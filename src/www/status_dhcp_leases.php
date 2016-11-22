@@ -74,6 +74,7 @@ function remove_duplicate($array, $field)
     return $new;
 }
 
+$interfaces = legacy_config_get_interfaces(array('virtual' => false));
 $leasesfile = services_dhcpd_leasesfile();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -226,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         asort($pools);
     }
 
-    foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifarr) {
+    foreach ($interfaces as $ifname => $ifarr) {
         if (isset($config['dhcpd'][$ifname]['staticmap'])) {
             foreach($config['dhcpd'][$ifname]['staticmap'] as $static) {
                 $slease = array();
@@ -355,6 +356,7 @@ include("head.inc");?>
             <table class="table table-striped">
               <thead>
                 <tr>
+                    <td class="act_sort" data-field="if"><?=gettext("Interface"); ?></td>
                     <td class="act_sort" data-field="ip"><?=gettext("IP address"); ?></td>
                     <td class="act_sort" data-field="mac"><?=gettext("MAC address"); ?></td>
                     <td class="act_sort" data-field="hostname"><?=gettext("Hostname"); ?></td>
@@ -386,6 +388,7 @@ include("head.inc");?>
                           if(is_array($dhcpifconf['staticmap'])) {
                               foreach ($dhcpifconf['staticmap'] as $staticent) {
                                   if ($data['ip'] == $staticent['ipaddr']) {
+                                      $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);
                                       $data['if'] = $dhcpif;
                                       break;
                                   }
@@ -402,6 +405,7 @@ include("head.inc");?>
                               continue;
                           }
                           if (($lip >= ip2ulong($dhcpifconf['range']['from'])) && ($lip <= ip2ulong($dhcpifconf['range']['to']))) {
+                              $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);
                               $data['if'] = $dhcpif;
                               break;
                           }
@@ -410,6 +414,7 @@ include("head.inc");?>
                   $mac_hi = strtoupper($data['mac'][0] . $data['mac'][1] . $data['mac'][3] . $data['mac'][4] . $data['mac'][6] . $data['mac'][7]);
               ?>
               <tr>
+                  <td><?=$data['int'];?></td>
                   <td><?=$data['ip'];?></td>
                   <td>
                       <a href="services_wol.php?if=<?=$data['if'];?>&amp;mac=<?=$data['mac'];?>" title="<?=gettext("send Wake on LAN packet to this MAC address");?>">

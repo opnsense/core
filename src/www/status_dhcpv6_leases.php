@@ -96,6 +96,7 @@ function parse_duid($duid_string) {
     return array($iaid, $duid);
 }
 
+$interfaces = legacy_config_get_interfaces(array('virtual' => false));
 $leasesfile = services_dhcpdv6_leasesfile();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -291,7 +292,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         asort($pools);
     }
 
-    foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifarr) {
+    foreach ($interfaces as $ifname => $ifarr) {
         if (isset($config['dhcpdv6'][$ifname]['staticmap'])) {
             foreach($config['dhcpdv6'][$ifname]['staticmap'] as $static) {
                 $slease = array();
@@ -426,6 +427,7 @@ endif;?>
             <table class="table table-striped">
               <thead>
                 <tr>
+                    <th><?=gettext("Interface"); ?></td>
                     <th><?=gettext("IPv6 address"); ?></th>
                     <th><?=gettext("IAID"); ?></th>
                     <th><?=gettext("DUID"); ?></th>
@@ -447,6 +449,7 @@ endif;?>
                         if (is_array($dhcpifconf['staticmap'])) {
                             foreach ($dhcpifconf['staticmap'] as $staticent) {
                                 if ($data['ip'] == $staticent['ipaddr']) {
+                                    $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);
                                     $data['if'] = $dhcpif;
                                     break;
                                 }
@@ -459,9 +462,11 @@ endif;?>
                     }
                 } else {
                   $data['if'] = convert_real_interface_to_friendly_interface_name(guess_interface_from_ip($data['ip']));
+                  $data['int'] = htmlspecialchars($interfaces[$data['if']]['descr']);
                 }
                 ?>
                 <tr>
+                  <td><?=$data['int'];?></td>
                   <td><?=$data['ip'];?></td>
                   <td><?=$data['iaid'];?></td>
                   <td><?=$data['duid'];?></td>
