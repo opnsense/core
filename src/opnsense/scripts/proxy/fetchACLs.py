@@ -37,6 +37,7 @@ import gzip
 import zipfile
 import syslog
 import shutil
+import urllib2
 from ConfigParser import ConfigParser
 import requests
 
@@ -54,7 +55,7 @@ class Downloader(object):
             :param url: source url
             :param timeout: timeout in seconds
         """
-        self._url = url
+        self._url = url.strip()
         self._timeout = timeout
         self._source_handle = None
         self._username = username
@@ -63,18 +64,38 @@ class Downloader(object):
     def fetch(self):
         """ fetch (raw) source data into tempfile using self._source_handle
         """
-        if self._username is not None:
-            req = requests.get(url=self._url, stream=True, timeout=self._timeout, auth=(self._username, self._password))
+        self._source_handle = None
+        if self._url.lower().startswith('http://') or self._url.lower().startswith('https://'):
+            # HTTP(S) download
+            if self._username is not None:
+                req = requests.get(url=self._url, stream=True, timeout=self._timeout,
+                                   auth=(self._username, self._password))
+            else:
+                req = requests.get(url=self._url, stream=True, timeout=self._timeout)
+            if req.status_code == 200:
+                self._source_handle = tempfile.NamedTemporaryFile()
+                shutil.copyfileobj(req.raw, self._source_handle)
+                self._source_handle.seek(0)
+            else:
+                syslog.syslog(syslog.LOG_ERR, 'proxy acl: error downloading %s (http code: %s)' % (self._url,
+                                                                                                   req.status_code))
+        elif self._url.lower().startswith('ftp://'):
+            # FTP download
+            try:
+                f = urllib2.urlopen(self._url, timeout=self._timeout)
+                self._source_handle = tempfile.NamedTemporaryFile()
+                while True:
+                    data = f.read(1024)
+                    if not data:
+                        break
+                    else:
+                         self._source_handle.write(data)
+                self._source_handle.seek(0)
+                f.close()
+            except (urllib2.URLError, urllib2.HTTPError, IOError) as e:
+                 syslog.syslog(syslog.LOG_ERR, 'proxy acl: error downloading %s' % self._url)
         else:
-            req = requests.get(url=self._url, stream=True, timeout=self._timeout)
-        if req.status_code == 200:
-            self._source_handle = tempfile.NamedTemporaryFile()
-            shutil.copyfileobj(req.raw, self._source_handle)
-            self._source_handle.seek(0)
-        else:
-            syslog.syslog(syslog.LOG_ERR, 'proxy acl: error downloading %s (http code: %s)' % (self._url,
-                                                                                               req.status_code))
-            self._source_handle = None
+            syslog.syslog(syslog.LOG_ERR, 'proxy acl: unsupported protocol for %s' % self._url)
 
     def get_files(self):
         """ process downloaded data, handle compression
