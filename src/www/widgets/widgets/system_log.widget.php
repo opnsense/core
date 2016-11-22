@@ -52,25 +52,28 @@ function dump_log($system_logfile, $syslogEntriesToFetch)
   $logdatastr = configd_run("syslog dumplog {$system_logfile}");
   $logdata = explode("\n", $logdatastr);
   $reverse = ($config['OPNsense']['Syslog']['Reverse'] == '1');
-  if($reverse)
+  if($reverse) {
     $logdata = array_reverse($logdata);
+  }
 
   $counter = 1;
   foreach ($logdata as $logent) {
-    if(trim($logent) == '')
+    if(trim($logent) == '') {
       continue;
+    }
 
     $logent = preg_split("/\s+/", $logent, 6);
     $entry_date_time = join(" ", array_slice($logent, 0, 3));
-    echo "<tr>\n";
     $entry_text = ($logent[3] == $hostname) ? "" : $logent[3] . " ";
     $entry_text .= (isset($logent[4]) ?  $logent[4] : '') . (isset($logent[5]) ? " " . $logent[5] : '');
+    echo "<tr>\n";
     echo "<td>{$entry_date_time}</td>\n";
     echo "<td>{$entry_text}</td>\n";
     echo "</tr>\n";
 
-    if(++$counter > $syslogEntriesToFetch)
-      break; 
+    if(++$counter > $syslogEntriesToFetch) {
+      break;
+    }
   }
 }
 
