@@ -72,6 +72,7 @@ function dnsmasq_configure_do($verbose = false)
         "local-ttl" => "--local-ttl=1"
     );
 
+    dnsmasq_dhcpleases_stop();
     killbypid('/var/run/dnsmasq.pid', 'TERM', true);
 
     if (!dnsmasq_enabled()) {
@@ -178,10 +179,8 @@ function dnsmasq_configure_do($verbose = false)
     }
     $args .= ' ' . implode(' ', array_values($standard_args));
 
-    /* run dnsmasq */
-    $cmd = "/usr/local/sbin/dnsmasq --all-servers {$dns_rebind} {$args}";
-    mwexec_bg($cmd);
-    unset($args);
+    mwexec("/usr/local/sbin/dnsmasq --all-servers {$dns_rebind} {$args}");
+    dnsmasq_dhcpleases_start();
 
     if ($verbose) {
         echo "done.\n";
