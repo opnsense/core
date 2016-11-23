@@ -72,7 +72,6 @@ function dnsmasq_configure_do($verbose = false)
         "local-ttl" => "--local-ttl=1"
     );
 
-    dnsmasq_dhcpleases_stop();
     killbypid('/var/run/dnsmasq.pid', 'TERM', true);
 
     if (!dnsmasq_enabled()) {
@@ -87,7 +86,7 @@ function dnsmasq_configure_do($verbose = false)
     $args = "";
 
     if (isset($config['dnsmasq']['regdhcp'])) {
-        $args .= " --dhcp-hostsfile=/etc/hosts ";
+        $args .= " -H /var/etc/dnsmasq-hosts ";
     }
 
     /* Setup listen port, if non-default */
@@ -180,7 +179,6 @@ function dnsmasq_configure_do($verbose = false)
     $args .= ' ' . implode(' ', array_values($standard_args));
 
     mwexec("/usr/local/sbin/dnsmasq --all-servers {$dns_rebind} {$args}");
-    dnsmasq_dhcpleases_start();
 
     if ($verbose) {
         echo "done.\n";
@@ -191,8 +189,10 @@ function dnsmasq_hosts_generate()
 {
     global $config;
 
+    killbypid('/var/run/dhcpleases.pid', 'TERM', true);
+
     if (!dnsmasq_enabled()) {
-        return '';
+        return;
     }
 
     $dnsmasqcfg = $config['dnsmasq'];
@@ -205,18 +205,18 @@ function dnsmasq_hosts_generate()
 
     foreach ($dnsmasqcfg['hosts'] as $host) {
         if ($host['host']) {
-            $lhosts .= "{$host['ip']}  {$host['host']}.{$host['domain']} {$host['host']}\n";
+            $lhosts .= "{$host['ip']}\t{$host['host']}.{$host['domain']} {$host['host']}\n";
         } else {
-            $lhosts .= "{$host['ip']}  {$host['domain']}\n";
+            $lhosts .= "{$host['ip']}\t{$host['domain']}\n";
         }
         if (!isset($host['aliases']) || !is_array($host['aliases']) || !is_array($host['aliases']['item'])) {
             continue;
         }
         foreach ($host['aliases']['item'] as $alias) {
             if ($alias['host']) {
-                $lhosts .= "{$host['ip']}  {$alias['host']}.{$alias['domain']} {$alias['host']}\n";
+                $lhosts .= "{$host['ip']}\t{$alias['host']}.{$alias['domain']} {$alias['host']}\n";
             } else {
-                $lhosts .= "{$host['ip']}  {$alias['domain']}\n";
+                $lhosts .= "{$host['ip']}\t{$alias['domain']}\n";
             }
         }
     }
@@ -236,11 +236,12 @@ function dnsmasq_hosts_generate()
                         $domain = $dhcpifconf['domain'];
                     }
 
-                    $dhosts .= "{$host['ipaddr']}  {$host['hostname']}.{$domain} {$host['hostname']}\n";
+                    $dhosts .= "{$host['ipaddr']}\t{$host['hostname']}.{$domain} {$host['hostname']}\n";
                 }
             }
         }
     }
+
     if (isset($dnsmasqcfg['regdhcpstatic']) && is_array($config['dhcpdv6'])) {
         foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
             if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
@@ -256,42 +257,27 @@ function dnsmasq_hosts_generate()
                         $domain = $dhcpifconf['domain'];
                     }
 
-                    $dhosts .= "{$host['ipaddrv6']}  {$host['hostname']}.{$domain} {$host['hostname']}\n";
+                    $dhosts .= "{$host['ipaddrv6']}\t{$host['hostname']}.{$domain} {$host['hostname']}\n";
                 }
             }
         }
     }
 
     if (isset($dnsmasqcfg['dhcpfirst'])) {
-        return $dhosts . $lhosts;
-    }
-
-    return $lhosts . $dhosts;
-}
-
-function dnsmasq_dhcpleases_stop()
-{
-    killbypid('/var/run/dhcpleases.pid', 'TERM', true);
-}
-
-function dnsmasq_dhcpleases_start()
-{
-    global $config;
-
-    if (!isset($config['dnsmasq']['enable']) || !isset($config['dnsmasq']['regdhcp'])) {
-        return;
+        file_put_contents('/var/etc/dnsmasq-hosts', $dhosts . $lhosts);
+    } else {
+        file_put_contents('/var/etc/dnsmasq-hosts', $lhosts . $dhosts);
     }
 
     $leases = services_dhcpd_leasesfile();
-    if (!file_exists($leases)) {
-        return;
+
+    if (isset($config['dnsmasq']['regdhcp']) && file_exists($leases)) {
+        $domain = $config['system']['domain'];
+        mwexecf(
+            '/usr/local/sbin/dhcpleases -l %s -d %s -p %s -h %s',
+            array($leases, $domain, '/var/run/dnsmasq.pid', '/var/etc/dnsmasq-hosts')
+        );
     }
 
-    /* we can let the user choose a domain, but it can be only one */
-    $domain = $config['system']['domain'];
-
-    mwexecf(
-        '/usr/local/sbin/dhcpleases -l %s -d %s -p %s -h %s',
-        array($leases, $domain, '/var/run/dnsmasq.pid', '/etc/hosts')
-    );
+    killbypid('/var/run/dnsmasq.pid', 'HUP');
 }

@@ -447,7 +447,7 @@ include("head.inc");
                 <br/>
                 <input name="dnslocalhost" type="checkbox" value="yes" <?=$pconfig['dnslocalhost'] ? "checked=\"checked\"" : ""; ?> />
                 <strong>
-                  <?=gettext("Do not use the DNS Forwarder as a DNS server for the firewall"); ?>
+                  <?=gettext("Do not use the DNS Forwarder/Resolver as a DNS server for the firewall"); ?>
                 </strong>
                 <div class="hidden" for="help_for_dnsservers_opt">
                   <?=gettext("By default localhost (127.0.0.1) will be used as the first DNS server where the DNS Forwarder or DNS Resolver is enabled and set to listen on Localhost, so system can use the local DNS service to perform lookups. ".

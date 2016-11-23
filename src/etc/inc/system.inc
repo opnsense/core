@@ -356,12 +356,12 @@ function system_hosts_generate()
 
     $syscfg = $config['system'];
 
-    $hosts = "127.0.0.1  localhost localhost.{$syscfg['domain']}\n";
+    $hosts = "127.0.0.1\tlocalhost localhost.{$syscfg['domain']}\n";
 
     if (isset($config['interfaces']['lan'])) {
         $cfgip = get_interface_ip("lan");
         if (is_ipaddr($cfgip)) {
-            $hosts .= "{$cfgip}  {$syscfg['hostname']}.{$syscfg['domain']} {$syscfg['hostname']}\n";
+            $hosts .= "{$cfgip}\t{$syscfg['hostname']}.{$syscfg['domain']} {$syscfg['hostname']}\n";
         }
     } else {
         $sysiflist = get_configured_interface_list();
@@ -369,24 +369,17 @@ function system_hosts_generate()
             if (!interface_has_gateway($sysif)) {
                 $cfgip = get_interface_ip($sysif);
                 if (is_ipaddr($cfgip)) {
-                    $hosts .= "{$cfgip}  {$syscfg['hostname']}.{$syscfg['domain']} {$syscfg['hostname']}\n";
+                    $hosts .= "{$cfgip}\t{$syscfg['hostname']}.{$syscfg['domain']} {$syscfg['hostname']}\n";
                     break;
                 }
             }
         }
     }
 
-    /* XXX currenty taints the hosts file, unbound doesn't */
-    $hosts .= dnsmasq_hosts_generate();
-    unbound_hosts_generate();
-
-    /*
-     * Do not remove this because dhcpleases monitors with kqueue
-     * it needs to be killed before writing to hosts files.
-     */
-    dnsmasq_dhcpleases_stop();
     file_put_contents('/etc/hosts', $hosts);
-    dnsmasq_dhcpleases_start();
+
+    dnsmasq_hosts_generate();
+    unbound_hosts_generate();
 }
 
 function system_hostname_configure()
