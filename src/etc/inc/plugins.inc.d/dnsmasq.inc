@@ -273,6 +273,9 @@ function dnsmasq_hosts_generate()
 
     if (isset($config['dnsmasq']['regdhcp']) && file_exists($leases)) {
         $domain = $config['system']['domain'];
+        if (isset($config['dnsmasq']['regdhcpdomain'])) {
+            $domain = $config['dnsmasq']['regdhcpdomain'];
+        }
         mwexecf(
             '/usr/local/sbin/dhcpleases -l %s -d %s -p %s -h %s',
             array($leases, $domain, '/var/run/dnsmasq.pid', '/var/etc/dnsmasq-hosts')
