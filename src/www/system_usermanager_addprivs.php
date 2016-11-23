@@ -201,19 +201,33 @@ include("head.inc");
                                 <tr>
                                     <th style="width:70px;"></th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
 <?php
-                            foreach ($priv_list as $pname => $pdata) :?>
-                                <tr class="acl_item" data-search-phrase="<?=$pdata['name'];?> <?=!empty($pdata['descr']) ? $pdata['descr'] : "";?>">
+                            foreach ($priv_list as $pname => $pdata) {
+                                 $pnamesafe = !empty($pdata['name']) ? $pdata['name'] : $pname;
+                                 switch (substr($pname, 0, 5)) {
+                                     case 'page-':
+                                         $pdesc = gettext('GUI');
+                                         break;
+                                     case 'user-':
+                                         $pdesc = gettext('User');
+                                         break;
+                                     default:
+                                         $pdesc = gettext('N/A');
+                                         break;
+                                 } ?>
+                                <tr class="acl_item" data-search-phrase="<?= $pdesc . ' ' . $pnamesafe ?>">
                                     <td>
                                         <input name="sysprivs[]" type="checkbox" value="<?=$pname;?>" <?=in_array($pname, $a_privs) ?  "checked=\"checked\"" : "";?>>
                                     </td>
-                                    <td><small data-toggle="tooltip" title="<?=!empty($pdata['descr']) ? $pdata['descr'] : "";?>"><?=!empty($pdata['name']) ? $pdata['name'] : $pname;?></small></td>
+                                    <td><?= $pdesc ?></td>
+                                    <td><?= $pnamesafe ?></td>
                                 </tr>
 <?php
-                            endforeach; ?>
+                            } ?>
                             </tbody>
                         </table>
                     </div>

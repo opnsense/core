@@ -676,15 +676,15 @@ $( document ).ready(function() {
                           <td><?=!empty($priv['group']) ? $priv['group'] : ''?></td>
                           <td>
 <?php
-                             switch (substr($id, 0, 5)) {
+                             switch (substr($priv['id'], 0, 5)) {
                                  case 'page-':
                                      echo gettext('GUI');
                                      break;
                                  case 'user-':
-                                     echo gettext('System');
+                                     echo gettext('User');
                                      break;
                                  default:
-                                     echo gettext('Unknown');
+                                     echo gettext('N/A');
                                      break;
                              } ?>
                           </td>

@@ -59,7 +59,7 @@
         </patterns>
     </page-dashboard-all>
     <page-dashboard-widgets>
-        <name>Dashboard widgets (direct access).</name>
+        <name>Dashboard (widgets only)</name>
         <patterns>
             <pattern>*.widget.php*</pattern>
         </patterns>
