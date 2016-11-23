@@ -100,10 +100,6 @@ class ACL
                         if (isset($ACLnode->name)) {
                             $aclPayload = array();
                             $aclPayload['name'] = (string)$ACLnode->name;
-                            if (isset($ACLnode->description)) {
-                                // rename internal tag for backward compat.
-                                $aclPayload['descr'] = (string)$ACLnode->description;
-                            }
                             if (isset($ACLnode->patterns->pattern)) {
                                 // rename pattern to match for internal usage, old code did use match and
                                 // to avoid duplicate conversion let's do this only on input.
@@ -254,8 +250,8 @@ class ACL
         foreach ($this->ACLtags as $aclKey => $aclItem) {
             $priv_list[$aclKey] = array();
             foreach ($aclItem as $propName => $propValue) {
-                if ($propName == 'name' || $propName == 'descr') {
-                    // translate name and description tags
+                if ($propName == 'name') {
+                    // translate name tag
                     $priv_list[$aclKey][$propName] = gettext($propValue);
                 } else {
                     $priv_list[$aclKey][$propName] = $propValue;

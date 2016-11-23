@@ -1,67 +1,56 @@
 <acl>
     <user-config-readonly>
-        <name>User - Config - Deny Config Write</name>
-        <description>If present, ignores requests from this user to write config.xml.</description>
+        <name>System: Deny config write</name>
     </user-config-readonly>
     <user-shell-access>
-        <name>User - System - Shell account access</name>
-        <description>Indicates whether the user is able to login for example via SSH.</description>
+        <name>System: Shell account access</name>
     </user-shell-access>
     <user-ipsec-xauth-dialin>
-        <name>User - VPN - IPsec xauth Dialin</name>
-        <description>Indicates whether the user is allowed to dial in via IPsec xauth.</description>
+        <name>VPN: IPsec XAUTH dialin</name>
     </user-ipsec-xauth-dialin>
     <user-proxy-auth>
-        <name>User - Proxy - Login</name>
-        <description>Indicates whether the user is allowed to authenticate with the proxy.</description>
+        <name>Proxy: Login</name>
     </user-proxy-auth>
     <page-diagnostics-backup-restore>
-        <name>WebCfg - Diagnostics: Backup / Restore page</name>
-        <descr>Allow access to the 'Diagnostics: Backup / Restore' page.</descr>
+        <name>Diagnostics: Backup / Restore</name>
         <patterns>
             <pattern>diag_backup.php*</pattern>
         </patterns>
     </page-diagnostics-backup-restore>
     <page-system-login-logout>
-        <name>WebCfg - Lobby: Login / Logout / Dashboard page</name>
-        <descr>Allow access to the 'Lobby: Login / Logout / Dashboard' page.</descr>
+        <name>Lobby: Login / Logout / Dashboard</name>
         <patterns>
             <pattern>index.php*</pattern>
         </patterns>
     </page-system-login-logout>
     <page-getserviceproviders>
-        <name>WebCfg - AJAX: Get Service Providers</name>
-        <description>Allow access to the 'AJAX: Service Providers' page.</description>
+        <name>AJAX: Get Service Providers</name>
         <patterns>
             <pattern>license.php</pattern>
             <pattern>getserviceproviders.php*</pattern>
         </patterns>
     </page-getserviceproviders>
     <page-getstats>
-        <name>WebCfg - AJAX: Get Stats</name>
-        <description>Allow access to the 'AJAX: Get Stats' page.</description>
+        <name>AJAX: Get Stats</name>
         <patterns>
             <pattern>license.php</pattern>
             <pattern>widgets/api/get.php*</pattern>
         </patterns>
     </page-getstats>
     <page-all>
-        <name>WebCfg - All pages</name>
-        <description>Allow access to all pages</description>
+        <name>All pages</name>
         <patterns>
             <pattern>*</pattern>
         </patterns>
     </page-all>
     <page-diagnostics-crash-reporter>
-        <name>WebCfg - System: Crash Reporter</name>
-        <description>Uploads crash reports to the developers.</description>
+        <name>System: Crash Reporter</name>
         <patterns>
             <pattern>crash_reporter.php*</pattern>
         </patterns>
     </page-diagnostics-crash-reporter>
     <page-dashboard-all>
-        <name>WebCfg - Dashboard (all)</name>
-        <description>Allow access to all pages required for the dashboard.</description>
+        <name>Dashboard (all)</name>
         <patterns>
             <pattern>index.php*</pattern>
             <pattern>*.widget.php*</pattern>
@@ -70,1034 +59,887 @@
         </patterns>
     </page-dashboard-all>
     <page-dashboard-widgets>
-        <name>WebCfg - Dashboard widgets (direct access).</name>
-        <description>Allow direct access to all Dashboard widget pages, required for some widgets using AJAX.</description>
+        <name>Dashboard widgets (direct access).</name>
         <patterns>
             <pattern>*.widget.php*</pattern>
         </patterns>
     </page-dashboard-widgets>
     <page-diagnostics-authentication>
-        <name>WebCfg - Diagnostics: Authentication page</name>
-        <description>Allow access to the 'Diagnostics: Authentication' page.</description>
+        <name>Diagnostics: Authentication</name>
         <patterns>
             <pattern>diag_authentication.php*</pattern>
         </patterns>
     </page-diagnostics-authentication>
     <page-diagnostics-configurationhistory>
-        <name>WebCfg - Diagnostics: Configuration History page</name>
-        <description>Allow access to the 'Diagnostics: Configuration History' page.</description>
+        <name>Diagnostics: Configuration History</name>
         <patterns>
             <pattern>diag_confbak.php*</pattern>
         </patterns>
     </page-diagnostics-configurationhistory>
     <page-diagnostics-factorydefaults>
-        <name>WebCfg - Diagnostics: Factory defaults page</name>
-        <description>Allow access to the 'Diagnostics: Factory defaults' page.</description>
+        <name>Diagnostics: Factory defaults</name>
         <patterns>
             <pattern>diag_defaults.php*</pattern>
         </patterns>
     </page-diagnostics-factorydefaults>
     <page-diagnostics-haltsystem>
-        <name>WebCfg - Diagnostics: Halt system page</name>
-        <description>Allow access to the 'Diagnostics: Halt system' page.</description>
+        <name>Diagnostics: Halt system</name>
         <patterns>
             <pattern>diag_halt.php*</pattern>
         </patterns>
     </page-diagnostics-haltsystem>
     <page-diagnostics-limiter-info>
-        <name>WebCfg - Diagnostics: Limiter Info</name>
-        <description>Allows access to the 'Diagnostics: Limiter Info' page</description>
+        <name>Diagnostics: Limiter Info</name>
         <patterns>
             <pattern>diag_limiter_info.php*</pattern>
         </patterns>
     </page-diagnostics-limiter-info>
     <page-diagnostics-logs-dhcp>
-        <name>WebCfg - Diagnostics: Logs: DHCP page</name>
-        <description>Allow access to the 'Diagnostics: Logs: DHCP' page.</description>
+        <name>Diagnostics: Logs: DHCP</name>
         <patterns>
             <pattern>diag_logs_dhcp.php*</pattern>
         </patterns>
     </page-diagnostics-logs-dhcp>
     <page-diagnostics-logs-gateways>
-        <name>WebCfg - Diagnostics: Logs: Gateways page</name>
-        <description>Allow access to the 'Diagnostics: Logs: System: Gateways' page.</description>
+        <name>Diagnostics: Logs: Gateways</name>
         <patterns>
             <pattern>diag_logs_gateways.php*</pattern>
         </patterns>
     </page-diagnostics-logs-gateways>
     <page-diagnostics-logs-resolver>
-        <name>WebCfg - Diagnostics: Logs: Resolver page</name>
-        <description>Allow access to the 'Diagnostics: Logs: System: Resolver' page.</description>
+        <name>Diagnostics: Logs: Resolver</name>
         <patterns>
             <pattern>diag_logs_resolver.php*</pattern>
         </patterns>
     </page-diagnostics-logs-resolver>
     <page-diagnostics-logs-settings>
-        <name>WebCfg - Diagnostics: Logs: Settings page</name>
-        <description>Allow access to the 'Diagnostics: Logs: Settings' page.</description>
+        <name>Diagnostics: Logs: Settings</name>
         <patterns>
             <pattern>diag_logs_settings.php*</pattern>
         </patterns>
     </page-diagnostics-logs-settings>
     <page-diagnostics-logs-system>
-        <name>WebCfg - Diagnostics: Logs: System page</name>
-        <description>Allow access to the 'Diagnostics: Logs: System' page.</description>
+        <name>Diagnostics: Logs: System</name>
         <patterns>
             <pattern>diag_logs.php*</pattern>
         </patterns>
     </page-diagnostics-logs-system>
     <page-diagnostics-packetcapture>
-        <name>WebCfg - Diagnostics: Packet Capture page</name>
-        <description>Allow access to the 'Diagnostics: Packet Capture' page.</description>
+        <name>Diagnostics: Packet Capture</name>
         <patterns>
             <pattern>diag_packet_capture.php*</pattern>
         </patterns>
     </page-diagnostics-packetcapture>
     <page-diagnostics-tables>
-        <name>WebCfg - Diagnostics: PF Table IP addresses</name>
-        <description>Allow access to the 'Diagnostics: Tables' page.</description>
+        <name>Diagnostics: PF Table IP addresses</name>
         <patterns>
             <pattern>diag_tables.php*</pattern>
         </patterns>
     </page-diagnostics-tables>
     <page-diagnostics-pf-info>
-        <name>WebCfg - Diagnostics: pfInfo</name>
-        <description>Allows access to the 'Diagnostics: pfInfo' page</description>
+        <name>Diagnostics: pfInfo</name>
         <patterns>
             <pattern>diag_pf_info.php*</pattern>
         </patterns>
     </page-diagnostics-pf-info>
     <page-diagnostics-system-pftop>
-        <name>WebCfg - Diagnostics: pfTop</name>
-        <description>Allows access to the 'Diagnostics: pfTop' page</description>
+        <name>Diagnostics: pfTop</name>
         <patterns>
             <pattern>diag_system_pftop.php*</pattern>
         </patterns>
     </page-diagnostics-system-pftop>
     <page-diagnostics-ping>
-        <name>WebCfg - Diagnostics: Ping page</name>
-        <description>Allow access to the 'Diagnostics: Ping' page.</description>
+        <name>Diagnostics: Ping</name>
         <patterns>
             <pattern>diag_ping.php*</pattern>
         </patterns>
     </page-diagnostics-ping>
     <page-diagnostics-rebootsystem>
-        <name>WebCfg - Diagnostics: Reboot System page</name>
-        <description>Allow access to the 'Diagnostics: Reboot System' page.</description>
+        <name>Diagnostics: Reboot System</name>
         <patterns>
             <pattern>reboot.php*</pattern>
         </patterns>
     </page-diagnostics-rebootsystem>
     <page-diagnostics-resetstate>
-        <name>WebCfg - Diagnostics: Reset state page</name>
-        <description>Allow access to the 'Diagnostics: Reset state' page.</description>
+        <name>Diagnostics: Reset state</name>
         <patterns>
             <pattern>diag_resetstate.php*</pattern>
         </patterns>
     </page-diagnostics-resetstate>
     <page-diagnostics-showstates>
-        <name>WebCfg - Diagnostics: Show States page</name>
-        <description>Allow access to the 'Diagnostics: Show States' page.</description>
+        <name>Diagnostics: Show States</name>
         <patterns>
             <pattern>diag_dump_states.php*</pattern>
         </patterns>
     </page-diagnostics-showstates>
     <page-diagnostics-sockets>
-        <name>WebCfg - Diagnostics: Sockets page</name>
-        <description>Allow access to the 'Diagnostics: Sockets' page.</description>
+        <name>Diagnostics: Sockets</name>
         <patterns>
             <pattern>diag_sockets.php*</pattern>
         </patterns>
     </page-diagnostics-sockets>
     <page-diagnostics-statessummary>
-        <name>WebCfg - Diagnostics: States Summary page</name>
-        <description>Allow access to the 'Diagnostics: States Summary' page.</description>
+        <name>Diagnostics: States Summary</name>
         <patterns>
             <pattern>diag_states_summary.php*</pattern>
         </patterns>
     </page-diagnostics-statessummary>
     <page-diagnostics-testport>
-        <name>WebCfg - Diagnostics: Test Port</name>
-        <description>Allow access to the 'Diagnostics: Test Port' page.</description>
+        <name>Diagnostics: Test Port</name>
         <patterns>
             <pattern>diag_testport.php*</pattern>
         </patterns>
     </page-diagnostics-testport>
     <page-diagnostics-traceroute>
-        <name>WebCfg - Diagnostics: Traceroute page</name>
-        <description>Allow access to the 'Diagnostics: Traceroute' page.</description>
+        <name>Diagnostics: Traceroute</name>
         <patterns>
             <pattern>diag_traceroute.php*</pattern>
         </patterns>
     </page-diagnostics-traceroute>
     <page-firewall-alias-edit>
-        <name>WebCfg - Firewall: Alias: Edit page</name>
-        <description>Allow access to the 'Firewall: Alias: Edit' page.</description>
+        <name>Firewall: Alias: Edit</name>
         <patterns>
             <pattern>firewall_aliases_edit.php*</pattern>
         </patterns>
     </page-firewall-alias-edit>
     <page-firewall-alias-import>
-        <name>WebCfg - Firewall: Alias: Import page</name>
-        <description>Allow access to the 'Firewall: Alias: Import' page.</description>
+        <name>Firewall: Alias: Import</name>
         <patterns>
             <pattern>firewall_aliases_import.php*</pattern>
         </patterns>
     </page-firewall-alias-import>
     <page-firewall-aliases>
-        <name>WebCfg - Firewall: Aliases page</name>
-        <description>Allow access to the 'Firewall: Aliases' page.</description>
+        <name>Firewall: Aliases</name>
         <patterns>
             <pattern>firewall_aliases.php*</pattern>
         </patterns>
     </page-firewall-aliases>
     <page-firewall-nat-1-1>
-        <name>WebCfg - Firewall: NAT: 1:1 page</name>
-        <description>Allow access to the 'Firewall: NAT: 1:1' page.</description>
+        <name>Firewall: NAT: 1:1</name>
         <patterns>
             <pattern>firewall_nat_1to1.php*</pattern>
         </patterns>
     </page-firewall-nat-1-1>
     <page-firewall-nat-1-1-edit>
-        <name>WebCfg - Firewall: NAT: 1:1: Edit page</name>
-        <description>Allow access to the 'Firewall: NAT: 1:1: Edit' page.</description>
+        <name>Firewall: NAT: 1:1: Edit</name>
         <patterns>
             <pattern>firewall_nat_1to1_edit.php*</pattern>
         </patterns>
     </page-firewall-nat-1-1-edit>
     <page-firewall-nat-npt>
-        <name>WebCfg - Firewall: NAT: NPT page</name>
-        <description>Allow access to the 'Firewall: NAT: NPT' page.</description>
+        <name>Firewall: NAT: NPT</name>
         <patterns>
             <pattern>firewall_nat_npt.php*</pattern>
         </patterns>
     </page-firewall-nat-npt>
     <page-firewall-nat-npt-edit>
-        <name>WebCfg - Firewall: NAT: NPT: Edit page</name>
-        <description>Allow access to the 'Firewall: NAT: NPT: Edit' page.</description>
+        <name>Firewall: NAT: NPT: Edit</name>
         <patterns>
             <pattern>firewall_nat_npt_edit.php*</pattern>
         </patterns>
     </page-firewall-nat-npt-edit>
     <page-firewall-nat-outbound>
-        <name>WebCfg - Firewall: NAT: Outbound page</name>
-        <description>Allow access to the 'Firewall: NAT: Outbound' page.</description>
+        <name>Firewall: NAT: Outbound</name>
         <patterns>
             <pattern>firewall_nat_out.php*</pattern>
         </patterns>
     </page-firewall-nat-outbound>
     <page-firewall-nat-outbound-edit>
-        <name>WebCfg - Firewall: NAT: Outbound: Edit page</name>
-        <description>Allow access to the 'Firewall: NAT: Outbound: Edit' page.</description>
+        <name>Firewall: NAT: Outbound: Edit</name>
         <patterns>
             <pattern>firewall_nat_out_edit.php*</pattern>
         </patterns>
     </page-firewall-nat-outbound-edit>
     <page-firewall-nat-portforward>
-        <name>WebCfg - Firewall: NAT: Port Forward page</name>
-        <description>Allow access to the 'Firewall: NAT: Port Forward' page.</description>
+        <name>Firewall: NAT: Port Forward</name>
         <patterns>
             <pattern>firewall_nat.php*</pattern>
         </patterns>
     </page-firewall-nat-portforward>
     <page-firewall-nat-portforward-edit>
-        <name>WebCfg - Firewall: NAT: Port Forward: Edit page</name>
-        <description>Allow access to the 'Firewall: NAT: Port Forward: Edit' page.</description>
+        <name>Firewall: NAT: Port Forward: Edit</name>
         <patterns>
             <pattern>firewall_nat_edit.php*</pattern>
         </patterns>
     </page-firewall-nat-portforward-edit>
     <page-firewall-rules>
-        <name>WebCfg - Firewall: Rules page</name>
-        <description>Allow access to the 'Firewall: Rules' page.</description>
+        <name>Firewall: Rules</name>
         <patterns>
             <pattern>firewall_rules.php*</pattern>
         </patterns>
     </page-firewall-rules>
     <page-firewall-rules-edit>
-        <name>WebCfg - Firewall: Rules: Edit page</name>
-        <description>Allow access to the 'Firewall: Rules: Edit' page.</description>
+        <name>Firewall: Rules: Edit</name>
         <patterns>
             <pattern>firewall_rules_edit.php*</pattern>
         </patterns>
     </page-firewall-rules-edit>
     <page-firewall-schedules>
-        <name>WebCfg - Firewall: Schedules page</name>
-        <description>Allow access to the 'Firewall: Schedules' page.</description>
+        <name>Firewall: Schedules</name>
         <patterns>
             <pattern>firewall_schedule.php*</pattern>
         </patterns>
     </page-firewall-schedules>
     <page-firewall-scrub>
-        <name>WebCfg - Firewall: Normalization page</name>
-        <description>Allow access to the 'Firewall: Normalization' page.</description>
+        <name>Firewall: Normalization</name>
         <patterns>
             <pattern>firewall_scrub.php*</pattern>
             <pattern>firewall_scrub_edit.php*</pattern>
         </patterns>
     </page-firewall-scrub>
     <page-firewall-schedules-edit>
-        <name>WebCfg - Firewall: Schedules: Edit page</name>
-        <description>Allow access to the 'Firewall: Schedules: Edit' page.</description>
+        <name>Firewall: Schedules: Edit</name>
         <patterns>
             <pattern>firewall_schedule_edit.php*</pattern>
         </patterns>
     </page-firewall-schedules-edit>
     <page-firewall-virtualipaddress-edit>
-        <name>WebCfg - Firewall: Virtual IP Address: Edit page</name>
-        <description>Allow access to the 'Firewall: Virtual IP Address: Edit' page.</description>
+        <name>Firewall: Virtual IP Address: Edit</name>
         <patterns>
             <pattern>firewall_virtual_ip_edit.php*</pattern>
         </patterns>
     </page-firewall-virtualipaddress-edit>
     <page-firewall-virtualipaddresses>
-        <name>WebCfg - Firewall: Virtual IP Addresses page</name>
-        <description>Allow access to the 'Firewall: Virtual IP Addresses' page.</description>
+        <name>Firewall: Virtual IP Addresses</name>
         <patterns>
             <pattern>firewall_virtual_ip.php*</pattern>
         </patterns>
     </page-firewall-virtualipaddresses>
     <page-diagnostics-logs-firewall>
-        <name>WebCfg - Diagnostics: Logs: Firewall: Normal View page</name>
-        <description>Allow access to the 'Diagnostics: Logs: Firewall: Normal View' page.</description>
+        <name>Diagnostics: Logs: Firewall: Normal View</name>
         <patterns>
             <pattern>diag_logs_filter.php*</pattern>
         </patterns>
     </page-diagnostics-logs-firewall>
     <page-diagnostics-logs-firewall-plain>
-        <name>WebCfg - Diagnostics: Logs: Firewall: Plain View page</name>
-        <description>Allow access to the 'Diagnostics: Logs: Firewall: Plain View' page.</description>
+        <name>Diagnostics: Logs: Firewall: Plain View</name>
         <patterns>
             <pattern>diag_logs_filter_plain.php*</pattern>
         </patterns>
     </page-diagnostics-logs-firewall-plain>
     <page-diagnostics-logs-firewall-dynamic>
-        <name>WebCfg - Diagnostics: Logs: Firewall: Dynamic View page</name>
-        <description>Allow access to the 'Diagnostics: Logs: Firewall: Dynamic View' page.</description>
+        <name>Diagnostics: Logs: Firewall: Dynamic View</name>
         <patterns>
             <pattern>diag_logs_filter_dynamic.php*</pattern>
         </patterns>
     </page-diagnostics-logs-firewall-dynamic>
     <page-diagnostics-logs-firewall-summary>
-        <name>WebCfg - Diagnostics: Logs: Firewall: Summary View page</name>
-        <description>Allow access to the 'Diagnostics: Logs: Firewall: Summary View' page.</description>
+        <name>Diagnostics: Logs: Firewall: Summary View</name>
         <patterns>
             <pattern>diag_logs_filter_summary.php*</pattern>
         </patterns>
     </page-diagnostics-logs-firewall-summary>
     <page-interfaces-assignnetworkports>
-        <name>WebCfg - Interfaces: Assign network ports page</name>
-        <description>Allow access to the 'Interfaces: Assign network ports' page.</description>
+        <name>Interfaces: Assign network ports</name>
         <patterns>
             <pattern>interfaces_assign.php*</pattern>
         </patterns>
     </page-interfaces-assignnetworkports>
     <page-interfaces-bridge-edit>
-        <name>WebCfg - Interfaces: Bridge edit page</name>
-        <description>Allow access to the 'Interfaces: Bridge : Edit' page.</description>
+        <name>Interfaces: Bridge edit</name>
         <patterns>
             <pattern>interfaces_bridge_edit.php*</pattern>
         </patterns>
     </page-interfaces-bridge-edit>
     <page-interfaces-bridge>
-        <name>WebCfg - Interfaces: Bridge page</name>
-        <description>Allow access to the 'Interfaces: Bridge' page.</description>
+        <name>Interfaces: Bridge</name>
         <patterns>
             <pattern>interfaces_bridge.php*</pattern>
         </patterns>
     </page-interfaces-bridge>
     <page-interfaces-gif>
-        <name>WebCfg - Interfaces: GIF page</name>
-        <description>Allow access to the 'Interfaces: GIF' page.</description>
+        <name>Interfaces: GIF</name>
         <patterns>
             <pattern>interfaces_gif.php*</pattern>
         </patterns>
     </page-interfaces-gif>
     <page-interfaces-gif-edit>
-        <name>WebCfg - Interfaces: GIF: Edit page</name>
-        <description>Allow access to the 'Interfaces: GIF: Edit' page.</description>
+        <name>Interfaces: GIF: Edit</name>
         <patterns>
             <pattern>interfaces_gif_edit.php*</pattern>
         </patterns>
     </page-interfaces-gif-edit>
     <page-interfaces-gre>
-        <name>WebCfg - Interfaces: GRE page</name>
-        <description>Allow access to the 'Interfaces: GRE' page.</description>
+        <name>Interfaces: GRE</name>
         <patterns>
             <pattern>interfaces_gre.php*</pattern>
         </patterns>
     </page-interfaces-gre>
     <page-interfaces-gre-edit>
-        <name>WebCfg - Interfaces: GRE: Edit page</name>
-        <description>Allow access to the 'Interfaces: GRE: Edit' page.</description>
+        <name>Interfaces: GRE: Edit</name>
         <patterns>
             <pattern>interfaces_gre_edit.php*</pattern>
         </patterns>
     </page-interfaces-gre-edit>
     <page-interfaces-groups>
-        <name>WebCfg - Interfaces: Groups page</name>
-        <description>Allow access to the 'Interfaces: Groups' page.</description>
+        <name>Interfaces: Groups</name>
         <patterns>
             <pattern>interfaces_groups.php*</pattern>
         </patterns>
     </page-interfaces-groups>
     <page-interfaces-groups-edit>
-        <name>WebCfg - Interfaces: Groups: Edit page</name>
-        <description>Allow access to the 'Interfaces: Groups: Edit' page.</description>
+        <name>Interfaces: Groups: Edit</name>
         <patterns>
             <pattern>interfaces_groups_edit.php*</pattern>
         </patterns>
     </page-interfaces-groups-edit>
     <page-interfaces-lagg-edit>
-        <name>WebCfg - Interfaces: LAGG: Edit page</name>
-        <description>Allow access to the 'Interfaces: LAGG: Edit' page.</description>
+        <name>Interfaces: LAGG: Edit</name>
         <patterns>
             <pattern>interfaces_lagg_edit.php*</pattern>
         </patterns>
     </page-interfaces-lagg-edit>
     <page-interfaces-lagg>
-        <name>WebCfg - Interfaces: LAGG page</name>
-        <description>Allow access to the 'Interfaces: LAGG' page.</description>
+        <name>Interfaces: LAGG</name>
         <patterns>
             <pattern>interfaces_lagg.php*</pattern>
         </patterns>
     </page-interfaces-lagg>
     <page-interfaces-ppps>
-        <name>WebCfg - Interfaces: PPPs page</name>
-        <description>Allow access to the 'Interfaces: PPPs' page.</description>
+        <name>Interfaces: PPPs</name>
         <patterns>
             <pattern>interfaces_ppps.php*</pattern>
         </patterns>
     </page-interfaces-ppps>
     <page-interfaces-ppps-edit>
-        <name>WebCfg - Interfaces: PPPs: Edit page</name>
-        <description>Allow access to the 'Interfaces: PPPs: Edit' page.</description>
+        <name>Interfaces: PPPs: Edit</name>
         <patterns>
             <pattern>interfaces_ppps_edit.php*</pattern>
         </patterns>
     </page-interfaces-ppps-edit>
     <page-interfaces-qinq>
-        <name>WebCfg - Interfaces: QinQ page</name>
-        <description>Allow access to the 'Interfaces: QinQ' page.</description>
+        <name>Interfaces: QinQ</name>
         <patterns>
             <pattern>interfaces_qinq.php*</pattern>
         </patterns>
     </page-interfaces-qinq>
     <page-interfaces-qinq-edit>
-        <name>WebCfg - Interfaces: QinQ: Edit page</name>
-        <description>Allow access to 'Interfaces: QinQ: Edit' page</description>
+        <name>Interfaces: QinQ: Edit</name>
         <patterns>
             <pattern>interfaces_qinq_edit.php*</pattern>
         </patterns>
     </page-interfaces-qinq-edit>
     <page-interfaces-vlan>
-        <name>WebCfg - Interfaces: VLAN page</name>
-        <description>Allow access to the 'Interfaces: VLAN' page.</description>
+        <name>Interfaces: VLAN</name>
         <patterns>
             <pattern>interfaces_vlan.php*</pattern>
         </patterns>
     </page-interfaces-vlan>
     <page-interfaces-vlan-edit>
-        <name>WebCfg - Interfaces: VLAN: Edit page</name>
-        <description>Allow access to the 'Interfaces: VLAN: Edit' page.</description>
+        <name>Interfaces: VLAN: Edit</name>
         <patterns>
             <pattern>interfaces_vlan_edit.php*</pattern>
         </patterns>
     </page-interfaces-vlan-edit>
     <page-interfaces>
-        <name>WebCfg - Interfaces: WAN page</name>
-        <description>Allow access to the 'Interfaces' page.</description>
+        <name>Interfaces: WAN</name>
         <patterns>
             <pattern>interfaces.php*</pattern>
         </patterns>
     </page-interfaces>
     <page-interfaces-wireless-edit>
-        <name>WebCfg - Interfaces: Wireless edit page</name>
-        <description>Allow access to the 'Interfaces: Wireless : Edit' page.</description>
+        <name>Interfaces: Wireless edit</name>
         <patterns>
             <pattern>interfaces_wireless_edit.php*</pattern>
         </patterns>
     </page-interfaces-wireless-edit>
     <page-interfaces-wireless>
-        <name>WebCfg - Interfaces: Wireless page</name>
-        <description>Allow access to the 'Interfaces: Wireless' page.</description>
+        <name>Interfaces: Wireless</name>
         <patterns>
             <pattern>interfaces_wireless.php*</pattern>
         </patterns>
     </page-interfaces-wireless>
     <page-pfsensewizardsubsystem>
-        <name>WebCfg - Wizard subsystem page</name>
-        <description>Allow access to the 'Wizard subsystem' page.</description>
+        <name>Wizard subsystem</name>
         <patterns>
             <pattern>wizard.php*</pattern>
         </patterns>
     </page-pfsensewizardsubsystem>
     <page-services-dhcprelay>
-        <name>WebCfg - Services: DHCP Relay page</name>
-        <description>Allow access to the 'Services: DHCP Relay' page.</description>
+        <name>Services: DHCP Relay</name>
         <patterns>
             <pattern>services_dhcp_relay.php*</pattern>
         </patterns>
     </page-services-dhcprelay>
     <page-services-dhcpserver-editstaticmapping>
-        <name>WebCfg - Services: DHCP Server : Edit static mapping page</name>
-        <description>Allow access to the 'Services: DHCP Server : Edit static mapping' page.</description>
+        <name>Services: DHCP Server : Edit static mapping</name>
         <patterns>
             <pattern>services_dhcp_edit.php*</pattern>
         </patterns>
     </page-services-dhcpserver-editstaticmapping>
     <page-services-dhcpserver>
-        <name>WebCfg - Services: DHCP server page</name>
-        <description>Allow access to the 'Services: DHCP server' page.</description>
+        <name>Services: DHCP server</name>
         <patterns>
             <pattern>services_dhcp.php*</pattern>
         </patterns>
     </page-services-dhcpserver>
     <page-services-dhcpv6relay>
-        <name>WebCfg - Services: DHCPv6 Relay page</name>
-        <description>Allow access to the 'Services: DHCPv6 Relay' page.</description>
+        <name>Services: DHCPv6 Relay</name>
         <patterns>
             <pattern>services_dhcpv6_relay.php*</pattern>
         </patterns>
     </page-services-dhcpv6relay>
     <page-services-dhcpserverv6-editstaticmapping>
-        <name>WebCfg - Services: DHCPv6 Server : Edit static mapping page</name>
-        <description>Allow access to the 'Services: DHCPv6 Server : Edit static mapping' page.</description>
+        <name>Services: DHCPv6 Server : Edit static mapping</name>
         <patterns>
             <pattern>services_dhcpv6_edit.php*</pattern>
         </patterns>
     </page-services-dhcpserverv6-editstaticmapping>
     <page-services-dhcpv6server>
-        <name>WebCfg - Services: DHCPv6 server page</name>
-        <description>Allow access to the 'Services: DHCPv6 server' page.</description>
+        <name>Services: DHCPv6 server</name>
         <patterns>
             <pattern>services_dhcpv6.php*</pattern>
         </patterns>
     </page-services-dhcpv6server>
     <page-services-opendns>
-        <name>WebCfg - Services: DNS Filter</name>
-        <description>Allow access to the 'Services: DNS Filter' page.</description>
+        <name>Services: DNS Filter</name>
         <patterns>
             <pattern>services_opendns.php*</pattern>
         </patterns>
     </page-services-opendns>
     <page-services-dnsforwarder>
-        <name>WebCfg - Services: DNS Forwarder page</name>
-        <description>Allow access to the 'Services: DNS Forwarder' page.</description>
+        <name>Services: DNS Forwarder</name>
         <patterns>
             <pattern>services_dnsmasq.php*</pattern>
         </patterns>
     </page-services-dnsforwarder>
     <page-services-dnsforwarder-editdomainoverride>
-        <name>WebCfg - Services: DNS Forwarder: Edit Domain Override page</name>
-        <description>Allow access to the 'Services: DNS Forwarder: Edit Domain Override' page.</description>
+        <name>Services: DNS Forwarder: Edit Domain Override</name>
         <patterns>
             <pattern>services_dnsmasq_domainoverride_edit.php*</pattern>
         </patterns>
     </page-services-dnsforwarder-editdomainoverride>
     <page-services-dnsforwarder-edithost>
-        <name>WebCfg - Services: DNS Forwarder: Edit host page</name>
-        <description>Allow access to the 'Services: DNS Forwarder: Edit host' page.</description>
+        <name>Services: DNS Forwarder: Edit host</name>
         <patterns>
             <pattern>services_dnsmasq_edit.php*</pattern>
         </patterns>
     </page-services-dnsforwarder-edithost>
     <page-services-dnsresolver>
-        <name>WebCfg - Services: DNS Resolver page</name>
-        <description>Allow access to the 'Services: DNS Resolver' page.</description>
+        <name>Services: DNS Resolver</name>
         <patterns>
             <pattern>services_unbound.php*</pattern>
         </patterns>
     </page-services-dnsresolver>
     <page-services-dnsresolver-acls>
-        <name>WebCfg - Services: DNS Resolver: Access Lists page</name>
-        <description>Allow access to the 'Services: DNS Resolver: Access Lists' page.</description>
+        <name>Services: DNS Resolver: Access Lists</name>
         <patterns>
             <pattern>services_unbound_acls.php*</pattern>
         </patterns>
     </page-services-dnsresolver-acls>
     <page-services-dnsresolver-editacls>
-        <name>WebCfg - Services: DNS Resolver: Access Lists: Edit page</name>
-        <description>Allow access to the 'Services: DNS Resolver: Access Lists: Edit' page.</description>
+        <name>Services: DNS Resolver: Access Lists: Edit</name>
         <patterns>
             <pattern>services_unbound_acls_edit.php*</pattern>
         </patterns>
     </page-services-dnsresolver-editacls>
     <page-services-dnsresolver-advanced>
-        <name>WebCfg - Services: DNS Resolver: Advanced page</name>
-        <description>Allow access to the 'Services: DNS Resolver: Advanced' page.</description>
+        <name>Services: DNS Resolver: Advanced</name>
         <patterns>
             <pattern>services_unbound_advanced.php*</pattern>
         </patterns>
     </page-services-dnsresolver-advanced>
     <page-services-dnsresolver-editdomainoverride>
-        <name>WebCfg - Services: DNS Resolver: Edit Domain Override page</name>
-        <description>Allow access to the 'Services: DNS Resolver: Edit Domain Override' page.</description>
+        <name>Services: DNS Resolver: Edit Domain Override</name>
         <patterns>
             <pattern>services_unbound_domainoverride_edit.php*</pattern>
         </patterns>
     </page-services-dnsresolver-editdomainoverride>
     <page-services-dnsresolver-edithost>
-        <name>WebCfg - Services: DNS Resolver: Edit host page</name>
-        <description>Allow access to the 'Services: DNS Resolver: Edit host' page.</description>
+        <name>Services: DNS Resolver: Edit host</name>
         <patterns>
             <pattern>services_unbound_host_edit.php*</pattern>
         </patterns>
     </page-services-dnsresolver-edithost>
     <page-services-dynamicdnsclient>
-        <name>WebCfg - Services: Dynamic DNS client page</name>
-        <description>Allow access to the 'Services: Dynamic DNS client' page.</description>
+        <name>Services: Dynamic DNS client</name>
         <patterns>
             <pattern>services_dyndns_edit.php*</pattern>
         </patterns>
     </page-services-dynamicdnsclient>
     <page-services-dynamicdnsclients>
-        <name>WebCfg - Services: Dynamic DNS clients page</name>
-        <description>Allow access to the 'Services: Dynamic DNS clients' page.</description>
+        <name>Services: Dynamic DNS clients</name>
         <patterns>
             <pattern>services_dyndns.php*</pattern>
         </patterns>
     </page-services-dynamicdnsclients>
     <page-services-rfc2136clients>
-        <name>WebCfg - Services: RFC 2136 clients page</name>
-        <description>Allow access to the 'Services: RFC 2136 clients' page.</description>
+        <name>Services: RFC 2136 clients</name>
         <patterns>
             <pattern>services_rfc2136.php*</pattern>
         </patterns>
     </page-services-rfc2136clients>
     <page-services-router-advertisements>
-        <name>WebCfg - Services: Router advertisements page</name>
-        <description>Allow access to the 'Services: Router Advertisements' page.</description>
+        <name>Services: Router advertisements</name>
         <patterns>
             <pattern>services_router_advertisements.php*</pattern>
         </patterns>
     </page-services-router-advertisements>
     <page-status-carp>
-        <name>WebCfg - Status: CARP page</name>
-        <description>Allow access to the 'Status: CARP' page.</description>
+        <name>Status: CARP</name>
         <patterns>
             <pattern>carp_status.php*</pattern>
         </patterns>
     </page-status-carp>
     <page-status-habackup>
-        <name>WebCfg - Status: HA backup page</name>
-        <description>Allow access to the 'Status: HA backup' page.</description>
+        <name>Status: HA backup</name>
         <patterns>
             <pattern>status_habackup.php</pattern>
         </patterns>
     </page-status-habackup>
     <page-status-dhcpleases>
-        <name>WebCfg - Status: DHCP leases page</name>
-        <description>Allow access to the 'Status: DHCP leases' page.</description>
+        <name>Status: DHCP leases</name>
         <patterns>
             <pattern>status_dhcp_leases.php*</pattern>
         </patterns>
     </page-status-dhcpleases>
     <page-status-dhcpv6leases>
-        <name>WebCfg - Status: DHCPv6 leases page</name>
-        <description>Allow access to the 'Status: DHCPv6 leases' page.</description>
+        <name>Status: DHCPv6 leases</name>
         <patterns>
             <pattern>status_dhcpv6_leases.php*</pattern>
         </patterns>
     </page-status-dhcpv6leases>
     <page-status-filterreloadstatus>
-        <name>WebCfg - Status: Filter Reload Status page</name>
-        <description>Allow access to the 'Status: Filter Reload Status' page.</description>
+        <name>Status: Filter Reload Status</name>
         <patterns>
             <pattern>status_filter_reload.php*</pattern>
         </patterns>
     </page-status-filterreloadstatus>
     <page-status-gatewaygroups>
-        <name>WebCfg - Status: Gateway Groups page</name>
-        <description>Allow access to the 'Status: Gateway Groups' page.</description>
+        <name>Status: Gateway Groups</name>
         <patterns>
             <pattern>status_gateway_groups.php*</pattern>
         </patterns>
     </page-status-gatewaygroups>
     <page-status-gateways>
-        <name>WebCfg - Status: Gateways page</name>
-        <description>Allow access to the 'Status: Gateways' page.</description>
+        <name>Status: Gateways</name>
         <patterns>
             <pattern>status_gateways.php*</pattern>
         </patterns>
     </page-status-gateways>
     <page-status-interfaces>
-        <name>WebCfg - Status: Interfaces page</name>
-        <description>Allow access to the 'Status: Interfaces' page.</description>
+        <name>Status: Interfaces</name>
         <patterns>
             <pattern>status_interfaces.php*</pattern>
         </patterns>
     </page-status-interfaces>
     <page-status-ipsec>
-        <name>WebCfg - Status: IPsec page</name>
-        <description>Allow access to the 'Status: IPsec' page.</description>
+        <name>Status: IPsec</name>
         <patterns>
             <pattern>diag_ipsec.php*</pattern>
         </patterns>
     </page-status-ipsec>
     <page-status-ipsec-leases>
-        <name>WebCfg - Status: IPsec: Leasespage</name>
-        <description>Allow access to the 'Status: IPsec: Leases' page.</description>
+        <name>Status: IPsec: Leasespage</name>
         <patterns>
             <pattern>diag_ipsec_leases.php*</pattern>
         </patterns>
     </page-status-ipsec-leases>
     <page-status-ipsec-sad>
-        <name>WebCfg - Status: IPsec: SAD page</name>
-        <description>Allow access to the 'Status: IPsec: SAD' page.</description>
+        <name>Status: IPsec: SAD</name>
         <patterns>
             <pattern>diag_ipsec_sad.php*</pattern>
         </patterns>
     </page-status-ipsec-sad>
     <page-status-ipsec-spd>
-        <name>WebCfg - Status: IPsec: SPD page</name>
-        <description>Allow access to the 'Status: IPsec: SPD' page.</description>
+        <name>Status: IPsec: SPD</name>
         <patterns>
             <pattern>diag_ipsec_spd.php*</pattern>
         </patterns>
     </page-status-ipsec-spd>
     <page-status-openvpn>
-        <name>WebCfg - Status: OpenVPN page</name>
-        <description>Allow access to the 'Status: OpenVPN' page.</description>
+        <name>Status: OpenVPN</name>
         <patterns>
             <pattern>status_openvpn.php*</pattern>
         </patterns>
     </page-status-openvpn>
     <page-status-services>
-        <name>WebCfg - Status: Services page</name>
-        <description>Allow access to the 'Status: Services' page.</description>
+        <name>Status: Services</name>
         <patterns>
             <pattern>status_services.php*</pattern>
         </patterns>
     </page-status-services>
     <page-status-systemlogs-portalauth>
-        <name>WebCfg - Status: System logs: Captive portal page</name>
-        <description>Allow access to the 'Status: System logs: Captive portal' page.</description>
+        <name>Status: System logs: Captive portal</name>
         <patterns>
             <pattern>diag_logs_auth.php*</pattern>
         </patterns>
     </page-status-systemlogs-portalauth>
     <page-status-systemlogs-ipsecvpn>
-        <name>WebCfg - Status: System logs: IPsec VPN page</name>
-        <description>Allow access to the 'Status: System logs: IPsec VPN' page.</description>
+        <name>Status: System logs: IPsec VPN</name>
         <patterns>
             <pattern>diag_logs_ipsec.php*</pattern>
         </patterns>
     </page-status-systemlogs-ipsecvpn>
     <page-status-systemlogs-ppp>
-        <name>WebCfg - Status: System logs: IPsec VPN page</name>
-        <description>Allow access to the 'Status: System logs: IPsec VPN' page.</description>
+        <name>Status: System logs: IPsec VPN</name>
         <patterns>
             <pattern>diag_logs_ppp.php*</pattern>
         </patterns>
     </page-status-systemlogs-ppp>
     <page-status-systemlogs-openvpn>
-        <name>WebCfg - Status: System logs: OpenVPN page</name>
-        <description>Allow access to the 'Status: System logs: OpenVPN' page.</description>
+        <name>Status: System logs: OpenVPN</name>
         <patterns>
             <pattern>diag_logs_openvpn.php*</pattern>
         </patterns>
     </page-status-systemlogs-openvpn>
     <page-status-systemlogs-routing>
-        <name>WebCfg - Status: System logs: Routing page</name>
-        <description>Allow access to the 'Status: System logs: System: Routing' page.</description>
+        <name>Status: System logs: Routing</name>
         <patterns>
             <pattern>diag_logs_routing.php*</pattern>
         </patterns>
     </page-status-systemlogs-routing>
     <page-status-systemlogs-wireless>
-        <name>WebCfg - Status: System logs: Wireless page</name>
-        <description>Allow access to the 'Status: System logs: System: Wireless' page.</description>
+        <name>Status: System logs: Wireless</name>
         <patterns>
             <pattern>diag_logs_wireless.php*</pattern>
         </patterns>
     </page-status-systemlogs-wireless>
     <page-status-trafficgraph>
-        <name>WebCfg - Status: Traffic Graph page</name>
-        <description>Allow access to the 'Status: Traffic Graph' page.</description>
+        <name>Status: Traffic Graph</name>
         <patterns>
             <pattern>status_graph.php*</pattern>
         </patterns>
     </page-status-trafficgraph>
     <page-diagnostics-wirelessstatus>
-        <name>WebCfg - Status: Wireless page</name>
-        <description>Allow access to the 'Status: Wireless' page.</description>
+        <name>Status: Wireless</name>
         <patterns>
             <pattern>status_wireless.php*</pattern>
         </patterns>
     </page-diagnostics-wirelessstatus>
     <page-system-advanced-admin>
-        <name>WebCfg - System: Advanced: Admin Access Page</name>
-        <description>Allow access to the 'System: Advanced: Admin Access' page.</description>
+        <name>System: Advanced: Admin Access Page</name>
         <patterns>
             <pattern>system_advanced_admin.php*</pattern>
         </patterns>
     </page-system-advanced-admin>
     <page-system-advanced-firewall>
-        <name>WebCfg - System: Advanced: Firewall and NAT page</name>
-        <description>Allow access to the 'System: Advanced: Firewall and NAT' page.</description>
+        <name>System: Advanced: Firewall and NAT</name>
         <patterns>
             <pattern>system_advanced_firewall.php*</pattern>
         </patterns>
     </page-system-advanced-firewall>
     <page-system-advanced-misc>
-        <name>WebCfg - System: Advanced: Miscellaneous page</name>
-        <description>Allow access to the 'System: Advanced: Miscellaneous' page.</description>
+        <name>System: Advanced: Miscellaneous</name>
         <patterns>
             <pattern>system_advanced_misc.php*</pattern>
         </patterns>
     </page-system-advanced-misc>
     <page-system-advanced-network>
-        <name>WebCfg - System: Advanced: Network page</name>
-        <description>Allow access to the 'System: Advanced: Networking' page.</description>
+        <name>System: Advanced: Network</name>
         <patterns>
             <pattern>system_advanced_network.php*</pattern>
         </patterns>
     </page-system-advanced-network>
     <page-system-advanced-notifications>
-        <name>WebCfg - System: Advanced: Notifications page</name>
-        <description>Allow access to the 'System: Advanced: Notifications' page.</description>
+        <name>System: Advanced: Notifications</name>
         <patterns>
             <pattern>system_advanced_notifications.php*</pattern>
         </patterns>
     </page-system-advanced-notifications>
     <page-system-advanced-sysctl>
-        <name>WebCfg - System: Advanced: Tunables page</name>
-        <description>Allow access to the 'System: Advanced: Tunables' page.</description>
+        <name>System: Advanced: Tunables</name>
         <patterns>
             <pattern>system_advanced_sysctl.php*</pattern>
         </patterns>
     </page-system-advanced-sysctl>
     <page-system-authservers>
-        <name>WebCfg - System: Authentication Servers</name>
-        <description>Allow access to the 'System: Authentication Servers' page.</description>
+        <name>System: Authentication Servers</name>
         <patterns>
             <pattern>system_authservers.php*</pattern>
         </patterns>
     </page-system-authservers>
     <page-system-camanager>
-        <name>WebCfg - System: CA Manager</name>
-        <description>Allow access to the 'System: CA Manager' page.</description>
+        <name>System: CA Manager</name>
         <patterns>
             <pattern>system_camanager.php*</pattern>
         </patterns>
     </page-system-camanager>
     <page-system-certmanager>
-        <name>WebCfg - System: Certificate Manager</name>
-        <description>Allow access to the 'System: Certificate Manager' page.</description>
+        <name>System: Certificate Manager</name>
         <patterns>
             <pattern>system_certmanager.php*</pattern>
         </patterns>
     </page-system-certmanager>
     <page-system-crlmanager>
-        <name>WebCfg - System: CRL Manager</name>
-        <description>Allow access to the 'System: CRL Manager' page.</description>
+        <name>System: CRL Manager</name>
         <patterns>
             <pattern>system_crlmanager.php*</pattern>
         </patterns>
     </page-system-crlmanager>
     <page-system-firmware-autoupdate>
-        <name>WebCfg - System: Firmware page</name>
-        <description>Allow access to the 'System: Firmware' page.</description>
+        <name>System: Firmware</name>
         <patterns>
             <pattern>ui/core/firmware/*</pattern>
             <pattern>api/core/firmware/*</pattern>
         </patterns>
     </page-system-firmware-autoupdate>
     <page-system-firmware-manualupdate>
-        <name>WebCfg - System: Firmware page</name>
-        <description>Allow access to the 'System: Firmware' page.</description>
+        <name>System: Firmware</name>
         <patterns>
             <pattern>ui/core/firmware/*</pattern>
             <pattern>api/core/firmware/*</pattern>
         </patterns>
     </page-system-firmware-manualupdate>
     <page-system-gatewaygroups>
-        <name>WebCfg - System: Gateway Groups page</name>
-        <description>Allow access to the 'System: Gateway Groups' page.</description>
+        <name>System: Gateway Groups</name>
         <patterns>
             <pattern>system_gateway_groups.php*</pattern>
         </patterns>
     </page-system-gatewaygroups>
     <page-system-gateways>
-        <name>WebCfg - System: Gateways page</name>
-        <description>Allow access to the 'System: Gateways' page.</description>
+        <name>System: Gateways</name>
         <patterns>
             <pattern>system_gateways.php*</pattern>
         </patterns>
     </page-system-gateways>
     <page-system-gateways-editgatewaygroups>
-        <name>WebCfg - System: Gateways: Edit Gateway Groups page</name>
-        <description>Allow access to the 'System: Gateways: Edit Gateway Groups' page.</description>
+        <name>System: Gateways: Edit Gateway Groups</name>
         <patterns>
             <pattern>system_gateway_groups_edit.php*</pattern>
         </patterns>
     </page-system-gateways-editgatewaygroups>
     <page-system-gateways-editgateway>
-        <name>WebCfg - System: Gateways: Edit Gateway page</name>
-        <description>Allow access to the 'System: Gateways: Edit Gateway' page.</description>
+        <name>System: Gateways: Edit Gateway</name>
         <patterns>
             <pattern>system_gateways_edit.php*</pattern>
         </patterns>
     </page-system-gateways-editgateway>
     <page-system-generalsetup>
-        <name>WebCfg - System: General Setup page</name>
-        <description>Allow access to the 'System: General Setup' page.</description>
+        <name>System: General Setup</name>
         <patterns>
             <pattern>system_general.php*</pattern>
         </patterns>
     </page-system-generalsetup>
     <page-system-groupmanager>
-        <name>WebCfg - System: Group manager page</name>
-        <description>Allow access to the 'System: Group manager' page.</description>
+        <name>System: Group manager</name>
         <patterns>
             <pattern>system_groupmanager.php*</pattern>
         </patterns>
     </page-system-groupmanager>
     <page-system-groupmanager-addprivs>
-        <name>WebCfg - System: Group Manager: Add Privileges page</name>
-        <description>Allow access to the 'System: Group Manager: Add Privileges' page.</description>
+        <name>System: Group Manager: Add Privileges</name>
         <patterns>
             <pattern>system_usermanager_addprivs.php?group*</pattern>
         </patterns>
     </page-system-groupmanager-addprivs>
     <page-system-hasync>
-        <name>WebCfg - System: High Availability</name>
-        <description>Allow access to the 'System: High Availability' page.</description>
+        <name>System: High Availability</name>
         <patterns>
             <pattern>system_hasync.php*</pattern>
         </patterns>
     </page-system-hasync>
     <page-system-license>
-        <name>WebCfg - System: License page</name>
-        <description>Allow access to the 'System: License' page.</description>
+        <name>System: License</name>
         <patterns>
             <pattern>license.php*</pattern>
         </patterns>
     </page-system-license>
     <page-system-staticroutes>
-        <name>WebCfg - System: Static Routes page</name>
-        <description>Allow access to the 'System: Static Routes' page.</description>
+        <name>System: Static Routes</name>
         <patterns>
             <pattern>system_routes.php*</pattern>
         </patterns>
     </page-system-staticroutes>
     <page-system-staticroutes-editroute>
-        <name>WebCfg - System: Static Routes: Edit route page</name>
-        <description>Allow access to the 'System: Static Routes: Edit route' page.</description>
+        <name>System: Static Routes: Edit route</name>
         <patterns>
             <pattern>system_routes_edit.php*</pattern>
         </patterns>
     </page-system-staticroutes-editroute>
     <page-system-usermanager>
-        <name>WebCfg - System: User Manager page</name>
-        <description>Allow access to the 'System: User Manager' page.</description>
+        <name>System: User Manager</name>
         <patterns>
             <pattern>system_usermanager.php*</pattern>
             <pattern>system_usermanager_import_ldap.php*</pattern>
         </patterns>
     </page-system-usermanager>
     <page-system-usermanager-addprivs>
-        <name>WebCfg - System: User Manager: Add Privileges page</name>
-        <description>Allow access to the 'System: User Manager: Add Privileges' page.</description>
+        <name>System: User Manager: Add Privileges</name>
         <patterns>
             <pattern>system_usermanager_addprivs.php?user*</pattern>
         </patterns>
     </page-system-usermanager-addprivs>
     <page-system-usermanager-settings>
-        <name>WebCfg - System: User Manager: settings page</name>
-        <description>Allow access to the 'System: User Manager: settings' page.</description>
+        <name>System: User Manager: settings</name>
         <patterns>
             <pattern>system_usermanager_settings.php*</pattern>
         </patterns>
     </page-system-usermanager-settings>
     <page-system-usermanager-settings-testldap>
-        <name>WebCfg - System: User Manager: Settings: Test LDAP page</name>
-        <description>Allow access to the 'System: User Manager: Settings: Test LDAP' page.</description>
+        <name>System: User Manager: Settings: Test LDAP</name>
         <patterns>
             <pattern>system_usermanager_settings_test.php*</pattern>
         </patterns>
     </page-system-usermanager-settings-testldap>
     <page-system-usermanager-passwordmg>
-        <name>WebCfg - System: User Password Manager page</name>
-        <description>Allow access to the 'System: User Password Manager' page.</description>
+        <name>System: User Password Manager</name>
         <patterns>
             <pattern>system_usermanager_passwordmg.php*</pattern>
         </patterns>
     </page-system-usermanager-passwordmg>
     <page-vpn-ipsec>
-        <name>WebCfg - VPN: IPsec page</name>
-        <description>Allow access to the 'VPN: IPsec' page.</description>
+        <name>VPN: IPsec</name>
         <patterns>
             <pattern>vpn_ipsec.php*</pattern>
         </patterns>
     </page-vpn-ipsec>
     <page-vpn-ipsec-editphase1>
-        <name>WebCfg - VPN: IPsec: Edit Phase 1 page</name>
-        <description>Allow access to the 'VPN: IPsec: Edit Phase 1' page.</description>
+        <name>VPN: IPsec: Edit Phase 1</name>
         <patterns>
             <pattern>vpn_ipsec_phase1.php*</pattern>
         </patterns>
     </page-vpn-ipsec-editphase1>
     <page-vpn-ipsec-editphase2>
-        <name>WebCfg - VPN: IPsec: Edit Phase 2 page</name>
-        <description>Allow access to the 'VPN: IPsec: Edit Phase 2' page.</description>
+        <name>VPN: IPsec: Edit Phase 2</name>
         <patterns>
             <pattern>vpn_ipsec_phase2.php*</pattern>
         </patterns>
     </page-vpn-ipsec-editphase2>
     <page-vpn-ipsec-editkeys>
-        <name>WebCfg - VPN: IPsec: Edit Pre-Shared Keys</name>
-        <description>Allow access to the 'VPN: IPsec: Edit Pre-Shared Keys' page.</description>
+        <name>VPN: IPsec: Edit Pre-Shared Keys</name>
         <patterns>
             <pattern>vpn_ipsec_keys_edit.php*</pattern>
         </patterns>
     </page-vpn-ipsec-editkeys>
     <page-vpn-ipsec-mobile>
-        <name>WebCfg - VPN: IPsec: Mobile page</name>
-        <description>Allow access to the 'VPN: IPsec: Mobile' page.</description>
+        <name>VPN: IPsec: Mobile</name>
         <patterns>
             <pattern>vpn_ipsec_mobile.php*</pattern>
         </patterns>
     </page-vpn-ipsec-mobile>
     <page-vpn-ipsec-listkeys>
-        <name>WebCfg - VPN: IPsec: Pre-Shared Keys List</name>
-        <description>Allow access to the 'VPN: IPsec: Pre-Shared Keys List' page.</description>
+        <name>VPN: IPsec: Pre-Shared Keys List</name>
         <patterns>
             <pattern>vpn_ipsec_keys.php*</pattern>
         </patterns>
     </page-vpn-ipsec-listkeys>
     <page-openvpn-client-export>
-        <name>WebCfg - VPN: OpenVPN: Client Export Utility</name>
-        <description>Allow access to the 'VPN: OpenVPN: Client Export Utility' page.</description>
+        <name>VPN: OpenVPN: Client Export Utility</name>
         <patterns>
             <pattern>vpn_openvpn_export.php*</pattern>
         </patterns>
     </page-openvpn-client-export>
     <page-openvpn-client>
-        <name>WebCfg - VPN: OpenVPN: Client page</name>
-        <description>Allow access to the 'VPN: OpenVPN: Client' page.</description>
+        <name>VPN: OpenVPN: Client</name>
         <patterns>
             <pattern>vpn_openvpn_client.php*</pattern>
         </patterns>
     </page-openvpn-client>
     <page-openvpn-csc>
-        <name>WebCfg - VPN: OpenVPN: Client Specific Override page</name>
-        <description>Allow access to the 'VPN: OpenVPN: Client Specific Override' page.</description>
+        <name>VPN: OpenVPN: Client Specific Override</name>
         <patterns>
             <pattern>vpn_openvpn_csc.php*</pattern>
         </patterns>
     </page-openvpn-csc>
     <page-openvpn-server>
-        <name>WebCfg - VPN: OpenVPN: Server page</name>
-        <description>Allow access to the 'VPN: OpenVPN: Server' page.</description>
+        <name>VPN: OpenVPN: Server</name>
         <patterns>
             <pattern>vpn_openvpn_server.php*</pattern>
         </patterns>
     </page-openvpn-server>
     <page-xmlrpclibrary>
-        <name>WebCfg - XMLRPC Library page</name>
-        <description>Allow access to the 'XMLRPC Library' page.</description>
+        <name>XMLRPC Library</name>
         <patterns>
             <pattern>xmlrpc.php*</pattern>
         </patterns>
