@@ -72,6 +72,8 @@ function dnsmasq_configure_do($verbose = false)
         "local-ttl" => "--local-ttl=1"
     );
 
+    _dnsmasq_dhcpleases_stop();
+
     killbypid('/var/run/dnsmasq.pid', 'TERM', true);
 
     if (!dnsmasq_enabled()) {
@@ -178,22 +180,20 @@ function dnsmasq_configure_do($verbose = false)
     }
     $args .= ' ' . implode(' ', array_values($standard_args));
 
+    _dnsmasq_add_host_entries();
+
     mwexec("/usr/local/sbin/dnsmasq --all-servers {$dns_rebind} {$args}");
+
+    _dnsmasq_dhcpleases_start();
 
     if ($verbose) {
         echo "done.\n";
     }
 }
 
-function dnsmasq_hosts_generate()
+function _dnsmasq_add_host_entries()
 {
     global $config;
-
-    killbypid('/var/run/dhcpleases.pid', 'TERM', true);
-
-    if (!dnsmasq_enabled()) {
-        return;
-    }
 
     $dnsmasqcfg = $config['dnsmasq'];
     $lhosts = '';
@@ -268,6 +268,11 @@ function dnsmasq_hosts_generate()
     } else {
         file_put_contents('/var/etc/dnsmasq-hosts', $lhosts . $dhosts);
     }
+}
+
+function _dnsmasq_dhcpleases_start()
+{
+    global $config;
 
     $leases = services_dhcpd_leasesfile();
 
@@ -281,6 +286,23 @@ function dnsmasq_hosts_generate()
             array($leases, $domain, '/var/run/dnsmasq.pid', '/var/etc/dnsmasq-hosts')
         );
     }
+}
+
+function _dnsmasq_dhcpleases_stop()
+{
+    killbypid('/var/run/dhcpleases.pid', 'TERM', true);
+}
+
+function dnsmasq_hosts_generate()
+{
+    _dnsmasq_dhcpleases_stop();
+
+    if (!dnsmasq_enabled()) {
+        return;
+    }
+
+    _dnsmasq_add_host_entries();
+    _dnsmasq_dhcpleases_start();
 
     killbypid('/var/run/dnsmasq.pid', 'HUP');
 }
