@@ -452,10 +452,13 @@ function unbound_execute($cmd)
 
     switch ($cmd) {
         case 'start':
-            $local_domain = !empty($config['system']['domain']) ? $config['system']['domain'] : "local";
+            $domain = $config['system']['domain'];
+            if (isset($config['unbound']['regdhcpdomain'])) {
+                $domain = $config['unbound']['regdhcpdomain'];
+            }
             killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
             if (isset($config['unbound']['regdhcp'])) {
-                mwexecf('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py /domain %s', $local_domain);
+                mwexecf('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py /domain %s', $domain);
             }
             mwexecf('/usr/local/sbin/unbound -c %s', "{$g['unbound_chroot_path']}/unbound.conf");
             break;
