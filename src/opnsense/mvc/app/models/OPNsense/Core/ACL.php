@@ -75,18 +75,6 @@ class ACL
     }
 
     /**
-     * merge legacy acl's from json file into $this->ACLtags
-     */
-    private function mergeLegacyACL()
-    {
-        // load legacy acl from json file
-        $this->ACLtags = array_merge_recursive(
-            $this->ACLtags,
-            json_decode(file_get_contents(__DIR__."/ACL_Legacy_Page_Map.json"), true)
-        );
-    }
-
-    /**
      * merge pluggable ACL xml's into $this->ACLtags
      * @throws \Exception
      */
@@ -139,7 +127,6 @@ class ACL
     private function init()
     {
         // add acl payload
-        $this->mergeLegacyACL();
         $this->mergePluggableACLs();
 
         $pageMap = $this->loadPageMap();
