@@ -1,14 +1,12 @@
 <acl>
     <page-services-igmpproxy>
-        <name>WebCfg - Services: Igmpproxy page</name>
-        <description>Allow access to the 'Services: Igmpproxy' page.</description>
+        <name>Services: Igmpproxy</name>
         <patterns>
             <pattern>services_igmpproxy.php*</pattern>
         </patterns>
     </page-services-igmpproxy>
     <page-services-igmpproxy-edit>
-        <name>WebCfg - Services: Igmpproxy: Edit page</name>
-        <description>Allow access to the 'Services: Igmpproxy: Edit' page.</description>
+        <name>Services: Igmpproxy: Edit</name>
         <patterns>
             <pattern>services_igmpproxy_edit.php*</pattern>
         </patterns>

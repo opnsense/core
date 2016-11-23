@@ -1,7 +1,6 @@
 <acl>
     <page-services-snmp>
-        <name>WebCfg - Services: SNMP page</name>
-        <description>Allow access to the 'Services: SNMP' page.</description>
+        <name>Services: SNMP</name>
         <patterns>
             <pattern>services_snmp.php*</pattern>
         </patterns>

@@ -1,8 +1,6 @@
 <acl>
-    <!-- unique acl key, must be globally unique for all acl's  -->
     <page-services-ids>
-        <name>WebCfg - Services: Intrusion Detection page</name>
-        <description>Allow access to the 'Services: Intrusion Detection' page.</description>
+        <name>Services: Intrusion Detection</name>
         <patterns>
             <pattern>ui/ids/*</pattern>
             <pattern>api/ids/*</pattern>

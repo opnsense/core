@@ -1,35 +1,30 @@
 <acl>
     <page-services-ntpd>
-        <name>WebCfg - Services: NTP</name>
-        <description>Allow access to the 'Services: NTP' page.</description>
+        <name>Services: NTP</name>
         <patterns>
             <pattern>services_ntpd.php*</pattern>
         </patterns>
     </page-services-ntpd>
     <page-services-ntp-gps>
-        <name>WebCfg - Status: NTP GPS page</name>
-        <description>Allow access to the 'Status: NTP Serial GPS' page.</description>
+        <name>Status: NTP GPS</name>
         <patterns>
             <pattern>status_ntpd_gps.php*</pattern>
         </patterns>
     </page-services-ntp-gps>
     <page-status-ntp>
-        <name>WebCfg - Status: NTP page</name>
-        <description>Allow access to the 'Status: NTP' page.</description>
+        <name>Status: NTP</name>
         <patterns>
             <pattern>status_ntpd.php*</pattern>
         </patterns>
     </page-status-ntp>
     <page-services-ntp-pps>
-        <name>WebCfg - Status: NTP PPS page</name>
-        <description>Allow access to the 'Status: NTP PPS' page.</description>
+        <name>Status: NTP PPS</name>
         <patterns>
             <pattern>status_ntpd_pps.php*</pattern>
         </patterns>
     </page-services-ntp-pps>
     <page-status-systemlogs-ntpd>
-        <name>WebCfg - Status: System logs: NTP page</name>
-        <description>Allow access to the 'Status: System logs: NTP' page.</description>
+        <name>Status: System logs: NTP</name>
         <patterns>
             <pattern>diag_logs_ntpd.php*</pattern>
         </patterns>

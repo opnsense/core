@@ -1,8 +1,6 @@
 <acl>
-    <!-- unique acl key, must be globally unique for all acl's  -->
     <page-system-cron>
-        <name>WebCfg - System: Settings: Cron page</name>
-        <description>Allow access to the 'System: Settings: Cron' page.</description>
+        <name>System: Settings: Cron</name>
         <patterns>
             <pattern>ui/cron/*</pattern>
             <pattern>api/cron/*</pattern>

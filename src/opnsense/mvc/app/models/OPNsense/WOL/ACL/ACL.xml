@@ -1,14 +1,12 @@
 <acl>
     <page-services-wakeonlan>
-        <name>WebCfg - Services: Wake on LAN page</name>
-        <description>Allow access to the 'Services: Wake on LAN' page.</description>
+        <name>Services: Wake on LAN</name>
         <patterns>
             <pattern>services_wol.php*</pattern>
         </patterns>
     </page-services-wakeonlan>
     <page-services-wakeonlan-edit>
-        <name>WebCfg - Services: Wake on LAN: Edit page</name>
-        <description>Allow access to the 'Services: Wake on LAN: Edit' page.</description>
+        <name>Services: Wake on LAN: Edit</name>
         <patterns>
             <pattern>services_wol_edit.php*</pattern>
         </patterns>
