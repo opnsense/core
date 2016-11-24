@@ -39,8 +39,8 @@ function miniupnpd_firewall($fw)
         return;
     }
 
-    $fw->registerAnchor('miniupnpd/*', 'rdr');
-    $fw->registerAnchor('miniupnpd/*', 'fw');
+    $fw->registerAnchor('miniupnpd', 'rdr');
+    $fw->registerAnchor('miniupnpd', 'fw');
 }
 
 function miniupnpd_services()
