@@ -85,6 +85,8 @@ data_title      :   data-title to set on form
                 {% if help|default(false) %}<small>{{ lang._('full help') }} </small><a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_{{id}}" type="button"></i></a>{% endif %}
             </td>
         </tr>
+        {% set advanced=false %}
+        {% set help=false %}
         {% for field in fields|default({})%}
             {% if field['type'] == 'header' %}
               {# close table and start new one with header #}
