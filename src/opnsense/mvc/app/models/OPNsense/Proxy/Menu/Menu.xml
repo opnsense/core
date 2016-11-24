@@ -1,6 +1,6 @@
 <menu>
     <Services>
-      <Proxy VisibleName="Web Proxy" cssClass="fa fa-bolt fa-fw">
+      <WebProxy VisibleName="Web Proxy" cssClass="fa fa-bolt fa-fw">
           <Administration url="/ui/proxy/">
             <GeneralSettings VisibleName="General" url="/ui/proxy/#subtab_proxy-general-settings"/>
             <LocalCache VisibleName="Cache" url="/ui/proxy/#subtab_proxy-general-cache-local"/>
@@ -15,6 +15,6 @@
           <Log VisibleName="Log File" url="/diag_logs_proxy.php?type=cache">
               <More url="/diag_logs_proxy.php*" visibility="hidden"/>
           </Log>
-      </Proxy>
+      </WebProxy>
     </Services>
 </menu>
