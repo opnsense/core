@@ -333,7 +333,7 @@ $( document ).ready(function() {
               $("#ldap_attr_user").val('cn');
               break;
             case 'msad':
-              $("#ldap_attr_user").val('samAccountName');
+              $("#ldap_attr_user").val('sAMAccountName');
               break;
         }
     });
@@ -548,21 +548,20 @@ endif; ?>
                 <tr class="auth_ldap auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Search scope");?></td>
                   <td>
-                    <div>
-                      <?=gettext("Level:");?><br/>
-                      <select name='ldap_scope' id='ldap_scope' class="formselect selectpicker" data-style="btn-default">
-                          <option value="one" <?=$pconfig['ldap_scope'] == 'one' ?  "selected=\"selected\"" : "";?>>
-                              <?=gettext('One Level');?>
-                          </option>
-                          <option value="subtree" <?=$pconfig['ldap_scope'] == 'subtree' ?  "selected=\"selected\"" : "";?>>
-                              <?=gettext('Entire Subtree');?>
-                          </option>
-                      </select>
-                    </div>
-                    <div>
-                      <?=gettext("Base DN:");?><br/>
-                      <input name="ldap_basedn" type="text" id="ldap_basedn" size="40" value="<?=$pconfig['ldap_basedn'];?>"/>
-                    </div>
+                    <select name='ldap_scope' id='ldap_scope' class="formselect selectpicker" data-style="btn-default">
+                      <option value="one" <?=$pconfig['ldap_scope'] == 'one' ?  "selected=\"selected\"" : "";?>>
+                        <?=gettext('One Level');?>
+                      </option>
+                      <option value="subtree" <?=$pconfig['ldap_scope'] == 'subtree' ?  "selected=\"selected\"" : "";?>>
+                        <?=gettext('Entire Subtree');?>
+                      </option>
+                    </select>
+                  </td>
+                </tr>
+                <tr class="auth_ldap auth_options hidden">
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Base DN");?></td>
+                  <td>
+                    <input name="ldap_basedn" type="text" id="ldap_basedn" size="40" value="<?=$pconfig['ldap_basedn'];?>"/>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_options hidden">
@@ -574,9 +573,8 @@ endif; ?>
                     </ul>
                     <br/>
                     <div class="hidden" for="help_for_ldapauthcontainers">
-                        <br/><?=gettext("Semicolon separated. This will be prepended to the search base DN above or you can specify full container path containing a DC= component.");?>
-                        <br /><?=gettext("Example:");?> CN=Users;DC=example,DC=com
-                        <br /><?=gettext("Example:");?> OU=Staff;OU=Freelancers
+                        <br/><?= gettext('Semicolon-separated list of distinguished names optionally containing DC= components.') ?>
+                        <br/><?=gettext("Example:");?> OU=Freelancers,O=Company,DC=example,DC=com;CN=Users,OU=Staff,O=Company
                     </div>
                   </td>
                 </tr>
@@ -604,9 +602,12 @@ endif; ?>
 <?php
 endif; ?>
                 <tr class="auth_ldap auth_options hidden">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("User naming attribute");?></td>
+                  <td><a id="help_for_ldap_attr_user" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("User naming attribute");?></td>
                   <td>
                     <input name="ldap_attr_user" type="text" id="ldap_attr_user" size="20" value="<?=$pconfig['ldap_attr_user'];?>"/>
+                    <div class="hidden" for="help_for_ldap_attr_user">
+                      <?= gettext('Typically "cn" (OpenLDAP, Novell eDirectory), "sAMAccountName" (Microsoft AD)') ?>
+                    </div>
                   </td>
                 </tr>
                 <!-- RADIUS -->
