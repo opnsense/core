@@ -199,7 +199,7 @@ include("head.inc");
                         <?=gettext("A serial GPS may also be used, but the serial GPS driver would usually be the better option.");?>
                         <?=gettext("A PPS signal only provides a reference to the change of a second, so at least one other source to number the seconds is required.");?>
                         <br />
-                        <br /><strong><?=gettext("Note");?>:</strong> <?=gettext("At least 3 additional time sources should be configured under"); ?> <a href="services_ntpd.php"><?=gettext("Services > NTP"); ?></a> <?=gettext("to reliably supply the time of each PPS pulse."); ?>
+                        <br /><strong><?=gettext("Note");?>:</strong> <?= sprintf(gettext("At least 3 additional time sources should be configured under %sServices: NTP%s to reliably supply the time of each PPS pulse."),'<a href="services_ntpd.php">', '</a>') ?>
                       </td>
                     </tr>
                   </tfoot>
