@@ -81,6 +81,17 @@ class LDAP implements IAuthConnector
     private $ldapExtendedQuery = null;
 
     /**
+     * @var auth containers
+     */
+    private $ldapAuthcontainers = null;
+
+    /**
+     * @var ldap scope
+     */
+    private $ldapScope = "tree";
+
+
+    /**
      * @var array list of already known usernames vs distinguished names
      */
     private $userDNmap = array();
@@ -109,16 +120,20 @@ class LDAP implements IAuthConnector
     /**
      * search ldap tree
      * @param string $filter ldap filter string to use
-     * @param string $ldap_scope scope either one or tree
      * @return array|bool result list or false on errors
      */
-    private function search($filter, $ldap_scope = "tree")
+    private function search($filter)
     {
         $result = false;
         if ($this->ldapHandle != null) {
             // if we're looking at multple dn's, split and combine output
-            foreach (explode(";", $this->baseSearchDN) as $baseDN) {
-                if ($ldap_scope == "one") {
+            if (!empty($this->ldapAuthcontainers)) {
+                $searchpaths = $this->ldapAuthcontainers;
+            } else {
+                $searchpaths = $this->baseSearchDN;
+            }
+            foreach (explode(";", $searchpaths) as $baseDN) {
+                if ($this->ldapScope == "one") {
                     $sr=@ldap_list($this->ldapHandle, $baseDN, $filter, $this->ldapSearchAttr);
                 } else {
                     $sr=@ldap_search($this->ldapHandle, $baseDN, $filter, $this->ldapSearchAttr);
@@ -185,6 +200,8 @@ class LDAP implements IAuthConnector
             "ldap_bindpw" => "ldapBindPassword",
             "ldap_attr_user" => "ldapAttributeUser",
             "ldap_extended_query" => "ldapExtendedQuery",
+            "ldap_authcn" => "ldapAuthcontainers",
+            "ldap_scope" => "ldapScope",
             "local_users" => "userDNmap"
         );
 
