@@ -88,7 +88,7 @@ class LDAP implements IAuthConnector
     /**
      * @var ldap scope
      */
-    private $ldapScope = "tree";
+    private $ldapScope = 'subtree';
 
 
     /**
