@@ -194,6 +194,9 @@ function plugins_xmlrpc_sync()
             foreach ($func() as $helper) {
                 if (!empty($helper['id']) && !empty($helper['section'])) {
                     $sync_settings[$helper['id']] = $helper;
+                    if (empty($helper['help'])) {
+                        $sync_settings[$helper['id']]['help'] = sprintf(gettext('Synchronize %s settings to backup'), $helper['description']);
+                    }
                     unset($sync_settings[$helper['id']]['id']);
                 }
             }
