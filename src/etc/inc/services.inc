@@ -132,7 +132,7 @@ function services_radvd_configure($blacklist = array())
 
         $ifcfgsnv6 = get_interface_subnetv6($dhcpv6if);
         $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
-        $radvdifs[$realif] = $realif;
+        $radvdifs[$realif] = 1;
 
         $radvdconf .= "# Generated for DHCPv6 Server $dhcpv6if\n";
         $radvdconf .= "interface {$realif} {\n";
@@ -239,14 +239,28 @@ function services_radvd_configure($blacklist = array())
         if (isset($radvdifs[$realif])) {
             continue;
         }
+        $radvdifs[$realif] = 1;
+
+        $dnslist = array();
 
         $ifcfgipv6 = get_interface_ipv6($if);
         if (!is_ipaddrv6($ifcfgipv6)) {
             $subnetv6 = "::";
             $ifcfgsnv6 = "64";
         } else {
+            if (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
+                $dnslist[] = $ifcfgipv6;
+            }
             $ifcfgsnv6 = get_interface_subnetv6($if);
             $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
+        }
+
+        if (!empty($config['system']['dnsserver'])) {
+            foreach($config['system']['dnsserver'] as $server) {
+                if (is_ipaddrv6($server)) {
+                    $dnslist[] = $server;
+                }
+            }
         }
 
         if (isset($config['interfaces'][$trackif]['ipaddrv6'])) {
@@ -267,17 +281,6 @@ function services_radvd_configure($blacklist = array())
         $radvdconf .= "\t\tAdvRouterAddr on;\n";
         $radvdconf .= "\t};\n";
 
-        /* add DNS servers */
-        $dnslist = array();
-        if (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
-            $dnslist[] = $ifcfgipv6;
-        } elseif (!empty($config['system']['dnsserver'])) {
-            foreach($config['system']['dnsserver'] as $server) {
-                if (is_ipaddrv6($server)) {
-                    $dnslist[] = $server;
-                }
-            }
-        }
         if (count($dnslist) > 0) {
             $radvdconf .= "\tRDNSS ".implode(" ", $dnslist)." { };\n";
         }
