@@ -24,31 +24,11 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-BASEDIR="/usr/local/opnsense/scripts/firmware"
-LOCKFILE="/tmp/pkg_upgrade.progress"
-FLOCK="/usr/local/bin/flock -n -o"
-COMMANDS="
-audit
-hotfix
-install
-lock
-reinstall
-remove
-unlock
-upgrade
-"
+PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 
-SELECTED=${1}
-ARGUMENT=${2}
+# Truncate upgrade progress file
+: > ${PKG_PROGRESS_FILE}
 
-for COMMAND in ${COMMANDS}; do
-	if [ "${SELECTED}" != ${COMMAND} ]; then
-		continue
-	fi
-
-	if [ -n "$(pgrep pkg)" ]; then
-		break
-	fi
-
-	${FLOCK} ${LOCKFILE} ${BASEDIR}/${COMMAND}.sh ${ARGUMENT}
-done
+echo "***GOT REQUEST TO AUDIT" >> ${PKG_PROGRESS_FILE}
+pkg audit -F >> ${PKG_PROGRESS_FILE} 2>&1
+echo '***DONE***' >> ${PKG_PROGRESS_FILE}

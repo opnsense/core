@@ -63,6 +63,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
                 // unhide upgrade button
                 $("#upgrade").attr("style","");
+                $("#audit").attr("style","display:none");
 
                 // show upgrade list
                 $('#update_status').hide();
@@ -91,6 +92,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 packagesInfo(false);
             } else {
                 $("#upgrade").attr("style","display:none");
+                $("#audit").attr("style","");
 
                 // update list so plugins sync as well (all)
                 packagesInfo(true);
@@ -106,10 +108,29 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#update_status').show();
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Upgrading...') }}");
+        $("#audit").attr("style","display:none");
         $("#upgrade").attr("style","");
         $("#upgrade_progress").addClass("fa fa-spinner fa-pulse");
 
         ajaxCall('/api/core/firmware/upgrade',{upgrade:$.upgrade_action},function() {
+            $('#updatelist').empty();
+            setTimeout(trackStatus, 500);
+        });
+    }
+
+    /**
+     * perform audit, install poller to update status
+     */
+    function audit() {
+        $.upgrade_action = 'audit';
+        $('#updatelist').hide();
+        $('#update_status').show();
+        $('#updatetab > a').tab('show');
+        $('#updatestatus').html("{{ lang._('Auditing...') }}");
+        $("#audit").attr("style","");
+        $("#audit_progress").addClass("fa fa-spinner fa-pulse");
+
+        ajaxCall('/api/core/firmware/audit', {}, function () {
             $('#updatelist').empty();
             setTimeout(trackStatus, 500);
         });
@@ -218,9 +239,9 @@ POSSIBILITY OF SUCH DAMAGE.
     }
 
     /**
-     * handle update status
+     * handle check/audit/upgrade status
      */
-    function trackStatus(){
+    function trackStatus() {
         ajaxGet('/api/core/firmware/upgradestatus',{},function(data, status) {
             if (data['log'] != undefined) {
                 $('#update_status').html(data['log']);
@@ -228,12 +249,16 @@ POSSIBILITY OF SUCH DAMAGE.
             }
             if (data['status'] == 'done') {
                 $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
-                if ($.upgrade_action != 'pkg') {
-                    $('#updatestatus').html("{{ lang._('Upgrade done!') }}");
-                } else {
+                $("#audit_progress").removeClass("fa fa-spinner fa-pulse");
+                if ($.upgrade_action == 'pkg') {
                     $('#updatestatus').html("{{ lang._('Package manager update done. Please check for more updates.') }}");
+                } else if ($.upgrade_action == 'audit') {
+                    $('#updatestatus').html("{{ lang._('Audit done.') }}");
+                } else {
+                    $('#updatestatus').html("{{ lang._('Upgrade done.') }}");
                 }
                 $("#upgrade").attr("style","display:none");
+                $("#audit").attr("style","");
                 packagesInfo(true);
             } else if (data['status'] == 'reboot') {
                 BootstrapDialog.show({
@@ -418,6 +443,7 @@ POSSIBILITY OF SUCH DAMAGE.
         // link event handlers
         $('#checkupdate').click(updateStatus);
         $('#upgrade').click(upgrade_ui);
+        $('#audit').click(audit);
         // show upgrade message if there
         if ($('#message').html() != '') {
             $('#message').attr('style', '');
@@ -550,6 +576,7 @@ POSSIBILITY OF SUCH DAMAGE.
         <div id="message" style="display:none" class="alert alert-warning" role="alert"><?= @file_get_contents('/usr/local/opnsense/firmware-message') ?></div>
         <div class="alert alert-info" role="alert" style="min-height: 65px;">
             <button class='btn btn-primary pull-right' id="upgrade" style="display:none"><i id="upgrade_progress" class=""></i> {{ lang._('Upgrade now') }}</button>
+            <button class='btn btn-primary pull-right' id="audit"><i id="audit_progress" class=""></i> {{ lang._('Audit now') }}</button>
             <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;"><i id="checkupdate_progress" class=""></i> {{ lang._('Check for updates')}}</button>
             <div style="margin-top: 8px;" id="updatestatus">{{ lang._('Click to check for updates.')}}</div>
         </div>

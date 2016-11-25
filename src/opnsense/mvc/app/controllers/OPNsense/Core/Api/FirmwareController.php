@@ -274,6 +274,26 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
+     * run a security audit
+     * @return array status
+     * @throws \Exception
+     */
+    public function auditAction()
+    {
+        $backend = new Backend();
+        $response = array();
+
+        if ($this->request->isPost()) {
+            $response['status'] = 'ok';
+            $response['msg_uuid'] = trim($backend->configdRun("firmware audit", true));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
      * reinstall package
      * @param string $pkg_name package name to reinstall
      * @return array status
