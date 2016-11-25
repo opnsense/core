@@ -32,6 +32,10 @@ PROMPT="[y/N]"
 NAME="y"
 ARGS=
 
+echo "This will automatically fetch all available updates, apply them,"
+echo "and reboot if necessary."
+echo
+
 if [ -f ${UPGRADE} ]; then
 	NAME=$(cat ${UPGRADE})
 
@@ -42,13 +46,11 @@ if [ -f ${UPGRADE} ]; then
 	echo "require 500MB of free space.  Continue with this major upgrade by"
 	echo "typing the major upgrade version number displayed above."
 	echo
+	echo "Minor updates are available, answer 'y' to run them instead."
+	echo
 
-	PROMPT="[y/${NAME}/N]"
+	PROMPT="[${NAME}/y/N]"
 fi
-
-echo "This will automatically fetch all available updates, apply them,"
-echo "and reboot if necessary."
-echo
 
 read -p "Proceed with this action? ${PROMPT}: " YN
 
