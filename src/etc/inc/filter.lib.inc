@@ -163,7 +163,7 @@ function filter_core_rules_system($fw, $defaults)
         $fw->registerFilterRule(1,
           array('direction' => 'in', 'interface' => $intf,
             'label' => "Block private networks from ".$intfinfo['descr'],
-            'disabled' => !isset($intfinfo['blockbogons'])),
+            'disabled' => !isset($intfinfo['blockpriv'])),
           $privtmpl
         );
     }
