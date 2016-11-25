@@ -85,9 +85,6 @@ fi
 # regenerate groups and users for base
 /usr/local/etc/rc.recover base > /dev/null
 
-# rewrite message of the day
-/etc/rc.d/motd onestart
-
 # set keyboard map if needed
 /etc/rc.d/syscons onestart
 
