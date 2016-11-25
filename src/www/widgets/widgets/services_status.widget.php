@@ -82,11 +82,10 @@ if (isset($_POST['servicestatusfilter'])) {
       foreach ($services as $service):
           if (!$service['name'] || in_array($service['name'], $skipservices)) {
               continue;
-          }
-          $service_desc = explode(".", $service['description']);?>
+          } ?>
         <tr>
           <td><?=$service['name'];?></td>
-          <td><?=$service_desc[0];?></td>
+          <td><?=$service['description'];?></td>
           <td><?=str_replace('btn ', 'btn btn-xs ', get_service_status_icon($service, false, true));?>
               <?=str_replace('btn ', 'btn btn-xs ', get_service_control_links($service));?>
           </td>
