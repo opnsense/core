@@ -137,11 +137,13 @@ class Downloader(object):
         """
         self.fetch()
         for filename, filehandle in self.get_files():
+            basefilename = os.path.basename(filename).lower()
+            file_ext = filename.split('.')[-1].lower()
             while True:
                 line = filehandle.readline()
                 if not line:
                     break
-                yield filename, line
+                yield filename, basefilename, file_ext, line
 
 
 class DomainSorter(object):
@@ -252,13 +254,14 @@ class DomainSorter(object):
                     prev_line = line
 
 
-def filename_in_ignorelist(filename):
+def filename_in_ignorelist(bfilename, filename_ext):
     """ ignore certain files from processing.
-        :param filename: filename to inspect
+        :param bfilename: basefilename to inspect
+        :param filename_ext: extention of the filename
     """
-    if filename.lower().split('.')[-1] in ['pdf', 'txt', 'doc']:
+    if filename_ext in ['pdf', 'txt', 'doc']:
         return True
-    elif filename.lower() in ('readme', 'license', 'usage', 'categories'):
+    elif bfilename in ('readme', 'license', 'usage', 'categories'):
         return True
     return False
 
@@ -300,8 +303,8 @@ def main():
                         download_password = None
                     acl = Downloader(download_url, download_username, download_password, acl_max_timeout)
                     all_filenames = list()
-                    for filename, line in acl.download():
-                        if filename_in_ignorelist(os.path.basename(filename)):
+                    for filename, basefilename, file_ext, line in acl.download():
+                        if filename_in_ignorelist(basefilename, file_ext):
                             # ignore documents, licenses and readme's
                             continue
 
@@ -325,8 +328,7 @@ def main():
                                 continue
 
                         if filetype in targets and targets[filetype]['handle'] is None:
-                            targets[filetype]['handle'] = targets[filetype]['class'](targets[filetype]['filename'],
-                                                                                     'wb')
+                            targets[filetype]['handle'] = targets[filetype]['class'](targets[filetype]['filename'],'wb')
                         if filetype in targets:
                             targets[filetype]['handle'].write('%s\n' % line)
                     # save index to disc
