@@ -1659,7 +1659,8 @@ function system_login_configure()
     foreach ($etc_ttys_lines as $tty) {
         if (strpos($tty, 'ttyv0') === 0) {
             /* first virtual terminal */
-            fwrite($fd, "ttyv0\t\"/usr/libexec/getty {$console_type}\"\t\t{$terminal_type}\ton  secure\n");
+            $on_off_secure2 = count($console_selection) == 1 && $console_selection[0] == 'nullconsole' ? 'off secure' : 'on  secure';
+            fwrite($fd, "ttyv0\t\"/usr/libexec/getty {$console_type}\"\t\t{$terminal_type}\t${on_off_secure2}\n");
             continue;
         }
         foreach (array('ttyu0', 'ttyu1', 'ttyu2', 'ttyu3') as $serialport) {
