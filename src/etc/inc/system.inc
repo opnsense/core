@@ -1563,16 +1563,8 @@ function system_login_configure()
     configd_run('template reload OPNsense/Auth');
 
     $serialspeed = (!empty($config['system']['serialspeed']) && is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
-    $serial_enabled = isset($config['system']['enableserial']);
+    $serial_enabled = isset($config['system']['enableserial']); /* XXX zap me, can figure out serial from primary/secondary */
 
-    // ** serial console - write out /boot.config
-    if ($serial_enabled) {
-        @file_put_contents('/boot.config', "-S{$serialspeed} -D\n");
-    } else {
-        @unlink('/boot.config');
-    }
-
-    // ** console settings in /boot/loader.conf
     $new_boot_config = array();
     $new_boot_config['comconsole_speed'] = null;
     $new_boot_config['boot_multicons'] = null;
@@ -1599,8 +1591,11 @@ function system_login_configure()
     }
 
     if ($serial_enabled) {
+        @file_put_contents('/boot.config', "-S{$serialspeed} -D\n");
         $new_boot_config['comconsole_speed'] = '"'.$serialspeed.'"';
         $new_boot_config['boot_serial'] = '"YES"';
+    } else {
+        @unlink('/boot.config');
     }
 
     /* reload static values from rc.loader.d */
