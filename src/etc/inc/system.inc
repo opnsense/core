@@ -1546,6 +1546,31 @@ function system_cron_configure($verbose = false)
     }
 }
 
+function system_console_mutable()
+{
+    /* this function name is a pun :) */
+
+    global $config;
+
+    return isset($config['system']['primaryconsole']) &&
+        ($config['system']['primaryconsole'] == 'serial' ||
+        $config['system']['primaryconsole'] == 'null');
+}
+
+function system_console_mute()
+{
+    if (system_console_mutable()) {
+        exec('/sbin/conscontrol mute on');
+    }
+}
+
+function system_console_unmute()
+{
+    if (system_console_mutable()) {
+        exec('/sbin/conscontrol mute off');
+    }
+}
+
 function system_console_types()
 {
     return array(
@@ -1563,7 +1588,7 @@ function system_login_configure()
     configd_run('template reload OPNsense/Auth');
 
     $serialspeed = (!empty($config['system']['serialspeed']) && is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
-    $serial_enabled = isset($config['system']['enableserial']); /* XXX zap me, can figure out serial from primary/secondary */
+    $serial_enabled = false;
 
     $new_boot_config = array();
     $new_boot_config['comconsole_speed'] = null;

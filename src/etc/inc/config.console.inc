@@ -58,7 +58,7 @@ function set_networking_interfaces_ports($probe = false)
 	$key = null;
 
 	/* kernel messages clobber stty probing on ifconfig up */
-	mute_kernel_msgs();
+	system_console_mute();
 
 	$iflist = get_interface_list(false, true);
 
@@ -290,7 +290,7 @@ EOD;
 	}
 
 	if (!in_array($key, array('y', 'Y'))) {
-		unmute_kernel_msgs();
+		system_console_unmute();
 		fclose($fp);
 		return false;
 	}
@@ -420,7 +420,7 @@ EOD;
 	write_config("Console assignment of interfaces");
 	printf(gettext("done.%s"), "\n");
 
-	unmute_kernel_msgs();
+	system_console_unmute();
 	fclose($fp);
 
 	return true;

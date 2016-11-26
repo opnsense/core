@@ -1363,22 +1363,6 @@ function set_single_sysctl($name, $value)
     return true;
 }
 
-function mute_kernel_msgs()
-{
-    global $config;
-
-    if (isset($config['system']['enableserial'])) {
-        return;
-    }
-
-    exec('/sbin/conscontrol mute on');
-}
-
-function unmute_kernel_msgs()
-{
-    exec('/sbin/conscontrol mute off');
-}
-
 /****f* util/msort
  * NAME
  *   msort - sort array

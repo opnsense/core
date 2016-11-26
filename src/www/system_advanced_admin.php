@@ -48,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['nohttpreferercheck'] = isset($config['system']['webgui']['nohttpreferercheck']);
     $pconfig['loginautocomplete'] = isset($config['system']['webgui']['loginautocomplete']);
     $pconfig['althostnames'] = $config['system']['webgui']['althostnames'];
-    $pconfig['enableserial'] = isset($config['system']['enableserial']);
     $pconfig['serialspeed'] = $config['system']['serialspeed'];
     $pconfig['primaryconsole'] = $config['system']['primaryconsole'];
     $pconfig['secondaryconsole'] = $config['system']['secondaryconsole'];
@@ -132,12 +131,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['noantilockout'] = true;
         } elseif (isset($config['system']['webgui']['noantilockout'])) {
             unset($config['system']['webgui']['noantilockout']);
-        }
-
-        if ($pconfig['enableserial'] == "yes") {
-            $config['system']['enableserial'] = true;
-        } elseif (isset($config['system']['enableserial'])) {
-            unset($config['system']['enableserial']);
         }
 
         if (is_numeric($pconfig['serialspeed'])) {
@@ -510,17 +503,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <th colspan="2"><?=gettext("Serial Communications"); ?></th>
-                </tr>
-                <tr>
-                  <td><a id="help_for_enableserial" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial Terminal"); ?></td>
-                  <td width="78%">
-                    <input name="enableserial" type="checkbox" id="enableserial" value="yes" <?=!empty($pconfig['enableserial']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Enable serial ports with 115200/8/N/1 by default, or another speed selectable below."); ?></strong>
-                    <div class="hidden" for="help_for_enableserial">
-                      <?=gettext("Note: This will redirect the console output and messages to the serial port. You can still access the console menu from the internal video card/keyboard. A null modem serial cable or adapter is required to use the serial console."); ?>
-                    </div>
-                  </td>
+                  <th colspan="2"><?=gettext("Console Options"); ?></th>
                 </tr>
                 <tr>
                   <td><a id="help_for_serialspeed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial Speed")?></td>
@@ -532,7 +515,7 @@ include("head.inc");
                       <option value="19200" <?=$pconfig['serialspeed'] == "19200" ? 'selected="selected"' : '' ?>>19200</option>
                       <option value="14400" <?=$pconfig['serialspeed'] == "14400" ? 'selected="selected"' : '' ?>>14400</option>
                       <option value="9600" <?=$pconfig['serialspeed'] == "9600" ? 'selected="selected"' : '' ?>>9600</option>
-                    </select> <?=gettext("bps");?>
+                    </select>
                     <div class="hidden" for="help_for_serialspeed">
                       <?=gettext("Allows selection of different speeds for the serial console port."); ?>
                     </div>
@@ -566,9 +549,6 @@ include("head.inc");
                       <?=gettext("All consoles display OS boot messages, console messages, and the console menu."); ?>
                     </div>
                   </td>
-                </tr>
-                <tr>
-                  <th colspan="2"><?=gettext("Console Options"); ?></th>
                 </tr>
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i></a> <?= gettext("Console menu") ?></td>

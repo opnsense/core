@@ -58,11 +58,11 @@ echo " done.\n";
 
 /* start devd (dhclient now uses it) */
 echo "Starting device manager (devd)...";
-mute_kernel_msgs();
+system_console_mute();
 exec('/sbin/devd');
 sleep(1);
 set_device_perms();
-unmute_kernel_msgs();
+system_console_unmute();
 echo "done.\n";
 
 /* configure login behaviour */
@@ -135,10 +135,10 @@ interfaces_loopback_configure();
 system_syslogd_start(true);
 
 /* set up interfaces */
-mute_kernel_msgs();
+system_console_mute();
 openvpn_prepare_all();
 interfaces_configure();
-unmute_kernel_msgs();
+system_console_unmute();
 
 /* start OpenVPN server & clients */
 echo "Syncing OpenVPN settings...";
