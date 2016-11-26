@@ -1551,6 +1551,7 @@ function system_console_types()
     return array(
         'serial' => array('value' => 'comconsole', 'name' => gettext('Serial Console')),
         'video' => array('value' => 'vidconsole', 'name' => gettext('VGA Console')),
+        'null' => array('value' => 'nullconsole', 'name' => gettext('Mute Console')),
         'efi' => array('value' => 'efi', 'name' => gettext('EFI Console')),
     );
 }
