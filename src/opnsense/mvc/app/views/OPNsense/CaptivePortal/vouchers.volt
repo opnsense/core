@@ -178,7 +178,10 @@ POSSIBILITY OF SUCH DAMAGE.
             var voucher_validity = $("#voucher-validity").val();
             var voucher_quantity = $("#voucher-quantity").val();
             var voucher_groupname = $("#voucher-groupname").val();
-
+            if (!$.isNumeric(voucher_validity) || !$.isNumeric(voucher_quantity)) {
+                // don't try to generate vouchers then validity or quantity are invalid
+                return;
+            }
             ajaxCall(url="/api/captiveportal/voucher/generateVouchers/" + voucher_provider + "/",
                     sendData={
                         'count':voucher_quantity,
