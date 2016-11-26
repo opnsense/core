@@ -1642,9 +1642,11 @@ function system_console_unmute()
 function system_console_types()
 {
     return array(
-        'serial' => array('value' => 'comconsole', 'name' => gettext('Serial Console')),
+        /* sorted by usage */
         'video' => array('value' => 'vidconsole', 'name' => gettext('VGA Console')),
+        'serial' => array('value' => 'comconsole', 'name' => gettext('Serial Console')),
         'efi' => array('value' => 'efi', 'name' => gettext('EFI Console')),
+        'null' => array('value' => 'nullconsole', 'name' => gettext('Mute Console')),
     );
 }
 
@@ -1660,16 +1662,7 @@ function system_login_configure($verbose = false)
     configd_run('template reload OPNsense/Auth');
 
     $serialspeed = (!empty($config['system']['serialspeed']) && is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
-    $serial_enabled = isset($config['system']['enableserial']);
 
-    // ** serial console - write out /boot.config
-    if ($serial_enabled) {
-        @file_put_contents('/boot.config', "-S{$serialspeed} -D\n");
-    } else {
-        @unlink('/boot.config');
-    }
-
-    // ** console settings in /boot/loader.conf
     $new_boot_config = array();
     $new_boot_config['comconsole_speed'] = null;
     $new_boot_config['boot_multicons'] = null;
@@ -1687,13 +1680,26 @@ function system_login_configure($verbose = false)
 
     $console_selection = array_unique($console_selection);
 
-    if ($serial_enabled) {
+    $output_enabled = count($console_selection) != 1 || !in_array('nullconsole', $console_selection);
+    $virtual_enabled = !count($console_selection) || in_array('vidconsole', $console_selection) ||
+        in_array('efi', $console_selection);
+    $serial_enabled = in_array('comconsole', $console_selection) || isset($config['system']['enableserial']);
+
+    if (count($console_selection)) {
         $new_boot_config['console'] = '"' . implode(',', $console_selection) . '"';
-        $new_boot_config['comconsole_speed'] = '"'.$serialspeed.'"';
-        $new_boot_config['boot_serial'] = '"YES"';
         if (count($console_selection) >= 2) {
             $new_boot_config['boot_multicons'] = '"YES"';
         }
+    }
+
+    if ($serial_enabled) {
+        @file_put_contents('/boot.config', "-S{$serialspeed} -D\n");
+        $new_boot_config['comconsole_speed'] = '"'.$serialspeed.'"';
+        $new_boot_config['boot_serial'] = '"YES"';
+    } elseif (!$output_enabled) {
+        @file_put_contents('/boot.config', "-q -m\n");
+    } else {
+        @unlink('/boot.config');
     }
 
     /* reload static values from rc.loader.d */
@@ -1715,10 +1721,11 @@ function system_login_configure($verbose = false)
     /* write merged file back to target location */
     @file_put_contents('/boot/loader.conf', $new_loader_conf);
 
-    // ** setup /etc/ttys
+    /* setup /etc/ttys */
     $etc_ttys_lines = explode("\n", file_get_contents('/etc/ttys'));
     $fd = fopen('/etc/ttys', 'w');
-    $on_off_secure = $serial_enabled ? 'onifconsole secure' : 'off secure';
+    $on_off_secure_u = $serial_enabled ? 'onifconsole secure' : 'off secure';
+    $on_off_secure_v = $virtual_enabled ? 'on  secure' : 'off secure';
     $terminal_type = 'cons25'; /* XXX standard is 'xterm' for virtual, 'vt100' for serial */
     if (isset($config['system']['disableconsolemenu'])) {
         $console_type = 'Pc';
@@ -1728,15 +1735,22 @@ function system_login_configure($verbose = false)
         $serial_type = 'al.' . $serialspeed;
     }
     foreach ($etc_ttys_lines as $tty) {
+        /* first virtual terminal */
         if (strpos($tty, 'ttyv0') === 0) {
-            /* first virtual terminal */
-            fwrite($fd, "ttyv0\t\"/usr/libexec/getty {$console_type}\"\t\t{$terminal_type}\ton  secure\n");
+            fwrite($fd, "ttyv0\t\"/usr/libexec/getty {$console_type}\"\t\t{$terminal_type}\t${on_off_secure_v}\n");
             continue;
         }
+        /* all other virtual terminals */
+        foreach (array('ttyv1', 'ttyv2', 'ttyv3', 'ttyv4', 'ttyv5', 'ttyv6', 'ttyv7') as $virtualport) {
+            if (strpos($tty, $virtualport) === 0) {
+                fwrite($fd, "${virtualport}\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t${on_off_secure_v}\n");
+                continue 2;
+            }
+        }
+        /* each serial terminal */
         foreach (array('ttyu0', 'ttyu1', 'ttyu2', 'ttyu3') as $serialport) {
             if (strpos($tty, $serialport) === 0) {
-                /* each serial terminal */
-                fwrite($fd, "{$serialport}\t\"/usr/libexec/getty {$serial_type}\"\t{$terminal_type}\t{$on_off_secure}\n");
+                fwrite($fd, "{$serialport}\t\"/usr/libexec/getty {$serial_type}\"\t{$terminal_type}\t{$on_off_secure_u}\n");
                 /* skip to next line in outer loop */
                 continue 2;
             }
