@@ -174,12 +174,18 @@ POSSIBILITY OF SUCH DAMAGE.
          * link actual voucher generation in dialog
          */
         $("#generateVoucherBtn").click(function(){
+            $('#generatevouchererror').html('');
+            $('#generatevouchererror').hide();
             var voucher_provider = $('#voucher-providers').find("option:selected").val();
             var voucher_validity = $("#voucher-validity").val();
             var voucher_quantity = $("#voucher-quantity").val();
             var voucher_groupname = $("#voucher-groupname").val();
             if (!$.isNumeric(voucher_validity) || !$.isNumeric(voucher_quantity)) {
                 // don't try to generate vouchers then validity or quantity are invalid
+                var error = $('<p />');
+                error.text("{{ lang._('The validity and the quantity of vouchers must be integers.') }}");
+                $('#generatevouchererror').append(error);
+                $('#generatevouchererror').show();
                 return;
             }
             ajaxCall(url="/api/captiveportal/voucher/generateVouchers/" + voucher_provider + "/",
@@ -384,6 +390,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 <h4 class="modal-title">{{ lang._('Generate vouchers') }}</h4>
             </div>
             <div class="modal-body">
+            <div id="generatevouchererror" class="alert alert-danger" role="alert" style="display: none"></div>
                 <table class="table table-striped table-condensed table-responsive">
                     <thead>
                         <tr>
