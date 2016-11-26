@@ -1585,18 +1585,22 @@ function system_login_configure()
     foreach (array('primaryconsole', 'secondaryconsole') as $console_order) {
         if (!empty($config['system'][$console_order]) && isset($console_types[$config['system'][$console_order]])) {
             $console_selection[] = $console_types[$config['system'][$console_order]]['value'];
+            if ($config['system'][$console_order] == 'serial') {
+                /* make sure serial is enabled when selected, but not by checkbox */
+                $serial_enabled = true;
+            }
         }
     }
 
     $console_selection = array_unique($console_selection);
+    $new_boot_config['console'] = '"' . implode(',', $console_selection) . '"';
+    if (count($console_selection) >= 2) {
+        $new_boot_config['boot_multicons'] = '"YES"';
+    }
 
     if ($serial_enabled) {
-        $new_boot_config['console'] = '"' . implode(',', $console_selection) . '"';
         $new_boot_config['comconsole_speed'] = '"'.$serialspeed.'"';
         $new_boot_config['boot_serial'] = '"YES"';
-        if (count($console_selection) >= 2) {
-            $new_boot_config['boot_multicons'] = '"YES"';
-        }
     }
 
     /* reload static values from rc.loader.d */
