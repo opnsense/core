@@ -1619,7 +1619,7 @@ function system_login_configure()
         @file_put_contents('/boot.config', "-S{$serialspeed} -D\n");
         $new_boot_config['comconsole_speed'] = '"'.$serialspeed.'"';
         $new_boot_config['boot_serial'] = '"YES"';
-    } elseif (count($console_selection) == 1 && $console_selection[0] == 'null') {
+    } elseif (count($console_selection) == 1 && $console_selection[0] == 'nullconsole') {
         @file_put_contents('/boot.config', "-q -m\n");
     } else {
         @unlink('/boot.config');
