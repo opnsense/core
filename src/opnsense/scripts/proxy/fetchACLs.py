@@ -50,7 +50,7 @@ class Downloader(object):
     """ Download helper
     """
 
-    def __init__(self, url,username, password, timeout):
+    def __init__(self, url,username, password, timeout, ssl_no_verify=False):
         """ init new
             :param url: source url
             :param timeout: timeout in seconds
@@ -60,6 +60,7 @@ class Downloader(object):
         self._source_handle = None
         self._username = username
         self._password = password
+        self._ssl_no_verify = ssl_no_verify
 
     def fetch(self):
         """ fetch (raw) source data into tempfile using self._source_handle
@@ -67,11 +68,16 @@ class Downloader(object):
         self._source_handle = None
         if self._url.lower().startswith('http://') or self._url.lower().startswith('https://'):
             # HTTP(S) download
+            req_opts = dict()
+            req_opts['url'] = self._url
+            req_opts['stream'] = True
+            req_opts['timeout'] = self._timeout
+            if self._ssl_no_verify:
+                req_opts['verify'] = False
             if self._username is not None:
-                req = requests.get(url=self._url, stream=True, timeout=self._timeout,
-                                   auth=(self._username, self._password))
-            else:
-                req = requests.get(url=self._url, stream=True, timeout=self._timeout)
+                req_opts['auth'] = (self._username, self._password)
+
+            req = requests.get(**req_opts)
             if req.status_code == 200:
                 self._source_handle = tempfile.NamedTemporaryFile()
                 shutil.copyfileobj(req.raw, self._source_handle)
@@ -301,7 +307,11 @@ def main():
                     else:
                         download_username = None
                         download_password = None
-                    acl = Downloader(download_url, download_username, download_password, acl_max_timeout)
+                    if cnf.has_option(section, 'sslNoVerify') and cnf.get(section, 'sslNoVerify') == '1':
+                        sslNoVerify = True
+                    else:
+                        sslNoVerify = False
+                    acl = Downloader(download_url, download_username, download_password, acl_max_timeout, sslNoVerify)
                     all_filenames = list()
                     for filename, basefilename, file_ext, line in acl.download():
                         if filename_in_ignorelist(basefilename, file_ext):
