@@ -39,6 +39,12 @@
         <help><![CDATA[select categories to use, leave empty for all. Categories are visible after initial download.]]></help>
     </field>
     <field>
+        <id>blacklist.sslNoVerify</id>
+        <label>ssl ignore cert</label>
+        <type>checkbox</type>
+        <help>Ignore SSL certificate validation (for self-signed certificates)</help>
+    </field>
+    <field>
         <id>blacklist.description</id>
         <label>Description</label>
         <type>text</type>
