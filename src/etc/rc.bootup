@@ -61,7 +61,6 @@ echo "Starting device manager (devd)...";
 system_console_mute();
 exec('/sbin/devd');
 sleep(1);
-set_device_perms();
 system_console_unmute();
 echo "done.\n";
 

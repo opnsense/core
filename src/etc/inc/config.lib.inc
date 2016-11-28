@@ -290,24 +290,6 @@ function cleanup_backups()
     }
 }
 
-
-function set_device_perms() {
-    $devices = array(
-      'pf'  => array(  'user'  => 'root',
-            'group'  => 'proxy',
-            'mode'  => 0660),
-      );
-
-    foreach ($devices as $name => $attr) {
-        $path = "/dev/$name";
-        if (file_exists($path)) {
-            chown($path, $attr['user']);
-            chgrp($path, $attr['group']);
-            chmod($path, $attr['mode']);
-        }
-    }
-}
-
 function make_config_revision_entry($desc = '')
 {
     global $config;
