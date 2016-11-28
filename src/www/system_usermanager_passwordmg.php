@@ -58,7 +58,7 @@ if (isset($_POST['save'])) {
 
     if (count($input_errors) == 0) {
         // all values are okay --> saving changes
-        $config['system']['user'][$userindex[$username]]['password'] = generate_password_hash($_POST['passwordfld1'], 10);
+        local_user_set_password($config['system']['user'][$userindex[$username]], $_POST['passwordfld1']);
         local_user_set($config['system']['user'][$userindex[$username]]);
 
         write_config();
