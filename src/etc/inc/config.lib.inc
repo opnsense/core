@@ -92,8 +92,13 @@ function load_config_from_file($filename)
  * RESULT
  *   $config      - array containing all configuration variables
  ******/
-function parse_config()
+function parse_config($verbose = false)
 {
+    if ($verbose) {
+        echo 'Loading configuration...';
+        flush();
+    }
+
     $cnf = OPNsense\Core\Config::getInstance();
 
     // return config data as array, use old "listags" construction to mark certain elements as array (even if they're not recurring)
@@ -101,6 +106,10 @@ function parse_config()
 
     /* make alias table (for faster lookups) */
     alias_make_table($config);
+
+    if ($verbose) {
+        echo "done.\n";
+    }
 
     return $config;
 }
@@ -287,24 +296,6 @@ function cleanup_backups()
             @unlink($filename);
         }
         ++$cnt ;
-    }
-}
-
-
-function set_device_perms() {
-    $devices = array(
-      'pf'  => array(  'user'  => 'root',
-            'group'  => 'proxy',
-            'mode'  => 0660),
-      );
-
-    foreach ($devices as $name => $attr) {
-        $path = "/dev/$name";
-        if (file_exists($path)) {
-            chown($path, $attr['user']);
-            chgrp($path, $attr['group']);
-            chmod($path, $attr['mode']);
-        }
     }
 }
 
