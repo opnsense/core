@@ -488,14 +488,16 @@ function local_user_del($user)
 
 function local_user_set_password(&$user, $password)
 {
-    $user['password'] = crypt($password, '$6$');
+    $cost = 10;
 
-    // Converts ascii to unicode.
-    $astr = (string) $password;
-    $ustr = '';
-    for ($i = 0; $i < strlen($astr); $i++) {
-        $a = ord($astr{$i}) << 8;
-        $ustr.= sprintf("%X", $a);
+    $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => $cost ]);
+    if ($hash !== false) {
+        /*
+         * $2y$ returned is supported in FreeBSD 11.0 and up,
+         * but we started with FreeBSD 10.3 so need to fix:
+         */
+        $hash[2] = 'b';
+        $user['password'] = $hash;
     }
 }
 

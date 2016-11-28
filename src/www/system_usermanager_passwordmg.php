@@ -40,7 +40,7 @@ if (isset($_POST['save'])) {
     do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
     if ($_POST['passwordfld1'] != $_POST['passwordfld2'] ||
-        $config['system']['user'][$userindex[$username]]['password'] != crypt($_POST['passwordfld0'], '$6$')) {
+        !password_verify($_POST['passwordfld0'], $config['system']['user'][$userindex[$username]]['password'])) {
         $input_errors[] = gettext("The passwords do not match.");
     }
 
@@ -58,7 +58,7 @@ if (isset($_POST['save'])) {
 
     if (count($input_errors) == 0) {
         // all values are okay --> saving changes
-        $config['system']['user'][$userindex[$username]]['password'] = crypt($_POST['passwordfld1'], '$6$');
+        local_user_set_password($config['system']['user'][$userindex[$username]], $_POST['passwordfld1']);
         local_user_set($config['system']['user'][$userindex[$username]]);
 
         write_config();
