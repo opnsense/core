@@ -488,7 +488,7 @@ function local_user_del($user)
 
 function local_user_set_password(&$user, $password)
 {
-    $user['password'] = crypt($password, '$6$');
+    $user['password'] = generate_password_hash($password, 10);
 
     // Converts ascii to unicode.
     $astr = (string) $password;
