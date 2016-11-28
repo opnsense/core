@@ -1575,3 +1575,11 @@ function is_install_media()
 
     return true;
 }
+
+function generate_password_hash($password, $cost = 10)
+{
+    $hash = password_hash($password, PASSWORD_BCRYPT, ["cost" => $cost]);
+    // at the moment of writing FreeBSD can't recognise $2y$... as bcrypt, $2b$ is needed
+    $hash[2] = 'b';
+    return $hash;
+}

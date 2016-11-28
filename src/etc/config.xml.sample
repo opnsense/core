@@ -204,7 +204,7 @@
       <descr><![CDATA[System Administrator]]></descr>
       <scope>system</scope>
       <groupname>admins</groupname>
-      <password>$6$$Y8Et6wWDdXO2tJZRabvSfQvG2Lc8bAS6D9COIsMXEJ2KjA27wqDuAyd/CdazBQc3H3xQX.JXMKxJeRz2OqTkl.</password>
+      <password>$2b$10$YRVoF4SgskIsrXOvOQjGieB9XqHPRra9R7d80B3BZdbY/j21TwBfS</password>
       <uid>0</uid>
     </user>
     <nextuid>2000</nextuid>
