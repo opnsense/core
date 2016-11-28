@@ -1648,7 +1648,7 @@ function system_login_configure()
     $etc_ttys_lines = explode("\n", file_get_contents('/etc/ttys'));
     $fd = fopen('/etc/ttys', 'w');
     $on_off_secure_u = $serial_enabled ? 'onifconsole secure' : 'off secure';
-    $on_off_secure_v = $virtual_enabled ? 'off secure' : 'on  secure';
+    $on_off_secure_v = $virtual_enabled ? 'on  secure' : 'off secure';
     $terminal_type = 'cons25'; /* XXX standard is 'xterm' for virtual, 'vt100' for serial */
     if (isset($config['system']['disableconsolemenu'])) {
         $console_type = 'Pc';
