@@ -1632,7 +1632,7 @@ function system_login_configure()
         }
     }
 
-    $output_enabled = count($console_selection) != 1 || in_array('nullconsole', $console_selection);
+    $output_enabled = count($console_selection) != 1 || !in_array('nullconsole', $console_selection);
     $virtual_enabled = !count($console_selection) || in_array('vidconsole', $console_selection) ||
         in_array('efi', $console_selection);
     $serial_enabled = in_array('comconsole', $console_selection);
