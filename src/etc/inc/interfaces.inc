@@ -1766,7 +1766,6 @@ function interfaces_carp_setup()
 
     if (file_exists("/var/run/booting")) {
         echo gettext("Configuring CARP settings...");
-        mute_kernel_msgs();
     }
     set_single_sysctl("net.inet.carp.preempt", "1");
 
@@ -1788,7 +1787,6 @@ function interfaces_carp_setup()
     }
 
     if (file_exists("/var/run/booting")) {
-        unmute_kernel_msgs();
         echo gettext("done.") . "\n";
     }
 }
