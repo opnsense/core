@@ -1602,10 +1602,11 @@ function system_console_unmute()
 function system_console_types()
 {
     return array(
-        'serial' => array('value' => 'comconsole', 'name' => gettext('Serial Console')),
+        /* sorted by usage */
         'video' => array('value' => 'vidconsole', 'name' => gettext('VGA Console')),
-        'null' => array('value' => 'nullconsole', 'name' => gettext('Mute Console')),
+        'serial' => array('value' => 'comconsole', 'name' => gettext('Serial Console')),
         'efi' => array('value' => 'efi', 'name' => gettext('EFI Console')),
+        'null' => array('value' => 'nullconsole', 'name' => gettext('Mute Console')),
     );
 }
 
