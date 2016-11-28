@@ -56,16 +56,8 @@ echo ".";
 require_once("rrd.inc");
 echo " done.\n";
 
-/* start devd (dhclient now uses it) */
-echo "Starting device manager (devd)...";
-system_console_mute();
-exec('/sbin/devd');
-sleep(1);
-system_console_unmute();
-echo "done.\n";
-
-/* configure login behaviour */
-system_login_configure();
+system_devd_configure(true);
+system_login_configure(true);
 
 $setup_installer = is_install_media();
 if ($setup_installer) {
@@ -88,11 +80,9 @@ if ($setup_installer) {
     OPNsense\Core\Config::getInstance()->forceReload();
 }
 
-echo "Loading configuration...";
 global $config;
-$config = parse_config();
+$config = parse_config(true);
 convert_config();
-echo "done.\n";
 
 /*
  *  Determine if we need to throw a interface exception

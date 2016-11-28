@@ -1473,6 +1473,22 @@ function system_kernel_configure($verbose = false)
     }
 }
 
+function system_devd_configure($verbose = false)
+{
+    if ($verbose) {
+        echo 'Starting device manager...';
+        flush();
+    }
+
+    exec('/sbin/devd');
+    /* historic sleep */
+    sleep(1);
+
+    if ($verbose) {
+        echo "done.\n";
+    }
+}
+
 function system_cron_configure($verbose = false)
 {
     global $config;
@@ -1610,9 +1626,14 @@ function system_console_types()
     );
 }
 
-function system_login_configure()
+function system_login_configure($verbose = false)
 {
     global $config;
+
+    if ($verbose) {
+        echo 'Configuring login behaviour...';
+        flush();
+    }
 
     configd_run('template reload OPNsense/Auth');
 
@@ -1717,6 +1738,11 @@ function system_login_configure()
         }
     }
     fclose($fd);
+
+    if ($verbose) {
+        echo "done\n";
+        flush();
+    }
 
     /* force init(8) to reload /etc/ttys */
     exec('/bin/kill -HUP 1');

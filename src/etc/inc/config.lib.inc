@@ -92,8 +92,13 @@ function load_config_from_file($filename)
  * RESULT
  *   $config      - array containing all configuration variables
  ******/
-function parse_config()
+function parse_config($verbose = false)
 {
+    if ($verbose) {
+        echo 'Loading configuration...';
+        flush();
+    }
+
     $cnf = OPNsense\Core\Config::getInstance();
 
     // return config data as array, use old "listags" construction to mark certain elements as array (even if they're not recurring)
@@ -101,6 +106,10 @@ function parse_config()
 
     /* make alias table (for faster lookups) */
     alias_make_table($config);
+
+    if ($verbose) {
+        echo "done.\n";
+    }
 
     return $config;
 }
