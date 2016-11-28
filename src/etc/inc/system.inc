@@ -1420,28 +1420,56 @@ function get_possible_listen_ips($include_ipv6_link_local = false, $include_loop
     return $listenips;
 }
 
-function load_crypto_module()
+function system_kernel_configure($verbose = false)
 {
-    global $config;
+    if ($verbose) {
+        echo 'Configuring kernel modules...';
+        flush();
+    }
+
+    /*
+     * Vital kernel modules can go missing on reboot due to
+     * /boot/loader.conf not materialising.  This is still
+     * an UFS problem, despite claims otherwise.  In any case,
+     * load all the modules again to make sure.
+     *
+     * Keep in sync with /usr/local/etc/erc.loader.d/20-modules
+     */
+    $mods = array(
+        'carp',
+        'if_bridge',
+        'if_enc',
+        'if_gif',
+        'if_gre',
+        'if_lagg',
+        'if_tap',
+        'if_tun',
+        'if_vlan',
+        'pf',
+        'pflog',
+        'pfsync',
+    );
+
+    foreach ($mods as $mod) {
+        mwexecf('/sbin/kldload %s', $mod, true);
+    }
 
     if (!empty($config['system']['crypto_hardware'])) {
         log_error(sprintf('Loading %s cryptographic accelerator module.', $config['system']['crypto_hardware']));
         mwexecf('/sbin/kldload %s', $config['system']['crypto_hardware'], true);
     }
-
     if (isset($config['system']['cryptodev_enable'])) {
         log_error('Loading cryptodev kernel module.');
         mwexecf('/sbin/kldload %s', 'cryptodev', true);
     }
-}
-
-function load_thermal_module()
-{
-    global $config;
 
     if (!empty($config['system']['thermal_hardware'])) {
         log_error(sprintf('Loading %s thermal monitor module.', $config['system']['thermal_hardware']));
         mwexecf('/sbin/kldload %s', $config['system']['thermal_hardware'], true);
+    }
+
+    if ($verbose) {
+        echo "done.\n";
     }
 }
 

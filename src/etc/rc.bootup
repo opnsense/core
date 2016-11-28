@@ -105,11 +105,7 @@ if (is_interface_mismatch()) {
     while (!set_networking_interfaces_ports(true));
 }
 
-/* enable optional crypto modules */
-load_crypto_module();
-
-/* enable optional thermal sensor modules */
-load_thermal_module();
+system_kernel_configure(true);
 
 /* read in /etc/sysctl.conf and set values if needed */
 echo "Setting up extended sysctls...";
