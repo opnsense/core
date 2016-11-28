@@ -1640,10 +1640,11 @@ function system_login_configure()
         in_array('efi', $console_selection);
     $serial_enabled = in_array('comconsole', $console_selection);
 
-    if (count($console_selection) == 0) {
+    if (count($console_selection)) {
         $new_boot_config['console'] = '"' . implode(',', $console_selection) . '"';
-    } elseif (count($console_selection) >= 2) {
-        $new_boot_config['boot_multicons'] = '"YES"';
+        if (count($console_selection) >= 2) {
+            $new_boot_config['boot_multicons'] = '"YES"';
+        }
     }
 
     if ($serial_enabled) {
