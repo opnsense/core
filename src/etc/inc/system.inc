@@ -1450,22 +1450,22 @@ function system_kernel_configure($verbose = false)
         'pfsync',
     );
 
-    foreach ($mods as $mod) {
-        mwexecf('/sbin/kldload %s', $mod, true);
-    }
-
     if (!empty($config['system']['crypto_hardware'])) {
         log_error(sprintf('Loading %s cryptographic accelerator module.', $config['system']['crypto_hardware']));
-        mwexecf('/sbin/kldload %s', $config['system']['crypto_hardware'], true);
+        $mods[] = $config['system']['crypto_hardware'];
     }
     if (isset($config['system']['cryptodev_enable'])) {
         log_error('Loading cryptodev kernel module.');
-        mwexecf('/sbin/kldload %s', 'cryptodev', true);
+        $mods[] = 'cryptodev';
     }
 
     if (!empty($config['system']['thermal_hardware'])) {
         log_error(sprintf('Loading %s thermal monitor module.', $config['system']['thermal_hardware']));
-        mwexecf('/sbin/kldload %s', $config['system']['thermal_hardware'], true);
+        $mods[] = $config['system']['thermal_hardware'];
+    }
+
+    foreach ($mods as $mod) {
+        mwexecf('/sbin/kldload %s', $mod, true);
     }
 
     if ($verbose) {
