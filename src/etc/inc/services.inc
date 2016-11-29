@@ -2052,8 +2052,8 @@ function get_service_control_links($service, $addname = false)
     return $output;
 }
 
-/* radvd enabled on any interfaces? */
-function is_radvd_enabled() {
+function is_radvd_enabled()
+{
     global $config;
 
     if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
@@ -2067,18 +2067,7 @@ function is_radvd_enabled() {
     foreach ($dhcpdv6cfg as $dhcpv6if => $dhcpv6ifconf) {
         if (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
             continue;
-        }
-
-        if (!isset($dhcpv6ifconf['ramode'])) {
-            $dhcpv6ifconf['ramode'] = $dhcpv6ifconf['mode'];
-        }
-
-        if ($dhcpv6ifconf['ramode'] == "disabled") {
-            continue;
-        }
-
-        $ifcfgipv6 = get_interface_ipv6($dhcpv6if);
-        if (!is_ipaddrv6($ifcfgipv6)) {
+        } elseif ($dhcpv6ifconf['ramode'] == "disabled") {
             continue;
         }
 
@@ -2089,20 +2078,9 @@ function is_radvd_enabled() {
     foreach ($Iflist as $if => $ifdescr) {
         if (!isset($config['interfaces'][$if]['track6-interface'])) {
             continue;
-        }
-        if (!isset($config['interfaces'][$if]['enable'])) {
+        } elseif (empty($config['interfaces'][$config['interfaces'][$if]['track6-interface']])) {
             continue;
-        }
-
-        $ifcfgipv6 = get_interface_ipv6($if);
-        if (!is_ipaddrv6($ifcfgipv6)) {
-            continue;
-        }
-
-        $ifcfgsnv6 = get_interface_subnetv6($if);
-        $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
-
-        if (!is_ipaddrv6($subnetv6)) {
+        } elseif (!isset($config['interfaces'][$if]['enable'])) {
             continue;
         }
 
