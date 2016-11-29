@@ -382,19 +382,28 @@ function system_hosts_generate()
     unbound_hosts_generate();
 }
 
-function system_hostname_configure()
+function system_hostname_configure($verbose = false)
 {
     global $config;
 
+    if ($verbose) {
+        echo 'Setting hostname: ';
+        flush();
+    }
+
     $syscfg = $config['system'];
 
+    $hostname = "{$syscfg['hostname']}.{$syscfg['domain']}";
+
     /* set hostname */
-    $status = mwexecf('/bin/hostname %s', "{$syscfg['hostname']}.{$syscfg['domain']}");
+    mwexecf('/bin/hostname %s', $hostname);
 
     /* Setup host GUID ID.  This is used by ZFS. */
     mwexec("/etc/rc.d/hostid start");
 
-    return $status;
+    if ($verbose) {
+        echo "{$hostname}\n";
+    }
 }
 
 function system_routing_configure($interface = '')
@@ -698,16 +707,16 @@ function system_syslogd_start($verbose = false)
 {
     global $config, $g;
 
+    if ($verbose) {
+        echo 'Starting syslog...';
+        flush();
+    }
+
     configd_run('template reload OPNsense/Syslog');
 
     mwexec('/etc/rc.d/hostid start');
 
     $syslogcfg = $config['syslog'];
-
-    if ($verbose) {
-        echo 'Starting syslog...';
-        flush();
-    }
 
     $log_directive = '%';
     $syslogd_extra = '';
@@ -1273,9 +1282,14 @@ EOD;
     return 0;
 }
 
-function system_firmware_configure()
+function system_firmware_configure($verbose = false)
 {
     global $config;
+
+    if ($verbose) {
+        echo 'Writing firmware setting...';
+        flush();
+    }
 
     /* rewrite the config via the defaults */
     $origin_conf = '/usr/local/etc/pkg/repos/origin.conf';
@@ -1305,6 +1319,10 @@ function system_firmware_configure()
             '/usr/local/sbin/opnsense-update %s %s',
             array('-sn', str_replace('/', '\/', $osabi . $config['system']['firmware']['flavour']))
         );
+    }
+
+    if ($verbose) {
+        echo "done.\n";
     }
 }
 
@@ -1359,10 +1377,19 @@ function system_reboot($sync = false)
     }
 }
 
-function system_setup_sysctl()
+function system_sysctl_configure($verbose = false)
 {
+    if ($verbose) {
+        echo 'Setting up extended sysctls...';
+        flush();
+    }
+
     activate_sysctls();
     system_arp_wrong_if();
+
+    if ($verbose) {
+        echo "done.\n";
+    }
 }
 
 function system_arp_wrong_if()

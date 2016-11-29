@@ -30,31 +30,32 @@
 */
 
 /* looks weird, but means we started PHP successfully */
-echo " done.\n";
+echo "done.\n";
 
 echo "Initializing...";
-require_once("config.inc");
-echo ".";
-require_once("config.console.inc");
-echo ".";
-require_once("auth.inc");
-echo ".";
-require_once("util.inc");
-echo ".";
-require_once("interfaces.inc");
-echo ".";
-require_once("services.inc");
-echo ".";
-require_once("system.inc");
-echo ".";
-require_once("filter.inc");
-echo ".";
-require_once("ipsec.inc");
-echo ".";
-require_once("openvpn.inc");
-echo ".";
-require_once("rrd.inc");
-echo " done.\n";
+flush();
+
+$inc_files = array(
+    'config.inc',
+    'config.console.inc',
+    'auth.inc',
+    'util.inc',
+    'interfaces.inc',
+    'services.inc',
+    'system.inc',
+    'filter.inc',
+    'ipsec.inc',
+    'openvpn.inc',
+    'rrd.inc',
+);
+
+foreach ($inc_files as $inc_file) {
+    require_once $inc_file;
+    echo '.';
+    flush();
+}
+
+echo "done.\n";
 
 system_devd_configure(true);
 system_login_configure(true);
@@ -95,20 +96,10 @@ if (is_interface_mismatch()) {
 }
 
 system_kernel_configure(true);
-
-/* read in /etc/sysctl.conf and set values if needed */
-echo "Setting up extended sysctls...";
-system_setup_sysctl();
-echo "done.\n";
-
-/* set up our timezone */
+system_sysctl_configure(true);
 system_timezone_configure(true);
-
-/* set up firmware configuration */
-system_firmware_configure();
-
-/* set up our hostname */
-system_hostname_configure();
+system_firmware_configure(true);
+system_hostname_configure(true);
 
 /* make hosts file */
 system_hosts_generate();
