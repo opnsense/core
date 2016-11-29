@@ -388,7 +388,7 @@ $( document ).ready(function() {
       BootstrapDialog.show({
           type:BootstrapDialog.TYPE_DANGER,
           title: "<?= gettext("Certificate");?>",
-          message: '<?=gettext("Do you really want to remove this certificate association?") .'\n'. gettext("(Certificate will not be deleted)");?>',
+          message: "<?=gettext("Do you really want to remove this certificate association?") .'\n'. gettext("(Certificate will not be deleted)");?>",
           buttons: [{
                   label: "<?= gettext("No");?>",
                   action: function(dialogRef) {
@@ -412,7 +412,7 @@ $( document ).ready(function() {
       BootstrapDialog.show({
           type:BootstrapDialog.TYPE_DANGER,
           title: "<?= gettext("User");?>",
-          message: '<?=html_safe(gettext("Do you really want to delete this user?"));?>' + '<br/>('+username+")",
+          message: "<?=html_safe(gettext('Do you really want to delete this user?'));?>" + "<br/>("+username+")",
           buttons: [{
                   label: "<?= gettext("No");?>",
                   action: function(dialogRef) {
