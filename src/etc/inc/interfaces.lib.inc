@@ -28,8 +28,15 @@
 
 function legacy_interface_listget($flag = '')
 {
+    $cmd_wlan = 'sysctl -n net.wlan.devices';
     $cmd = '/sbin/ifconfig -l';
+    $ifs_wlan = null;
     $ifs = null;
+
+    exec($cmd_wlan . ' 2>&1', $out_wlan, $ret_wlan);
+    if (!$ret_wlan && isset($out_wlan[0])) {
+        $ifs_wlan = explode(' ', $out_wlan[0]);
+    }
 
     if ($flag === 'up') {
         $cmd .= 'u';
@@ -45,6 +52,10 @@ function legacy_interface_listget($flag = '')
 
     if (isset($out[0])) {
         $ifs = explode(' ', $out[0]);
+    }
+
+    if ($ifs_wlan != null) {
+        $ifs = array_merge($ifs, $ifs_wlan);
     }
 
     return ($ifs);
