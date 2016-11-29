@@ -126,17 +126,28 @@ class LDAP implements IAuthConnector
     {
         $result = false;
         if ($this->ldapHandle != null) {
-            // if we're looking at multple dn's, split and combine output
+            $searchpaths = array();
             if (!empty($this->ldapAuthcontainers)) {
-                $searchpaths = $this->ldapAuthcontainers;
+                /* prepend each authentication container */
+                foreach (explode(';', $this->ldapAuthcontainers) as $container) {
+                    $searchpath = array();
+                    if (!empty($container)) {
+                        $searchpath[] = $container;
+                    }
+                    if (!empty($this->baseSearchDN)) {
+                        $searchpath[] = $this->baseSearchDN;
+                    }
+                    $searchpaths[] = implode(',', $searchpath);
+                }
             } else {
-                $searchpaths = $this->baseSearchDN;
+                /* use a single base DN */
+                $searchpaths[] = $this->baseSearchDN;
             }
-            foreach (explode(";", $searchpaths) as $baseDN) {
-                if ($this->ldapScope == "one") {
-                    $sr=@ldap_list($this->ldapHandle, $baseDN, $filter, $this->ldapSearchAttr);
+            foreach ($searchpaths as $baseDN) {
+                if ($this->ldapScope == 'one') {
+                    $sr = @ldap_list($this->ldapHandle, $baseDN, $filter, $this->ldapSearchAttr);
                 } else {
-                    $sr=@ldap_search($this->ldapHandle, $baseDN, $filter, $this->ldapSearchAttr);
+                    $sr = @ldap_search($this->ldapHandle, $baseDN, $filter, $this->ldapSearchAttr);
                 }
                 if ($sr !== false) {
                     $info = @ldap_get_entries($this->ldapHandle, $sr);

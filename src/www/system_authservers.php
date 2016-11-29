@@ -333,7 +333,7 @@ $( document ).ready(function() {
               $("#ldap_attr_user").val('cn');
               break;
             case 'msad':
-              $("#ldap_attr_user").val('samAccountName');
+              $("#ldap_attr_user").val('sAMAccountName');
               break;
         }
     });
@@ -604,9 +604,12 @@ endif; ?>
 <?php
 endif; ?>
                 <tr class="auth_ldap auth_options hidden">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("User naming attribute");?></td>
+                  <td><a id="help_for_ldap_attr_user" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("User naming attribute");?></td>
                   <td>
                     <input name="ldap_attr_user" type="text" id="ldap_attr_user" size="20" value="<?=$pconfig['ldap_attr_user'];?>"/>
+                    <div class="hidden" for="help_for_ldap_attr_user">
+                      <?= gettext('Typically "cn" (OpenLDAP, Novell eDirectory), "sAMAccountName" (Microsoft AD)') ?>
+                    </div>
                   </td>
                 </tr>
                 <!-- RADIUS -->
