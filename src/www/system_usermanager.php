@@ -387,14 +387,14 @@ $( document ).ready(function() {
       event.preventDefault();
       BootstrapDialog.show({
           type:BootstrapDialog.TYPE_DANGER,
-          title: "<?= gettext("Certificate");?>",
-          message: "<?=gettext("Do you really want to remove this certificate association?") .'\n'. gettext("(Certificate will not be deleted)");?>",
+          title: "<?= html_safe(gettext('Certificate')) ?>",
+          message: "<?= html_safe(gettext('Do you really want to remove this certificate association?')) .'\n'. html_safe(gettext('(Certificate will not be deleted)')) ?>",
           buttons: [{
-                  label: "<?= gettext("No");?>",
+                  label: "<?= html_safe(gettext('No')) ?>",
                   action: function(dialogRef) {
                     dialogRef.close();
                   }}, {
-                    label: "<?= gettext("Yes");?>",
+                    label: "<?= html_safe(gettext('Yes')) ?>",
                     action: function(dialogRef) {
                       $("#certid").val(certid);
                       $("#act").val("delcert");
@@ -411,14 +411,14 @@ $( document ).ready(function() {
       event.preventDefault();
       BootstrapDialog.show({
           type:BootstrapDialog.TYPE_DANGER,
-          title: "<?= gettext("User");?>",
-          message: "<?=html_safe(gettext('Do you really want to delete this user?'));?>" + "<br/>("+username+")",
+          title: "<?= html_safe(gettext('User')) ?>",
+          message: "<?= html_safe(gettext('Do you really want to delete this user?')) ?>" + "<br/>("+username+")",
           buttons: [{
-                  label: "<?= gettext("No");?>",
+                  label: "<?= html_safe(gettext('No')) ?>",
                   action: function(dialogRef) {
                     dialogRef.close();
                   }}, {
-                    label: "<?= gettext("Yes");?>",
+                    label: "<?= html_safe(gettext('Yes')) ?>",
                     action: function(dialogRef) {
                       $("#userid").val(userid);
                       $("#act2").val("deluser");
@@ -438,7 +438,7 @@ $( document ).ready(function() {
       url="system_usermanager_import_ldap.php";
       var oWin = window.open(url,"OPNsense","width=620,height=400,top=150,left=150,scrollbars=yes");
       if (oWin==null || typeof(oWin)=="undefined") {
-        alert("<?=gettext('Popup blocker detected. Action aborted.');?>");
+        alert("<?= html_safe(gettext('Popup blocker detected. Action aborted.')) ?>");
       }
     });
 
@@ -472,14 +472,14 @@ $( document ).ready(function() {
         var apiKey = $(this).data('key');
         BootstrapDialog.show({
             type:BootstrapDialog.TYPE_DANGER,
-            title: "<?= gettext("User");?>",
-            message: '<?=gettext("Do you really want to delete this API key?");?>' + '<br/><small>('+apiKey.substring(0,40)+"...)</small>",
+            title: "<?= html_safe(gettext('User')) ?>",
+            message: '<?= html_safe(gettext('Do you really want to delete this API key?')) ?>' + '<br/><small>('+apiKey.substring(0,40)+"...)</small>",
             buttons: [{
-                    label: "<?= gettext("No");?>",
+                    label: "<?= html_safe(gettext('No')) ?>",
                     action: function(dialogRef) {
                       dialogRef.close();
                     }}, {
-                      label: "<?= gettext("Yes");?>",
+                      label: "<?= html_safe(gettext('Yes')) ?>",
                       action: function(dialogRef) {
                         $("#act").val("delApiKey");
                         $("#api_delete").val(apiKey);
