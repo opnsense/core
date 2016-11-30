@@ -192,6 +192,7 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#update_status').show();
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Executing...') }}");
+        $.upgrade_action = 'action';
 
         ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name,{},function() {
             $('#updatelist').empty();
@@ -254,6 +255,8 @@ POSSIBILITY OF SUCH DAMAGE.
                     $('#updatestatus').html("{{ lang._('Package manager update done. Please check for more updates.') }}");
                 } else if ($.upgrade_action == 'audit') {
                     $('#updatestatus').html("{{ lang._('Audit done.') }}");
+                } else if ($.upgrade_action == 'action') {
+                    $('#updatestatus').html("{{ lang._('Done.') }}");
                 } else {
                     $('#updatestatus').html("{{ lang._('Upgrade done.') }}");
                 }
@@ -298,7 +301,7 @@ POSSIBILITY OF SUCH DAMAGE.
             "<th>{{ lang._('License') }}</th><th>{{ lang._('Comment') }}</th><th></th></tr>");
             $("#pluginlist").html("<tr><th>{{ lang._('Name') }}</th>" +
             "<th>{{ lang._('Version') }}</th><th>{{ lang._('Size') }}</th>" +
-            "<th>{{ lang._('License') }}</th><th>{{ lang._('Comment') }}</th><th></th></tr>");
+            "<th>{{ lang._('Comment') }}</th><th></th></tr>");
 
             var local_count = 0;
             var remote_count = 0;
@@ -352,12 +355,8 @@ POSSIBILITY OF SUCH DAMAGE.
                     '<tr>' + '<td>' + row['name'] + orphaned_text + '</td>' +
                     '<td>' + row['version'] + '</td>' +
                     '<td>' + row['flatsize'] + '</td>' +
-                    '<td>' + row['license'] + '</td>' +
                     '<td>' + row['comment'] + '</td>' +
-                    '<td><button class="btn btn-default btn-xs act_license" data-package="' + row['name'] + '" ' +
-                    '  data-toggle="tooltip" title="View ' + row['name'] + ' license">' +
-                    '<span class="fa fa-balance-scale"></span></button> ' +
-                    (row['installed'] == "1" ?
+                    '<td>' + (row['installed'] == "1" ?
                         '<button class="btn btn-default btn-xs act_remove" data-package="' + row['name'] + '" '+
                         '  data-toggle="tooltip" title="Remove ' + row['name'] + '">' +
                         '<span class="fa fa-trash">' +
