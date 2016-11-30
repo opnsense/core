@@ -225,7 +225,7 @@ fi
 echo "done."
 
 # Regenerate groups and users for packages
-/usr/local/etc/rc.recover pkg > /dev/null
+/usr/local/etc/rc.recover pkg > /dev/null 2> /dev/null
 
 # Recreate capabilities DB
 /usr/bin/cap_mkdb /etc/login.conf
