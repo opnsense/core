@@ -32,9 +32,11 @@ POSSIBILITY OF SUCH DAMAGE.
     /**
      * prepare for checking update status
      */
-    function updateStatusPrepare() {
-        $('#update_status').hide();
-        $('#updatelist').show();
+    function updateStatusPrepare(rerun) {
+        if ($rerun = false) {
+            $('#update_status').hide();
+            $('#updatelist').show();
+        }
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
         $('#updatestatus').html("{{ lang._('Checking... (may take up to 30 seconds)') }}");
     }
@@ -44,7 +46,7 @@ POSSIBILITY OF SUCH DAMAGE.
      */
     function updateStatus() {
         // update UI
-        updateStatusPrepare();
+        updateStatusPrepare(false);
 
         // request status
         ajaxGet('/api/core/firmware/status',{},function(data,status){
@@ -91,6 +93,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 // update list so plugins sync as well (no logs)
                 packagesInfo(false);
             } else {
+                $('#update_status').hide();
+                $('#updatelist').show();
                 $("#upgrade").attr("style","display:none");
                 $("#audit").attr("style","");
 
@@ -251,18 +255,22 @@ POSSIBILITY OF SUCH DAMAGE.
             if (data['status'] == 'done') {
                 $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
                 $("#audit_progress").removeClass("fa fa-spinner fa-pulse");
-                if ($.upgrade_action == 'pkg') {
-                    $('#updatestatus').html("{{ lang._('Package manager update done. Please check for more updates.') }}");
-                } else if ($.upgrade_action == 'audit') {
-                    $('#updatestatus').html("{{ lang._('Audit done.') }}");
-                } else if ($.upgrade_action == 'action') {
-                    $('#updatestatus').html("{{ lang._('Done.') }}");
-                } else {
-                    $('#updatestatus').html("{{ lang._('Upgrade done.') }}");
-                }
                 $("#upgrade").attr("style","display:none");
                 $("#audit").attr("style","");
-                packagesInfo(true);
+                if ($.upgrade_action == 'pkg') {
+                    // update UI and delay update to avoid races
+                    updateStatusPrepare(true);
+                    setTimeout(updateStatus, 1000);
+                } else {
+                    if ($.upgrade_action == 'audit') {
+                        $('#updatestatus').html("{{ lang._('Audit done.') }}");
+                    } else if ($.upgrade_action == 'action') {
+                        $('#updatestatus').html("{{ lang._('Done.') }}");
+                    } else {
+                        $('#updatestatus').html("{{ lang._('Upgrade done.') }}");
+                    }
+                    packagesInfo(true);
+                }
             } else if (data['status'] == 'reboot') {
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_INFO,
@@ -458,7 +466,7 @@ POSSIBILITY OF SUCH DAMAGE.
             // dashboard link: run check automatically
             } else if (window.location.hash == '#checkupdate') {
                 // update UI and delay update to avoid races
-                updateStatusPrepare();
+                updateStatusPrepare(false);
                 setTimeout(updateStatus, 1000);
             }
         });
