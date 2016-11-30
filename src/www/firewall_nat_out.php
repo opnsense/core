@@ -385,7 +385,23 @@ include("head.inc");
                     </td>
                     <td class="hidden-xs hidden-sm">
                       <?=!empty($natent['protocol']) ? $natent['protocol'] . '/' : "" ;?>
-                      <?=!empty($natent['sourceport']) ? $natent['sourceport'] : "*"; ?>
+<?php
+                      if (empty($natent['sourceport'])):?>
+                      *
+<?php
+                      elseif (isset($natent['sourceport']) && is_alias($natent['sourceport'])):?>
+                      <span title="<?=htmlspecialchars(get_alias_description($natent['sourceport']));?>" data-toggle="tooltip">
+                        <?=htmlspecialchars(pprint_port($natent['sourceport'])); ?>&nbsp;
+                      </span>
+                      <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['sourceport']);?>"
+                          title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                        <i class="fa fa-list"></i>
+                      </a>
+<?php
+                      else:?>
+                      <?=htmlspecialchars($natent['sourceport'])?>
+<?php
+                      endif;?>
                     </td>
                     <td class="hidden-xs hidden-sm">
                       <?=isset($natent['destination']['not']) ? "!&nbsp;" :"";?>
@@ -403,7 +419,23 @@ include("head.inc");
                     </td>
                     <td class="hidden-xs hidden-sm">
                       <?=!empty($natent['protocol']) ? $natent['protocol'] . '/' : "" ;?>
-                      <?=empty($natent['dstport']) ? "*" : $natent['dstport'] ;?>
+<?php
+                      if (empty($natent['dstport'])):?>
+                      *
+<?php
+                      elseif (isset($natent['dstport']) && is_alias($natent['dstport'])):?>
+                      <span title="<?=htmlspecialchars(get_alias_description($natent['dstport']));?>" data-toggle="tooltip">
+                        <?=htmlspecialchars(pprint_port($natent['dstport'])); ?>&nbsp;
+                      </span>
+                      <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['dstport']);?>"
+                          title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                        <i class="fa fa-list"></i>
+                      </a>
+<?php
+                      else:?>
+                      <?=htmlspecialchars($natent['dstport'])?>
+<?php
+                      endif;?>
                     </td>
                     <td class="hidden-xs hidden-sm">
 <?php

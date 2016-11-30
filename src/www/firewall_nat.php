@@ -394,7 +394,7 @@ $( document ).ready(function() {
                             $localport   .= '-' . $localendport;
                         }
 ?>
-<?php                   if (isset($natent['destination']['port']) && is_alias($natent['destination']['port'])): ?>
+<?php                   if (isset($natent['local-port']) && is_alias($natent['local-port'])): ?>
                           <span title="<?=htmlspecialchars(get_alias_description($localport));?>" data-toggle="tooltip">
                             <?=htmlspecialchars(pprint_port($localport));?>&nbsp;
                           </span>
