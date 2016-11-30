@@ -314,9 +314,9 @@ POSSIBILITY OF SUCH DAMAGE.
             var local_count = 0;
             var remote_count = 0;
             var changelog_count = 0;
-            var changelog_display = 12;
+            var changelog_max = 12;
             if ($.changelog_keep_full != undefined) {
-                changelog_display = 9999;
+                changelog_max = 9999;
             }
 
             $.each(data['package'], function(index, row) {
@@ -405,7 +405,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     }
 
                     $('#updatelist').append(
-                        '<tr' + (changelog_count > changelog_display ? ' class="changelog-hidden" style="display: none;" ' : '' ) +
+                        '<tr' + (changelog_count > changelog_max ? ' class="changelog-hidden" style="display: none;" ' : '' ) +
                         '><td>' + row['version'] + installed_text + '</td><td>' + row['date'] + '</td>' +
                         '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
                         'data-toggle="tooltip" title="View ' + row['version'] + '">' +
@@ -419,7 +419,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     );
                 }
 
-                if (changelog_count > changelog_display) {
+                if (changelog_count > changelog_max) {
                     $('#updatelist').append(
                         '<tr class= "changelog-full"><td colspan=3><a id="changelog-act" href="#">{{ lang._('Click to view full changelog history.') }}</a></td></tr>'
                     );
