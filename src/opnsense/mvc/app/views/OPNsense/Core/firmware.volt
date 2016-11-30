@@ -58,7 +58,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (data['status_upgrade_action'] != 'pkg') {
                     $.upgrade_needs_reboot = data['upgrade_needs_reboot'];
                 } else {
-                    $.upgrade_needs_reboot = 0 ;
+                    $.upgrade_needs_reboot = 0;
                 }
 
                 $.upgrade_show_log = '';
@@ -313,6 +313,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
             var local_count = 0;
             var remote_count = 0;
+            var changelog_count = 0;
+            var changelog_display = 12;
+            if ($.changelog_keep_full != undefined) {
+                changelog_display = 9999;
+            }
 
             $.each(data['package'], function(index, row) {
                 if (row['provided'] == "1") {
@@ -392,13 +397,16 @@ POSSIBILITY OF SUCH DAMAGE.
                 installed_version = data['product_version'].replace(/[_-].*/, '');
 
                 $.each(data['changelog'], function(index, row) {
+                    changelog_count += 1;
+
                     installed_text = '';
                     if (installed_version == row['version']) {
                         installed_text = ' ({{ lang._('installed') }})';
                     }
+
                     $('#updatelist').append(
-                        '<tr><td>' + row['version'] + installed_text + '</td>' +
-                        '<td>' + row['date'] + '</td>' +
+                        '<tr' + (changelog_count > changelog_display ? ' class="changelog-hidden" style="display: none;" ' : '' ) +
+                        '><td>' + row['version'] + installed_text + '</td><td>' + row['date'] + '</td>' +
                         '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
                         'data-toggle="tooltip" title="View ' + row['version'] + '">' +
                         '<span class="fa fa-book"></span></button></td></tr>'
@@ -409,6 +417,18 @@ POSSIBILITY OF SUCH DAMAGE.
                     $('#updatelist').append(
                         '<tr><td colspan=3>{{ lang._('Check for updates to view changelog history.') }}</td></tr>'
                     );
+                }
+
+                if (changelog_count > changelog_display) {
+                    $('#updatelist').append(
+                        '<tr class= "changelog-full"><td colspan=3><a id="changelog-act" href="#">{{ lang._('Click to view full changelog history.') }}</a></td></tr>'
+                    );
+                    $("#changelog-act").click(function(event) {
+                        event.preventDefault();
+                        $(".changelog-hidden").attr('style', '');
+                        $(".changelog-full").attr('style', 'display: none;');
+                        $.changelog_keep_full = 1;
+                    });
                 }
             }
 
