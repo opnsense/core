@@ -1477,6 +1477,10 @@ function system_kernel_configure($verbose = false)
         'pfsync',
     );
 
+    /* we now have /dev/pf, time to fix permissions for proxies */
+    chgrp('/dev/pf', 'proxy');
+    chmod('/dev/pf', 0660);
+
     if (!empty($config['system']['crypto_hardware'])) {
         log_error(sprintf('Loading %s cryptographic accelerator module.', $config['system']['crypto_hardware']));
         $mods[] = $config['system']['crypto_hardware'];
