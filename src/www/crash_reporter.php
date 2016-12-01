@@ -63,19 +63,18 @@ include('head.inc');
 
 $last_version = '/usr/local/opnsense/version/opnsense.last';
 $crash_report_header = sprintf(
-    "%s\n%s %s%s %s (%s)\nUUID %s\nTime %s\n",
+    "%s\n%s %s%s %s (%s)\nTime %s\n",
     php_uname('v'),
     $g['product_name'],
     trim(file_get_contents('/usr/local/opnsense/version/opnsense')),
     file_exists($last_version) ? sprintf(' [%s]', trim(file_get_contents($last_version))) : '',
     trim(shell_exec('/usr/local/bin/openssl version')),
     trim(shell_exec('uname -p')),
-    shell_exec('/sbin/sysctl -b kern.hostuuid'),
     date('r')
 );
 
 if (isset($_SERVER['HTTP_USER_AGENT'])) {
-    $crash_report_header .= "User Agent {$_SERVER['HTTP_USER_AGENT']}\n";
+    $crash_report_header = "User-Agent {$_SERVER['HTTP_USER_AGENT']}\n{$crash_report_header}";
 }
 
 $pkgver = explode('-', trim(file_get_contents('/usr/local/opnsense/version/opnsense')));
