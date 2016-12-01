@@ -22,6 +22,8 @@ echo "Mounting filesystems..."
 # tunefs may refuse otherwise
 mount -fr /
 
+GROWFS_MARKER=/.probe.for.growfs.nano
+
 while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 	# only tune our own file systems
 	if [ "${FS_TYPE}" != "ufs" ]; then
@@ -40,6 +42,11 @@ while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 	FS_DEV=$(echo ${FS_PART} | awk 'match($0, /^\/dev\/(gpt|ufs)\/.+$/) { print substr( $0, RSTART + 5, RLENGTH - 5 )}')
 	if [ -n "${FS_DEV}" ]; then
 		FS_DEV=$(glabel status -as | grep ${FS_DEV} | awk 'match($3, /^[a-z]+[0-9]+/) { print substr( $3, RSTART, RLENGTH )}')
+		if [ "${FS_MNT}" = "/" -a -f ${GROWFS_MARKER} ]; then
+			# hammertime!
+			gpart resize -i 1 ${FS_DEV}
+			growfs -y ${FS_MNT}
+		fi
 	fi
 	if [ -z "${FS_DEV}" ]; then
 		FS_DEV=$(echo ${FS_PART} | awk 'match($0, /^\/dev\/[a-z]+[0-9]+/) { print substr( $0, RSTART + 5, RLENGTH - 5 )}')
@@ -80,6 +87,17 @@ else
 		mkdir -p /tmp/.cdrom/${i}
 		mount_unionfs /tmp/.cdrom/${i} /${i}
 	done
+fi
+
+if [ -f ${GROWFS_MARKER} ]; then
+	# clean up the growfs marker to not trigger it anymore
+	rm ${GROWFS_MARKER}
+
+	# while here, why not unbreak the next boot...
+	FS_DEV=$(glabel status -as | grep ufs/OPNsense | awk '{ print $3 }')
+	if [ -n "${FS_DEV}" ]; then
+		echo "/dev/${FS_DEV} / ufs rw,async,noatime 1 1" > /etc/fstab
+	fi
 fi
 
 # regenerate groups and users for base
