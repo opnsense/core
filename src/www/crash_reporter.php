@@ -74,7 +74,7 @@ $crash_report_header = sprintf(
 );
 
 if (isset($_SERVER['HTTP_USER_AGENT'])) {
-    $crash_report_header = "User Agent {$_SERVER['HTTP_USER_AGENT']}\n{$crash_reporter_header}";
+    $crash_report_header = "User-Agent {$_SERVER['HTTP_USER_AGENT']}\n{$crash_report_header}";
 }
 
 $pkgver = explode('-', trim(file_get_contents('/usr/local/opnsense/version/opnsense')));
