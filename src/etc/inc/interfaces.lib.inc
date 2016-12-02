@@ -207,66 +207,68 @@ function legacy_interfaces_details($intf=null)
     } else {
         $tmp_intf = "";
     }
-    $process = proc_open('/sbin/ifconfig -m ' . $tmp_intf , array(array("pipe", "r"), array("pipe", "w")), $pipes);
-    if (is_resource($process)) {
-        $current_interface = null;
-        $ifconfig_data = stream_get_contents($pipes[1]);
-        foreach (explode("\n", $ifconfig_data) as $line) {
-            $line_parts = explode(' ', $line);
-            if (strpos(trim($line), 'flags=') !== false) {
-                $current_interface = explode(':', $line)[0];
-                $result[$current_interface] = array();
-                $result[$current_interface]["capabilities"] = array();
-                $result[$current_interface]["options"] = array();
-                $result[$current_interface]["macaddr"] = "00:00:00:00:00:00";
-                $result[$current_interface]["ipv4"] = array();
-                $result[$current_interface]["ipv6"] = array();
-            } elseif (empty($current_interface)) {
-                // skip parsing, no interface found (yet)
-                continue;
-            } elseif (strpos(trim($line), 'capabilities=') !== false) {
-                // parse capabilities
-                $capabilities = substr($line, strpos($line, '<') + 1, -1);
-                foreach (explode(',', $capabilities) as $capability) {
-                    $result[$current_interface]["capabilities"][] = strtolower(trim($capability));
-                }
-            } elseif (strpos(trim($line), 'options=') !== false) {
-                // parse options
-                $capabilities = substr($line, strpos($line, '<') + 1, -1);
-                foreach (explode(',', $capabilities) as $capability) {
-                    $result[$current_interface]["options"][] = strtolower(trim($capability));
-                }
-            } elseif (strpos($line, "\tether ") !== false) {
-                // mac address
-                $result[$current_interface]["macaddr"] = $line_parts[1];
-            } elseif (strpos($line, "\tinet ") !== false) {
-                // IPv4 information
-                $mask = substr_count(base_convert(hexdec($line_parts[3]), 10, 2), '1');
-                $result[$current_interface]["ipv4"][] = array("ipaddr" => $line_parts[1], "subnetbits" => $mask);
-            } elseif (strpos($line, "\tinet6 ") !== false) {
-                // IPv6 information
-                $addr = strtok($line_parts[1], '%');
-                unset($mask);
-                for ($i = 0; $i < count($line_parts) - 1; ++$i) {
-                  if ($line_parts[$i] == 'prefixlen') {
-                      $mask = intval($line_parts[$i + 1]);
-                  }
-                }
-                if (isset($mask)) {
-                    $is_link_local = strpos($addr, 'fe80:') === 0;
-                    $result[$current_interface]["ipv6"][] = array('ipaddr' => $addr, 'subnetbits' => $mask,
-                                                                  'link-local' => $is_link_local);
-                    // sort link local to bottom, leave rest of sorting as-is (primary address on top)
-                    usort($result[$current_interface]["ipv6"], function($a, $b) {
-                        return $a['link-local'] - $b['link-local'];
-                    });
-                }
-            }
-
-        }
-        fclose($pipes[1]);
-        proc_close($process);
+    $cmd = '/sbin/ifconfig -m ' . $tmp_intf;
+    exec($cmd . ' 2>&1', $ifconfig_data, $ret);
+    if ($ret) {
+        log_error('The command `' . $cmd . '\' failed to execute ' . implode(' ', $ifconfig_data) );
+        return array();
     }
+
+    $current_interface = null;
+    foreach ($ifconfig_data as $line) {
+        $line_parts = explode(' ', $line);
+        if (strpos(trim($line), 'flags=') !== false) {
+            $current_interface = explode(':', $line)[0];
+            $result[$current_interface] = array();
+            $result[$current_interface]["capabilities"] = array();
+            $result[$current_interface]["options"] = array();
+            $result[$current_interface]["macaddr"] = "00:00:00:00:00:00";
+            $result[$current_interface]["ipv4"] = array();
+            $result[$current_interface]["ipv6"] = array();
+        } elseif (empty($current_interface)) {
+            // skip parsing, no interface found (yet)
+            continue;
+        } elseif (strpos(trim($line), 'capabilities=') !== false) {
+            // parse capabilities
+            $capabilities = substr($line, strpos($line, '<') + 1, -1);
+            foreach (explode(',', $capabilities) as $capability) {
+                $result[$current_interface]["capabilities"][] = strtolower(trim($capability));
+            }
+        } elseif (strpos(trim($line), 'options=') !== false) {
+            // parse options
+            $capabilities = substr($line, strpos($line, '<') + 1, -1);
+            foreach (explode(',', $capabilities) as $capability) {
+                $result[$current_interface]["options"][] = strtolower(trim($capability));
+            }
+        } elseif (strpos($line, "\tether ") !== false) {
+            // mac address
+            $result[$current_interface]["macaddr"] = $line_parts[1];
+        } elseif (strpos($line, "\tinet ") !== false) {
+            // IPv4 information
+            $mask = substr_count(base_convert(hexdec($line_parts[3]), 10, 2), '1');
+            $result[$current_interface]["ipv4"][] = array("ipaddr" => $line_parts[1], "subnetbits" => $mask);
+        } elseif (strpos($line, "\tinet6 ") !== false) {
+            // IPv6 information
+            $addr = strtok($line_parts[1], '%');
+            unset($mask);
+            for ($i = 0; $i < count($line_parts) - 1; ++$i) {
+              if ($line_parts[$i] == 'prefixlen') {
+                  $mask = intval($line_parts[$i + 1]);
+              }
+            }
+            if (isset($mask)) {
+                $is_link_local = strpos($addr, 'fe80:') === 0;
+                $result[$current_interface]["ipv6"][] = array('ipaddr' => $addr, 'subnetbits' => $mask,
+                                                              'link-local' => $is_link_local);
+                // sort link local to bottom, leave rest of sorting as-is (primary address on top)
+                usort($result[$current_interface]["ipv6"], function($a, $b) {
+                    return $a['link-local'] - $b['link-local'];
+                });
+            }
+        }
+
+    }
+
     return $result;
 }
 
