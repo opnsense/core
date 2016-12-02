@@ -402,7 +402,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext('On Battery Normal Mode') ?></td>
+                <td><a id="help_for_powerd_normal_mode" href="#" class="showhelp"><i class="fa fa-info-circle text-circle"></i></a>  <?=gettext('On Normal Power Mode'); ?></td>
                 <td>
                   <select name="powerd_normal_mode" class="selectpicker" data-style="btn-default" data-width="auto">
                     <option value="hadp"<?=$pconfig['powerd_normal_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
