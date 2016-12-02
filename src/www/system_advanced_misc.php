@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['cryptodev_enable'] = isset($config['system']['cryptodev_enable']);
     $pconfig['thermal_hardware'] = !empty($config['system']['thermal_hardware']) ? $config['system']['thermal_hardware'] : null;
     /* if the old use_mfs_tmpvar is found, set these flags, too */
-    $pconfig['use_mfs_var'] = isset($config['system']['use_mfs_tmpvar']) || isset($config['system']['use_mfs_var']);
+    $pconfig['use_mfs_var'] = isset($config['system']['use_mfs_tmpvar']) || isset($config['system']['use_mfs_var']);
     $pconfig['use_mfs_tmp'] = isset($config['system']['use_mfs_tmpvar']) || isset($config['system']['use_mfs_tmp']);
     $pconfig['powerd_ac_mode'] = "hadp";
     $pconfig['rrdbackup'] = !empty($config['system']['rrdbackup']) ? $config['system']['rrdbackup'] : null;
