@@ -77,6 +77,9 @@ while [ ${attempts} -lt 3 ]; do
 	attempts=$((attempts+1))
 done
 
+# clear growfs marker now that we are read/write
+rm -f ${GROWFS_MARKER}
+
 # see if / is writable (aka. non-LiveCD boot)
 if _tmpdir=$(mktemp -d -q /.diskless.XXXXXX); then
 	# only remove the directory
@@ -87,17 +90,6 @@ else
 		mkdir -p /tmp/.cdrom/${i}
 		mount_unionfs /tmp/.cdrom/${i} /${i}
 	done
-fi
-
-if [ -f ${GROWFS_MARKER} ]; then
-	# clean up the growfs marker to not trigger it anymore
-	rm ${GROWFS_MARKER}
-
-	# while here, why not unbreak the next boot...
-	FS_DEV=$(glabel status -as | grep ufs/OPNsense | awk '{ print $3 }')
-	if [ -n "${FS_DEV}" ]; then
-		echo "/dev/${FS_DEV} / ufs rw,async,noatime 1 1" > /etc/fstab
-	fi
 fi
 
 # regenerate groups and users for base
