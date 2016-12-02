@@ -81,16 +81,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['thermal_hardware'] = !empty($config['system']['thermal_hardware']) ? $config['system']['thermal_hardware'] : null;
     $pconfig['use_mfs_tmpvar'] = isset($config['system']['use_mfs_tmpvar']);
     $pconfig['use_mfs_tmp'] = isset($config['system']['use_mfs_tmp']);
-    $pconfig['powerd_ac_mode'] = "hadp";
     $pconfig['rrdbackup'] = !empty($config['system']['rrdbackup']) ? $config['system']['rrdbackup'] : null;
     $pconfig['dhcpbackup'] = !empty($config['system']['dhcpbackup']) ? $config['system']['dhcpbackup'] : null;
     $pconfig['netflowbackup'] = !empty($config['system']['netflowbackup']) ? $config['system']['netflowbackup'] : null;
+    $pconfig['powerd_ac_mode'] = "hadp";
     if (!empty($config['system']['powerd_ac_mode'])) {
         $pconfig['powerd_ac_mode'] = $config['system']['powerd_ac_mode'];
     }
     $pconfig['powerd_battery_mode'] = "hadp";
     if (!empty($config['system']['powerd_battery_mode'])) {
         $pconfig['powerd_battery_mode'] = $config['system']['powerd_battery_mode'];
+    }
+    $pconfig['powerd_normal_mode'] = "hadp";
+    if (!empty($config['system']['powerd_normal_mode'])) {
+        $pconfig['powerd_normal_mode'] = $config['system']['powerd_normal_mode'];
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //
@@ -114,6 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $config['system']['powerd_ac_mode'] = $pconfig['powerd_ac_mode'];
         $config['system']['powerd_battery_mode'] = $pconfig['powerd_battery_mode'];
+        $config['system']['powerd_normal_mode'] = $pconfig['powerd_normal_mode'];
 
         if ($pconfig['crypto_hardware']) {
             $config['system']['crypto_hardware'] = $pconfig['crypto_hardware'];
@@ -388,6 +393,28 @@ include("head.inc");
                       <?=gettext("Maximum");?>
                     </option>
                   </select>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_powerd_normal_mode" href="#" class="showhelp"><i class="fa fa-info-circle text-circle"></i></a>  <?=gettext('On Normal Power Mode'); ?></td>
+                <td>
+                  <select name="powerd_normal_mode" class="selectpicker" data-style="btn-default" data-width="auto">
+                    <option value="hadp"<?=$pconfig['powerd_normal_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Hiadaptive");?>
+                    </option>
+                    <option value="adp" <?=$pconfig['powerd_normal_mode']=="adp" ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Adaptive");?>
+                    </option>
+                    <option value="min" <?=$pconfig['powerd_normal_mode']=="min" ? "selected=\"selected\"" :"";?>>
+                      <?=gettext("Minimum");?>
+                    </option>
+                    <option value="max" <?=$pconfig['powerd_normal_mode']=="max" ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Maximum");?>
+                    </option>
+                  </select>
+                  <div class="hidden" for="help_for_powerd_normal_mode">
+                    <?=gettext("If the powerd utility can not determine the power state it uses \"normal\" for control."); ?>
+                  </div>
                 </td>
               </tr>
               <tr>
