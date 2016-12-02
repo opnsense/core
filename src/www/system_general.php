@@ -401,12 +401,15 @@ include("head.inc");
                           </option>
 <?php
                           foreach(return_gateways_array() as $gwname => $gwitem):
-                            if(is_ipaddrv4(lookup_gateway_ip_by_name($pconfig[$dnsgw])) && is_ipaddrv6($gwitem['gateway'])) {
-                              continue;
-                            }
-                            if(is_ipaddrv6(lookup_gateway_ip_by_name($pconfig[$dnsgw])) && is_ipaddrv4($gwitem['gateway'])) {
-                              continue;
+                            if ($pconfig[$dnsgw] != "none") {
+                              if (is_ipaddrv4(lookup_gateway_ip_by_name($pconfig[$dnsgw])) && is_ipaddrv6($gwitem['gateway'])) {
+                                continue;
+                              }
+                              if (is_ipaddrv6(lookup_gateway_ip_by_name($pconfig[$dnsgw])) && is_ipaddrv4($gwitem['gateway'])) {
+                                continue;
+                              }
                             }?>
+
                             <option value="<?=$gwname;?>" <?=$pconfig[$dnsgw] == $gwname ? 'selected="selected"' : '' ?>>
                               <?=$gwname;?> - <?=$gwitem['friendlyiface'];?> - <?=$gwitem['gateway'];?>
                             </option>
