@@ -400,10 +400,10 @@ include("head.inc");
                 <th colspan="2" valign="top" class="listtopic"><?=gettext("RAM Disk Settings (Reboot to Apply Changes)"); ?></th>
               </tr>
               <tr>
-                <td><a id="help_for_use_mfs_var" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/tmp and /var RAM disks'); ?></td>
+                <td><a id="help_for_use_mfs_var" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/var RAM disk'); ?></td>
                 <td>
                   <input name="use_mfs_var" type="checkbox" id="use_mfs_var" value="yes" <?=!empty($pconfig['use_mfs_var']) ? 'checked="checked"' : '';?>/>
-                  <strong><?=gettext("Use memory file system for /tmp and /var"); ?></strong>
+                  <strong><?=gettext("Use memory file system for /var"); ?></strong>
                   <div class="hidden" for="help_for_use_mfs_var">
                     <?=gettext("Set this if you wish to use /var as a RAM disk (memory file system disks) " .
                       "rather than using the hard disk. Setting this will cause the data /var to be lost on reboot, including log data."); ?>
