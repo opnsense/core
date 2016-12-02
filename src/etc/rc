@@ -158,10 +158,9 @@ remove_mfs_link()
 	fi
 }
 
-# USE_MFS_TMP also catches and overrides USE_MFS_VAR (pre-16.7 compat)
-# At some point we want to flip use_mfs_tmpvar to use_mfs_var instead.
-USE_MFS_VAR=`/usr/bin/grep -c use_mfs_tmpvar /conf/config.xml`
-USE_MFS_TMP=`/usr/bin/grep -c use_mfs_tmp /conf/config.xml`
+# pre-17.1 compat: use_mfs_tmpvar matches both patterns
+USE_MFS_VAR=`/usr/bin/grep -c 'use_mfs_.*var' /conf/config.xml`
+USE_MFS_TMP=`/usr/bin/grep -c 'use_mfs_tmp' /conf/config.xml`
 
 if [ ${USE_MFS_TMP} -ne 0 ]; then
 	mount -t tmpfs -o mode=01777 tmpfs /tmp
