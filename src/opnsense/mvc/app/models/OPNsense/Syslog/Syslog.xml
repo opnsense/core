@@ -108,8 +108,8 @@
             </BindAddress>
             <Servers type="CSVListField">
                 <Required>N</Required>
-                <mask>/^[a-zA-Z0-9\-\.:,_ ]*/</mask>
-                <ValidationMessage>Please enter valid targets (e.g. 192.168.0.100:514).</ValidationMessage>
+                <mask>/^((\[[:\da-f]+\](:\d+)?)|([a-z0-9-.]+(:\d+)?))(,((\[[:\da-f]+\](:\d+)?)|([a-z0-9-.]+(:\d+)?)))*$/i</mask>
+                <ValidationMessage>Please enter valid targets (e.g. 192.168.0.100:514 or [::1]:1514 or host.name.dom:514). If port is not specified, default 514 value used.</ValidationMessage>
             </Servers>
             <LogAll type="BooleanField">
             </LogAll>
