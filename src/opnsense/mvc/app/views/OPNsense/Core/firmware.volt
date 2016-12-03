@@ -312,7 +312,7 @@ POSSIBILITY OF SUCH DAMAGE.
             "<th>{{ lang._('Comment') }}</th><th></th></tr>");
 
             var local_count = 0;
-            var remote_count = 0;
+            var plugin_count = 0;
             var changelog_count = 0;
             var changelog_max = 12;
             if ($.changelog_keep_full != undefined) {
@@ -320,9 +320,6 @@ POSSIBILITY OF SUCH DAMAGE.
             }
 
             $.each(data['package'], function(index, row) {
-                if (row['provided'] == "1") {
-                    remote_count += 1;
-                }
                 if (row['installed'] == "1") {
                     local_count += 1;
                 } else {
@@ -360,6 +357,9 @@ POSSIBILITY OF SUCH DAMAGE.
             }
 
             $.each(data['plugin'], function(index, row) {
+                if (row['provided'] == "1") {
+                    plugin_count += 1;
+                }
                 orphaned_text = '';
                 if (row['provided'] == "0") {
                     orphaned_text = ' ({{ lang._('orphaned') }})';
@@ -382,7 +382,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 );
             });
 
-            if (remote_count == 0) {
+            if (plugin_count == 0) {
                 $('#pluginlist').append(
                     '<tr><td colspan=5>{{ lang._('Check for updates to view available plugins.') }}</td></tr>'
                 );
