@@ -100,14 +100,8 @@ system_sysctl_configure(true);
 system_timezone_configure(true);
 system_firmware_configure(true);
 system_hostname_configure(true);
-
-/* make hosts file */
-system_hosts_generate();
-
-/* configure loopback interface */
-interfaces_loopback_configure();
-
-/* start syslogd */
+system_hosts_generate(true);
+interfaces_loopback_configure(true);
 system_syslogd_start(true);
 
 /* set up interfaces */

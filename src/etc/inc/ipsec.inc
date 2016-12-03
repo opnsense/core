@@ -1282,7 +1282,7 @@ EOD;
     }
 
     if (file_exists("/var/run/booting")) {
-        echo "done\n";
+        echo "done.\n";
     }
 
     return count($filterdns_list);
