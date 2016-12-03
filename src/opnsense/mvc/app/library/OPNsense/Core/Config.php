@@ -70,12 +70,12 @@ class Config extends Singleton
 
     /**
      * check if array is a sequential type.
-     * @param $arrayData array structure to check
+     * @param &array $arrayData array structure to check
      * @return bool
      */
-    private function isArraySequential($arrayData)
+    private function isArraySequential(&$arrayData)
     {
-        foreach ($arrayData as $key => $value) {
+        foreach ($arrayData as $key => &$value) {
             if (!ctype_digit(strval($key))) {
                 return false;
             }
