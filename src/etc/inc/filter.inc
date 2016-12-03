@@ -397,6 +397,7 @@ function filter_configure_sync($verbose = false)
     /* generate aliases */
     update_filter_reload_status(gettext("Creating aliases"));
     $aliases = filter_generate_aliases($FilterIflist, $after_filter_configure_run);
+    $aliases .= filter_generate_network_aliases();
     $gateways = filter_generate_gateways();
 
     if ($verbose) {
@@ -854,6 +855,35 @@ function filter_generate_aliases(&$FilterIflist, &$after_filter_configure_run)
     }
 
     return $aliases;
+}
+
+/**
+ * generate aliases for internal networks, so eventually we don't need logic in the rule parsing to bind the
+ * existing network/ip options.
+ */
+function filter_generate_network_aliases()
+{
+    global $config;
+    $result = "### define internal aliases\n";
+    $interface_config = legacy_interfaces_details();
+    foreach (legacy_config_get_interfaces(array("enable" => true)) as $if => $ifdetail) {
+        $networks = array();
+        $addresses = array();
+        if (!empty($ifdetail['if']) && !empty($interface_config[$ifdetail['if']])) {
+            $properties = $interface_config[$ifdetail['if']];
+            if (!empty($properties['ipv4'])) {
+                $networks[] = gen_subnet($properties['ipv4'][0]['ipaddr'], $properties['ipv4'][0]['subnetbits']);
+                $addresses[] = $properties['ipv4'][0]['ipaddr'];
+            }
+            if (!empty($properties['ipv6']) && empty($properties['ipv6'][0]['link-local'])) {
+                $networks[] = gen_subnetv6($properties['ipv6'][0]['ipaddr'], $properties['ipv6'][0]['subnetbits']);
+                $addresses[] = $properties['ipv6'][0]['ipaddr'];
+            }
+        }
+        $result .= "table <internal-{$if}> { " . implode(' ', $networks) . " } \n";
+        $result .= "table <internal-{$if}ip> { " . implode(' ', $addresses) . " } \n";
+    }
+    return $result;
 }
 
 function filter_generate_gateways()
