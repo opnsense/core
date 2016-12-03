@@ -1415,7 +1415,7 @@ function services_dhcrelay_configure($verbose = false)
     }
 
     if ($verbose) {
-        echo "done\n";
+        echo "done.\n";
     }
 }
 
@@ -1529,7 +1529,7 @@ function services_dhcrelay6_configure($verbose = false)
     }
 
     if ($verbose) {
-        echo "done\n";
+        echo "done.\n";
     }
 }
 

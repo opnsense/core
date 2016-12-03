@@ -184,20 +184,19 @@ function interface_netgraph_needed($interface)
     return false;
 }
 
-function interfaces_loopback_configure()
+function interfaces_loopback_configure($verbose = false)
 {
-    if (file_exists("/var/run/booting")) {
-        echo gettext("Configuring loopback interface...");
+    if ($verbose) {
+        echo 'Configuring loopback interface...';
+        flush();
     }
 
     legacy_interface_setaddress('lo0', '127.0.0.1');
     interfaces_bring_up("lo0");
 
-    if (file_exists("/var/run/booting")) {
-        echo gettext("done.") . "\n";
+    if ($verbose) {
+        echo "done.\n";
     }
-
-    return 0;
 }
 
 function interfaces_vlan_configure($realif = '')

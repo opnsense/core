@@ -344,9 +344,14 @@ function get_nameservers()
     return $master_list;
 }
 
-function system_hosts_generate()
+function system_hosts_generate($verbose = false)
 {
     global $config;
+
+    if ($verbose) {
+        echo 'Generating /etc/hosts...';
+        flush();
+    }
 
     $syscfg = $config['system'];
 
@@ -374,6 +379,10 @@ function system_hosts_generate()
 
     dnsmasq_hosts_generate();
     unbound_hosts_generate();
+
+    if ($verbose) {
+        echo "done.\n";
+    }
 }
 
 function system_hostname_configure($verbose = false)
@@ -1764,8 +1773,7 @@ function system_login_configure($verbose = false)
     fclose($fd);
 
     if ($verbose) {
-        echo "done\n";
-        flush();
+        echo "done.\n";
     }
 
     /* force init(8) to reload /etc/ttys */
