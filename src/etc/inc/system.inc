@@ -1683,7 +1683,7 @@ function system_login_configure($verbose = false)
     $output_enabled = count($console_selection) != 1 || !in_array('nullconsole', $console_selection);
     $virtual_enabled = !count($console_selection) || in_array('vidconsole', $console_selection) ||
         in_array('efi', $console_selection);
-    $serial_enabled = in_array('comconsole', $console_selection) || isset($config['system']['enableserial']);
+    $serial_enabled = in_array('comconsole', $console_selection);
 
     if (count($console_selection)) {
         $new_boot_config['console'] = '"' . implode(',', $console_selection) . '"';
