@@ -177,5 +177,4 @@ class Routing
     {
         return $this->router;
     }
-
 }

@@ -428,4 +428,3 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
         echo "done.\n";
     }
 }
-
