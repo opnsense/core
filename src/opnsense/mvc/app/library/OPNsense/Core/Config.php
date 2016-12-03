@@ -102,7 +102,7 @@ class Config extends Singleton
 
         // copy attributes to @attribute key item
         foreach ($node->attributes() as $AttrKey => $AttrValue) {
-            if (!array_key_exists('@attributes', $result)) {
+            if (!isset($result['@attributes'])) {
                 $result['@attributes'] = array();
             }
             $result['@attributes'][$AttrKey] = $AttrValue->__toString();
@@ -112,7 +112,7 @@ class Config extends Singleton
             $xmlNodeName = $xmlNode->getName();
             if ($xmlNode->count() > 0) {
                 $tmpNode = $this->toArray($forceList, $xmlNode);
-                if (array_key_exists($xmlNodeName, $result)) {
+                if (isset($result[$xmlNodeName])) {
                     $old_content = $result[$xmlNodeName];
                     // check if array content is associative, move items to new list
                     // (handles first item of specific type)
@@ -121,7 +121,7 @@ class Config extends Singleton
                         $result[$xmlNodeName][] = $old_content;
                     }
                     $result[$xmlNodeName][] = $tmpNode;
-                } elseif (is_array($forceList) && array_key_exists($xmlNodeName, $forceList)) {
+                } elseif (isset($forceList[$xmlNodeName])) {
                     // force tag in an array
                     $result[$xmlNodeName] = array();
                     $result[$xmlNodeName][] = $tmpNode;
@@ -129,7 +129,7 @@ class Config extends Singleton
                     $result[$xmlNodeName] = $tmpNode;
                 }
             } else {
-                if (array_key_exists($xmlNodeName, $result)) {
+                if (isset($result[$xmlNodeName])) {
                     // repeating item
                     if (!is_array($result[$xmlNodeName])) {
                         // move first item into list
@@ -140,7 +140,7 @@ class Config extends Singleton
                     $result[$xmlNodeName][] = $xmlNode->__toString();
                 } else {
                     // single content item
-                    if (is_array($forceList) && array_key_exists($xmlNodeName, $forceList)) {
+                    if (isset($forceList[$xmlNodeName])) {
                         $result[$xmlNodeName] = array();
                         if ($xmlNode->__toString() != null && trim($xmlNode->__toString()) !== "") {
                             $result[$xmlNodeName][] = $xmlNode->__toString();
