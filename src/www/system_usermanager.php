@@ -666,16 +666,29 @@ $( document ).ready(function() {
                     <td>
                       <table class="table table-hover table-condensed">
                         <tr>
-                          <td><b><?=gettext("Inherited From");?></b></td>
+                          <td><b><?=gettext("Inherited from");?></b></td>
+                          <td><b><?=gettext("Type");?></b></td>
                           <td><b><?=gettext("Name");?></b></td>
-                          <td><b><?=gettext("Description");?></b></td>
                         </tr>
 <?php
                         foreach (get_user_privdesc($a_user[$id]) as $priv) :?>
                         <tr>
-                            <td><?=!empty($priv['group']) ? $priv['group'] : ""?></td>
-                            <td><?=$priv['name']?></td>
-                            <td><?=!empty($priv['descr']) ? $priv['descr'] : ""?></td>
+                          <td><?=!empty($priv['group']) ? $priv['group'] : ''?></td>
+                          <td>
+<?php
+                             switch (substr($priv['id'], 0, 5)) {
+                                 case 'page-':
+                                     echo gettext('GUI');
+                                     break;
+                                 case 'user-':
+                                     echo gettext('User');
+                                     break;
+                                 default:
+                                     echo gettext('N/A');
+                                     break;
+                             } ?>
+                          </td>
+                          <td><?=$priv['name']?></td>
                         </tr>
 <?php
                         endforeach;?>
