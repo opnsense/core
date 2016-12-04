@@ -1,6 +1,7 @@
 {#
 
-OPNsense® is Copyright © 2014 – 2015 by Deciso B.V.
+Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
+Copyright (c) 2015–2016 Deciso B.V.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -29,14 +30,23 @@ POSSIBILITY OF SUCH DAMAGE.
 <script type="text/javascript">
 
     /**
+     * prepare for checking update status
+     */
+    function updateStatusPrepare(rerun) {
+        if ($rerun = false) {
+            $('#update_status').hide();
+            $('#updatelist').show();
+        }
+        $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
+        $('#updatestatus').html("{{ lang._('Checking... (may take up to 30 seconds)') }}");
+    }
+
+    /**
      * retrieve update status from backend
      */
     function updateStatus() {
         // update UI
-        $('#updatelist').empty();
-        $('#updatetab > a').tab('show');
-        $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
-        $('#updatestatus').html("{{ lang._('Checking... (may take up to 30 seconds)') }}");
+        updateStatusPrepare(false);
 
         // request status
         ajaxGet('/api/core/firmware/status',{},function(data,status){
@@ -48,44 +58,61 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (data['status_upgrade_action'] != 'pkg') {
                     $.upgrade_needs_reboot = data['upgrade_needs_reboot'];
                 } else {
-                    $.upgrade_needs_reboot = 0 ;
+                    $.upgrade_needs_reboot = 0;
                 }
+
+                $.upgrade_show_log = '';
 
                 // unhide upgrade button
                 $("#upgrade").attr("style","");
+                $("#audit").attr("style","display:none");
 
                 // show upgrade list
+                $('#update_status').hide();
+                $('#updatelist').show();
+                $('#updatelist').empty();
+                $('#updatetab > a').tab('show');
                 $("#updatelist").html("<tr><th>{{ lang._('Package Name') }}</th>" +
-                "<th>{{ lang._('Current Version') }}</th><th>{{ lang._('New Version') }}</th></tr>");
-                $.each(['new_packages', 'upgrade_packages', 'reinstall_packages'], function(type_idx,type_name){
-                    if ( data[type_name] != undefined ) {
-                        $.each(data[type_name],function(index,row){
-                            if (type_name == "new_packages") {
-                                $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
-                                "<td><strong>{{ lang._('NEW') }}</strong></td><td>"+row['version']+"</td></tr>");
-                            } else if (type_name == "reinstall_packages") {
-                                $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
-                                "<td>"+row['version']+"</td><td><strong>{{ lang._('REINSTALL') }}</strong></td></tr>");
-                            } else {
-                                $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
-                                '<td>'+row['current_version']+'</td><td>'+row['new_version']+'</td></tr>');
-                            }
-                        });
+                "<th>{{ lang._('Current Version') }}</th><th>{{ lang._('New Version') }}</th>" +
+                "<th>{{ lang._('Required Action') }}</th></tr>");
+                $.each(data['all_packages'], function (index, row) {
+                    $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
+                    '<td>'+row['old']+'</td><td>'+row['new']+'</td><td>' +
+                    row['reason'] + '</td></tr>');
+
+                    if (row['name'] == data['product_name']) {
+                        $.upgrade_show_log = data['product_version'].replace(/[_-].*/, '');
                     }
                 });
-            }
 
-            // update list so plugins sync as well
-            packagesInfo();
+                // display the current changelog if one was found
+                if ($.upgrade_show_log != '') {
+                    changelog($.upgrade_show_log);
+                }
+
+                // update list so plugins sync as well (no logs)
+                packagesInfo(false);
+            } else {
+                $('#update_status').hide();
+                $('#updatelist').show();
+                $("#upgrade").attr("style","display:none");
+                $("#audit").attr("style","");
+
+                // update list so plugins sync as well (all)
+                packagesInfo(true);
+            }
         });
     }
 
     /**
      * perform upgrade, install poller to update status
      */
-    function upgrade(){
-        $('#progresstab > a').tab('show');
+    function upgrade() {
+        $('#updatelist').hide();
+        $('#update_status').show();
+        $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Upgrading...') }}");
+        $("#audit").attr("style","display:none");
         $("#upgrade").attr("style","");
         $("#upgrade_progress").addClass("fa fa-spinner fa-pulse");
 
@@ -96,12 +123,80 @@ POSSIBILITY OF SUCH DAMAGE.
     }
 
     /**
+     * perform audit, install poller to update status
+     */
+    function audit() {
+        $.upgrade_action = 'audit';
+        $('#updatelist').hide();
+        $('#update_status').show();
+        $('#updatetab > a').tab('show');
+        $('#updatestatus').html("{{ lang._('Auditing...') }}");
+        $("#audit").attr("style","");
+        $("#audit_progress").addClass("fa fa-spinner fa-pulse");
+
+        ajaxCall('/api/core/firmware/audit', {}, function () {
+            $('#updatelist').empty();
+            setTimeout(trackStatus, 500);
+        });
+    }
+
+    /**
+     * read license from backend
+     */
+    function license(package)
+    {
+        ajaxCall('/api/core/firmware/license/' + package, {}, function (data, status) {
+            var license = "{{ lang._('Sorry, the package does not have an associated license file.') }}";
+            if (data['license'] != undefined) {
+                license = data['license'];
+            }
+            BootstrapDialog.show({
+                type:BootstrapDialog.TYPE_INFO,
+                title: "{{ lang._('License details') }}",
+                message: license,
+                buttons: [{
+                    label: "{{ lang._('Close') }}",
+                    action: function(dialogRef){
+                        dialogRef.close();
+                    }
+                }]
+            });
+        });
+    }
+
+    /**
+     * read changelog from backend
+     */
+    function changelog(version)
+    {
+        ajaxCall('/api/core/firmware/changelog/' + version, {}, function (data, status) {
+            if (data['html'] != undefined) {
+                BootstrapDialog.show({
+                    type:BootstrapDialog.TYPE_PRIMARY,
+                    title: version,
+                    /* we trust this data, it was signed by us and secured by csrf */
+                    message: htmlDecode(data['html']),
+                    buttons: [{
+                        label: "{{ lang._('Close') }}",
+                        action: function(dialogRef){
+                            dialogRef.close();
+                        }
+                    }]
+                });
+            }
+        });
+    }
+
+    /**
      * perform package action, install poller to update status
      */
     function action(pkg_act, pkg_name)
     {
-        $('#progresstab > a').tab('show');
+        $('#updatelist').hide();
+        $('#update_status').show();
+        $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Executing...') }}");
+        $.upgrade_action = 'action';
 
         ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name,{},function() {
             $('#updatelist').empty();
@@ -131,7 +226,6 @@ POSSIBILITY OF SUCH DAMAGE.
                         dialogRef.close();
                     }
                 }]
-
             });
         } else {
             upgrade();
@@ -150,9 +244,9 @@ POSSIBILITY OF SUCH DAMAGE.
     }
 
     /**
-     * handle update status
+     * handle check/audit/upgrade status
      */
-    function trackStatus(){
+    function trackStatus() {
         ajaxGet('/api/core/firmware/upgradestatus',{},function(data, status) {
             if (data['log'] != undefined) {
                 $('#update_status').html(data['log']);
@@ -160,13 +254,23 @@ POSSIBILITY OF SUCH DAMAGE.
             }
             if (data['status'] == 'done') {
                 $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
-                if ($.upgrade_action != 'pkg') {
-                    $('#updatestatus').html("{{ lang._('Upgrade done!') }}");
-                } else {
-                    $('#updatestatus').html("{{ lang._('Package manager update done. Please check for more updates.') }}");
-                }
+                $("#audit_progress").removeClass("fa fa-spinner fa-pulse");
                 $("#upgrade").attr("style","display:none");
-                packagesInfo();
+                $("#audit").attr("style","");
+                if ($.upgrade_action == 'pkg') {
+                    // update UI and delay update to avoid races
+                    updateStatusPrepare(true);
+                    setTimeout(updateStatus, 1000);
+                } else {
+                    if ($.upgrade_action == 'audit') {
+                        $('#updatestatus').html("{{ lang._('Audit done.') }}");
+                    } else if ($.upgrade_action == 'action') {
+                        $('#updatestatus').html("{{ lang._('Done.') }}");
+                    } else {
+                        $('#updatestatus').html("{{ lang._('Upgrade done.') }}");
+                    }
+                    packagesInfo(true);
+                }
             } else if (data['status'] == 'reboot') {
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_INFO,
@@ -194,7 +298,7 @@ POSSIBILITY OF SUCH DAMAGE.
     /**
      * show package info
      */
-    function packagesInfo() {
+    function packagesInfo(changelog_display) {
         ajaxGet('/api/core/firmware/info', {}, function (data, status) {
             $('#packageslist').empty();
             $('#pluginlist').empty();
@@ -202,19 +306,36 @@ POSSIBILITY OF SUCH DAMAGE.
 
             $("#packageslist").html("<tr><th>{{ lang._('Name') }}</th>" +
             "<th>{{ lang._('Version') }}</th><th>{{ lang._('Size') }}</th>" +
-            "<th>{{ lang._('Comment') }}</th><th></th></tr>");
+            "<th>{{ lang._('License') }}</th><th>{{ lang._('Comment') }}</th><th></th></tr>");
             $("#pluginlist").html("<tr><th>{{ lang._('Name') }}</th>" +
             "<th>{{ lang._('Version') }}</th><th>{{ lang._('Size') }}</th>" +
             "<th>{{ lang._('Comment') }}</th><th></th></tr>");
 
-            $.each(data['local'], function(index, row) {
+            var local_count = 0;
+            var plugin_count = 0;
+            var changelog_count = 0;
+            var changelog_max = 12;
+            if ($.changelog_keep_full != undefined) {
+                changelog_max = 9999;
+            }
+
+            $.each(data['package'], function(index, row) {
+                if (row['installed'] == "1") {
+                    local_count += 1;
+                } else {
+                    return 1;
+                }
                 $('#packageslist').append(
                     '<tr>' +
                     '<td>' + row['name'] + '</td>' +
                     '<td>' + row['version'] + '</td>' +
                     '<td>' + row['flatsize'] + '</td>' +
+                    '<td>' + row['license'] + '</td>' +
                     '<td>' + row['comment'] + '</td>' +
                     '<td>' +
+                    '<button class="btn btn-default btn-xs act_license" data-package="' + row['name'] + '" ' +
+                    '  data-toggle="tooltip" title="View ' + row['name'] + ' license">' +
+                    '<span class="fa fa-balance-scale"></span></button> ' +
                     '<button class="btn btn-default btn-xs act_reinstall" data-package="' + row['name'] + '" ' +
                     '  data-toggle="tooltip" title="Reinstall ' + row['name'] + '">' +
                     '<span class="fa fa-recycle"></span></button> ' + (row['locked'] === '1' ?
@@ -227,22 +348,28 @@ POSSIBILITY OF SUCH DAMAGE.
                     ) + '</td>' +
                     '</tr>'
                 );
-                if (!row['name'].match(/^os-/g)) {
-                    return 1;
-                }
-                installed[row['name']] = row;
             });
 
-            $.each(data['remote'], function(index, row) {
-                if (!row['name'].match(/^os-/g)) {
-                    return 1;
+            if (local_count == 0) {
+                $('#packageslist').append(
+                    '<tr><td colspan=5>{{ lang._('No packages were found on your system. Please call for help.') }}</td></tr>'
+                );
+            }
+
+            $.each(data['plugin'], function(index, row) {
+                if (row['provided'] == "1") {
+                    plugin_count += 1;
+                }
+                orphaned_text = '';
+                if (row['provided'] == "0") {
+                    orphaned_text = ' ({{ lang._('orphaned') }})';
                 }
                 $('#pluginlist').append(
-                    '<tr>' + '<td>' + row['name'] + '</td>' +
+                    '<tr>' + '<td>' + row['name'] + orphaned_text + '</td>' +
                     '<td>' + row['version'] + '</td>' +
                     '<td>' + row['flatsize'] + '</td>' +
                     '<td>' + row['comment'] + '</td>' +
-                    '<td>' + (row['name'] in installed ?
+                    '<td>' + (row['installed'] == "1" ?
                         '<button class="btn btn-default btn-xs act_remove" data-package="' + row['name'] + '" '+
                         '  data-toggle="tooltip" title="Remove ' + row['name'] + '">' +
                         '<span class="fa fa-trash">' +
@@ -255,10 +382,54 @@ POSSIBILITY OF SUCH DAMAGE.
                 );
             });
 
-            if (!data['remote'].length) {
+            if (plugin_count == 0) {
                 $('#pluginlist').append(
                     '<tr><td colspan=5>{{ lang._('Check for updates to view available plugins.') }}</td></tr>'
                 );
+            }
+
+            if (changelog_display) {
+                $('#updatelist').empty();
+
+                $("#updatelist").html("<tr><th>{{ lang._('Version') }}</th>" +
+                "<th>{{ lang._('Date') }}</th><th></th></tr>");
+
+                installed_version = data['product_version'].replace(/[_-].*/, '');
+
+                $.each(data['changelog'], function(index, row) {
+                    changelog_count += 1;
+
+                    installed_text = '';
+                    if (installed_version == row['version']) {
+                        installed_text = ' ({{ lang._('installed') }})';
+                    }
+
+                    $('#updatelist').append(
+                        '<tr' + (changelog_count > changelog_max ? ' class="changelog-hidden" style="display: none;" ' : '' ) +
+                        '><td>' + row['version'] + installed_text + '</td><td>' + row['date'] + '</td>' +
+                        '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
+                        'data-toggle="tooltip" title="View ' + row['version'] + '">' +
+                        '<span class="fa fa-book"></span></button></td></tr>'
+                    );
+                });
+
+                if (!data['changelog'].length) {
+                    $('#updatelist').append(
+                        '<tr><td colspan=3>{{ lang._('Check for updates to view changelog history.') }}</td></tr>'
+                    );
+                }
+
+                if (changelog_count > changelog_max) {
+                    $('#updatelist').append(
+                        '<tr class= "changelog-full"><td colspan=3><a id="changelog-act" href="#">{{ lang._('Click to view full changelog history.') }}</a></td></tr>'
+                    );
+                    $("#changelog-act").click(function(event) {
+                        event.preventDefault();
+                        $(".changelog-hidden").attr('style', '');
+                        $(".changelog-full").attr('style', 'display: none;');
+                        $.changelog_keep_full = 1;
+                    });
+                }
             }
 
             // link buttons to actions
@@ -282,6 +453,14 @@ POSSIBILITY OF SUCH DAMAGE.
                 event.preventDefault();
                 action('install', $(this).data('package'));
             });
+            $(".act_changelog").click(function(event) {
+                event.preventDefault();
+                changelog($(this).data('version'));
+            });
+            $(".act_license").click(function(event) {
+                event.preventDefault();
+                license($(this).data('package'));
+            });
             // attach tooltip to generated buttons
             $('[data-toggle="tooltip"]').tooltip();
         });
@@ -291,13 +470,14 @@ POSSIBILITY OF SUCH DAMAGE.
         // link event handlers
         $('#checkupdate').click(updateStatus);
         $('#upgrade').click(upgrade_ui);
+        $('#audit').click(audit);
         // show upgrade message if there
         if ($('#message').html() != '') {
             $('#message').attr('style', '');
         }
 
-        // repopulate package information
-        packagesInfo();
+        // populate package information
+        packagesInfo(true);
 
         ajaxGet('/api/core/firmware/running',{},function(data, status) {
             // if action is already running reattach now...
@@ -305,7 +485,9 @@ POSSIBILITY OF SUCH DAMAGE.
                 upgrade();
             // dashboard link: run check automatically
             } else if (window.location.hash == '#checkupdate') {
-                updateStatus();
+                // update UI and delay update to avoid races
+                updateStatusPrepare(false);
+                setTimeout(updateStatus, 1000);
             }
         });
 
@@ -403,7 +585,16 @@ POSSIBILITY OF SUCH DAMAGE.
             });
         });
 
-
+        // update history on tab state and implement navigation
+        if(window.location.hash != "") {
+            $('a[href="' + window.location.hash + '"]').click()
+        }
+        $('.nav-tabs a').on('shown.bs.tab', function (e) {
+            history.pushState(null, null, e.target.hash);
+        });
+        $(window).on('hashchange', function(e) {
+            $('a[href="' + window.location.hash + '"]').click()
+        });
     });
 </script>
 
@@ -412,6 +603,7 @@ POSSIBILITY OF SUCH DAMAGE.
         <div id="message" style="display:none" class="alert alert-warning" role="alert"><?= @file_get_contents('/usr/local/opnsense/firmware-message') ?></div>
         <div class="alert alert-info" role="alert" style="min-height: 65px;">
             <button class='btn btn-primary pull-right' id="upgrade" style="display:none"><i id="upgrade_progress" class=""></i> {{ lang._('Upgrade now') }}</button>
+            <button class='btn btn-primary pull-right' id="audit"><i id="audit_progress" class=""></i> {{ lang._('Audit now') }}</button>
             <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;"><i id="checkupdate_progress" class=""></i> {{ lang._('Check for updates')}}</button>
             <div style="margin-top: 8px;" id="updatestatus">{{ lang._('Click to check for updates.')}}</div>
         </div>
@@ -419,14 +611,23 @@ POSSIBILITY OF SUCH DAMAGE.
     <div class="row">
         <div class="col-md-12" id="content">
             <ul class="nav nav-tabs" data-tabs="tabs">
-                <li id="settingstab" class="active"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
+                <li id="updatetab" class="active"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
                 <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
                 <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
-                <li id="updatetab"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
-                <li id="progresstab"><a data-toggle="tab" href="#progress">{{ lang._('Progress') }}</a></li>
+                <li id="settingstab"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
             </ul>
             <div class="tab-content content-box tab-content">
-                <div id="settings" class="tab-pane fade in active">
+                <div id="updates" class="tab-pane fade in active">
+                    <textarea name="output" id="update_status" class="form-control" rows="25" wrap="hard" readonly style="max-width:100%; font-family: monospace; display: none;"></textarea>
+                    <table class="table table-striped table-condensed table-responsive" id="updatelist"></table>
+                </div>
+                <div id="packages" class="tab-pane fade in">
+                    <table class="table table-striped table-condensed table-responsive" id="packageslist"></table>
+                </div>
+                <div id="plugins" class="tab-pane fade in">
+                    <table class="table table-striped table-condensed table-responsive" id="pluginlist"></table>
+                </div>
+                <div id="settings" class="tab-pane fade in">
                     <table class="table table-striped table-responsive">
                         <tbody>
                             <tr>
@@ -476,7 +677,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             <tr>
                                 <td></td>
                                 <td>
-                                    <button class="btn btn-primary"  id="change_mirror" type="button"><b>{{ lang._('Save') }}</b><i id="change_mirror_progress" class=""></i></button>
+                                    <button class="btn btn-primary" id="change_mirror" type="button"><i id="change_mirror_progress" class=""></i> {{ lang._('Save') }}</button>
                                 </td>
                                 <td></td>
                             </tr>
@@ -487,21 +688,6 @@ POSSIBILITY OF SUCH DAMAGE.
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                <div id="packages" class="tab-pane fade in">
-                    <table class="table table-striped table-condensed table-responsive" id="packageslist">
-                    </table>
-                </div>
-                <div id="plugins" class="tab-pane fade in">
-                    <table class="table table-striped table-condensed table-responsive" id="pluginlist">
-                    </table>
-                </div>
-                <div id="updates" class="tab-pane fade in">
-                    <table class="table table-striped table-condensed table-responsive" id="updatelist">
-                    </table>
-                </div>
-                <div id="progress" class="tab-pane fade in">
-                    <textarea name="output" id="update_status" class="form-control" rows="20" wrap="hard" readonly style="max-width:100%; font-family: monospace;"></textarea>
                 </div>
             </div>
         </div>

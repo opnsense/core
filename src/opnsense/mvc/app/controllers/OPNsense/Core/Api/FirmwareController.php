@@ -1,8 +1,8 @@
 <?php
 
 /**
- *    Copyright (C) 2015 Deciso B.V.
- *
+ *    Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
+ *    Copyright (c) 2015-2016 Deciso B.V.
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,6 @@
  *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *    POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 namespace OPNsense\Core\Api;
@@ -92,20 +91,121 @@ class FirmwareController extends ApiControllerBase
                     );
                 }
             }
+
+            $sorted = array();
+
+            /*
+             * new_packages: array with { name: <package_name>, version: <package_version> }
+             * reinstall_packages: array with { name: <package_name>, version: <package_version> }
+             * upgrade_packages: array with { name: <package_name>,
+             *     current_version: <current_version>, new_version: <new_version> }
+             */
+            foreach (array('new_packages', 'reinstall_packages', 'upgrade_packages') as $pkg_type) {
+                if (isset($response[$pkg_type])) {
+                    foreach ($response[$pkg_type] as $value) {
+                        switch ($pkg_type) {
+                            case 'new_packages':
+                                $sorted[$value['name']] = array(
+                                    'new' => $value['version'],
+                                    'reason' => gettext('new'),
+                                    'name' => $value['name'],
+                                    'old' => gettext('N/A'),
+                                );
+                                break;
+                            case 'reinstall_packages':
+                                $sorted[$value['name']] = array(
+                                    'reason' => gettext('reinstall'),
+                                    'new' => $value['version'],
+                                    'old' => $value['version'],
+                                    'name' => $value['name'],
+                                );
+                                break;
+                            case 'upgrade_packages':
+                                $sorted[$value['name']] = array(
+                                    'reason' => gettext('update'),
+                                    'old' => $value['current_version'],
+                                    'new' => $value['new_version'],
+                                    'name' => $value['name'],
+                                );
+                                break;
+                            default:
+                                /* undefined */
+                                break;
+                        }
+                    }
+                }
+            }
+
+            uksort($sorted, function ($a, $b) {
+                return strnatcasecmp($a, $b);
+            });
+
+            $response['all_packages'] = $sorted;
         } else {
-            $response = array('status' => 'unknown', 'status_msg' => gettext('Current status is unknown.'));
+            $response = array(
+                'status_msg' => gettext('Firmware status check was aborted internally. Please try again.'),
+                'status' => 'unknown'
+            );
         }
 
-        /* XXX array isn't flat, need to refactor this */
-        if (isset($response['upgrade_packages'])) {
-            $sorted = array();
-            foreach ($response['upgrade_packages'] as $key => $value) {
-                $sorted[$value['name']] = $value;
-            }
-            uksort($sorted, function ($a, $b) {
-                return strnatcmp($a, $b);
+        return $response;
+    }
+
+    /**
+     * Retrieve specific changelog in text and html format
+     * @param string $version changelog to retrieve
+     * @return array correspondng changelog in both formats
+     * @throws \Exception
+     */
+    public function changelogAction($version)
+    {
+        $this->sessionClose(); // long running action, close session
+        $backend = new Backend();
+        $response = array();
+
+        if ($this->request->isPost()) {
+            // sanitize package name
+            $filter = new \Phalcon\Filter();
+            $filter->add('version', function ($value) {
+                return preg_replace('/[^0-9a-zA-Z\.]/', '', $value);
             });
-            $response['upgrade_packages'] = $sorted;
+            $version = $filter->sanitize($version, 'version');
+            $text = trim($backend->configdRun(sprintf('firmware changelog text %s', $version)));
+            $html = trim($backend->configdRun(sprintf('firmware changelog html %s', $version)));
+            if (!empty($text)) {
+                $response['text'] = $text;
+            }
+            if (!empty($html)) {
+                $response['html'] = $html;
+            }
+        }
+
+        return $response;
+    }
+
+    /**
+     * Retrieve specific license for package in text format
+     * @param string $package package to retrieve
+     * @return array with all possible licenses
+     * @throws \Exception
+     */
+    public function licenseAction($package)
+    {
+        $this->sessionClose(); // long running action, close session
+        $backend = new Backend();
+        $response = array();
+
+        if ($this->request->isPost()) {
+            // sanitize package name
+            $filter = new \Phalcon\Filter();
+            $filter->add('scrub', function ($value) {
+                return preg_replace('/[^0-9a-zA-Z]/', '', $value);
+            });
+            $package = $filter->sanitize($package, 'scrub');
+            $text = trim($backend->configdRun(sprintf('firmware license %s', $package)));
+            if (!empty($text)) {
+                $response['license'] = $text;
+            }
         }
 
         return $response;
@@ -166,6 +266,26 @@ class FirmwareController extends ApiControllerBase
                 $action = "firmware upgrade all";
             }
             $response['msg_uuid'] = trim($backend->configdRun($action, true));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
+     * run a security audit
+     * @return array status
+     * @throws \Exception
+     */
+    public function auditAction()
+    {
+        $backend = new Backend();
+        $response = array();
+
+        if ($this->request->isPost()) {
+            $response['status'] = 'ok';
+            $response['msg_uuid'] = trim($backend->configdRun("firmware audit", true));
         } else {
             $response['status'] = 'failure';
         }
@@ -356,15 +476,29 @@ class FirmwareController extends ApiControllerBase
     {
         $this->sessionClose(); // long running action, close session
 
-        $keys = array('name', 'version', 'comment', 'flatsize', 'locked');
+        $keys = array('name', 'version', 'comment', 'flatsize', 'locked', 'license');
         $backend = new Backend();
         $response = array();
 
+        /* allows us to select UI features based on product state */
+        $response['product_version'] = trim(file_get_contents('/usr/local/opnsense/version/opnsense'));
+        $response['product_name'] = trim(file_get_contents('/usr/local/opnsense/version/opnsense.name'));
+
+        $devel = explode('-', $response['product_name']);
+        $devel = count($devel) == 2 ? $devel[1] == 'devel' : false;
+
+        /* need both remote and local, create array earlier */
+        $packages = array();
+        $plugins = array();
+
         /* package infos are flat lists with 3 pipes as delimiter */
-        foreach (array('local', 'remote') as $type) {
+        foreach (array('remote', 'local') as $type) {
             $current = $backend->configdRun("firmware ${type}");
             $current = explode("\n", trim($current));
+
+            /* XXX remove this when 17.1 is out */
             $response[$type] = array();
+
             foreach ($current as $line) {
                 $expanded = explode('|||', $line);
                 $translated = array();
@@ -375,9 +509,70 @@ class FirmwareController extends ApiControllerBase
                 foreach ($keys as $key) {
                     $translated[$key] = $expanded[$index++];
                 }
+
+                /* XXX remove this when 17.1 is out */
                 $response[$type][] = $translated;
+
+                /* mark remote packages as "provided", local as "installed" */
+                $translated['provided'] = $type == 'remote' ? "1" : "0";
+                $translated['installed'] = $type == 'local' ? "1" : "0";
+                if (isset($packages[$translated['name']])) {
+                    /* local iteration, mark package provided */
+                    $translated['provided'] = "1";
+                }
+                $packages[$translated['name']] = $translated;
+
+                /* figure out local and remote plugins */
+                $plugin = explode('-', $translated['name']);
+                if (count($plugin)) {
+                    if ($plugin[0] == 'os' || ($type == 'local' && $plugin[0] == 'ospriv') ||
+                        ($devel && $type == 'remote' && $plugin[0] == 'ospriv')) {
+                        $plugins[$translated['name']] = $translated;
+                    }
+                }
             }
+
+            /* XXX remove this when 17.1 is out */
+            usort($response[$type], function ($a, $b) {
+                return strnatcasecmp($a['name'], $b['name']);
+            });
         }
+
+        uksort($packages, function ($a, $b) {
+            return strnatcasecmp($a, $b);
+        });
+
+        $response['package'] = array();
+        foreach ($packages as $package) {
+            $response['package'][] = $package;
+        }
+
+        uksort($plugins, function ($a, $b) {
+            return strnatcasecmp($a, $b);
+        });
+
+        $response['plugin'] = array();
+        foreach ($plugins as $plugin) {
+            $response['plugin'][] = $plugin;
+        }
+
+        /* also pull in changelogs from here */
+        $changelogs = json_decode(trim($backend->configdRun('firmware changelog list')), true);
+        if ($changelogs == null) {
+            $changelogs = array();
+        } else {
+            foreach ($changelogs as &$changelog) {
+                /* rewrite dates as ISO */
+                $date = date_parse($changelog['date']);
+                $changelog['date'] = sprintf('%04d-%02d-%02d', $date['year'], $date['month'], $date['day']);
+            }
+            /* sort in reverse */
+            usort($changelogs, function ($a, $b) {
+                return strcmp($b['date'], $a['date']);
+            });
+        }
+
+        $response['changelog'] = $changelogs;
 
         return $response;
     }

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2016 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -27,44 +27,57 @@
 
 set -e
 
-UPGRADE="/usr/local/opnsense/firmware-upgrade"
-PROMPT="[y/N]"
-NAME="y"
-ARGS=
+DESTDIR="/usr/local/opnsense/changelog"
+WORKDIR="/tmp/changelog"
+FETCH="fetch -aqT 5"
 
-echo "This will automatically fetch all available updates, apply them,"
-echo "and reboot if necessary."
-echo
+changelog_remove()
+{
+	rm -rf ${DESTDIR}
+	mkdir -p ${DESTDIR}
+}
 
-if [ -f ${UPGRADE} ]; then
-	NAME=$(cat ${UPGRADE})
+changelog_fetch()
+{
+	CORE_ABI=$(cat /usr/local/opnsense/version/opnsense.abi 2> /dev/null)
+	SYS_ABI=$(opnsense-verify -a 2> /dev/null)
 
-	echo "A major firmware upgrade is available for this installation: ${NAME}"
-	echo
-	echo "Make sure you have read the release notes and migration guide before"
-	echo "attempting this upgrade.  Around 200MB will need to be downloaded and"
-	echo "require 500MB of free space.  Continue with this major upgrade by"
-	echo "typing the major upgrade version number displayed above."
-	echo
-	echo "Minor updates are available, answer 'y' to run them instead."
-	echo
+	URL="https://pkg.opnsense.org"
+	URL="${URL}/${SYS_ABI}/${CORE_ABI}"
+	URL="${URL}/sets/changelog.txz"
 
-	PROMPT="[${NAME}/y/N]"
+	rm -rf ${WORKDIR}
+	mkdir -p ${WORKDIR}
+
+	${FETCH} -o ${WORKDIR}/changelog.txz.sig "${URL}.sig"
+	${FETCH} -o ${WORKDIR}/changelog.txz "${URL}"
+	opnsense-verify -q ${WORKDIR}/changelog.txz
+
+	changelog_remove
+
+	tar -C ${DESTDIR} -xJf ${WORKDIR}/changelog.txz
+}
+
+changelog_show()
+{
+	FILE="${DESTDIR}/${1}"
+
+	if [ -f "${FILE}" ]; then
+		cat "${FILE}"
+	fi
+}
+
+COMMAND=${1}
+VERSION=${2}
+
+if [ "${COMMAND}" = "fetch" ]; then
+	changelog_fetch
+elif [ "${COMMAND}" = "remove" ]; then
+	changelog_remove
+elif [ "${COMMAND}" = "list" ]; then
+	changelog_show index.json
+elif [ "${COMMAND}" = "html" -a -n "${VERSION}" ]; then
+	changelog_show "$(basename ${VERSION}).htm"
+elif [ "${COMMAND}" = "text" -a -n "${VERSION}" ]; then
+	changelog_show "$(basename ${VERSION}).txt"
 fi
-
-read -p "Proceed with this action? ${PROMPT}: " YN
-
-case ${YN} in
-[yY])
-	;;
-${NAME})
-	ARGS="upgrade ${NAME}"
-	;;
-*)
-	exit 0
-	;;
-esac
-
-echo
-
-/usr/local/etc/rc.firmware ${ARGS}

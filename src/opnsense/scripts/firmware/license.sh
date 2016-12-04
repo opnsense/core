@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2016 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -25,46 +25,13 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-set -e
+LICENSEDIR="/usr/local/share/licenses"
 
-UPGRADE="/usr/local/opnsense/firmware-upgrade"
-PROMPT="[y/N]"
-NAME="y"
-ARGS=
+PACKAGE=${1}
 
-echo "This will automatically fetch all available updates, apply them,"
-echo "and reboot if necessary."
-echo
+LICENSES=$(pkg query %L ${PACKAGE})
+VERSION=$(pkg query %v ${PACKAGE})
 
-if [ -f ${UPGRADE} ]; then
-	NAME=$(cat ${UPGRADE})
-
-	echo "A major firmware upgrade is available for this installation: ${NAME}"
-	echo
-	echo "Make sure you have read the release notes and migration guide before"
-	echo "attempting this upgrade.  Around 200MB will need to be downloaded and"
-	echo "require 500MB of free space.  Continue with this major upgrade by"
-	echo "typing the major upgrade version number displayed above."
-	echo
-	echo "Minor updates are available, answer 'y' to run them instead."
-	echo
-
-	PROMPT="[${NAME}/y/N]"
+if [ -f "${LICENSEDIR}/${PACKAGE}-${VERSION}/${LICENSES}" ]; then
+	cat "${LICENSEDIR}/${PACKAGE}-${VERSION}/${LICENSES}"
 fi
-
-read -p "Proceed with this action? ${PROMPT}: " YN
-
-case ${YN} in
-[yY])
-	;;
-${NAME})
-	ARGS="upgrade ${NAME}"
-	;;
-*)
-	exit 0
-	;;
-esac
-
-echo
-
-/usr/local/etc/rc.firmware ${ARGS}

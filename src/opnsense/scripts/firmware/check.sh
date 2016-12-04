@@ -62,6 +62,8 @@ tmp_pkg_update_file="/tmp/pkg_updates.output"
 # Check if pkg is already runnig
 pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
 if [ "$pkg_running" == "" ]; then
+      # load changelogs first
+      /usr/local/opnsense/scripts/firmware/changelog.sh fetch
       # start pkg update
       pkg update -f > $tmp_pkg_update_file &
       pkg_running="started" # Set running state to arbitrary value
@@ -224,9 +226,10 @@ if [ "$pkg_running" == "" ]; then
       fi
 
       product_version=$(cat /usr/local/opnsense/version/opnsense)
+      product_name=$(cat /usr/local/opnsense/version/opnsense.name)
       os_version=$(uname -sr)
       last_check=$(date)
 
       # Write our json structure to disk
-      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"product_version\":\"$product_version\",\"os_version\":\"$os_version\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded],\"upgrade_needs_reboot\":\"$upgrade_needs_reboot\"}"
+      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"product_version\":\"$product_version\",\"product_name\":\"$product_name\",\"os_version\":\"$os_version\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded],\"upgrade_needs_reboot\":\"$upgrade_needs_reboot\"}"
 fi
