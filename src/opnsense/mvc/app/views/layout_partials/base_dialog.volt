@@ -76,6 +76,8 @@ label           :   dialog label
                             </td>
                         </tr>
                         {% endif %}
+                        {% set advanced=false %}
+                        {% set help=false %}
                         {% for field in fields|default({})%}
                             {% if field['type'] == 'header' %}
                               {# close table and start new one with header #}
