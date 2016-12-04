@@ -548,10 +548,13 @@
 /usr/local/opnsense/scripts/filter/list_table.py
 /usr/local/opnsense/scripts/filter/list_tables.py
 /usr/local/opnsense/scripts/filter/pfinfo.py
+/usr/local/opnsense/scripts/firmware/audit.sh
+/usr/local/opnsense/scripts/firmware/changelog.sh
 /usr/local/opnsense/scripts/firmware/check.sh
 /usr/local/opnsense/scripts/firmware/hotfix.sh
 /usr/local/opnsense/scripts/firmware/install.sh
 /usr/local/opnsense/scripts/firmware/launcher.sh
+/usr/local/opnsense/scripts/firmware/license.sh
 /usr/local/opnsense/scripts/firmware/lock.sh
 /usr/local/opnsense/scripts/firmware/reinstall.sh
 /usr/local/opnsense/scripts/firmware/remove.sh
