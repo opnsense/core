@@ -81,7 +81,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     row['reason'] + '</td></tr>');
 
                     if (row['name'] == data['product_name']) {
-                        $.upgrade_show_log = data['product_version'].replace(/[_-].*/, '');
+                        $.upgrade_show_log = row['new'].replace(/[_-].*/, '');
                     }
                 });
 
