@@ -281,6 +281,15 @@ class MenuItem
     }
 
     /**
+     * is node visible
+     * @return bool
+     */
+    public function isVisible()
+    {
+        return $this->visibility  != 'delete';
+    }
+
+    /**
      * check if this item is selected
      * @return bool is this item selected
      */
@@ -379,34 +388,19 @@ class MenuItem
     public function toggleSelected($url)
     {
         $this->selected = false;
-        foreach ($this->getFilteredChildren() as $nodeId => $node) {
-            $node->toggleSelected($url);
-            if ($node->getUrl() != "") {
-                // hash part isn't available on server end
-                $menuItemUrl = explode("#", $node->getUrl())[0];
-                $match =  str_replace(array(".", "*","?"), array("\.", ".*","\?"), $menuItemUrl);
-                if (preg_match("@^{$match}$@", "{$url}")) {
-                    $node->select();
+        foreach ($this->children as $nodeId => &$node) {
+            if ($node->isVisible()) {
+                $node->toggleSelected($url);
+                if ($node->getUrl() != "") {
+                    // hash part isn't available on server end
+                    $menuItemUrl = explode("#", $node->getUrl())[0];
+                    $match =  str_replace(array(".", "*","?"), array("\.", ".*","\?"), $menuItemUrl);
+                    if (preg_match("@^{$match}$@", "{$url}")) {
+                        $node->select();
+                    }
                 }
             }
         }
-    }
-
-    /**
-     * Menu items are pluggable and can override already existing sections.
-     * This function filters the available child items and only return the still existing ones.
-     * @return array filtered set of children
-     */
-    private function getFilteredChildren()
-    {
-        $result = array();
-        foreach ($this->children as $key => $node) {
-            if ($node->getVisibility() != 'delete') {
-                $result[$key] = $node;
-            }
-        }
-        ksort($result);
-        return $result;
     }
 
     /**
@@ -417,12 +411,15 @@ class MenuItem
     {
         $result = array();
         // sort by order/id and map getters to array items
-        foreach ($this->getFilteredChildren() as $key => $node) {
-            $result[$node->id] = new \stdClass();
-            foreach (self::$internalClassGetterNames as $methodName => $propName) {
-                $result[$node->id]->{$propName} = $node->$methodName();
+        foreach ($this->children as $key => &$node) {
+            if ($node->isVisible()) {
+                $result[$key] = new \stdClass();
+                foreach (self::$internalClassGetterNames as $methodName => $propName) {
+                    $result[$key]->{$propName} = $node->$methodName();
+                }
             }
         }
+        ksort($result);
 
         return $result;
     }
@@ -434,8 +431,8 @@ class MenuItem
      */
     public function findNodeById($id)
     {
-        foreach ($this->getFilteredChildren() as $key => $node) {
-            if (strtolower($node->getId()) == strtolower($id)) {
+        foreach ($this->children as $key => &$node) {
+            if ($node->isVisible() && strtolower($node->getId()) == strtolower($id)) {
                 return $node;
             }
         }
