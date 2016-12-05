@@ -186,6 +186,9 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
     $conf .= "auth {$digest}{$nl}";
     $conf .= "tls-client{$nl}";
     $conf .= "client{$nl}";
+    if (!empty($settings['reneg-sec'])) {
+        $conf .= "reneg-sec {$settings['reneg-sec']}{$nl}";
+    }
     if (($expformat != "inlinedroid") && ($expformat != "inlineios")) {
         $conf .= "resolv-retry infinite{$nl}";
     }
@@ -631,6 +634,9 @@ function openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipco
     $conf .= "auth {$digest}\n";
     $conf .= "pull\n";
     $conf .= "resolv-retry infinite\n";
+    if (!empty($settings['reneg-sec'])) {
+        $conf .= "reneg-sec {$settings['reneg-sec']}\n";
+    }
     $conf .= "remote {$server_host} {$server_port}\n";
     if (!empty($settings['local_network'])) {
         $conf .= openvpn_gen_routes($settings['local_network'], 'ipv4');
