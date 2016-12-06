@@ -49,7 +49,6 @@ system_timezone_configure();
 system_hostname_configure();
 system_hosts_generate();
 system_resolvconf_generate();
-system_routing_enable();
 interfaces_configure();
 services_dyndns_configure();
 system_cron_configure();

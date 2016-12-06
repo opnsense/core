@@ -415,9 +415,14 @@ function system_hostname_configure($verbose = false)
     }
 }
 
-function system_routing_configure($interface = '')
+function system_routing_configure($verbose = false, $interface = '')
 {
     global $config;
+
+    if ($verbose) {
+        echo 'Setting up routes...';
+        flush();
+    }
 
     $gatewayip = "";
     $interfacegw = "";
@@ -515,6 +520,15 @@ function system_routing_configure($interface = '')
     }
 
     system_staticroutes_configure($interface);
+
+    set_sysctl(array(
+      'net.inet.ip.forwarding' => '1',
+      'net.inet6.ip6.forwarding' => '1'
+    ));
+
+    if ($verbose) {
+        echo "done.\n";
+    }
 
     return 0;
 }
@@ -662,17 +676,8 @@ function system_staticroutes_configure($interface = '')
     return 0;
 }
 
-function system_routing_enable()
+function system_syslogd_fixup_server($server)
 {
-    global $config;
-
-    set_sysctl(array(
-      "net.inet.ip.forwarding" => "1",
-      "net.inet6.ip6.forwarding" => "1"
-    ));
-}
-
-function system_syslogd_fixup_server($server) {
     /* If it's an IPv6 IP alone, encase it in brackets */
     if (is_ipaddrv6($server)) {
         return "[$server]";
@@ -897,9 +902,14 @@ function system_clear_clog($logfile, $restart_syslogd = true)
 }
 
 
-function system_webgui_configure()
+function system_webgui_configure($verbose = false)
 {
     global $config;
+
+    if ($verbose) {
+        echo 'Starting GUI...';
+        flush();
+    }
 
     chdir('/usr/local/www');
     @unlink('/usr/local/www/csrf/csrf-secret.php');
@@ -974,8 +984,12 @@ function system_webgui_configure()
     /* regenerate the php.ini files in case the setup has changed */
     mwexec('/usr/local/etc/rc.php_ini_setup');
 
-    /* attempt to start lighthttpd and return true if ok */
-    return !mwexec("/usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf");
+    /* start lighthttpd */
+    mwexec('/usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf');
+
+    if ($verbose) {
+        echo "done.\n";
+    }
 }
 
 /*

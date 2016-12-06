@@ -138,12 +138,9 @@ echo "done.\n";
 /* start ssh daemon */
 mwexec("/usr/local/etc/rc.sshd");
 
-/* start web server */
-echo 'Starting webConfigurator...'. (system_webgui_configure() ? "done.\n" : "failed.\n");
-
+system_webgui_configure(true);
 system_cron_configure(true);
-system_routing_configure();
-system_routing_enable();
+system_routing_configure(true);
 dnsmasq_configure_do(true);
 unbound_configure_do(true);
 services_dhcpd_configure('all', array(), true);

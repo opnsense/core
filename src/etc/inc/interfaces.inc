@@ -989,12 +989,8 @@ function interface_gif_configure(&$gif, $gifkey = "")
     $iflist = get_configured_interface_list();
     foreach ($iflist as $ifname) {
         if ($config['interfaces'][$ifname]['if'] == $gifif) {
-            if (get_interface_gateway($ifname)) {
-                system_routing_configure($ifname);
-                break;
-            }
-            if (get_interface_gateway_v6($ifname)) {
-                system_routing_configure($ifname);
+            if (get_interface_gateway($ifname) || get_interface_gateway_v6($ifname)) {
+                system_routing_configure(false, $ifname);
                 break;
             }
         }
@@ -1134,7 +1130,6 @@ function interfaces_configure()
     interfaces_group_setup();
 
     if (!file_exists("/var/run/booting")) {
-        /* reconfigure static routes (kernel may have deleted them) */
         system_routing_configure();
 
         /* reload IPsec tunnels */
@@ -2879,8 +2874,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
         }
 
         if ($reloadall == true) {
-            /* reconfigure static routes (kernel may have deleted them) */
-            system_routing_configure($interface);
+            system_routing_configure(false, $interface);
 
             /* reload ipsec tunnels */
             ipsec_configure();

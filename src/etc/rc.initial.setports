@@ -43,7 +43,6 @@ if (set_networking_interfaces_ports()) {
     echo "Reloading interfaces...";
     global $config;
     $config = parse_config();
-    system_routing_enable();
     interfaces_configure();
     echo "done.\n";
     enable_rrd_graphing();
