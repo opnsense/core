@@ -88,7 +88,7 @@ class CSVListField extends BaseField
 
         foreach ($selectlist as $optKey) {
             if (strlen($optKey) > 0) {
-                if (array_key_exists($optKey, $result)) {
+                if (isset($result[$optKey])) {
                     $result[$optKey]["selected"] = 1;
                 } else {
                     $result[$optKey] = array("value"=>$optKey, "selected" => 1);

@@ -68,7 +68,7 @@ class ConfigdActionsField extends BaseField
      */
     public function eventPostLoading()
     {
-        if (!array_key_exists($this->internalCacheKey, self::$internalOptionList)) {
+        if (!isset(self::$internalOptionList[$this->internalCacheKey])) {
             self::$internalOptionList[$this->internalCacheKey] = array();
 
             $backend = new Backend();
@@ -95,7 +95,7 @@ class ConfigdActionsField extends BaseField
                 // use filters to determine relevance
                 $isMatched = true;
                 foreach ($this->internalFilters as $filterKey => $filterData) {
-                    if (array_key_exists($filterKey, $value)) {
+                    if (isset($value[$filterKey])) {
                         $fieldData = $value[$filterKey];
                         if (!preg_match($filterData, $fieldData)) {
                             $isMatched = false;

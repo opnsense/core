@@ -114,7 +114,7 @@ class ArrayField extends BaseField
      */
     public function del($index)
     {
-        if (array_key_exists((string)$index, $this->internalChildnodes)) {
+        if (isset($this->internalChildnodes[(string)$index])) {
             unset($this->internalChildnodes[$index]);
             return true;
         } else {
@@ -145,7 +145,7 @@ class ArrayField extends BaseField
             // populate sort key
             $sortKey = '';
             foreach ($fieldNames as $fieldName) {
-                if (array_key_exists($fieldName, $node->internalChildnodes)) {
+                if (isset($node->internalChildnodes[$fieldName])) {
                     if (is_numeric((string)$node->$fieldName)) {
                         // align numeric values right for sorting, not perfect but works for integer type values
                         $sortKey .=  sprintf("%".$MAX_KEY_LENGTH."s,", $node->$fieldName);

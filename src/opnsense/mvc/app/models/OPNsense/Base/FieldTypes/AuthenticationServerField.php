@@ -76,7 +76,7 @@ class AuthenticationServerField extends BaseField
      */
     public function eventPostLoading()
     {
-        if (!array_key_exists($this->internalCacheKey, self::$internalOptionList)) {
+        if (!isset(self::$internalOptionList[$this->internalCacheKey])) {
             self::$internalOptionList[$this->internalCacheKey] = array();
 
             $authFactory = new \OPNsense\Auth\AuthenticationFactory;

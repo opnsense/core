@@ -233,7 +233,7 @@ abstract class BaseField
      */
     public function __get($name)
     {
-        if (array_key_exists($name, $this->internalChildnodes)) {
+        if (isset($this->internalChildnodes[$name])) {
             return $this->internalChildnodes[$name];
         } elseif ($name == '__items') {
             // return all (no virtual/hidden) items
@@ -265,7 +265,7 @@ abstract class BaseField
      */
     public function __set($name, $value)
     {
-        if (array_key_exists($name, $this->internalChildnodes)) {
+        if (isset($this->internalChildnodes[$name])) {
             $this->internalChildnodes[$name]->setValue($value);
         } else {
             throw new \InvalidArgumentException($name." not an attribute of ". $this->internalReference);
@@ -515,7 +515,7 @@ abstract class BaseField
     {
         // update structure with new content
         foreach ($this->__items as $key => $node) {
-            if ($data != null && array_key_exists($key, $data)) {
+            if ($data != null && isset($data[$key])) {
                 if ($node->isContainer()) {
                     if (is_array($data[$key])) {
                         $node->setNodes($data[$key]);
@@ -531,7 +531,7 @@ abstract class BaseField
         // add new items to array type objects
         if (get_class($this) == "OPNsense\\Base\\FieldTypes\\ArrayField") {
             foreach ($data as $dataKey => $dataValue) {
-                if (!array_key_exists($dataKey, $this->__items)) {
+                if (!isset($this->__items[$dataKey])) {
                     $node = $this->add();
                     $node->setNodes($dataValue);
                 }

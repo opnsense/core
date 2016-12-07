@@ -70,6 +70,12 @@ abstract class BaseModel
     private $internal_current_model_version = null;
 
     /**
+     * cache classes
+     * @var null
+     */
+    private static $internalCacheReflectionClasses = null;
+
+    /**
      * If the model needs a custom initializer, override this init() method
      * Default behaviour is to do nothing in this init.
      */
@@ -86,7 +92,7 @@ abstract class BaseModel
     private function parseOptionData($xmlNode)
     {
         if ($xmlNode->count() == 0) {
-            $result = $xmlNode->__toString();
+            $result = (string)$xmlNode;
         } else {
             $result = array();
             foreach ($xmlNode->children() as $childNode) {
@@ -97,13 +103,44 @@ abstract class BaseModel
     }
 
     /**
+     * fetch reflection class (cached by field type)
+     * @param $classname classname to construct
+     */
+    private function getNewField($classname)
+    {
+        if (self::$internalCacheReflectionClasses === null) {
+            self::$internalCacheReflectionClasses = array();
+        }
+        if (!isset(self::$internalCacheReflectionClasses[$classname])) {
+            $is_derived_from_basefield = false;
+            if (class_exists($classname)) {
+                $field_rfcls = new \ReflectionClass($classname);
+                $check_derived = $field_rfcls->getParentClass();
+                while ($check_derived != false) {
+                    if ($check_derived->name == 'OPNsense\Base\FieldTypes\BaseField') {
+                        $is_derived_from_basefield = true;
+                        break;
+                    }
+                    $check_derived = $check_derived->getParentClass();
+                }
+            }
+            if (!$is_derived_from_basefield) {
+                // class found, but of wrong type. raise an exception.
+                throw new ModelException("class ".$field_rfcls->name." of wrong type in model definition");
+            }
+            self::$internalCacheReflectionClasses[$classname] = $field_rfcls ;
+        }
+        return self::$internalCacheReflectionClasses[$classname];
+    }
+
+    /**
      * parse model and config xml to object model using types in FieldTypes
      * @param SimpleXMLElement $xml model xml data (from items section)
      * @param SimpleXMLElement $config_data (current) config data
      * @param BaseField $internal_data output structure using FieldTypes,rootnode is internalData
      * @throws ModelException parse error
      */
-    private function parseXml($xml, &$config_data, &$internal_data)
+    private function parseXml(&$xml, &$config_data, &$internal_data)
     {
         // copy xml tag attributes to Field
         if ($config_data != null) {
@@ -117,27 +154,13 @@ abstract class BaseModel
             $tagName = $xmlNode->getName();
             // every item results in a Field type object, the first step is to determine which object to create
             // based on the input model spec
-            $fieldObject = null;
-            $classname = "OPNsense\\Base\\FieldTypes\\".$xmlNode->attributes()["type"];
-            if (class_exists($classname)) {
+            $xmlNodeType = $xmlNode->attributes()["type"];
+            if (!empty($xmlNodeType)) {
                 // construct field type object
-                $field_rfcls = new \ReflectionClass($classname);
-                $check_derived = $field_rfcls->getParentClass();
-                $is_derived_from_basefield = false;
-                while ($check_derived != false) {
-                    if ($check_derived->name == 'OPNsense\Base\FieldTypes\BaseField') {
-                        $is_derived_from_basefield = true;
-                        break;
-                    }
-                    $check_derived = $check_derived->getParentClass();
-                }
-                if (!$is_derived_from_basefield) {
-                    // class found, but of wrong type. raise an exception.
-                    throw new ModelException("class ".$field_rfcls->name." of wrong type in model definition");
-                }
+                $field_rfcls = $this->getNewField("OPNsense\\Base\\FieldTypes\\".$xmlNodeType);
             } else {
                 // no type defined, so this must be a standard container (without content)
-                $field_rfcls = new \ReflectionClass('OPNsense\Base\FieldTypes\ContainerField');
+                $field_rfcls = $this->getNewField('OPNsense\Base\FieldTypes\ContainerField');
             }
 
             // generate full object name ( section.section.field syntax ) and create new Field
@@ -182,7 +205,6 @@ abstract class BaseModel
                             } else {
                                 $tagUUID = $internal_data->generateUUID();
                             }
-
 
                             // iterate array items from config data
                             $child_node = new ContainerField($fieldObject->__reference . "." . $tagUUID, $tagName);
@@ -494,7 +516,7 @@ abstract class BaseModel
         $node = $this->internalData;
         while (count($parts)>0) {
             $childName = array_shift($parts);
-            if (array_key_exists($childName, $node->getChildren())) {
+            if (isset($node->getChildren()[$childName])) {
                 $node = $node->getChildren()[$childName];
             } else {
                 return null;

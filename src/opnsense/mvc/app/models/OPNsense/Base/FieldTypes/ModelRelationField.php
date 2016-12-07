@@ -79,24 +79,24 @@ class ModelRelationField extends BaseField
 
         // only collect options once per source/filter combination, we use a static to save our unique option
         // combinations over the running application.
-        if (!array_key_exists($this->internalCacheKey, self::$internalOptionList)) {
+        if (!isset(self::$internalOptionList[$this->internalCacheKey])) {
             self::$internalOptionList[$this->internalCacheKey] = array();
             foreach ($mdlStructure as $modelData) {
                 // only handle valid model sources
-                if (array_key_exists('source', $modelData) && array_key_exists('items', $modelData) &&
-                    array_key_exists('display', $modelData)) {
+                if (isset($modelData['source']) && isset($modelData['items']) && isset($modelData['display'])) {
                     $className = str_replace(".", "\\", $modelData['source']);
                     $modelObj = new $className;
                     foreach ($modelObj->getNodeByReference($modelData['items'])->__items as $node) {
                         $displayKey = $modelData['display'];
-                        if (array_key_exists("uuid", $node->getAttributes()) && $node->$displayKey != null) {
+                        if (isset($node->getAttributes()["uuid"]) && $node->$displayKey != null) {
                             // check for filters and apply if found
                             $isMatched = true;
-                            if (array_key_exists("filters", $modelData)) {
+                            if (isset($modelData['filters'])) {
                                 foreach ($modelData['filters'] as $filterKey => $filterValue) {
                                     $fieldData = $node->$filterKey;
                                     if (!preg_match($filterValue, $fieldData) && $fieldData != null) {
                                         $isMatched = false;
+                                        break;
                                     }
                                 }
                             }
@@ -133,7 +133,7 @@ class ModelRelationField extends BaseField
     public function getNodeData()
     {
         $result = array ();
-        if (array_key_exists($this->internalCacheKey, self::$internalOptionList) &&
+        if (isset(self::$internalOptionList[$this->internalCacheKey]) &&
             is_array(self::$internalOptionList[$this->internalCacheKey])) {
             // if relation is not required, add empty option
             if (!$this->internalIsRequired) {
