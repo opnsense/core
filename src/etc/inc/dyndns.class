@@ -552,6 +552,9 @@
 					/* Function to find old values of records in Route 53 */
 					if(!function_exists('Searchrecords')) {
 						function SearchRecords($records, $name) {
+							if (!is_array($records)) {
+								return false;
+							}
 							$result = array();
 							foreach($records as $record) {
 								if(strtolower($record['Name']) == strtolower($name)) {
