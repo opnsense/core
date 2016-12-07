@@ -432,7 +432,7 @@ function ipsec_convert_to_modp($index)
     return $convertion;
 }
 
-function ipsec_configure()
+function ipsec_configure($verbose = false)
 {
     global $config, $p2_ealgos, $ipsec_loglevels;
 
@@ -487,8 +487,8 @@ function ipsec_configure()
         @mkdir('/usr/local/etc/ipsec.d/ocspcerts');
         @mkdir('/usr/local/etc/ipsec.d/reqs');
 
-        if (file_exists("/var/run/booting")) {
-            echo gettext("Configuring IPsec VPN...");
+        if ($verbose) {
+            echo 'Configuring IPsec VPN...';
         }
 
         /* fastforwarding is not compatible with ipsec tunnels */
@@ -520,7 +520,7 @@ function ipsec_configure()
 
             if (!is_ipaddr($rg)) {
                 $filterdns_list[] = "{$rg}";
-                if(! file_exists("/var/run/booting")) {
+                if (!file_exists('/var/run/booting')) {
                     $rg = resolve_retry($rg);
                 }
                 if (!is_ipaddr($rg)) {
@@ -1281,7 +1281,7 @@ EOD;
         killbypid('/var/run/filterdns-ipsec.pid');
     }
 
-    if (file_exists("/var/run/booting")) {
+    if ($verbose) {
         echo "done.\n";
     }
 

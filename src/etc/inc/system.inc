@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-function activate_powerd()
+function system_powerd_configure($verbose = false)
 {
     global $config;
 
@@ -36,22 +36,37 @@ function activate_powerd()
         exec('/usr/bin/killall powerd');
     }
 
-    if(isset($config['system']['powerd_enable'])) {
-        $ac_mode = "hadp";
-        if (!empty($config['system']['powerd_ac_mode'])) {
-            $ac_mode = $config['system']['powerd_ac_mode'];
-        }
+    if (!isset($config['system']['powerd_enable'])) {
+        return;
+    }
 
-        $battery_mode = "hadp";
-        if (!empty($config['system']['powerd_battery_mode'])) {
-            $battery_mode = $config['system']['powerd_battery_mode'];
-        }
+    if ($verbose) {
+        echo 'Starting power daemon...';
+        flush();
+    }
 
-        $normal_mode = "hadp";
-        if (!empty($config['system']['powerd_normal_mode'])) {
-            $normal_mode = $config['system']['powerd_normal_mode'];
-        }
-        mwexec("/usr/sbin/powerd -b $battery_mode -a $ac_mode -n $normal_mode");
+    $ac_mode = 'hadp';
+    if (!empty($config['system']['powerd_ac_mode'])) {
+        $ac_mode = $config['system']['powerd_ac_mode'];
+    }
+
+    $battery_mode = 'hadp';
+    if (!empty($config['system']['powerd_battery_mode'])) {
+        $battery_mode = $config['system']['powerd_battery_mode'];
+    }
+
+    $normal_mode = 'hadp';
+    if (!empty($config['system']['powerd_normal_mode'])) {
+        $normal_mode = $config['system']['powerd_normal_mode'];
+    }
+
+    mwexecf(
+        '/usr/sbin/powerd -b %s -a %s -n %s',
+        array($battery_mode, $ac_mode, $normal_mode)
+    );
+
+    if ($verbose) {
+        echo "done.\n";
     }
 }
 
@@ -415,7 +430,7 @@ function system_hostname_configure($verbose = false)
     }
 }
 
-function system_routing_configure($verbose = false, $interface = '')
+function system_routing_configure($interface = '', $verbose = false)
 {
     global $config;
 

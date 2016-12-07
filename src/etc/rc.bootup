@@ -118,58 +118,36 @@ echo "done.\n";
 /* generate resolv.conf */
 system_resolvconf_generate();
 
-/* setup pf */
 filter_configure_sync(true);
-
-/* start pflog */
-echo "Starting PFLOG...";
-filter_pflog_start();
-echo "done.\n";
-
-/* reconfigure our gateway monitor */
-echo "Setting up gateway monitors...";
-setup_gateways_monitor();
-echo "done.\n";
-
-echo "Synchronizing user settings...";
-local_sync_accounts();
-echo "done.\n";
-
-/* start ssh daemon */
-mwexec("/usr/local/etc/rc.sshd");
-
+filter_pflog_start(true);
+setup_gateways_monitor(true);
+local_sync_accounts(true);
 system_webgui_configure(true);
 system_cron_configure(true);
-system_routing_configure(true);
+system_routing_configure('', true);
+
 dnsmasq_configure_do(true);
 unbound_configure_do(true);
 services_dhcpd_configure('all', array(), true);
-system_hosts_generate();
+system_hosts_generate(true);
 services_dhcrelay_configure(true);
 services_dhcrelay6_configure(true);
 
-/* dyndns service updates */
-mwexec("/usr/local/etc/rc.dyndns.update");
+mwexec("/usr/local/etc/rc.sshd"); /* XXX convert to plugin */
+mwexec("/usr/local/etc/rc.dyndns.update"); /* XXX convert to plugin */
 
-/* Run a filter configure now that most all services have started */
+prefer_ipv4_or_ipv6();
 filter_configure_sync(true);
 
-/* start all registered plugins */
 if (function_exists('plugins_configure')) {
     plugins_configure('bootup', true);
 }
 
 /* start IPsec tunnels */
-$ipsec_dynamic_hosts = ipsec_configure();
+$ipsec_dynamic_hosts = ipsec_configure(true);
 
-/* load graphing functions */
 enable_rrd_graphing(true);
-
-/* If powerd is enabled, lets launch it */
-activate_powerd();
-
-/* Set preferred protocol */
-prefer_ipv4_or_ipv6();
+system_powerd_configure(true);
 
 /*
  * Give syslogd a kick after everything else has been
@@ -180,8 +158,7 @@ system_syslogd_start(true);
 
 /* If there are ipsec dynamic hosts try again to reload the tunnels as rc.newipsecdns does */
 if ($ipsec_dynamic_hosts) {
-    ipsec_configure();
-    filter_configure();
+    ipsec_configure(true);
 }
 
 // generate configuration data for all installed templates

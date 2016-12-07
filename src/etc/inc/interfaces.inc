@@ -990,7 +990,7 @@ function interface_gif_configure(&$gif, $gifkey = "")
     foreach ($iflist as $ifname) {
         if ($config['interfaces'][$ifname]['if'] == $gifif) {
             if (get_interface_gateway($ifname) || get_interface_gateway_v6($ifname)) {
-                system_routing_configure(false, $ifname);
+                system_routing_configure($ifname);
                 break;
             }
         }
@@ -2874,7 +2874,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
         }
 
         if ($reloadall == true) {
-            system_routing_configure(false, $interface);
+            system_routing_configure($interface);
 
             /* reload ipsec tunnels */
             ipsec_configure();

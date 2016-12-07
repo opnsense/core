@@ -168,7 +168,7 @@ if(isset($config['gifs']['gif']) && is_array($config['gifs']['gif'])){
                   if (!empty($confif)) {
                       interface_configure($confif);
                   }
-                  system_routing_configure(false, $ifname);
+                  system_routing_configure($ifname);
                 }
             }
         }
@@ -181,9 +181,7 @@ if(isset($config['gifs']['gif']) && is_array($config['gifs']['gif'])){
  * could be failing back in which case we need to switch IPs back anyhow.
  */
 if (!is_ipaddr($oldip) || $curwanip != $oldip || !is_ipaddrv4($config['interfaces'][$interface]['ipaddr'])) {
-    system_routing_configure(false, $interface);
-
-    /* reconfigure our gateway monitor */
+    system_routing_configure($interface);
     setup_gateways_monitor();
 
     if (is_ipaddr($curwanip)) {

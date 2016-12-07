@@ -179,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         system_resolvconf_generate(true);
         system_cron_configure();
-        activate_powerd();
+        system_powerd_configure();
         system_kernel_configure();
     }
 }

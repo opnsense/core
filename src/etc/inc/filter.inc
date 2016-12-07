@@ -311,13 +311,22 @@ function filter_rules_sort()
     }
 }
 
-function filter_pflog_start()
+function filter_pflog_start($verbose = false)
 {
     if (isvalidpid('/var/run/filterlog.pid')) {
         return;
     }
 
+    if ($verbose) {
+        echo 'Starting PFLOG...';
+        flush();
+    }
+
     mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
+
+    if ($verbose) {
+        echo "done.\n";
+    }
 }
 
 function filter_configure()

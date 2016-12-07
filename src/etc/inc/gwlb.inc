@@ -42,9 +42,14 @@ function return_apinger_defaults()
     );
 }
 
-function setup_gateways_monitor()
+function setup_gateways_monitor($verbose = false)
 {
     global $config;
+
+    if ($verbose) {
+        echo 'Setting up gateway monitors...';
+        flush();
+    }
 
     killbypid('/var/run/apinger.pid', 'TERM', true);
     @unlink('/var/run/apinger.status');
@@ -373,11 +378,14 @@ EOD;
     $gateways_arr = return_gateways_array();
     if (!is_array($gateways_arr)) {
         log_error("No gateways to monitor. Apinger will not be run.");
-        return;
+    } else {
+        file_put_contents('/var/etc/apinger.conf', $apingerconfig);
+        mwexec_bg('/usr/local/sbin/apinger -c /var/etc/apinger.conf');
     }
 
-    file_put_contents('/var/etc/apinger.conf', $apingerconfig);
-    mwexec_bg('/usr/local/sbin/apinger -c /var/etc/apinger.conf');
+    if ($verbose) {
+        echo "done.\n";
+    }
 }
 
 /* return the status of the apinger targets as a array */
