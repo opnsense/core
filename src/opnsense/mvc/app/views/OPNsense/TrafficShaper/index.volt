@@ -1,6 +1,6 @@
 {#
 
-OPNsense® is Copyright © 2014 – 2015 by Deciso B.V.
+OPNsense® is Copyright © 2014 – 2016 by Deciso B.V.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -91,6 +91,32 @@ POSSIBILITY OF SUCH DAMAGE.
                     });
                 }
             });
+        });
+
+        $("#flushAct").click(function(){
+          // Ask user if it's ok to flush all of ipfw
+          BootstrapDialog.show({
+              type:BootstrapDialog.TYPE_WARNING,
+              title: 'Flush',
+              message: "{{ lang._('Are you sure you want to flush and reload all? this might have impact on other services using the same technology underneath (such as Captive portal)') }}",
+              buttons: [{
+                  label: 'Yes',
+                  action: function(dialogRef){
+                      dialogRef.close();
+                      $("#flushAct_progress").addClass("fa fa-spinner fa-pulse");
+                      ajaxCall(url="/api/trafficshaper/service/flushreload", sendData={}, callback=function(data,status) {
+                          // when done, disable progress animation.
+                          $("#flushAct_progress").removeClass("fa fa-spinner fa-pulse");
+                      });
+
+                  }
+              },{
+                  label: 'No',
+                  action: function(dialogRef){
+                      dialogRef.close();
+                  }
+              }]
+          });
         });
 
         // update history on tab state and implement navigation
@@ -202,6 +228,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <div class="col-md-12">
         <hr/>
         <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b><i id="reconfigureAct_progress" class=""></i></button>
+        <button class="btn btn-primary pull-right"  id="flushAct" type="button"><b>{{ lang._('Reset') }}</b><i id="flushAct_progress" class=""></i></button>
         <br/><br/>
     </div>
 </div>

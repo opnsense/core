@@ -1,6 +1,6 @@
 <?php
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2015-2016 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -56,6 +56,24 @@ class ServiceController extends ApiControllerBase
                 $status = "error reloading shaper (".$bckresult.")";
             }
 
+            return array("status" => $status);
+        } else {
+            return array("status" => "failed");
+        }
+    }
+
+    /**
+     * flush all ipfw rules
+     */
+    public function flushreloadAction()
+    {
+        if ($this->request->isPost()) {
+            // close session for long running action
+            $this->sessionClose();
+
+            $backend = new Backend();
+            $status = trim($backend->configdRun("ipfw flush"));
+            $status = trim($backend->configdRun("ipfw reload"));
             return array("status" => $status);
         } else {
             return array("status" => "failed");
