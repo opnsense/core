@@ -2050,7 +2050,6 @@ include("head.inc");
                             <div class="hidden" for="help_for_dhcp_option_modifiers">
                               <?=gettext("The values in this field are DHCP option modifiers applied to obtained DHCP lease. [modifier option declaration [, ...]] <br />" .
                               "modifiers: (default, supersede, prepend, append)"); ?><br/>
-                              <a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhcp-options&amp;sektion=5"><?=gettext("FreeBSD manual");?></a>
                             </div>
                           </td>
                         </tr>
@@ -2059,11 +2058,7 @@ include("head.inc");
                           <td>
                             <input name="adv_dhcp_config_file_override_path"   type="text" id="adv_dhcp_config_file_override_path"  value="<?=$pconfig['adv_dhcp_config_file_override_path'];?>" />
                             <div class="hidden" for="help_for_dhcp_config_file_override_path">
-                              <?=gettext("The value in this field is the full absolute path to a DHCP client configuration file.  [/[dirname/[.../]]filename[.ext]] <br /> " .
-                              "Value Substitutions in Config File: {interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} <br />" .
-                              "Where C is U(pper) or L(ower) Case, and D is \" :-.\" Delimiter (space, colon, hyphen, or period) (omitted for none). <br />" .
-                              "Some ISPs may require certain options be or not be sent."); ?>
-                              <a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5"><?=gettext("FreeBSD manual");?></a>
+                              <?= gettext('The value in this field is the full absolute path to a DHCP client configuration file.') ?>
                             </div>
                           </td>
                         </tr>
@@ -2548,8 +2543,7 @@ include("head.inc");
                             <strong><?=gettext("Script"); ?></strong><br />
                             <input name="adv_dhcp6_interface_statement_script" type="text" id="adv_dhcp6_interface_statement_script" value="<?=htmlspecialchars($pconfig['adv_dhcp6_interface_statement_script']);?>" />
                             <div class="hidden" for="help_for_dhcp6_intf_stmt">
-                                <?=gettext("The value in this field is the absolute path to a script invoked on certain conditions including when a reply message is received. <br />" .
-                                "[/[dirname/[.../]]filename[.ext]] "); ?>
+                              <?= gettext('The value in this field is the absolute path to a script invoked on certain conditions including when a reply message is received.') ?>
                             </div>
                           </td>
                         </tr>
@@ -2633,9 +2627,7 @@ include("head.inc");
                           <td>
                             <input name="adv_dhcp6_config_file_override_path" type="text" id="adv_dhcp6_config_file_override_path"  value="<?=$pconfig['adv_dhcp6_config_file_override_path'];?>" />
                             <div class="hidden" for="help_for_adv_dhcp6_config_file_override_path">
-                              <?=sprintf(gettext('The value in this field is the full absolute path to a DHCP client configuration file.  [/[dirname/[.../]]filename[.ext]] %s' .
-                              'Value Substitutions in Config File: {interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} %sWhere C is U(pper) or L(ower) Case, and D is " :-." Delimiter (space, colon, hyphen, or period) (omitted for none).%s' .
-                              'Some ISPs may require certain options be or not be sent.'),'<br />','<br />','<br />') ?>
+                              <?= gettext('The value in this field is the full absolute path to a DHCP client configuration file.') ?>
                             </div>
                           </td>
                         </tr>
