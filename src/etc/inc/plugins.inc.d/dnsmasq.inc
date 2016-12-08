@@ -85,11 +85,7 @@ function dnsmasq_configure_do($verbose = false)
         flush();
     }
 
-    $args = "";
-
-    if (isset($config['dnsmasq']['regdhcp'])) {
-        $args .= " -H /var/etc/dnsmasq-hosts ";
-    }
+    $args = ' -H /var/etc/dnsmasq-hosts ';
 
     /* Setup listen port, if non-default */
     if (isset($config['dnsmasq']['port']) && is_port($config['dnsmasq']['port'])) {
