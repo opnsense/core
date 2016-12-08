@@ -268,6 +268,13 @@ function _dnsmasq_add_host_entries()
     } else {
         file_put_contents('/var/etc/dnsmasq-hosts', $lhosts . $dhosts);
     }
+
+    /*
+     * Several reports indicated 600 permissions on this file.
+     * The reason is currently unknown, but setting it to 644
+     * as it should be brings the service back to life.
+     */
+    chmod('/var/etc/dnsmasq-hosts', 0644);
 }
 
 function _dnsmasq_dhcpleases_start()
