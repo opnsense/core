@@ -41,12 +41,15 @@ require_once("openvpn.inc");
 system_console_mute();
 
 if (set_networking_interfaces_ports()) {
-    echo "Reloading interfaces...";
     global $config;
-    $config = parse_config();
-    interfaces_configure();
-    echo "done.\n";
-    enable_rrd_graphing();
+    $config = parse_config(true);
+
+    /* need to stop local dhcp servers to avoid wrong leases */
+    killbypid("{$g['dhcpd_chroot_path']}/var/run/dhcpd.pid", 'TERM', true);
+    killbypid("{$g['dhcpd_chroot_path']}/var/run/dhcpdv6.pid", 'TERM', true);
+
+    interfaces_configure(true);
+    enable_rrd_graphing(true);
 }
 
 system_console_unmute();
