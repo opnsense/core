@@ -1087,7 +1087,7 @@ function interfaces_configure($verbose = false)
         ipsec_configure($verbose);
         dnsmasq_configure_do($verbose);
         unbound_configure_do($verbose);
-        services_dhcpd_configure($verbose);
+        services_dhcpd_configure('all', array(), $verbose);
     }
 
     return 0;
