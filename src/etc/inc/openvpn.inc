@@ -1026,7 +1026,7 @@ function openvpn_resync_csc()
     }
 }
 
-function openvpn_prepare_all()
+function openvpn_prepare_all($verbose = false)
 {
     global $config;
 
@@ -1034,7 +1034,10 @@ function openvpn_prepare_all()
         return;
     }
 
-    log_error('Creating OpenVPN instances.');
+    if ($verbose) {
+        echo 'Creating OpenVPN instances...';
+        flush();
+    }
 
     foreach (array('server', 'client') as $mode) {
         if (isset($config['openvpn']["openvpn-{$mode}"])) {
@@ -1042,6 +1045,10 @@ function openvpn_prepare_all()
                 openvpn_reconfigure($mode, $settings, true);
             }
         }
+    }
+
+    if ($verbose) {
+        echo "done.\n";
     }
 }
 
@@ -1051,7 +1058,7 @@ function openvpn_resync($mode, $settings)
     openvpn_restart($mode, $settings);
 }
 
-function openvpn_resync_all($interface = null)
+function openvpn_resync_all($interface = null, $verbose = false)
 {
     global $config;
 
@@ -1059,6 +1066,11 @@ function openvpn_resync_all($interface = null)
 
     if (!isset($config['openvpn'])) {
         return;
+    }
+
+    if ($verbose) {
+        echo 'Syncing OpenVPN settings...';
+        flush();
     }
 
     if (!empty($interface)) {
@@ -1081,6 +1093,10 @@ function openvpn_resync_all($interface = null)
     }
 
     openvpn_resync_csc();
+
+    if ($verbose) {
+        echo "done.\n";
+    }
 }
 
 function openvpn_get_active_servers($type = 'multipoint')

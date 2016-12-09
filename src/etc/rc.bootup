@@ -104,16 +104,11 @@ system_hosts_generate(true);
 interfaces_loopback_configure(true);
 system_syslogd_start(true);
 
-/* set up interfaces */
-system_console_mute();
-openvpn_prepare_all();
-interfaces_configure();
-system_console_unmute();
-
-/* start OpenVPN server & clients */
-echo "Syncing OpenVPN settings...";
-openvpn_resync_all();
-echo "done.\n";
+system_console_mute(); /* XXX move this further up */
+openvpn_prepare_all(true);
+interfaces_configure(); /* XXX needs $verbose conversion */
+openvpn_resync_all(null, true);
+system_console_unmute(); /* XXX move this further down */
 
 system_resolvconf_generate(true);
 filter_configure_sync(true);
