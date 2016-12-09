@@ -35,9 +35,19 @@ if(empty($config['unbound']) || !is_array($config['unbound'])) {
     $config['unbound'] = array();
 }
 
-$copy_fields = array('msgcachesize', 'outgoing_num_tcp', 'incoming_num_tcp', 'edns_buffer_size',
-                    'num_queries_per_thread', 'jostle_timeout', 'cache_max_ttl', 'cache_min_ttl',
-                    'infra_host_ttl', 'infra_cache_numhosts','unwanted_reply_threshold', 'log_verbosity');
+$copy_fields = array(
+    'cache_max_ttl',
+    'cache_min_ttl',
+    'incoming_num_tcp',
+    'infra_cache_numhosts',
+    'infra_host_ttl',
+    'jostle_timeout',
+    'log_verbosity',
+    'msgcachesize',
+    'num_queries_per_thread',
+    'outgoing_num_tcp',
+    'unwanted_reply_threshold',
+);
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -47,7 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['infra_host_ttl'] = 900;
     $pconfig['jostle_timeout'] = 200;
     $pconfig['infra_cache_numhosts'] = 10000;
-    $pconfig['edns_buffer_size'] = 4096;
     $pconfig['num_queries_per_thread'] = 4096;
     $pconfig['log_verbosity'] = "1";
 
@@ -214,23 +223,6 @@ include_once("head.inc");
                           </select>
                           <div class="hidden" for="help_for_incoming_num_tcp">
                             <?=gettext("The number of incoming TCP buffers to allocate per thread. The default value is 10. If 0 is selected then no TCP queries, from clients, are accepted.");?>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><a id="help_for_edns_buffer_size" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("EDNS Buffer Size") ?></td>
-                        <td>
-                          <select id="edns_buffer_size" name="edns_buffer_size" class="selectpicker">
-<?php
-                          foreach (array("512", "1480", "4096") as $size) :?>
-                            <option value="<?= $size ?>" <?= $pconfig['edns_buffer_size'] == $size ? 'selected="selected"' : '' ?>>
-                              <?= $size ?>
-                            </option>
-<?php
-                          endforeach;?>
-                          </select>
-                          <div class="hidden" for="help_for_edns_buffer_size">
-                            <?= gettext("Number of bytes size to advertise as the EDNS reassembly buffer size. This is the value that is used in UDP datagrams sent to peers. RFC recommendation is 4096 (which is the default). If you have fragmentation reassemble problems, usually seen as timeouts, then a value of 1480 should help. The 512 value bypasses most MTU path problems, but it can generate an excessive amount of TCP fallback.") ?>
                           </div>
                         </td>
                       </tr>
