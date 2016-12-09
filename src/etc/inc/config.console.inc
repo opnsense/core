@@ -57,9 +57,6 @@ function set_networking_interfaces_ports($probe = false)
 	$interactive = true;
 	$key = null;
 
-	/* kernel messages clobber stty probing on ifconfig up */
-	system_console_mute();
-
 	$iflist = get_interface_list(false, true);
 
 	if ($probe) {
@@ -290,7 +287,6 @@ EOD;
 	}
 
 	if (!in_array($key, array('y', 'Y'))) {
-		system_console_unmute();
 		fclose($fp);
 		return false;
 	}
@@ -420,7 +416,6 @@ EOD;
 	write_config("Console assignment of interfaces");
 	printf(gettext("done.%s"), "\n");
 
-	system_console_unmute();
 	fclose($fp);
 
 	return true;

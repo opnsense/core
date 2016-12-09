@@ -27,7 +27,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* parse the configuration and include all functions used below */
 require_once("config.inc");
 require_once("config.console.inc");
 require_once("filter.inc");
@@ -39,6 +38,8 @@ require_once("services.inc");
 require_once("interfaces.inc");
 require_once("openvpn.inc");
 
+system_console_mute();
+
 if (set_networking_interfaces_ports()) {
     echo "Reloading interfaces...";
     global $config;
@@ -47,3 +48,5 @@ if (set_networking_interfaces_ports()) {
     echo "done.\n";
     enable_rrd_graphing();
 }
+
+system_console_unmute();

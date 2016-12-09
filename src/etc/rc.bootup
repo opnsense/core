@@ -57,6 +57,13 @@ foreach ($inc_files as $inc_file) {
 
 echo "done.\n";
 
+/*
+ * Now mute console messages from kernel for this script, it
+ * has consequences for printing bootup info and can clobber
+ * stty probing during interface auto-detection.
+ */
+system_console_mute();
+
 system_devd_configure(true);
 system_login_configure(true);
 
@@ -104,11 +111,9 @@ system_hosts_generate(true);
 interfaces_loopback_configure(true);
 system_syslogd_start(true);
 
-system_console_mute(); /* XXX move this further up */
 openvpn_prepare_all(true);
 interfaces_configure(true);
 openvpn_resync_all(null, true);
-system_console_unmute(); /* XXX move this further down */
 
 system_resolvconf_generate(true);
 filter_configure_sync(true);
@@ -191,5 +196,7 @@ if ($setup_installer) {
         echo "password works for both accounts.  Remote login via SSH is possible.\n\n";
     }
 }
+
+system_console_unmute();
 
 exit(0);
