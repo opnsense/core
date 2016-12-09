@@ -2613,7 +2613,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
         return;
     }
 
-    $wandescr = isset($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface);
+    $wandescr = !empty($wancfg['descr']) ? strtoupper($wancfg['descr']) : strtoupper($interface);
 
     if ($verbose) {
         echo sprintf('Configuring %s interface...', $wandescr);
