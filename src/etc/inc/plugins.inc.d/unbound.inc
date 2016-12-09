@@ -257,7 +257,6 @@ EOF;
     $prefetch_key = !empty($config['unbound']['prefetchkey']) ? "yes" : "no";
     $outgoing_num_tcp = !empty($config['unbound']['outgoing_num_tcp']) ? $config['unbound']['outgoing_num_tcp'] : "10";
     $incoming_num_tcp = !empty($config['unbound']['incoming_num_tcp']) ? $config['unbound']['incoming_num_tcp'] : "10";
-    $edns_buffer_size = !empty($config['unbound']['edns_buffer_size']) ? $config['unbound']['edns_buffer_size'] : "4096";
     $num_queries_per_thread = !empty($config['unbound']['num_queries_per_thread']) ? $config['unbound']['num_queries_per_thread'] : "4096";
     $jostle_timeout = !empty($config['unbound']['jostle_timeout']) ? $config['unbound']['jostle_timeout'] : "200";
     $cache_max_ttl = !empty($config['unbound']['cache_max_ttl']) ? $config['unbound']['cache_max_ttl'] : "86400";
@@ -342,7 +341,6 @@ cache-min-ttl: {$cache_min_ttl}
 harden-dnssec-stripped: {$dnssecstripped}
 outgoing-num-tcp: {$outgoing_num_tcp}
 incoming-num-tcp: {$incoming_num_tcp}
-edns-buffer-size: {$edns_buffer_size}
 num-queries-per-thread: {$num_queries_per_thread}
 infra-host-ttl: {$infra_host_ttl}
 infra-cache-numhosts: {$infra_cache_numhosts}

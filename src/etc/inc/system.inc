@@ -175,11 +175,6 @@ function system_resolvconf_generate($dynupdate = false)
         }
     }
 
-    // Add EDNS support
-    if (isset($config['unbound']['enable']) && isset($config['unbound']['edns'])) {
-        $resolvconf .= "options edns0\n";
-    }
-
     $dnslock = lock('resolvconf', LOCK_EX);
 
     file_put_contents('/etc/resolv.conf', $resolvconf);
