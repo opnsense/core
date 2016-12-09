@@ -96,24 +96,19 @@ if ($curwanip == "0.0.0.0" || !is_ipaddr($curwanip)) {
     }
 }
 
-
-
 if (file_exists("/var/db/{$interface}_cacheip")) {
     $oldip = file_get_contents("/var/db/{$interface}_cacheip");
 } else {
     $oldip = "0.0.0.0";
 }
 
-
-/* regenerate resolv.conf if DNS overrides are allowed */
-system_resolvconf_generate(true);
+system_resolvconf_generate();
 
 /* write the current interface IP to file */
 /* used in src/sbin/dhclient-script.ext */
 if (is_ipaddr($curwanip)) {
     @file_put_contents("/var/db/{$interface}_ip", $curwanip);
 }
-
 
 link_interface_to_vips($interface, "update");
 

@@ -55,11 +55,10 @@ if (empty($config['unbound']['domainoverrides']) || !is_array($config['unbound']
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (!empty($pconfig['apply'])) {
+        system_resolvconf_generate();
         unbound_configure_do();
         services_dhcpd_configure();
         clear_subsystem_dirty('unbound');
-        /* Update resolv.conf in case the interface bindings exclude localhost. */
-        system_resolvconf_generate();
         header(url_safe('Location: /services_unbound_overrides.php'));
         exit;
     } elseif (!empty($pconfig['act']) && $pconfig['act'] == 'del') {

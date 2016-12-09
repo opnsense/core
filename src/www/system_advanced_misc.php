@@ -177,7 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
         $savemsg = get_std_save_message();
 
-        system_resolvconf_generate(true);
+        system_resolvconf_generate();
         system_cron_configure();
         system_powerd_configure();
         system_kernel_configure();

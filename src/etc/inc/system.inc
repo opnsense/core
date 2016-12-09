@@ -150,11 +150,16 @@ function activate_sysctls()
     set_sysctl($sysctls);
 }
 
-function system_resolvconf_generate($dynupdate = false)
+function system_resolvconf_generate($verbose = false)
 {
     global $config;
 
     $syscfg = $config['system'];
+
+    if ($verbose) {
+        echo 'Generating /etc/resolv.conf...';
+        flush();
+    }
 
     // Do not create blank domain lines, it breaks tools like dig.
     if($syscfg['domain']) {
@@ -200,13 +205,6 @@ function system_resolvconf_generate($dynupdate = false)
     file_put_contents('/etc/resolv.conf', $resolvconf);
     chmod('/etc/resolv.conf', 0644);
 
-    if (!file_exists("/var/run/booting")) {
-        /* restart dhcpd (nameservers may have changed) */
-        if (!$dynupdate) {
-            services_dhcpd_configure();
-        }
-    }
-
     /* setup static routes for DNS servers. */
     for ($dnscounter=1; $dnscounter<5; $dnscounter++) {
         /* setup static routes for dns servers */
@@ -232,7 +230,10 @@ function system_resolvconf_generate($dynupdate = false)
     }
 
     unlock($dnslock);
-    return 0;
+
+    if ($verbose) {
+        echo "done.\n";
+    }
 }
 
 function get_locale_list()

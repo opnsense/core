@@ -161,7 +161,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $config['system']['dnsserver'][] = $pconfig[$dnsopt];
             }
         }
-        $olddnsallowoverride = !empty($config['system']['dnsallowoverride']);
 
         $config['system']['dnsallowoverride'] = !empty($pconfig['dnsallowoverride']);
 
@@ -229,11 +228,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         unbound_configure_do();
         services_dhcpd_configure();
         system_timezone_configure();
-
-        if ($olddnsallowoverride != $config['system']['dnsallowoverride']) {
-            configd_run("dns reload");
-        }
-
         filter_configure();
 
         header(url_safe('Location: /system_general.php?savemsg=%s', array(get_std_save_message())));

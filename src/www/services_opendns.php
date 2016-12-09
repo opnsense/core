@@ -104,7 +104,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         write_config('OpenDNS filter configuration change');
         if ($refresh) {
-            $retval = system_resolvconf_generate();
+            system_resolvconf_generate();
+            services_dhcpd_configure();
             $savemsg = get_std_save_message();
         }
     }

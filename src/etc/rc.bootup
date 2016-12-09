@@ -115,9 +115,7 @@ echo "Syncing OpenVPN settings...";
 openvpn_resync_all();
 echo "done.\n";
 
-/* generate resolv.conf */
-system_resolvconf_generate();
-
+system_resolvconf_generate(true);
 filter_configure_sync(true);
 filter_pflog_start(true);
 setup_gateways_monitor(true);

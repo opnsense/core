@@ -122,9 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             exit;
         }
     } elseif (isset($pconfig['apply'])) {
-        // Reload filter (we might need to sync to CARP hosts)
         filter_configure();
-        /* Update resolv.conf in case the interface bindings exclude localhost. */
         system_resolvconf_generate();
         system_hosts_generate();
         dnsmasq_configure_do();
