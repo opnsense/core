@@ -1037,7 +1037,7 @@ function interfaces_configure($verbose = false)
     $track6_list = array();
 
     /* This is needed to speedup interfaces on bootup. */
-    $reload = file_exists('/var/run/booting');
+    $reload = !file_exists('/var/run/booting');
 
     foreach ($iflist as $if => $ifname) {
         $realif = $config['interfaces'][$if]['if'];
@@ -1082,7 +1082,7 @@ function interfaces_configure($verbose = false)
 
     interfaces_group_setup();
 
-    if (!$reload) {
+    if ($reload) {
         system_routing_configure('', $verbose);
         ipsec_configure($verbose);
         dnsmasq_configure_do($verbose);
