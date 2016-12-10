@@ -190,8 +190,11 @@ class Template(object):
         for fpart in filename.strip().split('/')[:-1]:
             fparts.append(fpart)
             if len(fpart) > 1:
-                if not os.path.exists('/'.join(fparts)):
-                    os.mkdir('/'.join(fparts))
+                tmppart = '/'.join(fparts);
+                if os.path.isfile(tmppart):
+                    os.remove(tmppart)
+                if not os.path.exists(tmppart):
+                    os.mkdir(tmppart)
 
     def _generate(self, module_name, create_directory=True):
         """ generate configuration files for one section using bound config and template data
