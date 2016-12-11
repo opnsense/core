@@ -28,4 +28,3 @@
 /sbin/ipfw -f flush
 /sbin/ipfw -f pipe flush
 /sbin/ipfw -f queue flush
-

@@ -128,7 +128,7 @@ abstract class BaseModel
                 // class found, but of wrong type. raise an exception.
                 throw new ModelException("class ".$field_rfcls->name." of wrong type in model definition");
             }
-            self::$internalCacheReflectionClasses[$classname] = $field_rfcls ;
+            self::$internalCacheReflectionClasses[$classname] = $field_rfcls;
         }
         return self::$internalCacheReflectionClasses[$classname];
     }
