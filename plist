@@ -111,6 +111,7 @@
 /usr/local/etc/rc.installer
 /usr/local/etc/rc.interfaces_wan_configure
 /usr/local/etc/rc.ipfw
+/usr/local/etc/rc.ipfw.flush_all
 /usr/local/etc/rc.ipfw.postload
 /usr/local/etc/rc.kill_states
 /usr/local/etc/rc.linkup
