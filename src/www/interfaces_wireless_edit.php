@@ -188,7 +188,7 @@ include("head.inc");
                     <input type="hidden" name="mode" value="<?=isset($pconfig['mode']) ? $pconfig['mode'] : 'bss' ?>" />
                     <input type="hidden" name="cloneif" value="<?=$pconfig['cloneif']; ?>" />
                     <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_wireless.php');?>'" />
+                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_wireless.php'" />
                     <?php if (isset($id)): ?>
                     <input name="id" type="hidden" value="<?=$id;?>" />
                     <?php endif; ?>

@@ -317,7 +317,7 @@ include("head.inc");
                       <td>&nbsp;</td>
                       <td>
                         <input name="Save" type="submit" class="btn btn-primary" value="<?=gettext("Submit"); ?>" />
-                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/load_balancer_virtual_server.php');?>'" />
+                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/load_balancer_virtual_server.php'" />
                         <?php if (isset($id) && (empty($_GET['act'] ) || $_GET['act'] != 'dup')): ?>
                           <input name="id" type="hidden" value="<?=$id;?>" />
                         <?php endif; ?>

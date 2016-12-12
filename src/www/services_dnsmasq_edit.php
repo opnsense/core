@@ -283,7 +283,7 @@ include("head.inc");
                   <td>&nbsp;</td>
                   <td>
                     <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_dnsmasq.php');?>'" />
+                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/services_dnsmasq.php'" />
                     <?php if (isset($id)): ?>
                     <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
                     <?php endif; ?>

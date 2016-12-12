@@ -322,7 +322,7 @@ $types = array("icmp" => gettext("ICMP"), "tcp" => gettext("TCP"), "http" => get
                     <td valign="top">&nbsp;</td>
                     <td width="78%">
                       <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/load_balancer_monitor.php');?>'" />
+                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/load_balancer_monitor.php'" />
                       <?php if (isset($id)): ?>
                       <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
                       <?php endif; ?>

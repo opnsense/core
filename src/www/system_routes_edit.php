@@ -32,8 +32,6 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("interfaces.inc");
 
-$referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_routes.php');
-
 if (!isset($config['staticroutes']) || !is_array($config['staticroutes'])) {
     $config['staticroutes'] = array();
 }
@@ -330,7 +328,7 @@ include("head.inc");
                     <td></td>
                     <td>
                       <input id="save" name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                      <input id="cancel" type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+                      <input id="cancel" type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/system_routes.php'" />
 <?php
                       if (isset($id) && $a_routes[$id]) :?>
                         <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />

@@ -382,7 +382,7 @@ include("head.inc");
                   <td></td>
                   <td>
                     <input name="Submit" type="submit" class="btn btn-primary" value="Save" />
-                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_hasync.php');?>'" />
+                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/system_hasync.php'" />
                   </td>
                 </tr>
               </table>

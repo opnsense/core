@@ -275,7 +275,7 @@ include("head.inc");
                     <td>
                       <input type="hidden" name="gifif" value="<?=$pconfig['gifif']; ?>" />
                       <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_gif.php');?>'" />
+                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_gif.php'" />
                       <?php if (isset($id)): ?>
                       <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
                       <?php endif; ?>

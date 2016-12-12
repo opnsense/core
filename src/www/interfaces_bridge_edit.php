@@ -621,7 +621,7 @@ $(document).ready(function() {
                       <td width="78%">
                         <input type="hidden" name="bridgeif" value="<?=$pconfig['bridgeif']; ?>" />
                         <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_bridge.php');?>'" />
+                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_bridge.php'" />
 <?php if (isset($id)): ?>
                         <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
 <?php endif; ?>
