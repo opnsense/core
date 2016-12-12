@@ -212,7 +212,7 @@ include("head.inc");
                     <td>&nbsp;</td>
                     <td>
                       <input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_qinq.php');?>'" />
+                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_qinq.php'" />
                       <?php if (isset($id) && isset($a_qinqs[$id])): ?>
                       <input name="id" type="hidden" value="<?=$id;?>" />
                       <?php endif; ?>

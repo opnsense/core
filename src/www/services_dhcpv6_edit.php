@@ -244,7 +244,7 @@ include("head.inc");
                     <td></td>
                     <td>
                       <input name="Submit" type="submit" class="formbtn btn btn-primary" value="<?=gettext("Save");?>" />
-                      <input type="button" class="formbtn btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_dhcpv6.php');?>'" />
+                      <input type="button" class="formbtn btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/services_dhcpv6.php'" />
                       <?php if (isset($id)): ?>
                       <input name="id" type="hidden" value="<?=$id;?>" />
                       <?php endif; ?>

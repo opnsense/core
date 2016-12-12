@@ -371,7 +371,7 @@ include("head.inc");
                     <td width="78%">
                       <br />
                       <input id="save" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>"/>
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/load_balancer_pool.php');?>'" />
+                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/load_balancer_pool.php'" />
                       <?php if (isset($id) && (empty($_GET['act']) || $_GET['act'] != 'dup')): ?>
                       <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
                       <?php endif; ?>

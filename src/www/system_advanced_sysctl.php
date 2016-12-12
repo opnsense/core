@@ -223,7 +223,7 @@ $( document ).ready(function() {
                     <td>&nbsp;</td>
                     <td>
                       <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? html_safe($_SERVER['HTTP_REFERER']) : '/system_advanced_sysctl.php');?>'" />
+                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/system_advanced_sysctl.php'" />
 
 <?php
                       if (isset($id)) :?>

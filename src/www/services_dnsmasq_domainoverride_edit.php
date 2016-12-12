@@ -32,7 +32,6 @@ require_once("system.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-$referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_dnsmasq.php');
 
 if (empty($config['dnsmasq']['domainoverrides']) || !is_array($config['dnsmasq']['domainoverrides'])) {
     $config['dnsmasq']['domainoverrides'] = array();
@@ -198,7 +197,7 @@ include("head.inc");
                       <td>&nbsp;</td>
                       <td>
                         <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/services_dnsmasq.php'" />
                         <?php if (isset($id)): ?>
                         <input name="id" type="hidden" value="<?=$id;?>" />
                         <?php endif; ?>

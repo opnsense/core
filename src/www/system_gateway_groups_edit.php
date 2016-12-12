@@ -309,7 +309,7 @@ $( document ).ready(function() {
                     <td></td>
                     <td>
                       <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_gateway_groups.php');?>'" />
+                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/system_gateway_groups.php'" />
 <?php
                       if (isset($id)) :?>
                       <input name="id" type="hidden" value="<?=$id;?>" />

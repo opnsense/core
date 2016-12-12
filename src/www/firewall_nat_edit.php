@@ -1018,7 +1018,7 @@ $( document ).ready(function() {
                   <td>&nbsp;</td>
                   <td>
                     <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_nat.php';?>'" />
+                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/firewall_nat.php'" />
                     <?php if (isset($id)): ?>
                     <input name="id" type="hidden" value="<?=$id;?>" />
                     <?php endif; ?>
