@@ -31,6 +31,7 @@
 
 import os
 import os.path
+import glob
 import stat
 import syslog
 import collections
@@ -58,33 +59,22 @@ class Template(object):
         self._j2_env = jinja2.Environment(loader=jinja2.FileSystemLoader(self._template_dir), trim_blocks=True,
                                           extensions=["jinja2.ext.do", "jinja2.ext.loopcontrols"])
 
-    @staticmethod
-    def _read_targets(filename):
-        """ read raw target filename masks
-
-        :param filename: targets filename (path/+TARGETS)
-        :return: dictionary containing +TARGETS filename sets
-        """
-        result = {}
-        for line in open(filename, 'r').read().split('\n'):
-            parts = line.split(':')
-            if len(parts) > 1 and parts[0].strip()[0] != '#':
-                result[parts[0]] = ':'.join(parts[1:]).strip()
-
-        return result
-
     def list_module(self, module_name):
         """ list single module content
         :param module_name: module name in dot notation ( company.module )
         :return: dictionary with module data
         """
-        result = {}
+        result = {'+TARGETS': dict(), '+CLEANUP_TARGETS': dict()}
         file_path = '%s/%s' % (self._template_dir, module_name.replace('.', '/'))
         if os.path.exists('%s/+TARGETS' % file_path):
-            result['+TARGETS'] = self._read_targets('%s/+TARGETS' % file_path)
-        else:
-            result['+TARGETS'] = {}
-
+            for line in open('%s/+TARGETS' % file_path, 'r').read().split('\n'):
+                parts = line.split(':')
+                if len(parts) > 1 and parts[0].strip()[0] != '#':
+                    result['+TARGETS'][parts[0]] = parts[1].strip()
+                    if len(parts) == 2:
+                        result['+CLEANUP_TARGETS'][parts[0]] = parts[1].strip()
+                    elif parts[2].strip() != "":
+                        result['+CLEANUP_TARGETS'][parts[0]] = parts[2].strip()
         return result
 
     def list_modules(self):
@@ -93,12 +83,11 @@ class Template(object):
 
         :return: list (dict) of registered modules
         """
-        result = {}
+        result =list()
         for root, dirs, files in os.walk(self._template_dir):
             if root.count('/') > self._template_dir.count('/'):
                 module_name = root.replace(self._template_dir, '')
-                if module_name not in result:
-                    result[module_name] = self.list_module(module_name)
+                result.append(module_name)
 
         return result
 
@@ -274,14 +263,12 @@ class Template(object):
 
         return result
 
-    def generate(self, module_name, create_directory=True):
+    def iter_modules(self, module_name):
         """
         :param module_name: module name in dot notation ( company.module ), may use wildcards
-        :param create_directory: automatically create directories to place template output in ( if not existing )
-        :return: list of generated output files or None if template not found
+        :return: templates matching paterns
         """
-        result = None
-        for template_name in sorted(self.list_modules().keys()):
+        for template_name in sorted(self.list_modules()):
             wildcard_pos = module_name.find('*')
             do_generate = False
             if wildcard_pos > -1 and module_name[:wildcard_pos] == template_name[:wildcard_pos]:
@@ -296,19 +283,45 @@ class Template(object):
                 do_generate = True
 
             if do_generate:
-                if result is None:
-                    result = list()
-                syslog.syslog(syslog.LOG_NOTICE, "generate template container %s" % template_name)
-                try:
-                    for filename in self._generate(template_name, create_directory):
-                        result.append(filename)
-                except Exception as render_exception:
-                    if wildcard_pos > -1:
-                        # log failure, but proceed processing when doing a wildcard search
-                        syslog.syslog(syslog.LOG_ERR, 'error generating template %s : %s' % (template_name,
-                                                                                             traceback.format_exc()))
-                    else:
-                        raise render_exception
+                yield template_name
+
+    def generate(self, module_name, create_directory=True):
+        """
+        :param module_name: module name in dot notation ( company.module ), may use wildcards
+        :param create_directory: automatically create directories to place template output in ( if not existing )
+        :return: list of generated output files or None if template not found
+        """
+        result = None
+        for template_name in self.iter_modules(module_name):
+            if result is None:
+                result = list()
+            syslog.syslog(syslog.LOG_NOTICE, "generate template container %s" % template_name)
+            try:
+                for filename in self._generate(template_name, create_directory):
+                    result.append(filename)
+            except Exception as render_exception:
+                if wildcard_pos > -1:
+                    # log failure, but proceed processing when doing a wildcard search
+                    syslog.syslog(syslog.LOG_ERR, 'error generating template %s : %s' % (template_name,
+                                                                                         traceback.format_exc()))
+                else:
+                    raise render_exception
 
 
+        return result
+
+    def cleanup(self, module_name):
+        """
+        :param module_name: module name in dot notation ( company.module ), may use wildcards
+        :return: list of removed files or None if template not found
+        """
+        result = list()
+        for template_name in self.iter_modules(module_name):
+            syslog.syslog(syslog.LOG_NOTICE, "cleanup template container %s" % template_name)
+            module_data = self.list_module(module_name)
+            for src_template in module_data['+CLEANUP_TARGETS'].keys():
+                target = module_data['+CLEANUP_TARGETS'][src_template]
+                for filename in glob.glob(target):
+                    os.remove(filename)
+                    result.append(filename)
         return result

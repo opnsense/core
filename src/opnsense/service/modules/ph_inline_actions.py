@@ -65,15 +65,26 @@ def execute(action, parameters):
         # traverse all installed templates and return list
         # the number of registered targets is returned between []
         tmpl = template.Template(action.root_dir)
-        all_templates = tmpl.list_modules()
         retval = []
-        for tag in sorted(all_templates.keys()):
-            template_name = '%s [%d]' % (tag, len(all_templates[tag]['+TARGETS']))
+        for module_name in sorted(tmpl.list_modules()):
+            template_count = len(tmpl.list_module(module_name)['+TARGETS'])
+            template_name = '%s [%d]' % (module_name, template_count)
             retval.append(template_name)
 
         del tmpl
-
         return '\n'.join(retval)
+    elif action.command == 'template.cleanup':
+        tmpl = template.Template(action.root_dir)
+        filenames = tmpl.cleanup(parameters)
+        del tmpl
+
+        # send generated filenames to syslog
+        if filenames is not None:
+            for filename in filenames:
+                syslog.syslog(syslog.LOG_DEBUG, ' %s removed %s' % (parameters, filename))
+            return 'OK'
+        else:
+            return 'ERR'
     elif action.command == 'configd.actions':
         # list all available configd actions
         from processhandler import ActionHandler
