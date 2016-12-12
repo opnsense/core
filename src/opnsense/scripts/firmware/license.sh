@@ -32,6 +32,10 @@ PACKAGE=${1}
 LICENSES=$(pkg query %L ${PACKAGE})
 VERSION=$(pkg query %v ${PACKAGE})
 
-if [ -f "${LICENSEDIR}/${PACKAGE}-${VERSION}/${LICENSES}" ]; then
-	cat "${LICENSEDIR}/${PACKAGE}-${VERSION}/${LICENSES}"
-fi
+IFS=', '
+
+for LICENSE in ${LICENSES}; do
+	if [ -f "${LICENSEDIR}/${PACKAGE}-${VERSION}/${LICENSE}" ]; then
+		cat "${LICENSEDIR}/${PACKAGE}-${VERSION}/${LICENSE}"
+	fi
+done

@@ -199,7 +199,7 @@ class FirmwareController extends ApiControllerBase
             // sanitize package name
             $filter = new \Phalcon\Filter();
             $filter->add('scrub', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z]/', '', $value);
+                return preg_replace('/[^0-9a-zA-Z\-]/', '', $value);
             });
             $package = $filter->sanitize($package, 'scrub');
             $text = trim($backend->configdRun(sprintf('firmware license %s', $package)));
