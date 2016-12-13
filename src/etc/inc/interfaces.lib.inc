@@ -282,21 +282,6 @@ function legacy_interface_details($intf)
     return legacy_interfaces_details($intf)[$intf];
 }
 
-function legacy_netgraph_attach($ifs)
-{
-    /* XXX compat stub for plugins to be removed in 17.1 */
-}
-
-function legacy_netgraph_detach($ifs)
-{
-    /* XXX compat stub for plugins to be removed in 17.1 */
-}
-
-function legacy_netgraph_rename($tmpifs, $ifs)
-{
-    mwexecf('/usr/sbin/ngctl name %s: %s', array($tmpifs, $ifs));
-}
-
 /**
  * configure interface hardware settings
  * @param string $ifs interface name

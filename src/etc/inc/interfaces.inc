@@ -210,7 +210,7 @@ function interface_vlan_configure(&$vlan)
     } else {
         $tmpvlanif = legacy_interface_create('vlan');
         legacy_interface_rename($tmpvlanif, $vlanif);
-        legacy_netgraph_rename($tmpvlanif, $vlanif);
+        mwexecf('/usr/sbin/ngctl name %s: %s', array($tmpvlanif, $vlanif));
     }
 
     legacy_vlan_tag($vlanif, $if, $vlan['tag']);
