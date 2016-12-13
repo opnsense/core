@@ -29,6 +29,7 @@
 
 import tempfile
 import os
+import sys
 import json
 import glob
 import os.path
@@ -36,9 +37,16 @@ import tarfile
 import gzip
 import zipfile
 import syslog
-import shutil
-import urllib2
-from ConfigParser import ConfigParser
+if sys.version_info < (3, 0):
+    from ConfigParser import ConfigParser
+    from urllib2 import urlopen
+    from urllib2 import URLError
+    from urllib2 import HTTPError
+else:
+    from configparser import ConfigParser
+    from urllib.request import urlopen
+    from urllib.error import URLError
+    from urllib.error import HTTPError
 import requests
 
 acl_config_fn = '/usr/local/etc/squid/externalACLs.conf'
@@ -79,8 +87,13 @@ class Downloader(object):
 
             req = requests.get(**req_opts)
             if req.status_code == 200:
-                self._source_handle = tempfile.NamedTemporaryFile()
-                shutil.copyfileobj(req.raw, self._source_handle)
+                self._source_handle = tempfile.NamedTemporaryFile('wb+', 10240)
+                while True:
+                    data = req.raw.read(10240)
+                    if not data:
+                        break
+                    else:
+                         self._source_handle.write(data)
                 self._source_handle.seek(0)
             else:
                 syslog.syslog(syslog.LOG_ERR, 'proxy acl: error downloading %s (http code: %s)' % (self._url,
@@ -88,17 +101,17 @@ class Downloader(object):
         elif self._url.lower().startswith('ftp://'):
             # FTP download
             try:
-                f = urllib2.urlopen(self._url, timeout=self._timeout)
-                self._source_handle = tempfile.NamedTemporaryFile()
+                f = urlopen(self._url, timeout=self._timeout)
+                self._source_handle = tempfile.NamedTemporaryFile('wb+', 10240)
                 while True:
-                    data = f.read(1024)
+                    data = f.read(10240)
                     if not data:
                         break
                     else:
                          self._source_handle.write(data)
                 self._source_handle.seek(0)
                 f.close()
-            except (urllib2.URLError, urllib2.HTTPError, IOError) as e:
+            except (URLError, HTTPError, IOError) as e:
                  syslog.syslog(syslog.LOG_ERR, 'proxy acl: error downloading %s' % self._url)
         else:
             syslog.syslog(syslog.LOG_ERR, 'proxy acl: unsupported protocol for %s' % self._url)
@@ -141,12 +154,16 @@ class Downloader(object):
         """ download / unpack ACL
             :return: iterator filename, type, content
         """
+        is_python3 = sys.version_info >= (3, 0)
         self.fetch()
         for filename, filehandle in self.get_files():
             basefilename = os.path.basename(filename).lower()
             file_ext = filename.split('.')[-1].lower()
             while True:
-                line = filehandle.readline()
+                if is_python3:
+                    line = filehandle.readline().decode(encoding='utf-8', errors='ignore')
+                else:
+                    line = filehandle.readline()
                 if not line:
                     break
                 yield filename, basefilename, file_ext, line
@@ -180,7 +197,7 @@ class DomainSorter(object):
             target = chr(i + 1)
             setid = int(i / (sets / self._num_targets))
             if setid not in self._buckets:
-                self._buckets[setid] = tempfile.NamedTemporaryFile()
+                self._buckets[setid] = tempfile.NamedTemporaryFile('w+', 10240)
             self._sort_map[target] = self._buckets[setid]
 
     def write(self, data):
@@ -203,7 +220,8 @@ class DomainSorter(object):
         """
         target = key[0]
         if target in self._sort_map:
-            self._sort_map[target].write('%s%s%s\n' % (key, self._seperator, value))
+            for part in (key, self._seperator, value, '\n'):
+                self._sort_map[target].write(part)
         else:
             # not supposed to happen, every key should have a calculated target pool
             pass
@@ -245,7 +263,7 @@ class DomainSorter(object):
         """
         if self._target_filename is not None and self._target_mode is not None:
             # flush to file on close
-            with open(self._target_filename, self._target_mode) as f_out:
+            with open(self._target_filename, self._target_mode, buffering=10240) as f_out:
                 prev_line = None
                 for line in self.reader():
                     line = line.lstrip('.')
@@ -338,11 +356,12 @@ def main():
                                 continue
 
                         if filetype in targets and targets[filetype]['handle'] is None:
-                            targets[filetype]['handle'] = targets[filetype]['class'](targets[filetype]['filename'],'wb')
+                            targets[filetype]['handle'] = targets[filetype]['class'](targets[filetype]['filename'],'w')
                         if filetype in targets:
-                            targets[filetype]['handle'].write('%s\n' % line)
+                            targets[filetype]['handle'].write(line)
+                            targets[filetype]['handle'].write('\n')
                     # save index to disc
-                    with open('%s.index' % target_filename, 'wb') as idx_out:
+                    with open('%s.index' % target_filename, 'w', buffering=10240) as idx_out:
                         index_data = dict()
                         for filename in all_filenames:
                             if len(filename.split('/')) > 2:
@@ -361,7 +380,7 @@ def main():
                             os.remove(targets[filetype]['filename'])
                     elif not os.path.isfile(targets[filetype]['filename']):
                         # no data fetched and no file available, create new empty file
-                        with open(targets[filetype]['filename'], 'wb') as target_out:
+                        with open(targets[filetype]['filename'], 'w') as target_out:
                             target_out.write("")
 
 
