@@ -120,70 +120,6 @@ function does_interface_exist($interface)
     }
 }
 
-function interface_netgraph_needed($interface)
-{
-    global $config;
-
-    if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == 'server') {
-        if ('wan' == $interface) {
-            return true;
-        }
-    }
-
-    if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == 'server') {
-        if ($config['l2tp']['interface'] == $interface) {
-            return true;
-        }
-    }
-
-    if (isset($config['pppoes']['pppoe'])) {
-        foreach ($config['pppoes']['pppoe'] as $pppoe) {
-            if ($pppoe['mode'] != 'server') {
-                continue;
-            }
-            if ($pppoe['interface'] == $interface) {
-                return true;
-            }
-        }
-    }
-
-    if (isset($config['interfaces'][$interface]['ipaddr'])) {
-        switch ($config['interfaces'][$interface]['ipaddr']) {
-            case 'ppp':
-            case 'pppoe':
-            case 'l2tp':
-            case 'pptp':
-                return true;
-            default:
-                break;
-        }
-    }
-
-    $realif = get_real_interface($interface);
-
-    if (isset($config['ppps']['ppp'])) {
-        foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
-            $ports = explode(',', $ppp['ports']);
-            foreach ($ports as $pid => $port) {
-                $port = get_real_interface($port);
-                if ($realif == $port) {
-                    return true;
-                }
-                /*
-                 * Find the parent interfaces of the vlans in the MLPPP
-                 * configs there should be only one element in the array
-                 */
-                $parent_if = get_parent_interface($port);
-                if ($realif == $parent_if[0]) {
-                    return true;
-                }
-            }
-        }
-    }
-
-    return false;
-}
-
 function interfaces_loopback_configure($verbose = false)
 {
     if ($verbose) {
@@ -280,8 +216,6 @@ function interface_vlan_configure(&$vlan)
     legacy_vlan_tag($vlanif, $if, $vlan['tag']);
 
     interfaces_bring_up($vlanif);
-
-    /* XXX: ermal -- for now leave it here at the moment it does not hurt. */
     interfaces_bring_up($if);
 
     return $vlanif;
@@ -319,7 +253,6 @@ function interface_qinq_configure(&$vlan, $fd = null)
 
     /* make sure the parent is converted to ng_vlan(4) and is up */
     interfaces_bring_up($qinqif);
-    legacy_netgraph_attach($qinqif);
 
     if (!empty($vlanif) && does_interface_exist($vlanif)) {
         exec("/usr/sbin/ngctl msg {$vlanif}qinq: gettable", $result);
@@ -1400,7 +1333,6 @@ function interface_ppps_configure($interface)
             case "pppoe":
                 /* Bring the parent interface up */
                 interfaces_bring_up($port);
-                legacy_netgraph_attach($port);
                 /* Enable setautosrc to automatically change mac address if parent interface's changes */
                 mwexecf('/usr/sbin/ngctl msg %s: setautosrc 1', array($port));
                 break;
@@ -1423,7 +1355,6 @@ function interface_ppps_configure($interface)
                     log_error(sprintf('Could not get a PPTP/L2TP Remote IP address from %s for %s in interfaces_ppps_configure.', $dhcp_gateway, $gway));
                     return 0;
                 }
-                legacy_netgraph_attach($port);
                 break;
             case "ppp":
                 if (!file_exists("{$port}")) {
@@ -2787,10 +2718,6 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 
     if (does_interface_exist($wancfg['if'])) {
         interfaces_bring_up($wancfg['if']);
-    }
-
-    if (!interface_netgraph_needed($interface)) {
-        legacy_netgraph_detach($realif);
     }
 
     if (!file_exists("/var/run/booting")) {
