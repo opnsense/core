@@ -339,7 +339,7 @@ function filter_configure()
      */
     if (!file_exists("/var/run/booting")) {
         configd_run('filter reload');
-        if ( !empty($config['hasync']['synchronizetoip'])) {
+        if (!empty($config['hasync']['synchronizetoip'])) {
             configd_run('filter sync restart');
         }
     }
@@ -500,6 +500,7 @@ function filter_configure_sync($verbose = false)
     update_filter_reload_status(gettext("Setting up SCRUB information"));
     $rules .= filter_generate_scrubing($FilterIflist);
     $rules .= "\n";
+    update_filter_reload_status(gettext("Generating rules"));
     $rules .= $fw->anchorToText('nat,binat,rdr', 'head');
     $rules .= "{$natrules}\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'tail');
@@ -510,6 +511,8 @@ function filter_configure_sync($verbose = false)
     $rules .= $fw->anchorToText('fw', 'tail');
 
     unset($aliases, $gateways, $natrules, $pfrules);
+
+    update_filter_reload_status(gettext("Executing packet filter reload"));
 
     // Copy rules.debug to rules.debug.old
     if (file_exists('/tmp/rules.debug')) {
@@ -579,6 +582,8 @@ function filter_configure_sync($verbose = false)
         $_grbg = exec('/sbin/pfctl -t bogonsv6 -T kill 2>/dev/null');
     }
 
+    update_filter_reload_status(gettext("Reloading filterdns daemon"));
+
     if (!empty($filterdns)) {
         @file_put_contents('/var/etc/filterdns.conf', implode('', $filterdns));
         unset($filterdns);
@@ -599,6 +604,8 @@ function filter_configure_sync($verbose = false)
     } else {
         killbypid('/var/run/filterdns.pid');
     }
+
+    update_filter_reload_status(gettext("Flushing schedule state"));
 
     /* run items scheduled for after filter configure run */
     foreach ($after_filter_configure_run as $afcr) {
