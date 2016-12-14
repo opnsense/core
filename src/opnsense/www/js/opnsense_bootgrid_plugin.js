@@ -81,6 +81,19 @@ function stdBootgridUI(obj, sourceUrl, options) {
 }
 
 /**
+ * reload bootgrid, return to current selected page
+ */
+function std_bootgrid_reload(gridId) {
+    var currentpage = $("#"+gridId).bootgrid("getCurrentPage");
+    $("#"+gridId).bootgrid("reload");
+    // absolutely not perfect, bootgrid.reload doesn't seem to support when().done()
+    setTimeout(function(){
+        $('#'+gridId+'-footer  a[data-page="'+currentpage+'"]').click();
+    }, 400);
+}
+
+
+/**
  * creates new bootgrid object and links actions to our standard templates
  * uses the following data properties to define functionality:
  *      data-editDialog : id of the edit dialog to use (  see base_dialog.volt template for details )
@@ -135,7 +148,7 @@ $.fn.UIBootgrid = function (params) {
                                     saveFormToEndpoint(url=gridParams['set']+uuid,
                                         formid='frm_' + editDlg, callback_ok=function(){
                                             $("#"+editDlg).modal('hide');
-                                            $("#"+gridId).bootgrid("reload");
+                                            std_bootgrid_reload(gridId);
                                         }, true);
                                 } else {
                                     console.log("[grid] action set missing")
@@ -169,7 +182,7 @@ $.fn.UIBootgrid = function (params) {
                                     saveFormToEndpoint(url=gridParams['add'],
                                         formid='frm_' + editDlg, callback_ok=function(){
                                             $("#"+editDlg).modal('hide');
-                                            $("#"+gridId).bootgrid("reload");
+                                            std_bootgrid_reload(gridId);
                                         }, true);
                                 } else {
                                     console.log("[grid] action add missing")
@@ -207,7 +220,7 @@ $.fn.UIBootgrid = function (params) {
                             ajaxCall(url=gridParams['toggle'] + uuid,
                                 sendData={},callback=function(data,status){
                                     // reload grid after delete
-                                    $("#"+gridId).bootgrid("reload");
+                                    std_bootgrid_reload(gridId);
                                 });
                         } else {
                             console.log("[grid] action toggle missing")
@@ -255,7 +268,7 @@ $.fn.UIBootgrid = function (params) {
                                 });
                                 // refresh after load
                                 $.when.apply(null, deferreds).done(function(){
-                                    $("#"+gridId).bootgrid("reload");
+                                    std_bootgrid_reload(gridId);
                                 });
                             }
                         });
