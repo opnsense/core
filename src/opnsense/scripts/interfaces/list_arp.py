@@ -45,7 +45,7 @@ if __name__ == '__main__':
     if os.path.isfile(dhcp_leases_filename):
         leases = open(dhcp_leases_filename, 'r').read()
         for lease in leases.split('}'):
-            if lease.find('{') > -1:
+            if lease.strip().find('lease') == 0 and lease.find('{') > -1:
                 dhcp_ipv4_address = lease.split('{')[0].split('lease')[1].strip()
                 if lease.find('client-hostname') > -1:
                     dhcp_leases[dhcp_ipv4_address] = {'hostname': lease.split('client-hostname')[1].strip()[1:-2]}
