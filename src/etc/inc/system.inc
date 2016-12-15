@@ -1452,6 +1452,8 @@ function get_possible_listen_ips($include_ipv6_link_local = false, $include_loop
 
 function system_kernel_configure($verbose = false)
 {
+    global $config;
+
     if ($verbose) {
         echo 'Configuring kernel modules...';
         flush();
