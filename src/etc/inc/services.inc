@@ -1393,8 +1393,9 @@ function services_dhcrelay_configure($verbose = false)
                         break;
                     }
                 }
-            } else
-            $destif = get_real_interface("wan");
+            } else {
+                $destif = get_real_interface("wan");
+            }
         }
 
         if (!empty($destif)) {
