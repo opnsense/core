@@ -2,6 +2,7 @@
 <?php
 
 /*
+    Copyright (C) 2014-2016 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2004-2009 Scott Ullrich <sullrich@pfsense.org>.
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
     Copyright (C) 2009 Erik Kristensen
@@ -64,9 +65,6 @@ echo "done.\n";
  */
 system_console_mute();
 
-system_devd_configure(true);
-system_login_configure(true);
-
 /* loopback device is required early for syslog and the installer */
 interfaces_loopback_configure(true);
 
@@ -94,6 +92,9 @@ if ($setup_installer) {
 global $config;
 $config = parse_config(true);
 convert_config();
+
+system_devd_configure(true);
+system_login_configure(true);
 
 /*
  *  Determine if we need to throw a interface exception

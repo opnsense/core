@@ -127,11 +127,6 @@ function interfaces_loopback_configure($verbose = false)
         flush();
     }
 
-    /*
-     * This function is called very early, we must
-     * make sure the config is not required.
-     */
-
     legacy_interface_setaddress('lo0', '127.0.0.1');
     legacy_interface_flags('lo0', 'up');
 
