@@ -67,6 +67,9 @@ system_console_mute();
 system_devd_configure(true);
 system_login_configure(true);
 
+/* loopback device is required early for syslog and the installer */
+interfaces_loopback_configure(true);
+
 $setup_installer = is_install_media();
 if ($setup_installer) {
     echo 'Press any key to start the early installer:  ';
@@ -108,7 +111,6 @@ system_timezone_configure(true);
 system_firmware_configure(true);
 system_hostname_configure(true);
 system_hosts_generate(true);
-interfaces_loopback_configure(true);
 system_syslogd_start(true);
 
 openvpn_prepare_all(true);
