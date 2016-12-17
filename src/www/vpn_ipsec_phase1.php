@@ -383,6 +383,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($p1index) && isset($a_phase1[$p1index])) {
             $a_phase1[$p1index] = $ph1ent;
         } else {
+            if (!empty($pconfig['clone_phase2']) && !empty($a_phase1[$_GET['dup']])
+              && !empty($config['ipsec']['phase2'])) {
+                // clone phase 2 entries in disabled state if requested.
+                $prev_ike_id = $a_phase1[$_GET['dup']]['ikeid'];
+                foreach ($config['ipsec']['phase2'] as $phase2ent) {
+                    if ($phase2ent['ikeid'] == $prev_ike_id) {
+                        $new_phase2 = $phase2ent;
+                        $new_phase2['disabled'] = true;
+                        $new_phase2['uniqid'] = uniqid();
+                        $new_phase2['ikeid'] = $ph1ent['ikeid'];
+                        $config['ipsec']['phase2'][] = $new_phase2;
+                    }
+                }
+            }
             $a_phase1[] = $ph1ent;
         }
 
@@ -515,6 +529,19 @@ include("head.inc");
                       <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                     </td>
                   </tr>
+<?php
+                  if (!empty($_GET['dup'])):?>
+                  <tr>
+                    <td><a id="help_for_clone_phase2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Clone phase2"); ?></td>
+                    <td>
+                      <input name="clone_phase2" type="checkbox" id="clone_phase2" value="yes" <?=!empty($pconfig['clone_phase2'])?"checked=\"checked\"":"";?> />
+                      <div class="hidden" for="help_for_clone_phase2">
+                        <?=gettext("Clone related phase 2 entries as well, remember to change the networks. All phase 2 entries will be added in disabled state"); ?>
+                      </div>
+                    </td>
+                  </tr>
+<?php
+                  endif;?>
                   <tr>
                     <td width="22%" valign="top"><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                     <td>
