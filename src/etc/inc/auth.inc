@@ -431,7 +431,8 @@ function local_user_set(&$user)
     }
 
     /* unlock valid shell users */
-    if (!is_account_disabled($user_name) && !is_account_expired($user_name)) {
+    if (!is_account_disabled($user_name) && !is_account_expired($user_name)
+      && !empty($config['system']['disableintegratedauth'])) {
         $lock_account = 'unlock';
     }
 
