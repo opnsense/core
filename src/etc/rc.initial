@@ -82,7 +82,7 @@ case ${OPCODE} in
 	/usr/local/etc/rc.initial.firmware
 	;;
 13)
-	/usr/local/etc/rc.restore_config_backup
+	/usr/local/etc/rc.initial.restore
 	;;
 *)
 	;;
