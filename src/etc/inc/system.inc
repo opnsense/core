@@ -918,7 +918,7 @@ function system_webgui_configure($verbose = false)
     global $config;
 
     if ($verbose) {
-        echo 'Starting GUI...';
+        echo 'Starting web GUI...';
         flush();
     }
 
