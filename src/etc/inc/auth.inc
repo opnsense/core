@@ -401,7 +401,7 @@ function local_sync_accounts($verbose = false)
     }
 }
 
-function local_user_set(&$user)
+function local_user_set(&$user, $force_unlock = false)
 {
     if (empty($user['password'])) {
         log_error(sprintf(
@@ -416,7 +416,7 @@ function local_user_set(&$user)
     $user_home = "/home/{$user_name}";
     $user_shell = '/sbin/nologin';
     $user_group = 'nobody';
-    $lock_account = 'lock';
+    $lock_account = $force_unlock ? 'unlock' : 'lock';
 
     @mkdir('/home', 0755);
 
@@ -430,7 +430,7 @@ function local_user_set(&$user)
         $user_shell = '/bin/csh';
     }
 
-    /* unlock valid shell users */
+    /* unlock valid shell users (only when integrated auth is disabled, our users are locked locally by default)*/
     if (!is_account_disabled($user_name) && !is_account_expired($user_name)
       && !empty($config['system']['disableintegratedauth'])) {
         $lock_account = 'unlock';

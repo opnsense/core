@@ -189,7 +189,7 @@ if ($setup_installer) {
     if ($root) {
         $root['shell'] = '/usr/local/etc/rc.installer';
         $root['name'] = 'installer';
-        local_user_set($root);
+        local_user_set($root, true);
 
         mwexec("/usr/local/etc/rc.sshd installer");
 
