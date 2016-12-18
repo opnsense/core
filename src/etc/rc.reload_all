@@ -66,3 +66,8 @@ if (function_exists('plugins_configure')) {
 log_error("rc.reload_all: Reloading filter configuration.");
 
 filter_configure_sync(true);
+
+log_error("rc.reload_all: Reloading web GUI.");
+
+system_webgui_configure(true);
+enable_rrd_graphing(true);

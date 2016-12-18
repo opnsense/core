@@ -12,9 +12,5 @@ if (count($argv) > 1 && is_numeric($argv[1])) {
     sleep($argv[1]);
 }
 
-echo 'Restarting webConfigurator...';
-
-system_webgui_configure();
-enable_rrd_graphing();
-
-echo 'done.' . PHP_EOL;
+system_webgui_configure(true);
+enable_rrd_graphing(true);
