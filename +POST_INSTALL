@@ -43,5 +43,4 @@ if pgrep -q php-cgi; then
 	pkill -HUP php-cgi
 fi
 
-echo "Reloading firmware configuration"
 /usr/local/etc/rc.configure_firmware
