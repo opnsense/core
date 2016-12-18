@@ -1702,6 +1702,9 @@ function system_login_configure($verbose = false)
         flush();
     }
 
+    /* depends on user account locking */
+    local_sync_accounts();
+
     configd_run('template reload OPNsense/Auth');
 
     $serialspeed = (!empty($config['system']['serialspeed']) && is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';

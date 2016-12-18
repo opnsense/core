@@ -122,7 +122,6 @@ system_resolvconf_generate(true);
 filter_configure_sync(true);
 filter_pflog_start(true);
 setup_gateways_monitor(true);
-local_sync_accounts(true);
 system_webgui_configure(true);
 system_cron_configure(true);
 system_routing_configure('', true);

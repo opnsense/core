@@ -337,14 +337,9 @@ function userHasPrivilege($userent, $privid = false)
     return true;
 }
 
-function local_sync_accounts($verbose = false)
+function local_sync_accounts()
 {
     global $config;
-
-    if ($verbose) {
-        echo 'Synchronizing user settings...';
-        flush();
-    }
 
     /* remove local users to avoid uid conflicts */
     $fd = popen('/usr/sbin/pw usershow -a', 'r');
@@ -394,10 +389,6 @@ function local_sync_accounts($verbose = false)
         foreach ($config['system']['group'] as $group) {
             local_group_set($group);
         }
-    }
-
-    if ($verbose) {
-        echo "done.\n";
     }
 }
 
