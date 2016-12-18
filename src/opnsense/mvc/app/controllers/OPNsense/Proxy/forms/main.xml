@@ -76,9 +76,9 @@
             </field>
             <field>
                 <id>proxy.general.forwardedForHandling</id>
-                <label>X-Forwarded for header handling</label>
+                <label>X-Forwarded-For header handling</label>
                 <type>dropdown</type>
-                <help><![CDATA[Select what to do with X-Forwarded for header.]]></help>
+                <help><![CDATA[Select what to do with X-Forwarded-For header.]]></help>
                 <advanced>true</advanced>
             </field>
             <field>
