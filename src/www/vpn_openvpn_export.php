@@ -464,9 +464,6 @@ function viscosity_openvpn_client_config_exporter($srvid, $usrid, $crtid, $usead
 {
     global $config;
 
-    $uniq = uniqid();
-    $tempdir = "/tmp/openvpn-export-{$uniq}";
-
     $validconfig = openvpn_client_export_validate_config($srvid, $usrid, $crtid);
     if (!$validconfig) {
         return false;
@@ -475,11 +472,9 @@ function viscosity_openvpn_client_config_exporter($srvid, $usrid, $crtid, $usead
     list($settings, $server_cert, $server_ca, $servercn, $user, $cert, $nokeys) = $validconfig;
 
     // create template directory
+    $baseTempDir = "/tmp/openvpn-export-" . uniqid();
+    $tempdir = $baseTempDir . "/Viscosity.visc";
     mkdir($tempdir, 0700, true);
-    mkdir($tempdir . "/Viscosity.visc", 0700, true);
-
-    // Append new Viscosity.visc directory on top
-    $tempdir = $tempdir . "/Viscosity.visc/";
 
     // write cofiguration file
     $prefix = openvpn_client_export_prefix($srvid, $usrid, $crtid);
@@ -570,7 +565,7 @@ EOF;
     }
 
     // Remove temporary directory
-    exec("rm -rf {$tempdir}");
+    exec("rm -rf {$baseTempDir}");
 
     return $outputfile;
 }
