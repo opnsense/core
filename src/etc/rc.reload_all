@@ -43,6 +43,10 @@ global $config;
 
 $config = parse_config(true);
 
+log_error("rc.reload_all: Reloading web GUI.");
+
+system_webgui_configure(true);
+
 log_error("rc.reload_all: Reloading all configuration settings.");
 
 system_firmware_configure(true);
@@ -64,11 +68,8 @@ if (function_exists('plugins_configure')) {
     plugins_configure('local', true);
 }
 
+enable_rrd_graphing(true);
+
 log_error("rc.reload_all: Reloading filter configuration.");
 
 filter_configure_sync(true);
-
-log_error("rc.reload_all: Reloading web GUI.");
-
-system_webgui_configure(true);
-enable_rrd_graphing(true);
