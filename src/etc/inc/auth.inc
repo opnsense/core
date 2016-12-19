@@ -394,6 +394,8 @@ function local_sync_accounts()
 
 function local_user_set(&$user, $force_unlock = false)
 {
+    global $config;
+
     if (empty($user['password'])) {
         log_error(sprintf(
           gettext('There is something wrong in your config because user %s password is missing!'),
