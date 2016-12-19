@@ -113,7 +113,7 @@ function prompt_for_enable_dhcp_server($version = 4)
 
     $label_DHCP = ($version === 6) ? "DHCP6" : "DHCP";
     $upperifname = strtoupper($interface);
-    return console_prompt_for_yn(sprintf(gettext("Do you want to enable the %s server on %s?"), $label_DHCP, $upperifname));
+    return console_prompt_for_yn(sprintf('Do you want to enable the %s server on %s?', $label_DHCP, $upperifname));
 }
 
 function get_interface_config_description($iface)
@@ -270,7 +270,7 @@ function console_configure_ip_address($version)
     $upperifname = strtoupper($interface);
 
     if ($interface == "wan") {
-        if (console_prompt_for_yn(sprintf(gettext("Configure %s address %s interface via %s?"), $label_IPvX, $upperifname, $label_DHCP))) {
+        if (console_prompt_for_yn(sprintf('Configure %s address %s interface via %s?', $label_IPvX, $upperifname, $label_DHCP))) {
             $ifppp = console_get_interface_from_ppp(get_real_interface("wan"));
             if (!empty($ifppp)) {
                 $ifaceassigned = $ifppp;
@@ -286,7 +286,7 @@ function console_configure_ip_address($version)
         while (true) {
             do {
                 echo "\n" . sprintf(
-                    gettext("Enter the new %s %s address.  Press <ENTER> for none:"),
+                    'Enter the new %s %s address.  Press <ENTER> for none:',
                     $upperifname,
                     $label_IPvX
                 ) . "\n> ";
@@ -294,13 +294,13 @@ function console_configure_ip_address($version)
                 $is_ipaddr = ($version === 6) ? is_ipaddrv6($intip) : is_ipaddrv4($intip);
                 if ($is_ipaddr && is_ipaddr_configured($intip, $interface)) {
                     $ip_conflict = true;
-                    echo gettext("This IP address conflicts with another interface or a VIP") . "\n";
+                    echo "This IP address conflicts with another interface or a VIP\n";
                 } else {
                     $ip_conflict = false;
                 }
             } while (($ip_conflict === true) || !($is_ipaddr || $intip == ''));
             if ($intip != '') {
-                echo "\n" . gettext("Subnet masks are entered as bit counts (like CIDR notation).") . "\n";
+                echo "\nSubnet masks are entered as bit counts (like CIDR notation).\n";
                 if ($version === 6) {
                     echo "e.g. ffff:ffff:ffff:ffff:ffff:ffff:ffff:ff00 = 120\n";
                     echo "     ffff:ffff:ffff:ffff:ffff:ffff:ffff:0    = 112\n";
@@ -315,7 +315,7 @@ function console_configure_ip_address($version)
                 do {
                     $upperifname = strtoupper($interface);
                     echo "\n" . sprintf(
-                        gettext("Enter the new %s %s subnet bit count (1 to %s):"),
+                        'Enter the new %s %s subnet bit count (1 to %s):',
                         $upperifname,
                         $label_IPvX,
                         $maxbits
@@ -326,11 +326,11 @@ function console_configure_ip_address($version)
 
                     if ($version === 4 && $intbits < $maxbits) {
                         if ($intip == gen_subnet($intip, $intbits)) {
-                            echo gettext("You cannot set network address to an interface");
+                            echo 'You cannot set network address to an interface';
                             continue 2;
                             $intbits_ok = false;
                         } elseif ($intip == gen_subnet_max($intip, $intbits)) {
-                            echo gettext("You cannot set broadcast address to an interface");
+                            echo 'You cannot set broadcast address to an interface';
                             continue 2;
                             $intbits_ok = false;
                         }
@@ -343,16 +343,16 @@ function console_configure_ip_address($version)
                     $subnet = gen_subnet($intip, $intbits);
                 }
                 do {
-                    echo "\n" . sprintf(gettext("For a WAN, enter the new %s %s upstream gateway address."), $upperifname, $label_IPvX) . "\n" .
-                                gettext("For a LAN, press <ENTER> for none:") . "\n> ";
+                    echo "\n" . sprintf('For a WAN, enter the new %s %s upstream gateway address.', $upperifname, $label_IPvX) . "\n" .
+                                'For a LAN, press <ENTER> for none:' . "\n> ";
                     $gwip = chop(fgets($fp));
                     $is_ipaddr = ($version === 6) ? is_ipaddrv6($gwip) : is_ipaddrv4($gwip);
                     $is_in_subnet = $is_ipaddr && ip_in_subnet($gwip, $subnet . "/" . $intbits);
                     if ($gwip != '') {
                         if (!$is_ipaddr) {
-                            echo sprintf(gettext("not an %s IP address!"), $label_IPvX) . "\n";
+                            echo sprintf('not an %s IP address!', $label_IPvX) . "\n";
                         } elseif (!$is_in_subnet) {
-                            echo gettext("not in subnet!") . "\n";
+                            echo "not in subnet\n";
                         }
                     }
                 } while (!($gwip == '' || ($is_ipaddr && $is_in_subnet)));
@@ -399,7 +399,7 @@ function console_configure_dhcpd($version = 4)
         $subnet_end = ($version === 6) ? gen_subnetv6_max($intip6, $intbits6) : gen_subnet_max($intip, $intbits);
         do {
             do {
-                echo sprintf(gettext("Enter the start address of the %s client address range:"), $label_IPvX) . " ";
+                echo sprintf('Enter the start address of the %s client address range:', $label_IPvX) . " ";
                 $dhcpstartip = chop(fgets($fp));
                 if ($dhcpstartip === "") {
                     fclose($fp);
@@ -408,12 +408,12 @@ function console_configure_dhcpd($version = 4)
                 $is_ipaddr = ($version === 6) ? is_ipaddrv6($dhcpstartip) : is_ipaddrv4($dhcpstartip);
                 $is_inrange = is_inrange($dhcpstartip, $subnet_start, $subnet_end);
                 if (!$is_inrange) {
-                    echo gettext("This IP address must be in the interface's subnet") . "\n";
+                    echo "This IP address must be in the interface's subnet\n";
                 }
             } while (!$is_ipaddr || !$is_inrange);
 
             do {
-                echo sprintf(gettext("Enter the end address of the %s client address range:"), $label_IPvX) . " ";
+                echo sprintf('Enter the end address of the %s client address range:', $label_IPvX) . " ";
                 $dhcpendip = chop(fgets($fp));
                 if ($dhcpendip === "") {
                     fclose($fp);
@@ -422,11 +422,11 @@ function console_configure_dhcpd($version = 4)
                 $is_ipaddr = ($version === 6) ? is_ipaddrv6($dhcpendip) : is_ipaddrv4($dhcpendip);
                 $is_inrange = is_inrange($dhcpendip, $subnet_start, $subnet_end);
                 if (!$is_inrange) {
-                    echo gettext("This IP address must be in the interface's subnet") . "\n";
+                    echo "This IP address must be in the interface's subnet\n";
                 }
                 $not_inorder = ($version === 6) ? (inet_pton($dhcpendip) < inet_pton($dhcpstartip)) : ip_less_than($dhcpendip, $dhcpstartip);
                 if ($not_inorder) {
-                    echo gettext("The end address of the DHCP range must be >= the start address") . "\n";
+                    echo "The end address of the DHCP range must be >= the start address\n";
                 }
             } while (!$is_ipaddr || !$is_inrange);
         } while ($not_inorder);
@@ -437,7 +437,7 @@ function console_configure_dhcpd($version = 4)
     } else {
         if (isset($config[$dhcpd][$interface]['enable'])) {
             unset($config[$dhcpd][$interface]['enable']);
-            printf(gettext("Disabling %s DHCPD..."), $label_IPvX);
+            printf('Disabling %s DHCPD...', $label_IPvX);
             $restart_dhcpd = true;
         }
     }
@@ -449,14 +449,14 @@ console_configure_dhcpd(6);
 //*****************************************************************************
 
 if ($config['system']['webgui']['protocol'] == "https") {
-    if (console_prompt_for_yn(gettext("Do you want to revert to HTTP as the web GUI protocol?"))) {
+    if (console_prompt_for_yn('Do you want to revert to HTTP as the web GUI protocol?')) {
         $config['system']['webgui']['protocol'] = "http";
         $restart_webgui = true;
     }
 }
 
 if (isset($config['system']['webgui']['noantilockout'])) {
-    echo "\n" . sprintf(gettext("Note: the anti-lockout rule on %s has been re-enabled."), $interface) . "\n";
+    echo "\n" . sprintf('Note: the anti-lockout rule on %s has been re-enabled.', $interface) . "\n";
     unset($config['system']['webgui']['noantilockout']);
 }
 
@@ -507,13 +507,13 @@ if (!$dry_run) {
 if ($intip != '') {
     if (is_ipaddr($intip)) {
         echo "\n\n" . sprintf(
-            gettext("The IPv4 %s address has been set to %s"),
+            'The IPv4 %s address has been set to %s',
             $upperifname,
             "{$intip}/{$intbits}"
         ) . "\n";
     } else {
         echo "\n\n" . sprintf(
-            gettext("The IPv4 %s address has been set to %s"),
+            'The IPv4 %s address has been set to %s',
             $upperifname,
             $intip
         ) . "\n";
@@ -522,13 +522,13 @@ if ($intip != '') {
 if ($intip6 != '') {
     if (is_ipaddr($intip6)) {
         echo "\n\n" . sprintf(
-            gettext("The IPv6 %s address has been set to %s"),
+            'The IPv6 %s address has been set to %s',
             $upperifname,
             "${intip6}/${intbits6}"
         ) . "\n";
     } else {
         echo "\n\n" . sprintf(
-            gettext("The IPv6 %s address has been set to %s"),
+            'The IPv6 %s address has been set to %s',
             $upperifname,
             $intip6
         ) . "\n";
@@ -537,7 +537,7 @@ if ($intip6 != '') {
 
 if ($intip != '' || $intip6 != '') {
     if (count($ifdescrs) == "1" or $interface == "lan") {
-        echo gettext('You can now access the web GUI by opening the following URL in your web browser:') . "\n";
+        echo "You can now access the web GUI by opening the following URL in your web browser:\n";
         if (!empty($config['system']['webgui']['port'])) {
             $webuiport = $config['system']['webgui']['port'];
             if ($intip != '') {
@@ -565,7 +565,7 @@ if ($intip != '' || $intip6 != '') {
     }
 }
 
-echo "\n" . gettext('Press <ENTER> to continue.');
+echo "\nPress <ENTER> to continue.";
 
 fgets($fp);
 fclose($fp);
