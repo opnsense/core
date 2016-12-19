@@ -406,6 +406,7 @@ function local_user_set(&$user, $force_unlock = false)
 
     $user_uid = $user['uid'];
     $user_name = $user['name'];
+    $user_pass = $user['password'];
     $user_home = "/home/{$user_name}";
     $user_shell = '/sbin/nologin';
     $user_group = 'nobody';
@@ -423,10 +424,14 @@ function local_user_set(&$user, $force_unlock = false)
         $user_shell = '/bin/csh';
     }
 
-    /* unlock valid shell users (only when integrated auth is disabled, our users are locked locally by default)*/
-    if (!is_account_disabled($user_name) && !is_account_expired($user_name)
-      && !empty($config['system']['disableintegratedauth'])) {
+    /* unlock valid shell users */
+    if (!is_account_disabled($user_name) && !is_account_expired($user_name)) {
         $lock_account = 'unlock';
+    }
+
+    /* passwords only when integrated auth is disabled */
+    if (empty($config['system']['disableintegratedauth'])) {
+        $user_pass = '*';
     }
 
     /* root user special handling */
@@ -455,7 +460,7 @@ function local_user_set(&$user, $force_unlock = false)
       " -g {$user_group} -s {$user_shell} -d {$user_home}".
       " -c ".escapeshellarg($comment)." -H 0 2>&1";
     $fd = popen($cmd, 'w');
-    fwrite($fd, $user['password']);
+    fwrite($fd, $user_pass);
     pclose($fd);
 
     /* create user directory if required */
