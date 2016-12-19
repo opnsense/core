@@ -342,8 +342,6 @@ function upgrade_010_to_011() {
 			$fr['interface'] = $ifmap[$fr['interface']];
 		else {
 			/* remove the rule */
-			printf(gettext("%sWarning: filter rule removed " .
-				"(interface '%s' does not exist anymore)."), "\n", $fr['interface']);
 			unset($config['filter']['rule'][$i]);
 			continue;
 		}
@@ -354,8 +352,6 @@ function upgrade_010_to_011() {
 				$fr['source']['network'] = $ifmap[$fr['source']['network']];
 			else {
 				/* remove the rule */
-				printf(gettext("%sWarning: filter rule removed " .
-					"(source network '%s' does not exist anymore)."), "\n", $fr['source']['network']);
 				unset($config['filter']['rule'][$i]);
 				continue;
 			}
@@ -367,8 +363,6 @@ function upgrade_010_to_011() {
 				$fr['destination']['network'] = $ifmap[$fr['destination']['network']];
 			else {
 				/* remove the rule */
-				printf(gettext("%sWarning: filter rule removed " .
-					"(destination network '%s' does not exist anymore)."), "\n", $fr['destination']['network']);
 				unset($config['filter']['rule'][$i]);
 				continue;
 			}
@@ -387,8 +381,6 @@ function upgrade_010_to_011() {
 			$fr['interface'] = $ifmap[$fr['interface']];
 		else {
 			/* remove the rule */
-			printf(gettext("%sWarning: traffic shaper rule removed " .
-				"(interface '%s' does not exist anymore)."), "\n", $fr['interface']);
 			unset($config['pfqueueing']['rule'][$i]);
 			continue;
 		}
@@ -399,8 +391,6 @@ function upgrade_010_to_011() {
 				$fr['source']['network'] = $ifmap[$fr['source']['network']];
 			else {
 				/* remove the rule */
-				printf(gettext("%sWarning: traffic shaper rule removed " .
-					"(source network '%s' does not exist anymore)."), "\n", $fr['source']['network']);
 				unset($config['pfqueueing']['rule'][$i]);
 				continue;
 			}
@@ -412,8 +402,6 @@ function upgrade_010_to_011() {
 				$fr['destination']['network'] = $ifmap[$fr['destination']['network']];
 			else {
 				/* remove the rule */
-				printf(gettext("%sWarning: traffic shaper rule removed " .
-					"(destination network '%s' does not exist anymore)."), "\n", $fr['destination']['network']);
 				unset($config['pfqueueing']['rule'][$i]);
 				continue;
 			}
@@ -559,7 +547,7 @@ function upgrade_017_to_018() {
 			$vip = array();
 			$vip['mode'] = "carp";
 			$vip['interface'] = "AUTO";
-			$vip['descr'] = sprintf(gettext("CARP vhid %s"), $carpent['vhid']);
+			$vip['descr'] = sprintf('CARP vhid %s', $carpent['vhid']);
 			$vip['type'] = "single";
 			$vip['vhid'] = $carpent['vhid'];
 			$vip['advskew'] = $carpent['advskew'];
@@ -613,7 +601,7 @@ function upgrade_028_to_029() {
 	$rule_item['type'] = "pass";
 	$rule_item['source']['any'] = true;
 	$rule_item['destination']['any'] = true;
-	$rule_item['descr'] = gettext("Permit IPsec traffic.");
+	$rule_item['descr'] = 'Permit IPsec traffic.';
 	$rule_item['statetype'] = "keep state";
 	$a_filter[] = $rule_item;
 }
@@ -632,7 +620,7 @@ function upgrade_039_to_040() {
 	if (isset ($config['system']['username'])) {
 		$config['system']['group'] = array();
 		$config['system']['group'][0]['name'] = "admins";
-		$config['system']['group'][0]['description'] = gettext("System Administrators");
+		$config['system']['group'][0]['description'] = 'System Administrators';
 		$config['system']['group'][0]['scope'] = "system";
 		$config['system']['group'][0]['priv'] = "page-all";
 		$config['system']['group'][0]['home'] = "index.php";
@@ -651,16 +639,16 @@ function upgrade_039_to_040() {
 		$config['system']['user'][0]['priv'] = array();
 		$config['system']['user'][0]['priv'][0]['id'] = "lockwc";
 		$config['system']['user'][0]['priv'][0]['name'] = "Lock web GUI";
-		$config['system']['user'][0]['priv'][0]['descr'] = gettext("Indicates whether this user will lock access to the web GUI for other users.");
+		$config['system']['user'][0]['priv'][0]['descr'] = 'Indicates whether this user will lock access to the web GUI for other users.';
 		$config['system']['user'][0]['priv'][1]['id'] = "lock-ipages";
 		$config['system']['user'][0]['priv'][1]['name'] = "Lock individual pages";
-		$config['system']['user'][0]['priv'][1]['descr'] = gettext("Indicates whether this user will lock individual HTML pages after having accessed a particular page (the lock will be freed if the user leaves or saves the page form).");
+		$config['system']['user'][0]['priv'][1]['descr'] = 'Indicates whether this user will lock individual HTML pages after having accessed a particular page (the lock will be freed if the user leaves or saves the page form).';
 		$config['system']['user'][0]['priv'][2]['id'] = "hasshell";
 		$config['system']['user'][0]['priv'][2]['name'] = "Has shell access";
-		$config['system']['user'][0]['priv'][2]['descr'] = gettext("Indicates whether this user is able to login for example via SSH.");
+		$config['system']['user'][0]['priv'][2]['descr'] = 'Indicates whether this user is able to login for example via SSH.';
 		$config['system']['user'][0]['priv'][4]['id'] = "isroot";
 		$config['system']['user'][0]['priv'][4]['name'] = "Is root user";
-		$config['system']['user'][0]['priv'][4]['descr'] = gettext("This user is associated with the UNIX root user (you should associate this privilege only with one single user).");
+		$config['system']['user'][0]['priv'][4]['descr'] = "This user is associated with the UNIX root user (you should associate this privilege only with one single user).";
 
 		$config['system']['nextuid'] = "111";
 		$config['system']['nextgid'] = "111";
@@ -776,10 +764,10 @@ function upgrade_042_to_043() {
 		$config['gateways']['gateway_item'][$i] = array();
 		if(is_ipaddr($config['interfaces'][$ifname]['gateway'])) {
 			$config['gateways']['gateway_item'][$i]['gateway'] = $config['interfaces'][$ifname]['gateway'];
-			$config['gateways']['gateway_item'][$i]['descr'] = sprintf(gettext("Interface %s Static Gateway"), $ifname);
+			$config['gateways']['gateway_item'][$i]['descr'] = sprintf('Interface %s Static Gateway', $ifname);
 		} else {
 			$config['gateways']['gateway_item'][$i]['gateway'] = "dynamic";
-			$config['gateways']['gateway_item'][$i]['descr'] = sprintf(gettext("Interface %s Dynamic Gateway"), $ifname);
+			$config['gateways']['gateway_item'][$i]['descr'] = sprintf('Interface %s Dynamic Gateway', $ifname);
 		}
 		$config['gateways']['gateway_item'][$i]['interface'] = $ifname;
 		$config['gateways']['gateway_item'][$i]['name'] = "GW_" . strtoupper($ifname);
@@ -847,7 +835,7 @@ function upgrade_043_to_044()
 				$gwmap[$sroute['gateway']] = $gateway['name'];
 				$gateway['gateway'] = $sroute['gateway'];
 				$gateway['interface'] = $sroute['interface'];
-				$gateway['descr'] = sprintf(gettext("Upgraded static route for %s"), $sroute['network']);
+				$gateway['descr'] = sprintf('Upgraded static route for %s', $sroute['network']);
 				if (!is_array($config['gateways']['gateway_item']))
 					$config['gateways']['gateway_item'] = array();
 				$config['gateways']['gateway_item'][] = $gateway;
@@ -944,7 +932,7 @@ function upgrade_045_to_046() {
 				$pool['type'] = 'server';
 				$pool['behaviour'] = 'balance';
 				$pool['name'] = "{$vs_a[$i]['name']}-sitedown";
-				$pool['descr'] = sprintf(gettext("Sitedown pool for VS: %s"), $vs_a[$i]['name']);
+				$pool['descr'] = sprintf('Sitedown pool for VS: %s', $vs_a[$i]['name']);
 				if (is_array($vs_a[$i]['pool']))
 					$vs_a[$i]['pool'] = $vs_a[$i]['pool'][0];
 				$pool['port'] = $pools[$vs_a[$i]['pool']]['port'];
@@ -1096,7 +1084,7 @@ function upgrade_046_to_047() {
 			if (isset($tunnel['disabled']))
 				$ph1ent['disabled'] = $tunnel['disabled'];
 
-			$ph2ent['descr'] = sprintf(gettext("phase2 for %s"), $tunnel['descr']);
+			$ph2ent['descr'] = sprintf('phase2 for %s', $tunnel['descr']);
 
 			$type = "lan";
 			if ($tunnel['local-subnet']['network'])
@@ -1323,7 +1311,7 @@ function upgrade_047_to_048() {
 			$tempdyn['host'] = $config['dyndns'][0]['host'];
 			$tempdyn['mx'] = $config['dyndns'][0]['mx'];
 			$tempdyn['interface'] = "wan";
-			$tempdyn['descr'] = sprintf(gettext("Upgraded Dyndns %s"), $tempdyn['type']);
+			$tempdyn['descr'] = sprintf('Upgraded Dyndns %s', $tempdyn['type']);
 			$config['dyndnses']['dyndns'][] = $tempdyn;
 		}
 		unset($config['dyndns']);
@@ -1375,7 +1363,7 @@ function upgrade_048_to_049() {
 	/* setup new all users group */
 	$all = array();
 	$all['name'] = "all";
-	$all['description'] = gettext("All Users");
+	$all['description'] = 'All Users';
 	$all['scope'] = "system";
 	$all['gid'] = 1998;
 	$all['member'] = array();
@@ -1527,7 +1515,7 @@ function upgrade_050_to_051() {
 			if (isset($intf['bridge']) && $intf['bridge'] <> "") {
 				$nbridge = array();
 				$nbridge['members'] = "{$ifr},{$intf['bridge']}";
-				$nbridge['descr'] = sprintf(gettext("Converted bridged %s"), $ifr);
+				$nbridge['descr'] = sprintf('Converted bridged %s', $ifr);
 				$nbridge['bridgeif'] = "bridge{$i}";
 				$config['bridges']['bridged'][] = $nbridge;
 				unset($intf['bridge']);
@@ -1901,7 +1889,7 @@ function upgrade_051_to_052() {
 		$ovpnrule['destination'] = array();
 		$ovpnrule['source']['any'] = true;
 		$ovpnrule['destination']['any'] = true;
-		$ovpnrule['descr'] = gettext("Auto added OpenVPN rule from config upgrade.");
+		$ovpnrule['descr'] = 'Auto added OpenVPN rule from config upgrade.';
 		$config['filter']['rule'][] = $ovpnrule;
 	}
 
