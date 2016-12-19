@@ -38,18 +38,43 @@ class Metadata(object):
     def __init__(self):
         self._rules_dir = '%s/../metadata/rules/' % (os.path.dirname(os.path.abspath(__file__)))
 
-    def list_rules(self):
-        """ list all available rules
-        :return: generator method returning all known rulefiles
+    def _list_xml_sources(self, replace_tags = {}):
+        """ list all available rule xml files
+        :return: generator method returning all known rule xml files
         """
         for filename in sorted(glob.glob('%s*.xml' % self._rules_dir)):
             try:
-                rule_xml = xml.etree.ElementTree.fromstring(open(filename).read())
+                xml_data = open(filename).read()
+                for tag in replace_tags.keys():
+                    search_tag = '%%%%%s%%%%' % tag
+                    if xml_data.find(search_tag) > -1:
+                        xml_data = xml_data.replace(search_tag, replace_tags[tag])
+                rule_xml = xml.etree.ElementTree.fromstring(xml_data)
+                yield rule_xml
             except xml.etree.ElementTree.ParseError:
                 # unparseable metadata
                 syslog.syslog(syslog.LOG_ERR, 'suricata metadata unparsable @ %s' % filename)
                 continue
 
+    def list_rule_properties(self):
+        """ collect settable properties from installed ruleset
+        :return: dict unique properties
+        """
+        result = dict()
+        for rule_xml in self._list_xml_sources():
+            if rule_xml.find('properties') is not None:
+                for rule_prop in rule_xml.find('properties'):
+                    if 'name' in rule_prop.attrib:
+                        result[rule_prop.attrib['name']] = {'default': None}
+                        if 'default' in rule_prop.attrib:
+                            result[rule_prop.attrib['name']]['default'] = rule_prop.attrib['default']
+        return result
+
+    def list_rules(self, replace_tags = {}):
+        """ list all available rules
+        :return: generator method returning all known rulefiles
+        """
+        for rule_xml in self._list_xml_sources(replace_tags):
             src_location = rule_xml.find('location')
             if src_location is None or 'url' not in src_location.attrib:
                 syslog.syslog(syslog.LOG_ERR, 'suricata metadata missing location  @ %s' % filename)
@@ -89,5 +114,4 @@ class Metadata(object):
                         else:
                             metadata_record['description'] = '%s%s' % (description_prefix,
                                                                        rule_filename.text)
-
                         yield metadata_record

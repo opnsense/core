@@ -49,4 +49,5 @@ if __name__ == '__main__':
         else:
             items[rule['filename']]['modified_local'] = None
     result = {'items': items, 'count': len(items)}
+    result['properties'] = md.list_rule_properties()
     print (ujson.dumps(result))

@@ -49,12 +49,17 @@ except IOError:
 if __name__ == '__main__':
     # load list of configured rules from generated config
     enabled_rulefiles = dict()
+    rule_properties = dict()
     updater_conf = '/usr/local/etc/suricata/rule-updater.config'
     if os.path.exists(updater_conf):
         cnf = ConfigParser()
         cnf.read(updater_conf)
         for section in cnf.sections():
-            if cnf.has_option(section, 'enabled') and cnf.getint(section, 'enabled') == 1:
+            if section == '__properties__':
+                # special section, rule properties (extend url's etc.)
+                for item in cnf.items(section):
+                    rule_properties[item[0]] = item[1]
+            elif cnf.has_option(section, 'enabled') and cnf.getint(section, 'enabled') == 1:
                 enabled_rulefiles[section.strip()] = {}
                 # input filter
                 if cnf.has_option(section, 'filter'):
@@ -62,11 +67,10 @@ if __name__ == '__main__':
                 else:
                     enabled_rulefiles[section.strip()]['filter'] = ""
 
-
     # download / remove rules
     md = metadata.Metadata()
     dl = downloader.Downloader(target_dir=rule_source_directory)
-    for rule in md.list_rules():
+    for rule in md.list_rules(rule_properties):
         if 'url' in rule['source']:
             download_proto = str(rule['source']['url']).split(':')[0].lower()
             if dl.is_supported(download_proto):
