@@ -196,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $savemsg = get_std_save_message();
 
             if ($oldnologlighttpd !== isset($config['syslog']['nologlighttpd'])) {
-              log_error('webConfigurator configuration has changed. Restarting webConfigurator now.');
+              log_error('Web GUI configuration has changed. Restarting now.');
               mwexec_bg('/usr/local/etc/rc.restart_webgui 2');
               $savemsg .= "<br />" . gettext("WebGUI process is restarting.");
             }

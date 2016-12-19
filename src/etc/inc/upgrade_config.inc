@@ -650,8 +650,8 @@ function upgrade_039_to_040() {
 
 		$config['system']['user'][0]['priv'] = array();
 		$config['system']['user'][0]['priv'][0]['id'] = "lockwc";
-		$config['system']['user'][0]['priv'][0]['name'] = "Lock webConfigurator";
-		$config['system']['user'][0]['priv'][0]['descr'] = gettext("Indicates whether this user will lock access to the webConfigurator for other users.");
+		$config['system']['user'][0]['priv'][0]['name'] = "Lock web GUI";
+		$config['system']['user'][0]['priv'][0]['descr'] = gettext("Indicates whether this user will lock access to the web GUI for other users.");
 		$config['system']['user'][0]['priv'][1]['id'] = "lock-ipages";
 		$config['system']['user'][0]['priv'][1]['name'] = "Lock individual pages";
 		$config['system']['user'][0]['priv'][1]['descr'] = gettext("Indicates whether this user will lock individual HTML pages after having accessed a particular page (the lock will be freed if the user leaves or saves the page form).");
@@ -1931,7 +1931,7 @@ function upgrade_052_to_053() {
 		/* create cert entry */
 		$cert = array();
 		$cert['refid'] = uniqid();
-		$cert['descr'] = "webConfigurator SSL Certificate";
+		$cert['descr'] = "Web GUI SSL certificate";
 		$cert['crt'] = $config['system']['webgui']['certificate'];
 		$cert['prv'] = $config['system']['webgui']['private-key'];
 		$config['cert'][] = $cert;

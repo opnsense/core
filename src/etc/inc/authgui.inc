@@ -221,7 +221,7 @@ function session_auth(&$Login_Error)
         } else {
             /* give the user an error message */
             $Login_Error = gettext('Wrong username or password.');
-            log_error("webConfigurator authentication error for '{$_POST['usernamefld']}' from {$_SERVER['REMOTE_ADDR']}");
+            log_error("Web GUI authentication error for '{$_POST['usernamefld']}' from {$_SERVER['REMOTE_ADDR']}");
         }
     }
 

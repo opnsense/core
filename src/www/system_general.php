@@ -319,7 +319,7 @@ include("head.inc");
                 </select>
                 <div class="hidden" for="help_for_language">
                   <strong>
-                    <?=gettext("Choose a language for the webConfigurator"); ?>
+                    <?= gettext('Choose a language for the web GUI.') ?>
                   </strong>
                 </div>
               </td>

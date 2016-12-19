@@ -937,7 +937,6 @@ function system_webgui_configure($verbose = false)
     }
 
     if ($config['system']['webgui']['protocol'] == "https") {
-        // Ensure that we have a webConfigurator CERT
         $cert =& lookup_cert($config['system']['webgui']['ssl-certref']);
         if(!is_array($cert) && !$cert['crt'] && !$cert['prv']) {
             if (!is_array($config['ca'])) {
@@ -948,10 +947,10 @@ function system_webgui_configure($verbose = false)
                 $config['cert'] = array();
             }
             $a_cert =& $config['cert'];
-            log_error("Creating SSL Certificate for this host");
+            log_error("Creating SSL certificate for this host");
             $cert = array();
             $cert['refid'] = uniqid();
-            $cert['descr'] = 'webConfigurator default';
+            $cert['descr'] = 'Web GUI SSL certificate';
             mwexec(
                 /* XXX ought to be replaced by PHP calls */
                 '/usr/local/bin/openssl req -new ' .
@@ -966,7 +965,7 @@ function system_webgui_configure($verbose = false)
             cert_import($cert, $crt, $key);
             $a_cert[] = $cert;
             $config['system']['webgui']['ssl-certref'] = $cert['refid'];
-            write_config('Importing HTTPS certificate');
+            write_config('Created web GUI SSL certificate');
         } else {
             $crt = base64_decode($cert['crt']);
             $key = base64_decode($cert['prv']);

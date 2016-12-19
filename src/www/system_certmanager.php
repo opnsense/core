@@ -1273,7 +1273,7 @@ $( document ).ready(function() {
 <?php
                 endif;
                 if (is_webgui_cert($cert['refid'])) :?>
-                  <?=gettext('webConfigurator') ?><br />
+                  <?=gettext('Web GUI') ?><br />
 <?php
                 endif;
                 if (is_user_cert($cert['refid'])) :?>

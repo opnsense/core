@@ -182,7 +182,7 @@ include("head.inc");
                   <td>
                     <input  name="username" type="text" value="<?=$pconfig['username'];?>" />
                     <div class="hidden" for="help_for_username">
-                      <?=gettext('Enter the webConfigurator username of the system entered above for synchronizing your configuration.') ?><br />
+                      <?=gettext('Enter the web GUI username of the system entered above for synchronizing your configuration.') ?><br />
                       <div class="well well-sm">
                         <b><?=gettext('Do not use the Synchronize Config to IP and username option on backup cluster members!') ?></b>
                       </div>
@@ -194,7 +194,7 @@ include("head.inc");
                   <td>
                     <input  type="password" name="password" value="<?=$pconfig['password']; ?>" />
                     <div class="hidden" for="help_for_password">
-                      <?=gettext('Enter the webConfigurator password of the system entered above for synchronizing your configuration.') ?><br />
+                      <?=gettext('Enter the web GUI password of the system entered above for synchronizing your configuration.') ?><br />
                       <div class="well well-sm">
                         <b><?=gettext('Do not use the Synchronize Config to IP and password option on backup cluster members!') ?></b>
                       </div>

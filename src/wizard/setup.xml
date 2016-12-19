@@ -649,7 +649,7 @@
 		Congratulations!  OPNsense is now configured.<p/>
 		Please consider donating to the project to help us with our overhead costs.<p/>
 		See <a target='_new' href='https://opnsense.org/'>OPNsense.org</a> to donate or purchase services offered by the OPNsense team.<p/>
-		Click <a href='$myurl'>here</a> to continue on to OPNsense webConfigurator.
+		Click <a href='$myurl'>here</a> to continue on to OPNsense web GUI.
 	]]>
 	</description>
 </step>

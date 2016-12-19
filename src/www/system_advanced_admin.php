@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     /* input validation */
     if (!empty($pconfig['webguiport'])) {
         if (!is_port($pconfig['webguiport'])) {
-            $input_errors[] = gettext("You must specify a valid webConfigurator port number");
+            $input_errors[] = gettext('You must specify a valid web GUI port number');
         }
     }
 
@@ -315,7 +315,7 @@ include("head.inc");
           <form method="post" name="iform" id="iform">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td width="22%"><strong><?=gettext("webConfigurator");?></strong></td>
+                <td width="22%"><strong><?=gettext('Web GUI');?></strong></td>
                 <td  width="78%" align="right">
                   <small><?=gettext("full help"); ?> </small>
                   <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page" type="button"></i>
@@ -364,7 +364,7 @@ include("head.inc");
                   <td>
                     <input name="webguiport" type="text" value="<?=$pconfig['webguiport'];?>" />
                     <div class="hidden" for="help_for_webguiport">
-                      <?=gettext("Enter a custom port number for the webConfigurator " .
+                      <?=gettext("Enter a custom port number for the web GUI " .
                                             "above if you want to override the default (80 for HTTP, 443 " .
                                             "for HTTPS). Changes will take effect immediately after save."); ?>
                     </div>
@@ -374,9 +374,9 @@ include("head.inc");
                   <td><a id="help_for_disablehttpredirect" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WebGUI redirect"); ?></td>
                   <td width="78%">
                     <input name="disablehttpredirect" type="checkbox" value="yes" <?= empty($pconfig['disablehttpredirect']) ? '' : 'checked="checked"';?> />
-                    <strong><?=gettext("Disable webConfigurator redirect rule"); ?></strong>
+                    <strong><?= gettext('Disable web GUI redirect rule') ?></strong>
                     <div class="hidden" for="help_for_disablehttpredirect">
-                      <?= gettext("When this is unchecked, access to the webConfigurator " .
+                      <?= gettext("When this is unchecked, access to the web GUI " .
                                           "is always permitted even on port 80, regardless of the listening port configured. " .
                                           "Check this box to disable this automatically added redirect rule.");
                                           ?>
@@ -387,9 +387,9 @@ include("head.inc");
                   <td><a id="help_for_loginautocomplete" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WebGUI Login Autocomplete"); ?></td>
                   <td>
                     <input name="loginautocomplete" type="checkbox" value="yes" <?= empty($pconfig['loginautocomplete']) ? '' : 'checked="checked"' ?> />
-                    <strong><?=gettext("Enable webConfigurator login autocomplete"); ?></strong>
+                    <strong><?= gettext('Enable web GUI login autocomplete') ?></strong>
                     <div class="hidden" for="help_for_loginautocomplete">
-                      <?= gettext("When this is checked, login credentials for the webConfigurator " .
+                      <?= gettext("When this is checked, login credentials for the web GUI " .
                                           "may be saved by the browser. While convenient, some security standards require this to be disabled. " .
                                           "Check this box to enable autocomplete on the login form so that browsers will prompt to save credentials (NOTE: Some browsers do not respect this option).");?>
                     </div>
@@ -399,9 +399,9 @@ include("head.inc");
                   <td><a id="help_for_quietlogin" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WebGUI login messages") ?></td>
                   <td>
                     <input name="quietlogin" type="checkbox" value="yes" <?= empty($pconfig['quietlogin']) ? '' : 'checked="checked"' ?>/>
-                    <strong><?=gettext("Disable logging of webConfigurator successful logins"); ?></strong>
+                    <strong><?= gettext('Disable logging of web GUI successful logins') ?></strong>
                     <div class="hidden" for="help_for_quietlogin">
-                      <?=gettext("When this is checked, successful logins to the webConfigurator " .
+                      <?=gettext("When this is checked, successful logins to the web GUI " .
                                           "will not be logged.");?>
                     </div>
                   </td>
@@ -410,12 +410,12 @@ include("head.inc");
                   <td><a id="help_for_noantilockout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Anti-lockout"); ?></td>
                   <td>
                     <input name="noantilockout" type="checkbox" value="yes" <?= empty($pconfig['noantilockout']) ? '' : 'checked="checked"' ?>/>
-                    <strong><?=gettext("Disable webConfigurator anti-lockout rule"); ?></strong>
+                    <strong><?= gettext('Disable web GUI anti-lockout rule') ?></strong>
                     <div class="hidden" for="help_for_noantilockout">
-                      <?= sprintf(gettext("When this is unchecked, access to the webConfigurator " .
+                      <?= sprintf(gettext("When this is unchecked, access to the web GUI " .
                                           "on the %s interface is always permitted, regardless of the user-defined firewall " .
                                           "rule set. Check this box to disable this automatically added rule, so access " .
-                                          "to the webConfigurator is controlled by the user-defined firewall rules " .
+                                          "to the web GUI is controlled by the user-defined firewall rules " .
                                           "(ensure you have a firewall rule in place that allows you in, or you will " .
                                           "lock yourself out!)"), (empty($config['interfaces']['lan']) ? gettext("WAN") : gettext("LAN"))); ?>
                       <em><?= gettext('Hint: the "Set interface(s) IP address" option in the console menu resets this setting as well.'); ?></em>
@@ -430,7 +430,7 @@ include("head.inc");
                     <div class="hidden" for="help_for_nodnsrebindcheck">
                       <?= sprintf(gettext("When this is unchecked, your system is protected against %sDNS Rebinding attacks%s. " .
                                           "This blocks private IP responses from your configured DNS servers. Check this box to disable this protection if it interferes with " .
-                                          "webConfigurator access or name resolution in your environment."),'<a href="http://en.wikipedia.org/wiki/DNS_rebinding">','</a>') ?>
+                                          "web GUI access or name resolution in your environment."),'<a href="http://en.wikipedia.org/wiki/DNS_rebinding">','</a>') ?>
                     </div>
                   </td>
                 </tr>
@@ -451,10 +451,10 @@ include("head.inc");
                     <input name="nohttpreferercheck" type="checkbox" value="yes" <?= empty($pconfig['nohttpreferercheck']) ? '' : 'checked="checked"' ?> />
                     <strong><?=gettext("Disable HTTP_REFERER enforcement check"); ?></strong>
                     <div class="hidden" for="help_for_nohttpreferercheck">
-                      <?=sprintf(gettext("When this is unchecked, access to the webConfigurator " .
+                      <?=sprintf(gettext("When this is unchecked, access to the web GUI " .
                                           "is protected against HTTP_REFERER redirection attempts. " .
                                           "Check this box to disable this protection if you find that it interferes with " .
-                                          "webConfigurator access in certain corner cases such as using external scripts to interact with this system. More information on HTTP_REFERER is available from %sWikipedia%s."),
+                                          "web GUI access in certain corner cases such as using external scripts to interact with this system. More information on HTTP_REFERER is available from %sWikipedia%s."),
                                           '<a target="_blank" href="http://en.wikipedia.org/wiki/HTTP_referrer">','</a>') ?>
                     </div>
                   </td>

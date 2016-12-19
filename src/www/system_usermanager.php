@@ -964,7 +964,7 @@ $( document ).ready(function() {
                     <tr>
                       <td colspan="4">
                           <?=gettext("Additional users can be added here. User permissions for accessing " .
-                                        "the webConfigurator can be assigned directly or inherited from group memberships. " .
+                                        "the web GUI or other subsystems can be assigned directly or inherited from group memberships. " .
                                         "An icon that appears grey indicates that it is a system defined object. " .
                                         "Some system object properties can be modified but they cannot be deleted."); ?>
                       </td>
