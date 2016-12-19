@@ -70,7 +70,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['port']) && !is_port($pconfig['port'])) {
             $input_errors[] = gettext("You must specify a valid port number");
         }
-        if (!empty($pconfig['enable']) && isset($config['unbound']['enable']) && (empty($config['unbound']['port']) || $config['unbound']['port'] == '53')) {
+        $unbound_port = empty($config['unbound']['port']) ? "53" : $config['unbound']['port'];
+        $dnsmasq_port = empty($pconfig['port']) ? "53" : $pconfig['port'];
+        if (!empty($pconfig['enable']) && isset($config['unbound']['enable']) && $dnsmasq_port == $unbound_port) {
             $input_errors[] = gettext("The DNS Resolver is still active. Disable it before enabling the DNS Forwarder.");
         }
 
