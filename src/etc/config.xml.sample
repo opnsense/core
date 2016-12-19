@@ -229,6 +229,7 @@
     </bogons>
     <kill_states/>
     <backupcount>60</backupcount>
+    <crypto_hardware>aesni</crypto_hardware>
   </system>
   <interfaces>
     <wan>
