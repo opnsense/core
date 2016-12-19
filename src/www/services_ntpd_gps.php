@@ -390,19 +390,19 @@ SureGPS =    #Sure Electronics SKG16B
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_fudge1" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Fudge time 1') ?> (<?=gettext("seconds");?>)</td>
+                      <td><a id="help_for_fudge1" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Fudge time 1 (seconds)') ?></td>
                       <td>
                         <input name="fudge1" type="text" id="gpsfudge1" min="-1" max="1" size="20" value="<?=$pconfig['fudge1'];?>" />
                         <div class="hidden" for="help_for_fudge1">
-                          <?=gettext("Fudge time 1 is used to specify the GPS PPS signal offset");?> (<?=gettext("default");?>: 0.0).
+                          <?= gettext("Fudge time 1 is used to specify the GPS PPS signal offset (default: 0.0).") ?>
                         </div>
                     </tr>
                     <tr>
-                      <td><a id="help_for_fudge2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Fudge time 2') ?> (<?=gettext("seconds");?>) </td>
+                      <td><a id="help_for_fudge2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Fudge time 2 (seconds)');?></td>
                       <td>
                         <input name="fudge2" type="text" id="gpsfudge2" min="-1" max="1" size="20" value="<?=$pconfig['fudge2'];?>" />
                         <div class="hidden" for="help_for_fudge2">
-                          <?=gettext("Fudge time 2 is used to specify the GPS time offset");?> (<?=gettext("default");?>: 0.0).
+                          <?= gettext("Fudge time 2 is used to specify the GPS time offset (default: 0.0).") ?>
                         </div>
                       </td>
                     </tr>
@@ -412,7 +412,7 @@ SureGPS =    #Sure Electronics SKG16B
                         <input name="stratum" type="text" id="gpsstratum"  value="<?=$pconfig['stratum'];?>" />
                         <div class="hidden" for="help_for_stratum">
                           <?=gettext("(0-16)");?><br />
-                          <?=gettext("This may be used to change the GPS Clock stratum");?> (<?=gettext("default");?>: 0). <?=gettext("This may be useful if, for some reason, you want ntpd to prefer a different clock"); ?>
+                          <?=gettext("This may be used to change the GPS Clock stratum (default: 0). This may be useful if, for some reason, you want ntpd to prefer a different clock"); ?>
                         </div>
                       </td>
                     </tr>
@@ -478,7 +478,8 @@ SureGPS =    #Sure Electronics SKG16B
                               <input name="subsec" type="checkbox" id="gpssubsec"<?=!empty($pconfig['subsec']) ? " checked=\"checked\"" : ""; ?> />
                             </td>
                             <td>
-                              <?=gettext("Log the sub-second fraction of the received time stamp (default: Not logged).<br />Note: enabling this will rapidly fill the log, but is useful for tuning Fudge time 2."); ?>
+                              <?= gettext("Log the sub-second fraction of the received time stamp (default: Not logged).") ?><br />
+                              <?= gettext("Enabling this will rapidly fill the log, but is useful for tuning Fudge time 2.") ?>
                             </td>
                           </tr>
                         </table>
@@ -490,7 +491,7 @@ SureGPS =    #Sure Electronics SKG16B
                         <input name="refid" type="text" id="gpsrefid" value="<?=$pconfig['refid'];?>" />
                         <div class="hidden" for="help_for_refid">
                           <?=gettext("(1 to 4 characters)");?><br />
-                          <?=gettext("This may be used to change the GPS Clock ID");?> (<?=gettext("default");?>: GPS).
+                          <?=gettext("This may be used to change the GPS Clock ID (default: GPS).") ?>
                         </div>
                       </td>
                     </tr>
@@ -505,7 +506,7 @@ SureGPS =    #Sure Electronics SKG16B
                           <?=gettext("Note: Commands entered here will be sent to the GPS during initialization. Please read and understand your GPS documentation before making any changes here.");?><br /><br />
                           <strong><?=gettext("NMEA checksum calculator");?>:</strong>
                           <br />
-                          <?=gettext("Enter the text between &quot;$&quot; and &quot;*&quot; of a NMEA command string:");?><br /> $<input name="nmeastring" type="text" id="nmeastring" size="30" value="" />*<span id="nmeachecksum"><?=gettext("checksum");?></span>&nbsp;&nbsp;
+                          <?=gettext('Enter the text between "$" and "*" of a NMEA command string:');?><br /> $<input name="nmeastring" type="text" id="nmeastring" size="30" value="" />*<span id="nmeachecksum"><?=gettext("checksum");?></span>&nbsp;&nbsp;
                           <input type="button" id="calcnmeachk" value="<?=gettext("Calculate NMEA checksum");?>" />
                         </div>
                       </td>
@@ -522,7 +523,7 @@ SureGPS =    #Sure Electronics SKG16B
                       <td colspan="2">
                         <?=gettext('A GPS connected via a serial port may be used as a reference clock for NTP. If the GPS also supports PPS and is properly configured, and connected, that GPS may also be used as a Pulse Per Second clock reference. NOTE: a USB GPS may work, but is not recommended due to USB bus timing issues.') ?>
                         <br />
-                        <br /><?=gettext("For the best results, NTP should have at least three sources of time. So it is best to configure at least 2 servers under"); ?> <a href="services_ntpd.php"><?=gettext("Services > NTP"); ?></a> <?=gettext("to minimize clock drift if the GPS data is not valid over time. Otherwise ntpd may only use values from the unsynchronized local clock when providing time to clients."); ?>
+                        <br /><?=sprintf(gettext("For the best results, NTP should have at least three sources of time. So it is best to configure at least 2 servers under %sServices > NTP%s to minimize clock drift if the GPS data is not valid over time. Otherwise ntpd may only use values from the unsynchronized local clock when providing time to clients."),'<a href="services_ntpd.php">','</a>') ?>
                       </td>
                     </tr>
                   </tfoot>
