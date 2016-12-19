@@ -229,7 +229,6 @@
     </bogons>
     <kill_states/>
     <backupcount>60</backupcount>
-    <disableintegratedauth>1</disableintegratedauth>
   </system>
   <interfaces>
     <wan>
