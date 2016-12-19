@@ -32,7 +32,6 @@ import syslog
 import tarfile
 import gzip
 import zipfile
-import shutil
 import tempfile
 import requests
 
@@ -122,10 +121,16 @@ class Downloader(object):
             frm_url = url.replace('//', '/').replace(':/', '://')
             # stream to temp file
             if frm_url not in self._download_cache:
-                req = requests.get(url=frm_url, stream=True)
+                req = requests.get(url=frm_url, stream=True, verify=False)
                 if req.status_code == 200:
-                    src = tempfile.NamedTemporaryFile()
-                    shutil.copyfileobj(req.raw, src)
+                    src = tempfile.NamedTemporaryFile('wb+', 10240)
+                    while True:
+                        data = req.raw.read(10240)
+                        if not data:
+                            break
+                        else:
+                             src.write(data)
+                    src.seek(0)
                     self._download_cache[frm_url] = src
 
             # process rules from tempfile (prevent duplicate download for files within an archive)
@@ -134,7 +139,7 @@ class Downloader(object):
                     target_filename = '%s/%s' % (self._target_dir, filename)
                     save_data = self._unpack(self._download_cache[frm_url], url, url_filename)
                     save_data = self.filter(save_data, input_filter)
-                    open(target_filename, 'wb').write(save_data)
+                    open(target_filename, 'w', buffering=10240).write(save_data)
                 except IOError:
                     syslog.syslog(syslog.LOG_ERR, 'cannot write to %s' % target_filename)
                     return None
