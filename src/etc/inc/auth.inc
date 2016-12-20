@@ -392,7 +392,7 @@ function local_sync_accounts()
     }
 }
 
-function local_user_set(&$user, $force_unlock = false)
+function local_user_set(&$user, $force_password = false)
 {
     global $config;
 
@@ -410,7 +410,7 @@ function local_user_set(&$user, $force_unlock = false)
     $user_home = "/home/{$user_name}";
     $user_shell = '/sbin/nologin';
     $user_group = 'nobody';
-    $lock_account = $force_unlock ? 'unlock' : 'lock';
+    $lock_account = 'lock';
 
     @mkdir('/home', 0755);
 
@@ -429,8 +429,8 @@ function local_user_set(&$user, $force_unlock = false)
         $lock_account = 'unlock';
     }
 
-    /* passwords only when integrated auth is disabled */
-    if (empty($config['system']['disableintegratedauth'])) {
+    /* passwords only when integrated auth is disabled or forced */
+    if (!$force_password && empty($config['system']['disableintegratedauth'])) {
         $user_pass = '*';
     }
 
