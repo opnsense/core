@@ -317,8 +317,7 @@ $( document ).ready(function() {
                 endif; ?>
 <?php
                 // Show the anti-lockout rule if it's enabled, and we are on LAN with an if count > 1, or WAN with an if count of 1.
-                if (!isset($config['system']['webgui']['noantilockout']) &&
-                        (((count($config['interfaces']) > 1) && ($selected_if == 'lan'))
+                if (!isset($config['system']['webgui']['noantilockout']) && ($selected_if == 'lan'
                         || ((count($config['interfaces']) == 1) && ($selected_if == 'wan')))):
                         $alports = implode('<br />', filter_core_antilockout_ports());
 ?>
