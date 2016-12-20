@@ -103,6 +103,12 @@ label           :   dialog label
                         {% for field in base_dialog_fields|default({})%}
                             {% set advanced=false %}
                             {% set help=false %}
+                            {% set style=false %}
+                            {% set hint=false %}
+                            {% set style=false %}
+                            {% set maxheight=false %}
+                            {% set width=false %}
+                            {% set allownew=false %}
                             {% if field['type'] == 'header' %}
                               {# close table and start new one with header #}
                               {{ base_dialog_header(field['label']) }}

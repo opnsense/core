@@ -87,6 +87,12 @@ data_title      :   data-title to set on form
         </tr>
         {% set advanced=false %}
         {% set help=false %}
+        {% set style=false %}
+        {% set hint=false %}
+        {% set style=false %}
+        {% set maxheight=false %}
+        {% set width=false %}
+        {% set allownew=false %}
         {% for field in fields|default({})%}
             {% if field['type'] == 'header' %}
               {# close table and start new one with header #}
