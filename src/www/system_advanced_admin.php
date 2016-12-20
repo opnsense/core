@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ssl-certref'] = $config['system']['webgui']['ssl-certref'];
     $pconfig['disablehttpredirect'] = isset($config['system']['webgui']['disablehttpredirect']);
     $pconfig['disableconsolemenu'] = isset($config['system']['disableconsolemenu']);
-    $pconfig['sudo_allow_wheel'] = isset($config['system']['sudo_allow_wheel']);
+    $pconfig['sudo_allow_wheel'] = $config['system']['sudo_allow_wheel'];
     $pconfig['noantilockout'] = isset($config['system']['webgui']['noantilockout']);
     $pconfig['nodnsrebindcheck'] = isset($config['system']['webgui']['nodnsrebindcheck']);
     $pconfig['nohttpreferercheck'] = isset($config['system']['webgui']['nohttpreferercheck']);
@@ -114,8 +114,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['disableconsolemenu']);
         }
 
-        if ($pconfig['sudo_allow_wheel'] == "yes") {
-            $config['system']['sudo_allow_wheel'] = true;
+        if (!empty($pconfig['sudo_allow_wheel'])) {
+            $config['system']['sudo_allow_wheel'] = $pconfig['sudo_allow_wheel'];
         } elseif (isset($config['system']['sudo_allow_wheel'])) {
             unset($config['system']['sudo_allow_wheel']);
         }
@@ -553,8 +553,11 @@ include("head.inc");
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Sudo usage") ?></td>
                   <td width="78%">
-                    <input name="sudo_allow_wheel" type="checkbox" value="yes" <?= empty($pconfig['sudo_allow_wheel']) ? '' : 'checked="checked"' ?>  />
-                    <strong><?= gettext('Allow administrators to use the Sudo utility') ?></strong>
+                    <select name="sudo_allow_wheel" id="sudo_allow_wheel" class="formselect selectpicker">
+                      <option value="" <?= empty($pconfig['sudo_allow_wheel']) ? 'selected="selected"' : '' ?>><?= gettext('Disallow') ?></option>
+                      <option value="1" <?= $pconfig['sudo_allow_wheel'] == 1 ? 'selected="selected"' : '' ?>><?= gettext('Ask password') ?></option>
+                      <option value="2" <?= $pconfig['sudo_allow_wheel'] == 2 ? 'selected="selected"' : '' ?>><?= gettext('No password') ?></option>
+                    </select>
                   </td>
                 </tr>
                 <tr>

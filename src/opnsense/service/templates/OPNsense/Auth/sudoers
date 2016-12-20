@@ -1,3 +1,5 @@
 {% if system.sudo_allow_wheel|default('0') == '1' %}
 %wheel ALL=(ALL) ALL
+{% elif system.sudo_allow_wheel|default('0') == '2' %}
+%wheel ALL=(ALL) NOPASSWD: ALL
 {% endif %}
