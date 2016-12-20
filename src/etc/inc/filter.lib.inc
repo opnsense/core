@@ -325,9 +325,9 @@ function filter_core_rules_system($fw, $defaults)
     $lockoutprts = filter_core_antilockout_ports();
     if (count($lockoutprts) > 0) {
         $lockoutif = null;
-        if (count($config['interfaces']) > 1 && !empty($config['interfaces']['lan']['if'])) {
+        if (!empty($config['interfaces']['lan']['if'])) {
             $lockoutif = 'lan';
-        } elseif (count($config['interfaces']) == 1  && !empty($config['interfaces']['wan']['if'])) {
+        } elseif (count($config['interfaces']) == 1 && !empty($config['interfaces']['wan']['if'])) {
             $lockoutif = 'wan';
         }
         if (!empty($lockoutif)) {

@@ -417,7 +417,8 @@ include("head.inc");
                                           "rule set. Check this box to disable this automatically added rule, so access " .
                                           "to the web GUI is controlled by the user-defined firewall rules " .
                                           "(ensure you have a firewall rule in place that allows you in, or you will " .
-                                          "lock yourself out!)"), (empty($config['interfaces']['lan']) ? gettext("WAN") : gettext("LAN"))); ?>
+                                          "lock yourself out!)"), count($config['interfaces']) == 1 && !empty($config['interfaces']['wan']['if'] ?
+                                          gettext("WAN") : gettext("LAN"))); ?>
                       <em><?= gettext('Hint: the "Set interface(s) IP address" option in the console menu resets this setting as well.'); ?></em>
                     </div>
                   </td>

@@ -1778,12 +1778,12 @@ function filter_nat_rules_generate(&$FilterIflist)
     }
 
     // prevent redirection on ports with "lock out" protection
-    if (!isset($config['system']['webgui']['noantilockout'])) {
-        $alports = implode(" ", filter_core_antilockout_ports());
-        if ( !empty($FilterIflist['lan']['if']) ) {
+    $lockoutprts = filter_core_antilockout_ports();
+    if (count($lockoutprts) > 0) {
+        $alports = implode(' ', $lockoutprts);
+        if (!empty($FilterIflist['lan']['if']) ) {
             $alintrf = $FilterIflist['lan']['if'];
-        } elseif ( !empty($FilterIflist['wan']['if']) ) {
-            // single-interface deployment, add to WAN
+        } elseif (count($config['interfaces']) == 1 && !empty($FilterIflist['wan']['if']) ) {
             $alintrf = $FilterIflist['wan']['if'];
         } else {
             $alintrf = null;
