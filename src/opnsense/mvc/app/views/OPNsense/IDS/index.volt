@@ -205,7 +205,9 @@ POSSIBILITY OF SUCH DAMAGE.
          * load content on tab changes
          */
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            if (e.target.id == 'rule_tab'){
+            if (e.target.id == 'settings_tab'){
+                loadGeneralSettings();
+            } else if (e.target.id == 'rule_tab'){
                 //
                 // activate rule tab page
                 //
@@ -273,15 +275,13 @@ POSSIBILITY OF SUCH DAMAGE.
                         toggle:'/api/ids/settings/toggleUserRule/'
                     }
                 );
-
-            }
-        })
-
-        /**
-         * grid for installable rule files
-         */
-        $("#grid-rule-files").UIBootgrid(
-                {   search:'/api/ids/settings/listRulesets',
+            } else if (e.target.id == 'download_settings_tab') {
+                /**
+                 * grid for installable rule files
+                 */
+                $('#grid-rule-files').bootgrid('destroy'); // always destroy previous grid, so data is always fresh
+                $("#grid-rule-files").UIBootgrid({
+                    search:'/api/ids/settings/listRulesets',
                     get:'/api/ids/settings/getRuleset/',
                     set:'/api/ids/settings/setRuleset/',
                     toggle:'/api/ids/settings/toggleRuleset/',
@@ -315,6 +315,10 @@ POSSIBILITY OF SUCH DAMAGE.
                         }
                     }
                 });
+            }
+        })
+
+
 
         /*************************************************************************************************************
          * UI button Commands
@@ -471,13 +475,15 @@ POSSIBILITY OF SUCH DAMAGE.
         /**
          * Initialize
          */
-        loadGeneralSettings();
         updateStatus();
 
         // update history on tab state and implement navigation
-        if(window.location.hash != "") {
-            $('a[href="' + window.location.hash + '"]').click()
+        if (window.location.hash != "") {
+            $('a[href="' + window.location.hash + '"]').click();
+        } else {
+            $('a[href="#settings"]').click();
         }
+
         $('.nav-tabs a').on('shown.bs.tab', function (e) {
             history.pushState(null, null, e.target.hash);
         });
@@ -520,7 +526,7 @@ POSSIBILITY OF SUCH DAMAGE.
 </script>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" href="#settings" id="settings_tab">{{ lang._('Settings') }}</a></li>
+    <li><a data-toggle="tab" href="#settings" id="settings_tab">{{ lang._('Settings') }}</a></li>
     <li><a data-toggle="tab" href="#download_settings" id="download_settings_tab">{{ lang._('Download') }}</a></li>
     <li><a data-toggle="tab" href="#rules" id="rule_tab">{{ lang._('Rules') }}</a></li>
     <li><a data-toggle="tab" href="#userrules" id="userrules_tab">{{ lang._('User defined') }}</a></li>
@@ -528,7 +534,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <li><a href="" id="scheduled_updates" style="display:none">{{ lang._('Schedule') }}</a></li>
 </ul>
 <div class="tab-content content-box tab-content">
-    <div id="settings" class="tab-pane fade in active">
+    <div id="settings" class="tab-pane fade in">
         {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_GeneralSettings'])}}
         <div class="col-md-12">
             <hr/>
@@ -580,7 +586,6 @@ POSSIBILITY OF SUCH DAMAGE.
                   </div>
                 </td>
             </tr>
-<!--
             <tr>
                 <td><div class="control-label">
                     <i class="fa fa-info-circle text-muted"></i>
@@ -591,7 +596,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
                 </td>
             </tr>
--->
           </tbody>
       </table>
       <div class="col-md-12">
