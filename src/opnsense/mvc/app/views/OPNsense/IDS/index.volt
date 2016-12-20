@@ -421,6 +421,18 @@ POSSIBILITY OF SUCH DAMAGE.
             }
         });
 
+        $("#grid-rule-files-search").keydown(function (e) {
+            var searchString = $(this).val();
+            $("#grid-rule-files > tbody > tr").each(function(){
+                var itemName = $(this).children('td:eq(1)').html();
+                if (itemName.toLowerCase().indexOf(searchString.toLowerCase())>=0) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
         /**
          * Change sid to action selector after DialogAlert show
          */
@@ -509,6 +521,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" href="#settings" id="settings_tab">{{ lang._('Settings') }}</a></li>
+    <li><a data-toggle="tab" href="#download_settings" id="download_settings_tab">{{ lang._('Download') }}</a></li>
     <li><a data-toggle="tab" href="#rules" id="rule_tab">{{ lang._('Rules') }}</a></li>
     <li><a data-toggle="tab" href="#userrules" id="userrules_tab">{{ lang._('User defined') }}</a></li>
     <li><a data-toggle="tab" href="#alerts" id="alert_tab">{{ lang._('Alerts') }}</a></li>
@@ -517,13 +530,17 @@ POSSIBILITY OF SUCH DAMAGE.
 <div class="tab-content content-box tab-content">
     <div id="settings" class="tab-pane fade in active">
         {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_GeneralSettings'])}}
-        <!-- add installable rule files -->
-        <table class="table table-striped table-condensed table-responsive">
-            <colgroup>
-                <col class="col-md-3"/>
-                <col class="col-md-9"/>
-            </colgroup>
-            <tbody>
+        <div class="col-md-12">
+            <hr/>
+            <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b><i id="reconfigureAct_progress" class=""></i></button>
+            <br/>
+            <br/>
+        </div>
+    </div>
+    <div id="download_settings" class="tab-pane fade in">
+      <!-- add installable rule files -->
+      <table class="table table-striped table-condensed table-responsive">
+          <tbody>
             <tr>
                 <td><div class="control-label">
                     <i class="fa fa-info-circle text-muted"></i>
@@ -534,35 +551,55 @@ POSSIBILITY OF SUCH DAMAGE.
                   <table class="table table-condensed table-responsive">
                     <tr>
                       <td>
-                        <button data-toggle="tooltip" id="enableSelectedRuleSets" type="button" class="btn btn-xs btn-default btn-primary">{{ lang._('Enable selected') }}</span></button>
-                        <button data-toggle="tooltip" id="disableSelectedRuleSets" type="button" class="btn btn-xs btn-default btn-primary">{{ lang._('Disable selected') }}</span></button>
+                        <div class="row">
+                          <div class="col-xs-9">
+                            <button data-toggle="tooltip" id="enableSelectedRuleSets" type="button" class="btn btn-xs btn-default btn-primary">{{ lang._('Enable selected') }}</span></button>
+                            <button data-toggle="tooltip" id="disableSelectedRuleSets" type="button" class="btn btn-xs btn-default btn-primary">{{ lang._('Disable selected') }}</span></button>
+                          </div>
+                          <div class="col-xs-3" style="padding-top:0px;">
+                            <input type="text" placeholder="{{ lang._('Search') }}" id="grid-rule-files-search" value=""/>
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   </table>
-                <table id="grid-rule-files" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRuleset">
-                    <thead>
-                    <tr>
-                        <th data-column-id="filename" data-type="string" data-visible="false" data-identifier="true">{{ lang._('Filename') }}</th>
-                        <th data-column-id="description" data-type="string" data-sortable="false" data-visible="true">{{ lang._('Description') }}</th>
-                        <th data-column-id="modified_local" data-type="rulets" data-sortable="false" data-visible="true">{{ lang._('Last updated') }}</th>
-                        <th data-column-id="filter_str" data-type="string" data-identifier="true">{{ lang._('Filter') }}</th>
-                        <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false" data-width="10em">{{ lang._('Commands') }}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+                  <div style="max-height: 400px; width: 100%; margin: 0; overflow-y: auto;" id="grid-rule-files-container">
+                    <table id="grid-rule-files" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRuleset">
+                        <thead>
+                        <tr>
+                            <th data-column-id="filename" data-type="string" data-visible="false" data-identifier="true">{{ lang._('Filename') }}</th>
+                            <th data-column-id="description" data-type="string" data-sortable="false" data-visible="true">{{ lang._('Description') }}</th>
+                            <th data-column-id="modified_local" data-type="rulets" data-sortable="false" data-visible="true">{{ lang._('Last updated') }}</th>
+                            <th data-column-id="filter_str" data-type="string" data-identifier="true">{{ lang._('Filter') }}</th>
+                            <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false" data-width="10em">{{ lang._('Commands') }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                  </div>
                 </td>
             </tr>
-            </tbody>
-        </table>
-        <div class="col-md-12">
-            <hr/>
-            <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b><i id="reconfigureAct_progress" class=""></i></button>
-            <button class="btn btn-primary" id="updateRulesAct" type="button"><b>{{ lang._('Download & Update Rules') }}</b><i id="updateRulesAct_progress" class=""></i></button>
-            <br/>
-            <i>{{ lang._('Please use "Download & Update Rules" to fetch your initial ruleset, automatic updating can be scheduled after the first download.') }} </i>
-        </div>
+<!--
+            <tr>
+                <td><div class="control-label">
+                    <i class="fa fa-info-circle text-muted"></i>
+                    <b>{{ lang._('Settings') }}</b>
+                    </div>
+                </td>
+                <td>
+
+                </td>
+            </tr>
+-->
+          </tbody>
+      </table>
+      <div class="col-md-12">
+          <hr/>
+          <button class="btn btn-primary" id="updateRulesAct" type="button"><b>{{ lang._('Download & Update Rules') }}</b><i id="updateRulesAct_progress" class=""></i></button>
+          <br/>
+          <i>{{ lang._('Please use "Download & Update Rules" to fetch your initial ruleset, automatic updating can be scheduled after the first download.') }} </i>
+      </div>
     </div>
     <div id="rules" class="tab-pane fade in">
         <div class="bootgrid-header container-fluid">
