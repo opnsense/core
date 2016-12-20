@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['disablehttpredirect'] = isset($config['system']['webgui']['disablehttpredirect']);
     $pconfig['disableconsolemenu'] = isset($config['system']['disableconsolemenu']);
     $pconfig['disableintegratedauth'] = !empty($config['system']['disableintegratedauth']);
-    $pconfig['sudo_allow_wheel'] = isset($config['system']['sudo_allow_wheel']);
+    $pconfig['sudo_allow_wheel'] = $config['system']['sudo_allow_wheel'];
     $pconfig['noantilockout'] = isset($config['system']['webgui']['noantilockout']);
     $pconfig['nodnsrebindcheck'] = isset($config['system']['webgui']['nodnsrebindcheck']);
     $pconfig['nohttpreferercheck'] = isset($config['system']['webgui']['nohttpreferercheck']);
@@ -121,8 +121,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['disableintegratedauth']);
         }
 
-        if ($pconfig['sudo_allow_wheel'] == "yes") {
-            $config['system']['sudo_allow_wheel'] = true;
+        if (!empty($pconfig['sudo_allow_wheel'])) {
+            $config['system']['sudo_allow_wheel'] = $pconfig['sudo_allow_wheel'];
         } elseif (isset($config['system']['sudo_allow_wheel'])) {
             unset($config['system']['sudo_allow_wheel']);
         }
@@ -559,13 +559,6 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Sudo usage") ?></td>
-                  <td width="78%">
-                    <input name="sudo_allow_wheel" type="checkbox" value="yes" <?= empty($pconfig['sudo_allow_wheel']) ? '' : 'checked="checked"' ?>  />
-                    <strong><?= gettext('Allow administrators to use the Sudo utility') ?></strong>
-                  </td>
-                </tr>
-                <tr>
                   <td><a id="help_for_disableintegratedauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Integrated authentication") ?></td>
                   <td width="78%">
                     <input name="disableintegratedauth" type="checkbox" value="yes" <?= empty($pconfig['disableintegratedauth']) ? '' : 'checked="checked"' ?>  />
@@ -573,6 +566,16 @@ include("head.inc");
                     <div class="hidden" for="help_for_disableintegratedauth">
                         <?=gettext("Disable OPNsense integrated authentication module for console access, falling back to normal unix authentication.");?>
                     </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Sudo usage") ?></td>
+                  <td width="78%">
+                    <select name="sudo_allow_wheel" id="sudo_allow_wheel" class="formselect selectpicker">
+                      <option value="" <?= empty($pconfig['sudo_allow_wheel']) ? 'selected="selected"' : '' ?>><?= gettext('Disallow') ?></option>
+                      <option value="1" <?= $pconfig['sudo_allow_wheel'] == 1 ? 'selected="selected"' : '' ?>><?= gettext('Ask password') ?></option>
+                      <option value="2" <?= $pconfig['sudo_allow_wheel'] == 2 ? 'selected="selected"' : '' ?>><?= gettext('No password') ?></option>
+                    </select>
                   </td>
                 </tr>
                 <tr>
