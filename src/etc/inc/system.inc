@@ -1738,11 +1738,7 @@ function system_login_configure($verbose = false)
     }
 
     if ($serial_enabled) {
-        if (count($console_selection) >= 2) {
-            @file_put_contents('/boot.config', "-S{$serialspeed} -D\n");
-        } else {
-            @file_put_contents('/boot.config', "-S{$serialspeed} -h\n");
-        }
+        @file_put_contents('/boot.config', "-S{$serialspeed} -D\n");
         $new_boot_config['comconsole_speed'] = '"'.$serialspeed.'"';
         $new_boot_config['boot_serial'] = '"YES"';
     } elseif (!$output_enabled) {
