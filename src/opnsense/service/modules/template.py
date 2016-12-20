@@ -293,6 +293,7 @@ class Template(object):
         """
         result = None
         for template_name in self.iter_modules(module_name):
+            wildcard_pos = module_name.find('*')
             if result is None:
                 result = list()
             syslog.syslog(syslog.LOG_NOTICE, "generate template container %s" % template_name)
