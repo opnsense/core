@@ -685,7 +685,7 @@ $( document ).ready(function() {
                       </tbody>
                     </table>
                     <div class="hidden" for="help_for_srcport">
-                      <?=gettext("Specify the source port or port range for this rule"); ?>.
+                      <?=gettext("When using the TCP or UDP protocols, specify the source port or port range for this rule"); ?>.
                       <b><?=gettext("This is usually"); ?>
                         <em><?=gettext("random"); ?></em>
                          <?=gettext("and almost never equal to the destination port range (and should usually be 'any')"); ?>.
@@ -829,7 +829,7 @@ $( document ).ready(function() {
                       </tbody>
                     </table>
                     <div class="hidden" for="help_for_dstport">
-                      <?=gettext("Specify the port or port range for the destination of the packet for this mapping."); ?>
+                      <?=gettext("When using the TCP or UDP protocols, specify the port or port range for the destination of the packet for this mapping."); ?>
                     </div>
                   </td>
                 </tr>
