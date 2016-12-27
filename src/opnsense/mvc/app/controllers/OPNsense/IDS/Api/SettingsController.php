@@ -267,6 +267,76 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
+     * list ruleset properties
+     * @return array
+     */
+    public function getRulesetpropertiesAction()
+    {
+        $result = array('properties' => array());
+        $backend = new Backend();
+        $response = $backend->configdRun("ids list installablerulesets");
+        $data = json_decode($response, true);
+        if ($data != null && isset($data["properties"])) {
+            foreach ($data['properties'] as $key => $settings) {
+                $result['properties'][$key] = !empty($settings['default']) ? $settings['default'] : "";
+                foreach ($this->getModel()->fileTags->tag->__items as $tag) {
+                    if ((string)$tag->property == $key) {
+                        $result['properties'][(string)$tag->property] = (string)$tag->value;
+                    }
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * update ruleset properties
+     * @return array
+     */
+    public function setRulesetpropertiesAction()
+    {
+        $result = array("result" => "failed");
+        if ($this->request->isPost() && $this->request->hasPost("properties")) {
+            // only update properties available in "ids list installablerulesets"
+            $backend = new Backend();
+            $response = $backend->configdRun("ids list installablerulesets");
+            $data = json_decode($response, true);
+            if ($data != null && isset($data["properties"])) {
+                $setProperties = $this->request->getPost("properties");
+                foreach ($setProperties as $key => $value) {
+                    if (isset($data['properties'][$key])) {
+                        if (!isset($result['fields'])) {
+                            $result['fields'] = array(); // return updated fields
+                        }
+                        $result['fields'][] = $key;
+                        $resultTag = null;
+                        foreach ($this->getModel()->fileTags->tag->__items as $tag) {
+                            if ((string)$tag->property == $key) {
+                                $resultTag = $tag;
+                                break;
+                            }
+                        }
+                        if ($resultTag == null) {
+                            $resultTag = $this->getModel()->fileTags->tag->Add();
+                        }
+                        $resultTag->property = (string)$key;
+                        $resultTag->value = (string)$value;
+                    }
+                }
+                $validations = $this->getModel()->validate();
+                if (count($validations)) {
+                    $result['validations'] = $validations;
+                } else {
+                    $this->getModel()->serializeToConfig();
+                    Config::getInstance()->save();
+                    $result["result"] = "saved";
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
      * list all installable rules including current status
      * @return array|mixed list of items when $id is null otherwise the selected item is returned
      * @throws \Exception

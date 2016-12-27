@@ -82,5 +82,9 @@ if __name__ == '__main__':
                         pass
                 else:
                     input_filter = enabled_rulefiles[rule['filename']]['filter']
+                    if ('username' in rule['source'] and 'password' in rule['source']):
+                        auth = (rule['source']['username'], rule['source']['password'])
+                    else:
+                        auth = None
                     dl.download(proto=download_proto, url=rule['url'], url_filename=rule['url_filename'],
-                                filename=rule['filename'], input_filter=input_filter)
+                                filename=rule['filename'], input_filter=input_filter, auth=auth)

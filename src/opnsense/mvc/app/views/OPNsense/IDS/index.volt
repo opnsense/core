@@ -153,6 +153,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     if (status == "success" || data['status'].toLowerCase().trim() == "ok") {
                         result_status = true;
                     }
+                    $('#scheduled_updates').show();
                     callback_funct(result_status);
                 });
             });
@@ -207,6 +208,65 @@ POSSIBILITY OF SUCH DAMAGE.
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             if (e.target.id == 'settings_tab'){
                 loadGeneralSettings();
+            } else if (e.target.id == 'download_settings_tab') {
+                /**
+                 * grid for installable rule files
+                 */
+                $('#grid-rule-files').bootgrid('destroy'); // always destroy previous grid, so data is always fresh
+                $("#grid-rule-files").UIBootgrid({
+                    search:'/api/ids/settings/listRulesets',
+                    get:'/api/ids/settings/getRuleset/',
+                    set:'/api/ids/settings/setRuleset/',
+                    toggle:'/api/ids/settings/toggleRuleset/',
+                    options:{
+                        navigation:0,
+                        formatters:{
+                            rowtoggle: function (column, row) {
+                                var toggle = " <button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.filename + "\"><span class=\"fa fa-pencil\"></span></button> ";
+                                if (parseInt(row[column.id], 2) == 1) {
+                                    toggle += "<span style=\"cursor: pointer;\" class=\"fa fa-check-square-o command-toggle\" data-value=\"1\" data-row-id=\"" + row.filename + "\"></span>";
+                                } else {
+                                    toggle += "<span style=\"cursor: pointer;\" class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.filename + "\"></span>";
+                                }
+                                return toggle;
+                            }
+                        },
+                        converters: {
+                            // show "not installed" for rules without timestamp (not on disc)
+                            rulets: {
+                                from: function (value) {
+                                    return value;
+                                },
+                                to: function (value) {
+                                    if ( value == null ) {
+                                        return "{{ lang._('not installed') }}";
+                                    } else {
+                                        return value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                // display file settings (if available)
+                ajaxGet(url="/api/ids/settings/getRulesetproperties", sendData={}, callback=function(data, status) {
+                    if (status == "success") {
+                        var rows = [];
+                        // generate rows with field references
+                        $.each(data['properties'], function(key, value) {
+                            rows.push('<tr><td>'+key+'</td><td><input class="rulesetprop" data-id="'+key+'" type="text"></td></tr>');
+                        });
+                        $("#grid-rule-files-settings > tbody").html(rows.join(''));
+                        // update with data
+                        $(".rulesetprop").each(function(){
+                            $(this).val(data['properties'][$(this).data('id')]);
+                        });
+                        if (rows.length > 0) {
+                            $("#grid-rule-files-settings").parent().parent().show();
+                            $("#updateSettings").show();
+                        }
+                    }
+                });
             } else if (e.target.id == 'rule_tab'){
                 //
                 // activate rule tab page
@@ -275,46 +335,6 @@ POSSIBILITY OF SUCH DAMAGE.
                         toggle:'/api/ids/settings/toggleUserRule/'
                     }
                 );
-            } else if (e.target.id == 'download_settings_tab') {
-                /**
-                 * grid for installable rule files
-                 */
-                $('#grid-rule-files').bootgrid('destroy'); // always destroy previous grid, so data is always fresh
-                $("#grid-rule-files").UIBootgrid({
-                    search:'/api/ids/settings/listRulesets',
-                    get:'/api/ids/settings/getRuleset/',
-                    set:'/api/ids/settings/setRuleset/',
-                    toggle:'/api/ids/settings/toggleRuleset/',
-                    options:{
-                        navigation:0,
-                        formatters:{
-                            rowtoggle: function (column, row) {
-                                var toggle = " <button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.filename + "\"><span class=\"fa fa-pencil\"></span></button> ";
-                                if (parseInt(row[column.id], 2) == 1) {
-                                    toggle += "<span style=\"cursor: pointer;\" class=\"fa fa-check-square-o command-toggle\" data-value=\"1\" data-row-id=\"" + row.filename + "\"></span>";
-                                } else {
-                                    toggle += "<span style=\"cursor: pointer;\" class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.filename + "\"></span>";
-                                }
-                                return toggle;
-                            }
-                        },
-                        converters: {
-                            // show "not installed" for rules without timestamp (not on disc)
-                            rulets: {
-                                from: function (value) {
-                                    return value;
-                                },
-                                to: function (value) {
-                                    if ( value == null ) {
-                                        return "{{ lang._('not installed') }}";
-                                    } else {
-                                        return value;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
             }
         })
 
@@ -344,6 +364,16 @@ POSSIBILITY OF SUCH DAMAGE.
                 }
             });
         });
+        $("#updateSettings").click(function(){
+            $("#updateSettings_progress").addClass("fa fa-spinner fa-pulse");
+            var settings = {};
+            $(".rulesetprop").each(function(){
+                settings[$(this).data('id')] = $(this).val();
+            });
+            ajaxCall(url="/api/ids/settings/setRulesetproperties", sendData={'properties': settings}, callback=function(data,status) {
+                $("#updateSettings_progress").removeClass("fa fa-spinner fa-pulse");
+            });
+        });
 
         /**
          * update (userdefined) rules
@@ -365,15 +395,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 // when done, disable progress animation and reload grid.
                 $('#grid-rule-files').bootgrid('reload');
                 updateStatus();
-                if ($('#scheduled_updates').is(':hidden') ){
-                    // save and reconfigure on initial download (tries to create a cron job)
-                    actionReconfigure(function(status){
-                        loadGeneralSettings();
-                        $("#updateRulesAct_progress").removeClass("fa fa-spinner fa-pulse");
-                    });
-                } else {
-                    $("#updateRulesAct_progress").removeClass("fa fa-spinner fa-pulse");
-                }
+                $("#updateRulesAct_progress").removeClass("fa fa-spinner fa-pulse");
             });
         });
 
@@ -586,20 +608,24 @@ POSSIBILITY OF SUCH DAMAGE.
                   </div>
                 </td>
             </tr>
-            <tr>
+            <tr style="display:none">
                 <td><div class="control-label">
                     <i class="fa fa-info-circle text-muted"></i>
                     <b>{{ lang._('Settings') }}</b>
                     </div>
                 </td>
                 <td>
-
+                  <table id="grid-rule-files-settings" class="table-condensed table-hover">
+                    <tbody>
+                    </tbody>
+                  </table>
                 </td>
             </tr>
           </tbody>
       </table>
       <div class="col-md-12">
           <hr/>
+          <button class="btn btn-primary" style="display:none" id="updateSettings" type="button"><b>{{ lang._('Save') }}</b><i id="updateSettings_progress" class=""></i></button>
           <button class="btn btn-primary" id="updateRulesAct" type="button"><b>{{ lang._('Download & Update Rules') }}</b><i id="updateRulesAct_progress" class=""></i></button>
           <br/>
           <i>{{ lang._('Please use "Download & Update Rules" to fetch your initial ruleset, automatic updating can be scheduled after the first download.') }} </i>

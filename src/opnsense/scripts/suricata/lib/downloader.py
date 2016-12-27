@@ -110,7 +110,7 @@ class Downloader(object):
         else:
             return src.read()
 
-    def download(self, proto, url, url_filename, filename, input_filter):
+    def download(self, proto, url, url_filename, filename, input_filter, auth = None):
         """ download ruleset file
             :param proto: protocol (http,https)
             :param url: download url
@@ -121,7 +121,13 @@ class Downloader(object):
             frm_url = url.replace('//', '/').replace(':/', '://')
             # stream to temp file
             if frm_url not in self._download_cache:
-                req = requests.get(url=frm_url, stream=True, verify=False)
+                req_opts = dict()
+                req_opts['url'] = frm_url
+                req_opts['stream'] = True
+                if auth is not None:
+                    req_opts['auth'] = auth
+                req = requests.get(**req_opts)
+
                 if req.status_code == 200:
                     src = tempfile.NamedTemporaryFile('wb+', 10240)
                     while True:
