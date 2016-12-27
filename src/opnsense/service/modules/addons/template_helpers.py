@@ -29,6 +29,7 @@
 """
 
 from operator import itemgetter
+import netaddr
 
 
 # noinspection PyPep8Naming
@@ -105,3 +106,11 @@ class Helpers(object):
             return self._template_in_data['__uuid__'][uuid]
         else:
             return {}
+
+    @staticmethod
+    def getIPNetwork(network):
+        """ generate network object using netaddr
+            :param network: network
+            :return: IPNetwork
+        """
+        return netaddr.IPNetwork(network)
