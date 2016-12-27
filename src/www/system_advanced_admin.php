@@ -39,6 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['webguiproto'] = $config['system']['webgui']['protocol'];
     $pconfig['webguiport'] = $config['system']['webgui']['port'];
     $pconfig['ssl-certref'] = $config['system']['webgui']['ssl-certref'];
+    if (!empty($config['system']['webgui']['ssl-ciphers'])) {
+        $pconfig['ssl-ciphers'] = explode(':', $config['system']['webgui']['ssl-ciphers']);
+    } else {
+        $pconfig['ssl-ciphers'] = array();
+    }
     $pconfig['disablehttpredirect'] = isset($config['system']['webgui']['disablehttpredirect']);
     $pconfig['disableconsolemenu'] = isset($config['system']['disableconsolemenu']);
     $pconfig['disableintegratedauth'] = !empty($config['system']['disableintegratedauth']);
@@ -84,9 +89,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (count($input_errors) ==0) {
         // flag web ui for restart
+        if (!empty($pconfig['ssl-ciphers'])) {
+            $newciphers = implode(':', $pconfig['ssl-ciphers']);
+        } else {
+            $newciphers = '';
+        }
         if ($config['system']['webgui']['protocol'] != $pconfig['webguiproto'] ||
             $config['system']['webgui']['port'] != $pconfig['webguiport'] ||
             $config['system']['webgui']['ssl-certref'] != $pconfig['ssl-certref'] ||
+            $config['system']['webgui']['ssl-ciphers'] != $newciphers ||
             ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect'])
             ) {
             $restart_webgui = true;
@@ -97,6 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['webgui']['protocol'] = $pconfig['webguiproto'];
         $config['system']['webgui']['port'] = $pconfig['webguiport'];
         $config['system']['webgui']['ssl-certref'] = $pconfig['ssl-certref'];
+        $config['system']['webgui']['ssl-ciphers'] = $newciphers;
 
         if ($pconfig['disablehttpredirect'] == "yes") {
             $config['system']['webgui']['disablehttpredirect'] = true;
@@ -357,6 +369,24 @@ include("head.inc");
                         '<a href="/system_certmanager.php">', '</a>'
                       );?>
                     </div>
+                  </td>
+                </tr>
+                <tr class="ssl_opts">
+                  <td><a id="help_for_sslciphers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("limit SSL Ciphers (advanced)"); ?></td>
+                  <td>
+                      <select name="ssl-ciphers[]" class="selectpicker"  multiple="multiple" data-live-search="true" title="<?=gettext("leave default");?>">
+<?php
+                      $ciphers = json_decode(configd_run("system ssl ciphers"), true);
+                      foreach ($ciphers as $cipher => $cipher_data):?>
+                        <option value="<?=$cipher;?>" <?=in_array($cipher, $pconfig['ssl-ciphers']) ? 'selected="selected"' : '';?>>
+                          <?=!empty($cipher_data['description']) ? $cipher_data['description'] : $cipher;?>
+                        </option>
+<?php
+                      endforeach;?>
+                      </select>
+                      <div class="hidden" for="help_for_sslciphers">
+                        <?=gettext("Limit SSL ciphers to selected ones, be **very** careful changing this option, invalid options could lead to an inaccessible user interface.");?>
+                      </div>
                   </td>
                 </tr>
                 <tr>
