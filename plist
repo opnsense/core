@@ -619,6 +619,8 @@
 /usr/local/opnsense/scripts/suricata/queryInstalledRules.py
 /usr/local/opnsense/scripts/suricata/rule-updater.py
 /usr/local/opnsense/scripts/suricata/setup.sh
+/usr/local/opnsense/scripts/system/rfc5246_cipher_suites.csv
+/usr/local/opnsense/scripts/system/ssl_ciphers.py
 /usr/local/opnsense/scripts/systemhealth/activity.py
 /usr/local/opnsense/scripts/systemhealth/definitions/gateway-quality.xml
 /usr/local/opnsense/scripts/systemhealth/definitions/interface-packets.xml
