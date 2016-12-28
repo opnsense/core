@@ -378,7 +378,7 @@ include("head.inc");
 <?php
                       $ciphers = json_decode(configd_run("system ssl ciphers"), true);
                       foreach ($ciphers as $cipher => $cipher_data):?>
-                        <option value="<?=$cipher;?>" <?=in_array($cipher, $pconfig['ssl-ciphers']) ? 'selected="selected"' : '';?>>
+                        <option value="<?=$cipher;?>" <?= !empty($pconfig['ssl-ciphers']) && in_array($cipher, $pconfig['ssl-ciphers']) ? 'selected="selected"' : '' ?>>
                           <?=!empty($cipher_data['description']) ? $cipher_data['description'] : $cipher;?>
                         </option>
 <?php
