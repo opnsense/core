@@ -108,7 +108,7 @@ CORE_DEPENDS?=		apinger \
 			ngattach \
 			ntp \
 			openssh-portable \
-			openvpn \
+			openvpn23 \
 			opnsense-lang \
 			opnsense-update \
 			pecl-radius \
