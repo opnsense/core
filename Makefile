@@ -107,7 +107,7 @@ CORE_DEPENDS?=		apinger \
 			mpd5 \
 			ntp \
 			openssh-portable \
-			openvpn \
+			openvpn23 \
 			opnsense-lang \
 			opnsense-update \
 			pam_opnsense \
