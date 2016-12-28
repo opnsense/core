@@ -69,14 +69,11 @@ Value,Description,DTLS-OK,Reference
 "0x00,0x44",TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA,Y,[RFC5932]
 "0x00,0x45",TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA,Y,[RFC5932]
 "0x00,0x46",TLS_DH_anon_WITH_CAMELLIA_128_CBC_SHA,Y,[RFC5932]
-"0x00,0x47-4F","Reserved to avoid conflicts with         
-deployed implementations",,[Pasi_Eronen]
+"0x00,0x47-4F","Reserved to avoid conflicts with deployed implementations",,[Pasi_Eronen]
 "0x00,0x50-58",Reserved to avoid conflicts,,"[Pasi Eronen, <pasi.eronen&nokia.com>, 2008-04-04.  2008-04-04]"
-"0x00,0x59-5C","Reserved to avoid conflicts with         
-deployed implementations",,[Pasi_Eronen]
+"0x00,0x59-5C","Reserved to avoid conflicts with deployed implementations",,[Pasi_Eronen]
 "0x00,0x5D-5F",Unassigned,,
-"0x00,0x60-66","Reserved to avoid conflicts with
-widely deployed implementations",,[Pasi_Eronen]
+"0x00,0x60-66","Reserved to avoid conflicts with widely deployed implementations",,[Pasi_Eronen]
 "0x00,0x67",TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,Y,[RFC5246]
 "0x00,0x68",TLS_DH_DSS_WITH_AES_256_CBC_SHA256,Y,[RFC5246]
 "0x00,0x69",TLS_DH_RSA_WITH_AES_256_CBC_SHA256,Y,[RFC5246]
@@ -344,6 +341,5 @@ widely deployed implementations",,[Pasi_Eronen]
 "0xCC,0xAF-FF",Unassigned,,
 "0xCD-FD,*",Unassigned,,
 "0xFE,0x00-FD",Unassigned,,
-"0xFE,0xFE-FF","Reserved to avoid conflicts with
-widely deployed implementations",,[Pasi_Eronen]
+"0xFE,0xFE-FF","Reserved to avoid conflicts with widely deployed implementations",,[Pasi_Eronen]
 "0xFF,0x00-FF",Reserved for Private Use,,[RFC5246]
