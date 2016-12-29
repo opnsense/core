@@ -52,7 +52,7 @@ function dhcp_clean_leases()
     foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifarr) {
         if (isset($config['dhcpd'][$ifname]['staticmap'])) {
             foreach($config['dhcpd'][$ifname]['staticmap'] as $static) {
-                $lease_patterns[] = '(\h*lease\s*[0-9\.]+\s*\{[^\{\}]*hardware\h*ethernet\h*' . $static['mac'] . '[^\{\}]*(.*"[^\{\}]*\}|\})\s?)';
+                $lease_patterns[] = '(lease\s*[0-9\.]+\s*\{[^\{\}]*hardware ethernet ' . $static['mac'] . '[^\{\}]*(.*"[^\{\}]*\}|\})\s?)';
             }
         }
     }
