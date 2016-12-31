@@ -195,7 +195,7 @@ function plugins_xmlrpc_sync()
                 if (!empty($helper['id']) && !empty($helper['section'])) {
                     $sync_settings[$helper['id']] = $helper;
                     if (empty($helper['help'])) {
-                        $sync_settings[$helper['id']]['help'] = sprintf(gettext('Synchronize %s settings to backup'), $helper['description']);
+                        $sync_settings[$helper['id']]['help'] = sprintf(gettext('Automatically synchronize the %s configuration to the other HA host when changes are made.'), $helper['description']);
                     }
                     unset($sync_settings[$helper['id']]['id']);
                 }

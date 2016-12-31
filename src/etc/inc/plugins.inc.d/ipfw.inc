@@ -48,3 +48,21 @@ function ipfw_services()
 
     return $services;
 }
+
+function ipfw_xmlrpc_sync()
+{
+    $result = array();
+
+    $result[] = array(
+        'description' => gettext('Traffic Shaper'),
+        'section' => 'OPNsense.TrafficShaper',
+        'id' => 'shaper',
+    );
+    $result[] = array(
+        'description' => gettext('Captive Portal'),
+        'section' => 'OPNsense.captiveportal',
+        'id' => 'captiveportal',
+    );
+
+    return $result;
+}

@@ -35,11 +35,24 @@ if (!isset($config['hasync']) || !is_array($config['hasync'])) {
 }
 $a_hasync = &$config['hasync'];
 
-$checkbox_names = array('pfsyncenabled', 'synchronizeusers', 'synchronizeauthservers', 'synchronizecerts',
-                        'synchronizerules', 'synchronizeschedules', 'synchronizealiases', 'synchronizenat',
-                        'synchronizeipsec', 'synchronizeopenvpn', 'synchronizedhcpd', 'synchronizewol',
-                        'synchronizestaticroutes', 'synchronizelb', 'synchronizevirtualip',
-                        'synchronizednsforwarder','synchronizednsresolver', 'synchronizeshaper', 'synchronizecaptiveportal'
+$checkbox_names = array(
+    'pfsyncenabled',
+    'synchronizealiases',
+    'synchronizeauthservers',
+    'synchronizecerts',
+    'synchronizedhcpd',
+    'synchronizednsforwarder',
+    'synchronizednsresolver',
+    'synchronizeipsec',
+    'synchronizelb',
+    'synchronizenat',
+    'synchronizeopenvpn',
+    'synchronizerules',
+    'synchronizeschedules',
+    'synchronizestaticroutes',
+    'synchronizeusers',
+    'synchronizevirtualip',
+    'synchronizewol',
 );
 
 $syncplugins = array();
@@ -343,24 +356,6 @@ include("head.inc");
                     <input type="checkbox" name="synchronizednsresolver" value="on" <?=!empty($pconfig['synchronizednsresolver']) ? "checked=\"checked\"" :"";?> />
                     <div class="hidden" for="help_for_synchronizednsresolver">
                       <?=gettext('Automatically sync the DNS Resolver configuration to the other HA host when changes are made.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizeshaper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Traffic Shaper') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizeshaper" value="on" <?=!empty($pconfig['synchronizeshaper']) ? "checked=\"checked\"" :"";?> />
-                    <div class="hidden" for="help_for_synchronizeshaper">
-                      <?=gettext('Automatically sync the TrafficShaper configuration to the other HA host when changes are made.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizecaptiveportal" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Captive Portal') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizecaptiveportal" value="on" <?=!empty($pconfig['synchronizecaptiveportal']) ? "checked=\"checked\"" :"";?> />
-                    <div class="hidden" for="help_for_synchronizecaptiveportal">
-                      <?=gettext('Automatically sync the Captive Portal configuration to the other HA host when changes are made.') ?>
                     </div>
                   </td>
                 </tr>
