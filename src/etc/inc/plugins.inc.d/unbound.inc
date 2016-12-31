@@ -55,6 +55,19 @@ function unbound_services()
     return $services;
 }
 
+function unbound_xmlrpc_sync()
+{
+    $result = array();
+
+    $result[] = array(
+        'description' => gettext('DNS Resolver'),
+        'section' => 'unbound',
+        'id' => 'dnsresolver',
+    );
+
+    return $result;
+}
+
 function unbound_configure()
 {
     /* XXX stub that prevents unbound from starting again on bootup */

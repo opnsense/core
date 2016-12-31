@@ -97,3 +97,16 @@ function if_ipsec_interfaces()
 
     return $interfaces;
 }
+
+function if_ipsec_xmlrpc_sync()
+{
+    $result = array();
+
+    $result[] = array(
+        'description' => gettext('IPsec'),
+        'section' => 'ipsec',
+        'id' => 'ipsec',
+    );
+
+    return $result;
+}

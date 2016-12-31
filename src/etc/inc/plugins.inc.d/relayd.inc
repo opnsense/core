@@ -55,12 +55,25 @@ function relayd_services()
 
     $pconfig = array();
     $pconfig['name'] = 'relayd';
-    $pconfig['description'] = gettext('Server load balancing daemon');
+    $pconfig['description'] = gettext('Relayd Load Balancer');
     $pconfig['php']['restart'] = array('relayd_configure_do');
     $pconfig['php']['start'] = array('relayd_configure_do');
     $services[] = $pconfig;
 
     return $services;
+}
+
+function relayd_xmlrpc_sync()
+{
+    $result = array();
+
+    $result[] = array(
+        'description' => gettext('Relayd Load Balancer'),
+        'section' => 'load_balancer',
+        'id' => 'lb',
+    );
+
+    return $result;
 }
 
 function relayd_syslog()

@@ -60,6 +60,7 @@
 /usr/local/etc/inc/plugins.inc.d/squid.inc
 /usr/local/etc/inc/plugins.inc.d/suricata.inc
 /usr/local/etc/inc/plugins.inc.d/unbound.inc
+/usr/local/etc/inc/plugins.inc.d/wol.inc
 /usr/local/etc/inc/rrd.inc
 /usr/local/etc/inc/services.inc
 /usr/local/etc/inc/squid.auth-user.php

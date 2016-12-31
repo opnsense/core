@@ -280,17 +280,11 @@ if (isset($config['hasync']) && is_array($config['hasync'])) {
     $section_cnf['synchronizenat'] = 'nat';
     $section_cnf['synchronizealiases'] = 'aliases';
     $section_cnf['synchronizedhcpd'] = 'dhcpd';
-    $section_cnf['synchronizewol'] = 'wol';
     $section_cnf['synchronizestaticroutes'] = 'staticroutes,gateways';
     $section_cnf['synchronizevirtualip'] = 'virtualip';
-    $section_cnf['synchronizelb'] = 'load_balancer';
-    $section_cnf['synchronizeipsec'] = 'ipsec';
-    $section_cnf['synchronizeopenvpn'] = 'openvpn';
     $section_cnf['synchronizecerts'] = 'cert,ca,crl';
     $section_cnf['synchronizeusers'] = 'system.user,system.group';
     $section_cnf['synchronizeauthservers'] = 'system.authserver';
-    $section_cnf['synchronizednsforwarder'] = 'dnsmasq';
-    $section_cnf['synchronizednsresolver'] = 'unbound';
     $section_cnf['synchronizeschedules'] = 'schedules';
 
     if (function_exists('plugins_xmlrpc_sync')) {

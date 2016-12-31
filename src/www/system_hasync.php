@@ -41,18 +41,12 @@ $checkbox_names = array(
     'synchronizeauthservers',
     'synchronizecerts',
     'synchronizedhcpd',
-    'synchronizednsforwarder',
-    'synchronizednsresolver',
-    'synchronizeipsec',
-    'synchronizelb',
     'synchronizenat',
-    'synchronizeopenvpn',
     'synchronizerules',
     'synchronizeschedules',
     'synchronizestaticroutes',
     'synchronizeusers',
     'synchronizevirtualip',
-    'synchronizewol',
 );
 
 $syncplugins = array();
@@ -278,39 +272,11 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_synchronizeipsec" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('IPsec') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizeipsec" value="on" <?=!empty($pconfig['synchronizeipsec']) ? "checked=\"checked\"" : "";?> />
-                    <div class="hidden" for="help_for_synchronizeipsec">
-                      <?=gettext('Automatically sync the IPsec configuration to the other HA host when changes are made.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizeopenvpn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('OpenVPN') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizeopenvpn" value="on" <?=!empty($pconfig['synchronizeopenvpn']) ? "checked=\"checked\"" :"";?> />
-                    <div class="hidden" for="help_for_synchronizeopenvpn">
-                      <?=gettext('Automatically sync the OpenVPN configuration to the other HA host when changes are made.') ?>
-                      <div class="well well-sm"><b><?=gettext('Using this option implies "Synchronize Certificates" as they are required for OpenVPN.') ?></b></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
                   <td><a id="help_for_synchronizedhcpd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('DHCPD') ?></td>
                   <td>
                     <input type="checkbox" name="synchronizedhcpd" value="on" <?=!empty($pconfig['synchronizedhcpd']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" for="help_for_synchronizedhcpd">
                       <?=gettext('Automatically sync the DHCP Server settings over to the other HA host when changes are made. This only applies to DHCP for IPv4.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizewol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Wake on LAN') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizewol" value="on" <?=!empty($pconfig['synchronizewol']) ? "checked=\"checked\"" : "";?> />
-                    <div class="hidden" for="help_for_synchronizewol">
-                      <?=gettext('Automatically sync the WoL configuration to the other HA host when changes are made.') ?>
                     </div>
                   </td>
                 </tr>
@@ -324,38 +290,11 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_synchronizelb" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Load Balancer') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizelb" value="on" <?=!empty($pconfig['synchronizelb']) ? "checked=\"checked\"" :"";?> />
-                    <div class="hidden" for="help_for_synchronizelb">
-                      <?=gettext('Automatically sync the Load Balancer configuration to the other HA host when changes are made.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
                   <td><a id="help_for_synchronizevirtualip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Virtual IPs') ?></td>
                   <td>
                     <input type="checkbox" name="synchronizevirtualip" value="on" <?=!empty($pconfig['synchronizevirtualip']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" for="help_for_synchronizevirtualip">
                       <?=gettext('Automatically sync the CARP Virtual IPs to the other HA host when changes are made.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizednsforwarder" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('DNS Forwarder') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizednsforwarder" value="on" <?=!empty($pconfig['synchronizednsforwarder']) ? "checked=\"checked\"" :"";?> />
-                    <div class="hidden" for="help_for_synchronizednsforwarder">
-                      <?=gettext('Automatically sync the DNS Forwarder configuration to the other HA host when changes are made.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizednsresolver" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('DNS Resolver') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizednsresolver" value="on" <?=!empty($pconfig['synchronizednsresolver']) ? "checked=\"checked\"" :"";?> />
-                    <div class="hidden" for="help_for_synchronizednsresolver">
-                      <?=gettext('Automatically sync the DNS Resolver configuration to the other HA host when changes are made.') ?>
                     </div>
                   </td>
                 </tr>

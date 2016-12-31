@@ -91,3 +91,16 @@ function if_openvpn_interfaces()
 
     return $interfaces;
 }
+
+function if_openvpn_xmlrpc_sync()
+{
+    $result = array();
+
+    $result[] = array(
+        'description' => gettext('OpenVPN'),
+        'section' => 'openvpn',
+        'id' => 'openvpn',
+    );
+
+    return $result;
+}

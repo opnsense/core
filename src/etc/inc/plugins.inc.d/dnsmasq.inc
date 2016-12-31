@@ -55,6 +55,19 @@ function dnsmasq_services()
     return $services;
 }
 
+function dnsmasq_xmlrpc_sync()
+{
+    $result = array();
+
+    $result[] = array(
+        'description' => gettext('DNS Forwarder'),
+        'section' => 'dnsmasq',
+        'id' => 'dnsforwarder',
+    );
+
+    return $result;
+}
+
 function dnsmasq_configure()
 {
     /* XXX stub that prevents dnsmasq from starting again on bootup */
