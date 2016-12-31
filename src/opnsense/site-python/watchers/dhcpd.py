@@ -96,7 +96,7 @@ class DHCPDLease(object):
             if line:
                 if len(line) > 5 and line[0:5] == 'lease':
                     self._section_data.append(line)
-                elif len(line) > 1 and line[0] == '}':
+                elif len(line) > 1 and line[0] == '}' and len(self._section_data) > 0:
                     self._section_data.append(line)
                     yield self.parse_lease(self._section_data)
                     self._section_data = []
