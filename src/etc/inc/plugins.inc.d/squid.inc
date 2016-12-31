@@ -56,3 +56,16 @@ function squid_syslog()
 
     return $logfacilities;
 }
+
+function squid_xmlrpc_sync()
+{
+    $result = array();
+
+    $result[] = array(
+        'description' => gettext('Web Proxy'),
+        'section' => 'OPNsense.proxy',
+        'id' => 'squid',
+    );
+
+    return $result;
+}

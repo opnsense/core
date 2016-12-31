@@ -56,3 +56,16 @@ function suricata_syslog()
 
     return $logfacilities;
 }
+
+function suricata_xmlrpc_sync()
+{
+    $result = array();
+
+    $result[] = array(
+        'description' => gettext('Intrusion Detection'),
+        'section' => 'OPNsense.IDS',
+        'id' => 'suricata',
+    );
+
+    return $result;
+}
