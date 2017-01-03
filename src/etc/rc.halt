@@ -1,5 +1,5 @@
 #!/bin/sh
 
-. /usr/local/etc/rc.halt.subr
+. /usr/local/etc/rc.shutdown
 
 /sbin/shutdown -op now

@@ -98,7 +98,6 @@
 /usr/local/etc/rc.firmware
 /usr/local/etc/rc.firmware.subr
 /usr/local/etc/rc.halt
-/usr/local/etc/rc.halt.subr
 /usr/local/etc/rc.initial
 /usr/local/etc/rc.initial.banner
 /usr/local/etc/rc.initial.defaults
@@ -137,6 +136,7 @@
 /usr/local/etc/rc.reload_interfaces
 /usr/local/etc/rc.resolv_conf_generate
 /usr/local/etc/rc.restart_webgui
+/usr/local/etc/rc.shutdown
 /usr/local/etc/rc.sshd
 /usr/local/etc/rc.syshook
 /usr/local/etc/rc.update_alias_url_data

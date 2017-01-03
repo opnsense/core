@@ -13,3 +13,8 @@ echo "Unhooking from /etc/rc"
 cp /etc/rc /etc/rc.bak
 tail -n +4 /etc/rc.bak > /etc/rc
 rm -f /etc/rc.bak
+
+echo "Unhooking from /etc/rc.shutdown"
+cp /etc/rc.shutdown /etc/rc.shutdown.bak
+tail -n +4 /etc/rc.shutdown.bak > /etc/rc.shutdown
+rm -f /etc/rc.shutdown.bak
