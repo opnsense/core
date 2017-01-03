@@ -625,8 +625,8 @@ POSSIBILITY OF SUCH DAMAGE.
       </table>
       <div class="col-md-12">
           <hr/>
-          <button class="btn btn-primary" style="display:none" id="updateSettings" type="button"><b>{{ lang._('Save') }}</b><i id="updateSettings_progress" class=""></i></button>
-          <button class="btn btn-primary" id="updateRulesAct" type="button"><b>{{ lang._('Download & Update Rules') }}</b><i id="updateRulesAct_progress" class=""></i></button>
+          <button class="btn btn-primary" style="display:none" id="updateSettings" type="button"><b>{{ lang._('Save') }}</b> <i id="updateSettings_progress" class=""></i></button>
+          <button class="btn btn-primary" id="updateRulesAct" type="button"><b>{{ lang._('Download & Update Rules') }}</b> <i id="updateRulesAct_progress" class=""></i></button>
           <br/>
           <i>{{ lang._('Please use "Download & Update Rules" to fetch your initial ruleset, automatic updating can be scheduled after the first download.') }} </i>
       </div>
