@@ -96,7 +96,6 @@ CORE_DEPENDS?=		apinger \
 			ifinfo \
 			flock \
 			flowd \
-			igmpproxy \
 			isc-dhcp43-client \
 			isc-dhcp43-relay \
 			isc-dhcp43-server \

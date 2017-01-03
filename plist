@@ -47,7 +47,6 @@
 /usr/local/etc/inc/plugins.inc.d/if_ipsec.inc
 /usr/local/etc/inc/plugins.inc.d/if_legacy_opt.inc
 /usr/local/etc/inc/plugins.inc.d/if_openvpn.inc
-/usr/local/etc/inc/plugins.inc.d/igmpproxy.inc
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc
 /usr/local/etc/inc/plugins.inc.d/miniupnpd.inc
 /usr/local/etc/inc/plugins.inc.d/netflow.inc
@@ -452,8 +451,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/IDS.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_0.php
-/usr/local/opnsense/mvc/app/models/OPNsense/IGMPProxy/ACL/ACL.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/IGMPProxy/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/ACL/ACL.xml
@@ -1051,8 +1048,6 @@
 /usr/local/www/services_dnsmasq_edit.php
 /usr/local/www/services_dyndns.php
 /usr/local/www/services_dyndns_edit.php
-/usr/local/www/services_igmpproxy.php
-/usr/local/www/services_igmpproxy_edit.php
 /usr/local/www/services_ntpd.php
 /usr/local/www/services_ntpd_gps.php
 /usr/local/www/services_ntpd_pps.php
