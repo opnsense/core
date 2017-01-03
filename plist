@@ -58,7 +58,6 @@
 /usr/local/etc/inc/plugins.inc.d/squid.inc
 /usr/local/etc/inc/plugins.inc.d/suricata.inc
 /usr/local/etc/inc/plugins.inc.d/unbound.inc
-/usr/local/etc/inc/plugins.inc.d/wol.inc
 /usr/local/etc/inc/rrd.inc
 /usr/local/etc/inc/services.inc
 /usr/local/etc/inc/squid.auth-user.php
@@ -467,8 +466,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/UPnP/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/UPnP/Menu/Menu.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/WOL/ACL/ACL.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/WOL/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt
@@ -1062,8 +1059,6 @@
 /usr/local/www/services_unbound_host_edit.php
 /usr/local/www/services_unbound_overrides.php
 /usr/local/www/services_upnp.php
-/usr/local/www/services_wol.php
-/usr/local/www/services_wol_edit.php
 /usr/local/www/status_dhcp_leases.php
 /usr/local/www/status_dhcpv6_leases.php
 /usr/local/www/status_filter_reload.php
@@ -1136,7 +1131,6 @@
 /usr/local/www/widgets/include/system_log.inc
 /usr/local/www/widgets/include/thermal_sensors.inc
 /usr/local/www/widgets/include/traffic_graph.inc
-/usr/local/www/widgets/include/wake_on_lan.inc
 /usr/local/www/widgets/widgets/carp_status.widget.php
 /usr/local/www/widgets/widgets/dyn_dns_status.widget.php
 /usr/local/www/widgets/widgets/gateways.widget.php
@@ -1154,7 +1148,6 @@
 /usr/local/www/widgets/widgets/system_log.widget.php
 /usr/local/www/widgets/widgets/thermal_sensors.widget.php
 /usr/local/www/widgets/widgets/traffic_graphs.widget.php
-/usr/local/www/widgets/widgets/wake_on_lan.widget.php
 /usr/local/www/wizard.php
 /usr/local/www/xmlrpc.php
 @shadow /usr/local/etc/bogons.sample
