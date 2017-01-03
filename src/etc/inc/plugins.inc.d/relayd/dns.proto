@@ -1,3 +1,0 @@
-dns protocol "dns" {
-	tcp { nodelay, sack, socket buffer 1024, backlog 1000 }
-}

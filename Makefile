@@ -135,7 +135,6 @@ CORE_DEPENDS?=		apinger \
 			py${CORE_PY}-ujson \
 			radvd \
 			rate \
-			relayd \
 			rrdtool12 \
 			samplicator \
 			squid \

@@ -51,9 +51,6 @@
 /usr/local/etc/inc/plugins.inc.d/netflow.inc
 /usr/local/etc/inc/plugins.inc.d/ntpd.inc
 /usr/local/etc/inc/plugins.inc.d/pf.inc
-/usr/local/etc/inc/plugins.inc.d/relayd.inc
-/usr/local/etc/inc/plugins.inc.d/relayd/dns.proto
-/usr/local/etc/inc/plugins.inc.d/relayd/tcp.proto
 /usr/local/etc/inc/plugins.inc.d/squid.inc
 /usr/local/etc/inc/plugins.inc.d/suricata.inc
 /usr/local/etc/inc/plugins.inc.d/unbound.inc
@@ -456,8 +453,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/Relayd/ACL/ACL.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/Relayd/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Migrations/M1_0_0.php
@@ -954,7 +949,6 @@
 /usr/local/www/diag_logs_openvpn.php
 /usr/local/www/diag_logs_ppp.php
 /usr/local/www/diag_logs_proxy.php
-/usr/local/www/diag_logs_relayd.php
 /usr/local/www/diag_logs_resolver.php
 /usr/local/www/diag_logs_routing.php
 /usr/local/www/diag_logs_settings.php
@@ -1022,13 +1016,6 @@
 /usr/local/www/javascript/wizard/disablekeys.js
 /usr/local/www/javascript/wizard/suggestions.js
 /usr/local/www/license.php
-/usr/local/www/load_balancer_monitor.php
-/usr/local/www/load_balancer_monitor_edit.php
-/usr/local/www/load_balancer_pool.php
-/usr/local/www/load_balancer_pool_edit.php
-/usr/local/www/load_balancer_setting.php
-/usr/local/www/load_balancer_virtual_server.php
-/usr/local/www/load_balancer_virtual_server_edit.php
 /usr/local/www/reboot.php
 /usr/local/www/reporting_settings.php
 /usr/local/www/services_dhcp.php
@@ -1063,8 +1050,6 @@
 /usr/local/www/status_graph.php
 /usr/local/www/status_habackup.php
 /usr/local/www/status_interfaces.php
-/usr/local/www/status_lb_pool.php
-/usr/local/www/status_lb_vs.php
 /usr/local/www/status_ntpd.php
 /usr/local/www/status_openvpn.php
 /usr/local/www/status_services.php
@@ -1118,7 +1103,6 @@
 /usr/local/www/widgets/include/interface_statistics.inc
 /usr/local/www/widgets/include/interfaces.inc
 /usr/local/www/widgets/include/ipsec.inc
-/usr/local/www/widgets/include/load_balancer.inc
 /usr/local/www/widgets/include/log.inc
 /usr/local/www/widgets/include/ntp_status.inc
 /usr/local/www/widgets/include/openvpn.inc
@@ -1132,7 +1116,6 @@
 /usr/local/www/widgets/widgets/interface_list.widget.php
 /usr/local/www/widgets/widgets/interface_statistics.widget.php
 /usr/local/www/widgets/widgets/ipsec.widget.php
-/usr/local/www/widgets/widgets/load_balancer_status.widget.php
 /usr/local/www/widgets/widgets/log.widget.php
 /usr/local/www/widgets/widgets/ntp_status.widget.php
 /usr/local/www/widgets/widgets/openvpn.widget.php
