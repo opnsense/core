@@ -48,7 +48,6 @@
 /usr/local/etc/inc/plugins.inc.d/if_legacy_opt.inc
 /usr/local/etc/inc/plugins.inc.d/if_openvpn.inc
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc
-/usr/local/etc/inc/plugins.inc.d/miniupnpd.inc
 /usr/local/etc/inc/plugins.inc.d/netflow.inc
 /usr/local/etc/inc/plugins.inc.d/ntpd.inc
 /usr/local/etc/inc/plugins.inc.d/pf.inc
@@ -464,8 +463,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.php
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/UPnP/ACL/ACL.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/UPnP/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt
@@ -1058,7 +1055,6 @@
 /usr/local/www/services_unbound_domainoverride_edit.php
 /usr/local/www/services_unbound_host_edit.php
 /usr/local/www/services_unbound_overrides.php
-/usr/local/www/services_upnp.php
 /usr/local/www/status_dhcp_leases.php
 /usr/local/www/status_dhcpv6_leases.php
 /usr/local/www/status_filter_reload.php
@@ -1072,7 +1068,6 @@
 /usr/local/www/status_ntpd.php
 /usr/local/www/status_openvpn.php
 /usr/local/www/status_services.php
-/usr/local/www/status_upnp.php
 /usr/local/www/status_wireless.php
 /usr/local/www/system_advanced_admin.php
 /usr/local/www/system_advanced_firewall.php

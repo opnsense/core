@@ -100,7 +100,6 @@ CORE_DEPENDS?=		apinger \
 			isc-dhcp43-relay \
 			isc-dhcp43-server \
 			lighttpd \
-			miniupnpd \
 			mpd5 \
 			ntp \
 			openssh-portable \
