@@ -1,8 +1,0 @@
-<acl>
-    <page-services-snmp>
-        <name>Services: SNMP</name>
-        <patterns>
-            <pattern>services_snmp.php*</pattern>
-        </patterns>
-    </page-services-snmp>
-</acl>

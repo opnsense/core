@@ -42,7 +42,6 @@
 /usr/local/etc/inc/openvpn.tls-verify.php
 /usr/local/etc/inc/openvpn_wizard.inc
 /usr/local/etc/inc/plugins.inc
-/usr/local/etc/inc/plugins.inc.d/bsnmpd.inc
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
 /usr/local/etc/inc/plugins.inc.d/if_group.inc
 /usr/local/etc/inc/plugins.inc.d/if_ipsec.inc
@@ -464,8 +463,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Relayd/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Relayd/Menu/Menu.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/SNMP/ACL/ACL.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/SNMP/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Migrations/M1_0_0.php
@@ -1063,7 +1060,6 @@
 /usr/local/www/services_rfc2136.php
 /usr/local/www/services_rfc2136_edit.php
 /usr/local/www/services_router_advertisements.php
-/usr/local/www/services_snmp.php
 /usr/local/www/services_unbound.php
 /usr/local/www/services_unbound_acls.php
 /usr/local/www/services_unbound_advanced.php

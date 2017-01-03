@@ -84,8 +84,6 @@ CORE_DEPENDS_amd64?=	beep bsdinstaller
 CORE_DEPENDS_i386?=	${CORE_DEPENDS_amd64}
 CORE_DEPENDS?=		apinger \
 			bind${CORE_BIND} \
-			bsnmp-regex \
-			bsnmp-ucd \
 			ca_root_nss \
 			choparp \
 			cpustats \
