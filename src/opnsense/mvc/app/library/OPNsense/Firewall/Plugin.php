@@ -51,7 +51,7 @@ class Plugin
      * @param $priority sort order from low to high
      * @return null
      */
-    public function registerAnchor($name, $type="fw", $priority=0, $placement="tail")
+    public function registerAnchor($name, $type = "fw", $priority = 0, $placement = "tail")
     {
         $anchorKey = sprintf("%s.%s.%08d.%08d", $type, $placement, $priority, count($this->anchors));
         $this->anchors[$anchorKey] = $name;
@@ -64,7 +64,7 @@ class Plugin
      * @param $priority sort order from low to high
      * @return string
      */
-    public function anchorToText($types="fw", $placement="tail")
+    public function anchorToText($types = "fw", $placement = "tail")
     {
         $result = "";
         foreach (explode(',', $types) as $type) {

@@ -73,7 +73,7 @@ class Routing
         $this->router->add('/', array("controller" => 'index',"action" => 'index'));
 
         $this->type = $type;
-        switch ($this->type){
+        switch ($this->type) {
             case "ui":
                 $this->router->setDefaultNamespace('OPNsense\Core');
                 break;
@@ -152,7 +152,7 @@ class Routing
                 foreach ($module_configs as $module_config) {
                     foreach (glob($module_config['path']."/*.php") as $filename) {
                         // extract controller name and bind static in routing table
-                        $controller = strtolower(str_replace('Controller.php','', basename($filename)));
+                        $controller = strtolower(str_replace('Controller.php', '', basename($filename)));
                         $this->router->add("/{$module_name}/{$controller}/:action/", array(
                             "namespace" => $module_config['namespace'],
                             "controller" => $controller,
