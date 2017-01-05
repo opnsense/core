@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -42,11 +42,11 @@ if [ -f ${UPGRADE} ]; then
 	echo "A major firmware upgrade is available for this installation: ${NAME}"
 	echo
 	echo "Make sure you have read the release notes and migration guide before"
-	echo "attempting this upgrade.  Around 200MB will need to be downloaded and"
-	echo "require 500MB of free space.  Continue with this major upgrade by"
+	echo "attempting this upgrade.  Around 300MB will need to be downloaded and"
+	echo "require 600MB of free space.  Continue with this major upgrade by"
 	echo "typing the major upgrade version number displayed above."
 	echo
-	echo "Minor updates are available, answer 'y' to run them instead."
+	echo "Minor updates may be available, answer 'y' to run them instead."
 	echo
 
 	PROMPT="[${NAME}/y/N]"
