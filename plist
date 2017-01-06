@@ -315,7 +315,6 @@
 /usr/local/opnsense/mvc/app/config/services_api.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ApiControllerBase.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ApiMutableModelControllerBase.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ApiMutableTableModelControllerBase.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ControllerBase.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ControllerRoot.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/IndexController.php
