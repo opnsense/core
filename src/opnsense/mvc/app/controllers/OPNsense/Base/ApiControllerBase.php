@@ -207,12 +207,9 @@ class ApiControllerBase extends ControllerRoot
             if (is_array($data)) {
                 $this->response->setContentType('application/json', 'UTF-8');
                 $this->response->setContent(htmlspecialchars(json_encode($data), ENT_NOQUOTES));
-            } else {
-                // output raw data
-                $this->response->setContent($data);
             }
         }
 
-        return $this->response->send();
+        return $this->response->send();;
     }
 }
