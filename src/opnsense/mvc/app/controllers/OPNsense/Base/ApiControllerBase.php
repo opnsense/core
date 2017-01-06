@@ -206,13 +206,13 @@ class ApiControllerBase extends ControllerRoot
             $data = $dispatcher->getReturnedValue();
             if (is_array($data)) {
                 $this->response->setContentType('application/json', 'UTF-8');
-                echo htmlspecialchars(json_encode($data), ENT_NOQUOTES);
+                $this->response->setContent(htmlspecialchars(json_encode($data), ENT_NOQUOTES));
             } else {
                 // output raw data
-                echo $data;
+                $this->response->setContent($data);
             }
         }
 
-        return true;
+        return $this->response->send();
     }
 }
