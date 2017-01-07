@@ -744,7 +744,7 @@ $i = 0;
 ?>
                 <tr>
                   <td><?=$server['name']?></td>
-                  <td><?=!empty($authCNFOptions[$server['type']]) ? $authCNFOptions[$server['type']]['description'] : "";;?></td>
+                  <td><?= !empty($authCNFOptions[$server['type']]) ? $authCNFOptions[$server['type']]['description'] : '' ?></td>
                   <td><?=$server['host'];?></td>
                   <td>
                     <?php if ($i < (count($a_server) - 1)) :

@@ -526,7 +526,7 @@ if (empty($act)) {
 <body>
   <style>
     .monospace-dialog {
-      font-family: monospace;;
+      font-family: monospace;
       white-space: pre;
     }
 

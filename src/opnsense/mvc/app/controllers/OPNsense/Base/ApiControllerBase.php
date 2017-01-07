@@ -210,6 +210,6 @@ class ApiControllerBase extends ControllerRoot
             }
         }
 
-        return $this->response->send();;
+        return $this->response->send();
     }
 }

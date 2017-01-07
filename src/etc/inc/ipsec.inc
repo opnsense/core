@@ -943,7 +943,7 @@ EOD;
                     $authentication .= "\n\tleftcert={$certpath}/cert-{$ph1ent['ikeid']}.crt";
                 }
                 if (!empty($ph1ent['caref'])) {
-                    $ca = lookup_ca($ph1ent['caref']);;
+                    $ca = lookup_ca($ph1ent['caref']);
                     if (!empty($ca)) {
                          $rightca = "";
                          foreach (cert_get_subject_array($ca['crt']) as $ca_field) {

@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // parse timeservers
     $pconfig['timeservers_host'] = array();
     $pconfig['timeservers_noselect'] = array();
-    $pconfig['timeservers_prefer'] = array();;
+    $pconfig['timeservers_prefer'] = array();
     if (!empty($config['system']['timeservers'])) {
         $pconfig['timeservers_noselect'] = !empty($a_ntpd['noselect']) ? explode(' ', $a_ntpd['noselect']) : array();
         $pconfig['timeservers_prefer'] = !empty($a_ntpd['prefer']) ? explode(' ', $a_ntpd['prefer']) : array();

@@ -430,7 +430,7 @@ include("head.inc");
             <tr>
               <td><a id="help_for_dnsservers_opt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS server options"); ?></td>
               <td>
-                <input name="dnsallowoverride" type="checkbox" value="yes" <?=$pconfig['dnsallowoverride'] ? "checked=\"checked\"" : ""; ;?> />
+                <input name="dnsallowoverride" type="checkbox" value="yes" <?= $pconfig['dnsallowoverride'] ? 'checked="checked"' : '' ?>/>
                 <strong>
                   <?=gettext("Allow DNS server list to be overridden by DHCP/PPP on WAN"); ?>
                 </strong>

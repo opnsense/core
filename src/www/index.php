@@ -278,7 +278,7 @@ include("fbegin.inc");?>
               if (classname.indexOf('col-md') > -1) {
                   widget_col.removeClass(classname);
               }
-           });;
+           });
            widget_col.addClass('col-md-'+(12 / $("#column_count_input").val()));
          });
       });
