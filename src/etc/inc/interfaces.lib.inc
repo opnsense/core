@@ -331,9 +331,14 @@ function legacy_getall_interface_addresses($ifs)
 {
     $result = array();
     $intf_details = legacy_interface_details($ifs);
-    foreach (array("ipv4", "ipv6") as $proto) {
+    foreach (array('ipv4', 'ipv6') as $proto) {
+        if (empty($intf_details[$proto])) {
+            continue;
+        }
         foreach ($intf_details[$proto] as $address) {
-            $result[] = $address['ipaddr'] . "/" . $address['subnetbits'];
+            if (!empty($address['ipaddr']) && !empty($address['subnetbits'])) {
+                $result[] = $address['ipaddr'] . '/' . $address['subnetbits'];
+            }
         }
     }
     return $result;
