@@ -4520,22 +4520,12 @@ function get_interface_mac($interface)
     return $macinfo["macaddr"];
 }
 
-/****f* interfaces/is_jumbo_capable
- * NAME
- *   is_jumbo_capable - Test if interface is jumbo frame capable.  Useful for determining VLAN capability.
- * INPUTS
- *   $int             - string containing interface name
- * RESULT
- *   boolean          - true or false
- ******/
 function is_jumbo_capable($iface)
 {
     $intf_details = legacy_interface_details(trim($iface));
-    if (in_array('vlan_mtu', $intf_details['capabilities'])) {
-        return true;
-    } else {
-        return false;
-    }
+
+    return isset($intf_details['capabilities']) &&
+        in_array('vlan_mtu', $intf_details['capabilities']);
 }
 
 function get_vip_descr($ipaddress)
