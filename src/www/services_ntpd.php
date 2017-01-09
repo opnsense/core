@@ -260,10 +260,10 @@ include("head.inc");
                               <input name="timeservers_host[]" type="text" value="<?=$timeserver;?>" />
                             </td>
                             <td>
-                              <input name="timeservers_prefer[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?=in_array($timeserver, $pconfig['timeservers_prefer']) ? " checked=\"checked\"" : "";?> />
+                              <input name="timeservers_prefer[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_prefer']) && in_array($timeserver, $pconfig['timeservers_prefer']) ? 'checked="checked"' : '' ?>/>
                             </td>
                             <td>
-                              <input name="timeservers_noselect[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?=in_array($timeserver,  $pconfig['timeservers_noselect']) ? " checked=\"checked\"" : "";?> />
+                              <input name="timeservers_noselect[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_noselect']) && in_array($timeserver,  $pconfig['timeservers_noselect']) ? 'checked="checked"' : '' ?>/>
                             </td>
                           </tr>
 <?php
