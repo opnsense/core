@@ -350,11 +350,11 @@ function legacy_get_interface_addresses($ifs)
 {
     $intf_details = legacy_interface_details($ifs);
     $addrs = array("macaddr" => $intf_details['macaddr']);
-    if (!empty($intf_details['ipv4'])) {
+    if (!empty($intf_details['ipv4'][0])) {
         $addrs['ipaddr'] = $intf_details['ipv4'][0]['ipaddr'];
         $addrs['subnetbits'] = $intf_details['ipv4'][0]['subnetbits'];
     }
-    if (!empty($intf_details['ipv6']) && empty($intf_details['ipv6'][0]['link-local'])) {
+    if (!empty($intf_details['ipv6'][0]) && empty($intf_details['ipv6'][0]['link-local'])) {
         $addrs['ipaddr6'] = $intf_details['ipv6'][0]['ipaddr'];
         $addrs['subnetbits6'] = $intf_details['ipv6'][0]['subnetbits'];
     }
