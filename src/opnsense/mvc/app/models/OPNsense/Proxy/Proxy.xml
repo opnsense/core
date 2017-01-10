@@ -100,7 +100,7 @@
                     </directory>
                     <cache_mem type="IntegerField">
                         <default>256</default>
-                        <MinimumValue>1</MinimumValue>
+                        <MinimumValue>0</MinimumValue>
                         <ValidationMessage>Specify a positive memory cache size. (number of MB's)</ValidationMessage>
                         <Required>Y</Required>
                     </cache_mem>

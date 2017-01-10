@@ -117,22 +117,26 @@
                 <id>proxy.general.cache.local.cache_mem</id>
                 <label>Memory Cache size in Megabytes</label>
                 <type>text</type>
-                <help><![CDATA[Enter the cache memory size to use.]]></help>
-                <advanced>true</advanced>
+                <help><![CDATA[Enter the cache memory size to use or zero to disable completely.]]></help>
             </field>
             <field>
                 <id>proxy.general.cache.local.enabled</id>
                 <label>Enable local cache (requires service restart)</label>
                 <type>checkbox</type>
-                <help><![CDATA[Enable or disable the local cache.<br/>
-        Currently only ufs directory cache type is supported.<br/>
-        <b class="text-danger">Do not enable on embedded systems with SD or CF cards as this may break your drive.</b>]]></help>
+                <help><![CDATA[Enable or disable the local cache. Only UFS directory cache type is supported. Do not enable on embedded systems with SD or CF cards without the /var MFS option as this will wear down your drive.]]></help>
             </field>
             <field>
                 <id>proxy.general.cache.local.size</id>
                 <label>Cache size in Megabytes</label>
                 <type>text</type>
                 <help><![CDATA[Enter the storage size for the local cache (default is 100).]]></help>
+                <advanced>true</advanced>
+            </field>
+            <field>
+                <id>proxy.general.cache.local.directory</id>
+                <label>Cache directory location</label>
+                <type>text</type>
+                <help><![CDATA[Enter the directory location for thee local cache (default is /var/squid/cache).]]></help>
                 <advanced>true</advanced>
             </field>
             <field>
