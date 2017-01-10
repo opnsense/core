@@ -1516,10 +1516,6 @@ function system_kernel_configure($verbose = false)
         'pfsync',
     );
 
-    /* we now have /dev/pf, time to fix permissions for proxies */
-    chgrp('/dev/pf', 'proxy');
-    chmod('/dev/pf', 0660);
-
     if (!empty($config['system']['crypto_hardware'])) {
         log_error(sprintf('Loading %s cryptographic accelerator module.', $config['system']['crypto_hardware']));
         $mods[] = $config['system']['crypto_hardware'];
@@ -1537,6 +1533,10 @@ function system_kernel_configure($verbose = false)
     foreach ($mods as $mod) {
         mwexecf('/sbin/kldload %s', $mod, true);
     }
+
+    /* we now have /dev/pf, time to fix permissions for proxies */
+    chgrp('/dev/pf', 'proxy');
+    chmod('/dev/pf', 0660);
 
     if ($verbose) {
         echo "done.\n";
