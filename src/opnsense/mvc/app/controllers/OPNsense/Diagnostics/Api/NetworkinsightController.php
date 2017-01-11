@@ -259,11 +259,8 @@ class NetworkinsightController extends ApiControllerBase
         $to_date = null,
         $resolution = null
     ) {
-        $this->response->setContentType('application/CSV', 'UTF-8');
-        $this->response->setHeader(
-            'Content-Disposition:',
-            "Attachment; filename=\"" . $provider . ".csv\""
-        );
+        $this->response->setRawHeader("Content-Type: application/octet-stream");
+        $this->response->setRawHeader("Content-Disposition: attachment; filename=".$provider.".csv");
         if ($this->request->isGet()) {
             $backend = new Backend();
             $configd_cmd = "netflow aggregate export {$provider} {$from_date} {$to_date} {$resolution}";
