@@ -229,10 +229,6 @@
                   Enable sslbump mode,
                   which makes the proxy act as a man in the middle between the internet and your clients.<br/>
                   Be aware of the security implications before enabling this option.
-                  <br/><br/>
-                  Transparent HTTP proxy needs to be enabled and you need nat rules to reflect your traffic
-                  for this feature to work.<br/>
-                  <a href="/firewall_nat_edit.php?template=transparent_proxy&https=1"> Add a new firewall rule </a>
                   ]]></help>
             </field>
             <field>
