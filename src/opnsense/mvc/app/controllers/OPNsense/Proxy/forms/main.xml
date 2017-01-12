@@ -223,19 +223,24 @@
             </field>
             <field>
                 <id>proxy.forward.sslbump</id>
-                <label>Enable SSL mode</label>
+                <label>Enable SSL inspection</label>
                 <type>checkbox</type>
                 <help><![CDATA[
-                  Enable sslbump mode,
-                  which makes the proxy act as a man in the middle between the internet and your clients.<br/>
+                  Enable SSL inspection mode,
+                  which allows to log HTTPS connections information, such as requested URL and/or
+                  make the proxy act as a man in the middle between the internet and your clients.<br/>
                   Be aware of the security implications before enabling this option.
                   ]]></help>
             </field>
             <field>
                 <id>proxy.forward.sslurlonly</id>
-                <label>SSL Domain/IP only</label>
+                <label>Log SNI information only</label>
                 <type>checkbox</type>
-                <help>Do not filter content, only domains and addresses</help>
+                <help><![CDATA[
+                  Do not decode and/or filter SSL content, only log requested domains and IP addresses.<br/>
+                  Some old servers may not provide SNI, so their addresses will not be indicated.<br/>Get more information about
+                  <a href="https://wikipedia.org/wiki/Server_Name_Indication" target="_blank">Server Name Indication</a>.
+                  ]]></help>
             </field>
             <field>
                 <id>proxy.forward.sslbumpport</id>
