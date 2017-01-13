@@ -55,6 +55,7 @@ data_title      :   data-title to set on form
 {%- endmacro %}
 
 {# Find if there are help supported or advanced field on this page #}
+{% set base_form_id=id %}
 {% set help=false %}
 {% set advanced=false %}
 {% for field in fields|default({})%}
@@ -70,7 +71,7 @@ data_title      :   data-title to set on form
 {%         break %}
 {%     endif %}
 {% endfor %}
-<form id="{{id}}" class="form-inline" data-title="{{data_title|default('')}}">
+<form id="{{base_form_id}}" class="form-inline" data-title="{{data_title|default('')}}">
   <div class="table-responsive">
     <table class="table table-striped table-condensed">
         <colgroup>
@@ -80,9 +81,9 @@ data_title      :   data-title to set on form
         </colgroup>
         <tbody>
         <tr>
-            <td align="left">{% if advanced|default(false) %}<a href="#"><i class="fa fa-toggle-off text-danger" id="show_advanced_{{id}}" type="button"></i> </a><small>{{ lang._('advanced mode') }} </small>{% endif %}</td>
+            <td align="left">{% if advanced|default(false) %}<a href="#"><i class="fa fa-toggle-off text-danger" id="show_advanced_{{base_form_id}}" type="button"></i> </a><small>{{ lang._('advanced mode') }} </small>{% endif %}</td>
             <td colspan="2" align="right">
-                {% if help|default(false) %}<small>{{ lang._('full help') }} </small><a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_{{id}}" type="button"></i></a>{% endif %}
+                {% if help|default(false) %}<small>{{ lang._('full help') }} </small><a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_{{base_form_id}}" type="button"></i></a>{% endif %}
             </td>
         </tr>
         {% set advanced=false %}
@@ -103,7 +104,7 @@ data_title      :   data-title to set on form
         {% endfor %}
         {% if apply_btn_id|default('') != '' %}
         <tr>
-            <td colspan="3"><button class="btn btn-primary" id="{{apply_btn_id}}" type="button"><b>{{ lang._('Apply') }} </b><i id="{{id}}_progress" class=""></i></button></td>
+            <td colspan="3"><button class="btn btn-primary" id="{{apply_btn_id}}" type="button"><b>{{ lang._('Apply') }} </b><i id="{{base_form_id}}_progress" class=""></i></button></td>
         </tr>
         {% endif %}
         </tbody>
