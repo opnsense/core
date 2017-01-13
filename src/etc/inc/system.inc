@@ -239,18 +239,13 @@ function get_locale_list()
     $locales['en_US'] = gettext('English');
     $locales['cs_CZ'] = gettext('Czech');
     $locales['zh_CN'] = gettext('Chinese (Simplified)');
-    $locales['nl_NL'] = gettext('Dutch');
     $locales['fr_FR'] = gettext('French');
     $locales['de_DE'] = gettext('German');
     $locales['it_IT'] = gettext('Italian');
     $locales['ja_JP'] = gettext('Japanese');
-    $locales['mn_MN'] = gettext('Mongolian');
     $locales['pt_BR'] = gettext('Portuguese (Brazil)');
     $locales['pt_PR'] = gettext('Portuguese (Portugal)');
     $locales['ru_RU'] = gettext('Russian');
-    $locales['es_ES'] = gettext('Spanish');
-    $locales['sv_SE'] = gettext('Swedish');
-    $locales['tr_TR'] = gettext('Turkish');
 
     return $locales;
 }

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2014-2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2014-2017 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2010 Scott Ullrich <sullrich@gmail.com>
 # All rights reserved.
 #
@@ -28,9 +28,6 @@
 if [ -d /usr/local/lib/php/20151012 ]; then
 	# PHP 7.0
 	EXTENSIONSDIR="/usr/local/lib/php/20151012/"
-elif [ -d /usr/local/lib/php/20131226 ]; then
-	# PHP 5.6
-	EXTENSIONSDIR="/usr/local/lib/php/20131226/"
 else
 	echo "No supported PHP version was found."
 	exit 1
@@ -38,9 +35,6 @@ fi
 
 PHP_INI=$(mktemp -q /tmp/php_ini.XXXXXX)
 chmod 644 ${PHP_INI}
-
-# XXX can be removed in 17.1
-rm -f /usr/local/etc/php/extensions.ini
 
 # Fetch the timezone from the XML and set it here
 TIMEZONE=Etc/UTC
@@ -84,30 +78,7 @@ date.timezone="${TIMEZONE}"
 [xdebug]
 xdebug.profiler_enable_trigger = 1
 xdebug.profiler_output_name = cachegrind.out.%t.%p
-
-[suhosin]
-suhosin.get.max_array_depth = 5000
-suhosin.get.max_array_index_length = 256
-suhosin.get.max_vars = 5000
-suhosin.get.max_value_length = 500000
-suhosin.post.max_array_depth = 5000
-suhosin.post.max_array_index_length = 256
-suhosin.post.max_vars = 5000
-suhosin.post.max_value_length = 9000000
-suhosin.request.max_array_depth = 5000
-suhosin.request.max_array_index_length = 256
-suhosin.request.max_vars = 5000
-suhosin.request.max_value_length = 9000000
-suhosin.memory_limit = 512435456
-suhosin.session.cryptdocroot=Off
 EOF
-
-PKGNAME="/usr/local/opnsense/version/opnsense.name"
-if [ -f ${PKGNAME} -a "$(grep -c -- -devel$ ${PKGNAME})" != "0" ]; then
-	cat >> ${PHP_INI} << EOF
-suhosin.executor.include.whitelist = phar://
-EOF
-fi
 
 cp ${PHP_INI} /usr/local/etc/php.ini
 cp ${PHP_INI} /usr/local/lib/php.ini

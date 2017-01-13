@@ -175,10 +175,6 @@ function plugins_configure($hook, $verbose = false)
                         $task($verbose);
                     }
                 }
-                /* XXX compat glue from when configure wasn't indexed (remove in 17.1) */
-                if ($hook == 'bootup' && !is_array($worker)) {
-                    $worker($verbose);
-                }
             }
         }
     }

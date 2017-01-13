@@ -47,8 +47,6 @@ def execute(action, parameters):
         tmpl = template.Template(action.root_dir)
         conf = config.Config(action.config)
         tmpl.set_config(conf.get())
-        # XXX backwards-compat for '.' syntax, remove post-17.1
-        parameters = parameters.replace('.', '/')
         filenames = tmpl.generate(parameters)
 
         del conf

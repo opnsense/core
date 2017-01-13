@@ -496,9 +496,6 @@ class FirmwareController extends ApiControllerBase
             $current = $backend->configdRun("firmware ${type}");
             $current = explode("\n", trim($current));
 
-            /* XXX remove this when 17.1 is out */
-            $response[$type] = array();
-
             foreach ($current as $line) {
                 $expanded = explode('|||', $line);
                 $translated = array();
@@ -509,9 +506,6 @@ class FirmwareController extends ApiControllerBase
                 foreach ($keys as $key) {
                     $translated[$key] = $expanded[$index++];
                 }
-
-                /* XXX remove this when 17.1 is out */
-                $response[$type][] = $translated;
 
                 /* mark remote packages as "provided", local as "installed" */
                 $translated['provided'] = $type == 'remote' ? "1" : "0";
@@ -531,11 +525,6 @@ class FirmwareController extends ApiControllerBase
                     }
                 }
             }
-
-            /* XXX remove this when 17.1 is out */
-            usort($response[$type], function ($a, $b) {
-                return strnatcasecmp($a['name'], $b['name']);
-            });
         }
 
         uksort($packages, function ($a, $b) {
