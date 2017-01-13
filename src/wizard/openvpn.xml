@@ -412,7 +412,7 @@
 		<field>
 			<name>city</name>
 			<displayname>City</displayname>
-			<description>City or other Locality name (e.g. Middelharnis, Leipzig, Île-de-France, Louisville).</description>
+			<description>City or other Locality name (e.g. Middelharnis, Leipzig, Louisville).</description>
 			<type>input</type>
 			<size>30</size>
 			<bindstofield>ovpnserver->step6->city</bindstofield>
@@ -541,7 +541,7 @@
 		<field>
 			<name>city</name>
 			<displayname>City</displayname>
-			<description>City or other Locality name (e.g. Middelharnis, Leipzig, Île-de-France, Louisville).</description>
+			<description>City or other Locality name (e.g. Middelharnis, Leipzig, Louisville).</description>
 			<type>input</type>
 			<size>30</size>
 			<bindstofield>ovpnserver->step9->city</bindstofield>
