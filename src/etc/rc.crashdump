@@ -7,9 +7,7 @@ while read DEV MP TYPE MORE; do
 	[ -c "${DEV}" ] || continue
 	if dumpon ${DEV}; then
 		echo ${DEV}
-		if [ -n "`sysctl -Nq debug.ddb.scripting.scripts`" ]; then
-			ddb /usr/local/etc/ddb.conf
-		fi
+		ddb /etc/ddb.conf
 		if savecore -C ${DEV} > /dev/null; then
 			savecore /var/crash ${DEV}
 		fi
@@ -18,3 +16,4 @@ while read DEV MP TYPE MORE; do
 done < /etc/fstab
 
 echo "/dev/null"
+ddb /etc/ddb.conf
