@@ -148,19 +148,19 @@ function filter_core_rules_system($fw, $defaults)
     $privtmpl = array('type' => 'block', 'log' => !isset($config['syslog']['nologprivatenets']),
       'from' => '10.0.0.0/8,127.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,fc00::/7');
     foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
-        $fw->registerFilterRule(1,
+        $fw->registerFilterRule(5,
           array('from' => "<bogons>", 'direction' => 'in', 'interface' => $intf,
             'label' => "block bogon IPv4 networks from ".$intfinfo['descr'],
             'disabled' => !isset($intfinfo['blockbogons'])),
           $bogontmpl
         );
-        $fw->registerFilterRule(1,
+        $fw->registerFilterRule(5,
           array('from' => "<bogonsv6>", 'direction' => 'in', 'interface' => $intf,
             'disabled' => !isset($config['system']['ipv6allow']) || !isset($intfinfo['blockbogons']),
             'label' => "block bogon IPv6 networks from ".$intfinfo['descr']),
           $bogontmpl
         );
-        $fw->registerFilterRule(1,
+        $fw->registerFilterRule(5,
           array('direction' => 'in', 'interface' => $intf,
             'label' => "Block private networks from ".$intfinfo['descr'],
             'disabled' => !isset($intfinfo['blockpriv'])),
@@ -170,19 +170,19 @@ function filter_core_rules_system($fw, $defaults)
 
     // interface configuration per type
     foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
-        // allow DHCPv6 client out
+        // allow DHCPv6 client out, before adding bogons (sequence 1, bogons @ 5)
         if (isset($config['system']['ipv6allow']) && in_array($intfinfo['ipaddrv6'], array("slaac","dhcp6"))) {
-            $fw->registerFilterRule(5,
+            $fw->registerFilterRule(1,
               array('protocol' => 'udp', 'from' => 'fe80::/10', 'from_port' => 546, 'to' => 'fe80::/10',
                     'interface' => $intf, 'to_port' => 546, 'label' =>'allow dhcpv6 client in ' . $intfinfo['descr']),
               $defaults['pass']
             );
-            $fw->registerFilterRule(5,
+            $fw->registerFilterRule(1,
               array('protocol' => 'udp', 'from_port' => 547,'to_port' => 546, 'direction' => 'in',
                     'interface' => $intf, 'label' =>'allow dhcpv6 client in ' . $intfinfo['descr']),
               $defaults['pass']
             );
-            $fw->registerFilterRule(5,
+            $fw->registerFilterRule(1,
               array('protocol' => 'udp', 'from_port' => 546,'to_port' => 547, 'direction' => 'out',
                     'interface' => $intf, 'label' =>'allow dhcpv6 client in ' . $intfinfo['descr']),
               $defaults['pass']
