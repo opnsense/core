@@ -182,7 +182,7 @@
 			<type>input</type>
 			<size>40</size>
 			<bindstofield>ovpnserver->step2->authscope</bindstofield>
-			<description>Semicolon separated. This will be prepended to the search base DN above or you can specify full container path.&lt;br/&gt;EXAMPLE: CN=Users;DC=example&lt;br/&gt;EXAMPLE: CN=Users,DC=example,DC=com;OU=OtherUsers,DC=example,DC=com </description>
+			<description>Semicolon separated. This will be prepended to the search base DN above or you can specify full container path.&lt;br/&gt;EXAMPLE: CN=Users;DC=example&lt;br/&gt;EXAMPLE: CN=Users,DC=example,DC=com;OU=OtherUsers,DC=example,DC=com</description>
 		</field>
 		<field>
 			<name>userdn</name>
@@ -396,7 +396,7 @@
 		<field>
 			<name>country</name>
 			<displayname>Country Code</displayname>
-			<description>Two-letter ISO country code (e.g. NL, DE, FR, US) </description>
+			<description>Two-letter ISO country code (e.g. NL, DE, US)</description>
 			<type>input</type>
 			<size>5</size>
 			<bindstofield>ovpnserver->step6->country</bindstofield>
@@ -404,7 +404,7 @@
 		<field>
 			<name>state</name>
 			<displayname>State or Province</displayname>
-			<description>Full State of Province name, not abbreviated (e.g. Zuid Holland, Sachsen, Paris, Kentucky).</description>
+			<description>Full State of Province name, not abbreviated (e.g. Zuid Holland, Sachsen, Kentucky).</description>
 			<type>input</type>
 			<size>30</size>
 			<bindstofield>ovpnserver->step6->state</bindstofield>
@@ -496,19 +496,19 @@
 			<bindstofield>ovpnserver->step9->keylength</bindstofield>
 			<options>
 				<option>
-					<name>512 bits</name>
+					<name>512 bit</name>
 					<value>512</value>
 				</option>
 				<option>
-					<name>1024 bits</name>
+					<name>1024 bit</name>
 					<value>1024</value>
 				</option>
 				<option>
-					<name>2048 bits</name>
+					<name>2048 bit</name>
 					<value>2048</value>
 				</option>
 				<option>
-					<name>4096 bits</name>
+					<name>4096 bit</name>
 					<value>4096</value>
 				</option>
 			</options>
@@ -525,7 +525,7 @@
 		<field>
 			<name>country</name>
 			<displayname>Country Code</displayname>
-			<description>Two-letter ISO country code (e.g. NL, DE, FR, US) </description>
+			<description>Two-letter ISO country code (e.g. NL, DE, US)</description>
 			<type>input</type>
 			<size>5</size>
 			<bindstofield>ovpnserver->step9->country</bindstofield>
@@ -533,7 +533,7 @@
 		<field>
 			<name>state</name>
 			<displayname>State or Province</displayname>
-			<description>Full State of Province name, not abbreviated (e.g. Zuid Holland, Sachsen, Paris, Kentucky).</description>
+			<description>Full State of Province name, not abbreviated (e.g. Zuid Holland, Sachsen, Kentucky).</description>
 			<type>input</type>
 			<size>30</size>
 			<bindstofield>ovpnserver->step9->state</bindstofield>
@@ -852,7 +852,7 @@
 			<type>checkbox</type>
 			<displayname>NetBIOS Options</displayname>
 			<bindstofield>ovpnserver->step10->nbtenable</bindstofield>
-			<description>Enable NetBIOS over TCP/IP. &lt;br/&gt;If this option is not set, all NetBIOS-over-TCP/IP options (including WINS) will be disabled. </description>
+			<description>Enable NetBIOS over TCP/IP. &lt;br/&gt;If this option is not set, all NetBIOS-over-TCP/IP options (including WINS) will be disabled.</description>
 		</field>
 		<field>
 			<displayname>NetBIOS Node Type</displayname>

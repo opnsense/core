@@ -225,7 +225,7 @@
 			<name>MAC Address</name>
 			<bindstofield>interfaces->wan->spoofmac</bindstofield>
 			<type>input</type>
-			<description> This field can be used to modify ("spoof") the MAC address of the WAN interface (may be required with some cable connections). Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx or leave blank.</description>
+			<description>This field can be used to modify ("spoof") the MAC address of the WAN interface (may be required with some cable connections). Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx or leave blank.</description>
 			<validate>^([0-9a-f]{2}([:-]||$)){6}$</validate>
 			<message>MAC Address field is invalid</message>
 		</field>
@@ -234,14 +234,14 @@
 			<name>MTU</name>
 			<type>input</type>
 			<bindstofield>interfaces->wan->mtu</bindstofield>
-			<description> Set the MTU of the WAN interface. If you leave this field blank, an MTU of 1492 bytes for PPPoE and 1500 bytes for all other connection types will be assumed.</description>
+			<description>Set the MTU of the WAN interface. If you leave this field blank, an MTU of 1492 bytes for PPPoE and 1500 bytes for all other connection types will be assumed.</description>
 		</field>
 		<field>
 			<donotdisable>true</donotdisable>
 			<name>MSS</name>
 			<type>input</type>
 			<bindstofield>interfaces->wan->mss</bindstofield>
-			<description> If you enter a value in this field, then MSS clamping for TCP connections to the value entered above minus 40 (TCP/IP header size) will be in effect. If you leave this field blank, an MSS of 1492 bytes for PPPoE and 1500 bytes for all other connection types will be assumed. This should match the above MTU value in most all cases.</description>
+			<description>If you enter a value in this field, then MSS clamping for TCP connections to the value entered above minus 40 (TCP/IP header size) will be in effect. If you leave this field blank, an MSS of 1492 bytes for PPPoE and 1500 bytes for all other connection types will be assumed. This should match the above MTU value in most all cases.</description>
 		</field>
 		<field>
 			<name>Static IP Configuration</name>
@@ -279,7 +279,7 @@
 			<name>DHCP Hostname</name>
 			<type>input</type>
 			<bindstofield>interfaces->wan->dhcphostname</bindstofield>
-			<description> The value in this field is sent as the DHCP client identifier and hostname when requesting a DHCP lease. Some ISPs may require this (for client identification).</description>
+			<description>The value in this field is sent as the DHCP client identifier and hostname when requesting a DHCP lease. Some ISPs may require this (for client identification).</description>
 		</field>
 		<field>
 			<name>PPPoE configuration</name>
@@ -372,7 +372,7 @@
 		<field>
 			<donotdisable>true</donotdisable>
 			<name>Block RFC1918 Private Networks</name>
-			<description> When set, this option blocks traffic from IP addresses that are reserved for private networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as well as loopback addresses (127/8). You should generally leave this option turned on, unless your WAN network lies in such a private address space, too.</description>
+			<description>When set, this option blocks traffic from IP addresses that are reserved for private networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as well as loopback addresses (127/8). You should generally leave this option turned on, unless your WAN network lies in such a private address space, too.</description>
 			<type>checkbox</type>
 			<bindstofield>interfaces->wan->blockpriv</bindstofield>
 			<typehint>Block private networks from entering via WAN</typehint>
