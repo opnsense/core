@@ -33,20 +33,7 @@ require_once("util.inc");
 require_once("config.inc");
 
 /* CSRF BEGIN: CHECK MUST BE EXECUTED FIRST; NO EXCEPTIONS */
-
-function csrf_startup()
-{
-    global $config;
-
-    csrf_conf('rewrite-js', '/csrf/csrf-magic.js');
-    $timeout_minutes = isset($config['system']['webgui']['session_timeout']) ? $config['system']['webgui']['session_timeout'] : 240;
-    csrf_conf('expires', $timeout_minutes * 60);
-}
-
-session_start();
-require_once('csrf/csrf-magic.php');
-session_write_close();
-
+require_once('csrf.inc');
 /* CSRF END: THANK YOU FOR YOUR COOPERATION */
 
 function get_current_theme()
