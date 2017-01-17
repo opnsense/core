@@ -924,7 +924,6 @@ function system_webgui_configure($verbose = false)
     }
 
     chdir('/usr/local/www');
-    @unlink('/usr/local/www/csrf/csrf-secret.php');
 
     /* defaults */
     $portarg = "80";

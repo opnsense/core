@@ -919,8 +919,7 @@
 /usr/local/wizard/setup.xml
 /usr/local/www/carp_status.php
 /usr/local/www/crash_reporter.php
-/usr/local/www/csrf/csrf-magic.js
-/usr/local/www/csrf/csrf-magic.php
+/usr/local/www/csrf.inc
 /usr/local/www/diag_authentication.php
 /usr/local/www/diag_backup.php
 /usr/local/www/diag_confbak.php
