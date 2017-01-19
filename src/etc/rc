@@ -203,9 +203,11 @@ else
 	remove_mfs_link /root /var crash
 fi
 
-# make some directories in /var
-mkdir -p /var/run /var/log /var/etc /var/db/entropy /var/at/jobs \
-    /var/empty /var/tmp /var/crash /var/cron/tabs
+# ensure default directories in /var
+mtree -deiU -f /etc/mtree/BSD.var.dist -p /var > /dev/null
+
+# old config files are stored in this place
+mkdir -p /var/etc
 
 # work around the fact that shutdown(8) doesn't clean up this file
 rm -f /var/run/nologin
