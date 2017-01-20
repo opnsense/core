@@ -31,6 +31,7 @@ class LegacyCSRF
     private $di = null;
     private $security = null;
     private $session = null;
+    private $is_html_output = false;
     public function __construct()
     {
         $this->di = new \Phalcon\DI\FactoryDefault();
@@ -53,12 +54,19 @@ class LegacyCSRF
 
     public function checkToken()
     {
+        $result = false; // default, not valid
         $this->Session();
         // do not destroy token after successfull validation, some pages use ajax type requests
-        $this->securityTokenKey = $this->security->getSessionToken() ;
-        $this->securityToken = !empty($_POST[$tokenKey]) ? $_POST[$tokenKey] : "";
-        // todo: add header check for ajax requests
-        $result = $this->security->checkToken($this->securityToken, $this->securityTokenKey, false);
+        $this->securityTokenKey = $_SESSION['$PHALCON/CSRF/KEY$'];
+        $this->securityToken = !empty($_POST[$this->securityTokenKey]) ? $_POST[$this->securityTokenKey] : "";
+        if (empty($this->securityToken)) {
+            if (!empty($_SERVER['HTTP_X_CSRFTOKEN'])) {
+                $this->securityToken = $_SERVER['HTTP_X_CSRFTOKEN'];
+                $result = $this->security->checkToken(null, $this->securityToken, false);
+            }
+        } else {
+            $result = $this->security->checkToken($this->securityTokenKey, $this->securityToken, false);
+        }
         // close session after validation
         session_write_close();
         return $result;
@@ -67,6 +75,7 @@ class LegacyCSRF
     private function newToken()
     {
         $this->Session();
+        // only request new token when checkToken() hasn't saved one
         if ($this->securityToken == null) {
             $this->securityToken = $this->security->getToken();
             $this->securityTokenKey = $this->security->getTokenKey();
@@ -76,36 +85,40 @@ class LegacyCSRF
 
     public function csrfRewriteHandler($buffer)
     {
-        $csrf = $this->newToken();
-        $inputtag = "<input type=\"hidden\" id=\"__opnsense_csrf\" name=\"{$csrf['key']}\" value=\"{$csrf['token']}\"\/>";
-        $buffer = preg_replace('#(<form[^>]*method\s*=\s*["\']post["\'][^>]*>)#i', '$1' . $inputtag, $buffer);
-        // todo, add ajax handler :
-        // <script type="text/javascript">
-        // $( document ).ready(function() {
-        //         $.ajaxSetup({
-        //     'beforeSend': function(xhr) {
-        //         xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}" );
-        //         xhr.setRequestHeader("X-CSRFTokenKey", "{{ csrf_tokenKey }}" );
-        //     }
-        // });
-        // </script>
-
-
+        // quick check if output looks like html, don't rewrite other document types
+        if (stripos($buffer, '<html') !== false) {
+            $this->is_html_output = true;
+        }
+        if ($this->is_html_output) {
+            $csrf = $this->newToken();
+            $inputtag = "<input type=\"hidden\" id=\"__opnsense_csrf\" name=\"{$csrf['key']}\" value=\"{$csrf['token']}\"\/>";
+            $buffer = preg_replace('#(<form[^>]*method\s*=\s*["\']post["\'][^>]*>)#i', '$1' . $inputtag, $buffer);
+            // csrf token for Ajax type requests
+            $script = "
+            <script type=\"text/javascript\">
+              $( document ).ready(function() {
+                  $.ajaxSetup({
+                  'beforeSend': function(xhr) {
+                      xhr.setRequestHeader(\"X-CSRFToken\", \"{$csrf['token']}\" );
+                  }
+                });
+              });
+            </script>
+            ";
+            $buffer = str_ireplace('</head>', '</head>'.$script, $buffer);
+        }
         return $buffer;
     }
-
 }
 $LegacyCSRFObject = new LegacyCSRF();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!$LegacyCSRFObject->checkToken()) {
-        header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
-        echo "<html><head><title>CSRF check failed</title></head>
-            <body>
-            <p>CSRF check failed. Your form session may have expired, or you may not have
-            cookies enabled.</p>
-            </body></html>
-        ";
-        die;
-    }
+if ($_SERVER['REQUEST_METHOD'] !== 'GET' && !$LegacyCSRFObject->checkToken()) {
+    header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+    echo "<html><head><title>CSRF check failed</title></head>
+        <body>
+        <p>CSRF check failed. Your form session may have expired, or you may not have
+        cookies enabled.</p>
+        </body></html>
+    ";
+    die;
 }
