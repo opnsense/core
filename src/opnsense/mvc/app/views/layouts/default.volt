@@ -51,7 +51,6 @@
                 $.ajaxSetup({
                     'beforeSend': function(xhr) {
                         xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}" );
-                        xhr.setRequestHeader("X-CSRFTokenKey", "{{ csrf_tokenKey }}" );
                     }
                 });
                 // propagate ajax error messages
