@@ -175,9 +175,8 @@ class ApiControllerBase extends ControllerRoot
             }
 
             // check for valid csrf on post requests
-            $csrf_tokenkey = $this->request->getHeader('X_CSRFTOKENKEY');
-            $csrf_token =   $this->request->getHeader('X_CSRFTOKEN');
-            $csrf_valid = $this->security->checkToken($csrf_tokenkey, $csrf_token, false);
+            $csrf_token = $this->request->getHeader('X_CSRFTOKEN');
+            $csrf_valid = $this->security->checkToken(null, $csrf_token, false);
 
             if (($this->request->isPost() ||
                     $this->request->isPut() ||
