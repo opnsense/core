@@ -28,7 +28,6 @@
     package : configd
 """
 
-from operator import itemgetter
 import netaddr
 
 
@@ -85,7 +84,7 @@ class Helpers(object):
             return result
         else:
             # resort list by tag
-            return sorted(result, key=itemgetter(sortBy))
+            return sorted(result, key=lambda d: int(d[sortBy]))
 
     def getUUIDtag(self, uuid):
         """ retrieve tag name of registered uuid, returns __not_found__ if none available
