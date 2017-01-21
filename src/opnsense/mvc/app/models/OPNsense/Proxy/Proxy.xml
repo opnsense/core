@@ -214,7 +214,7 @@
             </sslcertificate>
             <sslnobumpsites type="CSVListField">
               <Required>N</Required>
-              <mask>/^([a-zA-Z0-9.:,]){0,}/</mask>
+              <mask>/^([a-zA-Z0-9\.:\[\]\s\-]*?,)*([a-zA-Z0-9\.:\[\]\s\-]*)$/</mask>
               <ValidationMessage>Please enter ip addresses or domain names here</ValidationMessage>
             </sslnobumpsites>
             <ssl_crtd_storage_max_size type="IntegerField">
