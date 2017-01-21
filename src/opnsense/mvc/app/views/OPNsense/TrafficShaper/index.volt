@@ -227,8 +227,8 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div class="col-md-12">
         <hr/>
-        <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b><i id="reconfigureAct_progress" class=""></i></button>
-        <button class="btn btn-primary pull-right"  id="flushAct" type="button"><b>{{ lang._('Reset') }}</b><i id="flushAct_progress" class=""></i></button>
+        <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
+        <button class="btn btn-primary pull-right" id="flushAct" type="button"><b>{{ lang._('Reset') }}</b> <i id="flushAct_progress" class=""></i></button>
         <br/><br/>
     </div>
 </div>
