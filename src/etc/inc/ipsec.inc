@@ -64,6 +64,7 @@ $p1_authentication_methods = array(
     'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
     'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
     'eap-mschapv2' => array( 'name' => 'EAP-MSCHAPV2', 'mobile' => true),
+    'eap-radius' => array( 'name' => 'EAP-RADIUS', 'mobile' => true),
     'rsasig' => array( 'name' => 'Mutual RSA', 'mobile' => false ),
     'pre_shared_key' => array( 'name' => 'Mutual PSK', 'mobile' => false ),
 );
@@ -498,6 +499,11 @@ function ipsec_configure($verbose = false)
         $rgmap = array();
         $filterdns_list = array();
         $ipsecpinghosts = "";
+
+        /* radius server and secret for eap-radius */
+        $radius_server = "";
+        $radius_secret = "";
+
         /* step through each phase1 entry */
         foreach ($a_phase1 as $ph1ent) {
             if (isset($ph1ent['disabled'])) {
@@ -508,6 +514,12 @@ function ipsec_configure($verbose = false)
                 $aggressive_psk = true;
             }
             $ep = ipsec_get_phase1_src($ph1ent);
+
+            /* it is not possible to have more than one radius server defined currently */
+            if ($ph1ent['authentication_method'] == "eap-radius") {
+                $radius_server = $ph1ent['radius_server'];
+                $radius_secret = $ph1ent['radius_secret'];
+            }
 
             /* see if this tunnel has a hostname for the remote-gateway. If so,
                try to resolve it now and add it to the list for filterdns */
@@ -717,6 +729,13 @@ EOD;
                 $strongswan .= "\n";
                 $strongswan .= "\t\t}\n";
             }
+
+            if (!empty($radius_server) && !empty($radius_secret)) {
+                $strongswan .= "\t\teap-radius {\n";
+                $strongswan .= "\t\t\tserver = " . $radius_server . "\n";
+                $strongswan .= "\t\t\tsecret = " . $radius_secret . "\n";
+                $strongswan .= "\t\t}\n";
+            }
         }
 
         $strongswan .= "\t}\n}\n";
@@ -918,6 +937,11 @@ EOD;
                         break;
                     case 'eap-mschapv2':
                         $authentication = "leftauth = pubkey\n\trightauth = eap-mschapv2";
+                        $authentication .= "\n\teap_identity = %any";
+                        break;
+                    case 'eap-radius':
+                        $authentication = "leftauth = pubkey\n\trightauth = eap-radius";
+                        $authentication .= "\n\trightsendcert = never";
                         $authentication .= "\n\teap_identity = %any";
                         break;
                     case 'xauth_rsa_server':
