@@ -4,3 +4,6 @@ newsyslog.conf:/etc/newsyslog.conf.d/squid
 externalACLs.conf:/usr/local/etc/squid/externalACLs.conf
 nobumpsites.acl:/usr/local/etc/squid/nobumpsites.acl
 ca.pem.id:/usr/local/etc/squid/ca.pem.id
+pre-auth.conf:/usr/local/etc/squid/pre-auth/dummy.conf
+auth.conf:/usr/local/etc/squid/auth/dummy.conf
+post-auth.conf:/usr/local/etc/squid/post-auth/dummy.conf
