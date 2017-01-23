@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $pconfig['disablehttpredirect'] = isset($config['system']['webgui']['disablehttpredirect']);
     $pconfig['disableconsolemenu'] = isset($config['system']['disableconsolemenu']);
+    $pconfig['usevirtualterminal'] = isset($config['system']['usevirtualterminal']);
     $pconfig['disableintegratedauth'] = !empty($config['system']['disableintegratedauth']);
     $pconfig['sudo_allow_wheel'] = $config['system']['sudo_allow_wheel'];
     $pconfig['noantilockout'] = isset($config['system']['webgui']['noantilockout']);
@@ -125,6 +126,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['disableconsolemenu'] = true;
         } elseif (isset($config['system']['disableconsolemenu'])) {
             unset($config['system']['disableconsolemenu']);
+        }
+
+        if (!empty($pconfig['usevirtualterminal'])) {
+            $config['system']['usevirtualterminal'] = true;
+        } elseif (isset($config['system']['usevirtualterminal'])) {
+            unset($config['system']['usevirtualterminal']);
         }
 
         if (!empty($pconfig['disableintegratedauth'])) {
@@ -537,19 +544,10 @@ include("head.inc");
                   <th colspan="2"><?=gettext("Console Options"); ?></th>
                 </tr>
                 <tr>
-                  <td><a id="help_for_serialspeed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial Speed")?></td>
-                  <td>
-                    <select name="serialspeed" id="serialspeed" class="formselect selectpicker">
-                      <option value="115200" <?=$pconfig['serialspeed'] == "115200" ? 'selected="selected"' : '' ?>>115200</option>
-                      <option value="57600" <?=$pconfig['serialspeed'] == "57600" ? 'selected="selected"' : '' ?>>57600</option>
-                      <option value="38400" <?=$pconfig['serialspeed'] == "38400" ? 'selected="selected"' : '' ?>>38400</option>
-                      <option value="19200" <?=$pconfig['serialspeed'] == "19200" ? 'selected="selected"' : '' ?>>19200</option>
-                      <option value="14400" <?=$pconfig['serialspeed'] == "14400" ? 'selected="selected"' : '' ?>>14400</option>
-                      <option value="9600" <?=$pconfig['serialspeed'] == "9600" ? 'selected="selected"' : '' ?>>9600</option>
-                    </select>
-                    <div class="hidden" for="help_for_serialspeed">
-                      <?=gettext("Allows selection of different speeds for the serial console port."); ?>
-                    </div>
+                  <td><i class="fa fa-info-circle text-muted"></i></a> <?= gettext('Console driver') ?></td>
+                  <td width="78%">
+                    <input name="usevirtualterminal" type="checkbox" value="yes" <?= empty($pconfig['usevirtualterminal']) ? '' : 'checked="checked"' ?>  />
+                    <strong><?= gettext('Use the virtual terminal driver (vt)') ?></strong>
                   </td>
                 </tr>
                 <tr>
@@ -578,6 +576,22 @@ include("head.inc");
                     <div class="hidden" for="help_for_secondaryconsole">
                       <?=gettext("Select the secondary console if multiple consoles are present."); ?>
                       <?=gettext("All consoles display OS boot messages, console messages, and the console menu."); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_serialspeed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial Speed")?></td>
+                  <td>
+                    <select name="serialspeed" id="serialspeed" class="formselect selectpicker">
+                      <option value="115200" <?=$pconfig['serialspeed'] == "115200" ? 'selected="selected"' : '' ?>>115200</option>
+                      <option value="57600" <?=$pconfig['serialspeed'] == "57600" ? 'selected="selected"' : '' ?>>57600</option>
+                      <option value="38400" <?=$pconfig['serialspeed'] == "38400" ? 'selected="selected"' : '' ?>>38400</option>
+                      <option value="19200" <?=$pconfig['serialspeed'] == "19200" ? 'selected="selected"' : '' ?>>19200</option>
+                      <option value="14400" <?=$pconfig['serialspeed'] == "14400" ? 'selected="selected"' : '' ?>>14400</option>
+                      <option value="9600" <?=$pconfig['serialspeed'] == "9600" ? 'selected="selected"' : '' ?>>9600</option>
+                    </select>
+                    <div class="hidden" for="help_for_serialspeed">
+                      <?=gettext("Allows selection of different speeds for the serial console port."); ?>
                     </div>
                   </td>
                 </tr>
