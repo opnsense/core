@@ -546,7 +546,7 @@ include("head.inc");
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i></a> <?= gettext('Console driver') ?></td>
                   <td width="78%">
-                    <input name="usevirtualterminal" type="checkbox" value="yes" <?= !empty($pconfig['usevirtualterminal']) ? '' : 'checked="checked"' ?>  />
+                    <input name="usevirtualterminal" type="checkbox" value="yes" <?= empty($pconfig['usevirtualterminal']) ? '' : 'checked="checked"' ?>  />
                     <strong><?= gettext('Use the virtual terminal driver (vt)') ?></strong>
                   </td>
                 </tr>
