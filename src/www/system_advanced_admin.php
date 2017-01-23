@@ -544,6 +544,13 @@ include("head.inc");
                   <th colspan="2"><?=gettext("Console Options"); ?></th>
                 </tr>
                 <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i></a> <?= gettext('Console driver') ?></td>
+                  <td width="78%">
+                    <input name="usevirtualterminal" type="checkbox" value="yes" <?= !empty($pconfig['usevirtualterminal']) ? '' : 'checked="checked"' ?>  />
+                    <strong><?= gettext('Use the virtual terminal driver (vt)') ?></strong>
+                  </td>
+                </tr>
+                <tr>
                   <td><a id="help_for_primaryconsole" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Primary Console")?></td>
                   <td width="78%">
                     <select name="primaryconsole" id="primaryconsole" class="formselect selectpicker">
@@ -593,13 +600,6 @@ include("head.inc");
                   <td width="78%">
                     <input name="disableconsolemenu" type="checkbox" value="yes" <?= empty($pconfig['disableconsolemenu']) ? '' : 'checked="checked"' ?>  />
                     <strong><?=gettext("Password protect the console menu"); ?></strong>
-                  </td>
-                </tr>
-                <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i></a> <?= gettext('Console driver') ?></td>
-                  <td width="78%">
-                    <input name="usevirtualterminal" type="checkbox" value="yes" <?= empty($pconfig['usevirtualterminal']) ? '' : 'checked="checked"' ?>  />
-                    <strong><?= gettext('Use the virtual terminal driver (vt)') ?></strong>
                   </td>
                 </tr>
                 <tr>
