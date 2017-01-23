@@ -1715,6 +1715,7 @@ function system_login_configure($verbose = false)
     $new_boot_config['comconsole_speed'] = null;
     $new_boot_config['boot_multicons'] = null;
     $new_boot_config['boot_serial'] = null;
+    $new_boot_config['kern.vty'] = 'vt';
     $new_boot_config['console'] = null;
 
     $console_types = system_console_types();
@@ -1748,6 +1749,10 @@ function system_login_configure($verbose = false)
         @file_put_contents('/boot.config', "-q -m\n");
     } else {
         @unlink('/boot.config');
+    }
+
+    if (empty($config['system']['usevirtualterminal'])) {
+        $new_boot_config['kern.vty'] = 'sc';
     }
 
     /* reload static values from rc.loader.d */
