@@ -1,0 +1,47 @@
+<p>Dear friends and followers,</p>
+<p>This is the EOL announcement for the 16.7 series of OPNsense. As such it
+will not receive any more updates, but the upgrade to the new 17.1 series is
+seamless, except for the following points:</p>
+<p><ul><li>The integrated authentication framework is now used as a system-wide
+default including login(1), su(1) and sudo(8). This means that e.g. 2FA
+will be used for low-level password prompts as well and plain passwords are
+disabled by default. If this behaviour is undesired, set the "Disable
+integrated authentication" option under System: Settings: Administration.</li>
+<li>The console settings received a non-backwards compatible change. If the
+VGA console is not working, simply reconfigure it from System: Settings:
+Administration as it was likely set to Serial due to a wrong GUI default</li>
+<li>FreeBSD 11.0 switched to the vt(4) console driver, but we are keeping
+sc(4) as the default. You can change this after installation by enabling the
+virtual terminal driver under System: Settings: Administration.</li>
+<li>The access privileges for "Lobby: Login / Logout / Dashboard" and
+"Diagnostics: Backup / Restore" have been remapped internally and need to be
+reapplied when used explicitly on a previous version.</li>
+<li>The inherited 6rd kernel patches are not included in standard FreeBSD
+11.0. The state of 6rd is possibly broken, We ask for volunteers to pick up
+the work if 6rd is still a requirement, as we do not have access to such
+setups.</li>
+<li>Fundamental WiFi stack changes in FreeBDS 11.0 could still affect overall
+operability.</li>
+<li>The following services moved to individual plugins and need to be
+reinstalled in order to be used: SNMP, Load Balancer, Wake on LAN, Universal
+Plug and Play, IGMP Proxy. Their respective configuration will be preserved
+by the system even if these plugins are not installed.</li>
+<li>The Intel e1000 driver plugin has been removed due to an incompatibility
+with FreeBSD 11.0. All previously known bugs of the FreeBSD 11.0 e1000 driver
+have been fixed in OPNsense 17.1 and reported to FreeBSD.</li> </ul></p>
+<p>We would like to encourage everyone to supervise this major upgrade physically.
+As such, it cannot be performed from the GUI. Instead, go to the root console
+menu, choose option 12 and type "17.1" at the prompt. Alternatively, SSH can
+be used to perform the upgrade.</p>
+<p>The process will download a full set of updates and reboot multiple.
+All operating system files and packages will be reinstalled as a consequence.
+Another method is to import and reinstall using a new installation image,
+which will retain your settings (selecting "Import Configuration"), then
+reformat the disk and apply a clean system (selecting "Guided Installation").</p>
+<p>Please heed these points carefully before upgrading. Backup your configs,
+preview the new version via the live CD or in a virtual machine. Create
+snapshots. If all else fails, report back
+<a href="https://forum.opnsense.org/" target="_blank">in the forums</a> for
+assistance. You don't have to do this on your own. :)</p>
+<p><em>Dancing Dolphin</em>, you've served us well.</p>
+<p>See you on the other side,<br>Your OPNsense team</p>
