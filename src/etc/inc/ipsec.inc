@@ -64,6 +64,7 @@ $p1_authentication_methods = array(
     'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
     'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
     'eap-mschapv2' => array( 'name' => 'EAP-MSCHAPV2', 'mobile' => true),
+    'eap-radius' => array( 'name' => 'EAP-RADIUS', 'mobile' => true),
     'rsasig' => array( 'name' => 'Mutual RSA', 'mobile' => false ),
     'pre_shared_key' => array( 'name' => 'Mutual PSK', 'mobile' => false ),
 );
@@ -498,6 +499,10 @@ function ipsec_configure($verbose = false)
         $rgmap = array();
         $filterdns_list = array();
         $ipsecpinghosts = "";
+
+        $radius_enabled = false;
+        $radius_accounting_enabled = false;
+
         /* step through each phase1 entry */
         foreach ($a_phase1 as $ph1ent) {
             if (isset($ph1ent['disabled'])) {
@@ -508,6 +513,21 @@ function ipsec_configure($verbose = false)
                 $aggressive_psk = true;
             }
             $ep = ipsec_get_phase1_src($ph1ent);
+
+            /* only run once */
+            if ($ph1ent['authentication_method'] == "eap-radius" && $radius_enabled == false) {
+                $radius_enabled = true;
+
+                foreach (auth_get_authserver_list() as $auth_server) {
+                    if ($auth_server['type'] == "radius") {
+                        $radius_servers[] = $auth_server;
+
+                        if (!empty($auth_server['radius_acct_port'])) {
+                            $radius_accounting_enabled = true;
+                        }
+                    }
+                }
+            }
 
             /* see if this tunnel has a hostname for the remote-gateway. If so,
                try to resolve it now and add it to the list for filterdns */
@@ -717,6 +737,35 @@ EOD;
                 $strongswan .= "\n";
                 $strongswan .= "\t\t}\n";
             }
+
+            if ($radius_enabled == true) {
+                $strongswan .= "\t\teap-radius {\n";
+
+                if ($radius_accounting_enabled == true) {
+                    $strongswan .= "\t\t\taccounting = yes\n";
+                }
+
+                $strongswan .= "\t\t\tservers {\n";
+                $i = 1;
+
+                foreach ($radius_servers as $radius_server) {
+                    $strongswan .= "\t\t\t\tserver" . $i . " {\n";
+
+                    $strongswan .= "\t\t\t\t\taddress = " . $radius_server['host'] . "\n";
+                    $strongswan .= "\t\t\t\t\tsecret = " . $radius_server['radius_secret'] . "\n";
+                    $strongswan .= "\t\t\t\t\tauth_port = " . $radius_server['radius_auth_port'] . "\n";
+
+                    if (!empty($radius_server['radius_acct_port'])) {
+                        $strongswan .= "\t\t\t\t\tacct_port = " . $radius_server['radius_acct_port'] . "\n";
+                    }
+
+                    $strongswan .= "\t\t\t\t}\n";
+                    $i = $i + 1;
+                }
+
+                $strongswan .= "\t\t\t}\n";
+                $strongswan .= "\t\t}\n";
+            }
         }
 
         $strongswan .= "\t}\n}\n";
@@ -918,6 +967,11 @@ EOD;
                         break;
                     case 'eap-mschapv2':
                         $authentication = "leftauth = pubkey\n\trightauth = eap-mschapv2";
+                        $authentication .= "\n\teap_identity = %any";
+                        break;
+                    case 'eap-radius':
+                        $authentication = "leftauth = pubkey\n\trightauth = eap-radius";
+                        $authentication .= "\n\trightsendcert = never";
                         $authentication .= "\n\teap_identity = %any";
                         break;
                     case 'xauth_rsa_server':
