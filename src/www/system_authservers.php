@@ -494,6 +494,9 @@ endif; ?>
                       <option value="TCP - Standard" data-port="389" <?=$pconfig['ldap_urltype'] == "TCP - Standard" ? "selected=\"selected\"" : "";?>>
                         <?=gettext("TCP - Standard");?>
                       </option>
+                      <option value="StartTLS" data-port="389" <?=$pconfig['ldap_urltype'] == "StartTLS" ? "selected=\"selected\"" : "";?>>
+                        <?=gettext("StartTLS");?>
+                      </option>
                       <option value="SSL - Encrypted" data-port="636" <?=$pconfig['ldap_urltype'] == "SSL - Encrypted" ? "selected=\"selected\"" : "";?>>
                         <?=gettext("SSL - Encrypted");?>
                       </option>
