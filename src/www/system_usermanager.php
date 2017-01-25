@@ -567,7 +567,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
 <?php
-                  else:?>
+                  endif;?>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password");?></td>
                     <td>
@@ -576,8 +576,6 @@ $( document ).ready(function() {
                       <small><?= gettext("(confirmation)"); ?></small>
                     </td>
                   </tr>
-<?php
-                  endif;?>
                   <tr>
                     <td><a id="help_for_fullname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Full name");?></td>
                     <td>
