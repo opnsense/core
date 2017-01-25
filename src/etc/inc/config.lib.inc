@@ -161,7 +161,7 @@ function convert_config($verbose = false)
     if ($verbose) {
         passthru($mvc_migration);
     } else {
-        mwexecf($mvc_migraton);
+        mwexecf($mvc_migration);
     }
 }
 
