@@ -218,7 +218,7 @@ class LDAP implements IAuthConnector
         // Encryption types: Standard ( none ), StartTLS and SSL
         if (strstr($config['ldap_urltype'], "Standard")) {
             $this->ldapBindURL = "ldap://";
-        } else if (strstr($config['ldap_urltype'], "StartTLS")) {
+        } elseif (strstr($config['ldap_urltype'], "StartTLS")) {
             $this->ldapBindURL = "ldap://";
             $this->useStartTLS = true;
         } else {
@@ -259,7 +259,7 @@ class LDAP implements IAuthConnector
         $this->closeLDAPHandle();
         $this->ldapHandle = @ldap_connect($bind_url);
 
-        if($this->useStartTLS) {
+        if ($this->useStartTLS) {
             ldap_set_option($this->ldapHandle, LDAP_OPT_PROTOCOL_VERSION, 3);
             if (ldap_start_tls($this->ldapHandle) === false) {
                 $this->ldapHandle = null;
