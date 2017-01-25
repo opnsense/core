@@ -497,9 +497,15 @@ function local_user_del($user)
     local_group_del_user($user);
 }
 
-function local_user_set_password(&$user, $password)
+function local_user_set_password(&$user, $password = null)
 {
     $cost = 10;
+
+    if ($password == null) {
+        /* generate a random password */
+        $bytes = openssl_random_pseudo_bytes(50);
+        $password = pack('H*',bin2hex($bytes));
+    }
 
     $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => $cost ]);
     if ($hash !== false) {

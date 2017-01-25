@@ -35,8 +35,8 @@ if (isset($_POST['save'])) {
     $input_errors = array();
     /* input validation */
 
-    $reqdfields = explode(" ", "passwordfld0 passwordfld1 passwordfld2");
-    $reqdfieldsn = array(gettext("Password"));
+    $reqdfields = explode(' ', 'passwordfld0 passwordfld1');
+    $reqdfieldsn = array(gettext('Old password'), gettext('New password'));
     do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
     if ($_POST['passwordfld1'] != $_POST['passwordfld2'] ||
@@ -49,6 +49,7 @@ if (isset($_POST['save'])) {
     foreach ($config['system']['user'] as $user) {
         if ($user['name'] == $username) {
             $userFound = true;
+            break;
         }
     }
 
@@ -57,7 +58,6 @@ if (isset($_POST['save'])) {
     }
 
     if (count($input_errors) == 0) {
-        // all values are okay --> saving changes
         local_user_set_password($config['system']['user'][$userindex[$username]], $_POST['passwordfld1']);
         local_user_set($config['system']['user'][$userindex[$username]]);
 
