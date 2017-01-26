@@ -523,7 +523,7 @@ SureGPS =    #Sure Electronics SKG16B
                       <td colspan="2">
                         <?=gettext('A GPS connected via a serial port may be used as a reference clock for NTP. If the GPS also supports PPS and is properly configured, and connected, that GPS may also be used as a Pulse Per Second clock reference. NOTE: a USB GPS may work, but is not recommended due to USB bus timing issues.') ?>
                         <br />
-                        <br /><?=sprintf(gettext("For the best results, NTP should have at least three sources of time. So it is best to configure at least 2 servers under %sServices > NTP%s to minimize clock drift if the GPS data is not valid over time. Otherwise ntpd may only use values from the unsynchronized local clock when providing time to clients."),'<a href="services_ntpd.php">','</a>') ?>
+                        <br /><?=sprintf(gettext("For the best results, NTP should have at least three sources of time. So it is best to configure at least 2 servers under %sServices: Network Time%s to minimize clock drift if the GPS data is not valid over time. Otherwise ntpd may only use values from the unsynchronized local clock when providing time to clients."),'<a href="services_ntpd.php">','</a>') ?>
                       </td>
                     </tr>
                   </tfoot>
