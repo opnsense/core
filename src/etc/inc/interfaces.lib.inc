@@ -196,7 +196,6 @@ function legacy_interface_stats($ifs=null)
 
 /**
  * detect interface capabilities using ifconfig -m
- * @param $intf filter on interface name (empty for all)
  * @return array list of interface specifics indexed by physical interface name
  */
 function legacy_interfaces_details($intf = null)
@@ -276,7 +275,7 @@ function legacy_interfaces_details($intf = null)
 
 /**
  * fetch interface details for one interface
- * @param $intf interface name
+ * @param $intf string interface name
  * @return array list of interface specifics
  */
 function legacy_interface_details($intf)
