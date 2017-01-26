@@ -50,7 +50,7 @@
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" logo+
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@  " logo+
 	s"  #[m                              " logo+
-	s"   17.1  ``Insert Name Here''  #[m" logo+
+	s"    17.1  ``Eclectic Eagle''   #[m" logo+
 
 	2drop
 ;

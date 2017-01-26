@@ -71,7 +71,7 @@ CORE_ORIGIN?=		opnsense/${CORE_NAME}
 CORE_COMMENT?=		OPNsense ${CORE_FAMILY} package
 CORE_MAINTAINER?=	franco@opnsense.org
 CORE_WWW?=		https://opnsense.org/
-CORE_MESSAGE?=		Insert Name Here
+CORE_MESSAGE?=		What do you mean, an African or European Eagle?
 # CORE_DEPENDS_armv6 is empty
 CORE_DEPENDS_amd64?=	beep bsdinstaller
 CORE_DEPENDS_i386?=	${CORE_DEPENDS_amd64}
