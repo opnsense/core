@@ -20,7 +20,7 @@ reapplied when used explicitly on a previous version.</li>
 11.0. The state of 6rd is possibly broken, We ask for volunteers to pick up
 the work if 6rd is still a requirement, as we do not have access to such
 setups.</li>
-<li>Fundamental WiFi stack changes in FreeBDS 11.0 could still affect overall
+<li>Fundamental WiFi stack changes in FreeBSD 11.0 could still affect overall
 operability.</li>
 <li>The following services moved to individual plugins and need to be
 reinstalled in order to be used: SNMP, Load Balancer, Wake on LAN, Universal
