@@ -116,7 +116,7 @@ class UIModelGrid
                                 }
                             }
                             if (empty($row[$fieldname])) {
-                                $row[$fieldname] = "##Unlinked";
+                                $row[$fieldname] = "";
                             }
                         }
                     }
