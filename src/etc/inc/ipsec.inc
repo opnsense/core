@@ -64,6 +64,7 @@ $p1_authentication_methods = array(
     'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
     'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
     'eap-mschapv2' => array( 'name' => 'EAP-MSCHAPV2', 'mobile' => true),
+    'eap-radius' => array( 'name' => 'EAP-RADIUS', 'mobile' => true),
     'rsasig' => array( 'name' => 'Mutual RSA', 'mobile' => false ),
     'pre_shared_key' => array( 'name' => 'Mutual PSK', 'mobile' => false ),
 );
@@ -498,6 +499,11 @@ function ipsec_configure($verbose = false)
         $rgmap = array();
         $filterdns_list = array();
         $ipsecpinghosts = "";
+
+        /* radius server and secret for eap-radius */
+        $radius_server = "";
+        $radius_secret = "";
+
         /* step through each phase1 entry */
         foreach ($a_phase1 as $ph1ent) {
             if (isset($ph1ent['disabled'])) {
@@ -508,6 +514,12 @@ function ipsec_configure($verbose = false)
                 $aggressive_psk = true;
             }
             $ep = ipsec_get_phase1_src($ph1ent);
+
+            /* it is not possible to have more than one radius server defined currently */
+            if ($ph1ent['authentication_method'] == "eap-radius") {
+                $radius_server = $ph1ent['radius_server'];
+                $radius_secret = $ph1ent['radius_secret'];
+            }
 
             /* see if this tunnel has a hostname for the remote-gateway. If so,
                try to resolve it now and add it to the list for filterdns */
@@ -626,7 +638,7 @@ EOD;
         if (isset($a_client['enable'])) {
             $strongswan .= "\t\tattr {\n";
             if ($a_client['pool_address'] && $a_client['pool_netbits']) {
-                $strongswan .= "\t\tsubnet = {$a_client['pool_address']}/{$a_client['pool_netbits']}\n";
+                $strongswan .= "\t\t\tsubnet = {$a_client['pool_address']}/{$a_client['pool_netbits']}\n";
             }
             $cfgservers = array();
             foreach (array('dns_server1', 'dns_server2', 'dns_server3', 'dns_server4') as $dns_server) {
@@ -635,7 +647,7 @@ EOD;
                 }
             }
             if (!empty($cfgservers)) {
-                $strongswan .= "\t\tdns = " . implode(",", $cfgservers) . "\n";
+                $strongswan .= "\t\t\tdns = " . implode(",", $cfgservers) . "\n";
             }
             unset($cfgservers);
             $cfgservers = array();
@@ -646,7 +658,7 @@ EOD;
                 $cfgservers[] = $a_client['wins_server2'];
             }
             if (!empty($cfgservers)) {
-                $strongswan .= "\t\tnbns = " . implode(",", $cfgservers) . "\n";
+                $strongswan .= "\t\t\tnbns = " . implode(",", $cfgservers) . "\n";
             }
             unset($cfgservers);
 
@@ -667,41 +679,41 @@ EOD;
                 }
 
                 if (!empty($net_list)) {
-                    $strongswan .= "\t\tsplit-include = {$net_list}\n";
+                    $strongswan .= "\t\t\tsplit-include = {$net_list}\n";
                     unset($net_list);
                 }
             }
 
             if (!empty($a_client['dns_domain'])) {
-                $strongswan .= "\t\t# Search domain and default domain\n";
-                $strongswan .= "\t\t28674 = {$a_client['dns_domain']}\n";
+                $strongswan .= "\t\t\t# Search domain and default domain\n";
+                $strongswan .= "\t\t\t28674 = {$a_client['dns_domain']}\n";
                 if (empty($a_client['dns_split'])) {
-                    $strongswan .= "\t\t28675 = {$a_client['dns_domain']}";
+                    $strongswan .= "\t\t\t28675 = {$a_client['dns_domain']}";
                 }
                 $strongswan .= "\n";
             }
 
             if (!empty($a_client['dns_split'])) {
-                $strongswan .= "\t\t28675 = {$a_client['dns_split']}\n";
+                $strongswan .= "\t\t\t28675 = {$a_client['dns_split']}\n";
             }
 
             if (!empty($a_client['login_banner'])) {
-                $strongswan .= "\t\t28672 = {$a_client['login_banner']}\n";
+                $strongswan .= "\t\t\t28672 = {$a_client['login_banner']}\n";
             }
 
             if (isset($a_client['save_passwd'])) {
-                $strongswan .= "\t\t28673 = 1\n";
+                $strongswan .= "\t\t\t28673 = 1\n";
             }
 
             if (!empty($a_client['pfs_group'])) {
-                $strongswan .= "\t\t28679 = {$a_client['pfs_group']}\n";
+                $strongswan .= "\t\t\t28679 = {$a_client['pfs_group']}\n";
             }
             $strongswan .= "\t\t}\n";
 
             if ($a_client['user_source'] != "none") {
-                $strongswan .= "\txauth-generic {\n";
-                $strongswan .= "\t\tscript = /usr/local/etc/inc/ipsec.auth-user.php\n";
-                $strongswan .= "\t\tauthcfg = ";
+                $strongswan .= "\t\txauth-generic {\n";
+                $strongswan .= "\t\t\tscript = /usr/local/etc/inc/ipsec.auth-user.php\n";
+                $strongswan .= "\t\t\tauthcfg = ";
                 $firstsed = 0;
                 $authcfgs = explode(",", $a_client['user_source']);
                 foreach ($authcfgs as $authcfg) {
@@ -715,7 +727,14 @@ EOD;
                     $firstsed = 1;
                 }
                 $strongswan .= "\n";
-                $strongswan .= "\t}\n";
+                $strongswan .= "\t\t}\n";
+            }
+
+            if (!empty($radius_server) && !empty($radius_secret)) {
+                $strongswan .= "\t\teap-radius {\n";
+                $strongswan .= "\t\t\tserver = " . $radius_server . "\n";
+                $strongswan .= "\t\t\tsecret = " . $radius_secret . "\n";
+                $strongswan .= "\t\t}\n";
             }
         }
 
@@ -918,7 +937,12 @@ EOD;
                         break;
                     case 'eap-mschapv2':
                         $authentication = "leftauth = pubkey\n\trightauth = eap-mschapv2";
-                        $authentication .= "\n\teap_identity=%any";
+                        $authentication .= "\n\teap_identity = %any";
+                        break;
+                    case 'eap-radius':
+                        $authentication = "leftauth = pubkey\n\trightauth = eap-radius";
+                        $authentication .= "\n\trightsendcert = never";
+                        $authentication .= "\n\teap_identity = %any";
                         break;
                     case 'xauth_rsa_server':
                         $authentication = "leftauth = pubkey\n\trightauth = pubkey";
@@ -940,7 +964,7 @@ EOD;
                         break;
                 }
                 if (!empty($ph1ent['certref'])) {
-                    $authentication .= "\n\tleftcert={$certpath}/cert-{$ph1ent['ikeid']}.crt";
+                    $authentication .= "\n\tleftcert = {$certpath}/cert-{$ph1ent['ikeid']}.crt";
                 }
                 if (!empty($ph1ent['caref'])) {
                     $ca = lookup_ca($ph1ent['caref']);
@@ -949,7 +973,7 @@ EOD;
                          foreach (cert_get_subject_array($ca['crt']) as $ca_field) {
                             $rightca .= "{$ca_field['a']}={$ca_field['v']}/";
                          }
-                         $authentication .= "\n\trightca=\"/$rightca\"";
+                         $authentication .= "\n\trightca = \"/$rightca\"";
                     }
                 }
                 $left_spec = $ep;

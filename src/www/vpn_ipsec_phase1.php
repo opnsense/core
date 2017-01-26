@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $phase1_fields = "mode,protocol,myid_type,myid_data,peerid_type,peerid_data
     ,encryption-algorithm,hash-algorithm,dhgroup,lifetime,authentication_method,descr,nat_traversal
     ,interface,iketype,dpd_delay,dpd_maxfail,remote-gateway,pre-shared-key,certref
-    ,caref,reauth_enable,rekey_enable,auto,tunnel_isolation";
+    ,caref,radius_server,radius_secret,reauth_enable,rekey_enable,auto,tunnel_isolation";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
         // 1-on-1 copy
         foreach (explode(",", $phase1_fields) as $fieldname) {
@@ -170,6 +170,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['peerid_data'] = "";
     }
 
+    /* RADIUS server means no CA being sent */
+    if ($pconfig['authentication_method'] == "eap-radius") {
+        $pconfig['caref'] = "";
+    }
+
     /* input validation */
     $method = $pconfig['authentication_method'];
 
@@ -180,6 +185,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         case "eap-mschapv2":
           if ($pconfig['iketype'] != 'ikev2') {
               $input_errors[] = sprintf(gettext("%s can only be used with IKEv2 type VPNs."), strtoupper($method));
+          }
+          break;
+        case "eap-radius":
+          if ($pconfig['iketype'] != 'ikev2') {
+              $input_errors[] = sprintf(gettext("%s can only be used with IKEv2 type VPNs."), strtoupper($method));
+          }
+
+          if (empty($pconfig['radius_server']) || empty($pconfig['radius_secret'])) {
+              $input_errors[] = gettext("You must enter both RADIUS server and secret to use EAP-RADIUS.");
           }
           break;
         case "pre_shared_key":
@@ -342,8 +356,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (count($input_errors) == 0) {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
         ,peerid_type,peerid_data,encryption-algorithm,hash-algorithm,dhgroup
-        ,lifetime,pre-shared-key,certref,caref,authentication_method,descr
-        ,nat_traversal, auto";
+        ,lifetime,pre-shared-key,certref,caref,radius_server,radius_secret
+        ,authentication_method,descr,nat_traversal, auto";
 
         foreach (explode(",",$copy_fields) as $fieldname) {
             $fieldname = trim($fieldname);
@@ -460,6 +474,14 @@ include("head.inc");
                     $(".auth_eap_tls :input").prop( "disabled", false );
                     $(".auth_eap_tls_caref").show();
                     $(".auth_eap_tls_caref :input").prop( "disabled", false );
+                    break;
+                case 'eap-radius':
+                    $(".auth_eap_tls").show();
+                    $(".auth_eap_tls :input").prop( "disabled", false );
+                    $(".auth_eap_tls_caref").hide();
+                    $(".auth_eap_tls_caref :input").prop( "disabled", true );
+                    $(".auth_eap_radius").show();
+                    $(".auth_eap_radius :input").prop( "disabled", false );
                     break;
                 case 'pre_shared_key':
                     if ($("#mobile").val() == undefined) {
@@ -833,6 +855,26 @@ endforeach; ?>
                       </select>
                       <div class="hidden" for="help_for_caref">
                         <?=gettext("Select a certificate authority previously configured in the Certificate Manager."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="auth_opt auth_eap_radius">
+                    <td ><a id="help_for_radius_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RADIUS Server"); ?></td>
+                    <td>
+                      <input name="radius_server" type="text" class="formfld unknown" id="radiusserver" size="40"
+                             value="<?= $pconfig['authentication_method'] == "eap-radius" ? $pconfig['radius_server'] : "";?>" />
+                      <div class="hidden" for="help_for_radius_server">
+                        <?=gettext("Input your RADIUS server IP."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="auth_opt auth_eap_radius">
+                    <td ><a id="help_for_radius_secret" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RADIUS Secret"); ?></td>
+                    <td>
+                      <input name="radius_secret" type="password" class="formfld unknown" id="radiussecret" size="40"
+                             value="<?= $pconfig['authentication_method'] == "eap-radius" ? $pconfig['radius_server'] : "";?>" />
+                      <div class="hidden" for="help_for_radius_secret">
+                        <?=gettext("Input your RADIUS secret."); ?>
                       </div>
                     </td>
                   </tr>
