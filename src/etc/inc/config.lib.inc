@@ -279,7 +279,6 @@ function security_checks_disabled()
 function cleanup_backups()
 {
     global $config;
-    $i = false;
 
     if (isset($config['system']['backupcount']) && is_numeric($config['system']['backupcount']) && ($config['system']['backupcount'] >= 0)) {
         $revisions = intval($config['system']['backupcount']);
@@ -301,8 +300,6 @@ function cleanup_backups()
 
 function make_config_revision_entry($desc = '')
 {
-    global $config;
-
     if (!empty($_SESSION['Username'])) {
         $username = $_SESSION['Username'];
     } else {

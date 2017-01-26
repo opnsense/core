@@ -239,6 +239,8 @@ function index_users()
 {
     global $config;
 
+    $userindex = array();
+
     if (is_array($config['system']['user'])) {
         $i = 0;
         foreach($config['system']['user'] as $userent) {
@@ -247,7 +249,7 @@ function index_users()
         }
     }
 
-    return ($userindex);
+    return $userindex;
   }
 
 function &getUserEntry($name)
@@ -283,6 +285,8 @@ function &getGroupEntry($name)
     if (isset($groupindex[$name])) {
         return $config['system']['group'][$groupindex[$name]];
     }
+
+    return array();
 }
 
 function &getGroupEntryByGID($gid)
@@ -360,7 +364,6 @@ function local_sync_accounts()
     }
 
     /* remove local groups to avoid gid conflicts */
-    $gids = array();
     $fd = popen('/usr/sbin/pw groupshow -a', 'r');
     if ($fd) {
         while (!feof($fd)) {
@@ -606,9 +609,9 @@ function local_group_del_user($user)
 function local_group_set($group, $reset = false)
 {
     if (!isset($group['name']) || !isset($group['gid'])) {
-        // input data invalid
-        return false;
+        return;
     }
+
     $group_name = $group['name'];
     $group_gid = $group['gid'];
     $group_members = '';
@@ -721,6 +724,8 @@ function auth_get_authserver($name)
             }
         }
     }
+
+    return false;
 }
 
 function auth_get_authserver_list()
