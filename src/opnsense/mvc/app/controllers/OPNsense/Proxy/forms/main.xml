@@ -448,8 +448,8 @@
                 <label>Request Modify URL</label>
                 <type>text</type>
                 <style>tokenize</style>
-                <help><![CDATA[Enter the url where the reqmod requests should be sent to.]]></help>
-                <hint>Enter the url of the ICAP Server</hint>
+                <help><![CDATA[Enter the url where the REQMOD requests should be sent to.]]></help>
+                <hint>Enter the URL of the ICAP Server</hint>
                 <allownew>true</allownew>
                 <advanced>false</advanced>
             </field>
@@ -458,8 +458,8 @@
                 <label>Response Modify URL</label>
                 <type>text</type>
                 <style>tokenize</style>
-                <help><![CDATA[Enter the url where the respmod requests should be sent to.]]></help>
-                <hint>Enter the url of the ICAP Server</hint>
+                <help><![CDATA[Enter the url where the RESPMOD requests should be sent to.]]></help>
+                <hint>Enter the URL of the ICAP Server</hint>
                 <allownew>true</allownew>
                 <advanced>false</advanced>
             </field>
