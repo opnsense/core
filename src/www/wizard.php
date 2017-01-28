@@ -197,7 +197,7 @@ function update_config_field($field, $updatetext, $unset, $arraynum, $field_type
 	if($field_type == "interfaces_selection") {
 		$var = "\$config{$field_conv}";
 		$text = "if (isset({$var})) unset({$var});";
-		$text .= "\$config" . $field_conv . " = \"" . $updatetext . "\";";
+		$text .= "\$config" . $field_conv . " = '" . addslashes($updatetext) . "';";
 		eval($text);
 		return;
 	}
@@ -206,7 +206,7 @@ function update_config_field($field, $updatetext, $unset, $arraynum, $field_type
 		$text = "unset(\$config" . $field_conv . ");";
 		eval($text);
 	}
-	$text = "\$config" . $field_conv . " = \"" . addslashes($updatetext) . "\";";
+	$text = "\$config" . $field_conv . " = '" . addslashes($updatetext) . "';";
 	eval($text);
 }
 
