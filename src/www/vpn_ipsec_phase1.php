@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $phase1_fields = "mode,protocol,myid_type,myid_data,peerid_type,peerid_data
     ,encryption-algorithm,hash-algorithm,dhgroup,lifetime,authentication_method,descr,nat_traversal
     ,interface,iketype,dpd_delay,dpd_maxfail,remote-gateway,pre-shared-key,certref
-    ,caref,reauth_enable,rekey_enable,auto,tunnel_isolation";
+    ,caref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
         // 1-on-1 copy
         foreach (explode(",", $phase1_fields) as $fieldname) {
@@ -106,6 +106,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $pconfig['disabled'] = isset($config['ipsec']['phase1'][$p1index]['disabled']);
 
+        if (!empty($config['ipsec']['phase1'][$p1index]['authservers'])) {
+          $pconfig['authservers'] = explode(',', $config['ipsec']['phase1'][$p1index]['authservers']);
+        } else {
+          $pconfig['authservers'] = array();
+        }
         $pconfig['remotebits'] = null;
         $pconfig['remotenet'] = null ;
         if (isset($a_phase1[$p1index]['remote-subnet']) && strpos($config['ipsec']['phase1'][$p1index]['remote-subnet'],'/') !== false) {
@@ -133,6 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['lifetime'] = "28800";
         $pconfig['nat_traversal'] = "on";
         $pconfig['iketype'] = "ikev1";
+        $pconfig['authservers'] = array();
 
         /* mobile client */
         if (isset($_GET['mobile'])) {
@@ -178,8 +184,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     switch ($method) {
         case "eap-tls":
         case "eap-mschapv2":
+        case "eap-radius":
           if ($pconfig['iketype'] != 'ikev2') {
               $input_errors[] = sprintf(gettext("%s can only be used with IKEv2 type VPNs."), strtoupper($method));
+          }
+          if ($method == 'eap-radius' && empty($pconfig['authservers'])) {
+              $input_errors[] = gettext("Please select radius servers to use.");
           }
           break;
         case "pre_shared_key":
@@ -343,7 +353,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
         ,peerid_type,peerid_data,encryption-algorithm,hash-algorithm,dhgroup
         ,lifetime,pre-shared-key,certref,caref,authentication_method,descr
-        ,nat_traversal, auto";
+        ,nat_traversal,auto";
 
         foreach (explode(",",$copy_fields) as $fieldname) {
             $fieldname = trim($fieldname);
@@ -351,6 +361,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $ph1ent[$fieldname] = $pconfig[$fieldname];
             }
         }
+        $ph1ent['authservers'] = implode(',', $pconfig['authservers']);
 
         $ph1ent['disabled'] = !empty($pconfig['disabled']) ? true : false;
         $ph1ent['private-key'] =isset($pconfig['privatekey']) ? base64_encode($pconfig['privatekey']) : null;
@@ -461,6 +472,12 @@ include("head.inc");
                     $(".auth_eap_tls_caref").show();
                     $(".auth_eap_tls_caref :input").prop( "disabled", false );
                     break;
+                case 'eap-radius':
+                    $(".auth_eap_tls").show();
+                    $(".auth_eap_tls :input").prop( "disabled", false );
+                    $(".auth_eap_radius").show();
+                    $(".auth_eap_radius :input").prop( "disabled", false );
+                    break;
                 case 'pre_shared_key':
                     if ($("#mobile").val() == undefined) {
                         $(".auth_psk").show();
@@ -472,6 +489,7 @@ include("head.inc");
                     $(".auth_psk :input").prop( "disabled", false );
                     break;
             }
+            $(".selectpicker").selectpicker('refresh');
         });
         $("#authentication_method").change();
 
@@ -697,7 +715,8 @@ include("head.inc");
 ?>
                       </select>
                       <div class="hidden" for="help_for_authmethod">
-                        <?=gettext("Must match the setting chosen on the remote side."); ?>
+                        <?=gettext("Must match the setting chosen on the remote side."); ?><br />
+                        <?=sprintf(gettext("If you select EAP-RADIUS, you must define your RADIUS servers on the %sServers%s page."), '<a href="/system_authservers.php">', '</a>'); ?>
                       </div>
                     </td>
                   </tr>
@@ -833,6 +852,25 @@ endforeach; ?>
                       </select>
                       <div class="hidden" for="help_for_caref">
                         <?=gettext("Select a certificate authority previously configured in the Certificate Manager."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="auth_opt auth_eap_radius">
+                    <td><a id="help_for_authservers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Radius servers"); ?></td>
+                    <td>
+                      <select name="authservers[]"  multiple="multiple" size="3" class="selectpicker" data-live-search="true">
+<?php
+                      foreach (auth_get_authserver_list() as $auth_server):
+                        if ($auth_server['type'] == "radius"):?>
+                        <option value="<?=$auth_server['name'];?>" <?=in_array($auth_server['name'],$pconfig['authservers']) ? 'selected="selected"' : "";?>>
+                          <?=htmlspecialchars($auth_server['name']);?>
+                        </option>
+<?php
+                        endif;
+                      endforeach;?>
+                      </select>
+                      <div class="hidden" for="help_for_authservers">
+                        <?=gettext("Select authentication servers to use."); ?>
                       </div>
                     </td>
                   </tr>
