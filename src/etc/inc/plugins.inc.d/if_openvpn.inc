@@ -47,7 +47,7 @@ function if_openvpn_services()
     foreach (array('server', 'client') as $mode) {
         if (isset($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as $setting) {
-                if (!isset($setting['disable'])) {
+                if (empty($setting['disable'])) {
                     $pconfig = array();
                     $pconfig['description'] = "OpenVPN {$mode}: " . htmlspecialchars($setting['description']);
                     $pconfig['pidfile'] = "/var/run/openvpn_{$mode}{$setting['vpnid']}.pid";
@@ -75,7 +75,7 @@ function if_openvpn_interfaces()
     foreach (array('server', 'client') as $mode) {
         if (isset($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as &$settings) {
-                if (!isset($settings['disable'])) {
+                if (empty($settings['disable'])) {
                     $oic = array('enable' => true);
                     $oic['if'] = 'openvpn';
                     $oic['descr'] = 'OpenVPN';
