@@ -1007,7 +1007,8 @@ function url_safe($format, $args = array())
     }
 
     foreach ($args as $id => $arg) {
-        $args[$id] = urlencode($arg);
+        /* arguments could be empty, so force default */
+        $args[$id] = !empty($arg) ? urlencode($arg) : '';
     }
 
     return vsprintf($format, $args);
