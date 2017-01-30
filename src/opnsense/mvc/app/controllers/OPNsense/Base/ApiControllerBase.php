@@ -171,6 +171,7 @@ class ApiControllerBase extends ControllerRoot
             // handle UI ajax requests
             // use session data and ACL to validate request.
             if (!$this->doAuth()) {
+                $this->response->setStatusCode(401, "Unauthorized");
                 return false;
             }
 
@@ -185,6 +186,7 @@ class ApiControllerBase extends ControllerRoot
             ) {
                 // missing csrf, exit.
                 $this->getLogger()->error("no matching csrf found for request");
+                $this->response->setStatusCode(403, "Forbidden");
                 return false;
             }
         }
