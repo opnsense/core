@@ -500,9 +500,6 @@ function ipsec_configure($verbose = false)
         $filterdns_list = array();
         $ipsecpinghosts = "";
 
-        $radius_enabled = false;
-        $radius_accounting_enabled = false;
-
         /* step through each phase1 entry */
         foreach ($a_phase1 as $ph1ent) {
             if (isset($ph1ent['disabled'])) {
@@ -513,21 +510,6 @@ function ipsec_configure($verbose = false)
                 $aggressive_psk = true;
             }
             $ep = ipsec_get_phase1_src($ph1ent);
-
-            /* only run once */
-            if ($ph1ent['authentication_method'] == "eap-radius" && $radius_enabled == false) {
-                $radius_enabled = true;
-
-                foreach (auth_get_authserver_list() as $auth_server) {
-                    if ($auth_server['type'] == "radius") {
-                        $radius_servers[] = $auth_server;
-
-                        if (!empty($auth_server['radius_acct_port'])) {
-                            $radius_accounting_enabled = true;
-                        }
-                    }
-                }
-            }
 
             /* see if this tunnel has a hostname for the remote-gateway. If so,
                try to resolve it now and add it to the list for filterdns */
@@ -738,31 +720,33 @@ EOD;
                 $strongswan .= "\t\t}\n";
             }
 
-            if ($radius_enabled == true) {
+            if ($ph1ent['authentication_method'] == "eap-radius") {
                 $strongswan .= "\t\teap-radius {\n";
+                $radius_servers = "";
+                $radius_server_num = 1;
+                $radius_accounting_enabled = false;
+                foreach (auth_get_authserver_list() as $auth_server) {
+                    if (in_array($auth_server['name'], explode(',', $ph1ent['authservers']))) {
+                        $radius_servers .= "\t\t\t\tserver" . $radius_server_num . " {\n";
+                        $radius_servers .= "\t\t\t\t\taddress = " . $auth_server['host'] . "\n";
+                        $radius_servers .= "\t\t\t\t\tsecret = " . $auth_server['radius_secret'] . "\n";
+                        $radius_servers .= "\t\t\t\t\tauth_port = " . $auth_server['radius_auth_port'] . "\n";
 
-                if ($radius_accounting_enabled == true) {
+                        if (!empty($auth_server['radius_acct_port'])) {
+                            $radius_servers .= "\t\t\t\t\tacct_port = " . $auth_server['radius_acct_port'] . "\n";
+                        }
+                        $radius_servers .= "\t\t\t\t}\n";
+                        if (!empty($auth_server['radius_acct_port'])) {
+                            $radius_accounting_enabled = true;
+                        }
+                        $radius_server_num += 1;
+                    }
+                }
+                if ($radius_accounting_enabled) {
                     $strongswan .= "\t\t\taccounting = yes\n";
                 }
-
                 $strongswan .= "\t\t\tservers {\n";
-                $i = 1;
-
-                foreach ($radius_servers as $radius_server) {
-                    $strongswan .= "\t\t\t\tserver" . $i . " {\n";
-
-                    $strongswan .= "\t\t\t\t\taddress = " . $radius_server['host'] . "\n";
-                    $strongswan .= "\t\t\t\t\tsecret = " . $radius_server['radius_secret'] . "\n";
-                    $strongswan .= "\t\t\t\t\tauth_port = " . $radius_server['radius_auth_port'] . "\n";
-
-                    if (!empty($radius_server['radius_acct_port'])) {
-                        $strongswan .= "\t\t\t\t\tacct_port = " . $radius_server['radius_acct_port'] . "\n";
-                    }
-
-                    $strongswan .= "\t\t\t\t}\n";
-                    $i = $i + 1;
-                }
-
+                $strongswan .= $radius_servers;
                 $strongswan .= "\t\t\t}\n";
                 $strongswan .= "\t\t}\n";
             }
