@@ -160,11 +160,11 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination server");?></td>
+                      <td><a id="help_for_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination server(s)");?></td>
                       <td>
                         <input name="server" type="text" value="<?=!empty($pconfig['server']) ? htmlspecialchars($pconfig['server']):"";?>" />
                         <div class="hidden" for="help_for_server">
-                          <?=gettext("This is the IP address of the server to which DHCP requests are relayed. You can enter multiple server IP addresses, separated by commas. Select \"Proxy requests to DHCP server on WAN subnet\" to relay DHCP packets to the server that was used on the WAN interface.");?>
+                          <?=gettext("This is the IP addresses of the servers to which DHCP requests are relayed. You can enter multiple server IP addresses, separated by commas. Select \"Proxy requests to DHCP server on WAN subnet\" to relay DHCP packets to the server that was used on the WAN interface.");?>
                         </div>
                       </td>
                     </tr>
