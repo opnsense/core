@@ -179,6 +179,7 @@ class ControllerBase extends ControllerRoot
             // check for valid csrf on post requests
             if ($this->request->isPost() && !$this->security->checkToken()) {
                 // post without csrf, exit.
+                $this->response->setStatusCode(403, "Forbidden");
                 return false;
             }
 
