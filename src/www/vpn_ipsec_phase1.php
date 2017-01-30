@@ -170,6 +170,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['peerid_data'] = "";
     }
 
+    /* RADIUS server means no CA being sent */
+    if ($pconfig['authentication_method'] == "eap-radius") {
+        $pconfig['caref'] = "";
+    }
+
     /* input validation */
     $method = $pconfig['authentication_method'];
 
@@ -178,6 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     switch ($method) {
         case "eap-tls":
         case "eap-mschapv2":
+        case "eap-radius":
           if ($pconfig['iketype'] != 'ikev2') {
               $input_errors[] = sprintf(gettext("%s can only be used with IKEv2 type VPNs."), strtoupper($method));
           }
@@ -461,6 +467,12 @@ include("head.inc");
                     $(".auth_eap_tls_caref").show();
                     $(".auth_eap_tls_caref :input").prop( "disabled", false );
                     break;
+                case 'eap-radius':
+                    $(".auth_eap_tls").show();
+                    $(".auth_eap_tls :input").prop( "disabled", false );
+                    $(".auth_eap_tls_caref").hide();
+                    $(".auth_eap_tls_caref :input").prop( "disabled", true );
+                    break;
                 case 'pre_shared_key':
                     if ($("#mobile").val() == undefined) {
                         $(".auth_psk").show();
@@ -697,7 +709,8 @@ include("head.inc");
 ?>
                       </select>
                       <div class="hidden" for="help_for_authmethod">
-                        <?=gettext("Must match the setting chosen on the remote side."); ?>
+                        <?=gettext("Must match the setting chosen on the remote side."); ?><br />
+                        <?=sprintf(gettext("If you select EAP-RADIUS, you must define your RADIUS servers on the %sServers%s page."), '<a href="/system_authservers.php">', '</a>'); ?>
                       </div>
                     </td>
                   </tr>
