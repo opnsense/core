@@ -44,7 +44,7 @@ function if_ipsec_services()
 
     $services = array();
 
-    if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) {
+    if (!empty($config['ipsec']['enable']) || !empty($config['ipsec']['client']['enable'])) {
         $pconfig = array();
         $pconfig['name'] = 'strongswan';
         $pconfig['description'] = gettext('IPsec VPN');
@@ -68,17 +68,17 @@ function if_ipsec_interfaces()
 
     if (isset($config['ipsec']['phase1']) && isset($config['ipsec']['phase2'])) {
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
-            if (isset($ph1ent['disabled'])) {
+            if (!empty($ph1ent['disabled'])) {
                 continue;
             }
 
             foreach ($config['ipsec']['phase2'] as $ph2ent) {
-                if (isset($ph2ent['disabled']) || $ph1ent['ikeid'] != $ph2ent['ikeid']) {
+                if (!empty($ph2ent['disabled']) || $ph1ent['ikeid'] != $ph2ent['ikeid']) {
                     continue;
                 }
 
-                if ((isset($ph2ent['mobile']) && !isset($config['ipsec']['client']['enable'])) ||
-                    !isset($config['ipsec']['enable'])) {
+                if ((!empty($ph2ent['mobile']) && empty($config['ipsec']['client']['enable'])) ||
+                    empty($config['ipsec']['enable'])) {
                     continue;
                 }
 
