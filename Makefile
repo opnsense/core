@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2017 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -41,18 +41,11 @@ CORE_VERSION=	${CORE_COMMIT:C/-.*$//1}
 CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 .endif
 
-CORE_ABI?=	16.7
+CORE_ABI?=	17.1
 CORE_ARCH?=	${ARCH}
-CORE_PY?=	27
-
-.if ${CORE_ABI} == 16.7
-CORE_BIND?=	910
-CORE_PHP_SUHOSIN=php-suhosin
-CORE_PHP?=	56
-.else
 CORE_BIND?=	911
 CORE_PHP?=	70
-.endif
+CORE_PY?=	27
 
 .if "${CORE_RELEASE}" == yes
 CORE_NAME?=		opnsense
@@ -110,7 +103,6 @@ CORE_DEPENDS?=		apinger \
 			pecl-radius \
 			pftop \
 			phalcon \
-			${CORE_PHP_SUHOSIN} \
 			php${CORE_PHP}-ctype \
 			php${CORE_PHP}-curl \
 			php${CORE_PHP}-dom \

@@ -1,9 +1,7 @@
 # The netgraph(4) framework is loaded here
-# for backwards compat with the pre-16.7
-# kernel configuration that compiled all of
-# these modules into the kernel.  This list
-# needs further pruning and probing, it's
-# possible we do not need frame relay anymore.
+# for backwards compat for when the kernel
+# had these compiled in, not as modules. This
+# list needs further pruning and probing.
 netgraph_load="YES"
 ng_UI_load="YES"
 ng_async_load="YES"
