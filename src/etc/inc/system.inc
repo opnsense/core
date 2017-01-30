@@ -244,7 +244,7 @@ function get_locale_list()
     $locales['it_IT'] = gettext('Italian');
     $locales['ja_JP'] = gettext('Japanese');
     $locales['pt_BR'] = gettext('Portuguese (Brazil)');
-    $locales['pt_PR'] = gettext('Portuguese (Portugal)');
+    $locales['pt_PT'] = gettext('Portuguese (Portugal)');
     $locales['ru_RU'] = gettext('Russian');
 
     return $locales;
