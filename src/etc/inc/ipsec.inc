@@ -700,7 +700,44 @@ EOD;
             }
             $strongswan .= "\t\t}\n";
 
-            if ($a_client['user_source'] != "none") {
+            $disable_xauth = false;
+            foreach ($a_phase1 as $ph1ent) {
+                if (!isset($ph1ent['disabled']) && isset($ph1ent['mobile'])) {
+                    if ($ph1ent['authentication_method'] == "eap-radius") {
+                        $disable_xauth = true; // disable Xauth when radius is used.
+                        $strongswan .= "\t\teap-radius {\n";
+                        $radius_servers = "";
+                        $radius_server_num = 1;
+                        $radius_accounting_enabled = false;
+                        foreach (auth_get_authserver_list() as $auth_server) {
+                            if (in_array($auth_server['name'], explode(',', $ph1ent['authservers']))) {
+                                $radius_servers .= "\t\t\t\tserver" . $radius_server_num . " {\n";
+                                $radius_servers .= "\t\t\t\t\taddress = " . $auth_server['host'] . "\n";
+                                $radius_servers .= "\t\t\t\t\tsecret = " . $auth_server['radius_secret'] . "\n";
+                                $radius_servers .= "\t\t\t\t\tauth_port = " . $auth_server['radius_auth_port'] . "\n";
+
+                                if (!empty($auth_server['radius_acct_port'])) {
+                                    $radius_servers .= "\t\t\t\t\tacct_port = " . $auth_server['radius_acct_port'] . "\n";
+                                }
+                                $radius_servers .= "\t\t\t\t}\n";
+                                if (!empty($auth_server['radius_acct_port'])) {
+                                    $radius_accounting_enabled = true;
+                                }
+                                $radius_server_num += 1;
+                            }
+                        }
+                        if ($radius_accounting_enabled) {
+                            $strongswan .= "\t\t\taccounting = yes\n";
+                        }
+                        $strongswan .= "\t\t\tservers {\n";
+                        $strongswan .= $radius_servers;
+                        $strongswan .= "\t\t\t}\n";
+                        $strongswan .= "\t\t}\n";
+                        break; // there can only be one mobile phase1, exit loop
+                    }
+                }
+            }
+            if ($a_client['user_source'] != "none" && $disable_xauth == false) {
                 $strongswan .= "\t\txauth-generic {\n";
                 $strongswan .= "\t\t\tscript = /usr/local/etc/inc/ipsec.auth-user.php\n";
                 $strongswan .= "\t\t\tauthcfg = ";
@@ -717,37 +754,6 @@ EOD;
                     $firstsed = 1;
                 }
                 $strongswan .= "\n";
-                $strongswan .= "\t\t}\n";
-            }
-
-            if ($ph1ent['authentication_method'] == "eap-radius") {
-                $strongswan .= "\t\teap-radius {\n";
-                $radius_servers = "";
-                $radius_server_num = 1;
-                $radius_accounting_enabled = false;
-                foreach (auth_get_authserver_list() as $auth_server) {
-                    if (in_array($auth_server['name'], explode(',', $ph1ent['authservers']))) {
-                        $radius_servers .= "\t\t\t\tserver" . $radius_server_num . " {\n";
-                        $radius_servers .= "\t\t\t\t\taddress = " . $auth_server['host'] . "\n";
-                        $radius_servers .= "\t\t\t\t\tsecret = " . $auth_server['radius_secret'] . "\n";
-                        $radius_servers .= "\t\t\t\t\tauth_port = " . $auth_server['radius_auth_port'] . "\n";
-
-                        if (!empty($auth_server['radius_acct_port'])) {
-                            $radius_servers .= "\t\t\t\t\tacct_port = " . $auth_server['radius_acct_port'] . "\n";
-                        }
-                        $radius_servers .= "\t\t\t\t}\n";
-                        if (!empty($auth_server['radius_acct_port'])) {
-                            $radius_accounting_enabled = true;
-                        }
-                        $radius_server_num += 1;
-                    }
-                }
-                if ($radius_accounting_enabled) {
-                    $strongswan .= "\t\t\taccounting = yes\n";
-                }
-                $strongswan .= "\t\t\tservers {\n";
-                $strongswan .= $radius_servers;
-                $strongswan .= "\t\t\t}\n";
                 $strongswan .= "\t\t}\n";
             }
         }
