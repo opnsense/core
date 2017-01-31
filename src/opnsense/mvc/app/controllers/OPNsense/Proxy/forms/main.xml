@@ -230,6 +230,9 @@
                   which allows to log HTTPS connections information, such as requested URL and/or
                   make the proxy act as a man in the middle between the internet and your clients.<br/>
                   Be aware of the security implications before enabling this option.
+                  <br/><br/>
+                  If you plan to use transparent HTTPS mode, you need nat rules to reflect your traffic.<br/>
+                  <a href="/firewall_nat_edit.php?template=transparent_proxy&https=1">Add a new firewall rule </a>
                   ]]></help>
             </field>
             <field>
