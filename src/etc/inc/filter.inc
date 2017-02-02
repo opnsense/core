@@ -2297,11 +2297,15 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     } else {
         $aline['type'] = $type . " ";
     }
-    if (isset($rule['floating']) && $rule['floating'] == "yes" && $rule['direction'] != "any") {
-        $aline['direction'] = " " . $rule['direction'] . " ";
+    if (isset($rule['floating']) && $rule['floating'] == 'yes') {
+        if ($rule['direction'] != 'any') {
+            $aline['direction'] = " {$rule['direction']} ";
+        } elseif ($$rule['direction'] == 'any') {
+            $aline['direction'] = '';
+        }
     } else {
-        /* ensure the direction is in */
-        $aline['direction'] = " in ";
+        /* ensure the direction is 'in' */
+        $aline['direction'] = ' in ';
     }
     if (isset($rule['log'])) {
         $aline['log'] = "log ";
