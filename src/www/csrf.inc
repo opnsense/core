@@ -28,8 +28,6 @@
 
 class LegacyCSRF
 {
-    private $securityToken = null;
-    private $securityTokenKey = null;
     private $di = null;
     private $security = null;
     private $session = null;
@@ -58,16 +56,13 @@ class LegacyCSRF
     {
         $result = false; // default, not valid
         $this->Session();
-        // do not destroy token after successfull validation, some pages use ajax type requests
-        $this->securityTokenKey = $_SESSION['$PHALCON/CSRF/KEY$'];
-        $this->securityToken = !empty($_POST[$this->securityTokenKey]) ? $_POST[$this->securityTokenKey] : "";
-        if (empty($this->securityToken)) {
+        $securityTokenKey = $_SESSION['$PHALCON/CSRF/KEY$'];
+        if (empty($_POST[$securityTokenKey])) {
             if (!empty($_SERVER['HTTP_X_CSRFTOKEN'])) {
-                $this->securityToken = $_SERVER['HTTP_X_CSRFTOKEN'];
-                $result = $this->security->checkToken(null, $this->securityToken, false);
+                $result = $this->security->checkToken(null, $_SERVER['HTTP_X_CSRFTOKEN'], false);
             }
         } else {
-            $result = $this->security->checkToken($this->securityTokenKey, $this->securityToken, false);
+            $result = $this->security->checkToken($securityTokenKey, $_POST[$securityTokenKey], false);
         }
         // close session after validation
         session_write_close();
@@ -77,12 +72,14 @@ class LegacyCSRF
     private function newToken()
     {
         $this->Session();
-        // only request new token when checkToken() hasn't saved one
-        if ($this->securityToken == null) {
-            $this->securityToken = $this->security->getToken();
-            $this->securityTokenKey = $this->security->getTokenKey();
+        // only request new token when session has none
+        $securityTokenKey = $_SESSION['$PHALCON/CSRF/KEY$'];
+        $securityToken = $_SESSION['$PHALCON/CSRF$'];
+        if (empty($securityToken) || empty($securityTokenKey)) {
+            $securityToken = $this->security->getToken();
+            $securityTokenKey = $this->security->getTokenKey();
         }
-        return array('token'=>$this->securityToken, 'key' => $this->securityTokenKey);
+        return array('token'=>$securityToken, 'key' => $securityTokenKey);
     }
 
     public function csrfRewriteHandler($buffer)

@@ -177,7 +177,7 @@ class ControllerBase extends ControllerRoot
             }
 
             // check for valid csrf on post requests
-            if ($this->request->isPost() && !$this->security->checkToken()) {
+            if ($this->request->isPost() && !$this->security->checkToken(null, null, false)) {
                 // post without csrf, exit.
                 $this->response->setStatusCode(403, "Forbidden");
                 return false;
@@ -195,10 +195,9 @@ class ControllerBase extends ControllerRoot
         }
 
         // include csrf for volt view rendering.
-        $this->view->setVars([
-            'csrf_tokenKey' => $this->security->getTokenKey(),
-            'csrf_token' => $this->security->getToken()
-        ]);
+        $csrf_token = $this->session->get('$PHALCON/CSRF$');
+        $csrf_tokenKey = $this->session->get('$PHALCON/CSRF/KEY$');
+        $this->view->setVars(['csrf_tokenKey' => $csrf_tokenKey,'csrf_token' => $csrf_token]);
 
         // link menu system to view, append /ui in uri because of rewrite
         $menu = new Menu\MenuSystem();
