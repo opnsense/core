@@ -1171,7 +1171,7 @@ include("head.inc");
                 } else {
                     params['openvpnmanager'] = 0;
                 }
-                params['advancedoptions'] = escape($("#advancedoptions").val());
+                params['advancedoptions'] = $("#advancedoptions").val();
                 params['verifyservercn'] = $("#verifyservercn").val();
                 if ($(this).data('type') == 'cert') {
                     params['crtid'] = $(this).data('id');
