@@ -447,18 +447,18 @@ include("head.inc");
                       elseif ($natent['target'] == "other-subnet")
                         $nat_address = $natent['targetip'] . '/' . $natent['targetip_subnet'];
                       else
-                        $nat_address = $natent['target'];
+                        $nat_address = htmlspecialchars($natent['target']);
 ?>
 <?php                 if (isset($natent['target']) && is_alias($natent['target'])): ?>
                         <span title="<?=htmlspecialchars(get_alias_description($natent['target']));?>" data-toggle="tooltip">
-                          <?=htmlspecialchars($nat_address);?>&nbsp;
+                          <?=$nat_address;?>&nbsp;
                         </span>
                         <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['target']);?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>
 <?php                 else: ?>
-                        <?=htmlspecialchars($nat_address);?>
+                        <?=$nat_address;?>
 <?php                 endif; ?>
                     </td>
                     <td class="hidden-xs hidden-sm">
@@ -611,7 +611,7 @@ include("head.inc");
                     } elseif ($natent['target'] == "other-subnet") {
                         $nat_address = $natent['targetip'] . '/' . $natent['targetip_subnet'];
                     } else  {
-                        $nat_address = $natent['target'];
+                        $nat_address = htmlspecialchars($natent['target']);
                     }
 ?>
                     <?=$nat_address;?>
