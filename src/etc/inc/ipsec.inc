@@ -51,6 +51,9 @@ $ipsec_loglevels = array(
 
 $p1_ealgos = array(
     'aes' => array( 'name' => 'AES', 'keysel' => array( 'lo' => 128, 'hi' => 256, 'step' => 64 ), 'iketype' => null ),
+    'aes128gcm16' => array( 'name' => '128 bit AES-GCM with 128 bit ICV', 'iketype' => null ),
+    'aes192gcm16' => array( 'name' => '192 bit AES-GCM with 128 bit ICV', 'iketype' => null ),
+    'aes256gcm16' => array( 'name' => '256 bit AES-GCM with 128 bit ICV', 'iketype' => null ),
     'camellia' => array( 'name' => 'Camellia', 'keysel' => array( 'lo' => 128, 'hi' => 256, 'step' => 64 ), 'iketype' => 'ikev2' ),
     'blowfish' => array( 'name' => 'Blowfish', 'keysel' => array( 'lo' => 128, 'hi' => 256, 'step' => 64 ), 'iketype' => null ),
     '3des' => array( 'name' => '3DES', 'iketype' => null ),
@@ -71,6 +74,9 @@ $p1_authentication_methods = array(
 
 $p2_ealgos = array(
     'aes' => array( 'name' => 'AES', 'keysel' => array( 'lo' => 128, 'hi' => 256, 'step' => 64 ) ),
+    'aes128gcm16' => array( 'name' => 'aes128gcm16'),
+    'aes192gcm16' => array( 'name' => 'aes192gcm16'),
+    'aes256gcm16' => array( 'name' => 'aes256gcm16'),
     'blowfish' => array( 'name' => 'Blowfish', 'keysel' => array( 'lo' => 128, 'hi' => 256, 'step' => 64 ) ),
     '3des' => array( 'name' => '3DES' ),
     'cast128' => array( 'name' => 'CAST128' ),
