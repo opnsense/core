@@ -105,6 +105,8 @@ abstract class BaseModel
     /**
      * fetch reflection class (cached by field type)
      * @param $classname classname to construct
+     * @return array
+     * @throws ModelException
      */
     private function getNewField($classname)
     {
