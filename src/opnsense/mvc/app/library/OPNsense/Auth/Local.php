@@ -35,7 +35,7 @@ use OPNsense\Core\Config;
  * Class Local user database connector (using legacy xml structure).
  * @package OPNsense\Auth
  */
-class Local implements IAuthConnector
+class Local extends Base implements IAuthConnector
 {
     /**
      * type name in configuration
@@ -62,26 +62,6 @@ class Local implements IAuthConnector
     public function getLastAuthProperties()
     {
         return array();
-    }
-
-    /**
-     * find user settings in local database
-     * @param string $username username to find
-     * @return SimpleXMLElement|null user settings (xml section)
-     */
-    protected function getUser($username)
-    {
-        // search local user in database
-        $configObj = Config::getInstance()->object();
-        $userObject = null;
-        foreach ($configObj->system->children() as $key => $value) {
-            if ($key == 'user' && !empty($value->name) && (string)$value->name == $username) {
-                // user found, stop search
-                $userObject = $value;
-                break;
-            }
-        }
-        return $userObject;
     }
 
     /**

@@ -27,6 +27,12 @@
         <help><![CDATA[Select authentication methods to use, leave empty for no authentication needed.]]></help>
     </field>
     <field>
+        <id>zone.authEnforceGroup</id>
+        <label>Enforce local group</label>
+        <type>dropdown</type>
+        <help><![CDATA[Restrict access to users in the selected (local)group.]]></help>
+    </field>
+    <field>
         <id>zone.idletimeout</id>
         <label>Idle timeout (minutes)</label>
         <type>text</type>

@@ -148,6 +148,11 @@ class AccessController extends ApiControllerBase
                                 $this->request->getPost("password", "string")
                             );
 
+                            // check group when group enforcement is set
+                            if ($isAuthenticated && (string)$cpZone->authEnforceGroup != "") {
+                                $isAuthenticated = $authServer->groupAllowed($userName, $cpZone->authEnforceGroup);
+                            }
+
                             if ($isAuthenticated) {
                                 // stop trying, when authenticated
                                 break;

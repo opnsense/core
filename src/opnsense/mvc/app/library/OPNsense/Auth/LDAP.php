@@ -33,7 +33,7 @@ namespace OPNsense\Auth;
  * Class LDAP connector
  * @package OPNsense\Auth
  */
-class LDAP implements IAuthConnector
+class LDAP extends Base implements IAuthConnector
 {
     /**
      * @var int ldap version to use
