@@ -181,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-    if(($pconfig['ipprotocol'] == "inet46") && !empty($pconfig['gateway'])) {
+    if ($pconfig['ipprotocol'] == "inet46" && !empty($pconfig['gateway'])) {
         $input_errors[] = gettext("You can not assign a gateway to a rule that applies to IPv4 and IPv6");
     }
     if (!empty($pconfig['gateway']) && isset($config['gateways']['gateway_group'])) {
@@ -199,17 +199,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
     if (!empty($pconfig['gateway']) && is_ipaddr(lookup_gateway_ip_by_name($pconfig['gateway']))) {
-        if( $pconfig['ipprotocol'] == "inet6" && !is_ipaddrv6(lookup_gateway_ip_by_name($pconfig['gateway']))) {
+        if ($pconfig['ipprotocol'] == "inet6" && !is_ipaddrv6(lookup_gateway_ip_by_name($pconfig['gateway']))) {
             $input_errors[] = gettext("You can not assign the IPv4 Gateway to a IPv6 Filter rule");
         }
-        if( $pconfig['ipprotocol'] == "inet" && !is_ipaddrv4(lookup_gateway_ip_by_name($pconfig['gateway']))) {
+        if ($pconfig['ipprotocol'] == "inet" && !is_ipaddrv4(lookup_gateway_ip_by_name($pconfig['gateway']))) {
             $input_errors[] = gettext("You can not assign the IPv6 Gateway to a IPv4 Filter rule");
         }
     }
     if ($pconfig['protocol'] == "icmp" && !empty($pconfig['icmptype']) && $pconfig['ipprotocol'] == "inet46") {
         $input_errors[] =  gettext("You can not assign a ICMP type to a rule that applies to IPv4 and IPv6");
     }
-    if($pconfig['statetype'] == "synproxy state" ) {
+    if ($pconfig['statetype'] == "synproxy state" ) {
         if ($pconfig['protocol'] != "tcp") {
             $input_errors[] = sprintf(gettext("%s is only valid with protocol tcp."),$pconfig['statetype']);
         }
@@ -217,13 +217,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = sprintf(gettext("%s is only valid if the gateway is set to 'default'."),$pconfig['statetype']);
         }
     }
-    if ( !empty($pconfig['srcbeginport']) && !is_portoralias($pconfig['srcbeginport']) && $pconfig['srcbeginport'] != 'any')
+    if (!empty($pconfig['srcbeginport']) && !is_portoralias($pconfig['srcbeginport']) && $pconfig['srcbeginport'] != 'any')
         $input_errors[] = sprintf(gettext("%s is not a valid start source port. It must be a port alias or integer between 1 and 65535."),$pconfig['srcbeginport']);
-    if ( !empty($pconfig['srcendport']) && !is_portoralias($pconfig['srcendport']) && $pconfig['srcendport'] != 'any')
+    if (!empty($pconfig['srcendport']) && !is_portoralias($pconfig['srcendport']) && $pconfig['srcendport'] != 'any')
         $input_errors[] = sprintf(gettext("%s is not a valid end source port. It must be a port alias or integer between 1 and 65535."),$pconfig['srcendport']);
-    if ( !empty($pconfig['dstbeginport']) && !is_portoralias($pconfig['dstbeginport']) && $pconfig['dstbeginport'] != 'any')
+    if (!empty($pconfig['dstbeginport']) && !is_portoralias($pconfig['dstbeginport']) && $pconfig['dstbeginport'] != 'any')
         $input_errors[] = sprintf(gettext("%s is not a valid start destination port. It must be a port alias or integer between 1 and 65535."),$pconfig['dstbeginport']);
-    if ( !empty($pconfig['dstendport']) && !is_portoralias($pconfig['dstendport']) && $pconfig['dstendport'] != 'any')
+    if (!empty($pconfig['dstendport']) && !is_portoralias($pconfig['dstendport']) && $pconfig['dstendport'] != 'any')
         $input_errors[] = sprintf(gettext("%s is not a valid end destination port. It must be a port alias or integer between 1 and 65535."),$pconfig['dstendport']);
 
     if ( (is_alias($pconfig['srcbeginport']) || is_alias($pconfig['srcendport']))  && $pconfig['srcbeginport'] != $pconfig['srcendport']) {
@@ -248,13 +248,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("A valid destination bit count must be specified.");
         }
     }
-    if((is_ipaddr($pconfig['src']) && is_ipaddr($pconfig['dst']))) {
-      if(!validate_address_family($pconfig['src'], $pconfig['dst']))
-          $input_errors[] = sprintf(gettext("The Source IP address %s Address Family differs from the destination %s."), $pconfig['src'], $pconfig['dst']);
-      if((is_ipaddrv6($pconfig['src']) || is_ipaddrv6($pconfig['dst'])) && ($pconfig['ipprotocol'] == "inet"))
-          $input_errors[] = gettext("You can not use IPv6 addresses in IPv4 rules.");
-      if((is_ipaddrv4($pconfig['src']) || is_ipaddrv4($pconfig['dst'])) && ($pconfig['ipprotocol'] == "inet6"))
-          $input_errors[] = gettext("You can not use IPv4 addresses in IPv6 rules.");
+    if (is_ipaddr($pconfig['src']) && is_ipaddr($pconfig['dst']) && !validate_address_family($pconfig['src'], $pconfig['dst'])) {
+        $input_errors[] = sprintf(gettext("The Source IP address %s Address Family differs from the destination %s."), $pconfig['src'], $pconfig['dst']);
+    }
+    foreach (array('src', 'dst') as $fam) {
+        if (is_ipaddr($pconfig[$fam])) {
+            if (is_ipaddrv6($pconfig[$fam]) && $pconfig['ipprotocol'] == "inet") {
+                $input_errors[] = gettext("You can not use IPv6 addresses in IPv4 rules.");
+            } elseif (is_ipaddrv4($pconfig[$fam]) && $pconfig['ipprotocol'] == "inet6") {
+                $input_errors[] = gettext("You can not use IPv4 addresses in IPv6 rules.");
+            }
+        }
     }
 
     if (is_ipaddrv4($pconfig['src']) && $pconfig['srcmask'] > 32) {
@@ -264,7 +268,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("Invalid subnet mask on IPv4 destination");
     }
 
-    if((is_ipaddr($pconfig['src']) || is_ipaddr($pconfig['dst'])) && ($pconfig['ipprotocol'] == "inet46")) {
+    if ((is_ipaddr($pconfig['src']) || is_ipaddr($pconfig['dst'])) && ($pconfig['ipprotocol'] == "inet46")) {
         $input_errors[] = gettext("You can not use a IPv4 or IPv6 address in combined IPv4 + IPv6 rules.");
     }
     if (!empty($pconfig['os'])) {
@@ -540,21 +544,8 @@ include("head.inc");
           });
       });
 
-      // IPv4 address, fix dstmask
-      $("#dst_address").change(function(){
-        if ( $(this).val().indexOf('.') > -1 && $("#dstmask").val() > 32) {
-            $("#dstmask").val("32");
-            $('#dstmask').selectpicker('refresh');
-        }
-      });
-
-      // IPv4 address, fix srcmask
-      $("#src_address").change(function(){
-          if ( $(this).val().indexOf('.') > -1 && $("#srcmask").val() > 32) {
-              $("#srcmask").val("32");
-              $('#srcmask').selectpicker('refresh');
-          }
-      });
+      // IPv4/IPv6 select
+      hook_ipv4v6('ipv4v6net', 'network-id');
 
       // align dropdown source from/to port
       $("#srcbeginport").change(function(){
@@ -857,7 +848,7 @@ include("head.inc");
                                         <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  type="text" id="src_address" for="src" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
                                       </td>
                                       <td>
-                                        <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="srcmask" class="selectpicker" data-size="5" id="srcmask"  data-width="auto" for="src" >
+                                        <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="srcmask" data-network-id="src_address" class="selectpicker ipv4v6net" data-size="5" id="srcmask"  data-width="auto" for="src" >
                                         <?php for ($i = 128; $i > 0; $i--): ?>
                                           <option value="<?=$i;?>" <?= $i == $pconfig['srcmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                                         <?php endfor; ?>
@@ -986,7 +977,7 @@ include("head.inc");
                                       <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  type="text" id="dst_address" for="dst" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("Destination address");?>"/>
                                     </td>
                                     <td>
-                                      <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="dstmask" class="selectpicker" data-size="5" id="srcmask"  data-width="auto" for="dst" >
+                                      <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="dstmask" class="selectpicker ipv4v6net" data-network-id="dst_address" data-size="5" id="dstmask"  data-width="auto" for="dst" >
                                       <?php for ($i = 128; $i > 0; $i--): ?>
                                         <option value="<?=$i;?>" <?= $i == $pconfig['dstmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                                       <?php endfor; ?>
