@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
+ *    Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
  *    Copyright (c) 2015-2016 Deciso B.V.
  *    All rights reserved.
  *
@@ -519,25 +519,11 @@ class FirmwareController extends ApiControllerBase
                 /* figure out local and remote plugins */
                 $plugin = explode('-', $translated['name']);
                 if (count($plugin)) {
-                    $visible = 0;
-                    /* "os" is our common prefix, "devel" the development suffix */
-                    if ($plugin[0] == 'os') {
-                        if ($type = 'local') {
-                            $visible = 1;
-                        } elseif ($type = 'remote') {
-                            if (count($plugin) < 3 || end($plugin) != 'devel') {
-                                $visible = 1;
-                            } elseif ($devel) {
-                                $visible = 1;
-                            }
+                    if ($plugin[0] == 'os' || ($type == 'local' && $plugin[0] == 'ospriv') ||
+                        ($devel && $type == 'remote' && $plugin[0] == 'ospriv')) {
+                        if ($devel || (count($plugin) < 3 || end($plugin) != 'devel')) {
+                            $plugins[$translated['name']] = $translated;
                         }
-                    }
-                    /* "ospriv" is our historic development prefix */
-                    if ($plugin[0] == 'ospriv' && ($type == 'local' || ($devel && $type == 'remote'))) {
-                        $visible = 1;
-                    }
-                    if ($visible) {
-                        $plugins[$translated['name']] = $translated;
                     }
                 }
             }
