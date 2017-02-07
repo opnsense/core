@@ -31,6 +31,9 @@
                     <multiple>Y</multiple>
                     <default>Local Database</default>
                 </authservers>
+                <authEnforceGroup type="AuthGroupField">
+                    <Required>N</Required>
+                </authEnforceGroup>
                 <idletimeout type="IntegerField">
                     <Required>Y</Required>
                     <Default>0</Default>
