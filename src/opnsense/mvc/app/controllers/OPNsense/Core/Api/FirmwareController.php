@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
+ *    Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
  *    Copyright (c) 2015-2016 Deciso B.V.
  *    All rights reserved.
  *
@@ -521,7 +521,9 @@ class FirmwareController extends ApiControllerBase
                 if (count($plugin)) {
                     if ($plugin[0] == 'os' || ($type == 'local' && $plugin[0] == 'ospriv') ||
                         ($devel && $type == 'remote' && $plugin[0] == 'ospriv')) {
-                        $plugins[$translated['name']] = $translated;
+                        if ($devel || (count($plugin) < 3 || end($plugin) != 'devel')) {
+                            $plugins[$translated['name']] = $translated;
+                        }
                     }
                 }
             }
