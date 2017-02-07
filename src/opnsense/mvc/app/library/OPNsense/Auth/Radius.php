@@ -34,7 +34,7 @@ namespace OPNsense\Auth;
  * Class Radius connector
  * @package OPNsense\Auth
  */
-class Radius implements IAuthConnector
+class Radius extends Base implements IAuthConnector
 {
     /**
      * @var null radius hostname / ip

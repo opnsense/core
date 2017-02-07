@@ -35,7 +35,7 @@ use OPNsense\Core\Config;
  * Class API key/secret database connector (connect to legacy xml structure).
  * @package OPNsense\Auth
  */
-class API implements IAuthConnector
+class API extends Base implements IAuthConnector
 {
     /**
      * @var array internal list of authentication properties
