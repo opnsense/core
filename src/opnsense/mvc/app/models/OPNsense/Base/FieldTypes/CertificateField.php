@@ -99,8 +99,8 @@ class CertificateField extends BaseField
     public function eventPostLoading()
     {
         if (!isset(self::$internalOptionList[$this->certificateType])) {
-             self::$internalOptionList[$this->certificateType] = array();
-             $configObj = Config::getInstance()->object();
+            self::$internalOptionList[$this->certificateType] = array();
+            $configObj = Config::getInstance()->object();
             foreach ($configObj->{$this->certificateType} as $cert) {
                 self::$internalOptionList[$this->certificateType][(string)$cert->refid] = (string)$cert->descr;
             }
