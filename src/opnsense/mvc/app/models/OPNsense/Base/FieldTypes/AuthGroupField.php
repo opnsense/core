@@ -93,7 +93,7 @@ class AuthGroupField extends BaseField
         $result = array ();
         // if certificate is not required, add empty option
         if (!$this->internalIsRequired) {
-            $result[""] = array("value" => gettext("none"), "selected" => 0);
+            $result[""] = array("value" => gettext("none"), "selected" => ($this->internalValue == "") ? 1 : 0);
         }
 
         $groups = explode(',', $this->internalValue);
