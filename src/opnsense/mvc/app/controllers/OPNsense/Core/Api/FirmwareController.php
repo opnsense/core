@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
+ *    Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
  *    Copyright (c) 2015-2016 Deciso B.V.
  *    All rights reserved.
  *
