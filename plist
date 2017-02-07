@@ -367,6 +367,7 @@
 /usr/local/opnsense/mvc/app/library/Google/API/Drive.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/API.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/AuthenticationFactory.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Auth/Base.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/IAuthConnector.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/LDAP.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Local.php
@@ -391,6 +392,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/BaseConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/UniqueConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/ArrayField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/AuthGroupField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/AuthenticationServerField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/AutoNumberField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/BaseField.php
