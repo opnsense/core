@@ -76,6 +76,8 @@ function remove_duplicate($array, $field)
 
 $interfaces = legacy_config_get_interfaces(array('virtual' => false));
 $leasesfile = services_dhcpd_leasesfile();
+/* Check if WOL plugin is installed */
+$plugin_installed = count(plugins_scan('wol'));
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $awk = "/usr/bin/awk";
@@ -417,9 +419,13 @@ include("head.inc");?>
                   <td><?=$data['int'];?></td>
                   <td><?=$data['ip'];?></td>
                   <td>
+                      <? if ($plugin_installed) { ?>
                       <a href="services_wol.php?if=<?=$data['if'];?>&amp;mac=<?=$data['mac'];?>" title="<?=gettext("send Wake on LAN packet to this MAC address");?>">
                         <?=$data['mac'];?>
                       </a>
+                      <? } else { ?>
+                        <?=$data['mac'];?>
+                      <? } ?>
                       <br />
                       <small><i><?=!empty($mac_man[$mac_hi]) ? $mac_man[$mac_hi] : "";?></i></small>
                   </td>
