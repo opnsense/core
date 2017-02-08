@@ -2198,3 +2198,46 @@ function service_control_restart($name, $extras)
 
     return sprintf(gettext("%s has been restarted."), htmlspecialchars($name));
 }
+
+function is_plugin_installed($name)
+{
+    // NOTE: Based on infoAction() from Core/Api/FirmwareController.php
+
+    $backend = new \OPNsense\Core\Backend();
+    $keys = array('name', 'version', 'comment', 'flatsize', 'locked', 'license');
+    $plugins = array();
+
+    // Only check local package data for performance reasons
+    $current = $backend->configdRun("firmware local");
+    $current = explode("\n", trim($current));
+
+    foreach ($current as $line) {
+        /* package infos are flat lists with 3 pipes as delimiter */
+        $expanded = explode('|||', $line);
+        $translated = array();
+        $index = 0;
+        if (count($expanded) != count($keys)) {
+            continue;
+        }
+        foreach ($keys as $key) {
+            $translated[$key] = $expanded[$index++];
+        }
+
+        /* mark local packages as "installed" */
+        $translated['installed'] = "1";
+
+        /* figure out local and remote plugins */
+        $plugin = explode('-', $translated['name']);
+        if (count($plugin)) {
+            if ($plugin[0] == 'os' || $plugin[0] == 'ospriv') {
+                $plugins[$translated['name']] = $translated;
+            }
+        }
+    }
+
+    if (isset($plugins[$name]) and $plugins[$name]['installed'] == "1") {
+        return true; // is installed
+    } else {
+        return false; // is not installed
+    }
+}
