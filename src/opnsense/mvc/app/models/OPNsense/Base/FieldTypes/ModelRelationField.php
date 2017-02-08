@@ -85,6 +85,10 @@ class ModelRelationField extends BaseField
                 // only handle valid model sources
                 if (isset($modelData['source']) && isset($modelData['items']) && isset($modelData['display'])) {
                     $className = str_replace(".", "\\", $modelData['source']);
+                    // handle optional/missing classes, i.e. from plugins
+                    if (!class_exists($className)) {
+                        continue;
+                    }
                     $modelObj = new $className;
                     foreach ($modelObj->getNodeByReference($modelData['items'])->__items as $node) {
                         $displayKey = $modelData['display'];
