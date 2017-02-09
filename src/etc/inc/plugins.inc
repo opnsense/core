@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2017 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * scan plugins for legacy system
  * @return array
  */
-function plugins_scan()
+function plugins_scan($search = '')
 {
     $path = '/usr/local/etc/inc/plugins.inc.d/';
     $ext = '.inc';
@@ -47,6 +47,9 @@ function plugins_scan()
     foreach ($plugins as $plugin) {
         $name = preg_replace('/' . preg_quote($path, '/') . '/', '', $plugin);
         $name = preg_replace('/' . preg_quote($ext, '/') . '/', '', $name);
+        if (!empty($search) && $search !== $name) {
+            continue;
+        }
         $ret[$name] = $plugin;
     }
 
