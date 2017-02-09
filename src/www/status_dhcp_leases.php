@@ -419,13 +419,16 @@ include("head.inc");?>
                   <td><?=$data['int'];?></td>
                   <td><?=$data['ip'];?></td>
                   <td>
-                      <? if ($plugin_installed) { ?>
+<?php
+                      if ($plugin_installed): ?>
                       <a href="services_wol.php?if=<?=$data['if'];?>&amp;mac=<?=$data['mac'];?>" title="<?=gettext("send Wake on LAN packet to this MAC address");?>">
                         <?=$data['mac'];?>
                       </a>
-                      <? } else { ?>
+<?php
+                      else: ?>
                         <?=$data['mac'];?>
-                      <? } ?>
+<?php
+                      endif; ?>
                       <br />
                       <small><i><?=!empty($mac_man[$mac_hi]) ? $mac_man[$mac_hi] : "";?></i></small>
                   </td>
@@ -443,9 +446,13 @@ include("head.inc");?>
                       </a>
 <?php
                     endif;?>
+<?php
+                    if ($plugin_installed): ?>
                     <a class="btn btn-default btn-xs" href="services_wol_edit.php?if=<?=$data['if'];?>&amp;mac=<?=$data['mac'];?>&amp;descr=<?=$data['hostname'];?>">
                       <span class="glyphicon glyphicon-flash" data-toggle="tooltip"  title="<?=gettext("add a Wake on LAN mapping for this MAC address");?>" alt="add"></span>
                     </a>
+<?php
+                    endif;?>
 <?php
                     if (($data['type'] == "dynamic") && ($data['online'] != "online")):?>
 
