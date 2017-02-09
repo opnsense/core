@@ -34,7 +34,7 @@ function legacy_interface_listget($flag = '')
     $ifs = null;
 
     exec($cmd_wlan . ' 2>&1', $out_wlan, $ret_wlan);
-    if (!$ret_wlan && isset($out_wlan[0])) {
+    if (!$ret_wlan && !empty($out_wlan[0])) {
         $ifs_wlan = explode(' ', $out_wlan[0]);
     }
 
