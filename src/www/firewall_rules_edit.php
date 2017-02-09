@@ -49,7 +49,7 @@ if ($ostypes == null) {
 function FormSetAdvancedOptions(&$item) {
     foreach (array("max", "max-src-nodes", "max-src-conn", "max-src-states","nopfsync", "statetimeout"
                   ,"max-src-conn-rate","max-src-conn-rates", "tag", "tagged", "allowopts", "disablereplyto","tcpflags1"
-                  ,"tcpflags2") as $fieldname) {
+                  ,"tcpflags2", 'priority', 'priority-match') as $fieldname) {
 
         if (!empty($item[$fieldname])) {
             return true;
@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                           ,'descr','tcpflags_any','tcpflags1','tcpflags2','tag','tagged','quick','allowopts'
                           ,'disablereplyto','max','max-src-nodes','max-src-conn','max-src-states','statetype'
                           ,'statetimeout','nopfsync','nosync','max-src-conn-rate','max-src-conn-rates','gateway','sched'
-                          ,'associated-rule-id','floating', 'category'
+                          ,'associated-rule-id','floating', 'category', 'priority', 'priority-match'
                         );
 
     $pconfig = array();
@@ -349,13 +349,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("If you specify TCP flags that should be set you should specify out of which flags as well.");
 
 
+    // must use value + 1 in comparison due to not being able to store "0" in rule config
+    if (!empty($pconfig['priority']) && ($pconfig['priority'] < 1 || $pconfig['priority'] > 8))
+        $input_errors[] = gettext('Priority must be between 0 and 7.');
+
+    if (!empty($pconfig['priority-match']) && ($pconfig['priority-match'] < 1 || $pconfig['priority-match'] > 8))
+        $input_errors[] = gettext('Priority must be between 0 and 7.');
+
     if (count($input_errors)  == 0) {
         $filterent = array();
         // 1-on-1 copy of form values
         $copy_fields = array('type', 'interface', 'ipprotocol', 'tag', 'tagged', 'max', 'max-src-nodes'
                             , 'max-src-conn', 'max-src-states', 'statetimeout', 'statetype', 'os', 'descr', 'gateway'
                             , 'sched', 'associated-rule-id', 'direction', 'quick'
-                            , 'max-src-conn-rate', 'max-src-conn-rates', 'category') ;
+                            , 'max-src-conn-rate', 'max-src-conn-rates', 'category', 'priority', 'priority-match') ;
 
         foreach ($copy_fields as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
@@ -1199,6 +1206,50 @@ include("head.inc");
                         <input type="checkbox" value="yes" name="disablereplyto"<?= !empty($pconfig['disablereplyto']) ? " checked=\"checked\"" :""; ?> />
                         <div class="hidden" for="help_for_disable_replyto">
                           <?=gettext("This will disable auto generated reply-to for this rule.");?>
+                        </div>
+                      </td>
+                  </tr>
+<?
+$priorities = [
+  gettext('Background'),
+  gettext('Best Effort'),
+  gettext('Excellent Effort'),
+  gettext('Critical Applications'),
+  gettext('Video'),
+  gettext('Voice'),
+  gettext('Internetwork Control'),
+  gettext('Network Control'),
+];
+?>
+                  <tr class="opt_advanced hidden">
+                      <td><a id="help_for_priority" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Set priority"); ?></td>
+                      <td>
+                        <select name="priority">
+                            <option value="0"></option>
+<?  foreach ($priorities as $prio => $priority) {
+    $prio_value = $prio + 1;
+?>
+                            <option value="<?=$prio_value;?>"<?=(!empty($pconfig['priority']) && $pconfig['priority'] == $prio_value ? ' selected="selected"' : '');?>><?=$prio.' - '.htmlspecialchars($priority);?></option>
+<? } ?>
+                        </select>
+                        <div class="hidden" for="help_for_priority">
+                            <?= sprintf(gettext("Set the priority (Class of Service) of packets matching this rule."),'<b>','</b>') ?>
+                        </div>
+                    </td>
+                  </tr>
+                  <tr class="opt_advanced hidden">
+                      <td><a id="help_for_priority_match" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Match priority"); ?></td>
+                      <td>
+                        <select name="priority-match">
+                          <option value="0"></option>
+<?  foreach ($priorities as $prio => $priority) {
+    $prio_value = $prio + 1;
+?>
+                          <option value="<?=$prio_value;?>"<?=(!empty($pconfig['priority-match']) && $pconfig['priority-match'] == $prio_value ? ' selected="selected"' : '');?>><?=$prio.' - '.htmlspecialchars($priority);?></option>
+<? } ?>
+                        </select>
+                        <div class="hidden" for="help_for_priority_match">
+                          <?= sprintf(gettext("match on the priority (Class of Service) of packets ."),'<b>','</b>') ?>
                         </div>
                       </td>
                   </tr>

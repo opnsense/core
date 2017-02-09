@@ -2231,7 +2231,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     $int = "";
     $aline = array();
     // initialize array with empty tags
-    foreach (array('schedlabel','divert','icmp-type','icmp6-type','tag','tagged','route','os','reply','prot','log') as $tag) {
+    foreach (array('schedlabel','divert','icmp-type','icmp6-type','tag','tagged','route','os','reply','prot','log', 'priority', 'priority-match') as $tag) {
         $aline[$tag] = "";
     }
 
@@ -2388,6 +2388,16 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     if (isset($rule['protocol']) && $rule['protocol'] == "icmp" && $rule['icmptype'] && $rule['ipprotocol'] == "inet6") {
         $aline['icmp6-type'] = "icmp6-type {$rule['icmptype']} ";
     }
+
+    if (!empty($rule['priority'])) {
+    	// need to use a hack for priority values since rule apparantly cannot store "0"
+		$aline['priority'] = ' set prio '.($rule['priority'] - 1).' ';
+	}
+
+	if (!empty($rule['priority-match'])) {
+		$aline['priority-match'] = ' prio '.($rule['priority-match'] - 1).' ';
+	}
+
     if (!empty($rule['tag'])) {
         $aline['tag'] = " tag " .$rule['tag']. " ";
     }
@@ -2539,7 +2549,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     $line .= $aline['type'] . $aline['direction'] . $aline['log'] . $aline['quick'] . $aline['interface'] .
       $aline['reply'] . $aline['route'] . $aline['ipprotocol'] . $aline['prot'] . $aline['src'] . $aline['os'] . $aline['dst'] .
       $aline['divert'] . $aline['icmp-type'] . $aline['icmp6-type'] . $aline['tag'] . $aline['tagged'] .
-      $aline['allowopts'] . $aline['flags'] . $aline['schedlabel'];
+      $aline['priority'] . $aline['priority-match'] . $aline['allowopts'] . $aline['flags'] . $aline['schedlabel'];
 
     unset($aline);
 
