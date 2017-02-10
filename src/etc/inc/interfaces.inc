@@ -213,7 +213,7 @@ function interface_vlan_configure(&$vlan)
         mwexecf('/usr/sbin/ngctl name %s: %s', array($tmpvlanif, $vlanif));
     }
 
-    legacy_vlan_tag($vlanif, $if, $vlan['tag']);
+    legacy_vlan_tag($vlanif, $if, $vlan['tag'], $vlan['pcp']);
 
     interfaces_bring_up($vlanif);
     interfaces_bring_up($if);
