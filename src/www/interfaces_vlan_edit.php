@@ -207,7 +207,7 @@ include("head.inc");
                     </td>
                   </tr>
 <?
-$priorities = [
+$priorities = array(
     1   => gettext('1 - Background'),
     0   => gettext('0 - Best Effort (default)'),
     2   => gettext('2 - Excellent Effort'),
@@ -216,7 +216,7 @@ $priorities = [
     5   => gettext('5 - Voice'),
     6   => gettext('6 - Internetwork Control'),
     7   => gettext('7 - Network Control'),
-];
+);
 ?>
                   <tr>
                     <td><a id="help_for_pcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN priority");?></td>
