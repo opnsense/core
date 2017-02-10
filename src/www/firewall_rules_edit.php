@@ -49,7 +49,7 @@ if ($ostypes == null) {
 function FormSetAdvancedOptions(&$item) {
     foreach (array("max", "max-src-nodes", "max-src-conn", "max-src-states","nopfsync", "statetimeout"
                   ,"max-src-conn-rate","max-src-conn-rates", "tag", "tagged", "allowopts", "disablereplyto","tcpflags1"
-                  ,"tcpflags2", 'priority', 'priority-match') as $fieldname) {
+                  ,"tcpflags2", 'set-prio', 'set-prio-alt', 'prio') as $fieldname) {
 
         if (!empty($item[$fieldname])) {
             return true;
@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                           ,'descr','tcpflags_any','tcpflags1','tcpflags2','tag','tagged','quick','allowopts'
                           ,'disablereplyto','max','max-src-nodes','max-src-conn','max-src-states','statetype'
                           ,'statetimeout','nopfsync','nosync','max-src-conn-rate','max-src-conn-rates','gateway','sched'
-                          ,'associated-rule-id','floating', 'category', 'priority', 'priority-match'
+                          ,'associated-rule-id','floating', 'category', 'set-prio', 'set-prio-alt', 'prio'
                         );
 
     $pconfig = array();
@@ -349,12 +349,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("If you specify TCP flags that should be set you should specify out of which flags as well.");
 
 
-    // must use value + 1 in comparison due to not being able to store "0" in rule config
-    if (!empty($pconfig['priority']) && ($pconfig['priority'] < 1 || $pconfig['priority'] > 8))
-        $input_errors[] = gettext('Priority must be between 0 and 7.');
+    if (!empty($pconfig['set-prio']) && (!is_numericint($pconfig['set-prio']) || $pconfig['set-prio'] < 0 || $pconfig['set-prio'] > 7)) {
+        $input_errors[] = gettext('Set priority must be an integer between 0 and 7.');
 
-    if (!empty($pconfig['priority-match']) && ($pconfig['priority-match'] < 1 || $pconfig['priority-match'] > 8))
-        $input_errors[] = gettext('Priority must be between 0 and 7.');
+        if (!empty($pconfig['set-prio-alt']) && (!is_numericint($pconfig['set-prio-alt']) || $pconfig['set-prio-alt'] < 0 || $pconfig['set-prio-alt'] > 7)) {
+            $input_errors[] = gettext('Set alternate priority must be an integer between 0 and 7.');
+        }
+    }
+
+    if (!empty($pconfig['prio']) && ($pconfig['prio'] < 0 || $pconfig['prio'] > 7)) {
+        $input_errors[] = gettext('Priority match must be an integer between 0 and 7.');
+    }
 
     if (count($input_errors)  == 0) {
         $filterent = array();
@@ -362,7 +367,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $copy_fields = array('type', 'interface', 'ipprotocol', 'tag', 'tagged', 'max', 'max-src-nodes'
                             , 'max-src-conn', 'max-src-states', 'statetimeout', 'statetype', 'os', 'descr', 'gateway'
                             , 'sched', 'associated-rule-id', 'direction', 'quick'
-                            , 'max-src-conn-rate', 'max-src-conn-rates', 'category', 'priority', 'priority-match') ;
+                            , 'max-src-conn-rate', 'max-src-conn-rates', 'category') ;
 
         foreach ($copy_fields as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
@@ -418,6 +423,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['log'])) {
             $filterent['log'] = true;
         }
+
+        if (isset($pconfig['set-prio']) && $pconfig['set-prio'] !== '') {
+            $filterent['set-prio'] = (int)$pconfig['set-prio'];
+
+            if (isset($pconfig['set-prio-alt']) && $pconfig['set-prio-alt'] !== '') {
+                $filterent['set-prio-alt'] = (int)$pconfig['set-prio-alt'];
+			}
+        }
+
+        if (isset($pconfig['prio']) && $pconfig['prio'] !== '') {
+            $filterent['prio'] = (int)$pconfig['prio'];
+        }
+
 
         if ($pconfig['protocol'] != "any") {
             $filterent['protocol'] = $pconfig['protocol'];
@@ -1210,46 +1228,58 @@ include("head.inc");
                       </td>
                   </tr>
 <?
-$priorities = [
-  gettext('Background'),
-  gettext('Best Effort'),
-  gettext('Excellent Effort'),
-  gettext('Critical Applications'),
-  gettext('Video'),
-  gettext('Voice'),
-  gettext('Internetwork Control'),
-  gettext('Network Control'),
-];
+$priorities = array(
+    ''  => '',
+    1   => gettext('1 - Background'),
+    0   => gettext('0 - Best Effort (default)'),
+    2   => gettext('2 - Excellent Effort'),
+    3   => gettext('3 - Critical Applications'),
+    4   => gettext('4 - Video'),
+    5   => gettext('5 - Voice'),
+    6   => gettext('6 - Internetwork Control'),
+    7   => gettext('7 - Network Control'),
+);
 ?>
                   <tr class="opt_advanced hidden">
-                      <td><a id="help_for_priority" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Set priority"); ?></td>
+                      <td><a id="help_for_set-prio" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Set priority"); ?></td>
                       <td>
-                        <select name="priority">
-                            <option value="0"></option>
-<?  foreach ($priorities as $prio => $priority) {
-    $prio_value = $prio + 1;
-?>
-                            <option value="<?=$prio_value;?>"<?=(!empty($pconfig['priority']) && $pconfig['priority'] == $prio_value ? ' selected="selected"' : '');?>><?=$prio.' - '.htmlspecialchars($priority);?></option>
+                          <table class="table table-condensed">
+                              <tr>
+                                  <th>Main:</th>
+                                  <th>Alternate (optional):</th>
+                              </tr>
+                              <tr>
+                                  <td>
+                                    <select name="set-prio">
+<?  foreach ($priorities as $prio => $priority) { ?>
+                                        <option value="<?=$prio;?>"<?=(isset($pconfig['set-prio']) && $pconfig['set-prio'] !== '' && $pconfig['set-prio'] == $prio ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
 <? } ?>
-                        </select>
-                        <div class="hidden" for="help_for_priority">
-                            <?= sprintf(gettext("Set the priority (Class of Service) of packets matching this rule."),'<b>','</b>') ?>
-                        </div>
+                                    </select>
+                                  </td>
+                                  <td>
+                                    <select name="set-prio-alt">
+<?  foreach ($priorities as $prio => $priority) { ?>
+                                        <option value="<?=$prio;?>"<?=(isset($pconfig['set-prio-alt']) && $pconfig['set-prio-alt'] !== '' && $pconfig['set-prio-alt'] == $prio ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
+<? } ?>
+                                    </select>
+                                  </td>
+                              </tr>
+                          </table>
+                          <div class="hidden" for="help_for_set-prio">
+                              <?=sprintf(gettext('Set the priority of packets matching this rule. If an alternate priority is set, packets with a TOS of %slowdelay%s and TCP ACKs with no data payload will be assigned this priority.'), '<strong>', '</strong>');?>
+                          </div>
                     </td>
                   </tr>
                   <tr class="opt_advanced hidden">
-                      <td><a id="help_for_priority_match" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Match priority"); ?></td>
+                      <td><a id="help_for_prio" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Match priority"); ?></td>
                       <td>
-                        <select name="priority-match">
-                          <option value="0"></option>
-<?  foreach ($priorities as $prio => $priority) {
-    $prio_value = $prio + 1;
-?>
-                          <option value="<?=$prio_value;?>"<?=(!empty($pconfig['priority-match']) && $pconfig['priority-match'] == $prio_value ? ' selected="selected"' : '');?>><?=$prio.' - '.htmlspecialchars($priority);?></option>
+                        <select name="prio">
+<?  foreach ($priorities as $prio => $priority) { ?>
+                            <option value="<?=$prio;?>"<?=(isset($pconfig['prio']) && $pconfig['prio'] !== '' && $pconfig['prio'] == $prio ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
 <? } ?>
                         </select>
-                        <div class="hidden" for="help_for_priority_match">
-                          <?= sprintf(gettext("match on the priority (Class of Service) of packets ."),'<b>','</b>') ?>
+                        <div class="hidden" for="help_for_prio">
+                          <?=gettext('Match on the priority of packets.');?>
                         </div>
                       </td>
                   </tr>
