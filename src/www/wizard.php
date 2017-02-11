@@ -86,9 +86,10 @@ if (isset($_GET['xml'])) {
 
 switch ($xml) {
 	case 'openvpn':
+	case 'system':
 		break;
 	default:
-		$xml = 'system';
+		print_info_box(gettext('ERROR: Could not find wizard file.'));
 		break;
 }
 
@@ -1060,10 +1061,4 @@ function fixup_string($string)
 	return $newstring;
 }
 
-function is_timezone($elt) {
-	return !preg_match("/\/$/", $elt);
-}
-
-?>
-
-<?php include('foot.inc'); ?>
+include('foot.inc');
