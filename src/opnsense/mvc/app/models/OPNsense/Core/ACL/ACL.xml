@@ -449,12 +449,18 @@
             <pattern>interfaces_wireless.php*</pattern>
         </patterns>
     </page-interfaces-wireless>
-    <page-pfsensewizardsubsystem>
-        <name>Wizard subsystem</name>
+    <page-wizard-general>
+        <name>General Setup Wizard</name>
         <patterns>
-            <pattern>wizard.php*</pattern>
+            <pattern>wizard.php?xml=general*</pattern>
         </patterns>
-    </page-pfsensewizardsubsystem>
+    </page-wizard-general>
+    <page-wizard-openvpn>
+        <name>OpenVPN Server Wizard</name>
+        <patterns>
+            <pattern>wizard.php?xml=openvpn*</pattern>
+        </patterns>
+    </page-wizard-openvpn>
     <page-services-dhcprelay>
         <name>Services: DHCP Relay</name>
         <patterns>
