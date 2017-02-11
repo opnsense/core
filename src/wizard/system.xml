@@ -636,7 +636,7 @@
 	</description>
 	<stepafterformdisplay>
 		<![CDATA[
-		configd_run('service reload all', true);
+		configd_run('service reload delay', true);
 		]]>
 	</stepafterformdisplay>
 </step>
