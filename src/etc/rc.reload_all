@@ -66,7 +66,6 @@ services_dyndns_configure('', true);
 system_cron_configure(true);
 
 mwexec_bg('/usr/local/etc/rc.sshd');
-mwexec_bg('/usr/local/etc/rc.restart_webgui');
 
 if (function_exists('plugins_configure')) {
     log_error("rc.reload_all: Reloading all plugin settings.");
