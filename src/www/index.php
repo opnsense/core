@@ -133,7 +133,7 @@ include("fbegin.inc");?>
       </div>
     </div>
   </section>
-  <meta http-equiv="refresh" content="3;url=wizard.php">
+  <meta http-equiv="refresh" content="3;url=wizard.php?xml=system">
 <?php
   // normal dashboard
   else:?>
