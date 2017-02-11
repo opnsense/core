@@ -455,12 +455,6 @@
             <pattern>wizard.php?xml=system*</pattern>
         </patterns>
     </page-wizard-system>
-    <page-wizard-openvpn>
-        <name>OpenVPN Server Wizard</name>
-        <patterns>
-            <pattern>wizard.php?xml=openvpn*</pattern>
-        </patterns>
-    </page-wizard-openvpn>
     <page-services-dhcprelay>
         <name>Services: DHCP Relay</name>
         <patterns>
@@ -942,6 +936,7 @@
         <name>VPN: OpenVPN: Server</name>
         <patterns>
             <pattern>vpn_openvpn_server.php*</pattern>
+            <pattern>wizard.php?xml=openvpn*</pattern>
         </patterns>
     </page-openvpn-server>
     <page-xmlrpclibrary>
