@@ -884,12 +884,9 @@ EOD;
                 if (isset($ph1ent['disabled'])) {
                     continue;
                 }
-
-                if ($ph1ent['mode'] == "aggressive") {
-                    $aggressive = "yes";
-                } else {
-                    $aggressive = "no";
-                }
+                $conn_params = "";
+                $aggressive = $ph1ent['mode'] == "aggressive" ? "yes" : "no";
+                $mobike = !empty($ph1ent['mobike']) ? "mobike = no" : "  mobike = yes";
 
                 $ep = ipsec_get_phase1_src($ph1ent);
                 if (empty($ep)) {
@@ -991,6 +988,7 @@ EOD;
                 }
                 if (!empty($ph1ent['certref'])) {
                     $authentication .= "\n\tleftcert = {$certpath}/cert-{$ph1ent['ikeid']}.crt";
+                    $authentication .= "\n\tleftsendcert = always";
                 }
                 if (!empty($ph1ent['caref'])) {
                     $ca = lookup_ca($ph1ent['caref']);
@@ -1177,6 +1175,7 @@ conn con<<connectionId>>
   {$reauth}
   {$rekey}
   {$forceencaps}
+  {$mobike}
   installpolicy = yes
   {$tunneltype}
   {$dpdline}
