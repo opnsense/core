@@ -49,12 +49,19 @@ if ($ostypes == null) {
 function FormSetAdvancedOptions(&$item) {
     foreach (array("max", "max-src-nodes", "max-src-conn", "max-src-states","nopfsync", "statetimeout"
                   ,"max-src-conn-rate","max-src-conn-rates", "tag", "tagged", "allowopts", "disablereplyto","tcpflags1"
-                  ,"tcpflags2", 'set-prio', 'set-prio-alt', 'prio') as $fieldname) {
+                  ,"tcpflags2") as $fieldname) {
 
         if (!empty($item[$fieldname])) {
             return true;
         }
     }
+    // check these fields for anything being set except a blank string
+    foreach (array('set-prio', 'set-prio-alt', 'prio') as $fieldname) {
+        if (isset($item[$fieldname]) && $item[$fieldname] !== '') {
+            return true;
+        }
+    }
+
     if (!empty($item["statetype"]) && $item["statetype"] != 'keep state') {
         return true;
     }
