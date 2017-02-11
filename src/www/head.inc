@@ -15,18 +15,18 @@ function system_get_language_code() {
 
 // link menu system
 $menu = new OPNsense\Base\Menu\MenuSystem();
+/* XXX generating breadcrumbs requires getItems() call */
 $menuSystem = $menu->getItems($_SERVER['REQUEST_URI']);
+$menuBreadcrumbs = $menu->getBreadcrumbs();
 
-/* XXX workaround for dashboard */
-if (!isset($menuBreadcrumbs)) {
-    /* XXX generating breadcrumbs requires getItems() call */
-    $menuBreadcrumbs = $menu->getBreadcrumbs();
+if (isset($extraBreadcrumb)) {
+    $menuBreadcrumbs[] = array('name' => $extraBreadcrumb);
 }
 
-$themename = htmlspecialchars(get_current_theme());
+$themename = html_safe(get_current_theme());
 
 $pagetitle = gentitle(array_reverse($menuBreadcrumbs), ' | ');
-$pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system']['domain']);
+$pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $config['system']['domain']));
 
 ?><!doctype html>
 <!--[if IE 8 ]><html lang="<?=system_get_language_code();?>" class="ie ie8 lte9 lte8 no-js"><![endif]-->

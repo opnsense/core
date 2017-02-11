@@ -1,6 +1,7 @@
 <menu>
     <Lobby order="10" cssClass="fa fa-laptop">
         <Dashboard order="0" url="/index.php" cssClass="fa fa-dashboard fa-fw">
+            <Args url="/index.php*" visibility="hidden"/>
             <Root url="/" visibility="hidden"/>
         </Dashboard>
         <License order="1" url="/license.php" cssClass="fa fa-balance-scale fa-fw"/>
@@ -71,8 +72,8 @@
             </Tunables>
         </Settings>
         <LogFile order="150" VisibleName="Log File" url="/diag_logs.php" cssClass="fa fa-eye fa-fw"/>
-        <Wizard order="140" url="/wizard.php" cssClass="fa fa-magic fa-fw">
-            <Step url="/wizard.php*" visibility="hidden"/>
+        <Wizard order="140" url="/wizard.php?xml=system" cssClass="fa fa-magic fa-fw">
+            <Step url="/wizard.php?xml=system*" visibility="hidden"/>
         </Wizard>
         <Access order="10" cssClass="fa fa-users fa-fw">
             <Users order="10" url="/system_usermanager.php">
@@ -283,6 +284,7 @@
         <OpenVPN cssClass="fa fa-lock fa-fw" order="20">
             <Servers order="10" url="/vpn_openvpn_server.php">
                 <Edit url="/vpn_openvpn_server.php?*" visibility="hidden"/>
+                <Step url="/wizard.php?xml=openvpn*" visibility="hidden"/>
             </Servers>
             <Clients order="20" url="/vpn_openvpn_client.php">
                 <Edit url="/vpn_openvpn_client.php?*" visibility="hidden"/>

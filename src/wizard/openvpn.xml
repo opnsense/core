@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<opnsensewizard>
+<wizard>
 <copyright>
 /*
 	Copyright (C) 2014 Deciso B.V.
@@ -32,9 +32,7 @@
 <totalsteps>12</totalsteps>
 <step>
 	<id>1</id>
-	<title>OpenVPN Wizard: Authentication Type Selection</title>
-	<description>OpenVPN Remote Access Server Setup Wizard</description>
-	<disableheader>on</disableheader>
+	<title>Authentication Type Selection</title>
 	<fields>
 		<field>
 			<type>listtopic</type>
@@ -70,9 +68,7 @@
 </step>
 <step>
 	<id>2</id>
-	<title>OpenVPN Wizard: LDAP Server Selection</title>
-	<description>OpenVPN Remote Access Server Setup Wizard</description>
-	<disableheader>on</disableheader>
+	<title>LDAP Server Selection</title>
 	<fields>
 		<field>
 			<type>listtopic</type>
@@ -105,9 +101,7 @@
 </step>
 <step>
 	<id>3</id>
-	<title>OpenVPN Wizard: Add LDAP Server</title>
-	<description>OpenVPN Remote Access Server Setup Wizard</description>
-	<disableheader>on</disableheader>
+	<title>Add LDAP Server</title>
 	<fields>
 		<field>
 			<type>listtopic</type>
@@ -231,9 +225,7 @@
 </step>
 <step>
 	<id>4</id>
-	<title>OpenVPN Wizard: RADIUS Server Selection</title>
-	<description>OpenVPN Remote Access Server Setup Wizard</description>
-	<disableheader>on</disableheader>
+	<title>RADIUS Server Selection</title>
 	<fields>
 		<field>
 			<type>listtopic</type>
@@ -266,9 +258,7 @@
 </step>
 <step>
 	<id>5</id>
-	<title>OpenVPN Wizard: Add RADIUS Server</title>
-	<description>OpenVPN Remote Access Server Setup Wizard</description>
-	<disableheader>on</disableheader>
+	<title>Add RADIUS Server</title>
 	<fields>
 		<field>
 			<type>listtopic</type>
@@ -314,9 +304,7 @@
 </step>
 <step>
 	<id>6</id>
-	<title>OpenVPN Wizard: Certificate Authority Selection</title>
-	<description>OpenVPN Remote Access Server Setup Wizard</description>
-	<disableheader>on</disableheader>
+	<title>Certificate Authority Selection</title>
 	<fields>
 		<field>
 			<name>Choose a Certificate Authority (CA)</name>
@@ -342,9 +330,7 @@
 </step>
 <step>
 	<id>7</id>
-	<title>OpenVPN Wizard: Add Certificate Authority</title>
-	<description>OpenVPN Remote Access Server Setup Wizard</description>
-	<disableheader>on</disableheader>
+	<title>Add Certificate Authority</title>
 	<fields>
 		<field>
 			<name>Create a New Certificate Authority (CA) Certificate</name>
@@ -443,9 +429,7 @@
 </step>
 <step>
 	<id>8</id>
-	<title>OpenVPN Wizard: Server Certificate Selection</title>
-	<description>OpenVPN Remote Access Server Setup Wizard</description>
-	<disableheader>on</disableheader>
+	<title>Server Certificate Selection</title>
 	<fields>
 		<field>
 			<name>Choose a Server Certificate</name>
@@ -471,9 +455,7 @@
 </step>
 <step>
 	<id>9</id>
-	<title>OpenVPN Wizard: Add a Server Certificate</title>
-	<description>OpenVPN Remote Access Server Setup Wizard</description>
-	<disableheader>on</disableheader>
+	<title>Add a Server Certificate</title>
 	<fields>
 		<field>
 			<name>Create a New Server Certificate</name>
@@ -572,9 +554,7 @@
 </step>
 <step>
 	<id>10</id>
-	<title>OpenVPN Wizard: Server Setup</title>
-	<description>OpenVPN Remote Access Server Setup Wizard</description>
-	<disableheader>on</disableheader>
+	<title>Server Setup</title>
 	<fields>
 		<field>
 			<type>listtopic</type>
@@ -906,9 +886,7 @@
 </step>
 <step>
 	<id>11</id>
-	<title>OpenVPN Wizard: Firewall Rule Configuration</title>
-	<description>OpenVPN Remote Access Server Setup Wizard</description>
-	<disableheader>on</disableheader>
+	<title>Firewall Rule Configuration</title>
 	<fields>
 		<field>
 			<type>listtopic</type>
@@ -948,14 +926,8 @@
 </step>
 <step>
 	<id>12</id>
-	<title>OpenVPN Wizard: Finished!</title>
-	<description>OpenVPN Remote Access Server Setup Wizard</description>
-	<disableheader>on</disableheader>
+	<title>Finished!</title>
 	<fields>
-		<field>
-			<type>listtopic</type>
-			<name>Configuration Complete!</name>
-		</field>
 		<field>
 			<type>text</type>
 			<description>Your configuration is now complete.</description>
@@ -967,4 +939,4 @@
 	</fields>
 	<stepsubmitphpaction>step12_submitphpaction();</stepsubmitphpaction>
 </step>
-</opnsensewizard>
+</wizard>

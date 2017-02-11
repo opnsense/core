@@ -86,10 +86,11 @@ if (isset($_GET['xml'])) {
 
 switch ($xml) {
 	case 'openvpn':
+	case 'system':
 		break;
 	default:
-		$xml = 'setup';
-		break;
+		print_info_box(gettext('ERROR: Could not find wizard file.'));
+		die;
 }
 
 global $listtags;
@@ -118,7 +119,7 @@ $listtags = array_flip(array(
 	'template',
 ));
 
-$pkg = parse_xml_config_raw("/usr/local/wizard/{$xml}.xml", 'opnsensewizard', false);
+$pkg = parse_xml_config_raw("/usr/local/wizard/{$xml}.xml", 'wizard', false);
 if (!is_array($pkg)) {
 	print_info_box(sprintf(gettext("ERROR: Could not parse %s wizard file."), $xml));
 	die;
@@ -171,8 +172,7 @@ if ($_POST && !$input_errors) {
 	}
 }
 
-$description = gettext($pkg['step'][$stepid]['description']);
-$title = gettext($pkg['step'][$stepid]['title']);
+$extraBreadcrumb = $pkg['step'][$stepid]['title'];
 
 function update_config_field($field, $updatetext, $unset, $arraynum, $field_type) {
 	global $config;
@@ -208,6 +208,55 @@ function update_config_field($field, $updatetext, $unset, $arraynum, $field_type
 	}
 	$text = "\$config" . $field_conv . " = '" . addslashes($updatetext) . "';";
 	eval($text);
+}
+
+function redirect_url()
+{
+	global $config, $title;
+
+	switch($config['system']['webgui']['protocol']) {
+		case "http":
+			$proto = "http";
+			break;
+		case "https":
+			$proto = "https";
+			break;
+		default:
+			$proto = "http";
+			break;
+	}
+	$port = $config['system']['webgui']['port'];
+	if($port != "") {
+		if(($port == "443" and $proto != "https") or ($port == "80" and $proto != "http")) {
+			$urlport = ":" . $port;
+		} elseif ($port != "80" and $port != "443") {
+			$urlport = ":" . $port;
+		} else {
+			$urlport = "";
+		}
+	}
+	$http_host = $_SERVER['SERVER_NAME'];
+	$urlhost = $http_host;
+	// If finishing the setup wizard, check if accessing on a LAN or WAN address that changed
+	if($title == "Reload in progress") {
+		if (is_ipaddr($urlhost)) {
+			$host_if = find_ip_interface($urlhost);
+			if ($host_if) {
+				$host_if = convert_real_interface_to_friendly_interface_name($host_if);
+				if ($host_if && is_ipaddr($config['interfaces'][$host_if]['ipaddr']))
+					$urlhost = $config['interfaces'][$host_if]['ipaddr'];
+			}
+		} else if ($urlhost == $config['system']['hostname']) {
+			$urlhost = $config['wizardtemp']['system']['hostname'];
+		} else if ($urlhost == $config['system']['hostname'] . '.' . $config['system']['domain']) {
+			$urlhost = $config['wizardtemp']['system']['hostname'] . '.' . $config['wizardtemp']['system']['domain'];
+		}
+	}
+	if ($urlhost != $http_host) {
+		file_put_contents('/tmp/setupwizard_lastreferrer', $proto . '://' . $http_host . $urlport . $_SERVER['REQUEST_URI']);
+	}
+
+	return $proto . '://' . $urlhost . $urlport;
 }
 
 // handle before form display event.
@@ -350,19 +399,8 @@ function showchange() {
 </script>
 <?php } ?>
 
-
-<?php
-	if($title == "Reload in progress") {
-		$ip = fixup_string("\$myurl");
-	} else {
-		$ip = "/";
-	}
-?>
-
-
 <section class="page-content-main">
-	<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
-		<div class="row">
+	<div class="container-fluid">
 
 			<?php
 				if (isset($input_errors) && count($input_errors) > 0)
@@ -381,23 +419,8 @@ function showchange() {
 					 <form method="post" name="iform" id="iform">
 						<input type="hidden" name="xml" value="<?= htmlspecialchars($xml) ?>" />
 						<input type="hidden" name="stepid" value="<?= htmlspecialchars($stepid) ?>" />
-
-						<?php if(!$pkg['step'][$stepid]['disableheader']): ?>
-						<header class="content-box-head container-fluid">
-						<h3><?= fixup_string($title) ?></h3>
-					</header>
-					<?php endif; ?>
-
-						<div class="content-box-main">
-							<div style="padding:20px !important;">
-								<p><br /><?=fixup_string($description) ?></p>
-
-							</div>
 							<div class="table-responsive">
 								<table class="table table-striped">
-
-
-
 <?php
 	$inputaliases = array();
 	if($pkg['step'][$stepid]['fields']['field'] <> "") {
@@ -437,7 +460,7 @@ function showchange() {
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
 					echo "<td width=\"22%\" align=\"right\" class=\"vncellreq\">\n";
-					echo fixup_string(gettext($field['name']));
+					echo gettext($field['name']);
 					echo ":</td>\n";
 				}
 				if(!$field['dontcombinecells'])
@@ -467,7 +490,7 @@ function showchange() {
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
 					echo "<td width=\"22%\" align=\"right\" class=\"vncellreq\">\n";
-					echo fixup_string(gettext($field['name']));
+					echo gettext($field['name']);
 					echo ":</td>\n";
 				}
 				if(!$field['dontcombinecells'])
@@ -491,7 +514,7 @@ function showchange() {
 				$multiple = "";
 				$name = strtolower($name);
 				echo "<td width=\"22%\" align=\"right\" class=\"vncellreq\">\n";
-				echo fixup_string($field['displayname'] ? gettext($field['displayname']) : gettext($field['name'])) . ":\n";
+				echo ($field['displayname'] ? gettext($field['displayname']) : gettext($field['name'])) . ":\n";
 				echo "</td>";
 				echo "<td class=\"vtable\">\n";
 				if($field['size'] <> "") $size = "size=\"{$field['size']}\"";
@@ -542,7 +565,7 @@ function showchange() {
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
 					echo "<td width=\"22%\" align=\"right\" class=\"vncellreq\">\n";
-					echo fixup_string(gettext($field['name']));
+					echo gettext($field['name']);
 					echo ":</td>\n";
 				}
 				if(!$field['dontcombinecells'])
@@ -562,7 +585,7 @@ function showchange() {
 				$multiple = "";
 				$name = strtolower($name);
 				echo "<td width=\"22%\" align=\"right\" class=\"vncellreq\">\n";
-				echo fixup_string($field['displayname'] ? gettext($field['displayname']) : gettext($field['name'])) . ":\n";
+				echo ($field['displayname'] ? gettext($field['displayname']) : gettext($field['name'])) . ":\n";
 				echo "</td>";
 				echo "<td class=\"vtable\">\n";
 				if($field['size'] <> "") $size = "size=\"{$field['size']}\"";
@@ -600,7 +623,7 @@ function showchange() {
 				$multiple = "";
 				$name = strtolower($name);
 				echo "<td width=\"22%\" align=\"right\" class=\"vncellreq\">\n";
-				echo fixup_string($field['displayname'] ? gettext($field['displayname']) : gettext($field['name'])) . ":\n";
+				echo ($field['displayname'] ? gettext($field['displayname']) : gettext($field['name'])) . ":\n";
 				echo "</td>";
 				echo "<td class=\"vtable\">\n";
 				if($field['size'] <> "") $size = "size=\"{$field['size']}\"";
@@ -642,7 +665,7 @@ function showchange() {
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
 					echo "<td width=\"22%\" align=\"right\" class=\"vncellreq\">\n";
-					echo fixup_string(gettext($field['name']));
+					echo gettext($field['name']);
 					echo ":</td>\n";
 				}
 				if($field['size']) $size = " size='" . $field['size'] . "' ";
@@ -682,7 +705,7 @@ function showchange() {
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
 					echo "<td width=\"22%\" align=\"right\" class=\"vncellreq\">\n";
-					echo fixup_string(gettext($field['name']));
+					echo gettext($field['name']);
 					echo ":</td>";
 				}
 				if(!$field['dontcombinecells'])
@@ -701,8 +724,7 @@ function showchange() {
 
 				break;
 			case "submit":
-				echo "<td colspan=\"2\">&nbsp;</td></tr>";
-				echo "<tr><td colspan=\"2\" align=\"center\">";
+				echo "<td colspan=\"2\" align=\"center\">";
 				echo "<input type='submit' class=\"btn btn-primary\" name='" . $name . "' value=\"" . htmlspecialchars(gettext($field['name'])) . "\" />\n";
 
 				if($field['description'] <> "") {
@@ -711,8 +733,7 @@ function showchange() {
 
 				break;
 			case "listtopic":
-				echo "<td colspan=\"2\">&nbsp;</td></tr>";
-				echo "<tr><td colspan=\"2\" class=\"listtopic\">" . gettext($field['name']) . "<br />\n";
+				echo "<td colspan=\"2\" class=\"listtopic\">" . gettext($field['name']) . "<br />\n";
 
 				break;
 			case "subnet_select":
@@ -722,7 +743,7 @@ function showchange() {
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
 					echo "<td width=\"22%\" align=\"right\" class=\"vncellreq\">\n";
-					echo fixup_string(gettext($field['name']));
+					echo gettext($field['name']);
 					echo ":</td>";
 				}
 				if(!$field['dontcombinecells'])
@@ -758,7 +779,7 @@ function showchange() {
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
 					echo "<td width=\"22%\" align=\"right\" class=\"vncellreq\">\n";
-					echo fixup_string(gettext($field['name']));
+					echo gettext($field['name']);
 					echo ":</td>";
 				}
 				if(!$field['dontcombinecells'])
@@ -787,7 +808,7 @@ function showchange() {
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
 					echo "<td width=\"22%\" align=\"right\" class=\"vncellreq\">\n";
-					echo fixup_string(gettext($field['name']));
+					echo gettext($field['name']);
 					echo ":</td>";
 				}
 				if(!$field['dontcombinecells'])
@@ -855,14 +876,24 @@ function showchange() {
 ?>
 
 								</table>
-								<br /><br /><br />
+<?php
+	if($pkg['step'][$stepid]['fields']['field'] <> "") {
+		foreach ($pkg['step'][$stepid]['fields']['field'] as $field) {
+			switch ($field['type']) {
+			case "refresh":
+				if($field['page'] <> "" && $field['time'] <> "") {
+					echo '<meta http-equiv="refresh" content="' . $field['time'] . ';url=' . redirect_url() . '/' . $field['page'] . '">';
+				}
+				break 2;
+			}
+		}
+	}
+?>
 							</div>
-						</div>
 					 </form>
 			     </div>
 		    </section>
 		</div>
-	</div>
 </section>
 
 
@@ -993,77 +1024,4 @@ if($pkg['step'][$stepid]['javascriptafterformdisplay'] <> "") {
 	echo "</script>\n\n";
 }
 
-/*
- *  HELPER FUNCTIONS
- */
-
-function fixup_string($string)
-{
-	global $config, $myurl, $title;
-	$newstring = $string;
-	// fixup #1: $myurl -> http[s]://ip_address:port/
-	switch($config['system']['webgui']['protocol']) {
-		case "http":
-			$proto = "http";
-			break;
-		case "https":
-			$proto = "https";
-			break;
-		default:
-			$proto = "http";
-			break;
-	}
-	$port = $config['system']['webgui']['port'];
-	if($port != "") {
-		if(($port == "443" and $proto != "https") or ($port == "80" and $proto != "http")) {
-			$urlport = ":" . $port;
-		} elseif ($port != "80" and $port != "443") {
-			$urlport = ":" . $port;
-		} else {
-			$urlport = "";
-		}
-	}
-	$http_host = $_SERVER['SERVER_NAME'];
-	$urlhost = $http_host;
-	// If finishing the setup wizard, check if accessing on a LAN or WAN address that changed
-	if($title == "Reload in progress") {
-		if (is_ipaddr($urlhost)) {
-			$host_if = find_ip_interface($urlhost);
-			if ($host_if) {
-				$host_if = convert_real_interface_to_friendly_interface_name($host_if);
-				if ($host_if && is_ipaddr($config['interfaces'][$host_if]['ipaddr']))
-					$urlhost = $config['interfaces'][$host_if]['ipaddr'];
-			}
-		} else if ($urlhost == $config['system']['hostname'])
-			$urlhost = $config['wizardtemp']['system']['hostname'];
-		else if ($urlhost == $config['system']['hostname'] . '.' . $config['system']['domain'])
-			$urlhost = $config['wizardtemp']['system']['hostname'] . '.' . $config['wizardtemp']['system']['domain'];
-	}
-	if ($urlhost != $http_host) {
-		file_put_contents('/tmp/setupwizard_lastreferrer', $proto . '://' . $http_host . $urlport . $_SERVER['REQUEST_URI']);
-	}
-	$myurl = $proto . "://" . $urlhost . $urlport . "/";
-
-	if (strstr($newstring, "\$myurl"))
-		$newstring = str_replace("\$myurl", $myurl, $newstring);
-	// fixup #2: $wanip
-	if (strstr($newstring, "\$wanip")) {
-		$curwanip = get_interface_ip();
-		$newstring = str_replace("\$wanip", $curwanip, $newstring);
-	}
-	// fixup #3: $lanip
-	if (strstr($newstring, "\$lanip")) {
-		$lanip = get_interface_ip("lan");
-		$newstring = str_replace("\$lanip", $lanip, $newstring);
-	}
-	// fixup #4: fix'r'up here.
-	return $newstring;
-}
-
-function is_timezone($elt) {
-	return !preg_match("/\/$/", $elt);
-}
-
-?>
-
-<?php include('foot.inc'); ?>
+include('foot.inc');
