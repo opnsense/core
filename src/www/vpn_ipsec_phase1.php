@@ -469,8 +469,6 @@ include("head.inc");
                 case 'eap-mschapv2':
                     $(".auth_eap_tls").show();
                     $(".auth_eap_tls :input").prop( "disabled", false );
-                    $(".auth_eap_tls_caref").show();
-                    $(".auth_eap_tls_caref :input").prop( "disabled", false );
                     break;
                 case 'eap-radius':
                     $(".auth_eap_tls").show();
