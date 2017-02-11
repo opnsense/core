@@ -920,7 +920,7 @@
 /usr/local/sbin/ppp-uptime.sh
 /usr/local/sbin/prefixes.php
 /usr/local/wizard/openvpn.xml
-/usr/local/wizard/setup.xml
+/usr/local/wizard/system.xml
 /usr/local/www/carp_status.php
 /usr/local/www/crash_reporter.php
 /usr/local/www/csrf.inc

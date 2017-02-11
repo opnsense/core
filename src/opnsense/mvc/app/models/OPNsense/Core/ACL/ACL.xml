@@ -449,12 +449,12 @@
             <pattern>interfaces_wireless.php*</pattern>
         </patterns>
     </page-interfaces-wireless>
-    <page-wizard-general>
-        <name>General Setup Wizard</name>
+    <page-wizard-system>
+        <name>System Setup Wizard</name>
         <patterns>
-            <pattern>wizard.php?xml=general*</pattern>
+            <pattern>wizard.php?xml=system*</pattern>
         </patterns>
-    </page-wizard-general>
+    </page-wizard-system>
     <page-wizard-openvpn>
         <name>OpenVPN Server Wizard</name>
         <patterns>

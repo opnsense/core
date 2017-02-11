@@ -88,7 +88,7 @@ switch ($xml) {
 	case 'openvpn':
 		break;
 	default:
-		$xml = 'setup';
+		$xml = 'system';
 		break;
 }
 

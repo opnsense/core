@@ -71,8 +71,8 @@
             </Tunables>
         </Settings>
         <LogFile order="150" VisibleName="Log File" url="/diag_logs.php" cssClass="fa fa-eye fa-fw"/>
-        <Wizard order="140" url="/wizard.php?xml=setup" cssClass="fa fa-magic fa-fw">
-            <Step url="/wizard.php?xml=setup*" visibility="hidden"/>
+        <Wizard order="140" url="/wizard.php?xml=system" cssClass="fa fa-magic fa-fw">
+            <Step url="/wizard.php?xml=system*" visibility="hidden"/>
         </Wizard>
         <Access order="10" cssClass="fa fa-users fa-fw">
             <Users order="10" url="/system_usermanager.php">
