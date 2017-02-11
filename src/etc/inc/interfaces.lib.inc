@@ -150,9 +150,8 @@ function legacy_bridge_member($ifs, $member)
     }
 }
 
-function legacy_vlan_tag($ifs, $member, $tag, $pcp)
+function legacy_vlan_tag($ifs, $member, $tag, $pcp = 0)
 {
-	$pcp = (int)$pcp;
     $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' vlandev ' . escapeshellarg($member) . ' vlan ' . escapeshellarg($tag) . ' vlanpcp '.escapeshellarg($pcp);
 
     exec($cmd . ' 2>&1', $out, $ret);
