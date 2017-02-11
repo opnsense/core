@@ -90,7 +90,7 @@ switch ($xml) {
 		break;
 	default:
 		print_info_box(gettext('ERROR: Could not find wizard file.'));
-		break;
+		die;
 }
 
 global $listtags;
