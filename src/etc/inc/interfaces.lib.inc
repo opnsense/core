@@ -246,7 +246,7 @@ function legacy_interfaces_details($intf = null)
             $result[$current_interface]["macaddr"] = $line_parts[1];
         } elseif (strpos($line, "\tinet ") !== false) {
             // IPv4 information
-			unset($mask);
+            unset($mask);
             for ($i = 0; $i < count($line_parts) - 1; ++$i) {
                 if ($line_parts[$i] == 'netmask') {
                     $mask = substr_count(base_convert(hexdec($line_parts[($i + 1)]), 10, 2), '1');
