@@ -67,8 +67,8 @@
 /usr/local/etc/netflow.conf.example
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20150402
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20160104
+/usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20160630
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/opnsense-update.deciso.com.20160725
-/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20160630
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20161210
 /usr/local/etc/rc
 /usr/local/etc/rc.backup_dhcpleases
