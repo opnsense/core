@@ -135,6 +135,20 @@ function interfaces_loopback_configure($verbose = false)
     }
 }
 
+function interfaces_vlan_priorities()
+{
+    return array(
+        1 => gettext('Background (1, lowest)'),
+        0 => gettext('Best Effort (0, default)'),
+        2 => gettext('Excellent Effort (2)'),
+        3 => gettext('Critical Applications (3)'),
+        4 => gettext('Video (4)'),
+        5 => gettext('Voice (5)'),
+        6 => gettext('Internetwork Control (6)'),
+        7 => gettext('Network Control (7, highest)'),
+    );
+}
+
 function interfaces_vlan_configure($realif = '', $verbose = false)
 {
     global $config;

@@ -122,7 +122,8 @@ $main_buttons = array(
                   <thead>
                     <tr>
                       <th><?=gettext("Interface");?></th>
-                      <th><?=gettext("VLAN tag");?></th>
+                      <th><?=gettext("Tag");?></th>
+                      <th><?=gettext("PCP");?></th>
                       <th><?=gettext("Description");?></th>
                       <th>&nbsp;</th>
                     </tr>
@@ -134,6 +135,7 @@ $main_buttons = array(
                     <tr>
                       <td><?=$vlan['if'];?></td>
                       <td><?=$vlan['tag'];?></td>
+                      <td><?= isset($vlan['pcp']) ? $vlan['pcp'] : 0 ?></td>
                       <td><?=$vlan['descr'];?></td>
                       <td>
                         <a href="interfaces_vlan_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" title="<?=gettext("edit interface");?>">

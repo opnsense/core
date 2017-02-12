@@ -206,23 +206,11 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
-<?
-$priorities = array(
-    1 => gettext('Background (1, lowest)'),
-    0 => gettext('Best Effort (0, default)'),
-    2 => gettext('Excellent Effort (2)'),
-    3 => gettext('Critical Applications (3)'),
-    4 => gettext('Video (4)'),
-    5 => gettext('Voice (5)'),
-    6 => gettext('Internetwork Control (6)'),
-    7 => gettext('Network Control (7, highest)'),
-);
-?>
                   <tr>
                     <td><a id="help_for_pcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN priority");?></td>
                     <td>
                       <select name="pcp">
-<? foreach ($priorities as $pcp => $priority): ?>
+<? foreach (interfaces_vlan_priorities() as $pcp => $priority): ?>
                         <option value="<?=$pcp;?>"<?=($pconfig['pcp'] == $pcp ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
 <? endforeach ?>
                       </select>
