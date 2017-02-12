@@ -2231,7 +2231,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     $int = "";
     $aline = array();
     // initialize array with empty tags
-    foreach (array('schedlabel','divert','icmp-type','icmp6-type','tag','tagged','route','os','reply','prot','log', 'set-prio', 'set-prio-alt', 'prio') as $tag) {
+    foreach (array('schedlabel','divert','icmp-type','icmp6-type','tag','tagged','route','os','reply','prot','log', 'set-prio', 'set-prio-low', 'prio') as $tag) {
         $aline[$tag] = "";
     }
 
@@ -2390,19 +2390,16 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     }
 
     if (isset($rule['set-prio']) && $rule['set-prio'] !== '') {
-    	if (isset($rule['set-prio-alt']) && $rule['set-prio-alt'] !== '') {
-    		$prio = '('.$rule['set-prio'].','.$rule['set-prio-alt'].')';
-		}
-		else {
-			$prio = $rule['set-prio'];
-		}
+        $prio = $rule['set-prio'];
+        if (isset($rule['set-prio-low']) && $rule['set-prio-low'] !== '') {
+            $prio = '('.$rule['set-prio'].','.$rule['set-prio-low'].')';
+        }
+        $aline['set-prio'] = ' set prio '.$prio.' ';
+    }
 
-		$aline['set-prio'] = ' set prio '.$prio.' ';
-	}
-
-	if (isset($rule['prio']) && $rule['prio'] !== '') {
-		$aline['prio'] = ' prio '.$rule['prio'].' ';
-	}
+    if (isset($rule['prio']) && $rule['prio'] !== '') {
+        $aline['prio'] = ' prio '.$rule['prio'].' ';
+    }
 
     if (!empty($rule['tag'])) {
         $aline['tag'] = " tag " .$rule['tag']. " ";
