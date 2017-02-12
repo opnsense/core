@@ -135,6 +135,22 @@ function interfaces_loopback_configure($verbose = false)
     }
 }
 
+function interfaces_vlan_priorities()
+{
+    $priorities = array();
+
+    $priorities['1'] = gettext('Background (1, lowest)');
+    $priorities['0'] = gettext('Best Effort (0, default)');
+    $priorities['2'] = gettext('Excellent Effort (2)');
+    $priorities['3'] = gettext('Critical Applications (3)');
+    $priorities['4'] = gettext('Video (4)');
+    $priorities['5'] = gettext('Voice (5)');
+    $priorities['6'] = gettext('Internetwork Control (6)');
+    $priorities['7'] = gettext('Network Control (7, highest)');
+
+    return $priorities;
+}
+
 function interfaces_vlan_configure($realif = '', $verbose = false)
 {
     global $config;
@@ -213,7 +229,8 @@ function interface_vlan_configure(&$vlan)
         mwexecf('/usr/sbin/ngctl name %s: %s', array($tmpvlanif, $vlanif));
     }
 
-    legacy_vlan_tag($vlanif, $if, $vlan['tag']);
+    $pcp = isset($vlan['pcp']) ? $vlan['pcp'] : 0;
+    legacy_vlan_tag($vlanif, $if, $vlan['tag'], $pcp);
 
     interfaces_bring_up($vlanif);
     interfaces_bring_up($if);
