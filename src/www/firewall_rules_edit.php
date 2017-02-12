@@ -55,6 +55,13 @@ function FormSetAdvancedOptions(&$item) {
             return true;
         }
     }
+    // check these fields for anything being set except a blank string
+    foreach (array('set-prio', 'set-prio-alt', 'prio') as $fieldname) {
+        if (isset($item[$fieldname]) && $item[$fieldname] !== '') {
+            return true;
+        }
+    }
+
     if (!empty($item["statetype"]) && $item["statetype"] != 'keep state') {
         return true;
     }
@@ -89,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                           ,'descr','tcpflags_any','tcpflags1','tcpflags2','tag','tagged','quick','allowopts'
                           ,'disablereplyto','max','max-src-nodes','max-src-conn','max-src-states','statetype'
                           ,'statetimeout','nopfsync','nosync','max-src-conn-rate','max-src-conn-rates','gateway','sched'
-                          ,'associated-rule-id','floating', 'category'
+                          ,'associated-rule-id','floating', 'category', 'set-prio', 'set-prio-alt', 'prio'
                         );
 
     $pconfig = array();
@@ -349,6 +356,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("If you specify TCP flags that should be set you should specify out of which flags as well.");
 
 
+    if (!empty($pconfig['set-prio']) && (!is_numericint($pconfig['set-prio']) || $pconfig['set-prio'] < 0 || $pconfig['set-prio'] > 7)) {
+        $input_errors[] = gettext('Set priority must be an integer between 0 and 7.');
+
+        if (!empty($pconfig['set-prio-alt']) && (!is_numericint($pconfig['set-prio-alt']) || $pconfig['set-prio-alt'] < 0 || $pconfig['set-prio-alt'] > 7)) {
+            $input_errors[] = gettext('Set alternate priority must be an integer between 0 and 7.');
+        }
+    }
+
+    if (!empty($pconfig['prio']) && ($pconfig['prio'] < 0 || $pconfig['prio'] > 7)) {
+        $input_errors[] = gettext('Priority match must be an integer between 0 and 7.');
+    }
+
     if (count($input_errors)  == 0) {
         $filterent = array();
         // 1-on-1 copy of form values
@@ -411,6 +430,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['log'])) {
             $filterent['log'] = true;
         }
+
+        if (isset($pconfig['set-prio']) && $pconfig['set-prio'] !== '') {
+            $filterent['set-prio'] = (int)$pconfig['set-prio'];
+
+            if (isset($pconfig['set-prio-alt']) && $pconfig['set-prio-alt'] !== '') {
+                $filterent['set-prio-alt'] = (int)$pconfig['set-prio-alt'];
+			}
+        }
+
+        if (isset($pconfig['prio']) && $pconfig['prio'] !== '') {
+            $filterent['prio'] = (int)$pconfig['prio'];
+        }
+
 
         if ($pconfig['protocol'] != "any") {
             $filterent['protocol'] = $pconfig['protocol'];
@@ -1199,6 +1231,62 @@ include("head.inc");
                         <input type="checkbox" value="yes" name="disablereplyto"<?= !empty($pconfig['disablereplyto']) ? " checked=\"checked\"" :""; ?> />
                         <div class="hidden" for="help_for_disable_replyto">
                           <?=gettext("This will disable auto generated reply-to for this rule.");?>
+                        </div>
+                      </td>
+                  </tr>
+<?
+$priorities = array(
+    ''  => '',
+    1   => gettext('1 - Background'),
+    0   => gettext('0 - Best Effort (default)'),
+    2   => gettext('2 - Excellent Effort'),
+    3   => gettext('3 - Critical Applications'),
+    4   => gettext('4 - Video'),
+    5   => gettext('5 - Voice'),
+    6   => gettext('6 - Internetwork Control'),
+    7   => gettext('7 - Network Control'),
+);
+?>
+                  <tr class="opt_advanced hidden">
+                      <td><a id="help_for_set-prio" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Set priority"); ?></td>
+                      <td>
+                          <table class="table table-condensed">
+                              <tr>
+                                  <th>Main:</th>
+                                  <th>Alternate (optional):</th>
+                              </tr>
+                              <tr>
+                                  <td>
+                                    <select name="set-prio">
+<?  foreach ($priorities as $prio => $priority) { ?>
+                                        <option value="<?=$prio;?>"<?=(isset($pconfig['set-prio']) && $pconfig['set-prio'] !== '' && $pconfig['set-prio'] == $prio ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
+<? } ?>
+                                    </select>
+                                  </td>
+                                  <td>
+                                    <select name="set-prio-alt">
+<?  foreach ($priorities as $prio => $priority) { ?>
+                                        <option value="<?=$prio;?>"<?=(isset($pconfig['set-prio-alt']) && $pconfig['set-prio-alt'] !== '' && $pconfig['set-prio-alt'] == $prio ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
+<? } ?>
+                                    </select>
+                                  </td>
+                              </tr>
+                          </table>
+                          <div class="hidden" for="help_for_set-prio">
+                              <?=sprintf(gettext('Set the priority of packets matching this rule. If an alternate priority is set, packets with a TOS of %slowdelay%s and TCP ACKs with no data payload will be assigned this priority.'), '<strong>', '</strong>');?>
+                          </div>
+                    </td>
+                  </tr>
+                  <tr class="opt_advanced hidden">
+                      <td><a id="help_for_prio" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Match priority"); ?></td>
+                      <td>
+                        <select name="prio">
+<?  foreach ($priorities as $prio => $priority) { ?>
+                            <option value="<?=$prio;?>"<?=(isset($pconfig['prio']) && $pconfig['prio'] !== '' && $pconfig['prio'] == $prio ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
+<? } ?>
+                        </select>
+                        <div class="hidden" for="help_for_prio">
+                          <?=gettext('Match on the priority of packets.');?>
                         </div>
                       </td>
                   </tr>
