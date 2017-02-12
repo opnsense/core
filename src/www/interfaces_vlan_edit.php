@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['if'] = isset($a_vlans[$id]['if']) ? $a_vlans[$id]['if'] : null;
     $pconfig['vlanif'] = isset($a_vlans[$id]['vlanif']) ? $a_vlans[$id]['vlanif'] : null;
     $pconfig['tag'] = isset($a_vlans[$id]['tag']) ? $a_vlans[$id]['tag'] : null;
+    $pconfig['pcp'] = isset($a_vlans[$id]['pcp']) ? $a_vlans[$id]['pcp'] : null;
     $pconfig['descr'] = isset($a_vlans[$id]['descr']) ? $a_vlans[$id]['descr'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // validate / save form data
@@ -67,6 +68,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if ($pconfig['tag'] && (!is_numericint($pconfig['tag']) || ($pconfig['tag'] < '1') || ($pconfig['tag'] > '4094'))) {
         $input_errors[] = gettext("The VLAN tag must be an integer between 1 and 4094.");
+    }
+
+    if (isset($pconfig['pcp']) && (!is_numericint($pconfig['pcp']) || $pconfig['pcp'] < 0 || $pconfig['pcp'] > 7)) {
+        $input_errors[] = gettext("The VLAN priority must be an integer between 0 and 7.");
     }
 
     if (!does_interface_exist($pconfig['if'])) {
@@ -99,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (count($input_errors) == 0) {
         $confif = "";
         if (isset($id)) {
-            if (($a_vlans[$id]['if'] != $pconfig['if']) || ($a_vlans[$id]['tag'] != $pconfig['tag'])) {
+            if (($a_vlans[$id]['if'] != $pconfig['if']) || ($a_vlans[$id]['tag'] != $pconfig['tag']) || ($a_vlans[$id]['pcp'] != $pconfig['pcp'])) {
                 if (!empty($a_vlans[$id]['vlanif'])) {
                     $confif = convert_real_interface_to_friendly_interface_name($a_vlans[$id]['vlanif']);
                     legacy_interface_destroy($a_vlans[$id]['vlanif']);
@@ -115,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $vlan = array();
         $vlan['if'] = $_POST['if'];
         $vlan['tag'] = $_POST['tag'];
+        $vlan['pcp'] = $pconfig['pcp'];
         $vlan['descr'] = $_POST['descr'];
         $vlan['vlanif'] = "{$_POST['if']}_vlan{$_POST['tag']}";
         $vlan['vlanif'] = interface_vlan_configure($vlan);
@@ -197,6 +203,31 @@ include("head.inc");
                       <input name="tag" type="text" value="<?=$pconfig['tag'];?>" />
                       <div class="hidden" for="help_for_tag">
                         <?=gettext("802.1Q VLAN tag (between 1 and 4094)");?>
+                      </div>
+                    </td>
+                  </tr>
+<?
+$priorities = array(
+    1   => gettext('1 - Background'),
+    0   => gettext('0 - Best Effort (default)'),
+    2   => gettext('2 - Excellent Effort'),
+    3   => gettext('3 - Critical Applications'),
+    4   => gettext('4 - Video'),
+    5   => gettext('5 - Voice'),
+    6   => gettext('6 - Internetwork Control'),
+    7   => gettext('7 - Network Control'),
+);
+?>
+                  <tr>
+                    <td><a id="help_for_pcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN priority");?></td>
+                    <td>
+                      <select name="pcp">
+<? foreach ($priorities as $pcp => $priority) { ?>
+                        <option value="<?=$pcp;?>"<?=($pconfig['pcp'] == $pcp ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
+<? } ?>
+                      </select>
+                      <div class="hidden" for="help_for_pcp">
+                        <?=gettext('802.1Q VLAN PCP (priority code point)');?>
                       </div>
                     </td>
                   </tr>
