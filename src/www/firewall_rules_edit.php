@@ -536,12 +536,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 legacy_html_escape_form_data($pconfig);
 
-/* select priorities, but also offer an empty first option */
-$priorities = array_merge(array('' => gettext('None')), interfaces_vlan_priorities());
+$priorities = interfaces_vlan_priorities(true);
 
 include("head.inc");
-?>
 
+?>
 <body>
   <script type="text/javascript">
   $( document ).ready(function() {
