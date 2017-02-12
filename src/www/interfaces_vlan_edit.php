@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['if'] = isset($a_vlans[$id]['if']) ? $a_vlans[$id]['if'] : null;
     $pconfig['vlanif'] = isset($a_vlans[$id]['vlanif']) ? $a_vlans[$id]['vlanif'] : null;
     $pconfig['tag'] = isset($a_vlans[$id]['tag']) ? $a_vlans[$id]['tag'] : null;
-    $pconfig['pcp'] = isset($a_vlans[$id]['pcp']) ? $a_vlans[$id]['pcp'] : null;
+    $pconfig['pcp'] = isset($a_vlans[$id]['pcp']) ? $a_vlans[$id]['pcp'] : 0;
     $pconfig['descr'] = isset($a_vlans[$id]['descr']) ? $a_vlans[$id]['descr'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // validate / save form data
@@ -208,23 +208,23 @@ include("head.inc");
                   </tr>
 <?
 $priorities = array(
-    1   => gettext('1 - Background'),
-    0   => gettext('0 - Best Effort (default)'),
-    2   => gettext('2 - Excellent Effort'),
-    3   => gettext('3 - Critical Applications'),
-    4   => gettext('4 - Video'),
-    5   => gettext('5 - Voice'),
-    6   => gettext('6 - Internetwork Control'),
-    7   => gettext('7 - Network Control'),
+    1 => gettext('Background (1, lowest)'),
+    0 => gettext('Best Effort (0, default)'),
+    2 => gettext('Excellent Effort (2)'),
+    3 => gettext('Critical Applications (3)'),
+    4 => gettext('Video (4)'),
+    5 => gettext('Voice (5)'),
+    6 => gettext('Internetwork Control (6)'),
+    7 => gettext('Network Control (7, highest)'),
 );
 ?>
                   <tr>
                     <td><a id="help_for_pcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN priority");?></td>
                     <td>
                       <select name="pcp">
-<? foreach ($priorities as $pcp => $priority) { ?>
+<? foreach ($priorities as $pcp => $priority): ?>
                         <option value="<?=$pcp;?>"<?=($pconfig['pcp'] == $pcp ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
-<? } ?>
+<? endforeach ?>
                       </select>
                       <div class="hidden" for="help_for_pcp">
                         <?=gettext('802.1Q VLAN PCP (priority code point)');?>
