@@ -387,15 +387,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("If you specify TCP flags that should be set you should specify out of which flags as well.");
 
 
-    if (!empty($pconfig['set-prio']) && (!is_numericint($pconfig['set-prio']) || $pconfig['set-prio'] < 0 || $pconfig['set-prio'] > 7)) {
+    if (isset($pconfig['set-prio']) && $pconfig['set-prio'] !== '' && (!is_numericint($pconfig['set-prio']) || $pconfig['set-prio'] < 0 || $pconfig['set-prio'] > 7)) {
         $input_errors[] = gettext('Set priority must be an integer between 0 and 7.');
     }
 
-    if (!empty($pconfig['set-prio-low']) && (!is_numericint($pconfig['set-prio-low']) || $pconfig['set-prio-low'] < 0 || $pconfig['set-prio-low'] > 7)) {
+    if (isset($pconfig['set-prio-low']) && $pconfig['set-prio-low'] !== '' && (!is_numericint($pconfig['set-prio-low']) || $pconfig['set-prio-low'] < 0 || $pconfig['set-prio-low'] > 7)) {
         $input_errors[] = gettext('Set priority for low latency and acknowledgements must be an integer between 0 and 7.');
     }
 
-    if (empty($pconfig['set-prio']) && !empty($pconfig['set-prio-low'])) {
+    if (isset($pconfig['set-prio-low']) && $pconfig['set-prio-low'] !== '' && (!isset($pconfig['set-prio']) || $pconfig['set-prio'] === '')) {
         $input_errors[] = gettext('Set priority for low latency and acknowledgements requires a set priority for normal packets.');
     }
 
