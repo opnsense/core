@@ -2250,7 +2250,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     $int = "";
     $aline = array();
     // initialize array with empty tags
-    foreach (array('icmp-type','icmp6-type','tag','tagged','route','os','reply','prot','log') as $tag) {
+    foreach (array('icmp-type','icmp6-type','tag','tagged','route','os','reply','prot','log', 'set-prio', 'set-prio-low', 'prio') as $tag) {
         $aline[$tag] = "";
     }
 
@@ -2407,6 +2407,19 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     if (isset($rule['protocol']) && $rule['protocol'] == "icmp" && $rule['icmptype'] && $rule['ipprotocol'] == "inet6") {
         $aline['icmp6-type'] = "icmp6-type {$rule['icmptype']} ";
     }
+
+    if (isset($rule['set-prio']) && $rule['set-prio'] !== '') {
+        $prio = $rule['set-prio'];
+        if (isset($rule['set-prio-low']) && $rule['set-prio-low'] !== '') {
+            $prio = '('.$rule['set-prio'].','.$rule['set-prio-low'].')';
+        }
+        $aline['set-prio'] = ' set prio '.$prio.' ';
+    }
+
+    if (isset($rule['prio']) && $rule['prio'] !== '') {
+        $aline['prio'] = ' prio '.$rule['prio'].' ';
+    }
+
     if (!empty($rule['tag'])) {
         $aline['tag'] = " tag " .$rule['tag']. " ";
     }
@@ -2558,7 +2571,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     $line .= $aline['type'] . $aline['direction'] . $aline['log'] . $aline['quick'] . $aline['interface'] .
       $aline['reply'] . $aline['route'] . $aline['ipprotocol'] . $aline['prot'] . $aline['src'] . $aline['os'] . $aline['dst'] .
       $aline['icmp-type'] . $aline['icmp6-type'] . $aline['tag'] . $aline['tagged'] .
-      $aline['allowopts'] . $aline['flags'];
+      $aline['set-prio'] . $aline['prio'] . $aline['allowopts'] . $aline['flags'];
 
     unset($aline);
 
