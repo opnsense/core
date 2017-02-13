@@ -110,7 +110,14 @@ include("fbegin.inc");?>
   </script>
   <header class="page-content-head">
     <div class="container-fluid">
+<?php
+     if (isset($config['trigger_initial_wizard'])): ?>
       <h1><?= gettext("Starting initial configuration!") ?></h1>
+<?php
+     else: ?>
+      <h1><?= gettext("Finished initial configuration!") ?></h1>
+<?php
+     endif ?>
     </div>
   </header>
   <section class="page-content-main">

@@ -636,8 +636,8 @@
 		</field>
 		<field>
 			<type>refresh</type>
-			<!-- XXX use $myurl -->
-			<content>5;/index.php?wizard_done</content>
+			<time>5</time>
+			<page>index.php?wizard_done</page>
 		</field>
 	</fields>
 	<stepafterformdisplay>

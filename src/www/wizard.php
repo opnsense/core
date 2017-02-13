@@ -350,16 +350,6 @@ function showchange() {
 </script>
 <?php } ?>
 
-
-<?php
-	if($extraBreadcrumbs == "Reload in progress") {
-		$ip = fixup_string("\$myurl");
-	} else {
-		$ip = "/";
-	}
-?>
-
-
 <section class="page-content-main">
 	<div class="container-fluid">
 
@@ -436,12 +426,6 @@ function showchange() {
 
 				if($field['description'] <> "") {
 					echo "<br /> " . gettext($field['description']);
-				}
-				break;
-			case "refresh":
-				echo "<td colspan=\"2\" align=\"center\" class=\"vncell\">\n";
-				if($field['content'] <> "") {
-					echo '<meta http-equiv="refresh" content="' . $field['content'] . '">';
 				}
 				break;
 			case "text":
@@ -843,6 +827,19 @@ function showchange() {
 ?>
 
 								</table>
+<?php
+	if($pkg['step'][$stepid]['fields']['field'] <> "") {
+		foreach ($pkg['step'][$stepid]['fields']['field'] as $field) {
+			switch ($field['type']) {
+			case "refresh":
+				if($field['url'] <> "" && $field['time'] <> "") {
+					echo '<meta http-equiv="refresh" content="' . $field['time'] . ';url=' . fixup_string('$myurl') . $field['url'] . '">';
+				}
+				break 2;
+			}
+		}
+	}
+?>
 							</div>
 					 </form>
 			     </div>
