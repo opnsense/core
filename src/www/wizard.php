@@ -832,8 +832,8 @@ function showchange() {
 		foreach ($pkg['step'][$stepid]['fields']['field'] as $field) {
 			switch ($field['type']) {
 			case "refresh":
-				if($field['url'] <> "" && $field['time'] <> "") {
-					echo '<meta http-equiv="refresh" content="' . $field['time'] . ';url=' . fixup_string('$myurl') . $field['url'] . '">';
+				if($field['page'] <> "" && $field['time'] <> "") {
+					echo '<meta http-equiv="refresh" content="' . $field['time'] . ';url=' . fixup_string('$myurl') . $field['page'] . '">';
 				}
 				break 2;
 			}
