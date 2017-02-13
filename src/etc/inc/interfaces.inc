@@ -135,13 +135,9 @@ function interfaces_loopback_configure($verbose = false)
     }
 }
 
-function interfaces_vlan_priorities($want_none = false)
+function interfaces_vlan_priorities()
 {
     $priorities = array();
-
-    if ($want_none) {
-        $priorities[''] = gettext('None');
-    }
 
     $priorities['1'] = gettext('Background (1, lowest)');
     $priorities['0'] = gettext('Best Effort (0, default)');
