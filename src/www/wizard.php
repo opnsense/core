@@ -119,7 +119,7 @@ $listtags = array_flip(array(
 	'template',
 ));
 
-$pkg = parse_xml_config_raw("/usr/local/wizard/{$xml}.xml", 'opnsensewizard', false);
+$pkg = parse_xml_config_raw("/usr/local/wizard/{$xml}.xml", 'wizard', false);
 if (!is_array($pkg)) {
 	print_info_box(sprintf(gettext("ERROR: Could not parse %s wizard file."), $xml));
 	die;
@@ -172,8 +172,7 @@ if ($_POST && !$input_errors) {
 	}
 }
 
-$description = gettext($pkg['step'][$stepid]['description']);
-$title = gettext($pkg['step'][$stepid]['title']);
+$extraBreadcrumb = $pkg['step'][$stepid]['title'];
 
 function update_config_field($field, $updatetext, $unset, $arraynum, $field_type) {
 	global $config;
@@ -353,7 +352,7 @@ function showchange() {
 
 
 <?php
-	if($title == "Reload in progress") {
+	if($extraBreadcrumbs == "Reload in progress") {
 		$ip = fixup_string("\$myurl");
 	} else {
 		$ip = "/";
@@ -362,8 +361,7 @@ function showchange() {
 
 
 <section class="page-content-main">
-	<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
-		<div class="row">
+	<div class="container-fluid">
 
 			<?php
 				if (isset($input_errors) && count($input_errors) > 0)
@@ -382,23 +380,8 @@ function showchange() {
 					 <form method="post" name="iform" id="iform">
 						<input type="hidden" name="xml" value="<?= htmlspecialchars($xml) ?>" />
 						<input type="hidden" name="stepid" value="<?= htmlspecialchars($stepid) ?>" />
-
-						<?php if(!$pkg['step'][$stepid]['disableheader']): ?>
-						<header class="content-box-head container-fluid">
-						<h3><?= fixup_string($title) ?></h3>
-					</header>
-					<?php endif; ?>
-
-						<div class="content-box-main">
-							<div style="padding:20px !important;">
-								<p><br /><?=fixup_string($description) ?></p>
-
-							</div>
 							<div class="table-responsive">
 								<table class="table table-striped">
-
-
-
 <?php
 	$inputaliases = array();
 	if($pkg['step'][$stepid]['fields']['field'] <> "") {
@@ -453,6 +436,12 @@ function showchange() {
 
 				if($field['description'] <> "") {
 					echo "<br /> " . gettext($field['description']);
+				}
+				break;
+			case "refresh":
+				echo "<td colspan=\"2\" align=\"center\" class=\"vncell\">\n";
+				if($field['content'] <> "") {
+					echo '<meta http-equiv="refresh" content="' . $field['content'] . '">';
 				}
 				break;
 			case "text":
@@ -702,8 +691,7 @@ function showchange() {
 
 				break;
 			case "submit":
-				echo "<td colspan=\"2\">&nbsp;</td></tr>";
-				echo "<tr><td colspan=\"2\" align=\"center\">";
+				echo "<td colspan=\"2\" align=\"center\">";
 				echo "<input type='submit' class=\"btn btn-primary\" name='" . $name . "' value=\"" . htmlspecialchars(gettext($field['name'])) . "\" />\n";
 
 				if($field['description'] <> "") {
@@ -712,8 +700,7 @@ function showchange() {
 
 				break;
 			case "listtopic":
-				echo "<td colspan=\"2\">&nbsp;</td></tr>";
-				echo "<tr><td colspan=\"2\" class=\"listtopic\">" . gettext($field['name']) . "<br />\n";
+				echo "<td colspan=\"2\" class=\"listtopic\">" . gettext($field['name']) . "<br />\n";
 
 				break;
 			case "subnet_select":
@@ -856,14 +843,11 @@ function showchange() {
 ?>
 
 								</table>
-								<br /><br /><br />
 							</div>
-						</div>
 					 </form>
 			     </div>
 		    </section>
 		</div>
-	</div>
 </section>
 
 

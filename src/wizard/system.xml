@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<opnsensewizard>
+<wizard>
 <copyright>
 /*
 	Copyright (C) 2014 Deciso B.V.
@@ -31,10 +31,12 @@
 <totalsteps>9</totalsteps>
 <step>
 	<id>1</id>
-	<title>OPNsense Setup Wizard</title>
-	<disableheader>true</disableheader>
-	<description>This wizard will guide you through the initial configuration of OPNsense.&lt;br/&gt;&lt;br/&gt; The wizard may be stopped at any time by clicking the logo image at the top of the screen.</description>
+	<title>General Setup</title>
 	<fields>
+		<field>
+			<type>text</type>
+			<description>This wizard will guide you through the initial system configuration. The wizard may be stopped at any time by clicking the logo image at the top of the screen.</description>
+		</field>
 		<field>
 			<name>Next</name>
 			<type>submit</type>
@@ -50,7 +52,6 @@
 <step>
 	<id>2</id>
 	<title>General Information</title>
-	<description>On this screen you will set the general OPNsense parameters.</description>
 	<fields>
 		<field>
 			<name>Hostname</name>
@@ -134,7 +135,6 @@
 <step>
 	<id>3</id>
 	<title>Time Server Information</title>
-	<description>Please enter the time, date and time zone.</description>
 	<fields>
 		<field>
 			<name>Time server hostname</name>
@@ -167,7 +167,6 @@
 	<id>4</id>
 	<disableallfieldsbydefault>true</disableallfieldsbydefault>
 	<title>Configure WAN Interface</title>
-	<description>On this screen we will configure the Wide Area Network information.</description>
 	<javascriptafterformdisplay>
 		var selectedItem = 0;
 		if(jQuery('#ipaddress').val() == 'dhcp') {
@@ -544,8 +543,7 @@
 </step>
 <step>
 	<id>6</id>
-	<title>Set Admin WebGUI Password</title>
-	<description>On this screen we will set the admin password, which is used to access the WebGUI and also SSH services if you wish to enable them.</description>
+	<title>Set Admin Web GUI Password</title>
 	<fields>
 		<field>
 			<name>Admin Password</name>
@@ -576,10 +574,12 @@
 </step>
 <step>
 	<id>7</id>
-	<title>Reload configuration</title>
-	<disableheader>true</disableheader>
-	<description>Click 'Reload' to reload OPNsense with new changes.</description>
+	<title>Reload Configuration</title>
 	<fields>
+		<field>
+			<type>text</type>
+			<description>Click 'Reload' to reload to apply the changes.</description>
+		</field>
 		<field>
 			<name>Reload</name>
 			<type>submit</type>
@@ -629,27 +629,21 @@
 <step>
 	<id>8</id>
 	<title>Reload in progress</title>
-	<description>
-		&lt;p&gt;A reload is now in progress. Please wait.&lt;/p&gt;
-		&lt;meta http-equiv="refresh" content="5;url=wizard.php?xml=system&amp;stepid=8"&gt;
-		&lt;p&gt;The wizard will redirect to the next step once the reload is completed.&lt;/p&gt;
-	</description>
+	<fields>
+		<field>
+			<type>text</type>
+			<description>A reload is now in progress. The wizard will redirect you to the dashboard once the reload is completed.</description>
+		</field>
+		<field>
+			<type>refresh</type>
+			<!-- XXX use $myurl -->
+			<content>5;/index.php?wizard_done</content>
+		</field>
+	</fields>
 	<stepafterformdisplay>
 		<![CDATA[
 		configd_run('service reload delay', true);
 		]]>
 	</stepafterformdisplay>
 </step>
-<step>
-	<id>9</id>
-	<title>Wizard completed.</title>
-	<description>
-	<![CDATA[
-		Congratulations!  OPNsense is now configured.<p/>
-		Please consider donating to the project to help us with our overhead costs.<p/>
-		See <a target='_new' href='https://opnsense.org/'>OPNsense.org</a> to donate or purchase services offered by the OPNsense team.<p/>
-		Click <a href='$myurl'>here</a> to continue on to OPNsense web GUI.
-	]]>
-	</description>
-</step>
-</opnsensewizard>
+</wizard>
