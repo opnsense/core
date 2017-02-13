@@ -361,7 +361,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $ph1ent[$fieldname] = $pconfig[$fieldname];
             }
         }
-        $ph1ent['authservers'] = implode(',', $pconfig['authservers']);
+        if (!empty($pconfig['authservers'])) {
+            $ph1ent['authservers'] = implode(',', $pconfig['authservers']);
+        }
 
         $ph1ent['disabled'] = !empty($pconfig['disabled']) ? true : false;
         $ph1ent['private-key'] =isset($pconfig['privatekey']) ? base64_encode($pconfig['privatekey']) : null;
