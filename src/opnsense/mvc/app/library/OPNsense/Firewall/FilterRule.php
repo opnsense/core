@@ -54,6 +54,8 @@ class FilterRule
         'icmp6-type' => 'parsePlain,icmp6-type {,}',
         'flags' => 'parsePlain, flags ',
         'state' => 'parseState',
+        'set-prio' => 'parsePlain, set prio ',
+        'prio' => 'parsePlain, prio ',
         'allowopts' => 'parseBool,allow-opts',
         'label' => 'parsePlain,label ",",63'
     );
@@ -81,7 +83,7 @@ class FilterRule
         if (!empty($maxsize) && strlen($value) > $maxsize) {
             $value = substr($value, 0, $maxsize);
         }
-        return $value == '' ? "" : $prefix . $value . $suffix . " ";
+        return $value === '' ? "" : $prefix . $value . $suffix . " ";
     }
 
     /**
@@ -237,6 +239,11 @@ class FilterRule
                 // icmpv6
                 if ($ipproto == 'inet6' && !empty($tmp['protocol']) && $tmp['protocol'] == "icmp") {
                     $tmp['protocol'] = 'ipv6-icmp';
+                }
+                // set prio
+                if (isset($tmp['set-prio']) && $tmp['set-prio'] !== ""
+                  && isset($tmp['set-prio-low']) && $tmp['set-prio-low'] !== "" ) {
+                    $tmp['set-prio'] = "({$tmp['set-prio']}, {$tmp['set-prio-low']})" ;
                 }
                 $result[] = $tmp;
             }
