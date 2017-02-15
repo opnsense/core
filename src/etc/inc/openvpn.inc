@@ -284,11 +284,17 @@ function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = "ipv
     }
 }
 
-function openvpn_validate_cidr_ipv4($value) {
+function openvpn_validate_cidr_ipv4($value)
+{
     $value = trim($value);
     if (!empty($value)) {
         list($ip, $mask) = explode('/', $value);
         if (!is_ipaddrv4($ip) or !is_numeric($mask) or ($mask > 32) or ($mask < 0)) {
+            return false;
+        }
+        /* IPv4 case is very strict, cannot be a host address */
+        $mask = (0xffffffff << (32 - $mask)) & 0xffffffff;
+	if ((ip2long($ip) & $mask) != ip2long($ip)) {
             return false;
         }
     }
@@ -301,7 +307,7 @@ function openvpn_validate_cidr_ipv6($value)
     if (!empty($value)) {
         list($ipv6, $prefix) = explode('/', $value);
         if (empty($prefix)) {
-            $prefix = "128";
+            $prefix = '128';
         }
         if (!is_ipaddrv6($ipv6) or !is_numeric($prefix) or ($prefix > 128) or ($prefix < 0)) {
             return false;
@@ -310,7 +316,7 @@ function openvpn_validate_cidr_ipv6($value)
     return true;
 }
 
-function openvpn_add_dhcpopts(& $settings, & $conf)
+function openvpn_add_dhcpopts(&$settings, &$conf)
 {
     if (!empty($settings['dns_domain'])) {
         $conf .= "push \"dhcp-option DOMAIN {$settings['dns_domain']}\"\n";
