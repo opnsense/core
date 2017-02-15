@@ -83,7 +83,7 @@ class FilterRule
         if (!empty($maxsize) && strlen($value) > $maxsize) {
             $value = substr($value, 0, $maxsize);
         }
-        return $value === '' ? "" : $prefix . $value . $suffix . " ";
+        return $value == null || $value === '' ? '' : $prefix . $value . $suffix . ' ';
     }
 
     /**
