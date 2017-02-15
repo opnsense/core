@@ -57,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['kill_states'] = isset($config['system']['kill_states']);
     $pconfig['skip_rules_gw_down'] = isset($config['system']['skip_rules_gw_down']);
     $pconfig['lb_use_sticky'] = isset($config['system']['lb_use_sticky']);
+    $pconfig['pf_share_forward'] = isset($config['system']['pf_share_forward']);
     $pconfig['srctrack'] = !empty($config['system']['srctrack']) ? $config['system']['srctrack'] : null;
     if (!isset($config['system']['disablenatreflection'])) {
         $pconfig['natreflection'] = "purenat";
@@ -94,6 +95,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("The Firewall Maximum Table Entries value must be an integer.");
     }
     if (count($input_errors) == 0) {
+        if (!empty($pconfig['pf_share_forward'])) {
+            $config['system']['pf_share_forward'] = true;
+        } elseif (isset($config['system']['pf_share_forward'])) {
+            unset($config['system']['pf_share_forward']);
+        }
 
         if (!empty($pconfig['lb_use_sticky'])) {
             $config['system']['lb_use_sticky'] = true;
@@ -369,6 +375,19 @@ include("head.inc");
                       <?=gettext("Set the source tracking timeout for sticky connections in seconds. " .
                                           "By default this is 0, so source tracking is removed as soon as the state expires. " .
                                           "Setting this timeout higher will cause the source/destination relationship to persist for longer periods of time."); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_pf_share_forward" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Shared forwarding');?> </td>
+                  <td>
+                    <input name="pf_share_forward" type="checkbox" id="pf_share_forward" value="yes" <?= !empty($pconfig['pf_share_forward']) ? 'checked="checked"' : '' ?>/>
+                    <strong><?=gettext('Use shared forwarding between filter and traffic shaper / captive portal'); ?></strong><br />
+                    <div class="hidden" for="help_for_pf_share_forward">
+                      <?= gettext('Using policy routing in the filter rules causes packets to skip ' .
+                                  'processing for the traffic shaper and captive portal tasks. ' .
+                                  'Using this option enables the sharing of such forwarding decisions ' .
+                                  'between all components to accomodate complex setups. Use with care.') ?>
                     </div>
                   </td>
                 </tr>
