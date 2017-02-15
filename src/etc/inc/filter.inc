@@ -577,7 +577,14 @@ function filter_configure_sync($verbose = false)
         return;
     }
 
-    # If we are not using bogonsv6 then we can remove any bogonsv6 table from the running pf (if the table is not there, the kill is still fine).
+    /* set shared forwarding according to config option */
+    set_single_sysctl('net.pf.share_forward', !empty($config['system']['pf_share_forward']) ? '1' : '0');
+
+    /*
+     * If we are not using bogonsv6 then we can remove any
+     * bogonsv6 table from the running pf (if the table is
+     * not there, the kill is still fine).
+     */
     if (!is_bogonsv6_used()) {
         $_grbg = exec('/sbin/pfctl -t bogonsv6 -T kill 2>/dev/null');
     }

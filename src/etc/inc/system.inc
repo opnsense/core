@@ -1516,7 +1516,7 @@ function system_kernel_configure($verbose = false)
         log_error(sprintf('Loading %s cryptographic accelerator module.', $config['system']['crypto_hardware']));
         $mods[] = $config['system']['crypto_hardware'];
     }
-    if (isset($config['system']['cryptodev_enable'])) {
+    if (!empty($config['system']['cryptodev_enable'])) {
         log_error('Loading cryptodev kernel module.');
         $mods[] = 'cryptodev';
     }
