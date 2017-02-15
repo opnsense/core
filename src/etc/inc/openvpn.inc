@@ -294,7 +294,7 @@ function openvpn_validate_cidr_ipv4($value)
         }
         /* IPv4 case is very strict, cannot be a host address */
         $mask = (0xffffffff << (32 - $mask)) & 0xffffffff;
-	if ((ip2long($ip) & $mask) != ip2long($ip)) {
+        if ((ip2long($ip) & $mask) != ip2long($ip)) {
             return false;
         }
     }
