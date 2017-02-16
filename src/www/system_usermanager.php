@@ -581,7 +581,7 @@ $( document ).ready(function() {
                       <input name="passwordfld1" type="password" class="formfld pwd" id="passwordfld1" size="20" value="" /><br/>
                       <input name="passwordfld2" type="password" class="formfld pwd" id="passwordfld2" size="20" value="" />
                       <small><?= gettext("(confirmation)"); ?></small><br/><br/>
-                      <input type="checkbox" name="gen_new_password"/>&nbsp;<small><?=gettext('Generate new random password') ?></small>
+                      <input type="checkbox" name="gen_new_password"/>&nbsp;<small><?=gettext('Generate a scrambled password to prevent local database logins for this user.') ?></small>
                     </td>
                   </tr>
                   <tr>
