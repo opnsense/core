@@ -1,6 +1,7 @@
 <?php
 
 /*
+    Copyright (C) 2017 Deciso B.V.
     Copyright (C) 2004-2007 Scott Ullrich
     Copyright (C) 2005 Bill Marquette
     Copyright (C) 2006 Peter Allgeyer
@@ -35,12 +36,6 @@ require_once('filter.lib.inc');
 /* Create a global array to avoid errors on rulesets. */
 $GatewaysList = array();
 
-/* Used for the hostname dns resolver */
-$filterdns = array();
-
-/* Used for aliases and interface macros */
-$aliases = "";
-
 function alias_expand_urltable($name) {
     global $config;
     $urltable_prefix = "/var/db/aliastables/";
@@ -51,7 +46,7 @@ function alias_expand_urltable($name) {
             if (preg_match("/urltable/i", $alias['type']) && ($alias['name'] == $name)) {
                 if (is_URL($alias["url"]) && file_exists($urltable_filename) && filesize($urltable_filename)) {
                     return $urltable_filename;
-                } elseif (process_alias_urltable($name, $alias["url"], 0, true)) {
+                } elseif (process_alias_urltable($name, $alias["type"], $alias["url"], 0, true)) {
                     return $urltable_filename;
                 }
             } elseif ($alias['type'] == 'geoip' && $alias['name'] == $name) {
@@ -190,7 +185,7 @@ function update_alias_names_upon_change($section, $field, $new_alias_name, $orig
     }
 }
 
-function process_alias_urltable($name, $url, $freq, $forceupdate = false)
+function process_alias_urltable($name, $alias_type, $url, $freq, $forceupdate = false)
 {
     global $config;
 
@@ -216,7 +211,6 @@ function process_alias_urltable($name, $url, $freq, $forceupdate = false)
         // todo: rethink alias_expand_urltable in filter.inc , its probably not a very good idea to download and
         //       process files during boot.
         $output_file_handle = fopen($urltable_filename, 'w');
-        $alias_type = alias_get_type($name);
         // Try to fetch the URL supplied
         @unlink("{$urltable_filename}.tmp");
         $verify_ssl = isset($config['system']['checkaliasesurlcert']);
@@ -376,10 +370,7 @@ function filter_delete_states_for_down_gateways()
 
 function filter_configure_sync($verbose = false)
 {
-    global $config, $filterdns, $aliases;
-
-    /* holds the tables to be flushed *AFTER* the filter is fully loaded */
-    $after_filter_configure_run = array();
+    global $config;
 
     $FilterIflist = filter_generate_optcfg_array();
 
@@ -403,7 +394,7 @@ function filter_configure_sync($verbose = false)
 
     /* generate aliases */
     update_filter_reload_status(gettext("Creating aliases"));
-    $aliases = filter_generate_aliases($FilterIflist, $after_filter_configure_run);
+    $aliases = filter_generate_aliases($FilterIflist);
     $aliases .= filter_generate_network_aliases();
     $gateways = filter_generate_gateways();
 
@@ -595,33 +586,31 @@ function filter_configure_sync($verbose = false)
 
     update_filter_reload_status(gettext("Reloading filterdns daemon"));
 
-    if (!empty($filterdns)) {
-        @file_put_contents('/var/etc/filterdns.conf', implode('', $filterdns));
-        unset($filterdns);
-        if (isvalidpid('/var/run/filterdns.pid')) {
-            killbypid('/var/run/filterdns.pid', 'HUP');
-        } else {
-            /*
-             * FilterDNS has three debugging levels. The default choosen is 1.
-             * Availabe are level 2 and greater then 2.
-             */
-            if (isset($config['system']['aliasesresolveinterval']) && is_numeric($config['system']['aliasesresolveinterval'])) {
-                $resolve_interval = $config['system']['aliasesresolveinterval'];
-            } else {
-                $resolve_interval = 300;
+    // collect all filterdns entries
+    $filterdns = null;
+    foreach (filter_expand_aliases() as $name => $aliascontent) {
+        if (!empty($aliascontent['hostnames'])) {
+            foreach ($aliascontent['hostnames'] as $address) {
+                $filterdns .= "pf {$address} {$name}\n";
             }
-            mwexec("/usr/local/sbin/filterdns -p /var/run/filterdns.pid -i {$resolve_interval} -c /var/etc/filterdns.conf -d 1");
         }
-    } else {
-        killbypid('/var/run/filterdns.pid');
+    }
+    killbypid('/var/run/filterdns.pid', 'KILL', true);
+    if (!empty($filterdns)) {
+        @file_put_contents('/var/etc/filterdns.conf', $filterdns);
+        /*
+         * FilterDNS has three debugging levels. The default choosen is 1.
+         * Availabe are level 2 and greater than 2.
+         */
+        if (isset($config['system']['aliasesresolveinterval']) && is_numeric($config['system']['aliasesresolveinterval'])) {
+            $resolve_interval = $config['system']['aliasesresolveinterval'];
+        } else {
+            $resolve_interval = 300;
+        }
+        mwexec("/usr/local/sbin/filterdns -p /var/run/filterdns.pid -i {$resolve_interval} -c /var/etc/filterdns.conf -d 1");
     }
 
     update_filter_reload_status(gettext("Flushing schedule state"));
-
-    /* run items scheduled for after filter configure run */
-    foreach ($after_filter_configure_run as $afcr) {
-        mwexecf('/sbin/pfctl -T flush -t %s', $afcr);
-    }
 
     if ($verbose) {
         echo '.';
@@ -720,73 +709,77 @@ function filter_generate_scrubing(&$FilterIflist)
     return $scrubrules;
 }
 
-function filter_generate_nested_alias($name, $alias, &$aliasnesting, &$aliasaddrnesting) {
-    global $aliastable, $filterdns;
+/**
+ * recursively collect alias(es) contents
+ * @param $aliasname string|null alias name or null to fetch all aliases
+ * @param $maxdepth maximum recursion depth
+ * @param $depth current depth (internal use)
+ * @return array containing addresses (or ports) and hostnames
+ */
+function filter_expand_aliases($aliasname=null, $maxdepth=10, $depth=0)
+{
+    global $config;
 
-    $addresses = explode(" ", $alias);
-    $finallist = "";
-    $builtlist = "";
-    $urltable_nesting = "";
-    $aliasnesting[$name] = $name;
-    foreach ($addresses as $address) {
-        if (empty($address)) {
-            continue;
-        }
-        $linelength = strlen($builtlist);
-        $tmpline = "";
-        if (is_alias($address)) {
-            if (alias_get_type($address) == 'urltable') {
-                // Feature#1603. For this type of alias we do not need to recursively call filter_generate_nested_alias. Just load IPs from the file.
-                $urltable_netsting = alias_expand_urltable($address);
-                if (!empty($urltable_nesting)) {
-                    $urlfile_as_arr = file($urltable_nesting);
-                    foreach($urlfile_as_arr as $line) {
-                        $address= rtrim($line);
-                        if ((strlen($tmpline) + $linelength) > 4036) {
-                            $finallist .= "{$tmpline} \\\n";
-                            $tmpline = "";
+    $response = array();
+    if (isset($config['aliases']['alias'])) {
+        foreach ($config['aliases']['alias'] as $aliased) {
+            if ($aliasname === null || $aliasname == $aliased['name']) {
+                // new output structure
+                $response[$aliased['name']] = array('addresses' => array(), 'hostnames' => array());
+                if ($aliasname !== null && in_array($aliased['type'], array('urltable', 'urltable_ports'))) {
+                    // only get contents when nested,
+                    // it's functional, but fetching remote lists has disadvantages...
+                    $urltable_contents = @file_get_contents(alias_expand_urltable($aliased['name']));
+                    $response[$aliased['name']]['addresses'] = preg_split('/[\s]+/', $urltable_contents);
+                } elseif (in_array($aliased['type'], array('host', 'network', 'port', 'url'))
+                      && isset($aliased['address'])) {
+                    // split alias contents and handle per type
+                    foreach (explode(" ", $aliased['address']) as $address) {
+                        if (is_alias($address)) {
+                            if ($depth < $maxdepth) {
+                                $tmp = filter_expand_aliases($address, $maxdepth, $depth+1);
+                                foreach ($tmp as $aliascontent2) {
+                                    foreach ($aliascontent2 as $aliastype_key => $aliastype) {
+                                        $response[$aliased['name']][$aliastype_key] = array_merge(
+                                            $response[$aliased['name']][$aliastype_key], $aliastype
+                                        );
+                                    }
+                                }
+                            }
+                        } elseif (!is_ipaddr($address) && !is_subnet($address)
+                              && !is_port($address) && !is_portrange($address) && is_hostname($address)
+                              && in_array($aliased['type'], array('host'))) {
+                            $response[$aliased['name']]['hostnames'][] = $address;
+                        } elseif (strpos($address, '-') !== false) {
+                            $tmp = explode('-', $address);
+                            $response[$aliased['name']]['addresses'] = array_merge(
+                              $response[$aliased['name']]['addresses'],
+                              ip_range_to_subnet_array($tmp[0], $tmp[1])
+                            );
+                        } else {
+                            $response[$aliased['name']]['addresses'][] = $address;
                         }
-                        $tmpline .= " {$address}";
                     }
                 }
-            } elseif (!isset($aliasnesting[$address])) {
-                /* We already expanded this alias so there is no neccessity to do it again. */
-                $tmpline = filter_generate_nested_alias($name, $aliastable[$address], $aliasnesting, $aliasaddrnesting);
             }
-        } elseif (!isset($aliasaddrnesting[$address])) {
-            if (!is_ipaddr($address) && !is_subnet($address) && !is_port($address) && !is_portrange($address) && is_hostname($address)) {
-                if (!isset($filterdns["{$address}{$name}"]) && in_array(alias_get_type($name), array('host'))) {
-                    $filterdns["{$address}{$name}"] = "pf {$address} {$name}\n";
-                }
-                continue;
-            }
-            $aliasaddrnesting[$address] = $address;
-            $tmpline = " {$address}";
-        }
-        if ((strlen($tmpline)+ $linelength) > 4036) {
-            $finallist .= "{$builtlist} \\\n";
-            $builtlist = "";
-        }
-        if (!empty($tmpline)) {
-            $builtlist .= " {$tmpline}";
         }
     }
-    $finallist .= $builtlist;
-    return $finallist;
+    // de-duplicate results
+    foreach ($response as $alias_name => $alias) {
+        foreach ($alias as $type => $value) {
+            $response[$alias_name][$type] = array_filter(array_unique($value), 'strlen');
+        }
+    }
+    return $response;
 }
 
 function filter_expand_alias($alias_name)
 {
-    global $config;
-
-    if (isset($config['aliases']['alias'])) {
-        foreach ($config['aliases']['alias'] as $aliased) {
-            if ($aliased['name'] == $alias_name) {
-                $aliasnesting = array();
-                $aliasaddrnesting = array();
-                return filter_generate_nested_alias($aliased['name'], $aliased['address'], $aliasnesting, $aliasaddrnesting);
-            }
-        }
+    $tmp = filter_expand_aliases($alias_name);
+    if (!empty($tmp[$alias_name]['addresses'])) {
+        return implode(' ', $tmp[$alias_name]['addresses']);
+    } else {
+        return '';
     }
 }
 
@@ -795,7 +788,7 @@ function filter_expand_alias_array($alias_name) {
     return explode(" ", preg_replace('/\s+/', ' ', trim($expansion)));
 }
 
-function filter_generate_aliases(&$FilterIflist, &$after_filter_configure_run)
+function filter_generate_aliases(&$FilterIflist)
 {
     global $config;
 
@@ -838,19 +831,21 @@ function filter_generate_aliases(&$FilterIflist, &$after_filter_configure_run)
     $aliases .= "\n# User Aliases \n";
     /* Setup pf groups */
     if (isset($config['aliases']['alias'])) {
+        $expanded_aliases = filter_expand_aliases();
         foreach ($config['aliases']['alias'] as $aliased) {
             $aliasnesting = array();
             $aliasaddrnesting = array();
-            $addrlist = filter_generate_nested_alias($aliased['name'], $aliased['address'], $aliasnesting, $aliasaddrnesting);
+            if (!empty($expanded_aliases[$aliased['name']]['addresses'])) {
+                $addrlist = implode(' ', $expanded_aliases[$aliased['name']]['addresses']);
+            } else {
+                $addrlist = null;
+            }
             switch ($aliased['type']) {
                 case "host":
                 case "network":
                 case "url":
                     if (empty($addrlist)) {
-                        $aliases .= "table <{$aliased['name']}> persist\n";
-                        if (empty($aliased['address'])) {
-                            $after_filter_configure_run[] = $aliased['name'];
-                        }
+                        $aliases .= "table <{$aliased['name']}> {} persist\n";
                     } else {
                         $aliases .= "table <{$aliased['name']}> { {$addrlist} } \n";
                     }
@@ -1535,7 +1530,7 @@ function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcpor
 
 function filter_nat_rules_generate(&$FilterIflist)
 {
-    global $config, $GatewaysList, $aliases;
+    global $config, $GatewaysList;
 
     $natrules = "no nat proto carp\n";
     $natrules .= "no rdr proto carp\n";

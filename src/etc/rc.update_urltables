@@ -36,7 +36,7 @@ if (count($todo) > 0) {
     foreach ($todo as $alias) {
         if (preg_match('/urltable/i', $alias['type'])) {
             log_error("{$argv[0]}: start update {$alias['name']} ");
-            $r = process_alias_urltable($alias['name'], $alias['url'], $alias['updatefreq']);
+            $r = process_alias_urltable($alias['name'], $alias['type'], $alias['url'], $alias['updatefreq']);
             if ($r == 1) {
                 if ($alias['type'] == "urltable") {
                     exec("/sbin/pfctl -t " . escapeshellarg($alias['name']) . " -T replace -f /var/db/aliastables/" . escapeshellarg($alias['name']) . ".txt 2>&1", $result);
