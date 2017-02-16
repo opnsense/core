@@ -232,8 +232,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("The username is longer than 16 characters.");
         }
 
-        if (($pconfig['passwordfld1']) && ($pconfig['passwordfld1'] != $pconfig['passwordfld2'])) {
-            $input_errors[] = gettext("The passwords do not match.");
+        if (!empty($pconfig['passwordfld1'])) {
+            if ($pconfig['passwordfld1'] != $pconfig['passwordfld2']) {
+                $input_errors[] = gettext('The passwords do not match.');
+            }
+            if (!empty($pconfig['gen_new_password'])) {
+                $input_errors[] = gettext('Cannot set random password due to explicit input.');
+            }
         }
 
         if (!empty($pconfig['disabled']) && $_SESSION['Username'] === $a_user[$id]['name']) {
@@ -305,6 +310,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             /* the user password was modified */
             if (!empty($pconfig['passwordfld1'])) {
                 local_user_set_password($userent, $pconfig['passwordfld1']);
+            } elseif (!empty($pconfig['gen_new_password'])) {
+                local_user_set_password($userent);
             }
 
             isset($pconfig['scope']) ? $userent['scope'] = $pconfig['scope'] : $userent['scope'] = "system";
@@ -572,8 +579,9 @@ $( document ).ready(function() {
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password");?></td>
                     <td>
                       <input name="passwordfld1" type="password" class="formfld pwd" id="passwordfld1" size="20" value="" /><br/>
-                      <input name="passwordfld2" type="password" class="formfld pwd" id="passwordfld2" size="20" value="" />&nbsp;
-                      <small><?= gettext("(confirmation)"); ?></small>
+                      <input name="passwordfld2" type="password" class="formfld pwd" id="passwordfld2" size="20" value="" />
+                      <small><?= gettext("(confirmation)"); ?></small><br/><br/>
+                      <input type="checkbox" name="gen_new_password"/>&nbsp;<small><?=gettext('Generate new random password') ?></small>
                     </td>
                   </tr>
                   <tr>
@@ -822,7 +830,7 @@ $( document ).ready(function() {
                     <td><a id="help_for_otp_seed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("OTP seed");?></td>
                     <td>
                       <input name="otp_seed" type="text" value="<?=$pconfig['otp_seed'];?>"/>
-                      <input type="checkbox" name="gen_otp_seed"/>&nbsp;<small><?=gettext("generate new (160bit) secret");?></small>
+                      <input type="checkbox" name="gen_otp_seed"/>&nbsp;<small><?= gettext('Generate new secret (160 bit)') ?></small>
                       <div class="hidden" for="help_for_otp_seed">
                         <?=gettext("OTP (base32) seed to use when a one time password authenticator is used");?><br/>
 <?php
