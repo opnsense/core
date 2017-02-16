@@ -201,7 +201,7 @@ class SettingsController extends ApiControllerBase
         $grid = new UIModelGrid($mdlShaper->pipes->pipe);
         return $grid->fetchBindRequest(
             $this->request,
-            array("enabled","number", "bandwidth","bandwidthMetric","burst","description","mask","origin"),
+            array("enabled","number", "bandwidth","bandwidthMetric","description","mask","origin"),
             "number"
         );
     }
