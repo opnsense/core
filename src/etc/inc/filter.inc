@@ -378,9 +378,6 @@ function filter_configure_sync($verbose = false)
 {
     global $config, $filterdns, $aliases;
 
-    /* holds the tables to be flushed *AFTER* the filter is fully loaded */
-    $after_filter_configure_run = array();
-
     $FilterIflist = filter_generate_optcfg_array();
 
     // initialize fw plugin object
@@ -405,7 +402,7 @@ function filter_configure_sync($verbose = false)
 
     /* generate aliases */
     update_filter_reload_status(gettext("Creating aliases"));
-    $aliases = filter_generate_aliases($FilterIflist, $after_filter_configure_run);
+    $aliases = filter_generate_aliases($FilterIflist);
     $aliases .= filter_generate_network_aliases();
     $gateways = filter_generate_gateways();
 
@@ -614,11 +611,6 @@ function filter_configure_sync($verbose = false)
 
     update_filter_reload_status(gettext("Flushing schedule state"));
 
-    /* run items scheduled for after filter configure run */
-    foreach ($after_filter_configure_run as $afcr) {
-        mwexecf('/sbin/pfctl -T flush -t %s', $afcr);
-    }
-
     if ($verbose) {
         echo '.';
         flush();
@@ -791,7 +783,7 @@ function filter_expand_alias_array($alias_name) {
     return explode(" ", preg_replace('/\s+/', ' ', trim($expansion)));
 }
 
-function filter_generate_aliases(&$FilterIflist, &$after_filter_configure_run)
+function filter_generate_aliases(&$FilterIflist)
 {
     global $config;
 
@@ -843,10 +835,7 @@ function filter_generate_aliases(&$FilterIflist, &$after_filter_configure_run)
                 case "network":
                 case "url":
                     if (empty($addrlist)) {
-                        $aliases .= "table <{$aliased['name']}> persist\n";
-                        if (empty($aliased['address'])) {
-                            $after_filter_configure_run[] = $aliased['name'];
-                        }
+                        $aliases .= "table <{$aliased['name']}> {} persist\n";
                     } else {
                         $aliases .= "table <{$aliased['name']}> { {$addrlist} } \n";
                     }
