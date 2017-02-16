@@ -1,31 +1,53 @@
 #!/bin/sh
 
 IF="${1}"
-LOCAL_IP="${3}"
+AF="${2}"
+IP="${3}"
+GW=
 
-if [ -f /tmp/${IF}up ] && [ -f /conf/${IF}.log ]; then
-	seconds=$((`date -j +%s` - `/usr/bin/stat -f %m /tmp/${IF}up`))
-	/usr/local/sbin/ppp-log-uptime.sh $seconds ${IF} &
+/usr/local/etc/rc.kill_states ${IF} ${IP}
+
+if [ "${AF}" = "inet" ]; then
+	if [ -f /tmp/${IF}up ] && [ -f /conf/${IF}.log ]; then
+		seconds=$((`date -j +%s` - `/usr/bin/stat -f %m /tmp/${IF}up`))
+		/usr/local/sbin/ppp-log-uptime.sh $seconds ${IF} &
+	fi
+
+	if [ -s "/tmp/${IF}_defaultgw" ]; then
+		GW=$(head -n 1 /tmp/${IF}_defaultgw)
+	fi
+	if [ -n "${GW}" ]; then
+		/sbin/route delete -${AF} default ${GW}
+	fi
+
+	if [ -f "/var/etc/nameserver_${IF}" ]; then
+		# Remove old entries
+		for nameserver in $(cat /var/etc/nameserver_${IF}); do
+			/sbin/route delete ${nameserver} >/dev/null 2>&1
+		done
+		/bin/rm -f /var/etc/nameserver_${IF}
+	fi
+
+	# Do not remove gateway used during filter reload.
+	/bin/rm -f /tmp/${IF}_router /tmp/${IF}up /tmp/${IF}_ip
+elif [ "${AF}" = "inet6" ]; then
+	if [ -s "/tmp/${IF}_defaultgwv6" ]; then
+		GW=$(head -n 1 /tmp/${IF}_defaultgwv6)
+	fi
+	if [ -n "${GW}" ]; then
+		/sbin/route delete -${AF} default ${GW}
+	fi
+
+	if [ -f "/var/etc/nameserver_v6${IF}" ]; then
+		# Remove old entries
+		for nameserver in $(cat /var/etc/nameserver_v6${IF}); do
+			/sbin/route delete ${nameserver} >/dev/null 2>&1
+		done
+		/bin/rm -f /var/etc/nameserver_v6${IF}
+	fi
+
+	# Do not remove gateway used during filter reload.
+	/bin/rm -f /tmp/${IF}_routerv6 /tmp/${IF}upv6 /tmp/${IF}_ipv6
 fi
 
-/usr/local/etc/rc.kill_states ${IF} ${LOCAL_IP}
-
-if [ -s "/tmp/${IF}_defaultgw" ]; then
-	GW=`head -n 1 /tmp/${IF}_defaultgw`
-	[ -n "${GW}" ] \
-		&& /sbin/route delete default ${GW}
-fi
-# delete the node just in case mpd cannot do that
-/usr/sbin/ngctl shutdown ${IF}:
-if [ -f "/var/etc/nameserver_${IF}" ]; then
-	# Remove old entries
-	for nameserver in `cat /var/etc/nameserver_${IF}`; do
-		/sbin/route delete ${nameserver} >/dev/null 2>&1
-	done
-	/bin/rm -f /var/etc/nameserver_${IF}
-fi
-# Do not remove gateway used during filter reload.
-/bin/rm -f /tmp/${IF}_router
-/bin/rm -f /tmp/${IF}up
-/bin/rm -f /tmp/${IF}_ip
 /usr/local/opnsense/service/configd_ctl.py dns reload
