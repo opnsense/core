@@ -63,16 +63,16 @@ if (empty($interface)) {
 }
 
 //Do not process while booting
-if (file_exists("/var/run/booting") && $config['interfaces'][$interface]['ipaddrv6'] != "dhcp6")
+if (file_exists("/var/run/booting") && $config['interfaces'][$interface]['ipaddrv6'] != "dhcp6") {
 	return;
+}
 
 /*
  * NOTE: Take care of openvpn and similar if you generate the event to reconfigure an interface.
  *	i.e. OpenVPN might be in tap mode and not have an ip.
  */
 if ((empty($curwanipv6) || !is_ipaddrv6($curwanipv6)) && substr($interface_real, 0, 4) != "ovpn") {
-        log_error("rc.newwanipv6: Failed to update {$interface_descr}[{$interface}] IPv6, restarting...");
-	// configd_run("interface reconfigure {$interface}");
+        log_error("rc.newwanipv6: Failed to detect IPv6 for {$interface_descr}[{$interface}]");
         return;
 }
 
@@ -85,26 +85,31 @@ if (!empty($new_domain_name_servers)) {
 			$valid_ns[] = trim($ns);
 	}
 
-	if (count($valid_ns > 0))
+	if (count($valid_ns) > 0) {
 		file_put_contents("/var/etc/nameserver_v6{$interface}", implode("\n", $valid_ns));
+	}
 }
 $new_domain_name = getenv("new_domain_name");
-if (!empty($new_domain_name))
+if (!empty($new_domain_name)) {
 	file_put_contents("/var/etc/searchdomain_v6{$interface}", $new_domain_name);
+}
 
 /* write current WAN IPv6 to file */
-if (is_ipaddrv6($curwanipv6))
+if (is_ipaddrv6($curwanipv6)) {
 	@file_put_contents("/var/db/{$interface}_ipv6", $curwanipv6);
+}
 
 log_error("rc.newwanipv6: on (IP address: {$curwanipv6}) (interface: {$interface}) (real interface: {$interface_real}).");
 
 $oldipv6 = "";
-if (file_exists("/var/db/{$interface}_cacheipv6"))
+if (file_exists("/var/db/{$interface}_cacheipv6")) {
 	$oldipv6 = file_get_contents("/var/db/{$interface}_cacheipv6");
+}
 
 $grouptmp = link_interface_to_group($interface);
-if (!empty($grouptmp))
+if (!empty($grouptmp)) {
 	array_walk($grouptmp, 'interface_group_add_member');
+}
 
 link_interface_to_track6($interface, "update");
 system_resolvconf_generate();
@@ -124,12 +129,14 @@ if (is_ipaddrv6($oldipv6)) {
 			}
 
 			/* start OpenVPN server & clients */
-			if (substr($interface_real, 0, 4) != "ovpn")
+			if (substr($interface_real, 0, 4) != "ovpn") {
 				openvpn_resync_all($interface);
+			}
 		}
 		return;
-	} else if (does_interface_exist($interface_real))
+	} elseif (does_interface_exist($interface_real)) {
 		mwexec("/sbin/ifconfig {$interface_real} inet6 {$oldipv6} delete");
+	}
 
 	file_put_contents("/var/db/{$interface}_cacheipv6", $curwanipv6);
 }
