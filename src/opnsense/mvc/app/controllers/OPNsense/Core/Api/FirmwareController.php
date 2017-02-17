@@ -519,9 +519,9 @@ class FirmwareController extends ApiControllerBase
                 /* figure out local and remote plugins */
                 $plugin = explode('-', $translated['name']);
                 if (count($plugin)) {
-                    if ($plugin[0] == 'os' || ($type == 'local' && $plugin[0] == 'ospriv') ||
-                        ($devel && $type == 'remote' && $plugin[0] == 'ospriv')) {
-                        if ($devel || (count($plugin) < 3 || end($plugin) != 'devel')) {
+                    if ($plugin[0] == 'os') {
+                        if ($type == 'local' || ($type == 'remote' &&
+                            ($devel || end($plugin) != 'devel'))) {
                             $plugins[$translated['name']] = $translated;
                         }
                     }
