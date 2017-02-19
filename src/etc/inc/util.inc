@@ -1088,21 +1088,6 @@ function is_alias($name)
     return array_key_exists($name, $aliastable);
 }
 
-function alias_get_type($name)
-{
-    global $config;
-
-    if (is_array($config['aliases']['alias'])) {
-        foreach ($config['aliases']['alias'] as $alias) {
-            if ($name == $alias['name']) {
-                return $alias['type'];
-            }
-        }
-    }
-
-    return "";
-}
-
 /* expand a host or network alias, if necessary */
 function alias_expand($name)
 {

@@ -46,7 +46,7 @@ function alias_expand_urltable($name) {
             if (preg_match("/urltable/i", $alias['type']) && ($alias['name'] == $name)) {
                 if (is_URL($alias["url"]) && file_exists($urltable_filename) && filesize($urltable_filename)) {
                     return $urltable_filename;
-                } elseif (process_alias_urltable($name, $alias["url"], 0, true)) {
+                } elseif (process_alias_urltable($name, $alias["type"], $alias["url"], 0, true)) {
                     return $urltable_filename;
                 }
             } elseif ($alias['type'] == 'geoip' && $alias['name'] == $name) {
@@ -185,7 +185,7 @@ function update_alias_names_upon_change($section, $field, $new_alias_name, $orig
     }
 }
 
-function process_alias_urltable($name, $url, $freq, $forceupdate = false)
+function process_alias_urltable($name, $alias_type, $url, $freq, $forceupdate = false)
 {
     global $config;
 
@@ -211,7 +211,6 @@ function process_alias_urltable($name, $url, $freq, $forceupdate = false)
         // todo: rethink alias_expand_urltable in filter.inc , its probably not a very good idea to download and
         //       process files during boot.
         $output_file_handle = fopen($urltable_filename, 'w');
-        $alias_type = alias_get_type($name);
         // Try to fetch the URL supplied
         @unlink("{$urltable_filename}.tmp");
         $verify_ssl = isset($config['system']['checkaliasesurlcert']);
