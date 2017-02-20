@@ -540,7 +540,9 @@ class SystemhealthController extends ApiControllerBase
         if ($rrd_details['filename'] != "") {
             $backend = new Backend();
             $response = $backend->configdpRun("systemhealth fetch ", array($rrd_details['filename']));
-            $xml = @simplexml_load_string($response);
+            if ($response != null) {
+                $xml = @simplexml_load_string($response);
+            }
         }
 
         if ($xml !== false) {
