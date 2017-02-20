@@ -77,6 +77,7 @@ class Backend
     public function configdRun($event, $detach = false, $timeout = 120, $connect_timeout = 10)
     {
         $endOfStream = chr(0).chr(0).chr(0);
+        $errorOfStream = 'Execute error';
         $poll_timeout = 2; // poll timeout interval
 
         // wait until socket exist for a maximum of $connect_timeout
@@ -122,7 +123,12 @@ class Backend
             }
         }
 
-        return  str_replace($endOfStream, "", $resp);
+        if (strlen($resp) >= strlen($errorOfStream) &&
+            substr($resp, 0, strlen($errorOfStream)) == $errorOfStream) {
+            return null;
+        }
+
+        return str_replace($endOfStream, '', $resp);
     }
 
     /**

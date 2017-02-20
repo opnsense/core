@@ -446,6 +446,7 @@ class FirmwareController extends ApiControllerBase
 
         return $result;
     }
+
     /**
      * retrieve upgrade status (and log file of current process)
      */
@@ -457,7 +458,7 @@ class FirmwareController extends ApiControllerBase
 
         $result['log'] = $cmd_result;
 
-        if (trim($cmd_result) == 'Execute error') {
+        if ($cmd_result == null) {
             $result['status'] = 'error';
         } elseif (strpos($cmd_result, '***DONE***') !== false) {
             $result['status'] = 'done';
