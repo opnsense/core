@@ -558,6 +558,9 @@ function unbound_add_host_entries()
     }
 
     foreach ($interfaces as $interface) {
+        if ($interface == 'lo0') {
+            continue;
+        }
         $if = get_real_interface($interface);
         if (does_interface_exist($if)) {
             $laddr = find_interface_ip($if);
