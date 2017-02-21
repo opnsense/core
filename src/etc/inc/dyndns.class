@@ -32,6 +32,7 @@
 	 *    - GratisDNS (gratisdns.dk)
 	 *    - City Network (citynetwork.se)
 	 *    - Duck DNS (duckdns.org)
+	 *    - Google Domains (domains.google.com)
 	 * +----------------------------------------------------+
 	 *  Requirements:
 	 *    - PHP version 4.0.2 or higher with the CURL Library and the PCRE Library
@@ -75,6 +76,7 @@
 	 *  OVH DynHOST	   - Last Tested: NEVER
 	 *  City Network   - Last Tested: 13 November 2013
 	 *  Duck DNS       - Last Tested: 04 March 2015
+	 *  Google Domains - Last Tested: 20 February 2017
 	 * +====================================================+
 	 *
 	 * @author	E.Kristensen
@@ -1238,9 +1240,9 @@
 					} else if (preg_match('/badagent/i', $data)) {
 						$status = "Dynamic DNS: (Error) Bad request";
 					} else if (preg_match('/abuse/i', $data)) {
-						$status = "Dynamic DNS: (Error) Access has been blocked";
+						$status = "Dynamic DNS: (Error) Access has been blocked for abuse";
 					} else if (preg_match('/911/i', $data)) {
-						$status = "Dynamic DNS: (Error) ";
+						$status = "Dynamic DNS: (Error) Server-side error or maintenance";
 					} else {
 						$status = "Dynamic DNS: (Unknown Response)";
 						log_error("Dynamic DNS: PAYLOAD: {$data}");
