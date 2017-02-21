@@ -752,6 +752,12 @@ function filter_expand_aliases($aliasname=null, $maxdepth=10, $depth=0)
                               && !is_port($address) && !is_portrange($address) && is_hostname($address)
                               && in_array($aliased['type'], array('host'))) {
                             $response[$aliased['name']]['hostnames'][] = $address;
+                        } elseif (strpos($address, '-') !== false || strpos($address, ':') !== false) {
+                            $tmp = preg_split("/[:-]+/", $address);
+                            $response[$aliased['name']]['addresses'] = array_merge(
+                              $response[$aliased['name']]['addresses'],
+                              ip_range_to_subnet_array($tmp[0], $tmp[1])
+                            );
                         } else {
                             $response[$aliased['name']]['addresses'][] = $address;
                         }
