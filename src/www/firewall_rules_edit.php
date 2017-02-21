@@ -247,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($pconfig['protocol'] == "icmp" && !empty($pconfig['icmptype']) && $pconfig['ipprotocol'] == "inet46") {
         $input_errors[] =  gettext("You can not assign a ICMP type to a rule that applies to IPv4 and IPv6");
     }
-    if ($pconfig['statetype'] == "synproxy state" ) {
+    if ($pconfig['statetype'] == "synproxy state" || $pconfig['statetype'] == "modulate state") {
         if ($pconfig['protocol'] != "tcp") {
             $input_errors[] = sprintf(gettext("%s is only valid with protocol tcp."),$pconfig['statetype']);
         }
@@ -1466,6 +1466,9 @@ include("head.inc");
                             </option>
                             <option value="sloppy state" <?=$pconfig['statetype'] == "sloppy state" ? "selected=\"selected\"" :""; ?>>
                               <?=gettext("sloppy state");?>
+                            </option>
+                            <option value="modulate state"<?=$pconfig['statetype'] == "modulate state" ?  "selected=\"selected\"" :""; ?>>
+                              <?=gettext("modulate state");?>
                             </option>
                             <option value="synproxy state"<?=$pconfig['statetype'] == "synproxy state" ?  "selected=\"selected\"" :""; ?>>
                               <?=gettext("synproxy state");?>
