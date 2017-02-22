@@ -445,7 +445,7 @@ function ipsec_configure($verbose = false)
 
     /* get the automatic ping_hosts.sh ready */
     @unlink('/var/db/ipsecpinghosts');
-    touch('/var/db/ipsecpinghosts');
+    @touch('/var/db/ipsecpinghosts');
 
     //  Prefer older IPsec SAs (advanced setting)
     if (isset($config['ipsec']['preferoldsa'])) {
