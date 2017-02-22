@@ -1935,10 +1935,8 @@ function services_get()
         'name' => 'configd',
     );
 
-    if (function_exists('plugins_services')) {
-        foreach (plugins_services() as $service) {
-            $services[] = $service;
-        }
+    foreach (plugins_services() as $service) {
+        $services[] = $service;
     }
 
     uasort($services, function ($a, $b) {

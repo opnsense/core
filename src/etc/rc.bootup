@@ -139,9 +139,7 @@ mwexec("/usr/local/etc/rc.dyndns.update"); /* XXX convert to plugin */
 prefer_ipv4_or_ipv6();
 filter_configure_sync(true);
 
-if (function_exists('plugins_configure')) {
-    plugins_configure('bootup', true);
-}
+plugins_configure('bootup', true);
 
 /* start IPsec tunnels */
 $ipsec_dynamic_hosts = ipsec_configure(true);

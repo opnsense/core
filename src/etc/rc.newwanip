@@ -203,9 +203,7 @@ if (!is_ipaddr($oldip) || $curwanip != $oldip || !is_ipaddrv4($config['interface
     enable_rrd_graphing();
 
     /* reload plugins */
-    if (function_exists('plugins_configure')) {
-        plugins_configure('interface');
-    }
+    plugins_configure('interface');
 }
 
 /* reload filter, don't try to sync to carp slave */

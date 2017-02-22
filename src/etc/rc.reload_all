@@ -67,10 +67,11 @@ system_cron_configure(true);
 
 mwexec_bg('/usr/local/etc/rc.sshd');
 
-if (function_exists('plugins_configure')) {
-    log_error("rc.reload_all: Reloading all plugin settings.");
-    plugins_configure('local', true);
-}
+log_error("rc.reload_all: Reloading all plugin settings.");
+
+plugins_configure('local', true);
+
+log_error("rc.reload_all: Reloading RRD graphing");
 
 enable_rrd_graphing(true);
 
