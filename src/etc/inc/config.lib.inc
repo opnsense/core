@@ -57,10 +57,9 @@ require_once("certs.inc");
 /*
  * Hook up the plugin system which consists of several low-profile
  * functions that can be called from within our backend code when
- * they exist.  The magic here is that if the plugin system is not
- * required it can be completely disabled by removing plugins.inc.
+ * they exist.
  */
-include_once('plugins.inc');
+require_once('plugins.inc');
 
 /* make a global alias table (for faster lookups) */
 function alias_make_table($config)
@@ -199,9 +198,7 @@ function write_config($desc = '', $backup = true)
         return -1;
     }
 
-    if (function_exists('plugins_interfaces')) {
-        plugins_interfaces();
-    }
+    plugins_interfaces();
 
     $cnf = OPNsense\Core\Config::getInstance();
     $cnf->fromArray($config);

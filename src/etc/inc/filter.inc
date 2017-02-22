@@ -379,9 +379,7 @@ function filter_configure_sync($verbose = false)
     $fw->setInterfaceMapping(legacy_config_get_interfaces(array("enable" => true)));
     filter_core_bootstrap($fw);
 
-    if (function_exists('plugins_firewall')) {
-        plugins_firewall($fw);
-    }
+    plugins_firewall($fw);
 
     /* Use filter lock to not allow concurrent filter reloads during this run. */
     $filterlck = lock('filter', LOCK_EX);

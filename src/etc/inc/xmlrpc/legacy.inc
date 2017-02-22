@@ -141,9 +141,7 @@ function filter_configure_xmlrpc()
     services_dhcpd_configure();
     openvpn_resync_all();
 
-    if (function_exists('plugins_configure')) {
-        plugins_configure('remote');
-    }
+    plugins_configure('remote');
 
     return true;
 }

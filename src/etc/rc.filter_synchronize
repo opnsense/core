@@ -287,10 +287,8 @@ if (isset($config['hasync']) && is_array($config['hasync'])) {
     $section_cnf['synchronizeauthservers'] = 'system.authserver';
     $section_cnf['synchronizeschedules'] = 'schedules';
 
-    if (function_exists('plugins_xmlrpc_sync')) {
-        foreach (plugins_xmlrpc_sync() as $syncid => $syncconf) {
-            $section_cnf['synchronize'.$syncid] = $syncconf['section'];
-        }
+    foreach (plugins_xmlrpc_sync() as $syncid => $syncconf) {
+        $section_cnf['synchronize'.$syncid] = $syncconf['section'];
     }
 
     $sections = array();
@@ -306,7 +304,6 @@ if (isset($config['hasync']) && is_array($config['hasync'])) {
         log_error("Nothing has been configured to be synched. Skipping....");
         exit;
     }
-
 
     $username = empty($hasync['username']) ? "root" : $hasync['username'];
     if (!carp_check_version($synchronizeto, $username, $hasync['password'])) {

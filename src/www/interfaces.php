@@ -524,9 +524,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
             /* restart plugins */
-            if (function_exists('plugins_configure')) {
-                plugins_configure('interface');
-            }
+            plugins_configure('interface');
             /* sync filter configuration */
             setup_gateways_monitor();
             filter_configure();

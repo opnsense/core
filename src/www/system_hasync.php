@@ -49,11 +49,7 @@ $checkbox_names = array(
     'synchronizevirtualip',
 );
 
-$syncplugins = array();
-
-if (function_exists('plugins_xmlrpc_sync')) {
-    $syncplugins = plugins_xmlrpc_sync();
-}
+$syncplugins = plugins_xmlrpc_sync();
 
 foreach (array_keys($syncplugins) as $key) {
     $checkbox_names[] = 'synchronize'.$key;

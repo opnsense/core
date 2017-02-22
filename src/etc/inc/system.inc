@@ -751,10 +751,8 @@ function system_syslogd_start($verbose = false)
 
         $syslogconfs = array();
 
-        if (function_exists('plugins_syslog')) {
-            foreach (plugins_syslog() as $plugin_name => $plugin_details) {
-                $syslogconfs[$plugin_name] = $plugin_details;
-            }
+        foreach (plugins_syslog() as $plugin_name => $plugin_details) {
+            $syslogconfs[$plugin_name] = $plugin_details;
         }
 
         /*
