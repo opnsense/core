@@ -2035,42 +2035,6 @@ function filter_generate_port(& $rule, $target = "source", $isnat = false) {
     return $src;
 }
 
-function filter_address_add_vips_subnets(&$FilterIflist, &$subnets, $if, $not)
-{
-    $if_subnets = array($subnets);
-
-    if ($not == true) {
-        $subnets = "!{$subnets}";
-    }
-
-    if (!empty($FilterIflist[$if]['vips']) || !empty($FilterIflist[$if]['vips6'])) {
-        $all_vips = array();
-        $all_vips = array_merge($all_vips, !empty($FilterIflist[$if]['vips']) ?  $FilterIflist[$if]['vips'] : array());
-        $all_vips = array_merge($all_vips, !empty($FilterIflist[$if]['vips6']) ?  $FilterIflist[$if]['vips6'] : array());
-        foreach ($all_vips as $vip) {
-            foreach ($if_subnets as $subnet) {
-                if (ip_in_subnet($vip['ip'], $subnet)) {
-                    continue 2;
-                }
-            }
-            $network = null;
-            if (is_ipaddrv4($vip['ip']) && is_subnetv4($if_subnets[0])) {
-                $network = gen_subnet($vip['ip'], $vip['sn']);
-            } elseif (is_ipaddrv6($vip['ip']) && is_subnetv6($if_subnets[0])) {
-                $network = gen_subnetv6($vip['ip'], $vip['sn']);
-            }
-            if (!empty($network)) {
-                $subnets .= ' ' . ($not == true ? '!' : '') . $network . '/' . $vip['sn'];
-                $if_subnets[] = $network . '/' . $vip['sn'];
-            }
-        }
-
-        if (strpos($subnets, ' ') !== false) {
-            $subnets = "{ {$subnets} }";
-        }
-    }
-}
-
 function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $isnat = false)
 {
     global $config;
@@ -2116,9 +2080,6 @@ function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $is
         }
         if (isset($rule[$target]['not'])) {
             $src = " !{$src}";
-        }
-        if (is_subnet($src)) {
-            filter_address_add_vips_subnets($FilterIflist, $src, $rule[$target]['network'], isset($rule[$target]['not']));
         }
     } elseif ($rule[$target]['address']) {
         $expsrc = alias_expand($rule[$target]['address']);
