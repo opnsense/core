@@ -134,6 +134,7 @@ class SystemhealthController extends ApiControllerBase
             $from_timestamp = $this->getMaxRange($rra_info)["oldest_timestamp"];
             $to_timestamp = $this->getMaxRange($rra_info)["newest_timestamp"];
         }
+        $max_values = ($max_values <=0) ? 1 : $max_values;
 
         $archives = array();
         // find archive match
