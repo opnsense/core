@@ -2083,124 +2083,39 @@ function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $is
         if (strstr($rule[$target]['network'], "opt")) {
             $optmatch = "";
             $matches = "";
-            if ($rule['ipprotocol'] == "inet6") {
-                if (preg_match("/opt([0-9]*)$/", $rule[$target]['network'], $optmatch)) {
-                    $opt_ip = $FilterIflist["opt{$optmatch[1]}"]['ipv6'];
-                    if (!is_ipaddrv6($opt_ip)) {
-                        return "";
-                    }
-                    $src = $opt_ip . "/" . $FilterIflist["opt{$optmatch[1]}"]['snv6'];
-                    /* check for opt$NUMip here */
-                } elseif (preg_match("/opt([0-9]*)ip/", $rule[$target]['network'], $matches)) {
-                    $src = $FilterIflist["opt{$matches[1]}"]['ipv6'];
-                    if (!is_ipaddrv6($src)) {
-                        return "";
-                    }
-                    if (isset($rule[$target]['not'])) {
-                        $src = " !{$src}";
-                    }
-                }
-            } else {
-                if (preg_match("/opt([0-9]*)$/", $rule[$target]['network'], $optmatch)) {
-                    $opt_ip = $FilterIflist["opt{$optmatch[1]}"]['ip'];
-                    if (!is_ipaddrv4($opt_ip)) {
-                        return "";
-                    }
-                    $src = $opt_ip . "/" . $FilterIflist["opt{$optmatch[1]}"]['sn'];
-                    /* check for opt$NUMip here */
-                } elseif (preg_match("/opt([0-9]*)ip/", $rule[$target]['network'], $matches)) {
-                    $src = $FilterIflist["opt{$matches[1]}"]['ip'];
-                    if (!is_ipaddrv4($src)) {
-                        return "";
-                    }
-                    if (isset($rule[$target]['not'])) {
-                        $src = " !{$src}";
-                    }
-                }
+            if (preg_match("/opt([0-9]*)$/", $rule[$target]['network'], $optmatch)) {
+                $src = "({$FilterIflist["opt{$optmatch[1]}"]['if']}:network)";
+                /* check for opt$NUMip here */
+            } elseif (preg_match("/opt([0-9]*)ip/", $rule[$target]['network'], $matches)) {
+                $src = "({$FilterIflist["opt{$matches[1]}"]['if']})";
             }
         } else {
-            if ($rule['ipprotocol'] == "inet6") {
-                switch ($rule[$target]['network']) {
-                    case 'wan':
-                        $wansa = $FilterIflist['wan']['sav6'];
-                        if (!is_ipaddrv6($wansa)) {
-                            return "";
-                        }
-                        $wansn = $FilterIflist['wan']['snv6'];
-                        $src = "{$wansa}/{$wansn}";
-                        break;
-                    case 'wanip':
-                        $src = $FilterIflist["wan"]['ipv6'];
-                        if (!is_ipaddrv6($src)) {
-                            return "";
-                        }
-                        break;
-                    case 'lanip':
-                        $src = $FilterIflist["lan"]['ipv6'];
-                        if (!is_ipaddrv6($src)) {
-                            return "";
-                        }
-                        break;
-                    case 'lan':
-                        $lansa = $FilterIflist['lan']['sav6'];
-                        if (!is_ipaddrv6($lansa)) {
-                            return "";
-                        }
-                        $lansn = $FilterIflist['lan']['snv6'];
-                        $src = "{$lansa}/{$lansn}";
-                        break;
-                    case '(self)':
-                        $src = "(self)";
-                        break;
-                    default:
-                        if (!empty($FilterIflist[$rule[$target]['network']]['sav6'])) {
-                            $src = $FilterIflist[$rule[$target]['network']]['sav6'] . "/" . $FilterIflist[$rule[$target]['network']]['snv6'];
-                        } else {
-                            return "";
-                        }
-                }
-                if (isset($rule[$target]['not']) && !is_subnet($src)) {
-                    $src = " !{$src}";
-                }
-            } else {
-                switch ($rule[$target]['network']) {
-                    case 'wan':
-                        $wansa = $FilterIflist['wan']['sa'];
-                        if (!is_ipaddrv4($wansa)) {
-                            return "";
-                        }
-                        $wansn = $FilterIflist['wan']['sn'];
-                        $src = "{$wansa}/{$wansn}";
-                        break;
-                    case 'wanip':
-                        $src = $FilterIflist["wan"]['ip'];
-                        break;
-                    case 'lanip':
-                        $src = $FilterIflist["lan"]['ip'];
-                        break;
-                    case 'lan':
-                        $lansa = $FilterIflist['lan']['sa'];
-                        if (!is_ipaddrv4($lansa)) {
-                            return "";
-                        }
-                        $lansn = $FilterIflist['lan']['sn'];
-                        $src = "{$lansa}/{$lansn}";
-                        break;
-                    case '(self)':
-                        $src = "(self)";
-                        break;
-                    default:
-                        if (!empty($FilterIflist[$rule[$target]['network']]['sa'])) {
-                            $src = $FilterIflist[$rule[$target]['network']]['sa'] . "/" . $FilterIflist[$rule[$target]['network']]['sn'];
-                        } else {
-                            return "";
-                        }
-                }
-                if (isset($rule[$target]['not']) && !is_subnet($src) &&
-                  (strpos($src, '{') === false)) {
-                    $src = " !{$src}";
-                }
+            switch ($rule[$target]['network']) {
+                case 'wan':
+                    $src = "({$FilterIflist['wan']['if']}:network)";
+                    break;
+                case 'wanip':
+                    $src = "({$FilterIflist['wan']['if']})";
+                    break;
+                case 'lan':
+                    $src = "({$FilterIflist['lan']['if']}:network)";
+                    break;
+                case 'lanip':
+                    $src = "({$FilterIflist['lan']['if']})";
+                    break;
+                case '(self)':
+                    $src = "(self)";
+                    break;
+                default:
+                    if (!empty($FilterIflist[$rule[$target]['network']]['if'])) {
+                        $src = "({$FilterIflist[$rule[$target]['network']]['if']}:network)";
+                    } else {
+                        return "";
+                    }
             }
+        }
+        if (isset($rule[$target]['not'])) {
+            $src = " !{$src}";
         }
         if (is_subnet($src)) {
             filter_address_add_vips_subnets($FilterIflist, $src, $rule[$target]['network'], isset($rule[$target]['not']));
