@@ -1553,6 +1553,7 @@ function services_dyndns_list()
       'eurodns' => 'EuroDNS',
       'freedns' => 'freeDNS',
       'gratisdns' => 'GratisDNS',
+      'googledomains' => 'Google Domains',
       'he-net' => 'HE.net',
       'he-net-v6' => 'HE.net (v6)',
       'he-net-tunnelbroker' => 'HE.net Tunnelbroker',
