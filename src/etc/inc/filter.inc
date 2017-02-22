@@ -395,7 +395,6 @@ function filter_configure_sync($verbose = false)
     /* generate aliases */
     update_filter_reload_status(gettext("Creating aliases"));
     $aliases = filter_generate_aliases($FilterIflist);
-    $aliases .= filter_generate_network_aliases();
     $gateways = filter_generate_gateways();
 
     if ($verbose) {
@@ -877,35 +876,6 @@ function filter_generate_aliases(&$FilterIflist)
     }
 
     return $aliases;
-}
-
-/**
- * generate aliases for internal networks, so eventually we don't need logic in the rule parsing to bind the
- * existing network/ip options.
- */
-function filter_generate_network_aliases()
-{
-    global $config;
-    $result = "### define internal aliases\n";
-    $interface_config = legacy_interfaces_details();
-    foreach (legacy_config_get_interfaces(array("enable" => true)) as $if => $ifdetail) {
-        $networks = array();
-        $addresses = array();
-        if (!empty($ifdetail['if']) && !empty($interface_config[$ifdetail['if']])) {
-            $properties = $interface_config[$ifdetail['if']];
-            if (!empty($properties['ipv4'])) {
-                $networks[] = gen_subnet($properties['ipv4'][0]['ipaddr'], $properties['ipv4'][0]['subnetbits']);
-                $addresses[] = $properties['ipv4'][0]['ipaddr'];
-            }
-            if (!empty($properties['ipv6']) && empty($properties['ipv6'][0]['link-local'])) {
-                $networks[] = gen_subnetv6($properties['ipv6'][0]['ipaddr'], $properties['ipv6'][0]['subnetbits']);
-                $addresses[] = $properties['ipv6'][0]['ipaddr'];
-            }
-        }
-        $result .= "table <internal-{$if}> { " . implode(' ', $networks) . " } \n";
-        $result .= "table <internal-{$if}ip> { " . implode(' ', $addresses) . " } \n";
-    }
-    return $result;
 }
 
 function filter_generate_gateways()
@@ -2027,67 +1997,14 @@ function filter_generate_port(& $rule, $target = "source", $isnat = false) {
     }
     if (isset($rule['protocol']) && in_array($rule['protocol'], array("tcp","udp","tcp/udp"))) {
         if (!empty($rule[$target]['port'])) {
-            $srcport = explode("-", $rule[$target]['port']);
-            $srcporta = alias_expand($srcport[0]);
-            if (!$srcporta) {
-                log_error(sprintf('filter_generate_port: %s is not a valid %s port.', $srcport[0], $target));
-            } elseif (empty($srcport[1]) || $srcport[0] == $srcport[1]) {
-                $src .= " port {$srcporta} ";
-            } elseif (($srcport[0] == 1) && ($srcport[1] == 65535)) {
-                /* no need for a port statement here */
-            } elseif ($isnat) {
-                $src .= " port {$srcport[0]}:{$srcport[1]}";
-            } else {
-                if (is_port($srcporta) && $srcport[1] == 65535) {
-                    $src .= " port >= {$srcporta} ";
-                } elseif ($srcport[0] == 1) {
-                    $src .= " port <= {$srcport[1]} ";
-                } else {
-                    $srcport[0]--;
-                    $srcport[1]++;
-                    $src .= " port {$srcport[0]} >< {$srcport[1]} ";
-                }
+            $port = alias_expand(str_replace('-', ':', $rule[$target]['port']));
+            if (!empty($port)) {
+                $src = " port " . $port;
             }
         }
     }
 
     return $src;
-}
-
-function filter_address_add_vips_subnets(&$FilterIflist, &$subnets, $if, $not)
-{
-    $if_subnets = array($subnets);
-
-    if ($not == true) {
-        $subnets = "!{$subnets}";
-    }
-
-    if (!empty($FilterIflist[$if]['vips']) || !empty($FilterIflist[$if]['vips6'])) {
-        $all_vips = array();
-        $all_vips = array_merge($all_vips, !empty($FilterIflist[$if]['vips']) ?  $FilterIflist[$if]['vips'] : array());
-        $all_vips = array_merge($all_vips, !empty($FilterIflist[$if]['vips6']) ?  $FilterIflist[$if]['vips6'] : array());
-        foreach ($all_vips as $vip) {
-            foreach ($if_subnets as $subnet) {
-                if (ip_in_subnet($vip['ip'], $subnet)) {
-                    continue 2;
-                }
-            }
-            $network = null;
-            if (is_ipaddrv4($vip['ip']) && is_subnetv4($if_subnets[0])) {
-                $network = gen_subnet($vip['ip'], $vip['sn']);
-            } elseif (is_ipaddrv6($vip['ip']) && is_subnetv6($if_subnets[0])) {
-                $network = gen_subnetv6($vip['ip'], $vip['sn']);
-            }
-            if (!empty($network)) {
-                $subnets .= ' ' . ($not == true ? '!' : '') . $network . '/' . $vip['sn'];
-                $if_subnets[] = $network . '/' . $vip['sn'];
-            }
-        }
-
-        if (strpos($subnets, ' ') !== false) {
-            $subnets = "{ {$subnets} }";
-        }
-    }
 }
 
 function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $isnat = false)
@@ -2099,130 +2016,25 @@ function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $is
     if (isset($rule[$target]['any'])) {
         $src = "any";
     } elseif (!empty($rule[$target]['network'])) {
-        if (strstr($rule[$target]['network'], "opt")) {
-            $optmatch = "";
-            $matches = "";
-            if ($rule['ipprotocol'] == "inet6") {
-                if (preg_match("/opt([0-9]*)$/", $rule[$target]['network'], $optmatch)) {
-                    $opt_ip = $FilterIflist["opt{$optmatch[1]}"]['ipv6'];
-                    if (!is_ipaddrv6($opt_ip)) {
-                        return "";
-                    }
-                    $src = $opt_ip . "/" . $FilterIflist["opt{$optmatch[1]}"]['snv6'];
-                    /* check for opt$NUMip here */
-                } elseif (preg_match("/opt([0-9]*)ip/", $rule[$target]['network'], $matches)) {
-                    $src = $FilterIflist["opt{$matches[1]}"]['ipv6'];
-                    if (!is_ipaddrv6($src)) {
-                        return "";
-                    }
-                    if (isset($rule[$target]['not'])) {
-                        $src = " !{$src}";
-                    }
-                }
-            } else {
-                if (preg_match("/opt([0-9]*)$/", $rule[$target]['network'], $optmatch)) {
-                    $opt_ip = $FilterIflist["opt{$optmatch[1]}"]['ip'];
-                    if (!is_ipaddrv4($opt_ip)) {
-                        return "";
-                    }
-                    $src = $opt_ip . "/" . $FilterIflist["opt{$optmatch[1]}"]['sn'];
-                    /* check for opt$NUMip here */
-                } elseif (preg_match("/opt([0-9]*)ip/", $rule[$target]['network'], $matches)) {
-                    $src = $FilterIflist["opt{$matches[1]}"]['ip'];
-                    if (!is_ipaddrv4($src)) {
-                        return "";
-                    }
-                    if (isset($rule[$target]['not'])) {
-                        $src = " !{$src}";
-                    }
-                }
+        $network_name = $rule[$target]['network'];
+        $matches = "";
+        if ($network_name == '(self)') {
+            $src = "(self)";
+        } elseif (preg_match("/^(wan|lan|opt[0-9]+)ip$/", $network_name, $matches)) {
+            if (empty($FilterIflist[$matches[1]]['if'])) {
+                // interface non-existent or in-active
+                return null;
             }
+            $src = "({$FilterIflist["{$matches[1]}"]['if']})";
         } else {
-            if ($rule['ipprotocol'] == "inet6") {
-                switch ($rule[$target]['network']) {
-                    case 'wan':
-                        $wansa = $FilterIflist['wan']['sav6'];
-                        if (!is_ipaddrv6($wansa)) {
-                            return "";
-                        }
-                        $wansn = $FilterIflist['wan']['snv6'];
-                        $src = "{$wansa}/{$wansn}";
-                        break;
-                    case 'wanip':
-                        $src = $FilterIflist["wan"]['ipv6'];
-                        if (!is_ipaddrv6($src)) {
-                            return "";
-                        }
-                        break;
-                    case 'lanip':
-                        $src = $FilterIflist["lan"]['ipv6'];
-                        if (!is_ipaddrv6($src)) {
-                            return "";
-                        }
-                        break;
-                    case 'lan':
-                        $lansa = $FilterIflist['lan']['sav6'];
-                        if (!is_ipaddrv6($lansa)) {
-                            return "";
-                        }
-                        $lansn = $FilterIflist['lan']['snv6'];
-                        $src = "{$lansa}/{$lansn}";
-                        break;
-                    case '(self)':
-                        $src = "(self)";
-                        break;
-                    default:
-                        if (!empty($FilterIflist[$rule[$target]['network']]['sav6'])) {
-                            $src = $FilterIflist[$rule[$target]['network']]['sav6'] . "/" . $FilterIflist[$rule[$target]['network']]['snv6'];
-                        } else {
-                            return "";
-                        }
-                }
-                if (isset($rule[$target]['not']) && !is_subnet($src)) {
-                    $src = " !{$src}";
-                }
-            } else {
-                switch ($rule[$target]['network']) {
-                    case 'wan':
-                        $wansa = $FilterIflist['wan']['sa'];
-                        if (!is_ipaddrv4($wansa)) {
-                            return "";
-                        }
-                        $wansn = $FilterIflist['wan']['sn'];
-                        $src = "{$wansa}/{$wansn}";
-                        break;
-                    case 'wanip':
-                        $src = $FilterIflist["wan"]['ip'];
-                        break;
-                    case 'lanip':
-                        $src = $FilterIflist["lan"]['ip'];
-                        break;
-                    case 'lan':
-                        $lansa = $FilterIflist['lan']['sa'];
-                        if (!is_ipaddrv4($lansa)) {
-                            return "";
-                        }
-                        $lansn = $FilterIflist['lan']['sn'];
-                        $src = "{$lansa}/{$lansn}";
-                        break;
-                    case '(self)':
-                        $src = "(self)";
-                        break;
-                    default:
-                        if (!empty($FilterIflist[$rule[$target]['network']]['sa'])) {
-                            $src = $FilterIflist[$rule[$target]['network']]['sa'] . "/" . $FilterIflist[$rule[$target]['network']]['sn'];
-                        } else {
-                            return "";
-                        }
-                }
-                if (isset($rule[$target]['not']) && !is_subnet($src) &&
-                  (strpos($src, '{') === false)) {
-                    $src = " !{$src}";
-                }
+            if (empty($FilterIflist[$network_name]['if'])) {
+                // interface non-existent or in-active
+                return null;
             }
+            $src = "({$FilterIflist[$network_name]['if']}:network)";
         }
-        if (is_subnet($src)) {
-            filter_address_add_vips_subnets($FilterIflist, $src, $rule[$target]['network'], isset($rule[$target]['not']));
+        if (isset($rule[$target]['not'])) {
+            $src = " !{$src}";
         }
     } elseif ($rule[$target]['address']) {
         $expsrc = alias_expand($rule[$target]['address']);
@@ -2626,27 +2438,13 @@ function filter_rules_generate(&$FilterIflist)
 
         $gw = get_interface_gateway($ifdescr);
         if (is_ipaddrv4($gw) && isset($ifcfg['ip']) && is_ipaddrv4($ifcfg['ip'])) {
-            $ipfrules .= "pass out {$log['pass']} route-to ( {$ifcfg['if']} {$gw} ) from {$ifcfg['ip']} to !{$ifcfg['sa']}/{$ifcfg['sn']} keep state allow-opts label \"let out anything from firewall host itself\"\n";
-            if (isset($ifcfg['vips']) && is_array($ifcfg['vips'])) {
-                foreach ($ifcfg['vips'] as $vip) {
-                    if (ip_in_subnet($vip['ip'], "{$ifcfg['sa']}/{$ifcfg['sn']}")) {
-                        $ipfrules .= "pass out {$log['pass']} route-to ( {$ifcfg['if']} {$gw} ) from {$vip['ip']} to !{$ifcfg['sa']}/{$ifcfg['sn']} keep state allow-opts label \"let out anything from firewall host itself\"\n";
-                    } else {
-                        $ipfrules .= "pass out {$log['pass']} route-to ( {$ifcfg['if']} {$gw} ) from {$vip['ip']} to !" . gen_subnet($vip['ip'], $vip['sn']) . "/{$vip['sn']} keep state allow-opts label \"let out anything from firewall host itself\"\n";
-                    }
-                }
-            }
+            $ipfrules .= "pass out {$log['pass']} route-to ( {$ifcfg['if']} {$gw} ) from ({$ifcfg['if']}) to !({$ifcfg['if']}:network) keep state allow-opts label \"let out anything from firewall host itself\"\n";
         }
 
         $gwv6 = get_interface_gateway_v6($ifdescr);
         $stf = get_real_interface($ifdescr, "inet6");
-        $pdlen = 64 - calculate_ipv6_delegation_length($ifdescr);
         if (is_ipaddrv6($gwv6) && is_ipaddrv6($ifcfg['ipv6'])) {
-            $ipfrules .= "pass out {$log['pass']} route-to ( {$stf} {$gwv6} ) inet6 from {$ifcfg['ipv6']} to !{$ifcfg['ipv6']}/{$pdlen} keep state allow-opts label \"let out anything from firewall host itself\"\n";
-            if (is_array($ifcfg['vips6'])) {
-              foreach ($ifcfg['vips6'] as $vip)
-                $ipfrules .= "pass out {$log['pass']} route-to ( {$stf} {$gwv6} ) inet6 from {$vip['ip']} to !{$vip['ip']}/{$pdlen} keep state allow-opts label \"let out anything from firewall host itself\"\n";
-            }
+            $ipfrules .= "pass out {$log['pass']} route-to ( {$stf} {$gwv6} ) inet6 from ({$stf}) to !({$stf}:network) keep state allow-opts label \"let out anything from firewall host itself\"\n";
         }
     }
 
