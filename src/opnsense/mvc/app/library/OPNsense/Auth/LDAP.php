@@ -369,7 +369,10 @@ class LDAP extends Base implements IAuthConnector
     {
         // todo: implement SSL parts (legacy : ldap_setup_caenv)
         // authenticate user
-        if (array_key_exists($username, $this->userDNmap)) {
+        if (empty($password)) {
+            // prevent anonymous bind
+            return false;
+        } elseif (array_key_exists($username, $this->userDNmap)) {
             // we can map $username to distinguished name, just feed to connect
             $ldap_is_connected = $this->connect($this->ldapBindURL, $this->userDNmap[$username], $password);
             return $ldap_is_connected;
