@@ -589,25 +589,19 @@ function filter_configure_sync($verbose = false)
             }
         }
     }
-
+    killbypid('/var/run/filterdns.pid');
     if (!empty($filterdns)) {
         @file_put_contents('/var/etc/filterdns.conf', $filterdns);
-        if (isvalidpid('/var/run/filterdns.pid')) {
-            killbypid('/var/run/filterdns.pid', 'HUP');
+        /*
+         * FilterDNS has three debugging levels. The default choosen is 1.
+         * Availabe are level 2 and greater then 2.
+         */
+        if (isset($config['system']['aliasesresolveinterval']) && is_numeric($config['system']['aliasesresolveinterval'])) {
+            $resolve_interval = $config['system']['aliasesresolveinterval'];
         } else {
-            /*
-             * FilterDNS has three debugging levels. The default choosen is 1.
-             * Availabe are level 2 and greater then 2.
-             */
-            if (isset($config['system']['aliasesresolveinterval']) && is_numeric($config['system']['aliasesresolveinterval'])) {
-                $resolve_interval = $config['system']['aliasesresolveinterval'];
-            } else {
-                $resolve_interval = 300;
-            }
-            mwexec("/usr/local/sbin/filterdns -p /var/run/filterdns.pid -i {$resolve_interval} -c /var/etc/filterdns.conf -d 1");
+            $resolve_interval = 300;
         }
-    } else {
-        killbypid('/var/run/filterdns.pid');
+        mwexec("/usr/local/sbin/filterdns -p /var/run/filterdns.pid -i {$resolve_interval} -c /var/etc/filterdns.conf -d 1");
     }
 
     update_filter_reload_status(gettext("Flushing schedule state"));
