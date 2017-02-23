@@ -53,7 +53,14 @@ function stdBootgridUI(obj, sourceUrl, options) {
                 } else {
                     return "<span style=\"cursor: pointer;\" class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
                 }
-            }
+            },
+            "boolean": function (column, row) {
+                if (parseInt(row[column.id], 2) == 1) {
+                    return "<span class=\"fa fa-check\"></span>";
+                } else {
+                    return "<span class=\"fa fa-times\"></span>";
+                }
+            },
         }
     };
 
