@@ -445,6 +445,12 @@ function filter_configure_sync($verbose = false)
         $limitrules .= "set limit table-entries {$config['system']['maximumtableentries']}\n";
     }
 
+    if (!empty($config['system']['rulesetoptimization'])) {
+        $limitrules .= "set ruleset-optimization {$config['system']['rulesetoptimization']}\n";
+    } else {
+        $limitrules .= "set ruleset-optimization basic\n";
+    }
+
     if ($config['system']['optimization'] <> "") {
         $limitrules .= "set optimization {$config['system']['optimization']}\n";
         if ($config['system']['optimization'] == "conservative") {
