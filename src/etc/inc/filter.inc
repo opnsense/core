@@ -2044,39 +2044,14 @@ function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $is
     if (isset($rule[$target]['any'])) {
         $src = "any";
     } elseif (!empty($rule[$target]['network'])) {
-        if (strstr($rule[$target]['network'], "opt")) {
-            $optmatch = "";
-            $matches = "";
-            if (preg_match("/opt([0-9]*)$/", $rule[$target]['network'], $optmatch)) {
-                $src = "({$FilterIflist["opt{$optmatch[1]}"]['if']}:network)";
-                /* check for opt$NUMip here */
-            } elseif (preg_match("/opt([0-9]*)ip/", $rule[$target]['network'], $matches)) {
-                $src = "({$FilterIflist["opt{$matches[1]}"]['if']})";
-            }
+        $network_name = $rule[$target]['network'];
+        $matches = "";
+        if ($network_name == '(self)') {
+            $src = "(self)";
+        } elseif (preg_match("/(.*)ip$/", $rule[$target]['network'], $matches)) {
+            $src = "({$FilterIflist["{$matches[1]}"]['if']})";
         } else {
-            switch ($rule[$target]['network']) {
-                case 'wan':
-                    $src = "({$FilterIflist['wan']['if']}:network)";
-                    break;
-                case 'wanip':
-                    $src = "({$FilterIflist['wan']['if']})";
-                    break;
-                case 'lan':
-                    $src = "({$FilterIflist['lan']['if']}:network)";
-                    break;
-                case 'lanip':
-                    $src = "({$FilterIflist['lan']['if']})";
-                    break;
-                case '(self)':
-                    $src = "(self)";
-                    break;
-                default:
-                    if (!empty($FilterIflist[$rule[$target]['network']]['if'])) {
-                        $src = "({$FilterIflist[$rule[$target]['network']]['if']}:network)";
-                    } else {
-                        return "";
-                    }
-            }
+            $src = "({$FilterIflist[$network_name]['if']}:network)";
         }
         if (isset($rule[$target]['not'])) {
             $src = " !{$src}";
