@@ -44,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ipv6allow'] = isset($config['system']['ipv6allow']);
     $pconfig['disablefilter'] = !empty($config['system']['disablefilter']);
     $pconfig['optimization'] = isset($config['system']['optimization']) ? $config['system']['optimization'] : "normal";
+    $pconfig['rulesetoptimization'] = isset($config['system']['rulesetoptimization']) ? $config['system']['rulesetoptimization'] : "basic";
     $pconfig['maximumstates'] = isset($config['system']['maximumstates']) ? $config['system']['maximumstates'] : null;
     $pconfig['maximumfrags'] = isset($config['system']['maximumfrags']) ? $config['system']['maximumfrags'] : null;
     $pconfig['adaptivestart'] = isset($config['system']['adaptivestart']) ? $config['system']['adaptivestart'] : null;
@@ -169,6 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         $config['system']['optimization'] = $pconfig['optimization'];
+        $config['system']['rulesetoptimization'] = $pconfig['rulesetoptimization'];
         $config['system']['maximumstates'] = $pconfig['maximumstates'];
         $config['system']['maximumfrags'] = $pconfig['maximumfrags'];
         $config['system']['aliasesresolveinterval'] = $pconfig['aliasesresolveinterval'];
@@ -442,6 +444,40 @@ include("head.inc");
                         <tr>
                           <td><strong><?=gettext("conservative");?></strong></td>
                           <td><?=gettext("Tries to avoid dropping any legitimate idle connections at the expense of increased memory usage and CPU utilization.");?></td>
+                        </tr>
+                      </table>
+                      <hr/>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_rulesetoptimization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Rules Optimization");?></td>
+                  <td>
+                    <select onchange="update_description(this.selectedIndex);" name="rulesetoptimization" id="rulesetoptimization" class="selectpicker" data-style="btn-default">
+                      <option value="none"<?=$pconfig['rulesetoptimization']=="none" ? " selected=\"selected\"" : ""; ?>>
+                        <?=gettext("none");?>
+                      </option>
+                      <option value="basic"<?=$pconfig['rulesetoptimization']=="basic" ? " selected=\"selected\"" : ""; ?>>
+                        <?=gettext("basic");?>
+                      </option>
+                      <option value="profile"<?=$pconfig['rulesetoptimization']=="profile" ? " selected=\"selected\"" : ""; ?>>
+                        <?=gettext("profile");?>
+                      </option>
+                    </select>
+                    <div class="hidden" for="help_for_rulesetoptimization">
+                      <?=gettext("Select the type of rules optimization to use");?>
+                      <table class="table table-condensed">
+                        <tr>
+                          <td><strong><?=gettext("none");?></strong></td>
+                          <td><?=gettext("Disable the ruleset optimizer.");?></td>
+                        </tr>
+                        <tr>
+                          <td><strong><?=gettext("basic");?></strong></td>
+                          <td><?=gettext("(default) Basic ruleset optimization does four things to improve the performance of ruleset evaluations: remove duplicate rules; remove rules that are a subset of another rule; combine multiple rules into a table when advantageous; re-order the rules to improve evaluation performance");?></td>
+                        </tr>
+                        <tr>
+                          <td><strong><?=gettext("profile");?></strong></td>
+                          <td><?=gettext("Uses the currently loaded ruleset as a feedback profile to tailor the ordering of quick rules to actual network traffic.");?></td>
                         </tr>
                       </table>
                       <hr/>
