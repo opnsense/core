@@ -1645,9 +1645,8 @@ function system_cron_configure($verbose = false)
         $crontab_contents .= "{$item['mday']}\t";
         $crontab_contents .= "{$item['month']}\t";
         $crontab_contents .= "{$item['wday']}\t";
-        $crontab_contents .= "{$item['command']}\n";
+        $crontab_contents .= "({$item['command']}) > /dev/null\n";
     }
-
     file_put_contents('/var/cron/tabs/root', $crontab_contents);
     killbypid('/var/run/cron.pid', 'HUP');
 
