@@ -589,12 +589,12 @@ function filter_configure_sync($verbose = false)
             }
         }
     }
-    killbypid('/var/run/filterdns.pid');
+    killbypid('/var/run/filterdns.pid', 'TERM', true);
     if (!empty($filterdns)) {
         @file_put_contents('/var/etc/filterdns.conf', $filterdns);
         /*
          * FilterDNS has three debugging levels. The default choosen is 1.
-         * Availabe are level 2 and greater then 2.
+         * Availabe are level 2 and greater than 2.
          */
         if (isset($config['system']['aliasesresolveinterval']) && is_numeric($config['system']['aliasesresolveinterval'])) {
             $resolve_interval = $config['system']['aliasesresolveinterval'];
