@@ -30,6 +30,7 @@ DEVS=$(camcontrol devlist)
 PART=
 
 while [ -z "${PART}" ]; do
+	echo
 	echo "${DEVS}"
 	echo
 	read -p "Select a device import from or leave blank to exit: " DEV
@@ -43,10 +44,12 @@ while [ -z "${PART}" ]; do
 		# GPT layout found
 		PART="/dev/${DEV}p3"
 	else
-		echo "No known partition layout was found."
 		echo
+		echo "No known partition layout was found for '${DEV}'."
 	fi
 done
+
+echo
 
 mkdir -p ${MNT}
 fsck -t ufs -y  ${PART} > /dev/null
