@@ -228,8 +228,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("The username contains invalid characters.");
         }
 
-        if (strlen($_POST['usernamefld']) > 16) {
-            $input_errors[] = gettext("The username is longer than 16 characters.");
+        if (strlen($_POST['usernamefld']) > 32) {
+            $input_errors[] = gettext("The username is longer than 32 characters.");
         }
 
         if (!empty($pconfig['passwordfld1'])) {
@@ -561,7 +561,7 @@ $( document ).ready(function() {
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Username");?></td>
                     <td>
-                      <input name="usernamefld" type="text" class="formfld user" id="usernamefld" size="20" maxlength="16" value="<?=$pconfig['usernamefld'];?>" <?= $pconfig['scope'] == "system" || !empty($pconfig['user_dn']) ? "readonly=\"readonly\"" : "";?> />
+                      <input name="usernamefld" type="text" class="formfld user" id="usernamefld" size="20" maxlength="32" value="<?=$pconfig['usernamefld'];?>" <?= $pconfig['scope'] == "system" || !empty($pconfig['user_dn']) ? "readonly=\"readonly\"" : "";?> />
                       <input name="oldusername" type="hidden" id="oldusername" value="<?=$pconfig['usernamefld'];?>" />
                     </td>
                   </tr>
@@ -570,7 +570,7 @@ $( document ).ready(function() {
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("User distinguished name");?></td>
                     <td>
-                      <input name="user_dn" type="text" class="formfld user" id="user_dn" size="20" maxlength="16" value="<?=$pconfig['user_dn'];?>"/ readonly>
+                      <input name="user_dn" type="text" class="formfld user" id="user_dn" size="20" value="<?=$pconfig['user_dn'];?>"/ readonly>
                     </td>
                   </tr>
 <?php
