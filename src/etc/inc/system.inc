@@ -1776,7 +1776,7 @@ function system_login_configure($verbose = false)
     $fd = fopen('/etc/ttys', 'w');
     $on_off_secure_u = $serial_enabled ? 'onifconsole secure' : 'off secure';
     $on_off_secure_v = $virtual_enabled ? 'on  secure' : 'off secure';
-    $terminal_type = 'cons25'; /* XXX standard is 'xterm' for virtual, 'vt100' for serial */
+    /* XXX serial type uses 3wire nowadays */
     if (isset($config['system']['disableconsolemenu'])) {
         $console_type = 'Pc';
         $serial_type = 'std.' . $serialspeed;
@@ -1785,22 +1785,17 @@ function system_login_configure($verbose = false)
         $serial_type = 'al.' . $serialspeed;
     }
     foreach ($etc_ttys_lines as $tty) {
-        /* first virtual terminal */
-        if (strpos($tty, 'ttyv0') === 0) {
-            fwrite($fd, "ttyv0\t\"/usr/libexec/getty {$console_type}\"\t\t{$terminal_type}\t${on_off_secure_v}\n");
-            continue;
-        }
-        /* all other virtual terminals */
-        foreach (array('ttyv1', 'ttyv2', 'ttyv3', 'ttyv4', 'ttyv5', 'ttyv6', 'ttyv7') as $virtualport) {
+        /* virtual terminals */
+        foreach (array('ttyv0', 'ttyv1', 'ttyv2', 'ttyv3', 'ttyv4', 'ttyv5', 'ttyv6', 'ttyv7') as $virtualport) {
             if (strpos($tty, $virtualport) === 0) {
                 fwrite($fd, "${virtualport}\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t${on_off_secure_v}\n");
                 continue 2;
             }
         }
-        /* each serial terminal */
+        /* serial terminals */
         foreach (array('ttyu0', 'ttyu1', 'ttyu2', 'ttyu3') as $serialport) {
             if (strpos($tty, $serialport) === 0) {
-                fwrite($fd, "{$serialport}\t\"/usr/libexec/getty {$serial_type}\"\t{$terminal_type}\t{$on_off_secure_u}\n");
+                fwrite($fd, "{$serialport}\t\"/usr/libexec/getty {$serial_type}\"\tvt100\t{$on_off_secure_u}\n");
                 /* skip to next line in outer loop */
                 continue 2;
             }

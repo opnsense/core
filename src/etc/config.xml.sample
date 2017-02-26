@@ -216,6 +216,7 @@
       <protocol>https</protocol>
     </webgui>
     <disablenatreflection>yes</disablenatreflection>
+    <usevirtualterminal>1</usevirtualterminal>
     <disableconsolemenu/>
     <disablechecksumoffloading>1</disablechecksumoffloading>
     <disablesegmentationoffloading>1</disablesegmentationoffloading>
