@@ -33,6 +33,7 @@ require_once("util.inc");
 require_once("config.inc");
 require_once("filter.inc");
 require_once('ipsec.inc');
+require_once('auth.inc');
 require_once("interfaces.inc");
 
 /* make sure to wait until the boot scripts have finished */
