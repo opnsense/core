@@ -2048,7 +2048,7 @@ function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $is
         $matches = "";
         if ($network_name == '(self)') {
             $src = "(self)";
-        } elseif (preg_match("/(.*)ip$/", $rule[$target]['network'], $matches)) {
+        } elseif (preg_match("/^(wan|lan|opt[0-9]+)ip$/", $rule[$target]['network'], $matches)) {
             $src = "({$FilterIflist["{$matches[1]}"]['if']})";
         } else {
             $src = "({$FilterIflist[$network_name]['if']}:network)";
