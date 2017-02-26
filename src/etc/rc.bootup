@@ -65,30 +65,6 @@ echo "done.\n";
  */
 system_console_mute();
 
-/* loopback device is required early for syslog and the installer */
-interfaces_loopback_configure(true);
-
-$setup_installer = is_install_media();
-if ($setup_installer) {
-    echo 'Press any key to start the early installer:  ';
-
-    $key = timeout();
-    if ($key != "\n") {
-        echo "\n";
-    }
-
-    if (isset($key)) {
-        passthru('/usr/local/etc/rc.installer');
-        if (file_exists('/tmp/install_complete')) {
-            passthru('/usr/local/etc/rc.reboot');
-            exit;
-        }
-    }
-
-    /* config may have changed via installer import */
-    OPNsense\Core\Config::getInstance()->forceReload();
-}
-
 global $config;
 $config = parse_config(true);
 convert_config();
@@ -162,7 +138,7 @@ if ($ipsec_dynamic_hosts) {
 // generate configuration data for all installed templates
 configd_run('template reload *');
 
-if ($setup_installer) {
+if (is_install_media()) {
     /*
      * Installer mode requires setting up an extra user and
      * we will protect it with root's password.  We can only
