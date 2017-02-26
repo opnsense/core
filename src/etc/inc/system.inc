@@ -1712,7 +1712,7 @@ function system_login_configure($verbose = false)
     $new_boot_config['comconsole_speed'] = null;
     $new_boot_config['boot_multicons'] = null;
     $new_boot_config['boot_serial'] = null;
-    $new_boot_config['kern.vty'] = '"vt"';
+    $new_boot_config['kern.vty'] = null;
     $new_boot_config['console'] = null;
 
     $console_types = system_console_types();
@@ -1796,7 +1796,6 @@ function system_login_configure($verbose = false)
         foreach (array('ttyu0', 'ttyu1', 'ttyu2', 'ttyu3') as $serialport) {
             if (strpos($tty, $serialport) === 0) {
                 fwrite($fd, "{$serialport}\t\"/usr/libexec/getty {$serial_type}\"\tvt100\t{$on_off_secure_u}\n");
-                /* skip to next line in outer loop */
                 continue 2;
             }
         }
