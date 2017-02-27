@@ -24,7 +24,56 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+INSTALL="/.probe.for.install.media"
 MNT="/tmp/hdrescue"
+
+bootstrap_and_exit()
+{
+	# ensure config directory structure
+	mkdir -p /conf/backup
+	mkdir -p /conf/sshd
+
+	# create initial config.xml if necessary
+	if [ ! -f /conf/config.xml ]; then
+		echo -n "Bootstrapping config.xml..."
+		cp /usr/local/etc/config.xml /conf/config.xml
+		echo "done."
+	fi
+
+	exit 0
+}
+
+touch ${INSTALL}
+if [ -f ${INSTALL} -a -f /conf/config.xml ]; then
+	bootstrap_and_exit
+fi
+
+timeout_prompt()
+{
+	OUTPUT=$(echo ${2} | sed 's/./& /g')
+	MESSAGE=${1}
+	RETURN=1
+
+	echo -n "${MESSAGE} "
+
+	stty cbreak -echo
+	for NEXT in ${OUTPUT}; do
+		echo -n ${NEXT}
+		if timeout 1 dd of=/dev/null count=1 status=none; then
+			RETURN=0
+			break
+		fi
+	done
+	stty -cbreak echo
+
+	echo
+
+	return ${RETURN}
+}
+
+if ! timeout_prompt 'Press any key to start the configuration importer:' .......; then
+	bootstrap_and_exit
+fi
 
 DEVS=$(camcontrol devlist)
 PART=
@@ -36,7 +85,7 @@ while [ -z "${PART}" ]; do
 	read -p "Select a device import from or leave blank to exit: " DEV
 
 	if [ -z "${DEV}" ]; then
-		exit 0
+		bootstrap_and_exit
 	elif [ -e "/dev/${DEV}s1a" ]; then
 		# MBR layout found
 		PART="/dev/${DEV}s1a"
@@ -59,14 +108,16 @@ if [ -f "${MNT}/conf/config.xml" ]; then
 	rm -rf /conf/*
 	for FILE in config.xml dhcpleases.tgz netflow.tgz rrd.tgz; do
 		if [ -f "${MNT}/conf/${FILE}" ]; then
+			echo -n "Restoring ${FILE}..."
 			cp "${MNT}/conf/${FILE}" /conf
-			echo "Restored ${FILE}"
+			echo "done."
 		fi
 	done
 	for DIR in backup sshd; do
 		if [ -d "${MNT}/conf/${DIR}" ]; then
+			echo -n "Restoring ${DIR}..."
 			cp -r "${MNT}/conf/${DIR}" /conf
-			echo "Restored ${DIR}"
+			echo "done."
 		else
 			mkdir -p "/conf/${DIR}"
 		fi
@@ -77,3 +128,5 @@ fi
 
 umount ${MNT}
 rm -r ${MNT}
+
+bootstrap_and_exit

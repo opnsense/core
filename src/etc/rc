@@ -71,7 +71,7 @@ attempts=0
 while [ ${attempts} -lt 3 ]; do
 	fsck -C -y /
 	fsck -C -y /
-	if mount -a 2>/dev/null; then
+	if mount -a 2> /dev/null; then
 		# bail if all is well
 		break
 	fi
@@ -99,19 +99,11 @@ fi
 # set keyboard map if needed
 /etc/rc.d/syscons onestart
 
-# set up config directory structure
-mkdir -p /conf/backup
-mkdir -p /conf/sshd
-
-# Bootstrap config.xml if necessary
-if [ ! -f /conf/config.xml ]; then
-	echo -n "Bootstrapping config.xml..."
-	cp /usr/local/etc/config.xml /conf/config.xml
-	echo "done."
-fi
+# run the config importer during early startup
+/usr/local/etc/rc.importer || exit 1
 
 # Enable console output if its muted.
-/sbin/conscontrol mute off >/dev/null
+/sbin/conscontrol mute off > /dev/null
 
 setup_mfs_link()
 {
@@ -217,7 +209,7 @@ chmod 1777 /tmp
 
 echo -n "."
 /sbin/ldconfig -elf /usr/lib /usr/local/lib /lib
-/etc/rc.d/ldconfig start 2>/dev/null
+/etc/rc.d/ldconfig start 2> /dev/null
 
 # Launching kbdmux(4)
 if [ -f "/dev/kbdmux0" ]; then
@@ -270,7 +262,7 @@ rm /var/run/booting
 /usr/local/etc/rc.opnsense start
 
 echo -n "Starting CRON..."
-cd /tmp && /usr/sbin/cron -s 2>/dev/null
+cd /tmp && /usr/sbin/cron -s 2> /dev/null
 echo "done."
 
 /usr/local/sbin/beep.sh start
