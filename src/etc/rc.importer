@@ -40,6 +40,12 @@ bootstrap_and_exit()
 		echo "done."
 	fi
 
+	# clean up after a finished import
+	if [ -d ${MNT} ]; then
+		umount ${MNT} 2> /dev/null
+		rm -rf ${MNT}
+	fi
+
 	exit 0
 }
 
@@ -101,8 +107,12 @@ done
 echo
 
 mkdir -p ${MNT}
-fsck -t ufs -y  ${PART} > /dev/null
-mount ${PART} ${MNT}
+fsck -t ufs -y ${PART} > /dev/null
+if ! mount ${PART} ${MNT} 2> /dev/null; then
+	echo "The device could not be mounted."
+	bootstrap_and_exit
+	# XXX redo
+fi
 
 if [ -f "${MNT}/conf/config.xml" ]; then
 	rm -rf /conf/*
@@ -123,10 +133,9 @@ if [ -f "${MNT}/conf/config.xml" ]; then
 		fi
 	done
 else
-	echo "No previous configuration was found on this disk."
+	echo "No previous configuration was found on this device."
+	bootstrap_and_exit
+	# XXX redo
 fi
-
-umount ${MNT}
-rm -r ${MNT}
 
 bootstrap_and_exit
