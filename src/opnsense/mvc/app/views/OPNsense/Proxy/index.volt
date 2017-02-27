@@ -56,6 +56,20 @@ POSSIBILITY OF SUCH DAMAGE.
                 }
         );
 
+        // when  closing DialogEditBlacklist, point the user to the download buttons
+        $("#DialogEditBlacklist").on("show.bs.modal", function () {
+            // wait some time before linking the save button, missing handle
+            setTimeout(function(){
+                $("#btn_DialogEditBlacklist_save").click(function(){
+                    $("#remoteACLchangeMessage").slideDown(1000, function(){
+                        setTimeout(function(){
+                            $("#remoteACLchangeMessage").slideUp(2000);
+                        }, 2000);
+                    });
+                });
+            }, 500);
+        });
+
         /**
          *
          * Reconfigure proxy - activate changes
@@ -253,17 +267,20 @@ POSSIBILITY OF SUCH DAMAGE.
                 </div>
                 </td>
                 <td>
-                <small class="hidden" for="help_for_proxy.forward.acl.remoteACLs.blacklist">
-                    {{ lang._('
-                    Add an item to the table to fetch a remote acl for blacklisting.%s
-                    You can enable or disable the blacklist list.%s
-                    The active blacklists will be merged with the settings under %sForward Proxy -> Access Control List%s.
-                    ') | format('<br/>','<br/>','<b>','</b>') }}
-                </small>
+                  <small class="hidden" for="help_for_proxy.forward.acl.remoteACLs.blacklist">
+                      {{ lang._('
+                      Add an item to the table to fetch a remote acl for blacklisting.%s
+                      You can enable or disable the blacklist list.%s
+                      The active blacklists will be merged with the settings under %sForward Proxy -> Access Control List%s.
+                      ') | format('<br/>','<br/>','<b>','</b>') }}
+                  </small>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
+                    <div id="remoteACLchangeMessage" class="alert alert-info" style="display: none" role="alert">
+                        {{ lang._('Note: after changing categories, please remember to download the ACL again to apply your new settings') }}
+                    </div>
                     <table id="grid-remote-blacklists" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditBlacklist">
                         <thead>
                         <tr>
