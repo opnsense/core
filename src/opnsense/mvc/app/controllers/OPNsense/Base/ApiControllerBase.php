@@ -132,24 +132,27 @@ class ApiControllerBase extends ControllerRoot
                                 $dispatchError = null;
                                 // check number of parameters using reflection
                                 $object_info = new \ReflectionObject($this);
-                                $req_c = $object_info->getMethod($callMethodName)->getNumberOfRequiredParameters();
-                                if ($req_c > count($dispatcher->getParams())) {
-                                    $dispatchError = 'action ' . $dispatcher->getActionName() .
-                                      ' expects at least '. $req_c . ' parameter(s)';
-                                } else {
-                                    // if body is send as json data, parse to $_POST first
-                                    $dispatchError = $this->parseJsonBodyData();
-                                }
-                                if ($dispatchError != null) {
-                                    // send error to client
-                                    $this->response->setStatusCode(400, "Bad Request");
-                                    $this->response->setContentType('application/json', 'UTF-8');
-                                    $this->response->setJsonContent(
-                                        array('message' => $dispatchError,
-                                              'status'  => 400)
-                                    );
-                                    $this->response->send();
-                                    return false;
+                                if ($object_info->hasMethod($callMethodName)) {
+                                    // only inspect parameters if object exists
+                                    $req_c = $object_info->getMethod($callMethodName)->getNumberOfRequiredParameters();
+                                    if ($req_c > count($dispatcher->getParams())) {
+                                        $dispatchError = 'action ' . $dispatcher->getActionName() .
+                                            ' expects at least '. $req_c . ' parameter(s)';
+                                    } else {
+                                        // if body is send as json data, parse to $_POST first
+                                        $dispatchError = $this->parseJsonBodyData();
+                                    }
+                                    if ($dispatchError != null) {
+                                        // send error to client
+                                        $this->response->setStatusCode(400, "Bad Request");
+                                        $this->response->setContentType('application/json', 'UTF-8');
+                                        $this->response->setJsonContent(
+                                            array('message' => $dispatchError,
+                                                'status'  => 400)
+                                        );
+                                        $this->response->send();
+                                        return false;
+                                    }
                                 }
 
                                 return true;
