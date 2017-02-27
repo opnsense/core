@@ -49,7 +49,7 @@ bootstrap_and_exit()
 	exit 0
 }
 
-touch ${INSTALL}
+touch ${INSTALL} 2> /dev/null
 if [ -f ${INSTALL} -a -f /conf/config.xml ]; then
 	bootstrap_and_exit
 fi
