@@ -694,9 +694,9 @@ $( document ).ready(function() {
             <td width="22%"><a id="help_for_auth_user_pass" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("User name/pass"); ?></td>
             <td width="78%">
               <div><?=gettext("Username"); ?></div>
-              <div><input name="auth_user" id="auth_user" class="form-control unknown" type="text" size="20" value="<?=htmlspecialchars($pconfig['auth_user']);?>" /></div>
+              <div><input name="auth_user" id="auth_user" class="form-control unknown" type="text" size="20" value="<?=$pconfig['auth_user'];?>" /></div>
               <div><?=gettext("Password"); ?></div>
-              <div><input name="auth_pass" id="auth_pass" type="password" class="form-control pwd" size="20" value="<?=htmlspecialchars($pconfig['auth_pass']);?>" /></div>
+              <div><input name="auth_pass" id="auth_pass" type="password" class="form-control pwd" size="20" value="<?=$pconfig['auth_pass'];?>" /></div>
               <div class="hidden" for="help_for_auth_user_pass">
                 <?=gettext("Leave empty when no user name and password are needed."); ?>
               </div>
