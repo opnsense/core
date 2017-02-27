@@ -395,7 +395,6 @@ function filter_configure_sync($verbose = false)
     /* generate aliases */
     update_filter_reload_status(gettext("Creating aliases"));
     $aliases = filter_generate_aliases($FilterIflist);
-    $aliases .= filter_generate_network_aliases();
     $gateways = filter_generate_gateways();
 
     if ($verbose) {
@@ -871,35 +870,6 @@ function filter_generate_aliases(&$FilterIflist)
     }
 
     return $aliases;
-}
-
-/**
- * generate aliases for internal networks, so eventually we don't need logic in the rule parsing to bind the
- * existing network/ip options.
- */
-function filter_generate_network_aliases()
-{
-    global $config;
-    $result = "### define internal aliases\n";
-    $interface_config = legacy_interfaces_details();
-    foreach (legacy_config_get_interfaces(array("enable" => true)) as $if => $ifdetail) {
-        $networks = array();
-        $addresses = array();
-        if (!empty($ifdetail['if']) && !empty($interface_config[$ifdetail['if']])) {
-            $properties = $interface_config[$ifdetail['if']];
-            if (!empty($properties['ipv4'])) {
-                $networks[] = gen_subnet($properties['ipv4'][0]['ipaddr'], $properties['ipv4'][0]['subnetbits']);
-                $addresses[] = $properties['ipv4'][0]['ipaddr'];
-            }
-            if (!empty($properties['ipv6']) && empty($properties['ipv6'][0]['link-local'])) {
-                $networks[] = gen_subnetv6($properties['ipv6'][0]['ipaddr'], $properties['ipv6'][0]['subnetbits']);
-                $addresses[] = $properties['ipv6'][0]['ipaddr'];
-            }
-        }
-        $result .= "table <internal-{$if}> { " . implode(' ', $networks) . " } \n";
-        $result .= "table <internal-{$if}ip> { " . implode(' ', $addresses) . " } \n";
-    }
-    return $result;
 }
 
 function filter_generate_gateways()
@@ -2458,27 +2428,13 @@ function filter_rules_generate(&$FilterIflist)
 
         $gw = get_interface_gateway($ifdescr);
         if (is_ipaddrv4($gw) && isset($ifcfg['ip']) && is_ipaddrv4($ifcfg['ip'])) {
-            $ipfrules .= "pass out {$log['pass']} route-to ( {$ifcfg['if']} {$gw} ) from {$ifcfg['ip']} to !{$ifcfg['sa']}/{$ifcfg['sn']} keep state allow-opts label \"let out anything from firewall host itself\"\n";
-            if (isset($ifcfg['vips']) && is_array($ifcfg['vips'])) {
-                foreach ($ifcfg['vips'] as $vip) {
-                    if (ip_in_subnet($vip['ip'], "{$ifcfg['sa']}/{$ifcfg['sn']}")) {
-                        $ipfrules .= "pass out {$log['pass']} route-to ( {$ifcfg['if']} {$gw} ) from {$vip['ip']} to !{$ifcfg['sa']}/{$ifcfg['sn']} keep state allow-opts label \"let out anything from firewall host itself\"\n";
-                    } else {
-                        $ipfrules .= "pass out {$log['pass']} route-to ( {$ifcfg['if']} {$gw} ) from {$vip['ip']} to !" . gen_subnet($vip['ip'], $vip['sn']) . "/{$vip['sn']} keep state allow-opts label \"let out anything from firewall host itself\"\n";
-                    }
-                }
-            }
+            $ipfrules .= "pass out {$log['pass']} route-to ( {$ifcfg['if']} {$gw} ) from ({$ifcfg['if']}) to !({$ifcfg['if']}:network) keep state allow-opts label \"let out anything from firewall host itself\"\n";
         }
 
         $gwv6 = get_interface_gateway_v6($ifdescr);
         $stf = get_real_interface($ifdescr, "inet6");
-        $pdlen = 64 - calculate_ipv6_delegation_length($ifdescr);
         if (is_ipaddrv6($gwv6) && is_ipaddrv6($ifcfg['ipv6'])) {
-            $ipfrules .= "pass out {$log['pass']} route-to ( {$stf} {$gwv6} ) inet6 from {$ifcfg['ipv6']} to !{$ifcfg['ipv6']}/{$pdlen} keep state allow-opts label \"let out anything from firewall host itself\"\n";
-            if (is_array($ifcfg['vips6'])) {
-              foreach ($ifcfg['vips6'] as $vip)
-                $ipfrules .= "pass out {$log['pass']} route-to ( {$stf} {$gwv6} ) inet6 from {$vip['ip']} to !{$vip['ip']}/{$pdlen} keep state allow-opts label \"let out anything from firewall host itself\"\n";
-            }
+            $ipfrules .= "pass out {$log['pass']} route-to ( {$stf} {$gwv6} ) inet6 from ({$stf}) to !({$stf}:network) keep state allow-opts label \"let out anything from firewall host itself\"\n";
         }
     }
 
