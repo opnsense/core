@@ -202,7 +202,7 @@ class ControllerBase extends ControllerRoot
             $csrf_token = $this->security->getToken();
             $csrf_tokenKey = $this->security->getTokenKey();
         }
-        $this->view->setVars(['csrf_tokenKey' => $csrf_tokenKey,'csrf_token' => $csrf_token]);
+        $this->view->setVars(['csrf_tokenKey' => $csrf_tokenKey, 'csrf_token' => $csrf_token]);
 
         // link menu system to view, append /ui in uri because of rewrite
         $menu = new Menu\MenuSystem();

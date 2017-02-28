@@ -192,6 +192,8 @@ class ApiControllerBase extends ControllerRoot
                 $this->response->setStatusCode(403, "Forbidden");
                 return false;
             }
+            // when request is using a json body (based on content type), parse it first
+            $this->parseJsonBodyData();
         }
     }
 

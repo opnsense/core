@@ -185,12 +185,13 @@ function clearFormValidation(parent) {
  * @param callback callback function
  * @return deferred object
  */
-function ajaxCall(url,sendData,callback) {
+function ajaxCall(url, sendData, callback) {
     return $.ajax({
         type: "POST",
         url: url,
         dataType:"json",
-        complete: function(data,status) {
+        contentType: "application/json",
+        complete: function(data, status) {
             if ( callback == null ) {
                 null;
             } else if ( "responseJSON" in data ) {
@@ -199,7 +200,7 @@ function ajaxCall(url,sendData,callback) {
                 callback(data,status);
             }
         },
-        data:sendData
+        data: JSON.stringify(sendData)
     });
 }
 
@@ -215,6 +216,7 @@ function ajaxGet(url,sendData,callback) {
         type: "GET",
         url: url,
         dataType:"json",
+        contentType: "application/json",
         complete: function(data,status) {
             if ( callback == null ) {
                 null;
@@ -224,7 +226,7 @@ function ajaxGet(url,sendData,callback) {
                 callback({},status);
             }
         },
-        data:sendData
+        data: sendData
     });
 }
 
