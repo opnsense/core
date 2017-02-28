@@ -197,6 +197,11 @@ class ControllerBase extends ControllerRoot
         // include csrf for volt view rendering.
         $csrf_token = $this->session->get('$PHALCON/CSRF$');
         $csrf_tokenKey = $this->session->get('$PHALCON/CSRF/KEY$');
+        if (empty($csrf_token) || empty($csrf_tokenKey)) {
+            // when there's no token in our session, request a new one
+            $csrf_token = $this->security->getToken();
+            $csrf_tokenKey = $this->security->getTokenKey();
+        }
         $this->view->setVars(['csrf_tokenKey' => $csrf_tokenKey,'csrf_token' => $csrf_token]);
 
         // link menu system to view, append /ui in uri because of rewrite
