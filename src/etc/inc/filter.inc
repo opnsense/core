@@ -594,7 +594,7 @@ function filter_configure_sync($verbose = false)
             }
         }
     }
-    killbypid('/var/run/filterdns.pid', 'TERM', true);
+    killbypid('/var/run/filterdns.pid', 'KILL', true);
     if (!empty($filterdns)) {
         @file_put_contents('/var/etc/filterdns.conf', $filterdns);
         /*
