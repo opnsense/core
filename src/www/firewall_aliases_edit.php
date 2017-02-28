@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $input_errors[] = sprintf(gettext("%s doesn't appear to be a valid hostname or ip address"), $detail_entry) ;
                 }
             } elseif ($pconfig['type'] == 'port') {
-                if (!is_port($detail_entry) && !is_portrange($detail_entry)) {
+                if (!is_port($detail_entry) && !is_portrange($detail_entry) && !is_alias($detail_entry)) {
                     $input_errors[] = sprintf(gettext("%s doesn't appear to be a valid port number"), $detail_entry) ;
                 }
             } elseif ($pconfig['type'] == 'geoip') {
