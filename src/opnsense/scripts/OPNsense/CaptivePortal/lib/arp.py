@@ -52,18 +52,27 @@ class ARP(object):
             output_stream.seek(0)
             for line in output_stream.read().split('\n'):
                 line_parts = line.split()
-                if len(line_parts) > 10 and len(line_parts[1]) > 2:
-                    if line_parts[8].isdigit():
-                        expires = int(line_parts[8])
-                    else:
-                        expires = -1
-                    address = line_parts[1][1:-1]
-                    mac = line_parts[3]
-                    physical_intf = line_parts[5]
-                    if address in self._arp_table:
-                        self._arp_table[address]['intf'].append(physical_intf)
-                    elif mac.find('incomplete') == -1:
-                        self._arp_table[address] = {'mac': mac, 'intf': [physical_intf], 'expires': expires}
+
+                if len(line_parts) < 6 or line_parts[2] != 'at' or line_parts[4] != 'on':
+                    continue
+
+                if len(line_parts[1]) < 2 or line_parts[1][0] != '(' or line_parts[1][-1] != ')':
+                    continue
+
+                address = line_parts[1][1:-1]
+                physical_intf = line_parts[5]
+                mac = line_parts[3]
+                expires = -1
+
+                for index in range(len(line_parts) - 3):
+                    if line_parts[index] == 'expires' and line_parts[index + 1] == 'in':
+                        if line_parts[index + 2].isdigit():
+                            expires = int(line_parts[index + 2])
+
+                if address in self._arp_table:
+                    self._arp_table[address]['intf'].append(physical_intf)
+                elif mac.find('incomplete') == -1:
+                    self._arp_table[address] = {'mac': mac, 'intf': [physical_intf], 'expires': expires}
 
     def list_items(self):
         """ return parsed arp list
