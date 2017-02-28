@@ -88,7 +88,7 @@ while [ -z "${PART}" ]; do
 	echo
 	echo "${DEVS}"
 	echo
-	read -p "Select a device import from or leave blank to exit: " DEV
+	read -p "Select device to import from (e.g. ada0) or leave blank to exit: " DEV
 
 	if [ -z "${DEV}" ]; then
 		bootstrap_and_exit
