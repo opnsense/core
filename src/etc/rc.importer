@@ -33,6 +33,7 @@ while getopts b OPT; do
 	case ${OPT} in
 	b)
 		DO_BOOT="-b"
+		shift
 		;;
 	*)
 		echo "Unknown argument during import." >&2
@@ -86,6 +87,26 @@ timeout_prompt()
 	return ${RETURN}
 }
 
+probe_for_part()
+{
+	DEV=${1}
+
+	if [ -e "/dev/${DEV}s1a" ]; then
+		# MBR layout found
+		export PART="/dev/${DEV}s1a"
+		return 0
+	elif [ -e "/dev/${DEV}p3" ]; then
+		# GPT layout found
+		export PART="/dev/${DEV}p3"
+		return 0
+	fi
+
+	return 1
+}
+
+DEVS=
+PART=
+
 if [ -n "${DO_BOOT}" ]; then
 	touch ${INSTALL} 2> /dev/null
 	if [ -f ${INSTALL} -a -f /conf/config.xml ]; then
@@ -96,31 +117,31 @@ if [ -n "${DO_BOOT}" ]; then
 	    'Press any key to start the configuration importer:' .......; then
 		bootstrap_and_exit
 	fi
+elif [ -n "${1}" ]; then
+	if ! probe_for_part ${1}; then
+		bootstrap_and_exit
+	fi
+else
+	DEVS=$(camcontrol devlist)
 fi
-
-DEVS=$(camcontrol devlist)
-PART=
 
 while [ -z "${PART}" ]; do
 	echo
 	echo "${DEVS}"
 	echo
 	read -p "Select device to import from (e.g. ada0) or leave blank to exit: " DEV
+	echo
 
 	if [ -z "${DEV}" ]; then
 		bootstrap_and_exit
-	elif [ -e "/dev/${DEV}s1a" ]; then
-		# MBR layout found
-		PART="/dev/${DEV}s1a"
-	elif [ -e "/dev/${DEV}p3" ]; then
-		# GPT layout found
-		PART="/dev/${DEV}p3"
-	else
-		echo
+        fi
+
+	if ! probe_for_part ${DEV}; then
 		echo "No known partition layout was found for '${DEV}'."
 	fi
 done
 
+echo "Starting import for partition '${PART}'."
 echo
 
 mkdir -p ${MNT}
