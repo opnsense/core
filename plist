@@ -912,6 +912,8 @@
 /usr/local/sbin/ntpdate_sync_once.sh
 /usr/local/sbin/openvpn.attributes.sh
 /usr/local/sbin/opnsense-auth
+/usr/local/sbin/opnsense-importer
+/usr/local/sbin/opnsense-installer
 /usr/local/sbin/ovpn-linkdown
 /usr/local/sbin/ovpn-linkup
 /usr/local/sbin/ovpn_auth_verify
