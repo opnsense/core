@@ -221,14 +221,15 @@ POSSIBILITY OF SUCH DAMAGE.
                     options:{
                         navigation:0,
                         formatters:{
-                            rowtoggle: function (column, row) {
-                                var toggle = " <button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.filename + "\"><span class=\"fa fa-pencil\"></span></button> ";
+                            editor: function (column, row) {
+                                return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.filename + "\"><span class=\"fa fa-pencil\"></span></button> ";
+                            },
+                            boolean: function (column, row) {
                                 if (parseInt(row[column.id], 2) == 1) {
-                                    toggle += "<span style=\"cursor: pointer;\" class=\"fa fa-check-square-o command-toggle\" data-value=\"1\" data-row-id=\"" + row.filename + "\"></span>";
+                                    return "<span class=\"fa fa-check\"></span>";
                                 } else {
-                                    toggle += "<span style=\"cursor: pointer;\" class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.filename + "\"></span>";
+                                    return "<span class=\"fa fa-times\"></span>";
                                 }
-                                return toggle;
                             }
                         },
                         converters: {
@@ -538,10 +539,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
         });
 
-        // When ajax commands complete, hide some controls from our grid(s)
-        $( document ).ajaxComplete(function(){
-            $("#grid-rule-files  .command-toggle").hide();
-        });
     });
 
 
@@ -598,8 +595,9 @@ POSSIBILITY OF SUCH DAMAGE.
                             <th data-column-id="filename" data-type="string" data-visible="false" data-identifier="true">{{ lang._('Filename') }}</th>
                             <th data-column-id="description" data-type="string" data-sortable="false" data-visible="true">{{ lang._('Description') }}</th>
                             <th data-column-id="modified_local" data-type="rulets" data-sortable="false" data-visible="true">{{ lang._('Last updated') }}</th>
+                            <th data-column-id="enabled" data-formatter="boolean" data-sortable="false" data-width="10em">{{ lang._('Enabled') }}</th>
                             <th data-column-id="filter_str" data-type="string" data-identifier="true">{{ lang._('Filter') }}</th>
-                            <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false" data-width="10em">{{ lang._('Commands') }}</th>
+                            <th data-column-id="edit" data-formatter="editor" data-sortable="false" data-width="10em">{{ lang._('Edit') }}</th>
                         </tr>
                         </thead>
                         <tbody>
