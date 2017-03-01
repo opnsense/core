@@ -78,9 +78,9 @@ function getFormData(parent) {
                 } else if (sourceNode.prop("type") == "checkbox") {
                     // checkbox input type
                     if (sourceNode.prop("checked")) {
-                        node[keypart] = 1 ;
+                        node[keypart] = "1" ;
                     } else {
-                        node[keypart] = 0 ;
+                        node[keypart] = "0" ;
                     }
                 } else {
                     // regular input type
