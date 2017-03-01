@@ -56,9 +56,9 @@ function stdBootgridUI(obj, sourceUrl, options) {
             },
             "boolean": function (column, row) {
                 if (parseInt(row[column.id], 2) == 1) {
-                    return "<span class=\"fa fa-check\"></span>";
+                    return "<span class=\"fa fa-check\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
                 } else {
-                    return "<span class=\"fa fa-times\"></span>";
+                    return "<span class=\"fa fa-times\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
                 }
             },
         }
@@ -78,6 +78,9 @@ function stdBootgridUI(obj, sourceUrl, options) {
         $(this).find("tfoot td:first-child").attr('colspan',$(this).find("th").length - 1);
         $(this).find('tr[data-row-id]').each(function(){
             if ($(this).find('[class*="command-toggle"]').first().data("value") == "0") {
+                $(this).addClass("text-muted");
+            }
+            if ($(this).find('[class*="command-boolean"]').first().data("value") == "0") {
                 $(this).addClass("text-muted");
             }
         });

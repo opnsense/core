@@ -222,13 +222,13 @@ POSSIBILITY OF SUCH DAMAGE.
                         navigation:0,
                         formatters:{
                             editor: function (column, row) {
-                                return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.filename + "\"><span class=\"fa fa-pencil\"></span></button> ";
+                                return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.filename + "\"><span class=\"fa fa-pencil\"></span></button>";
                             },
                             boolean: function (column, row) {
                                 if (parseInt(row[column.id], 2) == 1) {
-                                    return "<span class=\"fa fa-check\"></span>";
+                                    return "<span class=\"fa fa-check command-boolean\" data-value=\"1\" data-row-id=\"" + row.filename + "\"></span>";
                                 } else {
-                                    return "<span class=\"fa fa-times\"></span>";
+                                    return "<span class=\"fa fa-times command-boolean\" data-value=\"0\" data-row-id=\"" + row.filename + "\"></span>";
                                 }
                             }
                         },
