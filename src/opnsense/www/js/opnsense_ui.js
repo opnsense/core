@@ -63,19 +63,30 @@ function saveFormToEndpoint(url,formid,callback_ok, disable_dialog) {
             // if there are validation issues, update our screen and show a dialog.
             if (data['validations'] != undefined) {
                 if (!disable_dialog) {
+                    var detailsid = "errorfrm"+Math.floor((Math.random() * 10000000) + 1);
+                    var errorMessage = $('<div></div>');
+                    errorMessage.append('Please correct validation errors in form <br />');
+                    errorMessage.append('<i class="fa fa-bug pull-right" aria-hidden="true" data-toggle="collapse" '+
+                                        'data-target="#'+detailsid+'" aria-expanded="false" aria-controls="'+detailsid+'"></i>');
+                    errorMessage.append('<div class="collapse" id="'+detailsid+'"><hr/><pre></pre></div>');
+
                     // validation message box is optional, form is already updated using handleFormValidation
                     BootstrapDialog.show({
                         type:BootstrapDialog.TYPE_WARNING,
                         title: 'Input validation',
-                        message: 'Please correct validation errors in form',
+                        message: errorMessage,
                         buttons: [{
                             label: 'Dismiss',
                             action: function(dialogRef){
                                 dialogRef.close();
                             }
-                        }]
-
+                        }],
+                        onshown: function(){
+                            // set debug information
+                            $("#"+detailsid + " > pre").html(JSON.stringify(data, null, 2));
+                        }
                     });
+
                 }
             } else if ( callback_ok != undefined ) {
                 // execute callback function
