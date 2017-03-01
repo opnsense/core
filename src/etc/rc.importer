@@ -176,4 +176,8 @@ else
 	# XXX redo
 fi
 
+if [ -z "${DO_BOOT}" ]; then
+	echo "Please reboot."
+fi
+
 bootstrap_and_exit
