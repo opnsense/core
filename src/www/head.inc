@@ -100,7 +100,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <script>var theme = "<?= $themename ?>"; </script>
 
     <!-- JQuery -->
-    <script type="text/javascript" src="/ui/js/jquery-1.12.0.min.js"></script>
+    <script type="text/javascript" src="/ui/js/jquery-1.12.4.min.js"></script>
 
     <!-- Ticker used for notices-->
     <script type="text/javascript" src="/javascript/ticker.js"></script>
