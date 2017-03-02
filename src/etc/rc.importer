@@ -27,21 +27,6 @@
 INSTALL="/.probe.for.install.media"
 MNT="/tmp/hdrescue"
 
-DO_BOOT=
-
-while getopts b OPT; do
-	case ${OPT} in
-	b)
-		DO_BOOT="-b"
-		shift
-		;;
-	*)
-		echo "Unknown argument during import." >&2
-		exit 0
-		;;
-	esac
-done
-
 bootstrap_and_exit()
 {
 	# ensure config directory structure
@@ -63,6 +48,24 @@ bootstrap_and_exit()
 
 	exit 0
 }
+
+
+trap bootstrap_and_exit 2
+
+DO_BOOT=
+
+while getopts b OPT; do
+	case ${OPT} in
+	b)
+		DO_BOOT="-b"
+		shift
+		;;
+	*)
+		echo "Unknown argument during import." >&2
+		bootstrap_and_exit
+		;;
+	esac
+done
 
 timeout_prompt()
 {
@@ -154,7 +157,7 @@ fi
 
 if [ -f "${MNT}/conf/config.xml" ]; then
 	rm -rf /conf/*
-	for FILE in config.xml dhcpleases.tgz netflow.tgz rrd.tgz; do
+	for FILE in captiveportal.sqlite config.xml dhcpleases.tgz netflow.tgz rrd.tgz; do
 		if [ -f "${MNT}/conf/${FILE}" ]; then
 			echo -n "Restoring ${FILE}..."
 			cp "${MNT}/conf/${FILE}" /conf
