@@ -1133,8 +1133,8 @@
 /usr/local/www/widgets/widgets/traffic_graphs.widget.php
 /usr/local/www/wizard.php
 /usr/local/www/xmlrpc.php
-@shadow /usr/local/etc/bogons.sample
-@shadow /usr/local/etc/bogonsv6.sample
-@shadow /usr/local/etc/config.xml.sample
+@sample /usr/local/etc/bogons.sample
+@sample /usr/local/etc/bogonsv6.sample
+@sample /usr/local/etc/config.xml.sample
 @shadow /usr/local/etc/pkg/repos/FreeBSD.conf.sample
 @shadow /usr/local/etc/pkg/repos/origin.conf.sample

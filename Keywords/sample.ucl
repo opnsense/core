@@ -1,15 +1,17 @@
 # $FreeBSD$
 #
-# MAINTAINER: franco@opnsense.org
+# MAINTAINER: portmgr@FreeBSD.org
 #
-# @shadow etc/somefile.conf.sample
+# @sample etc/somefile.conf.sample
 # or
-# @shadow file1 file2
+# @sample file1 file2
 #
 # Where file1 is considered as a sample file and file2 the target file
 #
 # This will install the somefile.conf.sample and automatically copy to
-# somefile.conf if it doesn't exist. On deinstall it will be removed.
+# somefile.conf if it doesn't exist. On deinstall it will remove the
+# somefile.conf if it still matches the sample, otherwise it is
+# kept.
 #
 # This replaces the old pattern:
 #  @unexec if cmp -s %D/etc/pkgtools.conf %D/etc/pkgtools.conf.sample; then rm -f %D/etc/pkgtools.conf; fi
@@ -51,5 +53,9 @@ pre-deinstall: <<EOD
   /*) target_file="${target_file}" ;;
   *) target_file="%D/${target_file}" ;;
   esac
-  rm -f "${target_file}"
+  if cmp -s "${target_file}" "${sample_file}"; then
+    rm -f "${target_file}"
+  else
+    echo "You may need to manually remove ${target_file} if it is no longer needed."
+  fi
 EOD
