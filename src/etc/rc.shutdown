@@ -10,9 +10,9 @@
 /usr/local/etc/rc.opnsense stop
 
 # backup volatile internals
-/usr/local/etc/rc.backup_dhcpleases stop
-/usr/local/etc/rc.backup_netflow stop
-/usr/local/etc/rc.backup_rrd stop
+for BACKUP in captiveportal dhcpleases netflow rrd; do
+	/usr/local/etc/rc.backup_${BACKUP} stop
+done
 
 # wait for config lock to release
 php -a >/dev/null  << EOF

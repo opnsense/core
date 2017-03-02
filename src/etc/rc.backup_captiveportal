@@ -1,0 +1,14 @@
+#!/bin/sh
+
+BACKUPFILE="/conf/captiveportal.sqlite"
+BACKUPDB="/var/captiveportal/captiveportal.sqlite"
+
+if [ "${1}" = "restore" ]; then
+	if [ -f "${BACKUPFILE}" ]; then
+		cp "${BACKUPFILE}" "${BACKUPDB}"
+	fi
+else
+	if [ -f "${BACKUPDB}" ]; then
+		sqlite3 "${BACKUPDB}" ".backup ${BACKUPFILE}"
+	fi
+fi

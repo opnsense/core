@@ -241,10 +241,10 @@ done
 # Startup configd
 /usr/local/etc/rc.d/configd start
 
-# Restore backups from previous shutdown (if any)
-/usr/local/etc/rc.backup_dhcpleases restore
-/usr/local/etc/rc.backup_netflow restore
-/usr/local/etc/rc.backup_rrd restore
+# Restore backups from previous shutdown
+for BACKUP in captiveportal dhcpleases netflow rrd; do
+	/usr/local/etc/rc.backup_${BACKUP} restore
+done
 
 # Execute the early syshook / plugin commands
 /usr/local/etc/rc.syshook early

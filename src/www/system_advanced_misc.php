@@ -85,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['rrdbackup'] = !empty($config['system']['rrdbackup']) ? $config['system']['rrdbackup'] : null;
     $pconfig['dhcpbackup'] = !empty($config['system']['dhcpbackup']) ? $config['system']['dhcpbackup'] : null;
     $pconfig['netflowbackup'] = !empty($config['system']['netflowbackup']) ? $config['system']['netflowbackup'] : null;
+    $pconfig['captiveportalbackup'] = !empty($config['system']['captiveportalbackup']) ? $config['system']['captiveportalbackup'] : null;
     $pconfig['powerd_ac_mode'] = "hadp";
     if (!empty($config['system']['powerd_ac_mode'])) {
         $pconfig['powerd_ac_mode'] = $config['system']['powerd_ac_mode'];
@@ -172,6 +173,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['netflowbackup'] = $pconfig['netflowbackup'];
         } elseif (isset($config['system']['netflowbackup'])) {
             unset($config['system']['netflowbackup']);
+        }
+
+        if (!empty($pconfig['captiveportalbackup'])) {
+            $config['system']['captiveportalbackup'] = $pconfig['captiveportalbackup'];
+        } elseif (isset($config['system']['captiveportalbackup'])) {
+            unset($config['system']['captiveportalbackup']);
         }
 
         write_config();
@@ -337,6 +344,24 @@ include("head.inc");
                   </select>
                   <div class="hidden" for="help_for_netflowbackup">
                     <?=gettext("This will periodically backup the NetFlow data aggregation so it can be restored automatically on the next boot.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_captiveportalbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic Captive Portal Backup");?></td>
+                <td>
+                  <select name="captiveportalbackup" class="selectpicker" data-style="btn-default" id="captiveportalbackup">
+                    <option value='0' <?= $pconfig['captiveportalbackup'] == 0 ? 'selected="selected"' : ''; ?>><?=gettext('Disabled'); ?></option>
+<?php
+                    for ($x = 1; $x <= 24; $x++): ?>
+                    <option value="<?= $x ?>" <?= $pconfig['captiveportalbackup'] == $x ? 'selected="selected"' : '';?>>
+                      <?= $x == 1 ? gettext('1 hour') : sprintf(gettext('%s hours'), $x) ?>
+                    </option>
+<?php
+                    endfor; ?>
+                  </select>
+                  <div class="hidden" for="help_for_captiveportalbackup">
+                    <?=gettext("This will periodically backup the captive portal session data so it can be restored automatically on the next boot.");?>
                   </div>
                 </td>
               </tr>

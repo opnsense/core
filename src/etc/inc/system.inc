@@ -1606,6 +1606,10 @@ function system_cron_configure($verbose = false)
         $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_netflow', '0', '*/' . $config['system']['netflowbackup']);
     }
 
+    if (!empty($config['system']['captiveportalbackup'])) {
+        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_captiveportal', '0', '*/' . $config['system']['captiveportalbackup']);
+    }
+
     if (!empty($config['system']['remotebackup']['GDriveEnabled'])) {
         $autocron[] = generate_cron_job('/usr/local/opnsense/scripts/remote_backup.php', 0, 1);
     }
