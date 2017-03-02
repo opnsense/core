@@ -154,7 +154,7 @@ fi
 
 if [ -f "${MNT}/conf/config.xml" ]; then
 	rm -rf /conf/*
-	for FILE in config.xml dhcpleases.tgz netflow.tgz rrd.tgz; do
+	for FILE in captiveportal.sqlite config.xml dhcpleases.tgz netflow.tgz rrd.tgz; do
 		if [ -f "${MNT}/conf/${FILE}" ]; then
 			echo -n "Restoring ${FILE}..."
 			cp "${MNT}/conf/${FILE}" /conf
