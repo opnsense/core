@@ -1215,7 +1215,7 @@ function update_filter_reload_status($text, $first = false)
         @unlink($filter_reload_status);
     }
 
-    file_put_contents(
+    @file_put_contents(
       $filter_reload_status,
       sprintf("%s: %s\n", microtime(true), $text),
       FILE_APPEND
