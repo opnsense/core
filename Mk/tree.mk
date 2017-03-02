@@ -69,6 +69,10 @@ install-${TARGET}: force
 			mv -v "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}" \
 			    "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE%%.sample}"; \
 		fi; \
+		if [ -n "${NO_SAMPLE}" -a "$${FILE%%.shadow}" != "$${FILE}" ]; then \
+			mv -v "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}" \
+			    "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE%%.shadow}"; \
+		fi; \
 	done
 .endfor
 
@@ -77,10 +81,15 @@ plist-${TARGET}: force
 	@(cd ${TREE}; find * -type f ${_IGNORES}) | while read FILE; do \
 		FILE="$${FILE%%.in}"; PREFIX=""; \
 		if [ -z "${NO_SAMPLE}" -a "$${FILE%%.sample}" != "$${FILE}" ]; then \
+			PREFIX="@sample "; \
+		fi; \
+		if [ -z "${NO_SAMPLE}" -a "$${FILE%%.shadow}" != "$${FILE}" ]; then \
+			FILE="$${FILE%%.shadow}.sample"; \
 			PREFIX="@shadow "; \
 		fi; \
 		if [ -n "${NO_SAMPLE}" ]; then \
 			FILE="$${FILE%%.sample}"; \
+			FILE="$${FILE%%.shadow}"; \
 		fi; \
 		echo "$${PREFIX}${ROOT_${TARGET}}/${TREE}/$${FILE}"; \
 	done

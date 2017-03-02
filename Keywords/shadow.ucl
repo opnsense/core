@@ -9,7 +9,7 @@
 # Where file1 is considered as a sample file and file2 the target file
 #
 # This will install the somefile.conf.sample and automatically copy to
-# somefile.conf if it doesn't exist. On deinstall it will be kept.
+# somefile.conf if it doesn't exist. On deinstall it will be removed.
 #
 # This replaces the old pattern:
 #  @unexec if cmp -s %D/etc/pkgtools.conf %D/etc/pkgtools.conf.sample; then rm -f %D/etc/pkgtools.conf; fi
@@ -51,4 +51,5 @@ pre-deinstall: <<EOD
   /*) target_file="${target_file}" ;;
   *) target_file="%D/${target_file}" ;;
   esac
+  rm -f "${target_file}"
 EOD
