@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -69,9 +69,14 @@ install-${TARGET}: force
 			mv -v "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}" \
 			    "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE%%.sample}"; \
 		fi; \
-		if [ -n "${NO_SAMPLE}" -a "$${FILE%%.shadow}" != "$${FILE}" ]; then \
-			mv -v "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}" \
-			    "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE%%.shadow}"; \
+		if [ "$${FILE%%.shadow}" != "$${FILE}" ]; then \
+			if [ -n "${NO_SAMPLE}" ]; then \
+				mv -v "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}" \
+				    "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE%%.shadow}"; \
+			else \
+				mv "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}" \
+				    "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE%%.shadow}.sample"; \
+			fi; \
 		fi; \
 	done
 .endfor
