@@ -2453,15 +2453,7 @@ function kill_dhclient_process($interface)
         return;
     }
 
-    $i = 0;
-    while ((($pid = find_dhclient_process($interface)) != 0) && ($i < 3)) {
-        /* 3rd time make it die for sure */
-        $sig = ($i == 2 ? 'KILL' : 'TERM');
-        exec(sprintf('/bin/kill -%s %s', $sig, $pid));
-        sleep(1);
-        $i++;
-    }
-    unset($i);
+    killbypid(find_dhclient_process($interface), 'TERM', true);
 }
 
 function interface_vlan_mtu_configured($realhwif, $mtu)
