@@ -5,6 +5,7 @@ BACKUPDB="/var/captiveportal/captiveportal.sqlite"
 
 if [ "${1}" = "restore" ]; then
 	if [ -f "${BACKUPFILE}" ]; then
+		mkdir -p "$(dirname ${BACKUPDB})"
 		cp "${BACKUPFILE}" "${BACKUPDB}"
 	fi
 else
