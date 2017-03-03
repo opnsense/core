@@ -355,7 +355,7 @@
 					curl_setopt($ch, CURLOPT_URL, $server . $port . '?username=' . urlencode($this->_dnsUser) . '&pass=' . urlencode($this->_dnsPass) . '&hostname=' . $this->_dnsHost.'&ip=' . $iptoset);
 					break;
 				case 'easydns':
-					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
 					curl_setopt($ch, CURLOPT_USERPWD, $this->_dnsUser.':'.$this->_dnsPass);
 					$server = "https://members.easydns.com/dyn/dyndns.php";
 					$port = "";
@@ -366,7 +366,6 @@
 					curl_setopt($ch, CURLOPT_URL, $server . $port . '?hostname=' . $this->_dnsHost . '&myip=' . $this->_dnsIP . '&wildcard=' . $this->_dnsWildcard . '&mx=' . $this->_dnsMX . '&backmx=' . $this->_dnsBackMX);
 					break;
 				case 'hn':
-					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 					curl_setopt($ch, CURLOPT_USERPWD, $this->_dnsUser.':'.$this->_dnsPass);
 					$server = "http://dup.hn.org/vanity/update";
 					$port = "";
@@ -448,7 +447,7 @@
 					break;
 				case 'opendns':
 					if (isset($this->_dnsWildcard) && $this->_dnsWildcard != "OFF") $this->_dnsWildcard = "ON";
-					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
 					curl_setopt($ch, CURLOPT_USERPWD, $this->_dnsUser.':'.$this->_dnsPass);
 					$server = "https://updates.opendns.com/nic/update?hostname=". $this->_dnsHost;
 					$port = "";
@@ -515,7 +514,7 @@
 					if ($this->_dnsVerboseLog)
 						log_error("HE.net Tunnelbroker: DNS update() starting.");
 					$server = "https://ipv4.tunnelbroker.net/ipv4_end.php?";
-					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
 					curl_setopt($ch, CURLOPT_USERPWD, $this->_dnsUser . ':' . $this->_dnsPass);
 					curl_setopt($ch, CURLOPT_URL, $server . 'tid=' . $this->_dnsHost);
 					break;
@@ -523,7 +522,7 @@
 					if ($this->_dnsVerboseLog)
 						log_error("SelfHost: DNS update() starting.");
 					if (isset($this->_dnsWildcard) && $this->_dnsWildcard != "OFF") $this->_dnsWildcard = "ON";
-					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
 					curl_setopt($ch, CURLOPT_USERPWD, $this->_dnsUser.':'.$this->_dnsPass);
 					$server = "https://carol.selfhost.de/nic/update";
 					$port = "";
@@ -667,7 +666,7 @@
 					if ($this->_dnsVerboseLog)
 						log_error("GratisDNS.dk ({$this->_dnsHost}): DNS update() starting.");
 					$server = "https://ssl.gratisdns.dk/ddns.phtml";
-					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
 					list($hostname, $domain) = explode(".", $this->_dnsHost, 2);
 					curl_setopt($ch, CURLOPT_URL, $server . '?u=' . $this->_dnsUser . '&p=' . $this->_dnsPass . '&h=' . $this->_dnsHost . '&d=' . $domain);
 					break;
@@ -675,7 +674,7 @@
 					if ($this->_dnsVerboseLog)
 						log_error("OVH DynHOST: ({$this->_dnsHost}) DNS update() starting.");
 					if (isset($this->_dnsWildcard) && $this->_dnsWildcard != "OFF") $this->_dnsWildcard = "ON";
-					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
 					curl_setopt($ch, CURLOPT_USERPWD, $this->_dnsUser.':'.$this->_dnsPass);
 					$server = "https://www.ovh.com/nic/update";
 					$port = "";
@@ -688,7 +687,7 @@
 				case 'citynetwork':
 					if ($this->_dnsVerboseLog)
 						log_error("City Network: ({$this->_dnsHost}) DNS update() starting.");
-					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
 					curl_setopt($ch, CURLOPT_USERPWD, $this->_dnsUser.':'.$this->_dnsPass);
 					$server = 'https://dyndns.citynetwork.se/nic/update';
 					$port = "";
@@ -702,7 +701,7 @@
 					if ($this->_dnsVerboseLog)
 						log_error("Duck DNS ({$this->_dnsHost}): DNS update() starting.");
 					$server = "https://www.duckdns.org/update";
-					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
 					curl_setopt($ch, CURLOPT_URL, $server . '?domains=' . str_replace('.duckdns.org', '', $this->_dnsHost) . '&token=' . $this->_dnsUser);
 					break;
 				case 'googledomains':
@@ -712,7 +711,7 @@
 					$post_data['hostname'] = $this->_dnsHost;
 					$post_data['myip'] = $this->_dnsIP;
 					$post_data['offline'] = 'no';
-					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
 					curl_setopt($ch, CURLOPT_USERPWD, $this->_dnsUser.':'.$this->_dnsPass);
 					curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
 					curl_setopt($ch, CURLOPT_URL, $server);
