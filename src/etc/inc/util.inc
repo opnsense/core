@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
+    Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
     All rights reserved.
@@ -41,11 +41,13 @@ function killbyname($procname, $sig = 'TERM')
 
 function killbypid($pidfile, $sig = 'TERM', $waitforit = false)
 {
-    if (!isvalidpid($pidfile)) {
+    if (isvalidpid($pidfile)) {
+        mwexecf('/bin/pkill -%s -F %s', array($sig, $pidfile));
+    } elseif (is_numeric($pidfile) && $pidfile > 0) {
+        mwexecf('/bin/kill -%s %s', array($sig, $pidfile));
+    } else {
         return;
     }
-
-    mwexecf('/bin/pkill -%s -F %s', array($sig, $pidfile));
 
     if (!$waitforit) {
         return;
@@ -58,11 +60,13 @@ function killbypid($pidfile, $sig = 'TERM', $waitforit = false)
 
 function isvalidpid($pidfile)
 {
-    if (!file_exists($pidfile)) {
-        return false;
+    if (file_exists($pidfile)) {
+        return mwexecf('/bin/pgrep -nF %s', $pidfile, true) == 0;
+    } elseif (is_numeric($pidfile) && $pidfile > 0) {
+        return mwexecf('/bin/kill -0 %s', $pidfile, true) == 0;
     }
 
-    return mwexecf('/bin/pgrep -nF %s', $pidfile, true) == 0;
+    return false;
 }
 
 function is_process_running($process)
