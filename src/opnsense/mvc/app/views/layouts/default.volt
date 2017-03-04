@@ -192,7 +192,7 @@
             <img class="brand-icon" src="/ui/themes/{{theme_name}}/build/images/icon-logo.png" height="30" alt="icon"/>
           </a>
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
-            <span class="sr-only">Toggle navigation</span>
+            <span class="sr-only">{{ lang._('Toggle navigation') }}</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -250,7 +250,7 @@
         <!-- page footer -->
     <footer class="page-foot col-sm-push-3 col-lg-push-2">
       <div class="container-fluid">
-        <a target="_blank" href="https://opnsense.org/" class="redlnk">OPNsense</a> (c) 2014-2016 <a href="https://www.deciso.com" class="tblnk">Deciso B.V.</a>
+        <a target="_blank" href="https://opnsense.org/" class="redlnk">OPNsense</a> (c) 2014-2017 <a href="https://www.deciso.com" class="tblnk">Deciso B.V.</a>
       </div>
     </footer>
 
