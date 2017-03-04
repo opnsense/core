@@ -34,11 +34,11 @@ label           :   dialog label
 
 #}
 
-{%- macro base_dialog_header(header_text) %}
+{%- macro base_dialog_header(field) %}
       </tbody>
     </table>
   </div>
-  <div class="table-responsive">
+  <div class="table-responsive {% if field['style'] %}{{field['style']}}{% endif %}">
     <table class="table table-striped table-condensed">
         <colgroup>
             <col class="col-md-3"/>
@@ -47,7 +47,7 @@ label           :   dialog label
         </colgroup>
         <thead>
           <tr colspan="3">
-            <th><h2>{{header_text}}</h2></th>
+            <th><h2>{{field['label']}}</h2></th>
           </tr>
         </thead>
         <tbody>
@@ -111,7 +111,7 @@ label           :   dialog label
                             {% set allownew=false %}
                             {% if field['type'] == 'header' %}
                               {# close table and start new one with header #}
-                              {{ base_dialog_header(field['label']) }}
+                              {{ base_dialog_header(field) }}
                             {% else %}
                               {{ partial("layout_partials/form_input_tr",field)}}
                             {% endif %}
