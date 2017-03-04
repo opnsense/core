@@ -41,10 +41,10 @@ function killbyname($procname, $sig = 'TERM')
 
 function killbypid($pidfile, $sig = 'TERM', $waitforit = false)
 {
-    if (isvalidpid($pidfile)) {
-        mwexecf('/bin/pkill -%s -F %s', array($sig, $pidfile));
-    } elseif (is_numeric($pidfile) && $pidfile > 1) {
+    if (is_numeric($pidfile) && $pidfile > 1) {
         mwexecf('/bin/kill -%s %s', array($sig, $pidfile));
+    } elseif (isvalidpid($pidfile)) {
+        mwexecf('/bin/pkill -%s -F %s', array($sig, $pidfile));
     } else {
         return;
     }
@@ -60,10 +60,10 @@ function killbypid($pidfile, $sig = 'TERM', $waitforit = false)
 
 function isvalidpid($pidfile)
 {
-    if (file_exists($pidfile)) {
-        return mwexecf('/bin/pgrep -nF %s', $pidfile, true) == 0;
-    } elseif (is_numeric($pidfile) && $pidfile > 1) {
+    if (is_numeric($pidfile) && $pidfile > 1) {
         return mwexecf('/bin/kill -0 %s', $pidfile, true) == 0;
+    } elseif (file_exists($pidfile)) {
+        return mwexecf('/bin/pgrep -nF %s', $pidfile, true) == 0;
     }
 
     return false;
