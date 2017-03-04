@@ -148,21 +148,21 @@ $.fn.UIBootgrid = function (params) {
                                 $('.selectpicker').selectpicker('refresh');
                                 // clear validation errors (if any)
                                 clearFormValidation('frm_' + editDlg);
-                            });
 
-                            // show dialog for pipe edit
-                            $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
-                            // define save action
-                            $("#btn_"+editDlg+"_save").unbind('click').click(function(){
-                                if (gridParams['set'] != undefined) {
-                                    saveFormToEndpoint(url=gridParams['set']+uuid,
-                                        formid='frm_' + editDlg, callback_ok=function(){
-                                            $("#"+editDlg).modal('hide');
-                                            std_bootgrid_reload(gridId);
-                                        }, true);
-                                } else {
-                                    console.log("[grid] action set missing")
-                                }
+                                // show dialog for pipe edit
+                                $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
+                                // define save action
+                                $("#btn_"+editDlg+"_save").unbind('click').click(function(){
+                                    if (gridParams['set'] != undefined) {
+                                        saveFormToEndpoint(url=gridParams['set']+uuid,
+                                            formid='frm_' + editDlg, callback_ok=function(){
+                                                $("#"+editDlg).modal('hide');
+                                                std_bootgrid_reload(gridId);
+                                            }, true);
+                                    } else {
+                                        console.log("[grid] action set missing")
+                                    }
+                                });
                             });
                         } else {
                             console.log("[grid] action get or data-editDialog missing")
@@ -182,21 +182,21 @@ $.fn.UIBootgrid = function (params) {
                                 $('.selectpicker').selectpicker('refresh');
                                 // clear validation errors (if any)
                                 clearFormValidation('frm_' + editDlg);
-                            });
 
-                            // show dialog for pipe edit
-                            $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
-                            // define save action
-                            $("#btn_"+editDlg+"_save").unbind('click').click(function(){
-                                if (gridParams['add'] != undefined) {
-                                    saveFormToEndpoint(url=gridParams['add'],
-                                        formid='frm_' + editDlg, callback_ok=function(){
-                                            $("#"+editDlg).modal('hide');
-                                            std_bootgrid_reload(gridId);
-                                        }, true);
-                                } else {
-                                    console.log("[grid] action add missing")
-                                }
+                                // show dialog for pipe edit
+                                $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
+                                // define save action
+                                $("#btn_"+editDlg+"_save").unbind('click').click(function(){
+                                    if (gridParams['add'] != undefined) {
+                                        saveFormToEndpoint(url=gridParams['add'],
+                                            formid='frm_' + editDlg, callback_ok=function(){
+                                                $("#"+editDlg).modal('hide');
+                                                std_bootgrid_reload(gridId);
+                                            }, true);
+                                    } else {
+                                        console.log("[grid] action add missing")
+                                    }
+                                });
                             });
                         } else {
                             console.log("[grid] action get or data-editDialog missing")
