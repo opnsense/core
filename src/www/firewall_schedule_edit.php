@@ -106,7 +106,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['name'] = $a_schedules[$configId]['name'];
     $pconfig['descr'] = $a_schedules[$configId]['descr'];
     $pconfig['timerange'] = isset($a_schedules[$configId]['timerange']) ? $a_schedules[$configId]['timerange'] : array();
-    $pconfig['schedlabel'] = isset($a_schedules[$configId]['schedlabel']) ? $a_schedules[$configId]['schedlabel'] : uniqid();
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['id']) && isset($a_schedules[$_POST['id']])) {
         $id = $_POST['id'];
@@ -196,7 +195,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $schedule['name'] = $pconfig['name'];
         $schedule['descr'] = $pconfig['descr'];
         $schedule['timerange'] = $pconfig['timerange'];
-        $schedule['schedlabel'] = $pconfig['schedlabel'];
 
         if (isset($id)) {
             $a_schedules[$id] = $schedule;
@@ -782,7 +780,6 @@ function removeRow(el) {
           <section class="col-xs-12">
             <div class="content-box tab-content">
               <form method="post" name="iform" id="iform">
-                <input type="hidden" name="schedlabel" value="<?=$pconfig['schedlabel'];?>"/>
                   <table class="table table-striped opnsense_standard_table_form">
                     <tbody>
                       <tr>
