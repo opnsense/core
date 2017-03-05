@@ -62,8 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['local-port'] = 80;
     if (isset($configId)) {
         // copy 1-on-1
-        foreach (array('protocol','target','local-port','descr','interface','associated-rule-id','nosync'
-                      ,'natreflection','created','updated','ipprotocol') as $fieldname) {
+        foreach (array('protocol','target','local-port','descr','interface','associated-rule-id','nosync',
+                      'natreflection','created','updated','ipprotocol','tag','tagged') as $fieldname) {
             if (isset($a_nat[$configId][$fieldname])) {
                 $pconfig[$fieldname] = $a_nat[$configId][$fieldname];
             } else {
@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['src'] = "any";
     }
     // init empty fields
-    foreach (array("dst","dstmask","srcmask","dstbeginport","dstendport","target","local-port","natreflection","descr","disabled","nosync", "ipprotocol") as $fieldname) {
+    foreach (array('dst','dstmask','srcmask','dstbeginport','dstendport','target','local-port','natreflection','descr','disabled','nosync','ipprotocol','tag','tagged') as $fieldname) {
         if (!isset($pconfig[$fieldname])) {
             $pconfig[$fieldname] = null;
         }
@@ -217,12 +217,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $natent['interface'] = $pconfig['interface'];
         $natent['ipprotocol'] = $pconfig['ipprotocol'];
         $natent['descr'] = $pconfig['descr'];
+        $natent['tag'] = $pconfig['tag'];
+        $natent['tagged'] = $pconfig['tagged'];
+
         if (!empty($pconfig['associated-rule-id'])) {
             $natent['associated-rule-id'] = $pconfig['associated-rule-id'];
         } else {
             $natent['associated-rule-id'] = null;
         }
-
 
         // form processing logic
         $natent['disabled'] = !empty($pconfig['disabled']) ? true:false;
@@ -913,6 +915,24 @@ $( document ).ready(function() {
                     <div class="hidden" for="help_for_descr">
                       <?=gettext("You may enter a description here " ."for your reference (not parsed)."); ?>
                     </div>
+                </tr>
+                <tr>
+                    <td><a id="help_for_tag" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Set local tag"); ?></td>
+                    <td>
+                      <input name="tag" type="text" value="<?=$pconfig['tag'];?>" />
+                      <div class="hidden" for="help_for_tag">
+                        <?= gettext("You can mark a packet matching this rule and use this mark to match on other NAT/filter rules.") ?>
+                      </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><a id="help_for_tagged" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Match local tag"); ?>   </td>
+                    <td>
+                      <input name="tagged" type="text" value="<?=$pconfig['tagged'];?>" />
+                      <div class="hidden" for="help_for_tagged">
+                        <?=gettext("You can match packet on a mark placed before on another rule.")?>
+                      </div>
+                    </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_nosync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("No XMLRPC Sync"); ?></td>

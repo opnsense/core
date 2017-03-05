@@ -1322,7 +1322,7 @@ include("head.inc");
                       <td>
                         <input name="tag" type="text" value="<?=$pconfig['tag'];?>" />
                         <div class="hidden" for="help_for_tag">
-                          <?= sprintf(gettext("You can mark a packet matching this rule and use this mark to match on other NAT/filter rules. It is called %sPolicy filtering%s."),'<b>','</b>') ?>
+                          <?= gettext("You can mark a packet matching this rule and use this mark to match on other NAT/filter rules.") ?>
                         </div>
                       </td>
                   </tr>

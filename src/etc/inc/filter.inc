@@ -1892,9 +1892,17 @@ function filter_nat_rules_generate(&$FilterIflist)
                 $localport_nat = " port " . $dstaddr_port[2];
             }
 
+            $tagging = '';
+            if (!empty($rule['tag'])) {
+                $tagging .= " tag {$rule['tag']}";
+            }
+            if (!empty($rule['tagged'])) {
+                $tagging .= " tagged {$rule['tagged']}";
+            }
+
             if ($srcaddr <> "" && $dstaddr <> "" && $natif) {
                 $protocol_keyword = !empty($protocol) ? "proto" : "";
-                $natrules .= "{$nordr}rdr {$rdrpass}on {$natif} {$address_family} {$protocol_keyword} {$protocol} from {$srcaddr} to {$dstaddr}" . ($nordr == "" ? " -> {$target}{$localport}" : "");
+                $natrules .= "{$nordr}rdr {$rdrpass}on {$natif} {$address_family} {$protocol_keyword} {$protocol} from {$srcaddr} to {$dstaddr}{$tagging}" . ($nordr == "" ? " -> {$target}{$localport}" : "");
                 /* Does this rule redirect back to a internal host? */
                 if (isset($rule['destination']['any']) && !isset($rule['nordr']) && !isset($config['system']['enablenatreflectionhelper'])) {
                     if ($address_family == 'inet6' && !interface_has_gatewayv6($rule['interface'])) {
