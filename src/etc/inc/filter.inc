@@ -1984,26 +1984,9 @@ function filter_generate_port(& $rule, $target = "source", $isnat = false) {
     }
     if (isset($rule['protocol']) && in_array($rule['protocol'], array("tcp","udp","tcp/udp"))) {
         if (!empty($rule[$target]['port'])) {
-            $srcport = explode("-", $rule[$target]['port']);
-            $srcporta = alias_expand($srcport[0]);
-            if (!$srcporta) {
-                log_error(sprintf('filter_generate_port: %s is not a valid %s port.', $srcport[0], $target));
-            } elseif (empty($srcport[1]) || $srcport[0] == $srcport[1]) {
-                $src .= " port {$srcporta} ";
-            } elseif (($srcport[0] == 1) && ($srcport[1] == 65535)) {
-                /* no need for a port statement here */
-            } elseif ($isnat) {
-                $src .= " port {$srcport[0]}:{$srcport[1]}";
-            } else {
-                if (is_port($srcporta) && $srcport[1] == 65535) {
-                    $src .= " port >= {$srcporta} ";
-                } elseif ($srcport[0] == 1) {
-                    $src .= " port <= {$srcport[1]} ";
-                } else {
-                    $srcport[0]--;
-                    $srcport[1]++;
-                    $src .= " port {$srcport[0]} >< {$srcport[1]} ";
-                }
+            $port = alias_expand(str_replace('-', ':', $rule[$target]['port']));
+            if (!empty($port)) {
+                $src = " port " . $port;
             }
         }
     }
