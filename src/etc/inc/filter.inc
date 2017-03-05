@@ -2025,8 +2025,16 @@ function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $is
         if ($network_name == '(self)') {
             $src = "(self)";
         } elseif (preg_match("/^(wan|lan|opt[0-9]+)ip$/", $rule[$target]['network'], $matches)) {
+            if (empty($FilterIflist[$matches[1]]['if'])) {
+                // interface non-existent or in-active
+                return null;
+            }
             $src = "({$FilterIflist["{$matches[1]}"]['if']})";
         } else {
+            if (empty($FilterIflist[$network_name]['if'])) {
+                // interface non-existent or in-active
+                return null;
+            }
             $src = "({$FilterIflist[$network_name]['if']}:network)";
         }
         if (isset($rule[$target]['not'])) {
