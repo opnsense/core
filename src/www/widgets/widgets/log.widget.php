@@ -266,19 +266,12 @@ endforeach;
   </form>
 </div>
 
-<table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" style="table-layout: fixed;" summary="logs">
-  <colgroup>
-    <col style='width:  7%;' />
-    <col style='width: 23%;' />
-    <col style='width: 11%;' />
-    <col style='width: 28%;' />
-    <col style='width: 31%;' />
-  </colgroup>
+<table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="logs">
   <thead>
     <tr>
       <td class="listhdrr"><?=gettext("Act");?></td>
       <td class="listhdrr"><?=gettext("Time");?></td>
-      <td class="listhdrr"><?=gettext("IF");?></td>
+      <td class="listhdrr"><?=gettext("Interface");?></td>
       <td class="listhdrr"><?=gettext("Source");?></td>
       <td class="listhdrr"><?=gettext("Destination");?></td>
     </tr>
