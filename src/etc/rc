@@ -100,7 +100,7 @@ fi
 /etc/rc.d/syscons onestart
 
 # run the config importer during early startup
-/usr/local/etc/rc.importer -b || exit 1
+/usr/local/etc/rc.importer -b
 
 # Enable console output if its muted.
 /sbin/conscontrol mute off > /dev/null

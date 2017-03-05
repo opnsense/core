@@ -27,21 +27,6 @@
 INSTALL="/.probe.for.install.media"
 MNT="/tmp/hdrescue"
 
-DO_BOOT=
-
-while getopts b OPT; do
-	case ${OPT} in
-	b)
-		DO_BOOT="-b"
-		shift
-		;;
-	*)
-		echo "Unknown argument during import." >&2
-		exit 0
-		;;
-	esac
-done
-
 bootstrap_and_exit()
 {
 	# ensure config directory structure
@@ -63,6 +48,24 @@ bootstrap_and_exit()
 
 	exit 0
 }
+
+
+trap bootstrap_and_exit 2
+
+DO_BOOT=
+
+while getopts b OPT; do
+	case ${OPT} in
+	b)
+		DO_BOOT="-b"
+		shift
+		;;
+	*)
+		echo "Unknown argument during import." >&2
+		bootstrap_and_exit
+		;;
+	esac
+done
 
 timeout_prompt()
 {
