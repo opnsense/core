@@ -159,8 +159,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-    if (!isset($pconfig['nordr']) && ($pconfig['target'] && !is_ipaddroralias($pconfig['target']))) {
-        $input_errors[] = sprintf(gettext("\"%s\" is not a valid redirect target IP address or host alias."), $pconfig['target']);
+    if (!isset($pconfig['nordr']) && ($pconfig['target'] && !is_ipaddroralias($pconfig['target']) && !is_subnet($pconfig['target']))) {
+        $input_errors[] = sprintf(gettext("\"%s\" is not a valid redirect target IP address, network or host alias."), $pconfig['target']);
     }
     if (!empty($pconfig['srcbeginport']) && $pconfig['srcbeginport'] != 'any' && !is_portoralias($pconfig['srcbeginport']))
         $input_errors[] = sprintf(gettext("%s is not a valid start source port. It must be a port alias or integer between 1 and 65535."), $pconfig['srcbeginport']);
@@ -842,7 +842,7 @@ $( document ).ready(function() {
                       <tr>
                         <td>
                           <select name="target" id="target" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
-                            <option data-other=true value="<?=$pconfig['target'];?>" <?=!is_alias($pconfig['target']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host"); ?></option>
+                            <option data-other=true value="<?=$pconfig['target'];?>" <?=!is_alias($pconfig['target']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                             <optgroup label="<?=gettext("Aliases");?>">
 <?php
                               foreach (legacy_list_aliases("network") as $alias):?>
