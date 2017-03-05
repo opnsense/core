@@ -62,8 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['local-port'] = 80;
     if (isset($configId)) {
         // copy 1-on-1
-        foreach (array('protocol','target','local-port','descr','interface','associated-rule-id','nosync'
-                      ,'natreflection','created','updated','ipprotocol') as $fieldname) {
+        foreach (array('protocol','target','local-port','descr','interface','associated-rule-id','nosync',
+                      'natreflection','created','updated','ipprotocol','tag','tagged','poolopts') as $fieldname) {
             if (isset($a_nat[$configId][$fieldname])) {
                 $pconfig[$fieldname] = $a_nat[$configId][$fieldname];
             } else {
@@ -121,7 +121,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['src'] = "any";
     }
     // init empty fields
-    foreach (array("dst","dstmask","srcmask","dstbeginport","dstendport","target","local-port","natreflection","descr","disabled","nosync", "ipprotocol") as $fieldname) {
+    foreach (array('dst','dstmask','srcmask','dstbeginport','dstendport','target',
+        'local-port','natreflection','descr','disabled','nosync','ipprotocol',
+        'tag','tagged','poolopts') as $fieldname) {
         if (!isset($pconfig[$fieldname])) {
             $pconfig[$fieldname] = null;
         }
@@ -159,8 +161,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-    if (!isset($pconfig['nordr']) && ($pconfig['target'] && !is_ipaddroralias($pconfig['target']))) {
-        $input_errors[] = sprintf(gettext("\"%s\" is not a valid redirect target IP address or host alias."), $pconfig['target']);
+    if (!isset($pconfig['nordr']) && ($pconfig['target'] && !is_ipaddroralias($pconfig['target']) && !is_subnet($pconfig['target']))) {
+        $input_errors[] = sprintf(gettext("\"%s\" is not a valid redirect target IP address, network or host alias."), $pconfig['target']);
     }
     if (!empty($pconfig['srcbeginport']) && $pconfig['srcbeginport'] != 'any' && !is_portoralias($pconfig['srcbeginport']))
         $input_errors[] = sprintf(gettext("%s is not a valid start source port. It must be a port alias or integer between 1 and 65535."), $pconfig['srcbeginport']);
@@ -217,12 +219,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $natent['interface'] = $pconfig['interface'];
         $natent['ipprotocol'] = $pconfig['ipprotocol'];
         $natent['descr'] = $pconfig['descr'];
+        $natent['tag'] = $pconfig['tag'];
+        $natent['tagged'] = $pconfig['tagged'];
+        $natent['poolopts'] = $pconfig['poolopts'];
+
         if (!empty($pconfig['associated-rule-id'])) {
             $natent['associated-rule-id'] = $pconfig['associated-rule-id'];
         } else {
             $natent['associated-rule-id'] = null;
         }
-
 
         // form processing logic
         $natent['disabled'] = !empty($pconfig['disabled']) ? true:false;
@@ -840,7 +845,7 @@ $( document ).ready(function() {
                       <tr>
                         <td>
                           <select name="target" id="target" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
-                            <option data-other=true value="<?=$pconfig['target'];?>" <?=!is_alias($pconfig['target']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host"); ?></option>
+                            <option data-other=true value="<?=$pconfig['target'];?>" <?=!is_alias($pconfig['target']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                             <optgroup label="<?=gettext("Aliases");?>">
 <?php
                               foreach (legacy_list_aliases("network") as $alias):?>
@@ -906,6 +911,42 @@ $( document ).ready(function() {
                     </div>
                   </td>
                 </tr>
+                <tr class="act_no_rdr">
+                  <td><a id="help_for_poolopts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Pool Options:");?></td>
+                  <td>
+                    <select name="poolopts" class="selectpicker">
+                      <option value="" <?=empty($pconfig['poolopts']) ? "selected=\"selected\"" : ""; ?>>
+                        <?=gettext("Default");?>
+                      </option>
+                      <option value="round-robin" <?=$pconfig['poolopts'] == "round-robin" ? "selected=\"selected\"" : ""; ?>>
+                        <?=gettext("Round Robin");?>
+                      </option>
+                      <option value="round-robin sticky-address" <?=$pconfig['poolopts'] == "round-robin sticky-address" ? "selected=\"selected\"" : ""; ?>>
+                        <?=gettext("Round Robin with Sticky Address");?>
+                      </option>
+                      <option value="random" <?=$pconfig['poolopts'] == "random" ? "selected=\"selected\"" : ""; ?>>
+                        <?=gettext("Random");?>
+                      </option>
+                      <option value="random sticky-address" <?=$pconfig['poolopts'] == "random sticky-address" ? "selected=\"selected\"" : ""; ?>>
+                        <?=gettext("Random with Sticky Address");?>
+                      </option>
+                      <option value="source-hash" <?=$pconfig['poolopts'] == "source-hash" ? "selected=\"selected\"" : ""; ?>>
+                        <?=gettext("Source Hash");?>
+                      </option>
+                      <option value="bitmask" <?=$pconfig['poolopts'] == "bitmask" ? "selected=\"selected\"" : ""; ?>>
+                        <?=gettext("Bitmask");?>
+                      </option>
+                    </select>
+                    <div class="hidden" for="help_for_poolopts">
+                      <?=gettext("Only Round Robin types work with Host Aliases. Any type can be used with a Subnet.");?><br />
+                      * <?=gettext("Round Robin: Loops through the translation addresses.");?><br />
+                      * <?=gettext("Random: Selects an address from the translation address pool at random.");?><br />
+                      * <?=gettext("Source Hash: Uses a hash of the source address to determine the translation address, ensuring that the redirection address is always the same for a given source.");?><br />
+                      * <?=gettext("Bitmask: Applies the subnet mask and keeps the last portion identical; 10.0.1.50 -&gt; x.x.x.50.");?><br />
+                      * <?=gettext("Sticky Address: The Sticky Address option can be used with the Random and Round Robin pool types to ensure that a particular source address is always mapped to the same translation address.");?><br />
+                    </div>
+                  </td>
+                </tr>
                 <tr>
                   <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                   <td>
@@ -913,6 +954,24 @@ $( document ).ready(function() {
                     <div class="hidden" for="help_for_descr">
                       <?=gettext("You may enter a description here " ."for your reference (not parsed)."); ?>
                     </div>
+                </tr>
+                <tr>
+                    <td><a id="help_for_tag" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Set local tag"); ?></td>
+                    <td>
+                      <input name="tag" type="text" value="<?=$pconfig['tag'];?>" />
+                      <div class="hidden" for="help_for_tag">
+                        <?= gettext("You can mark a packet matching this rule and use this mark to match on other NAT/filter rules.") ?>
+                      </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><a id="help_for_tagged" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Match local tag"); ?>   </td>
+                    <td>
+                      <input name="tagged" type="text" value="<?=$pconfig['tagged'];?>" />
+                      <div class="hidden" for="help_for_tagged">
+                        <?=gettext("You can match packet on a mark placed before on another rule.")?>
+                      </div>
+                    </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_nosync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("No XMLRPC Sync"); ?></td>
