@@ -51,11 +51,14 @@ class FilterRule
         'from_port' => 'parsePlain, port {,}',
         'to' => 'parsePlain,to {,}',
         'to_port' => 'parsePlain, port {,}',
+        'icmp-type' => 'parsePlain,icmp-type {,}',
         'icmp6-type' => 'parsePlain,icmp6-type {,}',
         'flags' => 'parsePlain, flags ',
         'state' => 'parseState',
         'set-prio' => 'parsePlain, set prio ',
         'prio' => 'parsePlain, prio ',
+        'tag' => 'parsePlain, tag ',
+        'tagged' => 'parsePlain, tagged ',
         'allowopts' => 'parseBool,allow-opts',
         'label' => 'parsePlain,label ",",63'
     );
@@ -234,6 +237,14 @@ class FilterRule
                     if (!empty($tmp['max-src-conn-rate']) && !empty($tmp['max-src-conn-rates'])) {
                         $tmp['state']['options'][] = "max-src-conn-rate " . $tmp['max-src-conn-rate'] . " " .
                                               "/" . $tmp['max-src-conn-rates'] . ", overload <virusprot> flush global ";
+                    }
+                }
+                // icmp-type switch (ipv4/ipv6)
+                if ($tmp['protocol'] == "icmp" && !empty($tmp['icmptype'])) {
+                    if ($ipproto == 'inet') {
+                        $tmp['icmp-type'] = $tmp['icmptype'];
+                    } elseif ($ipproto == 'inet6') {
+                        $tmp['icmp6-type'] = $tmp['icmptype'];
                     }
                 }
                 // icmpv6
