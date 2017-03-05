@@ -2024,7 +2024,7 @@ function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $is
         $matches = "";
         if ($network_name == '(self)') {
             $src = "(self)";
-        } elseif (preg_match("/^(wan|lan|opt[0-9]+)ip$/", $rule[$target]['network'], $matches)) {
+        } elseif (preg_match("/^(wan|lan|opt[0-9]+)ip$/", $network_name, $matches)) {
             if (empty($FilterIflist[$matches[1]]['if'])) {
                 // interface non-existent or in-active
                 return null;
