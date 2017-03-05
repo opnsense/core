@@ -1900,9 +1900,14 @@ function filter_nat_rules_generate(&$FilterIflist)
                 $tagging .= " tagged {$rule['tagged']}";
             }
 
+            $poolopts = '';
+            if (!empty($rule['poolopts']) && (is_subnet($rule['target']) || is_alias($rule['target']))) {
+                $poolopts = " {$rule['poolopts']}";
+            }
+
             if ($srcaddr <> "" && $dstaddr <> "" && $natif) {
                 $protocol_keyword = !empty($protocol) ? "proto" : "";
-                $natrules .= "{$nordr}rdr {$rdrpass}on {$natif} {$address_family} {$protocol_keyword} {$protocol} from {$srcaddr} to {$dstaddr}{$tagging}" . ($nordr == "" ? " -> {$target}{$localport}" : "");
+                $natrules .= "{$nordr}rdr {$rdrpass}on {$natif} {$address_family} {$protocol_keyword} {$protocol} from {$srcaddr} to {$dstaddr}{$tagging}" . ($nordr == "" ? " -> {$target}{$localport}{$poolopts}" : '');
                 /* Does this rule redirect back to a internal host? */
                 if (isset($rule['destination']['any']) && !isset($rule['nordr']) && !isset($config['system']['enablenatreflectionhelper'])) {
                     if ($address_family == 'inet6' && !interface_has_gatewayv6($rule['interface'])) {

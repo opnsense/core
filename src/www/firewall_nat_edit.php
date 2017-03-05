@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($configId)) {
         // copy 1-on-1
         foreach (array('protocol','target','local-port','descr','interface','associated-rule-id','nosync',
-                      'natreflection','created','updated','ipprotocol','tag','tagged') as $fieldname) {
+                      'natreflection','created','updated','ipprotocol','tag','tagged','poolopts') as $fieldname) {
             if (isset($a_nat[$configId][$fieldname])) {
                 $pconfig[$fieldname] = $a_nat[$configId][$fieldname];
             } else {
@@ -121,7 +121,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['src'] = "any";
     }
     // init empty fields
-    foreach (array('dst','dstmask','srcmask','dstbeginport','dstendport','target','local-port','natreflection','descr','disabled','nosync','ipprotocol','tag','tagged') as $fieldname) {
+    foreach (array('dst','dstmask','srcmask','dstbeginport','dstendport','target',
+        'local-port','natreflection','descr','disabled','nosync','ipprotocol',
+        'tag','tagged','poolopts') as $fieldname) {
         if (!isset($pconfig[$fieldname])) {
             $pconfig[$fieldname] = null;
         }
@@ -219,6 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $natent['descr'] = $pconfig['descr'];
         $natent['tag'] = $pconfig['tag'];
         $natent['tagged'] = $pconfig['tagged'];
+        $natent['poolopts'] = $pconfig['poolopts'];
 
         if (!empty($pconfig['associated-rule-id'])) {
             $natent['associated-rule-id'] = $pconfig['associated-rule-id'];
@@ -905,6 +908,42 @@ $( document ).ready(function() {
                       "the beginning port of the range (the end port will be calculated " .
                       "automatically)."); ?><br />
                       <?=gettext("Hint: this is usually identical to the 'from' port above"); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="act_no_rdr">
+                  <td><a id="help_for_poolopts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Pool Options:");?></td>
+                  <td>
+                    <select name="poolopts" class="selectpicker">
+                      <option value="" <?=empty($pconfig['poolopts']) ? "selected=\"selected\"" : ""; ?>>
+                        <?=gettext("Default");?>
+                      </option>
+                      <option value="round-robin" <?=$pconfig['poolopts'] == "round-robin" ? "selected=\"selected\"" : ""; ?>>
+                        <?=gettext("Round Robin");?>
+                      </option>
+                      <option value="round-robin sticky-address" <?=$pconfig['poolopts'] == "round-robin sticky-address" ? "selected=\"selected\"" : ""; ?>>
+                        <?=gettext("Round Robin with Sticky Address");?>
+                      </option>
+                      <option value="random" <?=$pconfig['poolopts'] == "random" ? "selected=\"selected\"" : ""; ?>>
+                        <?=gettext("Random");?>
+                      </option>
+                      <option value="random sticky-address" <?=$pconfig['poolopts'] == "random sticky-address" ? "selected=\"selected\"" : ""; ?>>
+                        <?=gettext("Random with Sticky Address");?>
+                      </option>
+                      <option value="source-hash" <?=$pconfig['poolopts'] == "source-hash" ? "selected=\"selected\"" : ""; ?>>
+                        <?=gettext("Source Hash");?>
+                      </option>
+                      <option value="bitmask" <?=$pconfig['poolopts'] == "bitmask" ? "selected=\"selected\"" : ""; ?>>
+                        <?=gettext("Bitmask");?>
+                      </option>
+                    </select>
+                    <div class="hidden" for="help_for_poolopts">
+                      <?=gettext("Only Round Robin types work with Host Aliases. Any type can be used with a Subnet.");?><br />
+                      * <?=gettext("Round Robin: Loops through the translation addresses.");?><br />
+                      * <?=gettext("Random: Selects an address from the translation address pool at random.");?><br />
+                      * <?=gettext("Source Hash: Uses a hash of the source address to determine the translation address, ensuring that the redirection address is always the same for a given source.");?><br />
+                      * <?=gettext("Bitmask: Applies the subnet mask and keeps the last portion identical; 10.0.1.50 -&gt; x.x.x.50.");?><br />
+                      * <?=gettext("Sticky Address: The Sticky Address option can be used with the Random and Round Robin pool types to ensure that a particular source address is always mapped to the same translation address.");?><br />
                     </div>
                   </td>
                 </tr>
