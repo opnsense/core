@@ -388,6 +388,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Singleton.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/FilterRule.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Plugin.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Util.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModel.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModelMigration.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/AllOrNoneConstraint.php
