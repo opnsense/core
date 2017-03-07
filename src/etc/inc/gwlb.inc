@@ -667,14 +667,6 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
                     }
                     $gateway['dynamic'] = true;
                 }
-            } else {
-                /* getting this detection right is hard at this point because we still don't
-                 * store the address family in the gateway item */
-                if (is_ipaddrv4($gateway['gateway'])) {
-                    $gateway['ipprotocol'] = "inet";
-                } elseif (is_ipaddrv6($gateway['gateway'])) {
-                    $gateway['ipprotocol'] = "inet6";
-                }
             }
 
             if (isset($gateway['monitor_disable'])) {
@@ -694,11 +686,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 
             /* entry has a default flag, use it */
             if (isset($gateway['defaultgw'])) {
-                if ($gateway['ipprotocol'] == "inet") {
-                    $gateway['defaultgw'] = true;
-                } elseif ($gateway['ipprotocol'] == "inet6") {
-                    $gateway['defaultgw'] = true;
-                }
+                $gateway['defaultgw'] = true;
             }
             /* include the gateway index as the attribute */
             $gateway['attribute'] = $i++;
