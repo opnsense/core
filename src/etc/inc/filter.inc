@@ -913,8 +913,6 @@ function filter_generate_gateways()
     if (is_array($GatewayGroupsList)) {
         foreach ($GatewayGroupsList as $gateway => $members) {
             $route = "";
-            /* hey, that's not a group member! */
-            unset($members['ipprotocol']);
             if (count($members) > 0) {
                 $foundlb = 0;
                 $routeto = "";
