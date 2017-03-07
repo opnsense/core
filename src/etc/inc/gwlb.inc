@@ -532,14 +532,6 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             $gateway['gateway'] = "dynamic";
         }
 
-        /* automatically skip known static and dynamic gateways we have a array entry for */
-        foreach ($gateways_arr as $gateway_item) {
-            if ((($ifname == $gateway_item['friendlyiface'] && $friendly == $gateway_item['name'])&& ($gateway['ipprotocol'] == $gateway_item['ipprotocol'])) ||
-              ($ifname == $gateway_item['friendlyiface'] && $gateway_item['dynamic'] == true) && ($gateway['ipprotocol'] == $gateway_item['ipprotocol'])) {
-                continue 2;
-            }
-        }
-
         if (is_ipaddrv4($gateway['gateway'])) {
             $gateway['monitor'] = $gateway['gateway'];
         }
