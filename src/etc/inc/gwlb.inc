@@ -626,24 +626,21 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
         $gateways_arr[$gateway['name']] = $gateway;
     }
 
-    $i = -1;
+    $i = 0;
     /* Process/add all the configured gateways. */
     if (isset($config['gateways']['gateway_item'])) {
         foreach ($config['gateways']['gateway_item'] as $gateway) {
-            /* Increment it here to do not skip items */
-            $i++;
-
             if (empty($config['interfaces'][$gateway['interface']])) {
-              if ($inactive === false) {
-                  continue;
-              } else {
-                  $gateway['inactive'] = true;
-              }
+                if (!$inactive) {
+                    continue;
+                } else {
+                    $gateway['inactive'] = true;
+                }
             }
             $wancfg = $config['interfaces'][$gateway['interface']];
 
             /* skip disabled interfaces */
-            if ($disabled === false && (!isset($wancfg['enable']) || isset($gateway['disabled']))) {
+            if (!$disabled && (!isset($wancfg['enable']) || isset($gateway['disabled']))) {
                 if (isset($gateways_arr[$gateway['name']])) {
                     unset($gateways_arr[$gateway['name']]);
                 }
@@ -699,14 +696,12 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             if (isset($gateway['defaultgw'])) {
                 if ($gateway['ipprotocol'] == "inet") {
                     $gateway['defaultgw'] = true;
-                    $found_defaultv4 = 1;
-                } else if ($gateway['ipprotocol'] == "inet6") {
+                } elseif ($gateway['ipprotocol'] == "inet6") {
                     $gateway['defaultgw'] = true;
-                    $found_defaultv6 = 1;
                 }
             }
             /* include the gateway index as the attribute */
-            $gateway['attribute'] = $i;
+            $gateway['attribute'] = $i++;
 
             $gateways_arr[$gateway['name']] = $gateway;
         }
