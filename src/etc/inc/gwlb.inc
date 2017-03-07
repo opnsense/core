@@ -473,16 +473,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
     $found_defaultv4 = 0;
     $found_defaultv6 = 0;
 
-    $interfaces = legacy_interface_listget();
-    $interfaces_v4 = array();
-    $interfaces_v6 = array();
-
-    /* Loop through all interfaces with a gateway and add it to a array */
-    if ($disabled == false) {
-        $iflist = get_configured_interface_with_descr();
-    } else {
-        $iflist = get_configured_interface_with_descr(false, true);
-    }
+    $iflist = get_configured_interface_with_descr();
 
     /* Process/add dynamic v4 gateways. */
     foreach ($iflist as $ifname => $friendly) {
@@ -490,20 +481,9 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             continue;
         }
 
-        if (empty($config['interfaces'][$ifname])) {
-            continue;
-        }
-
         $ifcfg = &$config['interfaces'][$ifname];
-        if (!isset($ifcfg['enable'])) {
-            continue;
-        }
 
         if (!empty($ifcfg['ipaddr']) && is_ipaddrv4($ifcfg['ipaddr'])) {
-            continue;
-        }
-
-        if (isset($interfaces_v4[$ifname])) {
             continue;
         }
 
@@ -542,7 +522,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
         $gateway['name'] = "{$friendly}{$ctype}";
         $gateway['attribute'] = "system";
 
-        if (($gateway['dynamic'] === "default") && ($found_defaultv4 == 0)) {
+        if ($gateway['dynamic'] === "default" && $found_defaultv4 == 0) {
             $gateway['defaultgw'] = true;
             $gateway['dynamic'] = true;
             $found_defaultv4 = 1;
@@ -568,7 +548,6 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
         $gateway['monitor_disable'] = true;
         $gateways_arr[$gateway['name']] = $gateway;
     }
-    unset($gateway);
 
     /* Process/add dynamic v6 gateways. */
     foreach ($iflist as $ifname => $friendly) {
@@ -586,15 +565,8 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
         }
 
         $ifcfg = &$config['interfaces'][$ifname];
-        if (!isset($ifcfg['enable'])) {
-            continue;
-        }
 
         if (!empty($ifcfg['ipaddrv6']) && is_ipaddrv6($ifcfg['ipaddrv6'])) {
-            continue;
-        }
-
-        if (isset($interfaces_v6[$ifname])) {
             continue;
         }
 
@@ -669,7 +641,6 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
         $gateway['monitor_disable'] = true;
         $gateways_arr[$gateway['name']] = $gateway;
     }
-    unset($gateway);
 
     $i = -1;
     /* Process/add all the configured gateways. */
@@ -736,10 +707,8 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             /* special treatment for tunnel interfaces */
             if ($gateway['ipprotocol'] == "inet6") {
                 $gateway['interface'] = get_real_interface($gateway['interface'], "inet6", false, false);
-                $interfaces_v6[$gateway['friendlyiface']] = $gateway['friendlyiface'];
             } else {
                 $gateway['interface'] = get_real_interface($gateway['interface'], "all", false, false);
-                $interfaces_v4[$gateway['friendlyiface']] = $gateway['friendlyiface'];
             }
 
             /* entry has a default flag, use it */
@@ -758,7 +727,6 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             $gateways_arr[$gateway['name']] = $gateway;
         }
     }
-    unset($gateway);
 
     if ($localhost === true) {
         /* attach localhost for Null routes */
@@ -776,7 +744,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
         $gateways_arr['Null6'] = $gwlo6;
     }
 
-    return($gateways_arr);
+    return $gateways_arr;
 }
 
 function fixup_default_gateway($ipprotocol, $gateways_status, $gateways_arr)
