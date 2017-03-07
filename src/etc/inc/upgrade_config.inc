@@ -2193,15 +2193,6 @@ function upgrade_057_to_058() {
 			$ph2ent['mode'] = 'tunnel';
 }
 
-function upgrade_058_to_059() {
-	global $config;
-
-	if (is_array($config['schedules']['schedule'])) {
-		foreach ($config['schedules']['schedule'] as & $schedl)
-			$schedl['schedlabel'] = uniqid();
-	}
-}
-
 function upgrade_059_to_060() {
 	global $config;
 	if (is_array($config['ca'])) {
