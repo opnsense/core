@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
     }
-    if (preg_match("/([^a-zA-Z])+/", $pconfig['ifname'], $match)) {
+    if (preg_match("/([^a-zA-Z])+/", $pconfig['ifname'], $match) || empty($pconfig['ifname'])) {
         $input_errors[] = gettext("Only letters A-Z are allowed as the group name.");
     }
 
@@ -183,9 +183,9 @@ legacy_html_escape_form_data($pconfig);
                     <td>
                         <select name="members[]" multiple="multiple" class="selectpicker" data-size="5" data-live-search="true">
 <?php
-                        foreach (get_configured_interface_with_descr() as $ifn => $ifinfo):?>
+                        foreach (legacy_config_get_interfaces(array("enable" => true)) as $ifn => $ifdetail):?>
                             <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['members']) ? "selected=\"selected\"" : "";?>>
-                                <?=$ifinfo;?>
+                                <?=strtoupper($ifdetail['descr']);?>
                             </option>
 <?php
                         endforeach;?>
