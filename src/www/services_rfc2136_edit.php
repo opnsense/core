@@ -58,6 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['usetcp'] = isset($a_rfc2136[$id]['usetcp']);
     $pconfig['usepublicip'] = isset($a_rfc2136[$id]['usepublicip']);
 
+    $pconfig['recordtype'] = $a_rfc2136[$id]['recordtype'];
+    if (!$pconfig['recordtype']) $pconfig['recordtype'] = "both";
+
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['id']) && !empty($a_rfc2136[$_POST['id']])) {
         $id = $_POST['id'];
@@ -93,6 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $rfc2136['server'] = $pconfig['server'];
         $rfc2136['usetcp'] = !empty($pconfig['usetcp']);
         $rfc2136['usepublicip'] = !empty($pconfig['usepublicip']);
+        $rfc2136['recordtype'] = $_POST['recordtype'];
         $rfc2136['interface'] = $pconfig['interface'];
         $rfc2136['descr'] = $pconfig['descr'];
 
@@ -219,6 +223,14 @@ include("head.inc");
                     <td>
                       <input name="usepublicip" type="checkbox" id="usepublicip" value="<?=gettext("yes");?>" <?=!empty($pconfig['usepublicip']) ? "checked=\"checked\"" : ""; ?> />
                       <strong><?=gettext("If the interface IP is private, attempt to fetch and use the public IP instead.");?></strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" class="vncellreq"><?=gettext("Record Type");?> </td>
+                    <td class="vtable">
+                      <input name="recordtype" type="radio" value="A" <?php if ($pconfig['recordtype'] == "A") echo "checked=\"checked\""; ?> /> <?=gettext("A (IPv4)");?> &nbsp;
+                      <input name="recordtype" type="radio" value="AAAA" <?php if ($pconfig['recordtype'] == "AAAA") echo "checked=\"checked\""; ?> /> <?=gettext("AAAA (IPv6)");?> &nbsp;
+                      <input name="recordtype" type="radio" value="both" <?php if ($pconfig['recordtype'] == "both") echo "checked=\"checked\""; ?> /> <?=gettext("Both");?>
                     </td>
                   </tr>
                   <tr>
