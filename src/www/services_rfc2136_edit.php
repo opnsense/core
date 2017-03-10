@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['usetcp'] = isset($a_rfc2136[$id]['usetcp']);
     $pconfig['usepublicip'] = isset($a_rfc2136[$id]['usepublicip']);
 
-    $pconfig['recordtype'] = $a_rfc2136[$id]['recordtype'];
+    $pconfig['recordtype'] = isset($id) && !empty($a_rfc2136[$id]['recordtype']) ? $a_rfc2136[$id]['recordtype'] : null;
 
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['id']) && !empty($a_rfc2136[$_POST['id']])) {
