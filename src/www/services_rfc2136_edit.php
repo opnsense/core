@@ -59,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['usepublicip'] = isset($a_rfc2136[$id]['usepublicip']);
 
     $pconfig['recordtype'] = $a_rfc2136[$id]['recordtype'];
-    if (!$pconfig['recordtype']) $pconfig['recordtype'] = "both";
 
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['id']) && !empty($a_rfc2136[$_POST['id']])) {
@@ -228,9 +227,9 @@ include("head.inc");
                   <tr>
                     <td valign="top" class="vncellreq"><?=gettext("Record Type");?> </td>
                     <td class="vtable">
+                      <input name="recordtype" type="radio" value="" <?php if (empty($pconfig['recordtype'])) echo "checked=\"checked\""; ?> /> <?=gettext("All");?> &nbsp;
                       <input name="recordtype" type="radio" value="A" <?php if ($pconfig['recordtype'] == "A") echo "checked=\"checked\""; ?> /> <?=gettext("A (IPv4)");?> &nbsp;
-                      <input name="recordtype" type="radio" value="AAAA" <?php if ($pconfig['recordtype'] == "AAAA") echo "checked=\"checked\""; ?> /> <?=gettext("AAAA (IPv6)");?> &nbsp;
-                      <input name="recordtype" type="radio" value="both" <?php if ($pconfig['recordtype'] == "both") echo "checked=\"checked\""; ?> /> <?=gettext("Both");?>
+                      <input name="recordtype" type="radio" value="AAAA" <?php if ($pconfig['recordtype'] == "AAAA") echo "checked=\"checked\""; ?> /> <?=gettext("AAAA (IPv6)");?>
                     </td>
                   </tr>
                   <tr>
