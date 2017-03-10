@@ -225,11 +225,14 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td valign="top" class="vncellreq"><?=gettext("Record Type");?> </td>
+                    <td><a id="help_for_recordtype" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Record Type");?></td>
                     <td class="vtable">
                       <input name="recordtype" type="radio" value="" <?php if (empty($pconfig['recordtype'])) echo "checked=\"checked\""; ?> /> <?=gettext("All");?> &nbsp;
                       <input name="recordtype" type="radio" value="A" <?php if ($pconfig['recordtype'] == "A") echo "checked=\"checked\""; ?> /> <?=gettext("A (IPv4)");?> &nbsp;
                       <input name="recordtype" type="radio" value="AAAA" <?php if ($pconfig['recordtype'] == "AAAA") echo "checked=\"checked\""; ?> /> <?=gettext("AAAA (IPv6)");?>
+                      <div class="hidden" for="help_for_recordtype">
+                        <?=gettext("'All' will update all available record types.");?>
+                      </div>
                     </td>
                   </tr>
                   <tr>
