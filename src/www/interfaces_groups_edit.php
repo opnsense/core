@@ -183,7 +183,11 @@ legacy_html_escape_form_data($pconfig);
                     <td>
                         <select name="members[]" multiple="multiple" class="selectpicker" data-size="5" data-live-search="true">
 <?php
-                        foreach (legacy_config_get_interfaces(array("enable" => true)) as $ifn => $ifdetail):?>
+                        foreach (legacy_config_get_interfaces(array("enable" => true)) as $ifn => $ifdetail):
+                          if (!empty($ifdetail['type']) && $ifdetail['type'] == 'ifgroup') {
+                              continue;
+                          }
+                          ?>
                             <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['members']) ? "selected=\"selected\"" : "";?>>
                                 <?=strtoupper($ifdetail['descr']);?>
                             </option>
