@@ -45,8 +45,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       $pconfig['disablevlanhwfilter'] = $config['system']['disablevlanhwfilter'];
     }
     $pconfig['sharednet'] = isset($config['system']['sharednet']);
+    $pconfig['offloadoverride'] = isset($config['system']['offloadoverride']);
+    $pconfig['overridemembers'] = isset($config['system']['overridemembers']) ? explode(' ', $config['system']['overridemembers']) : array();
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
+
+    if (!empty($pconfig['offloadoverride'])) {
+        $config['system']['offloadoverride'] = true;
+    } elseif (isset($config['system']['offloadoverride'])) {
+        unset($config['system']['offloadoverride']);
+    }
+
+    if (!empty($pconfig['overridemembers'])) {
+        $config['system']['overridemembers'] = implode(' ', $pconfig['overridemembers']);
+    } else {
+        $pconfig['overridemembers'] = array();
+        unset($config['system']['overridemembers']);
+    }
 
     if (!empty($pconfig['sharednet'])) {
         $config['system']['sharednet'] = true;
@@ -80,6 +95,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     write_config();
     system_arp_wrong_if();
+
+    //Configure interfaces with new values for offloading
+    foreach (legacy_config_get_interfaces(array("enable" => true)) as $ifn => $ifdetail) {
+        if ((!empty($ifdetail['type']) && $ifdetail['type'] == 'group') || empty($ifdetail['if'])) {
+            continue;
+        }
+        configure_interface_hardware($ifdetail['if']);
+    }
 }
 
 legacy_html_escape_form_data($pconfig);
@@ -167,6 +190,37 @@ include("head.inc");
                   <strong><?=gettext("Suppress ARP messages"); ?></strong><br />
                   <div class="hidden" for="help_for_sharednet">
                     <?=gettext("This option will suppress ARP log messages when multiple interfaces reside on the same broadcast domain"); ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_offloadoverride" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Individual interface settings"); ?></td>
+                <td>
+                  <input name="offloadoverride" type="checkbox" id="offloadoverride" value="yes" <?= !empty($pconfig['offloadoverride']) ? "checked=\"checked\"" :"";?>/>
+                  <strong><?=gettext("Enable per interface offloading override"); ?></strong><br />
+                  <div class="hidden" for="help_for_offloadoverride">
+                    <?=gettext("This option will enable controll of hardware off-loading per individual interface. It will override global settings for the interface that is configured with those settings."); ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_overridemembers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interfaces to override");?></td>
+                <td>
+                    <select name="overridemembers[]" multiple="multiple" class="selectpicker" data-size="5" data-live-search="true">
+<?php
+                    foreach (legacy_config_get_interfaces(array("enable" => true)) as $ifn => $ifdetail):
+                      if ((!empty($ifdetail['type']) && $ifdetail['type'] == 'group') || empty($ifdetail['if'])) {
+                          continue;
+                      }
+                      ?>
+                        <option value="<?=$ifdetail['if'];?>" <?=in_array($ifdetail['if'], $pconfig['overridemembers']) ? "selected=\"selected\"" : "";?>>
+                            <?=strtoupper($ifdetail['descr']);?> (<?=$ifdetail['if'];?>)
+                        </option>
+<?php
+                    endforeach;?>
+                    </select>
+                  <div class="hidden" for="help_for_overridemembers">
+                  <?= gettext('Select interface(s) that you would like to retain hardware offloading for.') ?>
                   </div>
                 </td>
               </tr>
