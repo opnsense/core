@@ -40,7 +40,7 @@ function if_group_interfaces()
             $oc['if'] = $ifgen['ifname'];
             $oc['descr'] = $ifgen['ifname'];
             $oc['virtual'] = true;
-            $oc['type'] = 'ifgroup';
+            $oc['type'] = 'group';
             $interfaces[$ifgen['ifname']] = $oc;
         }
     }

@@ -79,7 +79,7 @@ function if_openvpn_interfaces()
                     $oic = array('enable' => true);
                     $oic['if'] = 'openvpn';
                     $oic['descr'] = 'OpenVPN';
-                    $oic['type'] = 'ifgroup';
+                    $oic['type'] = 'group';
                     $oic['virtual'] = true;
                     $oic['networks'] = array();
                     $interfaces['openvpn'] = $oic;
