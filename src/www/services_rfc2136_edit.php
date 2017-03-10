@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         $pconfig['enable'] = true;
     }
+
     $pconfig['host'] = isset($id) && !empty($a_rfc2136[$id]['host']) ? $a_rfc2136[$id]['host'] : null;
     $pconfig['ttl'] = isset($id) &&!empty($a_rfc2136[$id]['ttl']) ? $a_rfc2136[$id]['ttl'] : 60;
     $pconfig['keydata'] = isset($id) &&!empty($a_rfc2136[$id]['keydata']) ? $a_rfc2136[$id]['keydata'] : null;
@@ -54,11 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['server'] = isset($id) &&!empty($a_rfc2136[$id]['server']) ? $a_rfc2136[$id]['server'] : null;
     $pconfig['interface'] = isset($id) &&!empty($a_rfc2136[$id]['interface']) ? $a_rfc2136[$id]['interface'] : null;
     $pconfig['descr'] = isset($id) &&!empty($a_rfc2136[$id]['descr']) ? $a_rfc2136[$id]['descr'] : null;
+    $pconfig['recordtype'] = isset($id) && !empty($a_rfc2136[$id]['recordtype']) ? $a_rfc2136[$id]['recordtype'] : null;
 
     $pconfig['usetcp'] = isset($a_rfc2136[$id]['usetcp']);
     $pconfig['usepublicip'] = isset($a_rfc2136[$id]['usepublicip']);
-
-    $pconfig['recordtype'] = isset($id) && !empty($a_rfc2136[$id]['recordtype']) ? $a_rfc2136[$id]['recordtype'] : null;
 
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['id']) && !empty($a_rfc2136[$_POST['id']])) {
@@ -173,6 +173,17 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
+                    <td><a id="help_for_recordtype" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Record Type");?></td>
+                    <td>
+                      <input name="recordtype" type="radio" value="" <?= empty($pconfig['recordtype']) ? 'checked="checked"' : '' ?> /> <?=gettext('All');?> &nbsp;
+                      <input name="recordtype" type="radio" value="A" <?= $pconfig['recordtype'] == 'A' ? 'checked="checked"' : '' ?> /> <?=gettext('A (IPv4)');?> &nbsp;
+                      <input name="recordtype" type="radio" value="AAAA" <?= $pconfig['recordtype'] == 'AAAA' ? 'checked="checked"' : '' ?> /> <?=gettext('AAAA (IPv6)');?>
+                      <div class="hidden" for="help_for_recordtype">
+                        <?=gettext("'All' will update all available record types.");?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("TTL"); ?> (<?=gettext("seconds");?>)</td>
                     <td>
                       <input name="ttl" type="text" id="ttl" value="<?=$pconfig['ttl'];?>" />
@@ -192,7 +203,7 @@ include("head.inc");
                     <td>
                       <input name="keytype" type="radio" value="zone" <?= $pconfig['keytype'] == "zone" ? "checked=\"checked\"" :""; ?> /> <?=gettext("Zone");?> &nbsp;
                       <input name="keytype" type="radio" value="host" <?= $pconfig['keytype'] == "host" ? "checked=\"checked\"" :""; ?> /> <?=gettext("Host");?> &nbsp;
-                      <input name="keytype" type="radio" value="user" <?= $pconfig['keytype'] == "user" ? "checked=\"checked\"" :""; ?> /> <?=gettext(" User");?>
+                      <input name="keytype" type="radio" value="user" <?= $pconfig['keytype'] == "user" ? "checked=\"checked\"" :""; ?> /> <?=gettext("User");?>
                     </td>
                   </tr>
                   <tr>
@@ -222,17 +233,6 @@ include("head.inc");
                     <td>
                       <input name="usepublicip" type="checkbox" id="usepublicip" value="<?=gettext("yes");?>" <?=!empty($pconfig['usepublicip']) ? "checked=\"checked\"" : ""; ?> />
                       <strong><?=gettext("If the interface IP is private, attempt to fetch and use the public IP instead.");?></strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_recordtype" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Record Type");?></td>
-                    <td class="vtable">
-                      <input name="recordtype" type="radio" value="" <?php if (empty($pconfig['recordtype'])) echo "checked=\"checked\""; ?> /> <?=gettext("All");?> &nbsp;
-                      <input name="recordtype" type="radio" value="A" <?php if ($pconfig['recordtype'] == "A") echo "checked=\"checked\""; ?> /> <?=gettext("A (IPv4)");?> &nbsp;
-                      <input name="recordtype" type="radio" value="AAAA" <?php if ($pconfig['recordtype'] == "AAAA") echo "checked=\"checked\""; ?> /> <?=gettext("AAAA (IPv6)");?>
-                      <div class="hidden" for="help_for_recordtype">
-                        <?=gettext("'All' will update all available record types.");?>
-                      </div>
                     </td>
                   </tr>
                   <tr>
