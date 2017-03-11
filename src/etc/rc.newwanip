@@ -189,7 +189,7 @@ if (!is_ipaddr($oldip) || $curwanip != $oldip || !is_ipaddrv4($config['interface
 
     /* reconfigure IPsec tunnels */
     if (ipsec_configured_on_interface($interface)) {
-        ipsec_configure();
+        ipsec_configure_do();
     }
 
     /* start OpenVPN server & clients */

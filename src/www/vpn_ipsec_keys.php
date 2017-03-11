@@ -28,7 +28,7 @@
 */
 
 require_once("guiconfig.inc");
-require_once("ipsec.inc");
+require_once("plugins.inc.d/ipsec.inc");
 require_once("filter.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif (isset($_POST['apply'])) {
         // apply changes
-        ipsec_configure();
+        ipsec_configure_do();
         filter_configure();
         $savemsg = get_std_save_message();
         clear_subsystem_dirty('ipsec');

@@ -45,8 +45,8 @@
  */
 require_once('dyndns.class');
 require_once('plugins.inc.d/dnsmasq.inc');
-require_once('ipsec.inc');
-require_once('openvpn.inc');
+require_once('plugins.inc.d/ipsec.inc');
+require_once('openvpn.inc'); /* XXX move to plugin */
 require_once('plugins.inc.d/unbound.inc');
 
 function generate_ipv6_from_mac($mac)

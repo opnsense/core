@@ -23,8 +23,6 @@
 /usr/local/etc/inc/gwlb.inc
 /usr/local/etc/inc/interfaces.inc
 /usr/local/etc/inc/interfaces.lib.inc
-/usr/local/etc/inc/ipsec.auth-user.php
-/usr/local/etc/inc/ipsec.inc
 /usr/local/etc/inc/legacy_bindings.inc
 /usr/local/etc/inc/notices.basic_sasl_client.inc
 /usr/local/etc/inc/notices.cram_md5_sasl_client.inc
@@ -43,10 +41,11 @@
 /usr/local/etc/inc/plugins.inc
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
 /usr/local/etc/inc/plugins.inc.d/if_group.inc
-/usr/local/etc/inc/plugins.inc.d/if_ipsec.inc
 /usr/local/etc/inc/plugins.inc.d/if_legacy_opt.inc
 /usr/local/etc/inc/plugins.inc.d/if_openvpn.inc
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc
+/usr/local/etc/inc/plugins.inc.d/ipsec.inc
+/usr/local/etc/inc/plugins.inc.d/ipsec/auth-user.php
 /usr/local/etc/inc/plugins.inc.d/netflow.inc
 /usr/local/etc/inc/plugins.inc.d/ntpd.inc
 /usr/local/etc/inc/plugins.inc.d/pf.inc

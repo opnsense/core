@@ -116,7 +116,7 @@ filter_configure_sync(true);
 plugins_configure('bootup', true);
 
 /* start IPsec tunnels */
-$ipsec_dynamic_hosts = ipsec_configure(true);
+$ipsec_dynamic_hosts = ipsec_configure_do(true);
 
 enable_rrd_graphing(true);
 system_powerd_configure(true);
@@ -130,7 +130,7 @@ system_syslogd_start(true);
 
 /* If there are ipsec dynamic hosts try again to reload the tunnels as rc.newipsecdns does */
 if ($ipsec_dynamic_hosts) {
-    ipsec_configure(true);
+    ipsec_configure_do(true);
 }
 
 // generate configuration data for all installed templates

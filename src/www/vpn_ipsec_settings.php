@@ -29,7 +29,7 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-require_once("ipsec.inc");
+require_once("plugins.inc.d/ipsec.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     write_config();
     $savemsg = get_std_save_message();
     filter_configure();
-    ipsec_configure();
+    ipsec_configure_do();
 }
 
 $service_hook = 'ipsec';

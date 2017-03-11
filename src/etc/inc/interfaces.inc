@@ -1034,7 +1034,7 @@ function interfaces_configure($verbose = false)
 
     if ($reload) {
         system_routing_configure('', $verbose);
-        ipsec_configure($verbose);
+        ipsec_configure_do($verbose);
         dnsmasq_configure_do($verbose);
         unbound_configure_do($verbose);
         services_dhcpd_configure('all', array(), $verbose);
@@ -2769,7 +2769,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
             system_routing_configure($interface);
 
             /* reload ipsec tunnels */
-            ipsec_configure();
+            ipsec_configure_do();
 
             /* restart dns servers */
             dnsmasq_configure_do();
