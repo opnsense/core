@@ -27,14 +27,13 @@
 */
 
 require_once("guiconfig.inc");
-require_once("openvpn.inc");
-
+require_once("plugins.inc.d/openvpn.inc");
 
 $servers = openvpn_get_active_servers();
 $sk_servers = openvpn_get_active_servers("p2p");
 $clients = openvpn_get_active_clients();
-?>
 
+?>
 <script type="text/javascript">
     $( document ).ready(function() {
         // link kill buttons

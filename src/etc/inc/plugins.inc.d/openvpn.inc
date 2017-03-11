@@ -11,11 +11,11 @@
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notices,
+    1. Redistributions of source code must retain the above copyright notice,
        this list of conditions and the following disclaimer.
 
     2. Redistributions in binary form must reproduce the above copyright
-       notices, this list of conditions and the following disclaimer in the
+       notice, this list of conditions and the following disclaimer in the
        documentation and/or other materials provided with the distribution.
 
     THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
@@ -29,6 +29,85 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
+
+function openvpn_syslog()
+{
+    $logfacilities = array();
+
+    $logfacilities['openvpn'] = array(
+        'facility' => array('openvpn'),
+        'remote' => 'vpn',
+    );
+
+    return $logfacilities;
+}
+
+function openvpn_services()
+{
+    global $config;
+
+    $services = array();
+
+    foreach (array('server', 'client') as $mode) {
+        if (isset($config['openvpn']["openvpn-{$mode}"])) {
+            foreach ($config['openvpn']["openvpn-{$mode}"] as $setting) {
+                if (empty($setting['disable'])) {
+                    $pconfig = array();
+                    $pconfig['description'] = "OpenVPN {$mode}: " . htmlspecialchars($setting['description']);
+                    $pconfig['pidfile'] = "/var/run/openvpn_{$mode}{$setting['vpnid']}.pid";
+                    $pconfig['php']['restart'] = array('openvpn_restart_by_id');
+                    $pconfig['php']['start'] = array('openvpn_restart_by_id');
+                    $pconfig['php']['args'] = array('mode', 'id');
+                    $pconfig['id'] = $setting['vpnid'];
+                    $pconfig['name'] = 'openvpn';
+                    $pconfig['mode'] = $mode;
+                    $services[] = $pconfig;
+                }
+            }
+        }
+    }
+
+    return $services;
+}
+
+function openvpn_interfaces()
+{
+    global $config;
+
+    $interfaces = array();
+
+    foreach (array('server', 'client') as $mode) {
+        if (isset($config['openvpn']["openvpn-{$mode}"])) {
+            foreach ($config['openvpn']["openvpn-{$mode}"] as &$settings) {
+                if (empty($settings['disable'])) {
+                    $oic = array('enable' => true);
+                    $oic['if'] = 'openvpn';
+                    $oic['descr'] = 'OpenVPN';
+                    $oic['type'] = 'group';
+                    $oic['virtual'] = true;
+                    $oic['networks'] = array();
+                    $interfaces['openvpn'] = $oic;
+                    break 2;
+                }
+            }
+        }
+    }
+
+    return $interfaces;
+}
+
+function openvpn_xmlrpc_sync()
+{
+    $result = array();
+
+    $result[] = array(
+        'description' => gettext('OpenVPN'),
+        'section' => 'openvpn',
+        'id' => 'openvpn',
+    );
+
+    return $result;
+}
 
 global $openvpn_verbosity_level;
 $openvpn_verbosity_level = array(
@@ -1513,29 +1592,69 @@ function openvpn_refresh_crls()
 
 function openvpn_resync_if_needed($mode, $ovpn_settings, $interface)
 {
-	global $config;
+    global $config;
 
-	$resync_needed = true;
-	if (isset($ovpn_settings['disable'])) {
-		$resync_needed = false;
-	} else {
-		if (!empty($interface)) {
-			$mode_id = $mode . $ovpn_settings['vpnid'];
-			$fpath = "/var/etc/openvpn/{$mode_id}.interface";
-			if (file_exists($fpath)) {
-				$current_device = file_get_contents($fpath);
-				$current_device = trim($current_device, " \t\n");
-				$new_device = get_failover_interface($ovpn_settings['interface']);
-				if (isset($config['interfaces'][$interface])) {
-					$this_device = $config['interfaces'][$interface]['if'];
-					if (($current_device == $new_device) && ($current_device != $this_device))
-						$resync_needed = false;
-				}
-			}
-		}
-	}
-	if ($resync_needed == true) {
-		log_error("OpenVPN: Resync " . $mode_id . " " . $ovpn_settings['description']);
-		openvpn_resync($mode, $ovpn_settings);
-	}
+    $resync_needed = true;
+    if (isset($ovpn_settings['disable'])) {
+        $resync_needed = false;
+    } else {
+        if (!empty($interface)) {
+            $mode_id = $mode . $ovpn_settings['vpnid'];
+            $fpath = "/var/etc/openvpn/{$mode_id}.interface";
+            if (file_exists($fpath)) {
+                $current_device = file_get_contents($fpath);
+                $current_device = trim($current_device, " \t\n");
+                $new_device = get_failover_interface($ovpn_settings['interface']);
+                if (isset($config['interfaces'][$interface])) {
+                    $this_device = $config['interfaces'][$interface]['if'];
+                    if (($current_device == $new_device) && ($current_device != $this_device))
+                        $resync_needed = false;
+                }
+            }
+        }
+    }
+    if ($resync_needed == true) {
+        log_error("OpenVPN: Resync " . $mode_id . " " . $ovpn_settings['description']);
+        openvpn_resync($mode, $ovpn_settings);
+    }
+}
+
+function openvpn_carp_stop($carp_iface)
+{
+    global $config;
+
+    $friendly_descr = convert_friendly_interface_to_friendly_descr($carp_iface);
+
+    if (is_array($config['openvpn']) && is_array($config['openvpn']['openvpn-client'])) {
+        foreach ($config['openvpn']['openvpn-client'] as $settings) {
+            if ($settings['interface'] == $carp_iface) {
+                log_error("Stopping OpenVPN client instance on {$friendly_descr} because of transition to CARP backup.");
+                openvpn_restart('client', $settings);
+            }
+        }
+    }
+}
+
+function openvpn_carp_start($carp_iface)
+{
+    global $config;
+
+    $friendly_descr = convert_friendly_interface_to_friendly_descr($carp_iface);
+
+    if (is_array($config['openvpn']) && is_array($config['openvpn']['openvpn-client'])) {
+        foreach ($config['openvpn']['openvpn-client'] as $settings) {
+            if ($settings['interface'] == $carp_iface) {
+                log_error("Starting OpenVPN client instance on {$friendly_descr} because of transition to CARP master.");
+                openvpn_restart('client', $settings);
+            }
+        }
+    }
+    if (is_array($config['openvpn']) && is_array($config['openvpn']['openvpn-server'])) {
+        foreach ($config['openvpn']['openvpn-server'] as $settings) {
+            if ($settings['interface'] == $carp_iface) {
+                log_error("Starting OpenVPN instance on {$friendly_descr} because of transition to CARP master.");
+                openvpn_restart('server', $settings);
+            }
+        }
+    }
 }

@@ -28,7 +28,7 @@
 */
 
 require_once("config.inc");
-require_once("openvpn.inc");
+require_once("services.inc");
 require_once("interfaces.inc");
 require_once("util.inc");
 
@@ -48,12 +48,4 @@ notify_via_growl($notificationmsg);
 log_error($notificationmsg);
 
 /* Stop OpenVPN clients running on this VIP, since multiple active OpenVPN clients on a CARP cluster can be problematic. */
-global $config;
-if (is_array($config['openvpn']) && is_array($config['openvpn']['openvpn-client'])) {
-	foreach ($config['openvpn']['openvpn-client'] as $settings) {
-		if ($settings['interface'] == $carp_iface) {
-			log_error("Stopping OpenVPN client instance on {$friendly_descr} because of transition to CARP backup.");
-			openvpn_restart('client', $settings);
-		}
-	}
-}
+openvpn_carp_stop($carp_iface);

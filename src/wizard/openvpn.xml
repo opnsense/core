@@ -28,7 +28,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 </copyright>
-<includefile>openvpn_wizard.inc</includefile>
+<includefile>plugins.inc.d/openvpn/wizard.inc</includefile>
 <totalsteps>12</totalsteps>
 <step>
 	<id>1</id>

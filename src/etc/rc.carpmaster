@@ -28,7 +28,7 @@
 */
 
 require_once("config.inc");
-require_once("openvpn.inc");
+require_once("services.inc");
 require_once("interfaces.inc");
 require_once("util.inc");
 
@@ -48,20 +48,4 @@ notify_via_growl($notificationmsg);
 log_error($notificationmsg);
 
 /* Start OpenVPN clients running on this VIP, since they should be in the stopped state while the VIP is CARP Backup. */
-global $config;
-if (is_array($config['openvpn']) && is_array($config['openvpn']['openvpn-client'])) {
-	foreach ($config['openvpn']['openvpn-client'] as $settings) {
-		if ($settings['interface'] == $carp_iface) {
-			log_error("Starting OpenVPN client instance on {$friendly_descr} because of transition to CARP master.");
-			openvpn_restart('client', $settings);
-		}
-	}
-}
-if (is_array($config['openvpn']) && is_array($config['openvpn']['openvpn-server'])) {
-	foreach ($config['openvpn']['openvpn-server'] as $settings) {
-		if ($settings['interface'] == $carp_iface) {
-			log_error("Starting OpenVPN instance on {$friendly_descr} because of transition to CARP master.");
-			openvpn_restart('server', $settings);
-		}
-	}
-}
+openvpn_carp_start($carp_iface);
