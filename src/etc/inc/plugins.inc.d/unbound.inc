@@ -280,7 +280,8 @@ EOF;
     $verbosity = isset($config['unbound']['log_verbosity']) ? $config['unbound']['log_verbosity'] : 1;
     $msgcachesize = !empty($config['unbound']['msgcachesize']) ? $config['unbound']['msgcachesize'] : 4;
     $rrsetcachesize = $msgcachesize * 2;
-    $dnssecstripped = !empty($config['unbound']['dnssecstripped']) ? "yes" : "no";
+    $dnssecstripped = !empty($config['unbound']['dnssecstripped']) ? 'yes' : 'no';
+    $serveexpired = !empty($config['unbound']['serveexpired']) ? 'yes' : 'no';
 
     if (isset($config['unbound']['regdhcp'])) {
         // include dynamic leases
@@ -352,6 +353,7 @@ module-config: "{$module_config}"
 cache-max-ttl: {$cache_max_ttl}
 cache-min-ttl: {$cache_min_ttl}
 harden-dnssec-stripped: {$dnssecstripped}
+serve-expired: {$serveexpired}
 outgoing-num-tcp: {$outgoing_num_tcp}
 incoming-num-tcp: {$incoming_num_tcp}
 num-queries-per-thread: {$num_queries_per_thread}

@@ -66,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['prefetch'] = isset($config['unbound']['prefetch']);
     $pconfig['prefetchkey'] = isset($config['unbound']['prefetchkey']);
     $pconfig['dnssecstripped'] = isset($config['unbound']['dnssecstripped']);
+    $pconfig['serveexpired'] = isset($config['unbound']['serveexpired']);
 
     // text fields
     foreach ($copy_fields as $fieldname) {
@@ -85,11 +86,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         $pconfig = $_POST;
         // boolean fields
-        $config['unbound']['hideidentity'] =  !empty($pconfig['hideidentity']);
-        $config['unbound']['hideversion'] =  !empty($pconfig['hideversion']);
-        $config['unbound']['prefetch'] =  !empty($pconfig['prefetch']);
-        $config['unbound']['prefetchkey'] =  !empty($pconfig['prefetchkey']);
-        $config['unbound']['dnssecstripped'] =  !empty($pconfig['dnssecstripped']);
+        $config['unbound']['hideidentity'] = !empty($pconfig['hideidentity']);
+        $config['unbound']['hideversion'] = !empty($pconfig['hideversion']);
+        $config['unbound']['prefetch'] = !empty($pconfig['prefetch']);
+        $config['unbound']['prefetchkey'] = !empty($pconfig['prefetchkey']);
+        $config['unbound']['dnssecstripped'] = !empty($pconfig['dnssecstripped']);
+        $config['unbound']['serveexpired'] = !empty($pconfig['serveexpired']);
         // text fields
         foreach ($copy_fields as $fieldname) {
             $config['unbound'][$fieldname] = $pconfig[$fieldname];
@@ -172,6 +174,15 @@ include_once("head.inc");
                           <input name="dnssecstripped" type="checkbox" id="dnssecstripped" value="yes" <?= empty($pconfig['dnssecstripped']) ? '' : 'checked="checked"' ?> />
                           <div class="hidden" for="help_for_dnssecstripped">
                             <?= gettext("DNSSEC data is required for trust-anchored zones. If such data is absent, the zone becomes bogus. If this is disabled and no DNSSEC data is received, then the zone is made insecure.") ?>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_serveexpired" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <? gettext('Serve expired responses') ?></td>
+                        <td>
+                          <input name="serveexpired" type="checkbox" id="serveexpired" value="yes" <?= empty($pconfig['serveexpired']) ? '' : 'checked="checked"' ?> />
+                          <div class="hidden" for="help_for_serveexpired">
+                            <?= gettext('Serve expired responses from the cache with a TTL of 0 without waiting for the actual resolution to finish.') ?>
                           </div>
                         </td>
                       </tr>
