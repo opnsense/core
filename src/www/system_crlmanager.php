@@ -648,7 +648,7 @@ include("head.inc");
                 <tr>
                   <td><?=htmlspecialchars($tmpcrl['descr']); ?></td>
                   <td><?=$internal ? gettext("YES") : gettext("NO"); ?></td>
-                  <td><?=$internal ? (isset($tmpcrl['cert']) && count($tmpcrl['cert'])) : gettext("Unknown (imported)"); ?></td>
+                  <td><?=$internal ? (isset($tmpcrl['cert']) ? count($tmpcrl['cert']) : 0) : gettext("Unknown (imported)"); ?></td>
                   <td><?=$inuse ? gettext("YES") : gettext("NO"); ?></td>
                   <td>
                     <a href="system_crlmanager.php?act=exp&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
