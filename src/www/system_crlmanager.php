@@ -28,39 +28,7 @@
 */
 
 require_once('guiconfig.inc');
-require_once('openvpn.inc');
-
-function openvpn_refresh_crls()
-{
-    global $config;
-
-    openvpn_create_dirs();
-
-    if (isset($config['openvpn']['openvpn-server']) && is_array($config['openvpn']['openvpn-server'])) {
-        foreach ($config['openvpn']['openvpn-server'] as $settings) {
-            if (empty($settings) || isset($settings['disable'])) {
-                continue;
-            }
-            // Write the settings for the keys
-            switch($settings['mode']) {
-                case 'p2p_tls':
-                case 'server_tls':
-                case 'server_tls_user':
-                case 'server_user':
-                    if (!empty($settings['crlref'])) {
-                        $crl = lookup_crl($settings['crlref']);
-                        crl_update($crl);
-                        $fpath = "/var/etc/openvpn/server{$settings['vpnid']}.crl-verify";
-                        file_put_contents($fpath, base64_decode($crl['text']));
-                        @chmod($fpath, 0644);
-                    }
-                    break;
-            }
-        }
-    }
-}
-
-
+require_once('services.inc');
 
 function cert_unrevoke($cert, & $crl) {
     global $config;
@@ -85,6 +53,7 @@ function cert_unrevoke($cert, & $crl) {
     }
     return false;
 }
+
 // openssl_crl_status messages from certs.inc
 global $openssl_crl_status;
 

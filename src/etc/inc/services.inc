@@ -37,9 +37,16 @@
  * from system.inc, but its movable parts belong to
  * system.inc, while all services belong to their own
  * files.  Maybe eventually this will change...
+ *
+ * ... it does, but now we also chain IPsec and OpenVPN
+ * through this in order to remove the widespread usage
+ * of includes and switch them for a cleaner "services.inc"
+ * include.
  */
 require_once('dyndns.class');
 require_once('plugins.inc.d/dnsmasq.inc');
+require_once('ipsec.inc');
+require_once('openvpn.inc');
 require_once('plugins.inc.d/unbound.inc');
 
 function generate_ipv6_from_mac($mac)

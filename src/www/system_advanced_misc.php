@@ -31,7 +31,7 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-require_once("ipsec.inc");
+require_once("services.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 

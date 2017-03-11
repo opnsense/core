@@ -1452,3 +1452,90 @@ function openvpn_get_remote_access_servers()
     }
     return $result;
 }
+
+// Resync and restart all VPNs using a gateway group.
+function openvpn_resync_gwgroup($gwgroupname = "") {
+    global $config;
+
+    if (!empty($gwgroupname)) {
+        if (isset($config['openvpn']['openvpn-server'])) {
+            foreach ($config['openvpn']['openvpn-server'] as & $settings) {
+                if ($gwgroupname == $settings['interface']) {
+                    log_error("Resyncing OpenVPN for gateway group " . $gwgroupname . " server " . $settings["description"] . ".");
+                    openvpn_resync('server', $settings);
+                }
+            }
+        }
+
+        if (isset($config['openvpn']['openvpn-client'])) {
+            foreach ($config['openvpn']['openvpn-client'] as & $settings) {
+                if ($gwgroupname == $settings['interface']) {
+                    log_error("Resyncing OpenVPN for gateway group " . $gwgroupname . " client " . $settings["description"] . ".");
+                    openvpn_resync('client', $settings);
+                }
+            }
+        }
+        // Note: no need to resysnc Client Specific (csc) here, as changes to the OpenVPN real interface do not effect these.
+    } else {
+        log_error("openvpn_resync_gwgroup called with null gwgroup parameter.");
+    }
+}
+
+function openvpn_refresh_crls()
+{
+    global $config;
+
+    openvpn_create_dirs();
+
+    if (isset($config['openvpn']['openvpn-server']) && is_array($config['openvpn']['openvpn-server'])) {
+        foreach ($config['openvpn']['openvpn-server'] as $settings) {
+            if (empty($settings) || isset($settings['disable'])) {
+                continue;
+            }
+            // Write the settings for the keys
+            switch($settings['mode']) {
+                case 'p2p_tls':
+                case 'server_tls':
+                case 'server_tls_user':
+                case 'server_user':
+                    if (!empty($settings['crlref'])) {
+                        $crl = lookup_crl($settings['crlref']);
+                        crl_update($crl);
+                        $fpath = "/var/etc/openvpn/server{$settings['vpnid']}.crl-verify";
+                        file_put_contents($fpath, base64_decode($crl['text']));
+                        @chmod($fpath, 0644);
+                    }
+                    break;
+            }
+        }
+    }
+}
+
+function openvpn_resync_if_needed($mode, $ovpn_settings, $interface)
+{
+	global $config;
+
+	$resync_needed = true;
+	if (isset($ovpn_settings['disable'])) {
+		$resync_needed = false;
+	} else {
+		if (!empty($interface)) {
+			$mode_id = $mode . $ovpn_settings['vpnid'];
+			$fpath = "/var/etc/openvpn/{$mode_id}.interface";
+			if (file_exists($fpath)) {
+				$current_device = file_get_contents($fpath);
+				$current_device = trim($current_device, " \t\n");
+				$new_device = get_failover_interface($ovpn_settings['interface']);
+				if (isset($config['interfaces'][$interface])) {
+					$this_device = $config['interfaces'][$interface]['if'];
+					if (($current_device == $new_device) && ($current_device != $this_device))
+						$resync_needed = false;
+				}
+			}
+		}
+	}
+	if ($resync_needed == true) {
+		log_error("OpenVPN: Resync " . $mode_id . " " . $ovpn_settings['description']);
+		openvpn_resync($mode, $ovpn_settings);
+	}
+}

@@ -127,7 +127,6 @@ function filter_configure_xmlrpc()
     require_once("system.inc");
     require_once("util.inc");
     require_once("interfaces.inc");
-    require_once("openvpn.inc");
     require_once("services.inc");
     require_once("rrd.inc");
 
@@ -156,8 +155,8 @@ function restore_config_section_xmlrpc($new_config)
     global $config;
 
     require_once("interfaces.inc");
+    require_once("services.inc");
     require_once("filter.inc");
-    require_once("ipsec.inc");
 
     // save old config
     $old_config = $config;

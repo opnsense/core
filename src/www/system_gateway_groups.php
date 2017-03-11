@@ -29,39 +29,9 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
-require_once("openvpn.inc");
 require_once("system.inc");
 require_once("services.inc");
 require_once("rrd.inc");
-
-// Resync and restart all VPNs using a gateway group.
-function openvpn_resync_gwgroup($gwgroupname = "") {
-    global $config;
-
-    if (!empty($gwgroupname)) {
-        if (isset($config['openvpn']['openvpn-server'])) {
-            foreach ($config['openvpn']['openvpn-server'] as & $settings) {
-                if ($gwgroupname == $settings['interface']) {
-                    log_error("Resyncing OpenVPN for gateway group " . $gwgroupname . " server " . $settings["description"] . ".");
-                    openvpn_resync('server', $settings);
-                }
-            }
-        }
-
-        if (isset($config['openvpn']['openvpn-client'])) {
-            foreach ($config['openvpn']['openvpn-client'] as & $settings) {
-                if ($gwgroupname == $settings['interface']) {
-                    log_error("Resyncing OpenVPN for gateway group " . $gwgroupname . " client " . $settings["description"] . ".");
-                    openvpn_resync('client', $settings);
-                }
-            }
-        }
-        // Note: no need to resysnc Client Specific (csc) here, as changes to the OpenVPN real interface do not effect these.
-    } else {
-        log_error("openvpn_resync_gwgroup called with null gwgroup parameter.");
-    }
-}
-
 
 if (!isset($config['gateways']['gateway_group']) || !is_array($config['gateways']['gateway_group'])) {
     $a_gateway_groups = array();

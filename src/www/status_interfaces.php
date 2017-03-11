@@ -32,8 +32,6 @@ require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
-require_once("openvpn.inc");
-require_once("services.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['if']) && !empty($_POST['submit'])) {
