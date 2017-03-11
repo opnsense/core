@@ -178,7 +178,7 @@ include_once("head.inc");
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_serveexpired" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <? gettext('Serve expired responses') ?></td>
+                        <td><a id="help_for_serveexpired" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Serve expired responses') ?></td>
                         <td>
                           <input name="serveexpired" type="checkbox" id="serveexpired" value="yes" <?= empty($pconfig['serveexpired']) ? '' : 'checked="checked"' ?> />
                           <div class="hidden" for="help_for_serveexpired">
