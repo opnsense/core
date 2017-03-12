@@ -26,7 +26,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("openvpn.inc");
+require_once("plugins.inc.d/openvpn.inc");
 require_once("util.inc");
 
 function cert_get_subject_hash($crt)
