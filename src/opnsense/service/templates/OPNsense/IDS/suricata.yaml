@@ -39,7 +39,7 @@ runmode: workers
 # If set to auto, the variable is internally switch to 'router' in IPS mode
 # and 'sniffer-only' in IDS mode.
 # This feature is currently only used by the reject* keywords.
-#host-mode: sniffer-only
+host-mode: auto
 
 # Run suricata as user and group.
 #run-as:
