@@ -312,6 +312,7 @@
 		</field>
 		<field>
 			<type>certca_selection</type>
+			<internal>1</internal>
 			<name>certca</name>
 			<displayname>Certificate Authority</displayname>
 			<bindstofield>ovpnserver->step6->authcertca</bindstofield>

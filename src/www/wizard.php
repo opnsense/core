@@ -596,6 +596,9 @@ function showchange() {
 					echo "<option value='" . $field['add_to_certca_selection'] . "'" . $SELECTED . ">" . $field['add_to_certca_selection'] . "</option>\n";
 				}
 				foreach($config['ca'] as $ca) {
+					if (!empty($field['internal']) && empty($ca['prv'])) {
+						continue;
+					}
 					$name = htmlspecialchars($ca['descr']);
 					$SELECTED = "";
 					if ($value == $name) $SELECTED = " selected=\"selected\"";
