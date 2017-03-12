@@ -36,8 +36,6 @@
 /usr/local/etc/inc/notices.smtp.inc
 /usr/local/etc/inc/plugins.inc
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
-/usr/local/etc/inc/plugins.inc.d/if_group.inc
-/usr/local/etc/inc/plugins.inc.d/if_legacy_opt.inc
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc
 /usr/local/etc/inc/plugins.inc.d/ipsec.inc
 /usr/local/etc/inc/plugins.inc.d/ipsec/auth-user.php

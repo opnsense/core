@@ -120,9 +120,6 @@
             <GRE url="/interfaces_gre.php">
                 <Edit url="/interfaces_gre_edit.php*" visibility="hidden"/>
             </GRE>
-            <Group url="/interfaces_groups.php">
-                <Edit url="/interfaces_groups_edit.php*" visibility="hidden"/>
-            </Group>
             <LAGG url="/interfaces_lagg.php">
                 <Edit url="/interfaces_lagg_edit.php*" visibility="hidden"/>
             </LAGG>
@@ -166,6 +163,9 @@
                 <Edit url="/firewall_nat_npt_edit.php*" visibility="hidden"/>
             </NPT>
         </NAT>
+        <Groups order="40" url="/interfaces_groups.php" cssClass="fa fa-sitemap fa-fw">
+            <Edit url="/interfaces_groups_edit.php*" visibility="hidden"/>
+        </Groups>
         <VIP order="50" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
             <Settings url="/firewall_virtual_ip.php">
                 <Edit url="/firewall_virtual_ip_edit.php*" visibility="hidden"/>

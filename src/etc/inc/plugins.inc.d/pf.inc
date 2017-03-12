@@ -1,6 +1,7 @@
 <?php
 
 /*
+    Copyright (C) 2016 Deciso B.V.
     Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
     All rights reserved.
 
@@ -46,4 +47,83 @@ function pf_services()
     }
 
     return $services;
+}
+
+function pf_interfaces()
+{
+    global $config;
+
+    $interfaces = array();
+
+    /* add interface groups */
+    if (isset($config['ifgroups']['ifgroupentry'])) {
+        foreach($config['ifgroups']['ifgroupentry'] as $ifgen) {
+            $oc = array("enable" => true);
+            $oc['networks'] = array();
+            $oc['if'] = $ifgen['ifname'];
+            $oc['descr'] = $ifgen['ifname'];
+            $oc['virtual'] = true;
+            $oc['type'] = 'group';
+            $interfaces[$ifgen['ifname']] = $oc;
+        }
+    }
+
+    return $interfaces;
+}
+
+/**
+ * options we should probably remove from the system at some point, lets make them plugabble before removal
+ */
+function pf_firewall($fw)
+{
+    global $config, $GatewaysList;
+
+    $defaults = array();
+    $defaults['pass'] = array("type" => "pass", "log" => !isset($config['syslog']['nologdefaultpass']));
+
+    /*
+     *  pass traffic between statically routed subnets and the subnet on the
+     *  interface in question to avoid problems with complicated routing
+     *  topologies
+     */
+    if (isset($config['filter']['bypassstaticroutes']) && isset($config['staticroutes']['route']) && count($config['staticroutes']['route'])) {
+        $FilterIflist = filter_generate_optcfg_array();
+        filter_generate_gateways(); // loads global $GatewaysList
+
+        foreach (get_staticroutes() as $route) {
+            $friendly = $GatewaysList[$route['gateway']]['friendlyiface'];
+            if (is_array($FilterIflist[$friendly])) {
+                $oc = $FilterIflist[$friendly];
+                $routeent = explode("/", $route['network']);
+                if (is_ipaddrv4($routeent[0]) && is_ipaddrv4($oc['ip'])) {
+                    $sa = $oc['sa'];
+                    $sn = $oc['sn'];
+                } elseif (is_ipaddrv6($routeent[0]) && is_ipaddrv6($oc['ipv6'])) {
+                    $sa = $oc['sav6'];
+                    $sn = $oc['snv6'];
+                } else {
+                    continue;
+                }
+
+                $networks = array();
+                $networks[] = array('from' => "{$sa}/{$sn}", 'to' => $route['network']);
+                $networks[] = array('to' => "{$sa}/{$sn}", 'from' => $route['network']);
+                foreach ($networks as $network) {
+                    $fw->registerFilterRule(10,
+                      array('interface' => $friendly, 'statetype' => 'sloppy',
+                            'protocol' => 'tcp','flags' => 'any', 'from' => $network['from'],
+                            'to' => $network['to'], 'quick' => false,
+                            'label' => "pass traffic between statically routed subnets"),
+                      $defaults['pass']
+                    );
+                    $fw->registerFilterRule(10,
+                      array('interface' => $friendly, 'statetype' => 'sloppy',
+                            'from' => $network['from'],'to' => $network['to'], 'quick' => false,
+                            'label' => "pass traffic between statically routed subnets"),
+                      $defaults['pass']
+                    );
+                }
+            }
+        }
+    }
 }
