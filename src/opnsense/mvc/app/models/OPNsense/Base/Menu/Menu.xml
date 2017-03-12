@@ -163,10 +163,10 @@
                 <Edit url="/firewall_nat_npt_edit.php*" visibility="hidden"/>
             </NPT>
         </NAT>
-        <Groups order="40" url="/interfaces_groups.php" cssClass="fa fa-sitemap fa-fw">
+        <Groups order="50" url="/interfaces_groups.php" cssClass="fa fa-sitemap fa-fw">
             <Edit url="/interfaces_groups_edit.php*" visibility="hidden"/>
         </Groups>
-        <VIP order="50" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
+        <VIP order="60" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
             <Settings url="/firewall_virtual_ip.php">
                 <Edit url="/firewall_virtual_ip_edit.php*" visibility="hidden"/>
             </Settings>
