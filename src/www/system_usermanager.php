@@ -214,13 +214,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (isset($pconfig['save'])) {
         // save user
         /* input validation */
-        if (isset($id)) {
-            $reqdfields = explode(" ", "usernamefld");
-            $reqdfieldsn = array(gettext("Username"));
-        } else {
-            $reqdfields = explode(" ", "usernamefld passwordfld1");
-            $reqdfieldsn = array(gettext("Username"), gettext("Password"));
-        }
+        $reqdfields = explode(' ', 'usernamefld');
+        $reqdfieldsn = array(gettext('Username'));
 
         do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
@@ -228,17 +223,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("The username contains invalid characters.");
         }
 
-        if (strlen($_POST['usernamefld']) > 32) {
+        if (strlen($pconfig['usernamefld']) > 32) {
             $input_errors[] = gettext("The username is longer than 32 characters.");
         }
 
-        if (!empty($pconfig['passwordfld1'])) {
-            if ($pconfig['passwordfld1'] != $pconfig['passwordfld2']) {
-                $input_errors[] = gettext('The passwords do not match.');
-            }
-            if (!empty($pconfig['gen_new_password'])) {
-                $input_errors[] = gettext('Cannot set random password due to explicit input.');
-            }
+        if ($pconfig['passwordfld1'] != $pconfig['passwordfld2']) {
+            $input_errors[] = gettext('The passwords do not match.');
+        }
+
+        if (!empty($pconfig['passwordfld1']) && !empty($pconfig['gen_new_password'])) {
+            $input_errors[] = gettext('Cannot set random password due to explicit input.');
+        }
+
+        if (empty($pconfig['passwordfld1']) && empty($pconfig['gen_new_password'])) {
+            $input_errors[] = gettext('A password is required.');
         }
 
         if (!empty($pconfig['disabled']) && $_SESSION['Username'] === $a_user[$id]['name']) {
@@ -581,7 +579,7 @@ $( document ).ready(function() {
                       <input name="passwordfld1" type="password" class="formfld pwd" id="passwordfld1" size="20" value="" /><br/>
                       <input name="passwordfld2" type="password" class="formfld pwd" id="passwordfld2" size="20" value="" />
                       <small><?= gettext("(confirmation)"); ?></small><br/><br/>
-                      <input type="checkbox" name="gen_new_password"/>&nbsp;<small><?=gettext('Generate a scrambled password to prevent local database logins for this user.') ?></small>
+                      <input type="checkbox" name="gen_new_password" <?= !empty($pconfig['gen_new_password']) ? 'checked="checked"' : '' ?>/>&nbsp;<small><?=gettext('Generate a scrambled password to prevent local database logins for this user.') ?></small>
                     </td>
                   </tr>
                   <tr>
