@@ -91,8 +91,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("The group name contains invalid characters.");
         }
 
-        if (strlen($pconfig['name']) > 16) {
-            $input_errors[] = gettext("The group name is longer than 16 characters.");
+        if (strlen($pconfig['name']) > 32) {
+            $input_errors[] = gettext("The group name is longer than 32 characters.");
         }
 
         if (count($input_errors) == 0 && !isset($id)) {
@@ -237,7 +237,7 @@ $( document ).ready(function() {
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Group name");?></td>
                 <td>
-                  <input name="name" type="text" maxlength="16" value="<?=$pconfig['name'];?>" <?=$pconfig['scope'] == "system" ? "readonly=\"readonly\"" : "";?> />
+                  <input name="name" type="text" maxlength="32" value="<?=$pconfig['name'];?>" <?=$pconfig['scope'] == "system" ? "readonly=\"readonly\"" : "";?> />
                 </td>
               </tr>
               <tr>
