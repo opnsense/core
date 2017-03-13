@@ -68,12 +68,6 @@ function dnsmasq_xmlrpc_sync()
     return $result;
 }
 
-function dnsmasq_configure()
-{
-    /* XXX stub that prevents dnsmasq from starting again on bootup */
-    return array();
-}
-
 function dnsmasq_configure_do($verbose = false)
 {
     global $config;

@@ -68,12 +68,6 @@ function unbound_xmlrpc_sync()
     return $result;
 }
 
-function unbound_configure()
-{
-    /* XXX stub that prevents unbound from starting again on bootup */
-    return array();
-}
-
 function unbound_optimization()
 {
     global $config;
@@ -138,23 +132,9 @@ function unbound_optimization()
     return $optimization;
 }
 
-function unbound_bootstrap_root()
-{
-    global $g;
-
-    if (!is_dir($g['unbound_chroot_path'])) {
-        mkdir($g['unbound_chroot_path']);
-        chown($g['unbound_chroot_path'], 'unbound');
-        chgrp($g['unbound_chroot_path'], 'unbound');
-    }
-}
-
 function unbound_generate_config()
 {
     global $config, $g;
-
-    // Bootstrap needed for /var MFS
-    unbound_bootstrap_root();
 
     // Setup optimization
     $optimization = unbound_optimization();
@@ -448,7 +428,6 @@ function unbound_configure_do($verbose = false)
         flush();
     }
 
-    unbound_bootstrap_root();
     unbound_execute('unbound-anchor');
     unbound_remote_control_setup();
     unbound_generate_config();
@@ -485,7 +464,8 @@ function unbound_execute($cmd)
         case 'unbound-anchor':
             mwexecf(
                 'chroot -u unbound -g unbound / %s -a %s',
-                array('/usr/local/sbin/unbound-anchor', "{$g['unbound_chroot_path']}/root.key")
+                array('/usr/local/sbin/unbound-anchor', "{$g['unbound_chroot_path']}/root.key"),
+                true
             );
             break;
         case 'unbound-control-setup':
@@ -671,7 +651,6 @@ function unbound_add_host_entries()
         }
     }
 
-    unbound_bootstrap_root();
     file_put_contents("{$g['unbound_chroot_path']}/host_entries.conf", $unbound_entries);
 }
 
@@ -752,7 +731,6 @@ function unbound_acls_config() {
     }
 
     // Write out Access list
-    unbound_bootstrap_root();
     file_put_contents("{$g['unbound_chroot_path']}/access_lists.conf", $aclcfg);
 }
 
