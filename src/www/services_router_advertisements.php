@@ -58,9 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     // boolean
     $pconfig['rasamednsasdhcp6'] = isset($config['dhcpdv6'][$if]['rasamednsasdhcp6']);
-    if (empty($config['dhcpdv6'][$if]['ranosend'])) {
-        $pconfig['rasend'] = true;
-    }
+    $pconfig['rasend'] = empty($config['dhcpdv6'][$if]['ranosend']) ? true : null;
+    $pconfig['radefault'] = empty($config['dhcpdv6'][$if]['ranodefault']) ? true : null;
 
     // defaults
     if (empty($pconfig['ramininterval'])) {
@@ -73,6 +72,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // arrays
     $pconfig['radns1'] = !empty($config['dhcpdv6'][$if]['radnsserver'][0]) ? $config['dhcpdv6'][$if]['radnsserver'][0] : null;
     $pconfig['radns2'] = !empty($config['dhcpdv6'][$if]['radnsserver'][1]) ? $config['dhcpdv6'][$if]['radnsserver'][1] : null;
+
+    // csvs
+    if (!empty($config['dhcpdv6'][$if]['raroutes'])) {
+        $pconfig['raroutes'] = explode(',', $config['dhcpdv6'][$if]['raroutes']);
+    } else {
+        $pconfig['raroutes'] = array();
+    }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['if']) && !empty($config['interfaces'][$_POST['if']])) {
         $if = $_POST['if'];
@@ -81,6 +87,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     /* input validation */
     $input_errors = array();
     $pconfig = $_POST;
+
+    $pconfig['raroutes'] = array();
+    foreach ($pconfig['route_address'] as $idx => $address) {
+        if (!empty($address)) {
+            $route = "{$address}/{$pconfig['route_bits'][$idx]}";
+            if (!is_subnetv6($route)) {
+                $input_errors[] = sprintf(gettext('An invalid subnet route was supplied: %s'), $route);
+            }
+            $pconfig['raroutes'][] = $route;
+        }
+    }
 
     if ((!empty($pconfig['radns1']) && !is_ipaddrv6($pconfig['radns1'])) || ($pconfig['radns2'] && !is_ipaddrv6($pconfig['radns2']))) {
         $input_errors[] = gettext("A valid IPv6 address must be specified for the primary/secondary DNS servers.");
@@ -120,6 +137,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['dhcpdv6'][$if]['ranosend']);
         }
 
+        # flipped in GUI on purpose
+        if (empty($pconfig['radefault'])) {
+            $config['dhcpdv6'][$if]['ranodefault'] = true;
+        } elseif (isset($config['dhcpdv6'][$if]['ranodefault'])) {
+            unset($config['dhcpdv6'][$if]['ranodefault']);
+        }
+
         $config['dhcpdv6'][$if]['radomainsearchlist'] = $pconfig['radomainsearchlist'];
         $config['dhcpdv6'][$if]['radnsserver'] = array();
         if (!empty($pconfig['radns1'])) {
@@ -129,6 +153,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['dhcpdv6'][$if]['radnsserver'][] = $pconfig['radns2'];
         }
         $config['dhcpdv6'][$if]['rasamednsasdhcp6'] = !empty($pconfig['rasamednsasdhcp6']);
+
+        if (count($pconfig['raroutes'])) {
+            $config['dhcpdv6'][$if]['raroutes'] = implode(',', $pconfig['raroutes']);
+        } elseif (isset($config['dhcpdv6'][$if]['raroutes'])) {
+            unset($config['dhcpdv6'][$if]['raroutes']);
+        }
 
         write_config();
         services_radvd_configure();
@@ -270,8 +300,75 @@ include("head.inc");
                     </td>
                   </tr>
 <?php
-                  endif;?>
-
+                  endif ?>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Advertise Default Gateway') ?></td>
+                    <td>
+                      <input id="radefault" name="radefault" type="checkbox" value="yes" <?= !empty($pconfig['radefault']) ? 'checked="checked"' : '' ?>/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_raroutes" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Advertise Routes') ?></td>
+                    <td>
+                      <table class="table table-striped table-condensed" id="maintable">
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <th><?= gettext('Prefix') ?></th>
+                            <th><?= gettext('Length') ?></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+<?php
+                        $pconfig['raroutes'][] = '';
+                        foreach($pconfig['raroutes'] as $item):
+                          $parts = explode('/', $item);
+                          if (count($parts) > 1) {
+                              $sn_bits = intval($parts[1]);
+                          } else {
+                              $sn_bits = null;
+                          }
+                          $sn_address = $parts[0];
+                          ?>
+                          <tr>
+                            <td>
+<?php
+                          if (!empty($item)): ?>
+                              <label class="act-removerow btn btn-default btn-xs">
+                                <span class="sr-only"><?= gettext('Remove') ?></span>
+                                <span class="fa fa-minus"></span>
+                              </label>
+<?php
+                          else: ?>
+                              <label id="addNew" class="btn btn-default btn-xs">
+                                <span class="sr-only"><?= gettext('Add') ?></span>
+                                <span class="fa fa-plus"></span>
+                              </label>
+<?php
+                          endif ?>
+                            </td>
+                            <td>
+                              <input name="route_address[]" type="text" value="<?=$sn_address;?>" />
+                            </td>
+                            <td>
+                              <select name="route_bits[]">
+<?php
+                              for ($i = 128; $i >= 0; $i -= 1): ?>
+                                <option value="<?= $i ?>" <?= $sn_bits === $i ? 'selected="selected"' : '' ?>><?= $i ?></option>
+<?php
+                              endfor ?>
+                              </select>
+                            </td>
+                          </tr>
+<?php
+                        endforeach ?>
+                        </tbody>
+                      </table>
+                      <div class="hidden" for="help_for_raroutes">
+                        <?= gettext('Routes are specified in CIDR format. The prefix of a route definition should be network prefix; it can be used to advertise more specific routes to the hosts.') ?>
+                      </div>
+                    </td>
+                  </tr>
                   <tr>
                     <td><a id="help_for_radns" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS servers");?></td>
                     <td>

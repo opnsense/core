@@ -193,10 +193,18 @@ function services_radvd_configure($blacklist = array())
             $radvdconf .= "\troute ::/0 {\n";
             $radvdconf .= "\t\tRemoveRoute off;\n";
             $radvdconf .= "\t};\n";
-        } else {
+        } elseif (empty($dhcpv6ifconf['ranodefault'])) {
             $radvdconf .= "\troute ::/0 {\n";
             $radvdconf .= "\t\tRemoveRoute on;\n";
             $radvdconf .= "\t};\n";
+        }
+
+        if (!empty($dhcpv6ifconf['raroutes'])) {
+            foreach (explode(',', $dhcpv6ifconf['raroutes']) as $raroute) {
+                $radvdconf .= "\troute {$raroute} {\n";
+                $radvdconf .= "\t\tRemoveRoute on;\n";
+                $radvdconf .= "\t};\n";
+            }
         }
 
         /* add DNS servers */
@@ -2034,7 +2042,7 @@ function get_service_control_links($service, $addname = false)
             'srv_status_act',
             'glyphicon glyphicon-refresh'
         );
-	if (empty($service['nocheck'])) {
+        if (empty($service['nocheck'])) {
             $output .= sprintf(
                 $template,
                 $service_id,
