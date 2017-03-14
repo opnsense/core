@@ -797,99 +797,84 @@ function return_gateway_groups_array()
         foreach ($config['gateways']['gateway_group'] as $group) {
             /* create array with group gateways members separated by tier */
             $tiers = array();
-            $backupplan = array();
-            $gwvip_arr = array();
+            $tiers_online = 0;
             foreach ($group['item'] as $item) {
                 list($gwname, $tier, $vipname) = explode("|", $item);
-
-                if (is_ipaddr($carplist[$vipname])) {
-                    if (!is_array($gwvip_arr[$group['name']])) {
-                        $gwvip_arr[$group['name']] = array();
-                    }
-                    $gwvip_arr[$group['name']][$gwname] = $vipname;
+                if (!isset($tiers[$tier])) {
+                    $tiers[$tier] = array();
                 }
 
-                /* Do it here rather than reiterating again the group in case no member is up. */
-                if (!is_array($backupplan[$tier])) {
-                    $backupplan[$tier] = array();
-                }
-                $backupplan[$tier][] = $gwname;
-
-                /* check if the gateway is available before adding it to the array */
-                if (is_array($gateways_status[$gwname])) {
+                $gwup = false;
+                if (!empty($gateways_status[$gwname])) {
                     $status = $gateways_status[$gwname];
-                    $gwdown = false;
                     if (stristr($status['status'], 'down')) {
                         $msg = sprintf(gettext('MONITOR: %s is down, removing from routing group %s'), $gwname, $group['name']);
-                        $gwdown = true;
                     } elseif (stristr($status['status'], 'loss') && strstr($group['trigger'], 'loss')) {
-                        /* packet loss */
                         $msg = sprintf(gettext('MONITOR: %s has packet loss, removing from routing group %s'), $gwname, $group['name']);
-                        $gwdown = true;
                     } elseif (stristr($status['status'], 'delay') && strstr($group['trigger'] , 'latency')) {
-                        /* high latency */
                         $msg = sprintf(gettext('MONITOR: %s has high latency, removing from routing group %s'), $gwname, $group['name']);
-                        $gwdown = true;
-                    }
-                    if ($gwdown == true) {
-                        log_error($msg);
-                        notify_via_growl($msg);
-                        notify_via_smtp($msg);
                     } else {
-                        /* Online add member */
-                        if (!is_array($tiers[$tier])) {
-                            $tiers[$tier] = array();
-                        }
-                        $tiers[$tier][] = $gwname;
+                        $msg = null;
+                    }
+                    if (!empty($msg)) {
+                        log_error($msg);
+                        notify_all_remote($msg);
+                    } else {
+                        $tiers_online++;
+                        $gwup = true;
                     }
                 } elseif (isset($gateways_arr[$gwname]['monitor_disable'])) {
-                    $tiers[$tier][] = $gwname;
+                    $gwup = true;
                 }
-            }
-            $tiers_count = count($tiers);
-            if ($tiers_count == 0) {
-                /* Oh dear, we have no members! Engage Plan B */
-                if (!file_exists('/var/run/booting')) {
-                    $msg = sprintf(gettext('Gateways status could not be determined, considering all as up/active. (Group: %s)'), $group['name']);
-                    log_error($msg);
-                    notify_via_growl($msg);
-                    //notify_via_smtp($msg);
+                $vip = null;
+                if (!empty($carplist[$vipname]) && is_ipaddr($carplist[$vipname])) {
+                    $vip = $vipname;
                 }
-                $tiers = $backupplan;
+
+                $tiers[$tier][] = array("up" => $gwup, "gwname" => $gwname, "vip" => $vip);
             }
+            if ($tiers_online == 0 && !file_exists('/var/run/booting')) {
+                /* Oh dear, we have no members!*/
+                $msg = sprintf(gettext('Gateways status could not be determined, considering all as up/active. (Group: %s)'), $group['name']);
+                log_error($msg);
+                notify_via_growl($msg);
+            }
+
             /* sort the tiers array by the tier key */
             ksort($tiers);
 
             /* we do not really foreach the tiers as we stop after the first tier */
             foreach ($tiers as $tieridx => $tier) {
                 /* process all gateways in this tier */
-                foreach ($tier as $member) {
-                    /* determine interface gateway */
-                    if (isset($gateways_arr[$member])) {
+                foreach ($tier as $member_item) {
+                    $member = $member_item['gwname'];
+                    if (($member_item['up'] || $tiers_online) && isset($gateways_arr[$member])) {
+                        /* determine interface gateway */
                         $gateway = $gateways_arr[$member];
-                        $int = $gateway['interface'];
-                        $gatewayip = "";
                         if (is_ipaddr($gateway['gateway'])) {
                             $gatewayip = $gateway['gateway'];
-                        } elseif (!empty($int)) {
+                        } elseif (!empty($gateway['interface'])) {
                             $gatewayip = get_interface_gateway($gateway['friendlyiface']);
+                        } else {
+                            $gatewayip = "";
                         }
 
-                        if (!empty($int)) {
+                        if (!empty($gateway['interface'])) {
                             $gateway_groups_array[$group['name']]['ipprotocol'] = $gateway['ipprotocol'];
                             if (is_ipaddr($gatewayip)) {
                                 $groupmember = array();
-                                $groupmember['int']  = $int;
+                                $groupmember['int']  = $gateway['interface'];
                                 $groupmember['gwip']  = $gatewayip;
                                 $groupmember['weight']  = isset($gateway['weight']) ? $gateway['weight'] : 1;
-                                if (is_array($gwvip_arr[$group['name']])&& !empty($gwvip_arr[$group['name']][$member])) {
-                                  $groupmember['vip'] = $gwvip_arr[$group['name']][$member];
+                                if (!empty($member_item['vip'])) {
+                                    $groupmember['vip'] = $member_item['vip'];
                                 }
                                 $gateway_groups_array[$group['name']][] = $groupmember;
                             }
                         }
                     }
                 }
+
                 /* we should have the 1st available tier now, exit stage left */
                 if (count($gateway_groups_array[$group['name']]) > 0) {
                     break;
@@ -900,7 +885,7 @@ function return_gateway_groups_array()
         }
     }
 
-    return ($gateway_groups_array);
+    return $gateway_groups_array;
 }
 
 function lookup_gateway_ip_by_name($name)
