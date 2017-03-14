@@ -860,7 +860,9 @@ function return_gateway_groups_array()
                         }
 
                         if (!empty($gateway['interface'])) {
-                            $gateway_groups_array[$group['name']]['ipprotocol'] = $gateway['ipprotocol'];
+                            if (empty($gateway_groups_array[$group['name']])) {
+                                $gateway_groups_array[$group['name']] = array();
+                            }
                             if (is_ipaddr($gatewayip)) {
                                 $groupmember = array();
                                 $groupmember['int']  = $gateway['interface'];
