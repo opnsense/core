@@ -145,6 +145,7 @@ path {
 	var h = 30 - m[0] - m[2]; // height of minigraphs
 	var datasize = 45; //size of minigraph history - 45 @ 2sec poll = 1min 30sec history
 	var maxvalue = 0; //top value of minigraph - changes based on incoming spikes
+    var hostmax = 20; //arbitrary max of top 20 hosts
 
   	$( document ).ready(function() {
       function update_bandwidth_stats() {
@@ -219,9 +220,8 @@ path {
 			   tablearray.sort(function(a, b) {
 					return parseFloat(b[sortval]) - parseFloat(a[sortval]);
 			   });
-			   if (tablearray.length > 20) {
-					//Arbitrary limit of top 20
-					tablearray.length = 20;
+			   if (tablearray.length > hostmax) {
+					tablearray.length = hostmax;
 			   }
 			   graphtable = {};
                $.each(tablearray, function(idx, record){
@@ -291,6 +291,7 @@ path {
                     <th><?= gettext('Sort by') ?></th>
                     <th><?= gettext('Filter') ?></th>
                     <th><?= gettext('Display') ?></th>
+                    <th><?= gettext('Top') ?></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -349,6 +350,22 @@ path {
                         </option>
                       </select>
                     </td>
+                    <td>
+                      <select id="hostmax" name="hostmax">
+                        <option value="5">
+                          <?= gettext('5') ?>
+                        </option>
+                        <option value="10">
+                          <?= gettext('10') ?>
+                        </option>
+                        <option value="20" selected>
+                          <?= gettext('20') ?>
+                        </option>
+                        <option value="30">
+                          <?= gettext('30') ?>
+                        </option>
+                      </select>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -388,6 +405,9 @@ path {
   });
   $('#hostipformat').on('change', function () {
         graphtable = {};
+  });
+  $('#hostmax').on('change', function () {
+        hostmax = parseInt($( "#hostmax option:selected" ).val());
   });
 </script>
 <?php include("foot.inc"); ?>
