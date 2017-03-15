@@ -1,7 +1,8 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
+    Copyright (C) 2014-2017 Deciso B.V.
+    Copyright (C) 2017 Jeffrey Gentes
     Copyright (C) 2004 Scott Ullrich
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
     All rights reserved.
@@ -139,11 +140,11 @@ path {
         return false;
     }
     // define dimensions of graph
-	var m = [3, 3, 1, 3]; // margins
-	var w = 150 - m[1] - m[3]; // width
-	var h = 30 - m[0] - m[2]; // height
-	var datasize = 45;
-	var maxvalue = 0;
+	var m = [3, 3, 1, 3]; // margins of minigraphs
+	var w = 150 - m[1] - m[3]; // width of minigraphs
+	var h = 30 - m[0] - m[2]; // height of minigraphs
+	var datasize = 45; //size of minigraph history - 45 @ 2sec poll = 1min 30sec history
+	var maxvalue = 0; //top value of minigraph - changes based on incoming spikes
 
   	$( document ).ready(function() {
       function update_bandwidth_stats() {
@@ -236,23 +237,23 @@ path {
 							return y(d); 
 						})
 					var svg = document.createElementNS(d3.ns.prefix.svg, 'g');
-					var graph = d3.select(svg).append("svg:svg")
+					var graphIn = d3.select(svg).append("svg:svg")
 						  .attr("width", w + m[1] + m[3])
 						  .attr("height", h + m[0] + m[2])
 						.append("svg:g")
 						  .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 					var svg2 = document.createElementNS(d3.ns.prefix.svg, 'g');
-					var graph2 = d3.select(svg).append("svg:svg")
+					var graphOut = d3.select(svg).append("svg:svg")
 						  .attr("width", w + m[1] + m[3])
 						  .attr("height", h + m[0] + m[2])
 						.append("svg:g")
 						  .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
                		html.push('<tr>');
                		html.push('<td>'+record.host+'</td>');
-                    graph.append("svg:path").attr("d", line(record.historyin));
-                    graph2.append("svg:path").attr("d", line(record.historyout));
-                    html.push('<td style="width: 55px;">' +formatSizeUnits(record.in)+'</td><td style="padding: 0; width: ' + w + '; height: ' + h + ';"><svg class="minigraph" style="width: ' + w  + '; height: ' + h + ';">' + graph.html() + '</svg></td>');
-                    html.push('<td style="width: 55px;">' +formatSizeUnits(record.out)+'</td><td style="padding: 0; width: ' + w + '; height: ' + h + ';"><svg class="minigraph" style="width: ' + w  + '; height: ' + h + ';">' + graph2.html() + '</svg></td>');
+                    graphIn.append("svg:path").attr("d", line(record.historyin));
+                    graphOut.append("svg:path").attr("d", line(record.historyout));
+                    html.push('<td style="width: 55px;">' +formatSizeUnits(record.in)+'</td><td style="padding: 0; width: ' + w + '; height: ' + h + ';"><svg class="minigraph" style="width: ' + w  + '; height: ' + h + ';">' + graphIn.html() + '</svg></td>');
+                    html.push('<td style="width: 55px;">' +formatSizeUnits(record.out)+'</td><td style="padding: 0; width: ' + w + '; height: ' + h + ';"><svg class="minigraph" style="width: ' + w  + '; height: ' + h + ';">' + graphOut.html() + '</svg></td>');
                		html.push('<td>'+formatSizeUnits(record.totalin)+'</td>');
                		html.push('<td>'+formatSizeUnits(record.totalout)+'</td>');
                		html.push('</tr>');
