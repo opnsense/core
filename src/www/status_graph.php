@@ -125,8 +125,7 @@ path {
         if      (bytes>=1000000000) {bytes=(bytes/1000000000).toFixed(2)+'G';}
         else if (bytes>=1000000)    {bytes=(bytes/1000000).toFixed(2)+'M';}
         else if (bytes>=1000)       {bytes=(bytes/1000).toFixed(2)+'k';}
-        else if (bytes>1)           {bytes=bytes.toFixed(2) +'b';}
-        else if (bytes==1)          {bytes=bytes.toFixed(2) +'b';}
+        else if (bytes>=1)          {bytes=bytes.toFixed(2) +'b';}
         else                        {bytes='0.00b';}
         return bytes;
     }
@@ -139,21 +138,6 @@ path {
         }
         return false;
     }
-    function sortProperties(obj, item)
-	{
-	  // convert object into array
-		var sortable=[];
-		for(var key in obj)
-			if(obj.hasOwnProperty(key))
-				sortable.push([key, obj[key]][item]); // each item is an array in format [key, value]
-
-		// sort items by value
-		sortable.sort(function(a, b)
-		{
-		  return a[1]-b[1]; // compare numbers
-		});
-		return sortable; // array in format [ [ key1, val1 ], [ key2, val2 ], ... ]
-	}
     // define dimensions of graph
 	var m = [3, 3, 1, 3]; // margins
 	var w = 150 - m[1] - m[3]; // width
