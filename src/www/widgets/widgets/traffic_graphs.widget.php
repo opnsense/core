@@ -109,6 +109,11 @@
               d3.select(this).on("click").apply(this, [d, i]);
           }
       });
+      chart_data_in = null;
+      chart_data_out = null;
+      chart_data_keys = null;
+      deselected_series_in = null;
+      deselected_series_out = null;
   }
   /**
    * page setup

@@ -257,8 +257,9 @@ path {
                		html.push('<td>'+formatSizeUnits(record.totalin)+'</td>');
                		html.push('<td>'+formatSizeUnits(record.totalout)+'</td>');
                		html.push('</tr>');
-            });
-            $("#bandwidth_details").html(html.join(''));
+			   });
+			   tablearray = null;
+			   $("#bandwidth_details").html(html.join(''));
           }
         });
         setTimeout(update_bandwidth_stats, 2000);
@@ -363,6 +364,12 @@ path {
                         </option>
                         <option value="30">
                           <?= gettext('30') ?>
+                        </option>
+                        <option value="40">
+                          <?= gettext('40') ?>
+                        </option>
+                        <option value="50">
+                          <?= gettext('50') ?>
                         </option>
                       </select>
                     </td>
