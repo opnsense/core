@@ -107,7 +107,7 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 <style>
 path {
-    stroke: steelblue; 
+    stroke: steelblue;
     stroke-width: 1;
     fill: none;
 }
@@ -190,7 +190,7 @@ path {
                		historyout.push(parseInt(record.out));
                		historyin.shift();
                		historyout.shift();
-               		graphtable[record.host] = record;				
+               		graphtable[record.host] = record;
                		graphtable[record.host].totalin = totalin;
                		graphtable[record.host].totalout = totalout;
                		graphtable[record.host].historyin = historyin;
@@ -230,11 +230,11 @@ path {
 					//using non-linear y so that large spikes don't zero out the other graphs
 					var y = d3.scale.pow().exponent(0.3).domain([0, maxvalue]).range([h, 0]);
 					var line = d3.svg.line()
-						.x(function(d,i) { 
-							return x(i); 
+						.x(function(d,i) {
+							return x(i);
 						})
 						.y(function(d) {
-							return y(d); 
+							return y(d);
 						})
 					var svg = document.createElementNS(d3.ns.prefix.svg, 'g');
 					var graphIn = d3.select(svg).append("svg:svg")
@@ -258,7 +258,6 @@ path {
                		html.push('<td>'+formatSizeUnits(record.totalout)+'</td>');
                		html.push('</tr>');
 			   });
-			   tablearray = null;
 			   $("#bandwidth_details").html(html.join(''));
           }
         });
@@ -267,7 +266,7 @@ path {
       update_bandwidth_stats();
 
   });
-  
+
 </script>
 
 <section class="page-content-main">
