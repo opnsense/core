@@ -314,7 +314,7 @@ class FilterRule
                 // set prio
                 if (isset($tmp['set-prio']) && $tmp['set-prio'] !== ""
                   && isset($tmp['set-prio-low']) && $tmp['set-prio-low'] !== "" ) {
-                    $tmp['set-prio'] = "({$tmp['set-prio']}, {$tmp['set-prio-low']})" ;
+                    $tmp['set-prio'] = "({$tmp['set-prio']}, {$tmp['set-prio-low']})";
                 }
                 $result[] = $tmp;
             }
