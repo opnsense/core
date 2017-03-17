@@ -35,6 +35,8 @@ require_once("/usr/local/www/widgets/api/plugins/traffic.inc");
 
 // Get configured interface list
 $ifdescrs = get_configured_interface_with_descr();
+$interfaces = legacy_config_get_interfaces(array('virtual' => false));
+$hostlist = array();
 if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) {
     $ifdescrs['enc0'] = "IPsec";
 }
@@ -43,6 +45,24 @@ foreach (array('server', 'client') as $mode) {
         foreach ($config['openvpn']["openvpn-{$mode}"] as $id => $setting) {
             if (!isset($setting['disable'])) {
                 $ifdescrs['ovpn' . substr($mode, 0, 1) . $setting['vpnid']] = gettext("OpenVPN") . " ".$mode.": ".htmlspecialchars($setting['description']);
+            }
+        }
+    }
+}
+
+//Create array of hostnames from DHCP
+foreach ($interfaces as $ifname => $ifarr) {
+	if (isset($config['dhcpd'][$ifname]['staticmap'])) {
+		foreach($config['dhcpd'][$ifname]['staticmap'] as $entry) {
+			if (htmlentities($entry['hostname']) !== "") {
+				$hostlist[$entry['ipaddr']] = htmlentities($entry['hostname']);
+			}
+		}
+	}
+	if (isset($config['dhcpdv6'][$ifname]['staticmap'])) {
+        foreach($config['dhcpdv6'][$ifname]['staticmap'] as $entry) {
+        	if (htmlentities($entry['hostname']) !== "") {
+            	$hostlist[$entry['ipaddrv6']] = htmlentities($entry['hostname']);
             }
         }
     }
@@ -83,6 +103,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $addrdata = gethostbyaddr($fields[0]);
                     if ($pconfig['hostipformat'] == 'hostname' && $addrdata != $fields[0]){
                         $addrdata = explode(".", $addrdata)[0];
+                    } else if ($pconfig['hostipformat'] == 'hostname' && array_key_exists($fields[0], $hostlist)) {
+                    	$addrdata = $hostlist[$fields[0]];
                     }
                 } else {
                     $addrdata = $fields[0];
