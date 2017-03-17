@@ -58,15 +58,16 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 CORE_REPOSITORY?=	${FLAVOUR}
 .endif
 
-CORE_PACKAGESITE?=	http://pkg.opnsense.org
-
 CORE_NAME?=		opnsense-devel
 CORE_FAMILY?=		development
+CORE_MESSAGE?=		Insert Name Here
+
+CORE_MAINTAINER?=	franco@opnsense.org
+CORE_PACKAGESITE?=	http://pkg.opnsense.org
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
 CORE_COMMENT?=		OPNsense ${CORE_FAMILY} package
-CORE_MAINTAINER?=	franco@opnsense.org
 CORE_WWW?=		https://opnsense.org/
-CORE_MESSAGE?=		Insert Name Here
+
 # CORE_DEPENDS_armv6 is empty
 CORE_DEPENDS_amd64?=	beep bsdinstaller
 CORE_DEPENDS_i386?=	${CORE_DEPENDS_amd64}
