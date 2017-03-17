@@ -1015,14 +1015,13 @@ function openvpn_resync_csc_conf($settings, $server)
 
     if (!empty($settings['tunnel_network'])) {
         list($ip, $mask) = explode('/', $settings['tunnel_network']);
-        $baselong = ip2long32($ip) & gen_subnet_mask_long($mask);
-        $serverip = long2ip32($baselong + 1);
-        $clientip = long2ip32($baselong + 2);
-        /* Because this is being pushed, the order from the client's point of view. */
-        if ($server['dev_mode'] != 'tap' && empty($server['topology_subnet'])) {
+        if ($server['dev_mode'] == 'tun' && empty($server['topology_subnet'])) {
+            $baselong = ip2long32($ip) & gen_subnet_mask_long($mask);
+            $serverip = long2ip32($baselong + 1);
+            $clientip = long2ip32($baselong + 2);
             $conf .= "ifconfig-push {$clientip} {$serverip}\n";
         } else {
-            $conf .= "ifconfig-push {$clientip} " . gen_subnet_mask($mask) . "\n";
+            $conf .= "ifconfig-push {$ip} " . gen_subnet_mask($mask) . "\n";
         }
     }
     if (!empty($settings['tunnel_networkv6'])) {
