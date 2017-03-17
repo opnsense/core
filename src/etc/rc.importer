@@ -110,21 +110,22 @@ probe_for_part()
 DEVS=
 PART=
 
-if [ -n "${DO_BOOT}" ]; then
-	touch ${INSTALL} 2> /dev/null
-	if [ -f ${INSTALL} -a -f /conf/config.xml ]; then
-		bootstrap_and_exit
-	fi
-
-	if ! timeout_prompt \
-	    'Press any key to start the configuration importer:' .......; then
-		bootstrap_and_exit
-	fi
-elif [ -n "${1}" ]; then
+if [ -n "${1}" ]; then
 	if ! probe_for_part ${1}; then
 		bootstrap_and_exit
 	fi
 else
+	if [ -n "${DO_BOOT}" ]; then
+		touch ${INSTALL} 2> /dev/null
+		if [ -f ${INSTALL} -a -f /conf/config.xml ]; then
+			bootstrap_and_exit
+		fi
+
+		if ! timeout_prompt \
+		    'Press any key to start the configuration importer:' .......; then
+			bootstrap_and_exit
+		fi
+	fi
 	DEVS=$(camcontrol devlist)
 fi
 
