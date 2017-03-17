@@ -332,7 +332,7 @@ function openvpn_validate_port($value, $name)
     return false;
 }
 
-function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = "ipv4")
+function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = 'ipv4', $allow_hosts = false)
 {
     $value = trim($value);
     $error = false;
@@ -346,8 +346,8 @@ function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = "ipv
     }
 
     foreach ($networks as $network) {
-        if ($ipproto == "ipv4") {
-            $error = !openvpn_validate_cidr_ipv4($network);
+        if ($ipproto == 'ipv4') {
+            $error = !openvpn_validate_cidr_ipv4($network, $allow_hosts);
         } else {
             $error = !openvpn_validate_cidr_ipv6($network);
         }
@@ -363,7 +363,7 @@ function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = "ipv
     }
 }
 
-function openvpn_validate_cidr_ipv4($value)
+function openvpn_validate_cidr_ipv4($value, $allow_hosts = false)
 {
     $value = trim($value);
     if (!empty($value)) {
@@ -373,7 +373,7 @@ function openvpn_validate_cidr_ipv4($value)
         }
         /* IPv4 case is very strict, cannot be a host address */
         $mask = (0xffffffff << (32 - $mask)) & 0xffffffff;
-        if ((ip2long($ip) & $mask) != ip2long($ip)) {
+        if (!$allow_hosts && (ip2long($ip) & $mask) != ip2long($ip)) {
             return false;
         }
     }
