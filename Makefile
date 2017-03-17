@@ -47,11 +47,6 @@ CORE_BIND?=	911
 CORE_PHP?=	70
 CORE_PY?=	27
 
-.if "${CORE_RELEASE}" == yes
-CORE_NAME?=		opnsense
-CORE_FAMILY?=		release
-.endif
-
 _FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
 FLAVOUR?=	${_FLAVOUR:[1]}
 
