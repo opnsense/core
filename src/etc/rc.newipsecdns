@@ -46,6 +46,4 @@ if (file_exists('/var/run/booting')) {
     return;
 }
 
-$ipseclck = lock('ipsecdns', LOCK_EX);
-ipsec_configure_do();
-unlock($ipseclck);
+ipsec_configure_do(true);
