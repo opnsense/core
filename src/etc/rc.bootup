@@ -73,7 +73,7 @@ system_devd_configure(true);
 system_login_configure(true);
 
 /*
- *  Determine if we need to throw a interface exception
+ *  Determine if we need to throw an interface exception
  *  and ask the user to reassign interfaces.  This will
  *  avoid a reboot and thats a good thing.
  */
@@ -81,6 +81,9 @@ if (is_interface_mismatch()) {
     echo "\nDefault interfaces not found -- Running interface assignment option.\n";
     while (!set_networking_interfaces_ports(true));
 }
+
+/* loopback device is required early for syslog */
+interfaces_loopback_configure(true);
 
 system_kernel_configure(true);
 system_sysctl_configure(true);
@@ -115,6 +118,10 @@ mwexec("/usr/local/etc/rc.dyndns.update"); /* XXX convert to plugin */
 prefer_ipv4_or_ipv6();
 filter_configure_sync(true);
 
+/* generate configuration data for all installed templates */
+configd_run('template reload *');
+
+/* start all registered bootup plugins */
 plugins_configure('bootup', true);
 
 /* start IPsec tunnels */
@@ -134,9 +141,6 @@ system_syslogd_start(true);
 if ($ipsec_dynamic_hosts) {
     ipsec_configure(true);
 }
-
-// generate configuration data for all installed templates
-configd_run('template reload *');
 
 if (is_install_media()) {
     /*
