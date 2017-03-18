@@ -32,6 +32,7 @@
 function rfc2136_configure()
 {
     return array(
+        'local' => array('rfc2136_configure_do'),
         'interface' => array('rfc2136_configure_do:2'),
     );
 }
