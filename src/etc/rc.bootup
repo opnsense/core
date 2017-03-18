@@ -107,11 +107,10 @@ system_hosts_generate(true);
 services_dhcrelay_configure(true);
 services_dhcrelay6_configure(true);
 
-mwexec("/usr/local/etc/rc.sshd"); /* XXX convert to plugin */
-mwexec("/usr/local/etc/rc.dyndns.update"); /* XXX convert to plugin */
-
 prefer_ipv4_or_ipv6();
 filter_configure_sync(true);
+
+mwexec("/usr/local/etc/rc.sshd"); /* XXX convert to plugin */
 
 plugins_configure('bootup', true);
 

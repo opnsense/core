@@ -35,6 +35,7 @@ require_once('plugins.inc.d/dyndns/r53.inc');
 function dyndns_configure()
 {
     return array(
+        'bootup' => array('dyndns_configure_do'),
         'local' => array('dyndns_configure_do'),
         'interface' => array('dyndns_configure_do:2'),
     );
