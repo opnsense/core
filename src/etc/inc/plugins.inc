@@ -165,8 +165,10 @@ function plugins_firewall($fw)
     return $fw;
 }
 
-function plugins_configure($hook, $verbose = false)
+function plugins_configure($hook, $verbose = false, $args = array())
 {
+    array_unshift($args, $verbose);
+
     foreach (plugins_scan() as $name => $path) {
         require_once $path;
         $func = sprintf('%s_configure', $name);
@@ -175,7 +177,19 @@ function plugins_configure($hook, $verbose = false)
             foreach ($workers as $when => $worker) {
                 if ($hook == $when && is_array($worker)) {
                     foreach ($worker as $task) {
-                        $task($verbose);
+                        /*
+                         * An optional argument count parameter can be
+                         * given by the plugin, which allows to securely
+                         * pull more info from the configure call spot.
+                         */
+                        list($argf, $argc) = explode(':', $task);
+                        if (empty($argc) || !is_numeric($argc)) {
+                            $argc = 1;
+                        }
+                        if ($argc > count($args)) {
+                            $argc = count($args);
+                        }
+                        call_user_func_array($argf, array_slice($args, 0, $argc));
                     }
                 }
             }

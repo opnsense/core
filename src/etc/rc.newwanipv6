@@ -139,9 +139,6 @@ if (is_ipaddrv6($oldipv6)) {
 	file_put_contents("/var/db/{$interface}_cacheipv6", $curwanipv6);
 }
 
-/* perform RFC 2136 DNS update */
-services_dnsupdate_process($interface);
-
 /* signal dyndns update */
 services_dyndns_configure($interface);
 

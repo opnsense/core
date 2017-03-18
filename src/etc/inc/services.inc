@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Franco Fichtner <franco@opnsense.org>
+    Copyright (C) 2014-2017 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2010 Ermal Luci
     Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -30,23 +30,24 @@
 */
 
 /*
- * Best case this shouldn't be here but DNS (and DHCP)
- * are deeply tied into several internals in system.inc
- * and services.inc.  services.inc itself has always
- * been a workaround for holding multiple features away
- * from system.inc, but its movable parts belong to
- * system.inc, while all services belong to their own
- * files.  Maybe eventually this will change...
+ * Base services are slowly being converted into plugins,
+ * hooks are created and expanded to accomodate for their
+ * feature set, which allows us to build a better plugin
+ * system in general.
  *
- * ... it does, but now we also chain IPsec and OpenVPN
- * through this in order to remove the widespread usage
- * of includes and switch them for a cleaner "services.inc"
- * include.
+ * Ideally this may allow us to remove all service-relevant
+ * parts from system.inc and services.inc so that the latter
+ * will eventually become obsolete.
+ *
+ * The goal may not be to remove all of the base system
+ * as plugins, but the things listed below are viable
+ * targets in the future:
  */
 require_once('plugins.inc.d/dnsmasq.inc');
 require_once('dyndns.class'); /* XXX move to plugin */
 require_once('plugins.inc.d/ipsec.inc');
 require_once('plugins.inc.d/openvpn.inc');
+require_once('plugins.inc.d/rfc2136.inc');
 require_once('plugins.inc.d/unbound.inc');
 
 function generate_ipv6_from_mac($mac)
@@ -1674,147 +1675,6 @@ function dyndnsCheckIP($int)
         $ip_address = trim($matches[1]);
     }
     return $ip_address;
-}
-
-function services_dnsupdate_process($int = '', $updatehost = '', $forced = false)
-{
-    global $config;
-
-    if (isset($config['dnsupdates']['dnsupdate'])) {
-        $notify_text = "";
-        foreach ($config['dnsupdates']['dnsupdate'] as $i => $dnsupdate) {
-            if (!isset($dnsupdate['enable'])) {
-                continue;
-            } elseif (!empty($int) && $int != $dnsupdate['interface']) {
-                continue;
-            } elseif (!empty($updatehost) && ($updatehost != $dnsupdate['host'])) {
-                continue;
-            }
-
-            $if = get_real_interface($dnsupdate['interface']);
-
-            if (isset($dnsupdate['usepublicip'])) {
-                $wanip = dyndnsCheckIP($dnsupdate['interface']);
-            } else {
-                $wanip = get_interface_ip($dnsupdate['interface']);
-            }
-
-            $wanipv6 = get_interface_ipv6($dnsupdate['interface']);
-            $cacheFile = "/conf/dyndns_{$dnsupdate['interface']}_rfc2136_" . escapeshellarg($dnsupdate['host']) . "_{$dnsupdate['server']}.cache";
-            $currentTime = time();
-
-            if ($wanip || $wanipv6) {
-                $keyname = $dnsupdate['keyname'];
-                /* trailing dot */
-                if (substr($keyname, -1) != ".") {
-                    $keyname .= ".";
-                }
-
-                $hostname = $dnsupdate['host'];
-                /* trailing dot */
-                if (substr($hostname, -1) != ".") {
-                    $hostname .= ".";
-                }
-
-                /* write private key file
-                   this is dumb - public and private keys are the same for HMAC-MD5,
-                   but nsupdate insists on having both */
-                $fd = fopen("/var/etc/K{$i}{$keyname}+157+00000.private", "w");
-                $privkey = <<<EOD
-Private-key-format: v1.2
-Algorithm: 157 (HMAC)
-Key: {$dnsupdate['keydata']}
-
-EOD;
-                fwrite($fd, $privkey);
-                fclose($fd);
-
-                /* write public key file */
-                if ($dnsupdate['keytype'] == "zone") {
-                    $flags = 257;
-                    $proto = 3;
-                } elseif ($dnsupdate['keytype'] == "host") {
-                    $flags = 513;
-                    $proto = 3;
-                } elseif ($dnsupdate['keytype'] == "user") {
-                    $flags = 0;
-                    $proto = 2;
-                }
-
-                $fd = fopen("/var/etc/K{$i}{$keyname}+157+00000.key", "w");
-                fwrite($fd, "{$keyname} IN KEY {$flags} {$proto} 157 {$dnsupdate['keydata']}\n");
-                fclose($fd);
-
-                /* generate update instructions */
-                $upinst = "";
-                if (!empty($dnsupdate['server'])) {
-                    $upinst .= "server {$dnsupdate['server']}\n";
-                }
-
-                if (file_exists($cacheFile)) {
-                    list($cachedipv4, $cacheTimev4) = explode("|", file_get_contents($cacheFile));
-                }
-                if (file_exists("{$cacheFile}.ipv6")) {
-                    list($cachedipv6, $cacheTimev6) = explode("|", file_get_contents("{$cacheFile}.ipv6"));
-                }
-
-                // 25 Days
-                $maxCacheAgeSecs = 25 * 24 * 60 * 60;
-                $need_update = false;
-
-                /* Update IPv4 if we have it. */
-                if (is_ipaddrv4($wanip) && (empty($dnsupdate['recordtype']) || $dnsupdate['recordtype'] == 'A')) {
-                    if (($wanip != $cachedipv4) || (($currentTime - $cacheTimev4) > $maxCacheAgeSecs) || $forced) {
-                        $upinst .= "update delete {$dnsupdate['host']}. A\n";
-                        $upinst .= "update add {$dnsupdate['host']}. {$dnsupdate['ttl']} A {$wanip}\n";
-                        $notify_text .= sprintf(gettext('Dynamic DNS updated IP Address (A) for %s on %s (%s) to %s'), $dnsupdate['host'], convert_real_interface_to_friendly_descr($if), $if, $wanip) . "\n";
-                        @file_put_contents($cacheFile, "{$wanip}|{$currentTime}");
-                        log_error("Dynamic DNS: updating cache file {$cacheFile}: {$wanip}");
-                        $need_update = true;
-                    } else {
-                        log_error("Dynamic DNS: Not updating {$dnsupdate['host']} A record because the IP address has not changed.");
-                    }
-                } else {
-                    @unlink($cacheFile);
-                }
-
-                /* Update IPv6 if we have it. */
-                if (is_ipaddrv6($wanipv6) && (empty($dnsupdate['recordtype']) || $dnsupdate['recordtype'] == 'AAAA')) {
-                    if (($wanipv6 != $cachedipv6) || (($currentTime - $cacheTimev6) > $maxCacheAgeSecs) || $forced) {
-                        $upinst .= "update delete {$dnsupdate['host']}. AAAA\n";
-                        $upinst .= "update add {$dnsupdate['host']}. {$dnsupdate['ttl']} AAAA {$wanipv6}\n";
-                        $notify_text .= sprintf(gettext('Dynamic DNS updated IPv6 Address (AAAA) for %s on %s (%s) to %s'), $dnsupdate['host'], convert_real_interface_to_friendly_descr($if), $if, $wanipv6) . "\n";
-                        @file_put_contents("{$cacheFile}.ipv6", "{$wanipv6}|{$currentTime}");
-                        log_error("Dynamic DNS: updating cache file {$cacheFile}.ipv6: {$wanipv6}");
-                        $need_update = true;
-                    } else {
-                        log_error("Dynamic DNS: Not updating {$dnsupdate['host']} AAAA record because the IPv6 address has not changed.");
-                    }
-                } else {
-                    @unlink("{$cacheFile}.ipv6");
-                }
-
-                $upinst .= "\n";  /* mind that trailing newline! */
-
-                if ($need_update) {
-                    @file_put_contents("/var/etc/nsupdatecmds{$i}", $upinst);
-                    unset($upinst);
-                    /* invoke nsupdate */
-                    $cmd = "/usr/local/bin/nsupdate -k /var/etc/K{$i}{$keyname}+157+00000.key";
-                    if (isset($dnsupdate['usetcp']))
-                      $cmd .= " -v";
-                    $cmd .= " /var/etc/nsupdatecmds{$i}";
-                    mwexec_bg($cmd);
-                    unset($cmd);
-                }
-            }
-        }
-        if (!empty($notify_text)) {
-            notify_all_remote($notify_text);
-        }
-    }
-
-    return 0;
 }
 
 function is_apinger_enabled()

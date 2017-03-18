@@ -111,21 +111,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config('New/Edited RFC2136 dnsupdate entry was posted');
 
         if (!empty($pconfig['force'])) {
-            services_dnsupdate_process("", $rfc2136['host'], true);
+            rfc2136_configure_do(false, '', $rfc2136['host'], true);
         } else {
-            services_dnsupdate_process();
+            rfc2136_configure_do();
         }
         header(url_safe('Location: /services_rfc2136.php'));
         exit;
     }
 }
 
-
-
 legacy_html_escape_form_data($pconfig);
 include("head.inc");
-?>
 
+?>
 <body>
 <?php include("fbegin.inc"); ?>
   <section class="page-content-main">
