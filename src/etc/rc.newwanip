@@ -184,11 +184,6 @@ if (!is_ipaddr($oldip) || $curwanip != $oldip || !is_ipaddrv4($config['interface
     /* signal dyndns update */
     services_dyndns_configure($interface);
 
-    /* reconfigure IPsec tunnels */
-    if (ipsec_configured_on_interface($interface)) {
-        ipsec_configure_do();
-    }
-
     /* start OpenVPN server & clients */
     if (substr($interface_real, 0, 4) != "ovpn") {
         openvpn_resync_all($interface);

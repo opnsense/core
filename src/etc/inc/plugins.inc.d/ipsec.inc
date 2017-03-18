@@ -99,6 +99,13 @@ $p2_protos = array(
     'ah' => 'AH'
 );
 
+function ipsec_configure()
+{
+    return array(
+        'interface' => array('ipsec_configure_do:2'),
+    );
+}
+
 function ipsec_syslog()
 {
     $logfacilities = array();
@@ -525,9 +532,23 @@ function ipsec_convert_to_modp($index)
     return $convertion;
 }
 
-function ipsec_configure_do($verbose = false)
+function ipsec_configure_do($verbose = false, $interface = null)
 {
     global $config, $p2_ealgos, $ipsec_loglevels;
+
+    if (!empty($interface)) {
+         $active = false;
+         if (isset($config['ipsec']['phase1'])) {
+             foreach ($config['ipsec']['phase1'] as $phase1) {
+                if (!isset($phase1['disabled']) && $phase1['interface'] == $interface) {
+                    $active = true;
+                }
+            }
+        }
+        if (!$active) {
+            return;
+        }
+    }
 
     /* get the automatic ping_hosts.sh ready */
     @unlink('/var/db/ipsecpinghosts');
@@ -1421,17 +1442,4 @@ EOD;
     }
 
     return count($filterdns_list);
-}
-
-function ipsec_configured_on_interface($interface)
-{
-    global $config;
-    if (isset($config['ipsec']['phase1'])) {
-        foreach ($config['ipsec']['phase1'] as $phase1) {
-            if (!isset($phase1['disabled']) && $phase1['interface'] == $interface) {
-                return true;
-            }
-        }
-    }
-    return false;
 }
