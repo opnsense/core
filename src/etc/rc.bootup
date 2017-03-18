@@ -110,8 +110,6 @@ services_dhcrelay6_configure(true);
 prefer_ipv4_or_ipv6();
 filter_configure_sync(true);
 
-mwexec("/usr/local/etc/rc.sshd"); /* XXX convert to plugin */
-
 plugins_configure('bootup', true);
 
 /* start IPsec tunnels */
@@ -160,8 +158,6 @@ if (is_install_media()) {
         $root['shell'] = '/usr/local/etc/rc.installer';
         $root['name'] = 'installer';
         local_user_set($root, true);
-
-        mwexec("/usr/local/etc/rc.sshd installer");
 
         echo "\n";
         echo "Welcome!  Both `root' and `installer' users are availabe for system\n";

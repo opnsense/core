@@ -268,7 +268,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         services_dhcpd_configure();
 
         if ($restart_sshd) {
-            configd_run('sshd restart', true);
+            configd_run('openssh restart', true);
         }
 
         if ($restart_webgui) {
