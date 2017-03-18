@@ -1,4 +1,3 @@
-#!/usr/local/bin/php
 <?php
 
 /*
@@ -45,11 +44,12 @@ function openssh_services()
 
     if (isset($config['system']['ssh']['enabled'])) {
         $pconfig = array();
-        $pconfig['name'] = 'openssh';
         $pconfig['description'] = gettext('Secure Shell Daemon');
         $pconfig['configd']['restart'] = array('openssh restart');
         $pconfig['configd']['start'] = array('openssh start');
         $pconfig['configd']['stop'] = array('openssh stop');
+        $pconfig['pidfile'] = '/var/run/sshd.pid';
+        $pconfig['name'] = 'openssh';
         $services[] = $pconfig;
     }
 
