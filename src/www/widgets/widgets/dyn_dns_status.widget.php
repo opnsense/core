@@ -32,6 +32,7 @@ require_once("guiconfig.inc");
 require_once("widgets/include/dyn_dns_status.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/dyndns.inc");
 
 if (!isset($config['dyndnses']['dyndns'])) {
     $config['dyndnses']['dyndns'] = array();
@@ -100,7 +101,7 @@ if (!empty($_REQUEST['getdyndnsstatus'])) {
   <tbody>
 <?php
   $iflist = get_configured_interface_with_descr();
-  $types = services_dyndns_list();
+  $types = dyndns_list();
   $groupslist = return_gateway_groups_array();
   foreach ($a_dyndns as $i => $dyndns) :?>
     <tr ondblclick="document.location='services_dyndns_edit.php?id=<?=$i;?>'">

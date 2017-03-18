@@ -42,13 +42,13 @@ if (isset($argv[1])) {
 }
 
 if (empty($argument)) {
-	services_dyndns_configure();
-	rfc2136_configure_do(false);
+	dyndns_configure_do();
+	rfc2136_configure_do();
 } else {
 	$interface = lookup_gateway_interface_by_name($argument);
 	if (empty($interface)) {
 		$interface = $argument;
         }
-	services_dyndns_configure($interface);
+	dyndns_configure_do(false, $interface);
 	rfc2136_configure_do(false, $interface);
 }

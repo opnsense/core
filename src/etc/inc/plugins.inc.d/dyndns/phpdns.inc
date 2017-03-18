@@ -544,10 +544,6 @@
 					$NewIP=$this->_dnsIP;
 					$NewTTL=$this->_dnsTTL;
 
-					/* Include Route 53 Library Class (and util.inc for log_error) */
-					require_once('util.inc');
-					require_once('dyndns.r53.class');
-
 					/* Set Amazon AWS Credentials for this record */
 					$r53 = new Route53($AccessKeyId, $SecretAccessKey);
 

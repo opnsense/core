@@ -30,7 +30,7 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
-require_once("interfaces.inc");
+require_once("plugins.inc.d/dyndns.inc");
 
 if (empty($config['dyndnses']['dyndns']) || !isset($config['dyndnses']['dyndns'])) {
     $config['dyndnses']['dyndns'] = array();
@@ -136,7 +136,7 @@ $main_buttons = array(
                         </a>
                         <?=!empty($config['interfaces'][$dyndns['interface']]['descr']) ? $config['interfaces'][$dyndns['interface']]['descr'] : strtoupper($dyndns['interface']);?>
                       </td>
-                      <td><?=services_dyndns_list()[$dyndns['type']];?></td>
+                      <td><?=dyndns_list()[$dyndns['type']];?></td>
                       <td><?=$dyndns['host'];?></td>
                       <td>
 <?php

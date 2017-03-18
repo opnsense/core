@@ -60,7 +60,6 @@ system_hosts_generate(true);
 system_resolvconf_generate(true);
 services_dhcpd_configure('all', array(), true);
 interfaces_configure(true);
-services_dyndns_configure('', true);
 system_cron_configure(true);
 
 mwexec_bg('/usr/local/etc/rc.sshd');

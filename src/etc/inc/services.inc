@@ -44,7 +44,7 @@
  * targets in the future:
  */
 require_once('plugins.inc.d/dnsmasq.inc');
-require_once('dyndns.class'); /* XXX move to plugin */
+require_once('plugins.inc.d/dyndns.inc');
 require_once('plugins.inc.d/ipsec.inc');
 require_once('plugins.inc.d/openvpn.inc');
 require_once('plugins.inc.d/rfc2136.inc');
@@ -1548,103 +1548,6 @@ function services_dhcrelay6_configure($verbose = false)
     if ($verbose) {
         echo "done.\n";
     }
-}
-
-function services_dyndns_list()
-{
-    return array(
-      'citynetwork' => 'City Network',
-      'cloudflare' => 'CloudFlare',
-      'custom' => 'Custom',
-      'custom-v6' => 'Custom (v6)',
-      'dhs' => 'DHS',
-      'dnsexit' => 'DNSexit',
-      'dnsomatic' => 'DNS-O-Matic',
-      'duckdns' => 'Duck DNS',
-      'dyndns' => 'DynDNS (dynamic)',
-      'dyndns-static' => 'DynDNS (static)',
-      'dyndns-custom' => 'DynDNS (custom)',
-      'dyns' => 'DyNS',
-      'easydns' => 'easyDNS',
-      'eurodns' => 'EuroDNS',
-      'freedns' => 'freeDNS',
-      'gratisdns' => 'GratisDNS',
-      'googledomains' => 'Google Domains',
-      'he-net' => 'HE.net',
-      'he-net-v6' => 'HE.net (v6)',
-      'he-net-tunnelbroker' => 'HE.net Tunnelbroker',
-      'loopia' => 'Loopia',
-      'namecheap' => 'Namecheap',
-      'noip' => 'No-IP',
-      'noip-free' => 'No-IP (free)',
-      'ods' => 'ODS.org',
-      'opendns' => 'OpenDNS',
-      'ovh-dynhost' => 'OVH DynHOST',
-      'route53' => 'Route 53',
-      'selfhost' => 'SelfHost',
-      'zoneedit' => 'ZoneEdit',
-    );
-}
-
-function services_dyndns_configure_client($conf)
-{
-    if (!isset($conf['enable'])) {
-        return;
-    }
-
-    $dns = new updatedns($dnsService = $conf['type'],
-        $dnsHost = $conf['host'],
-        $dnsUser = $conf['username'],
-        $dnsPass = $conf['password'],
-        $dnsWilcard = $conf['wildcard'],
-        $dnsMX = $conf['mx'],
-        $dnsIf = "{$conf['interface']}",
-        $dnsBackMX = NULL,
-        $dnsServer = NULL,
-        $dnsPort = NULL,
-        $dnsUpdateURL = "{$conf['updateurl']}",
-        $forceUpdate = $conf['force'],
-        $dnsZoneID=$conf['zoneid'],
-        $dnsTTL=$conf['ttl'],
-        $dnsResultMatch = "{$conf['resultmatch']}",
-        $dnsRequestIf = "{$conf['requestif']}",
-        $dnsID = "{$conf['id']}",
-        $dnsVerboseLog = $conf['verboselog'],
-        $curlIpresolveV4 = $conf['curl_ipresolve_v4'],
-        $curlSslVerifypeer = $conf['curl_ssl_verifypeer']
-    );
-}
-
-function services_dyndns_configure($int = '', $verbose = false)
-{
-    global $config;
-
-    if (isset($config['dyndnses']['dyndns'])) {
-        $dyndnscfg = $config['dyndnses']['dyndns'];
-        $gwgroups = return_gateway_groups_array();
-        if (is_array($dyndnscfg)) {
-            if ($verbose) {
-                echo 'Starting dynamic DNS clients...';
-                flush();
-            }
-
-            foreach ($dyndnscfg as $dyndns) {
-                if ((empty($int)) || ($int == $dyndns['interface']) || (is_array($gwgroups[$dyndns['interface']]))) {
-                    $dyndns['verboselog'] = isset($dyndns['verboselog']);
-                    $dyndns['curl_ipresolve_v4'] = isset($dyndns['curl_ipresolve_v4']);
-                    $dyndns['curl_ssl_verifypeer'] = isset($dyndns['curl_ssl_verifypeer']);
-                    services_dyndns_configure_client($dyndns);
-                    sleep(1);
-                }
-            }
-
-            if ($verbose) {
-                echo "done.\n";
-            }
-        }
-    }
-
-    return 0;
 }
 
 function dyndnsCheckIP($int)

@@ -15,8 +15,6 @@
 /usr/local/etc/inc/config.inc
 /usr/local/etc/inc/config.lib.inc
 /usr/local/etc/inc/crypt.inc
-/usr/local/etc/inc/dyndns.class
-/usr/local/etc/inc/dyndns.r53.class
 /usr/local/etc/inc/filter.inc
 /usr/local/etc/inc/filter.lib.inc
 /usr/local/etc/inc/filter_log.inc
@@ -36,6 +34,9 @@
 /usr/local/etc/inc/notices.smtp.inc
 /usr/local/etc/inc/plugins.inc
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
+/usr/local/etc/inc/plugins.inc.d/dyndns.inc
+/usr/local/etc/inc/plugins.inc.d/dyndns/phpdns.inc
+/usr/local/etc/inc/plugins.inc.d/dyndns/r53.inc
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc
 /usr/local/etc/inc/plugins.inc.d/ipsec.inc
 /usr/local/etc/inc/plugins.inc.d/ipsec/auth-user.php

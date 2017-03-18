@@ -30,6 +30,7 @@
 require_once("guiconfig.inc");
 require_once("services.inc") ;
 require_once("interfaces.inc");
+require_once("plugins.inc.d/dyndns.inc");
 
 /* returns true if $uname is a valid dynamic DNS username */
 function is_dyndns_username($uname)
@@ -161,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config();
-        services_dyndns_configure_client($dyndns);
+        dyndns_configure_client($dyndns);
         header(url_safe('Location: /services_dyndns.php'));
         exit;
     }
@@ -223,7 +224,7 @@ include("head.inc");
                     <td>
                       <select name="type" class="selectpicker" id="type">
 <?php
-                        foreach (services_dyndns_list() as $value => $type):?>
+                        foreach (dyndns_list() as $value => $type):?>
                                 <option value="<?= $value ?>" <?= $value == $pconfig['type'] ? 'selected="selected"' : '' ?>>
                                   <?= $type ?>
                                 </option>
