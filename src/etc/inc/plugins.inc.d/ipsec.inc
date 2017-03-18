@@ -99,6 +99,19 @@ $p2_protos = array(
     'ah' => 'AH'
 );
 
+$p2_pfskeygroups = array(
+    0 => 'off',
+    1  => '1 (768 bit)',
+    2  => '2 (1024 bit)',
+    5  => '5 (1536 bit)',
+    14 => '14 (2048 bit)',
+    15 => '15 (3072 bit)',
+    16 => '16 (4096 bit)',
+    17 => '17 (6144 bit)',
+    18 => '18 (8192 bit)'
+);
+
+
 function ipsec_configure()
 {
     return array(
@@ -139,18 +152,6 @@ function ipsec_services()
 
     return $services;
 }
-
-$p2_pfskeygroups = array(
-    0 => 'off',
-    1  => '1 (768 bit)',
-    2  => '2 (1024 bit)',
-    5  => '5 (1536 bit)',
-    14 => '14 (2048 bit)',
-    15 => '15 (3072 bit)',
-    16 => '16 (4096 bit)',
-    17 => '17 (6144 bit)',
-    18 => '18 (8192 bit)'
-);
 
 function ipsec_interfaces()
 {
@@ -532,7 +533,7 @@ function ipsec_convert_to_modp($index)
     return $convertion;
 }
 
-function ipsec_configure_do($verbose = false, $interface = null)
+function ipsec_configure_do($verbose = false, $interface = '')
 {
     global $config, $p2_ealgos, $ipsec_loglevels;
 
