@@ -52,19 +52,14 @@ foreach (array('server', 'client') as $mode) {
 
 //Create array of hostnames from DHCP
 foreach ($interfaces as $ifname => $ifarr) {
-	if (isset($config['dhcpd'][$ifname]['staticmap'])) {
-		foreach($config['dhcpd'][$ifname]['staticmap'] as $entry) {
-			if (htmlentities($entry['hostname']) !== "") {
-				$hostlist[$entry['ipaddr']] = htmlentities($entry['hostname']);
+	foreach (array('dhcpd', 'dhcpdv6') as $dhcp) {
+		if (isset($config[$dhcp][$ifname]['staticmap'])) {
+			foreach($config[$dhcp][$ifname]['staticmap'] as $entry) {
+				if (!empty($entry['hostname'])) {
+					$hostlist[$entry['ipaddr']] = htmlentities($entry['hostname']);
+				}
 			}
 		}
-	}
-	if (isset($config['dhcpdv6'][$ifname]['staticmap'])) {
-        foreach($config['dhcpdv6'][$ifname]['staticmap'] as $entry) {
-        	if (htmlentities($entry['hostname']) !== "") {
-            	$hostlist[$entry['ipaddrv6']] = htmlentities($entry['hostname']);
-            }
-        }
     }
 }
 
