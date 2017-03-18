@@ -156,4 +156,4 @@ if (substr($interface_real, 0, 4) != 'ovpn') {
 enable_rrd_graphing();
 
 /* reload plugins */
-plugins_configure('interface');
+plugins_configure('interface', false, array($interface));
