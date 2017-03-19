@@ -43,9 +43,9 @@ function dyndns_configure()
 
 function dyndns_cron()
 {
-    $jobs = array('autocron' => array());
+    $jobs = array();
 
-    $jobs['autocron'][] = array('/usr/local/etc/rc.dyndns.update', '11', '1');
+    $jobs[]['autocron'] = array('/usr/local/etc/rc.dyndns.update', '11', '1');
 
     return $jobs;
 }

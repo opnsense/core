@@ -53,12 +53,12 @@ function pf_cron()
 {
     global $config;
 
-    $jobs = array('autocron' => array());
+    $jobs = array();
 
     if (isset($config['filter']['rule'])) {
         foreach ($config['filter']['rule'] as $rule) {
             if (!empty($rule['sched'])) {
-                $jobs['autocron'][] = array('/usr/local/etc/rc.filter_configure', '0,15,30,45');
+                $jobs[]['autocron'] = array('/usr/local/etc/rc.filter_configure', '0,15,30,45');
                 break;
             }
         }

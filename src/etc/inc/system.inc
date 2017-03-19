@@ -1589,9 +1589,7 @@ function system_cron_configure($verbose = false)
          * and conquer the code bits...  :)
          */
         if (!empty($cron_plugin['autocron'])) {
-            foreach ($cron_plugin['autocron'] as $cron_job) {
-                $autocron[] = call_user_func_array('generate_cron_job', $cron_job);
-            }
+            $autocron[] = call_user_func_array('generate_cron_job', $cron_plugin['autocron']);
         }
     }
 

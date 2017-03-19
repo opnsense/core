@@ -38,11 +38,21 @@ function rfc2136_configure()
     );
 }
 
+function rfc2136_enabled()
+{
+    global $config;
+
+    /* XXX not entirely correct */
+    return isset($config['dnsupdates']['dnsupdate']);
+}
+
 function rfc2136_cron()
 {
-    $jobs = array('autocron' => array());
+    $jobs = array();
 
-    $jobs['autocron'][] = array('/usr/local/etc/rc.rfc2136.update', '16', '1');
+    if (rfc2136_enabled()) {
+        $jobs[]['autocron'] = array('/usr/local/etc/rc.rfc2136.update', '16', '1');
+    }
 
     return $jobs;
 }
@@ -51,7 +61,7 @@ function rfc2136_configure_do($verbose = false, $int = '', $updatehost = '', $fo
 {
     global $config;
 
-    if (!isset($config['dnsupdates']['dnsupdate'])) {
+    if (!rfc_2136_enabled()) {
         return;
     }
 
@@ -74,12 +84,13 @@ function rfc2136_configure_do($verbose = false, $int = '', $updatehost = '', $fo
         $if = get_real_interface($dnsupdate['interface']);
 
         if (isset($dnsupdate['usepublicip'])) {
-            $wanip = get_dyndns_ip($dnsupdate['interface']);
+            $wanip = get_dyndns_ip($dnsupdate['interface'], 4);
+            $wanipv6 = get_dyndns_ip($dnsupdate['interface'], 6);
         } else {
             $wanip = get_interface_ip($dnsupdate['interface']);
+            $wanipv6 = get_interface_ipv6($dnsupdate['interface']);
         }
 
-        $wanipv6 = get_interface_ipv6($dnsupdate['interface']);
         $cacheFile = "/conf/dyndns_{$dnsupdate['interface']}_rfc2136_" . escapeshellarg($dnsupdate['host']) . "_{$dnsupdate['server']}.cache";
         $currentTime = time();
 
