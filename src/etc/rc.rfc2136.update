@@ -32,7 +32,7 @@ require_once("interfaces.inc");
 require_once("util.inc");
 require_once("filter.inc");
 require_once("services.inc");
-require_once("plugins.inc.d/dyndns.inc");
+require_once("plugins.inc.d/rfc2136.inc");
 
 if (isset($argv[1])) {
 	$argument = trim($argv[1], " \n");
@@ -41,11 +41,11 @@ if (isset($argv[1])) {
 }
 
 if (empty($argument)) {
-	dyndns_configure_do(true);
+	rfc2136_configure_do(true);
 } else {
 	$interface = lookup_gateway_interface_by_name($argument);
 	if (empty($interface)) {
 		$interface = $argument;
         }
-	dyndns_configure_do(true, $interface);
+	rfc2136_configure_do(true, $interface);
 }
