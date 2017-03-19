@@ -121,7 +121,7 @@ function dyndns_configure_do($verbose = false, $int = '')
     }
 
     if ($verbose) {
-        echo 'Starting dynamic DNS clients...';
+        echo 'Configuring dynamic DNS clients...';
         flush();
     }
 

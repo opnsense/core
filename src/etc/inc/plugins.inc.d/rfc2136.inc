@@ -48,6 +48,11 @@ function rfc2136_configure_do($verbose = false, $int = '', $updatehost = '', $fo
 
     $notify_text = '';
 
+    if ($verbose) {
+        echo 'Configuring RFC 2136 clients...';
+        flush();
+    }
+
     foreach ($config['dnsupdates']['dnsupdate'] as $i => $dnsupdate) {
         if (!isset($dnsupdate['enable'])) {
             continue;
@@ -178,5 +183,9 @@ EOD;
 
     if (!empty($notify_text)) {
         notify_all_remote($notify_text);
+    }
+
+    if ($verbose) {
+        echo "done.\n";
     }
 }
