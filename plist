@@ -129,6 +129,7 @@
 /usr/local/etc/rc.reload_interfaces
 /usr/local/etc/rc.resolv_conf_generate
 /usr/local/etc/rc.restart_webgui
+/usr/local/etc/rc.rfc2136.update
 /usr/local/etc/rc.shutdown
 /usr/local/etc/rc.sshd
 /usr/local/etc/rc.syshook
@@ -632,6 +633,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
 /usr/local/opnsense/service/conf/actions.d/actions_proxy.conf
+/usr/local/opnsense/service/conf/actions.d/actions_rfc2136.conf
 /usr/local/opnsense/service/conf/actions.d/actions_routedns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_system.conf
 /usr/local/opnsense/service/conf/actions.d/actions_systemhealth.conf

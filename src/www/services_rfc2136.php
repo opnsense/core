@@ -143,7 +143,7 @@ $main_buttons = array(
                         if (file_exists($filename) && !empty($rfc2136['enable']) && (empty($dnsupdate['recordtype']) || $dnsupdate['recordtype'] == 'A')) {
                             echo "IPv4: ";
                             if (isset($rfc2136['usepublicip'])) {
-                                $ipaddr = dyndnsCheckIP($rfc2136['interface']);
+                                $ipaddr = get_dyndns_ip($rfc2136['interface'], 4);
                             } else {
                                 $ipaddr = get_interface_ip($rfc2136['interface']);
                             }
@@ -162,7 +162,11 @@ $main_buttons = array(
                         echo "<br />";
                         if (file_exists("{$filename}.ipv6") && !empty($rfc2136['enable']) && (empty($dnsupdate['recordtype']) || $dnsupdate['recordtype'] == 'AAAA')) {
                             echo "IPv6: ";
-                            $ipaddr = get_interface_ipv6($rfc2136['interface']);
+                            if (isset($rfc2136['usepublicip'])) {
+                                $ipaddr = get_dyndns_ip($rfc2136['interface'], 6);
+                            } else {
+                                $ipaddr = get_interface_ipv6($rfc2136['interface']);
+                            }
                             $cached_ip_s = explode("|", file_get_contents("{$filename}.ipv6"));
                             $cached_ip = $cached_ip_s[0];
                             if ($ipaddr <> $cached_ip) {

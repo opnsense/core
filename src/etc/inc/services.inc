@@ -1551,33 +1551,36 @@ function services_dhcrelay6_configure($verbose = false)
     }
 }
 
-function dyndnsCheckIP($int)
+function get_dyndns_ip($int, $ipver = 4)
 {
     global $config;
 
-    $ip_address = get_interface_ip($int);
+    $ip_address = $ipver == 6 ? get_interface_ipv6($int) : get_interface_ip($int);
 
-    if (is_private_ip($ip_address)) {
+    if ($ipver == 6 || is_private_ip($ip_address)) {
         $gateways_status = return_gateways_status(true);
         // If the gateway for this interface is down, then the external check cannot work.
         // Avoid the long wait for the external check to timeout.
         if (stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'],"down")) {
-            return "down";
+            return 'down';
         }
-        $hosttocheck = "http://checkip.dyndns.org";
+        $hosttocheck = $ipver == 6 ? 'http://checkipv6.dyndns.org' : 'http://checkip.dyndns.org';
         $ip_ch = curl_init($hosttocheck);
         curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ip_ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ip_ch, CURLOPT_INTERFACE, $ip_address);
-        curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, '30');
-        curl_setopt($ip_ch, CURLOPT_TIMEOUT, 120);
-        curl_setopt($ip_ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ip_ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ip_ch, CURLOPT_IPRESOLVE, $ipver == 6 ? CURL_IPRESOLVE_V6 : CURL_IPRESOLVE_V4);
         $ip_result_page = curl_exec($ip_ch);
         curl_close($ip_ch);
         $ip_result_decoded = urldecode($ip_result_page);
-        preg_match('=Current IP Address: (.*)</body>=siU', $ip_result_decoded, $matches);
+        preg_match('=<body>Current IP Address: (.*)</body>=siU', $ip_result_decoded, $matches);
         $ip_address = trim($matches[1]);
+        if (($ipver == 6 && !is_ipaddrv6($ip_address)) || ($ipver != 6 && !is_ipaddrv4($ip_address))) {
+            return 'down';
+        }
     }
+
     return $ip_address;
 }
 

@@ -65,7 +65,7 @@ function rfc2136_configure_do($verbose = false, $int = '', $updatehost = '', $fo
         $if = get_real_interface($dnsupdate['interface']);
 
         if (isset($dnsupdate['usepublicip'])) {
-            $wanip = dyndnsCheckIP($dnsupdate['interface']);
+            $wanip = get_dyndns_ip($dnsupdate['interface']);
         } else {
             $wanip = get_interface_ip($dnsupdate['interface']);
         }

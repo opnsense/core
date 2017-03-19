@@ -53,14 +53,14 @@ if (!empty($_REQUEST['getdyndnsstatus'])) {
         $filename = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}.cache";
         $fdata = '';
         if (!empty($dyndns['enable']) && file_exists($filename)) {
-            $ipaddr = dyndnsCheckIP($dyndns['interface']);
+            $ipaddr = get_dyndns_ip($dyndns['interface'], 4);
             $fdata = @file_get_contents($filename);
         }
 
         $filename_v6 = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}_v6.cache";
         $fdata6 = '';
         if (!empty($dyndns['enable']) && file_exists($filename_v6)) {
-            $ipv6addr = get_interface_ipv6($dyndns['interface']);
+            $ipv6addr = get_dyndns_ip($dyndns['interface'], 6);
             $fdata6 = @file_get_contents($filename_v6);
         }
 
