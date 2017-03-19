@@ -74,6 +74,24 @@ function plugins_services()
     return $services;
 }
 
+function plugins_cron()
+{
+    $jobs = array();
+
+    foreach (plugins_scan() as $name => $path) {
+        require_once $path;
+        $func = sprintf('%s_cron', $name);
+        if (function_exists($func)) {
+            $workers = $func();
+            foreach ($workers as $work) {
+                $jobs[] = $work;
+            }
+        }
+    }
+
+    return $jobs;
+}
+
 function plugins_syslog()
 {
     $syslogs = array();

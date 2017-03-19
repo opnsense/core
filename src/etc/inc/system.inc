@@ -1580,6 +1580,21 @@ function system_cron_configure($verbose = false)
         flush();
     }
 
+    foreach (plugins_cron() as $cron_plugin) {
+        /*
+         * We are stuffing jobs inside 'autocron' to be able to
+         * depreceate this at a later time.  Ideally all of the
+         * services should use a single cron-model, which this is
+         * not.  At least this plugin function helps us to divide
+         * and conquer the code bits...  :)
+         */
+        if (!empty($cron_plugin['autocron'])) {
+            foreach ($cron_plugin['autocron'] as $cron_job) {
+                $autocron[] = call_user_func_array('generate_cron_job', $cron_job);
+            }
+        }
+    }
+
     /* hourly */
     $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 webConfiguratorlockout', '1');
     $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '2');
@@ -1589,8 +1604,6 @@ function system_cron_configure($verbose = false)
     /* daily */
     $autocron[] = generate_cron_job('/usr/local/etc/rc.update_alias_url_data', '1', '1');
     $autocron[] = generate_cron_job('/usr/local/etc/rc.update_urltables', '6', '1');
-    $autocron[] = generate_cron_job('/usr/local/etc/rc.dyndns.update', '11', '1');
-    $autocron[] = generate_cron_job('/usr/local/etc/rc.rfc2136.update', '16', '1');
 
     /* every now and then */
     $autocron[] = generate_cron_job('/usr/local/sbin/ping_hosts.sh', '*/4');
@@ -1613,15 +1626,6 @@ function system_cron_configure($verbose = false)
 
     if (!empty($config['system']['remotebackup']['GDriveEnabled'])) {
         $autocron[] = generate_cron_job('/usr/local/opnsense/scripts/remote_backup.php', 0, 1);
-    }
-
-    if (isset($config['filter']['rule'])) {
-        foreach ($config['filter']['rule'] as $rule) {
-            if (!empty($rule['sched'])) {
-                $autocron[] = generate_cron_job('/usr/local/etc/rc.filter_configure', '0,15,30,45');
-                break;
-            }
-        }
     }
 
     /* bogons fetch always set in default config.xml */

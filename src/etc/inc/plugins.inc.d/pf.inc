@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2016 Deciso B.V.
-    Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
+    Copyright (C) 2016-2017 Franco Fichtner <franco@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -47,6 +47,24 @@ function pf_services()
     }
 
     return $services;
+}
+
+function pf_cron()
+{
+    global $config;
+
+    $jobs = array('autocron' => array());
+
+    if (isset($config['filter']['rule'])) {
+        foreach ($config['filter']['rule'] as $rule) {
+            if (!empty($rule['sched'])) {
+                $jobs['autocron'][] = array('/usr/local/etc/rc.filter_configure', '0,15,30,45');
+                break;
+            }
+        }
+    }
+
+    return $jobs;
 }
 
 function pf_interfaces()

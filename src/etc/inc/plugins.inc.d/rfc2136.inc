@@ -38,6 +38,15 @@ function rfc2136_configure()
     );
 }
 
+function rfc2136_cron()
+{
+    $jobs = array('autocron' => array());
+
+    $jobs['autocron'][] = array('/usr/local/etc/rc.rfc2136.update', '16', '1');
+
+    return $jobs;
+}
+
 function rfc2136_configure_do($verbose = false, $int = '', $updatehost = '', $forced = false)
 {
     global $config;
