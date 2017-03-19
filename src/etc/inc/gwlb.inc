@@ -714,63 +714,53 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
     return $gateways_arr;
 }
 
-function fixup_default_gateway($ipprotocol, $gateways_status, $gateways_arr)
+function fixup_default_gateway($gateways_status, $gateways_arr)
 {
     global $config;
     /*
      * NOTE: The code below is meant to replace the default gateway when it goes down.
      *  This facilitates services running on OPNsense itself and are not handled by a PBR to continue working.
      */
-    $upgw = "";
-    $dfltgwdown = false;
-    $dfltgwfound = false;
-    foreach ($gateways_arr as $gwname => $gwsttng) {
-        if (($gwsttng['ipprotocol'] == $ipprotocol) && isset($gwsttng['defaultgw'])) {
-            $dfltgwfound = true;
-            $dfltgwname = $gwname;
-            if (!isset($gwsttng['monitor_disable']) && stristr($gateways_status[$gwname]['status'], "down")) {
-                $dfltgwdown = true;
+    foreach (array("inet", "inet6") as $ipprotocol) {
+        $upgw = "";
+        $dfltgwup = false;
+        $dfltgwname = null;
+        foreach ($gateways_arr as $gwname => $gwsttng) {
+            if ($gwsttng['ipprotocol'] == $ipprotocol) {
+                if (isset($gwsttng['defaultgw'])) {
+                    $dfltgwname = $gwname;
+                    if (isset($gwsttng['monitor_disable']) || !stristr($gateways_status[$gwname]['status'], "down")) {
+                        $dfltgwup = true;
+                    }
+                }
+                /* Keep a record of the last up gateway */
+                /* XXX: Blacklist lan for now since it might cause issues to those who have a gateway set for it */
+                if (empty($upgw) && $gwsttng[$gwname]['friendlyiface'] != "lan" &&
+                  (isset($gwsttng['monitor_disable']) || !stristr($gateways_status[$gwname]['status'], "down"))) {
+                    $upgw = $gwname;
+                }
+                if ($dfltgwdown && !empty($upgw)) {
+                    break;
+                }
             }
         }
-        /* Keep a record of the last up gateway */
-        /* XXX: Blacklist lan for now since it might cause issues to those who have a gateway set for it */
-        if (empty($upgw) && ($gwsttng['ipprotocol'] == $ipprotocol) && (isset($gwsttng['monitor_disable']) || !stristr($gateways_status[$gwname]['status'], "down")) && $gwsttng[$gwname]['friendlyiface'] != "lan") {
-            $upgw = $gwname;
-        }
-        if ($dfltgwdown == true && !empty($upgw)) {
-            break;
-        }
-    }
-    if ($dfltgwfound == false) {
-        $gwname = convert_friendly_interface_to_friendly_descr("wan");
-        if (!empty($gateways_status[$gwname]) && stristr($gateways_status[$gwname]['status'], "down")) {
-            $dfltgwdown = true;
-        }
-    }
-    if ($dfltgwdown == true && !empty($upgw)) {
         if ($gateways_arr[$upgw]['gateway'] == "dynamic") {
-            $gateways_arr[$upgw]['gateway'] = get_interface_gateway($gateways_arr[$upgw]['friendlyiface']);
-        }
-        if (is_ipaddr($gateways_arr[$upgw]['gateway'])) {
-            log_error("Default gateway down setting {$upgw} as default!");
-            if (is_ipaddrv6($gateways_arr[$upgw]['gateway'])) {
-                $inetfamily = "-inet6";
-            } else {
-                $inetfamily = "-inet";
-            }
-            mwexec("/sbin/route delete {$inetfamily} default {$gateways_arr[$upgw]['gateway']}");
-            mwexec("/sbin/route add {$inetfamily} default {$gateways_arr[$upgw]['gateway']}");
-        }
-    } else {
-        $defaultgw = trim(exec("/sbin/route -n get -{$ipprotocol} default | /usr/bin/awk '/gateway:/ {print $2}'"), " \n");
-        if (is_ipaddrv6($gateways_arr[$dfltgwname]['gateway'])) {
-            $inetfamily = "-inet6";
+            $gwip = get_interface_gateway($gateways_arr[$upgw]['friendlyiface']);
         } else {
-            $inetfamily = "-inet";
+            $gwip = $gateways_arr[$upgw]['gateway'];
         }
-        if ($defaultgw != $gateways_arr[$dfltgwname]['gateway']) {
-            mwexec("/sbin/route delete {$inetfamily} default {$gateways_arr[$dfltgwname]['gateway']}");
-            mwexec("/sbin/route add {$inetfamily} default {$gateways_arr[$dfltgwname]['gateway']}");
+        if (!$dfltgwup && !empty($upgw)) {
+            if (is_ipaddr($gwip)) {
+                log_error("Default gateway down setting {$upgw} as default!");
+                mwexec("/sbin/route delete -{$ipprotocol} default");
+                mwexec("/sbin/route add -{$ipprotocol} default {$gwip}");
+            }
+        } else {
+            $defaultgw = trim(exec("/sbin/route -n get -{$ipprotocol} default | /usr/bin/awk '/gateway:/ {print $2}'"), " \n");
+            if ($defaultgw != $gwip) {
+                mwexec("/sbin/route delete -{$ipprotocol} default");
+                mwexec("/sbin/route add -{$ipprotocol} default {$gwip}");
+            }
         }
     }
 }
@@ -789,8 +779,7 @@ function return_gateway_groups_array()
     $gateway_groups_array = array();
 
     if (isset($config['system']['gw_switch_default'])) {
-        fixup_default_gateway("inet", $gateways_status, $gateways_arr);
-        fixup_default_gateway("inet6", $gateways_status, $gateways_arr);
+        fixup_default_gateway($gateways_status, $gateways_arr);
     }
     if (isset($config['gateways']['gateway_group'])) {
         $carplist = get_configured_carp_interface_list();
