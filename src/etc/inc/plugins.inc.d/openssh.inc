@@ -156,14 +156,20 @@ function openssh_configure_do($verbose = false)
         $sshconf .= "HostKey {$file}\n";
     }
 
-    /* Write the new sshd config file */
     file_put_contents("/usr/local/etc/ssh/sshd_config", $sshconf);
 
-    /* Launch new server process */
-    echo "Reloading sshd...";
+    if ($verbose) {
+        echo 'Configuring OpenSSH...';
+        flush();
+    }
+
     if (mwexecf('/usr/bin/protect -i /usr/local/sbin/sshd')) {
-        echo "failed.\n";
+        if ($verbose) {
+            echo "failed.\n";
+        }
     } else {
-        echo "done.\n";
+        if ($verbose) {
+            echo "done.\n";
+        }
     }
 }
