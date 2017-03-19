@@ -42,8 +42,15 @@ function rfc2136_enabled()
 {
     global $config;
 
-    /* XXX not entirely correct */
-    return isset($config['dnsupdates']['dnsupdate']);
+    if (isset($config['dnsupdates']['dnsupdate'])) {
+        foreach ($config['dnsupdates']['dnsupdate'] as $dnsupdate) {
+            if (isset($dnsupdate['enable'])) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 function rfc2136_cron()

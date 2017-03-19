@@ -41,11 +41,28 @@ function dyndns_configure()
     );
 }
 
+function dyndns_enabled()
+{
+    global $config;
+
+    if (isset($config['dyndnses']['dyndns'])) {
+        foreach ($config['dyndnses']['dyndns'] as $conf) {
+            if (isset($conf['enable'])) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 function dyndns_cron()
 {
     $jobs = array();
 
-    $jobs[]['autocron'] = array('/usr/local/etc/rc.dyndns.update', '11', '1');
+    if (dyndns_enabled()) {
+        $jobs[]['autocron'] = array('/usr/local/etc/rc.dyndns.update', '11', '1');
+    }
 
     return $jobs;
 }
@@ -119,15 +136,12 @@ function dyndns_configure_do($verbose = false, $int = '')
 {
     global $config;
 
-    if (!isset($config['dyndnses']['dyndns'])) {
+    if (!dyndns_enabled()) {
         return;
     }
 
     $dyndnscfg = $config['dyndnses']['dyndns'];
     $gwgroups = return_gateway_groups_array();
-    if (!is_array($dyndnscfg)) {
-        return;
-    }
 
     if ($verbose) {
         echo 'Configuring dynamic DNS clients...';
