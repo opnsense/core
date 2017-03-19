@@ -1617,7 +1617,7 @@ function system_cron_configure($verbose = false)
     if (isset($config['filter']['rule'])) {
         foreach ($config['filter']['rule'] as $rule) {
             if (!empty($rule['sched'])) {
-                $autocron[] = generate_cron_job('/usr/local/etc/rc.filter_configure_sync', '0,15,30,45');
+                $autocron[] = generate_cron_job('/usr/local/etc/rc.filter_configure', '0,15,30,45');
                 break;
             }
         }

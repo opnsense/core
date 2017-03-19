@@ -34,4 +34,4 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-filter_configure_sync();
+filter_configure_sync(true);
