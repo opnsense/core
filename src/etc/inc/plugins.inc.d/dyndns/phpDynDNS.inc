@@ -137,11 +137,11 @@
 				    $dnsZoneID ='', $dnsTTL='', $dnsResultMatch = '', $dnsRequestIf = '',
 				    $dnsID = '', $dnsVerboseLog = false, $curlIpresolveV4 = false, $curlSslVerifypeer = true) {
 
-			global $config;
-
-			$this->_cacheFile = "/conf/dyndns_{$dnsIf}{$dnsService}" . escapeshellarg($dnsHost) . "{$dnsID}.cache";
-			$this->_cacheFile_v6 = "/conf/dyndns_{$dnsIf}{$dnsService}" . escapeshellarg($dnsHost) . "{$dnsID}_v6.cache";
-			$this->_debugFile = "/var/etc/dyndns_{$dnsIf}{$dnsService}" . escapeshellarg($dnsHost) . "{$dnsID}.debug";
+			/* XXX because the call stack is upside down we need to reassemble config parts here... */
+			$conf = array('host' => $dnsHost, 'id' => $dnsID, 'interface' => $dnsIf);
+			$this->_cacheFile = dyndns_cache_file($conf, 4);
+			$this->_cacheFile_v6 = dyndns_cache_file($conf, 6);
+			$this->_debugFile = dyndns_cache_file($conf, 4) . '.debug';
 
 			$this->_curlIpresolveV4 = $curlIpresolveV4;
 			$this->_curlSslVerifypeer = $curlSslVerifypeer;

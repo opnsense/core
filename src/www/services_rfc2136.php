@@ -145,7 +145,7 @@ $main_buttons = array(
                       <td><?=$rfc2136['host'];?></td>
                       <td>
 <?php
-                        $filename = "/conf/dyndns_{$rfc2136['interface']}_rfc2136_" . escapeshellarg($rfc2136['host']) . "_{$rfc2136['server']}.cache";
+                        $filename = rfc2136_cache_file($rfc2136, 4);
                         if (file_exists($filename) && !empty($rfc2136['enable']) && (empty($dnsupdate['recordtype']) || $dnsupdate['recordtype'] == 'A')) {
                             echo "IPv4: ";
                             if (isset($rfc2136['usepublicip'])) {
@@ -166,14 +166,15 @@ $main_buttons = array(
                             echo "IPv4: N/A";
                         }
                         echo "<br />";
-                        if (file_exists("{$filename}.ipv6") && !empty($rfc2136['enable']) && (empty($dnsupdate['recordtype']) || $dnsupdate['recordtype'] == 'AAAA')) {
+                        $filename6 = rfc2136_cache_file($rfc2136, 6);
+                        if (file_exists($filename6) && !empty($rfc2136['enable']) && (empty($dnsupdate['recordtype']) || $dnsupdate['recordtype'] == 'AAAA')) {
                             echo "IPv6: ";
                             if (isset($rfc2136['usepublicip'])) {
                                 $ipaddr = get_dyndns_ip($rfc2136['interface'], 6);
                             } else {
                                 $ipaddr = get_interface_ipv6($rfc2136['interface']);
                             }
-                            $cached_ip_s = explode("|", file_get_contents("{$filename}.ipv6"));
+                            $cached_ip_s = explode("|", file_get_contents($filename6));
                             $cached_ip = $cached_ip_s[0];
                             if ($ipaddr <> $cached_ip) {
                                 echo "<font color='red'>";

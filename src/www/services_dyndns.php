@@ -42,7 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['act']) && $_POST['act'] == "del" && isset($_POST['id'])) {
         if (!empty($a_dyndns[$_POST['id']])) {
             $conf = $a_dyndns[$_POST['id']];
-            @unlink("/conf/dyndns_{$conf['interface']}{$conf['type']}" . escapeshellarg($conf['host']) . "{$conf['id']}.cache");
+            @unlink(dyndns_cache_file($conf, 4));
+            @unlink(dyndns_cache_file($conf, 6));
             unset($a_dyndns[$_POST['id']]);
             write_config();
             system_cron_configure();
@@ -146,14 +147,14 @@ $main_buttons = array(
                       <td><?=$dyndns['host'];?></td>
                       <td>
 <?php
-                      $filename = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}.cache";
+                      $filename = dyndns_cache_file($dyndns, 4);
                       $fdata = '';
                       if (file_exists($filename) && !empty($dyndns['enable'])) {
                           $ipaddr = get_dyndns_ip($dyndns['interface'], 4);
                           $fdata = @file_get_contents($filename);
                       }
 
-                      $filename_v6 = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}_v6.cache";
+                      $filename_v6 = dyndns_cache_file($dyndns, 6);
                       $fdata6 = '';
                       if (file_exists($filename_v6) && !empty($dyndns['enable'])) {
                           $ipv6addr = get_dyndns_ip($dyndns['interface'], 6);

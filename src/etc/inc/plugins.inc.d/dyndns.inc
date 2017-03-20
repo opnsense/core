@@ -123,6 +123,13 @@ function dyndns_list()
     );
 }
 
+function dyndns_cache_file($conf, $ipver = 4)
+{
+    $ipver = $ipver == 6 ? '_v6' : '';
+
+    return "/var/cache/dyndns_{$conf['interface']}_{$conf['host']}_{$dyndns['id']}{$ipver}.cache";
+}
+
 function dyndns_configure_client($conf)
 {
     if (!isset($conf['enable'])) {
