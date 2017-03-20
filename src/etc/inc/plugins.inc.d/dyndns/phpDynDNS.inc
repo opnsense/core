@@ -1406,54 +1406,20 @@
 			fclose($file);
 		}
 		function _checkIP() {
-			if ($this->_useIPv6 == true) {
-				$ip_address = find_interface_ipv6($this->_if);
-				if (!is_ipaddrv6($ip_address))
-					return 0;
-			} else {
-				$ip_address = find_interface_ip($this->_if);
-				if (!is_ipaddr($ip_address))
-					return 0;
-			}
-			if ($this->_useIPv6 == false && is_private_ip($ip_address)) {
-				$hosttocheck = "checkip.dyndns.org";
-				$try = 0;
-				while ($try < 3) {
-					$checkip = gethostbyname($hosttocheck);
-					if (is_ipaddr($checkip))
-						break;
-					$try++;
-				}
-				if ($try >= 3) {
-					log_error("Dynamic DNS debug information ({$this->_dnsHost}): Could not resolve {$hosttocheck} to ip using interface ip {$ip_address}.");
-					return 0;
-				}
-				$ip_ch = curl_init("http://{$checkip}");
-				curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($ip_ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-				curl_setopt($ip_ch, CURLOPT_INTERFACE, $ip_address);
-				curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, '30');
-				curl_setopt($ip_ch, CURLOPT_TIMEOUT, 120);
-				if ($this->_useIPv6 == false) {
-					curl_setopt($ip_ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-				}
-				$ip_result_page = curl_exec($ip_ch);
-				curl_close($ip_ch);
-				$ip_result_decoded = urldecode($ip_result_page);
-				preg_match('/Current IP Address: (.*)<\/body>/', $ip_result_decoded, $matches);
-				$ip_address = trim($matches[1]);
-				if (is_ipaddr($ip_address)) {
-					if ($this->_dnsVerboseLog)
-						log_error("Dynamic DNS ({$this->_dnsHost}): {$ip_address} extracted from {$hosttocheck}");
-				} else {
+			$ip_address = get_dyndns_ip($this->_if, $his->_useIPv6 ? 6 : 4);
+			if (!is_ipaddr($ip_address)) {
+				if ($this->_dnsVerboseLog) {
 					log_error("Dynamic DNS ({$this->_dnsHost}): IP address could not be extracted from {$hosttocheck}");
-					return 0;
 				}
+
+				$ip_address = 0;
 			} else {
-				if ($this->_dnsVerboseLog)
-					log_error("Dynamic DNS ({$this->_dnsHost}): {$ip_address} extracted from local system.");
+				if ($this->_dnsVerboseLog) {
+					log_error("Dynamic DNS ({$this->_dnsHost}): {$ip_address} extracted from {$hosttocheck}");
+				}
+
+				$this->_dnsIP = $ip_address;
 			}
-			$this->_dnsIP = $ip_address;
 
 			return $ip_address;
 		}
