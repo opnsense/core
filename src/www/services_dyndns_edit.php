@@ -398,14 +398,14 @@ include("head.inc");
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?= gettext("Save") ?>" onclick="enable_change(true)" />
+                      <button name="submit" type="submit" class="btn btn-primary" value="save" onclick="enable_change(true)"><?= gettext('Save') ?></button>
 <?php
                       if (isset($id)): ?>
+                        <button name="force" type="submit" class="btn btn-primary" value="force" onclick="enable_change(true)"><?= gettext('Save and Force Update') ?></button>
                         <input name="id" type="hidden" value="<?= $id ?>" />
-                        <input name="force" type="submit" class="btn btn-primary" value="<?= gettext("Save & Force Update") ?>" onclick="enable_change(true)" />
 <?php
                       endif; ?>
-                        <a href="services_dyndns.php" class="btn btn-default"><?= gettext("Cancel") ?></a>
+                      <a href="services_dyndns.php" class="btn btn-default"><?= gettext('Cancel') ?></a>
                     </td>
                   </tr>
                   <tr>

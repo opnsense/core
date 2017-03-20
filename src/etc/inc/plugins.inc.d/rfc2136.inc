@@ -88,7 +88,7 @@ function rfc2136_configure_do($verbose = false, $int = '', $updatehost = '', $fo
 {
     global $config;
 
-    if (!rfc_2136_enabled()) {
+    if (!rfc2136_enabled()) {
         return;
     }
 

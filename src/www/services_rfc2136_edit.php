@@ -247,12 +247,12 @@ include("head.inc");
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" onclick="enable_change(true)" />
-                      <input name="force" type="submit" class="btn btn-primary" value="<?=gettext("Save &amp; Force Update");?>" onclick="enable_change(true)" />
-                      <a href="services_rfc2136.php"><input name="Cancel" type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" /></a>
+                      <button name="save" type="submit" class="btn btn-primary" value="save" onclick="enable_change(true)"><?= gettext('Save') ?></button>
                       <?php if (isset($id)): ?>
-                      <input name="id" type="hidden" value="<?=$id;?>" />
+                        <button name="force" type="submit" class="btn btn-primary" value="force" onclick="enable_change(true)"><?= gettext('Save and Force Update') ?></button>
+                        <input name="id" type="hidden" value="<?=$id;?>" />
                       <?php endif; ?>
+                      <a href="services_rfc2136.php" class="btn btn-default"><?= gettext('Cancel') ?></a>
                     </td>
                   </tr>
                   <tr>
