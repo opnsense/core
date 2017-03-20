@@ -165,7 +165,7 @@ $main_buttons = array(
                             echo htmlspecialchars($cached_ip);
                             echo "</font>";
                         } else {
-                            echo "IPv4: N/A";
+                            echo 'IPv4: ' . gettext('N/A');
                         }
                         echo "<br />";
                         $filename6 = rfc2136_cache_file($rfc2136, 6);
@@ -186,7 +186,7 @@ $main_buttons = array(
                             echo htmlspecialchars($cached_ip);
                             echo "</font>";
                         } else {
-                          echo "IPv6: N/A";
+                            echo 'IPv6: ' . gettext('N/A');
                         }?>
                       </td>
                       <td><?=$rfc2136['descr'];?></td>

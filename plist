@@ -1114,6 +1114,7 @@
 /usr/local/www/widgets/include/log.inc
 /usr/local/www/widgets/include/ntp_status.inc
 /usr/local/www/widgets/include/openvpn.inc
+/usr/local/www/widgets/include/rfc2136.inc
 /usr/local/www/widgets/include/services_status.inc
 /usr/local/www/widgets/include/system_log.inc
 /usr/local/www/widgets/include/thermal_sensors.inc
@@ -1128,6 +1129,7 @@
 /usr/local/www/widgets/widgets/ntp_status.widget.php
 /usr/local/www/widgets/widgets/openvpn.widget.php
 /usr/local/www/widgets/widgets/picture.widget.php
+/usr/local/www/widgets/widgets/rfc2136.widget.php
 /usr/local/www/widgets/widgets/rss.widget.php
 /usr/local/www/widgets/widgets/services_status.widget.php
 /usr/local/www/widgets/widgets/system_information.widget.php
