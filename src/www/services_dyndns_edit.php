@@ -398,10 +398,10 @@ include("head.inc");
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <button name="submit" type="submit" class="btn btn-primary" value="save" onclick="enable_change(true)"><?= gettext('Save') ?></button>
+                      <button name="submit" type="submit" class="btn btn-primary" value="save"><?= gettext('Save') ?></button>
 <?php
                       if (isset($id)): ?>
-                        <button name="force" type="submit" class="btn btn-primary" value="force" onclick="enable_change(true)"><?= gettext('Save and Force Update') ?></button>
+                        <button name="force" type="submit" class="btn btn-primary" value="force"><?= gettext('Save and Force Update') ?></button>
                         <input name="id" type="hidden" value="<?= $id ?>" />
 <?php
                       endif; ?>

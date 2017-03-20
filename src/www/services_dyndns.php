@@ -189,11 +189,6 @@ $main_buttons = array(
 <?php
                       $i++;
                     endforeach; ?>
-                    <tr>
-                      <td colspan="6" class="list">
-                        <?=gettext("You can force an update for an IP address on the edit page for that service.");?>
-                      </td>
-                    </tr>
                   </tbody>
                 </table>
               </div>
