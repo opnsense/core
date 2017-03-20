@@ -148,7 +148,7 @@ $main_buttons = array(
                       <td>
 <?php
                         $filename = rfc2136_cache_file($rfc2136, 4);
-                        if (file_exists($filename) && !empty($rfc2136['enable']) && (empty($dnsupdate['recordtype']) || $dnsupdate['recordtype'] == 'A')) {
+                        if (file_exists($filename) && !empty($rfc2136['enable']) && (empty($rfc2136['recordtype']) || $rfc2136['recordtype'] == 'A')) {
                             echo "IPv4: ";
                             if (isset($rfc2136['usepublicip'])) {
                                 $ipaddr = get_dyndns_ip($rfc2136['interface'], 4);
@@ -169,7 +169,7 @@ $main_buttons = array(
                         }
                         echo "<br />";
                         $filename6 = rfc2136_cache_file($rfc2136, 6);
-                        if (file_exists($filename6) && !empty($rfc2136['enable']) && (empty($dnsupdate['recordtype']) || $dnsupdate['recordtype'] == 'AAAA')) {
+                        if (file_exists($filename6) && !empty($rfc2136['enable']) && (empty($rfc2136['recordtype']) || $rfc2136['recordtype'] == 'AAAA')) {
                             echo "IPv6: ";
                             if (isset($rfc2136['usepublicip'])) {
                                 $ipaddr = get_dyndns_ip($rfc2136['interface'], 6);

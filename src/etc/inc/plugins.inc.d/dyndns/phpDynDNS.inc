@@ -1252,7 +1252,7 @@
 					$currentTime = time();
 					notify_all_remote(sprintf(gettext("Dynamic DNS updated IP Address on %s (%s) to %s"), convert_real_interface_to_friendly_descr($this->_if), $this->_if, $wan_ip));
 					log_error("Dynamic DNS: updating cache file {$this->_cacheFile}: {$wan_ip}");
-					@file_put_contents($this->_cacheFile, "{$wan_ip}:{$currentTime}");
+					@file_put_contents($this->_cacheFile, "{$wan_ip}|{$currentTime}");
 				} else
 					@unlink($this->_cacheFile);
 				if ($this->_useIPv6 == true && $wan_ip > 0) {
@@ -1345,13 +1345,13 @@
 			} else {
 				if (file_exists($this->_cacheFile)) {
 					$contents = file_get_contents($this->_cacheFile);
-					list($cacheIP,$cacheTime) = explode(':', $contents);
+					list($cacheIP,$cacheTime) = explode('|', $contents);
 					$this->_debug($cacheIP.'/'.$cacheTime);
 					$initial = false;
 					$log_error .= "Cached IP: {$cacheIP} ";
 				} else {
 					$cacheIP = '0.0.0.0';
-					@file_put_contents($this->_cacheFile, "0.0.0.0:{$currentTime}");
+					@file_put_contents($this->_cacheFile, "0.0.0.0|{$currentTime}");
 					$cacheTime = $currentTime;
 					$initial = true;
 					$log_error .= "No Cached IP found.";

@@ -84,7 +84,7 @@ function rfc2136_cron()
     return $jobs;
 }
 
-function rfc2136_cache_file($dnspdate, $ipver = 4)
+function rfc2136_cache_file($dnsupdate, $ipver = 4)
 {
     $ipver = $ipver == 6 ? '_v6' : '';
 

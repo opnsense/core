@@ -162,7 +162,7 @@ $main_buttons = array(
                       }
 
                       if (!empty($fdata)) {
-                          $cached_ip_s = explode(':', $fdata);
+                          $cached_ip_s = explode('|', $fdata);
                           $cached_ip = $cached_ip_s[0];
                           echo sprintf(
                               '<font color="%s">%s</font>',
