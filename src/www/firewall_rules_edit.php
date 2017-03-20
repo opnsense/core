@@ -30,7 +30,6 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
-require_once("system.inc");
 require_once("filter.inc");
 
 /* TCP flags */
@@ -522,7 +521,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         // sort filter items per interface, not really necessary but leaves a bit nicer sorted config.xml behind.
         filter_rules_sort();
-        system_cron_configure();
         // write to config
         write_config();
         mark_subsystem_dirty('filter');
