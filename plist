@@ -35,7 +35,7 @@
 /usr/local/etc/inc/plugins.inc
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
 /usr/local/etc/inc/plugins.inc.d/dyndns.inc
-/usr/local/etc/inc/plugins.inc.d/dyndns/phpdns.inc
+/usr/local/etc/inc/plugins.inc.d/dyndns/phpDynDNS.inc
 /usr/local/etc/inc/plugins.inc.d/dyndns/r53.inc
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc
 /usr/local/etc/inc/plugins.inc.d/ipsec.inc

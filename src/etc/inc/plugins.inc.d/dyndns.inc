@@ -29,7 +29,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once('plugins.inc.d/dyndns/phpdns.inc');
+require_once('plugins.inc.d/dyndns/phpDynDNS.inc');
 require_once('plugins.inc.d/dyndns/r53.inc');
 
 function dyndns_configure()
@@ -54,6 +54,26 @@ function dyndns_enabled()
     }
 
     return false;
+}
+
+function dyndns_services()
+{
+    global $config;
+
+    $services = array();
+
+    if (dyndns_enabled()) {
+        $services[] = array(
+            'description' => gettext('Dynamic DNS'),
+            'configd' => array(
+                'restart' => array('dyndns reload'),
+            ),
+            'nocheck' => true,
+            'name' => 'dyndns',
+        );
+    }
+
+    return $services;
 }
 
 function dyndns_cron()

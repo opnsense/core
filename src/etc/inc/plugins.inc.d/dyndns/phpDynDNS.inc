@@ -147,7 +147,7 @@
 			$this->_curlSslVerifypeer = $curlSslVerifypeer;
 			$this->_dnsVerboseLog = $dnsVerboseLog;
 			if ($this->_dnsVerboseLog)
-				log_error("DynDns: updatedns() starting");
+				log_error("Dynamic DNS: updatedns() starting");
 
 			$dyndnslck = lock("DDNS".$dnsID, LOCK_EX);
 
@@ -279,7 +279,7 @@
 		function _update() {
 
 			if ($this->_dnsVerboseLog)
-				log_error("Dynamic DNS ({$this->_dnsHost}): DynDns _update() starting.");
+				log_error("Dynamic DNS ({$this->_dnsHost}): _update() starting.");
 
 			if ($this->_dnsService != 'ods' and $this->_dnsService != 'route53 ') {
 				$ch = curl_init();
@@ -649,7 +649,7 @@
 					break;
 				case 'eurodns':
 					if ($this->_dnsVerboseLog)
-						log_error("EuroDynDns ({$this->_dnsHost}) DNS update() starting.");
+						log_error("EuroDNS ({$this->_dnsHost}) DNS update() starting.");
 					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 					curl_setopt($ch, CURLOPT_USERPWD, $this->_dnsUser.':'.$this->_dnsPass);
 					$server = "https://eurodyndns.org/update/";
@@ -729,7 +729,7 @@
 		 */
 		function _checkStatus($ch, $data) {
 			if ($this->_dnsVerboseLog) {
-				log_error("Dynamic DNS ({$this->_dnsHost}): DynDns _checkStatus() starting.");
+				log_error("Dynamic DNS ({$this->_dnsHost}): _checkStatus() starting.");
 				log_error("Dynamic DNS ({$this->_dnsHost}): Current Service: {$this->_dnsService}");
 			}
 			$successful_update = false;
@@ -981,7 +981,7 @@
 					break;
 				case 'dnsexit':
 					if (preg_match("/is the same/i", $data)) {
-						$status = "phpDynDns ({$this->_dnsHost}): (Success) No Change In IP Address";
+						$status = "Dynamic DNS ({$this->_dnsHost}): (Success) No Change In IP Address";
 						$successful_update = true;
 					} else if (preg_match("/Success/i", $data)) {
 						$status = "Dynamic DNS ({$this->_dnsHost}): (Success) IP Address Changed Successfully!";
@@ -1019,7 +1019,7 @@
 					} else if (preg_match('/yours/i', $data)) {
 						$status = "Dynamic DNS ({$this->_dnsHost}): (Error) hostname specified exists, but not under the username specified.";
 					} else if (preg_match('/abuse/i', $data)) {
-						$status = "phpDynDns ({$this->_dnsHost}): (Error) Updating too frequently, considered abuse.";
+						$status = "Dynamic DNS ({$this->_dnsHost}): (Error) Updating too frequently, considered abuse.";
 					} else {
 						$status = "Dynamic DNS ({$this->_dnsHost}): (Unknown Response)";
 						log_error("Dynamic DNS ({$this->_dnsHost}): PAYLOAD: {$data}");
@@ -1323,10 +1323,10 @@
 
 			$wan_ip = $this->_checkIP();
 			if ($wan_ip == 0) {
-				log_error("DynDns ({$this->_dnsHost}): Current WAN IP could not be determined, skipping update process.");
+				log_error("Dynamic DNS ({$this->_dnsHost}): Current WAN IP could not be determined, skipping update process.");
 				return false;
 			}
-			$log_error = "DynDns ({$this->_dnsHost}): Current WAN IP: {$wan_ip} ";
+			$log_error = "Dynamic DNS ({$this->_dnsHost}): Current WAN IP: {$wan_ip} ";
 
 			if ($this->_useIPv6 == true) {
 				if (file_exists($this->_cacheFile_v6)) {
@@ -1367,13 +1367,13 @@
 			/* lets determine if the item needs updating */
 			if ($cacheIP != $wan_ip) {
 				$needs_updating = true;
-				$update_reason = "DynDns: cacheIP != wan_ip.  Updating. ";
+				$update_reason = "Dynamic DNS: cacheIP != wan_ip.  Updating. ";
 				$update_reason .= "Cached IP: {$cacheIP} WAN IP: {$wan_ip} ";
 			}
 			if (($currentTime - $cacheTime) > $maxCacheAgeSecs) {
 				$needs_updating = true;
 				$this->_forceUpdateNeeded = true;
-				$update_reason = "DynDns: More than " . $this->_dnsMaxCacheAgeDays . " days.  Updating. ";
+				$update_reason = "Dynamic DNS: More than " . $this->_dnsMaxCacheAgeDays . " days.  Updating. ";
 				$update_reason .= "{$currentTime} - {$cacheTime} > {$maxCacheAgeSecs} ";
 			}
 			if ($initial == true) {
@@ -1386,7 +1386,7 @@
 			 */
 			if ($needs_updating == true) {
 				if ($this->_dnsVerboseLog)
-					log_error("DynDns ({$this->_dnsHost}): {$update_reason}");
+					log_error("Dynamic DNS ({$this->_dnsHost}): {$update_reason}");
 				return true;
 			}
 
@@ -1425,7 +1425,7 @@
 					$try++;
 				}
 				if ($try >= 3) {
-					log_error("Dyndns debug information ({$this->_dnsHost}): Could not resolve {$hosttocheck} to ip using interface ip {$ip_address}.");
+					log_error("Dynamic DNS debug information ({$this->_dnsHost}): Could not resolve {$hosttocheck} to ip using interface ip {$ip_address}.");
 					return 0;
 				}
 				$ip_ch = curl_init("http://{$checkip}");
@@ -1444,14 +1444,14 @@
 				$ip_address = trim($matches[1]);
 				if (is_ipaddr($ip_address)) {
 					if ($this->_dnsVerboseLog)
-						log_error("DynDns ({$this->_dnsHost}): {$ip_address} extracted from {$hosttocheck}");
+						log_error("Dynamic DNS ({$this->_dnsHost}): {$ip_address} extracted from {$hosttocheck}");
 				} else {
-					log_error("DynDns ({$this->_dnsHost}): IP address could not be extracted from {$hosttocheck}");
+					log_error("Dynamic DNS ({$this->_dnsHost}): IP address could not be extracted from {$hosttocheck}");
 					return 0;
 				}
 			} else {
 				if ($this->_dnsVerboseLog)
-					log_error("DynDns ({$this->_dnsHost}): {$ip_address} extracted from local system.");
+					log_error("Dynamic DNS ({$this->_dnsHost}): {$ip_address} extracted from local system.");
 			}
 			$this->_dnsIP = $ip_address;
 

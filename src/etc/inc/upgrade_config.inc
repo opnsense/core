@@ -1295,8 +1295,8 @@ function upgrade_046_to_047() {
 	}
 }
 
-
-function upgrade_047_to_048() {
+function upgrade_047_to_048()
+{
 	global $config;
 	if (!empty($config['dyndns'])) {
 		$config['dyndnses'] = array();
@@ -1311,7 +1311,7 @@ function upgrade_047_to_048() {
 			$tempdyn['host'] = $config['dyndns'][0]['host'];
 			$tempdyn['mx'] = $config['dyndns'][0]['mx'];
 			$tempdyn['interface'] = "wan";
-			$tempdyn['descr'] = sprintf('Upgraded Dyndns %s', $tempdyn['type']);
+			$tempdyn['descr'] = sprintf('Upgraded dynamic DNS %s', $tempdyn['type']);
 			$config['dyndnses']['dyndns'][] = $tempdyn;
 		}
 		unset($config['dyndns']);

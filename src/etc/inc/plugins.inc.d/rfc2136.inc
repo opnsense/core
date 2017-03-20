@@ -53,6 +53,26 @@ function rfc2136_enabled()
     return false;
 }
 
+function rfc2136_services()
+{
+    global $config;
+
+    $services = array();
+
+    if (rfc2136_enabled()) {
+        $services[] = array(
+            'description' => gettext('RFC 2136'),
+            'configd' => array(
+                'restart' => array('rfc2136 reload'),
+            ),
+            'nocheck' => true,
+            'name' => 'rfc2136',
+        );
+    }
+
+    return $services;
+}
+
 function rfc2136_cron()
 {
     $jobs = array();

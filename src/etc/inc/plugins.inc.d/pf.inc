@@ -38,8 +38,6 @@ function pf_services()
             'description' => gettext('Packet Filter'),
             'configd' => array(
                 'restart' => array('filter reload'),
-                'start' => array('filter reload'),
-                'stop' => array('filter reload'),
             ),
             'nocheck' => true,
             'name' => 'pf',

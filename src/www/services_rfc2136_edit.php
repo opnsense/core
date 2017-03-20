@@ -29,7 +29,9 @@
 
 require_once("guiconfig.inc");
 require_once("services.inc");
+require_once("system.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/rfc2136.inc");
 
 if (!isset($config['dnsupdates']['dnsupdate'])) {
     $config['dnsupdates']['dnsupdate'] = array();
@@ -109,12 +111,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config('New/Edited RFC2136 dnsupdate entry was posted');
+        system_cron_configure();
 
         if (!empty($pconfig['force'])) {
             rfc2136_configure_do(false, '', $rfc2136['host'], true);
-        } else {
-            rfc2136_configure_do();
         }
+
         header(url_safe('Location: /services_rfc2136.php'));
         exit;
     }
@@ -246,8 +248,8 @@ include("head.inc");
                     <td>&nbsp;</td>
                     <td>
                       <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" onclick="enable_change(true)" />
+                      <input name="force" type="submit" class="btn btn-primary" value="<?=gettext("Save &amp; Force Update");?>" onclick="enable_change(true)" />
                       <a href="services_rfc2136.php"><input name="Cancel" type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" /></a>
-                      <input name="force" type="submit" class="btn btn-default" value="<?=gettext("Save &amp; Force Update");?>" onclick="enable_change(true)" />
                       <?php if (isset($id)): ?>
                       <input name="id" type="hidden" value="<?=$id;?>" />
                       <?php endif; ?>

@@ -30,6 +30,7 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
+require_once("system.inc");
 require_once("plugins.inc.d/dyndns.inc");
 
 if (empty($config['dyndnses']['dyndns']) || !isset($config['dyndnses']['dyndns'])) {
@@ -44,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             @unlink("/conf/dyndns_{$conf['interface']}{$conf['type']}" . escapeshellarg($conf['host']) . "{$conf['id']}.cache");
             unset($a_dyndns[$_POST['id']]);
             write_config();
-            configd_run('dyndns reload', true);
+            system_cron_configure();
         }
         exit;
     } elseif (isset($_POST['act']) && $_POST['act'] == "toggle" && isset($_POST['id'])) {
@@ -55,20 +56,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $a_dyndns[$_POST['id']]['enable'] = true;
             }
             write_config();
-            configd_run('dyndns reload', true);
+            system_cron_configure();
+            if ($a_dyndns[$_POST['id']]['enable']) {
+                $a_dyndns[$_POST['id']]['force'] = true;
+                dyndns_configure_client($a_dyndns[$_POST['id']]);
+            }
         }
         exit;
     }
 }
 
-
 include("head.inc");
-legacy_html_escape_form_data($a_dyndns);
-$main_buttons = array(
-  array('label'=>gettext('Add'), 'href'=>'services_dyndns_edit.php'),
-);
-?>
 
+legacy_html_escape_form_data($a_dyndns);
+
+$main_buttons = array(
+    array('label' => gettext('Add'), 'href' => 'services_dyndns_edit.php'),
+);
+
+?>
 <body>
   <script type="text/javascript">
   $( document ).ready(function() {
@@ -78,7 +84,7 @@ $main_buttons = array(
       var id = $(this).data("id");
       BootstrapDialog.show({
         type:BootstrapDialog.TYPE_DANGER,
-        title: "<?= gettext("DynDNS");?>",
+        title: "<?= gettext("Dynamic DNS");?>",
         message: "<?=gettext("Do you really want to delete this entry?");?>",
         buttons: [{
                   label: "<?= gettext("No");?>",

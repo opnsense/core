@@ -30,6 +30,7 @@
 require_once("guiconfig.inc");
 require_once("services.inc") ;
 require_once("interfaces.inc");
+require_once("system.inc");
 require_once("plugins.inc.d/dyndns.inc");
 
 /* returns true if $uname is a valid dynamic DNS username */
@@ -162,17 +163,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config();
-        dyndns_configure_client($dyndns);
+        system_cron_configure();
+
+        if ($dyndns['force']) {
+            dyndns_configure_client($dyndns);
+        }
+
         header(url_safe('Location: /services_dyndns.php'));
         exit;
     }
 }
 
-
 legacy_html_escape_form_data($pconfig);
-include("head.inc");
-?>
 
+include("head.inc");
+
+?>
 <body>
 <?php include("fbegin.inc"); ?>
  <script type="text/javascript">

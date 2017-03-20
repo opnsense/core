@@ -30,6 +30,8 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
+require_once("system.inc");
+require_once("plugins.inc.d/rfc2136.inc");
 
 if (!isset($config['dnsupdates']['dnsupdate'])) {
     $config['dnsupdates']['dnsupdate'] = array();
@@ -42,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($a_rfc2136[$_POST['id']])) {
             unset($a_rfc2136[$_POST['id']]);
             write_config();
-            configd_run('dyndns reload', true);
+            system_cron_configure();
         }
         exit;
     } elseif (isset($_POST['act']) && $_POST['act'] == "toggle" && isset($_POST['id'])) {
@@ -53,20 +55,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $a_rfc2136[$_POST['id']]['enable'] = true;
             }
             write_config();
-            configd_run('dyndns reload', true);
+            system_cron_configure();
+            if (!empty($a_rfc2136[$_POST['id']]['enable'])) {
+                rfc2136_configure_do(false, '', $a_rfc2136[$_POST['id']]['host'], true);
+            }
         }
         exit;
     }
 }
 
-
 include("head.inc");
+
 legacy_html_escape_form_data($a_rfc2136);
+
 $main_buttons = array(
     array('label' => gettext('Add'), 'href' => 'services_rfc2136_edit.php'),
 );
-?>
 
+?>
 <body>
   <script type="text/javascript">
   $( document ).ready(function() {
