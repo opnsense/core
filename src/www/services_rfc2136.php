@@ -42,6 +42,8 @@ $a_rfc2136 = &$config['dnsupdates']['dnsupdate'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['act']) && $_POST['act'] == "del" && isset($_POST['id'])) {
         if (!empty($a_rfc2136[$_POST['id']])) {
+            @unlink(rfc2136_cache_file($a_rfc2136[$_POST['id']], 4));
+            @unlink(rfc2136_cache_file($a_rfc2136[$_POST['id']], 6));
             unset($a_rfc2136[$_POST['id']]);
             write_config();
             system_cron_configure();
