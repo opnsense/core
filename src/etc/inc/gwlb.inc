@@ -740,27 +740,28 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
                     $upgw = $gwname;
                 }
                 if ($dfltgwdown && !empty($upgw)) {
+                    // switch gateway
+                    $dfltgwname = $upgw;
                     break;
                 }
             }
         }
-        if ($gateways_arr[$upgw]['gateway'] == "dynamic") {
-            $gwip = get_interface_gateway($gateways_arr[$upgw]['friendlyiface']);
+        if ($gateways_arr[$dfltgwname]['gateway'] == "dynamic") {
+            if ($ipprotocol == 'inet') {
+                $gwip = get_interface_gateway($gateways_arr[$dfltgwname]['friendlyiface']);
+            } else {
+                $gwip = get_interface_gateway_v6($gateways_arr[$dfltgwname]['friendlyiface']);
+            }
         } else {
-            $gwip = $gateways_arr[$upgw]['gateway'];
+            $gwip = $gateways_arr[$dfltgwname]['gateway'];
         }
-        if (!$dfltgwup && !empty($upgw)) {
-            if (is_ipaddr($gwip)) {
-                log_error("Default gateway down setting {$upgw} as default!");
-                mwexec("/sbin/route delete -{$ipprotocol} default");
-                mwexec("/sbin/route add -{$ipprotocol} default {$gwip}");
-            }
-        } else {
-            $defaultgw = trim(exec("/sbin/route -n get -{$ipprotocol} default | /usr/bin/awk '/gateway:/ {print $2}'"), " \n");
-            if ($defaultgw != $gwip) {
-                mwexec("/sbin/route delete -{$ipprotocol} default");
-                mwexec("/sbin/route add -{$ipprotocol} default {$gwip}");
-            }
+        $defaultgw = trim(exec("/sbin/route -n get -{$ipprotocol} default | /usr/bin/awk '/gateway:/ {print $2}'"), " \n");
+        if (!$dfltgwup) {
+            log_error("Default gateway down setting {$dfltgwname} as default!");
+        }
+        if ($defaultgw != $gwip && is_ipaddr($gwip)) {
+            mwexec("/sbin/route delete -{$ipprotocol} default");
+            mwexec("/sbin/route add -{$ipprotocol} default {$gwip}");
         }
     }
 }
