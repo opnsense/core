@@ -26,7 +26,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 function ipfw_services()
 {
     global $config;

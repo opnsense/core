@@ -1295,8 +1295,8 @@ function upgrade_046_to_047() {
 	}
 }
 
-
-function upgrade_047_to_048() {
+function upgrade_047_to_048()
+{
 	global $config;
 	if (!empty($config['dyndns'])) {
 		$config['dyndnses'] = array();
@@ -1311,7 +1311,7 @@ function upgrade_047_to_048() {
 			$tempdyn['host'] = $config['dyndns'][0]['host'];
 			$tempdyn['mx'] = $config['dyndns'][0]['mx'];
 			$tempdyn['interface'] = "wan";
-			$tempdyn['descr'] = sprintf('Upgraded Dyndns %s', $tempdyn['type']);
+			$tempdyn['descr'] = sprintf('Upgraded dynamic DNS %s', $tempdyn['type']);
 			$config['dyndnses']['dyndns'][] = $tempdyn;
 		}
 		unset($config['dyndns']);
@@ -2191,15 +2191,6 @@ function upgrade_057_to_058() {
 	if (is_array($config['ipsec']['phase2']))
 		foreach($config['ipsec']['phase2'] as & $ph2ent)
 			$ph2ent['mode'] = 'tunnel';
-}
-
-function upgrade_058_to_059() {
-	global $config;
-
-	if (is_array($config['schedules']['schedule'])) {
-		foreach ($config['schedules']['schedule'] as & $schedl)
-			$schedl['schedlabel'] = uniqid();
-	}
 }
 
 function upgrade_059_to_060() {

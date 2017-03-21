@@ -2255,7 +2255,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     $int = "";
     $aline = array();
     // initialize array with empty tags
-    foreach (array('schedlabel','divert','icmp-type','icmp6-type','tag','tagged','route','os','reply','prot','log') as $tag) {
+    foreach (array('icmp-type','icmp6-type','tag','tagged','route','os','reply','prot','log') as $tag) {
         $aline[$tag] = "";
     }
 
@@ -2562,8 +2562,8 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     /* piece together the actual user rule */
     $line .= $aline['type'] . $aline['direction'] . $aline['log'] . $aline['quick'] . $aline['interface'] .
       $aline['reply'] . $aline['route'] . $aline['ipprotocol'] . $aline['prot'] . $aline['src'] . $aline['os'] . $aline['dst'] .
-      $aline['divert'] . $aline['icmp-type'] . $aline['icmp6-type'] . $aline['tag'] . $aline['tagged'] .
-      $aline['allowopts'] . $aline['flags'] . $aline['schedlabel'];
+      $aline['icmp-type'] . $aline['icmp6-type'] . $aline['tag'] . $aline['tagged'] .
+      $aline['allowopts'] . $aline['flags'];
 
     unset($aline);
 
