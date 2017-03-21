@@ -232,7 +232,7 @@
             </Leases>
         </DHCPv6>
         <DNSTools VisibleName="DNS Tools" cssClass="fa fa-tags fa-fw">
-            <DNSFilter VisibleName="OpenDNS" url="/services_opendns.php"/>
+            <OpenDNS VisibleName="OpenDNS" url="/services_opendns.php"/>
         </DNSTools>
         <Diagnostics order="900" cssClass="fa fa-medkit fa-fw" url="/status_services.php">
           <All url="/status_services.php?*" visibility="hidden"/>

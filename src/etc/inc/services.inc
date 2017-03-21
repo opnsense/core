@@ -1720,32 +1720,21 @@ function services_get()
     return $services;
 }
 
-function find_service_by_name($names, $filter = array())
+function find_service_by_name($name, $filter = array())
 {
-    if (!is_array($names)) {
-        $names = array($names);
-    }
-
     $services = services_get();
 
     foreach ($services as $service) {
-        foreach ($names as $name) {
-            if ($service['name'] != $name) {
-                continue;
-            }
-            if (!count($filter)) {
-                /* force match if filter wasn't set (standard behaviour) */
-                $filter['name'] = $name;
-            }
-            foreach ($filter as $key => $value) {
-                if (isset($service[$key]) && $service[$key] == $value) {
-                    /*
-                     * First match wins, $names is only used
-                     * to probe similar services that exclude
-                     * each other.
-                     */
-                    return $service;
-                }
+        if ($service['name'] != $name) {
+            continue;
+        }
+        if (!count($filter)) {
+            /* force match if filter wasn't set (standard behaviour) */
+            $filter['name'] = $name;
+        }
+        foreach ($filter as $key => $value) {
+            if (isset($service[$key]) && $service[$key] == $value) {
+                return $service;
             }
         }
     }
