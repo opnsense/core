@@ -30,7 +30,7 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-
+require_once("system.inc");
 
 if (!isset($config['filter']['rule'])) {
     $config['filter']['rule'] = array();
@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = $pconfig['id'];
     }
     if (isset($pconfig['apply'])) {
+        system_cron_configure();
         filter_configure();
         clear_subsystem_dirty('filter');
         $savemsg = sprintf(
