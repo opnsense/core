@@ -1,0 +1,9 @@
+<menu>
+    <Services>
+        <DNSTools>
+            <RFC2136 VisibleName="RFC 2136" url="/services_rfc2136.php">
+                <Edit url="/services_rfc2136_edit.php*" visibility="hidden"/>
+            </RFC2136>
+        </DNSTools>
+    </Services>
+</menu>

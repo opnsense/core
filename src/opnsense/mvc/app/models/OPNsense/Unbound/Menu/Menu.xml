@@ -1,0 +1,16 @@
+<menu>
+    <Services>
+        <DNSResolver VisibleName="Unbound DNS" cssClass="fa fa-tags fa-fw">
+            <General order="10" url="/services_unbound.php"/>
+            <Overrides order="20" url="/services_unbound_overrides.php">
+                <Hosts url="/services_unbound_host_edit.php*" visibility="hidden"/>
+                <Domains url="/services_unbound_domainoverride_edit.php*" visibility="hidden"/>
+            </Overrides>
+            <Advanced order="30" url="/services_unbound_advanced.php"/>
+            <ACL VisibleName="Access Lists" order="40" url="/services_unbound_acls.php">
+                <All url="/services_unbound_acls.php*" visibility="hidden"/>
+            </ACL>
+            <LogFile VisibleName="Log File" order="50" url="/diag_logs_resolver.php"/>
+        </DNSResolver>
+    </Services>
+</menu>

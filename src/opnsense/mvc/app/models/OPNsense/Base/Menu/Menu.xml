@@ -131,10 +131,11 @@
             </VLAN>
         </Types>
         <Diagnostics order="960" cssClass="fa fa-medkit fa-fw">
-            <PacketCapture order="40" VisibleName="Packet Capture" url="/diag_packet_capture.php"/>
-            <Ping order="50" url="/diag_ping.php"/>
-            <TestPort order="60" VisibleName="Test Port" url="/diag_testport.php"/>
-            <Traceroute order="70" url="/diag_traceroute.php"/>
+            <DNSLookup VisibleName="DNS Lookup" url="/diag_dns.php"/>
+            <PacketCapture VisibleName="Packet Capture" url="/diag_packet_capture.php"/>
+            <Ping url="/diag_ping.php"/>
+            <TestPort VisibleName="Port Probe" url="/diag_testport.php"/>
+            <Traceroute VisibleName="Trace Route" url="/diag_traceroute.php"/>
         </Diagnostics>
     </Interfaces>
     <Firewall order="40" cssClass="glyphicon glyphicon-fire">
@@ -230,31 +231,8 @@
                 <Details url="/status_dhcpv6_leases.php?*" visibility="hidden"/>
             </Leases>
         </DHCPv6>
-        <DNSForwarder VisibleName="DNS Forwarder" url="/services_dnsmasq.php" cssClass="fa fa-tags fa-fw">
-            <Hosts url="/services_dnsmasq_edit.php*" visibility="hidden"/>
-            <Domains url="/services_dnsmasq_domainoverride_edit.php*" visibility="hidden"/>
-        </DNSForwarder>
-        <DNSResolver VisibleName="DNS Resolver" cssClass="fa fa-tags fa-fw">
-            <General order="10" url="/services_unbound.php"/>
-            <Overrides order="15" url="/services_unbound_overrides.php">
-                <Hosts url="/services_unbound_host_edit.php*" visibility="hidden"/>
-                <Domains url="/services_unbound_domainoverride_edit.php*" visibility="hidden"/>
-            </Overrides>
-            <Advanced order="20" url="/services_unbound_advanced.php"/>
-            <ACL VisibleName="Access Lists" order="30" url="/services_unbound_acls.php">
-                <All url="/services_unbound_acls.php*" visibility="hidden"/>
-            </ACL>
-        </DNSResolver>
         <DNSTools VisibleName="DNS Tools" cssClass="fa fa-tags fa-fw">
-            <DynamicDNS VisibleName="Dynamic DNS" order="10" url="/services_dyndns.php">
-                <Edit url="/services_dyndns_edit.php*" visibility="hidden"/>
-            </DynamicDNS>
-            <Filter order="20" url="/services_opendns.php"/>
-            <RFC2136 order="30" VisibleName="RFC 2136" url="/services_rfc2136.php">
-                <Edit url="/services_rfc2136_edit.php*" visibility="hidden"/>
-            </RFC2136>
-            <Lookup order="40" url="/diag_dns.php"/>
-            <LogFile order="100" VisibleName="Log File" url="/diag_logs_resolver.php"/>
+            <DNSFilter VisibleName="OpenDNS" url="/services_opendns.php"/>
         </DNSTools>
         <Diagnostics order="900" cssClass="fa fa-medkit fa-fw" url="/status_services.php">
           <All url="/status_services.php?*" visibility="hidden"/>

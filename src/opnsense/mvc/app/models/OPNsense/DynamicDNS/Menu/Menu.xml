@@ -1,0 +1,9 @@
+<menu>
+    <Services>
+        <DNSTools>
+            <DynamicDNS VisibleName="Dynamic DNS" url="/services_dyndns.php">
+                <Edit url="/services_dyndns_edit.php*" visibility="hidden"/>
+            </DynamicDNS>
+        </DNSTools>
+    </Services>
+</menu>

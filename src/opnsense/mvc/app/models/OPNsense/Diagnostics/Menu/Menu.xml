@@ -13,8 +13,8 @@
     </System>
     <Interfaces>
         <Diagnostics>
-            <ARPTable order="10" VisibleName="ARP Table" url="/ui/diagnostics/interface/arp/"/>
-            <NDPTable order="30" VisibleName="NDP Table" url="/ui/diagnostics/interface/ndp/"/>
+            <ARPTable VisibleName="ARP Table" url="/ui/diagnostics/interface/arp/"/>
+            <NDPTable VisibleName="NDP Table" url="/ui/diagnostics/interface/ndp/"/>
         </Diagnostics>
     </Interfaces>
 </menu>

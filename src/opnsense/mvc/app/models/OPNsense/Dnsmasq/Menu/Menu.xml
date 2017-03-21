@@ -1,0 +1,8 @@
+<menu>
+    <Services>
+        <DNSForwarder VisibleName="Dnsmasq DNS" url="/services_dnsmasq.php" cssClass="fa fa-tags fa-fw">
+            <Hosts url="/services_dnsmasq_edit.php*" visibility="hidden"/>
+            <Domains url="/services_dnsmasq_domainoverride_edit.php*" visibility="hidden"/>
+        </DNSForwarder>
+    </Services>
+</menu>
