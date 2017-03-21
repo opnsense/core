@@ -39,8 +39,8 @@ function unbound_enabled()
 function unbound_configure()
 {
     return array(
-        'dns' => 'unbound_configure_do',
-        'hosts' => 'unbound_hosts_generate:0',
+        'dns' => array('unbound_configure_do'),
+        'hosts' => array('unbound_hosts_generate:0'),
     );
 }
 

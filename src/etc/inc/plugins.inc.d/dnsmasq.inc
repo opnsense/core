@@ -39,8 +39,8 @@ function dnsmasq_enabled()
 function dnsmasq_configure()
 {
     return array(
-        'dns' => 'dnsmasq_configure_do',
-        'hosts' => 'dnsmasq_hosts_generate:0',
+        'dns' => array('dnsmasq_configure_do'),
+        'hosts' => array('dnsmasq_hosts_generate:0'),
     );
 }
 
