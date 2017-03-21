@@ -994,7 +994,6 @@ EOD;
                 }
                 $conn_params = "";
                 $aggressive = $ph1ent['mode'] == "aggressive" ? "yes" : "no";
-                $mobike = !empty($ph1ent['mobike']) ? "mobike = no" : "  mobike = yes";
 
                 $ep = ipsec_get_phase1_src($ph1ent);
                 if (empty($ep)) {
@@ -1004,6 +1003,7 @@ EOD;
                 $keyexchange = "ikev1";
                 if (!empty($ph1ent['iketype']) && $ph1ent['iketype'] != "ikev1") {
                     $keyexchange = "ikev2";
+                    $mobike = !empty($ph1ent['mobike']) ? "mobike = no" : "mobike = yes";
                 }
 
                 if (isset($ph1ent['mobile'])) {
@@ -1142,7 +1142,7 @@ EOD;
                             continue;
                         }
 
-                        if (($ph2ent['mode'] == 'tunnel') or ($ph2ent['mode'] == 'tunnel6')) {
+                        if (($ph2ent['mode'] == 'tunnel') || ($ph2ent['mode'] == 'tunnel6')) {
                             $tunneltype = "type = tunnel";
                             $localid_type = $ph2ent['localid']['type'];
                             $leftsubnet_data = ipsec_idinfo_to_cidr($ph2ent['localid'], false, $ph2ent['mode']);
@@ -1280,10 +1280,10 @@ conn con<<connectionId>>
   aggressive = {$aggressive}
   fragmentation = yes
   keyexchange = {$keyexchange}
+  {$mobike}
   {$reauth}
   {$rekey}
   {$forceencaps}
-  {$mobike}
   installpolicy = yes
   {$tunneltype}
   {$dpdline}
