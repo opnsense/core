@@ -103,8 +103,7 @@ system_webgui_configure(true);
 system_cron_configure(true);
 system_routing_configure('', true);
 
-dnsmasq_configure_do(true);
-unbound_configure_do(true);
+plugins_configure('dns', true);
 services_dhcpd_configure('all', array(), true);
 system_hosts_generate(true);
 services_dhcrelay_configure(true);

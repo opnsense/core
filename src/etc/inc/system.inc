@@ -394,8 +394,7 @@ function system_hosts_generate($verbose = false)
 
     file_put_contents('/etc/hosts', $hosts);
 
-    dnsmasq_hosts_generate();
-    unbound_hosts_generate();
+    plugins_configure('hosts');
 
     if ($verbose) {
         echo "done.\n";

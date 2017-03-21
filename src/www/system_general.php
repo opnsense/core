@@ -224,8 +224,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         system_hostname_configure();
         system_hosts_generate();
         system_resolvconf_generate();
-        dnsmasq_configure_do();
-        unbound_configure_do();
+        plugins_configure('dns');
         services_dhcpd_configure();
         system_timezone_configure();
         filter_configure();

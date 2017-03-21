@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
+    Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
     Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
     Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -36,6 +36,14 @@ function unbound_enabled()
     return isset($config['unbound']['enable']);
 }
 
+function unbound_configure()
+{
+    return array(
+        'dns' => 'unbound_configure_do',
+        'hosts' => 'unbound_hosts_generate:0',
+    );
+}
+
 function unbound_services()
 {
     $services = array();
@@ -46,7 +54,7 @@ function unbound_services()
 
     $pconfig = array();
     $pconfig['name'] = 'unbound';
-    $pconfig['description'] = gettext('DNS Resolver');
+    $pconfig['description'] = gettext('Unbound DNS');
     $pconfig['php']['restart'] = array('unbound_configure_do');
     $pconfig['php']['start'] = array('unbound_configure_do');
     $pconfig['pidfile'] = '/var/run/unbound.pid';
@@ -60,7 +68,7 @@ function unbound_xmlrpc_sync()
     $result = array();
 
     $result[] = array(
-        'description' => gettext('DNS Resolver'),
+        'description' => gettext('Unbound DNS'),
         'section' => 'unbound',
         'id' => 'dnsresolver',
     );
@@ -424,7 +432,7 @@ function unbound_configure_do($verbose = false)
     }
 
     if ($verbose) {
-        echo 'Starting DNS Resolver...';
+        echo 'Starting Unbound DNS...';
         flush();
     }
 
