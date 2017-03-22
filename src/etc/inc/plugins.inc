@@ -48,8 +48,16 @@ function plugins_scan()
     foreach ($plugins as $plugin) {
         $name = preg_replace('/' . preg_quote($path, '/') . '/', '', $plugin);
         $name = preg_replace('/' . preg_quote($ext, '/') . '/', '', $name);
-        /* if the old file still exists upgrade went wrong */
         if (file_exists($clash . $name . $ext)) {
+            /*
+             * Congratulations, you found the reason why your plugin doesn't
+             * work!  It seems that you're using a name that is already taken
+             * by the base system.  Please change the name of your plugin.
+             *
+             * A traceable call stack requires unique prefixes, which is what
+             * will prevent this from working.  Do not remove this check
+             * without discussing the consequences with the authors.
+             */
             continue;
         }
         $ret[$name] = $plugin;
