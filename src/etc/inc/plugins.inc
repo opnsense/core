@@ -48,7 +48,7 @@ function plugins_scan()
     foreach ($plugins as $plugin) {
         $name = preg_replace('/' . preg_quote($path, '/') . '/', '', $plugin);
         $name = preg_replace('/' . preg_quote($ext, '/') . '/', '', $name);
-        if (file_exists($clash . $name . $ext)) {
+        if (file_exists($clash . $name . '.inc') || file_exists($clash . $name . '.class')) {
             /*
              * Congratulations, you found the reason why your plugin doesn't
              * work!  It seems that you're using a name that is already taken
