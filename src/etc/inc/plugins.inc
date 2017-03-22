@@ -30,9 +30,10 @@
  * scan plugins for legacy system
  * @return array
  */
-function plugins_scan($search = '')
+function plugins_scan()
 {
     $path = '/usr/local/etc/inc/plugins.inc.d/';
+    $clash = '/usr/local/etc/inc/';
     $ext = '.inc';
 
     $ret = array();
@@ -47,7 +48,16 @@ function plugins_scan($search = '')
     foreach ($plugins as $plugin) {
         $name = preg_replace('/' . preg_quote($path, '/') . '/', '', $plugin);
         $name = preg_replace('/' . preg_quote($ext, '/') . '/', '', $name);
-        if (!empty($search) && $search !== $name) {
+        if (file_exists($clash . $name . '.inc') || file_exists($clash . $name . '.class')) {
+            /*
+             * Congratulations, you found the reason why your plugin doesn't
+             * work!  It seems that you're using a name that is already taken
+             * by the base system.  Please change the name of your plugin.
+             *
+             * A traceable call stack requires unique prefixes, which is what
+             * will prevent this from working.  Do not remove this check
+             * without discussing the consequences with the authors.
+             */
             continue;
         }
         $ret[$name] = $plugin;
