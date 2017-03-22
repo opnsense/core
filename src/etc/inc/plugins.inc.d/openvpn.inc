@@ -63,12 +63,11 @@ function openvpn_services()
                     $pconfig = array();
                     $pconfig['description'] = "OpenVPN {$mode}: " . htmlspecialchars($setting['description']);
                     $pconfig['pidfile'] = "/var/run/openvpn_{$mode}{$setting['vpnid']}.pid";
-                    $pconfig['php']['restart'] = array('openvpn_restart_by_id');
-                    $pconfig['php']['start'] = array('openvpn_restart_by_id');
-                    $pconfig['php']['args'] = array('mode', 'id');
+                    $pconfig['php']['restart'] = array('openvpn_configure_single');
+                    $pconfig['php']['start'] = array('openvpn_configure_single');
+                    $pconfig['php']['args'] = array('id');
                     $pconfig['id'] = $setting['vpnid'];
                     $pconfig['name'] = 'openvpn';
-                    $pconfig['mode'] = $mode;
                     $services[] = $pconfig;
                 }
             }
@@ -912,28 +911,6 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     @chmod("/var/etc/openvpn/{$mode_id}.conf", 0600);
 }
 
-function openvpn_restart_by_id($mode, $id)
-{
-    global $config;
-
-    $found = null;
-
-    if (isset($config['openvpn']["openvpn-$mode"])) {
-        foreach ($config['openvpn']["openvpn-$mode"] as $settings) {
-            if ($id != 0 && $id == $settings['vpnid']) {
-                $found = $settings;
-                break;
-            }
-        }
-    }
-
-    if ($found == null) {
-        return;
-    }
-
-    openvpn_restart($mode, $found);
-}
-
 function openvpn_restart($mode, $settings)
 {
     global $config;
@@ -971,7 +948,7 @@ function openvpn_restart($mode, $settings)
     }
 }
 
-function openvpn_delete($mode, & $settings)
+function openvpn_delete($mode, &$settings)
 {
     global $config;
 
@@ -1152,7 +1129,8 @@ function openvpn_configure_interface($interface)
             foreach ($config['openvpn']['openvpn-server'] as $server) {
                 if ($interface == "ovpns{$server['vpnid']}") {
                     log_error("OpenVPN: Resync server {$server['description']}");
-                    openvpn_configure_server($server);
+                    openvpn_reconfigure('server', $server);
+                    openvpn_restart('server', $server);
                 }
             }
             unset($server);
@@ -1162,7 +1140,8 @@ function openvpn_configure_interface($interface)
             foreach ($config['openvpn']['openvpn-client'] as $client) {
                 if ($interface == "ovpnc{$client['vpnid']}") {
                     log_error("OpenVPN: Resync server {$client['description']}");
-                    openvpn_configure_client($client);
+                    openvpn_reconfigure('client', $client);
+                    openvpn_restart('client', $client);
                 }
             }
             unset($client);
@@ -1170,16 +1149,19 @@ function openvpn_configure_interface($interface)
     }
 }
 
-function openvpn_configure_client($settings)
+function openvpn_configure_single($id)
 {
-    openvpn_reconfigure('client', $settings);
-    openvpn_restart('client', $settings);
-}
+    global $config;
 
-function openvpn_configure_server($settings)
-{
-    openvpn_reconfigure('server', $settings);
-    openvpn_restart('server', $settings);
+    foreach (array('server', 'client') as $mode) {
+        if (isset($config['openvpn']["openvpn-{$mode}"])) {
+            foreach ($config['openvpn']["openvpn-{$mode}"] as &$settings) {
+                openvpn_reconfigure($mode, $settings);
+                openvpn_restart($mode, $settings);
+                return;
+            }
+        }
+    }
 }
 
 function openvpn_configure_do($verbose = false, $interface = '')

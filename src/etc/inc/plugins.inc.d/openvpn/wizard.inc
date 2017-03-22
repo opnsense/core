@@ -733,7 +733,7 @@ function step12_submitphpaction()
 
     write_config();
 
-    openvpn_configure_server($server);
+    openvpn_configure_single($server['vpnid']);
     openvpn_configure_csc();
 
     header(url_safe('Location: /vpn_openvpn_server.php'));
