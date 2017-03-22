@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($a_gateway_groups as $gateway_group) {
             $gw_subsystem = 'gwgroup.' . $gateway_group['name'];
             if (is_subsystem_dirty($gw_subsystem)) {
-                openvpn_resync_gwgroup($gateway_group['name']);
+                openvpn_configure_gwgroup($gateway_group['name']);
                 clear_subsystem_dirty($gw_subsystem);
             }
         }

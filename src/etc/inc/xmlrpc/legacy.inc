@@ -137,7 +137,6 @@ function filter_configure_xmlrpc()
     local_sync_accounts();
     plugins_configure('dns');
     services_dhcpd_configure();
-    openvpn_resync_all();
     plugins_configure('remote');
 
     return true;

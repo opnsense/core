@@ -2486,26 +2486,9 @@ function interface_virtual_create($interface)
         interfaces_gre_configure(0, $interface);
     } elseif (substr($interface, 0, 3) == "gif") {
         interfaces_gif_configure(0, $interface);
-    } elseif (substr($interface, 0, 5) == "ovpns") {
-        if (isset($config['openvpn']['openvpn-server'])) {
-            foreach ($config['openvpn']['openvpn-server'] as $server) {
-                if ($interface == "ovpns{$server['vpnid']}") {
-                    log_error("OpenVPN: Resync server {$server['description']}");
-                    openvpn_resync('server', $server);
-                }
-            }
-            unset($server);
-        }
-    } elseif (substr($interface, 0, 5) == "ovpnc") {
-        if (isset($config['openvpn']['openvpn-client'])) {
-            foreach ($config['openvpn']['openvpn-client'] as $client) {
-                if ($interface == "ovpnc{$client['vpnid']}") {
-                    log_error("OpenVPN: Resync server {$client['description']}");
-                    openvpn_resync('client', $client);
-                }
-            }
-            unset($client);
-        }
+    } elseif (substr($interface, 0, 4) == "ovpn") {
+        /* XXX this looks like a plugin spot... */
+        openvpn_configure_interface($interface);
     } elseif (substr($interface, 0, 4) == "lagg") {
         interfaces_lagg_configure($interface);
     } elseif (substr($interface, 0, 6) == "bridge") {

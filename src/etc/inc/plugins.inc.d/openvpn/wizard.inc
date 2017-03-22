@@ -731,8 +731,10 @@ function step12_submitphpaction()
 
     $config['openvpn']['openvpn-server'][] = $server;
 
-    openvpn_resync('server', $server);
     write_config();
+
+    openvpn_configure_server($server);
+    openvpn_configure_csc();
 
     header(url_safe('Location: /vpn_openvpn_server.php'));
     exit;

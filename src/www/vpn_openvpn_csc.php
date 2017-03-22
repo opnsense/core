@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_csc[$id]['disable'] = true;
             }
             write_config();
-            openvpn_resync_csc();
+            openvpn_configure_csc();
         }
         header(url_safe('Location: /vpn_openvpn_csc.php'));
         exit;
@@ -222,7 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 @unlink('/var/etc/openvpn-csc/' . basename($old_csc_cn));
             }
             write_config();
-            openvpn_resync_csc();
+            openvpn_configure_csc();
 
             header(url_safe('Location: /vpn_openvpn_csc.php'));
             exit;

@@ -30,6 +30,14 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
+function openvpn_configure()
+{
+    return array(
+        'interface' => array('openvpn_configure_do:2'),
+        'remote' => array('openvpn_configure_do'),
+    );
+}
+
 function openvpn_syslog()
 {
     $logfacilities = array();
@@ -995,14 +1003,13 @@ function openvpn_delete($mode, & $settings)
     @array_map('unlink', glob("/var/etc/openvpn/{$mode_id}.*"));
 }
 
-
 /**
  * generate config (text) data for a single client specific override
  * @param array $settings csc item
  * @param array $server openvpn server item
  * @return string
  */
-function openvpn_resync_csc_conf($settings, $server)
+function openvpn_csc_conf($settings, $server)
 {
     $conf = '';
     if (!empty($settings['block'])) {
@@ -1065,7 +1072,7 @@ function openvpn_resync_csc_conf($settings, $server)
 /**
  * resync all client specific overrides
  */
-function openvpn_resync_csc()
+function openvpn_configure_csc()
 {
     global $config;
     $generated_cscs = array();
@@ -1087,7 +1094,7 @@ function openvpn_resync_csc()
                         if (!isset($generated_cscs[$server['vpnid']])) {
                             $generated_cscs[$vpnid] = array();
                         }
-                        $conf = openvpn_resync_csc_conf($settings, $server);
+                        $conf = openvpn_csc_conf($settings, $server);
                         $target_filename = "/var/etc/openvpn-csc/".$vpnid."/".$settings['common_name'];
                         file_put_contents($target_filename, $conf);
                         chown($target_filename, 'nobody');
@@ -1136,13 +1143,46 @@ function openvpn_prepare_all($verbose = false)
     }
 }
 
-function openvpn_resync($mode, $settings)
+function openvpn_configure_interface($interface)
 {
-    openvpn_reconfigure($mode, $settings);
-    openvpn_restart($mode, $settings);
+    global $config;
+
+    if (substr($interface, 0, 5) == 'ovpns') {
+       if (isset($config['openvpn']['openvpn-server'])) {
+            foreach ($config['openvpn']['openvpn-server'] as $server) {
+                if ($interface == "ovpns{$server['vpnid']}") {
+                    log_error("OpenVPN: Resync server {$server['description']}");
+                    openvpn_configure_server($server);
+                }
+            }
+            unset($server);
+        }
+    } elseif (substr($interface, 0, 5) == 'ovpnc') {
+        if (isset($config['openvpn']['openvpn-client'])) {
+            foreach ($config['openvpn']['openvpn-client'] as $client) {
+                if ($interface == "ovpnc{$client['vpnid']}") {
+                    log_error("OpenVPN: Resync server {$client['description']}");
+                    openvpn_configure_client($client);
+                }
+            }
+            unset($client);
+        }
+    }
 }
 
-function openvpn_resync_all($interface = null, $verbose = false)
+function openvpn_configure_client($settings)
+{
+    openvpn_reconfigure('client', $settings);
+    openvpn_restart('client', $settings);
+}
+
+function openvpn_configure_server($settings)
+{
+    openvpn_reconfigure('server', $settings);
+    openvpn_restart('server', $settings);
+}
+
+function openvpn_configure_do($verbose = false, $interface = '')
 {
     global $config;
 
@@ -1152,12 +1192,11 @@ function openvpn_resync_all($interface = null, $verbose = false)
         return;
     }
 
-    if ($verbose) {
-        echo 'Syncing OpenVPN settings...';
-        flush();
-    }
-
     if (!empty($interface)) {
+        $interface_real = get_real_interface($interface);
+        if (substr($interface_real, 0, 4) == 'ovpn') {
+            return;
+        }
         log_error(sprintf(
             'Resyncing OpenVPN instances for interface %s.',
             convert_friendly_interface_to_friendly_descr($interface)
@@ -1166,17 +1205,23 @@ function openvpn_resync_all($interface = null, $verbose = false)
         log_error('Resyncing OpenVPN instances.');
     }
 
+    if ($verbose) {
+        echo 'Syncing OpenVPN settings...';
+        flush();
+    }
+
     foreach (array('server', 'client') as $mode) {
         if (isset($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as &$settings) {
                 if (empty($interface) || $interface == $settings['interface']) {
-                    openvpn_resync($mode, $settings);
+                    openvpn_reconfigure($mode, $settings);
+                    openvpn_restart($mode, $settings);
                 }
             }
         }
     }
 
-    openvpn_resync_csc();
+    openvpn_configure_csc();
 
     if ($verbose) {
         echo "done.\n";
@@ -1532,31 +1577,36 @@ function openvpn_get_remote_access_servers()
 }
 
 // Resync and restart all VPNs using a gateway group.
-function openvpn_resync_gwgroup($gwgroupname = "") {
+function openvpn_configure_gwgroup($gwgroupname = '')
+{
     global $config;
 
-    if (!empty($gwgroupname)) {
-        if (isset($config['openvpn']['openvpn-server'])) {
-            foreach ($config['openvpn']['openvpn-server'] as & $settings) {
-                if ($gwgroupname == $settings['interface']) {
-                    log_error("Resyncing OpenVPN for gateway group " . $gwgroupname . " server " . $settings["description"] . ".");
-                    openvpn_resync('server', $settings);
-                }
-            }
-        }
-
-        if (isset($config['openvpn']['openvpn-client'])) {
-            foreach ($config['openvpn']['openvpn-client'] as & $settings) {
-                if ($gwgroupname == $settings['interface']) {
-                    log_error("Resyncing OpenVPN for gateway group " . $gwgroupname . " client " . $settings["description"] . ".");
-                    openvpn_resync('client', $settings);
-                }
-            }
-        }
-        // Note: no need to resysnc Client Specific (csc) here, as changes to the OpenVPN real interface do not effect these.
-    } else {
-        log_error("openvpn_resync_gwgroup called with null gwgroup parameter.");
+    if (empty($gwgroupname)) {
+        log_error("openvpn_configure_gwgroup() called without gwgroup parameter.");
+        return;
     }
+
+    if (isset($config['openvpn']['openvpn-server'])) {
+        foreach ($config['openvpn']['openvpn-server'] as & $settings) {
+            if ($gwgroupname == $settings['interface']) {
+                log_error("Resyncing OpenVPN for gateway group " . $gwgroupname . " server " . $settings["description"] . ".");
+                openvpn_reconfigure('server', $settings);
+                openvpn_restart('server', $settings);
+            }
+        }
+    }
+
+    if (isset($config['openvpn']['openvpn-client'])) {
+        foreach ($config['openvpn']['openvpn-client'] as & $settings) {
+            if ($gwgroupname == $settings['interface']) {
+                log_error("Resyncing OpenVPN for gateway group " . $gwgroupname . " client " . $settings["description"] . ".");
+                openvpn_reconfigure('client', $settings);
+                openvpn_restart('client', $settings);
+            }
+        }
+    }
+
+    // Note: no need to resysnc Client Specific (csc) here, as changes to the OpenVPN real interface do not effect these.
 }
 
 function openvpn_refresh_crls()
@@ -1614,7 +1664,8 @@ function openvpn_resync_if_needed($mode, $ovpn_settings, $interface)
     }
     if ($resync_needed == true) {
         log_error("OpenVPN: Resync " . $mode_id . " " . $ovpn_settings['description']);
-        openvpn_resync($mode, $ovpn_settings);
+        openvpn_reconfigure($mode, $ovpn_settings);
+        openvpn_restart($mode, $ovpn_settings);
     }
 }
 

@@ -149,8 +149,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } else {
                 $a_server[$id]['disable'] = true;
             }
-            openvpn_resync('server', $a_server[$id]);
             write_config();
+            openvpn_configure_server($a_server[$id]);
         }
         header(url_safe('Location: /vpn_openvpn_server.php'));
         exit;
@@ -401,9 +401,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_server[] = $server;
             }
 
-            openvpn_resync('server', $server);
             write_config();
-            openvpn_resync_csc(); // dump client specific overrides, the required set may have changed
+
+            openvpn_configure_server($server);
+            openvpn_configure_csc();
 
             header(url_safe('Location: /vpn_openvpn_server.php'));
             exit;

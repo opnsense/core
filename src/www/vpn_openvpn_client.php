@@ -167,8 +167,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } else {
                 $a_client[$id]['disable'] = true;
             }
-            openvpn_resync('client', $a_client[$id]);
             write_config();
+            openvpn_configure_client($a_client[$id]);
         }
         header(url_safe('Location: /vpn_openvpn_client.php'));
         exit;
@@ -335,8 +335,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_client[] = $client;
             }
 
-            openvpn_resync('client', $client);
             write_config();
+
+            openvpn_configure_client($client);
 
             header(url_safe('Location: /vpn_openvpn_client.php'));
             exit;
