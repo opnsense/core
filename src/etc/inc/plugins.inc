@@ -30,9 +30,10 @@
  * scan plugins for legacy system
  * @return array
  */
-function plugins_scan($search = '')
+function plugins_scan()
 {
     $path = '/usr/local/etc/inc/plugins.inc.d/';
+    $clash = '/usr/local/etc/inc/';
     $ext = '.inc';
 
     $ret = array();
@@ -47,7 +48,8 @@ function plugins_scan($search = '')
     foreach ($plugins as $plugin) {
         $name = preg_replace('/' . preg_quote($path, '/') . '/', '', $plugin);
         $name = preg_replace('/' . preg_quote($ext, '/') . '/', '', $name);
-        if (!empty($search) && $search !== $name) {
+        /* if the old file still exists upgrade went wrong */
+        if (file_exists($clash . $name . $ext)) {
             continue;
         }
         $ret[$name] = $plugin;
