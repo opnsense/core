@@ -1156,6 +1156,9 @@ function openvpn_configure_single($id)
     foreach (array('server', 'client') as $mode) {
         if (isset($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as &$settings) {
+                if ($id != $settings['vpnid']) {
+                    continue;
+                }
                 openvpn_reconfigure($mode, $settings);
                 openvpn_restart($mode, $settings);
                 return;
