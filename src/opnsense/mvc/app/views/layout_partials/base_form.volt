@@ -34,26 +34,6 @@ data_title      :   data-title to set on form
 
 #}
 
-{# close table and reopen for new header#}
-{%- macro base_dialog_header(field) %}
-      </tbody>
-    </table>
-  </div>
-  <div class="table-responsive {% if field['style'] %}{{field['style']}}{% endif %}">
-    <table class="table table-striped table-condensed table-responsive">
-        <colgroup>
-            <col class="col-md-3"/>
-            <col class="col-md-4"/>
-            <col class="col-md-5"/>
-        </colgroup>
-        <thead>
-          <tr colspan="3">
-            <th><h2>{{field['label']}}</h2></th>
-          </tr>
-        </thead>
-        <tbody>
-{%- endmacro %}
-
 {# Find if there are help supported or advanced field on this page #}
 {% set base_form_id=id %}
 {% set help=false %}
@@ -86,18 +66,37 @@ data_title      :   data-title to set on form
                 {% if help|default(false) %}<small>{{ lang._('full help') }} </small><a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_{{base_form_id}}" type="button"></i></a>{% endif %}
             </td>
         </tr>
-        {% set advanced=false %}
-        {% set help=false %}
-        {% set style=false %}
-        {% set hint=false %}
-        {% set style=false %}
-        {% set maxheight=false %}
-        {% set width=false %}
-        {% set allownew=false %}
         {% for field in fields|default({})%}
+            {# looks a bit buggy in the volt templates, field parameters won't reset properly here #}
+            {% set advanced=false %}
+            {% set help=false %}
+            {% set hint=false %}
+            {% set style=false %}
+            {% set maxheight=false %}
+            {% set width=false %}
+            {% set allownew=false %}
             {% if field['type'] == 'header' %}
               {# close table and start new one with header #}
-              {{ base_dialog_header(field) }}
+
+{#- macro base_dialog_header(field) #}
+      </tbody>
+    </table>
+  </div>
+  <div class="table-responsive {% if field['style'] %}{{field['style']}}{% endif %}">
+    <table class="table table-striped table-condensed table-responsive">
+        <colgroup>
+            <col class="col-md-3"/>
+            <col class="col-md-4"/>
+            <col class="col-md-5"/>
+        </colgroup>
+        <thead>
+          <tr colspan="3">
+            <th><h2>{{field['label']}}</h2></th>
+          </tr>
+        </thead>
+        <tbody>
+{#- endmacro #}
+
             {% else %}
               {{ partial("layout_partials/form_input_tr",field)}}
             {% endif %}
