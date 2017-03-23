@@ -101,6 +101,16 @@ data_title      :   data-title to set on form
             {% else %}
               {{ partial("layout_partials/form_input_tr",field)}}
             {% endif %}
+
+            {# looks a bit buggy in the volt templates, field parameters won't reset properly here #}
+            {% set advanced=false %}
+            {% set help=false %}
+            {% set style=false %}
+            {% set hint=false %}
+            {% set style=false %}
+            {% set maxheight=false %}
+            {% set width=false %}
+            {% set allownew=false %}
         {% endfor %}
         {% if apply_btn_id|default('') != '' %}
         <tr>
