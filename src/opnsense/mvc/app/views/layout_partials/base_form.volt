@@ -34,26 +34,6 @@ data_title      :   data-title to set on form
 
 #}
 
-{# close table and reopen for new header#}
-{%- macro base_dialog_header(field) %}
-      </tbody>
-    </table>
-  </div>
-  <div class="table-responsive {% if field['style'] %}{{field['style']}}{% endif %}">
-    <table class="table table-striped table-condensed table-responsive">
-        <colgroup>
-            <col class="col-md-3"/>
-            <col class="col-md-4"/>
-            <col class="col-md-5"/>
-        </colgroup>
-        <thead>
-          <tr colspan="3">
-            <th><h2>{{field['label']}}</h2></th>
-          </tr>
-        </thead>
-        <tbody>
-{%- endmacro %}
-
 {# Find if there are help supported or advanced field on this page #}
 {% set base_form_id=id %}
 {% set help=false %}
@@ -97,7 +77,26 @@ data_title      :   data-title to set on form
         {% for field in fields|default({})%}
             {% if field['type'] == 'header' %}
               {# close table and start new one with header #}
-              {{ base_dialog_header(field) }}
+
+{#- macro base_dialog_header(field) #}
+      </tbody>
+    </table>
+  </div>
+  <div class="table-responsive {% if field['style'] %}{{field['style']}}{% endif %}">
+    <table class="table table-striped table-condensed table-responsive">
+        <colgroup>
+            <col class="col-md-3"/>
+            <col class="col-md-4"/>
+            <col class="col-md-5"/>
+        </colgroup>
+        <thead>
+          <tr colspan="3">
+            <th><h2>{{field['label']}}</h2></th>
+          </tr>
+        </thead>
+        <tbody>
+{#- endmacro #}
+
             {% else %}
               {{ partial("layout_partials/form_input_tr",field)}}
             {% endif %}

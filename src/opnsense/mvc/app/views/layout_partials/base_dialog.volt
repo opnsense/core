@@ -34,25 +34,6 @@ label           :   dialog label
 
 #}
 
-{%- macro base_dialog_header(field) %}
-      </tbody>
-    </table>
-  </div>
-  <div class="table-responsive {% if field['style'] %}{{field['style']}}{% endif %}">
-    <table class="table table-striped table-condensed">
-        <colgroup>
-            <col class="col-md-3"/>
-            <col class="col-md-{{ 12-3-msgzone_width|default(5) }}"/>
-            <col class="col-md-{{ msgzone_width|default(5) }}"/>
-        </colgroup>
-        <thead>
-          <tr colspan="3">
-            <th><h2>{{field['label']}}</h2></th>
-          </tr>
-        </thead>
-        <tbody>
-{%- endmacro %}
-
 {# Volt templates in php7 have issues with scope sometimes, copy input values to make them more unique #}
 {% set base_dialog_id=id %}
 {% set base_dialog_fields=fields %}
@@ -111,7 +92,26 @@ label           :   dialog label
                             {% set allownew=false %}
                             {% if field['type'] == 'header' %}
                               {# close table and start new one with header #}
-                              {{ base_dialog_header(field) }}
+
+{#- macro base_dialog_header(field) #}
+      </tbody>
+    </table>
+  </div>
+  <div class="table-responsive {% if field['style'] %}{{field['style']}}{% endif %}">
+    <table class="table table-striped table-condensed">
+        <colgroup>
+            <col class="col-md-3"/>
+            <col class="col-md-{{ 12-3-msgzone_width|default(5) }}"/>
+            <col class="col-md-{{ msgzone_width|default(5) }}"/>
+        </colgroup>
+        <thead>
+          <tr colspan="3">
+            <th><h2>{{field['label']}}</h2></th>
+          </tr>
+        </thead>
+        <tbody>
+{#- endmacro #}
+
                             {% else %}
                               {{ partial("layout_partials/form_input_tr",field)}}
                             {% endif %}
