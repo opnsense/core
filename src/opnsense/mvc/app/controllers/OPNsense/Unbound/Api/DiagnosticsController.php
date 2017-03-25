@@ -77,4 +77,37 @@ class DiagnosticsController extends ApiControllerBase
         }
         return $ret;
     }
+    public function listlocaldataAction()
+    {
+        $ret['status'] = "failed";
+        $backend = new Backend();
+        $result = json_decode(trim($backend->configdRun("unbound listlocaldata")), true);
+        if ($result !== null) {
+            $ret['data'] = $result;
+            $ret['status'] = 'ok';
+        }
+        return $ret;
+    }
+    public function listlocalzonesAction()
+    {
+        $ret['status'] = "failed";
+        $backend = new Backend();
+        $result = json_decode(trim($backend->configdRun("unbound listlocalzones")), true);
+        if ($result !== null) {
+            $ret['data'] = $result;
+            $ret['status'] = 'ok';
+        }
+        return $ret;
+    }
+    public function listinsecureAction()
+    {
+        $ret['status'] = "failed";
+        $backend = new Backend();
+        $result = json_decode(trim($backend->configdRun("unbound listinsecure")), true);
+        if ($result !== null) {
+            $ret['data'] = $result;
+            $ret['status'] = 'ok';
+        }
+        return $ret;
+    }
 }
