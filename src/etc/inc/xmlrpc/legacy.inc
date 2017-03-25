@@ -108,9 +108,9 @@ function firmware_version_xmlrpc()
     global $config;
 
     return array(
-      'kernel' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense-update.kernel')),
-      'base' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense-update.base')),
       'firmware' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense')),
+      'kernel' => array('version' => file_get_contents('/usr/local/opnsense/version/kernel')),
+      'base' => array('version' => file_get_contents('/usr/local/opnsense/version/base')),
       'config_version' => $config['version'],
     );
 }
