@@ -82,9 +82,9 @@ label           :   dialog label
                         </tr>
                         {% endif %}
                         {% for field in base_dialog_fields|default({})%}
+                            {# looks a bit buggy in the volt templates, field parameters won't reset properly here #}
                             {% set advanced=false %}
                             {% set help=false %}
-                            {% set style=false %}
                             {% set hint=false %}
                             {% set style=false %}
                             {% set maxheight=false %}
