@@ -83,7 +83,7 @@
 /usr/local/etc/rc.d/configd
 /usr/local/etc/rc.d/flowd_aggregate
 /usr/local/etc/rc.d/netflow
-/usr/local/etc/rc.dyndns.update
+/usr/local/etc/rc.dyndns
 /usr/local/etc/rc.expireaccounts
 /usr/local/etc/rc.filter_configure
 /usr/local/etc/rc.filter_synchronize
@@ -129,7 +129,7 @@
 /usr/local/etc/rc.reload_interfaces
 /usr/local/etc/rc.resolv_conf_generate
 /usr/local/etc/rc.restart_webgui
-/usr/local/etc/rc.rfc2136.update
+/usr/local/etc/rc.rfc2136
 /usr/local/etc/rc.shutdown
 /usr/local/etc/rc.sshd
 /usr/local/etc/rc.syshook

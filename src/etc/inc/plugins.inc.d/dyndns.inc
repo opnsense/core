@@ -81,7 +81,7 @@ function dyndns_cron()
     $jobs = array();
 
     if (dyndns_enabled()) {
-        $jobs[]['autocron'] = array('/usr/local/etc/rc.dyndns.update', '11', '1');
+        $jobs[]['autocron'] = array('/usr/local/etc/rc.dyndns', '11', '1');
     }
 
     return $jobs;

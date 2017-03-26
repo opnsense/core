@@ -78,7 +78,7 @@ function rfc2136_cron()
     $jobs = array();
 
     if (rfc2136_enabled()) {
-        $jobs[]['autocron'] = array('/usr/local/etc/rc.rfc2136.update', '16', '1');
+        $jobs[]['autocron'] = array('/usr/local/etc/rc.rfc2136', '16', '1');
     }
 
     return $jobs;
