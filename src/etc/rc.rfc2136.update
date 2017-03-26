@@ -35,17 +35,17 @@ require_once("services.inc");
 require_once("plugins.inc.d/rfc2136.inc");
 
 if (isset($argv[1])) {
-	$argument = trim($argv[1], " \n");
+    $argument = trim($argv[1], " \n");
 } else {
-	$argument = null;
+    $argument = null;
 }
 
 if (empty($argument)) {
-	rfc2136_configure_do(true);
+    rfc2136_configure_do(true);
 } else {
-	$interface = lookup_gateway_interface_by_name($argument);
-	if (empty($interface)) {
-		$interface = $argument;
-        }
-	rfc2136_configure_do(true, $interface);
+    $interface = lookup_gateway_interface_by_name($argument);
+    if (empty($interface)) {
+        $interface = $argument;
+    }
+    rfc2136_configure_do(true, $interface);
 }
