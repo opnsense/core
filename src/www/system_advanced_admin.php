@@ -263,8 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         system_login_configure();
         system_hosts_generate();
-        dnsmasq_configure_do();
-        unbound_configure_do();
+        plugins_configure('dns');
         services_dhcpd_configure();
 
         if ($restart_sshd) {

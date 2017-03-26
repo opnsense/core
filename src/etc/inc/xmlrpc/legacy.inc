@@ -136,8 +136,7 @@ function filter_configure_xmlrpc()
     setup_gateways_monitor();
     system_hosts_generate();
     local_sync_accounts();
-    dnsmasq_configure_do();
-    unbound_configure_do();
+    plugins_configure('dns');
     services_dhcpd_configure();
     openvpn_resync_all();
 
