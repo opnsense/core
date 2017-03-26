@@ -28,7 +28,7 @@
 */
 
 require_once('guiconfig.inc');
-require_once('openvpn.inc');
+require_once('services.inc');
 
 function openvpn_refresh_crls()
 {

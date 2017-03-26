@@ -45,8 +45,6 @@ $inc_files = array(
     'services.inc',
     'system.inc',
     'filter.inc',
-    'ipsec.inc',
-    'openvpn.inc',
     'rrd.inc',
 );
 
