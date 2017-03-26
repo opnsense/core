@@ -1596,7 +1596,7 @@ function system_cron_configure($verbose = false)
 
     /* daily */
     $autocron[] = generate_cron_job('/usr/local/etc/rc.update_alias_url_data', '1', '1');
-    $autocron[] = generate_cron_job('/usr/local/etc/rc.update_urltables', '5', '1');
+    $autocron[] = generate_cron_job('/usr/local/etc/rc.update_urltables', '6', '1');
     $autocron[] = generate_cron_job('/usr/local/etc/rc.dyndns.update', '11', '1');
 
     /* every now and then */
