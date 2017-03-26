@@ -85,8 +85,8 @@ def stats
     key_parts = key.split(".")
     if key_parts[0] == 'histogram'
       data['histogram'] = [] unless data['histogram']
-      data['histogram'] << {from: key_parts[1..2].map(&:to_i), 
-                            to: key_parts[4..5].map(&:to_i), 
+      data['histogram'] << {from: key_parts[1..2].map(&:to_i),
+                            to: key_parts[4..5].map(&:to_i),
                             value: value.to_i}
     else
       key = key_parts.pop
