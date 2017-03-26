@@ -111,7 +111,6 @@ $p2_pfskeygroups = array(
     18 => '18 (8192 bit)'
 );
 
-
 function ipsec_configure()
 {
     return array(
