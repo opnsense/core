@@ -155,21 +155,23 @@ function interfaces_vlan_configure($realif = '', $verbose = false)
 {
     global $config;
 
+    if (!isset($config['vlans']['vlan'])) {
+        return;
+    }
+
     if ($verbose) {
         echo 'Configuring VLAN interfaces...';
         flush();
     }
 
-    if (isset($config['vlans']['vlan'])) {
-        foreach ($config['vlans']['vlan'] as $vlan) {
-            if (empty($vlan['vlanif'])) {
-                $vlan['vlanif'] = "{$vlan['if']}_vlan{$vlan['tag']}";
-            }
-            if (!empty($realif) && $realif != $vlan['vlanif']) {
-                continue;
-            }
-            interface_vlan_configure($vlan);
+    foreach ($config['vlans']['vlan'] as $vlan) {
+        if (empty($vlan['vlanif'])) {
+            $vlan['vlanif'] = "{$vlan['if']}_vlan{$vlan['tag']}";
         }
+        if (!empty($realif) && $realif != $vlan['vlanif']) {
+            continue;
+        }
+        interface_vlan_configure($vlan);
     }
 
     if ($verbose) {
@@ -318,15 +320,17 @@ function interfaces_qinq_configure($verbose = false)
 {
     global $config;
 
+    if (!isset($config['qinqs']['qinqentry'])) {
+        return;
+    }
+
     if ($verbose) {
         echo 'Configuring QinQ interfaces...';
         flush();
     }
 
-    if (isset($config['qinqs']['qinqentry'])) {
-        foreach ($config['qinqs']['qinqentry'] as $qinq) {
-            interface_qinq_configure($qinq);
-        }
+    foreach ($config['qinqs']['qinqentry'] as $qinq) {
+        interface_qinq_configure($qinq);
     }
 
     if ($verbose) {
@@ -664,6 +668,10 @@ function interfaces_lagg_configure($realif = '', $verbose = false)
 {
     global $config;
 
+    if (!isset($config['laggs']['lagg'])) {
+        return;
+    }
+
     if ($verbose) {
         echo 'Configuring LAGG interfaces...';
         flush();
@@ -671,17 +679,15 @@ function interfaces_lagg_configure($realif = '', $verbose = false)
 
     $i = 0;
 
-    if (isset($config['laggs']['lagg'])) {
-        foreach ($config['laggs']['lagg'] as $lagg) {
-            if (empty($lagg['laggif'])) {
-                $lagg['laggif'] = "lagg{$i}";
-            }
-            if (!empty($realif) && $realif != $lagg['laggif']) {
-                continue;
-            }
-            interface_lagg_configure($lagg);
-            $i++;
+    foreach ($config['laggs']['lagg'] as $lagg) {
+        if (empty($lagg['laggif'])) {
+            $lagg['laggif'] = "lagg{$i}";
         }
+        if (!empty($realif) && $realif != $lagg['laggif']) {
+            continue;
+        }
+        interface_lagg_configure($lagg);
+        $i++;
     }
 
     if ($verbose) {
@@ -743,37 +749,48 @@ function interface_lagg_configure(&$lagg)
     return $laggif;
 }
 
-function interfaces_gre_configure($checkparent = 0, $realif = "")
+function interfaces_gre_configure($checkparent = 0, $verbose = false, $realif = '')
 {
     global $config;
 
-    if (isset($config['gres']['gre'])) {
-        foreach ($config['gres']['gre'] as $i => $gre) {
-            if (empty($gre['greif'])) {
-                $gre['greif'] = "gre{$i}";
-            }
-            if (!empty($realif) && $realif != $gre['greif']) {
+    if (!isset($config['gres']['gre'])) {
+        return;
+    }
+
+    if ($verbose) {
+        echo "Configuring GRE interfaces ($checkparent)...";
+        flush();
+    }
+
+    foreach ($config['gres']['gre'] as $i => $gre) {
+        if (empty($gre['greif'])) {
+            $gre['greif'] = "gre{$i}";
+        }
+        if (!empty($realif) && $realif != $gre['greif']) {
+            continue;
+        }
+
+        if ($checkparent == 1) {
+            if (strstr($gre['if'], '_vip')) {
                 continue;
             }
-
-            if ($checkparent == 1) {
-                if (strstr($gre['if'], "_vip")) {
-                    continue;
-                }
-                if (!empty($config['interfaces'][$gre['if']]) && $config['interfaces'][$gre['if']]['ipaddrv6'] == "track6") {
-                    continue;
-                }
-            } elseif ($checkparent == 2) {
-                if (strstr($gre['if'], "_vip")) {
-                    continue;
-                }
-                if (empty($config['interfaces'][$gre['if']]) || $config['interfaces'][$gre['if']]['ipaddrv6'] != "track6") {
-                    continue;
-                }
+            if (!empty($config['interfaces'][$gre['if']]) && $config['interfaces'][$gre['if']]['ipaddrv6'] == 'track6') {
+                continue;
             }
-            /* XXX: Maybe we should report any errors?! */
-            interface_gre_configure($gre);
+        } elseif ($checkparent == 2) {
+            if (strstr($gre['if'], '_vip')) {
+                continue;
+            }
+            if (empty($config['interfaces'][$gre['if']]) || $config['interfaces'][$gre['if']]['ipaddrv6'] != 'track6') {
+                continue;
+            }
         }
+
+        interface_gre_configure($gre);
+    }
+
+    if ($verbose) {
+        echo "done.\n";
     }
 }
 
@@ -845,37 +862,48 @@ function interface_gre_configure(&$gre, $grekey = "")
     return $greif;
 }
 
-function interfaces_gif_configure($checkparent = 0, $realif = "")
+function interfaces_gif_configure($checkparent = 0, $verbose = false, $realif = '')
 {
     global $config;
 
-    if (isset($config['gifs']['gif'])) {
-        foreach ($config['gifs']['gif'] as $i => $gif) {
-            if (empty($gif['gifif'])) {
-                $gre['gifif'] = "gif{$i}";
-            }
-            if (!empty($realif) && $realif != $gif['gifif']) {
+    if (!isset($config['gifs']['gif'])) {
+        return;
+    }
+
+    if ($verbose) {
+        echo "Configuring GIF interfaces ($checkparent)...";
+        flush();
+    }
+
+    foreach ($config['gifs']['gif'] as $i => $gif) {
+        if (empty($gif['gifif'])) {
+            $gre['gifif'] = "gif{$i}";
+        }
+        if (!empty($realif) && $realif != $gif['gifif']) {
+            continue;
+        }
+
+        if ($checkparent == 1) {
+            if (strstr($gif['if'], '_vip')) {
                 continue;
             }
-
-            if ($checkparent == 1) {
-                if (strstr($gif['if'], "_vip")) {
-                    continue;
-                }
-                if (!empty($config['interfaces'][$gif['if']]) && $config['interfaces'][$gif['if']]['ipaddrv6'] == "track6") {
-                    continue;
-                }
-            } elseif ($checkparent == 2) {
-                if (strstr($gif['if'], "_vip")) {
-                    continue;
-                }
-                if (empty($config['interfaces'][$gif['if']]) || $config['interfaces'][$gif['if']]['ipaddrv6'] != "track6") {
-                    continue;
-                }
+            if (!empty($config['interfaces'][$gif['if']]) && $config['interfaces'][$gif['if']]['ipaddrv6'] == 'track6') {
+                continue;
             }
-            /* XXX: Maybe we should report any errors?! */
-            interface_gif_configure($gif);
+        } elseif ($checkparent == 2) {
+            if (strstr($gif['if'], '_vip')) {
+                continue;
+            }
+            if (empty($config['interfaces'][$gif['if']]) || $config['interfaces'][$gif['if']]['ipaddrv6'] != 'track6') {
+                continue;
+            }
         }
+
+        interface_gif_configure($gif);
+    }
+
+    if ($verbose) {
+        echo "done.\n";
     }
 }
 
@@ -1008,8 +1036,8 @@ function interfaces_configure($verbose = false)
      *  2 - Do load gre/gif/bridge with parent/member as vip
      */
 
-    interfaces_gre_configure(1);
-    interfaces_gif_configure(1);
+    interfaces_gre_configure(1, $verbose);
+    interfaces_gif_configure(1, $verbose);
     interfaces_bridge_configure(1);
 
     foreach ($track6_list as $if => $ifname) {
@@ -1017,8 +1045,8 @@ function interfaces_configure($verbose = false)
     }
 
     interfaces_vips_configure('', $verbose);
-    interfaces_gre_configure(2);
-    interfaces_gif_configure(2);
+    interfaces_gre_configure(2, $verbose);
+    interfaces_gif_configure(2, $verbose);
 
     foreach ($delayed_list as $if => $ifname) {
         interface_configure($if, $reload, false, $verbose);
@@ -1038,14 +1066,6 @@ function interfaces_configure($verbose = false)
         plugins_configure('dns', $verbose);
         services_dhcpd_configure('all', array(), $verbose);
     }
-
-    return 0;
-}
-
-function interface_reconfigure($interface = 'wan', $reloadall = false)
-{
-    interface_bring_down($interface);
-    interface_configure($interface, $reloadall);
 }
 
 function interface_vip_bring_down($vip)
@@ -1929,9 +1949,19 @@ function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false)
 {
     global $config;
 
-    $shared_settings = array('standard', 'turbo', 'protmode', 'txpower', 'channel',
-        'diversity', 'txantenna', 'rxantenna',
-        'regdomain', 'regcountry', 'reglocation');
+    $shared_settings = array(
+        'channel',
+        'diversity',
+        'protmode',
+        'regcountry',
+        'regdomain',
+        'reglocation',
+        'rxantenna',
+        'standard',
+        'turbo',
+        'txantenna',
+        'txpower',
+    );
 
     if (!is_interface_wireless($ifcfg['if'])) {
         return;
@@ -2480,18 +2510,18 @@ function interface_virtual_create($interface)
 {
     global $config;
 
-    if (strstr($interface, "_vlan")) {
+    if (strstr($interface, '_vlan')) {
         interfaces_vlan_configure($vlan);
-    } elseif (substr($interface, 0, 3) == "gre") {
-        interfaces_gre_configure(0, $interface);
-    } elseif (substr($interface, 0, 3) == "gif") {
-        interfaces_gif_configure(0, $interface);
-    } elseif (substr($interface, 0, 4) == "ovpn") {
+    } elseif (substr($interface, 0, 3) == 'gre') {
+        interfaces_gre_configure(0, false, $interface);
+    } elseif (substr($interface, 0, 3) == 'gif') {
+        interfaces_gif_configure(0, false, $interface);
+    } elseif (substr($interface, 0, 4) == 'ovpn') {
         /* XXX this looks like a plugin spot... */
         openvpn_configure_interface($interface);
-    } elseif (substr($interface, 0, 4) == "lagg") {
+    } elseif (substr($interface, 0, 4) == 'lagg') {
         interfaces_lagg_configure($interface);
-    } elseif (substr($interface, 0, 6) == "bridge") {
+    } elseif (substr($interface, 0, 6) == 'bridge') {
         interfaces_bridge_configure(0, $interface);
     }
 }
@@ -4033,7 +4063,6 @@ function guess_interface_from_ip($ipaddress)
     }
     return $ret;
 }
-
 
 function link_interface_to_track6($int, $action = '')
 {
