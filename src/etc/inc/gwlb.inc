@@ -372,7 +372,7 @@ EOD;
         # Create gateway quality RRD with settings more suitable for OPNsense graph set,
         # since apinger uses default step (300; 5 minutes) and other settings that don't
         # match the OPNsense gateway quality graph set.
-        create_gateway_quality_rrd("/var/db/rrd/{$gateway['name']}-quality.rrd");
+        rrd_create_gateway_quality("/var/db/rrd/{$gateway['name']}-quality.rrd");
     }
 
     $gateways_arr = return_gateways_array();

@@ -65,78 +65,6 @@ function restore_config_section($section_name, $new_contents)
     return true;
 }
 
-function rrd_data_xml()
-{
-    $rrddbpath = '/var/db/rrd';
-
-    $result = "\t<rrddata>\n";
-    $rrd_files = glob("{$rrddbpath}/*.rrd");
-    $xml_files = array();
-    foreach ($rrd_files as $rrd_file) {
-        $basename = basename($rrd_file);
-        $xml_file = preg_replace('/\.rrd$/', ".xml", $rrd_file);
-        exec("/usr/local/bin/rrdtool dump '{$rrd_file}' '{$xml_file}'");
-        $xml_data = @file_get_contents($xml_file);
-        @unlink($xml_file);
-        if ($xml_data !== false) {
-            $result .= "\t\t<rrddatafile>\n";
-            $result .= "\t\t\t<filename>{$basename}</filename>\n";
-            $result .= "\t\t\t<xmldata>" . base64_encode(gzdeflate($xml_data)) . "</xmldata>\n";
-            $result .= "\t\t</rrddatafile>\n";
-        }
-    }
-    $result .= "\t</rrddata>\n";
-    return $result;
-}
-
-function restore_rrddata() {
-    global $config;
-    foreach($config['rrddata']['rrddatafile'] as $rrd) {
-        if (!empty($rrd['xmldata'])) {
-            $rrd_file = "/var/db/rrd/{$rrd['filename']}";
-            $xml_file = preg_replace('/\.rrd$/', ".xml", $rrd_file);
-            if (file_put_contents($xml_file, gzinflate(base64_decode($rrd['xmldata']))) === false) {
-                log_error("Cannot write $xml_file");
-                continue;
-            }
-            $output = array();
-            $status = null;
-            exec("/usr/local/bin/rrdtool restore -f '{$xml_file}' '{$rrd_file}'", $output, $status);
-            if ($status) {
-                log_error("rrdtool restore -f '{$xml_file}' '{$rrd_file}' failed returning {$status}.");
-                continue;
-            }
-            unlink($xml_file);
-        } elseif (!empty($rrd['data'])) {
-            /* rrd backup format */
-            $rrd_file = "/var/db/rrd/{$rrd['filename']}";
-            $rrd_fd = fopen($rrd_file, "w");
-            if (!$rrd_fd) {
-                log_error("Cannot write $rrd_file");
-                continue;
-            }
-            $data = base64_decode($rrd['data']);
-            /* Try to decompress the data. */
-            $dcomp = @gzinflate($data);
-            if ($dcomp) {
-                /* If the decompression worked, write the decompressed data */
-                if (fwrite($rrd_fd, $dcomp) === false) {
-                    log_error("fwrite $rrd_file failed");
-                    continue;
-                }
-            } elseif (fwrite($rrd_fd, $data) === false) {
-                  /* If the decompression failed, it wasn't compressed, so write raw data */
-                  log_error("fwrite $rrd_file failed");
-                  continue;
-            }
-            if (fclose($rrd_fd) === false) {
-                log_error("fclose $rrd_file failed");
-                continue;
-            }
-        }
-    }
-}
-
 $areas = array(
     'OPNsense' => gettext('OPNsense Additions'),	/* XXX need specifics */
     'aliases' => gettext('Aliases'),
@@ -220,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             /* backup RRD data */
             if (empty($_POST['donotbackuprrd'])) {
-                $rrd_data_xml = rrd_data_xml();
+                $rrd_data_xml = rrd_export();
                 $closing_tag = "</opnsense>";
                 $data = str_replace($closing_tag, $rrd_data_xml . $closing_tag, $data);
             }
@@ -286,7 +214,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $input_errors[] = gettext("You have selected to restore an area but we could not locate the correct xml tag.");
                 } else {
                     if (!empty($config['rrddata'])) {
-                        restore_rrddata();
+                        /* XXX we should point to the data... */
+                        rrd_import();
                         unset($config['rrddata']);
                         write_config();
                         convert_config();
@@ -308,7 +237,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $config = parse_config();
                     /* extract out rrd items, unset from $config when done */
                     if($config['rrddata']) {
-                        restore_rrddata();
+                        /* XXX we should point to the data... */
+                        rrd_import();
                         unset($config['rrddata']);
                         write_config();
                         convert_config();

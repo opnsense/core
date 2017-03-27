@@ -198,7 +198,7 @@ if (!is_ipaddr($oldip) || $curwanip != $oldip || !is_ipaddrv4($config['interface
     }
 
     /* reload graphing functions */
-    enable_rrd_graphing();
+    rrd_configure();
 
     /* reload plugins */
     plugins_configure('interface');

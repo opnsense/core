@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
     }
 
-    enable_rrd_graphing();
+    rrd_configure();
     setup_gateways_monitor();
 }
 

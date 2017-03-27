@@ -124,7 +124,7 @@ plugins_configure('bootup', true);
 /* start IPsec tunnels */
 $ipsec_dynamic_hosts = ipsec_configure(true);
 
-enable_rrd_graphing(true);
+rrd_configure(true);
 system_powerd_configure(true);
 
 /*
