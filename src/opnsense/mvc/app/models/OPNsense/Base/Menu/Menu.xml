@@ -131,10 +131,11 @@
             </VLAN>
         </Types>
         <Diagnostics order="960" cssClass="fa fa-medkit fa-fw">
-            <PacketCapture order="40" VisibleName="Packet Capture" url="/diag_packet_capture.php"/>
-            <Ping order="50" url="/diag_ping.php"/>
-            <TestPort order="60" VisibleName="Test Port" url="/diag_testport.php"/>
-            <Traceroute order="70" url="/diag_traceroute.php"/>
+            <DNSLookup VisibleName="DNS Lookup" url="/diag_dns.php"/>
+            <PacketCapture VisibleName="Packet Capture" url="/diag_packet_capture.php"/>
+            <Ping url="/diag_ping.php"/>
+            <TestPort VisibleName="Port Probe" url="/diag_testport.php"/>
+            <Traceroute VisibleName="Trace Route" url="/diag_traceroute.php"/>
         </Diagnostics>
     </Interfaces>
     <Firewall order="40" cssClass="glyphicon glyphicon-fire">
@@ -253,7 +254,6 @@
             <RFC2136 order="30" VisibleName="RFC 2136" url="/services_rfc2136.php">
                 <Edit url="/services_rfc2136_edit.php*" visibility="hidden"/>
             </RFC2136>
-            <Lookup order="40" url="/diag_dns.php"/>
             <LogFile order="100" VisibleName="Log File" url="/diag_logs_resolver.php"/>
         </DNSTools>
         <Diagnostics order="900" cssClass="fa fa-medkit fa-fw" url="/status_services.php">
