@@ -68,7 +68,7 @@ plugins_configure('local', true);
 
 log_error("rc.reload_all: Reloading RRD graphing");
 
-enable_rrd_graphing(true);
+rrd_configure(true);
 
 log_error("rc.reload_all: Reloading filter configuration.");
 

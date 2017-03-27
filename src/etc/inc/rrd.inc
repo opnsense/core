@@ -26,7 +26,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-function create_new_rrd($rrdcreatecmd)
+function rrd_create($rrdcreatecmd)
 {
     $rrdcreateoutput = array();
     $rrdcreatereturn = 0;
@@ -39,7 +39,7 @@ function create_new_rrd($rrdcreatecmd)
     return $rrdcreatereturn;
 }
 
-function enable_rrd_graphing($verbose = false)
+function rrd_configure($verbose = false)
 {
     global $config;
 
@@ -158,7 +158,7 @@ function enable_rrd_graphing($verbose = false)
                 $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
                 $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
 
-                create_new_rrd($rrdcreate);
+                rrd_create($rrdcreate);
                 unset($rrdcreate);
             }
 
@@ -191,7 +191,7 @@ function enable_rrd_graphing($verbose = false)
                 $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
                 $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
 
-                create_new_rrd($rrdcreate);
+                rrd_create($rrdcreate);
                 unset($rrdcreate);
             }
 
@@ -220,7 +220,7 @@ function enable_rrd_graphing($verbose = false)
                     $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
                     $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
 
-                    create_new_rrd($rrdcreate);
+                    rrd_create($rrdcreate);
                     unset($rrdcreate);
                 }
 
@@ -245,7 +245,7 @@ function enable_rrd_graphing($verbose = false)
                     $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
                     $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
 
-                    create_new_rrd($rrdcreate);
+                    rrd_create($rrdcreate);
                     unset($rrdcreate);
                 }
 
@@ -285,7 +285,7 @@ function enable_rrd_graphing($verbose = false)
                     $rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
                     $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
                     $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
-                    create_new_rrd($rrdcreate);
+                    rrd_create($rrdcreate);
                     unset($rrdcreate);
                 }
 
@@ -318,7 +318,7 @@ function enable_rrd_graphing($verbose = false)
             $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
             $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
 
-            create_new_rrd($rrdcreate);
+            rrd_create($rrdcreate);
             unset($rrdcreate);
         }
 
@@ -352,7 +352,7 @@ function enable_rrd_graphing($verbose = false)
             $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
             $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
 
-            create_new_rrd($rrdcreate);
+            rrd_create($rrdcreate);
             unset($rrdcreate);
         }
 
@@ -389,7 +389,7 @@ function enable_rrd_graphing($verbose = false)
             $rrdcreate .= "RRA:MAX:0.5:60:1860 ";
             $rrdcreate .= "RRA:MAX:0.5:1440:2284";
 
-            create_new_rrd($rrdcreate);
+            rrd_create($rrdcreate);
             unset($rrdcreate);
         }
 
@@ -425,7 +425,7 @@ function enable_rrd_graphing($verbose = false)
             $rrdcreate .= "RRA:MAX:0.5:60:1860 ";
             $rrdcreate .= "RRA:MAX:0.5:1440:2284";
 
-            create_new_rrd($rrdcreate);
+            rrd_create($rrdcreate);
             unset($rrdcreate);
         }
 
@@ -466,7 +466,7 @@ function enable_rrd_graphing($verbose = false)
                 $rrdcreate .= "RRA:MAX:0.5:60:1860 ";
                 $rrdcreate .= "RRA:MAX:0.5:1440:2284 ";
 
-                create_new_rrd($rrdcreate);
+                rrd_create($rrdcreate);
                 unset($rrdcreate);
             }
 
@@ -512,7 +512,7 @@ function enable_rrd_graphing($verbose = false)
             $rrdcreate .= "RRA:LAST:0.5:60:1000 ";
             $rrdcreate .= "RRA:LAST:0.5:720:3000 ";
 
-            create_new_rrd($rrdcreate);
+            rrd_create($rrdcreate);
         }
 
         /* enter UNKNOWN values in the RRD so it knows we rebooted. */
@@ -537,13 +537,13 @@ function enable_rrd_graphing($verbose = false)
         unset($rrdupdatesh);
 
         /* kill off traffic collectors */
-        kill_traffic_collector();
+        rrd_stop();
 
         /* start traffic collector */
         mwexec_bg("/bin/sh $updaterrdscript");
     } else {
         /* kill off traffic collectors */
-        kill_traffic_collector();
+        rrd_stop();
     }
 
     $databases = glob("{$rrddbpath}/*.rrd");
@@ -556,7 +556,7 @@ function enable_rrd_graphing($verbose = false)
     }
 }
 
-function create_gateway_quality_rrd($rrd_file)
+function rrd_create_gateway_quality($rrd_file)
 {
     $rrdinterval = 60;
     $valid = $rrdinterval * 2;
@@ -572,7 +572,7 @@ function create_gateway_quality_rrd($rrd_file)
         $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
         $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
 
-        create_new_rrd($rrdcreate);
+        rrd_create($rrdcreate);
         unset($rrdcreate);
     }
 
@@ -583,7 +583,81 @@ function create_gateway_quality_rrd($rrd_file)
     unset($rrdtool, $rrdinterval, $valid, $rrd_file);
 }
 
-function kill_traffic_collector()
+function rrd_stop()
 {
-    killbypid('/var/run/updaterrd.sh.pid');
+    killbypid('/var/run/updaterrd.sh.pid', 'TERM', true);
+}
+
+function rrd_export()
+{
+    $rrddbpath = '/var/db/rrd';
+
+    $result = "\t<rrddata>\n";
+    $rrd_files = glob("{$rrddbpath}/*.rrd");
+    $xml_files = array();
+    foreach ($rrd_files as $rrd_file) {
+        $basename = basename($rrd_file);
+        $xml_file = preg_replace('/\.rrd$/', ".xml", $rrd_file);
+        exec("/usr/local/bin/rrdtool dump '{$rrd_file}' '{$xml_file}'");
+        $xml_data = @file_get_contents($xml_file);
+        @unlink($xml_file);
+        if ($xml_data !== false) {
+            $result .= "\t\t<rrddatafile>\n";
+            $result .= "\t\t\t<filename>{$basename}</filename>\n";
+            $result .= "\t\t\t<xmldata>" . base64_encode(gzdeflate($xml_data)) . "</xmldata>\n";
+            $result .= "\t\t</rrddatafile>\n";
+        }
+    }
+    $result .= "\t</rrddata>\n";
+    return $result;
+}
+
+function rrd_import()
+{
+    global $config;
+
+    foreach ($config['rrddata']['rrddatafile'] as $rrd) {
+        if (!empty($rrd['xmldata'])) {
+            $rrd_file = "/var/db/rrd/{$rrd['filename']}";
+            $xml_file = preg_replace('/\.rrd$/', ".xml", $rrd_file);
+            if (file_put_contents($xml_file, gzinflate(base64_decode($rrd['xmldata']))) === false) {
+                log_error("Cannot write $xml_file");
+                continue;
+            }
+            $output = array();
+            $status = null;
+            exec("/usr/local/bin/rrdtool restore -f '{$xml_file}' '{$rrd_file}'", $output, $status);
+            if ($status) {
+                log_error("rrdtool restore -f '{$xml_file}' '{$rrd_file}' failed returning {$status}.");
+                continue;
+            }
+            unlink($xml_file);
+        } elseif (!empty($rrd['data'])) {
+            /* rrd backup format */
+            $rrd_file = "/var/db/rrd/{$rrd['filename']}";
+            $rrd_fd = fopen($rrd_file, "w");
+            if (!$rrd_fd) {
+                log_error("Cannot write $rrd_file");
+                continue;
+            }
+            $data = base64_decode($rrd['data']);
+            /* Try to decompress the data. */
+            $dcomp = @gzinflate($data);
+            if ($dcomp) {
+                /* If the decompression worked, write the decompressed data */
+                if (fwrite($rrd_fd, $dcomp) === false) {
+                    log_error("fwrite $rrd_file failed");
+                    continue;
+                }
+            } elseif (fwrite($rrd_fd, $data) === false) {
+                  /* If the decompression failed, it wasn't compressed, so write raw data */
+                  log_error("fwrite $rrd_file failed");
+                  continue;
+            }
+            if (fclose($rrd_fd) === false) {
+                log_error("fclose $rrd_file failed");
+                continue;
+            }
+        }
+    }
 }

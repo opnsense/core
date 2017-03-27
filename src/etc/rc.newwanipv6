@@ -136,4 +136,4 @@ if (is_ipaddrv6($oldipv6)) {
 plugins_configure('interface', false, array($interface));
 
 /* reload graphing functions */
-enable_rrd_graphing();
+rrd_configure();

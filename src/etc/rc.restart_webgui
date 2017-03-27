@@ -13,4 +13,4 @@ if (count($argv) > 1 && is_numeric($argv[1])) {
 }
 
 system_webgui_configure(true);
-enable_rrd_graphing(true);
+rrd_configure(true);

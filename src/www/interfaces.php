@@ -526,7 +526,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             /* sync filter configuration */
             setup_gateways_monitor();
             filter_configure();
-            enable_rrd_graphing();
+            rrd_configure();
             if (is_subsystem_dirty('staticroutes') && (system_routing_configure() == 0)) {
                 clear_subsystem_dirty('staticroutes');
             }

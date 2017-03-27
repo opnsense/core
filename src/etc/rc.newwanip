@@ -185,7 +185,7 @@ if (!is_ipaddr($oldip) || $curwanip != $oldip || !is_ipaddrv4($config['interface
     plugins_configure('interface', false, array($interface));
 
     /* reload graphing functions */
-    enable_rrd_graphing();
+    rrd_configure();
 }
 
 /* reload filter, don't try to sync to carp slave */

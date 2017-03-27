@@ -2107,7 +2107,7 @@ function upgrade_054_to_055()
 		$rrdcreate .= "RRA:AVERAGE:0.5:60:1000 ";
 		$rrdcreate .= "RRA:AVERAGE:0.5:720:1000 ";
 
-		create_new_rrd("$rrdcreate");
+		rrd_create("$rrdcreate");
 		/* create temporary xml from new RRD */
 		dump_rrd_to_xml("/tmp/{$databasetmp}", "/tmp/{$xmldumptmp}");
 
@@ -2136,7 +2136,7 @@ function upgrade_054_to_055()
 		mwexec("$rrdtool resize {$rrddbpath}/{$database} 3 GROW 2000;/bin/mv resize.rrd {$rrddbpath}/{$database} 2>&1");
 		unset($rrdxmlarray);
 	}
-	enable_rrd_graphing();
+	rrd_configure();
 }
 
 function upgrade_055_to_056() {
@@ -2708,7 +2708,7 @@ function upgrade_080_to_081()
 		@unlink("/tmp/{$xmldump}");
 		@unlink("/tmp/{$xmldumpnew}");
 	}
-	enable_rrd_graphing();
+	rrd_configure();
 
 	foreach($config['filter']['rule'] as & $rule) {
 		if (isset($rule['protocol']) && !empty($rule['protocol']))
@@ -2934,7 +2934,7 @@ function upgrade_095_to_096()
 		mwexec("{$cmd} 2>&1");
 
 	}
-	enable_rrd_graphing();
+	rrd_configure();
 }
 
 function upgrade_096_to_097()
