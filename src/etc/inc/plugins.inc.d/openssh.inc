@@ -31,7 +31,7 @@
 function openssh_configure()
 {
     return array(
-        'bootup' => array('openssh_configure_do'),
+        'earlybootup' => array('openssh_configure_do'),
         'local' => array('openssh_configure_do'),
     );
 }
