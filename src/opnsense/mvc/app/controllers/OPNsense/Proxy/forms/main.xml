@@ -136,7 +136,7 @@
                 <id>proxy.general.cache.local.directory</id>
                 <label>Cache directory location</label>
                 <type>text</type>
-                <help><![CDATA[Enter the directory location for thee local cache (default is /var/squid/cache).]]></help>
+                <help><![CDATA[Enter the directory location for the local cache (default is /var/squid/cache).]]></help>
                 <advanced>true</advanced>
             </field>
             <field>
