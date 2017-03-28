@@ -235,10 +235,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext('Cannot set random password due to explicit input.');
         }
 
-        if (empty($pconfig['passwordfld1']) && empty($pconfig['gen_new_password'])) {
-            $input_errors[] = gettext('A password is required.');
-        }
-
         if (!empty($pconfig['disabled']) && $_SESSION['Username'] === $a_user[$id]['name']) {
             $input_errors[] = gettext('You cannot disable yourself.');
         }
@@ -246,8 +242,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($id)) {
             $oldusername = $a_user[$id]['name'];
         } else {
-            $oldusername = "";
+            $oldusername = '';
+
+            if (empty($pconfig['passwordfld1']) && empty($pconfig['gen_new_password'])) {
+                $input_errors[] = gettext('A password is required.');
+            }
         }
+
         /* make sure this user name is unique */
         if (count($input_errors) == 0) {
             foreach ($a_user as $userent) {
@@ -257,6 +258,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
         }
+
         /* also make sure it is not reserved */
         if (count($input_errors) == 0) {
             $system_users = explode("\n", file_get_contents("/etc/passwd"));
@@ -269,14 +271,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-       /*
-       * Check for a valid expirationdate if one is set at all (valid means,
-       * DateTime puts out a time stamp so any DateTime compatible time
-       * format may be used. to keep it simple for the enduser, we only
-       * claim to accept MM/DD/YYYY as inputs. Advanced users may use inputs
-       * like "+1 day", which will be converted to MM/DD/YYYY based on "now".
-       * Otherwhise such an entry would lead to an invalid expiration data.
-       */
+        /*
+         * Check for a valid expirationdate if one is set at all (valid means,
+         * DateTime puts out a time stamp so any DateTime compatible time
+         * format may be used. to keep it simple for the enduser, we only
+         * claim to accept MM/DD/YYYY as inputs. Advanced users may use inputs
+         * like "+1 day", which will be converted to MM/DD/YYYY based on "now".
+         * Otherwhise such an entry would lead to an invalid expiration data.
+         */
         if (!empty($pconfig['expires'])) {
             try {
                 $expdate = new DateTime($pconfig['expires']);
