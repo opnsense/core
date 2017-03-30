@@ -84,9 +84,9 @@ class Downloader(object):
                 req_opts['verify'] = False
             if self._username is not None:
                 req_opts['auth'] = (self._username, self._password)
-
             req = requests.get(**req_opts)
             if req.status_code == 200:
+                req.raw.decode_content = True
                 self._source_handle = tempfile.NamedTemporaryFile('wb+', 10240)
                 while True:
                     data = req.raw.read(10240)
