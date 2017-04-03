@@ -551,24 +551,6 @@
             <pattern>services_unbound_host_edit.php*</pattern>
         </patterns>
     </page-services-dnsresolver-edithost>
-    <page-services-dynamicdnsclient>
-        <name>Services: Dynamic DNS client</name>
-        <patterns>
-            <pattern>services_dyndns_edit.php*</pattern>
-        </patterns>
-    </page-services-dynamicdnsclient>
-    <page-services-dynamicdnsclients>
-        <name>Services: Dynamic DNS clients</name>
-        <patterns>
-            <pattern>services_dyndns.php*</pattern>
-        </patterns>
-    </page-services-dynamicdnsclients>
-    <page-services-rfc2136clients>
-        <name>Services: RFC 2136 clients</name>
-        <patterns>
-            <pattern>services_rfc2136.php*</pattern>
-        </patterns>
-    </page-services-rfc2136clients>
     <page-services-router-advertisements>
         <name>Services: Router advertisements</name>
         <patterns>

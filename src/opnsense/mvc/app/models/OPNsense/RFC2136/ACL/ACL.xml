@@ -1,0 +1,9 @@
+<acl>
+    <page-services-rfc2136clients>
+        <name>Services: RFC 2136 clients</name>
+        <patterns>
+            <pattern>services_rfc2136.php*</pattern>
+            <pattern>services_rfc2136_edit.php*</pattern>
+        </patterns>
+    </page-services-rfc2136clients>
+</acl>

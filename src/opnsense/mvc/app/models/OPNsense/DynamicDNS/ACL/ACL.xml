@@ -1,0 +1,9 @@
+<acl>
+    <page-services-dynamicdnsclients>
+        <name>Services: Dynamic DNS clients</name>
+        <patterns>
+            <pattern>services_dyndns.php*</pattern>
+            <pattern>services_dyndns_edit.php*</pattern>
+        </patterns>
+    </page-services-dynamicdnsclients>
+</acl>
