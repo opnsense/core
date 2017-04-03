@@ -1,6 +1,7 @@
 <?php
 
 /*
+    Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2008 Ermal Luci
     Copyright (C) 2013 Stanley P. Miller \ stan-qaz
@@ -29,20 +30,20 @@
 */
 
 require_once("guiconfig.inc");
-require_once("widgets/include/dyn_dns_status.inc");
+require_once("widgets/include/rfc2136.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
-require_once("plugins.inc.d/dyndns.inc");
+require_once("plugins.inc.d/rfc2136.inc");
 
-if (!isset($config['dyndnses']['dyndns'])) {
-    $config['dyndnses']['dyndns'] = array();
+if (!isset($config['dnsupdates']['dnsupdate'])) {
+    $config['dnsupdates']['dnsupdate'] = array();
 }
 
-$a_dyndns = &$config['dyndnses']['dyndns'];
+$a_rfc2136 = &$config['dnsupdates']['dnsupdate'];
 
-if (!empty($_REQUEST['getdyndnsstatus'])) {
+if (!empty($_REQUEST['getrfc2136status'])) {
     $first_entry = true;
-    foreach ($a_dyndns as $dyndns) {
+    foreach ($a_rfc2136 as $rfc2136) {
         if ($first_entry) {
             $first_entry = false;
         } else {
@@ -50,17 +51,17 @@ if (!empty($_REQUEST['getdyndnsstatus'])) {
             echo '|';
         }
 
-        $filename = dyndns_cache_file($dyndns, 4);
+        $filename = rfc2136_cache_file($rfc2136, 4);
         $fdata = '';
-        if (!empty($dyndns['enable']) && file_exists($filename)) {
-            $ipaddr = get_dyndns_ip($dyndns['interface'], 4);
+        if (!empty($rfc2136['enable']) && (empty($rfc2136['recordtype']) || $rfc2136['recordtype'] == 'A') && file_exists($filename)) {
+            $ipaddr = get_dyndns_ip($rfc2136['interface'], 4);
             $fdata = @file_get_contents($filename);
         }
 
-        $filename_v6 = dyndns_cache_file($dyndns, 6);
+        $filename_v6 = rfc2136_cache_file($rfc2136, 6);
         $fdata6 = '';
-        if (!empty($dyndns['enable']) && file_exists($filename_v6)) {
-            $ipv6addr = get_dyndns_ip($dyndns['interface'], 6);
+        if (!empty($rfc2136['enable']) && (empty($rfc2136['recordtype']) || $rfc2136['recordtype'] == 'AAAA') && file_exists($filename_v6)) {
+            $ipv6addr = get_dyndns_ip($rfc2136['interface'], 6);
             $fdata6 = @file_get_contents($filename_v6);
         }
 
@@ -68,20 +69,26 @@ if (!empty($_REQUEST['getdyndnsstatus'])) {
             $cached_ip_s = explode('|', $fdata);
             $cached_ip = $cached_ip_s[0];
             echo sprintf(
-                '<font color="%s">%s</font>',
+                'IPv4: <font color="%s">%s</font>',
                 $ipaddr != $cached_ip ? 'red' : 'green',
                 htmlspecialchars($cached_ip)
             );
-        } elseif (!empty($fdata6)) {
+        } else {
+            echo 'IPv4: ' . gettext('N/A');
+        }
+
+        echo '<br />';
+
+        if (!empty($fdata6)) {
             $cached_ipv6_s = explode('|', $fdata6);
             $cached_ipv6 = $cached_ipv6_s[0];
             echo sprintf(
-                '<font color="%s">%s</font>',
+                'IPv6: <font color="%s">%s</font>',
                 $ipv6addr != $cached_ipv6 ? 'red' : 'green',
                 htmlspecialchars($cached_ipv6)
             );
         } else {
-            echo gettext('N/A');
+            echo 'IPv6: ' . gettext('N/A');
         }
     }
     exit;
@@ -93,7 +100,7 @@ if (!empty($_REQUEST['getdyndnsstatus'])) {
   <thead>
     <tr>
       <th><?=gettext("Interface");?></th>
-      <th><?=gettext("Service");?></th>
+      <th><?=gettext("Server");?></th>
       <th><?=gettext("Hostname");?></th>
       <th><?=gettext("Cached IP");?></th>
     </tr>
@@ -101,39 +108,32 @@ if (!empty($_REQUEST['getdyndnsstatus'])) {
   <tbody>
 <?php
   $iflist = get_configured_interface_with_descr();
-  $types = dyndns_list();
   $groupslist = return_gateway_groups_array();
-  foreach ($a_dyndns as $i => $dyndns) :?>
-    <tr ondblclick="document.location='services_dyndns_edit.php?id=<?=$i;?>'">
-      <td <?= isset($dyndns['enable']) ? '' : 'class="text-muted"' ?>>
+  foreach ($a_rfc2136 as $i => $rfc2136) :?>
+    <tr ondblclick="document.location='services_rfc2136_edit.php?id=<?=$i;?>'">
+      <td <?= isset($rfc2136['enable']) ? '' : 'class="text-muted"' ?>>
 <?php
         foreach ($iflist as $if => $ifdesc) {
-            if ($dyndns['interface'] == $if) {
+            if ($rfc2136['interface'] == $if) {
                 echo "{$ifdesc}";
                 break;
             }
         }
         foreach ($groupslist as $if => $group) {
-            if ($dyndns['interface'] == $if) {
+            if ($rfc2136['interface'] == $if) {
                 echo "{$if}";
                 break;
             }
         }?>
       </td>
-      <td <?= isset($dyndns['enable']) ? '' : 'class="text-muted"' ?>>
-<?php
-        if (isset($types[$dyndns['type']])) {
-            echo htmlspecialchars($types[$dyndns['type']]);
-        } else {
-            echo htmlspecialchars($dyndns['type']);
-        }
-?>
+      <td <?= isset($rfc2136['enable']) ? '' : 'class="text-muted"' ?>>
+        <?= htmlspecialchars($rfc2136['server']) ?>
       </td>
-      <td <?= isset($dyndns['enable']) ? '' : 'class="text-muted"' ?>>
-        <?= htmlspecialchars($dyndns['host']) ?>
+      <td <?= isset($rfc2136['enable']) ? '' : 'class="text-muted"' ?>>
+        <?= htmlspecialchars($rfc2136['host']) ?>
       </td>
-      <td <?= isset($dyndns['enable']) ? '' : 'class="text-muted"' ?>>
-        <div id='dyndnsstatus<?=$i;?>'>
+      <td <?= isset($rfc2136['enable']) ? '' : 'class="text-muted"' ?>>
+        <div id='rfc2136status<?=$i;?>'>
           <?= gettext('Checking...') ?>
         </div>
       </td>
@@ -143,26 +143,26 @@ if (!empty($_REQUEST['getdyndnsstatus'])) {
   </tbody>
 </table>
 <script type="text/javascript">
-  function dyndns_getstatus()
+  function rfc2136_getstatus()
   {
       scroll(0,0);
-      var url = "/widgets/widgets/dyn_dns_status.widget.php";
-      var pars = 'getdyndnsstatus=yes';
-      jQuery.ajax(url, {type: 'get', data: pars, complete: dyndnscallback});
+      var url = "/widgets/widgets/rfc2136.widget.php";
+      var pars = 'getrfc2136status=yes';
+      jQuery.ajax(url, {type: 'get', data: pars, complete: rfc2136callback});
       // Refresh the status every 5 minutes
-      setTimeout('dyndns_getstatus()', 5*60*1000);
+      setTimeout('rfc2136_getstatus()', 5*60*1000);
   }
-  function dyndnscallback(transport)
+  function rfc2136callback(transport)
   {
       // The server returns a string of statuses separated by vertical bars
       var responseStrings = transport.responseText.split("|");
       for (var count=0; count<responseStrings.length; count++) {
-          var divlabel = '#dyndnsstatus' + count;
+          var divlabel = '#rfc2136status' + count;
           jQuery(divlabel).prop('innerHTML',responseStrings[count]);
       }
   }
   $( document ).ready(function() {
     // Do the first status check 2 seconds after the dashboard opens
-    setTimeout('dyndns_getstatus()', 2000);
+    setTimeout('rfc2136_getstatus()', 2000);
   });
 </script>

@@ -32,22 +32,20 @@ require_once("interfaces.inc");
 require_once("util.inc");
 require_once("filter.inc");
 require_once("services.inc");
-
-/* Interface IP address has changed */
+require_once("plugins.inc.d/rfc2136.inc");
 
 if (isset($argv[1])) {
-	$argument = trim($argv[1], " \n");
+    $argument = trim($argv[1], " \n");
 } else {
-	$argument = null;
+    $argument = null;
 }
 
-if(empty($argument)) {
-	services_dyndns_configure();
-	services_dnsupdate_process();
+if (empty($argument)) {
+    rfc2136_configure_do(true);
 } else {
-	$interface = lookup_gateway_interface_by_name($argument);
-	if (empty($interface))
-		$interface = $argument;
-	services_dyndns_configure($interface);
-	services_dnsupdate_process($interface);
+    $interface = lookup_gateway_interface_by_name($argument);
+    if (empty($interface)) {
+        $interface = $argument;
+    }
+    rfc2136_configure_do(true, $interface);
 }

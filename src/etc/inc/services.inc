@@ -43,10 +43,11 @@
  * as plugins, but the things listed below are viable
  * targets in the future:
  */
-require_once('dyndns.class');
 require_once('ipsec.inc');
 require_once('openvpn.inc');
 require_once('plugins.inc.d/dnsmasq.inc');
+require_once('plugins.inc.d/dyndns.inc');
+require_once('plugins.inc.d/rfc2136.inc');
 require_once('plugins.inc.d/openssh.inc');
 require_once('plugins.inc.d/unbound.inc');
 
@@ -1542,272 +1543,37 @@ function services_dhcrelay6_configure($verbose = false)
     }
 }
 
-function services_dyndns_list()
-{
-    return array(
-      'citynetwork' => 'City Network',
-      'cloudflare' => 'CloudFlare',
-      'custom' => 'Custom',
-      'custom-v6' => 'Custom (v6)',
-      'dhs' => 'DHS',
-      'dnsexit' => 'DNSexit',
-      'dnsomatic' => 'DNS-O-Matic',
-      'duckdns' => 'Duck DNS',
-      'dyndns' => 'DynDNS (dynamic)',
-      'dyndns-static' => 'DynDNS (static)',
-      'dyndns-custom' => 'DynDNS (custom)',
-      'dyns' => 'DyNS',
-      'easydns' => 'easyDNS',
-      'eurodns' => 'EuroDNS',
-      'freedns' => 'freeDNS',
-      'gratisdns' => 'GratisDNS',
-      'googledomains' => 'Google Domains',
-      'he-net' => 'HE.net',
-      'he-net-v6' => 'HE.net (v6)',
-      'he-net-tunnelbroker' => 'HE.net Tunnelbroker',
-      'loopia' => 'Loopia',
-      'namecheap' => 'Namecheap',
-      'noip' => 'No-IP',
-      'noip-free' => 'No-IP (free)',
-      'ods' => 'ODS.org',
-      'opendns' => 'OpenDNS',
-      'ovh-dynhost' => 'OVH DynHOST',
-      'route53' => 'Route 53',
-      'selfhost' => 'SelfHost',
-      'zoneedit' => 'ZoneEdit',
-    );
-}
-
-function services_dyndns_configure_client($conf)
-{
-    if (!isset($conf['enable'])) {
-        return;
-    }
-
-    $dns = new updatedns($dnsService = $conf['type'],
-        $dnsHost = $conf['host'],
-        $dnsUser = $conf['username'],
-        $dnsPass = $conf['password'],
-        $dnsWilcard = $conf['wildcard'],
-        $dnsMX = $conf['mx'],
-        $dnsIf = "{$conf['interface']}",
-        $dnsBackMX = NULL,
-        $dnsServer = NULL,
-        $dnsPort = NULL,
-        $dnsUpdateURL = "{$conf['updateurl']}",
-        $forceUpdate = $conf['force'],
-        $dnsZoneID=$conf['zoneid'],
-        $dnsTTL=$conf['ttl'],
-        $dnsResultMatch = "{$conf['resultmatch']}",
-        $dnsRequestIf = "{$conf['requestif']}",
-        $dnsID = "{$conf['id']}",
-        $dnsVerboseLog = $conf['verboselog'],
-        $curlIpresolveV4 = $conf['curl_ipresolve_v4'],
-        $curlSslVerifypeer = $conf['curl_ssl_verifypeer']
-    );
-}
-
-function services_dyndns_configure($int = '', $verbose = false)
+function get_dyndns_ip($int, $ipver = 4)
 {
     global $config;
 
-    if (isset($config['dyndnses']['dyndns'])) {
-        $dyndnscfg = $config['dyndnses']['dyndns'];
-        $gwgroups = return_gateway_groups_array();
-        if (is_array($dyndnscfg)) {
-            if ($verbose) {
-                echo 'Starting dynamic DNS clients...';
-                flush();
-            }
+    $ip_address = $ipver == 6 ? get_interface_ipv6($int) : get_interface_ip($int);
 
-            foreach ($dyndnscfg as $dyndns) {
-                if ((empty($int)) || ($int == $dyndns['interface']) || (is_array($gwgroups[$dyndns['interface']]))) {
-                    $dyndns['verboselog'] = isset($dyndns['verboselog']);
-                    $dyndns['curl_ipresolve_v4'] = isset($dyndns['curl_ipresolve_v4']);
-                    $dyndns['curl_ssl_verifypeer'] = isset($dyndns['curl_ssl_verifypeer']);
-                    services_dyndns_configure_client($dyndns);
-                    sleep(1);
-                }
-            }
-
-            if ($verbose) {
-                echo "done.\n";
-            }
-        }
-    }
-
-    return 0;
-}
-
-function dyndnsCheckIP($int)
-{
-    global $config;
-
-    $ip_address = get_interface_ip($int);
-
-    if (is_private_ip($ip_address)) {
+    if ($ipver == 6 || is_private_ip($ip_address)) {
         $gateways_status = return_gateways_status(true);
         // If the gateway for this interface is down, then the external check cannot work.
         // Avoid the long wait for the external check to timeout.
         if (stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'],"down")) {
-            return "down";
+            return 'down';
         }
-        $hosttocheck = "http://checkip.dyndns.org";
+        $hosttocheck = $ipver == 6 ? 'http://checkipv6.dyndns.org' : 'http://checkip.dyndns.org';
         $ip_ch = curl_init($hosttocheck);
         curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ip_ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ip_ch, CURLOPT_INTERFACE, $ip_address);
-        curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, '30');
-        curl_setopt($ip_ch, CURLOPT_TIMEOUT, 120);
-        curl_setopt($ip_ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ip_ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ip_ch, CURLOPT_IPRESOLVE, $ipver == 6 ? CURL_IPRESOLVE_V6 : CURL_IPRESOLVE_V4);
         $ip_result_page = curl_exec($ip_ch);
         curl_close($ip_ch);
         $ip_result_decoded = urldecode($ip_result_page);
-        preg_match('=Current IP Address: (.*)</body>=siU', $ip_result_decoded, $matches);
+        preg_match('=<body>Current IP Address: (.*)</body>=siU', $ip_result_decoded, $matches);
         $ip_address = trim($matches[1]);
+        if (($ipver == 6 && !is_ipaddrv6($ip_address)) || ($ipver != 6 && !is_ipaddrv4($ip_address))) {
+            return 'down';
+        }
     }
+
     return $ip_address;
-}
-
-function services_dnsupdate_process($int = '', $updatehost = '', $forced = false)
-{
-    global $config;
-
-    if (isset($config['dnsupdates']['dnsupdate'])) {
-        $notify_text = "";
-        foreach ($config['dnsupdates']['dnsupdate'] as $i => $dnsupdate) {
-            if (!isset($dnsupdate['enable'])) {
-                continue;
-            } elseif (!empty($int) && $int != $dnsupdate['interface']) {
-                continue;
-            } elseif (!empty($updatehost) && ($updatehost != $dnsupdate['host'])) {
-                continue;
-            }
-
-            $if = get_real_interface($dnsupdate['interface']);
-
-            if (isset($dnsupdate['usepublicip'])) {
-                $wanip = dyndnsCheckIP($dnsupdate['interface']);
-            } else {
-                $wanip = get_interface_ip($dnsupdate['interface']);
-            }
-
-            $wanipv6 = get_interface_ipv6($dnsupdate['interface']);
-            $cacheFile = "/conf/dyndns_{$dnsupdate['interface']}_rfc2136_" . escapeshellarg($dnsupdate['host']) . "_{$dnsupdate['server']}.cache";
-            $currentTime = time();
-
-            if ($wanip || $wanipv6) {
-                $keyname = $dnsupdate['keyname'];
-                /* trailing dot */
-                if (substr($keyname, -1) != ".") {
-                    $keyname .= ".";
-                }
-
-                $hostname = $dnsupdate['host'];
-                /* trailing dot */
-                if (substr($hostname, -1) != ".") {
-                    $hostname .= ".";
-                }
-
-                /* write private key file
-                   this is dumb - public and private keys are the same for HMAC-MD5,
-                   but nsupdate insists on having both */
-                $fd = fopen("/var/etc/K{$i}{$keyname}+157+00000.private", "w");
-                $privkey = <<<EOD
-Private-key-format: v1.2
-Algorithm: 157 (HMAC)
-Key: {$dnsupdate['keydata']}
-
-EOD;
-                fwrite($fd, $privkey);
-                fclose($fd);
-
-                /* write public key file */
-                if ($dnsupdate['keytype'] == "zone") {
-                    $flags = 257;
-                    $proto = 3;
-                } elseif ($dnsupdate['keytype'] == "host") {
-                    $flags = 513;
-                    $proto = 3;
-                } elseif ($dnsupdate['keytype'] == "user") {
-                    $flags = 0;
-                    $proto = 2;
-                }
-
-                $fd = fopen("/var/etc/K{$i}{$keyname}+157+00000.key", "w");
-                fwrite($fd, "{$keyname} IN KEY {$flags} {$proto} 157 {$dnsupdate['keydata']}\n");
-                fclose($fd);
-
-                /* generate update instructions */
-                $upinst = "";
-                if (!empty($dnsupdate['server'])) {
-                    $upinst .= "server {$dnsupdate['server']}\n";
-                }
-
-                if (file_exists($cacheFile)) {
-                    list($cachedipv4, $cacheTimev4) = explode("|", file_get_contents($cacheFile));
-                }
-                if (file_exists("{$cacheFile}.ipv6")) {
-                    list($cachedipv6, $cacheTimev6) = explode("|", file_get_contents("{$cacheFile}.ipv6"));
-                }
-
-                // 25 Days
-                $maxCacheAgeSecs = 25 * 24 * 60 * 60;
-                $need_update = false;
-
-                /* Update IPv4 if we have it. */
-                if (is_ipaddrv4($wanip) && (empty($dnsupdate['recordtype']) || $dnsupdate['recordtype'] == 'A')) {
-                    if (($wanip != $cachedipv4) || (($currentTime - $cacheTimev4) > $maxCacheAgeSecs) || $forced) {
-                        $upinst .= "update delete {$dnsupdate['host']}. A\n";
-                        $upinst .= "update add {$dnsupdate['host']}. {$dnsupdate['ttl']} A {$wanip}\n";
-                        $notify_text .= sprintf(gettext('Dynamic DNS updated IP Address (A) for %s on %s (%s) to %s'), $dnsupdate['host'], convert_real_interface_to_friendly_descr($if), $if, $wanip) . "\n";
-                        @file_put_contents($cacheFile, "{$wanip}|{$currentTime}");
-                        log_error("Dynamic DNS: updating cache file {$cacheFile}: {$wanip}");
-                        $need_update = true;
-                    } else {
-                        log_error("Dynamic DNS: Not updating {$dnsupdate['host']} A record because the IP address has not changed.");
-                    }
-                } else {
-                    @unlink($cacheFile);
-                }
-
-                /* Update IPv6 if we have it. */
-                if (is_ipaddrv6($wanipv6) && (empty($dnsupdate['recordtype']) || $dnsupdate['recordtype'] == 'AAAA')) {
-                    if (($wanipv6 != $cachedipv6) || (($currentTime - $cacheTimev6) > $maxCacheAgeSecs) || $forced) {
-                        $upinst .= "update delete {$dnsupdate['host']}. AAAA\n";
-                        $upinst .= "update add {$dnsupdate['host']}. {$dnsupdate['ttl']} AAAA {$wanipv6}\n";
-                        $notify_text .= sprintf(gettext('Dynamic DNS updated IPv6 Address (AAAA) for %s on %s (%s) to %s'), $dnsupdate['host'], convert_real_interface_to_friendly_descr($if), $if, $wanipv6) . "\n";
-                        @file_put_contents("{$cacheFile}.ipv6", "{$wanipv6}|{$currentTime}");
-                        log_error("Dynamic DNS: updating cache file {$cacheFile}.ipv6: {$wanipv6}");
-                        $need_update = true;
-                    } else {
-                        log_error("Dynamic DNS: Not updating {$dnsupdate['host']} AAAA record because the IPv6 address has not changed.");
-                    }
-                } else {
-                    @unlink("{$cacheFile}.ipv6");
-                }
-
-                $upinst .= "\n";  /* mind that trailing newline! */
-
-                if ($need_update) {
-                    @file_put_contents("/var/etc/nsupdatecmds{$i}", $upinst);
-                    unset($upinst);
-                    /* invoke nsupdate */
-                    $cmd = "/usr/local/bin/nsupdate -k /var/etc/K{$i}{$keyname}+157+00000.key";
-                    if (isset($dnsupdate['usetcp']))
-                      $cmd .= " -v";
-                    $cmd .= " /var/etc/nsupdatecmds{$i}";
-                    mwexec_bg($cmd);
-                    unset($cmd);
-                }
-            }
-        }
-        if (!empty($notify_text)) {
-            notify_all_remote($notify_text);
-        }
-    }
-
-    return 0;
 }
 
 function is_apinger_enabled()

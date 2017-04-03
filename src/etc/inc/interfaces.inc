@@ -2778,6 +2778,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 
             /* update dyndns */
             configd_run("dyndns reload {$interface}");
+            configd_run("rfc2136 reload {$interface}");
         }
     }
 

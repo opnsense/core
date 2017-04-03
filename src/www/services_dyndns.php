@@ -30,7 +30,8 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
-require_once("interfaces.inc");
+require_once("system.inc");
+require_once("plugins.inc.d/dyndns.inc");
 
 if (empty($config['dyndnses']['dyndns']) || !isset($config['dyndnses']['dyndns'])) {
     $config['dyndnses']['dyndns'] = array();
@@ -41,10 +42,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['act']) && $_POST['act'] == "del" && isset($_POST['id'])) {
         if (!empty($a_dyndns[$_POST['id']])) {
             $conf = $a_dyndns[$_POST['id']];
-            @unlink("/conf/dyndns_{$conf['interface']}{$conf['type']}" . escapeshellarg($conf['host']) . "{$conf['id']}.cache");
+            @unlink(dyndns_cache_file($conf, 4));
+            @unlink(dyndns_cache_file($conf, 6));
             unset($a_dyndns[$_POST['id']]);
             write_config();
-            configd_run('dyndns reload', true);
+            system_cron_configure();
         }
         exit;
     } elseif (isset($_POST['act']) && $_POST['act'] == "toggle" && isset($_POST['id'])) {
@@ -55,20 +57,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $a_dyndns[$_POST['id']]['enable'] = true;
             }
             write_config();
-            configd_run('dyndns reload', true);
+            system_cron_configure();
+            if ($a_dyndns[$_POST['id']]['enable']) {
+                $a_dyndns[$_POST['id']]['force'] = true;
+                dyndns_configure_client($a_dyndns[$_POST['id']]);
+            }
         }
         exit;
     }
 }
 
-
 include("head.inc");
-legacy_html_escape_form_data($a_dyndns);
-$main_buttons = array(
-  array('label'=>gettext('Add'), 'href'=>'services_dyndns_edit.php'),
-);
-?>
 
+legacy_html_escape_form_data($a_dyndns);
+
+$main_buttons = array(
+    array('label' => gettext('Add'), 'href' => 'services_dyndns_edit.php'),
+);
+
+?>
 <body>
   <script type="text/javascript">
   $( document ).ready(function() {
@@ -78,7 +85,7 @@ $main_buttons = array(
       var id = $(this).data("id");
       BootstrapDialog.show({
         type:BootstrapDialog.TYPE_DANGER,
-        title: "<?= gettext("DynDNS");?>",
+        title: "<?= gettext("Dynamic DNS");?>",
         message: "<?=gettext("Do you really want to delete this entry?");?>",
         buttons: [{
                   label: "<?= gettext("No");?>",
@@ -136,26 +143,26 @@ $main_buttons = array(
                         </a>
                         <?=!empty($config['interfaces'][$dyndns['interface']]['descr']) ? $config['interfaces'][$dyndns['interface']]['descr'] : strtoupper($dyndns['interface']);?>
                       </td>
-                      <td><?=services_dyndns_list()[$dyndns['type']];?></td>
+                      <td><?=dyndns_list()[$dyndns['type']];?></td>
                       <td><?=$dyndns['host'];?></td>
                       <td>
 <?php
-                      $filename = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}.cache";
+                      $filename = dyndns_cache_file($dyndns, 4);
                       $fdata = '';
                       if (file_exists($filename) && !empty($dyndns['enable'])) {
-                          $ipaddr = dyndnsCheckIP($dyndns['interface']);
+                          $ipaddr = get_dyndns_ip($dyndns['interface'], 4);
                           $fdata = @file_get_contents($filename);
                       }
 
-                      $filename_v6 = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}_v6.cache";
+                      $filename_v6 = dyndns_cache_file($dyndns, 6);
                       $fdata6 = '';
                       if (file_exists($filename_v6) && !empty($dyndns['enable'])) {
-                          $ipv6addr = get_interface_ipv6($dyndns['interface']);
+                          $ipv6addr = get_dyndns_ip($dyndns['interface'], 6);
                           $fdata6 = @file_get_contents($filename_v6);
                       }
 
                       if (!empty($fdata)) {
-                          $cached_ip_s = explode(':', $fdata);
+                          $cached_ip_s = explode('|', $fdata);
                           $cached_ip = $cached_ip_s[0];
                           echo sprintf(
                               '<font color="%s">%s</font>',
@@ -183,11 +190,6 @@ $main_buttons = array(
 <?php
                       $i++;
                     endforeach; ?>
-                    <tr>
-                      <td colspan="6" class="list">
-                        <?=gettext("You can force an update for an IP address on the edit page for that service.");?>
-                      </td>
-                    </tr>
                   </tbody>
                 </table>
               </div>

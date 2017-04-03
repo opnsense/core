@@ -247,13 +247,7 @@
             </ACL>
         </DNSResolver>
         <DNSTools VisibleName="DNS Tools" cssClass="fa fa-tags fa-fw">
-            <DynamicDNS VisibleName="Dynamic DNS" order="10" url="/services_dyndns.php">
-                <Edit url="/services_dyndns_edit.php*" visibility="hidden"/>
-            </DynamicDNS>
             <Filter order="20" url="/services_opendns.php"/>
-            <RFC2136 order="30" VisibleName="RFC 2136" url="/services_rfc2136.php">
-                <Edit url="/services_rfc2136_edit.php*" visibility="hidden"/>
-            </RFC2136>
             <LogFile order="100" VisibleName="Log File" url="/diag_logs_resolver.php"/>
         </DNSTools>
         <Diagnostics order="900" cssClass="fa fa-medkit fa-fw" url="/status_services.php">

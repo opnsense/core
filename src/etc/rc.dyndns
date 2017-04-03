@@ -29,47 +29,23 @@
 
 require_once("config.inc");
 require_once("interfaces.inc");
-require_once("filter.inc");
-require_once("auth.inc");
-require_once('rrd.inc');
 require_once("util.inc");
-require_once("system.inc");
+require_once("filter.inc");
 require_once("services.inc");
-require_once("interfaces.inc");
+require_once("plugins.inc.d/dyndns.inc");
 
-global $config;
-
-$config = parse_config(true);
-
-if (count($argv) > 1 && is_numeric($argv[1])) {
-    // starting delayed.
-    sleep($argv[1]);
+if (isset($argv[1])) {
+    $argument = trim($argv[1], " \n");
+} else {
+    $argument = null;
 }
 
-log_error("rc.reload_all: Reloading web GUI.");
-
-system_webgui_configure(true);
-
-log_error("rc.reload_all: Reloading all configuration settings.");
-
-system_firmware_configure(true);
-system_login_configure(true);
-system_timezone_configure(true);
-system_hostname_configure(true);
-system_hosts_generate(true);
-system_resolvconf_generate(true);
-services_dhcpd_configure('all', array(), true);
-interfaces_configure(true);
-system_cron_configure(true);
-
-log_error("rc.reload_all: Reloading all plugin settings.");
-
-plugins_configure('local', true);
-
-log_error("rc.reload_all: Reloading RRD graphing");
-
-rrd_configure(true);
-
-log_error("rc.reload_all: Reloading filter configuration.");
-
-filter_configure_sync(true);
+if (empty($argument)) {
+    dyndns_configure_do(true);
+} else {
+    $interface = lookup_gateway_interface_by_name($argument);
+    if (empty($interface)) {
+        $interface = $argument;
+    }
+    dyndns_configure_do(true, $interface);
+}

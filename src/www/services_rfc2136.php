@@ -30,6 +30,8 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
+require_once("system.inc");
+require_once("plugins.inc.d/rfc2136.inc");
 
 if (!isset($config['dnsupdates']['dnsupdate'])) {
     $config['dnsupdates']['dnsupdate'] = array();
@@ -40,9 +42,11 @@ $a_rfc2136 = &$config['dnsupdates']['dnsupdate'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['act']) && $_POST['act'] == "del" && isset($_POST['id'])) {
         if (!empty($a_rfc2136[$_POST['id']])) {
+            @unlink(rfc2136_cache_file($a_rfc2136[$_POST['id']], 4));
+            @unlink(rfc2136_cache_file($a_rfc2136[$_POST['id']], 6));
             unset($a_rfc2136[$_POST['id']]);
             write_config();
-            configd_run('dyndns reload', true);
+            system_cron_configure();
         }
         exit;
     } elseif (isset($_POST['act']) && $_POST['act'] == "toggle" && isset($_POST['id'])) {
@@ -53,20 +57,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $a_rfc2136[$_POST['id']]['enable'] = true;
             }
             write_config();
-            configd_run('dyndns reload', true);
+            system_cron_configure();
+            if (!empty($a_rfc2136[$_POST['id']]['enable'])) {
+                rfc2136_configure_do(false, '', $a_rfc2136[$_POST['id']]['host'], true);
+            }
         }
         exit;
     }
 }
 
-
 include("head.inc");
+
 legacy_html_escape_form_data($a_rfc2136);
+
 $main_buttons = array(
     array('label' => gettext('Add'), 'href' => 'services_rfc2136_edit.php'),
 );
-?>
 
+?>
 <body>
   <script type="text/javascript">
   $( document ).ready(function() {
@@ -139,11 +147,11 @@ $main_buttons = array(
                       <td><?=$rfc2136['host'];?></td>
                       <td>
 <?php
-                        $filename = "/conf/dyndns_{$rfc2136['interface']}_rfc2136_" . escapeshellarg($rfc2136['host']) . "_{$rfc2136['server']}.cache";
-                        if (file_exists($filename) && !empty($rfc2136['enable']) && (empty($dnsupdate['recordtype']) || $dnsupdate['recordtype'] == 'A')) {
+                        $filename = rfc2136_cache_file($rfc2136, 4);
+                        if (file_exists($filename) && !empty($rfc2136['enable']) && (empty($rfc2136['recordtype']) || $rfc2136['recordtype'] == 'A')) {
                             echo "IPv4: ";
                             if (isset($rfc2136['usepublicip'])) {
-                                $ipaddr = dyndnsCheckIP($rfc2136['interface']);
+                                $ipaddr = get_dyndns_ip($rfc2136['interface'], 4);
                             } else {
                                 $ipaddr = get_interface_ip($rfc2136['interface']);
                             }
@@ -157,13 +165,18 @@ $main_buttons = array(
                             echo htmlspecialchars($cached_ip);
                             echo "</font>";
                         } else {
-                            echo "IPv4: N/A";
+                            echo 'IPv4: ' . gettext('N/A');
                         }
                         echo "<br />";
-                        if (file_exists("{$filename}.ipv6") && !empty($rfc2136['enable']) && (empty($dnsupdate['recordtype']) || $dnsupdate['recordtype'] == 'AAAA')) {
+                        $filename6 = rfc2136_cache_file($rfc2136, 6);
+                        if (file_exists($filename6) && !empty($rfc2136['enable']) && (empty($rfc2136['recordtype']) || $rfc2136['recordtype'] == 'AAAA')) {
                             echo "IPv6: ";
-                            $ipaddr = get_interface_ipv6($rfc2136['interface']);
-                            $cached_ip_s = explode("|", file_get_contents("{$filename}.ipv6"));
+                            if (isset($rfc2136['usepublicip'])) {
+                                $ipaddr = get_dyndns_ip($rfc2136['interface'], 6);
+                            } else {
+                                $ipaddr = get_interface_ipv6($rfc2136['interface']);
+                            }
+                            $cached_ip_s = explode("|", file_get_contents($filename6));
                             $cached_ip = $cached_ip_s[0];
                             if ($ipaddr <> $cached_ip) {
                                 echo "<font color='red'>";
@@ -173,7 +186,7 @@ $main_buttons = array(
                             echo htmlspecialchars($cached_ip);
                             echo "</font>";
                         } else {
-                          echo "IPv6: N/A";
+                            echo 'IPv6: ' . gettext('N/A');
                         }?>
                       </td>
                       <td><?=$rfc2136['descr'];?></td>

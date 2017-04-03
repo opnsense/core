@@ -15,8 +15,6 @@
 /usr/local/etc/inc/config.inc
 /usr/local/etc/inc/config.lib.inc
 /usr/local/etc/inc/crypt.inc
-/usr/local/etc/inc/dyndns.class
-/usr/local/etc/inc/dyndns.r53.class
 /usr/local/etc/inc/filter.inc
 /usr/local/etc/inc/filter.lib.inc
 /usr/local/etc/inc/filter_log.inc
@@ -42,6 +40,9 @@
 /usr/local/etc/inc/openvpn_wizard.inc
 /usr/local/etc/inc/plugins.inc
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
+/usr/local/etc/inc/plugins.inc.d/dyndns.inc
+/usr/local/etc/inc/plugins.inc.d/dyndns/phpDynDNS.inc
+/usr/local/etc/inc/plugins.inc.d/dyndns/r53.inc
 /usr/local/etc/inc/plugins.inc.d/if_ipsec.inc
 /usr/local/etc/inc/plugins.inc.d/if_openvpn.inc
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc
@@ -49,6 +50,7 @@
 /usr/local/etc/inc/plugins.inc.d/ntpd.inc
 /usr/local/etc/inc/plugins.inc.d/openssh.inc
 /usr/local/etc/inc/plugins.inc.d/pf.inc
+/usr/local/etc/inc/plugins.inc.d/rfc2136.inc
 /usr/local/etc/inc/plugins.inc.d/squid.inc
 /usr/local/etc/inc/plugins.inc.d/squid/auth-user.php
 /usr/local/etc/inc/plugins.inc.d/suricata.inc
@@ -83,7 +85,7 @@
 /usr/local/etc/rc.d/configd
 /usr/local/etc/rc.d/flowd_aggregate
 /usr/local/etc/rc.d/netflow
-/usr/local/etc/rc.dyndns.update
+/usr/local/etc/rc.dyndns
 /usr/local/etc/rc.expireaccounts
 /usr/local/etc/rc.filter_configure
 /usr/local/etc/rc.filter_synchronize
@@ -129,6 +131,7 @@
 /usr/local/etc/rc.reload_interfaces
 /usr/local/etc/rc.resolv_conf_generate
 /usr/local/etc/rc.restart_webgui
+/usr/local/etc/rc.rfc2136
 /usr/local/etc/rc.shutdown
 /usr/local/etc/rc.sshd
 /usr/local/etc/rc.syshook
@@ -442,6 +445,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Netflow.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Netflow.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/DynamicDNS/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/DynamicDNS/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/IDS.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/IDS.xml
@@ -454,6 +459,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/RFC2136/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/RFC2136/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Migrations/M1_0_0.php
@@ -632,6 +639,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
 /usr/local/opnsense/service/conf/actions.d/actions_proxy.conf
+/usr/local/opnsense/service/conf/actions.d/actions_rfc2136.conf
 /usr/local/opnsense/service/conf/actions.d/actions_routedns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_system.conf
 /usr/local/opnsense/service/conf/actions.d/actions_systemhealth.conf
@@ -1112,6 +1120,7 @@
 /usr/local/www/widgets/include/log.inc
 /usr/local/www/widgets/include/ntp_status.inc
 /usr/local/www/widgets/include/openvpn.inc
+/usr/local/www/widgets/include/rfc2136.inc
 /usr/local/www/widgets/include/services_status.inc
 /usr/local/www/widgets/include/system_log.inc
 /usr/local/www/widgets/include/thermal_sensors.inc
@@ -1126,6 +1135,7 @@
 /usr/local/www/widgets/widgets/ntp_status.widget.php
 /usr/local/www/widgets/widgets/openvpn.widget.php
 /usr/local/www/widgets/widgets/picture.widget.php
+/usr/local/www/widgets/widgets/rfc2136.widget.php
 /usr/local/www/widgets/widgets/rss.widget.php
 /usr/local/www/widgets/widgets/services_status.widget.php
 /usr/local/www/widgets/widgets/system_information.widget.php

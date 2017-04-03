@@ -30,6 +30,8 @@
 require_once("guiconfig.inc");
 require_once("services.inc") ;
 require_once("interfaces.inc");
+require_once("system.inc");
+require_once("plugins.inc.d/dyndns.inc");
 
 /* returns true if $uname is a valid dynamic DNS username */
 function is_dyndns_username($uname)
@@ -161,17 +163,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config();
-        services_dyndns_configure_client($dyndns);
+        system_cron_configure();
+
+        if ($dyndns['force']) {
+            dyndns_configure_client($dyndns);
+        }
+
         header(url_safe('Location: /services_dyndns.php'));
         exit;
     }
 }
 
-
 legacy_html_escape_form_data($pconfig);
-include("head.inc");
-?>
 
+include("head.inc");
+
+?>
 <body>
 <?php include("fbegin.inc"); ?>
  <script type="text/javascript">
@@ -223,7 +230,7 @@ include("head.inc");
                     <td>
                       <select name="type" class="selectpicker" id="type">
 <?php
-                        foreach (services_dyndns_list() as $value => $type):?>
+                        foreach (dyndns_list() as $value => $type):?>
                                 <option value="<?= $value ?>" <?= $value == $pconfig['type'] ? 'selected="selected"' : '' ?>>
                                   <?= $type ?>
                                 </option>
@@ -391,14 +398,14 @@ include("head.inc");
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?= gettext("Save") ?>" onclick="enable_change(true)" />
+                      <button name="submit" type="submit" class="btn btn-primary" value="save"><?= gettext('Save') ?></button>
 <?php
                       if (isset($id)): ?>
+                        <button name="force" type="submit" class="btn btn-primary" value="force"><?= gettext('Save and Force Update') ?></button>
                         <input name="id" type="hidden" value="<?= $id ?>" />
-                        <input name="force" type="submit" class="btn btn-primary" value="<?= gettext("Save & Force Update") ?>" onclick="enable_change(true)" />
 <?php
                       endif; ?>
-                        <a href="services_dyndns.php" class="btn btn-default"><?= gettext("Cancel") ?></a>
+                      <a href="services_dyndns.php" class="btn btn-default"><?= gettext('Cancel') ?></a>
                     </td>
                   </tr>
                   <tr>
