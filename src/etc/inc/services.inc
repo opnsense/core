@@ -47,6 +47,7 @@ require_once('dyndns.class');
 require_once('ipsec.inc');
 require_once('openvpn.inc');
 require_once('plugins.inc.d/dnsmasq.inc');
+require_once('plugins.inc.d/openssh.inc');
 require_once('plugins.inc.d/unbound.inc');
 
 function generate_ipv6_from_mac($mac)
@@ -1893,15 +1894,6 @@ function services_get()
         $pconfig['php']['restart'] = array('setup_gateways_monitor');
         $pconfig['php']['start'] = array('setup_gateways_monitor');
         $pconfig['pidfile'] = '/var/run/apinger.pid';
-        $services[] = $pconfig;
-    }
-
-    if (isset($config['system']['ssh']['enabled'])) {
-        $pconfig = array();
-        $pconfig['name'] = 'sshd';
-        $pconfig['description'] = gettext('Secure Shell Daemon');
-        $pconfig['configd']['restart'] = array('sshd restart');
-        $pconfig['configd']['start'] = array('sshd restart');
         $services[] = $pconfig;
     }
 

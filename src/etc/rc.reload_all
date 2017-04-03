@@ -63,8 +63,6 @@ interfaces_configure(true);
 services_dyndns_configure('', true);
 system_cron_configure(true);
 
-mwexec_bg('/usr/local/etc/rc.sshd');
-
 log_error("rc.reload_all: Reloading all plugin settings.");
 
 plugins_configure('local', true);

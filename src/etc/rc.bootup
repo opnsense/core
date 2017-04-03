@@ -100,6 +100,7 @@ filter_configure_sync(true);
 filter_pflog_start(true);
 setup_gateways_monitor(true);
 system_webgui_configure(true);
+plugins_configure('earlybootup', true);
 system_cron_configure(true);
 system_routing_configure('', true);
 
@@ -109,7 +110,6 @@ system_hosts_generate(true);
 services_dhcrelay_configure(true);
 services_dhcrelay6_configure(true);
 
-mwexec("/usr/local/etc/rc.sshd"); /* XXX convert to plugin */
 mwexec("/usr/local/etc/rc.dyndns.update"); /* XXX convert to plugin */
 
 prefer_ipv4_or_ipv6();
@@ -164,8 +164,6 @@ if (is_install_media()) {
         $root['shell'] = '/usr/local/etc/rc.installer';
         $root['name'] = 'installer';
         local_user_set($root, true);
-
-        mwexec("/usr/local/etc/rc.sshd installer");
 
         echo "\n";
         echo "Welcome!  Both `root' and `installer' users are availabe for system\n";
