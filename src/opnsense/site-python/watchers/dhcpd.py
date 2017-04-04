@@ -71,7 +71,7 @@ class DHCPDLease(object):
                 except ValueError:
                     field_value = None
             elif field_name == 'hardware' and len(parts) >= 3:
-                field_value = {'hardware-type': parts[1], 'mac-address': parts[2]}
+                field_value = {'hardware-type': parts[1], 'mac-address': parts[2].split(';')[0]}
             elif field_name in('uid', 'client-hostname') and len(parts) >= 2 and parts[1].find('"') > -1:
                 field_value = parts[1].split('"')[1]
 
