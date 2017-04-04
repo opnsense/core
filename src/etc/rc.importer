@@ -149,7 +149,11 @@ echo "Starting import for partition '${PART}'."
 echo
 
 mkdir -p ${MNT}
+
+echo -n "Running fsck..."
 fsck -t ufs -y ${PART} > /dev/null
+echo "done."
+
 if ! mount ${PART} ${MNT} 2> /dev/null; then
 	echo "The device could not be mounted."
 	bootstrap_and_exit
