@@ -24,16 +24,16 @@
     POSSIBILITY OF SUCH DAMAGE.
 """
 import os
-import time
+import calendar
 import datetime
 
 class DHCPDLease(object):
-    watch_file = '/var/dhcpd/var/db/dhcpd.leases'
-
-    def __init__(self):
+    def __init__(self, watch_file='/var/dhcpd/var/db/dhcpd.leases'):
         """ init watcher
+        :param watch_file: filename to watch
         :return: watcher object
         """
+        self.watch_file = watch_file
         self._section_data = []
         self._fhandle = None
         self._last_pos = None
@@ -67,7 +67,7 @@ class DHCPDLease(object):
             if field_name in ('starts', 'ends', 'tstp', 'tsfp', 'atsfp', 'cltt') and len(parts) >= 3:
                 dt = '%s %s'%(parts[2], parts[3])
                 try:
-                    field_value = time.mktime(datetime.datetime.strptime(dt, "%Y/%m/%d %H:%M:%S;").timetuple())
+                    field_value = calendar.timegm(datetime.datetime.strptime(dt, "%Y/%m/%d %H:%M:%S;").timetuple())
                 except ValueError:
                     field_value = None
             elif field_name == 'hardware' and len(parts) >= 3:
