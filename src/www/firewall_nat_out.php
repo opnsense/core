@@ -234,6 +234,12 @@ include("head.inc");
         $("#action").val("toggle");
         $("#iform").submit();
     });
+
+    // select All
+    $("#selectAll").click(function(){
+        $(".rule_select").prop("checked", $(this).prop("checked"));
+    });
+
     // watch scroll position and set to last known on page load
     watchScrollPosition();
   });
@@ -329,7 +335,7 @@ include("head.inc");
               <thead>
                 <tr><th colspan="12"><?=gettext("Manual rules:"); ?></th></tr>
                 <tr>
-                    <th>&nbsp;</th>
+                    <th><input type="checkbox" id="selectAll"></th>
                     <th>&nbsp;</th>
                     <th><?=gettext("Interface");?></th>
                     <th class="hidden-xs hidden-sm"><?=gettext("Source");?></th>
@@ -350,7 +356,7 @@ include("head.inc");
 ?>
                   <tr <?=$mode == "disabled" || $mode == "automatic" || isset($natent['disabled'])?"class=\"text-muted\"":"";?> ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
                     <td>
-                      <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
+                      <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
                     </td>
                     <td>
 <?php

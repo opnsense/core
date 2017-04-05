@@ -216,6 +216,11 @@ $( document ).ready(function() {
     $("#iform").submit();
   });
 
+  // select All
+  $("#selectAll").click(function(){
+      $(".rule_select").prop("checked", $(this).prop("checked"));
+  });
+
   // watch scroll position and set to last known on page load
   watchScrollPosition();
 });
@@ -245,7 +250,7 @@ $( document ).ready(function() {
                       <td colspan="2"> </td>
                     </tr>
                     <tr>
-                      <th width="2%">&nbsp;</th>
+                      <th width="2%"><input type="checkbox" id="selectAll"></th>
                       <th width="2%">&nbsp;</th>
                       <th width="2%">&nbsp;</th>
                       <th><?=gettext("If");?></th>
@@ -293,7 +298,7 @@ $( document ).ready(function() {
 ?>
                     <tr <?=isset($natent['disabled'])?"class=\"text-muted\"":"";?> ondblclick="document.location='firewall_nat_edit.php?id=<?=$nnats;?>';">
                       <td>
-                        <input type="checkbox" name="rule[]" value="<?=$nnats;?>"  />
+                        <input class="rule_select" type="checkbox" name="rule[]" value="<?=$nnats;?>"  />
                       </td>
                       <td>
 <?php                 if (isset($natent['nordr'])): ?>

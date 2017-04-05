@@ -205,6 +205,10 @@ $( document ).ready(function() {
   });
   $("#scrub_interface_disable").change();
 
+  // select All
+  $("#selectAll").click(function(){
+      $(".rule_select").prop("checked", $(this).prop("checked"));
+  });
 
   // watch scroll position and set to last known on page load
   watchScrollPosition();
@@ -295,7 +299,7 @@ $( document ).ready(function() {
                          <th colspan="2"> </th>
                      </tr>
                     <tr>
-                      <th>&nbsp;</th>
+                      <th><input type="checkbox" id="selectAll"></th>
                       <th><?=gettext("Interfaces");?></th>
                       <th class="hidden-xs hidden-sm"><?=gettext("Source");?></th>
                       <th class="hidden-xs hidden-sm"><?=gettext("Destination");?></th>
@@ -310,7 +314,7 @@ $( document ).ready(function() {
                 foreach ($a_scrub as $i => $scrubEntry):?>
                   <tr>
                     <td>
-                        <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
+                        <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
                         <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($scrubEntry['disabled'])) ? gettext("disable") : gettext("enable");?>">
                           <span class="glyphicon glyphicon-play <?=(empty($scrubEntry['disabled'])) ? "text-success" : "text-muted";?>"></span>
                         </a>
