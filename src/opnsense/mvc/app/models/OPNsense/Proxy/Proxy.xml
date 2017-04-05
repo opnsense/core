@@ -35,6 +35,7 @@
                     <Required>N</Required>
                     <BlankDesc>File</BlankDesc>
                     <OptionValues>
+                        <file_extendend>File (Extended)</file_extendend>
                         <syslog>Syslog</syslog>
                     </OptionValues>
                 </target>
