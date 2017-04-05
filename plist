@@ -537,6 +537,7 @@
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/set_session_restrictions.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/sql/init.sql
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/strip_template.py
+/usr/local/opnsense/scripts/dhcp/get_leases.py
 /usr/local/opnsense/scripts/dns/unbound_dhcpd.py
 /usr/local/opnsense/scripts/filter/delete_table.py
 /usr/local/opnsense/scripts/filter/download_geoip.py
@@ -628,6 +629,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_captiveportal.conf
 /usr/local/opnsense/service/conf/actions.d/actions_configd.conf
 /usr/local/opnsense/service/conf/actions.d/actions_cron.conf
+/usr/local/opnsense/service/conf/actions.d/actions_dhcpd.conf
 /usr/local/opnsense/service/conf/actions.d/actions_dns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_dyndns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_filter.conf
