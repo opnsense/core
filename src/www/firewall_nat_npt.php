@@ -167,6 +167,12 @@ $main_buttons = array(
       $("#action").val("toggle");
       $("#iform").submit();
     });
+
+    // select All
+    $("#selectAll").click(function(){
+        $(".rule_select").prop("checked", $(this).prop("checked"));
+    });
+
     // watch scroll position and set to last known on page load
     watchScrollPosition();
   });
@@ -191,7 +197,7 @@ $main_buttons = array(
                   <thead>
                     <tr>
                       <th width="2%">&nbsp;</th>
-                      <th width="2%">&nbsp;</th>
+                      <th width="2%"><input type="checkbox" id="selectAll"></th>
                       <th width="2%">&nbsp;</th>
                       <th><?=gettext("Interface"); ?></th>
                       <th><?=gettext("External Prefix"); ?></th>
@@ -207,7 +213,7 @@ $main_buttons = array(
                     <tr <?=isset($natent['disabled'])?"class=\"text-muted\"":"";?>  ondblclick="document.location='firewall_nat_npt_edit.php?id=<?=$i;?>';">
                       <td> </td>
                       <td>
-                          <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
+                          <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
                       </td>
                       <td>
                         <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(!isset($natent['disabled'])) ? gettext("disable rule") : gettext("enable rule");?>">

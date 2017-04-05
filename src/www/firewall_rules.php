@@ -240,6 +240,11 @@ $( document ).ready(function() {
       $("#fw_category").addClass('hidden');
   }
 
+  // select All
+  $("#selectAll").click(function(){
+      $(".rule_select").prop("checked", $(this).prop("checked"));
+  });
+
 });
 </script>
 
@@ -280,7 +285,7 @@ $( document ).ready(function() {
                 <table class="table table-striped table-hover" id="rules">
                   <thead>
                     <tr>
-                      <th>&nbsp;</th>
+                      <th><input type="checkbox" id="selectAll"></th>
                       <th>&nbsp;</th>
                       <th><?=gettext("Proto");?></th>
                       <th><?=gettext("Source");?></th>
@@ -436,7 +441,7 @@ $( document ).ready(function() {
 ?>
                   <tr class="rule" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
                     <td>
-                      <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
+                      <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
                     </td>
                     <td>
                       <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(empty($filterent['disabled'])) ? gettext("disable rule") : gettext("enable rule");?>"><span class="glyphicon <?=$iconfn;?>"></span></a>
