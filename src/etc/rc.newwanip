@@ -94,11 +94,7 @@ if ($curwanip == "0.0.0.0" || !is_ipaddr($curwanip)) {
     }
 }
 
-if (file_exists("/var/db/{$interface}_cacheip")) {
-    $oldip = file_get_contents("/var/db/{$interface}_cacheip");
-} else {
-    $oldip = "0.0.0.0";
-}
+$oldip = @file_get_contents("/var/db/{$interface}_cacheip");
 
 system_resolvconf_generate();
 
