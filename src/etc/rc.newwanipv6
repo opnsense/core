@@ -98,7 +98,7 @@ if (is_ipaddrv6($curwanipv6)) {
 
 log_error("rc.newwanipv6: on (IP address: {$curwanipv6}) (interface: {$interface}) (real interface: {$interface_real}).");
 
-$oldipv6 = "";
+$oldipv6 = "::";
 if (file_exists("/var/db/{$interface}_cacheipv6")) {
     $oldipv6 = file_get_contents("/var/db/{$interface}_cacheipv6");
 }
