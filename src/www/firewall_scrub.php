@@ -344,7 +344,7 @@ $( document ).ready(function() {
 <?php
                         if (is_alias($scrubEntry['dst'])):?>
                         <span title="<?=htmlspecialchars(get_alias_description($scrubEntry['dst']));?>" data-toggle="tooltip">
-                          <?=$scrubEntry['src'];?>&nbsp;
+                          <?=$scrubEntry['dst'];?>&nbsp;
                         </span>
                         <a href="/firewall_aliases_edit.php?name=<?=$scrubEntry['dst'];?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
