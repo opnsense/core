@@ -182,23 +182,27 @@ include("head.inc");
      */
     function removeRow() {
         if ( $('#maintable > tbody > tr').length == 1 ) {
-            $('#maintable > tbody > tr:last > td > input').each(function(){
-              $(this).val("");
-            });
+            $('#maintable > tbody > tr:last > td > input').each(function () { $(this).val(""); });
         } else {
             $(this).parent().parent().remove();
         }
     }
     // add new detail record
-    $("#addNew").click(function(){
+    function addRow() {
         // copy last row and reset values
+        $('#maintable > tbody > tr:last > td > label').removeClass('act-addrow').addClass('act-removerow');
+        $('#maintable > tbody > tr:last > td > label').unbind('click');
+        $('#maintable > tbody > tr:last > td > label').click(removeRow);
+        $('#maintable > tbody > tr:last > td > label > span:first').removeClass('fa-plus').addClass('fa-minus');
         $('#maintable > tbody').append('<tr>'+$('#maintable > tbody > tr:last').html()+'</tr>');
-        $('#maintable > tbody > tr:last > td > input').each(function(){
-          $(this).val("");
-        });
-        $(".act-removerow").click(removeRow);
-    });
+        $('#maintable > tbody > tr:last > td > input').each(function () { $(this).val(""); });
+        $('#maintable > tbody > tr:last > td > label').removeClass('act-removerow').addClass('act-addrow');
+        $('#maintable > tbody > tr:last > td > label').unbind('click');
+        $('#maintable > tbody > tr:last > td > label').click(addRow);
+        $('#maintable > tbody > tr:last > td > label > span:first').removeClass('fa-minus').addClass('fa-plus');
+    }
     $(".act-removerow").click(removeRow);
+    $(".act-addrow").click(addRow);
 });
 </script>
 
@@ -335,14 +339,14 @@ include("head.inc");
 <?php
                           if (!empty($item)): ?>
                               <label class="act-removerow btn btn-default btn-xs">
-                                <span class="sr-only"><?= gettext('Remove') ?></span>
                                 <span class="fa fa-minus"></span>
+                                <span class="sr-only"><?= gettext('Remove') ?></span>
                               </label>
 <?php
                           else: ?>
-                              <label id="addNew" class="btn btn-default btn-xs">
-                                <span class="sr-only"><?= gettext('Add') ?></span>
+                              <label class="act-addrow btn btn-default btn-xs">
                                 <span class="fa fa-plus"></span>
+                                <span class="sr-only"><?= gettext('Add') ?></span>
                               </label>
 <?php
                           endif ?>
