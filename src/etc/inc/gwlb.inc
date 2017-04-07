@@ -175,7 +175,7 @@ EOD;
 
             /* flush the monitor unconditionally */
             if (is_ipaddrv4($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-                log_error("Removing static route for monitor {$gateway['monitor']}");
+                log_error("Removing static route for monitor {$gateway['monitor']} via {$gateway['gateway']}");
                 mwexec("/sbin/route delete -host " . escapeshellarg($gateway['monitor']), true);
             }
 
@@ -191,7 +191,7 @@ EOD;
              * not strictly necessary but is a added level of protection.
              */
             if (is_ipaddrv4($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-                log_error("Adding static route for monitor through {$gateway['gateway']}");
+                log_error("Adding static route for monitor {$gateway['monitor']} via {$gateway['gateway']}");
                 mwexec("/sbin/route add -host " . escapeshellarg($gateway['monitor']) .
                   " " . escapeshellarg($gateway['gateway']), true);
             }
@@ -226,7 +226,7 @@ EOD;
 
             /* flush the monitor unconditionally */
             if (is_ipaddrv6($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-                log_error("Removing static route for monitor {$gateway['monitor']}");
+                log_error("Removing static route for monitor {$gateway['monitor']} via {$gateway['gateway']}");
                 mwexec("/sbin/route delete -host -inet6 " . escapeshellarg($gateway['monitor']), true);
             }
 
@@ -242,7 +242,7 @@ EOD;
              * not strictly necessary but is a added level of protection.
              */
             if (is_ipaddrv6($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-                log_error("Adding static route for monitor through {$gateway['gateway']}");
+                log_error("Adding static route for monitor {$gateway['monitor']} via {$gateway['gateway']}");
                 mwexec("/sbin/route add -host -inet6 " . escapeshellarg($gateway['monitor']) .
                   " " . escapeshellarg($gateway['gateway']), true);
             }
