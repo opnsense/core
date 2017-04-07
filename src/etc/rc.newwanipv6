@@ -37,10 +37,15 @@ require_once("util.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
+// Do not process while booting
+if (file_exists('/var/run/booting')) {
+    return;
+}
+
 /* Interface IP address has changed */
 $argument = trim($argv[1], " \n\t");
 
-log_error("rc.newwanipv6: Informational is starting {$argument}.");
+log_error("Informational is starting '{$argument}'");
 
 if (empty($argument)) {
     $interface = "wan";
@@ -54,13 +59,9 @@ if (empty($argument)) {
 
 $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 
-if (empty($interface)) {
-    filter_configure();
-    return;
-}
-
-//Do not process while booting
-if (file_exists("/var/run/booting") && $config['interfaces'][$interface]['ipaddrv6'] != "dhcp6") {
+/* If the interface is configured and not enabled, bail. We do not need to change settings for disabled interfaces. #3313 */
+if (!isset($config['interfaces'][$interface]['enable'])) {
+    log_error("Interface is disabled or empty, nothing to do.");
     return;
 }
 
@@ -69,7 +70,7 @@ if (file_exists("/var/run/booting") && $config['interfaces'][$interface]['ipaddr
  *    i.e. OpenVPN might be in tap mode and not have an ip.
  */
 if ((empty($curwanipv6) || !is_ipaddrv6($curwanipv6)) && substr($interface_real, 0, 4) != "ovpn") {
-        log_error("rc.newwanipv6: Failed to detect IPv6 for {$interface_descr}[{$interface}]");
+        log_error("Failed to detect IPv6 for {$interface_descr}[{$interface}]");
         return;
 }
 
@@ -96,7 +97,7 @@ if (is_ipaddrv6($curwanipv6)) {
     @file_put_contents("/var/db/{$interface}_ipv6", $curwanipv6);
 }
 
-log_error("rc.newwanipv6: on (IP address: {$curwanipv6}) (interface: {$interface}) (real interface: {$interface_real}).");
+log_error("On (IP address: {$curwanipv6}) (interface: {$interface}) (real interface: {$interface_real}).");
 
 $oldipv6 = @file_get_contents("/var/db/{$interface}_cacheipv6");
 
@@ -123,7 +124,7 @@ if (!is_ipaddr($oldipv6) || $curwanipv6 != $oldipv6 || !is_ipaddrv6($config['int
         }
     }
 
-    if (is_ipaddrv6($curwanip)) {
+    if (is_ipaddrv6($curwanipv6)) {
         @file_put_contents("/var/db/{$interface}_cacheipv6", $curwanipv6);
     }
 
