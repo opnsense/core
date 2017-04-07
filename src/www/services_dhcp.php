@@ -777,6 +777,7 @@ include("head.inc");
                               </td>
                             </tr>
 <?php
+                            $i++;
                             endforeach;?>
                             </tbody>
                         </table>
