@@ -71,11 +71,10 @@ function plugins_services()
     $services = array();
 
     foreach (plugins_scan() as $name => $path) {
-        require_once $path;
+        try { include_once $path; } catch (ParseError $e) { error_log($e); }
         $func = sprintf('%s_services', $name);
         if (function_exists($func)) {
-            $workers = $func();
-            foreach ($workers as $work) {
+            foreach ($func() as $work) {
                 $services[] = $work;
             }
         }
@@ -89,11 +88,10 @@ function plugins_cron()
     $jobs = array();
 
     foreach (plugins_scan() as $name => $path) {
-        require_once $path;
+        try { include_once $path; } catch (ParseError $e) { error_log($e); }
         $func = sprintf('%s_cron', $name);
         if (function_exists($func)) {
-            $workers = $func();
-            foreach ($workers as $work) {
+            foreach ($func() as $work) {
                 $jobs[] = $work;
             }
         }
@@ -107,11 +105,10 @@ function plugins_syslog()
     $syslogs = array();
 
     foreach (plugins_scan() as $name => $path) {
-        require_once $path;
+        try { include_once $path; } catch (ParseError $e) { error_log($e); }
         $func = sprintf('%s_syslog', $name);
         if (function_exists($func)) {
-            $workers = $func();
-            foreach ($workers as $plugin_syslog => $plugin_details) {
+            foreach ($func() as $plugin_syslog => $plugin_details) {
                 $syslogs[$plugin_syslog] = $plugin_details;
             }
         }
@@ -142,7 +139,7 @@ function plugins_interfaces()
 
     // register / update interfaces
     foreach (plugins_scan() as $name => $path) {
-        require_once $path;
+        try { include_once $path; } catch (ParseError $e) { error_log($e); }
         $func = sprintf('%s_interfaces', $name);
         if (function_exists($func)) {
             foreach ($func() as $intf_ref => $intf_data) {
@@ -183,7 +180,7 @@ function plugins_interfaces()
 function plugins_firewall($fw)
 {
     foreach (plugins_scan() as $name => $path) {
-        require_once $path;
+        try { include_once $path; } catch (ParseError $e) { error_log($e); }
         $func = sprintf('%s_firewall', $name);
         if (function_exists($func)) {
             $func($fw);
@@ -198,11 +195,10 @@ function plugins_configure($hook, $verbose = false, $args = array())
     array_unshift($args, $verbose);
 
     foreach (plugins_scan() as $name => $path) {
-        require_once $path;
+        try { include_once $path; } catch (ParseError $e) { error_log($e); }
         $func = sprintf('%s_configure', $name);
         if (function_exists($func)) {
-            $workers = $func();
-            foreach ($workers as $when => $worker) {
+            foreach ($func() as $when => $worker) {
                 if ($hook == $when && is_array($worker)) {
                     foreach ($worker as $task) {
                         /*
@@ -229,7 +225,7 @@ function plugins_xmlrpc_sync()
 {
     $sync_settings = array();
     foreach (plugins_scan() as $name => $path) {
-        require_once $path;
+        try { include_once $path; } catch (ParseError $e) { error_log($e); }
         $func = sprintf('%s_xmlrpc_sync', $name);
         if (function_exists($func)) {
             foreach ($func() as $helper) {
