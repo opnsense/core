@@ -29,6 +29,7 @@
 
 namespace OPNsense\Base;
 
+use OPNsense\Core\Config;
 use Phalcon\Mvc\Controller;
 use Phalcon\Logger\Adapter\Syslog;
 use OPNsense\Core\ACL;
@@ -45,6 +46,38 @@ class ControllerRoot extends Controller
     protected function sessionClose()
     {
         session_write_close();
+    }
+
+    /**
+     * Get lang encoding for gettext
+     */
+    public static function getLangEncode()
+    {
+        $lang = 'en_US';
+
+        // Set locale
+        foreach (Config::getInstance()->object()->system->children() as $key => $node) {
+            if ($key == 'language') {
+                $lang = $node->__toString();
+                break;
+            }
+        }
+
+        return $lang . '.UTF-8';
+    }
+
+    /**
+     * Set locale for gettext
+     */
+    public static function setLocale($lang_encoding)
+    {
+        $textdomain = 'OPNsense';
+
+        /* this isn't being done by Phalcon */
+        putenv('LANG=' . $lang_encoding);
+        textdomain($textdomain);
+        bindtextdomain($textdomain, '/usr/local/share/locale');
+        bind_textdomain_codeset($textdomain, $lang_encoding);
     }
 
     /**
