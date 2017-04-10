@@ -202,7 +202,7 @@ class ApiControllerBase extends ControllerRoot
      * @param $dispatcher
      * @return string json data
      */
-    protected function afterExecuteRoute($dispatcher)
+    public function afterExecuteRoute($dispatcher)
     {
         // exit when reponse headers are already set
         if ($this->response->getHeaders()->get("Status") != null) {
