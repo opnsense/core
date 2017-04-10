@@ -25,14 +25,6 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-if [ -d /usr/local/lib/php/20151012 ]; then
-	# PHP 7.0
-	EXTENSIONSDIR="/usr/local/lib/php/20151012/"
-else
-	echo "No supported PHP version was found."
-	exit 1
-fi
-
 PHP_INI=$(mktemp -q /tmp/php_ini.XXXXXX)
 chmod 644 ${PHP_INI}
 
@@ -72,7 +64,6 @@ error_reporting = E_ALL ^ (E_NOTICE | E_DEPRECATED | E_STRICT)
 display_errors=on
 log_errors=on
 error_log=/tmp/PHP_errors.log
-extension_dir=${EXTENSIONSDIR}
 date.timezone="${TIMEZONE}"
 
 [xdebug]
