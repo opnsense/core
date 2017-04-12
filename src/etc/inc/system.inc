@@ -729,7 +729,7 @@ function system_syslogd_extra_local($logsocket)
 
 function system_syslogd_start($verbose = false)
 {
-    global $config, $g;
+    global $config;
 
     if ($verbose) {
         echo 'Starting syslog...';
@@ -759,7 +759,7 @@ function system_syslogd_start($verbose = false)
          * get rid of this behaviour by wrapping this local array using
          * the key as a "name" entry in the array...
          */
-        $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay', 'dhclient', 'dhcp6c'), 'local' => "{$g['dhcpd_chroot_path']}/var/run/log", 'remote' => 'dhcp');
+        $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay', 'dhclient', 'dhcp6c'), 'local' => '/var/dhcpd/var/run/log', 'remote' => 'dhcp');
         $syslogconfs['filter'] = array('facility' => array('filterlog'), 'remote' => 'filter');
         $syslogconfs['gateways'] = array('facility' => array('apinger'), 'remote' => 'apinger');
         $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');

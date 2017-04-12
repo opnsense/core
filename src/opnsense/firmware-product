@@ -1,5 +1,4 @@
 {
-    "dhcpd_chroot_path": "/var/dhcpd",
     "factory_shipped_password": "opnsense",
     "factory_shipped_username": "root",
     "product_copyright_owner": "Deciso B.V.",
