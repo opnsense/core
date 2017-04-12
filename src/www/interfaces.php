@@ -2521,7 +2521,7 @@ include("head.inc");
                             <strong><?=gettext("Send Options"); ?></strong><br />
                             <input name="adv_dhcp6_interface_statement_send_options" type="text" id="adv_dhcp6_interface_statement_send_options" value="<?=$pconfig['adv_dhcp6_interface_statement_send_options'];?>" />
                             <div class="hidden" for="help_for_dhcp6_intf_stmt">
-                              <?=gettext("The values in this field are DHCP send options to be sent when requesting a DHCP lease.  [option declaration [, ...]] <br />" .
+                              <?=gettext("The values in this field are DHCP send options to be sent when requesting a DHCP lease. [option declaration [, ...]] <br />" .
                               "Value Substitutions: {interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} <br />" .
                               "Where C is U(pper) or L(ower) Case, and D is \" :-.\" Delimiter (space, colon, hyphen, or period) (omitted for none). <br />" .
                               "Some DHCP services may require certain options be or not be sent."); ?>
@@ -2531,8 +2531,8 @@ include("head.inc");
                             <strong><?=gettext("Request Options"); ?></strong><br />
                             <input name="adv_dhcp6_interface_statement_request_options" type="text" id="adv_dhcp6_interface_statement_request_options" value="<?=$pconfig['adv_dhcp6_interface_statement_request_options'];?>" />
                             <div class="hidden" for="help_for_dhcp6_intf_stmt">
-                              <?=gettext("The values in this field are DHCP request options to be sent when requesting a DHCP lease.  [option [, ...]] <br />" .
-                              "Some DHCP services may require certain options be or not be requested. "); ?>
+                              <?=gettext("The values in this field are DHCP request options to be sent when requesting a DHCP lease. [option [, ...]] <br />" .
+                              "Some DHCP services may require certain options be or not be requested."); ?>
                             </div>
                             <br />
                             <br />
