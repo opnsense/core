@@ -404,8 +404,8 @@ $( document ).ready(function() {
                     " address as a DNS server to DHCP clients so they will use".
                     " the forwarder. The DNS forwarder will use the DNS servers".
                     " entered in %sSystem: General setup%s".
-                    " or those obtained via DHCP or PPP on WAN if the &quot;Allow".
-                    " DNS server list to be overridden by DHCP/PPP on WAN&quot;".
+                    " or those obtained via DHCP or PPP on WAN if the \"Allow".
+                    " DNS server list to be overridden by DHCP/PPP on WAN\"".
                     " is checked. If you don't use that option (or if you use".
                     " a static IP address on WAN), you must manually specify at".
                     " least one DNS server on the %sSystem: General setup%s page."),

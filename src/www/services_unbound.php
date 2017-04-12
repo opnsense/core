@@ -315,10 +315,10 @@ include_once("head.inc");
                           <?= sprintf(gettext("If the DNS Resolver is enabled, the DHCP".
                           " service (if enabled) will automatically serve the LAN IP".
                           " address as a DNS server to DHCP clients so they will use".
-                          " the DNS Resolver. If Forwarding, is enabled, the DNS Resolver will use the DNS servers".
-                          " entered in %sSystem: General setup%s".
-                          " or those obtained via DHCP or PPP on WAN if the &quot;Allow".
-                          " DNS server list to be overridden by DHCP/PPP on WAN&quot;".
+                          " the DNS Resolver. If Forwarding, is enabled, the DNS Resolver".
+                          " will use the DNS servers entered in %sSystem: General setup%s".
+                          " or those obtained via DHCP or PPP on WAN if the \"Allow".
+                          " DNS server list to be overridden by DHCP/PPP on WAN\"".
                           " is checked."),'<a href="system_general.php">','</a>');?>
                         </td>
                       </tr>
