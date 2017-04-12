@@ -8,6 +8,5 @@
     "product_email": "project@opnsense.org",
     "product_id": "opnsense",
     "product_name": "OPNsense",
-    "product_website": "https://opnsense.org/",
-    "unbound_chroot_path": "/var/unbound"
+    "product_website": "https://opnsense.org/"
 }

@@ -149,10 +149,10 @@ function unbound_generate_config()
 
     // Setup DNSSEC support
     if (isset($config['unbound']['dnssec'])) {
-        $module_config = "validator iterator";
-        $anchor_file = "auto-trust-anchor-file: {$g['unbound_chroot_path']}/root.key";
+        $module_config = 'validator iterator';
+        $anchor_file = 'auto-trust-anchor-file: /var/unbound/root.key';
     } else {
-        $module_config = "iterator";
+        $module_config = 'iterator';
     }
 
     // Setup DNS Rebinding
@@ -273,10 +273,10 @@ EOF;
 
     if (isset($config['unbound']['regdhcp'])) {
         // include dynamic leases
-        @touch("{$g['unbound_chroot_path']}/dhcpleases.conf");
-        $include_dhcpleases = "include: {$g['unbound_chroot_path']}/dhcpleases.conf";
+        @touch('/var/unbound/dhcpleases.conf');
+        $include_dhcpleases = 'include: /var/unbound/dhcpleases.conf';
     } else {
-        $include_dhcpleases = "";
+        $include_dhcpleases = '';
     }
 
     // Set up forwarding if it configured
@@ -322,10 +322,10 @@ EOD;
 # Server configuration
 ##
 server:
-chroot: {$g['unbound_chroot_path']}
-username: "unbound"
-directory: "{$g['unbound_chroot_path']}"
-pidfile: "/var/run/unbound.pid"
+chroot: /var/unbound
+username: unbound
+directory: /var/unbound
+pidfile: /var/run/unbound.pid
 use-syslog: yes
 port: {$port}
 verbosity: {$verbosity}
@@ -372,16 +372,16 @@ prefetch-key: {$prefetch_key}
 {$private_domains}
 
 # Access lists
-include: {$g['unbound_chroot_path']}/access_lists.conf
+include: /var/unbound/access_lists.conf
 
 # Static host entries
-include: {$g['unbound_chroot_path']}/host_entries.conf
+include: /var/unbound/host_entries.conf
 
 # DHCP leases (if configured)
 {$include_dhcpleases}
 
 # Domain overrides
-include: {$g['unbound_chroot_path']}/domainoverrides.conf
+include: /var/unbound/domainoverrides.conf
 
 {$custom_options}
 
@@ -390,11 +390,11 @@ include: {$g['unbound_chroot_path']}/domainoverrides.conf
 ###
 # Remote Control Config
 ###
-include: {$g['unbound_chroot_path']}/remotecontrol.conf
+include: /var/unbound/remotecontrol.conf
 
 EOD;
 
-    file_put_contents("{$g['unbound_chroot_path']}/unbound.conf", $unboundconf);
+    file_put_contents('/var/unbound/unbound.conf', $unboundconf);
 
     return 0;
 }
@@ -402,20 +402,20 @@ EOD;
 function unbound_remote_control_setup() {
     global $g;
 
-    if (!file_exists("{$g['unbound_chroot_path']}/remotecontrol.conf") || !file_exists("{$g['unbound_chroot_path']}/unbound_control.key")) {
+    if (!file_exists('/var/unbound/remotecontrol.conf') || !file_exists('/var/unbound/unbound_control.key')) {
         $remotcfg = <<<EOF
 remote-control:
     control-enable: yes
     control-interface: 127.0.0.1
     control-port: 953
-    server-key-file: "{$g['unbound_chroot_path']}/unbound_server.key"
-    server-cert-file: "{$g['unbound_chroot_path']}/unbound_server.pem"
-    control-key-file: "{$g['unbound_chroot_path']}/unbound_control.key"
-    control-cert-file: "{$g['unbound_chroot_path']}/unbound_control.pem"
+    server-key-file: /var/unbound/unbound_server.key
+    server-cert-file: /var/unbound/unbound_server.pem
+    control-key-file: /var/unbound/unbound_control.key
+    control-cert-file: /var/unbound/unbound_control.pem
 
 EOF;
 
-        file_put_contents("{$g['unbound_chroot_path']}/remotecontrol.conf", $remotcfg);
+        file_put_contents('/var/unbound/remotecontrol.conf', $remotcfg);
 
         unbound_execute('unbound-control-setup');
     }
@@ -460,7 +460,7 @@ function unbound_execute($cmd)
             if (isset($config['unbound']['regdhcp'])) {
                 mwexecf('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py /domain %s', $domain);
             }
-            mwexecf('/usr/local/sbin/unbound -c %s', "{$g['unbound_chroot_path']}/unbound.conf");
+            mwexecf('/usr/local/sbin/unbound -c %s', '/var/unbound/unbound.conf');
             break;
         case 'stop':
             killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
@@ -472,14 +472,14 @@ function unbound_execute($cmd)
         case 'unbound-anchor':
             mwexecf(
                 'chroot -u unbound -g unbound / %s -a %s',
-                array('/usr/local/sbin/unbound-anchor', "{$g['unbound_chroot_path']}/root.key"),
+                array('/usr/local/sbin/unbound-anchor', '/var/unbound/root.key'),
                 true
             );
             break;
         case 'unbound-control-setup':
             mwexecf(
                 'chroot -u unbound -g unbound / %s -d %s',
-                array('/usr/local/sbin/unbound-control-setup', $g['unbound_chroot_path'])
+                array('/usr/local/sbin/unbound-control-setup', '/var/unbound')
             );
             break;
         default:
@@ -521,7 +521,7 @@ function unbound_add_domain_overrides($pvt=false) {
     if ($pvt == true) {
         return $domain_entries;
     } else {
-        file_put_contents("{$g['unbound_chroot_path']}/domainoverrides.conf", $domain_entries);
+        file_put_contents('/var/unbound/domainoverrides.conf', $domain_entries);
     }
 }
 
@@ -659,7 +659,7 @@ function unbound_add_host_entries()
         }
     }
 
-    file_put_contents("{$g['unbound_chroot_path']}/host_entries.conf", $unbound_entries);
+    file_put_contents('/var/unbound/host_entries.conf', $unbound_entries);
 }
 
 // Generation of Unbound statistics
@@ -739,7 +739,7 @@ function unbound_acls_config() {
     }
 
     // Write out Access list
-    file_put_contents("{$g['unbound_chroot_path']}/access_lists.conf", $aclcfg);
+    file_put_contents('/var/unbound/access_lists.conf', $aclcfg);
 }
 
 function unbound_hosts_generate()
