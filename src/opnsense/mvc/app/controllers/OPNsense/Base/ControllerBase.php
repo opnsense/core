@@ -221,6 +221,11 @@ class ControllerBase extends ControllerRoot
             $this->view->ui_theme = $cnf->object()->theme;
         }
 
+        $product_vars = json_decode(file_get_contents('/usr/local/opnsense/firmware-product'), true);
+        foreach ($product_vars as $product_key => $product_var) {
+            $this->view->$product_key = $product_var;
+        }
+
         // info about the current user and box
         $this->view->session_username = !empty($_SESSION['Username']) ? $_SESSION['Username'] : '(unknown)';
         $this->view->system_hostname = $cnf->object()->system->hostname;
