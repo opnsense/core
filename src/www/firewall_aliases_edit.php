@@ -125,25 +125,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         foreach ($pconfig['host_url'] as $detail_entry) {
             if ($pconfig['type'] == 'host') {
                 if (!is_domain($detail_entry) && !is_ipaddr($detail_entry) && !is_alias($detail_entry)) {
-                    $input_errors[] = sprintf(gettext("%s doesn't appear to be a valid hostname or ip address"), $detail_entry) ;
+                    $input_errors[] = sprintf(gettext('Entry "%s" is not a valid hostname or IP address.'), $detail_entry) ;
                 }
             } elseif ($pconfig['type'] == 'port') {
                 if (!is_port($detail_entry) && !is_portrange($detail_entry) && !is_alias($detail_entry)) {
-                    $input_errors[] = sprintf(gettext("%s doesn't appear to be a valid port number"), $detail_entry) ;
+                    $input_errors[] = sprintf(gettext('Entry "%s" is not a valid port number.'), $detail_entry) ;
                 }
             } elseif ($pconfig['type'] == 'geoip') {
                 if (!in_array($detail_entry, $country_codes)) {
-                    $input_errors[] = sprintf(gettext("%s doesn't appear to be a valid country code"), $detail_entry) ;
+                    $input_errors[] = sprintf(gettext('Entry "%s" is not a valid country code.'), $detail_entry) ;
                 }
             }
         }
 
         /* Check for reserved keyword names */
-        // Keywords not allowed in names
-        $reserved_keywords = array("all", "pass", "block", "out", "queue", "max", "min", "pptp", "pppoe", "L2TP", "OpenVPN", "IPsec");
+        $reserved_keywords = array();
 
-        // Add all Load balance names to reserved_keywords
-        if (is_array($config['load_balancer']['lbpool'])) {
+        if (isset($config['load_balancer']['lbpool'])) {
             foreach ($config['load_balancer']['lbpool'] as $lbpool) {
                 $reserved_keywords[] = $lbpool['name'];
             }
@@ -151,6 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $reserved_ifs = get_configured_interface_list(false, true);
         $reserved_keywords = array_merge($reserved_keywords, $reserved_ifs, $reserved_table_names);
+
         foreach ($reserved_keywords as $rk) {
             if ($rk == $pconfig['name']) {
                 $input_errors[] = sprintf(gettext("Cannot use a reserved keyword as alias name %s"), $rk);
@@ -164,8 +163,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 break;
             }
         }
-        if (is_validaliasname($pconfig['name']) !== true) {
-            $input_errors[] = gettext("The alias name must be less than 32 characters long and may only consist of the characters") . " a-z, A-Z, 0-9, _.";
+
+        $valid = is_validaliasname($pconfig['name']);
+        if ($valid === false) {
+            $input_errors[] = sprintf(gettext('The name must be less than 32 characters long and may only consist of the following characters: %s'), 'a-z, A-Z, 0-9, _');
+        } elseif ($valid === null) {
+            $input_errors[] = sprintf(gettext('The name cannot be the internally reserved keyword "%s".'), $pconfig['name']);
         }
 
         if (!empty($pconfig['updatefreq']) && !is_numericint($pconfig['updatefreq'])) {
@@ -450,28 +453,6 @@ endforeach;
                   </td>
                 </tr>
                 <tr>
-                  <td width="22%"><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Name"); ?></td>
-                  <td width="78%">
-                    <input name="origname" type="hidden" id="origname" class="form-control unknown" size="40" value="<?=$pconfig['name'];?>" />
-                    <?php if (isset($id)): ?>
-                      <input name="id" type="hidden" value="<?=$id;?>" />
-                    <?php endif; ?>
-                    <input name="name" type="text" id="name" class="form-control unknown" size="40" maxlength="31" value="<?=$pconfig['name'];?>" />
-                    <div class="hidden" for="help_for_name">
-                      <?=gettext("The name of the alias may only consist of the characters \"a-z, A-Z, 0-9 and _\"."); ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
-                  <td>
-                    <input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
-                    <div class="hidden" for="help_for_description">
-                      <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
                   <td><a id="help_for_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type"); ?></td>
                   <td>
                     <select  name="type" class="form-control" id="typeSelect">
@@ -523,7 +504,29 @@ endforeach;
                   </td>
                 </tr>
                 <tr>
-                  <td><div id="addressnetworkport"><a id="help_for_hosts" href="#" class="showhelp"><i class="fa fa-info-circle text-muted"></i></a> <?=gettext("Host(s)"); ?></div></td>
+                  <td width="22%"><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Name"); ?></td>
+                  <td width="78%">
+                    <input name="origname" type="hidden" id="origname" class="form-control unknown" size="40" value="<?=$pconfig['name'];?>" />
+                    <?php if (isset($id)): ?>
+                      <input name="id" type="hidden" value="<?=$id;?>" />
+                    <?php endif; ?>
+                    <input name="name" type="text" id="name" class="form-control unknown" size="40" maxlength="31" value="<?=$pconfig['name'];?>" />
+                    <div class="hidden" for="help_for_name">
+                      <?=gettext("The name of the alias may only consist of the characters \"a-z, A-Z, 0-9 and _\"."); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                  <td>
+                    <input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
+                    <div class="hidden" for="help_for_description">
+                      <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><div id="addressnetworkport"><i class="fa fa-info-circle text-muted"></i> <?= gettext('Aliases') ?></div></td>
                   <td>
                     <table class="table table-striped table-condensed" id="detailTable">
                       <thead>
