@@ -258,7 +258,7 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type)
 
 function console_configure_ip_address($version)
 {
-    global $g, $config, $interface, $restart_dhcpd, $ifaceassigned, $fp;
+    global $config, $interface, $restart_dhcpd, $ifaceassigned, $fp;
 
     $label_IPvX = ($version === 6) ? "IPv6"   : "IPv4";
     $maxbits    = ($version === 6) ? 127      : 31;
