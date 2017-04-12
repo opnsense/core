@@ -46,9 +46,13 @@ allownew    :   allow new items (for list) if applicable
             {% if help|default(false) %}
                 <a id="help_for_{{ id }}" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
             {% elseif help|default(false) == false %}
-                <i class="fa fa-info-circle text-muted"></i>
+                <i class="fa fa-info-circle text-muted{% if type == "header" %} hidden{% endif %}"></i>
             {% endif %}
-            <b>{{label}}</b>
+            {% if type == "header" %}
+                <h4 class="modal-title __mb __mt">{{label}}</h4>
+            {% else %}
+                <b>{{label}}</b>
+            {% endif %}
         </div>
     </td>
     <td >
