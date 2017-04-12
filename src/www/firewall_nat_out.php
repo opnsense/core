@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         filter_configure();
         clear_subsystem_dirty('natconf');
         clear_subsystem_dirty('filter');
-    } elseif (isset($pconfig['save']) && $pconfig['save'] == "Save") {
+    } elseif (isset($pconfig['save']) && $pconfig['save'] == gettext("Save")) {
         $mode = $config['nat']['outbound']['mode'];
         /* mutually exclusive settings - if user wants advanced NAT, we don't generate automatic rules */
         if ($pconfig['mode'] == "advanced" && ($mode == "automatic" || $mode == "hybrid")) {
