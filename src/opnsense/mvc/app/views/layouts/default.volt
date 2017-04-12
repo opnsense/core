@@ -250,7 +250,9 @@
         <!-- page footer -->
     <footer class="page-foot col-sm-push-3 col-lg-push-2">
       <div class="container-fluid">
-        <a target="_blank" href="https://opnsense.org/" class="redlnk">OPNsense</a> (c) 2014-2017 <a href="https://www.deciso.com" class="tblnk">Deciso B.V.</a>
+        <a target="_blank" href="{{ product_website }}" class="redlnk">{{ product_name }}</a>
+        (c) {{ product_copyright_years }}
+        <a href="{{ product_copyright_url }}" class="tblnk">{{ product_copyright_owner }}</a>
       </div>
     </footer>
 

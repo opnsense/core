@@ -29,23 +29,12 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-openlog('opnsense', LOG_ODELAY, LOG_USER);
-register_shutdown_function('closelog');
-
 global $g; /* XXX make this a getter function for traceability */
 
-$g = array(
-    'factory_shipped_username' => 'root',
-    'factory_shipped_password' => 'opnsense',
-    'dhcpd_chroot_path' => '/var/dhcpd',
-    'unbound_chroot_path' => '/var/unbound',
-    'product_name' => 'OPNsense',
-    'product_website' => 'https://opnsense.org/',
-    'product_email' => 'project@opnsense.org',
-    'product_copyright_owner' => 'Deciso B.V.',
-    'product_copyright_years' => '2014-2017',
-    'product_copyright_url' => 'https://www.deciso.com/',
-);
+$g = json_decode(file_get_contents('/usr/local/opnsense/firmware-product'), true);
+
+openlog($g['product_id'], LOG_ODELAY, LOG_USER);
+register_shutdown_function('closelog');
 
 require_once("xmlparse.inc");
 require_once("crypt.inc");

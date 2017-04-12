@@ -322,33 +322,27 @@ function services_radvd_configure($blacklist = array())
 
 function services_dhcpd_leasesfile()
 {
-    global $g;
-
-    return "{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases";
+    return '/var/dhcpd/var/db/dhcpd.leases';
 }
 
 function services_dhcpdv6_leasesfile()
 {
-    global $g;
-
-    return "{$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases";
+    return '/var/dhcpd/var/db/dhcpd6.leases';
 }
 
 function services_dhcpd_configure($family = 'all', $blacklist = array(), $verbose = false)
 {
-    global $g;
-
     $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
 
     foreach ($dirs as $dir) {
-        mwexecf('/bin/mkdir -p %s', "{$g['dhcpd_chroot_path']}{$dir}");
+        mwexecf('/bin/mkdir -p %s', "/var/dhcpd{$dir}");
     }
 
-    if (mwexecf('/sbin/mount -uw %s', "{$g['dhcpd_chroot_path']}/dev", true)) {
-        mwexecf('/sbin/mount -t devfs devfs %s', "{$g['dhcpd_chroot_path']}/dev");
+    if (mwexecf('/sbin/mount -uw %s', '/var/dhcpd/dev', true)) {
+        mwexecf('/sbin/mount -t devfs devfs %s', '/var/dhcpd/dev');
     }
 
-    mwexecf('/usr/sbin/chown -R dhcpd:dhcpd %s', $g['dhcpd_chroot_path']);
+    mwexecf('/usr/sbin/chown -R dhcpd:dhcpd %s', '/var/dhcpd');
 
     if ($family == 'all' || $family == 'inet') {
         services_dhcpdv4_configure($verbose);
@@ -379,12 +373,12 @@ function is_dhcpv4_server_enabled()
 
 function services_dhcpdv4_configure($verbose = false)
 {
-    global $config, $g;
+    global $config;
 
     $need_ddns_updates = false;
     $ddns_zones = array();
 
-    killbypid("{$g['dhcpd_chroot_path']}/var/run/dhcpd.pid", 'TERM', true);
+    killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
 
     if (!is_dhcpv4_server_enabled()) {
         return;
@@ -914,13 +908,13 @@ EOD;
         $dhcpdconf .= services_dhcpd_zones($ddns_zones);
     }
 
-    @file_put_contents("{$g['dhcpd_chroot_path']}/etc/dhcpd.conf", $dhcpdconf);
-    @touch("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases");
-    @unlink("{$g['dhcpd_chroot_path']}/var/run/dhcpd.pid");
+    @file_put_contents('/var/dhcpd/etc/dhcpd.conf', $dhcpdconf);
+    @touch('/var/dhcpd/var/db/dhcpd.leases');
+    @unlink('/var/dhcpd/var/run/dhcpd.pid');
 
     /* fire up dhcpd in a chroot */
     if (count($dhcpdifs) > 0) {
-        mwexec("/usr/local/sbin/dhcpd -user dhcpd -group dhcpd -chroot {$g['dhcpd_chroot_path']} -cf /etc/dhcpd.conf -pf /var/run/dhcpd.pid " . join(" ", $dhcpdifs));
+        mwexec('/usr/local/sbin/dhcpd -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpd.conf -pf /var/run/dhcpd.pid ' . join(' ', $dhcpdifs));
     }
 
     if ($verbose) {
@@ -1011,9 +1005,9 @@ function is_dhcpv6_server_enabled()
 
 function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
 {
-    global $config, $g;
+    global $config;
 
-    killbypid("{$g['dhcpd_chroot_path']}/var/run/dhcpdv6.pid", 'TERM', true);
+    killbypid('/var/dhcpd/var/run/dhcpdv6.pid', 'TERM', true);
     killbypid('/var/run/dhcpleases6.pid', 'TERM', true);
 
     if (!is_dhcpv6_server_enabled()) {
@@ -1302,15 +1296,14 @@ EOD;
         $dhcpdv6conf .= "\nddns-update-style none;\n";
     }
 
-    @file_put_contents("{$g['dhcpd_chroot_path']}/etc/dhcpdv6.conf", $dhcpdv6conf);
-    @touch("{$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases");
-    @unlink("{$g['dhcpd_chroot_path']}/var/run/dhcpdv6.pid");
+    @file_put_contents('/var/dhcpd/etc/dhcpdv6.conf', $dhcpdv6conf);
+    @touch('/var/dhcpd/var/db/dhcpd6.leases');
+    @unlink('/var/dhcpd/var/run/dhcpdv6.pid');
 
     /* fire up dhcpd in a chroot */
     if (count($dhcpdv6ifs) > 0) {
-        mwexec("/usr/local/sbin/dhcpd -6 -user dhcpd -group dhcpd -chroot {$g['dhcpd_chroot_path']} -cf /etc/dhcpdv6.conf -pf /var/run/dhcpdv6.pid " .
-          join(" ", $dhcpdv6ifs));
-        mwexec("/usr/local/sbin/dhcpleases6 -c \"/usr/local/bin/php -f /usr/local/sbin/prefixes.php|/bin/sh\" -l {$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases");
+        mwexec('/usr/local/sbin/dhcpd -6 -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpdv6.conf -pf /var/run/dhcpdv6.pid ' . join(' ', $dhcpdv6ifs));
+        mwexec('/usr/local/sbin/dhcpleases6 -c "/usr/local/bin/php -f /usr/local/sbin/prefixes.php|/bin/sh" -l /var/dhcpd/var/db/dhcpd6.leases');
     }
 
     if ($verbose) {
@@ -1607,7 +1600,7 @@ function is_apinger_enabled()
 
 function services_get()
 {
-    global $config, $g;
+    global $config;
 
     $services = array();
 
@@ -1647,7 +1640,7 @@ function services_get()
         $pconfig['description'] = gettext("DHCP Server");
         $pconfig['php']['restart'] = array('services_dhcpdv4_configure');
         $pconfig['php']['start'] = array('services_dhcpdv4_configure');
-        $pconfig['pidfile'] = "{$g['dhcpd_chroot_path']}/var/run/dhcpd.pid";
+        $pconfig['pidfile'] = '/var/dhcpd/var/run/dhcpd.pid';
         $services[] = $pconfig;
     }
 
@@ -1657,7 +1650,7 @@ function services_get()
         $pconfig['description'] = gettext("DHCPv6 Server");
         $pconfig['php']['restart'] = array('services_dhcpdv6_configure');
         $pconfig['php']['start'] = array('services_dhcpdv6_configure');
-        $pconfig['pidfile'] = "{$g['dhcpd_chroot_path']}/var/run/dhcpdv6.pid";
+        $pconfig['pidfile'] = '/var/dhcpd/var/run/dhcpdv6.pid';
         $services[] = $pconfig;
     }
 

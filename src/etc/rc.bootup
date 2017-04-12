@@ -38,7 +38,7 @@ flush();
 
 $inc_files = array(
     'config.inc',
-    'config.console.inc',
+    'console.inc',
     'auth.inc',
     'util.inc',
     'interfaces.inc',
