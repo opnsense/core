@@ -31,8 +31,8 @@
         </Configuration>
         <Firmware order="5" cssClass="fa fa-building-o fa-fw">
             <Updates order="10" url="/ui/core/firmware/#updates"/>
-            <Packages order="20" url="/ui/core/firmware/#packages"/>
-            <Plugins order="30" url="/ui/core/firmware/#plugins"/>
+            <Plugins order="20" url="/ui/core/firmware/#plugins"/>
+            <Packages order="30" url="/ui/core/firmware/#packages"/>
             <Settings order="40" url="/ui/core/firmware/#settings"/>
             <Reporter order="50" url="/crash_reporter.php"/>
             <Defaults order="60" url="/diag_defaults.php"/>
