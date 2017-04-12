@@ -49,14 +49,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-    if (is_validaliasname($pconfig['name']) == false) {
-        $input_errors[] = gettext("The alias name may only consist of the characters") . " a-z, A-Z, 0-9, _.";
+    $valid = is_validaliasname($pconfig['name']);
+    if ($valid === false) {
+        $input_errors[] = sprintf(gettext('The name must be less than 32 characters long and may only consist of the following characters: %s'), 'a-z, A-Z, 0-9, _');
+    } elseif ($valid === null) {
+        $input_errors[] = sprintf(gettext('The name cannot be the internally reserved keyword "%s".'), $pconfig['name']);
     }
 
     /* check for name duplicates */
     if (is_alias($pconfig['name'])) {
         $input_errors[] = gettext("An alias with this name already exists.");
     }
+
+    // Keywords not allowed in names
+    $reserved_keywords = array();
 
     // Add all Load balance names to reserved_keywords
     if (isset($config['load_balancer']['lbpool'])) {
@@ -65,14 +71,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    // Keywords not allowed in names
-    $reserved_keywords = array("all", "pass", "block", "out", "queue", "max", "min", "pptp", "pppoe", "L2TP", "OpenVPN", "IPsec");
     $reserved_ifs = get_configured_interface_list(false, true);
     $reserved_keywords = array_merge($reserved_keywords, $reserved_ifs, $reserved_table_names);
+
     /* Check for reserved keyword names */
-    foreach($reserved_keywords as $rk)
-        if ($rk == $pconfig['name'])
+    foreach($reserved_keywords as $rk) {
+        if ($rk == $pconfig['name']) {
             $input_errors[] = sprintf(gettext("Cannot use a reserved keyword as alias name %s"), $rk);
+        }
+    }
 
     /* check for name interface description conflicts */
     foreach($config['interfaces'] as $interface) {
@@ -200,8 +207,8 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td  width="22%"><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Alias Name"); ?></td>
-                  <td  width="78%">
+                  <td width="22%"><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Name') ?></td>
+                  <td width="78%">
                     <input name="name" type="text" class="form-control unknown" size="40" maxlength="31" value="<?=$pconfig['name'];?>" />
                     <div class="hidden" for="help_for_name">
                       <?=gettext("The name of the alias may only consist of the characters \"a-z, A-Z and 0-9\"."); ?>
@@ -218,7 +225,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_alias" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Aliases to import"); ?></td>
+                  <td><a id="help_for_alias" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Aliases') ?></td>
                   <td>
                     <textarea name="aliasimport" rows="15" cols="40"><?=$pconfig['aliasimport'];?></textarea>
                     <div class="hidden" for="help_for_alias">

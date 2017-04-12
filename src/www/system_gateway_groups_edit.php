@@ -76,8 +76,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (empty($pconfig['name'])) {
         $input_errors[] = gettext("A valid gateway group name must be specified.");
     }
-    if (!is_validaliasname($pconfig['name'])) {
-        $input_errors[] = gettext("The gateway name must not contain invalid characters.");
+
+    $valid = is_validaliasname($pconfig['name']);
+    if ($valid === false) {
+        $input_errors[] = sprintf(gettext('The name must be less than 32 characters long and may only consist of the following characters: %s'), 'a-z, A-Z, 0-9, _');
+    } elseif ($valid === null) {
+        $input_errors[] = sprintf(gettext('The name cannot be the internally reserved keyword "%s".'), $pconfig['name']);
     }
 
     if (!empty($pconfig['name'])) {
