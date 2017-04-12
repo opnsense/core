@@ -46,36 +46,9 @@ class AccessController extends ApiControllerBase
      */
     private function clientSession($zoneid)
     {
-        $backend = new Backend();
-        $allClientsRaw = $backend->configdpRun(
-            "captiveportal list_clients",
-            array($zoneid, 'json')
-        );
-        $allClients = json_decode($allClientsRaw, true);
-        if ($allClients != null) {
-            // search for client by ip address
-            foreach ($allClients as $connectedClient) {
-                if ($connectedClient['ipAddress'] == $this->getClientIp()) {
-                    // client is authorized in this zone according to our administration
-                    $connectedClient['clientState'] = 'AUTHORIZED';
-                    return $connectedClient;
-                }
-            }
-        }
-
-        // return Unauthorized including authentication requirements
-        $result = array('clientState' => "NOT_AUTHORIZED", "ipAddress" => $this->getClientIp());
-        $mdlCP = new CaptivePortal();
-        $cpZone = $mdlCP->getByZoneID($zoneid);
-        if ($cpZone != null && trim((string)$cpZone->authservers) == "") {
-            // no authentication needed, logon without username/password
-            $result['authType'] = 'none';
-        } else {
-            $result['authType'] = 'normal';
-        }
-        return $result;
+        $cp = new CaptivePortal();
+        return $cp->clientSession($zoneid,$this->getClientIp());
     }
-
     /**
      * determine clients ip address
      */
