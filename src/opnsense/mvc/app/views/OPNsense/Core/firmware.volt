@@ -1,7 +1,7 @@
 {#
 
-Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
-Copyright (c) 2015–2016 Deciso B.V.
+Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
+Copyright (c) 2015-2016 Deciso B.V.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -14,7 +14,7 @@ this list of conditions and the following disclaimer.
 this list of conditions and the following disclaimer in the documentation
 and/or other materials provided with the distribution.
 
-THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
 AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
 AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
@@ -612,8 +612,8 @@ POSSIBILITY OF SUCH DAMAGE.
         <div class="col-md-12" id="content">
             <ul class="nav nav-tabs" data-tabs="tabs">
                 <li id="updatetab" class="active"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
-                <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
                 <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
+                <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
                 <li id="settingstab"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
             </ul>
             <div class="tab-content content-box tab-content">
@@ -621,11 +621,11 @@ POSSIBILITY OF SUCH DAMAGE.
                     <textarea name="output" id="update_status" class="form-control" rows="25" wrap="hard" readonly style="max-width:100%; font-family: monospace; display: none;"></textarea>
                     <table class="table table-striped table-condensed table-responsive" id="updatelist"></table>
                 </div>
-                <div id="packages" class="tab-pane fade in">
-                    <table class="table table-striped table-condensed table-responsive" id="packageslist"></table>
-                </div>
                 <div id="plugins" class="tab-pane fade in">
                     <table class="table table-striped table-condensed table-responsive" id="pluginlist"></table>
+                </div>
+                <div id="packages" class="tab-pane fade in">
+                    <table class="table table-striped table-condensed table-responsive" id="packageslist"></table>
                 </div>
                 <div id="settings" class="tab-pane fade in">
                     <table class="table table-striped table-responsive">
