@@ -142,7 +142,7 @@ function unbound_optimization()
 
 function unbound_generate_config()
 {
-    global $config, $g;
+    global $config;
 
     // Setup optimization
     $optimization = unbound_optimization();
@@ -399,9 +399,8 @@ EOD;
     return 0;
 }
 
-function unbound_remote_control_setup() {
-    global $g;
-
+function unbound_remote_control_setup()
+{
     if (!file_exists('/var/unbound/remotecontrol.conf') || !file_exists('/var/unbound/unbound_control.key')) {
         $remotcfg = <<<EOF
 remote-control:
@@ -448,7 +447,7 @@ function unbound_configure_do($verbose = false)
 
 function unbound_execute($cmd)
 {
-    global $g, $config;
+    global $config;
 
     switch ($cmd) {
         case 'start':
@@ -487,8 +486,9 @@ function unbound_execute($cmd)
     }
 }
 
-function unbound_add_domain_overrides($pvt=false) {
-    global $config, $g;
+function unbound_add_domain_overrides($pvt = false)
+{
+    global $config;
 
     $domains = $config['unbound']['domainoverrides'];
 
@@ -527,7 +527,7 @@ function unbound_add_domain_overrides($pvt=false) {
 
 function unbound_add_host_entries()
 {
-    global $config, $g;
+    global $config;
 
     $unbound_entries = "local-zone: \"{$config['system']['domain']}\" transparent\n";
 
@@ -692,9 +692,9 @@ EOF;
     return $stats;
 }
 
-// Unbound Access lists
-function unbound_acls_config() {
-    global $g, $config;
+function unbound_acls_config()
+{
+    global $config;
 
     $aclcfg = "access-control: 127.0.0.1/32 allow\n";
     $aclcfg .= "access-control: ::1 allow\n";
