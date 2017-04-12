@@ -28,7 +28,7 @@
 */
 
 require_once("config.inc");
-require_once("config.console.inc");
+require_once("console.inc");
 require_once("filter.inc");
 require_once("util.inc");
 require_once("rrd.inc");

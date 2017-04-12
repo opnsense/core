@@ -11,9 +11,9 @@
 /usr/local/etc/inc/auth.inc
 /usr/local/etc/inc/authgui.inc
 /usr/local/etc/inc/certs.inc
-/usr/local/etc/inc/config.console.inc
 /usr/local/etc/inc/config.inc
 /usr/local/etc/inc/config.lib.inc
+/usr/local/etc/inc/console.inc
 /usr/local/etc/inc/crypt.inc
 /usr/local/etc/inc/filter.inc
 /usr/local/etc/inc/filter.lib.inc
