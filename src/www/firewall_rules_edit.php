@@ -225,7 +225,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         foreach($config['gateways']['gateway_group'] as $gw_group) {
             if($gw_group['name'] == $pconfig['gateway']) {
                 $a_gatewaygroups = return_gateway_groups_array();
-                $family = $a_gatewaygroups[$pconfig['gateway']]['ipprotocol'];
+                $family = 'inet';
+                if ( count($a_gatewaygroups[$pconfig['gateway']]) > 0 &&
+                     is_ipaddrv6($a_gatewaygroups[$pconfig['gateway']][0]['gwip'])) {
+                    $family = 'inet6';
+                }
                 if(($pconfig['ipprotocol'] == "inet6") && ($pconfig['ipprotocol'] != $family)) {
                     $input_errors[] = gettext("You can not assign a IPv4 gateway group on IPv6 Address Family rule");
                 }
