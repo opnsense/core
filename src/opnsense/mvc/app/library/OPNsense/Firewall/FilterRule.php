@@ -37,6 +37,7 @@ class FilterRule
 {
     private $rule = array();
     private $interfaceMapping = array();
+    private $gatewayMapping = array();
 
     private $procorder = array(
         'disabled' => 'parseIsComment',
@@ -325,11 +326,13 @@ class FilterRule
     /**
      * init FilterRule
      * @param array $interfaceMapping internal interface mapping
+     * @param array $gatewayMapping internal gateway mapping
      * @param array $conf rule configuration
      */
-    public function __construct(&$interfaceMapping, $conf)
+    public function __construct(&$interfaceMapping, &$gatewayMapping, $conf)
     {
         $this->interfaceMapping = $interfaceMapping;
+        $this->gatewayMapping = $gatewayMapping;
         $this->rule = $conf;
     }
 
