@@ -895,9 +895,6 @@ function filter_generate_gateways()
             $int = $gateway['interface'];
             $gwip = $gateway['gateway'];
             $route = "";
-            if (!is_ipaddr($gwip)) {
-                $gwip = get_interface_gateway($gateway['friendlyiface']);
-            }
             if (is_ipaddr($gwip) && !empty($int)) {
                 $route = "route-to ( {$int} {$gwip} )";
             }
