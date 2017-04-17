@@ -358,7 +358,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (!status) {
                     BootstrapDialog.show({
                         type: BootstrapDialog.TYPE_WARNING,
-                        title: "Error reconfiguring IDS",
+                        title: "{{ lang._('Error reconfiguring IDS') }}",
                         message: data['status'],
                         draggable: true
                     });
@@ -530,7 +530,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         dlg.close();
                     }
                 }, {
-                    label: 'Close',
+                    label: '{{ lang._('Close') }}',
                     action: function(dlg){
                         dlg.close();
                     }
@@ -722,7 +722,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         <option value="250">250</option>
                         <option value="500">500</option>
                         <option value="1000">1000</option>
-                        <option value="-1">All</option>
+                        <option value="-1">{{ lang._('All') }}</option>
                     </select>
                     <div class="search form-group">
                         <div class="input-group">
