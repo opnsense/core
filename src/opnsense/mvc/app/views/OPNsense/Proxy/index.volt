@@ -83,7 +83,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (status != "success" || data['status'] != 'ok') {
                     BootstrapDialog.show({
                         type: BootstrapDialog.TYPE_WARNING,
-                        title: "Error reconfiguring proxy",
+                        title: "{{ lang._('Error reconfiguring proxy') }}",
                         message: data['status'],
                         draggable: true
                     });
@@ -103,7 +103,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (status != "success" || data['status'] != 'ok') {
                     BootstrapDialog.show({
                         type: BootstrapDialog.TYPE_WARNING,
-                        title: "Error fetching remote acls",
+                        title: "{{ lang._('Error fetching remote acls') }}",
                         message: data['status'],
                         draggable: true
                     });
@@ -123,7 +123,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (status != "success" || data['status'] != 'ok') {
                     BootstrapDialog.show({
                         type: BootstrapDialog.TYPE_WARNING,
-                        title: "Error fetching remote acls",
+                        title: "{{ lang._('Error fetching remote acls') }}",
                         message: data['status'],
                         draggable: true
                     });
