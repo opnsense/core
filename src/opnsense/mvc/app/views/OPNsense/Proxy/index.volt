@@ -83,7 +83,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (status != "success" || data['status'] != 'ok') {
                     BootstrapDialog.show({
                         type: BootstrapDialog.TYPE_WARNING,
-                        title: "{{ lang._('Error reconfiguring proxy') }}",
+                        title: "Error reconfiguring proxy",
                         message: data['status'],
                         draggable: true
                     });
@@ -103,7 +103,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (status != "success" || data['status'] != 'ok') {
                     BootstrapDialog.show({
                         type: BootstrapDialog.TYPE_WARNING,
-                        title: "{{ lang._('Error fetching remote acls') }}",
+                        title: "Error fetching remote acls",
                         message: data['status'],
                         draggable: true
                     });
@@ -123,7 +123,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (status != "success" || data['status'] != 'ok') {
                     BootstrapDialog.show({
                         type: BootstrapDialog.TYPE_WARNING,
-                        title: "{{ lang._('Error fetching remote acls') }}",
+                        title: "Error fetching remote acls",
                         message: data['status'],
                         draggable: true
                     });
@@ -317,4 +317,4 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
 </div>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogEditBlacklist,'id':'DialogEditBlacklist','label':lang._('Edit Blacklist')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditBlacklist,'id':'DialogEditBlacklist','label':'Edit Blacklist'])}}

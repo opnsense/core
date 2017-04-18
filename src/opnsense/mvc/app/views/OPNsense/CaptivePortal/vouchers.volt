@@ -249,7 +249,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             dlg.close();
                         }
                     }, {
-                        label: '{{ lang._('Close') }}',
+                        label: 'Close',
                         action: function(dlg){
                             dlg.close();
                         }
@@ -286,7 +286,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         dlg.close();
                     }
                 }, {
-                    label: '{{ lang._('Close') }}',
+                    label: 'Close',
                     action: function(dlg){
                         dlg.close();
                     }

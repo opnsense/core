@@ -97,10 +97,10 @@ POSSIBILITY OF SUCH DAMAGE.
           // Ask user if it's ok to flush all of ipfw
           BootstrapDialog.show({
               type:BootstrapDialog.TYPE_WARNING,
-              title: '{{ lang._('Flush') }}',
+              title: 'Flush',
               message: "{{ lang._('Are you sure you want to flush and reload all? this might have impact on other services using the same technology underneath (such as Captive portal)') }}",
               buttons: [{
-                  label: '{{ lang._('Yes') }}',
+                  label: 'Yes',
                   action: function(dialogRef){
                       dialogRef.close();
                       $("#flushAct_progress").addClass("fa fa-spinner fa-pulse");
@@ -111,7 +111,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
                   }
               },{
-                  label: '{{ lang._('No') }}',
+                  label: 'No',
                   action: function(dialogRef){
                       dialogRef.close();
                   }
@@ -235,6 +235,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 
 {# include dialogs #}
-{{ partial("layout_partials/base_dialog",['fields':formDialogPipe,'id':'DialogPipe','label':lang._('Edit pipe')])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogQueue,'id':'DialogQueue','label':lang._('Edit queue')])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogRule,'id':'DialogRule','label':lang._('Edit rule')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogPipe,'id':'DialogPipe','label':'Edit pipe'])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogQueue,'id':'DialogQueue','label':'Edit queue'])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogRule,'id':'DialogRule','label':'Edit rule'])}}
