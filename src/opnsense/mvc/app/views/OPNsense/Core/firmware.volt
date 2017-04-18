@@ -640,7 +640,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                     </div>
                                     <div class="hidden" for="help_for_mirror">
                                         <strong>
-                                            {{ lang._("Select an alternate firmware mirror.") }}
+                                            {{ lang._('Select an alternate firmware mirror.') }}
                                         </strong>
                                     </div>
                                 </td>
@@ -656,7 +656,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                     </div>
                                     <div class="hidden" for="help_for_flavour">
                                         <strong>
-                                            {{ lang._("Select the firmware cryptography flavour.") }}
+                                            {{ lang._('Select the firmware cryptography flavour.') }}
                                         </strong>
                                     </div>
                                 </td>
@@ -668,7 +668,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                     <input type="text" id="firmware_mirror_subscription">
                                     <div class="hidden" for="help_for_mirror_subscription">
                                         <strong>
-                                            {{ lang._("Provide subscription key.") }}
+                                            {{ lang._('Provide subscription key.') }}
                                         </strong>
                                     </div>
                                 </td>
