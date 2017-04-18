@@ -752,7 +752,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 {{ partial("layout_partials/base_dialog_processing") }}
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogRule,'id':'DialogRule','label':'Rule details','hasSaveBtn':'true','msgzone_width':1])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogAlert,'id':'DialogAlert','label':'Alert details','hasSaveBtn':'false','msgzone_width':1])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogRuleset,'id':'DialogRuleset','label':'Ruleset details','hasSaveBtn':'true','msgzone_width':1])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogUserDefined,'id':'DialogUserDefined','label':'Rule details','hasSaveBtn':'true'])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogRule,'id':'DialogRule','label':lang._('Rule details'),'hasSaveBtn':'true','msgzone_width':1])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogAlert,'id':'DialogAlert','label':lang._('Alert details'),'hasSaveBtn':'false','msgzone_width':1])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogRuleset,'id':'DialogRuleset','label':lang._('Ruleset details'),'hasSaveBtn':'true','msgzone_width':1])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogUserDefined,'id':'DialogUserDefined','label':lang._('Rule details'),'hasSaveBtn':'true'])}}
