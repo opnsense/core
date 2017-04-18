@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
 
     if (isset($_GET['savemsg'])) {
-        $savemsg = htmlspecialchars($_GET['savemsg']);
+        $savemsg = htmlspecialchars(gettext($_GET['savemsg']));
     }
 
     $pconfig['dns1gw'] = null;
@@ -229,7 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         system_timezone_configure();
         filter_configure();
 
-        header(url_safe('Location: /system_general.php?savemsg=%s', array(get_std_save_message())));
+        header(url_safe('Location: /system_general.php?savemsg=%s', array(get_std_save_message(true))));
         exit;
     }
 }
