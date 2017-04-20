@@ -795,21 +795,21 @@
 		</field>
 		<field>
 			<displayname>DNS Server 2</displayname>
-			<name>dnserver2</name>
+			<name>dnsserver2</name>
 			<type>input</type>
 			<bindstofield>ovpnserver->step10->dns2</bindstofield>
 			<description>DNS server to provide for connecting client systems.</description>
 		</field>
 		<field>
 			<displayname>DNS Server 3</displayname>
-			<name>dnserver3</name>
+			<name>dnsserver3</name>
 			<type>input</type>
 			<bindstofield>ovpnserver->step10->dns3</bindstofield>
 			<description>DNS server to provide for connecting client systems.</description>
 		</field>
 		<field>
 			<displayname>DNS Server 4</displayname>
-			<name>dnserver4</name>
+			<name>dnsserver4</name>
 			<type>input</type>
 			<bindstofield>ovpnserver->step10->dns4</bindstofield>
 			<description>DNS server to provide for connecting client systems.</description>
