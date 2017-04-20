@@ -100,10 +100,11 @@ function get_pppoes_child_interfaces($ifpattern)
     return $if_arr;
 }
 
-/* implement ipv6 route advertising deamon */
 function services_radvd_configure($blacklist = array())
 {
     global $config;
+
+    killbypid('/var/run/radvd.pid', 'TERM', true);
 
     if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
         $config['dhcpdv6'] = array();
@@ -309,14 +310,8 @@ function services_radvd_configure($blacklist = array())
 
     file_put_contents('/var/etc/radvd.conf', $radvdconf);
 
-    if (count($radvdifs) > 0) {
-        if (isvalidpid('/var/run/radvd.pid')) {
-            killbypid('/var/run/radvd.pid', 'HUP');
-        } else {
-            mwexec('/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog');
-        }
-    } else {
-        killbypid('/var/run/radvd.pid', 'TERM', true);
+    if (count($radvdifs)) {
+        mwexec('/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog');
     }
 }
 
