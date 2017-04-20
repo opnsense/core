@@ -133,6 +133,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
+
+        $timezone_changed = $config['system']['timezone'] != $pconfig['timezone'];
+
         $config['system']['hostname'] = $pconfig['hostname'];
         $config['system']['domain'] = $pconfig['domain'];
         $config['system']['timezone'] = $pconfig['timezone'];
@@ -228,6 +231,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         services_dhcpd_configure();
         system_timezone_configure();
         filter_configure();
+
+        if ($timezone_changed) {
+            // force real radvd restart
+            $radvd = find_service_by_name('radvd');
+            killbypid($radvd['pidfile'], 'TERM', true);
+            services_radvd_configure();
+        }
 
         header(url_safe('Location: /system_general.php?savemsg=%s', array(get_std_save_message(true))));
         exit;
