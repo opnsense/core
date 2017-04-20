@@ -61,8 +61,14 @@ if (isset($config['ipsec']['phase1'])) {
         }
         foreach ($status_value['sas'] as $sas_key => $sas_value) {
             foreach ($sas_value['child-sas'] as $child_sa_key => $child_sa_value) {
-                $ipsec_tunnels[$child_sa_key]['active'] = true;
-                $activetunnels++;
+                if (!isset($ipsec_tunnels[$child_sa_key])) {
+                    /* XXX bug on strongSwan 5.5.2 appends -3 and -4 here? */
+                    $child_sa_key = preg_replace('/-.*$/', '', $child_sa_key);
+                }
+                if (isset($ipsec_tunnels[$child_sa_key])) {
+                    $ipsec_tunnels[$child_sa_key]['active'] = true;
+                    $activetunnels++;
+                }
             }
         }
     }
