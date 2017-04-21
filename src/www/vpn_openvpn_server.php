@@ -318,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("The Server Bridge DHCP range is invalid (start higher than end).");
             }
         }
-        if (!empty($pconfig['reneg-sec']) && (string)((int)$pconfig['reneg-sec']) != $pconfig['reneg-sec']) {
+        if (isset($pconfig['reneg-sec']) && (string)((int)$pconfig['reneg-sec']) != $pconfig['reneg-sec']) {
             $input_errors[] = gettext("Renegotiate time should contain a valid number of seconds.");
         }
         do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
