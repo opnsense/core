@@ -186,7 +186,7 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
     $conf .= "auth {$digest}{$nl}";
     $conf .= "tls-client{$nl}";
     $conf .= "client{$nl}";
-    if (!empty($settings['reneg-sec'])) {
+    if (isset($settings['reneg-sec']) && $settings['reneg-sec'] != "") {
         $conf .= "reneg-sec {$settings['reneg-sec']}{$nl}";
     }
     if (($expformat != "inlinedroid") && ($expformat != "inlineios")) {
