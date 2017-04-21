@@ -49,9 +49,9 @@ class ControllerRoot extends Controller
     }
 
     /**
-     * Set locale for gettext
+     * Get lang encoding for gettext
      */
-    public static function setLocale()
+    public static function getLangEncode()
     {
         $lang = 'en_US';
 
@@ -63,7 +63,14 @@ class ControllerRoot extends Controller
             }
         }
 
-        $lang_encoding = $lang . '.UTF-8';
+        return $lang . '.UTF-8';
+    }
+
+    /**
+     * Set locale for gettext
+     */
+    public static function setLocale($lang_encoding)
+    {
         $textdomain = 'OPNsense';
 
         /* this isn't being done by Phalcon */

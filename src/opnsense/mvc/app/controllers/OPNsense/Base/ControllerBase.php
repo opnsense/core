@@ -46,13 +46,15 @@ class ControllerBase extends ControllerRoot
      */
     public function getTranslator()
     {
+        $lang_encoding = self::getLangEncode();
+
         $ret = new ViewTranslator(array(
             'directory' => '/usr/local/share/locale',
             'defaultDomain' => 'OPNsense',
-            'locale' => "en_US.UTF-8",
+            'locale' => $lang_encoding,
         ));
 
-        self::setLocale();
+        self::setLocale($lang_encoding);
         return $ret;
     }
 
