@@ -629,7 +629,7 @@ function openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipco
     $conf .= "auth {$digest}\n";
     $conf .= "pull\n";
     $conf .= "resolv-retry infinite\n";
-    if (!empty($settings['reneg-sec'])) {
+    if (isset($settings['reneg-sec']) && $settings['reneg-sec'] != "") {
         $conf .= "reneg-sec {$settings['reneg-sec']}\n";
     }
     $conf .= "remote {$server_host} {$server_port}\n";
