@@ -137,22 +137,22 @@ class ApiControllerBase extends ControllerRoot
                                     $req_c = $object_info->getMethod($callMethodName)->getNumberOfRequiredParameters();
                                     if ($req_c > count($dispatcher->getParams())) {
                                         $dispatchError = 'action ' . $dispatcher->getActionName() .
-                                            ' expects at least '. $req_c . ' parameter(s)';
-                                    } else {
-                                        // if body is send as json data, parse to $_POST first
-                                        $dispatchError = $this->parseJsonBodyData();
+                                            ' expects at least ' . $req_c . ' parameter(s)';
                                     }
-                                    if ($dispatchError != null) {
-                                        // send error to client
-                                        $this->response->setStatusCode(400, "Bad Request");
-                                        $this->response->setContentType('application/json', 'UTF-8');
-                                        $this->response->setJsonContent(
-                                            array('message' => $dispatchError,
-                                                'status'  => 400)
-                                        );
-                                        $this->response->send();
-                                        return false;
-                                    }
+                                }
+                                // if body is send as json data, parse to $_POST first
+                                $dispatchError = empty($dispatchError) ? $this->parseJsonBodyData() : $dispatchError;
+
+                                if ($dispatchError != null) {
+                                    // send error to client
+                                    $this->response->setStatusCode(400, "Bad Request");
+                                    $this->response->setContentType('application/json', 'UTF-8');
+                                    $this->response->setJsonContent(
+                                        array('message' => $dispatchError,
+                                            'status'  => 400)
+                                    );
+                                    $this->response->send();
+                                    return false;
                                 }
 
                                 return true;
