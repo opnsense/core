@@ -59,10 +59,8 @@ class FirmwareController extends ApiControllerBase
             } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
                 $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
                 $response['status'] = 'none';
-            } elseif ((array_key_exists(0, $response['upgrade_packages']) &&
-                $response['upgrade_packages'][0]['name'] == 'pkg') ||
-                (array_key_exists(0, $response['reinstall_packages']) &&
-                $response['reinstall_packages'][0]['name'] == 'pkg')) {
+            } elseif (array_key_exists(0, $response['upgrade_packages']) &&
+                $response['upgrade_packages'][0]['name'] == 'pkg') {
                 $response['status_upgrade_action'] = 'pkg';
                 $response['status'] = 'ok';
                 $response['status_msg'] = gettext('There is a mandatory update for the package manager available.');
