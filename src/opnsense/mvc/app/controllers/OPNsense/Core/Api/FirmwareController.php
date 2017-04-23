@@ -59,10 +59,8 @@ class FirmwareController extends ApiControllerBase
             } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
                 $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
                 $response['status'] = 'none';
-            } elseif ((array_key_exists(0, $response['upgrade_packages']) &&
-                $response['upgrade_packages'][0]['name'] == 'pkg') ||
-                (array_key_exists(0, $response['reinstall_packages']) &&
-                $response['reinstall_packages'][0]['name'] == 'pkg')) {
+            } elseif (array_key_exists(0, $response['upgrade_packages']) &&
+                $response['upgrade_packages'][0]['name'] == 'pkg') {
                 $response['status_upgrade_action'] = 'pkg';
                 $response['status'] = 'ok';
                 $response['status_msg'] = gettext('There is a mandatory update for the package manager available.');
@@ -99,11 +97,21 @@ class FirmwareController extends ApiControllerBase
              * reinstall_packages: array with { name: <package_name>, version: <package_version> }
              * upgrade_packages: array with { name: <package_name>,
              *     current_version: <current_version>, new_version: <new_version> }
+             * downgrade_packages: array with { name: <package_name>,
+             *     current_version: <current_version>, new_version: <new_version> }
              */
-            foreach (array('new_packages', 'reinstall_packages', 'upgrade_packages') as $pkg_type) {
+            foreach (array('new_packages', 'reinstall_packages', 'upgrade_packages', 'downgrade_packages') as $pkg_type) {
                 if (isset($response[$pkg_type])) {
                     foreach ($response[$pkg_type] as $value) {
                         switch ($pkg_type) {
+                            case 'downgrade_packages':
+                                $sorted[$value['name']] = array(
+                                    'reason' => gettext('downgrade'),
+                                    'old' => $value['current_version'],
+                                    'new' => $value['new_version'],
+                                    'name' => $value['name'],
+                                );
+                                break;
                             case 'new_packages':
                                 $sorted[$value['name']] = array(
                                     'new' => $value['version'],
@@ -122,7 +130,7 @@ class FirmwareController extends ApiControllerBase
                                 break;
                             case 'upgrade_packages':
                                 $sorted[$value['name']] = array(
-                                    'reason' => gettext('update'),
+                                    'reason' => gettext('upgrade'),
                                     'old' => $value['current_version'],
                                     'new' => $value['new_version'],
                                     'name' => $value['name'],
