@@ -99,11 +99,21 @@ class FirmwareController extends ApiControllerBase
              * reinstall_packages: array with { name: <package_name>, version: <package_version> }
              * upgrade_packages: array with { name: <package_name>,
              *     current_version: <current_version>, new_version: <new_version> }
+             * downgrade_packages: array with { name: <package_name>,
+             *     current_version: <current_version>, new_version: <new_version> }
              */
-            foreach (array('new_packages', 'reinstall_packages', 'upgrade_packages') as $pkg_type) {
+            foreach (array('new_packages', 'reinstall_packages', 'upgrade_packages', 'downgrade_packages') as $pkg_type) {
                 if (isset($response[$pkg_type])) {
                     foreach ($response[$pkg_type] as $value) {
                         switch ($pkg_type) {
+                            case 'downgrade_packages':
+                                $sorted[$value['name']] = array(
+                                    'reason' => gettext('downgrade'),
+                                    'old' => $value['current_version'],
+                                    'new' => $value['new_version'],
+                                    'name' => $value['name'],
+                                );
+                                break;
                             case 'new_packages':
                                 $sorted[$value['name']] = array(
                                     'new' => $value['version'],
@@ -122,7 +132,7 @@ class FirmwareController extends ApiControllerBase
                                 break;
                             case 'upgrade_packages':
                                 $sorted[$value['name']] = array(
-                                    'reason' => gettext('update'),
+                                    'reason' => gettext('upgrade'),
                                     'old' => $value['current_version'],
                                     'new' => $value['new_version'],
                                     'name' => $value['name'],

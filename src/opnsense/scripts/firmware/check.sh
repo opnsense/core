@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -47,6 +47,7 @@ pkg_running=""
 packes_output=""
 last_check="unknown"
 packages_upgraded=""
+packages_downgraded=""
 packages_new=""
 required_space="none"
 download_size="none"
@@ -206,6 +207,35 @@ if [ "$pkg_running" == "" ]; then
                   itemcount=`echo $linecount + 4 | bc`
                 fi
               done
+
+              # Now check if there are downgrades to install
+              for i in $(cat $tmp_pkg_output_file); do
+                if [ "$itemcount" -gt "$linecount" ]; then
+                  if [  `echo $linecount + 4 | bc` -eq "$itemcount" ]; then
+                    if [ "`echo $i | grep ':'`" == "" ]; then
+                      itemcount=0 # This is not a valid item so reset item count
+                    else
+                      i=`echo $i | tr -d :`
+                      if [ "$packages_downgraded" == "" ]; then
+                        packages_downgraded=$packages_downgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a seperator
+                      else
+                        packages_downgraded=$packages_downgraded", {\"name\":\"$i\","
+                      fi
+                    fi
+                  fi
+                  if [  `echo $linecount + 3 | bc` -eq "$itemcount" ]; then
+                    packages_downgraded=$packages_downgraded"\"current_version\":\"$i\","
+                  fi
+                  if [  `echo $linecount + 1 | bc` -eq "$itemcount" ]; then
+                    packages_downgraded=$packages_downgraded"\"new_version\":\"$i\"}"
+                    itemcount=`echo $itemcount + 4 | bc` # Get ready for next item
+                  fi
+                fi
+                linecount=`echo $linecount + 1 | bc`
+                if [ "$i" == "DOWNGRADED:" ]; then
+                  itemcount=`echo $linecount + 4 | bc`
+                fi
+              done
             fi
           fi
         else
@@ -231,5 +261,5 @@ if [ "$pkg_running" == "" ]; then
       last_check=$(date)
 
       # Write our json structure to disk
-      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"product_version\":\"$product_version\",\"product_name\":\"$product_name\",\"os_version\":\"$os_version\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded],\"upgrade_needs_reboot\":\"$upgrade_needs_reboot\"}"
+      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"product_version\":\"$product_version\",\"product_name\":\"$product_name\",\"os_version\":\"$os_version\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded],\"downgrade_packages\":[$packages_downgraded],\"upgrade_needs_reboot\":\"$upgrade_needs_reboot\"}"
 fi
