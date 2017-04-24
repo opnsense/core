@@ -44,6 +44,7 @@ CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 CORE_ABI?=	17.1
 CORE_ARCH?=	${ARCH}
 CORE_BIND?=	911
+CORE_OPENVPN?=	23
 CORE_PHP?=	70
 CORE_PY?=	27
 
@@ -92,7 +93,7 @@ CORE_DEPENDS?=		apinger \
 			mpd5 \
 			ntp \
 			openssh-portable \
-			openvpn23 \
+			openvpn${CORE_OPENVPN} \
 			opnsense-lang \
 			opnsense-update \
 			pam_opnsense \
