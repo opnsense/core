@@ -110,8 +110,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                 <strong><?=gettext("Name resolution");?></strong>
                                 <p class="text-muted">
                                     <small>
-                                        {{ lang._("Enable this to attempt to resolve names when displaying the tables.") }}<br/>
-                                        {{ lang._('Note:') }} {{ lang._("By enabling name resolution, the query should take a bit longer.") }}
+                                        {{ lang._('Enable this to attempt to resolve names when displaying the tables. By enabling name resolution, the query may take longer.') }}
                                     </small>
                                 </p>
                             </td>
