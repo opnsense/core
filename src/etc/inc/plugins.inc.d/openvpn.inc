@@ -891,7 +891,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     }
 
     if (isset($settings['reneg-sec']) && $settings['reneg-sec'] != "") {
-        $conf .= "reneg-sec ".$settings['reneg-sec'].";\n";
+        $conf .= "reneg-sec ".$settings['reneg-sec']."\n";
     }
 
     openvpn_add_custom($settings, $conf);
