@@ -2,40 +2,40 @@
 <?php
 
 /*
-    Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("config.inc");
-require_once('auth.inc');
+require_once("auth.inc");
 require_once("filter.inc");
+require_once("services.inc");
 require_once("rrd.inc");
 require_once("util.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
-require_once("services.inc");
 
 // Do not process while booting
 if (file_exists('/var/run/booting')) {
@@ -53,13 +53,16 @@ log_error("Informational is starting '{$argument}'");
 
 if (empty($argument)) {
     $interface = "wan";
-    $interface_real = get_real_interface();
+    $interface_real = get_real_interface($interface);
+    $curwanip = get_interface_ip($interface);
 } else {
     $interface = convert_real_interface_to_friendly_interface_name($argument);
     $interface_real = $argument;
+    $curwanip = find_interface_ip($interface_real);
+    if (empty($curwanip)) {
+        $curwanip = get_interface_ip($interface);
+    }
 }
-
-$interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 
 /* If the interface is configured and not enabled, bail. We do not need to change settings for disabled interfaces. #3313 */
 if (!isset($config['interfaces'][$interface]['enable'])) {
@@ -67,34 +70,23 @@ if (!isset($config['interfaces'][$interface]['enable'])) {
     return;
 }
 
-if (empty($argument)) {
-    $curwanip = get_interface_ip();
-} else {
-    $curwanip = find_interface_ip($interface_real);
-    if(empty($curwanip)) {
-        $curwanip = get_interface_ip($interface);
-    }
-}
+$interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 
 log_error("On (IP address: {$curwanip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
 
 /*
- * NOTE: Take care of openvpn, no-ip or similar interfaces if you generate the event to reconfigure an interface.
- *      i.e. OpenVPN might be in tap mode and not have an ip.
+ * NOTE: Take care of openvpn and similar if you generate the event to reconfigure an interface.
+ *    i.e. OpenVPN might be in tap mode and not have an ip.
  */
-if ($curwanip == "0.0.0.0" || !is_ipaddr($curwanip)) {
-    if (substr($interface_real, 0, 4) != "ovpn") {
-        if (!empty($config['interfaces'][$interface]['ipaddr'])) {
-            log_error("Failed to update {$interface} IP, restarting...");
-            configd_run("interface reconfigure {$interface}");
-            return;
-        }
+if ((empty($curwanip) || !is_ipaddr($curwanip)) && substr($interface_real, 0, 4) != "ovpn") {
+    if (!empty($config['interfaces'][$interface]['ipaddr'])) {
+        log_error("Failed to update {$interface} IP, restarting...");
+        configd_run("interface reconfigure {$interface}");
+        return;
     }
 }
 
 $oldip = @file_get_contents("/var/db/{$interface}_cacheip");
-
-system_resolvconf_generate();
 
 /* write the current interface IP to file */
 /* used in src/sbin/dhclient-script.ext */
@@ -124,7 +116,7 @@ if (!empty($bridgetmp)) {
     interface_bridge_add_member($bridgetmp, $interface_real);
 }
 
-/* make new hosts file */
+system_resolvconf_generate();
 system_hosts_generate();
 
 /* check tunneled IPv6 interface tracking */
