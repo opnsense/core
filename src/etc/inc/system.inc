@@ -1376,7 +1376,9 @@ function system_timezone_configure($verbose = false)
     }
 
     /* apply timezone */
-    copy(sprintf('/usr/share/zoneinfo/%s', $timezone), '/etc/localtime');
+    if (file_exists(sprintf('/usr/share/zoneinfo/%s', $timezone))) {
+        copy(sprintf('/usr/share/zoneinfo/%s', $timezone), '/etc/localtime');
+    }
 
     if ($verbose) {
         echo "done.\n";
