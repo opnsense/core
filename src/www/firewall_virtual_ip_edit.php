@@ -170,6 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // defaults
         $vipent['type'] = "single";
         $vipent['subnet_bits'] = "32";
+        $vipent['advskew'] = "0";
         // 1-on-1 copy attributes
         foreach (array('mode', 'interface', 'descr', 'type', 'subnet_bits', 'subnet', 'vhid'
                       ,'advskew','advbase','password') as $fieldname) {
