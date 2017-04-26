@@ -220,13 +220,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         write_config();
 
+        /* time zone change first */
+        system_timezone_configure();
+
         prefer_ipv4_or_ipv6();
         system_hostname_configure();
         system_hosts_generate();
         system_resolvconf_generate();
         plugins_configure('dns');
         services_dhcpd_configure();
-        system_timezone_configure();
         filter_configure();
 
         header(url_safe('Location: /system_general.php?savemsg=%s', array(get_std_save_message(true))));
