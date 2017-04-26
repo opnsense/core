@@ -2,7 +2,7 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Franco Fichtner <franco@opnsense.org>
+    Copyright (C) 2014-2017 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2004-2009 Scott Ullrich <sullrich@pfsense.org>.
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
     Copyright (C) 2009 Erik Kristensen
@@ -99,7 +99,6 @@ system_resolvconf_generate(true);
 filter_configure_sync(true);
 filter_pflog_start(true);
 setup_gateways_monitor(true);
-system_webgui_configure(true);
 plugins_configure('earlybootup', true);
 system_cron_configure(true);
 system_routing_configure('', true);

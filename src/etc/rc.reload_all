@@ -46,10 +46,6 @@ if (count($argv) > 1 && is_numeric($argv[1])) {
     sleep($argv[1]);
 }
 
-log_error("rc.reload_all: Reloading web GUI.");
-
-system_webgui_configure(true);
-
 log_error("rc.reload_all: Reloading all configuration settings.");
 
 system_firmware_configure(true);
