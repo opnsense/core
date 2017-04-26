@@ -79,11 +79,8 @@ log_error("On (IP address: {$curwanip}) (interface: {$interface_descr}[{$interfa
  *    i.e. OpenVPN might be in tap mode and not have an ip.
  */
 if ((empty($curwanip) || !is_ipaddr($curwanip)) && substr($interface_real, 0, 4) != "ovpn") {
-    if (!empty($config['interfaces'][$interface]['ipaddr'])) {
-        log_error("Failed to update {$interface} IP, restarting...");
-        configd_run("interface reconfigure {$interface}");
-        return;
-    }
+    log_error("Failed to detect IP for {$interface_descr}[{$interface}]");
+    return;
 }
 
 $oldip = @file_get_contents("/var/db/{$interface}_cacheip");
