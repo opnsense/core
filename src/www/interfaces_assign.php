@@ -434,14 +434,14 @@ include("head.inc");
                           </button>
                         </td>
                       </tr>
+<?php
+                      endif; ?>
                       <tr>
                         <td colspan="2"></td>
                         <td>
                           <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                         </td>
                       </tr>
-<?php
-                      endif; ?>
                     </tbody>
                   </table>
                 </div>
