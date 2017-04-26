@@ -126,10 +126,6 @@ function webgui_generate_config($port, $cert, $key, $ca)
 {
     global $config;
 
-    /* XXX */
-    $filename = '/var/etc/lighty-webConfigurator.conf';
-    $pid_file = 'lighty-webConfigurator.pid';
-    $document_root = '/usr/local/www/';
     $cert_location = 'cert.pem';
     $ca_location = 'ca.pem';
 
@@ -201,7 +197,7 @@ server.max-keep-alive-idle = 30
 
 ## a static document-root, for virtual-hosting take look at the
 ## server.virtual-* options
-server.document-root        = "{$document_root}"
+server.document-root        = "/usr/local/www/"
 
 
 {$http_rewrite_rules}
@@ -309,7 +305,7 @@ EOD;
 #server.error-handler-404   = "/error-handler.php"
 
 ## to help the rc.scripts
-server.pid-file            = "/var/run/{$pid_file}"
+server.pid-file            = "/var/run/lighty-webConfigurator.pid"
 
 ## virtual directory listings
 server.dir-listing         = "disable"
@@ -406,12 +402,10 @@ EOD;
 EOD;
     }
 
-    $fd = fopen("{$filename}", "w");
-    if (!$fd) {
-        log_error(sprintf('Error: cannot open %s', $filename));
+    if (false === file_put_contents('/var/etc/lighty-webConfigurator.conf', $lighty_config)) {
+        log_error('Error: cannot write configuration');
         return 0;
     }
-    fwrite($fd, $lighty_config);
-    fclose($fd);
+
     return 1;
 }
