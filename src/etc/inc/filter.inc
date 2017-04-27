@@ -2810,14 +2810,17 @@ function default_state_size()
 
 function get_protocols()
 {
-    $protocols = array("any", "TCP", "UDP", "TCP/UDP", "ICMP", "ESP", "AH", "GRE", "IGMP", "PIM", "OSPF");
+    $protocols = array('any', 'TCP', 'UDP', 'TCP/UDP', 'ICMP', 'ESP', 'AH', 'GRE', 'IGMP', 'PIM', 'OSPF');
+
+    /* IPv6 extension headers are skipped by the packet filter, we cannot police them */
+    $ipv6_ext = array('IPV6-ROUTE', 'IPV6-FRAG', 'IPV6-OPTS', 'IPV6-NONXT', 'MOBILITY-HEADER');
 
     foreach (explode("\n", file_get_contents('/etc/protocols')) as $line) {
         if (substr($line,0, 1) != "#") {
             $parts = preg_split('/\s+/', $line);
             if (count($parts) >= 4 && $parts[1] > 0) {
                 $protocol = trim(strtoupper($parts[0]));
-                if (!in_array($protocol, $protocols)) {
+                if (!in_array($protocol, $ipv6_ext) && !in_array($protocol, $protocols)) {
                     $protocols[] = $protocol;
                 }
             }
