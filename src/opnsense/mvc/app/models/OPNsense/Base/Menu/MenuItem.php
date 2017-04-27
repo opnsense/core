@@ -394,7 +394,7 @@ class MenuItem
                 if ($node->getUrl() != "") {
                     // hash part isn't available on server end
                     $menuItemUrl = explode("#", $node->getUrl())[0];
-                    $match =  preg_quote($menuItemUrl, '@');
+                    $match =  str_replace(array(".", "*","?", "@"), array("\.", ".*","\?", "\@"), $menuItemUrl);
                     if (preg_match("@^{$match}$@", "{$url}")) {
                         $node->select();
                     }
