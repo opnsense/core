@@ -31,7 +31,7 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("filter.inc");
 require_once("services.inc");
-require_once("ipsec.inc");
+require_once("plugins.inc.d/ipsec.inc");
 
 if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
     $config['ipsec'] = array();
@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } elseif (isset($_POST['apply'])) {
         // apply changes
-        ipsec_configure();
+        ipsec_configure_do();
         $savemsg = get_std_save_message();
         clear_subsystem_dirty('ipsec');
         header(url_safe('Location: /vpn_ipsec_mobile.php?savemsg=%s', array($savemsg)));

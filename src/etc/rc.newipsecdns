@@ -31,7 +31,7 @@
 require_once("util.inc");
 require_once("config.inc");
 require_once("filter.inc");
-require_once('ipsec.inc');
+require_once('plugins.inc.d/ipsec.inc');
 require_once('auth.inc');
 require_once("interfaces.inc");
 
@@ -46,5 +46,5 @@ if (file_exists('/var/run/booting')) {
 }
 
 $ipseclck = lock('ipsecdns', LOCK_EX);
-ipsec_configure();
+ipsec_configure_do(true);
 unlock($ipseclck);

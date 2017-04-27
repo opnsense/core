@@ -30,7 +30,7 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
-require_once("ipsec.inc");
+require_once("plugins.inc.d/ipsec.inc");
 
 if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
     $config['ipsec'] = array();

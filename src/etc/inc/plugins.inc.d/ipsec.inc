@@ -1,6 +1,7 @@
 <?php
 
 /*
+    Copyright (C) 2016 Deciso B.V.
     Copyright (C) 2008 Shrew Soft Inc
     Copyright (C) 2008 Ermal Luçi
     Copyright (C) 2004-2007 Scott Ullrich
@@ -109,6 +110,98 @@ $p2_pfskeygroups = array(
     17 => '17 (6144 bit)',
     18 => '18 (8192 bit)'
 );
+
+function ipsec_configure()
+{
+    return array(
+        'interface' => array('ipsec_configure_do:2'),
+    );
+}
+
+function ipsec_syslog()
+{
+    $logfacilities = array();
+
+    $logfacilities['ipsec'] = array(
+        'facility' => array('charon'),
+        'remote' => 'vpn',
+    );
+
+    return $logfacilities;
+}
+
+function ipsec_services()
+{
+    global $config;
+
+    $services = array();
+
+    if (!empty($config['ipsec']['enable']) || !empty($config['ipsec']['client']['enable'])) {
+        $pconfig = array();
+        $pconfig['name'] = 'strongswan';
+        $pconfig['description'] = gettext('IPsec VPN');
+        $pconfig['pidfile'] = '/var/run/charon.pid';
+        $pconfig['configd'] = array(
+          'restart' => array('ipsec restart'),
+          'start' => array('ipsec start'),
+          'stop' => array('ipsec stop'),
+        );
+        $services[] = $pconfig;
+    }
+
+    return $services;
+}
+
+function ipsec_interfaces()
+{
+    global $config;
+
+    $interfaces = array();
+
+    if (isset($config['ipsec']['phase1']) && isset($config['ipsec']['phase2'])) {
+        foreach ($config['ipsec']['phase1'] as $ph1ent) {
+            if (!empty($ph1ent['disabled'])) {
+                continue;
+            }
+
+            foreach ($config['ipsec']['phase2'] as $ph2ent) {
+                if (!empty($ph2ent['disabled']) || $ph1ent['ikeid'] != $ph2ent['ikeid']) {
+                    continue;
+                }
+
+                if ((!empty($ph2ent['mobile']) && empty($config['ipsec']['client']['enable'])) ||
+                    empty($config['ipsec']['enable'])) {
+                    continue;
+                }
+
+                $oic = array('enable' => true);
+                $oic['if'] = 'enc0';
+                $oic['descr'] = 'IPsec';
+                $oic['type'] = 'none';
+                $oic['virtual'] = true;
+                $oic['networks'] = array();
+                $interfaces['enc0'] = $oic;
+
+                break 2;
+            }
+        }
+    }
+
+    return $interfaces;
+}
+
+function ipsec_xmlrpc_sync()
+{
+    $result = array();
+
+    $result[] = array(
+        'description' => gettext('IPsec'),
+        'section' => 'ipsec',
+        'id' => 'ipsec',
+    );
+
+    return $result;
+}
 
 /*
  * Return phase1 local address
@@ -439,9 +532,23 @@ function ipsec_convert_to_modp($index)
     return $convertion;
 }
 
-function ipsec_configure($verbose = false)
+function ipsec_configure_do($verbose = false, $interface = '')
 {
     global $config, $p2_ealgos, $ipsec_loglevels;
+
+    if (!empty($interface)) {
+         $active = false;
+         if (isset($config['ipsec']['phase1'])) {
+             foreach ($config['ipsec']['phase1'] as $phase1) {
+                if (!isset($phase1['disabled']) && $phase1['interface'] == $interface) {
+                    $active = true;
+                }
+            }
+        }
+        if (!$active) {
+            return;
+        }
+    }
 
     /* get the automatic ping_hosts.sh ready */
     @unlink('/var/db/ipsecpinghosts');
@@ -745,7 +852,7 @@ EOD;
             }
             if ($a_client['user_source'] != "none" && $disable_xauth == false) {
                 $strongswan .= "\t\txauth-generic {\n";
-                $strongswan .= "\t\t\tscript = /usr/local/etc/inc/ipsec.auth-user.php\n";
+                $strongswan .= "\t\t\tscript = /usr/local/etc/inc/plugins.inc.d/ipsec/auth-user.php\n";
                 $strongswan .= "\t\t\tauthcfg = ";
                 $firstsed = 0;
                 $authcfgs = explode(",", $a_client['user_source']);
@@ -886,7 +993,6 @@ EOD;
                 }
                 $conn_params = "";
                 $aggressive = $ph1ent['mode'] == "aggressive" ? "yes" : "no";
-                $mobike = !empty($ph1ent['mobike']) ? "mobike = no" : "  mobike = yes";
 
                 $ep = ipsec_get_phase1_src($ph1ent);
                 if (empty($ep)) {
@@ -896,6 +1002,7 @@ EOD;
                 $keyexchange = "ikev1";
                 if (!empty($ph1ent['iketype']) && $ph1ent['iketype'] != "ikev1") {
                     $keyexchange = "ikev2";
+                    $mobike = !empty($ph1ent['mobike']) ? "mobike = no" : "mobike = yes";
                 }
 
                 if (isset($ph1ent['mobile'])) {
@@ -1034,7 +1141,7 @@ EOD;
                             continue;
                         }
 
-                        if (($ph2ent['mode'] == 'tunnel') or ($ph2ent['mode'] == 'tunnel6')) {
+                        if (($ph2ent['mode'] == 'tunnel') || ($ph2ent['mode'] == 'tunnel6')) {
                             $tunneltype = "type = tunnel";
                             $localid_type = $ph2ent['localid']['type'];
                             $leftsubnet_data = ipsec_idinfo_to_cidr($ph2ent['localid'], false, $ph2ent['mode']);
@@ -1172,10 +1279,10 @@ conn con<<connectionId>>
   aggressive = {$aggressive}
   fragmentation = yes
   keyexchange = {$keyexchange}
+  {$mobike}
   {$reauth}
   {$rekey}
   {$forceencaps}
-  {$mobike}
   installpolicy = yes
   {$tunneltype}
   {$dpdline}
@@ -1335,17 +1442,4 @@ EOD;
     }
 
     return count($filterdns_list);
-}
-
-function ipsec_configured_on_interface($interface)
-{
-    global $config;
-    if (isset($config['ipsec']['phase1'])) {
-        foreach ($config['ipsec']['phase1'] as $phase1) {
-            if (!isset($phase1['disabled']) && $phase1['interface'] == $interface) {
-                return true;
-            }
-        }
-    }
-    return false;
 }

@@ -121,9 +121,7 @@ if (is_ipaddrv6($oldipv6)) {
         // Still need to sync VPNs on PPPoE and such, as even with the same IP the VPN software is unhappy with the IP disappearing.
         if (in_array($config['interfaces'][$interface]['ipaddrv6'], array('pppoe', 'pptp', 'ppp'))) {
             /* reconfigure IPsec tunnels */
-            if (ipsec_configured_on_interface($interface)) {
-                ipsec_configure();
-            }
+            ipsec_configure_do(false, $interface);
 
             /* start OpenVPN server & clients */
             if (substr($interface_real, 0, 4) != "ovpn") {
@@ -138,18 +136,13 @@ if (is_ipaddrv6($oldipv6)) {
     file_put_contents("/var/db/{$interface}_cacheipv6", $curwanipv6);
 }
 
-/* reconfigure IPsec tunnels */
-if (ipsec_configured_on_interface($interface)) {
-    ipsec_configure();
-}
-
 /* start OpenVPN server & clients */
 if (substr($interface_real, 0, 4) != 'ovpn') {
     openvpn_resync_all($interface);
 }
 
+/* reload plugins */
+plugins_configure('interface', false, array($interface));
+
 /* reload graphing functions */
 rrd_configure();
-
-/* reload plugins */
-plugins_configure('interface');

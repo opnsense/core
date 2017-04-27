@@ -1034,7 +1034,7 @@ function interfaces_configure($verbose = false)
 
     if ($reload) {
         system_routing_configure('', $verbose);
-        ipsec_configure($verbose);
+        ipsec_configure_do($verbose);
         plugins_configure('dns', $verbose);
         services_dhcpd_configure('all', array(), $verbose);
     }
@@ -2760,17 +2760,9 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 
         if ($reloadall == true) {
             system_routing_configure($interface);
-
-            /* reload ipsec tunnels */
-            ipsec_configure();
-
-            /* restart dns servers */
+            ipsec_configure_do();
             plugins_configure('dns');
-
-            /* reload dhcpd (interface enabled/disabled status may have changed) */
             services_dhcpd_configure();
-
-            /* update dyndns */
             configd_run("dyndns reload {$interface}");
             configd_run("rfc2136 reload {$interface}");
         }

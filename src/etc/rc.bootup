@@ -120,7 +120,7 @@ configd_run('template reload *');
 plugins_configure('bootup', true);
 
 /* start IPsec tunnels */
-$ipsec_dynamic_hosts = ipsec_configure(true);
+$ipsec_dynamic_hosts = ipsec_configure_do(true);
 
 rrd_configure(true);
 system_powerd_configure(true);
@@ -134,7 +134,7 @@ system_syslogd_start(true);
 
 /* If there are ipsec dynamic hosts try again to reload the tunnels as rc.newipsecdns does */
 if ($ipsec_dynamic_hosts) {
-    ipsec_configure(true);
+    ipsec_configure_do(true);
 }
 
 if (is_install_media()) {
