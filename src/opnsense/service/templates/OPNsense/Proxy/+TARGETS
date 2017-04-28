@@ -7,3 +7,4 @@ ca.pem.id:/usr/local/etc/squid/ca.pem.id
 pre-auth.conf:/usr/local/etc/squid/pre-auth/dummy.conf
 auth.conf:/usr/local/etc/squid/auth/dummy.conf
 post-auth.conf:/usr/local/etc/squid/post-auth/dummy.conf
+local_voucher.conf:/usr/local/etc/squid/post-auth/local_voucher.conf
