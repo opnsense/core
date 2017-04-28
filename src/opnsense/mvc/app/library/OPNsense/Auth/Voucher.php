@@ -93,12 +93,13 @@ class Voucher extends Base implements IAuthConnector
     {
         $db_path = '/conf/vouchers_' . $this->refid . '.db';
         $this->dbHandle = new \SQLite3($db_path);
-        chown($db_path, "squid");
         $this->dbHandle->busyTimeout(30000);
         $results = $this->dbHandle->query('select count(*) cnt from sqlite_master');
         $row = $results->fetchArray();
         if ($row['cnt'] == 0) {
             // new database, setup
+            chgrp($db_path, "voucher");
+            chmod($db_path, 0660);
             $sql_create = "
                 create table vouchers (
                       username      varchar2  -- username
@@ -135,6 +136,7 @@ class Voucher extends Base implements IAuthConnector
 
     private function setStartTime($username, $starttime)
     {
+        $this->dbHandle->exec("PRAGMA journal_mode=off");
         $stmt = $this->dbHandle->prepare('
                                 update vouchers
                                 set    starttime = :starttime
