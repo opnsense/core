@@ -67,8 +67,8 @@ function ntpd_configure()
 {
     return array(
         'bootup' => array('ntpd_configure_defer'),
-        'interface' => array('ntpd_configure_defer'),
         'local' => array('ntpd_configure_start'),
+        'newwanip' => array('ntpd_configure_defer'),
     );
 }
 

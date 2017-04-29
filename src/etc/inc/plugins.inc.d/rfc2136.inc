@@ -34,7 +34,7 @@ function rfc2136_configure()
     return array(
         'bootup' => array('rfc2136_configure_do'),
         'local' => array('rfc2136_configure_do'),
-        'interface' => array('rfc2136_configure_do:2'),
+        'newwanip' => array('rfc2136_configure_do:2'),
     );
 }
 
