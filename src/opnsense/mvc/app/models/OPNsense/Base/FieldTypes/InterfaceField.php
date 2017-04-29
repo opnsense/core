@@ -129,7 +129,7 @@ class InterfaceField extends BaseField
             $allInterfacesDevices = array(); // mapping device -> interface handle (lan/wan/optX)
             $configObj = Config::getInstance()->object();
             // Iterate over all interfaces configuration and collect data
-            if ($configObj->interfaces->count() > 0) {
+            if (isset($configObj->interfaces) && $configObj->interfaces->count() > 0) {
                 foreach ($configObj->interfaces->children() as $key => $value) {
                     $allInterfaces[$key] = $value;
                     if (!empty($value->if)) {
