@@ -676,6 +676,11 @@ EOPP;
               && (empty($dhcpifconf['maxleasetime']) || $poolconf['maxleasetime'] != $dhcpifconf['maxleasetime'])) {
                 $dhcpdconf .= "    max-lease-time {$poolconf['maxleasetime']};\n";
             }
+            // interface MTU
+            if (!empty($poolconf['interface_mtu'])
+              && (empty($dhcpifconf['interface_mtu']) || $poolconf['interface_mtu'] != $dhcpifconf['interface_mtu'])) {
+                $dhcpdconf .= "    option interface-mtu {$poolconf['interface_mtu']};\n";
+            }
 
             // netbios-name*
             if (!empty($poolconf['winsserver'][0])
@@ -741,6 +746,10 @@ EOD;
         // max-lease-time
         if (!empty($dhcpifconf['maxleasetime'])) {
             $dhcpdconf .= "  max-lease-time {$dhcpifconf['maxleasetime']};\n";
+        }
+        // interface MTU
+        if (!empty($dhcpifconf['interface_mtu'])) {
+            $dhcpdconf .= "  option interface-mtu {$dhcpifconf['interface_mtu']};\n";
         }
 
         // netbios-name*

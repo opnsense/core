@@ -97,7 +97,8 @@ function reconfigure_dhcpd()
 $config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'dhcpleaseinlocaltime','descr',
   'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown', 'ddnsdomain',
   'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsupdate', 'mac_allow', 'mac_deny', 'tftp', 'ldap',
-  'netboot', 'nextserver', 'filename', 'filename32', 'filename64', 'rootpath', 'netmask', 'numberoptions');
+  'netboot', 'nextserver', 'filename', 'filename32', 'filename64', 'rootpath', 'netmask', 'numberoptions',
+  'interface_mtu');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // handle identifiers and action
@@ -321,6 +322,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (!empty($pconfig['staticarp']) && $noip) {
             $input_errors[] = gettext("Cannot enable static ARP when you have static map entries without IP addresses. Ensure all static maps have IP addresses and try again.");
+        }
+        if (!empty($pconfig['interface_mtu']) && (
+          (string)((int)$pconfig['interface_mtu']) != $pconfig['interface_mtu'] || $pconfig['interface_mtu'] < 68)
+        ) {
+            $input_errors[] = gettext("A valid MTU value must be specified.");
         }
 
         if(is_array($pconfig['numberoptions']['item'])) {
@@ -849,6 +855,15 @@ include("head.inc");
                         <div class="hidden" for="help_for_maxleasetime">
                           <?=gettext("This is the maximum lease time for clients that ask for a specific expiration time."); ?><br />
                           <?=gettext("The default is 86400 seconds.");?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_interface_mtu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface MTU");?></td>
+                      <td>
+                        <input name="interface_mtu"  type="text" value="<?=$pconfig['interface_mtu']?>" />
+                        <div class="hidden" for="help_for_interface_mtu">
+                          <?=gettext('This option specifies the MTU to use on this interface. The minimum legal value for the MTU is 68.');?>
                         </div>
                       </td>
                     </tr>
