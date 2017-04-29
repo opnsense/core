@@ -52,8 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // read form data
     $pconfig = array();
     $config_copy_fieldnames = array('mac', 'cid', 'hostname', 'filename', 'rootpath', 'descr', 'arp_table_static_entry',
-      'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'wins1', 'wins2', 'dns1', 'dns2', 'ddnsdomain',
-      'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsupdate', 'ntp1', 'ntp2', 'tftp', 'ipaddr',
+      'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'winsserver', 'dnsserver', 'ddnsdomain',
+      'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsupdate', 'ntpserver', 'tftp', 'ipaddr',
       'winsserver', 'dnsserver');
     foreach ($config_copy_fieldnames as $fieldname) {
         if (isset($if) && isset($id) && isset($config['dhcpd'][$if]['staticmap'][$id][$fieldname])) {
