@@ -521,8 +521,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 }
             }
-            /* restart plugins */
-            plugins_configure('interface');
+
+            /*
+             * XXX possibly wrong to configure interfaces through newwanip
+             * when the interface is dynamic and this gets called again...
+             */
+            plugins_configure('newwanip');
+
             /* sync filter configuration */
             setup_gateways_monitor();
             filter_configure();

@@ -114,7 +114,7 @@ $p2_pfskeygroups = array(
 function ipsec_configure()
 {
     return array(
-        'interface' => array('ipsec_configure_do:2'),
+        'vpn' => array('ipsec_configure_do:2'),
     );
 }
 

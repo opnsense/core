@@ -33,8 +33,8 @@
 function openvpn_configure()
 {
     return array(
-        'interface' => array('openvpn_configure_do:2'),
         'remote' => array('openvpn_configure_do'),
+        'vpn' => array('openvpn_configure_do:2'),
     );
 }
 

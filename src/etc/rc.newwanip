@@ -164,10 +164,8 @@ if (!is_ipaddr($oldip) || $curwanip != $oldip || !is_ipaddrv4($config['interface
         @file_put_contents("/var/db/{$interface}_cacheip", $curwanip);
     }
 
-    /* reload plugins */
-    plugins_configure('interface', false, array($interface));
-
-    /* reload graphing functions */
+    plugins_configure('vpn', false, array($interface));
+    plugins_configure('newwanip', false, array($interface));
     rrd_configure();
 }
 
