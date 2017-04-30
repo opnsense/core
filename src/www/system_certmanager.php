@@ -652,14 +652,18 @@ $( document ).ready(function() {
           continue;
       }
       $subject = cert_get_subject_array($ca['crt']);
+      $subject_items = array('C'=>'', 'ST' => '', 'L' => '', 'O' => '', 'emailAddress' => '', 'CN' => '');
+      foreach ($subject as $subject_item) {
+          $subject_items[$subject_item['a']] = $subject_item['v'];
+      }
   ?>
       case "<?=$ca['refid'];?>":
-          $("#dn_state").val("<?=$subject[1]['v'];?>");
-          $("#dn_city").val("<?=$subject[2]['v'];?>");
-          $("#dn_organization").val("<?=$subject[3]['v'];?>");
-          $("#dn_email").val("<?=$subject[4]['v'];?>");
+          $("#dn_state").val("<?=$subject_items['ST'];?>");
+          $("#dn_city").val("<?=$subject_items['L'];?>");
+          $("#dn_organization").val("<?=$subject_items['O'];?>");
+          $("#dn_email").val("<?=$subject_items['emailAddress'];?>");
           $('#dn_country option').removeAttr('selected');
-          $('#dn_country option').filter('[value="<?=$subject[0]['v'];?>"]').prop('selected', true);
+          $('#dn_country option').filter('[value="<?=$subject_items['C'];?>"]').prop('selected', true);
           $("#dn_country").selectpicker('refresh');
           break;
   <?php
