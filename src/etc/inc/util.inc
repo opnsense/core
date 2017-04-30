@@ -392,6 +392,8 @@ function is_ipaddrv6($ipaddr)
     }
     if (strpos($ipaddr, ":") === false) {
         return false;
+    } elseif (strpos($ipaddr, "/") !== false) {
+        return false; // subnet is not an address
     } else {
         return Net_IPv6::checkIPv6($ipaddr);
     }
