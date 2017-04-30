@@ -543,9 +543,10 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     if (is_ipaddr($ipaddr)) {
         $iface_ip=$ipaddr;
     } elseif (!empty($interface) && $interface != "any") {
-        $iface_ip=get_interface_ip($interface);
-        if (empty($iface_ip)) {
+        if (substr($settings['protocol'], 3, 1) == "6") {
             $iface_ip = get_interface_ipv6($interface);
+        } else {
+            $iface_ip = get_interface_ip($interface);
         }
     }
 
