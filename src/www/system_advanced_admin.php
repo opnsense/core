@@ -383,6 +383,9 @@ include("head.inc");
                       <select name="ssl-ciphers[]" class="selectpicker"  multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
 <?php
                       $ciphers = json_decode(configd_run("system ssl ciphers"), true);
+                      if ($ciphers == null) {
+                          $ciphers = array();
+                      }
                       foreach ($ciphers as $cipher => $cipher_data):?>
                         <option value="<?=$cipher;?>" <?= !empty($pconfig['ssl-ciphers']) && in_array($cipher, $pconfig['ssl-ciphers']) ? 'selected="selected"' : '' ?>>
                           <?=!empty($cipher_data['description']) ? $cipher_data['description'] : $cipher;?>
