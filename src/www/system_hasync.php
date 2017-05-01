@@ -37,6 +37,7 @@ $a_hasync = &$config['hasync'];
 
 $checkbox_names = array(
     'pfsyncenabled',
+    'disablepreempt',
     'synchronizealiases',
     'synchronizeauthservers',
     'synchronizecerts',
@@ -99,12 +100,12 @@ include("head.inc");
 <body>
 <?php include("fbegin.inc"); ?>
 <section class="page-content-main">
-  <div class="container-fluid">
-    <div class="row">
-      <section class="col-xs-12">
-        <div class="content-box">
-          <div class="table-responsive">
-            <form method="post">
+  <form method="post">
+    <div class="container-fluid">
+      <div class="row">
+        <section class="col-xs-12">
+          <div class="tab-content content-box col-xs-12 __mb">
+            <div class="table-responsive">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
                   <td width="22%"><strong><?=gettext('State Synchronization') ?></strong></td>
@@ -123,6 +124,15 @@ include("head.inc");
                         'It also listens on that interface for similar messages from other firewalls, and imports them into the local state table.%s' .
                         'This setting should be enabled on all members of a failover group.'), '<br/>','<a href="http://www.openbsd.org/faq/pf/carp.html" target="_blank">','</a>','<br/>','<br/>') ?>
                       <div class="well well-sm" ><b><?=gettext('Clicking save will force a configuration sync if it is enabled! (see Configuration Synchronization Settings below)') ?></b></div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_disablepreempt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable preempt') ?></td>
+                  <td>
+                    <input type="checkbox" name="disablepreempt" value="on" <?= !empty($pconfig['disablepreempt']) ? "checked=\"checked\"" : "";?> />
+                    <div class="hidden" for="help_for_disablepreempt">
+                      <?=gettext("When this device is configured as CARP master it will try to switch to master when powering up, this option will keep this one slave if there already is a master on the network");?>
                     </div>
                   </td>
                 </tr>
@@ -162,6 +172,12 @@ include("head.inc");
                     </div>
                   </td>
                 </tr>
+              </table>
+            </div>
+          </div>
+          <div class="tab-content content-box col-xs-12 __mb">
+            <div class="table-responsive">
+              <table class="table table-striped opnsense_standard_table_form">
                 <tr>
                   <th colspan="2" class="listtopic"><?=gettext('Configuration Synchronization Settings (XMLRPC Sync)') ?></th>
                 </tr>
@@ -316,12 +332,12 @@ include("head.inc");
                   </td>
                 </tr>
               </table>
-            </form>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
-  </div>
+  </form>
 </section>
 
 

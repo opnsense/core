@@ -1,0 +1,3 @@
+#!/bin/sh
+# opnsense rc scripting startup
+/usr/local/etc/rc.opnsense start

@@ -1676,8 +1676,6 @@ function interfaces_carp_setup($verbose = false)
         flush();
     }
 
-    set_single_sysctl("net.inet.carp.preempt", "1");
-
     if (!empty($config['hasync']['pfsyncinterface'])) {
         $carp_sync_int = get_real_interface($config['hasync']['pfsyncinterface']);
     }
