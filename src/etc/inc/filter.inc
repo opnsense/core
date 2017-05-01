@@ -1387,7 +1387,7 @@ function filter_nat_rules_outbound_automatic(&$FilterIflist, $src)
 }
 
 /* Generate a 'nat on' or 'no nat on' rule for given interface */
-function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcport = "", $dst = "any", $dstport = "", $natip = "", $natport = "", $nonat = false, $staticnatport = false, $proto = "", $poolopts = "", $log = false, $ipproto = "inet")
+function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcport = "", $dst = "any", $dstport = "", $natip = "", $natport = "", $nonat = false, $staticnatport = false, $proto = "", $poolopts = "", $log = false, $ipproto = "inet", $tag = '', $tagged = '')
 {
     global $config;
 
@@ -1473,6 +1473,14 @@ function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcpor
     } elseif (!$natport) {
         $tgt .= " port 1024:65535"; // set source port range
     }
+    /* set and get tag handling */
+    $tagging = '';
+    if (!empty($tag)) {
+        $tagging .= " tag {$tag}";
+    }
+    if (!empty($tagged)) {
+        $tagging .= " tagged {$tagged}";
+    }
     /* Allow for negating NAT entries */
     if ($nonat) {
         $nat = "no nat";
@@ -1486,7 +1494,7 @@ function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcpor
     $if_friendly = $FilterIflist[$if]['descr'];
     /* Put all the pieces together */
     if ($if_friendly) {
-        $natrule = "{$nat} {$logtag} on \${$if_friendly}{$ipprotocol}{$protocol} from {$src} to {$dst} {$target} {$poolopts} {$staticnatport_txt}\n";
+        $natrule = "{$nat} {$logtag} on \${$if_friendly}{$ipprotocol}{$protocol} from {$src} to {$dst}${tagging} {$target} {$poolopts} {$staticnatport_txt}\n";
     } else {
         $natrule .= "# Could not convert {$if} to friendly name(alias)\n";
     }
@@ -1686,7 +1694,7 @@ function filter_nat_rules_generate(&$FilterIflist)
                 $obtarget = ($obent['target'] == "other-subnet") ? $obent['targetip'] . '/' . $obent['targetip_subnet']: $obent['target'];
                 $poolopts = (is_subnet($obtarget) || is_alias($obtarget)) ? $obent['poolopts'] : "";
 
-                $natrules .= filter_nat_rules_generate_if (
+                $natrules .= filter_nat_rules_generate_if(
                   $FilterIflist,
                   $obent['interface'],
                   $src,
@@ -1700,7 +1708,9 @@ function filter_nat_rules_generate(&$FilterIflist)
                   $obent['protocol'],
                   $poolopts,
                   isset($obent['log']),
-                  $obent['ipprotocol']
+                  $obent['ipprotocol'],
+                  $obent['tag'],
+                  $obent['tagged']
                 );
             }
         }
@@ -1731,7 +1741,7 @@ function filter_nat_rules_generate(&$FilterIflist)
 
             $a_outs = filter_nat_rules_outbound_automatic($FilterIflist, $macroortable);
             foreach ($a_outs as $a_out) {
-                $natrules .= filter_nat_rules_generate_if (
+                $natrules .= filter_nat_rules_generate_if(
                     $FilterIflist,
                     $a_out['interface'],
                     $a_out['source']['network'],
