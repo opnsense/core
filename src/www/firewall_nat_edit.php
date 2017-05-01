@@ -993,7 +993,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
 <?php            if (isset($id) && (!isset($_GET['dup']) || !is_numericint($_GET['dup']))): ?>
-                <tr>
+                <tr class="act_no_rdr">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Filter rule association"); ?></td>
                   <td>
                     <select name="associated-rule-id" class="selectpicker" >
@@ -1023,7 +1023,7 @@ $( document ).ready(function() {
                 </tr>
 <?php         elseif (!isset($id) || (isset($_GET['dup']) && is_numericint($_GET['dup']))) :
 ?>
-                <tr>
+                <tr class="act_no_rdr">
                   <td><a id="help_for_fra" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Filter rule association"); ?></td>
                   <td>
                     <select name="filter-rule-association">
@@ -1069,6 +1069,10 @@ $( document ).ready(function() {
 <?php          endif;
                 endif;
 ?>
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                </tr>
                 <tr>
                   <td>&nbsp;</td>
                   <td>
