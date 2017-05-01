@@ -410,8 +410,10 @@ $( document ).ready(function() {
     $("#nordr").change(function(){
         if ($("#nordr").prop('checked')) {
           $(".act_no_rdr").addClass("hidden");
+          $(".act_no_rdr :input").prop( "disabled", true );
         } else {
           $(".act_no_rdr").removeClass("hidden");
+          $(".act_no_rdr :input").prop( "disabled", false );
         }
     });
 
