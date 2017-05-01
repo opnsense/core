@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // load data from config
         foreach (array('protocol','sourceport','dstport','natport','target','targetip'
                 ,'targetip_subnet','poolopts','interface','descr','nonat','log'
-                ,'disabled','staticnatport','nosync','ipprotocol') as $fieldname) {
+                ,'disabled','staticnatport','nosync','ipprotocol','tag','tagged') as $fieldname) {
               if (isset($a_out[$configId][$fieldname])) {
                   $pconfig[$fieldname] = $a_out[$configId][$fieldname];
               }
@@ -126,9 +126,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     // initialize unused elements
-    foreach (array('protocol','sourceport','dstport','natport','target','targetip'
-            ,'targetip_subnet','poolopts','interface','descr','nonat'
-            ,'disabled','staticnatport','nosync','source','source_subnet','ipprotocol') as $fieldname) {
+    foreach (array('protocol','sourceport','dstport','natport','target','targetip',
+            'targetip_subnet','poolopts','interface','descr','nonat','tag','tagged',
+            'disabled','staticnatport','nosync','source','source_subnet','ipprotocol') as $fieldname) {
           if (!isset($pconfig[$fieldname])) {
               $pconfig[$fieldname] = null;
           }
@@ -209,6 +209,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $natent['destination'] = array();
         $natent['descr'] = $pconfig['descr'];
         $natent['interface'] = $pconfig['interface'];
+        $natent['tag'] = $pconfig['tag'];
+        $natent['tagged'] = $pconfig['tagged'];
         $natent['poolopts'] = $pconfig['poolopts'];
         $natent['ipprotocol'] = $pconfig['ipprotocol'];
 
@@ -672,6 +674,21 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
+                  <td><a id="help_for_natport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Translation") . " / " .gettext("port:");?></td>
+                  <td>
+                    <input name="natport" type="text" value="<?=$pconfig['natport'];?>" />
+                    <div class="hidden" for="help_for_natport">
+                      <?=gettext("Enter the source port for the outbound NAT mapping.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Static-port:");?></td>
+                  <td>
+                    <input name="staticnatport" type="checkbox" <?=!empty($pconfig['staticnatport']) ? " checked=\"checked\"" : "";?> >
+                  </td>
+                </tr>
+                <tr>
                   <td><a id="help_for_poolopts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Pool Options:");?></td>
                   <td>
                     <select name="poolopts" class="selectpicker">
@@ -708,19 +725,22 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_natport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Translation") . " / " .gettext("port:");?></td>
-                  <td>
-                    <input name="natport" type="text" value="<?=$pconfig['natport'];?>" />
-                    <div class="hidden" for="help_for_natport">
-                      <?=gettext("Enter the source port for the outbound NAT mapping.");?>
-                    </div>
-                  </td>
+                    <td><a id="help_for_tag" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Set local tag"); ?></td>
+                    <td>
+                      <input name="tag" type="text" value="<?=$pconfig['tag'];?>" />
+                      <div class="hidden" for="help_for_tag">
+                        <?= gettext("You can mark a packet matching this rule and use this mark to match on other NAT/filter rules.") ?>
+                      </div>
+                    </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Static-port:");?></td>
-                  <td>
-                    <input name="staticnatport" type="checkbox" <?=!empty($pconfig['staticnatport']) ? " checked=\"checked\"" : "";?> >
-                  </td>
+                    <td><a id="help_for_tagged" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Match local tag"); ?>   </td>
+                    <td>
+                      <input name="tagged" type="text" value="<?=$pconfig['tagged'];?>" />
+                      <div class="hidden" for="help_for_tagged">
+                        <?=gettext("You can match packet on a mark placed before on another rule.")?>
+                      </div>
+                    </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_nosync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("No XMLRPC Sync"); ?></td>
