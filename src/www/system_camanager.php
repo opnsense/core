@@ -332,6 +332,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
+        if (isset($pconfig['serial']) && ((string)((int)$pconfig['serial']) != $pconfig['serial'] || $pconfig['serial'] < 1)) {
+            $input_errors[] = gettext('The serial number must be a number greater than zero.');
+        }
+
         /* save modifications */
         if (count($input_errors) == 0) {
             $ca = array();
@@ -349,7 +353,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             if (!empty($pconfig['serial'])) {
-                $ca['serial'] = $pconfig['serial'];
+                $ca['serial'] = $pconfig['serial'] - 1;
             }
 
             if (isset($id)) {
