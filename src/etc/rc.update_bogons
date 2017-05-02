@@ -46,7 +46,7 @@ fi
 
 if [ -n "${PROC_ERROR}" ]; then
     # Relaunch and sleep
-    sh /usr/local/etc/rc.update_bogons &
+    sh /usr/local/etc/rc.update_bogons cron &
     exit
 fi
 
