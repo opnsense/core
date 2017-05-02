@@ -332,8 +332,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        if (isset($pconfig['serial']) && ((string)((int)$pconfig['serial']) != $pconfig['serial'] || $pconfig['serial'] < 1)) {
-            $input_errors[] = gettext('The serial number must be a number greater than zero.');
+        if (isset($pconfig['serial']) && $pconfig['serial'] !== '' &&
+            ((string)((int)$pconfig['serial']) != $pconfig['serial'] || $pconfig['serial'] < 1)) {
+            $input_errors[] = gettext('The serial number must be a number greater than zero or left blank.');
         }
 
         /* save modifications */
