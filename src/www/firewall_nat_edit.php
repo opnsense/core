@@ -415,6 +415,7 @@ $( document ).ready(function() {
           $(".act_no_rdr").removeClass("hidden");
           $(".act_no_rdr :input").prop( "disabled", false );
         }
+        $(".act_no_rdr .selectpicker").selectpicker('refresh');
     });
 
     // trigger initial form change
