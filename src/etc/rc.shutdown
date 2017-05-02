@@ -6,9 +6,6 @@
 # shutdown syshook / plugin scripts
 /usr/local/etc/rc.syshook stop
 
-# shutdown rc scripts
-/usr/local/etc/rc.opnsense stop
-
 # backup volatile internals
 for BACKUP in captiveportal dhcpleases netflow rrd; do
 	/usr/local/etc/rc.backup_${BACKUP} stop

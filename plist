@@ -89,6 +89,7 @@
 /usr/local/etc/rc.filter_synchronize
 /usr/local/etc/rc.firmware
 /usr/local/etc/rc.firmware.subr
+/usr/local/etc/rc.freebsd
 /usr/local/etc/rc.halt
 /usr/local/etc/rc.importer
 /usr/local/etc/rc.initial
@@ -120,7 +121,6 @@
 /usr/local/etc/rc.newwanip
 /usr/local/etc/rc.newwanipv6
 /usr/local/etc/rc.openvpn
-/usr/local/etc/rc.opnsense
 /usr/local/etc/rc.php_ini_setup
 /usr/local/etc/rc.reboot
 /usr/local/etc/rc.recover
@@ -132,6 +132,8 @@
 /usr/local/etc/rc.shutdown
 /usr/local/etc/rc.sshd
 /usr/local/etc/rc.syshook
+/usr/local/etc/rc.syshook.d/20-freebsd.start
+/usr/local/etc/rc.syshook.d/80-freebsd.stop
 /usr/local/etc/rc.syshook.d/90-cron.start
 /usr/local/etc/rc.update_alias_url_data
 /usr/local/etc/rc.update_bogons
