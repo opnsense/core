@@ -377,6 +377,8 @@ function filter_configure_sync($verbose = false)
     // initialize fw plugin object
     $fw = new \OPNsense\Firewall\Plugin();
     $fw->setInterfaceMapping(legacy_config_get_interfaces(array("enable" => true)));
+    //$fw->setGateways(return_gateways_array());
+    //$fw->setGatewayGroups(return_gateway_groups_array());
     filter_core_bootstrap($fw);
 
     plugins_firewall($fw);

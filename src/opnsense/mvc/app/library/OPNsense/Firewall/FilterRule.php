@@ -46,6 +46,7 @@ class FilterRule
         'log' => 'parseBool,log',
         'quick' => 'parseBool,quick',
         'interface' => 'parseInterface',
+        'gateway' => 'parseRoute',
         'ipprotocol' => 'parsePlain',
         'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
         'from' => 'parsePlain,from {,}',
@@ -144,6 +145,20 @@ class FilterRule
             return "on ##{$value}## ";
         } else {
             return "on ". $this->interfaceMapping[$value]['if']." ";
+        }
+    }
+
+    /**
+     * parse gateway (route-to)
+     * @param string $value field value
+     * @return string
+     */
+    private function parseRoute($value)
+    {
+        if (!empty($this->gatewayMapping[$value]['logic'])) {
+            return " " . $this->gatewayMapping[$value]['logic'] . " ";
+        } else {
+            return "";
         }
     }
 
