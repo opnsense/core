@@ -44,7 +44,11 @@ while [ ${RETRIES} -gt 0 ]; do
         break
     fi
 
-    RETRIES=$((RETRIES-1))
+    if [ "${COMMAND}" = "cron" ]; then
+        RETRIES=$((RETRIES - 1))
+    else
+        RETRIES=0
+    fi
 done
 
 if [ ${RETRIES} -eq 0 ]; then
