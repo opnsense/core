@@ -3,7 +3,7 @@
 DESTDIR="/usr/local/etc"
 WORKDIR="/tmp/bogons"
 FETCH="fetch -aqT 30"
-PROC_ERROR=
+RETRIES=5
 
 COMMAND=${1}
 
@@ -17,37 +17,39 @@ if [ -n "${CORE_ABI}" -a -n "${SYS_ABI}" ]; then
 fi
 URL="${URL}/sets/bogons.txz"
 
-echo "rc.update_bogons is starting up." | logger
+echo "rc.update_bogons is starting up" | logger
 
-if [ "${COMMAND}" = "cron" ]; then
-    VALUE=$(jot -r 1 1 900)
-    echo "rc.update_bogons is sleeping for ${VALUE} seconds" | logger
-    sleep ${VALUE}
-fi
+while [ ${RETRIES} -gt 0 ]; do
+    if [ "${COMMAND}" = "cron" ]; then
+        VALUE=$(jot -r 1 1 900)
+        echo "rc.update_bogons is sleeping for ${VALUE} seconds" | logger
+        sleep ${VALUE}
+    fi
 
-echo "rc.update_bogons is beginning the update cycle." | logger
+    echo "rc.update_bogons is beginning the update cycle" | logger
 
-rm -rf ${WORKDIR}
-mkdir -p ${WORKDIR}
+    rm -rf ${WORKDIR}
+    mkdir -p ${WORKDIR}
 
-${FETCH} -o ${WORKDIR}/bogons.txz.sig "${URL}.sig"
-${FETCH} -o ${WORKDIR}/bogons.txz "${URL}"
+    ${FETCH} -o ${WORKDIR}/bogons.txz.sig "${URL}.sig"
+    ${FETCH} -o ${WORKDIR}/bogons.txz "${URL}"
 
-if [ ! -f ${WORKDIR}/bogons.txz ]; then
-    echo "Could not download ${URL}" | logger
-    PROC_ERROR=1
-elif ! opnsense-verify -q ${WORKDIR}/bogons.txz; then
-    echo "Could not verify ${URL}" | logger
-    PROC_ERROR=1
-elif ! tar -C ${WORKDIR} -xJf ${WORKDIR}/bogons.txz; then
-    echo "Could not extract ${URL}" | logger
-    PROC_ERROR=1
-fi
+    if [ ! -f ${WORKDIR}/bogons.txz ]; then
+        echo "Could not download ${URL}" | logger
+    elif ! opnsense-verify -q ${WORKDIR}/bogons.txz; then
+        echo "Could not verify ${URL}" | logger
+    elif ! tar -C ${WORKDIR} -xJf ${WORKDIR}/bogons.txz; then
+        echo "Could not extract ${URL}" | logger
+    else
+        break
+    fi
 
-if [ -n "${PROC_ERROR}" ]; then
-    # Relaunch and sleep
-    sh /usr/local/etc/rc.update_bogons cron &
-    exit
+    RETRIES=$((RETRIES-1))
+done
+
+if [ ${RETRIES} -eq 0 ]; then
+    echo "rc.update_bogons is aborting the update cycle" | logger
+    exit 1
 fi
 
 ENTRIES_MAX=`pfctl -s memory | awk '/table-entries/ { print $4 }'`
@@ -88,4 +90,4 @@ else
     fi
 fi
 
-echo "rc.update_bogons is ending the update cycle." | logger
+echo "rc.update_bogons is ending the update cycle" | logger
