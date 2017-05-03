@@ -131,7 +131,7 @@ class updatedns {
      *   - $dnsUser, and $dnsPass indicate HTTP Auth for custom DNS, if they are needed in the URL (GET Variables), include them in $dnsUpdateURL.
      *   - $For custom requests, $dnsUpdateURL is parsed for '%IP%', which is replaced with the new IP.
      */
-    function updatedns ($dnsService = '', $dnsHost = '', $dnsUser = '', $dnsPass = '',
+    public function __construct ($dnsService = '', $dnsHost = '', $dnsUser = '', $dnsPass = '',
                 $dnsWildcard = 'OFF', $dnsMX = '', $dnsIf = '', $dnsBackMX = '',
                 $dnsServer = '', $dnsPort = '', $dnsUpdateURL = '', $forceUpdate = false,
                 $dnsZoneID ='', $dnsTTL='', $dnsResultMatch = '', $dnsRequestIf = '',
