@@ -17,8 +17,8 @@ $header = "#seconds,rssi,mode,submode,upstream,downstream,sentbytes,receivedbyts
 $i = 0;
 
 $record = array();
-$handle = fopen($device, "r");
-if (! $handle) {
+$handle = @fopen($device, 'r');
+if (!$handle) {
     echo "Can not open modem stats device\n";
     exit(1);
 }
