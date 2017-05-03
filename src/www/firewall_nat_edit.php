@@ -372,6 +372,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
+if (isset($_GET["format"]) && $_GET["format"] == "json")
+{
+    header("Content-Type: application/json");
+    print(json_encode($pconfig));
+    exit();
+}
+
+
 legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
@@ -410,12 +418,9 @@ $( document ).ready(function() {
     $("#nordr").change(function(){
         if ($("#nordr").prop('checked')) {
           $(".act_no_rdr").addClass("hidden");
-          $(".act_no_rdr :input").prop( "disabled", true );
         } else {
           $(".act_no_rdr").removeClass("hidden");
-          $(".act_no_rdr :input").prop( "disabled", false );
         }
-        $(".act_no_rdr .selectpicker").selectpicker('refresh');
     });
 
     // trigger initial form change
