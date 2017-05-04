@@ -109,7 +109,6 @@ function webgui_configure_do($verbose = false)
             unlink($filename);
         }
 
-
         /* regenerate the php.ini files in case the setup has changed */
         configd_run('template reload OPNsense/WebGui');
 
