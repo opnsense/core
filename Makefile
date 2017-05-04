@@ -306,13 +306,6 @@ style: want-pear-PHP_CodeSniffer
 style-fix: want-pear-PHP_CodeSniffer
 	phpcbf --standard=ruleset.xml ${.CURDIR}/src/opnsense || true
 
-setup: force
-	${.CURDIR}/src/etc/rc.php_ini_setup
-
-health: force
-	# check test script output and advertise a failure...
-	[ "`${.CURDIR}/src/etc/rc.php_test_run`" == "FCGI-PASSED PASSED" ]
-
 test: want-phpunit
 	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
 	    phpunit --configuration PHPunit.xml

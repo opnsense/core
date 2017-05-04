@@ -122,8 +122,6 @@
 /usr/local/etc/rc.newwanip
 /usr/local/etc/rc.newwanipv6
 /usr/local/etc/rc.openvpn
-/usr/local/etc/rc.php_ini_setup
-/usr/local/etc/rc.php_test_run
 /usr/local/etc/rc.reboot
 /usr/local/etc/rc.recover
 /usr/local/etc/rc.reload_all
@@ -722,6 +720,10 @@
 /usr/local/opnsense/service/templates/OPNsense/Sample/sub2/example_sub2.txt
 /usr/local/opnsense/service/templates/OPNsense/Syslog/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Syslog/newsyslog.conf
+/usr/local/opnsense/service/templates/OPNsense/WebGui/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/WebGui/php.etc.ini
+/usr/local/opnsense/service/templates/OPNsense/WebGui/php.ini
+/usr/local/opnsense/service/templates/OPNsense/WebGui/php.lib.ini
 /usr/local/opnsense/service/tests/__init__.py
 /usr/local/opnsense/service/tests/config/config.xml
 /usr/local/opnsense/service/tests/core.py

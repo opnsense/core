@@ -104,6 +104,12 @@ function webgui_configure_do($verbose = false)
         /* only stop the frontend when the generation was successful */
         killbypid('/var/run/lighty-webConfigurator.pid', 'TERM', true);
 
+        /* flush Phalcon volt templates */
+        foreach (glob('/usr/local/opnsense/mvc/app/cache/*.php') as $filename) {
+            unlink($filename);
+        }
+
+
         /* regenerate the php.ini files in case the setup has changed */
         configd_run('template reload OPNsense/WebGui');
 
