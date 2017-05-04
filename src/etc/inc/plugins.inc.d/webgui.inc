@@ -104,14 +104,14 @@ function webgui_configure_do($verbose = false)
         /* only stop the frontend when the generation was successful */
         killbypid('/var/run/lighty-webConfigurator.pid', 'TERM', true);
 
+        /* regenerate the php.ini files in case the setup has changed */
+        mwexec('/usr/local/etc/rc.php_ini_setup');
+
         /*
          * Force reloading all php-cgi children to
          * avoid hiccups with moved include files.
          */
         killbyname('php-cgi', 'HUP');
-
-        /* regenerate the php.ini files in case the setup has changed */
-        mwexec('/usr/local/etc/rc.php_ini_setup');
 
         /* start lighthttpd */
         mwexec('/usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf');
