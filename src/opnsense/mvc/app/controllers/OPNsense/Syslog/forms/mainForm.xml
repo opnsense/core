@@ -1,0 +1,111 @@
+<form>
+<tab id="syslog-general" description="General Syslog Settings">
+	<field>
+		<id>syslog.Reverse</id>
+		<label>Reverse Display</label>
+		<type>checkbox</type>
+		<help>Show log entries in reverse order (newest entries on top).</help>
+	</field>
+	<field>
+		<id>syslog.NumEntries</id>
+		<label>GUI Log Entries to Display</label>
+		<type>text</type>
+		<help>Hint: This is only the number of log entries displayed in the GUI. It does not affect how many entries are contained in the actual log files.</help>
+	</field>
+	<field>
+		<id>syslog.DisableLogFiles</id>
+		<label>Disable Local Logging</label>
+		<type>checkbox</type>
+		<help>Disable writing local log-files.</help>
+	</field>
+	<field>
+		<id>syslog.RotationFileSize</id>
+		<label>File size for log rotation, kBytes</label>
+		<type>text</type>
+		<help>Size of each logfile, which triggers rotation event.</help>
+	</field>
+	<field>
+		<id>syslog.RotationCount</id>
+		<label>Rotated items count</label>
+		<type>text</type>
+		<help>When logfile is rotated, its content moved to archive, stored in local disk. This option sets count of such archives.</help>
+	</field>
+	<field>
+		<id>syslog.LogWebServer</id>
+		<label>Web Server Log</label>
+		<type>checkbox</type>
+		<help>Hint: If this is checked, errors from the lighttpd web server process for the GUI or Captive Portal will appear in the main system log.</help>
+	</field>
+	<field>
+		<type>header</type>
+		<label>Firewall Logging</label>
+	</field>
+	<field>
+		<id>syslog.Firewall.LogDefaultBlock</id>
+		<label>Log packets matched from the default block rules put in the ruleset</label>
+		<type>checkbox</type>
+		<help>Hint: Packets that are blocked by the implicit default block rule will not be logged if you uncheck this option. Per-rule logging options are still respected.</help>
+	</field>
+	<field>
+		<id>syslog.Firewall.LogDefaultPass</id>
+		<label>Log packets matched from the default pass rules put in the ruleset</label>
+		<type>checkbox</type>
+		<help>Hint: Packets that are allowed by the implicit default pass rule will be logged if you check this option. Per-rule logging options are still respected.</help>
+	</field>
+	<field>
+		<id>syslog.Firewall.LogBogons</id>
+		<label>Log packets blocked by 'Block Bogon Networks' rules</label>
+		<type>checkbox</type>
+	</field>
+	<field>
+		<id>syslog.Firewall.LogPrivateNets</id>
+		<label>Log packets blocked by 'Block Private Networks' rules</label>
+		<type>checkbox</type>
+	</field>
+	<field>
+		<id>syslog.Firewall.FilterDescriptions</id>
+		<label>Filter descriptions</label>
+		<type>dropdown</type>
+		<help>Show the applied rule description below or in the firewall log rows.</help>
+	</field>
+</tab>
+<tab id="syslog-remote" description="Remote Logging">
+	<field>
+		<type>header</type>
+		<label>Remote Logging</label>
+	</field>
+	<field>
+		<id>syslog.Remote.Enable</id>
+		<label>Enable Remote Logging</label>
+		<type>checkbox</type>
+		<help>Send log messages to remote syslog server.</help>
+	</field>
+	<field>
+		<id>syslog.Remote.SourceIP</id>
+		<label>Source Address</label>
+		<type>dropdown</type>
+		<help>This option will allow the logging daemon to bind to a single IP address, rather than all IP addresses. If you pick a single IP, remote syslog severs must all be of that IP type. If you wish to mix IPv4 and IPv6 remote syslog servers, you must bind to all interfaces. If none selected, bind to all interfaces.</help>
+	</field>
+	<field>
+		<id>syslog.Remote.Proto</id>
+		<label>IP Protocol</label>
+		<type>dropdown</type>
+		<help>This option is only used when a non-default address is chosen as the source above. This option only expresses a preference; If an IP address of the selected type is not found on the chosen interface, the other type will be tried.</help>
+	</field>
+	<field>
+		<id>syslog.Remote.Servers</id>
+		<label>Remote Syslog Servers</label>
+		<type>select_multiple</type>
+		<allownew>true</allownew>
+		<style>tokenize</style>
+		<help>IP addresses of remote syslog servers, or an IP:port.</help>
+	</field>
+	<field>
+		<id>syslog.Remote.LogAll</id>
+		<label>Log everything</label>
+		<type>checkbox</type>
+		<help>Send all log events to remote syslog server.</help>
+	</field>
+</tab>
+<activetab>syslog-general</activetab>
+</form>

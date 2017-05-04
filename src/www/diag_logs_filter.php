@@ -594,8 +594,8 @@ if ($filtersubmit) {
 
 $filter_logfile = '/var/log/filter.log';
 
-if (isset($config['syslog']['nentries'])) {
-  $nentries = $config['syslog']['nentries'];
+if (isset($config['OPNsense']['Syslog']['NumEntries'])) {
+  $nentries = $config['OPNsense']['Syslog']['NumEntries'];
 } else {
   $nentries = 50;
 }
@@ -727,7 +727,7 @@ include("head.inc");
               }
 ?>
             <tr>
-              <td colspan="<?=isset($config['syslog']['filterdescriptions']) && $config['syslog']['filterdescriptions']==="1"?7:6?>">
+              <td colspan="<?=isset($config['OPNsense']['Syslog']['Firewall']['FilterDescriptions']) && $config['OPNsense']['Syslog']['Firewall']['FilterDescriptions']==="val_1"?7:6?>">
                 <strong>
 <?php
                   if ( (!$filtertext) && (!$filterfieldsarray) ) {
@@ -742,7 +742,7 @@ include("head.inc");
               <td width="50"><?=gettext("Act");?></td>
               <td><?=gettext("Time");?></td>
               <td><?=gettext("If");?></td>
-              <?php if (isset($config['syslog']['filterdescriptions']) && $config['syslog']['filterdescriptions'] === "1"):?>
+              <?php if (isset($config['OPNsense']['Syslog']['Firewall']['FilterDescriptions']) && $config['OPNsense']['Syslog']['Firewall']['FilterDescriptions'] === "val_1"):?>
               <td width="10%"><?=gettext("Rule");?></td>
               <?php endif;?>
               <td><?=gettext("Source");?></td>
@@ -750,7 +750,7 @@ include("head.inc");
               <td><?=gettext("Proto");?></td>
             </tr>
 <?php
-            if (isset($config['syslog']['filterdescriptions'])) {
+            if (isset($config['OPNsense']['Syslog']['Firewall']['FilterDescriptions'])) {
                 buffer_rules_load();
             }
             $rowIndex = 0;
@@ -786,7 +786,7 @@ include("head.inc");
                 <?=htmlspecialchars($filterent['interface']);?>
               </td>
 <?php
-              if (isset($config['syslog']['filterdescriptions']) && $config['syslog']['filterdescriptions'] === "1") {
+              if (isset($config['OPNsense']['Syslog']['Firewall']['FilterDescriptions']) && $config['OPNsense']['Syslog']['Firewall']['FilterDescriptions'] === "val_1") {
                   echo("<td class=\"listMRr nowrap\">".find_rule_by_number_buffer($filterent['rulenum'],$filterent['act'])."</td>");
               }
 
@@ -840,7 +840,7 @@ include("head.inc");
               </td>
             </tr>
 <?php
-            if (isset($config['syslog']['filterdescriptions']) && $config['syslog']['filterdescriptions'] === "2"):?>
+            if (isset($config['OPNsense']['Syslog']['Firewall']['FilterDescriptions']) && $config['OPNsense']['Syslog']['Firewall']['FilterDescriptions'] === "val_2"):?>
             <tr class="<?=$evenRowClass?>">
               <td colspan="2"></td>
               <td colspan="4"><?=find_rule_by_number_buffer($filterent['rulenum'],$filterent['act']);?></td>

@@ -42,8 +42,8 @@ require_once 'diag_logs_common.inc';
 $filtertext = '';
 $nentries = 50;
 
-if (isset($config['syslog']['nentries'])) {
-    $nentries = $config['syslog']['nentries'];
+if (isset($config['OPNsense']['Syslog']['NumEntries'])) {
+    $nentries = $config['OPNsense']['Syslog']['NumEntries'];
 }
 
 if (!empty($_POST['clear'])) {

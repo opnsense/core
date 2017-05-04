@@ -64,14 +64,12 @@
                 <workAround url="/system_general.php*"/>
             </General>
             <Administration order="200" url="/system_advanced_admin.php"/>
-            <Logging order="300" url="/diag_logs_settings.php"/>
             <Notifications order="400" url="/system_advanced_notifications.php"/>
             <Miscellaneous order="500" url="/system_advanced_misc.php"/>
             <Tunables VisibleName="Tunables" order="600" url="/system_advanced_sysctl.php">
                 <Edit url="/system_advanced_sysctl.php*" visibility="hidden"/>
             </Tunables>
         </Settings>
-        <LogFile order="150" VisibleName="Log File" url="/diag_logs.php" cssClass="fa fa-eye fa-fw"/>
         <Wizard order="140" url="/wizard.php?xml=system" cssClass="fa fa-magic fa-fw">
             <Step url="/wizard.php?xml=system*" visibility="hidden"/>
         </Wizard>

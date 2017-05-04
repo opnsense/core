@@ -2399,7 +2399,7 @@ function filter_rules_legacy(&$FilterIflist)
 {
     global $config;
     $log = array();
-    $log['block'] = !isset($config['syslog']['nologdefaultblock']) ? "log" : "";
+    $log['block'] = $config['OPNsense']['Syslog']['Firewall']['LogDefaultBlock'] == 1 ? "log" : "";
 
     $ipfrules = "";
     $isbridged = false;
@@ -2432,8 +2432,8 @@ function filter_rules_generate(&$FilterIflist)
     # BEGIN OF firewall rules
     /* default block logging? */
     $log = array();
-    $log['block'] = !isset($config['syslog']['nologdefaultblock']) ? "log" : "";
-    $log['pass'] = !isset($config['syslog']['nologdefaultpass']) ? "log" : "";
+    $log['block'] = $config['OPNsense']['Syslog']['Firewall']['LogDefaultBlock'] == 1 ? "log" : "";
+    $log['pass'] = $config['OPNsense']['Syslog']['Firewall']['LogDefaultPass'] == 1 ? "log" : "";
 
     // TODO : route-to needs to be refactored / simplified.
     foreach ($FilterIflist as $ifdescr => $ifcfg) {

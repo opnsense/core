@@ -146,7 +146,7 @@ EOD;
 
     $lighty_port = $port;
 
-    if(!isset($config['syslog']['nologlighttpd'])) {
+    if($config['OPNsense']['Syslog']['LogWebServer'] == 1) {
         $lighty_use_syslog = <<<EOD
 ## where to send error-messages to
 server.errorlog-use-syslog="enable"

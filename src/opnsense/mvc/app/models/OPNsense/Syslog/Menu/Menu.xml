@@ -1,0 +1,8 @@
+<menu>
+    <System>
+        <Settings>
+            <Logging order="300" url="/ui/syslog/" />
+        </Settings>
+        <LogFile order="150" VisibleName="Log File" url="/ui/syslog/logview/showlog/system" cssClass="fa fa-eye fa-fw"/>
+    </System>
+</menu>

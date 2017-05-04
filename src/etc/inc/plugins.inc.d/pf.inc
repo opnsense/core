@@ -95,7 +95,7 @@ function pf_firewall($fw)
     global $config, $GatewaysList;
 
     $defaults = array();
-    $defaults['pass'] = array("type" => "pass", "log" => !isset($config['syslog']['nologdefaultpass']));
+    $defaults['pass'] = array("type" => "pass", "log" => $config['OPNsense']['Syslog']['Firewall']['LogDefaultPass']);
 
     /*
      *  pass traffic between statically routed subnets and the subnet on the

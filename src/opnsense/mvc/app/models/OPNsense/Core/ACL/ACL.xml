@@ -112,18 +112,6 @@
             <pattern>diag_logs_resolver.php*</pattern>
         </patterns>
     </page-diagnostics-logs-resolver>
-    <page-diagnostics-logs-settings>
-        <name>Diagnostics: Logs: Settings</name>
-        <patterns>
-            <pattern>diag_logs_settings.php*</pattern>
-        </patterns>
-    </page-diagnostics-logs-settings>
-    <page-diagnostics-logs-system>
-        <name>Diagnostics: Logs: System</name>
-        <patterns>
-            <pattern>diag_logs.php*</pattern>
-        </patterns>
-    </page-diagnostics-logs-system>
     <page-diagnostics-packetcapture>
         <name>Diagnostics: Packet Capture</name>
         <patterns>

@@ -62,7 +62,7 @@ include("head.inc");
   var isPaused = false;
   var nentries = <?=$nentries; ?>;
 <?php
-  if(isset($config['syslog']['reverse']))
+  if($config['OPNsense']['Syslog']['Reverse'] == 1)
     echo "var isReverse = true;\n";
   else
     echo "var isReverse = false;\n";
