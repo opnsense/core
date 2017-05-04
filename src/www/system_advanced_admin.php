@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['webguiproto'] = $config['system']['webgui']['protocol'];
     $pconfig['webguiport'] = $config['system']['webgui']['port'];
     $pconfig['ssl-certref'] = $config['system']['webgui']['ssl-certref'];
+    $pconfig['webuicompression'] = isset($config['system']['webgui']['webuicompression']) ? $config['system']['webgui']['webuicompression'] : null;
     if (!empty($config['system']['webgui']['ssl-ciphers'])) {
         $pconfig['ssl-ciphers'] = explode(':', $config['system']['webgui']['ssl-ciphers']);
     } else {
@@ -98,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($config['system']['webgui']['protocol'] != $pconfig['webguiproto'] ||
             $config['system']['webgui']['port'] != $pconfig['webguiport'] ||
             $config['system']['webgui']['ssl-certref'] != $pconfig['ssl-certref'] ||
+            $config['system']['webgui']['webuicompression'] != $pconfig['webuicompression'] ||
             $config['system']['webgui']['ssl-ciphers'] != $newciphers ||
             ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect'])
             ) {
@@ -110,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['webgui']['port'] = $pconfig['webguiport'];
         $config['system']['webgui']['ssl-certref'] = $pconfig['ssl-certref'];
         $config['system']['webgui']['ssl-ciphers'] = $newciphers;
+        $config['system']['webgui']['webuicompression'] = $pconfig['webuicompression'];
 
         if ($pconfig['disablehttpredirect'] == "yes") {
             $config['system']['webgui']['disablehttpredirect'] = true;
@@ -482,6 +485,28 @@ include("head.inc");
                     <div class="hidden" for="help_for_althostnames">
                       <?= gettext("Here you can specify alternate hostnames by which the router may be queried, to " .
                                           "bypass the DNS Rebinding Attack checks. Separate hostnames with spaces.") ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_webuicompression" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WebGui Compression")?></td>
+                  <td width="78%">
+                    <select name="webuicompression" class="formselect selectpicker">
+                        <option value="" <?=empty($pconfig['webuicompression'])? 'selected="selected"' : '';?>>
+                          <?=gettext("Off");?>
+                        </option>
+                        <option value="1" <?=$pconfig['webuicompression'] == "1" ? 'selected="selected"' : '';?>>
+                          <?=gettext("Low");?>
+                        </option>
+                        <option value="5" <?=$pconfig['webuicompression'] == "5" ? 'selected="selected"' : '';?>>
+                          <?=gettext("Medium");?>
+                        </option>
+                        <option value="9" <?=$pconfig['webuicompression'] == "9" ? 'selected="selected"' : '';?>>
+                          <?=gettext("High");?>
+                        </option>
+                    </select>
+                    <div class="hidden" for="help_for_webuicompression">
+                      <?=gettext("Enable compression of webgui pages and dynamic content (transfer less data to the client for an additional cost in processing power).") ?>
                     </div>
                   </td>
                 </tr>
