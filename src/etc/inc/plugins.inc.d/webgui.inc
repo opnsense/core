@@ -105,7 +105,7 @@ function webgui_configure_do($verbose = false)
         killbypid('/var/run/lighty-webConfigurator.pid', 'TERM', true);
 
         /* regenerate the php.ini files in case the setup has changed */
-        mwexec('/usr/local/etc/rc.php_ini_setup');
+        configd_run('template reload OPNsense/WebGui');
 
         /*
          * Force reloading all php-cgi children to
