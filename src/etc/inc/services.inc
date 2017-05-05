@@ -1956,3 +1956,39 @@ function service_control_restart($name, $extras)
 
     return sprintf(gettext("%s has been restarted."), htmlspecialchars($name));
 }
+
+function service_control_squid_restart($name, $extras)
+{
+    if (!empty($extras['id'])) {
+        $filter['id'] = $extras['id'];
+    }
+
+    $service = find_service_by_name($name, $filter);
+    if (!isset($service['name'])) {
+        return sprintf(gettext("Could not start unknown service `%s'"), htmlspecialchars($name));
+    }
+
+    if (isset($service['configd']['squid_restart'])) {
+        foreach ($service['configd']['squid_restart'] as $cmd) {
+            configd_run($cmd);
+        }
+    } elseif (isset($service['php']['squid_restart'])) {
+        foreach ($service['php']['squid_restart'] as $cmd) {
+            $params = array();
+            if (isset($service['php']['args'])) {
+                foreach ($service['php']['args'] as $param) {
+                    $params[] = $service[$param];
+                }
+            }
+            call_user_func_array($cmd, $params);
+        }
+    } elseif (isset($service['mwexec']['squid_restart'])) {
+        foreach ($service['mwexec']['squid_restart'] as $cmd) {
+            mwexec($cmd);
+        }
+    } else {
+        return sprintf(gettext("Could not squid_start service `%s'"), htmlspecialchars($name));
+    }
+
+    return sprintf(gettext('%s has been started.'), htmlspecialchars($name));
+}

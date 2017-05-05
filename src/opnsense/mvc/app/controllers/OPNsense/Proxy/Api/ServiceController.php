@@ -146,6 +146,7 @@ class ServiceController extends ApiControllerBase
 
             // generate template
             $backend->configdRun('template reload OPNsense/Proxy');
+            $backend->configdRun('proxy plugins_reconfigure');
 
             // (res)start daemon
             if ($mdlProxy->general->enabled->__toString() == 1) {
