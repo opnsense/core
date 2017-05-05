@@ -739,7 +739,7 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
                   (isset($gwsttng['monitor_disable']) || !stristr($gateways_status[$gwname]['status'], "down"))) {
                     $upgw = $gwname;
                 }
-                if ($dfltgwdown && !empty($upgw)) {
+                if (!$dfltgwup && !empty($upgw)) {
                     // switch gateway
                     $dfltgwname = $upgw;
                     break;
@@ -755,7 +755,8 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
         } else {
             $gwip = $gateways_arr[$dfltgwname]['gateway'];
         }
-        $defaultgw = trim(exec("/sbin/route -n get -{$ipprotocol} default | /usr/bin/awk '/gateway:/ {print $2}'"), " \n");
+        $tmpcmd = "/sbin/route -n get -{$ipprotocol} default | /usr/bin/awk '/gateway:/ {print $2}'";
+        $defaultgw = trim(exec($tmpcmd), " \n");
         if (!$dfltgwup) {
             log_error("Default gateway down setting {$dfltgwname} as default!");
         }
