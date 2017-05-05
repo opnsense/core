@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $_GET['id'];
     }
     $pconfig = array();
-    foreach (array('rr', 'host', 'domain', 'ip', 'mxprio', 'mx', 'descr') as $fieldname) {
+    foreach (array('rr', 'host', 'domain', 'ip', 'mxprio', 'mx', 'descr', 'cname') as $fieldname) {
         if (isset($id) && !empty($a_hosts[$id][$fieldname])) {
             $pconfig[$fieldname] = $a_hosts[$id][$fieldname];
         } else {
@@ -122,6 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $hostent['ip'] = $pconfig['ip'];
         $hostent['mxprio'] = $pconfig['mxprio'];
         $hostent['mx'] = $pconfig['mx'];
+        $hostent['cname'] = $pconfig['cname'];
         $hostent['descr'] = $pconfig['descr'];
 
         if (isset($id)) {
@@ -269,7 +270,7 @@ include("head.inc");
                   <tr class="cname_rec">
                     <td><a id="help_for_cname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hostname");?></td>
                     <td>
-                      <input name="cname" type="text" id="cname" value="<?=$pconfig['ip'];?>" />
+                      <input name="cname" type="text" id="cname" value="<?=$pconfig['cname'];?>" />
                       <div class="hidden" for="help_for_cname">
                         <?=gettext("FQDN of the host"); ?><br />
                         <?=gettext("e.g."); ?> <em>myhost.example.com</em>
