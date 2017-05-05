@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2016 E.Bevz & Deciso B.V.
+ *    Copyright (C) 2017 E.Bevz & Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -169,8 +169,9 @@ class ServiceController extends ApiControllerBase
             $numentries = intval($mdl->NumEntries->__toString());
             $hostname = Config::getInstance()->toArray()['system']['hostname'];
 
-            if(!file_exists($filename))
+            if(!file_exists($filename)) {
                 return array("status" => "ok", "data" => array(array('time' => gettext("No data found"), 'filter' => "", 'message' => "")), 'filters' => '');
+            }
 
             $logtype = 'file';
             foreach($mdl->LogTargets->Target->__items as $uuid => $target) {
@@ -195,18 +196,21 @@ class ServiceController extends ApiControllerBase
 
             $filters = preg_split('/\s+/', trim(preg_quote($filter,'/')));
             foreach ($filters as $pattern) {
-                if(trim($pattern) == '')
+                if(trim($pattern) == '') {
                     continue;
+                }
                 $logdata = preg_grep("/$pattern/", $logdata);
             }
 
-            if($reverse)
+            if($reverse) {
                 $logdata = array_reverse($logdata);
+            }
 
             $counter = 1;
             foreach ($logdata as $logent) {
-                if(trim($logent) == '')
+                if(trim($logent) == '') {
                     continue;
+                }
 
                 $logent = preg_split("/\s+/", $logent, 6);
                 $entry_date_time = join(" ", array_slice($logent, 0, 3));
@@ -214,12 +218,14 @@ class ServiceController extends ApiControllerBase
                 $entry_text .= (isset($logent[4]) ?  $logent[4] : '') . (isset($logent[5]) ? " " . $logent[5] : '');
                 $formatted[] = array('time' => utf8_encode($entry_date_time), 'filter' => $filter, 'message' => utf8_encode($entry_text));
 
-                if(++$counter > $numentries)
-                    break; 
+                if(++$counter > $numentries) {
+                    break;
+                }
             }
 
-            if(count($formatted) == 0)
+            if(count($formatted) == 0) {
                 return array("status" => "ok", "data" => array(array('time' => gettext("No data found"), 'filter' => "", 'message' => "")), 'filters' => '');
+            }
 
             return array("status" => "ok", "data" => $formatted, 'filters' => $filters);
 

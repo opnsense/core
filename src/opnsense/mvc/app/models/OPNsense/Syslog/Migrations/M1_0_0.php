@@ -1,6 +1,6 @@
 <?php
 /**
- *    Copyright (C) 2016 E.Bevz, Deciso B.V.
+ *    Copyright (C) 2017 E.Bevz, Deciso B.V.
  *
  *    All rights reserved.
  *

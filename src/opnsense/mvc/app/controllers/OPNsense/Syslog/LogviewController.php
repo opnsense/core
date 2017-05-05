@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2016 Deciso B.V.
+ *    Copyright (C) 2017 E.Bevz & Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -54,7 +54,7 @@ class LogviewController extends \OPNsense\Base\IndexController
      */
     public function showlogAction($name, $filter = '')
     {
-        $this->view->title = gettext('Log File: ' . $name);
+        $this->view->title = gettext('Log File: ') . $name;
         $this->view->logname = $name;
         $this->view->filtertext = $filter;
         $this->view->pick('OPNsense/Syslog/logview');

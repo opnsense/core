@@ -1,6 +1,6 @@
 <?php
 /**
- *    Copyright (C) 2016 E. Bevz & Deciso B.V.
+ *    Copyright (C) 2017 E.Bevz & Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -96,8 +96,9 @@ class SettingsController extends ApiControllerBase
                         $bindip = "";
                     }
                 }
-                if($bindip != $mdl->Remote->BindAddress->__toString())
+                if($bindip != $mdl->Remote->BindAddress->__toString()) {
                     $mdl->Remote->BindAddress = $bindip;
+                }
 
                 // perform validation
                 $valMsgs = $mdl->performValidation();

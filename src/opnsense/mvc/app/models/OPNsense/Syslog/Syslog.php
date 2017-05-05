@@ -1,6 +1,6 @@
 <?php
 /**
- *    Copyright (C) 2016 Deciso B.V.
+ *    Copyright (C) 2017 E.Bevz, Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -62,21 +62,21 @@ class Syslog extends BaseModel
      private function getPredefinedTargets()
     {
         return array(
-        array('program' => 'filterlog',                                           'filter' => '*.*',  'type' => 'clog', 'target' => self::$LOGS_DIRECTORY.'/filter.log',  'category' => 'filter'),
-        array('program' => 'apinger',                                             'filter' => '*.*',  'type' => 'clog', 'target' => self::$LOGS_DIRECTORY.'/gateways.log','category' => 'gateways'),
-        array('program' => 'ntp,ntpd,ntpdate',                                    'filter' => '*.*',  'type' => 'clog', 'target' => self::$LOGS_DIRECTORY.'/ntpd.log',    'category' => 'ntpd'),
-        array('program' => 'captiveportal',                                       'filter' => '*.*',  'type' => 'clog', 'target' => self::$LOGS_DIRECTORY.'/portalauth.log','category' => 'portalauth'),
-        array('program' => 'ppp',                                                 'filter' => '*.*',  'type' => 'clog', 'target' => self::$LOGS_DIRECTORY.'/ppps.log',    'category' => null),
-        array('program' => 'dnsmasq,filterdns,unbound',                           'filter' => '*.*',  'type' => 'clog', 'target' => self::$LOGS_DIRECTORY.'/resolver.log','category' => 'resolver'),
-        array('program' => 'radvd,routed,rtsold,olsrd,zebra,ospfd,bgpd,miniupnpd','filter' => '*.*',  'type' => 'clog', 'target' => self::$LOGS_DIRECTORY.'/routing.log', 'category' => null),
-        array('program' => 'hostapd',                                             'filter' => '*.*',  'type' => 'clog', 'target' => self::$LOGS_DIRECTORY.'/wireless.log','category' => 'wireless'),
+            array('program' => 'filterlog',                                           'filter' => '*.*',  'type' => 'clog', 'target' => self::$LOGS_DIRECTORY.'/filter.log',  'category' => 'filter'),
+            array('program' => 'apinger',                                             'filter' => '*.*',  'type' => 'clog', 'target' => self::$LOGS_DIRECTORY.'/gateways.log','category' => 'gateways'),
+            array('program' => 'ntp,ntpd,ntpdate',                                    'filter' => '*.*',  'type' => 'clog', 'target' => self::$LOGS_DIRECTORY.'/ntpd.log',    'category' => 'ntpd'),
+            array('program' => 'captiveportal',                                       'filter' => '*.*',  'type' => 'clog', 'target' => self::$LOGS_DIRECTORY.'/portalauth.log','category' => 'portalauth'),
+            array('program' => 'ppp',                                                 'filter' => '*.*',  'type' => 'clog', 'target' => self::$LOGS_DIRECTORY.'/ppps.log',    'category' => null),
+            array('program' => 'dnsmasq,filterdns,unbound',                           'filter' => '*.*',  'type' => 'clog', 'target' => self::$LOGS_DIRECTORY.'/resolver.log','category' => 'resolver'),
+            array('program' => 'radvd,routed,rtsold,olsrd,zebra,ospfd,bgpd,miniupnpd','filter' => '*.*',  'type' => 'clog', 'target' => self::$LOGS_DIRECTORY.'/routing.log', 'category' => null),
+            array('program' => 'hostapd',                                             'filter' => '*.*',  'type' => 'clog', 'target' => self::$LOGS_DIRECTORY.'/wireless.log','category' => 'wireless'),
 
-        array('program' => null,  'filter' => 'local3.*',                             'type' => 'clog',   'target' => self::$LOGS_DIRECTORY.'/vpn.log',   'category' => 'vpn'),
-        array('program' => null,  'filter' => 'local7.*',                             'type' => 'clog',   'target' => self::$LOGS_DIRECTORY.'/dhcpd.log', 'category' => 'dhcp'),
-        array('program' => null,  'filter' => '*.notice;kern.debug;lpr.info;mail.crit;news.err;local0.none;local3.none;local4.none;local7.none;security.*;auth.info;authpriv.info;daemon.info', 
-                                                                                      'type' => 'clog',   'target' => self::$LOGS_DIRECTORY.'/system.log','category' => 'system'),
-        array('program' => null,  'filter' => 'auth.info;authpriv.info;user.*',       'type' => 'pipe',   'target' => 'exec /usr/local/sbin/sshlockout_pf 15','category' => null),
-        array('program' => null,  'filter' => '*.emerg',                              'type' => 'all',    'target' => '*',                                'category' => 'system'),
+            array('program' => null,  'filter' => 'local3.*',                             'type' => 'clog',   'target' => self::$LOGS_DIRECTORY.'/vpn.log',   'category' => 'vpn'),
+            array('program' => null,  'filter' => 'local7.*',                             'type' => 'clog',   'target' => self::$LOGS_DIRECTORY.'/dhcpd.log', 'category' => 'dhcp'),
+            array('program' => null,  'filter' => '*.notice;kern.debug;lpr.info;mail.crit;news.err;local0.none;local3.none;local4.none;local7.none;security.*;auth.info;authpriv.info;daemon.info', 
+                                                                                          'type' => 'clog',   'target' => self::$LOGS_DIRECTORY.'/system.log','category' => 'system'),
+            array('program' => null,  'filter' => 'auth.info;authpriv.info;user.*',       'type' => 'pipe',   'target' => 'exec /usr/local/sbin/sshlockout_pf 15','category' => null),
+            array('program' => null,  'filter' => '*.emerg',                              'type' => 'all',    'target' => '*',                                'category' => 'system'),
         );
     }
 
