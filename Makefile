@@ -28,7 +28,7 @@
 all:
 	@cat ${.CURDIR}/README.md | ${PAGER}
 
-WANTS=		git pear-PHP_CodeSniffer phpunit
+WANTS=		git pear-PHP_CodeSniffer phpunit6
 
 .for WANT in ${WANTS}
 want-${WANT}: force
@@ -306,7 +306,7 @@ style: want-pear-PHP_CodeSniffer
 style-fix: want-pear-PHP_CodeSniffer
 	phpcbf --standard=ruleset.xml ${.CURDIR}/src/opnsense || true
 
-test: want-phpunit
+test: want-phpunit6
 	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
 	    phpunit --configuration PHPunit.xml
 
