@@ -464,8 +464,6 @@ include("head.inc");
             $(".auth_opt :input").prop( "disabled", true );
             switch ($("#authentication_method").val()) {
                 case 'eap-tls':
-                case 'hybrid_rsa_server':
-                case 'xauth_rsa_server':
                 case 'eap-mschapv2':
                     $(".auth_eap_tls").show();
                     $(".auth_eap_tls :input").prop( "disabled", false );
@@ -482,6 +480,8 @@ include("head.inc");
                         $(".auth_psk :input").prop( "disabled", false );
                     }
                     break;
+                case 'hybrid_rsa_server':
+                case 'xauth_rsa_server':
                 case 'rsasig':
                     $(".auth_eap_tls_caref").show();
                     $(".auth_eap_tls_caref :input").prop( "disabled", false );
