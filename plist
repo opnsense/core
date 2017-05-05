@@ -12,7 +12,6 @@
 /usr/local/etc/inc/authgui.inc
 /usr/local/etc/inc/certs.inc
 /usr/local/etc/inc/config.inc
-/usr/local/etc/inc/config.lib.inc
 /usr/local/etc/inc/console.inc
 /usr/local/etc/inc/crypt.inc
 /usr/local/etc/inc/filter.inc
@@ -123,7 +122,6 @@
 /usr/local/etc/rc.openvpn
 /usr/local/etc/rc.opnsense
 /usr/local/etc/rc.php_ini_setup
-/usr/local/etc/rc.php_test_run
 /usr/local/etc/rc.reboot
 /usr/local/etc/rc.recover
 /usr/local/etc/rc.reload_all
