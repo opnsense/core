@@ -186,6 +186,9 @@ include_once("head.inc");
                               case 'MX':
                                   print $hostent['mxprio'] . " " . $hostent['mx'];
                                   break;
+                              case 'CNAME':
+                                  print $hostent['cname'];
+                                  break;
                               default:
                                   print '&nbsp;';
                                   break;

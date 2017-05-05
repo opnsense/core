@@ -100,6 +100,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("A valid MX host must be specified.");
             }
             break;
+        case 'CNAME':
+            $reqdfields = explode(" ", "cname");
+            $reqdfieldsn = array(gettext("Hostname"));
+            do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
+
+            if (!empty($pconfig['cname']) && !is_hostname($pconfig['cname'])) {
+                $input_errors[] = gettext("A valid hostname must be specified.");
+            }
+            break;
         default:
             $input_errors[] = gettext("A valid resource record type must be specified.");
             break;
@@ -139,18 +148,28 @@ include("head.inc");
     $("#rr").change(function() {
       $(".a_aaa_rec").hide();
       $(".mx_rec").hide();
+      $(".cname_rec").hide();
       switch ($(this).val()) {
         case 'A':
           $('#ip').prop('disabled', false);
           $('#mxprio').prop('disabled', true);
           $('#mx').prop('disabled', true);
+          $('#cname').prop('disabled', true);
           $(".a_aaa_rec").show();
           break;
         case 'MX':
           $('#ip').prop('disabled', true);
           $('#mxprio').prop('disabled', false);
           $('#mx').prop('disabled', false);
+          $('#cname').prop('disabled', true);
           $(".mx_rec").show();
+          break;
+        case 'CNAME':
+          $('#ip').prop('disabled', true);
+          $('#mxprio').prop('disabled', true);
+          $('#mx').prop('disabled', true);
+          $('#cname').prop('disabled', false);
+          $(".cname_rec").show();
           break;
       }
       $( window ).resize(); // call window resize, which will re-apply zebra
@@ -202,7 +221,7 @@ include("head.inc");
                     <td>
                       <select name="rr" id="rr" class="selectpicker">
 <?php
-                       $rrs = array("A" => gettext("A or AAAA (IPv4 or IPv6 address)"), "MX" => gettext("MX (Mail server)"));
+                       $rrs = array("A" => gettext("A or AAAA (IPv4 or IPv6 address)"), "MX" => gettext("MX (Mail server)"), "CNAME" => gettext("CNAME (Alias)"));
                        foreach ($rrs as $rr => $name) :?>
                         <option value="<?=$rr;?>" <?=($rr == $pconfig['rr'] || ($rr == 'A' && $pconfig['rr'] == 'AAAA')) ? "selected=\"selected\"" : "";?> >
                           <?=$name;?>
@@ -244,6 +263,16 @@ include("head.inc");
                       <div class="hidden" for="help_for_mx">
                         <?=gettext("Host name of MX host"); ?><br />
                         <?=gettext("e.g."); ?> <em>mail.example.com</em>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="cname_rec">
+                    <td><a id="help_for_cname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hostname");?></td>
+                    <td>
+                      <input name="cname" type="text" id="cname" value="<?=$pconfig['ip'];?>" />
+                      <div class="hidden" for="help_for_cname">
+                        <?=gettext("FQDN of the host"); ?><br />
+                        <?=gettext("e.g."); ?> <em>myhost.example.com</em>
                       </div>
                     </td>
                   </tr>

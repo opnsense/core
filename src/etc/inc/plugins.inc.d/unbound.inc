@@ -599,6 +599,9 @@ function unbound_add_host_entries()
                 case 'MX':
                     $unbound_entries .= "local-data: \"{$host['host']}{$host['domain']} IN MX {$host['mxprio']} {$host['mx']}\"\n";
                     break;
+                case 'CNAME':
+                    $unbound_entries .= "local-data: \"{$host['host']}{$host['domain']} IN {$host['rr']} {$host['cname']}\"\n";
+                    break;
             }
 
             if (!empty($host['descr']) && isset($config['unbound']['txtsupport'])) {
