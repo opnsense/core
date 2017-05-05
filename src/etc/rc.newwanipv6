@@ -115,11 +115,11 @@ system_hosts_generate();
  * Even with the same IP the VPN software is unhappy with the IP disappearing, and we
  * could be failing back in which case we need to switch IPs back anyhow.
  */
-if (!is_ipaddr($oldipv6) || $curwanipv6 != $oldipv6 || !is_ipaddrv6($config['interfaces'][$interface]['ipaddrv6'])) {
+if (!is_ipaddrv6($oldipv6) || $curwanipv6 != $oldipv6 || !is_ipaddrv6($config['interfaces'][$interface]['ipaddrv6'])) {
     system_routing_configure($interface);
     setup_gateways_monitor();
 
-    if (is_ipaddrv6($oldipv6)) {
+    if (is_ipaddrv6($oldipv6) && $curwanipv6 != $oldipv6) {
         if (does_interface_exist($interface_real)) {
             mwexec("/sbin/ifconfig {$interface_real} inet6 {$oldipv6} delete");
         }
