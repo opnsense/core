@@ -446,7 +446,7 @@ endif;?>
               foreach ($leases as $data):
                 if ($data['act'] == "static") {
                     foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
-                        if (is_array($dhcpifconf['staticmap'])) {
+                        if (isset($dhcpifconf['staticmap'])) {
                             foreach ($dhcpifconf['staticmap'] as $staticent) {
                                 if ($data['ip'] == $staticent['ipaddr']) {
                                     $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);
