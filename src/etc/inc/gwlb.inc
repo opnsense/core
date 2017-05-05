@@ -755,7 +755,7 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
         } else {
             $gwip = $gateways_arr[$dfltgwname]['gateway'];
         }
-        $tmpcmd = "sh -c '/sbin/route -n get -{$ipprotocol} default  2>/dev/null' | /usr/bin/awk '/gateway:/ {print $2}'";
+        $tmpcmd = "/sbin/route -n get -{$ipprotocol} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
         $defaultgw = trim(exec($tmpcmd), " \n");
         if (!$dfltgwup) {
             log_error("Default gateway down setting {$dfltgwname} as default!");
