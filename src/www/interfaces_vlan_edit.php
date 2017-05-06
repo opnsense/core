@@ -185,7 +185,15 @@ include("head.inc");
                             continue;
                         }?>
                         <option value="<?=$ifn;?>" <?=$ifn == $pconfig['if'] ? " selected=\"selected\"" : "";?>>
-                          <?=htmlspecialchars($ifn);?>  ( <?= !empty($ifinfo['mac']) ? $ifinfo['mac'] :"" ;?> )
+                          <?=htmlspecialchars($ifn);?>
+                          ( <?= !empty($ifinfo['mac']) ? $ifinfo['mac'] :"" ;?> )
+<?php
+                          if (!empty($ifinfo['friendly'])):?>
+                          [
+                          <?=!empty($config['interfaces'][$ifinfo['friendly']]['descr']) ? htmlspecialchars($config['interfaces'][$ifinfo['friendly']]['descr']) : $ifinfo['friendly'];?>
+                          ]
+<?php
+                          endif;?>
                         </option>
 <?php
                       endforeach;?>
