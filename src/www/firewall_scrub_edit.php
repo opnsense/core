@@ -574,7 +574,7 @@ include("head.inc");
                               <?=gettext("reliability");?>
                             </option>
 <?php
-                            for ($i = 1; $i < 256; $i++):
+                            for ($i = 0; $i < 256; $i++):
                                 $tos_val = "0x".dechex($i) ?>
                             <option value="<?=$tos_val;?>" <?= $tos_val == $pconfig['set-tos'] ? "selected=\"selected\"" : ""; ?>>
                                 <?=$tos_val;?>
