@@ -29,11 +29,43 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 
+/**
+ * Return array of possible TOS values
+ */
+function filter_tos_values()
+{
+    $ret = array(
+        '' => gettext('Do not change'),
+        'lowdelay' => gettext('lowdelay'),
+        'critical' => gettext('critical'),
+        'inetcontrol' => gettext('inetcontrol'),
+        'lowdelay' => gettext('lowdelay'),
+        'netcontrol' => gettext('netcontrol'),
+        'throughput' => gettext('throughput'),
+        'reliability' => gettext('reliability'),
+        'ef' => 'EF',
+    );
+
+    foreach (range(11, 43) as $val) {
+        $ret["af$val"] = "AF$val";
+    }
+
+    foreach (range(0, 7) as $val) {
+        $ret["cs$val"] = "CS$val";
+    }
+
+    foreach (range(0, 255) as $val) {
+        $ret['0x' . dechex($val)] = sprintf('0x%02X', $val);
+    }
+
+    return $ret;
+}
 
 /**
  * fetch list of selectable networks to use in form
  */
-function formNetworks() {
+function formNetworks()
+{
     $networks = array();
     $networks["any"] = gettext("any");
     // foreach (get_configured_interface_with_descr() as $ifent => $ifdesc) {
@@ -43,13 +75,11 @@ function formNetworks() {
     return $networks;
 }
 
-
 if (!isset($config['filter']['scrub']['rule'])) {
     $config['filter']['scrub'] = array();
     $config['filter']['scrub']['rule'] = array();
 }
 $a_scrub = &$config['filter']['scrub']['rule'];
-
 
 // define form fields
 $config_fields = array('interface', 'proto', 'srcnot', 'src', 'srcmask', 'dstnot', 'dst', 'dstmask', 'dstport',
@@ -133,12 +163,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("Please specify a valid number for min ttl (0-255).");
     }
 
-    if (count($input_errors)  == 0) {
+    if (count($input_errors) == 0) {
         $scrubent = array();
         foreach ($config_fields as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
                 if (is_array($pconfig[$fieldname])) {
-                     $scrubent[$fieldname] = implode(",", $pconfig[$fieldname]);
+                     $scrubent[$fieldname] = implode(',', $pconfig[$fieldname]);
                 } else  {
                     $scrubent[$fieldname] = trim($pconfig[$fieldname]);
                 }
@@ -558,34 +588,21 @@ include("head.inc");
                       </td>
                   </tr>
                   <tr>
-                      <td width="22%"><a id="help_for_tos" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TOS"); ?></td>
+                      <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('TOS / DSCP'); ?></td>
                       <td width="78%">
                           <select name="set-tos" class="selectpicker" data-size="5" data-width="auto"  data-live-search="true">
-                            <option value="" <?=empty($pconfig['set-tos']) ? "selected=\"selected\"" : "";?>>
-                              <?=gettext("Do not change");?>
-                            </option>
-                            <option value="lowdelay" <?=$pconfig['set-tos'] == 'lowdelay' ? "selected=\"selected\"" : "";?>>
-                              <?=gettext("lowdelay");?>
-                            </option>
-                            <option value="throughput" <?=$pconfig['set-tos'] == 'throughput' ? "selected=\"selected\"" : "";?>>
-                              <?=gettext("throughput");?>
-                            </option>
-                            <option value="reliability" <?=$pconfig['set-tos'] == 'reliability' ? "selected=\"selected\"" : "";?>>
-                              <?=gettext("reliability");?>
+<?php
+                            foreach (filter_tos_values() as $tos_value => $tos_label): ?>
+                            <option value="<?= $tos_value ?>" <?= $tos_value == $pconfig['set-tos'] ? 'selected="selected"' : '' ?>>
+                                <?= $tos_label ?>
                             </option>
 <?php
-                            for ($i = 0; $i < 256; $i++):
-                                $tos_val = "0x".dechex($i) ?>
-                            <option value="<?=$tos_val;?>" <?= $tos_val == $pconfig['set-tos'] ? "selected=\"selected\"" : ""; ?>>
-                                <?=$tos_val;?>
-                            </option>
-<?php
-                            endfor; ?>
+                            endforeach ?>
                           </select>
                       </td>
                   </tr>
                   <tr>
-                      <td width="22%"><a id="help_for_minttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Min ttl"); ?></td>
+                      <td width="22%"><a id="help_for_minttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Minimum TTL') ?></td>
                       <td width="78%">
                           <input name="min-ttl" type="text" value="<?=$pconfig['min-ttl'];?>" />
                           <div class="hidden" for="help_for_minttl">
@@ -603,7 +620,7 @@ include("head.inc");
                       </td>
                   </tr>
                   <tr>
-                      <td width="22%"><a id="help_for_randomid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Random-id"); ?></td>
+                      <td width="22%"><a id="help_for_randomid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Random ID') ?></td>
                       <td width="78%">
                           <input name="random-id" type="checkbox" value="1" <?= !empty($pconfig['random-id']) ? "checked=\"checked\"" : ""; ?> />
                           <div class="hidden" for="help_for_randomid">
