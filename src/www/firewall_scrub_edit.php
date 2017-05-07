@@ -46,7 +46,7 @@ function filter_tos_values()
         'ef' => 'EF',
     );
 
-    foreach (range(11, 43) as $val) {
+    foreach (array(11, 12, 13, 21, 22, 23, 31, 32, 33, 41 ,42, 43) as $val) {
         $ret["af$val"] = "AF$val";
     }
 
