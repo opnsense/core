@@ -415,8 +415,8 @@ function return_gateways_status($byname = false)
         $status[$target]['monitorip'] = $info[0];
         $status[$target]['srcip'] = $info[1];
         $status[$target]['name'] = $info[2];
-        $status[$target]['delay'] = empty($info[6]) ? "0ms" : round($info[6], 1) ."ms" ;
-        $status[$target]['loss'] = empty($info[7]) ? "0.0%" : round($info[7], 1) . "%";
+        $status[$target]['delay'] = sprintf('%0.1f ms', empty($info[6]) ? 0.0 : round($info[6], 1));
+        $status[$target]['loss'] = sprintf('%0.1f %%', empty($info[7]) ? 0.0 : round($info[7], 1));
         $status[$target]['status'] = trim($info[8]);
     }
 
@@ -445,20 +445,19 @@ function return_gateways_status($byname = false)
         }
 
         /* failsafe for down interfaces */
-        if ($target == "none") {
+        if ($target == 'none') {
             $target = $gwitem['name'];
             $status[$target]['name'] = $gwitem['name'];
-            $status[$target]['delay'] = "0.0ms";
-            $status[$target]['loss'] = "100.0%";
-            $status[$target]['status'] = "down";
+            $status[$target]['status'] = 'down';
         } else {
             $status[$target]['monitorip'] = $tgtip;
             $status[$target]['srcip'] = $srcip;
             $status[$target]['name'] = $gwitem['name'];
-            $status[$target]['delay'] = "0.0ms";
-            $status[$target]['loss'] = "0.0%";
-            $status[$target]['status'] = "none";
+            $status[$target]['status'] = 'none';
         }
+
+        $status[$target]['delay'] = '0.0 ms';
+        $status[$target]['loss'] = '100.0 %';
     }
     return($status);
 }
