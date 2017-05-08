@@ -738,13 +738,15 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
                 if (empty($upgw) && $gwsttng[$gwname]['friendlyiface'] != "lan" &&
                   (isset($gwsttng['monitor_disable']) || !stristr($gateways_status[$gwname]['status'], "down"))) {
                     $upgw = $gwname;
-                }
-                if (!$dfltgwup && !empty($upgw)) {
-                    // switch gateway
-                    $dfltgwname = $upgw;
-                    break;
+                    if (!$dfltgwup) {
+                        break;
+                    }
                 }
             }
+        }
+        if (!$dfltgwup && !empty($upgw)) {
+            // switch gateway
+            $dfltgwname = $upgw;
         }
         if ($gateways_arr[$dfltgwname]['gateway'] == "dynamic") {
             if ($ipprotocol == 'inet') {
