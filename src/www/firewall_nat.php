@@ -69,6 +69,46 @@ function delete_id($id, &$array)
     }
 }
 
+/****f* itemid/toggle_id (duplicate to remove itemid.inc)
+ * NAME
+ *   toggle_id - toggle an item with ['id'] = $id from $array
+ * INPUTS
+ *   $id       - int: The ID to delete
+ *   $array    - array to toggle the item from
+ *   $toggle   - on or off rule
+ * RESULT
+ *   boolean   - true if item was found and toggled
+ ******/
+function toggle_id($id, &$array, $toggle)
+{
+    // Index to delete
+    $toggle_index = NULL;
+
+    if (!isset($array)) {
+        return false;
+    }
+
+    // Search for the item in the array
+    foreach ($array as $key => $item){
+        // If this item is the one we want to toggle
+        if(isset($item['associated-rule-id']) && $item['associated-rule-id']==$id ){
+            $toggle_index = $key;
+            break;
+        }
+    }
+
+    // If we found the item, toggle it
+    if( $toggle_index!==NULL ){
+        if ($toggle)
+            unset($array[$toggle_index]['disabled']);
+        else
+            $array[$toggle_index]['disabled'] = true;
+        return true;
+    } else {
+        return false;
+    }
+}
+
 if (!isset($config['nat']['rule']) || !is_array($config['nat']['rule'])) {
     $config['nat']['rule'] = array();
 }
@@ -128,6 +168,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header(url_safe('Location: /firewall_nat.php'));
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'toggle' && isset($id)) {
+        // toggle nat rule and associated rule if it exists
+        if (isset($a_nat[$id]['associated-rule-id'])) {
+            toggle_id($a_nat[$id]['associated-rule-id'], $config['filter']['rule'], isset($a_nat[$id]['disabled']));
+            mark_subsystem_dirty('filter');
+        }
         // toggle item
         if(isset($a_nat[$id]['disabled'])) {
             unset($a_nat[$id]['disabled']);
