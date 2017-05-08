@@ -1,33 +1,71 @@
 #!/bin/sh
 
+# Copyright (c) 2015-2017 Ad Schellevis <ad@opnsense.org>
+# Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+# OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGE.
+
 # check which services to enable
 if [ -f /etc/rc.conf ]; then
 	. /etc/rc.conf
+fi
+if [ -f /etc/rc.conf.local ]; then
+	. /etc/rc.conf.local
 fi
 for RC_CONF in $(find /etc/rc.conf.d -type f); do
 	. ${RC_CONF}
 done
 
 # probe all deamons in /usr/local/etc/rc.d/
-ls /usr/local/etc/rc.d/* /etc/rc.d/* | while read rc_filename; do
-	# read rc scripts and parse name and rcvar variables
-	_file=`basename $rc_filename`
-	eval `/usr/bin/grep "name[[:blank:]]*=" $rc_filename | /usr/bin/head -n 1`
-	eval `grep "rcvar[[:blank:]]*=" $rc_filename | /usr/bin/sed '/^$/d'`
+ls /usr/local/etc/rc.d/[a-z]* /etc/rc.d/[a-z]* | while read rc_filename; do
+	# check if service has a name
+	eval "$(grep "^name[[:blank:]]*=" ${rc_filename})"
+	if [ -z "${name}" ]; then
+		echo "Error: no name set in ${rc_filename}"
+		continue
+	fi
+
+	# check if service has a variable
+	eval "$(grep "^rcvar[[:blank:]]*=" ${rc_filename})"
+	if [ -z "${rcvar}" ]; then
+		# FreeBSD does this, leave here for debugging
+		#echo "Error: no rcvar set in $rc_filename"
+		continue
+	fi
 
 	# check if service is enabled
-	eval "is_enabled=\$"$rcvar""
-
-	# start/stop service
-	if [ "$is_enabled" == "YES" ]; then
-		if [ "$1" == "start" ]; then
-			pre_run_var="`basename $rc_filename`_opnsense_bootup_run"
-			pre_run_var="`echo $pre_run_var | /usr/bin/sed 's/-/\-/g'`"
-			eval "pre_run=\$"$pre_run_var""
-			if [ ! -z "$pre_run" ]; then
-				eval "$pre_run"
+	eval "enabled=\$${rcvar}"
+	if [ "${enabled}" == "YES" ]; then
+		# run our bootstrap command on startup
+		if [ "${1}" == "start" ]; then
+			pre_run_var="${name}_opnsense_bootup_run"
+			eval "pre_run_cmd=\$${pre_run_var}"
+			if [ -n "${pre_run_cmd}" ]; then
+				${pre_run_cmd}
 			fi
 		fi
-		$rc_filename $1
+		# pass all commands to script now
+		${rc_filename} ${1}
 	fi
 done
