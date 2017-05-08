@@ -2,7 +2,7 @@
 
 DESTDIR="/usr/local/etc"
 WORKDIR="/tmp/bogons"
-FETCH="fetch -aqT 30"
+FETCH="fetch -qT 30"
 RETRIES=5
 
 COMMAND=${1}
