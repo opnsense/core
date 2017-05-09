@@ -119,7 +119,12 @@ if (!is_ipaddrv6($oldipv6) || $curwanipv6 != $oldipv6 || !is_ipaddrv6($config['i
     system_routing_configure($interface);
     setup_gateways_monitor();
 
-    if (is_ipaddrv6($oldipv6) && $curwanipv6 != $oldipv6) {
+    if ($curwanipv6 == $oldipv6) {
+        if (in_array($config['interfaces'][$interface]['ipaddrv6'], array('pppoe', 'pptp', 'ppp'))) {
+            /* PPP reconnect loop avoidance */
+            return;
+        }
+    } elseif (is_ipaddrv6($oldipv6)) {
         if (does_interface_exist($interface_real)) {
             mwexec("/sbin/ifconfig {$interface_real} inet6 {$oldipv6} delete");
         }
