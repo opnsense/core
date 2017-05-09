@@ -261,10 +261,6 @@ rm /var/run/booting
 # starting standard rc scripts
 /usr/local/etc/rc.opnsense start
 
-echo -n "Starting CRON..."
-cd /tmp && /usr/sbin/cron -s 2> /dev/null
-echo "done."
-
 /usr/local/sbin/beep.sh start
 
 /usr/local/etc/rc.initial.banner

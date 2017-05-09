@@ -132,6 +132,7 @@
 /usr/local/etc/rc.shutdown
 /usr/local/etc/rc.sshd
 /usr/local/etc/rc.syshook
+/usr/local/etc/rc.syshook.d/90-cron.start
 /usr/local/etc/rc.update_alias_url_data
 /usr/local/etc/rc.update_bogons
 /usr/local/etc/rc.update_urltables
