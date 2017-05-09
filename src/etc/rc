@@ -259,8 +259,6 @@ echo -n "Starting CRON..."
 cd /tmp && /usr/sbin/cron -s 2> /dev/null
 echo "done."
 
-/usr/local/sbin/beep.sh start
-
 /usr/local/etc/rc.initial.banner
 
 exit 0
