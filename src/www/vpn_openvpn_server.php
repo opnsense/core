@@ -717,7 +717,7 @@ $( document ).ready(function() {
                         }
                                                     $grouplist = return_gateway_groups_array();
                         foreach ($grouplist as $name => $group) {
-                            if ($group['ipprotocol'] != inet) {
+                            if ($group['ipprotocol'] != "inet") {
                                 continue;
                             }
                             if ($group[0]['vip'] <> "") {
