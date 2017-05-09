@@ -33,6 +33,7 @@
  *    - City Network (citynetwork.se)
  *    - Duck DNS (duckdns.org)
  *    - Google Domains (domains.google.com)
+ *    - STRATO (strato.com)
  * +----------------------------------------------------+
  *  Requirements:
  *    - PHP version 4.0.2 or higher with the CURL Library and the PCRE Library
@@ -77,6 +78,7 @@
  *  City Network   - Last Tested: 13 November 2013
  *  Duck DNS       - Last Tested: 04 March 2015
  *  Google Domains - Last Tested: 20 February 2017
+ *  STRATO         - Last Tested: 09 May 2017
  * +====================================================+
  *
  * @author    E.Kristensen
@@ -86,7 +88,6 @@
  *
  * DNSexit/OpenDNS support and multiwan extension for pfSense by Ermal Luci
  * Custom DNS support by Matt Corallo
- *
  */
 
 class updatedns {
@@ -221,38 +222,39 @@ class updatedns {
             $this->_error(10);
         } else {
             switch ($this->_dnsService) {
-            case 'dnsomatic':
-            case 'dyndns':
-            case 'dyndns-static':
-            case 'dyndns-custom':
-            case 'dhs':
-            case 'noip':
-            case 'noip-free':
-            case 'easydns':
-            case 'hn':
-            case 'zoneedit':
-            case 'dyns':
-            case 'ods':
-            case 'freedns':
-            case 'loopia':
-            case 'staticcling':
-            case 'dnsexit':
+            case 'citynetwork':
+            case 'cloudflare':
             case 'custom':
             case 'custom-v6':
-            case 'opendns':
-            case 'namecheap':
-            case 'he-net':
-            case 'he-net-v6':
-            case 'selfhost':
-            case 'he-net-tunnelbroker':
-            case 'route53':
-            case 'cloudflare':
-            case 'eurodns':
-            case 'gratisdns':
-            case 'ovh-dynhost':
-            case 'googledomains':
-            case 'citynetwork':
+            case 'dhs':
+            case 'dnsexit':
+            case 'dnsomatic':
             case 'duckdns':
+            case 'dyndns':
+            case 'dyndns-custom':
+            case 'dyndns-static':
+            case 'dyns':
+            case 'easydns':
+            case 'eurodns':
+            case 'freedns':
+            case 'googledomains':
+            case 'gratisdns':
+            case 'he-net':
+            case 'he-net-tunnelbroker':
+            case 'he-net-v6':
+            case 'hn':
+            case 'loopia':
+            case 'namecheap':
+            case 'noip':
+            case 'noip-free':
+            case 'ods':
+            case 'opendns':
+            case 'ovh-dynhost':
+            case 'route53':
+            case 'selfhost':
+            case 'strato':
+            case 'staticcling':
+            case 'zoneedit':
                 $this->_update();
                 if($this->_dnsDummyUpdateDone == true) {
                     // If a dummy update was needed, then sleep a while and do the update again to put the proper address back.
@@ -710,6 +712,15 @@ class updatedns {
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
                 curl_setopt($ch, CURLOPT_USERPWD, $this->_dnsUser.':'.$this->_dnsPass);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+                curl_setopt($ch, CURLOPT_URL, $server);
+                curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+                break;
+            case 'strato':
+                if ($this->_dnsVerboseLog)
+                    log_error("STRATO: ({$this->_dnsHost}): DNS update() starting.");
+                $server = "https://dyndns.strato.com/nic/update?hostname={$this->_dnsHost}&myip={$this->_dnsIP}";
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
+                curl_setopt($ch, CURLOPT_USERPWD, $this->_dnsUser.':'.$this->_dnsPass);
                 curl_setopt($ch, CURLOPT_URL, $server);
                 curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
                 break;
@@ -1220,6 +1231,7 @@ class updatedns {
                 }
                 break;
             case 'googledomains':
+            case 'strato':
                 if (preg_match('/notfqdn/i', $data)) {
                     $status = "Dynamic DNS: (Error) Not a FQDN";
                 } else if (preg_match('/nochg/i', $data)) {
@@ -1243,6 +1255,7 @@ class updatedns {
                     log_error("Dynamic DNS: PAYLOAD: {$data}");
                     $this->_debug($data);
                 }
+                break;
         }
 
         if($successful_update == true) {
@@ -1410,13 +1423,13 @@ class updatedns {
         $ip_address = get_dyndns_ip($this->_if, $his->_useIPv6 ? 6 : 4);
         if (!is_ipaddr($ip_address)) {
             if ($this->_dnsVerboseLog) {
-                log_error("Dynamic DNS ({$this->_dnsHost}): IP address could not be extracted from {$hosttocheck}");
+                log_error("Dynamic DNS ({$this->_dnsHost}): IP address could not be extracted");
             }
 
             $ip_address = 0;
         } else {
             if ($this->_dnsVerboseLog) {
-                log_error("Dynamic DNS ({$this->_dnsHost}): {$ip_address} extracted from {$hosttocheck}");
+                log_error("Dynamic DNS ({$this->_dnsHost}): {$ip_address} extracted");
             }
 
             $this->_dnsIP = $ip_address;
