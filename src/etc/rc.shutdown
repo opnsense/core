@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# run beep sequence if enabled
-/usr/local/sbin/beep.sh stop
-
 # shutdown syshook / plugin scripts
 /usr/local/etc/rc.syshook stop
 
