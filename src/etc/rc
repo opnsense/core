@@ -255,10 +255,6 @@ rm /var/run/booting
 # Execute the normal syshook / plugin commands
 /usr/local/etc/rc.syshook start
 
-echo -n "Starting CRON..."
-cd /tmp && /usr/sbin/cron -s 2> /dev/null
-echo "done."
-
 /usr/local/etc/rc.initial.banner
 
 exit 0
