@@ -82,7 +82,7 @@ def exec_config_cmd(exec_command):
 
 
 # set a timeout to the socket
-socket.setdefaulttimeout(120)
+socket.setdefaulttimeout(3600)
 
 # validate parameters
 if len(sys.argv) <= 1:
