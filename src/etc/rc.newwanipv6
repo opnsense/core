@@ -80,9 +80,10 @@ $new_domain_name_servers = getenv("new_domain_name_servers");
 if (!empty($new_domain_name_servers)) {
     $name_servers = explode(" ", $new_domain_name_servers);
     $valid_ns = array();
-    foreach($name_servers as $ns) {
-        if (is_ipaddrv6(trim($ns)))
+    foreach ($name_servers as $ns) {
+        if (is_ipaddrv6(trim($ns))) {
             $valid_ns[] = trim($ns);
+        }
     }
 
     if (count($valid_ns) > 0) {
@@ -137,7 +138,7 @@ if (!is_ipaddrv6($oldipv6) || $curwanipv6 != $oldipv6 || !is_ipaddrv6($config['i
     plugins_configure('vpn', false, array($interface));
     plugins_configure('newwanip', false, array($interface));
     rrd_configure();
-}
 
-/* reload filter, don't try to sync to carp slave */
-filter_configure_sync();
+    /* reload filter, don't try to sync to carp slave */
+    filter_configure_sync();
+}

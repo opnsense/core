@@ -134,11 +134,11 @@ if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
 }
 
 /* Check Gif tunnels */
-if(isset($config['gifs']['gif']) && is_array($config['gifs']['gif'])){
-    foreach($config['gifs']['gif'] as $gif) {
-        if($gif['if'] == $interface) {
+if (isset($config['gifs']['gif']) && is_array($config['gifs']['gif'])){
+    foreach ($config['gifs']['gif'] as $gif) {
+        if ($gif['if'] == $interface) {
             foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifparent) {
-                if(($ifparent['if'] == $gif['gifif']) && (isset($ifparent['enable']))) {
+                if (($ifparent['if'] == $gif['gifif']) && (isset($ifparent['enable']))) {
                   $gif['gifif'] = interface_gif_configure($gif);
                   $confif = convert_real_interface_to_friendly_interface_name($gif['gifif']);
                   if (!empty($confif)) {
@@ -167,7 +167,7 @@ if (!is_ipaddr($oldip) || $curwanip != $oldip || !is_ipaddrv4($config['interface
     plugins_configure('vpn', false, array($interface));
     plugins_configure('newwanip', false, array($interface));
     rrd_configure();
-}
 
-/* reload filter, don't try to sync to carp slave */
-filter_configure_sync();
+    /* reload filter, don't try to sync to carp slave */
+    filter_configure_sync();
+}
