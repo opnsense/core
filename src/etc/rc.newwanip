@@ -87,8 +87,7 @@ log_error("rc.newwanip: on (IP address: {$curwanip}) (interface: {$interface_des
 if ($curwanip == "0.0.0.0" || !is_ipaddr($curwanip)) {
     if (substr($interface_real, 0, 4) != "ovpn") {
         if (!empty($config['interfaces'][$interface]['ipaddr'])) {
-            log_error("rc.newwanip: Failed to update {$interface} IP, restarting...");
-            configd_run("interface reconfigure {$interface}");
+            log_error("rc.newwanip: Failed to update {$interface} IP");
             return;
         }
     }
