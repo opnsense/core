@@ -241,3 +241,25 @@ function plugins_xmlrpc_sync()
     }
     return $sync_settings;
 }
+
+function plugins_squid($hook)
+{
+    foreach (plugins_scan() as $name => $path) {
+        require_once $path;
+        $func = sprintf('%s_squid', $name);
+        if (function_exists($func)) {
+            $workers = $func();
+            foreach ($workers as $when => $worker) {
+                if ($when == $hook) {
+                    if (is_array($worker)) {
+                        foreach ($worker as $task) {
+                            $task();
+                        }
+                    } else {
+                        $worker();
+                    }
+                }
+            }
+        }
+    }
+}
