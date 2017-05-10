@@ -157,13 +157,12 @@ if (isset($config['gifs']['gif']) && is_array($config['gifs']['gif'])){
  * could be failing back in which case we need to switch IPs back anyhow.
  */
 if (!is_ipaddr($oldip) || $curwanip != $oldip || !is_ipaddrv4($config['interfaces'][$interface]['ipaddr'])) {
-    system_routing_configure($interface);
-    setup_gateways_monitor();
-
     if (is_ipaddr($curwanip)) {
         @file_put_contents("/var/db/{$interface}_cacheip", $curwanip);
     }
 
+    system_routing_configure($interface);
+    setup_gateways_monitor();
     plugins_configure('vpn', false, array($interface));
     plugins_configure('newwanip', false, array($interface));
     rrd_configure();

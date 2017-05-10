@@ -111,30 +111,31 @@ link_interface_to_track6($interface, "update");
 system_resolvconf_generate();
 system_hosts_generate();
 
+if (is_ipaddrv6($curwanipv6) && $curwanipv6 == $oldipv6) {
+    if (in_array($config['interfaces'][$interface]['ipaddrv6'], array('pppoe', 'pptp', 'ppp'))) {
+        /* PPP reconnect loop avoidance */
+        return;
+    }
+}
+
 /*
  * We need to force sync VPNs on such even when the IP is the same for dynamic interfaces.
  * Even with the same IP the VPN software is unhappy with the IP disappearing, and we
  * could be failing back in which case we need to switch IPs back anyhow.
  */
 if (!is_ipaddrv6($oldipv6) || $curwanipv6 != $oldipv6 || !is_ipaddrv6($config['interfaces'][$interface]['ipaddrv6'])) {
-    system_routing_configure($interface);
-    setup_gateways_monitor();
+    if (is_ipaddrv6($curwanipv6)) {
+        @file_put_contents("/var/db/{$interface}_cacheipv6", $curwanipv6);
+    }
 
-    if ($curwanipv6 == $oldipv6) {
-        if (in_array($config['interfaces'][$interface]['ipaddrv6'], array('pppoe', 'pptp', 'ppp'))) {
-            /* PPP reconnect loop avoidance */
-            return;
-        }
-    } elseif (is_ipaddrv6($oldipv6)) {
+    if ($curwanipv6 != $oldipv6 && is_ipaddrv6($oldipv6)) {
         if (does_interface_exist($interface_real)) {
             mwexec("/sbin/ifconfig {$interface_real} inet6 {$oldipv6} delete");
         }
     }
 
-    if (is_ipaddrv6($curwanipv6)) {
-        @file_put_contents("/var/db/{$interface}_cacheipv6", $curwanipv6);
-    }
-
+    system_routing_configure($interface);
+    setup_gateways_monitor();
     plugins_configure('vpn', false, array($interface));
     plugins_configure('newwanip', false, array($interface));
     rrd_configure();
