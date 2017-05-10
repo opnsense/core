@@ -52,7 +52,17 @@ POSSIBILITY OF SUCH DAMAGE.
                     'set':'/api/proxy/settings/setRemoteBlacklist/',
                     'add':'/api/proxy/settings/addRemoteBlacklist/',
                     'del':'/api/proxy/settings/delRemoteBlacklist/',
-                    'toggle':'/api/proxy/settings/toggleRemoteBlacklist/'
+                    'toggle':'/api/proxy/settings/toggleRemoteBlacklist/',
+                    'options': {
+                        'labels': {
+                            'all': "{{ lang._('All') }}",
+                            'infos': "{{ lang._('Showing {') }}" + "{ctx.start}" + "{{ lang._('} to {') }}" + "{ctx.end}" + "{{ lang._('} of {') }}" + "{ctx.total}" + "{{ lang._('} entries') }}",
+                            'loading': "{{ lang._('Loading...') }}",
+                            'noResults': "{{ lang._('No results found!') }}",
+                            'refresh': "{{ lang._('Refresh') }}",
+                            'search': "{{ lang._('Search') }}"
+                        }
+                    }
                 }
         );
 
