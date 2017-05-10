@@ -127,7 +127,7 @@ if (!is_ipaddrv6($oldipv6) || $curwanipv6 != $oldipv6 || !is_ipaddrv6($config['i
                 return;
             }
         } else {
-            if (does_interface_exist($interface_real)) {
+            if (is_ipaddrv6($oldipv6) && does_interface_exist($interface_real)) {
                 mwexec("/sbin/ifconfig {$interface_real} inet6 {$oldipv6} delete");
             }
         }
