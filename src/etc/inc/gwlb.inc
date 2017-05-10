@@ -448,16 +448,18 @@ function return_gateways_status($byname = false)
         if ($target == 'none') {
             $target = $gwitem['name'];
             $status[$target]['name'] = $gwitem['name'];
+            $status[$target]['delay'] = '0.0 ms';
+            $status[$target]['loss'] = '100.0 %';
             $status[$target]['status'] = 'down';
         } else {
             $status[$target]['monitorip'] = $tgtip;
             $status[$target]['srcip'] = $srcip;
             $status[$target]['name'] = $gwitem['name'];
+            $status[$target]['delay'] = '0.0 ms';
+            $status[$target]['loss'] = '0.0 %';
             $status[$target]['status'] = 'none';
         }
 
-        $status[$target]['delay'] = '0.0 ms';
-        $status[$target]['loss'] = '100.0 %';
     }
     return($status);
 }
