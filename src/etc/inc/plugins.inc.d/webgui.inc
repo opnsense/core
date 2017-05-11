@@ -289,10 +289,8 @@ EOD;
 
     $lighty_config .= "server.bind  = \"0.0.0.0\"\n";
     $lighty_config .= "server.port  = {$lighty_port}\n";
-    $lighty_config .= "\$SERVER[\"socket\"]  == \"0.0.0.0:{$lighty_port}\" { }\n";
-    $lighty_config .= "\$SERVER[\"socket\"]  == \"[::]:{$lighty_port}\" { \n";
 
-    $ssl_config = " ";
+    $ssl_config = '';
 
     $cert = str_replace("\r", "", $cert);
     $key = str_replace("\r", "", $key);
@@ -341,13 +339,20 @@ EOD;
         }
     }
 
-    $lighty_config .= $ssl_config;
-    $lighty_config .= " }\n";
+    $lighty_config .= "\$SERVER[\"socket\"]  == \"[::]:{$lighty_port}\" {\n";
 
+    /* address a bug in IPv6 handling */
     if ($config['system']['webgui']['protocol'] == "https") {
         $lighty_config .= $ssl_config;
     }
 
+    $lighty_config .= "}\n\n";
+
+    $lighty_config .= "\$SERVER[\"socket\"]  == \"0.0.0.0:{$lighty_port}\" { }\n";
+
+    if ($config['system']['webgui']['protocol'] == "https") {
+        $lighty_config .= $ssl_config;
+    }
 
     $lighty_config .= <<<EOD
 
