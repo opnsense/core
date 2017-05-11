@@ -78,8 +78,8 @@ if ((empty($ip) || !is_ipaddr($ip)) && substr($interface_real, 0, 4) != 'ovpn') 
 
 $configip = $config['interfaces'][$interface]['ipaddrv6'];
 
-$searchdomain_file = "/var/etc/searchdomain_v6{$interface}";
-$nameserver_file = "/var/etc/nameserver_v6{$interface}";
+$searchdomain_file = "/var/etc/searchdomain_v6{$interface_real}";
+$nameserver_file = "/var/etc/nameserver_v6{$interface_real}";
 $cacheip_file = "/var/db/{$interface}_cacheipv6";
 $ip_file = "/var/db/{$interface}_ipv6";
 
