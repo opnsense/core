@@ -99,7 +99,7 @@ function prompt_for_enable_dhcp_server($version = 4)
     $label_DHCP = ($version === 6) ? 'DHCP6' : 'DHCP';
     $upperifname = strtoupper($interface);
 
-    $ret = console_prompt_for_yn(sprintf('Do you want to enable the %s server on %s?', $label_DHCP, $upperifname), 'y');
+    $ret = console_prompt_for_yn(sprintf('Do you want to enable the %s server on %s?', $label_DHCP, $upperifname), 'n');
     echo "\n";
     return $ret;
 }
