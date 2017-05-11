@@ -2715,7 +2715,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
                 interface_6to4_configure($interface, $wancfg);
                 break;
             case 'track6':
-                interface_track6_configure($interface, $wancfg, $linkupevent);
+                interface_track6_configure($interface, $wancfg, $reloadall || $linkupevent);
                 break;
             default:
                 /* XXX: Kludge for now related to #3280 */
