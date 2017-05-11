@@ -98,6 +98,7 @@ function prompt_for_enable_dhcp_server($version = 4)
 
     $label_DHCP = ($version === 6) ? 'DHCP6' : 'DHCP';
     $upperifname = strtoupper($interface);
+
     return console_prompt_for_yn(sprintf('Do you want to enable the %s server on %s?', $label_DHCP, $upperifname), 'y');
 }
 
@@ -243,9 +244,9 @@ function console_configure_ip_address($version)
 {
     global $config, $interface, $restart_dhcpd, $ifaceassigned, $fp;
 
-    $label_IPvX = ($version === 6) ? "IPv6"   : "IPv4";
-    $maxbits    = ($version === 6) ? 127      : 31;
-    $label_DHCP = ($version === 6) ? "DHCP6"  : "DHCP";
+    $label_IPvX = ($version === 6) ? 'IPv6' : 'IPv4';
+    $maxbits = ($version === 6) ? 127 : 31;
+    $label_DHCP = ($version === 6) ? 'DHCP6' : 'DHCP';
 
     $upperifname = strtoupper($interface);
 
@@ -259,6 +260,14 @@ function console_configure_ip_address($version)
         $isintdhcp = true;
         $restart_dhcpd = true;
         echo "\n";
+    } elseif ($interface != 'wan' && $version === 6 && !empty($config['interfaces']['wan']['ipaddrv6']) &&
+        $config['interfaces']['wan']['ipaddrv6'] == 'dhcp6') {
+        if (console_prompt_for_yn(sprintf('Configure %s address %s interface via WAN tracking?'), 'y')) {
+            $intip = 'track6';
+            $intbits = '64';
+            $isintdhcp = true;
+            $restart_dhcpd = true;
+        }
     }
 
     if (!$isintdhcp) {
@@ -358,13 +367,26 @@ list($intip6, $intbits6, $gwname6) = console_configure_ip_address(6);
 if (!empty($ifaceassigned)) {
     $config['interfaces'][$interface]['if'] = $ifaceassigned;
 }
-$config['interfaces'][$interface]['ipaddr']    = $intip;
-$config['interfaces'][$interface]['subnet']    = $intbits;
-$config['interfaces'][$interface]['gateway']   = $gwname;
-$config['interfaces'][$interface]['ipaddrv6']  = $intip6;
-$config['interfaces'][$interface]['subnetv6']  = $intbits6;
+
+$config['interfaces'][$interface]['ipaddr'] = $intip;
+$config['interfaces'][$interface]['subnet'] = $intbits;
+$config['interfaces'][$interface]['gateway'] = $gwname;
+$config['interfaces'][$interface]['ipaddrv6'] = $intip6;
+$config['interfaces'][$interface]['subnetv6'] = $intbits6;
 $config['interfaces'][$interface]['gatewayv6'] = $gwname6;
-$config['interfaces'][$interface]['enable']    = true;
+$config['interfaces'][$interface]['enable'] = true;
+
+if ($intip6 == 'track6') {
+    $config['interfaces'][$interface]['track6-interface'] = 'wan';
+    $config['interfaces'][$interface]['track6-prefix-id'] = '0';
+} else {
+    if (isset($config['interfaces'][$interface]['track6-interface'])) {
+        unset($config['interfaces'][$interface]['track6-interface']);
+    }
+    if (isset($config['interfaces'][$interface]['track6-prefix-id'])) {
+        unset($config['interfaces'][$interface]['track6-prefix-id']);
+    }
+}
 
 function console_configure_dhcpd($version = 4)
 {
