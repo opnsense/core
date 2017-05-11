@@ -1254,8 +1254,10 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
         mwexec("/sbin/pfctl -i " . escapeshellarg($realif) . " -Fs");
     }
 
-    @unlink("/var/db/{$interface}ip");
-    @unlink("/var/db/{$interface}ipv6");
+    @unlink("/var/db/{$interface}_ip");
+    @unlink("/var/db/{$interface}_ipv6");
+    @unlink("/var/db/{$interface}_cacheip");
+    @unlink("/var/db/{$interface}_cacheipv6");
     @unlink("/var/etc/nameserver_{$realif}");
     @unlink("/var/etc/nameserver_v6{$realif}");
     @unlink("/var/etc/searchdomain_{$realif}");
