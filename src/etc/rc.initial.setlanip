@@ -248,7 +248,7 @@ function console_configure_ip_address($version)
 
     $upperifname = strtoupper($interface);
 
-    if (console_prompt_for_yn(sprintf('Configure %s address %s interface via %s?', $label_IPvX, $upperifname, $label_DHCP), 'y')) {
+    if (console_prompt_for_yn(sprintf('Configure %s address %s interface via %s?', $label_IPvX, $upperifname, $label_DHCP), $interface == 'wan' ? 'y' : 'n')) {
         $ifppp = console_get_interface_from_ppp(get_real_interface($interface));
         if (!empty($ifppp)) {
             $ifaceassigned = $ifppp;
@@ -262,11 +262,7 @@ function console_configure_ip_address($version)
     if (!$isintdhcp) {
         while (true) {
             do {
-                echo "\n" . sprintf(
-                    'Enter the new %s %s address.  Press <ENTER> for none:',
-                    $upperifname,
-                    $label_IPvX
-                ) . "\n> ";
+                echo "\n" . sprintf('Enter the new %s %s address. Press <ENTER> for none:', $upperifname, $label_IPvX) . "\n> ";
                 $intip = chop(fgets($fp));
                 $is_ipaddr = ($version === 6) ? is_ipaddrv6($intip) : is_ipaddrv4($intip);
                 if ($is_ipaddr && is_ipaddr_configured($intip, $interface)) {
@@ -276,6 +272,7 @@ function console_configure_ip_address($version)
                     $ip_conflict = false;
                 }
             } while (($ip_conflict === true) || !($is_ipaddr || $intip == ''));
+            echo "\n";
             if ($intip != '') {
                 echo "\nSubnet masks are entered as bit counts (like CIDR notation).\n";
                 if ($version === 6) {
@@ -313,6 +310,7 @@ function console_configure_ip_address($version)
                         }
                     }
                 } while (!$intbits_ok);
+                echo "\n";
 
                 if ($version === 6) {
                     $subnet = gen_subnetv6($intip, $intbits);
@@ -516,28 +514,28 @@ if ($intip6 != '') {
 
 if ($intip != '' || $intip6 != '') {
     if (count($ifdescrs) == "1" or $interface == "lan") {
-        echo "You can now access the web GUI by opening the following URL in your web browser:\n";
+        echo "\nYou can now access the web GUI by opening\nthe following URL in your web browser:\n\n";
         if (!empty($config['system']['webgui']['port'])) {
             $webuiport = $config['system']['webgui']['port'];
             if ($intip != '') {
-                echo "		{$config['system']['webgui']['protocol']}://{$intip}:{$webuiport}/\n";
+                echo "    {$config['system']['webgui']['protocol']}://{$intip}:{$webuiport}/\n";
             }
             if ($intip6 != '') {
                 if (is_ipaddr($intip6)) {
-                    echo "		{$config['system']['webgui']['protocol']}://[{$intip6}]:{$webuiport}/\n";
+                    echo "    {$config['system']['webgui']['protocol']}://[{$intip6}]:{$webuiport}/\n";
                 } else {
-                    echo "		{$config['system']['webgui']['protocol']}://{$intip6}:{$webuiport}/\n";
+                    echo "    {$config['system']['webgui']['protocol']}://{$intip6}:{$webuiport}/\n";
                 }
             }
         } else {
             if ($intip != '') {
-                echo "		{$config['system']['webgui']['protocol']}://{$intip}/\n";
+                echo "    {$config['system']['webgui']['protocol']}://{$intip}/\n";
             }
             if ($intip6 != '') {
                 if (is_ipaddr($intip6)) {
-                    echo "		{$config['system']['webgui']['protocol']}://[{$intip6}]/\n";
+                    echo "    {$config['system']['webgui']['protocol']}://[{$intip6}]/\n";
                 } else {
-                    echo "		{$config['system']['webgui']['protocol']}://{$intip6}/\n";
+                    echo "    {$config['system']['webgui']['protocol']}://{$intip6}/\n";
                 }
             }
         }
