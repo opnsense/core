@@ -56,7 +56,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     'options': {
                         'labels': {
                             'all': "{{ lang._('All') }}",
-                            'infos': "{{ lang._('Showing {{ctx.start}} to {{ctx.end}} of {{ctx.total}} entries') }}",
+                            'infos': "{{ lang._('Showing %s to %s of %s entries') | format('{{ctx.start}}','{{ctx.end}}','{{ctx.total}}') }}",
                             'loading': "{{ lang._('Loading...') }}",
                             'noResults': "{{ lang._('No results found!') }}",
                             'refresh': "{{ lang._('Refresh') }}",
