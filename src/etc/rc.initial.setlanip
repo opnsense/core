@@ -317,8 +317,9 @@ function console_configure_ip_address($version)
                 } else {
                     $subnet = gen_subnet($intip, $intbits);
                 }
+
                 do {
-                    echo "\n" . sprintf('For a WAN, enter the new %s %s upstream gateway address.', $upperifname, $label_IPvX) . "\n" .
+                    echo sprintf('For a WAN, enter the new %s %s upstream gateway address.', $upperifname, $label_IPvX) . "\n" .
                                 'For a LAN, press <ENTER> for none:' . "\n> ";
                     $gwip = chop(fgets($fp));
                     $is_ipaddr = ($version === 6) ? is_ipaddrv6($gwip) : is_ipaddrv4($gwip);
@@ -331,6 +332,7 @@ function console_configure_ip_address($version)
                         }
                     }
                 } while (!($gwip == '' || ($is_ipaddr && $is_in_subnet)));
+                echo "\n";
 
                 if ($gwip != '') {
                     $inet_type = ($version === 6) ? "inet6" : "inet";
@@ -517,26 +519,18 @@ if ($intip != '' || $intip6 != '') {
         echo "\nYou can now access the web GUI by opening\nthe following URL in your web browser:\n\n";
         if (!empty($config['system']['webgui']['port'])) {
             $webuiport = $config['system']['webgui']['port'];
-            if ($intip != '') {
+            if (is_ipaddr($intip)) {
                 echo "    {$config['system']['webgui']['protocol']}://{$intip}:{$webuiport}/\n";
             }
-            if ($intip6 != '') {
-                if (is_ipaddr($intip6)) {
-                    echo "    {$config['system']['webgui']['protocol']}://[{$intip6}]:{$webuiport}/\n";
-                } else {
-                    echo "    {$config['system']['webgui']['protocol']}://{$intip6}:{$webuiport}/\n";
-                }
+            if (is_ipaddr($intip6)) {
+                echo "    {$config['system']['webgui']['protocol']}://[{$intip6}]:{$webuiport}/\n";
             }
         } else {
-            if ($intip != '') {
+            if (is_ipaddr($intip)) {
                 echo "    {$config['system']['webgui']['protocol']}://{$intip}/\n";
             }
-            if ($intip6 != '') {
-                if (is_ipaddr($intip6)) {
-                    echo "    {$config['system']['webgui']['protocol']}://[{$intip6}]/\n";
-                } else {
-                    echo "    {$config['system']['webgui']['protocol']}://{$intip6}/\n";
-                }
+            if (is_ipaddr($intip6)) {
+                echo "    {$config['system']['webgui']['protocol']}://[{$intip6}]/\n";
             }
         }
     }
