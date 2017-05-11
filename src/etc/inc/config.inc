@@ -29,8 +29,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-global $g; /* XXX make this a getter function for traceability */
-
+/* XXX make this a getter function for traceability */
 $g = json_decode(file_get_contents('/usr/local/opnsense/firmware-product'), true);
 
 openlog($g['product_id'], LOG_ODELAY, LOG_USER);
