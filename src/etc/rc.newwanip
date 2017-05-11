@@ -79,13 +79,15 @@ if ((empty($ip) || !is_ipaddr($ip)) && substr($interface_real, 0, 4) != 'ovpn') 
     return;
 }
 
+$configip = $config['interfaces'][$interface]['ipaddr'];
+
 $cacheip_file = "/var/db/{$interface}_cacheip";
-$ipfile = "/var/db/{$interface}_ip";
+$ip_file = "/var/db/{$interface}_ip";
 
 /* write the current interface IP to file */
 /* used in src/sbin/dhclient-script.ext */
 if (is_ipaddr($ip)) {
-    @file_put_contents($ipfile, $ip);
+    @file_put_contents($ip_file, $ip);
 }
 
 link_interface_to_vips($interface, "update");
@@ -155,7 +157,7 @@ $cacheip = @file_get_contents($cacheip_file);
  * Even with the same IP the VPN software is unhappy with the IP disappearing, and we
  * could be failing back in which case we need to switch IPs back anyhow.
  */
-if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($config['interfaces'][$interface]['ipaddr'])) {
+if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
     @unlink($cacheip_file);
 
     system_routing_configure($interface);

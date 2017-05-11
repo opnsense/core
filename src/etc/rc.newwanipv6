@@ -76,6 +76,8 @@ if ((empty($ip) || !is_ipaddr($ip)) && substr($interface_real, 0, 4) != 'ovpn') 
     return;
 }
 
+$configip = $config['interfaces'][$interface]['ipaddrv6'];
+
 $searchdomain_file = "/var/etc/searchdomain_v6{$interface}";
 $nameserver_file = "/var/etc/nameserver_v6{$interface}";
 $cacheip_file = "/var/db/{$interface}_cacheipv6";
@@ -123,7 +125,7 @@ $cacheip = @file_get_contents($cacheip_file);
  * Even with the same IP the VPN software is unhappy with the IP disappearing, and we
  * could be failing back in which case we need to switch IPs back anyhow.
  */
-if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($config['interfaces'][$interface]['ipaddrv6'])) {
+if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
     if (is_ipaddr($ip)) {
         if ($ip == $cacheip) {
             if (in_array($config['interfaces'][$interface]['ipaddr'], array('l2tp', 'ppp', 'pppoe', 'pptp'))) {
