@@ -143,7 +143,7 @@ if ($count > 1) {
         echo "{$x} - {$ifdescr} ({$config_descr})\n";
         $x++;
     }
-    echo "\nEnter the number of the interface you wish to configure: ";
+    echo "\nEnter the number of the interface to configure: ";
     $intnum = chop(fgets($fp));
 } else {
     $intnum = $count;
@@ -169,6 +169,8 @@ if (!$interface) {
     echo "Invalid interface!\n";
     exit;
 }
+
+echo "\n";
 
 $ifaceassigned = "";
 
@@ -480,13 +482,13 @@ if ($restart_webgui) {
 
 if ($intip != '') {
     if (is_ipaddr($intip)) {
-        echo "\n\n" . sprintf(
+        echo sprintf(
             'The IPv4 %s address has been set to %s',
             $upperifname,
             "{$intip}/{$intbits}"
         ) . "\n";
     } else {
-        echo "\n\n" . sprintf(
+        echo sprintf(
             'The IPv4 %s address has been set to %s',
             $upperifname,
             $intip
@@ -495,13 +497,13 @@ if ($intip != '') {
 }
 if ($intip6 != '') {
     if (is_ipaddr($intip6)) {
-        echo "\n\n" . sprintf(
+        echo sprintf(
             'The IPv6 %s address has been set to %s',
             $upperifname,
             "${intip6}/${intbits6}"
         ) . "\n";
     } else {
-        echo "\n\n" . sprintf(
+        echo sprintf(
             'The IPv6 %s address has been set to %s',
             $upperifname,
             $intip6
