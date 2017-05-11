@@ -36,21 +36,6 @@ require_once("util.inc");
 require_once("services.inc");
 require_once("system.inc");
 
-$options = getopt("hn", array("dry-run", "help"));
-
-if (isset($options["h"]) || isset($options["help"])) {
-    echo "usage: rc.initial.setlanip [option ...]\n";
-    echo "  -h, --help       show this message\n";
-    echo "  -n, --dry-run    do not make any configuration changes\n";
-    exit(0);
-}
-
-$dry_run = isset($options["n"]) || isset($options["dry-run"]);
-if ($dry_run) {
-    echo "DRY RUN MODE IS ON\n";
-}
-
-
 function console_prompt_for_yn($prompt_text)
 {
     global $fp;
@@ -214,15 +199,12 @@ function next_unused_gateway_name($interface)
 
 function add_gateway_to_config($interface, $gatewayip, $inet_type)
 {
-    global $config, $dry_run;
+    global $config;
 
     if (!isset($config['gateways']['gateway_item'])) {
         $config['gateways']['gateway_item'] = array();
     }
     $a_gateways = &$config['gateways']['gateway_item'];
-    if ($dry_run) {
-        print_r($a_gateways);
-    }
     $new_name = '';
     $is_default = true;
     foreach ($a_gateways as $item) {
@@ -247,9 +229,6 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type)
             "descr" => "Interface $interface Gateway",
             "defaultgw" => $is_default
         );
-        if ($dry_run) {
-            print_r($item);
-        }
         $a_gateways[] = $item;
     }
 
@@ -386,7 +365,7 @@ $config['interfaces'][$interface]['enable']    = true;
 
 function console_configure_dhcpd($version = 4)
 {
-    global $config, $restart_dhcpd, $fp, $interface, $dry_run, $intip, $intbits, $intip6, $intbits6;
+    global $config, $restart_dhcpd, $fp, $interface, $intip, $intbits, $intip6, $intbits6;
 
     $label_IPvX = ($version === 6) ? "IPv6"    : "IPv4";
     $dhcpd      = ($version === 6) ? "dhcpdv6" : "dhcpd";
@@ -479,27 +458,23 @@ if (!$config['interfaces']['lan']) {
         unset($config['dhcpdv6']['lan']);
     }
     unset($config['nat']);
-    if (!$dry_run) {
-        system("rm /var/dhcpd/var/db/* >/dev/null 2>/dev/null");
-        $restart_dhcpd = true;
-    }
+    system("rm /var/dhcpd/var/db/* >/dev/null 2>/dev/null");
+    $restart_dhcpd = true;
 }
 
 $upperifname = strtoupper($interface);
-if (!$dry_run) {
-    echo "\nPlease wait while the changes are saved to {$upperifname}...";
-    write_config(sprintf('%s IP configuration from console menu', $interface));
-    interface_bring_down($interface);
-    interface_configure($interface);
-    echo "\n Reloading filter...";
-    filter_configure_sync();
-    if ($restart_dhcpd) {
-        echo "\n DHCPD...";
-        services_dhcpd_configure();
-    }
-    if ($restart_webgui) {
-        mwexec('/usr/local/etc/rc.restart_webgui');
-    }
+echo "\nPlease wait while the changes are saved to {$upperifname}...";
+write_config(sprintf('%s IP configuration from console menu', $interface));
+interface_bring_down($interface);
+interface_configure($interface);
+echo "\n Reloading filter...";
+filter_configure_sync();
+if ($restart_dhcpd) {
+    echo "\n DHCPD...";
+    services_dhcpd_configure();
+}
+if ($restart_webgui) {
+    mwexec('/usr/local/etc/rc.restart_webgui');
 }
 
 if ($intip != '') {
