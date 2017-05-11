@@ -41,7 +41,7 @@ function console_prompt_for_yn($prompt_text, $default = '')
 {
     global $fp;
 
-    $prompt_yn = sprintf('[%s/%s] ', $default == 'y' ? 'Y' : 'y', $default == 'n' ? 'N' : 'n');
+    $prompt_yn = sprintf('[%s/%s] ', $default === 'y' ? 'Y' : 'y', $default === 'n' ? 'N' : 'n');
 
     while (true) {
         echo "{$prompt_text} {$prompt_yn}";
@@ -50,10 +50,12 @@ function console_prompt_for_yn($prompt_text, $default = '')
                 return true;
             case 'n':
                 return false;
-            default:
-                if ($default != '' ) {
-                    return $default == 'y';
+            case '':
+                if ($default !== '') {
+                    return $default === 'y';
                 }
+                /* FALLTHROUGH */
+            default:
                 break;
         }
     }
@@ -145,6 +147,7 @@ if ($count > 1) {
     }
     echo "\nEnter the number of the interface to configure: ";
     $intnum = chop(fgets($fp));
+    echo "\n";
 } else {
     $intnum = $count;
 }
@@ -169,8 +172,6 @@ if (!$interface) {
     echo "Invalid interface!\n";
     exit;
 }
-
-echo "\n";
 
 $ifaceassigned = "";
 
