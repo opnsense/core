@@ -2,30 +2,31 @@
 <?php
 
 /*
-	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-	All rights reserved.
-
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
-
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
-
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
-
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("config.inc");
 require_once("interfaces.inc");
@@ -43,7 +44,7 @@ function console_prompt_for_yn($prompt_text, $default = '')
     $prompt_yn = sprintf('[%s/%s] ', $default == 'y' ? 'Y' : 'y', $default == 'n' ? 'N' : 'n');
 
     while (true) {
-        echo "\n{$prompt_text} {$prompt_yn}";
+        echo "{$prompt_text} {$prompt_yn}";
         switch (strtolower(chop(fgets($fp)))) {
             case 'y':
                 return true;
@@ -93,9 +94,9 @@ function prompt_for_enable_dhcp_server($version = 4)
         return false;
     }
 
-    $label_DHCP = ($version === 6) ? "DHCP6" : "DHCP";
+    $label_DHCP = ($version === 6) ? 'DHCP6' : 'DHCP';
     $upperifname = strtoupper($interface);
-    return console_prompt_for_yn(sprintf('Do you want to enable the %s server on %s?', $label_DHCP, $upperifname));
+    return console_prompt_for_yn(sprintf('Do you want to enable the %s server on %s?', $label_DHCP, $upperifname), 'y');
 }
 
 function get_interface_config_description($iface)
@@ -245,14 +246,14 @@ function console_configure_ip_address($version)
 
     $upperifname = strtoupper($interface);
 
-    if ($interface == "wan") {
-        if (console_prompt_for_yn(sprintf('Configure %s address %s interface via %s?', $label_IPvX, $upperifname, $label_DHCP))) {
-            $ifppp = console_get_interface_from_ppp(get_real_interface("wan"));
+    if ($interface == 'wan') {
+        if (console_prompt_for_yn(sprintf('Configure %s address %s interface via %s?', $label_IPvX, $upperifname, $label_DHCP), 'y')) {
+            $ifppp = console_get_interface_from_ppp(get_real_interface('wan'));
             if (!empty($ifppp)) {
                 $ifaceassigned = $ifppp;
             }
-            $intip = ($version === 6) ? "dhcp6" : "dhcp";
-            $intbits = "";
+            $intip = ($version === 6) ? 'dhcp6' : 'dhcp';
+            $intbits = '';
             $isintdhcp = true;
             $restart_dhcpd = true;
         }
@@ -424,15 +425,15 @@ console_configure_dhcpd(6);
 
 //*****************************************************************************
 
-if ($config['system']['webgui']['protocol'] == "https") {
-    if (console_prompt_for_yn('Do you want to revert to HTTP as the web GUI protocol?')) {
-        $config['system']['webgui']['protocol'] = "http";
+if ($config['system']['webgui']['protocol'] == 'https') {
+    if (console_prompt_for_yn('Do you want to revert to HTTP as the web GUI protocol?', 'n')) {
+        $config['system']['webgui']['protocol'] = 'http';
         $restart_webgui = true;
     }
 }
 
 if (isset($config['system']['webgui']['noantilockout'])) {
-    echo "\n" . sprintf('Note: the anti-lockout rule on %s has been re-enabled.', $interface) . "\n";
+    echo sprintf("Note: the anti-lockout rule on %s has been re-enabled.\n", $interface);
     unset($config['system']['webgui']['noantilockout']);
 }
 
@@ -538,7 +539,5 @@ if ($intip != '' || $intip6 != '') {
     }
 }
 
-echo "\nPress <ENTER> to continue.";
-
-fgets($fp);
-fclose($fp);
+/* rest now or hit CTRL-C */
+sleep(3);
