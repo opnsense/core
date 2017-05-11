@@ -516,23 +516,16 @@ if ($intip6 != '') {
 }
 
 if ($intip != '' || $intip6 != '') {
-    if (count($ifdescrs) == "1" or $interface == "lan") {
+    if (count($ifdescrs) == '1' or $interface == 'lan') {
+        $intip = get_interface_ip($interface);
+        $intip6 = get_interface_ipv6($interface, true);
         echo "\nYou can now access the web GUI by opening\nthe following URL in your web browser:\n\n";
-        if (!empty($config['system']['webgui']['port'])) {
-            $webuiport = $config['system']['webgui']['port'];
-            if (is_ipaddr($intip)) {
-                echo "    {$config['system']['webgui']['protocol']}://{$intip}:{$webuiport}/\n";
-            }
-            if (is_ipaddr($intip6)) {
-                echo "    {$config['system']['webgui']['protocol']}://[{$intip6}]:{$webuiport}/\n";
-            }
-        } else {
-            if (is_ipaddr($intip)) {
-                echo "    {$config['system']['webgui']['protocol']}://{$intip}/\n";
-            }
-            if (is_ipaddr($intip6)) {
-                echo "    {$config['system']['webgui']['protocol']}://[{$intip6}]/\n";
-            }
+        $webuiport = !empty($config['system']['webgui']['port']) ? ":{$config['system']['webgui']['port']}" : '';
+        if (is_ipaddr($intip)) {
+            echo "    {$config['system']['webgui']['protocol']}://{$intip}{$webuiport}/\n";
+        }
+        if (is_ipaddr($intip6)) {
+            echo "    {$config['system']['webgui']['protocol']}://[{$intip6}]{$webuiport}/\n";
         }
     }
 }
