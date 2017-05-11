@@ -511,44 +511,11 @@ if ($restart_webgui) {
 
 echo "\n";
 
-$upperifname = strtoupper($interface);
-
-if ($intip != '') {
-    if (is_ipaddr($intip)) {
-        echo sprintf(
-            'The IPv4 %s address has been set to %s',
-            $upperifname,
-            "{$intip}/{$intbits}"
-        ) . "\n";
-    } else {
-        echo sprintf(
-            'The IPv4 %s address has been set to %s',
-            $upperifname,
-            $intip
-        ) . "\n";
-    }
-}
-if ($intip6 != '') {
-    if (is_ipaddr($intip6)) {
-        echo sprintf(
-            'The IPv6 %s address has been set to %s',
-            $upperifname,
-            "${intip6}/${intbits6}"
-        ) . "\n";
-    } else {
-        echo sprintf(
-            'The IPv6 %s address has been set to %s',
-            $upperifname,
-            $intip6
-        ) . "\n";
-    }
-}
-
 if ($intip != '' || $intip6 != '') {
     if (count($ifdescrs) == '1' or $interface == 'lan') {
         $intip = get_interface_ip($interface);
         $intip6 = get_interface_ipv6($interface, true);
-        echo "\nYou can now access the web GUI by opening\nthe following URL in your web browser:\n\n";
+        echo "You can now access the web GUI by opening\nthe following URL in your web browser:\n\n";
         $webuiport = !empty($config['system']['webgui']['port']) ? ":{$config['system']['webgui']['port']}" : '';
         if (is_ipaddr($intip)) {
             echo "    {$config['system']['webgui']['protocol']}://{$intip}{$webuiport}\n";
