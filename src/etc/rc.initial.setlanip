@@ -99,7 +99,9 @@ function prompt_for_enable_dhcp_server($version = 4)
     $label_DHCP = ($version === 6) ? 'DHCP6' : 'DHCP';
     $upperifname = strtoupper($interface);
 
-    return console_prompt_for_yn(sprintf('Do you want to enable the %s server on %s?', $label_DHCP, $upperifname), 'y');
+    $ret = console_prompt_for_yn(sprintf('Do you want to enable the %s server on %s?', $label_DHCP, $upperifname), 'y');
+    echo "\n";
+    return $ret;
 }
 
 function get_interface_config_description($iface)
@@ -250,7 +252,16 @@ function console_configure_ip_address($version)
 
     $upperifname = strtoupper($interface);
 
-    if (console_prompt_for_yn(sprintf('Configure %s address %s interface via %s?', $label_IPvX, $upperifname, $label_DHCP), $interface == 'wan' ? 'y' : 'n')) {
+    if ($interface != 'wan' && $version === 6 && !empty($config['interfaces']['wan']['ipaddrv6']) &&
+        $config['interfaces']['wan']['ipaddrv6'] == 'dhcp6' && console_prompt_for_yn(sprintf(
+            'Configure %s address %s interface via WAN tracking?', $label_IPvX, $upperifname), 'y'
+    )) {
+        $intip = 'track6';
+        $intbits = '64';
+        $isintdhcp = true;
+        $restart_dhcpd = true;
+        echo "\n";
+    } elseif (console_prompt_for_yn(sprintf('Configure %s address %s interface via %s?', $label_IPvX, $upperifname, $label_DHCP), $interface == 'wan' ? 'y' : 'n')) {
         $ifppp = console_get_interface_from_ppp(get_real_interface($interface));
         if (!empty($ifppp)) {
             $ifaceassigned = $ifppp;
@@ -260,14 +271,6 @@ function console_configure_ip_address($version)
         $isintdhcp = true;
         $restart_dhcpd = true;
         echo "\n";
-    } elseif ($interface != 'wan' && $version === 6 && !empty($config['interfaces']['wan']['ipaddrv6']) &&
-        $config['interfaces']['wan']['ipaddrv6'] == 'dhcp6') {
-        if (console_prompt_for_yn(sprintf('Configure %s address %s interface via WAN tracking?', $label_IPvX, $upperifname), 'y')) {
-            $intip = 'track6';
-            $intbits = '64';
-            $isintdhcp = true;
-            $restart_dhcpd = true;
-        }
     }
 
     if (!$isintdhcp) {
