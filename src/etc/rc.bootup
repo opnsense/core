@@ -56,9 +56,7 @@ foreach ($inc_files as $inc_file) {
 
 echo "done.\n";
 
-global $config;
-$config = parse_config(true);
-convert_config();
+convert_config(true);
 
 /*
  * Now mute console messages from kernel for this script, it

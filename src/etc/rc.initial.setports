@@ -39,9 +39,6 @@ require_once("interfaces.inc");
 system_console_mute();
 
 if (set_networking_interfaces_ports()) {
-    global $config;
-    $config = parse_config(true);
-
     /* need to stop local dhcp servers to avoid wrong leases */
     killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
     killbypid('/var/dhcpd/var/run/dhcpdv6.pid', 'TERM', true);

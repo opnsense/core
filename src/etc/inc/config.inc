@@ -80,13 +80,8 @@ function load_config_from_file($filename)
  * RESULT
  *   $config      - array containing all configuration variables
  ******/
-function parse_config($verbose = false)
+function parse_config()
 {
-    if ($verbose) {
-        echo 'Loading configuration...';
-        flush();
-    }
-
     $cnf = OPNsense\Core\Config::getInstance();
 
     // return config data as array, use old "listags" construction to mark certain elements as array (even if they're not recurring)
@@ -94,10 +89,6 @@ function parse_config($verbose = false)
 
     /* make alias table (for faster lookups) */
     alias_make_table($config);
-
-    if ($verbose) {
-        echo "done.\n";
-    }
 
     return $config;
 }
@@ -151,6 +142,10 @@ function convert_config($verbose = false)
     } else {
         mwexecf($mvc_migration);
     }
+
+    /* reload the config as it was rewritten and saved in the script context */
+    OPNsense\Core\Config::getInstance()->forceReload();
+    $config = parse_config();
 }
 
 /****f* config/write_config

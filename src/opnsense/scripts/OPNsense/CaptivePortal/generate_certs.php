@@ -34,9 +34,8 @@
 require_once("config.inc");
 require_once("certs.inc");
 require_once("legacy_bindings.inc");
-use OPNsense\Core\Config;
 
-global $config;
+use OPNsense\Core\Config;
 
 // traverse captive portal zones
 $configObj = Config::getInstance()->object();
