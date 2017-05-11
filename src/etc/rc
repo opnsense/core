@@ -258,9 +258,6 @@ rm /var/run/booting
 # Execute the normal syshook / plugin commands
 /usr/local/etc/rc.syshook start
 
-# starting standard rc scripts
-/usr/local/etc/rc.opnsense start
-
 /usr/local/sbin/beep.sh start
 
 /usr/local/etc/rc.initial.banner
