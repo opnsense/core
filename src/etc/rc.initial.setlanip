@@ -467,9 +467,10 @@ if (!$config['interfaces']['lan']) {
     $restart_dhcpd = true;
 }
 
-echo "\n";
-
+echo "\nWriting configuration...";
+flush();
 write_config(sprintf('%s configuration from console menu', $interface));
+echo "done.\n";
 
 interface_bring_down($interface);
 interface_configure($interface, true, false, true);
