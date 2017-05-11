@@ -258,6 +258,7 @@ function console_configure_ip_address($version)
         $intbits = '';
         $isintdhcp = true;
         $restart_dhcpd = true;
+        echo "\n";
     }
 
     if (!$isintdhcp) {
@@ -419,6 +420,8 @@ function console_configure_dhcpd($version = 4)
             $restart_dhcpd = true;
         }
     }
+
+    echo "\n";
 }
 
 console_configure_dhcpd(4);
@@ -522,10 +525,10 @@ if ($intip != '' || $intip6 != '') {
         echo "\nYou can now access the web GUI by opening\nthe following URL in your web browser:\n\n";
         $webuiport = !empty($config['system']['webgui']['port']) ? ":{$config['system']['webgui']['port']}" : '';
         if (is_ipaddr($intip)) {
-            echo "    {$config['system']['webgui']['protocol']}://{$intip}{$webuiport}/\n";
+            echo "    {$config['system']['webgui']['protocol']}://{$intip}{$webuiport}\n";
         }
         if (is_ipaddr($intip6)) {
-            echo "    {$config['system']['webgui']['protocol']}://[{$intip6}]{$webuiport}/\n";
+            echo "    {$config['system']['webgui']['protocol']}://[{$intip6}]{$webuiport}\n";
         }
     }
 }
