@@ -465,20 +465,21 @@ if (!$config['interfaces']['lan']) {
     $restart_dhcpd = true;
 }
 
-$upperifname = strtoupper($interface);
-echo "\nPlease wait while the changes are saved to {$upperifname}...";
-write_config(sprintf('%s IP configuration from console menu', $interface));
+write_config(sprintf('%s configuration from console menu', $interface));
+
 interface_bring_down($interface);
-interface_configure($interface);
-echo "\n Reloading filter...";
-filter_configure_sync();
+interface_configure($interface, true);
+filter_configure_sync(true);
+
 if ($restart_dhcpd) {
-    echo "\n DHCPD...";
-    services_dhcpd_configure();
+    services_dhcpd_configure('all', array(), true);
 }
+
 if ($restart_webgui) {
-    mwexec('/usr/local/etc/rc.restart_webgui');
+    webgui_configure_do(true);
 }
+
+$upperifname = strtoupper($interface);
 
 if ($intip != '') {
     if (is_ipaddr($intip)) {
