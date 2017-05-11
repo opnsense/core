@@ -366,7 +366,7 @@ EOD;
 		$config['interfaces']['wan']['if'] = $wanif;
 		$config['interfaces']['wan']['enable'] = true;
 		$config['interfaces']['wan']['ipaddr'] = 'dhcp';
-		$config['interfaces']['wan']['ipaddrv6'] = 'dhcpv6';
+		$config['interfaces']['wan']['ipaddrv6'] = 'dhcp6';
 		$config['interfaces']['wan']['blockbogons'] = true;
 		if ($lanif) {
 			$config['interfaces']['wan']['blockpriv'] = true;
