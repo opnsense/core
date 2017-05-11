@@ -248,20 +248,18 @@ function console_configure_ip_address($version)
 
     $upperifname = strtoupper($interface);
 
-    if ($interface == 'wan') {
-        if (console_prompt_for_yn(sprintf('Configure %s address %s interface via %s?', $label_IPvX, $upperifname, $label_DHCP), 'y')) {
-            $ifppp = console_get_interface_from_ppp(get_real_interface('wan'));
-            if (!empty($ifppp)) {
-                $ifaceassigned = $ifppp;
-            }
-            $intip = ($version === 6) ? 'dhcp6' : 'dhcp';
-            $intbits = '';
-            $isintdhcp = true;
-            $restart_dhcpd = true;
+    if (console_prompt_for_yn(sprintf('Configure %s address %s interface via %s?', $label_IPvX, $upperifname, $label_DHCP), 'y')) {
+        $ifppp = console_get_interface_from_ppp(get_real_interface($interface));
+        if (!empty($ifppp)) {
+            $ifaceassigned = $ifppp;
         }
+        $intip = ($version === 6) ? 'dhcp6' : 'dhcp';
+        $intbits = '';
+        $isintdhcp = true;
+        $restart_dhcpd = true;
     }
 
-    if ($isintdhcp == false or $interface <> "wan") {
+    if (!$isintdhcp) {
         while (true) {
             do {
                 echo "\n" . sprintf(
@@ -465,10 +463,12 @@ if (!$config['interfaces']['lan']) {
     $restart_dhcpd = true;
 }
 
+echo "\n";
+
 write_config(sprintf('%s configuration from console menu', $interface));
 
 interface_bring_down($interface);
-interface_configure($interface, true);
+interface_configure($interface, true, false, true);
 filter_configure_sync(true);
 
 if ($restart_dhcpd) {
@@ -478,6 +478,8 @@ if ($restart_dhcpd) {
 if ($restart_webgui) {
     webgui_configure_do(true);
 }
+
+echo "\n";
 
 $upperifname = strtoupper($interface);
 
