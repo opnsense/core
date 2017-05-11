@@ -115,17 +115,17 @@ function get_interface_config_description($iface)
     $ipaddr = $c['ipaddr'];
     $ipaddrv6 = $c['ipaddrv6'];
     if (is_ipaddr($ipaddr)) {
-        $result2[] = "static";
-    } elseif ($ipaddr == "dhcp") {
-        $result2[] = "dhcp";
+        $result2[] = 'static';
+    } elseif (!empty($ipaddr)) {
+        $result2[] = $ipaddr;
     }
     if (is_ipaddr($ipaddrv6)) {
-        $result2[] = "staticv6";
-    } elseif ($ipaddrv6 == "dhcp6") {
-        $result2[] = "dhcp6";
+        $result2[] = 'staticv6';
+    } elseif (!empty($ipaddrv6)) {
+        $result2[] = $ipaddrv6;
     }
     if (count($result2)) {
-        $result .= " - " . implode(", ", $result2);
+        $result .= ' - ' . implode(', ', $result2);
     }
     return $result;
 }
