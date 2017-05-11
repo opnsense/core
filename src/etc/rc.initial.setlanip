@@ -36,26 +36,26 @@ require_once("util.inc");
 require_once("services.inc");
 require_once("system.inc");
 
-function console_prompt_for_yn($prompt_text)
+function console_prompt_for_yn($prompt_text, $default = '')
 {
     global $fp;
 
-    $good_answer = false;
+    $prompt_yn = sprintf('[%s/%s] ', $default == 'y' ? 'Y' : 'y', $default == 'n' ? 'N' : 'n');
 
-    do {
-        echo "\n" . $prompt_text . " (y/n) ";
-        $yn = strtolower(chop(fgets($fp)));
-        if (($yn == "y") || ($yn == "yes")) {
-            $boolean_answer = true;
-            $good_answer = true;
+    while (true) {
+        echo "\n{$prompt_text} {$prompt_yn}";
+        switch (strtolower(chop(fgets($fp)))) {
+            case 'y':
+                return true;
+            case 'n':
+                return false;
+            default:
+                if ($default != '' ) {
+                    return $default == 'y';
+                }
+                break;
         }
-        if (($yn == "n") || ($yn == "no")) {
-            $boolean_answer = false;
-            $good_answer = true;
-        }
-    } while (!$good_answer);
-
-    return $boolean_answer;
+    }
 }
 
 function console_get_interface_from_ppp($realif)
