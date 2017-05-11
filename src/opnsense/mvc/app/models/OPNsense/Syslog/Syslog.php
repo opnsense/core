@@ -212,7 +212,8 @@ class Syslog extends BaseModel
         $socketdir = dirname($path);
         if (!is_dir($socketdir))
         {
-            mkdir($socketdir, 0777, true);
+            // socket is not configured, skip
+            return;
         }
 
         $socket = $this->LocalSockets->Socket->add();
