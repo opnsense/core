@@ -2,7 +2,7 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Franco Fichtner <franco@opnsense.org>
+    Copyright (C) 2014-2017 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2004-2009 Scott Ullrich <sullrich@pfsense.org>.
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
     Copyright (C) 2009 Erik Kristensen
@@ -56,8 +56,12 @@ foreach ($inc_files as $inc_file) {
 
 echo "done.\n";
 
-global $config;
-$config = parse_config(true);
+/*
+ * If this was an import or restore or reset, once run
+ * the migration, but do not display the status here as
+ * otherwise this prints all the models that keep their
+ * current version level.
+ */
 convert_config();
 
 /*

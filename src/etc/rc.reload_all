@@ -37,10 +37,6 @@ require_once("system.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-global $config;
-
-$config = parse_config(true);
-
 if (count($argv) > 1 && is_numeric($argv[1])) {
     // starting delayed.
     sleep($argv[1]);

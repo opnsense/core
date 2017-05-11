@@ -58,7 +58,6 @@ function add_local_user($username, $userdn, $userfullname)
     local_user_set($new_user);
 }
 
-global $config;
 // attributes used in page
 $ldap_users= array();
 $ldap_is_connected = false;
