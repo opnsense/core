@@ -43,65 +43,69 @@ if (file_exists('/var/run/booting')) {
     return;
 }
 
-/* Interface IP address has changed */
-$argument = trim($argv[1], " \n\t");
+$argument = isset($argv[1]) ? trim($argv[1]) : '';
 
-log_error("Informational is starting '{$argument}'");
+log_error("IP renewal is starting on '{$argument}'");
 
 if (empty($argument)) {
-    $interface = "wan";
-    $interface_real = get_real_interface($interface, "inet6");
-    $curwanipv6 = get_interface_ipv6($interface, true);
+    $interface = 'wan';
+    $interface_real = get_real_interface($interface, 'inet6');
+    $ip = get_interface_ipv6($interface, true);
 } else {
+    $interface = convert_real_interface_to_friendly_interface_name($argument);
     $interface_real = $argument;
-    $interface = convert_real_interface_to_friendly_interface_name($interface_real);
-    $curwanipv6 = get_interface_ipv6($interface, true);
+    $ip = get_interface_ipv6($interface, true);
 }
 
 /* If the interface is configured and not enabled, bail. We do not need to change settings for disabled interfaces. #3313 */
 if (!isset($config['interfaces'][$interface]['enable'])) {
-    log_error("Interface is disabled or empty, nothing to do.");
+    log_error("Interface '{$interface}' is disabled or empty, nothing to do.");
     return;
 }
 
 $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 
-log_error("On (IP address: {$curwanipv6}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
+log_error("On (IP address: {$ip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
 
 /*
  * NOTE: Take care of openvpn and similar if you generate the event to reconfigure an interface.
  *    i.e. OpenVPN might be in tap mode and not have an ip.
  */
-if ((empty($curwanipv6) || !is_ipaddrv6($curwanipv6)) && substr($interface_real, 0, 4) != "ovpn") {
-    log_error("Failed to detect IPv6 for {$interface_descr}[{$interface}]");
+if ((empty($ip) || !is_ipaddr($ip)) && substr($interface_real, 0, 4) != 'ovpn') {
+    log_error("Failed to detect IP for {$interface_descr}[{$interface}]");
     return;
 }
 
-$new_domain_name_servers = getenv("new_domain_name_servers");
+$searchdomain_file = "/var/etc/searchdomain_v6{$interface}";
+$nameserver_file = "/var/etc/nameserver_v6{$interface}";
+$cacheip_file = "/var/db/{$interface}_cacheipv6";
+$ip_file = "/var/db/{$interface}_ipv6";
+
+$new_domain_name_servers = getenv('new_domain_name_servers');
 if (!empty($new_domain_name_servers)) {
     $name_servers = explode(" ", $new_domain_name_servers);
     $valid_ns = array();
     foreach ($name_servers as $ns) {
-        if (is_ipaddrv6(trim($ns))) {
+        if (is_ipaddr(trim($ns))) {
             $valid_ns[] = trim($ns);
         }
     }
 
     if (count($valid_ns) > 0) {
-        @file_put_contents("/var/etc/nameserver_v6{$interface}", implode("\n", $valid_ns));
+        @file_put_contents($nameserver_file, implode("\n", $valid_ns));
     }
 }
-$new_domain_name = getenv("new_domain_name");
+
+$new_domain_name = getenv('new_domain_name');
 if (!empty($new_domain_name)) {
-    @file_put_contents("/var/etc/searchdomain_v6{$interface}", $new_domain_name);
+    @file_put_contents($searchdomain_file, $new_domain_name);
 }
 
 /* write current WAN IPv6 to file */
-if (is_ipaddrv6($curwanipv6)) {
-    @file_put_contents("/var/db/{$interface}_ipv6", $curwanipv6);
+if (is_ipaddr($ip)) {
+    @file_put_contents($ip_file, $ip);
 }
 
-$oldipv6 = @file_get_contents("/var/db/{$interface}_cacheipv6");
 
 $grouptmp = link_interface_to_group($interface);
 if (!empty($grouptmp)) {
@@ -112,33 +116,37 @@ link_interface_to_track6($interface, "update");
 system_resolvconf_generate();
 system_hosts_generate();
 
+$cacheip = @file_get_contents($cacheip_file);
+
 /*
  * We need to force sync VPNs on such even when the IP is the same for dynamic interfaces.
  * Even with the same IP the VPN software is unhappy with the IP disappearing, and we
  * could be failing back in which case we need to switch IPs back anyhow.
  */
-if (!is_ipaddrv6($oldipv6) || $curwanipv6 != $oldipv6 || !is_ipaddrv6($config['interfaces'][$interface]['ipaddrv6'])) {
-    if (is_ipaddrv6($curwanipv6)) {
-        @file_put_contents("/var/db/{$interface}_cacheipv6", $curwanipv6);
-
-        if ($curwanipv6 == $oldipv6) {
+if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($config['interfaces'][$interface]['ipaddrv6'])) {
+    if (is_ipaddr($ip)) {
+        if ($ip == $cacheip) {
             if (in_array($config['interfaces'][$interface]['ipaddr'], array('l2tp', 'ppp', 'pppoe', 'pptp'))) {
                 /* PPP reconnect loop avoidance */
                 return;
             }
         } else {
-            if (is_ipaddrv6($oldipv6) && does_interface_exist($interface_real)) {
-                mwexec("/sbin/ifconfig {$interface_real} inet6 {$oldipv6} delete");
+            if (is_ipaddr($cacheip) && does_interface_exist($interface_real)) {
+                mwexec("/sbin/ifconfig {$interface_real} inet6 {$cacheip} delete");
             }
         }
     }
+
+    @unlink($cacheip_file);
 
     system_routing_configure($interface);
     setup_gateways_monitor();
     plugins_configure('vpn', false, array($interface));
     plugins_configure('newwanip', false, array($interface));
     rrd_configure();
-
-    /* reload filter, don't try to sync to carp slave */
     filter_configure_sync();
+
+    if (is_ipaddr($ip)) {
+        @file_put_contents($cacheip_file, $ip);
+    }
 }

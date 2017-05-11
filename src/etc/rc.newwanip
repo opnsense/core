@@ -43,53 +43,49 @@ if (file_exists('/var/run/booting')) {
     return;
 }
 
-/* Interface IP address has changed */
-if (isset($argv[1])) {
-    $argument = str_replace("\n", "", $argv[1]);
-} else {
-    $argument = null;
-}
+$argument = isset($argv[1]) ? trim($argv[1]) : '';
 
-log_error("Informational is starting '{$argument}'");
+log_error("IP renewal is starting on '{$argument}'");
 
 if (empty($argument)) {
-    $interface = "wan";
+    $interface = 'wan';
     $interface_real = get_real_interface($interface);
-    $curwanip = get_interface_ip($interface);
+    $ip = get_interface_ip($interface);
 } else {
     $interface = convert_real_interface_to_friendly_interface_name($argument);
     $interface_real = $argument;
-    $curwanip = find_interface_ip($interface_real);
-    if (empty($curwanip)) {
-        $curwanip = get_interface_ip($interface);
+    $ip = find_interface_ip($interface_real);
+    if (empty($ip)) {
+        $ip = get_interface_ip($interface);
     }
 }
 
 /* If the interface is configured and not enabled, bail. We do not need to change settings for disabled interfaces. #3313 */
 if (!isset($config['interfaces'][$interface]['enable'])) {
-    log_error("Interface is disabled or empty, nothing to do.");
+    log_error("Interface '{$interface}' is disabled or empty, nothing to do.");
     return;
 }
 
 $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 
-log_error("On (IP address: {$curwanip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
+log_error("On (IP address: {$ip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
 
 /*
  * NOTE: Take care of openvpn and similar if you generate the event to reconfigure an interface.
  *    i.e. OpenVPN might be in tap mode and not have an ip.
  */
-if ((empty($curwanip) || !is_ipaddr($curwanip)) && substr($interface_real, 0, 4) != "ovpn") {
+if ((empty($ip) || !is_ipaddr($ip)) && substr($interface_real, 0, 4) != 'ovpn') {
     log_error("Failed to detect IP for {$interface_descr}[{$interface}]");
     return;
 }
 
-$oldip = @file_get_contents("/var/db/{$interface}_cacheip");
+$cacheip_file = "/var/db/{$interface}_cacheip";
+$ipfile = "/var/db/{$interface}_ip";
 
 /* write the current interface IP to file */
 /* used in src/sbin/dhclient-script.ext */
-if (is_ipaddr($curwanip)) {
-    @file_put_contents("/var/db/{$interface}_ip", $curwanip);
+if (is_ipaddr($ip)) {
+    @file_put_contents($ipfile, $ip);
 }
 
 link_interface_to_vips($interface, "update");
@@ -152,22 +148,24 @@ if (isset($config['gifs']['gif']) && is_array($config['gifs']['gif'])){
     }
 }
 
+$cacheip = @file_get_contents($cacheip_file);
+
 /*
  * We need to force sync VPNs on such even when the IP is the same for dynamic interfaces.
  * Even with the same IP the VPN software is unhappy with the IP disappearing, and we
  * could be failing back in which case we need to switch IPs back anyhow.
  */
-if (!is_ipaddr($oldip) || $curwanip != $oldip || !is_ipaddrv4($config['interfaces'][$interface]['ipaddr'])) {
-    if (is_ipaddr($curwanip)) {
-        @file_put_contents("/var/db/{$interface}_cacheip", $curwanip);
-    }
+if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($config['interfaces'][$interface]['ipaddr'])) {
+    @unlink($cacheip_file);
 
     system_routing_configure($interface);
     setup_gateways_monitor();
     plugins_configure('vpn', false, array($interface));
     plugins_configure('newwanip', false, array($interface));
     rrd_configure();
-
-    /* reload filter, don't try to sync to carp slave */
     filter_configure_sync();
+
+    if (is_ipaddr($ip)) {
+        @file_put_contents($cacheip_file, $ip);
+    }
 }
