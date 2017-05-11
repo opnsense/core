@@ -50,14 +50,14 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir
                 $version_post = $mdl->getVersion();
                 if ($version_pre != $version_post) {
                     $version_pre = !empty($version_pre) ? $version_pre : ' <unversioned> ';
-                    echo "migrated " .  $mdl_class_info->getName() .
+                    echo "Migrated " .  $mdl_class_info->getName() .
                         " from " . $version_pre .
                         " to " . $version_post . "\n";
                     $executed_migration = true;
                 } elseif (!empty($version_post)) {
-                    echo "keep version " . $mdl_class_info->getName() . " (".$version_post.")\n";
+                    echo "Keep version " . $mdl_class_info->getName() . " (".$version_post.")\n";
                 } else {
-                    echo "unversioned " . $mdl_class_info->getName() . "\n";
+                    echo "Unversioned " . $mdl_class_info->getName() . "\n";
                 }
             }
         } catch (\ReflectionException $e) {

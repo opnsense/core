@@ -56,7 +56,13 @@ foreach ($inc_files as $inc_file) {
 
 echo "done.\n";
 
-convert_config(true);
+/*
+ * If this was an import or restore or reset, once run
+ * the migration, but do not display the status here as
+ * otherwise this prints all the models that keep their
+ * current version level.
+ */
+convert_config();
 
 /*
  * Now mute console messages from kernel for this script, it
