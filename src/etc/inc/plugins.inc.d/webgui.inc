@@ -291,16 +291,62 @@ EOD;
     $lighty_config .= "server.port  = {$lighty_port}\n";
     $lighty_config .= "\$SERVER[\"socket\"]  == \"0.0.0.0:{$lighty_port}\" { }\n";
     $lighty_config .= "\$SERVER[\"socket\"]  == \"[::]:{$lighty_port}\" { \n";
+
+    $ssl_config = " ";
+
+    $cert = str_replace("\r", "", $cert);
+    $key = str_replace("\r", "", $key);
+    $ca = str_replace("\r", "", $ca);
+
+    $cert = str_replace("\n\n", "\n", $cert);
+    $key = str_replace("\n\n", "\n", $key);
+    $ca = str_replace("\n\n", "\n", $ca);
+
     if($cert <> "" and $key <> "") {
-        $lighty_config .= "\n";
-        $lighty_config .= "## ssl configuration\n";
-        $lighty_config .= "ssl.engine = \"enable\"\n";
-        $lighty_config .= "ssl.pemfile = \"/var/etc/{$cert_location}\"\n\n";
-        if($ca <> "") {
-            $lighty_config .= "ssl.ca-file = \"/var/etc/{$ca_location}\"\n\n";
+        $fd = fopen("/var/etc/{$cert_location}", "w");
+        if (!$fd) {
+            log_error('Error: cannot open cert.pem');
+            return 0;
+        }
+        chmod("/var/etc/{$cert_location}", 0600);
+        fwrite($fd, $cert);
+        fwrite($fd, "\n");
+        fwrite($fd, $key);
+        fclose($fd);
+        if(!(empty($ca) || (strlen(trim($ca)) == 0))) {
+            $fd = fopen("/var/etc/{$ca_location}", "w");
+            if (!$fd) {
+                log_error('Error: cannot open ca.pem');
+                return 0;
+            }
+            chmod("/var/etc/{$ca_location}", 0600);
+            fwrite($fd, $ca);
+            fclose($fd);
+        }
+        $ssl_config = "\n";
+        $ssl_config .= "## ssl configuration\n";
+        $ssl_config .= "ssl.engine = \"enable\"\n";
+        $ssl_config .= "ssl.pemfile = \"/var/etc/{$cert_location}\"\n\n";
+
+        // Harden SSL a bit for PCI conformance testing
+        $ssl_config .= "ssl.use-sslv2 = \"disable\"\n";
+        if (empty($config['system']['webgui']['ssl-ciphers'])) {
+            $ssl_config .= 'ssl.cipher-list = "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA"' . PHP_EOL;
+        } else {
+            $ssl_config .= 'ssl.cipher-list = "'.$config['system']['webgui']['ssl-ciphers'].'"' . PHP_EOL;
+        }
+
+        if(!(empty($ca) || (strlen(trim($ca)) == 0))) {
+            $ssl_config .= "ssl.ca-file = \"/var/etc/{$ca_location}\"\n\n";
         }
     }
+
+    $lighty_config .= $ssl_config;
     $lighty_config .= " }\n";
+
+    if ($config['system']['webgui']['protocol'] == "https") {
+        $lighty_config .= $ssl_config;
+    }
 
 
     $lighty_config .= <<<EOD
@@ -338,53 +384,6 @@ expire.url = (
         )
 
 EOD;
-
-    $cert = str_replace("\r", "", $cert);
-    $key = str_replace("\r", "", $key);
-    $ca = str_replace("\r", "", $ca);
-
-    $cert = str_replace("\n\n", "\n", $cert);
-    $key = str_replace("\n\n", "\n", $key);
-    $ca = str_replace("\n\n", "\n", $ca);
-
-    if($cert <> "" and $key <> "") {
-        $fd = fopen("/var/etc/{$cert_location}", "w");
-        if (!$fd) {
-            log_error('Error: cannot open cert.pem');
-            return 0;
-        }
-        chmod("/var/etc/{$cert_location}", 0600);
-        fwrite($fd, $cert);
-        fwrite($fd, "\n");
-        fwrite($fd, $key);
-        fclose($fd);
-        if(!(empty($ca) || (strlen(trim($ca)) == 0))) {
-            $fd = fopen("/var/etc/{$ca_location}", "w");
-            if (!$fd) {
-                log_error('Error: cannot open ca.pem');
-                return 0;
-            }
-            chmod("/var/etc/{$ca_location}", 0600);
-            fwrite($fd, $ca);
-            fclose($fd);
-        }
-        $lighty_config .= "\n";
-        $lighty_config .= "## ssl configuration\n";
-        $lighty_config .= "ssl.engine = \"enable\"\n";
-        $lighty_config .= "ssl.pemfile = \"/var/etc/{$cert_location}\"\n\n";
-
-        // Harden SSL a bit for PCI conformance testing
-        $lighty_config .= "ssl.use-sslv2 = \"disable\"\n";
-        if (empty($config['system']['webgui']['ssl-ciphers'])) {
-            $lighty_config .= 'ssl.cipher-list = "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA"' . PHP_EOL;
-        } else {
-            $lighty_config .= 'ssl.cipher-list = "'.$config['system']['webgui']['ssl-ciphers'].'"' . PHP_EOL;
-        }
-
-        if(!(empty($ca) || (strlen(trim($ca)) == 0))) {
-            $lighty_config .= "ssl.ca-file = \"/var/etc/{$ca_location}\"\n\n";
-        }
-    }
 
   // Add HTTP to HTTPS redirect
   if ($config['system']['webgui']['protocol'] == "https" && !isset($config['system']['webgui']['disablehttpredirect'])) {
