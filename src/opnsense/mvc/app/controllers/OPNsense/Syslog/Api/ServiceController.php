@@ -185,8 +185,9 @@ class ServiceController extends ApiControllerBase
             $formatted = array();
             if($filename != '') {
                 $backend = new Backend();
+                $limit = $this->getMemoryLimit() / 16;
                 if($logtype == 'file') {
-                    $logdatastr = $backend->configdRun("syslog dumplog {$filename}");
+                    $logdatastr = $backend->configdRun("syslog dumplog {$filename} {$limit}");
                 }
                 if($logtype == 'clog') {
                     $logdatastr = $backend->configdRun("syslog dumpclog {$filename}");
@@ -233,4 +234,31 @@ class ServiceController extends ApiControllerBase
             return array("status" => "failed", "message" => gettext("Wrong request"));
         }
     }
+
+    private function getMemoryLimit()
+    {
+        $size = ini_get("memory_limit");
+        if($size == -1) {
+            return 0;
+        }
+
+        switch (substr($size, -1))
+        {
+            case 'M':
+            case 'm':
+                $size = (int)$size * 1048576;
+                break;
+            case 'K':
+            case 'k':
+                $size = (int)$size * 1024;
+                break;
+            case 'G':
+            case 'g':
+                $size = (int)$size * 1073741824;
+                break;
+        }
+
+        return $size;
+    }
 }
+
