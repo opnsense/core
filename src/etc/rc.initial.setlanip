@@ -219,10 +219,11 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet
     $is_default = true;
     $new_name = '';
 
-    foreach ($a_gateways as $item) {
+    foreach ($a_gateways as &$item) {
         if ($item['ipprotocol'] === $inet_type) {
             if ($item['interface'] === $interface && $item['gateway'] === $gatewayip) {
                 $new_name = $item['name'];
+                unset($item);
                 continue;
             }
             if (isset($item['defaultgw'])) {
@@ -247,22 +248,24 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet
 
     if ($new_name == '') {
         $new_name = next_unused_gateway_name($interface);
-        $item = array(
-            'descr' => sprintf('Interface %s Gateway', strtoupper($interface)),
-            'defaultgw' => $is_default,
-            'ipprotocol' => $inet_type,
-            'interface' => $interface,
-            'gateway' => $gatewayip,
-            'monitor_disable' => 1,
-            'name' => $new_name,
-            'interval' => true,
-            'weight' => 1,
-        );
-        if (!$is_in_subnet) {
-            $item['fargw'] = 1;
-        }
-        $a_gateways[] = $item;
     }
+
+    $item = array(
+        'descr' => sprintf('Interface %s Gateway', strtoupper($interface)),
+        'defaultgw' => $is_default,
+        'ipprotocol' => $inet_type,
+        'interface' => $interface,
+        'gateway' => $gatewayip,
+        'monitor_disable' => 1,
+        'name' => $new_name,
+         'interval' => true,
+        'weight' => 1,
+    );
+    if (!$is_in_subnet) {
+        $item['fargw'] = 1;
+    }
+
+    $a_gateways[] = $item;
 
     return $new_name;
 }
