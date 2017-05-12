@@ -209,26 +209,43 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet
 {
     global $config;
 
+    $label_IPvX = $inet_type == 'inet6' ? 'IPv6' : 'IPv4';
+
     if (!isset($config['gateways']['gateway_item'])) {
         $config['gateways']['gateway_item'] = array();
     }
+
     $a_gateways = &$config['gateways']['gateway_item'];
-    $new_name = '';
     $is_default = true;
+    $new_name = '';
+
     foreach ($a_gateways as $item) {
         if ($item['ipprotocol'] === $inet_type) {
             if (isset($item['defaultgw'])) {
                 $is_default = false;
             }
-            if (($item['interface'] === $interface) && ($item['gateway'] === $gatewayip)) {
+            if ($item['interface'] === $interface && $item['gateway'] === $gatewayip) {
                 $new_name = $item['name'];
             }
         }
     }
+
+    if (!$is_default && console_prompt_for_yn(sprintf('Do you want to use it as the default %s gateway?', $label_IPvX), $interface == 'wan' ? 'y' : 'n')) {
+        foreach ($a_gateways as $item) {
+            if ($item['ipprotocol'] === $inet_type) {
+                if (isset($item['defaultgw'])) {
+                    unset($item['defaultgw']);
+                }
+            }
+        }
+
+        $is_default = true;
+    }
+
     if ($new_name == '') {
         $new_name = next_unused_gateway_name($interface);
         $item = array(
-            'descr' => "Interface $interface Gateway",
+            'descr' => sprintf('Interface % Gateway', strtoupper($interface)),
             'defaultgw' => $is_default,
             'ipprotocol' => $inet_type,
             'interface' => $interface,
@@ -504,7 +521,7 @@ echo "done.\n";
 
 interface_bring_down($interface);
 interface_configure($interface, true, false, true);
-setup_gateways_monitor();
+setup_gateways_monitor(true);
 filter_configure_sync(true);
 
 if ($restart_dhcpd) {
