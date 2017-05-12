@@ -69,7 +69,7 @@ function restore_history_backup($number)
 		list_backups($number);
 		$filename = array_keys($confvers)[$number-1];
 		$thisbackup = $confvers[$filename];
-		echo 'Y/N? : ';
+		echo '[y/N]: ';
 		$confirm = strtoupper(chop(fgets($fp)));
 		if ($confirm == 'Y') {
 			$cnf = OPNsense\Core\Config::getInstance();

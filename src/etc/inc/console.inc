@@ -53,7 +53,7 @@ function set_networking_interfaces_ports($probe = false)
 	global $config;
 
 	$fp = fopen('php://stdin', 'r');
-	$yes_no_prompt = '[y|n]? ';
+	$yes_no_prompt = '[y/N]: ';
 	$interactive = true;
 	$key = null;
 
@@ -95,7 +95,7 @@ EOD;
 You now have the opportunity to configure VLANs.  If you don't require VLANs
 for initial connectivity, say no here and use the GUI to configure VLANs later.
 
-Do you want to set up VLANs now ${yes_no_prompt}
+Do you want to set up VLANs now? ${no_yes_prompt}
 EOD;
 	if ($interactive) {
 		$key = chop(fgets($fp));
@@ -277,7 +277,7 @@ EOD;
 
 	echo <<<EOD
 
-Do you want to proceed ${yes_no_prompt}
+Do you want to proceed? ${yes_no_prompt}
 EOD;
 	if ($interactive) {
 		$key = chop(fgets($fp));
@@ -454,7 +454,7 @@ function vlan_setup($iflist, $fp)
 {
 	global $config;
 
-	$yes_no_prompt = '[y|n]? ';
+	$yes_no_prompt = '[y/N]: ';
 
 	if (isset($config['vlans']['vlan'])) {
 
@@ -462,7 +462,7 @@ function vlan_setup($iflist, $fp)
 
 WARNING: all existing VLANs will be cleared if you proceed!
 
-Do you want to proceed ${yes_no_prompt}
+Do you want to proceed? ${yes_no_prompt}
 EOD;
 
 		if (strcasecmp(chop(fgets($fp)), "y") != 0) {
