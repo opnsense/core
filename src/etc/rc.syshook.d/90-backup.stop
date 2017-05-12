@@ -4,4 +4,3 @@
 for BACKUP in captiveportal dhcpleases netflow rrd; do
 	/usr/local/etc/rc.backup_${BACKUP} stop
 done
-
