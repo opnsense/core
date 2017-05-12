@@ -135,7 +135,7 @@ class ACL
 
         // gather user / group data from config.xml
         $config = Config::getInstance()->object();
-        if ($config->system != null) {
+        if ($config->system->count() > 0) {
             foreach ($config->system->children() as $key => $node) {
                 if ($key == 'user') {
                     $this->legacyUsers[$node->name->__toString()] = array();

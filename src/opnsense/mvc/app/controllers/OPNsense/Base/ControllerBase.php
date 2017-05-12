@@ -2,7 +2,6 @@
 
 /**
  *    Copyright (C) 2015 Deciso B.V.
- *
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -25,8 +24,8 @@
  *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *    POSSIBILITY OF SUCH DAMAGE.
- *
  */
+
 namespace OPNsense\Base;
 
 use OPNsense\Core\Config;
@@ -200,7 +199,7 @@ class ControllerBase extends ControllerRoot
         $this->view->menuSystem = $menu->getItems("/ui".$this->router->getRewriteUri());
 
         // set theme in ui_theme template var, let template handle its defaults (if there is no theme).
-        if ($cnf->object()->theme != null && !empty($cnf->object()->theme) &&
+        if ($cnf->object()->theme->count() > 0 && !empty($cnf->object()->theme) &&
             is_dir('/usr/local/opnsense/www/themes/'.(string)$cnf->object()->theme)
         ) {
             $this->view->ui_theme = $cnf->object()->theme;
