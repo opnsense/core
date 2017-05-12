@@ -205,7 +205,7 @@ function next_unused_gateway_name($interface)
     return $new_name;
 }
 
-function add_gateway_to_config($interface, $gatewayip, $inet_type)
+function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet)
 {
     global $config;
 
@@ -228,15 +228,19 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type)
     if ($new_name == '') {
         $new_name = next_unused_gateway_name($interface);
         $item = array(
-            "interface" => $interface,
-            "gateway" => $gatewayip,
-            "name" => $new_name,
-            "weight" => 1,
-            "ipprotocol" => $inet_type,
-            "interval" => true,
-            "descr" => "Interface $interface Gateway",
-            "defaultgw" => $is_default
+            'descr' => "Interface $interface Gateway",
+            'defaultgw' => $is_default,
+            'ipprotocol' => $inet_type,
+            'interface' => $interface,
+            'gateway' => $gatewayip,
+            'monitor_disable' => 1,
+            'name' => $new_name,
+            'interval' => true,
+            'weight' => 1,
         );
+        if (!$is_in_subnet) {
+            $item['fargw'] = 1;
+        }
         $a_gateways[] = $item;
     }
 
@@ -333,6 +337,8 @@ function console_configure_ip_address($version)
                     $subnet = gen_subnet($intip, $intbits);
                 }
 
+                $is_in_subnet = true;
+
                 do {
                     echo sprintf('For a WAN, enter the new %s %s upstream gateway address.', $upperifname, $label_IPvX) . "\n" .
                                 'For a LAN, press <ENTER> for none:' . "\n> ";
@@ -341,17 +347,15 @@ function console_configure_ip_address($version)
                     $is_in_subnet = $is_ipaddr && ip_in_subnet($gwip, $subnet . "/" . $intbits);
                     if ($gwip != '') {
                         if (!$is_ipaddr) {
-                            echo sprintf('not an %s IP address!', $label_IPvX) . "\n";
-                        } elseif (!$is_in_subnet) {
-                            echo "not in subnet\n";
+                            echo sprintf('Not an %s address!', $label_IPvX) . "\n\n";
                         }
                     }
-                } while (!($gwip == '' || ($is_ipaddr && $is_in_subnet)));
+                } while (!($gwip == '' || $is_ipaddr));
                 echo "\n";
 
                 if ($gwip != '') {
                     $inet_type = ($version === 6) ? "inet6" : "inet";
-                    $gwname = add_gateway_to_config($interface, $gwip, $inet_type);
+                    $gwname = add_gateway_to_config($interface, $gwip, $inet_type, $is_in_subnet);
                 }
             }
             $ifppp = console_get_interface_from_ppp(get_real_interface($interface));
@@ -500,6 +504,7 @@ echo "done.\n";
 
 interface_bring_down($interface);
 interface_configure($interface, true, false, true);
+setup_gateways_monitor();
 filter_configure_sync(true);
 
 if ($restart_dhcpd) {
