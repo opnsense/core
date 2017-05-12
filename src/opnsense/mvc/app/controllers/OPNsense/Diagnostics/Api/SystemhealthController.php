@@ -1,7 +1,7 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V. - J. Schellevis
- *
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -24,9 +24,7 @@
  *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *    POSSIBILITY OF SUCH DAMAGE.
- *
  */
-
 
 namespace OPNsense\Diagnostics\Api;
 
@@ -599,7 +597,7 @@ class SystemhealthController extends ApiControllerBase
         // collect interface names
         $intfmap = array();
         $config = Config::getInstance()->object();
-        if ($config->interfaces != null) {
+        if ($config->interfaces->count() > 0) {
             foreach ($config->interfaces->children() as $key => $node) {
                 $intfmap[(string)$key] = array("descr" => !empty((string)$node->descr) ? (string)$node->descr : $key);
             }
