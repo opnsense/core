@@ -221,11 +221,12 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet
 
     foreach ($a_gateways as $item) {
         if ($item['ipprotocol'] === $inet_type) {
-            if (isset($item['defaultgw'])) {
-                $is_default = false;
-            }
             if ($item['interface'] === $interface && $item['gateway'] === $gatewayip) {
                 $new_name = $item['name'];
+                continue;
+            }
+            if (isset($item['defaultgw'])) {
+                $is_default = false;
             }
         }
     }
@@ -240,12 +241,14 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet
         }
 
         $is_default = true;
+
+        echo "\n";
     }
 
     if ($new_name == '') {
         $new_name = next_unused_gateway_name($interface);
         $item = array(
-            'descr' => sprintf('Interface % Gateway', strtoupper($interface)),
+            'descr' => sprintf('Interface %s Gateway', strtoupper($interface)),
             'defaultgw' => $is_default,
             'ipprotocol' => $inet_type,
             'interface' => $interface,
