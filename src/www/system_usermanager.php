@@ -388,6 +388,11 @@ include("head.inc");
 
 <script type="text/javascript">
 $( document ).ready(function() {
+    // unhide otp QR code if found
+    $('#otp_unhide').click(function () {
+        $(this).hide();
+        $('#otp_qrcode').show();
+    });
     // remove certificate association
     $(".act-del-cert").click(function(event){
       var certid = $(this).data('certid');
@@ -821,18 +826,21 @@ $( document ).ready(function() {
                   <tr id="usercertchck">
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Certificate");?></td>
                     <td>
-                      <input type="checkbox" id="chkNewCert" name="chkNewCert" /> <?=gettext("Click to create a user certificate."); ?> (<?=gettext("Redirects on save"); ?>)
+                      <input type="checkbox" id="chkNewCert" name="chkNewCert" /> <?= gettext('Click to create a user certificate.') ?>
                     </td>
                   </tr>
 <?php
                 endif;?>
                   <tr>
-                    <td><a id="help_for_otp_seed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("OTP seed");?> (<?=gettext("Click to unhide");?>)</td>
+                    <td><a id="help_for_otp_seed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('OTP seed') ?></td>
                     <td>
                       <input name="otp_seed" type="text" value="<?=$pconfig['otp_seed'];?>"/>
                       <input type="checkbox" name="gen_otp_seed"/>&nbsp;<small><?= gettext('Generate new secret (160 bit)') ?></small>
                       <div class="hidden" for="help_for_otp_seed">
                         <?=gettext("OTP (base32) seed to use when a one time password authenticator is used");?><br/>
+                      </div>
+                    </td>
+                  </tr>
 <?php
                         if (!empty($pconfig['otp_seed'])):
                             // construct google url, using token, username and this machines hostname
@@ -840,17 +848,23 @@ $( document ).ready(function() {
                             $otp_url .= $pconfig['usernamefld']."@".htmlspecialchars($config['system']['hostname'])."?secret=";
                             $otp_url .= $pconfig['otp_seed'];
                         ?>
-                            <br/>
-                            <?=gettext("When using google authenticator, scan the following qrcode for easy setup:");?><br/>
-                            <div id="otp_qrcode"></div>
-                            <script type="text/javascript">
-                                $('#otp_qrcode').qrcode('<?= $otp_url ?>');
-                            </script>
-<?php
-                        endif;?>
+                  <tr>
+                    <td><a id="help_for_otp_code" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('OTP QR code') ?></td>
+                    <td>
+                      <label class="btn btn-primary" id="otp_unhide"><?= gettext('Click to unhide') ?></label>
+                      <div style="display:none;" id="otp_qrcode"></div>
+                      <script type="text/javascript">
+                        $('#otp_qrcode').qrcode('<?= $otp_url ?>');
+                      </script>
+                      </div>
+                      <div class="hidden" for="help_for_otp_code">
+                        <?= gettext('Scan this QR code for easy setup with external apps.') ?>
                       </div>
                     </td>
                   </tr>
+<?php
+                        endif;?>
+                  <tr>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Authorized keys");?></td>
                     <td>
