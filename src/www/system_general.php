@@ -67,8 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $pconfig['dnsallowoverride'] = isset($config['system']['dnsallowoverride']);
     $pconfig['timezone'] = $config['system']['timezone'];
-    if (isset($config['system']['theme'])) {
-        $pconfig['theme'] = $config['system']['theme'];
+    if (isset($config['theme'])) {
+        $pconfig['theme'] = $config['theme'];
     }
     if (isset($config['system']['language'])) {
         $pconfig['language'] = $config['system']['language'];
