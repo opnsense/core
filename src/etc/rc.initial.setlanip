@@ -232,16 +232,18 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet
         }
     }
 
-    if (!$is_default && console_prompt_for_yn(sprintf('Do you want to use it as the default %s gateway?', $label_IPvX), $interface == 'wan' ? 'y' : 'n')) {
-        foreach ($a_gateways as &$item) {
-            if ($item['ipprotocol'] === $inet_type) {
-                if (isset($item['defaultgw'])) {
-                    unset($item['defaultgw']);
+    if (!$is_default) {
+        if (console_prompt_for_yn(sprintf('Do you want to use it as the default %s gateway?', $label_IPvX), $interface == 'wan' ? 'y' : 'n')) {
+            foreach ($a_gateways as &$item) {
+                if ($item['ipprotocol'] === $inet_type) {
+                    if (isset($item['defaultgw'])) {
+                        unset($item['defaultgw']);
+                    }
                 }
             }
-        }
 
-        $is_default = true;
+            $is_default = true;
+        }
 
         echo "\n";
     }
@@ -258,7 +260,7 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet
         'gateway' => $gatewayip,
         'monitor_disable' => 1,
         'name' => $new_name,
-         'interval' => true,
+        'interval' => true,
         'weight' => 1,
     );
     if (!$is_in_subnet) {
