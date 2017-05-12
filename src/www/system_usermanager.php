@@ -827,7 +827,7 @@ $( document ).ready(function() {
 <?php
                 endif;?>
                   <tr>
-                    <td><a id="help_for_otp_seed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("OTP seed");?></td>
+                    <td><a id="help_for_otp_seed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("OTP seed");?> (<?=gettext("Click to unhide");?>)</td>
                     <td>
                       <input name="otp_seed" type="text" value="<?=$pconfig['otp_seed'];?>"/>
                       <input type="checkbox" name="gen_otp_seed"/>&nbsp;<small><?= gettext('Generate new secret (160 bit)') ?></small>
