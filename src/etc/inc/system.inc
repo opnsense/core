@@ -201,7 +201,7 @@ function system_resolvconf_generate($verbose = false)
     chmod('/etc/resolv.conf', 0644);
 
     /* setup static routes for DNS servers. */
-    for ($dnscounter=1; $dnscounter<5; $dnscounter++) {
+    for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
         /* setup static routes for dns servers */
         $dnsgw = "dns{$dnscounter}gw";
         if (isset($config['system'][$dnsgw])) {
