@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $pconfig['theme'] = null;
     $pconfig['language'] = null;
-    $pconfig['timezone'] = "Etc/UTC";
+    $pconfig['timezone'] = 'Etc/UTC';
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
     $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
     $pconfig['hostname'] = $config['system']['hostname'];
@@ -66,9 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['timezone']) && $pconfig['timezone'] <> $_POST['timezone']) {
-        filter_pflog_start();
-    }
     $input_errors = array();
     $pconfig = $_POST;
 
@@ -212,6 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         /* time zone change first */
         system_timezone_configure();
 
+        filter_pflog_start();
         prefer_ipv4_or_ipv6();
         system_hostname_configure();
         system_hosts_generate();
@@ -319,9 +317,8 @@ include("head.inc");
               <td>
                 <select name="theme" class="selectpicker" data-size="10" data-width="auto">
 <?php
-                  $curtheme = get_current_theme();
                   foreach (return_dir_as_array('/usr/local/opnsense/www/themes/') as $file):?>
-                  <option <?=$file == $curtheme ? "selected=\"selected\"" : "";?>>
+                  <option <?= $file == $pconfig['theme'] ? 'selected="selected"' : '' ?>>
                     <?=$file;?>
                   </option>
 <?php
