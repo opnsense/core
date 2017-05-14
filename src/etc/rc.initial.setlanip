@@ -86,8 +86,7 @@ function prompt_for_enable_dhcp_server($version = 4)
             return false;
         }
     }
-    /* only allow DHCP server to be enabled when static IP is
-	   configured on this interface */
+    /* only allow DHCP server to be enabled when static IP is configured on this interface */
     if ($version === 6) {
         $is_ipaddr = is_ipaddrv6($config['interfaces'][$interface]['ipaddrv6']);
     } else {
@@ -248,6 +247,25 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet
         echo "\n";
     }
 
+    if ($is_default) {
+        if (console_prompt_for_yn(sprintf('Do you want to use the gateway as the %s name server, too?', $label_IPvX), 'y')) {
+            $nameserver = $gatewayip;
+        } else {
+            do {
+                echo sprintf('Enter the %s name server or press <ENTER> for none: ', $label_IPvX);
+                $nameserver = chop(fgets($fp));
+                $is_ipaddr = $inet_type == 'inet6' ? is_ipaddrv6($nameserver) : is_ipaddrv4($nameserver);
+                if ($nameserver != '') {
+                    if (!$is_ipaddr) {
+                        echo sprintf('Not an %s address!', $label_IPvX) . "\n\n";
+                    }
+                }
+            } while (!($nameserver == '' || $is_ipaddr));
+        }
+
+        echo "\n";
+    }
+
     if ($new_name == '') {
         $new_name = next_unused_gateway_name($interface);
     }
@@ -269,7 +287,7 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet
 
     $a_gateways[] = $item;
 
-    return $new_name;
+    return array($new_name, $nameserver);
 }
 
 function console_configure_ip_address($version)
@@ -380,7 +398,7 @@ function console_configure_ip_address($version)
 
                 if ($gwip != '') {
                     $inet_type = ($version === 6) ? "inet6" : "inet";
-                    $gwname = add_gateway_to_config($interface, $gwip, $inet_type, $is_in_subnet);
+                    list($gwname, $nameserver) = add_gateway_to_config($interface, $gwip, $inet_type, $is_in_subnet);
                 }
             }
             $ifppp = console_get_interface_from_ppp(get_real_interface($interface));
@@ -391,11 +409,11 @@ function console_configure_ip_address($version)
         }
     }
 
-    return array($intip, $intbits, $gwname);
+    return array($intip, $intbits, $gwname, $nameserver);
 }
 
-list($intip,  $intbits,  $gwname)  = console_configure_ip_address(4);
-list($intip6, $intbits6, $gwname6) = console_configure_ip_address(6);
+list($intip,  $intbits,  $gwname, $nameserver) = console_configure_ip_address(4);
+list($intip6, $intbits6, $gwname6, $nameserver6) = console_configure_ip_address(6);
 
 if (!empty($ifaceassigned)) {
     $config['interfaces'][$interface]['if'] = $ifaceassigned;
@@ -418,6 +436,23 @@ if ($intip6 == 'track6') {
     }
     if (isset($config['interfaces'][$interface]['track6-prefix-id'])) {
         unset($config['interfaces'][$interface]['track6-prefix-id']);
+    }
+}
+
+$nameservers = array();
+if (!empty($nameserver)) {
+    $nameservers[] = $nameserver;
+}
+if (!empty($nameserver6)) {
+    $nameservers[] = $nameserverv6;
+}
+if (count($nameservers)) {
+    $config['system']['dnsserver'] = $nameservers;
+    for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
+        $dnsgwname= "dns{$dnscounter}gw";
+        if (isset($config['system'][$dnsgwname])) {
+            unset($config['system'][$dnsgwname]);
+        }
     }
 }
 
