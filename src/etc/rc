@@ -194,6 +194,9 @@ mtree -deiU -f /etc/mtree/BSD.var.dist -p /var > /dev/null
 # old config files are stored in this place
 mkdir -p /var/etc
 
+# clear nameserver/searchdomain cache files
+rm -f /var/etc/nameserver_* /var/etc/searchdomain_*
+
 # work around the fact that shutdown(8) doesn't clean up this file
 rm -f /var/run/nologin
 
