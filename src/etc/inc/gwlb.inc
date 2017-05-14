@@ -393,31 +393,33 @@ function return_gateways_status($byname = false)
 {
     global $config;
 
-    $apingerstatus = array();
-
-    /* Always get the latest status from apinger */
-    killbypid('/var/run/apinger.pid', 'USR1');
-    /* we may read the wrong file here as it's async: */
-    if (file_exists('/var/run/apinger.status')) {
-        $apingerstatus = file('/var/run/apinger.status');
-    }
-
     $status = array();
-    foreach ($apingerstatus as $line) {
-        $info = explode('|', $line);
-        if ($byname == false) {
-            $target = $info[0];
-        } else {
-            $target = $info[2];
-        }
 
-        $status[$target] = array();
-        $status[$target]['monitorip'] = $info[0];
-        $status[$target]['srcip'] = $info[1];
-        $status[$target]['name'] = $info[2];
-        $status[$target]['delay'] = sprintf('%0.1f ms', empty($info[6]) ? 0.0 : round($info[6], 1));
-        $status[$target]['loss'] = sprintf('%0.1f %%', empty($info[7]) ? 0.0 : round($info[7], 1));
-        $status[$target]['status'] = trim($info[8]);
+    if (isvalidpid('/var/run/apinger.pid')) {
+        /* always get the latest status from apinger */
+        killbypid('/var/run/apinger.pid', 'USR1');
+
+        /* we may read the wrong file here as it's async: */
+        if (file_exists('/var/run/apinger.status')) {
+            $apingerstatus = file('/var/run/apinger.status');
+
+            foreach ($apingerstatus as $line) {
+                $info = explode('|', $line);
+                if ($byname == false) {
+                    $target = $info[0];
+                } else {
+                    $target = $info[2];
+                }
+
+                $status[$target] = array();
+                $status[$target]['monitorip'] = $info[0];
+                $status[$target]['srcip'] = $info[1];
+                $status[$target]['name'] = $info[2];
+                $status[$target]['delay'] = sprintf('%0.1f ms', empty($info[6]) ? 0.0 : round($info[6], 1));
+                $status[$target]['loss'] = sprintf('%0.1f %%', empty($info[7]) ? 0.0 : round($info[7], 1));
+                $status[$target]['status'] = trim($info[8]);
+            }
+        }
     }
 
     /* tack on any gateways that have monitoring disabled
