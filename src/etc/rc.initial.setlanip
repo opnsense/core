@@ -252,7 +252,7 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet
             $nameserver = $gatewayip;
         } else {
             do {
-                echo sprintf('Enter the %s name server or press <ENTER> for none: ', $label_IPvX);
+                echo sprintf("Enter the %s name server or press <ENTER> for none:\n> ", $label_IPvX);
                 $nameserver = chop(fgets($fp));
                 $is_ipaddr = $inet_type == 'inet6' ? is_ipaddrv6($nameserver) : is_ipaddrv4($nameserver);
                 if ($nameserver != '') {
