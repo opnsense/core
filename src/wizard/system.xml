@@ -566,10 +566,13 @@
 			local_user_set($admin_user);
 			write_config();
 		} else {
-			print_info_box("Passwords do not match!  Please press back in your browser window and correct.");
+			print_info_box("Passwords do not match! Please press back in your browser window and correct.");
 			die;
 		}
-	}
+	} else {
+		print_info_box("You must set a new password! Please press back in your browser window and correct.");
+		die;
+        }
 	</stepsubmitphpaction>
 </step>
 <step>
