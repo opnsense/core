@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig[$dnsname] = !empty($config['system']['dnsserver'][$dnscounter - 1]) ? $config['system']['dnsserver'][$dnscounter - 1] : null;
 
         $dnsgwname= "dns{$dnscounter}gw";
-        $pconfig[$dnsgwopt] = !empty($config['system'][$dnsgwopt]) ? $config['system'][$dnsgwopt] : 'none';
+        $pconfig[$dnsgwname] = !empty($config['system'][$dnsgwname]) ? $config['system'][$dnsgwname] : 'none';
     }
 
     $pconfig['dnsallowoverride'] = isset($config['system']['dnsallowoverride']);
