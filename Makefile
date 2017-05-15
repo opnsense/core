@@ -265,7 +265,7 @@ upgrade: plist-check upgrade-check package
 	@${PKG} add ${PKGDIR}/*.txz
 	@${LOCALBASE}/etc/rc.restart_webgui
 
-lint: force
+lint: plist-check
 	find ${.CURDIR}/src ${.CURDIR}/Scripts \
 	    -name "*.sh" -type f -print0 | xargs -0 -n1 sh -n
 	find ${.CURDIR}/src ${.CURDIR}/Scripts \
@@ -305,13 +305,6 @@ style: want-pear-PHP_CodeSniffer
 
 style-fix: want-pear-PHP_CodeSniffer
 	phpcbf --standard=ruleset.xml ${.CURDIR}/src/opnsense || true
-
-setup: force
-	${.CURDIR}/src/etc/rc.php_ini_setup
-
-health: force
-	# check test script output and advertise a failure...
-	[ "`${.CURDIR}/src/etc/rc.php_test_run`" == "FCGI-PASSED PASSED" ]
 
 test: want-phpunit
 	@cd ${.CURDIR}/src/opnsense/mvc/tests && \

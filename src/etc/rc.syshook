@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -54,11 +54,12 @@ for SYSHOOK in ${SYSHOOKS}; do
 	# extract syshook origin
 	SYSHOOK=${SYSHOOK##"${SYSDIR}/"}
 	SYSHOOK=${SYSHOOK%%".${SYSLEVEL}"}
+	SYSNAME=${SYSHOOK#??-}
 
-	echo "rc.syshook(${SYSLEVEL}): running ${SYSHOOK#??-}"
+	echo ">>> Invoking ${SYSLEVEL} script '${SYSNAME}'"
 
 	if ! ${SYSDIR}/${SYSHOOK}.${SYSLEVEL}; then
-		echo "rc.syshook(${SYSLEVEL}): error in ${SYSHOOK#??-}"
+		echo ">>> Error in ${SYSLEVEL} script '${SYSNAME}'"
 	fi
 done
 

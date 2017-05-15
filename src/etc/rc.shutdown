@@ -1,15 +1,7 @@
 #!/bin/sh
 
-# run beep sequence if enabled
-/usr/local/sbin/beep.sh stop
-
 # shutdown syshook / plugin scripts
 /usr/local/etc/rc.syshook stop
-
-# backup volatile internals
-for BACKUP in captiveportal dhcpleases netflow rrd; do
-	/usr/local/etc/rc.backup_${BACKUP} stop
-done
 
 # wait for config lock to release
 php -a >/dev/null  << EOF

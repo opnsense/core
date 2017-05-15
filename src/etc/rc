@@ -230,22 +230,6 @@ echo "done."
 # Set up the correct php.ini content
 /usr/local/etc/rc.php_ini_setup
 
-# Perform major updates
-for STAGE in B P; do
-	if opnsense-update -${STAGE}; then
-		# ideally reroot with `-r', but panics on ZFS
-		reboot
-	fi
-done
-
-# Startup configd
-/usr/local/etc/rc.d/configd start
-
-# Restore backups from previous shutdown
-for BACKUP in captiveportal dhcpleases netflow rrd; do
-	/usr/local/etc/rc.backup_${BACKUP} restore
-done
-
 # Execute the early syshook / plugin commands
 /usr/local/etc/rc.syshook early
 
@@ -257,8 +241,6 @@ rm /var/run/booting
 
 # Execute the normal syshook / plugin commands
 /usr/local/etc/rc.syshook start
-
-/usr/local/sbin/beep.sh start
 
 /usr/local/etc/rc.initial.banner
 
