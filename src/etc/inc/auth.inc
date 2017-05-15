@@ -169,7 +169,10 @@ if (function_exists("display_error_form") && !isset($config['system']['webgui'][
         }
         if ($found_host == false) {
             if (!security_checks_disabled()) {
-                display_error_form("501", "An HTTP_REFERER was detected other than what is defined in System -> Advanced (" . htmlspecialchars($_SERVER['HTTP_REFERER']) . ").  You can disable this check if needed in System -> Settings -> Administration.");
+                display_error_form('501', sprintf(
+                    gettext('The HTTP_REFERER "%s" does not match the predefined settings. You can disable this check if needed under System: Settings: Administration.'),
+                    html_safe($_SERVER['HTTP_REFERER'])
+                ));
                 exit;
             }
             $security_passed = false;
