@@ -38,6 +38,13 @@
         <hint>Type or select interface.</hint>
     </field>
     <field>
+        <id>ids.general.defaultPacketSize</id>
+        <label>default packet size</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help><![CDATA[With this option, you can set the size of the packets on your network. It is possible that bigger packets have to be processed sometimes. The engine can still process these bigger packets, but processing it will lower the performance.]]></help>
+    </field>
+    <field>
         <id>ids.general.AlertLogrotate</id>
         <label>Rotate log</label>
         <type>dropdown</type>
