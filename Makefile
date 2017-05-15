@@ -265,7 +265,7 @@ upgrade: plist-check upgrade-check package
 	@${PKG} add ${PKGDIR}/*.txz
 	@${LOCALBASE}/etc/rc.restart_webgui
 
-lint: force
+lint: plist-check
 	find ${.CURDIR}/src ${.CURDIR}/Scripts \
 	    -name "*.sh" -type f -print0 | xargs -0 -n1 sh -n
 	find ${.CURDIR}/src ${.CURDIR}/Scripts \
