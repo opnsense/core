@@ -118,6 +118,12 @@
                     <enable>/^(?!0).*$/</enable>
                 </filters>
             </interfaces>
+            <defaultPacketSize type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>82</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+                <ValidationMessage>Enter a valid packet size</ValidationMessage>
+            </defaultPacketSize>
             <UpdateCron type="ModelRelationField">
                 <Model>
                     <queues>
