@@ -377,6 +377,8 @@ function filter_configure_sync($verbose = false)
     // initialize fw plugin object
     $fw = new \OPNsense\Firewall\Plugin();
     $fw->setInterfaceMapping(legacy_config_get_interfaces(array("enable" => true)));
+    //$fw->setGateways(return_gateways_array());
+    //$fw->setGatewayGroups(return_gateway_groups_array());
     filter_core_bootstrap($fw);
 
     plugins_firewall($fw);
@@ -895,9 +897,6 @@ function filter_generate_gateways()
             $int = $gateway['interface'];
             $gwip = $gateway['gateway'];
             $route = "";
-            if (!is_ipaddr($gwip)) {
-                $gwip = get_interface_gateway($gateway['friendlyiface']);
-            }
             if (is_ipaddr($gwip) && !empty($int)) {
                 $route = "route-to ( {$int} {$gwip} )";
             }

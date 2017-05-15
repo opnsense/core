@@ -29,6 +29,8 @@
  */
 namespace OPNsense\Firewall;
 
+use \OPNsense\Core\Config;
+
 /**
  * Class Plugin
  * @package OPNsense\Firewall
@@ -38,7 +40,7 @@ class Plugin
     private $anchors = array();
     private $filterRules = array();
     private $interfaceMapping = array();
-    private $interfaceStaticMapping;
+    private $gatewayMapping = array();
 
     /**
      * init firewall plugin component
@@ -48,7 +50,7 @@ class Plugin
     }
 
     /**
-     * set interface mapping to USE
+     * set interface mapping to use
      * @param array $mapping named array
      */
     public function setInterfaceMapping(&$mapping)
@@ -56,6 +58,49 @@ class Plugin
         $this->interfaceMapping = array();
         $this->interfaceMapping['loopback'] = array('if' => 'lo0', 'descr' => 'loopback');
         $this->interfaceMapping = array_merge($this->interfaceMapping, $mapping);
+    }
+
+    /**
+     * set defined gateways (route-to)
+     * @param array $gateways named array
+     */
+    public function setGateways($gateways)
+    {
+        if (is_array($gateways)) {
+            foreach ($gateways as $key => $gw) {
+                if (Util::isIpAddress($gw['gateway']) && !empty($gw['interface'])) {
+                    $this->gatewayMapping[$key] = array("logic" => "route-to ( {$gw['interface']} {$gw['gateway']} )");
+                }
+            }
+        }
+    }
+
+    /**
+     * set defined gateway groups (route-to)
+     * @param array $groups named array
+     */
+    public function setGatewayGroups($groups)
+    {
+        if (is_array($groups)) {
+            foreach ($groups as $key => $gwgr) {
+                $routeto = array();
+                foreach ($gwgr as $gw) {
+                    if (Util::isIpAddress($gw['gwip']) && !empty($gw['int'])) {
+                        $routeto[] = str_repeat("( {$gw['int']} {$gw['gwip']} )", $gw['weight']);
+                    }
+                }
+                if (count($routeto) > 0) {
+                    $routetologic = "route-to {".implode(' ', $routeto)."}";
+                    if (count($routeto) > 1) {
+                        $routetologic .= " round-robin ";
+                    }
+                    if (!empty(Config::getInstance()->object()->system->lb_use_sticky)) {
+                        $routetologic .= " sticky-address ";
+                    }
+                    $this->gatewayMapping[$key] = array("logic" => $routetologic);
+                }
+            }
+        }
     }
 
     /**
@@ -112,7 +157,7 @@ class Plugin
         if ($defaults != null) {
             $conf = array_merge($defaults, $conf);
         }
-        $rule = new FilterRule($this->interfaceMapping, $conf);
+        $rule = new FilterRule($this->interfaceMapping, $this->gatewayMapping, $conf);
         if (empty($this->filterRules[$prio])) {
             $this->filterRules[$prio] = array();
         }

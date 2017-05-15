@@ -37,6 +37,7 @@ class FilterRule
 {
     private $rule = array();
     private $interfaceMapping = array();
+    private $gatewayMapping = array();
 
     private $procorder = array(
         'disabled' => 'parseIsComment',
@@ -45,6 +46,7 @@ class FilterRule
         'log' => 'parseBool,log',
         'quick' => 'parseBool,quick',
         'interface' => 'parseInterface',
+        'gateway' => 'parseRoute',
         'ipprotocol' => 'parsePlain',
         'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
         'from' => 'parsePlain,from {,}',
@@ -143,6 +145,20 @@ class FilterRule
             return "on ##{$value}## ";
         } else {
             return "on ". $this->interfaceMapping[$value]['if']." ";
+        }
+    }
+
+    /**
+     * parse gateway (route-to)
+     * @param string $value field value
+     * @return string
+     */
+    private function parseRoute($value)
+    {
+        if (!empty($this->gatewayMapping[$value]['logic'])) {
+            return " " . $this->gatewayMapping[$value]['logic'] . " ";
+        } else {
+            return "";
         }
     }
 
@@ -325,11 +341,13 @@ class FilterRule
     /**
      * init FilterRule
      * @param array $interfaceMapping internal interface mapping
+     * @param array $gatewayMapping internal gateway mapping
      * @param array $conf rule configuration
      */
-    public function __construct(&$interfaceMapping, $conf)
+    public function __construct(&$interfaceMapping, &$gatewayMapping, $conf)
     {
         $this->interfaceMapping = $interfaceMapping;
+        $this->gatewayMapping = $gatewayMapping;
         $this->rule = $conf;
     }
 
