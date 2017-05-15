@@ -263,16 +263,20 @@ EOD;
 		}
 	}
 
-	echo "\nThe interfaces will be assigned as follows:\n\n";
+        if ($wanif != '' || $lanif != '' || count($optif)) {
+		echo "\nThe interfaces will be assigned as follows:\n\n";
 
-	if ($wanif != '') {
-		echo "WAN  -> " . $wanif . "\n";
-	}
-	if ($lanif != '') {
-		echo "LAN  -> " . $lanif . "\n";
-	}
-	for ($i = 0; $i < count($optif); $i++) {
-		echo "OPT" . ($i+1) . " -> " . $optif[$i] . "\n";
+		if ($wanif != '') {
+			echo "WAN  -> " . $wanif . "\n";
+		}
+		if ($lanif != '') {
+			echo "LAN  -> " . $lanif . "\n";
+		}
+		for ($i = 0; $i < count($optif); $i++) {
+			echo "OPT" . ($i+1) . " -> " . $optif[$i] . "\n";
+		}
+	} else {
+		echo "\nNo interfaces will be assigned.";
 	}
 
 	echo <<<EOD
