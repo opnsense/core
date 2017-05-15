@@ -276,7 +276,7 @@ EOD;
 			echo "OPT" . ($i+1) . " -> " . $optif[$i] . "\n";
 		}
 	} else {
-		echo "\nNo interfaces will be assigned.";
+		echo "\nNo interfaces will be assigned!\n";
 	}
 
 	echo <<<EOD
