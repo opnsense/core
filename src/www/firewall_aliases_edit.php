@@ -122,12 +122,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors = array();
         // validate data
         $country_codes = array_keys(geoip_countries());
-        foreach ($pconfig['host_url'] as $detail_entry) {
+        foreach ($pconfig['host_url'] as &$detail_entry) {
             if ($pconfig['type'] == 'host') {
                 if (!is_domain($detail_entry) && !is_ipaddr($detail_entry) && !is_alias($detail_entry)) {
                     $input_errors[] = sprintf(gettext('Entry "%s" is not a valid hostname or IP address.'), $detail_entry) ;
                 }
             } elseif ($pconfig['type'] == 'port') {
+                $detail_entry = str_replace("-", ":", $detail_entry);
                 if (!is_port($detail_entry) && !is_portrange($detail_entry) && !is_alias($detail_entry)) {
                     $input_errors[] = sprintf(gettext('Entry "%s" is not a valid port number.'), $detail_entry) ;
                 }
