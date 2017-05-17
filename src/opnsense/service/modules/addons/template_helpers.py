@@ -28,6 +28,7 @@
     package : configd
 """
 
+import collections
 import netaddr
 import operator
 
@@ -122,6 +123,6 @@ class Helpers(object):
     def sortDictList(lst, *operators):
         if type(lst) == list:
             lst.sort(key=operator.itemgetter(*operators))
-        elif type(lst) == dict:
+        elif type(lst) in (collections.OrderedDict, dict):
             return [lst]
         return lst
