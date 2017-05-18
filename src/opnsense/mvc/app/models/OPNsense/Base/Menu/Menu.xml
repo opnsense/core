@@ -41,24 +41,6 @@
             <Settings order="100" url="/system_hasync.php"/>
             <Status order="200" url="/status_habackup.php"/>
         </HighAvailability>
-        <Routes order="40" cssClass="fa fa-map-signs fa-fw">
-            <All order="10" url="/system_routes.php">
-                <Edit url="/system_routes_edit.php*" visibility="hidden"/>
-            </All>
-            <Log order="100" VisibleName="Log File" url="/diag_logs_routing.php"/>
-        </Routes>
-        <Gateways order="30" cssClass="fa fa-location-arrow fa-fw">
-            <All url="/system_gateways.php">
-                <All url="/system_gateways.php*" visibility="hidden"/>
-                <Edit url="/system_gateways_edit.php*" visibility="hidden"/>
-            </All>
-            <AllStatus VisibleName="Status" url="/status_gateways.php"/>
-            <Group url="/system_gateway_groups.php">
-                <Edit url="/system_gateway_groups_edit.php*" visibility="hidden"/>
-            </Group>
-            <GroupStatus VisibleName="Group Status" url="/status_gateway_groups.php"/>
-            <Log VisibleName="Log File" url="/diag_logs_gateways.php"/>
-        </Gateways>
         <Settings order="20" cssClass="fa fa-cogs fa-fw">
             <General order="100" url="/system_general.php">
                 <workAround url="/system_general.php*"/>
@@ -138,6 +120,26 @@
             <Traceroute VisibleName="Trace Route" url="/diag_traceroute.php"/>
         </Diagnostics>
     </Interfaces>
+    <Routing cssClass="fa fa-map-signs" order="35">
+        <StaticRoutes VisibleName="Static Routes" order="10" cssClass="fa fa-map-signs fa-fw">
+            <All order="10" url="/system_routes.php">
+                <Edit url="/system_routes_edit.php*" visibility="hidden"/>
+            </All>
+            <Log order="100" VisibleName="Log File" url="/diag_logs_routing.php"/>
+        </StaticRoutes>
+        <Gateways order="70" cssClass="fa fa-location-arrow fa-fw">
+            <All url="/system_gateways.php">
+                <All url="/system_gateways.php*" visibility="hidden"/>
+                <Edit url="/system_gateways_edit.php*" visibility="hidden"/>
+            </All>
+            <AllStatus VisibleName="Status" url="/status_gateways.php"/>
+            <Group url="/system_gateway_groups.php">
+                <Edit url="/system_gateway_groups_edit.php*" visibility="hidden"/>
+            </Group>
+            <GroupStatus VisibleName="Group Status" url="/status_gateway_groups.php"/>
+            <Log VisibleName="Log File" url="/diag_logs_gateways.php"/>
+        </Gateways>
+    </Routing>
     <Firewall order="40" cssClass="glyphicon glyphicon-fire">
         <Aliases order="10" cssClass="fa fa-list-alt fa-fw">
             <View order="100" url="/firewall_aliases.php">
