@@ -7,10 +7,10 @@
     </Reporting>
     <System>
         <Diagnostics order="160" url="/ui/diagnostics/activity/" cssClass="fa fa-medkit fa-fw"/>
-        <Routes>
-            <Status order="20" url="/ui/diagnostics/interface/routes/"/>
-        </Routes>
     </System>
+    <Routing>
+        <SystemRoutingTable VisibleName="System Routing Table"  order="100" url="/ui/diagnostics/interface/routes/"/>
+    </Routing>
     <Interfaces>
         <Diagnostics>
             <ARPTable VisibleName="ARP Table" url="/ui/diagnostics/interface/arp/"/>
