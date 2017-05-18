@@ -319,7 +319,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $userent['name'] = $pconfig['usernamefld'];
             $userent['descr'] = $pconfig['descr'];
             $userent['expires'] = $pconfig['expires'];
-            $userent['authorizedkeys'] = base64_encode($pconfig['authorizedkeys']);
+            $userent['authorizedkeys'] = base64_encode(trim($pconfig['authorizedkeys']));
             $userent['ipsecpsk'] = $pconfig['ipsecpsk'];
             if (!empty($pconfig['gen_otp_seed'])) {
                 // generate 160bit base32 encoded secret
