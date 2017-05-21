@@ -1,6 +1,32 @@
 #!/usr/local/bin/php
 <?php
 
+/*
+ * Copyright (C) 2011 Jim Pingle <jimp@pfsense.org>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 require_once('config.inc');
 
 $cnf = OPNsense\Core\Config::getInstance();
@@ -8,112 +34,120 @@ $confvers = $cnf->getBackups(true);
 
 $fp = fopen('php://stdin', 'r');
 
-function print_backup_info($backup_info, $number) {
-	if($backup_info['time'] != 0)
-		$date = date('n/j/y H:i:s', $backup_info['time']);
-	else
-		$date = 'Unknown';
+function print_backup_info($backup_info, $number)
+{
+    if ($backup_info['time'] != 0) {
+        $date = date('n/j/y H:i:s', $backup_info['time']);
+    } else {
+        $date = 'Unknown';
+    }
 
-	list($page, $reason) = explode(": ", $backup_info['description'], 2);
-	if (empty($reason)) {
-		$reason = $page;
-		$page = 'Unknown Page';
-	}
+    list($page, $reason) = explode(": ", $backup_info['description'], 2);
+    if (empty($reason)) {
+        $reason = $page;
+        $page = 'Unknown Page';
+    }
 
-	echo sprintf("%02d", $number) . ". {$date}\tv{$backup_info['version']}\t{$page}\n";
-	if ($reason) {
-		echo "    {$reason}\n";
-	}
+    echo sprintf("%02d", $number) . ". {$date}\tv{$backup_info['version']}\t{$page}\n";
+    if ($reason) {
+        echo "    {$reason}\n";
+    }
 }
 
-function list_backups($which="all") {
-	global $confvers;
+function list_backups($which = 'all')
+{
+    global $confvers;
 
-	if (count($confvers) == 0) {
-		echo 'No backups found in the configuration history.';
-		return;
-	}
+    if (count($confvers) == 0) {
+        echo 'No backups found in the configuration history.';
+        return;
+    }
 
-	$c = 0 ;
-	foreach ($confvers as $filename => $bckinfo) {
-		$c++;
-                if (is_numeric($which) && ($c != $which))
-                        continue;
-		print_backup_info($bckinfo,$c);
-	}
+    $c = 0 ;
+    foreach ($confvers as $filename => $bckinfo) {
+        $c++;
+        if (is_numeric($which) && ($c != $which)) {
+            continue;
+        }
+        print_backup_info($bckinfo,$c);
+    }
 }
 
-function choose_backup() {
-	global $fp, $confvers;
-	if (count($confvers) == 0) {
-		echo 'No backups found in the configuration history.';
-		return -1;
-	}
-	echo "Which configuration would you like to restore?\n";
-	echo " 1-" . count($confvers) . " : ";
-	$number = strtoupper(chop(fgets($fp)));
-	if (is_numeric($number) && ($number > 0) && ($number <= count($confvers))) {
-		return $number;
-	} else {
-		echo "That is not a valid backup number.\n";
-		return -1;
-	}
+function choose_backup()
+{
+    global $fp, $confvers;
+
+    if (count($confvers) == 0) {
+        echo 'No backups found in the configuration history.';
+        return -1;
+    }
+
+    echo "Which configuration would you like to restore?\n";
+    echo " 1-" . count($confvers) . " : ";
+
+    $number = strtoupper(chop(fgets($fp)));
+    if (is_numeric($number) && ($number > 0) && ($number <= count($confvers))) {
+        return $number;
+    }
+
+    echo "That is not a valid backup number.\n";
+    return -1;
 }
 
 function restore_history_backup($number)
 {
-	global $fp, $confvers;
+    global $fp, $confvers;
 
-	if (is_numeric($number) && ($number > 0) && ($number <= count($confvers))) {
-		echo "\nIs this the backup you wish to restore?\n";
-		list_backups($number);
-		$filename = array_keys($confvers)[$number-1];
-		$thisbackup = $confvers[$filename];
-		echo '[y/N]: ';
-		$confirm = strtoupper(chop(fgets($fp)));
-		if ($confirm == 'Y') {
-			$cnf = OPNsense\Core\Config::getInstance();
-			if($cnf->restoreBackup($filename)){
-				echo "\n";
-				echo sprintf('Successfully reverted to timestamp %s with description "%s".', date('n/j/y H:i:s', $thisbackup['time']), $thisbackup['description']);
-				echo "\nYou may need to reboot the firewall or restart services before the restored configuration is fully active.\n\n";
-			} else {
-				echo "Unable to revert to the selected configuration.\n";
-			}
-		} else {
-			echo "Restore canceled.\n";
-		}
-	} else {
-		echo "Restore canceled due to invalid input.\n";
-	}
+    if (is_numeric($number) && ($number > 0) && ($number <= count($confvers))) {
+        echo "\nIs this the backup you wish to restore?\n";
+        list_backups($number);
+        $filename = array_keys($confvers)[$number-1];
+        $thisbackup = $confvers[$filename];
+        echo '[y/N]: ';
+        $confirm = strtoupper(chop(fgets($fp)));
+        if ($confirm == 'Y') {
+            $cnf = OPNsense\Core\Config::getInstance();
+            if ($cnf->restoreBackup($filename)){
+                echo "\n";
+                echo sprintf('Successfully reverted to timestamp %s with description "%s".', date('n/j/y H:i:s', $thisbackup['time']), $thisbackup['description']);
+                echo "\nYou may need to reboot the firewall or restart services before the restored configuration is fully active.\n\n";
+            } else {
+                echo "Unable to revert to the selected configuration.\n";
+            }
+        } else {
+            echo "Restore canceled.\n";
+        }
+    } else {
+        echo "Restore canceled due to invalid input.\n";
+    }
 }
 
 while (true) {
-	echo "\nRestore Backup from Configuration History\n\n";
-	echo "1) List Backups\n";
-	echo "2) Restore Backup\n";
-	echo "q) Quit\n\n\n";
-	echo "Please select an option to continue: ";
+    echo "\nRestore Backup from Configuration History\n\n";
+    echo "1) List Backups\n";
+    echo "2) Restore Backup\n";
+    echo "q) Quit\n\n\n";
+    echo "Please select an option to continue: ";
 
-	$command = strtolower(chop(fgets($fp)));
+    $command = strtolower(chop(fgets($fp)));
 
-	switch ($command) {
-		case "q":
-		case "quit":
-			echo "\n";
-			fclose($fp);
-			die;
-			break;
-		case "1":
-			list_backups();
-			break;
-		case "2":
-			$number = choose_backup();
-			restore_history_backup($number);
-			fclose($fp);
-			die;
-			break;
-	}
+    switch ($command) {
+        case "q":
+        case "quit":
+            echo "\n";
+            fclose($fp);
+            die;
+            break;
+        case "1":
+            list_backups();
+            break;
+        case "2":
+            $number = choose_backup();
+            restore_history_backup($number);
+            fclose($fp);
+            die;
+            break;
+    }
 }
 
 fclose($fp);
