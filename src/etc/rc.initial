@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2017 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2011 Scott Ullrich <sullrich@gmail.com>
 # Copyright (c) 2003-2004 Manuel Kasper <mk@neon1.net>
 # All rights reserved.
@@ -13,6 +13,11 @@ trap : 3
 if [ -n "${*}" ]; then
 	/bin/csh "${@}"
 	exit ${?}
+fi
+
+OPT_RESTORE="13) Restore configuration"
+if [ ! -f /usr/local/etc/rc.initial.restore ]; then
+	OPT_RESTORE=
 fi
 
 # endless loop
@@ -32,7 +37,7 @@ echo "  2) Set interface IP address            9) pfTop"
 echo "  3) Reset the root password            10) Firewall log"
 echo "  4) Reset to factory defaults          11) Reload all services"
 echo "  5) Power off system                   12) Upgrade from console"
-echo "  6) Reboot system                      13) Restore a configuration"
+echo "  6) Reboot system                      ${OPT_RESTORE}"
 echo
 read -p "Enter an option: " OPCODE
 echo
@@ -82,7 +87,9 @@ case ${OPCODE} in
 	/usr/local/etc/rc.initial.firmware
 	;;
 13)
-	/usr/local/etc/rc.initial.restore
+	if [ -n "{OPT_RESTORE}" ]; then
+		/usr/local/etc/rc.initial.restore
+	fi
 	;;
 *)
 	;;
