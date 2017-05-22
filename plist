@@ -100,7 +100,6 @@
 /usr/local/etc/rc.initial.password
 /usr/local/etc/rc.initial.ping
 /usr/local/etc/rc.initial.reboot
-/usr/local/etc/rc.initial.restore
 /usr/local/etc/rc.initial.setlanip
 /usr/local/etc/rc.initial.setports
 /usr/local/etc/rc.installer
