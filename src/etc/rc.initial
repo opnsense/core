@@ -87,7 +87,7 @@ case ${OPCODE} in
 	/usr/local/etc/rc.initial.firmware
 	;;
 13)
-	if [ -n "{OPT_RESTORE}" ]; then
+	if [ -n "${OPT_RESTORE}" ]; then
 		/usr/local/etc/rc.initial.restore
 	fi
 	;;
