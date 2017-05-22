@@ -190,6 +190,7 @@ include("head.inc");
                       <div class="well">
                         <lu>
                           <li><?=sprintf(gettext('When using XMLRPC sync to a backup machine running on another port/protocol please input the full url (example: %s)'), 'https://192.168.1.1:444/') ?></li>
+                          <li><?=gettext('For setting up the backup machine leave this field empty, and do not forget to allow incoming connections on the specified interface for synchronization.') ?></li>
                           <li><b><?=gettext('Do not use the Synchronize Config to IP and password option on backup cluster members!') ?></b></li>
                         </lu>
                       </div>
