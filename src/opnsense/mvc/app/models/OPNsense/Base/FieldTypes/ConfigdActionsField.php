@@ -66,7 +66,7 @@ class ConfigdActionsField extends BaseField
     /**
      * generate validation data (list of known configd actions)
      */
-    public function eventPostLoading()
+    protected function actionPostLoadingEvent()
     {
         if (!isset(self::$internalOptionList[$this->internalCacheKey])) {
             self::$internalOptionList[$this->internalCacheKey] = array();

@@ -71,7 +71,7 @@ class AuthGroupField extends BaseField
     /**
      * generate validation data (list of certificates)
      */
-    public function eventPostLoading()
+    protected function actionPostLoadingEvent()
     {
         if (empty(self::$internalOptionList)) {
             $cnf = Config::getInstance()->object();

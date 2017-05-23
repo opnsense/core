@@ -120,7 +120,7 @@ class InterfaceField extends BaseField
     /**
      * generate validation data (list of interfaces and well know ports)
      */
-    public function eventPostLoading()
+    protected function actionPostLoadingEvent()
     {
         if (!isset(self::$internalOptionList[$this->internalCacheKey])) {
             self::$internalOptionList[$this->internalCacheKey] = array();
