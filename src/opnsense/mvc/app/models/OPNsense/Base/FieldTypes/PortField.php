@@ -101,7 +101,7 @@ class PortField extends BaseField
     /**
      * generate validation data (list of port numbers and well know ports)
      */
-    public function eventPostLoading()
+    protected function actionPostLoadingEvent()
     {
         if (!is_array(self::$internalOptionList)) {
             self::$internalOptionList = array("any") + self::$wellknownservices;

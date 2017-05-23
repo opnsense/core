@@ -113,6 +113,11 @@ abstract class BaseField
     private $internalChangeCase = null;
 
     /**
+     * @var bool is field loaded (after post loading event)
+     */
+    private $internalFieldLoaded = false;
+
+    /**
      * generate a new UUID v4 number
      * @return string uuid v4 number
      */
@@ -150,6 +155,7 @@ abstract class BaseField
             $node->eventPostLoading();
         }
         $this->actionPostLoadingEvent();
+        $this->internalFieldLoaded = true;
     }
 
     /**
@@ -287,8 +293,8 @@ abstract class BaseField
      */
     public function setValue($value)
     {
-        // if first set, store initial value
-        if ($this->internalInitialValue === false && $value != "") {
+        // if first set and not altered by the user, store initial value
+        if ($this->internalFieldLoaded === false && $this->internalInitialValue === false && $value != "") {
             $this->internalInitialValue = $value;
         }
         $this->internalValue = $value;
