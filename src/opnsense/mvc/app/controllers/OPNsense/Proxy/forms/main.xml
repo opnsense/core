@@ -566,6 +566,24 @@
                 <help><![CDATA[The total number of authenticator processes to spawn.]]></help>
             </field>
         </subtab>
+        <subtab id="proxy-custom-settings" description="Custom Settings">
+            <field>
+                <id>proxy.forward.custom.enable</id>
+                <label>Enable Custom Settings</label>
+                <type>select_multiple</type>
+                <type>checkbox</type>
+                <style>tokenize</style>
+                <help><![CDATA[Toggle custom settings inclusion in configuration]]></help>
+            </field>
+            <field>
+                <id>proxy.forward.custom.settings</id>
+                <label>Custom Settings:</label>
+                <type>textbox</type>
+                <help><![CDATA[Use this field to supply custom configuration for squid.conf. Settings will not be validated before applying, and have a high potential of breaking things. Commonly used for custom "refresh_pattern" settings.]]></help>
+                <allownew>true</allownew>
+                <advanced>true</advanced>
+            </field>
+        </subtab>
     </tab>
 
     <activetab>proxy-general-settings</activetab>

@@ -423,6 +423,16 @@
                     <Required>N</Required>
                 </children>
             </authentication>
+            <custom>
+                <enable type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </enable>
+                <settings type="TextField">
+                    <default></default>
+                    <Required>N</Required>
+                </settings>
+            </custom>
         </forward>
     </items>
 </model>
