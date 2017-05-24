@@ -94,6 +94,7 @@ else
 fi
 
 # regenerate groups and users for base
+# XXX port this to POSIX shell:
 /usr/local/etc/rc.recover base > /dev/null
 
 # set keyboard map if needed
@@ -226,6 +227,7 @@ fi
 echo "done."
 
 # Regenerate groups and users for packages
+# XXX port this to POSIX shell:
 /usr/local/etc/rc.recover pkg > /dev/null 2> /dev/null
 
 # Recreate capabilities DB
@@ -233,6 +235,10 @@ echo "done."
 
 # Execute the early syshook / plugin commands
 /usr/local/etc/rc.syshook early
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!! PHP starts working here, not earlier !!!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # Let the PHP-based configuration subsystem set up the system now
 echo -n "Launching the init system..."

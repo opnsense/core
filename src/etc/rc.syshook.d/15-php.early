@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# php.ini is chained into this template, required by backend
+configctl template reload OPNsense/WebGui
