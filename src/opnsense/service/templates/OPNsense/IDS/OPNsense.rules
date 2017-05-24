@@ -19,3 +19,6 @@
 {%          endif %}
 {%      endfor %}
 {% endif %}
+
+# Include rules from /usr/local/opnsense/service/templates/OPNsense/IDS/OPNsense.rules
+{% include "OPNsense/IDS/custom_rules.conf" ignore missing with context %}
