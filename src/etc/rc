@@ -234,6 +234,10 @@ echo "done."
 # Execute the early syshook / plugin commands
 /usr/local/etc/rc.syshook early
 
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!! PHP starts working here, not earlier !!!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 # Let the PHP-based configuration subsystem set up the system now
 echo -n "Launching the init system..."
 touch /var/run/booting
