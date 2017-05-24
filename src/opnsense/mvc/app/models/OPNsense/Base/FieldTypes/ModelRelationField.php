@@ -99,11 +99,7 @@ class ModelRelationField extends BaseField
                 $groups = array();
 
                 foreach ($modelObj->getNodeByReference($modelData['items'])->__items as $node) {
-                    if (!isset($node->getAttributes()['uuid'])) {
-                        continue;
-                    }
-
-                    if ($node->$displayKey == null) {
+                    if (!isset($node->getAttributes()['uuid']) || $node->$displayKey == null) {
                         continue;
                     }
 
@@ -116,7 +112,10 @@ class ModelRelationField extends BaseField
                         }
                     }
 
-                    if (!empty($groupKey) && $node->$groupKey != null) {
+                    if (!empty($groupKey)) {
+                        if ($node->$groupKey == null) {
+                            continue;
+                        }
                         $group = $node->$groupKey->__toString();
                         if (isset($groups[$group])) {
                             continue;
