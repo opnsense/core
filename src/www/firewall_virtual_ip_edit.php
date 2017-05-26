@@ -111,9 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("A valid IP address must be specified.");
             } else {
                 $ignore_if = isset($id) ? $a_vip[$id]['interface'] : $pconfig['interface'];
-                if ($pconfig['mode'] == 'carp') {
-                    $ignore_if .= "_vip{$pconfig['vhid']}";
-                }
                 if (is_ipaddr_configured($pconfig['subnet'], $ignore_if)) {
                     $input_errors[] = gettext("This IP address is being used by another interface or VIP.");
                 }

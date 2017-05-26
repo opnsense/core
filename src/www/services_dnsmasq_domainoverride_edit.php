@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['port']) && !is_port($pconfig['port'])) {
         $input_errors[] = gettext("A valid port number must be specified.");
     }
-    if (!empty($pconfig['dnssrcip']) && !in_array($pconfig['dnssrcip'], get_configured_ip_addresses())) {
+    if (!empty($pconfig['dnssrcip']) && !in_array($pconfig['dnssrcip'], array_keys(get_configured_ip_addresses()))) {
         $input_errors[] = gettext("An interface IP address must be specified for the DNS query source.");
     }
     if (count($input_errors) == 0) {

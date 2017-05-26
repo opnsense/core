@@ -5028,35 +5028,14 @@ function get_ppp_uptime($port)
 function is_ipaddr_configured($ipaddr, $ignore_if = '')
 {
     global $config;
+    $if = get_real_interface($ignore_if);
+    $interface_list_ips = get_configured_ip_addresses();
 
-    $isipv6 = is_ipaddrv6($ipaddr);
-    if ($isipv6 === true) {
-        $interface_list_ips = get_configured_ipv6_addresses();
+    if (empty($interface_list_ips[$ipaddr]) || $interface_list_ips[$ipaddr] == $if) {
+        return false;
     } else {
-        $interface_list_ips = get_configured_ip_addresses();
+        return true;
     }
-
-    foreach($interface_list_ips as $if => $ilips) {
-        /* Also ignore CARP interfaces, it'll be checked below */
-        if ($ignore_if == $if || strstr($ignore_if, "_vip")) {
-            continue;
-        }
-        if (strcasecmp($ipaddr, $ilips) == 0) {
-            return true;
-        }
-    }
-
-    $interface_list_vips = get_configured_vips_list(true);
-    foreach ($interface_list_vips as $id => $vip) {
-        if ($ignore_if == $vip['if']) {
-            continue;
-        }
-        if (strcasecmp($ipaddr, $vip['ipaddr']) == 0) {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 /*

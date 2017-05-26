@@ -199,14 +199,8 @@ function isAuthLocalIP($http_host)
 {
     global $config;
     $interface_list_ips = get_configured_ip_addresses();
-    foreach ($interface_list_ips as $ilips) {
+    foreach ($interface_list_ips as $ilips => $ifname) {
         if (strcasecmp($http_host, $ilips) == 0) {
-            return true;
-        }
-    }
-    $interface_list_ipv6s = get_configured_ipv6_addresses();
-    foreach ($interface_list_ipv6s as $ilipv6s) {
-        if (strcasecmp($http_host, $ilipv6s) == 0) {
             return true;
         }
     }
