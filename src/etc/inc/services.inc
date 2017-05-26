@@ -1556,11 +1556,15 @@ function get_dyndns_ip($int, $ipver = 4)
 
     if ($ipver == 6 || is_private_ip($ip_address)) {
         $gateways_status = return_gateways_status(true);
-        // If the gateway for this interface is down, then the external check cannot work.
-        // Avoid the long wait for the external check to timeout.
-        if (stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'],"down")) {
+        /*
+         * If the gateway for this interface is down, then the external
+         * check cannot work. Avoid the long wait for the external check
+         * to timeout.
+         */
+        if (stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')) {
             return 'down';
         }
+        /* Chinese alternative is http://ip.3322.net/ */
         $hosttocheck = $ipver == 6 ? 'http://checkipv6.dyndns.org' : 'http://checkip.dyndns.org';
         $ip_ch = curl_init($hosttocheck);
         curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
