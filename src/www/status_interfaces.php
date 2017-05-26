@@ -64,8 +64,12 @@ include("head.inc");
           <section class="col-xs-12">
 <?php
             $mac_man = json_decode(configd_run("interface list macdb json"), true);
+            $pfctl_counters = json_decode(configd_run("filter list counters json"), true);
+            $vmstat_interupts = json_decode(configd_run("system list interrupts json"), true);
+            $ifsinfo = get_interfaces_info();
             foreach (get_configured_interface_with_descr(false, true) as $ifdescr => $ifname):
-              $ifinfo = get_interface_info($ifdescr);
+              $ifinfo = $ifsinfo[$ifdescr];
+              $ifpfcounters = $pfctl_counters[$ifinfo['if']];
               legacy_html_escape_form_data($ifinfo);
               $ifdescr = htmlspecialchars($ifdescr);
               $ifname = htmlspecialchars($ifname);
@@ -392,20 +396,20 @@ include("head.inc");
                     endif; ?>
                     <tr>
                       <td><?= gettext("In/out packets") ?></td>
-                      <td> <?= $ifinfo['inpkts'] ?> / <?= $ifinfo['outpkts'] ?>
-                          (<?= format_bytes($ifinfo['inbytes']);?> / <?=format_bytes($ifinfo['outbytes']);?> )
+                      <td> <?= $ifpfcounters['inpkts'] ?> / <?= $ifpfcounters['outpkts'] ?>
+                          (<?= format_bytes($ifpfcounters['inbytes']);?> / <?=format_bytes($ifpfcounters['outbytes']);?> )
                       </td>
                     </tr>
                     <tr>
                       <td><?= gettext("In/out packets (pass)") ?></td>
-                      <td> <?= $ifinfo['inpktspass'] ?> / <?= $ifinfo['outpktspass'] ?>
-                          (<?= format_bytes($ifinfo['inbytespass']) ?> / <?= format_bytes($ifinfo['outbytespass']) ?> )
+                      <td> <?= $ifpfcounters['inpktspass'] ?> / <?= $ifpfcounters['outpktspass'] ?>
+                          (<?= format_bytes($ifpfcounters['inbytespass']) ?> / <?= format_bytes($ifpfcounters['outbytespass']) ?> )
                       </td>
                     </tr>
                     <tr>
                       <td><?= gettext("In/out packets (block)") ?></td>
-                      <td> <?= $ifinfo['inpktsblock'] ?> / <?= $ifinfo['outpktsblock'] ?>
-                          (<?= format_bytes($ifinfo['inbytesblock']) ?> / <?= format_bytes($ifinfo['outbytesblock']) ?> )
+                      <td> <?= $ifpfcounters['inpktsblock'] ?> / <?= $ifpfcounters['outpktsblock'] ?>
+                          (<?= format_bytes($ifpfcounters['inbytesblock']) ?> / <?= format_bytes($ifpfcounters['outbytesblock']) ?> )
                       </td>
                     </tr>
 <?php
@@ -433,31 +437,34 @@ include("head.inc");
                     </tr>
 <?php
                   endif;
-                  if(file_exists("/usr/bin/vmstat")):
-                    $real_interface = "";
-                    $interrupt_total = "";
-                    $interrupt_sec = "";
-                    $real_interface = $ifinfo['if'];
-                    $interrupt_total = `vmstat -i | grep $real_interface | awk '{ print $3 }'`;
-                    $interrupt_sec = `vmstat -i | grep $real_interface | awk '{ print $4 }'`;
-                    if(strstr($interrupt_total, "hci")) {
-                      $interrupt_total = `vmstat -i | grep $real_interface | awk '{ print $4 }'`;
-                      $interrupt_sec = `vmstat -i | grep $real_interface | awk '{ print $5 }'`;
-                    }
-                    unset($interrupt_total); // XXX: FIX ME!  Need a regex and parse correct data 100% of the time.
-                    if($interrupt_total): ?>
+                  if (!empty($vmstat_interupts['interrupt_map'][$ifinfo['if']])):
+                      $intrpts = $vmstat_interupts['interrupt_map'][$ifinfo['if']];?>
                     <tr>
-                      <td><?= gettext("Interrupts per Second") ?></td>
+                      <td><?= gettext("Interrupts") ?></td>
                       <td>
-                        <?php
-                          printf(gettext("%s total"),$interrupt_total);
-                          echo "<br />";
-                          printf(gettext("%s rate"),$interrupt_sec);
-                        ?>
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th><?=gettext("irq");?></th>
+                              <th><?=gettext("device");?></th>
+                              <th><?=gettext("total");?></th>
+                              <th><?=gettext("rate");?></th>
+                            </tr>
+                          </thead>
+<?php
+                        foreach ($intrpts as $intrpt):?>
+                        <tr>
+                          <td><?=$intrpt;?></td>
+                          <td><?=implode(' ', $vmstat_interupts['interrupts'][$intrpt]['devices']);?></td>
+                          <td><?=$vmstat_interupts['interrupts'][$intrpt]['total'];?></td>
+                          <td><?=$vmstat_interupts['interrupts'][$intrpt]['rate'];?></td>
+                        </tr>
+<?php
+                        endforeach; ?>
+                        </table>
                       </td>
                     </tr>
 <?php
-                    endif;
                   endif; ?>
                   </tbody>
                 </table>

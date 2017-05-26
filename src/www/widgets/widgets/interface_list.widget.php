@@ -68,8 +68,9 @@ require_once("interfaces.inc");
 <table class="table table-striped table-condensed" data-plugin="interfaces" data-callback="interface_widget_update">
   <tbody>
 <?php
+    $ifsinfo = get_interfaces_info();
     foreach (get_configured_interface_with_descr() as $ifdescr => $ifname):
-      $ifinfo = get_interface_info($ifdescr);
+      $ifinfo = $ifsinfo[$ifdescr];
       $iswireless = is_interface_wireless($ifdescr);?>
       <tr id="interface_widget_item_<?=$ifname;?>">
         <td>
