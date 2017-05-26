@@ -1092,7 +1092,7 @@ class updatedns {
                     $status = "Dynamic DNS: (Success) No change in IP address";
                     $successful_update = true;
                 } elseif (preg_match('/good/i', $data)) {
-                    $status = "Dynamic DNS: (Success) IP Address updated successfully ({$this->_dnsIP})";
+                    $status = "Dynamic DNS: (Success) IP address updated successfully ({$this->_dnsIP})";
                     $successful_update = true;
                 } elseif (preg_match('/badauth/i', $data)) {
                     $status = "Dynamic DNS: (Error) Authentication failed";

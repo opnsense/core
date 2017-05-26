@@ -89,6 +89,12 @@ function dyndns_cron()
 
 function dyndns_list()
 {
+    /*
+     * XXX something like this would be cool:
+     *
+     * https://github.com/openwrt/packages/blob/master/net/ddns-scripts/files/services
+     */
+
     return array(
         '3322' => '3322',
         'citynetwork' => 'City Network',
