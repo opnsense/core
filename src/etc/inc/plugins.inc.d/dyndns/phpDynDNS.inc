@@ -23,7 +23,7 @@
  *    - HE.net IPv6 (dns.he.net)
  *    - HE.net Tunnelbroker IP update (ipv4.tunnelbroker.net)
  *    - SelfHost (selfhost.de)
- *    - Amazon Route 53 (aws.amazon.com)
+ *    - Amazon Route53 (aws.amazon.com)
  *    - DNS-O-Matic (dnsomatic.com)
  *    - Custom dynamic DNS (any URL)
  *    - Custom dynamic DNS IPv6 (any URL)
@@ -34,6 +34,8 @@
  *    - Duck DNS (duckdns.org)
  *    - Google Domains (domains.google.com)
  *    - STRATO (strato.com)
+ *    - 3322 (3322.net)
+ *    - Oray (oray.com)
  * +----------------------------------------------------+
  *  Requirements:
  *    - PHP version 4.0.2 or higher with the CURL Library and the PCRE Library
@@ -62,23 +64,25 @@
  *  FreeDNS        - Last Tested: 23 Feb 2011
  *  Loopia         - Last Tested: NEVER
  *  StaticCling    - Last Tested: 27 April 2006
- *  DNSexit       - Last Tested: 20 July 2008
- *  OpenDNS       - Last Tested: 4 August 2008
- *  Namecheap       - Last Tested: 31 August 2010
+ *  DNSexit        - Last Tested: 20 July 2008
+ *  OpenDNS        - Last Tested: 4 August 2008
+ *  Namecheap      - Last Tested: 31 August 2010
  *  HE.net         - Last Tested: 7 July 2013
  *  HE.net IPv6    - Last Tested: 7 July 2013
  *  HE.net Tunnel  - Last Tested: 28 June 2011
  *  SelfHost       - Last Tested: 26 December 2011
- *  Amazon Route 53 - Last tested: 01 April 2012
- *  DNS-O-Matic       - Last Tested: 9 September 2010
+ *  Amazon Route53 - Last tested: 01 April 2012
+ *  DNS-O-Matic    - Last Tested: 9 September 2010
  *  CloudFlare     - Last Tested: 30 May 2013
- *  Eurodns       - Last Tested: 27 June 2013
+ *  Eurodns        - Last Tested: 27 June 2013
  *  GratisDNS      - Last Tested: 15 August 2012
- *  OVH DynHOST       - Last Tested: NEVER
+ *  OVH DynHOST    - Last Tested: NEVER
  *  City Network   - Last Tested: 13 November 2013
  *  Duck DNS       - Last Tested: 04 March 2015
  *  Google Domains - Last Tested: 20 February 2017
  *  STRATO         - Last Tested: 09 May 2017
+ *  3322           - Last Tested: 26 May 2017
+ *  Oray           - Last Tested: 26 May 2017
  * +====================================================+
  *
  * @author    E.Kristensen
@@ -222,6 +226,7 @@ class updatedns {
             $this->_error(10);
         } else {
             switch ($this->_dnsService) {
+            case '3322':
             case 'citynetwork':
             case 'cloudflare':
             case 'custom':
@@ -250,6 +255,7 @@ class updatedns {
             case 'ods':
             case 'opendns':
             case 'ovh-dynhost':
+            case 'oray':
             case 'route53':
             case 'selfhost':
             case 'strato':
@@ -724,6 +730,22 @@ class updatedns {
                 curl_setopt($ch, CURLOPT_URL, $server);
                 curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
                 break;
+            case '3322':
+                if ($this->_dnsVerboseLog)
+                    log_error("3322: ({$this->_dnsHost}): DNS update() starting.");
+                $server = "http://members.3322.net/dyndns/update?hostname={$this->_dnsHost}&myip={$this->_dnsIP}";
+                curl_setopt($ch, CURLOPT_USERPWD, $this->_dnsUser.':'.$this->_dnsPass);
+                curl_setopt($ch, CURLOPT_URL, $server);
+                curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+                break;
+            case 'oray':
+                if ($this->_dnsVerboseLog)
+                    log_error("Oray: ({$this->_dnsHost}): DNS update() starting.");
+                $server = "http://ddns.oray.com/ph/update?hostname={$this->_dnsHost}&myip={$this->_dnsIP}";
+                curl_setopt($ch, CURLOPT_USERPWD, $this->_dnsUser.':'.$this->_dnsPass);
+                curl_setopt($ch, CURLOPT_URL, $server);
+                curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+                break;
             default:
                 break;
         }
@@ -751,99 +773,6 @@ class updatedns {
             return;
         }
         switch ($this->_dnsService) {
-            case 'dnsomatic':
-                if (preg_match('/badauth/i', $data)) {
-                    $status = "DNS-O-Matic ({$this->_dnsHost}): The DNS-O-Matic username or password specified are incorrect. No updates will be distributed to services until this is resolved.";
-                } else if (preg_match('/notfqdn /i', $data)) {
-                    $status = "DNS-O-Matic ({$this->_dnsHost}): The hostname specified is not a fully-qualified domain name. If no hostnames included, notfqdn will be returned once.";
-                } else if (preg_match('/nohost/i', $data)) {
-                    $status = "DNS-O-Matic ({$this->_dnsHost}): The hostname passed could not be matched to any services configured. The service field will be blank in the return code.";
-                } else if (preg_match('/numhost/i', $data)) {
-                    $status = "DNS-O-Matic ({$this->_dnsHost}): You may update up to 20 hosts. numhost is returned if you try to update more than 20 or update a round-robin.";
-                } else if (preg_match('/abuse/i', $data)) {
-                    $status = "DNS-O-Matic ({$this->_dnsHost}): The hostname is blocked for update abuse.";
-                } else if (preg_match('/good/i', $data)) {
-                    $status = "DNS-O-Matic ({$this->_dnsHost}): (Success) IP Address Changed Successfully! (".$this->_dnsIP.")";
-                    $successful_update = true;
-                } else if (preg_match('/dnserr/i', $data)) {
-                    $status = "DNS-O-Matic ({$this->_dnsHost}): DNS error encountered. Stop updating for 30 minutes.";
-                } else {
-                    $status = "DNS-O-Matic ({$this->_dnsHost}): (Unknown Response)";
-                    log_error("DNS-O-Matic ({$this->_dnsHost}): PAYLOAD: {$data}");
-                    $this->_debug($data);
-                }
-                break;
-            case 'citynetwork':
-                if (preg_match('/notfqdn/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Error) Not A FQDN!";
-                } else if (preg_match('/nohost/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Error) No such host";
-                } else if (preg_match('/nochg/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Success) No Change In IP Address";
-                    $successful_update = true;
-                } else if (preg_match('/good/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Success) IP Address Changed Successfully! (".$this->_dnsIP.")";
-                    $successful_update = true;
-                } else if (preg_match('/badauth/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Error) User Authorization Failed";
-                } else {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Unknown Response)";
-                    log_error("Dynamic DNS ({$this->_dnsHost}): PAYLOAD: {$data}");
-                    $this->_debug($data);
-                }
-                break;
-            case 'ovh-dynhost':
-            case 'dyndns':
-                if (preg_match('/notfqdn/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Error) Not A FQDN!";
-                } else if (preg_match('/nochg/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Success) No Change In IP Address";
-                    $successful_update = true;
-                } else if (preg_match('/good/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Success) IP Address Changed Successfully! (".$this->_dnsIP.")";
-                    $successful_update = true;
-                } else if (preg_match('/noauth/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Error) User Authorization Failed";
-                } else {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Unknown Response)";
-                    log_error("Dynamic DNS ({$this->_dnsHost}): PAYLOAD: {$data}");
-                    $this->_debug($data);
-                }
-                break;
-            case 'dyndns-static':
-                if (preg_match('/notfqdn/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Error) Not A FQDN!";
-                } else if (preg_match('/nochg/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Success) No Change In IP Address";
-                    $successful_update = true;
-                } else if (preg_match('/good/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Success) IP Address Changed Successfully!";
-                    $successful_update = true;
-                } else if (preg_match('/noauth/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Error) User Authorization Failed";
-                } else {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Unknown Response)";
-                    log_error("Dynamic DNS ({$this->_dnsHost}): PAYLOAD: {$data}");
-                    $this->_debug($data);
-                }
-                break;
-            case 'dyndns-custom':
-                if (preg_match('/notfqdn/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Error) Not A FQDN!";
-                } else if (preg_match('/nochg/i', $data)) {
-                    $status = "Dynamic DNS: (Success) No Change In IP Address";
-                    $successful_update = true;
-                } else if (preg_match('/good/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Success) IP Address Changed Successfully!";
-                    $successful_update = true;
-                } else if (preg_match('/noauth/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Error) User Authorization Failed";
-                } else {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Unknown Response)";
-                    log_error("Dynamic DNS ({$this->_dnsHost}): PAYLOAD: {$data}");
-                    $this->_debug($data);
-                }
-                break;
             case 'dhs':
                 break;
             case 'noip':
@@ -1003,40 +932,6 @@ class updatedns {
                     $this->_debug($data);
                 }
                 break;
-            case 'loopia':
-                if (preg_match("/nochg/i", $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Success) No Change In IP Address";
-                    $successful_update = true;
-                } else if (preg_match("/good/i", $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Success) IP Address Changed Successfully!";
-                    $successful_update = true;
-                } else if (preg_match('/badauth/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Error) User Authorization Failed";
-                } else {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Unknown Response)";
-                    log_error("Dynamic DNS ({$this->_dnsHost}): PAYLOAD: {$data}");
-                    $this->_debug($data);
-                }
-                break;
-            case 'opendns':
-                if (preg_match('/badauth/i', $data)) {
-                    $status = "Dynamic DNS({$this->_dnsHost}): (Error) Not a valid username or password!";
-                } else if (preg_match('/nohost/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Error) Hostname you are trying to update does not exist.";
-                    $successful_update = true;
-                } else if (preg_match('/good/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Success) IP Address Changed Successfully! (".$this->_dnsIP.")";
-                    $successful_update = true;
-                } else if (preg_match('/yours/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Error) hostname specified exists, but not under the username specified.";
-                } else if (preg_match('/abuse/i', $data)) {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Error) Updating too frequently, considered abuse.";
-                } else {
-                    $status = "Dynamic DNS ({$this->_dnsHost}): (Unknown Response)";
-                    log_error("Dynamic DNS ({$this->_dnsHost}): PAYLOAD: {$data}");
-                    $this->_debug($data);
-                }
-                break;
             case 'staticcling':
                 if (preg_match("/invalid ip/i", $data)) {
                     $status = "Dynamic DNS ({$this->_dnsHost}): (Error) Bad Request - The IP provided was invalid.";
@@ -1080,27 +975,6 @@ class updatedns {
                     $this->_debug($data);
                 }
                 break;
-
-            case 'he-net':
-            case 'he-net-v6':
-                if (preg_match("/badip/i", $data)) {
-                    $status = "Dynamic DNS: (Error) Bad Request - The IP provided was invalid.";
-                } else if (preg_match('/nohost/i', $data)) {
-                    $status = "Dynamic DNS: (Error) Bad Request - A hostname was not provided.";
-                } else if (preg_match('/badauth/i', $data)) {
-                    $status = "Dynamic DNS: (Error) Invalid username or password.";
-                } else if (preg_match('/good/i', $data)) {
-                    $status = "Dynamic DNS: (Success) IP Address Updated Successfully!";
-                    $successful_update = true;
-                } else if (preg_match('/nochg/i', $data)) {
-                    $status = "Dynamic DNS: (Success) No Change In IP Address.";
-                    $successful_update = true;
-                } else {
-                    $status = "Dynamic DNS: (Unknown Response)";
-                    log_error("Dynamic DNS: PAYLOAD: {$data}");
-                    $this->_debug($data);
-                }
-                break;
             case 'he-net-tunnelbroker':
                 /*
                 -ERROR: Missing parameter(s).
@@ -1122,23 +996,6 @@ class updatedns {
                 } else if (preg_match('/This tunnel is already associated with this IP address/i', $data)) {
                     $status = "Dynamic DNS: (Success) No Change In IP Address.";
                     $successful_update = true;
-                } else {
-                    $status = "Dynamic DNS: (Unknown Response)";
-                    log_error("Dynamic DNS: PAYLOAD: {$data}");
-                    $this->_debug($data);
-                }
-                break;
-            case 'selfhost':
-                if (preg_match('/notfqdn/i', $data)) {
-                    $status = "Dynamic DNS: (Error) Not A FQDN!";
-                } else if (preg_match('/nochg/i', $data)) {
-                    $status = "Dynamic DNS: (Success) No Change In IP Address";
-                    $successful_update = true;
-                } else if (preg_match('/good/i', $data)) {
-                    $status = "Dynamic DNS: (Success) IP Address Changed Successfully! (".$this->_dnsIP.")";
-                    $successful_update = true;
-                } else if (preg_match('/noauth/i', $data)) {
-                    $status = "Dynamic DNS: (Error) User Authorization Failed";
                 } else {
                     $status = "Dynamic DNS: (Unknown Response)";
                     log_error("Dynamic DNS: PAYLOAD: {$data}");
@@ -1185,23 +1042,6 @@ class updatedns {
                     log_error("Dynamic DNS ({$this->_dnsHost}): PAYLOAD: {$data}");
                 }
                 break;
-            case 'eurodns':
-                if (preg_match('/notfqdn/i', $data)) {
-                    $status = "Dynamic DNS: (Error) Not A FQDN!";
-                } else if (preg_match('/nochg/i', $data)) {
-                    $status = "Dynamic DNS: (Success) No Change In IP Address";
-                    $successful_update = true;
-                } else if (preg_match('/good/i', $data)) {
-                    $status = "Dynamic DNS: (Success) IP Address Changed Successfully! (".$this->_dnsIP.")";
-                    $successful_update = true;
-                } else if (preg_match('/badauth/i', $data)) {
-                    $status = "Dynamic DNS: (Error) User Authorization Failed";
-                } else {
-                    $status = "Dynamic DNS: (Unknown Response)";
-                    log_error("Dynamic DNS: PAYLOAD: {$data}");
-                    $this->_debug($data);
-                }
-                break;
             case 'gratisdns':
                 if (preg_match('/Forkerte værdier/i', $data)) {
                         $status = "Dynamic DNS: (Error) Wrong values - Update could not be completed.";
@@ -1230,26 +1070,48 @@ class updatedns {
                         $this->_debug($data);
                 }
                 break;
+            case '3322':
+            case 'citynetwork':
+            case 'dnsomatic':
+            case 'dyndns':
+            case 'dyndns-custom':
+            case 'dyndns-static':
+            case 'eurodns':
             case 'googledomains':
+            case 'he-net':
+            case 'he-net-v6':
+            case 'loopia':
+            case 'opendns':
+            case 'oray':
+            case 'ovh-dynhost':
+            case 'selfhost':
             case 'strato':
                 if (preg_match('/notfqdn/i', $data)) {
                     $status = "Dynamic DNS: (Error) Not a FQDN";
-                } else if (preg_match('/nochg/i', $data)) {
+                } elseif (preg_match('/nochg/i', $data)) {
                     $status = "Dynamic DNS: (Success) No change in IP address";
                     $successful_update = true;
-                } else if (preg_match('/good/i', $data)) {
-                    $status = "Dynamic DNS: (Success) IP address updated successfully";
+                } elseif (preg_match('/good/i', $data)) {
+                    $status = "Dynamic DNS: (Success) IP Address updated successfully ({$this->_dnsIP})";
                     $successful_update = true;
-                } else if (preg_match('/badauth/i', $data)) {
+                } elseif (preg_match('/badauth/i', $data)) {
                     $status = "Dynamic DNS: (Error) Authentication failed";
-                } else if (preg_match('/nohost/i', $data)) {
+                } elseif (preg_match("/badip/i", $data)) {
+                    $status = "Dynamic DNS: (Error) IP address provided is invalid";
+                } elseif (preg_match('/nohost/i', $data)) {
                     $status = "Dynamic DNS: (Error) Hostname does not exist or does not have dynamic DNS enabled";
-                } else if (preg_match('/badagent/i', $data)) {
+                } elseif (preg_match('/numhost/i', $data)) {
+                    $status = "Dynamic DNS: (Error) You may update up to 20 hosts only";
+                } elseif (preg_match('/dnserr/i', $data)) {
+                    $status = "Dynamic DNS: (Error) DNS error, stop updating for 30 minutes.";
+                } elseif (preg_match('/badagent/i', $data)) {
                     $status = "Dynamic DNS: (Error) Bad request";
-                } else if (preg_match('/abuse/i', $data)) {
+                } elseif (preg_match('/abuse/i', $data)) {
                     $status = "Dynamic DNS: (Error) Access has been blocked for abuse";
-                } else if (preg_match('/911/i', $data)) {
+                } elseif (preg_match('/911/i', $data)) {
                     $status = "Dynamic DNS: (Error) Server-side error or maintenance";
+                } elseif (preg_match('/yours/i', $data)) {
+                    $status = "Dynamic DNS: (Error) Specified hostname does not exist under this username";
                 } else {
                     $status = "Dynamic DNS: (Unknown Response)";
                     log_error("Dynamic DNS: PAYLOAD: {$data}");
