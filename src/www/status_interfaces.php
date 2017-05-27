@@ -64,8 +64,10 @@ include("head.inc");
           <section class="col-xs-12">
 <?php
             $mac_man = json_decode(configd_run("interface list macdb json"), true);
+            $pfctl_counters = json_decode(configd_run("filter list counters json"), true);
             foreach (get_configured_interface_with_descr(false, true) as $ifdescr => $ifname):
               $ifinfo = get_interface_info($ifdescr);
+              $ifpfcounters = $pfctl_counters[$ifinfo['if']];
               legacy_html_escape_form_data($ifinfo);
               $ifdescr = htmlspecialchars($ifdescr);
               $ifname = htmlspecialchars($ifname);
@@ -392,20 +394,20 @@ include("head.inc");
                     endif; ?>
                     <tr>
                       <td><?= gettext("In/out packets") ?></td>
-                      <td> <?= $ifinfo['inpkts'] ?> / <?= $ifinfo['outpkts'] ?>
-                          (<?= format_bytes($ifinfo['inbytes']);?> / <?=format_bytes($ifinfo['outbytes']);?> )
+                      <td> <?= $ifpfcounters['inpkts'] ?> / <?= $ifpfcounters['outpkts'] ?>
+                          (<?= format_bytes($ifpfcounters['inbytes']);?> / <?=format_bytes($ifpfcounters['outbytes']);?> )
                       </td>
                     </tr>
                     <tr>
                       <td><?= gettext("In/out packets (pass)") ?></td>
-                      <td> <?= $ifinfo['inpktspass'] ?> / <?= $ifinfo['outpktspass'] ?>
-                          (<?= format_bytes($ifinfo['inbytespass']) ?> / <?= format_bytes($ifinfo['outbytespass']) ?> )
+                      <td> <?= $ifpfcounters['inpktspass'] ?> / <?= $ifpfcounters['outpktspass'] ?>
+                          (<?= format_bytes($ifpfcounters['inbytespass']) ?> / <?= format_bytes($ifpfcounters['outbytespass']) ?> )
                       </td>
                     </tr>
                     <tr>
                       <td><?= gettext("In/out packets (block)") ?></td>
-                      <td> <?= $ifinfo['inpktsblock'] ?> / <?= $ifinfo['outpktsblock'] ?>
-                          (<?= format_bytes($ifinfo['inbytesblock']) ?> / <?= format_bytes($ifinfo['outbytesblock']) ?> )
+                      <td> <?= $ifpfcounters['inpktsblock'] ?> / <?= $ifpfcounters['outpktsblock'] ?>
+                          (<?= format_bytes($ifpfcounters['inbytesblock']) ?> / <?= format_bytes($ifpfcounters['outbytesblock']) ?> )
                       </td>
                     </tr>
 <?php
