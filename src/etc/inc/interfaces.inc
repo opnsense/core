@@ -3747,11 +3747,15 @@ function convert_real_interface_to_friendly_interface_name($interface = 'wan')
         return null;
     }
 
-    foreach (legacy_config_get_interfaces() as $if => $ifname) {
+    // search direct
+    foreach ($config['interfaces'] as $if => $ifname) {
         if ($if == $interface || $ifname['if'] == $interface) {
             return $if;
         }
+    }
 
+    // search related
+    foreach ($config['interfaces'] as $if => $ifname) {
         if (get_real_interface($if) == $interface) {
             return $if;
         }
@@ -3947,16 +3951,12 @@ function get_real_interface($interface = "wan", $family = "all", $realv6iface = 
             $wanif = "enc0";
             break;
         default:
-            // If a real interface was alread passed simply
-            // pass the real interface back.  This encourages
-            // the usage of this function in more cases so that
-            // we can combine logic for more flexibility.
-            if (does_interface_exist($interface, $flush)) {
-                $wanif = $interface;
-                break;
-            }
-
             if (empty($config['interfaces'][$interface])) {
+                // leftover from legacy code, it's not a very bright idea to use the same function call
+                // for both virtual as real interface names. does_interface_exist() is quite expensive.
+                if (does_interface_exist($interface, $flush)) {
+                    $wanif = $interface;
+                }
                 break;
             }
 
