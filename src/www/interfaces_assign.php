@@ -322,9 +322,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $interfaces = list_interfaces();
 legacy_html_escape_form_data($interfaces);
 $unused_interfaces= array();
+$all_interfaces = legacy_config_get_interfaces();
 foreach ($interfaces as $portname => $portinfo) {
     $portused = false;
-    foreach (legacy_config_get_interfaces() as $ifname => $ifdata) {
+    foreach ($all_interfaces as $ifname => $ifdata) {
         if ($ifdata['if'] == $portname) {
             $portused = true;
             break;
