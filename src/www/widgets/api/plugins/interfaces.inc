@@ -31,8 +31,9 @@
 function interfaces_api()
 {
     $result = array();
+    $ifsinfo = get_interfaces_info();
     foreach (get_configured_interface_with_descr() as $ifdescr => $ifname) {
-        $ifinfo = get_interface_info($ifdescr);
+        $ifinfo = $ifsinfo[$ifdescr];
         $interfaceItem = array();
         $interfaceItem['inpkts'] = $ifinfo['inpkts'];
         $interfaceItem['outpkts'] = $ifinfo['outpkts'];

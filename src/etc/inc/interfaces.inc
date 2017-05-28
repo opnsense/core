@@ -4621,211 +4621,175 @@ function get_failover_interface($interface, $family = "all")
 }
 
 //returns interface information
-function get_interface_info($ifdescr)
+function get_interfaces_info()
 {
     global $config;
-
-    $ifinfo = array();
-
-    if (empty($config['interfaces'][$ifdescr])) {
-        return;
-    }
-
-    $ifinfo['if'] = get_real_interface($ifdescr);
-
-    $chkif = $ifinfo['if'];
-    $ifinfotmp = legacy_get_interface_addresses($chkif);
-    $ifinfo['macaddr'] = $ifinfotmp['macaddr'];
-    $ifinfo['ipaddr'] = $ifinfotmp['ipaddr'];
-    $ifinfo['subnet'] = $ifinfotmp['subnet'];
-
+    $result = array();
+    $all_intf_details = legacy_interfaces_details();
     $ifup = legacy_interface_listget('up');
-    $ifinfo['status'] = (is_array($ifup) && in_array($chkif, $ifup)) ? 'up' : 'down';
+    $all_intf_stats = legacy_interface_stats();
+    foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifdescr => $ifcnf) {
+        $ifinfo = array();
+        $ifinfo['if'] = get_real_interface($ifdescr);
+        if (!empty($all_intf_details[$ifinfo['if']])) {
+            $ifinfo = array_merge($ifinfo, $all_intf_details[$ifinfo['if']]);
+        }
 
-    $ifinfo['linklocal'] = get_interface_linklocal($ifdescr);
-    $ifinfo['ipaddrv6'] = get_interface_ipv6($ifdescr);
-    $ifinfo['subnetv6'] = get_interface_subnetv6($ifdescr);
+        $ifinfo['status'] = (is_array($ifup) && in_array($ifinfo['if'], $ifup)) ? 'up' : 'down';
 
-    $ifinfotmp = legacy_interface_stats($chkif);
-    $ifinfo['inerrs'] = $ifinfotmp['input errors'];
-    $ifinfo['outerrs'] = $ifinfotmp['output errors'];
-    $ifinfo['collisions'] = $ifinfotmp['collisions'];
-
-    $ifconfiginfo = "";
-    $link_type = $config['interfaces'][$ifdescr]['ipaddr'];
-    switch ($link_type) {
-        /* DHCP? -> see if dhclient is up */
-        case "dhcp":
-            /* see if dhclient is up */
-            if (find_dhclient_process($ifinfo['if']) != 0) {
-                $ifinfo['dhcplink'] = "up";
-            } else {
-                $ifinfo['dhcplink'] = "down";
+        if (!empty($ifinfo['ipv6'])) {
+            foreach ($ifinfo['ipv6'] as $ipv6addr) {
+                if (!empty($ipv6addr['link-local'])) {
+                    $ifinfo['linklocal'] = $ipv6addr['ipaddr'];
+                } elseif (empty($ifinfo['ipaddrv6'])) {
+                    $ifinfo['ipaddrv6'] = $ipv6addr['ipaddr'];
+                    $ifinfo['subnetv6'] = $ipv6addr['subnetbits'];
+                }
             }
+        }
 
-            break;
-        /* PPPoE/PPTP/L2TP interface? -> get status from virtual interface */
-        case "pppoe":
-        case "pptp":
-        case "l2tp":
-            if ($ifinfo['status'] == "up") {
-                /* XXX get PPPoE link status for dial on demand */
-                $ifinfo["{$link_type}link"] = "up";
-            } else {
-                $ifinfo["{$link_type}link"] = "down";
-            }
-            break;
-        /* PPP interface? -> get uptime for this session and cumulative uptime from the persistent log file in conf */
-        case "ppp":
-            if ($ifinfo['status'] == "up") {
-                $ifinfo['ppplink'] = "up";
-            } else {
-                $ifinfo['ppplink'] = "down";
-            }
+        $ifinfotmp = $all_intf_stats[$ifinfo['if']];
+        $ifinfo['inerrs'] = $ifinfotmp['input errors'];
+        $ifinfo['outerrs'] = $ifinfotmp['output errors'];
+        $ifinfo['collisions'] = $ifinfotmp['collisions'];
 
-            if (empty($ifinfo['status'])) {
-                $ifinfo['status'] = "down";
-            }
+        $ifconfiginfo = "";
+        $link_type = $config['interfaces'][$ifdescr]['ipaddr'];
+        switch ($link_type) {
+            /* DHCP? -> see if dhclient is up */
+            case "dhcp":
+                /* see if dhclient is up */
+                if (find_dhclient_process($ifinfo['if']) != 0) {
+                    $ifinfo['dhcplink'] = "up";
+                } else {
+                    $ifinfo['dhcplink'] = "down";
+                }
 
-            if (isset($config['ppps']['ppp'])) {
-                foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
-                    if ($config['interfaces'][$ifdescr]['if'] == $ppp['if']) {
-                        break;
+                break;
+            /* PPPoE/PPTP/L2TP interface? -> get status from virtual interface */
+            case "pppoe":
+            case "pptp":
+            case "l2tp":
+                if ($ifinfo['status'] == "up") {
+                    /* XXX get PPPoE link status for dial on demand */
+                    $ifinfo["{$link_type}link"] = "up";
+                } else {
+                    $ifinfo["{$link_type}link"] = "down";
+                }
+                break;
+            /* PPP interface? -> get uptime for this session and cumulative uptime from the persistent log file in conf */
+            case "ppp":
+                if ($ifinfo['status'] == "up") {
+                    $ifinfo['ppplink'] = "up";
+                } else {
+                    $ifinfo['ppplink'] = "down";
+                }
+
+                if (empty($ifinfo['status'])) {
+                    $ifinfo['status'] = "down";
+                }
+
+                if (isset($config['ppps']['ppp'])) {
+                    foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
+                        if ($config['interfaces'][$ifdescr]['if'] == $ppp['if']) {
+                            break;
+                        }
                     }
                 }
-            }
-            $dev = $ppp['ports'];
-            if ($config['interfaces'][$ifdescr]['if'] != $ppp['if'] || empty($dev)) {
+                $dev = $ppp['ports'];
+                if ($config['interfaces'][$ifdescr]['if'] != $ppp['if'] || empty($dev)) {
+                    break;
+                }
+                if (!file_exists($dev)) {
+                    $ifinfo['nodevice'] = 1;
+                    $ifinfo['pppinfo'] = $dev . " " . gettext("device not present! Is the modem attached to the system?");
+                }
+
+                $usbmodemoutput = array();
+                exec("usbconfig", $usbmodemoutput);
+                $mondev = "/tmp/3gstats.{$ifdescr}";
+                if (file_exists($mondev)) {
+                    $cellstats = file($mondev);
+                    /* skip header */
+                    $a_cellstats = explode(",", $cellstats[1]);
+                    if (preg_match("/huawei/i", implode("\n", $usbmodemoutput))) {
+                        $ifinfo['cell_rssi'] = huawei_rssi_to_string($a_cellstats[1]);
+                        $ifinfo['cell_mode'] = huawei_mode_to_string($a_cellstats[2], $a_cellstats[3]);
+                        $ifinfo['cell_simstate'] = huawei_simstate_to_string($a_cellstats[10]);
+                        $ifinfo['cell_service'] = huawei_service_to_string(trim($a_cellstats[11]));
+                    }
+                    if (preg_match("/zte/i", implode("\n", $usbmodemoutput))) {
+                        $ifinfo['cell_rssi'] = zte_rssi_to_string($a_cellstats[1]);
+                        $ifinfo['cell_mode'] = zte_mode_to_string($a_cellstats[2], $a_cellstats[3]);
+                        $ifinfo['cell_simstate'] = zte_simstate_to_string($a_cellstats[10]);
+                        $ifinfo['cell_service'] = zte_service_to_string(trim($a_cellstats[11]));
+                    }
+                    $ifinfo['cell_upstream'] = $a_cellstats[4];
+                    $ifinfo['cell_downstream'] = trim($a_cellstats[5]);
+                    $ifinfo['cell_sent'] = $a_cellstats[6];
+                    $ifinfo['cell_received'] = trim($a_cellstats[7]);
+                    $ifinfo['cell_bwupstream'] = $a_cellstats[8];
+                    $ifinfo['cell_bwdownstream'] = trim($a_cellstats[9]);
+                }
+                // Calculate cumulative uptime for PPP link. Useful for connections that have per minute/hour contracts so you don't go over!
+                if (isset($ppp['uptime'])) {
+                    $ifinfo['ppp_uptime_accumulated'] = "(" . get_ppp_uptime($ifinfo['if']) . ")";
+                }
                 break;
-            }
-            if (!file_exists($dev)) {
-                $ifinfo['nodevice'] = 1;
-                $ifinfo['pppinfo'] = $dev . " " . gettext("device not present! Is the modem attached to the system?");
-            }
+            default:
+                break;
+        }
 
-            $usbmodemoutput = array();
-            exec("usbconfig", $usbmodemoutput);
-            $mondev = "/tmp/3gstats.{$ifdescr}";
-            if (file_exists($mondev)) {
-                $cellstats = file($mondev);
-                /* skip header */
-                $a_cellstats = explode(",", $cellstats[1]);
-                if (preg_match("/huawei/i", implode("\n", $usbmodemoutput))) {
-                    $ifinfo['cell_rssi'] = huawei_rssi_to_string($a_cellstats[1]);
-                    $ifinfo['cell_mode'] = huawei_mode_to_string($a_cellstats[2], $a_cellstats[3]);
-                    $ifinfo['cell_simstate'] = huawei_simstate_to_string($a_cellstats[10]);
-                    $ifinfo['cell_service'] = huawei_service_to_string(trim($a_cellstats[11]));
-                }
-                if (preg_match("/zte/i", implode("\n", $usbmodemoutput))) {
-                    $ifinfo['cell_rssi'] = zte_rssi_to_string($a_cellstats[1]);
-                    $ifinfo['cell_mode'] = zte_mode_to_string($a_cellstats[2], $a_cellstats[3]);
-                    $ifinfo['cell_simstate'] = zte_simstate_to_string($a_cellstats[10]);
-                    $ifinfo['cell_service'] = zte_service_to_string(trim($a_cellstats[11]));
-                }
-                $ifinfo['cell_upstream'] = $a_cellstats[4];
-                $ifinfo['cell_downstream'] = trim($a_cellstats[5]);
-                $ifinfo['cell_sent'] = $a_cellstats[6];
-                $ifinfo['cell_received'] = trim($a_cellstats[7]);
-                $ifinfo['cell_bwupstream'] = $a_cellstats[8];
-                $ifinfo['cell_bwdownstream'] = trim($a_cellstats[9]);
+        if (file_exists("/var/run/{$link_type}_{$ifdescr}.pid")) {
+            $sec = trim(`/usr/local/sbin/ppp-uptime.sh {$ifinfo['if']}`);
+            $ifinfo['ppp_uptime'] = convert_seconds_to_hms($sec);
+        }
+
+        if ($ifinfo['status'] == "up") {
+            $wifconfiginfo = array();
+            if (is_interface_wireless($ifdescr)) {
+                exec("/sbin/ifconfig {$ifinfo['if']} list sta", $wifconfiginfo);
+                array_shift($wifconfiginfo);
             }
-            // Calculate cumulative uptime for PPP link. Useful for connections that have per minute/hour contracts so you don't go over!
-            if (isset($ppp['uptime'])) {
-                $ifinfo['ppp_uptime_accumulated'] = "(" . get_ppp_uptime($ifinfo['if']) . ")";
+            foreach ($wifconfiginfo as $ici) {
+                $elements = preg_split("/[ ]+/i", $ici);
+                if ($elements[0] != "") {
+                    $ifinfo['bssid'] = $elements[0];
+                }
+                if ($elements[3] != "") {
+                    $ifinfo['rate'] = $elements[3];
+                }
+                if ($elements[4] != "") {
+                    $ifinfo['rssi'] = $elements[4];
+                }
+
             }
-            break;
-        default:
-            break;
+            /* lookup the gateway */
+            if (interface_has_gateway($ifdescr)) {
+                $ifinfo['gateway'] = get_interface_gateway($ifdescr);
+                $ifinfo['gatewayv6'] = get_interface_gateway_v6($ifdescr);
+            }
+        }
+
+        $bridge = "";
+        $bridge = link_interface_to_bridge($ifdescr);
+        if ($bridge) {
+            $bridge_text = `/sbin/ifconfig {$bridge}`;
+            if (stristr($bridge_text, "blocking") <> false) {
+                $ifinfo['bridge'] = "<b><font color='red'>" . gettext("blocking") . "</font></b> - " . gettext("check for ethernet loops");
+                $ifinfo['bridgeint'] = $bridge;
+            } elseif (stristr($bridge_text, "learning") <> false) {
+                $ifinfo['bridge'] = gettext("learning");
+                $ifinfo['bridgeint'] = $bridge;
+            } elseif (stristr($bridge_text, "forwarding") <> false) {
+                $ifinfo['bridge'] = gettext("forwarding");
+                $ifinfo['bridgeint'] = $bridge;
+            }
+        }
+        $result[$ifdescr] = $ifinfo;
     }
 
-    if (file_exists("/var/run/{$link_type}_{$ifdescr}.pid")) {
-        $sec = trim(`/usr/local/sbin/ppp-uptime.sh {$ifinfo['if']}`);
-        $ifinfo['ppp_uptime'] = convert_seconds_to_hms($sec);
-    }
-
-    if ($ifinfo['status'] == "up") {
-        /* try to determine media with ifconfig */
-        unset($ifconfiginfo);
-        exec("/sbin/ifconfig " . $ifinfo['if'], $ifconfiginfo);
-        $wifconfiginfo = array();
-        if (is_interface_wireless($ifdescr)) {
-            exec("/sbin/ifconfig {$ifinfo['if']} list sta", $wifconfiginfo);
-            array_shift($wifconfiginfo);
-        }
-        $matches = "";
-        foreach ($ifconfiginfo as $ici) {
-            /* don't list media/speed for wireless cards, as it always
-               displays 2 Mbps even though clients can connect at 11 Mbps */
-            if (preg_match("/media: .*? \((.*?)\)/", $ici, $matches)) {
-                $ifinfo['media'] = $matches[1];
-            } elseif (preg_match("/media: Ethernet (.*)/", $ici, $matches)) {
-                $ifinfo['media'] = $matches[1];
-            } elseif (preg_match("/media: IEEE 802.11 Wireless Ethernet (.*)/", $ici, $matches)) {
-                $ifinfo['media'] = $matches[1];
-            }
-
-            if (preg_match("/status: (.*)$/", $ici, $matches)) {
-                if ($matches[1] != 'active') {
-                    $ifinfo['status'] = $matches[1];
-                }
-                if ($ifinfo['status'] == 'running') {
-                    $ifinfo['status'] = 'up';
-                }
-            }
-            if (preg_match("/channel (\S*)/", $ici, $matches)) {
-                $ifinfo['channel'] = $matches[1];
-            }
-            if (preg_match("/ssid (\".*?\"|\S*)/", $ici, $matches)) {
-                if ($matches[1][0] == '"') {
-                    $ifinfo['ssid'] = substr($matches[1], 1, -1);
-                } else {
-                    $ifinfo['ssid'] = $matches[1];
-                }
-            }
-            if (preg_match("/laggproto (.*)$/", $ici, $matches)) {
-                $ifinfo['laggproto'] = $matches[1];
-            }
-            if (preg_match("/laggport: (.*)$/", $ici, $matches)) {
-                $ifinfo['laggport'][] = $matches[1];
-            }
-        }
-        foreach ($wifconfiginfo as $ici) {
-            $elements = preg_split("/[ ]+/i", $ici);
-            if ($elements[0] != "") {
-                $ifinfo['bssid'] = $elements[0];
-            }
-            if ($elements[3] != "") {
-                $ifinfo['rate'] = $elements[3];
-            }
-            if ($elements[4] != "") {
-                $ifinfo['rssi'] = $elements[4];
-            }
-
-        }
-        /* lookup the gateway */
-        if (interface_has_gateway($ifdescr)) {
-            $ifinfo['gateway'] = get_interface_gateway($ifdescr);
-            $ifinfo['gatewayv6'] = get_interface_gateway_v6($ifdescr);
-        }
-    }
-
-    $bridge = "";
-    $bridge = link_interface_to_bridge($ifdescr);
-    if ($bridge) {
-        $bridge_text = `/sbin/ifconfig {$bridge}`;
-        if (stristr($bridge_text, "blocking") <> false) {
-            $ifinfo['bridge'] = "<b><font color='red'>" . gettext("blocking") . "</font></b> - " . gettext("check for ethernet loops");
-            $ifinfo['bridgeint'] = $bridge;
-        } elseif (stristr($bridge_text, "learning") <> false) {
-            $ifinfo['bridge'] = gettext("learning");
-            $ifinfo['bridgeint'] = $bridge;
-        } elseif (stristr($bridge_text, "forwarding") <> false) {
-            $ifinfo['bridge'] = gettext("forwarding");
-            $ifinfo['bridgeint'] = $bridge;
-        }
-    }
-
-    return $ifinfo;
+    return $result;
 }
 
 function convert_seconds_to_hms($sec)

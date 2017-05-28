@@ -65,8 +65,9 @@ include("head.inc");
 <?php
             $mac_man = json_decode(configd_run("interface list macdb json"), true);
             $pfctl_counters = json_decode(configd_run("filter list counters json"), true);
+            $ifsinfo = get_interfaces_info();
             foreach (get_configured_interface_with_descr(false, true) as $ifdescr => $ifname):
-              $ifinfo = get_interface_info($ifdescr);
+              $ifinfo = $ifsinfo[$ifdescr];
               $ifpfcounters = $pfctl_counters[$ifinfo['if']];
               legacy_html_escape_form_data($ifinfo);
               $ifdescr = htmlspecialchars($ifdescr);
