@@ -65,6 +65,7 @@ include("head.inc");
 <?php
             $mac_man = json_decode(configd_run("interface list macdb json"), true);
             $pfctl_counters = json_decode(configd_run("filter list counters json"), true);
+            $vmstat_interupts = json_decode(configd_run("system list interrupts json"), true);
             $ifsinfo = get_interfaces_info();
             foreach (get_configured_interface_with_descr(false, true) as $ifdescr => $ifname):
               $ifinfo = $ifsinfo[$ifdescr];
@@ -436,31 +437,21 @@ include("head.inc");
                     </tr>
 <?php
                   endif;
-                  if(file_exists("/usr/bin/vmstat")):
-                    $real_interface = "";
-                    $interrupt_total = "";
-                    $interrupt_sec = "";
-                    $real_interface = $ifinfo['if'];
-                    $interrupt_total = `vmstat -i | grep $real_interface | awk '{ print $3 }'`;
-                    $interrupt_sec = `vmstat -i | grep $real_interface | awk '{ print $4 }'`;
-                    if(strstr($interrupt_total, "hci")) {
-                      $interrupt_total = `vmstat -i | grep $real_interface | awk '{ print $4 }'`;
-                      $interrupt_sec = `vmstat -i | grep $real_interface | awk '{ print $5 }'`;
-                    }
-                    unset($interrupt_total); // XXX: FIX ME!  Need a regex and parse correct data 100% of the time.
-                    if($interrupt_total): ?>
+                  if (!empty($vmstat_interupts['interrupt_map'][$ifinfo['if']])):
+                      $intrpt = $vmstat_interupts['interrupt_map'][$ifinfo['if']];
+                      $interrupt_total = $vmstat_interupts['interrupts'][$intrpt]['total'];
+                      $interrupt_rate = $vmstat_interupts['interrupts'][$intrpt]['rate'];?>
                     <tr>
                       <td><?= gettext("Interrupts per Second") ?></td>
                       <td>
                         <?php
                           printf(gettext("%s total"),$interrupt_total);
                           echo "<br />";
-                          printf(gettext("%s rate"),$interrupt_sec);
+                          printf(gettext("%s rate"),$interrupt_rate);
                         ?>
                       </td>
                     </tr>
 <?php
-                    endif;
                   endif; ?>
                   </tbody>
                 </table>
