@@ -273,8 +273,26 @@ function legacy_interfaces_details($intf = null)
                     return $a['link-local'] - $b['link-local'];
                 });
             }
+        } elseif (preg_match("/media: (.*)/", $line, $matches)) {
+            // media, when link is between parenthesis grep only the link part
+            $result[$current_interface]['media'] = $matches[1];
+            if (preg_match("/media: .*? \((.*?)\)/", $line, $matches)) {
+                $result[$current_interface]['media'] = $matches[1];
+            }
+        } elseif (preg_match("/status: (.*)$/", $line, $matches)) {
+            $result[$current_interface]['status'] = $matches[1];
+        } elseif (preg_match("/channel (\S*)/", $line, $matches)) {
+            $result[$current_interface]['channel'] = $matches[1];
+        } elseif (preg_match("/ssid (\".*?\"|\S*)/", $line, $matches)) {
+            $result[$current_interface]['ssid'] = $matches[1];
+        } elseif (preg_match("/laggproto (.*)$/", $line, $matches)) {
+            $result[$current_interface]['laggproto'] = $matches[1];
+        } elseif (preg_match("/laggport: (.*)$/", $line, $matches)) {
+            if (empty($result[$current_interface]['laggport'])) {
+                $result[$current_interface]['laggport'] = array();
+            }
+            $result[$current_interface]['laggport'][] = $matches[1];
         }
-
     }
 
     return $result;
