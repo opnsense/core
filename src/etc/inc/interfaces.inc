@@ -4649,6 +4649,10 @@ function get_interfaces_info()
                 }
             }
         }
+        if (!empty($ifinfo['ipv4'])) {
+            $ifinfo['ipaddr'] = $ifinfo['ipv4'][0]['ipaddr'];
+            $ifinfo['subnet'] = $ifinfo['ipv4'][0]['subnetbits'];
+        }
 
         $ifinfotmp = $all_intf_stats[$ifinfo['if']];
         $ifinfo['inerrs'] = $ifinfotmp['input errors'];
