@@ -438,17 +438,30 @@ include("head.inc");
 <?php
                   endif;
                   if (!empty($vmstat_interupts['interrupt_map'][$ifinfo['if']])):
-                      $intrpt = $vmstat_interupts['interrupt_map'][$ifinfo['if']];
-                      $interrupt_total = $vmstat_interupts['interrupts'][$intrpt]['total'];
-                      $interrupt_rate = $vmstat_interupts['interrupts'][$intrpt]['rate'];?>
+                      $intrpts = $vmstat_interupts['interrupt_map'][$ifinfo['if']];?>
                     <tr>
-                      <td><?= gettext("Interrupts per Second") ?></td>
+                      <td><?= gettext("Interrupts") ?></td>
                       <td>
-                        <?php
-                          printf(gettext("%s total"),$interrupt_total);
-                          echo "<br />";
-                          printf(gettext("%s rate"),$interrupt_rate);
-                        ?>
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th><?=gettext("irq");?></th>
+                              <th><?=gettext("device");?></th>
+                              <th><?=gettext("total");?></th>
+                              <th><?=gettext("rate");?></th>
+                            </tr>
+                          </thead>
+<?php
+                        foreach ($intrpts as $intrpt):?>
+                        <tr>
+                          <td><?=$intrpt;?></td>
+                          <td><?=implode(' ', $vmstat_interupts['interrupts'][$intrpt]['devices']);?></td>
+                          <td><?=$vmstat_interupts['interrupts'][$intrpt]['total'];?></td>
+                          <td><?=$vmstat_interupts['interrupts'][$intrpt]['rate'];?></td>
+                        </tr>
+<?php
+                        endforeach; ?>
+                        </table>
                       </td>
                     </tr>
 <?php

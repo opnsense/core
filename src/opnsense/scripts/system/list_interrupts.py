@@ -40,18 +40,22 @@ if __name__ == '__main__':
         subprocess.call(['/usr/bin/vmstat', '-i'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
         output_stream.seek(0)
         data = output_stream.read().strip()
+
         intf = None
         interrupts = dict()
         interrupt_map = dict()
         for line in data.split('\n'):
             if line.find(':') > -1:
                 intrp = line.split(':')[0].strip()
-                parts = line.split(':')[1].split()
+                parts = ':'.join(line.split(':')[1:]).split()
                 interrupts[intrp] = {'devices': [], 'total': None, 'rate': None}
                 for part in parts:
                     if not part.isdigit():
                         interrupts[intrp]['devices'].append(part)
-                        interrupt_map[part] = intrp
+                        devnm = part.split(':')[0]
+                        if devnm not in interrupt_map:
+                            interrupt_map[devnm] = list()
+                        interrupt_map[devnm].append(intrp)
                     elif interrupts[intrp]['total'] is None:
                         interrupts[intrp]['total'] = int(part)
                     else:
