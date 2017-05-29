@@ -4631,12 +4631,12 @@ function get_interfaces_info()
     foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifdescr => $ifcnf) {
         $ifinfo = array();
         $ifinfo['if'] = get_real_interface($ifdescr);
-        $ifstatus = (is_array($ifup) && in_array($ifinfo['if'], $ifup)) ? 'up' : 'down';
+        $ifinfo['status'] = (is_array($ifup) && in_array($ifinfo['if'], $ifup)) ? 'up' : 'down';
         if (!empty($all_intf_details[$ifinfo['if']])) {
-            $ifinfo = array_merge($ifinfo, $all_intf_details[$ifinfo['if']]);
-            if (in_array($ifinfo['status'], array('active', 'running'))) {
-                $ifinfo['status'] = $ifstatus;
+            if (in_array($all_intf_details[$ifinfo['if']]['status'], array('active', 'running'))) {
+                $all_intf_details[$ifinfo['if']]['status'] = $ifinfo['status'];
             }
+            $ifinfo = array_merge($ifinfo, $all_intf_details[$ifinfo['if']]);
         }
 
         if (!empty($ifinfo['ipv6'])) {
