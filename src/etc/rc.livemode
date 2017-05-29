@@ -1,0 +1,64 @@
+#!/usr/local/bin/php
+<?php
+
+/*
+ * Copyright (c) 2016-2017 Franco Fichtner <franco@opnsense.org>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+require_once('config.inc');
+require_once('auth.inc');
+require_once('util.inc');
+
+if (is_install_media()) {
+    /*
+     * Installer mode requires setting up an extra user and
+     * we will protect it with root's password.  We can only
+     * do this if user does not exist, though.
+     */
+    $root = null;
+
+    if (isset($config['system']['user'])) {
+        foreach ($config['system']['user'] as $user) {
+            if ($user['name'] == 'installer') {
+                $root = null;
+                break;
+            }
+            if ($user['uid'] == 0) {
+                $root = $user;
+            }
+        }
+    }
+
+    if ($root) {
+        $root['shell'] = '/usr/local/etc/rc.installer';
+        $root['name'] = 'installer';
+        local_user_set($root, true);
+
+        echo "\n";
+        echo "Welcome!  Both `root' and `installer' users are availabe for system\n";
+        echo "setup or invoking the installer, respectively.  The predefined root\n";
+        echo "password works for both accounts.  Remote login via SSH is possible.\n\n";
+    }
+}

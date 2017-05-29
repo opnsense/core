@@ -248,5 +248,6 @@ rm /var/run/booting
 /usr/local/etc/rc.syshook start
 
 /usr/local/etc/rc.initial.banner
+/usr/local/etc/rc.livemode
 
 exit 0

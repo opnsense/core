@@ -109,6 +109,7 @@
 /usr/local/etc/rc.ipfw.postload
 /usr/local/etc/rc.kill_states
 /usr/local/etc/rc.linkup
+/usr/local/etc/rc.livemode
 /usr/local/etc/rc.loader
 /usr/local/etc/rc.loader.d/00-banner
 /usr/local/etc/rc.loader.d/20-brand
