@@ -33,6 +33,7 @@ function filter_core_bootstrap($fw)
     $filter_rule_defaults = array();
     $filter_rule_defaults['pass'] = array("type" => "pass", "log" => !isset($config['syslog']['nologdefaultpass']));
     $filter_rule_defaults['block'] = array("type" => "block", "log" => !isset($config['syslog']['nologdefaultblock']));
+    $filter_rule_defaults['disablereplyto'] = 1 ; // don't generate "reply-to" tags on internal rules by default
 
     // setup system filter rules
     filter_core_rules_system($fw, $filter_rule_defaults);

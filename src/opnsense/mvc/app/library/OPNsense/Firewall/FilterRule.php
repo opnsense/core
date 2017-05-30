@@ -47,6 +47,7 @@ class FilterRule
         'quick' => 'parseBool,quick',
         'interface' => 'parseInterface',
         'gateway' => 'parseRoute',
+        'reply' =>  'parsePlain',
         'ipprotocol' => 'parsePlain',
         'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
         'from' => 'parsePlain,from {,}',
@@ -252,6 +253,37 @@ class FilterRule
     }
 
     /**
+     * add reply-to tag when applicable
+     * @param array $rule rule
+     */
+    private function convertReplyTo(&$rule)
+    {
+        if (!isset($rule['disablereplyto'])) {
+            $proto = $rule['ipprotocol'];
+            if (!empty($this->interfaceMapping[$rule['interface']]['if']) && empty($rule['gateway'])) {
+                $if = $this->interfaceMapping[$rule['interface']]['if'];
+                switch ($proto) {
+                    case "inet6":
+                        if (!empty($this->interfaceMapping[$rule['interface']]['gatewayv6'])
+                           && Util::isIpAddress($this->interfaceMapping[$rule['interface']]['gatewayv6'])) {
+                            $gw = $this->interfaceMapping[$rule['interface']]['gatewayv6'];
+                            $rule['reply'] = "reply-to ( {$if} {$gw} ) ";
+                        }
+                        break;
+                    default:
+                        if (!empty($this->interfaceMapping[$rule['interface']]['gateway'])
+                           && Util::isIpAddress($this->interfaceMapping[$rule['interface']]['gateway'])) {
+                            $gw = $this->interfaceMapping[$rule['interface']]['gateway'];
+                            $rule['reply'] = "reply-to ( {$if} {$gw} ) ";
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
+
+    /**
      * preprocess internal rule data to detail level of actual ruleset
      * handles shortcuts, like inet46 and multiple interfaces
      * @return array
@@ -274,6 +306,7 @@ class FilterRule
                 $tmp['interface'] = $interface;
                 $tmp['ipprotocol'] = $ipproto;
                 $this->convertAddress($tmp);
+                $this->convertReplyTo($tmp);
                 $tmp['from'] = empty($tmp['from']) ? "any" : $tmp['from'];
                 $tmp['to'] = empty($tmp['to']) ? "any" : $tmp['to'];
                 // disable rule when interface not found
