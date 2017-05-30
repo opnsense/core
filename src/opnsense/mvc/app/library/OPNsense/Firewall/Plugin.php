@@ -41,12 +41,16 @@ class Plugin
     private $filterRules = array();
     private $interfaceMapping = array();
     private $gatewayMapping = array();
+    private $systemDefaults = array();
 
     /**
      * init firewall plugin component
      */
     public function __construct()
     {
+        if (!empty(Config::getInstance()->object()->system->disablereplyto)) {
+            $this->systemDefaults['disablereplyto'] = true;
+        }
     }
 
     /**
@@ -154,6 +158,9 @@ class Plugin
      */
     public function registerFilterRule($prio, $conf, $defaults = null)
     {
+        if (!empty($this->systemDefaults)) {
+            $conf = array_merge($this->systemDefaults, $conf);
+        }
         if ($defaults != null) {
             $conf = array_merge($defaults, $conf);
         }
