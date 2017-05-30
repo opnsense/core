@@ -717,38 +717,41 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 
 function fixup_default_gateway($gateways_status, $gateways_arr)
 {
-    global $config;
-    /*
-     * NOTE: The code below is meant to replace the default gateway when it goes down.
-     *  This facilitates services running on OPNsense itself and are not handled by a PBR to continue working.
-     */
     foreach (array("inet", "inet6") as $ipprotocol) {
-        $upgw = "";
-        $dfltgwup = false;
         $dfltgwname = null;
+        $count = 0;
+
         foreach ($gateways_arr as $gwname => $gwsttng) {
-            if ($gwsttng['ipprotocol'] == $ipprotocol) {
-                if (isset($gwsttng['defaultgw'])) {
-                    $dfltgwname = $gwname;
-                    if (isset($gwsttng['monitor_disable']) || !stristr($gateways_status[$gwname]['status'], "down")) {
-                        $dfltgwup = true;
-                    }
-                }
-                /* Keep a record of the last up gateway */
-                /* XXX: Blacklist lan for now since it might cause issues to those who have a gateway set for it */
-                if (empty($upgw) && $gwsttng[$gwname]['friendlyiface'] != "lan" &&
-                  (isset($gwsttng['monitor_disable']) || !stristr($gateways_status[$gwname]['status'], "down"))) {
-                    $upgw = $gwname;
-                    if (!$dfltgwup) {
-                        break;
-                    }
-                }
+            if (isset($gwsttng['disabled'])) {
+                /* does not apply */
+                continue;
+            }
+            if ($gwsttng['ipprotocol'] !== $ipprotocol) {
+                /* wrong address family */
+                continue;
+            }
+            if (!isset($gwsttng['monitoring_disabled']) && $gateways_status[$gwname]['status'] === 'down') {
+                /* cannot use down gateway */
+                continue;
+            }
+
+            /* can use this gateway */
+            $dfltgwname = $gwname;
+            $count += 1;
+
+            if (isset($gwsttng['defaultgw'])) {
+                /* if we found the default to be working use it right away */
+                break;
             }
         }
-        if (!$dfltgwup && !empty($upgw)) {
-            // switch gateway
-            $dfltgwname = $upgw;
+
+        if (empty($dfltgwname)) {
+            if ($count) {
+                log_error("Cannot switch while all $count $ipprotocol gateways are down");
+            }
+            continue;
         }
+
         if ($gateways_arr[$dfltgwname]['gateway'] == "dynamic") {
             if ($ipprotocol == 'inet') {
                 $gwip = get_interface_gateway($gateways_arr[$dfltgwname]['friendlyiface']);
@@ -758,14 +761,29 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
         } else {
             $gwip = $gateways_arr[$dfltgwname]['gateway'];
         }
+
+        if (!is_ipaddr($gwip)) {
+            log_error("Cannot switch gateway $dfltgwname with undefined address");
+            continue;
+        }
+
+        $defaultif = get_real_interface($gateways_arr[$dfltgwname]['friendlyiface']);
+        if (is_linklocal($gwip)) {
+            /* correct match in IPv6 case */
+            $gwip .= "%{$defaultif}";
+        }
+
         $tmpcmd = "/sbin/route -n get -{$ipprotocol} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
         $defaultgw = trim(exec($tmpcmd), " \n");
-        if (!$dfltgwup) {
-            log_error("Default gateway down setting {$dfltgwname} as default!");
-        }
-        if ($defaultgw != $gwip && is_ipaddr($gwip)) {
-            mwexec("/sbin/route delete -{$ipprotocol} default");
-            mwexec("/sbin/route add -{$ipprotocol} default {$gwip}");
+        if ($defaultgw != $gwip) {
+            log_error("Switching default gateway to $dfltgwname ($gwip)");
+
+            mwexecf('/sbin/route delete -%s default', array($ipprotocol), true);
+            if ($gateways_arr[$dfltgwname]['fargw']) {
+                mwexecf('/sbin/route delete -%s %s -interface %s', array($ipprotocol, $gwip, $defaultif), true);
+                mwexecf('/sbin/route add -%s %s -interface %s', array($ipprotocol, $gwip, $defaultif));
+            }
+            mwexecf('/sbin/route add -%s default %s', array($ipprotocol, $gwip));
         }
     }
 }
