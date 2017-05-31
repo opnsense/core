@@ -689,6 +689,10 @@ function filter_generate_scrubing(&$FilterIflist)
                 $scrub_rule_out .= !empty($scrub_rule['min-ttl']) ? " min-ttl " . $scrub_rule['min-ttl'] .  " " : "";
                 $scrub_rule_out .= !empty($scrub_rule['set-tos']) ? " set-tos " . $scrub_rule['set-tos'] .  " " : "";
                 $scrub_rule_out .= "\n";
+                if (count($interfaces) == 0) {
+                    # unknown interface, skip rule
+                    $scrubrules .= "#";
+                }
                 $scrubrules .= $scrub_rule_out;
             }
         }
