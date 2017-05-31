@@ -57,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
     $pconfig['kill_states'] = isset($config['system']['kill_states']);
     $pconfig['skip_rules_gw_down'] = isset($config['system']['skip_rules_gw_down']);
+    $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
     $pconfig['lb_use_sticky'] = isset($config['system']['lb_use_sticky']);
     $pconfig['pf_share_forward'] = isset($config['system']['pf_share_forward']);
     $pconfig['srctrack'] = !empty($config['system']['srctrack']) ? $config['system']['srctrack'] : null;
@@ -202,6 +203,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['skip_rules_gw_down'] = true;
         } elseif (isset($config['system']['skip_rules_gw_down'])) {
             unset($config['system']['skip_rules_gw_down']);
+        }
+
+        if (!empty($pconfig['gw_switch_default'])) {
+            $config['system']['gw_switch_default'] = true;
+        } elseif (isset($config['system']['gw_switch_default'])) {
+            unset($config['system']['gw_switch_default']);
         }
 
         write_config();
@@ -352,6 +359,16 @@ include("head.inc");
                       <?=gettext("By default, when a rule has a specific gateway set, and this gateway is down, ".
                                           "rule is created and traffic is sent to default gateway.This option overrides that behavior ".
                                           "and the rule is not created when gateway is down"); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_gw_switch_default" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Gateway switching') ?></td>
+                  <td>
+                    <input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?= !empty($pconfig['gw_switch_default']) ? 'checked="checked"' : '' ?> />
+                    <strong><?=gettext("Allow default gateway switching"); ?></strong><br />
+                    <div class="hidden" for="help_for_gw_switch_default">
+                      <?= gettext('If the link where the default gateway resides fails switch the default gateway to another available one. This feature has been deprecated.') ?>
                     </div>
                   </td>
                 </tr>
