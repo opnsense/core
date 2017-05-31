@@ -535,6 +535,7 @@ function system_routing_configure($interface = '', $verbose = false)
             }
         }
     }
+
     if (!$foundgw) {
         $defaultif = get_real_interface("wan");
         $interfacegw = "wan";
@@ -631,7 +632,7 @@ function system_staticroutes_configure($interface = '')
 
             $interfacegw = $gateway['interface'];
             $gatewayip = $gateway['gateway'];
-            $fargw = isset($gateway['fargw']);
+            $fargw = isset($gateway['fargw']) && $gateway['ipprotocol'] != 'inet6';
             $blackhole = '';
 
             switch ($rtent['gateway']) {
