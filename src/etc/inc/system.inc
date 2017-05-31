@@ -442,6 +442,36 @@ function system_host_route($host, $gateway, $delete = true, $add = true)
     }
 }
 
+function system_default_route($gateway, $interface = null, $delete = true, $add = true)
+{
+    if (is_ipaddrv4($gateway)) {
+        $family = 'inet';
+    } elseif (is_ipaddrv6($gateway)) {
+        $family = 'inet6';
+        if (is_linklocal($gateway)) {
+            $gatewayipv6 .= "%{$interface}";
+        }
+        /* IPv6 does not support far gateway notion */
+        $interface = null;
+    } else {
+        return;
+    }
+
+    if ($delete) {
+        mwexecf('/sbin/route delete -%s default', array($family), true);
+        if (!empty($interface)) {
+            mwexecf('/sbin/route delete -%s %s -interface %s', array($family, $gateway, $interface), true);
+        }
+    }
+
+    if ($add) {
+        if (!empty($interface)) {
+            mwexecf('/sbin/route add -%s %s -interface %s', array($family, $gateway, $interface));
+        }
+        mwexecf('/sbin/route add -%s default %s', array($family, $gateway));
+    }
+}
+
 function system_routing_configure($interface = '', $verbose = false)
 {
     global $config;
@@ -489,7 +519,6 @@ function system_routing_configure($interface = '', $verbose = false)
                     if ($gateway['gateway'] == "dynamic") {
                         $gateway['gateway'] = get_interface_gateway_v6($gateway['interface']);
                     }
-                    $fargw = isset($gateway['fargw']);
                     $gatewayipv6 = $gateway['gateway'];
                     $interfacegwv6 = $gateway['interface'];
                     if (!empty($gateway['interface'])) {
@@ -523,27 +552,14 @@ function system_routing_configure($interface = '', $verbose = false)
         ;
     elseif (is_ipaddrv4($gatewayip)) {
         log_error("ROUTING: setting IPv4 default route to {$gatewayip}");
-        mwexecf('/sbin/route delete -inet %s', 'default', true);
-        if ($fargw) {
-            mwexecf('/sbin/route delete -inet %s -interface %s', array($gatewayip, $defaultif), true);
-            mwexecf('/sbin/route add -inet %s -interface %s', array($gatewayip, $defaultif));
-        }
-        mwexecf('/sbin/route add -inet %s %s', array('default', $gatewayip));
+        system_default_route($gatewayip, $fargw ? $defaultif : null);
     }
 
     if (!empty($interface) && $interface != $interfacegwv6)
       ;
     elseif (is_ipaddrv6($gatewayipv6)) {
-        if (is_linklocal($gatewayipv6)) {
-            $gatewayipv6 .= "%{$defaultifv6}";
-        }
         log_error("ROUTING: setting IPv6 default route to {$gatewayipv6}");
-        mwexecf('/sbin/route delete -inet6 %s %s', array('default', $gatewayipv6), true);
-        if ($fargw) {
-            mwexecf('/sbin/route delete -inet6 %s -interface %s', array($gatewayipv6, $defaultifv6), true);
-            mwexecf('/sbin/route add -inet6 %s -interface %s', array($gatewayipv6, $defaultifv6));
-        }
-        mwexecf('/sbin/route add -inet6 %s %s', array('default', $gatewayipv6));
+        system_default_route($gatewayip, $defaultifv6);
     }
 
     system_staticroutes_configure($interface);
