@@ -31,9 +31,16 @@ function filter_core_bootstrap($fw)
     global $config;
     // set defaults
     $filter_rule_defaults = array();
-    $filter_rule_defaults['pass'] = array("type" => "pass", "log" => !isset($config['syslog']['nologdefaultpass']));
-    $filter_rule_defaults['block'] = array("type" => "block", "log" => !isset($config['syslog']['nologdefaultblock']));
-    $filter_rule_defaults['disablereplyto'] = 1 ; // don't generate "reply-to" tags on internal rules by default
+    $filter_rule_defaults['pass'] = array(
+      "type" => "pass",
+      "log" => !isset($config['syslog']['nologdefaultpass']),
+      "disablereplyto" => 1 // don't generate "reply-to" tags on internal rules by default
+    );
+    $filter_rule_defaults['block'] = array(
+      "type" => "block",
+      "log" => !isset($config['syslog']['nologdefaultblock']),
+      "disablereplyto" => 1 // don't generate "reply-to" tags on internal rules by default
+    );
 
     // setup system filter rules
     filter_core_rules_system($fw, $filter_rule_defaults);
@@ -145,9 +152,10 @@ function filter_core_rules_system($fw, $defaults)
     $fw->registerFilterRule(1,array('from' => '<virusprot>', 'label' => 'virusprot overload table'),$defaults['block']);
 
     // block bogons and private nets
-    $bogontmpl = array('type' => 'block', 'log' => !isset($config['syslog']['nologbogons']));
+    $bogontmpl = array('type' => 'block', 'log' => !isset($config['syslog']['nologbogons']), 'disablereplyto' => 1);
     $privtmpl = array('type' => 'block', 'log' => !isset($config['syslog']['nologprivatenets']),
-      'from' => '10.0.0.0/8,127.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,fc00::/7');
+      'from' => '10.0.0.0/8,127.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,fc00::/7',
+      'disablereplyto' => 1);
     foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
         $fw->registerFilterRule(5,
           array('from' => "<bogons>", 'direction' => 'in', 'interface' => $intf,
