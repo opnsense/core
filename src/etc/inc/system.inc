@@ -449,7 +449,7 @@ function system_default_route($gateway, $interface = null, $delete = true, $add 
     } elseif (is_ipaddrv6($gateway)) {
         $family = 'inet6';
         if (is_linklocal($gateway)) {
-            $gatewayipv6 .= "%{$interface}";
+            $gateway .= "%{$interface}";
         }
         /* IPv6 does not support far gateway notion */
         $interface = null;
@@ -559,7 +559,7 @@ function system_routing_configure($interface = '', $verbose = false)
       ;
     elseif (is_ipaddrv6($gatewayipv6)) {
         log_error("ROUTING: setting IPv6 default route to {$gatewayipv6}");
-        system_default_route($gatewayip, $defaultifv6);
+        system_default_route($gatewayipv6, $defaultifv6);
     }
 
     system_staticroutes_configure($interface);
