@@ -29,6 +29,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("system.inc");
 require_once("filter.inc");
 require_once("plugins.inc.d/ipsec.inc");
 require_once("services.inc");
@@ -104,7 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($del_items as $p1entrydel) {
             /* remove static route if interface is not WAN */
             if ($a_phase1[$p1entrydel]['interface'] <> "wan") {
-                mwexec('/sbin/route delete -host ' . escapeshellarg($a_phase1[$p1entrydel]['remote-gateway']));
+                /* XXX does this even apply? only use of system.inc at the top! */
+                system_host_route($a_phase1[$p1entrydel]['remote-gateway'], $a_phase1[$p1entrydel]['remote-gateway'], true, false);
             }
             /* remove all phase2 entries that match the ikeid */
             $ikeid = $a_phase1[$p1entrydel]['ikeid'];

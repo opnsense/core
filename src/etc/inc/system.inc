@@ -211,14 +211,12 @@ function system_resolvconf_generate($verbose = false)
                 if (is_ipaddrv4($gatewayip)) {
                     /* dns server array starts at 0 */
                     $dnscountermo = $dnscounter - 1;
-                    mwexec("/sbin/route delete -host " . $syscfg['dnsserver'][$dnscountermo]);
-                    mwexec("/sbin/route add -host " . $syscfg['dnsserver'][$dnscountermo] . " {$gatewayip}");
+                    system_host_route($syscfg['dnsserver'][$dnscountermo], $gatewayip);
                 }
                 if (is_ipaddrv6($gatewayip)) {
                     /* dns server array starts at 0 */
                     $dnscountermo = $dnscounter - 1;
-                    mwexec("/sbin/route delete -host -inet6 " . $syscfg['dnsserver'][$dnscountermo]);
-                    mwexec("/sbin/route add -host -inet6 " . $syscfg['dnsserver'][$dnscountermo] . " {$gatewayip}");
+                    system_host_route($syscfg['dnsserver'][$dnscountermo], $gatewayip);
                 }
             }
         }
@@ -425,18 +423,23 @@ function system_hostname_configure($verbose = false)
     }
 }
 
-function system_host_route($host, $gateway)
+function system_host_route($host, $gateway, $delete = true, $add = true)
 {
-    if (is_ipaddrv4($realifgw)) {
+    if (is_ipaddrv4($gateway)) {
         $family = 'inet';
-    } elseif (is_ipaddrv6($realifgw)) {
+    } elseif (is_ipaddrv6($gateway)) {
         $family = 'inet6';
     } else {
         return;
     }
 
-    mwexecf('/sbin/route delete -host -%s %s', array($family, $host), true);
-    mwexecf('/sbin/route add -host -%s %s %s', array($family, $host, $gateway));
+    if ($delete) {
+        mwexecf('/sbin/route delete -host -%s %s', array($family, $host), true);
+    }
+
+    if ($add) {
+        mwexecf('/sbin/route add -host -%s %s %s', array($family, $host, $gateway));
+    }
 }
 
 function system_routing_configure($interface = '', $verbose = false)

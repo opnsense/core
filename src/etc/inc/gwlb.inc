@@ -176,7 +176,7 @@ EOD;
             /* flush the monitor unconditionally */
             if (is_ipaddrv4($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
                 log_error("Removing static route for monitor {$gateway['monitor']} via {$gateway['gateway']}");
-                mwexec("/sbin/route delete -host " . escapeshellarg($gateway['monitor']), true);
+                system_host_route($gateway['monitor'], $gateway['gateway'], true, false);
             }
 
             /* Do not monitor if such was requested */
@@ -192,8 +192,7 @@ EOD;
              */
             if (is_ipaddrv4($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
                 log_error("Adding static route for monitor {$gateway['monitor']} via {$gateway['gateway']}");
-                mwexec("/sbin/route add -host " . escapeshellarg($gateway['monitor']) .
-                  " " . escapeshellarg($gateway['gateway']), true);
+                system_host_route($gateway['monitor'], $gateway['gateway'], false, true);
             }
         } elseif ($gateway['ipprotocol'] == "inet6") { // This is an IPv6 gateway...
             if ($gateway['monitor'] == $gateway['gateway']) {
@@ -227,7 +226,7 @@ EOD;
             /* flush the monitor unconditionally */
             if (is_ipaddrv6($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
                 log_error("Removing static route for monitor {$gateway['monitor']} via {$gateway['gateway']}");
-                mwexec("/sbin/route delete -host -inet6 " . escapeshellarg($gateway['monitor']), true);
+                system_host_route($gateway['monitor'], $gateway['gateway'], true, false);
             }
 
             /* Do not monitor if such was requested */
@@ -243,8 +242,7 @@ EOD;
              */
             if (is_ipaddrv6($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
                 log_error("Adding static route for monitor {$gateway['monitor']} via {$gateway['gateway']}");
-                mwexec("/sbin/route add -host -inet6 " . escapeshellarg($gateway['monitor']) .
-                  " " . escapeshellarg($gateway['gateway']), true);
+                system_host_route($gateway['monitor'], $gateway['gateway'], false, true);
             }
         } else {
             continue;

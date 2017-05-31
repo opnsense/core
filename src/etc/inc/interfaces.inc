@@ -3026,9 +3026,9 @@ function interface_6rd_configure($interface = "wan", $wancfg)
 
     $ip4gateway = get_interface_gateway($interface);
     if (is_ipaddrv4($ip4gateway)) {
-        mwexec("/sbin/route delete -host " . escapeshellarg($wancfg['gateway-6rd']));
-        mwexec("/sbin/route add -host " . escapeshellarg($wancfg['gateway-6rd']) . " {$ip4gateway}");
+        system_host_route($wancfg['gateway-6rd'], $ip4gateway);
     }
+
     /* configure dependent interfaces */
     if (!file_exists("/var/run/booting")) {
         link_interface_to_track6($interface, "update");
@@ -3126,8 +3126,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
 
     $ip4gateway = get_interface_gateway($interface);
     if (is_ipaddrv4($ip4gateway)) {
-        mwexec("/sbin/route delete -host 192.88.99.1");
-        mwexec("/sbin/route add -host 192.88.99.1 {$ip4gateway}");
+        system_host_route('192.88.99.1', $ip4gateway);
     }
 
     if (!file_exists("/var/run/booting")) {

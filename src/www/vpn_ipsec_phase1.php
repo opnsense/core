@@ -30,6 +30,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("system.inc");
 require_once("filter.inc");
 require_once("plugins.inc.d/ipsec.inc");
 require_once("services.inc");
@@ -416,7 +417,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         /* if the remote gateway changed and the interface is not WAN then remove route */
         if ($pconfig['interface'] <> "wan") {
             if ($old_ph1ent['remote-gateway'] <> $pconfig['remote-gateway']) {
-                mwexec("/sbin/route delete -host {$old_ph1ent['remote-gateway']}");
+                /* XXX does this even apply? only use of system.inc at the top! */
+                system_host_route($old_ph1ent['remote-gateway'], $old_ph1ent['remote-gateway'], true, false);
             }
         }
 
