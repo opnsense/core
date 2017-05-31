@@ -394,6 +394,13 @@ function filter_configure_sync($verbose = false)
         flush();
     }
 
+    /* XXX deprectated feature, only called on reconfigure */
+    if (isset($config['system']['gw_switch_default'])) {
+        $gateways_status = return_gateways_status(true);
+        $gateways_arr = return_gateways_array();
+        fixup_default_gateway($gateways_status, $gateways_arr);
+    }
+
     /* generate aliases */
     update_filter_reload_status(gettext("Creating aliases"));
     $aliases = filter_generate_aliases($FilterIflist);
@@ -424,7 +431,7 @@ function filter_configure_sync($verbose = false)
 
     /* enable pf if we need to, otherwise disable */
     update_filter_reload_status(gettext("Loading filter rules"));
-    if (!isset ($config['system']['disablefilter'])) {
+    if (!isset($config['system']['disablefilter'])) {
         mwexec("/sbin/pfctl -e", true);
     } else {
         mwexec("/sbin/pfctl -d", true);

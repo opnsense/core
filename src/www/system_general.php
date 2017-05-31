@@ -44,7 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['language'] = null;
     $pconfig['timezone'] = 'Etc/UTC';
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
-    $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
     $pconfig['hostname'] = $config['system']['hostname'];
     $pconfig['domain'] = $config['system']['domain'];
 
@@ -134,12 +133,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['prefer_ipv4'] = true;
         } elseif (isset($config['system']['prefer_ipv4'])) {
             unset($config['system']['prefer_ipv4']);
-        }
-
-        if (!empty($pconfig['gw_switch_default'])) {
-            $config['system']['gw_switch_default'] = true;
-        } elseif (isset($config['system']['gw_switch_default'])) {
-            unset($config['system']['gw_switch_default']);
         }
 
         $config['system']['dnsallowoverride'] = !empty($pconfig['dnsallowoverride']);
@@ -343,17 +336,6 @@ include("head.inc");
                   <?=gettext("By default, if a hostname resolves IPv6 and IPv4 addresses ".
                                       "IPv6 will be used, if you check this option, IPv4 will be " .
                                       "used instead of IPv6."); ?>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><a id="help_for_gw_switch_default" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway switching");?> </td>
-              <td>
-                <input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?= !empty($pconfig['gw_switch_default']) ? "checked=\"checked\"" : "";?> />
-                <strong><?=gettext("Allow default gateway switching"); ?></strong><br />
-                <div class="hidden" for="help_for_gw_switch_default">
-                  <?=gettext("If the link where the default gateway resides fails " .
-                                      "switch the default gateway to another available one."); ?>
                 </div>
               </td>
             </tr>

@@ -768,22 +768,18 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
         }
 
         $defaultif = get_real_interface($gateways_arr[$dfltgwname]['friendlyiface']);
+        $gwipmatch = $gwip;
         if (is_linklocal($gwip)) {
             /* correct match in IPv6 case */
-            $gwip .= "%{$defaultif}";
+            $gwipmatch .= "%{$defaultif}";
         }
 
         $tmpcmd = "/sbin/route -n get -{$ipprotocol} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
         $defaultgw = trim(exec($tmpcmd), " \n");
-        if ($defaultgw != $gwip) {
+        if ($defaultgw != $gwipmatch) {
             log_error("Switching default gateway to $dfltgwname ($gwip)");
-
-            mwexecf('/sbin/route delete -%s default', array($ipprotocol), true);
-            if ($gateways_arr[$dfltgwname]['fargw']) {
-                mwexecf('/sbin/route delete -%s %s -interface %s', array($ipprotocol, $gwip, $defaultif), true);
-                mwexecf('/sbin/route add -%s %s -interface %s', array($ipprotocol, $gwip, $defaultif));
-            }
-            mwexecf('/sbin/route add -%s default %s', array($ipprotocol, $gwip));
+            /* XXX fargw and IPv6 should be cleaned up to make it easier to read */
+            system_default_route($gwip, !isset($gateways_arr[$dfltgwname]['fargw']) && $ipprotocol == 'inet' ? null : $defaultif);
         }
     }
 }
@@ -801,9 +797,6 @@ function return_gateway_groups_array()
     $gateways_arr = return_gateways_array();
     $gateway_groups_array = array();
 
-    if (isset($config['system']['gw_switch_default'])) {
-        fixup_default_gateway($gateways_status, $gateways_arr);
-    }
     if (isset($config['gateways']['gateway_group'])) {
         $carplist = get_configured_carp_interface_list();
         foreach ($config['gateways']['gateway_group'] as $group) {
