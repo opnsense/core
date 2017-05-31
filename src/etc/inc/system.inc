@@ -425,6 +425,20 @@ function system_hostname_configure($verbose = false)
     }
 }
 
+function system_host_route($host, $gateway)
+{
+    if (is_ipaddrv4($realifgw)) {
+        $family = 'inet';
+    } elseif (is_ipaddrv6($realifgw)) {
+        $family = 'inet6';
+    } else {
+        return;
+    }
+
+    mwexecf('/sbin/route delete -host -%s %s', array($family, $host), true);
+    mwexecf('/sbin/route add -host -%s %s %s', array($family, $host, $gateway));
+}
+
 function system_routing_configure($interface = '', $verbose = false)
 {
     global $config;

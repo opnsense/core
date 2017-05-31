@@ -985,15 +985,7 @@ function interface_gif_configure(&$gif, $gifkey = "")
         file_put_contents("/tmp/{$gifif}_routerv6", $gif['tunnel-remote-addr']);
     }
 
-    if (is_ipaddrv4($realifgw)) {
-        mwexec("/sbin/route delete -host " . escapeshellarg($gif['remote-addr']));
-        mwexec("/sbin/route add -host " . escapeshellarg($gif['remote-addr']) . " {$realifgw}");
-    }
-    if (is_ipaddrv6($realifgw)) {
-        mwexec("/sbin/route delete -host -inet6 " . escapeshellarg($gif['remote-addr']));
-        mwexec("/sbin/route add -host -inet6 " . escapeshellarg($gif['remote-addr']) . " {$realifgw}");
-    }
-
+    system_host_route($gif['remote-addr'], $realifgw);
     interfaces_bring_up($gifif);
 
     return $gifif;
