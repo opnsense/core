@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
+    Copyright (C) 2016-2017 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
@@ -506,9 +506,9 @@ function system_routing_configure($interface = '', $verbose = false)
         ;
     elseif (is_ipaddrv4($gatewayip)) {
         log_error("ROUTING: setting IPv4 default route to {$gatewayip}");
-        mwexecf('/sbin/route delete -inet %s', 'default');
+        mwexecf('/sbin/route delete -inet %s', 'default', true);
         if ($fargw) {
-            mwexecf('/sbin/route delete -inet %s -interface %s', array($gatewayip, $defaultif));
+            mwexecf('/sbin/route delete -inet %s -interface %s', array($gatewayip, $defaultif), true);
             mwexecf('/sbin/route add -inet %s -interface %s', array($gatewayip, $defaultif));
         }
         mwexecf('/sbin/route add -inet %s %s', array('default', $gatewayip));
@@ -521,9 +521,9 @@ function system_routing_configure($interface = '', $verbose = false)
             $gatewayipv6 .= "%{$defaultifv6}";
         }
         log_error("ROUTING: setting IPv6 default route to {$gatewayipv6}");
-        mwexecf('/sbin/route delete -inet6 %s %s', array('default', $gatewayipv6));
+        mwexecf('/sbin/route delete -inet6 %s %s', array('default', $gatewayipv6), true);
         if ($fargw) {
-            mwexecf('/sbin/route delete -inet6 %s -interface %s', array($gatewayipv6, $defaultifv6));
+            mwexecf('/sbin/route delete -inet6 %s -interface %s', array($gatewayipv6, $defaultifv6), true);
             mwexecf('/sbin/route add -inet6 %s -interface %s', array($gatewayipv6, $defaultifv6));
         }
         mwexecf('/sbin/route add -inet6 %s %s', array('default', $gatewayipv6));
