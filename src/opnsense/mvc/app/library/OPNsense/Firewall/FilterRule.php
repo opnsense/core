@@ -258,7 +258,7 @@ class FilterRule
      */
     private function convertReplyTo(&$rule)
     {
-        if (!isset($rule['disablereplyto'])) {
+        if (!isset($rule['disablereplyto']) && $rule['direction'] != 'any') {
             $proto = $rule['ipprotocol'];
             if (!empty($this->interfaceMapping[$rule['interface']]['if']) && empty($rule['gateway'])) {
                 $if = $this->interfaceMapping[$rule['interface']]['if'];
