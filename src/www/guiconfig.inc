@@ -478,9 +478,7 @@ function display_top_tabs(& $tab_array, $no_drop_down = false)
             } else {
                 $selected = "";
             }
-            // Onclick in option will not work in some browser
-            // echo "<option onclick=\"document.location='{$ta[2]}';\"{$selected}>{$ta['0']}</option>\n";
-            echo "<option value=\"{$ta[2]}\"{$selected}>{$ta['0']}</option>\n";
+            echo "<option class=\"top_tab\" value=\"{$ta[2]}\"{$selected}>{$ta['0']}</option>\n";
         }
         echo "</select>\n<p>&nbsp;</p>";
         echo "<script type=\"text/javascript\">";
@@ -494,9 +492,9 @@ function display_top_tabs(& $tab_array, $no_drop_down = false)
         $tabscounter = 0;
         foreach ($tab_array as $ta) {
             if ($ta[1] == true) {
-                echo "  <li class=\"active\"><a href=\"{$ta[2]}\" role=\"tab\">{$ta[0]}</a></li>\n";
+                echo "  <li class=\"active\"><a class=\"top_tab\" href=\"{$ta[2]}\" role=\"tab\">{$ta[0]}</a></li>\n";
             } else {
-                echo "  <li><a href=\"{$ta[2]}\" role=\"tab\">{$ta[0]}</a></li>\n";
+                echo "  <li><a class=\"top_tab\" href=\"{$ta[2]}\" role=\"tab\">{$ta[0]}</a></li>\n";
             }
             $tabscounter++;
         }
