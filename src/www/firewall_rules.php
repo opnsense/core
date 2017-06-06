@@ -126,6 +126,11 @@ if (isset($_GET['if'])) {
 } else {
     $selected_if = "FloatingRules";
 }
+if (isset($_GET['category'])) {
+    $selected_category = !is_array($_GET['category']) ? array($_GET['category']) : $_GET['category'];
+} else {
+    $selected_category = array();
+}
 
 include("head.inc");
 
@@ -233,7 +238,29 @@ $( document ).ready(function() {
           $(this).css("background-color", $("#fw_category").data('stripe_color'));
         }
       });
+
+      // hook into tab changes, keep selected category/categories when following link
+      $(".top_tab").each(function(){
+          var add_link = "";
+          if (selected_values.length > 0) {
+              add_link = "&" + $.param({'category': selected_values});
+          }
+          if ($(this).is('A')) {
+              if ($(this).data('link') == undefined) {
+                  // move link to data tag
+                  $(this).data('link', $(this).attr('href'));
+              }
+              $(this).attr('href', $(this).data('link') + add_link);
+          } else if ($(this).is('OPTION')) {
+            if ($(this).data('link') == undefined) {
+                // move link to data tag
+                $(this).data('link', $(this).val());
+            }
+            $(this).val($(this).data('link') + add_link);
+          }
+      });
   });
+  $("#fw_category").change();
 
   // hide category search when not used
   if ($("#fw_category > option").length == 0) {
@@ -650,7 +677,7 @@ $( document ).ready(function() {
                             }
                         }
                         foreach ($categories as $category):?>
-                        <option value="<?=$category;?>"><?=$category;?></option>
+                        <option value="<?=$category;?>" <?=in_array($category, $selected_category) ? "selected=\"selected\"" : "" ;?>><?=$category;?></option>
 <?php
                         endforeach;?>
                       </select>
