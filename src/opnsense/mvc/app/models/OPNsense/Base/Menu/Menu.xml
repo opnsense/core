@@ -61,7 +61,7 @@
         </Gateways>
         <Settings order="20" cssClass="fa fa-cogs fa-fw">
             <General order="100" url="/system_general.php">
-                <workAround url="/system_general.php*"/>
+                <workAround url="/system_general.php*" visibility="hidden"/>
             </General>
             <Administration order="200" url="/system_advanced_admin.php"/>
             <Logging order="300" url="/diag_logs_settings.php"/>
