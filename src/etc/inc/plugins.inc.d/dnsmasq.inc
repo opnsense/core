@@ -143,19 +143,9 @@ function dnsmasq_configure_do($verbose = false)
         }
     }
 
-    /* If selected, then first forward reverse lookups for private IPv4 addresses to nowhere. */
-    /* If any of these are duplicated by a user-specified domain override (e.g. 10.in-addr.arpa) then */
-    /* the user-specified entry made later on the command line below will be the one that is effective. */
+    /* Prevent bogus lookups of unknown private ranges */
     if (isset($config['dnsmasq']['no_private_reverse'])) {
-        /* Note: Carrier Grade NAT (CGN) addresses 100.64.0.0/10 are intentionally not here. */
-        /* End-users should not be aware of CGN addresses, so reverse lookups for these should not happen. */
-        /* Just the OPNsense WAN might get a CGN address from an ISP. */
-        $args .= " --server=/10.in-addr.arpa/ ";
-        $args .= " --server=/168.192.in-addr.arpa/ ";
-        /* Unfortunately the 172.16.0.0/12 range does not map nicely to the in-addr.arpa scheme. */
-        for ($subnet_num = 16; $subnet_num < 32; $subnet_num++) {
-            $args .= " --server=/" . $subnet_num . ".172.in-addr.arpa/ ";
-        }
+        $args .= " --bogus-priv ";
     }
 
     /* Setup forwarded domains */
