@@ -508,6 +508,9 @@ function unbound_add_domain_overrides($pvt = false)
         if ($pvt == true) {
             $domain_entries .= "private-domain: \"$domain\"\n";
             $domain_entries .= "domain-insecure: \"$domain\"\n";
+            if ((substr($domain, -14) == ".in-addr.arpa.") || (substr($domain, -13) == ".in-addr.arpa")) {
+                $domain_entries .= "local-zone: \"$domain\" typetransparent\n";
+            }
         } else {
             $domain_entries .= "stub-zone:\n";
             $domain_entries .= "\tname: \"$domain\"\n";
