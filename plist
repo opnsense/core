@@ -454,6 +454,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Netflow.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Netflow.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/DynamicDNS/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/DynamicDNS/Menu/Menu.xml
@@ -476,6 +477,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.php
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt
@@ -974,6 +976,7 @@
 /usr/local/www/diag_logs_auth.php
 /usr/local/www/diag_logs_common.inc
 /usr/local/www/diag_logs_dhcp.php
+/usr/local/www/diag_logs_dnsmasq.php
 /usr/local/www/diag_logs_filter.php
 /usr/local/www/diag_logs_filter_dynamic.php
 /usr/local/www/diag_logs_filter_plain.php

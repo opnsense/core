@@ -63,6 +63,15 @@ function dnsmasq_services()
     return $services;
 }
 
+function dnsmasq_syslog()
+{
+    $logfacilities = array();
+
+    $logfacilities['dnsmasq'] = array('facility' => array('dnsmasq'), 'remote' => 'dns');
+
+    return $logfacilities;
+}
+
 function dnsmasq_xmlrpc_sync()
 {
     $result = array();

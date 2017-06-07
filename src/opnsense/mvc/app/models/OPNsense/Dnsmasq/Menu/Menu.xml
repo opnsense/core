@@ -1,8 +1,11 @@
 <menu>
     <Services>
-        <Dnsmasq VisibleName="Dnsmasq DNS" url="/services_dnsmasq.php" cssClass="fa fa-tags fa-fw">
+        <Dnsmasq VisibleName="Dnsmasq DNS" cssClass="fa fa-tags fa-fw">
+          <Settings order="10" url="/services_dnsmasq.php">
             <Hosts url="/services_dnsmasq_edit.php*" visibility="hidden"/>
             <Domains url="/services_dnsmasq_domainoverride_edit.php*" visibility="hidden"/>
+          </Settings>
+          <LogFile VisibleName="Log File" order="50" url="/diag_logs_resolver.php"/>
         </Dnsmasq>
     </Services>
 </menu>
