@@ -838,6 +838,10 @@ EOD;
             if (isset($syslogcfg['vpn'])) {
                 $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local3.*");
             }
+            if (isset($syslogcfg['dns'])) {
+                /* XXX needs testing */
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local5.*");
+            }
             if (isset($syslogcfg['portalauth'])) {
                 $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local4.*");
             }
