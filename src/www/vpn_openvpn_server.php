@@ -298,8 +298,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if ($pconfig['dev_mode'] != "tap") {
-            $reqdfields[] = 'tunnel_network';
-            $reqdfieldsn[] = gettext('Tunnel network');
+            if (!$pconfig['tunnel_networkv6']) {
+                $reqdfields[] = 'tunnel_network';
+                $reqdfieldsn[] = gettext('Tunnel network');
+            }
         } else {
             if ($pconfig['serverbridge_dhcp'] && $pconfig['tunnel_network']) {
                 $input_errors[] = gettext("Using a tunnel network and server bridge settings together is not allowed.");
