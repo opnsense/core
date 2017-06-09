@@ -9,3 +9,4 @@ suricata_flags="-D --pcap"
 {% else %}
 suricata_enable="NO"
 {% endif %}
+{% endif %}
