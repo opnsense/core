@@ -697,7 +697,7 @@ function showchange() {
 				echo "<!-- {$value} -->\n";
 
 				if($field['description'] <> "") {
-					echo gettext($field['description']);
+					echo "<br /> " . gettext($field['description']);
 				}
 
 				break;
