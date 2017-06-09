@@ -6,7 +6,7 @@ suricata_netmap="YES"
 {% else %}
 # IDS mode, pcap live mode
 suricata_flags="-D --pcap"
+{% endif %}
 {% else %}
 suricata_enable="NO"
-{% endif %}
 {% endif %}
