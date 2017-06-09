@@ -748,8 +748,12 @@ logging:
       format: "[%i] <%d> -- "
 
 pcap:
-  - interface: default
+  {% if helpers.exists('OPNsense.IDS.general.interfaces') %}
+    {% for intfName in OPNsense.IDS.general.interfaces.split(',') %}
+  - interface: {{physical_interface(intfName)}}
     promisc: {% if helpers.exists('OPNsense.IDS.general.promisc') and OPNsense.IDS.general.promisc|default('0') == '1' %}yes{% else %}no{% endif %} #  promiscuous mode
+    {% endfor %}
+  {% endif %}
 
 pcap-file:
   # Possible values are:
