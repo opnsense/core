@@ -22,7 +22,7 @@ suricata_interface="{{ physical_interface(intfName) }}"
 {%   endif %}
 {% endfor %}
 {#   append additional interfaces #}
-suricata_flags="-D {%
+suricata_flags="-D --pcap {%
    for intf in addFlags
 %} -i {{ intf }}  {% endfor
 %} "
