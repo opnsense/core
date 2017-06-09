@@ -224,12 +224,11 @@ function interface_vlan_configure(&$vlan)
     }
 
     if (!empty($vlanif) && does_interface_exist($vlanif)) {
-        interface_bring_down($vlanif, true);
-    } else {
-        $tmpvlanif = legacy_interface_create('vlan');
-        legacy_interface_rename($tmpvlanif, $vlanif);
-        mwexecf('/usr/sbin/ngctl name %s: %s', array($tmpvlanif, $vlanif));
+        legacy_interface_destroy($vlanif);
     }
+
+    $tmpvlanif = legacy_interface_create('vlan');
+    legacy_interface_rename($tmpvlanif, $vlanif);
 
     $pcp = isset($vlan['pcp']) ? $vlan['pcp'] : 0;
     legacy_vlan_tag($vlanif, $if, $vlan['tag'], $pcp);
