@@ -72,9 +72,12 @@ function legacy_interface_flags($ifs, $flag, $report_errors=true)
     }
 }
 
-function legacy_interface_create($ifs)
+function legacy_interface_create($ifs, $name=null)
 {
     $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' create';
+    if (!empty($name)) {
+        $cmd .= " name " . $name;
+    }
     $new = null;
 
     exec($cmd . ' 2>&1', $out, $ret);
