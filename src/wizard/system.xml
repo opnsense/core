@@ -57,7 +57,6 @@
 			<name>Hostname</name>
 			<type>input</type>
 			<bindstofield>wizardtemp->system->hostname</bindstofield>
-			<description>EXAMPLE: myserver</description>
 			<validate>^[A-Za-z0-9.|-]+$</validate>
 			<message>Invalid Hostname</message>
 		</field>
@@ -65,7 +64,6 @@
 			<name>Domain</name>
 			<type>input</type>
 			<bindstofield>wizardtemp->system->domain</bindstofield>
-			<description>EXAMPLE: mydomain.com</description>
 			<validate>^[a-z0-9.|-]+$</validate>
 			<message>Domain name field is invalid</message>
 		</field>
@@ -297,7 +295,6 @@
 		<field>
 			<name>PPPoE Service name</name>
 			<type>input</type>
-			<description>Hint: this field can usually be left empty</description>
 			<bindstofield>wizardtemp->wan->provider</bindstofield>
 		</field>
 		<field>
