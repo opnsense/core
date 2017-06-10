@@ -13,7 +13,7 @@ suricata_netmap="YES"
 {#     store additional interfaces to addFlags #}
 {%     do addFlags.append(physical_interface(intfName)) %}
 {%   endfor %}
-suricata_interface="{% addFlags|join(' ') %}"
+suricata_interface="{{ addFlags|join(' ') }}"
 {% endif %}
 {% else %}
 suricata_enable="NO"
