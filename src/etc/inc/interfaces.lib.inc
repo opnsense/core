@@ -72,11 +72,11 @@ function legacy_interface_flags($ifs, $flag, $report_errors=true)
     }
 }
 
-function legacy_interface_create($ifs, $name=null)
+function legacy_interface_create($ifs, $name = null)
 {
     $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' create';
     if (!empty($name)) {
-        $cmd .= " name " . escapeshellarg($name);
+        $cmd .= ' name ' . escapeshellarg($name);
     }
     $new = null;
 
@@ -123,16 +123,6 @@ function legacy_interface_deladdress($ifs, $addr)
     }
 }
 
-function legacy_interface_rename($ifs, $name)
-{
-    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' name ' . escapeshellarg($name);
-
-    exec($cmd . ' 2>&1', $out, $ret);
-    if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
-    }
-}
-
 function legacy_interface_mtu($ifs, $mtu)
 {
     $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' mtu ' . escapeshellarg($mtu);
@@ -163,7 +153,7 @@ function legacy_vlan_tag($ifs, $member, $tag, $pcp)
     }
 }
 
-function legacy_interface_stats($ifs=null)
+function legacy_interface_stats($ifs = null)
 {
     if ($ifs != null) {
         // only request data for selected interface

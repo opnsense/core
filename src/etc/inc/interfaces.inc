@@ -1919,16 +1919,11 @@ function interface_wireless_clone($realif, $wlcfg)
         }
 
         log_error(sprintf('Cloning new wireless interface %s', $realif));
-        // Create the new wlan interface. FreeBSD returns the new interface name.
-        // example:  wlan2
-        exec("/sbin/ifconfig wlan create wlandev {$baseif} {$mode} bssid 2>&1", $out, $ret);
+        exec("/sbin/ifconfig wlan create name {$realif} wlandev {$baseif} {$mode} bssid 2>&1", $out, $ret);
         if ($ret <> 0) {
             log_error(sprintf('Failed to clone interface %s with error code %s, output %s', $baseif, $ret, $out[0]));
             return false;
         }
-        $newif = trim($out[0]);
-        // Rename the interface to {$parentnic}_wlan{$number}#: EX: ath0_wlan0
-        legacy_interface_rename($newif, $realif);
         file_put_contents("/tmp/{$realif}_oldmac", get_interface_mac($realif));
     }
     return true;
@@ -3003,8 +2998,7 @@ function interface_6rd_configure($interface = "wan", $wancfg)
     if (does_interface_exist($stfiface)) {
         legacy_interface_destroy($stfiface);
     }
-    $tmpstfiface = legacy_interface_create('stf');
-    legacy_interface_rename($tmpstfiface, $stfiface);
+    legacy_interface_create('stf', $stfiface);
     legacy_interface_flags($stfiface, 'link2');
     if ($wancfg['prefix-6rd-v4plen'] > 0) {
         $rd6prefixlen += intval($wancfg['prefix-6rd-v4plen']);
@@ -3112,8 +3106,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
     if (does_interface_exist($stfiface)) {
         legacy_interface_destroy($stfiface);
     }
-    $tmpstfiface = legacy_interface_create('stf');
-    legacy_interface_rename($tmpstfiface, $stfiface);
+    legacy_interface_create('stf', $stfiface);
     legacy_interface_flags($stfiface, 'link2');
     mwexec("/sbin/ifconfig {$stfiface} inet6 {$stflanpr} prefixlen 16");
 
