@@ -32,12 +32,7 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("interfaces.inc");
 
-/**
- *   quite nasty, content provided by filter_generate_gateways (in filter.inc).
- *  Not going to solve this now, because filter_generate_gateways is not a propper function
- *  it returns both rules for the firewall and is kind of responsible for updating this global.
- */
-global $GatewaysList;
+$GatewaysList = return_gateways_array(false, true) + return_gateway_groups_array();
 
 if (!isset($config['nat']['outbound']))
     $config['nat']['outbound'] = array();
@@ -65,15 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mode = $config['nat']['outbound']['mode'];
         /* mutually exclusive settings - if user wants advanced NAT, we don't generate automatic rules */
         if ($pconfig['mode'] == "advanced" && ($mode == "automatic" || $mode == "hybrid")) {
-            /*
-             *    user has enabled advanced outbound NAT and doesn't have rules
-             *    lets automatically create entries
-             *    for all of the interfaces to make life easier on the pip-o-chap
-             */
-            if(empty($GatewaysList)) {
-                filter_generate_gateways();
-            }
-
             /* XXX cranky low-level call, please refactor */
             $FilterIflist = filter_generate_optcfg_array();
             $tonathosts = filter_nat_rules_automatic_tonathosts($FilterIflist, true);
@@ -112,7 +98,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             $savemsg = gettext("Default rules for each interface have been created.");
-            unset($GatewaysList);
         }
 
         $config['nat']['outbound']['mode'] = $pconfig['mode'];
@@ -550,15 +535,11 @@ include("head.inc");
 <?php
       // when automatic or hybrid, display "auto" table.
       if ($mode == "automatic" || $mode == "hybrid"):
-        if (empty($GatewaysList)) {
-            filter_generate_gateways();
-        }
         /* XXX cranky low-level call, please refactor */
         $FilterIflist = filter_generate_optcfg_array();
         $automatic_rules = filter_nat_rules_outbound_automatic(
           $FilterIflist, implode(' ', filter_nat_rules_automatic_tonathosts($FilterIflist))
         );
-        unset($GatewaysList);
 ?>
         <section class="col-xs-12">
           <div class="table-responsive content-box ">
