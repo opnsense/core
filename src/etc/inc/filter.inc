@@ -2456,24 +2456,6 @@ function filter_rules_generate(&$FilterIflist)
     $log['block'] = !isset($config['syslog']['nologdefaultblock']) ? "log" : "";
     $log['pass'] = !isset($config['syslog']['nologdefaultpass']) ? "log" : "";
 
-    // TODO : route-to needs to be refactored / simplified.
-    foreach ($FilterIflist as $ifdescr => $ifcfg) {
-        if (isset($ifcfg['virtual'])) {
-            continue;
-        }
-
-        $gw = get_interface_gateway($ifdescr);
-        if (is_ipaddrv4($gw) && isset($ifcfg['ip']) && is_ipaddrv4($ifcfg['ip'])) {
-            $ipfrules .= "pass out {$log['pass']} route-to ( {$ifcfg['if']} {$gw} ) from ({$ifcfg['if']}) to !({$ifcfg['if']}:network) keep state allow-opts label \"let out anything from firewall host itself\"\n";
-        }
-
-        $gwv6 = get_interface_gateway_v6($ifdescr);
-        $stf = get_real_interface($ifdescr, "inet6");
-        if (is_ipaddrv6($gwv6) && is_ipaddrv6($ifcfg['ipv6'])) {
-            $ipfrules .= "pass out {$log['pass']} route-to ( {$stf} {$gwv6} ) inet6 from ({$stf}) to !({$stf}:network) keep state allow-opts label \"let out anything from firewall host itself\"\n";
-        }
-    }
-
     if (isset($config['filter']['rule'])) {
         /* Pre-cache all our rules so we only have to generate them once */
         $rule_arr1 = array();
