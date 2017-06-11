@@ -313,6 +313,11 @@ class FilterRule
                 if (!empty($interface) && empty($this->interfaceMapping[$interface]['if'])) {
                     $tmp['disabled'] = true;
                 }
+                // disable rules when gateway is down and skip_rules_gw_down is set
+                if (!empty($tmp['skip_rules_gw_down']) && !empty($tmp['gateway']) &&
+                  empty($this->gatewayMapping[$tmp['gateway']])) {
+                    $tmp['disabled'] = true;
+                }
                 if (!isset($tmp['quick'])) {
                     // all rules are quick by default except floating
                     $tmp['quick'] = !isset($rule['floating']) ? true : false;
