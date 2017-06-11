@@ -376,9 +376,17 @@ function filter_configure_sync($verbose = false)
 
     // initialize fw plugin object
     $fw = new \OPNsense\Firewall\Plugin();
-    $fw->setInterfaceMapping(legacy_config_get_interfaces(array("enable" => true)));
-    //$fw->setGateways(return_gateways_array());
-    //$fw->setGatewayGroups(return_gateway_groups_array());
+    $cnfint = legacy_config_get_interfaces(array("enable" => true));
+    // to set "reply-to" we need to know the gateway for our interface, let's collect it here and pass it on to
+    // setInterfaceMapping()
+    foreach ($cnfint as $key => &$value) {
+        $value['gateway'] = get_interface_gateway($key);
+        $value['gatewayv6'] = get_interface_gateway_v6($key);
+    }
+    // init interfaces and gateways
+    $fw->setInterfaceMapping($cnfint);
+    $fw->setGateways(return_gateways_array());
+    $fw->setGatewayGroups(return_gateway_groups_array());
     filter_core_bootstrap($fw);
 
     plugins_firewall($fw);
