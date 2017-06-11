@@ -519,6 +519,8 @@ function filter_configure_sync($verbose = false)
     $rules .= filter_rules_legacy($FilterIflist);
     $rules .= $fw->outputFilterRules();
     $rules .= "{$pfrules}\n";
+    update_filter_reload_status(gettext("Creating IPsec rules..."));
+    $rules .= filter_generate_ipsec_rules($FilterIflist);
     $rules .= $fw->anchorToText('fw', 'tail');
 
     unset($aliases, $gateways, $natrules, $pfrules);
@@ -2451,10 +2453,6 @@ function filter_rules_generate(&$FilterIflist)
     $ipfrules = "";
 
     # BEGIN OF firewall rules
-    /* default block logging? */
-    $log = array();
-    $log['block'] = !isset($config['syslog']['nologdefaultblock']) ? "log" : "";
-    $log['pass'] = !isset($config['syslog']['nologdefaultpass']) ? "log" : "";
 
     if (isset($config['filter']['rule'])) {
         /* Pre-cache all our rules so we only have to generate them once */
@@ -2532,8 +2530,6 @@ function filter_rules_generate(&$FilterIflist)
         unset($rule_arr1, $rule_arr2, $rule_arr3);
     }
 
-    update_filter_reload_status(gettext("Creating IPsec rules..."));
-    $ipfrules .= filter_generate_ipsec_rules($FilterIflist, $log);
 
     return $ipfrules;
 }
@@ -2682,9 +2678,13 @@ function filter_setup_logging_interfaces(&$FilterIflist)
 }
 
 /* Generate IPsec Filter Items */
-function filter_generate_ipsec_rules(&$FilterIflist, $log = array())
+function filter_generate_ipsec_rules(&$FilterIflist)
 {
     global $config;
+    /* default block logging? */
+    $log = array();
+    $log['block'] = !isset($config['syslog']['nologdefaultblock']) ? "log" : "";
+    $log['pass'] = !isset($config['syslog']['nologdefaultpass']) ? "log" : "";
 
     if (isset($config['system']['disablevpnrules'])) {
         return "\n# VPN Rules not added disabled in System->Advanced.\n";
