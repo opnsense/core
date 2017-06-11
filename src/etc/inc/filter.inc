@@ -371,6 +371,7 @@ function filter_delete_states_for_down_gateways()
 function filter_configure_sync($verbose = false)
 {
     global $config, $GatewaysList;
+    $sched_kill_states = array(); // kill states for schedules
 
     // Temporary fill $GatewaysList, the global is still used by some old functions
     $GatewaysList = return_gateways_array(false, true) + return_gateway_groups_array();
@@ -416,6 +417,22 @@ function filter_configure_sync($verbose = false)
             $prio = 300000;
         } else {
             $prio = 400000;
+        }
+        /* is a time based rule schedule attached? */
+        if (!empty($rule['sched']) && !empty($config['schedules'])) {
+            foreach ($config['schedules']['schedule'] as $sched) {
+                if ($sched['name'] == $rule['sched']) {
+                    if (!filter_get_time_based_rule_status($sched)) {
+                        if (!isset($config['system']['schedule_states'])) {
+                            $sched_kill_states[] = $rule['label'];
+                        }
+                        /* disable rule, suffix label to mark end of schedule */
+                        $rule['disabled'] = true;
+                        $rule['label'] = "[FIN]".$rule['label'];
+                    }
+                    break;
+                }
+            }
         }
         $fw->registerFilterRule($prio, $rule);
     }
@@ -563,6 +580,13 @@ function filter_configure_sync($verbose = false)
 
     unset($rules_loading, $rules_error);
     $_grbg = exec('/sbin/pfctl -o basic -f /tmp/rules.debug 2>&1', $rules_error, $rules_loading);
+
+    update_filter_reload_status(gettext("Cleanup schedule states"));
+    foreach ($sched_kill_states as $label) {
+        echo $label . "\n";
+        mwexecf('/sbin/pfctl -k label -k %s', $label);
+    }
+
 
     /*
      * check for a error while loading the rules file.  if an error has occurred
