@@ -92,7 +92,7 @@ function pf_interfaces()
  */
 function pf_firewall($fw)
 {
-    global $config, $GatewaysList;
+    global $config;
 
     $defaults = array();
     $defaults['pass'] = array("type" => "pass", "log" => !isset($config['syslog']['nologdefaultpass']));
@@ -104,7 +104,7 @@ function pf_firewall($fw)
      */
     if (isset($config['filter']['bypassstaticroutes']) && isset($config['staticroutes']['route']) && count($config['staticroutes']['route'])) {
         $FilterIflist = filter_generate_optcfg_array();
-        filter_generate_gateways(); // loads global $GatewaysList
+        $GatewaysList = return_gateways_array(false, true) + return_gateway_groups_array();
 
         foreach (get_staticroutes() as $route) {
             $friendly = $GatewaysList[$route['gateway']]['friendlyiface'];
