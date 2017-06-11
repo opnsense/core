@@ -317,6 +317,23 @@ class FilterRule
                     // all rules are quick by default except floating
                     $tmp['quick'] = !isset($rule['floating']) ? true : false;
                 }
+                // restructure flags
+                if (isset($tmp['protocol']) && $tmp['protocol'] == "tcp") {
+                    if (isset($tmp['tcpflags_any'])) {
+                        $tmp['flags'] = "any";
+                    } elseif (!empty($tmp['tcpflags2'])) {
+                        $tmp['flags'] = "";
+                        foreach (array('tcpflags1', 'tcpflags2') as $flagtag) {
+                            $tmp['flags'] .= $flagtag == 'tcpflags2' ? "/" : "";
+                            if (!empty($tmp[$flagtag])) {
+                                foreach (explode(",", strtoupper($tmp[$flagtag])) as $flag1) {
+                                    // CWR flag needs special treatment
+                                    $tmp['flags'] .= $flag1[0] == "C" ? "W" : $flag1[0];
+                                }
+                            }
+                        }
+                    }
+                }
                 // restructure state settings for easier output parsing
                 if (!empty($tmp['statetype'])) {
                     $tmp['state'] = array('type' => 'keep', 'options' => array());
