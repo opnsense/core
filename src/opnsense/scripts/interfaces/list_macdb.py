@@ -36,8 +36,8 @@ import netaddr.eui.ieee
 
 if __name__ == '__main__':
     result=dict()
-    if os.path.isfile(netaddr.eui.ieee.OUI_REGISTRY):
-        for line in open(netaddr.eui.ieee.OUI_REGISTRY).read().split('\n'):
+    if os.path.isfile(netaddr.eui.ieee.OUI_REGISTRY_PATH):
+        for line in open(netaddr.eui.ieee.OUI_REGISTRY_PATH).read().split('\n'):
             if line.find('(base 16)') > -1:
                 parts=line.split('(base 16)')
                 if len(parts) >= 2:
