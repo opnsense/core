@@ -372,6 +372,9 @@ function filter_configure_sync($verbose = false)
 {
     global $config;
 
+    /* Use filter lock to not allow concurrent filter reloads during this run. */
+    $filterlck = lock('filter', LOCK_EX);
+
     $FilterIflist = filter_generate_optcfg_array();
 
     // initialize fw plugin object
@@ -390,9 +393,29 @@ function filter_configure_sync($verbose = false)
     filter_core_bootstrap($fw);
 
     plugins_firewall($fw);
+    // register user rules
+    update_filter_reload_status(gettext("Generating filter rules"));
+    foreach ($config['filter']['rule'] as $rule) {
+        $sched = '';
+        $descr = '';
 
-    /* Use filter lock to not allow concurrent filter reloads during this run. */
-    $filterlck = lock('filter', LOCK_EX);
+        if (!empty($rule['sched'])) {
+            $sched = "({$rule['sched']})";
+        }
+        if (!empty($rule['descr'])) {
+            $descr = ": {$rule['descr']}";
+        }
+
+        $rule['label'] = fix_rule_label("USER_RULE{$sched}{$descr}") ;
+        if (isset($rule['floating'])) {
+            $prio = 200000;
+        } elseif (is_interface_group($rule['interface']) || in_array($rule['interface'], array("l2tp", "pptp", "pppoe", "enc0", "openvpn"))) {
+            $prio = 300000;
+        } else {
+            $prio = 400000;
+        }
+        $fw->registerFilterRule($prio, $rule);
+    }
 
     filter_pflog_start();
     update_filter_reload_status(gettext("Initializing"), true);
@@ -427,10 +450,6 @@ function filter_configure_sync($verbose = false)
         echo '.';
         flush();
     }
-
-    /* generate pfctl rules */
-    update_filter_reload_status(gettext("Generating filter rules"));
-    $pfrules = filter_rules_generate($FilterIflist);
 
     if ($verbose) {
         echo '.';
@@ -518,12 +537,11 @@ function filter_configure_sync($verbose = false)
     $rules .= $fw->anchorToText('fw', 'head');
     $rules .= filter_rules_legacy($FilterIflist);
     $rules .= $fw->outputFilterRules();
-    $rules .= "{$pfrules}\n";
     update_filter_reload_status(gettext("Creating IPsec rules..."));
     $rules .= filter_generate_ipsec_rules($FilterIflist);
     $rules .= $fw->anchorToText('fw', 'tail');
 
-    unset($aliases, $gateways, $natrules, $pfrules);
+    unset($aliases, $gateways, $natrules);
 
     update_filter_reload_status(gettext("Executing packet filter reload"));
 
