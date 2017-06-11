@@ -73,7 +73,9 @@ class Plugin
         if (is_array($gateways)) {
             foreach ($gateways as $key => $gw) {
                 if (Util::isIpAddress($gw['gateway']) && !empty($gw['interface'])) {
-                    $this->gatewayMapping[$key] = array("logic" => "route-to ( {$gw['interface']} {$gw['gateway']} )");
+                    $this->gatewayMapping[$key] = array("logic" => "route-to ( {$gw['interface']} {$gw['gateway']} )",
+                                                        "interface" => $gw['interface'],
+                                                        "type" => "gateway");
                 }
             }
         }
@@ -101,10 +103,26 @@ class Plugin
                     if (!empty(Config::getInstance()->object()->system->lb_use_sticky)) {
                         $routetologic .= " sticky-address ";
                     }
-                    $this->gatewayMapping[$key] = array("logic" => $routetologic);
+                    $this->gatewayMapping[$key] = array("logic" => $routetologic,
+                                                        "type" => "group");
                 }
             }
         }
+    }
+
+    /**
+     * fetch gateway (names) for provided interface, would return both ipv4/ipv6
+     * @param string $intf interface (e.g. em0, igb0,...)
+     */
+    public function getInterfaceGateways($intf)
+    {
+        $result = array();
+        foreach ($this->gatewayMapping as $key => $gw) {
+            if ($gw['type'] == 'gateway' && $gw['interface'] == $intf) {
+                $result[] = $key;
+            }
+        }
+        return $result;
     }
 
     /**
