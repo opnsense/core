@@ -370,7 +370,10 @@ function filter_delete_states_for_down_gateways()
 
 function filter_configure_sync($verbose = false)
 {
-    global $config;
+    global $config, $GatewaysList;
+
+    // Temporary fill $GatewaysList, the global is still used by some old functions
+    $GatewaysList = return_gateways_array(false, true) + return_gateway_groups_array();
 
     /* Use filter lock to not allow concurrent filter reloads during this run. */
     $filterlck = lock('filter', LOCK_EX);
@@ -435,7 +438,6 @@ function filter_configure_sync($verbose = false)
     /* generate aliases */
     update_filter_reload_status(gettext("Creating aliases"));
     $aliases = filter_generate_aliases($FilterIflist);
-    $gateways = filter_generate_gateways();
 
     if ($verbose) {
         echo '.';
@@ -521,7 +523,6 @@ function filter_configure_sync($verbose = false)
 
     $rules = "{$limitrules}\n";
     $rules .= "{$aliases} \n";
-    $rules .= "{$gateways} \n";
     update_filter_reload_status(gettext("Setting up logging information"));
     $rules .= filter_setup_logging_interfaces($FilterIflist);
     $rules .= "\n";
@@ -541,7 +542,7 @@ function filter_configure_sync($verbose = false)
     $rules .= filter_generate_ipsec_rules($FilterIflist);
     $rules .= $fw->anchorToText('fw', 'tail');
 
-    unset($aliases, $gateways, $natrules);
+    unset($aliases, $natrules);
 
     update_filter_reload_status(gettext("Executing packet filter reload"));
 
@@ -918,83 +919,6 @@ function filter_generate_aliases(&$FilterIflist)
 
     return $aliases;
 }
-
-function filter_generate_gateways()
-{
-    global $config, $GatewaysList;
-
-    $rules = "# Gateways\n";
-
-    update_filter_reload_status(gettext("Creating gateway group item..."));
-
-    /* Lookup Gateways to be used in filter rules once */
-    $GatewaysList = return_gateways_array(false, true);
-    $GatewayGroupsList = return_gateway_groups_array();
-
-    if (is_array($GatewaysList)) {
-        foreach ($GatewaysList as $gwname => $gateway) {
-            $int = $gateway['interface'];
-            $gwip = $gateway['gateway'];
-            $route = "";
-            if (is_ipaddr($gwip) && !empty($int)) {
-                $route = "route-to ( {$int} {$gwip} )";
-            }
-            if (($route === "") && isset($config['system']['skip_rules_gw_down'])) {
-                unset($GatewaysList[$gwname]);
-            }
-            else {
-                $rules .= "GW{$gwname} = \" {$route} \"\n";
-            }
-        }
-    }
-
-    if (is_array($GatewayGroupsList)) {
-        foreach ($GatewayGroupsList as $gateway => $members) {
-            $route = "";
-            if (count($members) > 0) {
-                $foundlb = 0;
-                $routeto = "";
-                foreach($members as $idx => $member) {
-                    $int = $member['int'];
-                    $gatewayip = $member['gwip'];
-                    if (($int <> "") && is_ipaddr($gatewayip)) {
-                        if ($member['weight'] > 1) {
-                            $routeto .= str_repeat("( {$int} {$gatewayip} ) ", $member['weight']);
-                        } else {
-                            $routeto .= "( {$int} {$gatewayip} ) ";
-                        }
-                        $foundlb++;
-                    } else {
-                        log_error(sprintf('An error occurred while trying to find the interface got %s. The rule has not been added.', $gatewayip));
-                    }
-                }
-                $route = "";
-                if ($foundlb > 0) {
-                    $route = " route-to { {$routeto} } ";
-                    if ($foundlb > 1) {
-                        $route .= " round-robin ";
-                        if (isset($config['system']['lb_use_sticky'])) {
-                            $route .= " sticky-address ";
-                        }
-                    }
-                }
-            }
-            if (($route === "") && isset($config['system']['skip_rules_gw_down'])) {
-                unset($GatewayGroupsList[$gateway]);
-            } else {
-                $rules .= "GW{$gateway} = \" {$route} \"\n";
-            }
-        }
-    }
-
-    /* Create a global array to avoid errors on rulesets. */
-    $GatewaysList = $GatewaysList + $GatewayGroupsList;
-
-    $rules .= "\n";
-
-    return $rules;
-}
-
 
 /* returns space separated list of directly connected networks
  * optionally returns an array instead, including friendly interface and gateway (if applicable)
