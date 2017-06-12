@@ -45,6 +45,8 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
             Config::getInstance()->object()->tests->OPNsense->TestModel['version'] = '0.0.0';
             Config::getInstance()->object()->tests->OPNsense->TestModel->general->FromEmail = "sample@example.com";
         }
+        BaseModelTest::$model = new BaseModel\TestModel();
+        $this->assertEquals((string)BaseModelTest::$model->general->FromEmail, 'sample@example.com');
     }
 
     /**
@@ -158,6 +160,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     {
         // nothing changed, valid config
         BaseModelTest::$model->serializeToConfig();
+        $this->assertInstanceOf('tests\OPNsense\Base\BaseModel\TestModel', BaseModelTest::$model);
     }
 
     /**
@@ -262,6 +265,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
             $node->number = $count;
         }
         BaseModelTest::$model->serializeToConfig();
+        $this->assertInstanceOf('tests\OPNsense\Base\BaseModel\TestModel', BaseModelTest::$model);
     }
 
     /**
@@ -273,6 +277,9 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         BaseModelTest::$model->AllOrNone->value2 = "";
         BaseModelTest::$model->AllOrNone->value3 = "";
         BaseModelTest::$model->serializeToConfig();
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value1, '');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value2, '');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value3, '');
     }
 
     /**
@@ -286,6 +293,9 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         BaseModelTest::$model->AllOrNone->value2 = "X";
         BaseModelTest::$model->AllOrNone->value3 = "";
         BaseModelTest::$model->serializeToConfig();
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value1, '');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value2, 'X');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value3, '');
     }
 
     /**
@@ -297,5 +307,8 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         BaseModelTest::$model->AllOrNone->value2 = "X2";
         BaseModelTest::$model->AllOrNone->value3 = "X3";
         BaseModelTest::$model->serializeToConfig();
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value1, null);
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value2, null);
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value3, null);
     }
 }
