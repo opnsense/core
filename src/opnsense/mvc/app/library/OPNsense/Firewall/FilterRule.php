@@ -340,7 +340,7 @@ class FilterRule
                     }
                 }
                 // restructure state settings for easier output parsing
-                if (!empty($tmp['statetype'])) {
+                if (!empty($tmp['statetype']) && $tmp['type'] == 'pass' ) {
                     $tmp['state'] = array('type' => 'keep', 'options' => array());
                     switch ($tmp['statetype']) {
                         case 'none':
