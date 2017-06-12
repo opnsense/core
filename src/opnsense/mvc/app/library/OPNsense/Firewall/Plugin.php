@@ -78,6 +78,7 @@ class Plugin
                 if (Util::isIpAddress($gw['gateway']) && !empty($gw['interface'])) {
                     $this->gatewayMapping[$key] = array("logic" => "route-to ( {$gw['interface']} {$gw['gateway']} )",
                                                         "interface" => $gw['interface'],
+                                                        "gateway" => $gw['gateway'],
                                                         "type" => "gateway");
                 }
             }
@@ -120,9 +121,18 @@ class Plugin
     public function getInterfaceGateways($intf)
     {
         $result = array();
+        $protos_found = array();
         foreach ($this->gatewayMapping as $key => $gw) {
             if ($gw['type'] == 'gateway' && $gw['interface'] == $intf) {
-                $result[] = $key;
+                if (strstr($gw['gateway'], ':')) {
+                    $proto = 'v6';
+                } else {
+                    $proto = 'v4';
+                }
+                if (!in_array($proto, $protos_found)) {
+                    $result[] = $key;
+                    $protos_found[] = $proto;
+                }
             }
         }
         return $result;
