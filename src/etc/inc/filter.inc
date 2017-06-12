@@ -583,7 +583,6 @@ function filter_configure_sync($verbose = false)
 
     update_filter_reload_status(gettext("Cleanup schedule states"));
     foreach ($sched_kill_states as $label) {
-        echo $label . "\n";
         mwexecf('/sbin/pfctl -k label -k %s', $label);
     }
 
