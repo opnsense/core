@@ -50,11 +50,11 @@ class FilterRule
         'reply' =>  'parsePlain',
         'ipprotocol' => 'parsePlain',
         'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
-        'from' => 'parsePlain,from {,}',
-        'from_port' => 'parsePlain, port {,}',
+        'from' => 'parsePlainCurly,from ',
+        'from_port' => 'parsePlainCurly, port ',
         'os' => 'parsePlain, os {","}',
-        'to' => 'parsePlain,to {,}',
-        'to_port' => 'parsePlain, port {,}',
+        'to' => 'parsePlainCurly,to ',
+        'to_port' => 'parsePlainCurly, port ',
         'icmp-type' => 'parsePlain,icmp-type {,}',
         'icmp6-type' => 'parsePlain,icmp6-type {,}',
         'flags' => 'parsePlain, flags ',
@@ -89,6 +89,23 @@ class FilterRule
     {
         if (!empty($maxsize) && strlen($value) > $maxsize) {
             $value = substr($value, 0, $maxsize);
+        }
+        return $value == null || $value === '' ? '' : $prefix . $value . $suffix . ' ';
+    }
+
+    /**
+     * parse plain data
+     * @param string $value field value
+     * @param string $prefix prefix when $value is provided
+     * @return string
+     */
+    private function parsePlainCurly($value, $prefix = "")
+    {
+        $suffix = "";
+        if (strpos($value, '$') === false) {
+            // don't wrap aliases in curly brackets
+            $prefix = $prefix . "{";
+            $suffix = "}";
         }
         return $value == null || $value === '' ? '' : $prefix . $value . $suffix . ' ';
     }
