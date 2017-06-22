@@ -63,6 +63,7 @@ result = dict()
 for conns in s.list_conns():
     for connection_id in conns:
         result[connection_id] = parse_sa(conns[connection_id])
+        result[connection_id]['routed'] = True
         result[connection_id]['local-class'] = []
         result[connection_id]['remote-class'] = []
         # parse local-% and remote-% keys
@@ -83,6 +84,7 @@ for sas in s.list_sas():
     for sa in sas:
         if sa not in result:
             result[sa] = parse_sa(sas[sa])
+            result[sa]['routed'] = False
         result[sa]['sas'].append(sas[sa])
 
 print (ujson.dumps(result))

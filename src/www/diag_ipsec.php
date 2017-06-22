@@ -210,6 +210,7 @@ include("head.inc");
                                 </td>
                                 <td class="hidden-xs hidden-sm">
                                   <?= $child_sa['state']?>
+                                  <?= $ipsec_conn['routed'] ? '<br/>'.gettext("Routed") : "";?>
                                 </td>
                                 <td>
                                     <small>
