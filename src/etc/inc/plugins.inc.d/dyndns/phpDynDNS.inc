@@ -1282,7 +1282,7 @@ class updatedns {
     }
 
     function _checkIP() {
-        $ip_address = get_dyndns_ip($this->_if, $his->_useIPv6 ? 6 : 4);
+        $ip_address = get_dyndns_ip($this->_if, $this->_useIPv6 ? 6 : 4);
         if (!is_ipaddr($ip_address)) {
             if ($this->_dnsVerboseLog) {
                 log_error("Dynamic DNS ({$this->_dnsHost}): IP address could not be extracted");
