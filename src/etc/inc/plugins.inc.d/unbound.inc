@@ -115,26 +115,12 @@ function unbound_optimization()
         $optimization['outgoing_range'] = "outgoing-range: {4096}";
     }
 
-    /*
-     * Larger socket buffer for busy servers
-     * Check that it is set to 4MB (by default the OS has it configured to 4MB)
-     */
-    if (isset($config['sysctl']['item'])) {
-        foreach ($config['sysctl']['item'] as $tunable) {
-            if ($tunable['tunable'] == 'kern.ipc.maxsockbuf') {
-                $so = floor(($tunable['value']/1024/1024)-1);
-                // Check to ensure that the number is not a negative
-                if ($so > 0) {
-                    $optimization['so_rcvbuf'] = "so-rcvbuf: {$so}m";
-                } else {
-                    unset($optimization['so_rcvbuf']);
-                }
-            }
-        }
-        // Safety check in case kern.ipc.maxsockbuf is not available.
-        if (!isset($optimization['so_rcvbuf'])) {
-            $optimization['so_rcvbuf'] = "#so-rcvbuf: 4m";
-        }
+    /* Larger socket buffer for busy servers */
+    $so = floor((get_default_sysctl_value('kern.ipc.maxsockbuf')/1024/1024)-1);
+    if ($so > 0) {
+        $optimization['so_rcvbuf'] = "so-rcvbuf: {$so}m";
+    } else {
+        unset($optimization['so_rcvbuf']);
     }
 
     return $optimization;
