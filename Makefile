@@ -97,9 +97,9 @@ CORE_DEPENDS?=		apinger \
 			opnsense-lang \
 			opnsense-update \
 			pam_opnsense \
-			pecl-radius${CORE_PHP} \
+			pecl-radius \
 			pftop \
-			phalcon${CORE_PHP} \
+			phalcon \
 			php${CORE_PHP}-ctype \
 			php${CORE_PHP}-curl \
 			php${CORE_PHP}-dom \
