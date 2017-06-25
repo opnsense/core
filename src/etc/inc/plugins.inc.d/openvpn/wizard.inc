@@ -26,7 +26,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("openvpn.inc");
+require_once("plugins.inc.d/openvpn.inc");
 require_once("util.inc");
 
 function cert_get_subject_hash($crt)
@@ -731,8 +731,10 @@ function step12_submitphpaction()
 
     $config['openvpn']['openvpn-server'][] = $server;
 
-    openvpn_resync('server', $server);
     write_config();
+
+    openvpn_configure_single($server['vpnid']);
+    openvpn_configure_csc();
 
     header(url_safe('Location: /vpn_openvpn_server.php'));
     exit;

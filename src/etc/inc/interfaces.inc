@@ -1,33 +1,33 @@
 <?php
 
 /*
-    Copyright (C) 2004-2008 Scott Ullrich
-    Copyright (C) 2008-2009 Ermal Luçi
-    Copyright (C) 2005 Espen Johansen
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notices,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notices, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2004-2008 Scott Ullrich
+ * Copyright (C) 2008-2009 Ermal Luçi
+ * Copyright (C) 2005 Espen Johansen
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("interfaces.lib.inc");
 require_once("gwlb.inc");
@@ -2516,26 +2516,9 @@ function interface_virtual_create($interface)
         interfaces_gre_configure(0, false, $interface);
     } elseif (substr($interface, 0, 3) == 'gif') {
         interfaces_gif_configure(0, false, $interface);
-    } elseif (substr($interface, 0, 5) == "ovpns") {
-        if (isset($config['openvpn']['openvpn-server'])) {
-            foreach ($config['openvpn']['openvpn-server'] as $server) {
-                if ($interface == "ovpns{$server['vpnid']}") {
-                    log_error("OpenVPN: Resync server {$server['description']}");
-                    openvpn_resync('server', $server);
-                }
-            }
-            unset($server);
-        }
-    } elseif (substr($interface, 0, 5) == "ovpnc") {
-        if (isset($config['openvpn']['openvpn-client'])) {
-            foreach ($config['openvpn']['openvpn-client'] as $client) {
-                if ($interface == "ovpnc{$client['vpnid']}") {
-                    log_error("OpenVPN: Resync server {$client['description']}");
-                    openvpn_resync('client', $client);
-                }
-            }
-            unset($client);
-        }
+    } elseif (substr($interface, 0, 4) == 'ovpn') {
+        /* XXX this looks like a plugin spot... */
+        openvpn_configure_interface($interface);
     } elseif (substr($interface, 0, 4) == 'lagg') {
         interfaces_lagg_configure($interface);
     } elseif (substr($interface, 0, 6) == 'bridge') {
