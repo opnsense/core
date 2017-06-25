@@ -116,11 +116,11 @@ function unbound_optimization()
     }
 
     /* Larger socket buffer for busy servers */
-    $so = floor((get_default_sysctl_value('kern.ipc.maxsockbuf')/1024/1024)-1);
+    $so = floor(get_default_sysctl_value('kern.ipc.maxsockbuf')/1024/1024);
     if ($so > 0) {
         $optimization['so_rcvbuf'] = "so-rcvbuf: {$so}m";
     } else {
-        unset($optimization['so_rcvbuf']);
+        $optimization['so_rcvbuf'] = '#so-rcvbuf: 4m';
     }
 
     return $optimization;
