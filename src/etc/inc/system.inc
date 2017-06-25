@@ -760,7 +760,7 @@ function system_syslogd_start($verbose = false)
         $syslogconfs['gateways'] = array('facility' => array('apinger'), 'remote' => 'apinger');
         $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');
         $syslogconfs['ppps'] = array('facility' => array('ppp'));
-        $syslogconfs['resolver'] = array('facility' => array('dnsmasq', 'filterdns', 'unbound'));
+        $syslogconfs['resolver'] = array('facility' => array('filterdns', 'unbound'), 'remote' => 'dns');
         $syslogconfs['routing'] = array('facility' => array('radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'));
         $syslogconfs['wireless'] = array('facility' => array('hostapd'), 'remote' => 'hostapd');
 
@@ -799,6 +799,10 @@ EOD;
         if (!empty($syslogcfg['enable'])) {
             if (isset($syslogcfg['vpn'])) {
                 $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local3.*");
+            }
+            if (isset($syslogcfg['dns'])) {
+                /* XXX needs testing */
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local5.*");
             }
             if (isset($syslogcfg['portalauth'])) {
                 $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local4.*");

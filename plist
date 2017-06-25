@@ -456,6 +456,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Netflow.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Netflow.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/DynamicDNS/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/DynamicDNS/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/ACL/ACL.xml
@@ -477,6 +479,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.php
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt
@@ -552,6 +556,7 @@
 /usr/local/opnsense/scripts/filter/delete_table.py
 /usr/local/opnsense/scripts/filter/download_geoip.py
 /usr/local/opnsense/scripts/filter/kill_table.py
+/usr/local/opnsense/scripts/filter/list_counters.py
 /usr/local/opnsense/scripts/filter/list_osfp.py
 /usr/local/opnsense/scripts/filter/list_pfsync.py
 /usr/local/opnsense/scripts/filter/list_states.py
@@ -624,6 +629,7 @@
 /usr/local/opnsense/scripts/suricata/queryInstalledRules.py
 /usr/local/opnsense/scripts/suricata/rule-updater.py
 /usr/local/opnsense/scripts/suricata/setup.sh
+/usr/local/opnsense/scripts/system/list_interrupts.py
 /usr/local/opnsense/scripts/system/rfc5246_cipher_suites.csv
 /usr/local/opnsense/scripts/system/ssl_ciphers.py
 /usr/local/opnsense/scripts/systemhealth/activity.py
@@ -972,6 +978,7 @@
 /usr/local/www/diag_logs_auth.php
 /usr/local/www/diag_logs_common.inc
 /usr/local/www/diag_logs_dhcp.php
+/usr/local/www/diag_logs_dnsmasq.php
 /usr/local/www/diag_logs_filter.php
 /usr/local/www/diag_logs_filter_dynamic.php
 /usr/local/www/diag_logs_filter_plain.php

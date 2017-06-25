@@ -1,0 +1,26 @@
+<acl>
+    <page-services-dnsforwarder>
+        <name>Services: Dnsmasq DNS: Settings</name>
+        <patterns>
+            <pattern>services_dnsmasq.php*</pattern>
+        </patterns>
+    </page-services-dnsforwarder>
+    <page-services-dnsforwarder-editdomainoverride>
+        <name>Services: Dnsmasq DNS: Edit Domain Override</name>
+        <patterns>
+            <pattern>services_dnsmasq_domainoverride_edit.php*</pattern>
+        </patterns>
+    </page-services-dnsforwarder-editdomainoverride>
+    <page-services-dnsforwarder-edithost>
+        <name>Services: Dnsmasq DNS: Edit Host</name>
+        <patterns>
+            <pattern>services_dnsmasq_edit.php*</pattern>
+        </patterns>
+    </page-services-dnsforwarder-edithost>
+    <page-diagnostics-logs-dnsmasq>
+        <name>Services: Dnsmasq DNS: Log File</name>
+        <patterns>
+            <pattern>diag_logs_dnsmasq.php*</pattern>
+        </patterns>
+    </page-diagnostics-logs-dnsmasq>
+</acl>
