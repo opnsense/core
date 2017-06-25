@@ -98,6 +98,7 @@ CORE_DEPENDS?=		apinger \
 			pecl-radius${CORE_PHP} \
 			pftop \
 			phalcon${CORE_PHP} \
+			php${CORE_PHP} \
 			php${CORE_PHP}-ctype \
 			php${CORE_PHP}-curl \
 			php${CORE_PHP}-dom \
