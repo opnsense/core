@@ -33,9 +33,6 @@
 /usr/local/etc/inc/notices.smtp.inc
 /usr/local/etc/inc/plugins.inc
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
-/usr/local/etc/inc/plugins.inc.d/dyndns.inc
-/usr/local/etc/inc/plugins.inc.d/dyndns/phpDynDNS.inc
-/usr/local/etc/inc/plugins.inc.d/dyndns/r53.inc
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc
 /usr/local/etc/inc/plugins.inc.d/ipsec.inc
 /usr/local/etc/inc/plugins.inc.d/ipsec/auth-user.php
@@ -82,7 +79,6 @@
 /usr/local/etc/rc.d/configd
 /usr/local/etc/rc.d/flowd_aggregate
 /usr/local/etc/rc.d/netflow
-/usr/local/etc/rc.dyndns
 /usr/local/etc/rc.expireaccounts
 /usr/local/etc/rc.filter_configure
 /usr/local/etc/rc.filter_synchronize
@@ -454,8 +450,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Netflow.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/Menu/Menu.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/DynamicDNS/ACL/ACL.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/DynamicDNS/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/IDS.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/IDS.xml
@@ -641,7 +635,6 @@
 /usr/local/opnsense/service/conf/actions.d/actions_cron.conf
 /usr/local/opnsense/service/conf/actions.d/actions_dhcpd.conf
 /usr/local/opnsense/service/conf/actions.d/actions_dns.conf
-/usr/local/opnsense/service/conf/actions.d/actions_dyndns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_filter.conf
 /usr/local/opnsense/service/conf/actions.d/actions_firmware.conf
 /usr/local/opnsense/service/conf/actions.d/actions_ids.conf
@@ -1060,8 +1053,6 @@
 /usr/local/www/services_dnsmasq.php
 /usr/local/www/services_dnsmasq_domainoverride_edit.php
 /usr/local/www/services_dnsmasq_edit.php
-/usr/local/www/services_dyndns.php
-/usr/local/www/services_dyndns_edit.php
 /usr/local/www/services_ntpd.php
 /usr/local/www/services_ntpd_gps.php
 /usr/local/www/services_ntpd_pps.php
@@ -1129,7 +1120,6 @@
 /usr/local/www/widgets/api/plugins/temperature.inc
 /usr/local/www/widgets/api/plugins/traffic.inc
 /usr/local/www/widgets/include/carp_status.inc
-/usr/local/www/widgets/include/dyn_dns_status.inc
 /usr/local/www/widgets/include/gateways.inc
 /usr/local/www/widgets/include/interface_statistics.inc
 /usr/local/www/widgets/include/interfaces.inc
@@ -1142,7 +1132,6 @@
 /usr/local/www/widgets/include/thermal_sensors.inc
 /usr/local/www/widgets/include/traffic_graph.inc
 /usr/local/www/widgets/widgets/carp_status.widget.php
-/usr/local/www/widgets/widgets/dyn_dns_status.widget.php
 /usr/local/www/widgets/widgets/gateways.widget.php
 /usr/local/www/widgets/widgets/interface_list.widget.php
 /usr/local/www/widgets/widgets/interface_statistics.widget.php
