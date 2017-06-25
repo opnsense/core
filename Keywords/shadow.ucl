@@ -10,11 +10,6 @@
 #
 # This will install the somefile.conf.sample and automatically copy to
 # somefile.conf if it doesn't exist. On deinstall it will be removed.
-#
-# This replaces the old pattern:
-#  @unexec if cmp -s %D/etc/pkgtools.conf %D/etc/pkgtools.conf.sample; then rm -f %D/etc/pkgtools.conf; fi
-#  etc/pkgtools.conf.sample
-#  @exec [ -f %B/pkgtools.conf ] || cp %B/%f %B/pkgtools.conf
 
 actions: [file(1)]
 arguments: true
