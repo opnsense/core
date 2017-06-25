@@ -45,7 +45,7 @@ CORE_ABI?=	17.1
 CORE_ARCH?=	${ARCH}
 CORE_BIND?=	911
 CORE_OPENVPN?=	# empty for version 2.4
-CORE_PHP?=	70
+CORE_PHP?=	71
 CORE_PY?=	27
 
 _FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
@@ -97,9 +97,9 @@ CORE_DEPENDS?=		apinger \
 			opnsense-lang \
 			opnsense-update \
 			pam_opnsense \
-			pecl-radius \
+			pecl-radius${CORE_PHP} \
 			pftop \
-			phalcon \
+			phalcon${CORE_PHP} \
 			php${CORE_PHP}-ctype \
 			php${CORE_PHP}-curl \
 			php${CORE_PHP}-dom \
