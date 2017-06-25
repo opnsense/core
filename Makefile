@@ -43,7 +43,6 @@ CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 
 CORE_ABI?=	17.1
 CORE_ARCH?=	${ARCH}
-CORE_BIND?=	911
 CORE_OPENVPN?=	# empty for version 2.4
 CORE_PHP?=	71
 CORE_PY?=	27
@@ -73,7 +72,6 @@ CORE_WWW?=		https://opnsense.org/
 CORE_DEPENDS_amd64?=	beep bsdinstaller
 CORE_DEPENDS_i386?=	${CORE_DEPENDS_amd64}
 CORE_DEPENDS?=		apinger \
-			bind${CORE_BIND} \
 			ca_root_nss \
 			choparp \
 			cpustats \

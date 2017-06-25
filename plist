@@ -47,7 +47,6 @@
 /usr/local/etc/inc/plugins.inc.d/openvpn/tls-verify.php
 /usr/local/etc/inc/plugins.inc.d/openvpn/wizard.inc
 /usr/local/etc/inc/plugins.inc.d/pf.inc
-/usr/local/etc/inc/plugins.inc.d/rfc2136.inc
 /usr/local/etc/inc/plugins.inc.d/squid.inc
 /usr/local/etc/inc/plugins.inc.d/squid/auth-user.php
 /usr/local/etc/inc/plugins.inc.d/suricata.inc
@@ -127,7 +126,6 @@
 /usr/local/etc/rc.reload_interfaces
 /usr/local/etc/rc.resolv_conf_generate
 /usr/local/etc/rc.restart_webgui
-/usr/local/etc/rc.rfc2136
 /usr/local/etc/rc.shutdown
 /usr/local/etc/rc.sshd
 /usr/local/etc/rc.syshook
@@ -470,8 +468,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/RFC2136/ACL/ACL.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/RFC2136/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Migrations/M1_0_0.php
@@ -657,7 +653,6 @@
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
 /usr/local/opnsense/service/conf/actions.d/actions_proxy.conf
-/usr/local/opnsense/service/conf/actions.d/actions_rfc2136.conf
 /usr/local/opnsense/service/conf/actions.d/actions_routedns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_system.conf
 /usr/local/opnsense/service/conf/actions.d/actions_systemhealth.conf
@@ -1071,8 +1066,6 @@
 /usr/local/www/services_ntpd_gps.php
 /usr/local/www/services_ntpd_pps.php
 /usr/local/www/services_opendns.php
-/usr/local/www/services_rfc2136.php
-/usr/local/www/services_rfc2136_edit.php
 /usr/local/www/services_router_advertisements.php
 /usr/local/www/services_unbound.php
 /usr/local/www/services_unbound_acls.php
@@ -1144,7 +1137,6 @@
 /usr/local/www/widgets/include/log.inc
 /usr/local/www/widgets/include/ntp_status.inc
 /usr/local/www/widgets/include/openvpn.inc
-/usr/local/www/widgets/include/rfc2136.inc
 /usr/local/www/widgets/include/services_status.inc
 /usr/local/www/widgets/include/system_log.inc
 /usr/local/www/widgets/include/thermal_sensors.inc
@@ -1159,7 +1151,6 @@
 /usr/local/www/widgets/widgets/ntp_status.widget.php
 /usr/local/www/widgets/widgets/openvpn.widget.php
 /usr/local/www/widgets/widgets/picture.widget.php
-/usr/local/www/widgets/widgets/rfc2136.widget.php
 /usr/local/www/widgets/widgets/rss.widget.php
 /usr/local/www/widgets/widgets/services_status.widget.php
 /usr/local/www/widgets/widgets/system_information.widget.php
