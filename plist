@@ -65,6 +65,7 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20160630
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/opnsense-update.deciso.com.20160725
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20161210
+/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20170625
 /usr/local/etc/rc
 /usr/local/etc/rc.backup_captiveportal
 /usr/local/etc/rc.backup_dhcpleases
