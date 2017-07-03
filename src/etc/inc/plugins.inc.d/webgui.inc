@@ -324,6 +324,8 @@ EOD;
         $ssl_config = "\n";
         $ssl_config .= "## ssl configuration\n";
         $ssl_config .= "ssl.engine = \"enable\"\n";
+        $ssl_config .= "ssl.dh-file = \"/usr/local/etc/dh-parameters.4096\"\n";
+        $ssl_config .= "ssl.ec-curve = \"secp384r1\"\n";
         $ssl_config .= "ssl.pemfile = \"/var/etc/{$cert_location}\"\n\n";
 
         // Harden SSL a bit for PCI conformance testing
@@ -333,7 +335,6 @@ EOD;
         } else {
             $ssl_config .= 'ssl.cipher-list = "'.$config['system']['webgui']['ssl-ciphers'].'"' . PHP_EOL;
         }
-
         if(!(empty($ca) || (strlen(trim($ca)) == 0))) {
             $ssl_config .= "ssl.ca-file = \"/var/etc/{$ca_location}\"\n\n";
         }
