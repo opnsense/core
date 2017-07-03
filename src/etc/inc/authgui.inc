@@ -170,7 +170,8 @@ function session_auth(&$Login_Error)
     if (session_status() == PHP_SESSION_NONE) {
         if (session_start()) {
             $sess_name = session_name();
-            setcookie($sess_name, session_id(), null, '/', null, null, ($config['system']['webgui']['protocol'] == "https"));
+            $secure = $config['system']['webgui']['protocol'] == "https";
+            setcookie(session_name(), session_id(), null, '/', null, $secure, true);
         }
     }
 

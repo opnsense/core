@@ -43,11 +43,14 @@ class LegacyCSRF
 
     private function Session()
     {
+        global $config;
         if ($this->session == null) {
             $this->session = new Phalcon\Session\Adapter\Files();
             $this->session->start();
-            $secure = $config['system']['webgui']['protocol'] == 'https';
-            setcookie(session_name(), session_id(), null, '/', null, $secure, true);
+            if (!isset($_COOKIE[session_name()])) {
+                $secure = $config['system']['webgui']['protocol'] == 'https';
+                setcookie(session_name(), session_id(), null, '/', null, $secure, true);
+            }
             $this->di->setShared('session', $this->session);
         }
     }
