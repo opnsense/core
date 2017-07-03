@@ -43,6 +43,7 @@ class LegacyCSRF
 
     private function Session()
     {
+        global $config;
         if ($this->session == null) {
             $this->session = new Phalcon\Session\Adapter\Files();
             $this->session->start();
