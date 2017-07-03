@@ -168,11 +168,7 @@ function session_auth(&$Login_Error)
     );
 
     if (session_status() == PHP_SESSION_NONE) {
-        if (session_start()) {
-            $sess_name = session_name();
-            $secure = $config['system']['webgui']['protocol'] == "https";
-            setcookie(session_name(), session_id(), null, '/', null, $secure, true);
-        }
+        session_start();
     }
 
     // Detect protocol change
@@ -265,7 +261,8 @@ function session_auth(&$Login_Error)
         $_SESSION = array();
 
         if (isset($_COOKIE[session_name()])) {
-            setcookie(session_name(), '', time()-42000, '/');
+            $secure = $config['system']['webgui']['protocol'] == "https";
+            setcookie(session_name(), '', time()-42000, '/', null, $secure, true);
         }
 
         /* and destroy it */
