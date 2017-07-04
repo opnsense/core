@@ -364,21 +364,4 @@ function filter_core_rules_system($fw, $defaults)
         );
     }
 
-    // out from this Firewall, using the selected gateway.
-    foreach ($fw->getInterfaceMapping() as $ifdescr => $ifcfg) {
-        if (!isset($ifcfg['virtual'])) {
-            foreach ($fw->getInterfaceGateways($ifcfg['if']) as $gwname) {
-                $fw->registerFilterRule(100000,
-                  array('from' => $ifcfg['if'], 'direction' => 'out', 'gateway' => $gwname,
-                    'destination' => array('network'=> $ifdescr, "not" => true),
-                    'statetype' => 'keep',
-                    'allowopts' => true,
-                    'quick' => false,
-                    'label' => "let out anything from firewall host itself"),
-                  $defaults['pass']
-                );
-            }
-        }
-    }
-
 }
