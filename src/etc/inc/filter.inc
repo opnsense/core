@@ -1591,66 +1591,6 @@ function filter_nat_rules_generate(&$FilterIflist)
         }
     }
 
-    /* ipsec nat */
-    if (isset($config['ipsec']['enable'])) {
-        if (isset($config['ipsec']['phase2'])) {
-          foreach ($config['ipsec']['phase2'] as $ph2ent) {
-              if ($ph2ent['mode'] != 'transport' && !empty($ph2ent['natlocalid']) && !isset($ph2ent['disabled'])) {
-                  if (!is_array($ph2ent['localid'])) {
-                      $ph2ent['localid'] = array();
-                  }
-                  $ph2ent['localid']['mode'] = $ph2ent['mode'];
-                  $local_subnet = ipsec_idinfo_to_cidr($ph2ent['localid']);
-                  if (empty($local_subnet) || $local_subnet == "0.0.0.0/0") {
-                      continue;
-                  } elseif (!is_subnet($local_subnet) && !is_ipaddr($local_subnet)) {
-                      continue;
-                  }
-                  if (!is_array($ph2ent['natlocalid'])) {
-                      $ph2ent['natlocalid'] = array();
-                  }
-                  $ph2ent['natlocalid']['mode'] = $ph2ent['mode'];
-                  $natlocal_subnet = ipsec_idinfo_to_cidr($ph2ent['natlocalid']);
-                  if (empty($natlocal_subnet) || $natlocal_subnet == "0.0.0.0/0") {
-                      continue;
-                  } elseif (!is_subnet($natlocal_subnet) && !is_ipaddr($natlocal_subnet)) {
-                      continue;
-                  }
-                  if (!is_array($ph2ent['remoteid'])) {
-                      $ph2ent['remoteid'] = array();
-                  }
-                  $ph2ent['remoteid']['mode'] = $ph2ent['mode'];
-                  $remote_subnet = ipsec_idinfo_to_cidr($ph2ent['remoteid']);
-                  if (empty($remote_subnet)) {
-                      continue;
-                  } elseif (!is_subnet($remote_subnet) && !is_ipaddr($remote_subnet)) {
-                      continue;
-                  }
-                  if ($remote_subnet == "0.0.0.0/0") {
-                      $remote_subnet = "any";
-                  }
-                  /* Try to enforce a specific NAT type or choose automatically. */
-                  switch(isset($ph2ent['natlocalid']['nattype']) ? $ph2ent['natlocalid']['nattype'] : null) {
-                      case "binat":
-                          $nattype = "binat";
-                          break;
-                      case "nat":
-                          $nattype = "nat";
-                          break;
-                      default:
-                          if (is_ipaddr($natlocal_subnet) && !is_ipaddr($local_subnet)) {
-                              $nattype = "nat";
-                          } else {
-                              $nattype = "binat";
-                          }
-                          break;
-                  }
-                  $natrules .= "{$nattype} on enc0 from {$local_subnet} to {$remote_subnet} -> {$natlocal_subnet}\n";
-                }
-            }
-        }
-    }
-
     if (isset($config['nat']['outbound']['mode']) && $config['nat']['outbound']['mode'] == "disabled") {
         $natrules .= "\n# Outbound NAT rules are disabled\n";
     }

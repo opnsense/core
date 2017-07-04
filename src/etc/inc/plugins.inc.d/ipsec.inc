@@ -969,7 +969,6 @@ EOD;
         chmod("/usr/local/etc/ipsec.secrets", 0600);
         unset($pskconf);
 
-        $natfilterrules = false;
         /* begin ipsec.conf */
         $ipsecconf = "";
         if (count($a_phase1))  {
@@ -1157,9 +1156,6 @@ EOD;
                                 if (!is_ipaddr($leftsubnet_data) && !is_subnet($leftsubnet_data) && ($leftsubnet_data != "0.0.0.0/0")) {
                                     log_error("Invalid IPsec Phase 2 \"{$ph2ent['descr']}\" - {$ph2ent['localid']['type']} has no subnet.");
                                     continue;
-                                }
-                                if (!empty($ph2ent['natlocalid'])) {
-                                    $natfilterrules = true;
                                 }
                             }
 
@@ -1407,10 +1403,6 @@ EOD;
         mwexec('/usr/local/sbin/ipsec reload', false);
     } else {
         mwexec("/usr/local/sbin/ipsec start", false);
-    }
-
-    if ($natfilterrules == true) {
-        filter_configure();
     }
 
     /* start filterdns, if necessary */
