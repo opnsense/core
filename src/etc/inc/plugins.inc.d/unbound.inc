@@ -106,21 +106,12 @@ function unbound_optimization()
         $optimization['key_cache_slabs'] = "key-cache-slabs: 4";
     }
 
-
     // More outgoing connections per thread otherwise assign a default of 4096 for a single thread
     if ($numprocs > 0) {
         $or = (1024/$numprocs) - 50;
         $optimization['outgoing_range'] = "outgoing-range: {$or}";
     } else {
         $optimization['outgoing_range'] = "outgoing-range: {4096}";
-    }
-
-    /* Larger socket buffer for busy servers */
-    $so = floor(get_default_sysctl_value('kern.ipc.maxsockbuf')/1024/1024);
-    if ($so > 0) {
-        $optimization['so_rcvbuf'] = "so-rcvbuf: {$so}m";
-    } else {
-        $optimization['so_rcvbuf'] = '#so-rcvbuf: 4m';
     }
 
     return $optimization;
