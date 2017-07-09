@@ -212,16 +212,16 @@ POSSIBILITY OF SUCH DAMAGE.
             // reboot required, inform the user.
             BootstrapDialog.show({
                 type:BootstrapDialog.TYPE_WARNING,
-                title: 'Reboot required',
-                message: 'The firewall will be rebooted directly after this firmware update.',
+                title: "{{ lang._('Reboot required') }}",
+                message: "{{ lang._('The firewall will be rebooted directly after this firmware update.') }}",
                 buttons: [{
-                    label: 'Ok',
+                    label: "{{ lang._('OK') }}",
                     action: function(dialogRef){
                         dialogRef.close();
                         upgrade();
                     }
                 },{
-                    label: 'Abort',
+                    label: "{{ lang._('Abort') }}",
                     action: function(dialogRef){
                         dialogRef.close();
                     }
@@ -473,7 +473,17 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#audit').click(audit);
         // show upgrade message if there
         if ($('#message').html() != '') {
-            $('#message').attr('style', '');
+            BootstrapDialog.show({
+                type:BootstrapDialog.TYPE_WARNING,
+                title: "{{ lang._('End-of-Life Notice') }}",
+                message: $('#message').html(),
+                buttons: [{
+                    label: "{{ lang._('Close') }}",
+                    action: function(dialogRef){
+                        dialogRef.close();
+                    }
+                }]
+            });
         }
 
         // populate package information
