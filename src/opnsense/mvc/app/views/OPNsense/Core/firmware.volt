@@ -207,13 +207,18 @@ POSSIBILITY OF SUCH DAMAGE.
     /**
      *  check if a reboot is required, warn user or just upgrade
      */
-    function upgrade_ui(){
+    function upgrade_ui()
+    {
         if ( $.upgrade_needs_reboot == "1" ) {
+            reboot_mgs = "{{ lang._('The firewall will reboot directly after this firmware update.') }}";
+            if ($.upgrade_action == 'maj') {
+                reboot_msg = "{{ lang._('The firewall will download all firmware sets and reboot multiple times for this upgrade. All operating system files and packages will be reinstalled as a consequence. This may take several minutes to complete.') }}";
+            }
             // reboot required, inform the user.
             BootstrapDialog.show({
                 type:BootstrapDialog.TYPE_WARNING,
                 title: "{{ lang._('Reboot required') }}",
-                message: "{{ lang._('The firewall will be rebooted directly after this firmware update.') }}",
+                message: reboot_msg,
                 buttons: [{
                     label: "{{ lang._('OK') }}",
                     cssClass: 'btn-primary',
@@ -622,9 +627,9 @@ POSSIBILITY OF SUCH DAMAGE.
 <div class="container-fluid">
     <div class="row">
 <?php if (file_exists('/usr/local/opnsense/firmware-message')): ?>
-        <div id="message" style="display:none" class="alert alert-warning" role="alert"><?= @file_get_contents('/usr/local/opnsense/firmware-message') ?></div>
+        <div id="message" style="display:none;"><?= @file_get_contents('/usr/local/opnsense/firmware-message') ?></div>
         <div class="alert alert-warning" role="alert" style="min-height: 65px;">
-            <button class='btn btn-primary pull-right' id="upgrade_maj">{{ lang._('Upgrade instructions') }}</button>
+            <button class='btn pull-right' id="upgrade_maj">{{ lang._('Upgrade instructions') }}</button>
             <div style="margin-top: 8px;">{{ lang._('This software release has reached its designated end of life.') }}</div>
         </div>
 <?php endif ?>
