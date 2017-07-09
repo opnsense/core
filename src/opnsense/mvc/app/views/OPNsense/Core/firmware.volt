@@ -113,8 +113,12 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Upgrading...') }}");
         $("#audit").attr("style","display:none");
-        $("#upgrade").attr("style","");
-        $("#upgrade_progress").addClass("fa fa-spinner fa-pulse");
+        maj_suffix = '';
+        if ($.upgrade_action == 'maj') {
+            maj_suffix = '_maj';
+        }
+        $("#upgrade" + maj_suffix).attr("style","");
+        $("#upgrade_progress" + maj_suffix).addClass("fa fa-spinner fa-pulse");
 
         ajaxCall('/api/core/firmware/upgrade',{upgrade:$.upgrade_action},function() {
             $('#updatelist').empty();
@@ -207,21 +211,27 @@ POSSIBILITY OF SUCH DAMAGE.
     /**
      *  check if a reboot is required, warn user or just upgrade
      */
-    function upgrade_ui(){
+    function upgrade_ui()
+    {
         if ( $.upgrade_needs_reboot == "1" ) {
+            reboot_mgs = "{{ lang._('The firewall will reboot directly after this firmware update.') }}";
+            if ($.upgrade_action == 'maj') {
+                reboot_msg = "{{ lang._('The firewall will download all firmware sets and reboot multiple times for this upgrade. All operating system files and packages will be reinstalled as a consequence. This may take several minutes to complete.') }}";
+            }
             // reboot required, inform the user.
             BootstrapDialog.show({
                 type:BootstrapDialog.TYPE_WARNING,
-                title: 'Reboot required',
-                message: 'The firewall will be rebooted directly after this firmware update.',
+                title: "{{ lang._('Reboot required') }}",
+                message: reboot_msg,
                 buttons: [{
-                    label: 'Ok',
+                    label: "{{ lang._('OK') }}",
+                    cssClass: 'btn-warning',
                     action: function(dialogRef){
                         dialogRef.close();
                         upgrade();
                     }
                 },{
-                    label: 'Abort',
+                    label: "{{ lang._('Abort') }}",
                     action: function(dialogRef){
                         dialogRef.close();
                     }
@@ -253,8 +263,10 @@ POSSIBILITY OF SUCH DAMAGE.
                 $('#update_status').scrollTop($('#update_status')[0].scrollHeight);
             }
             if (data['status'] == 'done') {
+                $("#upgrade_progress_maj").removeClass("fa fa-spinner fa-pulse");
                 $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
                 $("#audit_progress").removeClass("fa fa-spinner fa-pulse");
+                $("#upgrade_maj").attr("style","display:none");
                 $("#upgrade").attr("style","display:none");
                 $("#audit").attr("style","");
                 if ($.upgrade_action == 'pkg') {
@@ -471,10 +483,40 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#checkupdate').click(updateStatus);
         $('#upgrade').click(upgrade_ui);
         $('#audit').click(audit);
-        // show upgrade message if there
-        if ($('#message').html() != '') {
-            $('#message').attr('style', '');
-        }
+        $('#upgrade_maj').click(function () {
+            $.upgrade_needs_reboot = 1;
+            $.upgrade_action = 'maj';
+            upgrade_ui();
+        });
+        $('#checkupdate_maj').click(function () {
+            $("#checkupdate_progress_maj").addClass("fa fa-spinner fa-pulse");
+            // empty call refreshes changelogs in the background
+            ajaxCall('/api/core/firmware/changelog/update', {}, function () {
+                $("#checkupdate_progress_maj").removeClass("fa fa-spinner fa-pulse");
+                BootstrapDialog.show({
+                    type:BootstrapDialog.TYPE_WARNING,
+                    title: "{{ lang._('Upgrade instructions') }}",
+                    message: $('#firmware-message').html(),
+                    buttons: [{
+<?php if (file_exists('/usr/local/opnsense/firmware-upgrade')): ?>
+                        label: "{{ lang._('Unlock upgrade') }}",
+                        cssClass: 'btn-warning',
+                        action: function (dialogRef) {
+                            dialogRef.close();
+                            $("#upgrade_maj").attr("style","");
+                            changelog($('#firmware-upgrade').text());
+                        }
+                    },{
+<?php endif ?>
+                        label: "{{ lang._('Close') }}",
+                        action: function (dialogRef) {
+                            dialogRef.close();
+                        }
+                    }]
+                });
+                packagesInfo(true);
+            });
+        });
 
         // populate package information
         packagesInfo(true);
@@ -600,9 +642,17 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <div class="container-fluid">
     <div class="row">
-        <div id="message" style="display:none" class="alert alert-warning" role="alert"><?= @file_get_contents('/usr/local/opnsense/firmware-message') ?></div>
+<?php if (file_exists('/usr/local/opnsense/firmware-message')): ?>
+        <div id="firmware-upgrade" style="display:none;"><?= @file_get_contents('/usr/local/opnsense/firmware-upgrade') ?></div>
+        <div id="firmware-message" style="display:none;"><?= @file_get_contents('/usr/local/opnsense/firmware-message') ?></div>
+        <div class="alert alert-warning" role="alert" style="min-height: 65px;">
+            <button class='btn btn-primary pull-right' id="upgrade_maj" style="display:none;"><i id="upgrade_progress_maj" class=""></i> {{ lang._('Upgrade now') }}</button>
+            <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;"><i id="checkupdate_progress_maj" class=""></i> {{ lang._('Check for upgrade') }}</button>
+            <div style="margin-top: 8px;">{{ lang._('This software release has reached its designated end of life.') }}</div>
+        </div>
+<?php endif ?>
         <div class="alert alert-info" role="alert" style="min-height: 65px;">
-            <button class='btn btn-primary pull-right' id="upgrade" style="display:none"><i id="upgrade_progress" class=""></i> {{ lang._('Upgrade now') }}</button>
+            <button class='btn btn-primary pull-right' id="upgrade" style="display:none"><i id="upgrade_progress" class=""></i> {{ lang._('Update now') }}</button>
             <button class='btn btn-primary pull-right' id="audit"><i id="audit_progress" class=""></i> {{ lang._('Audit now') }}</button>
             <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;"><i id="checkupdate_progress" class=""></i> {{ lang._('Check for updates')}}</button>
             <div style="margin-top: 8px;" id="updatestatus">{{ lang._('Click to check for updates.')}}</div>

@@ -47,6 +47,7 @@ class FirmwareController extends ApiControllerBase
     {
         $this->sessionClose(); // long running action, close session
         $backend = new Backend();
+        $backend->configdRun('firmware changelog fetch');
         $response = json_decode(trim($backend->configdRun('firmware check')), true);
 
         if ($response != null) {
@@ -171,13 +172,20 @@ class FirmwareController extends ApiControllerBase
         $backend = new Backend();
         $response = array();
 
-        if ($this->request->isPost()) {
-            // sanitize package name
-            $filter = new \Phalcon\Filter();
-            $filter->add('version', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z\.]/', '', $value);
-            });
-            $version = $filter->sanitize($version, 'version');
+        if (!$this->request->isPost()) {
+            return $response;
+        }
+
+        // sanitize package name
+        $filter = new \Phalcon\Filter();
+        $filter->add('version', function ($value) {
+            return preg_replace('/[^0-9a-zA-Z\.]/', '', $value);
+        });
+        $version = $filter->sanitize($version, 'version');
+
+        if ($version == 'update') {
+            $backend->configdRun('firmware changelog fetch');
+        } else {
             $text = trim($backend->configdRun(sprintf('firmware changelog text %s', $version)));
             $html = trim($backend->configdRun(sprintf('firmware changelog html %s', $version)));
             if (!empty($text)) {
@@ -266,12 +274,14 @@ class FirmwareController extends ApiControllerBase
     {
         $backend = new Backend();
         $response = array();
-        if ($this->request->hasPost("upgrade")) {
+        if ($this->request->hasPost('upgrade')) {
             $response['status'] = 'ok';
-            if ($this->request->getPost("upgrade") == "pkg") {
-                $action = "firmware upgrade pkg";
+            if ($this->request->getPost('upgrade') == 'pkg') {
+                $action = 'firmware upgrade pkg';
+            } elseif ($this->request->getPost('upgrade') == 'maj') {
+                $action = 'firmware upgrade maj';
             } else {
-                $action = "firmware upgrade all";
+                $action = 'firmware upgrade all';
             }
             $response['msg_uuid'] = trim($backend->configdRun($action, true));
         } else {
