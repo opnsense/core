@@ -216,6 +216,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 message: "{{ lang._('The firewall will be rebooted directly after this firmware update.') }}",
                 buttons: [{
                     label: "{{ lang._('OK') }}",
+                    cssClass: 'btn-primary',
                     action: function(dialogRef){
                         dialogRef.close();
                         upgrade();
@@ -471,15 +472,15 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#checkupdate').click(updateStatus);
         $('#upgrade').click(upgrade_ui);
         $('#audit').click(audit);
-        // show upgrade message if there
-        if ($('#message').html() != '') {
+        $('#upgrade_maj').click(function () {
             BootstrapDialog.show({
                 type:BootstrapDialog.TYPE_WARNING,
-                title: "{{ lang._('End-of-Life Notice') }}",
+                title: "{{ lang._('Upgrade instructions') }}",
                 message: $('#message').html(),
                 buttons: [{
 <?php if (file_exists('/usr/local/opnsense/firmware-upgrade')): ?>
                     label: "{{ lang._('Upgrade') }}",
+                    cssClass: 'btn-primary',
                     action: function(dialogRef){
                         dialogRef.close();
                         $.upgrade_needs_reboot = 1;
@@ -494,7 +495,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     }
                 }]
             });
-        }
+        });
 
         // populate package information
         packagesInfo(true);
@@ -620,7 +621,13 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <div class="container-fluid">
     <div class="row">
+<?php if (file_exists('/usr/local/opnsense/firmware-message')): ?>
         <div id="message" style="display:none" class="alert alert-warning" role="alert"><?= @file_get_contents('/usr/local/opnsense/firmware-message') ?></div>
+        <div class="alert alert-warning" role="alert" style="min-height: 65px;">
+            <button class='btn btn-primary pull-right' id="upgrade_maj">{{ lang._('Upgrade instructions') }}</button>
+            <div style="margin-top: 8px;">{{ lang._('This software release has reached its designated end of life.') }}</div>
+        </div>
+<?php endif ?>
         <div class="alert alert-info" role="alert" style="min-height: 65px;">
             <button class='btn btn-primary pull-right' id="upgrade" style="display:none"><i id="upgrade_progress" class=""></i> {{ lang._('Upgrade now') }}</button>
             <button class='btn btn-primary pull-right' id="audit"><i id="audit_progress" class=""></i> {{ lang._('Audit now') }}</button>
