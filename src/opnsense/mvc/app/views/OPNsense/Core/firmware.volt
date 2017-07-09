@@ -221,7 +221,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 message: reboot_msg,
                 buttons: [{
                     label: "{{ lang._('OK') }}",
-                    cssClass: 'btn-primary',
+                    cssClass: 'btn-warning',
                     action: function(dialogRef){
                         dialogRef.close();
                         upgrade();
@@ -485,7 +485,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 buttons: [{
 <?php if (file_exists('/usr/local/opnsense/firmware-upgrade')): ?>
                     label: "{{ lang._('Upgrade') }}",
-                    cssClass: 'btn-primary',
+                    cssClass: 'btn-warning',
                     action: function(dialogRef){
                         dialogRef.close();
                         $.upgrade_needs_reboot = 1;
