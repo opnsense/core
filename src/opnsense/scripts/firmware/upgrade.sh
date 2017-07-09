@@ -48,13 +48,13 @@ if [ "$PACKAGE" == "all" ]; then
 elif [ "$PACKAGE" == "maj" ]; then
 	# extract info for major upgrade
 	UPGRADE="/usr/local/opnsense/firmware-upgrade"
-	NAME="does.not.exist"
+	NAME=unknown
 	if [ -f ${UPGRADE} ]; then
 		NAME=$(cat ${UPGRADE})
 	fi
 	# perform first half of major upgrade
 	# (download all + kernel install)
-	if opnsense-update -ur "${NAME}" >> ${PKG_PROGRESS_FILE} 2>&1; then
+	if opnsense-update -ur "${NAME}" >> ${PKG_PROGRESS_FILE} 2>&1; then
 		REBOOT=1
 	fi
 	# second half reboots multiple times,
