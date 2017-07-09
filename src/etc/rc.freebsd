@@ -37,13 +37,15 @@ for RC_CONF in $(find /etc/rc.conf.d -type f); do
 	. ${RC_CONF}
 done
 
-# probe all deamons in /usr/local/etc/rc.d/
-ls /usr/local/etc/rc.d/[a-z]* /etc/rc.d/[a-z]* | while read rc_filename; do
+rc_enabled()
+{
+	rc_filename=${1}
+	name=${2}
+
 	# check if service has a name
-	eval "$(grep "^name[[:blank:]]*=" ${rc_filename})"
 	if [ -z "${name}" ]; then
 		echo "Error: no name set in ${rc_filename}"
-		continue
+		return 1
 	fi
 
 	# check if service has a variable
@@ -51,21 +53,42 @@ ls /usr/local/etc/rc.d/[a-z]* /etc/rc.d/[a-z]* | while read rc_filename; do
 	if [ -z "${rcvar}" ]; then
 		# FreeBSD does this, leave here for debugging
 		#echo "Error: no rcvar set in $rc_filename"
-		continue
+		return 1
 	fi
 
 	# check if service is enabled
 	eval "enabled=\$${rcvar}"
-	if [ "${enabled}" == "YES" ]; then
-		# run our bootstrap command on startup
-		if [ "${1}" == "start" ]; then
-			pre_run_var="${name}_opnsense_bootup_run"
-			eval "pre_run_cmd=\$${pre_run_var}"
-			if [ -n "${pre_run_cmd}" ]; then
-				${pre_run_cmd}
-			fi
-		fi
-		# pass all commands to script now
-		${rc_filename} ${1}
+	if [ "${enabled}" != "YES" ]; then
+		return 1
 	fi
+
+	return 0
+}
+
+rc_filenames="$(ls /etc/rc.d/[a-z]* /usr/local/etc/rc.d/[a-z]* 2> /dev/null || true)"
+
+# run our bootstrap command on startup
+if [ "${1}" == "start" ]; then
+	for rc_filename in ${rc_filenames}; do
+		eval "$(grep "^name[[:blank:]]*=" ${rc_filename})"
+
+		if ! rc_enabled ${rc_filename} ${name}; then
+			continue
+		fi
+
+		pre_run_var="${name}_opnsense_bootup_run"
+		eval "pre_run_cmd=\$${pre_run_var}"
+		${pre_run_cmd}
+	done
+fi
+
+# pass all commands to script now
+for rc_filename in ${rc_filenames}; do
+	eval "$(grep "^name[[:blank:]]*=" ${rc_filename})"
+
+	if ! rc_enabled ${rc_filename} ${name}; then
+		continue
+	fi
+
+	${rc_filename} ${1}
 done
