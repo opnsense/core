@@ -266,12 +266,14 @@ class FirmwareController extends ApiControllerBase
     {
         $backend = new Backend();
         $response = array();
-        if ($this->request->hasPost("upgrade")) {
+        if ($this->request->hasPost('upgrade')) {
             $response['status'] = 'ok';
-            if ($this->request->getPost("upgrade") == "pkg") {
-                $action = "firmware upgrade pkg";
+            if ($this->request->getPost('upgrade') == 'pkg') {
+                $action = 'firmware upgrade pkg';
+            } elseif ($this->request->getPost('upgrade') == 'maj') {
+                $action = 'firmware upgrade maj';
             } else {
-                $action = "firmware upgrade all";
+                $action = 'firmware upgrade all';
             }
             $response['msg_uuid'] = trim($backend->configdRun($action, true));
         } else {

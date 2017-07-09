@@ -478,6 +478,16 @@ POSSIBILITY OF SUCH DAMAGE.
                 title: "{{ lang._('End-of-Life Notice') }}",
                 message: $('#message').html(),
                 buttons: [{
+<?php if (file_exists('/usr/local/opnsense/firmware-upgrade')): ?>
+                    label: "{{ lang._('Upgrade') }}",
+                    action: function(dialogRef){
+                        dialogRef.close();
+                        $.upgrade_needs_reboot = 1;
+                        $.upgrade_action = 'maj';
+                        upgrade_ui();
+                    }
+                },{
+<?php endif ?>
                     label: "{{ lang._('Close') }}",
                     action: function(dialogRef){
                         dialogRef.close();
