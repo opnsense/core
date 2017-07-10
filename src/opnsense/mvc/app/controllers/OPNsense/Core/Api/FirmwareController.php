@@ -176,15 +176,16 @@ class FirmwareController extends ApiControllerBase
             return $response;
         }
 
-        if (empty($version)) {
+        // sanitize package name
+        $filter = new \Phalcon\Filter();
+        $filter->add('version', function ($value) {
+            return preg_replace('/[^0-9a-zA-Z\.]/', '', $value);
+        });
+        $version = $filter->sanitize($version, 'version');
+
+        if ($version == 'update') {
             $backend->configdRun('firmware changelog fetch');
         } else {
-            // sanitize package name
-            $filter = new \Phalcon\Filter();
-            $filter->add('version', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z\.]/', '', $value);
-            });
-            $version = $filter->sanitize($version, 'version');
             $text = trim($backend->configdRun(sprintf('firmware changelog text %s', $version)));
             $html = trim($backend->configdRun(sprintf('firmware changelog html %s', $version)));
             if (!empty($text)) {

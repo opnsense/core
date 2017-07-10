@@ -485,7 +485,7 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#checkupdate_maj').click(function () {
             $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
             // empty call refreshes changelogs in the background
-            ajaxCall('/api/core/firmware/changelog/', {}, function () {
+            ajaxCall('/api/core/firmware/changelog/update', {}, function () {
                 $("#checkupdate_progress").removeClass("fa fa-spinner fa-pulse");
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_WARNING,
