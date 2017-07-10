@@ -483,10 +483,10 @@ POSSIBILITY OF SUCH DAMAGE.
             upgrade_ui();
         });
         $('#checkupdate_maj').click(function () {
-            $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
+            $("#checkupdate_progress_maj").addClass("fa fa-spinner fa-pulse");
             // empty call refreshes changelogs in the background
             ajaxCall('/api/core/firmware/changelog/update', {}, function () {
-                $("#checkupdate_progress").removeClass("fa fa-spinner fa-pulse");
+                $("#checkupdate_progress_maj").removeClass("fa fa-spinner fa-pulse");
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_WARNING,
                     title: "{{ lang._('Upgrade instructions') }}",
@@ -638,7 +638,7 @@ POSSIBILITY OF SUCH DAMAGE.
         <div id="message" style="display:none;"><?= @file_get_contents('/usr/local/opnsense/firmware-message') ?></div>
         <div class="alert alert-warning" role="alert" style="min-height: 65px;">
             <button class='btn btn-primary pull-right' id="upgrade_maj" style="display:none;"><i id="upgrade_progress_maj" class=""></i> {{ lang._('Upgrade now') }}</button>
-            <button class='btn pull-right' id="checkupdate_maj">{{ lang._('Check for upgrade') }}</button>
+            <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;"><i id="checkupdate_progress_maj" class=""></i> {{ lang._('Check for upgrade') }}</button>
             <div style="margin-top: 8px;">{{ lang._('This software release has reached its designated end of life.') }}</div>
         </div>
 <?php endif ?>
