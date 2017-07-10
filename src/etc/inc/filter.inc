@@ -392,7 +392,7 @@ function filter_configure_sync($verbose = false)
     }
     // init interfaces and gateways
     $fw->setInterfaceMapping($cnfint);
-    $fw->setGateways(return_gateways_array());
+    $fw->setGateways(return_gateways_array(false, true));
     $fw->setGatewayGroups(return_gateway_groups_array());
     filter_core_bootstrap($fw);
 

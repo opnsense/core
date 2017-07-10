@@ -175,10 +175,6 @@ class FilterRule
     {
         if (!empty($this->gatewayMapping[$value]['logic'])) {
             return " " . $this->gatewayMapping[$value]['logic'] . " ";
-        } elseif ($value === 'Null4') {
-            return ' route-to ( lo0 127.0.0.1 )';
-        } elseif ($value === 'Null6') {
-            return ' route-to ( lo0 ::1 ) ';
         } else {
             return "";
         }
