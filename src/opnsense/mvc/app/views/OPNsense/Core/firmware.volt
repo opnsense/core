@@ -113,8 +113,12 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Upgrading...') }}");
         $("#audit").attr("style","display:none");
-        $("#upgrade").attr("style","");
-        $("#upgrade_progress").addClass("fa fa-spinner fa-pulse");
+        maj_suffix = '';
+        if ($.upgrade_action == 'maj') {
+            maj_suffix = '_maj';
+        }
+        $("#upgrade" + maj_suffix).attr("style","");
+        $("#upgrade_progress" + maj_suffix).addClass("fa fa-spinner fa-pulse");
 
         ajaxCall('/api/core/firmware/upgrade',{upgrade:$.upgrade_action},function() {
             $('#updatelist').empty();
@@ -487,7 +491,6 @@ POSSIBILITY OF SUCH DAMAGE.
             // empty call refreshes changelogs in the background
             ajaxCall('/api/core/firmware/changelog/update', {}, function () {
                 $("#checkupdate_progress_maj").removeClass("fa fa-spinner fa-pulse");
-                packagesInfo(true);
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_WARNING,
                     title: "{{ lang._('Upgrade instructions') }}",
@@ -498,7 +501,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         cssClass: 'btn-warning',
                         action: function (dialogRef) {
                             dialogRef.close();
-                            $("#upgrade").attr("style","");
+                            $("#upgrade_maj").attr("style","");
                         }
                     },{
 <?php endif ?>
@@ -508,6 +511,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         }
                     }]
                 });
+                packagesInfo(true);
             });
         });
 
