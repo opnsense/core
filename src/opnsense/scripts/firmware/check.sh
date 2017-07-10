@@ -54,7 +54,7 @@ download_size="none"
 itemcount=0
 linecount=0
 timer=0
-timeout=30 # Wait for a maximum number of seconds to determine connection issues
+timeout=45 # Wait for a maximum number of seconds to determine connection issues
 
 # File location variables
 tmp_pkg_output_file="/tmp/packages.output"
@@ -63,8 +63,6 @@ tmp_pkg_update_file="/tmp/pkg_updates.output"
 # Check if pkg is already runnig
 pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
 if [ "$pkg_running" == "" ]; then
-      # load changelogs first
-      /usr/local/opnsense/scripts/firmware/changelog.sh fetch
       # start pkg update
       pkg update -f > $tmp_pkg_update_file &
       pkg_running="started" # Set running state to arbitrary value

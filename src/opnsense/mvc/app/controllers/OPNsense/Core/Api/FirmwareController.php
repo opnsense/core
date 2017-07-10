@@ -47,6 +47,7 @@ class FirmwareController extends ApiControllerBase
     {
         $this->sessionClose(); // long running action, close session
         $backend = new Backend();
+        $backend->configdRun('firmware changelog fetch');
         $response = json_decode(trim($backend->configdRun('firmware check')), true);
 
         if ($response != null) {
@@ -171,7 +172,13 @@ class FirmwareController extends ApiControllerBase
         $backend = new Backend();
         $response = array();
 
-        if ($this->request->isPost()) {
+        if (!$this->request->isPost()) {
+            return $response;
+        }
+
+        if (empty($version)) {
+            $backend->configdRun('firmware changelog fetch');
+        } else {
             // sanitize package name
             $filter = new \Phalcon\Filter();
             $filter->add('version', function ($value) {
