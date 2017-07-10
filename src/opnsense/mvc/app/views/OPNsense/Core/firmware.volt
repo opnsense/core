@@ -263,8 +263,10 @@ POSSIBILITY OF SUCH DAMAGE.
                 $('#update_status').scrollTop($('#update_status')[0].scrollHeight);
             }
             if (data['status'] == 'done') {
+                $("#upgrade_progress_maj").removeClass("fa fa-spinner fa-pulse");
                 $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
                 $("#audit_progress").removeClass("fa fa-spinner fa-pulse");
+                $("#upgrade_maj").attr("style","display:none");
                 $("#upgrade").attr("style","display:none");
                 $("#audit").attr("style","");
                 if ($.upgrade_action == 'pkg') {
