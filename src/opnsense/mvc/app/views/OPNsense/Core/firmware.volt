@@ -478,27 +478,35 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#upgrade').click(upgrade_ui);
         $('#audit').click(audit);
         $('#upgrade_maj').click(function () {
-            BootstrapDialog.show({
-                type:BootstrapDialog.TYPE_WARNING,
-                title: "{{ lang._('Upgrade instructions') }}",
-                message: $('#message').html(),
-                buttons: [{
+            $.upgrade_needs_reboot = 1;
+            $.upgrade_action = 'maj';
+            upgrade_ui();
+        });
+        $('#checkupdate_maj').click(function () {
+            $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
+            // empty call refreshes changelogs in the background
+            ajaxCall('/api/core/firmware/changelog/', {}, function () {
+                $("#checkupdate_progress").removeClass("fa fa-spinner fa-pulse");
+                BootstrapDialog.show({
+                    type:BootstrapDialog.TYPE_WARNING,
+                    title: "{{ lang._('Upgrade instructions') }}",
+                    message: $('#message').html(),
+                    buttons: [{
 <?php if (file_exists('/usr/local/opnsense/firmware-upgrade')): ?>
-                    label: "{{ lang._('Upgrade') }}",
-                    cssClass: 'btn-warning',
-                    action: function(dialogRef){
-                        dialogRef.close();
-                        $.upgrade_needs_reboot = 1;
-                        $.upgrade_action = 'maj';
-                        upgrade_ui();
-                    }
-                },{
+                        label: "{{ lang._('Upgrade') }}",
+                        cssClass: 'btn-warning',
+                        action: function (dialogRef) {
+                            dialogRef.close();
+                            $("#upgrade").attr("style","");
+                        }
+                    },{
 <?php endif ?>
-                    label: "{{ lang._('Close') }}",
-                    action: function(dialogRef){
-                        dialogRef.close();
-                    }
-                }]
+                        label: "{{ lang._('Close') }}",
+                        action: function (dialogRef) {
+                            dialogRef.close();
+                        }
+                    }]
+                });
             });
         });
 
@@ -629,7 +637,8 @@ POSSIBILITY OF SUCH DAMAGE.
 <?php if (file_exists('/usr/local/opnsense/firmware-message')): ?>
         <div id="message" style="display:none;"><?= @file_get_contents('/usr/local/opnsense/firmware-message') ?></div>
         <div class="alert alert-warning" role="alert" style="min-height: 65px;">
-            <button class='btn pull-right' id="upgrade_maj">{{ lang._('Upgrade instructions') }}</button>
+            <button class='btn btn-primary pull-right' id="upgrade_maj" style="display:none;"><i id="upgrade_progress_maj" class=""></i> {{ lang._('Upgrade now') }}</button>
+            <button class='btn pull-right' id="checkupdate_maj">{{ lang._('Check for upgrade') }}</button>
             <div style="margin-top: 8px;">{{ lang._('This software release has reached its designated end of life.') }}</div>
         </div>
 <?php endif ?>
