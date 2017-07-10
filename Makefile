@@ -41,9 +41,9 @@ CORE_VERSION=	${CORE_COMMIT:C/-.*$//1}
 CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 .endif
 
-CORE_ABI?=	17.1
+CORE_ABI?=	17.7
 CORE_ARCH?=	${ARCH}
-CORE_OPENVPN?=	# empty for version 2.4
+CORE_OPENVPN?=	# empty
 CORE_PHP?=	70
 CORE_PY?=	27
 
@@ -58,8 +58,8 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 CORE_REPOSITORY?=	${FLAVOUR}
 .endif
 
-CORE_NAME?=		opnsense-devel
-CORE_FAMILY?=		development
+CORE_NAME?=		opnsense
+CORE_FAMILY?=		release
 CORE_MESSAGE?=		Insert Name Here
 
 CORE_MAINTAINER?=	franco@opnsense.org
