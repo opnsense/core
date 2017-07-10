@@ -496,7 +496,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_WARNING,
                     title: "{{ lang._('Upgrade instructions') }}",
-                    message: $('#message').html(),
+                    message: $('#firmware-message').html(),
                     buttons: [{
 <?php if (file_exists('/usr/local/opnsense/firmware-upgrade')): ?>
                         label: "{{ lang._('Unlock upgrade') }}",
@@ -504,6 +504,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         action: function (dialogRef) {
                             dialogRef.close();
                             $("#upgrade_maj").attr("style","");
+                            changelog($('#firmware-upgrade').text());
                         }
                     },{
 <?php endif ?>
@@ -642,7 +643,8 @@ POSSIBILITY OF SUCH DAMAGE.
 <div class="container-fluid">
     <div class="row">
 <?php if (file_exists('/usr/local/opnsense/firmware-message')): ?>
-        <div id="message" style="display:none;"><?= @file_get_contents('/usr/local/opnsense/firmware-message') ?></div>
+        <div id="firmware-upgrade" style="display:none;"><?= @file_get_contents('/usr/local/opnsense/firmware-upgrade') ?></div>
+        <div id="firmware-message" style="display:none;"><?= @file_get_contents('/usr/local/opnsense/firmware-message') ?></div>
         <div class="alert alert-warning" role="alert" style="min-height: 65px;">
             <button class='btn btn-primary pull-right' id="upgrade_maj" style="display:none;"><i id="upgrade_progress_maj" class=""></i> {{ lang._('Upgrade now') }}</button>
             <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;"><i id="checkupdate_progress_maj" class=""></i> {{ lang._('Check for upgrade') }}</button>
