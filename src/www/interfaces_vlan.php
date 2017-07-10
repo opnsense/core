@@ -149,12 +149,14 @@ $main_buttons = array(
 <?php
                   $i++;
                   endforeach; ?>
+                  </tbody>
+                  <tfoot>
                     <tr>
-                      <td colspan="4">
+                      <td colspan="5">
                         <?= gettext("Not all drivers/NICs support 802.1Q VLAN tagging properly. On cards that do not explicitly support it, VLAN tagging will still work, but the reduced MTU may cause problems.");?>
                       </td>
                     </tr>
-                  </tbody>
+                  </tfoot>
                 </table>
               </div>
             </form>
