@@ -43,7 +43,7 @@ CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 
 CORE_ABI?=	17.1
 CORE_ARCH?=	${ARCH}
-CORE_OPENVPN?=	# empty for version 2.4
+CORE_OPENVPN?=	# empty
 CORE_PHP?=	70
 CORE_PY?=	27
 
