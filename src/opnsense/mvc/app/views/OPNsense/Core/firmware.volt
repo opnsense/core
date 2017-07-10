@@ -499,7 +499,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     message: $('#message').html(),
                     buttons: [{
 <?php if (file_exists('/usr/local/opnsense/firmware-upgrade')): ?>
-                        label: "{{ lang._('Upgrade') }}",
+                        label: "{{ lang._('Unlock upgrade') }}",
                         cssClass: 'btn-warning',
                         action: function (dialogRef) {
                             dialogRef.close();
