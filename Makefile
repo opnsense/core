@@ -44,7 +44,7 @@ CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 CORE_ABI?=	17.7
 CORE_ARCH?=	${ARCH}
 CORE_OPENVPN?=	# empty
-CORE_PHP?=	70
+CORE_PHP?=	71
 CORE_PY?=	27
 
 _FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
