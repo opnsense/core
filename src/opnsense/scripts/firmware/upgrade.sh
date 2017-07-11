@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -54,7 +54,7 @@ elif [ "$PACKAGE" == "maj" ]; then
 	fi
 	# perform first half of major upgrade
 	# (download all + kernel install)
-	if opnsense-update -ur "${NAME}" >> ${PKG_PROGRESS_FILE} 2>&1; then
+	if opnsense-update -ufr "${NAME}" >> ${PKG_PROGRESS_FILE} 2>&1; then
 		REBOOT=1
 	fi
 	# second half reboots multiple times,
