@@ -82,6 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     /* if the old use_mfs_tmpvar is found, set these flags, too */
     $pconfig['use_mfs_var'] = isset($config['system']['use_mfs_tmpvar']) || isset($config['system']['use_mfs_var']);
     $pconfig['use_mfs_tmp'] = isset($config['system']['use_mfs_tmpvar']) || isset($config['system']['use_mfs_tmp']);
+    $pconfig['use_swap_file'] = isset($config['system']['use_swap_file']);
     $pconfig['rrdbackup'] = !empty($config['system']['rrdbackup']) ? $config['system']['rrdbackup'] : null;
     $pconfig['dhcpbackup'] = !empty($config['system']['dhcpbackup']) ? $config['system']['dhcpbackup'] : null;
     $pconfig['netflowbackup'] = !empty($config['system']['netflowbackup']) ? $config['system']['netflowbackup'] : null;
@@ -155,6 +156,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['use_mfs_tmp'] = true;
         } elseif (isset($config['system']['use_mfs_tmp'])) {
             unset($config['system']['use_mfs_tmp']);
+        }
+
+        if (!empty($pconfig['use_swap_file'])) {
+            /* set explicit value here in case we want to make it flexible */
+            $config['system']['use_swap_file'] = 2048;
+        } elseif (isset($config['system']['use_swap_file'])) {
+            unset($config['system']['use_swap_file']);
         }
 
         if (!empty($pconfig['rrdbackup'])) {
@@ -390,7 +398,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext('On AC Power Mode') ?></td>
+                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('On AC Power Mode') ?></td>
                 <td>
                   <select name="powerd_ac_mode" class="selectpicker" data-style="btn-default" data-width="auto">
                     <option value="hadp" <?=$pconfig['powerd_ac_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
@@ -408,7 +416,7 @@ include("head.inc");
                   </select>
                 </td>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext('On Battery Power Mode') ?></td>
+                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('On Battery Power Mode') ?></td>
                 <td>
                   <select name="powerd_battery_mode" class="selectpicker" data-style="btn-default" data-width="auto">
                     <option value="hadp"<?=$pconfig['powerd_battery_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
@@ -427,7 +435,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_powerd_normal_mode" href="#" class="showhelp"><i class="fa fa-info-circle text-circle"></i></a>  <?=gettext('On Normal Power Mode'); ?></td>
+                <td><a id="help_for_powerd_normal_mode" href="#" class="showhelp"><i class="fa fa-info-circle text-circle"></i></a> <?=gettext('On Normal Power Mode'); ?></td>
                 <td>
                   <select name="powerd_normal_mode" class="selectpicker" data-style="btn-default" data-width="auto">
                     <option value="hadp"<?=$pconfig['powerd_normal_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
@@ -449,7 +457,14 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("RAM Disk Settings (Reboot to Apply Changes)"); ?></th>
+                <th colspan="2" valign="top" class="listtopic"><?=gettext("Disk / Memory Settings (reboot to apply changes)"); ?></th>
+              </tr>
+              <tr>
+                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Swap file'); ?></td>
+                <td>
+                  <input name="use_swap_file" type="checkbox" id="use_swap_file" value="yes" <?=!empty($pconfig['use_swap_file']) ? 'checked="checked"' : '';?>/>
+                  <strong><?= gettext('Add a 2 GB swap file to the system') ?></strong>
+                </td>
               </tr>
               <tr>
                 <td><a id="help_for_use_mfs_var" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/var RAM disk'); ?></td>
