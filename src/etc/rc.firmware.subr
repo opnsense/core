@@ -65,7 +65,7 @@ if [ -z "${RELEASE}" ]; then
 else
 	# upgrade to a major release
 	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	if opnsense-update -ufr ${RELEASE} 2>&1 > ${PIPEFILE}; then
+	if opnsense-update -ur ${RELEASE} 2>&1 > ${PIPEFILE}; then
 		echo '***REBOOT***' >> ${LOCKFILE}
 		sleep 5
 		/usr/local/etc/rc.reboot
