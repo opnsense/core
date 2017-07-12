@@ -54,6 +54,11 @@ trait TOTP
     private $graceperiod = 10;
 
     /**
+     * @var bool token after password
+     */
+    private $passwordFirst = false;
+
+    /**
      * @var string method accepting username and returning a simplexml user object
      */
     private $getUserMethod = 'getUser';
@@ -149,8 +154,15 @@ trait TOTP
         if ($userObject != null && !empty($userObject->otp_seed)) {
             if (strlen($password) > $this->otpLength) {
                 // split otp token code and userpassword
-                $code = substr($password, 0, $this->otpLength);
-                $userPassword =  substr($password, $this->otpLength);
+                $pwLength = strlen($password) - $this->otpLength;
+                $pwStart = $this->otpLength;
+                $otpStart = 0;
+                if ($this->passwordFirst) {
+                    $otpStart = $pwLength;
+                    $pwStart = 0;
+                }
+                $userPassword = substr($password, $pwStart, $pwLength);
+                $code = substr($password, $otpStart, $this->otpLength);
                 $otp_seed = \Base32\Base32::decode($userObject->otp_seed);
                 if ($this->authTOTP($otp_seed, $code)) {
                     // token valid, do parents auth
@@ -175,6 +187,9 @@ trait TOTP
         }
         if (!empty($config['graceperiod'])) {
             $this->graceperiod = $config['graceperiod'];
+        }
+        if (array_key_exists('passwordFirst', $config) && !empty($config['passwordFirst'])) {
+            $this->passwordFirst = true;
         }
     }
 
@@ -225,6 +240,13 @@ trait TOTP
             } else {
                 return array();
             }
+        };
+        $fields["passwordFirst"] = array();
+        $fields["passwordFirst"]["name"] = gettext("Reverse token order");
+        $fields["passwordFirst"]["help"] = gettext("Require the password in front of the token instead of behind it.");
+        $fields["passwordFirst"]["type"] = "checkbox";
+        $fields["passwordFirst"]["validate"] = function ($value) {
+            return array();
         };
 
         return $fields;
