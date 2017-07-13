@@ -154,13 +154,14 @@ trait TOTP
         if ($userObject != null && !empty($userObject->otp_seed)) {
             if (strlen($password) > $this->otpLength) {
                 // split otp token code and userpassword
+                $pwLength = strlen($password) - $this->otpLength;
                 $pwStart = $this->otpLength;
                 $otpStart = 0;
                 if ($this->passwordFirst) {
-                    $otpStart = strlen($password) - $this->otpLength;
+                    $otpStart = $pwLength;
                     $pwStart = 0;
                 }
-                $userPassword = substr($password, $pwStart, strlen($password) - $this->otpLength);
+                $userPassword = substr($password, $pwStart, $pwLength);
                 $code = substr($password, $otpStart, $this->otpLength);
                 $otp_seed = \Base32\Base32::decode($userObject->otp_seed);
                 if ($this->authTOTP($otp_seed, $code)) {
