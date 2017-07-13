@@ -1919,7 +1919,7 @@ function interface_wireless_clone($realif, $wlcfg)
         }
 
         log_error(sprintf('Cloning new wireless interface %s', $realif));
-        exec("/sbin/ifconfig wlan create name {$realif} wlandev {$baseif} {$mode} bssid 2>&1", $out, $ret);
+        exec("/sbin/ifconfig wlan create wlandev {$baseif} {$mode} bssid name {$realif} 2>&1", $out, $ret);
         if ($ret <> 0) {
             log_error(sprintf('Failed to clone interface %s with error code %s, output %s', $baseif, $ret, $out[0]));
             return false;
