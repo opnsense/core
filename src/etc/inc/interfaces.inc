@@ -704,34 +704,47 @@ function interface_lagg_configure(&$lagg)
     if (!count($members)) {
         return -1;
     }
+    $interface_stats = legacy_interfaces_details();
 
-    if (file_exists("/var/run/booting") || !(empty($lagg['laggif']))) {
-        legacy_interface_destroy($lagg['laggif']);
-        legacy_interface_create($lagg['laggif']);
+    if (!empty($lagg['laggif'])) {
         $laggif = $lagg['laggif'];
+        if (empty($interface_stats[$laggif])) {
+            legacy_interface_create($lagg['laggif']);
+        } else {
+            // Already configured, detach child interfaces before attempting to configure.
+            // Prevents vlans to loose parent.
+            if (!empty($interface_stats[$laggif]['laggport'])) {
+                foreach ($interface_stats[$laggif]['laggport'] as $laggport) {
+                    mwexec("/sbin/ifconfig {$laggif} -laggport {$laggport}");
+                }
+            }
+        }
     } else {
         $laggif = legacy_interface_create('lagg');
     }
 
-    /* Calculate smaller mtu and enforce it */
+
+    // determine mtu value to use, either the provided one for the lagg or smallest of it's children
     $mtu = null;
-    foreach ($members as $member) {
-        $opts = legacy_interface_stats($member);
-        if (!empty($opts['mtu']) && ($mtu == null || $opts['mtu'] < $mtu)) {
-            $mtu = $opts['mtu'];
+    if (!empty($lagg['mtu'])) {
+        // mtu provided for lagg
+        $mtu = $lagg['mtu'];
+    } else {
+        // min() mtu of children
+        foreach ($members as $member) {
+            if (!empty($interface_stats[$member]['mtu']) && ($mtu == null || $interface_stats[$member]['mtu'] < $mtu)) {
+                $mtu = $interface_stats[$member]['mtu'];
+            }
         }
     }
 
-    $checklist = get_interface_list();
     foreach ($members as $member) {
-        if (!array_key_exists($member, $checklist)) {
-            continue;
+        if (!empty($interface_stats[$member])) {
+            legacy_interface_mtu($member, $mtu);
+            configure_interface_hardware($member);
+            interfaces_bring_up($member);
+            mwexec("/sbin/ifconfig {$laggif} laggport {$member}");
         }
-
-        legacy_interface_mtu($member, $mtu);
-        configure_interface_hardware($member);
-        interfaces_bring_up($member);
-        mwexec("/sbin/ifconfig {$laggif} laggport {$member}");
     }
 
     mwexec("/sbin/ifconfig {$laggif} laggproto " . escapeshellarg($lagg['proto']));
