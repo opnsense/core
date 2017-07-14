@@ -514,10 +514,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
                 foreach ($toapplylist as $ifapply => $ifcfgo) {
                     if (isset($config['interfaces'][$ifapply]['enable'])) {
-                        interface_bring_down($ifapply, false, $ifcfgo);
+                        interface_bring_down($ifapply, $ifcfgo);
                         interface_configure($ifapply, true);
                     } else {
-                        interface_bring_down($ifapply, true, $ifcfgo);
+                        interface_bring_down($ifapply, $ifcfgo);
                     }
                 }
             }
@@ -814,14 +814,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             if (stristr($a_interfaces[$if]['if'], "_vlan")) {
-                $realhwif_array = get_parent_interface($a_interfaces[$if]['if']);
-                // Need code to handle MLPPP if we ever use $realhwif for MLPPP handling
-                $parent_realhwif = $realhwif_array[0];
-                $parent_if = convert_real_interface_to_friendly_interface_name($parent_realhwif);
-                if (!empty($parent_if) && !empty($config['interfaces'][$parent_if]['mtu'])) {
-                    if ($pconfig['mtu'] > intval($config['interfaces'][$parent_if]['mtu'])) {
-                        $input_errors[] = gettext("MTU of a vlan should not be bigger than parent interface.");
-                    }
+                $parentif = get_parent_interface($a_interfaces[$if]['if'])[0];
+                $intf_details = legacy_interface_details($parentif);
+                if ($intf_details['mtu'] < $pconfig['mtu']) {
+                    $input_errors[] = gettext("MTU of a vlan should not be bigger than parent interface.");
                 }
             } else {
                 foreach ($config['interfaces'] as $idx => $ifdata) {

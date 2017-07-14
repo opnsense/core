@@ -93,6 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['proto'] = isset($a_laggs[$id]['proto']) ? $a_laggs[$id]['proto'] : null;
     $pconfig['descr'] = isset($a_laggs[$id]['descr']) ? $a_laggs[$id]['descr'] : null;
     $pconfig['lacp_fast_timeout'] = !empty($a_laggs[$id]['lacp_fast_timeout']);
+    $pconfig['mtu'] = isset($a_laggs[$id]['mtu']) ? $a_laggs[$id]['mtu'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // validate and save form data
     if (!empty($a_laggs[$_POST['id']])) {
@@ -118,6 +119,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!in_array($pconfig['proto'], $laggprotos)) {
         $input_errors[] = gettext("Protocol supplied is invalid");
     }
+    if (!empty($pconfig['mtu']) && ($pconfig['mtu'] < 576 || $pconfig['mtu'] > 9000)) {
+        $input_errors[] = gettext("The MTU must be greater than 576 bytes and less than 9000.");
+    }
 
     if (count($input_errors) == 0) {
         $lagg = array();
@@ -125,6 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $lagg['descr'] = $pconfig['descr'];
         $lagg['laggif'] = $pconfig['laggif'];
         $lagg['proto'] = $pconfig['proto'];
+        $lagg['mtu'] = $pconfig['mtu'];
         $lagg['lacp_fast_timeout'] = !empty($pconfig['lacp_fast_timeout']);
         if (isset($id)) {
             $lagg['laggif'] = $a_laggs[$id]['laggif'];
@@ -279,6 +284,15 @@ legacy_html_escape_form_data($pconfig);
                       <input name="lacp_fast_timeout" id="lacp_fast_timeout" type="checkbox" value="yes" <?=!empty($pconfig['lacp_fast_timeout']) ? "checked=\"checked\"" : "" ;?>/>
                       <div class="hidden" for="help_for_lacp_fast_timeout">
                         <?=gettext("Enable lacp fast-timeout on the interface."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_mtu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MTU"); ?></td>
+                    <td>
+                      <input name="mtu" id="mtu" type="text" value="<?=$pconfig['mtu'];?>" />
+                      <div class="hidden" for="help_for_mtu">
+                        <?= gettext("If you leave this field blank, the smallest mtu of this laggs children will be used.");?>
                       </div>
                     </td>
                   </tr>

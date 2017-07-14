@@ -704,34 +704,47 @@ function interface_lagg_configure(&$lagg)
     if (!count($members)) {
         return -1;
     }
+    $interface_stats = legacy_interfaces_details();
 
-    if (file_exists("/var/run/booting") || !(empty($lagg['laggif']))) {
-        legacy_interface_destroy($lagg['laggif']);
-        legacy_interface_create($lagg['laggif']);
+    if (!empty($lagg['laggif'])) {
         $laggif = $lagg['laggif'];
+        if (empty($interface_stats[$laggif])) {
+            legacy_interface_create($lagg['laggif']);
+        } else {
+            // Already configured, detach child interfaces before attempting to configure.
+            // Prevents vlans to loose parent.
+            if (!empty($interface_stats[$laggif]['laggport'])) {
+                foreach ($interface_stats[$laggif]['laggport'] as $laggport) {
+                    mwexec("/sbin/ifconfig {$laggif} -laggport {$laggport}");
+                }
+            }
+        }
     } else {
         $laggif = legacy_interface_create('lagg');
     }
 
-    /* Calculate smaller mtu and enforce it */
+
+    // determine mtu value to use, either the provided one for the lagg or smallest of it's children
     $mtu = null;
-    foreach ($members as $member) {
-        $opts = legacy_interface_stats($member);
-        if (!empty($opts['mtu']) && ($mtu == null || $opts['mtu'] < $mtu)) {
-            $mtu = $opts['mtu'];
+    if (!empty($lagg['mtu'])) {
+        // mtu provided for lagg
+        $mtu = $lagg['mtu'];
+    } else {
+        // min() mtu of children
+        foreach ($members as $member) {
+            if (!empty($interface_stats[$member]['mtu']) && ($mtu == null || $interface_stats[$member]['mtu'] < $mtu)) {
+                $mtu = $interface_stats[$member]['mtu'];
+            }
         }
     }
 
-    $checklist = get_interface_list();
     foreach ($members as $member) {
-        if (!array_key_exists($member, $checklist)) {
-            continue;
+        if (!empty($interface_stats[$member])) {
+            legacy_interface_mtu($member, $mtu);
+            configure_interface_hardware($member);
+            interfaces_bring_up($member);
+            mwexec("/sbin/ifconfig {$laggif} laggport {$member}");
         }
-
-        legacy_interface_mtu($member, $mtu);
-        configure_interface_hardware($member);
-        interfaces_bring_up($member);
-        mwexec("/sbin/ifconfig {$laggif} laggport {$member}");
     }
 
     mwexec("/sbin/ifconfig {$laggif} laggproto " . escapeshellarg($lagg['proto']));
@@ -1081,7 +1094,7 @@ function interface_vip_bring_down($vip)
     }
 }
 
-function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = false)
+function interface_bring_down($interface = "wan", $ifacecfg = false)
 {
     global $config;
 
@@ -1261,12 +1274,6 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
     if (isset($ifcfg['wireless']) && is_array($ifcfg['wireless'])) {
         kill_hostapd($realif);
         mwexec(kill_wpasupplicant($realif));
-    }
-
-    if ($destroy == true) {
-        if (preg_match("/^[a-z0-9]+^tun|^ovpn|^gif|^gre|^lagg|^bridge|vlan|_stf$/i", $realif)) {
-            legacy_interface_destroy($realif);
-        }
     }
 
     return;
@@ -2510,37 +2517,6 @@ function interface_virtual_create($interface)
     }
 }
 
-function interface_vlan_adapt_mtu($vlanifs, $mtu)
-{
-    global $config;
-
-    if (!is_array($vlanifs)) {
-        return;
-    }
-
-    /* All vlans need to use the same mtu value as their parent. */
-    foreach ($vlanifs as $vlan) {
-        $assignedport = convert_real_interface_to_friendly_interface_name($vlan['vlanif']);
-        if (!empty($assignedport)) {
-            if (!empty($config['interfaces'][$assignedport]['mtu'])) {
-                /*
-                 * XXX: This is really never going to happen just keep the code for safety and readbility.
-                 * It never happens since interface_vlan_mtu_configured finds the biggest mtu on vlans.
-                 * Also if it has a lower mtu configured just respect user choice.
-                 */
-                if (intval($config['interfaces'][$assignedport]['mtu']) > $mtu) {
-                    legacy_interface_mtu($vlan['vlanif'], $mtu);
-                }
-            } else {
-                if (legacy_interface_stats($vlan['vlanif'])['mtu'] != $mtu) {
-                    legacy_interface_mtu($vlan['vlanif'], $mtu);
-                }
-            }
-        } elseif (legacy_interface_stats($vlan['vlanif'])['mtu'] != $mtu) {
-            legacy_interface_mtu($vlan['vlanif'], $mtu);
-        }
-    }
-}
 
 function interface_configure($interface = 'wan', $reloadall = false, $linkupevent = false, $verbose = false)
 {
@@ -2694,34 +2670,27 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
                 break;
         }
     }
+    $intf_stats = legacy_interface_stats();
     if (!empty($wancfg['mtu'])) {
         if (stristr($realif, "_vlan")) {
-            $assignedparent = convert_real_interface_to_friendly_interface_name($realhwif);
-            if (!empty($assignedparent) && !empty($config['interfaces'][$assignedparent]['mtu'])) {
-                $parentmtu = $config['interfaces'][$assignedparent]['mtu'];
-            } else {
-                $parentmtu = interface_vlan_mtu_configured($realhwif, $wancfg['mtu']);
+            // max mtu to parent
+            $mtu = $wancfg['mtu'] < $intf_stats[$realhwif]['mtu'] ? $wancfg['mtu'] : $intf_stats[$realhwif]['mtu'];
+            if ($mtu != $intf_stats[$realif]['mtu']) {
+                legacy_interface_mtu($realif, $mtu);
             }
-
-            if ($wancfg['mtu'] > $parentmtu) {
-                if (legacy_interface_stats($realhwif)['mtu'] != $wancfg['mtu']) {
-                    legacy_interface_mtu($realhwif, $wancfg['mtu']);
-                }
-
-                /* All vlans need to use the same mtu value as their parent. */
-                interface_vlan_adapt_mtu(link_interface_to_vlans($realhwif), $wancfg['mtu']);
-            } else {
-                legacy_interface_mtu($realif, $wancfg['mtu']);
-            }
-        } else {
-            if ($wancfg['mtu'] != legacy_interface_stats($realhwif)['mtu']) {
-                legacy_interface_mtu($realhwif, $wancfg['mtu']);
-            }
-
-            /* This case is needed when the parent of vlans is being configured */
-            interface_vlan_adapt_mtu(link_interface_to_vlans($realif), $wancfg['mtu']);
+        } elseif ($wancfg['mtu'] != $intf_stats['mtu']) {
+            legacy_interface_mtu($realhwif, $wancfg['mtu']);
         }
-        /* XXX: What about gre/gif/lagg/.. ? */
+    }
+
+    // in case this interface has vlan's configured, make sure none of them has an mtu set higher than it's parent
+    if (!empty($config['vlans']['vlan'])) {
+        $intf_stats = legacy_interface_stats();
+        foreach ($config['vlans']['vlan'] as $vlan) {
+            if ($realhwif == $vlan['if'] && $intf_stats[$realhwif]['mtu'] < $intf_stats[$vlan['vlanif']]['mtu']) {
+                legacy_interface_mtu($vlan['vlanif'], $intf_stats[$realhwif]['mtu']);
+            }
+        }
     }
 
     if (does_interface_exist($wancfg['if'])) {
@@ -4068,31 +4037,6 @@ function link_interface_to_track6($int, $action = '')
             }
         }
         return $list;
-    }
-}
-
-function link_interface_to_vlans($int, $action = '')
-{
-    global $config;
-
-    if (empty($int)) {
-        return;
-    }
-
-    if (isset($config['vlans']['vlan'])) {
-        $ifaces = array();
-        foreach ($config['vlans']['vlan'] as $vlan) {
-            if ($int == $vlan['if']) {
-                if ($action == "update") {
-                    interfaces_bring_up($int);
-                } elseif ($action == "") {
-                    $ifaces[$vlan['tag']] = $vlan;
-                }
-            }
-        }
-        if (!empty($ifaces)) {
-            return $ifaces;
-        }
     }
 }
 

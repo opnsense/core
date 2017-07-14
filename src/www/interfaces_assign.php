@@ -35,6 +35,20 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
+function link_interface_to_vlans($int)
+{
+    global $config;
+
+    if (isset($config['vlans']['vlan'])) {
+        foreach ($config['vlans']['vlan'] as $vlan) {
+            if ($int == $vlan['if']) {
+                interfaces_bring_up($int);
+            }
+        }
+    }
+}
+
+
 function list_interfaces() {
     global $config;
     $interfaces  = array();
@@ -170,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // no validation errors, delete entry
             unset($config['interfaces'][$id]['enable']);
             $realid = get_real_interface($id);
-            interface_bring_down($id, true);   /* down the interface */
+            interface_bring_down($id);   /* down the interface */
 
             unset($config['interfaces'][$id]);  /* delete the specified OPTn or LAN*/
 
@@ -202,7 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if(!empty($config['interfaces']['lan']) && !empty($config['dhcpd']['wan']) && !empty($config['dhcpd']['wan']) ) {
                 unset($config['dhcpd']['wan']);
             }
-            link_interface_to_vlans($realid, "update");
+            link_interface_to_vlans($realid);
             header(url_safe('Location: /interfaces_assign.php'));
             exit;
         }
@@ -264,7 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               if (!is_array($ifport) && ($ifname == 'lan' || $ifname == 'wan' || substr($ifname, 0, 3) == 'opt')) {
                   $reloadif = false;
                   if (!empty($config['interfaces'][$ifname]['if']) && $config['interfaces'][$ifname]['if'] <> $ifport) {
-                      interface_bring_down($ifname, true);
+                      interface_bring_down($ifname);
                       /* Mark this to be reconfigured in any case. */
                       $reloadif = true;
                   }
