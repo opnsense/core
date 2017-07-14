@@ -1081,7 +1081,7 @@ function interface_vip_bring_down($vip)
     }
 }
 
-function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = false)
+function interface_bring_down($interface = "wan", $ifacecfg = false)
 {
     global $config;
 
@@ -1261,12 +1261,6 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
     if (isset($ifcfg['wireless']) && is_array($ifcfg['wireless'])) {
         kill_hostapd($realif);
         mwexec(kill_wpasupplicant($realif));
-    }
-
-    if ($destroy == true) {
-        if (preg_match("/^[a-z0-9]+^tun|^ovpn|^gif|^gre|^lagg|^bridge|vlan|_stf$/i", $realif)) {
-            legacy_interface_destroy($realif);
-        }
     }
 
     return;

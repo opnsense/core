@@ -514,10 +514,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
                 foreach ($toapplylist as $ifapply => $ifcfgo) {
                     if (isset($config['interfaces'][$ifapply]['enable'])) {
-                        interface_bring_down($ifapply, false, $ifcfgo);
+                        interface_bring_down($ifapply, $ifcfgo);
                         interface_configure($ifapply, true);
                     } else {
-                        interface_bring_down($ifapply, true, $ifcfgo);
+                        interface_bring_down($ifapply, $ifcfgo);
                     }
                 }
             }
