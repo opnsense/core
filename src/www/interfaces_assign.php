@@ -35,6 +35,20 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
+function link_interface_to_vlans($int)
+{
+    global $config;
+
+    if (isset($config['vlans']['vlan'])) {
+        foreach ($config['vlans']['vlan'] as $vlan) {
+            if ($int == $vlan['if']) {
+                interfaces_bring_up($int);
+            }
+        }
+    }
+}
+
+
 function list_interfaces() {
     global $config;
     $interfaces  = array();
@@ -202,7 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if(!empty($config['interfaces']['lan']) && !empty($config['dhcpd']['wan']) && !empty($config['dhcpd']['wan']) ) {
                 unset($config['dhcpd']['wan']);
             }
-            link_interface_to_vlans($realid, "update");
+            link_interface_to_vlans($realid);
             header(url_safe('Location: /interfaces_assign.php'));
             exit;
         }

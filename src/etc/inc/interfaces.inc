@@ -4040,31 +4040,6 @@ function link_interface_to_track6($int, $action = '')
     }
 }
 
-function link_interface_to_vlans($int, $action = '')
-{
-    global $config;
-
-    if (empty($int)) {
-        return;
-    }
-
-    if (isset($config['vlans']['vlan'])) {
-        $ifaces = array();
-        foreach ($config['vlans']['vlan'] as $vlan) {
-            if ($int == $vlan['if']) {
-                if ($action == "update") {
-                    interfaces_bring_up($int);
-                } elseif ($action == "") {
-                    $ifaces[$vlan['tag']] = $vlan;
-                }
-            }
-        }
-        if (!empty($ifaces)) {
-            return $ifaces;
-        }
-    }
-}
-
 function link_interface_to_vips($int, $action = '')
 {
     global $config;
