@@ -219,6 +219,9 @@ function legacy_interfaces_details($intf = null)
             $result[$current_interface]["macaddr"] = "00:00:00:00:00:00";
             $result[$current_interface]["ipv4"] = array();
             $result[$current_interface]["ipv6"] = array();
+            if (preg_match("/ mtu ([0-9]*).*$/", $line, $matches)) {
+                $result[$current_interface]["mtu"] = $matches[1];
+            }
         } elseif (empty($current_interface)) {
             // skip parsing, no interface found (yet)
             continue;
