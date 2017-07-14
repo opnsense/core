@@ -815,7 +815,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             if (stristr($a_interfaces[$if]['if'], "_vlan")) {
                 $parentif = get_parent_interface($a_interfaces[$if]['if'])[0];
-                $intf_details = legacy_interfaces_details($parentif)[$parentif];
+                $intf_details = legacy_interface_details($parentif);
                 if ($intf_details['mtu'] < $pconfig['mtu']) {
                     $input_errors[] = gettext("MTU of a vlan should not be bigger than parent interface.");
                 }
