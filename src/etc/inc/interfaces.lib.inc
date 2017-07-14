@@ -211,7 +211,7 @@ function legacy_interfaces_details($intf = null)
     $current_interface = null;
     foreach ($ifconfig_data as $line) {
         $line_parts = explode(' ', $line);
-        if (strpos(trim($line), 'flags=') !== false) {
+        if (strpos(trim($line), 'flags=') !== false && $line[0] != "\t") {
             $current_interface = explode(':', $line)[0];
             $result[$current_interface] = array();
             $result[$current_interface]["capabilities"] = array();
@@ -284,7 +284,7 @@ function legacy_interfaces_details($intf = null)
             if (empty($result[$current_interface]['laggport'])) {
                 $result[$current_interface]['laggport'] = array();
             }
-            $result[$current_interface]['laggport'][] = $matches[1];
+            $result[$current_interface]['laggport'][] = explode(' ', trim($matches[1]))[0];
         }
     }
 
