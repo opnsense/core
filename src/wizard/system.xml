@@ -545,6 +545,7 @@
 		<field>
 			<name>Admin Password</name>
 			<type>password</type>
+			<description>(leave empty to keep current one)</description>
 		</field>
 		<field>
 			<name>Admin Password AGAIN</name>
@@ -566,10 +567,7 @@
 			print_info_box("Passwords do not match! Please press back in your browser window and correct.");
 			die;
 		}
-	} else {
-		print_info_box("You must set a new password! Please press back in your browser window and correct.");
-		die;
-        }
+	}
 	</stepsubmitphpaction>
 </step>
 <step>
