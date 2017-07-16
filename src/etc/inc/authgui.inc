@@ -384,7 +384,7 @@ function display_login_form($Login_Error = '')
             }
         }
     }
-    setcookie("cookie_test", time() + 3600);
+    setcookie("cookie_test", time() + 3600 ,  time() + 3600, '/', null, $config['system']['webgui']['protocol'] == "https", true);
     $have_cookies = isset($_COOKIE["cookie_test"]);
 
 ?><!doctype html>
