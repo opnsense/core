@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     // plain 1-on-1 copy
     $copy_fields = array('ptpid', 'type', 'username', 'idletimeout', 'uptime', 'descr', 'simpin', 'pin-wait',
-                        'apn', 'apnum', 'phone', 'connect-timeout', 'provider');
+                        'apn', 'apnum', 'phone', 'connect-timeout', 'provider', 'hostuniq');
     foreach ($copy_fields as $fieldname) {
         if (isset($a_ppps[$id][$fieldname])) {
             $pconfig[$fieldname] = $a_ppps[$id][$fieldname];
@@ -175,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         // Loop through fields associated with a individual link/port and make an array of the data
-        $port_fields = array("localip", "gateway", "subnet", "bandwidth", "mtu", "mru", "mrru");
+        $port_fields = array("localip", "gateway", "subnet", "bandwidth", "mtu", "mru", "mrru", "hostuniq");
         $port_data = array();
         foreach($pconfig['ports'] as $iface_idx => $iface){
             foreach($port_fields as $field_label){
@@ -233,6 +233,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $ppp['mtu'] = implode(',', $port_data['mtu']);
         $ppp['mru'] = implode(',', $port_data['mru']);
         $ppp['mrru'] = implode(',', $port_data['mrru']);
+        $ppp['hostuniq'] = $pconfig['hostuniq'];
 
         // XXX this was already in here, but is probably not the correct place to create this
         if (!is_dir('/var/spool/lock')) {
@@ -782,6 +783,12 @@ include("head.inc");
                                 <input name="mrru[]" class="intf_select_<?=$intf_idx;?>" type="text" value="<?=isset($pconfig['mrru'][$intf_idx]) ? $pconfig['mrru'][$intf_idx] : "";?>" />
                               </td>
                             </tr>
+                            <tr>
+                              <td><?=gettext("Host-Uniq"); ?></td>
+                              <td>
+                                <input name="hostuniq" class="intf_select_<?=$intf_idx;?>" type="text" value="<?=$pconfig['hostuniq'];?>" />
+                              </td>
+                            </tr>
                           </table>
                           <div class="hidden" for="help_for_link_<?=$intf_idx;?>">
                             <ul>
@@ -789,6 +796,7 @@ include("head.inc");
                               <li><?=gettext("MTU: MTU will default to 1492.");?></li>
                               <li><?=gettext("MRU: MRU will be auto-negotiated by default.");?></li>
                               <li><?=gettext("MRRU: Set ONLY for MLPPP connections. MRRU will be auto-negotiated by default.");?></li>
+			      <li><?=gettext("Host-Uniq: Set ONLY if requested.");?></li>
                             </ul>
                           </div>
                         </td>
