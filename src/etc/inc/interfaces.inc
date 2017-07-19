@@ -1582,6 +1582,9 @@ EOD;
             $provider = isset($ppp['provider']) ? $ppp['provider'] : "";
             $mpdconf_arr[] = "set pppoe service \"{$provider}\"";
             $mpdconf_arr[] = "set pppoe iface {$port}";
+            if (!empty($ppp['hostuniq'])) {
+                $mpdconf_arr[] = "set host-uniq \"{$ppp['hostuniq']}\"";
+            }
         } elseif ($ppp['type'] == "pptp" || $ppp['type'] == "l2tp") {
             $mpdconf_arr[] = "set {$ppp['type']} self {$localips[$pid]}";
             $mpdconf_arr[] = "set {$ppp['type']} peer {$gateways[$pid]}";
