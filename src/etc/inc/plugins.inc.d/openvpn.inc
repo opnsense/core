@@ -466,11 +466,12 @@ function openvpn_add_custom(& $settings, & $conf)
     }
 }
 
-function openvpn_add_keyfile(&$data, &$conf, $mode_id, $directive, $opt = '')
+function openvpn_add_keyfile($data, &$conf, $mode_id, $directive, $opt = '')
 {
     $fpath = "/var/etc/openvpn/{$mode_id}.{$directive}";
     openvpn_create_dirs();
-    file_put_contents($fpath, base64_decode($data));
+    $data = str_replace("\r", "", base64_decode($data));
+    file_put_contents($fpath, str_replace("\n\n", "\n", $data));
     //chown($fpath, 'nobody');
     //chgrp($fpath, 'nobody');
     @chmod($fpath, 0600);
