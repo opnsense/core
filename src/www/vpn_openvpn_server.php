@@ -32,10 +32,7 @@ require_once("plugins.inc.d/openvpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-if (!isset($config['openvpn']['openvpn-server'])) {
-    $config['openvpn']['openvpn-server'] = array();
-}
-$a_server = &$config['openvpn']['openvpn-server'];
+$a_server = &config_read_array('openvpn', 'openvpn-server');
 
 $act = null;
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {

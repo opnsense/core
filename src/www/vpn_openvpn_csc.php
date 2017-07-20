@@ -32,7 +32,6 @@ require_once("plugins.inc.d/openvpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-// define all fields used in this form
 $all_form_fields = "custom_options,disable,common_name,block,description
     ,tunnel_network,tunnel_networkv6,local_network,local_networkv6,remote_network
     ,remote_networkv6,gwredir,push_reset,dns_domain,dns_server1
@@ -40,11 +39,7 @@ $all_form_fields = "custom_options,disable,common_name,block,description
     ,netbios_enable,netbios_ntype,netbios_scope,wins_server1
     ,wins_server2,ovpn_servers";
 
-// read config.
-if (!isset($config['openvpn']['openvpn-csc'])) {
-    $config['openvpn']['openvpn-csc'] = array();
-}
-$a_csc = &$config['openvpn']['openvpn-csc'];
+$a_csc = &config_read_array('openvpn', 'openvpn-csc');
 
 $vpnid = 0;
 $act=null;
