@@ -3183,8 +3183,7 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     unset($dhcp6cconf);
 
     $dhcp6cscript = "#!/bin/sh\n";
-    $dhcp6cscript .= "# This shell script launches /usr/local/etc/rc.newwanipv6 with a interface argument.\n";
-    $dhcp6cscript .= "/usr/local/etc/rc.newwanipv6 {$wanif} \n";
+    $dhcp6cscript .= "/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
 
     if (!@file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript)) {
         printf("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.\n");
