@@ -32,11 +32,7 @@ require_once("plugins.inc.d/openvpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-if (!isset($config['openvpn']['openvpn-client'])) {
-    $config['openvpn']['openvpn-client'] = array();
-}
-
-$a_client = &$config['openvpn']['openvpn-client'];
+$a_client = &config_read_array('openvpn', 'openvpn-client');
 
 $vpnid = 0;
 $act = null;

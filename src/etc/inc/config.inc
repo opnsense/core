@@ -278,6 +278,22 @@ function cleanup_backups()
     }
 }
 
+function &config_read_array()
+{
+    global $config;
+
+    $current = &$config;
+
+    foreach (func_get_args() as $key) {
+        if (!isset($current[$key]) || !is_array($current[$key])) {
+            $current[$key] = array();
+        }
+        $current = &$current[$key];
+    }
+
+    return $current;
+}
+
 function make_config_revision_entry($desc = '')
 {
     if (!empty($_SESSION['Username'])) {
