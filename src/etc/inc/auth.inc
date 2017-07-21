@@ -566,7 +566,7 @@ function local_user_set_groups($user, $new_groups = null)
             // continue if group is already in current list or the groupname is invalid
             continue;
         }
-        $group = & $config['system']['group'][$groupindex[$groupname]];
+        $group = &config_read_array('system', 'group', $groupindex[$groupname]);
         $group['member'][] = $user['uid'];
         $mod_groups[] = $group;
     }
@@ -579,7 +579,7 @@ function local_user_set_groups($user, $new_groups = null)
         if (!isset($config['system']['group'][$groupindex[$groupname]])) {
             continue;
         }
-        $group = & $config['system']['group'][$groupindex[$groupname]];
+        $group = &config_read_array('system', 'group', $groupindex[$groupname]);
         if (is_array($group['member'])) {
             $index = array_search($user['uid'], $group['member']);
             array_splice($group['member'], $index, 1);
