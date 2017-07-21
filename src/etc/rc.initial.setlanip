@@ -214,7 +214,7 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet
         $config['gateways']['gateway_item'] = array();
     }
 
-    $a_gateways = &$config['gateways']['gateway_item'];
+    $a_gateways =  &config_read_array('gateways', 'gateway_item');
     $is_default = true;
     $new_name = '';
 
