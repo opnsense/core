@@ -1321,7 +1321,7 @@ function services_dhcrelay_configure($verbose = false)
 
     killbypid('/var/run/dhcrelay.pid', 'TERM', true);
 
-    $dhcrelaycfg = &$config['dhcrelay'];
+    $dhcrelaycfg = &config_read_array('dhcrelay');
 
     if (!isset($dhcrelaycfg['enable'])) {
         return;
@@ -1440,7 +1440,7 @@ function services_dhcrelay6_configure($verbose = false)
 
     killbypid('/var/run/dhcrelay6.pid', 'TERM', true);
 
-    $dhcrelaycfg = &$config['dhcrelay6'];
+    $dhcrelaycfg = &config_read_array('dhcrelay6');
 
     if (!isset($dhcrelaycfg['enable'])) {
         return;

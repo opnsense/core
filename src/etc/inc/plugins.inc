@@ -153,9 +153,9 @@ function plugins_interfaces()
                     }
                     if (isset($config['interfaces'][$intf_ref][0])) {
                         // undo stupid listags() turning our item into a new array, see src/etc/inc/xmlparse.inc
-                        $intf_config = &$config['interfaces'][$intf_ref][0];
+                        $intf_config = &config_read_array('interfaces', $intf_ref, 0);
                     } else {
-                        $intf_config = &$config['interfaces'][$intf_ref];
+                        $intf_config = &config_read_array('interfaces', $intf_ref);
                     }
                     $intf_config['internal_dynamic'] = true;
                     // traverse and diff interface properties with known configuration

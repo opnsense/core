@@ -482,7 +482,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             continue;
         }
 
-        $ifcfg = &$config['interfaces'][$ifname];
+        $ifcfg = &config_read_array('interfaces', $ifname);
 
         if (!empty($ifcfg['ipaddr']) && is_ipaddrv4($ifcfg['ipaddr'])) {
             continue;
@@ -557,7 +557,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             continue;
         }
 
-        $ifcfg = &$config['interfaces'][$ifname];
+        $ifcfg = &config_read_array('interfaces', $ifname);
 
         if (!empty($ifcfg['ipaddrv6']) && is_ipaddrv6($ifcfg['ipaddrv6'])) {
             continue;

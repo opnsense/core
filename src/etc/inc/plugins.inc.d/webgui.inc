@@ -64,11 +64,11 @@ function webgui_configure_do($verbose = false)
             if (!is_array($config['ca'])) {
                 $config['ca'] = array();
             }
-            $a_ca =& $config['ca'];
+            $a_ca = &config_read_array('ca');
             if (!is_array($config['cert'])) {
                 $config['cert'] = array();
             }
-            $a_cert =& $config['cert'];
+            $a_cert = &config_read_array('cert');
             log_error("Creating SSL certificate for this host");
             $cert = array();
             $cert['refid'] = uniqid();
