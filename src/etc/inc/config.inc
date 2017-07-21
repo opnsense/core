@@ -39,7 +39,6 @@ require_once("xmlparse.inc");
 require_once("crypt.inc");
 require_once("notices.inc");
 require_once("legacy_bindings.inc");
-require_once('upgrade_config.inc');
 require_once("certs.inc");
 
 /*
@@ -108,30 +107,9 @@ function convert_config($verbose = false)
 {
     global $config;
 
-    /* hardcode this, legacy migration path is now disabled */
-    $latest_config = '11.2';
-
     if (!isset($config['revision'])) {
         /* force a revision tag for proper handling in config history */
         write_config('Factory configuration', false);
-    }
-
-    if ($config['version'] !== $latest_config) {
-        $prev_version = $config['version'];
-        /* Loop and run upgrade_VER_to_VER() until we're at current version */
-        while ($config['version'] < $latest_config) {
-            $cur = $config['version'] * 10;
-            $next = $cur + 1;
-            $migration_function = sprintf('upgrade_%03d_to_%03d', $cur, $next);
-            if (function_exists($migration_function)) {
-                $migration_function();
-            }
-            $config['version'] = sprintf('%.1f', $next / 10);
-        }
-
-        if ($prev_version != $config['version']) {
-            write_config(sprintf('Upgraded config version level from %s to %s', $prev_version, $config['version']));
-        }
     }
 
     /* chain the new migration into this function call */
@@ -173,12 +151,6 @@ function write_config($desc = '', $backup = true)
                 return false;
             }
         }
-    }
-
-    if (!isset($config['version'])) {
-        // Examine config.xml, if for some strange reason the content is unexpected : exit directly.
-        log_error('WARNING: Corrupt config!');
-        return -1;
     }
 
     plugins_interfaces();
