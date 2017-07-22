@@ -334,7 +334,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $realid = $a_gateways[$id]['attribute'];
         }
 
-        $a_gateway_item = &$config['gateways']['gateway_item'];
+        $a_gateway_item = &config_read_array('gateways', 'gateway_item');
         $reloadif = "";
         $gateway = array();
 

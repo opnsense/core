@@ -39,7 +39,7 @@ require_once("filter.inc");
 function deleteVIPEntry($id) {
     global $config;
     $input_errors = array();
-    $a_vip = &$config['virtualip']['vip'];
+    $a_vip = &config_read_array('virtualip', 'vip');
     /* make sure no inbound NAT mappings reference this entry */
     if (isset($config['nat']['rule'])) {
         foreach ($config['nat']['rule'] as $rule) {
@@ -127,10 +127,7 @@ function deleteVIPEntry($id) {
     return $input_errors;
 }
 
-if (!isset($config['virtualip']['vip'])) {
-    $config['virtualip']['vip'] = array();
-}
-$a_vip = &$config['virtualip']['vip'];
+$a_vip = &config_read_array('virtualip', 'vip');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;

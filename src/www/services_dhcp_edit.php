@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (empty($config['dhcpd'][$if]['staticmap'])) {
         $config['dhcpd'][$if]['staticmap'] = array();
     }
-    $a_maps = &$config['dhcpd'][$if]['staticmap'];
+    $a_maps = &config_read_array('dhcpd', $if, 'staticmap');
     $input_errors = array();
 
     /* input validation */

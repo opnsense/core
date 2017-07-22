@@ -66,11 +66,7 @@ function delete_static_route($id)
     unset($targets);
 }
 
-if (!isset($config['staticroutes']['route']) || !is_array($config['staticroutes']['route'])) {
-    $a_routes = array();
-} else {
-    $a_routes = &$config['staticroutes']['route'];
-}
+$a_routes = &config_read_array('staticroutes', 'route');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;

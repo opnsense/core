@@ -39,11 +39,7 @@ function gif_inuse($gif_intf) {
     return false;
 }
 
-if (!isset($config['gifs']['gif']) || !is_array($config['gifs']['gif'])) {
-    $a_gifs = array();
-} else {
-    $a_gifs = &$config['gifs']['gif'] ;
-}
+$a_gifs = &config_read_array('gifs', 'gif') ;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($a_gifs[$_POST['id']])) {

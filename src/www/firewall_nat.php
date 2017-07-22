@@ -69,11 +69,8 @@ function delete_id($id, &$array)
     }
 }
 
-if (!isset($config['nat']['rule']) || !is_array($config['nat']['rule'])) {
-    $config['nat']['rule'] = array();
-}
 
-$a_nat = &$config['nat']['rule'];
+$a_nat = &config_read_array('nat', 'rule');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (isset($pconfig['id']) && isset($a_nat[$pconfig['id']])) {

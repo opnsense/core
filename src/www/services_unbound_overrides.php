@@ -33,14 +33,7 @@ require_once("services.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-if (empty($config['unbound']) || !is_array($config['unbound'])) {
-    $config['unbound'] = array();
-}
-
-if (empty($config['unbound']['hosts']) || !is_array($config['unbound']['hosts'])) {
-    $config['unbound']['hosts'] = array();
-}
-$a_hosts =& $config['unbound']['hosts'];
+$a_hosts = &config_read_array('unbound', 'hosts');
 /* Backwards compatibility for records created before introducing RR types. */
 foreach ($a_hosts as $i => $hostent) {
     if (!isset($hostent['rr'])) {
@@ -69,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
     } elseif (!empty($pconfig['act']) && $pconfig['act'] == 'doverride') {
-        $a_domainOverrides = &$config['unbound']['domainoverrides'];
+        $a_domainOverrides = &config_read_array('unbound', 'domainoverrides');
         if (isset($pconfig['id']) && !empty($a_domainOverrides[$pconfig['id']])) {
             unset($a_domainOverrides[$pconfig['id']]);
             write_config();

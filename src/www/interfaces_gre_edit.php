@@ -32,13 +32,7 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-if (!isset($config['gres']) || !is_array($config['gres'])) {
-    $config['gres'] = array();
-}
-if (!isset($config['gres']['gre']) || !is_array($config['gres']['gre'])) {
-    $config['gres']['gre'] = array();
-}
-$a_gres = &$config['gres']['gre'];
+$a_gres = &config_read_array('gres', 'gre');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // read form data

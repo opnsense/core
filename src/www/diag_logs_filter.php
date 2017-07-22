@@ -120,7 +120,7 @@ function easyrule_block_rule_create($int = 'wan', $ipproto = "inet") {
     }
 
     filter_rules_sort();
-    $a_filter = &$config['filter']['rule'];
+    $a_filter = &config_read_array('filter', 'rule');
 
     /* Make up a new rule */
     $filterent = array();
@@ -173,7 +173,7 @@ function easyrule_block_alias_add($host, $int = 'wan') {
     if (!isset($config['aliases']['alias'])) {
         $config['aliases']['alias'] = array();
     }
-    $a_aliases = &$config['aliases']['alias'];
+    $a_aliases = &config_read_array('aliases', 'alias');
 
     /* Try to get the ID if the alias already exists */
     $id = easyrule_block_alias_getid($int);
@@ -278,7 +278,7 @@ function easyrule_pass_rule_add($int, $proto, $srchost, $dsthost, $dstport, $ipp
     }
 
     filter_rules_sort();
-    $a_filter = &$config['filter']['rule'];
+    $a_filter = &config_read_array('filter', 'rule');
 
     /* Make up a new rule */
     $filterent = array();

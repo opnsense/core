@@ -32,12 +32,7 @@ require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-if (empty($config['unbound']['domainoverrides']) || !is_array($config['unbound']['domainoverrides'])) {
-    $config['unbound']['domainoverrides'] = array();
-}
-
-$a_domainOverrides = &$config['unbound']['domainoverrides'];
-
+$a_domainOverrides = &config_read_array('unbound', 'domainoverrides');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && !empty($a_domainOverrides[$_GET['id']])) {

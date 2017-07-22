@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header(url_safe('Location: /services_dnsmasq.php'));
         exit;
     } elseif (!empty($pconfig['act']) && $pconfig['act'] == 'del') {
-        $a_hosts = &$config['dnsmasq']['hosts'];
+        $a_hosts = &config_read_array('dnsmasq', 'hosts');
         if (isset($pconfig['id']) && !empty($a_hosts[$pconfig['id']])) {
             unset($a_hosts[$pconfig['id']]);
             write_config();
@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             exit;
         }
     } elseif (!empty($pconfig['act']) && $pconfig['act'] == 'doverride') {
-        $a_domainOverrides = &$config['dnsmasq']['domainoverrides'];
+        $a_domainOverrides = &config_read_array('dnsmasq', 'domainoverrides');
         if (isset($pconfig['id']) && !empty($a_domainOverrides[$pconfig['id']])) {
             unset($a_domainOverrides[$pconfig['id']]);
             write_config();

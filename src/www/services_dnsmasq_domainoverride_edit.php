@@ -33,10 +33,7 @@ require_once("services.inc");
 require_once("interfaces.inc");
 
 
-if (empty($config['dnsmasq']['domainoverrides']) || !is_array($config['dnsmasq']['domainoverrides'])) {
-    $config['dnsmasq']['domainoverrides'] = array();
-}
-$a_domainOverrides = &$config['dnsmasq']['domainoverrides'];
+$a_domainOverrides = &config_read_array('dnsmasq', 'domainoverrides');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && !empty($a_domainOverrides[$_GET['id']])) {

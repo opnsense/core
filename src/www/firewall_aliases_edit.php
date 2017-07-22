@@ -50,13 +50,7 @@ function geoip_countries()
     return $result;
 }
 
-if (!isset($config['aliases']) || !is_array($config['aliases'])) {
-    $config['aliases'] = array();
-}
-if (!isset($config['aliases']['alias'])) {
-    $config['aliases']['alias'] = array();
-}
-$a_aliases = &$config['aliases']['alias'];
+$a_aliases = &config_read_array('aliases', 'alias');
 
 $pconfig = array();
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {

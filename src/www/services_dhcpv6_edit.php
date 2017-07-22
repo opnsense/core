@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     /* check for overlaps */
-    $a_maps = &$config['dhcpdv6'][$if]['staticmap'];
+    $a_maps = &config_read_array('dhcpdv6', $if, 'staticmap');
     foreach ($a_maps as $mapent) {
         if (isset($id) && ($a_maps[$id] === $mapent)) {
             continue;

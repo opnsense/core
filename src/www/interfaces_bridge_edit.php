@@ -39,7 +39,7 @@ if (!isset($config['bridges']['bridged']) || !is_array($config['bridges']['bridg
     $config['bridges']['bridged'] = array();
 }
 
-$a_bridges = &$config['bridges']['bridged'];
+$a_bridges = &config_read_array('bridges', 'bridged');
 
 // interface list
 $ifacelist = array();

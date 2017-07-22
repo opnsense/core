@@ -31,11 +31,7 @@ require_once("guiconfig.inc");
 require_once("services.inc");
 
 // request report data
-if (!isset($config['gateways']['gateway_group']) || !is_array($config['gateways']['gateway_group'])) {
-    $a_gateway_groups = array();
-} else {
-    $a_gateway_groups = &$config['gateways']['gateway_group'];
-}
+$a_gateway_groups = &config_read_array('gateways', 'gateway_group');
 $gateways_status = return_gateways_status(true);
 $a_gateways = return_gateways_array();
 

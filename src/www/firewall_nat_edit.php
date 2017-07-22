@@ -33,10 +33,7 @@ require_once("filter.inc");
 
 
 // init config and get reference
-if (!isset($config['nat']['rule']) || !is_array($config['nat']['rule'])) {
-    $config['nat']['rule'] = array();
-}
-$a_nat = &$config['nat']['rule'];
+$a_nat = &config_read_array('nat', 'rule');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // load form data from config
@@ -300,7 +297,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($filterentid === false) {
                     $filterent['associated-rule-id'] = $natent['associated-rule-id'];
                 } else {
-                    $filterent =& $config['filter']['rule'][$filterentid];
+                    $filterent = &config_read_array('filter', 'rule', $filterentid);
                 }
             }
             pconfig_to_address($filterent['source'], $pconfig['src'],

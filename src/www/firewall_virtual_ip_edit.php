@@ -50,13 +50,7 @@ function find_last_used_vhid() {
 
 
 // create new vip array if none existent
-if (!isset($config['virtualip']) || !is_array($config['virtualip'])) {
-    $config['virtualip'] = array();
-}
-if (!isset($config['virtualip']['vip']) || !is_array($config['virtualip']['vip'])) {
-    $config['virtualip']['vip'] = array();
-}
-$a_vip = &$config['virtualip']['vip'];
+$a_vip = &config_read_array('virtualip', 'vip');
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {

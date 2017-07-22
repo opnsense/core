@@ -32,11 +32,8 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("system.inc");
 
-if (!isset($config['filter']['rule'])) {
-    $config['filter']['rule'] = array();
-}
+$a_filter = &config_read_array('filter', 'rule');
 
-$a_filter = &$config['filter']['rule'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_GET['if'])) {
         $current_if = htmlspecialchars($_GET['if']);
@@ -65,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($a_filter[$id]['associated-rule-id'])) {
             // unlink nat entry
             if (isset($config['nat']['rule'])) {
-                $a_nat = &$config['nat']['rule'];
+                $a_nat = &config_read_array('nat', 'rule');
                 foreach ($a_nat as &$natent) {
                     if ($natent['associated-rule-id'] == $a_filter[$id]['associated-rule-id']) {
                         $natent['associated-rule-id'] = '';
@@ -83,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($pconfig['rule'] as $rulei) {
             // unlink nat entry
             if (isset($config['nat']['rule'])) {
-                $a_nat = &$config['nat']['rule'];
+                $a_nat = &config_read_array('nat', 'rule');
                 foreach ($a_nat as &$natent) {
                     if ($natent['associated-rule-id'] == $a_filter[$rulei]['associated-rule-id']) {
                         $natent['associated-rule-id'] = '';

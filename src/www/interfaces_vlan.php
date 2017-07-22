@@ -41,11 +41,7 @@ function vlan_inuse($vlan_intf) {
     return false;
 }
 
-if (!isset($config['vlans']['vlan']) || !is_array($config['vlans']['vlan'])) {
-    $a_vlans = array();
-} else {
-    $a_vlans = &$config['vlans']['vlan'] ;
-}
+$a_vlans = &config_read_array('vlans', 'vlan') ;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($a_vlans[$_POST['id']])) {

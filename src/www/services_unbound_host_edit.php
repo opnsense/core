@@ -38,10 +38,7 @@ function hostcmp($a, $b)
     return strcasecmp($a['host'], $b['host']);
 }
 
-if (empty($config['unbound']['hosts']) || !is_array($config['unbound']['hosts'])) {
-    $config['unbound']['hosts'] = array();
-}
-$a_hosts = &$config['unbound']['hosts'];
+$a_hosts = &config_read_array('unbound', 'hosts');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && !empty($a_hosts[$_GET['id']])) {

@@ -40,12 +40,7 @@ function clone_inuse($cloneif) {
     return false;
 }
 
-if (!isset($config['wireless']['clone']) || !is_array($config['wireless']['clone'])) {
-    $a_clones = array();
-} else {
-    $a_clones = &$config['wireless']['clone'];
-}
-
+$a_clones = &config_read_array('wireless', 'clone');
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

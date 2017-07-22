@@ -34,7 +34,7 @@ require_once("interfaces.inc");
 if ( !isset($config['virtualip']['vip']) || !is_array($config['virtualip']['vip'])) {
     $config['virtualip']['vip'] = array();
 }
-$a_vip = &$config['virtualip']['vip'];
+$a_vip = &config_read_array('virtualip', 'vip');
 
 $act = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

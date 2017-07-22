@@ -31,12 +31,7 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
 
-if (!isset($config['bridges']['bridged']) || !is_array($config['bridges']['bridged'])) {
-    $a_bridges = array();
-} else {
-    $a_bridges = &$config['bridges']['bridged'] ;
-}
-
+$a_bridges = &config_read_array('bridges', 'bridged') ;
 
 function bridge_inuse($bridge_if) {
     foreach (legacy_config_get_interfaces() as $if => $intf) {

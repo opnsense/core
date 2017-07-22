@@ -34,16 +34,10 @@ require_once("interfaces.inc");
 
 $GatewaysList = return_gateways_array(false, true) + return_gateway_groups_array();
 
-if (!isset($config['nat']['outbound']))
-    $config['nat']['outbound'] = array();
-
-if (!isset($config['nat']['outbound']['rule']))
-    $config['nat']['outbound']['rule'] = array();
-
-if (!isset($config['nat']['outbound']['mode']))
+$a_out = &config_read_array('nat', 'outbound', 'rule');
+if (!isset($config['nat']['outbound']['mode'])) {
     $config['nat']['outbound']['mode'] = "automatic";
-
-$a_out = &$config['nat']['outbound']['rule'];
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;

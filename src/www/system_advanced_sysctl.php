@@ -32,10 +32,7 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 
-if (!isset($config['sysctl']['item']) || !is_array($config['sysctl']['item'])) {
-    $config['sysctl']['item'] = array();
-}
-$a_tunable = &$config['sysctl']['item'];
+$a_tunable = &config_read_array('sysctl', 'item');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && isset($a_tunable[$_GET['id']])) {

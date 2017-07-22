@@ -30,10 +30,7 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-if (!isset($config['hasync']) || !is_array($config['hasync'])) {
-    $config['hasync'] = array();
-}
-$a_hasync = &$config['hasync'];
+$a_hasync = &config_read_array('hasync');
 
 $checkbox_names = array(
     'pfsyncenabled',

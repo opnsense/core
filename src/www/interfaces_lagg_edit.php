@@ -76,10 +76,7 @@ function available_interfaces($selected_id=null)
 
 $laggprotos = array("none", "lacp", "failover", "fec", "loadbalance", "roundrobin");
 
-if (!isset($config['laggs']['lagg'])) {
-    $config['laggs']['lagg'] = array();
-}
-$a_laggs = &$config['laggs']['lagg'];
+$a_laggs = &config_read_array('laggs', 'lagg');
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
