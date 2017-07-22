@@ -4444,9 +4444,7 @@ function is_interface_wireless($interface)
     $friendly = convert_real_interface_to_friendly_interface_name($interface);
     if (!isset($config['interfaces'][$friendly]['wireless'])) {
         if (match_wireless_interface($interface)) {
-            if (isset($config['interfaces'][$friendly])) {
-                $config['interfaces'][$friendly]['wireless'] = array();
-            }
+            config_read_array('interfaces', $friendly, 'wireless');
             return true;
         }
         return false;

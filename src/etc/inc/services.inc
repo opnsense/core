@@ -104,9 +104,7 @@ function services_radvd_configure($blacklist = array())
 
     killbypid('/var/run/radvd.pid', 'TERM', true);
 
-    if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
-        $config['dhcpdv6'] = array();
-    }
+    config_read_array('dhcpdv6');
 
     $radvdconf = "# Automatically Generated, do not edit\n";
 
@@ -1016,11 +1014,8 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
         return;
     }
 
-    $syscfg = $config['system'];
-    if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
-        $config['dhcpdv6'] = array();
-    }
-    $dhcpdv6cfg = $config['dhcpdv6'];
+    $syscfg = config_read_array('system');
+    $dhcpdv6cfg = config_read_array('dhcpdv6');
     $Iflist = get_configured_interface_list();
 
     if ($verbose) {
@@ -1818,11 +1813,7 @@ function is_radvd_enabled()
 {
     global $config;
 
-    if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
-        $config['dhcpdv6'] = array();
-    }
-
-    $dhcpdv6cfg = $config['dhcpdv6'];
+    $dhcpdv6cfg = config_read_array('dhcpdv6');
     $Iflist = get_configured_interface_list();
 
     /* handle manually configured DHCP6 server settings first */

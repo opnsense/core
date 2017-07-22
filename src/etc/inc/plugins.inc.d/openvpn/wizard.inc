@@ -514,11 +514,9 @@ function step12_submitphpaction()
             $auth['radius_secret'] = $pconfig['step2']['password'];
             $auth['radius_srvcs'] = "auth";
         }
-        if (!is_array($config['system']['authserver'])) {
-            $config['system']['authserver'] = array();
-        }
 
-        $config['system']['authserver'][] = $auth;
+        $a_auth = &config_read_array('system', 'authserver');
+        $a_auth[] = $auth;
     } elseif (!isset($pconfig['step2']['uselist']) && empty($pconfig['step2']['authserv'])) {
         $message = "Please choose an authentication server.";
         header(url_safe('Location: /wizard.php?xml=openvpn&stepid=1&message=%s', array($message)));
@@ -542,11 +540,9 @@ function step12_submitphpaction()
           'commonName' => $pconfig['step6']['certca']);
 
         ca_create($ca, $pconfig['step6']['keylength'], $pconfig['step6']['lifetime'], $dn, "sha256");
-        if (!is_array($config['ca'])) {
-            $config['ca'] = array();
-        }
 
-        $config['ca'][] = $ca;
+        $a_ca = &config_read_array('ca');
+        $a_ca[] = $ca;
     } elseif (!isset($pconfig['step6']['uselist']) && empty($pconfig['step6']['authcertca'])) {
         $message = "Please choose a Certificate Authority.";
         header(url_safe('Location: /wizard.php?xml=openvpn&stepid=5&message=%s', array($message)));
@@ -572,11 +568,8 @@ function step12_submitphpaction()
 
         cert_create($cert, $ca['refid'], $pconfig['step9']['keylength'], $pconfig['step9']['lifetime'], $dn, 'sha256', 'server_cert');
 
-        if (!is_array($config['cert'])) {
-            $config['cert'] = array();
-        }
-
-        $config['cert'][] = $cert;
+        $a_cert = &config_read_array('cert');
+        $a_cert[] = $cert;
     } elseif (!isset($pconfig['step9']['uselist']) && empty($pconfig['step9']['authcertname'])) {
         $message = "Please choose a Certificate.";
         header(url_safe('Location: /wizard.php?xml=openvpn&stepid=7&message=%s', array($message)));
@@ -725,11 +718,8 @@ function step12_submitphpaction()
         $config['filter']['rule'][] = $rule;
     }
 
-    if (!isset($config['openvpn']['openvpn-server'])) {
-        $config['openvpn']['openvpn-server'] = array();
-    }
-
-    $config['openvpn']['openvpn-server'][] = $server;
+    $a_server = &config_read_array('openvpn', 'openvpn-server');
+    $a_server[] = $server;
 
     write_config();
 

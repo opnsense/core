@@ -434,12 +434,8 @@
 		}
 		$type = $_POST['selectedtype'];
 
-		if (!is_array($config['ppps'])) {
-			$config['ppps'] = array();
-		}
-		if (!is_array($config['ppps']['ppp'])) {
-			$config['ppps']['ppp'] = array();
-		}
+		config_read_array('ppps', 'ppp');
+
 		foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
 			if ($ppp['ptpid'] == "0") {
 				if ((substr($config['interfaces']['wan']['if'],0,5) == "pppoe") || (substr($config['interfaces']['wan']['if'],0,4) == "pptp")) {
@@ -588,12 +584,7 @@
 		$config['system']['hostname'] = $config['wizardtemp']['system']['hostname'];
 		$config['system']['domain'] = $config['wizardtemp']['system']['domain'];
 		if (!empty($config['wizardtemp']['wangateway'])) {
-			if (!is_array($config['gateways'])) {
-				$config['gateways'] = array();
-			}
-			if (!isset($config['gateways']['gateway_item'])) {
-				$config['gateways']['gateway_item'] = array();
-			}
+			config_read_array('gateways', 'gateway_item');
 			$found = false;
 			$defaultgw_found = false;
 			foreach ($config['gateways']['gateway_item'] as & $gw) {

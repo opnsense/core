@@ -302,10 +302,11 @@ EOD;
     if ($lanif) {
         $new = false;
 
-        if (!is_array($config['interfaces']['lan'])) {
-            $config['interfaces']['lan'] = array();
+        if (!isset($config['interfaces']['lan'])) {
             $new = true;
         }
+
+        config_read_array('interfaces', 'lan');
         $config['interfaces']['lan']['if'] = $lanif;
         $config['interfaces']['lan']['enable'] = true;
 
@@ -319,31 +320,19 @@ EOD;
                 $config['interfaces']['lan']['subnetv6'] = '64';
             }
 
-            if (!isset($config['dhcpd']['lan'])) {
-                $config['dhcpd']['lan'] = array();
-                $config['dhcpd']['lan']['range'] = array();
-            }
+            config_read_array('dhcpd', 'lan', 'range');
             $config['dhcpd']['lan']['enable'] = true;
             $config['dhcpd']['lan']['range']['from'] = '192.168.1.100';
             $config['dhcpd']['lan']['range']['to'] = '192.168.1.199';
-            if (!is_array($config['nat'])) {
-                $config['nat'] = array();
-            }
-            if (!is_array($config['nat']['outbound'])) {
-                $config['nat']['outbound'] = array();
-            }
+
+            config_read_array('nat', 'outbound');
             $config['nat']['outbound']['mode'] = 'automatic';
         }
 
         if (match_wireless_interface($lanif)) {
-            if (is_array($config['interfaces']['lan']) &&
-                (!is_array($config['interfaces']['lan']['wireless']))) {
-                $config['interfaces']['lan']['wireless'] = array();
-            }
-        } else {
-            if (isset($config['interfaces']['lan'])) {
-                unset($config['interfaces']['lan']['wireless']);
-            }
+            config_read_array('interfaces', 'lan', 'wireless');
+        } elseif (isset($config['interfaces']['lan']['wireless'])) {
+            unset($config['interfaces']['lan']['wireless']);
         }
     } else {
         if (isset($config['interfaces']['lan']['if'])) {
@@ -364,9 +353,7 @@ EOD;
     }
 
     if ($wanif) {
-        if (!is_array($config['interfaces']['wan'])) {
-            $config['interfaces']['wan'] = array();
-        }
+        config_read_array('interfaces', 'wan');
         $config['interfaces']['wan']['if'] = $wanif;
         $config['interfaces']['wan']['enable'] = true;
         $config['interfaces']['wan']['ipaddr'] = 'dhcp';
@@ -377,14 +364,9 @@ EOD;
         }
 
         if (match_wireless_interface($wanif)) {
-            if (is_array($config['interfaces']['wan']) &&
-                (!is_array($config['interfaces']['wan']['wireless']))) {
-                $config['interfaces']['wan']['wireless'] = array();
-            }
-        } else {
-            if (isset($config['interfaces']['wan'])) {
-                unset($config['interfaces']['wan']['wireless']);
-            }
+            config_read_array('interfaces', 'wan', 'wireless');
+        } elseif (isset($config['interfaces']['wan']['wireless'])) {
+            unset($config['interfaces']['wan']['wireless']);
         }
     } else {
         if (isset($config['interfaces']['wan'])) {
@@ -393,15 +375,12 @@ EOD;
     }
 
     for ($i = 0; $i < count($optif); $i++) {
-        if (!is_array($config['interfaces']['opt' . ($i+1)]))
-            $config['interfaces']['opt' . ($i+1)] = array();
-
+        config_read_array('interfaces', 'opt' . ($i+1));
         $config['interfaces']['opt' . ($i+1)]['if'] = $optif[$i];
 
         if (match_wireless_interface($optif[$i])) {
-            if (!is_array($config['interfaces']['opt' . ($i+1)]['wireless']))
-                $config['interfaces']['opt' . ($i+1)]['wireless'] = array();
-        } else {
+            config_read_array('interfaces', 'opt' . ($i+1), 'wireless');
+        } elseif (isset($config['interfaces']['opt' . ($i+1)]['wireless'])) {
             unset($config['interfaces']['opt' . ($i+1)]['wireless']);
         }
 
@@ -474,7 +453,8 @@ EOD;
         }
     }
 
-    $config['vlans']['vlan'] = array();
+    config_read_array('vlans', 'vlan');
+
     echo "\n";
 
     $vlanif = 0;
