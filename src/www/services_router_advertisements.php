@@ -120,9 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
-        if (!is_array($config['dhcpdv6'][$if])) {
-            $config['dhcpdv6'][$if] = array();
-        }
+        config_read_array('dhcpdv6', $if);
 
         $config['dhcpdv6'][$if]['ramode'] = $pconfig['ramode'];
         $config['dhcpdv6'][$if]['rapriority'] = $pconfig['rapriority'];

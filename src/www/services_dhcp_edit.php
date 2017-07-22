@@ -86,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
+
     // handle identifiers and actions
     if (!empty($pconfig['if']) && !empty($config['interfaces'][$pconfig['if']])) {
         $if = $pconfig['if'];
@@ -93,15 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($config['dhcpd'][$if]['staticmap'][$pconfig['id']])) {
         $id = $pconfig['id'];
     }
-    if (empty($config['dhcpd'])) {
-        $config['dhcpd'] = array();
-    }
-    if (empty($config['dhcpd'][$if])) {
-        $config['dhcpd'][$if] = array();
-    }
-    if (empty($config['dhcpd'][$if]['staticmap'])) {
-        $config['dhcpd'][$if]['staticmap'] = array();
-    }
+
     $a_maps = &config_read_array('dhcpd', $if, 'staticmap');
     $input_errors = array();
 

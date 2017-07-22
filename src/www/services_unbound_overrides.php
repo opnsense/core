@@ -34,15 +34,13 @@ require_once("system.inc");
 require_once("interfaces.inc");
 
 $a_hosts = &config_read_array('unbound', 'hosts');
+config_read_array('unbound', 'domainoverrides');
+
 /* Backwards compatibility for records created before introducing RR types. */
 foreach ($a_hosts as $i => $hostent) {
     if (!isset($hostent['rr'])) {
         $a_hosts[$i]['rr'] = is_ipaddrv6($hostent['ip']) ? 'AAAA' : 'A';
     }
-}
-
-if (empty($config['unbound']['domainoverrides']) || !is_array($config['unbound']['domainoverrides'])) {
-    $config['unbound']['domainoverrides'] = array();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

@@ -321,13 +321,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (count($input_errors) == 0) {
-        if (!isset($config['gateways']) || !is_array($config['gateways'])) {
-            $config['gateways'] = array();
-        }
-
-        if (!isset($config['gateways']['gateway_item']) || !is_array($config['gateways']['gateway_item'])) {
-            $config['gateways']['gateway_item'] = array();
-        }
         // A result of obfuscating the list of gateways is that over here we need to map things back that should
         // be aligned with the configuration. Not going to fix this now.
         if (isset($a_gateways[$id]['attribute']) && is_numeric($a_gateways[$id]['attribute']) ) {

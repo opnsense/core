@@ -121,12 +121,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if (empty($config['dhcpd'][$if])) {
-        $config['dhcpd'][$if] = array();
-    }
-    if (empty($config['dhcpd'][$if]['pool'])) {
-        $config['dhcpd'][$if]['pool'] = array();
-    }
     $a_pools = &config_read_array('dhcpd', $if, 'pool');
 
     if (!empty($_GET['act'])) {
@@ -179,12 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pool = $_POST['pool'];
         }
     }
-    if (empty($config['dhcpd'][$if])) {
-        $config['dhcpd'][$if] = array();
-    }
-    if (empty($config['dhcpd'][$if]['pool'])) {
-        $config['dhcpd'][$if]['pool'] = array();
-    }
+
     $a_pools = &config_read_array('dhcpd', $if, 'pool');
 
     if (!empty($_POST['act'])) {

@@ -33,12 +33,7 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc.d/ntpd.inc");
 
-if (!isset($config['ntpd']) || !is_array($config['ntpd'])) {
-    $config['ntpd'] = array();
-}
-if (!isset($config['ntpd']['pps'])) {
-    $config['ntpd']['pps'] = array();
-}
+config_read_array('ntpd', 'pps');
 
 $copy_fields = array('port', 'fudge1', 'stratum', 'flag2', 'flag3', 'flag4', 'refid');
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {

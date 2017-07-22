@@ -64,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
+
     // handle identifiers and actions
     if (!empty($pconfig['if']) && !empty($config['interfaces'][$pconfig['if']])) {
         $if = $pconfig['if'];
@@ -71,15 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($config['dhcpdv6'][$if]['staticmap'][$pconfig['id']])) {
         $id = $pconfig['id'];
     }
-    if (empty($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
-        $config['dhcpdv6'] = array();
-    }
-    if (empty($config['dhcpdv6'][$if]) || !is_array($config['dhcpdv6'][$if])) {
-        $config['dhcpdv6'][$if] = array();
-    }
-    if (empty($config['dhcpdv6'][$if]['staticmap']) || !is_array($config['dhcpdv6'][$if]['staticmap'])) {
-        $config['dhcpdv6'][$if]['staticmap'] = array();
-    }
+
+    config_read_array('dhcpdv6', $if, 'staticmap');
+
     /* input validation */
     $reqdfields = explode(" ", "duid");
     $reqdfieldsn = array(gettext("DUID Identifier"));

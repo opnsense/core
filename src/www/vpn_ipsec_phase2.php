@@ -130,17 +130,8 @@ function getIndexByUniqueId($uniqid)
     return $p2index;
 }
 
-if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
-    $config['ipsec'] = array();
-}
-
-if (!isset($config['ipsec']['client'])) {
-    $config['ipsec']['client'] = array();
-}
-
-if (!isset($config['ipsec']['phase2'])) {
-    $config['ipsec']['phase2'] = array();
-}
+config_read_array('ipsec', 'client');
+config_read_array('ipsec', 'phase2');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // lookup p2index

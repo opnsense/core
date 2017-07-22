@@ -33,13 +33,8 @@ require_once("filter.inc");
 require_once("services.inc");
 require_once("system.inc");
 
-if (empty($config['dnsmasq']['hosts']) || !is_array($config['dnsmasq']['hosts'])) {
-    $config['dnsmasq']['hosts'] = array();
-}
-
-if (empty($config['dnsmasq']['domainoverrides']) || !is_array($config['dnsmasq']['domainoverrides'])) {
-    $config['dnsmasq']['domainoverrides'] = array();
-}
+config_read_array('dnsmasq', 'hosts');
+config_read_array('dnsmasq', 'domainoverrides');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();

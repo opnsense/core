@@ -30,10 +30,6 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-// init $config['virtualip']['vip']
-if ( !isset($config['virtualip']['vip']) || !is_array($config['virtualip']['vip'])) {
-    $config['virtualip']['vip'] = array();
-}
 $a_vip = &config_read_array('virtualip', 'vip');
 
 $act = null;

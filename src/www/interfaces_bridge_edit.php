@@ -32,13 +32,6 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-if (!isset($config['bridges']) || !is_array($config['bridges'])) {
-    $config['bridges'] = array();
-}
-if (!isset($config['bridges']['bridged']) || !is_array($config['bridges']['bridged'])) {
-    $config['bridges']['bridged'] = array();
-}
-
 $a_bridges = &config_read_array('bridges', 'bridged');
 
 // interface list

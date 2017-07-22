@@ -33,17 +33,8 @@ require_once("filter.inc");
 require_once("services.inc");
 require_once("plugins.inc.d/ipsec.inc");
 
-if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
-    $config['ipsec'] = array();
-}
-
-if (!isset($config['ipsec']['phase1'])) {
-    $config['ipsec']['phase1'] = array();
-}
-
-if (!isset($config['ipsec']['client'])) {
-    $config['ipsec']['client'] = array();
-}
+config_read_array('ipsec', 'client');
+config_read_array('ipsec', 'phase1');
 
 // define formfields
 $form_fields = "user_source,group_source,pool_address,pool_netbits,net_list

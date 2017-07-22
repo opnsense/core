@@ -100,8 +100,8 @@ function easyrule_block_rule_exists($int = 'wan', $ipproto = "inet") {
     return false;
 }
 
-function easyrule_block_rule_create($int = 'wan', $ipproto = "inet") {
-    global $config;
+function easyrule_block_rule_create($int = 'wan', $ipproto = "inet")
+{
     $blockaliasname = 'EasyRuleBlockHosts';
     /* If the alias doesn't exist, exit.
      * Can't create an empty alias, and we don't know a host */
@@ -114,13 +114,9 @@ function easyrule_block_rule_create($int = 'wan', $ipproto = "inet") {
         return true;
     }
 
-    /* No rules, start a new array */
-    if (!is_array($config['filter']['rule'])) {
-        $config['filter']['rule'] = array();
-    }
+    $a_filter = &config_read_array('filter', 'rule');
 
     filter_rules_sort();
-    $a_filter = &config_read_array('filter', 'rule');
 
     /* Make up a new rule */
     $filterent = array();
@@ -157,8 +153,8 @@ function easyrule_block_alias_getid($int = 'wan')
     return false;
 }
 
-function easyrule_block_alias_add($host, $int = 'wan') {
-    global $config;
+function easyrule_block_alias_add($host, $int = 'wan')
+{
     $blockaliasname = 'EasyRuleBlockHosts';
     /* If the host isn't a valid IP address, bail */
     $host = trim($host, "[]");
@@ -166,13 +162,6 @@ function easyrule_block_alias_add($host, $int = 'wan') {
         return false;
     }
 
-    /* If there are no aliases, start an array */
-    if (!isset($config['aliases']) || !is_array($config['aliases'])) {
-        $config['aliases'] = array();
-    }
-    if (!isset($config['aliases']['alias'])) {
-        $config['aliases']['alias'] = array();
-    }
     $a_aliases = &config_read_array('aliases', 'alias');
 
     /* Try to get the ID if the alias already exists */
@@ -269,16 +258,11 @@ function easyrule_block_host_add($host, $int = 'wan', $ipproto = "inet") {
     }
 }
 
-function easyrule_pass_rule_add($int, $proto, $srchost, $dsthost, $dstport, $ipproto) {
-    global $config;
-
-    /* No rules, start a new array */
-    if (!isset($config['filter']['rule'])) {
-        $config['filter']['rule'] = array();
-    }
+function easyrule_pass_rule_add($int, $proto, $srchost, $dsthost, $dstport, $ipproto)
+{
+    $a_filter = &config_read_array('filter', 'rule');
 
     filter_rules_sort();
-    $a_filter = &config_read_array('filter', 'rule');
 
     /* Make up a new rule */
     $filterent = array();

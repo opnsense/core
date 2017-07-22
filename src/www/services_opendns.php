@@ -32,9 +32,7 @@ require_once("system.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-if (empty($config['opendns']) || !is_array($config['opendns'])) {
-    $config['opendns'] = array();
-}
+config_read_array('opendns');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enable'] = isset($config['opendns']['enable']);
