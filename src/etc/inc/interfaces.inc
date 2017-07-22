@@ -1580,11 +1580,12 @@ EOD;
             }
         } elseif ($ppp['type'] == "pppoe") {
             $provider = isset($ppp['provider']) ? $ppp['provider'] : "";
-            $mpdconf_arr[] = "set pppoe service \"{$provider}\"";
-            $mpdconf_arr[] = "set pppoe iface {$port}";
+            $hostuniq = '';
             if (!empty($ppp['hostuniq'])) {
-                $mpdconf_arr[] = "set host-uniq \"{$ppp['hostuniq']}|\"";
+                $hostuniq = '0x' . array_shift(unpack('H*', $ppp['hostuniq'])) . '|';
             }
+            $mpdconf_arr[] = "set pppoe service \"{$hostuniq}{$provider}\"";
+            $mpdconf_arr[] = "set pppoe iface {$port}";
         } elseif ($ppp['type'] == "pptp" || $ppp['type'] == "l2tp") {
             $mpdconf_arr[] = "set {$ppp['type']} self {$localips[$pid]}";
             $mpdconf_arr[] = "set {$ppp['type']} peer {$gateways[$pid]}";
