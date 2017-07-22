@@ -335,17 +335,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_user[$id] = $userent;
             } else {
                 $userent['uid'] = $config['system']['nextuid']++;
-                /* Add the user to All Users group. */
-                foreach ($config['system']['group'] as $gidx => $group) {
-                    if ($group['name'] == "all") {
-                        if (!is_array($config['system']['group'][$gidx]['member'])) {
-                            $config['system']['group'][$gidx]['member'] = array();
-                        }
-                        $config['system']['group'][$gidx]['member'][] = $userent['uid'];
-                        break;
-                    }
-                }
-
                 $a_user[] = $userent;
             }
 
