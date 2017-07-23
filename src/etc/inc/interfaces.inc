@@ -1582,7 +1582,7 @@ EOD;
             $provider = isset($ppp['provider']) ? $ppp['provider'] : "";
             $hostuniq = '';
             if (!empty($ppp['hostuniq'])) {
-                $hostuniq = '0x' . array_shift(unpack('H*', $ppp['hostuniq'])) . '|';
+                $hostuniq = '0x' . strtolower(array_shift(unpack('H*', $ppp['hostuniq']))) . '|';
             }
             $mpdconf_arr[] = "set pppoe service \"{$hostuniq}{$provider}\"";
             $mpdconf_arr[] = "set pppoe iface {$port}";
