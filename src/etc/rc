@@ -247,6 +247,9 @@ rm /var/run/booting
 # Execute the normal syshook / plugin commands
 /usr/local/etc/rc.syshook start
 
+echo -n "Root file system: "
+mount | grep ' on / ' | awk '{ print $1 }'
+
 /usr/local/etc/rc.initial.banner
 /usr/local/etc/rc.livemode
 
