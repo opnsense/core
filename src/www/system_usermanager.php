@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } elseif ($act == 'new' || $act == 'edit') {
         // edit user, load or init data
-        $fieldnames = array('user_dn', 'descr', 'expires', 'scope', 'uid', 'priv', 'ipsecpsk', 'lifetime', 'otp_seed');
+        $fieldnames = array('user_dn', 'descr', 'expires', 'scope', 'uid', 'priv', 'ipsecpsk', 'lifetime', 'otp_seed', 'email', 'comment');
         if (isset($id)) {
             if (isset($a_user[$id]['authorizedkeys'])) {
                 $pconfig['authorizedkeys'] = base64_decode($a_user[$id]['authorizedkeys']);
@@ -195,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             echo json_encode($keyData);
         }
         exit;
-    } elseif ($act =='delApiKey'  && isset($id)) {
+    } elseif ($act =='delApiKey' && isset($id)) {
         $username = $a_user[$id]['name'];
         if (!empty($pconfig['api_delete'])) {
             $authFactory = new \OPNsense\Auth\AuthenticationFactory();
@@ -331,6 +331,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 unset($userent['disabled']);
             }
 
+            if (!empty($pconfig['email'])) {
+                $userent['email'] = $pconfig['email'];
+            } elseif (isset($userent['email'])) {
+                unset($userent['email']);
+            }
+
+            if (!empty($pconfig['comment'])) {
+                $userent['comment'] = $pconfig['comment'];
+            } elseif (isset($userent['comment'])) {
+                unset($userent['comment']);
+            }
+
             if (isset($id)) {
                 $a_user[$id] = $userent;
             } else {
@@ -344,15 +356,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             if (!empty($pconfig['chkNewCert'])) {
                 // redirect to cert manager when a new cert is requested for this user
-                header(url_safe('Location: /system_certmanager.php?act=new&userid=%s', array(count($a_user) - 1)));
+                header(url_safe('Location: /system_certmanager.php?act=new&userid=%s', array(isset($id) ? $id : count($a_user) - 1)));
             } else {
-                header(url_safe('Location: /system_usermanager.php'));
+                header(url_safe('Location: /system_usermanager.php?act=edit&userid=%s&savemsg=%s', array(isset($id) ? $id : count($a_user) - 1, get_std_save_message())));
                 exit;
             }
         }
-    } elseif (isset($id)) {
-        header(url_safe('Location: /system_usermanager.php?userid=%s', array($id)));
-        exit;
     } else {
         header(url_safe('Location: /system_usermanager.php'));
         exit;
@@ -581,6 +590,24 @@ $( document ).ready(function() {
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" <?= $pconfig['scope'] == "system" || !empty($pconfig['user_dn']) ? "readonly=\"readonly\"" : "";?> />
                       <div class="hidden" for="help_for_fullname">
                         <?=gettext("User's full name, for your own information only");?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_email" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("E-Mail");?></td>
+                    <td>
+                      <input name="email" type="text" value="<?= $pconfig['email'] ?>" />
+                      <div class="hidden" for="help_for_email">
+                        <?= gettext('User\'s e-mail address, for your own information only') ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_comment" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Comment");?></td>
+                    <td>
+                      <textarea name="comment" id="comment" class="form-control" cols="65" rows="3"><?= $pconfig['comment'] ?></textarea>
+                      <div class="hidden" for="help_for_comment">
+                        <?= gettext('User comment, for your own information only') ?>
                       </div>
                     </td>
                   </tr>
@@ -866,9 +893,8 @@ $( document ).ready(function() {
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <input name="save" id="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>"
-                             onclick="window.location.href='<?=isset($_SERVER['HTTP_REFERER']) ?  $_SERVER['HTTP_REFERER'] : '/system_usermanager.php';?>'" />
+                      <button name="save" id="save" type="submit" class="btn btn-primary" value="save" /><?= gettext('Save') ?></button>
+                      <button name="cancel" id="cancel" type="submit" class="btn btn-default" value="cancel" /><?= gettext('Cancel') ?></button>
 <?php
                       if (isset($id) && !empty($a_user[$id])) :?>
                       <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
