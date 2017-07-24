@@ -10,12 +10,7 @@ COMMAND=${1}
 CORE_ABI=$(cat /usr/local/opnsense/version/opnsense.abi 2> /dev/null)
 SYS_ABI=$(opnsense-verify -a 2> /dev/null)
 
-URL="https://pkg.opnsense.org"
-if [ -n "${CORE_ABI}" -a -n "${SYS_ABI}" ]; then
-	# expand url to new mirror layout per release
-	URL="${URL}/${SYS_ABI}/${CORE_ABI}"
-fi
-URL="${URL}/sets/bogons.txz"
+URL="https://pkg.opnsense.org/${SYS_ABI}/${CORE_ABI}/sets/bogons.txz"
 
 echo "rc.update_bogons is starting up" | logger
 

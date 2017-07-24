@@ -42,9 +42,7 @@ changelog_fetch()
 	CORE_ABI=$(cat /usr/local/opnsense/version/opnsense.abi 2> /dev/null)
 	SYS_ABI=$(opnsense-verify -a 2> /dev/null)
 
-	URL="https://pkg.opnsense.org"
-	URL="${URL}/${SYS_ABI}/${CORE_ABI}"
-	URL="${URL}/sets/changelog.txz"
+	URL="https://pkg.opnsense.org/${SYS_ABI}/${CORE_ABI}/sets/changelog.txz"
 
 	rm -rf ${WORKDIR}
 	mkdir -p ${WORKDIR}
