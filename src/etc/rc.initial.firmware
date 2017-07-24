@@ -36,8 +36,11 @@ echo "This will automatically fetch all available updates, apply them,"
 echo "and reboot if necessary."
 echo
 
-# always fetch changelogs, we may want to display them at one point
-/usr/local/opnsense/scripts/firmware/changelog.sh fetch || true
+echo -n "Fetching change log information, please wait... "
+if /usr/local/opnsense/scripts/firmware/changelog.sh fetch; then
+	echo "done"
+fi
+echo
 
 if [ -f ${UPGRADE} ]; then
 	NAME=$(cat ${UPGRADE})
