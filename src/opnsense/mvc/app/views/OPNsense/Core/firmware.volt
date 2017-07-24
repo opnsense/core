@@ -214,7 +214,7 @@ POSSIBILITY OF SUCH DAMAGE.
     function upgrade_ui()
     {
         if ( $.upgrade_needs_reboot == "1" ) {
-            reboot_mgs = "{{ lang._('The firewall will reboot directly after this firmware update.') }}";
+            reboot_msg = "{{ lang._('The firewall will reboot directly after this firmware update.') }}";
             if ($.upgrade_action == 'maj') {
                 reboot_msg = "{{ lang._('The firewall will download all firmware sets and reboot multiple times for this upgrade. All operating system files and packages will be reinstalled as a consequence. This may take several minutes to complete.') }}";
             }
