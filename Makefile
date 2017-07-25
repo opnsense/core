@@ -60,7 +60,7 @@ CORE_REPOSITORY?=	${FLAVOUR}
 
 CORE_NAME?=		opnsense
 CORE_FAMILY?=		release
-CORE_MESSAGE?=		Insert Name Here
+CORE_MESSAGE?=		The free fox is on the run
 
 CORE_MAINTAINER?=	franco@opnsense.org
 CORE_PACKAGESITE?=	http://pkg.opnsense.org
