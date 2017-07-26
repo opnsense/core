@@ -265,7 +265,7 @@ $( document ).ready(function() {
                         <?= $alias_values ?>
                       </td>
                       <td>
-                        <a href="firewall_aliases_edit.php?id=<?=$i;?>" title="<?=gettext("Edit alias"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="firewall_aliases_edit.php?id=<?=$i;?>" title="<?=gettext("Edit alias"); ?>" class="btn btn-default btn-xs"><span class="fa fa-pencil"></span></a>
                         <a id="del_<?=$i;?>" title="<?=gettext("delete alias"); ?>" class="act_delete btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
                       </td>
                     </tr>
