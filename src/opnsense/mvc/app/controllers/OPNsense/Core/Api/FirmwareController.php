@@ -598,7 +598,7 @@ class FirmwareController extends ApiControllerBase
         $mirrors[''] = '(default)';
         $mirrors['https://opnsense.aivian.org'] = 'Aivian (Shaoxing, CN)';
         $mirrors['https://opnsense-update.deciso.com'] = 'Deciso (NL, Commercial)';
-        $mirrors['https://mirror.auf-feindgebiet.de/opnsense'] = 'auf-feindgebiet.de (Cloudflare CDN)';
+        $mirrors['https://mirror.dns-root.de/opnsense'] = 'dns-root.de (Cloudflare CDN)';
         $mirrors['https://opnsense.c0urier.net'] = 'c0urier.net (Lund, SE)';
         $mirrors['https://ftp.yzu.edu.tw/opnsense'] = 'Dept. of CSE, Yuan Ze University (Taoyuan City, TW)';
         $mirrors['http://mirrors.dmcnet.net/opnsense'] = 'DMC Networks (Lincoln NE, US)';
