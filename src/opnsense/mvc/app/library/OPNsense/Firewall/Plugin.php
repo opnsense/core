@@ -173,8 +173,12 @@ class Plugin
         foreach (explode(',', $types) as $type) {
             foreach ($this->anchors as $anchorKey => $anchor) {
                 if (strpos($anchorKey, "{$type}.{$placement}") === 0) {
+                    $fixed_anchor = "";
+                    foreach (explode(' ', $anchor) as $token) {
+                        $fixed_anchor .= strpos($token, '/') === FALSE ? "$token " : sprintf("\"%s\" ", str_replace('"', '', $token));
+                    }
                     $result .= $type == "fw" ? "" : "{$type}-";
-                    $result .= "anchor \"{$anchor}\"\n";
+                    $result .= "anchor {$fixed_anchor}\n";
                 }
             }
         }
