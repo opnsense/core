@@ -117,8 +117,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // validate data
         $country_codes = array_keys(geoip_countries());
         foreach ($pconfig['host_url'] as &$detail_entry) {
+            $ipaddr_count = 0;
+            $domain_alias_count = 0;
+            foreach (explode('-', $detail_entry) as $tmpaddr) {
+                if (is_ipaddr($tmpaddr)) {
+                    $ipaddr_count++;
+                } elseif (trim($tmpaddr) != "") {
+                    $domain_alias_count++;
+                }
+            }
             if ($pconfig['type'] == 'host') {
-                if (!is_domain($detail_entry) && !is_ipaddr($detail_entry) && !is_alias($detail_entry)) {
+                if ($ipaddr_count > 1) {
+                    $input_errors[] = sprintf(gettext('Entry "%s" seems to contain a list of addresses, please use a network type alias to define ranges.'), $detail_entry) ;
+                } elseif (!is_domain($detail_entry) && !is_ipaddr($detail_entry) && !is_alias($detail_entry)) {
                     $input_errors[] = sprintf(gettext('Entry "%s" is not a valid hostname or IP address.'), $detail_entry) ;
                 }
             } elseif ($pconfig['type'] == 'port') {
@@ -129,6 +140,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } elseif ($pconfig['type'] == 'geoip') {
                 if (!in_array($detail_entry, $country_codes)) {
                     $input_errors[] = sprintf(gettext('Entry "%s" is not a valid country code.'), $detail_entry) ;
+                }
+            } elseif ($pconfig['type'] == 'network') {
+                if (!is_alias($detail_entry) && !is_ipaddr($detail_entry) && !is_subnet($detail_entry)
+                  && !($ipaddr_count == 2 && $domain_alias_count == 0)) {
+                    $input_errors[] = sprintf(gettext('Entry "%s" is not a valid network or IP address.'), $detail_entry) ;
                 }
             }
         }
