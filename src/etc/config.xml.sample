@@ -214,6 +214,8 @@
     <timeservers>0.nl.pool.ntp.org</timeservers>
     <webgui>
       <protocol>https</protocol>
+      <authmode>Local Database</authmode>
+      <authmode_fallback>__NO_FALLBACK__</authmode_fallback>
     </webgui>
     <disablenatreflection>yes</disablenatreflection>
     <usevirtualterminal>1</usevirtualterminal>
