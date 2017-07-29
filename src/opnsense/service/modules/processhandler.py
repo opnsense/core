@@ -435,25 +435,27 @@ class Action(object):
             # build script command to execute, shared for both types
             script_command = self.command
             if self.parameters is not None and type(self.parameters) == str and len(parameters) > 0:
-                script_command = '%s %s' % (script_command, self.parameters)
-                if script_command.find('%s') > -1:
+                script_arguments = self.parameters
+                if script_arguments.find('%s') > -1:
                     # use command execution parameters in action parameter template
                     # use quotes on parameters to prevent code injection
-                    if script_command.count('%s') > len(parameters):
-                        # script command accepts more parameters then given, fill with empty parameters
-                        for i in range(script_command.count('%s') - len(parameters)):
+                    if script_arguments.count('%s') > len(parameters):
+                        # script command accepts more parameters than given, fill with empty parameters
+                        for i in range(script_arguments.count('%s') - len(parameters)):
                             parameters.append("")
-                    elif len(parameters) > script_command.count('%s'):
-                        # parameters then expected, fail execution
+                    elif len(parameters) > script_arguments.count('%s'):
+                        # more parameters than expected, fail execution
                         return 'Parameter mismatch'
 
-                    # force escape of shell exploitable characters for all user parameters
-                    for escape_char in ['`', '$', '!', '(', ')', '|']:
-                        for i in range(len(parameters[0:script_command.count('%s')])):
-                            parameters[i] = parameters[i].replace(escape_char, '\\%s' % escape_char)
+                    # use single quotes to prevent command injection
+                    for i in range(len(parameters)):
+                        parameters[i] = "'" + parameters[i].replace("'", "'\"'\"'") + "'"
 
-                    script_command = script_command % tuple(map(lambda x: '"' + x.replace('"', '\\"') + '"',
-                                                                parameters[0:script_command.count('%s')]))
+                    # safely print the argument list now
+                    script_arguments = script_arguments % tuple(parameters)
+
+                script_command = script_command + " " + script_arguments
+
             if self.type.lower() == 'script':
                 # execute script type command
                 try:
