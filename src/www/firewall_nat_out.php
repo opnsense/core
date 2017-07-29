@@ -356,6 +356,7 @@ include("head.inc");
                       <?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($natent['interface'])); ?>
                     </td>
                     <td class="hidden-xs hidden-sm">
+                      <?= isset($natent['source']['not']) ? '!' : '' ?>
 <?php                 if (isset($natent['source']['network']) && is_alias($natent['source']['network'])): ?>
                         <span title="<?=htmlspecialchars(get_alias_description($natent['source']['network']));?>" data-toggle="tooltip">
                           <?=htmlspecialchars($natent['source']['network']);?>&nbsp;
@@ -389,7 +390,7 @@ include("head.inc");
                       endif;?>
                     </td>
                     <td class="hidden-xs hidden-sm">
-                      <?=isset($natent['destination']['not']) ? "!&nbsp;" :"";?>
+                      <?= isset($natent['destination']['not']) ? '!' : '' ?>
 <?php                 if (isset($natent['destination']['address']) && is_alias($natent['destination']['address'])): ?>
                         <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['address']));?>" data-toggle="tooltip">
                           <?=htmlspecialchars($natent['destination']['address']);?>&nbsp;
@@ -569,6 +570,7 @@ include("head.inc");
                     <?= htmlspecialchars(convert_friendly_interface_to_friendly_descr($natent['interface'])); ?>
                   </td>
                   <td>
+                    <?= isset($natent['source']['not']) ? '!' : '' ?>
                     <?=$natent['source']['network'];?>
                   </td>
                   <td class="hidden-xs hidden-sm">
@@ -576,7 +578,7 @@ include("head.inc");
                     <?=empty($natent['sourceport']) ? "*" : $natent['sourceport'] ;?>
                   </td>
                   <td class="hidden-xs hidden-sm">
-                    <?=isset($natent['destination']['not']) ? "!&nbsp;" : "";?>
+                    <?= isset($natent['destination']['not']) ? '!' : '' ?>
                     <?=isset($natent['destination']['any']) ? "*" : $natent['destination']['address'] ;?>
                   </td>
                   <td class="hidden-xs hidden-sm">

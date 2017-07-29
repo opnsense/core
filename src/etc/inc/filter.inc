@@ -1602,12 +1602,15 @@ function filter_nat_rules_generate(&$FilterIflist)
                 if (!$src) {
                     $src = $obent['source']['network'];
                 }
+                if (isset($obent['source']['not']) && !isset($obent['source']['any'])) {
+                    $src = "! $src";
+                }
                 $dst = alias_expand($obent['destination']['address']);
                 if (!$dst) {
                     $dst = $obent['destination']['address'];
                 }
                 if (isset($obent['destination']['not']) && !isset($obent['destination']['any'])) {
-                    $dst = "!" . $dst;
+                    $dst = "! $dst";
                 }
 
                 if (!$obent['interface'] || !isset($FilterIflist[$obent['interface']])) {
