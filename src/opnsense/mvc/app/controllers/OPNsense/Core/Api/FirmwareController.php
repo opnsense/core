@@ -488,6 +488,32 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
+     * query package details
+     * @return array
+     */
+    public function detailsAction($package)
+    {
+        $this->sessionClose(); // long running action, close session
+        $backend = new Backend();
+        $response = array();
+
+        if ($this->request->isPost()) {
+            // sanitize package name
+            $filter = new \Phalcon\Filter();
+            $filter->add('scrub', function ($value) {
+                return preg_replace('/[^0-9a-zA-Z\-]/', '', $value);
+            });
+            $package = $filter->sanitize($package, 'scrub');
+            $text = trim($backend->configdRun(sprintf('firmware details %s', $package)));
+            if (!empty($text)) {
+                $response['details'] = $text;
+            }
+        }
+
+        return $response;
+    }
+
+    /**
      * list local and remote packages
      * @return array
      */

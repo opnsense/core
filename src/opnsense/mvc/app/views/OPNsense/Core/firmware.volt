@@ -145,6 +145,30 @@ POSSIBILITY OF SUCH DAMAGE.
     }
 
     /**
+     * read package details from backend
+     */
+    function details(package)
+    {
+        ajaxCall('/api/core/firmware/details/' + package, {}, function (data, status) {
+            var details = "{{ lang._('Sorry, plugin details are currently not available.') }}";
+            if (data['details'] != undefined) {
+                details = data['details'];
+            }
+            BootstrapDialog.show({
+                type:BootstrapDialog.TYPE_INFO,
+                title: "{{ lang._('Plugin details') }}",
+                message: details,
+                buttons: [{
+                    label: "{{ lang._('Close') }}",
+                    action: function(dialogRef){
+                        dialogRef.close();
+                    }
+                }]
+            });
+        });
+    }
+
+    /**
      * read license from backend
      */
     function license(package)
@@ -381,7 +405,10 @@ POSSIBILITY OF SUCH DAMAGE.
                     '<td>' + row['version'] + '</td>' +
                     '<td>' + row['flatsize'] + '</td>' +
                     '<td>' + row['comment'] + '</td>' +
-                    '<td>' + (row['installed'] == "1" ?
+                    '<td><button class="btn btn-default btn-xs act_details" data-package="' + row['name'] + '" ' +
+                        ' data-toggle="tooltip" title="More about ' + row['name'] + '">' +
+                        '<span class="fa fa-info-circle"></span></button>' +
+                        (row['installed'] == "1" ?
                         '<button class="btn btn-default btn-xs act_remove" data-package="' + row['name'] + '" '+
                         '  data-toggle="tooltip" title="Remove ' + row['name'] + '">' +
                         '<span class="fa fa-trash">' +
@@ -460,6 +487,10 @@ POSSIBILITY OF SUCH DAMAGE.
             $(".act_remove").click(function(event) {
                 event.preventDefault();
                 action('remove', $(this).data('package'));
+            });
+            $(".act_details").click(function(event) {
+                event.preventDefault();
+                details($(this).data('package'));
             });
             $(".act_install").click(function(event) {
                 event.preventDefault();
