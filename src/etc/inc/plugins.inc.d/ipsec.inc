@@ -536,6 +536,36 @@ function ipsec_convert_to_modp($index)
     return $convertion;
 }
 
+/**
+ * load manual defined spd entries using setkey
+ */
+function load_manual_spd()
+{
+    global $config;
+    $spd_entries = array();
+    if (!empty($config['ipsec']['phase1']) && !empty($config['ipsec']['phase2'])) {
+        foreach ($config['ipsec']['phase1'] as $ph1ent) {
+            foreach ($config['ipsec']['phase2'] as $ph2ent) {
+                if (!isset($ph2ent['disabled']) && $ph1ent['ikeid'] == $ph2ent['ikeid'] && !empty($ph2ent['spd'])) {
+                    $myid_data = ipsec_find_id($ph1ent, "local");
+                    $peerid_spec = ipsec_find_id($ph1ent, "peer");
+                    foreach (explode(',', $ph2ent['spd']) as $local_net) {
+                        $proto = $ph2ent['mode'] == "tunnel" ? "4" : "6";
+                        $remote_net = ipsec_idinfo_to_cidr($ph2ent['remoteid'], false, $ph2ent['mode']);
+                        $spd_entries[] = sprintf("spdadd -%s %s %s any -P out ipsec %s/tunnel/%s-%s/require;",
+                                             $proto, trim($local_net), $remote_net, $ph2ent['protocol'],
+                                             $myid_data, $peerid_spec);
+                    }
+                }
+            }
+        }
+        $tmpfname = tempnam("/tmp", "setkey");
+        file_put_contents($tmpfname, implode("\n", $spd_entries) . "\n");
+        mwexec("/sbin/setkey -f ". $tmpfname, true);
+        unlink($tmpfname);
+    }
+}
+
 function ipsec_configure_do($verbose = false, $interface = '')
 {
     global $config, $p2_ealgos, $ipsec_loglevels;
@@ -1432,6 +1462,8 @@ EOD;
     } else {
         killbypid('/var/run/filterdns-ipsec.pid');
     }
+    // load manually defined SPD entries
+    load_manual_spd();
 
     if ($verbose) {
         echo "done.\n";

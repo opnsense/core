@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // initialize form data
     $pconfig = array();
 
-    $phase2_fields = "ikeid,mode,descr,uniqid,proto,hash-algorithm-option,pfsgroup,pfsgroup,lifetime,pinghost,protocol";
+    $phase2_fields = "ikeid,mode,descr,uniqid,proto,hash-algorithm-option,pfsgroup,pfsgroup,lifetime,pinghost,protocol,spd";
     if ($p2index !== null) {
         // 1-on-1 copy
         foreach (explode(",", $phase2_fields) as $fieldname) {
@@ -344,9 +344,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("The P2 lifetime must be an integer.");
     }
 
+    if (!empty($pconfig['spd'])) {
+        foreach (explode(',', $pconfig['spd']) as $spd_entry) {
+            if (($pconfig['mode'] == "tunnel" && !is_subnetv4(trim($spd_entry))) ||
+              ($pconfig['mode'] == "tunnel6" && !is_subnetv6(trim($spd_entry)))) {
+                $input_errors[] = sprintf(gettext('SPD "%s" is not a valid network, it should match the tunnel type (IPv4/IPv6).'), $spd_entry) ;
+            }
+        }
+    }
+
     if (count($input_errors) == 0) {
         $ph2ent = array();
-        $copy_fields = "ikeid,uniqid,mode,pfsgroup,lifetime,pinghost,descr,protocol";
+        $copy_fields = "ikeid,uniqid,mode,pfsgroup,lifetime,pinghost,descr,protocol,spd";
 
         // 1-on-1 copy
         foreach (explode(",", $copy_fields) as $fieldname) {
@@ -704,6 +713,23 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
+<?php
+                if (!isset($pconfig['mobile'])):?>
+                <tr class="opt_localid">
+                  <td><a id="help_for_spd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Manual SPD entries"); ?></td>
+                  <td>
+                    <input name="spd" type="text" id="spd" value="<?= $pconfig['spd'];?>" />
+                    <div class="hidden" for="help_for_spd">
+                        <strong><?=gettext("Register additional Security Policy Database entries"); ?></strong><br/>
+                        <?=gettext("Strongswan automatically creates SPD policies for the networks defined in this phase2. ".
+                                   "If you need to allow other networks to use this ipsec tunnel, you can add them here as a comma seperated list.".
+                                   "When configured, you can use network address translation to push packets through this tunnel from these networks."); ?><br/>
+                        <small><?=gettext("e.g. 192.168.1.0/24, 192.168.2.0/24"); ?></small>
+                    </div>
+                  </td>
+                </tr>
+<?php
+                endif; ?>
                 <tr>
                   <td>&nbsp;</td>
                   <td width="78%">
