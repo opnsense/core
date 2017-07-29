@@ -463,7 +463,7 @@ function ipsec_get_number_of_phase2($ikeid)
     return $nbph2;
 }
 
-function ipsec_find_id(&$ph1ent, $side = 'local', $rgmap = array())
+function ipsec_find_id(&$ph1ent, $side = 'local')
 {
     $id_data = null;
     if ($side == "local") {
@@ -486,7 +486,11 @@ function ipsec_find_id(&$ph1ent, $side = 'local', $rgmap = array())
             $thisid_data = resolve_retry($id_data);
             break;
         case "peeraddress":
-            $thisid_data = $rgmap[$ph1ent['remote-gateway']];
+            if (!is_ipaddr($ph1ent['remote-gateway'])) {
+                $thisid_data = resolve_retry($ph1ent['remote-gateway']);
+            } else {
+                $thisid_data = $ph1ent['remote-gateway'];
+            }
             break;
         case "address":
             $thisid_data = $id_data;
@@ -933,7 +937,7 @@ EOD;
                 $pskconf .= " : RSA {$ph1keyfile}\n";
             } elseif (!empty($ph1ent['pre-shared-key'])) {
                 $myid = isset($ph1ent['mobile']) ? trim(ipsec_find_id($ph1ent, "local")) : "";
-                $peerid_data = isset($ph1ent['mobile']) ? "%any" : ipsec_find_id($ph1ent, "peer", $rgmap);
+                $peerid_data = isset($ph1ent['mobile']) ? "%any" : ipsec_find_id($ph1ent, "peer");
 
                 if (!empty($peerid_data)) {
                     $pskconf .= $myid . " " . trim($peerid_data) . " : PSK 0s" . base64_encode(trim($ph1ent['pre-shared-key'])) . "\n";
@@ -1019,7 +1023,7 @@ EOD;
                 }
 
                 $myid_data = ipsec_find_id($ph1ent, "local");
-                $peerid_spec = ipsec_find_id($ph1ent, "peer", $rgmap);
+                $peerid_spec = ipsec_find_id($ph1ent, "peer");
 
                 if (!empty($ph1ent['encryption-algorithm']['name']) && !empty($ph1ent['hash-algorithm'])) {
                     $ealg_id = $ph1ent['encryption-algorithm']['name'];
