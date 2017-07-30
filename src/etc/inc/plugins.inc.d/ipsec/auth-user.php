@@ -59,7 +59,6 @@ if (empty($config['ipsec']['client']['enable'])) {
 }
 
 $authenticated = false;
-$priv_fallback = true;
 
 if (!empty($config['ipsec']['client']['local_group'])) {
     if (!in_array($config['ipsec']['client']['local_group'], getUserGroups($username))) {
@@ -67,8 +66,6 @@ if (!empty($config['ipsec']['client']['local_group'])) {
         closelog();
         exit(1);
     }
-
-    $priv_fallback = false;
 }
 
 $user_source = '';
@@ -86,14 +83,6 @@ foreach (explode(',', $user_source) as $authmode) {
 
     $authenticated = authenticate_user($username, $password, $authcfg);
     if ($authenticated == true) {
-        if ($priv_fallback && stristr($authmode, "local")) {
-            $user = getUserEntry($username);
-            if (!is_array($user) || !userHasPrivilege($user, "user-ipsec-xauth-dialin")) {
-                $authenticated = false;
-                syslog(LOG_WARNING, "User '{$username}' cannot authenticate through IPsec since the required privileges are missing.\n");
-                continue;
-            }
-        }
         break;
     }
 }

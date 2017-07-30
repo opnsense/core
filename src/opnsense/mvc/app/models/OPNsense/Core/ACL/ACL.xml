@@ -5,9 +5,6 @@
     <user-shell-access>
         <name>System: Shell account access</name>
     </user-shell-access>
-    <user-ipsec-xauth-dialin>
-        <name>VPN: IPsec XAUTH dialin</name>
-    </user-ipsec-xauth-dialin>
     <user-proxy-auth>
         <name>Proxy: Login</name>
     </user-proxy-auth>
