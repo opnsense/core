@@ -673,7 +673,7 @@ $( document ).ready(function() {
                         endforeach; ?>
                         </select>
                         <div class="hidden" for="help_for_local_group">
-                          <?= gettext('Restrict access to users in the selected  local group. Please be aware ' .
+                          <?= gettext('Restrict access to users in the selected local group. Please be aware ' .
                             'that other authentication backends will refuse to authenticate when using this option.') ?>
                         </div>
                       </td>
