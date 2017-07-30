@@ -1,0 +1,22 @@
+<form>
+  <field>
+    <id>route.disabled</id>
+    <label>Disabled</label>
+    <type>checkbox</type>
+  </field>
+  <field>
+    <id>route.network</id>
+    <label>Network Address</label>
+    <type>text</type>
+  </field>
+  <field>
+    <id>route.gateway</id>
+    <label>Gateway</label>
+    <type>text</type>
+  </field>
+  <field>
+    <id>route.descr</id>
+    <label>Description</label>
+    <type>text</type>
+  </field>
+</form>

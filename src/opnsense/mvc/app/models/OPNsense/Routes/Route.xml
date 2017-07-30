@@ -1,0 +1,22 @@
+<model>
+    <mount>//staticroutes</mount>
+    <version>0.0.1</version>
+    <items>
+        <route type="ArrayField">
+          <network type="NetworkField">
+            <NetMaskRequired>Y</NetMaskRequired>
+            <Required>Y</Required>
+          </network>
+          <gateway type="TextField">
+            <Required>Y</Required>
+          </gateway>
+          <descr type="TextField">
+            <Required>N</Required>
+          </descr>
+          <disabled type="BooleanField">
+            <default>0</default>
+            <Required>Y</Required>
+          </disabled>
+        </route>
+    </items>
+</model>
