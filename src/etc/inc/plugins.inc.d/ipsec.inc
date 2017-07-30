@@ -441,11 +441,9 @@ function ipsec_mobilekey_sort()
 {
     global $config;
 
-    function mobilekeycmp($a, $b) {
+    usort($config['ipsec']['mobilekey'], function ($a, $b) {
         return strcmp($a['ident'][0], $b['ident'][0]);
-    }
-
-    usort($config['ipsec']['mobilekey'], "mobilekeycmp");
+    });
 }
 
 function ipsec_get_number_of_phase2($ikeid)
@@ -539,10 +537,12 @@ function ipsec_convert_to_modp($index)
 /**
  * load manual defined spd entries using setkey
  */
-function load_manual_spd()
+function ipsec_configure_spd()
 {
     global $config;
+
     $spd_entries = array();
+
     if (!empty($config['ipsec']['phase1']) && !empty($config['ipsec']['phase2'])) {
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
             foreach ($config['ipsec']['phase2'] as $ph2ent) {
@@ -559,6 +559,7 @@ function load_manual_spd()
                 }
             }
         }
+
         $tmpfname = tempnam("/tmp", "setkey");
         file_put_contents($tmpfname, implode("\n", $spd_entries) . "\n");
         mwexec("/sbin/setkey -f ". $tmpfname, true);
@@ -1462,8 +1463,9 @@ EOD;
     } else {
         killbypid('/var/run/filterdns-ipsec.pid');
     }
-    // load manually defined SPD entries
-    load_manual_spd();
+
+    /* load manually defined SPD entries */
+    ipsec_configure_spd();
 
     if ($verbose) {
         echo "done.\n";
