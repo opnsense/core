@@ -44,7 +44,7 @@ function get_user_privdesc(& $user)
         $user_privs = $user['priv'];
     }
 
-    $names = local_user_get_groups($user, true);
+    $names = local_user_get_groups($user);
 
     foreach ($names as $name) {
         $group = getGroupEntry($name);

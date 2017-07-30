@@ -247,7 +247,25 @@ function index_users()
     }
 
     return $userindex;
-  }
+}
+
+function getUserGroups($username)
+{
+    global $config;
+    $member_groups = array();
+    $user = getUserEntry($username);
+    if ($user !== false) {
+        $allowed_groups = local_user_get_groups($user);
+        if (isset($config['system']['group'])) {
+            foreach ($config['system']['group'] as $group) {
+                if (in_array($group['name'], $allowed_groups)) {
+                    $member_groups[] = $group['name'];
+                }
+            }
+        }
+    }
+    return $member_groups;
+}
 
 function &getUserEntry($name)
 {
@@ -309,7 +327,7 @@ function get_user_privileges(&$user)
        $privs = $user['priv'];
     }
 
-    $names = local_user_get_groups($user, true);
+    $names = local_user_get_groups($user);
 
     foreach ($names as $name) {
         $group = getGroupEntry($name);
@@ -518,7 +536,7 @@ function local_user_set_password(&$user, $password = null)
     }
 }
 
-function local_user_get_groups($user, $all = false)
+function local_user_get_groups($user)
 {
     global $config;
 
@@ -530,7 +548,7 @@ function local_user_get_groups($user, $all = false)
 
     foreach ($config['system']['group'] as $group) {
         if (isset($group['member'])) {
-            if (in_array($user['uid'], $group['member']) || ($group['name'] == "all" && $all)) {
+            if (in_array($user['uid'], $group['member'])) {
                 $groups[] = $group['name'];
             }
         }
@@ -549,7 +567,7 @@ function local_user_set_groups($user, $new_groups = null)
         return;
     }
 
-    $cur_groups = local_user_get_groups($user, true);
+    $cur_groups = local_user_get_groups($user);
     $mod_groups = array();
 
     if (!is_array($new_groups)) {
