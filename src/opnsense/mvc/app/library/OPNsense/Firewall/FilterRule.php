@@ -337,7 +337,7 @@ class FilterRule
                 }
                 if (!isset($tmp['quick'])) {
                     // all rules are quick by default except floating
-                    $tmp['quick'] = !isset($rule['floating']) ? true : false;
+                    $tmp['quick'] = !isset($tmp['floating']) ? true : false;
                 }
                 // restructure flags
                 if (isset($tmp['protocol']) && $tmp['protocol'] == "tcp") {
