@@ -908,9 +908,10 @@ EOD;
                     }
                 }
             }
-            if ($a_client['user_source'] != "none" && $disable_xauth == false) {
+            if (isset($a_client['enable']) && !$disable_xauth) {
                 $strongswan .= "\t\txauth-generic {\n";
                 $strongswan .= "\t\t\tscript = /usr/local/etc/inc/plugins.inc.d/ipsec/auth-user.php\n";
+                $strongswan .= "\t\t\tauthcfg = unused\n";
                 $strongswan .= "\t\t}\n";
             }
         }
