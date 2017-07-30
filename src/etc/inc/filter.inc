@@ -1529,7 +1529,7 @@ function filter_nat_rules_generate(&$FilterIflist)
 
             $tmp = explode('/', $srcaddr);
             $srcip = $tmp[0];
-            if (!empty($tmp[1]) && is_numeric($tmp[1])) {
+            if (!empty($tmp[1]) && is_numeric($tmp[1]) && strpos($target, '/') === false) {
                 $sn = $tmp[1];
                 $sn1 = "/{$sn}";
             }
@@ -1546,8 +1546,8 @@ function filter_nat_rules_generate(&$FilterIflist)
             } else {
                 $nat_if_list = array();
             }
-
-            $natrules .= "binat on {$natif} from {$srcaddr} to {$dstaddr} -> {$target}{$sn1}\n";
+            $nattype = empty($rule['type']) ? "binat" : $rule['type'];
+            $natrules .= "{$nattype} on {$natif} from {$srcaddr} to {$dstaddr} -> {$target}{$sn1}\n";
             if (!empty($nat_if_list)) {
                 $binat_if_list = implode(" ", $nat_if_list);
                 $binat_if_list = "{ {$binat_if_list} }";

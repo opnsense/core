@@ -226,7 +226,7 @@ $main_buttons = array(
                       <?=htmlspecialchars(convert_friendly_interface_to_friendly_descr(isset($natent['interface']) ? $natent['interface'] : "wan"));?>
                     </td>
                     <td>
-                      <?=isset($natent['external']) ? $natent['external'] : "";?><?=isset($natent['source']) ? strstr(pprint_address($natent['source']), '/') : "";?>
+                      <?=isset($natent['external']) ? $natent['external'] : "";?><?=isset($natent['source']) && strpos($natent['external'], '/') === false ? strstr(pprint_address($natent['source']), '/') : "";?>
 <?php                 if (isset($natent['external']['address']) && is_alias($natent['external']['address'])): ?>
                       &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['external']['address']);?>"><i class="fa fa-list"></i> </a>
 <?php                 endif; ?>
