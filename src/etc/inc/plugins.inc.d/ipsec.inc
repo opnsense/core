@@ -543,6 +543,29 @@ function ipsec_configure_spd()
 
     $spd_entries = array();
 
+    // cleanup, collect previous manual added spd entries (stash in spd_entries) for removal.
+    exec('/sbin/setkey -PD', $lines);
+    $line_count = 0;
+    foreach ($lines as $line) {
+        if ($line[0] != "\t") {
+            $tmp = explode(' ', $line);
+            if (count($tmp) >= 3) {
+                $src = explode('[', $tmp[0])[0];
+                $dst = explode('[', $tmp[1])[0];
+            }
+            $line_count = 0;
+        } elseif ($line_count == 1) {
+            // direction
+            $direction = trim(explode(' ', $line)[0]);
+        } elseif (strpos($line, '/require') !== false) {
+            // we'll assume that the require items in the spd are our manual items, so
+            // they will be removed first
+            $spd_entries[] = sprintf("spddelete -n %s %s any -P %s;", $src, $dst, $direction);
+        }
+        $line_count++;
+    }
+
+    // add manual added spd entries
     if (!empty($config['ipsec']['phase1']) && !empty($config['ipsec']['phase2'])) {
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
             foreach ($config['ipsec']['phase2'] as $ph2ent) {
