@@ -1289,7 +1289,7 @@ function openvpn_get_server_status($server, $socket)
                 $conn['virtual_addr'] = $list[3];
                 $conn['bytes_recv'] = $list[4];
                 $conn['bytes_sent'] = $list[5];
-                $conn['connect_time'] = $list[6];
+                $conn['connect_time'] = date("D M j G:i:s Y", $list[6]);
                 $server['conns'][] = $conn;
             }
             /* parse routing table lines */
@@ -1375,8 +1375,8 @@ function openvpn_get_client_status($client, $socket)
                 $client['status']="up";
                 $list = explode(",", $line);
 
-                $client['connect_time']  = date("D M j G:i:s Y", $list[0]);
-                $client['virtual_addr']  = $list[3];
+                $client['connect_time'] = date("D M j G:i:s Y", $list[0]);
+                $client['virtual_addr'] = $list[3];
                 $client['remote_host'] = $list[4];
             }
             if (strstr($line,"CONNECTING")) {
@@ -1385,13 +1385,13 @@ function openvpn_get_client_status($client, $socket)
             if (strstr($line,"ASSIGN_IP")) {
                 $client['status']="waiting";
                 $list = explode(",", $line);
-                $client['connect_time']  = date("D M j G:i:s Y", $list[0]);
-                $client['virtual_addr']  = $list[3];
+                $client['connect_time'] = date("D M j G:i:s Y", $list[0]);
+                $client['virtual_addr'] = $list[3];
             }
             if (strstr($line,"RECONNECTING")) {
                 $client['status']="reconnecting";
                 $list = explode(",", $line);
-                $client['connect_time']  = date("D M j G:i:s Y", $list[0]);
+                $client['connect_time'] = date("D M j G:i:s Y", $list[0]);
                 $client['status'] .= "; " . $list[2];
             }
             /* parse end of output line */
