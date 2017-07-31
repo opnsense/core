@@ -29,8 +29,6 @@
 namespace OPNsense\Base;
 
 use OPNsense\Core\Config;
-use OPNsense\Base\ViewTranslator;
-use Phalcon\Mvc\Controller;
 
 /**
  * Class ControllerBase implements core controller for OPNsense framework
@@ -38,25 +36,6 @@ use Phalcon\Mvc\Controller;
  */
 class ControllerBase extends ControllerRoot
 {
-    /**
-     * translate a text
-     * @param OPNsense\Core\Config $cnf config handle
-     * @return ViewTranslator
-     */
-    public function getTranslator()
-    {
-        $lang_encoding = self::getLangEncode();
-
-        $ret = new ViewTranslator(array(
-            'directory' => '/usr/local/share/locale',
-            'defaultDomain' => 'OPNsense',
-            'locale' => $lang_encoding,
-        ));
-
-        self::setLocale($lang_encoding);
-        return $ret;
-    }
-
     /**
      * convert xml form definition to simple data structure to use in our Volt templates
      *
@@ -195,7 +174,7 @@ class ControllerBase extends ControllerRoot
         $cnf = Config::getInstance();
 
         // set translator
-        $this->view->setVar('lang', $this->getTranslator());
+        $this->view->setVar('lang', self::getTranslator());
         $this->view->menuSystem = $menu->getItems("/ui".$this->router->getRewriteUri());
 
         // set theme in ui_theme template var, let template handle its defaults (if there is no theme).
