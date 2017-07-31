@@ -690,6 +690,11 @@ function openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipco
         file_put_contents("{$tempdir}/{$prefix}.ovpn", $conf);
         $shkeyfile = "{$tempdir}/{$shkeyfile}";
         file_put_contents("{$shkeyfile}", base64_decode($settings['shared_key']));
+        if (!empty($proxy['passwdfile'])) {
+            $pwdfle = "{$proxy['user']}\n";
+            $pwdfle .= "{$proxy['password']}\n";
+            file_put_contents("{$tempdir}/{$proxy['passwdfile']}", $pwdfle);
+        }
         exec("cd {$tempdir}/.. && /usr/local/bin/zip -r /tmp/{$prefix}-config.zip {$prefix}");
         // Remove temporary directory
         exec("rm -rf {$tempdir}");
