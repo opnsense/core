@@ -369,6 +369,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
+if (isset($_GET["format"]) && $_GET["format"] == "json")
+{
+    header("Content-Type: application/json");
+    print(json_encode($pconfig));
+    exit();
+}
+
+
 legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
