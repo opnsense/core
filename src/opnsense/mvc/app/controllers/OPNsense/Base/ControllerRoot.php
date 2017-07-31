@@ -49,9 +49,10 @@ class ControllerRoot extends Controller
     }
 
     /**
-     * Get lang encoding for gettext
+     * translate a text
+     * @return ViewTranslator
      */
-    public static function getLangEncode()
+    public static function getTranslator()
     {
         $lang = 'en_US';
 
@@ -63,21 +64,11 @@ class ControllerRoot extends Controller
             }
         }
 
-        return $lang . '.UTF-8';
-    }
-
-    /**
-     * Set locale for gettext
-     */
-    public static function setLocale($lang_encoding)
-    {
-        $textdomain = 'OPNsense';
-
-        /* this isn't being done by Phalcon */
-        putenv('LANG=' . $lang_encoding);
-        textdomain($textdomain);
-        bindtextdomain($textdomain, '/usr/local/share/locale');
-        bind_textdomain_codeset($textdomain, $lang_encoding);
+        return new ViewTranslator(array(
+            'directory' => '/usr/local/share/locale',
+            'defaultDomain' => 'OPNsense',
+            'locale' => $lang . '.UTF-8',
+        ));
     }
 
     /**
