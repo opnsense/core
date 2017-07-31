@@ -1,7 +1,8 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
+    Copyright (C) 2014-2017 Deciso B.V.
+    Copyright (C) 2017 Jeffrey Gentes
     Copyright (C) 2004 Scott Ullrich
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
     All rights reserved.
@@ -34,6 +35,8 @@ require_once("/usr/local/www/widgets/api/plugins/traffic.inc");
 
 // Get configured interface list
 $ifdescrs = get_configured_interface_with_descr();
+$interfaces = legacy_config_get_interfaces(array('virtual' => false));
+$hostlist = array();
 if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) {
     $ifdescrs['enc0'] = "IPsec";
 }
@@ -44,6 +47,19 @@ foreach (array('server', 'client') as $mode) {
                 $ifdescrs['ovpn' . substr($mode, 0, 1) . $setting['vpnid']] = gettext("OpenVPN") . " ".$mode.": ".htmlspecialchars($setting['description']);
             }
         }
+    }
+}
+
+//Create array of hostnames from DHCP
+foreach ($interfaces as $ifname => $ifarr) {
+	foreach (array('dhcpd', 'dhcpdv6') as $dhcp) {
+		if (isset($config[$dhcp][$ifname]['staticmap'])) {
+			foreach($config[$dhcp][$ifname]['staticmap'] as $entry) {
+				if (!empty($entry['hostname'])) {
+					$hostlist[$entry['ipaddr']] = htmlentities($entry['hostname']);
+				}
+			}
+		}
     }
 }
 
@@ -74,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $intsubnet = gen_subnet(find_interface_ip($real_interface), $netmask) . "/$netmask";
             $cmd_args = $pconfig['filter'] == "local" ? " -c " . $intsubnet . " " : " -lc 0.0.0.0/0 ";
             $cmd_args .= $pconfig['sort'] == "out" ? " -T " : " -R ";
-            $cmd_action = "/usr/local/bin/rate -i {$real_interface} -nlq 1 -Aba 20 {$cmd_args} | tr \"|\" \" \" | awk '{ printf \"%s:%s:%s:%s:%s\\n\", $1,  $2,  $4,  $6,  $8 }'";
+            $cmd_action = "/usr/local/bin/rate -v -i {$real_interface} -nlq 1 -Aba 20 {$cmd_args} | tr \"|\" \" \" | awk '{ printf \"%s:%s:%s:%s:%s\\n\", $1,  $2,  $4,  $6,  $8 }'";
             exec($cmd_action, $listedIPs);
             for ($idx = 2 ; $idx < count($listedIPs) ; ++$idx) {
                 $fields = explode(':', $listedIPs[$idx]);
@@ -82,6 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $addrdata = gethostbyaddr($fields[0]);
                     if ($pconfig['hostipformat'] == 'hostname' && $addrdata != $fields[0]){
                         $addrdata = explode(".", $addrdata)[0];
+                    } else if ($pconfig['hostipformat'] == 'hostname' && array_key_exists($fields[0], $hostlist)) {
+                    	$addrdata = $hostlist[$fields[0]];
                     }
                 } else {
                     $addrdata = $fields[0];
@@ -104,9 +122,49 @@ include("head.inc");
 ?>
 <body>
 <?php include("fbegin.inc"); ?>
-
+<style>
+path {
+    stroke: steelblue;
+    stroke-width: 1;
+    fill: none;
+}
+.minigraph {
+	border-style: solid;
+	border-color: lightgray;
+	border-width: 0px 1px 1px 1px;
+	padding: 0px;
+	margin: 0px;
+	margin-bottom: -5px;
+}
+</style>
 <script type="text/javascript">
-  $( document ).ready(function() {
+    var graphtable = {};
+    function formatSizeUnits(bytes){
+        if      (bytes>=1000000000) {bytes=(bytes/1000000000).toFixed(2)+'G';}
+        else if (bytes>=1000000)    {bytes=(bytes/1000000).toFixed(2)+'M';}
+        else if (bytes>=1000)       {bytes=(bytes/1000).toFixed(2)+'k';}
+        else if (bytes>=1)          {bytes=bytes.toFixed(2) +'b';}
+        else                        {bytes='0.00b';}
+        return bytes;
+    }
+    function containsHost(obj, list) {
+        var i;
+        for (i = 0; i < list.length; i++) {
+            if (list[i].host === obj.host) {
+                return true;
+            }
+        }
+        return false;
+    }
+    // define dimensions of graph
+	var m = [3, 3, 1, 3]; // margins of minigraphs
+	var w = 150 - m[1] - m[3]; // width of minigraphs
+	var h = 30 - m[0] - m[2]; // height of minigraphs
+	var datasize = 45; //size of minigraph history - 45 @ 2sec poll = 1min 30sec history
+	var maxvalue = 0; //top value of minigraph - changes based on incoming spikes
+    var hostmax = 20; //arbitrary max of top 20 hosts
+
+  	$( document ).ready(function() {
       function update_bandwidth_stats() {
         $.ajax("status_graph.php", {'type': 'get', 'cache': false, 'dataType': 'json', 'data': {'act': 'traffic'}}).done(function(data){
             traffic_widget_update($("[data-plugin=traffic]")[0], data);
@@ -122,15 +180,102 @@ include("head.inc");
                   hostipformat: $("#hostipformat").val()
                 },
           success: function(data) {
-            var html = [];
-            $.each(data, function(idx, record){
-                html.push('<tr>');
-                html.push('<td>'+record.host+'</td>');
-                html.push('<td>'+record.in+'</td>');
-                html.push('<td>'+record.out+'</td>');
-                html.push('</tr>');
-            });
-            $("#bandwidth_details").html(html.join(''));
+               var html = [];
+               $.each(data, function(idx, record){
+               		var totalin = 0;
+               		var totalout = 0;
+               		var historyin;
+               		var historyout;
+               		if (record.in > maxvalue) {
+               			maxvalue = parseInt(record.in);
+               		}
+               		if (record.out > maxvalue) {
+               			maxvalue = parseInt(record.out);
+               		}
+               		if (record.host in graphtable) {
+                        totalin = graphtable[record.host].totalin + parseFloat(record.in);
+                        totalout = graphtable[record.host].totalout + parseFloat(record.out);
+                        historyin = graphtable[record.host].historyin;
+                        historyout = graphtable[record.host].historyout;
+               		} else {
+                        totalin = parseFloat(record.in);
+                        totalout = parseFloat(record.out);
+                        historyin = Array.apply(null, Array(datasize)).map(Number.prototype.valueOf,0);
+                        historyout = Array.apply(null, Array(datasize)).map(Number.prototype.valueOf,0);
+               		}
+               		historyin.push(parseInt(record.in));
+               		historyout.push(parseInt(record.out));
+               		historyin.shift();
+               		historyout.shift();
+               		graphtable[record.host] = record;
+               		graphtable[record.host].totalin = totalin;
+               		graphtable[record.host].totalout = totalout;
+               		graphtable[record.host].historyin = historyin;
+               		graphtable[record.host].historyout = historyout;
+               		var sum = historyin.reduce(function(a, b) { return a + b; });
+					graphtable[record.host].avgin = parseInt(sum / datasize);
+					sum = historyout.reduce(function(a, b) { return a + b; });
+					graphtable[record.host].avgout = parseInt(sum / datasize);
+               });
+               var tablearray = [];
+               var sortval = $( "#sort option:selected" ).val();
+               $.each(graphtable, function(idx, record){
+               		if (!containsHost(record, data)) {
+               			record.in = 0;
+               			record.out = 0;
+               			record.historyin.push(0);
+               			record.historyin.shift();
+               			record.historyout.push(0);
+               			record.historyout.shift();
+						var sum = record.historyin.reduce(function(a, b) { return a + b; });
+						record.avgin = parseInt(sum / datasize);
+						sum = record.historyout.reduce(function(a, b) { return a + b; });
+						record.avgout = parseInt(sum / datasize);
+					}
+					tablearray.push(record);
+			   });
+			   tablearray.sort(function(a, b) {
+					return parseFloat(b[sortval]) - parseFloat(a[sortval]);
+			   });
+			   if (tablearray.length > hostmax) {
+					tablearray.length = hostmax;
+			   }
+			   graphtable = {};
+               $.each(tablearray, function(idx, record){
+               		graphtable[record.host] = record;
+					var x = d3.scale.linear().domain([0, datasize-1]).range([0, w]);
+					//using non-linear y so that large spikes don't zero out the other graphs
+					var y = d3.scale.pow().exponent(0.3).domain([0, maxvalue]).range([h, 0]);
+					var line = d3.svg.line()
+						.x(function(d,i) {
+							return x(i);
+						})
+						.y(function(d) {
+							return y(d);
+						})
+					var svg = document.createElementNS(d3.ns.prefix.svg, 'g');
+					var graphIn = d3.select(svg).append("svg:svg")
+						  .attr("width", w + m[1] + m[3])
+						  .attr("height", h + m[0] + m[2])
+						.append("svg:g")
+						  .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+					var svg2 = document.createElementNS(d3.ns.prefix.svg, 'g');
+					var graphOut = d3.select(svg).append("svg:svg")
+						  .attr("width", w + m[1] + m[3])
+						  .attr("height", h + m[0] + m[2])
+						.append("svg:g")
+						  .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+               		html.push('<tr>');
+               		html.push('<td>'+record.host+'</td>');
+                    graphIn.append("svg:path").attr("d", line(record.historyin));
+                    graphOut.append("svg:path").attr("d", line(record.historyout));
+                    html.push('<td style="width: 55px;">' +formatSizeUnits(record.in)+'</td><td style="padding: 0; width: ' + w + '; height: ' + h + ';"><svg class="minigraph" style="width: ' + w  + '; height: ' + h + ';">' + graphIn.html() + '</svg></td>');
+                    html.push('<td style="width: 55px;">' +formatSizeUnits(record.out)+'</td><td style="padding: 0; width: ' + w + '; height: ' + h + ';"><svg class="minigraph" style="width: ' + w  + '; height: ' + h + ';">' + graphOut.html() + '</svg></td>');
+               		html.push('<td>'+formatSizeUnits(record.totalin)+'</td>');
+               		html.push('<td>'+formatSizeUnits(record.totalout)+'</td>');
+               		html.push('</tr>');
+			   });
+			   $("#bandwidth_details").html(html.join(''));
           }
         });
         setTimeout(update_bandwidth_stats, 2000);
@@ -138,6 +283,7 @@ include("head.inc");
       update_bandwidth_stats();
 
   });
+
 </script>
 
 <section class="page-content-main">
@@ -162,6 +308,7 @@ include("head.inc");
                     <th><?= gettext('Sort by') ?></th>
                     <th><?= gettext('Filter') ?></th>
                     <th><?= gettext('Display') ?></th>
+                    <th><?= gettext('Top') ?></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -179,11 +326,23 @@ include("head.inc");
                     </td>
                     <td>
                       <select id="sort" name="sort">
-                        <option value="">
+                        <option value="in">
                           <?= gettext('Bw In') ?>
                         </option>
                         <option value="out"<?= $pconfig['sort'] == "out" ? " selected=\"selected\"" : "";?>>
                           <?= gettext('Bw Out') ?>
+                        </option>
+                        <option value="avgin">
+                          <?= gettext('Bw In Avg') ?>
+                        </option>
+                        <option value="avgout">
+                          <?= gettext('Bw Out Avg') ?>
+                        </option>
+                         <option value="totalin">
+                          <?= gettext('Total In') ?>
+                        </option>
+                         <option value="totalout">
+                          <?= gettext('Total Out') ?>
                         </option>
                       </select>
                     </td>
@@ -208,6 +367,28 @@ include("head.inc");
                         </option>
                       </select>
                     </td>
+                    <td>
+                      <select id="hostmax" name="hostmax">
+                        <option value="5">
+                          <?= gettext('5') ?>
+                        </option>
+                        <option value="10">
+                          <?= gettext('10') ?>
+                        </option>
+                        <option value="20" selected>
+                          <?= gettext('20') ?>
+                        </option>
+                        <option value="30">
+                          <?= gettext('30') ?>
+                        </option>
+                        <option value="40">
+                          <?= gettext('40') ?>
+                        </option>
+                        <option value="50">
+                          <?= gettext('50') ?>
+                        </option>
+                      </select>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -222,8 +403,10 @@ include("head.inc");
                 <thead>
                   <tr>
                       <td><?=empty($pconfig['hostipformat']) ? gettext("Host IP") : gettext("Host Name or IP"); ?></td>
-                      <td><?=gettext("Bandwidth In"); ?></td>
-                      <td><?=gettext("Bandwidth Out"); ?></td>
+                      <td colspan="2"><?=gettext("Bandwidth In"); ?></td>
+                      <td colspan="2"><?=gettext("Bandwidth Out"); ?></td>
+                      <td><?=gettext("Total In"); ?></td>
+                      <td><?=gettext("Total Out"); ?></td>
                  </tr>
                 </thead>
                 <tbody id="bandwidth_details">
@@ -236,5 +419,18 @@ include("head.inc");
     </div>
   </div>
 </section>
-
+<script>
+  $('#if').on('change', function () {
+        graphtable = {};
+  });
+  $('#filter').on('change', function () {
+        graphtable = {};
+  });
+  $('#hostipformat').on('change', function () {
+        graphtable = {};
+  });
+  $('#hostmax').on('change', function () {
+        hostmax = parseInt($( "#hostmax option:selected" ).val());
+  });
+</script>
 <?php include("foot.inc"); ?>

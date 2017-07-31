@@ -94,7 +94,9 @@
 
       // load data
       traffic_graph_widget_chart_data_in.datum(chart_data_in).transition().duration(500).call(traffic_graph_widget_chart_in);
-      traffic_graph_widget_chart_data_out.datum(chart_data_out).transition().duration(500).call(traffic_graph_widget_chart_out);
+      if (traffic_graph_widget_chart_data_out !== null) {
+      	traffic_graph_widget_chart_data_out.datum(chart_data_out).transition().duration(500).call(traffic_graph_widget_chart_out);
+      }
 
       // set selection
       d3.selectAll("#traffic_graph_widget_chart_in").selectAll(".nv-series").each(function(d, i) {
