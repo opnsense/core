@@ -31,10 +31,10 @@ import time
 import os
 import sys
 import signal
-import glob
 import copy
 import syslog
 import traceback
+import socket
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from sqlite3_helper import check_and_repair
 from lib.parse import parse_flow
@@ -42,12 +42,12 @@ from lib.aggregate import AggMetadata
 import lib.aggregates
 from daemonize import Daemonize
 
-
 MAX_FILE_SIZE_MB=10
 MAX_LOGS=10
+SOCKET_PATH="/var/run/flowd.socket"
 
 
-def aggregate_flowd(do_vacuum=False):
+def aggregate_flowd(server, do_vacuum=False):
     """ aggregate collected flowd data
     :param do_vacuum: vacuum database after cleanup
     :return: None
@@ -62,14 +62,12 @@ def aggregate_flowd(do_vacuum=False):
             stream_agg_objects.append(agg_class(resolution))
 
     # parse flow data and stream to registered consumers
-    prev_recv = metadata.last_sync()
     commit_record_count = 0
-    for flow_record in parse_flow(prev_recv):
-        if flow_record is None or (prev_recv != flow_record['recv'] and commit_record_count > 100000):
+    for flow_record in parse_flow(server):
+        if (flow_record is None and commit_record_count > 0) or commit_record_count > 100000:
             # commit data on receive timestamp change or last record
             for stream_agg_object in stream_agg_objects:
                 stream_agg_object.commit()
-            metadata.update_sync_time(prev_recv)
         if flow_record is not None:
             # send to aggregator
             for stream_agg_object in stream_agg_objects:
@@ -78,43 +76,12 @@ def aggregate_flowd(do_vacuum=False):
                 flow_record_cpy = copy.copy(flow_record)
                 stream_agg_object.add(flow_record_cpy)
             commit_record_count += 1
-            prev_recv = flow_record['recv']
 
     # expire old data
     for stream_agg_object in stream_agg_objects:
         stream_agg_object.cleanup(do_vacuum)
         del stream_agg_object
     del metadata
-
-
-def check_rotate():
-    """ Checks if flowd log needs to be rotated, if so perform rotate.
-        We keep [MAX_LOGS] number of logs containing approx. [MAX_FILE_SIZE_MB] data, the flowd data probably contains
-        more detailed data then the stored aggregates.
-    :return: None
-    """
-    if os.path.getsize("/var/log/flowd.log")/1024/1024 > MAX_FILE_SIZE_MB:
-        # max filesize reached rotate
-        filenames = sorted(glob.glob('/var/log/flowd.log.*'), reverse=True)
-        file_sequence = len(filenames)
-        for filename in filenames:
-            sequence = filename.split('.')[-1]
-            if sequence.isdigit():
-                if file_sequence >= MAX_LOGS:
-                    os.remove(filename)
-                elif int(sequence) != 0:
-                    os.rename(filename, filename.replace('.%s' % sequence, '.%06d' % (int(sequence)+1)))
-            file_sequence -= 1
-        # rename /var/log/flowd.log
-        os.rename('/var/log/flowd.log', '/var/log/flowd.log.000001')
-        # signal flowd for new log file
-        if os.path.isfile('/var/run/flowd.pid'):
-            pid = open('/var/run/flowd.pid').read().strip()
-            if pid.isdigit():
-                try:
-                    os.kill(int(pid), signal.SIGUSR1)
-                except OSError:
-                    pass
 
 
 class Main(object):
@@ -135,6 +102,10 @@ class Main(object):
 
         vacuum_interval = (60*60*8) # 8 hour vacuum cycle
         vacuum_countdown = None
+        if os.path.exists(SOCKET_PATH):
+            os.remove(SOCKET_PATH)
+        server = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+        server.bind(SOCKET_PATH)
         while self.running:
             # should we perform a vacuum
             if not vacuum_countdown or vacuum_countdown < time.time():
@@ -145,18 +116,19 @@ class Main(object):
 
             # run aggregate
             try:
-                aggregate_flowd(do_vacuum)
+                aggregate_flowd(server, do_vacuum)
             except:
                 syslog.syslog(syslog.LOG_ERR, 'flowd aggregate died with message %s' % (traceback.format_exc()))
                 return
-            # rotate if needed
-            check_rotate()
             # wait for next pass, exit on sigterm
             for i in range(30):
                 if self.running:
                     time.sleep(0.5)
                 else:
                     break
+
+        server.close()
+        os.remove(SOCKET_PATH)
 
     def signal_handler(self, sig, frame):
         """ end (run) loop on signal

@@ -36,4 +36,5 @@ use OPNsense\Base\BaseModel;
  */
 class Netflow extends BaseModel
 {
+    static public $socket_path = "/var/run/flowd.socket";
 }
