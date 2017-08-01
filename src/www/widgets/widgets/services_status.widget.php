@@ -71,7 +71,7 @@ if (isset($_POST['servicestatusfilter'])) {
     <tr>
       <th><?= gettext('Service') ?></th>
       <th><?= gettext('Description') ?></th>
-      <th><?= gettext('Status') ?></th>
+      <th style="width:100px;"><?= gettext('Status') ?></th>
     </tr>
   </thead>
   <tbody>
