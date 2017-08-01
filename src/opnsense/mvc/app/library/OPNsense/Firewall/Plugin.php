@@ -164,10 +164,10 @@ class Plugin
      * @param string $placement placement head,tail
      * @return null
      */
-    public function registerAnchor($name, $type = "fw", $priority = 0, $placement = "tail")
+    public function registerAnchor($name, $type = "fw", $priority = 0, $placement = "tail", $quick = false)
     {
         $anchorKey = sprintf("%s.%s.%08d.%08d", $type, $placement, $priority, count($this->anchors));
-        $this->anchors[$anchorKey] = $name;
+        $this->anchors[$anchorKey] = array('name' => $name, 'quick' => $quick);
         ksort($this->anchors);
     }
 
@@ -184,7 +184,11 @@ class Plugin
             foreach ($this->anchors as $anchorKey => $anchor) {
                 if (strpos($anchorKey, "{$type}.{$placement}") === 0) {
                     $result .= $type == "fw" ? "" : "{$type}-";
-                    $result .= "anchor \"{$anchor}\"\n";
+                    $result .= "anchor \"{$anchor['name']}\"";
+                    if ($anchor['quick']) {
+                        $result .= " quick";
+                    }
+                    $result .= "\n";
                 }
             }
         }
