@@ -64,10 +64,12 @@ class ControllerRoot extends Controller
             }
         }
 
+        $locale = $lang . '.UTF-8';
+        bind_textdomain_codeset('OPNsense', $locale);
         return new ViewTranslator(array(
             'directory' => '/usr/local/share/locale',
             'defaultDomain' => 'OPNsense',
-            'locale' => $lang . '.UTF-8',
+            'locale' => $locale,
         ));
     }
 
