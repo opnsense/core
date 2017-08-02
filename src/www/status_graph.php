@@ -123,7 +123,7 @@ include("head.inc");
 <body>
 <?php include("fbegin.inc"); ?>
 <style>
-path {
+.minigraph path {
     stroke: steelblue;
     stroke-width: 1;
     fill: none;
