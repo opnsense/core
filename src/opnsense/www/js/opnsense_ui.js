@@ -271,15 +271,15 @@ function initFormAdvancedUI() {
 }
 
 /**
- * standard remove items dialog, wrapper around BootstrapDialog
+ * standard dialog when confirmation is required, wrapper around BootstrapDialog
  */
-function stdDialogRemoveItem(message, callback) {
+function stdDialogConfirmation(title, message, accept, decline, callback) {
     BootstrapDialog.confirm({
-        title: 'Remove',
+        title: title,
         message: message,
         type:BootstrapDialog.TYPE_DANGER,
-        btnCancelLabel: 'Cancel',
-        btnOKLabel: 'Yes',
+        btnCancelLabel: decline,
+        btnOKLabel: accept,
         btnOKClass: 'btn-primary',
         callback: function(result) {
             if(result) {
@@ -287,4 +287,11 @@ function stdDialogRemoveItem(message, callback) {
             }
         }
     });
+}
+
+/**
+ * wrapper for backwards compatibility
+ */
+function stdDialogRemoveItem(message, callback) {
+    stdDialogConfirmation('Remove', message, 'Yes', 'Cancel', callback)
 }
