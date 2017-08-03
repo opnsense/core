@@ -986,7 +986,7 @@ function system_firmware_configure($verbose = false)
             str_replace('/', '\/', sprintf(
                 "%s{$config['system']['firmware']['flavour']}",
                 /* if there is no directory slash we always treat it with default ABI prefix */
-                strstr($config['system']['firmware']['flavour'], '/') === false ?
+                strpos($config['system']['firmware']['flavour'], '/') === false ?
                     trim(file_get_contents('/usr/local/opnsense/version/opnsense.abi')) . '/' : ''
             ))
         );
