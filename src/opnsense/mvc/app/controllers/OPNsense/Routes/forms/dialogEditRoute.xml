@@ -12,7 +12,7 @@
   <field>
     <id>route.gateway</id>
     <label>Gateway</label>
-    <type>text</type>
+    <type>dropdown</type>
   </field>
   <field>
     <id>route.descr</id>

@@ -7,8 +7,10 @@
             <NetMaskRequired>Y</NetMaskRequired>
             <Required>Y</Required>
           </network>
-          <gateway type="TextField">
+          <gateway type="JsonKeyValueStoreField">
             <Required>Y</Required>
+            <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+            <SourceFile>/tmp/gateway_list.json</SourceFile>
           </gateway>
           <descr type="TextField">
             <Required>N</Required>
