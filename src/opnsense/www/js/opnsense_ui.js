@@ -271,13 +271,13 @@ function initFormAdvancedUI() {
 }
 
 /**
- * standard remove items dialog, wrapper around BootstrapDialog
+ * standard dialog when confirmation is required, wrapper around BootstrapDialog
  */
-function stdDialogRemoveItem(message, callback) {
+function stdDialogConfirmation(title, message, callback) {
     BootstrapDialog.confirm({
-        title: 'Remove',
+        title: title,
         message: message,
-        type:BootstrapDialog.TYPE_DANGER,
+        type:BootstrapDialog.TYPE_WARNING,
         btnCancelLabel: 'Cancel',
         btnOKLabel: 'Yes',
         btnOKClass: 'btn-primary',

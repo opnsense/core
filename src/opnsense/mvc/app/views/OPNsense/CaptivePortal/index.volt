@@ -79,7 +79,7 @@ POSSIBILITY OF SUCH DAMAGE.
             });
             grid_templates.find(".command-delete").on("click", function(e) {
                 var uuid=$(this).data("row-id");
-                stdDialogRemoveItem('Remove selected item?',function() {
+                stdDialogConfirmation('Remove','Remove selected item?',function() {
                     ajaxCall(url="/api/captiveportal/service/delTemplate/" + uuid,
                             sendData={},callback=function(data,status){
                                 // reload grid after delete
