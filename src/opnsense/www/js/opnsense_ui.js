@@ -273,13 +273,13 @@ function initFormAdvancedUI() {
 /**
  * standard dialog when confirmation is required, wrapper around BootstrapDialog
  */
-function stdDialogConfirmation(title, message, callback) {
+function stdDialogConfirmation(title, message, accept, decline, callback) {
     BootstrapDialog.confirm({
         title: title,
         message: message,
         type:BootstrapDialog.TYPE_WARNING,
-        btnCancelLabel: 'Cancel',
-        btnOKLabel: 'Yes',
+        btnCancelLabel: decline,
+        btnOKLabel: accept,
         btnOKClass: 'btn-primary',
         callback: function(result) {
             if(result) {
