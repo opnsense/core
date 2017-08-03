@@ -981,21 +981,14 @@ function system_firmware_configure($verbose = false)
     }
 
     if (!empty($config['system']['firmware']['flavour'])) {
-        $osabi = '';
-
-        switch ($config['system']['firmware']['flavour']) {
-            case 'libressl':
-            case 'latest':
-                /* if this is known flavour we treat it with ABI prefix */
-                $osabi = trim(file_get_contents('/usr/local/opnsense/version/opnsense.abi')) . '/';
-                break;
-            default:
-                break;
-        }
-
         mwexecf(
-            '/usr/local/sbin/opnsense-update %s %s',
-            array('-sn', str_replace('/', '\/', $osabi . $config['system']['firmware']['flavour']))
+            '/usr/local/sbin/opnsense-update -sn %s',
+            str_replace('/', '\/', sprintf(
+                "%s{$config['system']['firmware']['flavour']}",
+                /* if there is no directory slash we always treat it with default ABI prefix */
+                strstr($config['system']['firmware']['flavour'], '/') === false ?
+                    trim(file_get_contents('/usr/local/opnsense/version/opnsense.abi')) . '/' : ''
+            ))
         );
     }
 
