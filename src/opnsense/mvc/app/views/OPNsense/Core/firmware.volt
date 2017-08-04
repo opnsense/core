@@ -400,11 +400,17 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (row['provided'] == "0") {
                     orphaned_text = ' ({{ lang._('orphaned') }})';
                 }
+                bold_on = '';
+                bold_off = '';
+                if (row['installed'] == "1") {
+                    bold_on = '<b>';
+                    bold_off = '</b>';
+                }
                 $('#pluginlist').append(
-                    '<tr>' + '<td>' + row['name'] + orphaned_text + '</td>' +
-                    '<td>' + row['version'] + '</td>' +
-                    '<td>' + row['flatsize'] + '</td>' +
-                    '<td>' + row['comment'] + '</td>' +
+                    '<tr>' + '<td>' + bold_on + row['name'] + orphaned_text + bold_off + '</td>' +
+                    '<td>' + bold_on + row['version'] + bold_off + '</td>' +
+                    '<td>' + bold_on + row['flatsize'] + bold_off + '</td>' +
+                    '<td>' + bold_on + row['comment'] + bold_off + '</td>' +
                     '<td><button class="btn btn-default btn-xs act_details" data-package="' + row['name'] + '" ' +
                         ' data-toggle="tooltip" title="More about ' + row['name'] + '">' +
                         '<span class="fa fa-info-circle"></span></button>' +
