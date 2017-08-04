@@ -677,15 +677,15 @@ POSSIBILITY OF SUCH DAMAGE.
         <div id="firmware-upgrade" style="display:none;"><?= @file_get_contents('/usr/local/opnsense/firmware-upgrade') ?></div>
         <div id="firmware-message" style="display:none;"><?= str_replace(PHP_EOL, ' ', @file_get_contents('/usr/local/opnsense/firmware-message')) ?></div>
         <div class="alert alert-warning" role="alert" style="min-height: 65px;">
-            <button class='btn btn-primary pull-right' id="upgrade_maj" style="display:none;"><i id="upgrade_progress_maj" class=""></i> {{ lang._('Upgrade now') }}</button>
-            <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;"><i id="checkupdate_progress_maj" class=""></i> {{ lang._('Check for upgrade') }}</button>
+            <button class='btn btn-primary pull-right' id="upgrade_maj" style="display:none;">{{ lang._('Upgrade now') }} <i id="upgrade_progress_maj"></i> </button>
+            <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;">{{ lang._('Check for upgrade') }} <i id="checkupdate_progress_maj"></i></button>
             <div style="margin-top: 8px;">{{ lang._('This software release has reached its designated end of life.') }}</div>
         </div>
 <?php endif ?>
         <div class="alert alert-info" role="alert" style="min-height: 65px;">
-            <button class='btn btn-primary pull-right' id="upgrade" style="display:none"><i id="upgrade_progress" class=""></i> {{ lang._('Update now') }}</button>
-            <button class='btn btn-primary pull-right' id="audit"><i id="audit_progress" class=""></i> {{ lang._('Audit now') }}</button>
-            <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;"><i id="checkupdate_progress" class=""></i> {{ lang._('Check for updates')}}</button>
+            <button class='btn btn-primary pull-right' id="upgrade" style="display:none">{{ lang._('Update now') }} <i id="upgrade_progress"></i></button>
+            <button class='btn btn-primary pull-right' id="audit">{{ lang._('Audit now') }} <i id="audit_progress"></i></button>
+            <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;">{{ lang._('Check for updates') }} <i id="checkupdate_progress"></i></button>
             <div style="margin-top: 8px;" id="updatestatus">{{ lang._('Click to check for updates.')}}</div>
         </div>
     </div>
@@ -720,9 +720,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                         <input type="text" id="firmware_mirror_value">
                                     </div>
                                     <div class="hidden" for="help_for_mirror">
-                                        <strong>
-                                            {{ lang._('Select an alternate firmware mirror.') }}
-                                        </strong>
+                                        {{ lang._('Select an alternate firmware mirror.') }}
                                     </div>
                                 </td>
                                 <td></td>
@@ -736,9 +734,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                         <input type="text" id="firmware_flavour_value">
                                     </div>
                                     <div class="hidden" for="help_for_flavour">
-                                        <strong>
-                                            {{ lang._('Select the firmware cryptography flavour.') }}
-                                        </strong>
+                                        {{ lang._('Select the firmware cryptography flavour.') }}
                                     </div>
                                 </td>
                                 <td></td>
@@ -748,9 +744,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                 <td>
                                     <input type="text" id="firmware_mirror_subscription">
                                     <div class="hidden" for="help_for_mirror_subscription">
-                                        <strong>
-                                            {{ lang._('Provide subscription key.') }}
-                                        </strong>
+                                        {{ lang._('Provide subscription key.') }}
                                     </div>
                                 </td>
                                 <td></td>
@@ -758,7 +752,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             <tr>
                                 <td></td>
                                 <td>
-                                    <button class="btn btn-primary" id="change_mirror" type="button"><i id="change_mirror_progress" class=""></i> {{ lang._('Save') }}</button>
+                                    <button class="btn btn-primary" id="change_mirror" type="button">{{ lang._('Save') }} <i id="change_mirror_progress"></i></button>
                                 </td>
                                 <td></td>
                             </tr>
