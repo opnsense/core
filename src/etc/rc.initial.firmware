@@ -32,14 +32,14 @@ PROMPT="[y/N]"
 NAME="y"
 ARGS=
 
-echo "This will automatically fetch all available updates, apply them,"
-echo "and reboot if necessary."
-echo
-
 echo -n "Fetching change log information, please wait... "
 if /usr/local/opnsense/scripts/firmware/changelog.sh fetch; then
 	echo "done"
 fi
+echo
+
+echo "This will automatically fetch all available updates, apply them,"
+echo "and reboot if necessary."
 echo
 
 if [ -f ${UPGRADE} ]; then
