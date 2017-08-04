@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if ($pconfig['hostipformat'] == 'hostname' && $addrdata != $fields[0]){
                         $addrdata = explode(".", $addrdata)[0];
                     } else if ($pconfig['hostipformat'] == 'hostname' && array_key_exists($fields[0], $hostlist)) {
-                    	$addrdata = $hostlist[$fields[0]];
+			$addrdata = $hostlist[$fields[0]];
                     }
                 } else {
                     $addrdata = $fields[0];
@@ -164,7 +164,7 @@ include("head.inc");
 	var maxvalue = 0; //top value of minigraph - changes based on incoming spikes
     var hostmax = 20; //arbitrary max of top 20 hosts
 
-  	$( document ).ready(function() {
+	$( document ).ready(function() {
       function update_bandwidth_stats() {
         $.ajax("status_graph.php", {'type': 'get', 'cache': false, 'dataType': 'json', 'data': {'act': 'traffic'}}).done(function(data){
             traffic_widget_update($("[data-plugin=traffic]")[0], data);
@@ -182,37 +182,37 @@ include("head.inc");
           success: function(data) {
                var html = [];
                $.each(data, function(idx, record){
-               		var totalin = 0;
-               		var totalout = 0;
-               		var historyin;
-               		var historyout;
-               		if (record.in > maxvalue) {
-               			maxvalue = parseInt(record.in);
-               		}
-               		if (record.out > maxvalue) {
-               			maxvalue = parseInt(record.out);
-               		}
-               		if (record.host in graphtable) {
+			var totalin = 0;
+			var totalout = 0;
+			var historyin;
+			var historyout;
+			if (record.in > maxvalue) {
+				maxvalue = parseInt(record.in);
+			}
+			if (record.out > maxvalue) {
+				maxvalue = parseInt(record.out);
+			}
+			if (record.host in graphtable) {
                         totalin = graphtable[record.host].totalin + parseFloat(record.in);
                         totalout = graphtable[record.host].totalout + parseFloat(record.out);
                         historyin = graphtable[record.host].historyin;
                         historyout = graphtable[record.host].historyout;
-               		} else {
+			} else {
                         totalin = parseFloat(record.in);
                         totalout = parseFloat(record.out);
                         historyin = Array.apply(null, Array(datasize)).map(Number.prototype.valueOf,0);
                         historyout = Array.apply(null, Array(datasize)).map(Number.prototype.valueOf,0);
-               		}
-               		historyin.push(parseInt(record.in));
-               		historyout.push(parseInt(record.out));
-               		historyin.shift();
-               		historyout.shift();
-               		graphtable[record.host] = record;
-               		graphtable[record.host].totalin = totalin;
-               		graphtable[record.host].totalout = totalout;
-               		graphtable[record.host].historyin = historyin;
-               		graphtable[record.host].historyout = historyout;
-               		var sum = historyin.reduce(function(a, b) { return a + b; });
+			}
+			historyin.push(parseInt(record.in));
+			historyout.push(parseInt(record.out));
+			historyin.shift();
+			historyout.shift();
+			graphtable[record.host] = record;
+			graphtable[record.host].totalin = totalin;
+			graphtable[record.host].totalout = totalout;
+			graphtable[record.host].historyin = historyin;
+			graphtable[record.host].historyout = historyout;
+			var sum = historyin.reduce(function(a, b) { return a + b; });
 					graphtable[record.host].avgin = parseInt(sum / datasize);
 					sum = historyout.reduce(function(a, b) { return a + b; });
 					graphtable[record.host].avgout = parseInt(sum / datasize);
@@ -220,13 +220,13 @@ include("head.inc");
                var tablearray = [];
                var sortval = $( "#sort option:selected" ).val();
                $.each(graphtable, function(idx, record){
-               		if (!containsHost(record, data)) {
-               			record.in = 0;
-               			record.out = 0;
-               			record.historyin.push(0);
-               			record.historyin.shift();
-               			record.historyout.push(0);
-               			record.historyout.shift();
+			if (!containsHost(record, data)) {
+				record.in = 0;
+				record.out = 0;
+				record.historyin.push(0);
+				record.historyin.shift();
+				record.historyout.push(0);
+				record.historyout.shift();
 						var sum = record.historyin.reduce(function(a, b) { return a + b; });
 						record.avgin = parseInt(sum / datasize);
 						sum = record.historyout.reduce(function(a, b) { return a + b; });
@@ -242,7 +242,7 @@ include("head.inc");
 			   }
 			   graphtable = {};
                $.each(tablearray, function(idx, record){
-               		graphtable[record.host] = record;
+			graphtable[record.host] = record;
 					var x = d3.scale.linear().domain([0, datasize-1]).range([0, w]);
 					//using non-linear y so that large spikes don't zero out the other graphs
 					var y = d3.scale.pow().exponent(0.3).domain([0, maxvalue]).range([h, 0]);
@@ -265,15 +265,15 @@ include("head.inc");
 						  .attr("height", h + m[0] + m[2])
 						.append("svg:g")
 						  .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
-               		html.push('<tr>');
-               		html.push('<td>'+record.host+'</td>');
+			html.push('<tr>');
+			html.push('<td>'+record.host+'</td>');
                     graphIn.append("svg:path").attr("d", line(record.historyin));
                     graphOut.append("svg:path").attr("d", line(record.historyout));
                     html.push('<td style="width: 55px;">' +formatSizeUnits(record.in)+'</td><td style="padding: 0; width: ' + w + '; height: ' + h + ';"><svg class="minigraph" style="width: ' + w  + '; height: ' + h + ';">' + graphIn.html() + '</svg></td>');
                     html.push('<td style="width: 55px;">' +formatSizeUnits(record.out)+'</td><td style="padding: 0; width: ' + w + '; height: ' + h + ';"><svg class="minigraph" style="width: ' + w  + '; height: ' + h + ';">' + graphOut.html() + '</svg></td>');
-               		html.push('<td>'+formatSizeUnits(record.totalin)+'</td>');
-               		html.push('<td>'+formatSizeUnits(record.totalout)+'</td>');
-               		html.push('</tr>');
+			html.push('<td>'+formatSizeUnits(record.totalin)+'</td>');
+			html.push('<td>'+formatSizeUnits(record.totalout)+'</td>');
+			html.push('</tr>');
 			   });
 			   $("#bandwidth_details").html(html.join(''));
           }

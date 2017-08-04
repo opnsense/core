@@ -95,7 +95,7 @@
       // load data
       traffic_graph_widget_chart_data_in.datum(chart_data_in).transition().duration(500).call(traffic_graph_widget_chart_in);
       if (traffic_graph_widget_chart_data_out !== null) {
-      	traffic_graph_widget_chart_data_out.datum(chart_data_out).transition().duration(500).call(traffic_graph_widget_chart_out);
+	traffic_graph_widget_chart_data_out.datum(chart_data_out).transition().duration(500).call(traffic_graph_widget_chart_out);
       }
 
       // set selection
