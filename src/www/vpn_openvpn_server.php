@@ -1184,7 +1184,7 @@ endif; ?>
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_p2p_shared_key opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user opt_gwredir">
-                      <td width="22%" ><a id="help_for_local_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a><?=gettext("IPv6 Local Network"); ?></td>
+                      <td width="22%" ><a id="help_for_local_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Local Network"); ?></td>
                       <td>
                         <input name="local_networkv6" type="text" class="form-control unknown" size="40" value="<?=$pconfig['local_networkv6'];?>" />
                         <div class="hidden" for="help_for_local_networkv6">
