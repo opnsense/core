@@ -509,7 +509,7 @@ $( document ).ready(function() {
               </td>
             </tr>
             <tr>
-              <td><a id="help_for_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a><?=gettext("Disabled"); ?></td>
+              <td><a id="help_for_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
               <td>
                 <input name="disable" type="checkbox" value="yes" <?= !empty($pconfig['disable']) ? "checked=\"checked\"" : "";?> />
                 <div class="hidden" for="help_for_disable">
@@ -1065,7 +1065,6 @@ $( document ).ready(function() {
               <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
 <?php
               endif; ?>
-              <br/><br/>
             </td>
           </tr>
         </table>
