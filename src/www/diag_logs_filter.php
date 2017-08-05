@@ -3,7 +3,7 @@
 /*
     Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2009-2010 Jim Pingle <jimp@pfsense.org>
-    Copyright (C) 2004-2009 Scott Ullrich
+    Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2003-2009 Manuel Kasper <mk@neon1.net>
     Originally Sponsored By Anathematic @ pfSense Forums
     All rights reserved.

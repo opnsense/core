@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2017 Deciso B.V.
-    Copyright (C) 2004-2007 Scott Ullrich
+    Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>
     Copyright (C) 2006 Peter Allgeyer <allgeyer@web.de>
     Copyright (C) 2008-2010 Ermal Luçi
