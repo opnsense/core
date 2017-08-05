@@ -5,7 +5,7 @@
     Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     Copyright (C) 2008 Ermal Luçi
     Copyright (C) 2004-2007 Scott Ullrich
-    Copyright (C) 2003-2004 Manuel Kasper
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

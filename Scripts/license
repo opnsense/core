@@ -67,9 +67,12 @@ my %copyrights = ();
 sub process_file
 {
     my $filename = $File::Find::name;
+
     return if not -f "$cwd/$filename";
+
     my @lines = read_file( "$cwd/$filename" );
     my $possibly_bsd;
+
     for my $line ( @lines ) {
         $possibly_bsd = 1 if $line =~ /Redistribution and use in source and binary forms/i;
         if ( $line =~ /Apache License/i ) {
@@ -77,15 +80,19 @@ sub process_file
             last;
         }
     }
+
     return if not $possibly_bsd;
+
     for my $line ( @lines ) {
         my $copy = $line;
-        chomp $copy;
         next if $line !~ s/copyright\s+\(c\)\s+//i;
-        my ( $start, $end ) = ( 0, 9999 );
-        $line =~ s/(^[\*\\#\s]+|[\.\s]+$)//g;
+        $line =~ s/^[\*\\#\s]+//g;
+        $line =~ s/[\.\s]+$//g;
         $line =~ s/Inc$/Inc./;
         $line =~ s/B\.V$/B.V./;
+        chomp $copy;
+        $copy =~ s/^[\*\\#\s]+//g;
+        my ( $start, $end ) = ( 0, 9999 );
         if ( $line =~ s/(\d\d\d\d\s*,?-?\s*)// ) {
             $start = $1;
             $start =~ s/[,\s\-]+//g;
@@ -95,6 +102,7 @@ sub process_file
             $end =~ s/[,\s]+//g;
         }
         $end = $start if $end == 9999;
+        say STDERR "Error in $filename: $copy" if $end == 0;
         if ( exists $copyrights{$line} ) {
             if ( $start > $copyrights{$line}[0] ) {
                 $start = $copyrights{$line}[0];
