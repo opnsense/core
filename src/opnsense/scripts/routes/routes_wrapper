@@ -24,16 +24,35 @@
 include('/usr/local/etc/inc/util.inc');
 include('/usr/local/etc/inc/gwlb.inc');
 
-$inactive = true;
-$localhost = true;
-$disabled = true;
-$gateways = return_gateways_array($disabled, $localhost, $inactive);
 
 function extract_gateway_name($entry) {
     return $entry['name'];
 }
 
-$gateways = array_map(extract_gateway_name, $gateways);
+if ($_SERVER['argc'] == 0)
+die("You should not do that.");
 
-print(json_encode($gateways));
+switch ($_SERVER['argv'][1])
+{
+  case 'list':
 
+    $inactive = true;
+    $localhost = true;
+    $disabled = true;
+    $gateways = return_gateways_array($disabled, $localhost, $inactive);
+    $gateways = array_map(extract_gateway_name, $gateways);
+    print(json_encode($gateways));
+    break;
+  case 'add':
+  case 'delete':
+    $action = escapeshellarg($_SERVER['argv'][1]);
+    $network = escapeshellarg($_SERVER['argv'][2]);
+    $gateway = escapeshellarg(lookup_gateway_ip_by_name($_SERVER['argv'][3]));
+    $version = stristr($network,':') ? '6' : '4';
+    $command = "/sbin/route -$version $action -net $network $gateway";
+    system($command);
+    break;
+  default:
+    print_r($_SERVER);
+    die("you should not do this");
+}

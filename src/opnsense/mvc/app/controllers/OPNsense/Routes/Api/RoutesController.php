@@ -60,6 +60,7 @@ class RoutesController extends ApiControllerBase
             if ($uuid != null) {
                 $node = $mdlRoute->getNodeByReference('route.'.$uuid);
                 if ($node != null) {
+                    $this->backend_execute_route('delete', $node);
                     $node->setNodes($this->request->getPost("route"));
                     $validations = $mdlRoute->validate($node->__reference, "route");
                     if (count($validations)) {
@@ -67,6 +68,7 @@ class RoutesController extends ApiControllerBase
                     } else {
                         // serialize model to config and save
                         $mdlRoute->serializeToConfig();
+                        $this->backend_execute_route('add', $node);
                         Config::getInstance()->save();
                         $result["result"] = "saved";
                     }
@@ -90,6 +92,7 @@ class RoutesController extends ApiControllerBase
                 // serialize model to config and save
                 $mdlRoute->serializeToConfig();
                 Config::getInstance()->save();
+                $this->backend_execute_route('add', $node);
                 $result["result"] = "saved";
             }
         }
@@ -118,11 +121,13 @@ class RoutesController extends ApiControllerBase
         $result = array("result"=>"failed");
         if ($this->request->isPost() && $uuid != null) {
             $mdlRoute = new Route();
+            $node = $mdlRoute->getNodeByReference('route.'.$uuid);
             if ($mdlRoute->route->del($uuid)) {
                 // if item is removed, serialize to config and save
                 $mdlRoute->serializeToConfig();
                 Config::getInstance()->save();
                 $result['result'] = 'deleted';
+                $this->backend_execute_route('delete', $node);
             } else {
                 $result['result'] = 'not found';
             }
@@ -130,7 +135,7 @@ class RoutesController extends ApiControllerBase
         return $result;
     }
 
-   public function togglerouteAction($uuid, $disabled = null)
+    public function togglerouteAction($uuid, $disabled = null)
     {
         $result = array("result" => "failed");
         if ($this->request->isPost() && $uuid != null) {
@@ -141,8 +146,10 @@ class RoutesController extends ApiControllerBase
                     $node->disabled = (string)$disabled;
                 } elseif ($node->disabled->__toString() == "1") {
                     $node->disabled = "0";
+                    $this->backend_execute_route('add', $node);
                 } else {
                     $node->disabled = "1";
+                    $this->backend_execute_route('delete', $node);
                 }
                 $result['result'] = $node->disabled;
                 // if item has toggled, serialize to config and save
@@ -151,6 +158,12 @@ class RoutesController extends ApiControllerBase
             }
         }
         return $result;
+    }
+    private function backend_execute_route($action, $node)
+    {
+        $backend = new Backend();
+        $command = "interface routes $action " . $node->network . ' ' . $node->gateway;
+        $backend->configdRun($command, false);
     }
 }
  
