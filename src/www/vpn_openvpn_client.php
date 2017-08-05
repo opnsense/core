@@ -1065,7 +1065,6 @@ $( document ).ready(function() {
               <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
 <?php
               endif; ?>
-              <br/><br/>
             </td>
           </tr>
         </table>
