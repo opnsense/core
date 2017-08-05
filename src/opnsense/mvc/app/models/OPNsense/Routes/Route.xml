@@ -11,6 +11,7 @@
             <Required>Y</Required>
             <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
             <SourceFile>/tmp/gateway_list.json</SourceFile>
+            <ConfigdPopulateTTL>20</ConfigdPopulateTTL>
           </gateway>
           <descr type="TextField">
             <Required>N</Required>
