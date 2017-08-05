@@ -2556,11 +2556,11 @@ include("head.inc");
                               <input name="adv_dhcp6_id_assoc_statement_address_id" type="text" id="adv_dhcp6_id_assoc_statement_address_id" value="<?=$pconfig['adv_dhcp6_id_assoc_statement_address_id'];?>" />
                               <br />
                               <?=gettext("Address"); ?>
-                              <i><?=gettext("ipv6-address"); ?></i>
+                              <i><?=gettext("IPv6-address"); ?></i>
                               <input name="adv_dhcp6_id_assoc_statement_address" type="text" id="adv_dhcp6_id_assoc_statement_address" value="<?=$pconfig['adv_dhcp6_id_assoc_statement_address'];?>" />
-                              <i><?=gettext("pltime"); ?></i>
+                              <i><?=gettext("Preferred Lifetime"); ?></i>
                               <input name="adv_dhcp6_id_assoc_statement_address_pltime" type="text" id="adv_dhcp6_id_assoc_statement_address_pltime" value="<?=$pconfig['adv_dhcp6_id_assoc_statement_address_pltime'];?>" />
-                              <i><?=gettext("vltime"); ?></i>
+                              <i><?=gettext("Valid Time"); ?></i>
                               <input name="adv_dhcp6_id_assoc_statement_address_vltime" type="text" id="adv_dhcp6_id_assoc_statement_address_vltime" value="<?=$pconfig['adv_dhcp6_id_assoc_statement_address_vltime'];?>" />
                             </div>
                             <hr/>
@@ -2572,11 +2572,11 @@ include("head.inc");
                               <input name="adv_dhcp6_id_assoc_statement_prefix_id" type="text" id="adv_dhcp6_id_assoc_statement_prefix_id" value="<?=$pconfig['adv_dhcp6_id_assoc_statement_prefix_id'];?>" />
                               <br />
                               <?=gettext("Prefix"); ?>
-                              <i><?=gettext("ipv6-prefix"); ?></i>
+                              <i><?=gettext("IPv6-Prefix"); ?></i>
                               <input name="adv_dhcp6_id_assoc_statement_prefix" type="text" id="adv_dhcp6_id_assoc_statement_prefix" value="<?=$pconfig['adv_dhcp6_id_assoc_statement_prefix'];?>" />
-                              <i><?=gettext("pltime"); ?></i>
+                              <i><?=gettext("Preferred Lifetime"); ?></i>
                               <input name="adv_dhcp6_id_assoc_statement_prefix_pltime" type="text" id="adv_dhcp6_id_assoc_statement_prefix_pltime" value="<?=$pconfig['adv_dhcp6_id_assoc_statement_prefix_pltime'];?>" />
-                              <i><?=gettext("vltime"); ?></i>
+                              <i><?=gettext("Valid Time"); ?></i>
                               <input name="adv_dhcp6_id_assoc_statement_prefix_vltime" type="text" id="adv_dhcp6_id_assoc_statement_prefix_vltime" value="<?=$pconfig['adv_dhcp6_id_assoc_statement_prefix_vltime'];?>" />
                             </div>
                           </td>
@@ -2585,9 +2585,9 @@ include("head.inc");
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Prefix Interface");?></td>
                           <td>
                             <?=gettext("Prefix Interface "); ?>
-                            <i><?=gettext("sla-id"); ?></i>
+                            <i><?=gettext("Site-Level Aggregation Identifier"); ?></i>
                             <input name="adv_dhcp6_prefix_interface_statement_sla_id" type="text" id="adv_dhcp6_prefix_interface_statement_sla_id" value="<?=$pconfig['adv_dhcp6_prefix_interface_statement_sla_id'];?>" />
-                            <i><?=gettext("sla-len"); ?></i>
+                            <i><?=gettext("Site-Level Aggregation Length"); ?></i>
                             <input name="adv_dhcp6_prefix_interface_statement_sla_len" type="text" id="adv_dhcp6_prefix_interface_statement_sla_len" value="<?=$pconfig['adv_dhcp6_prefix_interface_statement_sla_len'];?>" />
                           </td>
                         </tr>
@@ -2598,7 +2598,7 @@ include("head.inc");
                             <input name="adv_dhcp6_authentication_statement_authname" type="text" id="adv_dhcp6_authentication_statement_authname" value="<?=$pconfig['adv_dhcp6_authentication_statement_authname'];?>" />
                             <i><?=gettext("protocol"); ?></i>
                             <input name="adv_dhcp6_authentication_statement_protocol" type="text" id="adv_dhcp6_authentication_statement_protocol" value="<?=$pconfig['adv_dhcp6_authentication_statement_protocol'];?>" />
-                            <i><?=gettext("algorithm"); ?></i>
+                            <i><?=gettext("Algorithm"); ?></i>
                             <input name="adv_dhcp6_authentication_statement_algorithm" type="text" id="adv_dhcp6_authentication_statement_algorithm" value="<?=$pconfig['adv_dhcp6_authentication_statement_algorithm'];?>" />
                             <i><?=gettext("rdm"); ?></i>
                             <input name="adv_dhcp6_authentication_statement_rdm" type="text" id="adv_dhcp6_authentication_statement_rdm" value="<?=$pconfig['adv_dhcp6_authentication_statement_rdm'];?>" />
