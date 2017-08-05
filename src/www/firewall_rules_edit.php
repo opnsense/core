@@ -1275,7 +1275,7 @@ include("head.inc");
                       <td>
                           <table class="table table-condensed">
                               <tr>
-                                  <th><?= gettext('Main') ?></th>
+                                  <th><?= gettext('All packets') ?></th>
                                   <th><?= gettext('Low Delay/TCP ACK') ?></th>
                               </tr>
                               <tr>
