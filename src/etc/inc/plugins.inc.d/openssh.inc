@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2004 Scott K Ullrich
+ * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2004 Fred Mol <fredmol@xs4all.nl>.
  * Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.

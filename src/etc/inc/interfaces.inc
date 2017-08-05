@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2004-2008 Scott Ullrich
+ * Copyright (C) 2004-2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008-2009 Ermal Luçi
  * Copyright (C) 2005 Espen Johansen
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>

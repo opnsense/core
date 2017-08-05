@@ -3,7 +3,7 @@
 /*
     Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2013 Dagorlad
-    Copyright (C) 2012 Jim Pingle
+    Copyright (C) 2012 Jim Pingle <jimp@pfsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

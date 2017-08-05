@@ -2,7 +2,7 @@
 <?php
 
 /*
-    Copyright (C) 2008 Shrew Soft Inc
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     Copyright (C) 2010 Ermal Luçi
     All rights reserved.
 
