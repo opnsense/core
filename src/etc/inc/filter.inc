@@ -3,9 +3,9 @@
 /*
     Copyright (C) 2017 Deciso B.V.
     Copyright (C) 2004-2007 Scott Ullrich
-    Copyright (C) 2005 Bill Marquette
-    Copyright (C) 2006 Peter Allgeyer
-    Copyright (C) 2008-2010  Ermal Luci
+    Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>
+    Copyright (C) 2006 Peter Allgeyer <allgeyer@web.de>
+    Copyright (C) 2008-2010 Ermal Luçi
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 

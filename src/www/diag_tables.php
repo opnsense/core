@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2010 Jim Pingle
+    Copyright (C) 2010 Jim Pingle <jimp@pfsense.org>
     Copyright (C) 2010 Scott Ullrich
     All rights reserved.
 

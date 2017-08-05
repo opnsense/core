@@ -1,9 +1,9 @@
 <?php
 
 /*
-    Copyright (C) 2010 Ermal Luci
+    Copyright (C) 2010 Ermal Luçi
     Copyright (C) 2009 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2008 Shrew Soft Inc
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     Copyright (C) 2003-2004 Manuel Kasper
     All rights reserved.
 

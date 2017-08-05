@@ -1,7 +1,7 @@
 <?php
+
 /**
- *    Copyright (C) 2015 J. Schellevis - Deciso B.V.
- *
+ *    Copyright (C) 2015 Deciso B.V. - J. Schellevis
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -24,8 +24,8 @@
  *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *    POSSIBILITY OF SUCH DAMAGE.
- *
  */
+
 namespace OPNsense\Proxy\Api;
 
 use \OPNsense\Base\ApiMutableModelControllerBase;

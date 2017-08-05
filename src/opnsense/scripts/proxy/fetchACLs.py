@@ -1,8 +1,8 @@
 #!/usr/local/bin/python2.7
 
 """
-    Copyright (c) 2016 Ad Schellevis - Deciso B.V.
-    Copyright (c) 2015 Jos Schellevis - Deciso B.V.
+    Copyright (c) 2016 Deciso B.V. - Ad Schellevis
+    Copyright (c) 2015 Deciso B.V. - J. Schellevis
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
