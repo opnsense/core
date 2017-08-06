@@ -47,30 +47,32 @@ class RoutesController extends ApiControllerBase
         $grid = new UIModelGrid($mdlRoute->route);
         return $grid->fetchBindRequest(
             $this->request,
-            array("disabled", "network", "gateway", "descr"),
-            "description"
+            array('disabled', 'network', 'gateway', 'descr'),
+            'description'
         );
     }
 
     public function setrouteAction($uuid)
     {
-        $result = array("result"=>"failed");
-        if ($this->request->isPost() && $this->request->hasPost("route")) {
+        $result = array('result'=>'failed');
+        if ($this->request->isPost() && $this->request->hasPost('route')) {
             $mdlRoute = new Route();
             if ($uuid != null) {
                 $node = $mdlRoute->getNodeByReference('route.'.$uuid);
                 if ($node != null) {
                     $this->backend_execute_route('delete', $node);
-                    $node->setNodes($this->request->getPost("route"));
-                    $validations = $mdlRoute->validate($node->__reference, "route");
+                    $node->setNodes($this->request->getPost('route'));
+                    $validations = $mdlRoute->validate($node->__reference, 'route');
                     if (count($validations)) {
                         $result['validations'] = $validations;
                     } else {
                         // serialize model to config and save
                         $mdlRoute->serializeToConfig();
-                        $this->backend_execute_route('add', $node);
+                        if ((string)$node->disabled != '1') {
+                            $this->backend_execute_route('add', $node);
+                        }
                         Config::getInstance()->save();
-                        $result["result"] = "saved";
+                        $result['result'] = 'saved';
                     }
                 }
             }
@@ -80,20 +82,22 @@ class RoutesController extends ApiControllerBase
 
     public function addrouteAction()
     {
-        $result = array("result"=>"failed");
-        if ($this->request->isPost() && $this->request->hasPost("route")) {
+        $result = array('result'=>'failed');
+        if ($this->request->isPost() && $this->request->hasPost('route')) {
             $mdlRoute = new Route();
             $node = $mdlRoute->route->Add();
-            $node->setNodes($this->request->getPost("route"));
-            $validations = $mdlRoute->validate($node->__reference, "route");
+            $node->setNodes($this->request->getPost('route'));
+            $validations = $mdlRoute->validate($node->__reference, 'route');
             if (count($validations)) {
                 $result['validations'] = $validations;
             } else {
                 // serialize model to config and save
                 $mdlRoute->serializeToConfig();
                 Config::getInstance()->save();
-                $this->backend_execute_route('add', $node);
-                $result["result"] = "saved";
+                if ((string)$node->disabled != '1') {
+                    $this->backend_execute_route('add', $node);
+                }
+                $result['result'] = 'saved';
             }
         }
         return $result;
@@ -106,19 +110,19 @@ class RoutesController extends ApiControllerBase
             $node = $mdlRoute->getNodeByReference('route.'.$uuid);
             if ($node != null) {
                 // return node
-                return array("route" => $node->getNodes());
+                return array('route' => $node->getNodes());
             }
         } else {
             // generate new node, but don't save to disc
             $node = $mdlRoute->route->add();
-            return array("route" => $node->getNodes());
+            return array('route' => $node->getNodes());
         }
         return array();
     }
 
     public function delrouteAction($uuid)
     {
-        $result = array("result"=>"failed");
+        $result = array('result'=>'failed');
         if ($this->request->isPost() && $uuid != null) {
             $mdlRoute = new Route();
             $node = $mdlRoute->getNodeByReference('route.'.$uuid);
@@ -127,7 +131,9 @@ class RoutesController extends ApiControllerBase
                 $mdlRoute->serializeToConfig();
                 Config::getInstance()->save();
                 $result['result'] = 'deleted';
-                $this->backend_execute_route('delete', $node);
+                if ((string)$node->disabled != '1') {
+                    $this->backend_execute_route('delete', $node);
+                }
             } else {
                 $result['result'] = 'not found';
             }
@@ -142,16 +148,16 @@ class RoutesController extends ApiControllerBase
             $mdlRoute = new Route();
             $node = $mdlRoute->getNodeByReference('route.' . $uuid);
             if ($node != null) {
-                if ($disabled == "0" || $disabled == "1") {
+                if ($disabled == '0' || $disabled == '1') {
                     $node->disabled = (string)$disabled;
-                } elseif ($node->disabled->__toString() == "1") {
-                    $node->disabled = "0";
+                } elseif ($node->disabled->__toString() == '1') {
+                    $node->disabled = '0';
                     $this->backend_execute_route('add', $node);
                 } else {
-                    $node->disabled = "1";
+                    $node->disabled = '1';
                     $this->backend_execute_route('delete', $node);
                 }
-                $result['result'] = $node->disabled;
+                $result['result'] = (string)$node->disabled == '1' ? 'Disabled' : 'Enabled';
                 // if item has toggled, serialize to config and save
                 $mdlRoute->serializeToConfig();
                 Config::getInstance()->save();

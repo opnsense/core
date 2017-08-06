@@ -20,13 +20,11 @@
                     <!-- <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button> -->
                 </td>
             </tr>
-            <tr>
-                <td colspan="6">
-                    {{ lang._('Do not enter static routes for networks assigned on any interface of this firewall. Static routes are only used for networks reachable via a different router, and not reachable via your default gateway.')}}
-                </td>
-            </tr>
         </tfoot>
     </table>
+    <div>
+        <p>{{ lang._('Do not enter static routes for networks assigned on any interface of this firewall. Static routes are only used for networks reachable via a different router, and not reachable via your default gateway.')}}</p>
+    </div>
 </div>
 
 
