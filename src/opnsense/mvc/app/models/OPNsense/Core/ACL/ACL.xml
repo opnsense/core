@@ -757,7 +757,7 @@
     <page-system-staticroutes>
         <name>System: Static Routes</name>
         <patterns>
-            <pattern>ui/routes/</pattern>
+            <pattern>ui/routes/*</pattern>
             <pattern>api/routes/*</pattern>
         </patterns>
     </page-system-staticroutes>
