@@ -1455,7 +1455,6 @@ include("head.inc");
               $(".dhcp_basic").removeClass("hidden");
               break;
             case "advanced":
-              $(".dhcp_basic").removeClass("hidden");
               $(".dhcp_advanced").removeClass("hidden");
               break;
             case "file":
@@ -1477,7 +1476,6 @@ include("head.inc");
               $(".dhcpv6_basic").removeClass("hidden");
               break;
             case "advanced":
-              $(".dhcpv6_basic").removeClass("hidden");
               $(".dhcpv6_advanced").removeClass("hidden");
               break;
             case "file":
@@ -1929,17 +1927,6 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr class="dhcp_basic">
-                          <td><a id="help_for_dhcphostname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hostname"); ?></td>
-                          <td>
-                            <input name="dhcphostname" type="text" id="dhcphostname" value="<?=$pconfig['dhcphostname'];?>" />
-                            <div class="hidden" for="help_for_dhcphostname">
-                              <?=gettext("The value in this field is sent as the DHCP client identifier " .
-                              "and hostname when requesting a DHCP lease. Some ISPs may require " .
-                              "this (for client identification)."); ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr class="dhcp_basic">
                           <td><a id="help_for_alias_address" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Alias IPv4 address"); ?></td>
                           <td>
                             <table>
@@ -1973,6 +1960,17 @@ include("head.inc");
                             <div class="hidden" for="help_for_dhcprejectfrom">
                               <?=gettext("If there is a certain upstream DHCP server that should be ignored, place the IP address or subnet of the DHCP server to be ignored here."); ?>
                               <?=gettext("This is useful for rejecting leases from cable modems that offer private IPs when they lose upstream sync."); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="dhcp_basic dhcp_advanced">
+                          <td><a id="help_for_dhcphostname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hostname"); ?></td>
+                          <td>
+                            <input name="dhcphostname" type="text" id="dhcphostname" value="<?=$pconfig['dhcphostname'];?>" />
+                            <div class="hidden" for="help_for_dhcphostname">
+                              <?=gettext("The value in this field is sent as the DHCP client identifier " .
+                              "and hostname when requesting a DHCP lease. Some ISPs may require " .
+                              "this (for client identification)."); ?>
                             </div>
                           </td>
                         </tr>
@@ -2445,39 +2443,12 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr class="dhcpv6_advanced dhcpv6_file_override">
-                            <td><a id="help_for_dhcp6_debug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable debug"); ?></td>
-                            <td>
-                              <input name="adv_dhcp6_debug" type="checkbox" id="adv_dhcp6_debug" value="yes" <?=!empty($pconfig['adv_dhcp6_debug']) ? "checked=\"checked\"" : ""; ?> />
-                              <div class="hidden" for="help_for_dhcp6_debug">
-                                <?=gettext("Enable debug mode for DHCPv6 client"); ?>
-                              </div>
-                            </td>
-                        </tr>
-                        <tr class="dhcpv6_basic">
-                          <td><a id="help_for_dhcp6usev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use IPv4 connectivity"); ?></td>
-                          <td>
-                            <input name="dhcp6usev4iface" type="checkbox" id="dhcp6usev4iface" value="yes" <?=!empty($pconfig['dhcp6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
-                            <div class="hidden" for="help_for_dhcp6usev4iface">
-                              <?=gettext("Request a IPv6 prefix/information through the IPv4 connectivity link"); ?>
-                            </div>
-                          </td>
-                        </tr>
                         <tr class="dhcpv6_basic">
                           <td><a id="help_for_dhcp6prefixonly" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Request only a IPv6 prefix"); ?></td>
                           <td>
                             <input name="dhcp6prefixonly" type="checkbox" id="dhcp6prefixonly" value="yes" <?=!empty($pconfig['dhcp6prefixonly']) ? "checked=\"checked\"" : "";?> />
                             <div class="hidden" for="help_for_dhcp6prefixonly">
                               <?=gettext("Only request a IPv6 prefix, do not request a IPv6 address"); ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr class="dhcpv6_basic">
-                          <td><a id="help_for_dhcp6sendsolicit" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Directly send SOLICIT'); ?></td>
-                          <td>
-                            <input name="dhcp6sendsolicit" type="checkbox" id="dhcp6sendsolicit" value="yes" <?= !empty($pconfig['dhcp6sendsolicit']) ? 'checked="checked"' : '' ?>/>
-                            <div class="hidden" for="help_for_dhcp6sendsolicit">
-                              <?= gettext('In case the ISP requires a SOLICIT message for authentication, select this option to prevent indefinite waiting for a router advertisement.') ?>
                             </div>
                           </td>
                         </tr>
@@ -2506,6 +2477,33 @@ include("head.inc");
                               <?=gettext("Send an IPv6 prefix hint to indicate the desired prefix size for delegation"); ?>
                             </div>
                           </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_dhcp6sendsolicit" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Directly send SOLICIT'); ?></td>
+                          <td>
+                            <input name="dhcp6sendsolicit" type="checkbox" id="dhcp6sendsolicit" value="yes" <?= !empty($pconfig['dhcp6sendsolicit']) ? 'checked="checked"' : '' ?>/>
+                            <div class="hidden" for="help_for_dhcp6sendsolicit">
+                              <?= gettext('In case the ISP requires a SOLICIT message for authentication, select this option to prevent indefinite waiting for a router advertisement.') ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_dhcp6usev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use IPv4 connectivity"); ?></td>
+                          <td>
+                            <input name="dhcp6usev4iface" type="checkbox" id="dhcp6usev4iface" value="yes" <?=!empty($pconfig['dhcp6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
+                            <div class="hidden" for="help_for_dhcp6usev4iface">
+                              <?=gettext("Request a IPv6 prefix/information through the IPv4 connectivity link"); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                            <td><a id="help_for_dhcp6_debug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable debug"); ?></td>
+                            <td>
+                              <input name="adv_dhcp6_debug" type="checkbox" id="adv_dhcp6_debug" value="yes" <?=!empty($pconfig['adv_dhcp6_debug']) ? "checked=\"checked\"" : ""; ?> />
+                              <div class="hidden" for="help_for_dhcp6_debug">
+                                <?=gettext("Enable debug mode for DHCPv6 client"); ?>
+                              </div>
+                            </td>
                         </tr>
                         <tr class="dhcpv6_advanced">
                           <td><a id="help_for_dhcp6_intf_stmt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface Statement");?></td>
