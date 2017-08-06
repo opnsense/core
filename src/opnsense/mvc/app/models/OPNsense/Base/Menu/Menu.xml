@@ -42,9 +42,7 @@
             <Status order="200" url="/status_habackup.php"/>
         </HighAvailability>
         <Routes order="40" cssClass="fa fa-map-signs fa-fw">
-            <All order="10" url="/system_routes.php">
-                <Edit url="/system_routes_edit.php*" visibility="hidden"/>
-            </All>
+            <Configuration order="10" url="/ui/routes/" />
             <Log order="100" VisibleName="Log File" url="/diag_logs_routing.php"/>
         </Routes>
         <Gateways order="30" cssClass="fa fa-location-arrow fa-fw">
