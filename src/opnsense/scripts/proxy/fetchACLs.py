@@ -1,7 +1,7 @@
 #!/usr/local/bin/python2.7
 
 """
-    Copyright (c) 2016 Deciso B.V. - Ad Schellevis
+    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
     Copyright (c) 2015 Jos Schellevis <jos@opnsense.org>
     All rights reserved.
 
