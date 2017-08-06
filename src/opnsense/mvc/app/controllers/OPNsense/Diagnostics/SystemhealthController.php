@@ -1,7 +1,7 @@
 <?php
 
 /*
- *    Copyright (C) 2015 Deciso B.V. - J. Schellevis
+ *    Copyright (C) 2015 Jos Schellevis <jos@opnsense.org>
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without

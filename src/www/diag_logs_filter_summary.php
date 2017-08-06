@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V. - J. Schellevis
+    Copyright (C) 2014-2015 Jos Schellevis <jos@opnsense.org>
     Copyright (C) 2009 Jim Pingle <jimp@pfsense.org>
     All rights reserved.
 
