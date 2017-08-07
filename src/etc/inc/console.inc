@@ -50,19 +50,23 @@ function timeout($timer = 5)
 
 function is_interface_mismatch()
 {
+    $mismatch = false;
+
     foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifcfg) {
         if (!empty($ifcfg['lock'])) {
             /* Do not mismatch if any lock was issued */
+            $mismatch = false;
             break;
         } elseif (preg_match("/^enc|^cua|^tun|^tap|^l2tp|^pptp|^ppp|^ovpn|^tinc|^gif|^gre|^lagg|^bridge|vlan|_wlan/i", $ifcfg['if'])) {
             /* Do not check these interfaces */
             continue;
         } elseif (does_interface_exist($ifcfg['if']) == false) {
-            return true;
+            /* Continue loop, may still find a lock */
+            $mismatch = true;
         }
     }
 
-    return false;
+    return $mismatch;
 }
 
 function set_networking_interfaces_ports($probe = false)
