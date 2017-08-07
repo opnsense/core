@@ -288,3 +288,10 @@ function stdDialogConfirmation(title, message, accept, decline, callback) {
         }
     });
 }
+
+/**
+ * wrapper for backwards compatibility
+ */
+function stdDialogRemoveItem(message, callback) {
+    stdDialogConfirmation('Remove', message, 'Yes', 'Cancel', callback)
+}
