@@ -424,9 +424,13 @@ include("head.inc");
                           </select>
                         </td>
                         <td>
-                          <button title="<?=gettext("delete interface");?>" data-toggle="tooltip" data-id="<?=$ifname;?>" class="btn btn-default act_delete" type="submit">
-                            <span class="fa fa-trash text-muted"></span>
+<?php
+                          if (empty($iface['lock'])): ?>
+                          <button title="<?= html_safe(gettext('Delete interface')) ?>" data-toggle="tooltip" data-id="<?=$ifname;?>" class="btn btn-default act_delete" type="submit">
+                            <span class="fa fa-trash"></span>
                           </button>
+<?php
+                          endif ?>
                         </td>
                       </tr>
 <?php
