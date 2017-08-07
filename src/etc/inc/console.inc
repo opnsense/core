@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -46,6 +46,23 @@ function timeout($timer = 5)
     }
 
     return $key;
+}
+
+function is_interface_mismatch()
+{
+    foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifcfg) {
+        if (!empty($ifcfg['lock'])) {
+            /* Do not mismatch if any lock was issued */
+            break;
+        } elseif (preg_match("/^enc|^cua|^tun|^tap|^l2tp|^pptp|^ppp|^ovpn|^tinc|^gif|^gre|^lagg|^bridge|vlan|_wlan/i", $ifcfg['if'])) {
+            /* Do not check these interfaces */
+            continue;
+        } elseif (does_interface_exist($ifcfg['if']) == false) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function set_networking_interfaces_ports($probe = false)

@@ -4913,21 +4913,3 @@ function get_carp_interface_status($carpinterface)
     }
     return;
 }
-
-function is_interface_mismatch()
-{
-    global $config;
-
-    if (isset($config['interfaces'])) {
-        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifcfg) {
-            if (preg_match("/^enc|^cua|^tun|^tap|^l2tp|^pptp|^ppp|^ovpn|^tinc|^gif|^gre|^lagg|^bridge|vlan|_wlan/i", $ifcfg['if'])) {
-                /* Do not check these interfaces */
-                continue;
-            } elseif (does_interface_exist($ifcfg['if']) == false) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
