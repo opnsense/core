@@ -95,7 +95,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     grid_clients.on("loaded.rs.jquery.bootgrid", function(){
                         grid_clients.find(".command-disconnect").on("click", function(e) {
                             var sessionId=$(this).data("row-id");
-                            stdDialogRemoveItem('{{ lang._('Disconnect selected client?') }}',function() {
+                            stdDialogConfirmation('Remove','{{ lang._('Disconnect selected client?') }}','OK','Cancel',function() {
                                 ajaxCall(url="/api/captiveportal/session/disconnect/" + zoneid + '/',
                                         sendData={'sessionId': sessionId}, callback=function(data,status){
                                             // reload grid after delete

@@ -209,7 +209,7 @@ $.fn.UIBootgrid = function (params) {
                     {
                         if (gridParams['del'] != undefined) {
                             var uuid=$(this).data("row-id");
-                            stdDialogRemoveItem('Remove selected item?',function() {
+                            stdDialogConfirmation('Remove','Remove selected item?','OK','Cancel',function() {
                                 ajaxCall(url=gridParams['del'] + uuid,
                                     sendData={},callback=function(data,status){
                                         // reload grid after delete
@@ -269,7 +269,7 @@ $.fn.UIBootgrid = function (params) {
                 // link delete selected items action
                 $(this).find("*[data-action=deleteSelected]").click(function(){
                     if ( gridParams['del'] != undefined) {
-                        stdDialogRemoveItem("Remove selected items?",function(){
+                        stdDialogConfirmation('Remove','Remove selected items?','OK','Cancel',function(){
                             var rows =$("#"+gridId).bootgrid('getSelectedRows');
                             if (rows != undefined){
                                 var deferreds = [];
