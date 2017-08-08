@@ -271,18 +271,58 @@ function initFormAdvancedUI() {
 }
 
 /**
+ * standard dialog when information is required, wrapper around BootstrapDialog
+ */
+function stdDialogInform(title, message, close, callback, type) {
+     var types = {
+         "danger": BootstrapDialog.TYPE_DANGER,
+         "default": BootstrapDialog.TYPE_DEFAULT,
+         "info": BootstrapDialog.TYPE_INFO,
+         "primary": BootstrapDialog.TYPE_PRIMARY,
+         "success": BootstrapDialog.TYPE_SUCCESS,
+         "warning": BootstrapDialog.TYPE_WARNING
+    };
+    if (!(type in types)) {
+        type = 'info';
+    }
+    BootstrapDialog.show({
+        title: title,
+        message: message,
+        type: types[type],
+        buttons: [{
+            label: close,
+            action: function (dialogRef) {
+                if (typeof callback !== 'undefined') {
+                    callback();
+                }
+                dialogRef.close();
+            }
+        }]
+    });
+}
+
+/**
  * standard dialog when confirmation is required, wrapper around BootstrapDialog
  */
-function stdDialogConfirmation(title, message, accept, decline, callback) {
+function stdDialogConfirm(title, message, accept, decline, callback, type) {
+     var types = {
+         // only types that make sense for confirmation
+         "danger": BootstrapDialog.TYPE_DANGER,
+         "default": BootstrapDialog.TYPE_DEFAULT,
+         "warning": BootstrapDialog.TYPE_WARNING
+    };
+    if (!(type in types)) {
+        type = 'warning';
+    }
     BootstrapDialog.confirm({
         title: title,
         message: message,
-        type:BootstrapDialog.TYPE_DANGER,
+        type: types[type],
         btnCancelLabel: decline,
         btnOKLabel: accept,
-        btnOKClass: 'btn-primary',
+        btnOKClass: 'btn-' + type,
         callback: function(result) {
-            if(result) {
+            if (result) {
                 callback();
             }
         }
@@ -290,8 +330,8 @@ function stdDialogConfirmation(title, message, accept, decline, callback) {
 }
 
 /**
- * wrapper for backwards compatibility
+ * wrapper for backwards compatibility (do not use)
  */
 function stdDialogRemoveItem(message, callback) {
-    stdDialogConfirmation('Remove', message, 'Yes', 'Cancel', callback)
+    stdDialogConfirm('Remove', message, 'Yes', 'Cancel', callback);
 }

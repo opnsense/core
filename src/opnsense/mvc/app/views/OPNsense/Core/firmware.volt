@@ -154,17 +154,7 @@ POSSIBILITY OF SUCH DAMAGE.
             if (data['details'] != undefined) {
                 details = data['details'];
             }
-            BootstrapDialog.show({
-                type:BootstrapDialog.TYPE_INFO,
-                title: "{{ lang._('Plugin details') }}",
-                message: details,
-                buttons: [{
-                    label: "{{ lang._('Close') }}",
-                    action: function(dialogRef){
-                        dialogRef.close();
-                    }
-                }]
-            });
+            stdDialogInform("{{ lang._('Plugin details') }}", details, "{{ lang._('Close') }}");
         });
     }
 
@@ -178,17 +168,7 @@ POSSIBILITY OF SUCH DAMAGE.
             if (data['license'] != undefined) {
                 license = data['license'];
             }
-            BootstrapDialog.show({
-                type:BootstrapDialog.TYPE_INFO,
-                title: "{{ lang._('License details') }}",
-                message: license,
-                buttons: [{
-                    label: "{{ lang._('Close') }}",
-                    action: function(dialogRef){
-                        dialogRef.close();
-                    }
-                }]
-            });
+            stdDialogInform("{{ lang._('License details') }}", license, "{{ lang._('Close') }}");
         });
     }
 
