@@ -306,9 +306,11 @@ function stdDialogInform(title, message, close, callback, type) {
  */
 function stdDialogConfirm(title, message, accept, decline, callback, type) {
      var types = {
-         // only types that make sense for confirmation
          "danger": BootstrapDialog.TYPE_DANGER,
          "default": BootstrapDialog.TYPE_DEFAULT,
+         "info": BootstrapDialog.TYPE_INFO,
+         "primary": BootstrapDialog.TYPE_PRIMARY,
+         "success": BootstrapDialog.TYPE_SUCCESS,
          "warning": BootstrapDialog.TYPE_WARNING
     };
     if (!(type in types)) {
