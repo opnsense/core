@@ -67,7 +67,7 @@ function openssh_configure_do($verbose = false)
 
     if (isset($config['system']['ssh'])) {
         if (isset($config['system']['ssh']['enabled'])) {
-        $sshcfg = $config['system']['ssh'];
+            $sshcfg = $config['system']['ssh'];
         }
     } elseif (is_install_media()) {
         /* only revert to installer config when ssh is not set at all */

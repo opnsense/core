@@ -50,6 +50,17 @@ function filter_core_antilockout_ports()
 {
     global $config;
     $lockout_ports = array();
+    /*
+     * XXX Some issues here:
+     *
+     * 1. Why does the webgui nolockout control the ssh lockout?
+     * 2. Both webgui and openssh are plugins, their code should
+     *    reside in the respective plugins.inc.d file once anti-
+     *    lockout is fully pluggable.
+     * 3. Openssh opens the port when install media is detected
+     *    and no ssh has ever been configured.  This is in line
+     *    with how the plugin behaves, but probably looks odd.
+     */
     if (!isset($config['system']['webgui']['noantilockout'])) {
         if (empty($config['system']['webgui']['port'])) {
             $lockout_ports[] = $config['system']['webgui']['protocol'] == "https" ? "443" : "80";
@@ -59,7 +70,7 @@ function filter_core_antilockout_ports()
         if ($config['system']['webgui']['protocol'] == "https" && !isset($config['system']['webgui']['disablehttpredirect'])) {
             $lockout_ports[] = "80";
         }
-        if (isset($config['system']['ssh']['enabled'])) {
+        if (isset($config['system']['ssh']['enabled']) || (!isset($config['system']['ssh']) && is_install_media())) {
             $lockout_ports[] = empty($config['system']['ssh']['port']) ? "22" : $config['system']['ssh']['port'];
         }
     }

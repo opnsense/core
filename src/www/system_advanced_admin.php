@@ -196,6 +196,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['webgui']['althostnames']);
         }
 
+        /* always store ssh setting to prevent install scenario */
+        config_read_array('system', 'ssh');
+
         if (empty($config['system']['ssh']['enabled']) != empty($pconfig['enablesshd']) ||
             empty($config['system']['ssh']['passwordauth']) != empty($pconfig['passwordauth']) ||
             $config['system']['ssh']['port'] != $pconfig['sshport'] ||
