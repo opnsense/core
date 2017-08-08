@@ -199,11 +199,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         /* always store ssh setting to prevent install scenario */
         $config['system']['ssh']['reserved'] = 1;
 
-        $restart_ssh = empty($config['system']['ssh']['enabled']) != empty($pconfig['enablesshd']) ||
-            empty($config['system']['ssh']['passwordauth']) != empty($pconfig['passwordauth']) ||
-            empty($config['system']['ssh']['port']) != !empty($pconfig['sshport']) ||
-            empty($config['system']['ssh']['permitrootlogin']) != empty($pconfig['sshdpermitrootlogin']);
-
         if (!empty($pconfig['enablesshd'])) {
             $config['system']['ssh']['enabled'] = 'enabled';
         } elseif (isset($config['system']['ssh']['enabled'])) {
@@ -266,10 +261,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         system_hosts_generate();
         plugins_configure('dns');
         services_dhcpd_configure();
-
-        if ($restart_sshd) {
-            configd_run('openssh restart', true);
-        }
+        configd_run('openssh restart', true);
 
         if ($restart_webgui) {
             mwexec_bg('/usr/local/etc/rc.restart_webgui 2');
