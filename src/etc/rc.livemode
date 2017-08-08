@@ -31,7 +31,7 @@ require_once('config.inc');
 require_once('auth.inc');
 require_once('util.inc');
 
-if (is_install_media()) {
+if (!isset($config['system']['ssh']) && is_install_media()) {
     /*
      * Installer mode requires setting up an extra user and
      * we will protect it with root's password.  We can only

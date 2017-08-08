@@ -197,17 +197,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         /* always store ssh setting to prevent install scenario */
-        config_read_array('system', 'ssh');
+        $config['system']['ssh']['reserved'] = 1;
 
-        if (empty($config['system']['ssh']['enabled']) != empty($pconfig['enablesshd']) ||
+        $restart_ssh = empty($config['system']['ssh']['enabled']) != empty($pconfig['enablesshd']) ||
             empty($config['system']['ssh']['passwordauth']) != empty($pconfig['passwordauth']) ||
-            $config['system']['ssh']['port'] != $pconfig['sshport'] ||
-            empty($config['system']['ssh']['permitrootlogin']) != empty($pconfig['sshdpermitrootlogin'])
-            ) {
-              $restart_sshd = true;
-        } else {
-            $restart_sshd = false;
-        }
+            empty($config['system']['ssh']['port']) != !empty($pconfig['sshport']) ||
+            empty($config['system']['ssh']['permitrootlogin']) != empty($pconfig['sshdpermitrootlogin']);
 
         if (!empty($pconfig['enablesshd'])) {
             $config['system']['ssh']['enabled'] = 'enabled';
