@@ -70,7 +70,8 @@ function filter_core_antilockout_ports()
         if ($config['system']['webgui']['protocol'] == "https" && !isset($config['system']['webgui']['disablehttpredirect'])) {
             $lockout_ports[] = "80";
         }
-        if (isset($config['system']['ssh']['enabled']) || (!isset($config['system']['ssh']) && is_install_media())) {
+        if (isset($config['system']['ssh']['enabled']) ||
+            (is_install_media() && !isset($config['system']['ssh']) && is_process_running('sshd'))) {
             $lockout_ports[] = empty($config['system']['ssh']['port']) ? "22" : $config['system']['ssh']['port'];
         }
     }
