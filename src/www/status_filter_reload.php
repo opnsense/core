@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2006 Scott Ullrich
+    Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,7 +3,7 @@
 /*
     Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
-    Copyright (C) 2004-2005 Scott Ullrich
+    Copyright (C) 2004-2005 Scott Ullrich <sullrich@gmail.com>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

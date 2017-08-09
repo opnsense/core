@@ -2,9 +2,10 @@
 
 /*
     Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2010 Jim Pingle
-    Copyright (C) 2008 Shrew Soft Inc.
-    Copyright (C) 2005 Scott Ullrich, Colin Smith
+    Copyright (C) 2010 Jim Pingle <jimp@pfsense.org>
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+    Copyright (C) 2005 Scott Ullrich <sullrich@gmail.com>
+    Copyright (C) 2005 Colin Smith <ethethlay@gmail.com>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

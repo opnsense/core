@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2012
+    Copyright (C) 2012 PiBa-NL <pba_2k3@yahoo.com>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
