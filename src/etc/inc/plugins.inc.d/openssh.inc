@@ -28,6 +28,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+function openssh_enabled()
+{
+    return isset($config['system']['ssh']['enabled']) ||
+        (!isset($config['system']['ssh']['noauto']) && is_install_media());
+}
+
 function openssh_configure()
 {
     return array(
@@ -42,8 +48,7 @@ function openssh_services()
 
     $services = array();
 
-    if (isset($config['system']['ssh']['enabled']) ||
-        (!isset($config['system']['ssh']) && is_install_media())) {
+    if (openssh_enabled()) {
         $pconfig = array();
         $pconfig['description'] = gettext('Secure Shell Daemon');
         $pconfig['configd']['restart'] = array('openssh restart');
@@ -66,13 +71,11 @@ function openssh_configure_do($verbose = false)
 
     $sshcfg = null;
 
-    if (isset($config['system']['ssh'])) {
-        if (isset($config['system']['ssh']['enabled'])) {
-            $sshcfg = $config['system']['ssh'];
-        }
-    } elseif (is_install_media()) {
+    if (!isset($config['system']['ssh']['noauto']) && is_install_media()) {
         /* only revert to installer config when ssh is not set at all */
         $sshcfg = array('permitrootlogin' => 1, 'passwordauth' => 1);
+    } elseif (isset($config['system']['ssh']['enabled'])) {
+        $sshcfg = $config['system']['ssh'];
     }
 
     if ($sshcfg === null) {
@@ -114,15 +117,15 @@ function openssh_configure_do($verbose = false)
 
     if ($generate_keys) {
         if (is_subsystem_dirty('sshdkeys')) {
-        return;
+            return;
         }
         log_error('Started creating your SSH keys. SSH startup is being delayed a wee bit.');
         mark_subsystem_dirty('sshdkeys');
         foreach ($keys as $type => $name) {
-        $file = "/conf/sshd/{$name}";
-        @unlink("{$file}.pub");
-        @unlink($file);
-        mwexecf('/usr/local/bin/ssh-keygen -t %s -N "" -f %s', array($type, $file));
+            $file = "/conf/sshd/{$name}";
+            @unlink("{$file}.pub");
+            @unlink($file);
+            mwexecf('/usr/local/bin/ssh-keygen -t %s -N "" -f %s', array($type, $file));
         }
         clear_subsystem_dirty('sshdkeys');
         log_error('Completed creating your SSH keys. SSH will now be started.');

@@ -71,7 +71,7 @@ function filter_core_antilockout_ports()
             $lockout_ports[] = "80";
         }
         if (isset($config['system']['ssh']['enabled']) ||
-            (is_install_media() && !isset($config['system']['ssh']) && is_process_running('sshd'))) {
+            (!isset($config['system']['ssh']['noauto']) && is_install_media() && is_process_running('sshd'))) {
             $lockout_ports[] = empty($config['system']['ssh']['port']) ? "22" : $config['system']['ssh']['port'];
         }
     }

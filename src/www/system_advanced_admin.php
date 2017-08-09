@@ -196,8 +196,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['webgui']['althostnames']);
         }
 
-        /* always store ssh setting to prevent install scenario */
-        $config['system']['ssh']['reserved'] = 1;
+        /* always store setting to prevent installer auto-start */
+        $config['system']['ssh']['noauto'] = 1;
 
         if (!empty($pconfig['enablesshd'])) {
             $config['system']['ssh']['enabled'] = 'enabled';
