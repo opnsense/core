@@ -42,7 +42,8 @@ function openssh_services()
 
     $services = array();
 
-    if (isset($config['system']['ssh']['enabled'])) {
+    if (isset($config['system']['ssh']['enabled']) ||
+        (!isset($config['system']['ssh']) && is_install_media())) {
         $pconfig = array();
         $pconfig['description'] = gettext('Secure Shell Daemon');
         $pconfig['configd']['restart'] = array('openssh restart');
