@@ -71,11 +71,11 @@ function openssh_configure_do($verbose = false)
 
     $sshcfg = null;
 
-    if (!isset($config['system']['ssh']['noauto']) && is_install_media()) {
+    if (isset($config['system']['ssh']['enabled'])) {
+        $sshcfg = $config['system']['ssh'];
+    } elseif (!isset($config['system']['ssh']['noauto']) && is_install_media()) {
         /* only revert to installer config when ssh is not set at all */
         $sshcfg = array('permitrootlogin' => 1, 'passwordauth' => 1);
-    } elseif (isset($config['system']['ssh']['enabled'])) {
-        $sshcfg = $config['system']['ssh'];
     }
 
     if ($sshcfg === null) {
