@@ -30,6 +30,8 @@
 
 function openssh_enabled()
 {
+    global $config;
+
     return isset($config['system']['ssh']['enabled']) ||
         (!isset($config['system']['ssh']['noauto']) && is_install_media());
 }
