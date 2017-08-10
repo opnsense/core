@@ -34,12 +34,19 @@ require_once('script/load_phalcon.php');
 
 use OPNsense\Core\Config;
 
+$classprefix = !empty($argv[1]) ? str_replace('/', '\\', $argv[1]) : '';
+
 $class_info = new \ReflectionClass("OPNsense\\Base\\BaseModel");
 $executed_migration = false;
 $model_dir = dirname($class_info->getFileName())."/../../";
 foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir)) as $x) {
     if (strtolower(substr($x->getPathname(), -4)) == '.php') {
         $classname = str_replace('/', '\\', explode('.', str_replace($model_dir, '', $x->getPathname()))[0]);
+        /* XXX we match the prefix here, but should eventually switch to component exploded by "\" */
+        if (!empty($classprefix) && strpos($classname, $classprefix) !== 0) {
+            /* not our requested class */
+            continue;
+        }
         try {
             $mdl_class_info = new \ReflectionClass($classname);
             $parent = $mdl_class_info->getParentClass();
