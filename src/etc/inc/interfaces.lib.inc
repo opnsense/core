@@ -72,12 +72,19 @@ function legacy_interface_flags($ifs, $flag, $report_errors=true)
     }
 }
 
+function legacy_interface_rename($ifs, $name)
+{
+    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' name ' . escapeshellarg($name);
+
+    exec($cmd . ' 2>&1', $out, $ret);
+    if ($ret) {
+        log_error('The command `' . $cmd . '\' failed to execute');
+    }
+}
+
 function legacy_interface_create($ifs, $name = null)
 {
     $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' create';
-    if (!empty($name)) {
-        $cmd .= ' name ' . escapeshellarg($name);
-    }
     $new = null;
 
     exec($cmd . ' 2>&1', $out, $ret);
@@ -88,6 +95,11 @@ function legacy_interface_create($ifs, $name = null)
 
     if (isset($out[0])) {
         $new = $out[0];
+    }
+
+    if (!empty($name)) {
+        legacy_interface_rename($ifs, $name);
+        $new = $name;
     }
 
     return ($new);
