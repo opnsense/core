@@ -98,7 +98,7 @@ function legacy_interface_create($ifs, $name = null)
     }
 
     if (!empty($name)) {
-        legacy_interface_rename($ifs, $name);
+        legacy_interface_rename($new, $name);
         $new = $name;
     }
 
