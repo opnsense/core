@@ -45,6 +45,12 @@ if [ "$PACKAGE" == "all" ]; then
 			REBOOT=1
 		fi
 	fi
+elif [ "$PACKAGE" == "bsd" ]; then
+	if opnsense-update -c; then
+		if opnsense-update -bk >> ${PKG_PROGRESS_FILE} 2>&1; then
+			REBOOT=1
+		fi
+	fi
 elif [ "$PACKAGE" == "maj" ]; then
 	# extract info for major upgrade
 	UPGRADE="/usr/local/opnsense/firmware-upgrade"
@@ -61,7 +67,6 @@ elif [ "$PACKAGE" == "maj" ]; then
 	# but will snap the GUI back when done
 elif [ "$PACKAGE" == "pkg" ]; then
 	pkg upgrade -y $PACKAGE >> ${PKG_PROGRESS_FILE} 2>&1
-	echo  "*** PLEASE CHECK FOR MORE UPGRADES"
 else
 	echo "Cannot update $PACKAGE" >> ${PKG_PROGRESS_FILE}
 fi
