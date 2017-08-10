@@ -1401,7 +1401,7 @@ include("head.inc");
             type: 'post',
             data: 'isAjax=true&ipprotocol=inet' + defaultgw + '&interface=' + escape(iface) + '&name=' + escape(name) + '&descr=' + escape(descr) + '&gateway=' + escape(gatewayip),
             error: function(request, textStatus, errorThrown){
-                if (textStatus === "error" && request.getResponseHeader("Content-Type") === "text/plain") {
+                if (textStatus === "error" && request.getResponseHeader("Content-Type").indexOf("text/plain") === 0) {
                     alert(request.responseText);
                 } else {
                     alert("Sorry, we could not create your IPv4 gateway at this time.");
@@ -1434,7 +1434,7 @@ include("head.inc");
             type: 'post',
             data: 'isAjax=true&ipprotocol=inet6' + defaultgw + '&interface=' + escape(iface) + '&name=' + escape(name) + '&descr=' + escape(descr) + '&gateway=' + escape(gatewayip),
             error: function(request, textStatus, errorThrown){
-                if (textStatus === "error" && request.getResponseHeader("Content-Type") === "text/plain") {
+                if (textStatus === "error" && request.getResponseHeader("Content-Type").indexOf("text/plain") === 0) {
                     alert(request.responseText);
                 } else {
                     alert("Sorry, we could not create your IPv6 gateway at this time.");
