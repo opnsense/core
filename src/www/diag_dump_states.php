@@ -146,11 +146,12 @@ include("head.inc");
                     $iface = convert_real_interface_to_friendly_descr($iface);
 
                     /* break up info and extract $srcip and $dstip */
+                    $charmask = array(' ','\t','\n','\r','\0','\x0B','<','>');
                     $ends = preg_split("/\<?-\>?/", $info);
                     $parts = explode(":", $ends[0]);
-                    $srcip = trim($parts[0]);
+                    $srcip = str_replace($charmask,'',htmlspecialchars_decode($parts[0]));
                     $parts = explode(":", $ends[count($ends) - 1]);
-                    $dstip = trim($parts[0]);
+                    $dstip = str_replace($charmask,'',htmlspecialchars_decode($parts[0]));
                     // states can be deleted by source / dest combination, all matching records use the same class.
                     $rowid = str_replace(array('.', ':'), '_', $srcip.$dstip);
                   ?>
