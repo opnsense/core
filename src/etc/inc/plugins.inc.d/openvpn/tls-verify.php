@@ -2,7 +2,7 @@
 <?php
 
 /*
-    Copyright (C) 2011 Jim Pingle
+    Copyright (C) 2011 Jim Pingle <jimp@pfsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

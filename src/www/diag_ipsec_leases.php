@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2014 Ermal LUÇi
+    Copyright (C) 2014 Ermal Luçi
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

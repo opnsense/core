@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) Jim McBeath
+    Copyright (C) 2004 Jim McBeath
     Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
@@ -424,9 +424,13 @@ include("head.inc");
                           </select>
                         </td>
                         <td>
-                          <button title="<?=gettext("delete interface");?>" data-toggle="tooltip" data-id="<?=$ifname;?>" class="btn btn-default act_delete" type="submit">
-                            <span class="fa fa-trash text-muted"></span>
+<?php
+                          if (empty($iface['lock'])): ?>
+                          <button title="<?= html_safe(gettext('Delete interface')) ?>" data-toggle="tooltip" data-id="<?=$ifname;?>" class="btn btn-default act_delete" type="submit">
+                            <span class="fa fa-trash"></span>
                           </button>
+<?php
+                          endif ?>
                         </td>
                       </tr>
 <?php

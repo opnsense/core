@@ -1,0 +1,125 @@
+#!/usr/bin/env perl
+
+# Copyright (c) 2017 Franco Fichtner <franco@opnsense.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+# OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGE.
+
+use strict;
+use warnings;
+use autodie;
+
+use Cwd;
+use File::Find;
+use File::Slurp;
+
+my $src = shift || 'src';
+my $cwd = getcwd;
+my $lic = << 'END_LIC';
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+END_LIC
+
+my %copyrights = ();
+
+sub process_file
+{
+    my $filename = $File::Find::name;
+
+    return if not -f "$cwd/$filename";
+
+    my @lines = read_file( "$cwd/$filename" );
+    my $possibly_bsd;
+
+    for my $line ( @lines ) {
+        $possibly_bsd = 1 if $line =~ /Redistribution and use in source and binary forms/i;
+        if ( $line =~ /Apache License/i ) {
+            $possibly_bsd = 0;
+            last;
+        }
+    }
+
+    return if not $possibly_bsd;
+
+    for my $line ( @lines ) {
+        my $copy = $line;
+        next if $line !~ s/copyright\s+\(c\)\s+//i;
+        $line =~ s/^[\*\\#\s]+//g;
+        $line =~ s/[\.\s]+$//g;
+        $line =~ s/Inc$/Inc./;
+        $line =~ s/B\.V$/B.V./;
+        chomp $copy;
+        $copy =~ s/^[\*\\#\s]+//g;
+        my ( $start, $end ) = ( 0, 9999 );
+        if ( $line =~ s/(\d\d\d\d\s*,?-?\s*)// ) {
+            $start = $1;
+            $start =~ s/[,\s\-]+//g;
+        }
+        if ( $line =~ s/(\d\d\d\d\s*,?\s+)// ) {
+            $end = $1;
+            $end =~ s/[,\s]+//g;
+        }
+        $end = $start if $end == 9999;
+        say STDERR "Error in $filename: $copy" if $end == 0;
+        if ( exists $copyrights{$line} ) {
+            if ( $start > $copyrights{$line}[0] ) {
+                $start = $copyrights{$line}[0];
+            }
+            if ( $copyrights{$line}[1] == 9999 or $end < $copyrights{$line}[1] ) {
+                $end = $copyrights{$line}[1];
+            }
+        }
+        $copyrights{$line} = [ $start, $end ];
+    }
+}
+
+find( \&process_file, $src );
+
+for ( sort keys %copyrights ) {
+    my $date = $copyrights{$_}[0];
+    next if $date == 0;
+    $date = join '-', @{ $copyrights{$_} } if $copyrights{$_}[1] != $date;
+    print "Copyright (c) $date $_\n";
+}
+
+print $lic;

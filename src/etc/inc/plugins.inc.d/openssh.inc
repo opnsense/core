@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2004 Scott K Ullrich
+ * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2004 Fred Mol <fredmol@xs4all.nl>.
  * Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
@@ -28,6 +28,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+function openssh_enabled()
+{
+    global $config;
+
+    return isset($config['system']['ssh']['enabled']) ||
+        (!isset($config['system']['ssh']['noauto']) && is_install_media());
+}
+
 function openssh_configure()
 {
     return array(
@@ -42,7 +50,7 @@ function openssh_services()
 
     $services = array();
 
-    if (isset($config['system']['ssh']['enabled'])) {
+    if (openssh_enabled()) {
         $pconfig = array();
         $pconfig['description'] = gettext('Secure Shell Daemon');
         $pconfig['configd']['restart'] = array('openssh restart');
@@ -65,11 +73,9 @@ function openssh_configure_do($verbose = false)
 
     $sshcfg = null;
 
-    if (isset($config['system']['ssh'])) {
-        if (isset($config['system']['ssh']['enabled'])) {
+    if (isset($config['system']['ssh']['enabled'])) {
         $sshcfg = $config['system']['ssh'];
-        }
-    } elseif (is_install_media()) {
+    } elseif (!isset($config['system']['ssh']['noauto']) && is_install_media()) {
         /* only revert to installer config when ssh is not set at all */
         $sshcfg = array('permitrootlogin' => 1, 'passwordauth' => 1);
     }
@@ -113,15 +119,15 @@ function openssh_configure_do($verbose = false)
 
     if ($generate_keys) {
         if (is_subsystem_dirty('sshdkeys')) {
-        return;
+            return;
         }
         log_error('Started creating your SSH keys. SSH startup is being delayed a wee bit.');
         mark_subsystem_dirty('sshdkeys');
         foreach ($keys as $type => $name) {
-        $file = "/conf/sshd/{$name}";
-        @unlink("{$file}.pub");
-        @unlink($file);
-        mwexecf('/usr/local/bin/ssh-keygen -t %s -N "" -f %s', array($type, $file));
+            $file = "/conf/sshd/{$name}";
+            @unlink("{$file}.pub");
+            @unlink($file);
+            mwexecf('/usr/local/bin/ssh-keygen -t %s -N "" -f %s', array($type, $file));
         }
         clear_subsystem_dirty('sshdkeys');
         log_error('Completed creating your SSH keys. SSH will now be started.');

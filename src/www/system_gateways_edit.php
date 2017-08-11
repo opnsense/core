@@ -437,9 +437,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($_REQUEST['isAjax'])) {
             header("HTTP/1.0 500 Internal Server Error");
             header("Content-type: text/plain");
-            foreach ($input_errors as $error) {
-                echo("$error\n");
-            }
+            echo implode("\n\n", $input_errors);
             exit;
         }
 

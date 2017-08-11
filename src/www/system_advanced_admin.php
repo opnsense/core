@@ -2,8 +2,8 @@
 
 /*
     Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2005-2010 Scott Ullrich
-    Copyright (C) 2008 Shrew Soft Inc
+    Copyright (C) 2005-2010 Scott Ullrich <sullrich@gmail.com>
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
@@ -196,15 +196,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['webgui']['althostnames']);
         }
 
-        if (empty($config['system']['ssh']['enabled']) != empty($pconfig['enablesshd']) ||
-            empty($config['system']['ssh']['passwordauth']) != empty($pconfig['passwordauth']) ||
-            $config['system']['ssh']['port'] != $pconfig['sshport'] ||
-            empty($config['system']['ssh']['permitrootlogin']) != empty($pconfig['sshdpermitrootlogin'])
-            ) {
-              $restart_sshd = true;
-        } else {
-            $restart_sshd = false;
-        }
+        /* always store setting to prevent installer auto-start */
+        $config['system']['ssh']['noauto'] = 1;
 
         if (!empty($pconfig['enablesshd'])) {
             $config['system']['ssh']['enabled'] = 'enabled';
@@ -268,10 +261,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         system_hosts_generate();
         plugins_configure('dns');
         services_dhcpd_configure();
-
-        if ($restart_sshd) {
-            configd_run('openssh restart', true);
-        }
+        configd_run('openssh restart', true);
 
         if ($restart_webgui) {
             mwexec_bg('/usr/local/etc/rc.restart_webgui 2');

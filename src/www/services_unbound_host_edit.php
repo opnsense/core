@@ -4,7 +4,8 @@
     Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
     Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
-    Copyright (C) 2003-2004 Bob Zoller <bob@kludgebox.com> and Manuel Kasper <mk@neon1.net>.
+    Copyright (C) 2003-2004 Bob Zoller <bob@kludgebox.com>
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

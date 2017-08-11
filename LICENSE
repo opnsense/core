@@ -1,0 +1,73 @@
+Copyright (c) 2014-2017 Ad Schellevis <ad@opnsense.org>
+Copyright (c) 2004 Bachman Kharazmi
+Copyright (c) 2005-2008 Bill Marquette <bill.marquette@gmail.com>
+Copyright (c) 2003-2005 Bob Zoller <bob@kludgebox.com>
+Copyright (c) 2012 Carlos Cesario <carloscesario@gmail.com>
+Copyright (c) 2005-2006 Colin Smith <ethethlay@gmail.com>
+Copyright (c) 2013 Dagorlad
+Copyright (c) 2006 Daniel S. Haischt
+Copyright (c) 2012 Darren Embry <dse@webonastick.com>
+Copyright (c) 2005-2012 David Zeller
+Copyright (c) 2014-2017 Deciso B.V.
+Copyright (c) 2006-2015 Devin Teske <dteske@FreeBSD.org>
+Copyright (c) 2014 Electric Sheep Fencing, LLC
+Copyright (c) 2010 Erik Fonnesbeck
+Copyright (c) 2009 Erik Kristensen <erik@erikkristensen.com>
+Copyright (c) 2008-2014 Ermal Luçi
+Copyright (c) 2005 Espen Johansen
+Copyright (c) 2017 Fabian Franz
+Copyright (c) 2006 Fernando Lemos
+Copyright (c) 2014-2017 Franco Fichtner <franco@opnsense.org>
+Copyright (c) 2004 Fred Mol <fredmol@xs4all.nl>
+Copyright (c) 2010 Gabriel B. <gnoahb@gmail.com>
+Copyright (c) 2016 IT-assistans Sverige AB
+Copyright (c) 2009 Janne Enberg <janne.enberg@lietu.net>
+Copyright (c) 2017 Jeffrey Gentes
+Copyright (c) 2004 Jim McBeath
+Copyright (c) 2009-2014 Jim Pingle <jimp@pfsense.org>
+Copyright (c) 2012 Jonas von Andrian
+Copyright (c) 2004-2005 Jonathan Watt <jwatt@jwatt.org>
+Copyright (c) 2014-2015 Jos Schellevis <jos@opnsense.org>
+Copyright (c) 2003-2004 Justin Ellison <justin@techadvise.com>
+Copyright (c) 2015 Manuel Faux <mfaux@conf.at>
+Copyright (c) 2003-2009 Manuel Kasper <mk@neon1.net>
+Copyright (c) 2012 Marcello Coutinho
+Copyright (c) 2010-2015 Michael Bostock
+Copyright (c) 2005-2006 Paul Taylor <paultaylor@winn-dixie.com>
+Copyright (c) 2005-2006 Peter Allgeyer <allgeyer@web.de>
+Copyright (c) 2004 Peter Curran <peter@closeconsultants.com>
+Copyright (c) 2012 PiBa-NL <pba_2k3@yahoo.com>
+Copyright (c) 2013 Renato Botelho <garga@pfsense.org>
+Copyright (c) 2015 S. Linke <dev@devsash.de>
+Copyright (c) 2007 Sam Wenham
+Copyright (c) 2007 Scott Dale
+Copyright (c) 2003-2012 Scott Ullrich <sullrich@gmail.com>
+Copyright (c) 2007-2012 Seth Mos <seth.mos@dds.nl>
+Copyright (c) 2008-2009 Shrew Soft Inc. <mgrooms@shrew.net>
+Copyright (c) 2004-2005 T. Lechat <dev@lechat.org>
+Copyright (c) 2008 Tellnet AG
+Copyright (c) 2016 Tobias Boertitz <tbor87@gmail.com>
+Copyright (c) 2010 Vinicius Coque <vinicius.coque@bluepex.com>
+Copyright (c) 2011-2014 Warren Baker <warren@decoy.co.za>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

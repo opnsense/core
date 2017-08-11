@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2008 Shrew Soft Inc
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     Copyright (C) 2007-2008 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2005-2006 Bill Marquette <bill.marquette@gmail.com>
     Copyright (C) 2006 Paul Taylor <paultaylor@winn-dixie.com>

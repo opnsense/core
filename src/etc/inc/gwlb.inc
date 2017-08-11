@@ -1,7 +1,8 @@
 <?php
 
 /*
-    Copyright (C) 2008 Bill Marquette, Seth Mos
+    Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>
+    Copyright (C) 2008 Seth Mos <seth.mos@dds.nl>
     Copyright (C) 2010 Ermal Luçi
     All rights reserved.
 

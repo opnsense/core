@@ -50,6 +50,17 @@ function filter_core_antilockout_ports()
 {
     global $config;
     $lockout_ports = array();
+    /*
+     * XXX Some issues here:
+     *
+     * 1. Why does the webgui nolockout control the ssh lockout?
+     * 2. Both webgui and openssh are plugins, their code should
+     *    reside in the respective plugins.inc.d file once anti-
+     *    lockout is fully pluggable.
+     * 3. Openssh opens the port when install media is detected
+     *    and no ssh has ever been configured.  This is in line
+     *    with how the plugin behaves, but probably looks odd.
+     */
     if (!isset($config['system']['webgui']['noantilockout'])) {
         if (empty($config['system']['webgui']['port'])) {
             $lockout_ports[] = $config['system']['webgui']['protocol'] == "https" ? "443" : "80";
@@ -59,7 +70,8 @@ function filter_core_antilockout_ports()
         if ($config['system']['webgui']['protocol'] == "https" && !isset($config['system']['webgui']['disablehttpredirect'])) {
             $lockout_ports[] = "80";
         }
-        if (isset($config['system']['ssh']['enabled'])) {
+        if (isset($config['system']['ssh']['enabled']) ||
+            (!isset($config['system']['ssh']['noauto']) && is_install_media() && is_process_running('sshd'))) {
             $lockout_ports[] = empty($config['system']['ssh']['port']) ? "22" : $config['system']['ssh']['port'];
         }
     }
@@ -362,6 +374,35 @@ function filter_core_rules_system($fw, $defaults)
                 'protocol' => 'gre', 'label' =>'allow pptpd', 'quick' => false),
           $defaults['pass']
         );
+    }
+
+    // out from this Firewall, using the selected gateway.
+    foreach ($fw->getInterfaceMapping() as $ifdescr => $ifcfg) {
+        if (!isset($ifcfg['virtual'])) {
+            $intf_has_v4 = false;
+            $intf_has_v6 = false;
+            foreach (legacy_getall_interface_addresses($ifcfg['if']) as $addr) {
+                $intf_has_v4 = $intf_has_v4 || is_subnetv4($addr);
+                $intf_has_v6 = $intf_has_v6 || is_subnetv6($addr);
+            }
+            $intf_addrs = legacy_getall_interface_addresses($ifcfg['if']);
+            foreach ($fw->getInterfaceGateways($ifcfg['if']) as $gwname) {
+                $gwproto = $fw->getGateway($gwname)['proto'];
+                // only try to add gateway rules for traffic leaving this interface when the correct protocol is
+                // assigned to the interface (e.g. no ipv4 gateway when :network doesn't resolve to an ipv4 network)
+                if (($gwproto == 'inet' && $intf_has_v4) || ($gwproto == 'inet6' && $intf_has_v6)) {
+                    $fw->registerFilterRule(100000,
+                      array('from' => $ifcfg['if'], 'direction' => 'out', 'gateway' => $gwname,
+                        'destination' => array('network'=> $ifdescr, "not" => true),
+                        'statetype' => 'keep',
+                        'allowopts' => true,
+                        'quick' => false,
+                        'label' => "let out anything from firewall host itself"),
+                      $defaults['pass']
+                    );
+                }
+            }
+        }
     }
 
 }

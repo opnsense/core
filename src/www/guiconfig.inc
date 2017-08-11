@@ -3,7 +3,7 @@
 /*
     Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2004 Scott Ullrich
+    Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
     All rights reserved.
 
@@ -67,7 +67,6 @@ $lang_encoding = $lang . '.UTF-8';
 $textdomain = 'OPNsense';
 
 putenv('LANG=' . $lang_encoding);
-setlocale(LC_ALL, $lang_encoding);
 textdomain($textdomain);
 bindtextdomain($textdomain, '/usr/local/share/locale');
 bind_textdomain_codeset($textdomain, $lang_encoding);
@@ -253,7 +252,8 @@ function print_service_banner($service)
             }
             print_alert_box(
                 gettext('You are currently running in LiveCD mode. A reboot will reset the configuration.') .' ' .
-                (is_process_running('sshd') ? gettext('SSH remote login is enabled for the users "root" and ' .
+                (!isset($config['system']['ssh']['noauto']) && is_process_running('sshd') ?
+                gettext('SSH remote login is enabled for the users "root" and ' .
                 '"installer" using the same password.') : gettext('SSH remote login is disabled.'))
             );
         default:

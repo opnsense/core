@@ -2,7 +2,7 @@
 
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2004 Scott Ullrich
+	Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
 	Copyright (C) 2010 Ermal Luçi
 	All rights reserved.
 

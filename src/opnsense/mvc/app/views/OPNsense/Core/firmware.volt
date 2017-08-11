@@ -154,17 +154,7 @@ POSSIBILITY OF SUCH DAMAGE.
             if (data['details'] != undefined) {
                 details = data['details'];
             }
-            BootstrapDialog.show({
-                type:BootstrapDialog.TYPE_INFO,
-                title: "{{ lang._('Plugin details') }}",
-                message: details,
-                buttons: [{
-                    label: "{{ lang._('Close') }}",
-                    action: function(dialogRef){
-                        dialogRef.close();
-                    }
-                }]
-            });
+            stdDialogInform("{{ lang._('Plugin details') }}", details, "{{ lang._('Close') }}");
         });
     }
 
@@ -178,17 +168,7 @@ POSSIBILITY OF SUCH DAMAGE.
             if (data['license'] != undefined) {
                 license = data['license'];
             }
-            BootstrapDialog.show({
-                type:BootstrapDialog.TYPE_INFO,
-                title: "{{ lang._('License details') }}",
-                message: license,
-                buttons: [{
-                    label: "{{ lang._('Close') }}",
-                    action: function(dialogRef){
-                        dialogRef.close();
-                    }
-                }]
-            });
+            stdDialogInform("{{ lang._('License details') }}", license, "{{ lang._('Close') }}");
         });
     }
 
@@ -396,18 +376,20 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (row['provided'] == "1") {
                     plugin_count += 1;
                 }
-                orphaned_text = '';
-                if (row['provided'] == "0") {
-                    orphaned_text = ' ({{ lang._('orphaned') }})';
-                }
+                status_text = '';
                 bold_on = '';
                 bold_off = '';
                 if (row['installed'] == "1") {
+                    status_text = ' ({{ lang._('installed') }})';
                     bold_on = '<b>';
                     bold_off = '</b>';
                 }
+                if (row['provided'] == "0") {
+                    // this state overwrites installed on purpose
+                    status_text = ' ({{ lang._('orphaned') }})';
+                }
                 $('#pluginlist').append(
-                    '<tr>' + '<td>' + bold_on + row['name'] + orphaned_text + bold_off + '</td>' +
+                    '<tr>' + '<td>' + bold_on + row['name'] + status_text + bold_off + '</td>' +
                     '<td>' + bold_on + row['version'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['flatsize'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['comment'] + bold_off + '</td>' +
@@ -444,14 +426,19 @@ POSSIBILITY OF SUCH DAMAGE.
                 $.each(data['changelog'], function(index, row) {
                     changelog_count += 1;
 
-                    installed_text = '';
+                    status_text = '';
+                    bold_on = '';
+                    bold_off = '';
+
                     if (installed_version == row['version']) {
-                        installed_text = ' ({{ lang._('installed') }})';
+                        status_text = ' ({{ lang._('installed') }})';
+                        bold_on = '<b>';
+                        bold_off = '</b>';
                     }
 
                     $('#updatelist').append(
                         '<tr' + (changelog_count > changelog_max ? ' class="changelog-hidden" style="display: none;" ' : '' ) +
-                        '><td>' + row['version'] + installed_text + '</td><td>' + row['date'] + '</td>' +
+                        '><td>' + bold_on + row['version'] + status_text + bold_off + '</td><td>' + bold_on + row['date'] + bold_off + '</td>' +
                         '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
                         'data-toggle="tooltip" title="View ' + row['version'] + '">' +
                         '<span class="fa fa-book"></span></button></td></tr>'

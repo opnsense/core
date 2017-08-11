@@ -209,6 +209,7 @@ $.fn.UIBootgrid = function (params) {
                     {
                         if (gridParams['del'] != undefined) {
                             var uuid=$(this).data("row-id");
+                            // XXX must be replaced, cannot translate
                             stdDialogRemoveItem('Remove selected item?',function() {
                                 ajaxCall(url=gridParams['del'] + uuid,
                                     sendData={},callback=function(data,status){
@@ -269,6 +270,7 @@ $.fn.UIBootgrid = function (params) {
                 // link delete selected items action
                 $(this).find("*[data-action=deleteSelected]").click(function(){
                     if ( gridParams['del'] != undefined) {
+                        // XXX must be replaced, cannot translate
                         stdDialogRemoveItem("Remove selected items?",function(){
                             var rows =$("#"+gridId).bootgrid('getSelectedRows');
                             if (rows != undefined){

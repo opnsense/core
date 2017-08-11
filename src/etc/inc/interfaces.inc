@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2004-2008 Scott Ullrich
+ * Copyright (C) 2004-2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008-2009 Ermal Luçi
  * Copyright (C) 2005 Espen Johansen
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -212,11 +212,25 @@ function interface_vlan_configure(&$vlan)
     // disable/enable hardware vlan tags, will be skipped when "Leave default" (option 2) is selected
     if (!isset($config['system']['disablevlanhwfilter']) || $config['system']['disablevlanhwfilter'] == 1) {
         foreach ($members as $member) {
+            // probe already selected options
+            $intf_details = legacy_interface_details($member);
+            $selected_opts = array();
+            if (!empty($intf_details['options'])) {
+                foreach ($intf_details['options'] as $opt) {
+                    if ($opt == 'vlan_hwtagging') {
+                        $selected_opts[] = 'vlanhwtag';
+                    } else {
+                        $selected_opts[] = str_replace('_', '', $opt);
+                    }
+                }
+            }
             // set one tag at a time to avoid driver issues
-            foreach (array('vlanmtu', 'vlanhwtag', 'vlanhwfilter', 'vlanhwcsum', 'vlanhwtso')  as $tag) {
+            foreach (array('vlanhwtag', 'vlanhwfilter', 'vlanhwtso')  as $tag) {
                 if (!isset($config['system']['disablevlanhwfilter'])) {
-                    legacy_interface_flags($member, $tag);
-                } else {
+                    if (!in_array($tag, $selected_opts)) {
+                        legacy_interface_flags($member, $tag);
+                    }
+                } elseif (in_array($tag, $selected_opts)) {
                     legacy_interface_flags($member, '-'.$tag);
                 }
             }
@@ -4912,22 +4926,4 @@ function get_carp_interface_status($carpinterface)
         }
     }
     return;
-}
-
-function is_interface_mismatch()
-{
-    global $config;
-
-    if (isset($config['interfaces'])) {
-        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifcfg) {
-            if (preg_match("/^enc|^cua|^tun|^tap|^l2tp|^pptp|^ppp|^ovpn|^tinc|^gif|^gre|^lagg|^bridge|vlan|_wlan/i", $ifcfg['if'])) {
-                /* Do not check these interfaces */
-                continue;
-            } elseif (does_interface_exist($ifcfg['if']) == false) {
-                return true;
-            }
-        }
-    }
-
-    return false;
 }

@@ -4,7 +4,7 @@
     Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2010 Erik Fonnesbeck
     Copyright (C) 2008-2010 Ermal Luçi
-    Copyright (C) 2004-2008 Scott Ullrich
+    Copyright (C) 2004-2008 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2006 Daniel S. Haischt
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
@@ -356,6 +356,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig[$fieldname] = isset($a_interfaces[$if][$fieldname]) ? $a_interfaces[$if][$fieldname] : null;
     }
     $pconfig['enable'] = isset($a_interfaces[$if]['enable']);
+    $pconfig['lock'] = isset($a_interfaces[$if]['lock']);
     $pconfig['blockpriv'] = isset($a_interfaces[$if]['blockpriv']);
     $pconfig['blockbogons'] = isset($a_interfaces[$if]['blockbogons']);
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
@@ -409,8 +410,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['pppoe_dialondemand'] = isset($a_ppps[$pppid]['ondemand']);
     $pconfig['pptp_dialondemand'] = isset($a_ppps[$pppid]['ondemand']);
     $pconfig['pppoe_password'] = $pconfig['password']; // pppoe password field
-    $pconfig['pppoe_username'] =  $pconfig['username'];
-    $pconfig['pppoe_hostuniq'] =  $pconfig['hostuniq'];
+    $pconfig['pppoe_username'] = $pconfig['username'];
+    $pconfig['pppoe_hostuniq'] = $pconfig['hostuniq'];
     $pconfig['pppoe_idletimeout'] = $pconfig['idletimeout'];
 
     $pconfig['pptp_username'] = $pconfig['username'];
@@ -535,6 +536,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (empty($pconfig['enable'])) {
         if (isset($a_interfaces[$if]['enable'])) {
             unset($a_interfaces[$if]['enable']);
+        }
+        if (!empty($pconfig['lock'])) {
+            $a_interfaces[$if]['lock'] = true;
+        } elseif (isset($a_interfaces[$if]['lock'])) {
+            unset($a_interfaces[$if]['lock']);
         }
         if (isset($a_interfaces[$if]['wireless'])) {
             interface_sync_wireless_clones($a_interfaces[$if], false);
@@ -903,7 +909,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     } elseif (strlen($pconfig['key' . $i]) == 28) {
                         continue;
                     } else {
-                        $input_errors[] =  gettext("Invalid WEP key size. Sizes should be 40 (64) bit keys or 104 (128) bit.");
+                        $input_errors[] = gettext("Invalid WEP key size. Sizes should be 40 (64) bit keys or 104 (128) bit.");
                     }
                 }
             }
@@ -928,7 +934,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             //
             $new_config['descr'] = preg_replace('/[^a-z_0-9]/i', '', $pconfig['descr']);
-            $new_config['enable'] =  !empty($pconfig['enable']);
+            $new_config['enable'] = !empty($pconfig['enable']);
+            $new_config['lock'] = !empty($pconfig['lock']);
             $new_config['spoofmac'] = $pconfig['spoofmac'];
 
             $new_config['blockpriv'] = !empty($pconfig['blockpriv']);
@@ -1393,7 +1400,7 @@ include("head.inc");
             type: 'post',
             data: 'isAjax=true&ipprotocol=inet' + defaultgw + '&interface=' + escape(iface) + '&name=' + escape(name) + '&descr=' + escape(descr) + '&gateway=' + escape(gatewayip),
             error: function(request, textStatus, errorThrown){
-                if (textStatus === "error" && request.getResponseHeader("Content-Type") === "text/plain") {
+                if (textStatus === "error" && request.getResponseHeader("Content-Type").indexOf("text/plain") === 0) {
                     alert(request.responseText);
                 } else {
                     alert("Sorry, we could not create your IPv4 gateway at this time.");
@@ -1426,7 +1433,7 @@ include("head.inc");
             type: 'post',
             data: 'isAjax=true&ipprotocol=inet6' + defaultgw + '&interface=' + escape(iface) + '&name=' + escape(name) + '&descr=' + escape(descr) + '&gateway=' + escape(gatewayip),
             error: function(request, textStatus, errorThrown){
-                if (textStatus === "error" && request.getResponseHeader("Content-Type") === "text/plain") {
+                if (textStatus === "error" && request.getResponseHeader("Content-Type").indexOf("text/plain") === 0) {
                     alert(request.responseText);
                 } else {
                     alert("Sorry, we could not create your IPv6 gateway at this time.");
@@ -1641,10 +1648,17 @@ include("head.inc");
                     </thead>
                     <tbody>
                       <tr>
-                        <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable"); ?></td>
+                        <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Enable') ?></td>
                         <td>
-                          <input id="enable" name="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
-                          <strong><?=gettext("Enable Interface"); ?></strong>
+                          <input id="enable" name="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : '' ?>/>
+                          <strong><?= gettext('Enable Interface') ?></strong>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Lock') ?></td>
+                        <td>
+                          <input id="lock" name="lock" type="checkbox" value="yes" <?=!empty($pconfig['lock']) ? 'checked="checked"' : '' ?>/>
+                          <strong><?= gettext('Prevent interface removal') ?></strong>
                         </td>
                       </tr>
                     </tbody>

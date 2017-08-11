@@ -58,8 +58,14 @@ class FirmwareController extends ApiControllerBase
                 $response['status_msg'] = gettext('Could not find the repository on the selected mirror.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
-                $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
-                $response['status'] = 'none';
+                if (array_key_exists('upgrade_needs_reboot', $response) && $response['upgrade_needs_reboot'] == 1) {
+                    $response['status_msg'] = gettext('Operating system updates are available, total download size is unknown.');
+                    $response['status_upgrade_action'] = 'bsd';
+                    $response['status'] = 'ok';
+                } else {
+                    $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
+                    $response['status'] = 'none';
+                }
             } elseif (array_key_exists(0, $response['upgrade_packages']) &&
                 $response['upgrade_packages'][0]['name'] == 'pkg') {
                 $response['status_upgrade_action'] = 'pkg';
@@ -132,7 +138,7 @@ class FirmwareController extends ApiControllerBase
                             case 'upgrade_packages':
                                 $sorted[$value['name']] = array(
                                     'reason' => gettext('upgrade'),
-                                    'old' => $value['current_version'],
+                                    'old' => empty($value['current_version']) ? gettext('N/A') : $value['current_version'],
                                     'new' => $value['new_version'],
                                     'name' => $value['name'],
                                 );
@@ -280,6 +286,8 @@ class FirmwareController extends ApiControllerBase
                 $action = 'firmware upgrade pkg';
             } elseif ($this->request->getPost('upgrade') == 'maj') {
                 $action = 'firmware upgrade maj';
+            } elseif ($this->request->getPost('upgrade') == 'bsd') {
+                $action = 'firmware upgrade bsd';
             } else {
                 $action = 'firmware upgrade all';
             }
