@@ -212,11 +212,25 @@ function interface_vlan_configure(&$vlan)
     // disable/enable hardware vlan tags, will be skipped when "Leave default" (option 2) is selected
     if (!isset($config['system']['disablevlanhwfilter']) || $config['system']['disablevlanhwfilter'] == 1) {
         foreach ($members as $member) {
+            // probe already selected options
+            $intf_details = legacy_interface_details($member);
+            $selected_opts = array();
+            if (!empty($intf_details['options'])) {
+                foreach ($intf_details['options'] as $opt) {
+                    if ($opt == 'vlan_hwtagging') {
+                        $selected_opts[] = 'vlanhwtag';
+                    } else {
+                        $selected_opts[] = str_replace('_', '', $opt);
+                    }
+                }
+            }
             // set one tag at a time to avoid driver issues
             foreach (array('vlanmtu', 'vlanhwtag', 'vlanhwfilter', 'vlanhwcsum', 'vlanhwtso')  as $tag) {
                 if (!isset($config['system']['disablevlanhwfilter'])) {
-                    legacy_interface_flags($member, $tag);
-                } else {
+                    if (!in_array($tag, $selected_opts)) {
+                        legacy_interface_flags($member, $tag);
+                    }
+                } elseif (in_array($tag, $selected_opts)) {
                     legacy_interface_flags($member, '-'.$tag);
                 }
             }
