@@ -225,7 +225,7 @@ function interface_vlan_configure(&$vlan)
                 }
             }
             // set one tag at a time to avoid driver issues
-            foreach (array('vlanmtu', 'vlanhwtag', 'vlanhwfilter', 'vlanhwcsum', 'vlanhwtso')  as $tag) {
+            foreach (array('vlanhwtag', 'vlanhwfilter', 'vlanhwtso')  as $tag) {
                 if (!isset($config['system']['disablevlanhwfilter'])) {
                     if (!in_array($tag, $selected_opts)) {
                         legacy_interface_flags($member, $tag);
