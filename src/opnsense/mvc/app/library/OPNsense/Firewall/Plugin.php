@@ -79,6 +79,7 @@ class Plugin
                     $this->gatewayMapping[$key] = array("logic" => "route-to ( {$gw['interface']} {$gw['gateway']} )",
                                                         "interface" => $gw['interface'],
                                                         "gateway" => $gw['gateway'],
+                                                        "proto" => strstr($gw['gateway'], ':') ? "inet6" : "inet",
                                                         "type" => "gateway");
                 }
             }
@@ -94,9 +95,13 @@ class Plugin
         if (is_array($groups)) {
             foreach ($groups as $key => $gwgr) {
                 $routeto = array();
+                $proto = 'inet';
                 foreach ($gwgr as $gw) {
                     if (Util::isIpAddress($gw['gwip']) && !empty($gw['int'])) {
                         $routeto[] = str_repeat("( {$gw['int']} {$gw['gwip']} )", $gw['weight']);
+                        if (strstr($gw['gwip'], ':')) {
+                            $proto = 'inet6';
+                        }
                     }
                 }
                 if (count($routeto) > 0) {
@@ -108,6 +113,7 @@ class Plugin
                         $routetologic .= " sticky-address ";
                     }
                     $this->gatewayMapping[$key] = array("logic" => $routetologic,
+                                                        "proto" => $proto,
                                                         "type" => "group");
                 }
             }
@@ -124,18 +130,22 @@ class Plugin
         $protos_found = array();
         foreach ($this->gatewayMapping as $key => $gw) {
             if ($gw['type'] == 'gateway' && $gw['interface'] == $intf) {
-                if (strstr($gw['gateway'], ':')) {
-                    $proto = 'v6';
-                } else {
-                    $proto = 'v4';
-                }
-                if (!in_array($proto, $protos_found)) {
+                if (!in_array($gw['proto'], $protos_found)) {
                     $result[] = $key;
-                    $protos_found[] = $proto;
+                    $protos_found[] = $gw['proto'];
                 }
             }
         }
         return $result;
+    }
+
+    /**
+     *  Fetch gateway
+     *  @param string $gw gateway name
+     */
+    public function getGateway($gw)
+    {
+        return $this->gatewayMapping[$gw];
     }
 
     /**
