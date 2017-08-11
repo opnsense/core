@@ -50,20 +50,34 @@ def check_and_repair(filename_mask):
             cur = None
             os.rename(filename, filename_tmp)
 
-        # try to vacuum all tables, triggers a "database disk image is malformed" when corrupted
+        # try to perform an integrity_check, triggers a "database disk image is malformed" when corrupted
         # force a repair when corrupted, using a dump / import
         if cur is not None:
             try:
-                for table in cur.fetchall():
-                    cur.execute('vacuum %s' % table[0])
+                cur.execute('pragma integrity_check')
+                cur.execute('analyze')
             except sqlite3.DatabaseError, e:
                 if e.message.find('malformed') > -1:
                     syslog.syslog(syslog.LOG_ERR, "sqlite3 repair %s" % filename)
                     filename_tmp = '%s.fix'%filename
+                    filename_sql = '%s.sql'%filename
+                    filename_sql_clean = '%s.clean.sql'%filename
+                    for tmp_filename in [filename_tmp, filename_sql, filename_sql_clean]:
+                        if os.path.exists(tmp_filename):
+                            os.remove(tmp_filename)
+                    # export the usable parts from the file to an sql file
+                    os.system('echo ".dump" | /usr/local/bin/sqlite3 %s > %s ' % (filename, filename_sql))
+                    # remove transaction and error blocks
+                    with open(filename_sql, 'r') as f_in:
+                        with open(filename_sql_clean, 'w') as f_out:
+                            for line in f_in:
+                                if line.strip().split(';')[0] not in ('BEGIN TRANSACTION', 'ROLLBACK'):
+                                    f_out.write(line)
+                    # create a new sqlite3 database
+                    os.system('/usr/local/bin/sqlite3 %s < %s ' % (filename_tmp, filename_sql_clean))
+                    # cleanup / move new database into place
                     if os.path.exists(filename_tmp):
-                        os.remove(filename_tmp)
-                    os.system('echo ".dump" | /usr/local/bin/sqlite3 %s | /usr/local/bin/sqlite3 %s' % (filename,
-                                                                                                        filename_tmp))
-                    if os.path.exists(filename_tmp):
-                        os.remove(filename)
+                        for tmp_filename in [filename, filename_sql, filename_sql_clean]:
+                            os.remove(tmp_filename)
                         os.rename(filename_tmp, filename)
+                    syslog.syslog(syslog.LOG_ERR, "sqlite3 repair %s [done]" % filename)
