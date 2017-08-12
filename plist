@@ -366,6 +366,9 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/forms/dialogEditBlacklist.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/forms/main.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/Api/RoutesController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/IndexController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/forms/dialogEditRoute.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/IndexController.php
@@ -464,6 +467,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Migrations/M1_0_0.php
@@ -485,6 +490,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Proxy/index.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Routes/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog_processing.volt
@@ -599,6 +605,7 @@
 /usr/local/opnsense/scripts/proxy/generate_cert.php
 /usr/local/opnsense/scripts/proxy/setup.sh
 /usr/local/opnsense/scripts/remote_backup.php
+/usr/local/opnsense/scripts/routes/routes_wrapper
 /usr/local/opnsense/scripts/routes/show_routes.py
 /usr/local/opnsense/scripts/suricata/__init__.py
 /usr/local/opnsense/scripts/suricata/dropAlertLog.py
@@ -1068,8 +1075,6 @@
 /usr/local/www/system_general.php
 /usr/local/www/system_groupmanager.php
 /usr/local/www/system_hasync.php
-/usr/local/www/system_routes.php
-/usr/local/www/system_routes_edit.php
 /usr/local/www/system_usermanager.php
 /usr/local/www/system_usermanager_addprivs.php
 /usr/local/www/system_usermanager_import_ldap.php

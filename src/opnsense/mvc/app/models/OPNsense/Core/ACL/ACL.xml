@@ -757,15 +757,10 @@
     <page-system-staticroutes>
         <name>System: Static Routes</name>
         <patterns>
-            <pattern>system_routes.php*</pattern>
+            <pattern>ui/routes/*</pattern>
+            <pattern>api/routes/*</pattern>
         </patterns>
     </page-system-staticroutes>
-    <page-system-staticroutes-editroute>
-        <name>System: Static Routes: Edit route</name>
-        <patterns>
-            <pattern>system_routes_edit.php*</pattern>
-        </patterns>
-    </page-system-staticroutes-editroute>
     <page-system-usermanager>
         <name>System: User Manager</name>
         <patterns>
