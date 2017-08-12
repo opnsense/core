@@ -33,6 +33,7 @@ import subprocess
 import os
 import sys
 import ujson
+import argparse
 
 
 def parse_address(addr):
@@ -53,7 +54,14 @@ def parse_address(addr):
     return parse_result
 
 if __name__ == '__main__':
-    result = {'details': []}
+    # parse input arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--output', help='output type [json/text]', default='json')
+    parser.add_argument('--filter', help='filter results', default='')
+    parser.add_argument('--limit', help='limit number of results', default='')
+    inputargs = parser.parse_args()
+
+    result = {'details': [], 'total_entries': 0}
     with tempfile.NamedTemporaryFile() as output_stream:
         subprocess.call(['/sbin/pfctl', '-s', 'state'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
         output_stream.seek(0)
@@ -62,6 +70,14 @@ if __name__ == '__main__':
             for line in data.split('\n'):
                 parts = line.split()
                 if len(parts) >= 6:
+                    # count total number of state table entries
+                    result['total_entries'] += 1
+                    # apply filter when provided
+                    if inputargs.filter != "" and line.lower().find(inputargs.filter) == -1:
+                        continue
+                    # limit results
+                    if inputargs.limit.isdigit() and len(result['details']) >= int(inputargs.limit):
+                        continue
                     record = dict()
                     record['nat_addr'] = None
                     record['nat_port'] = None
@@ -91,7 +107,7 @@ if __name__ == '__main__':
     result['total'] = len(result['details'])
 
     # handle command line argument (type selection)
-    if len(sys.argv) > 1 and sys.argv[1] == 'json':
+    if inputargs.output == 'json':
         print(ujson.dumps(result))
     else:
         # output plain

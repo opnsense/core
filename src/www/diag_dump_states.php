@@ -84,7 +84,12 @@ include("head.inc");
           <div class="content-box">
             <form  method="post" name="iform">
 <?php
-              $current_statecount=`pfctl -si | grep "current entries" | awk '{ print $3 }'`;?>
+              if (empty($_POST['filter'])) {
+                  $filter = "''";
+              } else {
+                  $filter = escapeshellarg(htmlspecialchars($_POST['filter']));
+              }
+              $states_info = json_decode(configd_run("filter list states {$filter} 10000"), true);?>
               <table class="table table-striped">
                 <thead>
                   <tr>
@@ -95,7 +100,7 @@ include("head.inc");
                 </thead>
                 <tbody>
                   <tr>
-                    <td><?=$current_statecount?></td>
+                    <td><?=$states_info['total_entries'];?></td>
                     <td>
                       <input type="text" name="filter" value="<?=!empty($_POST['filter']) ? htmlspecialchars($_POST['filter']) : "";?>"/>
                     </td>
@@ -126,59 +131,49 @@ include("head.inc");
                   </thead>
                   <tbody>
 <?php
-                  $row = 0;
-                  /* get our states */
-                  $grepline = (isset($_POST['filter'])) ? "| /usr/bin/egrep " . escapeshellarg(htmlspecialchars($_POST['filter'])) : "";
-                  $fd = popen("/sbin/pfctl -s state {$grepline}", "r" );
-                  while ($line = chop(fgets($fd))):
-                    if ($row >= 10000) {
-                        break;
-                    }
-
-                    $line_split = preg_split("/\s+/", $line);
-
-                    $iface  = array_shift($line_split);
-                    $proto = array_shift($line_split);
-                    $state = array_pop($line_split);
-                    $info  = htmlspecialchars(implode(" ", $line_split));
-
-                    // We may want to make this optional, with a large state table, this could get to be expensive.
-                    $iface = convert_real_interface_to_friendly_descr($iface);
-
-                    /* break up info and extract $srcip and $dstip */
-                    $ends = preg_split("/\<?-\>?/", $info);
-                    $parts = explode(":", $ends[0]);
-                    $srcip = trim($parts[0]);
-                    $parts = explode(":", $ends[count($ends) - 1]);
-                    $dstip = trim($parts[0]);
+                  $intfdescr = array();
+                  foreach (legacy_config_get_interfaces() as $intf) {
+                      $intfdescr[$intf['if']] = $intf['descr'];
+                  }
+                  foreach ($states_info['details'] as $state):
                     // states can be deleted by source / dest combination, all matching records use the same class.
-                    $rowid = str_replace(array('.', ':'), '_', $srcip.$dstip);
-                  ?>
+                    $rowid = str_replace(array('.', ':'), '_', $state['src_addr'].$state['dst_addr']);
+                    // (re)construct info
+                    $direction = ($state['direction'] == 'out' ? '->' : '<-');
+                    $isipv4 = strpos($state['src_addr'], ':') === false;
+                    $srcport = $isipv4 ? ":{$state['src_port']}" : "[{$state['src_port']}]";
+                    $dstport = $isipv4 ? ":{$state['dst_port']}" : "[{$state['dst_port']}]";
+                    $info = $state['src_addr'] . $srcport . " " . $direction . " ";
+                    if (!empty($state['nat_addr'])) {
+                        $natport = $isipv4 ? ":{$state['nat_port']}" : "[{$state['nat_port']}]";
+                        $info .=$state['nat_addr'] . $natport;
+                    }
+                    $info .= $state['dst_addr'] . $dstport;
+?>
                     <tr class="r<?=$rowid;?>">
-                      <td><?= $iface ?></td>
-                      <td><?= $proto ?></td>
+                      <td><?= !empty($intfdescr[$state['iface']]) ? $intfdescr[$state['iface']] : $state['iface'] ?></td>
+                      <td><?= $state['proto'];?></td>
                       <td><?= $info ?></td>
-                      <td><?= $state ?></td>
+                      <td><?= $state['state'];?></td>
                       <td>
-                        <a href="#" data-rowid="r<?=$rowid?>" data-srcip="<?=$srcip?>" data-dstip="<?=$dstip;?>" class="act_del btn btn-default" title="<?= gettext('Remove all state entries from') ?> <?= $srcip ?> <?= gettext('to') ?> <?= $dstip ?>"><span class="glyphicon glyphicon-remove"></span></a>
+                        <a href="#" data-rowid="r<?=$rowid?>" data-srcip="<?=$state['src_addr']?>" data-dstip="<?=$state['dst_addr'];?>" class="act_del btn btn-default" title="<?= gettext('Remove all state entries from') ?> <?= $state['src_addr'] ?> <?= gettext('to') ?> <?= $state['dst_addr'] ?>"><span class="glyphicon glyphicon-remove"></span></a>
                       </td>
                     </tr>
 <?php
                     $row++;
-                  endwhile;
-                  if ($row == 0): ?>
+                  endforeach;
+                  if ($states_info['total'] == 0): ?>
                     <tr>
                       <td colspan="5"><?= gettext("No states were found.") ?></td>
                     </tr>
 <?php
-                  endif;
-                  pclose($fd);?>
+                  endif;?>
                   </tbody>
                   <tfoot>
 <?php
                     if (!empty($_POST['filter'])): ?>
                     <tr>
-                      <td colspan="5"><?=gettext("States matching current filter")?>: <?= $row ?></td>
+                      <td colspan="5"><?=gettext("States matching current filter")?>: <?= $states_info['total'] ?></td>
                     </tr>
 <?php
                     endif;?>

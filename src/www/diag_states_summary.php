@@ -78,7 +78,7 @@ $dstipinfo = array();
 $allipinfo = array();
 $pairipinfo = array();
 
-$states = json_decode(configd_run("filter list states json"), true);
+$states = json_decode(configd_run("filter list states"), true);
 if(isset($states['details'])) {
   foreach($states['details'] as $state) {
     if (isset($state['nat_addr']) && $states['direction'] == 'out') {
