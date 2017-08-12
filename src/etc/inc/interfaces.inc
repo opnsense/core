@@ -3801,17 +3801,6 @@ function convert_friendly_interface_to_friendly_descr($interface)
     return $ifdesc;
 }
 
-function convert_real_interface_to_friendly_descr($interface)
-{
-    $ifdesc = convert_real_interface_to_friendly_interface_name("{$interface}");
-
-    if (!empty($ifdesc)) {
-        return convert_friendly_interface_to_friendly_descr($ifdesc);
-    }
-
-    return $interface;
-}
-
 /*
  *  get_parent_interface($interface):
  *      --returns the (real or virtual) parent interface(s) array for a given interface friendly name (i.e. wan)

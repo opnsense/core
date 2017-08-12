@@ -39,6 +39,7 @@ if (!isset($config['nat']['outbound']['mode'])) {
     $config['nat']['outbound']['mode'] = "automatic";
 }
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (isset($pconfig['id']) && isset($a_out[$pconfig['id']])) {
@@ -58,11 +59,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $FilterIflist = filter_generate_optcfg_array();
             $tonathosts = filter_nat_rules_automatic_tonathosts($FilterIflist, true);
             $automatic_rules = filter_nat_rules_outbound_automatic($FilterIflist, '');
+            $allinterfaces = legacy_config_get_interfaces();
 
             foreach ($tonathosts as $tonathost) {
                 foreach ($automatic_rules as $natent) {
                     $natent['source']['network'] = $tonathost['subnet'];
-                    $natent['descr'] .= ' - ' . $tonathost['descr'] . ' -> ' . convert_real_interface_to_friendly_descr($natent['interface']);
+                    $natent['descr'] .= ' - ' . $tonathost['descr'] . ' -> ' . $allinterfaces[$natent['interface']]['descr'];
                     $natent['created'] = make_config_revision_entry();
 
                     /* Try to detect already auto created rules and avoid duplicate them */
