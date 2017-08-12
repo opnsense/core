@@ -385,7 +385,6 @@ function filter_core_rules_system($fw, $defaults)
                 $intf_has_v4 = $intf_has_v4 || is_subnetv4($addr);
                 $intf_has_v6 = $intf_has_v6 || is_subnetv6($addr);
             }
-            $intf_addrs = legacy_getall_interface_addresses($ifcfg['if']);
             foreach ($fw->getInterfaceGateways($ifcfg['if']) as $gwname) {
                 $gwproto = $fw->getGateway($gwname)['proto'];
                 // only try to add gateway rules for traffic leaving this interface when the correct protocol is
