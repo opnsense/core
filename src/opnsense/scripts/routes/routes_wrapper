@@ -21,8 +21,10 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-include('/usr/local/etc/inc/util.inc');
-include('/usr/local/etc/inc/gwlb.inc');
+# require legacy services 
+require_once("config.inc");
+require_once("util.inc");
+require_once("interfaces.inc");
 
 
 function extract_gateway_name($entry) {
@@ -35,11 +37,7 @@ die("You should not do that.");
 switch ($_SERVER['argv'][1])
 {
   case 'list':
-
-    $inactive = true;
-    $localhost = true;
-    $disabled = true;
-    $gateways = return_gateways_array($disabled, $localhost, $inactive);
+    $gateways = return_gateways_array(true, true, true);
     $gateways = array_map(extract_gateway_name, $gateways);
     print(json_encode($gateways));
     break;
