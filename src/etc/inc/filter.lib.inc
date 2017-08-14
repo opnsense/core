@@ -378,7 +378,7 @@ function filter_core_rules_system($fw, $defaults)
 
     // out from this Firewall, using the selected gateway.
     foreach ($fw->getInterfaceMapping() as $ifdescr => $ifcfg) {
-        if (!isset($ifcfg['virtual'])) {
+        if (!isset($ifcfg['virtual']) && $ifcfg['if'] != 'lo0') {
             $intf_has_v4 = false;
             $intf_has_v6 = false;
             foreach (legacy_getall_interface_addresses($ifcfg['if']) as $addr) {
