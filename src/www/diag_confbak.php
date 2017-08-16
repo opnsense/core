@@ -284,7 +284,6 @@ $( document ).ready(function() {
                   <tr>
                     <th colspan="2"><?=gettext("Diff");?></th>
                     <th><?=gettext("Date");?></th>
-                    <th><?=gettext("Version");?></th>
                     <th><?=gettext("Size");?></th>
                     <th><?=gettext("Configuration Change");?></th>
                     <th>&nbsp;</th>
@@ -297,7 +296,6 @@ $( document ).ready(function() {
                       <input type="radio" name="newtime" value="current" <?= !isset($newcheck) || $newcheck == 'current' ? 'checked="checked"' : '' ?>/>
                     </td>
                     <td> <?=date(gettext("n/j/y H:i:s"), $config['revision']['time']) ?></td>
-                    <td> <?=$config['version'] ?></td>
                     <td> <?=format_bytes(filesize("/conf/config.xml")) ?></td>
                     <td> <?="{$config['revision']['username']}: {$config['revision']['description']}" ?></td>
                     <td><b><?=gettext("Current");?></b></td>
@@ -315,10 +313,9 @@ $( document ).ready(function() {
                       <input type="radio" name="newtime" value="<?=$version['time'];?>" <?= isset($newcheck) && $newcheck == $version['time'] ? 'checked="checked"' : ''?>/>
                       <?php endif ?>
                     </td>
-                    <td> <?= date(gettext("n/j/y H:i:s"), $version['time']) ?></td>
-                    <td> <?= $version['version'] ?></td>
-                    <td> <?= format_bytes($version['filesize']) ?></td>
-                    <td> <?= "{$version['username']}: {$version['description']}" ?></td>
+                    <td><?= date(gettext("n/j/y H:i:s"), $version['time']) ?></td>
+                    <td><?= format_bytes($version['filesize']) ?></td>
+                    <td><?= "{$version['username']}: {$version['description']}" ?></td>
                     <td>
                       <a data-id="<?=$version['time'];?>" href="#" class="act_revert btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Revert to this configuration");?>">
                          <span class="glyphicon glyphicon-log-in"></span>

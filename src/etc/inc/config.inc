@@ -153,12 +153,6 @@ function write_config($desc = '', $backup = true)
         }
     }
 
-    if (!isset($config['version'])) {
-        // Examine config.xml, if for some strange reason the content is unexpected : exit directly.
-        log_error('WARNING: Corrupt config!');
-        return -1;
-    }
-
     plugins_interfaces();
 
     $cnf = OPNsense\Core\Config::getInstance();

@@ -77,8 +77,6 @@ function get_vip_config_section()
  */
 function carp_check_version($url, $username, $password, $method = 'opnsense.firmware_version')
 {
-    global $config;
-
     $client = new SimpleXMLRPC_Client($url,240);
     $client->setCredentials($username, $password);
     if ($client->query($method)) {
@@ -100,14 +98,7 @@ function carp_check_version($url, $username, $password, $method = 'opnsense.firm
         return false;
     }
 
-    if (!isset($remote_version['config_version']) ||
-        $remote_version['config_version'] < $config['version']) {
-        update_filter_reload_status("The other member is on older configuration version. Sync will not be done to prevent problems!");
-        log_error("The other member is on older configuration version. Sync will not be done to prevent problems!");
-        return false;
-    } else {
-        return true;
-    }
+    return true;
 }
 
 /**
