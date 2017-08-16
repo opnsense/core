@@ -33,11 +33,13 @@ import time
 import syslog
 import traceback
 import subprocess
+sys.path.insert(0, "/usr/local/opnsense/site-python")
 from lib import Config
 from lib.db import DB
 from lib.arp import ARP
 from lib.ipfw import IPFW
 from lib.daemonize import Daemonize
+from sqlite3_helper import check_and_repair
 
 
 class CPBackgroundProcess(object):
@@ -192,6 +194,9 @@ def main():
     """ Background process loop, runs as backend daemon for all zones. only one should be active at all times.
         The main job of this procedure is to sync the administration with the actual situation in the ipfw firewall.
     """
+    # perform integrity check and repair database if needed
+    check_and_repair('/var/captiveportal/captiveportal.sqlite')
+
     last_cleanup_timestamp = 0
     bgprocess = CPBackgroundProcess()
     bgprocess.initialize_fixed()
