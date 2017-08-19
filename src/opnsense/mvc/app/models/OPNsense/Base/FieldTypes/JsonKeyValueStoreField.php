@@ -161,13 +161,17 @@ class JsonKeyValueStoreField extends BaseField
                     $muttime = 0;
                 } else {
                     $stat = stat($sourcefile);
-                    $muttime = $stat['mtime'];
+                    // ignore empty files
+                    $muttime = $stat['size'] == 0 ? 0 : $stat['mtime'];
                 }
                 if (time() - $muttime > $this->internalConfigdPopulateTTL) {
                     $act = $this->internalConfigdPopulateAct;
                     $backend = new Backend();
                     $response = $backend->configdRun($act, false, 20);
-                    file_put_contents($sourcefile, $response);
+                    if (!empty($response) && json_decode($response) !== null) {
+                        // only store parsable results
+                        file_put_contents($sourcefile, $response);
+                    }
                 }
             }
             if (is_file($sourcefile)) {
