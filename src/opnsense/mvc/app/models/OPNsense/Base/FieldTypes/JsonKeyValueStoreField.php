@@ -161,7 +161,8 @@ class JsonKeyValueStoreField extends BaseField
                     $muttime = 0;
                 } else {
                     $stat = stat($sourcefile);
-                    $muttime = $stat['mtime'];
+                    // ignore empty files
+                    $muttime = $stat['size'] == 0 ? 0 : $stat['mtime'];
                 }
                 if (time() - $muttime > $this->internalConfigdPopulateTTL) {
                     $act = $this->internalConfigdPopulateAct;
