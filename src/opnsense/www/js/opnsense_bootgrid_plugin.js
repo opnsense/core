@@ -76,13 +76,17 @@ function stdBootgridUI(obj, sourceUrl, options) {
     {
         // scale footer on resize
         $(this).find("tfoot td:first-child").attr('colspan',$(this).find("th").length - 1);
-        $(this).find('tr[data-row-id]').each(function(){
-            if ($(this).find('[class*="command-toggle"]').first().data("value") == "0") {
-                $(this).addClass("text-muted");
-            }
-            if ($(this).find('[class*="command-boolean"]').first().data("value") == "0") {
-                $(this).addClass("text-muted");
-            }
+        // invert colors if needed (check if there is a disabled field instead of an enabled field
+        var inverted = $(this).find("thead th[data-column-id=disabled]").length > 0;
+        $(this).find('tr[data-row-id]').each(function(index, entry){
+            ['[class*="command-toggle"]', '[class*="command-boolean"]'].forEach(function (selector) {
+                var selected_element = $(entry).find(selector).first();
+                if (selected_element.length > 0) {
+                    if ((selected_element.data("value") == "0") != inverted ) {
+                        $(entry).addClass("text-muted");
+                    }
+                }
+            });
         });
 
     })
