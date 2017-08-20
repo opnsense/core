@@ -125,7 +125,7 @@ include("head.inc");
 <style>
 .minigraph path {
     stroke: steelblue;
-    stroke-width: 1;
+    stroke-width: 1px;
     fill: none;
 }
 .minigraph {
@@ -255,22 +255,22 @@ include("head.inc");
 						})
 					var svg = document.createElementNS(d3.ns.prefix.svg, 'g');
 					var graphIn = d3.select(svg).append("svg:svg")
-						  .attr("width", w + m[1] + m[3])
-						  .attr("height", h + m[0] + m[2])
+						  .attr("width", w + m[1] + m[3] + "px")
+						  .attr("height", h + m[0] + m[2] + "px")
 						.append("svg:g")
 						  .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 					var svg2 = document.createElementNS(d3.ns.prefix.svg, 'g');
 					var graphOut = d3.select(svg).append("svg:svg")
-						  .attr("width", w + m[1] + m[3])
-						  .attr("height", h + m[0] + m[2])
+						  .attr("width", w + m[1] + m[3] + "px")
+						  .attr("height", h + m[0] + m[2] + "px")
 						.append("svg:g")
 						  .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 			html.push('<tr>');
 			html.push('<td>'+record.host+'</td>');
                     graphIn.append("svg:path").attr("d", line(record.historyin));
                     graphOut.append("svg:path").attr("d", line(record.historyout));
-                    html.push('<td style="width: 55px;">' +formatSizeUnits(record.in)+'</td><td style="padding: 0; width: ' + w + '; height: ' + h + ';"><svg class="minigraph" style="width: ' + w  + '; height: ' + h + ';">' + graphIn.html() + '</svg></td>');
-                    html.push('<td style="width: 55px;">' +formatSizeUnits(record.out)+'</td><td style="padding: 0; width: ' + w + '; height: ' + h + ';"><svg class="minigraph" style="width: ' + w  + '; height: ' + h + ';">' + graphOut.html() + '</svg></td>');
+                    html.push('<td style="width: 55px;">' +formatSizeUnits(record.in)+'</td><td style="width: ' + w + 'px; height: ' + h + 'px;"><svg class="minigraph" style="width: ' + w  + 'px; height: ' + h + 'px;">' + graphIn.html() + '</svg></td>');
+                    html.push('<td style="width: 55px;">' +formatSizeUnits(record.out)+'</td><td style="width: ' + w + 'px; height: ' + h + 'px;"><svg class="minigraph" style="width: ' + w  + 'px; height: ' + h + 'px;">' + graphOut.html() + '</svg></td>');
 			html.push('<td>'+formatSizeUnits(record.totalin)+'</td>');
 			html.push('<td>'+formatSizeUnits(record.totalout)+'</td>');
 			html.push('</tr>');
