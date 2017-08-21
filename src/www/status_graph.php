@@ -256,15 +256,11 @@ include("head.inc");
 					var svg = document.createElementNS(d3.ns.prefix.svg, 'g');
 					var graphIn = d3.select(svg).append("svg:svg")
 						  .attr("width", w + m[1] + m[3] + "px")
-						  .attr("height", h + m[0] + m[2] + "px")
-						.append("svg:g")
-						  .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+						  .attr("height", h + m[0] + m[2] + "px");
 					var svg2 = document.createElementNS(d3.ns.prefix.svg, 'g');
 					var graphOut = d3.select(svg).append("svg:svg")
 						  .attr("width", w + m[1] + m[3] + "px")
-						  .attr("height", h + m[0] + m[2] + "px")
-						.append("svg:g")
-						  .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+						  .attr("height", h + m[0] + m[2] + "px");
 			html.push('<tr>');
 			html.push('<td>'+record.host+'</td>');
                     graphIn.append("svg:path").attr("d", line(record.historyin));
