@@ -1,6 +1,7 @@
 #!/bin/sh
 
 if [ ! -e /var/run/configd.pid ]; then
+	echo "configd not running!"
 	exit 1
 fi
 
