@@ -1,4 +1,9 @@
 #!/bin/sh
 
+if [ ! -e /var/run/configd.pid ]; then
+	echo "configd not running!"
+	exit 1
+fi
+
 # launch the real utility from here
 /usr/local/opnsense/service/configd_ctl.py "${@}"
