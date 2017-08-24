@@ -1825,7 +1825,8 @@ function interface_ipalias_configure(&$vip)
     if (is_ipaddrv6($vip['subnet'])) {
         $af = "inet6";
     }
-    mwexec("/sbin/ifconfig " . escapeshellarg($if) ." {$af} ". escapeshellarg($vip['subnet']) ."/" . escapeshellarg($vip['subnet_bits']) . " alias");
+    $vhid = !empty($vip['vhid']) ? "vhid " . escapeshellarg($vip['vhid']) : "";
+    mwexec("/sbin/ifconfig " . escapeshellarg($if) ." {$af} ". escapeshellarg($vip['subnet']) ."/" . escapeshellarg($vip['subnet_bits']) . " alias ". $vhid);
 }
 
 function interface_carp_configure(&$vip)
