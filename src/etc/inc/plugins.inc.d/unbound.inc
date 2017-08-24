@@ -394,7 +394,10 @@ EOF;
 
         file_put_contents('/var/unbound/remotecontrol.conf', $remotcfg);
 
-        unbound_execute('unbound-control-setup');
+        mwexecf(
+            'chroot -u unbound -g unbound / %s -d %s',
+            array('/usr/local/sbin/unbound-control-setup', '/var/unbound')
+        );
     }
 }
 
@@ -439,7 +442,8 @@ function unbound_configure_do($verbose = false, $interface = '')
         return;
     }
 
-    unbound_execute('stop');
+    killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
+    killbypid('/var/run/unbound.pid', 'TERM', true);
 
     if (!isset($config['unbound']['enable'])) {
         return;
@@ -450,54 +454,27 @@ function unbound_configure_do($verbose = false, $interface = '')
         flush();
     }
 
-    unbound_execute('unbound-anchor');
+    mwexecf(
+        'chroot -u unbound -g unbound / %s -a %s',
+        array('/usr/local/sbin/unbound-anchor', '/var/unbound/root.key'),
+        true
+    );
+
     unbound_remote_control_setup();
     unbound_generate_config();
-    unbound_execute('start');
+
+    $domain = $config['system']['domain'];
+    if (isset($config['unbound']['regdhcpdomain'])) {
+        $domain = $config['unbound']['regdhcpdomain'];
+    }
+    killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
+    if (isset($config['unbound']['regdhcp'])) {
+        mwexecf('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py /domain %s', $domain);
+    }
+    mwexecf('/usr/local/sbin/unbound -c %s', '/var/unbound/unbound.conf');
 
     if ($verbose) {
         echo "done.\n";
-    }
-}
-
-function unbound_execute($cmd)
-{
-    global $config;
-
-    switch ($cmd) {
-        case 'start':
-            $domain = $config['system']['domain'];
-            if (isset($config['unbound']['regdhcpdomain'])) {
-                $domain = $config['unbound']['regdhcpdomain'];
-            }
-            killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
-            if (isset($config['unbound']['regdhcp'])) {
-                mwexecf('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py /domain %s', $domain);
-            }
-            mwexecf('/usr/local/sbin/unbound -c %s', '/var/unbound/unbound.conf');
-            break;
-        case 'stop':
-            killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
-            killbypid('/var/run/unbound.pid', 'TERM', true);
-            break;
-        case 'reload':
-            killbypid('/var/run/unbound.pid', 'HUP');
-            break;
-        case 'unbound-anchor':
-            mwexecf(
-                'chroot -u unbound -g unbound / %s -a %s',
-                array('/usr/local/sbin/unbound-anchor', '/var/unbound/root.key'),
-                true
-            );
-            break;
-        case 'unbound-control-setup':
-            mwexecf(
-                'chroot -u unbound -g unbound / %s -d %s',
-                array('/usr/local/sbin/unbound-control-setup', '/var/unbound')
-            );
-            break;
-        default:
-            break;
     }
 }
 
@@ -769,5 +746,6 @@ function unbound_hosts_generate()
     }
 
     unbound_add_host_entries();
-    unbound_execute('reload');
+
+    killbypid('/var/run/unbound.pid', 'HUP');
 }
