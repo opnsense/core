@@ -2,3 +2,6 @@
 
 # Restore backups from previous shutdown
 /usr/local/etc/rc.syshook backup restore
+
+# Flush cache, kind of a backup now and maybe even more so in the future
+configctl unbound cache flush

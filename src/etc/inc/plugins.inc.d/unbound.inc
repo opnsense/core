@@ -429,6 +429,8 @@ function unbound_configure_do($verbose = false, $interface = '')
         return;
     }
 
+    configd_run('unbound cache dump');
+
     killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
     killbypid('/var/run/unbound.pid', 'TERM', true);
 
@@ -459,6 +461,8 @@ function unbound_configure_do($verbose = false, $interface = '')
         mwexecf('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py /domain %s', $domain);
     }
     mwexecf('/usr/local/sbin/unbound -c %s', '/var/unbound/unbound.conf');
+
+    configd_run('unbound cache load');
 
     if ($verbose) {
         echo "done.\n";
