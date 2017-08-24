@@ -85,31 +85,6 @@ function deleteVIPEntry($id) {
         }
     }
 
-    if ($a_vip[$id]['mode'] == "ipalias") {
-        $subnet = gen_subnet($a_vip[$id]['subnet'], $a_vip[$id]['subnet_bits']) . "/" . $a_vip[$id]['subnet_bits'];
-        $found_if = false;
-        $found_carp = false;
-        $found_other_alias = false;
-
-        if ($subnet == $if_subnet)
-          $found_if = true;
-
-        $vipiface = $a_vip[$id]['interface'];
-        foreach ($a_vip as $vip_id => $vip) {
-            if ($vip_id != $id) {
-                if ($vip['interface'] == $vipiface && ip_in_subnet($vip['subnet'], $subnet)) {
-                    if ($vip['mode'] == "carp") {
-                        $found_carp = true;
-                    } else if ($vip['mode'] == "ipalias") {
-                        $found_other_alias = true;
-                    }
-                }
-            }
-        }
-        if ($found_carp === true && $found_other_alias === false && $found_if === false) {
-            $input_errors[] = sprintf(gettext("This entry cannot be deleted because it is still referenced by a CARP IP with the description %s."), $vip['descr']);
-        }
-    }
     if (count($input_errors) == 0) {
         // Special case since every proxyarp vip is handled by the same daemon.
         if ($a_vip[$id]['mode'] == "proxyarp") {
