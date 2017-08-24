@@ -41,6 +41,7 @@ function unbound_configure()
     return array(
         'dns' => array('unbound_configure_do'),
         'hosts' => array('unbound_hosts_generate:0'),
+        'newwanip' => array('unbound_configure_do:2'),
     );
 }
 
@@ -397,9 +398,46 @@ EOF;
     }
 }
 
-function unbound_configure_do($verbose = false)
+function unbound_interface($interface)
 {
     global $config;
+
+    if (empty($interface)) {
+        /* emulate non-interface reload */
+        return true;
+    }
+
+    if (!empty($config['unbound']['active_interface'])) {
+        foreach (explode(',', $config['unbound']['active_interface']) as $used) {
+            if ($used == $interface) {
+                return true;
+            }
+        }
+    }
+
+    if (!empty($config['unbound']['outgoing_interface'])) {
+        foreach (explode(',', $config['unbound']['outgoing_interface']) as $used) {
+            if ($used == $interface) {
+                return true;
+            }
+        }
+    }
+
+    /*
+     * We can ignore this request as we don't listen here
+     * or always listen on :: / 0.0.0.0 so that a reload
+     * is not necessary.
+     */
+    return false;
+}
+
+function unbound_configure_do($verbose = false, $interface = '')
+{
+    global $config;
+
+    if (!unbound_interface($interface)) {
+        return;
+    }
 
     unbound_execute('stop');
 
