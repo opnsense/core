@@ -34,12 +34,19 @@ require_once('script/load_phalcon.php');
 
 use OPNsense\Core\Config;
 
+$classprefix = !empty($argv[1]) ? str_replace('/', '\\', $argv[1]) : '';
+
 $class_info = new \ReflectionClass("OPNsense\\Base\\BaseModel");
 $executed_migration = false;
 $model_dir = dirname($class_info->getFileName())."/../../";
 foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir)) as $x) {
     if (strtolower(substr($x->getPathname(), -4)) == '.php') {
         $classname = str_replace('/', '\\', explode('.', str_replace($model_dir, '', $x->getPathname()))[0]);
+        /* XXX we match the prefix here, but should eventually switch to component exploded by "\" */
+        if (!empty($classprefix) && strpos($classname, $classprefix) !== 0) {
+            /* not our requested class */
+            continue;
+        }
         try {
             $mdl_class_info = new \ReflectionClass($classname);
             $parent = $mdl_class_info->getParentClass();
@@ -50,14 +57,14 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir
                 $version_post = $mdl->getVersion();
                 if ($version_pre != $version_post) {
                     $version_pre = !empty($version_pre) ? $version_pre : ' <unversioned> ';
-                    echo "migrated " .  $mdl_class_info->getName() .
+                    echo "Migrated " .  $mdl_class_info->getName() .
                         " from " . $version_pre .
                         " to " . $version_post . "\n";
                     $executed_migration = true;
                 } elseif (!empty($version_post)) {
-                    echo "keep version " . $mdl_class_info->getName() . " (".$version_post.")\n";
+                    echo "Keep version " . $mdl_class_info->getName() . " (".$version_post.")\n";
                 } else {
-                    echo "unversioned " . $mdl_class_info->getName() . "\n";
+                    echo "Unversioned " . $mdl_class_info->getName() . "\n";
                 }
             }
         } catch (\ReflectionException $e) {

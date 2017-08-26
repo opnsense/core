@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2004 Scott Ullrich
+    Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
     All rights reserved.
 
@@ -32,23 +32,13 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("interfaces.inc");
 
-/**
- *   quite nasty, content provided by filter_generate_gateways (in filter.inc).
- *  Not going to solve this now, because filter_generate_gateways is not a propper function
- *  it returns both rules for the firewall and is kind of responsible for updating this global.
- */
-global $GatewaysList;
+$GatewaysList = return_gateways_array(false, true) + return_gateway_groups_array();
 
-if (!isset($config['nat']['outbound']))
-    $config['nat']['outbound'] = array();
-
-if (!isset($config['nat']['outbound']['rule']))
-    $config['nat']['outbound']['rule'] = array();
-
-if (!isset($config['nat']['outbound']['mode']))
+$a_out = &config_read_array('nat', 'outbound', 'rule');
+if (!isset($config['nat']['outbound']['mode'])) {
     $config['nat']['outbound']['mode'] = "automatic";
+}
 
-$a_out = &$config['nat']['outbound']['rule'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
@@ -65,24 +55,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mode = $config['nat']['outbound']['mode'];
         /* mutually exclusive settings - if user wants advanced NAT, we don't generate automatic rules */
         if ($pconfig['mode'] == "advanced" && ($mode == "automatic" || $mode == "hybrid")) {
-            /*
-             *    user has enabled advanced outbound NAT and doesn't have rules
-             *    lets automatically create entries
-             *    for all of the interfaces to make life easier on the pip-o-chap
-             */
-            if(empty($GatewaysList)) {
-                filter_generate_gateways();
-            }
-
             /* XXX cranky low-level call, please refactor */
             $FilterIflist = filter_generate_optcfg_array();
             $tonathosts = filter_nat_rules_automatic_tonathosts($FilterIflist, true);
             $automatic_rules = filter_nat_rules_outbound_automatic($FilterIflist, '');
+            $allinterfaces = legacy_config_get_interfaces();
 
             foreach ($tonathosts as $tonathost) {
                 foreach ($automatic_rules as $natent) {
                     $natent['source']['network'] = $tonathost['subnet'];
-                    $natent['descr'] .= ' - ' . $tonathost['descr'] . ' -> ' . convert_real_interface_to_friendly_descr($natent['interface']);
+                    $natent['descr'] .= ' - ' . $tonathost['descr'] . ' -> ' . $allinterfaces[$natent['interface']]['descr'];
                     $natent['created'] = make_config_revision_entry();
 
                     /* Try to detect already auto created rules and avoid duplicate them */
@@ -112,7 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             $savemsg = gettext("Default rules for each interface have been created.");
-            unset($GatewaysList);
         }
 
         $config['nat']['outbound']['mode'] = $pconfig['mode'];
@@ -377,6 +358,7 @@ include("head.inc");
                       <?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($natent['interface'])); ?>
                     </td>
                     <td class="hidden-xs hidden-sm">
+                      <?= isset($natent['source']['not']) ? '!' : '' ?>
 <?php                 if (isset($natent['source']['network']) && is_alias($natent['source']['network'])): ?>
                         <span title="<?=htmlspecialchars(get_alias_description($natent['source']['network']));?>" data-toggle="tooltip">
                           <?=htmlspecialchars($natent['source']['network']);?>&nbsp;
@@ -410,7 +392,7 @@ include("head.inc");
                       endif;?>
                     </td>
                     <td class="hidden-xs hidden-sm">
-                      <?=isset($natent['destination']['not']) ? "!&nbsp;" :"";?>
+                      <?= isset($natent['destination']['not']) ? '!' : '' ?>
 <?php                 if (isset($natent['destination']['address']) && is_alias($natent['destination']['address'])): ?>
                         <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['address']));?>" data-toggle="tooltip">
                           <?=htmlspecialchars($natent['destination']['address']);?>&nbsp;
@@ -550,15 +532,11 @@ include("head.inc");
 <?php
       // when automatic or hybrid, display "auto" table.
       if ($mode == "automatic" || $mode == "hybrid"):
-        if (empty($GatewaysList)) {
-            filter_generate_gateways();
-        }
         /* XXX cranky low-level call, please refactor */
         $FilterIflist = filter_generate_optcfg_array();
         $automatic_rules = filter_nat_rules_outbound_automatic(
           $FilterIflist, implode(' ', filter_nat_rules_automatic_tonathosts($FilterIflist))
         );
-        unset($GatewaysList);
 ?>
         <section class="col-xs-12">
           <div class="table-responsive content-box ">
@@ -594,6 +572,7 @@ include("head.inc");
                     <?= htmlspecialchars(convert_friendly_interface_to_friendly_descr($natent['interface'])); ?>
                   </td>
                   <td>
+                    <?= isset($natent['source']['not']) ? '!' : '' ?>
                     <?=$natent['source']['network'];?>
                   </td>
                   <td class="hidden-xs hidden-sm">
@@ -601,7 +580,7 @@ include("head.inc");
                     <?=empty($natent['sourceport']) ? "*" : $natent['sourceport'] ;?>
                   </td>
                   <td class="hidden-xs hidden-sm">
-                    <?=isset($natent['destination']['not']) ? "!&nbsp;" : "";?>
+                    <?= isset($natent['destination']['not']) ? '!' : '' ?>
                     <?=isset($natent['destination']['any']) ? "*" : $natent['destination']['address'] ;?>
                   </td>
                   <td class="hidden-xs hidden-sm">

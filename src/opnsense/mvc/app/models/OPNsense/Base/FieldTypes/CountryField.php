@@ -66,7 +66,7 @@ class CountryField extends BaseField
     /**
      * generate validation data (list of countries)
      */
-    public function eventPostLoading()
+    protected function actionPostLoadingEvent()
     {
         if (count(self::$internalOptionList) == 0) {
             $filename = '/usr/local/opnsense/contrib/tzdata/iso3166.tab';

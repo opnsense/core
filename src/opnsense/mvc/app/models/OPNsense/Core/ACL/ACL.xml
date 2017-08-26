@@ -5,9 +5,6 @@
     <user-shell-access>
         <name>System: Shell account access</name>
     </user-shell-access>
-    <user-ipsec-xauth-dialin>
-        <name>VPN: IPsec XAUTH dialin</name>
-    </user-ipsec-xauth-dialin>
     <user-proxy-auth>
         <name>Proxy: Login</name>
     </user-proxy-auth>
@@ -106,12 +103,18 @@
             <pattern>diag_logs_gateways.php*</pattern>
         </patterns>
     </page-diagnostics-logs-gateways>
-    <page-diagnostics-logs-resolver>
-        <name>Diagnostics: Logs: Resolver</name>
+    <page-diagnostics-logs-settings>
+        <name>Diagnostics: Logs: Settings</name>
         <patterns>
-            <pattern>diag_logs_resolver.php*</pattern>
+            <pattern>/ui/syslog/</pattern>
         </patterns>
-    </page-diagnostics-logs-resolver>
+    </page-diagnostics-logs-settings>
+    <page-diagnostics-logs-system>
+        <name>Diagnostics: Logs: System</name>
+        <patterns>
+            <pattern>/ui/syslog/logview/showlog/system</pattern>
+        </patterns>
+    </page-diagnostics-logs-system>
     <page-diagnostics-packetcapture>
         <name>Diagnostics: Packet Capture</name>
         <patterns>
@@ -485,60 +488,6 @@
             <pattern>services_opendns.php*</pattern>
         </patterns>
     </page-services-opendns>
-    <page-services-dnsforwarder>
-        <name>Services: DNS Forwarder</name>
-        <patterns>
-            <pattern>services_dnsmasq.php*</pattern>
-        </patterns>
-    </page-services-dnsforwarder>
-    <page-services-dnsforwarder-editdomainoverride>
-        <name>Services: DNS Forwarder: Edit Domain Override</name>
-        <patterns>
-            <pattern>services_dnsmasq_domainoverride_edit.php*</pattern>
-        </patterns>
-    </page-services-dnsforwarder-editdomainoverride>
-    <page-services-dnsforwarder-edithost>
-        <name>Services: DNS Forwarder: Edit host</name>
-        <patterns>
-            <pattern>services_dnsmasq_edit.php*</pattern>
-        </patterns>
-    </page-services-dnsforwarder-edithost>
-    <page-services-dnsresolver>
-        <name>Services: DNS Resolver</name>
-        <patterns>
-            <pattern>services_unbound.php*</pattern>
-        </patterns>
-    </page-services-dnsresolver>
-    <page-services-dnsresolver-acls>
-        <name>Services: DNS Resolver: Access Lists</name>
-        <patterns>
-            <pattern>services_unbound_acls.php*</pattern>
-        </patterns>
-    </page-services-dnsresolver-acls>
-    <page-services-dnsresolver-editacls>
-        <name>Services: DNS Resolver: Access Lists: Edit</name>
-        <patterns>
-            <pattern>services_unbound_acls_edit.php*</pattern>
-        </patterns>
-    </page-services-dnsresolver-editacls>
-    <page-services-dnsresolver-advanced>
-        <name>Services: DNS Resolver: Advanced</name>
-        <patterns>
-            <pattern>services_unbound_advanced.php*</pattern>
-        </patterns>
-    </page-services-dnsresolver-advanced>
-    <page-services-dnsresolver-editdomainoverride>
-        <name>Services: DNS Resolver: Edit Domain Override</name>
-        <patterns>
-            <pattern>services_unbound_domainoverride_edit.php*</pattern>
-        </patterns>
-    </page-services-dnsresolver-editdomainoverride>
-    <page-services-dnsresolver-edithost>
-        <name>Services: DNS Resolver: Edit host</name>
-        <patterns>
-            <pattern>services_unbound_host_edit.php*</pattern>
-        </patterns>
-    </page-services-dnsresolver-edithost>
     <page-services-router-advertisements>
         <name>Services: Router advertisements</name>
         <patterns>
@@ -569,12 +518,6 @@
             <pattern>status_dhcpv6_leases.php*</pattern>
         </patterns>
     </page-status-dhcpv6leases>
-    <page-status-filterreloadstatus>
-        <name>Status: Filter Reload Status</name>
-        <patterns>
-            <pattern>status_filter_reload.php*</pattern>
-        </patterns>
-    </page-status-filterreloadstatus>
     <page-status-gatewaygroups>
         <name>Status: Gateway Groups</name>
         <patterns>
@@ -808,15 +751,10 @@
     <page-system-staticroutes>
         <name>System: Static Routes</name>
         <patterns>
-            <pattern>system_routes.php*</pattern>
+            <pattern>ui/routes/*</pattern>
+            <pattern>api/routes/*</pattern>
         </patterns>
     </page-system-staticroutes>
-    <page-system-staticroutes-editroute>
-        <name>System: Static Routes: Edit route</name>
-        <patterns>
-            <pattern>system_routes_edit.php*</pattern>
-        </patterns>
-    </page-system-staticroutes-editroute>
     <page-system-usermanager>
         <name>System: User Manager</name>
         <patterns>

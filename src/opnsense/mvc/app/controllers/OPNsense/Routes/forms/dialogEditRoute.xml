@@ -1,0 +1,26 @@
+<form>
+  <field>
+    <id>route.disabled</id>
+    <label>Disabled</label>
+    <type>checkbox</type>
+    <help>Set this option to disable this static route without removing it from the list.</help>
+  </field>
+  <field>
+    <id>route.network</id>
+    <label>Network Address</label>
+    <type>text</type>
+    <help>Destination network for this static route</help>
+  </field>
+  <field>
+    <id>route.gateway</id>
+    <label>Gateway</label>
+    <type>dropdown</type>
+    <help><![CDATA[Choose which gateway this route applies to or <a href="/system_gateways_edit.php">add a new one</a>.]]></help>
+  </field>
+  <field>
+    <id>route.descr</id>
+    <label>Description</label>
+    <type>text</type>
+    <help>You may enter a description here for your reference (not parsed).</help>
+  </field>
+</form>

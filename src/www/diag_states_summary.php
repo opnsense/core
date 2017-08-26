@@ -2,9 +2,9 @@
 
 /*
     Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2010-2014 Jim Pingle
-    Copyright (C) 2005-2009 Scott Ullrich
-    Copyright (C) 2005 Colin Smith
+    Copyright (C) 2010-2014 Jim Pingle <jimp@pfsense.org>
+    Copyright (C) 2005-2009 Scott Ullrich <sullrich@gmail.com>
+    Copyright (C) 2005 Colin Smith <ethethlay@gmail.com>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -78,7 +78,7 @@ $dstipinfo = array();
 $allipinfo = array();
 $pairipinfo = array();
 
-$states = json_decode(configd_run("filter list states json"), true);
+$states = json_decode(configd_run("filter list states"), true);
 if(isset($states['details'])) {
   foreach($states['details'] as $state) {
     if (isset($state['nat_addr']) && $states['direction'] == 'out') {

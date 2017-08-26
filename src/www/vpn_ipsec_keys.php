@@ -33,15 +33,8 @@ require_once("filter.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
-    $config['ipsec'] = array();
-}
-
-if (!is_array($config['ipsec']['mobilekey'])) {
-    $config['ipsec']['mobilekey'] = array();
-} else {
-    ipsec_mobilekey_sort();
-}
+config_read_array('ipsec', 'mobilekey');
+ipsec_mobilekey_sort();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['act']) && isset($_POST['id']) && is_numericint($_POST['id']) && $_POST['act'] == "del") {

@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2008 Shrew Soft Inc
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
     Copyright (C) 2014 Ermal Luçi
     All rights reserved.
@@ -30,6 +30,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("system.inc");
 require_once("filter.inc");
 require_once("plugins.inc.d/ipsec.inc");
 require_once("services.inc");
@@ -42,10 +43,13 @@ require_once("interfaces.inc");
 function ipsec_ikeid_used($ikeid) {
     global $config;
 
-    foreach ($config['ipsec']['phase1'] as $ph1ent)
-        if( $ikeid == $ph1ent['ikeid'] ) {
-            return true;
+    if (!empty($config['ipsec']['phase1'])) {
+        foreach ($config['ipsec']['phase1'] as $ph1ent) {
+            if( $ikeid == $ph1ent['ikeid'] ) {
+                return true;
+            }
         }
+    }
     return false;
 }
 
@@ -58,18 +62,8 @@ function ipsec_ikeid_next() {
     return $ikeid;
 }
 
-
-if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
-    $config['ipsec'] = array();
-}
-
-if (!isset($config['ipsec']['phase1'])) {
-    $config['ipsec']['phase1'] = array();
-}
-
-if (!isset($config['ipsec']['phase2'])) {
-    $config['ipsec']['phase2'] = array();
-}
+config_read_array('ipsec', 'phase1');
+config_read_array('ipsec', 'phase2');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // fetch data
@@ -153,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $a_phase1 = &$config['ipsec']['phase1'];
+    $a_phase1 = &config_read_array('ipsec', 'phase1');
     if (isset($_POST['p1index']) && is_numericint($_POST['p1index'])) {
         $p1index = $_POST['p1index'];
     }
@@ -231,7 +225,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if ((!empty($pconfig['remote-gateway']) && is_ipaddr($pconfig['remote-gateway']) && !isset($pconfig['disabled']) )) {
+    if (!empty($pconfig['remote-gateway']) && is_ipaddr($pconfig['remote-gateway']) && !isset($pconfig['disabled']) &&
+        (empty($pconfig['iketype']) || $pconfig['iketype'] == "ikev1")) {
         $t = 0;
         foreach ($a_phase1 as $ph1tmp) {
             if ($p1index <> $t) {
@@ -243,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if (count($config['ipsec']['phase2'])) {
+    if (!empty($config['ipsec']['phase2'])) {
         foreach ($config['ipsec']['phase2'] as $phase2) {
             if ($phase2['ikeid'] == $pconfig['ikeid']) {
                 if (($pconfig['protocol'] == "inet") && ($phase2['mode'] == "tunnel6")) {
@@ -416,7 +411,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         /* if the remote gateway changed and the interface is not WAN then remove route */
         if ($pconfig['interface'] <> "wan") {
             if ($old_ph1ent['remote-gateway'] <> $pconfig['remote-gateway']) {
-                mwexec("/sbin/route delete -host {$old_ph1ent['remote-gateway']}");
+                /* XXX does this even apply? only use of system.inc at the top! */
+                system_host_route($old_ph1ent['remote-gateway'], $old_ph1ent['remote-gateway'], true, false);
             }
         }
 
@@ -464,8 +460,6 @@ include("head.inc");
             $(".auth_opt :input").prop( "disabled", true );
             switch ($("#authentication_method").val()) {
                 case 'eap-tls':
-                case 'hybrid_rsa_server':
-                case 'xauth_rsa_server':
                 case 'eap-mschapv2':
                     $(".auth_eap_tls").show();
                     $(".auth_eap_tls :input").prop( "disabled", false );
@@ -482,6 +476,8 @@ include("head.inc");
                         $(".auth_psk :input").prop( "disabled", false );
                     }
                     break;
+                case 'hybrid_rsa_server':
+                case 'xauth_rsa_server':
                 case 'rsasig':
                     $(".auth_eap_tls_caref").show();
                     $(".auth_eap_tls_caref :input").prop( "disabled", false );

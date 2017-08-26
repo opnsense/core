@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2011 Warren Baker <warren@pfsense.org>
+    Copyright (C) 2011 Warren Baker <warren@decoy.co.za>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -31,9 +31,7 @@ require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("services.inc");
 
-if(empty($config['unbound']) || !is_array($config['unbound'])) {
-    $config['unbound'] = array();
-}
+config_read_array('unbound');
 
 $copy_fields = array(
     'cache_max_ttl',

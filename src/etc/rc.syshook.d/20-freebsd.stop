@@ -1,2 +1,0 @@
-#!/bin/sh
-/usr/local/etc/rc.freebsd stop

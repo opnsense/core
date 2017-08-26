@@ -3,7 +3,7 @@
 /*
     Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2004 Scott Ullrich
+    Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
     All rights reserved.
 
@@ -67,7 +67,6 @@ $lang_encoding = $lang . '.UTF-8';
 $textdomain = 'OPNsense';
 
 putenv('LANG=' . $lang_encoding);
-setlocale(LC_ALL, $lang_encoding);
 textdomain($textdomain);
 bindtextdomain($textdomain, '/usr/local/share/locale');
 bind_textdomain_codeset($textdomain, $lang_encoding);
@@ -253,7 +252,8 @@ function print_service_banner($service)
             }
             print_alert_box(
                 gettext('You are currently running in LiveCD mode. A reboot will reset the configuration.') .' ' .
-                (is_process_running('sshd') ? gettext('SSH remote login is enabled for the users "root" and ' .
+                (!isset($config['system']['ssh']['noauto']) && is_process_running('sshd') ?
+                gettext('SSH remote login is enabled for the users "root" and ' .
                 '"installer" using the same password.') : gettext('SSH remote login is disabled.'))
             );
         default:
@@ -408,7 +408,7 @@ function pconfig_to_address(&$adr, $padr, $pmask, $pnot=false, $pbeginport=0, $p
     if (is_alias($pbeginport)) {
         $adr['port'] = $pbeginport;
     } elseif (($pbeginport != 0) && ($pbeginport != "any")) {
-        if ($pbeginport != $pendport) {
+        if ($pbeginport != $pendport && !empty($pendport)) {
             $adr['port'] = $pbeginport . "-" . $pendport;
         } else {
             $adr['port'] = $pbeginport;
@@ -478,9 +478,7 @@ function display_top_tabs(& $tab_array, $no_drop_down = false)
             } else {
                 $selected = "";
             }
-            // Onclick in option will not work in some browser
-            // echo "<option onclick=\"document.location='{$ta[2]}';\"{$selected}>{$ta['0']}</option>\n";
-            echo "<option value=\"{$ta[2]}\"{$selected}>{$ta['0']}</option>\n";
+            echo "<option class=\"top_tab\" value=\"{$ta[2]}\"{$selected}>{$ta['0']}</option>\n";
         }
         echo "</select>\n<p>&nbsp;</p>";
         echo "<script type=\"text/javascript\">";
@@ -494,9 +492,9 @@ function display_top_tabs(& $tab_array, $no_drop_down = false)
         $tabscounter = 0;
         foreach ($tab_array as $ta) {
             if ($ta[1] == true) {
-                echo "  <li class=\"active\"><a href=\"{$ta[2]}\" role=\"tab\">{$ta[0]}</a></li>\n";
+                echo "  <li class=\"active\"><a class=\"top_tab\" href=\"{$ta[2]}\" role=\"tab\">{$ta[0]}</a></li>\n";
             } else {
-                echo "  <li><a href=\"{$ta[2]}\" role=\"tab\">{$ta[0]}</a></li>\n";
+                echo "  <li><a class=\"top_tab\" href=\"{$ta[2]}\" role=\"tab\">{$ta[0]}</a></li>\n";
             }
             $tabscounter++;
         }

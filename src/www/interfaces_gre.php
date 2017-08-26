@@ -39,12 +39,7 @@ function gre_inuse($gre_intf) {
     return false;
 }
 
-if (!isset($config['gres']['gre']) || !is_array($config['gres']['gre'])) {
-    $a_gres = array();
-} else {
-    $a_gres = &$config['gres']['gre'] ;
-}
-
+$a_gres = &config_read_array('gres', 'gre') ;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($a_gres[$_POST['id']])) {

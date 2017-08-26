@@ -3,7 +3,7 @@
 /*
     Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2013 Dagorlad
-    Copyright (C) 2012 Jim Pingle
+    Copyright (C) 2012 Jim Pingle <jimp@pfsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -34,9 +34,7 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc.d/ntpd.inc");
 
-if (!isset($config['ntpd']['gps'])) {
-    $config['ntpd']['gps'] = array();
-}
+config_read_array('ntpd', 'gps');
 
 $copy_fields = array('port', 'type', 'speed', 'nmea', 'fudge1', 'fudge2', 'stratum', 'prefer', 'noselect',
                      'flag1', 'flag2', 'flag3', 'flag4', 'subsec', 'refid', 'initcmd');

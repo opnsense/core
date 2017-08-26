@@ -2,8 +2,8 @@
 
 /*
     Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2004-2009 Scott Ullrich
-    Copyright (C) 2011 Seth Mos
+    Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
+    Copyright (C) 2011 Seth Mos <seth.mos@dds.nl>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
     All rights reserved.
 
@@ -446,7 +446,7 @@ endif;?>
               foreach ($leases as $data):
                 if ($data['act'] == "static") {
                     foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
-                        if (is_array($dhcpifconf['staticmap'])) {
+                        if (isset($dhcpifconf['staticmap'])) {
                             foreach ($dhcpifconf['staticmap'] as $staticent) {
                                 if ($data['ip'] == $staticent['ipaddr']) {
                                     $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);

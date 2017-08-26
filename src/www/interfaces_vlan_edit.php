@@ -32,13 +32,7 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-if (!isset($config['vlans']) || !is_array($config['vlans'])) {
-    $config['vlans'] = array();
-}
-if (!isset($config['vlans']['vlan']) || !is_array($config['vlans']['vlan'])) {
-    $config['vlans']['vlan'] = array();
-}
-$a_vlans = &$config['vlans']['vlan'];
+$a_vlans = &config_read_array('vlans', 'vlan');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // read form data
@@ -185,7 +179,15 @@ include("head.inc");
                             continue;
                         }?>
                         <option value="<?=$ifn;?>" <?=$ifn == $pconfig['if'] ? " selected=\"selected\"" : "";?>>
-                          <?=htmlspecialchars($ifn);?>  ( <?= !empty($ifinfo['mac']) ? $ifinfo['mac'] :"" ;?> )
+                          <?=htmlspecialchars($ifn);?>
+                          ( <?= !empty($ifinfo['mac']) ? $ifinfo['mac'] :"" ;?> )
+<?php
+                          if (!empty($ifinfo['friendly'])):?>
+                          [
+                          <?=!empty($config['interfaces'][$ifinfo['friendly']]['descr']) ? htmlspecialchars($config['interfaces'][$ifinfo['friendly']]['descr']) : $ifinfo['friendly'];?>
+                          ]
+<?php
+                          endif;?>
                         </option>
 <?php
                       endforeach;?>

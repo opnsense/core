@@ -74,7 +74,7 @@ class AuthenticationServerField extends BaseField
     /**
      * generate validation data (list of AuthServers)
      */
-    public function eventPostLoading()
+    protected function actionPostLoadingEvent()
     {
         if (!isset(self::$internalOptionList[$this->internalCacheKey])) {
             self::$internalOptionList[$this->internalCacheKey] = array();

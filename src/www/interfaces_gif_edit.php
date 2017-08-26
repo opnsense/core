@@ -32,13 +32,7 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-if (!isset($config['gifs']) || !is_array($config['gifs'])) {
-    $config['gifs'] = array();
-}
-if (!isset($config['gifs']['gif']) || !is_array($config['gifs']['gif'])) {
-    $config['gifs']['gif'] = array();
-}
-$a_gifs = &$config['gifs']['gif'];
+$a_gifs = &config_read_array('gifs', 'gif');
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {

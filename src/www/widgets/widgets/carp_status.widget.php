@@ -31,9 +31,7 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-if (!isset($config['virtualip']['vip'])) {
-   $config['virtualip']['vip'] = array();
-}
+config_read_array('virtualip', 'vip');
 
 ?>
 <table class="table table-striped table-condensed">

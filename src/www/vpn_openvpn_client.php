@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2008 Shrew Soft Inc.
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -32,11 +32,7 @@ require_once("plugins.inc.d/openvpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-if (!isset($config['openvpn']['openvpn-client'])) {
-    $config['openvpn']['openvpn-client'] = array();
-}
-
-$a_client = &$config['openvpn']['openvpn-client'];
+$a_client = &config_read_array('openvpn', 'openvpn-client');
 
 $vpnid = 0;
 $act = null;
@@ -513,7 +509,7 @@ $( document ).ready(function() {
               </td>
             </tr>
             <tr>
-              <td><a id="help_for_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a><?=gettext("Disabled"); ?></td>
+              <td><a id="help_for_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
               <td>
                 <input name="disable" type="checkbox" value="yes" <?= !empty($pconfig['disable']) ? "checked=\"checked\"" : "";?> />
                 <div class="hidden" for="help_for_disable">
@@ -588,7 +584,7 @@ $( document ).ready(function() {
               }
               $grouplist = return_gateway_groups_array();
               foreach ($grouplist as $name => $group) {
-                  if ($group['ipprotocol'] != inet) {
+                  if ($group['ipprotocol'] != "inet") {
                       continue;
                   }
                   if ($group[0]['vip'] <> "") {
@@ -1069,7 +1065,6 @@ $( document ).ready(function() {
               <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
 <?php
               endif; ?>
-              <br/><br/>
             </td>
           </tr>
         </table>

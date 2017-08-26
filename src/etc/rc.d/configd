@@ -9,7 +9,9 @@
 
 . /etc/rc.subr
 
-name=configd
+name="configd"
+rcvar="configd_enable"
+: ${configd_enable="YES"}
 pidfile="/var/run/${name}.pid"
 
 start_precmd=configd_prestart

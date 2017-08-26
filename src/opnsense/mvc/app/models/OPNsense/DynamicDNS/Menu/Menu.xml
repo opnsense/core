@@ -1,7 +1,0 @@
-<menu>
-    <Services>
-        <DynamicDNS VisibleName="Dynamic DNS" url="/services_dyndns.php" cssClass="fa fa-tags fa-fw">
-            <Edit url="/services_dyndns_edit.php*" visibility="hidden"/>
-        </DynamicDNS>
-    </Services>
-</menu>

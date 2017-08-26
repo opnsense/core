@@ -3,9 +3,9 @@
 
 /*
     Copyright (C) 2014-2017 Franco Fichtner <franco@opnsense.org>
-    Copyright (C) 2004-2009 Scott Ullrich <sullrich@pfsense.org>.
+    Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-    Copyright (C) 2009 Erik Kristensen
+    Copyright (C) 2009 Erik Kristensen <erik@erikkristensen.com>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -56,8 +56,12 @@ foreach ($inc_files as $inc_file) {
 
 echo "done.\n";
 
-global $config;
-$config = parse_config(true);
+/*
+ * If this was an import or restore or reset, once run
+ * the migration, but do not display the status here as
+ * otherwise this prints all the models that keep their
+ * current version level.
+ */
 convert_config();
 
 /*
@@ -100,7 +104,7 @@ filter_configure_sync(true);
 filter_pflog_start(true);
 setup_gateways_monitor(true);
 plugins_configure('earlybootup', true);
-system_cron_configure(true);
+system_cron_configure(true, true);
 system_routing_configure('', true);
 
 plugins_configure('dns', true);
@@ -134,39 +138,6 @@ system_syslogd_start(true);
 /* If there are ipsec dynamic hosts try again to reload the tunnels as rc.newipsecdns does */
 if ($ipsec_dynamic_hosts) {
     ipsec_configure_do(true);
-}
-
-if (is_install_media()) {
-    /*
-     * Installer mode requires setting up an extra user and
-     * we will protect it with root's password.  We can only
-     * do this if user does not exist, though.
-     */
-
-    $root = null;
-
-    if (isset($config['system']['user'])) {
-        foreach ($config['system']['user'] as $user) {
-            if ($user['name'] == 'installer') {
-                $root = null;
-                break;
-            }
-            if ($user['uid'] == 0) {
-                $root = $user;
-            }
-        }
-    }
-
-    if ($root) {
-        $root['shell'] = '/usr/local/etc/rc.installer';
-        $root['name'] = 'installer';
-        local_user_set($root, true);
-
-        echo "\n";
-        echo "Welcome!  Both `root' and `installer' users are availabe for system\n";
-        echo "setup or invoking the installer, respectively.  The predefined root\n";
-        echo "password works for both accounts.  Remote login via SSH is possible.\n\n";
-    }
 }
 
 system_console_unmute();

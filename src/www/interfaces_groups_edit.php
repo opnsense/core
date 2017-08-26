@@ -3,7 +3,7 @@
 /*
     Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2009 Ermal Luçi
-    Copyright (C) 2004 Scott Ullrich
+    Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -31,14 +31,7 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-if (!isset($config['ifgroups']) || !is_array($config['ifgroups'])) {
-    $config['ifgroups'] = array();
-}
-if (!isset($config['ifgroups']['ifgroupentry']) || !is_array($config['ifgroups']['ifgroupentry'])) {
-    $config['ifgroups']['ifgroupentry'] = array();
-}
-
-$a_ifgroups = &$config['ifgroups']['ifgroupentry'];
+$a_ifgroups = &config_read_array('ifgroups', 'ifgroupentry');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // read form data

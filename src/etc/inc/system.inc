@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
+    Copyright (C) 2016-2017 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
@@ -201,7 +201,7 @@ function system_resolvconf_generate($verbose = false)
     chmod('/etc/resolv.conf', 0644);
 
     /* setup static routes for DNS servers. */
-    for ($dnscounter=1; $dnscounter<5; $dnscounter++) {
+    for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
         /* setup static routes for dns servers */
         $dnsgw = "dns{$dnscounter}gw";
         if (isset($config['system'][$dnsgw])) {
@@ -211,14 +211,12 @@ function system_resolvconf_generate($verbose = false)
                 if (is_ipaddrv4($gatewayip)) {
                     /* dns server array starts at 0 */
                     $dnscountermo = $dnscounter - 1;
-                    mwexec("/sbin/route delete -host " . $syscfg['dnsserver'][$dnscountermo]);
-                    mwexec("/sbin/route add -host " . $syscfg['dnsserver'][$dnscountermo] . " {$gatewayip}");
+                    system_host_route($syscfg['dnsserver'][$dnscountermo], $gatewayip);
                 }
                 if (is_ipaddrv6($gatewayip)) {
                     /* dns server array starts at 0 */
                     $dnscountermo = $dnscounter - 1;
-                    mwexec("/sbin/route delete -host -inet6 " . $syscfg['dnsserver'][$dnscountermo]);
-                    mwexec("/sbin/route add -host -inet6 " . $syscfg['dnsserver'][$dnscountermo] . " {$gatewayip}");
+                    system_host_route($syscfg['dnsserver'][$dnscountermo], $gatewayip);
                 }
             }
         }
@@ -248,7 +246,6 @@ function get_locale_list()
     $locales['pt_PT'] = gettext('Portuguese (Portugal)');
     $locales['ru_RU'] = gettext('Russian');
     $locales['es_ES'] = gettext('Spanish');
-    $locales['sv_SE'] = gettext('Swedish');
     $locales['tr_TR'] = gettext('Turkish');
 
     return $locales;
@@ -346,18 +343,6 @@ function get_nameservers()
         }
     }
 
-    // Read in any extra nameservers
-    if(file_exists("/var/etc/nameservers.conf")) {
-        $dns_s = file("/var/etc/nameservers.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        if(is_array($dns_s)) {
-            foreach($dns_s as $dns) {
-                if (is_ipaddr($dns)) {
-                    $master_list[] = $dns;
-                }
-            }
-        }
-    }
-
     return $master_list;
 }
 
@@ -425,6 +410,55 @@ function system_hostname_configure($verbose = false)
     }
 }
 
+function system_host_route($host, $gateway, $delete = true, $add = true)
+{
+    if (is_ipaddrv4($gateway)) {
+        $family = 'inet';
+    } elseif (is_ipaddrv6($gateway)) {
+        $family = 'inet6';
+    } else {
+        return;
+    }
+
+    if ($delete) {
+        mwexecf('/sbin/route delete -host -%s %s', array($family, $host), true);
+    }
+
+    if ($add) {
+        mwexecf('/sbin/route add -host -%s %s %s', array($family, $host, $gateway));
+    }
+}
+
+function system_default_route($gateway, $interface = null, $delete = true, $add = true)
+{
+    if (is_ipaddrv4($gateway)) {
+        $family = 'inet';
+    } elseif (is_ipaddrv6($gateway)) {
+        $family = 'inet6';
+        if (is_linklocal($gateway)) {
+            $gateway .= "%{$interface}";
+        }
+        /* IPv6 does not support far gateway notion */
+        $interface = null;
+    } else {
+        return;
+    }
+
+    if ($delete) {
+        mwexecf('/sbin/route delete -%s default', array($family), true);
+        if (!empty($interface)) {
+            mwexecf('/sbin/route delete -%s %s -interface %s', array($family, $gateway, $interface), true);
+        }
+    }
+
+    if ($add) {
+        if (!empty($interface)) {
+            mwexecf('/sbin/route add -%s %s -interface %s', array($family, $gateway, $interface));
+        }
+        mwexecf('/sbin/route add -%s default %s', array($family, $gateway));
+    }
+}
+
 function system_routing_configure($interface = '', $verbose = false)
 {
     global $config;
@@ -472,7 +506,6 @@ function system_routing_configure($interface = '', $verbose = false)
                     if ($gateway['gateway'] == "dynamic") {
                         $gateway['gateway'] = get_interface_gateway_v6($gateway['interface']);
                     }
-                    $fargw = isset($gateway['fargw']);
                     $gatewayipv6 = $gateway['gateway'];
                     $interfacegwv6 = $gateway['interface'];
                     if (!empty($gateway['interface'])) {
@@ -489,6 +522,7 @@ function system_routing_configure($interface = '', $verbose = false)
             }
         }
     }
+
     if (!$foundgw) {
         $defaultif = get_real_interface("wan");
         $interfacegw = "wan";
@@ -506,27 +540,14 @@ function system_routing_configure($interface = '', $verbose = false)
         ;
     elseif (is_ipaddrv4($gatewayip)) {
         log_error("ROUTING: setting IPv4 default route to {$gatewayip}");
-        mwexecf('/sbin/route delete -inet %s', 'default');
-        if ($fargw) {
-            mwexecf('/sbin/route delete -inet %s -interface %s', array($gatewayip, $defaultif));
-            mwexecf('/sbin/route add -inet %s -interface %s', array($gatewayip, $defaultif));
-        }
-        mwexecf('/sbin/route add -inet %s %s', array('default', $gatewayip));
+        system_default_route($gatewayip, $fargw ? $defaultif : null);
     }
 
     if (!empty($interface) && $interface != $interfacegwv6)
       ;
     elseif (is_ipaddrv6($gatewayipv6)) {
-        if (is_linklocal($gatewayipv6)) {
-            $gatewayipv6 .= "%{$defaultifv6}";
-        }
         log_error("ROUTING: setting IPv6 default route to {$gatewayipv6}");
-        mwexecf('/sbin/route delete -inet6 %s %s', array('default', $gatewayipv6));
-        if ($fargw) {
-            mwexecf('/sbin/route delete -inet6 %s -interface %s', array($gatewayipv6, $defaultifv6));
-            mwexecf('/sbin/route add -inet6 %s -interface %s', array($gatewayipv6, $defaultifv6));
-        }
-        mwexecf('/sbin/route add -inet6 %s %s', array('default', $gatewayipv6));
+        system_default_route($gatewayipv6, $defaultifv6);
     }
 
     system_staticroutes_configure($interface);
@@ -598,7 +619,7 @@ function system_staticroutes_configure($interface = '')
 
             $interfacegw = $gateway['interface'];
             $gatewayip = $gateway['gateway'];
-            $fargw = isset($gateway['fargw']);
+            $fargw = isset($gateway['fargw']) && $gateway['ipprotocol'] != 'inet6';
             $blackhole = '';
 
             switch ($rtent['gateway']) {
@@ -792,21 +813,14 @@ function system_firmware_configure($verbose = false)
     }
 
     if (!empty($config['system']['firmware']['flavour'])) {
-        $osabi = '';
-
-        switch ($config['system']['firmware']['flavour']) {
-            case 'libressl':
-            case 'latest':
-                /* if this is known flavour we treat it with ABI prefix */
-                $osabi = trim(file_get_contents('/usr/local/opnsense/version/opnsense.abi')) . '/';
-                break;
-            default:
-                break;
-        }
-
         mwexecf(
-            '/usr/local/sbin/opnsense-update %s %s',
-            array('-sn', str_replace('/', '\/', $osabi . $config['system']['firmware']['flavour']))
+            '/usr/local/sbin/opnsense-update -sn %s',
+            str_replace('/', '\/', sprintf(
+                "%s{$config['system']['firmware']['flavour']}",
+                /* if there is no directory slash we always treat it with default ABI prefix */
+                strpos($config['system']['firmware']['flavour'], '/') === false ?
+                    trim(file_get_contents('/usr/local/opnsense/version/opnsense.abi')) . '/' : ''
+            ))
         );
     }
 
@@ -1013,7 +1027,7 @@ function system_devd_configure($verbose = false)
     }
 }
 
-function system_cron_configure($verbose = false)
+function system_cron_configure($verbose = false, $defer = false)
 {
     global $config;
 
@@ -1099,7 +1113,10 @@ function system_cron_configure($verbose = false)
     }
 
     $crontab_contents = "# DO NOT EDIT THIS FILE -- OPNsense auto-generated file\n";
-    $crontab_contents .= "# Please use /etc/crontab for your overrides instead.\n";
+    $crontab_contents .= "#\n";
+    $crontab_contents .= "# User-defined crontab files can be loaded via /etc/cron.d\n";
+    $crontab_contents .= "# or /usr/local/etc/cron.d and follow the same format as\n";
+    $crontab_contents .= "# /etc/crontab, see the crontab(5) manual page.\n";
     $crontab_contents .= "SHELL=/bin/sh\n";
     $crontab_contents .= "PATH=/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin\n";
     $crontab_contents .= "#minute\thour\tmday\tmonth\twday\tcommand\n";
@@ -1114,7 +1131,10 @@ function system_cron_configure($verbose = false)
     }
 
     file_put_contents('/var/cron/tabs/root', $crontab_contents);
-    killbypid('/var/run/cron.pid', 'HUP');
+
+    if (!$defer) {
+        configd_run('cron restart');
+    }
 
     if ($verbose) {
         echo "done.\n";

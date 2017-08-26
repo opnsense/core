@@ -1,0 +1,25 @@
+<model>
+    <mount>//staticroutes</mount>
+    <version>0.0.1</version>
+    <items>
+        <route type="ArrayField">
+          <network type="NetworkField">
+            <NetMaskRequired>Y</NetMaskRequired>
+            <Required>Y</Required>
+          </network>
+          <gateway type="JsonKeyValueStoreField">
+            <Required>Y</Required>
+            <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+            <SourceFile>/tmp/gateway_list.json</SourceFile>
+            <ConfigdPopulateTTL>20</ConfigdPopulateTTL>
+          </gateway>
+          <descr type="TextField">
+            <Required>N</Required>
+          </descr>
+          <disabled type="BooleanField">
+            <default>0</default>
+            <Required>Y</Required>
+          </disabled>
+        </route>
+    </items>
+</model>

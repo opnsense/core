@@ -2,7 +2,8 @@
 
 /*
     Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2003-2004 Bob Zoller <bob@kludgebox.com> and Manuel Kasper <mk@neon1.net>.
+    Copyright (C) 2003-2004 Bob Zoller <bob@kludgebox.com>
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -36,11 +37,7 @@ function hostcmp($a, $b)
     return strcasecmp($a['host'], $b['host']);
 }
 
-if (empty($config['dnsmasq']['hosts']) || !is_array($config['dnsmasq']['hosts'])) {
-    $config['dnsmasq']['hosts'] = array();
-}
-
-$a_hosts = &$config['dnsmasq']['hosts'];
+$a_hosts = &config_read_array('dnsmasq', 'hosts');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && !empty($a_hosts[$_GET['id']])) {

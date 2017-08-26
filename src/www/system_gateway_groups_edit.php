@@ -31,14 +31,7 @@ require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-if (!is_array($config['gateways'])) {
-    $config['gateways'] = array();
-}
-
-if (!is_array($config['gateways']['gateway_group'])) {
-    $config['gateways']['gateway_group'] = array();
-}
-$a_gateway_groups = &$config['gateways']['gateway_group'];
+$a_gateway_groups = &config_read_array('gateways', 'gateway_group');
 $a_gateways = return_gateways_array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {

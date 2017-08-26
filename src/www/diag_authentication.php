@@ -31,25 +31,6 @@ require_once("guiconfig.inc");
 require_once("PEAR.inc");
 require_once("interfaces.inc");
 
-function getUserGroups($username, $authcfg)
-{
-    global $config;
-    $member_groups = array();
-    $user = getUserEntry($username);
-    if ($user !== false) {
-        $allowed_groups = local_user_get_groups($user, true);
-        if (isset($config['system']['group'])) {
-            foreach ($config['system']['group'] as $group) {
-                if (in_array($group['name'], $allowed_groups)) {
-                    $member_groups[] = $group['name'];
-                }
-            }
-        }
-    }
-    return $member_groups;
-}
-
-
 $input_errors = array();
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array("authmode" => "", "username" => "", "password" => "");
@@ -68,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (count($input_errors) == 0) {
         if (authenticate_user($_POST['username'], $_POST['password'], $authcfg)) {
             $savemsg = gettext("User") . ": " . $_POST['username'] . " " . gettext("authenticated successfully.");
-            $groups = getUserGroups($_POST['username'], $authcfg);
+            $groups = getUserGroups($_POST['username']);
             $savemsg .= "<br />" . gettext("This user is a member of these groups") . ": <br />";
             foreach ($groups as $group) {
                 $savemsg .= "{$group} ";

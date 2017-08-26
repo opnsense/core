@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -45,9 +45,28 @@ if [ "$PACKAGE" == "all" ]; then
 			REBOOT=1
 		fi
 	fi
+elif [ "$PACKAGE" == "bsd" ]; then
+	if opnsense-update -c; then
+		if opnsense-update -bk >> ${PKG_PROGRESS_FILE} 2>&1; then
+			REBOOT=1
+		fi
+	fi
+elif [ "$PACKAGE" == "maj" ]; then
+	# extract info for major upgrade
+	UPGRADE="/usr/local/opnsense/firmware-upgrade"
+	NAME=unknown
+	if [ -f ${UPGRADE} ]; then
+		NAME=$(cat ${UPGRADE})
+	fi
+	# perform first half of major upgrade
+	# (download all + kernel install)
+	if opnsense-update -ur "${NAME}" >> ${PKG_PROGRESS_FILE} 2>&1; then
+		REBOOT=1
+	fi
+	# second half reboots multiple times,
+	# but will snap the GUI back when done
 elif [ "$PACKAGE" == "pkg" ]; then
 	pkg upgrade -y $PACKAGE >> ${PKG_PROGRESS_FILE} 2>&1
-	echo  "*** PLEASE CHECK FOR MORE UPGRADES"
 else
 	echo "Cannot update $PACKAGE" >> ${PKG_PROGRESS_FILE}
 fi

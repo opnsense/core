@@ -32,7 +32,7 @@ use OPNsense\Base\Validators\MinMaxValidator;
 use OPNsense\Base\Validators\IntegerValidator;
 
 /**
- * Class AutoNumberField auto numbering integer type field, using it's direct neighbours to determine the already used
+ * Class AutoNumberField auto numbering integer type field, using it's direct neighbors to determine the already used
  * numbers.
  * @package OPNsense\Base\FieldTypes
  */
@@ -77,7 +77,7 @@ class AutoNumberField extends BaseField
      * ArrayField it always receives all of it's defaults after clone.
      * (see ArrayField for how this works).
      *
-     * In this case, the default is a new sequence based on the same field in this fields direct neighbours.
+     * In this case, the default is a new sequence based on the same field in this fields direct neighbors.
      * When maximum_value is reached, all succeeding items will get maximum_value+1. (which fails on validation)
      */
     public function applyDefault()

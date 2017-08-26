@@ -42,9 +42,7 @@
             <Status order="200" url="/status_habackup.php"/>
         </HighAvailability>
         <Routes order="40" cssClass="fa fa-map-signs fa-fw">
-            <All order="10" url="/system_routes.php">
-                <Edit url="/system_routes_edit.php*" visibility="hidden"/>
-            </All>
+            <Configuration order="10" url="/ui/routes/" />
             <Log order="100" VisibleName="Log File" url="/diag_logs_routing.php"/>
         </Routes>
         <Gateways order="30" cssClass="fa fa-location-arrow fa-fw">
@@ -61,7 +59,7 @@
         </Gateways>
         <Settings order="20" cssClass="fa fa-cogs fa-fw">
             <General order="100" url="/system_general.php">
-                <workAround url="/system_general.php*"/>
+                <workAround url="/system_general.php*" visibility="hidden"/>
             </General>
             <Administration order="200" url="/system_advanced_admin.php"/>
             <Notifications order="400" url="/system_advanced_notifications.php"/>
@@ -174,17 +172,16 @@
             </Status>
         </VIP>
         <Settings order="200" cssClass="fa fa-cogs fa-fw">
-            <Schedules order="100" url="/firewall_schedule.php">
+            <Schedules url="/firewall_schedule.php">
                 <SchedulesEdit url="/firewall_schedule_edit.php*" visibility="hidden"/>
             </Schedules>
-            <Normalization order="200" url="/firewall_scrub.php">
+            <Normalization url="/firewall_scrub.php">
                 <NormalizationEdit url="/firewall_scrub_edit.php*" visibility="hidden"/>
                 <Normalization url="/firewall_scrub.php*" visibility="hidden"/>
             </Normalization>
-            <Advanced order="300" url="/system_advanced_firewall.php"/>
+            <Advanced url="/system_advanced_firewall.php"/>
         </Settings>
         <Diagnostics order="500" cssClass="fa fa-medkit fa-fw">
-            <FilterReload order="20"  VisibleName="Filter Reload" url="/status_filter_reload.php"/>
             <pfInfo order="30" url="/diag_pf_info.php" VisibleName="pfInfo"/>
             <pfTop order="40" url="/diag_system_pftop.php" VisibleName="pfTop"/>
             <pfTables order="50" url="/diag_tables.php">

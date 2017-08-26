@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2014 Warren Baker <warren@pfsense.org>
+    Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -32,10 +32,7 @@ require_once("services.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-if (empty($config['unbound']) || !is_array($config['unbound'])) {
-    $config['unbound'] = array();
-}
-$a_unboundcfg =& $config['unbound'];
+$a_unboundcfg = &config_read_array('unbound');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();

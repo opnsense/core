@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2008 Seth Mos
+    Copyright (C) 2008 Seth Mos <seth.mos@dds.nl>
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:

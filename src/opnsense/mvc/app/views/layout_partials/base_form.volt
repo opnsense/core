@@ -82,7 +82,7 @@ data_title      :   data-title to set on form
       </tbody>
     </table>
   </div>
-  <div class="table-responsive {% if field['style'] %}{{field['style']}}{% endif %}">
+  <div class="table-responsive {{field['style']|default('')}}">
     <table class="table table-striped table-condensed table-responsive">
         <colgroup>
             <col class="col-md-3"/>

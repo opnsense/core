@@ -1,3 +1,5 @@
+/usr/local/etc/rc.d/configd stop
+
 echo "Resetting root shell"
 pw usermod -n root -s /bin/csh
 

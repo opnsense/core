@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2016-2017 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -29,7 +29,7 @@ set -e
 
 DESTDIR="/usr/local/opnsense/changelog"
 WORKDIR="/tmp/changelog"
-FETCH="fetch -aqT 5"
+FETCH="fetch -qT 5"
 
 changelog_remove()
 {
@@ -42,9 +42,7 @@ changelog_fetch()
 	CORE_ABI=$(cat /usr/local/opnsense/version/opnsense.abi 2> /dev/null)
 	SYS_ABI=$(opnsense-verify -a 2> /dev/null)
 
-	URL="https://pkg.opnsense.org"
-	URL="${URL}/${SYS_ABI}/${CORE_ABI}"
-	URL="${URL}/sets/changelog.txz"
+	URL="https://pkg.opnsense.org/${SYS_ABI}/${CORE_ABI}/sets/changelog.txz"
 
 	rm -rf ${WORKDIR}
 	mkdir -p ${WORKDIR}

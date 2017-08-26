@@ -2,8 +2,8 @@
 
 /*
     Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2013  Dagorlad
-    Copyright (C) 2012  Jim Pingle
+    Copyright (C) 2013 Dagorlad
+    Copyright (C) 2012 Jim Pingle <jimp@pfsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -35,10 +35,7 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc.d/ntpd.inc");
 
-if (!isset($config['ntpd']) || !is_array($config['ntpd'])) {
-    $config['ntpd'] = array();
-}
-$a_ntpd = &$config['ntpd'];
+$a_ntpd = &config_read_array('ntpd');
 
 $copy_fields = array('orphan', 'statsgraph', 'logpeer', 'logsys', 'clockstats', 'loopstats', 'interface',
                      'peerstats', 'noquery', 'noserve', 'kod', 'nomodify', 'nopeer', 'notrap', 'leapsec');
@@ -280,9 +277,9 @@ include("head.inc");
                       <div class="hidden" for="help_for_timeservers">
                         <?=gettext('For best results three to five servers should be configured here.'); ?>
                         <br />
-                        <?= sprintf(gettext('The %sprefer%s option indicates that NTP should favor the use of this server more than all others.'),'<i>','</i>') ?>
+                        <?= gettext('The "prefer" option indicates that NTP should favor the use of this server more than all others.') ?>
                         <br />
-                        <?= sprintf(gettext('The %snoselect%s option indicates that NTP should not use this server for time, but stats for this server will be collected and displayed.'),'<i>','</i>') ?>
+                        <?= gettext('The "do not use" option indicates that NTP should not use this server for time, but stats for this server will be collected and displayed.') ?>
                       </div>
                     </td>
                   </tr>

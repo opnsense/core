@@ -150,13 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isset($id) && isset($pconfig['act']) && $pconfig['act'] == "toggle") {
         // Toggle active/in-active
         $realid = $a_gateways[$id]['attribute'];
-        if (!is_array($config['gateways'])) {
-            $config['gateways'] = array();
-        }
-        if (!is_array($config['gateways']['gateway_item'])) {
-            $config['gateways']['gateway_item'] = array();
-        }
-        $a_gateway_item = &$config['gateways']['gateway_item'];
+        $a_gateway_item = &config_read_array('gateways', 'gateway_item');
 
         if (isset($a_gateway_item[$realid]['disabled'])) {
             unset($a_gateway_item[$realid]['disabled']);

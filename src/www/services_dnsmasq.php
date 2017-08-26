@@ -2,7 +2,8 @@
 
 /*
     Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2003-2004 Bob Zoller <bob@kludgebox.com> and Manuel Kasper <mk@neon1.net>.
+    Copyright (C) 2003-2004 Bob Zoller <bob@kludgebox.com>
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,13 +34,8 @@ require_once("filter.inc");
 require_once("services.inc");
 require_once("system.inc");
 
-if (empty($config['dnsmasq']['hosts']) || !is_array($config['dnsmasq']['hosts'])) {
-    $config['dnsmasq']['hosts'] = array();
-}
-
-if (empty($config['dnsmasq']['domainoverrides']) || !is_array($config['dnsmasq']['domainoverrides'])) {
-    $config['dnsmasq']['domainoverrides'] = array();
-}
+config_read_array('dnsmasq', 'hosts');
+config_read_array('dnsmasq', 'domainoverrides');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -133,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header(url_safe('Location: /services_dnsmasq.php'));
         exit;
     } elseif (!empty($pconfig['act']) && $pconfig['act'] == 'del') {
-        $a_hosts = &$config['dnsmasq']['hosts'];
+        $a_hosts = &config_read_array('dnsmasq', 'hosts');
         if (isset($pconfig['id']) && !empty($a_hosts[$pconfig['id']])) {
             unset($a_hosts[$pconfig['id']]);
             write_config();
@@ -141,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             exit;
         }
     } elseif (!empty($pconfig['act']) && $pconfig['act'] == 'doverride') {
-        $a_domainOverrides = &$config['dnsmasq']['domainoverrides'];
+        $a_domainOverrides = &config_read_array('dnsmasq', 'domainoverrides');
         if (isset($pconfig['id']) && !empty($a_domainOverrides[$pconfig['id']])) {
             unset($a_domainOverrides[$pconfig['id']]);
             write_config();

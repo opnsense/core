@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2008 Shrew Soft Inc.
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     Copyright (C) 2005 Paul Taylor <paultaylor@winn-dixie.com>.
     Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
     All rights reserved.
@@ -31,10 +31,7 @@
 
 require_once("guiconfig.inc");
 
-if (!isset($config['system']['group'])) {
-    $config['system']['group'] = array();
-}
-$a_group = &$config['system']['group'];
+$a_group = &config_read_array('system', 'group');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($a_group[$_GET['groupid']])) {
@@ -136,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             /* Refresh users in this group since their privileges may have changed. */
             if (is_array($group['member'])) {
-                $a_user = &$config['system']['user'];
+                $a_user = &config_read_array('system', 'user');
                 foreach ($a_user as & $user) {
                     if (in_array($user['uid'], $group['member'])) {
                         local_user_set($user);

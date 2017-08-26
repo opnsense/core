@@ -2,7 +2,7 @@
 <?php
 
 /*
-    Copyright (C) 2008 Shrew Soft Inc
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     Copyright (C) 2010 Ermal Luçi
     All rights reserved.
 
@@ -45,40 +45,53 @@ openlog("charon", LOG_ODELAY, LOG_AUTH);
 /* read data from environment */
 $username = getenv("username");
 $password = getenv("password");
-$authmodes = explode(",", getenv("authcfg"));
 
 if (!$username || !$password) {
-    syslog(LOG_ERR, "invalid user authentication environment");
+    syslog(LOG_ERR, "Invalid user authentication environment.");
+    closelog();
+    exit(-1);
+}
+
+if (empty($config['ipsec']['client']['enable'])) {
+    syslog(LOG_ERR, "IPsec mobile extension is disabled.");
     closelog();
     exit(-1);
 }
 
 $authenticated = false;
-foreach ($authmodes as $authmode) {
+
+if (!empty($config['ipsec']['client']['local_group'])) {
+    if (!in_array($config['ipsec']['client']['local_group'], getUserGroups($username))) {
+        syslog(LOG_WARNING, "User '{$username}' requires membership in the local group '{$client['ipsec']['client']['local_group']}'.");
+        closelog();
+        exit(1);
+    }
+}
+
+$user_source = '';
+if (!empty($config['ipsec']['client']['user_source'])) {
+     $user_source = $config['ipsec']['client']['user_source'];
+}
+
+foreach (explode(',', $user_source) as $authmode) {
     $authcfg = auth_get_authserver($authmode);
+
+    /* XXX looks funny, like OpenVPN */
     if (!$authcfg && $authmode != "local") {
         continue;
     }
 
     $authenticated = authenticate_user($username, $password, $authcfg);
     if ($authenticated == true) {
-        if (stristr($authmode, "local")) {
-            $user = getUserEntry($username);
-            if (!is_array($user) || !userHasPrivilege($user, "user-ipsec-xauth-dialin")) {
-                $authenticated = false;
-                syslog(LOG_WARNING, "user '{$username}' cannot authenticate through IPsec since the required privileges are missing.\n");
-                continue;
-            }
-        }
         break;
     }
 }
 
-if ($authenticated == false) {
-    syslog(LOG_WARNING, "user '{$username}' could not authenticate.\n");
+if (!$authenticated) {
+    syslog(LOG_WARNING, "User '{$username}' could not authenticate.\n");
     exit(-1);
-} else {
-    syslog(LOG_NOTICE, "user '{$username}' authenticated\n");
-    closelog();
-    exit(0);
 }
+
+syslog(LOG_NOTICE, "User '{$username}' authenticated\n");
+closelog();
+exit(0);

@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2004 Scott Ullrich
+    Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
     All rights reserved.
 
@@ -57,7 +57,7 @@ function find_alias_reference($section, $field, $origname, &$is_alias_referenced
         return;
     }
 
-    $sectionref = &$config;
+    $sectionref = &config_read_array();
     foreach($section as $sectionname) {
         if (is_array($sectionref) && isset($sectionref[$sectionname])) {
             $sectionref = &$sectionref[$sectionname];
@@ -110,13 +110,7 @@ function alias_used_recursive($origname)
     return null;
 }
 
-if (!isset($config['aliases']) || !is_array($config['aliases'])) {
-    $config['aliases'] = array();
-}
-if (!isset($config['aliases']['alias'])) {
-    $config['aliases']['alias'] = array();
-}
-$a_aliases = &$config['aliases']['alias'];
+$a_aliases = &config_read_array('aliases', 'alias');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['apply'])) {
@@ -170,7 +164,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 configd_run("filter kill table {$alias_name}");
                 unset($a_aliases[$_POST['id']]);
                 write_config();
-                filter_configure();
                 mark_subsystem_dirty('aliases');
                 header(url_safe('Location: /firewall_aliases.php'));
                 exit;
@@ -272,7 +265,7 @@ $( document ).ready(function() {
                         <?= $alias_values ?>
                       </td>
                       <td>
-                        <a href="firewall_aliases_edit.php?id=<?=$i;?>" title="<?=gettext("Edit alias"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="firewall_aliases_edit.php?id=<?=$i;?>" title="<?=gettext("Edit alias"); ?>" class="btn btn-default btn-xs"><span class="fa fa-pencil"></span></a>
                         <a id="del_<?=$i;?>" title="<?=gettext("delete alias"); ?>" class="act_delete btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
                       </td>
                     </tr>

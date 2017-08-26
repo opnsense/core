@@ -1,34 +1,34 @@
 <?php
 
 /*
-    Copyright (C) 2016 Deciso B.V.
-    Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2006 Fernando Lemos
-    Copyright (C) 2005 Peter Allgeyer <allgeyer_AT_web.de>
-    Copyright (C) 2004 Peter Curran <peter@closeconsultants.com>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2016 Deciso B.V.
+ * Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2006 Fernando Lemos
+ * Copyright (C) 2005 Peter Allgeyer <allgeyer@web.de>
+ * Copyright (C) 2004 Peter Curran <peter@closeconsultants.com>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 function openvpn_configure()
 {
@@ -466,11 +466,12 @@ function openvpn_add_custom(& $settings, & $conf)
     }
 }
 
-function openvpn_add_keyfile(&$data, &$conf, $mode_id, $directive, $opt = '')
+function openvpn_add_keyfile($data, &$conf, $mode_id, $directive, $opt = '')
 {
     $fpath = "/var/etc/openvpn/{$mode_id}.{$directive}";
     openvpn_create_dirs();
-    file_put_contents($fpath, base64_decode($data));
+    $data = str_replace("\r", "", base64_decode($data));
+    file_put_contents($fpath, str_replace("\n\n", "\n", $data));
     //chown($fpath, 'nobody');
     //chgrp($fpath, 'nobody');
     @chmod($fpath, 0600);
@@ -685,7 +686,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                     if ($settings['strictusercn']) {
                         $strictusercn = "true";
                     }
-                    $conf .= "auth-user-pass-verify \"/usr/local/sbin/ovpn_auth_verify user '{$settings['authmode']}' {$strictusercn} {$mode_id}\" via-env\n";
+                    $conf .= "auth-user-pass-verify \"/usr/local/sbin/ovpn_auth_verify user '{$settings['authmode']}' '{$strictusercn}' '{$mode_id}'\" via-env\n";
                 }
                 break;
         }
@@ -1286,9 +1287,9 @@ function openvpn_get_server_status($server, $socket)
                 $conn['common_name'] = $list[1];
                 $conn['remote_host'] = $list[2];
                 $conn['virtual_addr'] = $list[3];
-                $conn['bytes_recv'] = $list[4];
-                $conn['bytes_sent'] = $list[5];
-                $conn['connect_time'] = $list[6];
+                $conn['bytes_recv'] = $list[5];
+                $conn['bytes_sent'] = $list[6];
+                $conn['connect_time'] = date('Y-m-d H:i:s', $list[8]);
                 $server['conns'][] = $conn;
             }
             /* parse routing table lines */
@@ -1374,8 +1375,8 @@ function openvpn_get_client_status($client, $socket)
                 $client['status']="up";
                 $list = explode(",", $line);
 
-                $client['connect_time']  = date("D M j G:i:s Y", $list[0]);
-                $client['virtual_addr']  = $list[3];
+                $client['connect_time'] = date('Y-m-d H:i:s', $list[0]);
+                $client['virtual_addr'] = $list[3];
                 $client['remote_host'] = $list[4];
             }
             if (strstr($line,"CONNECTING")) {
@@ -1384,13 +1385,13 @@ function openvpn_get_client_status($client, $socket)
             if (strstr($line,"ASSIGN_IP")) {
                 $client['status']="waiting";
                 $list = explode(",", $line);
-                $client['connect_time']  = date("D M j G:i:s Y", $list[0]);
-                $client['virtual_addr']  = $list[3];
+                $client['connect_time'] = date('Y-m-d H:i:s', $list[0]);
+                $client['virtual_addr'] = $list[3];
             }
             if (strstr($line,"RECONNECTING")) {
                 $client['status']="reconnecting";
                 $list = explode(",", $line);
-                $client['connect_time']  = date("D M j G:i:s Y", $list[0]);
+                $client['connect_time'] = date('Y-m-d H:i:s', $list[0]);
                 $client['status'] .= "; " . $list[2];
             }
             /* parse end of output line */

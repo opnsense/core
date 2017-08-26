@@ -2,8 +2,8 @@
 
 /*
     Copyright (C) 2015-2016 Deciso B.V.
-    Copyright (C) 2004-2010 Scott Ullrich
-    Copyright (C) 2005 Colin Smith
+    Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
+    Copyright (C) 2005 Colin Smith <ethethlay@gmail.com>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -105,13 +105,12 @@ function merge_config_attributes(&$cnf_source, &$cnf_dest)
  */
 function firmware_version_xmlrpc()
 {
-    global $config;
-
     return array(
-      'firmware' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense')),
-      'kernel' => array('version' => file_get_contents('/usr/local/opnsense/version/kernel')),
-      'base' => array('version' => file_get_contents('/usr/local/opnsense/version/base')),
-      'config_version' => $config['version'],
+        'firmware' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense')),
+        'kernel' => array('version' => file_get_contents('/usr/local/opnsense/version/kernel')),
+        'base' => array('version' => file_get_contents('/usr/local/opnsense/version/base')),
+        # XXX hardcoded pre-17.7.2 compat, can remove this in 18.1
+        'config_version' => '11.2',
     );
 }
 

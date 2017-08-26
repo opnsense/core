@@ -1,10 +1,10 @@
 <?php
 
 /*
-    Copyright (C) 2010 Ermal Luci
+    Copyright (C) 2010 Ermal Luçi
     Copyright (C) 2009 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2008 Shrew Soft Inc
-    Copyright (C) 2003-2004 Manuel Kasper
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -690,6 +690,11 @@ function openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipco
         file_put_contents("{$tempdir}/{$prefix}.ovpn", $conf);
         $shkeyfile = "{$tempdir}/{$shkeyfile}";
         file_put_contents("{$shkeyfile}", base64_decode($settings['shared_key']));
+        if (!empty($proxy['passwdfile'])) {
+            $pwdfle = "{$proxy['user']}\n";
+            $pwdfle .= "{$proxy['password']}\n";
+            file_put_contents("{$tempdir}/{$proxy['passwdfile']}", $pwdfle);
+        }
         exec("cd {$tempdir}/.. && /usr/local/bin/zip -r /tmp/{$prefix}-config.zip {$prefix}");
         // Remove temporary directory
         exec("rm -rf {$tempdir}");
@@ -1502,7 +1507,7 @@ if (isset($savemsg)) {
                     <a href="https://play.google.com/store/apps/details?id=de.blinkt.openvpn"><?= gettext("OpenVPN For Android") ?></a> - <?=gettext("Recommended client for Android")?><br/>
                     <a href="http://www.featvpn.com/"><?= gettext("FEAT VPN For Android") ?></a> - <?=gettext("For older versions of Android")?><br/>
                     <?= gettext("OpenVPN Connect") ?>: <a href="https://play.google.com/store/apps/details?id=net.openvpn.openvpn"><?=gettext("Android (Google Play)")?></a> or <a href="https://itunes.apple.com/us/app/openvpn-connect/id590379981"><?=gettext("iOS (App Store)")?></a> - <?= gettext("Recommended client for iOS") ?><br/>
-                    <a href="http://code.google.com/p/tunnelblick/"><?= gettext("Tunnelblick") ?></a> - <?= gettext("Free client for OSX") ?>
+                    <a href="https://tunnelblick.net"><?= gettext("Tunnelblick") ?></a> - <?= gettext("Free client for OSX") ?>
                   </td>
                 </tr>
               </table>

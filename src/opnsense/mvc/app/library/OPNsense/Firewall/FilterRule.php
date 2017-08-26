@@ -46,13 +46,15 @@ class FilterRule
         'log' => 'parseBool,log',
         'quick' => 'parseBool,quick',
         'interface' => 'parseInterface',
+        'gateway' => 'parseRoute',
+        'reply' =>  'parsePlain',
         'ipprotocol' => 'parsePlain',
         'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
-        'from' => 'parsePlain,from {,}',
-        'from_port' => 'parsePlain, port {,}',
+        'from' => 'parsePlainCurly,from ',
+        'from_port' => 'parsePlainCurly, port ',
         'os' => 'parsePlain, os {","}',
-        'to' => 'parsePlain,to {,}',
-        'to_port' => 'parsePlain, port {,}',
+        'to' => 'parsePlainCurly,to ',
+        'to_port' => 'parsePlainCurly, port ',
         'icmp-type' => 'parsePlain,icmp-type {,}',
         'icmp6-type' => 'parsePlain,icmp6-type {,}',
         'flags' => 'parsePlain, flags ',
@@ -87,6 +89,23 @@ class FilterRule
     {
         if (!empty($maxsize) && strlen($value) > $maxsize) {
             $value = substr($value, 0, $maxsize);
+        }
+        return $value == null || $value === '' ? '' : $prefix . $value . $suffix . ' ';
+    }
+
+    /**
+     * parse plain data
+     * @param string $value field value
+     * @param string $prefix prefix when $value is provided
+     * @return string
+     */
+    private function parsePlainCurly($value, $prefix = "")
+    {
+        $suffix = "";
+        if (strpos($value, '$') === false) {
+            // don't wrap aliases in curly brackets
+            $prefix = $prefix . "{";
+            $suffix = "}";
         }
         return $value == null || $value === '' ? '' : $prefix . $value . $suffix . ' ';
     }
@@ -144,6 +163,20 @@ class FilterRule
             return "on ##{$value}## ";
         } else {
             return "on ". $this->interfaceMapping[$value]['if']." ";
+        }
+    }
+
+    /**
+     * parse gateway (route-to)
+     * @param string $value field value
+     * @return string
+     */
+    private function parseRoute($value)
+    {
+        if (!empty($this->gatewayMapping[$value]['logic'])) {
+            return " " . $this->gatewayMapping[$value]['logic'] . " ";
+        } else {
+            return "";
         }
     }
 
@@ -237,6 +270,37 @@ class FilterRule
     }
 
     /**
+     * add reply-to tag when applicable
+     * @param array $rule rule
+     */
+    private function convertReplyTo(&$rule)
+    {
+        if (!isset($rule['disablereplyto']) && $rule['direction'] != 'any') {
+            $proto = $rule['ipprotocol'];
+            if (!empty($this->interfaceMapping[$rule['interface']]['if']) && empty($rule['gateway'])) {
+                $if = $this->interfaceMapping[$rule['interface']]['if'];
+                switch ($proto) {
+                    case "inet6":
+                        if (!empty($this->interfaceMapping[$rule['interface']]['gatewayv6'])
+                           && Util::isIpAddress($this->interfaceMapping[$rule['interface']]['gatewayv6'])) {
+                            $gw = $this->interfaceMapping[$rule['interface']]['gatewayv6'];
+                            $rule['reply'] = "reply-to ( {$if} {$gw} ) ";
+                        }
+                        break;
+                    default:
+                        if (!empty($this->interfaceMapping[$rule['interface']]['gateway'])
+                           && Util::isIpAddress($this->interfaceMapping[$rule['interface']]['gateway'])) {
+                            $gw = $this->interfaceMapping[$rule['interface']]['gateway'];
+                            $rule['reply'] = "reply-to ( {$if} {$gw} ) ";
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
+
+    /**
      * preprocess internal rule data to detail level of actual ruleset
      * handles shortcuts, like inet46 and multiple interfaces
      * @return array
@@ -259,18 +323,41 @@ class FilterRule
                 $tmp['interface'] = $interface;
                 $tmp['ipprotocol'] = $ipproto;
                 $this->convertAddress($tmp);
+                $this->convertReplyTo($tmp);
                 $tmp['from'] = empty($tmp['from']) ? "any" : $tmp['from'];
                 $tmp['to'] = empty($tmp['to']) ? "any" : $tmp['to'];
                 // disable rule when interface not found
                 if (!empty($interface) && empty($this->interfaceMapping[$interface]['if'])) {
                     $tmp['disabled'] = true;
                 }
+                // disable rules when gateway is down and skip_rules_gw_down is set
+                if (!empty($tmp['skip_rules_gw_down']) && !empty($tmp['gateway']) &&
+                  empty($this->gatewayMapping[$tmp['gateway']])) {
+                    $tmp['disabled'] = true;
+                }
                 if (!isset($tmp['quick'])) {
                     // all rules are quick by default except floating
-                    $tmp['quick'] = !isset($rule['floating']) ? true : false;
+                    $tmp['quick'] = !isset($tmp['floating']) ? true : false;
+                }
+                // restructure flags
+                if (isset($tmp['protocol']) && $tmp['protocol'] == "tcp") {
+                    if (isset($tmp['tcpflags_any'])) {
+                        $tmp['flags'] = "any";
+                    } elseif (!empty($tmp['tcpflags2'])) {
+                        $tmp['flags'] = "";
+                        foreach (array('tcpflags1', 'tcpflags2') as $flagtag) {
+                            $tmp['flags'] .= $flagtag == 'tcpflags2' ? "/" : "";
+                            if (!empty($tmp[$flagtag])) {
+                                foreach (explode(",", strtoupper($tmp[$flagtag])) as $flag1) {
+                                    // CWR flag needs special treatment
+                                    $tmp['flags'] .= $flag1[0] == "C" ? "W" : $flag1[0];
+                                }
+                            }
+                        }
+                    }
                 }
                 // restructure state settings for easier output parsing
-                if (!empty($tmp['statetype'])) {
+                if (!empty($tmp['statetype']) && $tmp['type'] == 'pass') {
                     $tmp['state'] = array('type' => 'keep', 'options' => array());
                     switch ($tmp['statetype']) {
                         case 'none':

@@ -30,10 +30,7 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-if (!isset($config['hasync']) || !is_array($config['hasync'])) {
-    $config['hasync'] = array();
-}
-$a_hasync = &$config['hasync'];
+$a_hasync = &config_read_array('hasync');
 
 $checkbox_names = array(
     'pfsyncenabled',
@@ -190,7 +187,7 @@ include("head.inc");
                       <div class="well">
                         <lu>
                           <li><?=sprintf(gettext('When using XMLRPC sync to a backup machine running on another port/protocol please input the full url (example: %s)'), 'https://192.168.1.1:444/') ?></li>
-                          <li><b><?=gettext('Do not use the Synchronize Config to IP and password option on backup cluster members!') ?></b></li>
+                          <li><?=gettext('For setting up the backup machine leave this field empty, and do not forget to allow incoming connections on the specified interface for synchronization.') ?></li>
                         </lu>
                       </div>
                     </div>

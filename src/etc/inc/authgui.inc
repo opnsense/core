@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2008 Shrew Soft Inc
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     Copyright (C) 2007-2008 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2005-2006 Bill Marquette <bill.marquette@gmail.com>
     Copyright (C) 2006 Paul Taylor <paultaylor@winn-dixie.com>
@@ -168,10 +168,7 @@ function session_auth(&$Login_Error)
     );
 
     if (session_status() == PHP_SESSION_NONE) {
-        if (session_start()) {
-            $sess_name = session_name();
-            setcookie($sess_name, session_id(), null, '/', null, null, ($config['system']['webgui']['protocol'] == "https"));
-        }
+        session_start();
     }
 
     // Detect protocol change
@@ -264,7 +261,8 @@ function session_auth(&$Login_Error)
         $_SESSION = array();
 
         if (isset($_COOKIE[session_name()])) {
-            setcookie(session_name(), '', time()-42000, '/');
+            $secure = $config['system']['webgui']['protocol'] == "https";
+            setcookie(session_name(), '', time()-42000, '/', null, $secure, true);
         }
 
         /* and destroy it */
@@ -386,7 +384,7 @@ function display_login_form($Login_Error = '')
             }
         }
     }
-    setcookie("cookie_test", time() + 3600);
+    setcookie("cookie_test", time() + 3600 ,  time() + 3600, '/', null, $config['system']['webgui']['protocol'] == "https", true);
     $have_cookies = isset($_COOKIE["cookie_test"]);
 
 ?><!doctype html>

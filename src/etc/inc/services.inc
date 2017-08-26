@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014-2017 Franco Fichtner <franco@opnsense.org>
-    Copyright (C) 2010 Ermal Luci
+    Copyright (C) 2010 Ermal Luçi
     Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
@@ -44,10 +44,8 @@
  * targets in the future:
  */
 require_once('plugins.inc.d/dnsmasq.inc');
-require_once('plugins.inc.d/dyndns.inc');
 require_once('plugins.inc.d/ipsec.inc');
 require_once('plugins.inc.d/openvpn.inc');
-require_once('plugins.inc.d/rfc2136.inc');
 require_once('plugins.inc.d/openssh.inc');
 require_once('plugins.inc.d/unbound.inc');
 
@@ -106,9 +104,7 @@ function services_radvd_configure($blacklist = array())
 
     killbypid('/var/run/radvd.pid', 'TERM', true);
 
-    if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
-        $config['dhcpdv6'] = array();
-    }
+    config_read_array('dhcpdv6');
 
     $radvdconf = "# Automatically Generated, do not edit\n";
 
@@ -1018,11 +1014,8 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
         return;
     }
 
-    $syscfg = $config['system'];
-    if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
-        $config['dhcpdv6'] = array();
-    }
-    $dhcpdv6cfg = $config['dhcpdv6'];
+    $syscfg = config_read_array('system');
+    $dhcpdv6cfg = config_read_array('dhcpdv6');
     $Iflist = get_configured_interface_list();
 
     if ($verbose) {
@@ -1323,7 +1316,7 @@ function services_dhcrelay_configure($verbose = false)
 
     killbypid('/var/run/dhcrelay.pid', 'TERM', true);
 
-    $dhcrelaycfg = &$config['dhcrelay'];
+    $dhcrelaycfg = &config_read_array('dhcrelay');
 
     if (!isset($dhcrelaycfg['enable'])) {
         return;
@@ -1442,7 +1435,7 @@ function services_dhcrelay6_configure($verbose = false)
 
     killbypid('/var/run/dhcrelay6.pid', 'TERM', true);
 
-    $dhcrelaycfg = &$config['dhcrelay6'];
+    $dhcrelaycfg = &config_read_array('dhcrelay6');
 
     if (!isset($dhcrelaycfg['enable'])) {
         return;
@@ -1556,11 +1549,15 @@ function get_dyndns_ip($int, $ipver = 4)
 
     if ($ipver == 6 || is_private_ip($ip_address)) {
         $gateways_status = return_gateways_status(true);
-        // If the gateway for this interface is down, then the external check cannot work.
-        // Avoid the long wait for the external check to timeout.
-        if (stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'],"down")) {
+        /*
+         * If the gateway for this interface is down, then the external
+         * check cannot work. Avoid the long wait for the external check
+         * to timeout.
+         */
+        if (stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')) {
             return 'down';
         }
+        /* Chinese alternative is http://ip.3322.net/ */
         $hosttocheck = $ipver == 6 ? 'http://checkipv6.dyndns.org' : 'http://checkip.dyndns.org';
         $ip_ch = curl_init($hosttocheck);
         curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
@@ -1568,11 +1565,14 @@ function get_dyndns_ip($int, $ipver = 4)
         curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ip_ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ip_ch, CURLOPT_IPRESOLVE, $ipver == 6 ? CURL_IPRESOLVE_V6 : CURL_IPRESOLVE_V4);
-        $ip_result_page = curl_exec($ip_ch);
+        $ip_result = curl_exec($ip_ch);
+        if ($ip_result !== false) {
+            preg_match('=<body>Current IP Address: (.*)</body>=siU', $ip_result, $matches);
+            $ip_address = trim($matches[1]);
+        } else {
+            log_error('Aborted IP detection: ' . curl_error($ip_ch));
+        }
         curl_close($ip_ch);
-        $ip_result_decoded = urldecode($ip_result_page);
-        preg_match('=<body>Current IP Address: (.*)</body>=siU', $ip_result_decoded, $matches);
-        $ip_address = trim($matches[1]);
         if (($ipver == 6 && !is_ipaddrv6($ip_address)) || ($ipver != 6 && !is_ipaddrv4($ip_address))) {
             return 'down';
         }
@@ -1816,11 +1816,7 @@ function is_radvd_enabled()
 {
     global $config;
 
-    if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
-        $config['dhcpdv6'] = array();
-    }
-
-    $dhcpdv6cfg = $config['dhcpdv6'];
+    $dhcpdv6cfg = config_read_array('dhcpdv6');
     $Iflist = get_configured_interface_list();
 
     /* handle manually configured DHCP6 server settings first */

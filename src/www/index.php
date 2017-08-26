@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2004-2012 Scott Ullrich
+    Copyright (C) 2004-2012 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
     All rights reserved.
 
@@ -37,10 +37,8 @@ if (isset($_REQUEST['closenotice'])) {
     exit;
 }
 
-##if no config entry found, initialize config entry
-if (empty($config['widgets']) || !is_array($config['widgets'])) {
-    $config['widgets'] = array();
-}
+// if no config entry found, initialize config entry
+config_read_array('widgets');
 
 $widgetCollection = array();
 

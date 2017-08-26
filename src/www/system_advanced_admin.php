@@ -2,8 +2,8 @@
 
 /*
     Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2005-2010 Scott Ullrich
-    Copyright (C) 2008 Shrew Soft Inc
+    Copyright (C) 2005-2010 Scott Ullrich <sullrich@gmail.com>
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['webguiproto'] = $config['system']['webgui']['protocol'];
     $pconfig['webguiport'] = $config['system']['webgui']['port'];
     $pconfig['ssl-certref'] = $config['system']['webgui']['ssl-certref'];
+    $pconfig['compression'] = isset($config['system']['webgui']['compression']) ? $config['system']['webgui']['compression'] : null;
     if (!empty($config['system']['webgui']['ssl-ciphers'])) {
         $pconfig['ssl-ciphers'] = explode(':', $config['system']['webgui']['ssl-ciphers']);
     } else {
@@ -98,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($config['system']['webgui']['protocol'] != $pconfig['webguiproto'] ||
             $config['system']['webgui']['port'] != $pconfig['webguiport'] ||
             $config['system']['webgui']['ssl-certref'] != $pconfig['ssl-certref'] ||
+            $config['system']['webgui']['compression'] != $pconfig['compression'] ||
             $config['system']['webgui']['ssl-ciphers'] != $newciphers ||
             ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect'])
             ) {
@@ -110,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['webgui']['port'] = $pconfig['webguiport'];
         $config['system']['webgui']['ssl-certref'] = $pconfig['ssl-certref'];
         $config['system']['webgui']['ssl-ciphers'] = $newciphers;
+        $config['system']['webgui']['compression'] = $pconfig['compression'];
 
         if ($pconfig['disablehttpredirect'] == "yes") {
             $config['system']['webgui']['disablehttpredirect'] = true;
@@ -193,15 +196,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['webgui']['althostnames']);
         }
 
-        if (empty($config['system']['ssh']['enabled']) != empty($pconfig['enablesshd']) ||
-            empty($config['system']['ssh']['passwordauth']) != empty($pconfig['passwordauth']) ||
-            $config['system']['ssh']['port'] != $pconfig['sshport'] ||
-            empty($config['system']['ssh']['permitrootlogin']) != empty($pconfig['sshdpermitrootlogin'])
-            ) {
-              $restart_sshd = true;
-        } else {
-            $restart_sshd = false;
-        }
+        /* always store setting to prevent installer auto-start */
+        $config['system']['ssh']['noauto'] = 1;
 
         if (!empty($pconfig['enablesshd'])) {
             $config['system']['ssh']['enabled'] = 'enabled';
@@ -265,13 +261,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         system_hosts_generate();
         plugins_configure('dns');
         services_dhcpd_configure();
-
-        if ($restart_sshd) {
-            configd_run('openssh restart', true);
-        }
+        configd_run('openssh restart', true);
 
         if ($restart_webgui) {
-            mwexec_bg('/usr/local/etc/rc.restart_webgui 2');
+            configd_run('webgui restart 2', true);
         }
     }
 }
@@ -482,6 +475,29 @@ include("head.inc");
                     <div class="hidden" for="help_for_althostnames">
                       <?= gettext("Here you can specify alternate hostnames by which the router may be queried, to " .
                                           "bypass the DNS Rebinding Attack checks. Separate hostnames with spaces.") ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_compression" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WebGui Compression")?></td>
+                  <td width="78%">
+                    <select name="compression" class="formselect selectpicker">
+                        <option value="" <?=empty($pconfig['compression'])? 'selected="selected"' : '';?>>
+                          <?=gettext("Off");?>
+                        </option>
+                        <option value="1" <?=$pconfig['compression'] == "1" ? 'selected="selected"' : '';?>>
+                          <?=gettext("Low");?>
+                        </option>
+                        <option value="5" <?=$pconfig['compression'] == "5" ? 'selected="selected"' : '';?>>
+                          <?=gettext("Medium");?>
+                        </option>
+                        <option value="9" <?=$pconfig['compression'] == "9" ? 'selected="selected"' : '';?>>
+                          <?=gettext("High");?>
+                        </option>
+                    </select>
+                    <div class="hidden" for="help_for_compression">
+                      <?=gettext("Enable compression of webgui pages and dynamic content.");?><br/>
+                      <?=gettext("Transfer less data to the client for an additional cost in processing power.");?>
                     </div>
                   </td>
                 </tr>

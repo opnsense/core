@@ -48,15 +48,10 @@ function adjust_gmt($dt)
     }
 
     foreach ($dhcpd as $dhcpditem) {
-        $dhcpleaseinlocaltime = $dhcpditem['dhcpleaseinlocaltime'];
-        if ($dhcpleaseinlocaltime == "yes") {
-            break;
+        if (isset($dhcpditem['dhcpleaseinlocaltime']) && $dhcpleaseinlocaltime == "yes") {
+            $ts = strtotime($dt . " GMT");
+            return strftime("%Y/%m/%d %I:%M:%S%p", $ts);
         }
-    }
-
-    if ($dhcpleaseinlocaltime == "yes") {
-        $ts = strtotime($dt . " GMT");
-        return strftime("%Y/%m/%d %I:%M:%S%p", $ts);
     }
 
     return $dt;
@@ -387,7 +382,7 @@ include("head.inc");?>
                   $lip = ip2ulong($data['ip']);
                   if ($data['act'] == "static") {
                       foreach ($dhcpd as $dhcpif => $dhcpifconf) {
-                          if(is_array($dhcpifconf['staticmap'])) {
+                          if(isset($dhcpifconf['staticmap']) && is_array($dhcpifconf['staticmap'])) {
                               foreach ($dhcpifconf['staticmap'] as $staticent) {
                                   if ($data['ip'] == $staticent['ipaddr']) {
                                       $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);

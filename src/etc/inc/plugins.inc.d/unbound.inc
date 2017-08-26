@@ -41,6 +41,7 @@ function unbound_configure()
     return array(
         'dns' => array('unbound_configure_do'),
         'hosts' => array('unbound_hosts_generate:0'),
+        'newwanip' => array('unbound_configure_do:2'),
     );
 }
 
@@ -106,35 +107,12 @@ function unbound_optimization()
         $optimization['key_cache_slabs'] = "key-cache-slabs: 4";
     }
 
-
     // More outgoing connections per thread otherwise assign a default of 4096 for a single thread
     if ($numprocs > 0) {
         $or = (1024/$numprocs) - 50;
         $optimization['outgoing_range'] = "outgoing-range: {$or}";
     } else {
         $optimization['outgoing_range'] = "outgoing-range: {4096}";
-    }
-
-    /*
-     * Larger socket buffer for busy servers
-     * Check that it is set to 4MB (by default the OS has it configured to 4MB)
-     */
-    if (isset($config['sysctl']['item'])) {
-        foreach ($config['sysctl']['item'] as $tunable) {
-            if ($tunable['tunable'] == 'kern.ipc.maxsockbuf') {
-                $so = floor(($tunable['value']/1024/1024)-1);
-                // Check to ensure that the number is not a negative
-                if ($so > 0) {
-                    $optimization['so_rcvbuf'] = "so-rcvbuf: {$so}m";
-                } else {
-                    unset($optimization['so_rcvbuf']);
-                }
-            }
-        }
-        // Safety check in case kern.ipc.maxsockbuf is not available.
-        if (!isset($optimization['so_rcvbuf'])) {
-            $optimization['so_rcvbuf'] = "#so-rcvbuf: 4m";
-        }
     }
 
     return $optimization;
@@ -416,15 +394,56 @@ EOF;
 
         file_put_contents('/var/unbound/remotecontrol.conf', $remotcfg);
 
-        unbound_execute('unbound-control-setup');
+        mwexecf(
+            'chroot -u unbound -g unbound / %s -d %s',
+            array('/usr/local/sbin/unbound-control-setup', '/var/unbound')
+        );
     }
 }
 
-function unbound_configure_do($verbose = false)
+function unbound_interface($interface)
 {
     global $config;
 
-    unbound_execute('stop');
+    if (empty($interface)) {
+        /* emulate non-interface reload */
+        return true;
+    }
+
+    if (!empty($config['unbound']['active_interface'])) {
+        foreach (explode(',', $config['unbound']['active_interface']) as $used) {
+            if ($used == $interface) {
+                return true;
+            }
+        }
+    }
+
+    if (!empty($config['unbound']['outgoing_interface'])) {
+        foreach (explode(',', $config['unbound']['outgoing_interface']) as $used) {
+            if ($used == $interface) {
+                return true;
+            }
+        }
+    }
+
+    /*
+     * We can ignore this request as we don't listen here
+     * or always listen on :: / 0.0.0.0 so that a reload
+     * is not necessary.
+     */
+    return false;
+}
+
+function unbound_configure_do($verbose = false, $interface = '')
+{
+    global $config;
+
+    if (!unbound_interface($interface)) {
+        return;
+    }
+
+    killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
+    killbypid('/var/run/unbound.pid', 'TERM', true);
 
     if (!isset($config['unbound']['enable'])) {
         return;
@@ -435,54 +454,27 @@ function unbound_configure_do($verbose = false)
         flush();
     }
 
-    unbound_execute('unbound-anchor');
+    mwexecf(
+        'chroot -u unbound -g unbound / %s -a %s',
+        array('/usr/local/sbin/unbound-anchor', '/var/unbound/root.key'),
+        true
+    );
+
     unbound_remote_control_setup();
     unbound_generate_config();
-    unbound_execute('start');
+
+    $domain = $config['system']['domain'];
+    if (isset($config['unbound']['regdhcpdomain'])) {
+        $domain = $config['unbound']['regdhcpdomain'];
+    }
+    killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
+    if (isset($config['unbound']['regdhcp'])) {
+        mwexecf('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py /domain %s', $domain);
+    }
+    mwexecf('/usr/local/sbin/unbound -c %s', '/var/unbound/unbound.conf');
 
     if ($verbose) {
         echo "done.\n";
-    }
-}
-
-function unbound_execute($cmd)
-{
-    global $config;
-
-    switch ($cmd) {
-        case 'start':
-            $domain = $config['system']['domain'];
-            if (isset($config['unbound']['regdhcpdomain'])) {
-                $domain = $config['unbound']['regdhcpdomain'];
-            }
-            killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
-            if (isset($config['unbound']['regdhcp'])) {
-                mwexecf('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py /domain %s', $domain);
-            }
-            mwexecf('/usr/local/sbin/unbound -c %s', '/var/unbound/unbound.conf');
-            break;
-        case 'stop':
-            killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
-            killbypid('/var/run/unbound.pid', 'TERM', true);
-            break;
-        case 'reload':
-            killbypid('/var/run/unbound.pid', 'HUP');
-            break;
-        case 'unbound-anchor':
-            mwexecf(
-                'chroot -u unbound -g unbound / %s -a %s',
-                array('/usr/local/sbin/unbound-anchor', '/var/unbound/root.key'),
-                true
-            );
-            break;
-        case 'unbound-control-setup':
-            mwexecf(
-                'chroot -u unbound -g unbound / %s -d %s',
-                array('/usr/local/sbin/unbound-control-setup', '/var/unbound')
-            );
-            break;
-        default:
-            break;
     }
 }
 
@@ -508,6 +500,9 @@ function unbound_add_domain_overrides($pvt = false)
         if ($pvt == true) {
             $domain_entries .= "private-domain: \"$domain\"\n";
             $domain_entries .= "domain-insecure: \"$domain\"\n";
+            if (preg_match('/.+\.in-addr\.arpa\.?$/', $domain)) {
+                $domain_entries .= "local-zone: \"$domain\" typetransparent\n";
+            }
         } else {
             $domain_entries .= "stub-zone:\n";
             $domain_entries .= "\tname: \"$domain\"\n";
@@ -751,5 +746,6 @@ function unbound_hosts_generate()
     }
 
     unbound_add_host_entries();
-    unbound_execute('reload');
+
+    killbypid('/var/run/unbound.pid', 'HUP');
 }

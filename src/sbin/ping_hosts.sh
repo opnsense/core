@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2006 Scott Ullrich
+# Copyright (c) 2006 Scott Ullrich <sullrich@gmail.com>
 # All rights reserved.
 
 # Format of file should be deliminted by |

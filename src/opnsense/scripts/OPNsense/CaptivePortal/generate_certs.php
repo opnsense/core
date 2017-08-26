@@ -1,9 +1,8 @@
 #!/usr/local/bin/php
 <?php
 
-/**
+/*
  *    Copyright (C) 2015 Deciso B.V.
- *
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -26,7 +25,6 @@
  *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *    POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 // use legacy code to generate certs and ca's
@@ -34,9 +32,8 @@
 require_once("config.inc");
 require_once("certs.inc");
 require_once("legacy_bindings.inc");
-use OPNsense\Core\Config;
 
-global $config;
+use OPNsense\Core\Config;
 
 // traverse captive portal zones
 $configObj = Config::getInstance()->object();

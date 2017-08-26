@@ -29,11 +29,7 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 
-if (!isset($config['filter']['scrub']['rule'])) {
-    $config['filter']['scrub'] = array();
-    $config['filter']['scrub']['rule'] = array();
-}
-$a_scrub = &$config['filter']['scrub']['rule'];
+$a_scrub = &config_read_array('filter', 'scrub', 'rule');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -41,14 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['scrubrnid'] = !empty($config['system']['scrubrnid']);
     $pconfig['scrub_interface_disable'] = !empty($config['system']['scrub_interface_disable']);
     if (!empty($_GET['savemsg'])) {
-        $savemsg = sprintf(
-            gettext(
-                'The settings have been applied and the rules are now reloading ' .
-                'in the background. You can monitor the reload progress %shere%s.'
-            ),
-            '<a href="status_filter_reload.php">',
-            '</a>'
-        );
+        $savemsg = gettext('The settings have been applied and the rules are now reloading in the background.');
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;

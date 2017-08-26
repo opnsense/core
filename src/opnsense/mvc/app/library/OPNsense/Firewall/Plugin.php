@@ -41,12 +41,19 @@ class Plugin
     private $filterRules = array();
     private $interfaceMapping = array();
     private $gatewayMapping = array();
+    private $systemDefaults = array();
 
     /**
      * init firewall plugin component
      */
     public function __construct()
     {
+        if (!empty(Config::getInstance()->object()->system->disablereplyto)) {
+            $this->systemDefaults['disablereplyto'] = true;
+        }
+        if (!empty(Config::getInstance()->object()->system->skip_rules_gw_down)) {
+            $this->systemDefaults['skip_rules_gw_down'] = true;
+        }
     }
 
     /**
@@ -69,7 +76,11 @@ class Plugin
         if (is_array($gateways)) {
             foreach ($gateways as $key => $gw) {
                 if (Util::isIpAddress($gw['gateway']) && !empty($gw['interface'])) {
-                    $this->gatewayMapping[$key] = array("logic" => "route-to ( {$gw['interface']} {$gw['gateway']} )");
+                    $this->gatewayMapping[$key] = array("logic" => "route-to ( {$gw['interface']} {$gw['gateway']} )",
+                                                        "interface" => $gw['interface'],
+                                                        "gateway" => $gw['gateway'],
+                                                        "proto" => strstr($gw['gateway'], ':') ? "inet6" : "inet",
+                                                        "type" => "gateway");
                 }
             }
         }
@@ -84,9 +95,13 @@ class Plugin
         if (is_array($groups)) {
             foreach ($groups as $key => $gwgr) {
                 $routeto = array();
+                $proto = 'inet';
                 foreach ($gwgr as $gw) {
                     if (Util::isIpAddress($gw['gwip']) && !empty($gw['int'])) {
                         $routeto[] = str_repeat("( {$gw['int']} {$gw['gwip']} )", $gw['weight']);
+                        if (strstr($gw['gwip'], ':')) {
+                            $proto = 'inet6';
+                        }
                     }
                 }
                 if (count($routeto) > 0) {
@@ -97,10 +112,40 @@ class Plugin
                     if (!empty(Config::getInstance()->object()->system->lb_use_sticky)) {
                         $routetologic .= " sticky-address ";
                     }
-                    $this->gatewayMapping[$key] = array("logic" => $routetologic);
+                    $this->gatewayMapping[$key] = array("logic" => $routetologic,
+                                                        "proto" => $proto,
+                                                        "type" => "group");
                 }
             }
         }
+    }
+
+    /**
+     * fetch gateway (names) for provided interface, would return both ipv4/ipv6
+     * @param string $intf interface (e.g. em0, igb0,...)
+     */
+    public function getInterfaceGateways($intf)
+    {
+        $result = array();
+        $protos_found = array();
+        foreach ($this->gatewayMapping as $key => $gw) {
+            if ($gw['type'] == 'gateway' && $gw['interface'] == $intf) {
+                if (!in_array($gw['proto'], $protos_found)) {
+                    $result[] = $key;
+                    $protos_found[] = $gw['proto'];
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     *  Fetch gateway
+     *  @param string $gw gateway name
+     */
+    public function getGateway($gw)
+    {
+        return $this->gatewayMapping[$gw];
     }
 
     /**
@@ -119,10 +164,10 @@ class Plugin
      * @param string $placement placement head,tail
      * @return null
      */
-    public function registerAnchor($name, $type = "fw", $priority = 0, $placement = "tail")
+    public function registerAnchor($name, $type = "fw", $priority = 0, $placement = "tail", $quick = false)
     {
         $anchorKey = sprintf("%s.%s.%08d.%08d", $type, $placement, $priority, count($this->anchors));
-        $this->anchors[$anchorKey] = $name;
+        $this->anchors[$anchorKey] = array('name' => $name, 'quick' => $quick);
         ksort($this->anchors);
     }
 
@@ -139,7 +184,11 @@ class Plugin
             foreach ($this->anchors as $anchorKey => $anchor) {
                 if (strpos($anchorKey, "{$type}.{$placement}") === 0) {
                     $result .= $type == "fw" ? "" : "{$type}-";
-                    $result .= "anchor \"{$anchor}\"\n";
+                    $result .= "anchor \"{$anchor['name']}\"";
+                    if ($anchor['quick']) {
+                        $result .= " quick";
+                    }
+                    $result .= "\n";
                 }
             }
         }
@@ -154,6 +203,9 @@ class Plugin
      */
     public function registerFilterRule($prio, $conf, $defaults = null)
     {
+        if (!empty($this->systemDefaults)) {
+            $conf = array_merge($this->systemDefaults, $conf);
+        }
         if ($defaults != null) {
             $conf = array_merge($defaults, $conf);
         }

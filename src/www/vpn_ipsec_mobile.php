@@ -2,7 +2,7 @@
 
 /*
   Copyright (C) 2014-2015 Deciso B.V.
-  Copyright (C) 2008 Shrew Soft Inc
+  Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -33,20 +33,11 @@ require_once("filter.inc");
 require_once("services.inc");
 require_once("plugins.inc.d/ipsec.inc");
 
-if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
-    $config['ipsec'] = array();
-}
-
-if (!isset($config['ipsec']['phase1'])) {
-    $config['ipsec']['phase1'] = array();
-}
-
-if (!isset($config['ipsec']['client'])) {
-    $config['ipsec']['client'] = array();
-}
+config_read_array('ipsec', 'client');
+config_read_array('ipsec', 'phase1');
 
 // define formfields
-$form_fields = "user_source,group_source,pool_address,pool_netbits,net_list
+$form_fields = "user_source,local_group,pool_address,pool_netbits,net_list
 ,save_passwd,dns_domain,dns_split,dns_server1,dns_server2,dns_server3
 ,dns_server4,wins_server1,wins_server2,pfs_group,login_banner";
 
@@ -102,8 +93,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         /* input validation */
-        $reqdfields = explode(" ", "user_source group_source");
-        $reqdfieldsn =  array(gettext("User Authentication Source"),gettext("Group Authentication Source"));
+        $reqdfields = explode(" ", "user_source");
+        $reqdfieldsn =  array(gettext("User Authentication Source"));
         do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
         if (!empty($pconfig['pool_address']) && !is_ipaddr($pconfig['pool_address'])) {
@@ -146,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (count($input_errors) == 0) {
             $client = array();
-            $copy_fields = "user_source,group_source,pool_address,pool_netbits,dns_domain,dns_server1
+            $copy_fields = "user_source,local_group,pool_address,pool_netbits,dns_domain,dns_server1
             ,dns_server2,dns_server3,dns_server4,wins_server1,wins_server2
             ,dns_split,pfs_group,login_banner";
             foreach (explode(",", $copy_fields) as $fieldname) {
@@ -393,13 +384,21 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Group Authentication"); ?></td>
+                    <td><a id="help_for_local_group" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Enforce local group') ?></td>
                     <td>
-                      <select name="group_source" class="form-control" id="group_source">
-                        <option value="none"><?=gettext("none"); ?></option>
-                        <option value="system" <?= $pconfig['group_source'] == "system" ?  "selected=\"selected\"" : "";
-?>><?=gettext("system"); ?></option>
+                      <select name="local_group" class="form-control" id="local_group">
+                        <option value="" <?= empty($pconfig['local_group']) ? 'selected="selected"' : '' ?>>(<?= gettext('none') ?>)</option>
+<?php
+                      foreach (config_read_array('system', 'group') as $group):
+                          $selected = $pconfig['local_group'] == $group['name'] ? 'selected="selected"' : ''; ?>
+                        <option value="<?= $group['name'] ?>" <?= $selected ?>><?= $group['name'] ?></option>
+<?php
+                      endforeach ?>
                       </select>
+                      <div class="hidden" for="help_for_local_group">
+                        <?= gettext('Restrict access to users in the selected local group. Please be aware ' .
+                          'that other authentication backends will refuse to authenticate when using this option.') ?>
+                      </div>
                     </td>
                   </tr>
                     <tr>

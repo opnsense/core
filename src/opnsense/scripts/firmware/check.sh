@@ -54,7 +54,7 @@ download_size="none"
 itemcount=0
 linecount=0
 timer=0
-timeout=30 # Wait for a maximum number of seconds to determine connection issues
+timeout=45 # Wait for a maximum number of seconds to determine connection issues
 
 # File location variables
 tmp_pkg_output_file="/tmp/packages.output"
@@ -63,8 +63,6 @@ tmp_pkg_update_file="/tmp/pkg_updates.output"
 # Check if pkg is already runnig
 pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
 if [ "$pkg_running" == "" ]; then
-      # load changelogs first
-      /usr/local/opnsense/scripts/firmware/changelog.sh fetch
       # start pkg update
       pkg update -f > $tmp_pkg_update_file &
       pkg_running="started" # Set running state to arbitrary value
@@ -121,8 +119,6 @@ if [ "$pkg_running" == "" ]; then
               LQUERY=$(pkg query %v opnsense-update)
               RQUERY=$(pkg rquery %v opnsense-update)
               if [ "${LQUERY%%_*}" != "${RQUERY%%_*}" ]; then
-                upgrade_needs_reboot="1"
-              elif opnsense-update -c > /dev/null; then
                 upgrade_needs_reboot="1"
               fi
 
@@ -236,6 +232,26 @@ if [ "$pkg_running" == "" ]; then
                   itemcount=`echo $linecount + 4 | bc`
                 fi
               done
+            fi
+            if opnsense-update -bc; then
+              if [ "$packages_upgraded" == "" ]; then
+                packages_upgraded=$packages_upgraded"{\"name\":\"base\"," # If it is the first item then we do not want a seperator
+              else
+                packages_upgraded=$packages_upgraded", {\"name\":\"base\","
+              fi
+              packages_upgraded=$packages_upgraded"\"current_version\":\"$(opnsense-update -bv)\","
+              packages_upgraded=$packages_upgraded"\"new_version\":\"$(opnsense-update -v)\"}"
+              upgrade_needs_reboot="1"
+            fi
+            if opnsense-update -kc; then
+              if [ "$packages_upgraded" == "" ]; then
+                packages_upgraded=$packages_upgraded"{\"name\":\"kernel\"," # If it is the first item then we do not want a seperator
+              else
+                packages_upgraded=$packages_upgraded", {\"name\":\"kernel\","
+              fi
+              packages_upgraded=$packages_upgraded"\"current_version\":\"$(opnsense-update -kv)\","
+              packages_upgraded=$packages_upgraded"\"new_version\":\"$(opnsense-update -v)\"}"
+              upgrade_needs_reboot="1"
             fi
           fi
         else

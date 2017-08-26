@@ -3,8 +3,9 @@
 /*
     Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2007 Scott Dale
-    Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
-    and Jonathan Watt <jwatt@jwatt.org>.
+    Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>
+    Copyright (C) 2004-2005 Manuel Kasper <mk@neon1.net>
+    Copyright (C) 2004-2005 Jonathan Watt <jwatt@jwatt.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -68,8 +69,9 @@ require_once("interfaces.inc");
 <table class="table table-striped table-condensed" data-plugin="interfaces" data-callback="interface_widget_update">
   <tbody>
 <?php
+    $ifsinfo = get_interfaces_info();
     foreach (get_configured_interface_with_descr() as $ifdescr => $ifname):
-      $ifinfo = get_interface_info($ifdescr);
+      $ifinfo = $ifsinfo[$ifdescr];
       $iswireless = is_interface_wireless($ifdescr);?>
       <tr id="interface_widget_item_<?=$ifname;?>">
         <td>

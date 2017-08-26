@@ -3,7 +3,7 @@
 /*
     Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
     Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2014 Warren Baker <warren@pfsense.org>
+    Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,23 +33,14 @@ require_once("services.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-if (empty($config['unbound']) || !is_array($config['unbound'])) {
-    $config['unbound'] = array();
-}
+$a_hosts = &config_read_array('unbound', 'hosts');
+config_read_array('unbound', 'domainoverrides');
 
-if (empty($config['unbound']['hosts']) || !is_array($config['unbound']['hosts'])) {
-    $config['unbound']['hosts'] = array();
-}
-$a_hosts =& $config['unbound']['hosts'];
 /* Backwards compatibility for records created before introducing RR types. */
 foreach ($a_hosts as $i => $hostent) {
     if (!isset($hostent['rr'])) {
         $a_hosts[$i]['rr'] = is_ipaddrv6($hostent['ip']) ? 'AAAA' : 'A';
     }
-}
-
-if (empty($config['unbound']['domainoverrides']) || !is_array($config['unbound']['domainoverrides'])) {
-    $config['unbound']['domainoverrides'] = array();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -69,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
     } elseif (!empty($pconfig['act']) && $pconfig['act'] == 'doverride') {
-        $a_domainOverrides = &$config['unbound']['domainoverrides'];
+        $a_domainOverrides = &config_read_array('unbound', 'domainoverrides');
         if (isset($pconfig['id']) && !empty($a_domainOverrides[$pconfig['id']])) {
             unset($a_domainOverrides[$pconfig['id']]);
             write_config();

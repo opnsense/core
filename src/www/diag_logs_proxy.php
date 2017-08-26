@@ -7,6 +7,7 @@ if (isset($_GET['type']) && ($_GET['type'] === 'access' || $_GET['type'] === 'st
 
 $logfile = "/var/log/squid/{$type}.log";
 $logclog = false;
+$logsplit = 2;
 
 $logpills = array();
 $logpills[] = array(gettext('Cache'), true, '/diag_logs_proxy.php?type=cache');

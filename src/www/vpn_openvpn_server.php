@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2008 Shrew Soft Inc.
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -32,10 +32,7 @@ require_once("plugins.inc.d/openvpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-if (!isset($config['openvpn']['openvpn-server'])) {
-    $config['openvpn']['openvpn-server'] = array();
-}
-$a_server = &$config['openvpn']['openvpn-server'];
+$a_server = &config_read_array('openvpn', 'openvpn-server');
 
 $act = null;
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -67,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,serverbridge_interface,serverbridge_dhcp_start,serverbridge_dhcp_end
             ,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
-            ,wins_server2,no_tun_ipv6,push_register_dns,dns_domain
+            ,wins_server2,no_tun_ipv6,push_register_dns,dns_domain,local_group
             ,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
             ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,reneg-sec,use-common-name";
 
@@ -335,7 +332,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $copy_fields = "mode,protocol,dev_mode,local_port,description,crypto,digest,engine
                 ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6
                 ,gwredir,local_network,local_networkv6,maxclients,compression
-                ,passtos,client2client,dynamic_ip,pool_enable,topology_subnet
+                ,passtos,client2client,dynamic_ip,pool_enable,topology_subnet,local_group
                 ,serverbridge_dhcp,serverbridge_interface,serverbridge_dhcp_start
                 ,serverbridge_dhcp_end,dns_domain,dns_server1,dns_server2,dns_server3
                 ,dns_server4,push_register_dns,ntp_server1,ntp_server2,netbios_enable
@@ -663,6 +660,24 @@ $( document ).ready(function() {
                         </select>
                       </td>
                     </tr>
+                    <tr class="opt_mode opt_mode_server_user opt_mode_server_tls_user" style="display:none">
+                      <td><a id="help_for_local_group" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Enforce local group') ?></td>
+                      <td>
+                        <select name='local_group' id="local_group" class="form-control">
+                          <option value="" <?= empty($pconfig['local_group']) ? 'selected="selected"' : '' ?>>(<?= gettext('none') ?>)</option>
+<?php
+                        foreach (config_read_array('system', 'group') as $group):
+                            $selected = $pconfig['local_group'] == $group['name'] ? 'selected="selected"' : ''; ?>
+                          <option value="<?= $group['name'] ?>" <?= $selected ?>><?= $group['name'] ?></option>
+<?php
+                        endforeach; ?>
+                        </select>
+                        <div class="hidden" for="help_for_local_group">
+                          <?= gettext('Restrict access to users in the selected local group. Please be aware ' .
+                            'that other authentication backends will refuse to authenticate when using this option.') ?>
+                        </div>
+                      </td>
+                    </tr>
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Protocol");?></td>
                         <td>
@@ -717,7 +732,7 @@ $( document ).ready(function() {
                         }
                                                     $grouplist = return_gateway_groups_array();
                         foreach ($grouplist as $name => $group) {
-                            if ($group['ipprotocol'] != inet) {
+                            if ($group['ipprotocol'] != "inet") {
                                 continue;
                             }
                             if ($group[0]['vip'] <> "") {
@@ -1169,7 +1184,7 @@ endif; ?>
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_p2p_shared_key opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user opt_gwredir">
-                      <td width="22%" ><a id="help_for_local_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a><?=gettext("IPv6 Local Network"); ?></td>
+                      <td width="22%" ><a id="help_for_local_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Local Network"); ?></td>
                       <td>
                         <input name="local_networkv6" type="text" class="form-control unknown" size="40" value="<?=$pconfig['local_networkv6'];?>" />
                         <div class="hidden" for="help_for_local_networkv6">

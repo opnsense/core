@@ -74,10 +74,7 @@ function is_posnumericint($arg) {
 }
 
 
-if (!isset($config['filter']['rule'])) {
-    $config['filter']['rule'] = array();
-}
-$a_filter = &$config['filter']['rule'];
+$a_filter = &config_read_array('filter', 'rule');
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -967,7 +964,7 @@ include("head.inc");
                                 <optgroup label="<?=gettext("Well-known ports");?>">
                                   <option value="any" <?= $pconfig['srcbeginport'] == "any" ? "selected=\"selected\"" : ""; ?>><?=gettext("any"); ?></option>
   <?php                            foreach ($wkports as $wkport => $wkportdesc): ?>
-                                  <option value="<?=$wkport;?>" <?= $wkport == $pconfig['srcbeginport'] ?  "selected=\"selected\"" : "" ;?>><?=htmlspecialchars($wkportdesc);?></option>
+                                  <option value="<?=$wkport;?>" <?= $wkport == $pconfig['srcbeginport'] && $wkport == $pconfig['srcendport'] ?  "selected=\"selected\"" : "" ;?>><?=htmlspecialchars($wkportdesc);?></option>
   <?php                            endforeach; ?>
                                 </optgroup>
                               </select>
@@ -984,7 +981,7 @@ include("head.inc");
                                 <optgroup label="<?=gettext("Well-known ports");?>">
                                   <option value="any" <?= $pconfig['srcendport'] == "any" ? "selected=\"selected\"" : ""; ?>><?=gettext("any"); ?></option>
   <?php                          foreach ($wkports as $wkport => $wkportdesc): ?>
-                                  <option value="<?=$wkport;?>" <?= $wkport == $pconfig['srcendport'] ?  "selected=\"selected\"" : "" ;?>><?=htmlspecialchars($wkportdesc);?></option>
+                                  <option value="<?=$wkport;?>" <?= $wkport == $pconfig['srcbeginport'] && $wkport == $pconfig['srcendport'] ?  "selected=\"selected\"" : "" ;?>><?=htmlspecialchars($wkportdesc);?></option>
   <?php                          endforeach; ?>
                                 </optgroup>
                               </select>
@@ -1086,7 +1083,7 @@ include("head.inc");
                                 <optgroup label="<?=gettext("Well-known ports");?>">
                                   <option value="any" <?= $pconfig['dstbeginport'] == "any" ? "selected=\"selected\"" : ""; ?>><?=gettext("any"); ?></option>
   <?php                            foreach ($wkports as $wkport => $wkportdesc): ?>
-                                  <option value="<?=$wkport;?>" <?= $wkport == $pconfig['dstbeginport'] ?  "selected=\"selected\"" : "" ;?>><?=htmlspecialchars($wkportdesc);?></option>
+                                  <option value="<?=$wkport;?>" <?= $wkport == $pconfig['dstbeginport'] && $wkport == $pconfig['dstendport'] ?  "selected=\"selected\"" : "" ;?>><?=htmlspecialchars($wkportdesc);?></option>
   <?php                            endforeach; ?>
                                 </optgroup>
                               </select>
@@ -1103,7 +1100,7 @@ include("head.inc");
                                 <optgroup label="<?=gettext("Well-known ports");?>">
                                   <option value="any" <?= $pconfig['dstendport'] == "any" ? "selected=\"selected\"" : ""; ?>><?=gettext("any"); ?></option>
   <?php                          foreach ($wkports as $wkport => $wkportdesc): ?>
-                                  <option value="<?=$wkport;?>" <?= $wkport == $pconfig['dstendport'] ?  "selected=\"selected\"" : "" ;?>><?=htmlspecialchars($wkportdesc);?></option>
+                                  <option value="<?=$wkport;?>" <?= $wkport == $pconfig['dstbeginport'] && $wkport == $pconfig['dstendport'] ?  "selected=\"selected\"" : "" ;?>><?=htmlspecialchars($wkportdesc);?></option>
   <?php                          endforeach; ?>
                                 </optgroup>
                               </select>
@@ -1278,7 +1275,7 @@ include("head.inc");
                       <td>
                           <table class="table table-condensed">
                               <tr>
-                                  <th><?= gettext('Main') ?></th>
+                                  <th><?= gettext('All packets') ?></th>
                                   <th><?= gettext('Low Delay/TCP ACK') ?></th>
                               </tr>
                               <tr>

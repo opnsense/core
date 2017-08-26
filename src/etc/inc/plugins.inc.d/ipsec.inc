@@ -2,10 +2,10 @@
 
 /*
     Copyright (C) 2016 Deciso B.V.
-    Copyright (C) 2008 Shrew Soft Inc
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     Copyright (C) 2008 Ermal Luçi
-    Copyright (C) 2004-2007 Scott Ullrich
-    Copyright (C) 2003-2004 Manuel Kasper
+    Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -441,11 +441,9 @@ function ipsec_mobilekey_sort()
 {
     global $config;
 
-    function mobilekeycmp($a, $b) {
+    usort($config['ipsec']['mobilekey'], function ($a, $b) {
         return strcmp($a['ident'][0], $b['ident'][0]);
-    }
-
-    usort($config['ipsec']['mobilekey'], "mobilekeycmp");
+    });
 }
 
 function ipsec_get_number_of_phase2($ikeid)
@@ -463,7 +461,7 @@ function ipsec_get_number_of_phase2($ikeid)
     return $nbph2;
 }
 
-function ipsec_find_id(&$ph1ent, $side = 'local', $rgmap = array())
+function ipsec_find_id(&$ph1ent, $side = 'local')
 {
     $id_data = null;
     if ($side == "local") {
@@ -486,7 +484,11 @@ function ipsec_find_id(&$ph1ent, $side = 'local', $rgmap = array())
             $thisid_data = resolve_retry($id_data);
             break;
         case "peeraddress":
-            $thisid_data = $rgmap[$ph1ent['remote-gateway']];
+            if (!is_ipaddr($ph1ent['remote-gateway'])) {
+                $thisid_data = resolve_retry($ph1ent['remote-gateway']);
+            } else {
+                $thisid_data = $ph1ent['remote-gateway'];
+            }
             break;
         case "address":
             $thisid_data = $id_data;
@@ -530,6 +532,62 @@ function ipsec_convert_to_modp($index)
     }
 
     return $convertion;
+}
+
+/**
+ * load manual defined spd entries using setkey
+ */
+function ipsec_configure_spd()
+{
+    global $config;
+
+    $spd_entries = array();
+
+    // cleanup, collect previous manual added spd entries (stash in spd_entries) for removal.
+    exec('/sbin/setkey -PD', $lines);
+    $line_count = 0;
+    foreach ($lines as $line) {
+        if ($line[0] != "\t") {
+            $tmp = explode(' ', $line);
+            if (count($tmp) >= 3) {
+                $src = explode('[', $tmp[0])[0];
+                $dst = explode('[', $tmp[1])[0];
+            }
+            $line_count = 0;
+        } elseif ($line_count == 1) {
+            // direction
+            $direction = trim(explode(' ', $line)[0]);
+        } elseif (strpos($line, '/require') !== false) {
+            // we'll assume that the require items in the spd are our manual items, so
+            // they will be removed first
+            $spd_entries[] = sprintf("spddelete -n %s %s any -P %s;", $src, $dst, $direction);
+        }
+        $line_count++;
+    }
+
+    // add manual added spd entries
+    if (!empty($config['ipsec']['phase1']) && !empty($config['ipsec']['phase2'])) {
+        foreach ($config['ipsec']['phase1'] as $ph1ent) {
+            foreach ($config['ipsec']['phase2'] as $ph2ent) {
+                if (!isset($ph2ent['disabled']) && $ph1ent['ikeid'] == $ph2ent['ikeid'] && !empty($ph2ent['spd'])) {
+                    $myid_data = ipsec_find_id($ph1ent, "local");
+                    $peerid_spec = ipsec_find_id($ph1ent, "peer");
+                    foreach (explode(',', $ph2ent['spd']) as $local_net) {
+                        $proto = $ph2ent['mode'] == "tunnel" ? "4" : "6";
+                        $remote_net = ipsec_idinfo_to_cidr($ph2ent['remoteid'], false, $ph2ent['mode']);
+                        $spd_entries[] = sprintf("spdadd -%s %s %s any -P out ipsec %s/tunnel/%s-%s/require;",
+                                             $proto, trim($local_net), $remote_net, $ph2ent['protocol'],
+                                             $myid_data, $peerid_spec);
+                    }
+                }
+            }
+        }
+
+        $tmpfname = tempnam("/tmp", "setkey");
+        file_put_contents($tmpfname, implode("\n", $spd_entries) . "\n");
+        mwexec("/sbin/setkey -f ". $tmpfname, true);
+        unlink($tmpfname);
+    }
 }
 
 function ipsec_configure_do($verbose = false, $interface = '')
@@ -850,23 +908,10 @@ EOD;
                     }
                 }
             }
-            if ($a_client['user_source'] != "none" && $disable_xauth == false) {
+            if (isset($a_client['enable']) && !$disable_xauth) {
                 $strongswan .= "\t\txauth-generic {\n";
                 $strongswan .= "\t\t\tscript = /usr/local/etc/inc/plugins.inc.d/ipsec/auth-user.php\n";
-                $strongswan .= "\t\t\tauthcfg = ";
-                $firstsed = 0;
-                $authcfgs = explode(",", $a_client['user_source']);
-                foreach ($authcfgs as $authcfg) {
-                    if ($firstsed > 0) {
-                        $strongswan .= ",";
-                    }
-                    if ($authcfg == "system") {
-                        $authcfg = "Local Database";
-                    }
-                    $strongswan .= $authcfg;
-                    $firstsed = 1;
-                }
-                $strongswan .= "\n";
+                $strongswan .= "\t\t\tauthcfg = unused\n";
                 $strongswan .= "\t\t}\n";
             }
         }
@@ -933,7 +978,7 @@ EOD;
                 $pskconf .= " : RSA {$ph1keyfile}\n";
             } elseif (!empty($ph1ent['pre-shared-key'])) {
                 $myid = isset($ph1ent['mobile']) ? trim(ipsec_find_id($ph1ent, "local")) : "";
-                $peerid_data = isset($ph1ent['mobile']) ? "%any" : ipsec_find_id($ph1ent, "peer", $rgmap);
+                $peerid_data = isset($ph1ent['mobile']) ? "%any" : ipsec_find_id($ph1ent, "peer");
 
                 if (!empty($peerid_data)) {
                     $pskconf .= $myid . " " . trim($peerid_data) . " : PSK 0s" . base64_encode(trim($ph1ent['pre-shared-key'])) . "\n";
@@ -969,7 +1014,6 @@ EOD;
         chmod("/usr/local/etc/ipsec.secrets", 0600);
         unset($pskconf);
 
-        $natfilterrules = false;
         /* begin ipsec.conf */
         $ipsecconf = "";
         if (count($a_phase1))  {
@@ -1020,7 +1064,7 @@ EOD;
                 }
 
                 $myid_data = ipsec_find_id($ph1ent, "local");
-                $peerid_spec = ipsec_find_id($ph1ent, "peer", $rgmap);
+                $peerid_spec = ipsec_find_id($ph1ent, "peer");
 
                 if (!empty($ph1ent['encryption-algorithm']['name']) && !empty($ph1ent['hash-algorithm'])) {
                     $ealg_id = $ph1ent['encryption-algorithm']['name'];
@@ -1157,9 +1201,6 @@ EOD;
                                 if (!is_ipaddr($leftsubnet_data) && !is_subnet($leftsubnet_data) && ($leftsubnet_data != "0.0.0.0/0")) {
                                     log_error("Invalid IPsec Phase 2 \"{$ph2ent['descr']}\" - {$ph2ent['localid']['type']} has no subnet.");
                                     continue;
-                                }
-                                if (!empty($ph2ent['natlocalid'])) {
-                                    $natfilterrules = true;
                                 }
                             }
 
@@ -1409,10 +1450,6 @@ EOD;
         mwexec("/usr/local/sbin/ipsec start", false);
     }
 
-    if ($natfilterrules == true) {
-        filter_configure();
-    }
-
     /* start filterdns, if necessary */
     if (count($filterdns_list) > 0) {
         $interval = 60;
@@ -1436,6 +1473,9 @@ EOD;
     } else {
         killbypid('/var/run/filterdns-ipsec.pid');
     }
+
+    /* load manually defined SPD entries */
+    ipsec_configure_spd();
 
     if ($verbose) {
         echo "done.\n";

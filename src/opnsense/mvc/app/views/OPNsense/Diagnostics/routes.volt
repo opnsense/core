@@ -84,7 +84,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         <thead>
                         <tr>
                             <th data-column-id="proto" data-type="string" >{{ lang._('Proto') }}</th>
-                            <th data-column-id="destination" data-type="string" data-identifier="true">{{ lang._('Destination') }}</th>
+                            <th data-column-id="destination" data-type="string">{{ lang._('Destination') }}</th>
                             <th data-column-id="gateway" data-type="string">{{ lang._('Gateway') }}</th>
                             <th data-column-id="flags" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Flags') }}</th>
                             <th data-column-id="use" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Use') }}</th>

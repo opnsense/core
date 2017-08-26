@@ -3,7 +3,7 @@
 /*
     Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2009 Janne Enberg <janne.enberg@lietu.net>
-    Copyright (C) 2004 Scott Ullrich
+    Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
@@ -69,11 +69,8 @@ function delete_id($id, &$array)
     }
 }
 
-if (!isset($config['nat']['rule']) || !is_array($config['nat']['rule'])) {
-    $config['nat']['rule'] = array();
-}
 
-$a_nat = &$config['nat']['rule'];
+$a_nat = &config_read_array('nat', 'rule');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (isset($pconfig['id']) && isset($a_nat[$pconfig['id']])) {

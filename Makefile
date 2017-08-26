@@ -28,7 +28,7 @@
 all:
 	@cat ${.CURDIR}/README.md | ${PAGER}
 
-WANTS=		git pear-PHP_CodeSniffer phpunit
+WANTS=		git pear-PHP_CodeSniffer phpunit6
 
 .for WANT in ${WANTS}
 want-${WANT}: force
@@ -41,10 +41,9 @@ CORE_VERSION=	${CORE_COMMIT:C/-.*$//1}
 CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 .endif
 
-CORE_ABI?=	17.1
+CORE_ABI?=	17.7
 CORE_ARCH?=	${ARCH}
-CORE_BIND?=	911
-CORE_OPENVPN?=	# empty for version 2.4
+CORE_OPENVPN?=	# empty
 CORE_PHP?=	70
 CORE_PY?=	27
 
@@ -73,7 +72,6 @@ CORE_WWW?=		https://opnsense.org/
 CORE_DEPENDS_amd64?=	beep bsdinstaller
 CORE_DEPENDS_i386?=	${CORE_DEPENDS_amd64}
 CORE_DEPENDS?=		apinger \
-			bind${CORE_BIND} \
 			ca_root_nss \
 			choparp \
 			cpustats \
@@ -263,9 +261,10 @@ upgrade-check: force
 upgrade: plist-check upgrade-check package
 	@${PKG} delete -fy ${CORE_NAME}
 	@${PKG} add ${PKGDIR}/*.txz
-	@${LOCALBASE}/etc/rc.restart_webgui
+	@echo -n "Restarting web GUI: "
+	@configctl webgui restart
 
-lint: force
+lint: plist-check
 	find ${.CURDIR}/src ${.CURDIR}/Scripts \
 	    -name "*.sh" -type f -print0 | xargs -0 -n1 sh -n
 	find ${.CURDIR}/src ${.CURDIR}/Scripts \
@@ -306,16 +305,14 @@ style: want-pear-PHP_CodeSniffer
 style-fix: want-pear-PHP_CodeSniffer
 	phpcbf --standard=ruleset.xml ${.CURDIR}/src/opnsense || true
 
-setup: force
-	${.CURDIR}/src/etc/rc.php_ini_setup
+license:
+	@${.CURDIR}/Scripts/license > ${.CURDIR}/LICENSE
 
-health: force
-	# check test script output and advertise a failure...
-	[ "`${.CURDIR}/src/etc/rc.php_test_run`" == "FCGI-PASSED PASSED" ]
-
-test: want-phpunit
+test: want-phpunit6
 	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
 	    phpunit --configuration PHPunit.xml
 
 clean: want-git
 	${GIT} reset --hard HEAD && ${GIT} clean -xdqf .
+
+.PHONY: license

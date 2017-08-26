@@ -105,9 +105,12 @@ class MenuSystem
         }
         // add interfaces to "Interfaces" menu tab... kind of a hack, may need some improvement.
         $ifarr = array();
-        foreach (Config::getInstance()->object()->interfaces->children() as $key => $node) {
-            if (empty($node->virtual)) {
-                $ifarr[$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
+        $config = Config::getInstance()->object();
+        if ($config->interfaces->count() > 0) {
+            foreach ($config->interfaces->children() as $key => $node) {
+                if (empty($node->virtual)) {
+                    $ifarr[$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
+                }
             }
         }
         natcasesort($ifarr);

@@ -57,24 +57,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     }
     if ($input_type == "group") {
-        if (!isset($config['system']['group'][$id]['priv']) || !is_array($config['system']['group'][$id]['priv'])) {
-            $a_privs = array();
-        } else {
-            $a_privs = & $config['system']['group'][$id]['priv'];
-        }
+        $a_privs = &config_read_array('system', 'group', $id, 'priv');
     } else {
-        if (!isset($config['system']['user'][$id]['priv']) || !is_array($config['system']['user'][$id]['priv'])) {
-            $a_privs = array();
-        } else {
-            $a_privs = $config['system']['user'][$id]['priv'];
-        }
+        $a_privs = &config_read_array('system', 'user', $id, 'priv');
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (isset($pconfig['input_type']) && isset($pconfig['id'])) {
         if ($pconfig['input_type'] == 'user' && isset($config['system']['user'][$pconfig['id']]['name'])) {
             $userid = $_POST['id'];
-            $a_user = & $config['system']['user'][$userid];
+            $a_user = &config_read_array('system', 'user', $userid);
             $a_user['priv'] = is_array($pconfig['sysprivs']) ? $pconfig['sysprivs'] : array();
             $a_user['priv'] = sort_user_privs($a_user['priv']);
             local_user_set($a_user);
@@ -85,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             exit;
         } elseif ($_POST['input_type'] == 'group' && isset($config['system']['group'][$pconfig['id']]['name'])) {
             $groupid = $_POST['id'];
-            $a_group = & $config['system']['group'][$groupid];
+            $a_group = &config_read_array('system', 'group', $groupid);
             $a_group['priv'] = is_array($pconfig['sysprivs']) ? $pconfig['sysprivs'] : array();
             $a_group['priv'] = sort_user_privs($a_group['priv']);
             if (is_array($a_group['member'])) {

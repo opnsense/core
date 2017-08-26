@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wizard>
-<copyright>
+<copyright><![CDATA[
 /*
 	Copyright (C) 2014 Deciso B.V.
-	Copyright (C) 2004, 2005 Scott Ullrich
+	Copyright (C) 2004-2005 Scott Ullrich <sullrich@gmail.com>
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-</copyright>
+]]></copyright>
 <totalsteps>9</totalsteps>
 <step>
 	<id>1</id>
@@ -57,7 +57,6 @@
 			<name>Hostname</name>
 			<type>input</type>
 			<bindstofield>wizardtemp->system->hostname</bindstofield>
-			<description>EXAMPLE: myserver</description>
 			<validate>^[A-Za-z0-9.|-]+$</validate>
 			<message>Invalid Hostname</message>
 		</field>
@@ -65,7 +64,6 @@
 			<name>Domain</name>
 			<type>input</type>
 			<bindstofield>wizardtemp->system->domain</bindstofield>
-			<description>EXAMPLE: mydomain.com</description>
 			<validate>^[a-z0-9.|-]+$</validate>
 			<message>Domain name field is invalid</message>
 		</field>
@@ -297,7 +295,6 @@
 		<field>
 			<name>PPPoE Service name</name>
 			<type>input</type>
-			<description>Hint: this field can usually be left empty</description>
 			<bindstofield>wizardtemp->wan->provider</bindstofield>
 		</field>
 		<field>
@@ -437,12 +434,8 @@
 		}
 		$type = $_POST['selectedtype'];
 
-		if (!is_array($config['ppps'])) {
-			$config['ppps'] = array();
-		}
-		if (!is_array($config['ppps']['ppp'])) {
-			$config['ppps']['ppp'] = array();
-		}
+		config_read_array('ppps', 'ppp');
+
 		foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
 			if ($ppp['ptpid'] == "0") {
 				if ((substr($config['interfaces']['wan']['if'],0,5) == "pppoe") || (substr($config['interfaces']['wan']['if'],0,4) == "pptp")) {
@@ -548,6 +541,7 @@
 		<field>
 			<name>Admin Password</name>
 			<type>password</type>
+			<description>(leave empty to keep current one)</description>
 		</field>
 		<field>
 			<name>Admin Password AGAIN</name>
@@ -566,7 +560,7 @@
 			local_user_set($admin_user);
 			write_config();
 		} else {
-			print_info_box("Passwords do not match!  Please press back in your browser window and correct.");
+			print_info_box("Passwords do not match! Please press back in your browser window and correct.");
 			die;
 		}
 	}
@@ -590,12 +584,7 @@
 		$config['system']['hostname'] = $config['wizardtemp']['system']['hostname'];
 		$config['system']['domain'] = $config['wizardtemp']['system']['domain'];
 		if (!empty($config['wizardtemp']['wangateway'])) {
-			if (!is_array($config['gateways'])) {
-				$config['gateways'] = array();
-			}
-			if (!isset($config['gateways']['gateway_item'])) {
-				$config['gateways']['gateway_item'] = array();
-			}
+			config_read_array('gateways', 'gateway_item');
 			$found = false;
 			$defaultgw_found = false;
 			foreach ($config['gateways']['gateway_item'] as & $gw) {

@@ -3,7 +3,7 @@
 /*
     Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-    Copyright (C) 2010 Scott Ullrich
+    Copyright (C) 2010 Scott Ullrich <sullrich@gmail.com>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -32,15 +32,7 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("interfaces.inc");
 
-if (!isset($config['staticroutes']) || !is_array($config['staticroutes'])) {
-    $config['staticroutes'] = array();
-}
-
-if (!isset($config['staticroutes']['route']) || !is_array($config['staticroutes']['route'])) {
-    $config['staticroutes']['route'] = array();
-}
-
-$a_routes = &$config['staticroutes']['route'];
+$a_routes =  &config_read_array('staticroutes', 'route');
 $a_gateways = return_gateways_array(true, true);
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {

@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <opnsense>
   <trigger_initial_wizard/>
-  <version>11.2</version>
   <theme>opnsense</theme>
   <sysctl>
     <item>
@@ -214,6 +213,8 @@
     <timeservers>0.nl.pool.ntp.org</timeservers>
     <webgui>
       <protocol>https</protocol>
+      <authmode>Local Database</authmode>
+      <authmode_fallback>__NO_FALLBACK__</authmode_fallback>
     </webgui>
     <disablenatreflection>yes</disablenatreflection>
     <usevirtualterminal>1</usevirtualterminal>
@@ -234,22 +235,22 @@
   </system>
   <interfaces>
     <wan>
-      <enable/>
+      <enable>1</enable>
       <if>mismatch1</if>
       <mtu/>
       <ipaddr>dhcp</ipaddr>
       <ipaddrv6>dhcp6</ipaddrv6>
       <subnet/>
       <gateway/>
-      <blockpriv/>
-      <blockbogons/>
+      <blockpriv>1</blockpriv>
+      <blockbogons>1</blockbogons>
       <dhcphostname/>
       <media/>
       <mediaopt/>
       <dhcp6-ia-pd-len>0</dhcp6-ia-pd-len>
     </wan>
     <lan>
-      <enable/>
+      <enable>1</enable>
       <if>mismatch0</if>
       <ipaddr>192.168.1.1</ipaddr>
       <subnet>24</subnet>
@@ -270,9 +271,11 @@
       </range>
     </lan>
   </dhcpd>
-  <dnsmasq>
-    <enable/>
-  </dnsmasq>
+  <unbound>
+    <enable>1</enable>
+    <dnssec>1</dnssec>
+    <dnssecstripped>1</dnssecstripped>
+  </unbound>
   <snmpd>
     <syslocation/>
     <syscontact/>

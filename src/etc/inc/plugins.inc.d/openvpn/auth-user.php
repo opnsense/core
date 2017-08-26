@@ -2,7 +2,7 @@
 <?php
 
 /*
-    Copyright (C) 2008 Shrew Soft Inc
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     Copyright (C) 2010 Ermal Luçi
     All rights reserved.
 
@@ -78,8 +78,33 @@ if (!is_array($authmodes)) {
     exit(1);
 }
 
+$a_server = null;
+
+if (isset($config['openvpn']['openvpn-server'])) {
+    foreach ($config['openvpn']['openvpn-server'] as $server) {
+        if ("server{$server['vpnid']}" == $modeid) {
+            $a_server = $server;
+            break;
+        }
+   }
+}
+
+if ($a_server == null) {
+    syslog(LOG_WARNING, "OpenVPN '$modeid' was not found. Denying authentication for user {$username}");
+    closelog();
+    exit(1);
+}
+
+if (!empty($a_server['local_group']) && !in_array($a_server['local_group'], getUserGroups($username))) {
+    syslog(LOG_WARNING, "OpenVPN '$modeid' requires the local group {$a_server['local_group']}. Denying authentication for user {$username}");
+    closelog();
+    exit(1);
+}
+
 foreach ($authmodes as $authmode) {
     $authcfg = auth_get_authserver($authmode);
+
+    /* XXX this doesn't look right... */
     if (!$authcfg && $authmode != "local") {
         continue;
     }

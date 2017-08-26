@@ -2,30 +2,31 @@
 <?php
 
 /*
-	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-	All rights reserved.
-
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
-
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
-
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
-
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("config.inc");
 require_once("interfaces.inc");
@@ -35,42 +36,30 @@ require_once("rrd.inc");
 require_once("util.inc");
 require_once("services.inc");
 require_once("system.inc");
+require_once('plugins.inc.d/webgui.inc');
 
-$options = getopt("hn", array("dry-run", "help"));
-
-if (isset($options["h"]) || isset($options["help"])) {
-    echo "usage: rc.initial.setlanip [option ...]\n";
-    echo "  -h, --help       show this message\n";
-    echo "  -n, --dry-run    do not make any configuration changes\n";
-    exit(0);
-}
-
-$dry_run = isset($options["n"]) || isset($options["dry-run"]);
-if ($dry_run) {
-    echo "DRY RUN MODE IS ON\n";
-}
-
-
-function console_prompt_for_yn($prompt_text)
+function console_prompt_for_yn($prompt_text, $default = '')
 {
     global $fp;
 
-    $good_answer = false;
+    $prompt_yn = sprintf('[%s/%s] ', $default === 'y' ? 'Y' : 'y', $default === 'n' ? 'N' : 'n');
 
-    do {
-        echo "\n" . $prompt_text . " (y/n) ";
-        $yn = strtolower(chop(fgets($fp)));
-        if (($yn == "y") || ($yn == "yes")) {
-            $boolean_answer = true;
-            $good_answer = true;
+    while (true) {
+        echo "{$prompt_text} {$prompt_yn}";
+        switch (strtolower(chop(fgets($fp)))) {
+            case 'y':
+                return true;
+            case 'n':
+                return false;
+            case '':
+                if ($default !== '') {
+                    return $default === 'y';
+                }
+                /* FALLTHROUGH */
+            default:
+                break;
         }
-        if (($yn == "n") || ($yn == "no")) {
-            $boolean_answer = false;
-            $good_answer = true;
-        }
-    } while (!$good_answer);
-
-    return $boolean_answer;
+    }
 }
 
 function console_get_interface_from_ppp($realif)
@@ -97,8 +86,7 @@ function prompt_for_enable_dhcp_server($version = 4)
             return false;
         }
     }
-    /* only allow DHCP server to be enabled when static IP is
-	   configured on this interface */
+    /* only allow DHCP server to be enabled when static IP is configured on this interface */
     if ($version === 6) {
         $is_ipaddr = is_ipaddrv6($config['interfaces'][$interface]['ipaddrv6']);
     } else {
@@ -108,9 +96,12 @@ function prompt_for_enable_dhcp_server($version = 4)
         return false;
     }
 
-    $label_DHCP = ($version === 6) ? "DHCP6" : "DHCP";
+    $label_DHCP = ($version === 6) ? 'DHCP6' : 'DHCP';
     $upperifname = strtoupper($interface);
-    return console_prompt_for_yn(sprintf('Do you want to enable the %s server on %s?', $label_DHCP, $upperifname));
+
+    $ret = console_prompt_for_yn(sprintf('Do you want to enable the %s server on %s?', $label_DHCP, $upperifname), 'n');
+    echo "\n";
+    return $ret;
 }
 
 function get_interface_config_description($iface)
@@ -126,17 +117,17 @@ function get_interface_config_description($iface)
     $ipaddr = $c['ipaddr'];
     $ipaddrv6 = $c['ipaddrv6'];
     if (is_ipaddr($ipaddr)) {
-        $result2[] = "static";
-    } elseif ($ipaddr == "dhcp") {
-        $result2[] = "dhcp";
+        $result2[] = 'static';
+    } elseif (!empty($ipaddr)) {
+        $result2[] = $ipaddr;
     }
     if (is_ipaddr($ipaddrv6)) {
-        $result2[] = "staticv6";
-    } elseif ($ipaddrv6 == "dhcp6") {
-        $result2[] = "dhcp6";
+        $result2[] = 'staticv6';
+    } elseif (!empty($ipaddrv6)) {
+        $result2[] = $ipaddrv6;
     }
     if (count($result2)) {
-        $result .= " - " . implode(", ", $result2);
+        $result .= ' - ' . implode(', ', $result2);
     }
     return $result;
 }
@@ -157,8 +148,9 @@ if ($count > 1) {
         echo "{$x} - {$ifdescr} ({$config_descr})\n";
         $x++;
     }
-    echo "\nEnter the number of the interface you wish to configure: ";
+    echo "\nEnter the number of the interface to configure: ";
     $intnum = chop(fgets($fp));
+    echo "\n";
 } else {
     $intnum = $count;
 }
@@ -212,81 +204,123 @@ function next_unused_gateway_name($interface)
     return $new_name;
 }
 
-function add_gateway_to_config($interface, $gatewayip, $inet_type)
+function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet)
 {
-    global $config, $dry_run;
+    global $config, $fp;
 
-    if (!isset($config['gateways']['gateway_item'])) {
-        $config['gateways']['gateway_item'] = array();
-    }
-    $a_gateways = &$config['gateways']['gateway_item'];
-    if ($dry_run) {
-        print_r($a_gateways);
-    }
-    $new_name = '';
+    $label_IPvX = $inet_type == 'inet6' ? 'IPv6' : 'IPv4';
+
+    $a_gateways =  &config_read_array('gateways', 'gateway_item');
     $is_default = true;
-    foreach ($a_gateways as $item) {
+    $new_name = '';
+
+    foreach ($a_gateways as &$item) {
         if ($item['ipprotocol'] === $inet_type) {
+            if ($item['interface'] === $interface && $item['gateway'] === $gatewayip) {
+                $new_name = $item['name'];
+                unset($item);
+                continue;
+            }
             if (isset($item['defaultgw'])) {
                 $is_default = false;
             }
-            if (($item['interface'] === $interface) && ($item['gateway'] === $gatewayip)) {
-                $new_name = $item['name'];
-            }
         }
-    }
-    if ($new_name == '') {
-        $new_name = next_unused_gateway_name($interface);
-        $item = array(
-            "interface" => $interface,
-            "gateway" => $gatewayip,
-            "name" => $new_name,
-            "weight" => 1,
-            "ipprotocol" => $inet_type,
-            "interval" => true,
-            "descr" => "Interface $interface Gateway",
-            "defaultgw" => $is_default
-        );
-        if ($dry_run) {
-            print_r($item);
-        }
-        $a_gateways[] = $item;
     }
 
-    return $new_name;
+    if (!$is_default) {
+        if (console_prompt_for_yn(sprintf('Do you want to use it as the default %s gateway?', $label_IPvX), $interface == 'wan' ? 'y' : 'n')) {
+            foreach ($a_gateways as &$item) {
+                if ($item['ipprotocol'] === $inet_type) {
+                    if (isset($item['defaultgw'])) {
+                        unset($item['defaultgw']);
+                    }
+                }
+            }
+
+            $is_default = true;
+        }
+
+        echo "\n";
+    }
+
+    if ($is_default) {
+        if (console_prompt_for_yn(sprintf('Do you want to use the gateway as the %s name server, too?', $label_IPvX), 'y')) {
+            $nameserver = $gatewayip;
+        } else {
+            do {
+                echo sprintf("Enter the %s name server or press <ENTER> for none:\n> ", $label_IPvX);
+                $nameserver = chop(fgets($fp));
+                $is_ipaddr = $inet_type == 'inet6' ? is_ipaddrv6($nameserver) : is_ipaddrv4($nameserver);
+                if ($nameserver != '') {
+                    if (!$is_ipaddr) {
+                        echo sprintf('Not an %s address!', $label_IPvX) . "\n\n";
+                    }
+                }
+            } while (!($nameserver == '' || $is_ipaddr));
+        }
+
+        echo "\n";
+    }
+
+    if ($new_name == '') {
+        $new_name = next_unused_gateway_name($interface);
+    }
+
+    $item = array(
+        'descr' => sprintf('Interface %s Gateway', strtoupper($interface)),
+        'defaultgw' => $is_default,
+        'ipprotocol' => $inet_type,
+        'interface' => $interface,
+        'gateway' => $gatewayip,
+        'monitor_disable' => 1,
+        'name' => $new_name,
+        'interval' => true,
+        'weight' => 1,
+    );
+    if (!$is_in_subnet) {
+        $item['fargw'] = 1;
+    }
+
+    $a_gateways[] = $item;
+
+    return array($new_name, $nameserver);
 }
 
 function console_configure_ip_address($version)
 {
     global $config, $interface, $restart_dhcpd, $ifaceassigned, $fp;
 
-    $label_IPvX = ($version === 6) ? "IPv6"   : "IPv4";
-    $maxbits    = ($version === 6) ? 127      : 31;
-    $label_DHCP = ($version === 6) ? "DHCP6"  : "DHCP";
+    $label_IPvX = ($version === 6) ? 'IPv6' : 'IPv4';
+    $maxbits = ($version === 6) ? 127 : 31;
+    $label_DHCP = ($version === 6) ? 'DHCP6' : 'DHCP';
 
     $upperifname = strtoupper($interface);
 
-    if ($interface == "wan") {
-        if (console_prompt_for_yn(sprintf('Configure %s address %s interface via %s?', $label_IPvX, $upperifname, $label_DHCP))) {
-            $ifppp = console_get_interface_from_ppp(get_real_interface("wan"));
-            if (!empty($ifppp)) {
-                $ifaceassigned = $ifppp;
-            }
-            $intip = ($version === 6) ? "dhcp6" : "dhcp";
-            $intbits = "";
-            $isintdhcp = true;
-            $restart_dhcpd = true;
+    if ($interface != 'wan' && $version === 6 && !empty($config['interfaces']['wan']['ipaddrv6']) &&
+        $config['interfaces']['wan']['ipaddrv6'] == 'dhcp6' && console_prompt_for_yn(sprintf(
+            'Configure %s address %s interface via WAN tracking?', $label_IPvX, $upperifname), 'n'
+    )) {
+        $intip = 'track6';
+        $intbits = '64';
+        $isintdhcp = true;
+        $restart_dhcpd = true;
+        echo "\n";
+    } elseif (console_prompt_for_yn(sprintf('Configure %s address %s interface via %s?', $label_IPvX, $upperifname, $label_DHCP), $interface == 'wan' ? 'y' : 'n')) {
+        $ifppp = console_get_interface_from_ppp(get_real_interface($interface));
+        if (!empty($ifppp)) {
+            $ifaceassigned = $ifppp;
         }
+        $intip = ($version === 6) ? 'dhcp6' : 'dhcp';
+        $intbits = '';
+        $isintdhcp = true;
+        $restart_dhcpd = true;
+        echo "\n";
     }
 
-    if ($isintdhcp == false or $interface <> "wan") {
+    if (!$isintdhcp) {
         while (true) {
             do {
-                echo "\n" . sprintf(
-                    'Enter the new %s %s address.  Press <ENTER> for none:',
-                    $upperifname,
-                    $label_IPvX
-                ) . "\n> ";
+                echo "\n" . sprintf('Enter the new %s %s address. Press <ENTER> for none:', $upperifname, $label_IPvX) . "\n> ";
                 $intip = chop(fgets($fp));
                 $is_ipaddr = ($version === 6) ? is_ipaddrv6($intip) : is_ipaddrv4($intip);
                 if ($is_ipaddr && is_ipaddr_configured($intip, $interface)) {
@@ -296,6 +330,7 @@ function console_configure_ip_address($version)
                     $ip_conflict = false;
                 }
             } while (($ip_conflict === true) || !($is_ipaddr || $intip == ''));
+            echo "\n";
             if ($intip != '') {
                 echo "\nSubnet masks are entered as bit counts (like CIDR notation).\n";
                 if ($version === 6) {
@@ -333,30 +368,33 @@ function console_configure_ip_address($version)
                         }
                     }
                 } while (!$intbits_ok);
+                echo "\n";
 
                 if ($version === 6) {
                     $subnet = gen_subnetv6($intip, $intbits);
                 } else {
                     $subnet = gen_subnet($intip, $intbits);
                 }
+
+                $is_in_subnet = true;
+
                 do {
-                    echo "\n" . sprintf('For a WAN, enter the new %s %s upstream gateway address.', $upperifname, $label_IPvX) . "\n" .
+                    echo sprintf('For a WAN, enter the new %s %s upstream gateway address.', $upperifname, $label_IPvX) . "\n" .
                                 'For a LAN, press <ENTER> for none:' . "\n> ";
                     $gwip = chop(fgets($fp));
                     $is_ipaddr = ($version === 6) ? is_ipaddrv6($gwip) : is_ipaddrv4($gwip);
                     $is_in_subnet = $is_ipaddr && ip_in_subnet($gwip, $subnet . "/" . $intbits);
                     if ($gwip != '') {
                         if (!$is_ipaddr) {
-                            echo sprintf('not an %s IP address!', $label_IPvX) . "\n";
-                        } elseif (!$is_in_subnet) {
-                            echo "not in subnet\n";
+                            echo sprintf('Not an %s address!', $label_IPvX) . "\n\n";
                         }
                     }
-                } while (!($gwip == '' || ($is_ipaddr && $is_in_subnet)));
+                } while (!($gwip == '' || $is_ipaddr));
+                echo "\n";
 
                 if ($gwip != '') {
                     $inet_type = ($version === 6) ? "inet6" : "inet";
-                    $gwname = add_gateway_to_config($interface, $gwip, $inet_type);
+                    list($gwname, $nameserver) = add_gateway_to_config($interface, $gwip, $inet_type, $is_in_subnet);
                 }
             }
             $ifppp = console_get_interface_from_ppp(get_real_interface($interface));
@@ -367,26 +405,56 @@ function console_configure_ip_address($version)
         }
     }
 
-    return array($intip, $intbits, $gwname);
+    return array($intip, $intbits, $gwname, $nameserver);
 }
 
-list($intip,  $intbits,  $gwname)  = console_configure_ip_address(4);
-list($intip6, $intbits6, $gwname6) = console_configure_ip_address(6);
+list($intip,  $intbits,  $gwname, $nameserver) = console_configure_ip_address(4);
+list($intip6, $intbits6, $gwname6, $nameserver6) = console_configure_ip_address(6);
 
 if (!empty($ifaceassigned)) {
     $config['interfaces'][$interface]['if'] = $ifaceassigned;
 }
-$config['interfaces'][$interface]['ipaddr']    = $intip;
-$config['interfaces'][$interface]['subnet']    = $intbits;
-$config['interfaces'][$interface]['gateway']   = $gwname;
-$config['interfaces'][$interface]['ipaddrv6']  = $intip6;
-$config['interfaces'][$interface]['subnetv6']  = $intbits6;
+
+$config['interfaces'][$interface]['ipaddr'] = $intip;
+$config['interfaces'][$interface]['subnet'] = $intbits;
+$config['interfaces'][$interface]['gateway'] = $gwname;
+$config['interfaces'][$interface]['ipaddrv6'] = $intip6;
+$config['interfaces'][$interface]['subnetv6'] = $intbits6;
 $config['interfaces'][$interface]['gatewayv6'] = $gwname6;
-$config['interfaces'][$interface]['enable']    = true;
+$config['interfaces'][$interface]['enable'] = true;
+
+if ($intip6 == 'track6') {
+    $config['interfaces'][$interface]['track6-interface'] = 'wan';
+    $config['interfaces'][$interface]['track6-prefix-id'] = '0';
+} else {
+    if (isset($config['interfaces'][$interface]['track6-interface'])) {
+        unset($config['interfaces'][$interface]['track6-interface']);
+    }
+    if (isset($config['interfaces'][$interface]['track6-prefix-id'])) {
+        unset($config['interfaces'][$interface]['track6-prefix-id']);
+    }
+}
+
+$nameservers = array();
+if (!empty($nameserver)) {
+    $nameservers[] = $nameserver;
+}
+if (!empty($nameserver6)) {
+    $nameservers[] = $nameserverv6;
+}
+if (count($nameservers)) {
+    $config['system']['dnsserver'] = $nameservers;
+    for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
+        $dnsgwname= "dns{$dnscounter}gw";
+        if (isset($config['system'][$dnsgwname])) {
+            unset($config['system'][$dnsgwname]);
+        }
+    }
+}
 
 function console_configure_dhcpd($version = 4)
 {
-    global $config, $restart_dhcpd, $fp, $interface, $dry_run, $intip, $intbits, $intip6, $intbits6;
+    global $config, $restart_dhcpd, $fp, $interface, $intip, $intbits, $intip6, $intbits6;
 
     $label_IPvX = ($version === 6) ? "IPv6"    : "IPv4";
     $dhcpd      = ($version === 6) ? "dhcpdv6" : "dhcpd";
@@ -431,10 +499,10 @@ function console_configure_dhcpd($version = 4)
         $config[$dhcpd][$interface]['enable'] = true;
         $config[$dhcpd][$interface]['range']['from'] = $dhcpstartip;
         $config[$dhcpd][$interface]['range']['to'] = $dhcpendip;
+        echo "\n";
     } else {
         if (isset($config[$dhcpd][$interface]['enable'])) {
             unset($config[$dhcpd][$interface]['enable']);
-            printf('Disabling %s DHCPD...', $label_IPvX);
             $restart_dhcpd = true;
         }
     }
@@ -445,15 +513,14 @@ console_configure_dhcpd(6);
 
 //*****************************************************************************
 
-if ($config['system']['webgui']['protocol'] == "https") {
-    if (console_prompt_for_yn('Do you want to revert to HTTP as the web GUI protocol?')) {
-        $config['system']['webgui']['protocol'] = "http";
+if ($config['system']['webgui']['protocol'] == 'https') {
+    if (console_prompt_for_yn('Do you want to revert to HTTP as the web GUI protocol?', 'n')) {
+        $config['system']['webgui']['protocol'] = 'http';
         $restart_webgui = true;
     }
 }
 
 if (isset($config['system']['webgui']['noantilockout'])) {
-    echo "\n" . sprintf('Note: the anti-lockout rule on %s has been re-enabled.', $interface) . "\n";
     unset($config['system']['webgui']['noantilockout']);
 }
 
@@ -479,91 +546,46 @@ if (!$config['interfaces']['lan']) {
         unset($config['dhcpdv6']['lan']);
     }
     unset($config['nat']);
-    if (!$dry_run) {
-        system("rm /var/dhcpd/var/db/* >/dev/null 2>/dev/null");
-        $restart_dhcpd = true;
-    }
+    system("rm /var/dhcpd/var/db/* >/dev/null 2>/dev/null");
+    $restart_dhcpd = true;
 }
 
-$upperifname = strtoupper($interface);
-if (!$dry_run) {
-    echo "\nPlease wait while the changes are saved to {$upperifname}...";
-    write_config(sprintf('%s IP configuration from console menu', $interface));
-    interface_bring_down($interface);
-    interface_configure($interface);
-    echo "\n Reloading filter...";
-    filter_configure_sync();
-    if ($restart_dhcpd) {
-        echo "\n DHCPD...";
-        services_dhcpd_configure();
-    }
-    if ($restart_webgui) {
-        mwexec('/usr/local/etc/rc.restart_webgui');
-    }
+echo "\nWriting configuration...";
+flush();
+write_config(sprintf('%s configuration from console menu', $interface));
+echo "done.\n";
+
+system_hosts_generate(true);
+system_resolvconf_generate(true);
+interface_bring_down($interface);
+interface_configure($interface, true, false, true);
+setup_gateways_monitor(true);
+filter_configure_sync(true);
+
+if ($restart_dhcpd) {
+    services_dhcpd_configure('all', array(), true);
 }
 
-if ($intip != '') {
-    if (is_ipaddr($intip)) {
-        echo "\n\n" . sprintf(
-            'The IPv4 %s address has been set to %s',
-            $upperifname,
-            "{$intip}/{$intbits}"
-        ) . "\n";
-    } else {
-        echo "\n\n" . sprintf(
-            'The IPv4 %s address has been set to %s',
-            $upperifname,
-            $intip
-        ) . "\n";
-    }
+if ($restart_webgui) {
+    webgui_configure_do(true);
 }
-if ($intip6 != '') {
-    if (is_ipaddr($intip6)) {
-        echo "\n\n" . sprintf(
-            'The IPv6 %s address has been set to %s',
-            $upperifname,
-            "${intip6}/${intbits6}"
-        ) . "\n";
-    } else {
-        echo "\n\n" . sprintf(
-            'The IPv6 %s address has been set to %s',
-            $upperifname,
-            $intip6
-        ) . "\n";
-    }
-}
+
+echo "\n";
 
 if ($intip != '' || $intip6 != '') {
-    if (count($ifdescrs) == "1" or $interface == "lan") {
-        echo "You can now access the web GUI by opening the following URL in your web browser:\n";
-        if (!empty($config['system']['webgui']['port'])) {
-            $webuiport = $config['system']['webgui']['port'];
-            if ($intip != '') {
-                echo "		{$config['system']['webgui']['protocol']}://{$intip}:{$webuiport}/\n";
-            }
-            if ($intip6 != '') {
-                if (is_ipaddr($intip6)) {
-                    echo "		{$config['system']['webgui']['protocol']}://[{$intip6}]:{$webuiport}/\n";
-                } else {
-                    echo "		{$config['system']['webgui']['protocol']}://{$intip6}:{$webuiport}/\n";
-                }
-            }
-        } else {
-            if ($intip != '') {
-                echo "		{$config['system']['webgui']['protocol']}://{$intip}/\n";
-            }
-            if ($intip6 != '') {
-                if (is_ipaddr($intip6)) {
-                    echo "		{$config['system']['webgui']['protocol']}://[{$intip6}]/\n";
-                } else {
-                    echo "		{$config['system']['webgui']['protocol']}://{$intip6}/\n";
-                }
-            }
+    if (count($ifdescrs) == '1' or $interface == 'lan') {
+        $intip = get_interface_ip($interface);
+        $intip6 = get_interface_ipv6($interface, true);
+        echo "You can now access the web GUI by opening\nthe following URL in your web browser:\n\n";
+        $webuiport = !empty($config['system']['webgui']['port']) ? ":{$config['system']['webgui']['port']}" : '';
+        if (is_ipaddr($intip)) {
+            echo "    {$config['system']['webgui']['protocol']}://{$intip}{$webuiport}\n";
+        }
+        if (is_ipaddr($intip6)) {
+            echo "    {$config['system']['webgui']['protocol']}://[{$intip6}]{$webuiport}\n";
         }
     }
 }
 
-echo "\nPress <ENTER> to continue.";
-
-fgets($fp);
-fclose($fp);
+/* rest now or hit CTRL-C */
+sleep(3);

@@ -2,7 +2,8 @@
 
 /*
     Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2003-2005 Bob Zoller <bob@kludgebox.com> and Manuel Kasper <mk@neon1.net>.
+    Copyright (C) 2003-2005 Bob Zoller <bob@kludgebox.com>
+    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,10 +34,7 @@ require_once("services.inc");
 require_once("interfaces.inc");
 
 
-if (empty($config['dnsmasq']['domainoverrides']) || !is_array($config['dnsmasq']['domainoverrides'])) {
-    $config['dnsmasq']['domainoverrides'] = array();
-}
-$a_domainOverrides = &$config['dnsmasq']['domainoverrides'];
+$a_domainOverrides = &config_read_array('dnsmasq', 'domainoverrides');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && !empty($a_domainOverrides[$_GET['id']])) {
@@ -94,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['port']) && !is_port($pconfig['port'])) {
         $input_errors[] = gettext("A valid port number must be specified.");
     }
-    if (!empty($pconfig['dnssrcip']) && !in_array($pconfig['dnssrcip'], get_configured_ip_addresses())) {
+    if (!empty($pconfig['dnssrcip']) && !in_array($pconfig['dnssrcip'], array_keys(get_configured_ip_addresses()))) {
         $input_errors[] = gettext("An interface IP address must be specified for the DNS query source.");
     }
     if (count($input_errors) == 0) {

@@ -3,7 +3,7 @@
 /*
     Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2010 Ermal Luçi
-    Copyright (C) 2008 Shrew Soft Inc.
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -27,19 +27,15 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
+
 require_once("guiconfig.inc");
 require_once("auth.inc");
 
 $authFactory = new \OPNsense\Auth\AuthenticationFactory();
 $authCNFOptions = $authFactory->listConfigOptions();
 
-if (!isset($config['system']['authserver'])) {
-    $config['system']['authserver'] = array();
-}
-
-if (empty($config['ca']) || !is_array($config['ca'])) {
-    $config['ca'] = array();
-}
+config_read_array('system', 'authserver');
+config_read_array('ca');
 
 $a_servers = auth_get_authserver_list();
 $a_server = array();

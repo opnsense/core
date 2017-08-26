@@ -1,5 +1,8 @@
 #!/bin/sh
 
+sed -e 's/kdb.enter.panic=/kdb.enter.default=/' \
+    /etc/ddb.conf > /tmp/ddb.conf
+
 echo -n "Configuring crash dump device: "
 
 while read DEV MP TYPE MORE; do
@@ -7,7 +10,7 @@ while read DEV MP TYPE MORE; do
 	[ -c "${DEV}" ] || continue
 	if dumpon ${DEV}; then
 		echo ${DEV}
-		ddb /etc/ddb.conf
+		ddb /tmp/ddb.conf
 		if savecore -C ${DEV} > /dev/null; then
 			savecore /var/crash ${DEV}
 		fi
@@ -16,4 +19,4 @@ while read DEV MP TYPE MORE; do
 done < /etc/fstab
 
 echo "/dev/null"
-ddb /etc/ddb.conf
+ddb /tmp/ddb.conf

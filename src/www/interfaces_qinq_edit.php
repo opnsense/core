@@ -30,13 +30,7 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-if (!isset($config['qinqs']) || !is_array($config['qinqs'])) {
-    $config['qinqs'] = array();
-}
-if (!isset($config['qinqs']['qinqentry']) || !is_array($config['qinqs']['qinqentry'])) {
-    $config['qinqs']['qinqentry'] = array();
-}
-$a_qinqs = &$config['qinqs']['qinqentry'];
+$a_qinqs = &config_read_array('qinqs', 'qinqentry');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $id = 0;

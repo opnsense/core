@@ -47,6 +47,7 @@ class FirmwareController extends ApiControllerBase
     {
         $this->sessionClose(); // long running action, close session
         $backend = new Backend();
+        $backend->configdRun('firmware changelog fetch');
         $response = json_decode(trim($backend->configdRun('firmware check')), true);
 
         if ($response != null) {
@@ -57,8 +58,14 @@ class FirmwareController extends ApiControllerBase
                 $response['status_msg'] = gettext('Could not find the repository on the selected mirror.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
-                $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
-                $response['status'] = 'none';
+                if (array_key_exists('upgrade_needs_reboot', $response) && $response['upgrade_needs_reboot'] == 1) {
+                    $response['status_msg'] = gettext('Operating system updates are available, total download size is unknown.');
+                    $response['status_upgrade_action'] = 'bsd';
+                    $response['status'] = 'ok';
+                } else {
+                    $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
+                    $response['status'] = 'none';
+                }
             } elseif (array_key_exists(0, $response['upgrade_packages']) &&
                 $response['upgrade_packages'][0]['name'] == 'pkg') {
                 $response['status_upgrade_action'] = 'pkg';
@@ -131,7 +138,7 @@ class FirmwareController extends ApiControllerBase
                             case 'upgrade_packages':
                                 $sorted[$value['name']] = array(
                                     'reason' => gettext('upgrade'),
-                                    'old' => $value['current_version'],
+                                    'old' => empty($value['current_version']) ? gettext('N/A') : $value['current_version'],
                                     'new' => $value['new_version'],
                                     'name' => $value['name'],
                                 );
@@ -171,13 +178,20 @@ class FirmwareController extends ApiControllerBase
         $backend = new Backend();
         $response = array();
 
-        if ($this->request->isPost()) {
-            // sanitize package name
-            $filter = new \Phalcon\Filter();
-            $filter->add('version', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z\.]/', '', $value);
-            });
-            $version = $filter->sanitize($version, 'version');
+        if (!$this->request->isPost()) {
+            return $response;
+        }
+
+        // sanitize package name
+        $filter = new \Phalcon\Filter();
+        $filter->add('version', function ($value) {
+            return preg_replace('/[^0-9a-zA-Z\.]/', '', $value);
+        });
+        $version = $filter->sanitize($version, 'version');
+
+        if ($version == 'update') {
+            $backend->configdRun('firmware changelog fetch');
+        } else {
             $text = trim($backend->configdRun(sprintf('firmware changelog text %s', $version)));
             $html = trim($backend->configdRun(sprintf('firmware changelog html %s', $version)));
             if (!empty($text)) {
@@ -266,12 +280,16 @@ class FirmwareController extends ApiControllerBase
     {
         $backend = new Backend();
         $response = array();
-        if ($this->request->hasPost("upgrade")) {
+        if ($this->request->hasPost('upgrade')) {
             $response['status'] = 'ok';
-            if ($this->request->getPost("upgrade") == "pkg") {
-                $action = "firmware upgrade pkg";
+            if ($this->request->getPost('upgrade') == 'pkg') {
+                $action = 'firmware upgrade pkg';
+            } elseif ($this->request->getPost('upgrade') == 'maj') {
+                $action = 'firmware upgrade maj';
+            } elseif ($this->request->getPost('upgrade') == 'bsd') {
+                $action = 'firmware upgrade bsd';
             } else {
-                $action = "firmware upgrade all";
+                $action = 'firmware upgrade all';
             }
             $response['msg_uuid'] = trim($backend->configdRun($action, true));
         } else {
@@ -478,6 +496,32 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
+     * query package details
+     * @return array
+     */
+    public function detailsAction($package)
+    {
+        $this->sessionClose(); // long running action, close session
+        $backend = new Backend();
+        $response = array();
+
+        if ($this->request->isPost()) {
+            // sanitize package name
+            $filter = new \Phalcon\Filter();
+            $filter->add('scrub', function ($value) {
+                return preg_replace('/[^0-9a-zA-Z\-]/', '', $value);
+            });
+            $package = $filter->sanitize($package, 'scrub');
+            $text = trim($backend->configdRun(sprintf('firmware details %s', $package)));
+            if (!empty($text)) {
+                $response['details'] = $text;
+            }
+        }
+
+        return $response;
+    }
+
+    /**
      * list local and remote packages
      * @return array
      */
@@ -588,8 +632,9 @@ class FirmwareController extends ApiControllerBase
         $mirrors[''] = '(default)';
         $mirrors['https://opnsense.aivian.org'] = 'Aivian (Shaoxing, CN)';
         $mirrors['https://opnsense-update.deciso.com'] = 'Deciso (NL, Commercial)';
-        $mirrors['https://mirror.auf-feindgebiet.de/opnsense'] = 'auf-feindgebiet.de (Cloudflare CDN)';
+        $mirrors['https://mirror.dns-root.de/opnsense'] = 'dns-root.de (Cloudflare CDN)';
         $mirrors['https://opnsense.c0urier.net'] = 'c0urier.net (Lund, SE)';
+        $mirrors['https://ftp.yzu.edu.tw/opnsense'] = 'Dept. of CSE, Yuan Ze University (Taoyuan City, TW)';
         $mirrors['http://mirrors.dmcnet.net/opnsense'] = 'DMC Networks (Lincoln NE, US)';
         //$mirrors['https://fleximus.org/mirror/opnsense'] = 'Fleximus (Roubaix, FR)';
         $mirrors['https://fourdots.com/mirror/OPNSense'] = 'FourDots (Belgrade, RS)';

@@ -97,7 +97,7 @@ label           :   dialog label
       </tbody>
     </table>
   </div>
-  <div class="table-responsive {% if style in field %}{{field['style']}}{% endif %}">
+  <div class="table-responsive {{field['style']|default('')}}">
     <table class="table table-striped table-condensed">
         <colgroup>
             <col class="col-md-3"/>

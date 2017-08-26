@@ -2,6 +2,7 @@
 
 /*
     Copyright (C) 2014-2016 Deciso B.V.
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -27,6 +28,8 @@
 
 require_once("guiconfig.inc");
 
+config_read_array('widgets', 'thermal_sensors_widget');
+
 function validate_temp_value($value)
 {
     if (is_numeric($value) && (int)$value == $value && $value >= 0 and $value <= 100) {
@@ -45,10 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig[$fieldname] = !empty($config['widgets']['thermal_sensors_widget'][$fieldname]) ? $config['widgets']['thermal_sensors_widget'][$fieldname] : $defaultValue;
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // save widget config
-    if (empty($config['widgets']['thermal_sensors_widget']) || !is_array($config['widgets']['thermal_sensors_widget'])) {
-        $config['widgets']['thermal_sensors_widget'] = array();
-    }
     foreach ($fieldnames as $fieldname) {
         $defaultValue = strpos($fieldname, 'critical') !== false ? 80 : 70;
         $newValue = !empty($_POST[$fieldname]) ? $_POST[$fieldname] : "";

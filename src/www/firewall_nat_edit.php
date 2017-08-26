@@ -33,10 +33,7 @@ require_once("filter.inc");
 
 
 // init config and get reference
-if (!isset($config['nat']['rule']) || !is_array($config['nat']['rule'])) {
-    $config['nat']['rule'] = array();
-}
-$a_nat = &$config['nat']['rule'];
+$a_nat = &config_read_array('nat', 'rule');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // load form data from config
@@ -300,7 +297,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($filterentid === false) {
                     $filterent['associated-rule-id'] = $natent['associated-rule-id'];
                 } else {
-                    $filterent =& $config['filter']['rule'][$filterentid];
+                    $filterent = &config_read_array('filter', 'rule', $filterentid);
                 }
             }
             pconfig_to_address($filterent['source'], $pconfig['src'],
@@ -479,6 +476,19 @@ $( document ).ready(function() {
         $('#dstendport').prop('selectedIndex', $("#dstbeginport").prop('selectedIndex') );
         $('#dstendport').selectpicker('refresh');
         $('#dstendport').change();
+        // on new entry, align redirect target port to dst target
+        if ($("#entryid").length == 0) {
+            $('#localbeginport').prop('selectedIndex', $("#dstbeginport").prop('selectedIndex') );
+            $('#localbeginport').change();
+        }
+    });
+
+    $("input[for='dstbeginport']").change(function(){
+        // on new entry, align redirect target port to dst target
+        if ($("#entryid").length == 0) {
+            $("input[for='localbeginport']").val($(this).val());
+            $("input[for='localbeginport']").change();
+        }
     });
 
     // IPv4/IPv6 select
@@ -1082,7 +1092,7 @@ $( document ).ready(function() {
                     <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                     <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/firewall_nat.php'" />
                     <?php if (isset($id)): ?>
-                    <input name="id" type="hidden" value="<?=$id;?>" />
+                    <input id="entryid" name="id" type="hidden" value="<?=$id;?>" />
                     <?php endif; ?>
                     <?php if (isset($after)) : ?>
                     <input name="after" type="hidden" value="<?=$after;?>" />

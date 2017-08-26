@@ -94,26 +94,38 @@ class ModelRelationField extends BaseField
 
                 $modelObj = new $className;
 
+                $groupKey = isset($modelData['group']) ? $modelData['group'] : null;
+                $displayKey = $modelData['display'];
+                $groups = array();
+
                 foreach ($modelObj->getNodeByReference($modelData['items'])->__items as $node) {
-                    $displayKey = $modelData['display'];
-                    if (isset($node->getAttributes()["uuid"]) && $node->$displayKey != null) {
-                        // check for filters and apply if found
-                        $isMatched = true;
-                        if (isset($modelData['filters'])) {
-                            foreach ($modelData['filters'] as $filterKey => $filterValue) {
-                                $fieldData = $node->$filterKey;
-                                if (!preg_match($filterValue, $fieldData) && $fieldData != null) {
-                                    $isMatched = false;
-                                    break;
-                                }
+                    if (!isset($node->getAttributes()['uuid']) || $node->$displayKey == null) {
+                        continue;
+                    }
+
+                    if (isset($modelData['filters'])) {
+                        foreach ($modelData['filters'] as $filterKey => $filterValue) {
+                            $fieldData = $node->$filterKey;
+                            if (!preg_match($filterValue, $fieldData) && $fieldData != null) {
+                                continue 2;
                             }
                         }
-                        if ($isMatched) {
-                            $uuid = $node->getAttributes()['uuid'];
-                            self::$internalOptionList[$this->internalCacheKey][$uuid] =
-                                $node->$displayKey->__toString();
-                        }
                     }
+
+                    if (!empty($groupKey)) {
+                        if ($node->$groupKey == null) {
+                            continue;
+                        }
+                        $group = $node->$groupKey->__toString();
+                        if (isset($groups[$group])) {
+                            continue;
+                        }
+                        $groups[$group] = 1;
+                    }
+
+                    $uuid = $node->getAttributes()['uuid'];
+                    self::$internalOptionList[$this->internalCacheKey][$uuid] =
+                        $node->$displayKey->__toString();
                 }
 
                 unset($modelObj);

@@ -30,6 +30,7 @@
 namespace OPNsense\Base\FieldTypes;
 
 use Phalcon\Validation\Validator\InclusionIn;
+use OPNsense\Base\Validators\CsvListValidator;
 
 /**
  * Class OptionField
@@ -57,6 +58,11 @@ class OptionField extends BaseField
      * @var array valid options for this list
      */
     private $internalOptionList = array();
+
+    /**
+     * @var bool field may contain multiple interfaces at once
+     */
+    private $internalMultiSelect = false;
 
     /**
      * set descriptive text for empty value
@@ -89,6 +95,19 @@ class OptionField extends BaseField
     }
 
     /**
+     * select if multiple interfaces may be selected at once
+     * @param $value boolean value 0/1
+     */
+    public function setMultiple($value)
+    {
+        if (trim(strtoupper($value)) == "Y") {
+            $this->internalMultiSelect = true;
+        } else {
+            $this->internalMultiSelect = false;
+        }
+    }
+
+    /**
      * get valid options, descriptions and selected value
      * @return array
      */
@@ -96,11 +115,14 @@ class OptionField extends BaseField
     {
         $result = array ();
         // if relation is not required, add empty option
-        if (!$this->internalIsRequired) {
+        if (!$this->internalIsRequired && !$this->internalMultiSelect) {
             $result[""] = array("value"=>$this->internalEmptyDescription, "selected" => 0);
         }
+
+        // explode options
+        $options = explode(',', $this->internalValue);
         foreach ($this->internalOptionList as $optKey => $optValue) {
-            if ($optKey == $this->internalValue) {
+            if (in_array($optKey, $options)) {
                 $selected = 1;
             } else {
                 $selected = 0;
@@ -120,8 +142,15 @@ class OptionField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-                'domain'=>array_keys($this->internalOptionList)));
+            if ($this->internalMultiSelect) {
+                // field may contain more than one option
+                $validators[] = new CsvListValidator(array('message' => $this->internalValidationMessage,
+                    'domain'=>array_keys($this->internalOptionList)));
+            } else {
+                // single option selection
+                $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
+                    'domain'=>array_keys($this->internalOptionList)));
+            }
         }
         return $validators;
     }

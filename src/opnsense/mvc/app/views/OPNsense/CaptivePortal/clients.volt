@@ -95,7 +95,9 @@ POSSIBILITY OF SUCH DAMAGE.
                     grid_clients.on("loaded.rs.jquery.bootgrid", function(){
                         grid_clients.find(".command-disconnect").on("click", function(e) {
                             var sessionId=$(this).data("row-id");
-                            stdDialogRemoveItem('{{ lang._('Disconnect selected client?') }}',function() {
+                            stdDialogConfirm('{{ lang._('Confirm disconnect') }}',
+                                '{{ lang._('Do you want to disconnect the selected client?') }}',
+                                '{{ lang._('Yes') }}', '{{ lang._('Cancel') }}', function () {
                                 ajaxCall(url="/api/captiveportal/session/disconnect/" + zoneid + '/',
                                         sendData={'sessionId': sessionId}, callback=function(data,status){
                                             // reload grid after delete
@@ -130,8 +132,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 <tr>
                     <th data-column-id="sessionid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('Session') }}</th>
                     <th data-column-id="userName" data-type="string">{{ lang._('userName') }}</th>
-                    <th data-column-id="macAddress" data-type="string" data-css-class="hidden-xs hidden-sm"  data-header-css-class="hidden-xs hidden-sm">{{ lang._('macAddress') }}</th>
-                    <th data-column-id="ipAddress" data-type="string" data-css-class="hidden-xs hidden-sm"  data-header-css-class="hidden-xs hidden-sm">{{ lang._('ipAddress') }}</th>
+                    <th data-column-id="macAddress" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('macAddress') }}</th>
+                    <th data-column-id="ipAddress" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('ipAddress') }}</th>
                     <th data-column-id="startTime" data-type="datetime">{{ lang._('connected since') }}</th>
                     <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false"></th>
                 </tr>
