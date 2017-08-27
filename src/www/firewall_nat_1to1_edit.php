@@ -102,7 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     /* For external, user can enter only ip's */
     $tmpext = explode('/', $pconfig['external']);
-    //print_r($tmpext);echo $pconfig['srcmask'] ;die;
     if (!empty($pconfig['external'])) {
         if ($pconfig['type'] == 'binat' && (!is_ipaddr($tmpext[0]) || (count($tmpext) != 1 && $pconfig['srcmask'] != $tmpext[1]))) {
             $input_errors[] = gettext("A valid external subnet must be specified.");
@@ -111,7 +110,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
     /* For src, user can enter only ip's or networks */
-    if (!is_specialnet($pconfig['src']) && !is_ipaddroralias($pconfig['src'])) {
+    if ($pconfig['type'] == 'binat' && !is_subnet($pconfig['src']) && !is_ipaddr($pconfig['src'])) {
+        $input_errors[] = sprintf(gettext("%s is not a valid source IP address."), $pconfig['src']);
+    } elseif (!is_specialnet($pconfig['src']) && !is_ipaddroralias($pconfig['src'])) {
         $input_errors[] = sprintf(gettext("%s is not a valid source IP address or alias."), $pconfig['src']);
     }
     if (!empty($pconfig['srcmask']) && !is_numericint($pconfig['srcmask'])) {
@@ -210,6 +211,17 @@ include("head.inc");
         }
     });
 
+    // aliases and "special nets" are only allowed for nat type entries
+    $("#nattype").change(function(){
+        if ($(this).val() == 'binat') {
+            $("#src optgroup[data-type='nat']").children().prop('disabled', true);
+        } else {
+            $("#src optgroup[data-type='nat']").children().prop('disabled', false);
+        }
+        $("#src").selectpicker('refresh');
+    });
+    $("#nattype").change();
+
   });
   </script>
 
@@ -265,7 +277,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type"); ?></td>
                     <td>
-                      <select name="type" class="selectpicker" data-width="auto">
+                      <select name="type" class="selectpicker" data-width="auto" id="nattype">
                           <option value="binat" <?=$pconfig['type'] == 'binat' || empty($pconfig['type']) ? "selected=\"selected\"" : ""; ?>>
                             <?=gettext("BINAT");?>
                           </option>
@@ -306,15 +318,15 @@ include("head.inc");
                         <table class="table table-condensed">
                           <tr>
                             <td>
-                              <select name="src" id="src" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                              <select name="src" id="src" class="selectpicker" data-live-search="true" data-size="5" data-width="auto" data-hide-disabled="true">
                                 <option data-other=true value="<?=$pconfig['src'];?>" <?=!is_specialnet($pconfig['src']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
-                                <optgroup label="<?=gettext("Aliases");?>">
+                                <optgroup label="<?=gettext("Aliases");?>" data-type="nat">
   <?php                        foreach (legacy_list_aliases("network") as $alias):
   ?>
                                   <option value="<?=$alias['name'];?>" <?=$alias['name'] == $pconfig['src'] ? "selected=\"selected\"" : "";?>><?=htmlspecialchars($alias['name']);?></option>
   <?php                          endforeach; ?>
                                 </optgroup>
-                                <optgroup label="<?=gettext("Networks");?>">
+                                <optgroup label="<?=gettext("Networks");?>" data-type="nat">
   <?php                          foreach (get_specialnets(true) as $ifent => $ifdesc):
   ?>
                                   <option value="<?=$ifent;?>" <?= $pconfig['src'] == $ifent ? "selected=\"selected\"" : ""; ?>><?=$ifdesc;?></option>
