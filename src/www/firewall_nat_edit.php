@@ -476,6 +476,19 @@ $( document ).ready(function() {
         $('#dstendport').prop('selectedIndex', $("#dstbeginport").prop('selectedIndex') );
         $('#dstendport').selectpicker('refresh');
         $('#dstendport').change();
+        // on new entry, align redirect target port to dst target
+        if ($("#entryid").length == 0) {
+            $('#localbeginport').prop('selectedIndex', $("#dstbeginport").prop('selectedIndex') );
+            $('#localbeginport').change();
+        }
+    });
+
+    $("input[for='dstbeginport']").change(function(){
+        // on new entry, align redirect target port to dst target
+        if ($("#entryid").length == 0) {
+            $("input[for='localbeginport']").val($(this).val());
+            $("input[for='localbeginport']").change();
+        }
     });
 
     // IPv4/IPv6 select
@@ -1079,7 +1092,7 @@ $( document ).ready(function() {
                     <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                     <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/firewall_nat.php'" />
                     <?php if (isset($id)): ?>
-                    <input name="id" type="hidden" value="<?=$id;?>" />
+                    <input id="entryid" name="id" type="hidden" value="<?=$id;?>" />
                     <?php endif; ?>
                     <?php if (isset($after)) : ?>
                     <input name="after" type="hidden" value="<?=$after;?>" />
