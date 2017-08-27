@@ -171,6 +171,20 @@
         <!-- Bootgrind (grid system from http://www.jquery-bootgrid.com/ )  -->
         <link rel="stylesheet" type="text/css" href="/ui/css/jquery.bootgrid.css"/>
         <script type="text/javascript" src="/ui/js/jquery.bootgrid.js"></script>
+        <script>
+        /* patch translations into bootgrid library */
+        Object.assign(
+            jQuery.fn.bootgrid.prototype.constructor.Constructor.defaults.labels,
+            {
+                'all': "{{ lang._('All') }}",
+                'infos': "{{ lang._('Showing %s to %s of %s entries') | format('{{ctx.start}}','{{ctx.end}}','{{ctx.total}}') }}",
+                'loading': "{{ lang._('Loading...') }}",
+                'noResults': "{{ lang._('No results found!') }}",
+                'refresh': "{{ lang._('Refresh') }}",
+                'search': "{{ lang._('Search') }}"
+            }
+        )
+        </script>
 
         <!-- Bootstrap type ahead -->
         <script type="text/javascript" src="/ui/js/bootstrap3-typeahead.min.js"></script>
