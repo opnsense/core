@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
+    Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -29,9 +29,13 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
+if (!isset($logsplit)) {
+    $logsplit = 3;
+}
+
 function print_dump($logarr)
 {
-    global $config;
+    global $config, $logsplit;
 
     if (!is_array($logarr)) {
         echo "<tr>\n";
@@ -41,11 +45,18 @@ function print_dump($logarr)
     }
 
     foreach ($logarr as $logent) {
-        $logent = preg_split("/\s+/", $logent, 6);
+        $logent = preg_split('/\s+/', $logent);
+        if (count($logent) < $logsplit + 1) {
+            continue;
+        }
         echo "<tr>\n";
-        $entry_date_time = htmlspecialchars(join(" ", array_slice($logent, 0, 3)));
-        $entry_text = ($logent[3] ==  $config['system']['hostname']) ? "" : $logent[3] . " ";
-        $entry_text .= htmlspecialchars($logent[4] . " " . $logent[5]);
+        $entry_date_time = html_safe(join(' ', array_slice($logent, 0, $logsplit)));
+        $entry_text = '';
+        $hostname = $logent[$logsplit];
+        if ($hostname != $config['system']['hostname']) {
+            $entry_text = html_safe($hostname) . ' ';
+        }
+        $entry_text .= html_safe(join(' ', array_slice($logent, $logsplit + 1)));
         echo "<td>{$entry_date_time}</td>\n";
         echo "<td>{$entry_text}</td>\n";
         echo "</tr>\n";
