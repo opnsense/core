@@ -97,8 +97,6 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <!-- datepicker css -->
     <link  href="/ui/css/bootstrap-datepicker3.min.css" rel="stylesheet">
 
-    <script>var theme = "<?= $themename ?>"; </script>
-
     <!-- JQuery -->
     <script type="text/javascript" src="/ui/js/jquery-1.12.4.min.js"></script>
 
