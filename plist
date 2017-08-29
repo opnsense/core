@@ -660,6 +660,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_systemhealth.conf
 /usr/local/opnsense/service/conf/actions.d/actions_template.conf
 /usr/local/opnsense/service/conf/actions.d/actions_unbound.conf
+/usr/local/opnsense/service/conf/actions.d/actions_webgui.conf
 /usr/local/opnsense/service/conf/actions_service.conf
 /usr/local/opnsense/service/conf/configd.conf
 /usr/local/opnsense/service/configd.py

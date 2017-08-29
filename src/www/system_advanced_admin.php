@@ -264,7 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         configd_run('openssh restart', true);
 
         if ($restart_webgui) {
-            mwexec_bg('/usr/local/etc/rc.restart_webgui 2');
+            configd_run('webgui restart 2', true);
         }
     }
 }
