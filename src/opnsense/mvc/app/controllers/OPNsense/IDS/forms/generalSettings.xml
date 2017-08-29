@@ -38,6 +38,15 @@
         <hint>Type or select interface.</hint>
     </field>
     <field>
+        <id>ids.general.homenet</id>
+        <label>Home networks</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Networks to interpret as local</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <id>ids.general.defaultPacketSize</id>
         <label>default packet size</label>
         <type>text</type>

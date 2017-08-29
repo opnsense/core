@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/IDS</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>
         OPNsense IDS
     </description>
@@ -118,6 +118,12 @@
                     <enable>/^(?!0).*$/</enable>
                 </filters>
             </interfaces>
+            <homenet type="NetworkField">
+                <Required>N</Required>
+                <FieldSeparator>,</FieldSeparator>
+                <default>192.168.0.0/16,10.0.0.0/8,172.16.0.0/12</default>
+                <asList>Y</asList>
+            </homenet>
             <defaultPacketSize type="IntegerField">
                 <Required>N</Required>
                 <MinimumValue>82</MinimumValue>
