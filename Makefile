@@ -262,7 +262,7 @@ upgrade: plist-check upgrade-check package
 	@${PKG} delete -fy ${CORE_NAME}
 	@${PKG} add ${PKGDIR}/*.txz
 	@echo -n "Restarting web GUI: "
-	@configctl restart webgui
+	@configctl webgui restart
 
 lint: plist-check
 	find ${.CURDIR}/src ${.CURDIR}/Scripts \
