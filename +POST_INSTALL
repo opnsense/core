@@ -40,6 +40,6 @@ echo "%%CORE_COMMIT%%" > /usr/local/opnsense/version/opnsense
 echo "%%CORE_NAME%%" > /usr/local/opnsense/version/opnsense.name
 echo "%%CORE_ABI%%" > /usr/local/opnsense/version/opnsense.abi
 
-/usr/local/etc/rc.d/configd restart
+/usr/local/etc/rc.d/configd start
 
 /usr/local/etc/rc.configure_firmware
