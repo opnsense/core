@@ -63,6 +63,11 @@ class NetworkField extends BaseField
     protected $internalWildcardEnabled = true;
 
     /**
+     * @var bool when set, results are returned as list (with all options enabled)
+     */
+    private $internalAsList = false;
+
+    /**
      * always lowercase / trim networks
      * @param string $value
      */
@@ -103,6 +108,38 @@ class NetworkField extends BaseField
             $this->internalWildcardEnabled = true;
         } else {
             $this->internalWildcardEnabled = false;
+        }
+    }
+
+    /**
+     * select if multiple networks may be selected at once
+     * @param $value boolean value 0/1
+     */
+    public function setAsList($value)
+    {
+        if (trim(strtoupper($value)) == "Y") {
+            $this->internalAsList = true;
+        } else {
+            $this->internalAsList = false;
+        }
+    }
+
+    /**
+     * get valid options, descriptions and selected value
+     * @return array
+     */
+    public function getNodeData()
+    {
+        if ($this->internalAsList) {
+            // return result as list
+            $result = array();
+            foreach (explode(',', $this->internalValue) as $net) {
+                $result[$net] = array("value" => $net, "selected" => 1);
+            }
+            return $result;
+        } else {
+            // normal, single field response
+            return $this->internalValue;
         }
     }
 
