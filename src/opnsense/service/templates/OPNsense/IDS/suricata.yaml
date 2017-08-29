@@ -799,7 +799,7 @@ vars:
   # These would be retrieved during the Signature address parsing stage.
   address-groups:
 
-    HOME_NET: "[192.168.0.0/16,10.0.0.0/8,172.16.0.0/12]"
+    HOME_NET: "[{{OPNsense.IDS.general.homenet|default('192.168.0.0/16,10.0.0.0/8,172.16.0.0/12')}}]"
 
     EXTERNAL_NET: "!$HOME_NET"
 
