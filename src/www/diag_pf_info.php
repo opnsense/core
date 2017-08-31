@@ -56,7 +56,7 @@ $( document ).ready(function() {
           // push data into tabs
           $.each(data, function(key, value) {
               if ($("#data_"+key.toLowerCase()).length) {
-                  $("#data_"+key.toLowerCase()).html(value);
+                  $("#data_"+key.toLowerCase()).text(value);
               }
           });
           setTimeout(getpfinfo, 2000);
