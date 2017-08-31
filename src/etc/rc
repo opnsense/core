@@ -152,6 +152,9 @@ remove_mfs_link()
 		rm -f "${MFS}/${NAME}"
 		mv "${ROOT}${MFS}/${NAME}" "${MFS}/"
 	fi
+
+	# ensure directory always exist
+	mkdir -p "${MFS}/${NAME}"
 }
 
 # pre-17.1 compat: use_mfs_tmpvar matches both patterns
