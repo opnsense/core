@@ -37,14 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['scrubrnid'] = !empty($config['system']['scrubrnid']);
     $pconfig['scrub_interface_disable'] = !empty($config['system']['scrub_interface_disable']);
     if (!empty($_GET['savemsg'])) {
-        $savemsg = sprintf(
-            gettext(
-                'The settings have been applied and the rules are now reloading ' .
-                'in the background. You can monitor the reload progress %shere%s.'
-            ),
-            '<a href="status_filter_reload.php">',
-            '</a>'
-        );
+        $savemsg = gettext('The settings have been applied and the rules are now reloading in the background.');
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;

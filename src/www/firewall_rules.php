@@ -49,14 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         system_cron_configure();
         filter_configure();
         clear_subsystem_dirty('filter');
-        $savemsg = sprintf(
-            gettext(
-                'The settings have been applied and the rules are now reloading ' .
-                'in the background. You can monitor the reload progress %shere%s.'
-            ),
-            '<a href="status_filter_reload.php">',
-            '</a>'
-        );
+        $savemsg = gettext('The settings have been applied and the rules are now reloading in the background.');
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
         // delete single item
         if (!empty($a_filter[$id]['associated-rule-id'])) {

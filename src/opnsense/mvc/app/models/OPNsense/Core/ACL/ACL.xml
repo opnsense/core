@@ -518,12 +518,6 @@
             <pattern>status_dhcpv6_leases.php*</pattern>
         </patterns>
     </page-status-dhcpv6leases>
-    <page-status-filterreloadstatus>
-        <name>Status: Filter Reload Status</name>
-        <patterns>
-            <pattern>status_filter_reload.php*</pattern>
-        </patterns>
-    </page-status-filterreloadstatus>
     <page-status-gatewaygroups>
         <name>Status: Gateway Groups</name>
         <patterns>

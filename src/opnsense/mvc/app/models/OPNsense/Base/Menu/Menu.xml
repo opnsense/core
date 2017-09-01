@@ -184,7 +184,6 @@
             <Advanced order="300" url="/system_advanced_firewall.php"/>
         </Settings>
         <Diagnostics order="500" cssClass="fa fa-medkit fa-fw">
-            <FilterReload order="20"  VisibleName="Filter Reload" url="/status_filter_reload.php"/>
             <pfInfo order="30" url="/diag_pf_info.php" VisibleName="pfInfo"/>
             <pfTop order="40" url="/diag_system_pftop.php" VisibleName="pfTop"/>
             <pfTables order="50" url="/diag_tables.php">
