@@ -1175,21 +1175,6 @@ function format_bytes($bytes)
     }
 }
 
-function update_filter_reload_status($text, $first = false)
-{
-    $filter_reload_status = '/var/run/filter_reload_status';
-
-    if ($first) {
-        @unlink($filter_reload_status);
-    }
-
-    @file_put_contents(
-      $filter_reload_status,
-      sprintf("%s: %s\n", microtime(true), $text),
-      FILE_APPEND
-    );
-}
-
 /****** util/return_dir_as_array
  * NAME
  *   return_dir_as_array - Return a directory's contents as an array.
