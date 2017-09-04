@@ -27,6 +27,7 @@
 
 set -e
 
+UPGRADEFILE="/usr/local/opnsense/firmware-upgrade"
 LOCKFILE="/tmp/pkg_upgrade.progress"
 PIPEFILE="/tmp/pkg_upgrade.pipe"
 TEE="/usr/bin/tee -a"
@@ -34,8 +35,8 @@ RELEASE=
 
 if [ "${1}" = "upgrade" -a -n "${2}" ]; then
 	RELEASE=${2}
-elif [ "${1}" = "ALLOW_RISKY_MAJOR_UPGRADE" ]; then
-	RELEASE=$(cat /usr/local/opnsense/firmware-upgrade 2> /dev/null)
+elif [ "${1}" = "ALLOW_RISKY_MAJOR_UPGRADE" -a -f ${UPGRADEFILE} ]; then
+	RELEASE=$(cat ${UPGRADEFILE})
 fi
 
 : > ${LOCKFILE}
