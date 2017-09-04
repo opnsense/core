@@ -1645,8 +1645,10 @@ EOD;
     }
 
     /* fire up mpd */
-    mwexec("/usr/local/sbin/mpd5 -b -k -d /var/etc -f mpd_{$interface}.conf -p /var/run/" .
-        escapeshellarg($ppp['type']) . "_{$interface}.pid -s ppp " . escapeshellarg($ppp['type']) . "client");
+    mwexecf(
+        '/usr/local/sbin/mpd5 -b -k -d /var/etc -f %s -p %s -s ppp %s',
+        array("mpd_{$interface}.conf", "/var/run/{$ppp['type']}_{$interface}.pid", "{$ppp['type']}client")
+    );
 
     /* wait for up to 10 seconds for the interface to appear (ppp(oe)) */
     $i = 0;
