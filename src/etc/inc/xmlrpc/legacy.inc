@@ -106,9 +106,11 @@ function merge_config_attributes(&$cnf_source, &$cnf_dest)
 function firmware_version_xmlrpc()
 {
     return array(
-      'firmware' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense')),
-      'kernel' => array('version' => file_get_contents('/usr/local/opnsense/version/kernel')),
-      'base' => array('version' => file_get_contents('/usr/local/opnsense/version/base')),
+        'firmware' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense')),
+        'kernel' => array('version' => file_get_contents('/usr/local/opnsense/version/kernel')),
+        'base' => array('version' => file_get_contents('/usr/local/opnsense/version/base')),
+        # XXX hardcoded pre-17.7.2 compat, can remove this in 18.1
+        'config_version' => '11.2',
     );
 }
 
