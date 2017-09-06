@@ -42,11 +42,7 @@ function ppp_inuse($ppp_intf) {
     return false;
 }
 
-if (!isset($config['ppps']['ppp']) || !is_array($config['ppps']['ppp'])) {
-    $a_ppps = array();
-} else {
-    $a_ppps = &$config['ppps']['ppp'];
-}
+$a_ppps = &config_read_array('ppps', 'ppp');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($a_ppps[$_POST['id']])) {

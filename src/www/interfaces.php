@@ -316,16 +316,8 @@ function get_wireless_channel_info($interface) {
 $ifdescrs = get_configured_interface_with_descr(false, true);
 
 // reference to interface section
-if (empty($config['interfaces']) || !is_array($config['interfaces'])) {
-    $config['interfaces'] = array();
-}
-$a_interfaces = &$config['interfaces'];
-
-if (empty($config['ppps']['ppp']) || !is_array($config['ppps']['ppp'])) {
-    $config['ppps'] = array();
-    $config['ppps']['ppp'] = array();
-}
-$a_ppps = &$config['ppps']['ppp'];
+$a_interfaces = &config_read_array('interfaces');
+$a_ppps = &config_read_array('ppps', 'ppp');
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {

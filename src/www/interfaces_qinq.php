@@ -40,11 +40,8 @@ function qinq_inuse($qinq_intf) {
     return false;
 }
 
-if (!isset($config['qinqs']['qinqentry']) || !is_array($config['qinqs']['qinqentry'])) {
-    $a_qinqs = array();
-} else {
-    $a_qinqs = &$config['qinqs']['qinqentry'];
-}
+
+$a_qinqs = &config_read_array('qinqs', 'qinqentry');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($a_qinqs[$_POST['id']])) {

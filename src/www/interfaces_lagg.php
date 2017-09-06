@@ -48,13 +48,7 @@ function lagg_inuse($lagg_intf) {
     return false;
 }
 
-
-if (!isset($config['laggs']['lagg'])) {
-    $a_laggs = array();
-} else {
-    $a_laggs = &$config['laggs']['lagg'] ;
-}
-
+$a_laggs = &config_read_array('laggs', 'lagg') ;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($a_laggs[$_POST['id']])) {

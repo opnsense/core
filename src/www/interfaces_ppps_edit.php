@@ -32,13 +32,7 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-if (!isset($config['ppps'])) {
-    $config['ppps'] = array();
-}
-if (!isset($config['ppps']['ppp'])) {
-    $config['ppps']['ppp'] = array();
-}
-$a_ppps = &$config['ppps']['ppp'];
+$a_ppps = &config_read_array('ppps', 'ppp');
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
