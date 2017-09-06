@@ -79,7 +79,9 @@ POSSIBILITY OF SUCH DAMAGE.
             });
             grid_templates.find(".command-delete").on("click", function(e) {
                 var uuid=$(this).data("row-id");
-                stdDialogRemoveItem('Remove selected item?',function() {
+                stdDialogConfirm('{{ lang._('Confirm removal') }}',
+                    '{{ lang._('Do you want to remove the selected item?') }}',
+                    '{{ lang._('Yes') }}', '{{ lang._('Cancel') }}', function () {
                     ajaxCall(url="/api/captiveportal/service/delTemplate/" + uuid,
                             sendData={},callback=function(data,status){
                                 // reload grid after delete
@@ -187,10 +189,10 @@ POSSIBILITY OF SUCH DAMAGE.
             <thead>
             <tr>
                 <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                <th data-column-id="zoneid" data-type="number"  data-visible="false">{{ lang._('Zoneid') }}</th>
+                <th data-column-id="zoneid" data-type="number" data-visible="false">{{ lang._('Zoneid') }}</th>
                 <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                 <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
+                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -211,10 +213,10 @@ POSSIBILITY OF SUCH DAMAGE.
             <table id="grid-templates" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogTemplate">
                 <thead>
                 <tr>
-                    <th data-column-id="fileid" data-type="string"  data-visible="false">{{ lang._('Fileid') }}</th>
+                    <th data-column-id="fileid" data-type="string" data-visible="false">{{ lang._('Fileid') }}</th>
                     <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
                     <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                    <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
+                    <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -233,11 +235,10 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div class="col-md-12">
         <hr/>
-        <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b><i id="reconfigureAct_progress" class=""></i></button>
+        <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress"></i></button>
         <br/><br/>
     </div>
 </div>
-
 
 {# include dialogs #}
 {{ partial("layout_partials/base_dialog",['fields':formDialogZone,'id':'DialogZone','label':'Edit zone'])}}
