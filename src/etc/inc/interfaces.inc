@@ -3917,7 +3917,7 @@ function get_real_interface($interface = "wan", $family = "all", $realv6iface = 
                 break;
             }
 
-            $cfg = &$config['interfaces'][$interface];
+            $cfg = &config_read_array('interfaces', $interface);
 
             if ($family == "inet6") {
                 if (isset($cfg['ipaddrv6'])) {
@@ -4372,7 +4372,7 @@ function interface_has_gateway($friendly)
     global $config;
 
     if (!empty($config['interfaces'][$friendly])) {
-        $ifname = &$config['interfaces'][$friendly];
+        $ifname = &config_read_array('interfaces', $friendly);
         switch ($ifname['ipaddr']) {
             case "dhcp":
             case "pppoe":
@@ -4405,7 +4405,7 @@ function interface_has_gatewayv6($friendly)
     global $config;
 
     if (!empty($config['interfaces'][$friendly])) {
-        $ifname = &$config['interfaces'][$friendly];
+        $ifname = &config_read_array('interfaces', $friendly);
         if (isset($ifname['ipaddrv6'])) {
             $ipaddrv6 = $ifname['ipaddrv6'];
         } else {
@@ -4449,9 +4449,7 @@ function is_interface_wireless($interface)
     $friendly = convert_real_interface_to_friendly_interface_name($interface);
     if (!isset($config['interfaces'][$friendly]['wireless'])) {
         if (match_wireless_interface($interface)) {
-            if (isset($config['interfaces'][$friendly])) {
-                $config['interfaces'][$friendly]['wireless'] = array();
-            }
+            config_read_array('interfaces', $friendly, 'wireless');
             return true;
         }
         return false;

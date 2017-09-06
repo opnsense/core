@@ -143,7 +143,7 @@ function update_alias_names_upon_change($section, $field, $new_alias_name, $orig
     global $config;
     if (!empty($origname) && !empty($new_alias_name)) {
         // find section, return if not found
-        $sectionref = &$config;
+        $sectionref = &config_read_array();
         foreach ($section as $sectionname) {
             if (!empty($sectionref[$sectionname]) && is_array($sectionref[$sectionname])) {
                 $sectionref = &$sectionref[$sectionname];
