@@ -162,7 +162,7 @@ include("head.inc");
 	var h = 30 - m[0] - m[2]; // height of minigraphs
 	var datasize = 45; //size of minigraph history - 45 @ 2sec poll = 1min 30sec history
 	var maxvalue = 0; //top value of minigraph - changes based on incoming spikes
-    var hostmax = 20; //arbitrary max of top 20 hosts
+    var hostmax = 10; //arbitrary max of top 10 hosts
 
 	$( document ).ready(function() {
       function update_bandwidth_stats() {
@@ -368,10 +368,10 @@ include("head.inc");
                         <option value="5">
                           <?= gettext('5') ?>
                         </option>
-                        <option value="10">
+                        <option value="10" selected>
                           <?= gettext('10') ?>
                         </option>
-                        <option value="20" selected>
+                        <option value="20">
                           <?= gettext('20') ?>
                         </option>
                         <option value="30">
