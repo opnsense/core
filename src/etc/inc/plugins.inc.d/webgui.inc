@@ -61,14 +61,8 @@ function webgui_configure_do($verbose = false)
     if ($config['system']['webgui']['protocol'] == "https") {
         $cert =& lookup_cert($config['system']['webgui']['ssl-certref']);
         if(!is_array($cert) && !$cert['crt'] && !$cert['prv']) {
-            if (!is_array($config['ca'])) {
-                $config['ca'] = array();
-            }
-            $a_ca =& $config['ca'];
-            if (!is_array($config['cert'])) {
-                $config['cert'] = array();
-            }
-            $a_cert =& $config['cert'];
+            $a_ca = &config_read_array('ca');
+            $a_cert = &config_read_array('cert');
             log_error("Creating SSL certificate for this host");
             $cert = array();
             $cert['refid'] = uniqid();
