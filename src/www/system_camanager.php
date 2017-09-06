@@ -131,19 +131,9 @@ function ca_inter_create(&$ca, $keylen, $lifetime, $dn, $caref, $digest_alg = 's
 
 $ca_keylens = array( "512", "1024", "2048", "4096", "8192");
 $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
-
-if (!is_array($config['cert'])) {
-    $config['cert'] = array();
-}
-if (!isset($config['crl']) || !is_array($config['crl'])) {
-    $config['crl'] = array();
-}
-
-if (!isset($config['ca']) || !is_array($config['ca'])) {
-    $config['ca'] = array();
-}
-
-$a_ca =& $config['ca'];
+$a_ca = &config_read_array('ca');
+$a_cert = &config_read_array('cert');
+$a_crl = &config_read_array('crl');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($a_ca[$_GET['id']])) {
@@ -237,7 +227,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             header(url_safe('Location: /system_camanager.php'));
             exit;
         }
-        $a_cert =& $config['cert'];
         $index = count($a_cert) - 1;
         for (; $index >=0; $index--) {
             if (isset($a_cert[$index]['caref']) && isset($a_ca[$id]['refid']) && $a_cert[$index]['caref'] == $a_ca[$id]['refid']) {
@@ -245,7 +234,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        $a_crl =& $config['crl'];
         $index = count($a_crl) - 1;
         for (; $index >=0; $index--) {
             if ($a_crl[$index]['caref'] == $a_ca[$id]['refid']) {
@@ -739,7 +727,7 @@ $main_buttons = array(
 
               $certcount = 0;
 
-              foreach ($config['cert'] as $cert) {
+              foreach ($a_cert as $cert) {
                   if ($cert['caref'] == $ca['refid']) {
                       $certcount++;
                   }

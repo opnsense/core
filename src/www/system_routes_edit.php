@@ -32,15 +32,7 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("interfaces.inc");
 
-if (!isset($config['staticroutes']) || !is_array($config['staticroutes'])) {
-    $config['staticroutes'] = array();
-}
-
-if (!isset($config['staticroutes']['route']) || !is_array($config['staticroutes']['route'])) {
-    $config['staticroutes']['route'] = array();
-}
-
-$a_routes = &$config['staticroutes']['route'];
+$a_routes =  &config_read_array('staticroutes', 'route');
 $a_gateways = return_gateways_array(true, true);
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {

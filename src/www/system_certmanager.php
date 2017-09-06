@@ -91,18 +91,9 @@ $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
 
 
 // config reference pointers
-if (!isset($config['system']['user']) || !is_array($config['system']['user'])) {
-    $config['system']['user'] = array();
-}
-$a_user =& $config['system']['user'];
-if (!isset($config['ca']) || !is_array($config['ca'])) {
-    $config['ca'] = array();
-}
-$a_ca =& $config['ca'];
-if (!is_array($config['cert'])) {
-    $config['cert'] = array();
-}
-$a_cert =& $config['cert'];
+$a_user = &config_read_array('system', 'user');
+$a_ca = &config_read_array('ca');
+$a_cert = &config_read_array('cert');
 
 
 // handle user GET/POST data

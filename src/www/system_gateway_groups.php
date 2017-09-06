@@ -33,11 +33,7 @@ require_once("system.inc");
 require_once("services.inc");
 require_once("rrd.inc");
 
-if (!isset($config['gateways']['gateway_group']) || !is_array($config['gateways']['gateway_group'])) {
-    $a_gateway_groups = array();
-} else {
-    $a_gateway_groups = &$config['gateways']['gateway_group'];
-}
+$a_gateway_groups = &config_read_array('gateways', 'gateway_group');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['act']) && $_POST['act'] == "del" ) {

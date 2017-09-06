@@ -27,19 +27,15 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
+
 require_once("guiconfig.inc");
 require_once("auth.inc");
 
 $authFactory = new \OPNsense\Auth\AuthenticationFactory();
 $authCNFOptions = $authFactory->listConfigOptions();
 
-if (!isset($config['system']['authserver'])) {
-    $config['system']['authserver'] = array();
-}
-
-if (empty($config['ca']) || !is_array($config['ca'])) {
-    $config['ca'] = array();
-}
+config_read_array('system', 'authserver');
+config_read_array('ca');
 
 $a_servers = auth_get_authserver_list();
 $a_server = array();

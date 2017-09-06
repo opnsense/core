@@ -44,7 +44,7 @@ function get_user_privdesc(& $user)
         $user_privs = $user['priv'];
     }
 
-    $names = local_user_get_groups($user, true);
+    $names = local_user_get_groups($user);
 
     foreach ($names as $name) {
         $group = getGroupEntry($name);
@@ -76,10 +76,7 @@ function get_user_privdesc(& $user)
 }
 
 // link user section
-if (!isset($config['system']['user']) || !is_array($config['system']['user'])) {
-    $config['system']['user'] = array();
-}
-$a_user = &$config['system']['user'];
+$a_user = &config_read_array('system', 'user');
 
 // reset errors and action
 $input_errors = array();

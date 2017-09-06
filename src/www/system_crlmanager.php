@@ -58,16 +58,9 @@ function cert_unrevoke($cert, & $crl) {
 global $openssl_crl_status;
 
 // prepare config types
-if (!isset($config['ca']) || !is_array($config['ca'])) {
-    $config['ca'] = array();
-}
-if (!isset($config['cert']) || !is_array($config['cert'])) {
-    $config['cert'] = array();
-}
-if (!isset($config['crl']) || !is_array($config['crl'])) {
-    $config['crl'] = array();
-}
-$a_crl =& $config['crl'];
+$a_crl = &config_read_array('crl');
+$a_cert = &config_read_array('cert');
+$a_ca = &config_read_array('ca');
 
 
 $thiscrl = false;
@@ -363,7 +356,7 @@ include("head.inc");
                 <td>
                   <select name='caref' id='caref' class="selectpicker">
 <?php
-                  foreach ($config['ca'] as $ca):?>
+                  foreach ($a_ca as $ca):?>
                     <option value="<?=$ca['refid'];?>" <?=$pconfig['caref'] == $ca['refid'] ? "selected=\"selected\"" : "";?>>
                       <?=htmlentities($ca['descr']);?>
                     </option>
@@ -512,7 +505,7 @@ include("head.inc");
                 endforeach;
               endif;
               $ca_certs = array();
-              foreach ($config['cert'] as $cert) {
+              foreach ($a_cert as $cert) {
                   if (isset($cert['caref']) && isset($thiscrl['caref'])  && $cert['caref'] == $thiscrl['caref']) {
                       $ca_certs[] = $cert;
                   }
@@ -590,7 +583,7 @@ include("head.inc");
                     $ca_crl_map[$crl['caref']][] = $crl['refid'];
                 }
 
-                foreach ($config['ca'] as $ca) :?>
+                foreach ($a_ca as $ca) :?>
                 <tr>
                   <td colspan="4"> <?=htmlspecialchars($ca['descr']);?></td>
                   <td>
