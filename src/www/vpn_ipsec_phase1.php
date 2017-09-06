@@ -62,6 +62,9 @@ function ipsec_ikeid_next() {
     return $ikeid;
 }
 
+config_read_array('ipsec', 'phase1');
+config_read_array('ipsec', 'phase2');
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // fetch data
     if (isset($_GET['dup']) && is_numericint($_GET['dup'])) {
