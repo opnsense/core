@@ -201,8 +201,11 @@ mkdir -p /var/etc
 rm -f /var/db/*_ip /var/db/*_ipv6 /var/db/*_cacheip /var/db/*_cacheipv6
 rm -f /var/etc/nameserver_* /var/etc/searchdomain_*
 
-# work around the fact that shutdown(8) doesn't clean up this file
-rm -f /var/run/nologin
+# Clear all files in this directory to prevent stale state of
+# services.  At one point this also helped to prevent shutdown(8)
+# from dropping "nologin" into the directory, preventing login on
+# the next boot.
+rm -rf /var/run/*
 
 # set up and recover a crash dump before activating swap
 /usr/local/etc/rc.crashdump
