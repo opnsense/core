@@ -37,10 +37,8 @@ if (isset($_REQUEST['closenotice'])) {
     exit;
 }
 
-##if no config entry found, initialize config entry
-if (empty($config['widgets']) || !is_array($config['widgets'])) {
-    $config['widgets'] = array();
-}
+// if no config entry found, initialize config entry
+config_read_array('widgets');
 
 $widgetCollection = array();
 
