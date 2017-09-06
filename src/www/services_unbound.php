@@ -32,10 +32,7 @@ require_once("services.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-if (empty($config['unbound']) || !is_array($config['unbound'])) {
-    $config['unbound'] = array();
-}
-$a_unboundcfg =& $config['unbound'];
+$a_unboundcfg = &config_read_array('unbound');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();

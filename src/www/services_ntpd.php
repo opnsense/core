@@ -35,10 +35,7 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc.d/ntpd.inc");
 
-if (!isset($config['ntpd']) || !is_array($config['ntpd'])) {
-    $config['ntpd'] = array();
-}
-$a_ntpd = &$config['ntpd'];
+$a_ntpd = &config_read_array('ntpd');
 
 $copy_fields = array('orphan', 'statsgraph', 'logpeer', 'logsys', 'clockstats', 'loopstats', 'interface',
                      'peerstats', 'noquery', 'noserve', 'kod', 'nomodify', 'nopeer', 'notrap', 'leapsec');

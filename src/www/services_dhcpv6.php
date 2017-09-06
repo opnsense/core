@@ -237,13 +237,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (count($input_errors) == 0) {
+            config_read_array('dhcpdv6', $if);
             $dhcpdconf = array();
-            if (empty($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
-                $config['dhcpdv6'] = array();
-            }
-            if (empty($config['dhcpdv6'][$if]) || !is_array($config['dhcpdv6'][$if])) {
-                $config['dhcpdv6'][$if] = array();
-            }
 
             // simple 1-on-1 copy
             $config_copy_fieldsnames = array('defaultleasetime', 'maxleasetime', 'netmask', 'domain', 'domainsearchlist',
