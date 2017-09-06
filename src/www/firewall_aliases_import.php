@@ -29,12 +29,7 @@
 
 require_once("guiconfig.inc");
 
-if (!isset($config['aliases']) || !is_array($config['aliases'])) {
-    $config['aliases'] = array();
-}
-if (!isset($config['aliases']['alias'])) {
-    $config['aliases']['alias'] = array();
-}
+config_read_array('aliases', 'alias');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // initialize form vars

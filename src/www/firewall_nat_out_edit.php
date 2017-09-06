@@ -75,13 +75,7 @@ function formTranslateAddresses() {
     return $retval;
 }
 
-if (!isset($config['nat']['outbound']['rule'])) {
-    if (!isset($config['nat']['outbound'])) {
-        $config['nat']['outbound'] = array();
-    }
-    $config['nat']['outbound']['rule'] = array();
-}
-$a_out = &$config['nat']['outbound']['rule'];
+$a_out = &config_read_array('nat', 'outbound', 'rule');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // input record id, if valid

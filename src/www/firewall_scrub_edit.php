@@ -75,11 +75,7 @@ function formNetworks()
     return $networks;
 }
 
-if (!isset($config['filter']['scrub']['rule'])) {
-    $config['filter']['scrub'] = array();
-    $config['filter']['scrub']['rule'] = array();
-}
-$a_scrub = &$config['filter']['scrub']['rule'];
+$a_scrub = &config_read_array('filter', 'scrub', 'rule');
 
 // define form fields
 $config_fields = array('interface', 'proto', 'srcnot', 'src', 'srcmask', 'dstnot', 'dst', 'dstmask', 'dstport',

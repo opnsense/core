@@ -31,10 +31,7 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("filter.inc");
 
-if (!isset($config['nat']['onetoone'])) {
-    $config['nat']['onetoone'] = array();
-}
-$a_1to1 = &$config['nat']['onetoone'];
+$a_1to1 = &config_read_array('nat', 'onetoone');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;

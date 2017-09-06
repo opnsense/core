@@ -30,11 +30,7 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-
-if (!isset($config['nat']['npt'])) {
-    $config['nat']['npt'] = array();
-}
-$a_npt = &$config['nat']['npt'];
+$a_npt = &config_read_array('nat', 'npt');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['dup']) && isset($a_npt[$_GET['dup']])) {

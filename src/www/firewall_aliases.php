@@ -57,7 +57,7 @@ function find_alias_reference($section, $field, $origname, &$is_alias_referenced
         return;
     }
 
-    $sectionref = &$config;
+    $sectionref = &config_read_array();
     foreach($section as $sectionname) {
         if (is_array($sectionref) && isset($sectionref[$sectionname])) {
             $sectionref = &$sectionref[$sectionname];
@@ -110,13 +110,7 @@ function alias_used_recursive($origname)
     return null;
 }
 
-if (!isset($config['aliases']) || !is_array($config['aliases'])) {
-    $config['aliases'] = array();
-}
-if (!isset($config['aliases']['alias'])) {
-    $config['aliases']['alias'] = array();
-}
-$a_aliases = &$config['aliases']['alias'];
+$a_aliases = &config_read_array('aliases', 'alias');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['apply'])) {

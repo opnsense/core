@@ -29,11 +29,7 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 
-if (!isset($config['filter']['scrub']['rule'])) {
-    $config['filter']['scrub'] = array();
-    $config['filter']['scrub']['rule'] = array();
-}
-$a_scrub = &$config['filter']['scrub']['rule'];
+$a_scrub = &config_read_array('filter', 'scrub', 'rule');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
