@@ -32,15 +32,8 @@ require_once("interfaces.inc");
 require_once("services.inc");
 require_once("plugins.inc.d/ipsec.inc");
 
-if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
-    $config['ipsec'] = array();
-}
-
-if (!isset($config['ipsec']['mobilekey'])) {
-    $config['ipsec']['mobilekey'] = array();
-} else {
-    ipsec_mobilekey_sort();
-}
+config_read_aray('ipsec', 'mobilekey');
+ipsec_mobilekey_sort();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();

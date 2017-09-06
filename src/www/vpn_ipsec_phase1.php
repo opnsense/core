@@ -43,10 +43,13 @@ require_once("interfaces.inc");
 function ipsec_ikeid_used($ikeid) {
     global $config;
 
-    foreach ($config['ipsec']['phase1'] as $ph1ent)
-        if( $ikeid == $ph1ent['ikeid'] ) {
-            return true;
+    if (!empty($config['ipsec']['phase1'])) {
+        foreach ($config['ipsec']['phase1'] as $ph1ent) {
+            if( $ikeid == $ph1ent['ikeid'] ) {
+                return true;
+            }
         }
+    }
     return false;
 }
 
@@ -59,18 +62,8 @@ function ipsec_ikeid_next() {
     return $ikeid;
 }
 
-
-if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
-    $config['ipsec'] = array();
-}
-
-if (!isset($config['ipsec']['phase1'])) {
-    $config['ipsec']['phase1'] = array();
-}
-
-if (!isset($config['ipsec']['phase2'])) {
-    $config['ipsec']['phase2'] = array();
-}
+config_read_array('ipsec', 'phase1');
+config_read_array('ipsec', 'phase2');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // fetch data
@@ -154,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $a_phase1 = &$config['ipsec']['phase1'];
+    $a_phase1 = &config_read_array('ipsec', 'phase1');
     if (isset($_POST['p1index']) && is_numericint($_POST['p1index'])) {
         $p1index = $_POST['p1index'];
     }
@@ -245,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if (count($config['ipsec']['phase2'])) {
+    if (!empty($config['ipsec']['phase2'])) {
         foreach ($config['ipsec']['phase2'] as $phase2) {
             if ($phase2['ikeid'] == $pconfig['ikeid']) {
                 if (($pconfig['protocol'] == "inet") && ($phase2['mode'] == "tunnel6")) {

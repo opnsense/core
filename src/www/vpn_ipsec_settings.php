@@ -33,9 +33,7 @@ require_once("plugins.inc.d/ipsec.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
-    $config['ipsec'] = array();
-}
+config_read_array('ipsec');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // fetch form data
