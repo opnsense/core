@@ -39,7 +39,7 @@ $count = count($config['system']['user']);
 $index = 0;
 
 for (; $index < $count; $index++) {
-	$user =& $config['system']['user'][$index];
+	$user =  &config_read_array('system', 'user', $index);
 	if($user['scope'] == "system")
 		continue;
 	echo "1\n";
