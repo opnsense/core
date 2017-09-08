@@ -537,6 +537,24 @@
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
+            <field>
+                <id>proxy.forward.icap.exclude</id>
+                <label>Exclusion List</label>
+                <type>select_multiple</type>
+                <style>tokenize</style>
+                <help><![CDATA[Exclusion list destination domains.<br/>
+        You may use a regular expression, use a comma or press Enter for new item.<br/>
+        <div class="alert alert-info">
+            <b>Examples:</b><br/>
+            <b class="text-primary">mydomain.com</b> -> matches on <b>*.mydomain.com</b><br/>
+            <b class="text-primary">^https?:\/\/([a-zA-Z]+)\.mydomain\.</b> -> matches on <b>http(s)://textONLY.mydomain.*</b><br/>
+            <b class="text-primary">\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
+            <b class="text-primary">\[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
+        </div>
+        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <hint>Regular expressions are allowed.</hint>
+                <allownew>true</allownew>
+            </field>
         </subtab>
         <subtab id="proxy-general-authentication" description="Authentication Settings">
             <field>
