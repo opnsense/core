@@ -399,9 +399,9 @@
                     <default>60</default>
                     <Required>Y</Required>
                 </OptionsTTL>
-                <whiteList type="CSVListField">
+                <exclude type="CSVListField">
                     <Required>N</Required>
-                </whiteList>
+                </exclude>
             </icap>
             <authentication>
                 <method type="AuthenticationServerField">

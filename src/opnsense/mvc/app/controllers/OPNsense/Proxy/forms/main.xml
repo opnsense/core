@@ -538,11 +538,11 @@
                 <advanced>true</advanced>
             </field>
             <field>
-                <id>proxy.forward.icap.whiteList</id>
-                <label>Whitelist</label>
+                <id>proxy.forward.icap.exclude</id>
+                <label>Exclusion List</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Whitelist destination domains.<br/>
+                <help><![CDATA[Exclusion list destination domains.<br/>
         You may use a regular expression, use a comma or press Enter for new item.<br/>
         <div class="alert alert-info">
             <b>Examples:</b><br/>
