@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $timehourstr = $pconfig['starttime' . $x];
         $timehourstr .= "-";
         $timehourstr .= $pconfig['stoptime' . $x];
-        $timedescrstr = htmlentities($pconfig['timedescr' . $x], ENT_QUOTES, 'UTF-8');
+        $timedescrstr = $pconfig['timedescr' . $x];
         $dashpos = strpos($timestr, '-');
         if ($dashpos === false) {
               $timeparts['position'] = $timestr;
