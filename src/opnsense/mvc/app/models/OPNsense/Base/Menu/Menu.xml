@@ -174,14 +174,14 @@
             </Status>
         </VIP>
         <Settings order="200" cssClass="fa fa-cogs fa-fw">
-            <Schedules order="100" url="/firewall_schedule.php">
+            <Schedules url="/firewall_schedule.php">
                 <SchedulesEdit url="/firewall_schedule_edit.php*" visibility="hidden"/>
             </Schedules>
-            <Normalization order="200" url="/firewall_scrub.php">
+            <Normalization url="/firewall_scrub.php">
                 <NormalizationEdit url="/firewall_scrub_edit.php*" visibility="hidden"/>
                 <Normalization url="/firewall_scrub.php*" visibility="hidden"/>
             </Normalization>
-            <Advanced order="300" url="/system_advanced_firewall.php"/>
+            <Advanced url="/system_advanced_firewall.php"/>
         </Settings>
         <Diagnostics order="500" cssClass="fa fa-medkit fa-fw">
             <pfInfo order="30" url="/diag_pf_info.php" VisibleName="pfInfo"/>
