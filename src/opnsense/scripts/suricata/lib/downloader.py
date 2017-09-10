@@ -129,6 +129,7 @@ class Downloader(object):
                 req = requests.get(**req_opts)
 
                 if req.status_code == 200:
+                    req.raw.decode_content = True
                     src = tempfile.NamedTemporaryFile('wb+', 10240)
                     while True:
                         data = req.raw.read(10240)
