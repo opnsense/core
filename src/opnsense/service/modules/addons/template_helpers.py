@@ -1,5 +1,6 @@
 """
     Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2017 Fabian Franz
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -31,7 +32,7 @@
 import collections
 import netaddr
 import operator
-
+import os.path
 
 # noinspection PyPep8Naming
 class Helpers(object):
@@ -111,6 +112,18 @@ class Helpers(object):
         else:
             return {}
 
+
+    def readFile(self, filename):
+        """ read a file and return its content if exists"""
+        if os.path.isfile(filename):
+            try:
+                with open(filename) as f:
+                    return f.read()
+            except:
+                pass
+            return ""
+        else:
+            return ""
     @staticmethod
     def getIPNetwork(network):
         """ generate network object using netaddr
