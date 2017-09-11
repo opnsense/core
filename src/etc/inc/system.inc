@@ -429,7 +429,7 @@ function system_host_route($host, $gateway, $delete = true, $add = true)
     }
 }
 
-function system_default_route($gateway, $interface = null, $delete = true, $add = true)
+function system_default_route($gateway, $interface = null)
 {
     if (is_ipaddrv4($gateway)) {
         $family = 'inet';
@@ -444,19 +444,12 @@ function system_default_route($gateway, $interface = null, $delete = true, $add 
         return;
     }
 
-    if ($delete) {
-        mwexecf('/sbin/route delete -%s default', array($family), true);
-        if (!empty($interface)) {
-            mwexecf('/sbin/route delete -%s %s -interface %s', array($family, $gateway, $interface), true);
-        }
+    mwexecf('/sbin/route delete -%s default', array($family), true);
+    if (!empty($interface)) {
+        mwexecf('/sbin/route delete -%s %s -interface %s', array($family, $gateway, $interface), true);
+        mwexecf('/sbin/route add -%s %s -interface %s', array($family, $gateway, $interface));
     }
-
-    if ($add) {
-        if (!empty($interface)) {
-            mwexecf('/sbin/route add -%s %s -interface %s', array($family, $gateway, $interface));
-        }
-        mwexecf('/sbin/route add -%s default %s', array($family, $gateway));
-    }
+    mwexecf('/sbin/route add -%s default %s', array($family, $gateway));
 }
 
 function system_routing_configure($interface = '', $verbose = false)
@@ -486,7 +479,7 @@ function system_routing_configure($interface = '', $verbose = false)
         foreach ($config['gateways']['gateway_item'] as $gateway) {
             if (isset($gateway['defaultgw'])) {
                 if ($gateway['ipprotocol'] != "inet6" && (is_ipaddrv4($gateway['gateway']) || $gateway['gateway'] == "dynamic")) {
-                    if(strstr($gateway['gateway'], ":")) {
+                    if (strstr($gateway['gateway'], ":")) {
                         continue;
                     }
                     if ($gateway['gateway'] == "dynamic") {
@@ -502,7 +495,7 @@ function system_routing_configure($interface = '', $verbose = false)
                         }
                     }
                     $foundgw = true;
-                } else if ($gateway['ipprotocol'] == "inet6" && (is_ipaddrv6($gateway['gateway']) || $gateway['gateway'] == "dynamic")) {
+                } elseif ($gateway['ipprotocol'] == "inet6" && (is_ipaddrv6($gateway['gateway']) || $gateway['gateway'] == "dynamic")) {
                     if ($gateway['gateway'] == "dynamic") {
                         $gateway['gateway'] = get_interface_gateway_v6($gateway['interface']);
                     }
