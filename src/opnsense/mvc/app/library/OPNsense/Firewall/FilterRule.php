@@ -173,7 +173,7 @@ class FilterRule
      */
     private function parseRoute($value)
     {
-        if (!empty($this->gatewayMapping[$value]['logic'])) {
+        if (!empty($value) && !empty($this->gatewayMapping[$value]['logic'])) {
             return " " . $this->gatewayMapping[$value]['logic'] . " ";
         } else {
             return "";
