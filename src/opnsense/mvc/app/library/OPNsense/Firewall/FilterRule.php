@@ -275,7 +275,14 @@ class FilterRule
      */
     private function convertReplyTo(&$rule)
     {
-        if (!isset($rule['disablereplyto']) && $rule['direction'] != 'any') {
+        if (!empty($rule['reply-to'])) {
+            // reply-to gateway set, when found map to reply attribute, otherwise skip keyword
+            if (!empty($this->gatewayMapping[$rule['reply-to']])) {
+                $if = $this->gatewayMapping[$rule['reply-to']]['if'];
+                $gw = $this->gatewayMapping[$rule['reply-to']]['gateway'];
+                $rule['reply'] = "reply-to ( {$if} {$gw} ) ";
+            }
+        } elseif (!isset($rule['disablereplyto']) && $rule['direction'] != 'any') {
             $proto = $rule['ipprotocol'];
             if (!empty($this->interfaceMapping[$rule['interface']]['if']) && empty($rule['gateway'])) {
                 $if = $this->interfaceMapping[$rule['interface']]['if'];
