@@ -376,29 +376,33 @@ function filter_core_rules_system($fw, $defaults)
         );
     }
 
-    // out from this Firewall, using the selected gateway.
-    foreach ($fw->getInterfaceMapping() as $ifdescr => $ifcfg) {
-        if (!isset($ifcfg['virtual']) && $ifcfg['if'] != 'lo0') {
-            $intf_has_v4 = false;
-            $intf_has_v6 = false;
-            foreach (legacy_getall_interface_addresses($ifcfg['if']) as $addr) {
-                $intf_has_v4 = $intf_has_v4 || is_subnetv4($addr);
-                $intf_has_v6 = $intf_has_v6 || is_subnetv6($addr);
-            }
-            foreach ($fw->getInterfaceGateways($ifcfg['if']) as $gwname) {
-                $gwproto = $fw->getGateway($gwname)['proto'];
-                // only try to add gateway rules for traffic leaving this interface when the correct protocol is
-                // assigned to the interface (e.g. no ipv4 gateway when :network doesn't resolve to an ipv4 network)
-                if (($gwproto == 'inet' && $intf_has_v4) || ($gwproto == 'inet6' && $intf_has_v6)) {
-                    $fw->registerFilterRule(100000,
-                      array('from' => $ifcfg['if'], 'direction' => 'out', 'gateway' => $gwname,
-                        'destination' => array('network'=> $ifdescr, "not" => true),
-                        'statetype' => 'keep',
-                        'allowopts' => true,
-                        'quick' => false,
-                        'label' => "let out anything from firewall host itself"),
-                      $defaults['pass']
-                    );
+    // [out from this Firewall, using the selected gateway].
+    // Our default setting has been to force traffic leaving a specific interface to use the associated gateway.
+    // This behaviour can be disabled, so settings can be customized using manual firewall rules.
+    if (empty($config['system']['pf_disable_force_gw'])) {
+        foreach ($fw->getInterfaceMapping() as $ifdescr => $ifcfg) {
+            if (!isset($ifcfg['virtual']) && $ifcfg['if'] != 'lo0') {
+                $intf_has_v4 = false;
+                $intf_has_v6 = false;
+                foreach (legacy_getall_interface_addresses($ifcfg['if']) as $addr) {
+                    $intf_has_v4 = $intf_has_v4 || is_subnetv4($addr);
+                    $intf_has_v6 = $intf_has_v6 || is_subnetv6($addr);
+                }
+                foreach ($fw->getInterfaceGateways($ifcfg['if']) as $gwname) {
+                    $gwproto = $fw->getGateway($gwname)['proto'];
+                    // only try to add gateway rules for traffic leaving this interface when the correct protocol is
+                    // assigned to the interface (e.g. no ipv4 gateway when :network doesn't resolve to an ipv4 network)
+                    if (($gwproto == 'inet' && $intf_has_v4) || ($gwproto == 'inet6' && $intf_has_v6)) {
+                        $fw->registerFilterRule(100000,
+                          array('from' => $ifcfg['if'], 'direction' => 'out', 'gateway' => $gwname,
+                            'destination' => array('network'=> $ifdescr, "not" => true),
+                            'statetype' => 'keep',
+                            'allowopts' => true,
+                            'quick' => false,
+                            'label' => "let out anything from firewall host itself"),
+                          $defaults['pass']
+                        );
+                    }
                 }
             }
         }

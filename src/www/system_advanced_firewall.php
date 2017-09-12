@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
     $pconfig['lb_use_sticky'] = isset($config['system']['lb_use_sticky']);
     $pconfig['pf_share_forward'] = isset($config['system']['pf_share_forward']);
+    $pconfig['pf_disable_force_gw'] = isset($config['system']['pf_disable_force_gw']);
     $pconfig['srctrack'] = !empty($config['system']['srctrack']) ? $config['system']['srctrack'] : null;
     if (!isset($config['system']['disablenatreflection'])) {
         $pconfig['natreflection'] = "purenat";
@@ -101,6 +102,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['pf_share_forward'] = true;
         } elseif (isset($config['system']['pf_share_forward'])) {
             unset($config['system']['pf_share_forward']);
+        }
+
+        if (!empty($pconfig['pf_disable_force_gw'])) {
+            $config['system']['pf_disable_force_gw'] = true;
+        } elseif (isset($config['system']['pf_disable_force_gw'])) {
+            unset($config['system']['pf_disable_force_gw']);
         }
 
         if (!empty($pconfig['lb_use_sticky'])) {
@@ -407,6 +414,18 @@ include("head.inc");
                                   'processing for the traffic shaper and captive portal tasks. ' .
                                   'Using this option enables the sharing of such forwarding decisions ' .
                                   'between all components to accomodate complex setups. Use with care.') ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_pf_disable_force_gw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable force gateway');?> </td>
+                  <td>
+                    <input name="pf_disable_force_gw" type="checkbox" id="pf_disable_force_gw" value="yes" <?= !empty($pconfig['pf_disable_force_gw']) ? 'checked="checked"' : '' ?>/>
+                    <strong><?=gettext('Disable automatic rules which force local services to use the assigned interface gateway.'); ?></strong><br />
+                    <div class="hidden" for="help_pf_disable_force_gw">
+                      <?= gettext('Outgoing packets from this firewall on an interface which has a gateway ' .
+                                  'will normally use the specified gateway for that interface. ' .
+                                  'When this option is set, the default routing rules apply (automatic rules will be disabled).') ?>
                     </div>
                   </td>
                 </tr>
