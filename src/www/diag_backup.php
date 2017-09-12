@@ -204,11 +204,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (count($input_errors) == 0) {
-            if(stristr($data, "<m0n0wall>")) {
-                log_error('Upgrading m0n0wall configuration to OPNsense.');
-                $data = str_replace('m0n0wall', 'opnsense', $data);
-                $m0n0wall_upgrade = true;
-            }
             if (!empty($_POST['restorearea'])) {
                 if (!restore_config_section($_POST['restorearea'], $data)) {
                     $input_errors[] = gettext("You have selected to restore an area but we could not locate the correct xml tag.");
@@ -243,103 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         write_config();
                         convert_config();
                     }
-                    if($m0n0wall_upgrade) {
-                        if(!empty($config['system']['gateway'])) {
-                            $config['interfaces']['wan']['gateway'] = $config['system']['gateway'];
-                        }
-                        /* optional if list */
-                        $ifdescrs = get_configured_interface_list(true, true);
-                        /* remove special characters from interface descriptions */
-                        if(is_array($ifdescrs)) {
-                            foreach($ifdescrs as $iface) {
-                                $config['interfaces'][$iface]['descr'] = preg_replace('/[^a-z_0-9]/i','',$config['interfaces'][$iface]['descr']);
-                            }
-                            /* check for interface names with an alias */
-                            foreach($ifdescrs as $iface) {
-                                if(is_alias($config['interfaces'][$iface]['descr'])) {
-                                    // Firewall rules
-                                    $origname = $config['interfaces'][$iface]['descr'];
-                                    $newname  = $config['interfaces'][$iface]['descr'] . "Alias";
-                                    update_alias_names_upon_change(array('filter', 'rule'), array('source', 'address'), $newname, $origname);
-                                    update_alias_names_upon_change(array('filter', 'rule'), array('destination', 'address'), $newname, $origname);
-                                    // NAT Rules
-                                    update_alias_names_upon_change(array('nat', 'rule'), array('source', 'address'), $newname, $origname);
-                                    update_alias_names_upon_change(array('nat', 'rule'), array('destination', 'address'), $newname, $origname);
-                                    update_alias_names_upon_change(array('nat', 'rule'), array('target'), $newname, $origname);
-                                    // Alias in an alias
-                                    update_alias_names_upon_change(array('aliases', 'alias'), array('address'), $newname, $origname);
-                                }
-                            }
-                        }
-                        // Reset configuration version to something low
-                        // in order to force the config upgrade code to
-                        // run through with all steps that are required.
-                        $config['system']['version'] = "1.0";
-                        // Deal with descriptions longer than 63 characters
-                        for ($i = 0; isset($config["filter"]["rule"][$i]); $i++) {
-                            if(count($config['filter']['rule'][$i]['descr']) > 63) {
-                                $config['filter']['rule'][$i]['descr'] = substr($config['filter']['rule'][$i]['descr'], 0, 63);
-                            }
-                        }
-                        // Move interface from ipsec to enc0
-                        for ($i = 0; isset($config["filter"]["rule"][$i]); $i++) {
-                            if($config['filter']['rule'][$i]['interface'] == "ipsec") {
-                                $config['filter']['rule'][$i]['interface'] = "enc0";
-                            }
-                        }
-                        // Convert icmp types
-                        // http://www.openbsd.org/cgi-bin/man.cgi?query=icmp&sektion=4&arch=i386&apropos=0&manpath=OpenBSD+Current
-                        for ($i = 0; isset($config["filter"]["rule"][$i]); $i++) {
-                            if($config["filter"]["rule"][$i]['icmptype']) {
-                                switch($config["filter"]["rule"][$i]['icmptype']) {
-                                    case "echo":
-                                        $config["filter"]["rule"][$i]['icmptype'] = "echoreq";
-                                        break;
-                                    case "unreach":
-                                        $config["filter"]["rule"][$i]['icmptype'] = "unreach";
-                                        break;
-                                    case "echorep":
-                                        $config["filter"]["rule"][$i]['icmptype'] = "echorep";
-                                        break;
-                                    case "squench":
-                                        $config["filter"]["rule"][$i]['icmptype'] = "squench";
-                                        break;
-                                    case "redir":
-                                        $config["filter"]["rule"][$i]['icmptype'] = "redir";
-                                        break;
-                                    case "timex":
-                                        $config["filter"]["rule"][$i]['icmptype'] = "timex";
-                                        break;
-                                    case "paramprob":
-                                        $config["filter"]["rule"][$i]['icmptype'] = "paramprob";
-                                        break;
-                                    case "timest":
-                                        $config["filter"]["rule"][$i]['icmptype'] = "timereq";
-                                        break;
-                                    case "timestrep":
-                                        $config["filter"]["rule"][$i]['icmptype'] = "timerep";
-                                        break;
-                                    case "inforeq":
-                                        $config["filter"]["rule"][$i]['icmptype'] = "inforeq";
-                                        break;
-                                    case "inforep":
-                                        $config["filter"]["rule"][$i]['icmptype'] = "inforep";
-                                        break;
-                                    case "maskreq":
-                                        $config["filter"]["rule"][$i]['icmptype'] = "maskreq";
-                                        break;
-                                    case "maskrep":
-                                        $config["filter"]["rule"][$i]['icmptype'] = "maskrep";
-                                        break;
-                                }
-                            }
-                        }
-                        write_config();
-                        convert_config();
-                        $savemsg = gettext("The m0n0wall configuration has been restored and upgraded to OPNsense.");
-                    } else {
-                        $savemsg = gettext("The configuration has been restored.");
-                    }
+                    $savemsg = gettext("The configuration has been restored.");
                 } else {
                     $input_errors[] = gettext("The configuration could not be restored.");
                 }
