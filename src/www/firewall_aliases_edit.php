@@ -33,6 +33,53 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 
+function update_alias_names_upon_change($section, $field, $new_alias_name, $origname, $field_separator=null)
+{
+    global $config;
+    if (!empty($origname) && !empty($new_alias_name)) {
+        // find section, return if not found
+        $sectionref = &config_read_array();
+        foreach ($section as $sectionname) {
+            if (!empty($sectionref[$sectionname]) && is_array($sectionref[$sectionname])) {
+                $sectionref = &$sectionref[$sectionname];
+            } else {
+                return;
+            }
+        }
+        // traverse all found sections
+        foreach($sectionref as $itemkey => $item) {
+            // locate field within structure
+            $fieldref = &$sectionref[$itemkey];
+            foreach($field as $fieldname) {
+                if (!empty($fieldref[$fieldname])) {
+                    $fieldref = &$fieldref[$fieldname];
+                } else {
+                    unset($fieldref);
+                    break;
+                }
+            }
+            // if field is found, check and replace
+            if (isset($fieldref) && !is_array($fieldref)) {
+                if ($fieldref == $origname) {
+                    $fieldref = $new_alias_name;
+                } elseif ($field_separator != null) {
+                    // field contains more then one value
+                    $parts = explode($field_separator, $fieldref);
+                    foreach ($parts as &$part) {
+                        if ($part == $origname) {
+                            $part = $new_alias_name;
+                        }
+                    }
+                    $new_field_value = implode($field_separator, $parts);
+                    if ($new_field_value != $fieldref) {
+                        $fieldref = $new_field_value;
+                    }
+                }
+            }
+        }
+    }
+}
+
 /**
  * generate simple country selection list for geoip
  */
