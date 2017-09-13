@@ -275,7 +275,7 @@ class FilterRule
      */
     private function convertReplyTo(&$rule)
     {
-        if (!empty($rule['reply-to'])) {
+        if (isset($rule['reply-to'])) {
             // reply-to gateway set, when found map to reply attribute, otherwise skip keyword
             if (!empty($this->gatewayMapping[$rule['reply-to']])) {
                 $if = $this->gatewayMapping[$rule['reply-to']]['interface'];
