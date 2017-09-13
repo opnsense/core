@@ -190,6 +190,109 @@ function ipsec_interfaces()
     return $interfaces;
 }
 
+function ipsec_firewall($fw)
+{
+    global $config;
+
+    if (!isset($config['system']['disablevpnrules']) &&
+            isset($config['ipsec']['enable']) && isset($config['ipsec']['phase1'])) {
+        foreach ($config['ipsec']['phase1'] as $ph1ent) {
+            if (!isset($ph1ent['disabled'])) {
+                // detect remote ip
+                $rgip = null;
+                if (isset($ph1ent['mobile'])) {
+                    $rgip = "any";
+                } elseif (!is_ipaddr($ph1ent['remote-gateway'])) {
+                    $dns_qry_type = $ph1ent['protocol'] == 'inet6' ? DNS_AAAA : DNS_A ;
+                    $dns_qry_outfield = $ph1ent['protocol'] == 'inet6' ? "ipv6" : "ip";
+                    $dns_records = @dns_get_record($ph1ent['remote-gateway'], $dns_qry_type);
+                    if (is_array($dns_records)) {
+                        foreach ($dns_records as $dns_record) {
+                            if (!empty($dns_record[$dns_qry_outfield])) {
+                                $rgip = $dns_record[$dns_qry_outfield];
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    $rgip = $ph1ent['remote-gateway'];
+                }
+                if (!empty($rgip)) {
+                    $protos_used = array();
+                    if (is_array($config['ipsec']['phase2'])) {
+                        foreach ($config['ipsec']['phase2'] as $ph2ent) {
+                            if ($ph2ent['ikeid'] == $ph1ent['ikeid']) {
+                                if ($ph2ent['protocol'] == 'esp' || $ph2ent['protocol'] == 'ah') {
+                                    if (!in_array($ph2ent['protocol'], $protos_used)) {
+                                        $protos_used[] = $ph2ent['protocol'];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    $interface = explode("_vhid", $ph1ent['interface'])[0];
+                    $baserule = array("interface" => $interface,
+                                      "log" => !isset($config['syslog']['nologdefaultpass']),
+                                      "quick" => false,
+                                      "type" => "pass",
+                                      "statetype" => "keep",
+                                      "label" => "IPsec: " . (!empty($ph1ent['descr']) ? $ph1ent['descr'] : $rgip)
+                                    );
+
+                    // find gateway
+                    $gwname = null;
+                    foreach ($fw->getInterfaceMapping() as $intfnm => $intf) {
+                        if ($intfnm == $interface) {
+                            foreach ($fw->getInterfaceGateways($intf['if']) as $gwnm) {
+                                $gw = $fw->getGateway($gwnm);
+                                if ($gw['proto'] == $ph1ent['protocol']) {
+                                    $gwname = $gwnm;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    // register rules
+                    $fw->registerFilterRule(500000,
+                        array("direction" => "out", "protocol" => "udp", "to" => $rgip, "to_port" => 500,
+                              "gateway" => $gwname, "disablereplyto" => true),
+                        $baserule
+                    );
+                    $fw->registerFilterRule(500000,
+                        array("direction" => "in", "protocol" => "udp", "from" => $rgip, "to_port" => 500,
+                              "reply-to" => $gwname),
+                        $baserule
+                    );
+                    if ($ph1ent['nat_traversal'] != "off") {
+                        $fw->registerFilterRule(500000,
+                            array("direction" => "out", "protocol" => "udp", "to" => $rgip, "to_port" => 4500,
+                                  "gateway" => $gwname, "disablereplyto" => true),
+                            $baserule
+                        );
+                        $fw->registerFilterRule(500000,
+                            array("direction" => "in", "protocol" => "udp", "from" => $rgip, "to_port" => 4500,
+                                  "reply-to" => $gwname),
+                            $baserule
+                        );
+                    }
+                    foreach ($protos_used as $proto) {
+                        $fw->registerFilterRule(500000,
+                            array("direction" => "out", "protocol" => $proto, "to" => $rgip,
+                                  "gateway" => $gwname, "disablereplyto" => true),
+                            $baserule
+                        );
+                        $fw->registerFilterRule(500000,
+                            array("direction" => "in", "protocol" => $proto, "from" => $rgip,
+                                  "reply-to" => $gwname),
+                            $baserule
+                        );
+                    }
+                }
+            }
+        }
+    }
+}
+
 function ipsec_xmlrpc_sync()
 {
     $result = array();
