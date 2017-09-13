@@ -364,10 +364,10 @@
                 </enable>
                 <RequestURL type="TextField">
                     <Required>Y</Required>
-                    <default>icap://127.0.0.1/reqmod</default>
+                    <default>icap://[::1]:1344/avscan</default>
                 </RequestURL>
                 <ResponseURL type="TextField">
-                    <default>icap://127.0.0.1/respmod</default>
+                    <default>icap://[::1]:1344/avscan</default>
                     <Required>Y</Required>
                 </ResponseURL>
                 <SendClientIP type="BooleanField">
