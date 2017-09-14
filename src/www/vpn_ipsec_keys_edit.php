@@ -32,7 +32,7 @@ require_once("interfaces.inc");
 require_once("services.inc");
 require_once("plugins.inc.d/ipsec.inc");
 
-config_read_aray('ipsec', 'mobilekey');
+config_read_array('ipsec', 'mobilekey');
 ipsec_mobilekey_sort();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
