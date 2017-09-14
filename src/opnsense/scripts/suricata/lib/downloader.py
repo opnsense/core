@@ -63,7 +63,7 @@ class Downloader(object):
                 if line[0:5] == 'alert':
                     line = 'drop %s' % line[5:]
                 elif line[0:6] == '#alert':
-                    line = '#drop %s' % line[5:]
+                    line = '#drop %s' % line[6:]
             output.append(line)
         return '\n'.join(output)
 
