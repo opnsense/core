@@ -161,37 +161,28 @@ function system_resolvconf_generate($verbose = false)
         flush();
     }
 
-    // Do not create blank domain lines, it breaks tools like dig.
-    if($syscfg['domain']) {
+    if (!empty($syscfg['domain'])) {
         $resolvconf = "domain {$syscfg['domain']}\n";
     }
 
     if (((isset($config['dnsmasq']['enable']) && (empty($config['dnsmasq']['interface']) || in_array("lo0", explode(",", $config['dnsmasq']['interface']))))
       || (isset($config['unbound']['enable'])) && (empty($config['unbound']['active_interface']) || in_array("lo0", explode(",", $config['unbound']['active_interface']))))
       && !isset($config['system']['dnslocalhost'])) {
-          $resolvconf .= "nameserver 127.0.0.1\n";
-      }
+        $resolvconf .= "nameserver 127.0.0.1\n";
+    }
 
     if (isset($syscfg['dnsallowoverride'])) {
-        /* get dynamically assigned DNS servers (if any) */
-        $ns = array_unique(get_searchdomains());
-        foreach($ns as $searchserver) {
-            if($searchserver) {
-                $resolvconf .= "search {$searchserver}\n";
-            }
+        foreach (get_searchdomains() as $searchserver) {
+            $resolvconf .= "search {$searchserver}\n";
         }
-        $ns = array_unique(get_nameservers());
-        foreach($ns as $nameserver) {
-            if($nameserver) {
-                $resolvconf .= "nameserver $nameserver\n";
-            }
+        foreach (get_nameservers() as $nameserver) {
+            $resolvconf .= "nameserver $nameserver\n";
         }
     }
-    if (isset($syscfg['dnsserver']) && is_array($syscfg['dnsserver'])) {
+
+    if (isset($syscfg['dnsserver'][0])) {
         foreach ($syscfg['dnsserver'] as $ns) {
-            if ($ns) {
-                $resolvconf .= "nameserver $ns\n";
-            }
+            $resolvconf .= "nameserver $ns\n";
         }
     }
 
@@ -283,38 +274,36 @@ function get_zoneinfo()
 
 function get_searchdomains()
 {
-    global $config;
-
     $master_list = array();
 
-    // Read in dhclient nameservers
-    $search_list = glob("/var/etc/searchdomain_*");
+    $search_list = glob('/var/etc/searchdomain_*');
+
     if (is_array($search_list)) {
-        foreach($search_list as $fdns) {
+        foreach ($search_list as $fdns) {
             $contents = file($fdns, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             if (!is_array($contents)) {
                 continue;
             }
             foreach ($contents as $dns) {
-                if(is_hostname($dns)) {
+                if (!empty($dns) && is_hostname($dns)) {
                     $master_list[] = $dns;
                 }
             }
         }
     }
 
-    return $master_list;
+    return array_unique($master_list);
 }
 
 function get_dns_servers()
 {
     $dns_servers = array();
 
-    $dns_s = file("/etc/resolv.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $dns_s = file('/etc/resolv.conf', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
     foreach($dns_s as $dns) {
-        $matches = "";
-        if (preg_match("/nameserver (.*)/", $dns, $matches)) {
+        $matches = '';
+        if (preg_match('/nameserver ([^ ]+)/', $dns, $matches)) {
             $dns_servers[] = $matches[1];
         }
     }
@@ -324,26 +313,25 @@ function get_dns_servers()
 
 function get_nameservers()
 {
-    global $config;
     $master_list = array();
 
-    // Read in dhclient nameservers
-    $dns_lists = glob("/var/etc/nameserver_*");
+    $dns_lists = glob('/var/etc/nameserver_*');
+
     if (is_array($dns_lists)) {
-        foreach($dns_lists as $fdns) {
+        foreach ($dns_lists as $fdns) {
             $contents = file($fdns, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             if (!is_array($contents)) {
                 continue;
             }
             foreach ($contents as $dns) {
-                if(is_ipaddr($dns)) {
+                if (!empty($dns) && is_ipaddr($dns)) {
                     $master_list[] = $dns;
                 }
             }
         }
     }
 
-    return $master_list;
+    return array_unique($master_list);
 }
 
 function system_hosts_generate($verbose = false)

@@ -171,7 +171,7 @@ EOF;
     $bindints = "";
     if (!empty($config['unbound']['active_interface'])) {
         $active_interfaces = explode(",", $config['unbound']['active_interface']);
-        foreach($active_interfaces as $ubif) {
+        foreach ($active_interfaces as $ubif) {
             $intip = get_interface_ip($ubif);
             if (!empty($intip)) {
                 $bindints .= "interface: $intip\n";
@@ -192,7 +192,7 @@ EOF;
     if (!empty($config['unbound']['outgoing_interface'])) {
         $outgoingints = "# Outgoing interfaces to be used\n";
         $outgoing_interfaces = explode(",", $config['unbound']['outgoing_interface']);
-        foreach($outgoing_interfaces as $outif) {
+        foreach ($outgoing_interfaces as $outif) {
             $outip = get_interface_ip($outif);
             if (!empty($outip)) {
                 $outgoingints .= "outgoing-interface: $outip\n";
@@ -261,18 +261,12 @@ EOF;
     if (isset($config['unbound']['forwarding'])) {
         $dnsservers = array();
         if (isset($config['system']['dnsallowoverride'])) {
-            $ns = array_unique(get_nameservers());
-            foreach($ns as $nameserver) {
-                if ($nameserver) {
-                    $dnsservers[] = $nameserver;
-                }
+            foreach (get_nameservers() as $nameserver) {
+                $dnsservers[] = $nameserver;
             }
         } else {
-            $ns = array_unique(get_dns_servers());
-            foreach($ns as $nameserver) {
-                if ($nameserver) {
-                    $dnsservers[] = $nameserver;
-                }
+            foreach (get_dns_servers() as $nameserver) {
+                $dnsservers[] = $nameserver;
             }
         }
 
@@ -283,7 +277,7 @@ forward-zone:
     name: "."
 
 EOD;
-            foreach($dnsservers as $dnsserver) {
+            foreach ($dnsservers as $dnsserver) {
                 $forward_conf .= "\tforward-addr: $dnsserver\n";
             }
         }
@@ -486,7 +480,7 @@ function unbound_add_domain_overrides($pvt = false)
 
     $sorted_domains = msort($domains, "domain");
     $result = array();
-    foreach($sorted_domains as $domain) {
+    foreach ($sorted_domains as $domain) {
         $domain_key = current($domain);
         if (!isset($result[$domain_key])) {
             $result[$domain_key] = array();
@@ -496,7 +490,7 @@ function unbound_add_domain_overrides($pvt = false)
 
     // Domain overrides that have multiple entries need multiple stub-addr: added
     $domain_entries = "";
-    foreach($result as $domain=>$ips) {
+    foreach ($result as $domain => $ips) {
         if ($pvt == true) {
             $domain_entries .= "private-domain: \"$domain\"\n";
             $domain_entries .= "domain-insecure: \"$domain\"\n";
@@ -506,7 +500,7 @@ function unbound_add_domain_overrides($pvt = false)
         } else {
             $domain_entries .= "stub-zone:\n";
             $domain_entries .= "\tname: \"$domain\"\n";
-            foreach($ips as $ip) {
+            foreach ($ips as $ip) {
                 $domain_entries .= "\tstub-addr: $ip\n";
             }
             $domain_entries .= "\tstub-prime: no\n";
@@ -575,7 +569,7 @@ function unbound_add_host_entries()
     if (isset($config['unbound']['hosts'])) {
         $added_item = array();
 
-        foreach($config['unbound']['hosts'] as $host) {
+        foreach ($config['unbound']['hosts'] as $host) {
             if ($host['host'] != "") {
                 $host['host'] = $host['host'].".";
             }
@@ -701,7 +695,7 @@ function unbound_acls_config()
     }
 
     $bindints = "";
-    foreach($active_interfaces as $ubif => $ifdesc) {
+    foreach ($active_interfaces as $ubif => $ifdesc) {
         $ifip = get_interface_ip($ubif);
         if (!empty($ifip)) {
             $subnet_bits = get_interface_subnet($ubif);
@@ -722,9 +716,9 @@ function unbound_acls_config()
 
     // Configure the custom ACLs
     if (isset($config['unbound']['acls'])) {
-        foreach($config['unbound']['acls'] as $unbound_acl) {
+        foreach ($config['unbound']['acls'] as $unbound_acl) {
             $aclcfg .= "#{$unbound_acl['aclname']}\n";
-            foreach($unbound_acl['row'] as $network) {
+            foreach ($unbound_acl['row'] as $network) {
                 if ($unbound_acl['aclaction'] == "allow snoop") {
                     $unbound_acl['aclaction'] = "allow_snoop";
                 }
