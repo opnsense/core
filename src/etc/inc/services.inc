@@ -256,20 +256,19 @@ function services_radvd_configure($blacklist = array())
         $radvdifs[$realif] = 1;
 
         $dnslist = array();
+        $subnetv6 = '::';
+        $ifcfgsnv6 = '64';
 
         $ifcfgipv6 = get_interface_ipv6($if);
-        if (!is_ipaddrv6($ifcfgipv6)) {
-            $subnetv6 = "::";
-            $ifcfgsnv6 = "64";
-        } else {
-            if (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
-                $dnslist[] = $ifcfgipv6;
-            }
+
+        if (is_ipaddrv6($ifcfgipv6)) {
             $ifcfgsnv6 = get_interface_subnetv6($if);
             $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
         }
 
-        if (!empty($config['system']['dnsserver'])) {
+        if ((isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) && is_ipaddrv6($ifcfgipv6)) {
+            $dnslist[] = $ifcfgipv6;
+        } elseif (!empty($config['system']['dnsserver'])) {
             foreach($config['system']['dnsserver'] as $server) {
                 if (is_ipaddrv6($server)) {
                     $dnslist[] = $server;
