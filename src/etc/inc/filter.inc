@@ -333,8 +333,6 @@ function filter_configure_sync($verbose = false)
     /* Use filter lock to not allow concurrent filter reloads during this run. */
     $filterlck = lock('filter', LOCK_EX);
 
-    $FilterIflist = filter_generate_optcfg_array();
-
     // initialize fw plugin object
     $fw = new \OPNsense\Firewall\Plugin();
     $cnfint = legacy_config_get_interfaces(array("enable" => true));
@@ -405,13 +403,14 @@ function filter_configure_sync($verbose = false)
         fixup_default_gateway($gateways_status, $gateways_arr);
     }
 
-    $aliases = filter_generate_aliases($FilterIflist);
+    $aliases = filter_generate_aliases($cnfint);
 
     if ($verbose) {
         echo '.';
         flush();
     }
 
+    $FilterIflist = filter_generate_optcfg_array();
     $natrules = filter_nat_rules_generate($FilterIflist);
 
     if ($verbose) {
@@ -487,17 +486,17 @@ function filter_configure_sync($verbose = false)
 
     $rules = "{$limitrules}\n";
     $rules .= "{$aliases} \n";
-    $rules .= filter_setup_logging_interfaces($FilterIflist);
+    $rules .= filter_setup_logging_interfaces($cnfint);
     $rules .= "\n";
     $rules .= "set skip on pfsync0\n";
     $rules .= "\n";
-    $rules .= filter_generate_scrubing($FilterIflist);
+    $rules .= filter_generate_scrubing($cnfint);
     $rules .= "\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'head');
     $rules .= "{$natrules}\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'tail');
     $rules .= $fw->anchorToText('fw', 'head');
-    $rules .= filter_rules_legacy($FilterIflist);
+    $rules .= filter_rules_legacy($cnfint);
     $rules .= $fw->outputFilterRules();
     $rules .= $fw->anchorToText('fw', 'tail');
 
@@ -793,13 +792,13 @@ function filter_generate_aliases(&$FilterIflist)
 
     foreach ($FilterIflist as $if => $ifcfg) {
         if (!empty($ifcfg['if'])) {
-            if (isset($ifcfg['type6']) && $ifcfg['type6'] == '6rd') {
+            if (isset($ifcfg['ipaddrv6']) && $ifcfg['ipaddrv6'] == '6rd') {
                 $aliases .= "{$if} = \"{ {$ifcfg['if']} {$if}_stf";
-            } elseif (isset($ifcfg['type6']) && $ifcfg['type6'] == '6to4') {
+            } elseif (isset($ifcfg['ipaddrv6']) && $ifcfg['ipaddrv6'] == '6to4') {
                 $aliases .= "{$if} = \"{ {$ifcfg['if']} {$if}_stf";
             } else {
                 $aliases .= "{$if} = \"{ {$ifcfg['if']}";
-                if (isset($ifcfg['type']) && $ifcfg['type'] == 'pptp') {
+                if (isset($ifcfg['ipaddr']) && $ifcfg['ipaddr'] == 'pptp') {
                     foreach (get_parent_interface($ifcfg['if']) as $parent_if) {
                         if ($parent_if != $ifcfg['if']) {
                             $aliases .= " {$parent_if}";
@@ -1894,7 +1893,7 @@ function filter_rules_legacy(&$FilterIflist)
         }
     }
     foreach ($FilterIflist as $on => $oc) {
-        if ($oc['ip'] && !($isbridged) && !isset($oc['internal_dynamic'])) {
+        if (!$isbridged && !isset($oc['internal_dynamic'])) {
             $ipfrules .= "antispoof {$log['block']} for {$oc['if']} \n";
         }
     }

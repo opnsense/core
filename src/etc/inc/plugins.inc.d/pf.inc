@@ -103,27 +103,25 @@ function pf_firewall($fw)
      *  topologies
      */
     if (isset($config['filter']['bypassstaticroutes']) && isset($config['staticroutes']['route']) && count($config['staticroutes']['route'])) {
-        $FilterIflist = filter_generate_optcfg_array();
+        $ifdetails = legacy_interfaces_details();
+        $intf = $fw->getInterfaceMapping();
         $GatewaysList = return_gateways_array(false, true) + return_gateway_groups_array();
 
         foreach (get_staticroutes() as $route) {
             $friendly = $GatewaysList[$route['gateway']]['friendlyiface'];
-            if (is_array($FilterIflist[$friendly])) {
-                $oc = $FilterIflist[$friendly];
+            if (!empty($intf[$friendly])) {
                 $routeent = explode("/", $route['network']);
-                if (is_ipaddrv4($routeent[0]) && is_ipaddrv4($oc['ip'])) {
-                    $sa = $oc['sa'];
-                    $sn = $oc['sn'];
-                } elseif (is_ipaddrv6($routeent[0]) && is_ipaddrv6($oc['ipv6'])) {
-                    $sa = $oc['sav6'];
-                    $sn = $oc['snv6'];
-                } else {
+                if (is_ipaddrv4($routeent[0]) && empty($ifdetails[$intf[$friendly]['if']]['ipv4'])) {
+                    continue;
+                } elseif (is_ipaddrv6($routeent[0]) && empty($ifdetails[$intf[$friendly]['if']]['ipv6'])) {
+                    continue;
+                } elseif (!is_ipaddrv4($routeent[0]) && !is_ipaddrv6($routeent[0])) {
                     continue;
                 }
 
                 $networks = array();
-                $networks[] = array('from' => "{$sa}/{$sn}", 'to' => $route['network']);
-                $networks[] = array('to' => "{$sa}/{$sn}", 'from' => $route['network']);
+                $networks[] = array('from' => $intf[$friendly]['if'].":network", 'to' => $route['network']);
+                $networks[] = array('to' => $intf[$friendly]['if'].":network", 'from' => $route['network']);
                 foreach ($networks as $network) {
                     $fw->registerFilterRule(10,
                       array('interface' => $friendly, 'statetype' => 'sloppy',
