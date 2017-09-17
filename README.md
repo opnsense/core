@@ -9,7 +9,7 @@ The build process has been designed to make it easy for anyone to
 build and write code.  The main outline of the new codebase is
 available at:
 
-https://wiki.opnsense.org/index.php/Develop:Architecture
+https://docs.opnsense.org/development/architecture.html
 
 Our aim is to gradually evolve to a new codebase instead of using a
 big bang approach into something new.
