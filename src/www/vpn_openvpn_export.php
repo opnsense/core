@@ -754,7 +754,7 @@ function openvpn_client_export_find_port_forwards($targetip, $targetport, $targe
 {
     global $config;
 
-    $FilterIflist = filter_generate_optcfg_array();
+    $FilterIflist = legacy_config_get_interfaces(array("enable" => true));
     $destinations = array();
 
     if (!isset($config['nat']['rule'])) {

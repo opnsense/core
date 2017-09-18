@@ -103,15 +103,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
       }
     }
-    /* XXX cranky low-level call, please refactor */
-    $direct_networks_list = explode(' ', filter_get_direct_networks_list(filter_generate_optcfg_array()));
+    /* collect direct attached networks and static routes */
+    $direct_networks_list = array();
+    foreach (legacy_interfaces_details() as $ifname => $ifcnf) {
+        foreach ($ifcnf['ipv4'] as $addr) {
+            $direct_networks_list[] = gen_subnet($addr['ipaddr'], $addr['subnetbits']) . "/{$addr['subnetbits']}";
+        }
+        foreach ($ifcnf['ipv6'] as $addr) {
+            $direct_networks_list[] = gen_subnetv6($addr['ipaddr'], $addr['subnetbits']) . "/{$addr['subnetbits']}";
+        }
+    }
+    foreach (get_staticroutes() as $netent) {
+        $direct_networks_list[] = $netent['network'];
+    }
+
     for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
         $dnsitem = "dns{$dnscounter}";
         $dnsgwitem = "dns{$dnscounter}gw";
         if (!empty($pconfig[$dnsgwitem])) {
-            if(interface_has_gateway($pconfig[$dnsgwitem])) {
-                foreach($direct_networks_list as $direct_network) {
-                    if(ip_in_subnet($_POST[$dnsitem], $direct_network)) {
+            if (interface_has_gateway($pconfig[$dnsgwitem])) {
+                foreach ($direct_networks_list as $direct_network) {
+                    if (ip_in_subnet($_POST[$dnsitem], $direct_network)) {
                         $input_errors[] = sprintf(gettext("You can not assign a gateway to DNS '%s' server which is on a directly connected network."),$pconfig[$dnsitem]);
                     }
                 }
