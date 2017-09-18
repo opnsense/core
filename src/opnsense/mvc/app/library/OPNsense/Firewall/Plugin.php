@@ -98,7 +98,8 @@ class Plugin
                 $proto = 'inet';
                 foreach ($gwgr as $gw) {
                     if (Util::isIpAddress($gw['gwip']) && !empty($gw['int'])) {
-                        $routeto[] = str_repeat("( {$gw['int']} {$gw['gwip']} )", $gw['weight']);
+                        $gwweight = empty($gw['weight']) ? 1 : $gw['weight'];
+                        $routeto[] = str_repeat("( {$gw['int']} {$gw['gwip']} )", $gwweight);
                         if (strstr($gw['gwip'], ':')) {
                             $proto = 'inet6';
                         }
