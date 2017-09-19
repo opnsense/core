@@ -1,0 +1,150 @@
+#!/bin/sh
+
+# Copyright (c) 2014-2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2004-2010 Scott Ullrich <sullrich@gmail.com>
+# Copyright (c) 2003-2004 Manuel Kasper <mk@neon1.net>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+# OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGE.
+
+ROOTDIR="/root"
+
+setup_mfs_link()
+{
+	ROOT=${ROOTDIR}
+	MFS=$(dirname ${1})
+	NAME=$(basename ${1})
+
+	# Create dummy directory to for MFS-bound
+	# directories that require a persistent
+	# storage underneath to run.
+
+	if [ ! -d "${ROOT}${MFS}/${NAME}" ]; then
+		mkdir -p "${ROOT}${MFS}" "${MFS}/${NAME}"
+		mv "${MFS}/${NAME}" "${ROOT}${MFS}"
+		# create a symlink underneath as well
+		ln -s "${ROOT}${MFS}/${NAME}" "${MFS}/${NAME}"
+	fi
+}
+
+install_mfs_link()
+{
+	ROOT=${ROOTDIR}
+	MFS=$(dirname ${1})
+	NAME=$(basename ${1})
+
+	# Redirect persistent, but MFS-bound
+	# directory after tmpfs mount.
+
+	mkdir -p "${MFS}"
+	ln -s "${ROOT}${MFS}/${NAME}" "${MFS}/${NAME}"
+}
+
+remove_mfs_link()
+{
+	ROOT=${ROOTDIR}
+	MFS=$(dirname ${1})
+	NAME=$(basename ${1})
+
+	# Persistent copies of MFS-bound directories
+	# still there must be moved back into place.
+
+	if [ -d "${ROOT}${MFS}/${NAME}" ]; then
+		mkdir -p "${MFS}"
+		# reverse the recovery symlink before
+		# moving back the original database
+		rm -f "${MFS}/${NAME}"
+		mv "${ROOT}${MFS}/${NAME}" "${MFS}/"
+	fi
+
+	# ensure directory always exist
+	mkdir -p "${MFS}/${NAME}"
+}
+
+# check which directories we need
+if [ -f /etc/rc.conf ]; then
+	. /etc/rc.conf
+fi
+if [ -f /etc/rc.conf.local ]; then
+	. /etc/rc.conf.local
+fi
+for RC_CONF in $(find /etc/rc.conf.d -type f); do
+	. ${RC_CONF}
+done
+
+RC_FILES="$(ls /etc/rc.d/[a-z]* /usr/local/etc/rc.d/[a-z]* 2> /dev/null || true)"
+MFS_DIRS="
+/var/cache/opnsense-update
+/var/cache/pkg
+/var/crash
+/var/db/pkg
+/var/log/bsdinstaller
+"
+
+for RC_FILE in ${RC_FILES}; do
+	eval "$(grep "^name[[:blank:]]*=" ${RC_FILE})"
+	VAR_MFS="${name}_var_mfs"
+	eval "VAR_DIRS=\$${VAR_MFS}"
+	for VAR_DIR in ${VAR_DIRS}; do
+		MFS_DIRS="${MFS_DIRS} ${VAR_DIR}"
+	done
+done
+
+# XXX pre-17.1 compat: use_mfs_tmpvar matches both patterns
+USE_MFS_VAR=`/usr/bin/grep -c 'use_mfs_.*var[^_]' /conf/config.xml`
+
+if [ ${USE_MFS_VAR} -ne 0 ]; then
+	echo -n "Setting up memory disks..."
+
+	for DIR in ${MFS_DIRS}; do
+		setup_mfs_link ${DIR}
+	done
+
+	mount -t tmpfs tmpfs /var
+
+	for DIR in ${MFS_DIRS}; do
+		install_mfs_link ${DIR}
+	done
+
+	echo "done."
+else
+	for DIR in ${MFS_DIRS}; do
+		remove_mfs_link ${DIR}
+	done
+fi
+
+# ensure default directories in /var
+mtree -deiU -f /etc/mtree/BSD.var.dist -p /var > /dev/null
+
+# old config files are stored in this place
+mkdir -p /var/etc
+
+# clear nameserver, searchdomain and IP cache files
+rm -f /var/db/*_ip /var/db/*_ipv6 /var/db/*_cacheip /var/db/*_cacheipv6
+rm -f /var/etc/nameserver_* /var/etc/searchdomain_*
+
+# Clear all files in this directory to prevent stale state of
+# services.  At one point this also helped to prevent shutdown(8)
+# from dropping "nologin" into the directory, preventing login on
+# the next boot.
+rm -rf /var/run/*

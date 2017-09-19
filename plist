@@ -126,6 +126,7 @@
 /usr/local/etc/rc.restart_webgui
 /usr/local/etc/rc.shutdown
 /usr/local/etc/rc.sshd
+/usr/local/etc/rc.subr.d/var
 /usr/local/etc/rc.swapon
 /usr/local/etc/rc.syshook
 /usr/local/etc/rc.syshook.d/05-beep.stop
