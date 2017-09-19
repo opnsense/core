@@ -110,7 +110,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         if (status == "success") {
                             $("#grid-vouchers > tbody").html('');
                             $.each(data, function (key, value) {
-                                var fields = ["username", "starttime", "endtime", "state"];
+                                var fields = ["username", "starttime", "endtime", "expirytime", "state"];
                                 tr_str = '<tr>';
                                 for (var i = 0; i < fields.length; i++) {
                                     if (value[fields[i]] != null) {
@@ -178,12 +178,13 @@ POSSIBILITY OF SUCH DAMAGE.
             $('#generatevouchererror').hide();
             var voucher_provider = $('#voucher-providers').find("option:selected").val();
             var voucher_validity = $("#voucher-validity").val();
+            var voucher_expirytime = $("#voucher-expiry").val();
             var voucher_quantity = $("#voucher-quantity").val();
             var voucher_groupname = $("#voucher-groupname").val();
-            if (!$.isNumeric(voucher_validity) || !$.isNumeric(voucher_quantity)) {
-                // don't try to generate vouchers then validity or quantity are invalid
+            if (!$.isNumeric(voucher_validity) || !$.isNumeric(voucher_quantity) || !$.isNumeric(voucher_expirytime)) {
+                // don't try to generate vouchers when validity, expirytime or quantity are invalid
                 var error = $('<p />');
-                error.text("{{ lang._('The validity and the quantity of vouchers must be integers.') }}");
+                error.text("{{ lang._('The validity, expiry time and the quantity of vouchers must be integers.') }}");
                 $('#generatevouchererror').append(error);
                 $('#generatevouchererror').show();
                 return;
@@ -192,14 +193,16 @@ POSSIBILITY OF SUCH DAMAGE.
                     sendData={
                         'count':voucher_quantity,
                         'validity':voucher_validity,
-                        'vouchergroup': voucher_groupname
+                        'expirytime':voucher_expirytime,
+                        'vouchergroup':voucher_groupname
                     }, callback=function(data,status){
                         // convert json to csv data
-                        var output_data = 'username,password,vouchergroup,validity\n';
+                        var output_data = 'username,password,vouchergroup,expirytime,validity\n';
                         $.each(data, function( key, value ) {
                             output_data = output_data.concat('"', value['username'], '",');
                             output_data = output_data.concat('"', value['password'], '",');
                             output_data = output_data.concat('"', value['vouchergroup'], '",');
+                            output_data = output_data.concat('"', value['expirytime'], '",');
                             output_data = output_data.concat('"', value['validity'], '"\n');
                         });
 
@@ -304,6 +307,16 @@ POSSIBILITY OF SUCH DAMAGE.
         $("#voucher-validity-custom-data").keyup(function(){
             $("#voucher-validity-custom").val($(this).val()*60);
         });
+        $("#voucher-expiry").change(function(){
+            if ($(this).children(":selected").attr("id") == 'voucher-expiry-custom') {
+                $("#voucher-expiry-custom-data").show();
+            } else {
+                $("#voucher-expiry-custom-data").hide();
+            }
+        });
+        $("#voucher-expiry-custom-data").keyup(function(){
+            $("#voucher-expiry-custom").val($(this).val()*3600);
+        });
 
         $("#voucher-quantity").change(function(){
             if ($(this).children(":selected").attr("id") == 'voucher-quantity-custom') {
@@ -343,6 +356,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         <th data-column-id="username" data-type="string" data-identifier="true">{{ lang._('Voucher') }}</th>
                         <th data-column-id="starttime" data-type="datetime">{{ lang._('Valid from') }}</th>
                         <th data-column-id="endtime" data-type="datetime">{{ lang._('Valid to') }}</th>
+                        <th data-column-id="expirytime" data-type="datetime">{{ lang._('Expires at') }}</th>
                         <th data-column-id="state" data-type="string">{{ lang._('State') }}</th>
                     </tr>
                     </thead>
@@ -392,15 +406,9 @@ POSSIBILITY OF SUCH DAMAGE.
             <div class="modal-body">
             <div id="generatevouchererror" class="alert alert-danger" role="alert" style="display: none"></div>
                 <table class="table table-striped table-condensed table-responsive">
-                    <thead>
-                        <tr>
-                            <td>{{ lang._('Validity') }}</td>
-                            <td>{{ lang._('Number of vouchers') }}</td>
-                            <td>{{ lang._('Groupname') }}</td>
-                        </tr>
-                    </thead>
                     <tbody>
                         <tr>
+                            <th>{{ lang._('Validity') }}</th>
                             <td>
                                 <select id="voucher-validity" class="selectpicker" data-width="200px">
                                     <option value="14400">{{ lang._('4 hours') }}</option>
@@ -417,6 +425,33 @@ POSSIBILITY OF SUCH DAMAGE.
                                 </select>
                                 <input type="text" id="voucher-validity-custom-data" style="display:none;">
                             </td>
+                        </tr>
+                        <tr>
+                            <th>{{ lang._('Expires in') }}</th>
+                            <td>
+                                <select id="voucher-expiry" class="selectpicker" data-width="200px">
+                                    <option value="0">{{ lang._('never') }}</option>
+                                    <option value="21600">{{ lang._('6 hours') }}</option>
+                                    <option value="43200">{{ lang._('12 hours') }}</option>
+                                    <option value="86400">{{ lang._('1 day') }}</option>
+                                    <option value="172800">{{ lang._('2 days') }}</option>
+                                    <option value="259200">{{ lang._('3 days') }}</option>
+                                    <option value="345600">{{ lang._('4 days') }}</option>
+                                    <option value="432000">{{ lang._('5 days') }}</option>
+                                    <option value="518400">{{ lang._('6 days') }}</option>
+                                    <option value="604800">{{ lang._('1 week') }}</option>
+                                    <option value="1209600">{{ lang._('2 weeks') }}</option>
+                                    <option value="1814400">{{ lang._('3 weeks') }}</option>
+                                    <option value="2419200">{{ lang._('1 month') }}</option>
+                                    <option value="4838400">{{ lang._('2 months') }}</option>
+                                    <option value="7257600">{{ lang._('3 months') }}</option>
+                                    <option id="voucher-expiry-custom" value="">{{ lang._('Custom (hours)') }}</option>
+                                </select>
+                                <input type="text" id="voucher-expiry-custom-data" style="display:none;">
+                            </td>
+                        </tr>
+						<tr>
+                            <th>{{ lang._('Number of vouchers') }}</th>
                             <td>
                                 <select id="voucher-quantity" class="selectpicker" data-width="200px">
                                     <option value="1">1</option>
@@ -430,6 +465,9 @@ POSSIBILITY OF SUCH DAMAGE.
                                 </select>
                                 <input type="text" id="voucher-quantity-custom-data" style="display:none;">
                             </td>
+                        </tr>
+						<tr>
+                            <th>{{ lang._('Groupname') }}</th>
                             <td>
                                 <input id="voucher-groupname" type="text">
                             </td>
