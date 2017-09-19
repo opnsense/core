@@ -363,7 +363,7 @@ class Voucher extends Base implements IAuthConnector
                   delete
                   from vouchers
                   where vouchergroup = :vouchergroup
-                  and starttime is not null
+                  and ((starttime is not null) or (expirytime > 0))
                   and (starttime + validity < :endtime or (expirytime > 0 and expirytime < :endtime))
                   ');
         $stmt->bindParam(':vouchergroup', $vouchergroup);
