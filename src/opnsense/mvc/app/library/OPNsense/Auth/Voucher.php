@@ -242,7 +242,7 @@ class Voucher extends Base implements IAuthConnector
                     $generatedPasswordHash = crypt($generatedPassword, '$6$');
                     $stmt = $this->dbHandle->prepare('
                                 insert into vouchers(username, password, vouchergroup, validity, expirytime, starttime)
-                                values (:username, :password, :vouchergroup, :validity, :expirytime,:starttime)
+                                values (:username, :password, :vouchergroup, :validity, :expirytime, :starttime)
                                 ');
                     $stmt->bindParam(':username', $generatedUsername);
                     $stmt->bindParam(':password', $generatedPasswordHash);
