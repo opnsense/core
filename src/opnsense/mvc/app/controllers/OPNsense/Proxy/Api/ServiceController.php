@@ -1,7 +1,7 @@
 <?php
-/**
+
+/*
  *    Copyright (C) 2015 Deciso B.V.
- *
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -24,8 +24,8 @@
  *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *    POSSIBILITY OF SUCH DAMAGE.
- *
  */
+
 namespace OPNsense\Proxy\Api;
 
 use \OPNsense\Base\ApiControllerBase;
@@ -62,8 +62,8 @@ class ServiceController extends ApiControllerBase
     {
         if ($this->request->isPost()) {
             $backend = new Backend();
-            $backend->configdRun('proxy plugins stop');
             $response = $backend->configdRun("proxy stop");
+            $backend->configdRun('proxy plugins stop');
             return array("response" => $response);
         } else {
             return array("response" => array());
