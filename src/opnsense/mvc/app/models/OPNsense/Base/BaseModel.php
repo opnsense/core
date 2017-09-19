@@ -96,7 +96,13 @@ abstract class BaseModel
         } else {
             $result = array();
             foreach ($xmlNode->children() as $childNode) {
-                $result[$childNode->getName()] = $this->parseOptionData($childNode);
+                // item keys can be overwritten using value attributes
+                if (empty($childNode->attributes()['value'])) {
+                    $itemKey = (string)$childNode->getName();
+                } else {
+                    $itemKey = (string)$childNode->attributes()['value'];
+                }
+                $result[$itemKey] = $this->parseOptionData($childNode);
             }
         }
         return $result;
