@@ -30,8 +30,8 @@
 require_once('guiconfig.inc');
 require_once('services.inc');
 
-function cert_unrevoke($cert, & $crl) {
-    global $config;
+function cert_unrevoke($cert, &$crl)
+{
     if (!is_crl_internal($crl)) {
         return false;
     }
@@ -51,6 +51,7 @@ function cert_unrevoke($cert, & $crl) {
             return true;
         }
     }
+
     return false;
 }
 
@@ -61,7 +62,6 @@ global $openssl_crl_status;
 $a_crl = &config_read_array('crl');
 $a_cert = &config_read_array('cert');
 $a_ca = &config_read_array('ca');
-
 
 $thiscrl = false;
 $act=null;
@@ -490,7 +490,7 @@ include("head.inc");
                 </tr>
 <?php
               else :
-                foreach ($thiscrl['cert'] as $i => $cert) :?>
+                foreach ($thiscrl['cert'] as $cert) :?>
                 <tr>
                   <td><?=$cert['descr']; ?></td>
                   <td><?=$openssl_crl_status[$cert["reason"]]; ?></td>
@@ -506,8 +506,19 @@ include("head.inc");
               endif;
               $ca_certs = array();
               foreach ($a_cert as $cert) {
-                  if (isset($cert['caref']) && isset($thiscrl['caref'])  && $cert['caref'] == $thiscrl['caref']) {
-                      $ca_certs[] = $cert;
+                  if (isset($cert['caref']) && isset($thiscrl['caref']) && $cert['caref'] == $thiscrl['caref']) {
+                      $revoked = false;
+                      if (isset($thiscrl['cert'])) {
+                          foreach ($thiscrl['cert'] as $revoked_cert) {
+                              if ($cert['refid'] == $revoked_cert['refid']) {
+                                  $revoked = true;
+                                  break;
+                              }
+                          }
+                      }
+                      if (!$revoked) {
+                          $ca_certs[] = $cert;
+                      }
                   }
               }
               if (count($ca_certs) == 0) :?>
