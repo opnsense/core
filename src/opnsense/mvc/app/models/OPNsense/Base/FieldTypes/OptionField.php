@@ -84,7 +84,7 @@ class OptionField extends BaseField
             // copy options to internal structure, make sure we don't copy in array structures
             foreach ($data as $key => $value) {
                 if (!is_array($value)) {
-                    if ($key == "__empty__") {
+                    if ($key === "__empty__") {
                         $this->internalOptionList[""] = $value;
                     } else {
                         $this->internalOptionList[$key] = $value;

@@ -97,7 +97,7 @@ abstract class BaseModel
             $result = array();
             foreach ($xmlNode->children() as $childNode) {
                 // item keys can be overwritten using value attributes
-                if (empty($childNode->attributes()['value'])) {
+                if (!isset($childNode->attributes()['value'])) {
                     $itemKey = (string)$childNode->getName();
                 } else {
                     $itemKey = (string)$childNode->attributes()['value'];
