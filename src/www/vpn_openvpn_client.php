@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($configId)) {
         // 1 on 1 copy of config attributes
         $copy_fields = "auth_user,auth_pass,disable,mode,protocol,interface
-            ,local_port,server_addr,server_port,resolve_retry
+            ,local_port,server_addr,server_port,resolve_retry,remote_random,reneg-sec
             ,proxy_addr,proxy_port,proxy_user,proxy_passwd,proxy_authtype,description
             ,custom_options,ns_cert_type,dev_mode,caref,certref,crypto,digest,engine
             ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6,use_shaper
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-            // load / convert
+        // load / convert
         if (!empty($a_client[$configId]['ipaddr'])) {
             $pconfig['interface'] = $pconfig['interface'] . '|' . $a_client[$configId]['ipaddr'];
         }
@@ -100,9 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif ($act=="new") {
         // create new
         $pconfig['interface'] = "wan";
-        $pconfig['server_port'] = 1194;
         $init_fields = "auth_user,auth_pass,disable,mode,protocol,interface
-            ,local_port,server_addr,server_port,resolve_retry
+            ,local_port,server_addr,server_port,resolve_retry,remote_random,reneg-sec
             ,proxy_addr,proxy_port,proxy_user,proxy_passwd,proxy_authtype,description
             ,custom_options,ns_cert_type,dev_mode,caref,certref,crypto,digest,engine
             ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6,use_shaper
@@ -211,17 +210,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        /* allow multiple servers separated by comma and/or whitespace */
-        $server_addr_a = preg_split('/[\s,]+/', $pconfig['server_addr']);
-        foreach ($server_addr_a as $server_addr) {
-            if (empty($server_addr) || (!is_domain($server_addr) && !is_ipaddr($server_addr))) {
+        $server_addr_a = array();
+        $server_port_a = array();
+
+        foreach ($pconfig['server_addr'] as $i => $unused) {
+            if (empty($pconfig['server_addr'][$i]) && empty($pconfig['server_port'][$i])) {
+                continue;
+            }
+            if (empty($pconfig['server_addr'][$i]) || (!is_domain($pconfig['server_addr'][$i]) && !is_ipaddr($pconfig['server_addr'][$i]))) {
                 $input_errors[] = gettext("The field 'Server host or address' must contain a valid IP address or domain name.") ;
             }
+            if (empty($pconfig['server_port'][$i]) || !is_numeric($pconfig['server_port'][$i]) || $pconfig['server_port'][$i] < 0 || $pconfig['server_port'][$i] > 65535) {
+                $input_errors[] = gettext("The field 'Server port' must contain a valid port, ranging from 0 to 65535.");
+            }
+            $server_addr_a[] = $pconfig['server_addr'][$i];
+            $server_port_a[] = $pconfig['server_port'][$i];
         }
-        $pconfig['server_addr'] = implode(',', $server_addr_a);
 
-        if (empty($pconfig['server_port']) || !is_numeric($pconfig['server_port']) || $pconfig['server_port'] < 0 || ($pconfig['server_port'] > 65535)) {
-            $input_errors[] = gettext("The field 'Server port' must contain a valid port, ranging from 0 to 65535.");
+        $pconfig['server_addr'] = implode(',', $server_addr_a);
+        $pconfig['server_port'] = implode(',', $server_port_a);
+
+        if (empty($pconfig['server_addr']) || empty($pconfig['server_port'])) {
+            $input_errors[] = gettext("At least one remote server must be specified.");
+        }
+
+        if (isset($pconfig['reneg-sec']) && $pconfig['reneg-sec'] != "" && (string)((int)$pconfig['reneg-sec']) != $pconfig['reneg-sec']) {
+            $input_errors[] = gettext("Renegotiate time should contain a valid number of seconds.");
         }
 
         if (!empty($pconfig['proxy_addr'])) {
@@ -289,8 +303,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // save data
             $client = array();
             // 1 on 1 copy of config attributes
-            $copy_fields = "auth_user,auth_pass,protocol,dev_mode,local_port
-                ,server_addr,server_port,resolve_retry,proxy_addr,proxy_port
+            $copy_fields = "auth_user,auth_pass,protocol,dev_mode,local_port,reneg-sec
+                ,server_addr,server_port,resolve_retry,proxy_addr,proxy_port,remote_random
                 ,proxy_authtype,proxy_user,proxy_passwd,description,mode,crypto,digest
                 ,engine,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6
                 ,use_shaper,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec
@@ -298,7 +312,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             foreach (explode(",", $copy_fields) as $fieldname) {
                 $fieldname = trim($fieldname);
-                if (!empty($pconfig[$fieldname])) {
+                if (!empty($pconfig[$fieldname]) || $pconfig[$fieldname] == '0') {
                     $client[$fieldname] = $pconfig[$fieldname];
                 }
             }
@@ -406,6 +420,29 @@ $( document ).ready(function() {
       });
     }
   });
+
+  function removeRow() {
+      if ( $('#maintable > tbody > tr').length == 1 ) {
+          $('#maintable > tbody > tr:last > td > input').each(function () { $(this).val(""); });
+      } else {
+          $(this).parent().parent().remove();
+      }
+  }
+  function addRow() {
+      // copy last row and reset values
+      $('#maintable > tbody > tr:last > td > label').removeClass('act-addrow').addClass('act-removerow');
+      $('#maintable > tbody > tr:last > td > label').unbind('click');
+      $('#maintable > tbody > tr:last > td > label').click(removeRow);
+      $('#maintable > tbody > tr:last > td > label > span:first').removeClass('fa-plus').addClass('fa-minus');
+      $('#maintable > tbody').append('<tr>'+$('#maintable > tbody > tr:last').html()+'</tr>');
+      $('#maintable > tbody > tr:last > td > input').each(function () { $(this).val(""); });
+      $('#maintable > tbody > tr:last > td > label').removeClass('act-removerow').addClass('act-addrow');
+      $('#maintable > tbody > tr:last > td > label').unbind('click');
+      $('#maintable > tbody > tr:last > td > label').click(addRow);
+      $('#maintable > tbody > tr:last > td > label > span:first').removeClass('fa-minus').addClass('fa-plus');
+  }
+  $(".act-removerow").click(removeRow);
+  $(".act-addrow").click(addRow);
 
   // link toggle buttons
   $(".act_toggle").click(function(event){
@@ -524,6 +561,15 @@ $( document ).ready(function() {
               </td>
             </tr>
             <tr>
+              <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+              <td>
+                <input name="description" type="text" class="form-control unknown" size="30" value="<?=$pconfig['description'];?>" />
+                <div class="hidden" for="help_for_description">
+                  <small><?=gettext("You may enter a description here for your reference (not parsed)"); ?>.</small>
+                </div>
+              </td>
+            </tr>
+            <tr>
               <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Server Mode");?></td>
               <td>
                 <select name="mode" id="mode">
@@ -614,24 +660,65 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><a id="help_for_local_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local port");?></td>
+            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Remote server");?></td>
             <td>
-              <input name="local_port" type="text" class="form-control unknown" size="5" value="<?=$pconfig['local_port'];?>" />
-              <div class="hidden" for="help_for_local_port">
-                <em><small><?=gettext("Set this option if you would like to bind to a specific port. Leave this blank or enter 0 for a random dynamic port."); ?></small></em>
+              <table class="table table-striped table-condensed" id="maintable">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th><?= gettext('Host or address') ?></th>
+                    <th><?= gettext('Port') ?></th>
+                  </tr>
+                </thead>
+                <tbody>
+<?php
+                $pconfig['server_addr'] = !empty($pconfig['server_addr']) ? explode(',', $pconfig['server_addr']) : array();
+                $pconfig['server_port'] = !empty($pconfig['server_port']) ? explode(',', $pconfig['server_port']) : array();
+                $pconfig['server_addr'][] = '';
+                $pconfig['server_port'][] = '';
+
+                foreach ($pconfig['server_addr'] as $i => $item): ?>
+                  <tr>
+                    <td>
+<?php
+                  if (!empty($item)): ?>
+                      <label class="act-removerow btn btn-default btn-xs">
+                        <span class="fa fa-minus"></span>
+                        <span class="sr-only"><?= gettext('Remove') ?></span>
+                      </label>
+<?php
+                  else: ?>
+                      <label class="act-addrow btn btn-default btn-xs">
+                        <span class="fa fa-plus"></span>
+                        <span class="sr-only"><?= gettext('Add') ?></span>
+                      </label>
+<?php
+                  endif ?>
+                    </td>
+                    <td>
+                      <input name="server_addr[]" type="text" value="<?= $pconfig['server_addr'][$i] ?>" />
+                    </td>
+                    <td>
+                      <input name="server_port[]" type="text" value="<?= $pconfig['server_port'][$i] ?>" />
+                    </td>
+                  </tr>
+<?php
+                        endforeach ?>
+                </tbody>
+              </table>
+              <br/>
+              <input name="remote_random" type="checkbox" value="yes" <?= !empty($pconfig['remote_random']) ? 'checked="checked"' : '' ?>/>
+              <strong><?= gettext('Select remote server at random') ?></strong>
+            </td>
+          </tr>
+          <tr>
+            <td><a id="help_for_resolve_retry" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Retry DNS resolution"); ?></td>
+            <td>
+              <input name="resolve_retry" type="checkbox" value="yes" <?= !empty($pconfig['resolve_retry']) ? 'checked="checked"' : '' ?>/>
+              <strong><?= gettext('Infinitely resolve remote server') ?></strong>
+              <div class="hidden" for="help_for_resolve_retry">
+                <div><small><?=gettext("Continuously attempt to resolve the server host name. Useful when communicating with a server that is not permanently connected to the Internet"); ?></small></div>
               </div>
-            </td>
-          </tr>
-          <tr>
-            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Server host or address");?></td>
-            <td>
-              <input name="server_addr" type="text" class="form-control unknown" size="30" value="<?=$pconfig['server_addr'];?>" />
-            </td>
-          </tr>
-          <tr>
-            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Server port");?></td>
-            <td>
-              <input name="server_port" type="text" class="form-control unknown" size="5" value="<?=$pconfig['server_port'];?>" />
             </td>
           </tr>
           <tr>
@@ -664,21 +751,11 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><a id="help_for_resolve_retry" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Server host name resolution"); ?></td>
+            <td><a id="help_for_local_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local port");?></td>
             <td>
-              <input name="resolve_retry" type="checkbox" value="yes" <?= !empty($pconfig['resolve_retry']) ? "checked=\"checked\"" : "";?>  />
-              <div class="hidden" for="help_for_resolve_retry">
-                <div><?=gettext("Infinitely resolve server"); ?></div>
-                <div><small><?=gettext("Continuously attempt to resolve the server host name. Useful when communicating with a server that is not permanently connected to the Internet"); ?></small></div>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
-            <td>
-              <input name="description" type="text" class="form-control unknown" size="30" value="<?=$pconfig['description'];?>" />
-              <div class="hidden" for="help_for_description">
-                <small><?=gettext("You may enter a description here for your reference (not parsed)"); ?>.</small>
+              <input name="local_port" type="text" class="form-control unknown" size="5" value="<?=$pconfig['local_port'];?>" />
+              <div class="hidden" for="help_for_local_port">
+                <em><small><?=gettext("Set this option if you would like to bind to a specific port. Leave this blank or enter 0 for a random dynamic port."); ?></small></em>
               </div>
             </td>
           </tr>
@@ -706,6 +783,15 @@ $( document ).ready(function() {
               <br/>
             </td>
           </tr>
+          <tr class="opt_mode opt_mode_server_tls_user opt_mode_server_user">
+            <td><a id="help_for_reneg-sec" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Renegotiate time"); ?></td>
+            <td>
+              <input type="text" name="reneg-sec" value="<?=$pconfig['reneg-sec'];?>">
+              <div class="hidden" for="help_for_reneg-sec">
+                <?= gettext('Renegotiate data channel key after n seconds (default=3600). Set to 0 to disable.') ?>
+              </div>
+            </td>
+           </tr>
           </table>
          </div>
         </div>
@@ -1025,8 +1111,7 @@ $( document ).ready(function() {
             <td width="78%">
               <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
               <div class="hidden" for="help_for_custom_options">
-                <?=gettext("Enter any additional options you would like to add to the OpenVPN client configuration here, separated by a semicolon"); ?><br />
-                <?=gettext("EXAMPLE:"); ?> <strong>remote server.mysite.com 1194;</strong> or <strong>remote 1.2.3.4 1194;</strong>
+                <?=gettext("Enter any additional options you would like to add to the configuration file here."); ?>
               </div>
             </td>
           </tr>
@@ -1099,7 +1184,12 @@ $( document ).ready(function() {
 <?php
             $i = 0;
             foreach ($a_client as $client) :
-              $server = "{$client['server_addr']}:{$client['server_port']}";?>
+              $server_addr_a = explode(',', $client['server_addr']);
+              $server_port_a = explode(',', $client['server_port']);
+              $server = array();
+              foreach ($server_addr_a as $j => $unused) {
+                  $server[] = "{$server_addr_a[$j]}:{$server_port_a[$j]}";
+              } ?>
               <tr>
                 <td>
                   <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
@@ -1108,15 +1198,9 @@ $( document ).ready(function() {
                     <span class="glyphicon glyphicon-play <?=(empty($client['disable'])) ? "text-success" : "text-muted";?>"></span>
                   </a>
                 </td>
-                <td>
-                    <?=htmlspecialchars($client['protocol']);?>
-                </td>
-                <td>
-                    <?=htmlspecialchars($server);?>
-                </td>
-                <td>
-                    <?=htmlspecialchars($client['description']);?>
-                </td>
+                <td><?= htmlspecialchars($client['protocol']) ?></td>
+                <td><?= htmlspecialchars(implode(', ', $server)) ?></td>
+                <td><?= htmlspecialchars($client['description']) ?></td>
                 <td>
                     <a data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("move selected before this item");?>" class="act_move btn btn-default btn-xs">
                       <span class="glyphicon glyphicon-arrow-left"></span>

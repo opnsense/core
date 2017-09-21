@@ -767,8 +767,9 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
 
         // The remote server
         $server_addr_a = explode(',', $settings['server_addr']);
-        foreach ($server_addr_a as $server_addr) {
-            $conf .= "remote {$server_addr} {$settings['server_port']}\n";
+        $server_port_a = explode(',', $settings['server_port']);
+        foreach ($server_addr_a as $i => $unused) {
+            $conf .= "remote {$server_addr_a[$i]} {$server_port_a[$i]}\n";
         }
 
         if (!empty($settings['use_shaper'])) {
@@ -869,10 +870,6 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         $conf .= "passtos\n";
     }
 
-    if ($settings['resolve_retry']) {
-        $conf .= "resolv-retry infinite\n";
-    }
-
     if ($settings['dynamic_ip']) {
         $conf .= "persist-remote-ip\n";
         $conf .= "float\n";
@@ -882,16 +879,23 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         $conf .= "topology subnet\n";
     }
 
-    // New client features
     if ($mode == "client") {
-        // Dont pull routes checkbox
         if ($settings['route_no_pull']) {
             $conf .= "route-nopull\n";
         }
 
-        // Dont add/remove routes checkbox
         if ($settings['route_no_exec']) {
             $conf .= "route-noexec\n";
+        }
+
+        if ($settings['resolve_retry']) {
+            $conf .= "resolv-retry infinite\n";
+        } else {
+            $conf .= "resolv-retry 60\n";
+        }
+
+        if ($settings['remote_random']) {
+            $conf .= "remote-random\n";
         }
     }
 
