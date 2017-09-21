@@ -31,9 +31,9 @@ https://opnsense.org/about/road-map/
 Feature requests beyond the scope of OPNsense may still be provided
 using the plugin framework:
 
-https://github.com/opnsense/plugins
+https://github.com/opnsense/plugins/issues
 
-Stale issues are timed out after a few months of inactivity.
+Stale issues are timed out after several months of inactivity.
 
 And above all: stay kind and open.  :)
 
