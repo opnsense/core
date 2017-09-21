@@ -57,7 +57,6 @@ function html_safe($text)
 
 header("X-Frame-Options: SAMEORIGIN");
 
-/* set language */
 $lang = 'en_US';
 if (!empty($config['system']['language'])) {
     $lang = $config['system']['language'];
@@ -72,6 +71,22 @@ bindtextdomain($textdomain, '/usr/local/share/locale');
 bind_textdomain_codeset($textdomain, $lang_encoding);
 
 require_once("authgui.inc");
+
+if (!empty($_SESSION['Username']) && array_key_exists($_SESSION['Username'], $userindex)) {
+    $old_lang = $lang;
+    $lang = $config['system']['user'][$userindex[$_SESSION['Username']]]['language'];
+
+    /* a bit silly to redo this now but ok... */
+    if (!empty($lang) && $lang != $old_lang) {
+        $lang_encoding = $lang . '.UTF-8';
+        $textdomain = 'OPNsense';
+
+        putenv('LANG=' . $lang_encoding);
+        textdomain($textdomain);
+        bindtextdomain($textdomain, '/usr/local/share/locale');
+        bind_textdomain_codeset($textdomain, $lang_encoding);
+    }
+}
 
 /* Reserved table names to avoid colision */
 $reserved_table_names = array(

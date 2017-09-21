@@ -5,7 +5,9 @@
             <Root url="/" visibility="hidden"/>
         </Dashboard>
         <License order="1" url="/license.php" cssClass="fa fa-balance-scale fa-fw"/>
-        <Password order="2" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key fa-fw"/>
+        <Password order="2" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key fa-fw">
+            <workAround url="/system_usermanager_passwordmg.php*" visibility="hidden"/>
+        </Password>
         <Logout order="3" url="/index.php?logout" cssClass="fa fa-sign-out fa-fw"/>
     </Lobby>
     <Reporting order="15" cssClass="fa fa-area-chart">
