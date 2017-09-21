@@ -210,9 +210,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("The specified 'Local port' is in use. Please select another value");
             }
         }
-        if (empty($pconfig['server_addr']) || (!is_domain($pconfig['server_addr']) && !is_ipaddr($pconfig['server_addr']))) {
-            $input_errors[] = gettext("The field 'Server host or address' must contain a valid IP address or domain name.") ;
+
+        /* allow multiple servers separated by comma and/or whitespace */
+        $server_addr_a = preg_split('/[\s,]+/', $pconfig['server_addr']);
+        foreach ($server_addr_a as $server_addr) {
+            if (empty($server_addr) || (!is_domain($server_addr) && !is_ipaddr($server_addr))) {
+                $input_errors[] = gettext("The field 'Server host or address' must contain a valid IP address or domain name.") ;
+            }
         }
+        $pconfig['server_addr'] = implode(',', $server_addr_a);
 
         if (empty($pconfig['server_port']) || !is_numeric($pconfig['server_port']) || $pconfig['server_port'] < 0 || ($pconfig['server_port'] > 65535)) {
             $input_errors[] = gettext("The field 'Server port' must contain a valid port, ranging from 0 to 65535.");

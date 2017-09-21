@@ -766,7 +766,10 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         $conf .= "management /var/etc/openvpn/{$mode_id}.sock unix\n";
 
         // The remote server
-        $conf .= "remote {$settings['server_addr']} {$settings['server_port']}\n";
+        $server_addr_a = explode(',', $settings['server_addr']);
+        foreach ($server_addr_a as $server_addr) {
+            $conf .= "remote {$server_addr} {$settings['server_port']}\n";
+        }
 
         if (!empty($settings['use_shaper'])) {
             $conf .= "shaper {$settings['use_shaper']}\n";
