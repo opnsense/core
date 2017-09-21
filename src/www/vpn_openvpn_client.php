@@ -783,7 +783,7 @@ $( document ).ready(function() {
               <br/>
             </td>
           </tr>
-          <tr class="opt_mode opt_mode_server_tls_user opt_mode_server_user">
+          <tr>
             <td><a id="help_for_reneg-sec" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Renegotiate time"); ?></td>
             <td>
               <input type="text" name="reneg-sec" value="<?=$pconfig['reneg-sec'];?>">
