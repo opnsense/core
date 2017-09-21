@@ -300,7 +300,7 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
     if (is_array($server_cert) && ($server_cert['crt'])) {
         $purpose = cert_get_purpose($server_cert['crt'], true);
         if ($purpose['server'] == 'Yes') {
-            $conf .= "ns-cert-type server{$nl}";
+            $conf .= "remote-cert-tls server{$nl}";
         }
     }
 
