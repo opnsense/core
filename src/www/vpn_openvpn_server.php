@@ -604,8 +604,7 @@ $( document ).ready(function() {
                     </tr>
                     <tr>
                       <td class="vncellreq">
-                        <a id="help_for_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
-                        <b><?=gettext("Disabled"); ?></b>
+                        <a id="help_for_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?>
                       </td>
                       <td>
                         <div>
@@ -614,6 +613,15 @@ $( document ).ready(function() {
                         <div class="hidden" for="help_for_disable">
                         <?=gettext("Set this option to disable this server without removing it from the list"); ?>.
                         </div >
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="22%" ><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                      <td>
+                        <input name="description" type="text" class="form-control unknown" size="30" value="<?=htmlspecialchars($pconfig['description']);?>" />
+                        <div class="hidden" for="help_for_description">
+                            <?=gettext("You may enter a description here for your reference (not parsed)"); ?>.
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -760,15 +768,6 @@ $( document ).ready(function() {
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Local port");?></td>
                       <td>
                         <input name="local_port" type="text" class="form-control unknown" size="5" value="<?=$pconfig['local_port'];?>" />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td width="22%" ><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
-                      <td>
-                        <input name="description" type="text" class="form-control unknown" size="30" value="<?=htmlspecialchars($pconfig['description']);?>" />
-                        <div class="hidden" for="help_for_description">
-                            <?=gettext("You may enter a description here for your reference (not parsed)"); ?>.
-                        </div>
                       </td>
                     </tr>
                   </table>
@@ -1529,8 +1528,7 @@ endif; ?>
                       <td>
                         <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
                         <div class="hidden" for="help_for_custom_options">
-                            <?=gettext("Enter any additional options you would like to add to the OpenVPN server configuration here, separated by a semicolon"); ?><br />
-                            <?=gettext("EXAMPLE: push \"route 10.0.0.0 255.255.255.0\""); ?>;
+                          <?=gettext("Enter any additional options you would like to add to the configuration file here."); ?>
                         </div>
                       </td>
                     </tr>
