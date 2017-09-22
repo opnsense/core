@@ -75,7 +75,6 @@
 /usr/local/etc/rc.carpbackup
 /usr/local/etc/rc.carpmaster
 /usr/local/etc/rc.configure_firmware
-/usr/local/etc/rc.crashdump
 /usr/local/etc/rc.d/captiveportal
 /usr/local/etc/rc.d/configd
 /usr/local/etc/rc.d/flowd_aggregate
@@ -106,7 +105,6 @@
 /usr/local/etc/rc.ipfw.postload
 /usr/local/etc/rc.kill_states
 /usr/local/etc/rc.linkup
-/usr/local/etc/rc.livemode
 /usr/local/etc/rc.loader
 /usr/local/etc/rc.loader.d/00-banner
 /usr/local/etc/rc.loader.d/20-brand
@@ -119,15 +117,17 @@
 /usr/local/etc/rc.newwanipv6
 /usr/local/etc/rc.openvpn
 /usr/local/etc/rc.reboot
-/usr/local/etc/rc.recover
 /usr/local/etc/rc.reload_all
 /usr/local/etc/rc.reload_interfaces
 /usr/local/etc/rc.resolv_conf_generate
 /usr/local/etc/rc.restart_webgui
 /usr/local/etc/rc.shutdown
 /usr/local/etc/rc.sshd
+/usr/local/etc/rc.subr.d/crashdump
+/usr/local/etc/rc.subr.d/livemode
+/usr/local/etc/rc.subr.d/recover
+/usr/local/etc/rc.subr.d/swapon
 /usr/local/etc/rc.subr.d/var
-/usr/local/etc/rc.swapon
 /usr/local/etc/rc.syshook
 /usr/local/etc/rc.syshook.d/05-beep.stop
 /usr/local/etc/rc.syshook.d/05-update.early

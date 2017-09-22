@@ -117,7 +117,7 @@ else
 fi
 
 # regenerate groups and users for base
-/usr/local/etc/rc.recover base > /dev/null
+/usr/local/etc/rc.subr.d/recover base > /dev/null
 
 # set keyboard map if needed
 /etc/rc.d/syscons onestart
@@ -145,8 +145,8 @@ else
 fi
 
 # set up and recover a crash dump before activating swap
-/usr/local/etc/rc.crashdump
-/usr/local/etc/rc.swapon
+/usr/local/etc/rc.subr.d/crashdump
+/usr/local/etc/rc.subr.d/swapon
 
 echo -n "."
 /sbin/ldconfig -elf /usr/lib /usr/local/lib /lib
@@ -163,7 +163,7 @@ fi
 echo "done."
 
 # Regenerate groups and users for packages
-/usr/local/etc/rc.recover pkg > /dev/null 2> /dev/null
+/usr/local/etc/rc.subr.d/recover pkg > /dev/null 2> /dev/null
 
 # Recreate capabilities DB
 /usr/bin/cap_mkdb /etc/login.conf
@@ -188,6 +188,6 @@ echo -n "Root file system: "
 mount | grep ' on / ' | awk '{ print $1 }'
 
 /usr/local/etc/rc.initial.banner
-/usr/local/etc/rc.livemode
+/usr/local/etc/rc.subr.d/livemode
 
 exit 0
