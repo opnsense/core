@@ -890,8 +890,6 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
 
         if ($settings['resolve_retry']) {
             $conf .= "resolv-retry infinite\n";
-        } else {
-            $conf .= "resolv-retry 60\n";
         }
 
         if ($settings['remote_random']) {
