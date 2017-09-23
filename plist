@@ -116,6 +116,7 @@
 /usr/local/etc/rc.newwanip
 /usr/local/etc/rc.newwanipv6
 /usr/local/etc/rc.openvpn
+/usr/local/etc/rc.plugins_configure
 /usr/local/etc/rc.reboot
 /usr/local/etc/rc.reload_all
 /usr/local/etc/rc.reload_interfaces
@@ -549,7 +550,6 @@
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/set_session_restrictions.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/sql/init.sql
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/strip_template.py
-/usr/local/opnsense/scripts/OPNsense/Proxy/plugins.php
 /usr/local/opnsense/scripts/dhcp/get_leases.py
 /usr/local/opnsense/scripts/dns/unbound_dhcpd.py
 /usr/local/opnsense/scripts/filter/delete_table.py
@@ -657,6 +657,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_netflow.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
+/usr/local/opnsense/service/conf/actions.d/actions_plugins.conf
 /usr/local/opnsense/service/conf/actions.d/actions_proxy.conf
 /usr/local/opnsense/service/conf/actions.d/actions_routedns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_system.conf
@@ -923,6 +924,7 @@
 /usr/local/sbin/ovpn-linkup
 /usr/local/sbin/ovpn_auth_verify
 /usr/local/sbin/ping_hosts.sh
+/usr/local/sbin/pluginctl
 /usr/local/sbin/ppp-linkdown
 /usr/local/sbin/ppp-linkup
 /usr/local/sbin/ppp-log-uptime.sh

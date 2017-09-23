@@ -46,7 +46,8 @@ class ServiceController extends ApiControllerBase
     {
         if ($this->request->isPost()) {
             $backend = new Backend();
-            $backend->configdRun('proxy plugins start');
+            /* XXX why don't we run this from the backend directly? */
+            $backend->configdRun('plugins webproxy start');
             $response = $backend->configdRun("proxy start", true);
             return array("response" => $response);
         } else {
@@ -63,7 +64,8 @@ class ServiceController extends ApiControllerBase
         if ($this->request->isPost()) {
             $backend = new Backend();
             $response = $backend->configdRun("proxy stop");
-            $backend->configdRun('proxy plugins stop');
+            /* XXX why don't we run this from the backend directly? */
+            $backend->configdRun('plugins webproxy stop');
             return array("response" => $response);
         } else {
             return array("response" => array());
@@ -78,7 +80,8 @@ class ServiceController extends ApiControllerBase
     {
         if ($this->request->isPost()) {
             $backend = new Backend();
-            $backend->configdRun('proxy plugins restart');
+            /* XXX why don't we run this from the backend directly? */
+            $backend->configdRun('plugins webproxy restart');
             $response = $backend->configdRun("proxy restart");
             return array("response" => $response);
         } else {
@@ -149,11 +152,12 @@ class ServiceController extends ApiControllerBase
 
             // generate template
             $backend->configdRun('template reload OPNsense/Proxy');
-            $backend->configdRun('proxy plugins reconfigure');
 
             // (res)start daemon
             if ($mdlProxy->general->enabled->__toString() == 1) {
                 if ($runStatus['status'] == "running" && !$force_restart) {
+                    /* XXX why don't we run this from the backend directly? */
+                    $backend->configdRun('plugins webproxy reconfigure');
                     $backend->configdRun("proxy reconfigure");
                 } else {
                     $this->startAction();

@@ -28,8 +28,11 @@
  */
 
 require_once("config.inc");
+/* XXX we probably need more includes here to be able to accomodate all */
 require_once("plugins.inc");
 
-if (isset($argv[1])) {
-    plugins_configure('webproxy', true, array(trim($argv[1], " \n")));
+if (!empty($argv[1])) {
+    $args = $argv;
+    $hook = array_shift($args);
+    plugins_configure($hook, true, $args);
 }
