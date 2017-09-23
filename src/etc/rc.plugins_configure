@@ -27,12 +27,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("config.inc");
-/* XXX we probably need more includes here to be able to accomodate all */
-require_once("plugins.inc");
+require_once 'config.inc';
+require_once 'util.inc';
+require_once 'system.inc';
+require_once 'interfaces.inc';
+require_once 'filter.inc';
+require_once 'services.inc';
+require_once 'auth.inc';
+require_once 'rrd.inc';
 
 if (!empty($argv[1])) {
+    /* we have a hook specified, copy args */
     $args = $argv;
+    /* first argument is command */
+    array_shift($args);
+    /* second argument is hook */
     $hook = array_shift($args);
+    /* other arguments are passed as is */
     plugins_configure($hook, true, $args);
 }
