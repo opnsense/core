@@ -31,5 +31,5 @@ require_once("config.inc");
 require_once("plugins.inc");
 
 if (isset($argv[1])) {
-    plugins_configure('webproxy', array(trim($argv[1], " \n")));
+    plugins_configure('webproxy', true, array(trim($argv[1], " \n")));
 }
