@@ -313,6 +313,8 @@ test: want-phpunit6
 	    phpunit --configuration PHPunit.xml
 
 clean: want-git
-	@${GIT} checkout -f ${.CURDIR}/src && ${GIT} clean -xdqf ${.CURDIR}/src
+	@${GIT} reset -q ${.CURDIR}/src && \
+	    ${GIT} checkout -f ${.CURDIR}/src && \
+	    ${GIT} clean -xdqf ${.CURDIR}/src
 
 .PHONY: license
