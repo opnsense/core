@@ -78,6 +78,43 @@ POSSIBILITY OF SUCH DAMAGE.
     });
 </script>
 
+
+<!-- Modal -->
+<div id="flushModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Flush ARP system table</h4>
+      </div>
+      <div class="modal-body">
+        <p>
+        If you've changed the IP of a host - or setup a new host with the IP of an old one - you've probably get that the host has no network connectivity for a period of time. The router has cached the old MAC address (ethernet hardware address) associated with the host's IP address. This cache will persist on the gateway network device until:
+        </p>
+        
+        <ul>
+            <li>
+        The ARP cache on the gateway network device expires.
+        </li>
+        <li>
+        You manually clear the ARP cache on the gateway network device.
+        </li>
+        </ul>
+        
+      </div>
+      <div class="modal-footer">
+          
+        <button type="button" class="btn btn-default btn-close" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-default" data-toggle="modal" id="flush">Flush ARP tables</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
 <div class="content-box">
     <div class="content-box-main">
         <div class="table-responsive">
@@ -106,7 +143,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="pull-right">
-                            <button id="flush" type="button" class="btn btn-default">
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#flushModal">
                                 <span>{{ lang._('Flush') }}</span>
                                 <span class="fa fa-eraser"></span>
                             </button>                            
