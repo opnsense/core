@@ -74,7 +74,18 @@ class InterfaceController extends ApiControllerBase
 
         return $arptable;
     }
-
+    
+    /**
+     * retrieve system arp table contents
+     * @return array
+     */
+    public function flushArpAction()
+    {
+        $backend = new Backend();
+        $response = $backend->configdpRun("interface flush arp");
+        return array("message" => "OK");
+    }
+    
     /**
      * retrieve system ndp table contents
      * @return array
