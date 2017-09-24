@@ -91,9 +91,8 @@ POSSIBILITY OF SUCH DAMAGE.
       </div>
       <div class="modal-body">
         <p>
-        If you've changed the IP of a host - or setup a new host with the IP of an old one - you've probably get that the host has no network connectivity for a period of time. The router has cached the old MAC address (ethernet hardware address) associated with the host's IP address. This cache will persist on the gateway network device until:
+        If you've changed the IP of a host - or setup a new host with the IP of an old one - you've probably got that the host has no network connectivity for a period of time. The router has cached the old MAC address (ethernet hardware address) associated with the host's IP address. This cache will persist on the gateway network device until:
         </p>
-        
         <ul>
             <li>
         The ARP cache on the gateway network device expires.
@@ -105,7 +104,6 @@ POSSIBILITY OF SUCH DAMAGE.
         
       </div>
       <div class="modal-footer">
-          
         <button type="button" class="btn btn-default btn-close" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-default" data-toggle="modal" id="flush">Flush ARP tables</button>
       </div>
