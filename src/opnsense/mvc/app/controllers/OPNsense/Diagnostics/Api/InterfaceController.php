@@ -76,6 +76,22 @@ class InterfaceController extends ApiControllerBase
     }
 
     /**
+     * retrieve system arp table contents
+     * @return array
+     */
+    public function flushArpAction()
+    {
+        if ($this->request->isPost()) {
+            $backend = new Backend();
+            $response = $backend->configdpRun("interface flush arp");
+            return $response;
+            }
+        else {
+            return array("message" => "error");
+            }
+    }
+    
+    /**
      * retrieve system ndp table contents
      * @return array
      */
