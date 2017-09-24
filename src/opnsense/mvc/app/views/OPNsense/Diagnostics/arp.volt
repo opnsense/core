@@ -61,7 +61,17 @@ POSSIBILITY OF SUCH DAMAGE.
                     }
             );
         }
+        
+        
+        function flushARP() {
+            ajaxGet(url = "/api/diagnostics/interface/flushArp",
+                sendData = {}, callback = function (data, status) {
+                    $("#refresh").click();
+                });
+        }
 
+        $("#flush").click(flushARP);
+        
         // initial fetch
         $("#refresh").click(updateARP);
         $("#refresh").click();
@@ -96,6 +106,10 @@ POSSIBILITY OF SUCH DAMAGE.
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="pull-right">
+                            <button id="flush" type="button" class="btn btn-default">
+                                <span>{{ lang._('Flush') }}</span>
+                                <span class="fa fa-eraser"></span>
+                            </button>                            
                             <button id="refresh" type="button" class="btn btn-default">
                                 <span>{{ lang._('Refresh') }}</span>
                                 <span class="fa fa-refresh"></span>
