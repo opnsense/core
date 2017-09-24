@@ -196,32 +196,31 @@ EOD;
                 system_host_route($gateway['monitor'], $gateway['gateway'], false, true);
             }
         } elseif ($gateway['ipprotocol'] == "inet6") { // This is an IPv6 gateway...
-            if ($gateway['monitor'] == $gateway['gateway']) {
-                /* link locals really need a different src ip */
-                if (is_linklocal($gateway['gateway'])) {
-                    $gwifip = find_interface_ipv6_ll($gateway['interface']);
-                } else {
-                    $gwifip = find_interface_ipv6($gateway['interface']);
-                }
+            if (is_linklocal($gateway['monitor'])) {
+                /* link local monitor needs a link local address for the "src" part */
+                $gwifip = find_interface_ipv6_ll($gateway['interface']);
             } else {
-                /* 'monitor' has been set, so makes sure it has precedence over
-                 * 'gateway' in defining the source IP. Otherwise if 'gateway'
-                 * is a local link and 'monitor' is global routable then the
-                 * ICMP6 response would not find its way back home...
-                 */
+                /* monitor is a routable address, so use a routable address for the "src" part */
                 $gwifip = find_interface_ipv6($gateway['interface']);
-                if (is_linklocal($gateway['monitor'])) {
-                    if (!strstr($gateway['monitor'], '%')) {
-                        $gateway['monitor'] .= "%{$gateway['interface']}";
-                    }
-                } else {
-                    // Monitor is a routable address, so use a routable address for the "src" part
-                    $gwifip = find_interface_ipv6($gateway['interface']);
-                }
             }
 
             if (!is_ipaddrv6($gwifip)) {
-                continue; //Skip this target
+                /* skip this target */
+                continue;
+            }
+
+            /*
+             * If gateway is a local link and 'monitor' is global routable
+             * then the ICMP6 response would not find its way back home.
+             */
+            if (is_linklocal($gateway['monitor']) && strpos($gateway['monitor'], '%') === false) {
+                $gateway['monitor'] .= "%{$gateway['interface']}";
+            }
+            if (is_linklocal($gateway['gateway']) && strpos($gateway['gateway'], '%') === false) {
+                $gateway['gateway'] .= "%{$gateway['interface']}";
+            }
+            if (is_linklocal($gwifip) && strpos($gwifip, '%') === false) {
+                $gwifip .= "%{$gateway['interface']}";
             }
 
             /* flush the monitor unconditionally */
@@ -902,6 +901,9 @@ function lookup_gateway_ip_by_name($name)
 
     foreach ($gateways_arr as $gname => $gw) {
         if ($gw['name'] === $name || $gname === $name) {
+            if (is_linklocal($gw['gateway']) && strpos($gw['gateway'], '%') === false) {
+                $gw['gateway'] .= "%{$gw['interface']}";
+            }
             return $gw['gateway'];
         }
     }
