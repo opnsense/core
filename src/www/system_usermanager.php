@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 } else {
                     $pconfig[$fieldname] = null;
                 }
-            } 
+            }
 
             foreach (get_locale_list() as $lcode => $ldesc) {
                 if ($a_user[$id]['language'] == $lcode) {
