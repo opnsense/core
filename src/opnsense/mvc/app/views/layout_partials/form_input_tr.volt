@@ -35,7 +35,7 @@ help        :   help text
 advanced    :   property "is advanced", only display in advanced mode
 hint        :   input control hint
 style       :   css class to add
-maxheight   :   maximum heigth in rows if applicable
+maxheight   :   maximum height in rows if applicable
 width       :   width in pixels if applicable
 allownew    :   allow new items (for list) if applicable
 
