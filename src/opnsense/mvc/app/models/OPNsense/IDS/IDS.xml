@@ -116,6 +116,7 @@
                 <AddParentDevices>Y</AddParentDevices>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
+                    <type>/(?s)^((?!group).)*$/</type>
                 </filters>
             </interfaces>
             <homenet type="NetworkField">
