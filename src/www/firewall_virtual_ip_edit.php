@@ -421,7 +421,7 @@ $( document ).ready(function() {
                           </option>
                         <?php endfor; ?>
                       </select>
-                      <button data-vhid="<?=find_last_used_vhid() + 1;?>" id="max_vhid" class="btn btn-default btn-cs">
+                      <button data-vhid="<?=find_last_used_vhid() + 1;?>" id="max_vhid" class="btn btn-default btn-cs" tabindex="-1">
                         <?=gettext("Unused");?>
                       </button>
                       <div class="hidden" for="help_for_vhid">
