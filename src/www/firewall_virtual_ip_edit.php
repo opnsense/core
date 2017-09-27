@@ -160,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
             if (!$carpvip_found) {
-                $input_errors[] = sprintf(gettext("VHID %s should be defined on interface %s."),$pconfig['vhid'], convert_friendly_interface_to_friendly_descr($pconfig['interface']));
+                $input_errors[] = sprintf(gettext("VHID %s must be defined on interface %s as a CARP VIP first."),$pconfig['vhid'], convert_friendly_interface_to_friendly_descr($pconfig['interface']));
             }
         }
     }
@@ -247,13 +247,15 @@ $( document ).ready(function() {
         $("#noexpand").attr('disabled', true);
         $("#noexpandrow").addClass("hidden");
         $("#vhid_none").attr('disabled', false);
+        $("#max_vhid").attr('disabled', true);
+        $("#vhid").val("");
 
         switch ($(this).val()) {
             case "ipalias":
               $("#type").prop("selectedIndex",0);
               $("#vhid").attr('disabled', false);
               $("#subnet_bits").attr('disabled', false);
-              $("#typenote").html("<?=gettext("Please provide a single IP address.");?>");
+              $("#typenote").html("<?= html_safe(gettext('Please provide a single IP address.')) ?>");
               break;
             case "carp":
               $("#type").prop("selectedIndex",0);
@@ -266,19 +268,20 @@ $( document ).ready(function() {
               if ($("#vhid").val() == null)  {
                   $("#max_vhid").click();
               }
-              $("#typenote").html("<?=gettext("This must be the network's subnet mask. It does not specify a CIDR range.");?>");
+              $("#max_vhid").attr('disabled', false);
+              $("#typenote").html("<?= html_safe(gettext('This must be the network\'s subnet mask. It does not specify a CIDR range.')) ?>");
               break;
             case "proxyarp":
               $("#type").attr('disabled', false);
               $("#subnet_bits").attr('disabled', false);
               $("#noexpand").attr('disabled', false);
               $("#noexpandrow").removeClass("hidden");
-              $("#typenote").html("<?=gettext("This is a CIDR block of proxy ARP addresses.");?>");
+              $("#typenote").html("<?= html_safe(gettext('This is a CIDR block of proxy ARP addresses.')) ?>");
               break;
             case "other":
               $("#type").attr('disabled', false);
               $("#subnet_bits").attr('disabled', false);
-              $("#typenote").html("<?=gettext("This must be the network's subnet mask. It does not specify a CIDR range.");?>");
+              $("#typenote").html("<?= html_safe(gettext('This must be the network\'s subnet mask. It does not specify a CIDR range.')) ?>");
               break;
         }
         // refresh selectpickers
@@ -325,7 +328,7 @@ $( document ).ready(function() {
                     <td>
                       <select id="mode" name="mode" class="selectpicker" data-width="auto" data-live-search="true">
                         <option value="ipalias" <?=$pconfig['mode'] == "ipalias" ? "selected=\"selected\"" : ""; ?>><?=gettext("IP Alias");?></option>
-                        <option value="carp" <?=$pconfig['mode'] == "carp" ? "selected=\"selected\"" : ""; ?>><?=gettext("carp");?></option>
+                        <option value="carp" <?=$pconfig['mode'] == "carp" ? "selected=\"selected\"" : ""; ?>><?=gettext("CARP");?></option>
                         <option value="proxyarp" <?=$pconfig['mode'] == "proxyarp" ? "selected=\"selected\"" : ""; ?>><?=gettext("Proxy ARP");?></option>
                         <option value="other" <?=$pconfig['mode'] == "other" ? "selected=\"selected\"" : ""; ?>><?=gettext("Other");?></option>
                       </select>
@@ -421,8 +424,8 @@ $( document ).ready(function() {
                           </option>
                         <?php endfor; ?>
                       </select>
-                      <button data-vhid="<?=find_last_used_vhid() + 1;?>" id="max_vhid" class="btn btn-default btn-cs" tabindex="-1">
-                        <?=gettext("Unused");?>
+                      <button type="button" data-vhid="<?=find_last_used_vhid() + 1;?>" id="max_vhid" class="btn btn-default btn-cs">
+                        <?=gettext("Select an unassigned VHID");?>
                       </button>
                       <div class="hidden" for="help_for_vhid">
                         <?=gettext("Enter the VHID group that the machines will share.");?>
