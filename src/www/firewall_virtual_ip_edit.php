@@ -146,7 +146,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (empty($pconfig['password'])) {
                 $input_errors[] = gettext("You must specify a CARP password that is shared between the two VHID members.");
             }
-
+            if (empty($pconfig['vhid'])) {
+               $input_errors[] = gettext('A VHID must be selected for this CARP VIP.');
+            }
             if ($pconfig['interface'] == "lo0") {
                 $input_errors[] = gettext("For this type of vip localhost is not allowed.");
             }
@@ -246,9 +248,7 @@ $( document ).ready(function() {
         $("#advbase").attr('disabled', true);
         $("#noexpand").attr('disabled', true);
         $("#noexpandrow").addClass("hidden");
-        $("#vhid_none").attr('disabled', false);
         $("#max_vhid").attr('disabled', true);
-        $("#vhid").val("");
 
         switch ($(this).val()) {
             case "ipalias":
@@ -264,10 +264,6 @@ $( document ).ready(function() {
               $("#vhid").attr('disabled', false);
               $("#advskew").attr('disabled', false);
               $("#advbase").attr('disabled', false);
-              $("#vhid_none").attr('disabled', true);
-              if ($("#vhid").val() == null)  {
-                  $("#max_vhid").click();
-              }
               $("#max_vhid").attr('disabled', false);
               $("#typenote").html("<?= html_safe(gettext('This must be the network\'s subnet mask. It does not specify a CIDR range.')) ?>");
               break;
@@ -277,11 +273,13 @@ $( document ).ready(function() {
               $("#noexpand").attr('disabled', false);
               $("#noexpandrow").removeClass("hidden");
               $("#typenote").html("<?= html_safe(gettext('This is a CIDR block of proxy ARP addresses.')) ?>");
+              $("#max_vhid").attr('disabled', true);
               break;
             case "other":
               $("#type").attr('disabled', false);
               $("#subnet_bits").attr('disabled', false);
               $("#typenote").html("<?= html_safe(gettext('This must be the network\'s subnet mask. It does not specify a CIDR range.')) ?>");
+              $("#max_vhid").attr('disabled', true);
               break;
         }
         // refresh selectpickers
