@@ -413,7 +413,7 @@ $( document ).ready(function() {
                     <td><a id="help_for_vhid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VHID Group");?></td>
                     <td>
                       <select id='vhid' name='vhid' class="selectpicker" data-size="10" data-width="auto">
-                          <option value="" id="vhid_none"><?= gettext('none') ?></option>
+                          <option value=""><?= gettext('none') ?></option>
                         <?php for ($i = 1; $i <= 255; $i++): ?>
                           <option value="<?=$i;?>" <?= $i == $pconfig['vhid'] ?  "selected=\"selected\"" : ""; ?>>
                             <?=$i;?>
