@@ -273,13 +273,11 @@ $( document ).ready(function() {
               $("#noexpand").attr('disabled', false);
               $("#noexpandrow").removeClass("hidden");
               $("#typenote").html("<?= html_safe(gettext('This is a CIDR block of proxy ARP addresses.')) ?>");
-              $("#max_vhid").attr('disabled', true);
               break;
             case "other":
               $("#type").attr('disabled', false);
               $("#subnet_bits").attr('disabled', false);
               $("#typenote").html("<?= html_safe(gettext('This must be the network\'s subnet mask. It does not specify a CIDR range.')) ?>");
-              $("#max_vhid").attr('disabled', true);
               break;
         }
         // refresh selectpickers
