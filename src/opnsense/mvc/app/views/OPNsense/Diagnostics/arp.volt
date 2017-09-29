@@ -68,7 +68,7 @@ POSSIBILITY OF SUCH DAMAGE.
             title: "<?= gettext("Flush ARP Table");?>",
             message: "<?=gettext("If an IP of a host is changed you've probably got that the host has no network connectivity for a period of time. The router has cached the old MAC address (ethernet hardware address) associated with the host's IP address. This cache will persist on the gateway network device until the ARP cache on the gateway network device expires. You can also flush it manually.");?>",
             buttons: [{
-                      label: "<?= gettext("No");?>",
+                      label: "<?= gettext("Close");?>",
                       action: function(dialogRef) {
                         dialogRef.close();
                       }}, {
