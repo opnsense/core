@@ -62,51 +62,32 @@ POSSIBILITY OF SUCH DAMAGE.
             );
         }
         
-        
-        function flushARP() {
-            ajaxCall(url = "/api/diagnostics/interface/flushArp",
-                sendData = {}, callback = function (data, status) {
-                    $("#refresh").click();
-                });
-        }
-
-        $("#flush").click(flushARP);
+        $("#flushModal").click(function(event){
+          BootstrapDialog.show({
+            type:BootstrapDialog.TYPE_DANGER,
+            title: "<?= gettext("Flush ARP Table");?>",
+            message: "<?=gettext("If an IP of a host is changed you've probably got that the host has no network connectivity for a period of time. The router has cached the old MAC address (ethernet hardware address) associated with the host's IP address. This cache will persist on the gateway network device until the ARP cache on the gateway network device expires. You can also flush it manually.");?>",
+            buttons: [{
+                      label: "<?= gettext("No");?>",
+                      action: function(dialogRef) {
+                        dialogRef.close();
+                      }}, {
+                      label: "<?= gettext("Flush ARP Table");?>",
+                      action: function(dialogRef) {
+                        ajaxCall(url = "/api/diagnostics/interface/flushArp",
+                            sendData = {}, callback = function (data, status) {
+                            $("#refresh").click();
+                        });
+                    }
+                  }]
+          }); // end BootstrapDialog.show
+        }); // end .click(function(event)
         
         // initial fetch
         $("#refresh").click(updateARP);
         $("#refresh").click();
     });
 </script>
-
-<!-- Modal -->
-<div id="flushModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">{{ lang._('Flush ARP Table') }}</h4>
-      </div>
-      <div class="modal-body">
-        <p>
-            {{ lang._("If you've changed the IP of a host - or setup a new host with the IP of an old one - you've probably got that the host has no network connectivity for a period of time. The router has cached the old MAC address (ethernet hardware address) associated with the host's IP address. This cache will persist on the gateway network device until:") }}
-        </p>
-        <ul>
-            <li>
-                {{ lang._('The ARP cache on the gateway network device expires.') }}
-            </li>
-            <li>
-                {{ lang._('You manually flush the ARP cache on the gateway network device.') }}
-            </li>
-        </ul>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default btn-close" data-dismiss="modal">{{ lang._('Close') }}</button>
-        <button type="button" class="btn btn-default" data-toggle="modal" id="flush">{{ lang._('Flush ARP Table') }}</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <div class="content-box">
     <div class="content-box-main">
@@ -136,7 +117,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="pull-right">
-                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#flushModal">
+                            <button type="button" class="btn btn-default" id="flushModal">
                                 <span>{{ lang._('Flush') }}</span>
                                 <span class="fa fa-eraser"></span>
                             </button>                            
