@@ -85,10 +85,9 @@ class InterfaceController extends ApiControllerBase
             $backend = new Backend();
             $response = $backend->configdpRun("interface flush arp");
             return $response;
-            }
-        else {
+        } else {
             return array("message" => "error");
-            }
+        }
     }
     
     /**
