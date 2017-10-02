@@ -96,7 +96,6 @@ function get_default_sysctl_value($id)
         "net.inet.tcp.syncookies" => "1",
         "net.inet.tcp.recvspace" => "65228",
         "net.inet.tcp.sendspace" => "65228",
-        "net.inet.ip.fastforwarding" => "0",
         'net.inet.ip.sourceroute' => '0',
         'net.inet.ip.accept_sourceroute' => '0',
         'net.inet.icmp.drop_redirect' => '0',
