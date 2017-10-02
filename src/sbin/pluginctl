@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# launch the real utility from here
+/usr/local/etc/rc.plugins_configure "${@}"
