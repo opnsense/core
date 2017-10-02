@@ -3220,9 +3220,11 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     );
 
     $rtsoldscript = "#!/bin/sh\n";
-    $rtsoldscript .= "# This shell script launches dhcp6c and configured gateways for this interface.\n";
-    $rtsoldscript .= "echo $2 > /tmp/{$wanif}_routerv6\n";
-    $rtsoldscript .= "echo $2 > /tmp/{$wanif}_defaultgwv6\n";
+    $rtsoldscript .= "# this file was auto-generated, do not edit\n";
+    $rtsoldscript .= "if [ -n \"\${2}\" ]; then\n";
+    $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_routerv6\n";
+    $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_defaultgwv6\n";
+    $rtsoldscript .= "fi\n";
     $rtsoldscript .= "if [ -f /var/run/dhcp6c_{$wanif}.pid ]; then\n";
     $rtsoldscript .= "\t/bin/pkill -F /var/run/dhcp6c_{$wanif}.pid\n";
     $rtsoldscript .= "\t/bin/sleep 1\n";
@@ -3249,23 +3251,20 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     /* always kill rtsold in case of reconfigure */
     killbypid("/var/run/rtsold_{$wanif}.pid", 'TERM', true);
 
+    /* fire up rtsold for IPv6 RAs first */
+    mwexecf(
+        '/usr/sbin/rtsold -p %s -O %s -R %s %s %s',
+        array(
+            "/var/run/rtsold_{$wanif}.pid",
+            "/var/etc/rtsold_{$wanif}_script.sh",
+            '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
+            empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
+            $wanif
+        )
+    );
+
     if (isset($wancfg['dhcp6sendsolicit'])) {
-        /* dhcp6c from previous run can still be around */
-        killbypid("/var/run/dhcp6c_{$wanif}.pid", 'TERM', true);
-        /* command is already exec_safe() */
-        mwexec($dhcp6ccommand);
-    } else {
-        /* fire up rtsold for IPv6 RAs first, this backgrounds immediately. It will call dhcp6c */
-        mwexecf(
-            '/usr/sbin/rtsold -p %s -O %s -R %s %s %s',
-            array(
-                "/var/run/rtsold_{$wanif}.pid",
-                "/var/etc/rtsold_{$wanif}_script.sh",
-                '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
-                empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
-                $wanif
-            )
-        );
+        mwexec("/var/etc/rtsold_{$wanif}_script.sh");
     }
 
     return 0;
