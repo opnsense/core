@@ -109,11 +109,6 @@
       <value>default</value>
     </item>
     <item>
-      <descr><![CDATA[IP Fastforwarding]]></descr>
-      <tunable>net.inet.ip.fastforwarding</tunable>
-      <value>default</value>
-    </item>
-    <item>
       <descr><![CDATA[Do not delay ACK to try and piggyback it onto a data packet]]></descr>
       <tunable>net.inet.tcp.delayed_ack</tunable>
       <value>default</value>
