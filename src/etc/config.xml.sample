@@ -283,6 +283,10 @@
   </snmpd>
   <syslog>
     <reverse/>
+    <nologdefaultblock>1</nologdefaultblock>
+    <nologdefaultpass>1</nologdefaultpass>
+    <nologbogons>1</nologbogons>
+    <nologprivatenets>1</nologprivatenets>
   </syslog>
   <nat>
     <outbound>
