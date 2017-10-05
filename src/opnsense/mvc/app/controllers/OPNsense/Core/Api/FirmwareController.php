@@ -638,7 +638,7 @@ class FirmwareController extends ApiControllerBase
         $mirrors['http://mirrors.dmcnet.net/opnsense'] = 'DMC Networks (Lincoln NE, US)';
         //$mirrors['https://fleximus.org/mirror/opnsense'] = 'Fleximus (Roubaix, FR)';
         $mirrors['https://fourdots.com/mirror/OPNSense'] = 'FourDots (Belgrade, RS)';
-        $mirrors['http://opnsense-mirror.hiho.ch'] = 'HiHo (Zurich, CH)';
+        $mirrors['https://opnsense-mirror.hiho.ch'] = 'HiHo (Zurich, CH)';
         $mirrors['http://mirror.ams1.nl.leaseweb.net/opnsense'] = 'LeaseWeb (Amsterdam, NL)';
         $mirrors['http://mirror.fra10.de.leaseweb.net/opnsense'] = 'LeaseWeb (Frankfurt, DE)';
         $mirrors['http://mirror.sfo12.us.leaseweb.net/opnsense'] = 'LeaseWeb (San Francisco, US)';
