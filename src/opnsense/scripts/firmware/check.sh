@@ -233,7 +233,7 @@ if [ "$pkg_running" == "" ]; then
                 fi
               done
             fi
-            if opnsense-update -bc; then
+            if opnsense-update -cbf; then
               if [ "$packages_upgraded" == "" ]; then
                 packages_upgraded=$packages_upgraded"{\"name\":\"base\"," # If it is the first item then we do not want a seperator
               else
@@ -243,7 +243,7 @@ if [ "$pkg_running" == "" ]; then
               packages_upgraded=$packages_upgraded"\"new_version\":\"$(opnsense-update -v)\"}"
               upgrade_needs_reboot="1"
             fi
-            if opnsense-update -kc; then
+            if opnsense-update -cfk; then
               if [ "$packages_upgraded" == "" ]; then
                 packages_upgraded=$packages_upgraded"{\"name\":\"kernel\"," # If it is the first item then we do not want a seperator
               else
