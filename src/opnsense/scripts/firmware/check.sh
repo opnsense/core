@@ -30,8 +30,7 @@
 # repository: error|ok
 # last_ckeck: <date_time_stamp>
 # updates: <#num_of_updates>
-# download_size: none|<size_of_total_downloads>
-# extra_space_required: none|<size_of_total_extra_space_required>
+# download_size: unknown|<size_of_total_downloads>
 # new_packages: array with { name: <package_name>, version: <package_version> }
 # reinstall_packages: array with { name: <package_name>, version: <package_version> }
 # upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
@@ -51,8 +50,7 @@ last_check="unknown"
 packages_upgraded=""
 packages_downgraded=""
 packages_new=""
-required_space="none"
-download_size="none"
+download_size="unknown"
 itemcount=0
 linecount=0
 timer=0
@@ -109,13 +107,9 @@ if [ "$pkg_running" == "" ]; then
               # There are no updates
               updates="0"
             else
-              required_space=`cat $tmp_pkg_output_file | grep 'The process will require' | awk -F '[ ]' '{print $5$6}'`
-              if [ "$required_space" == "" ]; then
-                required_space="none"
-              fi
               download_size=`cat $tmp_pkg_output_file | grep 'to be downloaded' | awk -F '[ ]' '{print $1$2}'`
               if [ "$download_size" == "" ]; then
-                download_size="none"
+                download_size="unknown"
               fi
 
               LQUERY=$(pkg query %v opnsense-update)
@@ -301,5 +295,5 @@ if [ "$pkg_running" == "" ]; then
       last_check=$(date)
 
       # Write our json structure to disk
-      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"product_version\":\"$product_version\",\"product_name\":\"$product_name\",\"os_version\":\"$os_version\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded],\"downgrade_packages\":[$packages_downgraded],\"upgrade_needs_reboot\":\"$upgrade_needs_reboot\"}"
+      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"product_version\":\"$product_version\",\"product_name\":\"$product_name\",\"os_version\":\"$os_version\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"download_size\":\"$download_size\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded],\"downgrade_packages\":[$packages_downgraded],\"upgrade_needs_reboot\":\"$upgrade_needs_reboot\"}"
 fi

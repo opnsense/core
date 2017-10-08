@@ -111,7 +111,7 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#updatelist').hide();
         $('#update_status').show();
         $('#updatetab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Upgrading...') }}");
+        $('#updatestatus').html("{{ lang._('Upgrading, please wait...') }}");
         $("#audit").attr("style","display:none");
         maj_suffix = '';
         if ($.upgrade_action == 'maj') {
@@ -134,7 +134,7 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#updatelist').hide();
         $('#update_status').show();
         $('#updatetab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Auditing...') }}");
+        $('#updatestatus').html("{{ lang._('Auditing, please wait...') }}");
         $("#audit").attr("style","");
         $("#audit_progress").addClass("fa fa-spinner fa-pulse");
 
@@ -203,7 +203,7 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#updatelist').hide();
         $('#update_status').show();
         $('#updatetab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Executing...') }}");
+        $('#updatestatus').html("{{ lang._('Executing, please wait...') }}");
         $.upgrade_action = 'action';
 
         ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name,{},function() {
