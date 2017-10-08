@@ -29,8 +29,8 @@
 # connection: error|ok
 # repository: error|ok
 # last_ckeck: <date_time_stamp>
-# updates: <#num_of_updates>
-# download_size: unknown|<size_of_total_downloads>
+# updates: <num_of_updates>
+# download_size: <size_of_total_downloads>
 # new_packages: array with { name: <package_name>, version: <package_version> }
 # reinstall_packages: array with { name: <package_name>, version: <package_version> }
 # upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
@@ -50,7 +50,7 @@ last_check="unknown"
 packages_upgraded=""
 packages_downgraded=""
 packages_new=""
-download_size="unknown"
+download_size=""
 itemcount=0
 linecount=0
 timer=0
@@ -108,16 +108,12 @@ if [ "$pkg_running" == "" ]; then
               updates="0"
             else
               download_size=`cat $tmp_pkg_output_file | grep 'to be downloaded' | awk -F '[ ]' '{print $1$2}'`
-              if [ "$download_size" == "" ]; then
-                download_size="unknown"
-              fi
 
               LQUERY=$(pkg query %v opnsense-update)
               RQUERY=$(pkg rquery %v opnsense-update)
               if [ "${LQUERY%%_*}" != "${RQUERY%%_*}" ]; then
                 kernel_to_reboot="${RQUERY%%_*}"
                 base_to_reboot="${RQUERY%%_*}"
-                upgrade_needs_reboot="1"
               fi
 
               # First check if there are new packages that need to be installed
@@ -239,16 +235,18 @@ if [ "$pkg_running" == "" ]; then
             fi
             if [ -n "$base_to_reboot" ]; then
               base_to_delete="$(opnsense-update -bv)"
-              if [ "$base_to_reboot" != "$base_to_delete" ]; then
+              base_is_size="$(opnsense-update -bfS)"
+              upgrade_needs_reboot="1"
+              if [ "$base_to_reboot" != "$base_to_delete" -a -n "$base_is_size" ]; then
                 if [ "$packages_upgraded" == "" ]; then
                   packages_upgraded=$packages_upgraded"{\"name\":\"base\"," # If it is the first item then we do not want a seperator
                 else
                   packages_upgraded=$packages_upgraded", {\"name\":\"base\","
                 fi
+                packages_upgraded=$packages_upgraded"\"size\":\"$base_is_size\","
                 packages_upgraded=$packages_upgraded"\"current_version\":\"$base_to_delete\","
                 packages_upgraded=$packages_upgraded"\"new_version\":\"$base_to_reboot\"}"
                 updates=$(expr $updates + 1)
-                upgrade_needs_reboot="1"
               fi
             fi
             if opnsense-update -cfk; then
@@ -259,16 +257,18 @@ if [ "$pkg_running" == "" ]; then
             fi
             if [ -n "$kernel_to_reboot" ]; then
               kernel_to_delete="$(opnsense-update -kv)"
-              if [ "$kernel_to_reboot" != "$kernel_to_delete" ]; then
+              kernel_is_size="$(opnsense-update -fkS)"
+              upgrade_needs_reboot="1"
+              if [ "$kernel_to_reboot" != "$kernel_to_delete" -a -n "$kernel_is_size" ]; then
                 if [ "$packages_upgraded" == "" ]; then
                   packages_upgraded=$packages_upgraded"{\"name\":\"kernel\"," # If it is the first item then we do not want a seperator
                 else
                   packages_upgraded=$packages_upgraded", {\"name\":\"kernel\","
                 fi
+                packages_upgraded=$packages_upgraded"\"size\":\"$kernel_is_size\","
                 packages_upgraded=$packages_upgraded"\"current_version\":\"$kernel_to_delete\","
                 packages_upgraded=$packages_upgraded"\"new_version\":\"$kernel_to_reboot\"}"
                 updates=$(expr $updates + 1)
-                upgrade_needs_reboot="1"
               fi
             fi
           fi

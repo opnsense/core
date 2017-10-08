@@ -40,6 +40,24 @@ use \OPNsense\Core\Config;
 class FirmwareController extends ApiControllerBase
 {
     /**
+     * return bytes in human-readable form
+     * @param integer $bytes bytes to convert
+     * @return string
+     */
+    private function format_bytes($bytes)
+    {
+        if ($bytes >= (1024 * 1024 * 1024)) {
+            return sprintf("%d GB", $bytes / (1024 * 1024 * 1024));
+        } elseif ($bytes >= 1024 * 1024) {
+            return sprintf("%d MB", $bytes / (1024 * 1024));
+        } elseif ($bytes >= 1024) {
+            return sprintf("%d KB", $bytes / 1024);
+        } else {
+            return sprintf("%d bytes", $bytes);
+        }
+    }
+
+    /**
      * retrieve available updates
      * @return array
      */
@@ -51,6 +69,20 @@ class FirmwareController extends ApiControllerBase
         $response = json_decode(trim($backend->configdRun('firmware check')), true);
 
         if ($response != null) {
+            $packages_size = !empty($response['download_size']) ? $response['download_size'] : 0;
+            $sets_size = 0;
+
+            if (!empty($response['upgrade_packages'])) {
+                foreach ($response['upgrade_packages'] as $listing) {
+                    if (!empty($listing['size'])) {
+                        $sets_size += $listing['size'];
+                    }
+                }
+            }
+
+            /* XXX scrape the number from $package_size and merge with sets size for total */
+            $download_size = $packages_size ? $packages_size : $this->format_bytes($sets_size);
+
             if (array_key_exists('connection', $response) && $response['connection'] == 'error') {
                 $response['status_msg'] = gettext('Connection error.');
                 $response['status'] = 'error';
@@ -73,13 +105,13 @@ class FirmwareController extends ApiControllerBase
                     $response['status_msg'] = sprintf(
                         gettext('There is %s update available, total download size is %s.'),
                         $response['updates'],
-                        $response['download_size']
+                        $download_size
                     );
                 } else {
                     $response['status_msg'] = sprintf(
                         gettext('There are %s updates available, total download size is %s.'),
                         $response['updates'],
-                        $response['download_size']
+                        $download_size
                     );
                 }
                 if ($response['upgrade_needs_reboot'] == 1) {
