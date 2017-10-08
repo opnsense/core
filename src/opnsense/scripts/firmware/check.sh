@@ -42,6 +42,8 @@
 connection="error"
 repository="error"
 upgrade_needs_reboot="0"
+kernel_to_reboot=""
+base_to_reboot=""
 updates=""
 pkg_running=""
 packes_output=""
@@ -119,6 +121,8 @@ if [ "$pkg_running" == "" ]; then
               LQUERY=$(pkg query %v opnsense-update)
               RQUERY=$(pkg rquery %v opnsense-update)
               if [ "${LQUERY%%_*}" != "${RQUERY%%_*}" ]; then
+                kernel_to_reboot="${RQUERY%%_*}"
+                base_to_reboot="${RQUERY%%_*}"
                 upgrade_needs_reboot="1"
               fi
 
@@ -234,26 +238,44 @@ if [ "$pkg_running" == "" ]; then
               done
             fi
             if opnsense-update -cbf; then
-              if [ "$packages_upgraded" == "" ]; then
-                packages_upgraded=$packages_upgraded"{\"name\":\"base\"," # If it is the first item then we do not want a seperator
-              else
-                packages_upgraded=$packages_upgraded", {\"name\":\"base\","
+              # the main update from package will override this during upgrade
+              if [ -z "$base_to_reboot" ]; then
+                  base_to_reboot="$(opnsense-update -v)"
               fi
-              packages_upgraded=$packages_upgraded"\"current_version\":\"$(opnsense-update -bv)\","
-              packages_upgraded=$packages_upgraded"\"new_version\":\"$(opnsense-update -v)\"}"
-              updates=$(expr $updates + 1)
-              upgrade_needs_reboot="1"
+            fi
+            if [ -n "$base_to_reboot" ]; then
+              base_to_delete="$(opnsense-update -bv)"
+              if [ "$base_to_reboot" != "$base_to_delete" ]; then
+                if [ "$packages_upgraded" == "" ]; then
+                  packages_upgraded=$packages_upgraded"{\"name\":\"base\"," # If it is the first item then we do not want a seperator
+                else
+                  packages_upgraded=$packages_upgraded", {\"name\":\"base\","
+                fi
+                packages_upgraded=$packages_upgraded"\"current_version\":\"$base_to_delete\","
+                packages_upgraded=$packages_upgraded"\"new_version\":\"$base_to_reboot\"}"
+                updates=$(expr $updates + 1)
+                upgrade_needs_reboot="1"
+              fi
             fi
             if opnsense-update -cfk; then
-              if [ "$packages_upgraded" == "" ]; then
-                packages_upgraded=$packages_upgraded"{\"name\":\"kernel\"," # If it is the first item then we do not want a seperator
-              else
-                packages_upgraded=$packages_upgraded", {\"name\":\"kernel\","
+              # the main update from package will override this during upgrade
+              if [ -z "$kernel_to_reboot" ]; then
+                  kernel_to_reboot="$(opnsense-update -v)"
               fi
-              packages_upgraded=$packages_upgraded"\"current_version\":\"$(opnsense-update -kv)\","
-              packages_upgraded=$packages_upgraded"\"new_version\":\"$(opnsense-update -v)\"}"
-              updates=$(expr $updates + 1)
-              upgrade_needs_reboot="1"
+            fi
+            if [ -n "$kernel_to_reboot" ]; then
+              kernel_to_delete="$(opnsense-update -kv)"
+              if [ "$kernel_to_reboot" != "$kernel_to_delete" ]; then
+                if [ "$packages_upgraded" == "" ]; then
+                  packages_upgraded=$packages_upgraded"{\"name\":\"kernel\"," # If it is the first item then we do not want a seperator
+                else
+                  packages_upgraded=$packages_upgraded", {\"name\":\"kernel\","
+                fi
+                packages_upgraded=$packages_upgraded"\"current_version\":\"$kernel_to_delete\","
+                packages_upgraded=$packages_upgraded"\"new_version\":\"$kernel_to_reboot\"}"
+                updates=$(expr $updates + 1)
+                upgrade_needs_reboot="1"
+              fi
             fi
           fi
         else
