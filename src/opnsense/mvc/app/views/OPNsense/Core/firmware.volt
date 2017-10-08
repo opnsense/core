@@ -38,7 +38,7 @@ POSSIBILITY OF SUCH DAMAGE.
             $('#updatelist').show();
         }
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
-        $('#updatestatus').html("{{ lang._('Checking... (may take up to 30 seconds)') }}");
+        $('#updatestatus').html("{{ lang._('Checking, please wait...') }}");
     }
 
     /**

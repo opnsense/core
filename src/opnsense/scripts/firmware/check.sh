@@ -54,7 +54,7 @@ download_size="none"
 itemcount=0
 linecount=0
 timer=0
-timeout=45 # Wait for a maximum number of seconds to determine connection issues
+timeout=60 # Wait for a maximum number of seconds to determine connection issues
 
 # File location variables
 tmp_pkg_output_file="/tmp/packages.output"
@@ -241,6 +241,7 @@ if [ "$pkg_running" == "" ]; then
               fi
               packages_upgraded=$packages_upgraded"\"current_version\":\"$(opnsense-update -bv)\","
               packages_upgraded=$packages_upgraded"\"new_version\":\"$(opnsense-update -v)\"}"
+              updates=$(expr $updates + 1)
               upgrade_needs_reboot="1"
             fi
             if opnsense-update -cfk; then
@@ -251,6 +252,7 @@ if [ "$pkg_running" == "" ]; then
               fi
               packages_upgraded=$packages_upgraded"\"current_version\":\"$(opnsense-update -kv)\","
               packages_upgraded=$packages_upgraded"\"new_version\":\"$(opnsense-update -v)\"}"
+              updates=$(expr $updates + 1)
               upgrade_needs_reboot="1"
             fi
           fi
