@@ -55,7 +55,8 @@ if [ -z "${RELEASE}" ]; then
 	/usr/local/etc/rc.restart_webgui 2>&1 > ${PIPEFILE}
 
 	# if we can update base, we'll do that as well
-	if opnsense-update -c; then
+	${TEE} ${LOCKFILE} < ${PIPEFILE} &
+	if opnsense-update -c 2>&1 > ${PIPEFILE}; then
 		${TEE} ${LOCKFILE} < ${PIPEFILE} &
 		if opnsense-update -bk 2>&1 > ${PIPEFILE}; then
 			echo '***REBOOT***' >> ${LOCKFILE}

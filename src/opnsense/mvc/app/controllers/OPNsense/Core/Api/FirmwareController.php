@@ -132,7 +132,7 @@ class FirmwareController extends ApiControllerBase
                             case 'upgrade_packages':
                                 $sorted[$value['name']] = array(
                                     'reason' => gettext('upgrade'),
-                                    'old' => $value['current_version'],
+                                    'old' => empty($value['current_version']) ? gettext('N/A') : $value['current_version'],
                                     'new' => $value['new_version'],
                                     'name' => $value['name'],
                                 );
@@ -485,6 +485,32 @@ class FirmwareController extends ApiControllerBase
         }
 
         return $result;
+    }
+
+    /**
+     * query package details
+     * @return array
+     */
+    public function detailsAction($package)
+    {
+        $this->sessionClose(); // long running action, close session
+        $backend = new Backend();
+        $response = array();
+
+        if ($this->request->isPost()) {
+            // sanitize package name
+            $filter = new \Phalcon\Filter();
+            $filter->add('scrub', function ($value) {
+                return preg_replace('/[^0-9a-zA-Z\-]/', '', $value);
+            });
+            $package = $filter->sanitize($package, 'scrub');
+            $text = trim($backend->configdRun(sprintf('firmware details %s', $package)));
+            if (!empty($text)) {
+                $response['details'] = $text;
+            }
+        }
+
+        return $response;
     }
 
     /**
