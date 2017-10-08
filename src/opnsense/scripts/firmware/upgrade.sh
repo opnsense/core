@@ -40,13 +40,13 @@ if [ "$PACKAGE" == "all" ]; then
 	# restart the web server
 	/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE} 2>&1
 	# if we can update base, we'll do that as well
-	if opnsense-update -c ${PKG_PROGRESS_FILE} 2>&1; then
+	if opnsense-update -c >> ${PKG_PROGRESS_FILE} 2>&1; then
 		if opnsense-update -bk >> ${PKG_PROGRESS_FILE} 2>&1; then
 			REBOOT=1
 		fi
 	fi
 elif [ "$PACKAGE" == "bsd" ]; then
-	if opnsense-update -c ${PKG_PROGRESS_FILE} 2>&1; then
+	if opnsense-update -c >> ${PKG_PROGRESS_FILE} 2>&1; then
 		if opnsense-update -bk >> ${PKG_PROGRESS_FILE} 2>&1; then
 			REBOOT=1
 		fi
