@@ -439,15 +439,18 @@ class FirmwareController extends ApiControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
-            $response['status'] = 'ok';
-            // sanitize package name
             $filter = new \Phalcon\Filter();
             $filter->add('pkgname', function ($value) {
                 return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
             });
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
-            // execute action
+        } else {
+            $pkg_name = null;
+        }
+
+        if (!empty($pkg_name)) {
             $response['msg_uuid'] = trim($backend->configdpRun("firmware lock", array($pkg_name), true));
+            $response['status'] = 'ok';
         } else {
             $response['status'] = 'failure';
         }
@@ -467,15 +470,18 @@ class FirmwareController extends ApiControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
-            $response['status'] = 'ok';
-            // sanitize package name
             $filter = new \Phalcon\Filter();
             $filter->add('pkgname', function ($value) {
                 return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
             });
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
-            // execute action
+        } else {
+            $pkg_name = null;
+        }
+
+        if (!empty($pkg_name)) {
             $response['msg_uuid'] = trim($backend->configdpRun("firmware unlock", array($pkg_name), true));
+            $response['status'] = 'ok';
         } else {
             $response['status'] = 'failure';
         }

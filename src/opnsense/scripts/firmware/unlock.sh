@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -26,11 +26,16 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
-PACKAGE=$1
+PACKAGE=${1}
+
+if [ -z "${PACKAGE}" ]; then
+	opnsense-update -U
+	exit 0
+fi
 
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
-echo "***GOT REQUEST TO UNLOCK: $PACKAGE***" >> ${PKG_PROGRESS_FILE}
-pkg unlock -y $PACKAGE >> ${PKG_PROGRESS_FILE} 2>&1
+echo "***GOT REQUEST TO UNLOCK: ${PACKAGE}***" >> ${PKG_PROGRESS_FILE}
+pkg unlock -y ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}
