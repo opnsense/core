@@ -117,5 +117,12 @@
                 </content>
             </template>
         </templates>
+        <PluginsAccess>
+            <Access type="ArrayField">
+                <Route type="TextField">
+                    <Required>Y</Required>
+                </Route>
+            </Access>
+        </PluginsAccess>
     </items>
 </model>
