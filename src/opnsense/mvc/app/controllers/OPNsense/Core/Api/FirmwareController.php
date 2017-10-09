@@ -80,8 +80,24 @@ class FirmwareController extends ApiControllerBase
                 }
             }
 
-            /* XXX scrape the number from $package_size and merge with sets size for total */
-            $download_size = $packages_size ? $packages_size : $this->format_bytes($sets_size);
+            if (preg_match('/\s*(\d+)\s*([a-z])/i', $packages_size, $matches)) {
+                $factor = 1;
+                switch (isset($matches[2]) ? strtolower($matches[2]) : 'b') {
+                    case 'g':
+                        $factor *= 1024;
+                    case 'm':
+                        $factor *= 1024;
+                    case 'k':
+                        $factor *= 1024;
+                    default:
+                        break;
+                }
+                $packages_size = $factor * $matches[1];
+            } else {
+                $packages_size = 0;
+            }
+
+            $download_size = $this->format_bytes($packages_size + $sets_size);
 
             if (array_key_exists('connection', $response) && $response['connection'] == 'error') {
                 $response['status_msg'] = gettext('Connection error.');
