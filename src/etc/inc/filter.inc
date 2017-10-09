@@ -175,7 +175,7 @@ function process_alias_urltable($name, $alias_type, $url, $freq, $forceupdate = 
                     continue;
                 }
                 // cleanse line item
-                $line = preg_split('/\s+/', $line)[0];
+                $line = preg_split('/[\s,;|]+/', $line)[0];
                 if ($alias_type == "urltable_ports") {
                     // todo: add proper validation for ports here
                     fwrite($output_file_handle, "{$line}\n");
