@@ -227,6 +227,7 @@
     <kill_states/>
     <backupcount>60</backupcount>
     <crypto_hardware>aesni</crypto_hardware>
+    <pf_share_forward>1</pf_share_forward>
   </system>
   <interfaces>
     <wan>
