@@ -407,6 +407,8 @@ function filter_configure_sync($verbose = false)
     }
 
     $aliases = filter_generate_aliases($FilterIflist);
+    $aliases .= "\n# Plugins tables\n";
+    $aliases .= $fw->tablesToText();
 
     if ($verbose) {
         echo '.';
