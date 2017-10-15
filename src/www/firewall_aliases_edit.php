@@ -98,6 +98,25 @@ function geoip_countries()
     return $result;
 }
 
+function geoip_regions()
+{
+    $result = array();
+    foreach (explode("\n", file_get_contents('/usr/local/opnsense/contrib/tzdata/zone.tab')) as $line) {
+        if (strlen($line) > 0 && substr($line, 0, 1) == '#' ) {
+            continue;
+        }
+        $line = explode("\t", $line);
+        if (empty($line[0]) || strlen($line[0]) != 2) {
+            continue;
+        }
+        if (empty($line[2]) || strpos($line[2], '/') === false) {
+            continue;
+        }
+        $result[$line[0]] = explode('/', $line[2])[0];
+    }
+    return $result;
+}
+
 $a_aliases = &config_read_array('aliases', 'alias');
 
 $pconfig = array();
