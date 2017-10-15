@@ -61,7 +61,28 @@ POSSIBILITY OF SUCH DAMAGE.
                     }
             );
         }
-
+        
+        $("#flushModal").click(function(event){
+          BootstrapDialog.show({
+            type:BootstrapDialog.TYPE_DANGER,
+            title: "<?= gettext("Flush ARP Table");?>",
+            message: "<?=gettext("If an IP of a host is changed you've probably got that the host has no network connectivity for a period of time. The router has cached the old MAC address (ethernet hardware address) associated with the host's IP address. This cache will persist on the gateway network device until the ARP cache on the gateway network device expires. You can also flush it manually.");?>",
+            buttons: [{
+                      label: "<?= gettext("Close");?>",
+                      action: function(dialogRef) {
+                        dialogRef.close();
+                      }}, {
+                      label: "<?= gettext("Flush ARP Table");?>",
+                      action: function(dialogRef) {
+                        ajaxCall(url = "/api/diagnostics/interface/flushArp",
+                            sendData = {}, callback = function (data, status) {
+                            $("#refresh").click();
+                        });
+                    }
+                  }]
+          }); // end BootstrapDialog.show
+        }); // end .click(function(event)
+        
         // initial fetch
         $("#refresh").click(updateARP);
         $("#refresh").click();
@@ -96,6 +117,10 @@ POSSIBILITY OF SUCH DAMAGE.
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="pull-right">
+                            <button type="button" class="btn btn-default" id="flushModal">
+                                <span>{{ lang._('Flush') }}</span>
+                                <span class="fa fa-eraser"></span>
+                            </button>                            
                             <button id="refresh" type="button" class="btn btn-default">
                                 <span>{{ lang._('Refresh') }}</span>
                                 <span class="fa fa-refresh"></span>
