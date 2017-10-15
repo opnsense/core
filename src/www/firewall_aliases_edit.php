@@ -182,36 +182,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($pconfig['submit'])) {
         $input_errors = array();
         // validate data
-        $country_codes = array_keys(geoip_countries());
-        foreach ($pconfig['host_url'] as &$detail_entry) {
-            $ipaddr_count = 0;
-            $domain_alias_count = 0;
-            foreach (explode('-', $detail_entry) as $tmpaddr) {
-                if (is_ipaddr($tmpaddr)) {
-                    $ipaddr_count++;
-                } elseif (trim($tmpaddr) != "") {
-                    $domain_alias_count++;
+
+        if (empty($pconfig['host_url'])) {
+            $input_errors[] = gettext('At least one alias entry must be supplied.');
+        } else {
+            $country_codes = array_keys(geoip_countries());
+            foreach ($pconfig['host_url'] as &$detail_entry) {
+                $ipaddr_count = 0;
+                $domain_alias_count = 0;
+                foreach (explode('-', $detail_entry) as $tmpaddr) {
+                    if (is_ipaddr($tmpaddr)) {
+                        $ipaddr_count++;
+                    } elseif (trim($tmpaddr) != "") {
+                        $domain_alias_count++;
+                    }
                 }
-            }
-            if ($pconfig['type'] == 'host') {
-                if ($ipaddr_count > 1) {
-                    $input_errors[] = sprintf(gettext('Entry "%s" seems to contain a list of addresses, please use a network type alias to define ranges.'), $detail_entry) ;
-                } elseif (!is_domain($detail_entry) && !is_ipaddr($detail_entry) && !is_alias($detail_entry)) {
-                    $input_errors[] = sprintf(gettext('Entry "%s" is not a valid hostname or IP address.'), $detail_entry) ;
-                }
-            } elseif ($pconfig['type'] == 'port') {
-                $detail_entry = str_replace("-", ":", $detail_entry);
-                if (!is_port($detail_entry) && !is_portrange($detail_entry) && !is_alias($detail_entry)) {
-                    $input_errors[] = sprintf(gettext('Entry "%s" is not a valid port number.'), $detail_entry) ;
-                }
-            } elseif ($pconfig['type'] == 'geoip') {
-                if (!in_array($detail_entry, $country_codes)) {
-                    $input_errors[] = sprintf(gettext('Entry "%s" is not a valid country code.'), $detail_entry) ;
-                }
-            } elseif ($pconfig['type'] == 'network') {
-                if (!is_alias($detail_entry) && !is_ipaddr($detail_entry) && !is_subnet($detail_entry)
-                  && !($ipaddr_count == 2 && $domain_alias_count == 0)) {
-                    $input_errors[] = sprintf(gettext('Entry "%s" is not a valid network or IP address.'), $detail_entry) ;
+                if ($pconfig['type'] == 'host') {
+                    if ($ipaddr_count > 1) {
+                        $input_errors[] = sprintf(gettext('Entry "%s" seems to contain a list of addresses, please use a network type alias to define ranges.'), $detail_entry);
+                    } elseif (!is_domain($detail_entry) && !is_ipaddr($detail_entry) && !is_alias($detail_entry)) {
+                        $input_errors[] = sprintf(gettext('Entry "%s" is not a valid hostname or IP address.'), $detail_entry);
+                    }
+                } elseif ($pconfig['type'] == 'port') {
+                    $detail_entry = str_replace("-", ":", $detail_entry);
+                    if (!is_port($detail_entry) && !is_portrange($detail_entry) && !is_alias($detail_entry)) {
+                        $input_errors[] = sprintf(gettext('Entry "%s" is not a valid port number.'), $detail_entry);
+                    }
+                } elseif ($pconfig['type'] == 'geoip') {
+                    if (!in_array($detail_entry, $country_codes)) {
+                        $input_errors[] = sprintf(gettext('Entry "%s" is not a valid country code.'), $detail_entry);
+                    }
+                } elseif ($pconfig['type'] == 'network') {
+                    if (!is_alias($detail_entry) && !is_ipaddr($detail_entry) && !is_subnet($detail_entry)
+                      && !($ipaddr_count == 2 && $domain_alias_count == 0)) {
+                        $input_errors[] = sprintf(gettext('Entry "%s" is not a valid network or IP address.'), $detail_entry);
+                    }
                 }
             }
         }
@@ -406,19 +411,9 @@ include("head.inc");
         $('#detailTable > tbody > tr:last > td > input').each(function(){
           $(this).val("");
         });
-        // cloned a selectpicker, move original select tag out of container and remove selectpicker
-        $('#detailTable > tbody > tr:last > td > div.btn-group').each(function(){
-            $(this).find('select').detach().appendTo($(this).parent());
-            $(this).remove();
-        });
         $(".act-removerow").click(removeRow);
         // link typeahead to new item
         addFieldTypeAhead();
-        // link geoip list to new item
-        $(".geoip_list").change(function(){
-            $(this).parent().parent().find('input').val($(this).val());
-        });
-        $('.selectpicker').selectpicker();
     });
 
     $(".act-removerow").click(removeRow);
@@ -437,9 +432,9 @@ include("head.inc");
         $('.act-removerow').removeClass('hidden');
       }
       $("#proto").addClass("hidden");
-      $(".geoip_list").addClass("hidden");
+      $(".geoip_table").addClass("hidden");
+      $(".not_geoip_table").removeClass("hidden");
       $(".host_url").removeClass("hidden");
-      $(".geoip_list > option").remove();
       switch($("#typeSelect").val()) {
           case 'urltable':
               $("#detailsHeading1").html("<?=gettext("URL");?>");
@@ -464,17 +459,9 @@ include("head.inc");
               break;
           case 'geoip':
               $("#proto").removeClass("hidden");
-              $(".geoip_list").removeClass("hidden");
+              $(".geoip_table").removeClass("hidden");
+              $(".not_geoip_table").addClass("hidden");
               $(".host_url").addClass("hidden");
-              $("#detailsHeading1").html("<?=gettext("Country");?>");
-              $("#countries > option").clone().appendTo('.geoip_list');
-              $('.geoip_list').each(function(){
-                  var url_item = $(this).parent().find('input').val();
-                  $(this).val(url_item);
-              });
-              $('.geoip_list').change(function(){
-                  $(this).parent().find('input').val($(this).val());
-              });
               break;
       }
       $(".fld_detail").typeahead("destroy");
@@ -494,6 +481,10 @@ include("head.inc");
         document.all_aliases[$(this).data('type')].push($(this).val())
     });
 
+    $('.region_toggle').click(function () {
+        $('.region_' + $(this).attr('data')).click();
+    });
+
     toggleType();
   });
 </script>
@@ -508,16 +499,6 @@ include("head.inc");
         endif;
       endforeach;
     endif;
-?>
-</select>
-
-<!-- push all available countries in a hidden select box for geoip -->
-<select class="hidden" id="countries">
-<?php
-foreach (geoip_countries() as $code => $name):?>
-    <option value="<?=$code;?>"><?=$name;?></option>
-<?php
-endforeach;
 ?>
 </select>
 
@@ -612,7 +593,7 @@ endforeach;
                 <tr>
                   <td><div id="addressnetworkport"><i class="fa fa-info-circle text-muted"></i> <?= gettext('Aliases') ?></div></td>
                   <td>
-                    <table class="table table-striped table-condensed" id="detailTable">
+                    <table class="table table-striped table-condensed not_geoip_table" id="detailTable">
                       <thead>
                         <tr>
                           <th></th>
@@ -627,11 +608,6 @@ endforeach;
                         <tr>
                           <td>
                             <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
-                          </td>
-                          <td>
-                            <select class="geoip_list selectpicker hidden" data-live-search="true" data-size="10">
-                            </select>
-                            <input type="text" class="host_url fld_detail" name="host_url[]" value="<?=$aliasurl;?>"/>
                           </td>
                           <td>
                             <input type="text" class="form-control" name="detail[]" value="<?= isset($pconfig['detail'][$aliasid])?$pconfig['detail'][$aliasid]:"";?>">
@@ -655,6 +631,41 @@ endforeach;
                         </tr>
                       </tfoot>
                     </table>
+<?php
+$where = geoip_regions();
+$unique = array_unique($where);
+uasort($unique , function($a, $b) {return strcasecmp($a, $b);});
+foreach ($unique as $region): ?>
+                    <table class="table table-striped table-condensed geoip_table">
+                      <tr>
+                        <td colspan="3">
+                          <input type="checkbox" class="region_toggle" data="<?= html_safe($region) ?>" />
+                          <strong><?= $region ?> (<?= gettext('toggle all') ?>)</strong>
+                        </td>
+                      </tr>
+                      <tr>
+<?php $i = 0; foreach (geoip_countries() as $code => $name):
+    if ($region == $where[$code]): ?>
+                        <td>
+                          <input type="checkbox" name="host_url[]" class="region_<?= html_safe($region) ?>" value="<?= html_safe($code) ?>" <?= in_array($code, $pconfig['host_url']) ? 'checked="checked"' : '' ?>/>
+                          <strong><?= $name ?></strong>
+                        </td>
+<?php $i += 1;
+if ($i % 3 == 0): ?>
+                      </tr>
+                      <tr>
+<?php endif;
+endif;
+endforeach; ?>
+<?php for ($i %= 3; $i < 3; $i += 1): ?>
+                        </td><td>
+<?php
+endfor; ?>
+                        </td>
+                      </tr>
+                    </table>
+                    <br class="geoip_table"/>
+<?php endforeach; ?>
                   </td>
                 </tr>
                 <tr>
