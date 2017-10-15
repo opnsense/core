@@ -94,6 +94,7 @@ function geoip_countries()
           $result[$code] = $name;
         }
     }
+    uasort($result, function($a, $b) {return strcasecmp($a, $b);});
     return $result;
 }
 
@@ -386,13 +387,19 @@ include("head.inc");
         $('#detailTable > tbody > tr:last > td > input').each(function(){
           $(this).val("");
         });
+        // cloned a selectpicker, move original select tag out of container and remove selectpicker
+        $('#detailTable > tbody > tr:last > td > div.btn-group').each(function(){
+            $(this).find('select').detach().appendTo($(this).parent());
+            $(this).remove();
+        });
         $(".act-removerow").click(removeRow);
         // link typeahead to new item
         addFieldTypeAhead();
         // link geoip list to new item
         $(".geoip_list").change(function(){
-            $(this).parent().find('input').val($(this).val());
+            $(this).parent().parent().find('input').val($(this).val());
         });
+        $('.selectpicker').selectpicker();
     });
 
     $(".act-removerow").click(removeRow);
@@ -603,7 +610,7 @@ endforeach;
                             <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
                           </td>
                           <td>
-                            <select class="geoip_list hidden">
+                            <select class="geoip_list selectpicker hidden" data-live-search="true" data-size="10">
                             </select>
                             <input type="text" class="host_url fld_detail" name="host_url[]" value="<?=$aliasurl;?>"/>
                           </td>
