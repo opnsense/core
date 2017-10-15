@@ -433,6 +433,17 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 <script type="text/javascript">
     $( document ).ready(function() {
+        $("#iketype").change(function(){
+            if ($(this).val() == 'ikev2') {
+                $("#mode").prop( "disabled", true );
+                $("#mode_tr").hide();
+            } else {
+                $("#mode").prop( "disabled", false );
+                $("#mode_tr").show();
+            }
+            $( window ).resize(); // call window resize, which will re-apply zebra
+        });
+        $("#iketype").change();
         $("#myid_type").change(function(){
             if ($("#myid_type").val() == 'myaddress') {
                 $("#myid_data").removeClass('show');
@@ -590,7 +601,7 @@ include("head.inc");
                     <td><a id="help_for_iketype" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Key Exchange version"); ?></td>
                     <td>
 
-                      <select name="iketype" class="formselect">
+                      <select name="iketype" id="iketype" class="formselect">
 <?php
                       $keyexchange = array("ikev1" => "V1", "ikev2" => "V2");
                       foreach ($keyexchange as $kidx => $name) :
@@ -720,10 +731,10 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
-                  <tr>
+                  <tr id="mode_tr">
                     <td><a id="help_for_mode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Negotiation mode"); ?></td>
                     <td>
-                      <select name="mode" class="formselect">
+                      <select id="mode" name="mode" class="formselect">
                       <?php
                       $modes = array("main" => "Main", "aggressive" => "Aggressive");
                       foreach ($modes as $mode => $mdescr) :
