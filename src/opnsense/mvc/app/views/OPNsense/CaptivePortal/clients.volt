@@ -131,11 +131,11 @@ POSSIBILITY OF SUCH DAMAGE.
                 <thead>
                 <tr>
                     <th data-column-id="sessionid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('Session') }}</th>
-                    <th data-column-id="userName" data-type="string">{{ lang._('userName') }}</th>
-                    <th data-column-id="macAddress" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('macAddress') }}</th>
-                    <th data-column-id="ipAddress" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('ipAddress') }}</th>
-                    <th data-column-id="startTime" data-type="datetime">{{ lang._('connected since') }}</th>
-                    <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false"></th>
+                    <th data-column-id="userName" data-type="string">{{ lang._('Username') }}</th>
+                    <th data-column-id="macAddress" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('MAC address') }}</th>
+                    <th data-column-id="ipAddress" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('IP address') }}</th>
+                    <th data-column-id="startTime" data-type="datetime">{{ lang._('Connected since') }}</th>
+                    <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                 </tr>
                 </thead>
                 <tbody>
