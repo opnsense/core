@@ -89,7 +89,7 @@ class InterfaceController extends ApiControllerBase
             return array("message" => "error");
         }
     }
-    
+
     /**
      * retrieve system ndp table contents
      * @return array
