@@ -119,7 +119,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         <div class="pull-right">
                             <button type="button" class="btn btn-default" id="flushModal">
                                 <span>{{ lang._('Flush') }}</span>
-                                <span class="fa fa-eraser"></span>
+                                <span class="fa fa-trash"></span>
                             </button>
                             <button id="refresh" type="button" class="btn btn-default">
                                 <span>{{ lang._('Refresh') }}</span>
