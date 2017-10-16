@@ -2068,11 +2068,11 @@ function interface_wireless_configure($if, &$wl, &$wlcfg)
     fwrite($fd_set, "# wireless configuration script.\n\n");
 
     /* set values for /path/program */
-    $hostapd = "/usr/sbin/hostapd";
-    $wpa_supplicant = "/usr/sbin/wpa_supplicant";
-    $ifconfig = "/sbin/ifconfig";
-    $sysctl = "/sbin/sysctl";
-    $killall = "/usr/bin/killall";
+    $wpa_supplicant = file_exists('/usr/local/sbin/wpa_supplicant') ? '/usr/local/sbin/wpa_supplicant' : '/usr/sbin/wpa_supplicant';
+    $hostapd = file_exists('/usr/local/sbin/hostapd') ? '/usr/local/sbin/hostapd' : '/usr/sbin/hostapd';
+    $killall = '/usr/bin/killall';
+    $ifconfig = '/sbin/ifconfig';
+    $sysctl = '/sbin/sysctl';
 
     /* Set all wireless ifconfig variables (split up to get rid of needed checking) */
 
