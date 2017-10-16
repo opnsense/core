@@ -177,8 +177,9 @@ function process_alias_urltable($name, $alias_type, $url, $freq, $forceupdate = 
                 // cleanse line item
                 $line = preg_split('/[\s,;|#]+/', $line)[0];
                 if ($alias_type == "urltable_ports") {
-                    // todo: add proper validation for ports here
-                    fwrite($output_file_handle, "{$line}\n");
+                    if ((string)((int)$line) === $line && $line >= 1 && $line <= 65535) {
+                        fwrite($output_file_handle, "{$line}\n");
+                    }
                 } else {
                     // validate or resolve line items, skip unparseable content
                     if (is_subnet($line) || is_ipaddr($line)) {
