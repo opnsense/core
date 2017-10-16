@@ -616,9 +616,7 @@
 /usr/local/opnsense/scripts/suricata/installRules.py
 /usr/local/opnsense/scripts/suricata/lib/__init__.py
 /usr/local/opnsense/scripts/suricata/lib/downloader.py
-/usr/local/opnsense/scripts/suricata/lib/log.py
 /usr/local/opnsense/scripts/suricata/lib/metadata.py
-/usr/local/opnsense/scripts/suricata/lib/params.py
 /usr/local/opnsense/scripts/suricata/lib/rulecache.py
 /usr/local/opnsense/scripts/suricata/listAlertLogs.py
 /usr/local/opnsense/scripts/suricata/listClasstypes.py
@@ -745,6 +743,7 @@
 /usr/local/opnsense/site-python/__init__.py
 /usr/local/opnsense/site-python/daemonize.LICENSE
 /usr/local/opnsense/site-python/daemonize.py
+/usr/local/opnsense/site-python/log_helper.py
 /usr/local/opnsense/site-python/params.py
 /usr/local/opnsense/site-python/sqlite3_helper.py
 /usr/local/opnsense/site-python/watchers/__init__.py
