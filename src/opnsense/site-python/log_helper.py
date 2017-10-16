@@ -29,41 +29,45 @@ import os
 
 def reverse_log_reader(filename, block_size=8192, start_pos=None):
     """ read log file in reverse order
-    :param filename: filename to parse
+    :param filename: filename or stream to parse
     :param block_size: max block size to examine per loop
     :param start_pos: start at position in file (None is end of file)
     :return: generator
     """
-    with open(filename, 'rU') as f_in:
-        if start_pos is None:
-            f_in.seek(0, os.SEEK_END)
-            file_byte_start = f_in.tell()
+    if type(filename) in (str, unicode):
+        input_stream = open(filename, 'rU')
+    else:
+        input_stream = filename
+
+    if start_pos is None:
+        input_stream.seek(0, os.SEEK_END)
+        file_byte_start = input_stream.tell()
+    else:
+        file_byte_start = start_pos
+
+    data = ''
+    while True:
+        if file_byte_start - block_size < 0:
+            block_size = file_byte_start
+            file_byte_start = 0
         else:
-            file_byte_start = start_pos
+            file_byte_start -= block_size
 
-        data = ''
-        while True:
-            if file_byte_start - block_size < 0:
-                block_size = file_byte_start
-                file_byte_start = 0
-            else:
-                file_byte_start -= block_size
+        input_stream.seek(file_byte_start)
 
-            f_in.seek(file_byte_start)
+        data = input_stream.read(block_size) + data
+        eol = data.rfind('\n')
 
-            data = f_in.read(block_size) + data
+        while eol > -1:
+            line_end = file_byte_start + len(data)
+            line = data[eol:]
+            data = data[:eol]
             eol = data.rfind('\n')
+            # field line and position in file
+            yield {'line': line.strip(), 'pos': line_end}
+        if file_byte_start == 0 and eol == -1:
+            # flush last line
+            yield {'line': data.strip(), 'pos': len(data)}
 
-            while eol > -1:
-                line_end = file_byte_start + len(data)
-                line = data[eol:]
-                data = data[:eol]
-                eol = data.rfind('\n')
-                # field line and position in file
-                yield {'line': line.strip(), 'pos': line_end}
-            if file_byte_start == 0 and eol == -1:
-                # flush last line
-                yield {'line': data.strip(), 'pos': len(data)}
-
-            if file_byte_start == 0:
-                break
+        if file_byte_start == 0:
+            break
