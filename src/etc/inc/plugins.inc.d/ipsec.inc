@@ -1217,6 +1217,9 @@ EOD;
                         $authentication = "leftauth = pubkey\n\trightauth = eap-radius";
                         $authentication .= "\n\trightsendcert = never";
                         $authentication .= "\n\teap_identity = %any";
+                        if (empty($rightsourceip)) {
+                            $rightsourceip = "\trightsourceip = %radius\n";
+                        }
                         break;
                     case 'xauth_rsa_server':
                         $authentication = "leftauth = pubkey\n\trightauth = pubkey";
