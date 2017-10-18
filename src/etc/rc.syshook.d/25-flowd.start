@@ -1,0 +1,28 @@
+#!/usr/local/bin/php
+
+<?php
+
+require_once('script/load_phalcon.php');
+
+use \OPNsense\Diagnostics\Netflow;
+use \OPNsense\Core\Backend;
+
+$mdlNetflow = new Netflow();
+if ((string)$mdlNetflow->collect->enable != 1)
+    return;
+
+$backend = new Backend();
+$backend->configdRun("netflow aggregate start");
+// wait until socket exist for a maximum of $connect_timeout
+$timeout_wait = 10;
+while (!file_exists(Netflow::$socket_path)) {
+    sleep(1);
+    $timeout_wait -= 1;
+    if ($timeout_wait <= 0) {
+        $this->getLogger()->error("failed waiting for starting flowd_aggregate.py");
+        return array("status" => "error");
+    }
+}
+
+// don't try to restart the collector, to avoid data loss on reconfigure
+$response = $backend->configdRun("netflow collect start");

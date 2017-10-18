@@ -27,7 +27,7 @@
     parse flowd log files
 """
 import flowd
-import glob
+import select
 import tempfile
 import subprocess
 import os
@@ -77,27 +77,23 @@ class Interfaces(object):
             return str(ifIndex)
 
 
-def parse_flow(recv_stamp):
+def parse_flow(server):
     """ parse flowd logs and yield records (dict type)
     :param recv_stamp: last receive timestamp (recv)
     :return: iterator flow details
     """
     interfaces = Interfaces()
-    parse_done = False
-    for filename in sorted(glob.glob(FLOWD_LOG_FILES)):
-        if parse_done:
-            # log file contains older data (recv_stamp), break
+    while True:
+        r, w, e = select.select([server], [], [], 0)
+        if not r:
             break
-        flog = flowd.FlowLog(filename)
-        for flow in flog:
+        for op in r:
+            flowrec = op.recv(8192)
+            flow = flowd.Flow(flowrec)
             flow_record = dict()
             if flow.has_field(flowd.FIELD_RECV_TIME):
                 # receive timestamp
                 flow_record['recv'] = flow.recv_sec
-                if flow_record['recv'] <= recv_stamp:
-                    # do not parse next flow archive (oldest reached)
-                    parse_done = True
-                    continue
                 if flow.has_field(flowd.FIELD_FLOW_TIMES):
                     # calculate flow start, end, duration in ms
                     flow_record['flow_end'] = flow.recv_sec - (flow.sys_uptime_ms - flow.flow_finish) / 1000.0
@@ -113,5 +109,7 @@ def parse_flow(recv_stamp):
                     flow_record['if_in'] = interfaces.if_device(flow_record['if_ndx_in'])
                     flow_record['if_out'] = interfaces.if_device(flow_record['if_ndx_out'])
                 yield flow_record
+
+
     # send None to mark last record
     yield None
