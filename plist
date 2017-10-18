@@ -563,6 +563,7 @@
 /usr/local/opnsense/scripts/filter/list_table.py
 /usr/local/opnsense/scripts/filter/list_tables.py
 /usr/local/opnsense/scripts/filter/pfinfo.py
+/usr/local/opnsense/scripts/filter/read_log.py
 /usr/local/opnsense/scripts/firmware/audit.sh
 /usr/local/opnsense/scripts/firmware/changelog.sh
 /usr/local/opnsense/scripts/firmware/check.sh
