@@ -42,6 +42,7 @@ class Plugin
     private $interfaceMapping = array();
     private $gatewayMapping = array();
     private $systemDefaults = array();
+    private $tables = array();
 
     /**
      * init firewall plugin component
@@ -231,5 +232,36 @@ class Plugin
             }
         }
         return $output;
+    }
+
+    /**
+     * register a pf table
+     * @param string $name table name
+     * @param boolean $persist persistent
+     * @param string $file get table from file
+     */
+    public function registerTable($name, $persist = false, $file = null)
+    {
+        $this->tables[] = array('name' => $name, 'persist' => $persist, 'file' => $file);
+    }
+
+    /**
+     * fetch tables as text (pf tables part)
+     * @return string
+     */
+    public function tablesToText()
+    {
+        $result = "";
+        foreach ($this->tables as $table) {
+            $result .= "table <{$table['name']}>";
+            if ($table['persist']) {
+                $result .= " persist";
+            }
+            if (!empty($table['file'])) {
+                $result .= " file \"{$table['file']}\"";
+            }
+            $result .= "\n";
+        }
+        return $result;
     }
 }
