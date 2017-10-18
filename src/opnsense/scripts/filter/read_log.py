@@ -110,4 +110,4 @@ if __name__ == '__main__':
                 break
 
 
-    print(ujson.dumps(result))
+    print (ujson.dumps(result))
