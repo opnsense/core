@@ -53,7 +53,11 @@ class ControllerBase extends ControllerRoot
                     }
                     $tab = array();
                     $tab[] = $node->attributes()->id;
-                    $tab[] = $node->attributes()->description;
+                    if (function_exists("gettext")) {
+                        $tab[] = gettext((string)$node->attributes()->description);
+                    } else {
+                        $tab[] = $node->attributes()->description;
+                    }
                     if (isset($node->subtab)) {
                         $tab["subtabs"] = $this->parseFormNode($node);
                     } else {
@@ -64,7 +68,11 @@ class ControllerBase extends ControllerRoot
                 case "subtab":
                     $subtab = array();
                     $subtab[] = $node->attributes()->id;
-                    $subtab[] = $node->attributes()->description;
+                    if (function_exists("gettext")) {
+                        $subtab[] = gettext((string)$node->attributes()->description);
+                    } else {
+                        $subtab[] = $node->attributes()->description;
+                    }
                     $subtab[] = $this->parseFormNode($node);
                     $result[] = $subtab;
                     break;
