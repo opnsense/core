@@ -75,7 +75,6 @@ class ControllerBase extends ControllerRoot
                 case "help":
                 case "hint":
                 case "label":
-                    // translate text items if gettext is enabled
                     $result[$key] = gettext((string)$node);
                     break;
                 default:
