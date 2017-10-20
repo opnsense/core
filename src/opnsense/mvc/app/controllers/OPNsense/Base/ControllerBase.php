@@ -53,7 +53,7 @@ class ControllerBase extends ControllerRoot
                     }
                     $tab = array();
                     $tab[] = $node->attributes()->id;
-                    $tab[] = $node->attributes()->description;
+                    $tab[] = gettext((string)$node->attributes()->description);
                     if (isset($node->subtab)) {
                         $tab["subtabs"] = $this->parseFormNode($node);
                     } else {
@@ -64,7 +64,7 @@ class ControllerBase extends ControllerRoot
                 case "subtab":
                     $subtab = array();
                     $subtab[] = $node->attributes()->id;
-                    $subtab[] = $node->attributes()->description;
+                    $subtab[] = gettext((string)$node->attributes()->description);
                     $subtab[] = $this->parseFormNode($node);
                     $result[] = $subtab;
                     break;
@@ -76,12 +76,7 @@ class ControllerBase extends ControllerRoot
                 case "hint":
                 case "label":
                     // translate text items if gettext is enabled
-                    if (function_exists("gettext")) {
-                        $result[$key] = gettext((string)$node);
-                    } else {
-                        $result[$key] = (string)$node;
-                    }
-
+                    $result[$key] = gettext((string)$node);
                     break;
                 default:
                     // default behavior, copy in value as key/value data
