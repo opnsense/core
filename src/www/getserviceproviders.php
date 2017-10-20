@@ -1,3 +1,4 @@
+
 <?php
 
 /*
@@ -106,12 +107,12 @@ function provider_plans_list($country,$provider) {
             if (!empty($sp->gsm)) {
                 foreach ($sp->gsm->apn as $apn) {
                     $apn_name = !empty((string)$apn->name) ? (string)$apn->name : (string)$apn ;
-                    echo $apn_name . ":". (string)$apn->attributes()['value'] ."\n";
+                    echo trim($apn_name . ":". (string)$apn->attributes()['value']) ."\n";
                 }
             }
             if (!empty($sp->cdma)) {
                 foreach ($sp->cdma as $apn) {
-                    $apn_name = !empty($apn->name) ? (string)$apn->name : (string)$sp->name ;
+                    $apn_name = trim(!empty($apn->name) ? (string)$apn->name : (string)$sp->name);
                     echo $apn_name . ":CDMA" ."\n";
                 }
             }
