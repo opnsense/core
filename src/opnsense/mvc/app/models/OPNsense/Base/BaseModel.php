@@ -471,8 +471,10 @@ abstract class BaseModel
         $fromDom = dom_import_simplexml($source_node[0]);
 
         // remove old model data and write new
-        foreach ($toDom->getElementsByTagName($fromDom->nodeName) as $oldNode) {
-            $toDom->removeChild($oldNode);
+        foreach ($toDom->childNodes as $childNode) {
+            if ($childNode->nodeName == $fromDom->nodeName) {
+                $toDom->removeChild($childNode);
+            }
         }
         $toDom->appendChild($toDom->ownerDocument->importNode($fromDom, true));
     }
