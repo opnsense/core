@@ -38,9 +38,12 @@ use \OPNsense\Core\Backend;
  */
 class InterfaceController extends ApiControllerBase
 {
+    /**
+     * collect interface names
+     * @return array interface mapping (raw interface to description)
+     */
     private function getInterfaceNames()
     {
-        // collect interface names
         $intfmap = array();
         $config = Config::getInstance()->object();
         if ($config->interfaces->count() > 0) {
@@ -50,6 +53,16 @@ class InterfaceController extends ApiControllerBase
         }
         return $intfmap;
     }
+
+    /**
+     * retrieve interface name mapping
+     * @return array interface mapping (raw interface to description)
+     */
+    public function getInterfaceNamesAction()
+    {
+        return $this->getInterfaceNames();
+    }
+
     /**
      * retrieve system arp table contents
      * @return array
