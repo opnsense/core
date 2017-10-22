@@ -73,12 +73,6 @@ if __name__ == '__main__':
     for record in reverse_log_reader(fetch_clog(filter_log)):
         if record['line'].find('filterlog') > -1:
             rule = dict()
-            # rule metadata (unique hash, hostname, timestamp)
-            tmp = record['line'].split('filterlog:')[0].split()
-            rule['__digest__'] = md5.new(record['line']).hexdigest()
-            rule['__host__'] = tmp.pop()
-            rule['__timestamp__'] =  ' '.join(tmp)
-
             rulep = record['line'].split('filterlog:')[1].strip().split(',')
             update_rule(rule, rulep, fields_general)
 
@@ -103,6 +97,13 @@ if __name__ == '__main__':
                             update_rule(rule, rulep, fields_ipv6_carp)
 
             result.append(rule)
+
+            # rule metadata (unique hash, hostname, timestamp)
+            tmp = record['line'].split('filterlog:')[0].split()
+            rule['__digest__'] = md5.new(record['line']).hexdigest()
+            rule['__host__'] = tmp.pop()
+            rule['__timestamp__'] =  ' '.join(tmp)
+
             # handle exit criteria, row limit or last digest
             if parameters['limit'] != 0 and len(result) > parameters['limit']:
                 break
