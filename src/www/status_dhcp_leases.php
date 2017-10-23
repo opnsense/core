@@ -240,9 +240,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $order = ( $_GET['order'] ) ? $_GET['order'] : 'ip';
     usort($leases, 
         function ($a, $b) use ($order) {
-            return strnatcasecmp($a[$order].$a[ip],$b[$order].$b[ip]);
+            return strnatcasecmp($a[$order].$a[ip], $b[$order].$b[ip]);
         }
     );
+     
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['deleteip']) && is_ipaddr($_POST['deleteip'])) {
         // delete dhcp lease
@@ -355,7 +356,7 @@ include("head.inc");?>
                     <td class="act_sort" data-field="ip"><?=gettext("IP address"); ?></td>
                     <td class="act_sort" data-field="mac"><?=gettext("MAC address"); ?></td>
                     <td class="act_sort" data-field="hostname"><?=gettext("Hostname"); ?></td>
-                    <td class="act_sort" data-field="desc"><?=gettext("Description"); ?></td>
+                    <td class="act_sort" data-field="descr"><?=gettext("Description"); ?></td>
                     <td class="act_sort" data-field="start"><?=gettext("Start"); ?></td>
                     <td class="act_sort" data-field="end"><?=gettext("End"); ?></td>
                     <td class="act_sort" data-field="online"><?=gettext("Status"); ?></td>
