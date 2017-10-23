@@ -360,7 +360,7 @@ include("head.inc");?>
                     <td class="act_sort" data-field="start"><?=gettext("Start"); ?></td>
                     <td class="act_sort" data-field="end"><?=gettext("End"); ?></td>
                     <td class="act_sort" data-field="online"><?=gettext("Status"); ?></td>
-                    <td class="act_sort" data-field="type"><?=gettext("Lease type"); ?></td>
+                    <td class="act_sort" data-field="act"><?=gettext("Lease type"); ?></td>
                     <td>&nbsp;</td>
                 </tr>
               </thead>
