@@ -238,10 +238,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     $order = ( $_GET['order'] ) ? $_GET['order'] : 'ip';
-    usort($leases, function ($a, $b) use ($order) {
-        return strnatcasecmp($a[$order].$a[ip],$b[$order].$b[ip]);
-    }
-  );
+    usort($leases, 
+        function ($a, $b) use ($order) {
+            return strnatcasecmp($a[$order].$a[ip],$b[$order].$b[ip]);
+        }
+    );
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['deleteip']) && is_ipaddr($_POST['deleteip'])) {
         // delete dhcp lease
