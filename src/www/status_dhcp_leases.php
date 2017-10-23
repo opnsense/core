@@ -33,11 +33,6 @@ require_once("config.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-function leasecmp($a, $b)
-{
-    return strcmp($a[$_GET['order']], $b[$_GET['order']]);
-}
-
 function adjust_gmt($dt)
 {
     global $config;
@@ -242,9 +237,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if ($_GET['order']) {
-        usort($leases, "leasecmp");
+    $order = ( $_GET['order'] ) ? $_GET['order'] : 'ip';
+    usort($leases, function ($a, $b) use ($order) {
+        return strnatcasecmp($a[$order].$a[ip],$b[$order].$b[ip]);
     }
+  );
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['deleteip']) && is_ipaddr($_POST['deleteip'])) {
         // delete dhcp lease
@@ -353,14 +350,14 @@ include("head.inc");?>
             <table class="table table-striped">
               <thead>
                 <tr>
-                    <td class="act_sort" data-field="if"><?=gettext("Interface"); ?></td>
+                    <td><?=gettext("Interface"); ?></td>
                     <td class="act_sort" data-field="ip"><?=gettext("IP address"); ?></td>
                     <td class="act_sort" data-field="mac"><?=gettext("MAC address"); ?></td>
                     <td class="act_sort" data-field="hostname"><?=gettext("Hostname"); ?></td>
                     <td class="act_sort" data-field="desc"><?=gettext("Description"); ?></td>
                     <td class="act_sort" data-field="start"><?=gettext("Start"); ?></td>
                     <td class="act_sort" data-field="end"><?=gettext("End"); ?></td>
-                    <td class="act_sort" data-field="status"><?=gettext("Status"); ?></td>
+                    <td class="act_sort" data-field="online"><?=gettext("Status"); ?></td>
                     <td class="act_sort" data-field="type"><?=gettext("Lease type"); ?></td>
                     <td>&nbsp;</td>
                 </tr>
