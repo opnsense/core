@@ -52,16 +52,17 @@ fields_ipv6_udp = fields_ipv6 + 'srcport,dstport,datalen'.split(',')
 fields_ipv6_tcp = fields_ipv6 + 'srcport,dstport,datalen,flags,error_options'.split(',')
 fields_ipv6_carp = fields_ipv6 + 'type,ttl,vhid,version2,advskew,advbase'.split(',')
 
-def update_rule(target, ruleparts, spec):
+def update_rule(target, metadata_target, ruleparts, spec):
     """ update target rule with parts in spec
         :param target: target rule
+        :param metadata_target: collected metadata
         :param ruleparts: list of rule items
         :param spec: full rule specification, depending on protocol and version
     """
     while len(target) < len(spec) and len(ruleparts) > 0:
         target[spec[len(target)]] = ruleparts.pop(0)
     # full spec
-    target['__spec__'] = spec
+    metadata_target['__spec__'] = spec
 
 if __name__ == '__main__':
     # read parameters
@@ -73,36 +74,37 @@ if __name__ == '__main__':
     for record in reverse_log_reader(fetch_clog(filter_log)):
         if record['line'].find('filterlog') > -1:
             rule = dict()
+            metadata = dict()
+            # rule metadata (unique hash, hostname, timestamp)
+            tmp = record['line'].split('filterlog:')[0].split()
+            metadata['__digest__'] = md5.new(record['line']).hexdigest()
+            metadata['__host__'] = tmp.pop()
+            metadata['__timestamp__'] =  ' '.join(tmp)
             rulep = record['line'].split('filterlog:')[1].strip().split(',')
-            update_rule(rule, rulep, fields_general)
+            update_rule(rule, metadata, rulep, fields_general)
 
             if 'version' in rule:
                 if rule['version'] == '4':
-                    update_rule(rule, rulep, fields_ipv4)
+                    update_rule(rule, metadata, rulep, fields_ipv4)
                     if 'proto' in rule:
                         if rule['proto'] == '17': # UDP
-                            update_rule(rule, rulep, fields_ipv4_udp)
+                            update_rule(rule, metadata, rulep, fields_ipv4_udp)
                         elif  rule['proto'] == '6': # TCP
-                            update_rule(rule, rulep, fields_ipv4_tcp)
+                            update_rule(rule, metadata, rulep, fields_ipv4_tcp)
                         elif  rule['proto'] == '112': # CARP
-                            update_rule(rule, rulep, fields_ipv4_carp)
+                            update_rule(rule, metadata, rulep, fields_ipv4_carp)
                 elif rule['version'] == '6':
-                    update_rule(rule, rulep, fields_ipv6)
+                    update_rule(rule, metadata, rulep, fields_ipv6)
                     if 'next' in rule:
                         if rule['next'] == '17': # UDP
-                            update_rule(rule, rulep, fields_ipv6_udp)
+                            update_rule(rule, metadata, rulep, fields_ipv6_udp)
                         elif  rule['next'] == '6': # TCP
-                            update_rule(rule, rulep, fields_ipv6_tcp)
+                            update_rule(rule, metadata, rulep, fields_ipv6_tcp)
                         elif  rule['next'] == '112': # CARP
-                            update_rule(rule, rulep, fields_ipv6_carp)
+                            update_rule(rule, metadata, rulep, fields_ipv6_carp)
 
+            rule.update(metadata)
             result.append(rule)
-
-            # rule metadata (unique hash, hostname, timestamp)
-            tmp = record['line'].split('filterlog:')[0].split()
-            rule['__digest__'] = md5.new(record['line']).hexdigest()
-            rule['__host__'] = tmp.pop()
-            rule['__timestamp__'] =  ' '.join(tmp)
 
             # handle exit criteria, row limit or last digest
             if parameters['limit'] != 0 and len(result) > parameters['limit']:
