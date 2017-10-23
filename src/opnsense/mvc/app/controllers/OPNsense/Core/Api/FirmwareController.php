@@ -694,6 +694,7 @@ class FirmwareController extends ApiControllerBase
         $mirrors['http://pkg.opnsense.org'] = 'OPNsense (Amsterdam, NL)';
         $mirrors['http://mirror.ragenetwork.de/opnsense'] = 'RageNetwork (Munich, DE)';
         $mirrors['http://mirror.upb.edu.co/opnsense'] = 'Universidad Pontificia Bolivariana (Medellin, CO)';
+        $mirrors['http://mirror.venturasystems.tech/opnsense'] = 'Ventura Systems (Medellin, CO)';
         $mirrors['http://mirror.wjcomms.co.uk/opnsense'] = 'WJComms (London, GB)';
 
         $has_subscription = array();
