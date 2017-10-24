@@ -1131,6 +1131,15 @@ EOD;
             }
             $ipsecconf .= "\tcharondebug=\"" .implode(',', $cfg_loglevels) . "\"\n";
 
+            if (!empty($config['ipsec']['passthrough_networks'])) {
+                $ipsecconf .= "\nconn pass\n";
+                $ipsecconf .= "\tright=127.0.0.1 # so this connection does not get used for other purposes\n";
+                $ipsecconf .= "\tleftsubnet={$config['ipsec']['passthrough_networks']}\n";
+                $ipsecconf .= "\trightsubnet={$config['ipsec']['passthrough_networks']}\n";
+                $ipsecconf .= "\ttype=passthrough\n";
+                $ipsecconf .= "\tauto=route\n";
+            }
+
             foreach ($a_phase1 as $ph1ent) {
                 if (isset($ph1ent['disabled'])) {
                     continue;
