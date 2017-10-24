@@ -38,7 +38,6 @@ config_read_array('ipsec');
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // fetch form data
     $pconfig  = array();
-    $pconfig['noinstalllanspd'] = isset($config['system']['noinstalllanspd']);
     $pconfig['disablevpnrules'] = isset($config['system']['disablevpnrules']);
     $pconfig['preferoldsa_enable'] = isset($config['ipsec']['preferoldsa']);
     foreach ($ipsec_loglevels as $lkey => $ldescr) {
@@ -51,11 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // save form data
     $pconfig = $_POST;
-    if (isset($pconfig['noinstalllanspd']) && $pconfig['noinstalllanspd'] == "yes") {
-        $config['system']['noinstalllanspd'] = true;
-    } elseif (isset($config['system']['noinstalllanspd'])) {
-        unset($config['system']['noinstalllanspd']);
-    }
     if (!empty($pconfig['disablevpnrules'])) {
         $config['system']['disablevpnrules'] = true;
     }  elseif (isset($config['system']['disablevpnrules'])) {
@@ -114,17 +108,6 @@ if (isset($input_errors) && count($input_errors) > 0) {
                       <td align="right">
                         <small><?=gettext("full help"); ?> </small>
                         <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a id="help_for_noinstalllanspd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("LAN security associations"); ?></td>
-                      <td>
-                        <input name="noinstalllanspd" type="checkbox" id="noinstalllanspd" value="yes" <?=!empty($pconfig['noinstalllanspd']) ? "checked=\"checked\""  : "";?> />
-                        <strong><?=gettext("Do not install LAN SPD"); ?></strong>
-                        <div class="hidden" for="help_for_noinstalllanspd">
-                            <?=gettext("By default, if IPsec is enabled negating SPD are inserted to provide protection. " .
-                                                  "This behaviour can be changed by enabling this setting which will prevent installing these SPDs."); ?>
-                        </div>
                       </td>
                     </tr>
                     <tr>
