@@ -240,10 +240,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $order = ( $_GET['order'] ) ? $_GET['order'] : 'ip';
     usort($leases, 
         function ($a, $b) use ($order) {
-			$cmp = strnatcasecmp($a[$order], $b[$order]);
-			if ($cmp === 0) {
-				$cmp = strnatcasecmp($a['ip'], $b['ip']);
-			}
+            $cmp = strnatcasecmp($a[$order], $b[$order]);
+            if ($cmp === 0) {
+                $cmp = strnatcasecmp($a['ip'], $b['ip']);
+            }
             return $cmp;
         }
     );
