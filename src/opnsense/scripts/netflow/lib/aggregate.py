@@ -68,7 +68,7 @@ class AggMetadata(object):
         if not os.path.isdir(target_path):
             os.makedirs(target_path)
         # open sqlite database and cursor
-        self._db_connection = sqlite3.connect(self._filename,
+        self._db_connection = sqlite3.connect(self._filename, timeout=60,
                                               detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
         self._db_cursor = self._db_connection.cursor()
         # known tables
@@ -219,7 +219,7 @@ class BaseFlowAggregator(object):
             if not os.path.isdir(target_path):
                 os.makedirs(target_path)
             # open sqlite database
-            self._db_connection = sqlite3.connect(self.target_filename % self.resolution,
+            self._db_connection = sqlite3.connect(self.target_filename % self.resolution, timeout=60,
                                                   detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
             # open update/insert cursor
             self._update_cur = self._db_connection.cursor()
