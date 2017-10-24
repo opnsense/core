@@ -40,6 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig  = array();
     $pconfig['disablevpnrules'] = isset($config['system']['disablevpnrules']);
     $pconfig['preferoldsa_enable'] = isset($config['ipsec']['preferoldsa']);
+    if (!empty($config['ipsec']['passthrough_networks'])) {
+        $pconfig['passthrough_networks'] = explode(',', $config['ipsec']['passthrough_networks']);
+    } else {
+        $pconfig['passthrough_networks'] = array();
+    }
     foreach ($ipsec_loglevels as $lkey => $ldescr) {
         if (!empty($config['ipsec']["ipsec_{$lkey}"])) {
             $pconfig["ipsec_{$lkey}"] = $config['ipsec']["ipsec_{$lkey}"];
@@ -48,41 +53,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // save form data
     $pconfig = $_POST;
-    if (!empty($pconfig['disablevpnrules'])) {
-        $config['system']['disablevpnrules'] = true;
-    }  elseif (isset($config['system']['disablevpnrules'])) {
-        unset($config['system']['disablevpnrules']);
-    }
-    if (isset($pconfig['preferoldsa_enable']) && $pconfig['preferoldsa_enable'] == "yes") {
-        $config['ipsec']['preferoldsa'] = true;
-    } elseif (isset($config['ipsec']['preferoldsa'])) {
-        unset($config['ipsec']['preferoldsa']);
-    }
-    if (isset($config['ipsec']) && is_array($config['ipsec'])) {
-        foreach ($ipsec_loglevels as $lkey => $ldescr) {
-            if (empty($_POST["ipsec_{$lkey}"])) {
-                if (isset($config['ipsec']["ipsec_{$lkey}"])) {
-                    unset($config['ipsec']["ipsec_{$lkey}"]);
-                }
-            } else {
-                $config['ipsec']["ipsec_{$lkey}"] = $_POST["ipsec_{$lkey}"];
-            }
+    // validate
+    $input_errors = array();
+    foreach ($pconfig['passthrough_networks'] as $ptnet) {
+        if (!is_subnet($ptnet)) {
+            $input_errors[] = sprintf(gettext('Entry "%s" is not a valid network.'), $ptnet);
         }
     }
 
-    write_config();
-    $savemsg = get_std_save_message();
-    filter_configure();
-    ipsec_configure_do();
+    // save form data
+    if (count($input_errors) == 0) {
+        if (!empty($pconfig['disablevpnrules'])) {
+            $config['system']['disablevpnrules'] = true;
+        }  elseif (isset($config['system']['disablevpnrules'])) {
+            unset($config['system']['disablevpnrules']);
+        }
+        if (isset($pconfig['preferoldsa_enable']) && $pconfig['preferoldsa_enable'] == "yes") {
+            $config['ipsec']['preferoldsa'] = true;
+        } elseif (isset($config['ipsec']['preferoldsa'])) {
+            unset($config['ipsec']['preferoldsa']);
+        }
+        if (isset($config['ipsec']) && is_array($config['ipsec'])) {
+            foreach ($ipsec_loglevels as $lkey => $ldescr) {
+                if (empty($pconfig["ipsec_{$lkey}"])) {
+                    if (isset($config['ipsec']["ipsec_{$lkey}"])) {
+                        unset($config['ipsec']["ipsec_{$lkey}"]);
+                    }
+                } else {
+                    $config['ipsec']["ipsec_{$lkey}"] = $pconfig["ipsec_{$lkey}"];
+                }
+            }
+        }
+        $config['ipsec']['passthrough_networks'] = implode(',', $pconfig['passthrough_networks']);
+
+        write_config();
+        $savemsg = get_std_save_message();
+        filter_configure();
+        ipsec_configure_do();
+    }
 }
 
 $service_hook = 'ipsec';
+legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
 
 ?>
+
+<!-- JQuery Tokenize (http://zellerda.com/projects/tokenize) -->
+<script type="text/javascript" src="/ui/js/jquery.tokenize.js"></script>
+<link rel="stylesheet" type="text/css" href="/ui/css/jquery.tokenize.css" />
+
+<script type="text/javascript" src="/ui/js/opnsense_ui.js"></script>
+
+ <script type="text/javascript">
+    $( document ).ready(function() {
+        formatTokenizersUI();
+    });
+</script>
 
 <body>
 <?php include("fbegin.inc"); ?>
@@ -126,6 +155,21 @@ if (isset($input_errors) && count($input_errors) > 0) {
                             <?=gettext("By default, if several SAs match, the newest one is " .
                                                   "preferred if it's at least 30 seconds old. Select this " .
                                                   "option to always prefer old SAs over new ones."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_passthrough_networks" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Passthrough networks"); ?></td>
+                      <td>
+                        <select name="passthrough_networks[]" multiple="multiple" class="tokenize" data-width="348px" data-allownew="true" data-nbdropdownelements="10">
+<?php
+                        foreach ($pconfig['passthrough_networks'] as $ptnet):?>
+                          <option value="<?=$ptnet;?>" selected="selected"><?=$ptnet;?></option>
+<?php                   endforeach; ?>
+                        </select>
+                        <div class="hidden" for="help_for_passthrough_networks">
+                            <?=gettext("This exempts traffic for one or more subnets from getting processed by the IPsec stack in the kernel. ".
+                                        "When sending all traffic to the remote location, you probably want to add your lan network(s) here"); ?>
                         </div>
                       </td>
                     </tr>
