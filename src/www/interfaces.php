@@ -1740,18 +1740,18 @@ include("head.inc");
                           <td>
                             <input name="spoofmac" type="text" id="spoofmac" value="<?=htmlspecialchars($pconfig['spoofmac']);?>" />
                             <div class="hidden" for="help_for_spoofmac">
+                              <?= gettext('This field can be used to modify ("spoof") the MAC address of ' .
+                                    'this interface. This may be required with some cable connections.') ?><br />
+                              <?=gettext('Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx or leave blank.') ?>
 <?php
                               $ip = getenv('REMOTE_ADDR');
                               $mac = `/usr/sbin/arp -an | grep {$ip} | cut -d" " -f4`;
                               $mac = str_replace("\n","",$mac);
                               if (!empty($mac)):
 ?>
-                              <a onclick="document.getElementById('spoofmac').value='<?= html_safe($mac) ?>';" href="#"><?=gettext("Insert my local MAC address"); ?></a><br />
+                              <a onclick="document.getElementById('spoofmac').value='<?= html_safe($mac) ?>';" href="#"><?=gettext("Insert my currently connected MAC address (use with care)"); ?></a><br />
 <?php
                               endif; ?>
-                              <?= gettext('This field can be used to modify ("spoof") the MAC address of ' .
-                                    'this interface. This may be required with some cable connections.') ?><br />
-                              <?=gettext('Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx or leave blank.') ?>
                             </div>
                           </td>
                         </tr>
