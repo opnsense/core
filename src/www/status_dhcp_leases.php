@@ -238,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     $order = ( $_GET['order'] ) ? $_GET['order'] : 'ip';
-    usort($leases, 
+    usort($leases,
         function ($a, $b) use ($order) {
             $cmp = strnatcasecmp($a[$order], $b[$order]);
             if ($cmp === 0) {
@@ -247,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             return $cmp;
         }
     );
-     
+
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['deleteip']) && is_ipaddr($_POST['deleteip'])) {
         // delete dhcp lease
