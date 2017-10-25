@@ -38,7 +38,7 @@ POSSIBILITY OF SUCH DAMAGE.
             $('#updatelist').show();
         }
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
-        $('#updatestatus').html("{{ lang._('Checking... (may take up to 30 seconds)') }}");
+        $('#updatestatus').html("{{ lang._('Checking, please wait...') }}");
     }
 
     /**
@@ -111,7 +111,7 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#updatelist').hide();
         $('#update_status').show();
         $('#updatetab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Upgrading...') }}");
+        $('#updatestatus').html("{{ lang._('Upgrading, please wait...') }}");
         $("#audit").attr("style","display:none");
         maj_suffix = '';
         if ($.upgrade_action == 'maj') {
@@ -134,13 +134,27 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#updatelist').hide();
         $('#update_status').show();
         $('#updatetab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Auditing...') }}");
+        $('#updatestatus').html("{{ lang._('Auditing, please wait...') }}");
         $("#audit").attr("style","");
         $("#audit_progress").addClass("fa fa-spinner fa-pulse");
 
         ajaxCall('/api/core/firmware/audit', {}, function () {
             $('#updatelist').empty();
             setTimeout(trackStatus, 500);
+        });
+    }
+
+    /**
+     * read package details from backend
+     */
+    function details(package)
+    {
+        ajaxCall('/api/core/firmware/details/' + package, {}, function (data, status) {
+            var details = "{{ lang._('Sorry, plugin details are currently not available.') }}";
+            if (data['details'] != undefined) {
+                details = data['details'];
+            }
+            stdDialogInform("{{ lang._('Plugin details') }}", details, "{{ lang._('Close') }}");
         });
     }
 
@@ -154,17 +168,7 @@ POSSIBILITY OF SUCH DAMAGE.
             if (data['license'] != undefined) {
                 license = data['license'];
             }
-            BootstrapDialog.show({
-                type:BootstrapDialog.TYPE_INFO,
-                title: "{{ lang._('License details') }}",
-                message: license,
-                buttons: [{
-                    label: "{{ lang._('Close') }}",
-                    action: function(dialogRef){
-                        dialogRef.close();
-                    }
-                }]
-            });
+            stdDialogInform("{{ lang._('License details') }}", license, "{{ lang._('Close') }}");
         });
     }
 
@@ -199,7 +203,7 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#updatelist').hide();
         $('#update_status').show();
         $('#updatetab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Executing...') }}");
+        $('#updatestatus').html("{{ lang._('Executing, please wait...') }}");
         $.upgrade_action = 'action';
 
         ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name,{},function() {
@@ -372,16 +376,27 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (row['provided'] == "1") {
                     plugin_count += 1;
                 }
-                orphaned_text = '';
+                status_text = '';
+                bold_on = '';
+                bold_off = '';
+                if (row['installed'] == "1") {
+                    status_text = ' ({{ lang._('installed') }})';
+                    bold_on = '<b>';
+                    bold_off = '</b>';
+                }
                 if (row['provided'] == "0") {
-                    orphaned_text = ' ({{ lang._('orphaned') }})';
+                    // this state overwrites installed on purpose
+                    status_text = ' ({{ lang._('orphaned') }})';
                 }
                 $('#pluginlist').append(
-                    '<tr>' + '<td>' + row['name'] + orphaned_text + '</td>' +
-                    '<td>' + row['version'] + '</td>' +
-                    '<td>' + row['flatsize'] + '</td>' +
-                    '<td>' + row['comment'] + '</td>' +
-                    '<td>' + (row['installed'] == "1" ?
+                    '<tr>' + '<td>' + bold_on + row['name'] + status_text + bold_off + '</td>' +
+                    '<td>' + bold_on + row['version'] + bold_off + '</td>' +
+                    '<td>' + bold_on + row['flatsize'] + bold_off + '</td>' +
+                    '<td>' + bold_on + row['comment'] + bold_off + '</td>' +
+                    '<td><button class="btn btn-default btn-xs act_details" data-package="' + row['name'] + '" ' +
+                        ' data-toggle="tooltip" title="More about ' + row['name'] + '">' +
+                        '<span class="fa fa-info-circle"></span></button>' +
+                        (row['installed'] == "1" ?
                         '<button class="btn btn-default btn-xs act_remove" data-package="' + row['name'] + '" '+
                         '  data-toggle="tooltip" title="Remove ' + row['name'] + '">' +
                         '<span class="fa fa-trash">' +
@@ -411,14 +426,19 @@ POSSIBILITY OF SUCH DAMAGE.
                 $.each(data['changelog'], function(index, row) {
                     changelog_count += 1;
 
-                    installed_text = '';
+                    status_text = '';
+                    bold_on = '';
+                    bold_off = '';
+
                     if (installed_version == row['version']) {
-                        installed_text = ' ({{ lang._('installed') }})';
+                        status_text = ' ({{ lang._('installed') }})';
+                        bold_on = '<b>';
+                        bold_off = '</b>';
                     }
 
                     $('#updatelist').append(
                         '<tr' + (changelog_count > changelog_max ? ' class="changelog-hidden" style="display: none;" ' : '' ) +
-                        '><td>' + row['version'] + installed_text + '</td><td>' + row['date'] + '</td>' +
+                        '><td>' + bold_on + row['version'] + status_text + bold_off + '</td><td>' + bold_on + row['date'] + bold_off + '</td>' +
                         '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
                         'data-toggle="tooltip" title="View ' + row['version'] + '">' +
                         '<span class="fa fa-book"></span></button></td></tr>'
@@ -460,6 +480,10 @@ POSSIBILITY OF SUCH DAMAGE.
             $(".act_remove").click(function(event) {
                 event.preventDefault();
                 action('remove', $(this).data('package'));
+            });
+            $(".act_details").click(function(event) {
+                event.preventDefault();
+                details($(this).data('package'));
             });
             $(".act_install").click(function(event) {
                 event.preventDefault();
@@ -646,15 +670,15 @@ POSSIBILITY OF SUCH DAMAGE.
         <div id="firmware-upgrade" style="display:none;"><?= @file_get_contents('/usr/local/opnsense/firmware-upgrade') ?></div>
         <div id="firmware-message" style="display:none;"><?= str_replace(PHP_EOL, ' ', @file_get_contents('/usr/local/opnsense/firmware-message')) ?></div>
         <div class="alert alert-warning" role="alert" style="min-height: 65px;">
-            <button class='btn btn-primary pull-right' id="upgrade_maj" style="display:none;"><i id="upgrade_progress_maj" class=""></i> {{ lang._('Upgrade now') }}</button>
-            <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;"><i id="checkupdate_progress_maj" class=""></i> {{ lang._('Check for upgrade') }}</button>
+            <button class='btn btn-primary pull-right' id="upgrade_maj" style="display:none;">{{ lang._('Upgrade now') }} <i id="upgrade_progress_maj"></i> </button>
+            <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;">{{ lang._('Check for upgrade') }} <i id="checkupdate_progress_maj"></i></button>
             <div style="margin-top: 8px;">{{ lang._('This software release has reached its designated end of life.') }}</div>
         </div>
 <?php endif ?>
         <div class="alert alert-info" role="alert" style="min-height: 65px;">
-            <button class='btn btn-primary pull-right' id="upgrade" style="display:none"><i id="upgrade_progress" class=""></i> {{ lang._('Update now') }}</button>
-            <button class='btn btn-primary pull-right' id="audit"><i id="audit_progress" class=""></i> {{ lang._('Audit now') }}</button>
-            <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;"><i id="checkupdate_progress" class=""></i> {{ lang._('Check for updates')}}</button>
+            <button class='btn btn-primary pull-right' id="upgrade" style="display:none">{{ lang._('Update now') }} <i id="upgrade_progress"></i></button>
+            <button class='btn btn-primary pull-right' id="audit">{{ lang._('Audit now') }} <i id="audit_progress"></i></button>
+            <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;">{{ lang._('Check for updates') }} <i id="checkupdate_progress"></i></button>
             <div style="margin-top: 8px;" id="updatestatus">{{ lang._('Click to check for updates.')}}</div>
         </div>
     </div>
@@ -689,9 +713,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                         <input type="text" id="firmware_mirror_value">
                                     </div>
                                     <div class="hidden" for="help_for_mirror">
-                                        <strong>
-                                            {{ lang._('Select an alternate firmware mirror.') }}
-                                        </strong>
+                                        {{ lang._('Select an alternate firmware mirror.') }}
                                     </div>
                                 </td>
                                 <td></td>
@@ -705,9 +727,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                         <input type="text" id="firmware_flavour_value">
                                     </div>
                                     <div class="hidden" for="help_for_flavour">
-                                        <strong>
-                                            {{ lang._('Select the firmware cryptography flavour.') }}
-                                        </strong>
+                                        {{ lang._('Select the firmware cryptography flavour.') }}
                                     </div>
                                 </td>
                                 <td></td>
@@ -717,9 +737,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                 <td>
                                     <input type="text" id="firmware_mirror_subscription">
                                     <div class="hidden" for="help_for_mirror_subscription">
-                                        <strong>
-                                            {{ lang._('Provide subscription key.') }}
-                                        </strong>
+                                        {{ lang._('Provide subscription key.') }}
                                     </div>
                                 </td>
                                 <td></td>
@@ -727,7 +745,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             <tr>
                                 <td></td>
                                 <td>
-                                    <button class="btn btn-primary" id="change_mirror" type="button"><i id="change_mirror_progress" class=""></i> {{ lang._('Save') }}</button>
+                                    <button class="btn btn-primary" id="change_mirror" type="button">{{ lang._('Save') }} <i id="change_mirror_progress"></i></button>
                                 </td>
                                 <td></td>
                             </tr>
