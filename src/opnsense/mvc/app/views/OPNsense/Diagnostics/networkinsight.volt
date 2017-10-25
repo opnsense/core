@@ -113,6 +113,7 @@ POSSIBILITY OF SUCH DAMAGE.
        */
       function delete_all_charts()
       {
+          d3.selectAll('.nvtooltip').remove(); // force removal of tooltips
           var svg = d3.select("svg");
           svg.selectAll("*").remove();
           pageCharts = {};
@@ -531,6 +532,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
       // event change interface selection
       $('#interface_select').change(function(){
+          d3.selectAll('.nvtooltip').remove(); // force removal of tooltips
           chart_top_dst_port_usage();
           chart_top_src_addr_usage();
           grid_totals();
