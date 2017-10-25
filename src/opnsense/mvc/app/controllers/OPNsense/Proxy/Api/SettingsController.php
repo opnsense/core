@@ -32,6 +32,7 @@ use \OPNsense\Base\ApiMutableModelControllerBase;
 use \OPNsense\Cron\Cron;
 use \OPNsense\Core\Config;
 use \OPNsense\Base\UIModelGrid;
+use \OPNsense\Base\IDN;
 
 /**
  * Class SettingsController
@@ -238,6 +239,55 @@ class SettingsController extends ApiMutableModelControllerBase
             }
         }
 
+        return $result;
+    }
+
+    /**
+     * get action
+     * @return array
+     */
+    public function getAction()
+    {
+        // define list of configurable settings
+        $result = array();
+        if ($this->request->isGet()) {
+            $mdlProxy = $this->getModel();
+            $mdlProxy->forward->acl->whiteList = IDN::decode($mdlProxy->forward->acl->whiteList);
+            $mdlProxy->forward->acl->blackList = IDN::decode($mdlProxy->forward->acl->blackList);
+            $mdlProxy->forward->icap->exclude = IDN::decode($mdlProxy->forward->icap->exclude);
+            $result[static::$internalModelName] = $mdlProxy->getNodes();
+        }
+        return $result;
+    }
+
+    /**
+     * set action
+     * @return array
+     */
+    public function setAction()
+    {
+        $result = array("result"=>"failed");
+        if ($this->request->isPost()) {
+            // load model and update with provided data
+            $mdl = $this->getModel();
+            $post = $this->request->getPost(static::$internalModelName);
+            if (isset($post['forward']['acl']['whiteList']))
+                $post['forward']['acl']['whiteList'] = IDN::encode($post['forward']['acl']['whiteList']);
+            if (isset($post['forward']['acl']['blackList']))
+                $post['forward']['acl']['blackList'] = IDN::encode($post['forward']['acl']['blackList']);
+            if (isset($post['forward']['icap']['exclude']))
+                $post['forward']['icap']['exclude'] = IDN::encode($post['forward']['icap']['exclude']);
+            $mdl->setNodes($post);
+            $result = $this->validate();
+            if (empty($result['result'])) {
+                $errorMessage = $this->setActionHook();
+                if (!empty($errorMessage)) {
+                    $result['error'] = $errorMessage;
+                } else {
+                    return $this->save();
+                }
+            }
+        }
         return $result;
     }
 }
