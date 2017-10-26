@@ -434,7 +434,8 @@ include("head.inc");
       $("#proto").addClass("hidden");
       $(".geoip_table").addClass("hidden");
       $(".not_geoip_table").removeClass("hidden");
-      $(".host_url").removeClass("hidden");
+      $(".host_url").removeAttr("disabled");
+      $(".geoip_item").attr("disabled", "disabled");
       switch($("#typeSelect").val()) {
           case 'urltable':
               $("#detailsHeading1").html("<?=gettext("URL");?>");
@@ -461,7 +462,8 @@ include("head.inc");
               $("#proto").removeClass("hidden");
               $(".geoip_table").removeClass("hidden");
               $(".not_geoip_table").addClass("hidden");
-              $(".host_url").addClass("hidden");
+              $(".host_url").attr("disabled", "disabled");
+              $(".geoip_item").removeAttr("disabled");
               break;
       }
       $(".fld_detail").typeahead("destroy");
@@ -610,6 +612,9 @@ include("head.inc");
                             <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
                           </td>
                           <td>
+                            <input type="text" class="host_url fld_detail" name="host_url[]" value="<?=$aliasurl;?>"/>
+                          </td>
+                          <td>
                             <input type="text" class="form-control" name="detail[]" value="<?= isset($pconfig['detail'][$aliasid])?$pconfig['detail'][$aliasid]:"";?>">
                           </td>
                           <td>
@@ -647,7 +652,7 @@ foreach ($unique as $region): ?>
 <?php $i = 0; foreach (geoip_countries() as $code => $name):
     if ($region == $where[$code]): ?>
                         <td>
-                          <input type="checkbox" name="host_url[]" class="region_<?= html_safe($region) ?>" value="<?= html_safe($code) ?>" <?= in_array($code, $pconfig['host_url']) ? 'checked="checked"' : '' ?>/>
+                          <input type="checkbox" name="host_url[]" class="geoip_item region_<?= html_safe($region) ?>" value="<?= html_safe($code) ?>" <?= in_array($code, $pconfig['host_url']) ? 'checked="checked"' : '' ?>/>
                           <strong><?= $name ?></strong>
                         </td>
 <?php $i += 1;
