@@ -33,8 +33,6 @@ use \OPNsense\Cron\Cron;
 use \OPNsense\Core\Config;
 use \OPNsense\Base\UIModelGrid;
 
-include_once('/usr/local/opnsense/contrib/simplepie/idn/idna_convert.class.php');
-
 /**
  * Class SettingsController
  * @package OPNsense\Proxy
@@ -289,11 +287,10 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public static function encode($domains)
     {
-        $IDN = new \idna_convert();
         $result = array();
         foreach (explode(",", $domains) as $domain) {
             if ($domain != "") {
-                $result[] = ($domain[0] == "." ? "." : "") . $IDN->encode($domain);
+                $result[] = ($domain[0] == "." ? "." : "") . idn_to_ascii($domain);
             }
         }
         return implode(",", $result);
@@ -306,10 +303,9 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public static function decode($domains)
     {
-        $IDN = new \idna_convert();
         $result = array();
         foreach ($domains as $domain => $element) {
-            $result[$IDN->decode($domain)] = array('value' => $IDN->decode($element['value']), 'selected' => $element['selected']);
+            $result[idn_to_utf8($domain)] = array('value' => idn_to_utf8($element['value']), 'selected' => $element['selected']);
         }
         return $result;
     }
