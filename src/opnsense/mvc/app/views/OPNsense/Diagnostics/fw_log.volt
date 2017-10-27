@@ -27,8 +27,8 @@ POSSIBILITY OF SUCH DAMAGE.
 #}
 
 <script type="text/javascript">
-//   /api/diagnostics/interface/getInterfaceNames
     $( document ).ready(function() {
+        var field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban'}
         var interface_descriptions = {};
         $("#update").click(function(){
             var record_spec = [];
@@ -41,19 +41,34 @@ POSSIBILITY OF SUCH DAMAGE.
             });
             // read last digest (record hash) from top data row
             var last_digest = $("#grid-log > tbody > tr:first > td:first").text();
-            if (last_digest == undefined) {
-                last_digest = "";
-            }
             // fetch new log lines and add on top of grid-log
-            ajaxGet(url='/api/diagnostics/firewall/log/' + last_digest+'/10', {}, callback=function(data, status) {
+            ajaxGet(url='/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': 10000}, callback=function(data, status) {
                 if (data != undefined && data.length > 0) {
                     while ((record=data.pop()) != null) {
                         if (record['__digest__'] != last_digest) {
                             var log_tr = $("<tr>");
                             $.each(record_spec, function(idx, field){
+                                var log_td = $('<td>').addClass(field['class']);
                                 var field_content = field['column-id'];
-                                log_tr.append($('<td>').addClass(field['class']).text(record[field_content]));
+                                var content = null;
+                                switch (field['type']) {
+                                    case 'icon':
+                                        var icon = field_type_icons[record[field_content]];
+                                        if (icon != undefined) {
+                                            log_td.html('<i class="fa '+icon+'" aria-hidden="true"></i>');
+                                        }
+                                        break;
+                                    default:
+                                        log_td.text(record[field_content]);
+                                }
+                                log_tr.append(log_td);
                             });
+
+                            if (record['action'] == 'pass') {
+                                log_tr.css('background', 'rgba(5, 142, 73, 0.6)');
+                            } else if (record['action'] == 'block') {
+                                log_tr.css('background', '#ff6666');
+                            }
                             $("#grid-log > tbody > tr:first").before(log_tr);
                         }
                     }
@@ -68,6 +83,15 @@ POSSIBILITY OF SUCH DAMAGE.
 
     });
 </script>
+<style>
+    .data-center {
+        text-align: center !important;
+    }
+    .table > tbody > tr > td {
+        padding-top: 1px !important;
+        padding-bottom: 1px !important;
+    }
+</style>
 
 <div class="content-box">
     <div class="content-box-main">
@@ -78,10 +102,11 @@ POSSIBILITY OF SUCH DAMAGE.
                       <span>{{ lang._('Refresh') }}</span>
                       <span class="fa fa-refresh"></span>
                   </button>
-                    <table id="grid-log" class="table table-condensed table-hover table-striped table-responsive">
+                    <table id="grid-log" class="table table-condensed table-responsive">
                         <thead>
                           <tr>
                               <th class="hidden" data-column-id="__digest__" data-type="string">{{ lang._('Hash') }}</th>
+                              <th class="data-center" data-column-id="action" data-type="icon"></th>
                               <th data-column-id="__timestamp__" data-type="string">{{ lang._('Time') }}</th>
                               <th data-column-id="src" data-type="string">{{ lang._('Source') }}</th>
                               <th data-column-id="dst" data-type="string">{{ lang._('Destination') }}</th>

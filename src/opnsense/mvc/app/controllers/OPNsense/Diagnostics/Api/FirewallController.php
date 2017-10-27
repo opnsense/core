@@ -43,9 +43,11 @@ class FirewallController extends ApiControllerBase
      * retrieve firewall log
      * @return array
      */
-    public function logAction($digest = null, $limit=1000)
+    public function logAction()
     {
         if ($this->request->isGet()) {
+            $digest = empty($this->request->get('digest')) ? "" : $this->request->get('digest');
+            $limit = empty($this->request->get('limit')) ? 1000 : $this->request->get('limit');
             $backend = new Backend();
             $response = $backend->configdpRun("filter read log", array($limit, $digest));
             $logoutput = json_decode($response, true);
