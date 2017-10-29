@@ -75,7 +75,7 @@ class Util
      */
     public static function isAlias($name)
     {
-        if (!empty(Config::getInstance()->object()->aliases)) {
+        if (!empty($name) && !empty(Config::getInstance()->object()->aliases)) {
             foreach (Config::getInstance()->object()->aliases->children() as $node) {
                 if ($node->name == $name) {
                     return true;
