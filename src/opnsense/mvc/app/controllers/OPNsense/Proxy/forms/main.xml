@@ -160,6 +160,18 @@
                 <help><![CDATA[Set the maximum object size (default 4MB when left empty).]]></help>
                 <advanced>true</advanced>
             </field>
+            <field>
+                <id>proxy.general.cache.local.cache_linux_packages</id>
+                <label>Enable Linux Package Cache</label>
+                <type>checkbox</type>
+                <help>Enable or disable the caching of packages for linux distributions. This makes sense if you have multiple servers in your network and do not host your own package mirror. This will reduce internet traffic usage but increase disk access.</help>
+            </field>
+            <field>
+                <id>proxy.general.cache.local.cache_windows_updates</id>
+                <label>Enable Windows Update Cache</label>
+                <type>checkbox</type>
+                <help>Enable or disable the caching of Windows updates. This makes sense if you don't have a WSUS server. If you can setup a WSUS server, this solution should be preferred.</help>
+            </field>
         </subtab>
         <subtab id="proxy-general-traffic" description="Traffic Management Settings">
             <field>
