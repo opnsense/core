@@ -128,6 +128,14 @@
                         <ValidationMessage>Specify a positive number of second-level subdirectories.</ValidationMessage>
                         <Required>Y</Required>
                     </l2>
+                    <cache_linux_packages type="BooleanField">
+                        <default>0</default>
+                        <Required>Y</Required>
+                    </cache_linux_packages>
+                    <cache_windows_updates type="BooleanField">
+                        <default>0</default>
+                        <Required>Y</Required>
+                    </cache_windows_updates>
                 </local>
             </cache>
             <traffic>
@@ -204,8 +212,8 @@
                 <Required>Y</Required>
             </sslbump>
             <sslurlonly type="BooleanField">
-		<default>0</default>
-		<Required>Y</Required>
+                <default>0</default>
+                <Required>Y</Required>
             </sslurlonly>
             <sslcertificate type="CertificateField">
                 <Required>N</Required>
