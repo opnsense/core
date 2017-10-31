@@ -181,33 +181,34 @@ class ServiceController extends ApiControllerBase
                 }
             }
 
+            $dump_filter = "";
+            $filters = preg_split('/\s+/', trim(preg_quote($filter,'/')));
+            foreach ($filters as $key => $pattern) {
+                if(trim($pattern) == '')
+                    continue;
+                if ($key > 0)
+                    $dump_filter .= "&&";
+                $dump_filter .= "/$pattern/";
+            }
+
             $logdata = array();
             $formatted = array();
             if($filename != '') {
                 $backend = new Backend();
                 $limit = $this->getMemoryLimit() / 16;
                 if($logtype == 'file') {
-                    $logdatastr = $backend->configdRun("syslog dumplog {$filename} {$limit}");
+                    $logdatastr = $backend->configdRun("syslog filterlog {$filename} {$numentries} {$dump_filter}");
                 }
                 if($logtype == 'clog') {
-                    $logdatastr = $backend->configdRun("syslog dumpclog {$filename}");
+                    $logdatastr = $backend->configdRun("syslog dumpclog {$filename} {$numentries} {$dump_filter}");
                 }
                 $logdata = explode("\n", $logdatastr);
-            }
-
-            $filters = preg_split('/\s+/', trim(preg_quote($filter,'/')));
-            foreach ($filters as $pattern) {
-                if(trim($pattern) == '') {
-                    continue;
-                }
-                $logdata = preg_grep("/$pattern/", $logdata);
             }
 
             if($reverse) {
                 $logdata = array_reverse($logdata);
             }
 
-            $counter = 1;
             foreach ($logdata as $logent) {
                 if(trim($logent) == '') {
                     continue;
@@ -218,10 +219,6 @@ class ServiceController extends ApiControllerBase
                 $entry_text = isset($logent[3]) ? (($logent[3] == $hostname) ? "" : $logent[3] . " ") : "";
                 $entry_text .= (isset($logent[4]) ?  $logent[4] : '') . (isset($logent[5]) ? " " . $logent[5] : '');
                 $formatted[] = array('time' => utf8_encode($entry_date_time), 'filter' => $filter, 'message' => utf8_encode($entry_text));
-
-                if(++$counter > $numentries) {
-                    break;
-                }
             }
 
             if(count($formatted) == 0) {
