@@ -197,7 +197,7 @@ class ServiceController extends ApiControllerBase
                 $backend = new Backend();
                 $limit = $this->getMemoryLimit() / 16;
                 if($logtype == 'file') {
-                    $logdatastr = $backend->configdRun("syslog filterlog {$filename} {$numentries} {$dump_filter}");
+                    $logdatastr = $backend->configdRun("syslog dumplog {$filename} {$numentries} {$dump_filter}");
                 }
                 if($logtype == 'clog') {
                     $logdatastr = $backend->configdRun("syslog dumpclog {$filename} {$numentries} {$dump_filter}");
