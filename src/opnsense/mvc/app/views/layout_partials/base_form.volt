@@ -90,8 +90,8 @@ data_title      :   data-title to set on form
             <col class="col-md-5"/>
         </colgroup>
         <thead>
-          <tr colspan="3">
-            <th><h2>{{field['label']}}</h2></th>
+          <tr>
+            <th colspan="3"><h2>{{field['label']}}</h2></th>
           </tr>
         </thead>
         <tbody>
