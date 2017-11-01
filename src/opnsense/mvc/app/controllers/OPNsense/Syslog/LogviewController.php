@@ -54,7 +54,7 @@ class LogviewController extends \OPNsense\Base\IndexController
      */
     public function showlogAction($name, $filter = '')
     {
-        $this->view->title = gettext('Log File: ') . $name;
+        $this->view->title = sprintf(gettext('Log File: %s'), $name);
         $this->view->logname = $name;
         $this->view->filtertext = $filter;
         $this->view->pick('OPNsense/Syslog/logview');
