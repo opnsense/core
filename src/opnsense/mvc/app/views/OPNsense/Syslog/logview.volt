@@ -15,15 +15,31 @@
             if(!data || !data.data || !data.data.length)
                 return;
 
+            var dateTimeFound = 0;
             for(i = 0; i < data.data.length; i++)
             {
+                if(data.data[i].time)
+                {
+                    dateTimeFound = 1;
+                }
+
                 var row = $("#grid-logview")[0].insertRow();
                 var td = row.insertCell(0);
                 td.innerHTML = data.data[i].time;
-                td.class = "listlr";
+                td.className = "listlr";
                 td = row.insertCell(1);
                 td.innerHTML = data.data[i].message;
-                td.class = "listr";
+                td.className = "listr";
+            }
+
+            if(!dateTimeFound)
+            {
+                $("#dateTimeHeader").hide();
+                $(".listlr").each(function(){$(this).hide();});
+            }
+            else
+            {
+                $("#dateTimeHeader").show();
             }
         };
 
@@ -67,7 +83,7 @@
             <table id="grid-logview" class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th class="col-xs-2">{{lang._('Time')}}</th>
+                        <th class="col-xs-2" id="dateTimeHeader">{{lang._('Time')}}</th>
                         <th>{{lang._('Message')}}</th>
                     </tr>
                 </thead>
