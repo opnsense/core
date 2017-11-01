@@ -122,7 +122,7 @@ class ServiceController extends ApiControllerBase
             $this->sessionClose();
 
             $filter = new Filter();
-            $filter->add('logfilename', function($value){ return preg_replace("/[^0-9a-zA-Z_]/", "", $value);});
+            $filter->add('logfilename', function($value){ return preg_replace("/[^0-9a-zA-Z_\-]/", "", $value);});
 
             $name = $this->request->getPost('logname');
             $name = $filter->sanitize($name, 'logfilename');
@@ -131,6 +131,15 @@ class ServiceController extends ApiControllerBase
             $mdl = new Syslog();
             $logsize = intval($mdl->RotationFileSize->__toString()) * 1024;
             $fullname = $mdl->getLogFileName($name);
+
+            if(empty($fullname)) {
+                return array("status" => "failed", "message" => gettext("Not found"));
+            }
+
+            if(!$mdl->canClearLog($name)) {
+                return array("status" => "failed", "message" => gettext("Can not clear log"));
+            }
+
             foreach($mdl->LogTargets->Target->__items as $uuid => $target) {
                 if($target->Target == $fullname) {
                     if($target->ActionType == 'file') {
@@ -195,7 +204,6 @@ class ServiceController extends ApiControllerBase
             $formatted = array();
             if($filename != '') {
                 $backend = new Backend();
-                $limit = $this->getMemoryLimit() / 16;
                 if($logtype == 'file') {
                     $logdatastr = $backend->configdRun("syslog dumplog {$filename} {$numentries} {$reverse} {$dump_filter}");
                 }
@@ -210,10 +218,24 @@ class ServiceController extends ApiControllerBase
                     continue;
                 }
 
-                $logent = preg_split("/\s+/", $logent, 6);
-                $entry_date_time = join(" ", array_slice($logent, 0, 3));
-                $entry_text = isset($logent[3]) ? (($logent[3] == $hostname) ? "" : $logent[3] . " ") : "";
-                $entry_text .= (isset($logent[4]) ?  $logent[4] : '') . (isset($logent[5]) ? " " . $logent[5] : '');
+                // extract timestamp
+                $datetime_pattern = $mdl->getDateTimePattern($logname);
+                $match = array();
+                $match_result = preg_match($datetime_pattern, $logent, $match);
+                $entry_date_time = '';
+                if($match_result == 1 && isset($match[1])) {
+                    $entry_date_time = $match[1];
+                }
+                if (!date_create($entry_date_time)) {
+                    $entry_date_time = "";
+                }
+                $entry_text = trim(substr($logent, strlen($entry_date_time)));
+
+                // cut off hostname
+                if(strpos($entry_text, $hostname) === 0) {
+                    $entry_text = trim(substr($entry_text, strlen($hostname)));
+                }
+
                 $formatted[] = array('time' => utf8_encode($entry_date_time), 'filter' => $filter, 'message' => utf8_encode($entry_text));
             }
 
@@ -226,32 +248,6 @@ class ServiceController extends ApiControllerBase
         } else {
             return array("status" => "failed", "message" => gettext("Wrong request"));
         }
-    }
-
-    private function getMemoryLimit()
-    {
-        $size = ini_get("memory_limit");
-        if($size == -1) {
-            return 0;
-        }
-
-        switch (substr($size, -1))
-        {
-            case 'M':
-            case 'm':
-                $size = (int)$size * 1048576;
-                break;
-            case 'K':
-            case 'k':
-                $size = (int)$size * 1024;
-                break;
-            case 'G':
-            case 'g':
-                $size = (int)$size * 1073741824;
-                break;
-        }
-
-        return $size;
     }
 }
 

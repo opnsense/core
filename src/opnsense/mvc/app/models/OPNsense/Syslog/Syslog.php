@@ -25,6 +25,26 @@
  *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *    POSSIBILITY OF SUCH DAMAGE.
  *
+ *      plugin_syslog return data format:
+ *
+ *      array(
+ *          'log_name' => array(                                    # mapped to log target; real log file name will be /var/log/<log_name>.log
+ *              'facility'  => array('program_1', 'program_2',...), # mapped to log program
+ *              'remote'    => 'remote_log_group_name',             # mapped to category; remote logging group name
+ *              'local'     => '/path/to/local/log-socket',         # local log-socket path; added to listening
+ *
+ *
+ *              # parameters for external logfiles, managed by logview controller, but not managed by syslog
+ *              # if is set, then syslog ignores this target
+ *
+ *              'external'  => array(
+ *                  'filename'          => '/path/to/logfile',      # abcolute path to log file
+ *                  'timestamp_pattern' => '/^([^\,]+),/',          # tamestamp pattern to extract timestamp from log entry, default is Syslog::$TIMESTAMP_PATTERN
+ *               ),
+ *          )
+ *      );
+ *
+ *      
  */
 namespace OPNsense\Syslog;
 
@@ -47,6 +67,7 @@ class Syslog extends BaseModel
 {
     private static $LOGS_DIRECTORY = "/var/log";
     private static $DEFAULT_TARGET_TYPE = "clog"; // system.inc:system_syslogd_start():$log_directive = '%'
+    private static $TIMESTAMP_PATTERN = '/^([\S]+\s+[\S]+\s+[\S]+)\s/';
 
     private $Modified = false;
     private $BatchMode = false;
@@ -228,6 +249,7 @@ class Syslog extends BaseModel
      */
     public function getLogFileName($logname)
     {
+        // scan defined targets
         foreach($this->LogTargets->Target->__items as $uuid => $target)
         {
             if(basename($target->Target->__toString(), '.log') == $logname)
@@ -236,7 +258,54 @@ class Syslog extends BaseModel
             }
         }
 
+        // scan plugins for external logfiles
+        $plugins_data = plugins_syslog();
+        foreach($plugins_data as $name => $params)
+        {
+            if($name == $logname && isset($params['external'])) {
+                return $params['external']['filename'];
+            }
+        }
+
         return '';
+    }
+
+    /**
+     * get full logfile datetime pattern
+     * @param $logname name of log
+     */
+    public function getDateTimePattern($logname)
+    {
+        // scan defined targets
+        foreach($this->LogTargets->Target->__items as $uuid => $target)
+            if(basename($target->Target->__toString(), '.log') == $logname)
+                return self::$TIMESTAMP_PATTERN;
+
+        // scan plugins for external logfiles
+        $plugins_data = plugins_syslog();
+        foreach($plugins_data as $name => $params)
+        {
+            if($name == $logname && isset($params['external'])) {
+                if(isset($params['external']['timestamp_pattern']))
+                    return $params['external']['timestamp_pattern'];
+            }
+        }
+
+        return self::$TIMESTAMP_PATTERN;;
+    }
+
+    /**
+     * cna clear log?
+     * @param $logname name of log
+     */
+    public function canClearLog($logname)
+    {
+        // scan defined targets
+        foreach($this->LogTargets->Target->__items as $uuid => $target)
+            if(basename($target->Target->__toString(), '.log') == $logname)
+                return true;
+
+        return false;
     }
 
     /*************************************************************************************************************
@@ -280,6 +349,9 @@ class Syslog extends BaseModel
         $plugins_data = plugins_syslog();
         foreach($plugins_data as $name => $params)
         {
+            if(isset($params['external'])) {
+                continue;
+            }
             $program = join(",", $params['facility']);
             $target =  self::$LOGS_DIRECTORY."/".$name.".log";
             $category = isset($params['remote']) ? $params['remote'] : null;
