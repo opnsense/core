@@ -47,7 +47,7 @@ fields_ipv4_udp = fields_ipv4 + 'srcport,dstport,datalen'.split(',')
 fields_ipv4_tcp = fields_ipv4 + 'srcport,dstport,datalen,flags,error_options'.split(',')
 fields_ipv4_carp = fields_ipv4 + 'type,ttl,vhid,version,advskew,advbase'.split(',')
 
-fields_ipv6 = fields_general + 'class,flowlabel,hlim,next-header,next,payload-length,src,dst'.split(',')
+fields_ipv6 = fields_general + 'class,flowlabel,hlim,protoname,proto,payload-length,src,dst'.split(',')
 fields_ipv6_udp = fields_ipv6 + 'srcport,dstport,datalen'.split(',')
 fields_ipv6_tcp = fields_ipv6 + 'srcport,dstport,datalen,flags,error_options'.split(',')
 fields_ipv6_carp = fields_ipv6 + 'type,ttl,vhid,version2,advskew,advbase'.split(',')
@@ -107,7 +107,7 @@ if __name__ == '__main__':
             result.append(rule)
 
             # handle exit criteria, row limit or last digest
-            if parameters['limit'] != 0 and len(result) > parameters['limit']:
+            if parameters['limit'] != 0 and len(result) >= parameters['limit']:
                 break
             elif parameters['digest'].strip() != '' and parameters['digest'] == rule['__digest__']:
                 break
