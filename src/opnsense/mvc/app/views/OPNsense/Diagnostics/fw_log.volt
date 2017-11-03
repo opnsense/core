@@ -211,6 +211,7 @@ POSSIBILITY OF SUCH DAMAGE.
                               <th data-column-id="src" data-type="address">{{ lang._('Source') }}</th>
                               <th data-column-id="dst" data-type="address">{{ lang._('Destination') }}</th>
                               <th data-column-id="protoname" data-type="string">{{ lang._('Proto') }}</th>
+                              <th data-column-id="label" data-type="string">{{ lang._('Label') }}</th>
                               <th data-column-id="" data-type="info" style="width:20px;"></th>
                           </tr>
                         </thead>
