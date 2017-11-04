@@ -194,7 +194,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     <option value="250" selected="selected">250</option>
                     <option value="500">500</option>
                     <option value="1000">1000</option>
-                    <option value="2000">2500</option>
+                    <option value="2500">2500</option>
                     <option value="5000">5000</option>
                 </select>
             </div>
