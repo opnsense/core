@@ -74,7 +74,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                         }
                                         break;
                                     case 'info':
-                                        log_td.html('<i class="act_info fa fa-info-circle" aria-hidden="true"></i>');
+                                        log_td.html('<button class="act_info btn btn-xs fa fa-info-circle" aria-hidden="true"></i>');
                                     default:
                                         if (record[column_name] != undefined) {
                                             log_td.text(record[column_name]);
