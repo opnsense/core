@@ -199,8 +199,8 @@
             <StatesSummary order="90" VisibleName="States Summary" url="/diag_states_summary.php"/>
         </Diagnostics>
         <LogFiles order="400" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
-            <Normal VisibleName="Normal View" order="100" url="/diag_logs_filter.php"/>
-            <Dynamic VisibleName="Dynamic View" order="200" url="/diag_logs_filter_dynamic.php"/>
+            <Live VisibleName="Live" order="100" url="/ui/diagnostics/firewall/log"/>
+            <Normal VisibleName="Normal View" order="200" url="/diag_logs_filter.php"/>
             <Summary VisibleName="Summary View" order="300" url="/diag_logs_filter_summary.php"/>
             <Plain VisibleName="Plain View" order="400" url="/diag_logs_filter_plain.php"/>
         </LogFiles>

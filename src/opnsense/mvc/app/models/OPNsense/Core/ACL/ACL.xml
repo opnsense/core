@@ -311,7 +311,9 @@
     <page-diagnostics-logs-firewall-dynamic>
         <name>Diagnostics: Logs: Firewall: Dynamic View</name>
         <patterns>
-            <pattern>diag_logs_filter_dynamic.php*</pattern>
+            <pattern>ui/diagnostics/firewall/log*</pattern>
+            <pattern>api/diagnostics/firewall/log*</pattern>
+            <pattern>api/diagnostics/interface/getInterfaceNames*</pattern>
         </patterns>
     </page-diagnostics-logs-firewall-dynamic>
     <page-diagnostics-logs-firewall-summary>

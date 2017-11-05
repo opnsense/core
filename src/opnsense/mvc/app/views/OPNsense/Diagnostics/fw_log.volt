@@ -84,40 +84,39 @@ POSSIBILITY OF SUCH DAMAGE.
                             });
 
                             if (record['action'] == 'pass') {
-                                log_tr.css('background', 'rgba(5, 142, 73, 0.6)');
+                                log_tr.css('background', 'rgba(5, 142, 73, 0.3)');
                             } else if (record['action'] == 'block') {
-                                log_tr.css('background', '#ff6666');
+                                log_tr.css('background', 'rgba(235, 9, 9, 0.3)');
                             }
                             $("#grid-log > tbody > tr:first").before(log_tr);
-                            // apply filter after load
-                            $("#filter").keyup();
-
-                            // bind info buttons
-                            $(".act_info").unbind('click').click(function(){
-                                var sender_tr = $(this).parent().parent();
-                                var sender_details = sender_tr.data('details');
-                                var hidden_columns = ['__spec__', '__host__', '__digest__'];
-                                var sorted_keys = Object.keys(sender_details).sort();
-                                var tbl = $('<table class="table table-condensed table-hover"/>');
-                                for (i=0 ; i < sorted_keys.length; i++) {
-                                    if (hidden_columns.indexOf(sorted_keys[i]) === -1 ) {
-                                        var row = $("<tr/>");
-                                        row.append($("<td/>").text(sorted_keys[i]));
-                                        row.append($("<td/>").text(sender_details[sorted_keys[i]]));
-                                        tbl.append(row);
-                                    }
-                                }
-                                BootstrapDialog.show({
-                                   title: "{{ lang._('Detailed rule info') }}",
-                                   message: tbl,
-                                   type: BootstrapDialog.TYPE_INFO,
-                                   draggable: true
-                                });
-                            });
                         }
                     }
                     // limit output
                     $("#grid-log > tbody > tr:gt("+(parseInt($("#limit").val())-1)+")").remove();
+                    // apply filter after load
+                    $("#filter").keyup();
+                    // bind info buttons
+                    $(".act_info").unbind('click').click(function(){
+                        var sender_tr = $(this).parent().parent();
+                        var sender_details = sender_tr.data('details');
+                        var hidden_columns = ['__spec__', '__host__', '__digest__'];
+                        var sorted_keys = Object.keys(sender_details).sort();
+                        var tbl = $('<table class="table table-condensed table-hover"/>');
+                        for (i=0 ; i < sorted_keys.length; i++) {
+                            if (hidden_columns.indexOf(sorted_keys[i]) === -1 ) {
+                                var row = $("<tr/>");
+                                row.append($("<td/>").text(sorted_keys[i]));
+                                row.append($("<td/>").text(sender_details[sorted_keys[i]]));
+                                tbl.append(row);
+                            }
+                        }
+                        BootstrapDialog.show({
+                           title: "{{ lang._('Detailed rule info') }}",
+                           message: tbl,
+                           type: BootstrapDialog.TYPE_INFO,
+                           draggable: true
+                        });
+                    });
                 }
             });
         };
