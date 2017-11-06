@@ -34,7 +34,7 @@ use \OPNsense\Core\Backend;
 
 /**
  * Class InterfaceController
- * @package OPNsense\SystemHealth
+ * @package OPNsense\Diagnostics\Api
  */
 class InterfaceController extends ApiControllerBase
 {

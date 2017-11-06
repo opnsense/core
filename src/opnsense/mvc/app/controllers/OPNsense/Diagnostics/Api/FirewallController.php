@@ -33,7 +33,7 @@ use \OPNsense\Core\Backend;
 
 /**
  * Class FirewallController
- * @package OPNsense\SystemHealth
+ * @package OPNsense\Diagnostics\Api
  */
 class FirewallController extends ApiControllerBase
 {

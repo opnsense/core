@@ -35,7 +35,7 @@ use \OPNsense\Core\Backend;
 
 /**
  * Class ActivityController
- * @package OPNsense\SystemHealth
+ * @package OPNsense\Diagnostics\Api
  */
 class ActivityController extends ApiControllerBase
 {
