@@ -33,70 +33,6 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
-require_once("filter_log.inc");
-
-function find_action_image($action)
-{
-  if ((strstr(strtolower($action), 'p')) || (strtolower($action) == 'rdr')) {
-    return 'glyphicon glyphicon-play text-success';
-  }
-
-  if (strstr(strtolower($action), 'r')) {
-    return 'glyphicon glyphicon-remove text-warning';
-  }
-
-  return 'glyphicon glyphicon-remove text-danger';
-}
-
-/**
- * original from diag_dns.php
- * temporary solution.
- */
-function display_host_results ($address,$hostname,$dns_speeds) {
-    $map_lengths = function($element) { return strlen($element[0]); };
-    echo gettext("IP Address") . ": {$address} \n";
-    echo gettext("Host Name") . ": {$hostname} \n";
-    echo "\n";
-    $text_table = array();
-    $text_table[] = array(gettext("Server"), gettext("Query Time"));
-    if (is_array($dns_speeds)) {
-        foreach ($dns_speeds as $qt) {
-            $text_table[] = array(trim($qt['dns_server']), trim($qt['query_time']));
-        }
-    }
-    $col0_padlength = max(array_map($map_lengths, $text_table)) + 4;
-    foreach ($text_table as $text_row) {
-        echo str_pad($text_row[0], $col0_padlength) . $text_row[1] . "\n";
-    }
-}
-
-if (!empty($_GET['host']) && !empty($_GET['dialog_output'])) {
-    $host = trim($_GET['host'], " \t\n\r\0\x0B[];\"'");
-    $host_esc = escapeshellarg($host);
-    $dns_servers = array();
-    exec("/usr/bin/grep nameserver /etc/resolv.conf | /usr/bin/cut -f2 -d' '", $dns_servers);
-    foreach ($dns_servers as $dns_server) {
-        $query_time = exec("/usr/bin/drill {$host_esc} " . escapeshellarg("@" . trim($dns_server)) . " | /usr/bin/grep Query | /usr/bin/cut -d':' -f2");
-        if ($query_time == "") {
-            $query_time = gettext("No response");
-        }
-        $dns_speeds[] = array('dns_server' => $dns_server, 'query_time' => $query_time);
-    }
-    $ipaddr = "";
-    if (count($input_errors) == 0) {
-        if (is_ipaddr($host)) {
-            $resolved[] = " " . gethostbyaddr($host); // add a space to provide an empty type field
-            $ipaddr = $host;
-        } elseif (is_hostname($host)) {
-            exec("/usr/bin/drill {$host_esc} A | /usr/bin/grep 'IN' | /usr/bin/grep -v ';' | /usr/bin/awk '{ print $4 \" \" $5 }'", $resolved);
-            $ipaddr = explode(" ", $resolved[count($resolved)-1])[1];
-        }
-    }
-
-    display_host_results ($host, $resolved[0], $dns_speeds);
-    exit;
-}
-
 
 if (is_numeric($_POST['filterlogentries'])) {
     $config['widgets']['filterlogentries'] = $_POST['filterlogentries'];
@@ -117,9 +53,8 @@ if (is_numeric($_POST['filterlogentries'])) {
     } else {
         unset($config['widgets']['filterlogentriesacts']);
     }
-    unset($acts);
 
-    if (($_POST['filterlogentriesinterfaces']) and ($_POST['filterlogentriesinterfaces'] != "All")) {
+    if (($_POST['filterlogentriesinterfaces']) && ($_POST['filterlogentriesinterfaces'] != "All")) {
         $config['widgets']['filterlogentriesinterfaces'] = trim($_POST['filterlogentriesinterfaces']);
     } else {
         unset($config['widgets']['filterlogentriesinterfaces']);
@@ -133,188 +68,169 @@ if (is_numeric($_POST['filterlogentries'])) {
 $nentries = isset($config['widgets']['filterlogentries']) ? $config['widgets']['filterlogentries'] : 5;
 
 //set variables for log
-$nentriesacts       = isset($config['widgets']['filterlogentriesacts'])       ? $config['widgets']['filterlogentriesacts']       : 'All';
+$nentriesacts       = isset($config['widgets']['filterlogentriesacts']) ?  explode(" ", $config['widgets']['filterlogentriesacts']) : array('All');
 $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? $config['widgets']['filterlogentriesinterfaces'] : 'All';
-
-$filterfieldsarray = array(
-    "act" => $nentriesacts,
-    "interface" => $nentriesinterfaces
-);
-
-$filter_logfile = '/var/log/filter.log';
-$filterlog = conv_log_filter($filter_logfile, $nentries, 50, $filterfieldsarray);
-
-/* AJAX related routines */
-handle_ajax($nentries, $nentries + 20);
-
 ?>
 
 <script type="text/javascript">
-//<![CDATA[
-lastsawtime = '<?= html_safe(time()) ?>';
-var lines = Array();
-var timer;
-var updateDelay = 30000;
-var isBusy = false;
-var isPaused = false;
-var nentries = <?= html_safe($nentries) ?>;
+    $( document ).ready(function() {
+        // needed to display the widget settings menu
+        $("#log-configure").removeClass("disabled");
+        // icons
+        var field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban'}
 
-<?php
-if (isset($config['syslog']['reverse'])) {
-    echo "var isReverse = true;\n";
-} else {
-    echo "var isReverse = false;\n";
-}
-?>
+        var interface_descriptions = {};
+        ajaxGet(url='/api/diagnostics/interface/getInterfaceNames', {}, callback=function(data, status) {
+            interface_descriptions = data;
+        });
+        function fetch_log(){
+            var record_spec = [];
+            // read heading, contains field specs
+            $("#filter-log-entries > thead > tr > th ").each(function(){
+                record_spec.push({'column-id': $(this).data('column-id'),
+                                  'type': $(this).data('type'),
+                                  'class': $(this).attr('class')
+                                 });
+            });
+            ajaxGet(url='/api/diagnostics/firewall/log/', {'limit': 100}, callback=function(data, status) {
+                while ((record=data.pop()) != null) {
+                    var intf = record['interface'];
+                    var filtact = [];
 
-/* Called by the AJAX updater */
-function format_log_line(row) {
-  var line = '<td class="listMRlr" align="center">' + row[0] + '<\/td>' +
-    '<td class="listMRr ellipsis" title="' + row[1] + '">' + row[1].slice(0,-3) + '<\/td>' +
-    '<td class="listMRr ellipsis" title="' + row[2] + '">' + row[2] + '<\/td>' +
-    '<td class="listMRr ellipsis" title="' + row[3] + '">' + row[3] + '<\/td>' +
-    '<td class="listMRr ellipsis" title="' + row[4] + '">' + row[4] + '<\/td>';
+                    if ($("#actpass").is(':checked')) {
+                        filtact.push('pass');
+                    }
+                    if ($("#actblock").is(':checked') || $("#actreject").is(':checked')) {
+                        filtact.push('block');
+                    }
 
-  var nentriesacts = "<?= html_safe($nentriesacts) ?>";
-  var nentriesinterfaces = "<?= html_safe($nentriesinterfaces) ?>";
+                    if (interface_descriptions[record['interface']] != undefined) {
+                        intf = interface_descriptions[record['interface']].toLowerCase();
+                    }
 
-  var Action = row[0].match(/alt=.*?(pass|block|reject)/i).join("").match(/pass|block|reject/i).join("");
-  var Interface = row[2];
+                    if ($("#filterlogentriesinterfaces").val() == "All" || $("#filterlogentriesinterfaces").val() == intf) {
+                        if (filtact.length == 0 || filtact.indexOf(record['action']) !== -1 ) {
+                            var log_tr = $("<tr>");
+                            log_tr.hide();
+                            $.each(record_spec, function(idx, field){
+                                var log_td = $('<td>').addClass(field['class']);
+                                var column_name = field['column-id'];
+                                var content = null;
+                                switch (field['type']) {
+                                    case 'icon':
+                                        var icon = field_type_icons[record[column_name]];
+                                        if (icon != undefined) {
+                                            log_td.html('<i class="fa '+icon+'" aria-hidden="true"></i>');
+                                            if (record[column_name] == 'pass') {
+                                                log_td.addClass('text-success');
+                                            } else {
+                                                log_td.addClass('text-danger');
+                                            }
 
-  if ( !(in_arrayi(Action,  nentriesacts.replace      (/\s+/g, ',').split(',') ) ) && (nentriesacts != 'All') )      return false;
-  if ( !(in_arrayi(Interface,  nentriesinterfaces.replace(/\s+/g, ',').split(',') ) ) && (nentriesinterfaces != 'All') )  return false;
+                                        }
+                                        break;
+                                    case 'interface':
+                                        if (interface_descriptions[record[column_name]] != undefined) {
+                                            log_td.text(interface_descriptions[record[column_name]]);
+                                        } else {
+                                            log_td.text(record[column_name]);
+                                        }
+                                        break;
+                                    case 'address':
+                                        log_td.text(record[column_name]);
+                                        if (record[column_name+'port'] != undefined) {
+                                            log_td.text(log_td.text()+':'+record[column_name+'port']);
+                                        }
+                                        break;
+                                    default:
+                                        if (record[column_name] != undefined) {
+                                            log_td.text(record[column_name]);
+                                        }
+                                }
+                                log_tr.append(log_td);
+                            });
+                            $("#filter-log-entries > tbody > tr:first").before(log_tr);
+                        }
+                    }
+                }
+                $("#filter-log-entries > tbody > tr:gt("+(parseInt($("#filterlogentries").val())-1)+")").remove();
+                $("#filter-log-entries > tbody > tr").show();
+            });
+            // schedule next fetch
+            setTimeout(fetch_log, 2000);
+        }
 
-  return line;
-}
-//]]>
+        fetch_log();
+    });
 </script>
-<script src="/javascript/filter_log.js" type="text/javascript"></script>
 
 <div id="log-settings" class="widgetconfigdiv" style="display:none;">
   <form action="/widgets/widgets/log.widget.php" method="post" name="iforma">
-        <table class="table table-striped">
-      <tbody>
-        <tr>
-          <td>
-            <?= gettext('Number of lines to display:') ?>
-          </td>
-        </tr>
-        <tr>
-          <td>
-        <select name="filterlogentries" class="formfld unknown" id="filterlogentries">
-        <?php for ($i = 1; $i <= 20; $i++) {
-?>
-          <option value="<?= html_safe($i) ?>" <?php if ($nentries == $i) {
-                        echo "selected=\"selected\"";
-}?>><?= html_safe($i) ?></option>
-        <?php
-} ?>
-        </select>
-          </td>
-        </tr>
+      <table class="table table-striped">
+        <tbody>
+          <tr>
+            <td>
+              <?= gettext('Number of lines to display:') ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <select name="filterlogentries" class="formfld unknown" id="filterlogentries">
 <?php
-        $Include_Act = explode(" ", $nentriesacts);
-if ($nentriesinterfaces == "All") {
-    $nentriesinterfaces = "";
-}
-?>
-    <tr>
-      <td>
-    <input id="actpass"   name="actpass"   type="checkbox" value="Pass"   <?php if (in_arrayi('Pass', $Include_Act)) {
-            echo "checked=\"checked\"";
-} ?> /> Pass
-    <input id="actblock"  name="actblock"  type="checkbox" value="Block"  <?php if (in_arrayi('Block', $Include_Act)) {
-            echo "checked=\"checked\"";
-} ?> /> Block
-    <input id="actreject" name="actreject" type="checkbox" value="Reject" <?php if (in_arrayi('Reject', $Include_Act)) {
-            echo "checked=\"checked\"";
-} ?> /> Reject
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <?= gettext('Interfaces:'); ?>
-      </td>
-    </tr>
-    <tr>
-      <td>
-    <select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces" class="formselect">
-      <option value="All"><?= gettext('ALL') ?></option>
+              for ($i = 1; $i <= 20; $i++):?>
+                <option value="<?=$i?>" <?= $nentries == $i ? "selected=\"selected\"" : ""?>><?=$i;?></option>
 <?php
-        $interfaces = get_configured_interface_with_descr();
-foreach ($interfaces as $iface => $ifacename) :
-?>
-    <option value="<?=$iface;?>" <?php if ($nentriesinterfaces == $iface) {
-        echo "selected=\"selected\"";
-}?>>
-        <?=htmlspecialchars($ifacename);?>
-    </option>
+              endfor;?>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input id="actpass"   name="actpass"   type="checkbox" value="Pass"   <?=in_array('Pass', $nentriesacts) ? "checked=\"checked\"" : "";?>/> Pass
+              <input id="actblock"  name="actblock"  type="checkbox" value="Block"  <?=in_array('Block', $nentriesacts) ? "checked=\"checked\"" : "";?>/> Block
+              <input id="actreject" name="actreject" type="checkbox" value="Reject" <?=in_array('Reject', $nentriesacts) ? "checked=\"checked\"": "";?>/> Reject
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <?= gettext('Interfaces:'); ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces" class="formselect">
+                <option value="All"><?= gettext('ALL') ?></option>
 <?php
-endforeach;
-        unset($interfaces);
-        unset($Include_Act);
-?>
-    </select>
-  </td>
-  </tr>
-  <tr>
-    <td>
-    <input id="submita" name="submita" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Save') ?>" />
-    </td>
-  </tr>
-  </tbody>
-  </table>
+                  foreach (get_configured_interface_with_descr() as $iface => $ifacename) :?>
+                  <option value="<?=$iface;?>" <?=$nentriesinterfaces == $iface ? "selected=\"selected\"" : "";?>>
+                      <?=htmlspecialchars($ifacename);?>
+                  </option>
+<?php
+                  endforeach;?>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input id="submita" name="submita" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Save') ?>" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
   </form>
 </div>
 
-<table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="logs">
+<table class="table table-striped"  id="filter-log-entries">
   <thead>
     <tr>
-      <td class="listhdrr"><?=gettext("Act");?></td>
-      <td class="listhdrr"><?=gettext("Time");?></td>
-      <td class="listhdrr"><?=gettext("Interface");?></td>
-      <td class="listhdrr"><?=gettext("Source");?></td>
-      <td class="listhdrr"><?=gettext("Destination");?></td>
+      <th data-column-id="action" data-type="icon"><?=gettext("Act");?></th>
+      <th data-column-id="__timestamp__" data-type="string"><?=gettext("Time");?></th>
+      <th data-column-id="interface" data-type="interface"><?=gettext("Interface");?></th>
+      <th data-column-id="src" data-type="address"><?=gettext("Source");?></th>
+      <th data-column-id="dst" data-type="address"><?=gettext("Destination");?></th>
     </tr>
   </thead>
-  <tbody id='filter-log-entries'>
-  <?php
-    $rowIndex = 0;
-    foreach ($filterlog as $filterent) :
-        $evenRowClass = $rowIndex % 2 ? " listMReven" : " listMRodd";
-        $rowIndex++;
-    ?>
-    <tr class="<?=$evenRowClass?>">
-      <td class="listMRlr nowrap" align="center">
-      <a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?= html_safe("{$filterent['rulenum']},{$filterent['act']}") ?>', outputrule);">
-      <span class="<?= html_safe(find_action_image($filterent['act'])) ?>" alt="<?= html_safe($filterent['act']) ?>" title="<?= html_safe($filterent['act']) ?>"></span>
-      </a>
-      </td>
-      <td class="listMRr ellipsis nowrap" title="<?= html_safe($filterent['time']) ?>"><?= html_safe(substr($filterent['time'], 0, -3)) ?></td>
-      <td class="listMRr ellipsis nowrap" title="<?= html_safe($filterent['interface']) ?>"><?= html_safe($filterent['interface']) ?></td>
-      <td class="listMRr ellipsis nowrap" title="<?= html_safe($filterent['src']) ?>">
-        <a href="#" onclick="javascript:getURL('widgets/widgets/log.widget.php?host=<?= html_safe($filterent['srcip']) ?>&amp;dialog_output=true', outputrule);"
-          title="<?= html_safe(gettext('Reverse Resolve with DNS')) ?>"><?= html_safe($filterent['srcip']) ?></a>
-      </td>
-      <td class="listMRr ellipsis nowrap" title="<?= html_safe($filterent['dst']) ?>">
-        <a href="#" onclick="javascript:getURL('widgets/widgets/log.widget.php?host=<?= html_safe($filterent['dstip']) ?>&amp;dialog_output=true', outputrule);"
-          title="<?= html_safe(gettext('Reverse Resolve with DNS')) ?>"><?= html_safe($filterent['dstip']) ?></a>:<?= html_safe($filterent['dstport']) ?>
-      </td>
-      <?php
-            if ($filterent['proto'] == "TCP") {
-                $filterent['proto'] .= ":{$filterent['tcpflags']}";
-            }
-            ?>
-    </tr>
-  <?php
-    endforeach; ?>
-    <tr style="display:none;"><td></td></tr>
+  <tbody>
+    <tr/>
   </tbody>
 </table>
-
-<!-- needed to display the widget settings menu -->
-<script type="text/javascript">
-//<![CDATA[
-  $("#log-configure").removeClass("disabled");
-//]]>
-</script>
