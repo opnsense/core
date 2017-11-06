@@ -57,7 +57,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                     case 'icon':
                                         var icon = field_type_icons[record[column_name]];
                                         if (icon != undefined) {
-                                            log_td.html('<i class="fa '+icon+'" aria-hidden="true"></i>');
+                                            log_td.html('<i class="fa '+icon+'" aria-hidden="true"></i><span style="display:none">'+record[column_name]+'</span>');
                                         }
                                         break;
                                     case 'interface':
