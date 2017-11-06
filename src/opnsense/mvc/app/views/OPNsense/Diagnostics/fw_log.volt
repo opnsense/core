@@ -106,7 +106,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             if (hidden_columns.indexOf(sorted_keys[i]) === -1 ) {
                                 var row = $("<tr/>");
                                 row.append($("<td/>").text(sorted_keys[i]));
-                                row.append($("<td/>").text(sender_details[sorted_keys[i]]));
+                                row.append($("<td/>").addClass("act_info_fld_"+sorted_keys[i]).text(sender_details[sorted_keys[i]]));
                                 tbl.append(row);
                             }
                         }
@@ -114,7 +114,30 @@ POSSIBILITY OF SUCH DAMAGE.
                            title: "{{ lang._('Detailed rule info') }}",
                            message: tbl,
                            type: BootstrapDialog.TYPE_INFO,
-                           draggable: true
+                           draggable: true,
+                           buttons: [{
+                             label: '<i class="fa fa-search" aria-hidden="true"></i>',
+                             action: function(){
+                               $(this).unbind('click');
+                               $(".act_info_fld_src, .act_info_fld_dst").each(function(){
+                                  var target_field = $(this);
+                                  ajaxGet(url='/api/diagnostics/dns/reverse_lookup', {'address': $(this).text()}, callback=function(data, status) {
+                                      if (Array.isArray(data)) {
+                                          var resolv_output = data.join(',');
+                                          if (target_field.text() != resolv_output) {
+                                              target_field.text(target_field.text() + ' [' + resolv_output + ']');
+                                          }
+                                      }
+                                      target_field.prepend('<i class="fa fa-search" aria-hidden="true"></i>&nbsp;');
+                                  });
+                               });
+                             }
+                           },{
+                             label: "{{ lang._('Close') }}",
+                             action: function(dialogItself){
+                               dialogItself.close();
+                             }
+                           }]
                         });
                     });
                 }
