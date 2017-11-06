@@ -41,14 +41,17 @@ class DnsController extends ApiControllerBase
 
     /**
      * perform a reverse dns lookup
-     * @param string|array $address ip address or list of addresses
      * @return array
      */
-    public function reverse_lookupAction($address)
+    public function reverse_lookupAction()
     {
-        if ($this->request->isGet()) {
+        if ($this->request->isGet() && $this->request->has('address')) {
             $this->sessionClose(); // long running action, close session
-            $address = !is_array($address) ? array($address) : $address;
+            if (is_array($this->request->get('address'))) {
+                $address = $this->request->get('address');
+            } else {
+                $address = array($this->request->get('address'));
+            }
             $result = array();
             foreach ($address as $addr) {
                 $result[] = gethostbyaddr($addr);
