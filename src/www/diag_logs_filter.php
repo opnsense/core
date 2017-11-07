@@ -597,7 +597,6 @@ if (isset($_POST['clear'])) {
 include("head.inc");
 ?>
 <body>
-  <script src="/javascript/filter_log.js" type="text/javascript"></script>
   <?php include("fbegin.inc"); ?>
   <section class="page-content-main">
     <div class="container-fluid">
@@ -743,7 +742,7 @@ include("head.inc");
             $rowIndex++;?>
             <tr class="<?=$evenRowClass?>">
               <td>
-                <a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?= html_safe("{$filterent['rulenum']},{$filterent['act']}") ?>', outputrule);" title="<?= html_safe($filterent['act']) ?>">
+                <a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?= html_safe("{$filterent['rulenum']},{$filterent['act']}") ?>', alert);" title="<?= html_safe($filterent['act']) ?>">
                   <span class="glyphicon glyphicon-<?php switch ($filterent['act']) {
                     case 'pass':
                         echo "play";  /* icon triangle */
@@ -903,6 +902,40 @@ function resolve_with_ajax(ip_to_resolve) {
     });
 
 }
+
+
+function getURL(url, callback) {
+  if (!url)
+    throw 'No URL for getURL';
+  try {
+    if (typeof callback.operationComplete == 'function')
+      callback = callback.operationComplete;
+  } catch (e) {}
+    if (typeof callback != 'function')
+      throw 'No callback function for getURL';
+  var http_request = null;
+  if (typeof XMLHttpRequest != 'undefined') {
+      http_request = new XMLHttpRequest();
+  }
+  else if (typeof ActiveXObject != 'undefined') {
+    try {
+      http_request = new ActiveXObject('Msxml2.XMLHTTP');
+    } catch (e) {
+      try {
+        http_request = new ActiveXObject('Microsoft.XMLHTTP');
+      } catch (e) {}
+    }
+  }
+  if (!http_request)
+    throw 'Both getURL and XMLHttpRequest are undefined';
+  http_request.onreadystatechange = function() {
+    if (http_request.readyState == 4) {
+      callback(http_request.responseText);
+    }
+  };
+  http_request.open('GET', url, true);
+  http_request.send(null);
+};
 
 function resolve_ip_callback(transport) {
   var response = jQuery.parseJSON(transport.responseText);
