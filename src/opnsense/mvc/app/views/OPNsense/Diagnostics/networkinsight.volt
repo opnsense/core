@@ -330,46 +330,75 @@ POSSIBILITY OF SUCH DAMAGE.
         ajaxGet('/api/diagnostics/networkinsight/top/FlowSourceAddrTotals/'+time_url+'/src_addr/octets/25/',
             {'filter_field': 'if', 'filter_value': $('#interface_select').val()}, function(data, status){
             if (status == 'success'){
-              nv.addGraph(function() {
-                var chart = nv.models.pieChart()
-                    .x(function(d) { return d.label })
-                    .y(function(d) { return d.value })
-                    .showLabels(true)
-                    .labelThreshold(.05)
-                    .labelType("percent")
-                    .donut(true)
-                    .donutRatio(0.35)
-                    .legendPosition("right")
-                    .valueFormat(d3.format(',.2s'));
+              add_src_pie = function(chart_data_in) {
+                  nv.addGraph(function() {
+                    var chart = nv.models.pieChart()
+                        .x(function(d) { return d.label })
+                        .y(function(d) { return d.value })
+                        .showLabels(true)
+                        .labelThreshold(.05)
+                        .labelType("percent")
+                        .donut(true)
+                        .donutRatio(0.35)
+                        .legendPosition("right")
+                        .valueFormat(d3.format(',.2s'));
 
-                chart_data = [];
-                data.map(function(item){
-                    var label = "(other)";
-                    if (item.src_addr != "") {
-                        label = item.src_addr;
-                    }
-                    chart_data.push({'label': label, 'value': item.total});
-                });
+                    chart_data = [];
+                    chart_data_in.map(function(item){
+                        var label = "(other)";
+                        if (item.src_addr != "") {
+                            label = item.src_addr;
+                        }
+                        chart_data.push({'label': label, 'value': item.total});
+                    });
 
-                d3.select("#chart_top_sources svg")
-                    .datum(chart_data)
-                    .transition().duration(350)
-                    .call(chart);
-                pageCharts["chart_top_sources"] = chart;
+                    d3.select("#chart_top_sources svg")
+                        .datum(chart_data)
+                        .transition().duration(350)
+                        .call(chart);
+                    pageCharts["chart_top_sources"] = chart;
 
-                // copy selection to detail tab and query results
-                chart.pie.dispatch.on('elementClick', function(e){
-                    if (data[e.index].src_addr != "") {
-                        $("#interface_select_detail").val($("#interface_select").val());
-                        $('#interface_select_detail').selectpicker('refresh');
-                        $("#service_port_detail").val("");
-                        $("#address_detail").val(data[e.index].src_addr);
-                        $("#details_tab").click();
-                        grid_details();
-                    }
-                });
-                return chart;
-              });
+                    // copy selection to detail tab and query results
+                    chart.pie.dispatch.on('elementClick', function(e){
+                        if (data[e.index].src_addr != "") {
+                            $("#interface_select_detail").val($("#interface_select").val());
+                            $('#interface_select_detail').selectpicker('refresh');
+                            $("#service_port_detail").val("");
+                            $("#address_detail").val(chart_data_in[e.index].src_addr);
+                            $("#details_tab").click();
+                            grid_details();
+                        }
+                    });
+                    chart.legend.margin({top: 0, right: 0, left: 0, bottom: 20})
+                    return chart;
+                  });
+              }
+              if ($("#reverse_lookup").is(':checked')) {
+                  var addresses = [];
+                  data.map(function(item){
+                      if (item.src_addr != "") {
+                          addresses.push(item.src_addr);
+                      }
+                  });
+                  // use full width when names are resolved
+                  $("#chart_top_sources,#chart_top_ports").parent().removeClass('col-sm-6');
+                  $("#chart_top_sources,#chart_top_ports").parent().addClass('col-sm-12');
+                  ajaxGet(url='/api/diagnostics/dns/reverse_lookup', {'address': addresses}, callback=function(lookup_data, status) {
+                      data.map(function(item){
+                          if (lookup_data[item.src_addr] != undefined) {
+                              item.src_addr = lookup_data[item.src_addr];
+                          }
+                      });
+                      add_src_pie(data);
+                      $(window).trigger('resize-end'); // force chart update
+                  });
+              } else {
+                  // split charts, half for ports half for sources
+                  $("#chart_top_sources,#chart_top_ports").parent().removeClass('col-sm-12');
+                  $("#chart_top_sources,#chart_top_ports").parent().addClass('col-sm-6');
+                  add_src_pie(data);
+                  $(window).trigger('resize-end'); // force chart update
+              }
             }
         });
       }
@@ -538,6 +567,10 @@ POSSIBILITY OF SUCH DAMAGE.
           grid_totals();
       });
 
+      $("#reverse_lookup").change(function(){
+          chart_top_src_addr_usage();
+      });
+
       $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
           // load charts for selected tab
           if (e.target.id == 'totals_tab'){
@@ -612,7 +645,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
       $("#refresh_details").click(grid_details);
       $("#export_btn").click(export_flow_data);
-
     });
 </script>
 
@@ -672,6 +704,12 @@ POSSIBILITY OF SUCH DAMAGE.
             <div class="col-xs-12">
               <select class="selectpicker" id="interface_select">
               </select>
+              <div class="checkbox-inline pull-right">
+                <label>
+                  <input id="reverse_lookup" type="checkbox">
+                  <span class="fa fa-search"></span> {{ lang._('Reverse lookup') }}
+                </label>
+              </div>
             </div>
             <div class="col-xs-12 col-sm-6">
               <div id="chart_top_ports">
