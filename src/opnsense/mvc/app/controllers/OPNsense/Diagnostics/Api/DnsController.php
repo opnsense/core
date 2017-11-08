@@ -54,7 +54,7 @@ class DnsController extends ApiControllerBase
             }
             $result = array();
             foreach ($address as $addr) {
-                $result[] = gethostbyaddr($addr);
+                $result[$addr] = gethostbyaddr($addr);
             }
             return $result;
         } else {

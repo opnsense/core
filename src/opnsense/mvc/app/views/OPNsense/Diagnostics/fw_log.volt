@@ -122,9 +122,9 @@ POSSIBILITY OF SUCH DAMAGE.
                                $(this).unbind('click');
                                $(".act_info_fld_src, .act_info_fld_dst").each(function(){
                                   var target_field = $(this);
-                                  ajaxGet(url='/api/diagnostics/dns/reverse_lookup', {'address': $(this).text()}, callback=function(data, status) {
-                                      if (Array.isArray(data)) {
-                                          var resolv_output = data.join(',');
+                                  ajaxGet(url='/api/diagnostics/dns/reverse_lookup', {'address': target_field.text()}, callback=function(data, status) {
+                                      if (data[target_field.text()] != undefined) {
+                                          var resolv_output = data[target_field.text()];
                                           if (target_field.text() != resolv_output) {
                                               target_field.text(target_field.text() + ' [' + resolv_output + ']');
                                           }
