@@ -54,7 +54,11 @@ class DnsController extends ApiControllerBase
             }
             $result = array();
             foreach ($address as $addr) {
-                $result[$addr] = gethostbyaddr($addr);
+                if (!empty(filter_var($addr, FILTER_VALIDATE_IP))) {
+                    $result[$addr] = gethostbyaddr($addr);
+                } else {
+                    $result[$addr] = $addr;
+                }
             }
             return $result;
         } else {
