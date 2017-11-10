@@ -168,7 +168,10 @@ class ControllerBase extends ControllerRoot
         $cnf = Config::getInstance();
 
         // set translator
-        $this->view->setVar('lang', self::getTranslator());
+        if (!isset($this->translator)) {
+            $this->translator = self::getTranslator();
+        }
+        $this->view->setVar('lang', $this->translator);
         $this->view->menuSystem = $menu->getItems("/ui".$this->router->getRewriteUri());
 
         // set theme in ui_theme template var, let template handle its defaults (if there is no theme).

@@ -109,6 +109,17 @@ class ControllerRoot extends Controller
             $this->response->redirect("/", true);
             return false;
         }
+        foreach (Config::getInstance()->object()->system->user as $user) {
+            if ($this->session->get("Username") == $user->name->__toString() && isset($user->language) && (!isset($this->translator) || $user->language != $this->translator->getLocale())) {
+                $locale = $user->language->__toString() . '.UTF-8';
+                bind_textdomain_codeset('OPNsense', $locale);
+                $this->translator = new ViewTranslator(array(
+                    'directory' => '/usr/local/share/locale',
+                    'defaultDomain' => 'OPNsense',
+                    'locale' => $locale,
+                ));
+            }
+        }
         $this->session->set("last_access", time());
 
         // Authorization using legacy acl structure

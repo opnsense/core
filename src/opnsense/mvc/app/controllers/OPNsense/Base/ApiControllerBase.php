@@ -91,7 +91,9 @@ class ApiControllerBase extends ControllerRoot
     {
         // disable view processing
         set_error_handler(array($this, 'APIErrorHandler'));
-        self::getTranslator();
+        if (!isset($this->translator)) {
+            $this->translator = self::getTranslator();
+        }
     }
 
     /**
