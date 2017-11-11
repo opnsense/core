@@ -407,7 +407,9 @@ function display_login_form($Login_Error = '')
     <link href="/ui/themes/<?= $themename ?>/build/css/main.css" rel="stylesheet">
     <link href="/ui/themes/<?= $themename ?>/build/images/favicon.png" rel="shortcut icon">
     <!-- JQuery -->
-    <script type="text/javascript" src="/ui/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="/ui/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/ui/js/jquery-migrate-3.0.1.min.js"></script>
+
 
 <?php
     if (file_exists("/usr/local/opnsense/www/themes/".$themename."/build/js/theme.js")):?>
