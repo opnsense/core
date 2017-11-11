@@ -179,7 +179,7 @@ include("head.inc");
                   <th colspan="2" class="listtopic"><?=gettext('Configuration Synchronization Settings (XMLRPC Sync)') ?></th>
                 </tr>
                 <tr>
-                  <td><a id="help_for_synchronizetoip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize Config to IP') ?></td>
+                  <td width="22%"><a id="help_for_synchronizetoip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize Config to IP') ?></td>
                   <td>
                     <input name="synchronizetoip" type="text" value="<?=$pconfig['synchronizetoip']; ?>" />
                     <div class="hidden" for="help_for_synchronizetoip">
