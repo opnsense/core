@@ -36,7 +36,8 @@ function upload_crash_report($files, $agent)
     $counter = 0;
 
     foreach ($files as $filename) {
-        if (is_link($filename) || $filename == '/var/crash/minfree.gz' || $filename == '/var/crash/bounds.gz') {
+        if (is_link($filename) || $filename == '/var/crash/minfree.gz' || $filename == '/var/crash/bounds.gz'
+            || filesize($filename) > 2097152 ) {
             continue;
         }
         $post["file{$counter}"] = curl_file_create($filename, "application/x-gzip", basename($filename));
