@@ -241,14 +241,23 @@ function initFormHelpUI() {
         $('[id*="show_all_help"]').toggleClass("fa-toggle-on fa-toggle-off");
         $('[id*="show_all_help"]').toggleClass("text-success text-danger");
         if ($('[id*="show_all_help"]').hasClass("fa-toggle-on")) {
+            sessionStorage.setItem('all_help_preset', 1);
             $('[for*="help_for"]').addClass("show");
             $('[for*="help_for"]').removeClass("hidden");
         } else {
             $('[for*="help_for"]').addClass("hidden");
             $('[for*="help_for"]').removeClass("show");
+            sessionStorage.setItem('all_help_preset', 0);
         }
         event.preventDefault();
     });
+    if (sessionStorage.getItem('all_help_preset') == 1) {
+        // show all help messages when preset was stored
+        $('[id*="show_all_help"]').toggleClass("fa-toggle-on fa-toggle-off");
+        $('[id*="show_all_help"]').toggleClass("text-success text-danger");
+        $('[for*="help_for"]').addClass("show");
+        $('[for*="help_for"]').removeClass("hidden");
+    }
 }
 
 /**
