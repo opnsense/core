@@ -167,10 +167,6 @@ class ControllerBase extends ControllerRoot
         // add interfaces to "Interfaces" menu tab... kind of a hack, may need some improvement.
         $cnf = Config::getInstance();
 
-        // set translator
-        if (!isset($this->translator)) {
-            $this->translator = self::getTranslator();
-        }
         $this->view->setVar('lang', $this->translator);
         $this->view->menuSystem = $menu->getItems("/ui".$this->router->getRewriteUri());
 
