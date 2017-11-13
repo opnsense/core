@@ -65,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['prefetchkey'] = isset($config['unbound']['prefetchkey']);
     $pconfig['dnssecstripped'] = isset($config['unbound']['dnssecstripped']);
     $pconfig['serveexpired'] = isset($config['unbound']['serveexpired']);
+    $pconfig['nointerfacerec'] = isset($config['unbound']['nointerfacerec']);
 
     // text fields
     foreach ($copy_fields as $fieldname) {
@@ -90,6 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['unbound']['prefetchkey'] = !empty($pconfig['prefetchkey']);
         $config['unbound']['dnssecstripped'] = !empty($pconfig['dnssecstripped']);
         $config['unbound']['serveexpired'] = !empty($pconfig['serveexpired']);
+        $config['unbound']['nointerfacerec'] = !empty($pconfig['nointerfacerec']);
         // text fields
         foreach ($copy_fields as $fieldname) {
             $config['unbound'][$fieldname] = $pconfig[$fieldname];
@@ -181,6 +183,15 @@ include_once("head.inc");
                           <input name="serveexpired" type="checkbox" id="serveexpired" value="yes" <?= empty($pconfig['serveexpired']) ? '' : 'checked="checked"' ?> />
                           <div class="hidden" for="help_for_serveexpired">
                             <?= gettext('Serve expired responses from the cache with a TTL of 0 without waiting for the actual resolution to finish.') ?>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_nointerfacerec" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Do not register interfaces') ?></td>
+                        <td>
+                          <input name="nointerfacerec" type="checkbox" id="serveexpired" value="yes" <?= empty($pconfig['nointerfacerec']) ? '' : 'checked="checked"' ?> />
+                          <div class="hidden" for="help_for_nointerfacerec">
+                            <?= gettext('Do not generate A and AAAA records for interfaces where unbound listens on.') ?>
                           </div>
                         </td>
                       </tr>
