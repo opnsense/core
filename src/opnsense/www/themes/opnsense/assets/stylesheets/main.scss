@@ -389,6 +389,14 @@ body{
 
 .nav-tabs > li > a.visible-lg-inline-block:not(.pull-right) {
   border-top-right-radius: 0px !important;
+  padding-left: 10px !important;
+  padding-right: 5px !important;
+}
+
+.nav-tabs > li > a.visible-lg-inline-block.pull-right {
+  border-left: 0px !important;
+  padding-left: 0px !important;
+  padding-right: 10px !important;
 }
 
 

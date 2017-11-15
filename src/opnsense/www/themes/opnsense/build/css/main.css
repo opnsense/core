@@ -5672,7 +5672,14 @@ body {
   margin-right: 0px; }
 
 .nav-tabs > li > a.visible-lg-inline-block:not(.pull-right) {
-  border-top-right-radius: 0px !important; }
+  border-top-right-radius: 0px !important;
+  padding-left: 10px !important;
+  padding-right: 5px !important; }
+
+.nav-tabs > li > a.visible-lg-inline-block.pull-right {
+  border-left: 0px !important;
+  padding-left: 0px !important;
+  padding-right: 10px !important; }
 
 .nav-tabs.nav-justified {
   border-right: 1px solid #E5E5E5; }
