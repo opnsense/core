@@ -506,6 +506,9 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         $result = array("result" => "failed");
         if ($this->request->isPost() && $this->request->hasPost("action")) {
+            if ($this->request->hasPost('enabled')) {
+                $this->toggleRuleAction($sid, $this->request->getPost("enabled", "int", null));
+            }
             $ruleinfo = $this->getRuleInfoAction($sid);
             $newAction = $this->request->getPost("action", "striptags", null);
             if (count($ruleinfo) > 0) {
