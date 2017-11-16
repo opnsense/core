@@ -176,6 +176,10 @@
                 <default>0</default>
                 <Required>Y</Required>
             </syslog>
+            <LogPayload type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </LogPayload>
         </general>
     </items>
 </model>

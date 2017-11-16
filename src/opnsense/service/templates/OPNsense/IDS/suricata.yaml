@@ -97,7 +97,15 @@ outputs:
       #level: Info ## possible levels: Emergency, Alert, Critical,
                    ## Error, Warning, Notice, Info, Debug
       types:
+{% if helpers.exists('OPNsense.IDS.general.LogPayload') and OPNsense.IDS.general.LogPayload|default('0') == '1' %}
+        - alert:
+             payload: yes
+             payload-buffer-size: 100kb
+             payload-printable: yes
+{% else %}
         - alert
+{% endif %}
+
 #        - http:
 #            extended: yes     # enable this for extended logging information
 #            # custom allows additional http fields to be included in eve-log

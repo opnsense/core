@@ -65,4 +65,11 @@
         <type>text</type>
         <help><![CDATA[Number of logs to keep.]]></help>
     </field>
+    <field>
+        <id>ids.general.LogPayload</id>
+        <label>Log package payload</label>
+        <type>checkbox</type>
+        <help>Send package payload to the log for further analyses.</help>
+        <advanced>true</advanced>
+    </field>
 </form>
