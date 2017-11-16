@@ -103,14 +103,16 @@ POSSIBILITY OF SUCH DAMAGE.
                         var hidden_columns = ['__spec__', '__host__', '__digest__'];
                         var sorted_keys = Object.keys(sender_details).sort();
                         var tbl = $('<table class="table table-condensed table-hover"/>');
+                        var tbl_tbody = $("<tbody/>");
                         for (i=0 ; i < sorted_keys.length; i++) {
                             if (hidden_columns.indexOf(sorted_keys[i]) === -1 ) {
                                 var row = $("<tr/>");
                                 row.append($("<td/>").text(sorted_keys[i]));
                                 row.append($("<td/>").addClass("act_info_fld_"+sorted_keys[i]).text(sender_details[sorted_keys[i]]));
-                                tbl.append(row);
+                                tbl_tbody.append(row);
                             }
                         }
+                        tbl.append(tbl_tbody);
                         BootstrapDialog.show({
                            title: "{{ lang._('Detailed rule info') }}",
                            message: tbl,
