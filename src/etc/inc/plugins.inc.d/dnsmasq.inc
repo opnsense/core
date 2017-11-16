@@ -296,7 +296,7 @@ function _dnsmasq_dhcpleases_start()
     if (isset($config['dnsmasq']['regdhcp']) && file_exists($leases)) {
         $domain = $config['system']['domain'];
         if (isset($config['dnsmasq']['regdhcpdomain'])) {
-            $domain = $config['dnsmasq']['regdhcpdomain'];
+            $domain = idn_to_ascii($config['dnsmasq']['regdhcpdomain']);
         }
         mwexecf(
             '/usr/local/sbin/dhcpleases -l %s -d %s -p %s -h %s',

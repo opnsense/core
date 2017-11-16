@@ -206,7 +206,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($pconfig['type'] == 'host') {
                     if ($ipaddr_count > 1) {
                         $input_errors[] = sprintf(gettext('Entry "%s" seems to contain a list of addresses, please use a network type alias to define ranges.'), $detail_entry);
-                    } elseif (!is_domain($detail_entry) && !is_ipaddr($detail_entry) && !is_alias($detail_entry)) {
+                    } elseif (!is_domain(idn_to_ascii($detail_entry)) && !is_ipaddr($detail_entry) && !is_alias($detail_entry)) {
                         $input_errors[] = sprintf(gettext('Entry "%s" is not a valid hostname or IP address.'), $detail_entry);
                     }
                 } elseif ($pconfig['type'] == 'port') {

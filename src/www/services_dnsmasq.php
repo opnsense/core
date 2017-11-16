@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
     if (isset($pconfig['submit'])) {
         // validate
-        if (!empty($pconfig['regdhcpdomain']) && !is_domain($pconfig['regdhcpdomain'])) {
+        if (!empty($pconfig['regdhcpdomain']) && !is_domain(idn_to_ascii($pconfig['regdhcpdomain']))) {
             $input_errors[] = gettext("The domain may only contain the characters a-z, 0-9, '-' and '.'.");
         }
         if (!empty($pconfig['port']) && !is_port($pconfig['port'])) {

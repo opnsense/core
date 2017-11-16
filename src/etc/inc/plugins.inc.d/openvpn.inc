@@ -779,7 +779,8 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         $server_addr_a = explode(',', $settings['server_addr']);
         $server_port_a = explode(',', $settings['server_port']);
         foreach ($server_addr_a as $i => $unused) {
-            $conf .= "remote {$server_addr_a[$i]} {$server_port_a[$i]}\n";
+            $server_addr = idn_to_ascii($server_addr_a[$i]);
+            $conf .= "remote {$server_addr} {$server_port_a[$i]}\n";
         }
 
         if (!empty($settings['use_shaper'])) {
