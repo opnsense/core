@@ -25,10 +25,16 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
 #}
+<style>
+    .tooltip-inner {
+        min-width: 250px;
+    }
+</style>
 
 <script type="text/javascript">
 
     $( document ).ready(function() {
+        var interface_descriptions = {};
         //
         var data_get_map = {'frm_GeneralSettings':"/api/ids/settings/get"};
 
@@ -323,8 +329,26 @@ POSSIBILITY OF SUCH DAMAGE.
                                         return "<button type=\"button\" class=\"btn btn-xs btn-default command-alertinfo\" data-row-id=\"" + row.filepos + "/" + row.fileid + "\"><span class=\"fa fa-pencil\"></span></button> ";
                                     }
                                 },
+                                converters: {
+                                    // convert interface to name
+                                    interface: {
+                                        from: function (value) { return value; },
+                                        to: function (value) { return interface_descriptions[value]; }
+                                    }
+                                }
                             }
                         });
+                // tooltip wide fields in alert grid
+                grid_alerts.on("loaded.rs.jquery.bootgrid", function(){
+                    $("#grid-alerts > tbody > tr > td").each(function(){
+                        if ($(this).outerWidth() < $(this)[0].scrollWidth) {
+                            var grid_td = $("<span/>");
+                            grid_td.html($(this).html());
+                            grid_td.tooltip({title: $(this).text()});
+                            $(this).html(grid_td);
+                        }
+                    });
+                });
                 // hook in alert details on alertinfo command
                 grid_alerts.on("loaded.rs.jquery.bootgrid", function(){
                     grid_alerts.find(".command-alertinfo").on("click", function(e) {
@@ -343,12 +367,19 @@ POSSIBILITY OF SUCH DAMAGE.
                                         alert_fields['dest_ip'] = "{{ lang._('Destination IP') }}";
                                         alert_fields['src_port'] = "{{ lang._('Source port') }}";
                                         alert_fields['dest_port'] = "{{ lang._('Destination port') }}";
+                                        alert_fields['in_iface'] = "{{ lang._('Interface') }}";
 
                                         $.each( alert_fields, function( fieldname, fielddesc ) {
-                                            var row = $("<tr/>");
-                                            row.append($("<td/>").text(fielddesc));
-                                            row.append($("<td/>").text(data[fieldname]));
-                                            tbl_tbody.append(row);
+                                            if (data[fieldname] != undefined) {
+                                                var row = $("<tr/>");
+                                                row.append($("<td/>").text(fielddesc));
+                                                if (fieldname == 'in_iface' && interface_descriptions[data[fieldname]] != undefined) {
+                                                    row.append($("<td/>").text(interface_descriptions[data[fieldname]]));
+                                                } else {
+                                                    row.append($("<td/>").text(data[fieldname]));
+                                                }
+                                                tbl_tbody.append(row);
+                                            }
                                         });
                                         if (rule_data.action != undefined) {
                                             var alert_select = $('<select class="selectpicker"/>');
@@ -550,6 +581,11 @@ POSSIBILITY OF SUCH DAMAGE.
         /**
          * Initialize
          */
+        // fetch interface mappings on load
+        ajaxGet(url='/api/diagnostics/interface/getInterfaceNames', {}, callback=function(data, status) {
+            interface_descriptions = data;
+        });
+
         updateStatus();
 
         // update history on tab state and implement navigation
@@ -787,14 +823,17 @@ POSSIBILITY OF SUCH DAMAGE.
         </div>
         <table id="grid-alerts" class="table table-condensed table-hover table-striped table-responsive">
             <thead>
-            <tr>
-                <th data-column-id="timestamp" data-type="string" data-sortable="false">{{ lang._('Timestamp') }}</th>
-                <th data-column-id="alert_action" data-type="string" data-sortable="false">{{ lang._('Action') }}</th>
-                <th data-column-id="src_ip" data-type="string" data-sortable="false" data-width="10em">{{ lang._('Source') }}</th>
-                <th data-column-id="dest_ip" data-type="string" data-sortable="false" data-width="10em">{{ lang._('Destination') }}</th>
-                <th data-column-id="alert" data-type="string" data-sortable="false" >{{ lang._('Alert') }}</th>
-                <th data-column-id="info" data-formatter="info" data-sortable="false" data-width="4em">{{ lang._('Info') }}</th>
-            </tr>
+              <tr>
+                  <th data-column-id="timestamp" data-type="string" data-sortable="false">{{ lang._('Timestamp') }}</th>
+                  <th data-column-id="alert_action" data-type="string" data-sortable="false" data-width="70px">{{ lang._('Action') }}</th>
+                  <th data-column-id="in_iface" data-type="interface" data-sortable="false" data-width="100px">{{ lang._('Interface') }}</th>
+                  <th data-column-id="src_ip" data-type="string" data-sortable="false" data-width="150px">{{ lang._('Source') }}</th>
+                  <th data-column-id="src_port" data-type="string" data-sortable="false" data-width="70px">{{ lang._('Port') }}</th>
+                  <th data-column-id="dest_ip" data-type="string" data-sortable="false" data-width="150px">{{ lang._('Destination') }}</th>
+                  <th data-column-id="dest_port" data-type="string" data-sortable="false" data-width="70px">{{ lang._('Port') }}</th>
+                  <th data-column-id="alert" data-type="string" data-sortable="false" >{{ lang._('Alert') }}</th>
+                  <th data-column-id="info" data-formatter="info" data-sortable="false" data-width="4em">{{ lang._('Info') }}</th>
+              </tr>
             </thead>
             <tbody>
             </tbody>
