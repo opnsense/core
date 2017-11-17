@@ -66,15 +66,20 @@ class Template(object):
         """
         result = {'+TARGETS': dict(), '+CLEANUP_TARGETS': dict()}
         file_path = '%s/%s' % (self._template_dir, module_name.replace('.', '/'))
-        if os.path.exists('%s/+TARGETS' % file_path):
-            for line in open('%s/+TARGETS' % file_path, 'r').read().split('\n'):
-                parts = line.split(':')
-                if len(parts) > 1 and parts[0].strip()[0] != '#':
-                    result['+TARGETS'][parts[0]] = parts[1].strip()
-                    if len(parts) == 2:
-                        result['+CLEANUP_TARGETS'][parts[0]] = parts[1].strip()
-                    elif parts[2].strip() != "":
-                        result['+CLEANUP_TARGETS'][parts[0]] = parts[2].strip()
+        for target_source in ['+TARGETS', '+TARGETS.overlay']:
+            if os.path.exists('%s/%s' % (file_path, target_source)):
+                for line in open('%s/%s' % (file_path, target_source), 'r').read().split('\n'):
+                    parts = line.split(':')
+                    if len(parts) > 1 and parts[0].strip()[0] != '#':
+                        source_file = parts[0].strip()
+                        target_name = parts[1].strip()
+                        if target_name in result['+TARGETS'].values():
+                            print ('overlay')
+                        result['+TARGETS'][source_file] = target_name
+                        if len(parts) == 2:
+                            result['+CLEANUP_TARGETS'][source_file] = target_name
+                        elif parts[2].strip() != "":
+                            result['+CLEANUP_TARGETS'][source_file] = parts[2].strip()
         return result
 
     def list_modules(self):
