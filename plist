@@ -348,6 +348,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/forms/dialogEdit.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/ActivityController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/ActivityController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/DnsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/FirewallController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/InterfaceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/NetflowController.php
@@ -362,7 +363,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/IndexController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/dialogAlert.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/dialogRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/dialogRuleset.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/dialogUserDefined.xml
@@ -783,7 +783,8 @@
 /usr/local/opnsense/www/js/bootstrap3-typeahead.min.js
 /usr/local/opnsense/www/js/d3.min.js
 /usr/local/opnsense/www/js/d3.min.js.LICENSE
-/usr/local/opnsense/www/js/jquery-1.12.4.min.js
+/usr/local/opnsense/www/js/jquery-3.2.1.min.js
+/usr/local/opnsense/www/js/jquery-migrate-3.0.1.min.js
 /usr/local/opnsense/www/js/jquery-sortable.js
 /usr/local/opnsense/www/js/jquery.bootgrid.LICENSE
 /usr/local/opnsense/www/js/jquery.bootgrid.js
@@ -957,7 +958,6 @@
 /usr/local/www/diag_logs_dhcp.php
 /usr/local/www/diag_logs_dnsmasq.php
 /usr/local/www/diag_logs_filter.php
-/usr/local/www/diag_logs_filter_dynamic.php
 /usr/local/www/diag_logs_filter_plain.php
 /usr/local/www/diag_logs_filter_summary.php
 /usr/local/www/diag_logs_gateways.php
@@ -1026,7 +1026,6 @@
 /usr/local/www/interfaces_vlan_edit.php
 /usr/local/www/interfaces_wireless.php
 /usr/local/www/interfaces_wireless_edit.php
-/usr/local/www/javascript/filter_log.js
 /usr/local/www/javascript/opnsense_legacy.js
 /usr/local/www/javascript/ticker.js
 /usr/local/www/javascript/wizard/autosuggest.js
