@@ -362,29 +362,44 @@ body{
   border-bottom: none;
 }
 
-.nav-tabs  {
+.nav-tabs {
   margin-right: 1px;
   border-bottom: 1px solid darken(map-get($colors, bordergrey), 30%);
 }
+
 .nav-tabs > li {
-  // border-radius: 5px;
-  background: #FBFBFB;
+  border-radius: 0px;
   border-top-right-radius: 10px;
-  border-right: 1px solid darken(#FBFBFB, 5%);
-  border-top: 1px solid darken(#FBFBFB, 5%);
-  border-left: 1px solid darken(#FBFBFB, 5%);
   margin-right: 2px;
-  border-bottom: 1px solid darken(map-get($colors, bordergrey), 30%);
-}
-.nav-tabs > li.active {
-  background: #FFF !important;
-  border-bottom: 1px solid map-get($colors, bordergrey);
 }
 
-.nav-tabs > li > a{
+.nav-tabs > li > a {
+  background: #FBFBFB;
   border-radius: 0px;
   border-top-right-radius: 10px;
   margin-right: 0px;
+}
+
+.nav-tabs > li > a,
+.nav-tabs > li > a:hover,
+.nav-tabs > li > a:focus {
+  border-right: 1px solid darken(#FBFBFB, 5%);
+  border-top: 1px solid darken(#FBFBFB, 5%);
+  border-left: 1px solid darken(#FBFBFB, 5%);
+  border-bottom: 1px solid darken(map-get($colors, bordergrey), 30%);
+}
+
+.nav-tabs > li.active > a {
+  background: #FFF !important;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  border-right: 1px solid darken(map-get($colors, bordergrey), 30%);
+  border-top: 1px solid darken(map-get($colors, bordergrey), 30%);
+  border-left: 1px solid darken(map-get($colors, bordergrey), 30%);
+  border-bottom: 1px solid darken(#FBFBFB, 5%);
 }
 
 .nav-tabs > li > a.visible-lg-inline-block:not(.pull-right) {
