@@ -175,7 +175,7 @@ function set_language()
     bind_textdomain_codeset($textdomain, $lang_encoding);
 }
 
-function session_auth(&$Login_Error)
+function session_auth()
 {
     global $config, $_SESSION;
 
@@ -238,8 +238,6 @@ function session_auth(&$Login_Error)
             header(url_safe("Location: {$_SERVER['REQUEST_URI']}"));
             exit;
         } else {
-            /* give the user an error message */
-            $Login_Error = gettext('Wrong username or password.');
             log_error("Web GUI authentication error for '{$_POST['usernamefld']}' from {$_SERVER['REMOTE_ADDR']}");
         }
     }
@@ -303,12 +301,10 @@ function session_auth(&$Login_Error)
     return true;
 }
 
-$Login_Error = '';
-
 /* Authenticate user - exit if failed */
-if (!session_auth($Login_Error)) {
+if (!session_auth()) {
     set_language();
-    display_login_form($Login_Error);
+    display_login_form(gettext('Wrong username or password.'));
     exit;
 }
 
