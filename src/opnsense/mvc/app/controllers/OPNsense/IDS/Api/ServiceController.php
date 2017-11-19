@@ -49,6 +49,7 @@ class ServiceController extends ApiControllerBase
     public function startAction()
     {
         if ($this->request->isPost()) {
+            $this->sessionClose();
             $backend = new Backend();
             $response = trim($backend->configdRun("ids start"));
             return array("response" => $response);
@@ -64,6 +65,7 @@ class ServiceController extends ApiControllerBase
     public function stopAction()
     {
         if ($this->request->isPost()) {
+            $this->sessionClose();
             $backend = new Backend();
             $response = trim($backend->configdRun("ids stop"));
             return array("response" => $response);
@@ -79,6 +81,7 @@ class ServiceController extends ApiControllerBase
     public function restartAction()
     {
         if ($this->request->isPost()) {
+            $this->sessionClose();
             $backend = new Backend();
             $response = $backend->configdRun("ids restart");
             return array("response" => $response);
@@ -94,6 +97,7 @@ class ServiceController extends ApiControllerBase
      */
     public function statusAction()
     {
+        $this->sessionClose();
         $backend = new Backend();
         $mdlIDS = new IDS();
         $response = $backend->configdRun("ids status");
@@ -278,6 +282,7 @@ class ServiceController extends ApiControllerBase
      */
     public function getAlertInfoAction($alertId, $fileid = "")
     {
+        $this->sessionClose();
         $backend = new Backend();
         $filter = new Filter();
         $id = $filter->sanitize($alertId, "int");
@@ -297,6 +302,7 @@ class ServiceController extends ApiControllerBase
      */
     public function getAlertLogsAction()
     {
+        $this->sessionClose();
         $backend = new Backend();
         $response = $backend->configdRun("ids list alertlogs");
         $result = json_decode($response, true);
