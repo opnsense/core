@@ -49,31 +49,6 @@ class ControllerRoot extends Controller
     }
 
     /**
-     * translate a text
-     * @return ViewTranslator
-     */
-    public static function getTranslator()
-    {
-        $lang = 'en_US';
-
-        // Set locale
-        foreach (Config::getInstance()->object()->system->children() as $key => $node) {
-            if ($key == 'language') {
-                $lang = $node->__toString();
-                break;
-            }
-        }
-
-        $locale = $lang . '.UTF-8';
-        bind_textdomain_codeset('OPNsense', $locale);
-        return new ViewTranslator(array(
-            'directory' => '/usr/local/share/locale',
-            'defaultDomain' => 'OPNsense',
-            'locale' => $locale,
-        ));
-    }
-
-    /**
      * get system logger
      * @param string $ident syslog identifier
      * @return Syslog log handler
@@ -109,6 +84,41 @@ class ControllerRoot extends Controller
             $this->response->redirect("/", true);
             return false;
         }
+
+        // User lang
+        $lang = '';
+        foreach (Config::getInstance()->object()->system->user as $user) {
+            if ($this->session->get("Username") == $user->name->__toString()) {
+                if (isset($user->language)) {
+                    $lang = $user->language->__toString();
+                }
+                break;
+            }
+        }
+
+        // System lang
+        if ($lang == '')
+        {
+            foreach (Config::getInstance()->object()->system->children() as $key => $node) {
+                if ($key == 'language') {
+                    $lang = $node->__toString();
+                    break;
+                }
+            }
+        }
+
+        // Set locale
+        if ($lang == '') {
+            $lang = 'en_US';
+        }
+        $locale = $lang . '.UTF-8';
+        bind_textdomain_codeset('OPNsense', $locale);
+        $this->translator = new ViewTranslator(array(
+            'directory' => '/usr/local/share/locale',
+            'defaultDomain' => 'OPNsense',
+            'locale' => $locale,
+        ));
+
         $this->session->set("last_access", time());
 
         // Authorization using legacy acl structure
