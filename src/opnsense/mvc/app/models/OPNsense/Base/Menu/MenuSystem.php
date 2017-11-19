@@ -103,9 +103,9 @@ class MenuSystem
                 }
             }
         }
-        // add interfaces to "Interfaces" menu tab... kind of a hack, may need some improvement.
-        $ifarr = array();
         $config = Config::getInstance()->object();
+        // add interfaces to "Interfaces" menu tab...
+        $ifarr = array();
         if ($config->interfaces->count() > 0) {
             foreach ($config->interfaces->children() as $key => $node) {
                 if (empty($node->virtual)) {
@@ -123,7 +123,37 @@ class MenuSystem
                 'order' => $ordid++,
             ));
         }
-        unset($ifarr);
+
+        // add interfaces to "Firewall: Rules" menu tab...
+        if ($config->interfaces->count() > 0) {
+            foreach ($config->interfaces->children() as $key => $node) {
+                if (isset($node->enable)) {
+                    $fwarr[$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
+                }
+            }
+        }
+        natcasesort($fwarr);
+	$fwarr = array_merge(array('FloatingRules' => gettext('Floating')), $fwarr);
+        $ordid = 0;
+        foreach ($fwarr as $key => $descr) {
+            $this->appendItem('Firewall.Rules', $key, array(
+                'url' => '/firewall_rules.php?if='. $key,
+                'visiblename' => $descr,
+                'order' => $ordid++,
+            ));
+            $this->appendItem('Firewall.Rules.' . $key, 'Add' . $key, array(
+                'url' => '/firewall_rules_edit.php?if='. $key,
+                'visibility' => 'hidden',
+            ));
+            $this->appendItem('Firewall.Rules.' . $key, 'Edit' . $key, array(
+                'url' => '/firewall_rules_edit.php?if=' . $key . '&id=*',
+                'visibility' => 'hidden',
+            ));
+            $this->appendItem('Firewall.Rules.' . $key, 'Clone' . $key, array(
+                'url' => '/firewall_rules_edit.php?if=' . $key . '&dup=*',
+                'visibility' => 'hidden',
+            ));
+        }
     }
 
     /**

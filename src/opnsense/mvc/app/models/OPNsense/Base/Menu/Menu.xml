@@ -145,11 +145,7 @@
             </View>
             <Import order="200" url="/firewall_aliases_import.php"/>
         </Aliases>
-        <Rules order="20" url="/firewall_rules.php" cssClass="fa fa-check fa-fw">
-            <RulesEdit url="/firewall_rules_edit.php*" visibility="hidden"/>
-            <Floating url="/firewall_rules.php?if=FloatingRules" visibility="hidden"/>
-            <Interface url="/firewall_rules.php?if=*" visibility="hidden"/>
-        </Rules>
+        <Rules order="20" cssClass="fa fa-check fa-fw" />
         <NAT order="30" cssClass="fa fa-exchange fa-fw">
             <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
               <Edit url="/firewall_nat_edit.php*" visibility="hidden"/>
