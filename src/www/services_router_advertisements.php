@@ -36,17 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['if']) && !empty($config['interfaces'][$_GET['if']])) {
         $if = $_GET['if'];
     } else {
-        $savemsg = gettext(
-            'Router Advertisements can only be enabled on interfaces configured with static ' .
-            'IP addresses. Only interfaces configured with a static IP will be shown.'
-         );
-         foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if_id => $intf) {
-             if (!empty($intf['enable']) && is_ipaddrv6($intf['ipaddrv6']) && !is_linklocal($oc['ipaddrv6'])) {
-                 $if = $if_id;
-                 break;
-             }
-         }
+        /* if no interface is provided this invoke is invalid */
+        header(url_safe('Location: /index.php'));
+        exit;
     }
+
     $pconfig = array();
     $config_copy_fieldsnames = array('ramode', 'rapriority', 'rainterface', 'ramininterval', 'ramaxinterval', 'radomainsearchlist');
     foreach ($config_copy_fieldsnames as $fieldname) {
@@ -210,23 +204,8 @@ include("head.inc");
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <section class="col-xs-12">
-<?php
-          /* active tabs */
-          $tab_array = array();
-          foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if_id => $intf) {
-              if (!empty($intf['enable']) && is_ipaddrv6($intf['ipaddrv6'])) {
-                  $ifname = !empty($intf['descr']) ? htmlspecialchars($intf['descr']) : strtoupper($if_id);
-                  $tab_array[] = array($ifname, $if_id == $if, "services_router_advertisements.php?if={$if_id}");
-              }
-          }
-
-          display_top_tabs($tab_array);
-          ?>
           <div class="tab-content content-box col-xs-12">
             <form method="post" name="iform" id="iform">
-            <?php if (count($tab_array) == 0):?>
-            <?php print_content_box(gettext('No interfaces found with a static IPv6 address.')); ?>
-            <?php else: ?>
               <div class="table-responsive">
                 <table class="table table-striped">
                   <tr>
@@ -429,8 +408,6 @@ include("head.inc");
                   </tr>
                 </table>
               </div>
-<?php
-            endif;?>
             </form>
           </div>
         </section>

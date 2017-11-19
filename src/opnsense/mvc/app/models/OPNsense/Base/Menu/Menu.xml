@@ -202,31 +202,21 @@
         </LogFiles>
     </Firewall>
     <Services order="60" cssClass="fa fa-cog">
-        <DHCP cssClass="fa fa-bullseye fa-fw">
-            <Server order="100" url="/services_dhcp.php">
-                <Tab url="/services_dhcp.php?if=*" visibility="hidden"/>
-                <Edit url="/services_dhcp_edit.php?*" visibility="hidden"/>
-            </Server>
+        <DHCP VisibleName="DHCP4" cssClass="fa fa-bullseye fa-fw">
             <Relay order="200" url="/services_dhcp_relay.php"/>
             <Leases order="300" url="/status_dhcp_leases.php">
                 <Details url="/status_dhcp_leases.php?*" visibility="hidden"/>
             </Leases>
             <LogFile VisibleName="Log File" order="400" url="/diag_logs_dhcp.php"/>
         </DHCP>
-        <DHCPv6 cssClass="fa fa-bullseye fa-fw">
-            <Advertisements order="100" url="/services_router_advertisements.php">
-                <Interface url="/services_router_advertisements.php?*" visibility="hidden"/>
-            </Advertisements>
-            <Server order="200" url="/services_dhcpv6.php">
-                <Interface url="/services_dhcpv6.php?*" visibility="hidden"/>
-                <Edit url="/services_dhcpv6_edit.php?*" visibility="hidden"/>
-            </Server>
+        <DHCPv6 VisibleName="DHCP6" cssClass="fa fa-bullseye fa-fw">
             <Relay order="300" url="/services_dhcpv6_relay.php"/>
             <Leases order="400" url="/status_dhcpv6_leases.php">
                 <Details url="/status_dhcpv6_leases.php?*" visibility="hidden"/>
             </Leases>
         </DHCPv6>
         <OpenDNS VisibleName="OpenDNS" url="/services_opendns.php" cssClass="fa fa-tags fa-fw"/>
+        <RouterAdv VisibleName="Router Advertisements" cssClass="fa fa-bullseye fa-fw" />
         <Diagnostics order="900" cssClass="fa fa-medkit fa-fw" url="/status_services.php">
           <All url="/status_services.php?*" visibility="hidden"/>
         </Diagnostics>

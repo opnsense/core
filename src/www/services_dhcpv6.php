@@ -50,17 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['if']) && !empty($config['interfaces'][$_GET['if']])) {
         $if = $_GET['if'];
     } else {
-        $savemsg = gettext(
-          "The DHCPv6 Server can only be enabled on interfaces configured with static " .
-          "IP addresses. Only interfaces configured with a static IP will be shown."
-        );
-        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if_id => $intf) {
-            if (!empty($intf['enable']) && isset($intf['ipaddrv6']) && is_ipaddrv6($intf['ipaddrv6']) && !is_linklocal($intf['ipaddrv6'])) {
-                $if = $if_id;
-                break;
-            }
-        }
+        /* if no interface is provided this invoke is invalid */
+        header(url_safe('Location: /index.php'));
+        exit;
     }
+
     $pconfig = array();
 
     if (!empty($config['dhcpdv6'][$if]['range'])) {
@@ -421,24 +415,10 @@ include("head.inc");
         <?php print_info_box_apply(gettext("The static mapping configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
         <?php endif; ?>
         <section class="col-xs-12">
-<?php
-        /* active tabs */
-        $tab_array = array();
-        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if_id => $intf) {
-            if (isset($intf['enable']) && isset($intf['ipaddrv6']) && is_ipaddrv6($intf['ipaddrv6'])) {
-                $ifname = !empty($intf['descr']) ? htmlspecialchars($intf['descr']) : strtoupper($if_id);
-                $tab_array[] = array($ifname, $if_id == $if, "services_dhcpv6.php?if={$if_id}");
-            }
-        }
-
-        display_top_tabs($tab_array);
-        ?>
         <div class="tab-content content-box col-xs-12">
           <form method="post" name="iform" id="iform">
               <?php if (!empty($config['dhcrelay6']['enabled'])): ?>
               <?php print_content_box(gettext('DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.')); ?>
-              <?php elseif (count($tab_array) == 0):?>
-              <?php print_content_box(gettext('No interfaces found with a static IPv6 address.')); ?>
               <?php else: ?>
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">

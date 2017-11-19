@@ -108,17 +108,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pool = $_GET['pool'];
         }
     } else {
-        $savemsg = gettext("The DHCP Server can only be enabled on interfaces configured with static IP addresses.") . "<br/><br/>" . gettext("Only interfaces configured with a static IP will be shown.");
-    }
-
-    /* If no interface is provided, choose first one from interfaces */
-    if (!isset($if)) {
-        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if_id => $intf) {
-            if (!empty($intf['enable']) && is_ipaddrv4($intf['ipaddr'])) {
-                $if = $if_id;
-                break;
-            }
-        }
+        /* if no interface is provided this invoke is invalid */
+        header(url_safe('Location: /index.php'));
+        exit;
     }
 
     $a_pools = &config_read_array('dhcpd', $if, 'pool');
@@ -629,25 +621,9 @@ include("head.inc");
         <?php print_info_box_apply(gettext("The static mapping configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
         <?php endif; ?>
         <section class="col-xs-12">
-<?php
-            /* active tabs */
-            $tab_array = array();
-            foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if_id => $intf) {
-                if (isset($intf['enable']) && is_ipaddrv4($intf['ipaddr'])) {
-                    $ifname = !empty($intf['descr']) ? htmlspecialchars($intf['descr']) : strtoupper($if_id);
-                    if ($if_id == $if) {
-                        $tab_array[] = array($ifname, true, "services_dhcp.php?if={$if_id}");
-                    } else {
-                        $tab_array[] = array($ifname, false, "services_dhcp.php?if={$if_id}");
-                    }
-                }
-            }?>
             <?php if (isset($config['dhcrelay']['enable'])): ?>
               <?php print_info_box(gettext("DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.")); ?>
-            <?php elseif (count($tab_array) == 0):?>
-              <?php print_info_box(("No interfaces found with a static IPv4 address.")); ?>
             <?php else: ?>
-              <?php display_top_tabs($tab_array); ?>
             <div class="tab-content content-box col-xs-12">
               <form method="post" name="iform" id="iform">
                 <div class="table-responsive">

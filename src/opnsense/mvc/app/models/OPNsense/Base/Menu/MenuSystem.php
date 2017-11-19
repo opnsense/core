@@ -152,12 +152,63 @@ class MenuSystem
                 'visibility' => 'hidden',
             ));
             $this->appendItem('Firewall.Rules.' . $key, 'Edit' . $key, array(
-                'url' => '/firewall_rules_edit.php?if=' . $key . '&id=*',
+                'url' => '/firewall_rules_edit.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
             ));
-            $this->appendItem('Firewall.Rules.' . $key, 'Clone' . $key, array(
-                'url' => '/firewall_rules_edit.php?if=' . $key . '&dup=*',
+        }
+
+        // add interfaces to "Services: DHCP(v6)" menu tab:
+        $dhcp4arr = array();
+        $dhcp6arr = array();
+        if ($config->interfaces->count() > 0) {
+            foreach ($config->interfaces->children() as $key => $node) {
+                if (empty($node->virtual) && isset($node->enable)) {
+                    if (!empty(filter_var($node->ipaddr, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))) {
+                        $dhcp4arr[$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
+                    }
+                    if (!empty(filter_var($node->ipaddrv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))) {
+                        $dhcp6arr[$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
+                    }
+                }
+            }
+        }
+        natcasesort($dhcp4arr);
+        natcasesort($dhcp6arr);
+        $ordid = 0;
+        foreach ($dhcp4arr as $key => $descr) {
+            $this->appendItem('Services.DHCP', $key, array(
+                'url' => '/services_dhcp.php?if='. $key,
+                'visiblename' => "[$descr]",
+                'order' => $ordid++,
+            ));
+            $this->appendItem('Services.DHCP.' . $key, 'Add' . $key, array(
+                'url' => '/services_dhcp_edit.php?if='. $key,
                 'visibility' => 'hidden',
+            ));
+            $this->appendItem('Services.DHCP.' . $key, 'Edit' . $key, array(
+                'url' => '/services_dhcp_edit.php?if='. $key . '&*',
+                'visibility' => 'hidden',
+            ));
+        }
+        $ordid = 0;
+        foreach ($dhcp6arr as $key => $descr) {
+            $this->appendItem('Services.DHCPv6', $key, array(
+                'url' => '/services_dhcpv6.php?if='. $key,
+                'visiblename' => "[$descr]",
+                'order' => $ordid++,
+            ));
+            $this->appendItem('Services.DHCPv6.' . $key, 'Add' . $key, array(
+                'url' => '/services_dhcpv6_edit.php?if='. $key,
+                'visibility' => 'hidden',
+            ));
+            $this->appendItem('Services.DHCPv6.' . $key, 'Edit' . $key, array(
+                'url' => '/services_dhcpv6_edit.php?if='. $key . '&*',
+                'visibility' => 'hidden',
+            ));
+            $this->appendItem('Services.RouterAdv', $key, array(
+                'url' => '/services_router_advertisements.php?if='. $key,
+                'visiblename' => "[$descr]",
+                'order' => $ordid++,
             ));
         }
     }
