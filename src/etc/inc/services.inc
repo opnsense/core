@@ -165,6 +165,8 @@ function services_radvd_configure($blacklist = array())
                 $radvdconf .= "\tAdvManagedFlag on;\n";
                 $radvdconf .= "\tAdvOtherConfigFlag on;\n";
                 break;
+            default:
+                break;
         }
         $radvdconf .= "\tprefix {$subnetv6}/{$ifcfgsnv6} {\n";
         $radvdconf .= "\t\tDeprecatePrefix ". (!empty($dhcpv6ifconf['rainterface']) ? "off" : "on").";\n";
@@ -184,6 +186,8 @@ function services_radvd_configure($blacklist = array())
                 $radvdconf .= "\t\tAdvOnLink on;\n";
                 $radvdconf .= "\t\tAdvAutonomous on;\n";
                 $radvdconf .= "\t\tAdvRouterAddr on;\n";
+                break;
+            default:
                 break;
         }
         $radvdconf .= "\t};\n";
@@ -1267,21 +1271,19 @@ EOD;
             }
         }
 
-        if (isset($config['dhcpdv6'][$dhcpv6if]['ramode']) && $config['dhcpdv6'][$dhcpv6if]['ramode'] <> "unmanaged") {
-            if (preg_match("/poes/si", $dhcpv6if)) {
-                /* magic here */
-                $dhcpdv6ifs = array_merge($dhcpdv6ifs, get_pppoes_child_interfaces($dhcpv6if));
-            } else {
-                $realif = get_real_interface($dhcpv6if, "inet6");
-                if (stristr("$realif", "bridge")) {
-                    $mac = get_interface_mac($realif);
-                    $v6address = generate_ipv6_from_mac($mac);
-                    /* Create link local address for bridges */
-                    mwexec("/sbin/ifconfig {$realif} inet6 {$v6address}");
-                }
-                $realif = escapeshellcmd($realif);
-                $dhcpdv6ifs[] = $realif;
+        if (preg_match("/poes/si", $dhcpv6if)) {
+            /* magic here */
+            $dhcpdv6ifs = array_merge($dhcpdv6ifs, get_pppoes_child_interfaces($dhcpv6if));
+        } else {
+            $realif = get_real_interface($dhcpv6if, "inet6");
+            if (stristr("$realif", "bridge")) {
+                $mac = get_interface_mac($realif);
+                $v6address = generate_ipv6_from_mac($mac);
+                /* create link local address for bridges */
+                mwexec("/sbin/ifconfig {$realif} inet6 {$v6address}");
             }
+            $realif = escapeshellcmd($realif);
+            $dhcpdv6ifs[] = $realif;
         }
     }
 
