@@ -66,15 +66,22 @@ class Template(object):
         """
         result = {'+TARGETS': dict(), '+CLEANUP_TARGETS': dict()}
         file_path = '%s/%s' % (self._template_dir, module_name.replace('.', '/'))
-        for target_source in ['+TARGETS', '+TARGETS.overlay']:
-            if os.path.exists('%s/%s' % (file_path, target_source)):
-                for line in open('%s/%s' % (file_path, target_source), 'r').read().split('\n'):
+        target_sources = ['%s/+TARGETS' % file_path]
+        if os.path.exists('%s/+TARGETS.D' % file_path):
+            for filename in sorted(glob.glob('%s/+TARGETS.D/*.TARGET' % file_path)):
+                target_sources.append(filename)
+
+        for target_source in target_sources:
+            if os.path.exists(target_source):
+                for line in open(target_source, 'r').read().split('\n'):
                     parts = line.split(':')
                     if len(parts) > 1 and parts[0].strip()[0] != '#':
                         source_file = parts[0].strip()
                         target_name = parts[1].strip()
                         if target_name in result['+TARGETS'].values():
-                            print ('overlay')
+                            syslog.syslog(syslog.LOG_NOTICE, "template overlay %s with %s" % (
+                                target_name, os.path.basename(target_source)
+                            ))
                         result['+TARGETS'][source_file] = target_name
                         if len(parts) == 2:
                             result['+CLEANUP_TARGETS'][source_file] = target_name
