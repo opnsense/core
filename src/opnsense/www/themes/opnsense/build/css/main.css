@@ -5656,15 +5656,13 @@ body {
 .nav-tabs > li {
   border-radius: 0px;
   border-top-right-radius: 10px;
-  margin-right: 2px;
-}
+  margin-right: 2px; }
 
 .nav-tabs > li > a {
   background: #FBFBFB;
   border-radius: 0px;
   border-top-right-radius: 10px;
-  margin-right: 0px;
-}
+  margin-right: 0px; }
 
 .nav-tabs > li > a,
 .nav-tabs > li > a:hover,
@@ -5675,8 +5673,7 @@ body {
   border-bottom: 1px solid #999999; }
 
 .nav-tabs > li.active > a {
-  background: #FFF !important;
-}
+  background: #FFF !important; }
 
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
