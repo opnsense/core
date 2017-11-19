@@ -152,6 +152,28 @@ function getAllowedPages($username) {
     return $allowed_pages;
 }
 
+function set_language()
+{
+    global $config, $userindex;
+
+    $lang = 'en_US';
+
+    if (!empty($config['system']['language'])) {
+        $lang = $config['system']['language'];
+    }
+
+    if (!empty($_SESSION['Username']) && array_key_exists($_SESSION['Username'], $userindex)) {
+        $lang = $config['system']['user'][$userindex[$_SESSION['Username']]]['language'];
+    }
+
+    $lang_encoding = $lang . '.UTF-8';
+    $textdomain = 'OPNsense';
+
+    putenv('LANG=' . $lang_encoding);
+    textdomain($textdomain);
+    bindtextdomain($textdomain, '/usr/local/share/locale');
+    bind_textdomain_codeset($textdomain, $lang_encoding);
+}
 
 function session_auth(&$Login_Error)
 {
@@ -285,9 +307,12 @@ $Login_Error = '';
 
 /* Authenticate user - exit if failed */
 if (!session_auth($Login_Error)) {
+    set_language();
     display_login_form($Login_Error);
     exit;
 }
+
+set_language();
 
 /*
  * redirect to first allowed page if requesting a wrong url
