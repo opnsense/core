@@ -175,9 +175,9 @@ function set_language()
     bind_textdomain_codeset($textdomain, $lang_encoding);
 }
 
-function session_auth()
+function session_auth(&$Login_Error)
 {
-    global $config, $_SESSION;
+    global $config;
 
     // Handle HTTPS httponly and secure flags
     $currentCookieParams = session_get_cookie_params();
@@ -239,6 +239,7 @@ function session_auth()
             exit;
         } else {
             log_error("Web GUI authentication error for '{$_POST['usernamefld']}' from {$_SERVER['REMOTE_ADDR']}");
+            $Login_Error = true;
         }
     }
 
@@ -301,10 +302,13 @@ function session_auth()
     return true;
 }
 
+/* XXX spagehtti code :( */
+$Login_Error = false;
+
 /* Authenticate user - exit if failed */
-if (!session_auth()) {
+if (!session_auth($Login_Error)) {
     set_language();
-    display_login_form(gettext('Wrong username or password.'));
+    display_login_form($Login_Error ? gettext('Wrong username or password.') : null);
     exit;
 }
 
@@ -377,7 +381,7 @@ function display_error_form($http_code, $desc)
 
 } // end function
 
-function display_login_form($Login_Error = '')
+function display_login_form($Login_Error)
 {
     global $config, $g;
 
