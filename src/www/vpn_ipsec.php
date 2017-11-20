@@ -410,6 +410,9 @@ $( document ).ready(function() {
                             16 => '16 (4096&nbsp;bits)',
                             17 => '17 (6144&nbsp;bits)',
                             18 => '18 (8192&nbsp;bits)',
+                            19 => '19 (256&nbsp;bit&nbsp;elliptic&nbsp;curve)',
+                            20 => '20 (384&nbsp;bit&nbsp;elliptic&nbsp;curve)',
+                            21 => '21 (521&nbsp;bit&nbsp;elliptic&nbsp;curve)',
                             22 => '22 (1024(sub 160)&nbsp;bits)',
                             23 => '23 (2048(sub 224)&nbsp;bits)',
                             24 => '24 (2048(sub 256)&nbsp;bits)'
