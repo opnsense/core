@@ -136,8 +136,6 @@ function services_radvd_configure($blacklist = array())
             continue;
         }
 
-        $ifcfgsnv6 = get_interface_subnetv6($dhcpv6if);
-        $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
         $radvdifs[$realif] = 1;
 
         $radvdconf .= "# Generated for DHCPv6 Server $dhcpv6if\n";
@@ -159,6 +157,7 @@ function services_radvd_configure($blacklist = array())
                 $radvdconf .= "\tAdvDefaultPreference medium;\n";
                 break;
         }
+
         switch($dhcpv6ifconf['ramode']) {
             case "managed":
             case "assist":
@@ -172,30 +171,47 @@ function services_radvd_configure($blacklist = array())
             default:
                 break;
         }
-        $radvdconf .= "\tprefix {$subnetv6}/{$ifcfgsnv6} {\n";
-        $radvdconf .= "\t\tDeprecatePrefix ". (!empty($dhcpv6ifconf['rainterface']) ? "off" : "on").";\n";
-        switch($dhcpv6ifconf['ramode']) {
-            case "managed":
-                $radvdconf .= "\t\tAdvOnLink on;\n";
-                $radvdconf .= "\t\tAdvAutonomous off;\n";
-                $radvdconf .= "\t\tAdvRouterAddr on;\n";
-                break;
-            case "router":
-                $radvdconf .= "\t\tAdvOnLink off;\n";
-                $radvdconf .= "\t\tAdvAutonomous off;\n";
-                $radvdconf .= "\t\tAdvRouterAddr on;\n";
-                break;
-            case "assist":
-            case "unmanaged":
-            case "stateless":
-                $radvdconf .= "\t\tAdvOnLink on;\n";
-                $radvdconf .= "\t\tAdvAutonomous on;\n";
-                $radvdconf .= "\t\tAdvRouterAddr on;\n";
-                break;
-            default:
-                break;
+
+        $stanzas = array();
+        $ifcfgsnv6 = get_interface_subnetv6($dhcpv6if);
+        $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
+        $stanzas[] = "{$subnetv6}/{$ifcfgsnv6}";
+
+        $viparr = &config_read_array('virtualip', 'vip');
+        foreach ($viparr as $vip) {
+            if ($vip['interface'] == $dhcpv6if && is_ipaddrv6($vip['subnet'])) {
+                $ifcfgsnv6 = $vip['subnet_bits'];
+                $subnetv6 = gen_subnetv6($vip['subnet'], $ifcfgsnv6);
+                $stanzas[] = "{$subnetv6}/{$ifcfgsnv6}";
+            }
         }
-        $radvdconf .= "\t};\n";
+
+        foreach ($stanzas as $stanza) {
+            $radvdconf .= "\tprefix {$stanza} {\n";
+            $radvdconf .= "\t\tDeprecatePrefix ". (!empty($dhcpv6ifconf['rainterface']) ? "off" : "on").";\n";
+            switch($dhcpv6ifconf['ramode']) {
+                case "managed":
+                    $radvdconf .= "\t\tAdvOnLink on;\n";
+                    $radvdconf .= "\t\tAdvAutonomous off;\n";
+                    $radvdconf .= "\t\tAdvRouterAddr on;\n";
+                    break;
+                case "router":
+                    $radvdconf .= "\t\tAdvOnLink off;\n";
+                    $radvdconf .= "\t\tAdvAutonomous off;\n";
+                    $radvdconf .= "\t\tAdvRouterAddr on;\n";
+                    break;
+                case "assist":
+                case "unmanaged":
+                case "stateless":
+                    $radvdconf .= "\t\tAdvOnLink on;\n";
+                    $radvdconf .= "\t\tAdvAutonomous on;\n";
+                    $radvdconf .= "\t\tAdvRouterAddr on;\n";
+                    break;
+                default:
+                    break;
+            }
+            $radvdconf .= "\t};\n";
+        }
 
         if (!empty($dhcpv6ifconf['rainterface'])) {
             $radvdconf .= "\troute ::/0 {\n";
