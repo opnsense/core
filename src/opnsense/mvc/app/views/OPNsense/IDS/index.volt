@@ -333,7 +333,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                     // convert interface to name
                                     interface: {
                                         from: function (value) { return value; },
-                                        to: function (value) { return interface_descriptions[value]; }
+                                        to: function (value) { return interface_descriptions[value.replace(/\+$/, '')]; }
                                     }
                                 }
                             }
@@ -373,8 +373,8 @@ POSSIBILITY OF SUCH DAMAGE.
                                             if (data[fieldname] != undefined) {
                                                 var row = $("<tr/>");
                                                 row.append($("<td/>").text(fielddesc));
-                                                if (fieldname == 'in_iface' && interface_descriptions[data[fieldname]] != undefined) {
-                                                    row.append($("<td/>").text(interface_descriptions[data[fieldname]]));
+                                                if (fieldname == 'in_iface' && interface_descriptions[data[fieldname].replace(/\+$/, '')] != undefined) {
+                                                    row.append($("<td/>").text(interface_descriptions[data[fieldname].replace(/\+$/, '')]));
                                                 } else {
                                                     row.append($("<td/>").text(data[fieldname]));
                                                 }
@@ -428,11 +428,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                             );
 
                                             var row = $("<tr/>");
-                                            row.append(
-                                              $("<td colspan=2/>").append(
-                                                $("<pre/>").text(data['payload_printable'])
-                                              )
-                                            );
+                                            row.append( $("<td colspan=2/>").append($("<pre/>").html($("<code/>").text(data['payload_printable']))));
                                             tbl_tbody.append(row);
                                         }
 
