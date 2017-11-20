@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-    Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>.
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
@@ -116,23 +116,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
         }
-        /* input validation */
-        $reqdfields = explode(" ", "range_from range_to");
-        $reqdfieldsn = array(gettext("Range begin"),gettext("Range end"));
-        do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-        if (!empty($pconfig['prefixrange_from']) && !is_ipaddrv6($pconfig['prefixrange_from'])) {
-            $input_errors[] = gettext("A valid range must be specified.");
-        }
-        if (!empty($pconfig['prefixrange_to']) && !is_ipaddrv6($pconfig['prefixrange_to'])) {
+        if (!empty($pconfig['prefixrange_from']) && !is_ipaddrv6($pconfig['prefixrange_from']) ||
+            !empty($pconfig['prefixrange_to']) && !is_ipaddrv6($pconfig['prefixrange_to'])) {
             $input_errors[] = gettext("A valid prefix range must be specified.");
         }
-        if (!empty($pconfig['range_from']) && !is_ipaddrv6($pconfig['range_from'])) {
+        if (!empty($pconfig['range_from']) && empty($pconfig['range_to']) ||
+            empty($pconfig['range_from']) && !empty($pconfig['range_to'])) {
             $input_errors[] = gettext("A valid range must be specified.");
-        }
-        if (!empty($pconfig['range_to']) && !is_ipaddrv6($pconfig['range_to'])) {
+        } elseif (!empty($pconfig['range_from']) && !is_ipaddrv6($pconfig['range_from']) ||
+            !empty($pconfig['range_to']) && !is_ipaddrv6($pconfig['range_to'])) {
             $input_errors[] = gettext("A valid range must be specified.");
+        } else {
+            /* Disallow a range that includes the virtualip */
+            if (!empty($config['virtualip']['vip'])) {
+                foreach($config['virtualip']['vip'] as $vip) {
+                    if($vip['interface'] == $if) {
+                        if (!empty($vip['subnetv6']) && is_inrange_v6($vip['subnetv6'], $pconfig['range_from'], $pconfig['range_to'])) {
+                            $input_errors[] = sprintf(gettext("The subnet range cannot overlap with virtual IPv6 address %s."),$vip['subnetv6']);
+                        }
+                    }
+                }
+            }
         }
+
         if (!empty($pconfig['gateway']) && !is_ipaddrv6($pconfig['gateway'])) {
             $input_errors[] = gettext("A valid IPv6 address must be specified for the gateway.");
         }
@@ -179,17 +186,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("A valid URL must be specified for the network bootfile.");
         }
 
-        // Disallow a range that includes the virtualip
-        if (!empty($config['virtualip']['vip'])) {
-            foreach($config['virtualip']['vip'] as $vip) {
-                if($vip['interface'] == $if) {
-                    if (!empty($vip['subnetv6']) && is_inrange_v6($vip['subnetv6'], $pconfig['range_from'], $pconfig['range_to'])) {
-                        $input_errors[] = sprintf(gettext("The subnet range cannot overlap with virtual IPv6 address %s."),$vip['subnetv6']);
-                    }
-                }
-            }
-        }
-
         if (count($input_errors) == 0) {
             /* make sure the range lies within the current subnet */
             $ifcfgip = get_interface_ipv6($if);
@@ -197,36 +193,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $subnet_start = gen_subnetv6($ifcfgip, $ifcfgsn);
             $subnet_end = gen_subnetv6_max($ifcfgip, $ifcfgsn);
 
-            if (is_ipaddrv6($ifcfgip)) {
-                if ((!is_inrange_v6($pconfig['range_from'], $subnet_start, $subnet_end)) ||
-                  (!is_inrange_v6($pconfig['range_to'], $subnet_start, $subnet_end))) {
-                    $input_errors[] = gettext("The specified range lies outside of the current subnet.");
+            if (!empty($pconfig['range_from']) && !empty($pconfig['range_to'])) {
+                if (is_ipaddrv6($ifcfgip) && !empty($pconfig['range_from']) && !empty($pconfig['range_to'])) {
+                    if ((!is_inrange_v6($pconfig['range_from'], $subnet_start, $subnet_end)) ||
+                        (!is_inrange_v6($pconfig['range_to'], $subnet_start, $subnet_end))) {
+                        $input_errors[] = gettext("The specified range lies outside of the current subnet.");
+                    }
                 }
-            }
-            /* "from" cannot be higher than "to" */
-            if (inet_pton($pconfig['range_from']) > inet_pton($pconfig['range_to'])) {
-                $input_errors[] = gettext("The range is invalid (first element higher than second element).");
+
+                /* "from" cannot be higher than "to" */
+                if (inet_pton($pconfig['range_from']) > inet_pton($pconfig['range_to'])) {
+                    $input_errors[] = gettext("The range is invalid (first element higher than second element).");
+                }
+
+                /* Verify static mappings do not overlap:
+                   - available DHCP range
+                   - prefix delegation range (FIXME: still need to be completed) */
+                $dynsubnet_start = inet_pton($pconfig['range_from']);
+                $dynsubnet_end = inet_pton($pconfig['range_to']);
+                if (!empty($config['dhcpdv6'][$if]['staticmap'])) {
+                    foreach ($config['dhcpdv6'][$if]['staticmap'] as $map) {
+                        if (!empty($map['ipaddrv6']) && inet_pton($map['ipaddrv6']) > $dynsubnet_start && inet_pton($map['ipaddrv6']) < $dynsubnet_end) {
+                            $input_errors[] = sprintf(gettext("The DHCP range cannot overlap any static DHCP mappings."));
+                            break;
+                        }
+                    }
+                }
             }
 
             /* make sure that the DHCP Relay isn't enabled on this interface */
             if (isset($config['dhcrelay'][$if]['enable'])) {
                 $input_errors[] = sprintf(gettext("You must disable the DHCP relay on the %s interface before enabling the DHCP server."),
                     !empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));
-            }
-
-
-            /* Verify static mappings do not overlap:
-               - available DHCP range
-               - prefix delegation range (FIXME: still need to be completed) */
-            $dynsubnet_start = inet_pton($pconfig['range_from']);
-            $dynsubnet_end = inet_pton($pconfig['range_to']);
-            if (!empty($config['dhcpdv6'][$if]['staticmap'])) {
-                foreach ($config['dhcpdv6'][$if]['staticmap'] as $map) {
-                    if (!empty($map['ipaddrv6']) && inet_pton($map['ipaddrv6']) > $dynsubnet_start && inet_pton($map['ipaddrv6']) < $dynsubnet_end) {
-                        $input_errors[] = sprintf(gettext("The DHCP range cannot overlap any static DHCP mappings."));
-                        break;
-                    }
-                }
             }
         }
 
