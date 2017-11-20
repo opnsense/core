@@ -107,7 +107,7 @@ class M1_0_0 extends BaseModelMigration
 		// save and restart
 		$model->serializeToConfig();
 		Config::getInstance()->save();
-		$backend->configdRun("template reload OPNsense.Syslog");
+		$backend->configdRun("template reload OPNsense/Syslog");
 		$backend->configdRun("syslog stop");
 		$backend->configdRun("syslog start");
 	}
