@@ -103,7 +103,9 @@ class MenuSystem
                 }
             }
         }
+
         $config = Config::getInstance()->object();
+
         // add interfaces to "Interfaces" menu tab...
         $ifarr = array();
         if ($config->interfaces->count() > 0) {
@@ -120,6 +122,25 @@ class MenuSystem
                 'url' => '/interfaces.php?if='. $key,
                 'visiblename' => '[' . $descr . ']',
                 'cssclass' => 'fa fa-sitemap',
+                'order' => $ordid++,
+            ));
+        }
+
+        // add interfaces to "Interfaces: Wireless" menu tab...
+        $wlarr = array();
+        if ($config->interfaces->count() > 0) {
+            foreach ($config->interfaces->children() as $key => $node) {
+                if (!empty($node->wireless)) {
+                    $wlarr[$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
+                }
+            }
+        }
+        natcasesort($wlarr);
+        $ordid = 100;
+        foreach ($wlarr as $key => $descr) {
+            $this->appendItem('Interfaces.Wireless', $key, array(
+                'visiblename' => sprintf(gettext('%s Status'), $descr),
+                'url' => '/status_wireless.php?if='. $key,
                 'order' => $ordid++,
             ));
         }

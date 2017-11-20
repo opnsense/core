@@ -34,63 +34,39 @@ require_once("interfaces.inc");
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if(!empty($_GET['if'])) {
         $if = $_GET['if'];
-    }
-    if (!empty($_GET['savemsg']) && $_GET['savemsg'] == 'rescan') {
-        $savemsg = gettext("Rescan has been initiated in the background. Refresh this page in 10 seconds to see the results.");
-    }
-} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!empty($_POST['if'])) {
-        $if = $_POST['if'];
+    } else {
+        /* if no interface is provided this invoke is invalid */
+        header(url_safe('Location: /index.php'));
+        exit;
     }
     $rwlif = escapeshellarg(get_real_interface($if));
-    if(!empty($_POST['rescanwifi'])) {
-        mwexecf_bg('/sbin/ifconfig %s scan', $rwlif);
-        header(url_safe('Location: /status_wireless.php?if=%s&savemsg=rescan', array($if)));
+    if(!empty($_GET['rescanwifi'])) {
+        mwexec("/sbin/ifconfig {$rwlif} scan; sleep 1");
+        header(url_safe('Location: /status_wireless.php?if=%s', array($if)));
         exit;
     }
 }
 
-$ciflist = get_configured_interface_with_descr();
-if(empty($if)) {
-    /* Find the first wireless interface */
-    foreach($ciflist as $interface => $ifdescr) {
-        if(is_interface_wireless(get_real_interface($interface))) {
-            $if = $interface;
-            break;
-        }
-    }
-}
-$rwlif = escapeshellarg(get_real_interface($if));
 include("head.inc");
-?>
 
+$main_buttons = array(
+    array('href' => 'status_wireless.php?if=' . html_safe($if) . '&rescanwifi=1', 'label' => gettext('Rescan')),
+);
+
+?>
 <body>
 <?php include("fbegin.inc"); ?>
   <section class="page-content-main">
     <div class="container-fluid">
+      <?php if (isset($savemsg)) print_info_box($savemsg); ?>
       <div class="row">
         <section class="col-xs-12">
-        <?php if (isset($savemsg)) print_info_box($savemsg); ?>
-<?php
-        $tab_array = array();
-        foreach($ciflist as $interface => $ifdescr) {
-            if (is_interface_wireless(get_real_interface($interface))) {
-              $enabled = false;
-              if($if == $interface) {
-                  $enabled = true;
-              }
-              $tab_array[] = array(gettext("Status") . " ({$ifdescr})", $enabled, "status_wireless.php?if={$interface}");
-            }
-        }
-        display_top_tabs($tab_array);
-?>
-        <div class="content-box">
           <form method="post" name="iform" id="iform">
+            <div class="content-box table-responsive __mb">
             <input type="hidden" name="if" id="if" value="<?= html_safe($if) ?>">
             <header class="content-box-head container-fluid">
               <h3><?=gettext("Nearby access points or ad-hoc peers"); ?></h3>
             </header>
-            <div class="table-responsive">
               <table class="table table-striped">
                 <thead>
                   <tr>
@@ -138,8 +114,7 @@ include("head.inc");
                 </tbody>
               </table>
             </div>
-            <br/>
-            <div class="table-responsive">
+            <div class="content-box table-responsive">
               <header class="content-box-head container-fluid">
                 <h3><?=gettext("Associated or ad-hoc peers"); ?></h3>
               </header>
@@ -181,18 +156,9 @@ include("head.inc");
 <?php
                 endforeach;?>
                 </tbody>
-              </table>
-            </div>
-            <div class="table-responsive">
-              <table class="table table-striped">
-                <tr>
-                  <td>
-                    <input type="submit" name="rescanwifi" value="<?=gettext("Rescan");?>" class="btn btn-primary"/>
-                  </td>
-                </tr>
                 <tfoot>
                   <tr>
-                    <td>
+                    <td colspan="10">
                       <b><?=gettext('Flags:') ?></b> <?=gettext('A = authorized, E = Extended Rate (802.11g), P = Power save mode') ?><br />
                       <b><?=gettext('Capabilities:') ?></b> <?=gettext('E = ESS (infrastructure mode), I = IBSS (ad-hoc mode), P = privacy (WEP/TKIP/AES), S = Short preamble, s = Short slot time') ?>
                     </td>

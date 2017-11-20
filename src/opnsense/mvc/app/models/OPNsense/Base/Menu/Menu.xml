@@ -100,9 +100,6 @@
                 <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
             </Devices>
             <Log VisibleName="Log File" url="/diag_logs_wireless.php"/>
-            <Status url="/status_wireless.php">
-                <Status url="/status_wireless.php*" visibility="hidden"/>
-            </Status>
         </Wireless>
         <PPP order="940" VisibleName="Point-to-Point" cssClass="fa fa-tty fa-fw">
             <Devices url="/interfaces_ppps.php">
