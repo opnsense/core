@@ -133,7 +133,7 @@ class MenuSystem
             }
         }
         natcasesort($fwarr);
-	$fwarr = array_merge(array('FloatingRules' => gettext('Floating')), $fwarr);
+        $fwarr = array_merge(array('FloatingRules' => gettext('Floating')), $fwarr);
         $ordid = 0;
         foreach ($fwarr as $key => $descr) {
             $this->appendItem('Firewall.Rules', $key, array(
