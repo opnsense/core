@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['authentication_method'] = "pre_shared_key";
         $pconfig['encryption-algorithm'] = array("name" => "3des") ;
         $pconfig['hash-algorithm'] = "sha1";
-        $pconfig['dhgroup'] = "2";
+        $pconfig['dhgroup'] = "24";
         $pconfig['lifetime'] = "28800";
         $pconfig['nat_traversal'] = "on";
         $pconfig['iketype'] = "ikev1";
@@ -951,6 +951,9 @@ endforeach; ?>
                         16 => '16 (4096 bit)',
                         17 => '17 (6144 bit)',
                         18 => '18 (8192 bit)',
+                        19 => '19 (256 bit elliptic curve)',
+                        20 => '20 (384 bit elliptic curve)',
+                        21 => '21 (521 bit elliptic curve)',
                         22 => '22 (1024(sub 160) bit)',
                         23 => '23 (2048(sub 224) bit)',
                         24 => '24 (2048(sub 256) bit)'
