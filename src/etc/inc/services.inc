@@ -165,6 +165,10 @@ function services_radvd_configure($blacklist = array())
                 $radvdconf .= "\tAdvManagedFlag on;\n";
                 $radvdconf .= "\tAdvOtherConfigFlag on;\n";
                 break;
+            case "stateless":
+                $radvdconf .= "\tAdvManagedFlag off;\n";
+                $radvdconf .= "\tAdvOtherConfigFlag on;\n";
+                break;
             default:
                 break;
         }
@@ -183,6 +187,7 @@ function services_radvd_configure($blacklist = array())
                 break;
             case "assist":
             case "unmanaged":
+            case "stateless":
                 $radvdconf .= "\t\tAdvOnLink on;\n";
                 $radvdconf .= "\t\tAdvAutonomous on;\n";
                 $radvdconf .= "\t\tAdvRouterAddr on;\n";
@@ -1162,17 +1167,19 @@ EOD;
 
         if (is_ipaddrv6($ifcfgipv6)) {
             $dhcpdv6conf .= "\nsubnet6 {$subnetv6}/{$ifcfgsnv6}";
-        } else {
+        } elseif (!empty($dhcpv6ifconf['range']['from'])) {
             $subnet6 = gen_subnetv6($dhcpv6ifconf['range']['from'], "64");
             $dhcpdv6conf .= "\nsubnet6 {$subnet6}/64";
         }
         $dhcpdv6conf .= " {\n";
 
-        $dhcpdv6conf .= <<<EOD
+        if (!empty($dhcpv6ifconf['range']['from'])) {
+            $dhcpdv6conf .= <<<EOD
   range6 {$dhcpv6ifconf['range']['from']} {$dhcpv6ifconf['range']['to']};
 $dnscfgv6
 
 EOD;
+        }
 
         if (!empty($dhcpv6ifconf['prefixrange']['from']) && is_ipaddrv6($dhcpv6ifconf['prefixrange']['from']) && is_ipaddrv6($dhcpv6ifconf['prefixrange']['to'])) {
             $dhcpdv6conf .= "  prefix6 {$dhcpv6ifconf['prefixrange']['from']} {$dhcpv6ifconf['prefixrange']['to']}/{$dhcpv6ifconf['prefixrange']['prefixlength']};\n";
