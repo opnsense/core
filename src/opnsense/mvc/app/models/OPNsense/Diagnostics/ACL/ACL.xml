@@ -32,7 +32,6 @@
         <patterns>
             <pattern>ui/diagnostics/systemhealth/*</pattern>
             <pattern>api/diagnostics/systemhealth/*</pattern>
-            <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
             <pattern>reporting_settings.php</pattern>
         </patterns>
     </page-diagnostics-health>
@@ -41,6 +40,7 @@
         <patterns>
             <pattern>ui/diagnostics/networkinsight/*</pattern>
             <pattern>api/diagnostics/networkinsight/*</pattern>
+            <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
         </patterns>
     </page-diagnostics-networkinsight>
     <page-diagnostics-netflow>
