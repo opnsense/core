@@ -29,6 +29,20 @@ POSSIBILITY OF SUCH DAMAGE.
     .tooltip-inner {
         min-width: 250px;
     }
+
+    .ids-alert-info > tbody > tr > td {
+        padding-top: 2px !important;
+        padding-bottom: : 2px !important;
+    }
+    .ids-alert-info > tbody > tr > td:first-child {
+        width: 150px;
+    }
+    @media (min-width: 768px) {
+        .modal-dialog {
+            width: 90%;
+            max-width:1200px;
+        }
+    }
 </style>
 
 <script type="text/javascript">
@@ -333,7 +347,12 @@ POSSIBILITY OF SUCH DAMAGE.
                                     // convert interface to name
                                     interface: {
                                         from: function (value) { return value; },
-                                        to: function (value) { return interface_descriptions[value.replace(/\+$/, '')]; }
+                                        to: function (value) {
+                                          if (value == null || value == undefined) {
+                                              return "";
+                                          }
+                                          return interface_descriptions[value.replace(/\+$/, '')];
+                                        }
                                     }
                                 }
                             }
@@ -357,7 +376,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             sendData={}, callback=function(data, status) {
                                 if (status == 'success') {
                                     ajaxGet(url="/api/ids/settings/getRuleInfo/"+data['alert_sid'],sendData={}, callback=function(rule_data, rule_status) {
-                                        var tbl = $('<table class="table table-condensed table-hover"/>');
+                                        var tbl = $('<table class="table table-condensed table-hover ids-alert-info"/>');
                                         var tbl_tbody = $("<tbody/>");
                                         var alert_fields = {};
                                         alert_fields['timestamp'] = "{{ lang._('Timestamp') }}";
@@ -368,19 +387,39 @@ POSSIBILITY OF SUCH DAMAGE.
                                         alert_fields['src_port'] = "{{ lang._('Source port') }}";
                                         alert_fields['dest_port'] = "{{ lang._('Destination port') }}";
                                         alert_fields['in_iface'] = "{{ lang._('Interface') }}";
+                                        alert_fields['http.hostname'] = "{{ lang._('http hostname') }}";
+                                        alert_fields['http.url'] = "{{ lang._('http url') }}";
+                                        alert_fields['http.http_user_agent'] = "{{ lang._('http user_agent') }}";
+                                        alert_fields['http.http_content_type'] = "{{ lang._('http content_type') }}";
+                                        alert_fields['tls.subject'] = "{{ lang._('tls subject') }}";
+                                        alert_fields['tls.issuerdn'] = "{{ lang._('tls issuer') }}";
+                                        alert_fields['tls.session_resumed'] = "{{ lang._('tls session resumed') }}";
+                                        alert_fields['tls.fingerprint'] = "{{ lang._('tls fingerprint') }}";
+                                        alert_fields['tls.serial'] = "{{ lang._('tls serial') }}";
+                                        alert_fields['tls.version'] = "{{ lang._('tls version') }}";
+                                        alert_fields['tls.notbefore'] = "{{ lang._('tls notbefore') }}";
+                                        alert_fields['tls.notafter'] = "{{ lang._('tls notafter') }}";
 
                                         $.each( alert_fields, function( fieldname, fielddesc ) {
-                                            if (data[fieldname] != undefined) {
+                                            var data_ptr = data;
+                                            $.each(fieldname.split('.'),function(indx, keypart){
+                                                if (data_ptr != undefined) {
+                                                    data_ptr = data_ptr[keypart];
+                                                }
+                                            });
+
+                                            if (data_ptr != undefined) {
                                                 var row = $("<tr/>");
                                                 row.append($("<td/>").text(fielddesc));
-                                                if (fieldname == 'in_iface' && interface_descriptions[data[fieldname].replace(/\+$/, '')] != undefined) {
-                                                    row.append($("<td/>").text(interface_descriptions[data[fieldname].replace(/\+$/, '')]));
+                                                if (fieldname == 'in_iface' && interface_descriptions[data_ptr.replace(/\+$/, '')] != undefined) {
+                                                    row.append($("<td/>").text(interface_descriptions[data_ptr.replace(/\+$/, '')]));
                                                 } else {
-                                                    row.append($("<td/>").text(data[fieldname]));
+                                                    row.append($("<td/>").text(data_ptr));
                                                 }
                                                 tbl_tbody.append(row);
                                             }
                                         });
+
                                         if (rule_data.action != undefined) {
                                             var alert_select = $('<select class="selectpicker"/>');
                                             var alert_enabled = $('<input type="checkbox"/>');
