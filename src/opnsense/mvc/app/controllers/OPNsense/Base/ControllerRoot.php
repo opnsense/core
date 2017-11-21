@@ -48,21 +48,6 @@ class ControllerRoot extends Controller
     }
 
     /**
-     * get system logger
-     * @param string $ident syslog identifier
-     * @return Syslog log handler
-     */
-    protected function getLogger($ident = "api")
-    {
-        $logger = new Syslog($ident, array(
-            'option' => LOG_PID,
-            'facility' => LOG_LOCAL4
-        ));
-
-        return $logger;
-    }
-
-    /**
      * set system language according to configuration
      */
     protected function setLang()
@@ -94,6 +79,21 @@ class ControllerRoot extends Controller
             'defaultDomain' => 'OPNsense',
             'locale' => $locale,
         ));
+    }
+
+    /**
+     * get system logger
+     * @param string $ident syslog identifier
+     * @return Syslog log handler
+     */
+    protected function getLogger($ident = "api")
+    {
+        $logger = new Syslog($ident, array(
+            'option' => LOG_PID,
+            'facility' => LOG_LOCAL4
+        ));
+
+        return $logger;
     }
 
     /**
