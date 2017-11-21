@@ -666,9 +666,8 @@ include("head.inc");
                     <tr>
                       <td>&nbsp;</td>
                       <td>
-                        &nbsp;<br />&nbsp;
                         <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/firewall_rules.php'" />
+                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/firewall_scrub.php'" />
                       </td>
                     </tr>
                   </table>
