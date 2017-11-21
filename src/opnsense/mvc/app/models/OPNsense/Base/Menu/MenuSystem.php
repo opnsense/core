@@ -106,18 +106,41 @@ class MenuSystem
 
         $config = Config::getInstance()->object();
 
-        // add interfaces to "Interfaces" menu tab...
-        $ifarr = array();
+        // collect interfaces for dynamic (interface) menu tabs...
+        $iftargets = array("if" => array(), "wl" => array(), "fw" => array(), "dhcp4" => array(), "dhcp6" => array());
         if ($config->interfaces->count() > 0) {
             foreach ($config->interfaces->children() as $key => $node) {
+                // Interfaces tab
                 if (empty($node->virtual)) {
-                    $ifarr[$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
+                    $iftargets['if'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
+                }
+                // Wireless status tab
+                if (!empty($node->wireless)) {
+                    $iftargets['wl'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
+                }
+                // "Firewall: Rules" menu tab...
+                if (isset($node->enable)) {
+                    $iftargets['fw'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
+                }
+                // "Services: DHCPv[46]" menu tab:
+                if (empty($node->virtual) && isset($node->enable)) {
+                    if (!empty(filter_var($node->ipaddr, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))) {
+                        $iftargets['dhcp4'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
+                    }
+                    if (!empty(filter_var($node->ipaddrv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))) {
+                        $iftargets['dhcp6'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
+                    }
                 }
             }
         }
-        natcasesort($ifarr);
+
+        foreach (array_keys($iftargets) as $tab) {
+            natcasesort($iftargets[$tab]);
+        }
+
+        // add interfaces to "Interfaces" menu tab...
         $ordid = 0;
-        foreach ($ifarr as $key => $descr) {
+        foreach ($iftargets['if'] as $key => $descr) {
             $this->appendItem('Interfaces', $key, array(
                 'url' => '/interfaces.php?if='. $key,
                 'visiblename' => '[' . $descr . ']',
@@ -126,18 +149,8 @@ class MenuSystem
             ));
         }
 
-        // add interfaces to "Interfaces: Wireless" menu tab...
-        $wlarr = array();
-        if ($config->interfaces->count() > 0) {
-            foreach ($config->interfaces->children() as $key => $node) {
-                if (!empty($node->wireless)) {
-                    $wlarr[$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
-                }
-            }
-        }
-        natcasesort($wlarr);
         $ordid = 100;
-        foreach ($wlarr as $key => $descr) {
+        foreach ($iftargets['wl'] as $key => $descr) {
             $this->appendItem('Interfaces.Wireless', $key, array(
                 'visiblename' => sprintf(gettext('%s Status'), $descr),
                 'url' => '/status_wireless.php?if='. $key,
@@ -146,17 +159,9 @@ class MenuSystem
         }
 
         // add interfaces to "Firewall: Rules" menu tab...
-        if ($config->interfaces->count() > 0) {
-            foreach ($config->interfaces->children() as $key => $node) {
-                if (isset($node->enable)) {
-                    $fwarr[$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
-                }
-            }
-        }
-        natcasesort($fwarr);
-        $fwarr = array_merge(array('FloatingRules' => gettext('Floating')), $fwarr);
+        $iftargets['fw'] = array_merge(array('FloatingRules' => gettext('Floating')), $iftargets['fw']);
         $ordid = 0;
-        foreach ($fwarr as $key => $descr) {
+        foreach ($iftargets['fw'] as $key => $descr) {
             $this->appendItem('Firewall.Rules', $key, array(
                 'url' => '/firewall_rules.php?if='. $key,
                 'visiblename' => $descr,
@@ -179,24 +184,8 @@ class MenuSystem
         }
 
         // add interfaces to "Services: DHCPv[46]" menu tab:
-        $dhcp4arr = array();
-        $dhcp6arr = array();
-        if ($config->interfaces->count() > 0) {
-            foreach ($config->interfaces->children() as $key => $node) {
-                if (empty($node->virtual) && isset($node->enable)) {
-                    if (!empty(filter_var($node->ipaddr, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))) {
-                        $dhcp4arr[$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
-                    }
-                    if (!empty(filter_var($node->ipaddrv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))) {
-                        $dhcp6arr[$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
-                    }
-                }
-            }
-        }
-        natcasesort($dhcp4arr);
-        natcasesort($dhcp6arr);
         $ordid = 0;
-        foreach ($dhcp4arr as $key => $descr) {
+        foreach ($iftargets['dhcp4'] as $key => $descr) {
             $this->appendItem('Services.DHCPv4', $key, array(
                 'url' => '/services_dhcp.php?if='. $key,
                 'visiblename' => "[$descr]",
@@ -212,7 +201,7 @@ class MenuSystem
             ));
         }
         $ordid = 0;
-        foreach ($dhcp6arr as $key => $descr) {
+        foreach ($iftargets['dhcp6'] as $key => $descr) {
             $this->appendItem('Services.DHCPv6', $key, array(
                 'url' => '/services_dhcpv6.php?if='. $key,
                 'visiblename' => "[$descr]",
