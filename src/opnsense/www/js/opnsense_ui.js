@@ -264,17 +264,26 @@ function initFormHelpUI() {
  * handle advanced show/hide
  */
 function initFormAdvancedUI() {
-    $('[data-advanced*="true"]').hide(function(){
-        $('[data-advanced*="true"]').after("<tr data-advanced='hidden_row'></tr>"); // the table row is added to keep correct table striping
-    });
+    if (sessionStorage.getItem('show_advanced_preset') == 1) {
+        // show advanced options when preset was stored
+        $('[id*="show_advanced"]').toggleClass("fa-toggle-on fa-toggle-off");
+        $('[id*="show_advanced"]').toggleClass("text-success text-danger");
+    } else {
+        $('[data-advanced*="true"]').hide(function(){
+            $('[data-advanced*="true"]').after("<tr data-advanced='hidden_row'></tr>"); // the table row is added to keep correct table striping
+        });
+    }
+
     $('[id*="show_advanced"]').click(function() {
         $('[id*="show_advanced"]').toggleClass("fa-toggle-on fa-toggle-off");
         $('[id*="show_advanced"]').toggleClass("text-success text-danger");
         if ($('[id*="show_advanced"]').hasClass("fa-toggle-on")) {
             $('[data-advanced*="true"]').show();
             $('[data-advanced*="hidden_row"]').remove(); // the table row is deleted to keep correct table striping
+            sessionStorage.setItem('show_advanced_preset', 1);
         } else {
             $('[data-advanced*="true"]').after("<tr data-advanced='hidden_row'></tr>").hide(); // the table row is added to keep correct table striping
+            sessionStorage.setItem('show_advanced_preset', 0);
         }
     });
 }
