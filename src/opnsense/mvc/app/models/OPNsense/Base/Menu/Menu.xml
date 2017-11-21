@@ -199,14 +199,14 @@
         </LogFiles>
     </Firewall>
     <Services order="60" cssClass="fa fa-cog">
-        <DHCP VisibleName="DHCP4" cssClass="fa fa-bullseye fa-fw">
+        <DHCPv4 cssClass="fa fa-bullseye fa-fw">
             <Relay order="200" url="/services_dhcp_relay.php"/>
             <Leases order="300" url="/status_dhcp_leases.php">
                 <Details url="/status_dhcp_leases.php?*" visibility="hidden"/>
             </Leases>
             <LogFile VisibleName="Log File" order="400" url="/diag_logs_dhcp.php"/>
-        </DHCP>
-        <DHCPv6 VisibleName="DHCP6" cssClass="fa fa-bullseye fa-fw">
+        </DHCPv4>
+        <DHCPv6 cssClass="fa fa-bullseye fa-fw">
             <Relay order="300" url="/services_dhcpv6_relay.php"/>
             <Leases order="400" url="/status_dhcpv6_leases.php">
                 <Details url="/status_dhcpv6_leases.php?*" visibility="hidden"/>

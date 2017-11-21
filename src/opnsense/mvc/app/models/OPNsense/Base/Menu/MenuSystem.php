@@ -178,7 +178,7 @@ class MenuSystem
             ));
         }
 
-        // add interfaces to "Services: DHCP(v6)" menu tab:
+        // add interfaces to "Services: DHCPv[46]" menu tab:
         $dhcp4arr = array();
         $dhcp6arr = array();
         if ($config->interfaces->count() > 0) {
@@ -197,16 +197,16 @@ class MenuSystem
         natcasesort($dhcp6arr);
         $ordid = 0;
         foreach ($dhcp4arr as $key => $descr) {
-            $this->appendItem('Services.DHCP', $key, array(
+            $this->appendItem('Services.DHCPv4', $key, array(
                 'url' => '/services_dhcp.php?if='. $key,
                 'visiblename' => "[$descr]",
                 'order' => $ordid++,
             ));
-            $this->appendItem('Services.DHCP.' . $key, 'Add' . $key, array(
+            $this->appendItem('Services.DHCPv4.' . $key, 'Add' . $key, array(
                 'url' => '/services_dhcp_edit.php?if='. $key,
                 'visibility' => 'hidden',
             ));
-            $this->appendItem('Services.DHCP.' . $key, 'Edit' . $key, array(
+            $this->appendItem('Services.DHCP4.' . $key, 'Edit' . $key, array(
                 'url' => '/services_dhcp_edit.php?if='. $key . '&*',
                 'visibility' => 'hidden',
             ));
