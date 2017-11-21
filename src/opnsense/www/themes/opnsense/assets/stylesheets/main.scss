@@ -362,6 +362,11 @@ body{
   border-bottom: none;
 }
 
+.dropdown-menu > li > a,
+.dropdown-header {
+  padding: 3px 10px;
+}
+
 .nav-tabs {
   margin-right: 1px;
   border-bottom: 1px solid darken(map-get($colors, bordergrey), 30%);
@@ -399,7 +404,6 @@ body{
   border-right: 1px solid darken(map-get($colors, bordergrey), 30%);
   border-top: 1px solid darken(map-get($colors, bordergrey), 30%);
   border-left: 1px solid darken(map-get($colors, bordergrey), 30%);
-  border-bottom: 1px solid darken(#FBFBFB, 5%);
 }
 
 .nav-tabs > li > a.visible-lg-inline-block:not(.pull-right) {
@@ -410,7 +414,7 @@ body{
 
 .nav-tabs > li > a.visible-lg-inline-block.pull-right {
   border-left: 0px !important;
-  padding-left: 0px !important;
+  padding-left: 5px !important;
   padding-right: 10px !important;
 }
 

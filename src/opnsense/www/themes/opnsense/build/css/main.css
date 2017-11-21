@@ -5649,6 +5649,10 @@ body {
 .collapse .list-group-item:last-child {
   border-bottom: none; }
 
+.dropdown-menu > li > a,
+.dropdown-header {
+  padding: 3px 10px; }
+
 .nav-tabs {
   margin-right: 1px;
   border-bottom: 1px solid #999999; }
@@ -5680,8 +5684,7 @@ body {
 .nav-tabs > li.active > a:focus {
   border-right: 1px solid #999999;
   border-top: 1px solid #999999;
-  border-left: 1px solid #999999;
-  border-bottom: 1px solid #eeeeee; }
+  border-left: 1px solid #999999; }
 
 .nav-tabs > li > a.visible-lg-inline-block:not(.pull-right) {
   border-top-right-radius: 0px !important;
@@ -5690,7 +5693,7 @@ body {
 
 .nav-tabs > li > a.visible-lg-inline-block.pull-right {
   border-left: 0px !important;
-  padding-left: 0px !important;
+  padding-left: 5px !important;
   padding-right: 10px !important; }
 
 .nav-tabs.nav-justified {
