@@ -195,7 +195,7 @@ if (isset($pconfig['Submit'])) {
         if (!$has_crashed) {
             $message = gettext('Thank you for submitting this crash report.');
         } else {
-            $message = gettext('This crash report contains no actual crash information. If you want to submit a problem please fill out your email and decription below.');
+            $message = gettext('This crash report contains no actual crash information. If you want to submit a problem please fill out your e-mail and description below.');
         }
     } elseif ($pconfig['Submit'] == 'no') {
         $message = gettext('Please consider submitting a crash report if the error persists.');
