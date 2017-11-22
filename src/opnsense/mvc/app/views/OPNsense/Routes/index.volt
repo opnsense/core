@@ -43,4 +43,4 @@ $(document).ready(function () {
 });
 </script>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogEditRoute,'id':'DialogRoute','label':lang._('Edit Route')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditRoute,'id':'DialogRoute','label':lang._('Edit route')])}}

@@ -319,4 +319,4 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
 </div>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogEditBlacklist,'id':'DialogEditBlacklist','label':lang._('Edit Blacklist')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditBlacklist,'id':'DialogEditBlacklist','label':lang._('Edit blacklist')])}}
