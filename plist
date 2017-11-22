@@ -40,6 +40,7 @@
 /usr/local/etc/inc/plugins.inc.d/ntpd.inc
 /usr/local/etc/inc/plugins.inc.d/openssh.inc
 /usr/local/etc/inc/plugins.inc.d/openvpn.inc
+/usr/local/etc/inc/plugins.inc.d/openvpn/attributes.sh
 /usr/local/etc/inc/plugins.inc.d/openvpn/auth-user.php
 /usr/local/etc/inc/plugins.inc.d/openvpn/tls-verify.php
 /usr/local/etc/inc/plugins.inc.d/openvpn/wizard.inc
@@ -922,7 +923,6 @@
 /usr/local/sbin/dhclient-script.ext
 /usr/local/sbin/mpd.script
 /usr/local/sbin/ntpdate_sync_once.sh
-/usr/local/sbin/openvpn.attributes.sh
 /usr/local/sbin/opnsense-auth
 /usr/local/sbin/opnsense-importer
 /usr/local/sbin/opnsense-installer

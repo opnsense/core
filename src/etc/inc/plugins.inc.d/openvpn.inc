@@ -564,6 +564,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
             }
             break;
     }
+
     $conf .= "dev-node /dev/{$tunname}\n";
     $conf .= "writepid /var/run/openvpn_{$mode_id}.pid\n";
     $conf .= "#user nobody\n";
@@ -579,14 +580,15 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     $conf .= "auth {$digest}\n";
     $conf .= "up /usr/local/sbin/ovpn-linkup\n";
     $conf .= "down /usr/local/sbin/ovpn-linkdown\n";
-    if (file_exists("/usr/local/sbin/openvpn.attributes.sh")) {
-        switch($settings['mode']) {
-            case 'server_user':
-            case 'server_tls_user':
-                $conf .= "client-connect /usr/local/sbin/openvpn.attributes.sh\n";
-                $conf .= "client-disconnect /usr/local/sbin/openvpn.attributes.sh\n";
-                break;
-        }
+
+    switch($settings['mode']) {
+        case 'server_user':
+        case 'server_tls_user':
+            $conf .= "client-connect /usr/local/etc/inc/plugins.inc.d/openvpn/attributes.sh\n";
+            $conf .= "client-disconnect /usr/local/etc/inc/plugins.inc.d/openvpn/attributes.sh\n";
+            break;
+        default:
+            break;
     }
 
     if (!empty($iface_ip)) {
