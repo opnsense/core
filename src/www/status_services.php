@@ -83,8 +83,8 @@ include("head.inc");
                     <td><?=$service['name'];?></td>
                     <td><?=$service['description'];?></td>
                     <td>
-                      <?=get_service_status_icon($service, true, true);?>
-                      <?=get_service_control_links($service, false);?>
+                      <?=get_service_status_icon($service);?>
+                      <?=get_service_control_links($service);?>
                     </td>
                 </tr>
 <?php

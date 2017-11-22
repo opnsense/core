@@ -5816,6 +5816,20 @@ table {
 .navbar-brand {
   padding: 10px 20px; }
 
+.label-opnsense {
+  border: 1px solid transparent;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 3px; }
+
+.label-opnsense-sm {
+  padding: 5px 10px; }
+
+.label-opnsense-xs {
+  padding: 1px 5px; }
+
 ::-webkit-scrollbar {
   width: 8px; }
 

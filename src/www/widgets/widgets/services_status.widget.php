@@ -85,8 +85,9 @@ if (isset($_POST['servicestatusfilter'])) {
         <tr>
           <td><?=$service['name'];?></td>
           <td><?=$service['description'];?></td>
-          <td><?=str_replace('btn ', 'btn btn-xs ', get_service_status_icon($service, false, true));?>
-              <?=str_replace('btn ', 'btn btn-xs ', get_service_control_links($service));?>
+          <td style="white-space: nowrap;">
+             <?= get_service_status_icon($service, true) ?>
+             <?= get_service_control_links($service, true) ?>
           </td>
         </tr>
 <?php

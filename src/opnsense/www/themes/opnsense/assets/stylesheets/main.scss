@@ -587,6 +587,26 @@ table{
     padding: 10px 20px;
 }
 
+.label-opnsense {
+  /* emulates btn */
+  border: 1px solid transparent;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 3px;
+}
+
+.label-opnsense-sm {
+  /* emulates btn-sm */
+  padding: 5px 10px;
+}
+
+.label-opnsense-xs {
+  /* emulates btn-xs */
+  padding: 1px 5px;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }

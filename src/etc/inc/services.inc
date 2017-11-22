@@ -1777,26 +1777,25 @@ function get_service_status($service)
 }
 
 
-function get_service_status_icon($service, $withtext = true, $smallicon = false)
+function get_service_status_icon($service, $xs = false)
 {
-    $output = "";
+    $output = '';
+
     if (get_service_status($service)) {
-        $statustext = gettext("Running");
-        $output .= '<span class="btn btn-success glyphicon glyphicon-play" title="'.sprintf(gettext('%s Service is'),$service['name']).' '.$statustext.'" data-toggle="tooltip"></span>' . PHP_EOL;
+        $output .= '<span class="label label-opnsense label-opnsense-%s label-success"><i class="fa fa-play fa-fw"></i></span>' . PHP_EOL;
     } else {
-        $statustext = gettext("Stopped") ;
-        $output .= '<span class="btn btn-danger glyphicon glyphicon-stop" title="'.sprintf(gettext('%s Service is'),$service['name']).' '.$statustext.'" data-toggle="tooltip"></span>' . PHP_EOL;
+        $output .= '<span class="label label-opnsense label-opnsense-%s label-danger"><i class="fa fa-stop fa-fw"></i></span>' . PHP_EOL;
     }
-    return $output;
+
+    return sprintf($output, $xs ? 'xs' : 'sm');
 }
 
-function get_service_control_links($service, $addname = false)
+function get_service_control_links($service, $xs = false)
 {
     $service_id = isset($service['id']) ? $service['id'] : '';
-    $service_title = $addname ? $service['name'] . ' ' : '';
 
     $template  = '<span data-service_id="%s" data-service_action="%s" data-service="%s" ';
-    $template .= 'data-toggle="tooltip" title="%s" class="btn btn-default %s %s"></span>' . PHP_EOL;
+    $template .= 'class="btn btn-%s btn-default %s"><i class="%s"></i></span>' . PHP_EOL;
 
     $output = '';
 
@@ -1806,9 +1805,9 @@ function get_service_control_links($service, $addname = false)
             $service_id,
             'restart',
             $service['name'],
-            sprintf(gettext('Restart %sService'), $service_title),
+            $xs ? 'xs' : 'sm',
             'srv_status_act',
-            'glyphicon glyphicon-refresh'
+            'fa fa-refresh fa-fw'
         );
         if (empty($service['nocheck'])) {
             $output .= sprintf(
@@ -1816,9 +1815,9 @@ function get_service_control_links($service, $addname = false)
                 $service_id,
                 'stop',
                 $service['name'],
-                sprintf(gettext('Stop %sService'), $service_title),
+                $xs ? 'xs' : 'sm',
                 'srv_status_act',
-                'glyphicon glyphicon-stop'
+                'fa fa-stop fa-fw'
             );
         }
     } else {
@@ -1827,9 +1826,9 @@ function get_service_control_links($service, $addname = false)
             $service_id,
             'start',
             $service['name'],
-            sprintf(gettext('Start %sService'), $service_title),
+            $xs ? 'xs' : 'sm',
             'srv_status_act',
-            'glyphicon glyphicon-play'
+            'fa fa-play fa-fw'
         );
     }
 

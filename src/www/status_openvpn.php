@@ -175,7 +175,7 @@ $( document ).ready(function() {
                 <tr>
                   <td colspan="2">
                     <?php $ssvc = find_service_by_name('openvpn', array('id' => $server['vpnid'])); ?>
-                    <?= get_service_status_icon($ssvc, true, true); ?>
+                    <?= get_service_status_icon($ssvc, true); ?>
                     <?= get_service_control_links($ssvc, true); ?>
                   </td>
                   <td colspan="6">&nbsp;</td>
@@ -254,7 +254,7 @@ $( document ).ready(function() {
                   <td>
                     <div>
                       <?php $ssvc = find_service_by_name('openvpn', array('id' => $sk_server['vpnid'])); ?>
-                      <?= get_service_status_icon($ssvc, false, true); ?>
+                      <?= get_service_status_icon($ssvc, true); ?>
                       <?= get_service_control_links($ssvc, true); ?>
                     </div>
                   </td>
@@ -294,7 +294,7 @@ $( document ).ready(function() {
                   <td>
                     <div>
                       <?php $ssvc = find_service_by_name('openvpn', array('id' => $client['vpnid'])); ?>
-                      <?= get_service_status_icon($ssvc, false, true); ?>
+                      <?= get_service_status_icon($ssvc, true); ?>
                       <?= get_service_control_links($ssvc, true); ?>
                     </div>
                   </td>
