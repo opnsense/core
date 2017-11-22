@@ -162,7 +162,8 @@ function set_language()
         $lang = $config['system']['language'];
     }
 
-    if (!empty($_SESSION['Username']) && array_key_exists($_SESSION['Username'], $userindex)) {
+    if (!empty($_SESSION['Username']) && array_key_exists($_SESSION['Username'], $userindex) &&
+        !empty($config['system']['user'][$userindex[$_SESSION['Username']]]['language'])) {
         $lang = $config['system']['user'][$userindex[$_SESSION['Username']]]['language'];
     }
 
