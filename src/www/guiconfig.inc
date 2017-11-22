@@ -57,20 +57,6 @@ function html_safe($text)
 
 header("X-Frame-Options: SAMEORIGIN");
 
-/* set language */
-$lang = 'en_US';
-if (!empty($config['system']['language'])) {
-    $lang = $config['system']['language'];
-}
-
-$lang_encoding = $lang . '.UTF-8';
-$textdomain = 'OPNsense';
-
-putenv('LANG=' . $lang_encoding);
-textdomain($textdomain);
-bindtextdomain($textdomain, '/usr/local/share/locale');
-bind_textdomain_codeset($textdomain, $lang_encoding);
-
 require_once("authgui.inc");
 
 /* Reserved table names to avoid colision */

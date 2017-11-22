@@ -152,10 +152,33 @@ function getAllowedPages($username) {
     return $allowed_pages;
 }
 
+function set_language()
+{
+    global $config, $userindex;
+
+    $lang = 'en_US';
+
+    if (!empty($config['system']['language'])) {
+        $lang = $config['system']['language'];
+    }
+
+    if (!empty($_SESSION['Username']) && array_key_exists($_SESSION['Username'], $userindex) &&
+        !empty($config['system']['user'][$userindex[$_SESSION['Username']]]['language'])) {
+        $lang = $config['system']['user'][$userindex[$_SESSION['Username']]]['language'];
+    }
+
+    $lang_encoding = $lang . '.UTF-8';
+    $textdomain = 'OPNsense';
+
+    putenv('LANG=' . $lang_encoding);
+    textdomain($textdomain);
+    bindtextdomain($textdomain, '/usr/local/share/locale');
+    bind_textdomain_codeset($textdomain, $lang_encoding);
+}
 
 function session_auth(&$Login_Error)
 {
-    global $config, $_SESSION;
+    global $config;
 
     // Handle HTTPS httponly and secure flags
     $currentCookieParams = session_get_cookie_params();
@@ -216,9 +239,8 @@ function session_auth(&$Login_Error)
             header(url_safe("Location: {$_SERVER['REQUEST_URI']}"));
             exit;
         } else {
-            /* give the user an error message */
-            $Login_Error = gettext('Wrong username or password.');
             log_error("Web GUI authentication error for '{$_POST['usernamefld']}' from {$_SERVER['REMOTE_ADDR']}");
+            $Login_Error = true;
         }
     }
 
@@ -281,13 +303,17 @@ function session_auth(&$Login_Error)
     return true;
 }
 
-$Login_Error = '';
+/* XXX spagehtti code :( */
+$Login_Error = false;
 
 /* Authenticate user - exit if failed */
 if (!session_auth($Login_Error)) {
-    display_login_form($Login_Error);
+    set_language();
+    display_login_form($Login_Error ? gettext('Wrong username or password.') : null);
     exit;
 }
+
+set_language();
 
 /*
  * redirect to first allowed page if requesting a wrong url
@@ -356,7 +382,7 @@ function display_error_form($http_code, $desc)
 
 } // end function
 
-function display_login_form($Login_Error = '')
+function display_login_form($Login_Error)
 {
     global $config, $g;
 
