@@ -683,13 +683,6 @@
             <pattern>system_crlmanager.php*</pattern>
         </patterns>
     </page-system-crlmanager>
-    <page-system-firmware-autoupdate>
-        <name>System: Firmware</name>
-        <patterns>
-            <pattern>ui/core/firmware/*</pattern>
-            <pattern>api/core/firmware/*</pattern>
-        </patterns>
-    </page-system-firmware-autoupdate>
     <page-system-firmware-manualupdate>
         <name>System: Firmware</name>
         <patterns>
