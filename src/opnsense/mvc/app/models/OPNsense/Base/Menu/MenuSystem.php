@@ -249,6 +249,11 @@ class MenuSystem
             $next = null;
             foreach ($nodes as $node) {
                 if ($node->Selected) {
+                    /* ignore client-side anchor in breadcrumb */
+                    if (!empty($node->Url) && strpos($node->Url, '#') !== false) {
+                        $next = null;
+                        break;
+                    }
                     $breadcrumbs[] = array('name' => $node->VisibleName);
                     /* only go as far as the first reachable URL */
                     $next = empty($node->Url) ? $node->Children : null;

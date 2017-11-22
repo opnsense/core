@@ -42,7 +42,6 @@ class IndexController extends \OPNsense\Base\IndexController
      */
     public function indexAction()
     {
-        $this->view->title = gettext('Cron Settings');
         // include dialog form definitions
         $this->view->formDialogEdit = $this->getForm("dialogEdit");
         $this->view->pick('OPNsense/Cron/index');

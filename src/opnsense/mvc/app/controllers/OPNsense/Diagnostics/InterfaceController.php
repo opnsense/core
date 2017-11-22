@@ -43,7 +43,6 @@ class InterfaceController extends IndexController
      */
     public function arpAction()
     {
-        $this->view->title = gettext('Interfaces ARP Table');
         $this->view->pick('OPNsense/Diagnostics/arp');
     }
 
@@ -52,7 +51,6 @@ class InterfaceController extends IndexController
      */
     public function ndpAction()
     {
-        $this->view->title = gettext('Interfaces NDP Table');
         $this->view->pick('OPNsense/Diagnostics/ndp');
     }
 
@@ -61,7 +59,6 @@ class InterfaceController extends IndexController
      */
     public function routesAction()
     {
-        $this->view->title = gettext('System Routing Table');
         $this->view->pick('OPNsense/Diagnostics/routes');
     }
 }

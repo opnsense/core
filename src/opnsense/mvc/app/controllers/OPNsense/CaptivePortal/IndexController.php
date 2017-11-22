@@ -38,7 +38,6 @@ class IndexController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
-        $this->view->title = gettext('Captive Portal');
         // link rule dialog
         $this->view->formDialogZone = $this->getForm("dialogZone");
         // choose template

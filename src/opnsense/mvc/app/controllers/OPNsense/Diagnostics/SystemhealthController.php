@@ -38,7 +38,6 @@ class SystemhealthController extends IndexController
 {
     public function indexAction()
     {
-        $this->view->title = gettext('System Health');
         $this->view->pick('OPNsense/Diagnostics/systemhealth');
     }
 }

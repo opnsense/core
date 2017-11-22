@@ -169,6 +169,8 @@ class ControllerBase extends ControllerRoot
 
         $this->view->setVar('lang', $this->translator);
         $this->view->menuSystem = $menu->getItems("/ui".$this->router->getRewriteUri());
+        /* XXX generating breadcrumbs requires getItems() call */
+        $this->view->menuBreadcrumbs = $menu->getBreadcrumbs();
 
         // set theme in ui_theme template var, let template handle its defaults (if there is no theme).
         if ($cnf->object()->theme->count() > 0 && !empty($cnf->object()->theme) &&
@@ -186,6 +188,19 @@ class ControllerBase extends ControllerRoot
         $this->view->session_username = !empty($_SESSION['Username']) ? $_SESSION['Username'] : '(unknown)';
         $this->view->system_hostname = $cnf->object()->system->hostname;
         $this->view->system_domain = $cnf->object()->system->domain;
+
+        if (isset($this->view->menuBreadcrumbs[0]['name'])) {
+            $output = array();
+            foreach ($this->view->menuBreadcrumbs as $crumb) {
+                $output[] = gettext($crumb['name']);
+            }
+            $this->view->title = join(': ', $output);
+            $output = array();
+            foreach (array_reverse($this->view->menuBreadcrumbs) as $crumb) {
+                $output[] = gettext($crumb['name']);
+            }
+            $this->view->headTitle = join(' | ', $output);
+        }
 
         // append ACL object to view
         $this->view->acl = new \OPNsense\Core\ACL();

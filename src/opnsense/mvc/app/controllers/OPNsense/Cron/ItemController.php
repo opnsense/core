@@ -43,7 +43,6 @@ class ItemController extends \OPNsense\Base\IndexController
      */
     public function openAction($uuid = null)
     {
-        $this->view->title = gettext('Cron Settings');
         $this->view->selected_uuid = $uuid;
         // include dialog form definitions
         $this->view->formDialogEdit = $this->getForm("dialogEdit");

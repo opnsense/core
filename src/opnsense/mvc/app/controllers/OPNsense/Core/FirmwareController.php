@@ -41,8 +41,6 @@ class FirmwareController extends \OPNsense\Base\IndexController
      */
     public function indexAction()
     {
-        $this->view->title = gettext('Firmware');
         $this->view->pick('OPNsense/Core/firmware');
-        return;
     }
 }

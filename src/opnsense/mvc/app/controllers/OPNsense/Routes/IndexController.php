@@ -38,7 +38,6 @@ class IndexController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
-        $this->view->title = gettext('Routes');
         // include dialog form definitions
         $this->view->formDialogEditRoute = $this->getForm("dialogEditRoute");
         $this->view->pick('OPNsense/Routes/index');

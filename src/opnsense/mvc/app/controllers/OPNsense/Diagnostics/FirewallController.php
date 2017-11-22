@@ -43,7 +43,6 @@ class FirewallController extends IndexController
      */
     public function logAction()
     {
-        $this->view->title = gettext('Firewall Live Log');
         $this->view->pick('OPNsense/Diagnostics/fw_log');
     }
 }

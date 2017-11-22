@@ -42,7 +42,6 @@ class IndexController extends \OPNsense\Base\IndexController
      */
     public function indexAction()
     {
-        $this->view->title = gettext('Web Proxy');
         $this->view->mainForm = $this->getForm("main");
         $this->view->formDialogEditBlacklist = $this->getForm("dialogEditBlacklist");
         $this->view->pick('OPNsense/Proxy/index');

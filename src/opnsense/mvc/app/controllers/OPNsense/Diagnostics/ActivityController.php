@@ -40,7 +40,6 @@ class ActivityController extends IndexController
 {
     public function indexAction()
     {
-        $this->view->title = gettext('System Activity');
         $this->view->pick('OPNsense/Diagnostics/systemactivity');
     }
 }

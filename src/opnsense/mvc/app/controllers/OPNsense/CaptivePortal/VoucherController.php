@@ -38,7 +38,6 @@ class VoucherController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
-        $this->view->title = gettext('Captive Portal Vouchers');
         // choose template
         $this->view->pick('OPNsense/CaptivePortal/vouchers');
     }

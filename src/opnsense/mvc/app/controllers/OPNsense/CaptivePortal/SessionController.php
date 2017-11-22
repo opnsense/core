@@ -38,7 +38,6 @@ class SessionController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
-        $this->view->title = gettext('Captive Portal Sessions');
         // choose template
         $this->view->pick('OPNsense/CaptivePortal/clients');
     }

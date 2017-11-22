@@ -40,7 +40,6 @@ class NetflowController extends IndexController
 {
     public function indexAction()
     {
-        $this->view->title = gettext('NetFlow');
         $this->view->pick('OPNsense/Diagnostics/netflow');
         $this->view->captureForm = $this->getForm("netflow_capture");
     }

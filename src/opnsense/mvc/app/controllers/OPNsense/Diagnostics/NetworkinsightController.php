@@ -40,7 +40,6 @@ class NetworkinsightController extends IndexController
 {
     public function indexAction()
     {
-        $this->view->title = gettext('Network Insight');
         $this->view->pick('OPNsense/Diagnostics/networkinsight');
     }
 }
