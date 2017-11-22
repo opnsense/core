@@ -101,9 +101,6 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <script type="text/javascript" src="/ui/js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="/ui/js/jquery-migrate-3.0.1.min.js"></script>
 
-    <!-- Ticker used for notices-->
-    <script type="text/javascript" src="/javascript/ticker.js"></script>
-
     <!-- datepicker -->
     <script src="/ui/js/bootstrap-datepicker.min.js"></script>
 
