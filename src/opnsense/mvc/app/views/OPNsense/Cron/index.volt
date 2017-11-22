@@ -155,4 +155,4 @@ POSSIBILITY OF SUCH DAMAGE.
 </div>
 
 {# include dialog #}
-{{ partial("layout_partials/base_dialog",['fields':formDialogEdit,'id':'DialogEdit','label':'Edit Job'])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEdit,'id':'DialogEdit','label':lang._('Edit job')])}}

@@ -241,7 +241,7 @@ POSSIBILITY OF SUCH DAMAGE.
 </div>
 
 {# include dialogs #}
-{{ partial("layout_partials/base_dialog",['fields':formDialogZone,'id':'DialogZone','label':'Edit zone'])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogZone,'id':'DialogZone','label':lang._('Edit zone')])}}
 
 <!-- upload (new) template content dialog -->
 <div class="modal fade" id="DialogTemplate" tabindex="-1" role="dialog" aria-labelledby="formDialogTemplateLabel" aria-hidden="true">
