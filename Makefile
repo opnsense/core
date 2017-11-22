@@ -132,6 +132,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			strongswan \
 			sudo \
 			suricata \
+			syslog-ng \
 			syslogd \
 			unbound \
 			wpa_supplicant \

@@ -1,1 +1,2 @@
 newsyslog.conf:/etc/newsyslog.conf
+syslog-ng.conf:/usr/local/etc/syslog-ng.conf

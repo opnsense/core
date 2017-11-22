@@ -736,6 +736,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Sample/sub2/example_sub2.txt
 /usr/local/opnsense/service/templates/OPNsense/Syslog/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Syslog/newsyslog.conf
+/usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng.conf
 /usr/local/opnsense/service/templates/OPNsense/WebGui/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/WebGui/php.etc.ini
 /usr/local/opnsense/service/templates/OPNsense/WebGui/php.ini
