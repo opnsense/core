@@ -578,8 +578,8 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     $conf .= "proto {$proto}\n";
     $conf .= "cipher {$cipher}\n";
     $conf .= "auth {$digest}\n";
-    $conf .= "up /usr/local/sbin/ovpn-linkup\n";
-    $conf .= "down /usr/local/sbin/ovpn-linkdown\n";
+    $conf .= "up /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup\n";
+    $conf .= "down /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkdown\n";
 
     switch($settings['mode']) {
         case 'server_user':
@@ -688,7 +688,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                     if ($settings['strictusercn']) {
                         $strictusercn = "true";
                     }
-                    $conf .= "auth-user-pass-verify \"/usr/local/sbin/ovpn_auth_verify user '{$settings['authmode']}' '{$strictusercn}' '{$mode_id}'\" via-env\n";
+                    $conf .= "auth-user-pass-verify \"/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_auth_verify user '{$settings['authmode']}' '{$strictusercn}' '{$mode_id}'\" via-env\n";
                 }
                 break;
         }
@@ -702,7 +702,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                 $cert = lookup_cert($settings['certref']);
                 /* XXX: Seems not used at all! */
                 $servercn = urlencode(cert_get_cn($cert['crt']));
-                $conf .= "tls-verify \"/usr/local/sbin/ovpn_auth_verify tls '{$servercn}' {$settings['cert_depth']}\"\n";
+                $conf .= "tls-verify \"/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_auth_verify tls '{$servercn}' {$settings['cert_depth']}\"\n";
             }
         }
 

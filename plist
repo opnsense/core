@@ -42,6 +42,9 @@
 /usr/local/etc/inc/plugins.inc.d/openvpn.inc
 /usr/local/etc/inc/plugins.inc.d/openvpn/attributes.sh
 /usr/local/etc/inc/plugins.inc.d/openvpn/auth-user.php
+/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkdown
+/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup
+/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_auth_verify
 /usr/local/etc/inc/plugins.inc.d/openvpn/tls-verify.php
 /usr/local/etc/inc/plugins.inc.d/openvpn/wizard.inc
 /usr/local/etc/inc/plugins.inc.d/pf.inc
@@ -926,9 +929,6 @@
 /usr/local/sbin/opnsense-auth
 /usr/local/sbin/opnsense-importer
 /usr/local/sbin/opnsense-installer
-/usr/local/sbin/ovpn-linkdown
-/usr/local/sbin/ovpn-linkup
-/usr/local/sbin/ovpn_auth_verify
 /usr/local/sbin/ping_hosts.sh
 /usr/local/sbin/pluginctl
 /usr/local/sbin/ppp-linkdown
