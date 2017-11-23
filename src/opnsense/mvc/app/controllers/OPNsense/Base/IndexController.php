@@ -45,6 +45,7 @@ class IndexController extends ControllerBase
     /**
      * log or send error message
      * @param string $message error message
+     * @return bool
      */
     public function handleErrorAction($message = null, $sender = null)
     {
@@ -63,4 +64,17 @@ class IndexController extends ControllerBase
         }
         return false;
     }
+
+    /**
+     * before routing event
+     * @param Dispatcher $dispatcher
+     * @return null|bool
+     */
+    public function beforeExecuteRoute($dispatcher)
+    {
+        parent::beforeExecuteRoute($dispatcher);
+        // by default, don't allow our content to be rendered in an [i]frame from another location.
+        $this->response->setHeader('X-Frame-Options', 'SAMEORIGIN');
+    }
+
 }
