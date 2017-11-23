@@ -819,12 +819,11 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         }
     }
 
-    // Add a remote network route if set, and only for p2p modes.
-    if ((substr($settings['mode'], 0, 3) == "p2p") && (openvpn_validate_cidr($settings['remote_network'], "", true, "ipv4") === false)) {
+    // Add remote network route if set
+    if (openvpn_validate_cidr($settings['remote_network'], "", true, "ipv4") === false) {
         $conf .= openvpn_gen_routes($settings['remote_network'], "ipv4", false);
     }
-    // Add a remote network route if set, and only for p2p modes.
-    if ((substr($settings['mode'], 0, 3) == "p2p") && (openvpn_validate_cidr($settings['remote_networkv6'], "", true, "ipv6") === false)) {
+    if (openvpn_validate_cidr($settings['remote_networkv6'], "", true, "ipv6") === false) {
         $conf .= openvpn_gen_routes($settings['remote_networkv6'], "ipv6", false);
     }
 
