@@ -169,12 +169,10 @@ POSSIBILITY OF SUCH DAMAGE.
                                 draggable: true
                             });
                         } else {
-                            // request service status after successful save and update status box (wait a few seconds before update)
-                            setTimeout(function(){
-                                ajaxCall(url="/api/proxy/service/status", sendData={}, callback=function(data,status) {
-                                    updateServiceStatusUI(data['status']);
-                                });
-                            },3000);
+                            // request service status after successful save and update status box
+                            ajaxCall(url="/api/proxy/service/status", sendData={}, callback=function(data,status) {
+                                updateServiceStatusUI(data['status']);
+                            });
                         }
                     });
                 });
