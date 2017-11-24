@@ -44,7 +44,7 @@ class FirmwareController extends ApiControllerBase
      * @param integer $bytes bytes to convert
      * @return string
      */
-    private function format_bytes($bytes)
+    protected function format_bytes($bytes)
     {
         if ($bytes >= (1024 * 1024 * 1024)) {
             return sprintf("%d GB", $bytes / (1024 * 1024 * 1024));
@@ -320,6 +320,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function upgradeAction()
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
         if ($this->request->hasPost('upgrade')) {
@@ -346,6 +347,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function auditAction()
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
 
@@ -367,6 +369,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function reinstallAction($pkg_name)
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
 
@@ -395,6 +398,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function installAction($pkg_name)
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
 
@@ -423,6 +427,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function removeAction($pkg_name)
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
 
@@ -451,6 +456,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function lockAction($pkg_name)
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
 
@@ -482,6 +488,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function unlockAction($pkg_name)
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
 
@@ -510,6 +517,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function runningAction()
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
 
         $result = array(
@@ -524,6 +532,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function upgradestatusAction()
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $result = array('status' => 'running');
         $cmd_result = trim($backend->configdRun('firmware status'));
@@ -673,6 +682,8 @@ class FirmwareController extends ApiControllerBase
      */
     public function getFirmwareOptionsAction()
     {
+        $this->sessionClose(); // long running action, close session
+
         // todo: we might want to move these into configuration files later
         $mirrors = array();
         $mirrors[''] = '(default)';
