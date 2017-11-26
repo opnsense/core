@@ -858,13 +858,11 @@ function filter_generate_aliases(&$FilterIflist)
                     }
                     break;
                 case "urltable_ports":
-                    $urlfn = alias_expand_urltable($aliased['name']);
-                    if ($urlfn) {
-                        $aliases .= "{$aliased['name']} = \"{ " . preg_replace("/\n/", " ", file_get_contents($urlfn)) . " }\"\n";
-                    }
+                case "url_ports":
+                    $tmp_ports = filter_core_get_url_port_alias($aliased['name']);
+                    $aliases .= "{$aliased['name']} = \"{ {$tmp_ports} }\"\n";
                     break;
                 case "port":
-                case "url_ports":
                     $aliases .= "{$aliased['name']} = \"{ {$addrlist} }\"\n";
                     break;
                 default:
