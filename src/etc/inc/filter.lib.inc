@@ -105,7 +105,7 @@ function filter_core_get_url_port_alias($name)
                      $alias_content = file_get_contents($urltable_filename);
                  } else {
                      $arrContextOptions = array();
-                     if (isset($config['system']['checkaliasesurlcert'])) {
+                     if (!isset($config['system']['checkaliasesurlcert'])) {
                          $arrContextOptions['ssl'] = array("verify_peer"=>false,"verify_peer_name"=>false);
                      }
                      foreach ($urls as $url) {
