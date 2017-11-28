@@ -268,8 +268,6 @@
   </dhcpd>
   <unbound>
     <enable>1</enable>
-    <dnssec>1</dnssec>
-    <dnssecstripped>1</dnssecstripped>
   </unbound>
   <snmpd>
     <syslocation/>

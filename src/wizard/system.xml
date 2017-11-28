@@ -60,6 +60,10 @@ if (isset($config['wizardtemp'])) {
 	<title>General Information</title>
 	<fields>
 		<field>
+			<name>General Information</name>
+			<type>listtopic</type>
+		</field>
+		<field>
 			<name>Hostname</name>
 			<type>input</type>
 			<bindstofield>wizardtemp->system->hostname</bindstofield>
@@ -103,6 +107,26 @@ if (isset($config['wizardtemp'])) {
 			<bindstofield>system->dnsallowoverride</bindstofield>
 		</field>
 		<field>
+			<name>Unbound DNS</name>
+			<type>listtopic</type>
+		</field>
+		<field>
+			<name>Enable Resolver</name>
+			<type>checkbox</type>
+			<value>1</value>
+			<bindstofield>unbound->enable</bindstofield>
+		</field>
+		<field>
+			<name>Enable DNSSEC Support</name>
+			<type>checkbox</type>
+			<bindstofield>unbound->dnssec</bindstofield>
+		</field>
+		<field>
+			<name>Harden DNSSEC data</name>
+			<type>checkbox</type>
+			<bindstofield>unbound->dnssecstripped</bindstofield>
+		</field>
+		<field>
 			<name>Next</name>
 			<type>submit</type>
 		</field>
@@ -129,6 +153,10 @@ if (!empty($_POST['secondarydnsserver']) && !is_ipaddr($_POST['secondarydnsserve
 }
 if (count($input_errors)) {
 	$stepid--;
+} else {
+	if (isset($config['unbound']['forwarding'])) {
+		unset($config['unbound']['forwarding']);
+	}
 }
 	]]></stepsubmitphpaction>
 </step>
