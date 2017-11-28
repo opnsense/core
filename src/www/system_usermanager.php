@@ -159,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
     if (empty($pconfig['language'])) {
-        $pconfig['language'] = 'Default';
+        $pconfig['language'] = gettext('Default');
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // process post type requests
