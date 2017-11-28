@@ -40,6 +40,24 @@ use \OPNsense\Core\Config;
 class FirmwareController extends ApiControllerBase
 {
     /**
+     * return bytes in human-readable form
+     * @param integer $bytes bytes to convert
+     * @return string
+     */
+    protected function format_bytes($bytes)
+    {
+        if ($bytes >= (1024 * 1024 * 1024)) {
+            return sprintf("%d GB", $bytes / (1024 * 1024 * 1024));
+        } elseif ($bytes >= 1024 * 1024) {
+            return sprintf("%d MB", $bytes / (1024 * 1024));
+        } elseif ($bytes >= 1024) {
+            return sprintf("%d KB", $bytes / 1024);
+        } else {
+            return sprintf("%d bytes", $bytes);
+        }
+    }
+
+    /**
      * retrieve available updates
      * @return array
      */
@@ -51,6 +69,36 @@ class FirmwareController extends ApiControllerBase
         $response = json_decode(trim($backend->configdRun('firmware check')), true);
 
         if ($response != null) {
+            $packages_size = !empty($response['download_size']) ? $response['download_size'] : 0;
+            $sets_size = 0;
+
+            if (!empty($response['upgrade_packages'])) {
+                foreach ($response['upgrade_packages'] as $listing) {
+                    if (!empty($listing['size'])) {
+                        $sets_size += $listing['size'];
+                    }
+                }
+            }
+
+            if (preg_match('/\s*(\d+)\s*([a-z])/i', $packages_size, $matches)) {
+                $factor = 1;
+                switch (isset($matches[2]) ? strtolower($matches[2]) : 'b') {
+                    case 'g':
+                        $factor *= 1024;
+                    case 'm':
+                        $factor *= 1024;
+                    case 'k':
+                        $factor *= 1024;
+                    default:
+                        break;
+                }
+                $packages_size = $factor * $matches[1];
+            } else {
+                $packages_size = 0;
+            }
+
+            $download_size = $this->format_bytes($packages_size + $sets_size);
+
             if (array_key_exists('connection', $response) && $response['connection'] == 'error') {
                 $response['status_msg'] = gettext('Connection error.');
                 $response['status'] = 'error';
@@ -73,13 +121,13 @@ class FirmwareController extends ApiControllerBase
                     $response['status_msg'] = sprintf(
                         gettext('There is %s update available, total download size is %s.'),
                         $response['updates'],
-                        $response['download_size']
+                        $download_size
                     );
                 } else {
                     $response['status_msg'] = sprintf(
                         gettext('There are %s updates available, total download size is %s.'),
                         $response['updates'],
-                        $response['download_size']
+                        $download_size
                     );
                 }
                 if ($response['upgrade_needs_reboot'] == 1) {
@@ -272,6 +320,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function upgradeAction()
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
         if ($this->request->hasPost('upgrade')) {
@@ -298,6 +347,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function auditAction()
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
 
@@ -319,6 +369,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function reinstallAction($pkg_name)
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
 
@@ -347,6 +398,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function installAction($pkg_name)
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
 
@@ -375,6 +427,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function removeAction($pkg_name)
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
 
@@ -403,6 +456,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function lockAction($pkg_name)
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
 
@@ -434,6 +488,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function unlockAction($pkg_name)
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
 
@@ -462,6 +517,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function runningAction()
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
 
         $result = array(
@@ -476,6 +532,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function upgradestatusAction()
     {
+        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $result = array('status' => 'running');
         $cmd_result = trim($backend->configdRun('firmware status'));
@@ -625,6 +682,8 @@ class FirmwareController extends ApiControllerBase
      */
     public function getFirmwareOptionsAction()
     {
+        $this->sessionClose(); // long running action, close session
+
         // todo: we might want to move these into configuration files later
         $mirrors = array();
         $mirrors[''] = '(default)';
