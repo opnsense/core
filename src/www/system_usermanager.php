@@ -30,6 +30,7 @@
 */
 
 require_once 'guiconfig.inc';
+require_once 'system.inc';
 require_once 'base32/Base32.php';
 
 function get_user_privdesc(& $user)
@@ -136,6 +137,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $pconfig[$fieldname] = null;
                 }
             }
+
+            foreach (get_locale_list() as $lcode => $ldesc) {
+                if ($a_user[$id]['language'] == $lcode) {
+                    $pconfig['language'] = $ldesc;
+                    break;
+                }
+            }
         } else {
             // set defaults
             $pconfig['groups'] = null;
@@ -149,6 +157,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
         }
+    }
+    if (empty($pconfig['language'])) {
+        $pconfig['language'] = gettext('Default');
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // process post type requests
@@ -609,6 +620,13 @@ $( document ).ready(function() {
                       <div class="hidden" for="help_for_comment">
                         <?= gettext('User comment, for your own information only') ?>
                       </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Language");?></td>
+                    <td>
+                      <input name="language" type="hidden" value="<?= $pconfig['language'] ?>" />
+                      <?= $pconfig['language'] ?>
                     </td>
                   </tr>
                   <tr>
