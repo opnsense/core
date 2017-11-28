@@ -1,7 +1,9 @@
 <menu>
     <System>
         <Settings>
-            <Cron order="1000" url="/ui/cron/"/>
+            <Cron order="1000" url="/ui/cron/">
+                <workAround url="/ui/cron/*" />
+            </Cron>
         </Settings>
     </System>
 </menu>
