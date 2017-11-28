@@ -504,6 +504,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 legacy_html_escape_form_data($pconfig);
+legacy_html_escape_form_data($a_ca);
+legacy_html_escape_form_data($a_cert);
+
 include("head.inc");
 
 if (empty($act)) {
@@ -643,6 +646,7 @@ $( document ).ready(function() {
           continue;
       }
       $subject = cert_get_subject_array($ca['crt']);
+      legacy_html_escape_form_data($subject);
       $subject_items = array('C'=>'', 'ST' => '', 'L' => '', 'O' => '', 'emailAddress' => '', 'CN' => '');
       foreach ($subject as $subject_item) {
           $subject_items[$subject_item['a']] = $subject_item['v'];
