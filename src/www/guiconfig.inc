@@ -34,8 +34,8 @@ require_once("config.inc");
 
 /* CSRF BEGIN: CHECK MUST BE EXECUTED FIRST; NO EXCEPTIONS */
 require_once('csrf.inc');
+header('X-Frame-Options: SAMEORIGIN');
 /* CSRF END: THANK YOU FOR YOUR COOPERATION */
-header("X-Frame-Options: SAMEORIGIN");
 
 function get_current_theme()
 {
