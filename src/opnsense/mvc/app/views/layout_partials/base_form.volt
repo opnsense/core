@@ -90,7 +90,7 @@ data_title      :   data-title to set on form
             <col class="col-md-5"/>
         </colgroup>
         <thead>
-          <tr>
+          <tr {% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
             <th colspan="3"><h2>{{field['label']}}</h2></th>
           </tr>
         </thead>
