@@ -569,7 +569,7 @@ if (empty($act)) {
                   BootstrapDialog.show({
                               title: '<?=gettext("Certificate");?>',
                               type:BootstrapDialog.TYPE_INFO,
-                              message: data,
+                              message: $("<div/>").html(data).text(),
                               cssClass: 'monospace-dialog',
                           });
                 }
