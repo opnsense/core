@@ -404,23 +404,8 @@ include("head.inc");
                     </div>
                   </td>
                 </tr>
-                <tr>
-                  <td><a id="help_for_webinterfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Listen Interfaces') ?></td>
-                    <td>
-                    <select name="webinterfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
-<?php
-                    foreach ($interfaces as $iface => $ifacename): ?>
-                        <option value="<?= html_safe($iface) ?>" <?= in_array($iface, $pconfig['webinterfaces']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
-<?php
-                    endforeach;?>
-                    </select>
-                    <div class="hidden" for="help_for_webinterfaces">
-                      <?= gettext('Only accept connections from the selected interfaces. Leave empty to listen globally. Use with care.') ?>
-                    </div>
-                  </td>
-                </tr>
                 <tr class="ssl_opts">
-                  <td><a id="help_for_disablehttpredirect" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WebGUI redirect"); ?></td>
+                  <td><a id="help_for_disablehttpredirect" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('HTTP Redirect'); ?></td>
                   <td width="78%">
                     <input name="disablehttpredirect" type="checkbox" value="yes" <?= empty($pconfig['disablehttpredirect']) ? '' : 'checked="checked"';?> />
                     <strong><?= gettext('Disable web GUI redirect rule') ?></strong>
@@ -515,6 +500,21 @@ include("head.inc");
                     <div class="hidden" for="help_for_compression">
                       <?=gettext("Enable compression of webgui pages and dynamic content.");?><br/>
                       <?=gettext("Transfer less data to the client for an additional cost in processing power.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_webguiinterfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Listen Interfaces') ?></td>
+                    <td>
+                    <select name="webguiinterfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
+<?php
+                    foreach ($interfaces as $iface => $ifacename): ?>
+                        <option value="<?= html_safe($iface) ?>" <?= in_array($iface, $pconfig['webguiinterfaces']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
+<?php
+                    endforeach;?>
+                    </select>
+                    <div class="hidden" for="help_for_webguiinterfaces">
+                      <?= gettext('Only accept connections from the selected interfaces. Leave empty to listen globally. Use with care.') ?>
                     </div>
                   </td>
                 </tr>
