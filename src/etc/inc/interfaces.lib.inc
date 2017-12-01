@@ -386,10 +386,6 @@ function legacy_get_interface_addresses($ifs)
         $addrs['ipaddr'] = $intf_details['ipv4'][0]['ipaddr'];
         $addrs['subnetbits'] = $intf_details['ipv4'][0]['subnetbits'];
     }
-    if (!empty($intf_details['ipv6'][0]) && empty($intf_details['ipv6'][0]['link-local'])) {
-        $addrs['ipaddr6'] = $intf_details['ipv6'][0]['ipaddr'];
-        $addrs['subnetbits6'] = $intf_details['ipv6'][0]['subnetbits'];
-    }
     foreach ($intf_details['ipv6'] as $ipv6) {
         if (empty($addrs['ipaddr6']) && empty($ipv6['link-local'])) {
             $addrs['ipaddr6'] = $ipv6['ipaddr'];
