@@ -397,7 +397,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_webguiport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TCP port"); ?></td>
                   <td>
-                    <input name="webguiport" type="text" value="<?=$pconfig['webguiport'];?>" />
+                    <input name="webguiport" type="text" value="<?=$pconfig['webguiport'];?>" placeholder="<?= $pconfig['webguiproto'] == 'https' ? '443' : '80' ?>" />
                     <div class="hidden" for="help_for_webguiport">
                       <?=gettext("Enter a custom port number for the web GUI " .
                                             "above if you want to override the default (80 for HTTP, 443 " .
@@ -555,7 +555,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_sshport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSH port"); ?></td>
                   <td width="78%">
-                    <input name="sshport" type="text" value="<?=$pconfig['sshport'];?>"/>
+                    <input name="sshport" type="text" value="<?=$pconfig['sshport'];?>" placeholder="22" />
                     <div class="hidden" for="help_for_sshport">
                       <?=gettext("Leave this blank for the default of 22."); ?>
                     </div>
@@ -566,7 +566,7 @@ include("head.inc");
                     <td>
 <?php
                     $interfaces = get_configured_interface_with_descr(); ?>
-                    <select name="sshinterfaces[]" multiple="multiple" class="selectpicker">
+                    <select name="sshinterfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
 <?php
                     foreach ($interfaces as $iface => $ifacename): ?>
                         <option value="<?= html_safe($iface) ?>" <?= in_array($iface, $pconfig['sshinterfaces']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>

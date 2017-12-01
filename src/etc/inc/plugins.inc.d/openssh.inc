@@ -178,26 +178,27 @@ function openssh_configure_do($verbose = false, $interface = '')
         $sshconf .= "HostKey {$file}\n";
     }
 
-    $any = count($interfaces) ? false : true;
+    $listeners = array();
 
     foreach ($interfaces as $interface) {
         $realif = get_real_interface($interface);
         $addrs = legacy_get_interface_addresses($realif);
-        if (!empty($addrs['ipaddr'])) {
-            $sshconf .= "ListenAddress {$addrs['ipaddr']}\n";
-            $any = true;
+        foreach (array('ipaddr', 'ipaddr6', 'ipaddr6_ll') as $type) {
+            if (!empty($addrs[$type])) {
+                $listeners[] = $addrs[$type];
+            }
         }
-        if (!empty($addrs['ipaddr6'])) {
-            $sshconf .= "ListenAddress {$addrs['ipaddr6']}\n";
-            $any = true;
-        }
+
         $viparr = &config_read_array('virtualip', 'vip');
         foreach ($viparr as $vip) {
             if ($vip['interface'] == $interface && is_ipaddr($vip['subnet'])) {
-                $sshconf .= "ListenAddress {$vip['subnet']}\n";
-                $any = true;
+                $listeners[] = $vip['subnet'];
             }
         }
+    }
+
+    foreach ($listeners as $listener) {
+        $sshconf .= "ListenAddress {$listener}\n";
     }
 
     file_put_contents("/usr/local/etc/ssh/sshd_config", $sshconf);
@@ -207,7 +208,7 @@ function openssh_configure_do($verbose = false, $interface = '')
         flush();
     }
 
-    if (!$any || mwexecf('/usr/bin/protect -i /usr/local/sbin/sshd')) {
+    if ((count($interfaces) && !count($listeners)) || mwexecf('/usr/bin/protect -i /usr/local/sbin/sshd')) {
         if ($verbose) {
             echo "failed.\n";
         }
