@@ -564,6 +564,7 @@
 /usr/local/opnsense/scripts/filter/download_geoip.py
 /usr/local/opnsense/scripts/filter/kill_table.py
 /usr/local/opnsense/scripts/filter/lib/__init__.py
+/usr/local/opnsense/scripts/filter/lib/alias.py
 /usr/local/opnsense/scripts/filter/lib/geoip.py
 /usr/local/opnsense/scripts/filter/list_counters.py
 /usr/local/opnsense/scripts/filter/list_osfp.py
@@ -573,6 +574,7 @@
 /usr/local/opnsense/scripts/filter/list_tables.py
 /usr/local/opnsense/scripts/filter/pfinfo.py
 /usr/local/opnsense/scripts/filter/read_log.py
+/usr/local/opnsense/scripts/filter/update_tables.py
 /usr/local/opnsense/scripts/firmware/audit.sh
 /usr/local/opnsense/scripts/firmware/changelog.sh
 /usr/local/opnsense/scripts/firmware/check.sh
@@ -700,6 +702,8 @@
 /usr/local/opnsense/service/templates/OPNsense/Captiveportal/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Cron/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Cron/user.cron
+/usr/local/opnsense/service/templates/OPNsense/Filter/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/Filter/filter_tables.conf
 /usr/local/opnsense/service/templates/OPNsense/IDS/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/IDS/OPNsense.rules
 /usr/local/opnsense/service/templates/OPNsense/IDS/classification.config
