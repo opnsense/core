@@ -165,7 +165,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
         }
         event.preventDefault();
       });
-      if (checkSessionStorageExists() && sessionStorage.getItem('all_help_preset') == 1) {
+      if (window.sessionStorage && sessionStorage.getItem('all_help_preset') == 1) {
           // show all help messages when preset was stored
           $('[id*="show_all_help"]').toggleClass("fa-toggle-on fa-toggle-off");
           $('[id*="show_all_help"]').toggleClass("text-success text-danger");
