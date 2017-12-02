@@ -36,9 +36,24 @@
   * @param value encoded text
   * @return string decoded text
   */
- function htmlDecode(value) {
-     return $("<textarea/>").html(value).text();
- }
+function htmlDecode(value) {
+    return $("<textarea/>").html(value).text();
+}
+ 
+
+/**
+ * Check if sessionStorage is available
+ * 
+ * @return boolean if sessionStorage is available.
+ */
+function checkSessionStorageExists() {
+  if ('sessionStorage' in window) {
+    if (window.sessionStorage != null) {
+      return true;
+    }
+  }
+  return false;
+}
 
  /**
  *
@@ -240,17 +255,19 @@ function watchScrollPosition() {
     }
 
     // link on scroll event handler
-    $(window).scroll(function(){
-        sessionStorage.setItem('scrollpos', current_location()+"|"+$(window).scrollTop());
-    });
+    if (checkSessionStorageExists()) {
+        $(window).scroll(function(){
+            sessionStorage.setItem('scrollpos', current_location()+"|"+$(window).scrollTop());
+        });
 
-    // move to last known position on page load
-    $( document ).ready(function() {
-        var scrollpos = sessionStorage.getItem('scrollpos');
-        if (scrollpos != null) {
-            if (scrollpos.split('|')[0] == current_location()) {
-                $(window).scrollTop(scrollpos.split('|')[1]);
+        // move to last known position on page load
+        $( document ).ready(function() {
+            var scrollpos = sessionStorage.getItem('scrollpos');
+            if (scrollpos != null) {
+                if (scrollpos.split('|')[0] == current_location()) {
+                    $(window).scrollTop(scrollpos.split('|')[1]);
+                }
             }
-        }
-    });
+        });
+    }
 }

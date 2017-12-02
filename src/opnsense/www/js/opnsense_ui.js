@@ -228,14 +228,6 @@ function addMultiSelectClearUI() {
     });
 }
 
-function checkSessionStorageExists() {
-  if ('sessionStorage' in window) {
-    if (window.sessionStorage != null) {
-      return true;
-    }
-  }
-  return false;
-}
 
 /**
  * setup form help buttons
