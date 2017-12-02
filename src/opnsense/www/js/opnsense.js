@@ -39,21 +39,7 @@
 function htmlDecode(value) {
     return $("<textarea/>").html(value).text();
 }
- 
 
-/**
- * Check if sessionStorage is available
- * 
- * @return boolean if sessionStorage is available.
- */
-function checkSessionStorageExists() {
-  if ('sessionStorage' in window) {
-    if (window.sessionStorage != null) {
-      return true;
-    }
-  }
-  return false;
-}
 
  /**
  *
@@ -255,7 +241,7 @@ function watchScrollPosition() {
     }
 
     // link on scroll event handler
-    if (checkSessionStorageExists()) {
+    if (window.sessionStorage) {
         $(window).scroll(function(){
             sessionStorage.setItem('scrollpos', current_location()+"|"+$(window).scrollTop());
         });

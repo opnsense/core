@@ -151,13 +151,13 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
         $('[id*="show_all_help"]').toggleClass("fa-toggle-on fa-toggle-off");
         $('[id*="show_all_help"]').toggleClass("text-success text-danger");
         if ($('[id*="show_all_help"]').hasClass("fa-toggle-on")) {
-          if (checkSessionStorageExists()) {
+          if (window.sessionStorage) {
             sessionStorage.setItem('all_help_preset', 1);
           }
           $('[for*="help_for"]').addClass("show");
           $('[for*="help_for"]').removeClass("hidden");
         } else {
-          if (checkSessionStorageExists()) {
+          if (window.sessionStorage) {
             sessionStorage.setItem('all_help_preset', 0);
           }
           $('[for*="help_for"]').addClass("hidden");
