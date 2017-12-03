@@ -28,15 +28,20 @@
     --------------------------------------------------------------------------------------
     update aliases
 """
+import os
 import sys
 import argparse
 import syslog
 import xml.etree.cElementTree as ET
 import syslog
+import tempfile
+import subprocess
 from lib.alias import Alias
 
 
-class Aliases(object):
+class AliasParser(object):
+    """ Alias Parser class, encapsulates all aliases
+    """
     def __init__(self, source_tree):
         self._source_tree = source_tree
         self._aliases = dict()
@@ -45,7 +50,7 @@ class Aliases(object):
         known_aliases_list = map(lambda x: x.text, self._source_tree.iterfind('table/name'))
         self._aliases = dict()
         for elem in self._source_tree.iterfind('table'):
-            alias = Alias(elem, known_aliases=known_aliases_list, ttl=60)
+            alias = Alias(elem, known_aliases=known_aliases_list)
             alias.resolve()
             self._aliases[alias.get_name()] = alias
 
@@ -64,6 +69,21 @@ class Aliases(object):
                     self.get_alias_deps(dep, alias_deps)
         return alias_deps
 
+    def get(self, name):
+        """ get alias by name
+            :param name: alias name
+            :return: alias (or None if not found)
+        """
+        if name in self._aliases:
+            return self._aliases[name]
+        return None
+
+    def __iter__(self):
+        """ iterate all known aliases
+            :return: iterator
+        """
+        for alias in self._aliases:
+            yield self._aliases[alias]
 
 if __name__ == '__main__':
     status = dict()
@@ -78,6 +98,46 @@ if __name__ == '__main__':
         syslog.syslog(syslog.LOG_ERR, 'filter table parse error (%s) %s' % (str(e), inputargs.source_conf))
         sys.exit(-1)
 
-    aliases = Aliases(source_tree)
+    aliases = AliasParser(source_tree)
     aliases.read()
-    print ('result:',aliases.get_alias_deps('recursionC'))
+    for alias in aliases:
+        # fetch alias content including dependencies
+        alias_name = alias.get_name()
+        alias_content = alias.resolve()
+        alias_changed_or_expired = max(alias.changed(), alias.expired())
+        for related_alias_name in aliases.get_alias_deps(alias_name):
+            if related_alias_name != alias_name:
+                rel_alias = aliases.get(related_alias_name)
+                if rel_alias:
+                    alias_changed_or_expired = max(alias_changed_or_expired, rel_alias.changed(), rel_alias.expired())
+                    alias_content += rel_alias.resolve()
+        # when the alias or any of it's dependencies has changed, generate new
+        if alias_changed_or_expired:
+            alias_content_txt = '\n'.join(sorted(alias_content))
+            if not os.path.isdir('/var/db/aliastables'):
+                if not os.path.isdir('/var/db'):
+                    os.mkdir('/var/db')
+                os.mkdir('/var/db/aliastables')
+            open('/var/db/aliastables/%s.txt' % alias_name, 'w').write(alias_content_txt)
+        else:
+            alias_content_txt = open('/var/db/aliastables/%s.txt' % alias_name, 'r').read()
+
+        alias_pf_content = list()
+        with tempfile.NamedTemporaryFile() as output_stream:
+            subprocess.call(['/sbin/pfctl', '-t', alias_name, '-T', 'show'],
+                            stdout=output_stream, stderr=open(os.devnull, 'wb'))
+            output_stream.seek(0)
+            for line in output_stream.read().strip().split('\n'):
+                line = line.strip()
+                if line:
+                    alias_pf_content.append(line)
+
+        if len(alias_content) != len(alias_pf_content) or alias_changed_or_expired:
+            if len(alias_content) == 0:
+                # flush when target is empty
+                subprocess.call(['/sbin/pfctl', '-t', alias_name, '-T', 'flush'],
+                                stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+            else:
+                subprocess.call(['/sbin/pfctl', '-t', alias_name, '-T', 'replace', '-f',
+                                 '/var/db/aliastables/%s.txt' % alias_name],
+                                 stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))

@@ -45,6 +45,9 @@ class Alias(object):
         """
         self._known_aliases = known_aliases
         self._dnsResolver = dns.resolver.Resolver()
+        self._dnsResolver.timeout = 2
+        self._is_changed = None
+        self._has_expired = None
         self._ttl = ttl
         self._name = None
         self._type = None
@@ -58,6 +61,10 @@ class Alias(object):
                 self._proto = subelem.text
             elif subelem.tag == 'name':
                 self._name = subelem.text
+            elif subelem.tag == 'ttl':
+                tmp = subelem.text.strip()
+                if len(tmp.split('.')) <= 2 and tmp.replace('.', '').isdigit():
+                    self._ttl = int(float(tmp))
             elif subelem.tag == 'aliasurl':
                 self._items = set(sorted(subelem.text.split()))
             elif subelem.tag == 'address' and len(self._items) == 0:
@@ -75,6 +82,7 @@ class Alias(object):
             :param address: address or network
             :return: boolean
         """
+        address = address.strip()
         if address.find('/') > -1:
             # provided address could be a network
             try:
@@ -104,7 +112,7 @@ class Alias(object):
             try:
                 for rdata in self._dnsResolver.query(address, record_type):
                     yield str(rdata)
-            except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN):
+            except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.exception.Timeout):
                 pass
 
     def _fetch_url(self, url, ssl_no_verify=False, timeout=120):
@@ -144,12 +152,12 @@ class Alias(object):
         if do_update:
             syslog.syslog(syslog.LOG_ERR, 'geoip updated (files: %s lines: %s)' % geoip.download_geolite())
 
-        # $filename = "/usr/local/share/GeoIP/alias/".$country_code."-".$alias['proto'];
-        # if (is_file($filename)) {
-        #     $alias_content .= file_get_contents($filename);
-        # }
-        if False:
-            yield None
+        geoip_filename = "/usr/local/share/GeoIP/alias/%s-%s" % (geoitem, self._proto)
+        if os.path.isfile(geoip_filename):
+            with open(geoip_filename) as f_in:
+                for line in f_in:
+                    for address in self._parse_address(line):
+                        yield address
 
     def items(self):
         """ return unparsed (raw) alias entries without dependencies
@@ -166,21 +174,28 @@ class Alias(object):
         return md5.new(','.join(sorted(list(self.items())))).hexdigest()
 
     def changed(self):
-        """ is the alias is changed
+        """ is the alias changed (cached result, if changed within this objects lifetime)
             :return: boolean
         """
-        if os.path.isfile(self._filename_alias_hash) and os.path.isfile(self._filename_alias_content):
-            return open(self._filename_alias_hash).read().strip() != self.uniqueid()
-        return True
+        if self._is_changed is None:
+            if os.path.isfile(self._filename_alias_hash) and os.path.isfile(self._filename_alias_content):
+                self._is_changed = open(self._filename_alias_hash).read().strip() != self.uniqueid()
+            else:
+                self._is_changed = True
+
+        return self._is_changed
 
     def expired(self):
         """ if this alias has an expiry (ttl), has it reached the end of it's lifetime
             :return: boolean
         """
-        if self._ttl > 0 and os.path.isfile(self._filename_alias_hash):
-            fstat = os.stat(self._filename_alias_hash)
-            return time.time() - fstat.st_mtime > self._ttl
-        return True
+        if self._has_expired is None:
+            if self._ttl > 0 and os.path.isfile(self._filename_alias_hash):
+                fstat = os.stat(self._filename_alias_hash)
+                self._has_expired = time.time() - fstat.st_mtime > self._ttl
+            else:
+                self._has_expired = False
+        return self._has_expired
 
     def resolve(self, ssl_no_verify=False, timeout=120, force=False):
         """ resolve (fetch) alias content, without dependencies.
@@ -196,12 +211,13 @@ class Alias(object):
                         for address in self._parse_address(item):
                             self._resolve_content.append(address)
                     elif self._type in ['url', 'urltable']:
-                        if item.find('deciso') > -1:
-                            for address in self._fetch_url(item):
-                                self._resolve_content.append(address)
+                        for address in self._fetch_url(item):
+                            self._resolve_content.append(address)
                     elif self._type == 'geoip':
                         for address in self._fetch_geo(item):
                             self._resolve_content.append(address)
+                # de-duplicate
+                self._resolve_content = list(set(self._resolve_content))
                 # flush new alias content (without dependencies) to disk
                 open(self._filename_alias_content, 'w').write('\n'.join(self._resolve_content))
                 # flush md5 hash to disk
