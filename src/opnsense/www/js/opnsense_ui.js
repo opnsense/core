@@ -228,6 +228,7 @@ function addMultiSelectClearUI() {
     });
 }
 
+
 /**
  * setup form help buttons
  */
@@ -243,17 +244,21 @@ function initFormHelpUI() {
         $('[id*="show_all_help"]').toggleClass("fa-toggle-on fa-toggle-off");
         $('[id*="show_all_help"]').toggleClass("text-success text-danger");
         if ($('[id*="show_all_help"]').hasClass("fa-toggle-on")) {
-            sessionStorage.setItem('all_help_preset', 1);
+            if (window.sessionStorage) {
+                sessionStorage.setItem('all_help_preset', 1);
+            }
             $('[for*="help_for"]').addClass("show");
             $('[for*="help_for"]').removeClass("hidden");
         } else {
             $('[for*="help_for"]').addClass("hidden");
             $('[for*="help_for"]').removeClass("show");
-            sessionStorage.setItem('all_help_preset', 0);
+            if (window.sessionStorage) {
+                sessionStorage.setItem('all_help_preset', 0);
+            }
         }
         event.preventDefault();
     });
-    if (sessionStorage.getItem('all_help_preset') == 1) {
+    if (window.sessionStorage && sessionStorage.getItem('all_help_preset') == 1) {
         // show all help messages when preset was stored
         $('[id*="show_all_help"]').toggleClass("fa-toggle-on fa-toggle-off");
         $('[id*="show_all_help"]').toggleClass("text-success text-danger");
@@ -266,7 +271,7 @@ function initFormHelpUI() {
  * handle advanced show/hide
  */
 function initFormAdvancedUI() {
-    if (sessionStorage.getItem('show_advanced_preset') == 1) {
+    if (window.sessionStorage && sessionStorage.getItem('show_advanced_preset') == 1) {
         // show advanced options when preset was stored
         $('[id*="show_advanced"]').toggleClass("fa-toggle-on fa-toggle-off");
         $('[id*="show_advanced"]').toggleClass("text-success text-danger");
@@ -282,10 +287,14 @@ function initFormAdvancedUI() {
         if ($('[id*="show_advanced"]').hasClass("fa-toggle-on")) {
             $('[data-advanced*="true"]').show();
             $('[data-advanced*="hidden_row"]').remove(); // the table row is deleted to keep correct table striping
-            sessionStorage.setItem('show_advanced_preset', 1);
+            if (window.sessionStorage) {
+                sessionStorage.setItem('show_advanced_preset', 1);
+            }
         } else {
             $('[data-advanced*="true"]').after("<tr data-advanced='hidden_row'></tr>").hide(); // the table row is added to keep correct table striping
-            sessionStorage.setItem('show_advanced_preset', 0);
+            if (window.sessionStorage) {
+                sessionStorage.setItem('show_advanced_preset', 0);
+            }
         }
     });
 }
