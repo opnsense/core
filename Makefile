@@ -118,6 +118,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			php${CORE_PHP}-sqlite3 \
 			php${CORE_PHP}-xml \
 			php${CORE_PHP}-zlib \
+			py${CORE_PY}-dnspython\
 			py${CORE_PY}-Jinja2 \
 			py${CORE_PY}-netaddr \
 			py${CORE_PY}-requests \
