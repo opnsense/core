@@ -770,7 +770,7 @@ function openvpn_client_export_find_port_forwards($targetip, $targetport, $targe
             $dest['proto'] = $natent['protocol'];
 
             // Could be multiple ports... But we can only use one.
-            $dports = is_port($natent['destination']['port']) ? array($natent['destination']['port']) : filter_expand_alias_array($natent['destination']['port']);
+            $dports = is_port($natent['destination']['port']) ? array($natent['destination']['port']) : filter_core_get_port_alias($natent['destination']['port']);
             $dest['port'] = $dports[0];
 
             // Could be network or address ...
