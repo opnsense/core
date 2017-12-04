@@ -76,5 +76,4 @@ class IndexController extends ControllerBase
         // by default, don't allow our content to be rendered in an [i]frame from another location.
         $this->response->setHeader('X-Frame-Options', 'SAMEORIGIN');
     }
-
 }
