@@ -135,11 +135,13 @@ if __name__ == '__main__':
                     alias_pf_content.append(line)
 
         if len(alias_content) != len(alias_pf_content) or alias_changed_or_expired:
+            # if the alias is changed, expired or the one in memory has a different number of items, load table
             if len(alias_content) == 0:
                 # flush when target is empty
                 subprocess.call(['/sbin/pfctl', '-t', alias_name, '-T', 'flush'],
                                 stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
             else:
+                # replace table contents with collected alias
                 subprocess.call(['/sbin/pfctl', '-t', alias_name, '-T', 'replace', '-f',
                                  '/var/db/aliastables/%s.txt' % alias_name],
                                  stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))

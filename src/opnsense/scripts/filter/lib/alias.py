@@ -27,6 +27,7 @@
     Alias representation
 """
 import os
+import re
 import md5
 import time
 import requests
@@ -134,9 +135,13 @@ class Alias(object):
         if req.status_code == 200:
             # only handle content if response is correct
             req.raw.decode_content = True
-            for line in req.raw.read().split():
-                raw_address = line.strip()
-                if not raw_address.startswith('#') and not raw_address.startswith('//'):
+            lines = req.raw.read().splitlines()
+            if len(lines) > 100:
+                # when larger alias lists are downloaded, make sure we log before handling.
+                syslog.syslog(syslog.LOG_ERR, 'fetch alias url %s (lines: %s)' % (url, len(lines)))
+            for line in lines:
+                raw_address = re.split(r'[\s,;|#]+', line)[0]
+                if raw_address and not raw_address.startswith('//'):
                     for address in self._parse_address(raw_address):
                         yield address
 
@@ -206,22 +211,26 @@ class Alias(object):
         """
         if not self._resolve_content:
             if self.expired() or self.changed():
-                for item in self.items():
-                    if self._type in ['host', 'network']:
-                        for address in self._parse_address(item):
-                            self._resolve_content.append(address)
-                    elif self._type in ['url', 'urltable']:
-                        for address in self._fetch_url(item):
-                            self._resolve_content.append(address)
-                    elif self._type == 'geoip':
-                        for address in self._fetch_geo(item):
-                            self._resolve_content.append(address)
-                # de-duplicate
-                self._resolve_content = list(set(self._resolve_content))
-                # flush new alias content (without dependencies) to disk
-                open(self._filename_alias_content, 'w').write('\n'.join(self._resolve_content))
-                # flush md5 hash to disk
-                open(self._filename_alias_hash, 'w').write(self.uniqueid())
+                with open(self._filename_alias_content, 'w') as f_out:
+                    for item in self.items():
+                        address_parser = None
+                        if self._type in ['host', 'network']:
+                            address_parser = self._parse_address
+                        elif self._type in ['url', 'urltable']:
+                            address_parser = self._fetch_url
+                        elif self._type == 'geoip':
+                            address_parser = self._fetch_geo
+                        if address_parser:
+                            for address in address_parser(item):
+                                if address not in self._resolve_content:
+                                    # flush new alias content (without dependencies) to disk, so progress can easliy
+                                    # be followed, large lists of domain names can take quite some resolve time.
+                                    f_out.write('%s\n' % address)
+                                    f_out.flush()
+                                    # preserve addresses
+                                    self._resolve_content.append(address)
+                    # flush md5 hash to disk
+                    open(self._filename_alias_hash, 'w').write(self.uniqueid())
             else:
                 self._resolve_content = open(self._filename_alias_content).read().split()
         # return the addresses and networks of this alias
