@@ -119,8 +119,10 @@ if __name__ == '__main__':
                     os.mkdir('/var/db')
                 os.mkdir('/var/db/aliastables')
             open('/var/db/aliastables/%s.txt' % alias_name, 'w').write(alias_content_txt)
-        else:
+        elif os.path.isfile('/var/db/aliastables/%s.txt' % alias_name):
             alias_content_txt = open('/var/db/aliastables/%s.txt' % alias_name, 'r').read()
+        else:
+            alias_content_txt = ""
 
         alias_pf_content = list()
         with tempfile.NamedTemporaryFile() as output_stream:
