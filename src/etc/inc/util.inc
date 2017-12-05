@@ -1445,38 +1445,6 @@ function prefer_ipv4_or_ipv6()
     );
 }
 
-/**
- * download geoip and collect alias contents into /var/db/aliastables
- * @param array $alias
- */
-function download_alias_geoip($alias)
-{
-    if ($alias['type'] == 'geoip') {
-        // create alias target directly if it doesn't exists (mfs)
-        if (!file_exists("/var/db/aliastables/")) {
-            mkdir("/var/db/aliastables");
-        }
-        // download the geoip database, first check if we haven't already done so the last day
-        if (!is_file('/usr/local/share/GeoIP/alias/NL-IPv4') || (time() - filemtime('/usr/local/share/GeoIP/alias/NL-IPv4')) > (86400 - 90)) {
-            log_error("{$argv[0]}: Download GeoIP database");
-            exec('/usr/local/opnsense/scripts/filter/download_geoip.py');
-        }
-        // concat geoip countries and save to alias file
-        $alias_content = "";
-        foreach (explode(' ', $alias['address']) as $country_code) {
-            if (strlen($country_code) == 2 && in_array($alias['proto'], array('IPv4', 'IPv6'))) {
-                $filename = "/usr/local/share/GeoIP/alias/".$country_code."-".$alias['proto'];
-                if (is_file($filename)) {
-                    $alias_content .= file_get_contents($filename);
-                }
-            }
-        }
-        return file_put_contents('/var/db/aliastables/'.basename($alias['name']).'.txt', $alias_content);
-    } else {
-        return false;
-    }
-}
-
 function is_fqdn($fqdn)
 {
     $hostname = false;

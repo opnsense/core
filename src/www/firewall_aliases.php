@@ -115,7 +115,11 @@ $a_aliases = &config_read_array('aliases', 'alias');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['apply'])) {
         /* reload all components that use aliases */
+        // striclly we should only reload if a port alias has changed
         filter_configure();
+        // flush alias contents to disk and update pf tables
+        configd_run('template reload OPNsense/Filter');
+        configd_run('filter refresh_aliases', true);
         $savemsg = get_std_save_message();
         clear_subsystem_dirty('aliases');
     } elseif (isset($_POST['act']) && $_POST['act'] == "del") {
