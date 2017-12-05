@@ -324,16 +324,31 @@ class Syslog extends BaseModel
 
     private function checkPredefinedCategories()
     {
-        $this->setCategory('system',    gettext('System events'));
-        $this->setCategory('dhcp',      gettext('DHCP service events'));
-        $this->setCategory('filter',    gettext('Firewall events'));
-        $this->setCategory('gateways',  gettext('Gateway Monitor events'));
-        $this->setCategory('ntpd',      gettext('Internet time events'));
-        $this->setCategory('portalauth',gettext('Portal Auth events'));
-        $this->setCategory('relayd',    gettext('Server Load Balancer events'));
-        $this->setCategory('resolver',  gettext('Domain name resolver events'));
-        $this->setCategory('wireless',  gettext('Wireless events'));
-        $this->setCategory('vpn',       gettext('VPN (PPTP, IPsec, OpenVPN) events'));
+        // do not write localized categories descriptions to config.xml
+        $this->setCategory('system',    'System events');
+        $this->setCategory('dhcp',      'DHCP service events');
+        $this->setCategory('filter',    'Firewall events');
+        $this->setCategory('gateways',  'Gateway Monitor events');
+        $this->setCategory('ntpd',      'Internet time events');
+        $this->setCategory('portalauth','Portal Auth events');
+        $this->setCategory('relayd',    'Server Load Balancer events');
+        $this->setCategory('resolver',  'Domain name resolver events');
+        $this->setCategory('wireless',  'Wireless events');
+        $this->setCategory('vpn',       'VPN (PPTP, IPsec, OpenVPN) events');
+
+        // hook to include category names to gettext files
+        $translate = [
+            gettext('System events'),
+            gettext('DHCP service events'),
+            gettext('Firewall events'),
+            gettext('Gateway Monitor events'),
+            gettext('Internet time events'),
+            gettext('Portal Auth events'),
+            gettext('Server Load Balancer events'),
+            gettext('Domain name resolver events'),
+            gettext('Wireless events'),
+            gettext('VPN (PPTP, IPsec, OpenVPN) events')
+        ];
     }
 
     private function checkPredefinedTargets()

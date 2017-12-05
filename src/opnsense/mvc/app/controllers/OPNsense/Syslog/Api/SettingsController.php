@@ -144,7 +144,11 @@ class SettingsController extends ApiControllerBase
             array("Description", "LogRemote", "Name"),
             "Description"
         );
-       
+
+        // let's translate
+        for ($i = 0; $i < count($result["rows"]); $i++) {
+            $result["rows"][$i]["Description"] = gettext($result["rows"][$i]["Description"]);
+        }
         return $result;
     }
 
