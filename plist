@@ -16,6 +16,7 @@
 /usr/local/etc/inc/crypt.inc
 /usr/local/etc/inc/filter.inc
 /usr/local/etc/inc/filter.lib.inc
+/usr/local/etc/inc/filter_legacy.inc
 /usr/local/etc/inc/filter_log.inc
 /usr/local/etc/inc/gwlb.inc
 /usr/local/etc/inc/interfaces.inc
@@ -145,9 +146,7 @@
 /usr/local/etc/rc.syshook.d/90-carp.start
 /usr/local/etc/rc.syshook.d/90-cron.start
 /usr/local/etc/rc.syshook.d/95-beep.start
-/usr/local/etc/rc.update_alias_url_data
 /usr/local/etc/rc.update_bogons
-/usr/local/etc/rc.update_urltables
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/opnsense/contrib/IXR/IXR_Library.php
 /usr/local/opnsense/contrib/base32/Base32.php
