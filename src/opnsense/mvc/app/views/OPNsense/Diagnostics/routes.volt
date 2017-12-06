@@ -125,7 +125,6 @@ POSSIBILITY OF SUCH DAMAGE.
                         </tr>
                     </table>
                 </div>
-                <hr/>
             </div>
         </div>
     </div>
