@@ -621,7 +621,7 @@
 /usr/local/opnsense/scripts/proxy/generate_cert.php
 /usr/local/opnsense/scripts/proxy/setup.sh
 /usr/local/opnsense/scripts/remote_backup.php
-/usr/local/opnsense/scripts/routes/routes_wrapper
+/usr/local/opnsense/scripts/routes/gateways.php
 /usr/local/opnsense/scripts/routes/show_routes.py
 /usr/local/opnsense/scripts/suricata/__init__.py
 /usr/local/opnsense/scripts/suricata/dropAlertLog.py
