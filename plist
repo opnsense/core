@@ -127,6 +127,7 @@
 /usr/local/etc/rc.reload_interfaces
 /usr/local/etc/rc.resolv_conf_generate
 /usr/local/etc/rc.restart_webgui
+/usr/local/etc/rc.routing_configure
 /usr/local/etc/rc.shutdown
 /usr/local/etc/rc.sshd
 /usr/local/etc/rc.subr.d/crashdump
