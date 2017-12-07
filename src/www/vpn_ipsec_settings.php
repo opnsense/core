@@ -56,10 +56,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $_POST;
     // validate
     $input_errors = array();
-    foreach ($pconfig['passthrough_networks'] as $ptnet) {
-        if (!is_subnet($ptnet)) {
-            $input_errors[] = sprintf(gettext('Entry "%s" is not a valid network.'), $ptnet);
+    if (!empty($pconfig['passthrough_networks'])) {
+        foreach ($pconfig['passthrough_networks'] as $ptnet) {
+            if (!is_subnet($ptnet)) {
+                $input_errors[] = sprintf(gettext('Entry "%s" is not a valid network.'), $ptnet);
+            }
         }
+    } else {
+        $pconfig['passthrough_networks'] = array();
     }
 
     // save form data
@@ -85,7 +89,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
         }
-        $config['ipsec']['passthrough_networks'] = implode(',', $pconfig['passthrough_networks']);
+
+        if (count($pconfig['passthrough_networks'])) {
+            $config['ipsec']['passthrough_networks'] = implode(',', $pconfig['passthrough_networks']);
+        } elseif (isset($config['ipsec']['passthrough_networks'])) {
+            unset($config['ipsec']['passthrough_networks']);
+        }
 
         write_config();
         $savemsg = get_std_save_message();
