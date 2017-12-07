@@ -117,6 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['action']) && $_POST['action'] == "resetlogs") {
         clear_all_log_files();
+        $pconfig = $_POST;
         $savemsg = gettext("The log files have been reset.");
     } else {
         $input_errors = array();
