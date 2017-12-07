@@ -603,6 +603,20 @@ POSSIBILITY OF SUCH DAMAGE.
                 );
                 $("#firmware_flavour").selectpicker('refresh');
                 $("#firmware_flavour").change();
+
+                $.each(firmwareoptions.families, function(key, value) {
+                    var selected = false;
+                    if (key == firmwareconfig['family']) {
+                        selected = true;
+                    }
+                    $("#firmware_family").append($("<option/>")
+                            .attr("value",key)
+                            .text(value)
+                            .prop('selected', selected)
+                    );
+                });
+                $("#firmware_family").selectpicker('refresh');
+                $("#firmware_family").change();
             });
         });
 
@@ -633,6 +647,7 @@ POSSIBILITY OF SUCH DAMAGE.
             var confopt = {};
             confopt.mirror = $("#firmware_mirror_value").val();
             confopt.flavour = $("#firmware_flavour_value").val();
+            confopt.family = $("#firmware_family").val();
             if ($("#firmware_mirror option:selected").data("has_subscription") == true) {
                 confopt.subscription = $("#firmware_mirror_subscription").val();
             } else {
@@ -749,6 +764,17 @@ POSSIBILITY OF SUCH DAMAGE.
                                     </div>
                                     <div class="hidden" for="help_for_flavour">
                                         {{ lang._('Select the firmware cryptography flavour.') }}
+                                    </div>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><a id="help_for_family" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Release Family') }}</td>
+                                <td>
+                                    <select class="selectpicker" id="firmware_family">
+                                    </select>
+                                    <div class="hidden" for="help_for_family">
+                                        {{ lang._('Select the release family. Use with care.') }}
                                     </div>
                                 </td>
                                 <td></td>
