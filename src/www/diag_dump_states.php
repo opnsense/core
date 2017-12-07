@@ -135,6 +135,9 @@ include("head.inc");
                   foreach (legacy_config_get_interfaces() as $intf) {
                       $intfdescr[$intf['if']] = $intf['descr'];
                   }
+                  if (empty($states_info['details'])) {
+                      $states_info['details'] = array();
+                  }
                   foreach ($states_info['details'] as $state):
                     // states can be deleted by source / dest combination, all matching records use the same class.
                     $rowid = str_replace(array('.', ':'), '_', $state['src_addr'].$state['dst_addr']);
