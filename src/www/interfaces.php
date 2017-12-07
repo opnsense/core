@@ -1197,7 +1197,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
                 $new_config['wireless']['pureg']['enable'] = !empty($pconfig['puremode']) && $pconfig['puremode'] == "11g";
                 $new_config['wireless']['puren']['enable'] = !empty($pconfig['puremode']) && $pconfig['puremode'] == "11n";
-                $new_config['wireless']['apbridge']['enable'] = !empty($pconfig['apbridge_enable']) ;
+                $new_config['wireless']['apbridge'] = array();
+                $new_config['wireless']['apbridge']['enable'] = !empty($pconfig['apbridge_enable']);
+                $new_config['wireless']['turbo'] = array();
                 $new_config['wireless']['turbo']['enable'] = $pconfig['standard'] == "11g Turbo" || $pconfig['standard'] == "11a Turbo";
 
                 $new_config['wireless']['wep']['key'] = array();
@@ -1622,7 +1624,7 @@ include("head.inc");
       <div class="row">
 <?php
       if (isset($input_errors) && count($input_errors) > 0) {
-          print_input_errors($input_errors) ;
+          print_input_errors($input_errors);
       }
       if (is_subsystem_dirty('interfaces')) {
           print_info_box_apply(sprintf(gettext("The %s configuration has been changed."),$pconfig['descr'])."<br/>".gettext("You must apply the changes in order for them to take effect.")."<br/>".gettext("Don't forget to adjust the DHCP Server range if needed after applying."));
