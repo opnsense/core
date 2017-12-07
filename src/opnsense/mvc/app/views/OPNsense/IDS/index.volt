@@ -382,7 +382,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                         alert_fields['timestamp'] = "{{ lang._('Timestamp') }}";
                                         alert_fields['alert'] = "{{ lang._('Alert') }}";
                                         alert_fields['alert_sid'] = "{{ lang._('Alert sid') }}";
-					alert_fields['proto'] = "{{ lang._('Protocol') }}";
+                                        alert_fields['proto'] = "{{ lang._('Protocol') }}";
                                         alert_fields['src_ip'] = "{{ lang._('Source IP') }}";
                                         alert_fields['dest_ip'] = "{{ lang._('Destination IP') }}";
                                         alert_fields['src_port'] = "{{ lang._('Source port') }}";
