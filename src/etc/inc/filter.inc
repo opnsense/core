@@ -1636,12 +1636,10 @@ function filter_nat_rules_generate(&$FilterIflist)
             }
 
             /* if item is an alias, expand */
-            $dstport = "";
-            $dstport[0] = alias_expand($rule['destination']['port']);
-            if (!$dstport[0]) {
+            $dstport = array(alias_expand($rule['destination']['port']));
+            if (empty($dstport[0])) {
                 $dstport = explode("-", $rule['destination']['port']);
             }
-
 
             if (!empty($rule['protocol']) && in_array($rule['protocol'], array('tcp/udp', 'udp', 'tcp'))) {
                 $localport = alias_expand($rule['local-port']);
