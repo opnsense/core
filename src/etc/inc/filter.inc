@@ -243,43 +243,45 @@ function filter_configure_sync($verbose = false)
 
     plugins_firewall($fw);
 
-    // register user rules
-    foreach ($config['filter']['rule'] as $rule) {
-        $sched = '';
-        $descr = '';
+    if (isset($config['filter']['rule'])) {
+        // register user rules
+        foreach ($config['filter']['rule'] as $rule) {
+            $sched = '';
+            $descr = '';
 
-        if (!empty($rule['sched'])) {
-            $sched = "({$rule['sched']})";
-        }
-        if (!empty($rule['descr'])) {
-            $descr = ": {$rule['descr']}";
-        }
+            if (!empty($rule['sched'])) {
+                $sched = "({$rule['sched']})";
+            }
+            if (!empty($rule['descr'])) {
+                $descr = ": {$rule['descr']}";
+            }
 
-        $rule['label'] = fix_rule_label("USER_RULE{$sched}{$descr}") ;
-        if (isset($rule['floating'])) {
-            $prio = 200000;
-        } elseif (is_interface_group($rule['interface']) || in_array($rule['interface'], array("l2tp", "pptp", "pppoe", "enc0", "openvpn"))) {
-            $prio = 300000;
-        } else {
-            $prio = 400000;
-        }
-        /* is a time based rule schedule attached? */
-        if (!empty($rule['sched']) && !empty($config['schedules'])) {
-            foreach ($config['schedules']['schedule'] as $sched) {
-                if ($sched['name'] == $rule['sched']) {
-                    if (!filter_get_time_based_rule_status($sched)) {
-                        if (!isset($config['system']['schedule_states'])) {
-                            $sched_kill_states[] = $rule['label'];
+            $rule['label'] = fix_rule_label("USER_RULE{$sched}{$descr}") ;
+            if (isset($rule['floating'])) {
+                $prio = 200000;
+            } elseif (is_interface_group($rule['interface']) || in_array($rule['interface'], array("l2tp", "pptp", "pppoe", "enc0", "openvpn"))) {
+                $prio = 300000;
+            } else {
+                $prio = 400000;
+            }
+            /* is a time based rule schedule attached? */
+            if (!empty($rule['sched']) && !empty($config['schedules'])) {
+                foreach ($config['schedules']['schedule'] as $sched) {
+                    if ($sched['name'] == $rule['sched']) {
+                        if (!filter_get_time_based_rule_status($sched)) {
+                            if (!isset($config['system']['schedule_states'])) {
+                                $sched_kill_states[] = $rule['label'];
+                            }
+                            /* disable rule, suffix label to mark end of schedule */
+                            $rule['disabled'] = true;
+                            $rule['label'] = "[FIN]".$rule['label'];
                         }
-                        /* disable rule, suffix label to mark end of schedule */
-                        $rule['disabled'] = true;
-                        $rule['label'] = "[FIN]".$rule['label'];
+                        break;
                     }
-                    break;
                 }
             }
+            $fw->registerFilterRule($prio, $rule);
         }
-        $fw->registerFilterRule($prio, $rule);
     }
 
     filter_pflog_start();
