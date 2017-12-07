@@ -47,7 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['language'] = $config['system']['language'];
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
     $pconfig['theme'] = $config['theme'];
-    $pconfig['timezone'] = empty($pconfig['timezone']) ? 'Etc/UTC' : $config['system']['timezone'] ;
+    $pconfig['timezone'] = $config['system']['timezone'];
+    $pconfig['timezone'] = 'Etc/UTC';
 
     for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
         $dnsname = "dns{$dnscounter}";
