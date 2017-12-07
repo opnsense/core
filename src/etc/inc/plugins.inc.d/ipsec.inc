@@ -881,7 +881,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                         $family = "inet";
                     }
                     if (is_ipaddr($srcip)) {
-                        $ipsecpinghosts[] = "{$srcip}|{$dstip}|3|||||{$family}|\n";
+                        $ipsecpinghosts .= "{$srcip}|{$dstip}|3|||||{$family}|\n";
                     }
                 }
             }
