@@ -49,7 +49,7 @@ if (isset($config['ipsec']['phase1'])) {
 
     // parse configured tunnels
     foreach ($ipsec_status as $status_key => $status_value) {
-        if (isset($status_value['children'])) {
+        if (isset($status_value['children']) && is_array($status_value['children'])) {
           foreach($status_value['children'] as $child_status_key => $child_status_value) {
               $ipsec_tunnels[$child_status_key] = array('active' => false,
                                                         'local-addrs' => $status_value['local-addrs'],
