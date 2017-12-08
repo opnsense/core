@@ -6,12 +6,14 @@
           <network type="NetworkField">
             <NetMaskRequired>Y</NetMaskRequired>
             <Required>Y</Required>
+            <ValidationMessage>Specify a valid network matching the gateways ip protocol.</ValidationMessage>
           </network>
           <gateway type="JsonKeyValueStoreField">
             <Required>Y</Required>
             <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
             <SourceFile>/tmp/gateway_list.json</SourceFile>
             <ConfigdPopulateTTL>20</ConfigdPopulateTTL>
+            <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
           </gateway>
           <descr type="TextField">
             <Required>N</Required>
