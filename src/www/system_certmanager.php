@@ -430,7 +430,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         'emailAddress' => $pconfig['dn_email'],
                         'commonName' => $pconfig['dn_commonname']);
                     if (count($altnames)) {
-                        $altnames_tmp = "";
+                        $altnames_tmp = array();
                         foreach ($altnames as $altname) {
                             $altnames_tmp[] = "{$altname['type']}:{$altname['value']}";
                         }
@@ -465,7 +465,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $dn['organizationalUnitName'] = $pconfig['csr_dn_organizationalunit'];
                     }
                     if (count($altnames)) {
-                        $altnames_tmp = "";
+                        $altnames_tmp = array();
                         foreach ($altnames as $altname) {
                             $altnames_tmp[] = "{$altname['type']}:{$altname['value']}";
                         }
