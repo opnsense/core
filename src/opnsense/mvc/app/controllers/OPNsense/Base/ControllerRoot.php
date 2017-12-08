@@ -130,7 +130,7 @@ class ControllerRoot extends Controller
         if (!$acl->isPageAccessible($this->session->get("Username"), $_SERVER['REQUEST_URI'])) {
             $this->getLogger()->error("uri ".$_SERVER['REQUEST_URI'].
                 " not accessible for user ".$this->session->get("Username"));
-            $this->response->redirect($redirect_uri, true);
+            $this->response->redirect("/", true);
             return false;
         }
 
