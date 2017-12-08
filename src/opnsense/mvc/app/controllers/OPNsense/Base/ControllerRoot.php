@@ -102,10 +102,11 @@ class ControllerRoot extends Controller
      */
     public function doAuth()
     {
+        $redirect_uri = "/?url=".$_SERVER['REQUEST_URI'];
         if ($this->session->has("Username") == false) {
             // user unknown
             $this->getLogger()->error("no active session, user not found");
-            $this->response->redirect("/", true);
+            $this->response->redirect($redirect_uri, true);
             $this->setLang();
             return false;
         } elseif ($this->session->has("last_access")
@@ -115,7 +116,7 @@ class ControllerRoot extends Controller
             // cleanup session data
             $this->session->remove("Username");
             $this->session->remove("last_access");
-            $this->response->redirect("/", true);
+            $this->response->redirect($redirect_uri, true);
             $this->setLang();
             return false;
         }
@@ -129,7 +130,7 @@ class ControllerRoot extends Controller
         if (!$acl->isPageAccessible($this->session->get("Username"), $_SERVER['REQUEST_URI'])) {
             $this->getLogger()->error("uri ".$_SERVER['REQUEST_URI'].
                 " not accessible for user ".$this->session->get("Username"));
-            $this->response->redirect("/", true);
+            $this->response->redirect($redirect_uri, true);
             return false;
         }
 

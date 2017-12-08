@@ -236,7 +236,11 @@ function session_auth(&$Login_Error)
             if (!isset($config['system']['webgui']['quietlogin'])) {
               log_error(sprintf("Successful login for user '%s' from: %s", $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']));
             }
-            header(url_safe("Location: {$_SERVER['REQUEST_URI']}"));
+            if (!empty($_GET['url'])) {
+                header(url_safe("Location: {$_GET['url']}"));
+            } else {
+                header(url_safe("Location: {$_SERVER['REQUEST_URI']}"));
+            }
             exit;
         } else {
             log_error("Web GUI authentication error for '{$_POST['usernamefld']}' from {$_SERVER['REMOTE_ADDR']}");
