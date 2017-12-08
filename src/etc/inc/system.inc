@@ -624,7 +624,7 @@ function system_staticroutes_configure($interface = '')
                 $ips = add_hostname_to_watch($rtent['network']);
             }
 
-            if (isset($rtent['disabled'])) {
+            if (!empty($rtent['disabled'])) {
                 foreach ($ips as $ip) {
                     if (!is_subnet($ip)) {
                         if (is_ipaddrv4($ip)) {
