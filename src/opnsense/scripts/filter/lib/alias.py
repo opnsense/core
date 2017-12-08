@@ -131,19 +131,22 @@ class Alias(object):
         if ssl_no_verify:
             req_opts['verify'] = False
         # fetch data
-        req = requests.get(**req_opts)
-        if req.status_code == 200:
-            # only handle content if response is correct
-            req.raw.decode_content = True
-            lines = req.raw.read().splitlines()
-            if len(lines) > 100:
-                # when larger alias lists are downloaded, make sure we log before handling.
-                syslog.syslog(syslog.LOG_ERR, 'fetch alias url %s (lines: %s)' % (url, len(lines)))
-            for line in lines:
-                raw_address = re.split(r'[\s,;|#]+', line)[0]
-                if raw_address and not raw_address.startswith('//'):
-                    for address in self._parse_address(raw_address):
-                        yield address
+        try:
+            req = requests.get(**req_opts)
+            if req.status_code == 200:
+                # only handle content if response is correct
+                req.raw.decode_content = True
+                lines = req.raw.read().splitlines()
+                if len(lines) > 100:
+                    # when larger alias lists are downloaded, make sure we log before handling.
+                    syslog.syslog(syslog.LOG_ERR, 'fetch alias url %s (lines: %s)' % (url, len(lines)))
+                for line in lines:
+                    raw_address = re.split(r'[\s,;|#]+', line)[0]
+                    if raw_address and not raw_address.startswith('//'):
+                        for address in self._parse_address(raw_address):
+                            yield address
+        except:
+            syslog.syslog(syslog.LOG_ERR, 'error fetching alias url %s' % (url))
 
     def _fetch_geo(self, geoitem):
         """ fetch geoip addresses, if not downloaded or outdated force an update
