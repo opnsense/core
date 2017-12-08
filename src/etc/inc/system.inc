@@ -544,44 +544,10 @@ function system_routing_configure($interface = '', $verbose = false)
     return 0;
 }
 
-function add_hostname_to_watch($hostname)
-{
-    $result = array();
-
-    if((is_fqdn($hostname)) && (!is_ipaddr($hostname))) {
-        $domrecords = array();
-        $domips = array();
-        exec("host -t A " . escapeshellarg($hostname), $domrecords, $rethost);
-        if($rethost == 0) {
-            foreach($domrecords as $domr) {
-                $doml = explode(" ", $domr);
-                $domip = $doml[3];
-                /* fill array with domain ip addresses */
-                if(is_ipaddr($domip)) {
-                    $domips[] = $domip;
-                }
-            }
-        }
-        sort($domips);
-        $contents = "";
-        if(! empty($domips)) {
-            foreach($domips as $ip) {
-                $contents .= "$ip\n";
-            }
-        }
-
-        /* Remove empty elements */
-        $result = array_filter(explode("\n", $contents), 'strlen');
-    }
-
-    return $result;
-}
 
 function system_staticroutes_configure($interface = '')
 {
     global $config, $aliastable;
-
-    $filterdns_list = array();
 
     $static_routes = get_staticroutes(false, true);
     if (count($static_routes)) {
@@ -597,6 +563,10 @@ function system_staticroutes_configure($interface = '')
                 continue;
             }
 
+            if (!is_subnet($rtent['network'])) {
+                log_error(sprintf('Cannot add static route to: %s', $rtent['network']));
+                continue;
+            }
             $interfacegw = $gateway['interface'];
             $gatewayip = $gateway['gateway'];
             $fargw = isset($gateway['fargw']) && $gateway['ipprotocol'] != 'inet6';
@@ -611,76 +581,25 @@ function system_staticroutes_configure($interface = '')
                     break;
             }
 
-            if (!is_fqdn($rtent['network']) && !is_subnet($rtent['network'])) {
-                continue;
-            }
-
-            if (is_subnet($rtent['network'])) {
-                $ips = array($rtent['network']);
-            } else {
-                if (!isset($rtent['disabled'])) {
-                    $filterdns_list[] = $rtent['network'];
-                }
-                $ips = add_hostname_to_watch($rtent['network']);
-            }
-
+            $ip = $rtent['network'];
             if (!empty($rtent['disabled'])) {
-                foreach ($ips as $ip) {
-                    if (!is_subnet($ip)) {
-                        if (is_ipaddrv4($ip)) {
-                            $ip .= "/32";
-                        } elseif (is_ipaddrv6($ip)) {
-                            $ip .= "/128";
-                        }
-                    }
-                    $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
-                    mwexec("/sbin/route delete {$inet} " . escapeshellarg($ip));
-                }
-                continue;
-            }
-
-            foreach ($ips as $ip) {
-                if (!is_subnet($ip)) {
-                    if (is_ipaddrv4($ip)) {
-                        $ip .= "/32";
-                    } elseif (is_ipaddrv6($ip)) {
-                        $ip .= "/128";
-                    }
-                }
-
+                $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
+                mwexec("/sbin/route delete {$inet} " . escapeshellarg($ip), true);
+            } else {
                 $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
                 $cmd = " {$inet} {$blackhole} " . escapeshellarg($ip) . " ";
-
-                if (is_subnet($ip)) {
-                    if (is_ipaddr($gatewayip)) {
-                        mwexec("/sbin/route delete".$cmd . escapeshellarg($gatewayip));
-                        if ($fargw) {
-                            mwexecf('/sbin/route delete %s %s -interface %s', array($inet, $gatewayip, $interfacegw));
-                            mwexecf('/sbin/route add %s %s -interface %s', array($inet, $gatewayip, $interfacegw));
-                        }
-                        mwexec("/sbin/route add".$cmd . escapeshellarg($gatewayip));
-                    } elseif (!empty($interfacegw)) {
-                        mwexec("/sbin/route delete".$cmd . "-interface " . escapeshellarg($interfacegw));
-                        mwexec("/sbin/route add".$cmd . "-interface " . escapeshellarg($interfacegw));
+                if (is_ipaddr($gatewayip)) {
+                    mwexec("/sbin/route delete".$cmd . escapeshellarg($gatewayip), true);
+                    if ($fargw) {
+                        mwexecf('/sbin/route delete %s %s -interface %s ', array($inet, $gatewayip, $interfacegw), true);
+                        mwexecf('/sbin/route add %s %s -interface %s', array($inet, $gatewayip, $interfacegw), true);
                     }
-                } else {
-                    log_error(sprintf('Cannot add static route to: %s', $ip));
+                    mwexec("/sbin/route add".$cmd . escapeshellarg($gatewayip), true);
+                } elseif (!empty($interfacegw)) {
+                    mwexec("/sbin/route delete".$cmd . "-interface " . escapeshellarg($interfacegw), true);
+                    mwexec("/sbin/route add".$cmd . "-interface " . escapeshellarg($interfacegw), true);
                 }
             }
-        }
-    }
-
-    if (count($filterdns_list)) {
-        $hostnames = "";
-        array_unique($filterdns_list);
-        foreach ($filterdns_list as $hostname) {
-            $hostnames .= "cmd {$hostname} '/usr/local/opnsense/service/configd_ctl.py routedns reload'\n";
-        }
-        file_put_contents("/var/etc/filterdns-route.hosts", $hostnames);
-        if (isvalidpid('/var/run/filterdns-route.pid')) {
-            killbypid('/var/run/filterdns-route.pid', 'HUP');
-        } else {
-            mwexec("/usr/local/sbin/filterdns -p /var/run/filterdns-route.pid -i 60 -c /var/etc/filterdns-route.hosts -d 1");
         }
     }
 
