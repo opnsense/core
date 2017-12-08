@@ -109,7 +109,7 @@ function pf_firewall($fw)
 
         foreach (get_staticroutes() as $route) {
             $friendly = $GatewaysList[$route['gateway']]['friendlyiface'];
-            if (!empty($intf[$friendly])) {
+            if (!empty($intf[$friendly]) && empty($route['disabled'])) {
                 $routeent = explode("/", $route['network']);
                 if (is_ipaddrv4($routeent[0]) && empty($ifdetails[$intf[$friendly]['if']]['ipv4'])) {
                     continue;
@@ -122,16 +122,17 @@ function pf_firewall($fw)
                 $networks = array();
                 $networks[] = array('from' => $intf[$friendly]['if'].":network", 'to' => $route['network']);
                 $networks[] = array('to' => $intf[$friendly]['if'].":network", 'from' => $route['network']);
+                $proto = strpos($route['network'], ":") !== false ? "inet6" : "inet";
                 foreach ($networks as $network) {
                     $fw->registerFilterRule(10,
-                      array('interface' => $friendly, 'statetype' => 'sloppy',
+                      array('interface' => $friendly, 'statetype' => 'sloppy', 'ipprotocol' => $proto,
                             'protocol' => 'tcp','flags' => 'any', 'from' => $network['from'],
                             'to' => $network['to'], 'quick' => false,
                             'label' => "pass traffic between statically routed subnets"),
                       $defaults['pass']
                     );
                     $fw->registerFilterRule(10,
-                      array('interface' => $friendly, 'statetype' => 'sloppy',
+                      array('interface' => $friendly, 'statetype' => 'sloppy', 'ipprotocol' => $proto,
                             'from' => $network['from'],'to' => $network['to'], 'quick' => false,
                             'label' => "pass traffic between statically routed subnets"),
                       $defaults['pass']
