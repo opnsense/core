@@ -377,10 +377,10 @@ SureGPS =    #Sure Electronics SKG16B
                         <input type="hidden" name="nmea" value="<?=$pconfig['nmea'];?>" id="nmea">
                         <select id="gpsnmea" multiple="multiple" class="selectpicker">
                           <option value="0" <?=empty($pconfig['nmea']) ? " selected=\"selected\"" : ""; ?>><?=gettext("All");?></option>
-                          <option value="1" <?=$pconfig['nmea'] & 1 ? " selected=\"selected\"" : "";?>><?=gettext("RMC");?></option>
-                          <option value="2" <?=$pconfig['nmea'] & 2 ? " selected=\"selected\"" : "";?>><?=gettext("GGA");?></option>
-                          <option value="4" <?=$pconfig['nmea'] & 4 ? " selected=\"selected\"" : "";?>><?=gettext("GLL");?></option>
-                          <option value="8" <?=$pconfig['nmea'] & 8 ? " selected=\"selected\"" : "";?>><?=gettext("ZDA or ZDG");?></option>
+                          <option value="1" <?=intval($pconfig['nmea']) & 1 ? " selected=\"selected\"" : "";?>><?=gettext("RMC");?></option>
+                          <option value="2" <?=intval($pconfig['nmea']) & 2 ? " selected=\"selected\"" : "";?>><?=gettext("GGA");?></option>
+                          <option value="4" <?=intval($pconfig['nmea']) & 4 ? " selected=\"selected\"" : "";?>><?=gettext("GLL");?></option>
+                          <option value="8" <?=intval($pconfig['nmea']) & 8 ? " selected=\"selected\"" : "";?>><?=gettext("ZDA or ZDG");?></option>
                         </select>
                         <div class="hidden" for="help_for_nmea">
                           <?=gettext("By default NTP will listen for all supported NMEA sentences. Here one or more sentences to listen for may be specified."); ?>
