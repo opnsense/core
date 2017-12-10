@@ -122,6 +122,8 @@ class RoutesController extends ApiControllerBase
             if ($mdlRoute->route->del($uuid)) {
                 // if item is removed, serialize to config and save
                 $mdlRoute->serializeToConfig();
+                // we don't know for sure if this route was already removed, flush to disk to remove on apply
+                file_put_contents("/tmp/delete_route_{$uuid}.todo", (string)$node->network);
                 Config::getInstance()->save();
                 $result['result'] = 'deleted';
             } else {

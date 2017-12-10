@@ -34,6 +34,14 @@ require_once 'interfaces.inc';
 require_once 'filter.inc';
 require_once 'rrd.inc';
 
+// drop deleted routes
+foreach (glob("/tmp/delete_route_*.todo") as $filename) {
+    $network = trim(file_get_contents($filename));
+    $inet = (is_subnetv6($network) ? "-inet6" : "-inet");
+    mwexec("/sbin/route delete {$inet} " . escapeshellarg($network), true);
+    unlink($filename);
+}
+
 system_routing_configure('', true);
 filter_configure_sync(true);
 setup_gateways_monitor(true);
