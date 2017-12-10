@@ -1088,8 +1088,6 @@
 /usr/local/www/system_general.php
 /usr/local/www/system_groupmanager.php
 /usr/local/www/system_hasync.php
-/usr/local/www/system_routes.php
-/usr/local/www/system_routes_edit.php
 /usr/local/www/system_usermanager.php
 /usr/local/www/system_usermanager_addprivs.php
 /usr/local/www/system_usermanager_import_ldap.php
