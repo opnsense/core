@@ -451,6 +451,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Cron.php
