@@ -32,7 +32,6 @@
 */
 
 require_once('filter.lib.inc');
-require_once('filter_legacy.inc');
 
 /* Create a global array to avoid errors on rulesets. */
 $GatewaysList = array();
