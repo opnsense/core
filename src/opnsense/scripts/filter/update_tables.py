@@ -134,8 +134,9 @@ if __name__ == '__main__':
                 if line:
                     alias_pf_content.append(line)
 
-        if len(alias_content) != len(alias_pf_content) or alias_changed_or_expired:
+        if (len(alias_content) != len(alias_pf_content) or alias_changed_or_expired) and alias.get_parser():
             # if the alias is changed, expired or the one in memory has a different number of items, load table
+            # (but only if we know how to handle this alias type)
             if len(alias_content) == 0:
                 # flush when target is empty
                 subprocess.call(['/sbin/pfctl', '-t', alias_name, '-T', 'flush'],
