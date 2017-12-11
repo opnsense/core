@@ -587,10 +587,9 @@ function filter_generate_aliases(&$FilterIflist)
     return $aliases;
 }
 
-/* returns space separated list of directly connected networks
- * optionally returns an array instead, including friendly interface and gateway (if applicable)
+/* returns list of directly connected networks
  */
-function filter_get_direct_networks_list(&$FilterIflist, $returnsubnetsonly = true)
+function filter_get_direct_networks_list(&$FilterIflist)
 {
     global $config, $GatewaysList;
 
@@ -601,14 +600,10 @@ function filter_get_direct_networks_list(&$FilterIflist, $returnsubnetsonly = tr
     foreach ($FilterIflist as $ifent => $ifcfg) {
         $subnet = "{$ifcfg['sa']}/{$ifcfg['sn']}";
         if (is_subnet($subnet)) {
-            if ($returnsubnetsonly) {
-                $networks_arr[] = $subnet;
-            } else {
-                $networks_arr[] = array(
-                  'subnet' => $subnet,
-                  'if' => $ifent,
-                  'ip' => $ifcfg['ip']);
-            }
+            $networks_arr[] = array(
+              'subnet' => $subnet,
+              'if' => $ifent,
+              'ip' => $ifcfg['ip']);
         }
     }
     foreach(get_configured_ip_aliases_list(true) as $vip) {
@@ -619,21 +614,15 @@ function filter_get_direct_networks_list(&$FilterIflist, $returnsubnetsonly = tr
             } elseif (is_subnetv6($subnet)) {
                 $subnet = gen_subnetv6($vip['subnet'], $vip['subnet_bits']) . "/{$vip['subnet_bits']}";
             }
-            if ($returnsubnetsonly) {
-                $networks_arr[] = $subnet;
-            } else {
-                $networks_arr[] = array(
-                  'subnet' => $subnet,
-                  'if' => $vip['interface'],
-                  'ip' => $vip['subnet']);
-            }
+            $networks_arr[] = array(
+              'subnet' => $subnet,
+              'if' => $vip['interface'],
+              'ip' => $vip['subnet']);
         }
     }
     foreach(get_staticroutes() as $netent) {
         if (is_subnet($netent['network'])) {
-            if ($returnsubnetsonly) {
-                $networks_arr[] = $netent['network'];
-            } elseif (isset($GatewaysList[$netent['gateway']])) {
+            if (isset($GatewaysList[$netent['gateway']])) {
                 $networks_arr[] = array(
                   'subnet' => $netent['network'],
                   'if' => $GatewaysList[$netent['gateway']]['friendlyiface'],
@@ -641,14 +630,7 @@ function filter_get_direct_networks_list(&$FilterIflist, $returnsubnetsonly = tr
             }
         }
     }
-    if ($returnsubnetsonly) {
-        if (!empty($networks_arr)) {
-            $networks = implode(" ", $networks_arr);
-        }
-        return $networks;
-    } else {
-        return $networks_arr;
-    }
+    return $networks_arr;
 }
 
 function filter_generate_optcfg_array()
@@ -817,7 +799,7 @@ function filter_generate_reflection_nat(&$FilterIflist, $rule, &$route_table, $n
 
     if (!is_array($route_table)) {
         /* get a simulated IPv4-only route table based on the config */
-        $route_table = filter_get_direct_networks_list($FilterIflist, false);
+        $route_table = filter_get_direct_networks_list($FilterIflist);
         foreach($route_table as $rt_key => $rt_ent) {
             if (!is_subnetv4($rt_ent['subnet'])) {
                 unset($route_table[$rt_key]);
