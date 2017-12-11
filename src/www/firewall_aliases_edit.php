@@ -428,6 +428,7 @@ include("head.inc");
         $("#addNew").removeClass('hidden');
         $('.act-removerow').removeClass('hidden');
       }
+      $("#detailTable").removeClass('hidden');
       $("#proto").addClass("hidden");
       $(".geoip_table").addClass("hidden");
       $(".not_geoip_table").removeClass("hidden");
@@ -461,6 +462,9 @@ include("head.inc");
               $(".not_geoip_table").addClass("hidden");
               $(".host_url").attr("disabled", "disabled");
               $(".geoip_item").removeAttr("disabled");
+              break;
+          case 'external':
+              $("#detailTable").addClass('hidden');
               break;
       }
       $(".fld_detail").typeahead("destroy");
@@ -528,6 +532,7 @@ include("head.inc");
                       <option value="urltable" <?=$pconfig['type'] == "urltable" ? "selected=\"selected\"" : ""; ?>><?=gettext("URL Table (IPs)"); ?></option>
                       <option value="urltable_ports" <?=$pconfig['type'] == "urltable_ports" ? "selected=\"selected\"" : ""; ?>><?=gettext("URL Table (Ports)"); ?></option>
                       <option value="geoip" <?=$pconfig['type'] == "geoip" ? "selected=\"selected\"" : ""; ?>><?=gettext("GeoIP"); ?></option>
+                      <option value="external" <?=$pconfig['type'] == "external" ? "selected=\"selected\"" : ""; ?>><?=gettext("External (advanced)"); ?></option>
                     </select>
                     <div id="proto" class="hidden">
                       <small><?=gettext("Protocol");?></small><br/>
@@ -563,6 +568,14 @@ include("head.inc");
                       </span>
                       <small>
                         <?=gettext("Enter an URL containing a large number of IPs, ports or subnets. After saving the lists will be downloaded and scheduled for automatic updates when a frequency is provided.");?>
+                        <br/>
+                      </small>
+                      <span class="text-info">
+                        <?=gettext("External (advanced)")?><br/>
+                      </span>
+                      <small>
+                        <?=gettext("Managed externally, the contents of this alias type could be managed by other scripts or services. ".
+                                  "OPNsense only makes sure the alias exists and leaves the contents alone");?>
                       </small>
                     </div>
                   </td>
