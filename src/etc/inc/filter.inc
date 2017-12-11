@@ -69,49 +69,6 @@ function is_bogonsv6_used()
     return $usebogonsv6;
 }
 
-function download_file($url, $destination, $verify_ssl = false, $connect_timeout = 60, $timeout = 0)
-{
-    global $config, $g;
-
-    $fp = fopen($destination, "wb");
-
-    if (!$fp) {
-        return false;
-    }
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    if (!$verify_ssl) {
-        /* leave the curl defaults untouched when verify is used */
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    }
-    curl_setopt($ch, CURLOPT_FILE, $fp);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $connect_timeout);
-    curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-    curl_setopt($ch, CURLOPT_HEADER, false);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/usr/local/opnsense/version/opnsense")));
-
-    @curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    fclose($fp);
-    curl_close($ch);
-
-    /*
-     * Crash reports indicated that this can fail on bad
-     * lines, causing the download to be "ok", but not
-     * actually writing the target file.  Make it a hard
-     * failure...
-     */
-    if (!file_exists($destination)) {
-        return false;
-    }
-
-    return ($http_code == 200);
-}
-
-
 /* sort by interface only, retain the original order of rules that apply to
    the same interface */
 function filter_rules_sort()
