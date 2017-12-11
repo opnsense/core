@@ -31,25 +31,35 @@
 namespace OPNsense\Core;
 
 /**
- * Class ACL, this version is only for legacy support and should eventually be replaced by a decent model.
+ * Class ACL, access control list management
  * @package OPNsense\Core
  */
 class ACL
 {
     /**
-     * @var array legacy users
+     * @var array user database
      */
-    private $legacyUsers = array();
+    private $userDatabase = array();
 
     /**
      * @var array privileges per group
      */
-    private $legacyGroupPrivs = array();
+    private $allGroupPrivs = array();
 
     /**
      * @var array page/endpoint mapping structure
      */
     private $ACLtags = array();
+
+    /**
+     * @var string location to store serialized acl
+     */
+    private $aclCacheFilename = "/conf/acl.json";
+
+    /**
+     * @var int time to live for serialized acl
+     */
+    private $aclCacheTTL = 120;
 
     /**
      * ACL to page/endpoint mapping method.
@@ -75,61 +85,15 @@ class ACL
     }
 
     /**
-     * merge pluggable ACL xml's into $this->ACLtags
-     * @throws \Exception
+     * load user and group privileges into $this->userDatabase and $this->allGroupPrivs
      */
-    private function mergePluggableACLs()
+    private function loadUserGroupRights()
     {
-        // crawl all vendors and modules and add acl definitions
-        foreach (glob(__DIR__.'/../../*') as $vendor) {
-            foreach (glob($vendor.'/*') as $module) {
-                $acl_cfg_xml = $module.'/ACL/ACL.xml';
-                if (file_exists($acl_cfg_xml)) {
-                    // load ACL xml file and perform some basic validation
-                    $ACLxml = simplexml_load_file($acl_cfg_xml);
-                    if ($ACLxml === false) {
-                        throw new \Exception('ACL xml '.$acl_cfg_xml.' not valid');
-                    }
-                    if ($ACLxml->getName() != "acl") {
-                        throw new \Exception('ACL xml '.$acl_cfg_xml.' seems to be of wrong type');
-                    }
-
-                    // when acl was correctly loaded, let's parse data into private $this->ACLtags
-                    foreach ($ACLxml as $aclID => $ACLnode) {
-                        // an acl should minimal have a name, without one skip processing.
-                        if (isset($ACLnode->name)) {
-                            $aclPayload = array();
-                            $aclPayload['name'] = (string)$ACLnode->name;
-                            if (isset($ACLnode->patterns->pattern)) {
-                                // rename pattern to match for internal usage, old code did use match and
-                                // to avoid duplicate conversion let's do this only on input.
-                                $aclPayload['match'] = array();
-                                foreach ($ACLnode->patterns->pattern as $pattern) {
-                                    $aclPayload['match'][] = (string)$pattern;
-                                }
-                            }
-
-                            $this->ACLtags[$aclID] = $aclPayload;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * init legacy ACL features
-     */
-    private function init()
-    {
-        // add acl payload
-        $this->mergePluggableACLs();
-
         $pageMap = $this->loadPageMap();
 
         // create privilege mappings
-        $this->legacyUsers = array();
-        $this->legacyGroupPrivs = array();
+        $this->userDatabase = array();
+        $this->allGroupPrivs = array();
 
         $groupmap = array();
 
@@ -138,14 +102,14 @@ class ACL
         if ($config->system->count() > 0) {
             foreach ($config->system->children() as $key => $node) {
                 if ($key == 'user') {
-                    $this->legacyUsers[$node->name->__toString()] = array();
-                    $this->legacyUsers[$node->name->__toString()]['uid'] = $node->uid->__toString();
-                    $this->legacyUsers[$node->name->__toString()]['groups'] = array();
-                    $this->legacyUsers[$node->name->__toString()]['priv'] = array();
+                    $this->userDatabase[$node->name->__toString()] = array();
+                    $this->userDatabase[$node->name->__toString()]['uid'] = $node->uid->__toString();
+                    $this->userDatabase[$node->name->__toString()]['groups'] = array();
+                    $this->userDatabase[$node->name->__toString()]['priv'] = array();
                     foreach ($node->priv as $priv) {
                         if (substr($priv, 0, 5) == 'page-') {
                             if (array_key_exists($priv->__toString(), $pageMap)) {
-                                $this->legacyUsers[$node->name->__toString()]['priv'][] =
+                                $this->userDatabase[$node->name->__toString()]['priv'][] =
                                     $pageMap[$priv->__toString()];
                             }
                         }
@@ -158,17 +122,17 @@ class ACL
 
         // interpret group privilege data and update user data with group information.
         foreach ($groupmap as $groupkey => $groupNode) {
-            $legacyGroupPrivs[$groupkey] = array();
+            $allGroupPrivs[$groupkey] = array();
             foreach ($groupNode->children() as $itemKey => $node) {
                 if ($node->getName() == "member" && $node->__toString() != "") {
-                    foreach ($this->legacyUsers as $username => $userinfo) {
-                        if ($this->legacyUsers[$username]["uid"] == $node->__toString()) {
-                            $this->legacyUsers[$username]["groups"][] = $groupkey;
+                    foreach ($this->userDatabase as $username => $userinfo) {
+                        if ($this->userDatabase[$username]["uid"] == $node->__toString()) {
+                            $this->userDatabase[$username]["groups"][] = $groupkey;
                         }
                     }
                 } elseif ($node->getName() == "priv" && substr($node->__toString(), 0, 5) == "page-") {
                     if (array_key_exists($node->__toString(), $pageMap)) {
-                        $this->legacyGroupPrivs[$groupkey][] = $pageMap[$node->__toString()];
+                        $this->allGroupPrivs[$groupkey][] = $pageMap[$node->__toString()];
                     }
                 }
             }
@@ -176,9 +140,45 @@ class ACL
     }
 
     /**
+     * merge pluggable ACL xml's into $this->ACLtags
+     * @throws \Exception
+     */
+    private function mergePluggableACLs()
+    {
+        // crawl all vendors and modules and add acl definitions
+        foreach (glob(__DIR__.'/../../*') as $vendor) {
+            foreach (glob($vendor.'/*') as $module) {
+                // probe for ACL implementation, which should derive from OPNsense\Core\ACL\ACL
+                $tmp = explode("/", $module);
+                $module_name = array_pop($tmp);
+                $vendor_name = array_pop($tmp);
+                $classname = "\\{$vendor_name}\\{$module_name}\\ACL\\ACL";
+                if (class_exists($classname)) {
+                    $acl_rfcls = new \ReflectionClass($classname);
+                    $check_derived = $acl_rfcls;
+                    while ($check_derived !== false) {
+                        if ($check_derived->name == 'OPNsense\Core\ACL\ACL') {
+                            break;
+                        }
+                        $check_derived = $check_derived->getParentClass();
+                    }
+                    if ($check_derived === false) {
+                        throw new \Exception('ACL class '.$classname.' seems to be of wrong type');
+                    }
+                } else {
+                    $acl_rfcls = new \ReflectionClass('OPNsense\Core\ACL\ACL');
+                }
+                // construct new ACL
+                $acl = $acl_rfcls->newInstance($module);
+                $acl->update($this->ACLtags);
+            }
+        }
+    }
+
+    /**
      * check url against regex mask
-     * @param $url url to match
-     * @param $urlmask regex mask
+     * @param string $url url to match
+     * @param string $urlmask regex mask
      * @return bool url matches mask
      */
     private function urlMatch($url, $urlmask)
@@ -197,13 +197,22 @@ class ACL
      */
     public function __construct()
     {
-        $this->init();
+        // load module ACL's
+        if (!$this->isExpired()) {
+            $this->ACLtags = json_decode(file_get_contents($this->aclCacheFilename), true);
+        }
+        if (empty($this->ACLtags)) {
+            // (re)generate acl mapping and save to cache
+            $this->persist();
+        }
+        // load user and group rights
+        $this->loadUserGroupRights();
     }
 
     /**
-     * legacy functionality to check if a page is accessible for the specified user.
-     * @param $username user name
-     * @param $url full url, for example /firewall_rules.php
+     * check if an endpoint url is accessible by the specified user.
+     * @param string $username user name
+     * @param string $url full url, for example /firewall_rules.php
      * @return bool
      */
     public function isPageAccessible($username, $url)
@@ -213,9 +222,9 @@ class ACL
             return true;
         }
 
-        if (array_key_exists($username, $this->legacyUsers)) {
+        if (array_key_exists($username, $this->userDatabase)) {
             // search user privs
-            foreach ($this->legacyUsers[$username]["priv"] as $privset) {
+            foreach ($this->userDatabase[$username]["priv"] as $privset) {
                 foreach ($privset as $urlmask) {
                     if ($this->urlMatch($url, $urlmask)) {
                         return true;
@@ -223,9 +232,9 @@ class ACL
                 }
             }
             // search group privs
-            foreach ($this->legacyUsers[$username]["groups"] as $itemkey => $group) {
-                if (array_key_exists($group, $this->legacyGroupPrivs)) {
-                    foreach ($this->legacyGroupPrivs[$group] as $privset) {
+            foreach ($this->userDatabase[$username]["groups"] as $itemkey => $group) {
+                if (array_key_exists($group, $this->allGroupPrivs)) {
+                    foreach ($this->allGroupPrivs[$group] as $privset) {
                         foreach ($privset as $urlmask) {
                             if ($this->urlMatch($url, $urlmask)) {
                                 return true;
@@ -243,7 +252,7 @@ class ACL
      * return privilege list as array (sorted), only for backward compatibility
      * @return array
      */
-    public function getLegacyPrivList()
+    public function getPrivList()
     {
         // convert json priv map to array
         $priv_list = array();
@@ -265,5 +274,43 @@ class ACL
         });
 
         return $priv_list;
+    }
+
+    /**
+     * Load and persist ACL configuration to disk.
+     * When locked we just load all the module ACL's and continue by default (return false),
+     * this has a slight performance impact but is usually better then waiting for likely the same content being
+     * written by another session.
+     * @param bool $nowait when the cache is locked, skip waiting for it to become available.
+     * @return bool has persisted
+     */
+    public function persist($nowait=true)
+    {
+        $this->mergePluggableACLs();
+        $fp = fopen($this->aclCacheFilename, file_exists($this->aclCacheFilename) ? "r+" : "w+");
+        $lockMode = $nowait ? LOCK_EX | LOCK_NB : LOCK_EX ;
+        if (flock($fp, $lockMode)) {
+            ftruncate($fp, 0);
+            fwrite($fp, json_encode($this->ACLtags));
+            fflush($fp);
+            flock($fp, LOCK_UN);
+            fclose($fp);
+            chmod($this->aclCacheFilename, 0660);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * check if pluggable ACL's are expired
+     * @return bool is expired
+     */
+    public function isExpired()
+    {
+        if (file_exists($this->aclCacheFilename)) {
+            $fstat = stat($this->aclCacheFilename);
+            return $this->aclCacheTTL < (time() - $fstat['mtime']);
+        }
+        return true;
     }
 }

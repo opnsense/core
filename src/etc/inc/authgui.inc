@@ -35,7 +35,7 @@ require_once("auth.inc");
 // provided via legacy_bindings.inc
 global $priv_list;
 $acl = new OPNsense\Core\ACL();
-$priv_list = $acl->getLegacyPrivList();
+$priv_list = $acl->getPrivList();
 
 
 function cmp_page_matches($page, & $matches, $fullwc = true) {
