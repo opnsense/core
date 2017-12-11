@@ -29,6 +29,7 @@ LOCKFILE="/tmp/pkg_upgrade.progress"
 FLOCK="/usr/local/bin/flock -n -o"
 COMMANDS="
 audit
+core
 hotfix
 install
 lock
