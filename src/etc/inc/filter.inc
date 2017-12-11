@@ -592,9 +592,6 @@ function filter_generate_aliases(&$FilterIflist)
 function filter_get_direct_networks_list(&$FilterIflist)
 {
     global $config, $GatewaysList;
-
-    /* build list of directly connected interfaces and networks */
-    $networks = "";
     $networks_arr = array();
 
     foreach ($FilterIflist as $ifent => $ifcfg) {
@@ -606,7 +603,7 @@ function filter_get_direct_networks_list(&$FilterIflist)
               'ip' => $ifcfg['ip']);
         }
     }
-    foreach(get_configured_ip_aliases_list(true) as $vip) {
+    foreach (get_configured_ip_aliases_list(true) as $vip) {
         $subnet = "{$vip['subnet']}/{$vip['subnet_bits']}";
         if (is_subnet($subnet) && !(is_subnetv4($subnet) && $vip['subnet_bits'] == 32) && !(is_subnetv6($subnet) && $vip['subnet_bits'] == 128)) {
             if (is_subnetv4($subnet)) {
@@ -620,7 +617,7 @@ function filter_get_direct_networks_list(&$FilterIflist)
               'ip' => $vip['subnet']);
         }
     }
-    foreach(get_staticroutes() as $netent) {
+    foreach (get_staticroutes() as $netent) {
         if (is_subnet($netent['network'])) {
             if (isset($GatewaysList[$netent['gateway']])) {
                 $networks_arr[] = array(
