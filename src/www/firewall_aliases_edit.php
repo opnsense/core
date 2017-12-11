@@ -164,6 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['host_url'] = array();
     }
     $pconfig['detail'] = !empty($pconfig['detail']) ? explode("||", $pconfig['detail']) : array();
+    $pconfig['proto'] = !empty($pconfig['proto']) ? explode(',', $pconfig['proto']) : array("IPv4");
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (isset($_POST['id']) && is_numericint($_POST['id']) && isset($a_aliases[$_POST['id']])) {
@@ -301,7 +302,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             // proto is only for geoip selection
             if ($pconfig['type'] == 'geoip') {
-                $confItem['proto'] = $pconfig['proto'];
+                $confItem['proto'] = !empty($pconfig['proto']) ? implode(',', $pconfig['proto']) : array("IPv4");
             }
 
             /*   Check to see if alias name needs to be
@@ -530,9 +531,9 @@ include("head.inc");
                     </select>
                     <div id="proto" class="hidden">
                       <small><?=gettext("Protocol");?></small><br/>
-                      <select name="proto">
-                        <option value="IPv4" <?=$pconfig['proto'] == "IPv4" ? "selected=\"selected\"" : ""; ?>><?=gettext("IPv4");?></option>
-                        <option value="IPv6" <?=$pconfig['proto'] == "IPv6" ? "selected=\"selected\"" : ""; ?>><?=gettext("IPv6");?></option>
+                      <select name="proto[]" multiple="multiple" class="selectpicker">
+                        <option value="IPv4" <?= in_array("IPv4", $pconfig['proto']) ? "selected=\"selected\"" : ""; ?>><?=gettext("IPv4");?></option>
+                        <option value="IPv6" <?= in_array("IPv6", $pconfig['proto']) ? "selected=\"selected\"" : ""; ?>><?=gettext("IPv6");?></option>
                       </select>
                     </div>
                     <div class="hidden" for="help_for_type">

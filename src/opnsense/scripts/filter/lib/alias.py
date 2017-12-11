@@ -160,12 +160,13 @@ class Alias(object):
         if do_update:
             syslog.syslog(syslog.LOG_ERR, 'geoip updated (files: %s lines: %s)' % geoip.download_geolite())
 
-        geoip_filename = "/usr/local/share/GeoIP/alias/%s-%s" % (geoitem, self._proto)
-        if os.path.isfile(geoip_filename):
-            with open(geoip_filename) as f_in:
-                for line in f_in:
-                    for address in self._parse_address(line):
-                        yield address
+        for proto in self._proto.split(','):
+            geoip_filename = "/usr/local/share/GeoIP/alias/%s-%s" % (geoitem, proto)
+            if os.path.isfile(geoip_filename):
+                with open(geoip_filename) as f_in:
+                    for line in f_in:
+                        for address in self._parse_address(line):
+                            yield address
 
     def items(self):
         """ return unparsed (raw) alias entries without dependencies
@@ -179,7 +180,10 @@ class Alias(object):
         """ generate an identification hash for this alias
             :return: md5 (string)
         """
-        return md5.new(','.join(sorted(list(self.items())))).hexdigest()
+        tmp = ','.join(sorted(list(self.items())))
+        if self._proto:
+            tmp = '%s[%s]' % (tmp, self._proto)
+        return md5.new(tmp).hexdigest()
 
     def changed(self):
         """ is the alias changed (cached result, if changed within this objects lifetime)
