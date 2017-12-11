@@ -220,13 +220,7 @@ class Alias(object):
             if self.expired() or self.changed():
                 with open(self._filename_alias_content, 'w') as f_out:
                     for item in self.items():
-                        address_parser = None
-                        if self._type in ['host', 'network']:
-                            address_parser = self._parse_address
-                        elif self._type in ['url', 'urltable']:
-                            address_parser = self._fetch_url
-                        elif self._type == 'geoip':
-                            address_parser = self._fetch_geo
+                        address_parser = self.get_parser()
                         if address_parser:
                             for address in address_parser(item):
                                 if address not in self._resolve_content:
@@ -242,6 +236,19 @@ class Alias(object):
                 self._resolve_content = open(self._filename_alias_content).read().split()
         # return the addresses and networks of this alias
         return self._resolve_content
+
+    def get_parser(self):
+        """ fetch address parser to use, None if alias type is not handled here
+            :return: function or None
+        """
+        if self._type in ['host', 'network']:
+            return self._parse_address
+        elif self._type in ['url', 'urltable']:
+            return self._fetch_url
+        elif self._type == 'geoip':
+            return self._fetch_geo
+        else:
+            return None
 
     def get_type(self):
         """ get type of alias
