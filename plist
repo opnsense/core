@@ -16,7 +16,6 @@
 /usr/local/etc/inc/crypt.inc
 /usr/local/etc/inc/filter.inc
 /usr/local/etc/inc/filter.lib.inc
-/usr/local/etc/inc/filter_legacy.inc
 /usr/local/etc/inc/filter_log.inc
 /usr/local/etc/inc/gwlb.inc
 /usr/local/etc/inc/interfaces.inc
