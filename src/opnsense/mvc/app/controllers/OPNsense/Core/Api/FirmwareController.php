@@ -63,9 +63,33 @@ class FirmwareController extends ApiControllerBase
      */
     public function statusAction()
     {
+        $config = Config::getInstance()->object();
+        $core_want = 'opnsense';
+        if (!empty($config->system->firmware->family)) {
+            $core_want .= '-' . (string)$config->system->firmware->family;
+        }
+
         $this->sessionClose(); // long running action, close session
+
         $backend = new Backend();
+        $core_have = trim($backend->configdRun('firmware core name'));
         $backend->configdRun('firmware changelog fetch');
+
+        if (!empty($core_have) && $core_have !== $core_want) {
+            $core_ver = trim($backend->configdRun('firmware core version ' . escapeshellarg($core_want)));
+            return array(
+                'status_msg' => gettext('The release family requires an update.'),
+                'all_packages' => array($core_want => array(
+                    'reason' => gettext('new'),
+                    'old' => gettext('N/A'),
+                    'name' => $core_want,
+                    'new' => $core_ver,
+                )),
+                'status_upgrade_action' => 'rel',
+                'status' => 'ok',
+            );
+        }
+
         $response = json_decode(trim($backend->configdRun('firmware check')), true);
 
         if ($response != null) {
@@ -320,6 +344,11 @@ class FirmwareController extends ApiControllerBase
      */
     public function upgradeAction()
     {
+        $config = Config::getInstance()->object();
+        $core_want = 'opnsense';
+        if (!empty($config->system->firmware->family)) {
+            $core_want .= '-' . (string)$config->system->firmware->family;
+        }
         $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
@@ -329,6 +358,8 @@ class FirmwareController extends ApiControllerBase
                 $action = 'firmware upgrade pkg';
             } elseif ($this->request->getPost('upgrade') == 'maj') {
                 $action = 'firmware upgrade maj';
+            } elseif ($this->request->getPost('upgrade') == 'rel') {
+                $action = 'firmware core switch ' . escapeshellarg($core_want);
             } else {
                 $action = 'firmware upgrade all';
             }
@@ -782,23 +813,31 @@ class FirmwareController extends ApiControllerBase
             if (!isset($config->system->firmware->mirror)) {
                 $config->system->firmware->addChild('mirror');
             }
-
             if (empty($selSubscription)) {
                 $config->system->firmware->mirror = $selectedMirror;
             } else {
                 // prepend subscription
                 $config->system->firmware->mirror = $selectedMirror . '/' . $selSubscription;
             }
+            if (empty($config->system->firmware->mirror)) {
+                unset($config->system->firmware->mirror);
+            }
 
             if (!isset($config->system->firmware->flavour)) {
                 $config->system->firmware->addChild('flavour');
             }
             $config->system->firmware->flavour = $selectedFlavour;
+            if (empty($config->system->firmware->flavour)) {
+                unset($config->system->firmware->flavour);
+            }
 
             if (!isset($config->system->firmware->family)) {
                 $config->system->firmware->addChild('family');
             }
             $config->system->firmware->family = $selectedFamily;
+            if (empty($config->system->firmware->family)) {
+                unset($config->system->firmware->family);
+            }
 
             Config::getInstance()->save();
 

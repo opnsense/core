@@ -281,7 +281,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     if ($.upgrade_action == 'audit') {
                         $('#updatestatus').html("{{ lang._('Audit done.') }}");
                     } else if ($.upgrade_action == 'action') {
-                        $('#updatestatus').html("{{ lang._('Done.') }}");
+                        $('#updatestatus').html("{{ lang._('Action done.') }}");
                     } else {
                         $('#updatestatus').html("{{ lang._('Upgrade done.') }}");
                     }
