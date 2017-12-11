@@ -80,8 +80,10 @@ class ApiControllerBase extends ControllerRoot
      */
     public function APIErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
     {
-        $msg = "Error at $errfile:$errline - $errstr (errno=$errno)";
-        throw new \Exception($msg);
+        if ($errno & error_reporting()) {
+            $msg = "Error at $errfile:$errline - $errstr (errno=$errno)";
+            throw new \Exception($msg);
+        }
     }
 
     /**
