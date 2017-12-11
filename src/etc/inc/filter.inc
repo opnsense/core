@@ -271,11 +271,6 @@ function filter_configure_sync($verbose = false)
         flush();
     }
 
-    if ($verbose) {
-        echo '.';
-        flush();
-    }
-
     /* enable pf if we need to, otherwise disable */
     if (!isset($config['system']['disablefilter'])) {
         mwexec("/sbin/pfctl -e", true);
@@ -353,8 +348,6 @@ function filter_configure_sync($verbose = false)
     $rules .= $fw->outputFilterRules();
     $rules .= $fw->anchorToText('fw', 'tail');
 
-    unset($aliases, $natrules);
-
     // Copy rules.debug to rules.debug.old
     if (file_exists('/tmp/rules.debug')) {
         @copy('/tmp/rules.debug', '/tmp/rules.debug.old');
@@ -368,10 +361,7 @@ function filter_configure_sync($verbose = false)
 
     @file_put_contents('/tmp/rules.limits', $limitrules);
     mwexec('/sbin/pfctl -Of /tmp/rules.limits');
-    unset($rules, $limitrules);
-
-    unset($rules_loading, $rules_error);
-    $_grbg = exec('/sbin/pfctl -o basic -f /tmp/rules.debug 2>&1', $rules_error, $rules_loading);
+    exec('/sbin/pfctl -o basic -f /tmp/rules.debug 2>&1', $rules_error, $rules_loading);
 
     foreach ($sched_kill_states as $label) {
         mwexecf('/sbin/pfctl -k label -k %s', $label);
@@ -404,7 +394,6 @@ function filter_configure_sync($verbose = false)
             if (is_array($line_split)) {
                 $config_line_error = sprintf(' - ' . gettext('The line in question reads [%d]: %s'), $line_number, $line_split[$line_number-1]);
             }
-            unset($line_split);
         }
 
         /* Brutal ugly hack but required -- PF is stuck, unwedge */
@@ -413,9 +402,8 @@ function filter_configure_sync($verbose = false)
             $error_msg = gettext("PF was wedged/busy and has been reset.");
             file_notice("pf_busy", $error_msg, "pf_busy", "");
         } else {
-            $_grbg = exec('/sbin/pfctl -o basic -f /tmp/rules.debug.old 2>&1');
+            exec('/sbin/pfctl -o basic -f /tmp/rules.debug.old 2>&1');
         }
-        unset($rules_loading, $rules_error);
 
         file_notice('filter_load', sprintf(gettext('There were error(s) loading the rules: %s%s'), $saved_line_error, $config_line_error), 'Filter Reload', '');
         unlock($filterlck);
@@ -432,7 +420,7 @@ function filter_configure_sync($verbose = false)
      * not there, the kill is still fine).
      */
     if (!is_bogonsv6_used()) {
-        $_grbg = exec('/sbin/pfctl -t bogonsv6 -T kill 2>/dev/null');
+        exec('/sbin/pfctl -t bogonsv6 -T kill 2>/dev/null');
     }
 
     if ($verbose) {
