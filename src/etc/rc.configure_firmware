@@ -45,3 +45,6 @@ convert_config(true);
 
 system_firmware_configure(true);
 system_login_configure(true);
+
+/* flush cache */
+(new OPNsense\Core\ACL())->persist();
