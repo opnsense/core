@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['secondaryconsole'] = $config['system']['secondaryconsole'];
     $pconfig['enablesshd'] = $config['system']['ssh']['enabled'];
     $pconfig['sshport'] = $config['system']['ssh']['port'];
+    $pconfig['sshinterfaces'] = !empty($config['system']['ssh']['interfaces']) ? explode(',', $config['system']['ssh']['interfaces']) : array();
     $pconfig['passwordauth'] = isset($config['system']['ssh']['passwordauth']);
     $pconfig['sshdpermitrootlogin'] = isset($config['system']['ssh']['permitrootlogin']);
     $pconfig['quietlogin'] = isset($config['system']['webgui']['quietlogin']);
@@ -199,6 +200,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         /* always store setting to prevent installer auto-start */
         $config['system']['ssh']['noauto'] = 1;
 
+        $config['system']['ssh']['interfaces'] = !empty($pconfig['sshinterfaces']) ? implode(',', $pconfig['sshinterfaces']) : null;
+
         if (!empty($pconfig['enablesshd'])) {
             $config['system']['ssh']['enabled'] = 'enabled';
         } elseif (isset($config['system']['ssh']['enabled'])) {
@@ -271,6 +274,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 
 $a_cert = isset($config['cert']) ? $config['cert'] : array();
+$interfaces = get_configured_interface_with_descr();
 
 $certs_available = false;
 if (count($a_cert)) {
@@ -552,9 +556,24 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_sshport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSH port"); ?></td>
                   <td width="78%">
-                    <input name="sshport" type="text" value="<?=$pconfig['sshport'];?>"/>
+                    <input name="sshport" type="text" value="<?=$pconfig['sshport'];?>" placeholder="22" />
                     <div class="hidden" for="help_for_sshport">
                       <?=gettext("Leave this blank for the default of 22."); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_sshinterfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Listen Interfaces') ?></td>
+                    <td>
+                    <select name="sshinterfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
+<?php
+                    foreach ($interfaces as $iface => $ifacename): ?>
+                        <option value="<?= html_safe($iface) ?>" <?= !empty($pconfig['sshinterfaces']) && in_array($iface, $pconfig['sshinterfaces']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
+<?php
+                    endforeach;?>
+                    </select>
+                    <div class="hidden" for="help_for_sshinterfaces">
+                      <?= gettext('Only accept connections from the selected interfaces. Leave empty to listen globally. Use with care.') ?>
                     </div>
                   </td>
                 </tr>

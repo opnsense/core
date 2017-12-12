@@ -41,6 +41,7 @@ function openssh_configure()
     return array(
         'earlybootup' => array('openssh_configure_do'),
         'local' => array('openssh_configure_do'),
+        'newwanip' => array('openssh_configure_do:2'),
     );
 }
 
@@ -64,12 +65,15 @@ function openssh_services()
     return $services;
 }
 
-function openssh_configure_do($verbose = false)
+function openssh_stop()
 {
-    global $config;
-
     /* if run from a shell session, `-af' and the full path is needed */
     mwexecf('/bin/pkill -af %s', '/usr/local/sbin/sshd', true);
+}
+
+function openssh_configure_do($verbose = false, $interface = '')
+{
+    global $config;
 
     $sshcfg = null;
 
@@ -81,8 +85,20 @@ function openssh_configure_do($verbose = false)
     }
 
     if ($sshcfg === null) {
+        openssh_stop();
         return;
     }
+
+    $interfaces = array();
+    if (!empty($sshcfg['interfaces'])) {
+        $interfaces = explode(',', $sshcfg['interfaces']);
+    }
+
+    if (!empty($interface) && !in_array($interface, $interfaces)) {
+        return;
+    }
+
+    openssh_stop();
 
     /* make sshd key store */
     @mkdir('/conf/sshd', 0777, true);
@@ -162,6 +178,29 @@ function openssh_configure_do($verbose = false)
         $sshconf .= "HostKey {$file}\n";
     }
 
+    $listeners = array();
+
+    foreach ($interfaces as $interface) {
+        $realif = get_real_interface($interface);
+        $addrs = legacy_get_interface_addresses($realif);
+        foreach (array('ipaddr', 'ipaddr6', 'ipaddr6_ll') as $type) {
+            if (!empty($addrs[$type])) {
+                $listeners[] = $addrs[$type];
+            }
+        }
+
+        $viparr = &config_read_array('virtualip', 'vip');
+        foreach ($viparr as $vip) {
+            if ($vip['interface'] == $interface && is_ipaddr($vip['subnet'])) {
+                $listeners[] = $vip['subnet'];
+            }
+        }
+    }
+
+    foreach ($listeners as $listener) {
+        $sshconf .= "ListenAddress {$listener}\n";
+    }
+
     file_put_contents("/usr/local/etc/ssh/sshd_config", $sshconf);
 
     if ($verbose) {
@@ -169,7 +208,7 @@ function openssh_configure_do($verbose = false)
         flush();
     }
 
-    if (mwexecf('/usr/bin/protect -i /usr/local/sbin/sshd')) {
+    if ((count($interfaces) && !count($listeners)) || mwexecf('/usr/bin/protect -i /usr/local/sbin/sshd')) {
         if ($verbose) {
             echo "failed.\n";
         }
