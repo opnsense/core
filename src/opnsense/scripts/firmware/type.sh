@@ -32,5 +32,8 @@ PACKAGE=${1}
 : > ${PKG_PROGRESS_FILE}
 
 echo "***GOT REQUEST FOR TYPE: ${PACKAGE}***" >> ${PKG_PROGRESS_FILE}
+# change the release type
 opnsense-update -t ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
+# restart the web server
+/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE} 2>&1
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}
