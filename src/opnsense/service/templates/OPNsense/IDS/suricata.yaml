@@ -806,48 +806,32 @@ vars:
   # Holds the address group vars that would be passed in a Signature.
   # These would be retrieved during the Signature address parsing stage.
   address-groups:
-
     HOME_NET: "[{{OPNsense.IDS.general.homenet|default('192.168.0.0/16,10.0.0.0/8,172.16.0.0/12')}}]"
-
     EXTERNAL_NET: "!$HOME_NET"
-
     HTTP_SERVERS: "$HOME_NET"
-
     SMTP_SERVERS: "$HOME_NET"
-
     SQL_SERVERS: "$HOME_NET"
-
     DNS_SERVERS: "$HOME_NET"
-
     TELNET_SERVERS: "$HOME_NET"
-
     AIM_SERVERS: "$EXTERNAL_NET"
-
     DNP3_SERVER: "$HOME_NET"
-
     DNP3_CLIENT: "$HOME_NET"
-
     MODBUS_CLIENT: "$HOME_NET"
-
     MODBUS_SERVER: "$HOME_NET"
-
     ENIP_CLIENT: "$HOME_NET"
-
     ENIP_SERVER: "$HOME_NET"
 
   # Holds the port group vars that would be passed in a Signature.
   # These would be retrieved during the Signature port parsing stage.
   port-groups:
-
     HTTP_PORTS: "80"
-
     SHELLCODE_PORTS: "!80"
-
     ORACLE_PORTS: 1521
-
     SSH_PORTS: 22
-
     DNP3_PORTS: 20000
+    MODBUS_PORTS: 502
+    FILE_DATA_PORTS: "[$HTTP_PORTS,110,143]"
+    FTP_PORTS: 21
 
 # Set the order of alerts bassed on actions
 # The default order is pass, drop, reject, alert
