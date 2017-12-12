@@ -187,8 +187,9 @@ server.network-backend  = "writev"
 #server.use-ipv6 = "enable"
 
 ## modules to load
-server.modules              =   ( "mod_access", "mod_expire", "mod_compress", "mod_redirect",
-  "mod_cgi", "mod_fastcgi","mod_alias", "mod_rewrite"
+server.modules              =   (
+  "mod_access", "mod_expire", "mod_compress", "mod_redirect",
+  "mod_cgi", "mod_fastcgi","mod_alias", "mod_rewrite", "mod_openssl"
 )
 
 server.max-keep-alive-requests = 15
