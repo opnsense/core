@@ -64,26 +64,26 @@ class FirmwareController extends ApiControllerBase
     public function statusAction()
     {
         $config = Config::getInstance()->object();
-        $core_want = 'opnsense';
-        if (!empty($config->system->firmware->family)) {
-            $core_want .= '-' . (string)$config->system->firmware->family;
+        $type_want = 'opnsense';
+        if (!empty($config->system->firmware->type)) {
+            $type_want .= '-' . (string)$config->system->firmware->type;
         }
 
         $this->sessionClose(); // long running action, close session
 
         $backend = new Backend();
-        $core_have = trim($backend->configdRun('firmware core name'));
+        $type_have = trim($backend->configdRun('firmware type name'));
         $backend->configdRun('firmware changelog fetch');
 
-        if (!empty($core_have) && $core_have !== $core_want) {
-            $core_ver = trim($backend->configdRun('firmware core version ' . escapeshellarg($core_want)));
+        if (!empty($type_have) && $type_have !== $type_want) {
+            $type_ver = trim($backend->configdRun('firmware type version ' . escapeshellarg($type_want)));
             return array(
-                'status_msg' => gettext('The release family requires an update.'),
-                'all_packages' => array($core_want => array(
+                'status_msg' => gettext('The release type requires an update.'),
+                'all_packages' => array($type_want => array(
                     'reason' => gettext('new'),
                     'old' => gettext('N/A'),
-                    'name' => $core_want,
-                    'new' => $core_ver,
+                    'name' => $type_want,
+                    'new' => $type_ver,
                 )),
                 'status_upgrade_action' => 'rel',
                 'status' => 'ok',
@@ -345,9 +345,9 @@ class FirmwareController extends ApiControllerBase
     public function upgradeAction()
     {
         $config = Config::getInstance()->object();
-        $core_want = 'opnsense';
-        if (!empty($config->system->firmware->family)) {
-            $core_want .= '-' . (string)$config->system->firmware->family;
+        $type_want = 'opnsense';
+        if (!empty($config->system->firmware->type)) {
+            $type_want .= '-' . (string)$config->system->firmware->type;
         }
         $this->sessionClose(); // long running action, close session
         $backend = new Backend();
@@ -359,7 +359,7 @@ class FirmwareController extends ApiControllerBase
             } elseif ($this->request->getPost('upgrade') == 'maj') {
                 $action = 'firmware upgrade maj';
             } elseif ($this->request->getPost('upgrade') == 'rel') {
-                $action = 'firmware core switch ' . escapeshellarg($core_want);
+                $action = 'firmware type install ' . escapeshellarg($type_want);
             } else {
                 $action = 'firmware upgrade all';
             }
@@ -769,15 +769,15 @@ class FirmwareController extends ApiControllerBase
         $result = array();
 
         $result['flavour'] = '';
-        $result['family'] = '';
         $result['mirror'] = '';
+        $result['type'] = '';
 
         if (!empty($config->system->firmware->flavour)) {
             $result['flavour'] = (string)$config->system->firmware->flavour;
         }
 
-        if (!empty($config->system->firmware->family)) {
-            $result['family'] = (string)$config->system->firmware->family;
+        if (!empty($config->system->firmware->type)) {
+            $result['type'] = (string)$config->system->firmware->type;
         }
 
         if (!empty($config->system->firmware->mirror)) {
@@ -802,7 +802,7 @@ class FirmwareController extends ApiControllerBase
 
             $selectedMirror = filter_var($this->request->getPost("mirror", null, ""), FILTER_SANITIZE_URL);
             $selectedFlavour = filter_var($this->request->getPost("flavour", null, ""), FILTER_SANITIZE_URL);
-            $selectedFamily = filter_var($this->request->getPost("family", null, ""), FILTER_SANITIZE_URL);
+            $selectedType = filter_var($this->request->getPost("type", null, ""), FILTER_SANITIZE_URL);
             $selSubscription = filter_var($this->request->getPost("subscription", null, ""), FILTER_SANITIZE_URL);
 
             // config data without model, prepare xml structure and write data
@@ -831,12 +831,16 @@ class FirmwareController extends ApiControllerBase
                 unset($config->system->firmware->flavour);
             }
 
-            if (!isset($config->system->firmware->family)) {
-                $config->system->firmware->addChild('family');
+            if (!isset($config->system->firmware->type)) {
+                $config->system->firmware->addChild('type');
             }
-            $config->system->firmware->family = $selectedFamily;
-            if (empty($config->system->firmware->family)) {
-                unset($config->system->firmware->family);
+            $config->system->firmware->type = $selectedType;
+            if (empty($config->system->firmware->type)) {
+                unset($config->system->firmware->type);
+            }
+
+            if (!@count($config->system->firmware->children())) {
+                unset($config->system->firmware);
             }
 
             Config::getInstance()->save();

@@ -31,6 +31,6 @@ PACKAGE=${1}
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
-echo "***GOT REQUEST TO SWITCH: ${PACKAGE}***" >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST FOR TYPE: ${PACKAGE}***" >> ${PKG_PROGRESS_FILE}
 opnsense-update -t ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}
