@@ -44,6 +44,7 @@ class ACL
     /**
      * Construct new ACL for an application
      * @param string $module_root location on disk for this ACL
+     * @throws \Exception
      */
     public function __construct($module_root)
     {
@@ -58,6 +59,15 @@ class ACL
                 throw new \Exception('ACL xml '.$acl_cfg_xml.' seems to be of wrong type');
             }
         }
+    }
+
+    /**
+     * return raw xml definition
+     * @return SimpleXMLElement|null
+     */
+    public function getXML()
+    {
+        return $this->aclXML;
     }
 
     /**
