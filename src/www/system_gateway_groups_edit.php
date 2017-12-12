@@ -149,9 +149,9 @@ include("head.inc");
 <script type="text/javascript">
 $( document ).ready(function() {
     // force protocol on initial selection (only relevant for new items)
-    $(".act-tier-change").change(function(){
+    $("select.act-tier-change").change(function(){
       var proto = $(this).data('proto');
-      $(".act-tier-change").each(function(){
+      $("select.act-tier-change").each(function(){
             if ($(this).data('proto') != proto) {
                 $(this).val('0');
             }
