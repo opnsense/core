@@ -59,13 +59,13 @@ CORE_REPOSITORY?=	${FLAVOUR}
 .endif
 
 CORE_NAME?=		opnsense
-CORE_FAMILY?=		release
+CORE_TYPE?=		release
 CORE_MESSAGE?=		The free fox is on the run
 
 CORE_MAINTAINER?=	franco@opnsense.org
 CORE_PACKAGESITE?=	http://pkg.opnsense.org
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
-CORE_COMMENT?=		OPNsense ${CORE_FAMILY} package
+CORE_COMMENT?=		OPNsense ${CORE_TYPE} package
 CORE_WWW?=		https://opnsense.org/
 
 CORE_DEPENDS_amd64?=	beep bsdinstaller
