@@ -53,6 +53,14 @@ class Session(object):
         """
         return self.handler.streamed_request("terminate", "control-log", sa)
 
+    def redirect(self, sa):
+        """Redirect an IKE_SA.
+
+        :param sa: the SA to redirect
+        :type sa: dict
+        """
+        self.handler.request("redirect", sa)
+
     def install(self, policy):
         """Install a trap, drop or bypass policy defined by a CHILD_SA config.
 
@@ -158,6 +166,17 @@ class Session(object):
         """
         self.handler.request("load-shared", secret)
 
+    def flush_certs(self, filter=None):
+        """Flush the volatile certificate cache.
+
+        Flush the certificate stored temporarily in the cache. The filter
+        allows to flush only a certain type of certificates, e.g. CRLs.
+
+        :param filter: flush only certificates of a given type (optional)
+        :type filter: dict
+        """
+        self.handler.request("flush-certs", filter)
+
     def clear_creds(self):
         """Clear credentials loaded over vici.
 
@@ -189,13 +208,15 @@ class Session(object):
         """
         self.handler.request("unload-pool", pool_name)
 
-    def get_pools(self):
+    def get_pools(self, options):
         """Retrieve loaded pools.
 
+        :param options: filter by name and/or retrieve leases (optional)
+        :type options: dict
         :return: loaded pools
         :rtype: dict
         """
-        return self.handler.request("get-pools")
+        return self.handler.request("get-pools", options)
 
     def listen(self, event_types):
         """Register and listen for the given events.

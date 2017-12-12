@@ -20,14 +20,24 @@ class Transport(object):
         self.socket.sendall(struct.pack("!I", len(packet)) + packet)
 
     def receive(self):
-        raw_length = self.socket.recv(self.HEADER_LENGTH)
+        raw_length = self._recvall(self.HEADER_LENGTH)
         length, = struct.unpack("!I", raw_length)
-        payload = self.socket.recv(length)
+        payload = self._recvall(length)
         return payload
 
     def close(self):
         self.socket.shutdown(socket.SHUT_RDWR)
         self.socket.close()
+
+    def _recvall(self, count):
+        """Ensure to read count bytes from the socket"""
+        data = b""
+        while len(data) < count:
+            buf = self.socket.recv(count - len(data))
+            if not buf:
+                raise socket.error('Connection closed')
+            data += buf
+        return data
 
 
 class Packet(object):
@@ -52,7 +62,7 @@ class Packet(object):
 
     @classmethod
     def _named_request(cls, request_type, request, message=None):
-        request = request.encode()
+        request = request.encode("UTF-8")
         payload = struct.pack("!BB", request_type, len(request)) + request
         if message is not None:
             return payload + message
@@ -95,12 +105,12 @@ class Message(object):
     @classmethod
     def serialize(cls, message):
         def encode_named_type(marker, name):
-            name = name.encode()
+            name = name.encode("UTF-8")
             return struct.pack("!BB", marker, len(name)) + name
 
         def encode_blob(value):
             if not isinstance(value, bytes):
-                value = str(value).encode()
+                value = str(value).encode("UTF-8")
             return struct.pack("!H", len(value)) + value
 
         def serialize_list(lst):
@@ -137,7 +147,7 @@ class Message(object):
     def deserialize(cls, stream):
         def decode_named_type(stream):
             length, = struct.unpack("!B", stream.read(1))
-            return stream.read(length).decode()
+            return stream.read(length).decode("UTF-8")
 
         def decode_blob(stream):
             length, = struct.unpack("!H", stream.read(2))
