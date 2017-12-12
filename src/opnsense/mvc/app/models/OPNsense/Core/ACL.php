@@ -54,7 +54,7 @@ class ACL
     /**
      * @var string location to store serialized acl
      */
-    private $aclCacheFilename = "/conf/acl.json";
+    private $aclCacheFilename = null;
 
     /**
      * @var int time to live for serialized acl
@@ -197,6 +197,9 @@ class ACL
      */
     public function __construct()
     {
+        // set cache location
+        $this->aclCacheFilename = sys_get_temp_dir(). "/opnsense_acl_cache.json";
+
         // load module ACL's
         if (!$this->isExpired()) {
             $this->ACLtags = json_decode(file_get_contents($this->aclCacheFilename), true);
