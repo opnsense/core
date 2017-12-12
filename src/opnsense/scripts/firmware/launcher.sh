@@ -34,6 +34,7 @@ install
 lock
 reinstall
 remove
+type
 unlock
 upgrade
 "

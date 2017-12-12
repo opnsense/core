@@ -33,6 +33,7 @@
 # download_size: <size_of_total_downloads>
 # new_packages: array with { name: <package_name>, version: <package_version> }
 # reinstall_packages: array with { name: <package_name>, version: <package_version> }
+# downgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 # upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 
 # TODO: Add object with items that will be removed
