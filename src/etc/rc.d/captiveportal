@@ -47,18 +47,17 @@ captiveportal_load_rc_config()
 captiveportal_cleanup_zones()
 {
     # cleanup removed zones
-    for installed_zoneid in `ls $CPWORKDIR |  sed 's/zone//g'`
-    do
+    for installed_zoneid in `ls $CPWORKDIR |  sed 's/zone//g'`; do
         if [ -d $CPWORKDIR/zone$installed_zoneid ]; then
             is_installed=0
-            for zoneid in $CPZONES
-            do
+            for zoneid in $CPZONES; do
                 if [ "$zoneid" -eq "$installed_zoneid" ]; then
                     is_installed=1
                 fi
             done
             if [ "$is_installed" -eq 0 ]; then
                 echo "Uninstall : zone $installed_zoneid"
+                umount "$CPWORKDIR/zone$installed_zoneid/dev"
                 rm -rf "$CPWORKDIR/zone$installed_zoneid"
             fi
         fi
@@ -82,20 +81,20 @@ captiveportal_start()
         /usr/local/opnsense/scripts/OPNsense/CaptivePortal/generate_certs.php
 
         # startup / bootstrap zones
-        for zoneid in $CPZONES
-        do
+        for zoneid in $CPZONES; do
             # bootstrap captiveportal jail
             zonedirname="zone$zoneid"
             echo "Install : zone $zoneid"
-            if [ ! -d $CPWORKDIR/$zonedirname ]; then
-                mkdir $CPWORKDIR/$zonedirname
-            fi
-            if [ -d $CPWORKDIR/$zonedirname/tmp ]; then
-                # remove temp (flush)
-                rm -rf $CPWORKDIR/$zonedirname/tmp
-            fi
-            mkdir $CPWORKDIR/$zonedirname/tmp
+            mkdir -p $CPWORKDIR/$zonedirname
+            # remove temp (flush)
+            rm -rf $CPWORKDIR/$zonedirname/tmp
+            mkdir -p $CPWORKDIR/$zonedirname/tmp
             chmod 770 $CPWORKDIR/$zonedirname/tmp
+
+            mkdir -p $CPWORKDIR/$zonedirname/dev
+            if ! mount -uw $CPWORKDIR/$zonedirname/dev 2> /dev/null; then
+                mount -t devfs devfs $CPWORKDIR/$zonedirname/dev
+            fi
 
             # sync default template
             cp -a $CPDEFAULTTEMPLATE/ $CPWORKDIR/$zonedirname/htdocs/
@@ -131,9 +130,9 @@ captiveportal_stop()
             rm /var/run/lighttpd-api-dispatcher.pid
         fi
     fi
+
     # stopping zone http servers
-    for zoneid in $CPZONES
-    do
+    for zoneid in $CPZONES; do
         # stop running instance
         zonepid="/var/run/lighttpd-cp-zone-$zoneid.pid"
         if [ -f $zonepid ]; then
@@ -142,17 +141,18 @@ captiveportal_stop()
             rm $zonepid
         fi
     done
+
     # stopping unconfigured zones (not in $CPZONES list)
-    for zonepid in `ls /var/run/lighttpd-cp-zone-*.pid 2>/dev/null`
-    do
+    for zonepid in `ls /var/run/lighttpd-cp-zone-*.pid 2>/dev/null`; do
         /bin/pkill -TERM -F $zonepid
         rm $zonepid
     done
 
     if [ -f /var/run/captiveportal.db.pid ]; then
-      echo "stop captiveportal background process"
-      /bin/pkill -TERM -F /var/run/captiveportal.db.pid
+        echo "stop captiveportal background process"
+        /bin/pkill -TERM -F /var/run/captiveportal.db.pid
     fi
+
     captiveportal_cleanup_zones
 }
 
