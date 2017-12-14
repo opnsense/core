@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
+    Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -386,13 +386,15 @@ function legacy_get_interface_addresses($ifs)
         $addrs['ipaddr'] = $intf_details['ipv4'][0]['ipaddr'];
         $addrs['subnetbits'] = $intf_details['ipv4'][0]['subnetbits'];
     }
-    foreach ($intf_details['ipv6'] as $ipv6) {
-        if (empty($addrs['ipaddr6']) && empty($ipv6['link-local'])) {
-            $addrs['ipaddr6'] = $ipv6['ipaddr'];
-            $addrs['subnetbits6'] = $ipv6['subnetbits'];
-        } elseif (empty($addrs['lladdr6']) && !empty($ipv6['link-local'])) {
-            $addrs['ipaddr6_ll'] = $ipv6['ipaddr'];
-            $addrs['subnetbits6_ll'] = $ipv6['subnetbits'];
+    if (isset($intf_details['ipv6'])) {
+        foreach ($intf_details['ipv6'] as $ipv6) {
+            if (empty($addrs['ipaddr6']) && empty($ipv6['link-local'])) {
+                $addrs['ipaddr6'] = $ipv6['ipaddr'];
+                $addrs['subnetbits6'] = $ipv6['subnetbits'];
+            } elseif (empty($addrs['lladdr6']) && !empty($ipv6['link-local'])) {
+                $addrs['ipaddr6_ll'] = $ipv6['ipaddr'];
+                $addrs['subnetbits6_ll'] = $ipv6['subnetbits'];
+            }
         }
     }
     return $addrs;
