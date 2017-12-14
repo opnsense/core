@@ -1,4 +1,4 @@
 <?php
 
 $log_title = gettext('Firewall Logs');
-$log_title_link = 'diag_logs_filter.php';
+$log_title_link = 'ui/diagnostics/firewall/log';

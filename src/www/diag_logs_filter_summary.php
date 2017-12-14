@@ -1,6 +1,7 @@
 <?php
 
 /*
+    Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2014-2015 Jos Schellevis <jos@opnsense.org>
     Copyright (C) 2009 Jim Pingle <jimp@pfsense.org>
     All rights reserved.
@@ -28,9 +29,271 @@
 */
 
 require_once("guiconfig.inc");
-require_once("filter_log.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+
+function conv_log_interface_names()
+{
+    global $config;
+
+    // collect interface names
+    $interface_names = array();
+    $interface_names['enc0'] = gettext("IPsec");
+
+    if (!empty($config['interfaces'])) {
+        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $intfkey => $interface) {
+            $interface_names[$interface['if']] = !empty($interface['descr']) ? $interface['descr'] : $intfkey;
+        }
+    }
+    return $interface_names;
+}
+
+/* format filter logs */
+function conv_log_filter($logfile, $nentries, $tail = 50, $filtertext = '', $filterinterface = null)
+{
+    global $config;
+
+    /* Make sure this is a number before using it in a system call */
+    if (!(is_numeric($tail))) {
+        return;
+    }
+
+    if ($filtertext!=""){
+        $tail = 5000;
+    }
+
+    /* Always do a reverse tail, to be sure we're grabbing the 'end' of the log. */
+    $logarr = "";
+
+    exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . " | grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/grep 'filterlog:' | /usr/bin/tail -r -n {$tail}", $logarr);
+
+    $filterlog = array();
+    $counter = 0;
+    $interface_names = conv_log_interface_names();
+    foreach ($logarr as $logent) {
+        if ($counter >= $nentries) {
+            break;
+        }
+
+        $flent = parse_filter_line($logent, $interface_names);
+        if (isset($flent) && is_array($flent)) {
+            if ($filterinterface == null || strtoupper($filterinterface) == $flent['interface']) {
+                if ( (!is_array($filtertext) && match_filter_line ($flent, $filtertext)) ||
+                  ( is_array($filtertext) && match_filter_field($flent, $filtertext))
+                ) {
+                    $counter++;
+                    $filterlog[] = $flent;
+                }
+            }
+        }
+    }
+    /* Since the lines are in reverse order, flip them around if needed based on the user's preference */
+    return isset($config['syslog']['reverse']) ? $filterlog : array_reverse($filterlog);
+}
+
+function escape_filter_regex($filtertext)
+{
+    /* If the caller (user) has not already put a backslash before a slash, to escape it in the regex, */
+    /* then this will do it. Take out any "\/" already there, then turn all ordinary "/" into "\/".  */
+    return str_replace('/', '\/', str_replace('\/', '/', $filtertext));
+}
+
+function match_filter_line($flent, $filtertext = "")
+{
+    if (!$filtertext) {
+        return true;
+    }
+    $filtertext = escape_filter_regex(str_replace(' ', '\s+', $filtertext));
+    return @preg_match("/{$filtertext}/i", implode(" ", array_values($flent)));
+}
+
+function match_filter_field($flent, $fields) {
+    foreach ($fields as $key => $field) {
+        if ($field == "All") {
+            continue;
+        }
+        if ((strpos($field, '!') === 0)) {
+            $field = substr($field, 1);
+            if (strtolower($key) == 'act') {
+                if (in_arrayi($flent[$key], explode(" ", $field))) {
+                    return false;
+                }
+            } else {
+                $field_regex = escape_filter_regex($field);
+                if (@preg_match("/{$field_regex}/i", $flent[$key])) {
+                    return false;
+                }
+            }
+        } else {
+            if (strtolower($key) == 'act') {
+                if (!in_arrayi($flent[$key], explode(" ", $field))) {
+                    return false;
+                }
+            } else {
+                $field_regex = escape_filter_regex($field);
+                if (!@preg_match("/{$field_regex}/i", $flent[$key])) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+// Case Insensitive in_array function
+function in_arrayi($needle, $haystack)
+{
+    return in_array(strtolower($needle), array_map('strtolower', $haystack));
+}
+
+function parse_filter_line($line, $interface_names = array())
+{
+    $flent = array();
+    $log_split = '';
+
+    if (!preg_match('/(.*)\s(.*)\sfilterlog:\s(.*)$/', $line, $log_split)) {
+        return '';
+    }
+
+    list($all, $flent['time'], $host, $rule) = $log_split;
+
+    if (trim($flent['time']) == '') {
+        log_error(sprintf('There was an error parsing a rule: no time (%s)', $log_split));
+        return '';
+    }
+
+    $rule_data = explode(',', $rule);
+    $field = 0;
+
+    $flent['rulenum'] = $rule_data[$field++];
+    $flent['subrulenum'] = $rule_data[$field++];
+    $flent['anchor'] = $rule_data[$field++];
+    $field++; // skip field
+    $flent['realint'] = $rule_data[$field++];
+    $flent['interface']  = !empty($interface_names[$flent['realint']]) ? $interface_names[$flent['realint']] : $flent['realint'] ;
+    $flent['reason'] = $rule_data[$field++];
+    $flent['act'] = $rule_data[$field++];
+    $flent['direction'] = $rule_data[$field++];
+    $flent['version'] = $rule_data[$field++];
+
+    if ($flent['version'] != '4' && $flent['version'] != '6') {
+        log_error(sprintf(
+          gettext('There was an error parsing rule number: %s -- not IPv4 or IPv6 (`%s\')'),
+          $flent['rulenum'],
+          $rule
+        ));
+        return '';
+    }
+
+    if ($flent['version'] == '4') {
+        $flent['tos'] = $rule_data[$field++];
+        $flent['ecn'] = $rule_data[$field++];
+        $flent['ttl'] = $rule_data[$field++];
+        $flent['id'] = $rule_data[$field++];
+        $flent['offset'] = $rule_data[$field++];
+        $flent['flags'] = $rule_data[$field++];
+        $flent['protoid'] = $rule_data[$field++];
+        $flent['proto'] = strtoupper($rule_data[$field++]);
+    } else {
+        $flent['class'] = $rule_data[$field++];
+        $flent['flowlabel'] = $rule_data[$field++];
+        $flent['hlim'] = $rule_data[$field++];
+        $flent['proto'] = $rule_data[$field++];
+        $flent['protoid'] = $rule_data[$field++];
+    }
+
+    $flent['length'] = $rule_data[$field++];
+    $flent['srcip'] = $rule_data[$field++];
+    $flent['dstip'] = $rule_data[$field++];
+
+    /* bootstrap src and dst for non-port protocols */
+    $flent['src'] = $flent['srcip'];
+    $flent['dst'] = $flent['dstip'];
+
+    if (trim($flent['src']) == '' || trim($flent['dst']) == '') {
+        log_error(sprintf(
+          gettext('There was an error parsing rule number: %s -- no src or dst (`%s\')'),
+          $flent['rulenum'],
+          $rule
+        ));
+        return '';
+    }
+
+    if ($flent['protoid'] == '6' || $flent['protoid'] == '17') { // TCP or UDP
+        $flent['srcport'] = $rule_data[$field++];
+        $flent['dstport'] = $rule_data[$field++];
+
+        $flent['src'] = $flent['srcip'] . ':' . $flent['srcport'];
+        $flent['dst'] = $flent['dstip'] . ':' . $flent['dstport'];
+
+        $flent['datalen'] = $rule_data[$field++];
+        if ($flent['protoid'] == '6') { // TCP
+            $flent['tcpflags'] = $rule_data[$field++];
+            $flent['seq'] = $rule_data[$field++];
+            $flent['ack'] = $rule_data[$field++];
+            $flent['window'] = $rule_data[$field++];
+            $flent['urg'] = $rule_data[$field++];
+            $flent['options'] = explode(";",$rule_data[$field++]);
+        }
+    } elseif ($flent['protoid'] == '1') { // ICMP
+        $flent['icmp_type'] = $rule_data[$field++];
+        switch ($flent['icmp_type']) {
+            case 'request':
+            case 'reply':
+                $flent['icmp_id'] = $rule_data[$field++];
+                $flent['icmp_seq'] = $rule_data[$field++];
+                break;
+            case 'unreachproto':
+                $flent['icmp_dstip'] = $rule_data[$field++];
+                $flent['icmp_protoid'] = $rule_data[$field++];
+                break;
+            case 'unreachport':
+                $flent['icmp_dstip'] = $rule_data[$field++];
+                $flent['icmp_protoid'] = $rule_data[$field++];
+                $flent['icmp_port'] = $rule_data[$field++];
+                break;
+            case 'unreach':
+            case 'timexceed':
+            case 'paramprob':
+            case 'redirect':
+            case 'maskreply':
+                $flent['icmp_descr'] = $rule_data[$field++];
+                break;
+            case 'needfrag':
+                $flent['icmp_dstip'] = $rule_data[$field++];
+                $flent['icmp_mtu'] = $rule_data[$field++];
+                break;
+            case 'tstamp':
+                $flent['icmp_id'] = $rule_data[$field++];
+                $flent['icmp_seq'] = $rule_data[$field++];
+                break;
+            case 'tstampreply':
+                $flent['icmp_id'] = $rule_data[$field++];
+                $flent['icmp_seq'] = $rule_data[$field++];
+                $flent['icmp_otime'] = $rule_data[$field++];
+                $flent['icmp_rtime'] = $rule_data[$field++];
+                $flent['icmp_ttime'] = $rule_data[$field++];
+                break;
+            default :
+                if (isset($rule_data[$field++])) {
+                    $flent['icmp_descr'] = $rule_data[$field++];
+                }
+                break;
+        }
+    } elseif ($flent['protoid'] == '2') { // IGMP
+        $flent['src'] = $flent['srcip'];
+        $flent['dst'] = $flent['dstip'];
+    } elseif ($flent['protoid'] == '112') { // CARP
+        $flent['type'] = $rule_data[$field++];
+        $flent['ttl'] = $rule_data[$field++];
+        $flent['vhid'] = $rule_data[$field++];
+        $flent['version'] = $rule_data[$field++];
+        $flent['advskew'] = $rule_data[$field++];
+        $flent['advbase'] = $rule_data[$field++];
+    }
+
+    return $flent;
+}
 
 $filter_logfile = '/var/log/filter.log';
 $lines = 5000; // Maximum number of log entries to fetch
@@ -214,4 +477,6 @@ include("head.inc"); ?>
   }
 </style>
 
-<?php include("foot.inc"); ?>
+<?php
+
+include("foot.inc");

@@ -296,12 +296,6 @@
             <pattern>firewall_virtual_ip.php*</pattern>
         </patterns>
     </page-firewall-virtualipaddresses>
-    <page-diagnostics-logs-firewall>
-        <name>Diagnostics: Logs: Firewall: Normal View</name>
-        <patterns>
-            <pattern>diag_logs_filter.php*</pattern>
-        </patterns>
-    </page-diagnostics-logs-firewall>
     <page-diagnostics-logs-firewall-plain>
         <name>Diagnostics: Logs: Firewall: Plain View</name>
         <patterns>

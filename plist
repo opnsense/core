@@ -16,7 +16,6 @@
 /usr/local/etc/inc/crypt.inc
 /usr/local/etc/inc/filter.inc
 /usr/local/etc/inc/filter.lib.inc
-/usr/local/etc/inc/filter_log.inc
 /usr/local/etc/inc/gwlb.inc
 /usr/local/etc/inc/interfaces.inc
 /usr/local/etc/inc/interfaces.lib.inc
@@ -965,7 +964,6 @@
 /usr/local/www/diag_logs_common.inc
 /usr/local/www/diag_logs_dhcp.php
 /usr/local/www/diag_logs_dnsmasq.php
-/usr/local/www/diag_logs_filter.php
 /usr/local/www/diag_logs_filter_plain.php
 /usr/local/www/diag_logs_filter_summary.php
 /usr/local/www/diag_logs_gateways.php

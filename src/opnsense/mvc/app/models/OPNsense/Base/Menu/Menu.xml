@@ -193,10 +193,9 @@
             <StatesSummary order="90" VisibleName="States Summary" url="/diag_states_summary.php"/>
         </Diagnostics>
         <LogFiles order="400" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
-            <Live VisibleName="Live View" order="100" url="/ui/diagnostics/firewall/log"/>
-            <Normal VisibleName="Static View" order="200" url="/diag_logs_filter.php"/>
-            <Summary VisibleName="Summary View" order="300" url="/diag_logs_filter_summary.php"/>
-            <Plain VisibleName="Plain View" order="400" url="/diag_logs_filter_plain.php"/>
+            <Live VisibleName="Live View" url="/ui/diagnostics/firewall/log"/>
+            <Overview url="/diag_logs_filter_summary.php"/>
+            <Plain VisibleName="Plain View" url="/diag_logs_filter_plain.php"/>
         </LogFiles>
     </Firewall>
     <Services order="60" cssClass="fa fa-cog">
