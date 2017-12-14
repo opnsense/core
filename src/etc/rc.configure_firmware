@@ -48,3 +48,4 @@ system_login_configure(true);
 
 /* flush cache */
 (new OPNsense\Core\ACL())->persist();
+(new OPNsense\Base\Menu\MenuSystem())->persist();
