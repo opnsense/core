@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,33 +24,14 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-BASEDIR="/usr/local/opnsense/scripts/firmware"
-LOCKFILE="/tmp/pkg_upgrade.progress"
-FLOCK="/usr/local/bin/flock -n -o"
-COMMANDS="
-audit
-health
-hotfix
-install
-lock
-reinstall
-remove
-type
-unlock
-upgrade
-"
+PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 
-SELECTED=${1}
-ARGUMENT=${2}
+# Truncate upgrade progress file
+: > ${PKG_PROGRESS_FILE}
 
-for COMMAND in ${COMMANDS}; do
-	if [ "${SELECTED}" != ${COMMAND} ]; then
-		continue
-	fi
-
-	if [ -n "$(pgrep pkg)" ]; then
-		break
-	fi
-
-	${FLOCK} ${LOCKFILE} ${BASEDIR}/${COMMAND}.sh ${ARGUMENT}
-done
+echo "***GOT REQUEST FOR HEALTH CHECK***" >> ${PKG_PROGRESS_FILE}
+echo "Check for and install missing package dependencies" >> ${PKG_PROGRESS_FILE}
+pkg check -da >> ${PKG_PROGRESS_FILE} 2>&1
+echo "Detect installed package files with invalid checksums" >> ${PKG_PROGRESS_FILE}
+pkg check -sa >> ${PKG_PROGRESS_FILE} 2>&1
+echo '***DONE***' >> ${PKG_PROGRESS_FILE}
