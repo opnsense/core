@@ -372,6 +372,27 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
+     * run a health check
+     * @return array status
+     * @throws \Exception
+     */
+    public function healthAction()
+    {
+        $this->sessionClose(); // long running action, close session
+        $backend = new Backend();
+        $response = array();
+
+        if ($this->request->isPost()) {
+            $response['status'] = 'ok';
+            $response['msg_uuid'] = trim($backend->configdRun("firmware health", true));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /*
      * run a security audit
      * @return array status
      * @throws \Exception

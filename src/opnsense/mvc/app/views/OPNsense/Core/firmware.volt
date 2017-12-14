@@ -65,7 +65,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
                 // unhide upgrade button
                 $("#upgrade").attr("style","");
-                $("#audit").attr("style","display:none");
+                $("#audit_all").attr("style","display:none");
 
                 // show upgrade list
                 $('#update_status').hide();
@@ -96,7 +96,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 $('#update_status').hide();
                 $('#updatelist').show();
                 $("#upgrade").attr("style","display:none");
-                $("#audit").attr("style","");
+                $("#audit_all").attr("style","");
 
                 // update list so plugins sync as well (all)
                 packagesInfo(true);
@@ -112,7 +112,7 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#update_status').show();
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Updating, please wait...') }}");
-        $("#audit").attr("style","display:none");
+        $("#audit_all").attr("style","display:none");
         maj_suffix = '';
         if ($.upgrade_action == 'maj') {
             maj_suffix = '_maj';
@@ -129,16 +129,17 @@ POSSIBILITY OF SUCH DAMAGE.
     /**
      * perform audit, install poller to update status
      */
-    function audit() {
-        $.upgrade_action = 'audit';
+    function audit($type) {
+        $.upgrade_action = $type;
         $('#updatelist').hide();
         $('#update_status').show();
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Auditing, please wait...') }}");
-        $("#audit").attr("style","");
+        $("#audit_all").attr("style","");
+        $("#audit_progress").removeClass("caret");
         $("#audit_progress").addClass("fa fa-spinner fa-pulse");
 
-        ajaxCall('/api/core/firmware/audit', {}, function () {
+        ajaxCall('/api/core/firmware/' + $type, {}, function () {
             $('#updatelist > tbody, thead').empty();
             setTimeout(trackStatus, 500);
         });
@@ -270,9 +271,10 @@ POSSIBILITY OF SUCH DAMAGE.
                 $("#upgrade_progress_maj").removeClass("fa fa-spinner fa-pulse");
                 $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
                 $("#audit_progress").removeClass("fa fa-spinner fa-pulse");
+                $("#audit_progress").addClass("caret");
                 $("#upgrade_maj").attr("style","display:none");
                 $("#upgrade").attr("style","display:none");
-                $("#audit").attr("style","");
+                $("#audit_all").attr("style","");
                 if ($.upgrade_action == 'pkg') {
                     // update UI and delay update to avoid races
                     updateStatusPrepare(true);
@@ -498,7 +500,8 @@ POSSIBILITY OF SUCH DAMAGE.
         // link event handlers
         $('#checkupdate').click(updateStatus);
         $('#upgrade').click(upgrade_ui);
-        $('#audit').click(audit);
+        $('#audit').click(function () { audit('audit'); });
+        $('#health').click(function () { audit('health'); });
         $('#upgrade_maj').click(function () {
             $.upgrade_needs_reboot = 1;
             $.upgrade_action = 'maj';
@@ -684,7 +687,15 @@ POSSIBILITY OF SUCH DAMAGE.
 <?php endif ?>
         <div class="alert alert-info" role="alert" style="min-height: 65px;">
             <button class='btn btn-primary pull-right' id="upgrade" style="display:none">{{ lang._('Update now') }} <i id="upgrade_progress"></i></button>
-            <button class='btn btn-primary pull-right' id="audit">{{ lang._('Audit now') }} <i id="audit_progress"></i></button>
+            <div class="btn-group pull-right">
+                <button type="button" id="audit_all" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    {{ lang._('Audit now') }} <i id="audit_progress" class="caret"></i>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a id="audit" href="#">Security</a></li>
+                    <li><a id="health" href="#">Health</a></li>
+                </ul>
+            </div>
             <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;">{{ lang._('Check for updates') }} <i id="checkupdate_progress"></i></button>
             <div style="margin-top: 8px;" id="updatestatus">{{ lang._('Click to check for updates.')}}</div>
         </div>

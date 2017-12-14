@@ -29,6 +29,6 @@ PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
-echo "***GOT REQUEST TO AUDIT***" >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO AUDIT SECURITY***" >> ${PKG_PROGRESS_FILE}
 pkg audit -F >> ${PKG_PROGRESS_FILE} 2>&1
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}
