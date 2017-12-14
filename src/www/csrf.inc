@@ -91,7 +91,7 @@ class LegacyCSRF
         }
         if ($this->is_html_output) {
             $csrf = $this->newToken();
-            $inputtag = "<input type=\"hidden\" id=\"__opnsense_csrf\" name=\"{$csrf['key']}\" value=\"{$csrf['token']}\" />";
+            $inputtag = "<input type=\"hidden\" name=\"{$csrf['key']}\" value=\"{$csrf['token']}\" />";
             $buffer = preg_replace('#(<form[^>]*method\s*=\s*["\']post["\'][^>]*>)#i', '$1' . $inputtag, $buffer);
             // csrf token for Ajax type requests
             $script = "
