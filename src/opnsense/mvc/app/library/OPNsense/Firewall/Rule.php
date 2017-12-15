@@ -51,6 +51,16 @@ abstract class Rule
     }
 
     /**
+     * output parsing
+     * @param string $value field value
+     * @return string
+     */
+    protected function parseIsComment($value)
+    {
+        return !empty($value) ? "#" : "";
+    }
+
+    /**
      * convert source/destination address entries as used by the gui
      * @param array $rule rule
      */

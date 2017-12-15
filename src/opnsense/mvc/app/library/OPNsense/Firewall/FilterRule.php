@@ -66,16 +66,6 @@ class FilterRule extends Rule
     );
 
     /**
-     * output parsing
-     * @param string $value field value
-     * @return string
-     */
-    private function parseIsComment($value)
-    {
-        return !empty($value) ? "#" : "";
-    }
-
-    /**
      * parse plain data
      * @param string $value field value
      * @param string $prefix prefix when $value is provided
