@@ -1122,34 +1122,6 @@ function format_bytes($bytes)
     }
 }
 
-/****** util/return_dir_as_array
- * NAME
- *   return_dir_as_array - Return a directory's contents as an array.
- * INPUTS
- *   $dir          - string containing the path to the desired directory.
- *   $filter_regex - string containing a regular expression to filter file names. Default empty.
- * RESULT
- *   $dir_array - array containing the directory's contents. This array will be empty if the path specified is invalid.
- ******/
-function return_dir_as_array($dir, $filter_regex = '')
-{
-    $dir_array = array();
-    if (is_dir($dir)) {
-        if ($dh = opendir($dir)) {
-            while (($file = readdir($dh)) !== false) {
-                if (($file == ".") || ($file == "..")) {
-                    continue;
-                }
-                if (empty($filter_regex) || preg_match($filter_regex, $file)) {
-                    array_push($dir_array, $file);
-                }
-            }
-            closedir($dh);
-        }
-    }
-    return $dir_array;
-}
-
 /*
  * get_sysctl($names)
  * Get values of sysctl OID's listed in $names (accepts an array or a single

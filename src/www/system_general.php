@@ -311,12 +311,13 @@ include("head.inc");
               <td>
                 <select name="theme" class="selectpicker" data-size="10" data-width="auto">
 <?php
-                  foreach (return_dir_as_array('/usr/local/opnsense/www/themes/') as $file):?>
+                foreach (glob('/usr/local/opnsense/www/themes/*', GLOB_ONLYDIR) as $file):
+                  $file = basename($file);?>
                   <option <?= $file == $pconfig['theme'] ? 'selected="selected"' : '' ?>>
                     <?=$file;?>
                   </option>
 <?php
-                  endforeach; ?>
+                endforeach; ?>
                 </select>
                 <div class="hidden" for="help_for_theme">
                   <strong>
