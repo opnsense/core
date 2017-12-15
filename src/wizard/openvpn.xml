@@ -43,7 +43,7 @@
 			<displayname>Type of Server</displayname>
 			<name>authtype</name>
 			<description>If you are unsure, leave this set to "Local User Access."</description>
-			<bindstofield>ovpnserver->step1->type</bindstofield>
+			<bindstofield>wizardtemp->step1->type</bindstofield>
 			<options>
 				<option>
 					<name>Local User Access</name>
@@ -64,6 +64,11 @@
 			<type>submit</type>
 		</field>
 	</fields>
+	<stepsubmitbeforesave>
+if (isset($config['wizardtemp'])) {
+	unset($config['wizardtemp']);
+}
+        </stepsubmitbeforesave>
 	<stepsubmitphpaction>step1_submitphpaction();</stepsubmitphpaction>
 </step>
 <step>
@@ -78,7 +83,7 @@
 			<name>authserv</name>
 			<displayname>LDAP servers</displayname>
 			<type>select</type>
-			<bindstofield>ovpnserver->step2->authserv</bindstofield>
+			<bindstofield>wizardtemp->step2->authserv</bindstofield>
 			<options>
 				<option>
 					<name>dummy</name>
@@ -111,7 +116,7 @@
 			<name>name</name>
 			<displayname>Name</displayname>
 			<type>input</type>
-			<bindstofield>ovpnserver->step2->authtype</bindstofield>
+			<bindstofield>wizardtemp->step2->authtype</bindstofield>
 			<size>30</size>
 			<description>Descriptive server name, for your own reference.</description>
 		</field>
@@ -119,7 +124,7 @@
 			<name>ip</name>
 			<displayname>Hostname or IP address</displayname>
 			<type>input</type>
-			<bindstofield>ovpnserver->step2->ip</bindstofield>
+			<bindstofield>wizardtemp->step2->ip</bindstofield>
 			<description>Address of the LDAP server.</description>
 		</field>
 		<field>
@@ -127,14 +132,14 @@
 			<displayname>Port</displayname>
 			<type>input</type>
 			<size>8</size>
-			<bindstofield>ovpnserver->step2->port</bindstofield>
+			<bindstofield>wizardtemp->step2->port</bindstofield>
 			<description>LDAP Server port, leave blank for the default (389 for TCP, 636 for SSL).</description>
 		</field>
 		<field>
 			<name>transport</name>
 			<displayname>Transport</displayname>
 			<type>select</type>
-			<bindstofield>ovpnserver->step2->transport</bindstofield>
+			<bindstofield>wizardtemp->step2->transport</bindstofield>
 			<options>
 				<option>
 					<name>TCP - Standard</name>
@@ -161,21 +166,21 @@
 					<value>subtree</value>
 				</option>
 			</options>
-			<bindstofield>ovpnserver->step2->scope</bindstofield>
+			<bindstofield>wizardtemp->step2->scope</bindstofield>
 		</field>
 		<field>
 			<name>basedn</name>
 			<displayname>Search Scope Base DN</displayname>
 			<type>input</type>
 			<size>40</size>
-			<bindstofield>ovpnserver->step2->basedn</bindstofield>
+			<bindstofield>wizardtemp->step2->basedn</bindstofield>
 		</field>
 		<field>
 			<name>authscope</name>
 			<displayname>Authentication Containers</displayname>
 			<type>input</type>
 			<size>40</size>
-			<bindstofield>ovpnserver->step2->authscope</bindstofield>
+			<bindstofield>wizardtemp->step2->authscope</bindstofield>
 			<description>Semicolon separated. This will be prepended to the search base DN above or you can specify full container path, e.g. CN=Users;DC=example or CN=Users,DC=example,DC=com;OU=OtherUsers,DC=example,DC=com</description>
 		</field>
 		<field>
@@ -184,35 +189,35 @@
 			<type>input</type>
 			<size>20</size>
 			<description>If left blank, an anonymous bind will be done.</description>
-			<bindstofield>ovpnserver->step2->userdn</bindstofield>
+			<bindstofield>wizardtemp->step2->userdn</bindstofield>
 		</field>
 		<field>
 			<name>passdn</name>
 			<displayname>LDAP Bind Password</displayname>
 			<type>password</type>
 			<size>20</size>
-			<bindstofield>ovpnserver->step2->passdn</bindstofield>
+			<bindstofield>wizardtemp->step2->passdn</bindstofield>
 			<description>If a user DN was supplied above, this password will also be used when performing a bind operation.</description>
 		</field>
 		<field>
 			<name>nameattr</name>
 			<displayname>User Naming Attribute</displayname>
 			<type>input</type>
-			<bindstofield>ovpnserver->step2->nameattr</bindstofield>
+			<bindstofield>wizardtemp->step2->nameattr</bindstofield>
 			<description>Typically "cn" (OpenLDAP, Novell eDirectory), "sAMAccountName" (Microsoft AD)</description>
 		</field>
 		<field>
 			<name>groupattr</name>
 			<displayname>Group Naming Attribute</displayname>
 			<type>input</type>
-			<bindstofield>ovpnserver->step2->groupattr</bindstofield>
+			<bindstofield>wizardtemp->step2->groupattr</bindstofield>
 			<description>Typically "cn" (OpenLDAP, Microsoft AD, and Novell eDirectory)</description>
 		</field>
 		<field>
 			<name>memberattr</name>
 			<displayname>Member Naming Attribute</displayname>
 			<type>input</type>
-			<bindstofield>ovpnserver->step2->memberattr</bindstofield>
+			<bindstofield>wizardtemp->step2->memberattr</bindstofield>
 			<description>Typically "member" (OpenLDAP), "memberOf" (Microsoft AD), "uniqueMember" (Novell eDirectory)</description>
 		</field>
 		<field>
@@ -235,7 +240,7 @@
 			<name>authserv</name>
 			<displayname>RADIUS servers</displayname>
 			<type>select</type>
-			<bindstofield>ovpnserver->step2->authserv</bindstofield>
+			<bindstofield>wizardtemp->step2->authserv</bindstofield>
 			<options>
 				<option>
 					<name>dummy</name>
@@ -268,7 +273,7 @@
 			<name>name</name>
 			<displayname>Name</displayname>
 			<type>input</type>
-			<bindstofield>ovpnserver->step2->authtype</bindstofield>
+			<bindstofield>wizardtemp->step2->authtype</bindstofield>
 			<size>20</size>
 			<description>Descriptive name for the RADIUS server, for your reference.</description>
 		</field>
@@ -276,7 +281,7 @@
 			<name>ip</name>
 			<displayname>Hostname or IP address</displayname>
 			<type>input</type>
-			<bindstofield>ovpnserver->step2->ip</bindstofield>
+			<bindstofield>wizardtemp->step2->ip</bindstofield>
 			<description>Address of the RADIUS server.</description>
 		</field>
 		<field>
@@ -284,7 +289,7 @@
 			<displayname>Authentication Port</displayname>
 			<type>input</type>
 			<size>8</size>
-			<bindstofield>ovpnserver->step2->port</bindstofield>
+			<bindstofield>wizardtemp->step2->port</bindstofield>
 			<description>Port used by the RADIUS server for accepting Authentication requests, typically 1812.</description>
 		</field>
 		<field>
@@ -292,7 +297,7 @@
 			<displayname>Shared Secret</displayname>
 			<type>password</type>
 			<size>20</size>
-			<bindstofield>ovpnserver->step2->password</bindstofield>
+			<bindstofield>wizardtemp->step2->password</bindstofield>
 			<description></description>
 		</field>
 		<field>
@@ -315,7 +320,7 @@
 			<internal>1</internal>
 			<name>certca</name>
 			<displayname>Certificate Authority</displayname>
-			<bindstofield>ovpnserver->step6->authcertca</bindstofield>
+			<bindstofield>wizardtemp->step6->authcertca</bindstofield>
 		</field>
 		<field>
 			<type>submit</type>
@@ -343,7 +348,7 @@
 			<description>A name for your reference, to identify this certificate. This is the same as common-name field for other Certificates.</description>
 			<type>input</type>
 			<size>20</size>
-			<bindstofield>ovpnserver->step6->certca</bindstofield>
+			<bindstofield>wizardtemp->step6->certca</bindstofield>
 		</field>
 		<field>
 			<name>keylength</name>
@@ -351,7 +356,7 @@
 			<description>Size of the key which will be generated. The larger the key, the more security is offers, but larger keys are generally slower to use.</description>
 			<type>select</type>
 			<value>2048</value>
-			<bindstofield>ovpnserver->step6->keylength</bindstofield>
+			<bindstofield>wizardtemp->step6->keylength</bindstofield>
 			<options>
 				<option>
 					<name>512 bit</name>
@@ -378,7 +383,7 @@
 			<size>10</size>
 			<value>365</value>
 			<description>Lifetime in days. This is commonly set to 365 (Approximately 1 year.)</description>
-			<bindstofield>ovpnserver->step6->lifetime</bindstofield>
+			<bindstofield>wizardtemp->step6->lifetime</bindstofield>
 		</field>
 		<field>
 			<name>country</name>
@@ -386,7 +391,7 @@
 			<description>Two-letter ISO country code (e.g. NL, DE, US)</description>
 			<type>input</type>
 			<size>5</size>
-			<bindstofield>ovpnserver->step6->country</bindstofield>
+			<bindstofield>wizardtemp->step6->country</bindstofield>
 		</field>
 		<field>
 			<name>state</name>
@@ -394,7 +399,7 @@
 			<description>Full State of Province name, not abbreviated (e.g. Zuid Holland, Sachsen, Kentucky).</description>
 			<type>input</type>
 			<size>30</size>
-			<bindstofield>ovpnserver->step6->state</bindstofield>
+			<bindstofield>wizardtemp->step6->state</bindstofield>
 		</field>
 		<field>
 			<name>city</name>
@@ -402,7 +407,7 @@
 			<description>City or other Locality name (e.g. Middelharnis, Leipzig, Louisville).</description>
 			<type>input</type>
 			<size>30</size>
-			<bindstofield>ovpnserver->step6->city</bindstofield>
+			<bindstofield>wizardtemp->step6->city</bindstofield>
 		</field>
 		<field>
 			<name>organization</name>
@@ -410,7 +415,7 @@
 			<description>Organization name, often the Company or Group name.</description>
 			<type>input</type>
 			<size>30</size>
-			<bindstofield>ovpnserver->step6->organization</bindstofield>
+			<bindstofield>wizardtemp->step6->organization</bindstofield>
 		</field>
 		<field>
 			<name>email</name>
@@ -418,7 +423,7 @@
 			<description>Email address for the Certificate contact. Often the email of the person generating the certificate (i.e. You.)</description>
 			<type>input</type>
 			<size>30</size>
-			<bindstofield>ovpnserver->step6->email</bindstofield>
+			<bindstofield>wizardtemp->step6->email</bindstofield>
 		</field>
 		<field>
 			<name>Add new CA</name>
@@ -440,7 +445,7 @@
 			<type>cert_selection</type>
 			<name>certname</name>
 			<displayname>Certificate</displayname>
-			<bindstofield>ovpnserver->step9->authcertname</bindstofield>
+			<bindstofield>wizardtemp->step9->authcertname</bindstofield>
 		</field>
 		<field>
 			<type>submit</type>
@@ -468,7 +473,7 @@
 			<description>A name for your reference, to identify this certificate. This is also known as the certificate's "Common Name."</description>
 			<type>input</type>
 			<size>20</size>
-			<bindstofield>ovpnserver->step9->certname</bindstofield>
+			<bindstofield>wizardtemp->step9->certname</bindstofield>
 		</field>
 		<field>
 			<name>keylength</name>
@@ -476,7 +481,7 @@
 			<description>Size of the key which will be generated. The larger the key, the more security is offers, but larger keys are generally slower to use.</description>
 			<type>select</type>
 			<value>2048</value>
-			<bindstofield>ovpnserver->step9->keylength</bindstofield>
+			<bindstofield>wizardtemp->step9->keylength</bindstofield>
 			<options>
 				<option>
 					<name>512 bit</name>
@@ -503,7 +508,7 @@
 			<type>input</type>
 			<size>10</size>
 			<value>365</value>
-			<bindstofield>ovpnserver->step9->lifetime</bindstofield>
+			<bindstofield>wizardtemp->step9->lifetime</bindstofield>
 		</field>
 		<field>
 			<name>country</name>
@@ -511,7 +516,7 @@
 			<description>Two-letter ISO country code (e.g. NL, DE, US)</description>
 			<type>input</type>
 			<size>5</size>
-			<bindstofield>ovpnserver->step9->country</bindstofield>
+			<bindstofield>wizardtemp->step9->country</bindstofield>
 		</field>
 		<field>
 			<name>state</name>
@@ -519,7 +524,7 @@
 			<description>Full State of Province name, not abbreviated (e.g. Zuid Holland, Sachsen, Kentucky).</description>
 			<type>input</type>
 			<size>30</size>
-			<bindstofield>ovpnserver->step9->state</bindstofield>
+			<bindstofield>wizardtemp->step9->state</bindstofield>
 		</field>
 		<field>
 			<name>city</name>
@@ -527,7 +532,7 @@
 			<description>City or other Locality name (e.g. Middelharnis, Leipzig, Louisville).</description>
 			<type>input</type>
 			<size>30</size>
-			<bindstofield>ovpnserver->step9->city</bindstofield>
+			<bindstofield>wizardtemp->step9->city</bindstofield>
 		</field>
 		<field>
 			<name>organization</name>
@@ -535,7 +540,7 @@
 			<description>Organization name, often the Company or Group name.</description>
 			<type>input</type>
 			<size>30</size>
-			<bindstofield>ovpnserver->step9->organization</bindstofield>
+			<bindstofield>wizardtemp->step9->organization</bindstofield>
 		</field>
 		<field>
 			<name>email</name>
@@ -543,7 +548,7 @@
 			<description>Email address for the Certificate contact. Often the email of the person generating the certificate (i.e. You.)</description>
 			<type>input</type>
 			<size>30</size>
-			<bindstofield>ovpnserver->step9->email</bindstofield>
+			<bindstofield>wizardtemp->step9->email</bindstofield>
 		</field>
 		<field>
 			<name>Create new Certificate</name>
@@ -566,12 +571,12 @@
 			<type>interfaces_selection</type>
 			<description>The interface where OpenVPN will listen for incoming connections (typically WAN.)</description>
 			<displayname>Interface</displayname>
-			<bindstofield>ovpnserver->step10->interface</bindstofield>
+			<bindstofield>wizardtemp->step10->interface</bindstofield>
 		</field>
 		<field>
 			<name>Protocol</name>
 			<type>select</type>
-			<bindstofield>ovpnserver->step10->protocol</bindstofield>
+			<bindstofield>wizardtemp->step10->protocol</bindstofield>
 			<options>
 				<option>
 					<name>UDP</name>
@@ -590,7 +595,7 @@
 			<description>Local port upon which OpenVPN will listen for connections. The default port is 1194. Leave this blank unless you need to use a different port.</description>
 			<type>input</type>
 			<size>10</size>
-			<bindstofield>ovpnserver->step10->localport</bindstofield>
+			<bindstofield>wizardtemp->step10->localport</bindstofield>
 		</field>
 		<field>
 			<name>description</name>
@@ -598,7 +603,7 @@
 			<description>A name for this OpenVPN instance, for your reference. It can be set however you like, but is often used to distinguish the purpose of the service (e.g. "Remote Technical Staff").</description>
 			<type>input</type>
 			<size>30</size>
-			<bindstofield>ovpnserver->step10->descr</bindstofield>
+			<bindstofield>wizardtemp->step10->descr</bindstofield>
 		</field>
 		<field>
 			<type>listtopic</type>
@@ -609,7 +614,7 @@
 			<type>checkbox</type>
 			<value>on</value>
 			<description>Enable authentication of TLS packets.</description>
-			<bindstofield>ovpnserver->step10->tlsauth</bindstofield>
+			<bindstofield>wizardtemp->step10->tlsauth</bindstofield>
 		</field>
 		<field>
 			<displayname>Generate TLS Key</displayname>
@@ -618,7 +623,7 @@
 			<value>on</value>
 			<type>checkbox</type>
 			<description>Automatically generate a shared TLS authentication key.</description>
-			<bindstofield>ovpnserver->step10->gentlskey</bindstofield>
+			<bindstofield>wizardtemp->step10->gentlskey</bindstofield>
 		</field>
 		<field>
 			<displayname>TLS Shared Key</displayname>
@@ -627,13 +632,13 @@
 			<type>textarea</type>
 			<cols>30</cols>
 			<rows>5</rows>
-			<bindstofield>ovpnserver->step10->tlskey</bindstofield>
+			<bindstofield>wizardtemp->step10->tlskey</bindstofield>
 		</field>
 		<field>
 			<displayname>DH Parameters Length</displayname>
 			<name>dhparameters</name>
 			<type>select</type>
-			<bindstofield>ovpnserver->step10->dhkey</bindstofield>
+			<bindstofield>wizardtemp->step10->dhkey</bindstofield>
 			<options>
 				<option>
 					<name>1024 bit</name>
@@ -654,7 +659,7 @@
 			<name>crypto</name>
 			<type>select</type>
 			<displayname>Encryption Algorithm</displayname>
-			<bindstofield>ovpnserver->step10->crypto</bindstofield>
+			<bindstofield>wizardtemp->step10->crypto</bindstofield>
 			<options>
 				<option>
 					<name>dummy</name>
@@ -667,7 +672,7 @@
 			<name>digest</name>
 			<type>select</type>
 			<displayname>Auth Digest Algorithm</displayname>
-			<bindstofield>ovpnserver->step10->digest</bindstofield>
+			<bindstofield>wizardtemp->step10->digest</bindstofield>
 			<options>
 				<option>
 					<name>dummy</name>
@@ -681,7 +686,7 @@
 			<name>engine</name>
 			<type>select</type>
 			<displayname>Hardware Crypto</displayname>
-			<bindstofield>ovpnserver->step10->engine</bindstofield>
+			<bindstofield>wizardtemp->step10->engine</bindstofield>
 			<options>
 				<option>
 					<name>dummy</name>
@@ -699,7 +704,7 @@
 			<name>tunnelnet</name>
 			<type>input</type>
 			<size>20</size>
-			<bindstofield>ovpnserver->step10->tunnelnet</bindstofield>
+			<bindstofield>wizardtemp->step10->tunnelnet</bindstofield>
 			<description>This is the IPv4 virtual network used for private communications between this server and client hosts expressed using CIDR notation (eg. 10.0.8.0/24). The first network address will be assigned to the server virtual interface. The remaining network addresses can optionally be assigned to connecting clients. (see Address Pool)</description>
 		</field>
 		<field>
@@ -707,14 +712,14 @@
 			<name>redirectgw</name>
 			<type>checkbox</type>
 			<description>Force all client generated traffic through the tunnel.</description>
-			<bindstofield>ovpnserver->step10->rdrgw</bindstofield>
+			<bindstofield>wizardtemp->step10->rdrgw</bindstofield>
 		</field>
 		<field>
 			<displayname>Local Network</displayname>
 			<name>localnet</name>
 			<type>input</type>
 			<size>20</size>
-			<bindstofield>ovpnserver->step10->localnet</bindstofield>
+			<bindstofield>wizardtemp->step10->localnet</bindstofield>
 			<description>This is the network that will be accessible from the remote endpoint, expressed as a CIDR range. You may leave this blank if you don't want to add a route to the local network through this tunnel on the remote machine. This is generally set to your LAN network.</description>
 		</field>
 		<field>
@@ -723,13 +728,13 @@
 			<description>Specify the maximum number of clients allowed to concurrently connect to this server.</description>
 			<type>input</type>
 			<size>10</size>
-			<bindstofield>ovpnserver->step10->concurrentcon</bindstofield>
+			<bindstofield>wizardtemp->step10->concurrentcon</bindstofield>
 		</field>
 		<field>
 			<displayname>Compression</displayname>
 			<name>compression</name>
 			<description>Compress tunnel packets using the LZO algorithm. Adaptive compression will dynamically disable compression for a period of time if OpenVPN detects that the data in the packets is not being compressed efficiently.</description>
-			<bindstofield>ovpnserver->step10->compression</bindstofield>
+			<bindstofield>wizardtemp->step10->compression</bindstofield>
 			<type>select</type>
 			<options>
 				<option>
@@ -743,21 +748,21 @@
 			<name>tos</name>
 			<type>checkbox</type>
 			<description>Set the TOS IP header value of tunnel packets to match the encapsulated packet value.</description>
-			<bindstofield>ovpnserver->step10->tos</bindstofield>
+			<bindstofield>wizardtemp->step10->tos</bindstofield>
 		</field>
 		<field>
 			<displayname>Inter-Client Communication</displayname>
 			<name>interclient</name>
 			<type>checkbox</type>
 			<description>Allow communication between clients connected to this server.</description>
-			<bindstofield>ovpnserver->step10->interclient</bindstofield>
+			<bindstofield>wizardtemp->step10->interclient</bindstofield>
 		</field>
 		<field>
 			<displayname>Duplicate Connections</displayname>
 			<name>duplicate_cn</name>
 			<type>checkbox</type>
 			<description>Allow multiple concurrent connections from clients using the same Common Name. This is not generally recommended, but may be needed for some scenarios.</description>
-			<bindstofield>ovpnserver->step10->duplicate_cn</bindstofield>
+			<bindstofield>wizardtemp->step10->duplicate_cn</bindstofield>
 		</field>
 		<field>
 			<type>listtopic</type>
@@ -769,7 +774,7 @@
 			<type>checkbox</type>
 			<value>on</value>
 			<description>Allow connected clients to retain their connections if their IP address changes.</description>
-			<bindstofield>ovpnserver->step10->dynip</bindstofield>
+			<bindstofield>wizardtemp->step10->dynip</bindstofield>
 		</field>
 		<field>
 			<displayname>Address Pool</displayname>
@@ -777,69 +782,69 @@
 			<type>checkbox</type>
 			<value>on</value>
 			<description>Provide a virtual adapter IP address to clients (see Tunnel Network).</description>
-			<bindstofield>ovpnserver->step10->addrpool</bindstofield>
+			<bindstofield>wizardtemp->step10->addrpool</bindstofield>
 		</field>
 		<field>
 			<displayname>DNS Default Domain</displayname>
 			<name>defaultdomain</name>
 			<type>input</type>
 			<description>Provide a default domain name to clients.</description>
-			<bindstofield>ovpnserver->step10->defaultdomain</bindstofield>
+			<bindstofield>wizardtemp->step10->defaultdomain</bindstofield>
 		</field>
 		<field>
 			<displayname>DNS Server 1</displayname>
 			<name>dnsserver1</name>
 			<type>input</type>
-			<bindstofield>ovpnserver->step10->dns1</bindstofield>
+			<bindstofield>wizardtemp->step10->dns1</bindstofield>
 			<description>DNS server to provide for connecting client systems.</description>
 		</field>
 		<field>
 			<displayname>DNS Server 2</displayname>
 			<name>dnsserver2</name>
 			<type>input</type>
-			<bindstofield>ovpnserver->step10->dns2</bindstofield>
+			<bindstofield>wizardtemp->step10->dns2</bindstofield>
 			<description>DNS server to provide for connecting client systems.</description>
 		</field>
 		<field>
 			<displayname>DNS Server 3</displayname>
 			<name>dnsserver3</name>
 			<type>input</type>
-			<bindstofield>ovpnserver->step10->dns3</bindstofield>
+			<bindstofield>wizardtemp->step10->dns3</bindstofield>
 			<description>DNS server to provide for connecting client systems.</description>
 		</field>
 		<field>
 			<displayname>DNS Server 4</displayname>
 			<name>dnsserver4</name>
 			<type>input</type>
-			<bindstofield>ovpnserver->step10->dns4</bindstofield>
+			<bindstofield>wizardtemp->step10->dns4</bindstofield>
 			<description>DNS server to provide for connecting client systems.</description>
 		</field>
 		<field>
 			<displayname>NTP Server</displayname>
 			<name>ntpserver1</name>
 			<type>input</type>
-			<bindstofield>ovpnserver->step10->ntp1</bindstofield>
+			<bindstofield>wizardtemp->step10->ntp1</bindstofield>
 			<description>Network Time Protocol server to provide for connecting client systems.</description>
 		</field>
 		<field>
 			<displayname>NTP Server 2</displayname>
 			<name>ntpserver2</name>
 			<type>input</type>
-			<bindstofield>ovpnserver->step10->ntp2</bindstofield>
+			<bindstofield>wizardtemp->step10->ntp2</bindstofield>
 			<description>Network Time Protocol server to provide for connecting client systems.</description>
 		</field>
 		<field>
 			<name>nbtenable</name>
 			<type>checkbox</type>
 			<displayname>NetBIOS Options</displayname>
-			<bindstofield>ovpnserver->step10->nbtenable</bindstofield>
+			<bindstofield>wizardtemp->step10->nbtenable</bindstofield>
 			<description>Enable NetBIOS over TCP/IP. If this option is not set, all NetBIOS-over-TCP/IP options (including WINS) will be disabled.</description>
 		</field>
 		<field>
 			<displayname>NetBIOS Node Type</displayname>
 			<name>nbttype</name>
 			<type>select</type>
-			<bindstofield>ovpnserver->step10->nbttype</bindstofield>
+			<bindstofield>wizardtemp->step10->nbttype</bindstofield>
 			<options>
 				<option>
 					<name>dummy</name>
@@ -852,21 +857,21 @@
 			<displayname>NetBIOS Scope ID</displayname>
 			<name>nbtscope</name>
 			<type>input</type>
-			<bindstofield>ovpnserver->step10->nbtscope</bindstofield>
+			<bindstofield>wizardtemp->step10->nbtscope</bindstofield>
 			<description>A NetBIOS Scope ID provides an extended naming service for NetBIOS over TCP/IP. The NetBIOS Scope ID isolates NetBIOS traffic on a single network to only those nodes with the same NetBIOS Scope ID.</description>
 		</field>
 		<field>
 			<displayname>WINS Server 1</displayname>
 			<name>winsserver1</name>
 			<type>input</type>
-			<bindstofield>ovpnserver->step10->wins1</bindstofield>
+			<bindstofield>wizardtemp->step10->wins1</bindstofield>
 			<description>A Windows Internet Name Service (WINS) server to provide for connecting clients, which allows them to browse Windows shares. This is typically an Active Directory Domain Controller, designated WINS server, or Samba server.</description>
 		</field>
 		<field>
 			<displayname>WINS Server 2</displayname>
 			<name>winsserver2</name>
 			<type>input</type>
-			<bindstofield>ovpnserver->step10->wins2</bindstofield>
+			<bindstofield>wizardtemp->step10->wins2</bindstofield>
 			<description>A Windows Internet Name Service (WINS) server to provide for connecting clients, which allows them to browse Windows shares. This is typically an Active Directory Domain Controller, designated WINS server, or Samba server.</description>
 		</field>
 		<field>
@@ -875,7 +880,7 @@
 			<cols>30</cols>
 			<rows>5</rows>
 			<description>Enter any additional options you would like to add to the OpenVPN server configuration here, separated by a semicolon. EXAMPLE: push "route 10.0.0.0 255.255.255.0"</description>
-			<bindstofield>ovpnserver->step10->advanced</bindstofield>
+			<bindstofield>wizardtemp->step10->advanced</bindstofield>
 		</field>
 		<field>
 			<name>Next</name>
@@ -906,7 +911,7 @@
 			<displayname>Firewall Rule</displayname>
 			<description>Add a rule to permit traffic from clients on the Internet to the OpenVPN server process.</description>
 			<type>checkbox</type>
-			<bindstofield>ovpnserver->step11->ovpnrule</bindstofield>
+			<bindstofield>wizardtemp->step11->ovpnrule</bindstofield>
 		</field>
 		<field>
 			<type>listtopic</type>
@@ -917,7 +922,7 @@
 			<displayname>OpenVPN rule</displayname>
 			<description>Add a rule to allow all traffic from connected clients to pass across the VPN tunnel.</description>
 			<type>checkbox</type>
-			<bindstofield>ovpnserver->step11->ovpnallow</bindstofield>
+			<bindstofield>wizardtemp->step11->ovpnallow</bindstofield>
 		</field>
 		<field>
 			<name>Next</name>

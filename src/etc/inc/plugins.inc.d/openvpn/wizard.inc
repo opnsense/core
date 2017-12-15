@@ -44,15 +44,16 @@ function has_special_chars($text)
 function step1_submitphpaction()
 {
     global $stepid, $config;
+
     if ($_POST['authtype'] == "local") {
         $stepid = 4;
-        $config['ovpnserver']['step1']['type'] = "local";
+        $config['wizardtemp']['step1']['type'] = "local";
     } elseif ($_POST['authtype'] == "ldap") {
         $stepid = 0;
     } elseif ($_POST['authtype'] == "radius") {
         $stepid = 2;
-        $config['ovpnserver']['step1']['type'] = "radius";
-        unset($config['ovpnserver']['step1']['uselist']);
+        $config['wizardtemp']['step1']['type'] = "radius";
+        unset($config['wizardtemp']['step1']['uselist']);
     }
 }
 
@@ -97,9 +98,9 @@ function step3_submitphpaction()
     /* Default LDAP port is 389 for TCP and 636 for SSL */
     if (empty($_POST['port'])) {
         if ($_POST['transport'] == "tcp") {
-            $config['ovpnserver']['step2']['port'] = 389;
+            $config['wizardtemp']['step2']['port'] = 389;
         } elseif ($_POST['transport'] == "ssl") {
-            $config['ovpnserver']['step2']['port'] = 636;
+            $config['wizardtemp']['step2']['port'] = 636;
         }
     } elseif (!is_port($_POST['port'])) {
         $input_errors[] = gettext('Please enter a valid port number.');
@@ -119,7 +120,7 @@ function step3_submitphpaction()
         $input_errors[] = gettext('Please enter a valid IP address or hostname for the authentication server.');
         $stepid--;
     } else {
-        $config['ovpnserver']['step2']['uselist'] = "on";
+        $config['wizardtemp']['step2']['uselist'] = "on";
         $_POST['uselist'] = "on";
         $stepid += 2;
     }
@@ -165,7 +166,7 @@ function step5_submitphpaction()
 
     /* Default RADIUS Auth port = 1812 */
     if (empty($_POST['port'])) {
-        $config['ovpnserver']['step2']['port'] = 1812;
+        $config['wizardtemp']['step2']['port'] = 1812;
     } elseif (!is_port($_POST['port'])) {
         $input_errors[] = gettext('Please enter a valid port number.');
         $stepid--;
@@ -183,7 +184,7 @@ function step5_submitphpaction()
         $input_errors[] = gettext('Please enter a valid IP address or hostname for the authentication server.');
         $stepid--;
     } else {
-        $config['ovpnserver']['step2']['uselist'] = "on";
+        $config['wizardtemp']['step2']['uselist'] = "on";
         $_POST['uselist'] = "on";
     }
 }
@@ -203,10 +204,10 @@ function step6_submitphpaction()
 
     if (isset($_POST['next'])) {
         $_POST['uselist'] = "";
-        unset($config['ovpnserver']['step6']['uselist']);
+        unset($config['wizardtemp']['step6']['uselist']);
         $stepid++;
     } else {
-        $config['ovpnserver']['step6']['uselist'] = "on";
+        $config['wizardtemp']['step6']['uselist'] = "on";
         $_POST['uselist'] = "on";
     }
 }
@@ -242,7 +243,7 @@ function step7_submitphpaction()
         $input_errors[] = gettext('Please enter only a two-letter ISO country code');
         $stepid--;
     } else {
-        $config['ovpnserver']['step6']['uselist'] = "on";
+        $config['wizardtemp']['step6']['uselist'] = "on";
         $_POST['uselist'] = "on";
     }
 }
@@ -263,10 +264,10 @@ function step8_submitphpaction()
 
     if (isset($_POST['next'])) {
         $_POST['uselist'] = "";
-        unset($config['ovpnserver']['step9']['uselist']);
+        unset($config['wizardtemp']['step9']['uselist']);
         $stepid++;
     } else {
-        $config['ovpnserver']['step6']['uselist'] = "on";
+        $config['wizardtemp']['step6']['uselist'] = "on";
         $_POST['uselist'] = "on";
     }
 }
@@ -275,7 +276,7 @@ function step9_stepbeforeformdisplay()
 {
     global $config, $pkg, $stepid;
 
-    $pconfig = $config['ovpnserver'];
+    $pconfig = $config['wizardtemp'];
 
     if (isset($pconfig['step6']['uselist'])) {
         $country = $pconfig['step6']['country'];
@@ -344,8 +345,9 @@ function step9_submitphpaction()
         $stepid--;
     } elseif (strlen($_POST['country']) != 2) {
         $input_errors[] = gettext('Please enter only a two-letter ISO country code');
+        $stepid--;
     } else {
-        $config['ovpnserver']['step9']['uselist'] = "on";
+        $config['wizardtemp']['step9']['uselist'] = "on";
         $_POST['uselist'] = "on";
     }
 }
@@ -483,9 +485,9 @@ function step12_submitphpaction()
 {
     global $config;
 
-    $pconfig = $config['ovpnserver'];
+    $pconfig = $config['wizardtemp'];
 
-    if (!is_array($config['ovpnserver'])) {
+    if (!is_array($config['wizardtemp'])) {
         $message = "No configuration found please retry again.";
         header(url_safe('Location: /wizard.php?xml=openvpn&stepid=1&message=%s'. array($message)));
         exit;
@@ -739,6 +741,7 @@ function step12_submitphpaction()
     $a_server = &config_read_array('openvpn', 'openvpn-server');
     $a_server[] = $server;
 
+    unset($config['wizardtemp']);
     write_config();
 
     openvpn_configure_single($server['vpnid']);

@@ -43,6 +43,11 @@
 			<type>submit</type>
 		</field>
 	</fields>
+	<stepsubmitbeforesave>
+if (isset($config['wizardtemp'])) {
+	unset($config['wizardtemp']);
+}
+        </stepsubmitbeforesave>
 	<stepbeforeformdisplay>
 		if (isset($config['trigger_initial_wizard'])) {
 			unset($config['trigger_initial_wizard']);
