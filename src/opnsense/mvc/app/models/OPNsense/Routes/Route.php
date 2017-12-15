@@ -48,28 +48,28 @@ class Route extends BaseModel
         $result = parent::performValidation($validateFullModel);
         // add validation for gateway / network
         foreach ($this->getFlatNodes() as $key => $node) {
-                if (($validateFullModel || $node->isFieldChanged())) {
-                    // if either the gateway or network changes, we validate protocols.
-                    // Use specified message from regular validators to report issues back to the user
-                    if (in_array($node->getInternalXMLTagName(), array("gateway", "network"))){
-                        $route = $node->getParentNode();
-                        $proto_net = strpos($route->network, ':') === false ? "inet" : "inet6";
-                        // Gateway addresses are stored in the result list received from configd.
-                        // Unfortunately we can't trust the config here, so we use the list results here.
-                        $gateway = $route->gateway->getNodeData()[(string)$route->gateway];
-                        $tmp = explode("-", $gateway['value']);
-                        $gateway_ip = !empty($tmp) ? end($tmp) : "";
-                        $gateway_proto = strpos($gateway_ip, ":") !== false ? "inet6" : "inet";
-                        // When protocols don't match, add a message for this field to the validation result.
-                        if (empty($gateway_ip) || $gateway_proto != $proto_net) {
-                            $node_validators = $node->getValidators();
-                            $result->appendMessage(new \Phalcon\Validation\Message(
-                                $node_validators[0]->getOption("message"), $key)
-                            );
-                        }
-
+            if (($validateFullModel || $node->isFieldChanged())) {
+                // if either the gateway or network changes, we validate protocols.
+                // Use specified message from regular validators to report issues back to the user
+                if (in_array($node->getInternalXMLTagName(), array("gateway", "network"))) {
+                    $route = $node->getParentNode();
+                    $proto_net = strpos($route->network, ':') === false ? "inet" : "inet6";
+                    // Gateway addresses are stored in the result list received from configd.
+                    // Unfortunately we can't trust the config here, so we use the list results here.
+                    $gateway = $route->gateway->getNodeData()[(string)$route->gateway];
+                    $tmp = explode("-", $gateway['value']);
+                    $gateway_ip = !empty($tmp) ? end($tmp) : "";
+                    $gateway_proto = strpos($gateway_ip, ":") !== false ? "inet6" : "inet";
+                    // When protocols don't match, add a message for this field to the validation result.
+                    if (empty($gateway_ip) || $gateway_proto != $proto_net) {
+                        $node_validators = $node->getValidators();
+                        $result->appendMessage(new \Phalcon\Validation\Message(
+                            $node_validators[0]->getOption("message"),
+                            $key
+                        ));
                     }
                 }
+            }
         }
         return $result;
     }

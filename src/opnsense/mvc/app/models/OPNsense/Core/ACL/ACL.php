@@ -100,7 +100,8 @@ class ACL
      * update provided acl array with content from this list
      * @param array &$acltags
      */
-    public function update(&$acltags) {
+    public function update(&$acltags)
+    {
         foreach ($this->get() as $aclID => $ACLnode) {
             $acltags[$aclID] = $ACLnode;
         }

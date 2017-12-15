@@ -99,7 +99,7 @@ class MenuSystem
      * @param bool $nowait when the cache is locked, skip waiting for it to become available.
      * @return SimpleXMLElement
      */
-    public function persist($nowait=true)
+    public function persist($nowait = true)
     {
         // collect all XML menu definitions into a single file
         $menuXml = new \DOMDocument('1.0');
@@ -118,7 +118,7 @@ class MenuSystem
         }
         // flush to disk
         $fp = fopen($this->menuCacheFilename, file_exists($this->menuCacheFilename) ? "r+" : "w+");
-        $lockMode = $nowait ? LOCK_EX | LOCK_NB : LOCK_EX ;
+        $lockMode = $nowait ? LOCK_EX | LOCK_NB : LOCK_EX;
         if (flock($fp, $lockMode)) {
             ftruncate($fp, 0);
             fwrite($fp, $menuXml->saveXML());
