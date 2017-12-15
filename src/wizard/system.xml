@@ -2,6 +2,7 @@
 <wizard>
 <copyright><![CDATA[
 /*
+	Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2005 Scott Ullrich <sullrich@gmail.com>
 	All rights reserved.
@@ -101,34 +102,30 @@
 			<type>submit</type>
 		</field>
 	</fields>
-	<stepbeforeformdisplay>
-		<![CDATA[
-		$config['wizardtemp'] = array();
-		$config['wizardtemp']['system'] = array();
-		$config['wizardtemp']['system']['hostname'] = $config['system']['hostname'];
-		$config['wizardtemp']['system']['domain'] = $config['system']['domain'];
-		]]>
-	</stepbeforeformdisplay>
-	<stepsubmitphpaction>
-		<![CDATA[
-		if(empty($_POST['hostname']) || !is_hostname($_POST['hostname'])) {
-			print_info_box("Hostname is invalid. Please press back in your browser window and correct.");
-			die;
-		}
-		if(empty($_POST['domain']) || !is_domain($_POST['domain'])) {
-			print_info_box("Domain is invalid. Please press back in your browser window and correct.");
-			die;
-		}
-		if(!empty($_POST['primarydnsserver']) && !is_ipaddr($_POST['primarydnsserver'])) {
-			print_info_box("Primary DNS server is invalid. Please press back in your browser window and correct.");
-			die;
-		}
-		if(!empty($_POST['secondarydnsserver']) && !is_ipaddr($_POST['secondarydnsserver'])) {
-			print_info_box("Second DNS server is invalid. Please press back in your browser window and correct.");
-			die;
-		}
-		]]>
-	</stepsubmitphpaction>
+	<stepbeforeformdisplay><![CDATA[
+$config['wizardtemp'] = array();
+$config['wizardtemp']['system'] = array();
+$config['wizardtemp']['system']['hostname'] = $config['system']['hostname'];
+$config['wizardtemp']['system']['domain'] = $config['system']['domain'];
+	]]></stepbeforeformdisplay>
+	<stepsubmitphpaction><![CDATA[
+global $input_errors, $stepid;
+if (empty($_POST['hostname']) || !is_hostname($_POST['hostname'])) {
+	$input_errors[] = gettext('Hostname is invalid.');
+}
+if (empty($_POST['domain']) || !is_domain($_POST['domain'])) {
+	$input_errors[] = gettext('Domain is invalid.');
+}
+if (!empty($_POST['primarydnsserver']) && !is_ipaddr($_POST['primarydnsserver'])) {
+	$input_errors[] = gettext('Primary DNS server is invalid.');
+}
+if (!empty($_POST['secondarydnsserver']) && !is_ipaddr($_POST['secondarydnsserver'])) {
+	$input_errors[] = gettext('Second DNS server is invalid.');
+}
+if (count($input_errors)) {
+	$stepid--;
+}
+	]]></stepsubmitphpaction>
 </step>
 <step>
 	<id>3</id>
@@ -150,16 +147,17 @@
 			<type>submit</type>
 		</field>
 	</fields>
-	<stepsubmitphpaction>
-		<![CDATA[
-		foreach (explode(' ', $_POST['timeserverhostname']) as $ts) {
-			if (!is_domain($ts)) {
-				print_info_box(gettext("NTP Time Server names may only contain the characters a-z, 0-9, '-' and '.'. Entries may be separated by spaces. Please press back in your browser window and correct."));
-				die;
-			}
-		}
-		]]>
-	</stepsubmitphpaction>
+	<stepsubmitphpaction><![CDATA[
+global $input_errors, $stepid;
+foreach (explode(' ', $_POST['timeserverhostname']) as $ts) {
+	if (!is_domain($ts)) {
+		$input_errors[] = gettext("NTP Time Server names may only contain the characters a-z, 0-9, '-' and '.'. Entries may be separated by spaces.");
+	}
+}
+if (count($input_errors)) {
+	$stepid--;
+}
+	]]></stepsubmitphpaction>
 </step>
 <step>
 	<id>4</id>
@@ -167,16 +165,16 @@
 	<title>Configure WAN Interface</title>
 	<javascriptafterformdisplay>
 		var selectedItem = 0;
-		if(jQuery('#ipaddress').val() == 'dhcp') {
+		if (jQuery('#ipaddress').val() == 'dhcp') {
 			selectedItem = 1;
 			jQuery('#ipaddress').val('');
-		} else if(jQuery('#ipaddress').val() == 'pppoe') {
+		} else if (jQuery('#ipaddress').val() == 'pppoe') {
 			selectedItem = 2;
 			jQuery('#ipaddress').val('');
-		} else if(jQuery('#ipaddress').val() == 'pptp') {
+		} else if (jQuery('#ipaddress').val() == 'pptp') {
 			selectedItem = 3;
 			jQuery('#ipaddress').val('');
-		} else if(jQuery('#ipaddress').val() == 'ppp' || jQuery('#ipaddress').val() == 'l2tp') {
+		} else if (jQuery('#ipaddress').val() == 'ppp' || jQuery('#ipaddress').val() == 'l2tp') {
 			jQuery('#ipaddress').val('');
 		} else {
 			selectedItem = 0;
@@ -390,96 +388,91 @@
 			<type>submit</type>
 		</field>
 	</fields>
-	<stepbeforeformdisplay>
-		<![CDATA[
-		if (isset($config['gateways']['gateway_item']))
-			foreach ($config['gateways']['gateway_item'] as $gw)
-				if ($gw['name'] == 'WANGW' || (!empty($config['wizardtemp']['wangateway']) && $gw['gateway'] == $config['wizardtemp']['wangateway']))
-					$config['wizardtemp']['wangateway'] = $gw['gateway'];
-		]]>
-	</stepbeforeformdisplay>
-	<stepsubmitphpaction>
-		<![CDATA[
-		if(!empty($_POST['mtu']) && ($_POST['mtu'] < 576)) {
-			print_info_box("MTU Must be at least 576 (Per RFC 791). Please press back in your browser window and correct.");
-			die;
+	<stepbeforeformdisplay><![CDATA[
+if (isset($config['gateways']['gateway_item'])) {
+	foreach ($config['gateways']['gateway_item'] as $gw) {
+		if ($gw['name'] == 'WANGW' || (!empty($config['wizardtemp']['wangateway']) && $gw['gateway'] == $config['wizardtemp']['wangateway'])) {
+			$config['wizardtemp']['wangateway'] = $gw['gateway'];
 		}
-		if(!empty($_POST['macaddress']) && !is_macaddr($_POST['macaddress'])) {
-			print_info_box("Invalid MAC Address. Please press back in your browser window and correct.");
-			die;
-		}
-		if(!empty($_POST['ipaddress']) && ($_POST['selectedtype'] == "Static")) {
-			if (!is_ipaddr($_POST['ipaddress'])) {
-				print_info_box("Invalid WAN IP Address. Please press back in your browser window and correct.");
-				die;
-			}
-			if ($_POST['subnetmask'] < 31 &&
-			    ($_POST['ipaddress'] == gen_subnet($_POST['ipaddress'], $_POST['subnetmask']) ||
-			     $_POST['ipaddress'] == gen_subnet_max($_POST['ipaddress'], $_POST['subnetmask']))) {
-				print_info_box("Invalid WAN IP Address. Please press back in your browser window and correct.");
-				die;
-			}
-		}
-		if(!empty($_POST['dhcphostname']) && !is_hostname($_POST['dhcphostname'])) {
-			print_info_box("Invalid DHCP Hostname. Please press back in your browser window and correct.");
-			die;
-		}
-		if(!empty($_POST['pptplocalipaddress']) && !is_ipaddr($_POST['pptplocalipaddress'])) {
-			print_info_box("Invalid PPTP Local IP Address. Please press back in your browser window and correct.");
-			die;
-		}
-		if(!empty($_POST['pptpremoteipaddress']) && !is_ipaddr($_POST['pptpremoteipaddress'])) {
-			print_info_box("Invalid PPTP Remopte IP Address. Please press back in your browser window and correct.");
-			die;
-		}
-		$type = $_POST['selectedtype'];
+	}
+}
+	]]></stepbeforeformdisplay>
+	<stepsubmitphpaction><![CDATA[
+global $input_errors, $stepid;
+if (!empty($_POST['mtu']) && ($_POST['mtu'] < 576)) {
+	$input_errors[] = gettext('MTU Must be at least 576 (Per RFC 791).');
+}
+if (!empty($_POST['macaddress']) && !is_macaddr($_POST['macaddress'])) {
+	$input_errors[] = gettext('Invalid MAC address.');
+}
+if (!empty($_POST['ipaddress']) && ($_POST['selectedtype'] == "Static")) {
+	if (!is_ipaddr($_POST['ipaddress'])) {
+		$input_errors[] = gettext('Invalid WAN IP address.');
+	}
+	if ($_POST['subnetmask'] < 31 &&
+	    ($_POST['ipaddress'] == gen_subnet($_POST['ipaddress'], $_POST['subnetmask']) ||
+	     $_POST['ipaddress'] == gen_subnet_max($_POST['ipaddress'], $_POST['subnetmask']))) {
+		$input_errors[] = gettext('Invalid WAN IP address.');
+	}
+}
+if (!empty($_POST['dhcphostname']) && !is_hostname($_POST['dhcphostname'])) {
+	$input_errors[] = gettext('Invalid DHCP hostname.');
+}
+if (!empty($_POST['pptplocalipaddress']) && !is_ipaddr($_POST['pptplocalipaddress'])) {
+	$input_errors[] = gettext('Invalid PPTP Local IP address.');
+}
+if (!empty($_POST['pptpremoteipaddress']) && !is_ipaddr($_POST['pptpremoteipaddress'])) {
+	$input_errors[] = gettext('Invalid PPTP Remopte IP address.');
+}
+if (count($input_errors)) {
+	$stepid--;
+} else {
+	$type = $_POST['selectedtype'];
 
-		config_read_array('ppps', 'ppp');
+	config_read_array('ppps', 'ppp');
 
-		foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
-			if ($ppp['ptpid'] == "0") {
-				if ((substr($config['interfaces']['wan']['if'],0,5) == "pppoe") || (substr($config['interfaces']['wan']['if'],0,4) == "pptp")) {
-					$oldif = explode(",", $ppp['ports']);
-					$config['interfaces']['wan']['if'] = $oldif[0];
-				}
-				if ($type == "pppoe" || $type == "pptp") {
-					unset($config['ppps']['ppp'][$pppid]);
-				}
+	foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
+		if ($ppp['ptpid'] == "0") {
+			if ((substr($config['interfaces']['wan']['if'],0,5) == "pppoe") || (substr($config['interfaces']['wan']['if'],0,4) == "pptp")) {
+				$oldif = explode(",", $ppp['ports']);
+				$config['interfaces']['wan']['if'] = $oldif[0];
+			}
+			if ($type == "pppoe" || $type == "pptp") {
+				unset($config['ppps']['ppp'][$pppid]);
 			}
 		}
+	}
 
-		if ($type == "pppoe" || $type == "pptp") {
-			if ($type == "pptp") {
-				$config['wizardtemp']['wan']['username'] = $config['wizardtemp']['wan']['pptpusername'];
-				$config['wizardtemp']['wan']['password'] = $config['wizardtemp']['wan']['pptppassword'];
-				$config['wizardtemp']['wan']['ondemand'] = $config['wizardtemp']['wan']['pptpondemand'];
-				$config['wizardtemp']['wan']['idletimeout'] = $config['wizardtemp']['wan']['pptpidletimeout'];
-				unset($config['wizardtemp']['wan']['pptpusername']);
-				unset($config['wizardtemp']['wan']['pptppassword']);
-				unset($config['wizardtemp']['wan']['pptpondemand']);
-				unset($config['wizardtemp']['wan']['pptpidletimeout']);
-			}
-			$config['wizardtemp']['wan']['password'] = base64_encode($config['wizardtemp']['wan']['password']);
-			$tmp = array();
-			$tmp['ptpid'] = "0";
-			$tmp['type'] = $type;
-			$tmp['if'] = $type . "0";
-			$tmp['ports'] = $config['interfaces']['wan']['if'];
-			$config['ppps']['ppp'][] = array_merge($tmp, $config['wizardtemp']['wan']);
-			unset($tmp);
-			$config['interfaces']['wan']['if'] = $type."0";
+	if ($type == "pppoe" || $type == "pptp") {
+		if ($type == "pptp") {
+			$config['wizardtemp']['wan']['username'] = $config['wizardtemp']['wan']['pptpusername'];
+			$config['wizardtemp']['wan']['password'] = $config['wizardtemp']['wan']['pptppassword'];
+			$config['wizardtemp']['wan']['ondemand'] = $config['wizardtemp']['wan']['pptpondemand'];
+			$config['wizardtemp']['wan']['idletimeout'] = $config['wizardtemp']['wan']['pptpidletimeout'];
+			unset($config['wizardtemp']['wan']['pptpusername']);
+			unset($config['wizardtemp']['wan']['pptppassword']);
+			unset($config['wizardtemp']['wan']['pptpondemand']);
+			unset($config['wizardtemp']['wan']['pptpidletimeout']);
 		}
-		unset($config['wizardtemp']['wan']);
-		]]>
-	</stepsubmitphpaction>
-	<stepsubmitbeforesave>
-		<![CDATA[
-			if ($_POST['selectedtype'] != "Static") {
-				$_POST['ipaddress'] = $_POST['selectedtype'];
-				$config['interfaces']['wan']['ipaddr'] = $_POST['selectedtype'];
-			}
-		]]>
-	</stepsubmitbeforesave>
+		$config['wizardtemp']['wan']['password'] = base64_encode($config['wizardtemp']['wan']['password']);
+		$tmp = array();
+		$tmp['ptpid'] = "0";
+		$tmp['type'] = $type;
+		$tmp['if'] = $type . "0";
+		$tmp['ports'] = $config['interfaces']['wan']['if'];
+		$config['ppps']['ppp'][] = array_merge($tmp, $config['wizardtemp']['wan']);
+		unset($tmp);
+		$config['interfaces']['wan']['if'] = $type."0";
+	}
+	unset($config['wizardtemp']['wan']);
+}
+	]]></stepsubmitphpaction>
+	<stepsubmitbeforesave><![CDATA[
+if ($_POST['selectedtype'] != "Static") {
+	$_POST['ipaddress'] = $_POST['selectedtype'];
+	$config['interfaces']['wan']['ipaddr'] = $_POST['selectedtype'];
+}
+	]]></stepsubmitbeforesave>
 </step>
 <step>
 	<id>5</id>
@@ -504,35 +497,36 @@
 			<type>submit</type>
 		</field>
 	</fields>
-	<stepsubmitphpaction>
-		<![CDATA[
-		if (!empty(trim($_POST['lanipaddress']))) {
-			if (!is_ipaddr($_POST['lanipaddress'])) {
-				print_info_box("Invalid LAN IP Address. Please press back in your browser window and correct.");
-				die;
-			}
+	<stepsubmitphpaction><![CDATA[
+global $input_errors, $stepid;
+if (!empty(trim($_POST['lanipaddress']))) {
+	if (!is_ipaddr($_POST['lanipaddress'])) {
+		$input_errors[] = gettext('Invalid LAN IP address.');
+	}
 
-			if ($_POST['subnetmask'] < 31 &&
-			    ($_POST['lanipaddress'] == gen_subnet($_POST['lanipaddress'], $_POST['subnetmask']) ||
-			     $_POST['lanipaddress'] == gen_subnet_max($_POST['lanipaddress'], $_POST['subnetmask']))) {
-				print_info_box("Invalid LAN IP Address. Please press back in your browser window and correct.");
-				die;
-			}
+	if ($_POST['subnetmask'] < 31 &&
+	    ($_POST['lanipaddress'] == gen_subnet($_POST['lanipaddress'], $_POST['subnetmask']) ||
+	     $_POST['lanipaddress'] == gen_subnet_max($_POST['lanipaddress'], $_POST['subnetmask']))) {
+		$input_errors[] = gettext('Invalid LAN IP address.');
+	}
 
-			$ft = explode(".", $_POST['lanipaddress']);
-			$ft_ip = $ft[0] . "." . $ft[1] . "." . $ft[2] . ".";
-			$config['dhcpd']['lan']['range']['from'] = $ft_ip . "10";
-			$highestip = gen_subnet_max($_POST['lanipaddress'], $config['interfaces']['lan']['subnet']);
-			$hi = explode(".", $highestip);
-			$highestip = $hi[3]-10;
-			$config['dhcpd']['lan']['range']['to'] = $ft_ip . $highestip;
-		} else {
-			if (isset($config['interfaces']['lan'])) {
-				unset($config['interfaces']['lan']);
-			}
-		}
-		]]>
-	</stepsubmitphpaction>
+	if (count($input_errors)) {
+		$stepid--;
+	} else {
+		$ft = explode(".", $_POST['lanipaddress']);
+		$ft_ip = $ft[0] . "." . $ft[1] . "." . $ft[2] . ".";
+		$config['dhcpd']['lan']['range']['from'] = $ft_ip . "10";
+		$highestip = gen_subnet_max($_POST['lanipaddress'], $config['interfaces']['lan']['subnet']);
+		$hi = explode(".", $highestip);
+		$highestip = $hi[3]-10;
+		$config['dhcpd']['lan']['range']['to'] = $ft_ip . $highestip;
+	}
+} else {
+	if (isset($config['interfaces']['lan'])) {
+		unset($config['interfaces']['lan']);
+	}
+}
+	]]></stepsubmitphpaction>
 </step>
 <step>
 	<id>6</id>
@@ -552,19 +546,23 @@
 			<type>submit</type>
 		</field>
 	</fields>
-	<stepsubmitphpaction>
-	if($_POST['adminpassword'] != "") {
-		if($_POST['adminpassword'] == $_POST['adminpasswordagain']) {
-			$admin_user =&amp; getUserEntryByUID(0);
-			local_user_set_password($admin_user, $_POST['adminpassword']);
-			local_user_set($admin_user);
-			write_config();
-		} else {
-			print_info_box("Passwords do not match! Please press back in your browser window and correct.");
-			die;
-		}
+	<stepsubmitphpaction><![CDATA[
+global $input_errors, $stepid;
+if (!empty($_POST['adminpassword']) || !empty($_POST['adminpasswordagain'])) {
+	if ($_POST['adminpassword'] == $_POST['adminpasswordagain']) {
+		$admin_user = &getUserEntryByUID(0);
+		local_user_set_password($admin_user, $_POST['adminpassword']);
+		local_user_set($admin_user);
+		/* XXX should this relly be written here? */
+		write_config();
+	} else {
+		$input_errors[] = gettext('Passwords do not match.');
 	}
-	</stepsubmitphpaction>
+}
+if (count($input_errors)) {
+	$stepid--;
+}
+	]]></stepsubmitphpaction>
 </step>
 <step>
 	<id>7</id>
@@ -579,41 +577,41 @@
 			<type>submit</type>
 		</field>
 	</fields>
-	<stepafterformdisplay>
-		<![CDATA[
-		$config['system']['hostname'] = $config['wizardtemp']['system']['hostname'];
-		$config['system']['domain'] = $config['wizardtemp']['system']['domain'];
-		if (!empty($config['wizardtemp']['wangateway'])) {
-			config_read_array('gateways', 'gateway_item');
-			$found = false;
-			$defaultgw_found = false;
-			foreach ($config['gateways']['gateway_item'] as & $gw) {
-				if ($gw['interface'] != "wan")
-					continue;
-				if (isset($gw['defaultgw']))
-					$defaultgw_found = true;
-				if ($gw['name'] == 'WANGW' || (!empty($config['wizardtemp']['wangateway']) && $gw['gateway'] == $config['wizardtemp']['wangateway'])) {
-					$found = true;
-					$gw['gateway'] = $config['wizardtemp']['wangateway'];
-					$config['interfaces']['wan']['gateway'] = $gw['name'];
-				}
-			}
-			if (!$found) {
-				$newgw = array();
-				$newgw['interface'] = "wan";
-				$newgw['gateway'] = $config['wizardtemp']['wangateway'];
-				$newgw['name'] = "WANGW";
-				$newgw['weight'] = 1;
-				$newgw['descr'] = "WAN Gateway";
-				$newgw['defaultgw'] = !$defaultgw_found;
-				$config['gateways']['gateway_item'][] = $newgw;
-				$config['interfaces']['wan']['gateway'] = "WANGW";
-			}
+	<stepafterformdisplay><![CDATA[
+$config['system']['hostname'] = $config['wizardtemp']['system']['hostname'];
+$config['system']['domain'] = $config['wizardtemp']['system']['domain'];
+
+if (!empty($config['wizardtemp']['wangateway'])) {
+	config_read_array('gateways', 'gateway_item');
+	$found = false;
+	$defaultgw_found = false;
+	foreach ($config['gateways']['gateway_item'] as & $gw) {
+		if ($gw['interface'] != "wan")
+			continue;
+		if (isset($gw['defaultgw']))
+			$defaultgw_found = true;
+		if ($gw['name'] == 'WANGW' || (!empty($config['wizardtemp']['wangateway']) && $gw['gateway'] == $config['wizardtemp']['wangateway'])) {
+			$found = true;
+			$gw['gateway'] = $config['wizardtemp']['wangateway'];
+			$config['interfaces']['wan']['gateway'] = $gw['name'];
 		}
-		unset($config['wizardtemp']);
-		write_config();
-		]]>
-	</stepafterformdisplay>
+	}
+	if (!$found) {
+		$newgw = array();
+		$newgw['interface'] = "wan";
+		$newgw['gateway'] = $config['wizardtemp']['wangateway'];
+		$newgw['name'] = "WANGW";
+		$newgw['weight'] = 1;
+		$newgw['descr'] = "WAN Gateway";
+		$newgw['defaultgw'] = !$defaultgw_found;
+		$config['gateways']['gateway_item'][] = $newgw;
+		$config['interfaces']['wan']['gateway'] = "WANGW";
+	}
+}
+
+unset($config['wizardtemp']);
+write_config();
+	]]></stepafterformdisplay>
 </step>
 <step>
 	<id>8</id>
@@ -629,10 +627,8 @@
 			<page>index.php?wizard_done</page>
 		</field>
 	</fields>
-	<stepafterformdisplay>
-		<![CDATA[
-		configd_run('service reload delay', true);
-		]]>
-	</stepafterformdisplay>
+	<stepafterformdisplay><![CDATA[
+configd_run('service reload delay', true);
+	]]></stepafterformdisplay>
 </step>
 </wizard>
