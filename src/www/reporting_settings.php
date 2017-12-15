@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $savemsg = gettext('All local netflow data has been cleared.');
         configd_run("netflow flush");
     } else {
+        config_read_array('rrd'); /* XXX PHP 7.1 autovivification fail? */
         $config['rrd']['enable'] = !empty($_POST['rrdenable']);
         $savemsg = get_std_save_message();
         write_config();
