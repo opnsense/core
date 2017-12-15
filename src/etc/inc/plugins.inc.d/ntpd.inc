@@ -421,7 +421,7 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
 
     if (!$start_ntpd) {
         /* write out the config and delay startup */
-        mwexec_bg('/usr/local/sbin/ntpdate_sync_once.sh');
+        mwexec_bg('/usr/local/etc/inc/plugins.inc.d/ntpdate_sync_once.sh');
         if ($verbose) {
             echo "deferred.\n";
         }
