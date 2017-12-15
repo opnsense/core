@@ -33,10 +33,8 @@ namespace OPNsense\Firewall;
  * Class FilterRule
  * @package OPNsense\Firewall
  */
-class FilterRule
+class FilterRule extends Rule
 {
-    private $rule = array();
-    private $interfaceMapping = array();
     private $gatewayMapping = array();
 
     private $procorder = array(
@@ -151,22 +149,6 @@ class FilterRule
     }
 
     /**
-     * parse interface (name to interface)
-     * @param string $value field value
-     * @return string
-     */
-    private function parseInterface($value)
-    {
-        if (empty($value)) {
-            return "";
-        } elseif (empty($this->interfaceMapping[$value]['if'])) {
-            return "on ##{$value}## ";
-        } else {
-            return "on ". $this->interfaceMapping[$value]['if']." ";
-        }
-    }
-
-    /**
      * parse gateway (route-to)
      * @param string $value field value
      * @return string
@@ -209,64 +191,6 @@ class FilterRule
             }
         }
         return $retval;
-    }
-
-    /**
-     * convert source/destination address entries as used by the gui
-     * @param array $rule rule
-     */
-    private function convertAddress(&$rule)
-    {
-        $fields = array();
-        $fields['source'] = 'from';
-        $fields['destination'] = 'to';
-        $interfaces = $this->interfaceMapping;
-        foreach ($fields as $tag => $target) {
-            if (!empty($rule[$tag])) {
-                if (isset($rule[$tag]['any'])) {
-                    $rule[$target] = 'any';
-                } elseif (!empty($rule[$tag]['network'])) {
-                    $network_name = $rule[$tag]['network'];
-                    $matches = "";
-                    if ($network_name == '(self)') {
-                        $rule[$target] = "(self)";
-                    } elseif (preg_match("/^(wan|lan|opt[0-9]+)ip$/", $network_name, $matches)) {
-                        if (!empty($interfaces[$matches[1]]['if'])) {
-                            $rule[$target] = "({$interfaces["{$matches[1]}"]['if']})";
-                        }
-                    } else {
-                        if (!empty($interfaces[$network_name]['if'])) {
-                            $rule[$target] = "({$interfaces[$network_name]['if']}:network)";
-                        }
-                    }
-                } elseif (!empty($rule[$tag]['address'])) {
-                    if (Util::isIpAddress($rule[$tag]['address']) || Util::isSubnet($rule[$tag]['address']) ||
-                      Util::isPort($rule[$tag]['address'])
-                    ) {
-                        $rule[$target] = $rule[$tag]['address'];
-                    } elseif (Util::isAlias($rule[$tag]['address'])) {
-                        $rule[$target] = '$'.$rule[$tag]['address'];
-                    }
-                }
-                if (!empty($rule[$target]) && $rule[$target] != 'any' && isset($rule[$tag]['not'])) {
-                    $rule[$target] = "!" . $rule[$target];
-                }
-                if (isset($rule['protocol']) && in_array(strtolower($rule['protocol']), array("tcp","udp","tcp/udp"))) {
-                    $port = str_replace('-', ':', $rule[$tag]['port']);
-                    if (Util::isPort($port)) {
-                        $rule[$target."_port"] = $port;
-                    } elseif (Util::isAlias($port)) {
-                        $rule[$target."_port"] = '$'.$port;
-                    }
-                }
-                if (!isset($rule[$target])) {
-                    // couldn't convert address, disable rule
-                    // dump all tag contents in target (from/to) for reference
-                    $rule['disabled'] = true;
-                    $rule[$target] = json_encode($rule[$tag]);
-                }
-            }
-        }
     }
 
     /**
@@ -425,9 +349,8 @@ class FilterRule
      */
     public function __construct(&$interfaceMapping, &$gatewayMapping, $conf)
     {
-        $this->interfaceMapping = $interfaceMapping;
+        parent::__construct($interfaceMapping, $conf);
         $this->gatewayMapping = $gatewayMapping;
-        $this->rule = $conf;
     }
 
     /**
