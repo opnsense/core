@@ -62,7 +62,8 @@ $authenticated = false;
 
 if (!empty($config['ipsec']['client']['local_group'])) {
     if (!in_array($config['ipsec']['client']['local_group'], getUserGroups($username))) {
-        syslog(LOG_WARNING, "User '{$username}' requires membership in the local group '{$client['ipsec']['client']['local_group']}'.");
+        syslog(LOG_WARNING, "User '{$username}' requires membership in the " .
+            "local group '{$client['ipsec']['client']['local_group']}'.");
         closelog();
         exit(1);
     }

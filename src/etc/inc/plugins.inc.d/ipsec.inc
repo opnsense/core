@@ -203,7 +203,7 @@ function ipsec_firewall($fw)
                 if (isset($ph1ent['mobile'])) {
                     $rgip = "any";
                 } elseif (!is_ipaddr($ph1ent['remote-gateway'])) {
-                    $dns_qry_type = $ph1ent['protocol'] == 'inet6' ? DNS_AAAA : DNS_A ;
+                    $dns_qry_type = $ph1ent['protocol'] == 'inet6' ? DNS_AAAA : DNS_A;
                     $dns_qry_outfield = $ph1ent['protocol'] == 'inet6' ? "ipv6" : "ip";
                     $dns_records = @dns_get_record($ph1ent['remote-gateway'], $dns_qry_type);
                     if (is_array($dns_records)) {
@@ -253,35 +253,41 @@ function ipsec_firewall($fw)
                         }
                     }
                     // register rules
-                    $fw->registerFilterRule(500000,
+                    $fw->registerFilterRule(
+                        500000,
                         array("direction" => "out", "protocol" => "udp", "to" => $rgip, "to_port" => 500,
                               "gateway" => $gwname, "disablereplyto" => true),
                         $baserule
                     );
-                    $fw->registerFilterRule(500000,
+                    $fw->registerFilterRule(
+                        500000,
                         array("direction" => "in", "protocol" => "udp", "from" => $rgip, "to_port" => 500,
                               "reply-to" => $gwname),
                         $baserule
                     );
                     if ($ph1ent['nat_traversal'] != "off") {
-                        $fw->registerFilterRule(500000,
+                        $fw->registerFilterRule(
+                            500000,
                             array("direction" => "out", "protocol" => "udp", "to" => $rgip, "to_port" => 4500,
                                   "gateway" => $gwname, "disablereplyto" => true),
                             $baserule
                         );
-                        $fw->registerFilterRule(500000,
+                        $fw->registerFilterRule(
+                            500000,
                             array("direction" => "in", "protocol" => "udp", "from" => $rgip, "to_port" => 4500,
                                   "reply-to" => $gwname),
                             $baserule
                         );
                     }
                     foreach ($protos_used as $proto) {
-                        $fw->registerFilterRule(500000,
+                        $fw->registerFilterRule(
+                            500000,
                             array("direction" => "out", "protocol" => $proto, "to" => $rgip,
                                   "gateway" => $gwname, "disablereplyto" => true),
                             $baserule
                         );
-                        $fw->registerFilterRule(500000,
+                        $fw->registerFilterRule(
+                            500000,
                             array("direction" => "in", "protocol" => $proto, "from" => $rgip,
                                   "reply-to" => $gwname),
                             $baserule
@@ -315,17 +321,17 @@ function ipsec_get_phase1_src(&$ph1ent)
         if ($ph1ent['interface'] == 'any') {
             return '%any';
         } elseif (!is_ipaddr($ph1ent['interface'])) {
-          if (strpos($ph1ent['interface'],'_vip') !== false) {
-              // if this is a vip, set the interface to $ph1ent['interface']
-              $if = $ph1ent['interface'];
-          } else {
-              // not a vip, check failover interface
-              if ($ph1ent['protocol'] == "inet6") {
-                  $if = get_failover_interface($ph1ent['interface'], "inet6");
-              } else {
-                  $if = get_failover_interface($ph1ent['interface']);
-              }
-          }
+            if (strpos($ph1ent['interface'], '_vip') !== false) {
+                // if this is a vip, set the interface to $ph1ent['interface']
+                $if = $ph1ent['interface'];
+            } else {
+                // not a vip, check failover interface
+                if ($ph1ent['protocol'] == "inet6") {
+                    $if = get_failover_interface($ph1ent['interface'], "inet6");
+                } else {
+                    $if = get_failover_interface($ph1ent['interface']);
+                }
+            }
         } else {
             // interface is an ip address, return
             return $ph1ent['interface'];
@@ -367,22 +373,22 @@ function ipsec_idinfo_to_cidr(&$idinfo, $addrbits = false, $mode = '')
             return "0.0.0.0/0";
             break; /* NOTREACHED */
         default:
-          if (empty($mode) && !empty($idinfo['mode'])) {
-              $mode = $idinfo['mode'];
-          }
+            if (empty($mode) && !empty($idinfo['mode'])) {
+                $mode = $idinfo['mode'];
+            }
 
-          if ($mode == "tunnel6") {
-              $address = get_interface_ipv6($idinfo['type']);
-              $netbits = get_interface_subnetv6($idinfo['type']);
-              $address = gen_subnetv6($address,$netbits);
-              return "{$address}/{$netbits}";
-          } else {
-              $address = get_interface_ip($idinfo['type']);
-              $netbits = get_interface_subnet($idinfo['type']);
-              $address = gen_subnet($address,$netbits);
-              return "{$address}/{$netbits}";
-          }
-          break; /* NOTREACHED */
+            if ($mode == "tunnel6") {
+                $address = get_interface_ipv6($idinfo['type']);
+                $netbits = get_interface_subnetv6($idinfo['type']);
+                $address = gen_subnetv6($address, $netbits);
+                return "{$address}/{$netbits}";
+            } else {
+                $address = get_interface_ip($idinfo['type']);
+                $netbits = get_interface_subnet($idinfo['type']);
+                $address = gen_subnet($address, $netbits);
+                return "{$address}/{$netbits}";
+            }
+            break; /* NOTREACHED */
     }
 }
 
@@ -458,9 +464,9 @@ function ipsec_dump_spd()
                 $i = 0;
             } elseif (isset($cursp)) {
                 $linea = explode(" ", trim($line));
-                switch($i) {
+                switch ($i) {
                     case 1:
-                        if ($linea[1] == "none")  { /* don't show default anti-lockout rule */
+                        if ($linea[1] == "none") { /* don't show default anti-lockout rule */
                             unset($cursp);
                         } else {
                             $cursp['dir'] = $linea[0];
@@ -515,7 +521,7 @@ function ipsec_dump_sad()
                         $cursa['proto'] = $linea[0];
                         $cursa['spi'] = substr($linea[2], strpos($linea[2], "x")+1, -1);
                         $reqid = substr($linea[3], strpos($linea[3], "=")+1);
-                        $cursa['reqid'] = substr($reqid, 0, strcspn($reqid,"("));
+                        $cursa['reqid'] = substr($reqid, 0, strcspn($reqid, "("));
                         break;
                     case 2:
                         $cursa['ealgo'] = $linea[1];
@@ -696,9 +702,15 @@ function ipsec_configure_spd()
                     foreach (explode(',', $ph2ent['spd']) as $local_net) {
                         $proto = $ph2ent['mode'] == "tunnel" ? "4" : "6";
                         $remote_net = ipsec_idinfo_to_cidr($ph2ent['remoteid'], false, $ph2ent['mode']);
-                        $spd_entries[] = sprintf("spdadd -%s %s %s any -P out ipsec %s/tunnel/%s-%s/require;",
-                                             $proto, trim($local_net), $remote_net, $ph2ent['protocol'],
-                                             $myid_data, $peerid_spec);
+                        $spd_entries[] = sprintf(
+                            "spdadd -%s %s %s any -P out ipsec %s/tunnel/%s-%s/require;",
+                            $proto,
+                            trim($local_net),
+                            $remote_net,
+                            $ph2ent['protocol'],
+                            $myid_data,
+                            $peerid_spec
+                        );
                     }
                 }
             }
@@ -717,8 +729,8 @@ function ipsec_configure_do($verbose = false, $interface = '')
 
     if (!empty($interface)) {
          $active = false;
-         if (isset($config['ipsec']['phase1'])) {
-             foreach ($config['ipsec']['phase1'] as $phase1) {
+        if (isset($config['ipsec']['phase1'])) {
+            foreach ($config['ipsec']['phase1'] as $phase1) {
                 if (!isset($phase1['disabled']) && $phase1['interface'] == $interface) {
                     $active = true;
                 }
@@ -803,7 +815,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
             /* see if this tunnel has a hostname for the remote-gateway. If so,
                try to resolve it now and add it to the list for filterdns */
 
-            if (isset ($ph1ent['mobile'])) {
+            if (isset($ph1ent['mobile'])) {
                 continue;
             }
 
@@ -842,7 +854,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $viplist = get_configured_vips_list();
                     $srcip = null;
                     $local_subnet = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
-                    if(is_ipaddrv6($ph2ent['pinghost'])) {
+                    if (is_ipaddrv6($ph2ent['pinghost'])) {
                         foreach ($iflist as $ifent => $ifname) {
                             $interface_ip = get_interface_ipv6($ifent);
                             if (!is_ipaddrv6($interface_ip)) {
@@ -875,7 +887,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                         }
                     }
                     $dstip = $ph2ent['pinghost'];
-                    if(is_ipaddrv6($dstip)) {
+                    if (is_ipaddrv6($dstip)) {
                         $family = "inet6";
                     } else {
                         $family = "inet";
@@ -1134,7 +1146,7 @@ EOD;
 
         /* begin ipsec.conf */
         $ipsecconf = "";
-        if (count($a_phase1))  {
+        if (count($a_phase1)) {
             $ipsecconf .= "# This file is automatically generated. Do not edit\n";
             $ipsecconf .= "config setup\n\tuniqueids = yes\n";
             // parse debug tags
@@ -1195,7 +1207,7 @@ EOD;
 
                 if (!empty($ph1ent['encryption-algorithm']['name']) && !empty($ph1ent['hash-algorithm'])) {
                     $ealg_id = $ph1ent['encryption-algorithm']['name'];
-                    if (isset($ph1ent['encryption-algorithm']['keylen'])){
+                    if (isset($ph1ent['encryption-algorithm']['keylen'])) {
                         $ealgosp1 = "ike = {$ealg_id}{$ph1ent['encryption-algorithm']['keylen']}-{$ph1ent['hash-algorithm']}";
                     } else {
                         $ealgosp1 = "ike = {$ealg_id}-{$ph1ent['hash-algorithm']}";
@@ -1226,8 +1238,8 @@ EOD;
                     $ikelifeline = '';
                 }
 
-                $rightsourceip = NULL;
-                if (!empty($a_client['pool_address']) && isset($ph1ent['mobile']) ) {
+                $rightsourceip = null;
+                if (!empty($a_client['pool_address']) && isset($ph1ent['mobile'])) {
                     $rightsourceip = "\trightsourceip = {$a_client['pool_address']}/{$a_client['pool_netbits']}\n";
                 }
 
@@ -1275,9 +1287,9 @@ EOD;
                     $ca = lookup_ca($ph1ent['caref']);
                     if (!empty($ca)) {
                          $rightca = "";
-                         foreach (cert_get_subject_array($ca['crt']) as $ca_field) {
+                        foreach (cert_get_subject_array($ca['crt']) as $ca_field) {
                             $rightca .= "{$ca_field['a']}={$ca_field['v']}/";
-                         }
+                        }
                          $authentication .= "\n\trightca = \"/$rightca\"";
                     }
                 }
@@ -1311,7 +1323,7 @@ EOD;
                         if ($ph1ent['ikeid'] != $ph2ent['ikeid'] || isset($ph2ent['disabled'])) {
                             continue;
                         }
-                        if (isset($ph2ent['mobile']) && !isset($a_client['enable'])){
+                        if (isset($ph2ent['mobile']) && !isset($a_client['enable'])) {
                             continue;
                         }
 
@@ -1339,7 +1351,7 @@ EOD;
                             if (!isset($ph2ent['mobile'])) {
                                 $tmpsubnet = ipsec_idinfo_to_cidr($ph2ent['remoteid'], false, $ph2ent['mode']);
                                 $rightsubnet_spec[] = $tmpsubnet;
-                            } else if (!empty($a_client['pool_address'])) {
+                            } elseif (!empty($a_client['pool_address'])) {
                                 $rightsubnet_spec[] = "{$a_client['pool_address']}/{$a_client['pool_netbits']}";
                             }
                         } else {
@@ -1421,7 +1433,7 @@ EOD;
                                 }
                             }
                             $ealgoESPsp2arr[] = $ealgoESPsp2arr_details;
-                        } else if (isset($ph2ent['protocol']) && $ph2ent['protocol'] == 'ah') {
+                        } elseif (isset($ph2ent['protocol']) && $ph2ent['protocol'] == 'ah') {
                             $ealgoAHsp2arr_details = array();
                             if (!empty($ph2ent['hash-algorithm-option']) && is_array($ph2ent['hash-algorithm-option'])) {
                                 $modp = ipsec_convert_to_modp($ph2ent['pfsgroup']);
@@ -1566,7 +1578,7 @@ EOD;
         }
     }
     // dump file, replace tabs for 2 spaces
-    @file_put_contents("/usr/local/etc/ipsec.conf", str_replace("\t",'  ', $ipsecconf));
+    @file_put_contents("/usr/local/etc/ipsec.conf", str_replace("\t", '  ', $ipsecconf));
     unset($ipsecconf);
     /* end ipsec.conf */
 
