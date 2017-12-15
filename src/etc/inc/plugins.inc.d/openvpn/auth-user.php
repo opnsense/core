@@ -67,13 +67,15 @@ if (file_exists("/var/etc/openvpn/{$modeid}.ca")) {
 
 $authenticated = false;
 if (($strictusercn === true) && ($common_name != $username)) {
-    syslog(LOG_WARNING, "Username does not match certificate common name ({$username} != {$common_name}), access denied.\n");
+    syslog(LOG_WARNING, 'Username does not match certificate common name ' .
+        "({$username} != {$common_name}), access denied.\n");
     closelog();
     exit(1);
 }
 
 if (!is_array($authmodes)) {
-    syslog(LOG_WARNING, "No authentication server has been selected to authenticate against. Denying authentication for user {$username}");
+    syslog(LOG_WARNING, 'No authentication server has been selected to authenticate against. ' .
+        "Denying authentication for user {$username}");
     closelog();
     exit(1);
 }
@@ -86,7 +88,7 @@ if (isset($config['openvpn']['openvpn-server'])) {
             $a_server = $server;
             break;
         }
-   }
+    }
 }
 
 if ($a_server == null) {
@@ -96,7 +98,8 @@ if ($a_server == null) {
 }
 
 if (!empty($a_server['local_group']) && !in_array($a_server['local_group'], getUserGroups($username))) {
-    syslog(LOG_WARNING, "OpenVPN '$modeid' requires the local group {$a_server['local_group']}. Denying authentication for user {$username}");
+    syslog(LOG_WARNING, "OpenVPN '$modeid' requires the local group {$a_server['local_group']}. " .
+        "Denying authentication for user {$username}");
     closelog();
     exit(1);
 }
