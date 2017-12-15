@@ -610,59 +610,6 @@ function is_portoralias($port)
     return is_port($port);
 }
 
-/* create ranges of sequential port numbers (200:215) and remove duplicates */
-function group_ports($ports)
-{
-    if (!is_array($ports) || empty($ports)) {
-        return;
-    }
-
-    $uniq = array();
-    foreach ($ports as $port) {
-        if (is_portrange($port)) {
-            list($begin, $end) = explode(":", $port);
-            if ($begin > $end) {
-                $aux = $begin;
-                $begin = $end;
-                $end = $aux;
-            }
-            for ($i = $begin; $i <= $end; $i++) {
-                if (!in_array($i, $uniq)) {
-                    $uniq[] = $i;
-                }
-            }
-        } elseif (is_port($port)) {
-            if (!in_array($port, $uniq)) {
-                $uniq[] = $port;
-            }
-        }
-    }
-    sort($uniq, SORT_NUMERIC);
-
-    $result = array();
-    foreach ($uniq as $idx => $port) {
-        if ($idx == 0) {
-            $result[] = $port;
-            continue;
-        }
-
-        $last = end($result);
-        if (is_portrange($last)) {
-            list($begin, $end) = explode(":", $last);
-        } else {
-            $begin = $end = $last;
-        }
-        if ($port == ($end+1)) {
-            $end++;
-            $result[count($result)-1] = "{$begin}:{$end}";
-        } else {
-            $result[] = $port;
-        }
-    }
-
-    return $result;
-}
-
 /* returns true if $test is in the range between $start and $end */
 function is_inrange_v4($test, $start, $end)
 {
