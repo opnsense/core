@@ -128,8 +128,8 @@ function openssh_configure_do($verbose = false, $interface = '')
     foreach ($keys as $name) {
         $file = "/conf/sshd/{$name}";
         if (!file_exists($file) || !file_exists("{$file}.pub")) {
-        $generate_keys = true;
-        break;
+            $generate_keys = true;
+            break;
         }
     }
 
