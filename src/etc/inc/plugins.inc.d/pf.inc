@@ -73,7 +73,7 @@ function pf_interfaces()
 
     /* add interface groups */
     if (isset($config['ifgroups']['ifgroupentry'])) {
-        foreach($config['ifgroups']['ifgroupentry'] as $ifgen) {
+        foreach ($config['ifgroups']['ifgroupentry'] as $ifgen) {
             $oc = array("enable" => true);
             $oc['networks'] = array();
             $oc['if'] = $ifgen['ifname'];
@@ -102,7 +102,8 @@ function pf_firewall($fw)
      *  interface in question to avoid problems with complicated routing
      *  topologies
      */
-    if (isset($config['filter']['bypassstaticroutes']) && isset($config['staticroutes']['route']) && count($config['staticroutes']['route'])) {
+    if (isset($config['filter']['bypassstaticroutes']) && isset($config['staticroutes']['route']) &&
+        count($config['staticroutes']['route'])) {
         $ifdetails = legacy_interfaces_details();
         $intf = $fw->getInterfaceMapping();
         $GatewaysList = return_gateways_array(false, true) + return_gateway_groups_array();
@@ -124,18 +125,20 @@ function pf_firewall($fw)
                 $networks[] = array('to' => $intf[$friendly]['if'].":network", 'from' => $route['network']);
                 $proto = strpos($route['network'], ":") !== false ? "inet6" : "inet";
                 foreach ($networks as $network) {
-                    $fw->registerFilterRule(10,
-                      array('interface' => $friendly, 'statetype' => 'sloppy', 'ipprotocol' => $proto,
+                    $fw->registerFilterRule(
+                        10,
+                        array('interface' => $friendly, 'statetype' => 'sloppy', 'ipprotocol' => $proto,
                             'protocol' => 'tcp','flags' => 'any', 'from' => $network['from'],
                             'to' => $network['to'], 'quick' => false,
                             'label' => "pass traffic between statically routed subnets"),
-                      $defaults['pass']
+                        $defaults['pass']
                     );
-                    $fw->registerFilterRule(10,
-                      array('interface' => $friendly, 'statetype' => 'sloppy', 'ipprotocol' => $proto,
+                    $fw->registerFilterRule(
+                        10,
+                        array('interface' => $friendly, 'statetype' => 'sloppy', 'ipprotocol' => $proto,
                             'from' => $network['from'],'to' => $network['to'], 'quick' => false,
                             'label' => "pass traffic between statically routed subnets"),
-                      $defaults['pass']
+                        $defaults['pass']
                     );
                 }
             }
