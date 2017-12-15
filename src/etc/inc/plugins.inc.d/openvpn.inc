@@ -630,6 +630,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                         $conf .= "server-ipv6 {$ipv6}/{$prefix}\n";
                     }
                 }
+                break;
             case 'p2p_shared_key':
                 if (!empty($ip) && !empty($mask)) {
                     list($ip1, $ip2) = openvpn_get_interface_ip($ip, $mask);
@@ -683,6 +684,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         switch ($settings['mode']) {
             case 'server_user':
                 $conf .= "client-cert-not-required\n";
+                break;
             case 'server_tls_user':
                 /* username-as-common-name is not compatible with server-bridge */
                 if (stristr($conf, "server-bridge") === false && empty($settings['use-common-name'])) {
@@ -753,6 +755,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         switch ($settings['mode']) {
             case 'p2p_tls':
                 $conf .= "tls-client\n";
+                break;
             case 'shared_key':
                 $conf .= "client\n";
                 break;
