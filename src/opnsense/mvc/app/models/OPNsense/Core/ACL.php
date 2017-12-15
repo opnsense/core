@@ -59,7 +59,7 @@ class ACL
     /**
      * @var int time to live for serialized acl
      */
-    private $aclCacheTTL = 120;
+    private $aclCacheTTL = 3600;
 
     /**
      * ACL to page/endpoint mapping method.
