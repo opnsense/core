@@ -153,20 +153,6 @@ class FilterRule extends Rule
     }
 
     /**
-     * parse boolean, return text from $valueTrue / $valueFalse
-     * @param string $value field value
-     * @return string
-     */
-    private function parseBool($value, $valueTrue, $valueFalse = "")
-    {
-        if (!empty($value)) {
-            return !empty($valueTrue) ? $valueTrue . " " : "";
-        } else {
-            return !empty($valueFalse) ? $valueFalse . " " : "";
-        }
-    }
-
-    /**
      * parse state settings
      * @param array $value state option
      * @return string

@@ -60,6 +60,21 @@ abstract class Rule
         return !empty($value) ? "#" : "";
     }
 
+
+    /**
+     * parse boolean, return text from $valueTrue / $valueFalse
+     * @param string $value field value
+     * @return string
+     */
+    protected function parseBool($value, $valueTrue, $valueFalse = "")
+    {
+        if (!empty($value)) {
+            return !empty($valueTrue) ? $valueTrue . " " : "";
+        } else {
+            return !empty($valueFalse) ? $valueFalse . " " : "";
+        }
+    }
+
     /**
      * convert source/destination address entries as used by the gui
      * @param array $rule rule
