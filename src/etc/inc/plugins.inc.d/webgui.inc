@@ -89,7 +89,7 @@ function webgui_configure_do($verbose = false, $interface = '')
 
     if ($config['system']['webgui']['protocol'] == "https") {
         $cert =& lookup_cert($config['system']['webgui']['ssl-certref']);
-        if(!is_array($cert) && !$cert['crt'] && !$cert['prv']) {
+        if (!is_array($cert) && !$cert['crt'] && !$cert['prv']) {
             $a_ca = &config_read_array('ca');
             $a_cert = &config_read_array('cert');
             log_error("Creating SSL certificate for this host");
@@ -152,7 +152,7 @@ function webgui_configure_do($verbose = false, $interface = '')
         if ($verbose) {
             echo "failed.\n";
         }
-    } else  {
+    } else {
         if ($verbose) {
             echo "done.\n";
         }
@@ -183,7 +183,7 @@ EOD;
 
     $lighty_port = $port;
 
-    if(!isset($config['syslog']['nologlighttpd'])) {
+    if (!isset($config['syslog']['nologlighttpd'])) {
         $lighty_use_syslog = <<<EOD
 ## where to send error-messages to
 server.errorlog-use-syslog="enable"
@@ -340,7 +340,7 @@ EOD;
         fwrite($fd, "\n");
         fwrite($fd, $key);
         fclose($fd);
-        if(!(empty($ca) || (strlen(trim($ca)) == 0))) {
+        if (!(empty($ca) || (strlen(trim($ca)) == 0))) {
             $fd = fopen("/var/etc/{$ca_location}", "w");
             if (!$fd) {
                 log_error('Error: cannot open ca.pem');
@@ -356,7 +356,7 @@ EOD;
         $lighty_config .= "ssl.dh-file = \"/usr/local/etc/dh-parameters.4096\"\n";
         $lighty_config .= "ssl.ec-curve = \"secp384r1\"\n";
         $lighty_config .= "ssl.pemfile = \"/var/etc/{$cert_location}\"\n";
-        if(!empty($ca)) {
+        if (!empty($ca)) {
             $lighty_config .= "ssl.ca-file = \"/var/etc/{$ca_location}\"\n";
         }
 
@@ -364,7 +364,49 @@ EOD;
         $lighty_config .= "ssl.use-sslv2 = \"disable\"\n";
         $lighty_config .= "ssl.use-sslv3 = \"disable\"\n";
         if (empty($config['system']['webgui']['ssl-ciphers'])) {
-            $lighty_config .= 'ssl.cipher-list = "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA"' . PHP_EOL;
+            $ciphers = array(
+                'ECDHE-RSA-AES128-GCM-SHA256',
+                'ECDHE-ECDSA-AES128-GCM-SHA256',
+                'ECDHE-RSA-AES256-GCM-SHA384',
+                'ECDHE-ECDSA-AES256-GCM-SHA384',
+                'DHE-RSA-AES128-GCM-SHA256',
+                'DHE-DSS-AES128-GCM-SHA256',
+                'kEDH+AESGCM',
+                'ECDHE-RSA-AES128-SHA256',
+                'ECDHE-ECDSA-AES128-SHA256',
+                'ECDHE-RSA-AES128-SHA',
+                'ECDHE-ECDSA-AES128-SHA',
+                'ECDHE-RSA-AES256-SHA384',
+                'ECDHE-ECDSA-AES256-SHA384',
+                'ECDHE-RSA-AES256-SHA',
+                'ECDHE-ECDSA-AES256-SHA',
+                'DHE-RSA-AES128-SHA256',
+                'DHE-RSA-AES128-SHA',
+                'DHE-DSS-AES128-SHA256',
+                'DHE-RSA-AES256-SHA256',
+                'DHE-DSS-AES256-SHA',
+                'DHE-RSA-AES256-SHA',
+                'AES128-GCM-SHA256',
+                'AES256-GCM-SHA384',
+                'AES128-SHA256',
+                'AES256-SHA256',
+                'AES128-SHA',
+                'AES256-SHA',
+                'AES',
+                'CAMELLIA',
+                '!aNULL',
+                '!eNULL',
+                '!EXPORT',
+                '!DES',
+                '!RC4',
+                '!MD5',
+                '!PSK',
+                '!aECDH',
+                '!EDH-DSS-DES-CBC3-SHA',
+                '!EDH-RSA-DES-CBC3-SHA',
+                '!KRB5-DES-CBC3-SHA',
+            );
+            $lighty_config .= 'ssl.cipher-list = "' . join(':', $ciphers) . '"' . PHP_EOL;
         } else {
             $lighty_config .= 'ssl.cipher-list = "'.$config['system']['webgui']['ssl-ciphers'].'"' . PHP_EOL;
         }
@@ -419,14 +461,16 @@ expire.url = (
 
 EOD;
 
-  // Add HTTP to HTTPS redirect
-  if ($config['system']['webgui']['protocol'] == "https" && !isset($config['system']['webgui']['disablehttpredirect'])) {
-      if($lighty_port != "443") {
-          $redirectport = ":{$lighty_port}";
-      } else {
-          $redirectport = "";
-      }
-      $lighty_config .= <<<EOD
+    /* add HTTP to HTTPS redirect */
+    if ($config['system']['webgui']['protocol'] == 'https' &&
+        !isset($config['system']['webgui']['disablehttpredirect'])) {
+        if ($lighty_port != "443") {
+            $redirectport = ":{$lighty_port}";
+        } else {
+            $redirectport = "";
+        }
+        /* XXX this needs redirects for each interface */
+        $lighty_config .= <<<EOD
 \$SERVER["socket"] == "0.0.0.0:80" {
   \$HTTP["host"] =~ "(.*)" {
     url.redirect = ( "^/(.*)" => "https://%1{$redirectport}/$1" )
