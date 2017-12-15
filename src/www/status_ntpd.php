@@ -33,7 +33,7 @@ require_once("services.inc");
 require_once("interfaces.inc");
 
 if(!isset($config['ntpd']['noquery'])) {
-    exec("/usr/local/sbin/ntpq -pn | /usr/bin/tail +3", $ntpq_output);
+    exec("/usr/local/sbin/ntpq -pnw | /usr/bin/tail +3", $ntpq_output);
     $ntpq_servers = array();
     foreach ($ntpq_output as $line) {
         $server = array();
@@ -151,95 +151,93 @@ include("head.inc");
           <header class="content-box-head container-fluid">
             <h3><?=gettext("Network Time Protocol Status");?></h3>
           </header>
-          <div class="content-box-main">
-            <div class="table-responsive">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th><?=gettext("Status"); ?></th>
-                    <th><?=gettext("Server"); ?></th>
-                    <th><?=gettext("Ref ID"); ?></th>
-                    <th><?=gettext("Stratum"); ?></th>
-                    <th><?=gettext("Type"); ?></th>
-                    <th><?=gettext("When"); ?></th>
-                    <th><?=gettext("Poll"); ?></th>
-                    <th><?=gettext("Reach"); ?></th>
-                    <th><?=gettext("Delay"); ?></th>
-                    <th><?=gettext("Offset"); ?></th>
-                    <th><?=gettext("Jitter"); ?></th>
-                  </tr>
-                </thead>
-                <tbody>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th><?=gettext("Status"); ?></th>
+                  <th><?=gettext("Server"); ?></th>
+                  <th><?=gettext("Ref ID"); ?></th>
+                  <th><?=gettext("Stratum"); ?></th>
+                  <th><?=gettext("Type"); ?></th>
+                  <th><?=gettext("When"); ?></th>
+                  <th><?=gettext("Poll"); ?></th>
+                  <th><?=gettext("Reach"); ?></th>
+                  <th><?=gettext("Delay"); ?></th>
+                  <th><?=gettext("Offset"); ?></th>
+                  <th><?=gettext("Jitter"); ?></th>
+                </tr>
+              </thead>
+              <tbody>
 <?php
-                if (isset($config['ntpd']['noquery'])): ?>
-                  <tr>
-                    <td colspan="11">
-                      <?= sprintf(gettext('Statistics unavailable because ntpq and ntpdc queries are disabled in the %sNTP service settings%s.'), '<a href="services_ntpd.php">','</a>') ?>
-                    </td>
-                  </tr>
+              if (isset($config['ntpd']['noquery'])): ?>
+                <tr>
+                  <td colspan="11">
+                    <?= sprintf(gettext('Statistics unavailable because ntpq and ntpdc queries are disabled in the %sNTP service settings%s.'), '<a href="services_ntpd.php">','</a>') ?>
+                  </td>
+                </tr>
 <?php
-                elseif (count($ntpq_servers) == 0): ?>
-                  <tr>
-                    <td colspan="11">
-                      <?= sprintf(gettext('No peers found, %sis the ntp service running%s?'), '<a href="status_services.php">','</a>') ?>
-                    </td>
-                  </tr>
+              elseif (count($ntpq_servers) == 0): ?>
+                <tr>
+                  <td colspan="11">
+                    <?= sprintf(gettext('No peers found, %sis the ntp service running%s?'), '<a href="status_services.php">','</a>') ?>
+                  </td>
+                </tr>
 <?php
-                else:
-                $i = 0;
-                foreach ($ntpq_servers as $server): ?>
-                  <tr>
-                    <td><?=$server['status'];?></td>
-                    <td><?=$server['server'];?></td>
-                    <td><?=$server['refid'];?></td>
-                    <td><?=$server['stratum'];?></td>
-                    <td><?=$server['type'];?></td>
-                    <td><?=$server['when'];?></td>
-                    <td><?=$server['poll'];?></td>
-                    <td><?=$server['reach'];?></td>
-                    <td><?=$server['delay'];?></td>
-                    <td><?=$server['offset'];?></td>
-                    <td><?=$server['jitter'];?></td>
-                  </tr>
+              else:
+              $i = 0;
+              foreach ($ntpq_servers as $server): ?>
+                <tr>
+                  <td><?=$server['status'];?></td>
+                  <td><?=$server['server'];?></td>
+                  <td><?=$server['refid'];?></td>
+                  <td><?=$server['stratum'];?></td>
+                  <td><?=$server['type'];?></td>
+                  <td><?=$server['when'];?></td>
+                  <td><?=$server['poll'];?></td>
+                  <td><?=$server['reach'];?></td>
+                  <td><?=$server['delay'];?></td>
+                  <td><?=$server['offset'];?></td>
+                  <td><?=$server['jitter'];?></td>
+                </tr>
 <?php
-                  $i++;
-                  endforeach;
-                endif; ?>
-                </tbody>
-              </table>
-<?php
-              if (($gps_ok) && ($gps_lat) && ($gps_lon)):
-              $gps_goo_lnk = 2; ?>
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th><?=gettext("Clock Latitude"); ?></th>
-                    <th><?=gettext("Clock Longitude"); ?></th>
-                    <?php if (isset($gps_alt)) { echo '<th>' . gettext("Clock Altitude") . '</th>'; $gps_goo_lnk++;}?>
-                    <?php if (isset($gps_sat) || isset($gps_satview)) { echo '<th>' . gettext("Satellites") . '</th>'; $gps_goo_lnk++;}?>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><?= sprintf("%.5f", $gps_lat); ?> (<?= sprintf("%d", $gps_lat_deg); ?>&deg; <?= sprintf("%.5f", $gps_lat_min*60); ?><?= $gps_vars[4]; ?>)</td>
-                    <td><?= sprintf("%.5f", $gps_lon); ?> (<?= sprintf("%d", $gps_lon_deg); ?>&deg; <?= sprintf("%.5f", $gps_lon_min*60); ?><?= $gps_vars[6]; ?>)</td>
-                    <?php if (isset($gps_alt)) { echo '<td>' . $gps_alt . ' ' . $gps_alt_unit . '</td>';}?>
-                    <td>
-<?php
-                    if (isset($gps_satview)) {echo 'in view ' . intval($gps_satview);}
-                    if (isset($gps_sat) && isset($gps_satview)) {echo ', ';}
-                    if (isset($gps_sat)) {echo 'in use ' . $gps_sat;}
-                    ?>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="<?= html_safe($gps_goo_lnk) ?>"><a target="_gmaps" href="http://maps.google.com/?q=<?= html_safe($gps_lat) ?>,<?= html_safe($gps_lon) ?>">Google Maps Link</a></td>
-                  </tr>
-                </tbody>
-              </table>
-<?php
+                $i++;
+                endforeach;
               endif; ?>
-            </div>
+              </tbody>
+            </table>
+<?php
+            if (($gps_ok) && ($gps_lat) && ($gps_lon)):
+            $gps_goo_lnk = 2; ?>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th><?=gettext("Clock Latitude"); ?></th>
+                  <th><?=gettext("Clock Longitude"); ?></th>
+                  <?php if (isset($gps_alt)) { echo '<th>' . gettext("Clock Altitude") . '</th>'; $gps_goo_lnk++;}?>
+                  <?php if (isset($gps_sat) || isset($gps_satview)) { echo '<th>' . gettext("Satellites") . '</th>'; $gps_goo_lnk++;}?>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><?= sprintf("%.5f", $gps_lat); ?> (<?= sprintf("%d", $gps_lat_deg); ?>&deg; <?= sprintf("%.5f", $gps_lat_min*60); ?><?= $gps_vars[4]; ?>)</td>
+                  <td><?= sprintf("%.5f", $gps_lon); ?> (<?= sprintf("%d", $gps_lon_deg); ?>&deg; <?= sprintf("%.5f", $gps_lon_min*60); ?><?= $gps_vars[6]; ?>)</td>
+                  <?php if (isset($gps_alt)) { echo '<td>' . $gps_alt . ' ' . $gps_alt_unit . '</td>';}?>
+                  <td>
+<?php
+                  if (isset($gps_satview)) {echo 'in view ' . intval($gps_satview);}
+                  if (isset($gps_sat) && isset($gps_satview)) {echo ', ';}
+                  if (isset($gps_sat)) {echo 'in use ' . $gps_sat;}
+                  ?>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="<?= html_safe($gps_goo_lnk) ?>"><a target="_gmaps" href="http://maps.google.com/?q=<?= html_safe($gps_lat) ?>,<?= html_safe($gps_lon) ?>">Google Maps Link</a></td>
+                </tr>
+              </tbody>
+            </table>
+<?php
+            endif; ?>
           </div>
         </div>
       </section>

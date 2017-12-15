@@ -208,11 +208,6 @@ function getServerDateItems($inDate)
     //   (use intval instead of ltrim, which translates '00' to '')
 }
 
-function clockDateString($inDate)
-{
-    return date('Y. F j l', $inDate);    // eg "Monday, January 1, 2002"
-}
-
 function clockTimeString($inDate, $showSeconds)
 {
     return date($showSeconds ? 'G:i:s' : 'g:i', $inDate).' ';
