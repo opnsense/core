@@ -1451,19 +1451,10 @@ function filter_nat_rules_generate(&$FilterIflist)
                 $natrules .= "{$nordr}rdr {$rdrpass}on {$natif} {$address_family} {$protocol_keyword} {$protocol} from {$srcaddr} to {$dstaddr}{$tagging}" . ($nordr == "" ? " -> {$target}{$localport}{$poolopts}" : '');
                 /* Does this rule redirect back to a internal host? */
                 if (isset($rule['destination']['any']) && !isset($rule['nordr']) && !isset($config['system']['enablenatreflectionhelper'])) {
-                    if ($address_family == 'inet6' && !interface_has_gatewayv6($rule['interface'])) {
-                        $rule_interface_subnet = find_interface_subnet6($natif);
-                        $rule_interface_ip = find_interface_ipv6($natif);
-                        $rule_subnet = gen_subnetv6($rule_interface_ip, $rule_interface_subnet);
-                    } elseif (!interface_has_gateway($rule['interface'])) {
-                        $rule_interface_subnet = find_interface_subnet($natif);
-                        $rule_interface_ip = find_interface_ip($natif);
-                        $rule_subnet = gen_subnet($rule_interface_ip, $rule_interface_subnet);
-                    }
-                    if (!empty($rule_interface_ip) && !empty($rule_interface_subnet)) {
+                    if (!interface_has_gateway($rule['interface']) && !interface_has_gatewayv6($rule['interface'])) {
                         $natrules .= "\n";
-                        $natrules .= "no nat on {$natif} {$address_family} proto tcp from ({$natif}) to {$rule_subnet}/{$rule_interface_subnet}\n";
-                        $natrules .= "nat on {$natif} {$address_family} proto tcp from {$rule_subnet}/{$rule_interface_subnet} to {$target} port {$dstport[0]} -> ({$natif})\n";
+                        $natrules .= "no nat on {$natif} {$address_family} proto tcp from ({$natif}) to ({$natif}:network)\n";
+                        $natrules .= "nat on {$natif} {$address_family} proto tcp from ({$natif}:network) to {$target} port {$dstport[0]} -> ({$natif})\n";
                     }
                 }
 
