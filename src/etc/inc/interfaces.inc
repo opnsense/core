@@ -2497,27 +2497,6 @@ function kill_dhclient_process($interface)
     killbypid(find_dhclient_process($interface), 'TERM', true);
 }
 
-function interface_vlan_mtu_configured($realhwif, $mtu)
-{
-    global $config;
-
-    if (isset($config['vlans']['vlan'])) {
-        foreach ($config['vlans']['vlan'] as $vlan) {
-            if ($vlan['if'] != $realhwif) {
-                continue;
-            }
-            $assignedport = convert_real_interface_to_friendly_interface_name($vlan['vlanif']);
-            if (!empty($assignedport) && !empty($config['interfaces'][$assignedport]['mtu'])) {
-                if (intval($config['interfaces'][$assignedport]['mtu']) > $mtu) {
-                    $mtu = $portmtu;
-                }
-            }
-        }
-    }
-
-    return $mtu;
-}
-
 function interface_virtual_create($interface)
 {
     global $config;
