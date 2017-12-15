@@ -90,7 +90,15 @@ function ntpd_configure_gps($serialport)
     if (isset($config['ntpd']['gps'])) {
         $gps_init = base64_decode($config['ntpd']['gps']['initcmd']);
     } else {
-        $gps_init = base64_decode('JFBVQlgsNDAsR1NWLDAsMCwwLDAqNTkNCiRQVUJYLDQwLEdMTCwwLDAsMCwwKjVDDQokUFVCWCw0MCxaREEsMCwwLDAsMCo0NA0KJFBVQlgsNDAsVlRHLDAsMCwwLDAqNUUNCiRQVUJYLDQwLEdTViwwLDAsMCwwKjU5DQokUFVCWCw0MCxHU0EsMCwwLDAsMCo0RQ0KJFBVQlgsNDAsR0dBLDAsMCwwLDANCiRQVUJYLDQwLFRYVCwwLDAsMCwwDQokUFVCWCw0MCxSTUMsMCwwLDAsMCo0Ng0KJFBVQlgsNDEsMSwwMDA3LDAwMDMsNDgwMCwwDQokUFVCWCw0MCxaREEsMSwxLDEsMQ==');
+        $gps_init = base64_decode(
+            'JFBVQlgsNDAsR1NWLDAsMCwwLDAqNTkNCiRQVUJYLDQwLEdMTCwwLDAsMC' .
+            'wwKjVDDQokUFVCWCw0MCxaREEsMCwwLDAsMCo0NA0KJFBVQlgsNDAsVlRH' .
+            'LDAsMCwwLDAqNUUNCiRQVUJYLDQwLEdTViwwLDAsMCwwKjU5DQokUFVCWC' .
+            'w0MCxHU0EsMCwwLDAsMCo0RQ0KJFBVQlgsNDAsR0dBLDAsMCwwLDANCiRQ' .
+            'VUJYLDQwLFRYVCwwLDAsMCwwDQokUFVCWCw0MCxSTUMsMCwwLDAsMCo0Ng' .
+            '0KJFBVQlgsNDEsMSwwMDA3LDAwMDMsNDgwMCwwDQokUFVCWCw0MCxaREEs' .
+            'MSwxLDEsMQ=='
+        );
     }
 
     /* XXX: Why not file_put_contents to the device */
@@ -101,7 +109,7 @@ function ntpd_configure_gps($serialport)
     if (intval(`grep -c '^gps0' /etc/remote`) == 0) {
         $gpsbaud = '4800';
         if (is_array($config['ntpd']) && is_array($config['ntpd']['gps']) && !empty($config['ntpd']['gps']['speed'])) {
-            switch($config['ntpd']['gps']['speed']) {
+            switch ($config['ntpd']['gps']['speed']) {
                 case '16':
                     $gpsbaud = '9600';
                     break;
@@ -186,7 +194,7 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
     $ntpcfg .= 'tos orphan ';
     if (!empty($config['ntpd']['orphan'])) {
         $ntpcfg .= $config['ntpd']['orphan'];
-    }else{
+    } else {
         $ntpcfg .= '12';
     }
     $ntpcfg .= "\n";
@@ -216,7 +224,7 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
         }
         if (!empty($config['ntpd']['pps']['flag3'])) {
             $ntpcfg .= ' flag3 1';
-        } else{
+        } else {
             $ntpcfg .= ' flag3 0';
         }
         if (!empty($config['ntpd']['pps']['flag4'])) {
@@ -237,7 +245,9 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
         $ntpcfg .= "\n";
         $ntpcfg .= "# GPS Setup\n";
         $ntpcfg .= 'server 127.127.20.0 mode ';
-        if (!empty($config['ntpd']['gps']['nmea']) || !empty($config['ntpd']['gps']['speed']) || !empty($config['ntpd']['gps']['subsec'])) {
+        if (!empty($config['ntpd']['gps']['nmea']) ||
+            !empty($config['ntpd']['gps']['speed']) ||
+            !empty($config['ntpd']['gps']['subsec'])) {
             if (!empty($config['ntpd']['gps']['nmea'])) {
                 $ntpmode = (int) $config['ntpd']['gps']['nmea'];
             }
@@ -248,7 +258,7 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
                 $ntpmode += 128;
             }
             $ntpcfg .= (string) $ntpmode;
-        } else{
+        } else {
             $ntpcfg .= '0';
         }
         $ntpcfg .= ' minpoll 4 maxpoll 4';
@@ -270,7 +280,7 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
         }
         if (!empty($config['ntpd']['gps']['flag1'])) {
             $ntpcfg .= ' flag1 1';
-        } else{
+        } else {
             $ntpcfg .= ' flag1 0';
         }
         if (!empty($config['ntpd']['gps']['flag2'])) {
@@ -278,7 +288,7 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
         }
         if (!empty($config['ntpd']['gps']['flag3'])) {
             $ntpcfg .= ' flag3 1';
-        } else{
+        } else {
             $ntpcfg .= ' flag3 0';
         }
         if (!empty($config['ntpd']['gps']['flag4'])) {
@@ -310,8 +320,13 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
     unset($ts);
 
     $ntpcfg .= "\n\n";
-    $ntpcfg .= "disable monitor\n"; //prevent NTP reflection attack, see https://ics-cert.us-cert.gov/advisories/ICSA-14-051-04
-    if (!empty($config['ntpd']['clockstats']) || !empty($config['ntpd']['loopstats']) || !empty($config['ntpd']['peerstats'])) {
+
+    /* prevent NTP reflection attack, see https://ics-cert.us-cert.gov/advisories/ICSA-14-051-04 */
+    $ntpcfg .= "disable monitor\n";
+
+    if (!empty($config['ntpd']['clockstats']) ||
+        !empty($config['ntpd']['loopstats']) ||
+        !empty($config['ntpd']['peerstats'])) {
         $ntpcfg .= "enable stats\n";
         $ntpcfg .= 'statistics';
         if (!empty($config['ntpd']['clockstats'])) {
@@ -418,8 +433,8 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
 
     /* start opentpd, set time now and use new config */
     mwexecf(
-      '/usr/local/sbin/ntpd -g -c %s -p %s',
-      array('/var/etc/ntpd.conf', '/var/run/ntpd.pid')
+        '/usr/local/sbin/ntpd -g -c %s -p %s',
+        array('/var/etc/ntpd.conf', '/var/run/ntpd.pid')
     );
 
     if ($verbose) {
