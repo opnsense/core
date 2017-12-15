@@ -150,19 +150,19 @@ function dnsmasq_configure_do($verbose = false)
 
     /* Setup forwarded domains */
     if (isset($config['dnsmasq']['domainoverrides']) && is_array($config['dnsmasq']['domainoverrides'])) {
-      foreach($config['dnsmasq']['domainoverrides'] as $override) {
-        if ($override['ip'] == "!") {
-            $override['ip'] = "";
+        foreach ($config['dnsmasq']['domainoverrides'] as $override) {
+            if ($override['ip'] == "!") {
+                $override['ip'] = "";
+            }
+            $args .= ' --server='. escapeshellarg('/' . $override['domain'] . '/' . $override['ip']);
         }
-        $args .= ' --server='. escapeshellarg('/' . $override['domain'] . '/' . $override['ip']);
-      }
     }
 
     /* Allow DNS Rebind for forwarded domains */
     if (isset($config['dnsmasq']['domainoverrides']) && is_array($config['dnsmasq']['domainoverrides'])) {
         if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
-            foreach($config['dnsmasq']['domainoverrides'] as $override) {
-                $args .= ' --rebind-domain-ok=' . escapeshellarg('/'.$override['domain'].'/') . ' ' ;
+            foreach ($config['dnsmasq']['domainoverrides'] as $override) {
+                $args .= ' --rebind-domain-ok=' . escapeshellarg('/'.$override['domain'].'/') . ' ';
             }
         }
     }
