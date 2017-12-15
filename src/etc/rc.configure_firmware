@@ -47,5 +47,5 @@ system_firmware_configure(true);
 system_login_configure(true);
 
 /* flush cache */
-(new OPNsense\Core\ACL())->persist();
-(new OPNsense\Base\Menu\MenuSystem())->persist();
+(new OPNsense\Core\ACL())->invalidateCache();
+(new OPNsense\Base\Menu\MenuSystem())->invalidateCache();

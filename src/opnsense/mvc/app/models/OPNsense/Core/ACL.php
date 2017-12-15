@@ -305,6 +305,16 @@ class ACL
     }
 
     /**
+     * invalidate cache, removes cache file from disk if available, which forces the next request to persist() again
+     */
+    public function invalidateCache()
+    {
+        if (file_exists($this->aclCacheFilename)) {
+            unlink($this->aclCacheFilename);
+        }
+    }
+
+    /**
      * check if pluggable ACL's are expired
      * @return bool is expired
      */

@@ -95,6 +95,16 @@ class MenuSystem
     }
 
     /**
+     * invalidate cache, removes cache file from disk if available, which forces the next request to persist() again
+     */
+    public function invalidateCache()
+    {
+        if (file_exists($this->menuCacheFilename)) {
+            unlink($this->menuCacheFilename);
+        }
+    }
+
+    /**
      * Load and persist Menu configuration to disk.
      * @param bool $nowait when the cache is locked, skip waiting for it to become available.
      * @return SimpleXMLElement
