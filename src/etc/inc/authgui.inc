@@ -234,7 +234,7 @@ function session_auth(&$Login_Error)
             $_SESSION['last_access'] = time();
             $_SESSION['protocol'] = $config['system']['webgui']['protocol'];
             if (!isset($config['system']['webgui']['quietlogin'])) {
-              log_error(sprintf("Successful login for user '%s' from: %s", $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']));
+                log_error(sprintf("Successful login for user '%s' from: %s", $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']));
             }
             header(url_safe("Location: {$_SERVER['REQUEST_URI']}"));
             exit;
