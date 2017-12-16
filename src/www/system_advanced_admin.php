@@ -51,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['usevirtualterminal'] = isset($config['system']['usevirtualterminal']);
     $pconfig['disableintegratedauth'] = !empty($config['system']['disableintegratedauth']);
     $pconfig['sudo_allow_wheel'] = $config['system']['sudo_allow_wheel'];
-    $pconfig['noantilockout'] = isset($config['system']['webgui']['noantilockout']);
     $pconfig['nodnsrebindcheck'] = isset($config['system']['webgui']['nodnsrebindcheck']);
     $pconfig['nohttpreferercheck'] = isset($config['system']['webgui']['nohttpreferercheck']);
     $pconfig['loginautocomplete'] = isset($config['system']['webgui']['loginautocomplete']);
@@ -144,12 +143,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['sudo_allow_wheel'] = $pconfig['sudo_allow_wheel'];
         } elseif (isset($config['system']['sudo_allow_wheel'])) {
             unset($config['system']['sudo_allow_wheel']);
-        }
-
-        if ($pconfig['noantilockout'] == "yes") {
-            $config['system']['webgui']['noantilockout'] = true;
-        } elseif (isset($config['system']['webgui']['noantilockout'])) {
-            unset($config['system']['webgui']['noantilockout']);
         }
 
         if (is_numeric($pconfig['serialspeed'])) {
@@ -511,23 +504,6 @@ include("head.inc");
                                           "Check this box to disable this protection if you find that it interferes with " .
                                           "web GUI access in certain corner cases such as using external scripts to interact with this system. More information on HTTP_REFERER is available from %sWikipedia%s."),
                                           '<a target="_blank" href="http://en.wikipedia.org/wiki/HTTP_referrer">','</a>') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_noantilockout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Anti-lockout"); ?></td>
-                  <td>
-                    <input name="noantilockout" type="checkbox" value="yes" <?= empty($pconfig['noantilockout']) ? '' : 'checked="checked"' ?>/>
-                    <strong><?= gettext('Disable web GUI anti-lockout rule') ?></strong>
-                    <div class="hidden" for="help_for_noantilockout">
-                      <?= sprintf(gettext("When this is unchecked, access to the web GUI " .
-                                  "on the %s interface is always permitted, regardless of the user-defined firewall " .
-                                  "rule set. Check this box to disable this automatically added rule, so access " .
-                                  "to the web GUI is controlled by the user-defined firewall rules " .
-                                  "(ensure you have a firewall rule in place that allows you in, or you will " .
-                                  "lock yourself out!)"), count($config['interfaces']) == 1 && !empty($config['interfaces']['wan']['if']) ?
-                                  gettext('WAN') : gettext('LAN')) ?>
-                      <em><?= gettext('Hint: the "Set interface(s) IP address" option in the console menu resets this setting as well.'); ?></em>
                     </div>
                   </td>
                 </tr>

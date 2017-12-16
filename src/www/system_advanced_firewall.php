@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['maximumfrags'] = isset($config['system']['maximumfrags']) ? $config['system']['maximumfrags'] : null;
     $pconfig['adaptivestart'] = isset($config['system']['adaptivestart']) ? $config['system']['adaptivestart'] : null;
     $pconfig['adaptiveend'] = isset($config['system']['adaptiveend']) ? $config['system']['adaptiveend'] : null;
+    $pconfig['noantilockout'] = isset($config['system']['webgui']['noantilockout']);
     $pconfig['aliasesresolveinterval'] = isset($config['system']['aliasesresolveinterval']) ? $config['system']['aliasesresolveinterval'] : null;
     $pconfig['checkaliasesurlcert'] = isset($config['system']['checkaliasesurlcert']);
     $pconfig['maximumtableentries'] = !empty($config['system']['maximumtableentries']) ? $config['system']['maximumtableentries'] : null ;
@@ -114,6 +115,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['lb_use_sticky'] = true;
         } elseif (isset($config['system']['lb_use_sticky'])) {
             unset($config['system']['lb_use_sticky']);
+        }
+
+        if ($pconfig['noantilockout'] == "yes") {
+            $config['system']['webgui']['noantilockout'] = true;
+        } elseif (isset($config['system']['webgui']['noantilockout'])) {
+            unset($config['system']['webgui']['noantilockout']);
         }
 
         if (!empty($pconfig['srctrack'])) {
@@ -626,6 +633,22 @@ include("head.inc");
                     <div class="hidden" for="help_for_disablereplyto">
                       <?=gettext("With Multi-WAN you generally want to ensure traffic leaves the same interface it arrives on, hence reply-to is added automatically by default. " .
                                           "When using bridging, you must disable this behavior if the WAN gateway IP is different from the gateway IP of the hosts behind the bridged interface.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_noantilockout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable anti-lockout"); ?></td>
+                  <td>
+                    <input name="noantilockout" type="checkbox" value="yes" <?= empty($pconfig['noantilockout']) ? '' : 'checked="checked"' ?>/>
+                    <strong><?= gettext('Disable administration anti-lockout rule') ?></strong>
+                    <div class="hidden" for="help_for_noantilockout">
+                      <?= sprintf(gettext("When this is unchecked, access to the web GUI or SSH " .
+                                  "on the %s interface is always permitted, regardless of the user-defined firewall " .
+                                  "rule set. Check this box to disable the automatically added rule, so access " .
+                                  "is controlled only by the user-defined firewall rules. Ensure you have a firewall rule " .
+                                  "in place that allows you in, or you will lock yourself out."),
+                                  count($config['interfaces']) == 1 && !empty($config['interfaces']['wan']['if']) ?
+                                  gettext('WAN') : gettext('LAN')) ?>
                     </div>
                   </td>
                 </tr>
