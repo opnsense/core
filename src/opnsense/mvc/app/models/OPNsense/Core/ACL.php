@@ -309,9 +309,7 @@ class ACL
      */
     public function invalidateCache()
     {
-        if (file_exists($this->aclCacheFilename)) {
-            unlink($this->aclCacheFilename);
-        }
+        @unlink($this->aclCacheFilename);
     }
 
     /**

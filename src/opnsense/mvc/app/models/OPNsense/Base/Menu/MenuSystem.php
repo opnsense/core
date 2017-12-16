@@ -99,9 +99,7 @@ class MenuSystem
      */
     public function invalidateCache()
     {
-        if (file_exists($this->menuCacheFilename)) {
-            unlink($this->menuCacheFilename);
-        }
+        @unlink($this->menuCacheFilename);
     }
 
     /**
