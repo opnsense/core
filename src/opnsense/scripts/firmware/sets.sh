@@ -1,7 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
-# Copyright (C) 2014 Deciso B.V.
+# Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,20 +24,19 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
-PACKAGE=${1}
+LIC="BSD2CLAUSE"
+OS="FreeBSD"
+SEP=${1:-","}
 
-# Truncate upgrade progress file
-: > ${PKG_PROGRESS_FILE}
+BV=$(opnsense-update -bv)
+KV=$(opnsense-update -kv)
 
-echo "***GOT REQUEST TO LOCK: ${PACKAGE}***" >> ${PKG_PROGRESS_FILE}
-if [ "${PACKAGE}" = "base" ]; then
-	echo "Locking base set" >> ${PKG_PROGRESS_FILE}
-	opnsense-update -bL >> ${PKG_PROGRESS_FILE} 2>&1
-elif [ "${PACKAGE}" = "kernel" ]; then
-	echo "Locking kernel set" >> ${PKG_PROGRESS_FILE}
-	opnsense-update -kL >> ${PKG_PROGRESS_FILE} 2>&1
-else
-	pkg lock -y ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
-fi
-echo '***DONE***' >> ${PKG_PROGRESS_FILE}
+BL=0
+KL=0
+
+# XXX pragmatic approach, we don't have a portable command yet
+[ -f /usr/local/opnsense/version/base.lock ] && BL=1
+[ -f /usr/local/opnsense/version/kernel.lock ] && KL=1
+
+echo "base${SEP}${BV%-*}${SEP}${OS} userland set${SEP}${SEP}${BL}${SEP}${LIC}"
+echo "kernel${SEP}${KV%-*}${SEP}${OS} kernel set${SEP}${SEP}${KL}${SEP}${LIC}"

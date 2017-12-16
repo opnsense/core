@@ -665,6 +665,9 @@ class FirmwareController extends ApiControllerBase
                 }
                 foreach ($keys as $key) {
                     $translated[$key] = $expanded[$index++];
+                    if (empty($translated[$key])) {
+                        $translated[$key] = gettext('N/A');
+                    }
                 }
 
                 /* mark remote packages as "provided", local as "installed" */
