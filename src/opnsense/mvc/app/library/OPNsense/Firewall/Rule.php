@@ -29,7 +29,6 @@
  */
 namespace OPNsense\Firewall;
 
-
 /**
  * Class Rule basic rule parsing logic
  * @package OPNsense\Firewall
