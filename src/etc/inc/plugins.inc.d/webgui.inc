@@ -455,33 +455,28 @@ compress.filetype  = ("text/plain","text/css", "text/xml", "text/javascript" )
 
 {$cgi_config}
 
-expire.url = (
-        "" => "access 50 hours",
-        )
+expire.url = ( "" => "access 50 hours" )
 
 EOD;
 
     /* add HTTP to HTTPS redirect */
     if ($config['system']['webgui']['protocol'] == 'https' &&
         !isset($config['system']['webgui']['disablehttpredirect'])) {
-        if ($lighty_port != "443") {
-            $redirectport = ":{$lighty_port}";
-        } else {
-            $redirectport = "";
-        }
-        /* XXX this needs redirects for each interface */
-        $lighty_config .= <<<EOD
-\$SERVER["socket"] == "0.0.0.0:80" {
-  \$HTTP["host"] =~ "(.*)" {
-    url.redirect = ( "^/(.*)" => "https://%1{$redirectport}/$1" )
-  }
+        $redirectport = $lighty_port != "443" ? ":{$lighty_port}" : '';
+        foreach ($listeners as $listener) {
+            if (is_ipaddrv6($listener)) {
+                $listener = "[{$listener}]";
+            }
+            $lighty_config .= <<<EOD
+
+\$SERVER["socket"] == "{$listener}:80" {
+    \$HTTP["host"] =~ "(.*)" {
+        url.redirect = ( "^/(.*)" => "https://%1{$redirectport}/$1" )
+    }
 }
-\$SERVER["socket"] == "[::]:80" {
-  \$HTTP["host"] =~ "(.*)" {
-    url.redirect = ( "^/(.*)" => "https://%1{$redirectport}/$1" )
-  }
-}
+
 EOD;
+        }
     }
 
     if (false === file_put_contents('/var/etc/lighty-webConfigurator.conf', $lighty_config)) {
