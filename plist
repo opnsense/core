@@ -79,6 +79,7 @@
 /usr/local/etc/rc.carpbackup
 /usr/local/etc/rc.carpmaster
 /usr/local/etc/rc.configure_firmware
+/usr/local/etc/rc.configure_plugins
 /usr/local/etc/rc.d/captiveportal
 /usr/local/etc/rc.d/configd
 /usr/local/etc/rc.d/flowd_aggregate

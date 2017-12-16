@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,24 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* there seems to be a race with unpacking files */
-shell_exec('/bin/sync');
-
-/* abort in case of no valid config for image install */
-if (!file_exists('/conf/config.xml')) {
-    exit(0);
-}
-
 require_once 'config.inc';
-require_once 'auth.inc';
-require_once 'util.inc';
-require_once 'system.inc';
-
-/* upgrade config before doing anything else */
-convert_config(true);
-
-system_firmware_configure(true);
-system_login_configure(true);
 
 /* flush cache */
 (new OPNsense\Core\ACL())->invalidateCache();
