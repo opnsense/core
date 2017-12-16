@@ -27,11 +27,43 @@
 
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 PACKAGE=$1
+REBOOT=
 
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
 echo "***GOT REQUEST TO REINSTALL: $PACKAGE***" >> ${PKG_PROGRESS_FILE}
-pkg install -yf $PACKAGE >> ${PKG_PROGRESS_FILE} 2>&1
-pkg autoremove -y >> ${PKG_PROGRESS_FILE} 2>&1
+
+if [ "${PACKAGE}" = "base" ]; then
+	# XXX need a portable command
+	if [ ! -f /usr/local/opnsense/version/base.lock ]; then
+		if opnsense-update -bf >> ${PKG_PROGRESS_FILE} 2>&1; then
+			REBOOT=1
+		fi
+	else
+		# for locked message only
+		opnsense-update -b >> ${PKG_PROGRESS_FILE} 2>&1
+	fi
+elif [ "${PACKAGE}" = "kernel" ]; then
+	# XXX need a portable command
+	if [ ! -f /usr/local/opnsense/version/kernel.lock ]; then
+		if opnsense-update -kf >> ${PKG_PROGRESS_FILE} 2>&1; then
+			REBOOT=1
+		fi
+	else
+		# for locked message only
+		opnsense-update -k >> ${PKG_PROGRESS_FILE} 2>&1
+	fi
+else
+	pkg install -yf $PACKAGE >> ${PKG_PROGRESS_FILE} 2>&1
+	pkg autoremove -y >> ${PKG_PROGRESS_FILE} 2>&1
+fi
+
+if [ -n "${REBOOT}" ]; then
+	echo '***REBOOT***' >> ${PKG_PROGRESS_FILE}
+	# give the frontend some time to figure out that a reboot is coming
+	sleep 5
+	/usr/local/etc/rc.reboot
+fi
+
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}
