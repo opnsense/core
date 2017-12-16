@@ -197,6 +197,38 @@ POSSIBILITY OF SUCH DAMAGE.
     }
 
     /**
+     * perform package action that requires reboot confirmation
+     */
+    function action_may_reboot(pkg_act, pkg_name)
+    {
+        if (pkg_act == 'reinstall' && (pkg_name == 'kernel' || pkg_name == 'base')) {
+            reboot_msg = "{{ lang._('The firewall will reboot directly after this set reinstall.') }}";
+
+            // reboot required, inform the user.
+            BootstrapDialog.show({
+                type:BootstrapDialog.TYPE_WARNING,
+                title: "{{ lang._('Reboot required') }}",
+                message: reboot_msg,
+                buttons: [{
+                    label: "{{ lang._('OK') }}",
+                    cssClass: 'btn-warning',
+                    action: function(dialogRef){
+                        dialogRef.close();
+                        action(pkg_act, pkg_name);
+                    }
+                },{
+                    label: "{{ lang._('Abort') }}",
+                    action: function(dialogRef){
+                        dialogRef.close();
+                    }
+                }]
+            });
+        } else {
+            action(pkg_act, pkg_name);
+        }
+    }
+
+    /**
      * perform package action, install poller to update status
      */
     function action(pkg_act, pkg_name)
@@ -461,7 +493,7 @@ POSSIBILITY OF SUCH DAMAGE.
             // link buttons to actions
             $(".act_reinstall").click(function(event) {
                 event.preventDefault();
-                action('reinstall', $(this).data('package'));
+                action_may_reboot('reinstall', $(this).data('package'));
             });
             $(".act_unlock").click(function(event) {
                 event.preventDefault();
