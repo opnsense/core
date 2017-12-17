@@ -525,6 +525,10 @@ $( document ).ready(function() {
         $("#groups > option").prop('selected', true);
         $("#notgroups > option").prop('selected', false);
     });
+    $("#save_close").click(function(){
+        $("#groups > option").prop('selected', true);
+        $("#notgroups > option").prop('selected', false);
+    });
 });
 </script>
 
