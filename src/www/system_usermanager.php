@@ -914,7 +914,7 @@ $( document ).ready(function() {
                     <td>&nbsp;</td>
                     <td>
                       <button name="save" id="save" type="submit" class="btn btn-primary" value="save" /><?= gettext('Save') ?></button>
-                      <button name="save_close" id="save_close" type="submit" class="btn btn-primary" value="save" /><?= gettext('Save & Close') ?></button>
+                      <button name="save_close" id="save_close" type="submit" class="btn btn-primary" value="save_close" /><?= gettext('Save and go back') ?></button>
                       <button name="cancel" id="cancel" type="submit" class="btn btn-default" value="cancel" /><?= gettext('Cancel') ?></button>
 <?php
                       if (isset($id) && !empty($a_user[$id])) :?>
