@@ -35,8 +35,8 @@ REBOOT=
 echo "***GOT REQUEST TO REINSTALL: $PACKAGE***" >> ${PKG_PROGRESS_FILE}
 
 if [ "${PACKAGE}" = "base" ]; then
-	# XXX need a portable command
-	if [ ! -f /usr/local/opnsense/version/base.lock ]; then
+	if opnsense-update -Tb; then
+		# force reinstall intended
 		if opnsense-update -bf >> ${PKG_PROGRESS_FILE} 2>&1; then
 			REBOOT=1
 		fi
@@ -45,8 +45,8 @@ if [ "${PACKAGE}" = "base" ]; then
 		opnsense-update -b >> ${PKG_PROGRESS_FILE} 2>&1
 	fi
 elif [ "${PACKAGE}" = "kernel" ]; then
-	# XXX need a portable command
-	if [ ! -f /usr/local/opnsense/version/kernel.lock ]; then
+	if opnsense-update -Tk; then
+		# force reinstall intended
 		if opnsense-update -kf >> ${PKG_PROGRESS_FILE} 2>&1; then
 			REBOOT=1
 		fi

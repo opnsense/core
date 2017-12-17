@@ -34,9 +34,8 @@ KV=$(opnsense-update -kv)
 BL=0
 KL=0
 
-# XXX pragmatic approach, we don't have a portable command yet
-[ -f /usr/local/opnsense/version/base.lock ] && BL=1
-[ -f /usr/local/opnsense/version/kernel.lock ] && KL=1
+opnsense-update -Tb || BL=1
+opnsense-update -Tk || KL=1
 
 echo "base${SEP}${BV%-*}${SEP}${OS} userland set${SEP}${SEP}${BL}${SEP}${LIC}"
 echo "kernel${SEP}${KV%-*}${SEP}${OS} kernel set${SEP}${SEP}${KL}${SEP}${LIC}"
