@@ -156,7 +156,7 @@ if ($has_crashed) {
     $crash_reports['System Information'] = trim($crash_report_header);
     if (file_exists('/tmp/PHP_errors.log')) {
         $php_errors_size = @filesize('/tmp/PHP_errors.log');
-        $max_php_errors_size = 1048576; // 1MB
+        $max_php_errors_size = 2 * 1024 * 1024;
         // limit reporting for PHP_errors.log to $max_php_errors_size characters
         if ($php_errors_size > $max_php_errors_size) {
             // if file is to large, only display last $max_php_errors_size characters
