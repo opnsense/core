@@ -76,7 +76,7 @@ if [ "${1}" == "start" ]; then
 			continue
 		fi
 
-		pre_run_var="${name}_opnsense_bootup_run"
+		pre_run_var="${name}_var_script"
 		eval "pre_run_cmd=\$${pre_run_var}"
 		${pre_run_cmd}
 	done
