@@ -383,7 +383,7 @@ $( document ).ready(function() {
                     <div id="showadv" <?=empty($pconfig['custom_options']) ? "style='display:none'" : ""; ?>>
                       <strong><?=gettext("Advanced");?><br /></strong>
                       <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
-                      <?=gettext("Enter any additional options you would like to add to the dnsmasq configuration here, separated by a space or newline"); ?><br />
+                      <?=gettext("Enter any additional options you would like to add to the dnsmasq configuration here, separated by a space or newline"); ?>
                     </div>
                   </td>
                 </tr>

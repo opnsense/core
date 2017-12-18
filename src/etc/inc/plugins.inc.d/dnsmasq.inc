@@ -179,7 +179,7 @@ function dnsmasq_configure_do($verbose = false)
         $args .= " --domain-needed ";
     }
 
-    if (isset($config['dnsmasq']['custom_options']) && !empty($config['dnsmasq']['custom_options'])) {
+    if (!empty($config['dnsmasq']['custom_options'])) {
         foreach (preg_split('/\s+/', $config['dnsmasq']['custom_options']) as $c) {
             $args .= " " . escapeshellarg("--{$c}");
             $p = explode('=', $c);
