@@ -565,17 +565,17 @@ include("head.inc");
                     </div>
                     <div class="hidden" for="help_for_type">
                       <span class="text-info">
-                        <?=gettext("Networks")?><br/>
-                      </span>
-                      <small>
-                        <?=gettext("Networks are specified in CIDR format. Select the CIDR suffix that pertains to each entry. /32 specifies a single IPv4 host, /128 specifies a single IPv6 host, /24 in IPv4 corresponds to 255.255.255.0, /64 specifies commonly used IPv6 network, etc. Hostnames (FQDNs) may also be specified, using /32 for IPv4 and /128 for IPv6.");?>
-                        <br/>
-                      </small>
-                      <span class="text-info">
                         <?=gettext("Hosts")?><br/>
                       </span>
                       <small>
                         <?=gettext("Enter as many hosts as you would like. Hosts must be specified by their IP address or fully qualified domain name (FQDN). FQDN hostnames are periodically re-resolved and updated. If multiple IPs are returned by a DNS query, all are used.");?>
+                        <br/>
+                      </small>
+                      <span class="text-info">
+                        <?=gettext("Networks")?><br/>
+                      </span>
+                      <small>
+                        <?=gettext("Networks are specified in CIDR format. Select the CIDR suffix that pertains to each entry. /32 specifies a single IPv4 host, /128 specifies a single IPv6 host, /24 in IPv4 corresponds to 255.255.255.0, /64 specifies commonly used IPv6 network, etc. Hostnames (FQDNs) may also be specified, using /32 for IPv4 and /128 for IPv6.");?>
                         <br/>
                       </small>
                       <span class="text-info">
@@ -590,6 +590,13 @@ include("head.inc");
                       </span>
                       <small>
                         <?=gettext("Enter an URL containing a large number of IPs, ports or subnets. After saving the lists will be downloaded and scheduled for automatic updates when a frequency is provided.");?>
+                        <br/>
+                      </small>
+                      <span class="text-info">
+                        <?=gettext("GeoIPs")?><br/>
+                      </span>
+                      <small>
+                        <?=gettext("Select contries to be resolved to IPs. IPv4 and IPv6 can be mixed.");?>
                         <br/>
                       </small>
                       <span class="text-info">
