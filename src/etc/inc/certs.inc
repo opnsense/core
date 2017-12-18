@@ -27,10 +27,8 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-global $openssl_digest_algs;
 $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
 
-global $openssl_crl_status;
 $openssl_crl_status = array(
   OCSP_REVOKED_STATUS_NOSTATUS              => "No Status (default)",
   OCSP_REVOKED_STATUS_UNSPECIFIED           => "Unspecified",
@@ -45,7 +43,6 @@ $openssl_crl_status = array(
 function &lookup_ca($refid)
 {
     global $config;
-    $false = false;
 
     if (is_array($config['ca'])) {
         foreach ($config['ca'] as & $ca) {
@@ -55,13 +52,12 @@ function &lookup_ca($refid)
         }
     }
 
-    return $false;
+    return false;
 }
 
 function &lookup_ca_by_subject($subject)
 {
     global $config;
-    $false = false;
 
     if (is_array($config['ca'])) {
         foreach ($config['ca'] as & $ca) {
@@ -72,13 +68,12 @@ function &lookup_ca_by_subject($subject)
         }
     }
 
-    return $false;
+    return false;
 }
 
 function &lookup_cert($refid)
 {
     global $config;
-    $false = false;
 
     if (is_array($config['cert'])) {
         foreach ($config['cert'] as & $cert) {
@@ -88,13 +83,12 @@ function &lookup_cert($refid)
         }
     }
 
-    return $false;
+    return false;
 }
 
 function &lookup_crl($refid)
 {
     global $config;
-    $false = false;
 
     if (is_array($config['crl'])) {
         foreach ($config['crl'] as & $crl) {
@@ -104,7 +98,7 @@ function &lookup_crl($refid)
         }
     }
 
-    return $false;
+    return false;
 }
 
 function ca_chain_array(&$cert)
