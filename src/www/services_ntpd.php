@@ -54,6 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // array types
     $pconfig['interface'] = !empty($pconfig['interface']) ? explode(",", $pconfig['interface']) : array();
 
+    // text types
+    $pconfig['custom_options'] = !empty($a_ntpd['custom_options']) ? $a_ntpd['custom_options'] : '';
+
     // parse timeservers
     $pconfig['timeservers_host'] = array();
     $pconfig['timeservers_noselect'] = array();
@@ -97,21 +100,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 unset($a_ntpd[$fieldname]);
             }
         }
+
         if (empty($config['system']['timeservers'])) {
             unset($config['system']['timeservers']);
         }
 
-        if (!empty($a_ntpd['leapsec'])) {
+        if (!empty($pconfig['leapsec'])) {
             $a_ntpd['leapsec'] = base64_encode($a_ntpd['leapsec']);
-        } elseif(isset($config['ntpd']['leapsec'])) {
-            unset($config['ntpd']['leapsec']);
+        } elseif(isset($a_ntpd['leapsec'])) {
+            unset($a_ntpd['leapsec']);
+        }
+
+        if (!empty($pconfig['custom_options'])) {
+            $a_ntpd['custom_options'] = str_replace("\r\n", "\n", $pconfig['custom_options']);
+        } elseif (isset($a_ntpd['custom_options'])) {
+            unset($a_ntpd['custom_options']);
         }
 
         if (is_uploaded_file($_FILES['leapfile']['tmp_name'])) {
             $a_ntpd['leapsec'] = base64_encode(file_get_contents($_FILES['leapfile']['tmp_name']));
         }
+
         write_config("Updated NTP Server Settings");
         ntpd_configure_start();
+
         header(url_safe('Location: /services_ntpd.php'));
         exit;
     }
@@ -119,7 +131,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 $service_hook = 'ntpd';
 legacy_html_escape_form_data($pconfig);
+
 include("head.inc");
+
 ?>
 <body>
 
@@ -137,6 +151,13 @@ include("head.inc");
         $("#showleapsecbox").parent().hide();
         $("#showleapsec").show();
     });
+    $("#show_advanced_ntpd").click(function(event){
+      $("#showadvbox").hide();
+      $("#showadv").show();
+    });
+    if ($("#custom_options").val() != "") {
+        $("#show_advanced_ntpd").click();
+    }
 
     /**
      *  Aliases
@@ -378,6 +399,19 @@ include("head.inc");
                         <textarea name="leapsec" cols="65" rows="7"><?=$pconfig['leapsec'];?></textarea><br />
                         <strong><?=gettext("Or");?></strong>, <?=gettext("select a file to upload:");?>
                         <input type="file" name="leapfile"/>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
+                    <td>
+                      <div id="showadvbox" <?=!empty($pconfig['custom_options']) ? "style='display:none'" : ""; ?>>
+                        <input type="button" class="btn btn-default btn-xs" id="show_advanced_ntpd" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+                      </div>
+                      <div id="showadv" <?=empty($pconfig['custom_options']) ? "style='display:none'" : ""; ?>>
+                        <strong><?=gettext("Advanced");?><br /></strong>
+                        <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
+                        <?= gettext('Enter any additional options you would like to add to the network time configuration here, separated by a space or newline.') ?>
                       </div>
                     </td>
                   </tr>

@@ -417,6 +417,10 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
         }
     }
 
+    if (!empty($config['ntpd']['custom_options'])) {
+        $ntpcfg .= "\n# custom options\n{$config['ntpd']['custom_options']}\n";
+    }
+
     file_put_contents('/var/etc/ntpd.conf', $ntpcfg);
 
     if (!$start_ntpd) {
