@@ -558,8 +558,6 @@ if (!empty($_POST['adminpassword']) || !empty($_POST['adminpasswordagain'])) {
 		$admin_user = &getUserEntryByUID(0);
 		local_user_set_password($admin_user, $_POST['adminpassword']);
 		local_user_set($admin_user);
-		/* XXX should this relly be written here? */
-		write_config();
 	} else {
 		$input_errors[] = gettext('Passwords do not match.');
 	}
