@@ -116,7 +116,6 @@
 /usr/local/etc/rc.loader.d/20-misc
 /usr/local/etc/rc.loader.d/20-modules
 /usr/local/etc/rc.loader.d/20-netgraph
-/usr/local/etc/rc.newipsecdns
 /usr/local/etc/rc.newwanip
 /usr/local/etc/rc.newwanipv6
 /usr/local/etc/rc.openvpn
@@ -668,7 +667,6 @@
 /usr/local/opnsense/service/conf/actions.d/actions_interface.conf
 /usr/local/opnsense/service/conf/actions.d/actions_ipfw.conf
 /usr/local/opnsense/service/conf/actions.d/actions_ipsec.conf
-/usr/local/opnsense/service/conf/actions.d/actions_ipsecdns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_netflow.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf

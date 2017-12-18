@@ -684,7 +684,7 @@ function system_syslogd_start($verbose = false)
         $syslogconfs['gateways'] = array('facility' => array('apinger'), 'remote' => 'apinger');
         $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');
         $syslogconfs['ppps'] = array('facility' => array('ppp'));
-        $syslogconfs['resolver'] = array('facility' => array('filterdns', 'unbound'), 'remote' => 'dns');
+        $syslogconfs['resolver'] = array('facility' => array('unbound'), 'remote' => 'dns');
         $syslogconfs['routing'] = array('facility' => array('radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'));
         $syslogconfs['wireless'] = array('facility' => array('hostapd'), 'remote' => 'hostapd');
 

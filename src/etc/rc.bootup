@@ -123,7 +123,7 @@ configd_run('template reload *');
 plugins_configure('bootup', true);
 
 /* start IPsec tunnels */
-$ipsec_dynamic_hosts = ipsec_configure_do(true);
+ipsec_configure_do(true);
 
 rrd_configure(true);
 system_powerd_configure(true);
@@ -134,11 +134,6 @@ system_powerd_configure(true);
  * route syslog messages properly on both IPv4 and IPv6.
  */
 system_syslogd_start(true);
-
-/* If there are ipsec dynamic hosts try again to reload the tunnels as rc.newipsecdns does */
-if ($ipsec_dynamic_hosts) {
-    ipsec_configure_do(true);
-}
 
 system_console_unmute();
 

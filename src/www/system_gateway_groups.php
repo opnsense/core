@@ -55,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         configd_run('dyndns reload');
         configd_run('rfc2136 reload');
-        configd_run('ipsecdns reload');
         configd_run('filter reload');
 
         /* reconfigure our gateway monitor */

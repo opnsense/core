@@ -762,8 +762,6 @@ function ipsec_configure_do($verbose = false, $interface = '')
     if (!isset($ipseccfg['enable'])) {
         /* try to stop charon */
         mwexec('/usr/local/sbin/ipsec stop');
-        /* Stop dynamic monitoring */
-        killbypid('/var/run/filterdns-ipsec.pid');
 
         /* wait for process to die */
         sleep(2);
@@ -798,7 +796,6 @@ function ipsec_configure_do($verbose = false, $interface = '')
 
         /* resolve all local, peer addresses and setup pings */
         $rgmap = array();
-        $filterdns_list = array();
         $ipsecpinghosts = "";
 
         /* step through each phase1 entry */
@@ -812,29 +809,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
             }
             $ep = ipsec_get_phase1_src($ph1ent);
 
-            /* see if this tunnel has a hostname for the remote-gateway. If so,
-               try to resolve it now and add it to the list for filterdns */
-
             if (isset($ph1ent['mobile'])) {
                 continue;
             }
-
-            $rg = $ph1ent['remote-gateway'];
-
-            if (!is_ipaddr($rg)) {
-                $filterdns_list[] = "{$rg}";
-                if (!file_exists('/var/run/booting')) {
-                    $rg = resolve_retry($rg);
-                }
-                if (!is_ipaddr($rg)) {
-                    continue;
-                }
-            }
-            if (array_search($rg, $rgmap)) {
-                log_error("The remote gateway {$rg} already exists on another phase 1 entry");
-                continue;
-            }
-            $rgmap[$ph1ent['remote-gateway']] = $rg;
 
             /* step through each phase2 entry */
             foreach ($a_phase2 as $ph2ent) {
@@ -1592,36 +1569,10 @@ EOD;
         mwexec("/usr/local/sbin/ipsec start", false);
     }
 
-    /* start filterdns, if necessary */
-    if (count($filterdns_list) > 0) {
-        $interval = 60;
-        if (!empty($ipseccfg['dns-interval']) && is_numeric($ipseccfg['dns-interval'])) {
-            $interval = $ipseccfg['dns-interval'];
-        }
-
-        $hostnames = "";
-        array_unique($filterdns_list);
-        foreach ($filterdns_list as $hostname) {
-            $hostnames .= "cmd {$hostname} '/usr/local/opnsense/service/configd_ctl.py ipsecdns reload'\n";
-        }
-        file_put_contents("/usr/local/etc/filterdns-ipsec.hosts", $hostnames);
-        unset($hostnames);
-
-        if (isvalidpid('/var/run/filterdns-ipsec.pid')) {
-            killbypid('/var/run/filterdns-ipsec.pid', 'HUP');
-        } else {
-            mwexec("/usr/local/sbin/filterdns -p /var/run/filterdns-ipsec.pid -i {$interval} -c /usr/local/etc/filterdns-ipsec.hosts -d 1");
-        }
-    } else {
-        killbypid('/var/run/filterdns-ipsec.pid');
-    }
-
     /* load manually defined SPD entries */
     ipsec_configure_spd();
 
     if ($verbose) {
         echo "done.\n";
     }
-
-    return count($filterdns_list);
 }

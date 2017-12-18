@@ -80,7 +80,6 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			dhcpleases \
 			dnsmasq \
 			expiretable \
-			filterdns \
 			filterlog \
 			ifinfo \
 			flock \
