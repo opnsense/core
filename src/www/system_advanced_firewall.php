@@ -73,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
-    $old_aliasesresolveinterval = $config['system']['aliasesresolveinterval'];
     $input_errors = array();
 
     /* input validation */
@@ -226,11 +225,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config();
-
-        // Kill filterdns when value changes, filter_configure() will restart it
-        if ($old_aliasesresolveinterval != $config['system']['aliasesresolveinterval']) {
-            killbypid('/var/run/filterdns.pid');
-        }
 
         $savemsg = get_std_save_message();
 
