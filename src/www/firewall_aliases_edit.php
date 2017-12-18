@@ -543,6 +543,28 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
+                  <td><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Name"); ?></td>
+                  <td>
+                    <input name="origname" type="hidden" id="origname" class="form-control unknown" size="40" value="<?=$pconfig['name'];?>" />
+                    <?php if (isset($id)): ?>
+                      <input name="id" type="hidden" value="<?=$id;?>" />
+                    <?php endif; ?>
+                    <input name="name" type="text" id="name" class="form-control unknown" size="40" maxlength="31" value="<?=$pconfig['name'];?>" />
+                    <div class="hidden" for="help_for_name">
+                      <?=gettext('The name of the alias may only consist of the characters "a-z, A-Z, 0-9 and _". Aliases can be nested using this name.'); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                  <td>
+                    <input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
+                    <div class="hidden" for="help_for_description">
+                      <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
                   <td><a id="help_for_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type"); ?></td>
                   <td>
                     <select  name="type" class="form-control" id="typeSelect">
@@ -593,7 +615,7 @@ include("head.inc");
                         <br/>
                       </small>
                       <span class="text-info">
-                        <?=gettext("GeoIPs")?><br/>
+                        <?=gettext("GeoIP")?><br/>
                       </span>
                       <small>
                         <?=gettext("Select contries to be resolved to IPs. IPv4 and IPv6 can be mixed.");?>
@@ -606,28 +628,6 @@ include("head.inc");
                         <?=gettext("Managed externally, the contents of this alias type could be managed by other scripts or services. ".
                                   "OPNsense only makes sure the alias exists and leaves the contents alone");?>
                       </small>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td width="22%"><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Name"); ?></td>
-                  <td width="78%">
-                    <input name="origname" type="hidden" id="origname" class="form-control unknown" size="40" value="<?=$pconfig['name'];?>" />
-                    <?php if (isset($id)): ?>
-                      <input name="id" type="hidden" value="<?=$id;?>" />
-                    <?php endif; ?>
-                    <input name="name" type="text" id="name" class="form-control unknown" size="40" maxlength="31" value="<?=$pconfig['name'];?>" />
-                    <div class="hidden" for="help_for_name">
-                      <?=gettext("The name of the alias may only consist of the characters \"a-z, A-Z, 0-9 and _\"."); ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
-                  <td>
-                    <input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
-                    <div class="hidden" for="help_for_description">
-                      <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
                     </div>
                   </td>
                 </tr>
