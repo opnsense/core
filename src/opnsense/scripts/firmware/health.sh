@@ -1,7 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
-# Copyright (C) 2014 Deciso B.V.
+# Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,19 +25,13 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
-PACKAGE=${1}
 
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
-echo "***GOT REQUEST TO LOCK: ${PACKAGE}***" >> ${PKG_PROGRESS_FILE}
-if [ "${PACKAGE}" = "base" ]; then
-	echo "Locking base set" >> ${PKG_PROGRESS_FILE}
-	opnsense-update -bL >> ${PKG_PROGRESS_FILE} 2>&1
-elif [ "${PACKAGE}" = "kernel" ]; then
-	echo "Locking kernel set" >> ${PKG_PROGRESS_FILE}
-	opnsense-update -kL >> ${PKG_PROGRESS_FILE} 2>&1
-else
-	pkg lock -y ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
-fi
+echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${PKG_PROGRESS_FILE}
+echo "Check for and install missing package dependencies" >> ${PKG_PROGRESS_FILE}
+pkg check -da >> ${PKG_PROGRESS_FILE} 2>&1
+echo "Detect installed package files with invalid checksums" >> ${PKG_PROGRESS_FILE}
+pkg check -sa >> ${PKG_PROGRESS_FILE} 2>&1
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}
