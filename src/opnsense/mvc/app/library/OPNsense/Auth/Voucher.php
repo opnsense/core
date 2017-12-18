@@ -91,13 +91,22 @@ class Voucher extends Base implements IAuthConnector
      */
     private function openDatabase()
     {
-        $db_path = '/conf/vouchers_' . $this->refid . '.db';
+        $db_dir = "/conf/db";
+        $db_path = $db_dir . '/vouchers_' . $this->refid . '.db';
+        if (!is_dir($db_dir))
+        {
+            mkdir($db_dir);
+            chgrp($db_dir, "squid");
+            chmod($db_dir, 0770);
+        }
         $this->dbHandle = new \SQLite3($db_path);
         $this->dbHandle->busyTimeout(30000);
         $results = $this->dbHandle->query('select count(*) cnt from sqlite_master');
         $row = $results->fetchArray();
         if ($row['cnt'] == 0) {
             // new database, setup
+            chgrp($db_path, "squid");
+            chmod($db_path, 0660);
             $sql_create = "
                 create table vouchers (
                       username      varchar2  -- username
