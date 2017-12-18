@@ -117,7 +117,6 @@
 /usr/local/etc/rc.loader.d/20-modules
 /usr/local/etc/rc.loader.d/20-netgraph
 /usr/local/etc/rc.newipsecdns
-/usr/local/etc/rc.newroutedns
 /usr/local/etc/rc.newwanip
 /usr/local/etc/rc.newwanipv6
 /usr/local/etc/rc.openvpn
@@ -675,7 +674,6 @@
 /usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
 /usr/local/opnsense/service/conf/actions.d/actions_plugins.conf
 /usr/local/opnsense/service/conf/actions.d/actions_proxy.conf
-/usr/local/opnsense/service/conf/actions.d/actions_routedns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_system.conf
 /usr/local/opnsense/service/conf/actions.d/actions_systemhealth.conf
 /usr/local/opnsense/service/conf/actions.d/actions_template.conf
