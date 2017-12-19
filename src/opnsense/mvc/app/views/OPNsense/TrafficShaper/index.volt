@@ -69,13 +69,11 @@ POSSIBILITY OF SUCH DAMAGE.
                         converters: {
                             notprefixable: {
                                 to: function (value) {
-                                    value = JSON.parse(value);
-                                    var str = "";
                                     if (value.not) {
-                                        str += '<i class="fa fa-exclamation"></i> ';
+                                        return '<i class="fa fa-exclamation"></i> ' + value.val;
+                                    } else {
+                                        return value.val;
                                     }
-                                    str += value.val;
-                                    return str;
                                 }
                             }
                         },
@@ -83,8 +81,10 @@ POSSIBILITY OF SUCH DAMAGE.
                             // concatenate fields for not.
                             if ('rows' in response) {
                                 for (var i = 0; i < response.rowCount; i++) {
-                                    response.rows[i]['displaysrc'] = JSON.stringify({'not':response.rows[i].source_not == '1', 'val':response.rows[i].source})
-                                    response.rows[i]['displaydst'] = JSON.stringify({'not':response.rows[i].destination_not == '1', 'val':response.rows[i].destination})
+                                    response.rows[i]['displaysrc'] = {'not':response.rows[i].source_not == '1',
+                                                                      'val':response.rows[i].source}
+                                    response.rows[i]['displaydst'] = {'not':response.rows[i].destination_not == '1',
+                                                                      'val':response.rows[i].destination}
                                 }
                             }
                             return response;
