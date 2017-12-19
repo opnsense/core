@@ -114,6 +114,7 @@ $p2_pfskeygroups = array(
 function ipsec_configure()
 {
     return array(
+        'bootup' => array('ipsec_configure_do'), /* XXX until OpenVPN moves */
         'vpn' => array('ipsec_configure_do:2'),
     );
 }
