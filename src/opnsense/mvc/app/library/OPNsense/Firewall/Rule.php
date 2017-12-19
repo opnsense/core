@@ -75,6 +75,62 @@ abstract class Rule
     }
 
     /**
+     * parse plain data
+     * @param string $value field value
+     * @param string $prefix prefix when $value is provided
+     * @param string $suffix suffix when $value is provided
+     * @param int $maxsize maximum size, cut when longer
+     * @return string
+     */
+    protected function parsePlain($value, $prefix = "", $suffix = "", $maxsize = null)
+    {
+        if (!empty($maxsize) && strlen($value) > $maxsize) {
+            $value = substr($value, 0, $maxsize);
+        }
+        return $value == null || $value === '' ? '' : $prefix . $value . $suffix . ' ';
+    }
+
+    /**
+     * parse plain data
+     * @param string $value field value
+     * @param string $prefix prefix when $value is provided
+     * @return string
+     */
+    protected function parsePlainCurly($value, $prefix = "")
+    {
+        $suffix = "";
+        if (strpos($value, '$') === false) {
+            // don't wrap aliases in curly brackets
+            $prefix = $prefix . "{";
+            $suffix = "}";
+        }
+        return $value == null || $value === '' ? '' : $prefix . $value . $suffix . ' ';
+    }
+
+    /**
+     * parse data, use replace map
+     * @param string $value field value
+     * @param string $map
+     * @return string
+     */
+    protected function parseReplaceSimple($value, $map, $prefix = "", $suffix = "")
+    {
+        $retval = $value;
+        foreach (explode('|', $map) as $item) {
+            $tmp = explode(':', $item);
+            if ($tmp[0] == $value) {
+                $retval = $tmp[1] . " ";
+                break;
+            }
+        }
+        if (!empty($retval)) {
+            return $prefix . $retval . $suffix . " ";
+        } else {
+            return "";
+        }
+    }
+
+    /**
      * convert source/destination address entries as used by the gui
      * @param array $rule rule
      */

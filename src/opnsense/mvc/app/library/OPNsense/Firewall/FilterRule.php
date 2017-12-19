@@ -66,62 +66,6 @@ class FilterRule extends Rule
     );
 
     /**
-     * parse plain data
-     * @param string $value field value
-     * @param string $prefix prefix when $value is provided
-     * @param string $suffix suffix when $value is provided
-     * @param int $maxsize maximum size, cut when longer
-     * @return string
-     */
-    private function parsePlain($value, $prefix = "", $suffix = "", $maxsize = null)
-    {
-        if (!empty($maxsize) && strlen($value) > $maxsize) {
-            $value = substr($value, 0, $maxsize);
-        }
-        return $value == null || $value === '' ? '' : $prefix . $value . $suffix . ' ';
-    }
-
-    /**
-     * parse plain data
-     * @param string $value field value
-     * @param string $prefix prefix when $value is provided
-     * @return string
-     */
-    private function parsePlainCurly($value, $prefix = "")
-    {
-        $suffix = "";
-        if (strpos($value, '$') === false) {
-            // don't wrap aliases in curly brackets
-            $prefix = $prefix . "{";
-            $suffix = "}";
-        }
-        return $value == null || $value === '' ? '' : $prefix . $value . $suffix . ' ';
-    }
-
-    /**
-     * parse data, use replace map
-     * @param string $value field value
-     * @param string $map
-     * @return string
-     */
-    private function parseReplaceSimple($value, $map, $prefix = "", $suffix = "")
-    {
-        $retval = $value;
-        foreach (explode('|', $map) as $item) {
-            $tmp = explode(':', $item);
-            if ($tmp[0] == $value) {
-                $retval = $tmp[1] . " ";
-                break;
-            }
-        }
-        if (!empty($retval)) {
-            return $prefix . $retval . $suffix . " ";
-        } else {
-            return "";
-        }
-    }
-
-    /**
      * parse type
      * @param string $value field value
      * @return string
