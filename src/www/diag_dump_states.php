@@ -146,12 +146,12 @@ include("head.inc");
                     $isipv4 = strpos($state['src_addr'], ':') === false;
                     $srcport = $isipv4 ? ":{$state['src_port']}" : "[{$state['src_port']}]";
                     $dstport = $isipv4 ? ":{$state['dst_port']}" : "[{$state['dst_port']}]";
-                    $info = $state['src_addr'] . $srcport . " " . $direction . " ";
+                    $info = $state['src_addr'] . $srcport ;
                     if (!empty($state['nat_addr'])) {
                         $natport = $isipv4 ? ":{$state['nat_port']}" : "[{$state['nat_port']}]";
-                        $info .=$state['nat_addr'] . $natport;
+                        $info .= " (" .$state['nat_addr'] . $natport . ") ";
                     }
-                    $info .= $state['dst_addr'] . $dstport;
+                    $info .=  " " . $direction . " " . $state['dst_addr'] . $dstport;
 ?>
                     <tr class="r<?=$rowid;?>">
                       <td><?= !empty($intfdescr[$state['iface']]) ? $intfdescr[$state['iface']] : $state['iface'] ?></td>
