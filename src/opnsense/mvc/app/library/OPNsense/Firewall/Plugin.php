@@ -39,6 +39,7 @@ class Plugin
 {
     private $anchors = array();
     private $filterRules = array();
+    private $natRules = array();
     private $interfaceMapping = array();
     private $gatewayMapping = array();
     private $systemDefaults = array();
@@ -219,6 +220,20 @@ class Plugin
     }
 
     /**
+     * register a Nat rule
+     * @param int $prio priority
+     * @param array $conf configuration
+     */
+    public function registerNatRule($prio, $conf)
+    {
+        $rule = new NatRule($this->interfaceMapping, $conf);
+        if (empty($this->natRules[$prio])) {
+            $this->natRules[$prio] = array();
+        }
+        $this->natRules[$prio][] = $rule;
+    }
+
+    /**
      * filter rules to text
      * @return string
      */
@@ -234,6 +249,21 @@ class Plugin
         return $output;
     }
 
+    /**
+     * filter rules to text
+     * @return string
+     */
+    public function outputNatRules()
+    {
+        $output = "";
+        ksort($this->natRules);
+        foreach ($this->natRules as $prio => $ruleset) {
+            foreach ($ruleset as $rule) {
+                $output .= (string)$rule;
+            }
+        }
+        return $output;
+    }
     /**
      * register a pf table
      * @param string $name table name
