@@ -379,7 +379,7 @@ BOUND|RENEW|REBIND|REBOOT)
 	fi
 	;;
 
-EXPIRE|FAIL)
+EXPIRE|FAIL|RELEASE)
 	delete_old_alias
 	delete_old_states
 	if [ -n "$old_ip_address" ]; then
