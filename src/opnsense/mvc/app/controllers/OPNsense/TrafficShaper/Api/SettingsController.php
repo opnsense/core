@@ -348,7 +348,7 @@ class SettingsController extends ApiControllerBase
         $grid = new UIModelGrid($mdlShaper->rules->rule);
         return $grid->fetchBindRequest(
             $this->request,
-            array("interface", "proto","source","destination","description","origin","sequence","target"),
+            array("interface", "proto", "source_not","source", "destination_not", "destination", "description", "origin", "sequence", "target"),
             "sequence"
         );
     }

@@ -64,7 +64,32 @@ POSSIBILITY OF SUCH DAMAGE.
                     get:'/api/trafficshaper/settings/getRule/',
                     set:'/api/trafficshaper/settings/setRule/',
                     add:'/api/trafficshaper/settings/addRule/',
-                    del:'/api/trafficshaper/settings/delRule/'
+                    del:'/api/trafficshaper/settings/delRule/',
+                    options: {
+                        converters: {
+                            notprefixable: {
+                                to: function (value) {
+                                    value = JSON.parse(value);
+                                    var str = "";
+                                    if (value.not) {
+                                        str += '<i class="fa fa-exclamation"></i> ';
+                                    }
+                                    str += value.val;
+                                    return str;
+                                }
+                            }
+                        },
+                        responseHandler: function (response) {
+                            // concatenate fields for not.
+                            if ('rows' in response) {
+                                for (var i = 0; i < response.rowCount; i++) {
+                                    response.rows[i]['displaysrc'] = JSON.stringify({'not':response.rows[i].source_not == '1', 'val':response.rows[i].source})
+                                    response.rows[i]['displaydst'] = JSON.stringify({'not':response.rows[i].destination_not == '1', 'val':response.rows[i].destination})
+                                }
+                            }
+                            return response;
+                        }
+                    }
                 }
         );
 
@@ -204,8 +229,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 <th data-column-id="origin" data-type="string"  data-visible="false">{{ lang._('Origin') }}</th>
                 <th data-column-id="interface" data-type="string">{{ lang._('Interface') }}</th>
                 <th data-column-id="proto" data-type="string">{{ lang._('Protocol') }}</th>
-                <th data-column-id="source" data-type="string">{{ lang._('Source') }}</th>
-                <th data-column-id="destination" data-type="string">{{ lang._('Destination') }}</th>
+                <th data-column-id="displaysrc" data-type="notprefixable">{{ lang._('Source') }}</th>
+                <th data-column-id="displaydst" data-type="notprefixable">{{ lang._('Destination') }}</th>
                 <th data-column-id="target" data-type="string">{{ lang._('Target') }}</th>
                 <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                 <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
