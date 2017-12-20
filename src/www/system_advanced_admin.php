@@ -41,11 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['webguiport'] = $config['system']['webgui']['port'];
     $pconfig['ssl-certref'] = $config['system']['webgui']['ssl-certref'];
     $pconfig['compression'] = isset($config['system']['webgui']['compression']) ? $config['system']['webgui']['compression'] : null;
-    if (!empty($config['system']['webgui']['ssl-ciphers'])) {
-        $pconfig['ssl-ciphers'] = explode(':', $config['system']['webgui']['ssl-ciphers']);
-    } else {
-        $pconfig['ssl-ciphers'] = array();
-    }
+    $pconfig['ssl-ciphers'] = !empty($config['system']['webgui']['ssl-ciphers']) ? explode(':', $config['system']['webgui']['ssl-ciphers']) : array();
     $pconfig['disablehttpredirect'] = isset($config['system']['webgui']['disablehttpredirect']);
     $pconfig['disableconsolemenu'] = isset($config['system']['disableconsolemenu']);
     $pconfig['usevirtualterminal'] = isset($config['system']['usevirtualterminal']);
@@ -53,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['sudo_allow_wheel'] = $config['system']['sudo_allow_wheel'];
     $pconfig['nodnsrebindcheck'] = isset($config['system']['webgui']['nodnsrebindcheck']);
     $pconfig['nohttpreferercheck'] = isset($config['system']['webgui']['nohttpreferercheck']);
-    $pconfig['loginautocomplete'] = isset($config['system']['webgui']['loginautocomplete']);
     $pconfig['althostnames'] = $config['system']['webgui']['althostnames'];
     $pconfig['serialspeed'] = $config['system']['serialspeed'];
     $pconfig['primaryconsole'] = $config['system']['primaryconsole'];
@@ -91,7 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
-        // flag web ui for restart
         $newinterfaces = !empty($pconfig['webguiinterfaces']) ? implode(',', $pconfig['webguiinterfaces']) : '';
         $newciphers = !empty($pconfig['ssl-ciphers']) ? implode(':', $pconfig['ssl-ciphers']) : '';
 
@@ -115,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif (isset($config['system']['webgui']['disablehttpredirect'])) {
             unset($config['system']['webgui']['disablehttpredirect']);
         }
+
         if ($pconfig['quietlogin'] == "yes") {
             $config['system']['webgui']['quietlogin'] = true;
         } elseif (isset($config['system']['webgui']['quietlogin'])) {
@@ -174,12 +169,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['webgui']['nohttpreferercheck']);
         }
 
-        if ($pconfig['loginautocomplete'] == "yes") {
-            $config['system']['webgui']['loginautocomplete'] = true;
-        } elseif (isset($config['system']['webgui']['loginautocomplete'])) {
-            unset($config['system']['webgui']['loginautocomplete']);
-        }
-
         if (!empty($pconfig['althostnames'])) {
             $config['system']['webgui']['althostnames'] = $pconfig['althostnames'];
         } elseif (isset($config['system']['webgui']['althostnames'])) {
@@ -216,7 +205,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if ($restart_webgui) {
-            global $_SERVER;
             $http_host_port = explode("]", $_SERVER['HTTP_HOST']);
             /* IPv6 address check */
             if (strstr($_SERVER['HTTP_HOST'], "]")) {
@@ -233,7 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             $prot = $config['system']['webgui']['protocol'];
             $port = $config['system']['webgui']['port'];
-            if ($port) {
+            if (!empty($port)) {
                 $url = "{$prot}://{$host}:{$port}/system_advanced_admin.php";
             } else {
                 $url = "{$prot}://{$host}/system_advanced_admin.php";
@@ -242,13 +230,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         write_config();
 
-        filter_configure();
         $savemsg = get_std_save_message();
 
-        if ($restart_webgui) {
-            $savemsg .= sprintf("<br />" . gettext("One moment...redirecting to %s in 20 seconds."), $url);
-        }
-
+        filter_configure();
         system_login_configure();
         system_hosts_generate();
         plugins_configure('dns');
@@ -256,7 +240,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         configd_run('openssh restart', true);
 
         if ($restart_webgui) {
-            configd_run('webgui restart 2', true);
+            configd_run('webgui restart 3', true);
         }
     }
 }
@@ -295,12 +279,34 @@ include("head.inc");
       $(".proto").change();
 
  <?php
-    // reload page after 20 seconds if webserver is restarted
-    if ( isset($restart_webgui) && $restart_webgui):?>
-       setTimeout(function(){
-         window.location.assign("<?=$url;?>");
-       }, 20000);
+    if (isset($restart_webgui) && $restart_webgui): ?>
+        BootstrapDialog.show({
+            type:BootstrapDialog.TYPE_INFO,
+            title: '<?= html_safe($savemsg) ?>',
+            closable: false,
+            onshow:function(dialogRef){
+                dialogRef.setClosable(false);
+                dialogRef.getModalBody().html(
+                    '<?= html_safe(gettext('The web GUI is restarting at the moment, please wait...')) ?>' +
+                    ' <i class="fa fa-cog fa-spin"></i><br /><br /><?= html_safe(gettext('If the page does not load go here:')) ?>' +
+                    ' <a href="<?= html_safe($url) ?>"><?= html_safe($url) ?></a>'
+                );
+                setTimeout(rebootWait, 10000);
+            },
+        });
+
+        function rebootWait() {
+            $.ajax({
+                url: '<?= html_safe($url); ?>',
+                timeout: 2500
+            }).fail(function () {
+                setTimeout(rebootWait, 2500);
+            }).done(function () {
+                window.location.assign('<?= html_safe($url); ?>');
+            });
+        }
  <?php
+    unset($savemsg);
     endif;?>
   });
 </script>
@@ -407,18 +413,6 @@ include("head.inc");
                                           "is always permitted even on port 80, regardless of the listening port configured. " .
                                           "Check this box to disable this automatically added redirect rule.");
                                           ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_loginautocomplete" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Login Autocomplete"); ?></td>
-                  <td>
-                    <input name="loginautocomplete" type="checkbox" value="yes" <?= empty($pconfig['loginautocomplete']) ? '' : 'checked="checked"' ?> />
-                    <strong><?= gettext('Enable web GUI login autocomplete') ?></strong>
-                    <div class="hidden" for="help_for_loginautocomplete">
-                      <?= gettext("When this is checked, login credentials for the web GUI " .
-                                          "may be saved by the browser. While convenient, some security standards require this to be disabled. " .
-                                          "Check this box to enable autocomplete on the login form so that browsers will prompt to save credentials (NOTE: Some browsers do not respect this option).");?>
                     </div>
                   </td>
                 </tr>
