@@ -287,20 +287,20 @@ include("head.inc");
             onshow:function(dialogRef){
                 dialogRef.setClosable(false);
                 dialogRef.getModalBody().html(
-                    '<?= html_safe(gettext('The web GUI is restarting at the moment, please wait...')) ?>' +
-                    ' <i class="fa fa-cog fa-spin"></i><br /><br /><?= html_safe(gettext('If the page does not load go here:')) ?>' +
+                    '<?= html_safe(gettext('The web GUI is reloading at the moment, please wait...')) ?>' +
+                    ' <i class="fa fa-cog fa-spin"></i><br /><br /><?= html_safe(gettext('If the page does not reload go here:')) ?>' +
                     ' <a href="<?= html_safe($url) ?>"><?= html_safe($url) ?></a>'
                 );
-                setTimeout(rebootWait, 10000);
+                setTimeout(reloadWait, 10000);
             },
         });
 
-        function rebootWait() {
+        function reloadWait() {
             $.ajax({
                 url: '<?= html_safe($url); ?>',
                 timeout: 2500
             }).fail(function () {
-                setTimeout(rebootWait, 2500);
+                setTimeout(reloadWait, 2500);
             }).done(function () {
                 window.location.assign('<?= html_safe($url); ?>');
             });

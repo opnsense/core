@@ -281,12 +281,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
     function rebootWait() {
         $.ajax({
-            url: document.url,
+            url: '/',
             timeout: 2500
         }).fail(function () {
             setTimeout(rebootWait, 2500);
         }).done(function () {
-            $(location).attr('href',"/");
+            $(location).attr('href', '/');
         });
     }
 

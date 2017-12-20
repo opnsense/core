@@ -31,22 +31,51 @@ require_once("guiconfig.inc");
 require_once("system.inc");
 
 include("head.inc");
+
 ?>
 <body>
-<?php include("fbegin.inc"); ?>
+<?php
+
+include("fbegin.inc");
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['Submit'])): ?>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    BootstrapDialog.show({
+        type:BootstrapDialog.TYPE_INFO,
+        title: '<?= html_safe(gettext('Your device is rebooting')) ?>',
+        closable: false,
+        onshow:function(dialogRef){
+            dialogRef.setClosable(false);
+            dialogRef.getModalBody().html(
+                '<?= html_safe(gettext('The system is rebooting now, please wait...')) ?>' +
+                ' <i class="fa fa-cog fa-spin"></i>'
+            );
+            setTimeout(rebootWait, 45000);
+        },
+    });
+
+    function rebootWait() {
+        $.ajax({
+            url: '/',
+            timeout: 2500
+        }).fail(function () {
+            setTimeout(rebootWait, 2500);
+        }).done(function () {
+            $(location).attr('href', '/');
+        });
+    }
+});
+</script>
+
+<?php
+      endif; ?>
 
 <section class="page-content-main">
   <div class="container-fluid col-xs-12 col-sm-10 col-md-9">
     <div class="row">
       <section class="col-xs-12">
-
-<?php
-      if (!empty($_POST['Submit'])): ?>
-        <meta http-equiv=\"refresh\" content=\"70;url=/\"/>
-<?php
-        print_info_box(gettext("The system is rebooting now. This may take one minute.")); ?>
-<?php
-      else:?>
         <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
           <p><strong><?=gettext("Are you sure you want to reboot the system?");?></strong></p>
           <div class="btn-group">
@@ -54,17 +83,14 @@ include("head.inc");
             <a href="/" class="btn btn-default"><?=gettext("No");?></a>
           </div>
         </form>
-<?php
-      endif; ?>
       </section>
     </div>
   </div>
 </section>
-<?php include("foot.inc");
-// system reboot, when submit pressed
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!empty($_POST['Submit'])) {
-        system_reboot();
-    }
+<?php
+
+include("foot.inc");
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['Submit'])) {
+    system_reboot();
 }
-?>
