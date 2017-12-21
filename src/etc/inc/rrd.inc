@@ -447,7 +447,7 @@ function rrd_configure($verbose = false)
             /* set up the ntpd rrd file */
             if (!file_exists("$rrddbpath$ntpd")) {
                 $rrdcreate = "$rrdtool create $rrddbpath$ntpd --step $rrdntpdinterval ";
-                $rrdcreate .= "DS:offset:GAUGE:$ntpdvalid:0:1000 ";
+                $rrdcreate .= "DS:offset:GAUGE:$ntpdvalid:-1000:1000 ";
                 $rrdcreate .= "DS:sjit:GAUGE:$ntpdvalid:0:1000 ";
                 $rrdcreate .= "DS:cjit:GAUGE:$ntpdvalid:0:1000 ";
                 $rrdcreate .= "DS:wander:GAUGE:$ntpdvalid:0:1000 ";
