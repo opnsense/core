@@ -157,6 +157,9 @@ if (count($input_errors)) {
 	if (isset($config['unbound']['forwarding'])) {
 		unset($config['unbound']['forwarding']);
 	}
+	if (isset($config['dnsmasq']['enable'])) {
+		unset($config['dnsmasq']['enable']);
+	}
 }
 	]]></stepsubmitphpaction>
 </step>
