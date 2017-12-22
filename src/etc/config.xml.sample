@@ -204,7 +204,7 @@
     <nextuid>2000</nextuid>
     <nextgid>2000</nextgid>
     <timezone>Etc/UTC</timezone>
-    <timeservers>0.opnsense.pool.ntp.org</timeservers>
+    <timeservers>2.opnsense.pool.ntp.org</timeservers>
     <webgui>
       <protocol>https</protocol>
       <authmode>Local Database</authmode>
