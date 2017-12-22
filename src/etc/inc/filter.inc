@@ -240,6 +240,14 @@ function filter_configure_sync($verbose = false)
         }
     }
 
+    if (!empty($config['nat']['rule'])) {
+        // register user nat rules
+        foreach ($config['nat']['rule'] as $rule) {
+            $fw->registerNatRule(1, $rule);
+        }
+    }
+
+
     filter_pflog_start();
 
     if ($verbose) {
@@ -264,7 +272,7 @@ function filter_configure_sync($verbose = false)
     }
 
     $FilterIflist = filter_generate_optcfg_array();
-    $natrules = filter_nat_rules_generate($FilterIflist);
+    $natrules = filter_nat_rules_generate($FilterIflist, $fw);
 
     if ($verbose) {
         echo '.';
@@ -1106,7 +1114,7 @@ function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcpor
     return $natrule;
 }
 
-function filter_nat_rules_generate(&$FilterIflist)
+function filter_nat_rules_generate(&$FilterIflist, &$fw)
 {
     global $config, $GatewaysList;
 
@@ -1317,176 +1325,9 @@ function filter_nat_rules_generate(&$FilterIflist)
         unset($alports);
     }
 
-    if (isset($config['nat']['rule'])) {
-        $natrules .= "\n# NAT Inbound Redirects\n";
-          foreach ($config['nat']['rule'] as $rule) {
-            if (isset($rule['disabled'])) {
-                continue;
-            }
 
-            /* if item is an alias, expand */
-            $dstport = array(alias_expand($rule['destination']['port']));
-            if (empty($dstport[0])) {
-                $dstport = explode("-", $rule['destination']['port']);
-            }
-
-            if (!empty($rule['protocol']) && in_array($rule['protocol'], array('tcp/udp', 'udp', 'tcp'))) {
-                $localport = alias_expand($rule['local-port']);
-                if (!$localport || $dstport[0] == $localport) {
-                    $localport = "";
-                } elseif (is_alias($rule['local-port'])) {
-                    $localport = filter_core_get_port_alias($rule['local-port']);
-                    if (!empty($localport)) {
-                        $localport = $localport[0];
-                        $localport = " port {$localport}";
-                    }
-                } elseif (is_alias($rule['destination']['port'])) {
-                    $localport = " port {$localport}";
-                } else {
-                    if (($dstport[1]) && ($dstport[0] != $dstport[1])) {
-                        $localendport = $localport + ($dstport[1] - $dstport[0]);
-                        $localport .= ":$localendport";
-                    }
-                    $localport = " port {$localport}";
-                }
-            } else {
-                $localport = "";
-            }
-
-            $address_family = !empty($rule['ipprotocol']) ? $rule['ipprotocol'] : "";
-            switch(strtolower(!empty($rule['protocol']) ? $rule['protocol'] : "")) {
-                case "tcp/udp":
-                    $protocol = "{ tcp udp }";
-                    break;
-                default:
-                    $protocol = strtolower($rule['protocol']);
-                    break;
-            }
-
-            $target = alias_expand($rule['target']);
-            if (!$target && !isset($rule['nordr'])) {
-                $natrules .= "# Unresolvable alias {$rule['target']}\n";
-                continue;    /* unresolvable alias */
-            }
-
-            if (is_alias($rule['target'])) {
-                $target_ip = "${$rule['target']}";
-            } elseif (is_ipaddr($rule['target'])) {
-                $target_ip = $rule['target'];
-            } elseif (is_ipaddr($FilterIflist[$rule['target']]['ip'])) {
-                $target_ip = $FilterIflist[$rule['target']]['ip'];
-            } else {
-                $target_ip = $rule['target'];
-            }
-            $target_ip = trim($target_ip);
-
-            if ($rule['associated-rule-id'] == "pass") {
-                $rdrpass = "pass ";
-            } else {
-                $rdrpass = "";
-            }
-
-            if (isset($rule['nordr'])) {
-                $nordr = "no ";
-                $rdrpass = "";
-            } else {
-                $nordr = "";
-            }
-
-            if (!$rule['interface']) {
-                $natif = "wan";
-            } else {
-                $natif = $rule['interface'];
-            }
-
-            if (!isset($FilterIflist[$natif])) {
-                continue;
-            }
-            $srcaddr = trim(filter_generate_address($FilterIflist, $rule, 'source', true));
-            $dstaddr = trim(filter_generate_address($FilterIflist, $rule, 'destination', true));
-
-            if (!$dstaddr) {
-                $dstaddr = $FilterIflist[$natif]['ip'];
-            }
-
-            $dstaddr_port = explode(" ", $dstaddr);
-            if (empty($dstaddr_port[0]) || strtolower(trim($dstaddr_port[0])) == "port") {
-                continue; // Skip port forward if no destination address found
-            }
-            $dstaddr_reflect = $dstaddr;
-            if (isset($rule['destination']['any'])) {
-                /* With reflection enabled, destination of 'any' has side effects
-                 * that most people would not expect, so change it on reflection rules. */
-                $dstaddr_reflect = $FilterIflist[$natif]['ip'];
-                if (!empty($FilterIflist[$natif]['sn'])) {
-                    $dstaddr_reflect = gen_subnet($dstaddr_reflect, $FilterIflist[$natif]['sn']) . '/' . $FilterIflist[$natif]['sn'];
-                }
-                if ($dstaddr_port[2]) {
-                    $dstaddr_reflect .= " port " . $dstaddr_port[2];
-                }
-            }
-
-            $natif = $FilterIflist[$natif]['if'];
-
-            $localport_nat = $localport;
-            if (empty($localport_nat) && $dstaddr_port[2]) {
-                $localport_nat = " port " . $dstaddr_port[2];
-            }
-
-            $tagging = '';
-            if (!empty($rule['tag'])) {
-                $tagging .= " tag {$rule['tag']}";
-            }
-            if (!empty($rule['tagged'])) {
-                $tagging .= " tagged {$rule['tagged']}";
-            }
-
-            $poolopts = '';
-            if (!empty($rule['poolopts']) && (is_subnet($rule['target']) || is_alias($rule['target']))) {
-                $poolopts = " {$rule['poolopts']}";
-            }
-
-            if ($srcaddr <> "" && $dstaddr <> "" && $natif) {
-                $protocol_keyword = !empty($protocol) ? "proto" : "";
-                $natrules .= "{$nordr}rdr {$rdrpass}on {$natif} {$address_family} {$protocol_keyword} {$protocol} from {$srcaddr} to {$dstaddr}{$tagging}" . ($nordr == "" ? " -> {$target}{$localport}{$poolopts}" : '');
-                /* Does this rule redirect back to a internal host? */
-                if (isset($rule['destination']['any']) && !isset($rule['nordr']) && !isset($config['system']['enablenatreflectionhelper'])) {
-                    if (!interface_has_gateway($rule['interface']) && !interface_has_gatewayv6($rule['interface'])) {
-                        $natrules .= "\n";
-                        $natrules .= "no nat on {$natif} {$address_family} proto tcp from ({$natif}) to ({$natif}:network)\n";
-                        $natrules .= "nat on {$natif} {$address_family} proto tcp from ({$natif}:network) to {$target} port {$dstport[0]} -> ({$natif})\n";
-                    }
-                }
-
-                $nat_if_list = array();
-                if ($rule['natreflection'] != "disable" && $dstaddr_port[0] != "0.0.0.0" && !is_ipaddrv6($target)) {
-                    $nat_if_list = filter_get_reflection_interfaces($FilterIflist, $natif);
-                    if (!empty($nat_if_list)) {
-                        if (in_array($rule['natreflection'], array("purenat", "enable")) || !isset($config['system']['disablenatreflection'])) {
-                            $rdr_if_list = implode(" ", $nat_if_list);
-                            if (count($nat_if_list) > 1) {
-                                $rdr_if_list = "{ {$rdr_if_list} }";
-                            }
-                            $natrules .= "\n# Reflection redirect\n";
-                            $protocol_keyword = !empty($protocol) ? "proto" : "";
-                            $natrules .= "{$nordr}rdr {$rdrpass}on {$rdr_if_list} {$address_family} {$protocol_keyword} {$protocol} from {$srcaddr} to {$dstaddr_reflect}" . ($nordr == "" ? " -> {$target}{$localport}" : "");
-                            $nat_if_list = array_merge(array($natif), $nat_if_list);
-                        }
-                    }
-                }
-
-                if (empty($nat_if_list)) {
-                    $nat_if_list = array($natif);
-                }
-
-                $natrules .= "\n";
-
-                if (!isset($rule['nordr']) && isset($config['system']['enablenatreflectionhelper'])) {
-                    $natrules .= filter_generate_reflection_nat($FilterIflist, $rule, $route_table, $nat_if_list, $protocol, "{$target}{$localport_nat}", $target_ip);
-                }
-            }
-        }
-    }
+    $natrules .= "\n# NAT Inbound Redirects\n";
+    $natrules .= $fw->outputNatRules();
 
     if (!empty($reflection_txt)) {
         $natrules .= "\n# Reflection redirects and NAT for 1:1 mappings\n" . $reflection_txt;
