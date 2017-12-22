@@ -60,7 +60,8 @@ class NatRule extends Rule
             'interface' => 'parseInterface',
             'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
             'interface.from' => 'parseInterface, from ,:network',
-            'localport' => 'parsePlainCurly,to ',
+            'target.to' => 'parsePlainCurly,to ',
+            'localport' => 'parsePlainCurly,port ',
             'interface.to' => 'parseInterface, -> ',
             'staticnatport' => 'parseBool,  static-port , port 1024:65535 '
         )
@@ -162,22 +163,27 @@ class NatRule extends Rule
                 if (!empty($interface) && empty($this->interfaceMapping[$interface]['if'])) {
                     $tmp['disabled'] = true;
                 }
-                // automatically generate nat rule when enablenatreflectionhelper is set
-                if (!$tmp['disabled'] && empty($tmp['nordr']) && !empty($tmp['enablenatreflectionhelper'])) {
-                    $tmp2 =  $tmp;
-                    $tmp2['rule_types'][] = "rdr_nat";
-                    $tmp2['staticnatport'] = !empty($tmp['staticnatport']);
-                    $result[] = $tmp2;
-                } else {
-                    $result[] = $tmp;
-                }
 
                 // When reflection is enabled our ruleset should cover all
+                $interflist = array($tmp['interface']);
                 if (!$tmp['disabled'] && in_array($tmp['natreflection'], array("purenat", "enable"))) {
-                    foreach ($this->reflectionInterfaces($interface) as $refl_interf) {
-                        $tmp['interface'] = $refl_interf;
-                        $result[] = $tmp;
+                    $interflist = array_merge($interflist, $this->reflectionInterfaces($interface));
+                }
+                foreach ($interflist as $interf) {
+                    $rule = $tmp;
+                    // automatically generate nat rule when enablenatreflectionhelper is set
+                    if (!$rule['disabled'] && empty($rule['nordr']) && !empty($rule['enablenatreflectionhelper'])) {
+                        // Only add nat rules when the selected interface has an address configured
+                        if (!empty($this->interfaceMapping[$interf])) {
+                            if (!empty($this->interfaceMapping[$interf]['ifconfig']['ipv4']) ||
+                                    !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4']) ) {
+                                $rule['rule_types'][] = "rdr_nat";
+                                $rule['staticnatport'] = !empty($rule['staticnatport']);
+                            }
+                        }
                     }
+                    $rule['interface'] = $interf;
+                    $result[] = $rule;
                 }
             }
         }

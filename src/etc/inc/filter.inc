@@ -185,11 +185,19 @@ function filter_configure_sync($verbose = false)
     // initialize fw plugin object
     $fw = new \OPNsense\Firewall\Plugin();
     $cnfint = legacy_config_get_interfaces(array("enable" => true));
-    // to set "reply-to" we need to know the gateway for our interface, let's collect it here and pass it on to
-    // setInterfaceMapping()
+    $ifdetails = legacy_interfaces_details();
     foreach ($cnfint as $key => &$value) {
+        // to set "reply-to" we need to know the gateway for our interface, let's collect it here and pass it on to
+        // setInterfaceMapping()
         $value['gateway'] = get_interface_gateway($key);
         $value['gatewayv6'] = get_interface_gateway_v6($key);
+        // In some cases we need to know if there currently are addresses configured on an interface, we pass
+        // the relevant ifconfig data to our interfacemapping (prevents "could not parse host specification" on load)
+        if (!empty($ifdetails[$value['if']])) {
+            $value['ifconfig'] = array();
+            $value['ifconfig']['ipv4'] = $ifdetails[$value['if']]['ipv4'];
+            $value['ifconfig']['ipv6'] = $ifdetails[$value['if']]['ipv6'];
+        }
     }
     // init interfaces and gateways
     $fw->setInterfaceMapping($cnfint);
