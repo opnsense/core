@@ -190,17 +190,18 @@ abstract class Rule
 
     /**
      * parse interface (name to interface)
-     * @param string $value field value
+     * @param string|array $value field value
+     * @param string $prefix prefix interface tag
      * @return string
      */
-    protected function parseInterface($value)
+    protected function parseInterface($value, $prefix="on ", $suffix="")
     {
         if (empty($value)) {
             return "";
         } elseif (empty($this->interfaceMapping[$value]['if'])) {
-            return "on ##{$value}## ";
+            return "{$prefix}##{$value}##{$suffix} ";
         } else {
-            return "on ". $this->interfaceMapping[$value]['if']." ";
+            return "{$prefix}". $this->interfaceMapping[$value]['if']."{$suffix} ";
         }
     }
 }
