@@ -56,7 +56,7 @@ class Plugin
         if (!empty(Config::getInstance()->object()->system->skip_rules_gw_down)) {
             $this->systemDefaults['skip_rules_gw_down'] = true;
         }
-        if (!empty(Config::getInstance()->object()->system->disablenatreflection)) {
+        if (empty(Config::getInstance()->object()->system->disablenatreflection)) {
             $this->systemDefaults['natreflection'] = "enable";
         }
         if (!empty(Config::getInstance()->object()->system->enablenatreflectionhelper)) {

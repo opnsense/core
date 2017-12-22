@@ -60,7 +60,7 @@ class NatRule extends Rule
             'interface' => 'parseInterface',
             'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
             'interface.from' => 'parseInterface, from ,:network',
-            'target.to' => 'parsePlainCurly,to ',
+            'localport' => 'parsePlainCurly,to ',
             'interface.to' => 'parseInterface, -> ',
             'staticnatport' => 'parseBool,  static-port , port 1024:65535 '
         )
@@ -168,11 +168,12 @@ class NatRule extends Rule
                     $tmp2['rule_types'][] = "rdr_nat";
                     $tmp2['staticnatport'] = !empty($tmp['staticnatport']);
                     $result[] = $tmp2;
+                } else {
+                    $result[] = $tmp;
                 }
 
-                $result[] = $tmp;
                 // When reflection is enabled our ruleset should cover all
-                if (!$tmp['disabled'] && in_array($this->rule['natreflection'], array("purenat", "enable"))) {
+                if (!$tmp['disabled'] && in_array($tmp['natreflection'], array("purenat", "enable"))) {
                     foreach ($this->reflectionInterfaces($interface) as $refl_interf) {
                         $tmp['interface'] = $refl_interf;
                         $result[] = $tmp;
