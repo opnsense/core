@@ -56,6 +56,12 @@ class Plugin
         if (!empty(Config::getInstance()->object()->system->skip_rules_gw_down)) {
             $this->systemDefaults['skip_rules_gw_down'] = true;
         }
+        if (!empty(Config::getInstance()->object()->system->disablenatreflection)) {
+            $this->systemDefaults['natreflection'] = "enable";
+        }
+        if (!empty(Config::getInstance()->object()->system->enablenatreflectionhelper)) {
+            $this->systemDefaults['enablenatreflectionhelper'] = true;
+        }
     }
 
     /**
@@ -226,6 +232,9 @@ class Plugin
      */
     public function registerNatRule($prio, $conf)
     {
+        if (!empty($this->systemDefaults)) {
+            $conf = array_merge($this->systemDefaults, $conf);
+        }
         $rule = new NatRule($this->interfaceMapping, $conf);
         if (empty($this->natRules[$prio])) {
             $this->natRules[$prio] = array();

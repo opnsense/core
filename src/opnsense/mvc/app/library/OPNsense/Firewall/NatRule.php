@@ -35,22 +35,35 @@ namespace OPNsense\Firewall;
  */
 class NatRule extends Rule
 {
-    private $procorder_rdr = array(
-        'disabled' => 'parseIsComment',
-        'rdr' => 'parseBool,no rdr,rdr',
-        'pass' => 'parseBool,pass ',
-        'interface' => 'parseInterface',
-        'ipprotocol' => 'parsePlain',
-        'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
-        'from' => 'parsePlainCurly,from ',
-        'from_port' => 'parsePlainCurly, port ',
-        'to' => 'parsePlainCurly,to ',
-        'to_port' => 'parsePlainCurly, port ',
-        'tag' => 'parsePlain, tag ',
-        'tagged' => 'parsePlain, tagged ',
-        'target' => 'parsePlain, -> ',
-        'localport' => 'parsePlain, port ',
-        'poolopts' => 'parsePlain'
+    private $procorder = array(
+        'rdr' => array(
+            'disabled' => 'parseIsComment',
+            'rdr' => 'parseBool,no rdr,rdr',
+            'pass' => 'parseBool,pass ',
+            'interface' => 'parseInterface',
+            'ipprotocol' => 'parsePlain',
+            'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
+            'from' => 'parsePlainCurly,from ',
+            'from_port' => 'parsePlainCurly, port ',
+            'to' => 'parsePlainCurly,to ',
+            'to_port' => 'parsePlainCurly, port ',
+            'tag' => 'parsePlain, tag ',
+            'tagged' => 'parsePlain, tagged ',
+            'target' => 'parsePlain, -> ',
+            'localport' => 'parsePlain, port ',
+            'poolopts' => 'parsePlain',
+            'descr' => 'parseComment'
+        ),
+        'rdr_nat' => array(
+            'disabled' => 'parseIsComment',
+            'nat' => 'parseBool,no nat,nat',
+            'interface' => 'parseInterface',
+            'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
+            'interface.from' => 'parseInterface, from ,:network',
+            'target.to' => 'parsePlainCurly,to ',
+            'interface.to' => 'parseInterface, -> ',
+            'staticnatport' => 'parseBool,  static-port , port 1024:65535 '
+        )
     );
 
     /**
@@ -64,6 +77,16 @@ class NatRule extends Rule
     }
 
     /**
+     * parse comment
+     * @param string $value field value
+     * @return string
+     */
+    private function parseComment($value)
+    {
+        return !empty($value) ? "# " . $value : "";
+    }
+
+    /**
      * search interfaces without a gateway other then the one provided
      * @param $interface
      * @return list of interfaces
@@ -73,8 +96,8 @@ class NatRule extends Rule
         $result = array();
         foreach ($this->interfaceMapping as $intfk => $intf) {
             if (empty($intf['gateway']) && empty($intf['gatewayv6']) && $interface != $intfk
-              && !in_array($intf['if'], $result)) {
-                $result[] = $intf['if'];
+              && !in_array($intf['if'], $result) && $intfk != 'loopback') {
+                $result[] = $intfk;
             }
         }
         return $result;
@@ -88,8 +111,8 @@ class NatRule extends Rule
     private function fetchActualRules()
     {
         $result = array();
-        $result = array();
         $interfaces = empty($this->rule['interface']) ? array(null) : explode(',', $this->rule['interface']);
+
         foreach ($interfaces as $interface) {
             if (isset($this->rule['ipprotocol']) && $this->rule['ipprotocol'] == 'inet46') {
                 $ipprotos = array('inet', 'inet6');
@@ -101,6 +124,7 @@ class NatRule extends Rule
 
             foreach ($ipprotos as $ipproto) {
                 $tmp = $this->rule;
+                $tmp['rule_types'] = array("rdr");
                 $tmp['rdr'] = !empty($tmp['nordr']);
                 if (!empty($tmp['associated-rule-id']) && $tmp['associated-rule-id'] == "pass") {
                     $tmp['pass'] = empty($tmp['nordr']);
@@ -138,9 +162,22 @@ class NatRule extends Rule
                 if (!empty($interface) && empty($this->interfaceMapping[$interface]['if'])) {
                     $tmp['disabled'] = true;
                 }
+                // automatically generate nat rule when enablenatreflectionhelper is set
+                if (!$tmp['disabled'] && empty($tmp['nordr']) && !empty($tmp['enablenatreflectionhelper'])) {
+                    $tmp2 =  $tmp;
+                    $tmp2['rule_types'][] = "rdr_nat";
+                    $tmp2['staticnatport'] = !empty($tmp['staticnatport']);
+                    $result[] = $tmp2;
+                }
+
                 $result[] = $tmp;
-                // print_r($this->interfaceMapping[$interface]);
-                // print_r($this->reflectionInterfaces($interface));
+                // When reflection is enabled our ruleset should cover all
+                if (!$tmp['disabled'] && in_array($this->rule['natreflection'], array("purenat", "enable"))) {
+                    foreach ($this->reflectionInterfaces($interface) as $refl_interf) {
+                        $tmp['interface'] = $refl_interf;
+                        $result[] = $tmp;
+                    }
+                }
             }
         }
         return $result;
@@ -154,17 +191,21 @@ class NatRule extends Rule
     {
         $ruleTxt = '';
         foreach ($this->fetchActualRules() as $rule) {
-            foreach ($this->procorder_rdr as $tag => $handle) {
-                $tmp = explode(',', $handle);
-                $method = $tmp[0];
-                $args = array(isset($rule[$tag]) ? $rule[$tag] : null);
-                if (count($tmp) > 1) {
-                    array_shift($tmp);
-                    $args = array_merge($args, $tmp);
+            foreach ($rule['rule_types'] as $rule_type) {
+                foreach ($this->procorder[$rule_type] as $tag => $handle) {
+                    // support reuse of the same fieldname
+                    $tag = explode(".", $tag)[0];
+                    $tmp = explode(',', $handle);
+                    $method = $tmp[0];
+                    $args = array(isset($rule[$tag]) ? $rule[$tag] : null);
+                    if (count($tmp) > 1) {
+                        array_shift($tmp);
+                        $args = array_merge($args, $tmp);
+                    }
+                    $ruleTxt .= call_user_func_array(array($this,$method), $args);
                 }
-                $ruleTxt .= call_user_func_array(array($this,$method), $args);
+                $ruleTxt .= "\n";
             }
-            $ruleTxt .= "\n";
         }
         return $ruleTxt;
     }
