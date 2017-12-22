@@ -32,40 +32,49 @@ require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-if(!isset($config['ntpd']['noquery'])) {
+if (!isset($config['ntpd']['noquery'])) {
     exec("/usr/local/sbin/ntpq -pnw | /usr/bin/tail +3", $ntpq_output);
     $ntpq_servers = array();
+    $server = array();
     foreach ($ntpq_output as $line) {
-        $server = array();
+        $status = gettext('Unknown');
         switch (substr($line, 0, 1)) {
-            case " ":
-                $server['status'] = "Unreach/Pending";
+            case ' ':
+                $status = gettext('Unreach/Pending');
                 break;
-            case "*":
-                $server['status'] = "Active Peer";
+            case '*':
+                $status = gettext('Active Peer');
                 break;
-            case "+":
-                $server['status'] = "Candidate";
+            case '+':
+                $status = gettext('Candidate');
                 break;
-            case "o":
-                $server['status'] = "PPS Peer";
+            case 'o':
+                $status = gettext('PPS Peer');
                 break;
-            case "#":
-                $server['status'] = "Selected";
+            case '#':
+                $status = gettext('Selected');
                 break;
-            case ".":
-                $server['status'] = "Excess Peer";
+            case '.':
+                $status = gettext('Excess Peer');
                 break;
-            case "x":
-                $server['status'] = "False Ticker";
+            case 'x':
+                $status = gettext('False Ticker');
                 break;
-            case "-":
-                $server['status'] = "Outlier";
+            case '-':
+                $status = gettext('Outlier');
                 break;
         }
+        if (empty($server['status'])) {
+            $server['status'] = $status;
+        }
         $line = substr($line, 1);
-        $peerinfo = preg_split("/[\s\t]+/", $line);
-        $server['server'] = $peerinfo[0];
+        $peerinfo = preg_split('/\s+/', $line);
+        if (empty($server['server'])) {
+            $server['server'] = $peerinfo[0];
+        }
+        if (empty($peerinfo[1])) {
+            continue;
+        }
         $server['refid'] = $peerinfo[1];
         $server['stratum'] = $peerinfo[2];
         $server['type'] = $peerinfo[3];
@@ -76,6 +85,7 @@ if(!isset($config['ntpd']['noquery'])) {
         $server['offset'] = $peerinfo[8];
         $server['jitter'] = $peerinfo[9];
         $ntpq_servers[] = $server;
+        $server = array();
     }
 
     exec("/usr/local/sbin/ntpq -c clockvar", $ntpq_clockvar_output);
@@ -127,9 +137,9 @@ if(!isset($config['ntpd']['noquery'])) {
 if (isset($config['ntpd']['gps']['type']) && ($config['ntpd']['gps']['type'] == 'SureGPS') && (isset($gps_ok))) {
     //GSV message is only enabled by init commands in services_ntpd_gps.php for SureGPS board
     $gpsport = fopen("/dev/gps0", "r+");
-    while($gpsport){
+    while ($gpsport) {
         $buffer = fgets($gpsport);
-        if(substr($buffer, 0, 6)=='$GPGSV'){
+        if (substr($buffer, 0, 6) == '$GPGSV') {
             $gpgsv = explode(',',$buffer);
             $gps_satview = $gpgsv[3];
             break;
