@@ -161,6 +161,28 @@ abstract class Rule
     }
 
     /**
+     * parse rule to text using processing parameters in $procorder
+     * @param array conversion properties (rule keys and methods to execute)
+     * @param array rule to parse
+     * @return string
+     */
+    protected function ruleToText(&$procorder, &$rule)
+    {
+        $ruleTxt = '';
+        foreach ($procorder as $tag => $handle) {
+            $tmp = explode(',', $handle);
+            $method = $tmp[0];
+            $args = array(isset($rule[$tag]) ? $rule[$tag] : null);
+            if (count($tmp) > 1) {
+                array_shift($tmp);
+                $args = array_merge($args, $tmp);
+            }
+            $ruleTxt .= call_user_func_array(array($this,$method), $args);
+        }
+        return $ruleTxt;
+    }
+
+    /**
      * convert source/destination address entries as used by the gui
      * @param array $rule rule
      */

@@ -70,7 +70,7 @@ class FilterRule extends Rule
      * @param string $value field value
      * @return string
      */
-    private function parseType($value)
+    protected function parseType($value)
     {
         switch ($value) {
             case 'reject':
@@ -87,7 +87,7 @@ class FilterRule extends Rule
      * @param string $value field value
      * @return string
      */
-    private function parseRoute($value)
+    protected function parseRoute($value)
     {
         if (!empty($value) && !empty($this->gatewayMapping[$value]['logic'])) {
             return " " . $this->gatewayMapping[$value]['logic'] . " ";
@@ -101,7 +101,7 @@ class FilterRule extends Rule
      * @param array $value state option
      * @return string
      */
-    private function parseState($value)
+    protected function parseState($value)
     {
         $retval = "";
         if (!empty($value)) {
@@ -117,7 +117,7 @@ class FilterRule extends Rule
      * add reply-to tag when applicable
      * @param array $rule rule
      */
-    private function convertReplyTo(&$rule)
+    protected function convertReplyTo(&$rule)
     {
         if (isset($rule['reply-to'])) {
             // reply-to gateway set, when found map to reply attribute, otherwise skip keyword
@@ -260,17 +260,7 @@ class FilterRule extends Rule
     {
         $ruleTxt = '';
         foreach ($this->parseFilterRules() as $rule) {
-            foreach ($this->procorder as $tag => $handle) {
-                $tmp = explode(',', $handle);
-                $method = $tmp[0];
-                $args = array(isset($rule[$tag]) ? $rule[$tag] : null);
-                if (count($tmp) > 1) {
-                    array_shift($tmp);
-                    $args = array_merge($args, $tmp);
-                }
-                $ruleTxt .= call_user_func_array(array($this,$method), $args);
-            }
-            $ruleTxt .= "\n";
+            $ruleTxt .= $this->ruleToText($this->procorder, $rule). "\n";
         }
         return $ruleTxt;
     }
