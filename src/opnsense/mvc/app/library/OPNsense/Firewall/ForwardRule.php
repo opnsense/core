@@ -147,7 +147,7 @@ class ForwardRule extends Rule
             // When reflection is enabled our ruleset should cover all
             $interflist = array($tmp['interface']);
             if (!$tmp['disabled'] && in_array($tmp['natreflection'], array("purenat", "enable"))) {
-                $interflist = array_merge($interflist, $this->reflectionInterfaces($interface));
+                $interflist = array_merge($interflist, $this->reflectionInterfaces($tmp['interface']));
             }
             foreach ($interflist as $interf) {
                 $rule = $tmp;
