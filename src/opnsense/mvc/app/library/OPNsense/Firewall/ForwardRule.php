@@ -156,7 +156,7 @@ class ForwardRule extends Rule
                     // Only add nat rules when the selected interface has an address configured
                     if (!empty($this->interfaceMapping[$interf])) {
                         if (!empty($this->interfaceMapping[$interf]['ifconfig']['ipv4']) ||
-                                !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4']) ) {
+                                !empty($this->interfaceMapping[$interf]['ifconfig']['ipv6']) ) {
                             $rule['rule_types'][] = "rdr_nat";
                             $rule['staticnatport'] = !empty($rule['staticnatport']);
                         }
