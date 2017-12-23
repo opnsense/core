@@ -158,7 +158,6 @@ class FilterRule extends Rule
      */
     private function fetchActualRules()
     {
-        $result = array();
         $interfaces = empty($this->rule['interface']) ? array(null) : explode(',', $this->rule['interface']);
         foreach ($interfaces as $interface) {
             if (isset($this->rule['ipprotocol']) && $this->rule['ipprotocol'] == 'inet46') {
@@ -255,10 +254,9 @@ class FilterRule extends Rule
                   && isset($tmp['set-prio-low']) && $tmp['set-prio-low'] !== "" ) {
                     $tmp['set-prio'] = "({$tmp['set-prio']}, {$tmp['set-prio-low']})";
                 }
-                $result[] = $tmp;
+                yield $tmp;
             }
         }
-        return $result;
     }
 
     /**
