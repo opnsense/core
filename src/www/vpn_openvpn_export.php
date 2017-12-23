@@ -35,6 +35,49 @@ require_once("services.inc");
 require_once("filter.inc");
 require_once("interfaces.inc");
 
+function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $isnat = false)
+{
+    global $config;
+
+    $src = '';
+
+    if (isset($rule[$target]['any'])) {
+        $src = "any";
+    } elseif (!empty($rule[$target]['network'])) {
+        $network_name = $rule[$target]['network'];
+        $matches = "";
+        if ($network_name == '(self)') {
+            $src = "(self)";
+        } elseif (preg_match("/^(wan|lan|opt[0-9]+)ip$/", $network_name, $matches)) {
+            if (empty($FilterIflist[$matches[1]]['if'])) {
+                // interface non-existent or in-active
+                return null;
+            }
+            $src = "({$FilterIflist["{$matches[1]}"]['if']})";
+        } else {
+            if (empty($FilterIflist[$network_name]['if'])) {
+                // interface non-existent or in-active
+                return null;
+            }
+            $src = "({$FilterIflist[$network_name]['if']}:network)";
+        }
+        if (isset($rule[$target]['not'])) {
+            $src = " !{$src}";
+        }
+    } elseif ($rule[$target]['address']) {
+        $expsrc = alias_expand($rule[$target]['address']);
+        if (isset($rule[$target]['not'])) {
+            $not = "!";
+        } else {
+            $not = "";
+        }
+        $src = " {$not} {$expsrc}";
+    }
+    $src .= filter_generate_port($rule, $target, $isnat);
+
+    return $src;
+}
+
 function openvpn_client_export_prefix($srvid, $usrid = null, $crtid = null)
 {
     global $config;
