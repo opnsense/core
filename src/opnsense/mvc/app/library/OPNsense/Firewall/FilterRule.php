@@ -156,106 +156,87 @@ class FilterRule extends Rule
      * handles shortcuts, like inet46 and multiple interfaces
      * @return array
      */
-    private function fetchActualRules()
+    private function parseFilterRules()
     {
-        $interfaces = empty($this->rule['interface']) ? array(null) : explode(',', $this->rule['interface']);
-        foreach ($interfaces as $interface) {
-            if (isset($this->rule['ipprotocol']) && $this->rule['ipprotocol'] == 'inet46') {
-                $ipprotos = array('inet', 'inet6');
-            } elseif (isset($this->rule['ipprotocol'])) {
-                $ipprotos = array($this->rule['ipprotocol']);
-            } else {
-                $ipprotos = array(null);
+        foreach ($this->reader() as $rule) {
+            $this->convertReplyTo($rule);
+            $rule['from'] = empty($rule['from']) ? "any" : $rule['from'];
+            $rule['to'] = empty($rule['to']) ? "any" : $rule['to'];
+            // disable rules when gateway is down and skip_rules_gw_down is set
+            if (!empty($rule['skip_rules_gw_down']) && !empty($rule['gateway']) &&
+              empty($this->gatewayMapping[$rule['gateway']])) {
+                $rule['disabled'] = true;
             }
-
-            foreach ($ipprotos as $ipproto) {
-                $tmp = $this->rule;
-                $tmp['interface'] = $interface;
-                $tmp['ipprotocol'] = $ipproto;
-                $this->convertAddress($tmp);
-                $this->convertReplyTo($tmp);
-                $tmp['from'] = empty($tmp['from']) ? "any" : $tmp['from'];
-                $tmp['to'] = empty($tmp['to']) ? "any" : $tmp['to'];
-                // disable rule when interface not found
-                if (!empty($interface) && empty($this->interfaceMapping[$interface]['if'])) {
-                    $tmp['disabled'] = true;
-                }
-                // disable rules when gateway is down and skip_rules_gw_down is set
-                if (!empty($tmp['skip_rules_gw_down']) && !empty($tmp['gateway']) &&
-                  empty($this->gatewayMapping[$tmp['gateway']])) {
-                    $tmp['disabled'] = true;
-                }
-                if (!isset($tmp['quick'])) {
-                    // all rules are quick by default except floating
-                    $tmp['quick'] = !isset($tmp['floating']) ? true : false;
-                }
-                // restructure flags
-                if (isset($tmp['protocol']) && $tmp['protocol'] == "tcp") {
-                    if (isset($tmp['tcpflags_any'])) {
-                        $tmp['flags'] = "any";
-                    } elseif (!empty($tmp['tcpflags2'])) {
-                        $tmp['flags'] = "";
-                        foreach (array('tcpflags1', 'tcpflags2') as $flagtag) {
-                            $tmp['flags'] .= $flagtag == 'tcpflags2' ? "/" : "";
-                            if (!empty($tmp[$flagtag])) {
-                                foreach (explode(",", strtoupper($tmp[$flagtag])) as $flag1) {
-                                    // CWR flag needs special treatment
-                                    $tmp['flags'] .= $flag1[0] == "C" ? "W" : $flag1[0];
-                                }
+            if (!isset($rule['quick'])) {
+                // all rules are quick by default except floating
+                $rule['quick'] = !isset($rule['floating']) ? true : false;
+            }
+            // restructure flags
+            if (isset($rule['protocol']) && $rule['protocol'] == "tcp") {
+                if (isset($rule['tcpflags_any'])) {
+                    $rule['flags'] = "any";
+                } elseif (!empty($rule['tcpflags2'])) {
+                    $rule['flags'] = "";
+                    foreach (array('tcpflags1', 'tcpflags2') as $flagtag) {
+                        $rule['flags'] .= $flagtag == 'tcpflags2' ? "/" : "";
+                        if (!empty($rule[$flagtag])) {
+                            foreach (explode(",", strtoupper($rule[$flagtag])) as $flag1) {
+                                // CWR flag needs special treatment
+                                $rule['flags'] .= $flag1[0] == "C" ? "W" : $flag1[0];
                             }
                         }
                     }
                 }
-                // restructure state settings for easier output parsing
-                if (!empty($tmp['statetype']) && $tmp['type'] == 'pass') {
-                    $tmp['state'] = array('type' => 'keep', 'options' => array());
-                    switch ($tmp['statetype']) {
-                        case 'none':
-                            $tmp['state']['type'] = 'no';
-                            break;
-                        case 'sloppy state':
-                        case 'sloppy':
-                            $tmp['state']['type'] = 'keep';
-                            $tmp['state']['options'][] = "sloppy ";
-                            break;
-                        default:
-                            $tmp['state']['type'] = explode(' ', $tmp['statetype'])[0];
-                    }
-                    if (!empty($tmp['nopfsync'])) {
-                        $tmp['state']['options'][] = "no-sync ";
-                    }
-                    foreach (array('max', 'max-src-nodes', 'max-src-conn', 'max-src-states') as $state_tag) {
-                        if (!empty($tmp[$state_tag])) {
-                            $tmp['state']['options'][] = $state_tag . " " . $tmp[$state_tag];
-                        }
-                    }
-                    if (!empty($tmp['statetimeout'])) {
-                        $tmp['state']['options'][] = "tcp.established " . $tmp['statetimeout'];
-                    }
-                    if (!empty($tmp['max-src-conn-rate']) && !empty($tmp['max-src-conn-rates'])) {
-                        $tmp['state']['options'][] = "max-src-conn-rate " . $tmp['max-src-conn-rate'] . " " .
-                                              "/" . $tmp['max-src-conn-rates'] . ", overload <virusprot> flush global ";
-                    }
-                }
-                // icmp-type switch (ipv4/ipv6)
-                if ($tmp['protocol'] == "icmp" && !empty($tmp['icmptype'])) {
-                    if ($ipproto == 'inet') {
-                        $tmp['icmp-type'] = $tmp['icmptype'];
-                    } elseif ($ipproto == 'inet6') {
-                        $tmp['icmp6-type'] = $tmp['icmptype'];
-                    }
-                }
-                // icmpv6
-                if ($ipproto == 'inet6' && !empty($tmp['protocol']) && $tmp['protocol'] == "icmp") {
-                    $tmp['protocol'] = 'ipv6-icmp';
-                }
-                // set prio
-                if (isset($tmp['set-prio']) && $tmp['set-prio'] !== ""
-                  && isset($tmp['set-prio-low']) && $tmp['set-prio-low'] !== "" ) {
-                    $tmp['set-prio'] = "({$tmp['set-prio']}, {$tmp['set-prio-low']})";
-                }
-                yield $tmp;
             }
+            // restructure state settings for easier output parsing
+            if (!empty($rule['statetype']) && $rule['type'] == 'pass') {
+                $rule['state'] = array('type' => 'keep', 'options' => array());
+                switch ($rule['statetype']) {
+                    case 'none':
+                        $rule['state']['type'] = 'no';
+                        break;
+                    case 'sloppy state':
+                    case 'sloppy':
+                        $rule['state']['type'] = 'keep';
+                        $rule['state']['options'][] = "sloppy ";
+                        break;
+                    default:
+                        $rule['state']['type'] = explode(' ', $rule['statetype'])[0];
+                }
+                if (!empty($rule['nopfsync'])) {
+                    $rule['state']['options'][] = "no-sync ";
+                }
+                foreach (array('max', 'max-src-nodes', 'max-src-conn', 'max-src-states') as $state_tag) {
+                    if (!empty($rule[$state_tag])) {
+                        $rule['state']['options'][] = $state_tag . " " . $rule[$state_tag];
+                    }
+                }
+                if (!empty($rule['statetimeout'])) {
+                    $rule['state']['options'][] = "tcp.established " . $rule['statetimeout'];
+                }
+                if (!empty($rule['max-src-conn-rate']) && !empty($rule['max-src-conn-rates'])) {
+                    $rule['state']['options'][] = "max-src-conn-rate " . $rule['max-src-conn-rate'] . " " .
+                                         "/" . $rule['max-src-conn-rates'] . ", overload <virusprot> flush global ";
+                }
+            }
+            // icmp-type switch (ipv4/ipv6)
+            if ($rule['protocol'] == "icmp" && !empty($rule['icmptype'])) {
+                if ($ipproto == 'inet') {
+                    $rule['icmp-type'] = $rule['icmptype'];
+                } elseif ($ipproto == 'inet6') {
+                    $rule['icmp6-type'] = $rule['icmptype'];
+                }
+            }
+            // icmpv6
+            if ($ipproto == 'inet6' && !empty($rule['protocol']) && $rule['protocol'] == "icmp") {
+                $rule['protocol'] = 'ipv6-icmp';
+            }
+            // set prio
+            if (isset($rule['set-prio']) && $rule['set-prio'] !== ""
+              && isset($rule['set-prio-low']) && $rule['set-prio-low'] !== "" ) {
+                $rule['set-prio'] = "({$rule['set-prio']}, {$rule['set-prio-low']})";
+            }
+            yield $rule;
         }
     }
 
@@ -278,7 +259,7 @@ class FilterRule extends Rule
     public function __toString()
     {
         $ruleTxt = '';
-        foreach ($this->fetchActualRules() as $rule) {
+        foreach ($this->parseFilterRules() as $rule) {
             foreach ($this->procorder as $tag => $handle) {
                 $tmp = explode(',', $handle);
                 $method = $tmp[0];

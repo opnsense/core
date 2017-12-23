@@ -131,6 +131,36 @@ abstract class Rule
     }
 
     /**
+     * rule reader, applies standard rule patterns
+     * @return iterator rules to generate
+     */
+    protected function reader()
+    {
+        $interfaces = empty($this->rule['interface']) ? array(null) : explode(',', $this->rule['interface']);
+        foreach ($interfaces as $interface) {
+            if (isset($this->rule['ipprotocol']) && $this->rule['ipprotocol'] == 'inet46') {
+                $ipprotos = array('inet', 'inet6');
+            } elseif (isset($this->rule['ipprotocol'])) {
+                $ipprotos = array($this->rule['ipprotocol']);
+            } else {
+                $ipprotos = array(null);
+            }
+
+            foreach ($ipprotos as $ipproto) {
+                $rule = $this->rule;
+                $rule['interface'] = $interface;
+                $rule['ipprotocol'] = $ipproto;
+                $this->convertAddress($rule);
+                // disable rule when interface not found
+                if (!empty($interface) && empty($this->interfaceMapping[$interface]['if'])) {
+                    $rule['disabled'] = true;
+                }
+                yield $rule;
+            }
+        }
+    }
+
+    /**
      * convert source/destination address entries as used by the gui
      * @param array $rule rule
      */
