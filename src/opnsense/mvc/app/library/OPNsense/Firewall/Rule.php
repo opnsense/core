@@ -258,4 +258,26 @@ abstract class Rule
             return "{$prefix}". $this->interfaceMapping[$value]['if']."{$suffix} ";
         }
     }
+
+    /**
+     * Validate if the provided rule looks like an ipv4 address.
+     * This method isn't bulletproof (if only aliases are used and we don't know the protocol, this might fail to
+     * tell the truth)
+     * @param array $rule parsed rule info
+     * @return bool
+     */
+    protected function isIpV4($rule)
+    {
+        if (!empty($rule['ipprotocol'])) {
+            return $rule['ipprotocol'] == 'inet';
+        } else {
+            // check fields which are known to contain addresses and search for an ipv4 address
+            foreach (array('from', 'to', 'external', 'target') as $fieldname) {
+                if (Util::isIpAddress($rule[$fieldname]) && strpos($rule[$fieldname], ":") === false) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 }
