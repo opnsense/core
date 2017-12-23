@@ -406,7 +406,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Shell.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Singleton.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/FilterRule.php
-/usr/local/opnsense/mvc/app/library/OPNsense/Firewall/NatRule.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Firewall/ForwardRule.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Plugin.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Rule.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Util.php
