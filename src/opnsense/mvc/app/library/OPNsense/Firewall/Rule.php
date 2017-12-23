@@ -94,15 +94,15 @@ abstract class Rule
      * parse plain data
      * @param string $value field value
      * @param string $prefix prefix when $value is provided
+     * @param string $suffix suffix when $value is provided
      * @return string
      */
-    protected function parsePlainCurly($value, $prefix = "")
+    protected function parsePlainCurly($value, $prefix = "", $suffix = "")
     {
-        $suffix = "";
         if (strpos($value, '$') === false) {
             // don't wrap aliases in curly brackets
             $prefix = $prefix . "{";
-            $suffix = "}";
+            $suffix = "}" . $suffix;
         }
         return $value == null || $value === '' ? '' : $prefix . $value . $suffix . ' ';
     }
