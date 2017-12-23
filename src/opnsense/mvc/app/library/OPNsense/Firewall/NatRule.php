@@ -58,6 +58,7 @@ class NatRule extends Rule
             'disabled' => 'parseIsComment',
             'nat' => 'parseBool,no nat,nat',
             'interface' => 'parseInterface',
+            'ipprotocol' => 'parsePlain',
             'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
             'interface.from' => 'parseInterface, from ,:network',
             'target.to' => 'parsePlainCurly,to ',
