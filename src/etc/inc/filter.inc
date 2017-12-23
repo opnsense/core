@@ -249,9 +249,9 @@ function filter_configure_sync($verbose = false)
     }
 
     if (!empty($config['nat']['rule'])) {
-        // register user nat rules
+        // register user forward rules
         foreach ($config['nat']['rule'] as $rule) {
-            $fw->registerNatRule(1, $rule);
+            $fw->registerForwardRule(100, $rule);
         }
     }
 

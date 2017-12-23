@@ -50,6 +50,7 @@ class Plugin
      */
     public function __construct()
     {
+        $this->systemDefaults['forward'] = array();
         if (!empty(Config::getInstance()->object()->system->disablereplyto)) {
             $this->systemDefaults['disablereplyto'] = true;
         }
@@ -57,7 +58,7 @@ class Plugin
             $this->systemDefaults['skip_rules_gw_down'] = true;
         }
         if (empty(Config::getInstance()->object()->system->disablenatreflection)) {
-            $this->systemDefaults['natreflection'] = "enable";
+            $this->systemDefaults['forward']['natreflection'] = "enable";
         }
         if (!empty(Config::getInstance()->object()->system->enablenatreflectionhelper)) {
             $this->systemDefaults['enablenatreflectionhelper'] = true;
@@ -230,12 +231,12 @@ class Plugin
      * @param int $prio priority
      * @param array $conf configuration
      */
-    public function registerNatRule($prio, $conf)
+    public function registerForwardRule($prio, $conf)
     {
         if (!empty($this->systemDefaults)) {
-            $conf = array_merge($this->systemDefaults, $conf);
+            $conf = array_merge($this->systemDefaults['forward'], $conf);
         }
-        $rule = new NatRule($this->interfaceMapping, $conf);
+        $rule = new ForwardRule($this->interfaceMapping, $conf);
         if (empty($this->natRules[$prio])) {
             $this->natRules[$prio] = array();
         }
