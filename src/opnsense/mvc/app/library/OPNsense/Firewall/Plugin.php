@@ -50,18 +50,22 @@ class Plugin
      */
     public function __construct()
     {
-        $this->systemDefaults['forward'] = array();
+        $this->systemDefaults = array("filter" => array(), "forward" => array(), "nat" => array());
         if (!empty(Config::getInstance()->object()->system->disablereplyto)) {
-            $this->systemDefaults['disablereplyto'] = true;
+            $this->systemDefaults['filter']['disablereplyto'] = true;
         }
         if (!empty(Config::getInstance()->object()->system->skip_rules_gw_down)) {
-            $this->systemDefaults['skip_rules_gw_down'] = true;
+            $this->systemDefaults['filter']['skip_rules_gw_down'] = true;
         }
         if (empty(Config::getInstance()->object()->system->disablenatreflection)) {
             $this->systemDefaults['forward']['natreflection'] = "enable";
         }
+        if (!empty(Config::getInstance()->object()->system->enablebinatreflection)) {
+            $this->systemDefaults['nat']['natreflection'] = "enable";
+        }
         if (!empty(Config::getInstance()->object()->system->enablenatreflectionhelper)) {
-            $this->systemDefaults['enablenatreflectionhelper'] = true;
+            $this->systemDefaults['forward']['enablenatreflectionhelper'] = true;
+            $this->systemDefaults['nat']['enablenatreflectionhelper'] = true;
         }
     }
 
@@ -213,8 +217,8 @@ class Plugin
      */
     public function registerFilterRule($prio, $conf, $defaults = null)
     {
-        if (!empty($this->systemDefaults)) {
-            $conf = array_merge($this->systemDefaults, $conf);
+        if (!empty($this->systemDefaults['filter'])) {
+            $conf = array_merge($this->systemDefaults['filter'], $conf);
         }
         if ($defaults != null) {
             $conf = array_merge($defaults, $conf);
@@ -227,16 +231,47 @@ class Plugin
     }
 
     /**
-     * register a Nat rule
+     * register a Forward (rdr) rule
      * @param int $prio priority
      * @param array $conf configuration
      */
     public function registerForwardRule($prio, $conf)
     {
-        if (!empty($this->systemDefaults)) {
+        if (!empty($this->systemDefaults['forward'])) {
             $conf = array_merge($this->systemDefaults['forward'], $conf);
         }
         $rule = new ForwardRule($this->interfaceMapping, $conf);
+        if (empty($this->natRules[$prio])) {
+            $this->natRules[$prio] = array();
+        }
+        $this->natRules[$prio][] = $rule;
+    }
+
+    /**
+     * register a Nat rule
+     * @param int $prio priority
+     * @param array $conf configuration
+     */
+    public function registerNatRule($prio, $conf)
+    {
+        if (!empty($this->systemDefaults['nat'])) {
+            $conf = array_merge($this->systemDefaults['nat'], $conf);
+        }
+        $rule = new NatRule($this->interfaceMapping, $conf);
+        if (empty($this->natRules[$prio])) {
+            $this->natRules[$prio] = array();
+        }
+        $this->natRules[$prio][] = $rule;
+    }
+
+    /**
+     * register an Npt rule
+     * @param int $prio priority
+     * @param array $conf configuration
+     */
+    public function registerNptRule($prio, $conf)
+    {
+        $rule = new NptRule($this->interfaceMapping, $conf);
         if (empty($this->natRules[$prio])) {
             $this->natRules[$prio] = array();
         }

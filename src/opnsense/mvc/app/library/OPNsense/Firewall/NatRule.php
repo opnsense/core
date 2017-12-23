@@ -30,39 +30,38 @@
 namespace OPNsense\Firewall;
 
 /**
- * Class ForwardRule, (pf rdr type rule, optionally combined with nat rules for reflection)
+ * Class NatRule, (pf nat type rule, optionally combined with rdr+nat rules for reflection)
  * @package OPNsense\Firewall
  */
-class ForwardRule extends Rule
+class NatRule extends Rule
 {
     private $procorder = array(
-        'rdr' => array(
+        'nat' => array(
             'disabled' => 'parseIsComment',
-            'rdr' => 'parseBool,no rdr,rdr',
-            'pass' => 'parseBool,pass ',
+            'type' => 'parsePlain',
             'interface' => 'parseInterface',
-            'ipprotocol' => 'parsePlain',
-            'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
-            'from' => 'parsePlainCurly,from ',
-            'from_port' => 'parsePlainCurly, port ',
-            'to' => 'parsePlainCurly,to ',
-            'to_port' => 'parsePlainCurly, port ',
-            'tag' => 'parsePlain, tag ',
-            'tagged' => 'parsePlain, tagged ',
-            'target' => 'parsePlain, -> ',
-            'localport' => 'parsePlain, port ',
-            'poolopts' => 'parsePlain',
+            'from' => 'parsePlain,from ',
+            'to' => 'parsePlain,to ',
+            'external' => 'parsePlain, -> ',
             'descr' => 'parseComment'
         ),
-        'rdr_nat' => array(
+        'nat_rdr' => array(
+            'disabled' => 'parseIsComment',
+            'nat' => 'parseBool,no rdr,rdr',
+            'interface' => 'parseInterface',
+            'to' => 'parsePlainCurly,from ',
+            'external' => 'parsePlainCurly,to ',
+            'from' => 'parsePlainCurly, -> , bitmask',
+            'descr' => 'parseComment'
+        ),
+        'nat_refl' => array(
             'disabled' => 'parseIsComment',
             'nat' => 'parseBool,no nat,nat',
             'interface' => 'parseInterface',
             'ipprotocol' => 'parsePlain',
             'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
             'interface.from' => 'parseInterface, from ,:network',
-            'target.to' => 'parsePlainCurly,to ',
-            'localport' => 'parsePlainCurly,port ',
+            'from' => 'parsePlainCurly,to ',
             'interface.to' => 'parseInterface, -> ',
             'staticnatport' => 'parseBool,  static-port , port 1024:65535 ',
             'descr' => 'parseComment'
@@ -111,61 +110,53 @@ class ForwardRule extends Rule
      * handles shortcuts, like inet46 and multiple interfaces
      * @return array
      */
-    private function parseRdrRules()
+    private function parseNatRules()
     {
-        foreach ($this->reader() as $tmp) {
-            $tmp['rule_types'] = array("rdr");
-            $tmp['rdr'] = !empty($tmp['nordr']);
-            if (!empty($tmp['associated-rule-id']) && $tmp['associated-rule-id'] == "pass") {
-                $tmp['pass'] = empty($tmp['nordr']);
-            }
+        foreach ($this->reader() as $rule) {
+            $rule['rule_type'] = "nat";
+            $rule['type'] = empty($rule['type']) ? "binat" : $rule['type'];
+
             // target address, when invalid, disable rule
-            if (!empty($tmp['target'])) {
-                if (Util::isAlias($tmp['target'])) {
-                    $tmp['target'] = "\${$tmp['target']}";
-                } elseif (!Util::isIpAddress($tmp['target']) && !Util::isSubnet($tmp['target'])) {
-                    $tmp['disabled'] = true;
+            if (!empty($rule['external'])) {
+                if (Util::isAlias($rule['external'])) {
+                    $rule['external'] = "\${$rule['external']}";
+                } elseif (!Util::isIpAddress($rule['external']) && !Util::isSubnet($rule['external'])) {
+                    $rule['disabled'] = true;
+                } elseif (strpos($rule['external'], '/') === false && strpos($rule['from'], '/') !== false) {
+                    $rule['external'] .= "/".explode('/', $rule['from'])[1];
                 }
             }
-            // parse our local port
-            if (!empty($tmp['local-port']) && !empty($tmp['protocol'])
-                  && in_array($tmp['protocol'], array('tcp/udp', 'udp', 'tcp'))) {
-                if (Util::isAlias($tmp['local-port'])) {
-                    // We will keep this for backwards compatibility, although the alias use is very confusing.
-                    // Because the target can only be one address or range, we will just use the first one found
-                    // in the alias.... confusing.
-                    $tmp_port = Util::getPortAlias($tmp['local-port']);
-                    if (!empty($tmp_port)) {
-                        $tmp['localport'] = $tmp_port[0];
-                    }
-                } elseif (Util::isPort($tmp['local-port'])) {
-                    $tmp['localport'] = $tmp['local-port'];
-                } else {
-                    $tmp['disabled'] = true;
+            yield $rule;
+
+            // yield reflection rdr rules when enabled
+            $interface = $rule['interface'];
+            $reflinterf = $this->reflectionInterfaces($interface);
+            if (!$rule['disabled'] && $rule['natreflection'] == "enable") {
+                foreach ($reflinterf as $interf) {
+                    $rule['rule_type'] = "nat_rdr";
+                    $rule['interface'] = $interf;
+                    yield $rule;
                 }
             }
 
-            // When reflection is enabled our ruleset should cover all
-            $interflist = array($tmp['interface']);
-            if (!$tmp['disabled'] && in_array($tmp['natreflection'], array("purenat", "enable"))) {
-                $interflist = array_merge($interflist, $this->reflectionInterfaces($tmp['interface']));
-            }
-            foreach ($interflist as $interf) {
-                $rule = $tmp;
-                // automatically generate nat rule when enablenatreflectionhelper is set
-                if (!$rule['disabled'] && empty($rule['nordr']) && !empty($rule['enablenatreflectionhelper'])) {
-                    // Only add nat rules when the selected interface has an address configured
+            // yield reflection nat rules when enabled, but only for interfaces with networks configured
+            if (!$rule['disabled'] && !empty($rule['enablenatreflectionhelper'])) {
+                $reflinterf[] = $interface;
+                foreach ($reflinterf as $interf) {
                     if (!empty($this->interfaceMapping[$interf])) {
-                        if (($this->isIpV4($rule) && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
-                            (!$this->isIpV4($rule) && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv6']))
+                        $is_ipv4 = $this->isIpV4($rule);
+                        if (($is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
+                            (!$is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv6']))
                         ) {
-                            $rule['rule_types'][] = "rdr_nat";
+                            // we don't seem to know the ip protocol here, make sure our ruleset contains one
+                            $rule['ipprotocol'] = $is_ipv4 ? "inet" : "inet6";
+                            $rule['rule_type'] = "nat_refl";
+                            $rule['interface'] = $interf;
                             $rule['staticnatport'] = !empty($rule['staticnatport']);
+                            yield $rule;
                         }
                     }
                 }
-                $rule['interface'] = $interf;
-                yield $rule;
             }
         }
     }
@@ -177,10 +168,8 @@ class ForwardRule extends Rule
     public function __toString()
     {
         $ruleTxt = '';
-        foreach ($this->parseRdrRules() as $rule) {
-            foreach ($rule['rule_types'] as $rule_type) {
-                $ruleTxt .= $this->ruleToText($this->procorder[$rule_type], $rule). "\n";
-            }
+        foreach ($this->parseNatRules() as $rule) {
+            $ruleTxt .= $this->ruleToText($this->procorder[$rule['rule_type']], $rule). "\n";
         }
         return $ruleTxt;
     }
