@@ -249,6 +249,7 @@ server.indexfiles           = ( "index.php", "index.html",
 
 # mimetype mapping
 mimetype.assign             = (
+  "wpad.dat"      =>      "application/x-ns-proxy-autoconfig",
   ".pdf"          =>      "application/pdf",
   ".sig"          =>      "application/pgp-signature",
   ".spl"          =>      "application/futuresplash",
