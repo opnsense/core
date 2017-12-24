@@ -168,7 +168,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             $backend->configdRun('template reload ' . escapeshellarg(static::$internalModelTemplate));
 
             // (re)start daemon
-            if ((string)$model->xpath(static::$internalModelEnabled) == '1') {
+            if ((string)$model->getNodeByReference(static::$internalModelEnabled) == '1') {
                 $this->startAction();
             }
 
@@ -190,14 +190,14 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
         $response = $backend->configdRun(escapeshellarg(static::$internalModelService) . ' status');
 
         if (strpos($response, 'not running') > 0) {
-            if ((string)$model->xpath(static::$internalModelEnabled) == 1) {
+            if ((string)$model->getNodeByReference(static::$internalModelEnabled) == 1) {
                 $status = 'stopped';
             } else {
                 $status = 'disabled';
             }
         } elseif (strpos($response, 'is running') > 0) {
             $status = 'running';
-        } elseif ((string)$model->xpath(static::$internalModelEnabled) == 0) {
+        } elseif ((string)$model->getNodeByReference(static::$internalModelEnabled) == 0) {
             $status = 'disabled';
         } else {
             $status = 'unknown';
