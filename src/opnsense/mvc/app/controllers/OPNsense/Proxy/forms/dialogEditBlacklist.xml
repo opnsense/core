@@ -32,7 +32,6 @@
     <field>
         <id>blacklist.filter</id>
         <label>categories (if available)</label>
-        <type>text</type>
         <type>select_multiple</type>
         <style>tokenize</style>
         <nbDropdownElements>300</nbDropdownElements>

@@ -55,6 +55,33 @@ POSSIBILITY OF SUCH DAMAGE.
                     'toggle':'/api/proxy/settings/toggleRemoteBlacklist/'
                 }
         );
+        $("#grid-pac-match").UIBootgrid(
+                {   'search':'/api/proxy/settings/searchPACMatch',
+                    'get':'/api/proxy/settings/getPACMatch/',
+                    'set':'/api/proxy/settings/setPACMatch/',
+                    'add':'/api/proxy/settings/addPACMatch/',
+                    'del':'/api/proxy/settings/delPACMatch/',
+                    'toggle':'/api/proxy/settings/togglePACMatch/'
+                }
+        );
+        $("#grid-pac-rule").UIBootgrid(
+                {   'search':'/api/proxy/settings/searchPACRule',
+                    'get':'/api/proxy/settings/getPACRule/',
+                    'set':'/api/proxy/settings/setPACRule/',
+                    'add':'/api/proxy/settings/addPACRule/',
+                    'del':'/api/proxy/settings/delPACRule/',
+                    'toggle':'/api/proxy/settings/togglePACRule/'
+                }
+        );
+        $("#grid-pac-proxy").UIBootgrid(
+                {   'search':'/api/proxy/settings/searchPACProxy',
+                    'get':'/api/proxy/settings/getPACProxy/',
+                    'set':'/api/proxy/settings/setPACProxy/',
+                    'add':'/api/proxy/settings/addPACProxy/',
+                    'del':'/api/proxy/settings/delPACProxy/',
+                    'toggle':'/api/proxy/settings/togglePACProxy/'
+                }
+        );
 
         // when  closing DialogEditBlacklist, point the user to the download buttons
         $("#DialogEditBlacklist").on("show.bs.modal", function () {
@@ -228,6 +255,23 @@ POSSIBILITY OF SUCH DAMAGE.
     {% endif %}
 {% endfor %}
     {# add custom content #}
+    <li role="presentation" class="dropdown">
+        <a data-toggle="dropdown" href="#" class="dropdown-toggle pull-right visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" role="button">
+            <b><span class="caret"></span></b>
+            <a data-toggle="tab" onclick="$('#subtab_item_pac_rules').click();" class="visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" style="border-right:0px;"><b>{{ lang._('PAC')}}</b></a>
+            <ul class="dropdown-menu" role="menu">
+                <li>
+                    <a data-toggle="tab" id="subtab_item_pac_rules" href="#subtab_pac_rules">{{ lang._('Rules') }}</a>
+                </li>
+                <li>
+                    <a data-toggle="tab" id="subtab_item_pac_rules" href="#subtab_pac_proxies">{{ lang._('Proxies') }}</a>
+                </li>
+                <li>
+                    <a data-toggle="tab" id="subtab_item_pac_rules" href="#subtab_pac_matches">{{ lang._('Matches') }}</a>
+                </li>
+            </ul>
+        </a>
+    </li>
     <li><a data-toggle="tab" href="#remote_acls"><b>{{ lang._('Remote Access Control Lists') }}</b></a></li>
 </ul>
 
@@ -247,6 +291,77 @@ POSSIBILITY OF SUCH DAMAGE.
             </div>
         {% endif %}
     {% endfor %}
+    <div id="subtab_pac_matches" class="tab-pane fade">
+        <table id="grid-pac-match" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditPACMatch">
+            <thead>
+                <tr>
+                    <th data-column-id="name" data-type="string" data-sortable="false" data-visible="true">{{ lang._('Name') }}</th>
+                    <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
+                    <th data-column-id="negate" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Negate') }}</th>
+                    <th data-column-id="match_type" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Match Type') }}</th>
+                    <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Action') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4"></td>
+                    <td>
+                        <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div id="subtab_pac_rules" class="tab-pane fade">
+        <table id="grid-pac-rule" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditPACRule">
+            <thead>
+                <tr>
+                    <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="6em">{{ lang._('Enabled') }}</th>
+                    <!--<th data-column-id="matches" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Matches') }}</th>
+                    <th data-column-id="proxies" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('URL') }}</th>-->
+                    <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
+                    <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Actions') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"></td>
+                    <td>
+                        <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div id="subtab_pac_proxies" class="tab-pane fade">
+        <table id="grid-pac-proxy" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditPACProxy">
+            <thead>
+                <tr>
+                    <th data-column-id="name" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Name') }}</th>
+                    <th data-column-id="url" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('URL') }}</th>
+                    <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
+                    <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Actions') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"></td>
+                    <td>
+                        <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
     <div id="remote_acls" class="tab-pane fade">
 
         <table class="table table-striped table-condensed table-responsive">
@@ -318,3 +433,6 @@ POSSIBILITY OF SUCH DAMAGE.
 </div>
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditBlacklist,'id':'DialogEditBlacklist','label':lang._('Edit blacklist')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditPACProxy,'id':'DialogEditPACProxy','label':lang._('Edit Proxy')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditPACMatch,'id':'DialogEditPACMatch','label':lang._('Edit Match')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditPACRule,'id':'DialogEditPACRule','label':lang._('Edit Rule')])}}

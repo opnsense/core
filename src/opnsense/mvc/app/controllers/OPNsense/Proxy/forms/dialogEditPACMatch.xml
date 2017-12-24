@@ -1,0 +1,33 @@
+<form>
+    <field>
+        <id>pac.match.name</id>
+        <label>Name</label>
+        <type>text</type>
+        <help>Select a name for this match.</help>
+    </field>
+    <field>
+        <id>pac.match.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>Enter a description for this rule. The description should help you to identify this rule.</help>
+    </field>
+    <field>
+        <id>pac.match.negate</id>
+        <label>Negate</label>
+        <type>checkbox</type>
+        <help>Negate this match. For example you can match if a host is not inside a network.</help>
+    </field>
+    <field>
+        <id>pac.rule.match_type</id>
+        <label>Match Type</label>
+        <type>dropdown</type>
+        <help>Select the type of the match. Depending on the match, you will need different arguments.</help>
+    </field>
+    <field>
+        <id>pac.rule.network_address</id>
+        <label>Network</label>
+        <type>text</type>
+        <help></help>
+    </field>
+</form>
+
