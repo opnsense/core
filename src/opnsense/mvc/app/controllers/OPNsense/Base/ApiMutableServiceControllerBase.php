@@ -109,7 +109,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             // close session for long running action
             $this->sessionClose();
             $backend = new Backend();
-            $response = $backend->configdRun(escapeshellarg($internalModelName) . ' start');
+            $response = $backend->configdRun(escapeshellarg(static::$internalModelName) . ' start');
             return array('response' => $response);
         } else {
             return array('response' => array());
@@ -126,7 +126,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             // close session for long running action
             $this->sessionClose();
             $backend = new Backend();
-            $response = $backend->configdRun(escapeshellarg($internalModelName) . ' stop');
+            $response = $backend->configdRun(escapeshellarg(static::$internalModelName) . ' stop');
             return array('response' => $response);
         } else {
             return array('response' => array());
@@ -143,7 +143,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             // close session for long running action
             $this->sessionClose();
             $backend = new Backend();
-            $response = $backend->configdRun(escapeshellarg($internalModelName) . ' restart');
+            $response = $backend->configdRun(escapeshellarg(static::$internalModelName) . ' restart');
             return array('response' => $response);
         } else {
             return array('response' => array());
@@ -165,10 +165,10 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             $this->stopAction();
 
             // generate template
-            $backend->configdRun('template reload ' . escapeshellarg($internalModelTemplate));
+            $backend->configdRun('template reload ' . escapeshellarg(static::$internalModelTemplate));
 
             // (re)start daemon
-            if ((string)$model->xpath($internalModelEnabled) == '1') {
+            if ((string)$model->xpath(static::$internalModelEnabled) == '1') {
                 $this->startAction();
             }
 
@@ -187,17 +187,17 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     {
         $backend = new Backend();
         $model = $this->getModel();
-        $response = $backend->configdRun(escapeshellarg($internalModelName) . ' status');
+        $response = $backend->configdRun(escapeshellarg(static::$internalModelName) . ' status');
 
         if (strpos($response, 'not running') > 0) {
-            if ((string)$model->xpath($internalModelEnabled) == 1) {
+            if ((string)$model->xpath(static::$internalModelEnabled) == 1) {
                 $status = 'stopped';
             } else {
                 $status = 'disabled';
             }
         } elseif (strpos($response, 'is running') > 0) {
             $status = 'running';
-        } elseif ((string)$model->xpath($internalModelEnabled) == 0) {
+        } elseif ((string)$model->xpath(static::$internalModelEnabled) == 0) {
             $status = 'disabled';
         } else {
             $status = 'unknown';
