@@ -1,9 +1,10 @@
+auth.conf:/usr/local/etc/squid/auth/dummy.conf
+ca.pem.id:/usr/local/etc/squid/ca.pem.id
+cache.active:/var/squid/cache/active
+externalACLs.conf:/usr/local/etc/squid/externalACLs.conf
+newsyslog.conf:/etc/newsyslog.conf.d/squid
+nobumpsites.acl:/usr/local/etc/squid/nobumpsites.acl
+post-auth.conf:/usr/local/etc/squid/post-auth/dummy.conf
+pre-auth.conf:/usr/local/etc/squid/pre-auth/dummy.conf
 rc.conf.d:/etc/rc.conf.d/squid/squid
 squid.conf:/usr/local/etc/squid/squid.conf
-newsyslog.conf:/etc/newsyslog.conf.d/squid
-externalACLs.conf:/usr/local/etc/squid/externalACLs.conf
-nobumpsites.acl:/usr/local/etc/squid/nobumpsites.acl
-ca.pem.id:/usr/local/etc/squid/ca.pem.id
-pre-auth.conf:/usr/local/etc/squid/pre-auth/dummy.conf
-auth.conf:/usr/local/etc/squid/auth/dummy.conf
-post-auth.conf:/usr/local/etc/squid/post-auth/dummy.conf
