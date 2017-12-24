@@ -365,6 +365,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcp6usev4iface'] = isset($a_interfaces[$if]['dhcp6usev4iface']);
     $pconfig['adv_dhcp6_debug'] = isset($a_interfaces[$if]['adv_dhcp6_debug']);
     $pconfig['track6-prefix-id--hex'] = sprintf("%x", empty($pconfig['track6-prefix-id']) ? 0 :$pconfig['track6-prefix-id']);
+    $pconfig['ipv6usev4iface'] = isset($a_interfaces[$if]['ipv6usev4iface']);
 
     // ipv4 type (from ipaddr)
     if (is_ipaddrv4($pconfig['ipaddr'])) {
@@ -1053,6 +1054,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $new_config['subnetv6'] = $pconfig['subnetv6'];
                     if ($pconfig['gatewayv6'] != "none") {
                         $new_config['gatewayv6'] = $pconfig['gatewayv6'];
+                    }
+					if (!empty($pconfig['ipv6usev4iface'])) {
+                        $new_config['ipv6usev4iface'] = true;
                     }
                     break;
                 case "slaac":
@@ -2356,6 +2360,18 @@ include("head.inc");
                                 </td>
                               </tr>
                             </table>
+                          </td>
+                        </tr>
+						<tr>
+                          <td width="22%"><a id="help_for_ipv6overpppoe" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Static IPv6 over V4 PPPoE"); ?></td>
+                          <td width="78%">
+                            <input name="ipv6usev4iface" type="checkbox" id="ipv6usev4iface" value="yes" <?=!empty($pconfig['ipv6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
+                            <div class="hidden" for="help_for_ipv6overpppoe">
+                              <?=gettext("When set, this option allows the setting of an IPv6 static assignment " .
+                                "but passes that over the PPPoE link negotiated by the V4 link." .
+                                " This is allows the gateway to correctly route the gateway monitor pings " .
+                                ".");?>
+                            </div>
                           </td>
                         </tr>
                         <tr>
