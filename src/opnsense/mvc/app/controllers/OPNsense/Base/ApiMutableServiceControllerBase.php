@@ -31,6 +31,8 @@
 
 namespace OPNsense\Base;
 
+use OPNsense\Core\Backend;
+
 /**
  * Class ApiMutableServiceControllerBase, inherit this class to implement
  * an API that exposes a service controller with start, stop, restart,
