@@ -30,7 +30,6 @@ FLOCK="/usr/local/bin/flock -n -o"
 COMMANDS="
 audit
 health
-hotfix
 install
 lock
 reinstall

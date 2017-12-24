@@ -581,7 +581,6 @@
 /usr/local/opnsense/scripts/firmware/changelog.sh
 /usr/local/opnsense/scripts/firmware/check.sh
 /usr/local/opnsense/scripts/firmware/health.sh
-/usr/local/opnsense/scripts/firmware/hotfix.sh
 /usr/local/opnsense/scripts/firmware/install.sh
 /usr/local/opnsense/scripts/firmware/launcher.sh
 /usr/local/opnsense/scripts/firmware/license.sh
