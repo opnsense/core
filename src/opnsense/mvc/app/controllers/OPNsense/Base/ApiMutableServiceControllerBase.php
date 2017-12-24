@@ -42,9 +42,9 @@ use OPNsense\Core\Backend;
 abstract class ApiMutableServiceControllerBase extends ApiControllerBase
 {
     /**
-     * @var string this implementations internal model name to use
+     * @var string this implementations internal model service to use
      */
-    static protected $internalModelName = null;
+    static protected $internalModelService = null;
 
     /**
      * @var string model class name to use
@@ -76,8 +76,8 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
         if (empty(static::$internalModelClass)) {
             throw new \Exception('cannot instantiate without internalModelClass defined.');
         }
-        if (empty(static::$internalModelName)) {
-            throw new \Exception('cannot instantiate without internalModelName defined.');
+        if (empty(static::$internalModelService)) {
+            throw new \Exception('cannot instantiate without internalModelService defined.');
         }
         if (empty(static::$internalModelTemplate)) {
             throw new \Exception('cannot instantiate without internalModelTemplate defined.');
@@ -109,7 +109,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             // close session for long running action
             $this->sessionClose();
             $backend = new Backend();
-            $response = $backend->configdRun(escapeshellarg(static::$internalModelName) . ' start');
+            $response = $backend->configdRun(escapeshellarg(static::$internalModelService) . ' start');
             return array('response' => $response);
         } else {
             return array('response' => array());
@@ -126,7 +126,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             // close session for long running action
             $this->sessionClose();
             $backend = new Backend();
-            $response = $backend->configdRun(escapeshellarg(static::$internalModelName) . ' stop');
+            $response = $backend->configdRun(escapeshellarg(static::$internalModelService) . ' stop');
             return array('response' => $response);
         } else {
             return array('response' => array());
@@ -143,7 +143,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             // close session for long running action
             $this->sessionClose();
             $backend = new Backend();
-            $response = $backend->configdRun(escapeshellarg(static::$internalModelName) . ' restart');
+            $response = $backend->configdRun(escapeshellarg(static::$internalModelService) . ' restart');
             return array('response' => $response);
         } else {
             return array('response' => array());
@@ -187,7 +187,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     {
         $backend = new Backend();
         $model = $this->getModel();
-        $response = $backend->configdRun(escapeshellarg(static::$internalModelName) . ' status');
+        $response = $backend->configdRun(escapeshellarg(static::$internalModelService) . ' status');
 
         if (strpos($response, 'not running') > 0) {
             if ((string)$model->xpath(static::$internalModelEnabled) == 1) {
