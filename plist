@@ -329,6 +329,7 @@
 /usr/local/opnsense/mvc/app/config/services_api.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ApiControllerBase.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ApiMutableModelControllerBase.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ApiMutableServiceControllerBase.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ControllerBase.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ControllerRoot.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/IndexController.php
@@ -732,6 +733,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Proxy/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Proxy/auth.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/ca.pem.id
+/usr/local/opnsense/service/templates/OPNsense/Proxy/cache.active
 /usr/local/opnsense/service/templates/OPNsense/Proxy/externalACLs.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/newsyslog.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/nobumpsites.acl

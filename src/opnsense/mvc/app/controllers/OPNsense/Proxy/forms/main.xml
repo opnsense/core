@@ -121,7 +121,7 @@
             </field>
             <field>
                 <id>proxy.general.cache.local.enabled</id>
-                <label>Enable local cache (requires service restart)</label>
+                <label>Enable local cache</label>
                 <type>checkbox</type>
                 <help><![CDATA[Enable or disable the local cache. Only UFS directory cache type is supported. Do not enable on embedded systems with SD or CF cards without the /var MFS option as this will wear down your drive.]]></help>
             </field>

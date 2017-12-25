@@ -137,14 +137,10 @@ class ServiceController extends ApiControllerBase
 
             // some operations can not be performed by a squid -k reconfigure,
             // try to determine if we need a stop/start here
-            if (is_file('/var/squid/ssl_crtd.id')) {
-                $prev_sslbump_cert = trim(file_get_contents('/var/squid/ssl_crtd.id'));
-            } else {
-                $prev_sslbump_cert = "";
-            }
-            if (((string)$mdlProxy->forward->sslcertificate) != $prev_sslbump_cert) {
-                $force_restart = true;
-            }
+            $prev_sslbump_cert = trim(@file_get_contents('/var/squid/ssl_crtd.id'));
+            $prev_cache_active = !empty(trim(@file_get_contents('/var/squid/cache/active')));
+            $force_restart = (((string)$mdlProxy->forward->sslcertificate) != $prev_sslbump_cert) ||
+                (!empty((string)$mdlProxy->general->cache->local->enabled) != $prev_cache_active);
 
             // stop squid when disabled
             if ($runStatus['status'] == "running" &&
