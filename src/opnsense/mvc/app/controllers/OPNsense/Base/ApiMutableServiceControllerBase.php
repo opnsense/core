@@ -44,22 +44,22 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     /**
      * @var string this implementations internal model service to use
      */
-    static protected $internalModelService = null;
+    static protected $internalServiceName = null;
 
     /**
      * @var string model class name to use
      */
-    static protected $internalModelClass = null;
+    static protected $internalServiceClass = null;
 
     /**
      * @var string model template name to use
      */
-    static protected $internalModelTemplate = null;
+    static protected $internalServiceTemplate = null;
 
     /**
      * @var string model enabled xpath to use
      */
-    static protected $internalModelEnabled = null;
+    static protected $internalServiceEnabled = null;
 
     /**
      * @var null|BaseModel model object to work on
@@ -73,17 +73,17 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function initialize()
     {
         parent::initialize();
-        if (empty(static::$internalModelClass)) {
-            throw new \Exception('cannot instantiate without internalModelClass defined.');
+        if (empty(static::$internalServiceClass)) {
+            throw new \Exception('cannot instantiate without internalServiceClass defined.');
         }
-        if (empty(static::$internalModelService)) {
-            throw new \Exception('cannot instantiate without internalModelService defined.');
+        if (empty(static::$internalServiceName)) {
+            throw new \Exception('cannot instantiate without internalServiceName defined.');
         }
-        if (empty(static::$internalModelTemplate)) {
-            throw new \Exception('cannot instantiate without internalModelTemplate defined.');
+        if (empty(static::$internalServiceTemplate)) {
+            throw new \Exception('cannot instantiate without internalServiceTemplate defined.');
         }
-        if (empty(static::$internalModelEnabled)) {
-            throw new \Exception('cannot instantiate without internalModelEnabled defined.');
+        if (empty(static::$internalServiceEnabled)) {
+            throw new \Exception('cannot instantiate without internalServiceEnabled defined.');
         }
     }
 
@@ -93,7 +93,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     protected function getModel()
     {
         if ($this->modelHandle == null) {
-            $this->modelHandle = (new \ReflectionClass(static::$internalModelClass))->newInstance();
+            $this->modelHandle = (new \ReflectionClass(static::$internalServiceClass))->newInstance();
         }
 
         return $this->modelHandle;
@@ -109,7 +109,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             // close session for long running action
             $this->sessionClose();
             $backend = new Backend();
-            $response = $backend->configdRun(escapeshellarg(static::$internalModelService) . ' start');
+            $response = $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' start');
             return array('response' => $response);
         } else {
             return array('response' => array());
@@ -126,7 +126,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             // close session for long running action
             $this->sessionClose();
             $backend = new Backend();
-            $response = $backend->configdRun(escapeshellarg(static::$internalModelService) . ' stop');
+            $response = $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' stop');
             return array('response' => $response);
         } else {
             return array('response' => array());
@@ -143,7 +143,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             // close session for long running action
             $this->sessionClose();
             $backend = new Backend();
-            $response = $backend->configdRun(escapeshellarg(static::$internalModelService) . ' restart');
+            $response = $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' restart');
             return array('response' => $response);
         } else {
             return array('response' => array());
@@ -165,10 +165,10 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             $this->stopAction();
 
             // generate template
-            $backend->configdRun('template reload ' . escapeshellarg(static::$internalModelTemplate));
+            $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
 
             // (re)start daemon
-            if ((string)$model->getNodeByReference(static::$internalModelEnabled) == '1') {
+            if ((string)$model->getNodeByReference(static::$internalServiceEnabled) == '1') {
                 $this->startAction();
             }
 
@@ -187,17 +187,17 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     {
         $backend = new Backend();
         $model = $this->getModel();
-        $response = $backend->configdRun(escapeshellarg(static::$internalModelService) . ' status');
+        $response = $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' status');
 
         if (strpos($response, 'not running') > 0) {
-            if ((string)$model->getNodeByReference(static::$internalModelEnabled) == 1) {
+            if ((string)$model->getNodeByReference(static::$internalServiceEnabled) == 1) {
                 $status = 'stopped';
             } else {
                 $status = 'disabled';
             }
         } elseif (strpos($response, 'is running') > 0) {
             $status = 'running';
-        } elseif ((string)$model->getNodeByReference(static::$internalModelEnabled) == 0) {
+        } elseif ((string)$model->getNodeByReference(static::$internalServiceEnabled) == 0) {
             $status = 'disabled';
         } else {
             $status = 'unknown';
