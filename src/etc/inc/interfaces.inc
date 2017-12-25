@@ -1116,19 +1116,29 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         return;
     }
 
-    /*
-     * NOTE: The $realifv6 is needed when WANv4 is type PPP and v6 is DHCP and the option v6 from v4 is used.
-     * In this case the real $realif of v4 is different from that of v6 for operation.
-     * Keep this in mind while doing changes here!
-     */
+    $realif = get_real_interface($interface);
+    $realifv6 = get_real_interface($interface, "inet6");
+    if (!in_array($interface, array('openvpn', 'ppp', 'ipsec', 'enc0'))) {
+        /**
+         * NOTE: The $realifv6 is needed when WANv4 is type PPP and v6 is DHCP and the option v6 from v4 is used.
+         * XXX: we kept this in place due to dropping the $realv6iface parameter from get_real_interface(),
+        */
+        $cfg = &config_read_array('interfaces', $interface);
+        $ipaddrv6 = empty($cfg['ipaddrv6']) ? null : $cfg['ipaddrv6'];
+        if (!in_array($ipaddrv6, array('6rd', '6to4', 'pppoe', 'ppp', 'l2tp', 'pptp'))) {
+            $ipaddr = empty($cfg['ipaddr']) ? null : $cfg['ipaddr'];
+            if (in_array($ipaddr, array('pppoe', 'ppp', 'l2tp', 'pptp'))) {
+                $parents = get_parent_interface($interface);
+                $realifv6 = !empty($parents[0]) ? $parents[0] : $cfg['if'];
+            }
+        }
+    }
     if ($ifacecfg === false) {
         $ifcfg = $config['interfaces'][$interface];
         $ppps = array();
         if (isset($config['ppps']['ppp'])) {
             $ppps = $config['ppps']['ppp'];
         }
-        $realif = get_real_interface($interface);
-        $realifv6 = get_real_interface($interface, "inet6", true);
     } elseif (!is_array($ifacecfg)) {
         log_error('Wrong parameters used during interface_bring_down()');
         $ifcfg = $config['interfaces'][$interface];
@@ -1136,8 +1146,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         if (isset($config['ppps']['ppp'])) {
             $ppps = $config['ppps']['ppp'];
         }
-        $realif = get_real_interface($interface);
-        $realifv6 = get_real_interface($interface, "inet6", true);
     } else {
         $ifcfg = $ifacecfg['ifcfg'];
         $ppps = $ifacecfg['ppps'];
@@ -1145,9 +1153,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
             $realif = $ifacecfg['ifcfg']['realif'];
             /* XXX: Any better way? */
             $realifv6 = $realif;
-        } else {
-            $realif = get_real_interface($interface);
-            $realifv6 = get_real_interface($interface, "inet6", true);
         }
     }
 
@@ -3872,7 +3877,7 @@ function interface_get_wireless_clone($wlif)
     }
 }
 
-function get_real_interface($interface = "wan", $family = "all", $realv6iface = false, $flush = true)
+function get_real_interface($interface = "wan", $family = "all", $flush = true)
 {
     global $config;
 
@@ -3926,7 +3931,7 @@ function get_real_interface($interface = "wan", $family = "all", $realv6iface = 
                             case 'ppp':
                             case 'l2tp':
                             case 'pptp':
-                                if (isset($cfg['dhcp6usev4iface']) && $realv6iface === false) {
+                                if (isset($cfg['dhcp6usev4iface'])) {
                                     $wanif = $cfg['if'];
                                 } else {
                                     $parents = get_parent_interface($interface);

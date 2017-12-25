@@ -363,6 +363,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcp6sendsolicit'] = isset($a_interfaces[$if]['dhcp6sendsolicit']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
     $pconfig['dhcp6usev4iface'] = isset($a_interfaces[$if]['dhcp6usev4iface']);
+    // Due to the settings being split per interface type, we need to copy the settings that use the same
+    // config directive.
+    $pconfig['staticv6usev4iface'] = $pconfig['dhcp6usev4iface'];
     $pconfig['adv_dhcp6_debug'] = isset($a_interfaces[$if]['adv_dhcp6_debug']);
     $pconfig['track6-prefix-id--hex'] = sprintf("%x", empty($pconfig['track6-prefix-id']) ? 0 :$pconfig['track6-prefix-id']);
 
@@ -1049,6 +1052,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // switch ipv6 config by type
             switch($pconfig['type6']) {
                 case "staticv6":
+                    if (!empty($pconfig['staticv6usev4iface'])) {
+                        $new_config['dhcp6usev4iface'] = true;
+                    }
                     $new_config['ipaddrv6'] = $pconfig['ipaddrv6'];
                     $new_config['subnetv6'] = $pconfig['subnetv6'];
                     if ($pconfig['gatewayv6'] != "none") {
@@ -2356,6 +2362,17 @@ include("head.inc");
                                 </td>
                               </tr>
                             </table>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_staticv6usev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Static IPv6 over V4 PPPoE"); ?></td>
+                          <td>
+                            <input name="staticv6usev4iface" type="checkbox" id="staticv6usev4iface" value="yes" <?=!empty($pconfig['staticv6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
+                            <div class="hidden" for="help_for_staticv6usev4iface">
+                                <?=gettext("When set, this option allows the setting of an IPv6 static assignment " .
+                                   "but passes that over the PPPoE link negotiated by the V4 link. " .
+                                   "This is allows the gateway to correctly route the gateway monitor pings .");?>
+                            </div>
                           </td>
                         </tr>
                         <tr>
