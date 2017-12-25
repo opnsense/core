@@ -446,8 +446,20 @@
                       </check001>
                   </Constraints>
               </name>
-              <url type="TextField">
+              <proxy_type type="OptionField">
                   <Required>Y</Required>
+                  <OptionValues>
+                      <PROXY>Proxy</PROXY>
+                      <DIRECT>Direct Connection (no Proxy)</DIRECT>
+                      <HTTP>HTTP Proxy</HTTP>
+                      <HTTPS>HTTPS Proxy</HTTPS>
+                      <SOCKS>SOCKS</SOCKS>
+                      <SOCKS4>SOCKS Version 4</SOCKS4>
+                      <SOCKS5>SOCKS Version 5</SOCKS5>
+                  </OptionValues>
+              </proxy_type>
+              <url type="TextField">
+                  <Required>N</Required>
                   <ValidationMessage>This does not look like a valid proxy or direct connection.</ValidationMessage>
               </url>
               <description type="TextField">

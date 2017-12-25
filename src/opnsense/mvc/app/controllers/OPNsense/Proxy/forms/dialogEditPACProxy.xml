@@ -12,10 +12,16 @@
         <help>Enter a description for this proxy for your reference.</help>
     </field>
     <field>
+        <id>pac.proxy.proxy_type</id>
+        <label>Description</label>
+        <type>dropdown</type>
+        <help>Enter a description for this proxy for your reference.</help>
+    </field>
+    <field>
         <id>pac.proxy.url</id>
         <label>URL</label>
         <type>text</type>
-        <help>Enter a proxy URL in the form proxy.example.com:3128 or "DIRECT" in case no proxy should be used.</help>
+        <help>Enter a proxy URL in the form proxy.example.com:3128.</help>
     </field>
 </form>
 
