@@ -438,7 +438,7 @@
           <proxy type="ArrayField">
               <name type="TextField">
                   <Required>Y</Required>
-                  <ValidationMessage>The proxy name must be set to DIRECT or a valid proxy URI.</ValidationMessage>
+                  <ValidationMessage>The proxy name must be set.</ValidationMessage>
                   <Constraints>
                       <check001>
                           <ValidationMessage>Proxy name should be unique</ValidationMessage>
@@ -458,7 +458,7 @@
           <match type="ArrayField">
               <name type="TextField">
                   <Required>Y</Required>
-                  <ValidationMessage>The proxy name must be set to DIRECT or a valid proxy URI.</ValidationMessage>
+                  <ValidationMessage>The match name must be set.</ValidationMessage>
                   <Constraints>
                       <check001>
                           <ValidationMessage>Proxy name should be unique</ValidationMessage>
@@ -529,7 +529,7 @@
                       <Mar>March</Mar>
                       <Apr>April</Apr>
                       <May>May</May>
-                      <Jun>June</June>
+                      <Jun>June</Jun>
                       <Jul>July</Jul>
                       <Aug>August</Aug>
                       <Sep>September</Sep>
@@ -546,7 +546,7 @@
                       <Mar>March</Mar>
                       <Apr>April</Apr>
                       <May>May</May>
-                      <Jun>June</June>
+                      <Jun>June</Jun>
                       <Jul>July</Jul>
                       <Aug>August</Aug>
                       <Sep>September</Sep>
@@ -577,7 +577,13 @@
                   <Required>Y</Required>
                   <multiple>Y</multiple>
               </matches>
-              
+              <join_type type="OptionField">
+                  <Required>Y</Required>
+                  <OptionValues>
+                      <and>And</and>
+                      <or>Or</or>
+                  </OptionValues>
+              </join_type>
               <match_type type="OptionField">
                   <Required>Y</Required>
                   <OptionValues>

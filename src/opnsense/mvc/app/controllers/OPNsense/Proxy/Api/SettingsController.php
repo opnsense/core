@@ -2,6 +2,7 @@
 
 /**
  *    Copyright (C) 2015 Jos Schellevis <jos@opnsense.org>
+ *    Copyright (C) 2017 Fabian Franz
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -276,6 +277,412 @@ class SettingsController extends ApiMutableModelControllerBase
         }
         if (isset($mdlProxy->forward->icap->exclude)) {
             $mdlProxy->forward->icap->exclude = self::decode($mdlProxy->forward->icap->exclude);
+        }
+        return $result;
+    }
+
+    /*                                             PAC RULE                                         */
+
+    /**
+     *
+     * search PAC Rule
+     * @return array
+     */
+    public function searchPACRuleAction()
+    {
+        $this->sessionClose();
+        $mdlProxy = $this->getModel();
+        $grid = new UIModelGrid($mdlProxy->pac->rule);
+        return $grid->fetchBindRequest(
+            $this->request,
+            array("enabled", "description", "proxies", "matches"),
+            "description"
+        );
+    }
+    /**
+     * retrieve PAC Rule or return defaults
+     * @param $uuid item unique id
+     * @return array
+     */
+    public function getPACRuleAction($uuid = null)
+    {
+        $mdlProxy = $this->getModel();
+        if ($uuid != null) {
+            $node = $mdlProxy->getNodeByReference('pac.rule.' . $uuid);
+            if ($node != null) {
+                // return node
+                return array("pac" => array('rule' =>$node->getNodes()));
+            }
+        } else {
+            // generate new node, but don't save to disc
+            $node = $mdlProxy->pac->rule->add();
+            return array("pac" => array('rule' =>$node->getNodes()));
+
+        }
+        return array();
+    }
+    /**
+     * add new PAC Rule and set with attributes from post
+     * @return array
+     */
+    public function addPACRuleAction()
+    {
+        $result = array('result' => 'failed');
+        if ($this->request->isPost() && $this->request->hasPost('pac')) {
+            $result = array('result' => 'failed', 'validations' => array());
+            $postdata = $this->request->getPost('pac');
+            if (!isset($postdata['rule'])) {
+                $result['error'] = 'Wrong PAC form sent.';
+                return $result;
+            }
+            $mdlProxy = $this->getModel();
+            $node = $mdlProxy->pac->rule->Add();
+            $node->setNodes($postdata['rule']);
+            $valMsgs = $mdlProxy->performValidation();
+
+            foreach ($valMsgs as $field => $msg) {
+                $fieldnm = str_replace($node->__reference, 'pac.rule', $msg->getField());
+                $result['validations'][$fieldnm] = $msg->getMessage();
+            }
+
+            if (count($result['validations']) == 0) {
+                // save config if validated correctly
+                $mdlProxy->serializeToConfig();
+                Config::getInstance()->save();
+                $result = array('result' => 'saved');
+            }
+            return $result;
+        }
+        return $result;
+    }
+    /**
+     * update PAC Rule
+     * @param string $uuid
+     * @return array result status
+     * @throws \Phalcon\Validation\Exception
+     */
+    public function setPACRuleAction($uuid)
+    {
+        return $this->pac_set_helper($uuid, 'pac.rule', 'rule');
+    }
+    /**
+     * toggle PAC Rule by uuid (enable/disable)
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function togglePACRuleAction($uuid)
+    {
+        return $this->toggle_helper($uuid, 'pac.rule');
+    }
+    /**
+     * delete PAC Rule by uuid
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function delPACRuleAction($uuid)
+    {
+
+        $result = array("result" => "failed");
+
+        if ($this->request->isPost()) {
+            $mdlProxy = $this->getModel();
+            if ($uuid != null) {
+                if ($mdlProxy->pac->rule->del($uuid)) {
+                    // if item is removed, serialize to config and save
+                    $mdlProxy->serializeToConfig();
+                    Config::getInstance()->save();
+                    $result['result'] = 'deleted';
+                } else {
+                    $result['result'] = 'not found';
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     *
+     * search PAC Proxy
+     * @return array
+     */
+    public function searchPACProxyAction()
+    {
+        $this->sessionClose();
+        $mdlProxy = $this->getModel();
+        $grid = new UIModelGrid($mdlProxy->pac->proxy);
+        return $grid->fetchBindRequest(
+            $this->request,
+            array("enabled", "name", "url", "description"),
+            "description"
+        );
+    }
+    /**
+     * retrieve PAC Proxy or return defaults
+     * @param $uuid item unique id
+     * @return array
+     */
+    public function getPACProxyAction($uuid = null)
+    {
+        $mdlProxy = $this->getModel();
+        if ($uuid != null) {
+            $node = $mdlProxy->getNodeByReference('pac.proxy.' . $uuid);
+            if ($node != null) {
+                // return node
+                return array("pac" => array('proxy' =>$node->getNodes()));
+            }
+        } else {
+            // generate new node, but don't save to disc
+            $node = $mdlProxy->pac->proxy->add();
+            return array("pac" => array('proxy' =>$node->getNodes()));
+        }
+        return array();
+    }
+    /**
+     * add new PAC Proxy and set with attributes from post
+     * @return array
+     */
+    public function addPACProxyAction()
+    {
+        $result = array('result' => 'failed');
+        if ($this->request->isPost() && $this->request->hasPost('pac')) {
+            $result = array('result' => 'failed', 'validations' => array());
+            $postdata = $this->request->getPost('pac');
+            if (!isset($postdata['proxy'])) {
+                $result['error'] = 'Wrong PAC form sent.';
+                return $result;
+            }
+            $mdlProxy = $this->getModel();
+            $node = $mdlProxy->pac->proxy->Add();
+            $node->setNodes($postdata['proxy']);
+            $valMsgs = $mdlProxy->performValidation();
+
+            foreach ($valMsgs as $field => $msg) {
+                $fieldnm = str_replace($node->__reference, 'pac.proxy', $msg->getField());
+                $result['validations'][$fieldnm] = $msg->getMessage();
+            }
+
+            if (count($result['validations']) == 0) {
+                // save config if validated correctly
+                $mdlProxy->serializeToConfig();
+                Config::getInstance()->save();
+                $result = array('result' => 'saved');
+            }
+            return $result;
+        }
+        return $result;
+    }
+    /**
+     * update PAC Proxy
+     * @param string $uuid
+     * @return array result status
+     * @throws \Phalcon\Validation\Exception
+     */
+    public function setPACProxyAction($uuid)
+    {
+        return $this->pac_set_helper($uuid, 'pac.proxy', 'proxy');
+    }
+    /**
+     * delete PAC Proxy by uuid
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function delPACProxyAction($uuid)
+    {
+
+        $result = array("result" => "failed");
+
+        if ($this->request->isPost()) {
+            $mdlProxy = $this->getModel();
+            if ($uuid != null) {
+                if ($mdlProxy->pac->proxy->del($uuid)) {
+                    // if item is removed, serialize to config and save
+                    $mdlProxy->serializeToConfig();
+                    Config::getInstance()->save();
+                    $result['result'] = 'deleted';
+                } else {
+                    $result['result'] = 'not found';
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     *
+     * search PAC Match
+     * @return array
+     */
+    public function searchPACMatchAction()
+    {
+        $this->sessionClose();
+        $mdlProxy = $this->getModel();
+        $grid = new UIModelGrid($mdlProxy->pac->match);
+        return $grid->fetchBindRequest(
+            $this->request,
+            array("enabled", "name", "description", "negate", "match_type"),
+            "name"
+        );
+    }
+    /**
+     * retrieve PAC Match or return defaults
+     * @param $uuid item unique id
+     * @return array
+     */
+    public function getPACMatchAction($uuid = null)
+    {
+        $mdlProxy = $this->getModel();
+        if ($uuid != null) {
+            $node = $mdlProxy->getNodeByReference('pac.match.' . $uuid);
+            if ($node != null) {
+                // return node
+                return array("pac" => array('match' => $node->getNodes()));
+            }
+        } else {
+            // generate new node, but don't save to disc
+            $node = $mdlProxy->pac->match->add();
+            return array("pac" => array('match' => $node->getNodes()));
+        }
+        return array();
+    }
+    /**
+     * add new PAC Proxy and set with attributes from post
+     * @return array
+     */
+    public function addPACMatchAction()
+    {
+        $result = array('result' => 'failed');
+        if ($this->request->isPost() && $this->request->hasPost('pac')) {
+            $result = array('result' => 'failed', 'validations' => array());
+            $postdata = $this->request->getPost('pac');
+            if (!isset($postdata['match'])) {
+                $result['error'] = 'Wrong PAC form sent.';
+                return $result;
+            }
+            $mdlProxy = $this->getModel();
+            $node = $mdlProxy->pac->match->Add();
+            $node->setNodes($postdata['match']);
+            $valMsgs = $mdlProxy->performValidation();
+
+            foreach ($valMsgs as $field => $msg) {
+                $fieldnm = str_replace($node->__reference, 'pac.match', $msg->getField());
+                $result['validations'][$fieldnm] = $msg->getMessage();
+            }
+
+            if (count($result['validations']) == 0) {
+                // save config if validated correctly
+                $mdlProxy->serializeToConfig();
+                Config::getInstance()->save();
+                $result = array('result' => 'saved');
+            }
+            return $result;
+        }
+        return $result;
+    }
+    /**
+     * update PAC Rule
+     * @param string $uuid
+     * @return array result status
+     * @throws \Phalcon\Validation\Exception
+     */
+    public function setPACMatchAction($uuid)
+    {
+        return $this->pac_set_helper($uuid, 'pac.match', 'match');
+    }
+
+    /**
+     * delete PAC Match by uuid
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function delPACMatchAction($uuid)
+    {
+
+        $result = array("result" => "failed");
+
+        if ($this->request->isPost()) {
+            $mdlProxy = $this->getModel();
+            if ($uuid != null) {
+                if ($mdlProxy->pac->match->del($uuid)) {
+                    // if item is removed, serialize to config and save
+                    $mdlProxy->serializeToConfig();
+                    Config::getInstance()->save();
+                    $result['result'] = 'deleted';
+                } else {
+                    $result['result'] = 'not found';
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * update PAC whatever
+     * @param string $uuid uuid of the node
+     * @param string $dbref db reference prefix
+     * @param $postfield array key for to extract
+     * @return array result status
+     * @throws \Phalcon\Validation\Exception
+     */
+    public function pac_set_helper($uuid, $dbref, $postfield)
+    {
+        if ($this->request->isPost() && $this->request->hasPost("pac")) {
+            $postdata = $this->request->getPost('pac');
+            if (!isset($postdata[$postfield])) {
+                $result['error'] = 'Wrong PAC form sent.';
+                return $result;
+            }
+            $mdlProxy = $this->getModel();
+            if ($uuid != null) {
+                $node = $mdlProxy->getNodeByReference($dbref . '.' . $uuid);
+                if ($node != null) {
+                    $result = array("result" => "failed", "validations" => array());
+                    $node->setNodes($postdata[$postfield]);
+                    $valMsgs = $mdlProxy->performValidation();
+                    foreach ($valMsgs as $field => $msg) {
+                        $fieldnm = str_replace($node->__reference, $dbref, $msg->getField());
+                        $result["validations"][$fieldnm] = $msg->getMessage();
+                    }
+
+                    if (count($result['validations']) == 0) {
+                        // save config if validated correctly
+                        $mdlProxy->serializeToConfig();
+                        Config::getInstance()->save();
+                        $result = array("result" => "saved");
+                    }
+                    return $result;
+                }
+            }
+        }
+        return array("result" => "failed");
+    }
+
+    /**
+     * toggle element by uuid (enable/disable)
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function toggle_helper($uuid, $reference)
+    {
+
+        $result = array("result" => "failed");
+
+        if ($this->request->isPost()) {
+            $mdlProxy = $this->getModel();
+            if ($uuid != null) {
+                $node = $mdlProxy->getNodeByReference($reference . '.' . $uuid);
+                if ($node != null) {
+                    if ($node->enabled->__toString() == "1") {
+                        $result['result'] = "Disabled";
+                        $node->enabled = "0";
+                    } else {
+                        $result['result'] = "Enabled";
+                        $node->enabled = "1";
+                    }
+                    // if item has toggled, serialize to config and save
+                    $mdlProxy->serializeToConfig();
+                    Config::getInstance()->save();
+                }
+            }
         }
         return $result;
     }

@@ -18,13 +18,13 @@
         <help>Negate this match. For example you can match if a host is not inside a network.</help>
     </field>
     <field>
-        <id>pac.rule.match_type</id>
+        <id>pac.match.match_type</id>
         <label>Match Type</label>
         <type>dropdown</type>
         <help>Select the type of the match. Depending on the match, you will need different arguments.</help>
     </field>
     <field>
-        <id>pac.rule.network_address</id>
+        <id>pac.match.network_address</id>
         <label>Network</label>
         <type>text</type>
         <help></help>
