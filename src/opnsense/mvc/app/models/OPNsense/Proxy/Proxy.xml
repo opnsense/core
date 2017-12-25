@@ -477,7 +477,7 @@
               <match_type type="OptionField">
                   <Required>Y</Required>
                   <OptionValues>
-                      <url_matches>Hostname Matches</url_matches>
+                      <url_matches>URL Matches</url_matches>
                       <hostname_matches>Hostname Matches</hostname_matches>
                       <dns_domain_is>DNS Domain Is</dns_domain_is>
                       <destination_in_net>IP Is In Network</destination_in_net>
@@ -493,6 +493,9 @@
               <hostname type="TextField">
                   <Required>N</Required>
               </hostname>
+              <url type="TextField">
+                  <Required>N</Required>
+              </url>
               <network type="NetworkField">
                 <Required>N</Required>
               </network>
@@ -517,45 +520,68 @@
               <time_to type="IntegerField">
                   <default>0</default>
                   <MinimumValue>0</MinimumValue>
-                  <MinimumValue>23</MinimumValue>
+                  <MaximumValue>23</MaximumValue>
                   <ValidationMessage>The last hour of the day is 23!</ValidationMessage>
                   <Required>N</Required>
               </time_to>
               <date_from type="OptionField">
                   <Required>Y</Required>
                   <OptionValues>
-                      <Jan>January</Jan>
-                      <Feb>February</Feb>
-                      <Mar>March</Mar>
-                      <Apr>April</Apr>
-                      <May>May</May>
-                      <Jun>June</Jun>
-                      <Jul>July</Jul>
-                      <Aug>August</Aug>
-                      <Sep>September</Sep>
-                      <Oct>October</Oct>
-                      <Nov>November</Nov>
-                      <Dec>December</Dec>
+                      <JAN>January</JAN>
+                      <FEB>February</FEB>
+                      <MAR>March</MAR>
+                      <APR>April</APR>
+                      <MAY>May</MAY>
+                      <JUN>June</JUN>
+                      <JUL>July</JUL>
+                      <AUG>August</AUG>
+                      <SEP>September</SEP>
+                      <OCT>October</OCT>
+                      <NOV>November</NOV>
+                      <DEC>December</DEC>
                   </OptionValues>
               </date_from>
               <date_to type="OptionField">
                   <Required>Y</Required>
                   <OptionValues>
-                      <Jan>January</Jan>
-                      <Feb>February</Feb>
-                      <Mar>March</Mar>
-                      <Apr>April</Apr>
-                      <May>May</May>
-                      <Jun>June</Jun>
-                      <Jul>July</Jul>
-                      <Aug>August</Aug>
-                      <Sep>September</Sep>
-                      <Oct>October</Oct>
-                      <Nov>November</Nov>
-                      <Dec>December</Dec>
+                      <JAN>January</JAN>
+                      <FEB>February</FEB>
+                      <MAR>March</MAR>
+                      <APR>April</APR>
+                      <MAY>May</MAY>
+                      <JUN>June</JUN>
+                      <JUL>July</JUL>
+                      <AUG>August</AUG>
+                      <SEP>September</SEP>
+                      <OCT>October</OCT>
+                      <NOV>November</NOV>
+                      <DEC>December</DEC>
                   </OptionValues>
               </date_to>
-              <!-- TODO Implement the rest -->
+              <weekday_from type="OptionField">
+                  <Required>Y</Required>
+                  <OptionValues>
+                      <MON>Monday</MON>
+                      <TUE>Tuesday</TUE>
+                      <WED>Wednesday</WED>
+                      <THU>Thursday</THU>
+                      <FRI>Friday</FRI>
+                      <SAT>Saturday</SAT>
+                      <SUN>Sunday</SUN>
+                  </OptionValues>
+              </weekday_from>
+              <weekday_to type="OptionField">
+                  <Required>Y</Required>
+                  <OptionValues>
+                      <MON>Monday</MON>
+                      <TUE>Tuesday</TUE>
+                      <WED>Wednesday</WED>
+                      <THU>Thursday</THU>
+                      <FRI>Friday</FRI>
+                      <SAT>Saturday</SAT>
+                      <SUN>Sunday</SUN>
+                  </OptionValues>
+              </weekday_to>
           </match>
           <rule type="ArrayField">
               <enabled type="BooleanField">
@@ -569,7 +595,7 @@
               <matches type="ModelRelationField">
                   <Model>
                       <queues>
-                          <source>OPNsense.Proxy</source>
+                          <source>OPNsense.Proxy.Proxy</source>
                           <items>pac.match</items>
                           <display>name</display>
                       </queues>
@@ -594,8 +620,8 @@
               <proxies type="ModelRelationField">
                   <Model>
                       <queues>
-                          <source>OPNsense.Proxy</source>
-                          <items>pac.rule</items>
+                          <source>OPNsense.Proxy.Proxy</source>
+                          <items>pac.proxy</items>
                           <display>name</display>
                       </queues>
                   </Model>

@@ -61,7 +61,29 @@ POSSIBILITY OF SUCH DAMAGE.
                     'set':'/api/proxy/settings/setPACMatch/',
                     'add':'/api/proxy/settings/addPACMatch/',
                     'del':'/api/proxy/settings/delPACMatch/',
-                    'toggle':'/api/proxy/settings/togglePACMatch/'
+                    'options': {
+                        converters: {
+                            notprefixable: {
+                                to: function (value) {
+                                    if (value.not) {
+                                        return '<i class="fa fa-exclamation"></i> ' + value.val;
+                                    } else {
+                                        return value.val;
+                                    }
+                                }
+                            }
+                        },
+                        responseHandler: function (response) {
+                            // concatenate fields for not.
+                            if ('rows' in response) {
+                                for (var i = 0; i < response.rowCount; i++) {
+                                    response.rows[i]['display_match_type'] = {'not':response.rows[i].negate == '1',
+                                                                      'val':response.rows[i].match_type}
+                                }
+                            }
+                            return response;
+                        }
+                    }
                 }
         );
         $("#grid-pac-rule").UIBootgrid(
@@ -78,8 +100,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     'get':'/api/proxy/settings/getPACProxy/',
                     'set':'/api/proxy/settings/setPACProxy/',
                     'add':'/api/proxy/settings/addPACProxy/',
-                    'del':'/api/proxy/settings/delPACProxy/',
-                    'toggle':'/api/proxy/settings/togglePACProxy/'
+                    'del':'/api/proxy/settings/delPACProxy/'
                 }
         );
 
@@ -96,6 +117,80 @@ POSSIBILITY OF SUCH DAMAGE.
                 });
             }, 500);
         });
+        function update_pac_match_view(event) {
+            function show_line(the_id) {
+                $('tr[for=' + the_id + ']').show();
+            }
+            value = $("#pac\\.match\\.match_type").val();
+            if (!value) {
+                // retry later
+                setTimeout(update_pac_match_view, 100);
+                return;
+            }
+            // hide tr of the element if not needed
+            ["pac\\.match\\.network",
+             "pac\\.match\\.hostname",
+             "pac\\.match\\.url",
+             "pac\\.match\\.domain_level_from",
+             "pac\\.match\\.domain_level_to",
+             "pac\\.match\\.time_from",
+             "pac\\.match\\.time_to",
+             "pac\\.match\\.date_from",
+             "pac\\.match\\.date_to",
+             "pac\\.match\\.weekday_from",
+             "pac\\.match\\.weekday_to"].forEach (function (the_id) {
+                $('tr[for=' + the_id + ']').hide();
+            });
+            switch (value) {
+                case 'hostname_matches':
+                    show_line("pac\\.match\\.hostname");
+                    break;
+                case "url_matches":
+                    show_line("pac\\.match\\.url");
+                    break;
+                case "dns_domain_is":
+                    show_line("pac\\.match\\.hostname");
+                    break;
+                case "destination_in_net":
+                case "my_ip_in_net":
+                    show_line("pac\\.match\\.network");
+                    break;
+                case "plain_hostname":
+                    break; // has no option
+                case "is_resolvable":
+                    show_line("pac\\.match\\.hostname");
+                    break;
+                case "dns_domain_is":
+                    show_line("pac\\.match\\.hostname");
+                    break;
+                case "dns_domain_levels":
+                    show_line("pac\\.match\\.domain_level_from");
+                    show_line("pac\\.match\\.domain_level_to");
+                    break;
+                case "dns_domain_is":
+                    show_line("pac\\.match\\.hostname");
+                    break;
+                case "dns_domain_is":
+                    show_line("pac\\.match\\.hostname");
+                    break;
+                case "weekday_range":
+                    show_line("pac\\.match\\.weekday_from");
+                    show_line("pac\\.match\\.weekday_to");
+                    break;
+                case "date_range":
+                    show_line("pac\\.match\\.date_from");
+                    show_line("pac\\.match\\.date_to");
+                    break;
+                case "time_range":
+                    show_line("pac\\.match\\.time_from");
+                    show_line("pac\\.match\\.time_to");
+                    break;
+            }
+
+        }
+        // when a modal is created, update the
+        $("#DialogEditPACMatch").on("show.bs.modal", update_pac_match_view);
+        $("#pac\\.match\\.match_type").change(update_pac_match_view);
 
         /**
          *
@@ -297,16 +392,15 @@ POSSIBILITY OF SUCH DAMAGE.
                 <tr>
                     <th data-column-id="name" data-type="string" data-sortable="false" data-visible="true">{{ lang._('Name') }}</th>
                     <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
-                    <th data-column-id="negate" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Negate') }}</th>
-                    <th data-column-id="match_type" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Match Type') }}</th>
-                    <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Action') }}</th>
+                    <th data-column-id="display_match_type" data-type="notprefixable" data-sortable="false"  data-visible="true">{{ lang._('Match Type') }}</th>
+                    <th data-column-id="commands" data-width="10em" data-formatter="commands" data-sortable="false">{{ lang._('Action') }}</th>
                 </tr>
             </thead>
             <tbody>
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="4"></td>
+                    <td colspan="3"></td>
                     <td>
                         <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
                         <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
@@ -323,7 +417,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     <!--<th data-column-id="matches" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Matches') }}</th>
                     <th data-column-id="proxies" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('URL') }}</th>-->
                     <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
-                    <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Actions') }}</th>
+                    <th data-column-id="commands" data-width="10em" data-formatter="commands" data-sortable="false">{{ lang._('Actions') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -346,7 +440,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     <th data-column-id="name" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Name') }}</th>
                     <th data-column-id="url" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('URL') }}</th>
                     <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
-                    <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Actions') }}</th>
+                    <th data-column-id="commands" data-width="10em" data-formatter="commands" data-sortable="false">{{ lang._('Actions') }}</th>
                 </tr>
             </thead>
             <tbody>

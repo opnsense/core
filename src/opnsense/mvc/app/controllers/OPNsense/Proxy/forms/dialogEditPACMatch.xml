@@ -24,10 +24,70 @@
         <help>Select the type of the match. Depending on the match, you will need different arguments.</help>
     </field>
     <field>
-        <id>pac.match.network_address</id>
+        <id>pac.match.network</id>
         <label>Network</label>
         <type>text</type>
-        <help></help>
+        <help>Enter the network address to match in CIDR notation for example like 127.0.0.1/8 or ::1/128</help>
+    </field>
+    <field>
+        <id>pac.match.hostname</id>
+        <label>Host Pattern</label>
+        <type>text</type>
+        <help>Enter a hostname pattern like *.opnsense.org.</help>
+    </field>
+    <field>
+        <id>pac.match.url</id>
+        <label>URL Pattern</label>
+        <type>text</type>
+        <help>Enter a URL pattern like forum.opnsense.org/index*.</help>
+    </field>
+    <field>
+        <id>pac.match.domain_level_from</id>
+        <label>Domain Level From</label>
+        <type>text</type>
+        <help>Enter the minimum amount of dots in the domain name.</help>
+    </field>
+    <field>
+        <id>pac.match.domain_level_to</id>
+        <label>Domain Level To</label>
+        <type>text</type>
+        <help>Enter the maximum amount of dots in the domain name.</help>
+    </field>
+    <field>
+        <id>pac.match.time_from</id>
+        <label>Beginning Hour</label>
+        <type>text</type>
+        <help>Enter start hour (minimum 0).</help>
+    </field>
+    <field>
+        <id>pac.match.time_to</id>
+        <label>Last Hour</label>
+        <type>text</type>
+        <help>Enter the end time (maximum 23, minimum 0 or start time).</help>
+    </field>
+    <field>
+        <id>pac.match.date_from</id>
+        <label>From Month</label>
+        <type>dropdown</type>
+        <help>Enter the first month.</help>
+    </field>
+    <field>
+        <id>pac.match.date_to</id>
+        <label>To Month</label>
+        <type>dropdown</type>
+        <help>Enter the last month (maximum December, minimum January or From Month).</help>
+    </field>
+    <field>
+        <id>pac.match.weekday_from</id>
+        <label>From Month</label>
+        <type>dropdown</type>
+        <help>Enter the first day of the week.</help>
+    </field>
+    <field>
+        <id>pac.match.weekday_to</id>
+        <label>To Month</label>
+        <type>dropdown</type>
+        <help>Enter the last day.</help>
     </field>
 </form>
 
