@@ -192,6 +192,13 @@ POSSIBILITY OF SUCH DAMAGE.
         $("#DialogEditPACMatch").on("show.bs.modal", update_pac_match_view);
         $("#pac\\.match\\.match_type").change(update_pac_match_view);
 
+        $('.reload-pac-btn').click(function () {
+            $('.reload-pac-btn .fa-refresh').addClass('fa-spin');
+            ajaxCall(url="/api/proxy/service/refreshTemplate", sendData={}, callback=function(data,status) {
+                $('.reload-pac-btn .fa-refresh').removeClass('fa-spin');
+            });
+        });
+
         /**
          *
          * Reconfigure proxy - activate changes
@@ -403,7 +410,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     <td colspan="3"></td>
                     <td>
                         <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
-                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                        <button type="button" class="btn btn-xs btn-primary reload-pac-btn"><span class="fa fa-refresh"></span></button>
                     </td>
                 </tr>
             </tfoot>
@@ -427,7 +434,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     <td colspan="3"></td>
                     <td>
                         <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
-                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                        <button type="button" class="btn btn-xs btn-primary reload-pac-btn"><span class="fa fa-refresh"></span></button>
                     </td>
                 </tr>
             </tfoot>
@@ -451,7 +458,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     <td colspan="3"></td>
                     <td>
                         <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
-                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                        <button type="button" class="btn btn-xs btn-primary reload-pac-btn"><span class="fa fa-refresh"></span></button>
                     </td>
                 </tr>
             </tfoot>
