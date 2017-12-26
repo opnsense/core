@@ -227,10 +227,14 @@ abstract class Rule
                         if (!empty($interfaces[$matches[1]]['if'])) {
                             $rule[$target] = "({$interfaces["{$matches[1]}"]['if']})";
                         }
-                    } else {
-                        if (!empty($interfaces[$network_name]['if'])) {
-                            $rule[$target] = "({$interfaces[$network_name]['if']}:network)";
-                        }
+                    } elseif (!empty($interfaces[$network_name]['if'])) {
+                        $rule[$target] = "({$interfaces[$network_name]['if']}:network)";
+                    } elseif (Util::isIpAddress($rule[$tag]['network']) || Util::isSubnet($rule[$tag]['network'])) {
+                        $rule[$target] = $rule[$tag]['network'];
+                    } elseif (Util::isAlias($rule[$tag]['network'])) {
+                        $rule[$target] = '$'.$rule[$tag]['network'];
+                    } elseif ($rule[$tag]['network'] == 'any') {
+                        $rule[$target] = $rule[$tag]['network'];
                     }
                 } elseif (!empty($rule[$tag]['address'])) {
                     if (Util::isIpAddress($rule[$tag]['address']) || Util::isSubnet($rule[$tag]['address']) ||
