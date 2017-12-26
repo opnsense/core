@@ -3111,6 +3111,13 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     $wanif = get_real_interface($interface, "inet6");
     $dhcp6cconf = "";
     $dhcp6cconf .= "interface {$wanif} {\n";
+    
+    if (!empty($config['system']['global-v6duid'])) {
+        // Write the DUID file
+        if(!write_dhcp6_duid($config['system']['global-v6duid'])) {
+            log_error(gettext("Failed to write user DUID file!"));
+		}
+    }
 
     /* for SLAAC interfaces we do fire off a dhcp6 client for just our name servers */
     if ($wancfg['ipaddrv6'] == "slaac") {
