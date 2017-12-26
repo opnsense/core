@@ -25,7 +25,6 @@
  # POSSIBILITY OF SUCH DAMAGE.
  #}
 
-<ul class="nav nav-tabs" role="tablist" id="maintabs">
 {% for tab in mainForm['tabs']|default([]) %}
     {% if tab['subtabs']|default(false) %}
         {# Tab with dropdown #}
@@ -59,6 +58,3 @@
         </li>
     {% endif %}
 {% endfor %}
-    {# add custom content #}
-    <li><a data-toggle="tab" href="#remote_acls"><b>{{ lang._('Remote Access Control Lists') }}</b></a></li>
-</ul>

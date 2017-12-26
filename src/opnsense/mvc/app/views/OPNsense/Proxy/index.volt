@@ -190,7 +190,11 @@
 
 </script>
 
-{{ partial("layout_partials/base_tabs_header") }}
+<ul class="nav nav-tabs" role="tablist" id="maintabs">
+    {{ partial("layout_partials/base_tabs_header") }}
+
+    <li><a data-toggle="tab" href="#remote_acls"><b>{{ lang._('Remote Access Control Lists') }}</b></a></li>
+</ul>
 
 <div class="content-box tab-content">
     {{ partial("layout_partials/base_tabs_content") }}
