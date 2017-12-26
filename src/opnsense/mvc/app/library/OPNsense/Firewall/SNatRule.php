@@ -43,12 +43,15 @@ class SNatRule extends Rule
         'ipprotocol' => 'parsePlain',
         'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
         'from' => 'parsePlain,from ',
+        'sourceport' => 'parsePlain, port ',
         'to' => 'parsePlain,to ',
+        'dstport' => 'parsePlain, port ',
         'tag' => 'parsePlain, tag ',
         'tagged' => 'parsePlain, tagged ',
         'target' => 'parsePlain, -> ',
+        'natport' => 'parsePlain, port ',
         'poolopts' => 'parsePlain',
-        'staticnatport' => 'parseBool,  static-port , port 1024:65535 ',
+        'staticnatport' => 'parseBool,  static-port ',
         'descr' => 'parseComment'
     );
 
@@ -60,8 +63,31 @@ class SNatRule extends Rule
     private function parseNatRules()
     {
         foreach ($this->reader() as $rule) {
-            if ($rule['target'] == "other-subnet") {
+            if (empty($rule['target'])) {
+                $interf = $rule['interface'];
+                if (!empty($this->interfaceMapping[$interf])) {
+                    if (($this->isIpV4($rule) && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
+                        (!$this->isIpV4($rule) && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv6']))
+                    ) {
+                        $rule['target'] = $this->interfaceMapping[$interf]['if'] ;
+                    }
+                }
+                if (empty($rule['target'])) {
+                    // no target found, disable rule
+                    $rule['disabled'] = true;
+                }
+            } elseif ($rule['target'] == "other-subnet") {
                 $rule['target'] = $rule['targetip'] . '/' . $rule['targetip_subnet'];
+            }
+            foreach (array("sourceport", "dstport", "natport") as $fieldname) {
+                if (!empty($rule[$fieldname]) && Util::isAlias($rule[$fieldname])) {
+                    $rule[$fieldname] = "$".$rule[$fieldname];
+                }
+            }
+            if (!empty($rule['staticnatport'])) {
+                $rule['natport'] = '';
+            } elseif (empty($rule['natport'])) {
+                $rule['natport'] = "1024:65535";
             }
             yield $rule;
         }
