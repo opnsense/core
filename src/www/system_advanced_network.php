@@ -34,11 +34,89 @@ require_once("interfaces.inc");
 require_once("filter.inc");
 require_once("system.inc");
 
+/*
+ * Format a string to look (more) like the expected DUID format:
+ *
+ * 1) Replace any "-" with ":"
+ * 2) If the user inputs 14 components, then add the expected "0e:00:" to the front.
+ *    This is convenience, because the actual DUID (which is reported in logs) is the last 14 components.
+ * 3) If any components are input with just a single char (hex digit hopefully), put a "0" in front.
+ *
+ * The final result should be closer to:
+ *
+ * "0e:00:00:01:00:01:nn:nn:nn:nn:nn:nn:nn:nn:nn:nn"
+ */
+function format_duid($duid)
+{
+    $values = explode(':', strtolower(str_replace('-', ':', $duid)));
+
+    if (count($values) == 14) {
+        array_unshift($values, '0e', '00');
+    }
+
+    array_walk($values, function(&$value) {
+        $value = str_pad($value, 2, '0', STR_PAD_LEFT);
+    });
+
+    return implode(':', $values);
+}
+
+function is_duid($duid)
+{
+    $values = explode(":", $duid);
+
+    if (count($values) != 16 || strlen($duid) != 47) {
+        return false;
+    }
+
+    for ($i = 0; $i < 16; $i++) {
+        if (ctype_xdigit($values[$i]) == false) {
+            return false;
+        }
+        if (hexdec($values[$i]) < 0 || hexdec($values[$i]) > 255) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/* read duid from disk or return blank DUID string */
+function read_duid()
+{
+    $duid = '';
+    $count = 0;
+
+    if (file_exists('/var/db/dhcp6c_duid') &&
+        ($fd = fopen('/var/db/dhcp6c_duid', 'r'))) {
+        if (filesize('/var/db/dhcp6c_duid') == 16) {
+            $buffer = fread($fd, 16);
+            while ($count < 16) {
+            $duid .= bin2hex($buffer[$count]);
+                $count++;
+                if ($count < 16) {
+                    $duid .= ':';
+                }
+            }
+        }
+        fclose($fd);
+    }
+
+    if (!is_duid($duid)) {
+        $duid = 'XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX';
+    }
+
+    return $duid;
+}
+
+$duid = read_duid();
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['disablechecksumoffloading'] = isset($config['system']['disablechecksumoffloading']);
     $pconfig['disablesegmentationoffloading'] = isset($config['system']['disablesegmentationoffloading']);
     $pconfig['disablelargereceiveoffloading'] = isset($config['system']['disablelargereceiveoffloading']);
+    $pconfig['ipv6duid'] = $config['system']['ipv6duid'];
     if (!isset($config['system']['disablevlanhwfilter'])) {
       $pconfig['disablevlanhwfilter'] = '0';
     } else {
@@ -46,40 +124,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $pconfig['sharednet'] = isset($config['system']['sharednet']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_errors = array();
     $pconfig = $_POST;
 
-    if (!empty($pconfig['sharednet'])) {
-        $config['system']['sharednet'] = true;
-    } elseif (isset($config['system']['sharednet'])) {
-        unset($config['system']['sharednet']);
+    if (!empty($pconfig['ipv6duid']) && !is_duid($pconfig['ipv6duid'])) {
+        $input_errors[] = gettext('A valid DUID must be specified.');
     }
 
-    if (!empty($pconfig['disablechecksumoffloading'])) {
-        $config['system']['disablechecksumoffloading'] = true;
-    } elseif (isset($config['system']['disablechecksumoffloading'])) {
-        unset($config['system']['disablechecksumoffloading']);
-    }
+    if (!count($input_errors)) {
+        if (!empty($pconfig['sharednet'])) {
+            $config['system']['sharednet'] = true;
+        } elseif (isset($config['system']['sharednet'])) {
+            unset($config['system']['sharednet']);
+        }
 
-    if (!empty($pconfig['disablesegmentationoffloading'])) {
-        $config['system']['disablesegmentationoffloading'] = true;
-    } elseif (isset($config['system']['disablesegmentationoffloading'])) {
-        unset($config['system']['disablesegmentationoffloading']);
-    }
+        if (!empty($pconfig['disablechecksumoffloading'])) {
+            $config['system']['disablechecksumoffloading'] = true;
+        } elseif (isset($config['system']['disablechecksumoffloading'])) {
+            unset($config['system']['disablechecksumoffloading']);
+        }
 
-    if (!empty($_POST['disablelargereceiveoffloading'])) {
-        $config['system']['disablelargereceiveoffloading'] = true;
-    } elseif (isset($config['system']['disablelargereceiveoffloading'])) {
-        unset($config['system']['disablelargereceiveoffloading']);
-    }
+        if (!empty($pconfig['disablesegmentationoffloading'])) {
+            $config['system']['disablesegmentationoffloading'] = true;
+        } elseif (isset($config['system']['disablesegmentationoffloading'])) {
+            unset($config['system']['disablesegmentationoffloading']);
+        }
 
-    if (!empty($_POST['disablevlanhwfilter'])) {
-        $config['system']['disablevlanhwfilter'] = $pconfig['disablevlanhwfilter'];
-    } elseif(isset($config['system']['disablevlanhwfilter'])) {
-        unset($config['system']['disablevlanhwfilter']);
-    }
+        if (!empty($pconfig['disablelargereceiveoffloading'])) {
+            $config['system']['disablelargereceiveoffloading'] = true;
+        } elseif (isset($config['system']['disablelargereceiveoffloading'])) {
+            unset($config['system']['disablelargereceiveoffloading']);
+        }
 
-    write_config();
-    system_arp_wrong_if();
+        if (!empty($pconfig['disablevlanhwfilter'])) {
+            $config['system']['disablevlanhwfilter'] = $pconfig['disablevlanhwfilter'];
+        } elseif (isset($config['system']['disablevlanhwfilter'])) {
+            unset($config['system']['disablevlanhwfilter']);
+        }
+
+        if (!empty($pconfig['ipv6duid'])) {
+            $config['system']['ipv6duid'] = format_duid($pconfig['ipv6duid']);
+        } elseif (isset($config['system']['ipv6duid'])) {
+            unset($config['system']['ipv6duid']);
+            /* clear the file as this means auto-generate */
+            @unlink('/var/db/dhcp6c_duid');
+        }
+
+        $savemsg = get_std_save_message();
+
+        write_config();
+        system_arp_wrong_if();
+    }
 }
 
 legacy_html_escape_form_data($pconfig);
@@ -96,6 +191,9 @@ include("head.inc");
   <div class="container-fluid">
     <div class="row">
 <?php
+    if (isset($input_errors) && count($input_errors)) {
+        print_input_errors($input_errors);
+    }
     if (isset($savemsg)) {
         print_info_box($savemsg);
     }
@@ -170,6 +268,16 @@ include("head.inc");
                   </div>
                 </td>
               </tr>
+              <tr>
+                <td><a id="help_for_persistent_duid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Unique Identifier"); ?></td>
+                <td>
+                  <input name="ipv6duid" type="text" id="ipv6duid" value="<?=htmlspecialchars($pconfig['ipv6duid']);?>" />
+                  <div class="hidden" for="help_for_persistent_duid">
+                    <?= gettext('This field can be used to enter an explicit DUID for use by IPv6 DHCP clients.') ?><br />
+                    <a onclick="$('#ipv6duid').val('<?= html_safe($duid) ?>');" href="#"><?=gettext("Insert the existing DUID here"); ?></a>
+                </div>
+              </td>
+            </tr>
             <tr>
               <td>&nbsp;</td>
               <td><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" /></td>
