@@ -3195,8 +3195,10 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     unset($dhcp6cscript);
     chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
+    $noreleaseoption = isset($wancfg['dhcp6norelease']) ? "-n" : "";
+
     $dhcp6ccommand = exec_safe(
-        "/usr/local/sbin/dhcp6c %s -c %s -p %s %s",
+        "/usr/local/sbin/dhcp6c %s {$noreleaseoption} -c %s -p %s %s",
         array(
             empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
             "/var/etc/dhcp6c_{$interface}.conf",

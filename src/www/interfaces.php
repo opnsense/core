@@ -363,6 +363,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcp6sendsolicit'] = isset($a_interfaces[$if]['dhcp6sendsolicit']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
     $pconfig['dhcp6usev4iface'] = isset($a_interfaces[$if]['dhcp6usev4iface']);
+    $pconfig['dhcp6norelease'] = isset($a_interfaces[$if]['dhcp6norelease']);
     // Due to the settings being split per interface type, we need to copy the settings that use the same
     // config directive.
     $pconfig['staticv6usev4iface'] = $pconfig['dhcp6usev4iface'];
@@ -1078,6 +1079,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     if (!empty($pconfig['dhcp6usev4iface'])) {
                         $new_config['dhcp6usev4iface'] = true;
+                    }
+                    if (!empty($pconfig['dhcp6norelease'])) {
+                        $new_config['dhcp6norelease'] = true;
                     }
                     $new_config['adv_dhcp6_debug'] = !empty($pconfig['adv_dhcp6_debug']);
                     $new_config['adv_dhcp6_interface_statement_send_options'] = $pconfig['adv_dhcp6_interface_statement_send_options'];
@@ -2522,6 +2526,15 @@ include("head.inc");
                             <input name="dhcp6usev4iface" type="checkbox" id="dhcp6usev4iface" value="yes" <?=!empty($pconfig['dhcp6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
                             <div class="hidden" for="help_for_dhcp6usev4iface">
                               <?=gettext("Request a IPv6 prefix/information through the IPv4 connectivity link"); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_dhcp6norelease" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("dhcp6c no release"); ?></td>
+                          <td>
+                            <input name="dhcp6norelease" type="checkbox" id="dhcp6norelease" value="yes" <?=!empty($pconfig['dhcp6norelease']) ? "checked=\"checked\"" : ""; ?> />
+                            <div class="hidden" for="help_for_dhcp6norelease">
+                              <?=gettext("By default, dhcp6c will send a release to the ISP on exit, some ISPs then release the allocated address or prefix. This option prevents that signal from being sent"); ?>
                             </div>
                           </td>
                         </tr>
