@@ -1,6 +1,6 @@
 {#
  # Copyright (c) 2017 Franco Fichtner <franco@opnsense.org>
- # Copyright (c) 2014–2015 Deciso B.V.
+ # Copyright (c) 2014-2015 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -13,7 +13,7 @@
  #     this list of conditions and the following disclaimer in the documentation
  #     and/or other materials provided with the distribution.
  #
- # THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ # THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
  # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
  # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
  # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
@@ -23,20 +23,22 @@
  # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  # POSSIBILITY OF SUCH DAMAGE.
+ #
+ # formData : the form data
  #}
 
-    {% for tab in mainForm['tabs']|default([]) %}
-        {% if tab['subtabs']|default(false) %}
-            {# Tab with dropdown #}
-            {% for subtab in tab['subtabs']|default({})%}
-                <div id="subtab_{{subtab[0]}}" class="tab-pane fade{% if mainForm['activetab']|default("") == subtab[0] %} in active {% endif %}">
+{% for tab in formData['tabs']|default([]) %}
+    {% if tab['subtabs']|default(false) %}
+        {# Tab with dropdown #}
+        {% for subtab in tab['subtabs']|default({})%}
+                <div id="subtab_{{subtab[0]}}" class="tab-pane fade{% if formData['activetab']|default("") == subtab[0] %} in active {% endif %}">
                     {{ partial("layout_partials/base_form",['fields':subtab[2],'id':'frm_'~subtab[0],'data_title':subtab[1],'apply_btn_id':'save_'~subtab[0]])}}
                 </div>
-            {% endfor %}
-        {% endif %}
-        {% if tab['subtabs']|default(false)==false %}
-            <div id="tab_{{tab[0]}}" class="tab-pane fade{% if mainForm['activetab']|default("") == tab[0] %} in active {% endif %}">
+        {% endfor %}
+    {% endif %}
+    {% if tab['subtabs']|default(false)==false %}
+            <div id="tab_{{tab[0]}}" class="tab-pane fade{% if formData['activetab']|default("") == tab[0] %} in active {% endif %}">
                 {{ partial("layout_partials/base_form",['fields':tab[2],'id':'frm_'~tab[0],'apply_btn_id':'save_'~tab[0]])}}
             </div>
-        {% endif %}
-    {% endfor %}
+    {% endif %}
+{% endfor %}

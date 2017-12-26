@@ -191,13 +191,13 @@
 </script>
 
 <ul class="nav nav-tabs" role="tablist" id="maintabs">
-    {{ partial("layout_partials/base_tabs_header") }}
+    {{ partial("layout_partials/base_tabs_header",['formData':mainForm]) }}
 
     <li><a data-toggle="tab" href="#remote_acls"><b>{{ lang._('Remote Access Control Lists') }}</b></a></li>
 </ul>
 
 <div class="content-box tab-content">
-    {{ partial("layout_partials/base_tabs_content") }}
+    {{ partial("layout_partials/base_tabs_content",['formData':mainForm]) }}
 
     <div id="remote_acls" class="tab-pane fade">
         <table class="table table-striped table-condensed table-responsive">
