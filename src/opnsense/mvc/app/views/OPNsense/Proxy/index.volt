@@ -437,8 +437,9 @@ POSSIBILITY OF SUCH DAMAGE.
         <table id="grid-pac-proxy" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditPACProxy">
             <thead>
                 <tr>
-                    <th data-column-id="name" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Name') }}</th>
-                    <th data-column-id="url" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('URL') }}</th>
+                    <th data-column-id="name" data-type="string" data-sortable="false" data-visible="true">{{ lang._('Name') }}</th>
+                    <th data-column-id="proxy_type" data-type="string" data-sortable="false" data-visible="true">{{ lang._('Type') }}</th>
+                    <th data-column-id="url" data-type="string" data-sortable="false" data-visible="true">{{ lang._('URL') }}</th>
                     <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
                     <th data-column-id="commands" data-width="10em" data-formatter="commands" data-sortable="false">{{ lang._('Actions') }}</th>
                 </tr>

@@ -412,7 +412,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $grid = new UIModelGrid($mdlProxy->pac->proxy);
         return $grid->fetchBindRequest(
             $this->request,
-            array("enabled", "name", "url", "description"),
+            array("enabled","proxy_type", "name", "url", "description"),
             "description"
         );
     }
