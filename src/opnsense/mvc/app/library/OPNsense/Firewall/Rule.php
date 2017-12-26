@@ -59,6 +59,26 @@ abstract class Rule
         return !empty($value) ? "#" : "";
     }
 
+    /**
+     * parse comment
+     * @param string $value field value
+     * @return string
+     */
+    protected function parseComment($value)
+    {
+        return !empty($value) ? "# " . $value : "";
+    }
+
+    /**
+     * parse static text
+     * @param string $value field value, ignored
+     * @param string $value static text
+     * @return string
+     */
+    protected function parseStaticText($value, $text)
+    {
+        return $text;
+    }
 
     /**
      * parse boolean, return text from $valueTrue / $valueFalse

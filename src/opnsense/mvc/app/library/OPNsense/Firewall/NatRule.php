@@ -47,7 +47,7 @@ class NatRule extends Rule
         ),
         'nat_rdr' => array(
             'disabled' => 'parseIsComment',
-            'nat' => 'parseBool,no rdr,rdr',
+            'nat' => 'parseStaticText, rdr ',
             'interface' => 'parseInterface',
             'to' => 'parsePlainCurly,from ',
             'external' => 'parsePlainCurly,to ',
@@ -56,7 +56,7 @@ class NatRule extends Rule
         ),
         'nat_refl' => array(
             'disabled' => 'parseIsComment',
-            'nat' => 'parseBool,no nat,nat',
+            'nat' => 'parseStaticText, nat ',
             'interface' => 'parseInterface',
             'ipprotocol' => 'parsePlain',
             'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
@@ -67,26 +67,6 @@ class NatRule extends Rule
             'descr' => 'parseComment'
         )
     );
-
-    /**
-     * output parsing
-     * @param string $value field value
-     * @return string
-     */
-    protected function parseIsComment($value)
-    {
-        return !empty($value) ? "#" : "";
-    }
-
-    /**
-     * parse comment
-     * @param string $value field value
-     * @return string
-     */
-    protected function parseComment($value)
-    {
-        return !empty($value) ? "# " . $value : "";
-    }
 
     /**
      * search interfaces without a gateway other then the one provided

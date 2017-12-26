@@ -38,7 +38,7 @@ class NptRule extends Rule
     private $procorder = array(
         'binat_1' => array(
             'disabled' => 'parseIsComment',
-            'binat' => 'parseBool,no binat,binat',
+            'binat' => 'parseStaticText, binat ',
             'interface' => 'parseInterface',
             'from' => 'parsePlain,from , to any',
             'to' => 'parsePlain, -> ',
@@ -46,33 +46,13 @@ class NptRule extends Rule
         ),
         'binat_2' => array(
             'disabled' => 'parseIsComment',
-            'binat' => 'parseBool,no binat,binat',
+            'binat' => 'parseStaticText, binat ',
             'interface' => 'parseInterface',
             'to' => 'parsePlain,from , to any',
             'from' => 'parsePlain, -> ',
             'descr' => 'parseComment'
         ),
     );
-
-    /**
-     * output parsing
-     * @param string $value field value
-     * @return string
-     */
-    protected function parseIsComment($value)
-    {
-        return !empty($value) ? "#" : "";
-    }
-
-    /**
-     * parse comment
-     * @param string $value field value
-     * @return string
-     */
-    protected function parseComment($value)
-    {
-        return !empty($value) ? "# " . $value : "";
-    }
 
     /**
      * search interfaces without a gateway other then the one provided
