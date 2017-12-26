@@ -447,7 +447,7 @@
             <tr>
                 <td colspan="2">
                     <div id="remoteACLchangeMessage" class="alert alert-info" style="display: none" role="alert">
-                        {{ lang._('Note: after changing categories, please remember to download the ACL again to apply your new settings') }}
+                        {{ lang._('Note: After changing categories, please remember to download the ACL again to apply your new settings') }}
                     </div>
                     <table id="grid-remote-blacklists" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditBlacklist">
                         <thead>
@@ -466,7 +466,6 @@
                             <td></td>
                             <td>
                                 <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
-                                <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
                             </td>
                         </tr>
                         </tfoot>
