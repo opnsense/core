@@ -49,16 +49,12 @@ function FindProxyForURL(url, host) {
 {%           set match_script = match_script + 'dnsDomainIs(host, "' + match.hostname + '")' %}
 {%         endif %}
 {%         if match.match_type == 'destination_in_net' %}
-{# TODO DEBUG #}
-{%           set ip = '10.0.0.0' %}
-{%           set subnet = '255.0.0.0' %}
-{%           set match_script = match_script + 'isInNet(dstip, "' + ip + '", "' + subnet + '")' %}
+{%           set tmp_net = helpers.getIPNetwork(match.network) %}
+{%           set match_script = match_script + 'isInNet(dstip, "' + tmp_net.network.__str__() + '", "' + tmp_net.netmask.__str__() + '")' %}
 {%         endif %}
 {%         if match.match_type == 'my_ip_in_net' %}
-{# TODO DEBUG #}
-{%           set ip = '10.0.0.0' %}
-{%           set subnet = '255.0.0.0' %}
-{%           set match_script = match_script + 'isInNet(myIpAddress(), "' + ip + '", "' + subnet + '")' %}
+{%           set tmp_net = helpers.getIPNetwork(match.network) %}
+{%           set match_script = match_script + 'isInNet(myIpAddress(), "' + tmp_net.network.__str__() + '", "' + tmp_net.netmask.__str__() + '")' %}
 {%         endif %}
 {%         if match.match_type == 'plain_hostname' %}
 {%           set match_script = match_script + 'isPlainHostName(host)' %}
