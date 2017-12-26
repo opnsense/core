@@ -607,21 +607,6 @@ function filter_generate_aliases(&$FilterIflist)
                     $tmp_ports = implode(" ", filter_core_get_port_alias($aliased['name']));
                     $aliases .= "{$aliased['name']} = \"{ {$tmp_ports} }\"\n";
                     break;
-                case "host":
-                    if (!empty($expanded_aliases[$aliased['name']]['addresses'])) {
-                        $addresses = array();
-                        foreach ($expanded_aliases[$aliased['name']]['addresses'] as $address) {
-                            $addresses[] = idn_to_ascii($address);
-                        }
-                        $addrlist = implode(' ', $addresses);
-                        if (empty($addrlist)) {
-                            $aliases .= "table <{$aliased['name']}> {} persist\n";
-                        } else {
-                            $aliases .= "table <{$aliased['name']}> { {$addrlist} } \n";
-                        }
-                        $aliases .= "{$aliased['name']} = \"<{$aliased['name']}>\"\n";
-                    }
-                    break;
                 default:
                     $aliases .= "table <{$aliased['name']}> persist\n";
                     $aliases .= "{$aliased['name']} = \"<{$aliased['name']}>\"\n";
