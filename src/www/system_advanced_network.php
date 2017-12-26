@@ -33,12 +33,14 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("filter.inc");
 require_once("system.inc");
+require_once("util.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['disablechecksumoffloading'] = isset($config['system']['disablechecksumoffloading']);
     $pconfig['disablesegmentationoffloading'] = isset($config['system']['disablesegmentationoffloading']);
     $pconfig['disablelargereceiveoffloading'] = isset($config['system']['disablelargereceiveoffloading']);
+    $pconfig['global-v6duid'] = $config['system']['global-v6duid'];
     if (!isset($config['system']['disablevlanhwfilter'])) {
       $pconfig['disablevlanhwfilter'] = '0';
     } else {
@@ -76,6 +78,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['disablevlanhwfilter'] = $pconfig['disablevlanhwfilter'];
     } elseif(isset($config['system']['disablevlanhwfilter'])) {
         unset($config['system']['disablevlanhwfilter']);
+    }
+    
+    if (!empty($_POST['global-v6duid'])) {
+        if (!is_duid($_POST['global-v6duid'])) {
+            $input_errors[] = gettext("A valid DUID must be specified");
+        } else {
+            $config['system']['global-v6duid'] = format_duid($pconfig['global-v6duid']);
+        }      
     }
 
     write_config();
@@ -170,7 +180,35 @@ include("head.inc");
                   </div>
                 </td>
               </tr>
+              <tr>
+                <td width="22%"><strong><?= gettext('DHCP6c DUID') ?></strong></td>
+                <td width="78%" align="right">
+                  <small><?=gettext("full help"); ?> </small>
+                  <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                </td>
+              </tr>
+              <tr>
+                  <td><a id="help_for_fixed_DUID" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Fixed DUID"); ?></td>
+                  <td>
+                    <input name="global-v6duid" type="text" id="global-v6duid" value="<?=htmlspecialchars($pconfig['global-v6duid']);?>" />
+                    <div class="hidden" for="help_for_fixed_DUID">
+                      <?= gettext('This field can be used to enter a fixed DUID for use by dhcp6c. The DUID ' .
+                          'may change when the system is rebooted if using RAM disks, it may also change ' .
+                          'when a firmware update takes place. Entering the DUID here will store it in ' .
+                          'in the configuration file.') ?><br />
+<?php
+            
+                      $duid = get_duid_from_file();
+                      if (!empty($duid)):
+?>
+                      <a onclick="document.getElementById('global-v6duid').value='<?= html_safe($duid) ?>';" href="#"><?=gettext("Insert the existing DUID here"); ?></a><br />
+<?php
+                      endif; ?>
+                    </div>
+                  </td>
+                </tr>
             <tr>
+            
               <td>&nbsp;</td>
               <td><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" /></td>
             </tr>

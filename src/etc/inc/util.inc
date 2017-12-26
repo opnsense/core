@@ -1370,3 +1370,92 @@ function is_install_media()
 
     return true;
 }
+/* format a string to look (more) like the expected DUID format:
+ * 1) Replace any "-" with ":"
+ * 2) If the user inputs 14 components, then add the expected "0e:00:" to the front.
+ *    This is convenience, because the actual DUID (which is reported in logs) is the last 14 components.
+ * 3) If any components are input with just a single char (hex digit hopefully), put a "0" in front.
+ *
+ * The final result should be closer to:
+ *
+ * "0e:00:00:01:00:01:nn:nn:nn:nn:nn:nn:nn:nn:nn:nn"
+ *
+ * This function does not validate the input. is_duid() will do validation.
+*/
+function format_duid($dhcp6duid) {
+    $values = explode(":", strtolower(str_replace("-", ":", $dhcp6duid)));
+    if (count($values) == 14) {
+        array_unshift($values, "0e", "00");
+    }
+
+    array_walk($values, function(&$value) {
+        $value = str_pad($value, 2, '0', STR_PAD_LEFT);
+    });
+
+    return implode(":", $values);
+}
+
+/* returns true if $dhcp6duid is a valid duid entry */
+function is_duid($dhcp6duid) {
+    $values = explode(":", $dhcp6duid);
+    if (count($values) != 16 || strlen($dhcp6duid) != 47) {
+        return false;
+    }
+    for ($i = 0; $i < 16; $i++) {
+        if (ctype_xdigit($values[$i]) == false)
+            return false;
+        if (hexdec($values[$i]) < 0 || hexdec($values[$i]) > 255)
+            return false;
+    }
+    return true;
+}
+
+/* Write the DHCP6 DUID file */
+function write_dhcp6_duid($duidstring) {
+    // Create the hex array from the dhcp6duid config entry and write to file
+
+    if(!is_duid($duidstring)) {
+        log_error(gettext("Error: attempting to write DUID file - Invalid DUID detected"));
+        return false;
+    }
+    $temp = str_replace(":","",$duidstring);
+    $duid_binstring = pack("H*",$temp);
+    if ($fd = fopen("/var/db//dhcp6c_duid", "wb")) {
+        fwrite($fd, $duid_binstring);
+        fclose($fd);
+        return true;
+    }
+    log_error(gettext("Error: attempting to write DUID file - File write error"));
+    return false;
+}
+
+/* returns duid string from 'vardb_path']}/dhcp6c_duid' */
+function get_duid_from_file() {
+
+    $duid_ASCII = "";
+    $count = 0;
+
+    if (file_exists("/var/db//dhcp6c_duid") &&
+        ($fd = fopen("/var/db/dhcp6c_duid", "r"))) {
+        if(filesize("/var/db//dhcp6c_duid")==16) {
+            $buffer = fread($fd,16);
+            while($count < 16) {
+            $duid_ASCII .= bin2hex($buffer[$count]);
+                $count++;
+                if($count < 16) {
+                    $duid_ASCII .= ":";
+                }
+            }
+        }
+        fclose($fd);
+    }
+    else
+    {
+        log_error(gettext("Error: Could not open /var/db/dhcp6c_duid"));
+    }
+	//if no file or error with read then the string returns blanked DUID string
+    if(!is_duid($duid_ASCII)) {
+        return "--:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--";
+    }
+    return($duid_ASCII);
+}
