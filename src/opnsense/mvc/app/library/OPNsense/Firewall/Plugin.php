@@ -265,6 +265,20 @@ class Plugin
     }
 
     /**
+     * register a destination Nat rule
+     * @param int $prio priority
+     * @param array $conf configuration
+     */
+    public function registerSNatRule($prio, $conf)
+    {
+        $rule = new SNatRule($this->interfaceMapping, $conf);
+        if (empty($this->natRules[$prio])) {
+            $this->natRules[$prio] = array();
+        }
+        $this->natRules[$prio][] = $rule;
+    }
+
+    /**
      * register an Npt rule
      * @param int $prio priority
      * @param array $conf configuration
