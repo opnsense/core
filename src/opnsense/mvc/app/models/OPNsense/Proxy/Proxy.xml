@@ -473,7 +473,7 @@
                   <ValidationMessage>The match name must be set.</ValidationMessage>
                   <Constraints>
                       <check001>
-                          <ValidationMessage>Proxy name should be unique</ValidationMessage>
+                          <ValidationMessage>Match name should be unique</ValidationMessage>
                           <type>UniqueConstraint</type>
                       </check001>
                   </Constraints>
@@ -506,6 +506,7 @@
                   <Required>N</Required>
               </hostname>
               <url type="TextField">
+                  <Mask>/^[^"]*$/</Mask>
                   <Required>N</Required>
               </url>
               <network type="NetworkField">
