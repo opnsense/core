@@ -513,6 +513,8 @@
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog_processing.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_form.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_menu_system.volt
+/usr/local/opnsense/mvc/app/views/layout_partials/base_tabs_content.volt
+/usr/local/opnsense/mvc/app/views/layout_partials/base_tabs_header.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/form_input_tr.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/sample_input_field.volt
 /usr/local/opnsense/mvc/app/views/layouts/default.volt
