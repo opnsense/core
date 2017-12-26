@@ -328,6 +328,7 @@
 /usr/local/opnsense/mvc/app/config/services_api.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ApiControllerBase.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ApiMutableModelControllerBase.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ApiMutableServiceControllerBase.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ControllerBase.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ControllerRoot.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/IndexController.php
@@ -496,6 +497,8 @@
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog_processing.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_form.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_menu_system.volt
+/usr/local/opnsense/mvc/app/views/layout_partials/base_tabs_content.volt
+/usr/local/opnsense/mvc/app/views/layout_partials/base_tabs_header.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/form_input_tr.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/sample_input_field.volt
 /usr/local/opnsense/mvc/app/views/layouts/default.volt
