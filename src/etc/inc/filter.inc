@@ -258,7 +258,7 @@ function filter_configure_sync($verbose = false)
     if (!empty($config['nat']['onetoone'])) {
         // register user 1:1 mappings
         foreach ($config['nat']['onetoone'] as $rule) {
-            $fw->registerNatRule(200, $rule);
+            $fw->registerDNatRule(200, $rule);
         }
     }
     if (!empty($config['nat']['rule'])) {

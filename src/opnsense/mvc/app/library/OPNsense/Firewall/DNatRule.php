@@ -30,10 +30,10 @@
 namespace OPNsense\Firewall;
 
 /**
- * Class NatRule, (pf nat type rule, optionally combined with rdr+nat rules for reflection)
+ * Class DNatRule, (pf nat type rule, optionally combined with rdr+nat rules for reflection)
  * @package OPNsense\Firewall
  */
-class NatRule extends Rule
+class DNatRule extends Rule
 {
     private $procorder = array(
         'nat' => array(

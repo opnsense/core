@@ -248,16 +248,16 @@ class Plugin
     }
 
     /**
-     * register a Nat rule
+     * register a destination Nat rule
      * @param int $prio priority
      * @param array $conf configuration
      */
-    public function registerNatRule($prio, $conf)
+    public function registerDNatRule($prio, $conf)
     {
         if (!empty($this->systemDefaults['nat'])) {
             $conf = array_merge($this->systemDefaults['nat'], $conf);
         }
-        $rule = new NatRule($this->interfaceMapping, $conf);
+        $rule = new DNatRule($this->interfaceMapping, $conf);
         if (empty($this->natRules[$prio])) {
             $this->natRules[$prio] = array();
         }
