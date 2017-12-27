@@ -93,8 +93,6 @@ switch ($xml) {
 		die;
 }
 
-global $listtags;
-
 $listtags = array_flip(array(
 	'additional_files_needed',
 	'alias',
