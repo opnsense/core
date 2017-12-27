@@ -116,7 +116,6 @@ function openvpn_xmlrpc_sync()
     return $result;
 }
 
-global $openvpn_verbosity_level;
 $openvpn_verbosity_level = array(
     0 => gettext('0 (none)'),
     1 => gettext('1 (default)'),
@@ -132,25 +131,11 @@ $openvpn_verbosity_level = array(
     11 => gettext('11'),
 );
 
-/*
- * The User Auth mode below is disabled because
- * OpenVPN erroneously requires that we provide
- * a CA configuration parameter. In this mode,
- * clients don't send a certificate so there is
- * no need for a CA. If we require that admins
- * provide one in the OPNsense UI due to a bogus
- * requirement imposed by OpenVPN, it could be
- * considered very confusing ( I know I was ).
- *
- * -mgrooms
- */
-
-global $openvpn_compression_modes;
 $openvpn_compression_modes = array(
-    '' =>  gettext("No Preference"),
-    'no' =>    gettext("Disabled - No Compression"),
-    'adaptive' =>  gettext("Enabled with Adaptive Compression"),
-    'yes' =>  gettext("Enabled without Adaptive Compression")
+    '' => gettext('No Preference'),
+    'no' => gettext('Disabled - No Compression'),
+    'adaptive' => gettext('Enabled with Adaptive Compression'),
+    'yes' => gettext('Enabled without Adaptive Compression'),
 );
 
 function openvpn_create_key()
