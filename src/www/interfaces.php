@@ -2486,7 +2486,7 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr class="dhcpv6_basic">
-                          <td><a id="help_for_dhcp6-ia-pd-len" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCPv6 Prefix Delegation size"); ?></td>
+                          <td><a id="help_for_dhcp6-ia-pd-len" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefix delegation size"); ?></td>
                           <td>
                             <select name="dhcp6-ia-pd-len" class="selectpicker" data-style="btn-default" id="dhcp6-ia-pd-len">
 <?php
@@ -2530,11 +2530,11 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
-                          <td><a id="help_for_dhcp6norelease" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("dhcp6c no release"); ?></td>
+                          <td><a id="help_for_dhcp6norelease" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prevent release"); ?></td>
                           <td>
-                            <input name="dhcp6norelease" type="checkbox" id="dhcp6norelease" value="yes" <?=!empty($pconfig['dhcp6norelease']) ? "checked=\"checked\"" : ""; ?> />
+                            <input name="dhcp6norelease" type="checkbox" id="dhcp6norelease" value="yes" <?= !empty($pconfig['dhcp6norelease']) ? 'checked="checked"' : '' ?> />
                             <div class="hidden" for="help_for_dhcp6norelease">
-                              <?=gettext("By default, dhcp6c will send a release to the ISP on exit, some ISPs then release the allocated address or prefix. This option prevents that signal from being sent"); ?>
+                              <?=gettext("Do not send a release message on client exit to prevent the release of an allocated address or prefix on the server."); ?>
                             </div>
                           </td>
                         </tr>
