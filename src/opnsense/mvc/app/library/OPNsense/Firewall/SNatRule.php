@@ -63,7 +63,13 @@ class SNatRule extends Rule
     private function parseNatRules()
     {
         foreach ($this->reader() as $rule) {
-            if (empty($rule['target'])) {
+            if (!empty($rule['nonat'])) {
+                // Just a precaution, when no nat is selected make sure we're not going to enter a target.
+                // (keep behaviour from legacy code as long as we don't know for sure the fields are always empty)
+                $rule['target'] = null;
+                $rule['poolopts'] = null;
+                $rule['staticnatport'] = null;
+            } elseif (empty($rule['target'])) {
                 $interf = $rule['interface'];
                 if (!empty($this->interfaceMapping[$interf])) {
                     if (($this->isIpV4($rule) && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
@@ -84,7 +90,7 @@ class SNatRule extends Rule
                     $rule[$fieldname] = "$".$rule[$fieldname];
                 }
             }
-            if (!empty($rule['staticnatport'])) {
+            if (!empty($rule['staticnatport']) || !empty($rule['nonat'])) {
                 $rule['natport'] = '';
             } elseif (empty($rule['natport'])) {
                 $rule['natport'] = "1024:65535";
