@@ -138,7 +138,6 @@ $config['wizardtemp']['system']['hostname'] = $config['system']['hostname'];
 $config['wizardtemp']['system']['domain'] = $config['system']['domain'];
 	]]></stepbeforeformdisplay>
 	<stepsubmitphpaction><![CDATA[
-global $input_errors, $stepid;
 if (empty($_POST['hostname']) || !is_hostname($_POST['hostname'])) {
 	$input_errors[] = gettext('Hostname is invalid.');
 }
@@ -184,7 +183,6 @@ if (count($input_errors)) {
 		</field>
 	</fields>
 	<stepsubmitphpaction><![CDATA[
-global $input_errors, $stepid;
 foreach (explode(' ', $_POST['timeserverhostname']) as $ts) {
 	if (!is_domain($ts)) {
 		$input_errors[] = gettext("NTP Time Server names may only contain the characters a-z, 0-9, '-' and '.'. Entries may be separated by spaces.");
@@ -434,7 +432,6 @@ if (isset($config['gateways']['gateway_item'])) {
 }
 	]]></stepbeforeformdisplay>
 	<stepsubmitphpaction><![CDATA[
-global $input_errors, $stepid;
 if (!empty($_POST['mtu']) && ($_POST['mtu'] < 576)) {
 	$input_errors[] = gettext('MTU Must be at least 576 (Per RFC 791).');
 }
@@ -534,7 +531,6 @@ if ($_POST['selectedtype'] != "Static") {
 		</field>
 	</fields>
 	<stepsubmitphpaction><![CDATA[
-global $input_errors, $stepid;
 if (!empty(trim($_POST['lanipaddress']))) {
 	if (!is_ipaddr($_POST['lanipaddress'])) {
 		$input_errors[] = gettext('Invalid LAN IP address.');
@@ -583,7 +579,6 @@ if (!empty(trim($_POST['lanipaddress']))) {
 		</field>
 	</fields>
 	<stepsubmitphpaction><![CDATA[
-global $input_errors, $stepid;
 if (!empty($_POST['adminpassword']) || !empty($_POST['adminpasswordagain'])) {
 	if ($_POST['adminpassword'] == $_POST['adminpasswordagain']) {
 		$admin_user = &getUserEntryByUID(0);
