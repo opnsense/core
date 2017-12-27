@@ -69,7 +69,7 @@ class SNatRule extends Rule
                     if (($this->isIpV4($rule) && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
                         (!$this->isIpV4($rule) && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv6']))
                     ) {
-                        $rule['target'] = $this->interfaceMapping[$interf]['if'] ;
+                        $rule['target'] = $this->interfaceMapping[$interf]['if'];
                     }
                 }
                 if (empty($rule['target'])) {

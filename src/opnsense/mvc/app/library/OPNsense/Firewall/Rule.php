@@ -272,7 +272,7 @@ abstract class Rule
      * @param string $prefix prefix interface tag
      * @return string
      */
-    protected function parseInterface($value, $prefix="on ", $suffix="")
+    protected function parseInterface($value, $prefix = "on ", $suffix = "")
     {
         if (empty($value)) {
             return "";
