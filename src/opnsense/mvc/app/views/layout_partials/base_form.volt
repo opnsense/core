@@ -60,12 +60,14 @@ data_title      :   data-title to set on form
             <col class="col-md-5"/>
         </colgroup>
         <tbody>
+{% if advanced|default(false) or help|default(false) %}
         <tr>
             <td align="left">{% if advanced|default(false) %}<a href="#"><i class="fa fa-toggle-off text-danger" id="show_advanced_{{base_form_id}}" type="button"></i> </a><small>{{ lang._('advanced mode') }} </small>{% endif %}</td>
             <td colspan="2" align="right">
                 {% if help|default(false) %}<small>{{ lang._('full help') }} </small><a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_{{base_form_id}}" type="button"></i></a>{% endif %}
             </td>
         </tr>
+{% endif %}
         {% for field in fields|default({})%}
             {# looks a bit buggy in the volt templates, field parameters won't reset properly here #}
             {% set advanced=false %}
