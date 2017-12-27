@@ -1,6 +1,6 @@
 #!/bin/sh
 
 # Backup volatile internals
-for BACKUP in captiveportal dhcpleases netflow rrd; do
-	/usr/local/etc/rc.backup_${BACKUP} stop
+for BACKUP in captiveportal dhcpleases duid netflow rrd; do
+	/usr/local/etc/rc.backup_${BACKUP}
 done

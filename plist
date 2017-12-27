@@ -74,6 +74,7 @@
 /usr/local/etc/rc
 /usr/local/etc/rc.backup_captiveportal
 /usr/local/etc/rc.backup_dhcpleases
+/usr/local/etc/rc.backup_duid
 /usr/local/etc/rc.backup_netflow
 /usr/local/etc/rc.backup_rrd
 /usr/local/etc/rc.bootup

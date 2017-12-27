@@ -1,0 +1,16 @@
+#!/bin/sh
+
+BACKUPFILE="/conf/dhcp6c_duid"
+BACKUPTARGET="/var/db/dhcp6c_duid"
+
+if [ "${1}" = "restore" ]; then
+	rm -f "${BACKUPTARGET}"
+	if [ -f "${BACKUPFILE}" ]; then
+		cp "${BACKUPFILE}" "${BACKUPTARGET}"
+	fi
+else
+	rm -f "${BACKUPFILE}"
+	if [ -f "${BACKUPTARGET}" ]; then
+		cp "${BACKUPTARGET}" "${BACKUPFILE}"
+	fi
+fi
