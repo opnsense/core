@@ -2365,13 +2365,11 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
-                          <td><a id="help_for_staticv6usev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Static IPv6 over V4 PPPoE"); ?></td>
+                          <td><a id="help_for_staticv6usev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use IPv4 connectivity"); ?></td>
                           <td>
                             <input name="staticv6usev4iface" type="checkbox" id="staticv6usev4iface" value="yes" <?=!empty($pconfig['staticv6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
                             <div class="hidden" for="help_for_staticv6usev4iface">
-                                <?=gettext("When set, this option allows the setting of an IPv6 static assignment " .
-                                   "but passes that over the PPPoE link negotiated by the V4 link. " .
-                                   "This is allows the gateway to correctly route the gateway monitor pings .");?>
+                                <?=gettext("Use the IPv4 connectivity link.");?>
                             </div>
                           </td>
                         </tr>
