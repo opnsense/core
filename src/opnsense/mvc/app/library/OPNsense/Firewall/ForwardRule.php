@@ -38,7 +38,7 @@ class ForwardRule extends Rule
     private $procorder = array(
         'rdr' => array(
             'disabled' => 'parseIsComment',
-            'rdr' => 'parseBool,no rdr,rdr',
+            'nordr' => 'parseBool,no rdr,rdr',
             'pass' => 'parseBool,pass ',
             'interface' => 'parseInterface',
             'ipprotocol' => 'parsePlain',
@@ -115,7 +115,7 @@ class ForwardRule extends Rule
     {
         foreach ($this->reader() as $tmp) {
             $tmp['rule_types'] = array("rdr");
-            $tmp['rdr'] = !empty($tmp['nordr']);
+            $tmp['nordr'] = !empty($tmp['nordr']);
             if (!empty($tmp['associated-rule-id']) && $tmp['associated-rule-id'] == "pass") {
                 $tmp['pass'] = empty($tmp['nordr']);
             }
@@ -147,7 +147,7 @@ class ForwardRule extends Rule
 
             // When reflection is enabled our ruleset should cover all
             $interflist = array($tmp['interface']);
-            if (!$tmp['disabled'] && in_array($tmp['natreflection'], array("purenat", "enable"))) {
+            if (!$tmp['disabled'] && !$tmp['nordr'] && in_array($tmp['natreflection'], array("purenat", "enable"))) {
                 $interflist = array_merge($interflist, $this->reflectionInterfaces($tmp['interface']));
             }
             foreach ($interflist as $interf) {
