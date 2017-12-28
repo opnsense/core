@@ -1,7 +1,7 @@
 <form>
     <field>
         <id>pac.rule.enabled</id>
-        <label>enabled</label>
+        <label>Enabled</label>
         <type>checkbox</type>
         <help>Please select if this rule should be added to the PAC file.</help>
     </field>
