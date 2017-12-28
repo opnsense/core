@@ -56,7 +56,7 @@ class ForwardRule extends Rule
         ),
         'rdr_nat' => array(
             'disabled' => 'parseIsComment',
-            'nat' => 'parseStaticText, nat ',
+            'nat' => 'parseStaticText,nat ',
             'interface' => 'parseInterface',
             'ipprotocol' => 'parsePlain',
             'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',

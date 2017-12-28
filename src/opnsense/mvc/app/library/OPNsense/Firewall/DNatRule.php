@@ -47,7 +47,7 @@ class DNatRule extends Rule
         ),
         'nat_rdr' => array(
             'disabled' => 'parseIsComment',
-            'nat' => 'parseStaticText, rdr ',
+            'nat' => 'parseStaticText,rdr ',
             'interface' => 'parseInterface',
             'to' => 'parsePlainCurly,from ',
             'external' => 'parsePlainCurly,to ',
@@ -56,7 +56,7 @@ class DNatRule extends Rule
         ),
         'nat_refl' => array(
             'disabled' => 'parseIsComment',
-            'nat' => 'parseStaticText, nat ',
+            'nat' => 'parseStaticText,nat ',
             'interface' => 'parseInterface',
             'ipprotocol' => 'parsePlain',
             'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',

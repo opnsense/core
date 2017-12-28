@@ -38,7 +38,7 @@ class NptRule extends Rule
     private $procorder = array(
         'binat_1' => array(
             'disabled' => 'parseIsComment',
-            'binat' => 'parseStaticText, binat ',
+            'binat' => 'parseStaticText,binat ',
             'interface' => 'parseInterface',
             'from' => 'parsePlain,from , to any',
             'to' => 'parsePlain, -> ',
@@ -46,7 +46,7 @@ class NptRule extends Rule
         ),
         'binat_2' => array(
             'disabled' => 'parseIsComment',
-            'binat' => 'parseStaticText, binat ',
+            'binat' => 'parseStaticText,binat ',
             'interface' => 'parseInterface',
             'to' => 'parsePlain,from , to any',
             'from' => 'parsePlain, -> ',
