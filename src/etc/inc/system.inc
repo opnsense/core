@@ -115,6 +115,7 @@ function get_default_sysctl_value($id)
         "net.route.netisr_maxqlen" => 1024,
         "net.inet.icmp.reply_from_interface" => 1,
         "vfs.read_max" => "32",
+        "net.link.vlan.mtag_pcp" => "1",
     );
 
     if (isset($sysctls[$id])) {
