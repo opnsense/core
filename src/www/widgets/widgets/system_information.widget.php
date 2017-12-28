@@ -145,6 +145,18 @@ require_once("system.inc");
       } else {
           $("#system_information_widget_disk_info").hide();
       }
+
+      // ACPI battery
+      if (data['acpi_power_status']['battery']['units'] >= 1) {
+          var bat_perc = parseInt(data['acpi_power_status']['battery']['life']);
+          $("#system_information_widget_acpi_battery .progress-bar").css("width",  bat_perc + "%").attr("aria-valuenow", bat_perc + "%");
+          var bat_text = data['acpi_power_status']['battery']['status_text'];
+          $("#system_information_widget_acpi_battery .state_text").html(bat_text);
+
+          $("#system_information_widget_acpi_battery_info").show();
+      } else {
+          $("#system_information_widget_acpi_battery_info").hide();
+      }
    }
 
   /**
@@ -280,6 +292,15 @@ require_once("system.inc");
           </div>
           <div class="disk_devices">
           </div>
+      </td>
+    </tr>
+    <tr id="system_information_widget_acpi_battery_info" style="display:none">
+      <td><?=gettext("Battery level (ACPI)");?></td>
+      <td id="system_information_widget_acpi_battery">
+        <div class="progress" style="text-align:center;">
+          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; z-index: 0;"></div>
+          <span class="state_text" style="position:absolute;right:0;left:0;"></span>
+        </div>
       </td>
     </tr>
   </tbody>

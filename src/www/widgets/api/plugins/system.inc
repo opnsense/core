@@ -194,6 +194,70 @@ function system_api_firmware($product)
     return $ret;
 }
 
+function system_api_acpi_power_status()
+{
+    // List of ACPI items to retrieve (battery units must be first)
+    $acpi_items = 
+    'hw.acpi.battery.units ' .    # number of batteries
+    'hw.acpi.battery.state ' .    # 0 high, 1 discharging, 2 charging, 3 ambigous (charge & discharge), 4 critical, 5 critical discharging, 6 critical charging, 7 not present
+    'hw.acpi.battery.time '  .    # remaining battery time (minutes); -1 if unknown
+    'hw.acpi.battery.life '  .    # remaining battery percent
+    'hw.acpi.acline';             # 0 off-line, 1 on-line
+
+    exec('/sbin/sysctl -eiq ' . $acpi_items, $acpi_power_status);
+
+    // No ACPI batteries (immediate return)
+    $battery_units = explode('=', $acpi_power_status[0]);
+    if ($battery_units[1] <= 0 || $battery_units[0] != 'hw.acpi.battery.units') {
+        $result['battery']['units'] = 0;
+        return $result;
+    }
+
+	// Dynamically make variables
+	foreach ($acpi_power_status as $line) {
+        list($key, $value) = explode('=', $line);
+        $key = str_replace('hw.acpi.', '', $key);
+        $key = str_replace('.', '_', $key);
+        ${$key} = $value;
+    }
+
+    // Remaining battery percent
+    $status_text = (($battery_life >= '0') && ($battery_life <= '100')) ? $battery_life . ' %' : gettext('unknown') . ' %';
+
+    // Power source: Battery
+    if ($acline == '0') {              # AC line state
+        $status_text .= ' ' . gettext('remaining');
+        $status_text .= ($battery_time > '0') ? ' (' . gettext('est.') . ' ' . gmdate('G:i', $battery_time * 60) . ')' : '';
+    }
+
+    // Power source: Line
+    elseif ($acline == '1') {          # AC line state
+        // 0 high, 1 discharging, 2 charging, 3 ambiguous, 4 critical, 5 critical discharging, 6 critical charging, 7 not present
+        switch ($battery_state) {      # Battery state                                                # bit 0 - discharge; bit 1 - charge; bit 2 - critical
+            case '0': $status_text .= ' (' . gettext('fully charged') . ')'; break;                   # (000) high (fully charged)
+            case '2': $status_text .= ' (' . gettext('plugged in, charging') . ')'; break;            # (010) charging
+            case '3': $status_text .= ' (' . gettext('ambiguous') . ')'; break;                       # (011) ambiguous (simultaneous charge and discharge bits)
+            case '4': $status_text .= ' (' . gettext('critical') . ')'; break;                        # (100) critical (lone critical bit set)
+            case '6': $status_text .= ' (' . gettext('plugged in, critical charging') . ')'; break;   # (110) critical charging
+            case '7': $status_text  = gettext('Not present'); break;                                  # (111) not present
+
+            // Plugged in and discharging (conditioning)
+            case '1':
+            case '5': $status_text .= ' (' . gettext('conditioning') . ')'; break;                    # (001) discharging, (101) critical discharging
+
+            // Other/unexpected
+            default: break;
+        }
+    }
+
+    # Return as associative array; raw values and status text
+    $result = array();
+    $result['battery']['units'] = $battery_units;
+    $result['battery']['life'] = $battery_life;
+    $result['battery']['status_text'] = $status_text;
+    return $result;
+}
+
 /**
  * widget system data
  */
@@ -211,6 +275,7 @@ function system_api()
     $result['kernel'] = system_api_kernel();
     $result['disk'] = system_api_disk();
     $result['firmware'] = system_api_firmware($product);
+    $result['acpi_power_status'] = system_api_acpi_power_status();
 
     return $result;
 }
