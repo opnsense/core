@@ -72,7 +72,7 @@ function FindProxyForURL(url, host) {
 {%           set match_script = match_script + 'dateRange("' + match.date_from + '", "' + match.date_to + '")' %}
 {%         endif %}
 {%         if match.match_type == 'time_range' %}
-{%           set match_script = match_script + 'timeRange("' + match.time_from + '", "' + match.time_to + '")' %}
+{%           set match_script = match_script + 'timeRange(' + match.time_from + ', ' + match.time_to + ')' %}
 {%         endif %}
 {%         set match_script = match_script + ')' %}
 {%         do expression.append(match_script) %}
