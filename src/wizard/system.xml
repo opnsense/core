@@ -113,19 +113,19 @@ if (isset($config['wizardtemp'])) {
 		<field>
 			<name>Enable Resolver</name>
 			<type>checkbox</type>
-			<value>1</value>
+			<value>yes</value>
 			<bindstofield>unbound->enable</bindstofield>
 		</field>
 		<field>
 			<name>Enable DNSSEC Support</name>
 			<type>checkbox</type>
-			<value>0</value>
+			<value></value>
 			<bindstofield>unbound->dnssec</bindstofield>
 		</field>
 		<field>
 			<name>Harden DNSSEC data</name>
 			<type>checkbox</type>
-			<value>0</value>
+			<value></value>
 			<bindstofield>unbound->dnssecstripped</bindstofield>
 		</field>
 		<field>
