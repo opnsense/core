@@ -341,7 +341,7 @@ function filter_configure_sync($verbose = false)
         fixup_default_gateway($gateways_status, $gateways_arr);
     }
 
-    $aliases = filter_generate_aliases($cnfint);
+    $aliases = filter_generate_aliases();
     $aliases .= "\n# Plugins tables\n";
     $aliases .= $fw->tablesToText();
 
@@ -609,32 +609,12 @@ function filter_generate_scrubing(&$FilterIflist)
 }
 
 
-function filter_generate_aliases(&$FilterIflist)
+function filter_generate_aliases()
 {
     global $config;
 
     $aliases = "# System aliases\n";
     $aliases .= "loopback = \"{ lo0 }\"\n";
-
-    foreach ($FilterIflist as $if => $ifcfg) {
-        if (!empty($ifcfg['if'])) {
-            if (isset($ifcfg['ipaddrv6']) && $ifcfg['ipaddrv6'] == '6rd') {
-                $aliases .= "{$if} = \"{ {$ifcfg['if']} {$if}_stf";
-            } elseif (isset($ifcfg['ipaddrv6']) && $ifcfg['ipaddrv6'] == '6to4') {
-                $aliases .= "{$if} = \"{ {$ifcfg['if']} {$if}_stf";
-            } else {
-                $aliases .= "{$if} = \"{ {$ifcfg['if']}";
-                if (isset($ifcfg['ipaddr']) && $ifcfg['ipaddr'] == 'pptp') {
-                    foreach (get_parent_interface($ifcfg['if']) as $parent_if) {
-                        if ($parent_if != $ifcfg['if']) {
-                            $aliases .= " {$parent_if}";
-                        }
-                    }
-                }
-            }
-            $aliases .= " }\"\n";
-        }
-    }
 
     $aliases .= "\n# SSH Lockout Table\n";
     $aliases .= "table <sshlockout> persist\n";
