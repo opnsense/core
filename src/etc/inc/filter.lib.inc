@@ -291,7 +291,7 @@ function filter_core_rules_system($fw, $defaults)
             );
             $fw->registerFilterRule(1,
               array('protocol' => 'udp', 'from_port' => 546,'to_port' => 547, 'direction' => 'out',
-                    'interface' => $intf, 'label' =>'allow dhcpv6 client in ' . $intfinfo['descr']),
+                    'interface' => $intf, 'label' =>'allow dhcpv6 client in ' . $intfinfo['descr'],'set-prio' => '2'),
               $defaults['pass']
             );
         }
