@@ -175,7 +175,7 @@ $( document ).ready(function() {
                     <?=$tunable['value']; ?>
                     <?=$tunable['value'] == "default" ? "(" . get_default_sysctl_value($tunable['tunable']) . ")" : "";?>
                   </td>
-                  <td>
+                  <td style="white-space: nowrap;">
                     <a href="system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs">
                         <span data-toggle="tooltip" title="<?=gettext("Edit Tunable"); ?>" class="glyphicon glyphicon-pencil"></span>
                     </a>
