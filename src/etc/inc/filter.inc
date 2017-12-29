@@ -600,7 +600,7 @@ function filter_generate_scrubing(&$FilterIflist)
                 }
                 $scrubnodf = !empty($config['system']['scrubnodf']) ? "no-df" : "";
                 $scrubrnid = !empty($config['system']['scrubrnid']) ? "random-id" : "";
-                $scrubrules .= "scrub on \${$scrubif} all {$scrubnodf} {$scrubrnid} {$mssclamp}\n";
+                $scrubrules .= "scrub on {$scrubcfg['if']} all {$scrubnodf} {$scrubrnid} {$mssclamp}\n";
             }
         }
     }
