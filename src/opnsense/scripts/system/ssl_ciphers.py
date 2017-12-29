@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     result = {}
     with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/usr/bin/openssl', 'ciphers', '-V'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
+        subprocess.call(['/usr/local/bin/openssl', 'ciphers', '-V'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
         output_stream.seek(0)
         for line in output_stream.read().strip().split('\n'):
             parts = line.strip().split()
