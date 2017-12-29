@@ -242,7 +242,7 @@ function interface_vlan_configure(&$vlan)
     }
 
     legacy_interface_create('vlan', $vlanif);
-    $pcp = isset($vlan['pcp']) ? $vlan['pcp'] : 0;
+    $pcp = isset($vlan['pcp']) ? $vlan['pcp'] : null;
     legacy_vlan_tag($vlanif, $if, $vlan['tag'], $pcp);
 
     interfaces_bring_up($vlanif);
