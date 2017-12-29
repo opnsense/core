@@ -612,25 +612,19 @@ function filter_generate_aliases()
 {
     global $config;
 
-    $aliases = "# System aliases\n";
-    $aliases .= "loopback = \"{ lo0 }\"\n";
-
-    $aliases .= "\n# SSH Lockout Table\n";
+    $aliases .= "\n# Lockout tables\n";
     $aliases .= "table <sshlockout> persist\n";
     $aliases .= "table <webConfiguratorlockout> persist\n";
 
-    $aliases .= "# Other tables\n";
+    $aliases .= "\n# Other tables\n";
     $aliases .= "table <virusprot>\n";
-    touch('/usr/local/etc/bogons');
-    touch('/usr/local/etc/bogonsv6');
     $aliases .= "table <bogons> persist file \"/usr/local/etc/bogons\"\n";
     if (is_bogonsv6_used()) {
         $aliases .= "table <bogonsv6> persist file \"/usr/local/etc/bogonsv6\"\n";
     }
 
-    $aliases .= "\n# User Aliases \n";
-    /* Setup pf groups */
     if (isset($config['aliases']['alias'])) {
+        $aliases .= "\n# User Aliases\n";
         foreach ($config['aliases']['alias'] as $aliased) {
             switch ($aliased['type']) {
                 case "urltable_ports":
