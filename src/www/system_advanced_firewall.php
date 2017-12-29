@@ -63,11 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['pf_share_forward'] = isset($config['system']['pf_share_forward']);
     $pconfig['pf_disable_force_gw'] = isset($config['system']['pf_disable_force_gw']);
     $pconfig['srctrack'] = !empty($config['system']['srctrack']) ? $config['system']['srctrack'] : null;
-    if (!isset($config['system']['disablenatreflection'])) {
-        $pconfig['natreflection'] = "purenat";
-    } else {
-        $pconfig['natreflection'] = "disable";
-    }
+    $pconfig['natreflection'] = empty($config['system']['disablenatreflection']);
     $pconfig['enablebinatreflection'] = !empty($config['system']['enablebinatreflection']);
     $pconfig['enablenatreflectionhelper'] = isset($config['system']['enablenatreflectionhelper']) ? $config['system']['enablenatreflectionhelper'] : null;
     $pconfig['snat_use_sticky'] = !empty($config['system']['snat_use_sticky']);
@@ -158,12 +154,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['checkaliasesurlcert']);
         }
 
-        if ($pconfig['natreflection'] == "purenat") {
-            if (isset($config['system']['disablenatreflection'])) {
-                unset($config['system']['disablenatreflection']);
-            }
-        } else {
-            $config['system']['disablenatreflection'] = "yes";
+        /* setting is inverted on the page */
+        if (empty($pconfig['natreflection'])) {
+            $config['system']['disablenatreflection'] = 'yes';
+        } elseif (isset($config['system']['disablenatreflection'])) {
+            unset($config['system']['disablenatreflection']);
         }
 
         if (!empty($pconfig['enablebinatreflection'])) {
@@ -171,6 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif (isset($config['system']['enablebinatreflection'])) {
             unset($config['system']['enablebinatreflection']);
         }
+
         $config['system']['snat_use_sticky'] = !empty($pconfig['snat_use_sticky']);
 
         if (!empty($pconfig['disablereplyto'])) {
@@ -283,19 +279,9 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_natreflection" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection for port forwards");?></td>
                   <td>
-                    <select name="natreflection" class="formselect selectpicker" data-style="btn-default">
-                      <option value="disable" <?=$pconfig['natreflection'] == "disable" ? "selected=\"selected\"" : "";?>>
-                        <?=gettext("Disable"); ?>
-                      </option>
-                      <option value="purenat" <?=$pconfig['natreflection'] == "purenat" ? "selected=\"selected\"" : "";?>>
-                        <?=gettext("Enable (Pure NAT)"); ?>
-                      </option>
-                    </select>
+                    <input name="natreflection" type="checkbox" id="natreflection" value="yes" <?= !empty($pconfig['natreflection']) ? 'checked="checked"' : '' ?>/>
                     <div class="hidden" for="help_for_natreflection">
-                      <strong><?=gettext("When enabled, this automatically creates additional NAT redirect rules for access to port forwards on your external IP addresses from within your internal networks.");?></strong>
-                      <br /><br />
-                      <?=gettext("The pure NAT mode uses a set of NAT rules to direct packets to the target of the port forward. It has better scalability, but it must be possible to accurately determine the interface and gateway IP used for communication with the target at the time the rules are loaded. There are no inherent limits to the number of ports other than the limits of the protocols. All protocols available for port forwards are supported.");?>
-                      <br /><br />
+                      <?=gettext("When enabled, this automatically creates additional NAT redirect rules for access to port forwards on your external IP addresses from within your internal networks.");?>
                       <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
                     </div>
                   </td>
@@ -305,9 +291,7 @@ include("head.inc");
                   <td>
                     <input name="enablebinatreflection" type="checkbox" id="enablebinatreflection" value="yes" <?=!empty($pconfig['enablebinatreflection']) ? "checked=\"checked\"" : "";?>/>
                     <div class="hidden" for="help_for_enablebinatreflection">
-                      <strong><?=gettext("Enables the automatic creation of additional NAT redirect rules for access to 1:1 mappings of your external IP addresses from within your internal networks.");?></strong><br />
-                      <?=gettext("Note: Reflection on 1:1 mappings is only for the inbound component of the 1:1 mappings. This functions the same as the pure NAT mode for port forwards. For more details, refer to the pure NAT mode description above.");?>
-                      <br /><br />
+                      <?=gettext("Enables the automatic creation of additional NAT redirect rules for access to 1:1 mappings of your external IP addresses from within your internal networks.");?>
                       <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
                     </div>
                   </td>
@@ -317,10 +301,7 @@ include("head.inc");
                   <td>
                     <input name="enablenatreflectionhelper" type="checkbox" id="enablenatreflectionhelper" value="yes" <?=!empty($pconfig['enablenatreflectionhelper']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" for="help_for_enablenatreflectionhelper">
-                      <strong><?=gettext("Automatically create outbound NAT rules which assist inbound NAT rules that direct traffic back out to the same subnet it originated from.");?></strong><br />
-                      <?=gettext("Required for full functionality of the pure NAT mode of NAT Reflection for port forwards or NAT Reflection for 1:1 NAT.");?>
-                      <br /><br />
-                      <?=gettext("Note: This only works for assigned interfaces. Other interfaces require manually creating the outbound NAT rules that direct the reply packets back through the router.");?>
+                      <?=gettext("Automatically create outbound NAT rules which assist inbound NAT rules that direct traffic back out to the same subnet it originated from.");?>
                     </div>
                   </td>
                 </tr>
@@ -329,7 +310,7 @@ include("head.inc");
                   <td>
                     <input name="snat_use_sticky" type="checkbox" id="snat_use_sticky" <?=!empty($pconfig['snat_use_sticky']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" for="help_for_snat_use_sticky">
-                      <?=gettext("When using automatic outbound nat rules make addresses sticky when there are more configured on the same interface.");?>
+                      <?=gettext("When using automatic outbound NAT rules this makes the handled connections stick to a specific address when there are multiple addresses configured on the same interface.");?>
                     </div>
                   </td>
                 </tr>
