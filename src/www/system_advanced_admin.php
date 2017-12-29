@@ -394,6 +394,7 @@ include("head.inc");
                       if ($ciphers == null) {
                           $ciphers = array();
                       }
+                      ksort($ciphers);
                       foreach ($ciphers as $cipher => $cipher_data):?>
                         <option value="<?=$cipher;?>" <?= !empty($pconfig['ssl-ciphers']) && in_array($cipher, $pconfig['ssl-ciphers']) ? 'selected="selected"' : '' ?>>
                           <?=!empty($cipher_data['description']) ? $cipher_data['description'] : $cipher;?>
