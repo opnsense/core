@@ -199,7 +199,9 @@ abstract class Rule
                 array_shift($tmp);
                 $args = array_merge($args, $tmp);
             }
-            $ruleTxt .= call_user_func_array(array($this,$method), $args);
+            $cmdout = trim(call_user_func_array(array($this,$method), $args));
+            $ruleTxt .= !empty($cmdout) && !empty($ruleTxt) ? " "  : "";
+            $ruleTxt .= $cmdout;
         }
         return $ruleTxt;
     }
