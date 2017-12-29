@@ -70,6 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $pconfig['enablebinatreflection'] = !empty($config['system']['enablebinatreflection']);
     $pconfig['enablenatreflectionhelper'] = isset($config['system']['enablenatreflectionhelper']) ? $config['system']['enablenatreflectionhelper'] : null;
+    $pconfig['snat_use_sticky'] = !empty($config['system']['snat_use_sticky']);
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
@@ -170,6 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif (isset($config['system']['enablebinatreflection'])) {
             unset($config['system']['enablebinatreflection']);
         }
+        $config['system']['snat_use_sticky'] = !empty($pconfig['snat_use_sticky']);
 
         if (!empty($pconfig['disablereplyto'])) {
             $config['system']['disablereplyto'] = $pconfig['disablereplyto'];
@@ -319,6 +321,15 @@ include("head.inc");
                       <?=gettext("Required for full functionality of the pure NAT mode of NAT Reflection for port forwards or NAT Reflection for 1:1 NAT.");?>
                       <br /><br />
                       <?=gettext("Note: This only works for assigned interfaces. Other interfaces require manually creating the outbound NAT rules that direct the reply packets back through the router.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_snat_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky oubound NAT");?></td>
+                  <td>
+                    <input name="snat_use_sticky" type="checkbox" id="snat_use_sticky" <?=!empty($pconfig['snat_use_sticky']) ? "checked=\"checked\"" : "";?> />
+                    <div class="hidden" for="help_for_snat_use_sticky">
+                      <?=gettext("When using automatic outbound nat rules make addresses sticky when there are more configured on the same interface.");?>
                     </div>
                   </td>
                 </tr>

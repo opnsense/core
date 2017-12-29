@@ -266,12 +266,14 @@ function filter_configure_sync($verbose = false)
             }
         }
         foreach ($fw->getInterfaceMapping() as $intf => $ifcfg) {
+            $pool_opts = !empty($config['system']['snat_use_sticky']) ? "sticky-address" : "";
             if (substr($ifcfg['if'], 0, 4) != 'ovpn' && !empty($ifcfg['gateway'])) {
                 foreach (array(500, null) as $dstport) {
                     $rule = array(
                         "interface" => $intf,
                         "dstport" => $dstport,
                         "staticnatport" => !empty($dstport),
+                        "poolopts" => $pool_opts,
                         "destination" => array("any" => true),
                         "ipprotocol" => 'inet',
                         "descr" => "Automatic outbound rule"
