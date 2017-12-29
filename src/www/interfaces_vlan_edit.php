@@ -42,22 +42,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['if'] = isset($a_vlans[$id]['if']) ? $a_vlans[$id]['if'] : null;
     $pconfig['vlanif'] = isset($a_vlans[$id]['vlanif']) ? $a_vlans[$id]['vlanif'] : null;
     $pconfig['tag'] = isset($a_vlans[$id]['tag']) ? $a_vlans[$id]['tag'] : null;
-    $pconfig['pcp'] = isset($a_vlans[$id]['pcp']) ? $a_vlans[$id]['pcp'] : null;
+    $pconfig['pcp'] = isset($a_vlans[$id]['pcp']) ? $a_vlans[$id]['pcp'] : 0;
     $pconfig['descr'] = isset($a_vlans[$id]['descr']) ? $a_vlans[$id]['descr'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // validate / save form data
+    if (!empty($a_vlans[$_POST['id']])) {
+        $id = $_POST['id'];
+    }
+
     $input_errors = array();
     $pconfig = $_POST;
-
-    // validate / save form data
-    if (!empty($a_vlans[$pconfig['id']])) {
-        $id = $pconfig['id'];
-    }
 
     /* input validation */
     $reqdfields = explode(" ", "if tag");
     $reqdfieldsn = array(gettext("Parent interface"),gettext("VLAN tag"));
 
-    do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
+    do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
     if ($pconfig['tag'] && (!is_numericint($pconfig['tag']) || ($pconfig['tag'] < '1') || ($pconfig['tag'] > '4094'))) {
         $input_errors[] = gettext("The VLAN tag must be an integer between 1 and 4094.");
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($id)  && $a_vlans[$id] === $vlan) {
             continue;
         }
-        if (($vlan['if'] == $pconfig['if']) && ($vlan['tag'] == $pconfig['tag'])) {
+        if (($vlan['if'] == $pconfig['if']) && ($vlan['tag'] == $_POST['tag'])) {
             $input_errors[] = sprintf(gettext("A VLAN with the tag %s is already defined on this interface."), $vlan['tag']);
             break;
         }
@@ -106,18 +106,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $confif = convert_real_interface_to_friendly_interface_name("{$a_vlans[$id]['if']}_vlan{$a_vlans[$id]['tag']}");
                 }
                 if ($confif <> "") {
-                    $config['interfaces'][$confif]['if'] = "{$pconfig['if']}_vlan{$pconfig['tag']}";
+                    $config['interfaces'][$confif]['if'] = "{$_POST['if']}_vlan{$_POST['tag']}";
                 }
             }
         }
         $vlan = array();
-        $vlan['if'] = $pconfig['if'];
-        $vlan['tag'] = $pconfig['tag'];
-        if (isset($pconfig['pcp'])) {
-            $vlan['pcp'] = $pconfig['pcp'];
-        }
-        $vlan['descr'] = $pconfig['descr'];
-        $vlan['vlanif'] = "{$pconfig['if']}_vlan{$pconfig['tag']}";
+        $vlan['if'] = $_POST['if'];
+        $vlan['tag'] = $_POST['tag'];
+        $vlan['pcp'] = $pconfig['pcp'];
+        $vlan['descr'] = $_POST['descr'];
+        $vlan['vlanif'] = "{$_POST['if']}_vlan{$_POST['tag']}";
         $vlan['vlanif'] = interface_vlan_configure($vlan);
         if ($vlan['vlanif'] == "" || !stristr($vlan['vlanif'], "vlan")) {
             $input_errors[] = gettext("Error occurred creating interface, please retry.");
@@ -213,7 +211,6 @@ include("head.inc");
                     <td><a id="help_for_pcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN priority");?></td>
                     <td>
                       <select name="pcp">
-                        <option value=""><?= gettext('No default (recommended)') ?></option>
 <? foreach (interfaces_vlan_priorities() as $pcp => $priority): ?>
                         <option value="<?=$pcp;?>"<?=($pconfig['pcp'] == $pcp ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
 <? endforeach ?>
