@@ -43,51 +43,17 @@ class ServiceController extends ApiMutableServiceControllerBase
     static $internalServiceTemplate = 'OPNsense/Proxy';
     static $internalServiceName = 'proxy';
 
-    /**
-     * reconfigure squid, generate config and reload
-     */
-    public function reconfigureAction()
+    protected function reconfigureForceRestart()
     {
-        if ($this->request->isPost()) {
-            // close session for long running action
-            $this->sessionClose();
+        $mdlProxy = new Proxy();
 
-            $force_restart = false;
+        // some operations can not be performed by a squid -k reconfigure,
+        // try to determine if we need a stop/start here
+        $prev_sslbump_cert = trim(@file_get_contents('/var/squid/ssl_crtd.id'));
+        $prev_cache_active = !empty(trim(@file_get_contents('/var/squid/cache/active')));
 
-            $mdlProxy = new Proxy();
-            $backend = new Backend();
-
-            $runStatus = $this->statusAction();
-
-            // some operations can not be performed by a squid -k reconfigure,
-            // try to determine if we need a stop/start here
-            $prev_sslbump_cert = trim(@file_get_contents('/var/squid/ssl_crtd.id'));
-            $prev_cache_active = !empty(trim(@file_get_contents('/var/squid/cache/active')));
-            $force_restart = (((string)$mdlProxy->forward->sslcertificate) != $prev_sslbump_cert) ||
-                (!empty((string)$mdlProxy->general->cache->local->enabled) != $prev_cache_active);
-
-            // stop squid when disabled
-            if ($runStatus['status'] == "running" &&
-               ($mdlProxy->general->enabled->__toString() == 0 || $force_restart)) {
-                $this->stopAction();
-            }
-
-            // generate template
-            $backend->configdRun('template reload OPNsense/Proxy');
-
-            // (res)start daemon
-            if ($mdlProxy->general->enabled->__toString() == 1) {
-                if ($runStatus['status'] == "running" && !$force_restart) {
-                    $backend->configdRun("proxy reconfigure");
-                } else {
-                    $this->startAction();
-                }
-            }
-
-            return array("status" => "ok");
-        } else {
-            return array("status" => "failed");
-        }
+        return (((string)$mdlProxy->forward->sslcertificate) != $prev_sslbump_cert) ||
+            (!empty((string)$mdlProxy->general->cache->local->enabled) != $prev_cache_active);
     }
 
     /**

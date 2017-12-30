@@ -105,7 +105,6 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function startAction()
     {
         if ($this->request->isPost()) {
-            // close session for long running action
             $this->sessionClose();
             $backend = new Backend();
             $response = $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' start');
@@ -122,7 +121,6 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function stopAction()
     {
         if ($this->request->isPost()) {
-            // close session for long running action
             $this->sessionClose();
             $backend = new Backend();
             $response = $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' stop');
@@ -139,7 +137,6 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function restartAction()
     {
         if ($this->request->isPost()) {
-            // close session for long running action
             $this->sessionClose();
             $backend = new Backend();
             $response = $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' restart');
@@ -150,25 +147,38 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     }
 
     /**
+     * reconfigure force restart check, return zero for soft-reload
+     */
+    protected function reconfigureForceRestart()
+    {
+        return 1;
+    }
+
+    /**
      * reconfigure, generate config and reload
      */
     public function reconfigureAction()
     {
         if ($this->request->isPost()) {
-            // close session for long running action
             $this->sessionClose();
 
             $model = $this->getModel();
             $backend = new Backend();
 
-            $this->stopAction();
+            if ((string)$model->getNodeByReference(static::$internalServiceEnabled) != '1' ||
+                $this->reconfigureForceRestart()) {
+                $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' stop');
+            }
 
-            // generate template
             $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
 
-            // (re)start daemon
             if ((string)$model->getNodeByReference(static::$internalServiceEnabled) == '1') {
-                $this->startAction();
+                $runStatus = $this->statusAction();
+                if ($runStatus['status'] != 'running') {
+                    $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' start');
+                } else {
+                    $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' reconfigure');
+                }
             }
 
             return array('status' => 'ok');
