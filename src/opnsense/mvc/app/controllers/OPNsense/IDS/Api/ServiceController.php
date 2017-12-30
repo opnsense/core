@@ -28,13 +28,13 @@
 
 namespace OPNsense\IDS\Api;
 
-use \Phalcon\Filter;
-use \OPNsense\Base\Filters\QueryFilter;
 use \OPNsense\Base\ApiMutableServiceControllerBase;
+use \OPNsense\Base\Filters\QueryFilter;
 use \OPNsense\Core\Backend;
-use \OPNsense\IDS\IDS;
-use \OPNsense\Cron\Cron;
 use \OPNsense\Core\Config;
+use \OPNsense\Cron\Cron;
+use \OPNsense\IDS\IDS;
+use \Phalcon\Filter;
 
 /**
  * Class ServiceController
