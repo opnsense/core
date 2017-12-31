@@ -320,19 +320,19 @@ include("fbegin.inc");
 <?php
                       endforeach; ?>
                       </select>
-                      <div class="hidden" for="help_for_if">
+                      <output class="hidden" for="help_for_if">
                         <?=gettext("Select the interface on which to capture traffic.");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_promiscuous" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Promiscuous");?></td>
                     <td>
                       <input name="promiscuous" type="checkbox" <?= !empty($pconfig['promiscuous']) ? " checked=\"checked\"" : ""; ?> />
-                      <div class="hidden" for="help_for_promiscuous">
+                      <output class="hidden" for="help_for_promiscuous">
                         <?=gettext("If checked, the");?> <a target="_blank" href="http://www.freebsd.org/cgi/man.cgi?query=tcpdump&amp;apropos=0&amp;sektion=0&amp;manpath=FreeBSD+8.3-stable&amp;arch=default&amp;format=html"><?= gettext("packet capture")?></a> <?= gettext("will be performed using promiscuous mode.");?>
                         <br /><b><?=gettext("Note");?>: </b><?=gettext("Some network adapters do not support or work well in promiscuous mode.");?>
-                      </div>
+                      </output>
                   </td>
                   </tr>
                   <tr>
@@ -347,9 +347,9 @@ include("fbegin.inc");
                           <?= gettext('IPv6 Only') ?>
                         </option>
                       </select>
-                      <div class="hidden" for="help_for_fam">
+                      <output class="hidden" for="help_for_fam">
                         <?=gettext("Select the type of traffic to be captured, either Any, IPv4 only or IPv6 only.");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
@@ -371,48 +371,48 @@ include("fbegin.inc");
                         <option value="!carp" <?=$pconfig['proto'] == "!carp" ? "selected=\"selected\"" : ""; ?>><?= gettext('Exclude CARP (VRRP)') ?></option>
                         <option value="esp" <?=$pconfig['proto'] == "esp" ? "selected=\"selected\"" : ""; ?>><?= gettext('ESP') ?></option>
                       </select>
-                      <div class="hidden" for="help_for_proto">
+                      <output class="hidden" for="help_for_proto">
                           <?=gettext("Select the protocol to capture, or Any.");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_host" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Host Address");?></td>
                     <td>
                       <input type="text"  name="host" value="<?=$pconfig['host'];?>" />
-                      <div class="hidden" for="help_for_host">
+                      <output class="hidden" for="help_for_host">
                         <?=gettext("This value is either the Source or Destination IP address or subnet in CIDR notation. The packet capture will look for this address in either field.");?>
                         <?=gettext("Matching can be negated by preceding the value with \"not\". Multiple IP addresses or CIDR subnets may be specified as boolean expresion.");?>
                         <?=gettext("If you leave this field blank, all packets on the specified interface will be captured.");?>
                         <br/><br/><?=gettext("Example:");?> not 10.0.0.0/24 not and not 11.0.0.1
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Port");?></td>
                     <td>
                       <input type="text" name="port" value="<?=$pconfig['port'];?>" />
-                      <div class="hidden" for="help_for_port">
+                      <output class="hidden" for="help_for_port">
                         <?=gettext("The port can be either the source or destination port. The packet capture will look for this port in either field.");?> <?=gettext("Leave blank if you do not want to filter by port.");?>
-                      </div>
+                      </output>
                   </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_snaplen" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Packet Length");?></td>
                     <td>
                       <input type="text" name="snaplen" value="<?=$pconfig['snaplen'];?>" />
-                      <div class="hidden" for="help_for_snaplen">
+                      <output class="hidden" for="help_for_snaplen">
                         <?=gettext("The Packet length is the number of bytes of each packet that will be captured. Default value is 0, which will capture the entire frame regardless of its size.");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_count" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Count");?></td>
                     <td>
                       <input type="text" name="count" class="formfld unknown" id="count" size="5" value="<?=$pconfig['count'];?>" />
-                      <div class="hidden" for="help_for_count">
+                      <output class="hidden" for="help_for_count">
                         <?=gettext("This is the number of packets the packet capture will grab. Default value is 100.") . "<br />" . gettext("Enter 0 (zero) for no count limit.");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
@@ -427,11 +427,11 @@ include("fbegin.inc");
                         <option value="high" <?=$pconfig['detail'] == 'high' ?  "selected=\"selected\"" : "";?> ><?=gettext("High");?></option>
                         <option value="full" <?=$pconfig['detail'] == 'full' ?  "selected=\"selected\"" : "";?> ><?=gettext("Full");?></option>
                       </select>
-                      <div class="hidden" for="help_for_detail">
+                      <output class="hidden" for="help_for_detail">
                         <?=gettext("This is the level of detail that will be displayed after hitting 'Stop' when the packets have been captured.") .  "<br /><b>" .
                            gettext("Note:") . "</b> " .
                            gettext("This option does not affect the level of detail when downloading the packet capture.");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
 
@@ -439,10 +439,10 @@ include("fbegin.inc");
                     <td><a id="help_for_dnsquery" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reverse DNS Lookup");?></td>
                     <td>
                       <input name="dnsquery" id="dnsquery" type="checkbox"/>
-                      <div class="hidden" for="help_for_dnsquery">
+                      <output class="hidden" for="help_for_dnsquery">
                        <?=gettext("This check box will cause the packet capture to perform a reverse DNS lookup associated with all IP addresses.");?>
                        <br /><b><?=gettext("Note");?>: </b><?=gettext("This option can cause delays for large packet captures.");?>
-                     </div>
+                     </output>
                     </td>
                   </tr>
 

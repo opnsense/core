@@ -88,15 +88,15 @@ if (isset($config['ipsec']['phase2'])) {
     });
 </script>
 <div id="tabs">
-    <div for="ipsec-Overview" class="ipsec-tab table-cell" style="background-color:#EEEEEE; color:black; cursor: pointer; display:table-cell">
+    <output for="ipsec-Overview" class="ipsec-tab table-cell" style="background-color:#EEEEEE; color:black; cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Overview");?>&nbsp;&nbsp;</strong>
-    </div>
-    <div for="ipsec-tunnel" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
+    </output>
+    <output for="ipsec-tunnel" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Tunnels");?>&nbsp;&nbsp;</strong>
-    </div>
-    <div for="ipsec-mobile" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
+    </output>
+    <output for="ipsec-mobile" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Mobile");?>&nbsp;&nbsp;</strong>
-    </div>
+    </output>
 </div>
 
 <div id="ipsec-Overview" class="ipsec-tab-content" style="display:block;background-color:#EEEEEE;">

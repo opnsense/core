@@ -791,9 +791,9 @@ POSSIBILITY OF SUCH DAMAGE.
                                     <div style="display:none;" id="firmware_mirror_other">
                                         <input type="text" id="firmware_mirror_value">
                                     </div>
-                                    <div class="hidden" for="help_for_mirror">
+                                    <output class="hidden" for="help_for_mirror">
                                         {{ lang._('Select an alternate firmware mirror.') }}
-                                    </div>
+                                    </output>
                                 </td>
                                 <td></td>
                             </tr>
@@ -805,9 +805,9 @@ POSSIBILITY OF SUCH DAMAGE.
                                     <div style="display:none;" id="firmware_flavour_other">
                                         <input type="text" id="firmware_flavour_value">
                                     </div>
-                                    <div class="hidden" for="help_for_flavour">
+                                    <output class="hidden" for="help_for_flavour">
                                         {{ lang._('Select the firmware cryptography flavour.') }}
-                                    </div>
+                                    </output>
                                 </td>
                                 <td></td>
                             </tr>
@@ -816,9 +816,9 @@ POSSIBILITY OF SUCH DAMAGE.
                                 <td>
                                     <select class="selectpicker" id="firmware_type">
                                     </select>
-                                    <div class="hidden" for="help_for_type">
+                                    <output class="hidden" for="help_for_type">
                                         {{ lang._('Select the release type. Use with care.') }}
-                                    </div>
+                                    </output>
                                 </td>
                                 <td></td>
                             </tr>
@@ -826,9 +826,9 @@ POSSIBILITY OF SUCH DAMAGE.
                                 <td style="width: 150px;"><a id="help_for_mirror_subscription" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Subscription') }}</td>
                                 <td>
                                     <input type="text" id="firmware_mirror_subscription">
-                                    <div class="hidden" for="help_for_mirror_subscription">
+                                    <output class="hidden" for="help_for_mirror_subscription">
                                         {{ lang._('Provide subscription key.') }}
-                                    </div>
+                                    </output>
                                 </td>
                                 <td></td>
                             </tr>

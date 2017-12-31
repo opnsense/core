@@ -550,18 +550,18 @@ include("head.inc");
                       <input name="id" type="hidden" value="<?=$id;?>" />
                     <?php endif; ?>
                     <input name="name" type="text" id="name" class="form-control unknown" size="40" maxlength="31" value="<?=$pconfig['name'];?>" />
-                    <div class="hidden" for="help_for_name">
+                    <output class="hidden" for="help_for_name">
                       <?=gettext('The name of the alias may only consist of the characters "a-z, A-Z, 0-9 and _". Aliases can be nested using this name.'); ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                   <td>
                     <input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
-                    <div class="hidden" for="help_for_description">
+                    <output class="hidden" for="help_for_description">
                       <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -585,7 +585,7 @@ include("head.inc");
                         <option value="IPv6" <?= in_array("IPv6", $pconfig['proto']) ? "selected=\"selected\"" : ""; ?>><?=gettext("IPv6");?></option>
                       </select>
                     </div>
-                    <div class="hidden" for="help_for_type">
+                    <output class="hidden" for="help_for_type">
                       <span class="text-info">
                         <?=gettext("Hosts")?><br/>
                       </span>
@@ -628,7 +628,7 @@ include("head.inc");
                         <?=gettext("Managed externally, the contents of this alias type could be managed by other scripts or services. ".
                                   "OPNsense only makes sure the alias exists and leaves the contents alone");?>
                       </small>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>

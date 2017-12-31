@@ -206,9 +206,9 @@ legacy_html_escape_form_data($pconfig);
 <?php
                         endforeach;?>
                       </select>
-                      <div class="hidden" for="help_for_members">
+                      <output class="hidden" for="help_for_members">
                         <?=gettext("Choose the members that will be used for the link aggregation"); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
@@ -223,7 +223,7 @@ legacy_html_escape_form_data($pconfig);
 <?php
                       endforeach;?>
                       </select>
-                      <div class="hidden" for="help_for_proto">
+                      <output class="hidden" for="help_for_proto">
                         <ul>
                           <li><b><?=gettext("failover"); ?></b></li>
                                 <?=gettext("Sends and receives traffic only through the master port. " .
@@ -263,34 +263,34 @@ legacy_html_escape_form_data($pconfig);
                                    "traffic without disabling the lagg interface itself."); ?>
 
                         </ul>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                      <div class="hidden" for="help_for_descr">
+                      <output class="hidden" for="help_for_descr">
                         <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_lacp_fast_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Fast timeout"); ?></td>
                     <td>
                       <input name="lacp_fast_timeout" id="lacp_fast_timeout" type="checkbox" value="yes" <?=!empty($pconfig['lacp_fast_timeout']) ? "checked=\"checked\"" : "" ;?>/>
-                      <div class="hidden" for="help_for_lacp_fast_timeout">
+                      <output class="hidden" for="help_for_lacp_fast_timeout">
                         <?=gettext("Enable lacp fast-timeout on the interface."); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_mtu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MTU"); ?></td>
                     <td>
                       <input name="mtu" id="mtu" type="text" value="<?=$pconfig['mtu'];?>" />
-                      <div class="hidden" for="help_for_mtu">
+                      <output class="hidden" for="help_for_mtu">
                         <?= gettext("If you leave this field blank, the smallest mtu of this laggs children will be used.");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>

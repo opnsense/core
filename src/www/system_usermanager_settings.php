@@ -110,10 +110,10 @@ endif;?>
                   <td style="width:22%"><a id="help_for_session_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Session Timeout"); ?></td>
                   <td style="width:78%">
                     <input class="form-control" name="session_timeout" id="session_timeout" type="text" size="8" value="<?=$pconfig['session_timeout'];?>" />
-                    <div class="hidden" for="help_for_session_timeout">
+                    <output class="hidden" for="help_for_session_timeout">
                       <?=gettext("Time in minutes to expire idle management sessions. The default is 4 hours (240 minutes).");?><br />
                       <?=gettext("Enter 0 to never expire sessions. NOTE: This is a security risk!");?><br />
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>

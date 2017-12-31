@@ -518,9 +518,9 @@ $main_buttons = array(
                 <td style="width:22%"><a id="help_for_cert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Certificate data");?></td>
                 <td style="width:78%">
                   <textarea name="cert" cols="65" rows="7" id="cert"><?=isset($pconfig['cert']) ? $pconfig['cert'] : "";?></textarea>
-                  <div class="hidden" for="help_for_cert">
+                  <output class="hidden" for="help_for_cert">
                     <?=gettext("Paste a certificate in X.509 PEM format here.");?>
-                  </div>
+                  </output>
                 </td>
               </tr>
               <tr>
@@ -530,18 +530,18 @@ $main_buttons = array(
                 </td>
                 <td style="width:78%">
                   <textarea name="key" id="key" cols="65" rows="7"><?= isset($pconfig['key']) ? $pconfig['key'] : "";?></textarea>
-                  <div class="hidden" for="help_for_key">
+                  <output class="hidden" for="help_for_key">
                     <?=gettext("Paste the private key for the above certificate here. This is optional in most cases, but required if you need to generate a Certificate Revocation List (CRL).");?>
-                  </div>
+                  </output>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_serial" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial for next certificate");?></td>
                 <td>
                   <input name="serial" type="text" id="serial" size="20" value="<?=$pconfig['serial'];?>"/>
-                  <div class="hidden" for="help_for_serial">
+                  <output class="hidden" for="help_for_serial">
                     <?=gettext("Enter a decimal number to be used as the serial number for the next certificate to be created using this CA.");?>
-                  </div>
+                  </output>
                 </td>
               </tr>
               </tbody>
@@ -591,9 +591,9 @@ $main_buttons = array(
 <?php
                     endforeach; ?>
                     </select>
-                    <div class="hidden" for="help_for_digest_alg">
+                    <output class="hidden" for="help_for_digest_alg">
                       <?= gettext("NOTE: It is recommended to use an algorithm stronger than SHA1 when possible.") ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -623,55 +623,55 @@ $main_buttons = array(
                   <td><a id="help_for_digest_dn_state" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State or Province");?> : &nbsp;</td>
                   <td>
                     <input name="dn_state" type="text" size="40" value="<?=$pconfig['dn_state'];?>"/>
-                    <div class="hidden" for="help_for_digest_dn_state">
+                    <output class="hidden" for="help_for_digest_dn_state">
                       <em><?=gettext("ex:");?></em>
                       &nbsp;
                       <?=gettext("Sachsen");?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_digest_dn_city" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("City");?> : &nbsp;</td>
                   <td>
                     <input name="dn_city" type="text" size="40" value="<?=$pconfig['dn_city'];?>"/>
-                    <div class="hidden" for="help_for_digest_dn_city">
+                    <output class="hidden" for="help_for_digest_dn_city">
                       <em><?=gettext("ex:");?></em>
                       &nbsp;
                       <?=gettext("Leipzig");?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_digest_dn_organization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organization");?> : &nbsp;</td>
                   <td>
                     <input name="dn_organization" type="text" size="40" value="<?=$pconfig['dn_organization'];?>"/>
-                    <div class="hidden" for="help_for_digest_dn_organization">
+                    <output class="hidden" for="help_for_digest_dn_organization">
                       <em><?=gettext("ex:");?></em>
                       &nbsp;
                       <?=gettext("My Company Inc");?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_digest_dn_email" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email Address");?> : &nbsp;</td>
                   <td>
                     <input name="dn_email" type="text" size="25" value="<?=$pconfig['dn_email'];?>"/>
-                    <div class="hidden" for="help_for_digest_dn_email">
+                    <output class="hidden" for="help_for_digest_dn_email">
                       <em><?=gettext("ex:");?></em>
                       &nbsp;
                       <?=gettext("admin@mycompany.com");?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_digest_dn_commonname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Common Name");?> : &nbsp;</td>
                   <td>
                     <input name="dn_commonname" type="text" size="25" value="<?=$pconfig['dn_commonname'];?>"/>
-                    <div class="hidden" for="help_for_digest_dn_commonname">
+                    <output class="hidden" for="help_for_digest_dn_commonname">
                       <em><?=gettext("ex:");?></em>
                       &nbsp;
                       <?=gettext("internal-ca");?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
               </tbody>
