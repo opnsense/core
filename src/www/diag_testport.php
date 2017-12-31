@@ -147,9 +147,9 @@ include("head.inc"); ?>
                             <?=gettext("IPv6");?>
                           </option>
                         </select>
-                        <div class="hidden" for="help_for_ipprotocol">
+                        <output class="hidden" for="help_for_ipprotocol">
                           <?=gettext("If you force IPv4 or IPv6 and use a hostname that does not contain a result using that protocol, it will result in an error. For example if you force IPv4 and use a hostname that only returns an AAAA IPv6 IP address, it will not work."); ?>
-                        </div>
+                        </output>
                       </td>
                     </tr>
                     <tr>
@@ -168,18 +168,18 @@ include("head.inc"); ?>
                       <td><a id="help_for_srcport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Source Port"); ?></td>
                       <td>
                         <input name="srcport" type="text" value="<?=$pconfig['srcport'];?>" />
-                        <div class="hidden" for="help_for_srcport">
+                        <output class="hidden" for="help_for_srcport">
                           <?=gettext("This should typically be left blank."); ?>
-                        </div>
+                        </output>
                       </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_showtext" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Show Remote Text"); ?></td>
                       <td>
                         <input name="showtext" type="checkbox" id="showtext" <?= !empty($pconfig['showtext']) ? "checked=\"checked\"" : "";?> />
-                        <div class="hidden" for="help_for_showtext">
+                        <output class="hidden" for="help_for_showtext">
                           <?=gettext("Shows the text given by the server when connecting to the port. Will take 10+ seconds to display if checked."); ?>
-                        </div>
+                        </output>
                       </td>
                     </tr>
                     <tr>

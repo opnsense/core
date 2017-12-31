@@ -252,22 +252,22 @@ include("head.inc");
               <td><a id="help_for_hostname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hostname"); ?></td>
               <td>
                 <input name="hostname" type="text" size="40" value="<?=$pconfig['hostname'];?>" />
-                <div class="hidden" for="help_for_hostname">
+                <output class="hidden" for="help_for_hostname">
                   <?=gettext("Name of the firewall host, without domain part"); ?>
                   <br />
                   <?=gettext("e.g."); ?> <em><?=gettext("firewall");?></em>
-                </div>
+                </output>
               </td>
             </tr>
             <tr>
               <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain"); ?></td>
               <td>
                 <input name="domain" type="text" value="<?=$pconfig['domain'];?>" />
-                <div class="hidden" for="help_for_domain">
+                <output class="hidden" for="help_for_domain">
                   <?=gettext("Do not use 'local' as a domain name. It will cause local hosts running mDNS (avahi, bonjour, etc.) to be unable to resolve local hosts not running mDNS."); ?>
                   <br />
                   <?=sprintf(gettext("e.g. %smycorp.com, home, office, private, etc.%s"),'<em>','</em>') ?>
-                </div>
+                </output>
               </td>
             </tr>
             <tr>
@@ -282,9 +282,9 @@ include("head.inc");
 <?php
                   endforeach; ?>
                 </select>
-                <div class="hidden" for="help_for_timezone">
+                <output class="hidden" for="help_for_timezone">
                   <?=gettext("Select the location closest to you"); ?>
-                </div>
+                </output>
               </td>
             </tr>
             <tr>
@@ -299,11 +299,11 @@ include("head.inc");
 <?php
                   endforeach;?>
                 </select>
-                <div class="hidden" for="help_for_language">
+                <output class="hidden" for="help_for_language">
                   <strong>
                     <?= gettext('Choose a language for the web GUI.') ?>
                   </strong>
-                </div>
+                </output>
               </td>
             </tr>
             <tr>
@@ -319,11 +319,11 @@ include("head.inc");
 <?php
                 endforeach; ?>
                 </select>
-                <div class="hidden" for="help_for_theme">
+                <output class="hidden" for="help_for_theme">
                   <strong>
                     <?= gettext('This will change the look and feel of the GUI.') ?>
                   </strong>
-                </div>
+                </output>
               </td>
             </tr>
             <tr>
@@ -334,11 +334,11 @@ include("head.inc");
               <td>
                 <input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?= !empty($pconfig['prefer_ipv4']) ? "checked=\"checked\"" : "";?> />
                 <strong><?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?></strong>
-                <div class="hidden" for="help_for_prefer_ipv4">
+                <output class="hidden" for="help_for_prefer_ipv4">
                   <?=gettext("By default, if a hostname resolves IPv6 and IPv4 addresses ".
                                       "IPv6 will be used, if you check this option, IPv4 will be " .
                                       "used instead of IPv6."); ?>
-                </div>
+                </output>
               </td>
             </tr>
             <tr>
@@ -388,14 +388,14 @@ include("head.inc");
                     endfor; ?>
                   </tbody>
                 </table>
-                <div class="hidden" for="help_for_dnsservers">
+                <output class="hidden" for="help_for_dnsservers">
                   <?=gettext("Enter IP addresses to be used by the system for DNS resolution. " .
                   "These are also used for the DHCP service, DNS forwarder and for PPTP VPN clients."); ?>
                   <br />
                   <br />
                   <?=gettext("In addition, optionally select the gateway for each DNS server. " .
                   "When using multiple WAN connections there should be at least one unique DNS server per gateway."); ?>
-                </div>
+                </output>
               </td>
             </tr>
             <tr>
@@ -405,22 +405,22 @@ include("head.inc");
                 <strong>
                   <?=gettext("Allow DNS server list to be overridden by DHCP/PPP on WAN"); ?>
                 </strong>
-                <div class="hidden" for="help_for_dnsservers_opt">
+                <output class="hidden" for="help_for_dnsservers_opt">
                   <?= gettext("If this option is set, DNS servers " .
                   "assigned by a DHCP/PPP server on WAN will be used " .
                   "for its own purposes (including the DNS forwarder). " .
                   "However, they will not be assigned to DHCP and PPTP " .
                   "VPN clients.") ?>
-                </div>
+                </output>
                 <br/>
                 <input name="dnslocalhost" type="checkbox" value="yes" <?=$pconfig['dnslocalhost'] ? "checked=\"checked\"" : ""; ?> />
                 <strong>
                   <?=gettext("Do not use the DNS Forwarder/Resolver as a DNS server for the firewall"); ?>
                 </strong>
-                <div class="hidden" for="help_for_dnsservers_opt">
+                <output class="hidden" for="help_for_dnsservers_opt">
                   <?=gettext("By default localhost (127.0.0.1) will be used as the first DNS server where the DNS Forwarder or DNS Resolver is enabled and set to listen on Localhost, so system can use the local DNS service to perform lookups. ".
                   "Checking this box omits localhost from the list of DNS servers."); ?>
-                </div>
+                </output>
               </td>
             </tr>
             <tr>

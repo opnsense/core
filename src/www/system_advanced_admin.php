@@ -376,13 +376,13 @@ include("head.inc");
 <?php
                     endforeach;?>
                     </select>
-                    <div class='hidden' for="help_for_sslcertref">
+                    <output class='hidden' for="help_for_sslcertref">
                       <?=sprintf(
                         gettext('The %sSSL certificate manager%s can be used to ' .
                         'create or import certificates if required.'),
                         '<a href="/system_certmanager.php">', '</a>'
                       );?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr class="ssl_opts">
@@ -402,20 +402,20 @@ include("head.inc");
 <?php
                       endforeach;?>
                       </select>
-                      <div class="hidden" for="help_for_sslciphers">
+                      <output class="hidden" for="help_for_sslciphers">
                         <?=gettext("Limit SSL cipher selection in case the system defaults are undesired. Note that restrictive use may lead to an inaccessible web GUI.");?>
-                      </div>
+                      </output>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_webguiport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TCP port"); ?></td>
                   <td>
                     <input name="webguiport" id="webguiport" type="text" value="<?=$pconfig['webguiport'];?>" placeholder="<?= $pconfig['webguiproto'] == 'https' ? '443' : '80' ?>" />
-                    <div class="hidden" for="help_for_webguiport">
+                    <output class="hidden" for="help_for_webguiport">
                       <?=gettext("Enter a custom port number for the web GUI " .
                                             "above if you want to override the default (80 for HTTP, 443 " .
                                             "for HTTPS). Changes will take effect immediately after save."); ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr class="ssl_opts">
@@ -423,12 +423,12 @@ include("head.inc");
                   <td style="width:78%">
                     <input name="disablehttpredirect" type="checkbox" value="yes" <?= empty($pconfig['disablehttpredirect']) ? '' : 'checked="checked"';?> />
                     <strong><?= gettext('Disable web GUI redirect rule') ?></strong>
-                    <div class="hidden" for="help_for_disablehttpredirect">
+                    <output class="hidden" for="help_for_disablehttpredirect">
                       <?= gettext("When this is unchecked, access to the web GUI " .
                                           "is always permitted even on port 80, regardless of the listening port configured. " .
                                           "Check this box to disable this automatically added redirect rule.");
                                           ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -436,9 +436,9 @@ include("head.inc");
                   <td>
                     <input name="quietlogin" type="checkbox" value="yes" <?= empty($pconfig['quietlogin']) ? '' : 'checked="checked"' ?>/>
                     <strong><?= gettext('Disable logging of web GUI successful logins') ?></strong>
-                    <div class="hidden" for="help_for_quietlogin">
+                    <output class="hidden" for="help_for_quietlogin">
                       <?=gettext("When this is checked, successful logins to the web GUI will not be logged.");?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -446,11 +446,11 @@ include("head.inc");
                   <td>
                     <input name="nodnsrebindcheck" type="checkbox" value="yes" <?= empty($pconfig['nodnsrebindcheck']) ? '' : 'checked="checked"';?>/>
                     <strong><?=gettext("Disable DNS Rebinding Checks"); ?></strong>
-                    <div class="hidden" for="help_for_nodnsrebindcheck">
+                    <output class="hidden" for="help_for_nodnsrebindcheck">
                       <?= sprintf(gettext("When this is unchecked, your system is protected against %sDNS Rebinding attacks%s. " .
                                           "This blocks private IP responses from your configured DNS servers. Check this box to disable this protection if it interferes with " .
                                           "web GUI access or name resolution in your environment."),'<a href="http://en.wikipedia.org/wiki/DNS_rebinding">','</a>') ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -458,10 +458,10 @@ include("head.inc");
                   <td>
                     <input name="althostnames" type="text" value="<?= $pconfig['althostnames'] ?>"/>
                     <strong><?=gettext("Alternate Hostnames for DNS Rebinding and HTTP_REFERER Checks"); ?></strong>
-                    <div class="hidden" for="help_for_althostnames">
+                    <output class="hidden" for="help_for_althostnames">
                       <?= gettext("Here you can specify alternate hostnames by which the router may be queried, to " .
                                           "bypass the DNS Rebinding Attack checks. Separate hostnames with spaces.") ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -481,10 +481,10 @@ include("head.inc");
                           <?=gettext("High");?>
                         </option>
                     </select>
-                    <div class="hidden" for="help_for_compression">
+                    <output class="hidden" for="help_for_compression">
                       <?=gettext("Enable compression of HTTP pages and dynamic content.");?><br/>
                       <?=gettext("Transfer less data to the client for an additional cost in processing power.");?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -497,9 +497,9 @@ include("head.inc");
 <?php
                     endforeach;?>
                     </select>
-                    <div class="hidden" for="help_for_webguiinterfaces">
+                    <output class="hidden" for="help_for_webguiinterfaces">
                       <?= gettext('Only accept connections from the selected interfaces. Leave empty to listen globally. Use with care.') ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -507,13 +507,13 @@ include("head.inc");
                   <td>
                     <input name="nohttpreferercheck" type="checkbox" value="yes" <?= empty($pconfig['nohttpreferercheck']) ? '' : 'checked="checked"' ?> />
                     <strong><?=gettext("Disable HTTP_REFERER enforcement check"); ?></strong>
-                    <div class="hidden" for="help_for_nohttpreferercheck">
+                    <output class="hidden" for="help_for_nohttpreferercheck">
                       <?=sprintf(gettext("When this is unchecked, access to the web GUI " .
                                           "is protected against HTTP_REFERER redirection attempts. " .
                                           "Check this box to disable this protection if you find that it interferes with " .
                                           "web GUI access in certain corner cases such as using external scripts to interact with this system. More information on HTTP_REFERER is available from %sWikipedia%s."),
                                           '<a target="_blank" href="http://en.wikipedia.org/wiki/HTTP_referrer">','</a>') ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -531,12 +531,12 @@ include("head.inc");
                   <td>
                     <input name="sshdpermitrootlogin" type="checkbox" value="yes" <?= empty($pconfig['sshdpermitrootlogin']) ? '' : 'checked="checked"' ?> />
                     <strong><?=gettext("Permit root user login"); ?></strong>
-                    <div class="hidden" for="help_for_sshdpermitrootlogin">
+                    <output class="hidden" for="help_for_sshdpermitrootlogin">
                       <?= gettext(
                         'Root login is generally discouraged. It is advised ' .
                         'to log in via another user and switch to root afterwards.'
                       ) ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -544,19 +544,19 @@ include("head.inc");
                   <td>
                     <input name="passwordauth" type="checkbox" value="yes" <?= empty($pconfig['passwordauth']) ? '' : 'checked="checked"' ?> />
                     <strong><?=gettext("Permit password login"); ?></strong>
-                    <div class="hidden" for="help_for_passwordauth">
+                    <output class="hidden" for="help_for_passwordauth">
                       <?=sprintf(gettext("When disabled, authorized keys need to be configured for each %sUser%s that has been granted secure shell access."),
                                 '<a href="system_usermanager.php">', '</a>') ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_sshport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSH port"); ?></td>
                   <td style="width:78%">
                     <input name="sshport" type="text" value="<?=$pconfig['sshport'];?>" placeholder="22" />
-                    <div class="hidden" for="help_for_sshport">
+                    <output class="hidden" for="help_for_sshport">
                       <?=gettext("Leave this blank for the default of 22."); ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -569,9 +569,9 @@ include("head.inc");
 <?php
                     endforeach;?>
                     </select>
-                    <div class="hidden" for="help_for_sshinterfaces">
+                    <output class="hidden" for="help_for_sshinterfaces">
                       <?= gettext('Only accept connections from the selected interfaces. Leave empty to listen globally. Use with care.') ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -592,10 +592,10 @@ include("head.inc");
                       <option value="<?= html_safe($console_key) ?>" <?= $pconfig['primaryconsole'] == $console_key ? 'selected="selected"' : '' ?>><?= $console_type['name'] ?></option>
 <?                  endforeach ?>
                     </select>
-                    <div class="hidden" for="help_for_primaryconsole">
+                    <output class="hidden" for="help_for_primaryconsole">
                       <?=gettext("Select the primary console. This preferred console will show boot script output.") ?>
                       <?=gettext("All consoles display OS boot messages, console messages, and the console menu."); ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -607,10 +607,10 @@ include("head.inc");
                       <option value="<?= html_safe($console_key) ?>" <?= $pconfig['secondaryconsole'] == $console_key ? 'selected="selected"' : '' ?>><?= $console_type['name'] ?></option>
 <?                  endforeach ?>
                     </select>
-                    <div class="hidden" for="help_for_secondaryconsole">
+                    <output class="hidden" for="help_for_secondaryconsole">
                       <?=gettext("Select the secondary console if multiple consoles are present."); ?>
                       <?=gettext("All consoles display OS boot messages, console messages, and the console menu."); ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -624,9 +624,9 @@ include("head.inc");
                       <option value="14400" <?=$pconfig['serialspeed'] == "14400" ? 'selected="selected"' : '' ?>>14400</option>
                       <option value="9600" <?=$pconfig['serialspeed'] == "9600" ? 'selected="selected"' : '' ?>>9600</option>
                     </select>
-                    <div class="hidden" for="help_for_serialspeed">
+                    <output class="hidden" for="help_for_serialspeed">
                       <?=gettext("Allows selection of different speeds for the serial console port."); ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -641,9 +641,9 @@ include("head.inc");
                   <td style="width:78%">
                     <input name="disableintegratedauth" type="checkbox" value="yes" <?= empty($pconfig['disableintegratedauth']) ? '' : 'checked="checked"' ?>  />
                     <strong><?=gettext("Disable integrated authentication"); ?></strong>
-                    <div class="hidden" for="help_for_disableintegratedauth">
+                    <output class="hidden" for="help_for_disableintegratedauth">
                         <?=gettext("Disable OPNsense integrated authentication module for console access, falling back to normal unix authentication.");?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>

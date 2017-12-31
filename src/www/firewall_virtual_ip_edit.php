@@ -333,9 +333,9 @@ $( document ).ready(function() {
                         <option value="proxyarp" <?=$pconfig['mode'] == "proxyarp" ? "selected=\"selected\"" : ""; ?>><?=gettext("Proxy ARP");?></option>
                         <option value="other" <?=$pconfig['mode'] == "other" ? "selected=\"selected\"" : ""; ?>><?=gettext("Other");?></option>
                       </select>
-                      <div class="hidden" for="help_for_mode">
+                      <output class="hidden" for="help_for_mode">
                         <?=gettext("Proxy ARP and other type Virtual IPs cannot be bound to by anything running on the firewall, such as IPsec, OpenVPN, etc. Use a CARP or IP Alias type address for these cases.");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
@@ -392,35 +392,35 @@ $( document ).ready(function() {
                             </td>
                           </tr>
                         </table>
-                        <div class="hidden" for="help_for_address">
+                        <output class="hidden" for="help_for_address">
                             <i id="typenote"></i>
-                        </div>
+                        </output>
                       </td>
                   </tr>
                   <tr>
                       <td><a id="help_for_gateway" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway");?></td>
                       <td>
                           <input name="gateway" type="text" class="form-control" id="gateway" value="<?=$pconfig['gateway'];?>" />
-                          <div class="hidden" for="help_for_gateway">
+                          <output class="hidden" for="help_for_gateway">
                             <?=gettext("For some interface types a gateway is required to configure an IP Alias (ppp/pppoe/tun), leave this field empty for all other interface types.");?>
-                          </div>
+                          </output>
                       </td>
                   </tr>
                   <tr id="noexpandrow">
                       <td><a id="help_for_noexpand" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Expansion");?> </td>
                       <td>
                           <input id="noexpand" name="noexpand" type="checkbox" class="form-control unknown" id="noexpand" <?= !empty($pconfig['noexpand']) ? "checked=\"checked\"" : "" ; ?> />
-                          <div class="hidden" for="help_for_noexpand">
+                          <output class="hidden" for="help_for_noexpand">
                             <?=gettext("Disable expansion of this entry into IPs on NAT lists (e.g. 192.168.1.0/24 expands to 256 entries.");?>
-                          </div>
+                          </output>
                   </tr>
                   <tr>
                     <td><a id="help_for_password" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Virtual IP Password");?></td>
                     <td>
                       <input type='password'  name='password' id="password" value="<?=$pconfig['password'];?>" />
-                      <div class="hidden" for="help_for_password">
+                      <output class="hidden" for="help_for_password">
                         <?=gettext("Enter the VHID group password.");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
@@ -437,9 +437,9 @@ $( document ).ready(function() {
                       <button type="button" data-vhid="<?=find_last_used_vhid() + 1;?>" id="max_vhid" class="btn btn-default btn-cs">
                         <?=gettext("Select an unassigned VHID");?>
                       </button>
-                      <div class="hidden" for="help_for_vhid">
+                      <output class="hidden" for="help_for_vhid">
                         <?=gettext("Enter the VHID group that the machines will share.");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
@@ -462,19 +462,19 @@ $( document ).ready(function() {
                         <?php endfor; ?>
                       </select>
 
-                      <div class="hidden" for="help_for_adv">
+                      <output class="hidden" for="help_for_adv">
                         <br/>
                         <?=gettext("The frequency that this machine will advertise. 0 usually means master. Otherwise the lowest combination of both values in the cluster determines the master.");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
                     <td>
                       <input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
-                      <div class="hidden" for="help_for_adv">
+                      <output class="hidden" for="help_for_adv">
                         <?=gettext("You may enter a description here for your reference (not parsed).");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>

@@ -338,32 +338,32 @@ $(document).ready(function() {
                     <td><a id="help_for_reverse" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Reverse Display') ?></td>
                     <td>
                       <input name="reverse" type="checkbox" id="reverse" value="yes" <?=!empty($pconfig['reverse']) ? "checked=\"checked\"" : ""; ?> />
-                      <div class="hidden" for="help_for_reverse">
+                      <output class="hidden" for="help_for_reverse">
                         <?=gettext("Show log entries in reverse order (newest entries on top)");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_nentries" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('GUI Log Entries to Display') ?></td>
                     <td>
                       <input name="nentries" type="text" value="<?=$pconfig['nentries'];?>" /><br />
-                      <div class="hidden" for="help_for_nentries">
+                      <output class="hidden" for="help_for_nentries">
                         <?=gettext("Hint: This is only the number of log entries displayed in the GUI. It does not affect how many entries are contained in the actual log files.") ?>
-                      </div>
+                      </output>
                       </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_logfilesize" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Log File Size (Bytes)') ?></td>
                     <td>
                       <input name="logfilesize" type="text" value="<?=$pconfig['logfilesize'];?>" />
-                      <div class="hidden" for="help_for_logfilesize">
+                      <output class="hidden" for="help_for_logfilesize">
                         <?=gettext("Logs are held in constant-size circular log files. This field controls how large each log file is, and thus how many entries may exist inside the log. By default this is approximately 500KB per log file, and there are nearly 20 such log files.") ?>
                         <br /><br />
                         <?=gettext("NOTE: Log sizes are changed the next time a log file is cleared or deleted. To immediately increase the size of the log files, you must first save the options to set the size, then clear all logs using the \"Reset Log Files\" option farther down this page. "); ?>
                         <?=gettext("Be aware that increasing this value increases every log file size, so disk usage will increase significantly."); ?>
                         <?=gettext("Disk space currently used by log files: ") ?><?= exec("/usr/bin/du -sh /var/log | /usr/bin/awk '{print $1;}'"); ?>.
                         <?=gettext("Remaining disk space for log files: ") ?><?= exec("/bin/df -h /var/log | /usr/bin/awk '{print $4;}'"); ?>.
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
@@ -371,14 +371,14 @@ $(document).ready(function() {
                     <td>
                       <input name="logdefaultblock" type="checkbox" value="yes" <?=!empty($pconfig['logdefaultblock']) ? "checked=\"checked\"" : ""; ?> />
                       <strong><?=gettext("Log packets matched from the default block rules put in the ruleset");?></strong><br />
-                      <div class="hidden" for="help_for_logdefaultblock">
+                      <output class="hidden" for="help_for_logdefaultblock">
                         <?=gettext("Hint: packets that are blocked by the implicit default block rule will not be logged if you uncheck this option. Per-rule logging options are still respected.");?>
-                      </div>
+                      </output>
                       <input name="logdefaultpass" type="checkbox" id="logdefaultpass" value="yes" <?=!empty($pconfig['logdefaultpass']) ? "checked=\"checked\"" :""; ?> />
                       <strong><?=gettext("Log packets matched from the default pass rules put in the ruleset");?></strong><br />
-                      <div class="hidden" for="help_for_logdefaultblock">
+                      <output class="hidden" for="help_for_logdefaultblock">
                         <?=gettext("Hint: packets that are allowed by the implicit default pass rule will be logged if you check this option. Per-rule logging options are still respected.");?>
-                      </div>
+                      </output>
                       <input name="logbogons" type="checkbox" id="logbogons" value="yes" <?=!empty($pconfig['logbogons']) ? "checked=\"checked\"" : ""; ?> />
                       <strong><?=gettext("Log packets blocked by 'Block Bogon Networks' rules");?></strong><br />
                       <input name="logprivatenets" type="checkbox" id="logprivatenets" value="yes" <?php if ($pconfig['logprivatenets']) echo "checked=\"checked\""; ?> />
@@ -390,9 +390,9 @@ $(document).ready(function() {
                     <td>
                       <input name="loglighttpd" type="checkbox" id="loglighttpd" value="yes" <?=!empty($pconfig['loglighttpd']) ? "checked=\"checked\"" :""; ?> />
                       <strong><?=gettext("Log errors from the web server process.");?></strong><br />
-                      <div class="hidden" for="help_for_loglighttpd">
+                      <output class="hidden" for="help_for_loglighttpd">
                         <?=gettext("Hint: If this is checked, errors from the lighttpd web server process for the GUI or Captive Portal will appear in the main system log.");?></td>
-                      </div>
+                      </output>
                   </tr>
                   <tr>
                       <td><a id="help_for_filterdescriptions" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Filter descriptions') ?></td>
@@ -402,11 +402,11 @@ $(document).ready(function() {
                           <option value="1"<?=($pconfig['filterdescriptions'])==="1"?" selected=\"selected\"":""?>><?=gettext('Display as column') ?></option>
                           <option value="2"<?=($pconfig['filterdescriptions'])==="2"?" selected=\"selected\"":""?>><?=gettext('Display as second row') ?></option>
                         </select>
-                        <div class="hidden" for="help_for_filterdescriptions">
+                        <output class="hidden" for="help_for_filterdescriptions">
                           <strong><?=gettext("Show the applied rule description below or in the firewall log rows.");?></strong>
                           <br />
                           <?=gettext("Displaying rule descriptions for all lines in the log might affect performance with large rule sets.");?>
-                        </div>
+                        </output>
                       </td>
                     </tr>
                     <tr>
@@ -418,9 +418,9 @@ $(document).ready(function() {
                       <td><a id="help_for_resetlogs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Reset Logs') ?></td>
                       <td>
                         <input name="resetlogs" id="resetlogs" type="submit" class="btn btn-default" value="<?=gettext("Reset Log Files"); ?>"/>
-                        <div class="hidden" for="help_for_resetlogs">
+                        <output class="hidden" for="help_for_resetlogs">
                           <?= gettext("Note: Clears all local log files and reinitializes them as empty logs. This also restarts the DHCP daemon. Use the Save button first if you have made any setting changes."); ?>
-                        </div>
+                        </output>
                       </td>
                     </tr>
                   </table>
@@ -450,12 +450,12 @@ $(document).ready(function() {
 <?php
                           endforeach; ?>
                         </select>
-                        <div class="hidden" for="help_for_sourceip">
+                        <output class="hidden" for="help_for_sourceip">
                           <?= gettext("This option will allow the logging daemon to bind to a single IP address, rather than all IP addresses."); ?>
                           <?= gettext("If you pick a single IP, remote syslog severs must all be of that IP type. If you wish to mix IPv4 and IPv6 remote syslog servers, you must bind to all interfaces."); ?>
                           <br /><br />
                           <?= gettext("NOTE: If an IP address cannot be located on the chosen interface, the daemon will bind to all addresses."); ?>
-                        </div>
+                        </output>
                       </td>
                     </tr>
                     <tr>
@@ -465,9 +465,9 @@ $(document).ready(function() {
                           <option value="ipv4" <?=$ipproto == "ipv4" ? 'selected="selected"' : "";?>><?=gettext("IPv4");?></option>
                           <option value="ipv6" <?=$ipproto == "ipv6" ? 'selected="selected"' : "";?>><?=gettext("IPv6");?></option>
                         </select>
-                        <div class="hidden" for="help_for_ipproto">
+                        <output class="hidden" for="help_for_ipproto">
                           <?= gettext("This option is only used when a non-default address is chosen as the source above. This option only expresses a preference; If an IP address of the selected type is not found on the chosen interface, the other type will be tried."); ?>
-                        </div>
+                        </output>
                       </td>
                     </tr>
                     <tr>
@@ -494,9 +494,9 @@ $(document).ready(function() {
                             <td><input name="remoteserver3" id="remoteserver3" type="text" class="form-control host" size="20" value="<?=htmlspecialchars($pconfig['remoteserver3']);?>" /></td>
                           </tr>
                         </table>
-                        <div class="hidden" for="help_for_remoteserver">
+                        <output class="hidden" for="help_for_remoteserver">
                           <?=gettext("IP addresses of remote syslog servers, or an IP:port.");?>
-                        </div>
+                        </output>
                       </td>
                     </tr>
                     <tr>

@@ -154,10 +154,10 @@ include("head.inc");
                     <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                     <td>
                       <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
-                      <div class="hidden" for="help_for_disabled">
+                      <output class="hidden" for="help_for_disabled">
                         <strong><?=gettext("Disable this rule"); ?></strong><br />
                         <?=gettext("Set this option to disable this rule without removing it from the list."); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
@@ -173,10 +173,10 @@ include("head.inc");
                           <?php endforeach; ?>
                         </select>
                       </div>
-                      <div class="hidden" for="help_for_interface">
+                      <output class="hidden" for="help_for_interface">
                         <?=gettext("Choose which interface this rule applies to"); ?>.<br />
                         <?=gettext("Hint: in most cases, you'll want to use WAN here"); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
@@ -186,9 +186,9 @@ include("head.inc");
                       <td><a id="help_for_srcnot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
                       <td>
                         <input name="srcnot" type="checkbox" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" :"";?> />
-                        <div class="hidden" for="help_for_srcnot">
+                        <output class="hidden" for="help_for_srcnot">
                             <?=gettext("Use this option to invert the sense of the match."); ?>
-                        </div>
+                        </output>
                       </td>
                   </tr>
                   <tr>
@@ -208,9 +208,9 @@ include("head.inc");
                           </td>
                         </tr>
                       </table>
-                      <div class="hidden" for="help_for_src">
+                      <output class="hidden" for="help_for_src">
                         <?=gettext("Enter the internal (LAN) ULA IPv6 Prefix for the Network Prefix translation. The prefix size specified for the internal IPv6 prefix will be applied to the external prefix.");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
 
@@ -224,9 +224,9 @@ include("head.inc");
                       <td><a id="help_for_dstnot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
                       <td>
                         <input name="dstnot" type="checkbox" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" :"";?> />
-                        <div class="hidden" for="help_for_dstnot">
+                        <output class="hidden" for="help_for_dstnot">
                             <?=gettext("Use this option to invert the sense of the match."); ?>
-                        </div>
+                        </output>
                       </td>
                   </tr>
                   <tr>
@@ -246,18 +246,18 @@ include("head.inc");
                           </td>
                         </tr>
                       </table>
-                      <div class="hidden" for="help_for_dst">
+                      <output class="hidden" for="help_for_dst">
                         <?=gettext("Enter the Global Unicast routable IPv6 prefix here"); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
-                      <div class="hidden" for="help_for_descr">
+                      <output class="hidden" for="help_for_descr">
                         <?=gettext("You may enter a description here " ."for your reference (not parsed)."); ?>
-                      </div>
+                      </output>
                   </tr>
                   <tr>
                     <td>&nbsp;</td>

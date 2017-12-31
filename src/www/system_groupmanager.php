@@ -241,9 +241,9 @@ $( document ).ready(function() {
                 <td><a id="help_for_desc" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
                 <td>
                   <input name="description" type="text" value="<?=$pconfig['description'];?>" />
-                  <div class="hidden" for="help_for_desc">
+                  <output class="hidden" for="help_for_desc">
                     <?=gettext("Group description, for your own information only");?>
-                  </div>
+                  </output>
                 </td>
               </tr>
               <tr>
@@ -302,9 +302,9 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                   </table>
-                  <div class="hidden" for="help_for_groups">
+                  <output class="hidden" for="help_for_groups">
                       <?=gettext("Hold down CTRL (pc)/COMMAND (mac) key to select multiple items");?>
-                  </div>
+                  </output>
                 </td>
               </tr>
 <?php

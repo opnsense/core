@@ -146,27 +146,27 @@ include 'head.inc';
                   <td>
                     <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : "";?> />
                     <strong><?=gettext('Filter DNS requests using OpenDNS'); ?></strong>
-                    <div class="hidden" for="help_for_enable">
+                    <output class="hidden" for="help_for_enable">
                       <?= sprintf(gettext(
                         'Enabling the OpenDNS service will overwrite DNS servers configured ' .
                         'via the General Setup page as well as ignore any DNS servers learned ' .
                         'by DHCP/PPP on WAN and use the DNS servers from %s instead.'),
                         '<a href="http://www.opendns.com" target="_blank">OpenDNS.com</a>'
                       ) ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_username" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Username'); ?></td>
                   <td>
                     <input name="username" type="text" id="username" size="20" value="<?=$pconfig['username'];?>" />
-                    <div class="hidden" for="help_for_username">
+                    <output class="hidden" for="help_for_username">
                       <?=gettext(
                         'Signon Username to log into your OpenDNS dashboard. ' .
                         'It is used to automatically update the IP address of ' .
                         'the registered network.'
                       ); ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -179,7 +179,7 @@ include 'head.inc';
                   <td><a id="help_for_host" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Network'); ?></td>
                   <td>
                     <input name="host" type="text" id="host" size="30" value="<?=$pconfig['host'];?>" />
-                    <div class="hidden" for="help_for_host">
+                    <output class="hidden" for="help_for_host">
                       <?= sprintf(gettext(
                         'Enter the network name configured on the %sNetworks ' .
                         'Dashboard of OpenDNS%s under \'Manage your networks\'. ' .
@@ -187,7 +187,7 @@ include 'head.inc';
                         'WAN interface changes its IP address.'),
                         '<a href="https://www.opendns.com/dashboard/networks/" target="_blank">', '</a>'
                       ) ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
 <?php
