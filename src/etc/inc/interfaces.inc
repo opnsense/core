@@ -3196,32 +3196,16 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     unset($dhcp6cconf);
 
     $dhcp6cscript = "#!/bin/sh\n";
+    $dhcp6cscript .= "if [ -n '" . (!empty($wancfg['adv_dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
+    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
+    $dhcp6cscript .= "fi\n";
     $dhcp6cscript .= "case \$REASON in\n";
-    $dhcp6cscript .= "REQUEST)\n";
-    $dhcp6cscript .= "/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
-    if (isset($wancfg['adv_dhcp6_debug'])) {
-        $dhcp6cscript .= "/usr/bin/logger -t dhcp6c \"dhcp6c REQUEST on {$wanif} - running newipv6\"\n";
-    }
-    $dhcp6cscript .= ";;\n";
-    $dhcp6cscript .= "REBIND)\n";
-    if (!empty($wancfg['adv_dhcp6_debug'])) {
-        $dhcp6cscript .= "/usr/bin/logger -t dhcp6c \"dhcp6c rebind on {$wanif}\"\n";
-    }
-    $dhcp6cscript .= ";;\n";
-    if (!empty($wancfg['dhcp6norelease'])) {
-        $dhcp6cscript .= "EXIT)\n";
-    } else {
-        $dhcp6cscript .= "RELEASE)\n";
-    }
-    if (!empty($wancfg['adv_dhcp6_debug'])) {
-        $dhcp6cscript .= "/usr/bin/logger -t dhcp6c \"dhcp6c EXIT or RELEASE on {$wanif} running newipv6\"\n";
-    }
-    $dhcp6cscript .= "/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
-    $dhcp6cscript .= ";;\n";
-    $dhcp6cscript .= "RENEW|INFO)\n";
-    if (!empty($wancfg['adv_dhcp6_debug'])) {
-        $dhcp6cscript .= "/usr/bin/logger -t dhcp6c \"dhcp6c renew, no change - bypassing update on {$wanif}\"\n";
-    }
+    $dhcp6cscript .= "REQUEST|" . (!empty($wancfg['dhcp6norelease']) ? 'EXIT' : 'RELEASE') . ")\n";
+    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
+    $dhcp6cscript .= "\t/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
+    $dhcp6cscript .= "\t;;\n";
+    $dhcp6cscript .= "*)\n";
+    $dhcp6cscript .= "\t;;\n";
     $dhcp6cscript .= "esac\n";
 
     if (!@file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript)) {
