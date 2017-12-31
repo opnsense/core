@@ -348,7 +348,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       "adv_dhcp6_authentication_statement_rdm", "adv_dhcp6_key_info_statement_keyname", "adv_dhcp6_key_info_statement_realm",
       "adv_dhcp6_key_info_statement_keyid", "adv_dhcp6_key_info_statement_secret", "adv_dhcp6_key_info_statement_expire",
       "adv_dhcp6_config_advanced", "adv_dhcp6_config_file_override", "adv_dhcp6_config_file_override_path",
-      "spoofmac", "mtu", "mss",
+      "spoofmac", "mtu", "mss", 'dhcp6vlanprio',
       "dhcp6-ia-pd-len", "track6-interface", "track6-prefix-id", "prefix-6rd", "prefix-6rd-v4plen", "gateway-6rd",
       "ipaddrv6", "subnetv6", "gatewayv6"
     );
@@ -364,13 +364,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
     $pconfig['dhcp6usev4iface'] = isset($a_interfaces[$if]['dhcp6usev4iface']);
     $pconfig['dhcp6norelease'] = isset($a_interfaces[$if]['dhcp6norelease']);
-    $pconfig['dhcp6enablevlanprio'] = isset($a_interfaces[$if]['dhcp6enablevlanprio']);
-    $pconfig['dhcp6c_pcp'] = isset($a_vlans[$id]['dhcp6c_pcp']) ? $a_vlans[$id]['dhcp6c_pcp'] : 0;
     // Due to the settings being split per interface type, we need to copy the settings that use the same
     // config directive.
     $pconfig['staticv6usev4iface'] = $pconfig['dhcp6usev4iface'];
     $pconfig['adv_dhcp6_debug'] = isset($a_interfaces[$if]['adv_dhcp6_debug']);
-    $pconfig['dhcp6c_pcp'] = isset($a_interfaces[$if]['dhcp6c_pcp']) ? $a_interfaces[$if]['dhcp6c_pcp'] : 0;
     $pconfig['track6-prefix-id--hex'] = sprintf("%x", empty($pconfig['track6-prefix-id']) ? 0 :$pconfig['track6-prefix-id']);
 
     // ipv4 type (from ipaddr)
@@ -1086,11 +1083,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (!empty($pconfig['dhcp6norelease'])) {
                         $new_config['dhcp6norelease'] = true;
                     }
-                    if (!empty($pconfig['dhcp6enablevlanprio'])) {
-                        $new_config['dhcp6enablevlanprio'] = true;
+                    if (isset($pconfig['dhcp6vlanprio']) && $pconfig['dhcp6vlanprio'] !== '') {
+                        $new_config['dhcp6vlanprio'] = $pconfig['dhcp6vlanprio'];
                     }
                     $new_config['adv_dhcp6_debug'] = !empty($pconfig['adv_dhcp6_debug']);
-                    $new_config['dhcp6c_pcp'] = $pconfig['dhcp6c_pcp'];
                     $new_config['adv_dhcp6_interface_statement_send_options'] = $pconfig['adv_dhcp6_interface_statement_send_options'];
                     $new_config['adv_dhcp6_interface_statement_request_options'] = $pconfig['adv_dhcp6_interface_statement_request_options'];
                     $new_config['adv_dhcp6_interface_statement_information_only_enable'] = $pconfig['adv_dhcp6_interface_statement_information_only_enable'];
@@ -2546,28 +2542,21 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
-                          <td><a id="help_for_dhcp6cenablevlanprio" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable dhcp6 vlan priority"); ?></td>
+                          <td><a id="help_for_dhcp6vlanprio" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Use VLAN priority') ?></td>
                           <td>
-                            <input name="dhcp6enablevlanprio" type="checkbox" id="dhcp6enablevlanprio" value="yes" <?= !empty($pconfig['dhcp6enablevlanprio']) ? 'checked="checked"' : '' ?> />
-                            <div class="hidden" for="help_for_dhcp6cenablevlanprio">
-                              <?=gettext("Certain ISPs require that dhcp6 requests are sent with a different vlan priority."); ?>
+                            <select name="dhcp6vlanprio">
+                              <option value="" <?= "{$pconfig['dhcp6vlanprio']}" === '' ? 'selected="selected"' : '' ?>><?= gettext('Disabled') ?></option>
+<?php
+                              foreach (interfaces_vlan_priorities() as $pcp => $priority): ?>
+                              <option value="<?= html_safe($pcp) ?>" <?= "{$pconfig['dhcp6vlanprio']}" === "$priority" ? 'selected="selected"' : '' ?>><?= htmlspecialchars($priority) ?></option>
+<?php
+                              endforeach ?>
+                            </select>
+                            <div class="hidden" for="help_for_dhcp6vlanprio">
+                              <?= gettext('Certain ISPs may require that DHCP6 requests are sent with a specific VLAN priority.') ?>
                             </div>
                           </td>
                         </tr>
-                        <tr>
-                    <td><a id="help_for_dhcp6c_pcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("dhcp6c VLAN priority");?></td>
-                    <td>
-                      <select name="dhcp6c_pcp">
-<? foreach (interfaces_vlan_priorities() as $dhcp6c_pcp => $priority): ?>
-                        <option value="<?=$dhcp6c_pcp;?>"<?=($pconfig['dhcp6c_pcp'] == $dhcp6c_pcp ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
-<? endforeach ?>
-                      </select>
-                      <div class="hidden" for="help_for_dhcp6c_pcp">
-                        <?=gettext('802.1Q VLAN PCP (priority code point)');?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
                         <tr>
                             <td><a id="help_for_dhcp6_debug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable debug"); ?></td>
                             <td>
