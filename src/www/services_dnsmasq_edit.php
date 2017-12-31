@@ -190,39 +190,39 @@ include("head.inc");
                   <td><a id="help_for_host" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Host");?></td>
                   <td>
                     <input name="host" type="text" id="host" value="<?=$pconfig['host'];?>" />
-                    <div class="hidden" for="help_for_host">
+                    <output class="hidden" for="help_for_host">
                       <?=gettext("Name of the host, without"." domain part"); ?><br />
                       <?=gettext("e.g."); ?> <em><?=gettext("myhost"); ?></em>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain");?></td>
                   <td>
                     <input name="domain" type="text" id="domain" value="<?=$pconfig['domain'];?>" />
-                    <div class="hidden" for="help_for_domain">
+                    <output class="hidden" for="help_for_domain">
                       <?=gettext("Domain of the host"); ?><br />
                       <?=gettext("e.g."); ?> <em><?=gettext("example.com"); ?></em>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_ip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP address");?></td>
                   <td>
                     <input name="ip" type="text" id="ip" value="<?=$pconfig['ip'];?>" />
-                    <div class="hidden" for="help_for_ip">
+                    <output class="hidden" for="help_for_ip">
                       <?=gettext("IP address of the host"); ?><br />
                       <?=gettext("e.g."); ?> <em>192.168.100.100</em> <?=gettext("or"); ?> <em>fd00:abcd::1</em><
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
                   <td>
                     <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
-                    <div class="hidden" for="help_for_descr">
+                    <output class="hidden" for="help_for_descr">
                       <?=gettext("You may enter a description here"." for your reference (not parsed).");?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
@@ -271,9 +271,9 @@ include("head.inc");
                         </tr>
                       </tfoot>
                     </table>
-                    <div class="hidden" for="help_for_alias">
+                    <output class="hidden" for="help_for_alias">
                       <?=gettext("Enter additional names for this host."); ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>

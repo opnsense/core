@@ -299,10 +299,10 @@ include("head.inc");
                     <td style="width:22%"><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                     <td style="width:78%">
                       <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
-                      <div class="hidden" for="help_for_disabled">
+                      <output class="hidden" for="help_for_disabled">
                         <strong><?=gettext("Disable this rule"); ?></strong><br />
                         <?=gettext("Set this option to disable this rule without removing it from the list."); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
@@ -323,9 +323,9 @@ include("head.inc");
 <?php
                     endforeach; ?>
                         </select>
-                        <div class="hidden" for="help_for_interface">
+                        <output class="hidden" for="help_for_interface">
                           <?=gettext("Choose on which interface packets must come in to match this rule.");?>
-                        </div>
+                        </output>
                     </td>
                   </tr>
                   <tr>
@@ -356,18 +356,18 @@ include("head.inc");
 <?php
                       endforeach; ?>
                       </select>
-                      <div class="hidden" for="help_for_protocol">
+                      <output class="hidden" for="help_for_protocol">
                         <?=gettext("Choose which IP protocol this rule should match.");?> <br />
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td> <a id="help_for_src_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
                     <td>
                       <input name="srcnot" type="checkbox" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" for="help_for_src_invert">
+                      <output class="hidden" for="help_for_src_invert">
                         <?=gettext("Use this option to invert the sense of the match."); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
@@ -455,19 +455,19 @@ include("head.inc");
                         </tbody>
                       </table>
                       </div>
-                      <div class="hidden" for="help_for_srcport">
+                      <output class="hidden" for="help_for_srcport">
                         <?=gettext("Specify the port or port range for the destination of the packet for this mapping."); ?><br/>
                         <?=gettext("To specify a range, use from:to (example 81:85).");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td> <a id="help_for_dst_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
                     <td>
                       <input name="dstnot" type="checkbox" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" for="help_for_dst_invert">
+                      <output class="hidden" for="help_for_dst_invert">
                         <?=gettext("Use this option to invert the sense of the match."); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
@@ -548,19 +548,19 @@ include("head.inc");
                           </tr>
                         </tbody>
                       </table>
-                      <div class="hidden" for="help_for_dstport">
+                      <output class="hidden" for="help_for_dstport">
                         <?=gettext("Specify the port or port range for the destination of the packet for this mapping."); ?><br/>
                         <?=gettext("To specify a range, use from:to (example 81:85).");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
-                      <div class="hidden" for="help_for_descr">
+                      <output class="hidden" for="help_for_descr">
                         <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                 </table>
@@ -578,9 +578,9 @@ include("head.inc");
                       <td style="width:22%"><a id="help_for_maxmss" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Max mss"); ?></td>
                       <td style="width:78%">
                           <input name="max-mss" type="text" value="<?=$pconfig['max-mss'];?>" />
-                          <div class="hidden" for="help_for_maxmss">
+                          <output class="hidden" for="help_for_maxmss">
                             <?=gettext("Enforces a maximum MSS for matching TCP packets."); ?>
-                          </div>
+                          </output>
                       </td>
                   </tr>
                   <tr>
@@ -601,29 +601,29 @@ include("head.inc");
                       <td style="width:22%"><a id="help_for_minttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Minimum TTL') ?></td>
                       <td style="width:78%">
                           <input name="min-ttl" type="text" value="<?=$pconfig['min-ttl'];?>" />
-                          <div class="hidden" for="help_for_minttl">
+                          <output class="hidden" for="help_for_minttl">
                             <?=gettext("Enforces a minimum TTL for matching IP packets."); ?>
-                          </div>
+                          </output>
                       </td>
                   </tr>
                   <tr>
                       <td style="width:22%"><a id="help_for_nodf" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Do not fragment"); ?></td>
                       <td style="width:78%">
                           <input name="no-df" type="checkbox" value="1" <?= !empty($pconfig['no-df']) ? "checked=\"checked\"" : ""; ?> />
-                          <div class="hidden" for="help_for_nodf">
+                          <output class="hidden" for="help_for_nodf">
                             <?=gettext("Clears the dont-fragment bit from a matching IP packet."); ?>
-                          </div>
+                          </output>
                       </td>
                   </tr>
                   <tr>
                       <td style="width:22%"><a id="help_for_randomid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Random ID') ?></td>
                       <td style="width:78%">
                           <input name="random-id" type="checkbox" value="1" <?= !empty($pconfig['random-id']) ? "checked=\"checked\"" : ""; ?> />
-                          <div class="hidden" for="help_for_randomid">
+                          <output class="hidden" for="help_for_randomid">
                             <?=gettext("Replaces the IP identification field with random values to compensate for ".
                                        "predictable values generated by many hosts. This option only applies to packets ".
                                        "that are not fragmented after the optional fragment reassembly."); ?>
-                          </div>
+                          </output>
                       </td>
                   </tr>
 

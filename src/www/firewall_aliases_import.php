@@ -183,7 +183,7 @@ include("head.inc");
                       <option value="host" <?=$pconfig['type'] == "host" ? "selected=\"selected\"" : ""; ?>><?=gettext("Host(s)"); ?></option>
                       <option value="network" <?=$pconfig['type'] == "network" ? "selected=\"selected\"" : ""; ?>><?=gettext("Network(s)"); ?></option>
                     </select>
-                    <div class="hidden" for="help_for_type">
+                    <output class="hidden" for="help_for_type">
                       <span class="text-info">
                         <?=gettext("Networks")?><br/>
                       </span>
@@ -198,32 +198,32 @@ include("head.inc");
                         <?=gettext("Enter as many hosts as you would like. Hosts must be specified by their IP address or fully qualified domain name (FQDN). FQDN hostnames are periodically re-resolved and updated. If multiple IPs are returned by a DNS query, all are used.");?>
                         <br/>
                       </small>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
                   <td style="width:22%"><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Name') ?></td>
                   <td style="width:78%">
                     <input name="name" type="text" class="form-control unknown" size="40" maxlength="31" value="<?=$pconfig['name'];?>" />
-                    <div class="hidden" for="help_for_name">
+                    <output class="hidden" for="help_for_name">
                       <?=gettext("The name of the alias may only consist of the characters \"a-z, A-Z and 0-9\"."); ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                   <td>
                     <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                    <div class="hidden" for="help_for_description">
+                    <output class="hidden" for="help_for_description">
                       <?=gettext("You may enter a description here for your reference (not parsed)"); ?>.
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_alias" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Aliases') ?></td>
                   <td>
                     <textarea name="aliasimport" rows="15" cols="40"><?=$pconfig['aliasimport'];?></textarea>
-                    <div class="hidden" for="help_for_alias">
+                    <output class="hidden" for="help_for_alias">
                       <?=gettext("Paste in the aliases to import separated by a carriage return. Common examples are lists of IPs, networks, blacklists, etc."); ?>
                       <br />
                       <?=gettext("The list may contain IP addresses, with or without CIDR prefix, IP ranges, blank lines (ignored) and an optional description after each IP. e.g.:"); ?>
@@ -235,7 +235,7 @@ include("head.inc");
                         <br/>10.20.0.0/16 Office network
                         <br/>10.40.1.10-10.40.1.19 Managed switches
                       </code>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr>

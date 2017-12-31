@@ -146,11 +146,11 @@ include("head.inc");
 <?php
                         endforeach;?>
                       </select>
-                      <div class="hidden" for="help_for_language">
+                      <output class="hidden" for="help_for_language">
                         <strong>
                           <?= gettext('Choose a language for the web GUI.') ?>
                         </strong>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>

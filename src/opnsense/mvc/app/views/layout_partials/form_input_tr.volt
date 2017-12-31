@@ -44,14 +44,14 @@ readonly    :   if true, input fields will be readonly
 
 <tr for="{{ id }}" {% if advanced|default(false)=='true' %} data-advanced="true"{% endif %}>
     <td >
-        <div class="control-label" for="{{ id }}">
+        <output class="control-label" for="{{ id }}">
             {% if help|default(false) %}
                 <a id="help_for_{{ id }}" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
             {% elseif help|default(false) == false %}
                 <i class="fa fa-info-circle text-muted"></i>
             {% endif %}
             <b>{{label}}</b>
-        </div>
+        </output>
     </td>
     <td >
         {% if type == "text" %}

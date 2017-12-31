@@ -156,19 +156,19 @@ legacy_html_escape_form_data($pconfig);
                     <td><a id="help_for_ifname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Group Name");?></td>
                     <td>
                       <input type="text" name="ifname" value="<?=$pconfig['ifname'];?>" />
-                      <div class="hidden" for="help_for_ifname">
+                      <output class="hidden" for="help_for_ifname">
                         <?=gettext("No numbers or spaces are allowed. Only characters in a-zA-Z");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                      <div class="hidden" for="help_for_descr">
+                      <output class="hidden" for="help_for_descr">
                         <?=gettext("You may enter a description here " .
                         "for your reference (not parsed)."); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
@@ -187,10 +187,10 @@ legacy_html_escape_form_data($pconfig);
 <?php
                         endforeach;?>
                         </select>
-                      <div class="hidden" for="help_for_members">
+                      <output class="hidden" for="help_for_members">
                       <strong><?= gettext('NOTE:') ?></strong>
                       <?= gettext('Rules for WAN type interfaces in groups do not contain the reply-to mechanism upon which Multi-WAN typically relies.') ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>

@@ -138,9 +138,9 @@ include("head.inc");
                     <td><a id="help_for_ident" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Identifier"); ?></td>
                     <td>
                       <input name="ident" type="text" class="formfld unknown" id="ident" size="30" value="<?=$pconfig['ident'];?>" />
-                      <div class="hidden" for="help_for_ident">
+                      <output class="hidden" for="help_for_ident">
                         <?=gettext("This can be either an IP address, fully qualified domain name or an email address."); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>

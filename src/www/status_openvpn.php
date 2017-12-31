@@ -187,7 +187,7 @@ $( document ).ready(function() {
                     <button class="btn btn-default act_show_routes" type="button" id="showroutes_<?=$i?>"><i class="fa fa-info"></i>
                       <?=gettext("Show/Hide Routing Table"); ?>
                     </button>
-                    <div  class="hidden"  for="showroutes_<?=$i?>">
+                    <output  class="hidden"  for="showroutes_<?=$i?>">
                       <small>
                         <?=$server['name'];?> <?=gettext("Routing Table"); ?>
                       </small>
@@ -218,7 +218,7 @@ $( document ).ready(function() {
                           </tr>
                         </tfoot>
                       </table>
-                    </div>
+                    </output>
                   </td>
                 </tr>
 <?php

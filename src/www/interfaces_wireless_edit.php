@@ -171,9 +171,9 @@ include("head.inc");
                   <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
                   <td>
                     <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                    <div class="hidden" for="help_for_descr">
+                    <output class="hidden" for="help_for_descr">
                       <?=gettext("You may enter a description here for your reference (not parsed).");?>
-                    </div>
+                    </output>
                   </div>
                 </tr>
                 <tr>

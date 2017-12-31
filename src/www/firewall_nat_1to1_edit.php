@@ -249,10 +249,10 @@ include("head.inc");
                     <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                     <td>
                       <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
-                      <div class="hidden" for="help_for_disabled">
+                      <output class="hidden" for="help_for_disabled">
                         <strong><?=gettext("Disable this rule"); ?></strong><br />
                         <?=gettext("Set this option to disable this rule without removing it from the list."); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
@@ -268,10 +268,10 @@ include("head.inc");
                           <?php endforeach; ?>
                         </select>
                       </div>
-                      <div class="hidden" for="help_for_interface">
+                      <output class="hidden" for="help_for_interface">
                         <?=gettext("Choose which interface this rule applies to"); ?>.<br />
                         <?=gettext("Hint: in most cases, you'll want to use WAN here"); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
@@ -285,31 +285,31 @@ include("head.inc");
                             <?=gettext("NAT");?>
                           </option>
                       </select>
-                      <div class="hidden" for="help_for_type">
+                      <output class="hidden" for="help_for_type">
                         <?=gettext("Select BINAT (default) or NAT here, when nets are equally sized binat is usually the best option.".
                                    "Using NAT we can also map unequal sized networks.");?><br />
                         <?=gettext("A BINAT rule specifies a bidirectional mapping between an external and internal network and can be used from both ends, nat only applies in one direction.");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_external" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("External network"); ?></td>
                     <td>
                       <input name="external" type="text" value="<?=$pconfig['external'];?>" />
-                      <div class="hidden" for="help_for_external">
+                      <output class="hidden" for="help_for_external">
                         <?=gettext("Enter the external subnet's starting address for the 1:1 mapping or network.");?><br />
                         <?=gettext("The subnet mask from the internal address below will be applied to this IP address, when none is provided."); ?><br />
                         <?=gettext("This is the address or network the traffic will translate to/from.");?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                       <td><a id="help_for_src_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
                       <td>
                         <input name="srcnot" type="checkbox" id="srcnot" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" : "";?> />
-                        <div class="hidden" for="help_for_src_invert">
+                        <output class="hidden" for="help_for_src_invert">
                           <?=gettext("Use this option to invert the sense of the match."); ?>
-                        </div>
+                        </output>
                       </td>
                   </tr>
                   <tr>
@@ -349,18 +349,18 @@ include("head.inc");
                           </td>
                         </tr>
                       </table>
-                      <div class="hidden" for="help_for_src">
+                      <output class="hidden" for="help_for_src">
                         <?=gettext("Enter the internal subnet for the 1:1 mapping. The subnet size specified for the source will be applied to the external subnet, when none is provided."); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td> <a id="help_for_dst_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
                     <td>
                       <input name="dstnot" type="checkbox" id="srcnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" for="help_for_dst_invert">
+                      <output class="hidden" for="help_for_dst_invert">
                         <?=gettext("Use this option to invert the sense of the match."); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
@@ -400,19 +400,19 @@ include("head.inc");
                           </td>
                         </tr>
                       </table>
-                      <div class="hidden" for="help_for_dst">
+                      <output class="hidden" for="help_for_dst">
                         <?=gettext("The 1:1 mapping will only be used for connections to or from the specified destination."); ?><br />
                         <?=gettext("Hint: this is usually 'any'."); ?>
-                      </div>
+                      </output>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
-                      <div class="hidden" for="help_for_descr">
+                      <output class="hidden" for="help_for_descr">
                         <?=gettext("You may enter a description here " ."for your reference (not parsed)."); ?>
-                      </div>
+                      </output>
                   </tr>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("NAT reflection"); ?></td>

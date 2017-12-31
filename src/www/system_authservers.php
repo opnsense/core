@@ -472,9 +472,9 @@ endif; ?>
                   <td><a id="help_for_ldap_host" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hostname or IP address");?></td>
                   <td>
                     <input name="ldap_host" type="text" id="ldap_host" size="20" value="<?=$pconfig['ldap_host'];?>"/>
-                    <div class="hidden" for="help_for_ldap_host">
+                    <output class="hidden" for="help_for_ldap_host">
                       <?= gettext("NOTE: When using SSL, this hostname MUST match the Common Name (CN) of the LDAP server's SSL Certificate."); ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_options hidden">
@@ -512,10 +512,10 @@ endif; ?>
 <?php
                     endforeach; ?>
                     </select>
-                    <div class="hidden" for="help_for_ldap_caref">
+                    <output class="hidden" for="help_for_ldap_caref">
                       <span><?=gettext("This option is used if 'SSL Encrypted' option is choosen.");?> <br />
                       <?=gettext("It must match with the CA in the AD otherwise problems will arise.");?></span>
-                    </div>
+                    </output>
 <?php
                     else :?>
                     <b><?=gettext('No Certificate Authorities defined.');?></b> <br /><?=gettext('Create one under');?> <a href="system_camanager.php"><?=gettext('System: Certificates');?></a>.
@@ -539,9 +539,9 @@ endif; ?>
                     <input name="ldap_binddn" type="text" id="ldap_binddn" size="40" value="<?=$pconfig['ldap_binddn'];?>"/>
                     <?=gettext("Password:");?><br/>
                     <input name="ldap_bindpw" type="password" class="formfld pwd" id="ldap_bindpw" size="20" value="<?=$pconfig['ldap_bindpw'];?>"/><br />
-                    <div class="hidden" for="help_for_ldap_binddn">
+                    <output class="hidden" for="help_for_ldap_binddn">
                       <?=gettext("Leave empty to use anonymous binds to resolve distinguished names");?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_options hidden">
@@ -571,19 +571,19 @@ endif; ?>
                     <li><input type="button" id="act_select" class="btn btn-default" value="<?=gettext("Select");?>" /></li>
                     </ul>
                     <br/>
-                    <div class="hidden" for="help_for_ldapauthcontainers">
+                    <output class="hidden" for="help_for_ldapauthcontainers">
                         <br/><?= gettext('Semicolon-separated list of distinguished names optionally containing DC= components.') ?>
                         <br/><?=gettext("Example:");?> OU=Freelancers,O=Company,DC=example,DC=com;CN=Users,OU=Staff,O=Company
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_options hidden">
                   <td><a id="help_for_ldap_extended_query" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Extended Query");?></td>
                   <td>
                     <input name="ldap_extended_query" type="text" id="ldap_extended_query" size="40" value="<?=$pconfig['ldap_extended_query'];?>"/>
-                    <div class="hidden" for="help_for_ldap_extended_query">
+                    <output class="hidden" for="help_for_ldap_extended_query">
                       <?=gettext("Example:");?> &amp;(objectClass=inetOrgPerson)(mail=*@example.com)
-                    </div>
+                    </output>
                   </td>
                 </tr>
 <?php if (!isset($id)) :
@@ -604,9 +604,9 @@ endif; ?>
                   <td><a id="help_for_ldap_attr_user" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("User naming attribute");?></td>
                   <td>
                     <input name="ldap_attr_user" type="text" id="ldap_attr_user" size="20" value="<?=$pconfig['ldap_attr_user'];?>"/>
-                    <div class="hidden" for="help_for_ldap_attr_user">
+                    <output class="hidden" for="help_for_ldap_attr_user">
                       <?= gettext('Typically "cn" (OpenLDAP, Novell eDirectory), "sAMAccountName" (Microsoft AD)') ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <!-- RADIUS -->
@@ -651,11 +651,11 @@ endif; ?>
                   <td><a id="help_for_radius_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Authentication Timeout");?></td>
                   <td>
                     <input name="radius_timeout" type="text" id="radius_timeout" size="20" value="<?=$pconfig['radius_timeout'];?>"/>
-                    <div class="hidden" for="help_for_radius_timeout">
+                    <output class="hidden" for="help_for_radius_timeout">
                       <br /><?= gettext("This value controls how long, in seconds, that the RADIUS server may take to respond to an authentication request.") ?>
                       <br /><?= gettext("If left blank, the default value is 5 seconds.") ?>
                       <br /><br /><?= gettext("NOTE: If you are using an interactive two-factor authentication system, increase this timeout to account for how long it will take the user to receive and enter a token.") ?>
-                    </div>
+                    </output>
                   </td>
                 </tr>
                 <!-- pluggable options -->
@@ -696,9 +696,9 @@ endif; ?>
                         <input name="<?=$fieldname;?>" type="checkbox" value="1" <?=!empty($pconfig[$fieldname]) ? "checked=\"checked\"" : ""; ?>/>
 <?php
                         endif;?>
-                        <div class="hidden" for="help_for_field_<?=$typename;?>_<?=$fieldname;?>">
+                        <output class="hidden" for="help_for_field_<?=$typename;?>_<?=$fieldname;?>">
                           <?=$field['help'];?>
-                        </div>
+                        </output>
                       </td>
                     </tr>
 
