@@ -55,16 +55,14 @@ function cert_unrevoke($cert, &$crl)
     return false;
 }
 
-// openssl_crl_status messages from certs.inc
-global $openssl_crl_status;
-
 // prepare config types
 $a_crl = &config_read_array('crl');
 $a_cert = &config_read_array('cert');
 $a_ca = &config_read_array('ca');
 
 $thiscrl = false;
-$act=null;
+$act = null;
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // locate cert by refid, returns false when not found
     if (isset($_GET['id'])) {

@@ -35,6 +35,24 @@ require_once("services.inc");
 require_once("filter.inc");
 require_once("interfaces.inc");
 
+function filter_generate_port(& $rule, $target = "source", $isnat = false) {
+    $src = "";
+
+    if (isset($rule['protocol'])) {
+        $rule['protocol'] = strtolower($rule['protocol']);
+    }
+    if (isset($rule['protocol']) && in_array($rule['protocol'], array("tcp","udp","tcp/udp"))) {
+        if (!empty($rule[$target]['port'])) {
+            $port = alias_expand(str_replace('-', ':', $rule[$target]['port']));
+            if (!empty($port)) {
+                $src = " port " . $port;
+            }
+        }
+    }
+
+    return $src;
+}
+
 function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $isnat = false)
 {
     global $config;

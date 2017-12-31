@@ -289,11 +289,18 @@ function filter_core_rules_system($fw, $defaults)
                     'interface' => $intf, 'label' =>'allow dhcpv6 client in ' . $intfinfo['descr']),
               $defaults['pass']
             );
-            $fw->registerFilterRule(1,
-              array('protocol' => 'udp', 'from_port' => 546,'to_port' => 547, 'direction' => 'out',
-                    'interface' => $intf, 'label' =>'allow dhcpv6 client in ' . $intfinfo['descr']),
-              $defaults['pass']
+            $dhcpv6_opts = array(
+                'label' => 'allow dhcpv6 client in ' . $intfinfo['descr'],
+                'direction' => 'out',
+                'interface' => $intf,
+                'protocol' => 'udp',
+                'from_port' => 546,
+                'to_port' => 547,
             );
+            if (isset($intfinfo['dhcp6vlanprio'])) {
+                 $dhcpv6_opts['set-prio'] = $intfinfo['dhcp6vlanprio'];
+            }
+            $fw->registerFilterRule(1, $dhcpv6_opts, $defaults['pass']);
         }
         // IPv4
         switch (empty($intfinfo['ipaddr']) ? "" : $intfinfo['ipaddr']) {

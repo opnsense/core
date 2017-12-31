@@ -422,10 +422,10 @@ include("fbegin.inc");
                     <td><a id="help_for_detail" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Level of Detail");?></td>
                     <td>
                       <select name="detail" class="selectpicker" id="detail">
-                        <option value="normal"><?=gettext("Normal");?></option>
-                        <option value="medium"><?=gettext("Medium");?></option>
-                        <option value="high"><?=gettext("High");?></option>
-                        <option value="full"><?=gettext("Full");?></option>
+                        <option value="normal" <?=$pconfig['detail'] == 'normal' ?  "selected=\"selected\"" : "";?> ><?=gettext("Normal");?></option>
+                        <option value="medium" <?=$pconfig['detail'] == 'medium' ?  "selected=\"selected\"" : "";?> ><?=gettext("Medium");?></option>
+                        <option value="high" <?=$pconfig['detail'] == 'high' ?  "selected=\"selected\"" : "";?> ><?=gettext("High");?></option>
+                        <option value="full" <?=$pconfig['detail'] == 'full' ?  "selected=\"selected\"" : "";?> ><?=gettext("Full");?></option>
                       </select>
                       <div class="hidden" for="help_for_detail">
                         <?=gettext("This is the level of detail that will be displayed after hitting 'Stop' when the packets have been captured.") .  "<br /><b>" .

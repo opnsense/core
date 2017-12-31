@@ -59,6 +59,26 @@ abstract class Rule
         return !empty($value) ? "#" : "";
     }
 
+    /**
+     * parse comment
+     * @param string $value field value
+     * @return string
+     */
+    protected function parseComment($value)
+    {
+        return !empty($value) ? "# " . $value : "";
+    }
+
+    /**
+     * parse static text
+     * @param string $value field value, ignored
+     * @param string $value static text
+     * @return string
+     */
+    protected function parseStaticText($value, $text)
+    {
+        return $text;
+    }
 
     /**
      * parse boolean, return text from $valueTrue / $valueFalse
@@ -179,7 +199,9 @@ abstract class Rule
                 array_shift($tmp);
                 $args = array_merge($args, $tmp);
             }
-            $ruleTxt .= call_user_func_array(array($this,$method), $args);
+            $cmdout = trim(call_user_func_array(array($this,$method), $args));
+            $ruleTxt .= !empty($cmdout) && !empty($ruleTxt) ? " "  : "";
+            $ruleTxt .= $cmdout;
         }
         return $ruleTxt;
     }
@@ -207,10 +229,14 @@ abstract class Rule
                         if (!empty($interfaces[$matches[1]]['if'])) {
                             $rule[$target] = "({$interfaces["{$matches[1]}"]['if']})";
                         }
-                    } else {
-                        if (!empty($interfaces[$network_name]['if'])) {
-                            $rule[$target] = "({$interfaces[$network_name]['if']}:network)";
-                        }
+                    } elseif (!empty($interfaces[$network_name]['if'])) {
+                        $rule[$target] = "({$interfaces[$network_name]['if']}:network)";
+                    } elseif (Util::isIpAddress($rule[$tag]['network']) || Util::isSubnet($rule[$tag]['network'])) {
+                        $rule[$target] = $rule[$tag]['network'];
+                    } elseif (Util::isAlias($rule[$tag]['network'])) {
+                        $rule[$target] = '$'.$rule[$tag]['network'];
+                    } elseif ($rule[$tag]['network'] == 'any') {
+                        $rule[$target] = $rule[$tag]['network'];
                     }
                 } elseif (!empty($rule[$tag]['address'])) {
                     if (Util::isIpAddress($rule[$tag]['address']) || Util::isSubnet($rule[$tag]['address']) ||
@@ -248,7 +274,7 @@ abstract class Rule
      * @param string $prefix prefix interface tag
      * @return string
      */
-    protected function parseInterface($value, $prefix="on ", $suffix="")
+    protected function parseInterface($value, $prefix = "on ", $suffix = "")
     {
         if (empty($value)) {
             return "";

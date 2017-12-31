@@ -3112,6 +3112,17 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     $dhcp6cconf = "";
     $dhcp6cconf .= "interface {$wanif} {\n";
 
+    /* write DUID if override was set */
+    if (!empty($config['system']['ipv6duid'])) {
+        $temp = str_replace(':', '', $config['system']['ipv6duid']);
+        $duid_binstring = pack('H*', $temp);
+        $fd = fopen('/var/db/dhcp6c_duid', 'wb');
+        if ($fd) {
+            fwrite($fd, $duid_binstring);
+            fclose($fd);
+        }
+    }
+
     /* for SLAAC interfaces we do fire off a dhcp6 client for just our name servers */
     if ($wancfg['ipaddrv6'] == "slaac") {
         $dhcp6cconf .= "  information-only;\n";
@@ -3185,7 +3196,17 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     unset($dhcp6cconf);
 
     $dhcp6cscript = "#!/bin/sh\n";
-    $dhcp6cscript .= "/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
+    $dhcp6cscript .= "if [ -n '" . (!empty($wancfg['adv_dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
+    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
+    $dhcp6cscript .= "fi\n";
+    $dhcp6cscript .= "case \$REASON in\n";
+    $dhcp6cscript .= "REQUEST|" . (!empty($wancfg['dhcp6norelease']) ? 'EXIT' : 'RELEASE') . ")\n";
+    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
+    $dhcp6cscript .= "\t/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
+    $dhcp6cscript .= "\t;;\n";
+    $dhcp6cscript .= "*)\n";
+    $dhcp6cscript .= "\t;;\n";
+    $dhcp6cscript .= "esac\n";
 
     if (!@file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript)) {
         printf("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.\n");
@@ -3198,7 +3219,7 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     $dhcp6ccommand = exec_safe(
         "/usr/local/sbin/dhcp6c %s -c %s -p %s %s",
         array(
-            empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
+            '-' . (empty($wancfg['adv_dhcp6_debug']) ? 'd' : 'D' ) . (!empty($wancfg['dhcp6norelease']) ? 'n' : ''),
             "/var/etc/dhcp6c_{$interface}.conf",
             "/var/run/dhcp6c_{$wanif}.pid",
             "{$wanif}"

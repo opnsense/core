@@ -92,31 +92,31 @@ class Util
      * @param $aliases aliases already parsed (prevent deadlock)
      * @return array containing all ports or addresses
      */
-     public static function getPortAlias($name, $aliases=array())
-     {
-         $result = array();
-         if (!empty($name) && !empty(Config::getInstance()->object()->aliases)) {
-             foreach (Config::getInstance()->object()->aliases->children() as $node) {
-                 if ($node->name == $name && $node->type == 'port') {
-                     foreach (explode(" ", $node->address) as $address) {
-                         if (Util::isAlias($address)) {
-                             if (!in_array($address, $aliases)) {
-                                 foreach (Util::getPortAlias($address, $aliases) as $port) {
-                                     if (!in_array($port, $result)) {
-                                         $result[] = $port;
-                                     }
-                                 }
-                             }
-                         } elseif (!in_array($address, $result)) {
-                             $result[] = $address;
-                         }
-                     }
-                 }
-             }
-         }
+    public static function getPortAlias($name, $aliases = array())
+    {
+        $result = array();
+        if (!empty($name) && !empty(Config::getInstance()->object()->aliases)) {
+            foreach (Config::getInstance()->object()->aliases->children() as $node) {
+                if ($node->name == $name && $node->type == 'port') {
+                    foreach (explode(" ", $node->address) as $address) {
+                        if (Util::isAlias($address)) {
+                            if (!in_array($address, $aliases)) {
+                                foreach (Util::getPortAlias($address, $aliases) as $port) {
+                                    if (!in_array($port, $result)) {
+                                        $result[] = $port;
+                                    }
+                                }
+                            }
+                        } elseif (!in_array($address, $result)) {
+                            $result[] = $address;
+                        }
+                    }
+                }
+            }
+        }
 
-         return $result;
-     }
+        return $result;
+    }
 
     /**
      * check if name exists in alias config section

@@ -32,6 +32,276 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("interfaces.inc");
 
+
+function filter_nat_rules_outbound_automatic(&$FilterIflist, $src)
+{
+    global $config ;
+
+    $rules = array();
+
+    foreach ($FilterIflist as $if => $ifcfg) {
+        if (substr($ifcfg['if'], 0, 4) == 'ovpn') {
+            continue;
+        }
+
+        if (!interface_has_gateway($if)) {
+            continue;
+        }
+
+        $natent = array();
+        $natent['interface'] = $if;
+        $natent['source']['network'] = $src;
+        $natent['dstport'] = '500';
+        $natent['target'] = '';
+        $natent['destination']['any'] = true;
+        $natent['staticnatport'] = true;
+        $natent['descr'] = gettext('Auto created rule for ISAKMP');
+        $rules[] = $natent;
+
+        $natent = array();
+        $natent['interface'] = $if;
+        $natent['source']['network'] = $src;
+        $natent['sourceport'] = '';
+        $natent['target'] = '';
+        $natent['destination']['any'] = true;
+        $natent['natport'] = '';
+        $natent['descr'] = gettext('Auto created rule');
+        $rules[] = $natent;
+    }
+
+    return $rules;
+}
+
+function filter_nat_rules_automatic_tonathosts(&$FilterIflist, $with_descr = false)
+{
+    global $config, $GatewaysList;
+
+    $tonathosts = array("127.0.0.0/8");
+    $descriptions = array(gettext("localhost"));
+
+    foreach (get_staticroutes() as $route) {
+        $netip = explode("/", $route['network']);
+        if (isset($GatewaysList[$route['gateway']])) {
+            $gateway =& $GatewaysList[$route['gateway']];
+            if (!interface_has_gateway($gateway['interface']) && is_private_ip($netip[0])) {
+                $tonathosts[] = $route['network'];
+                $descriptions[] = gettext("static route");
+            }
+        }
+    }
+
+    /* create outbound nat entries for all local networks */
+    foreach($FilterIflist as $ocname => $oc) {
+        if (interface_has_gateway($ocname)) {
+            continue;
+        }
+        if (isset($oc['alias-address']) && is_ipaddr($oc['alias-address'])) {
+            $tonathosts[] = "{$oc['alias-address']}/{$oc['alias-subnet']}";
+            $descriptions[] = $oc['descr'] . " " . gettext("DHCP alias address");
+        }
+        if (!empty($oc['sa'])) {
+            $tonathosts[] = "{$oc['sa']}/{$oc['sn']}";
+            $descriptions[] = $oc['descr'];
+            if (!empty($oc['vips']) && !empty($oc['internal_dynamic'])) {
+                foreach ($oc['vips'] as $vip) {
+                    $tonathosts[] = "{$vip['sa']}/{$vip['sn']}";
+                    $descriptions[] = $oc['descr'];
+                }
+            } elseif (isset($oc['vips']) && is_array($oc['vips'])) {
+                $if_subnets = array("{$oc['sa']}/{$oc['sn']}");
+                foreach ($oc['vips'] as $vip) {
+                    if (!is_ipaddrv4($vip['ip'])) {
+                        continue;
+                    }
+                    foreach ($if_subnets as $subnet) {
+                        if (ip_in_subnet($vip['ip'], $subnet)) {
+                            continue 2;
+                        }
+                    }
+                    $network = gen_subnet($vip['ip'], $vip['sn']);
+                    array_unshift($tonathosts, $network . '/' . $vip['sn']);
+                    array_unshift($descriptions, "Virtual IP ({$oc['descr']})");
+                    $if_subnets[] = $network . '/' . $vip['sn'];
+                    unset($network);
+                }
+                unset($if_subnets);
+            }
+        }
+    }
+
+    /* add openvpn interfaces */
+    if (isset($config['openvpn']['openvpn-server'])) {
+        foreach ($config['openvpn']['openvpn-server'] as $ovpnsrv) {
+            if (!isset($ovpnsrv['disable']) && !empty($ovpnsrv['tunnel_network'])) {
+                $tonathosts[] = $ovpnsrv['tunnel_network'];
+                $descriptions[] = gettext("OpenVPN server");
+            }
+        }
+    }
+
+    if (isset($config['openvpn']['openvpn-client'])) {
+        foreach ($config['openvpn']['openvpn-client'] as $ovpncli) {
+            if (!isset($ovpncli['disable']) && !empty($ovpncli['tunnel_network'])) {
+                $tonathosts[] = $ovpncli['tunnel_network'];
+                $descriptions[] = gettext("OpenVPN client");
+            }
+        }
+    }
+
+    /* IPsec mode_cfg subnet */
+    if (isset($config['ipsec']['client']['enable']) &&
+        !empty($config['ipsec']['client']['pool_address']) &&
+        !empty($config['ipsec']['client']['pool_netbits'])) {
+        $tonathosts[] = "{$config['ipsec']['client']['pool_address']}/{$config['ipsec']['client']['pool_netbits']}";
+        $descriptions[] = gettext("IPsec client");
+    }
+
+    if ($with_descr) {
+        $combined = array();
+        foreach ($tonathosts as $idx => $subnet) {
+            $combined[] = array(
+              "subnet" => $subnet,
+              "descr" => $descriptions[$idx]);
+        }
+
+        return $combined;
+    } else {
+        return $tonathosts;
+    }
+}
+
+
+function filter_generate_optcfg_array()
+{
+    global $config;
+
+    $FilterIflist = array();
+
+    /* traverse interfaces */
+    foreach (legacy_config_get_interfaces(array("enable" => true)) as $if => $ifdetail) {
+        if (isset($ifdetail['internal_dynamic'])) {
+            // transform plugin configuration
+            $oic = array();
+            $oic['internal_dynamic'] = true;
+            $oic['vips'] = array();
+            $oic['vips6'] = array();
+            $oic['descr'] = $ifdetail['descr'];
+            $oic['if'] = $ifdetail['if'];
+            if (isset($ifdetail['virtual'])) {
+                $oic['virtual'] = $ifdetail['virtual'];
+            }
+            if (!empty($ifdetail['networks'])) {
+                foreach (isset($ifdetail['networks'][0]) ? $ifdetail['networks'] : array($ifdetail['networks']) as $indx => $network) {
+                    if (is_ipaddrv4($network['network'])) {
+                        if ($indx == 0) {
+                            $oic['sa'] = $network['network'];
+                            $oic['sn'] = $network['mask'];
+                        } else {
+                            $vip = array();
+                            $vip['sa'] = $network['network'];
+                            $vip['sn'] = $network['mask'];
+                            $oic['vips'][] = $vip;
+                        }
+                    } elseif (is_ipaddrv6($network['network'])) {
+                        if ($indx == 0) {
+                            $oic['sav6'] = $network['network'];
+                            $oic['snv6'] = $network['mask'];
+                        } else {
+                            $vip = array();
+                            $vip['sa'] = $network['network'];
+                            $vip['sn'] = $network['mask'];
+                            $oic['vips6'][] = $vip;
+                        }
+                    }
+                }
+            }
+            $FilterIflist[$if] = $oic;
+        } else {
+            // XXX needs cleanup, original content
+            $oic = array();
+            $oic['if'] = get_real_interface($if);
+            if (!does_interface_exist($oic['if'])) {
+                continue;
+            }
+            $oic['ifv6'] = get_real_interface($if, "inet6");
+            $oic['ip'] = get_interface_ip($if);
+            $oic['ipv6'] = get_interface_ipv6($if);
+            if (!is_ipaddrv4($ifdetail['ipaddr']) && !empty($ifdetail['ipaddr'])) {
+                $oic['type'] = $ifdetail['ipaddr'];
+            }
+            if (isset($ifdetail['ipaddrv6'])) {
+                if ( !is_ipaddrv6($ifdetail['ipaddrv6']) && !empty($ifdetail['ipaddrv6'])) {
+                    $oic['type6'] = $ifdetail['ipaddrv6'];
+                }
+            } else {
+                $oic['type6'] = null;
+            }
+            if (!empty($ifdetail['track6-interface'])) {
+                $oic['track6-interface'] = $ifdetail['track6-interface'];
+            }
+            $oic['sn'] = get_interface_subnet($if);
+            $oic['snv6'] = get_interface_subnetv6($if);
+            $oic['mtu'] = empty($ifdetail['mtu']) ? 1500 : $ifdetail['mtu'];
+            $oic['mss'] = empty($ifdetail['mss']) ? '' : $ifdetail['mss'];
+            $oic['descr'] = !empty($ifdetail['descr']) ? $ifdetail['descr'] : $if;
+            $oic['sa'] = gen_subnet($oic['ip'], $oic['sn']);
+            $oic['sav6'] = gen_subnetv6($oic['ipv6'], $oic['snv6']);
+            if (isset($ifdetail['alias-address'])) {
+                $oic['alias-address'] = $ifdetail['alias-address'];
+            } else {
+                $oic['alias-address'] = null;
+            }
+            if (isset($ifdetail['alias-subnet'])) {
+                $oic['alias-subnet'] = $ifdetail['alias-subnet'];
+            } else {
+                $oic['alias-subnet'] = null;
+            }
+            if (isset($ifdetail['gateway'])) {
+                $oic['gateway'] = $ifdetail['gateway'];
+            } else {
+                $oic['gateway'] = null ;
+            }
+            if (isset($ifdetail['gatewayv6'])) {
+                $oic['gatewayv6'] = $ifdetail['gatewayv6'];
+            } else {
+                $oic['gatewayv6'] = null;
+            }
+            $oic['bridge'] = link_interface_to_bridge($if);
+            $vips = link_interface_to_vips($if);
+            if (!empty($vips)) {
+                foreach ($vips as $vipidx => $vip) {
+                    if (is_ipaddrv4($vip['subnet'])) {
+                        if (!isset($oic['vips'])) {
+                            $oic['vips'] = array();
+                        }
+                        $oic['vips'][$vipidx]['ip'] = $vip['subnet'];
+                        if (empty($vip['subnet_bits'])) {
+                            $oic['vips'][$vipidx]['sn'] = 32;
+                        } else {
+                            $oic['vips'][$vipidx]['sn'] = $vip['subnet_bits'];
+                        }
+                    } elseif (is_ipaddrv6($vip['subnet'])) {
+                        if (!is_array($oic['vips6'])) {
+                            $oic['vips6'] = array();
+                        }
+                        $oic['vips6'][$vipidx]['ip'] = $vip['subnet'];
+                        if (empty($vip['subnet_bits'])) {
+                            $oic['vips6'][$vipidx]['sn'] = 128;
+                        } else {
+                            $oic['vips6'][$vipidx]['sn'] = $vip['subnet_bits'];
+                        }
+                    }
+                }
+            }
+            unset($vips);
+            $FilterIflist[$if] = $oic;
+        }
+    }
+
+    return $FilterIflist ;
+}
+
+
 $GatewaysList = return_gateways_array(false, true) + return_gateway_groups_array();
 
 $a_out = &config_read_array('nat', 'outbound', 'rule');

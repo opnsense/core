@@ -1,30 +1,30 @@
 <?php
 
-/**
- *    Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
- *    Copyright (c) 2015-2016 Deciso B.V.
- *    All rights reserved.
+/*
+ * Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2016 Deciso B.V.
+ * All rights reserved.
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Core\Api;
@@ -248,7 +248,6 @@ class FirmwareController extends ApiControllerBase
             return $response;
         }
 
-        // sanitize package name
         $filter = new \Phalcon\Filter();
         $filter->add('version', function ($value) {
             return preg_replace('/[^0-9a-zA-Z\.]/', '', $value);
@@ -287,7 +286,7 @@ class FirmwareController extends ApiControllerBase
             // sanitize package name
             $filter = new \Phalcon\Filter();
             $filter->add('scrub', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z\-]/', '', $value);
+                return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
             });
             $package = $filter->sanitize($package, 'scrub');
             $text = trim($backend->configdRun(sprintf('firmware license %s', $package)));
@@ -430,7 +429,7 @@ class FirmwareController extends ApiControllerBase
             // sanitize package name
             $filter = new \Phalcon\Filter();
             $filter->add('pkgname', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
+                return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
             });
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
             // execute action
@@ -459,7 +458,7 @@ class FirmwareController extends ApiControllerBase
             // sanitize package name
             $filter = new \Phalcon\Filter();
             $filter->add('pkgname', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
+                return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
             });
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
             // execute action
@@ -488,7 +487,7 @@ class FirmwareController extends ApiControllerBase
             // sanitize package name
             $filter = new \Phalcon\Filter();
             $filter->add('pkgname', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
+                return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
             });
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
             // execute action
@@ -515,7 +514,7 @@ class FirmwareController extends ApiControllerBase
         if ($this->request->isPost()) {
             $filter = new \Phalcon\Filter();
             $filter->add('pkgname', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
+                return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
             });
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
         } else {
@@ -547,7 +546,7 @@ class FirmwareController extends ApiControllerBase
         if ($this->request->isPost()) {
             $filter = new \Phalcon\Filter();
             $filter->add('pkgname', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
+                return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
             });
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
         } else {
@@ -616,7 +615,7 @@ class FirmwareController extends ApiControllerBase
             // sanitize package name
             $filter = new \Phalcon\Filter();
             $filter->add('scrub', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z\-]/', '', $value);
+                return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
             });
             $package = $filter->sanitize($package, 'scrub');
             $text = trim($backend->configdRun(sprintf('firmware details %s', $package)));
@@ -701,8 +700,11 @@ class FirmwareController extends ApiControllerBase
             $response['package'][] = $package;
         }
 
-        uksort($plugins, function ($a, $b) {
-            return strnatcasecmp($a, $b);
+        uasort($plugins, function ($a, $b) {
+            return strnatcasecmp(
+                ($a['installed'] ? '0' : '1') . $a['name'],
+                ($b['installed'] ? '0' : '1') . $b['name']
+            );
         });
 
         $response['plugin'] = array();

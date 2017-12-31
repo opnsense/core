@@ -33,12 +33,11 @@
 require_once("auth.inc");
 
 // provided via legacy_bindings.inc
-global $priv_list;
 $acl = new OPNsense\Core\ACL();
 $priv_list = $acl->getPrivList();
 
-
-function cmp_page_matches($page, & $matches, $fullwc = true) {
+function cmp_page_matches($page, &$matches, $fullwc = true)
+{
     if (!is_array($matches)) {
         return false;
     }
@@ -98,7 +97,8 @@ function isAllowedPage($page)
 }
 
 
-function getPrivPages(& $entry, & $allowed_pages) {
+function getPrivPages(&$entry, &$allowed_pages)
+{
     global $priv_list;
 
     if (!isset($entry['priv']) || !is_array($entry['priv'])) {

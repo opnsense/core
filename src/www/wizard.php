@@ -93,8 +93,6 @@ switch ($xml) {
 		die;
 }
 
-global $listtags;
-
 $listtags = array_flip(array(
 	'additional_files_needed',
 	'alias',
@@ -432,7 +430,7 @@ function showchange() {
 			$name = preg_replace("/\s+/", "", $name);
 			$name = strtolower($name);
 
-			if($field['bindstofield'] <> "") {
+			if (!empty($field['bindstofield']) && !isset($field['value'])) {
 				$arraynum = "";
 				$field_conv = "";
 				$field_split = explode("->", $field['bindstofield']);
@@ -449,8 +447,9 @@ function showchange() {
 				eval($toeval);
 			}
 
-			if(!$field['combinefieldsend'])
+			if (!$field['combinefieldsend']) {
 				echo "<tr>";
+			}
 
 			switch ($field['type']) {
 			case "input":
