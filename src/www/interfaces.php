@@ -2524,36 +2524,11 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
-                          <td><a id="help_for_dhcp6usev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use IPv4 connectivity"); ?></td>
-                          <td>
-                            <input name="dhcp6usev4iface" type="checkbox" id="dhcp6usev4iface" value="yes" <?=!empty($pconfig['dhcp6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
-                            <div class="hidden" for="help_for_dhcp6usev4iface">
-                              <?=gettext("Request a IPv6 prefix/information through the IPv4 connectivity link"); ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
                           <td><a id="help_for_dhcp6norelease" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prevent release"); ?></td>
                           <td>
                             <input name="dhcp6norelease" type="checkbox" id="dhcp6norelease" value="yes" <?= !empty($pconfig['dhcp6norelease']) ? 'checked="checked"' : '' ?> />
                             <div class="hidden" for="help_for_dhcp6norelease">
                               <?=gettext("Do not send a release message on client exit to prevent the release of an allocated address or prefix on the server."); ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a id="help_for_dhcp6vlanprio" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Use VLAN priority') ?></td>
-                          <td>
-                            <select name="dhcp6vlanprio">
-                              <option value="" <?= "{$pconfig['dhcp6vlanprio']}" === '' ? 'selected="selected"' : '' ?>><?= gettext('Disabled') ?></option>
-<?php
-                              foreach (interfaces_vlan_priorities() as $pcp => $priority): ?>
-                              <option value="<?= html_safe($pcp) ?>" <?= "{$pconfig['dhcp6vlanprio']}" === "$priority" ? 'selected="selected"' : '' ?>><?= htmlspecialchars($priority) ?></option>
-<?php
-                              endforeach ?>
-                            </select>
-                            <div class="hidden" for="help_for_dhcp6vlanprio">
-                              <?= gettext('Certain ISPs may require that DHCP6 requests are sent with a specific VLAN priority.') ?>
                             </div>
                           </td>
                         </tr>
@@ -2565,6 +2540,31 @@ include("head.inc");
                                 <?=gettext("Enable debug mode for DHCPv6 client"); ?>
                               </div>
                             </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_dhcp6usev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use IPv4 connectivity"); ?></td>
+                          <td>
+                            <input name="dhcp6usev4iface" type="checkbox" id="dhcp6usev4iface" value="yes" <?=!empty($pconfig['dhcp6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
+                            <div class="hidden" for="help_for_dhcp6usev4iface">
+                              <?=gettext("Request a IPv6 prefix/information through the IPv4 connectivity link"); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_dhcp6vlanprio" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Use VLAN priority') ?></td>
+                          <td>
+                            <select name="dhcp6vlanprio">
+                              <option value="" <?= "{$pconfig['dhcp6vlanprio']}" === '' ? 'selected="selected"' : '' ?>><?= gettext('Disabled') ?></option>
+<?php
+                              foreach (interfaces_vlan_priorities() as $pcp => $priority): ?>
+                              <option value="<?= html_safe($pcp) ?>" <?= "{$pconfig['dhcp6vlanprio']}" === "$pcp" ? 'selected="selected"' : '' ?>><?= htmlspecialchars($priority) ?></option>
+<?php
+                              endforeach ?>
+                            </select>
+                            <div class="hidden" for="help_for_dhcp6vlanprio">
+                              <?= gettext('Certain ISPs may require that DHCPv6 requests are sent with a specific VLAN priority.') ?>
+                            </div>
+                          </td>
                         </tr>
                         <tr class="dhcpv6_advanced">
                           <td><a id="help_for_dhcp6_intf_stmt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface Statement");?></td>
