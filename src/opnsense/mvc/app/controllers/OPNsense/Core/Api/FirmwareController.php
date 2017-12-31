@@ -684,9 +684,7 @@ class FirmwareController extends ApiControllerBase
                     if ($plugin[0] == 'os') {
                         if ($type == 'local' || ($type == 'remote' &&
                             ($devel || end($plugin) != 'devel'))) {
-                            /* flip install status and prepend to search key to list them first */
-                            $sortkey = ($translated['installed'] ? '0' : '1') . $translated['name'];
-                            $plugins[$sortkey] = $translated;
+                            $plugins[$translated['name']] = $translated;
                         }
                     }
                 }
@@ -702,8 +700,11 @@ class FirmwareController extends ApiControllerBase
             $response['package'][] = $package;
         }
 
-        uksort($plugins, function ($a, $b) {
-            return strnatcasecmp($a, $b);
+        uasort($plugins, function ($a, $b) {
+            return strnatcasecmp(
+                ($a['installed'] ? '0' : '1') . $a['name'],
+                ($b['installed'] ? '0' : '1') . $b['name']
+            );
         });
 
         $response['plugin'] = array();
