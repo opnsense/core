@@ -5482,6 +5482,7 @@ html, body {
   font-family: 'SourceSansProRegular'; }
 
 body {
+  touch-action: manipulation;
   min-width: 320px; }
 
 .page-head {
