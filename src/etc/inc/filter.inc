@@ -247,6 +247,8 @@ function filter_configure_sync($verbose = false)
                 $intfv4[] =  $intf;
             }
         }
+        // add VPN and local networks
+        $intfv4 = array_merge($intfv4, filter_core_get_default_nat_outbound_networks());
         foreach ($fw->getInterfaceMapping() as $intf => $ifcfg) {
             $pool_opts = !empty($config['system']['snat_use_sticky']) ? "sticky-address" : "";
             if (substr($ifcfg['if'], 0, 4) != 'ovpn' && !empty($ifcfg['gateway'])) {

@@ -195,6 +195,31 @@ function filter_core_get_port_alias($aliasname, $aliases=array())
 
 
 /**
+ * Collect vpn networks for outbound rules
+ */
+function filter_core_get_default_nat_outbound_networks()
+{
+    global $config;
+    $result = array("127.0.0.0/8");
+    // Add openvpn networks
+    foreach (array('openvpn-server', 'openvpn-client') as $section) {
+        if (!empty($config['openvpn'][$section])) {
+            foreach ($config['openvpn'][$section] as $ovpn) {
+                if (!isset($ovpn['disable']) && !empty($ovpn['tunnel_network'])) {
+                    $result[] = $ovpn['tunnel_network'];
+                }
+            }
+        }
+    }
+    // Add ipsec network pool if specified
+    if (!empty($config['ipsec']['client']['pool_address']) && !empty($config['ipsec']['client']['pool_netbits'])) {
+        $tonathosts[] = "{$config['ipsec']['client']['pool_address']}/{$config['ipsec']['client']['pool_netbits']}";
+    }
+
+    return $result;
+}
+
+/**
  *  core system rules
  */
 function filter_core_rules_system($fw, $defaults)
