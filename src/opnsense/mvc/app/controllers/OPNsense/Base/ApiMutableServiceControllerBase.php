@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2018 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2016 IT-assistans Sverige AB
  * Copyright (C) 2015-2016 Deciso B.V.
  * All rights reserved.
@@ -155,7 +155,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     }
 
     /**
-     * reconfigure, generate config and reload
+     * reconfigure with opional stop, generate config and start / reload
      */
     public function reconfigureAction()
     {
@@ -177,7 +177,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
                 if ($runStatus['status'] != 'running') {
                     $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' start');
                 } else {
-                    $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' reconfigure');
+                    $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' reload');
                 }
             }
 
