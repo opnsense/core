@@ -155,7 +155,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     }
 
     /**
-     * reconfigure with opional stop, generate config and start / reload
+     * reconfigure with optional stop, generate config and start / reload
      */
     public function reconfigureAction()
     {
