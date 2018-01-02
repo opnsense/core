@@ -1,0 +1,9 @@
+<menu>
+    <System>
+        <Trust order="120" cssClass="fa fa-certificate fa-fw">
+            <Authorities url="/ui/trust/authorities/" />
+            <Certificates url="/ui/trust/certificates/" />
+            <Revocation url="/ui/trust/revocation/" />
+        </Trust>
+    </System>
+</menu>

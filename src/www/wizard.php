@@ -33,6 +33,7 @@ require_once("filter.inc");
 require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+use OPNsense\Trust\Trust;
 
 /*
  * find_ip_interface($ip): return the interface where an ip is defined
@@ -68,7 +69,7 @@ function find_ip_interface($ip, $bits = null) {
 	return false;
 }
 
-
+$mdlTrust = new Trust();
 $stepid = '0';
 
 if (isset($_POST['stepid'])) {
@@ -594,14 +595,14 @@ function showchange() {
 					if($field['add_to_certca_selection'] == $value) $SELECTED = " selected=\"selected\"";
 					echo "<option value='" . $field['add_to_certca_selection'] . "'" . $SELECTED . ">" . $field['add_to_certca_selection'] . "</option>\n";
 				}
-				foreach($config['ca'] as $ca) {
-					if (!empty($field['internal']) && empty($ca['prv'])) {
+				foreach($mdlTrust->cas->ca->getChildren() as $uuid => $ca) {
+					if (!empty($field['internal']) && empty($ca->prv->__toString())) {
 						continue;
 					}
-					$name = htmlspecialchars($ca['descr']);
+					$name = htmlspecialchars($ca->descr->__toString());
 					$SELECTED = "";
 					if ($value == $name) $SELECTED = " selected=\"selected\"";
-					$to_echo = "<option value='" . $ca['refid'] . "'" . $SELECTED . ">" . $name . "</option>\n";
+					$to_echo = "<option value='" . $uuid . "'" . $SELECTED . ">" . $name . "</option>\n";
 					$to_echo .= "<!-- {$value} -->";
 					$canecho = 0;
 					if($field['certca_filter'] <> "") {
@@ -635,13 +636,13 @@ function showchange() {
 					if($field['add_to_cert_selection'] == $value) $SELECTED = " selected=\"selected\"";
 					echo "<option value='" . $field['add_to_cert_selection'] . "'" . $SELECTED . ">" . $field['add_to_cert_selection'] . "</option>\n";
 				}
-				foreach($config['cert'] as $ca) {
-					if (stristr($ca['descr'], "webconf"))
+				foreach($mdlTrust->certs->cert->getChildren() as $uuid => $cert) {
+					if (stristr($cert->descr->__toString(), "webconf"))
 						continue;
-					$name = htmlspecialchars($ca['descr']);
+					$name = htmlspecialchars($cert->descr->__toString());
 					$SELECTED = "";
 					if ($value == $name) $SELECTED = " selected=\"selected\"";
-					$to_echo = "<option value='" . $ca['refid'] . "'" . $SELECTED . ">" . $name . "</option>\n";
+					$to_echo = "<option value='" . $uuid . "'" . $SELECTED . ">" . $name . "</option>\n";
 					$to_echo .= "<!-- {$value} -->";
 					$canecho = 0;
 					if($field['cert_filter'] <> "") {

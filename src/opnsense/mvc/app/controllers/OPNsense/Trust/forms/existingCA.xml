@@ -1,0 +1,31 @@
+<form>
+    <field>
+        <id>Existing.descr</id>
+        <label>Descriptive name</label>
+        <type>text</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Existing Certificate Authority</label>
+    </field>
+    <field>
+        <id>Existing.cert</id>
+        <label>Certificate data</label>
+        <type>textbox</type>
+        <height>7</height>
+        <help>Paste a certificate in X.509 PEM format here.</help>
+    </field>
+    <field>
+        <id>Existing.key</id>
+        <label>Certificate Private Key</label>
+        <type>textbox</type>
+        <height>7</height>
+        <help>Paste the private key for the above certificate here. This is optional in most cases, but required if you need to generate a Certificate Revocation List (CRL)."</help>
+    </field>
+    <field>
+        <id>Existing.serial</id>
+        <label>Serial for next certificate</label>
+        <type>text</type>
+        <help>Enter a decimal number to be used as the serial number for the next certificate to be created using this CA.</help>
+    </field>
+</form>

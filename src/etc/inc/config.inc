@@ -39,7 +39,6 @@ require_once("xmlparse.inc");
 require_once("crypt.inc");
 require_once("notices.inc");
 require_once("legacy_bindings.inc");
-require_once("certs.inc");
 
 /*
  * Hook up the plugin system which consists of several low-profile

@@ -33,6 +33,8 @@ require_once 'guiconfig.inc';
 require_once 'system.inc';
 require_once 'base32/Base32.php';
 
+use OPNsense\Trust\Trust;
+
 function get_user_privdesc(& $user)
 {
     global $priv_list;
@@ -78,6 +80,7 @@ function get_user_privdesc(& $user)
 
 // link user section
 $a_user = &config_read_array('system', 'user');
+$mdlTrust = new Trust();
 
 // reset errors and action
 $input_errors = array();
@@ -93,32 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['savemsg'])) {
         $savemsg = htmlspecialchars($_GET['savemsg']);
     }
-    if ($act == "expcert" && isset($id)) {
-        // export certificate
-        $cert =& lookup_cert($a_user[$id]['cert'][$_GET['certid']]);
-
-        $exp_name = urlencode("{$a_user[$id]['name']}-{$cert['descr']}.crt");
-        $exp_data = base64_decode($cert['crt']);
-        $exp_size = strlen($exp_data);
-
-        header("Content-Type: application/octet-stream");
-        header("Content-Disposition: attachment; filename={$exp_name}");
-        header("Content-Length: $exp_size");
-        echo $exp_data;
-        exit;
-    } elseif ($act == "expckey" && isset($id)) {
-        // export private key
-        $cert =& lookup_cert($a_user[$id]['cert'][$_GET['certid']]);
-        $exp_name = urlencode("{$a_user[$id]['name']}-{$cert['descr']}.key");
-        $exp_data = base64_decode($cert['prv']);
-        $exp_size = strlen($exp_data);
-
-        header("Content-Type: application/octet-stream");
-        header("Content-Disposition: attachment; filename={$exp_name}");
-        header("Content-Length: $exp_size");
-        echo $exp_data;
-        exit;
-    } elseif ($act == 'new' || $act == 'edit') {
+    if ($act == 'new' || $act == 'edit') {
         // edit user, load or init data
         $fieldnames = array('user_dn', 'descr', 'expires', 'scope', 'uid', 'priv', 'ipsecpsk', 'lifetime', 'otp_seed', 'email', 'comment');
         if (isset($id)) {
@@ -186,8 +164,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     } elseif ($act == "delcert" && isset($id)) {
         // remove certificate association
-        $certdeleted = lookup_cert($a_user[$id]['cert'][$pconfig['certid']]);
-        $certdeleted = $certdeleted['descr'];
+        $uuid = $a_user[$id]['cert'][$pconfig['certid']];
+        $certdeleted = $mdlTrust->certs->cert->{$uuid};
+        $certdeleted = $certdeleted->descr->__toString();
         unset($a_user[$id]['cert'][$pconfig['certid']]);
         write_config();
         $savemsg = sprintf(gettext('The certificate association "%s" was successfully removed.'), $certdeleted);
@@ -297,13 +276,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        if (!empty($pconfig['name'])) {
-            $ca = lookup_ca($pconfig['caref']);
-            if (!$ca) {
-                $input_errors[] = gettext("Invalid internal Certificate Authority") . "\n";
-            }
-        }
-
         if (count($input_errors)==0) {
             $userent = array();
 
@@ -367,7 +339,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             if (!empty($pconfig['chkNewCert'])) {
                 // redirect to cert manager when a new cert is requested for this user
-                header(url_safe('Location: /system_certmanager.php?act=new&userid=%s', array(isset($id) ? $id : count($a_user) - 1)));
+                header(url_safe('Location: /ui/trust/certificates/methods/%s', array(isset($id) ? $id : count($a_user) - 1)));
             } elseif (isset($pconfig['save_close'])) {
                 header(url_safe('Location: /system_usermanager.php?savemsg=%s', array(get_std_save_message())));
             } else {
@@ -764,22 +736,23 @@ $( document ).ready(function() {
                         if (isset($a_user[$id]['cert']) && is_array($a_user[$id]['cert'])) :
                           $i = 0;
                           foreach ($a_user[$id]['cert'] as $certref) :
-                            $cert = lookup_cert($certref);
-                            $ca = lookup_ca($cert['caref']);
+                              $cert = $mdlTrust->certs->cert->{$certref};
+                              $cert_uuid = $cert->getAttributes()["uuid"];
+                              $ca = $mdlTrust->cas->ca->{$cert->cauuid->__toString()};
 ?>
                         <tr>
-                          <td><?=htmlspecialchars($cert['descr']);?>
-                              <?=is_cert_revoked($cert) ? "(<b>".gettext('Revoked')."</b>)" : "";?>
+                          <td><?=htmlspecialchars($cert->descr->__toString());?>
+                              <?=$mdlTrust->is_cert_revoked($cert) ? "(<b>".gettext('Revoked')."</b>)" : "";?>
                           </td>
                           <td>
-                            <?=htmlspecialchars($ca['descr']);?>
+                            <?=$ca ? htmlspecialchars($ca->descr->__toString()) : "";?>
                           </td>
                           <td>
-                            <a href="system_usermanager.php?act=expckey&amp;certid=<?=$i?>&amp;userid=<?=$id?>"
+                            <a href="/api/trust/certificates/exp/<?=$cert_uuid;?>/key"
                                 class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export private key");?>">
                               <span class="glyphicon glyphicon-arrow-down"></span>
                             </a>
-                            <a href="system_usermanager.php?act=expcert&amp;certid=<?=$i?>&amp;userid=<?=$id?>"
+                            <a href="/api/trust/certificates/exp/<?=$cert_uuid;?>/crt"
                                 class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export certificate");?>">
                               <span class="glyphicon glyphicon-arrow-down"></span>
                             </a>
@@ -795,8 +768,20 @@ $( document ).ready(function() {
                         endif;?>
                         <tr>
                           <td colspan="3">
-                            <a href="system_certmanager.php?act=new&amp;userid=<?=$id?>" class="btn btn-default btn-xs"
-                                title="<?=gettext("create or link user certificate");?>" data-toggle="tooltip">
+                              <a href="/ui/trust/certificates/user/import/<?=$id?>" class="btn btn-default btn-xs"
+                                 title="<?=gettext("Import an existing Certificate");?>" data-toggle="tooltip">
+                                  <span class="glyphicon glyphicon-plus"></span>
+                              </a>
+                              <a href="/ui/trust/certificates/user/internal/<?=$id?>" class="btn btn-default btn-xs"
+                                 title="<?=gettext("Create an internal Certificate");?>" data-toggle="tooltip">
+                                  <span class="glyphicon glyphicon-plus"></span>
+                              </a>
+                              <a href="/ui/trust/certificates/user/external/<?=$id?>" class="btn btn-default btn-xs"
+                                 title="<?=gettext("Create a Certificate Signing Request");?>" data-toggle="tooltip">
+                                  <span class="glyphicon glyphicon-plus"></span>
+                              </a>
+                            <a href="/ui/trust/certificates/user/existing/<?=$id?>" class="btn btn-default btn-xs"
+                                title="<?=gettext("Choose an Existing Certificate");?>" data-toggle="tooltip">
                               <span class="glyphicon glyphicon-plus"></span>
                             </a>
                           </td>

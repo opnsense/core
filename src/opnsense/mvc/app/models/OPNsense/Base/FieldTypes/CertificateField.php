@@ -31,7 +31,7 @@ namespace OPNsense\Base\FieldTypes;
 
 use Phalcon\Validation\Validator\InclusionIn;
 use OPNsense\Base\Validators\CsvListValidator;
-use OPNsense\Core\Config;
+use OPNsense\Trust\Trust;
 
 /**
  * Class CertificateField field type to select certificates from the internal cert manager
@@ -100,9 +100,9 @@ class CertificateField extends BaseField
     {
         if (!isset(self::$internalOptionList[$this->certificateType])) {
             self::$internalOptionList[$this->certificateType] = array();
-            $configObj = Config::getInstance()->object();
-            foreach ($configObj->{$this->certificateType} as $cert) {
-                self::$internalOptionList[$this->certificateType][(string)$cert->refid] = (string)$cert->descr;
+            $type = $this->certificateType . "s";
+            foreach ((new Trust())->{$type}->{$this->certificateType}->getChildren() as $uuid => $cert) {
+                self::$internalOptionList[$this->certificateType][$uuid] = $cert->descr->__toString();
             }
         }
     }

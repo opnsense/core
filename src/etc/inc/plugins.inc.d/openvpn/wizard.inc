@@ -28,6 +28,9 @@
 
 require_once("plugins.inc.d/openvpn.inc");
 require_once("util.inc");
+use OPNsense\Trust\Trust;
+use OPNsense\Core\Certs;
+use OPNsense\Core\Config;
 
 function cert_get_subject_hash($crt)
 {
@@ -218,13 +221,11 @@ function step7_submitphpaction()
 
     $canames = array();
     $cacns = array();
-    if (is_array($config['ca'])) {
-        foreach ($config['ca'] as $ca) {
-            $canames[] = $ca['descr'];
-            $cainfo = cert_get_subject_hash($ca['crt']);
-            $cacns[] = $cainfo["CN"];
+    foreach((new Trust())->cas->ca->getChildren() as $ca) {
+        $canames[] = $ca->descr->__toString();
+        $cainfo = cert_get_subject_hash($ca->crt->__toString());
+        $cacns[] = $cainfo["CN"];
         }
-    }
 
     if (empty($_POST['descr']) || empty($_POST['keylength']) || empty($_POST['lifetime']) ||
         empty($_POST['country']) || empty($_POST['state']) || empty($_POST['city']) ||
@@ -285,8 +286,8 @@ function step9_stepbeforeformdisplay()
         $org = $pconfig['step6']['organization'];
         $email = $pconfig['step6']['email'];
     } else {
-        $ca = lookup_ca($pconfig['step6']['authcertca']);
-        $cavl = cert_get_subject_array($ca['crt']);
+        $ca = (new Trust())->cas->ca->{$pconfig['step6']['authcertca']};
+        $cavl = Certs::cert_get_subject_array($ca->crt->__toString());
         $country = $cavl[0]['v'];
         $state = $cavl[1]['v'];
         $city = $cavl[2]['v'];
@@ -322,13 +323,11 @@ function step9_submitphpaction()
 
     $certnames = array();
     $certcns = array();
-    if (is_array($config['cert'])) {
-        foreach ($config['cert'] as $cert) {
-            $certnames[] = $cert['descr'];
-            $certinfo = cert_get_subject_hash($cert['crt']);
-            $certcns[] = $certinfo["CN"];
+    foreach((new Trust())->certs->cert->getChildren() as $cert) {
+        $certnames[] = $cert->descr->__toString();
+        $certinfo = cert_get_subject_hash($cert->crt->__toString());
+        $certcns[] = $certinfo["CN"];
         }
-    }
 
     if (empty($_POST['descr']) || empty($_POST['keylength']) || empty($_POST['lifetime']) ||
         empty($_POST['country']) || empty($_POST['state']) || empty($_POST['city']) ||
@@ -539,66 +538,48 @@ function step12_submitphpaction()
         exit;
     }
 
+    $mdlTrust = new Trust();
     if (isset($pconfig['step6']['uselist']) && !empty($pconfig['step6']['certca'])) {
-        $ca = array();
-        $ca['refid'] = uniqid();
-        $ca['descr'] = $pconfig['step6']['certca'];
         $dn = array(
-          'countryName' => $pconfig['step6']['country'],
-          'stateOrProvinceName' => $pconfig['step6']['state'],
-          'localityName' => $pconfig['step6']['city'],
-          'organizationName' => $pconfig['step6']['organization'],
-          'emailAddress' => $pconfig['step6']['email'],
-          'commonName' => $pconfig['step6']['certca']);
-
-        ca_create($ca, $pconfig['step6']['keylength'], $pconfig['step6']['lifetime'], $dn, "sha256");
-
-        $a_ca = &config_read_array('ca');
-        $a_ca[] = $ca;
+            'countryName' => $pconfig['step6']['country'],
+            'stateOrProvinceName' => $pconfig['step6']['state'],
+            'localityName' => $pconfig['step6']['city'],
+            'organizationName' => $pconfig['step6']['organization'],
+            'emailAddress' => $pconfig['step6']['email'],
+            'commonName' => $pconfig['step6']['certca']);
+        $ca = $mdlTrust->ca_create($pconfig['step6']['certca'], $pconfig['step6']['keylength'], $pconfig['step6']['lifetime'], $dn, "sha256");
     } elseif (!isset($pconfig['step6']['uselist']) && empty($pconfig['step6']['authcertca'])) {
         $message = "Please choose a Certificate Authority.";
         header(url_safe('Location: /wizard.php?xml=openvpn&stepid=5&message=%s', array($message)));
         exit;
-    } elseif (!($ca = lookup_ca($pconfig['step6']['authcertca']))) {
+    } elseif (!($ca = $mdlTrust->cas->ca->{$pconfig['step6']['authcertca']})) {
         $message = "Not a valid Certificate Authority specified.";
         header(url_safe('Location: /wizard.php?xml=openvpn&stepid=5&message=%s', array($message)));
         exit;
     }
 
     if (isset($pconfig['step9']['uselist'])) {
-        $cert = array();
-        $cert['refid'] = uniqid();
-        $cert['descr'] = $pconfig['step9']['certname'];
         $dn = array(
-          'countryName' => $pconfig['step9']['country'],
-          'stateOrProvinceName' => $pconfig['step9']['state'],
-          'localityName' => $pconfig['step9']['city'],
-          'organizationName' => $pconfig['step9']['organization'],
-          'emailAddress' => $pconfig['step9']['email'],
-          'commonName' => $pconfig['step9']['certname']
+            'countryName' => $pconfig['step9']['country'],
+            'stateOrProvinceName' => $pconfig['step9']['state'],
+            'localityName' => $pconfig['step9']['city'],
+            'organizationName' => $pconfig['step9']['organization'],
+            'emailAddress' => $pconfig['step9']['email'],
+            'commonName' => $pconfig['step9']['certname']
         );
+        $cert = $mdlTrust->cert_create($pconfig['step9']['certname'], $ca->getAttributes()["uuid"], $pconfig['step9']['keylength'], $pconfig['step9']['lifetime'], $dn, 'sha256', 'server_cert');
 
-        cert_create(
-            $cert,
-            $ca['refid'],
-            $pconfig['step9']['keylength'],
-            $pconfig['step9']['lifetime'],
-            $dn,
-            'sha256',
-            'server_cert'
-        );
-
-        $a_cert = &config_read_array('cert');
-        $a_cert[] = $cert;
     } elseif (!isset($pconfig['step9']['uselist']) && empty($pconfig['step9']['authcertname'])) {
         $message = "Please choose a Certificate.";
         header(url_safe('Location: /wizard.php?xml=openvpn&stepid=7&message=%s', array($message)));
         exit;
-    } elseif (!($cert = lookup_cert($pconfig['step9']['authcertname']))) {
+    } elseif (!($cert = $mdlTrust->certs->cert->{$pconfig['step9']['authcertname']})) {
         $message = "Not a valid Certificate specified.";
         header(url_safe('Location: /wizard.php?xml=openvpn&stepid=7&message=%s', array($message)));
         exit;
     }
+    $mdlTrust->serializeToConfig();
+
     $server = array();
     $server['vpnid'] = openvpn_vpnid_next();
     switch ($auth['type']) {
@@ -615,8 +596,8 @@ function step12_submitphpaction()
             $server['mode'] = "server_tls_user";
             break;
     }
-    $server['caref'] = $ca['refid'];
-    $server['certref'] = $cert['refid'];
+    $server['caref'] = $ca->getAttributes()["uuid"];
+    $server['certref'] = $cert->getAttributes()["uuid"];
     $server['protocol'] = $pconfig['step10']['protocol'];
     $server['interface'] = $pconfig['step10']['interface'];
     if (isset($pconfig['step10']['localport'])) {
@@ -719,7 +700,7 @@ function step12_submitphpaction()
         $rule['type'] = "pass";
         $rule['enabled'] = "on";
         $rule['created'] = make_config_revision_entry();
-        $config['filter']['rule'][] = $rule;
+        Config::getInstance()->fromArray(["rule" => $rule], Config::getInstance()->object()->filter);
     }
     if (isset($pconfig['step11']['ovpnallow'])) {
         $rule = array();
@@ -735,14 +716,11 @@ function step12_submitphpaction()
         $rule['type'] = "pass";
         $rule['enabled'] = "on";
         $rule['created'] = make_config_revision_entry();
-        $config['filter']['rule'][] = $rule;
+        Config::getInstance()->fromArray(["rule" => $rule], Config::getInstance()->object()->filter);
     }
 
-    $a_server = &config_read_array('openvpn', 'openvpn-server');
-    $a_server[] = $server;
-
-    unset($config['wizardtemp']);
-    write_config();
+    Config::getInstance()->fromArray(["openvpn-server" => $server], Config::getInstance()->object()->openvpn);
+    Config::getInstance()->save();
 
     openvpn_configure_single($server['vpnid']);
     openvpn_configure_csc();

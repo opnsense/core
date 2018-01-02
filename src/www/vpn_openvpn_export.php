@@ -35,6 +35,9 @@ require_once("services.inc");
 require_once("filter.inc");
 require_once("interfaces.inc");
 
+use OPNsense\Trust\Trust;
+use OPNsense\Core\Certs;
+
 function filter_generate_port(& $rule, $target = "source", $isnat = false) {
     $src = "";
 
@@ -99,6 +102,7 @@ function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $is
 function openvpn_client_export_prefix($srvid, $usrid = null, $crtid = null)
 {
     global $config;
+    $mdlTrust = new Trust();
 
     // lookup server settings
     $settings = $config['openvpn']['openvpn-server'][$srvid];
@@ -116,8 +120,8 @@ function openvpn_client_export_prefix($srvid, $usrid = null, $crtid = null)
     $filename_addition = "";
     if ($usrid && is_numeric($usrid)) {
         $filename_addition = "-".$config['system']['user'][$usrid]['name'];
-    } elseif ($crtid && is_numeric($crtid)) {
-        $filename_addition = "-" . str_replace(' ', '_', cert_get_cn($config['cert'][$crtid]['crt']));
+    } elseif ($crtid) {
+        $filename_addition = "-" . str_replace(' ', '_', $mdlTrust->cert_get_cn($mdlTrust->certs->cert->{$crtid}->crt->__toString()));
     }
 
     return "{$host}-{$prot}-{$port}{$filename_addition}";
@@ -147,6 +151,7 @@ function openvpn_client_export_validate_config($srvid, $usrid, $crtid)
 {
     global $config, $input_errors;
     $nokeys = false;
+    $mdlTrust = new Trust();
 
     // lookup server settings
     $settings = $config['openvpn']['openvpn-server'][$srvid];
@@ -160,15 +165,14 @@ function openvpn_client_export_validate_config($srvid, $usrid, $crtid)
     }
 
     // lookup server certificate info
-    $server_cert = lookup_cert($settings['certref']);
-    if (!$server_cert) {
+    if (!($server_cert = $mdlTrust->certs->cert->{$settings['certref']})) {
         $input_errors[] = gettext("Could not locate server certificate.");
     } else {
-        $server_ca = ca_chain($server_cert);
+        $server_ca = $mdlTrust->ca_chain($server_cert);
         if (empty($server_ca)) {
             $input_errors[] = gettext("Could not locate the CA reference for the server certificate.");
         }
-        $servercn = cert_get_cn($server_cert['crt']);
+        $servercn = $mdlTrust->cert_get_cn($server_cert->crt->__toString());
     }
 
     // lookup user info
@@ -191,12 +195,11 @@ function openvpn_client_export_validate_config($srvid, $usrid, $crtid)
         } else {
             // If $cert is not an array, it's a certref not a cert.
             if (!is_array($cert)) {
-                $cert = lookup_cert($cert);
+                $cert = $mdlTrust->certs->cert->{$cert};
             }
         }
     } elseif (($settings['mode'] == "server_tls") || (($settings['mode'] == "server_tls_user") && ($settings['authmode'] != "Local Database"))) {
-        $cert = $config['cert'][$crtid];
-        if (!$cert) {
+        if (!($cert = $mdlTrust->certs->cert->{$crtid})) {
             $input_errors[] = gettext("Could not find client certificate.");
         }
     } else {
@@ -358,8 +361,8 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
     // - Disable for now, it requires the server cert to include special options
     //$conf .= "remote-cert-tls server{$nl}";
 
-    if (is_array($server_cert) && ($server_cert['crt'])) {
-        $purpose = cert_get_purpose($server_cert['crt'], true);
+    if ($crt = $server_cert->crt->__toString()) {
+        $purpose = Certs::cert_get_purpose($crt, true);
         if ($purpose['server'] == 'Yes') {
             $conf .= "remote-cert-tls server{$nl}";
         }
@@ -421,9 +424,9 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
             // write key files
             if ($settings['mode'] != "server_user") {
                 $crtfile = "{$tempdir}/{$prefix}-cert.crt";
-                file_put_contents($crtfile, base64_decode($cert['crt']));
+                file_put_contents($crtfile, base64_decode($cert->crt->__toString()));
                 $keyfile = "{$tempdir}/{$prefix}.key";
-                file_put_contents($keyfile, base64_decode($cert['prv']));
+                file_put_contents($keyfile, base64_decode($cert->prv->__toString()));
 
                 // convert to pkcs12 format
                 $p12file = "{$tempdir}/{$prefix}.p12";
@@ -449,9 +452,9 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
             $conf .= "<ca>{$nl}" . trim($server_ca) . "{$nl}</ca>{$nl}";
             if ($settings['mode'] != "server_user") {
                 // Inline Cert
-                $conf .= "<cert>{$nl}" . trim(base64_decode($cert['crt'])) . "{$nl}</cert>{$nl}";
+                $conf .= "<cert>{$nl}" . trim(base64_decode($cert->crt->__toString())) . "{$nl}</cert>{$nl}";
                 // Inline Key
-                $conf .= "<key>{$nl}" . trim(base64_decode($cert['prv'])) . "{$nl}</key>{$nl}";
+                $conf .= "<key>{$nl}" . trim(base64_decode($cert->prv->__toString())) . "{$nl}</key>{$nl}";
             } else {
                 // Work around OpenVPN Connect assuming you have a client cert even when you don't need one
                 $conf .= "setenv CLIENT_CERT 0{$nl}";
@@ -483,9 +486,9 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
             // write key files
             if ($settings['mode'] != "server_user") {
                 $crtfile = "{$keydir}/client1.crt";
-                file_put_contents($crtfile, base64_decode($cert['crt']));
+                file_put_contents($crtfile, base64_decode($cert->crt->__toString()));
                 $keyfile = "{$keydir}/client1.key";
-                file_put_contents($keyfile, base64_decode($cert['prv']));
+                file_put_contents($keyfile, base64_decode($cert->prv->__toString()));
             }
             exec("tar -C {$tempdir} -cf /tmp/client.tar ./keys ./vpn.cnf");
             // Remove temporary directory
@@ -508,9 +511,9 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
             // write key files
             if ($settings['mode'] != "server_user") {
                 $crtfile = "{$tempdir}/phone1.crt";
-                file_put_contents($crtfile, base64_decode($cert['crt']));
+                file_put_contents($crtfile, base64_decode($cert->crt->__toString()));
                 $keyfile = "{$tempdir}/phone1.key";
-                file_put_contents($keyfile, base64_decode($cert['prv']));
+                file_put_contents($keyfile, base64_decode($cert->prv->__toString()));
             }
             exec("cd {$tempdir}/ && tar -cf /tmp/vpnclient.tar *");
             // Remove temporary directory
@@ -592,13 +595,13 @@ EOF;
     if ($settings['mode'] != "server_user") {
         // write user .crt
         $crtfile = "{$tempdir}/cert.crt";
-        file_put_contents($crtfile, base64_decode($cert['crt']));
+        file_put_contents($crtfile, base64_decode($cert->crt->__toString()));
 
         // write user .key
         if (!empty($outpass)) {
             $keyfile = "{$tempdir}/key.key";
             $clearkeyfile = "{$tempdir}/key-clear.key";
-            file_put_contents($clearkeyfile, base64_decode($cert['prv']));
+            file_put_contents($clearkeyfile, base64_decode($cert->prv->__toString()));
             $eoutpass = escapeshellarg($outpass);
             $ekeyfile = escapeshellarg($keyfile);
             $eclearkeyfile = escapeshellarg($clearkeyfile);
@@ -606,7 +609,7 @@ EOF;
             unlink($clearkeyfile);
         } else {
             $keyfile = "{$tempdir}/key.key";
-            file_put_contents($keyfile, base64_decode($cert['prv']));
+            file_put_contents($keyfile, base64_decode($cert->prv->__toString()));
         }
     }
 
@@ -895,6 +898,7 @@ function openvpn_client_export_find_hostname($interface)
     }
 }
 
+$mdlTrust = new Trust();
 $ras_server = array();
 if (isset($config['openvpn']['openvpn-server'])) {
     // collect info
@@ -915,33 +919,28 @@ if (isset($config['openvpn']['openvpn-server'])) {
                     }
                     foreach ($user['cert'] as $cindex => $cert) {
                         // If $cert is not an array, it's a certref not a cert.
-                        if (!is_array($cert)) {
-                            $cert = lookup_cert($cert);
-                        }
+                        $cert = $mdlTrust->certs->cert->{$cert};
 
-                        if ($cert['caref'] != $server['caref']) {
+                        if ($cert->cauuid->__toString() != $server->caref) {
                             continue;
                         }
                         $ras_userent = array();
                         $ras_userent['uindex'] = $uindex;
                         $ras_userent['cindex'] = $cindex;
                         $ras_userent['name'] = $user['name'];
-                        $ras_userent['certname'] = $cert['descr'];
+                        $ras_userent['certname'] = $cert->descr->__toString();
                         $ras_user[] = $ras_userent;
                     }
                 }
             }
         } elseif (($server['mode'] == "server_tls") || (($server['mode'] == "server_tls_user") && ($server['authmode'] != "Local Database"))) {
-            if (isset($config['cert'])) {
-                foreach ($config['cert'] as $cindex => $cert) {
-                    if (($cert['caref'] != $server['caref']) || ($cert['refid'] == $server['certref'])) {
-                        continue;
-                    }
-                    $ras_cert_entry['cindex'] = $cindex;
-                    $ras_cert_entry['certname'] = $cert['descr'];
-                    $ras_cert_entry['certref'] = $cert['refid'];
-                    $ras_certs[] = $ras_cert_entry;
+            foreach ($mdlTrust->certs->cert->getChildren() as $uuid => $cert) {
+                if (($cert->cauuid->__toString() != $server->cauuid->__toString()) || ($uuid == $server->certref)) {
+                    continue;
                 }
+                $ras_cert_entry['certname'] = $cert->descr->__toString();
+                $ras_cert_entry['certref'] = $uuid;
+                $ras_certs[] = $ras_cert_entry;
             }
         }
 

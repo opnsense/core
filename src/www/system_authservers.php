@@ -30,6 +30,7 @@
 
 require_once("guiconfig.inc");
 require_once("auth.inc");
+use OPNsense\Trust\Trust;
 
 $authFactory = new \OPNsense\Auth\AuthenticationFactory();
 $authCNFOptions = $authFactory->listConfigOptions();
@@ -37,6 +38,7 @@ $authCNFOptions = $authFactory->listConfigOptions();
 config_read_array('system', 'authserver');
 config_read_array('ca');
 
+$mdlTrust = new Trust();
 $a_servers = auth_get_authserver_list();
 $a_server = array();
 foreach ($a_servers as $servers) {
@@ -503,12 +505,13 @@ endif; ?>
                   <td><a id="help_for_ldap_caref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Peer Certificate Authority"); ?></td>
                   <td>
 <?php
-                    if (count($config['ca'])) :?>
+                    $cas = $mdlTrust->cas->ca->getChildren();
+                    if (count($cas)) :?>
                     <select id='ldap_caref' name='ldap_caref' class="formselect selectpicker" data-style="btn-default">
 <?php
-                    foreach ($config['ca'] as $ca) :
+                    foreach ($cas as $uuid => $ca) :
 ?>
-                      <option value="<?=$ca['refid'];?>" <?=$pconfig['ldap_caref'] == $ca['refid'] ? "selected=\"selected\"" : "";?>><?=$ca['descr'];?></option>
+                      <option value="<?=$uuid;?>" <?=$pconfig['ldap_caref'] == $uuid ? "selected=\"selected\"" : "";?>><?=$ca->descr->__toString();?></option>
 <?php
                     endforeach; ?>
                     </select>

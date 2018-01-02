@@ -1,0 +1,12 @@
+<form>
+    <field>
+        <id>Revocation.certuuid</id>
+        <label>Choose a Certificate to Revoke</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>Revocation.reason</id>
+        <label>Reason</label>
+        <type>dropdown</type>
+    </field>
+</form>

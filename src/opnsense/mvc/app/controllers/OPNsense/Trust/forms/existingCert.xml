@@ -1,0 +1,11 @@
+<form>
+    <field>
+        <type>header</type>
+        <label>Choose an Existing Certificate</label>
+    </field>
+    <field>
+        <id>Existing.certuuid</id>
+        <label>Existing Certificates</label>
+        <type>dropdown</type>
+    </field>
+</form>

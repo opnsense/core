@@ -39,6 +39,7 @@
 /* include globals from notices.inc /utility/XML parser files */
 require_once("interfaces.inc");
 require_once("util.inc");
+use OPNsense\Trust\Trust;
 
 // Will be changed to false if security checks fail
 $security_passed = true;
@@ -669,22 +670,22 @@ function ldap_setup_caenv($authcfg)
         return;
     }
 
-    $caref = lookup_ca($authcfg['ldap_caref']);
-    if (!$caref) {
+    if (!($caref = (new Trust())->cas->ca->{$authcfg['ldap_caref']})) {
         log_error(sprintf('LDAP: Could not lookup CA by reference for host %s.', $authcfg['ldap_caref']));
         /* XXX: Prevent for credential leaking since we cannot setup the CA env. Better way? */
         putenv('LDAPTLS_REQCERT=hard');
         return;
     }
 
+    $uuid = $caref->getAttributes()["uuid"];
     @mkdir("/var/run/certs");
-    @unlink("/var/run/certs/{$caref['refid']}.ca");
-    file_put_contents("/var/run/certs/{$caref['refid']}.ca", base64_decode($caref['crt']));
-    @chmod("/var/run/certs/{$caref['refid']}.ca", 0600);
+    @unlink("/var/run/certs/{$uuid}.ca");
+    file_put_contents("/var/run/certs/{$uuid}.ca", base64_decode($caref->crt->__toString()));
+    @chmod("/var/run/certs/{$uuid}.ca", 0600);
     putenv('LDAPTLS_REQCERT=hard');
     /* XXX: Probably even the hashed link should be created for this? */
     putenv("LDAPTLS_CACERTDIR=/var/run/certs");
-    putenv("LDAPTLS_CACERT=/var/run/certs/{$caref['refid']}.ca");
+    putenv("LDAPTLS_CACERT=/var/run/certs/{$uuid}.ca");
 }
 
 

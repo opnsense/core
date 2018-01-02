@@ -28,6 +28,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+use \OPNsense\Trust\Trust;
+use \OPNsense\Core\Config;
+
 function webgui_configure()
 {
     return array(
@@ -39,11 +42,10 @@ function webgui_configure()
 
 function webgui_configure_do($verbose = false, $interface = '')
 {
-    global $config;
-
+    $config = Config::getInstance()->object();
     $interfaces = array();
-    if (!empty($config['system']['webgui']['interfaces'])) {
-        $interfaces = explode(',', $config['system']['webgui']['interfaces']);
+    if (!empty($config->system->webgui->interfaces->__toString())) {
+        $interfaces = explode(',', $config->system->webgui->interfaces->__toString());
     }
 
     if (!empty($interface) && !in_array($interface, $interfaces)) {
@@ -83,44 +85,43 @@ function webgui_configure_do($verbose = false, $interface = '')
     $ca = '';
 
     /* non-standard port? */
-    if (isset($config['system']['webgui']['port']) && $config['system']['webgui']['port'] <> "") {
-        $portarg = "{$config['system']['webgui']['port']}";
+    if (isset($config->system->webgui->port) && $config->system->webgui->port->__toString() <> "") {
+        $portarg = "{$config->system->webgui->port->__toString()}";
     }
 
-    if ($config['system']['webgui']['protocol'] == "https") {
-        $cert =& lookup_cert($config['system']['webgui']['ssl-certref']);
-        if (!is_array($cert) && !$cert['crt'] && !$cert['prv']) {
-            $a_ca = &config_read_array('ca');
-            $a_cert = &config_read_array('cert');
+    if ($config->system->webgui->protocol == "https") {
+        $mdlTrust = new Trust();
+        $cert = $mdlTrust->certs->cert->{$config->system->webgui->{"ssl-certref"}->__toString()};
+        if(!isset($cert) || !$cert->crt->__toString() || !$cert->prv->__toString()) {
             log_error("Creating SSL certificate for this host");
-            $cert = array();
-            $cert['refid'] = uniqid();
-            $cert['descr'] = 'Web GUI SSL certificate';
-            mwexec(
-                /* XXX ought to be replaced by PHP calls */
-                '/usr/local/bin/openssl req -new ' .
-                '-newkey rsa:4096 -sha256 -days 365 -nodes -x509 ' .
-                '-subj "/C=NL/ST=Zuid-Holland/L=Middelharnis/O=OPNsense" ' .
-                '-keyout /tmp/ssl.key -out /tmp/ssl.crt'
-            );
-            $crt = file_get_contents('/tmp/ssl.crt');
-            $key = file_get_contents('/tmp/ssl.key');
-            unlink('/tmp/ssl.key');
-            unlink('/tmp/ssl.crt');
-            cert_import($cert, $crt, $key);
-            $a_cert[] = $cert;
-            $config['system']['webgui']['ssl-certref'] = $cert['refid'];
-            write_config('Created web GUI SSL certificate');
+            $dn = [
+                "countryName" => "NL",
+                "stateOrProvinceName" => "Zuid-Holland",
+                "localityName" => "Middelharnis",
+                "organizationName" => "OPNsense"
+            ];
+            $privkey = openssl_pkey_new([
+                "private_key_bits" => 4096,
+                "private_key_type" => OPENSSL_KEYTYPE_RSA,
+            ]);
+            $csr = openssl_csr_new($dn, $privkey, ['digest_alg' => 'sha256']);
+            $x509 = openssl_csr_sign($csr, null, $privkey, $days=365, ['digest_alg' => 'sha256']);
+            openssl_x509_export($x509, $crt);
+            openssl_pkey_export($privkey, $key);
+            $cert = $mdlTrust->cert_import('Web GUI SSL certificate', $crt, $key);
+            Config::getInstance()->object()->system->webgui->{"ssl-certref"} = $cert->getAttributes()["uuid"];
+            $mdlTrust->serializeToConfig();
+            Config::getInstance()->save();
         } else {
-            $crt = base64_decode($cert['crt']);
-            $key = base64_decode($cert['prv']);
+            $crt = base64_decode($cert->crt->__toString());
+            $key = base64_decode($cert->prv->__toString());
         }
 
-        if (!$config['system']['webgui']['port']) {
+        if (!$config->system->webgui->port->__toString()) {
             $portarg = '443';
         }
 
-        $ca = ca_chain($cert);
+        $ca = $mdlTrust->ca_chain($cert);
     }
 
     if (!webgui_generate_config($portarg, $crt, $key, $ca, $listeners)) {
@@ -161,7 +162,7 @@ function webgui_configure_do($verbose = false, $interface = '')
 
 function webgui_generate_config($port, $cert, $key, $ca, $listeners)
 {
-    global $config;
+    $config = Config::getInstance()->object();
 
     $cert_location = 'cert.pem';
     $ca_location = 'ca.pem';
@@ -183,7 +184,7 @@ EOD;
 
     $lighty_port = $port;
 
-    if (!isset($config['syslog']['nologlighttpd'])) {
+    if (empty($config->syslog->nologlighttpd->__toString())) {
         $lighty_use_syslog = <<<EOD
 ## where to send error-messages to
 server.errorlog-use-syslog="enable"
@@ -364,7 +365,7 @@ EOD;
         // Harden SSL a bit for PCI conformance testing
         $lighty_config .= "ssl.use-sslv2 = \"disable\"\n";
         $lighty_config .= "ssl.use-sslv3 = \"disable\"\n";
-        if (empty($config['system']['webgui']['ssl-ciphers'])) {
+        if (empty($config->system->webgui->{"ssl-iphers"}->__toString())) {
             $ciphers = array(
                 'ECDHE-RSA-AES128-GCM-SHA256',
                 'ECDHE-ECDSA-AES128-GCM-SHA256',
@@ -409,7 +410,7 @@ EOD;
             );
             $lighty_config .= 'ssl.cipher-list = "' . join(':', $ciphers) . '"' . PHP_EOL;
         } else {
-            $lighty_config .= 'ssl.cipher-list = "'.$config['system']['webgui']['ssl-ciphers'].'"' . PHP_EOL;
+            $lighty_config .= 'ssl.cipher-list = "'.$config->system->webgui->{"ssl-iphers"}->__toString().'"' . PHP_EOL;
         }
 
         $lighty_config .= "\n";
@@ -420,7 +421,7 @@ EOD;
             $listener = "[{$listener}]";
         }
         $lighty_config .= "\$SERVER[\"socket\"] == \"{$listener}:{$lighty_port}\" {\n";
-        if ($config['system']['webgui']['protocol'] == "https") {
+        if ($config->system->webgui->protocol->__toString() == "https") {
             $lighty_config .= '    ssl.engine = "enable"' . PHP_EOL;
         }
         $lighty_config .= "}\n";
@@ -461,8 +462,8 @@ expire.url = ( "" => "access 50 hours" )
 EOD;
 
     /* add HTTP to HTTPS redirect */
-    if ($config['system']['webgui']['protocol'] == 'https' &&
-        !isset($config['system']['webgui']['disablehttpredirect'])) {
+    if ($config->system->webgui->protocol->__toString() == 'https' &&
+        !isset($config->system->webgui->disablehttpredirect->__toString())) {
         $redirectport = $lighty_port != "443" ? ":{$lighty_port}" : '';
         foreach ($listeners as $listener) {
             if (is_ipaddrv6($listener)) {
