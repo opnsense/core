@@ -742,7 +742,7 @@ POSSIBILITY OF SUCH DAMAGE.
             </ul>
             <div class="tab-content content-box tab-content">
                 <div id="updates" class="tab-pane fade in active">
-                    <textarea name="output" id="update_status" class="form-control" rows="25" wrap="hard" readonly style="max-width:100%; font-family: monospace; display: none;"></textarea>
+                    <textarea name="output" id="update_status" class="form-control" rows="25" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace; display: none;"></textarea>
                     <table class="table table-striped table-condensed table-responsive" id="updatelist">
                         <thead>
                         </thead>

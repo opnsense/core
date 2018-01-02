@@ -626,15 +626,15 @@ function insertElements(tempFriendlyTime, starttimehour, starttimemin, stoptimeh
     tr.appendChild(td);
 
     td = d.createElement("td");
-    td.innerHTML="<input type='text' readonly name='starttime" + schCounter + "' id='starttime" + schCounter + "' style=' word-wrap:break-word; width:100%; border:0px solid;' value='" + starttimehour + ":" + starttimemin + "' />";
+    td.innerHTML="<input type='text' readonly='readonly' name='starttime" + schCounter + "' id='starttime" + schCounter + "' style=' word-wrap:break-word; width:100%; border:0px solid;' value='" + starttimehour + ":" + starttimemin + "' />";
     tr.appendChild(td);
 
     td = d.createElement("td");
-    td.innerHTML="<input type='text' readonly name='stoptime" + schCounter + "' id='stoptime" + schCounter + "' style=' word-wrap:break-word; width:100%; border:0px solid;' value='" + stoptimehour + ":" + stoptimemin + "' />";
+    td.innerHTML="<input type='text' readonly='readonly' name='stoptime" + schCounter + "' id='stoptime" + schCounter + "' style=' word-wrap:break-word; width:100%; border:0px solid;' value='" + stoptimehour + ":" + stoptimemin + "' />";
     tr.appendChild(td);
 
     td = d.createElement("td");
-    td.innerHTML="<input type='text' readonly name='timedescr" + schCounter + "' id='timedescr" + schCounter + "' style=' word-wrap:break-word; width:100%; border:0px solid;' value='" + tempdescr + "' />";
+    td.innerHTML="<input type='text' readonly='readonly' name='timedescr" + schCounter + "' id='timedescr" + schCounter + "' style=' word-wrap:break-word; width:100%; border:0px solid;' value='" + tempdescr + "' />";
     tr.appendChild(td);
 
     td = d.createElement("td");

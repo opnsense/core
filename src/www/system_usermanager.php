@@ -587,7 +587,7 @@ $( document ).ready(function() {
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("User distinguished name");?></td>
                     <td>
-                      <input name="user_dn" type="text" class="formfld user" id="user_dn" size="20" value="<?=$pconfig['user_dn'];?>"/ readonly>
+                      <input name="user_dn" type="text" class="formfld user" id="user_dn" size="20" value="<?=$pconfig['user_dn'];?>" readonly="readonly" />
                     </td>
                   </tr>
 <?php
