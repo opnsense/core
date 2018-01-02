@@ -492,7 +492,7 @@ include("head.inc");
         $intfnatv4 = array();
         foreach ($fw->getInterfaceMapping() as $intf => $intfcf) {
             if (!empty($intfcf['ifconfig']['ipv4']) && empty($intfcf['gateway'])) {
-                $intfv4[] = $intfcf['descr'] . "&nbsp;" . gettext("Networks");
+                $intfv4[] = sprintf(gettext('%s networks'), $intfcf['descr']);
             } elseif (substr($intfcf['if'], 0, 4) != 'ovpn' && !empty($intfcf['gateway'])) {
                 $intfnatv4[] = $intfcf;
             }
