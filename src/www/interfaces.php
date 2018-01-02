@@ -344,7 +344,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       "adv_dhcp6_id_assoc_statement_prefix_enable", "adv_dhcp6_id_assoc_statement_prefix", "adv_dhcp6_id_assoc_statement_prefix_id",
       "adv_dhcp6_id_assoc_statement_prefix_pltime", "adv_dhcp6_id_assoc_statement_prefix_vltime",
       "adv_dhcp6_prefix_interface_statement_sla_id", "adv_dhcp6_prefix_interface_statement_sla_len",
-      "adv_dhcp6_authentication_statement_authname", "adv_dhcp6_authentication_statement_protocol", "adv_dhcp6_authentication_statement_algorithm",
+      "adv_dhcp6_authentication_statement_authname", "adv_dhcp6_authentication_statement_protocol", "adv_dhcp6_authentication_statement_algorithm", "adv_dhcp6_prefix_selected_interface",
       "adv_dhcp6_authentication_statement_rdm", "adv_dhcp6_key_info_statement_keyname", "adv_dhcp6_key_info_statement_realm",
       "adv_dhcp6_key_info_statement_keyid", "adv_dhcp6_key_info_statement_secret", "adv_dhcp6_key_info_statement_expire",
       "adv_dhcp6_config_advanced", "adv_dhcp6_config_file_override", "adv_dhcp6_config_file_override_path",
@@ -1100,6 +1100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $new_config['adv_dhcp6_id_assoc_statement_prefix_vltime'] = $pconfig['adv_dhcp6_id_assoc_statement_prefix_vltime'];
                     $new_config['adv_dhcp6_prefix_interface_statement_sla_id'] = $pconfig['adv_dhcp6_prefix_interface_statement_sla_id'];
                     $new_config['adv_dhcp6_prefix_interface_statement_sla_len'] = $pconfig['adv_dhcp6_prefix_interface_statement_sla_len'];
+                    $new_config['adv_dhcp6_prefix_selected_interface'] = $pconfig['adv_dhcp6_prefix_selected_interface'];
                     $new_config['adv_dhcp6_authentication_statement_authname'] = $pconfig['adv_dhcp6_authentication_statement_authname'];
                     $new_config['adv_dhcp6_authentication_statement_protocol'] = $pconfig['adv_dhcp6_authentication_statement_protocol'];
                     $new_config['adv_dhcp6_authentication_statement_algorithm'] = $pconfig['adv_dhcp6_authentication_statement_algorithm'];
@@ -2624,7 +2625,8 @@ include("head.inc");
                         <tr class="dhcpv6_advanced">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Prefix Interface");?></td>
                           <td>
-                            <?=gettext("Prefix Interface "); ?>
+                            <i><?=gettext("Prefix Interface name ( real \"igb1\" - \"em1\" etc )"); ?></i>
+                            <input name="adv_dhcp6_prefix_selected_interface" type="text" id="adv_dhcp6_prefix_selected_interface" value="<?=$pconfig['adv_dhcp6_prefix_selected_interface'];?>" />
                             <i><?=gettext("Site-Level Aggregation Identifier"); ?></i>
                             <input name="adv_dhcp6_prefix_interface_statement_sla_id" type="text" id="adv_dhcp6_prefix_interface_statement_sla_id" value="<?=$pconfig['adv_dhcp6_prefix_interface_statement_sla_id'];?>" />
                             <i><?=gettext("Site-Level Aggregation Length"); ?></i>
