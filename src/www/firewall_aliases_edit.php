@@ -262,7 +262,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         foreach (array('updatefreq', 'updatefreq_hours') as $fieldname) {
             if (!empty($pconfig[$fieldname]) && !is_numeric($pconfig[$fieldname])) {
-                $input_errors[] = gettext("Update Frequency should be a number");
+                $input_errors[] = gettext("Expiration should be a number");
                 break;
             }
         }
@@ -640,7 +640,7 @@ include("head.inc");
                           <th></th>
                           <th id="detailsHeading1"><?=gettext("Network"); ?></th>
                           <th id="detailsHeading3"><?=gettext("Description"); ?></th>
-                          <th colspan="2" id="updatefreqHeader" ><?=gettext("Update Freq. (days + hours)");?></th>
+                          <th colspan="2" id="updatefreqHeader" ><?=gettext("Alias Expiration. (days + hours)");?></th>
                         </tr>
                       </thead>
                       <tbody>
