@@ -530,7 +530,7 @@ include("head.inc");
                     <span class="glyphicon glyphicon-play text-success" data-toggle="tooltip" title="<?=gettext("automatic outbound nat");?>"></span>
                   </td>
                   <td><?= htmlspecialchars($natintf['descr']); ?></td>
-                  <td><?= implode(' , ', $intfv4);?></td>
+                  <td><?= implode(', ', $intfv4);?></td>
                   <td class="hidden-xs hidden-sm">*</td>
                   <td class="hidden-xs hidden-sm">*</td>
                   <td class="hidden-xs hidden-sm">500</td>
@@ -545,7 +545,7 @@ include("head.inc");
                     <span class="glyphicon glyphicon-play text-success" data-toggle="tooltip" title="<?=gettext("automatic outbound nat");?>"></span>
                   </td>
                   <td><?= htmlspecialchars($natintf['descr']); ?></td>
-                  <td><?= implode(' , ', $intfv4);?></td>
+                  <td><?= implode(', ', $intfv4);?></td>
                   <td class="hidden-xs hidden-sm">*</td>
                   <td class="hidden-xs hidden-sm">*</td>
                   <td class="hidden-xs hidden-sm">*</td>
