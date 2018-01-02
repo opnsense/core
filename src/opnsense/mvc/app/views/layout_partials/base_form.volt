@@ -77,6 +77,7 @@ data_title      :   data-title to set on form
             {% set maxheight=false %}
             {% set width=false %}
             {% set allownew=false %}
+            {% set readonly=false %}
             {% if field['type'] == 'header' %}
               {# close table and start new one with header #}
 

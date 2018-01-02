@@ -38,6 +38,7 @@ style       :   css class to add
 maxheight   :   maximum height in rows if applicable
 width       :   width in pixels if applicable
 allownew    :   allow new items (for list) if applicable
+readonly    :   if true, then textareas (textboxes) will be readonly
 
 #}
 
@@ -65,7 +66,7 @@ allownew    :   allow new items (for list) if applicable
         {% elseif type == "password" %}
             <input type="password" class="form-control" size="{{size|default("50")}}" id="{{ id }}" >
         {% elseif type == "textbox" %}
-            <textarea rows="{{height|default("5")}}" id="{{ id }}"></textarea>
+            <textarea rows="{{height|default("5")}}" id="{{ id }}" {{ readonly ? 'readonly' : '' }}></textarea>
         {% elseif type == "info" %}
             <span id="{{ id }}" ></span>
         {% endif %}
