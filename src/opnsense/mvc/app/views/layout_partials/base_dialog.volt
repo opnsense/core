@@ -90,6 +90,7 @@ label           :   dialog label
                             {% set maxheight=false %}
                             {% set width=false %}
                             {% set allownew=false %}
+                            {% set readonly=false %}
                             {% if field['type'] == 'header' %}
                               {# close table and start new one with header #}
 
