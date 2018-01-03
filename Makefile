@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2018 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -300,11 +300,14 @@ sweep: force
 	find ${.CURDIR} -type f -depth 1 -print0 | \
 	    xargs -0 -n1 ${.CURDIR}/Scripts/cleanfile
 
+STYLEDIRS?=	src/etc/inc/plugins.inc.d src/opnsense
+
 style: want-pear-PHP_CodeSniffer
-	@(phpcs --standard=ruleset.xml ${.CURDIR}/src/etc/inc/plugins.inc.d \
-	    || true) > ${.CURDIR}/.style.out
-	@(phpcs --standard=ruleset.xml ${.CURDIR}/src/opnsense \
+	@: > ${.CURDIR}/.style.out
+.for STYLEDIR in ${STYLEDIRS}
+	@(phpcs --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} \
 	    || true) >> ${.CURDIR}/.style.out
+.endfor
 	@echo -n "Total number of style warnings: "
 	@grep '| WARNING' ${.CURDIR}/.style.out | wc -l
 	@echo -n "Total number of style errors:   "
@@ -313,8 +316,9 @@ style: want-pear-PHP_CodeSniffer
 	@rm ${.CURDIR}/.style.out
 
 style-fix: want-pear-PHP_CodeSniffer
-	phpcbf --standard=ruleset.xml ${.CURDIR}/src/etc/inc/plugins.inc.d || true
-	phpcbf --standard=ruleset.xml ${.CURDIR}/src/opnsense || true
+.for STYLEDIR in ${STYLEDIRS}
+	phpcbf --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} || true
+.endfor
 
 license:
 	@${.CURDIR}/Scripts/license > ${.CURDIR}/LICENSE
