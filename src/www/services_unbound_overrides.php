@@ -185,7 +185,7 @@ include_once("head.inc");
                         <td><?=$hostent['descr'];?></td>
                         <td>
                           <a href="services_unbound_host_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                          <a href="#" data-id="<?=$i;?>" class="act_delete_host"><button type="button" class="btn btn-xs btn-default"><span class="fa fa-trash text-muted"></span></button></a>
+                          <a href="#" data-id="<?=$i;?>" class="act_delete_host btn btn-xs btn-default"><i class="fa fa-trash text-muted"></i></a>
                         </td>
                       </tr>
 <?php
@@ -236,7 +236,7 @@ include_once("head.inc");
                         <td><?=htmlspecialchars($doment['descr']);?></td>
                         <td>
                           <a href="services_unbound_domainoverride_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                          <a href="#" data-id="<?=$i;?>" class="act_delete_override"><button type="button" class="btn btn-xs btn-default"><span class="fa fa-trash text-muted"></span></button></a>
+                          <a href="#" data-id="<?=$i;?>" class="act_delete_override btn btn-xs btn-default"><i class="fa fa-trash text-muted"></i></a>
                         </td>
                       </tr>
 <?php

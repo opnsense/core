@@ -739,8 +739,8 @@ include("head.inc");
                               <td><?=htmlspecialchars($poolent['range']['to']);?></td>
                               <td><?=htmlspecialchars($poolent['descr']);?></td>
                               <td>
-                                <a href="services_dhcp.php?if=<?=$if;?>&amp;pool=<?=$i;?>"><button type="button" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button></a>
-                                <a href="#" data-if="<?=$if;?>" data-id="<?=$i;?>" class="act_delete_pool"><button type="button" class="btn btn-xs btn-default"><span class="fa fa-trash text-muted"></span></button></a>
+                                <a href="services_dhcp.php?if=<?=$if;?>&amp;pool=<?=$i;?>" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+                                <a href="#" data-if="<?=$if;?>" data-id="<?=$i;?>" class="act_delete_pool btn btn-xs btn-default"><i class="fa fa-trash text-muted"></i></a>
                               </td>
                             </tr>
 <?php
@@ -1130,7 +1130,7 @@ include("head.inc");
                       </td>
                       <td>
                         <a href="services_dhcp_edit.php?if=<?=htmlspecialchars($if);?>&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                        <a href="#" data-if="<?=$if;?>" data-id="<?=$i;?>" class="act_delete_static"><button type="button" class="btn btn-xs btn-default"><span class="fa fa-trash text-muted"></span></button></a>
+                        <a href="#" data-if="<?=$if;?>" data-id="<?=$i;?>" class="act_delete_static btn btn-xs btn-default"><i class="fa fa-trash text-muted"></i></a>
                       </td>
                     </tr>
 <?php
