@@ -397,7 +397,7 @@ include("head.inc");
                     </td>
                     <td>
                       <a href="services_unbound_acls.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                      <a href="#" data-id="<?=$i;?>" class="act_delete_acl"><button type="button" class="btn btn-xs btn-default"><span class="fa fa-trash text-muted"></span></button></a>
+                      <a href="#" data-id="<?=$i;?>" class="act_delete_acl btn btn-xs btn-default"><i class="fa fa-trash text-muted"></i></a>
                     </td>
                   </tr>
 <?php
