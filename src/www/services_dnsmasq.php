@@ -442,7 +442,7 @@ $( document ).ready(function() {
                   <td><?=htmlspecialchars($hostent['descr']);?></td>
                   <td>
                     <a href="services_dnsmasq_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                    <a href="#" data-id="<?=$i;?>" class="act_delete_host"><button type="button" class="btn btn-xs btn-default"><span class="fa fa-trash text-muted"></span></button></a>
+                    <a href="#" data-id="<?=$i;?>" class="act_delete_host btn btn-xs btn-default"><i class="fa fa-trash text-muted"></i></a>
                   </td>
                 </tr>
 <?php
@@ -508,7 +508,7 @@ $( document ).ready(function() {
                     <a href="services_dnsmasq_domainoverride_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs">
                       <span class="glyphicon glyphicon-pencil"></span>
                     </a>
-                    <a href="#" data-id="<?=$i;?>" class="act_delete_override"><button type="button" class="btn btn-xs btn-default"><span class="fa fa-trash text-muted"></span></button></a>
+                    <a href="#" data-id="<?=$i;?>" class="act_delete_override btn btn-xs btn-default"><i class="fa fa-trash text-muted"></i></a>
                   </td>
                 </tr>
 <?php
