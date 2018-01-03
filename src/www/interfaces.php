@@ -2625,8 +2625,25 @@ include("head.inc");
                         <tr class="dhcpv6_advanced">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Prefix Interface");?></td>
                           <td>
-                            <i><?=gettext("Prefix Interface name ( real \"igb1\" - \"em1\" etc )"); ?></i>
-                            <input name="adv_dhcp6_prefix_selected_interface" type="text" id="adv_dhcp6_prefix_selected_interface" value="<?=$pconfig['adv_dhcp6_prefix_selected_interface'];?>" />
+                            <select name='adv_dhcp6_prefix_selected_interface' class='selectpicker' data-style='btn-default' >
+<?php
+                            foreach (get_configured_interface_with_descr(false, true) as $iface => $ifacename):
+                              switch($config['interfaces'][$iface]['ipaddrv6']) {
+                                case "track6":
+                                    break;
+                                default:
+                                    continue 2;
+                              }?>
+                                <option value="<?=$iface;?>" <?=$iface == $pconfig['adv_dhcp6_prefix_selected_interface'] ? " selected=\"selected\"" : "";?>>
+                                    <?= htmlspecialchars($ifacename);?>
+                                </option>
+<?php
+                            endforeach;?>
+                            </select>
+                          </td>
+                        <tr class="dhcpv6_advanced">
+                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Prefix Interface");?></td>
+                          <td>
                             <i><?=gettext("Site-Level Aggregation Identifier"); ?></i>
                             <input name="adv_dhcp6_prefix_interface_statement_sla_id" type="text" id="adv_dhcp6_prefix_interface_statement_sla_id" value="<?=$pconfig['adv_dhcp6_prefix_interface_statement_sla_id'];?>" />
                             <i><?=gettext("Site-Level Aggregation Length"); ?></i>
