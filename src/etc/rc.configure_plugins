@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2018 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,11 @@
  */
 
 require_once 'config.inc';
+require_once 'system.inc';
 
-/* flush cache */
+/* reload subsystem that may have changed */
+system_syslogd_start(true);
+
+/* flush user-facing caches */
 (new OPNsense\Core\ACL())->invalidateCache();
 (new OPNsense\Base\Menu\MenuSystem())->invalidateCache();
