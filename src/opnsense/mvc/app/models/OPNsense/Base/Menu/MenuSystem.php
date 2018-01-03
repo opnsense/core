@@ -1,8 +1,7 @@
 <?php
 
-/**
+/*
  *    Copyright (C) 2015 Deciso B.V.
- *
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -25,8 +24,8 @@
  *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *    POSSIBILITY OF SUCH DAMAGE.
- *
  */
+
 namespace OPNsense\Base\Menu;
 
 use OPNsense\Core\Config;
@@ -265,11 +264,15 @@ class MenuSystem
                 'visiblename' => "[$descr]",
                 'order' => $ordid++,
             ));
-            $this->appendItem('Services.DHCPv4.' . $key, 'Add' . $key, array(
+            $this->appendItem('Services.DHCPv4.' . $key, 'Edit' . $key, array(
+                'url' => '/services_dhcp.php?if='. $key . '&*',
+                'visibility' => 'hidden',
+            ));
+            $this->appendItem('Services.DHCPv4.' . $key, 'AddStatic' . $key, array(
                 'url' => '/services_dhcp_edit.php?if='. $key,
                 'visibility' => 'hidden',
             ));
-            $this->appendItem('Services.DHCP4.' . $key, 'Edit' . $key, array(
+            $this->appendItem('Services.DHCPv4.' . $key, 'EditStatic' . $key, array(
                 'url' => '/services_dhcp_edit.php?if='. $key . '&*',
                 'visibility' => 'hidden',
             ));
