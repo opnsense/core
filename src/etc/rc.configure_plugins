@@ -29,6 +29,7 @@
 
 require_once 'config.inc';
 require_once 'system.inc';
+require_once 'util.inc';
 
 /* reload subsystem that may have changed */
 system_syslogd_start(true);

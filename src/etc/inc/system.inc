@@ -652,7 +652,7 @@ function system_syslogd_start($verbose = false)
     global $config;
 
     if ($verbose) {
-        echo 'Starting syslog...';
+        echo 'Configuring system logging...';
         flush();
     }
 
