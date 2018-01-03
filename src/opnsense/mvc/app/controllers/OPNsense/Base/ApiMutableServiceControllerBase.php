@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2018 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2016 IT-assistans Sverige AB
  * Copyright (C) 2015-2016 Deciso B.V.
  * All rights reserved.
@@ -105,7 +105,6 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function startAction()
     {
         if ($this->request->isPost()) {
-            // close session for long running action
             $this->sessionClose();
             $backend = new Backend();
             $response = $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' start');
@@ -122,7 +121,6 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function stopAction()
     {
         if ($this->request->isPost()) {
-            // close session for long running action
             $this->sessionClose();
             $backend = new Backend();
             $response = $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' stop');
@@ -139,7 +137,6 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function restartAction()
     {
         if ($this->request->isPost()) {
-            // close session for long running action
             $this->sessionClose();
             $backend = new Backend();
             $response = $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' restart');
@@ -150,25 +147,38 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     }
 
     /**
-     * reconfigure, generate config and reload
+     * reconfigure force restart check, return zero for soft-reload
+     */
+    protected function reconfigureForceRestart()
+    {
+        return 1;
+    }
+
+    /**
+     * reconfigure with optional stop, generate config and start / reload
      */
     public function reconfigureAction()
     {
         if ($this->request->isPost()) {
-            // close session for long running action
             $this->sessionClose();
 
             $model = $this->getModel();
             $backend = new Backend();
 
-            $this->stopAction();
+            if ((string)$model->getNodeByReference(static::$internalServiceEnabled) != '1' ||
+                $this->reconfigureForceRestart()) {
+                $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' stop');
+            }
 
-            // generate template
             $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
 
-            // (re)start daemon
             if ((string)$model->getNodeByReference(static::$internalServiceEnabled) == '1') {
-                $this->startAction();
+                $runStatus = $this->statusAction();
+                if ($runStatus['status'] != 'running') {
+                    $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' start');
+                } else {
+                    $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' reload');
+                }
             }
 
             return array('status' => 'ok');
