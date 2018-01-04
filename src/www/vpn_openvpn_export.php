@@ -1271,14 +1271,14 @@ if (isset($savemsg)) {
           <div class="table-responsive">
             <table class="table table-striped opnsense_standard_table_form" >
               <tr>
-                <td width="22%"></td>
-                <td width="78%" align="right">
+                <td style="width:22%"></td>
+                <td style="width:78%; text-align:right">
                   <small><?=gettext("full help"); ?> </small>
                   <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                 </td>
               </tr>
               <tr>
-                <td valign="top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Remote Access Server");?></td>
+                <td style="vertical-align:top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Remote Access Server");?></td>
                 <td>
                   <select name="server" id="server" class="formselect">
 <?php
@@ -1290,7 +1290,7 @@ if (isset($savemsg)) {
                 </td>
               </tr>
               <tr>
-                <td valign="top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Host Name Resolution");?></td>
+                <td style="vertical-align:top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Host Name Resolution");?></td>
                 <td>
                       <select name="useaddr" id="useaddr">
                         <option value="serveraddr" ><?=gettext("Interface IP Address");?></option>
@@ -1326,7 +1326,7 @@ if (isset($savemsg)) {
                 </td>
               </tr>
               <tr class="mode_server">
-                <td valign="top"><a id="help_for_verify_server_cn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Verify Server CN");?></td>
+                <td style="vertical-align:top"><a id="help_for_verify_server_cn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Verify Server CN");?></td>
                 <td >
                       <select name="verifyservercn" id="verifyservercn" class="formselect">
                         <option value="auto"><?=gettext("Automatic - Use verify-x509-name (OpenVPN 2.3+) where possible");?></option>
@@ -1342,7 +1342,7 @@ if (isset($savemsg)) {
                 </td>
               </tr>
               <tr class="mode_server">
-                <td valign="top"><a id="help_for_random_local_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use Random Local Port");?></td>
+                <td style="vertical-align:top"><a id="help_for_random_local_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use Random Local Port");?></td>
                 <td >
                       <input name="randomlocalport" id="randomlocalport" type="checkbox" value="yes" checked="CHECKED" />
                       <div class="hidden" for="help_for_random_local_port">
@@ -1352,7 +1352,7 @@ if (isset($savemsg)) {
                       </div>
               </tr>
               <tr class="mode_server">
-                <td valign="top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Certificate Export Options");?></td>
+                <td style="vertical-align:top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Certificate Export Options");?></td>
                 <td >
                       <div>
                         <input name="usetoken" id="usetoken" type="checkbox" value="yes" />
@@ -1371,7 +1371,7 @@ if (isset($savemsg)) {
                 </td>
               </tr>
               <tr>
-                <td valign="top"><a id="help_for_http_proxy" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use Proxy");?></td>
+                <td style="vertical-align:top"><a id="help_for_http_proxy" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use Proxy");?></td>
                 <td >
                       <input name="useproxy" id="useproxy" type="checkbox" value="yes" />
                       <div class="hidden" for="help_for_http_proxy">
@@ -1407,7 +1407,7 @@ if (isset($savemsg)) {
                 </td>
               </tr>
               <tr class="mode_server">
-                <td valign="top"><a id="help_for_openvpnmanager" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Management Interface OpenVPN Manager");?></td>
+                <td style="vertical-align:top"><a id="help_for_openvpnmanager" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Management Interface OpenVPN Manager");?></td>
                 <td >
                       <input name="openvpnmanager" id="openvpnmanager" type="checkbox" value="yes" />
                       <div class="hidden" for="help_for_openvpnmanager">
@@ -1418,7 +1418,7 @@ if (isset($savemsg)) {
                 </td>
               </tr>
               <tr class="mode_server">
-                <td valign="top"><a id="help_for_advancedoptions" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Additional configuration options");?></td>
+                <td style="vertical-align:top"><a id="help_for_advancedoptions" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Additional configuration options");?></td>
                 <td >
                       <textarea rows="6" cols="68" name="advancedoptions" id="advancedoptions"></textarea><br/>
                       <div class="hidden" for="help_for_advancedoptions">
@@ -1433,9 +1433,9 @@ if (isset($savemsg)) {
                   <table id="export_users" class="table table-striped table-condensed">
                     <thead>
                       <tr>
-                        <td width="25%" ><b><?=gettext("User");?></b></td>
-                        <td width="35%" ><b><?=gettext("Certificate Name");?></b></td>
-                        <td width="40%" ><b><?=gettext("Export");?></b></td>
+                        <td style="width:25%" ><b><?=gettext("User");?></b></td>
+                        <td style="width:35%" ><b><?=gettext("Certificate Name");?></b></td>
+                        <td style="width:40%" ><b><?=gettext("Export");?></b></td>
                       </tr>
                     </thead>
                     <tbody>
@@ -1561,7 +1561,7 @@ if (isset($savemsg)) {
                   </td>
                 </tr>
                 <tr>
-                  <td valign="top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Links to OpenVPN clients");?></td>
+                  <td style="vertical-align:top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Links to OpenVPN clients");?></td>
                   <td>
                     <a href="http://www.sparklabs.com/viscosity/"><?= gettext("Viscosity") ?></a> - <?= gettext("Recommended client for Mac OSX and Windows") ?><br/>
                     <a href="http://openvpn.net/index.php/open-source/downloads.html"><?= gettext("OpenVPN Community Client") ?></a> - <?=gettext("Binaries for Windows, Source for other platforms.")?><br/>

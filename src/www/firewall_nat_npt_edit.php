@@ -145,7 +145,7 @@ include("head.inc");
                 <table class="table table-striped opnsense_standard_table_form">
                   <tr>
                     <td><?=gettext("Edit NAT NPT entry"); ?></td>
-                    <td align="right">
+                    <td style="text-align:right">
                         <small><?=gettext("full help"); ?> </small>
                         <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                     </td>
@@ -194,9 +194,9 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_src" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ". gettext("Address:"); ?></td>
                     <td>
-                      <table border="0" cellspacing="0" cellpadding="0">
+                      <table style="border:0; cellspacing:0; cellpadding:0">
                         <tr>
-                          <td width="348px">
+                          <td style="width:348px">
                             <input name="src" type="text" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
                           </td>
                           <td >
@@ -232,9 +232,9 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_dst" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ". gettext("Address:"); ?></td>
                     <td>
-                      <table border="0" cellspacing="0" cellpadding="0">
+                      <table style="border:0; cellspacing:0; cellpadding:0">
                         <tr>
-                          <td width="348px">
+                          <td style="width:348px">
                             <input name="dst" type="text" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("Source address");?>"/>
                           </td>
                           <td >

@@ -381,14 +381,14 @@ if ($act!="new" && $act!="edit") {
                 <table class="table table-striped opnsense_standard_table_form">
                   <tr>
                     <td><?=gettext("General information"); ?></td>
-                    <td align="right">
+                    <td style="text-align:right">
                       <small><?=gettext("full help"); ?> </small>
                       <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                     </td>
                   </tr>
                   <tr>
-                    <td width="22%"><a id="help_for_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
-                    <td width="78%">
+                    <td style="width:22%"><a id="help_for_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
+                    <td style="width:78%">
                       <input name="disable" type="checkbox" value="yes" <?= !empty($pconfig['disable']) ? "checked=\"checked\"" : "";?> />
                       <div class="hidden" for="help_for_disable">
                         <?=gettext("Set this option to disable this client-specific override without removing it from the list"); ?>
@@ -670,7 +670,7 @@ if ($act!="new" && $act!="edit") {
                     </td>
                   </tr>
                   <tr>
-                    <td valign="top">&nbsp;</td>
+                    <td style="vertical-align:top">&nbsp;</td>
                     <td>
                       <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                       <input name="act" type="hidden" value="<?=$act;?>" />

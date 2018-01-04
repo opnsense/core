@@ -421,8 +421,8 @@ include("head.inc");
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">
                     <tr>
-                      <td width="22%" valign="top"></td>
-                      <td width="78%" align="right">
+                      <td style="width:22%; vertical-align:top"></td>
+                      <td style="width:78; text-align:right">
                         <small><?=gettext("full help"); ?> </small>
                         <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                       </td>
@@ -733,7 +733,7 @@ include("head.inc");
           <section class="col-xs-12">
             <div class="tab-content content-box col-xs-12">
                 <div class="table-responsive">
-                  <table class="tabcont table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="static mappings">
+                  <table class="tabcont table table-striped" style="width:100%; border:0; cellpadding:0; cellspacing:0">
                     <tr>
                       <td colspan="4" class="listtopic"><?=gettext("DHCPv6 Static Mappings for this interface.");?></td>
                       <td>&nbsp;</td>

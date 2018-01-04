@@ -143,7 +143,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <table class="table table-striped opnsense_standard_table_form">
                     <tr>
                       <td ><strong><?=gettext("IPsec Advanced Settings"); ?></strong></td>
-                      <td align="right">
+                      <td style="text-align:right">
                         <small><?=gettext("full help"); ?> </small>
                         <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                       </td>
@@ -157,7 +157,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                     </tr>
                     <tr>
                       <td><a id="help_for_preferoldsa_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Security Associations"); ?></td>
-                      <td width="78%" class="vtable">
+                      <td style="width:78%" class="vtable">
                         <input name="preferoldsa_enable" type="checkbox" id="preferoldsa_enable" value="yes" <?= !empty($pconfig['preferoldsa_enable']) ? "checked=\"checked\"" : "";?> />
                         <strong><?=gettext("Prefer older IPsec SAs"); ?></strong>
                         <div class="hidden" for="help_for_preferoldsa_enable">

@@ -78,8 +78,8 @@ include("head.inc");
             <table class="table table-striped opnsense_standard_table_form">
               <tbody>
                 <tr>
-                  <td width="22%"><?=gettext("Authentication Server"); ?></td>
-                  <td width="78%">
+                  <td style="width:22%"><?=gettext("Authentication Server"); ?></td>
+                  <td style="width:78%">
                     <select name="authmode" id="authmode" class="form-control" >
 <?php
                     foreach (auth_get_authserver_list() as $auth_server_id => $auth_server):?>
@@ -92,16 +92,16 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td width="22%"><?=gettext("Username"); ?></td>
-                  <td width="78%"><input type="text" name="username" value="<?=htmlspecialchars($pconfig['username']);?>"></td>
+                  <td style="width:22%"><?=gettext("Username"); ?></td>
+                  <td style="width:78%"><input type="text" name="username" value="<?=htmlspecialchars($pconfig['username']);?>"></td>
                 </tr>
                 <tr>
-                  <td width="22%"><?=gettext("Password"); ?></td>
-                  <td width="78%"><input type="password" name="password" value="<?=htmlspecialchars($pconfig['password']);?>"></td>
+                  <td style="width:22%"><?=gettext("Password"); ?></td>
+                  <td style="width:78%"><input type="password" name="password" value="<?=htmlspecialchars($pconfig['password']);?>"></td>
                 </tr>
                 <tr>
-                  <td width="22%">&nbsp;</td>
-                  <td width="78%"><input id="save" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Test");?>" /></td>
+                  <td style="width:22%">&nbsp;</td>
+                  <td style="width:78%"><input id="save" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Test");?>" /></td>
                 </tr>
               </tbody>
             </table>

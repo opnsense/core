@@ -341,8 +341,8 @@ include("head.inc");
           <form method="post" name="iform" id="iform">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td width="22%"><strong><?=gettext('Web GUI');?></strong></td>
-                <td  width="78%" align="right">
+                <td style="width:22%"><strong><?=gettext('Web GUI');?></strong></td>
+                <td style="width:78%; text-align:right">
                   <small><?=gettext("full help"); ?> </small>
                   <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                 </td>
@@ -420,7 +420,7 @@ include("head.inc");
                 </tr>
                 <tr class="ssl_opts">
                   <td><a id="help_for_disablehttpredirect" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('HTTP Redirect'); ?></td>
-                  <td width="78%">
+                  <td style="width:78%">
                     <input name="disablehttpredirect" type="checkbox" value="yes" <?= empty($pconfig['disablehttpredirect']) ? '' : 'checked="checked"';?> />
                     <strong><?= gettext('Disable web GUI redirect rule') ?></strong>
                     <div class="hidden" for="help_for_disablehttpredirect">
@@ -466,7 +466,7 @@ include("head.inc");
                 </tr>
                 <tr>
                   <td><a id="help_for_compression" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("HTTP Compression")?></td>
-                  <td width="78%">
+                  <td style="width:78%">
                     <select name="compression" class="formselect selectpicker">
                         <option value="" <?=empty($pconfig['compression'])? 'selected="selected"' : '';?>>
                           <?=gettext("Off");?>
@@ -552,7 +552,7 @@ include("head.inc");
                 </tr>
                 <tr>
                   <td><a id="help_for_sshport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSH port"); ?></td>
-                  <td width="78%">
+                  <td style="width:78%">
                     <input name="sshport" type="text" value="<?=$pconfig['sshport'];?>" placeholder="22" />
                     <div class="hidden" for="help_for_sshport">
                       <?=gettext("Leave this blank for the default of 22."); ?>
@@ -579,14 +579,14 @@ include("head.inc");
                 </tr>
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i></a> <?= gettext('Console driver') ?></td>
-                  <td width="78%">
+                  <td style="width:78%">
                     <input name="usevirtualterminal" type="checkbox" value="yes" <?= empty($pconfig['usevirtualterminal']) ? '' : 'checked="checked"' ?>  />
                     <strong><?= gettext('Use the virtual terminal driver (vt)') ?></strong>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_primaryconsole" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Primary Console")?></td>
-                  <td width="78%">
+                  <td style="width:78%">
                     <select name="primaryconsole" id="primaryconsole" class="formselect selectpicker">
 <?php               foreach (system_console_types() as $console_key => $console_type): ?>
                       <option value="<?= html_safe($console_key) ?>" <?= $pconfig['primaryconsole'] == $console_key ? 'selected="selected"' : '' ?>><?= $console_type['name'] ?></option>
@@ -600,7 +600,7 @@ include("head.inc");
                 </tr>
                 <tr>
                   <td><a id="help_for_secondaryconsole" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Secondary Console")?></td>
-                  <td width="78%">
+                  <td style="width:78%">
                     <select name="secondaryconsole" id="secondaryconsole" class="formselect selectpicker">
                       <option value="" <?= empty($pconfig['secondaryconsole']) ? 'selected="selected"' : '' ?>><?= gettext('None') ?></option>
 <?php               foreach (system_console_types() as $console_key => $console_type): ?>
@@ -631,14 +631,14 @@ include("head.inc");
                 </tr>
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i></a> <?= gettext("Console menu") ?></td>
-                  <td width="78%">
+                  <td style="width:78%">
                     <input name="disableconsolemenu" type="checkbox" value="yes" <?= empty($pconfig['disableconsolemenu']) ? '' : 'checked="checked"' ?>  />
                     <strong><?=gettext("Password protect the console menu"); ?></strong>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_disableintegratedauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Integrated authentication") ?></td>
-                  <td width="78%">
+                  <td style="width:78%">
                     <input name="disableintegratedauth" type="checkbox" value="yes" <?= empty($pconfig['disableintegratedauth']) ? '' : 'checked="checked"' ?>  />
                     <strong><?=gettext("Disable integrated authentication"); ?></strong>
                     <div class="hidden" for="help_for_disableintegratedauth">
@@ -648,7 +648,7 @@ include("head.inc");
                 </tr>
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Sudo usage") ?></td>
-                  <td width="78%">
+                  <td style="width:78%">
                     <select name="sudo_allow_wheel" id="sudo_allow_wheel" class="formselect selectpicker">
                       <option value="" <?= empty($pconfig['sudo_allow_wheel']) ? 'selected="selected"' : '' ?>><?= gettext('Disallow') ?></option>
                       <option value="1" <?= $pconfig['sudo_allow_wheel'] == 1 ? 'selected="selected"' : '' ?>><?= gettext('Ask password') ?></option>
@@ -657,8 +657,8 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td width="22%" valign="top">&nbsp;</td>
-                  <td width="78%"><input name="Submit" type="submit" class="btn btn-primary" value="<?= gettext("Save") ?>" /></td>
+                  <td style="width:22%; vertical-align:top">&nbsp;</td>
+                  <td style="width:78%"><input name="Submit" type="submit" class="btn btn-primary" value="<?= gettext("Save") ?>" /></td>
                 </tr>
             </table>
           </form>

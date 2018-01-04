@@ -194,7 +194,7 @@ $( document ).ready(function() {
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th colspan="2" valign="top" class="listtopic"><?=gettext("Edit system tunable"); ?></th>
+                    <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Edit system tunable"); ?></th>
                   </tr>
                 </thead>
                 <tbody>

@@ -410,8 +410,8 @@ include("head.inc");
                   <table class="table table-striped opnsense_standard_table_form">
                     <thead>
                       <tr>
-                        <td width="22%"><strong><?=gettext("PPPs configuration");?></strong></td>
-                        <td width="78%" align="right">
+                        <td style="width:22%"><strong><?=gettext("PPPs configuration");?></strong></td>
+                        <td style="width:78%; text-align:right">
                           <small><?=gettext("full help"); ?> </small>
                           <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                           &nbsp;
@@ -475,8 +475,8 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr id="ppp_provider">
-                        <td width="22%"><a id="help_for_country" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Service Provider"); ?></td>
-                        <td width="78%">
+                        <td style="width:22%"><a id="help_for_country" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Service Provider"); ?></td>
+                        <td style="width:78%">
                           <table class="table table-condensed">
                             <tr id="trcountry" class="hidden">
                               <td><?=gettext("Country:"); ?></td>
@@ -561,8 +561,8 @@ include("head.inc");
 <?php
                       for ($intf_idx=0; $intf_idx <= max(count($serialports), count($portlist)) ; ++$intf_idx):?>
                       <tr style="display:none" class="intf_select_<?=$intf_idx;?>">
-                        <td width="22%"><a id="help_for_localip_<?=$intf_idx;?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local IP");?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
-                        <td width="78%">
+                        <td style="width:22%"><a id="help_for_localip_<?=$intf_idx;?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local IP");?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
+                        <td style="width:78%">
                           <input name="localip[]" type="text" class="intf_select_<?=$intf_idx;?>" value="<?=isset($pconfig['localip'][$intf_idx]) ? $pconfig['localip'][$intf_idx] : "";?>" />
                           /
                           <select name="subnet[]" class="intf_select_<?=$intf_idx;?>">
@@ -578,8 +578,8 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr style="display:none" class="intf_select_<?=$intf_idx;?>">
-                        <td width="22%"><a id="help_for_gateway_<?=$intf_idx;?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway");?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
-                        <td width="78%">
+                        <td style="width:22%"><a id="help_for_gateway_<?=$intf_idx;?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway");?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
+                        <td style="width:78%">
                           <input name="gateway[]" type="text" class="intf_select_<?=$intf_idx;?>" value="<?=isset($pconfig['gateway'][$intf_idx]) ? $pconfig['gateway'][$intf_idx] : "";?>" />
                           <div class="hidden" for="help_for_gateway_<?=$intf_idx;?>">
                             <?= gettext("IP Address OR Hostname"); ?>
@@ -599,8 +599,8 @@ include("head.inc");
                   <table class="table table-striped" >
                     <tbody>
                       <tr>
-                        <td width="22%">&nbsp;</td>
-                        <td width="78%">
+                        <td style="width:22%">&nbsp;</td>
+                        <td style="width:78%">
                           <input type="button" id="show_advanced" value="<?=gettext("Show advanced options"); ?>" class="btn btn-default btn-xs"/>
                         </td>
                       </tr>
@@ -619,8 +619,8 @@ include("head.inc");
                     </thead>
                     <tbody>
                       <tr style="display:none" class="act_show_advanced">
-                        <td width="22%"><a id="help_for_apnum" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("APN number (optional)"); ?></td>
-                        <td width="78%">
+                        <td style="width:22%"><a id="help_for_apnum" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("APN number (optional)"); ?></td>
+                        <td style="width:78%">
                           <input name="apnum" type="text" id="apnum" value="<?=$pconfig['apnum'];?>" />
                           <div class="hidden" for="help_for_apnum">
                             <?= gettext("Note: Defaults to 1 if you set APN above. Ignored if you set no APN above."); ?>
@@ -677,8 +677,8 @@ include("head.inc");
                   <table class="table table-striped" >
                     <tbody>
                       <tr style="display:none" class="act_show_advanced">
-                        <td width="22%"><a id="help_for_ondemand" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Dial On Demand"); ?></td>
-                        <td width="78%">
+                        <td style="width:22%"><a id="help_for_ondemand" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Dial On Demand"); ?></td>
+                        <td style="width:78%">
                           <input type="checkbox" value="on" id="ondemand" name="ondemand" <?=!empty($pconfig['ondemand']) ? "checked=\"checked\"" : ""; ?> />
                           <?= gettext("Enable Dial-on-Demand mode"); ?>
                           <div class="hidden" for="help_for_ondemand">
@@ -762,8 +762,8 @@ include("head.inc");
 <?php
                       for ($intf_idx=0; $intf_idx <= max(count($serialports), count($portlist)) ; ++$intf_idx):?>
                       <tr style="display:none" class="intf_select_<?=$intf_idx;?>">
-                        <td width="22%"> <a id="help_for_link_<?=$intf_idx;?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Link Parameters");?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
-                        <td width="78%">
+                        <td style="width:22%"> <a id="help_for_link_<?=$intf_idx;?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Link Parameters");?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
+                        <td style="width:78%">
                           <table class="table table-striped table-condensed">
                             <tr>
                               <td><?=gettext("Bandwidth");?></td>
@@ -807,8 +807,8 @@ include("head.inc");
                   <table class="table table-striped">
                     <tbody>
                       <tr>
-                        <td width="22%" valign="top">&nbsp;</td>
-                        <td width="78%">
+                        <td style="width:22%; vertical-align:top">&nbsp;</td>
+                        <td style="width:78%">
                           <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                           <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_ppps.php'" />
                           <input name="ptpid" type="hidden" value="<?=$pconfig['ptpid'];?>" />

@@ -99,8 +99,8 @@ include("head.inc");
                   <table class="table table-striped">
                   <tbody>
                     <tr>
-                      <td width="22%"><?= gettext("Status") ?></td>
-                      <td width="78%"><?= $ifinfo['status'] ?></td>
+                      <td style="width:22%"><?= gettext("Status") ?></td>
+                      <td style="width:78%"><?= $ifinfo['status'] ?></td>
                     </tr>
 <?php
                     if (!empty($ifinfo['dhcplink'])): ?>

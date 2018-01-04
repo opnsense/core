@@ -476,15 +476,15 @@ if (isset($input_errors) && count($input_errors) > 0) {
             <div class="table-responsive">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <td width="22%"><b><?=gettext("General information"); ?></b></td>
-                  <td width="78%" align="right">
+                  <td style="width:22%"><b><?=gettext("General information"); ?></b></td>
+                  <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
                     <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                   </td>
                 </tr>
                 <tr>
-                  <td width="22%"><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
-                  <td width="78%" class="vtable">
+                  <td style="width:22%"><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
+                  <td style="width:78%" class="vtable">
                     <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : "" ;?> />
                     <div class="hidden" for="help_for_disabled">
                         <?=gettext("Disable this phase2 entry"); ?><br/>
@@ -603,7 +603,7 @@ endif; ?>
                 </tr>
                 <tr>
                   <td><a id="help_for_proto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol"); ?></td>
-                  <td width="78%" class="vtable">
+                  <td style="width:78%" class="vtable">
                     <select name="protocol" id="proto">
 <?php
                     foreach (array('esp' => 'ESP','ah' => 'AH') as $proto => $protoname) :?>
@@ -656,7 +656,7 @@ endif; ?>
                 </tr>
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hash algorithms"); ?></td>
-                  <td width="78%" class="vtable">
+                  <td style="width:78%" class="vtable">
 <?php
                   foreach ($p2_halgos as $algo => $algoname) :?>
                     <input type="checkbox" name="hash-algorithm-option[]" value="<?=$algo;?>" <?= isset($pconfig['hash-algorithm-option']) && in_array($algo, $pconfig['hash-algorithm-option']) ?  'checked="checked"' : '';?>/>
@@ -732,7 +732,7 @@ endif; ?>
                 endif; ?>
                 <tr>
                   <td>&nbsp;</td>
-                  <td width="78%">
+                  <td style="width:78%">
 <?php
                  if (isset($pconfig['mobile'])) :?>
                     <input name="mobile" type="hidden" value="true" />
