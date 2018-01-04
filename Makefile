@@ -41,7 +41,7 @@ CORE_VERSION=	${CORE_COMMIT:C/-.*$//1}
 CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 .endif
 
-CORE_ABI?=	17.7
+CORE_ABI?=	18.1
 CORE_ARCH?=	${ARCH}
 CORE_OPENVPN?=	# empty
 CORE_PHP?=	71
@@ -58,8 +58,8 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 CORE_REPOSITORY?=	${FLAVOUR}
 .endif
 
-CORE_NAME?=		opnsense-devel
-CORE_TYPE?=		development
+CORE_NAME?=		opnsense
+CORE_TYPE?=		release
 CORE_MESSAGE?=		Insert Name Here
 
 CORE_MAINTAINER?=	franco@opnsense.org
@@ -133,7 +133,6 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			strongswan \
 			sudo \
 			suricata \
-			syslog-ng \
 			syslogd \
 			unbound \
 			wpa_supplicant \
