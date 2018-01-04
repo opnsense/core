@@ -161,7 +161,7 @@ $(document).ready(function() {
                     <td colspan="2"><strong><?=gettext('Reporting Database Options');?></strong></td>
                   </tr>
                   <tr>
-                    <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Round-Robin-Database");?></td>
+                    <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Round-Robin-Database");?></td>
                     <td>
                       <input name="rrdenable" type="checkbox" id="rrdenable" value="yes" <?=!empty($pconfig['rrdenable']) ? "checked=\"checked\"" : ""?> />
                       &nbsp;<strong><?=gettext("Enables the RRD graphing backend.");?></strong>
@@ -193,7 +193,7 @@ $(document).ready(function() {
                     <td colspan="2"><strong><?=gettext('Collected reports');?></strong></td>
                   </tr>
                   <tr>
-                    <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Reports");?> </td>
+                    <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Reports");?> </td>
                     <td>
                       <table class="table table-condensed">
 <?php

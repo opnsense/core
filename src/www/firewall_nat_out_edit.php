@@ -390,7 +390,7 @@ include("head.inc");
                     <table>
                         <tr>
                             <td><?=gettext("Edit Advanced Outbound NAT entry");?></td>
-                            <td colspan="2" align="right">
+                            <td colspan="2" style="text-align:right">
                                 <small><?=gettext("full help"); ?> </small>
                                 <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                             </td>
@@ -410,7 +410,7 @@ include("head.inc");
                 </tr>
                 <tr>
                   <td><a id="help_for_do_not_nat" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Do not NAT");?></td>
-                  <td width="78%" class="vtable">
+                  <td style="width:78%" class="vtable">
                     <input type="checkbox" name="nonat" <?=!empty($pconfig['nonat']) ? " checked=\"checked\"" : ""; ?> />
                     <div class="hidden" for="help_for_do_not_nat">
                       <?=gettext("Enabling this option will disable NAT for traffic matching this rule and stop processing Outbound NAT rules.");?><br />

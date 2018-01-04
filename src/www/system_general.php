@@ -242,8 +242,8 @@ include("head.inc");
         <form method="post">
           <table class="table table-striped opnsense_standard_table_form">
             <tr>
-              <td width="22%"><strong><?=gettext("System");?></strong></td>
-              <td width="78%" align="right">
+              <td style="width:22%"><strong><?=gettext("System");?></strong></td>
+              <td style="width:78%; text-align:right">
                 <small><?=gettext("full help"); ?> </small>
                 <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
               </td>
@@ -327,7 +327,7 @@ include("head.inc");
               </td>
             </tr>
             <tr>
-              <th colspan="2" valign="top" class="listtopic"><?=gettext("Networking"); ?></th>
+              <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Networking"); ?></th>
             </tr>
             <tr>
               <td><a id="help_for_prefer_ipv4" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer IPv4 over IPv6"); ?></td>

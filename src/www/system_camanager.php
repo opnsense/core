@@ -477,8 +477,8 @@ $main_buttons = array(
           <input type="hidden" name="act" id="action" value="<?=$act;?>"/>
           <table class="table table-striped opnsense_standard_table_form">
             <tr>
-              <td width="22%"></td>
-              <td  width="78%" align="right">
+              <td style="width:22%"></td>
+              <td style="width:78%; text-align:right">
                 <small><?=gettext("full help"); ?> </small>
                 <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
               </td>
@@ -515,8 +515,8 @@ $main_buttons = array(
             </thead>
             <tbody>
               <tr>
-                <td width="22%"><a id="help_for_cert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Certificate data");?></td>
-                <td width="78%">
+                <td style="width:22%"><a id="help_for_cert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Certificate data");?></td>
+                <td style="width:78%">
                   <textarea name="cert" cols="65" rows="7" id="cert"><?=isset($pconfig['cert']) ? $pconfig['cert'] : "";?></textarea>
                   <div class="hidden" for="help_for_cert">
                     <?=gettext("Paste a certificate in X.509 PEM format here.");?>
@@ -528,7 +528,7 @@ $main_buttons = array(
                   <a id="help_for_key" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Certificate Private Key");?><br />
                   <?=gettext("(optional)");?>
                 </td>
-                <td width="78%">
+                <td style="width:78%">
                   <textarea name="key" id="key" cols="65" rows="7"><?= isset($pconfig['key']) ? $pconfig['key'] : "";?></textarea>
                   <div class="hidden" for="help_for_key">
                     <?=gettext("Paste the private key for the above certificate here. This is optional in most cases, but required if you need to generate a Certificate Revocation List (CRL).");?>
@@ -555,8 +555,8 @@ $main_buttons = array(
               </thead>
               <tbody>
                 <tr id='intermediate'>
-                  <td width="22%"> <i class="fa fa-info-circle text-muted"></i>  <?=gettext("Signing Certificate Authority");?></td>
-                  <td width="78%">
+                  <td style="width:22%"> <i class="fa fa-info-circle text-muted"></i>  <?=gettext("Signing Certificate Authority");?></td>
+                  <td style="width:78%">
                     <select name='caref' id='caref' class="selectpicker" onchange='internalca_change()'>
 <?php
                     foreach ($a_ca as $ca) :
@@ -571,7 +571,7 @@ $main_buttons = array(
                 </tr>
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
-                  <td width="78%">
+                  <td style="width:78%">
                     <select name='keylen' id='keylen' class="selectpicker">
 <?php
                     foreach ($ca_keylens as $len) :?>
@@ -679,8 +679,8 @@ $main_buttons = array(
 
             <table class="table opnsense_standard_table_form">
             <tr>
-              <td width="22%">&nbsp;</td>
-              <td width="78%">
+              <td style="width:22%">&nbsp;</td>
+              <td style="width:78%">
                 <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
               </td>
             </tr>
@@ -693,7 +693,7 @@ $main_buttons = array(
           <input type="hidden" name="id" id="id" value="<?=isset($id) ? $id :"";?>"/>
           <input type="hidden" name="act" id="action" value="<?=$act;?>"/>
         </form>
-        <table width="100%" border="0" cellpadding="0" cellspacing="0" summary="" class="table table-striped">
+        <table style="width:100%; border:0; cellpadding:0; cellspacing:0" class="table table-striped">
           <thead>
             <tr>
               <th><?=gettext("Name");?></th>
@@ -746,11 +746,11 @@ $main_buttons = array(
               <td><?=$issuer_name;?>&nbsp;</td>
               <td><?=$certcount;?>&nbsp;</td>
               <td><?=$subj;?><br />
-                  <table width="100%" style="font-size: 9px">
+                  <table style="width:100%; font-size: 9px">
                     <tr>
                       <td>&nbsp;</td>
-                      <td width="20%"><?=gettext("Valid From")?>:</td>
-                      <td width="70%"><?= $startdate ?></td>
+                      <td style="width:20%"><?=gettext("Valid From")?>:</td>
+                      <td style="width:70%"><?= $startdate ?></td>
                     </tr>
                     <tr>
                       <td>&nbsp;</td>

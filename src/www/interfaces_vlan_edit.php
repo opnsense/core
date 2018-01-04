@@ -153,8 +153,8 @@ include("head.inc");
               <table class="table table-striped opnsense_standard_table_form">
                 <thead>
                   <tr>
-                    <td width="22%"><strong><?=gettext("Interface VLAN Edit");?></strong></td>
-                    <td width="78%" align="right">
+                    <td style="width:22%"><strong><?=gettext("Interface VLAN Edit");?></strong></td>
+                    <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
                       <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                       &nbsp;
@@ -230,8 +230,8 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td width="22%" valign="top">&nbsp;</td>
-                    <td width="78%">
+                    <td style="width:22%; vertical-align:top">&nbsp;</td>
+                    <td style="width:78%">
                       <input type="hidden" name="vlanif" value="<?=$pconfig['vlanif']; ?>" />
                       <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
                       <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_vlan.php'" />

@@ -1653,8 +1653,8 @@ include("head.inc");
                   <table class="table table-striped opnsense_standard_table_form">
                     <thead>
                       <tr>
-                        <td width="22%"><strong><?=gettext("General configuration"); ?></strong></td>
-                        <td width="78%" align="right">
+                        <td style="width:22%"><strong><?=gettext("General configuration"); ?></strong></td>
+                        <td style="width:78%; text-align:right">
                           <small><?=gettext("full help"); ?> </small>
                           <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                           &nbsp;
@@ -1692,8 +1692,8 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td width="22%"><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
-                          <td width="78%">
+                          <td style="width:22%"><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                          <td style="width:78%">
                             <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
                             <div class="hidden" for="help_for_descr">
                               <?= gettext("Enter a description (name) for the interface here."); ?>
@@ -1701,8 +1701,8 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
-                          <td width="22%"><a id="help_for_blockpriv" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Block private networks"); ?></td>
-                          <td width="78%">
+                          <td style="width:22%"><a id="help_for_blockpriv" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Block private networks"); ?></td>
+                          <td style="width:78%">
                             <input name="blockpriv" type="checkbox" id="blockpriv" value="yes" <?=!empty($pconfig['blockpriv']) ? "checked=\"checked\"" : ""; ?> />
                             <div class="hidden" for="help_for_blockpriv">
                               <?=gettext("When set, this option blocks traffic from IP addresses that are reserved " .
@@ -1833,11 +1833,11 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv4 address"); ?></td>
-                          <td width="78%">
+                          <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv4 address"); ?></td>
+                          <td style="width:78%">
                             <table>
                               <tr>
-                                <td width="348px">
+                                <td style="width:348px">
                                   <input name="ipaddr" type="text" id="ipaddr" value="<?=$pconfig['ipaddr'];?>" />
                                 </td>
                                 <td>
@@ -1930,8 +1930,8 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td width="22%"><a id="help_for_dhcp_mode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Configuration Mode"); ?></td>
-                          <td width="78%">
+                          <td style="width:22%"><a id="help_for_dhcp_mode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Configuration Mode"); ?></td>
+                          <td style="width:78%">
                             <div id="dhcp_mode" class="btn-group" data-toggle="buttons">
                               <label class="btn btn-default <?=empty($pconfig['adv_dhcp_config_advanced']) && empty($pconfig['adv_dhcp_config_file_override']) ? "active" : "";?>">
                                 <input type="radio" value="basic" <?=empty($pconfig['adv_dhcp_config_advanced']) && empty($pconfig['adv_dhcp_config_file_override']) ? "checked=\"\"" : "";?>/>
@@ -1958,7 +1958,7 @@ include("head.inc");
                           <td>
                             <table>
                               <tr>
-                                <td width="348px;">
+                                <td style="width:348px;">
                                   <input name="alias-address" type="text" id="alias-address" value="<?=$pconfig['alias-address'];?>" />
                                 </td>
                                 <td>
@@ -2093,8 +2093,8 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td width="22%"><a id="help_for_country" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Service Provider"); ?></td>
-                          <td width="78%">
+                          <td style="width:22%"><a id="help_for_country" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Service Provider"); ?></td>
+                          <td style="width:78%">
                             <table class="table table-condensed">
                               <tr id="trcountry" class="hidden">
                                 <td><?=gettext("Country:"); ?></td>
@@ -2195,8 +2195,8 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Username"); ?></td>
-                          <td width="78%">
+                          <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Username"); ?></td>
+                          <td style="width:78%">
                               <input name="pppoe_username" type="text" id="pppoe_username" value="<?=$pconfig['pppoe_username'];?>" />
                           </td>
                         </tr>
@@ -2270,8 +2270,8 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Username"); ?></td>
-                          <td width="78%">
+                          <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Username"); ?></td>
+                          <td style="width:78%">
                             <input name="pptp_username" type="text" id="pptp_username" value="<?=$pconfig['pptp_username'];?>" />
                           </td>
                         </tr>
@@ -2286,7 +2286,7 @@ include("head.inc");
                           <td>
                             <table>
                               <tr>
-                                <td width="348px">
+                                <td style="width:348px">
                                   <input name="localip" type="text" id="localip"  value="<?=$pconfig['localip'];?>" />
                                 </td>
                                 <td>
@@ -2349,11 +2349,11 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv6 address"); ?></td>
-                          <td width="78%">
+                          <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv6 address"); ?></td>
+                          <td style="width:78%">
                             <table>
                               <tr>
-                                <td width="257px">
+                                <td style="width:257px">
                                   <input name="ipaddrv6" type="text" id="ipaddrv6" size="28" value="<?=htmlspecialchars($pconfig['ipaddrv6']);?>" />
                                 </td>
                                 <td>
@@ -2456,8 +2456,8 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td width="22%"><a id="help_for_dhcpv6_mode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Configuration Mode"); ?></td>
-                          <td width="78%">
+                          <td style="width:22%"><a id="help_for_dhcpv6_mode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Configuration Mode"); ?></td>
+                          <td style="width:78%">
                             <div id="dhcpv6_mode" class="btn-group" data-toggle="buttons">
                               <label class="btn btn-default <?=empty($pconfig['adv_dhcp6_config_advanced']) && empty($pconfig['adv_dhcp6_config_file_override']) ? "active" : "";?>">
                                 <input type="radio" value="basic" <?=empty($pconfig['adv_dhcp6_config_advanced']) && empty($pconfig['adv_dhcp6_config_file_override']) ? "checked=\"\"" : "";?>/>
@@ -2703,8 +2703,8 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td width="22%"><a id="help_for_prefix-6rd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("6RD prefix"); ?></td>
-                          <td width="78%">
+                          <td style="width:22%"><a id="help_for_prefix-6rd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("6RD prefix"); ?></td>
+                          <td style="width:78%">
                             <input name="prefix-6rd" type="text" id="prefix-6rd" value="<?=$pconfig['prefix-6rd'];?>" />
                             <div class="hidden" for="help_for_prefix-6rd">
                               <?=gettext("The value in this field is the 6RD IPv6 prefix assigned by your ISP. e.g. '2001:db8::/32'") ?>
@@ -2750,8 +2750,8 @@ include("head.inc");
                           <th colspan="2"><?=gettext("Track IPv6 Interface"); ?></th>
                         </tr>
                         <tr>
-                          <td width="22%"><a id="help_for_track6-interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Interface"); ?></td>
-                          <td width="78%">
+                          <td style="width:22%"><a id="help_for_track6-interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Interface"); ?></td>
+                          <td style="width:78%">
                             <select name='track6-interface' class='selectpicker' data-style='btn-default' >
 <?php
                             foreach (get_configured_interface_with_descr(false, true) as $iface => $ifacename):
@@ -2808,8 +2808,8 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td width="22%"><a id="help_for_persistcommonwireless" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Persist common settings");?></td>
-                          <td width="78%">
+                          <td style="width:22%"><a id="help_for_persistcommonwireless" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Persist common settings");?></td>
+                          <td style="width:78%">
                             <input name="persistcommonwireless" type="checkbox" value="yes"  id="persistcommonwireless" <?=!empty($pconfig['persistcommonwireless']) ? "checked=\"checked\"" : "";?> />
                             <div class="hidden" for="help_for_persistcommonwireless">
                               <?=gettext("Enabling this preserves the common wireless configuration through interface deletions and reassignments.");?>
@@ -3303,8 +3303,8 @@ include("head.inc");
                 <div class="table-responsive">
                     <table class="table table-striped opnsense_standard_table_form">
                       <tr>
-                        <td width="22%"></td>
-                        <td width="78%">
+                        <td style="width:22%"></td>
+                        <td style="width:78%">
                           <input id="save" name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                           <input id="cancel" type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces.php'" />
                           <input name="if" type="hidden" id="if" value="<?=$if;?>" />

@@ -169,8 +169,8 @@ include("head.inc");
             <input name="input_type" type="hidden" value="<?=$input_type;?>" />
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td width="22%"><?=gettext("System Privileges");?></td>
-                <td width="78%">
+                <td style="width:22%"><?=gettext("System Privileges");?></td>
+                <td style="width:78%">
                     <table class="table table-condensed table-hoover">
                         <thead>
                             <tr>

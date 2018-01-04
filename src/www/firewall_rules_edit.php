@@ -676,15 +676,15 @@ include("head.inc");
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">
                   <tr>
-                    <td valign="top"><strong><?=gettext("Edit Firewall rule");?></strong></td>
-                    <td align="right">
+                    <td style="vertical-align:top"><strong><?=gettext("Edit Firewall rule");?></strong></td>
+                    <td style="text-align:right">
                       <small><?=gettext("full help"); ?> </small>
                       <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                     </td>
                   </tr>
                   <tr>
-                    <td width="22%"><a id="help_for_action" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Action");?></td>
-                    <td width="78%">
+                    <td style="width:22%"><a id="help_for_action" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Action");?></td>
+                    <td style="width:78%">
                       <select name="type" class="selectpicker" data-live-search="true" data-size="5" >
 <?php
                         $type_options = array('Pass' => gettext('Pass'), 'Block' => gettext('Block'), 'Reject' => gettext('Reject'));
@@ -908,10 +908,10 @@ include("head.inc");
                         <tr>
                           <td>
                             <div>
-                              <table border="0" cellpadding="0" cellspacing="0">
+                              <table style="border:0; cellpadding:0; cellspacing:0">
                                 <tbody>
                                   <tr>
-                                      <td width="348px">
+                                      <td style="width:348px">
                                         <!-- updates to "other" option in  src -->
                                         <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  type="text" id="src_address" for="src" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
                                       </td>
@@ -1037,10 +1037,10 @@ include("head.inc");
                         </tr>
                         <tr>
                           <td>
-                            <table border="0" cellpadding="0" cellspacing="0">
+                            <table style="border:0; cellpadding:0; cellspacing:0">
                               <tbody>
                                 <tr>
-                                    <td width="348px">
+                                    <td style="width:348px">
                                       <!-- updates to "other" option in  src -->
                                       <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  type="text" id="dst_address" for="dst" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("Destination address");?>"/>
                                     </td>
@@ -1373,7 +1373,7 @@ include("head.inc");
                   <tr class="opt_advanced hidden">
                       <td><a id="help_for_max-src-conn-rate" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Max new connections");?> </td>
                       <td>
-                        <table border="0" cellspacing="0" cellpadding="0">
+                        <table style="border:0; cellspacing:0; cellpadding:0">
                           <tbody>
                             <tr>
                               <td>

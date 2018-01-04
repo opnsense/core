@@ -225,8 +225,8 @@ include("head.inc");
           <form method="post" name="iform" id="iform">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td width="22%"><strong><?= gettext('Cryptographic Hardware Acceleration') ?></strong></td>
-                <td width="78%" align="right">
+                <td style="width:22%"><strong><?= gettext('Cryptographic Hardware Acceleration') ?></strong></td>
+                <td style="width:78%; text-align:right">
                   <small><?=gettext("full help"); ?> </small>
                   <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                 </td>
@@ -272,7 +272,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Thermal Sensors"); ?></th>
+                <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Thermal Sensors"); ?></th>
               </tr>
               <tr>
                 <td><a id="help_for_thermal_hardware" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware");?> </td>
@@ -298,7 +298,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Periodic Backups"); ?></th>
+                <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Periodic Backups"); ?></th>
               </tr>
               <tr>
                 <td><a id="help_for_rrdbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic RRD Backup");?></td>
@@ -374,7 +374,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Power Savings"); ?></th>
+                <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Power Savings"); ?></th>
               </tr>
               <tr>
                 <td><a id="help_for_powerd_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use PowerD"); ?></td>
@@ -457,7 +457,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Disk / Memory Settings (reboot to apply changes)"); ?></th>
+                <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Disk / Memory Settings (reboot to apply changes)"); ?></th>
               </tr>
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Swap file'); ?></td>

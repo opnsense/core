@@ -229,8 +229,8 @@ $(document).ready(function() {
                 <table class="table table-striped opnsense_standard_table_form">
                   <thead>
                     <tr>
-                      <td width="22%"><strong><?=gettext("Bridge configuration");?></strong></td>
-                      <td width="78%" align="right">
+                      <td style="width:22%"><strong><?=gettext("Bridge configuration");?></strong></td>
+                      <td style="width:78%; text-align:right">
                         <small><?=gettext("full help"); ?> </small>
                         <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                         &nbsp;
@@ -285,8 +285,8 @@ $(document).ready(function() {
                   </thead>
                   <tbody>
                     <tr>
-                      <td width="22%"><a id="help_for_enablestp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable");?></td>
-                      <td width="78%">
+                      <td style="width:22%"><a id="help_for_enablestp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable");?></td>
+                      <td style="width:78%">
                         <input type="checkbox" name="enablestp" <?= !empty($pconfig['enablestp']) ? 'checked="checked"' : "";?> />
                         <div class="hidden" for="help_for_enablestp">
                           <?=gettext("Enable spanning tree options for this bridge."); ?>
@@ -439,8 +439,8 @@ $(document).ready(function() {
                   </thead>
                   <tbody>
                     <tr>
-                      <td width="22%"><a id="help_for_maxaddr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Cache size"); ?> (<?=gettext("entries"); ?>)</td>
-                      <td width="78%">
+                      <td style="width:22%"><a id="help_for_maxaddr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Cache size"); ?> (<?=gettext("entries"); ?>)</td>
+                      <td style="width:78%">
                         <input name="maxaddr" type="text" value="<?=$pconfig['maxaddr'];?>" />
                       <div class="hidden" for="help_for_maxaddr">
                         <?=gettext("Set the size of the bridge address cache to size. The default is .100 entries."); ?>
@@ -609,8 +609,8 @@ $(document).ready(function() {
                 <table class="table table-striped">
                   <tbody>
                     <tr>
-                      <td width="22%" valign="top">&nbsp;</td>
-                      <td width="78%">
+                      <td style="width:22%; vertical-align:top">&nbsp;</td>
+                      <td style="width:78%">
                         <input type="hidden" name="bridgeif" value="<?=$pconfig['bridgeif']; ?>" />
                         <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                         <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_bridge.php'" />

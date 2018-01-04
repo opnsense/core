@@ -96,7 +96,7 @@ if (isset($config['system']['authserver'][0]['host'])) {
         endif;
       endif;?>
       <tr>
-        <td colspan="2" align="right">
+        <td colspan="2" style="text-align:right">
           <input type="Button" value="<?=gettext("Close"); ?>" class="btn btn-default" onClick='Javascript:window.close();'>
         </td>
       </tr>

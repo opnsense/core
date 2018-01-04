@@ -99,7 +99,7 @@ if (isset($_GET['basedn']) && isset($_GET['host'])) {
 <?php
               endforeach;?>
               <tr>
-                <td align="right">
+                <td style="text-align:right">
                   <input type='button' class="btn btn-primary" value='<?=gettext("Save");?>' onClick="post_choices();">
                 </td>
               </tr>

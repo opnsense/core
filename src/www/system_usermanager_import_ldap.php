@@ -155,7 +155,7 @@ else :
       <?php endforeach;
 ?>
       <tr>
-        <td align="left" colspan="3">
+        <td style="text-align:left" colspan="3">
           <input type='submit' class="btn btn-primary" value='<?=gettext("Save");?>'>
         </td>
       </tr>
