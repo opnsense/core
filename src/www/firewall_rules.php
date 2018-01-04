@@ -302,7 +302,7 @@ $( document ).ready(function() {
                 if (!isset($config['system']['ipv6allow']) &&
                         ($selected_if == 'FloatingRules')):
 ?>
-                  <tr valign="top">
+                  <tr style="vertical-align:top">
                     <td>&nbsp;</td>
                     <td><span class="glyphicon glyphicon-remove text-danger"></span></td>
                     <td>IPv6 *</td>
@@ -324,7 +324,7 @@ $( document ).ready(function() {
                         || ((count($config['interfaces']) == 1) && ($selected_if == 'wan')))):
                         $alports = implode('<br />', filter_core_antilockout_ports());
 ?>
-                  <tr valign="top">
+                  <tr style="vertical-align:top">
                     <td>&nbsp;</td>
                     <td><span class="glyphicon glyphicon-play text-success"></span></td>
                     <td>*</td>
@@ -361,14 +361,14 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">*</td>
                     <td class="hidden-xs hidden-sm">&nbsp;</td>
                     <td class="hidden-xs hidden-sm"><?=gettext("Block private networks");?></td>
-                    <td valign="middle" class="list nowrap">
+                    <td style="vertical-align:middle" class="list nowrap">
                         <a href="interfaces.php?if=<?=$selected_if?>#rfc1918" data-toggle="tooltip" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
                     </td>
                   </tr>
 <?php
               endif;
               if (isset($config['interfaces'][$selected_if]['blockbogons'])): ?>
-                  <tr valign="top" id="frrfc1918">
+                  <tr style="vertical-align:top" id="frrfc1918">
                     <td>&nbsp;</td>
                     <td>
                       <span class="glyphicon glyphicon-remove text-danger"></span>
@@ -622,7 +622,7 @@ $( document ).ready(function() {
                   if (!$interface_has_rules):
 ?>
                   <tr>
-                    <td colspan="11" align="center" valign="middle">
+                    <td colspan="11" style="text-align:center; vertical-align:middle">
                     <span class="text-muted">
                 <?php if ($selected_if == 'FloatingRules'): ?>
                       <?= gettext('No floating rules are currently defined. Floating rules are ' .
@@ -673,24 +673,24 @@ $( document ).ready(function() {
                   </tr>
                   <tr class="hidden-xs hidden-sm">
                     <td colspan="11">
-                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                      <table style="width:100%; border:0; cellspacing:0; cellpadding:0">
                         <tr>
-                          <td width="16"><span class="glyphicon glyphicon-play text-success"></span></td>
-                          <td width="100"><?=gettext("pass");?></td>
-                          <td width="14"></td>
-                          <td width="16"><span class="glyphicon glyphicon-remove text-danger"></span></td>
-                          <td width="100"><?=gettext("block");?></td>
-                          <td width="14"></td>
-                          <td width="16"><span class="glyphicon glyphicon-remove-sign text-danger"></span></td>
-                          <td width="100"><?=gettext("reject");?></td>
-                          <td width="14"></td>
-                          <td width="16"><span class="glyphicon glyphicon-info-sign text-info"></span></td>
-                          <td width="100"><?=gettext("log");?></td>
-                          <td width="16"><span class="fa fa-long-arrow-right text-info"></span></td>
-                          <td width="100"><?=gettext("in");?></td>
+                          <td style="width:16px"><span class="glyphicon glyphicon-play text-success"></span></td>
+                          <td style="width:100px"><?=gettext("pass");?></td>
+                          <td style="width:14px"></td>
+                          <td style="width:16px"><span class="glyphicon glyphicon-remove text-danger"></span></td>
+                          <td style="width:100px"><?=gettext("block");?></td>
+                          <td style="width:14px"></td>
+                          <td style="width:16px"><span class="glyphicon glyphicon-remove-sign text-danger"></span></td>
+                          <td style="width:100px"><?=gettext("reject");?></td>
+                          <td style="width:14px"></td>
+                          <td style="width:16px"><span class="glyphicon glyphicon-info-sign text-info"></span></td>
+                          <td style="width:100px"><?=gettext("log");?></td>
+                          <td style="width:16px"><span class="fa fa-long-arrow-right text-info"></span></td>
+                          <td style="width:100px"><?=gettext("in");?></td>
 <?php                     if ($selected_if == 'FloatingRules'): ?>
-                          <td width="16"><span class="fa fa-flash text-warning"></span></td>
-                          <td width="100"><?=gettext("first match");?></td>
+                          <td style="width:16px"><span class="fa fa-flash text-warning"></span></td>
+                          <td style="width:100px"><?=gettext("first match");?></td>
 <?php                     endif; ?>
                         </tr>
                         <tr>
@@ -703,13 +703,13 @@ $( document ).ready(function() {
                           <td><span class="glyphicon glyphicon-remove-sign text-muted"></span></td>
                           <td class="nowrap"><?=gettext("reject (disabled)");?></td>
                           <td>&nbsp;</td>
-                          <td width="16"><span class="glyphicon glyphicon-info-sign text-muted"></span></td>
+                          <td style="width:16px"><span class="glyphicon glyphicon-info-sign text-muted"></span></td>
                           <td class="nowrap"><?=gettext("log (disabled)");?></td>
-                          <td width="16"><span class="fa fa-long-arrow-left"></span></td>
-                          <td width="100"><?=gettext("out");?></td>
+                          <td style="width:16px"><span class="fa fa-long-arrow-left"></span></td>
+                          <td style="width:100px"><?=gettext("out");?></td>
 <?php                     if ($selected_if == 'FloatingRules'): ?>
-                          <td width="16"><span class="fa fa-flash text-muted"></span></td>
-                          <td width="100"><?=gettext("last match");?></td>
+                          <td style="width:16px"><span class="fa fa-flash text-muted"></span></td>
+                          <td style="width:100px"><?=gettext("last match");?></td>
 <?php                     endif; ?>
                         </tr>
                       </table>

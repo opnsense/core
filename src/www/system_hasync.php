@@ -105,8 +105,8 @@ include("head.inc");
             <div class="table-responsive">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <td width="22%"><strong><?=gettext('State Synchronization') ?></strong></td>
-                  <td  width="78%" align="right">
+                  <td style="width:22%"><strong><?=gettext('State Synchronization') ?></strong></td>
+                  <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
                     <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                   </td>
@@ -179,7 +179,7 @@ include("head.inc");
                   <th colspan="2" class="listtopic"><?=gettext('Configuration Synchronization Settings (XMLRPC Sync)') ?></th>
                 </tr>
                 <tr>
-                  <td width="22%"><a id="help_for_synchronizetoip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize Config to IP') ?></td>
+                  <td style="width:22%"><a id="help_for_synchronizetoip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize Config to IP') ?></td>
                   <td>
                     <input name="synchronizetoip" type="text" value="<?=$pconfig['synchronizetoip']; ?>" />
                     <div class="hidden" for="help_for_synchronizetoip">

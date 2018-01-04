@@ -556,8 +556,8 @@ $( document ).ready(function() {
                 <input type="hidden" id="certid" name="certid" value="" /> <!-- remove cert association action -->
                 <table class="table table-striped opnsense_standard_table_form">
                   <tr>
-                    <td width="22%"></td>
-                    <td width="78%" align="right">
+                    <td style="width:22%"></td>
+                    <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
                       <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                     </td>
@@ -647,7 +647,7 @@ $( document ).ready(function() {
                   <tr>
                     <td><a id="help_for_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Group Memberships");?></td>
                     <td>
-                      <table class="table" width="100%" border="0" cellpadding="0" cellspacing="0">
+                      <table class="table" style="width:100%; border:0; cellpadding:0; cellspacing:0">
                         <thead>
                           <tr>
                             <th><?=gettext("Not Member Of"); ?></th>
@@ -989,13 +989,13 @@ $( document ).ready(function() {
                         <table>
                           <tr>
                             <td></td>
-                            <td width="20px"></td>
-                            <td width="20px"><span class="glyphicon glyphicon-user text-danger"></span></td>
-                            <td width="200px"><?= gettext('System Administrator') ?></td>
-                            <td width="20px"><span class="glyphicon glyphicon-user text-muted"></span></td>
-                            <td width="200px"><?= gettext('Disabled User') ?></td>
-                            <td width="20px"><span class="glyphicon glyphicon-user text-info"></span></td>
-                            <td width="200px"><?= gettext('Normal User') ?></td>
+                            <td style="width:20px"></td>
+                            <td style="width:20px"><span class="glyphicon glyphicon-user text-danger"></span></td>
+                            <td style="width:200px"><?= gettext('System Administrator') ?></td>
+                            <td style="width:20px"><span class="glyphicon glyphicon-user text-muted"></span></td>
+                            <td style="width:200px"><?= gettext('Disabled User') ?></td>
+                            <td style="width:20px"><span class="glyphicon glyphicon-user text-info"></span></td>
+                            <td style="width:200px"><?= gettext('Normal User') ?></td>
                             <td></td>
                           </tr>
                         </table>

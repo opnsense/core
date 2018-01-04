@@ -507,8 +507,8 @@ $( document ).ready(function() {
             <form method="post" name="iform" id="iform">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <td width="22%"><?=gettext("Edit Redirect entry"); ?></td>
-                  <td  width="78%" align="right">
+                  <td style="width:22%"><?=gettext("Edit Redirect entry"); ?></td>
+                  <td  style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
                     <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                   </td>

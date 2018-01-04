@@ -67,7 +67,7 @@ $showAllOption = $showAll ? "" : "?showAll";
           <header class="content-box-head container-fluid">
             <h3><a name="<?=$name;?>"></a><?=$name;?></h3>
           </header>
-         <table class="table table-striped" id="IPv4" summary="ipv4 routes">
+         <table class="table table-striped" id="IPv4">
             <?php
               foreach (explode("\n", $table) as $i => $line) {
                 if (trim($line) == "") {
@@ -107,7 +107,7 @@ $showAllOption = $showAll ? "" : "?showAll";
                                     'The information listed for each socket is:'),'<br />','<br />','<br />') ?></p>
           </div>
 
-          <table class="table table-striped" id="IPv4" summary="ipv4 routes">
+          <table class="table table-striped" id="IPv4">
           <tr><td>USER</td><td><?= gettext('The user who owns the socket.') ?></td></tr>
           <tr><td>COMMAND</td><td><?= gettext('The command which holds the socket.') ?></td></tr>
           <tr><td>PID</td><td><?= gettext('The process ID of the command which holds the socket.') ?></td></tr>

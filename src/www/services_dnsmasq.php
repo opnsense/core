@@ -230,15 +230,15 @@ $( document ).ready(function() {
             <div class="table-responsive">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <td valign="top"><strong><?=gettext("General DNS Forwarder Options");?></strong></td>
-                  <td align="right">
+                  <td style="vertical-align:top"><strong><?=gettext("General DNS Forwarder Options");?></strong></td>
+                  <td style="text-align:right">
                       <small><?=gettext("full help");?> </small>
                       <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                   </td>
                 </tr>
                 <tr>
-                  <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?></td>
-                  <td width="78%">
+                  <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?></td>
+                  <td style="width:78%">
                     <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
                      <strong><?=gettext("Enable DNS Forwarder");?></strong>
                   </td>

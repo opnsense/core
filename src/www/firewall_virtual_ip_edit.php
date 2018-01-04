@@ -313,8 +313,8 @@ $( document ).ready(function() {
                 <thead></thead>
                 <tbody>
                   <tr>
-                    <td width="22%"><strong><?=gettext("Edit Virtual IP");?></strong></td>
-                    <td  width="78%" align="right">
+                    <td style="width:22%"><strong><?=gettext("Edit Virtual IP");?></strong></td>
+                    <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
                       <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                     </td>
@@ -368,9 +368,9 @@ $( document ).ready(function() {
                   <tr>
                       <td><a id="help_for_address" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Address");?></td>
                       <td>
-                        <table border="0" cellspacing="0" cellpadding="0">
+                        <table style="border:0; cellspacing:0; cellpadding:0">
                           <tr>
-                            <td width="348px">
+                            <td style="width:348px">
                               <input name="subnet" type="text" class="form-control" id="subnet" size="28" value="<?=$pconfig['subnet'];?>" />
                             </td>
                             <td >

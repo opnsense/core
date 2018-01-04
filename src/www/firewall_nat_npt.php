@@ -193,9 +193,9 @@ $main_buttons = array(
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th width="2%">&nbsp;</th>
-                      <th width="2%"><input type="checkbox" id="selectAll"></th>
-                      <th width="2%">&nbsp;</th>
+                      <th style="width:2%">&nbsp;</th>
+                      <th style="width:2%"><input type="checkbox" id="selectAll"></th>
+                      <th style="width:2%">&nbsp;</th>
                       <th><?=gettext("Interface"); ?></th>
                       <th><?=gettext("External Prefix"); ?></th>
                       <th><?=gettext("Internal prefix"); ?></th>

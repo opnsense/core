@@ -157,8 +157,8 @@ include("head.inc");
               <table class="table table-striped opnsense_standard_table_form">
                 <thead>
                   <tr>
-                    <td width="22%"><strong><?=gettext("GIF configuration");?></strong></td>
-                    <td width="78%" align="right">
+                    <td style="width:22%"><strong><?=gettext("GIF configuration");?></strong></td>
+                    <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
                       <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                       &nbsp;
@@ -167,8 +167,8 @@ include("head.inc");
                 </thead>
                 <tbody>
                   <tr>
-                    <td width="22%"><a id="help_for_if" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Parent interface"); ?></td>
-                    <td width="78%">
+                    <td style="width:22%"><a id="help_for_if" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Parent interface"); ?></td>
+                    <td style="width:78%">
                       <select name="if" class="selectpicker" data-live-search="true">
 <?php
                       $portlist = get_configured_interface_with_descr();
@@ -215,7 +215,7 @@ include("head.inc");
                     <td>
                       <table class="table table-condensed">
                         <tr>
-                          <td width="285px">
+                          <td style="width:285px">
                             <input name="tunnel-remote-addr" type="text" id="tunnel-remote-addr" value="<?=$pconfig['tunnel-remote-addr'];?>" />
                           </td>
                           <td>

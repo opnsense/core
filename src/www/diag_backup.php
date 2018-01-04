@@ -345,7 +345,7 @@ $( document ).ready(function() {
             <table class="table table-striped ">
               <tbody>
                 <tr>
-                  <th colspan="2" valign="top" class="listtopic">
+                  <th colspan="2" style="vertical-align:top" class="listtopic">
                     <?=gettext("Download"); ?>
                   </th>
                 </tr>
@@ -386,7 +386,7 @@ $( document ).ready(function() {
             <table class="table table-striped ">
               <tbody>
                 <tr>
-                  <th colspan="2" valign="top" class="listtopic">
+                  <th colspan="2" style="vertical-align:top" class="listtopic">
                     <?=gettext("Restore"); ?>
                   </th>
                 </tr>
@@ -443,7 +443,7 @@ $( document ).ready(function() {
               </thead>
               <tbody>
                 <tr>
-                  <th colspan="2" valign="top" class="listtopic">
+                  <th colspan="2" style="vertical-align:top" class="listtopic">
                     <?=gettext("Google Drive"); ?>
                   </th>
                 </tr>

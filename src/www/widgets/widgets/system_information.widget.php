@@ -158,7 +158,7 @@ require_once("system.inc");
 <table class="table table-striped table-condensed" data-plugin="system" data-callback="system_information_widget_update">
   <tbody>
     <tr>
-      <td width="30%"><?=gettext("Name");?></td>
+      <td style="width:30%"><?=gettext("Name");?></td>
       <td><?=$config['system']['hostname'] . "." . $config['system']['domain']; ?></td>
     </tr>
     <tr>

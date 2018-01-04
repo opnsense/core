@@ -255,8 +255,8 @@ include("head.inc");
             <form method="post" name="iform" id="iform">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <td width="22%"><strong><?=gettext("IPv6 Options");?></strong></td>
-                  <td  width="78%" align="right">
+                  <td style="width:22%"><strong><?=gettext("IPv6 Options");?></strong></td>
+                  <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
                     <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                   </td>
@@ -274,7 +274,7 @@ include("head.inc");
                 </tr>
 <?php           if (count($config['interfaces']) > 1): ?>
                 <tr>
-                  <th colspan="2" valign="top" class="listtopic"><?=gettext("Network Address Translation");?></th>
+                  <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Network Address Translation");?></th>
                 </tr>
                 <tr>
                   <td><a id="help_for_natreflection" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection for port forwards");?></td>
@@ -316,7 +316,7 @@ include("head.inc");
                 </tr>
 <?php           endif; ?>
                 <tr>
-                  <th colspan="2" valign="top" class="listtopic"><?=gettext("Bogon Networks");?></th>
+                  <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Bogon Networks");?></th>
                 </tr>
                 <tr>
                   <td><a id="help_for_bogonsinterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Update Frequency");?></td>
@@ -338,7 +338,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <th colspan="2" valign="top" class="listtopic"><?=gettext("Gateway Monitoring"); ?></th>
+                  <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Gateway Monitoring"); ?></th>
                 </tr>
                 <tr>
                   <td><a id="help_for_kill_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Kill states");?> </td>
@@ -373,7 +373,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <th colspan="2" valign="top" class="listtopic"><?= gettext('Multi-WAN') ?></th>
+                  <th colspan="2" style="vertical-align:top" class="listtopic"><?= gettext('Multi-WAN') ?></th>
                 </tr>
                 <tr>
                   <td><a id="help_for_lb_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky connections");?> </td>
@@ -423,7 +423,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <th colspan="2" valign="top" class="listtopic"><?=gettext("Schedules"); ?></th>
+                  <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Schedules"); ?></th>
                 </tr>
                 <tr>
                   <td><a id="help_for_schedule_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Schedule States"); ?></td>
@@ -436,7 +436,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <th colspan="2" valign="top" class="listtopic"><?=gettext("Miscellaneous");?></th>
+                  <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Miscellaneous");?></th>
                 </tr>
                 <tr>
                   <td><a id="help_for_optimization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Optimization");?></td>

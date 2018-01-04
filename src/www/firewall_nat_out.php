@@ -472,7 +472,7 @@ include("head.inc");
                   <td colspan="12">&nbsp;</td>
                 </tr>
                 <tr>
-                  <td width="16"><span class="glyphicon glyphicon-play text-success"></span></td>
+                  <td style="width:16px"><span class="glyphicon glyphicon-play text-success"></span></td>
                   <td colspan="11"><?=gettext("Enabled rule"); ?></td>
                 </tr>
                 <tr>

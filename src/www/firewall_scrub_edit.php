@@ -289,15 +289,15 @@ include("head.inc");
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">
                   <tr>
-                    <td valign="top"><strong><?=gettext("Edit Firewall scrub rule");?></strong></td>
-                    <td align="right">
+                    <td style="vertical-align:top"><strong><?=gettext("Edit Firewall scrub rule");?></strong></td>
+                    <td style="text-align:right">
                       <small><?=gettext("full help"); ?> </small>
                       <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                     </td>
                   </tr>
                   <tr>
-                    <td width="22%"><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
-                    <td width="78%">
+                    <td style="width:22%"><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
+                    <td style="width:78%">
                       <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
                       <div class="hidden" for="help_for_disabled">
                         <strong><?=gettext("Disable this rule"); ?></strong><br />
@@ -396,10 +396,10 @@ include("head.inc");
                         <tr>
                           <td>
                             <div>
-                              <table border="0" cellpadding="0" cellspacing="0">
+                              <table style="border:0; cellpadding:0; cellspacing:0">
                                 <tbody>
                                   <tr>
-                                      <td width="348px">
+                                      <td style="width:348px">
                                         <!-- updates to "other" option in  src -->
                                         <input type="text" id="src_address" for="src" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
                                       </td>
@@ -495,10 +495,10 @@ include("head.inc");
                         </tr>
                         <tr>
                           <td>
-                            <table border="0" cellpadding="0" cellspacing="0">
+                            <table style="border:0; cellpadding:0; cellspacing:0">
                               <tbody>
                                 <tr>
-                                    <td width="348px">
+                                    <td style="width:348px">
                                       <!-- updates to "other" option in  src -->
                                       <input  type="text" id="dst_address" for="dst" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("Destination address");?>"/>
                                     </td>
@@ -575,8 +575,8 @@ include("head.inc");
                     <td colspan="2"><strong><?=gettext("Normalizations");?></strong></td>
                   </tr>
                   <tr>
-                      <td width="22%"><a id="help_for_maxmss" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Max mss"); ?></td>
-                      <td width="78%">
+                      <td style="width:22%"><a id="help_for_maxmss" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Max mss"); ?></td>
+                      <td style="width:78%">
                           <input name="max-mss" type="text" value="<?=$pconfig['max-mss'];?>" />
                           <div class="hidden" for="help_for_maxmss">
                             <?=gettext("Enforces a maximum MSS for matching TCP packets."); ?>
@@ -584,8 +584,8 @@ include("head.inc");
                       </td>
                   </tr>
                   <tr>
-                      <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('TOS / DSCP'); ?></td>
-                      <td width="78%">
+                      <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('TOS / DSCP'); ?></td>
+                      <td style="width:78%">
                           <select name="set-tos" class="selectpicker" data-size="5" data-width="auto"  data-live-search="true">
 <?php
                             foreach (filter_tos_values() as $tos_value => $tos_label): ?>
@@ -598,8 +598,8 @@ include("head.inc");
                       </td>
                   </tr>
                   <tr>
-                      <td width="22%"><a id="help_for_minttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Minimum TTL') ?></td>
-                      <td width="78%">
+                      <td style="width:22%"><a id="help_for_minttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Minimum TTL') ?></td>
+                      <td style="width:78%">
                           <input name="min-ttl" type="text" value="<?=$pconfig['min-ttl'];?>" />
                           <div class="hidden" for="help_for_minttl">
                             <?=gettext("Enforces a minimum TTL for matching IP packets."); ?>
@@ -607,8 +607,8 @@ include("head.inc");
                       </td>
                   </tr>
                   <tr>
-                      <td width="22%"><a id="help_for_nodf" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Do not fragment"); ?></td>
-                      <td width="78%">
+                      <td style="width:22%"><a id="help_for_nodf" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Do not fragment"); ?></td>
+                      <td style="width:78%">
                           <input name="no-df" type="checkbox" value="1" <?= !empty($pconfig['no-df']) ? "checked=\"checked\"" : ""; ?> />
                           <div class="hidden" for="help_for_nodf">
                             <?=gettext("Clears the dont-fragment bit from a matching IP packet."); ?>
@@ -616,8 +616,8 @@ include("head.inc");
                       </td>
                   </tr>
                   <tr>
-                      <td width="22%"><a id="help_for_randomid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Random ID') ?></td>
-                      <td width="78%">
+                      <td style="width:22%"><a id="help_for_randomid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Random ID') ?></td>
+                      <td style="width:78%">
                           <input name="random-id" type="checkbox" value="1" <?= !empty($pconfig['random-id']) ? "checked=\"checked\"" : ""; ?> />
                           <div class="hidden" for="help_for_randomid">
                             <?=gettext("Replaces the IP identification field with random values to compensate for ".
@@ -646,8 +646,8 @@ include("head.inc");
 <?php
                     if ($has_created_time): ?>
                     <tr>
-                      <td width="22%"><?=gettext("Created");?></td>
-                      <td width="78%">
+                      <td style="width:22%"><?=gettext("Created");?></td>
+                      <td style="width:78%">
                         <?= date(gettext("n/j/y H:i:s"), $a_scrub[$id]['created']['time']) ?> <?= gettext("by") ?> <strong><?= $a_scrub[$id]['created']['username'] ?></strong>
                       </td>
                     </tr>

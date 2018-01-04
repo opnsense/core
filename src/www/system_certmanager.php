@@ -707,8 +707,8 @@ $( document ).ready(function() {
             endif;?>
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td width="22%"></td>
-                <td  width="78%" align="right">
+                <td style="width:22%"></td>
+                <td  style="width:78%; text-align:right">
                   <small><?=gettext("full help"); ?> </small>
                   <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                 </td>
@@ -743,8 +743,8 @@ $( document ).ready(function() {
               </thead>
               <tbody>
                 <tr>
-                  <td width="22%"><a id="help_for_cert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Certificate data");?></td>
-                  <td width="78%">
+                  <td style="width:22%"><a id="help_for_cert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Certificate data");?></td>
+                  <td style="width:78%">
                     <textarea name="cert" id="cert" cols="65" rows="7"><?=$pconfig['cert'];?></textarea>
                     <div class="hidden" for="help_for_cert">
                       <?=gettext("Paste a certificate in X.509 PEM format here.");?>
@@ -771,8 +771,8 @@ $( document ).ready(function() {
               </thead>
               <tbody>
               <tr>
-                <td width="22%"><?=gettext("Certificate authority");?></td>
-                <td width="78%">
+                <td style="width:22%"><?=gettext("Certificate authority");?></td>
+                <td style="width:78%">
                   <select name='caref' id='caref'>
 <?php
                   foreach ($a_ca as $ca) :
@@ -985,8 +985,8 @@ $( document ).ready(function() {
               </thead>
               <tbody>
                 <tr>
-                  <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
-                  <td width="78%">
+                  <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
+                  <td style="width:78%">
                     <select name='csr_keylen' class="selectpicker">
 <?php
                     foreach ($cert_keylens as $len) :?>
@@ -1108,8 +1108,8 @@ $( document ).ready(function() {
             </thead>
               <tbody>
               <tr>
-                <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Existing Certificates");?></td>
-                <td width="78%">
+                <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Existing Certificates");?></td>
+                <td style="width:78%">
                   <select name='certref'>
 <?php
                   foreach ($config['cert'] as $cert) :
@@ -1139,8 +1139,8 @@ $( document ).ready(function() {
             <!-- submit -->
             <table class="table">
               <tr>
-                <td width="22%">&nbsp;</td>
-                <td width="78%">
+                <td style="width:22%">&nbsp;</td>
+                <td style="width:78%">
                   <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
                 </td>
               </tr>
@@ -1159,8 +1159,8 @@ $( document ).ready(function() {
             endif;?>
             <table class="table table-striped">
               <tr>
-                <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Descriptive name");?></td>
-                <td width="78%">
+                <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Descriptive name");?></td>
+                <td style="width:78%">
                   <input name="descr" type="text" id="descr" readonly="readonly" value="<?=$pconfig['descr'];?>"/>
                 </td>
               </tr>
@@ -1200,7 +1200,7 @@ $( document ).ready(function() {
             <input type="hidden" name="id" id="id" value="<?=isset($id) ? $id :"";?>"/>
             <input type="hidden" name="act" id="action" value="<?=$act;?>"/>
           </form>
-          <table summary="details"  class="table table-striped">
+          <table class="table table-striped">
             <thead>
               <tr>
                 <th><?=gettext("Name");?></th>
@@ -1252,11 +1252,11 @@ $( document ).ready(function() {
                 </td>
                 <td><?=$caname;?>&nbsp;</td>
                 <td><?=$subj;?>&nbsp;<br />
-                  <table summary="valid">
+                  <table>
                       <tr>
-                          <td width="10%">&nbsp;</td>
-                          <td width="20%"><?=gettext("Valid From")?>:</td>
-                          <td width="70%"><?= $startdate ?></td>
+                          <td style="width:10%">&nbsp;</td>
+                          <td style="width:20%"><?=gettext("Valid From")?>:</td>
+                          <td style="width:70%"><?= $startdate ?></td>
                       </tr>
                       <tr>
                           <td>&nbsp;</td>

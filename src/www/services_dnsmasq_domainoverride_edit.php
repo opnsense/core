@@ -137,15 +137,15 @@ include("head.inc");
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">
                     <tr>
-                      <td width="22%"><strong><?=gettext("Edit Domain Override entry");?></strong></td>
-                      <td width="78%" align="right">
+                      <td style="width:22%"><strong><?=gettext("Edit Domain Override entry");?></strong></td>
+                      <td style="width:78%; text-align:right">
                         <small><?=gettext("full help"); ?> </small>
                         <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                       </td>
                     </tr>
                     <tr>
-                      <td width="22%"><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain");?></td>
-                      <td width="78%">
+                      <td style="width:22%"><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain");?></td>
+                      <td style="width:78%">
                         <input name="domain" type="text" value="<?=$pconfig['domain'];?>" />
                         <div class="hidden" for="help_for_domain">
                           <?=gettext("Domain to override (NOTE: this does not have to be a valid TLD!)"); ?><br />

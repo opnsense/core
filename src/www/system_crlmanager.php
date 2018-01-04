@@ -333,8 +333,8 @@ include("head.inc");
 <?php
               if (!isset($id)) :?>
               <tr>
-                <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Method");?></td>
-                <td width="78%">
+                <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Method");?></td>
+                <td style="width:78%">
                   <select name="crlmethod" id='crlmethod' class="formselect">
                     <option value="internal" <?=$pconfig['crlmethod'] == "internal" ? "selected=\"selected\"" : "";?>><?=gettext("Create an internal Certificate Revocation List");?></option>
                     <option value="existing" <?=$pconfig['crlmethod'] == "existing" ? "selected=\"selected\"" : "";?>><?=gettext("Import an existing Certificate Revocation List");?></option>
@@ -373,8 +373,8 @@ include("head.inc");
               </thead>
               <tbody>
                 <tr>
-                  <td width="22%"><a id="help_for_crltext" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("CRL data");?></td>
-                  <td width="78%">
+                  <td style="width:22%"><a id="help_for_crltext" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("CRL data");?></td>
+                  <td style="width:78%">
                     <textarea name="crltext" id="crltext" cols="65" rows="7" class="formfld_crl"><?=$pconfig['crltext'];?></textarea>
                     <div class="hidden" for="help_for_crltext">
                       <?=gettext("Paste a Certificate Revocation List in X.509 CRL format here.");?>
@@ -392,8 +392,8 @@ include("head.inc");
               </thead>
               <tbody>
                 <tr>
-                  <td width="22%"><a id="help_for_lifetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Lifetime");?> (<?=gettext("days");?>)</td>
-                  <td width="78%">
+                  <td style="width:22%"><a id="help_for_lifetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Lifetime");?> (<?=gettext("days");?>)</td>
+                  <td style="width:78%">
                     <input name="lifetime" type="text" id="lifetime" size="5" value="<?=$pconfig['lifetime'];?>"/>
                     <div class="hidden" for="help_for_lifetime">
                       <?=gettext("Default: 9999");?>
@@ -414,8 +414,8 @@ include("head.inc");
 
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td width="22%">&nbsp;</td>
-                <td width="78%">
+                <td style="width:22%">&nbsp;</td>
+                <td style="width:78%">
                   <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
 <?php
                   if (isset($id)) :?>
@@ -434,8 +434,8 @@ include("head.inc");
                 <th colspan="2"><?=gettext("Edit Imported Certificate Revocation List");?></th>
               </tr>
               <tr>
-                <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Descriptive name");?></td>
-                <td width="78%">
+                <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Descriptive name");?></td>
+                <td style="width:78%">
                   <input name="descr" type="text" id="descr" size="20" value="<?=$thiscrl['descr'];?>"/>
                 </td>
               </tr>
@@ -532,7 +532,7 @@ include("head.inc");
                   <td>
                     <b><?=gettext("Choose a Certificate to Revoke"); ?></b>:
                   </td>
-                  <td colspan="3" align="left">
+                  <td colspan="3" style="text-align:left">
                     <select name='certref' id='certref' class="selectpicker" data-style="btn-default" data-live-search="true">
 <?php
                   foreach ($ca_certs as $cert) :?>
@@ -546,7 +546,7 @@ include("head.inc");
                   <td>
                     <b><?=gettext("Reason");?></b>:
                   </td>
-                  <td colspan="3" align="left">
+                  <td colspan="3" style="text-align:left">
                     <select name='crlreason' id='crlreason' class="selectpicker" data-style="btn-default">
 <?php
                   foreach ($openssl_crl_status as $code => $reason) :?>
@@ -558,7 +558,7 @@ include("head.inc");
                 </tr>
                 <tr>
                   <td></td>
-                  <td colspan="3" align="left">
+                  <td colspan="3" style="text-align:left">
                     <input name="act" type="hidden" value="addcert" />
                     <input name="id" type="hidden" value="<?=$thiscrl['refid'];?>" />
                     <input id="submit" name="add" type="submit" class="formbtn btn btn-primary" value="<?=gettext("Add"); ?>" />

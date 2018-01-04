@@ -545,8 +545,8 @@ $( document ).ready(function() {
           <div class="table-responsive">
           <table class="table table-striped opnsense_standard_table_form">
             <tr>
-              <td width="22%"><strong><?=gettext("General information"); ?></strong></td>
-              <td width="78%" align="right">
+              <td style="width:22%"><strong><?=gettext("General information"); ?></strong></td>
+              <td style="width:78%; text-align:right">
                 <small><?=gettext("full help"); ?> </small>
                 <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
               </td>
@@ -771,8 +771,8 @@ $( document ).ready(function() {
             <td colspan="2"><strong><?=gettext("User Authentication Settings"); ?></strong></td>
           </tr>
           <tr>
-            <td width="22%"><a id="help_for_auth_user_pass" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("User name/pass"); ?></td>
-            <td width="78%">
+            <td style="width:22%"><a id="help_for_auth_user_pass" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("User name/pass"); ?></td>
+            <td style="width:78%">
               <div><?=gettext("Username"); ?></div>
               <div><input name="auth_user" id="auth_user" class="form-control unknown" type="text" size="20" value="<?=$pconfig['auth_user'];?>" /></div>
               <div><?=gettext("Password"); ?></div>
@@ -801,8 +801,8 @@ $( document ).ready(function() {
          <div class="table-responsive">
           <table class="table table-striped opnsense_standard_table_form">
           <tr>
-            <td width="22%"><strong><?=gettext("Cryptographic Settings"); ?></strong></td>
-            <td width="78%"></td>
+            <td style="width:22%"><strong><?=gettext("Cryptographic Settings"); ?></strong></td>
+            <td style="width:78%"></td>
           </tr>
           <tr class="tls_option">
             <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("TLS Authentication"); ?></td>
@@ -968,8 +968,8 @@ $( document ).ready(function() {
             <td colspan="2"><strong><?=gettext("Tunnel Settings"); ?></strong></td>
           </tr>
           <tr>
-            <td width="22%"><a id="help_for_tunnel_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Tunnel Network"); ?></td>
-            <td width="78%">
+            <td style="width:22%"><a id="help_for_tunnel_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Tunnel Network"); ?></td>
+            <td style="width:78%">
               <input name="tunnel_network" type="text" class="form-control unknown" size="20" value="<?=$pconfig['tunnel_network'];?>" />
               <div class="hidden" for="help_for_tunnel_network">
                 <?=gettext("This is the IPv4 virtual network used for private " .
@@ -1107,8 +1107,8 @@ $( document ).ready(function() {
             <td colspan="2"><strong><?=gettext("Advanced configuration"); ?></strong></td>
           </tr>
           <tr>
-            <td width="22%"><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
-            <td width="78%">
+            <td style="width:22%"><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
+            <td style="width:78%">
               <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
               <div class="hidden" for="help_for_custom_options">
                 <?=gettext("Enter any additional options you would like to add to the configuration file here."); ?>
@@ -1148,7 +1148,7 @@ $( document ).ready(function() {
         <table class="table table-striped opnsense_standard_table_form">
           <tr>
             <td>&nbsp;</td>
-            <td width="78%">
+            <td style="width:78%">
               <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
               <input name="act" type="hidden" value="<?=$act;?>" />
 <?php

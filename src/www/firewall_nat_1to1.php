@@ -209,7 +209,7 @@ $main_buttons = array(
                 $i = 0;
                 foreach ($a_1to1 as $natent):
 ?>
-                  <tr <?=isset($natent['disabled'])?"class=\"text-muted\"":"";?> valign="top" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
+                  <tr <?=isset($natent['disabled'])?"class=\"text-muted\"":"";?> style="vertical-align:top" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
                     <td>
                       <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>" />
                     </td>
@@ -316,7 +316,7 @@ $main_buttons = array(
                     <td colspan="9">&nbsp;</td>
                   </tr>
                   <tr>
-                    <td width="16"><span class="glyphicon glyphicon-play text-success"></span></td>
+                    <td style="width:16px"><span class="glyphicon glyphicon-play text-success"></span></td>
                     <td colspan="8"><?=gettext("Enabled rule"); ?></td>
                   </tr>
                   <tr>

@@ -247,9 +247,9 @@ $( document ).ready(function() {
                       <td colspan="2"> </td>
                     </tr>
                     <tr>
-                      <th width="2%"><input type="checkbox" id="selectAll"></th>
-                      <th width="2%">&nbsp;</th>
-                      <th width="2%">&nbsp;</th>
+                      <th style="width:2%"><input type="checkbox" id="selectAll"></th>
+                      <th style="width:2%">&nbsp;</th>
+                      <th style="width:2%">&nbsp;</th>
                       <th><?=gettext("If");?></th>
                       <th><?=gettext("Proto");?></th>
                       <th class="hidden-xs hidden-sm"><?=gettext("Address");?></th>
@@ -461,7 +461,7 @@ $( document ).ready(function() {
                       <td colspan="13">&nbsp;</td>
                     </tr>
                     <tr>
-                      <td width="16"><span class="glyphicon glyphicon-play text-success"></span></td>
+                      <td style="width:16px"><span class="glyphicon glyphicon-play text-success"></span></td>
                       <td colspan="12"><?=gettext("Enabled rule"); ?></td>
                     </tr>
                     <tr>
