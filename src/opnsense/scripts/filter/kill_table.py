@@ -44,8 +44,9 @@ if __name__ == '__main__':
         # only try to remove alias if it exists
         if len(sys.argv) > 1 and sys.argv[1] in tables:
             # cleanup related alias file
-            if os.path.isfile('/var/db/aliastables/%s.txt' % sys.argv[1]):
-                os.remove('/var/db/aliastables/%s.txt' % sys.argv[1])
+            for suffix in  ['txt', 'md5.txt', 'self.txt']:
+                if os.path.isfile('/var/db/aliastables/%s.%s' % (sys.argv[1], suffix)):
+                    os.remove('/var/db/aliastables/%s.%s' % (sys.argv[1], suffix))
             subprocess.call(['/sbin/pfctl', '-t', sys.argv[1], '-T', 'kill'], stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
             # all good, exit 0
             sys.exit(0)
