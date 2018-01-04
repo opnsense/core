@@ -10,7 +10,6 @@
 /usr/local/etc/inc/XMLRPC_Client.inc
 /usr/local/etc/inc/auth.inc
 /usr/local/etc/inc/authgui.inc
-/usr/local/etc/inc/certs.inc
 /usr/local/etc/inc/config.inc
 /usr/local/etc/inc/console.inc
 /usr/local/etc/inc/crypt.inc
