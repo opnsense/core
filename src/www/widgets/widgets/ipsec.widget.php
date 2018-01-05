@@ -207,7 +207,7 @@ if (isset($config['ipsec']['phase2'])) {
 else {
 ?>
 <div style="display:block">
-   <table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="note">
+   <table class="table table-striped" style="width:100%; border:0; cellpadding:0; cellspacing:0;">
     <tr>
       <td colspan="4">
           <span class="vexpl">
