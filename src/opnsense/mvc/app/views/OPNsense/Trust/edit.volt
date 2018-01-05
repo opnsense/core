@@ -37,7 +37,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 options: {
                     formatters: {
                         "commands": function (column, row) {
-                            return "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.uuid + "\" title=\"{{ lang._('Delete this certificate from the CRL') }}\" alt=\"{{ lang._('Delete this certificate from the CRL') }}\"><span class=\"fa fa-trash-o\"></span></button>";
+                            return "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + $("<div/>").text(row.uuid).html() + "\" title=\"{{ lang._('Delete this certificate from the CRL') }}\" alt=\"{{ lang._('Delete this certificate from the CRL') }}\"><span class=\"fa fa-trash-o\"></span></button>";
                         },
                     }
                 }

@@ -37,20 +37,20 @@ POSSIBILITY OF SUCH DAMAGE.
                 options: {
                     formatters: {
                         "commands": function (column, row) {
-                            ret = "<button type=\"button\" class=\"btn btn-xs btn-default command-exp\" data-row-id=\"" + row.uuid + "\" title=\"{{ lang._('Export CRL') }}\" alt=\"{{ lang._('Export CRL') }}\"><span class=\"glyphicon glyphicon-export\"></span></button>";
+                            ret = "<button type=\"button\" class=\"btn btn-xs btn-default command-exp\" data-row-id=\"" + $("<div/>").text(row.uuid).html() + "\" title=\"{{ lang._('Export CRL') }}\" alt=\"{{ lang._('Export CRL') }}\"><span class=\"glyphicon glyphicon-export\"></span></button>";
                             if (row.InternalBool) {
-                                ret += "<button type=\"button\" class=\"btn btn-xs btn-default command-edit-internal\" data-row-id=\"" + row.uuid + "\" title=\"{{ lang._('Edit CRL') }}\" alt=\"{{ lang._('Edit CRL') }}\"><span class=\"fa fa-pencil\"></span></button> ";
+                                ret += "<button type=\"button\" class=\"btn btn-xs btn-default command-edit-internal\" data-row-id=\"" + $("<div/>").text(row.uuid).html() + "\" title=\"{{ lang._('Edit CRL') }}\" alt=\"{{ lang._('Edit CRL') }}\"><span class=\"fa fa-pencil\"></span></button> ";
                             } else {
-                                ret += "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.uuid + "\" title=\"{{ lang._('Edit CRL') }}\" alt=\"{{ lang._('Edit CRL') }}\"><span class=\"fa fa-pencil\"></span></button> ";
+                                ret += "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + $("<div/>").text(row.uuid).html() + "\" title=\"{{ lang._('Edit CRL') }}\" alt=\"{{ lang._('Edit CRL') }}\"><span class=\"fa fa-pencil\"></span></button> ";
                             }
                             return ret +
-                                "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.uuid + "\" title=\"{{ lang._('Delete CRL') }}\" alt=\"{{ lang._('Delete CRL') }}\"><span class=\"fa fa-trash-o\"></span></button>";
+                                "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + $("<div/>").text(row.uuid).html() + "\" title=\"{{ lang._('Delete CRL') }}\" alt=\"{{ lang._('Delete CRL') }}\"><span class=\"fa fa-trash-o\"></span></button>";
                         },
                         "Name": function (column, row) {
-                            return "<span class=\"glyphicon glyphicon-certificate __iconspacer\"></span>" + row[column.id] + "<br>" + row["Purpose"];
+                            return "<span class=\"glyphicon glyphicon-certificate __iconspacer\"></span>" + $("<div/>").text(row[column.id]).html() + "<br>" + $("<div/>").text(row["Purpose"]).html();
                         },
                         "Distinguished": function (column, row) {
-                            return row[column.id] + "<br>{{ lang._('Valid From') }}: " + row["startdate"] + "<br>{{ lang._('Valid Until') }}: " + row["enddate"];
+                            return $("<div/>").text(row[column.id]).html() + "<br>{{ lang._('Valid From:') }} " + $("<div/>").text(row["startdate"]).html() + "<br>{{ lang._('Valid Until:') }} " + $("<div/>").text(row["enddate"]).html();
                         },
                     }
                 }

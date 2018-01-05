@@ -37,38 +37,38 @@ POSSIBILITY OF SUCH DAMAGE.
                         "commands": function (column, row) {
                             ret = row.InUse.replace("\n", "<br>") + "<br>";
                             if (!row.csr) {
-                                ret += "<button type=\"button\" class=\"btn btn-xs btn-default command-certinfo\" data-row-id=\"" + row.uuid + "\" title=\"{{ lang._('show certificate info') }}\" alt=\"{{ lang._('show certificate info') }}\"><span class=\"glyphicon glyphicon-info-sign\"></span></button>" +
-                                    "<button type=\"button\" class=\"btn btn-xs btn-default command-exp\" data-type=\"crt\" data-row-id=\"" + row.uuid + "\" title=\"{{ lang._('export user cert') }}\" alt=\"{{ lang._('export user cert') }}\"><span class=\"glyphicon glyphicon-download\"></span></button>";
+                                ret += "<button type=\"button\" class=\"btn btn-xs btn-default command-certinfo\" data-row-id=\"" + $("<div/>").text(row.uuid).html() + "\" title=\"{{ lang._('show certificate info') }}\" alt=\"{{ lang._('show certificate info') }}\"><span class=\"glyphicon glyphicon-info-sign\"></span></button>" +
+                                    "<button type=\"button\" class=\"btn btn-xs btn-default command-exp\" data-type=\"crt\" data-row-id=\"" + $("<div/>").text(row.uuid).html() + "\" title=\"{{ lang._('export user cert') }}\" alt=\"{{ lang._('export user cert') }}\"><span class=\"glyphicon glyphicon-download\"></span></button>";
                             }
                             if (row.prv) {
-                                ret += "<button type=\"button\" class=\"btn btn-xs btn-default command-exp\" data-type=\"key\" data-row-id=\"" + row.uuid + "\" title=\"{{ lang._('export user key') }}\" alt=\"{{ lang._('export user key') }}\"><span class=\"glyphicon glyphicon-download\"></span></button>";
+                                ret += "<button type=\"button\" class=\"btn btn-xs btn-default command-exp\" data-type=\"key\" data-row-id=\"" + $("<div/>").text(row.uuid).html() + "\" title=\"{{ lang._('export user key') }}\" alt=\"{{ lang._('export user key') }}\"><span class=\"glyphicon glyphicon-download\"></span></button>";
                                 if (!row.csr) {
-                                    ret += "<button type=\"button\" class=\"btn btn-xs btn-default command-exp\" data-type=\"p12\" data-row-id=\"" + row.uuid + "\" title=\"{{ lang._('export ca+user cert+user key in .p12 format') }}\" alt=\"{{ lang._('export ca+user cert+user key in .p12 format') }}\"><span class=\"glyphicon glyphicon-download\"></span></button>";
+                                    ret += "<button type=\"button\" class=\"btn btn-xs btn-default command-exp\" data-type=\"p12\" data-row-id=\"" + $("<div/>").text(row.uuid).html() + "\" title=\"{{ lang._('export ca+user cert+user key in .p12 format') }}\" alt=\"{{ lang._('export ca+user cert+user key in .p12 format') }}\"><span class=\"glyphicon glyphicon-download\"></span></button>";
                                 }
                             }
                             if (row.InUse === "") {
-                                ret += "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.uuid + "\" title=\"{{ lang._('delete cert') }}\" alt=\"{{ lang._('delete cert') }}\"><span class=\"fa fa-trash-o\"></span></button>";
+                                ret += "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + $("<div/>").text(row.uuid).html() + "\" title=\"{{ lang._('delete cert') }}\" alt=\"{{ lang._('delete cert') }}\"><span class=\"fa fa-trash-o\"></span></button>";
                             }
                             if (row.csr) {
-                                ret += "<button type=\"button\" class=\"btn btn-xs btn-default command-csr\" data-row-id=\"" + row.uuid + "\" title=\"{{ lang._('update csr') }}\" alt=\"{{ lang._('update csr') }}\"><span class=\"glyphicon glyphicon-edit\"></span></button>";
+                                ret += "<button type=\"button\" class=\"btn btn-xs btn-default command-csr\" data-row-id=\"" + $("<div/>").text(row.uuid).html() + "\" title=\"{{ lang._('update csr') }}\" alt=\"{{ lang._('update csr') }}\"><span class=\"glyphicon glyphicon-edit\"></span></button>";
                             }
                             return ret;
                         },
                         "Name": function (column, row) {
-                            return "<span class=\"glyphicon glyphicon-certificate __iconspacer\"></span>" + row[column.id] + "<br>" + row["Purpose"];
+                            return "<span class=\"glyphicon glyphicon-certificate __iconspacer\"></span>" + $("<div/>").text(row[column.id]).html() + "<br>" + $("<div/>").text(row["Purpose"]).html();
                         },
                         "Distinguished": function (column, row) {
-                            return row[column.id] +
-                                "<table width=\"100%\" style=\"font-size: smaller\"> \
+                            return $("<div/>").text(row[column.id]).html() +
+                                "<table style=\"font-size:smaller; width:100%\"> \
                                     <tr> \
                                     <td>&nbsp;</td> \
-                                <td width=\"20%\">{{ lang._('Valid From') }}:</td> \
-                            <td width=\"70%\">" + row["startdate"] + "</td> \
+                                <td style=\"width:20%\">{{ lang._('Valid From:') }}</td> \
+                            <td style=\"width:70%\">" + $("<div/>").text(row["startdate"]).html() + "</td> \
                             </tr> \
                             <tr> \
                             <td>&nbsp;</td> \
-                            <td>{{ lang._('Valid Until') }}:</td> \
-                            <td>" + row["enddate"] + "</td> \
+                            <td>{{ lang._('Valid Until:') }}</td> \
+                            <td>" + $("<div/>").text(row["enddate"]).html() + "</td> \
                             </tr> \
                             </table>";
                         },
@@ -89,7 +89,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             BootstrapDialog.show({
                                 title: "{{ lang._('Certificate') }}",
                                 type: BootstrapDialog.TYPE_INFO,
-                                message: "<pre>" + data.message + "</pre>",
+                                message: "<pre>" + $("<div/>").text(data.message).html() + "</pre>",
                                 cssClass: 'monospace-dialog'
                             });
                         }

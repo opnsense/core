@@ -37,23 +37,23 @@ POSSIBILITY OF SUCH DAMAGE.
                 options: {
                     formatters: {
                         "commands": function (column, row) {
-                            return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.uuid + "\" title=\"{{ lang._('edit CA') }}\" alt=\"{{ lang._('edit CA') }}\"><span class=\"fa fa-pencil\"></span></button> " +
-                                "<button type=\"button\" class=\"btn btn-xs btn-default command-exp\" data-type=\"crt\" data-row-id=\"" + row.uuid + "\" title=\"{{ lang._('export CA cert') }}\" alt=\"{{ lang._('export CA cert') }}\"><span class=\"glyphicon glyphicon-download\"></span></button>" +
-                                "<button type=\"button\" class=\"btn btn-xs btn-default command-exp\" data-type=\"key\" data-row-id=\"" + row.uuid + "\" title=\"{{ lang._('export CA private key') }}\" alt=\"{{ lang._('export CA private key') }}\"><span class=\"glyphicon glyphicon-download\"></span></button>" +
-                                "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.uuid + "\" title=\"{{ lang._('delete ca') }}\" alt=\"{{ lang._('delete ca') }}\"><span class=\"fa fa-trash-o\"></span></button>";
+                            return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + $("<div/>").text(row.uuid).html() + "\" title=\"{{ lang._('edit CA') }}\" alt=\"{{ lang._('edit CA') }}\"><span class=\"fa fa-pencil\"></span></button> " +
+                                "<button type=\"button\" class=\"btn btn-xs btn-default command-exp\" data-type=\"crt\" data-row-id=\"" + $("<div/>").text(row.uuid).html() + "\" title=\"{{ lang._('export CA cert') }}\" alt=\"{{ lang._('export CA cert') }}\"><span class=\"glyphicon glyphicon-download\"></span></button>" +
+                                "<button type=\"button\" class=\"btn btn-xs btn-default command-exp\" data-type=\"key\" data-row-id=\"" + $("<div/>").text(row.uuid).html() + "\" title=\"{{ lang._('export CA private key') }}\" alt=\"{{ lang._('export CA private key') }}\"><span class=\"glyphicon glyphicon-download\"></span></button>" +
+                                "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + $("<div/>").text(row.uuid).html() + "\" title=\"{{ lang._('delete ca') }}\" alt=\"{{ lang._('delete ca') }}\"><span class=\"fa fa-trash-o\"></span></button>";
                         },
                         "Distinguished": function (column, row) {
-                            return row[column.id] +
-                            "<table width=\"100%\" style=\"font-size: smaller\"> \
+                            return $("<div/>").text(row[column.id]).html() +
+                            "<table style=\"font-size:smaller; width:100%\"> \
                                 <tr> \
                                 <td>&nbsp;</td> \
-                            <td width=\"20%\">{{ lang._('Valid From') }}:</td> \
-                            <td width=\"70%\">" + row["startdate"] + "</td> \
+                            <td style=\"width:20%\">{{ lang._('Valid From:') }}</td> \
+                            <td style=\"width:70%\">" + $("<div/>").text(row["startdate"]).html() + "</td> \
                             </tr> \
                             <tr> \
                             <td>&nbsp;</td> \
-                            <td>{{ lang._('Valid Until') }}:</td> \
-                            <td>" + row["enddate"] + "</td> \
+                            <td>{{ lang._('Valid Until:') }}:</td> \
+                            <td>" + $("<div/>").text(row["enddate"]).html() + "</td> \
                             </tr> \
                             </table>";
                         },
