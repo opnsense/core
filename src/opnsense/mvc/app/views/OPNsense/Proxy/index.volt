@@ -207,7 +207,7 @@
             </colgroup>
             <tbody>
             <tr>
-                <td colspan="2" align="right">
+                <td colspan="2" style="text-align:right">
                     <small>{{ lang._('full help') }} </small><a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_show_all_help_frm_proxy-forward-acl-remoteACLS" type="button"></i></a>
                 </td>
             </tr>

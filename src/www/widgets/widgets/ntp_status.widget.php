@@ -126,8 +126,8 @@ if ($_REQUEST['updateme']) {
 <table >
   <tbody>
     <tr>
-      <td width="40%" class="vncellt">Sync Source</td>
-      <td width="60%" class="listr">
+      <td style="width:40%" class="vncellt">Sync Source</td>
+      <td style="width:60%" class="listr">
       <?php if ($ntpq_counter == 0) :
 ?>
         <?= gettext('No active peers available') ?>
@@ -142,8 +142,8 @@ endif; ?>
     <?php if (($gps_ok) && ($gps_lat) && ($gps_lon)) :
 ?>
       <tr>
-        <td width="40%" class="vncellt"><?= gettext('Clock location') ?></td>
-        <td width="60%" class="listr">
+        <td style="width:40%" class="vncellt"><?= gettext('Clock location') ?></td>
+        <td style="width:60%" class="listr">
           <a target="_gmaps" href="http://maps.google.com/?q=<?= html_safe($gps_lat) ?>,<?= html_safe($gps_lon) ?>">
           <?php
                     echo sprintf("%.5f", $gps_lat) . " " . $gps_la . ", " . sprintf("%.5f", $gps_lon) . " " . $gps_lo; ?>
@@ -156,8 +156,8 @@ endif; ?>
       <?php if (isset($gps_sat) || isset($gps_satview)) :
 ?>
         <tr>
-        <td width="40%" class="vncellt"><?= gettext('Satellites') ?></td>
-          <td width="60%" class="listr">
+        <td style="width:40%" class="vncellt"><?= gettext('Satellites') ?></td>
+          <td style="width:60%" class="listr">
           <?php
                     if (isset($gps_satview)) {
                         echo gettext('in view ') . intval($gps_satview);
@@ -461,8 +461,8 @@ function clockUpdate()
 <table class="table table-striped table-condensed">
   <tbody>
     <tr>
-      <td width="40%" class="vncellt">Server Time</td>
-      <td width="60%" class="listr">
+      <td style="width:40%" class="vncellt">Server Time</td>
+      <td style="width:60%" class="listr">
         <div id="ClockTime">
           <b><?= clockTimeString($gDate, $gClockShowsSeconds) ?></b>
         </div>
