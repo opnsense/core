@@ -1827,13 +1827,14 @@ function interface_ipalias_configure(&$vip)
         return;
     }
 
-    $if = get_real_interface($vip['interface']);
+    $if = escapeshellarg(get_real_interface($vip['interface']));
     $af = "inet";
     if (is_ipaddrv6($vip['subnet'])) {
         $af = "inet6";
     }
     $vhid = !empty($vip['vhid']) ? "vhid " . escapeshellarg($vip['vhid']) : "";
-    mwexec("/sbin/ifconfig " . escapeshellarg($if) ." {$af} ". escapeshellarg($vip['subnet']) ."/" . escapeshellarg($vip['subnet_bits']) . " alias ". $vhid);
+    $gateway = !empty($vip['gateway']) ? escapeshellarg($vip['gateway']) . " " : "";
+    mwexec("/sbin/ifconfig " . $if ." {$af} ". escapeshellarg($vip['subnet']) ."/" . escapeshellarg($vip['subnet_bits']) . " alias ".$gateway. $vhid);
 }
 
 function interface_carp_configure(&$vip)

@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $pconfig = array();
     $form_fields = array('mode', 'vhid', 'advskew', 'advbase', 'password', 'subnet', 'subnet_bits'
-                        , 'descr' ,'type', 'interface' );
+                        , 'descr' ,'type', 'interface', 'gateway' );
 
     if (isset($configId)) {
         // 1-on-1 copy of config data
@@ -108,6 +108,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $input_errors[] = gettext("This IP address is being used by another interface or VIP.");
                 }
             }
+        }
+        if (!empty($pconfig['gateway']) && !is_ipaddr($pconfig['gateway'])) {
+            $input_errors[] = gettext("A valid IP address must be specified.");
         }
 
         $natiflist = get_configured_interface_with_descr();
@@ -174,7 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $vipent['subnet_bits'] = "32";
         // 1-on-1 copy attributes
         foreach (array('mode', 'interface', 'descr', 'type', 'subnet_bits', 'subnet', 'vhid'
-                      ,'advskew','advbase','password') as $fieldname) {
+                      ,'advskew','advbase','password', 'gateway') as $fieldname) {
             if (isset($pconfig[$fieldname]) && $pconfig[$fieldname] != "") {
                 $vipent[$fieldname] = $pconfig[$fieldname];
             }
@@ -240,6 +243,7 @@ $( document ).ready(function() {
     $("#mode").change(function(){
         //$("#subnet").attr('disabled', true);
         $("#type").attr('disabled', true);
+        $("#gateway").attr('disabled', true);
         $("#subnet_bits").attr('disabled', true);
         $("#noexpand").attr('disabled', true);
         $("#password").attr('disabled', true);
@@ -253,6 +257,7 @@ $( document ).ready(function() {
         switch ($(this).val()) {
             case "ipalias":
               $("#type").prop("selectedIndex",0);
+              $("#gateway").attr('disabled', false);
               $("#vhid").attr('disabled', false);
               $("#subnet_bits").attr('disabled', false);
               $("#typenote").html("<?= html_safe(gettext('Please provide a single IP address.')) ?>");
@@ -390,6 +395,15 @@ $( document ).ready(function() {
                         <div class="hidden" for="help_for_address">
                             <i id="typenote"></i>
                         </div>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td><a id="help_for_gateway" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway");?></td>
+                      <td>
+                          <input name="gateway" type="text" class="form-control" id="gateway" value="<?=$pconfig['gateway'];?>" />
+                          <div class="hidden" for="help_for_gateway">
+                            <?=gettext("For some interface types a gateway is required to configure an IP Alias (ppp/pppoe/tun), leave this field empty for all other interface types.");?>
+                          </div>
                       </td>
                   </tr>
                   <tr id="noexpandrow">
