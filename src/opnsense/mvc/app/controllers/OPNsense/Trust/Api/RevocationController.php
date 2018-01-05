@@ -42,7 +42,6 @@ use \OPNsense\Trust\Trust;
  */
 class RevocationController extends TrustBase
 {
-
     /**
      * Search CRL list
      * @return array
@@ -162,6 +161,17 @@ class RevocationController extends TrustBase
         $crl->method = "internal";
         $crl->serial = empty($post['serial']) ? 9999 : $post['serial'];
         $crl->lifetime = empty($post['lifetime']) ? 9999 : $post['lifetime'];
+
+        $valMsgs = $mdlTrust->performValidation();
+        foreach ($valMsgs as $field => $msg)
+        {
+            $fieldnm = str_replace($crl->__reference, "Internal", $msg->getField());
+            $result["validations"][$fieldnm] = $msg->getMessage();
+        }
+
+        if (count($result['validations']) > 0)
+            return $result;
+
         $mdlTrust->serializeToConfig();
         Config::getInstance()->save();
         return ["result" => "created"];
@@ -227,6 +237,17 @@ class RevocationController extends TrustBase
         }
         $crl->text = base64_encode($post['text']);
         $crl->method = "existing";
+
+        $valMsgs = $mdlTrust->performValidation();
+        foreach ($valMsgs as $field => $msg)
+        {
+            $fieldnm = str_replace($crl->__reference, "Existing", $msg->getField());
+            $result["validations"][$fieldnm] = $msg->getMessage();
+        }
+
+        if (count($result['validations']) > 0)
+            return $result;
+
         $mdlTrust->serializeToConfig();
         Config::getInstance()->save();
         return ["result" => "created"];
@@ -437,6 +458,17 @@ class RevocationController extends TrustBase
         if (!$mdlTrust->cert_revoke($cert, $crl, $post["reason"])) {
             return ["result" => "failed"];
         }
+
+        $valMsgs = $mdlTrust->performValidation();
+        foreach ($valMsgs as $field => $msg)
+        {
+            $fieldnm = str_replace($crl->__reference, "Revocation", $msg->getField());
+            $result["validations"][$fieldnm] = $msg->getMessage();
+        }
+
+        if (count($result['validations']) > 0)
+            return $result;
+
         $mdlTrust->serializeToConfig();
         Config::getInstance()->save();
         return ["result" => "created"];

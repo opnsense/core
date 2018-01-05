@@ -16,6 +16,8 @@
                 <prv type="TextField">
                 </prv>
                 <serial type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <default>0</default>
                 </serial>
             </ca>
         </cas>
@@ -50,8 +52,12 @@
                     </OptionValues>
                 </method>
                 <serial type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <default>0</default>
                 </serial>
                 <lifetime type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <default>0</default>
                 </lifetime>
                 <text type="TextField">
                 </text>
@@ -74,6 +80,8 @@
                 <reason type="TextField">
                 </reason>
                 <revoke_time type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <default>0</default>
                 </revoke_time>
             </cert>
         </crl_certs>

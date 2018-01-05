@@ -43,7 +43,6 @@ use \OPNsense\Trust\Trust;
  */
 class CertificatesController extends TrustBase
 {
-
     /**
      * Search the list of certificates
      * @return array
@@ -187,6 +186,17 @@ class CertificatesController extends TrustBase
             Config::getInstance()->object()->system->user->{(int)$user}->addChild("cert",
                 $cert->getAttributes()["uuid"]);
         }
+
+        $valMsgs = $mdlTrust->performValidation();
+        foreach ($valMsgs as $field => $msg)
+        {
+            $fieldnm = str_replace($cert->__reference, "Import", $msg->getField());
+            $result["validations"][$fieldnm] = $msg->getMessage();
+        }
+
+        if (count($result['validations']) > 0)
+            return $result;
+
         $mdlTrust->serializeToConfig();
         Config::getInstance()->save();
         return ["result" => "imported"];
@@ -486,6 +496,17 @@ class CertificatesController extends TrustBase
             Config::getInstance()->object()->system->user->{(int)$user}->addChild("cert",
                 $cert->getAttributes()["uuid"]);
         }
+
+        $valMsgs = $mdlTrust->performValidation();
+        foreach ($valMsgs as $field => $msg)
+        {
+            $fieldnm = str_replace($cert->__reference, "Internal", $msg->getField());
+            $result["validations"][$fieldnm] = $msg->getMessage();
+        }
+
+        if (count($result['validations']) > 0)
+            return $result;
+
         $mdlTrust->serializeToConfig();
         Config::getInstance()->save();
         return ["result" => "created"];
@@ -577,6 +598,17 @@ class CertificatesController extends TrustBase
             Config::getInstance()->object()->system->user->{(int)$user}->addChild("cert",
                 $cert->getAttributes()["uuid"]);
         }
+
+        $valMsgs = $mdlTrust->performValidation();
+        foreach ($valMsgs as $field => $msg)
+        {
+            $fieldnm = str_replace($cert->__reference, "External", $msg->getField());
+            $result["validations"][$fieldnm] = $msg->getMessage();
+        }
+
+        if (count($result['validations']) > 0)
+            return $result;
+
         $mdlTrust->serializeToConfig();
         Config::getInstance()->save();
         return ["result" => "created"];
@@ -648,6 +680,16 @@ class CertificatesController extends TrustBase
 
         $cert->crt = base64_encode($post['cert']);
         $cert->csr = "";
+
+        $valMsgs = $mdlTrust->performValidation();
+        foreach ($valMsgs as $field => $msg)
+        {
+            $fieldnm = str_replace($cert->__reference, "csr", $msg->getField());
+            $result["validations"][$fieldnm] = $msg->getMessage();
+        }
+
+        if (count($result['validations']) > 0)
+            return $result;
 
         $mdlTrust->serializeToConfig();
         Config::getInstance()->save();

@@ -293,6 +293,16 @@ class AuthoritiesController extends TrustBase
             error_reporting($old_err_level);
         }
 
+        $valMsgs = $mdlTrust->performValidation();
+        foreach ($valMsgs as $field => $msg)
+        {
+            $fieldnm = str_replace($ca->__reference, "Existing", $msg->getField());
+            $result["validations"][$fieldnm] = $msg->getMessage();
+        }
+
+        if (count($result['validations']) > 0)
+            return $result;
+
         $mdlTrust->serializeToConfig();
         Config::getInstance()->save();
         return ["result" => "importeds"];
@@ -382,6 +392,17 @@ class AuthoritiesController extends TrustBase
             return $result;
         }
         error_reporting($old_err_level);
+
+        $valMsgs = $mdlTrust->performValidation();
+        foreach ($valMsgs as $field => $msg)
+        {
+            $fieldnm = str_replace($ca->__reference, "Internal", $msg->getField());
+            $result["validations"][$fieldnm] = $msg->getMessage();
+        }
+
+        if (count($result['validations']) > 0)
+            return $result;
+
         $mdlTrust->serializeToConfig();
         Config::getInstance()->save();
         return ["result" => "created"];
@@ -459,14 +480,14 @@ class AuthoritiesController extends TrustBase
 
         $old_err_level = error_reporting(0); /* otherwise openssl_ functions throw warings directly to a page screwing menu tab */
         $mdlTrust = new Trust();
-        if (!$mdlTrust->ca_inter_create(
+        if (!($ca = $mdlTrust->ca_inter_create(
             $post['descr'],
             $post["cauuid"],
             $post['keylen'],
             $post['lifetime'],
             $dn,
             $post['digest_alg']
-        )) {
+        ))) {
             $input_errors = "";
             while ($ssl_err = openssl_error_string()) {
                 $input_errors .= " " . $ssl_err;
@@ -475,6 +496,17 @@ class AuthoritiesController extends TrustBase
             return $result;
         }
         error_reporting($old_err_level);
+
+        $valMsgs = $mdlTrust->performValidation();
+        foreach ($valMsgs as $field => $msg)
+        {
+            $fieldnm = str_replace($ca->__reference, "Intermediate", $msg->getField());
+            $result["validations"][$fieldnm] = $msg->getMessage();
+        }
+
+        if (count($result['validations']) > 0)
+            return $result;
+
         $mdlTrust->serializeToConfig();
         Config::getInstance()->save();
         return ["result" => "created"];
