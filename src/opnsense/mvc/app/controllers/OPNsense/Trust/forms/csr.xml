@@ -1,7 +1,7 @@
 <form>
     <field>
         <id>csr.descr</id>
-        <label>Descriptive name</label>
+        <label>Descriptive Name</label>
         <type>info</type>
     </field>
     <field>
@@ -10,13 +10,13 @@
     </field>
     <field>
         <id>csr.csr</id>
-        <label>Signing request data</label>
+        <label>Signing Request Data</label>
         <type>info</type>
         <help>Copy the certificate signing data from here and forward it to your certificate authority for signing.</help>
     </field>
     <field>
         <id>csr.cert</id>
-        <label>Final certificate data</label>
+        <label>Final Certificate Data</label>
         <type>textbox</type>
         <height>7</height>
         <help>Paste the certificate received from your certificate authority here.</help>

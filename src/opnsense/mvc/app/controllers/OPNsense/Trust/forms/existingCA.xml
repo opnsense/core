@@ -1,7 +1,7 @@
 <form>
     <field>
         <id>Existing.descr</id>
-        <label>Descriptive name</label>
+        <label>Descriptive Name</label>
         <type>text</type>
     </field>
     <field>
@@ -10,7 +10,7 @@
     </field>
     <field>
         <id>Existing.cert</id>
-        <label>Certificate data</label>
+        <label>Certificate Data</label>
         <type>textbox</type>
         <height>7</height>
         <help>Paste a certificate in X.509 PEM format here.</help>
@@ -24,7 +24,7 @@
     </field>
     <field>
         <id>Existing.serial</id>
-        <label>Serial for next certificate</label>
+        <label>Serial For Next Certificate</label>
         <type>text</type>
         <help>Enter a decimal number to be used as the serial number for the next certificate to be created using this CA.</help>
     </field>

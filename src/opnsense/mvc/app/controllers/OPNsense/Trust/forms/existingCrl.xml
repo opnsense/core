@@ -1,7 +1,7 @@
 <form>
     <field>
         <id>Existing.descr</id>
-        <label>Descriptive name</label>
+        <label>Descriptive Name</label>
         <type>text</type>
     </field>
     <field>
@@ -15,7 +15,7 @@
     </field>
     <field>
         <id>Existing.text</id>
-        <label>CRL data</label>
+        <label>CRL Data</label>
         <type>textbox</type>
         <height>7</height>
         <help>Paste a Certificate Revocation List in X.509 CRL format here.</help>

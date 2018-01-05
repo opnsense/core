@@ -1,7 +1,7 @@
 <form>
     <field>
         <id>Internal.descr</id>
-        <label>Descriptive name</label>
+        <label>Descriptive Name</label>
         <type>text</type>
     </field>
     <field>
@@ -10,7 +10,7 @@
     </field>
     <field>
         <id>Internal.cauuid</id>
-        <label>Certificate authority</label>
+        <label>Certificate Authority</label>
         <type>dropdown</type>
     </field>
     <field>
@@ -21,14 +21,14 @@
     </field>
     <field>
         <id>Internal.keylen</id>
-        <label>Key length (bits)</label>
+        <label>Key Length (bits)</label>
         <type>dropdown</type>
     </field>
     <field>
         <id>Internal.digest_alg</id>
         <label>Digest Algorithm</label>
         <type>dropdown</type>
-        <help>NOTE: It is recommended to use an algorithm stronger than SHA1 when possible.</help>
+        <help>It is recommended to use an algorithm stronger than SHA1 when possible.</help>
     </field>
     <field>
         <id>Internal.lifetime</id>
@@ -37,7 +37,7 @@
     </field>
     <field>
         <type>header</type>
-        <label>Distinguished name</label>
+        <label>Distinguished Name</label>
     </field>
     <field>
         <id>Internal.dn_country</id>
@@ -98,7 +98,7 @@
     </field>
     <field>
         <id>Internal.email</id>
-        <label>email</label>
+        <label>Email</label>
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>

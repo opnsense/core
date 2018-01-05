@@ -1,7 +1,7 @@
 <form>
     <field>
         <id>Internal.descr</id>
-        <label>Descriptive name</label>
+        <label>Descriptive Name</label>
         <type>text</type>
     </field>
     <field>

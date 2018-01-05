@@ -1,7 +1,7 @@
 <form>
     <field>
         <id>External.descr</id>
-        <label>Descriptive name</label>
+        <label>Descriptive Name</label>
         <type>text</type>
     </field>
     <field>
@@ -10,18 +10,18 @@
     </field>
     <field>
         <id>External.keylen</id>
-        <label>Key length (bits)</label>
+        <label>Key Length (bits)</label>
         <type>dropdown</type>
     </field>
     <field>
         <id>External.digest_alg</id>
         <label>Digest Algorithm</label>
         <type>dropdown</type>
-        <help>NOTE: It is recommended to use an algorithm stronger than SHA1 when possible.</help>
+        <help>It is recommended to use an algorithm stronger than SHA1 when possible.</help>
     </field>
     <field>
         <type>header</type>
-        <label>Distinguished name</label>
+        <label>Distinguished Name</label>
     </field>
     <field>
         <id>External.dn_country</id>
