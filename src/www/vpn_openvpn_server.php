@@ -829,7 +829,7 @@ endif; ?>
 <?php
                         else :?>
                           <b><?=gettext("No Certificate Authorities defined.");?></b>
-                          <br /><?=gettext("Create one under")?> <a href="/ui/trust/authorities/"> <?=gettext("System: Certificates");?></a>.
+                          <br /><?=gettext("Create one under")?> <a href="/ui/trust/authorities/"> <?=gettext("System: Trust: Authorities");?></a>.
 <?php
                         endif; ?>
                       </td>
@@ -855,7 +855,7 @@ endif; ?>
 <?php
                         else :?>
                         <b><?=gettext("No Certificate Revocation Lists (CRLs) defined.");?></b>
-                        <br /><?=gettext("Create one under");?> <a href="/ui/trust/revocation/"><?=gettext("System: Certificates");?></a>.
+                        <br /><?=gettext("Create one under");?> <a href="/ui/trust/revocation/"><?=gettext("System: Trust: Revocation");?></a>.
 <?php
                         endif; ?>
                       </td>
@@ -898,7 +898,7 @@ endif; ?>
 <?php
                       else :?>
                           <b><?=gettext("No Certificates defined.");?></b>
-                          <br /><?=gettext("Create one under");?> <a href="/ui/trust/certificates/"><?=gettext("System: Certificates");?></a>.
+                          <br /><?=gettext("Create one under");?> <a href="/ui/trust/certificates/"><?=gettext("System: Trust: Certificates");?></a>.
 <?php
                       endif; ?>
                       </td>

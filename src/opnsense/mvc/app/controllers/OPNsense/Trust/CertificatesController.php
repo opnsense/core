@@ -45,7 +45,7 @@ class CertificatesController extends IndexController
      */
     public function indexAction()
     {
-        $this->view->title = gettext('System') . ": " . gettext("Trust") . ": " . gettext("Certificates");
+        $this->view->title = gettext('System: Trust: Certificates');
         // include dialog form definitions
         $this->view->pick('OPNsense/Trust/certificates');
         $this->view->importCert = $this->getForm("importCert");

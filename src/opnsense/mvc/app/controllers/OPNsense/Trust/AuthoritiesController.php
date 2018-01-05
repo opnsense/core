@@ -44,7 +44,7 @@ class AuthoritiesController extends IndexController
      */
     public function indexAction()
     {
-        $this->view->title = gettext('System') . ": " . gettext("Trust") . ": " . gettext("Authorities");
+        $this->view->title = gettext('System: Trust: Authorities');
         // include dialog form definitions
         $this->view->pick('OPNsense/Trust/authorities');
         $this->view->existingCA = $this->getForm("existingCA");

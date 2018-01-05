@@ -44,7 +44,7 @@ class RevocationController extends IndexController
      */
     public function indexAction()
     {
-        $this->view->title = gettext('System') . ": " . gettext("Trust") . ": " . gettext("Revocation");
+        $this->view->title = gettext('System: Trust: Revocation');
         // include dialog form definitions
         $this->view->pick('OPNsense/Trust/revocation');
         $this->view->internalCrl = $this->getForm("internalCrl");

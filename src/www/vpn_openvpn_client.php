@@ -847,7 +847,7 @@ $( document ).ready(function() {
 <?php
               else :?>
               <b><?=gettext("No Certificate Authorities defined.");?></b> <br />
-              <?=gettext("Create one under");?> <a href="/ui/trust/authorities/"><?=gettext("System: Certificates");?></a>.
+              <?=gettext("Create one under");?> <a href="/ui/trust/authorities/"><?=gettext("System: Trust: Authorities");?></a>.
 <?php
               endif; ?>
             </td>
@@ -887,7 +887,7 @@ $( document ).ready(function() {
 <?php
               if (!isset($config['cert']) || count($config['cert']) == 0) :?>
                 <b><?=gettext("No Certificates defined.");?></b> <br /><?=gettext("Create one under");?>
-                <a href="/ui/trust/certificates/"><?=gettext("System: Certificates");?></a> <?=gettext("if one is required for this connection.");?>
+                <a href="/ui/trust/certificates/"><?=gettext("System: Trust: Certificates");?></a> <?=gettext("if one is required for this connection.");?>
 <?php
               endif; ?>
             </td>
