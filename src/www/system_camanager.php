@@ -159,16 +159,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dn_email'] = null;
     $pconfig['dn_commonname'] = null;
 
-
     if ($act == "edit") {
         if (!isset($id)) {
             header(url_safe('Location: /system_camanager.php'));
             exit;
         }
-        $pconfig['descr']  = $a_ca[$id]['descr'];
-        $pconfig['refid']  = $a_ca[$id]['refid'];
-        $pconfig['cert']   = base64_decode($a_ca[$id]['crt']);
-        $pconfig['serial'] = $a_ca[$id]['serial'];
+        $pconfig['descr'] = $a_ca[$id]['descr'];
+        $pconfig['refid'] = $a_ca[$id]['refid'];
+        $pconfig['cert'] = base64_decode($a_ca[$id]['crt']);
+        $pconfig['serial'] = $a_ca[$id]['serial'] + 1;
         if (!empty($a_ca[$id]['prv'])) {
             $pconfig['key'] = base64_decode($a_ca[$id]['prv']);
         }
@@ -347,9 +346,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             if (isset($id)) {
                 // edit existing
-                $ca['crt']    = base64_encode($pconfig['cert']);
+                $ca['crt'] = base64_encode($pconfig['cert']);
                 if (!empty($pconfig['key'])) {
-                    $ca['prv']    = base64_encode($pconfig['key']);
+                    $ca['prv'] = base64_encode($pconfig['key']);
                 }
             } else {
                 $old_err_level = error_reporting(0); /* otherwise openssl_ functions throw warnings directly to a page screwing menu tab */
