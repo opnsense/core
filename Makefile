@@ -28,7 +28,7 @@
 all:
 	@cat ${.CURDIR}/README.md | ${PAGER}
 
-WANTS=		git pear-PHP_CodeSniffer phpunit6
+WANTS=		git p5-File-Slurp pear-PHP_CodeSniffer phpunit6
 
 .for WANT in ${WANTS}
 want-${WANT}: force
@@ -320,7 +320,7 @@ style-fix: want-pear-PHP_CodeSniffer
 	phpcbf --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} || true
 .endfor
 
-license:
+license: want-p5-File-Slurp
 	@${.CURDIR}/Scripts/license > ${.CURDIR}/LICENSE
 
 dhparam:
