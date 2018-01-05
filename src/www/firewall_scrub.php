@@ -226,7 +226,7 @@ $( document ).ready(function() {
                       <td style="width:22%"><strong><?=gettext("General settings");?></strong></td>
                       <td style="width:78%; text-align:right">
                            <small><?=gettext("full help"); ?> </small>
-                           <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button">&nbsp;</i>
+                           <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page">&nbsp;</i>
                       </td>
                     </tr>
                   </thead>

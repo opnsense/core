@@ -787,7 +787,7 @@ function removeRow(el) {
                         <td style="width:15%"><strong><?=gettext("Schedule information");?></strong></td>
                         <td style="width:85%; text-align:right">
                           <small><?=gettext("full help"); ?> </small>
-                          <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                          <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                         </td>
                       </tr>
                       <tr>
