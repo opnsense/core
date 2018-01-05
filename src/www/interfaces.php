@@ -1656,7 +1656,7 @@ include("head.inc");
                         <td style="width:22%"><strong><?=gettext("General configuration"); ?></strong></td>
                         <td style="width:78%; text-align:right">
                           <small><?=gettext("full help"); ?> </small>
-                          <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                          <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                           &nbsp;
                         </td>
                       </tr>

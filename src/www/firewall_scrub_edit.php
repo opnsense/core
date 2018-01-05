@@ -292,7 +292,7 @@ include("head.inc");
                     <td style="vertical-align:top"><strong><?=gettext("Edit Firewall scrub rule");?></strong></td>
                     <td style="text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                     </td>
                   </tr>
                   <tr>
