@@ -124,6 +124,11 @@
       <value>default</value>
     </item>
     <item>
+      <descr><![CDATA[Set to 1 to additionally filter on the physical interface for locally destined packets]]></descr>
+      <tunable>net.link.bridge.pfil_local_phys</tunable>
+      <value>default</value>
+    </item>
+    <item>
       <descr><![CDATA[Set to 0 to disable filtering on the incoming and outgoing member interfaces.]]></descr>
       <tunable>net.link.bridge.pfil_member</tunable>
       <value>default</value>
