@@ -32,7 +32,11 @@ require_once("plugins.inc.d/openvpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
+use OPNsense\Trust\Trust;
+use OPNsense\Core\Certs;
+
 $a_client = &config_read_array('openvpn', 'openvpn-client');
+$mdlTrust = new Trust();
 
 $vpnid = 0;
 $act = null;
@@ -827,22 +831,23 @@ $( document ).ready(function() {
             <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Peer Certificate Authority"); ?></td>
             <td>
 <?php
-              if (isset($config['ca'])) :?>
+              $cas = $mdlTrust->cas->ca->getChildren();
+              if (count($cas) > 0) :?>
               <select name='caref' class="form-control">
 <?php
-              foreach ($config['ca'] as $ca) :
+              foreach ($cas as $uuid => $ca) :
                   $selected = "";
-                  if (isset($pconfig['caref']) && $pconfig['caref'] == $ca['refid']) {
+                  if (isset($pconfig['caref']) && $pconfig['caref'] == $uuid) {
                       $selected = "selected=\"selected\"";
                   }?>
-                <option value="<?=$ca['refid'];?>" <?=$selected;?>><?=$ca['descr'];?></option>
+                <option value="<?=$uuid;?>" <?=$selected;?>><?=$ca->descr->__toString();?></option>
 <?php
               endforeach; ?>
               </select>
 <?php
               else :?>
               <b><?=gettext("No Certificate Authorities defined.");?></b> <br />
-              <?=gettext("Create one under");?> <a href="system_camanager.php"><?=gettext("System: Certificates");?></a>.
+              <?=gettext("Create one under");?> <a href="/ui/trust/authorities/"><?=gettext("System: Trust: Authorities");?></a>.
 <?php
               endif; ?>
             </td>
@@ -852,27 +857,27 @@ $( document ).ready(function() {
             <td>
               <select name='certref' class="form-control">
 <?php
-              foreach (isset($config['cert']) ? $config['cert'] : array() as $cert) :
+              foreach ($mdlTrust->certs->cert->getChildren() as $uuid => $cert) :
                   $selected = "";
                   $caname = "";
                   $inuse = "";
                   $revoked = "";
-                  if (isset($cert['caref'])) {
-                      $ca = lookup_ca($cert['caref']);
-                      if (!empty($ca)) {
-                          $caname = " (CA: {$ca['descr']})";
+                  $cauuid = $cert->cauuid->__toString();
+                  if (!empty($cauuid)) {
+                      if ($ca = $mdlTrust->cas->ca->{$cauuid}) {
+                          $caname = " (CA: {$ca->descr->__toString()})";
                       }
                   }
-                  if (isset($pconfig['certref']) && $pconfig['certref'] == $cert['refid']) {
+                  if (isset($pconfig['certref']) && $pconfig['certref'] == $uuid) {
                       $selected = "selected=\"selected\"";
                   }
-                  if (isset($cert['refid']) && cert_in_use($cert['refid'])) {
+                  if (Certs::cert_in_use($uuid)) {
                       $inuse = " *In Use";
                   }
-                  if (is_cert_revoked($cert)) {
+                  if ($mdlTrust->is_cert_revoked($cert)) {
                       $revoked = " *Revoked";
                   }?>
-                <option value="<?=$cert['refid'];?>" <?=$selected;?>><?=$cert['descr'] . $caname . $inuse . $revoked;?></option>
+                <option value="<?=$uuid;?>" <?=$selected;?>><?=$cert->descr->__toString() . $caname . $inuse . $revoked;?></option>
 <?php
                 endforeach; ?>
                 <option value="" <?=empty($pconfig['certref'])?  "selected=\"selected\"" : "";?>>
@@ -882,7 +887,7 @@ $( document ).ready(function() {
 <?php
               if (!isset($config['cert']) || count($config['cert']) == 0) :?>
                 <b><?=gettext("No Certificates defined.");?></b> <br /><?=gettext("Create one under");?>
-                <a href="system_certmanager.php"><?=gettext("System: Certificates");?></a> <?=gettext("if one is required for this connection.");?>
+                <a href="/ui/trust/certificates/"><?=gettext("System: Trust: Certificates");?></a> <?=gettext("if one is required for this connection.");?>
 <?php
               endif; ?>
             </td>

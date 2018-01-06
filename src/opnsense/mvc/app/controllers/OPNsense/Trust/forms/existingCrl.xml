@@ -1,0 +1,23 @@
+<form>
+    <field>
+        <id>Existing.descr</id>
+        <label>Descriptive Name</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>Existing.cauuid</id>
+        <label>Certificate Authority</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Existing Certificate Revocation List</label>
+    </field>
+    <field>
+        <id>Existing.text</id>
+        <label>CRL Data</label>
+        <type>textbox</type>
+        <height>7</height>
+        <help>Paste a Certificate Revocation List in X.509 CRL format here.</help>
+    </field>
+</form>

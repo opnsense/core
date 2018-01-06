@@ -1,0 +1,28 @@
+<form>
+    <field>
+        <id>Internal.descr</id>
+        <label>Descriptive Name</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>Internal.cauuid</id>
+        <label>Certificate Authority</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Internal Certificate Revocation List</label>
+    </field>
+    <field>
+        <id>Internal.lifetime</id>
+        <label>Lifetime (days)</label>
+        <type>text</type>
+        <help>Default: 9999</help>
+    </field>
+    <field>
+        <id>Internal.serial</id>
+        <label>Serial</label>
+        <type>text</type>
+        <help>Default: 0</help>
+    </field>
+</form>

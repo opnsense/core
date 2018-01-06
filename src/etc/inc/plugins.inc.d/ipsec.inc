@@ -30,6 +30,9 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
+use OPNsense\Trust\Trust;
+use OPNsense\Core\Certs;
+
 $ipsec_loglevels = array(
     "asn" => "Low-level encoding/decoding (ASN.1, X.509 etc.)",
     "cfg" => "Configuration management and plugins",
@@ -726,6 +729,7 @@ function ipsec_configure_spd()
 function ipsec_configure_do($verbose = false, $interface = '')
 {
     global $config, $p2_ealgos, $ipsec_loglevels;
+    $mdlTrust = new Trust();
 
     if (!empty($interface)) {
          $active = false;
@@ -1028,25 +1032,25 @@ EOD;
         unset($strongswan);
 
         /* generate CA certificates files */
-        if (isset($config['ca'])) {
-            foreach ($config['ca'] as $ca) {
-                if (!isset($ca['crt'])) {
-                    log_error(sprintf('Error: Invalid certificate info for %s', $ca['descr']));
-                    continue;
-                }
-                $cert = base64_decode($ca['crt']);
-                $x509cert = openssl_x509_parse(openssl_x509_read($cert));
-                if (!is_array($x509cert) || !isset($x509cert['hash'])) {
-                    log_error(sprintf('Error: Invalid certificate hash info for %s', $ca['descr']));
-                    continue;
-                }
-                $fname = "{$capath}/{$x509cert['hash']}.0.crt";
-                if (!@file_put_contents($fname, $cert)) {
-                    log_error(sprintf('Error: Cannot write IPsec CA file for %s', $ca['descr']));
-                    continue;
-                }
-                unset($cert);
+        foreach ($mdlTrust->cas->ca->getChildren() as $ca) {
+            $crt = $ca->crt->__toString();
+            $descr = $ca->descr->__toString();
+            if (empty($crt)) {
+                log_error(sprintf('Error: Invalid certificate info for %s', $descr));
+                continue;
             }
+            $cert = base64_decode($crt);
+            $x509cert = openssl_x509_parse(openssl_x509_read($cert));
+            if (!is_array($x509cert) || !isset($x509cert['hash'])) {
+                log_error(sprintf('Error: Invalid certificate hash info for %s', $descr));
+                continue;
+            }
+            $fname = "{$capath}/{$x509cert['hash']}.0.crt";
+            if (!@file_put_contents($fname, $cert)) {
+                log_error(sprintf('Error: Cannot write IPsec CA file for %s', $descr));
+                continue;
+            }
+            unset($cert);
         }
 
         $pskconf = "";
@@ -1057,9 +1061,7 @@ EOD;
             }
 
             if (!empty($ph1ent['certref'])) {
-                $cert = lookup_cert($ph1ent['certref']);
-
-                if (empty($cert)) {
+                if (!($cert = $mdlTrust->certs->cert->{$ph1ent['certref']})) {
                     log_error(sprintf('Error: Invalid phase1 certificate reference for %s', $ph1ent['name']));
                     continue;
                 }
@@ -1067,14 +1069,14 @@ EOD;
                 @chmod($certpath, 0600);
 
                 $ph1keyfile = "{$keypath}/cert-{$ph1ent['ikeid']}.key";
-                if (!file_put_contents($ph1keyfile, base64_decode($cert['prv']))) {
+                if (!file_put_contents($ph1keyfile, base64_decode($cert->prv->__toString()))) {
                     log_error(sprintf('Error: Cannot write phase1 key file for %s', $ph1ent['name']));
                     continue;
                 }
                 @chmod($ph1keyfile, 0600);
 
                 $ph1certfile = "{$certpath}/cert-{$ph1ent['ikeid']}.crt";
-                if (!file_put_contents($ph1certfile, base64_decode($cert['crt']))) {
+                if (!file_put_contents($ph1certfile, base64_decode($cert->crt->__toString()))) {
                     log_error(sprintf('Error: Cannot write phase1 certificate file for %s', $ph1ent['name']));
                     @unlink($ph1keyfile);
                     continue;
@@ -1261,10 +1263,9 @@ EOD;
                     $authentication .= "\n\tleftsendcert = always";
                 }
                 if (!empty($ph1ent['caref'])) {
-                    $ca = lookup_ca($ph1ent['caref']);
-                    if (!empty($ca)) {
+                    if (($ca = $mdlTrust->cas->ca->{$ph1ent['caref']})) {
                          $rightca = "";
-                        foreach (cert_get_subject_array($ca['crt']) as $ca_field) {
+                         foreach (Certs::cert_get_subject_array($ca->crt->__toString()) as $ca_field) {
                             $rightca .= "{$ca_field['a']}={$ca_field['v']}/";
                         }
                          $authentication .= "\n\trightca = \"/$rightca\"";

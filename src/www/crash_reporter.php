@@ -71,7 +71,7 @@ $crash_report_header = sprintf(
     $g['product_name'],
     trim(file_get_contents('/usr/local/opnsense/version/opnsense')),
     file_exists($last_version) ? sprintf(' [%s]', trim(file_get_contents($last_version))) : '',
-    trim(shell_exec('/usr/local/bin/openssl version')),
+    OPENSSL_VERSION_TEXT,
     trim(shell_exec('uname -p')),
     empty($plugins) ? '' : "Plugins $plugins\n",
     date('r')

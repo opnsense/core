@@ -32,7 +32,11 @@ require_once("plugins.inc.d/openvpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
+use OPNsense\Trust\Trust;
+use OPNsense\Core\Certs;
+
 $a_server = &config_read_array('openvpn', 'openvpn-server');
+$mdlTrust = new Trust();
 
 $act = null;
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -806,17 +810,18 @@ endif; ?>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Peer Certificate Authority"); ?></td>
                         <td>
 <?php
-                        if (isset($config['ca'])) :?>
+                        $cas = $mdlTrust->cas->ca->getChildren();
+                        if (count($cas) > 0) :?>
                           <select name='caref' class="form-control">
 <?php
-                          foreach ($config['ca'] as $ca) :
+                          foreach ($cas as $uuid => $ca) :
                               $selected = "";
-                              if ($pconfig['caref'] == $ca['refid']) {
+                              if ($pconfig['caref'] == $uuid) {
                                   $selected = "selected=\"selected\"";
                               }
                           ?>
-                            <option value="<?=htmlspecialchars($ca['refid']);?>" <?=$selected;?>>
-                              <?=htmlspecialchars($ca['descr']);?>
+                            <option value="<?=htmlspecialchars($uuid);?>" <?=$selected;?>>
+                              <?=htmlspecialchars($ca->descr->__toString());?>
                             </option>
 <?php
                           endforeach; ?>
@@ -824,7 +829,7 @@ endif; ?>
 <?php
                         else :?>
                           <b><?=gettext("No Certificate Authorities defined.");?></b>
-                          <br /><?=gettext("Create one under")?> <a href="system_camanager.php"> <?=gettext("System: Certificates");?></a>.
+                          <br /><?=gettext("Create one under")?> <a href="/ui/trust/authorities/"> <?=gettext("System: Trust: Authorities");?></a>.
 <?php
                         endif; ?>
                       </td>
@@ -833,18 +838,16 @@ endif; ?>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Peer Certificate Revocation List"); ?></td>
                       <td>
 <?php
-                        if (isset($config['crl'])) :?>
+                        $crls = $mdlTrust->crls->crl->getChildren();
+                        if (count($crls) > 0) :?>
                         <select name='crlref' class="form-control">
                           <option value="">None</option>
 <?php
-                          foreach ($config['crl'] as $crl) :
-                              if (!isset($crl['refid'])) {
-                                  continue;
-                              }
-                              $ca = lookup_ca($crl['caref']);
+                          foreach ($crls as $uuid => $crl) :
+                              $ca = $mdlTrust->cas->ca->{$crl->cauuid->__toString()};
                               if ($ca) {
-                                  $selected = $pconfig['crlref'] == $crl['refid'] ? 'selected="selected"' : ''; ?>
-                            <option value="<?=htmlspecialchars($crl['refid']);?>" <?=$selected;?>><?=htmlspecialchars("{$crl['descr']} ({$ca['descr']})");?></option>
+                                  $selected = $pconfig['crlref'] == $uuid ? 'selected="selected"' : ''; ?>
+                            <option value="<?=htmlspecialchars($uuid);?>" <?=$selected;?>><?=htmlspecialchars("{$crl->descr->__toString()} ({$ca->descr->__toString()})");?></option>
 <?php
                               }
                           endforeach; ?>
@@ -852,7 +855,7 @@ endif; ?>
 <?php
                         else :?>
                         <b><?=gettext("No Certificate Revocation Lists (CRLs) defined.");?></b>
-                        <br /><?=gettext("Create one under");?> <a href="system_crlmanager.php"><?=gettext("System: Certificates");?></a>.
+                        <br /><?=gettext("Create one under");?> <a href="/ui/trust/revocation/"><?=gettext("System: Trust: Revocation");?></a>.
 <?php
                         endif; ?>
                       </td>
@@ -861,32 +864,33 @@ endif; ?>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Server Certificate"); ?></td>
                       <td>
 <?php
-                      if (isset($config['cert'])) :?>
+                      $certs = $mdlTrust->certs->cert->getChildren();
+                      if (count($certs) > 0) :?>
                         <select name='certref' class="form-control">
 <?php
-                        foreach ($config['cert'] as $cert) :
+                        foreach ($certs as $uuid => $cert) :
                             $selected = "";
                             $caname = "";
                             $inuse = "";
                             $revoked = "";
-                            if (isset($cert['caref'])) {
-                                $ca = lookup_ca($cert['caref']);
+                            if (!empty($cert->cauuid->__toString())) {
+                                $ca = $mdlTrust->cas->ca->{$cert->cauuid->__toString()};
                                 if (!empty($ca)) {
-                                    $caname = " ({$ca['descr']})";
+                                    $caname = " ({$ca->descr->__toString()})";
                                 }
                             }
-                            if ($pconfig['certref'] == $cert['refid']) {
+                            if ($pconfig['certref'] == $uuid) {
                                 $selected = "selected=\"selected\"";
                             }
-                            if (cert_in_use($cert['refid'])) {
+                            if (Certs::cert_in_use($uuid)) {
                                 $inuse = " *In Use";
                             }
-                            if (is_cert_revoked($cert)) {
+                            if ($mdlTrust->is_cert_revoked($cert)) {
                                 $revoked = " *Revoked";
                             }
                         ?>
-                          <option value="<?=htmlspecialchars($cert['refid']);?>" <?=$selected;?>>
-                            <?=htmlspecialchars($cert['descr'] . $caname . $inuse . $revoked);?>
+                          <option value="<?=htmlspecialchars($uuid);?>" <?=$selected;?>>
+                            <?=htmlspecialchars($cert->descr->__toString() . $caname . $inuse . $revoked);?>
                           </option>
 <?php
                         endforeach; ?>
@@ -894,7 +898,7 @@ endif; ?>
 <?php
                       else :?>
                           <b><?=gettext("No Certificates defined.");?></b>
-                          <br /><?=gettext("Create one under");?> <a href="system_certmanager.php"><?=gettext("System: Certificates");?></a>.
+                          <br /><?=gettext("Create one under");?> <a href="/ui/trust/certificates/"><?=gettext("System: Trust: Certificates");?></a>.
 <?php
                       endif; ?>
                       </td>

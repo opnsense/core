@@ -1,8 +1,7 @@
-#!/usr/local/bin/php
 <?php
 
 /**
- *    Copyright (C) 2016 Deciso B.V.
+ *    Copyright (C) 2017 Smart-Soft
  *
  *    All rights reserved.
  *
@@ -29,23 +28,27 @@
  *
  */
 
-// use legacy code to generate certs and ca's
-require_once("config.inc");
-require_once("legacy_bindings.inc");
+namespace OPNsense\Trust;
 
-use \OPNsense\Trust\Trust;
+use \OPNsense\Base\IndexController;
 
-// Our template systems stores the ca certid into /usr/local/etc/squid/ca.pem.id
-// Which makes it easier for the setup script to detect cert changes (which should flush the stored cache)
-if (is_file('/usr/local/etc/squid/ca.pem.id')) {
-    $cert_uuid = trim(file_get_contents('/usr/local/etc/squid/ca.pem.id'));
-    $mdlTrust = new Trust();
-    if ($ca = $mdlTrust->cas->ca->{$cert_uuid}) {
-        $pem_contents = '';
-        $pem_contents .= trim(base64_decode($ca->prv->__toString())) . "\n";
-        $pem_contents .= trim(base64_decode($ca->crt->__toString())) . "\n";
-        $pem_contents .= $mdlTrust->ca_chain($ca);
-        echo "certificate generated\n";
-        file_put_contents('/var/squid/ssl/ca.pem', $pem_contents);
+/**
+ * Class AuthoritiesController
+ * @package OPNsense\Trust
+ */
+class AuthoritiesController extends IndexController
+{
+    /**
+     * CA index
+     * @throws \Exception
+     */
+    public function indexAction()
+    {
+        $this->view->title = gettext('System: Trust: Authorities');
+        // include dialog form definitions
+        $this->view->pick('OPNsense/Trust/authorities');
+        $this->view->existingCA = $this->getForm("existingCA");
+        $this->view->internalCA = $this->getForm("internalCA");
+        $this->view->intermediateCA = $this->getForm("intermediateCA");
     }
 }

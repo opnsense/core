@@ -10,7 +10,6 @@
 /usr/local/etc/inc/XMLRPC_Client.inc
 /usr/local/etc/inc/auth.inc
 /usr/local/etc/inc/authgui.inc
-/usr/local/etc/inc/certs.inc
 /usr/local/etc/inc/config.inc
 /usr/local/etc/inc/console.inc
 /usr/local/etc/inc/crypt.inc
@@ -1087,9 +1086,6 @@
 /usr/local/www/system_advanced_notifications.php
 /usr/local/www/system_advanced_sysctl.php
 /usr/local/www/system_authservers.php
-/usr/local/www/system_camanager.php
-/usr/local/www/system_certmanager.php
-/usr/local/www/system_crlmanager.php
 /usr/local/www/system_gateway_groups.php
 /usr/local/www/system_gateway_groups_edit.php
 /usr/local/www/system_gateways.php

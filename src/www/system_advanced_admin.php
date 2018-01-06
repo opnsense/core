@@ -35,6 +35,8 @@ require_once("filter.inc");
 require_once("system.inc");
 require_once("services.inc");
 
+use \OPNsense\Trust\Trust;
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['webguiinterfaces'] = !empty($config['system']['webgui']['interfaces']) ? explode(',', $config['system']['webgui']['interfaces']) : array();
@@ -246,14 +248,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-
-$a_cert = isset($config['cert']) ? $config['cert'] : array();
+$a_cert = (new Trust())->certs->cert->getChildren();
+$certs_available = count($a_cert) > 0;
 $interfaces = get_configured_interface_with_descr();
-
-$certs_available = false;
-if (count($a_cert)) {
-    $certs_available = true;
-}
 
 if (empty($pconfig['webguiproto']) || !$certs_available) {
     $pconfig['webguiproto'] = "http";
@@ -359,7 +356,7 @@ include("head.inc");
 <?php
                     if (!$certs_available) :?>
                     <br />
-                    <?= sprintf(gettext("No Certificates have been defined. You must %sCreate or Import%s a Certificate before SSL can be enabled."),'<a href="system_certmanager.php">','</a>') ?>
+                    <?= sprintf(gettext("No Certificates have been defined. You must %sCreate or Import%s a Certificate before SSL can be enabled."),'<a href="/ui/trust/certificates/">','</a>') ?>
 <?php
                     endif; ?>
                   </td>
@@ -369,9 +366,9 @@ include("head.inc");
                   <td>
                     <select name="ssl-certref" class="formselect selectpicker" data-style="btn-default">
 <?php
-                    foreach ($a_cert as $cert) :?>
-                      <option value="<?=$cert['refid'];?>" <?=$pconfig['ssl-certref'] == $cert['refid'] ? "selected=\"selected\"" : "";?>>
-                        <?=$cert['descr'];?>
+                    foreach ($a_cert as $uuid => $cert) :?>
+                      <option value="<?=$uuid;?>" <?=$pconfig['ssl-certref'] == $uuid ? "selected=\"selected\"" : "";?>>
+                        <?=$cert->descr->__toString();?>
                       </option>
 <?php
                     endforeach;?>
@@ -380,7 +377,7 @@ include("head.inc");
                       <?=sprintf(
                         gettext('The %sSSL certificate manager%s can be used to ' .
                         'create or import certificates if required.'),
-                        '<a href="/system_certmanager.php">', '</a>'
+                        '<a href="/ui/trust/certificates/">', '</a>'
                       );?>
                     </div>
                   </td>

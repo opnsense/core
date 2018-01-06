@@ -1,0 +1,25 @@
+<form>
+    <field>
+        <id>Import.descr</id>
+        <label>Descriptive Name</label>
+        <type>text</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Import Certificate</label>
+    </field>
+    <field>
+        <id>Import.cert</id>
+        <label>Certificate Data</label>
+        <type>textbox</type>
+        <height>7</height>
+        <help>Paste a certificate in X.509 PEM format here.</help>
+    </field>
+    <field>
+        <id>Import.key</id>
+        <label>Private Key Data</label>
+        <type>textbox</type>
+        <height>7</height>
+        <help>Paste a private key in X.509 PEM format here.</help>
+    </field>
+</form>

@@ -1,0 +1,89 @@
+<model>
+    <mount>//OPNsense/Trust</mount>
+    <version>1.0.0</version>
+    <description>Trust/certificate manage</description>
+    <items>
+        <cas>
+            <ca type="ArrayField">
+                <refid type="TextField">
+                </refid>
+                <cauuid type="TextField">
+                </cauuid>
+                <descr type="TextField">
+                </descr>
+                <crt type="TextField">
+                </crt>
+                <prv type="TextField">
+                </prv>
+                <serial type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <default>0</default>
+                </serial>
+            </ca>
+        </cas>
+        <certs>
+            <cert type="ArrayField">
+                <refid type="TextField">
+                </refid>
+                <cauuid type="TextField">
+                </cauuid>
+                <descr type="TextField">
+                </descr>
+                <crt type="TextField">
+                </crt>
+                <prv type="TextField">
+                </prv>
+                <csr type="TextField">
+                </csr>
+            </cert>
+        </certs>
+        <crls>
+            <crl type="ArrayField">
+                <refid type="TextField">
+                </refid>
+                <cauuid type="TextField">
+                </cauuid>
+                <descr type="TextField">
+                </descr>
+                <method type="OptionField">
+                    <OptionValues>
+                        <existing>existing</existing>
+                        <internal>internal</internal>
+                    </OptionValues>
+                </method>
+                <serial type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <default>0</default>
+                </serial>
+                <lifetime type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <default>0</default>
+                </lifetime>
+                <text type="TextField">
+                </text>
+            </crl>
+        </crls>
+        <crl_certs>
+            <cert type="ArrayField">
+                <refid type="TextField">
+                </refid>
+                <cauuid type="TextField">
+                </cauuid>
+                <crluuid type="TextField">
+                </crluuid>
+                <descr type="TextField">
+                </descr>
+                <crt type="TextField">
+                </crt>
+                <prv type="TextField">
+                </prv>
+                <reason type="TextField">
+                </reason>
+                <revoke_time type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <default>0</default>
+                </revoke_time>
+            </cert>
+        </crl_certs>
+    </items>
+</model>

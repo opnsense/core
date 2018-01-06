@@ -33,6 +33,7 @@ require_once("filter.inc");
 require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+use OPNsense\Trust\Trust;
 
 /*
  * find_ip_interface($ip): return the interface where an ip is defined
@@ -68,7 +69,7 @@ function find_ip_interface($ip, $bits = null) {
 	return false;
 }
 
-
+$mdlTrust = new Trust();
 $stepid = '0';
 
 if (isset($_POST['stepid'])) {
@@ -523,9 +524,9 @@ function showchange() {
 				}
 				echo "<select class='form-control' id='{$name}' name='{$name}' {$size} {$multiple}>\n";
 				if($field['add_to_interfaces_selection'] <> "") {
-					$SELECTED = "";
-					if($field['add_to_interfaces_selection'] == $value) $SELECTED = " selected=\"selected\"";
-					echo "<option value='" . $field['add_to_interfaces_selection'] . "'" . $SELECTED . ">" . $field['add_to_interfaces_selection'] . "</option>\n";
+					$selected_field = "";
+					if($field['add_to_interfaces_selection'] == $value) $selected_field = " selected=\"selected\"";
+					echo "<option value='" . $field['add_to_interfaces_selection'] . "'" . $selected_field . ">" . $field['add_to_interfaces_selection'] . "</option>\n";
 				}
 				if($field['type'] == "interface_select")
 					$interfaces = get_interface_list();
@@ -537,9 +538,9 @@ function showchange() {
 						if ($iface['mac'])
 							$iface .= " ({$iface['mac']})";
 					}
-					$SELECTED = "";
-					if ($value == $ifname) $SELECTED = " selected=\"selected\"";
-					$to_echo = "<option value='" . $ifname . "'" . $SELECTED . ">" . $iface . "</option>\n";
+					$selected_field = "";
+					if ($value == $ifname) $selected_field = " selected=\"selected\"";
+					$to_echo = "<option value='" . $ifname . "'" . $selected_field . ">" . $iface . "</option>\n";
 					$to_echo .= "<!-- {$value} -->";
 					$canecho = 0;
 					if($field['interface_filter'] <> "") {
@@ -590,18 +591,18 @@ function showchange() {
 				if($field['size'] <> "") $size = "size=\"{$field['size']}\"";
 				echo "<select id='{$name}' name='{$name}' {$size}>\n";
 				if($field['add_to_certca_selection'] <> "") {
-					$SELECTED = "";
-					if($field['add_to_certca_selection'] == $value) $SELECTED = " selected=\"selected\"";
-					echo "<option value='" . $field['add_to_certca_selection'] . "'" . $SELECTED . ">" . $field['add_to_certca_selection'] . "</option>\n";
+					$selected_field = "";
+					if($field['add_to_certca_selection'] == $value) $selected_field = " selected=\"selected\"";
+					echo "<option value='" . $field['add_to_certca_selection'] . "'" . $selected_field . ">" . $field['add_to_certca_selection'] . "</option>\n";
 				}
-				foreach($config['ca'] as $ca) {
-					if (!empty($field['internal']) && empty($ca['prv'])) {
+				foreach($mdlTrust->cas->ca->getChildren() as $uuid => $ca) {
+					if (!empty($field['internal']) && empty($ca->prv->__toString())) {
 						continue;
 					}
-					$name = htmlspecialchars($ca['descr']);
-					$SELECTED = "";
-					if ($value == $name) $SELECTED = " selected=\"selected\"";
-					$to_echo = "<option value='" . $ca['refid'] . "'" . $SELECTED . ">" . $name . "</option>\n";
+					$name = htmlspecialchars($ca->descr->__toString());
+					$selected_field = "";
+					if ($value == $name) $selected_field = " selected=\"selected\"";
+					$to_echo = "<option value='" . $uuid . "'" . $selected_field . ">" . $name . "</option>\n";
 					$to_echo .= "<!-- {$value} -->";
 					$canecho = 0;
 					if($field['certca_filter'] <> "") {
@@ -631,17 +632,17 @@ function showchange() {
 				if($field['size'] <> "") $size = "size=\"{$field['size']}\"";
 				echo "<select id='{$name}' name='{$name}' {$size}>\n";
 				if($field['add_to_cert_selection'] <> "") {
-					$SELECTED = "";
-					if($field['add_to_cert_selection'] == $value) $SELECTED = " selected=\"selected\"";
-					echo "<option value='" . $field['add_to_cert_selection'] . "'" . $SELECTED . ">" . $field['add_to_cert_selection'] . "</option>\n";
+					$selected_field = "";
+					if($field['add_to_cert_selection'] == $value) $selected_field = " selected=\"selected\"";
+					echo "<option value='" . $field['add_to_cert_selection'] . "'" . $selected_field . ">" . $field['add_to_cert_selection'] . "</option>\n";
 				}
-				foreach($config['cert'] as $ca) {
-					if (stristr($ca['descr'], "webconf"))
+				foreach($mdlTrust->certs->cert->getChildren() as $uuid => $cert) {
+					if (stristr($cert->descr->__toString(), "webconf"))
 						continue;
-					$name = htmlspecialchars($ca['descr']);
-					$SELECTED = "";
-					if ($value == $name) $SELECTED = " selected=\"selected\"";
-					$to_echo = "<option value='" . $ca['refid'] . "'" . $SELECTED . ">" . $name . "</option>\n";
+					$name = htmlspecialchars($cert->descr->__toString());
+					$selected_field = "";
+					if ($value == $name) $selected_field = " selected=\"selected\"";
+					$to_echo = "<option value='" . $uuid . "'" . $selected_field . ">" . $name . "</option>\n";
 					$to_echo .= "<!-- {$value} -->";
 					$canecho = 0;
 					if($field['cert_filter'] <> "") {
@@ -788,9 +789,9 @@ function showchange() {
 					echo "<td class=\"vtable\">";
 				echo "<select class='form-control' name='{$name}'>\n";
 				foreach ($languagelist as $langkey => $langval) {
-					$SELECTED = "";
-					if ($value == $langkey) $SELECTED = " selected=\"selected\"";
-					echo "<option value=\"" . htmlspecialchars($langkey) . "\" {$SELECTED}>";
+					$selected_field = "";
+					if ($value == $langkey) $selected_field = " selected=\"selected\"";
+					echo "<option value=\"" . htmlspecialchars($langkey) . "\" {$selected_field}>";
 					echo htmlspecialchars($langval);
 					echo "</option>\n";
 				}
@@ -819,9 +820,9 @@ function showchange() {
 				foreach ($timezonelist as $tz) {
 					if(strstr($tz, "GMT"))
 						continue;
-					$SELECTED = "";
-					if ($value == $tz) $SELECTED = " selected=\"selected\"";
-					echo "<option value=\"" . htmlspecialchars($tz) . "\" {$SELECTED}>";
+					$selected_field = "";
+					if ($value == $tz) $selected_field = " selected=\"selected\"";
+					echo "<option value=\"" . htmlspecialchars($tz) . "\" {$selected_field}>";
 					echo htmlspecialchars($tz);
 					echo "</option>\n";
 				}

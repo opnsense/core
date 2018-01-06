@@ -36,6 +36,8 @@ require_once("plugins.inc.d/ipsec.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
+use OPNsense\Trust\Trust;
+
 /*
  * ikeid management functions
  */
@@ -64,6 +66,7 @@ function ipsec_ikeid_next() {
 
 config_read_array('ipsec', 'phase1');
 config_read_array('ipsec', 'phase2');
+$mdlTrust = new Trust();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // fetch data
@@ -828,14 +831,12 @@ endforeach; ?>
                     <td>
                       <select name="certref" class="formselect">
 <?php
-                      if (isset($config['cert'])) :
-                        foreach ($config['cert'] as $cert) :
+                        foreach ($mdlTrust->certs->cert->getChildren() as $uuid => $cert) :
 ?>
-                        <option value="<?=$cert['refid'];?>" <?= isset($pconfig['certref']) && $pconfig['certref'] == $cert['refid'] ? "selected=\"selected\"" : ""?>>
-                          <?=$cert['descr'];?>
+                        <option value="<?=$uuid;?>" <?= isset($pconfig['certref']) && $pconfig['certref'] == $uuid ? "selected=\"selected\"" : ""?>>
+                          <?=$cert->descr->__toString();?>
                         </option>
 <?php                endforeach;
-                      endif;
 ?>
                       </select>
                       <div class="hidden" for="help_for_certref">
@@ -848,15 +849,14 @@ endforeach; ?>
                     <td>
                       <select name="caref" class="formselect">
                       <?php
-                    $config__ca = isset($config['ca']) ? $config['ca'] : array();
-                        foreach ($config__ca as $ca) :
+                        foreach ($mdlTrust->cas->ca->getChildren() as $uuid => $ca) :
                             $selected = "";
-                            if ($pconfig['caref'] == $ca['refid']) {
+                            if ($pconfig['caref'] == $uuid) {
                                 $selected = "selected=\"selected\"";
                             }
                         ?>
-                          <option value="<?=$ca['refid'];?>" <?= isset($pconfig['caref']) && $pconfig['caref'] == $ca['refid'] ? "selected=\"selected\"":"";?>>
-                            <?=htmlspecialchars($ca['descr']);?>
+                          <option value="<?=$uuid;?>" <?= isset($pconfig['caref']) && $pconfig['caref'] == $uuid ? "selected=\"selected\"":"";?>>
+                            <?=htmlspecialchars($ca->descr->__toString());?>
                           </option>
 <?php                endforeach;
 ?>

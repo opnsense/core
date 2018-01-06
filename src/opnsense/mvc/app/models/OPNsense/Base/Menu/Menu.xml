@@ -15,17 +15,6 @@
         <Traffic order="100" VisibleName="Traffic Graph" url="/status_graph.php" cssClass="fa fa-line-chart fa-fw"/>
     </Reporting>
     <System order="20" cssClass="fa fa-server">
-        <Trust order="120" cssClass="fa fa-certificate fa-fw">
-            <Certificates url="/system_certmanager.php">
-                <workAround url="/system_certmanager.php*" visibility="hidden"/>
-            </Certificates>
-            <Authorities url="/system_camanager.php">
-                <workAround url="/system_camanager.php*" visibility="hidden"/>
-            </Authorities>
-            <Revocation url="/system_crlmanager.php">
-                <workAround url="/system_crlmanager.php*" visibility="hidden"/>
-            </Revocation>
-        </Trust>
         <Configuration order="80" cssClass="fa fa-history fa-fw">
             <History url="/diag_confbak.php">
                 <none url="/diag_confbak.php*" visibility="hidden"/>

@@ -30,6 +30,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+use \OPNsense\Trust\Trust;
+
 function openvpn_configure()
 {
     return array(
@@ -468,7 +470,7 @@ function openvpn_add_keyfile($data, &$conf, $mode_id, $directive, $opt = '')
 
 function openvpn_reconfigure($mode, $settings, $device_only = false)
 {
-    global $config;
+    $mdlTrust = new Trust();
 
     if (empty($settings)) {
         return;
@@ -689,14 +691,12 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
             $settings['cert_depth'] = 1;
         }
         if (is_numeric($settings['cert_depth'])) {
-            if (($mode == 'client') && empty($settings['certref'])) {
-                $cert = "";
-            } else {
-                $cert = lookup_cert($settings['certref']);
-                /* XXX: Seems not used at all! */
-                $servercn = urlencode(cert_get_cn($cert['crt']));
-                $conf .= "tls-verify \"/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_auth_verify " .
-                    "tls '{$servercn}' {$settings['cert_depth']}\"\n";
+            if (($mode != 'client') || !empty($settings['certref'])) {
+                if ($cert = $mdlTrust->certs->cert->{$settings['certref']}) {
+                    /* XXX: Seems not used at all! */
+                    $servercn = urlencode($mdlTrust->cert_get_cn($cert->crt->__toString()));
+                    $conf .= "tls-verify \"/usr/local/sbin/ovpn_auth_verify tls '{$servercn}' {$settings['cert_depth']}\"\n";
+                }
             }
         }
 
@@ -829,29 +829,31 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         case 'server_tls':
         case 'server_tls_user':
         case 'server_user':
-            $ca = lookup_ca($settings['caref']);
-            openvpn_add_keyfile($ca['crt'], $conf, $mode_id, "ca");
+            if ($ca = $mdlTrust->cas->ca->{$settings["caref"]}) {
+                openvpn_add_keyfile($ca->crt->__toString(), $conf, $mode_id, "ca");
 
-            if (!empty($settings['certref'])) {
-                $cert = lookup_cert($settings['certref']);
-                openvpn_add_keyfile($cert['crt'], $conf, $mode_id, "cert");
-                openvpn_add_keyfile($cert['prv'], $conf, $mode_id, "key");
-            }
-            if ($mode == 'server') {
-                $conf .= "dh /usr/local/etc/dh-parameters.{$settings['dh_length']}\n";
-            }
-            if (!empty($settings['crlref'])) {
-                $crl = lookup_crl($settings['crlref']);
-                crl_update($crl);
-                openvpn_add_keyfile($crl['text'], $conf, $mode_id, "crl-verify");
-            }
-            if ($settings['tls']) {
-                if ($mode == "server") {
-                    $tlsopt = 0;
-                } else {
-                    $tlsopt = 1;
+                if (!empty($settings['certref'])) {
+                    $cert = $mdlTrust->certs->cert->{$settings['certref']};
+                    openvpn_add_keyfile($cert->crt->__toString(), $conf, $mode_id, "cert");
+                    openvpn_add_keyfile($cert->prv->__toString(), $conf, $mode_id, "key");
                 }
-                openvpn_add_keyfile($settings['tls'], $conf, $mode_id, "tls-auth", $tlsopt);
+                if ($mode == 'server') {
+                    $conf .= "dh /usr/local/etc/dh-parameters.{$settings['dh_length']}\n";
+                }
+                if (!empty($settings['crlref'])) {
+                    $crl = $mdlTrust->crls->crl->{$settings['crlref']};
+                    if (($crl = $mdlTrust->crl_update($crl))) {
+                        openvpn_add_keyfile($crl->text->__toString(), $conf, $mode_id, "crl-verify");
+                    }
+                }
+                if ($settings['tls']) {
+                    if ($mode == "server") {
+                        $tlsopt = 0;
+                    } else {
+                        $tlsopt = 1;
+                    }
+                    openvpn_add_keyfile($settings['tls'], $conf, $mode_id, "tls-auth", $tlsopt);
+                }
             }
             break;
     }
@@ -1620,10 +1622,11 @@ function openvpn_refresh_crls()
                 case 'server_tls_user':
                 case 'server_user':
                     if (!empty($settings['crlref'])) {
-                        $crl = lookup_crl($settings['crlref']);
-                        crl_update($crl);
+                        $mdlTrust = new Trust();
+                        $crl = $mdlTrust->crls->crl->{$settings['crlref']};
+                        $mdlTrust->crl_update($crl);
                         $fpath = "/var/etc/openvpn/server{$settings['vpnid']}.crl-verify";
-                        file_put_contents($fpath, base64_decode($crl['text']));
+                        file_put_contents($fpath, base64_decode($crl->text->__toString()));
                         @chmod($fpath, 0644);
                     }
                     break;

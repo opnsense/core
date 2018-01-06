@@ -1,0 +1,67 @@
+<form>
+    <field>
+        <id>External.descr</id>
+        <label>Descriptive Name</label>
+        <type>text</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>External Signing Request</label>
+    </field>
+    <field>
+        <id>External.keylen</id>
+        <label>Key Length (bits)</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>External.digest_alg</id>
+        <label>Digest Algorithm</label>
+        <type>dropdown</type>
+        <help>It is recommended to use an algorithm stronger than SHA1 when possible.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Distinguished Name</label>
+    </field>
+    <field>
+        <id>External.dn_country</id>
+        <label>Country Code</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>External.dn_state</id>
+        <label>State or Province</label>
+        <type>text</type>
+        <help><![CDATA[<em>ex:</em> Sachsen]]></help>
+    </field>
+    <field>
+        <id>External.dn_city</id>
+        <label>City</label>
+        <type>text</type>
+        <help><![CDATA[<em>ex:</em> Leipzig]]></help>
+    </field>
+    <field>
+        <id>External.dn_organization</id>
+        <label>Organization</label>
+        <type>text</type>
+        <help><![CDATA[<em>ex:</em> My Company Inc]]></help>
+    </field>
+    <field>
+        <id>External.dn_organizationalunit</id>
+        <label>Organizational Unit</label>
+        <type>text</type>
+        <help><![CDATA[<em>ex:</em> IT department]]></help>
+    </field>
+    <field>
+        <id>External.dn_email</id>
+        <label>Email Address</label>
+        <type>text</type>
+        <help><![CDATA[<em>ex:</em> admin@mycompany.com]]></help>
+    </field>
+    <field>
+        <id>External.dn_commonname</id>
+        <label>Common Name</label>
+        <type>text</type>
+        <help><![CDATA[<em>ex:</em> internal-ca]]></help>
+    </field>
+</form>
