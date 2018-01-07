@@ -1,0 +1,7 @@
+{% if helpers.exists('OPNsense.ssh-keys') %}
+{%   if helpers.exists('OPNsense.ssh-keys.known_host') %}
+{%     for key in helpers.toList('OPNsense.ssh-keys.known_host') %}
+{{ key.host }} {{ key.key_type }} {{ key.public_key }}
+{%     endfor %}
+{%   endif %}
+{% endif %}

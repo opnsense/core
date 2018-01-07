@@ -1,0 +1,9 @@
+<acl>
+  <page-sshkeys>
+    <name>SSH Keys</name>
+    <patterns>
+      <pattern>ui/sshkeys/*</pattern>
+      <pattern>api/sshkeys/*</pattern>
+    </patterns>
+  </page-sshkeys>
+</acl>

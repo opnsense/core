@@ -1,0 +1,20 @@
+<form>
+  <field>
+    <id>known_host.host</id>
+    <label>Host</label>
+    <type>text</type>
+    <help>Enter an IPv4- or IPv6 address or a hostname.</help>
+  </field>
+  <field>
+    <id>known_host.key_type</id>
+    <label>Key Type</label>
+    <type>dropdown</type>
+    <help>Select a key type - you need to add one entry per key type the server supports.</help>
+  </field>
+  <field>
+    <id>known_host.public_key</id>
+    <label>Public Key</label>
+    <type>text</type>
+    <help>Enter a Base64 encoded public key.</help>
+  </field>
+</form>

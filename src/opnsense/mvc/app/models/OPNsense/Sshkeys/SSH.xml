@@ -1,0 +1,26 @@
+<model>
+  <mount>//OPNsense/ssh-keys</mount>
+  <description>Management of SSH Keys</description>
+  <items>
+    <known_host type="ArrayField">
+      <key_type type="OptionField">
+        <Required>Y</Required>
+        <default>ssh-ed25519</default>
+        <OptionValues>
+          <ecdsa-sha2-nistp256>ECDSA-SHA2-NISTP256</ecdsa-sha2-nistp256>
+          <ssh-ed25519>ED25519</ssh-ed25519>
+          <ssh-rsa>RSA</ssh-rsa>
+        </OptionValues>
+      </key_type>
+      <public_key type="TextField">
+        <Required>Y</Required>
+        <mask>/^(?:[A-Za-z0-9\+\/]{4})*(?:[A-Za-z0-9\+\/]{2}==|[A-Za-z0-9\+\/]{3}=)?$/</mask>
+        <ValidationMessage>This must be a valid base64 encoded public key.</ValidationMessage>
+      </public_key>
+      <host type="TextField">
+        <Required>Y</Required>
+        <mask>/^(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}|[a-fA-F0-9:]{2,40}$|[a-zA-Z][a-zA-Z0-9\-_\.]{3,}$)/</mask>
+      </host>
+    </known_host>
+  </items>
+</model>
