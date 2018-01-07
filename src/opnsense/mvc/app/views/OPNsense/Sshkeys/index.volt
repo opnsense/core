@@ -38,11 +38,21 @@ $( document ).ready(function() {
           'options':{selection:false, multiSelect:false}
         }
     );
+    $("#grid-ssh-keys").UIBootgrid(
+        { 'search':'/api/sshkeys/ssh/search_key_pair',
+          'get':'/api/sshkeys/ssh/get_key_pair/',
+          'set':'/api/sshkeys/ssh/set_key_pair/',
+          'add':'/api/sshkeys/ssh/add_key_pair/',
+          'del':'/api/sshkeys/ssh/del_key_pair/',
+          'options':{selection:false, multiSelect:false}
+        }
+    );
 });
 
 </script>
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" href="#known-hosts">{{ lang._('Known Hosts') }}</a></li>
+    <li><a data-toggle="tab" href="#key-pairs">{{ lang._('Key Pairs') }}</a></li>
 </ul>
 
 <div class="tab-content content-box tab-content" style="padding-bottom: 1.5em;">
@@ -62,6 +72,26 @@ $( document ).ready(function() {
           </tbody>
           <tfoot>
               <tr>
+                  <td colspan="2"></td>
+                  <td>
+                      <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                  </td>
+              </tr>
+          </tfoot>
+      </table>
+    </div>
+    <div id="key-pairs" class="tab-pane fade in">
+        <table id="grid-ssh-keys" class="table table-responsive" data-editDialog="keypairdlg">
+          <thead>
+              <tr>
+                  <th data-column-id="key_name" data-type="string" data-visible="true">{{ lang._('Name') }}</th>
+                  <th data-column-id="commands" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+          <tfoot>
+              <tr>
                   <td colspan="1"></td>
                   <td>
                       <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
@@ -73,3 +103,4 @@ $( document ).ready(function() {
 </div>
 
 {{ partial("layout_partials/base_dialog",['fields': known_host_form,'id':'knownhostdlg', 'label':lang._('Edit Known Host')]) }}
+{{ partial("layout_partials/base_dialog",['fields': key_pair_form,'id':'keypairdlg', 'label':lang._('Edit Key Pair')]) }}

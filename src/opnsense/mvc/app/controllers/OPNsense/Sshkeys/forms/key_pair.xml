@@ -1,0 +1,20 @@
+<form>
+  <field>
+    <id>key_pair.key_name</id>
+    <label>Name</label>
+    <type>text</type>
+    <help>Choose a name for your key (will be displayed in dropdown menus).</help>
+  </field>
+  <field>
+    <id>key_pair.private_key</id>
+    <label>Private Key</label>
+    <type>textbox</type>
+    <help>Private Key in OpenSSH format</help>
+  </field>
+  <field>
+    <id>key_pair.public_key</id>
+    <label>Public Key</label>
+    <type>text</type>
+    <help>Public Key in OpenSSH format (type - space - base64 key - space - comment </help>
+  </field>
+</form>

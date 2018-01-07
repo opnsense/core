@@ -142,6 +142,105 @@ class SshController extends ApiMutableModelControllerBase
         }
         return array('result' => 'failed');
     }
+    public function search_key_pairAction()
+    {
+        $this->sessionClose();
+        $mdl = $this->getModel();
+        $grid = new UIModelGrid($mdl->key_pair);
+        return $grid->fetchBindRequest(
+            $this->request,
+            array('key_name')
+        );
+    }
+    public function get_key_pairAction($uuid = null)
+    {
+        $mdl = $this->getModel();
+        if ($uuid != null) {
+            $node = $mdl->getNodeByReference('key_pair.' . $uuid);
+            if ($node != null) {
+                // return node
+                return array('key_pair' => $node->getNodes());
+            }
+        } else {
+            $node = $mdl->key_pair->add();
+            return array('key_pair' => $node->getNodes());
+        }
+        return array();
+    }
+    public function add_key_pairAction()
+    {
+        $result = array('result' => 'failed');
+        if ($this->request->isPost() && $this->request->hasPost('key_pair')) {
+            $result = array('result' => 'failed', 'validations' => array());
+            $mdl = $this->getModel();
+            $node = $mdl->key_pair->Add();
+            $node->setNodes($this->request->getPost('key_pair'));
+            $valMsgs = $mdl->performValidation();
+
+            foreach ($valMsgs as $field => $msg) {
+                $fieldnm = str_replace($node->__reference, 'key_pair', $msg->getField());
+                $result['validations'][$fieldnm] = $msg->getMessage();
+            }
+
+            if (count($result['validations']) == 0) {
+                // save config if validated correctly
+                $mdl->serializeToConfig();
+                Config::getInstance()->save();
+                unset($result['validations']);
+                $result['result'] = 'saved';
+            }
+        }
+        return $result;
+    }
+    public function del_key_pairAction($uuid)
+    {
+
+        $result = array('result' => 'failed');
+
+        if ($this->request->isPost()) {
+            $mdl = $this->getModel();
+            if ($uuid != null) {
+                if ($mdl->key_pair->del($uuid)) {
+                    $mdl->serializeToConfig();
+                    Config::getInstance()->save();
+                    $result['result'] = 'deleted';
+                } else {
+                    $result['result'] = 'not found';
+                }
+            }
+        }
+        return $result;
+    }
+    public function set_key_pairAction($uuid)
+    {
+        if ($this->request->isPost() && $this->request->hasPost('key_pair')) {
+            $mdl = $this->getModel();
+            if ($uuid != null) {
+                $node = $mdl->getNodeByReference('key_pair.' . $uuid);
+                if ($node != null) {
+                    $result = array('result' => 'failed', 'validations' => array());
+                    $info = $this->request->getPost('key_pair');
+
+                    $node->setNodes($info);
+                    $valMsgs = $mdl->performValidation();
+                    foreach ($valMsgs as $field => $msg) {
+                        $fieldnm = str_replace($node->__reference, 'key_pair', $msg->getField());
+                        $result['validations'][$fieldnm] = $msg->getMessage();
+                    }
+
+                    if (count($result['validations']) == 0) {
+                        // save config if validated correctly
+                        $mdl->serializeToConfig();
+                        unset($result['validations']);
+                        Config::getInstance()->save();
+                        $result = array('result' => 'saved');
+                    }
+                    return $result;
+                }
+            }
+        }
+        return array('result' => 'failed');
+    }
     private function refresh_template()
     {
         $backend = new Backend();

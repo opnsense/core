@@ -40,6 +40,7 @@ class IndexController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->known_host_form = $this->getForm("known_host");
+        $this->view->key_pair_form = $this->getForm("key_pair");
         $this->view->pick('OPNsense/Sshkeys/index');
     }
 }
