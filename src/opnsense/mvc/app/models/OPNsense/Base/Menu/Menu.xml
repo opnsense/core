@@ -154,9 +154,9 @@
             <Outbound order="300" VisibleName="Outbound" url="/firewall_nat_out.php">
               <Edit url="/firewall_nat_out_edit.php*" visibility="hidden"/>
             </Outbound>
-            <NPT VisibleName="NPT (IPv6)" order="400" url="/firewall_nat_npt.php">
+            <NPTv6 order="400" url="/firewall_nat_npt.php">
                 <Edit url="/firewall_nat_npt_edit.php*" visibility="hidden"/>
-            </NPT>
+            </NPTv6>
         </NAT>
         <Groups order="50" url="/interfaces_groups.php" cssClass="fa fa-sitemap fa-fw">
             <Edit url="/interfaces_groups_edit.php*" visibility="hidden"/>
