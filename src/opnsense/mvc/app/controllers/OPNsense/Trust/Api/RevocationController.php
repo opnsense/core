@@ -125,7 +125,7 @@ class RevocationController extends TrustBase
         return [
             "Internal" => [
                 "descr" => "",
-                "cauuid" => (new Trust())->list_ca(),
+                "cauuid" => (new Trust())->certs->cert->Add()->getNodes()["cauuid"],
                 "lifetime" => "9999",
                 "serial" => "0"
             ]
@@ -190,7 +190,7 @@ class RevocationController extends TrustBase
             return [
                 "Existing" => [
                     "descr" => "",
-                    "cauuid" => $mdlTrust->list_ca(),
+                    "cauuid" => $mdlTrust->certs->cert->Add()->getNodes()["cauuid"],
                     "text" => ""
                 ]
             ];
@@ -203,7 +203,7 @@ class RevocationController extends TrustBase
         return [
             "Existing" => [
                 "descr" => $crl->descr->__toString(),
-                "cauuid" => $mdlTrust->list_ca($crl->cauuid->__toString()),
+                "cauuid" => $mdlTrust->certs->cert->Add()->getNodes()["cauuid"],
                 "text" => base64_decode($crl->text->__toString())
             ]
         ];

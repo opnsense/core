@@ -463,7 +463,7 @@ EOD;
 
     /* add HTTP to HTTPS redirect */
     if ($config->system->webgui->protocol->__toString() == 'https' &&
-        !isset($config->system->webgui->disablehttpredirect->__toString())) {
+        empty($config->system->webgui->disablehttpredirect->__toString())) {
         $redirectport = $lighty_port != "443" ? ":{$lighty_port}" : '';
         foreach ($listeners as $listener) {
             if (is_ipaddrv6($listener)) {

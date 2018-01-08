@@ -358,7 +358,7 @@ class CertificatesController extends TrustBase
         return [
             "Internal" => [
                 "descr" => $user ? Config::getInstance()->object()->system->user->{(int)$user}->name->__toString() : "",
-                "cauuid" => $mdlTrust->list_ca(),
+                "cauuid" => $mdlTrust->certs->cert->Add()->getNodes()["cauuid"],
                 "cert_type" => [
                     "usr_cert" => ["value" => gettext("Client Certificate"), "selected" => "1"],
                     "cert_type" => ["value" => gettext("Server Certificate"), "selected" => "0"],

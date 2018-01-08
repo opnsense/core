@@ -99,23 +99,6 @@ class Trust extends BaseModel
     }
 
     /**
-     * The data for the dropdown list with the list of CA
-     * @param null $select
-     * @return array
-     */
-    public function list_ca($select = null)
-    {
-        $cas = [];
-        foreach ($this->cas->ca->getChildren() as $uuid => $ca) {
-            $cas[$uuid] = ["value" => $ca->descr->__toString(), "selected" => "0"];
-        }
-        if ($select) {
-            $cas[$select]["selected"] = "1";
-        }
-        return $cas;
-    }
-
-    /**
      * The update of the CRL
      * @param $crl
      * @return bool

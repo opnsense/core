@@ -25,7 +25,8 @@
             <cert type="ArrayField">
                 <refid type="TextField">
                 </refid>
-                <cauuid type="TextField">
+                <cauuid type="CertificateField">
+                    <Type>ca</Type>
                 </cauuid>
                 <descr type="TextField">
                 </descr>
@@ -41,7 +42,8 @@
             <crl type="ArrayField">
                 <refid type="TextField">
                 </refid>
-                <cauuid type="TextField">
+                <cauuid type="CertificateField">
+                    <Type>ca</Type>
                 </cauuid>
                 <descr type="TextField">
                 </descr>
@@ -67,9 +69,11 @@
             <cert type="ArrayField">
                 <refid type="TextField">
                 </refid>
-                <cauuid type="TextField">
+                <cauuid type="CertificateField">
+                    <Type>ca</Type>
                 </cauuid>
-                <crluuid type="TextField">
+                <crluuid type="CertificateField">
+                    <Type>crl</Type>
                 </crluuid>
                 <descr type="TextField">
                 </descr>

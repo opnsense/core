@@ -32,6 +32,7 @@ namespace OPNsense\Trust\Migrations;
 use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Config;
 use OPNsense\Proxy\Proxy;
+use OPNsense\Trust\Trust;
 
 class M1_0_0 extends BaseModelMigration
 {
@@ -70,6 +71,9 @@ class M1_0_0 extends BaseModelMigration
             }
         }
 
+        $model->serializeToConfig();
+        new Trust();
+
         foreach ($config->cert as $cert) {
             $new_cert = $model->certs->cert->add();
             $new_cert->refid = $cert->refid->__toString();
@@ -92,6 +96,9 @@ class M1_0_0 extends BaseModelMigration
             }
         }
 
+        $model->serializeToConfig();
+        new Trust();
+
         foreach ($config->crl as $crl) {
             $new_crl = $model->crls->crl->add();
             $new_crl->refid = $crl->refid->__toString();
@@ -110,6 +117,9 @@ class M1_0_0 extends BaseModelMigration
                     $new_crl->cauuid = $uuid;
                 }
             }
+
+            $model->serializeToConfig();
+            new Trust();
 
             foreach ($crl->cert as $cert) {
                 $new_cert_crl = $model->crl_certs->cert->add();
@@ -131,6 +141,7 @@ class M1_0_0 extends BaseModelMigration
             }
         }
         $model->serializeToConfig();
+        new Trust();
 
         $sslcertificate = (new Proxy())->forward->sslcertificate->__toString();
         if (!empty($sslcertificate)) {
