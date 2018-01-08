@@ -236,10 +236,9 @@ function print_service_banner($service)
                 break;
             }
             print_alert_box(
-                gettext('You are currently running in LiveCD mode. A reboot will reset the configuration.') .' ' .
+                gettext('You are currently running in LiveCD mode. A reboot will reset the configuration.') . ' ' .
                 (!isset($config['system']['ssh']['noauto']) && is_process_running('sshd') ?
-                gettext('SSH remote login is enabled for the users "root" and ' .
-                '"installer" using the same password.') : gettext('SSH remote login is disabled.'))
+                gettext('SSH remote login is enabled for the users "root" and "installer" using the same password.') : '')
             );
         default:
             break;
