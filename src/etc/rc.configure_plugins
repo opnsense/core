@@ -31,8 +31,13 @@ require_once 'config.inc';
 require_once 'system.inc';
 require_once 'util.inc';
 
+/* assume standard operation mode as post-install */
+$script = !empty($argv[1]) ? $argv[1] : 'POST_INSTALL';
+
 /* reload subsystem that may have changed */
-system_syslogd_start(true);
+if ($script == 'POST_INSTALL') {
+	system_syslogd_start(true);
+}
 
 /* flush user-facing caches */
 (new OPNsense\Core\ACL())->invalidateCache();
