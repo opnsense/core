@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $a_npt[$id]['disabled'] = true;
         }
-        write_config('Toggled NAT NPT rule');
+        write_config('Toggled NAT NPTv6 rule');
         mark_subsystem_dirty('natconf');
         header(url_safe('Location: /firewall_nat_npt.php'));
         exit;
@@ -110,7 +110,7 @@ $main_buttons = array(
         // delete single
         BootstrapDialog.show({
           type:BootstrapDialog.TYPE_DANGER,
-          title: "<?=gettext("NPT");?>",
+          title: "<?=gettext("NPTv6");?>",
           message: "<?=gettext("Do you really want to delete this rule?");?>",
           buttons: [{
                     label: "<?= gettext("No");?>",
@@ -129,7 +129,7 @@ $main_buttons = array(
         // delete selected
         BootstrapDialog.show({
           type:BootstrapDialog.TYPE_DANGER,
-          title: "<?= gettext("NPT");?>",
+          title: "<?= gettext("NPTv6");?>",
           message: "<?=gettext("Do you really want to delete the selected rules?");?>",
           buttons: [{
                     label: "<?= gettext("No");?>",
