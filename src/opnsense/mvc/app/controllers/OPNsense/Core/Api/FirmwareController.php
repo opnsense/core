@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2018 Franco Fichtner <franco@opnsense.org>
  * Copyright (c) 2015-2016 Deciso B.V.
  * All rights reserved.
  *
@@ -80,10 +80,10 @@ class FirmwareController extends ApiControllerBase
             return array(
                 'status_msg' => gettext('The release type requires an update.'),
                 'all_packages' => array($type_want => array(
+                    'new' => empty($type_ver) ? gettext('N/A') : $type_ver,
                     'reason' => gettext('new'),
                     'old' => gettext('N/A'),
                     'name' => $type_want,
-                    'new' => $type_ver,
                 )),
                 'status_upgrade_action' => 'rel',
                 'status' => 'ok',
