@@ -3233,9 +3233,10 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_routerv6\n";
     $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_defaultgwv6\n";
     $rtsoldscript .= "fi\n";
-    $rtsoldscript .= "if [ -f /var/run/dhcp6c_{$wanif}.pid ]; then\n";
-    $rtsoldscript .= "\t/bin/pkill -F /var/run/dhcp6c_{$wanif}.pid\n";
-    $rtsoldscript .= "\t/bin/sleep 1\n";
+    $rtsoldscript .= "PID=$(cat /var/run/dhcp6c_{$wanif}.pid)\n";
+    $rtsoldscript .= "if [ -n \"\${PID}\" ]; then\n";
+    $rtsoldscript .= "\t/bin/kill \${PID}\n";
+    $rtsoldscript .= "\t/bin/pwait \${PID}\n";
     $rtsoldscript .= "fi\n";
     $rtsoldscript .= "/usr/bin/logger -t rtsold \"Starting dhcp6 client for interface {$interface}({$wanif})\"\n";
     $rtsoldscript .= "$dhcp6ccommand\n";
