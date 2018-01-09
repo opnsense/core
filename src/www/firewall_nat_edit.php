@@ -187,6 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = sprintf(gettext("%s is not a valid IPv6 address."), $pconfig[$fieldname]);
         }
     }
+
     if (!empty($pconfig['srcmask']) && !is_numericint($pconfig['srcmask'])) {
         $input_errors[] = gettext("A valid source bit count must be specified.");
     }
@@ -557,7 +558,7 @@ $( document ).ready(function() {
                   <td>
                     <select name="ipprotocol" class="selectpicker" data-width="auto" data-live-search="true" data-size="5" >
 <?php
-                    foreach (array('inet' => 'IPv4','inet6' => 'IPv6') as $proto => $name): ?>
+                    foreach (array('inet' => 'IPv4','inet6' => 'IPv6', 'inet46' => 'IPv4+IPv6') as $proto => $name): ?>
                     <option value="<?=$proto;?>" <?= $proto == $pconfig['ipprotocol'] ? "selected=\"selected\"" : "";?>>
                       <?=$name;?>
                     </option>
