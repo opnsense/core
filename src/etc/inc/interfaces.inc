@@ -3134,15 +3134,15 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     } else {
         /* skip address request if this is set */
         if (!isset($wancfg['dhcp6prefixonly'])) {
-            $dhcp6cconf .= "  send ia-na 0;   # request stateful address\n";
+            $dhcp6cconf .= "  send ia-na 0; # request stateful address\n";
         }
         if (is_numeric($wancfg['dhcp6-ia-pd-len'])) {
-            $dhcp6cconf .= "  send ia-pd 0;  # request prefix delegation\n";
+            $dhcp6cconf .= "  send ia-pd 0; # request prefix delegation\n";
         }
 
-        $dhcp6cconf .= "\trequest domain-name-servers;\n";
-        $dhcp6cconf .= "\trequest domain-name;\n";
-        $dhcp6cconf .= "\tscript \"/var/etc/dhcp6c_{$interface}_script.sh\"; # we'd like some nameservers please\n";
+        $dhcp6cconf .= "  request domain-name-servers;\n";
+        $dhcp6cconf .= "  request domain-name;\n";
+        $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\"; # we'd like some nameservers please\n";
 
         $dhcp6cconf .= "};\n";
 
