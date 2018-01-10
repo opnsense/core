@@ -601,7 +601,7 @@ if (count($input_errors)) {
 	<fields>
 		<field>
 			<type>text</type>
-			<description>Click 'Reload' to reload to apply the changes.</description>
+			<description>Click 'Reload' to apply the changes.</description>
 		</field>
 		<field>
 			<name>Reload</name>
