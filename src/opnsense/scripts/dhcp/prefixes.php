@@ -61,7 +61,7 @@ foreach ($duid_arr as $entry) {
 
 if (count($routes) > 0) {
     foreach ($routes as $address => $prefix) {
-        mwexecf('/sbin/route delete -inet6 %s %s', array($prefix, $address));
+        mwexecf('/sbin/route delete -inet6 %s %s', array($prefix, $address), true);
         mwexecf('/sbin/route add -inet6 %s %s', array($prefix, $address));
     }
 }
@@ -91,7 +91,7 @@ foreach ($clog as $line) {
 if (count($expires) > 0) {
     foreach ($expires as $prefix) {
         if (isset($prefix['prefix'])) {
-            mwexecf('/sbin/route delete -inet6 %s', array($prefix['prefix']));
+            mwexecf('/sbin/route delete -inet6 %s', array($prefix['prefix']), true);
         }
     }
 }
