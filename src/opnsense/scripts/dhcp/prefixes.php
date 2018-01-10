@@ -1,4 +1,7 @@
+#!/usr/local/bin/php
 <?php
+
+require_once 'util.inc';
 
 $leases_file = "/var/dhcpd/var/db/dhcpd6.leases";
 if (!file_exists($leases_file)) {
@@ -7,7 +10,6 @@ if (!file_exists($leases_file)) {
 
 $duid_arr = array();
 foreach (file($leases_file) as $line) {
-    // echo "$line";
     if (preg_match("/^(ia-[np][ad])[ ]+\"(.*?)\"/i ", $line, $duidmatch)) {
         $type = $duidmatch[1];
         $duid = $duidmatch[2];
@@ -57,10 +59,10 @@ foreach ($duid_arr as $entry) {
     array_shift($duid_arr);
 }
 
-// echo "add routes\n";
 if (count($routes) > 0) {
     foreach ($routes as $address => $prefix) {
-        echo "/sbin/route change -inet6 {$prefix} {$address}\n";
+        mwexecf('/sbin/route delete -inet6 %s %s', array($prefix, $address), true);
+        mwexecf('/sbin/route add -inet6 %s %s', array($prefix, $address));
     }
 }
 
@@ -86,11 +88,10 @@ foreach ($clog as $line) {
     array_shift($clog);
 }
 
-// echo "remove routes\n";
 if (count($expires) > 0) {
     foreach ($expires as $prefix) {
         if (isset($prefix['prefix'])) {
-            echo "/sbin/route delete -inet6 {$prefix['prefix']}\n";
+            mwexecf('/sbin/route delete -inet6 %s', array($prefix['prefix']), true);
         }
     }
 }
