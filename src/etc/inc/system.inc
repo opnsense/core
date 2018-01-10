@@ -729,6 +729,9 @@ EOD;
                 /* XXX needs testing */
                 $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local5.*");
             }
+            if (isset($syslogcfg['mail'])) {
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "mail.*");
+            }
             if (isset($syslogcfg['portalauth'])) {
                 $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local4.*");
             }

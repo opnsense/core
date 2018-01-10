@@ -46,6 +46,7 @@ function clear_all_log_files()
         'ipsec',
         'l2tps',
         'lighttpd',
+        'mail',
         'ntpd',
         'openvpn',
         'poes',
@@ -98,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['filter'] = isset($config['syslog']['filter']);
     $pconfig['dhcp'] = isset($config['syslog']['dhcp']);
     $pconfig['portalauth'] = isset($config['syslog']['portalauth']);
+    $pconfig['mail'] = isset($config['syslog']['mail']);
     $pconfig['vpn'] = isset($config['syslog']['vpn']);
     $pconfig['dns'] = isset($config['syslog']['dns']);
     $pconfig['apinger'] = isset($config['syslog']['apinger']);
@@ -159,6 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['syslog']['filter'] = !empty($pconfig['filter']);
             $config['syslog']['dhcp'] = !empty($pconfig['dhcp']);
             $config['syslog']['portalauth'] = !empty($pconfig['portalauth']);
+            $config['syslog']['mail'] = !empty($pconfig['mail']);
             $config['syslog']['vpn'] = !empty($pconfig['vpn']);
             $config['syslog']['dns'] = !empty($pconfig['dns']);
             $config['syslog']['apinger'] = !empty($pconfig['apinger']);
@@ -225,6 +228,7 @@ function enable_change(enable_over) {
     document.iform.filter.disabled = 0;
     document.iform.dhcp.disabled = 0;
     document.iform.portalauth.disabled = 0;
+    document.iform.mail.disabled = 0;
     document.iform.vpn.disabled = 0;
     document.iform.dns.disabled = 0;
     document.iform.apinger.disabled = 0;
@@ -240,6 +244,7 @@ function enable_change(enable_over) {
     document.iform.filter.disabled = 1;
     document.iform.dhcp.disabled = 1;
     document.iform.portalauth.disabled = 1;
+    document.iform.mail.disabled = 1;
     document.iform.vpn.disabled = 1;
     document.iform.dns.disabled = 1;
     document.iform.apinger.disabled = 1;
@@ -257,6 +262,8 @@ function check_everything() {
     document.iform.dhcp.checked = false;
     document.iform.portalauth.disabled = 1;
     document.iform.portalauth.checked = false;
+    document.iform.mail.disabled = 1;
+    document.iform.mail.checked = false;
     document.iform.vpn.disabled = 1;
     document.iform.vpn.checked = false;
     document.iform.dns.disabled = 1;
@@ -273,6 +280,7 @@ function check_everything() {
     document.iform.filter.disabled = 0;
     document.iform.dhcp.disabled = 0;
     document.iform.portalauth.disabled = 0;
+    document.iform.mail.disabled = 0;
     document.iform.vpn.disabled = 0;
     document.iform.dns.disabled = 0;
     document.iform.apinger.disabled = 0;
@@ -511,7 +519,9 @@ $(document).ready(function() {
                         <input name="dhcp" id="dhcp" type="checkbox" value="yes" <?=!empty($pconfig['dhcp']) ? "checked=\"checked\"" : ""; ?> />
                         <?=gettext("DHCP service events");?><br />
                         <input name="dns" id="dns" type="checkbox" value="yes" <?=!empty($pconfig['dns']) ? "checked=\"checked\"" : ""; ?> />
-                        <?=gettext("DNS (Unbound, Dnsmasq, Bind) events");?><br />
+                        <?=gettext("DNS service events");?><br />
+                        <input name="mail" id="mail" type="checkbox" value="yes" <?=!empty($pconfig['mail']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Mail service events");?><br />
                         <input name="portalauth" id="portalauth" type="checkbox" value="yes" <?=!empty($pconfig['portalauth']) ? "checked=\"checked\"" : ""; ?> />
                         <?=gettext("Portal Auth events");?><br />
                         <input name="vpn" id="vpn" type="checkbox" value="yes" <?=!empty($pconfig['vpn']) ? "checked=\"checked\"" : ""; ?> />
