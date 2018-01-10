@@ -60,7 +60,8 @@ foreach ($duid_arr as $entry) {
 // echo "add routes\n";
 if (count($routes) > 0) {
     foreach ($routes as $address => $prefix) {
-        echo "/sbin/route change -inet6 {$prefix} {$address}\n";
+        echo "/sbin/route add -inet6 {$prefix} {$address}\n";
+        exec("/sbin/route add -inet6 {$prefix} {$address}");
     }
 }
 
@@ -91,6 +92,7 @@ if (count($expires) > 0) {
     foreach ($expires as $prefix) {
         if (isset($prefix['prefix'])) {
             echo "/sbin/route delete -inet6 {$prefix['prefix']}\n";
+            exec("/sbin/route delete -inet6 {$prefix['prefix']}");
         }
     }
 }
