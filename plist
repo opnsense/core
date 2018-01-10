@@ -569,6 +569,7 @@
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/sql/init.sql
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/strip_template.py
 /usr/local/opnsense/scripts/dhcp/get_leases.py
+/usr/local/opnsense/scripts/dhcp/prefixes.php
 /usr/local/opnsense/scripts/dns/unbound_dhcpd.py
 /usr/local/opnsense/scripts/filter/delete_table.py
 /usr/local/opnsense/scripts/filter/download_geoip.py
@@ -951,7 +952,6 @@
 /usr/local/sbin/ppp-linkup
 /usr/local/sbin/ppp-log-uptime.sh
 /usr/local/sbin/ppp-uptime.sh
-/usr/local/sbin/prefixes.php
 /usr/local/wizard/openvpn.xml
 /usr/local/wizard/system.xml
 /usr/local/www/carp_status.php
