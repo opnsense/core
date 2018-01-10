@@ -2523,7 +2523,6 @@ function interface_virtual_create($interface)
     }
 }
 
-
 function interface_configure($interface = 'wan', $reloadall = false, $linkupevent = false, $verbose = false)
 {
     global $config;
@@ -2650,6 +2649,15 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
             }
             break;
     }
+
+    /* configure dhcp6c..conf at this point             */
+    /* We need to take into account that a LAN change   */
+    /* may also affect it. It will get called everytime */
+    /* interface is reconfigured, but we have to watch  */
+    /* all interfaces.Initialy this will only support   */
+    /* one WAN interface with dhcp6.                    */
+
+    configure_dhcp6c_conf('wan', $config['interfaces']['wan']);
 
     if (isset($wancfg['ipaddrv6'])) {
         switch ($wancfg['ipaddrv6']) {
@@ -3123,33 +3131,6 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
         }
     }
 
-    // DHCP6 Config File Basic
-    $dhcp6cconf = DHCP6_Config_File_Basic($interface,$wancfg);
-
-    // DHCP6 Config File Advanced
-    if ($wancfg['adv_dhcp6_config_advanced']) {
-        $dhcp6cconf = DHCP6_Config_File_Advanced($interface, $wancfg, $wanif);
-    }
-
-    // DHCP6 Config File Override
-    if (!empty($wancfg['adv_dhcp6_config_file_override'])) {
-        $dhcp6cfile = $wancfg['adv_dhcp6_config_file_override_path'];
-        if (file_exists($dhcp6cfile)) {
-            $dhcp6cconf = file_get_contents($dhcp6cfile);
-            $dhcp6cconf = DHCP6_Config_File_Substitutions($wancfg, $wanif, $dhcp6cconf);
-        } else {
-            log_error(sprintf('DHCP6 config file override does not exist: "%s"', $dhcp6cfile));
-        }
-    }
-
-    /* wide-dhcp6c works for now. */
-    if (!@file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf)) {
-        printf("Error: cannot open dhcp6c_{$interface}.conf in interface_dhcpv6_configure() for writing.\n");
-        unset($dhcp6cconf);
-        return 1;
-    }
-    unset($dhcp6cconf);
-
     $dhcp6cscript = "#!/bin/sh\n";
     $dhcp6cscript .= "if [ -n '" . (!empty($wancfg['adv_dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
     $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
@@ -3230,6 +3211,40 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     }
 
     return 0;
+}
+function configure_dhcp6c_conf($interface, $wancfg)
+{
+    /* It's OK to SIGHUP dhcp6c,but the dhcp6_conf_will need to be reset */
+    /* and you'll need the modified dhcp6c client anyway */
+
+    $wanif = get_real_interface($interface, "inet6");
+    
+    // DHCP6 Config File Basic
+    $dhcp6cconf = DHCP6_Config_File_Basic($interface,$wancfg);
+
+    // DHCP6 Config File Advanced
+    if ($wancfg['adv_dhcp6_config_advanced']) {
+        $dhcp6cconf = DHCP6_Config_File_Advanced($interface, $wancfg, $wanif);
+    }
+
+    // DHCP6 Config File Override
+    if (!empty($wancfg['adv_dhcp6_config_file_override'])) {
+        $dhcp6cfile = $wancfg['adv_dhcp6_config_file_override_path'];
+        if (file_exists($dhcp6cfile)) {
+            $dhcp6cconf = file_get_contents($dhcp6cfile);
+            $dhcp6cconf = DHCP6_Config_File_Substitutions($wancfg, $wanif, $dhcp6cconf);
+        } else {
+            log_error(sprintf('DHCP6 config file override does not exist: "%s"', $dhcp6cfile));
+        }
+    }
+
+    /* wide-dhcp6c works for now. */
+    if (!@file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf)) {
+        printf("Error: cannot open dhcp6c_{$interface}.conf in interface_dhcpv6_configure() for writing.\n");
+        unset($dhcp6cconf);
+        return 1;
+    }
+    unset($dhcp6cconf);
 }
 
 function DHCP6_Config_File_Basic($interface,$wancfg)
@@ -3457,7 +3472,6 @@ function DHCP6_Config_File_Substitutions($wancfg, $wanif, $dhcp6cconf)
 
     return $dhcp6cconf;
 }
-
 
 function interface_dhcp_configure($interface = 'wan')
 {
