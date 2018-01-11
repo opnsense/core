@@ -358,7 +358,7 @@ include("head.inc");
 ?>
 
 <body>
-  <script type="text/javascript">
+  <script>
   $( document ).ready(function() {
     // link delete buttons
     $(".act_delete").click(function(event){

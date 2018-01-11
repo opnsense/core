@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 include("head.inc");
 ?>
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     $("#collapse_all").click(function(){
         $(".interface_details").collapse('toggle');

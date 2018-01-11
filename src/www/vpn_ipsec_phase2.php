@@ -410,7 +410,7 @@ include("head.inc");
 
 <body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
     $( document ).ready(function() {
         $("#mode").change(function(){
             $(".opt_localid").hide();

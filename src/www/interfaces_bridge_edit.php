@@ -207,7 +207,7 @@ include("head.inc");
 ?>
 
 <body>
-<script type="text/javascript">
+<script>
 $(document).ready(function() {
   // advanced options
   $("#show_advanced").click(function(){

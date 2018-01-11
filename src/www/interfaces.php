@@ -1331,7 +1331,7 @@ include("head.inc");
 ?>
 
 <body>
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
       function toggle_allcfg() {
           if ($("#enable").prop('checked')) {

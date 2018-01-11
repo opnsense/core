@@ -1127,7 +1127,7 @@ include("head.inc");
 
 <body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
     $( document ).ready(function() {
         $("#server").change(function(){
             $('.server_item').hide();

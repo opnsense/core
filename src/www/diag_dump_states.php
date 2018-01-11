@@ -62,7 +62,7 @@ include("head.inc");
 
 <body>
 <?php include("fbegin.inc"); ?>
-  <script type="text/javascript">
+  <script>
   $( document ).ready(function() {
     // delete state
     $(".act_del").click(function(event){

@@ -207,7 +207,7 @@ $main_buttons = array(
 
 ?>
 
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
   // link delete single item buttons (by class)
   $(".act_delete").click(function(event){

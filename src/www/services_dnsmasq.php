@@ -154,7 +154,7 @@ include("head.inc");
 
 <body>
 
-<script type="text/javascript">
+<script>
 //<![CDATA[
 $( document ).ready(function() {
   $("#show_advanced_dns").click(function(event){

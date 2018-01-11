@@ -111,12 +111,12 @@ include("head.inc");
 ?>
 
 <!-- JQuery Tokenize (http://zellerda.com/projects/tokenize) -->
-<script type="text/javascript" src="/ui/js/jquery.tokenize.js"></script>
+<script src="/ui/js/jquery.tokenize.js"></script>
 <link rel="stylesheet" type="text/css" href="/ui/css/jquery.tokenize.css" />
 
-<script type="text/javascript" src="/ui/js/opnsense_ui.js"></script>
+<script src="/ui/js/opnsense_ui.js"></script>
 
- <script type="text/javascript">
+ <script>
     $( document ).ready(function() {
         formatTokenizersUI();
     });

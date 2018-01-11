@@ -259,7 +259,7 @@ legacy_html_escape_form_data($pconfig);
 include("head.inc");
 ?>
 <body>
-  <script type="text/javascript">
+  <script>
     $( document ).ready(function() {
         $("#view").click(function(){
           $.ajax("diag_packet_capture.php",{

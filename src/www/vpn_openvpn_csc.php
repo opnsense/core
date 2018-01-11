@@ -233,7 +233,7 @@ include("head.inc");
 
 <body>
 
-<script type="text/javascript">
+<script>
 //<![CDATA[
 $( document ).ready(function() {
   // link delete buttons

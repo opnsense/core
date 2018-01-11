@@ -495,7 +495,7 @@ include("head.inc");
 
 <body>
 
-<script type="text/javascript">
+<script>
 //<![CDATA[
     function show_shownumbervalue() {
         $("#shownumbervaluebox").html('');
@@ -534,7 +534,7 @@ include("head.inc");
 //]]>
 </script>
 
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     /**
      * Additional BOOTP/DHCP Options extenable table

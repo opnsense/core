@@ -146,7 +146,7 @@ include("head.inc");
 
 ?>
 
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
     // force protocol on initial selection (only relevant for new items)
     $("select.act-tier-change").change(function(){
