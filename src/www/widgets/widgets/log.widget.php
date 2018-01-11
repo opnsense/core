@@ -72,7 +72,7 @@ $nentriesacts       = isset($config['widgets']['filterlogentriesacts']) ?  explo
 $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? $config['widgets']['filterlogentriesinterfaces'] : 'All';
 ?>
 
-<script type="text/javascript">
+<script>
     $( document ).ready(function() {
         // needed to display the widget settings menu
         $("#log-configure").removeClass("disabled");

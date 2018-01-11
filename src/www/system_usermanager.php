@@ -387,14 +387,14 @@ legacy_html_escape_form_data($a_user);
 include("head.inc");
 
 ?>
-<script type="text/javascript" src="/ui/js/jquery.qrcode.js"></script>
-<script type="text/javascript" src="/ui/js/qrcode.js"></script>
+<script src="/ui/js/jquery.qrcode.js"></script>
+<script src="/ui/js/qrcode.js"></script>
 
 <body>
 
 <?php include("fbegin.inc"); ?>
 
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
     // unhide otp QR code if found
     $('#otp_unhide').click(function () {
@@ -890,7 +890,7 @@ $( document ).ready(function() {
                     <td>
                       <label class="btn btn-primary" id="otp_unhide"><?= gettext('Click to unhide') ?></label>
                       <div style="display:none;" id="otp_qrcode"></div>
-                      <script type="text/javascript">
+                      <script>
                         $('#otp_qrcode').qrcode('<?= $otp_url ?>');
                       </script>
                       </div>

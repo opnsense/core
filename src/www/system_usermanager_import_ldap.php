@@ -129,7 +129,7 @@ include('head.inc');
  <body>
 <?php if ($exit_form) :
 ?>
-  <script type="text/javascript">
+  <script>
     // exit form and reload parent after save
     window.opener.location.href = window.opener.location.href;
   window.close();
@@ -165,8 +165,8 @@ else :
 <?php
 endif; ?>
 <!-- bootstrap script -->
-<script type="text/javascript" src="/ui/js/bootstrap.min.js"></script>
+<script src="/ui/js/bootstrap.min.js"></script>
 <!-- Fancy select with search options -->
-<script type="text/javascript" src="/ui/js/bootstrap-select.min.js"></script>
+<script src="/ui/js/bootstrap-select.min.js"></script>
  </body>
 </html>

@@ -162,7 +162,7 @@ include("head.inc");
 
 <body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
     // remove group
     $(".act-del-group").click(function(event){

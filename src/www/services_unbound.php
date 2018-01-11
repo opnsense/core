@@ -124,7 +124,7 @@ include_once("head.inc");
 ?>
 
 <body>
-<script type="text/javascript">
+<script>
     $( document ).ready(function() {
         $("#show_advanced_dns").click(function(){
             $(this).parent().parent().hide();

@@ -37,12 +37,12 @@ POSSIBILITY OF SUCH DAMAGE.
 <link rel="stylesheet" href="/ui/css/nv.d3.css">
 
 <!-- d3 -->
-<script type="text/javascript" src="/ui/js/d3.min.js"></script>
+<script src="/ui/js/d3.min.js"></script>
 
 <!-- nvd3 -->
-<script type="text/javascript" src="/ui/js/nv.d3.min.js"></script>
+<script src="/ui/js/nv.d3.min.js"></script>
 
-<script type="text/javascript">
+<script>
     $( document ).ready(function() {
       var resizeEnd ;
       $(window).on('resize', function() {

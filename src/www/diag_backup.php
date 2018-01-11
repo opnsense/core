@@ -307,7 +307,7 @@ include("head.inc");
 <body>
 <?php include("fbegin.inc"); ?>
 
-<script type="text/javascript">
+<script>
 //<![CDATA[
 $( document ).ready(function() {
     // show encryption password

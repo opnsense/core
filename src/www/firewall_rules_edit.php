@@ -541,7 +541,7 @@ include("head.inc");
 
 ?>
 <body>
-  <script type="text/javascript">
+  <script>
   $( document ).ready(function() {
       // show source fields (advanced)
       $("#showadvancedboxsrc").click(function(){

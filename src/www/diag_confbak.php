@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 include("head.inc");
 ?>
 
-<script type="text/javascript">
+<script>
 //<![CDATA[
 $( document ).ready(function() {
     // revert config dialog

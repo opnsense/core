@@ -64,7 +64,7 @@ if (isset($_GET['basedn']) && isset($_GET['host'])) {
 ?>
 
  <body>
-  <script type="text/javascript">
+  <script>
       function post_choices() {
         var ous = <?= html_safe(count($ous)) ?>;
         var i;
