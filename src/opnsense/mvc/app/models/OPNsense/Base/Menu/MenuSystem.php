@@ -54,6 +54,7 @@ class MenuSystem
     /**
      * add menu structure to root
      * @param string $filename menu xml filename
+     * @return \SimpleXMLElement
      * @throws MenuInitException unloadable menu xml
      */
     private function addXML($filename)
@@ -105,6 +106,7 @@ class MenuSystem
      * Load and persist Menu configuration to disk.
      * @param bool $nowait when the cache is locked, skip waiting for it to become available.
      * @return SimpleXMLElement
+     * @throws MenuInitException
      */
     public function persist($nowait = true)
     {
