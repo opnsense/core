@@ -218,7 +218,7 @@ include("head.inc");
 
 
 <body>
-<script type="text/javascript">
+<script>
 //<![CDATA[
 function enable_change(enable_over) {
   if (document.iform.enable.checked || enable_over) {

@@ -87,7 +87,7 @@ $main_buttons = array(
 );
 
 ?>
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
     // remove group
     $(".act-del-group").click(function(event){

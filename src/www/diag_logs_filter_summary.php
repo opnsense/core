@@ -440,7 +440,7 @@ include("head.inc"); ?>
     </div>
   </section>
 
-<script type="text/javascript" >
+<script >
     // Generate Donut charts
 
     nv.addGraph(function() {

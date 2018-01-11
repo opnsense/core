@@ -308,7 +308,7 @@ if (!isset($_GET['act']) || $_GET['act'] != 'new')
 
 <body>
 
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
     $("#type").change(function(){
         $(".auth_options").addClass('hidden');

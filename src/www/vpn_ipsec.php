@@ -189,7 +189,7 @@ include("head.inc");
 ?>
 
 <body>
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
     // link move/toggle buttons (phase 1 and phase 2)
     $(".act_move").click(function(event){

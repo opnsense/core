@@ -26,7 +26,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #}
 
-<script type="text/javascript">
+<script>
     $( document ).ready(function() {
         var field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban'}
         var interface_descriptions = {};

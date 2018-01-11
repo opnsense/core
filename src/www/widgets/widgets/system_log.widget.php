@@ -75,7 +75,7 @@ require_once('diag_logs_common.inc');
 </div>
 
 <!-- needed to display the widget settings menu -->
-<script type="text/javascript">
+<script>
 //<![CDATA[
   $("#system_log-configure").removeClass("disabled");
 //]]>

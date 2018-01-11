@@ -202,7 +202,7 @@ include("head.inc");
 ?>
 
 <body>
-  <script type="text/javascript">
+  <script>
   $( document ).ready(function() {
       // select / input combination, link behaviour
       // when the data attribute "data-other" is selected, display related input item(s)

@@ -296,7 +296,7 @@ include("head.inc");
 
 ?>
 <body>
-<script type="text/javascript">
+<script>
 //<![CDATA[
   function show_ddns_config() {
     $("#showddnsbox").hide();

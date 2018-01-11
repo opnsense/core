@@ -98,28 +98,28 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <link  href="/ui/css/bootstrap-datepicker3.min.css" rel="stylesheet">
 
     <!-- JQuery -->
-    <script type="text/javascript" src="/ui/js/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript" src="/ui/js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="/ui/js/jquery-3.2.1.min.js"></script>
+    <script src="/ui/js/jquery-migrate-3.0.1.min.js"></script>
 
     <!-- datepicker -->
     <script src="/ui/js/bootstrap-datepicker.min.js"></script>
 
     <!-- d3 -->
-    <script type="text/javascript" src="/ui/js/d3.min.js"></script>
+    <script src="/ui/js/d3.min.js"></script>
 
     <!-- nvd3 -->
-    <script type="text/javascript" src="/ui/js/nv.d3.min.js"></script>
+    <script src="/ui/js/nv.d3.min.js"></script>
 
     <!-- append some helper functions to integrate into the legacy code -->
-    <script type="text/javascript" src="/javascript/opnsense_legacy.js"></script>
+    <script src="/javascript/opnsense_legacy.js"></script>
 
     <!-- opnsense non legacy helper functions -->
-    <script type="text/javascript" src="/ui/js/opnsense.js"></script>
+    <script src="/ui/js/opnsense.js"></script>
 
     <!-- Bootstrap type ahead -->
-    <script type="text/javascript" src="/ui/js/bootstrap3-typeahead.min.js"></script>
+    <script src="/ui/js/bootstrap3-typeahead.min.js"></script>
 
-    <script type="text/javascript">
+    <script>
     //<![CDATA[
     $( document ).ready(function() {
       $('[data-toggle="tooltip"]').tooltip();
@@ -290,7 +290,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     </script>
 <?php
     if (file_exists("/usr/local/opnsense/www/themes/".$themename."/build/js/theme.js")):?>
-    <script type="text/javascript" src="/ui/themes/<?=$themename?>/build/js/theme.js"></script>
+    <script src="/ui/themes/<?=$themename?>/build/js/theme.js"></script>
 <?php
     endif;?>
 </head>

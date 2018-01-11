@@ -26,7 +26,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #}
 
-<script type="text/javascript">
+<script>
     $( document ).ready(function() {
         var data_get_map = {'frm_CaptureSettings':"/api/diagnostics/netflow/getconfig"};
         mapDataToFormUI(data_get_map).done(function(data){

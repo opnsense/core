@@ -94,7 +94,7 @@ if ($config['widgets']['picturewidget_filename'] != "") :?>
 <?php
 endif ?>
 <!-- needed to show the settings widget icon -->
-<script type="text/javascript">
+<script>
 //<![CDATA[
   $("#picture-configure").removeClass("disabled");
 //]]>

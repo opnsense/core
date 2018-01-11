@@ -132,7 +132,7 @@ legacy_html_escape_form_data($pconfig);
 include("head.inc");
 ?>
 
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     $("#rr").change(function() {
       $(".a_aaa_rec").hide();

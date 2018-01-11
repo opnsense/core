@@ -49,7 +49,7 @@ include("head.inc");
 ?>
 <body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
 //<![CDATA[
   function getlimiteractivity() {
     var url = "/diag_limiter_info.php";
