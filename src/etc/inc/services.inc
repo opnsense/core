@@ -1324,8 +1324,10 @@ EOD;
     /* fire up dhcpd in a chroot */
     if (count($dhcpdv6ifs) > 0) {
         mwexec('/usr/local/sbin/dhcpd -6 -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpdv6.conf -pf /var/run/dhcpdv6.pid ' . join(' ', $dhcpdv6ifs));
-        /* XXX prefixes.php is a backend script we must priv-sep! */
-        mwexec('/usr/local/sbin/dhcpleases6 -c /usr/local/opnsense/scripts/dhcp/prefixes.php -l /var/dhcpd/var/db/dhcpd6.leases');
+        mwexecf('/usr/local/sbin/dhcpleases6 -c %s -l %s', array(
+            '/usr/local/sbin/configctl dhcpd update prefixes',
+            '/var/dhcpd/var/db/dhcpd6.leases',
+        ));
     }
 
     if ($verbose) {
