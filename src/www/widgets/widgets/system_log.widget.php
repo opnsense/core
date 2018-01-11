@@ -61,7 +61,7 @@ require_once('diag_logs_common.inc');
           </select>
         </td>
         <td>
-          <input id="submit" name="submit" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Save') ?>" autocomplete="off">
+          <input id="submit_system_log_widget" name="submit_system_log_widget" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Save') ?>">
         </td>
       </tr>
     </table>

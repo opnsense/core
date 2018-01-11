@@ -76,7 +76,7 @@ if ($_POST) {
       </tr>
       <tr>
         <td>
-          <input id="submita" name="submita" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Upload') ?>" />
+          <input id="submit_pictfile_widget" name="submit_pictfile_widget" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Upload') ?>" />
         </td>
       </tr>
     </table>
@@ -88,7 +88,7 @@ if ($_POST) {
 if ($config['widgets']['picturewidget_filename'] != "") :?>
   <div id="picture-widgets" style="padding: 5px">
     <a href='/widgets/widgets/picture.widget.php?getpic=true' target='_blank'>
-      <img border="0" width="100%" height="100%" src="/widgets/widgets/picture.widget.php?getpic=true" alt="picture" />
+      <img style="border:0px solid; width:100%; height:100%" src="/widgets/widgets/picture.widget.php?getpic=true" alt="picture" />
     </a>
   </div>
 <?php
