@@ -34,7 +34,7 @@ $sk_servers = openvpn_get_active_servers("p2p");
 $clients = openvpn_get_active_clients();
 
 ?>
-<script type="text/javascript">
+<script>
     $( document ).ready(function() {
         // link kill buttons
         $(".act_kill_client").click(function(event){

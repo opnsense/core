@@ -58,7 +58,7 @@ include("head.inc");
 ?>
 <body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
     /**
      * fetch pftop data from backend

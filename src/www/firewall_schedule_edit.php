@@ -217,7 +217,7 @@ legacy_html_escape_form_data($pconfig);
 include("head.inc");
 
 ?>
-<script type="text/javascript">
+<script>
 //<![CDATA[
 var daysSelected = "";
 var month_array = <?= json_encode($monthArray) ?>;

@@ -488,7 +488,7 @@ include("head.inc");
 
 <body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
 //<![CDATA[
 function recalc_value(object, min, max) {
     if (object.val() != "") {

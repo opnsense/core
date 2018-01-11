@@ -25,9 +25,9 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
 #}
-<script src="/ui/js/moment-with-locales.min.js" type="text/javascript"></script>
+<script src="/ui/js/moment-with-locales.min.js"></script>
 
-<script type="text/javascript">
+<script>
 
     $( document ).ready(function() {
         /**

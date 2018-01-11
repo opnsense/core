@@ -215,7 +215,7 @@ function clockTimeString($inDate, $showSeconds)
 /*** Clock -- end of server-side support code ***/
 ?>
 
-<script type="text/javascript">
+<script>
 <!--
 /* set up variables used to init clock in BODY's onLoad handler;
    should be done as early as possible */
@@ -230,7 +230,7 @@ function clockInit() {
 </script>
 
 
-<script type="text/javascript">
+<script>
 <!--
 /*** simpleFindObj, by Andrew Shearer
 
@@ -477,7 +477,7 @@ function clockUpdate()
 </table>
 
 
-<script type="text/javascript">
+<script>
   function ntp_getstatus() {
     scroll(0,0);
     var url = "/widgets/widgets/ntp_status.widget.php";

@@ -137,7 +137,7 @@ include("head.inc");
     margin-bottom: -5px;
 }
 </style>
-<script type="text/javascript">
+<script>
     var graphtable = {};
     function formatSizeUnits(bytes){
         if      (bytes>=1000000000) {bytes=(bytes/1000000000).toFixed(2)+'G';}

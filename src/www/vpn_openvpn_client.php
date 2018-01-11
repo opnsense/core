@@ -374,7 +374,7 @@ $main_buttons = array(
 
 <body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
 //<![CDATA[
 $( document ).ready(function() {
   // link delete buttons

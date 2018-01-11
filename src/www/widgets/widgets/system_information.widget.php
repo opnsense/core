@@ -34,8 +34,8 @@ require_once("guiconfig.inc");
 require_once("system.inc");
 
 ?>
-<script src="/ui/js/moment-with-locales.min.js" type="text/javascript"></script>
-<script type="text/javascript">
+<script src="/ui/js/moment-with-locales.min.js"></script>
+<script>
   var system_information_widget_cpu_data = []; // reference to measures
   var system_information_widget_cpu_chart = null; // reference to chart object
   var system_information_widget_cpu_chart_data = null; // reference to chart data object
