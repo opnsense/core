@@ -91,6 +91,9 @@ if __name__ == '__main__':
     parser.add_argument('--output', help='output type [json/text]', default='json')
     parser.add_argument('--source_conf', help='configuration xml', default='/usr/local/etc/filter_tables.conf')
     inputargs = parser.parse_args()
+    # make sure our target directory exists
+    if not os.path.isdir('/var/db/aliastables'):
+        os.makedirs('/var/db/aliastables')
 
     try:
         source_tree = ET.ElementTree(file=inputargs.source_conf)
@@ -114,10 +117,6 @@ if __name__ == '__main__':
         # when the alias or any of it's dependencies has changed, generate new
         if alias_changed_or_expired:
             alias_content_txt = '\n'.join(sorted(alias_content))
-            if not os.path.isdir('/var/db/aliastables'):
-                if not os.path.isdir('/var/db'):
-                    os.mkdir('/var/db')
-                os.mkdir('/var/db/aliastables')
             open('/var/db/aliastables/%s.txt' % alias_name, 'w').write(alias_content_txt)
         elif os.path.isfile('/var/db/aliastables/%s.txt' % alias_name):
             alias_content_txt = open('/var/db/aliastables/%s.txt' % alias_name, 'r').read()
