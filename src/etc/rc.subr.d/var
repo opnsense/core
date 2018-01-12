@@ -146,5 +146,5 @@ rm -f /var/etc/nameserver_* /var/etc/searchdomain_*
 # Clear all files in this directory to prevent stale state of
 # services.  At one point this also helped to prevent shutdown(8)
 # from dropping "nologin" into the directory, preventing login on
-# the next boot.
-rm -rf /var/run/*
+# the next boot.  However, do not touch the directory tree.
+find /var/run -type f -exec rm {} \;
