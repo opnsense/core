@@ -69,25 +69,6 @@ class ForwardRule extends Rule
         )
     );
 
-    /**
-     * output parsing
-     * @param string $value field value
-     * @return string
-     */
-    protected function parseIsComment($value)
-    {
-        return !empty($value) ? "#" : "";
-    }
-
-    /**
-     * parse comment
-     * @param string $value field value
-     * @return string
-     */
-    protected function parseComment($value)
-    {
-        return !empty($value) ? "# " . $value : "";
-    }
 
     /**
      * search interfaces without a gateway other then the one provided
