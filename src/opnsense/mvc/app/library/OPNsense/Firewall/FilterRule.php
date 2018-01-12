@@ -62,7 +62,8 @@ class FilterRule extends Rule
         'tag' => 'parsePlain, tag ',
         'tagged' => 'parsePlain, tagged ',
         'allowopts' => 'parseBool,allow-opts',
-        'label' => 'parsePlain,label ",",63'
+        'label' => 'parsePlain,label ",",63',
+        'md5' => 'parseComment'
     );
 
     /**
