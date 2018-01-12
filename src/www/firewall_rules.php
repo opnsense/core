@@ -292,7 +292,9 @@ $( document ).ready(function() {
                       <th class="hidden-xs hidden-sm"><?=gettext("Port");?></th>
                       <th class="hidden-xs hidden-sm"><?=gettext("Gateway");?></th>
                       <th class="hidden-xs hidden-sm"><?=gettext("Schedule");?></th>
-                      <th><?=gettext("Description");?></th>
+                      <th><?=gettext("Description");?>
+                          <i class="fa fa-bug" data-toggle="collapse" data-target=".rule_md5_hash" ></i>
+                      </th>
                       <th></th>
                   </tr>
                 </thead>
@@ -395,8 +397,16 @@ $( document ).ready(function() {
 <?php
                 $interface_has_rules = false;
                 foreach ($a_filter as $i => $filterent):
-                if ((!isset($filterent['floating']) && $selected_if == $filterent['interface']) ||
-                     (isset($filterent['floating']) && $selected_if == 'FloatingRules')):
+                if (
+                    (!isset($filterent['floating']) && $selected_if == $filterent['interface']) ||
+                     (
+                        (isset($filterent['floating']) || empty($filterent['interface'])) &&
+                        $selected_if == 'FloatingRules'
+                     )
+                ):
+                  // calculate a hash so we can track these records in the rulset, new style (mvc) code will
+                  // automatically provide us with a uuid, this is a workaround to provide some help with tracking issues.
+                  $filterent['md5'] = md5(json_encode($filterent));
                   $interface_has_rules = true;
 
                   // select icon
@@ -589,6 +599,9 @@ $( document ).ready(function() {
                     </td>
                     <td>
                       <?=htmlspecialchars($filterent['descr']);?>
+                      <div class="collapse rule_md5_hash">
+                          <small><?=$filterent['md5'];?></small>
+                      </div>
                     </td>
                     <td>
                       <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">

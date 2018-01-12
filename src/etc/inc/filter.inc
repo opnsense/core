@@ -192,6 +192,9 @@ function filter_configure_sync($verbose = false)
     if (isset($config['filter']['rule'])) {
         // register user rules
         foreach ($config['filter']['rule'] as $rule) {
+            // calculate a hash for this arrea so we can track this rule, we should replace this
+            // with uuid's on the rules like the new style models do eventually.
+            $rule['md5'] = md5(json_encode($rule));
             $sched = '';
             $descr = '';
 
