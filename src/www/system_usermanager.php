@@ -1,6 +1,7 @@
 <?php
 
 /*
+    copyright (C) 2018 Fabian Franz
     Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     Copyright (C) 2005 Paul Taylor <paultaylor@winn-dixie.com>
@@ -79,6 +80,17 @@ function get_user_privdesc(& $user)
 // link user section
 $a_user = &config_read_array('system', 'user');
 
+$available_ssh_keys_raw = config_read_array('OPNsense', 'ssh-keys', 'key_pair');
+if (!is_array($available_ssh_keys_raw)) {
+    $available_ssh_keys_raw = array();
+}
+// like in a template: we need to add it to an array if we only got a single element
+if (array_key_exists('key_name', $available_ssh_keys_raw)) {
+    $available_ssh_keys = array($available_ssh_keys_raw);
+} else {
+    $available_ssh_keys = $available_ssh_keys_raw;
+}
+
 // reset errors and action
 $input_errors = array();
 $act = null;
@@ -122,8 +134,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // edit user, load or init data
         $fieldnames = array('user_dn', 'descr', 'expires', 'scope', 'uid', 'priv', 'ipsecpsk', 'lifetime', 'otp_seed', 'email', 'comment');
         if (isset($id)) {
+            $pconfig['authorizedkeys'] = array();
             if (isset($a_user[$id]['authorizedkeys'])) {
-                $pconfig['authorizedkeys'] = base64_decode($a_user[$id]['authorizedkeys']);
+                $ssh_keys_assigned = explode(',',$a_user[$id]['authorizedkeys']);
+                foreach ($available_ssh_keys as $key) {
+                    $pconfig['authorizedkeys'][$key['@attributes']['uuid']] = array(
+                        'name' => $key['key_name'],
+                        'selected' => in_array($key['@attributes']['uuid'], $ssh_keys_assigned)
+                    );
+                }
             }
             if (isset($a_user[$id]['name'])) {
                 $pconfig['usernamefld'] = $a_user[$id]['name'];
@@ -257,6 +276,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
+        if (isset($pconfig['authorizedkeys'])) {
+            if (!is_array($pconfig['authorizedkeys'])) {
+                $input_errors[] = gettext("Authorized Keys must be a selection of keys");
+            } else {
+                foreach ($pconfig['authorizedkeys'] as $selected_key) {
+                    $found = false;
+                    foreach ($available_ssh_keys as $key) {
+                        if ($key['@attributes']['uuid'] == $selected_key) {
+                            $found = true;
+                            break;
+                        }
+                    }
+                    if (!$found) {
+                        $input_errors[] = sprintf(gettext("Authorized Key with the id %s not found"), html_safe($selected_key));
+                    }
+                }
+            }
+        }
+
         /* make sure this user name is unique */
         if (count($input_errors) == 0) {
             foreach ($a_user as $userent) {
@@ -327,7 +365,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $userent['name'] = $pconfig['usernamefld'];
             $userent['descr'] = $pconfig['descr'];
             $userent['expires'] = $pconfig['expires'];
-            $userent['authorizedkeys'] = base64_encode(trim($pconfig['authorizedkeys']));
+            $userent['authorizedkeys'] = implode(',', $pconfig['authorizedkeys']);
             $userent['ipsecpsk'] = $pconfig['ipsecpsk'];
             if (!empty($pconfig['gen_otp_seed'])) {
                 // generate 160bit base32 encoded secret
@@ -448,10 +486,8 @@ $( document ).ready(function() {
       });
     });
 
-    // expand ssh key section on click
-    $("#authorizedkeys").click(function(){
-        $(this).attr('rows', '7');
-    });
+    // bootstrap style authorized key form control
+    $('#authorizedkeys').selectpicker('refresh');
 
     // import ldap users
     $("#import_ldap_users").click(function(){
@@ -905,7 +941,11 @@ $( document ).ready(function() {
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Authorized keys");?></td>
                     <td>
-                      <textarea name="authorizedkeys" id="authorizedkeys" class="form-control" cols="65" rows="1" placeholder="<?=gettext("Paste an authorized keys file here.");?>" wrap='off'><?=$pconfig['authorizedkeys'];?></textarea>
+                      <select multiple="multiple" id="authorizedkeys" name="authorizedkeys[]" data-width="348px" data-allownew="false" data-nbdropdownelements="10">
+                        <?php foreach ($pconfig['authorizedkeys'] as $key_uuid => $key_data): ?>
+                          <option value="<?= html_safe($key_uuid) ?>"<?= $key_data['selected'] ? ' selected="selected"' : '' ?>><?= html_safe($key_data['name']) ?></option>
+                        <?php endforeach ?>
+                      </select>
                     </td>
                   </tr>
                   <tr id="ipsecpskrow">
