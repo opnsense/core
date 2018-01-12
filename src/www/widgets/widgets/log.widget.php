@@ -231,6 +231,8 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
     </tr>
   </thead>
   <tbody>
-    <tr/>
+    <tr>
+      <td colspan=5></td>
+    </tr>
   </tbody>
 </table>

@@ -209,7 +209,7 @@ else {
 <div style="display:block">
    <table class="table table-striped" style="width:100%; border:0; cellpadding:0; cellspacing:0;">
     <tr>
-      <td colspan="4">
+      <td>
           <span class="vexpl">
             <span class="red">
               <strong>
