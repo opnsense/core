@@ -680,8 +680,9 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                     if ($settings['strictusercn']) {
                         $strictusercn = "true";
                     }
+                    $dynamic_ccd_lookup = $settings['dynamic-ccd-lookup'];
                     $conf .= "auth-user-pass-verify \"/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_auth_verify " .
-                        "user '{$settings['authmode']}' '{$strictusercn}' '{$mode_id}'\" via-env\n";
+                        "user '{$settings['authmode']}' '{$strictusercn}' '{$mode_id}'\" via-env '{$dynamic_ccd_lookup}'\n";
                 }
                 break;
         }

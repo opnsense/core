@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
             ,wins_server2,no_tun_ipv6,push_register_dns,dns_domain,local_group
             ,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
-            ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,reneg-sec,use-common-name";
+            ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,reneg-sec,use-common-name,dynamic-ccd-lookup";
 
         foreach (explode(",", $copy_fields) as $fieldname) {
             $fieldname = trim($fieldname);
@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
             ,wins_server2,no_tun_ipv6,push_register_dns,dns_domain
             ,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
-            ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tls,reneg-sec,use-common-name";
+            ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tls,reneg-sec,use-common-name,dynamic-ccd-lookup";
         foreach (explode(",", $init_fields) as $fieldname) {
             $fieldname = trim($fieldname);
             if (!isset($pconfig[$fieldname])) {
@@ -337,7 +337,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 ,serverbridge_dhcp_end,dns_domain,dns_server1,dns_server2,dns_server3
                 ,dns_server4,push_register_dns,ntp_server1,ntp_server2,netbios_enable
                 ,netbios_ntype,netbios_scope,no_tun_ipv6,verbosity_level,wins_server1
-                ,wins_server2,client_mgmt_port,strictusercn,reneg-sec,use-common-name";
+                ,wins_server2,client_mgmt_port,strictusercn,reneg-sec,use-common-name,dynamic-ccd-lookup";
 
             foreach (explode(",", $copy_fields) as $fieldname) {
                 $fieldname = trim($fieldname);
@@ -1522,6 +1522,17 @@ endif; ?>
                   <table class="table table-striped opnsense_standard_table_form">
                     <tr>
                       <td colspan="2"><strong><?=gettext("Advanced configuration"); ?></strong></td>
+                    </tr>
+                    <tr class="table table-striped opnsense_standard_table_form">
+                      <td style="width:22%"><a id="help_for_dynamic-ccd-lookup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use dynamic CCD Lookup"); ?></td>
+                      <td>
+                          <input name="dynamic-ccd-lookup" type="checkbox" value="1" <?=!empty($pconfig['dynamic-ccd-lookup']) ? "checked=\"checked\"" : "" ;?> />
+                          <output class="hidden" for="help_for_dynamic-ccd-lookup">
+                              <span>
+                                <?=gettext("When checked a dynamic lookup for CCD values like ip/netmask will be done with the auth backend like radius"); ?><br />
+                              </span>
+                          </output>
+                      </td>
                     </tr>
                     <tr>
                       <td style="width:22%"><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
