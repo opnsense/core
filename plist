@@ -433,6 +433,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/ContainerField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/CountryField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/EmailField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/HostnameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/IntegerField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/InterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/JsonKeyValueStoreField.php
@@ -450,6 +451,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuSystem.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/ModelException.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/CsvListValidator.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/HostValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/IntegerValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/MinMaxValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/NetworkValidator.php
