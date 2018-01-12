@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2018 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2010 Scott Ullrich <sullrich@gmail.com>
 # Copyright (c) 2003-2004 Manuel Kasper <mk@neon1.net>
 #
@@ -147,4 +147,4 @@ rm -f /var/etc/nameserver_* /var/etc/searchdomain_*
 # services.  At one point this also helped to prevent shutdown(8)
 # from dropping "nologin" into the directory, preventing login on
 # the next boot.  However, do not touch the directory tree.
-find /var/run -type f -exec rm {} \;
+find /var/run ! -type d -exec rm {} \;
