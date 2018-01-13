@@ -746,7 +746,7 @@ class FirmwareController extends ApiControllerBase
     {
         $this->sessionClose(); // long running action, close session
 
-        // todo: we might want to move these into configuration files later
+        /* XXX we might want to move these into configuration files later */
         $mirrors = array();
         $mirrors[''] = '(default)';
         $mirrors['https://opnsense.aivian.org'] = 'Aivian (Shaoxing, CN)';
@@ -754,8 +754,6 @@ class FirmwareController extends ApiControllerBase
         $mirrors['https://mirror.dns-root.de/opnsense'] = 'dns-root.de (Cloudflare CDN)';
         $mirrors['https://opnsense.c0urier.net'] = 'c0urier.net (Lund, SE)';
         $mirrors['https://ftp.yzu.edu.tw/opnsense'] = 'Dept. of CSE, Yuan Ze University (Taoyuan City, TW)';
-        $mirrors['http://mirrors.dmcnet.net/opnsense'] = 'DMC Networks (Lincoln NE, US)';
-        //$mirrors['https://fleximus.org/mirror/opnsense'] = 'Fleximus (Roubaix, FR)';
         $mirrors['https://fourdots.com/mirror/OPNSense'] = 'FourDots (Belgrade, RS)';
         $mirrors['https://opnsense-mirror.hiho.ch'] = 'HiHo (Zurich, CH)';
         $mirrors['https://opnsense.ieji.de'] = 'ieji.de (Frankfurt, DE)';
