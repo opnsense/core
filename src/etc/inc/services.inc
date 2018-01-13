@@ -432,6 +432,7 @@ option domain-name "{$config['system']['domain']}";
 option ldap-server code 95 = text;
 option domain-search-list code 119 = text;
 option arch code 93 = unsigned integer 16; # RFC4578
+option pac-webui code 252 = text;
 {$custoptions}
 default-lease-time 7200;
 max-lease-time 86400;
@@ -786,6 +787,19 @@ EOD;
         // tftp-server-name
         if (!empty($dhcpifconf['tftp'])) {
             $dhcpdconf .= "  option tftp-server-name \"{$dhcpifconf['tftp']}\";\n";
+        }
+
+
+
+        // add pac url if it applies
+        if (isset($dhcpifconf['wpad']) && !empty($config['system']['hostname']) && !empty($config['system']['domain'])) {
+            $protocol = !empty($config['system']['webgui']['protocol']) ? $config['system']['webgui']['protocol'] : 'https';
+            // take hostname from system settings - it can be used to be resolved to anything based on client IP
+            $host = implode('.', array($config['system']['hostname'], $config['system']['domain']));
+            $port = !empty($config['system']['webgui']['port']) ? $config['system']['webgui']['port'] : 443;
+            $webui_url = "$protocol://$host:$port/wpad.dat";
+
+            $dhcpdconf .= "  option pac-webui \"$webui_url\";\n";
         }
 
         // Handle option, number rowhelper values
