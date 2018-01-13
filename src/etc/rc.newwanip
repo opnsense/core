@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2018 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -162,13 +162,13 @@ if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
 
     system_routing_configure($interface);
     setup_gateways_monitor();
+    plugins_configure('vpn', false, array($interface));
     filter_configure_sync();
 
     if (is_ipaddr($ip)) {
         @file_put_contents($cacheip_file, $ip);
     }
 
-    plugins_configure('vpn', false, array($interface));
     plugins_configure('newwanip', false, array($interface));
     rrd_configure();
 }
