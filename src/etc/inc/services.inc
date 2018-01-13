@@ -795,7 +795,7 @@ EOD;
         if (isset($dhcpifconf['wpad']) && !empty($config['system']['hostname']) && !empty($config['system']['domain'])) {
             $protocol = !empty($config['system']['webgui']['protocol']) ? $config['system']['webgui']['protocol'] : 'https';
             // take hostname from system settings - it can be used to be resolved to anything based on client IP
-            $host = implode('.', array($config['system']['hostname'], $config['system']['domain']));
+            $host = implode('.', array('wpad', $config['system']['domain']));
             $port = !empty($config['system']['webgui']['port']) ? $config['system']['webgui']['port'] : 443;
             $webui_url = "$protocol://$host:$port/wpad.dat";
 
