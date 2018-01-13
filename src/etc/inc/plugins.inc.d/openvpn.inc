@@ -468,8 +468,6 @@ function openvpn_add_keyfile($data, &$conf, $mode_id, $directive, $opt = '')
 
 function openvpn_reconfigure($mode, $settings, $device_only = false)
 {
-    global $config;
-
     if (empty($settings)) {
         return;
     }
@@ -914,8 +912,6 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
 
 function openvpn_restart($mode, $settings)
 {
-    global $config;
-
     $vpnid = $settings['vpnid'];
     $mode_id = $mode.$vpnid;
 
@@ -953,8 +949,6 @@ function openvpn_restart($mode, $settings)
 
 function openvpn_delete($mode, &$settings)
 {
-    global $config;
-
     $vpnid = $settings['vpnid'];
     $mode_id = $mode.$vpnid;
 

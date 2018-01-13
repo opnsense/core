@@ -47,8 +47,6 @@ function openssh_configure()
 
 function openssh_services()
 {
-    global $config;
-
     $services = array();
 
     if (openssh_enabled()) {
