@@ -162,11 +162,11 @@ function setFormData(parent,data) {
 function handleFormValidation(parent,validationErrors) {
     $( "#"+parent).find("*").each(function( index ) {
         if (validationErrors != undefined && $(this).prop('id') in validationErrors) {
-            $("*[for='" + $(this).prop('id') + "']").addClass("has-error");
-            $("span[for='" + $(this).prop('id') + "']").text(validationErrors[$(this).prop('id')]);
+            $("*[id*='" + $(this).prop('id') + "']").addClass("has-error");
+            $("span[id='help_block_" + $(this).prop('id') + "']").text(validationErrors[$(this).prop('id')]);
         } else {
-            $("*[for='" + $(this).prop('id') + "']").removeClass("has-error");
-            $("span[for='" + $(this).prop('id') + "']").text("");
+            $("*[id*='" + $(this).prop('id') + "']").removeClass("has-error");
+            $("span[id='help_block_" + $(this).prop('id') + "']").text("");
         }
     });
 }
