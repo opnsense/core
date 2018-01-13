@@ -668,8 +668,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         // configure user auth modes
         switch ($settings['mode']) {
             case 'server_user':
-                /* XXX DEPRECATED, use: verify-client-cert none|optional */
-                $conf .= "client-cert-not-required\n";
+                $conf .= "verify-client-cert none\n";
                 /* FALLTHROUGH */
             case 'server_tls_user':
                 /* username-as-common-name is not compatible with server-bridge */
