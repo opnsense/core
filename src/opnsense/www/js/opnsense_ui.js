@@ -195,7 +195,7 @@ function formatTokenizersUI(){
 function addMultiSelectClearUI() {
     $('[id*="clear-options"]').each(function() {
         $(this).click(function() {
-            var id = $(this).attr("for");
+            var id = $(this).attr("id").replace(/_*clear-options_*/, '');
             BootstrapDialog.confirm({
                 title: 'Deselect or remove all items ?',
                 message: 'Deselect or remove all items ?',
