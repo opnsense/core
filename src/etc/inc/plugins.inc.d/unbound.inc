@@ -79,8 +79,6 @@ function unbound_xmlrpc_sync()
 
 function unbound_optimization()
 {
-    global $config;
-
     $optimization_settings = array();
 
     /*

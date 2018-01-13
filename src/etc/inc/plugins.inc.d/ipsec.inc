@@ -351,8 +351,6 @@ function ipsec_get_phase1_src(&$ph1ent)
  */
 function ipsec_idinfo_to_cidr(&$idinfo, $addrbits = false, $mode = '')
 {
-    global $config;
-
     switch ($idinfo['type']) {
         case "address":
             if ($addrbits) {
@@ -558,8 +556,10 @@ function ipsec_mobilekey_sort()
 function ipsec_get_number_of_phase2($ikeid)
 {
     global $config;
+
     $a_phase2 = $config['ipsec']['phase2'];
-    $nbph2=0;
+    $nbph2 = 0;
+
     if (is_array($a_phase2) && count($a_phase2)) {
         foreach ($a_phase2 as $ph2tmp) {
             if ($ph2tmp['ikeid'] == $ikeid) {
@@ -567,6 +567,7 @@ function ipsec_get_number_of_phase2($ikeid)
             }
         }
     }
+
     return $nbph2;
 }
 
