@@ -1526,7 +1526,7 @@ endif; ?>
                     <tr class="table table-striped opnsense_standard_table_form">
                       <td style="width:22%"><a id="help_for_dynamic-ccd-lookup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use dynamic CCD Lookup"); ?></td>
                       <td>
-                          <input name="dynamic-ccd-lookup" type="checkbox" value="1" <?=!empty($pconfig['dynamic-ccd-lookup']) ? "checked=\"checked\"" : "" ;?> />
+                          <input name="dynamic-ccd-lookup" type="checkbox" value="1" <?=!empty($pconfig['dynamic-ccd-lookup']) ? 'checked="checked"' : "" ;?> />
                           <output class="hidden" for="help_for_dynamic-ccd-lookup">
                               <span>
                                 <?=gettext("When checked a dynamic lookup for CCD values like ip/netmask will be done with the auth backend like radius"); ?><br />
