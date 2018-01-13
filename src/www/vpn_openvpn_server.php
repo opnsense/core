@@ -1529,7 +1529,7 @@ endif; ?>
                           <input name="dynamic-ccd-lookup" type="checkbox" value="1" <?=!empty($pconfig['dynamic-ccd-lookup']) ? 'checked="checked"' : "" ;?> />
                           <output class="hidden" for="help_for_dynamic-ccd-lookup">
                               <span>
-                                <?=gettext("When checked a dynamic lookup for CCD values like ip/netmask will be done with the auth backend like radius"); ?><br />
+                                <?=gettext("When checked a dynamic lookup for Client-Specific-Overrides or so called Client-Config-Dir values like IP/Netmask will be done with the auth backends like RADIUS"); ?><br />
                               </span>
                           </output>
                       </td>
