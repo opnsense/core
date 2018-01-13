@@ -42,10 +42,10 @@ use \Phalcon\Filter;
  */
 class ServiceController extends ApiMutableServiceControllerBase
 {
-    static $internalServiceClass = '\OPNsense\IDS\IDS';
-    static $internalServiceEnabled = 'general.enabled';
-    static $internalServiceTemplate = 'OPNsense/IDS';
-    static $internalServiceName = 'ids';
+    static protected $internalServiceClass = '\OPNsense\IDS\IDS';
+    static protected $internalServiceEnabled = 'general.enabled';
+    static protected $internalServiceTemplate = 'OPNsense/IDS';
+    static protected $internalServiceName = 'ids';
 
     /**
      * reconfigure IDS

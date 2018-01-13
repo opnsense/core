@@ -44,7 +44,7 @@ class FirmwareController extends ApiControllerBase
      * @param integer $bytes bytes to convert
      * @return string
      */
-    protected function format_bytes($bytes)
+    protected function formatBytes($bytes)
     {
         if ($bytes >= (1024 * 1024 * 1024)) {
             return sprintf("%d GB", $bytes / (1024 * 1024 * 1024));
@@ -109,10 +109,13 @@ class FirmwareController extends ApiControllerBase
                 switch (isset($matches[2]) ? strtolower($matches[2]) : 'b') {
                     case 'g':
                         $factor *= 1024;
+                        /* FALLTROUGH */
                     case 'm':
                         $factor *= 1024;
+                        /* FALLTROUGH */
                     case 'k':
                         $factor *= 1024;
+                        /* FALLTROUGH */
                     default:
                         break;
                 }
@@ -121,7 +124,7 @@ class FirmwareController extends ApiControllerBase
                 $packages_size = 0;
             }
 
-            $download_size = $this->format_bytes($packages_size + $sets_size);
+            $download_size = $this->formatBytes($packages_size + $sets_size);
 
             if (array_key_exists('connection', $response) && $response['connection'] == 'error') {
                 $response['status_msg'] = gettext('Connection error.');
@@ -173,7 +176,8 @@ class FirmwareController extends ApiControllerBase
              * downgrade_packages: array with { name: <package_name>,
              *     current_version: <current_version>, new_version: <new_version> }
              */
-            foreach (array('new_packages', 'reinstall_packages', 'upgrade_packages', 'downgrade_packages') as $pkg_type) {
+            foreach (array('new_packages', 'reinstall_packages', 'upgrade_packages',
+                'downgrade_packages') as $pkg_type) {
                 if (isset($response[$pkg_type])) {
                     foreach ($response[$pkg_type] as $value) {
                         switch ($pkg_type) {
@@ -204,7 +208,8 @@ class FirmwareController extends ApiControllerBase
                             case 'upgrade_packages':
                                 $sorted[$value['name']] = array(
                                     'reason' => gettext('upgrade'),
-                                    'old' => empty($value['current_version']) ? gettext('N/A') : $value['current_version'],
+                                    'old' => empty($value['current_version']) ?
+                                        gettext('N/A') : $value['current_version'],
                                     'new' => $value['new_version'],
                                     'name' => $value['name'],
                                 );
