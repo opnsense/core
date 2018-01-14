@@ -60,7 +60,7 @@ CORE_REPOSITORY?=	${FLAVOUR}
 
 CORE_NAME?=		opnsense
 CORE_TYPE?=		release
-CORE_MESSAGE?=		Insert Name Here
+CORE_MESSAGE?=		Gecko got the groove
 
 CORE_MAINTAINER?=	franco@opnsense.org
 CORE_PACKAGESITE?=	http://pkg.opnsense.org

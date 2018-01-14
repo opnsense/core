@@ -50,7 +50,7 @@
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" logo+
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@  " logo+
 	s"  #[m                              " logo+
-	s"   18.1  ``Insert Name Here''  #[m" logo+
+	s"     18.1  ``Groovy Gecko''    #[m" logo+
 
 	2drop
 ;
