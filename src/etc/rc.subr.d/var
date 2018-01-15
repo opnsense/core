@@ -110,7 +110,6 @@ for RC_FILE in ${RC_FILES}; do
 	done
 done
 
-# XXX pre-17.1 compat: use_mfs_tmpvar matches both patterns
 USE_MFS_VAR=$(/usr/bin/grep -c 'use_mfs_.*var[^_]' /conf/config.xml)
 
 # see if / is writable (aka. non-LiveCD boot)
