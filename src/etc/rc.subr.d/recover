@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2018 Franco Fichtner <franco@opnsense.org>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -167,6 +167,36 @@ dcons	"/usr/libexec/getty std.9600"	vt100	off secure
 
 EOF;
 
+$php_ini = <<<EOF
+; File generated via recovery
+output_buffering = "0"
+expose_php = Off
+implicit_flush = true
+magic_quotes_gpc = Off
+max_execution_time = 900
+max_input_time = 1800
+max_input_vars = 5000
+memory_limit = 384M
+register_argc_argv = On
+register_long_arrays = Off
+variables_order = "GPCS"
+file_uploads = On
+upload_tmp_dir = /tmp
+upload_max_filesize = 200M
+post_max_size = 200M
+html_errors = Off
+zlib.output_compression = Off
+zlib.output_compression_level = 1
+include_path = ".:/usr/local/etc/inc:/usr/local/www:/usr/local/opnsense/mvc:/usr/local/share/pear:/usr/local/opnsense/contrib"
+ignore_repeated_errors = on
+error_reporting = E_ALL ^ (E_NOTICE | E_DEPRECATED | E_STRICT)
+display_errors=on
+log_errors=on
+error_log=/tmp/PHP_errors.log
+date.timezone="Etc/UTC"
+
+EOF;
+
 function recover_ports()
 {
 	$actions = array(
@@ -209,7 +239,7 @@ function recover_rebuild()
 	passthru('/bin/sync');
 }
 
-function recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys)
+function recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys, $php_ini)
 {
 	echo "===> Restoring /etc/group\n";
 	file_put_contents('/etc/group', $etc_group);
@@ -222,6 +252,10 @@ function recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys)
 
 	echo "===> Restoring /etc/ttys\n";
 	file_put_contents('/etc/ttys', $etc_ttys);
+
+	echo "===> Restoring php.ini files\n";
+	file_put_contents('/usr/local/etc/php.ini', $php_ini);
+	file_put_contents('/usr/local/lib/php.ini', $php_ini);
 
 	recover_rebuild();
 }
@@ -236,13 +270,13 @@ $stage = isset($argv[1]) ? $argv[1] : 'both';
 
 switch ($stage) {
 	case 'base':
-		recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys);
+		recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys, $php_ini);
 		break;
 	case 'pkg':
 		recover_pkg();
 		break;
 	default:
-		recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys);
+		recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys, $php_ini);
 		recover_pkg();
 		break;
 }
