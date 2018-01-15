@@ -134,7 +134,6 @@ fi
 # write /var/run/dmesg.boot
 /etc/rc.d/dmesg onestart
 
-# XXX pre-17.1 compat: avoid matching use_mfs_tmpvar
 USE_MFS_TMP=$(/usr/bin/grep -c 'use_mfs_tmp[^_]' /conf/config.xml)
 
 if [ ${USE_MFS_TMP} -ne 0 ]; then
