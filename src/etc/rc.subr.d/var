@@ -111,7 +111,17 @@ for RC_FILE in ${RC_FILES}; do
 done
 
 # XXX pre-17.1 compat: use_mfs_tmpvar matches both patterns
-USE_MFS_VAR=`/usr/bin/grep -c 'use_mfs_.*var[^_]' /conf/config.xml`
+USE_MFS_VAR=$(/usr/bin/grep -c 'use_mfs_.*var[^_]' /conf/config.xml)
+
+# see if / is writable (aka. non-LiveCD boot)
+if _tmpdir=$(mktemp -d -q /.diskless.XXXXXX); then
+	# only remove the directory
+	rmdir ${_tmpdir}
+else
+	# config restore for install media does not support
+	# this as neither /var nor /root are persistent
+	USE_MFS_VAR=0
+fi
 
 if [ ${USE_MFS_VAR} -ne 0 ]; then
 	echo -n "Setting up memory disks..."
