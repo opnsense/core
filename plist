@@ -134,6 +134,7 @@
 /usr/local/etc/rc.subr.d/livemode
 /usr/local/etc/rc.subr.d/recover
 /usr/local/etc/rc.subr.d/swapon
+/usr/local/etc/rc.subr.d/tmp
 /usr/local/etc/rc.subr.d/var
 /usr/local/etc/rc.syshook
 /usr/local/etc/rc.syshook.d/05-beep.stop

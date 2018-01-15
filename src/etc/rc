@@ -134,14 +134,8 @@ fi
 # write /var/run/dmesg.boot
 /etc/rc.d/dmesg onestart
 
-USE_MFS_TMP=$(/usr/bin/grep -c 'use_mfs_tmp[^_]' /conf/config.xml)
-
-if [ ${USE_MFS_TMP} -ne 0 ]; then
-	mount -t tmpfs -o mode=01777 tmpfs /tmp
-else
-	rm -rf /tmp/*
-	chmod 1777 /tmp
-fi
+# all sorts of maintenance tasks for /tmp
+/usr/local/etc/rc.subr.d/tmp
 
 # set up and recover a crash dump before activating swap
 /usr/local/etc/rc.subr.d/crashdump
