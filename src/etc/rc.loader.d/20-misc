@@ -3,5 +3,3 @@ hw.usb.no_pf="1"
 # see https://forum.opnsense.org/index.php?topic=6366.0
 hint.ahci.0.msi="0"
 hint.ahci.1.msi="0"
-# see https://github.com/opnsense/plugins/issues/466
-hardening.pax.disallow_map32bit.status="1"
