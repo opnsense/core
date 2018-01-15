@@ -293,7 +293,7 @@ $( document ).ready(function() {
                       <th class="hidden-xs hidden-sm"><?=gettext("Gateway");?></th>
                       <th class="hidden-xs hidden-sm"><?=gettext("Schedule");?></th>
                       <th><?=gettext("Description");?>
-                          <i class="fa fa-bug" data-toggle="collapse" data-target=".rule_md5_hash" ></i>
+                          <i class="fa fa-question-circle" data-toggle="collapse" data-target=".rule_md5_hash" ></i>
                       </th>
                       <th></th>
                   </tr>
