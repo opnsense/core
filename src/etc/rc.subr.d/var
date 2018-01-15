@@ -97,6 +97,7 @@ MFS_DIRS="
 /var/cache/opnsense-update
 /var/cache/pkg
 /var/crash
+/var/db/aliastables
 /var/db/pkg
 /var/log/bsdinstaller
 "
