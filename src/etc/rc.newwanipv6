@@ -41,7 +41,8 @@ require_once("interfaces.inc");
 $argument = isset($argv[1]) ? trim($argv[1]) : '';
 
 if (file_exists('/var/run/booting')) {
-    log_error("IP renewal ignored during boot on '{$argument}'");
+    log_error("IP renewal deferred during boot on '{$argument}'");
+    file_put_contents('/tmp/newwanipv6_' . uniqid(), $argument);
     return;
 }
 
