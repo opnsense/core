@@ -58,7 +58,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 <th data-column-id="disabled" data-type="string" data-formatter="rowtoggle">{{ lang._('Disabled') }}</th>
                 <th data-column-id="network" data-type="string" data-visible="true">{{ lang._('Network') }}</th>
                 <th data-column-id="gateway" data-type="string" data-visible="true">{{ lang._('Gateway') }}</th>
-                <th data-column-id="descr" data-type="string" data-visible="true">{{ lang._('Beschreibung') }}</th>
+                <th data-column-id="descr" data-type="string" data-visible="true">{{ lang._('Description') }}</th>
                 <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                 <th data-column-id="commands" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
             </tr>
