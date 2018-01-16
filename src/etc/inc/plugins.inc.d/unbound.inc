@@ -1,6 +1,7 @@
 <?php
 
 /*
+    Copyright (C) 2018 Fabian Franz
     Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
     Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
@@ -573,6 +574,20 @@ function unbound_add_host_entries()
                 $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$lladdr6}\"\n";
             }
         }
+    }
+    if (isset($config['unbound']['enable_wpad'])) {
+        // default domain
+        $unbound_entries .= "local-data: \"wpad.{$domain} IN CNAME {$config['system']['hostname']}.{$domain}\"\n";
+        $unbound_entries .= "local-data: \"wpad IN CNAME {$config['system']['hostname']}.{$domain}\"\n";
+        // DHCP domains
+        $tmp_known_domains = array($domain);
+        foreach ($config['dhcpd'] as $dhcp_interface) {
+            if (isset($dhcp_interface['domain']) && !empty($dhcp_interface['domain']) && !in_array($tmp_known_domains)) {
+                $unbound_entries .= "local-data: \"wpad.{$dhcp_interface['domain']} IN CNAME {$config['system']['hostname']}.{$domain}\"\n";
+                $tmp_known_domains[] = $dhcp_interface['domain'];
+            }
+        }
+        unset($tmp_known_domains); // remove temporary variable
     }
 
     /* Static Host entries */
