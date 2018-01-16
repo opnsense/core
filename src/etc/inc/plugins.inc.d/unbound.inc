@@ -535,6 +535,7 @@ function unbound_add_host_entries()
         $interfaces = get_configured_interface_list();
     }
 
+    $system_host_fqdn = $config['system']['hostname'] . '.' . $config['system']['domain'];
     foreach ($interfaces as $interface) {
         if ($interface == 'lo0') {
             continue;
@@ -576,14 +577,18 @@ function unbound_add_host_entries()
         }
     }
     if (isset($config['unbound']['enable_wpad'])) {
+        $webui_protocol = !empty($config['system']['webgui']['protocol']) ? $config['system']['webgui']['protocol'] : 'https';
+        $webui_port = !empty($config['system']['webgui']['port']) ? $config['system']['webgui']['port'] : 443;
         // default domain
-        $unbound_entries .= "local-data: \"wpad.{$domain} IN CNAME {$config['system']['hostname']}.{$domain}\"\n";
-        $unbound_entries .= "local-data: \"wpad IN CNAME {$config['system']['hostname']}.{$domain}\"\n";
+        $unbound_entries .= "local-data: \"wpad.{$domain} IN CNAME {$system_host_fqdn}\"\n";
+        $unbound_entries .= "local-data: \"wpad IN CNAME {$system_host_fqdn}\"\n";
+        $unbound_entries .= "local-data: '{$domain} IN TXT \"service: wpad:{$webui_protocol}://{$system_host_fqdn}:{$webui_port}/wpad.dat\"'\n";
         // DHCP domains
         $tmp_known_domains = array($domain);
         foreach ($config['dhcpd'] as $dhcp_interface) {
-            if (isset($dhcp_interface['domain']) && !empty($dhcp_interface['domain']) && !in_array($tmp_known_domains)) {
-                $unbound_entries .= "local-data: \"wpad.{$dhcp_interface['domain']} IN CNAME {$config['system']['hostname']}.{$domain}\"\n";
+            if (isset($dhcp_interface['domain']) && !empty($dhcp_interface['domain']) && !in_array($tmp_known_domains, $dhcp_interface['domain'])) {
+                $unbound_entries .= "local-data: \"wpad.{$dhcp_interface['domain']} IN CNAME {$system_host_fqdn}\"\n";
+                $unbound_entries .= "local-data: '{$dhcp_interface['domain']} IN TXT \"service: wpad:{$webui_protocol}://{$system_host_fqdn}:{$webui_port}/wpad.dat\"'\n";
                 $tmp_known_domains[] = $dhcp_interface['domain'];
             }
         }
