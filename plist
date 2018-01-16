@@ -140,6 +140,7 @@
 /usr/local/etc/rc.syshook.d/05-beep.stop
 /usr/local/etc/rc.syshook.d/05-update.early
 /usr/local/etc/rc.syshook.d/10-configd.early
+/usr/local/etc/rc.syshook.d/10-newwanip.start
 /usr/local/etc/rc.syshook.d/15-php.early
 /usr/local/etc/rc.syshook.d/20-backup.early
 /usr/local/etc/rc.syshook.d/20-freebsd.start
