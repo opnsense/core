@@ -535,7 +535,6 @@ function unbound_add_host_entries()
         $interfaces = get_configured_interface_list();
     }
 
-    $system_host_fqdn = $config['system']['hostname'] . '.' . $config['system']['domain'];
     foreach ($interfaces as $interface) {
         if ($interface == 'lo0') {
             continue;
@@ -580,6 +579,10 @@ function unbound_add_host_entries()
         $webui_protocol = !empty($config['system']['webgui']['protocol']) ? $config['system']['webgui']['protocol'] : 'https';
         $webui_port = !empty($config['system']['webgui']['port']) ? $config['system']['webgui']['port'] : 443;
         // default domain
+        $system_host_fqdn = $config['system']['hostname'];
+        if (isset($config['system']['domain'])) {
+            $system_host_fqdn .= '.' . $config['system']['domain'];
+        }
         $unbound_entries .= "local-data: \"wpad.{$domain} IN CNAME {$system_host_fqdn}\"\n";
         $unbound_entries .= "local-data: \"wpad IN CNAME {$system_host_fqdn}\"\n";
         $unbound_entries .= "local-data: '{$domain} IN TXT \"service: wpad:{$webui_protocol}://{$system_host_fqdn}:{$webui_port}/wpad.dat\"'\n";
