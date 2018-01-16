@@ -558,6 +558,9 @@ function step12_submitphpaction()
         exit;
     }
 
+    $mdlTrust->serializeToConfig();
+    new Trust();
+
     if (isset($pconfig['step9']['uselist'])) {
         $dn = array(
             'countryName' => $pconfig['step9']['country'],
@@ -700,6 +703,9 @@ function step12_submitphpaction()
         $rule['type'] = "pass";
         $rule['enabled'] = "on";
         $rule['created'] = make_config_revision_entry();
+        if ((array) Config::getInstance()->object()->filter == []) {
+            Config::getInstance()->object()->addChild("filter");
+        }
         Config::getInstance()->fromArray(["rule" => $rule], Config::getInstance()->object()->filter);
     }
     if (isset($pconfig['step11']['ovpnallow'])) {
@@ -716,9 +722,15 @@ function step12_submitphpaction()
         $rule['type'] = "pass";
         $rule['enabled'] = "on";
         $rule['created'] = make_config_revision_entry();
+        if ((array) Config::getInstance()->object()->filter == []) {
+            Config::getInstance()->object()->addChild("filter");
+        }
         Config::getInstance()->fromArray(["rule" => $rule], Config::getInstance()->object()->filter);
     }
 
+    if ((array) Config::getInstance()->object()->openvpn == []) {
+        Config::getInstance()->object()->addChild("openvpn");
+    }
     Config::getInstance()->fromArray(["openvpn-server" => $server], Config::getInstance()->object()->openvpn);
     Config::getInstance()->save();
 
