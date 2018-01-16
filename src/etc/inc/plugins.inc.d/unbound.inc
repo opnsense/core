@@ -589,7 +589,7 @@ function unbound_add_host_entries()
         // DHCP domains
         $tmp_known_domains = array($domain);
         foreach ($config['dhcpd'] as $dhcp_interface) {
-            if (isset($dhcp_interface['domain']) && !empty($dhcp_interface['domain']) && !in_array($tmp_known_domains, $dhcp_interface['domain'])) {
+            if (isset($dhcp_interface['domain']) && !empty($dhcp_interface['domain']) && !in_array($dhcp_interface['domain'], $tmp_known_domains)) {
                 $unbound_entries .= "local-data: \"wpad.{$dhcp_interface['domain']} IN CNAME {$system_host_fqdn}\"\n";
                 $unbound_entries .= "local-data: '{$dhcp_interface['domain']} IN TXT \"service: wpad:{$webui_protocol}://{$system_host_fqdn}:{$webui_port}/wpad.dat\"'\n";
                 $tmp_known_domains[] = $dhcp_interface['domain'];
