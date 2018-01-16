@@ -276,6 +276,8 @@ include("fbegin.inc");?>
       // sortable widgets
       $(".dashboard_grid_column").sortable({
         handle: '.content-box-head',
+        delay: 50,
+        distance: 2,
         group: 'dashboard_grid_column',
         itemSelector: '.widgetdiv',
         containerSelector: '.dashboard_grid_column',
@@ -369,7 +371,7 @@ include("fbegin.inc");?>
           }?>
           <section class="widgetdiv" data-sortkey="<?=$widgetItem['sortKey'] ?>" id="<?=$widgetItem['name'];?>"  style="display:<?=$divdisplay;?>;">
             <div class="content-box">
-              <header class="content-box-head container-fluid">
+              <header class="content-box-head container-fluid" style="touch-action: none">
                 <ul class="list-inline __nomb">
                   <li><h3>
 <?php
