@@ -38,13 +38,12 @@ require_once("util.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-// Do not process while booting
+$argument = isset($argv[1]) ? trim($argv[1]) : '';
+
 if (file_exists('/var/run/booting')) {
     log_error("IP renewal ignored during boot on '{$argument}'");
     return;
 }
-
-$argument = isset($argv[1]) ? trim($argv[1]) : '';
 
 log_error("IP renewal is starting on '{$argument}'");
 
