@@ -254,7 +254,7 @@ include("head.inc");
                       </option>
                   </select>
                   <output class="hidden" for="help_for_disablevlanhwfilter">
-                    <?=gettext("Checking this option will disable VLAN hardware filtering. This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
+                    <?= gettext('Set usage of VLAN hardware filtering. This hardware acceleration may be broken in a particular device driver, or may impact performance.') ?>
                   </output>
                 </td>
               </tr>
