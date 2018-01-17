@@ -1127,8 +1127,8 @@
 /usr/local/www/widgets/api/plugins/traffic.inc
 /usr/local/www/widgets/include/carp_status.inc
 /usr/local/www/widgets/include/gateways.inc
+/usr/local/www/widgets/include/interface_list.inc
 /usr/local/www/widgets/include/interface_statistics.inc
-/usr/local/www/widgets/include/interfaces.inc
 /usr/local/www/widgets/include/ipsec.inc
 /usr/local/www/widgets/include/log.inc
 /usr/local/www/widgets/include/ntp_status.inc
