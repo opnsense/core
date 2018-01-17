@@ -183,48 +183,6 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
             });
         }
       });
-      // Side menu navigation for long item lists, when top level items tend to scroll above visible the area
-      // they will clip on top of the menu system. Scroll out will move them back into their normal positions.
-      $("#navigation").scroll(function(){
-          var collapsed_menu_item = $("#mainmenu .collapse.in").first();
-          if (collapsed_menu_item.position().top < 5) {
-              var top_pos = parseInt($("header").height());
-              $("#mainmenu .collapse.in").each(function(){
-                  var menuref = $('a[href="#'+$(this).attr('id')+'"]');
-                  if (!menuref.hasClass('mainmenu_clipped_on_top')) {
-                      menuref.addClass('mainmenu_clipped_on_top');
-                      menuref.data('__original_style__', {
-                        'z-index': menuref.css('z-index'),
-                        'width': menuref.css('width'),
-                        'position': menuref.css('position'),
-                        'background': menuref.css('background'),
-                        'top': menuref.css('top')
-                      });
-                  }
-                  menuref.css('z-index', 10);
-                  menuref.css('top', top_pos);
-                  menuref.css('width', collapsed_menu_item.outerWidth() + 'px');
-                  menuref.css('position', 'fixed');
-                  menuref.css('background', '#fff');
-                  top_pos += menuref.outerHeight();
-              });
-          } else {
-              // scroll-back, move menu items back in normal location
-              $(".mainmenu_clipped_on_top").each(function(){
-                  var menuref = $(this);
-                  $.each(menuref.data('__original_style__'), function(key, value){
-                      menuref.css(key, value);
-                  });
-                  $(this).removeClass('mainmenu_clipped_on_top');
-              });
-          }
-      });
-      // Side menu navigation, always force selected item in center when the menu contains more items then fits the view area
-      $(".list-group-item.active").each(function(){
-          var navbar_center = ($( window ).height() - $(".collapse.navbar-collapse").height())/2;
-          var x = $(this).offset().top - navbar_center;
-          $('html,aside').scrollTop(x);
-      });
 
       // hook in live menu search
       $.ajax("/api/core/menu/search/", {
