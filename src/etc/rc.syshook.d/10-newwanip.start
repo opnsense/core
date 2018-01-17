@@ -1,11 +1,13 @@
 #!/bin/sh
 
 for IPV4 in $(find /tmp -type f -name "newwanip_*"); do
+	echo -n "Reconfiguring IPv4: "
 	/usr/local/opnsense/service/configd_ctl.py interface newip $(cat "${IPV4}")
 	rm "${IPV4}"
 done
 
 for IPV6 in $(find /tmp -type f -name "newwanipv6_*"); do
+	echo -n "Reconfiguring IPv6: "
 	/usr/local/opnsense/service/configd_ctl.py interface newipv6 $(cat "${IPV6}")
 	rm "${IPV6}"
 done
