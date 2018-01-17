@@ -1139,8 +1139,8 @@
 /usr/local/www/widgets/include/traffic_graph.inc
 /usr/local/www/widgets/widgets/carp_status.widget.php
 /usr/local/www/widgets/widgets/gateways.widget.php
+/usr/local/www/widgets/widgets/interface_list.widget.php
 /usr/local/www/widgets/widgets/interface_statistics.widget.php
-/usr/local/www/widgets/widgets/interfaces.widget.php
 /usr/local/www/widgets/widgets/ipsec.widget.php
 /usr/local/www/widgets/widgets/log.widget.php
 /usr/local/www/widgets/widgets/ntp_status.widget.php
