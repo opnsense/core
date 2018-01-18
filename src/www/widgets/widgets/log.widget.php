@@ -36,6 +36,7 @@ require_once("interfaces.inc");
 
 if (is_numeric($_POST['filterlogentries'])) {
     $config['widgets']['filterlogentries'] = $_POST['filterlogentries'];
+    $config['widgets']['filterlogentriesupdateinterval'] = $_POST['filterlogentriesupdateinterval'];
 
     $acts = array();
     if ($_POST['actpass']) {
@@ -66,6 +67,7 @@ if (is_numeric($_POST['filterlogentries'])) {
 }
 
 $nentries = isset($config['widgets']['filterlogentries']) ? $config['widgets']['filterlogentries'] : 5;
+$updateinterval = isset($config['widgets']['filterlogentriesupdateinterval']) ? $config['widgets']['filterlogentriesupdateinterval'] : 2;
 
 //set variables for log
 $nentriesacts       = isset($config['widgets']['filterlogentriesacts']) ?  explode(" ", $config['widgets']['filterlogentriesacts']) : array('All');
@@ -163,7 +165,9 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                 $("#filter-log-entries > tbody > tr").show();
                 // schedule next fetch
             });
-            setTimeout(fetch_log, 5000);
+            var update_interval_ms = parseInt($("#filterlogentriesupdateinterval").val()) * 1000;
+            update_interval_ms = (isNaN(update_interval_ms) || update_interval_ms < 1000 || update_interval_ms > 60000) ? 5000 : update_interval_ms;
+            setTimeout(fetch_log, update_interval_ms);
         }
 
         fetch_log();
@@ -185,6 +189,22 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
 <?php
               for ($i = 1; $i <= 20; $i++):?>
                 <option value="<?=$i?>" <?= $nentries == $i ? "selected=\"selected\"" : ""?>><?=$i;?></option>
+<?php
+              endfor;?>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <?= gettext('Update interval (seconds):') ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <select name="filterlogentriesupdateinterval" class="formfld unknown" id="filterlogentriesupdateinterval">
+<?php
+              for ($i = 1; $i <= 60; $i++):?>
+                <option value="<?=$i?>" <?= $updateinterval == $i ? "selected=\"selected\"" : ""?>><?=$i;?></option>
 <?php
               endfor;?>
               </select>
