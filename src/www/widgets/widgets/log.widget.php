@@ -36,6 +36,7 @@ require_once("interfaces.inc");
 
 if (is_numeric($_POST['filterlogentries'])) {
     $config['widgets']['filterlogentries'] = $_POST['filterlogentries'];
+    $config['widgets']['filterlogentriesupdateinterval'] = $_POST['filterlogentriesupdateinterval'];
 
     $acts = array();
     if ($_POST['actpass']) {
@@ -66,6 +67,7 @@ if (is_numeric($_POST['filterlogentries'])) {
 }
 
 $nentries = isset($config['widgets']['filterlogentries']) ? $config['widgets']['filterlogentries'] : 5;
+$updateinterval = isset($config['widgets']['filterlogentriesupdateinterval']) ? $config['widgets']['filterlogentriesupdateinterval'] : 2;
 
 //set variables for log
 $nentriesacts       = isset($config['widgets']['filterlogentriesacts']) ?  explode(" ", $config['widgets']['filterlogentriesacts']) : array('All');
@@ -163,7 +165,9 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                 $("#filter-log-entries > tbody > tr").show();
                 // schedule next fetch
             });
-            setTimeout(fetch_log, 5000);
+            var update_interval_ms = parseInt($("#filterlogentriesupdateinterval").val()) * 1000;
+            update_interval_ms = (isNaN(update_interval_ms) || update_interval_ms < 1000 || update_interval_ms > 60000) ? 5000 : update_interval_ms;
+            setTimeout(fetch_log, update_interval_ms);
         }
 
         fetch_log();
@@ -172,14 +176,12 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
 
 <div id="log-settings" class="widgetconfigdiv" style="display:none;">
   <form action="/widgets/widgets/log.widget.php" method="post" name="iforma">
-      <table class="table table-striped">
+      <table class="table table-striped table-condensed">
         <tbody>
           <tr>
             <td>
-              <?= gettext('Number of lines to display:') ?>
+              <label for="filterlogentries"><?= gettext('Quantity:') ?><br /><small>(<?= gettext('log entires') ?>)</small></label>
             </td>
-          </tr>
-          <tr>
             <td>
               <select name="filterlogentries" class="formfld unknown" id="filterlogentries">
 <?php
@@ -189,21 +191,24 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
               endfor;?>
               </select>
             </td>
-          </tr>
-          <tr>
+            <td class="text-right" style="width: 100%">
+              <label for="filterlogentriesupdateinterval"><?= gettext('Update interval:') ?><br /><small>(<?= gettext('seconds') ?>)</small></label>
+            </td>
             <td>
-              <label for="actpass"><input id="actpass"   name="actpass"   type="checkbox" value="Pass"   <?=in_array('Pass', $nentriesacts) ? "checked=\"checked\"" : "";?>/>Pass</label>
-              <label for="actblock"><input id="actblock"  name="actblock"  type="checkbox" value="Block"  <?=in_array('Block', $nentriesacts) ? "checked=\"checked\"" : "";?>/>Block</label>
-              <label for="actreject"><input id="actreject" name="actreject" type="checkbox" value="Reject" <?=in_array('Reject', $nentriesacts) ? "checked=\"checked\"" : "";?>/>Reject</label>
+              <select name="filterlogentriesupdateinterval" class="formfld unknown" id="filterlogentriesupdateinterval">
+<?php
+              for ($i = 1; $i <= 60; $i++):?>
+                <option value="<?=$i?>" <?= $updateinterval == $i ? "selected=\"selected\"" : ""?>><?=$i;?></option>
+<?php
+              endfor;?>
+              </select>
             </td>
           </tr>
           <tr>
             <td>
-              <?= gettext('Interfaces:'); ?>
+              <label for="filterlogentriesinterfaces"><?= gettext('Interfaces:'); ?></label>
             </td>
-          </tr>
-          <tr>
-            <td>
+            <td colspan="3" style="width: 100%">
               <select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces">
                 <option value="All"><?= gettext('ALL') ?></option>
 <?php
@@ -218,7 +223,15 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
           </tr>
           <tr>
             <td>
-              <input id="submita" name="submita" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Save') ?>" />
+              <label><?= gettext('Filter:') ?><br /><small>(<?= gettext('action') ?>)</small></label>
+            </td>
+            <td colspan="2" style="width: 100%">
+              <label for="actpass"><input id="actpass" name="actpass" type="checkbox" value="Pass" <?=in_array('Pass', $nentriesacts) ? "checked=\"checked\"" : "";?> />Pass</label>
+              <label for="actblock"><input id="actblock" name="actblock" type="checkbox" value="Block" <?=in_array('Block', $nentriesacts) ? "checked=\"checked\"" : "";?> />Block</label>
+              <label for="actreject"><input id="actreject" name="actreject" type="checkbox" value="Reject" <?=in_array('Reject', $nentriesacts) ? "checked=\"checked\"" : "";?> />Reject</label>
+            </td>
+            <td class="text-right">
+              <input id="submit_firewall_logs_widget" name="submit_firewall_logs_widget" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Save') ?>" />
             </td>
           </tr>
         </tbody>
