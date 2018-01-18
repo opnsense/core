@@ -511,6 +511,14 @@ function filter_configure_sync($verbose = false)
     }
 
     if ($verbose) {
+        echo '.';
+        flush();
+    }
+
+    configd_run('template reload OPNsense/Filter');
+    configd_run('filter refresh_aliases', true);
+
+    if ($verbose) {
         echo "done.\n";
     }
 

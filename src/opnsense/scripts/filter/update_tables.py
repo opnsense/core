@@ -28,6 +28,7 @@
     --------------------------------------------------------------------------------------
     update aliases
 """
+
 import os
 import sys
 import argparse
@@ -38,6 +39,23 @@ import tempfile
 import subprocess
 from lib.alias import Alias
 
+class SettingsParser(object):
+    """ Settings Parser class, reads global values
+    """
+    def __init__(self, source_tree):
+        self._source_tree = source_tree
+        self._settings = dict()
+        self._settings['ssl_no_verify'] = False
+
+    def read(self):
+        for elem in self._source_tree.iterfind('general/ssl_no_verify'):
+            if elem.text == "1":
+                self._settings['ssl_no_verify'] = True
+
+    def get(self, name):
+        if name in self._settings:
+            return self._settings[name]
+        return None
 
 class AliasParser(object):
     """ Alias Parser class, encapsulates all aliases
@@ -51,7 +69,6 @@ class AliasParser(object):
         self._aliases = dict()
         for elem in self._source_tree.iterfind('table'):
             alias = Alias(elem, known_aliases=known_aliases_list)
-            alias.resolve()
             self._aliases[alias.get_name()] = alias
 
     def get_alias_deps(self, alias, alias_deps=None):
@@ -101,19 +118,25 @@ if __name__ == '__main__':
         syslog.syslog(syslog.LOG_ERR, 'filter table parse error (%s) %s' % (str(e), inputargs.source_conf))
         sys.exit(-1)
 
+    settings = SettingsParser(source_tree)
+    settings.read()
+
+    ssl_no_verify = settings.get('ssl_no_verify')
+
     aliases = AliasParser(source_tree)
     aliases.read()
+
     for alias in aliases:
         # fetch alias content including dependencies
         alias_name = alias.get_name()
-        alias_content = alias.resolve()
+        alias_content = alias.resolve(ssl_no_verify=ssl_no_verify)
         alias_changed_or_expired = max(alias.changed(), alias.expired())
         for related_alias_name in aliases.get_alias_deps(alias_name):
             if related_alias_name != alias_name:
                 rel_alias = aliases.get(related_alias_name)
                 if rel_alias:
                     alias_changed_or_expired = max(alias_changed_or_expired, rel_alias.changed(), rel_alias.expired())
-                    alias_content += rel_alias.resolve()
+                    alias_content += rel_alias.resolve(ssl_no_verify=ssl_no_verify)
         # when the alias or any of it's dependencies has changed, generate new
         if alias_changed_or_expired:
             alias_content_txt = '\n'.join(sorted(alias_content))

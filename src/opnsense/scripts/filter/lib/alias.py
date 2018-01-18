@@ -78,7 +78,7 @@ class Alias(object):
         # the generated alias contents, without dependencies
         self._filename_alias_content = '/var/db/aliastables/%s.self.txt' % self._name
 
-    def _parse_address(self, address):
+    def _parse_address(self, address, ssl_no_verify=False, timeout=120):
         """ parse addresses and hostnames, yield only valid addresses and networks
             :param address: address or network
             :return: boolean
@@ -148,7 +148,7 @@ class Alias(object):
         except:
             syslog.syslog(syslog.LOG_ERR, 'error fetching alias url %s' % (url))
 
-    def _fetch_geo(self, geoitem):
+    def _fetch_geo(self, geoitem, ssl_no_verify=False, timeout=120):
         """ fetch geoip addresses, if not downloaded or outdated force an update
             :return: iterator
         """
@@ -217,12 +217,12 @@ class Alias(object):
             :return: string
         """
         if not self._resolve_content:
-            if self.expired() or self.changed():
+            if self.expired() or self.changed() or force:
                 with open(self._filename_alias_content, 'w') as f_out:
                     for item in self.items():
                         address_parser = self.get_parser()
                         if address_parser:
-                            for address in address_parser(item):
+                            for address in address_parser(item, ssl_no_verify=ssl_no_verify, timeout=timeout):
                                 if address not in self._resolve_content:
                                     # flush new alias content (without dependencies) to disk, so progress can easliy
                                     # be followed, large lists of domain names can take quite some resolve time.
