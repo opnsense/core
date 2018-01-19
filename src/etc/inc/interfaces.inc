@@ -1819,9 +1819,12 @@ function interface_ipalias_configure(&$vip)
 {
     global $config;
 
+
     if ($vip['mode'] != "ipalias") {
         return;
     }
+
+    $wancfg = $config['interfaces'][$vip['interface']];
 
     if ($vip['interface'] != 'lo0' && !isset($config['interfaces'][$vip['interface']]['enable'])) {
         return;
@@ -1829,11 +1832,32 @@ function interface_ipalias_configure(&$vip)
 
     $if = escapeshellarg(get_real_interface($vip['interface']));
     $af = "inet";
+
+    $gateway = ''; // Want this to have nothing
+
+    if ($wancfg['ipaddr'] = 'pppoe') {
+        
+        /* if it's a pppoe connection then we do not know the gateway in advance */
+        /* however we can get it from the gateway address file */
+        $realif = get_real_interface($vip['interface']);
+
+        if (file_exists("/tmp/{$realif}_router")) {
+            $gateway = trim(file_get_contents("/tmp/{$realif}_router"), " \n");
+            log_error("ip log one gateway = {$gateway}");
+        }
+    }
+
     if (is_ipaddrv6($vip['subnet'])) {
         $af = "inet6";
     }
+
     $vhid = !empty($vip['vhid']) ? "vhid " . escapeshellarg($vip['vhid']) : "";
-    $gateway = !empty($vip['gateway']) ? escapeshellarg($vip['gateway']) . " " : "";
+
+    if(gateway == '')
+    {
+        $gateway = !empty($vip['gateway']) ? escapeshellarg($vip['gateway']) . " " : "";
+    }
+
     mwexec("/sbin/ifconfig " . $if ." {$af} ". escapeshellarg($vip['subnet']) ."/" . escapeshellarg($vip['subnet_bits']) . " alias ".$gateway. $vhid);
 }
 
