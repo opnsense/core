@@ -1839,7 +1839,7 @@ function interface_ipalias_configure(&$vip)
 
     $vhid = !empty($vip['vhid']) ? "vhid " . escapeshellarg($vip['vhid']) : "";
 
-     if ($wancfg['ipaddr'] = 'pppoe'  && !is_ipaddrv6($vip['subnet'])) {
+    if ($wancfg['ipaddr'] = 'pppoe'  && !is_ipaddrv6($vip['subnet'])) {
 
         /* if it's a pppoe connection then we do not know the gateway in advance */
         /* however we can get it from the gateway address file */
@@ -1852,6 +1852,7 @@ function interface_ipalias_configure(&$vip)
     } else {
         $gateway = !empty($vip['gateway']) ? escapeshellarg($vip['gateway']) . " " : "";
     }
+
     mwexec("/sbin/ifconfig " . $if ." {$af} ". escapeshellarg($vip['subnet']) ."/" . escapeshellarg($vip['subnet_bits']) . " alias ".$gateway. $vhid);
 }
 
