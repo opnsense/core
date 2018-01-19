@@ -289,9 +289,11 @@ $(document).ready(function() {
                  title: '<?= html_safe(gettext('Warning!')) ?>',
                  message: '<?= html_safe(gettext('Changing the listen interfaces of the web GUI may ' .
                      'prevent you from accessing this page if you continue. It is recommended to keep ' .
-                     'this set to "All" unless you know what you are doing.')) ?>',
+                     'this set to the default unless you know what you are doing.')) ?>',
                  type: BootstrapDialog.TYPE_WARNING,
                  btnOKClass: 'btn-warning',
+                 btnOKLabel: '<?= html_safe(gettext('I know what I am doing')) ?>',
+                 btnCancelLabel: '<?= html_safe(gettext('Use the default')) ?>',
                  callback: function(result) {
                      if (!result) {
                          $('#webguiinterface option:selected').removeAttr('selected');
@@ -315,8 +317,6 @@ $(document).ready(function() {
                 dialogRef.getModalBody().html(
                     '<?= html_safe(gettext('The web GUI is reloading at the moment, please wait...')) ?>' +
                     ' <i class="fa fa-cog fa-spin"></i><br /><br />' +
-                    ' <?= html_safe(gettext('You will have 5 minutes to confirm the changes before the GUI ' .
-                        'will revert to its previous configuration as an automatic recovery.')) ?><br /><br />' +
                     ' <?= html_safe(gettext('If the page does not reload go here:')) ?>' +
                     ' <a href="<?= html_safe($url) ?>" target="_blank"><?= html_safe($url) ?></a>'
                 );
