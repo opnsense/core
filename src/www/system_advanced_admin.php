@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2018 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2014-2015 Deciso B.V.
  * Copyright (C) 2005-2010 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
@@ -267,8 +267,9 @@ include("head.inc");
 <body>
 <?php include("fbegin.inc"); ?>
 <script type="text/javascript">
-  $(document).ready(function() {
-      $(".proto").change(function(){
+
+$(document).ready(function() {
+     $(".proto").change(function(){
          if ($("#https_proto").prop('checked')) {
              $("#webguiport").attr('placeholder', '443');
              $(".ssl_opts").show();
@@ -276,8 +277,32 @@ include("head.inc");
              $("#webguiport").attr('placeholder', '80');
              $(".ssl_opts").hide();
          }
-      });
-      $(".proto").change();
+     });
+     $(".proto").change();
+
+     $('#webguiinterface').change(function () {
+         if ($('#webguiinterface option:selected').text() == '') {
+             $.webguiinterface_warned = 0;
+         } else if ($.webguiinterface_warned != 1) {
+             $.webguiinterface_warned = 1;
+             BootstrapDialog.confirm({
+                 title: '<?= html_safe(gettext('Warning!')) ?>',
+                 message: '<?= html_safe(gettext('Changing the listen interfaces of the web GUI may ' .
+                     'prevent you from accessing this page if you continue. It is recommended to keep ' .
+                     'this set to "All" unless you know what you are doing.')) ?>',
+                 type: BootstrapDialog.TYPE_WARNING,
+                 btnOKClass: 'btn-warning',
+                 callback: function(result) {
+                     if (!result) {
+                         $('#webguiinterface option:selected').removeAttr('selected');
+                         $('#webguiinterface').selectpicker('refresh');
+                         $.webguiinterface_warned = 0;
+                     }
+                 }
+             });
+         }
+     });
+     $.webguiinterface_warned = 0;
 
  <?php
     if (isset($restart_webgui) && $restart_webgui): ?>
@@ -490,7 +515,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_webguiinterfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Listen Interfaces') ?></td>
                     <td>
-                    <select name="webguiinterfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
+                    <select id="webguiinterface" name="webguiinterfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
 <?php
                     foreach ($interfaces as $iface => $ifacename): ?>
                         <option value="<?= html_safe($iface) ?>" <?= !empty($pconfig['webguiinterfaces']) && in_array($iface, $pconfig['webguiinterfaces']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
