@@ -48,7 +48,7 @@ if($need_alert_display == true) {
 ?>
 
 <header class="page-head">
-  <nav class="navbar navbar-default" role="navigation">
+  <nav class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
         <a class="navbar-brand" href="/index.php">
@@ -82,7 +82,7 @@ if($need_alert_display == true) {
 <main class="page-content col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2">
     <aside id="navigation" class="page-side col-xs-12 col-sm-3 col-lg-2 hidden-xs">
         <div class="row">
-            <nav class="page-side-nav" role="navigation">
+            <nav class="page-side-nav">
                 <div id="mainmenu" class="panel" style="border:0px" >
                     <div class="panel list-group" style="border:0px">
 <?php
