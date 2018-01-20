@@ -1252,12 +1252,6 @@ include("head.inc");
                 $(this).val("");
             }
         });
-        // open external links in a separate tab or window
-        $('#openvpn_download_links a').click(function(event) {
-            event.preventDefault();
-            var url = event.target.href;
-            window.open(url,'_blank');
-        });
     });
 </script>
 
@@ -1568,7 +1562,7 @@ if (isset($savemsg)) {
                 </tr>
                 <tr>
                   <td style="vertical-align:top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Links to OpenVPN clients");?></td>
-                  <td id="openvpn_download_links">
+                  <td>
                     <a href="http://www.sparklabs.com/viscosity/"><?= gettext("Viscosity") ?></a> - <?= gettext("Recommended client for Mac OSX and Windows") ?><br/>
                     <a href="http://openvpn.net/index.php/open-source/downloads.html"><?= gettext("OpenVPN Community Client") ?></a> - <?=gettext("Binaries for Windows, Source for other platforms.")?><br/>
                     <a href="https://play.google.com/store/apps/details?id=de.blinkt.openvpn"><?= gettext("OpenVPN For Android") ?></a> - <?=gettext("Recommended client for Android")?><br/>
