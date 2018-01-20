@@ -26,12 +26,18 @@
 */
 -->
 
-<style type="text/css">
-.panel-heading-sm{
-    height: 28px;
-    padding: 4px 10px;
-}
-</style>
+<script>
+    var sheet = document.createElement('style');
+
+    sheet.innerHTML = '\
+.panel-heading-sm {\
+    height: 28px;\
+    padding: 4px 10px;\
+}\
+';
+
+    document.body.appendChild(sheet);
+</script>
 
 <!-- nvd3 -->
 <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/nv.d3.css', ui_theme|default('opnsense'))}}" />
@@ -43,14 +49,17 @@
 <script src="/ui/js/nv.d3.min.js"></script>
 
 <!-- System Health -->
-<style>
+<script>
+    var sheet = document.createElement('style');
 
-    #chart svg {
-        height: 500px;
-    }
+    sheet.innerHTML = '\
+#chart svg {\
+    height: 500px;\
+}\
+';
 
-</style>
-
+    document.body.appendChild(sheet);
+</script>
 
 <script>
     var chart;
@@ -658,7 +667,7 @@
             <div class="panel-heading">
                 <h3 class="panel-title">
                  <span id="loading">
-                     <i id="loading" class="fa fa-spinner fa-spin"></i>
+                     <i class="fa fa-spinner fa-spin"></i>
                      <b>{{ lang._('Please wait while loading data...') }}</b>
                  </span>
                 <span id="chart_title"> </span>
@@ -687,7 +696,7 @@
                         <table class="table table-condensed table-hover table-striped">
                             <thead>
                                 <tr id="table_view_general_heading" class="active">
-                                    <!-- Dynamic data -->
+                                    <!-- Dynamic data --><th></th>
                                 </tr>
                             </thead>
                             <tbody id="table_view_general_rows">
@@ -733,7 +742,7 @@
                     <table class="table table-condensed table-hover table-striped">
                         <thead>
                         <tr id="table_view_heading" class="active">
-                            <!-- Dynamic data -->
+                            <!-- Dynamic data --><th></th>
                         </tr>
                         </thead>
                         <tbody id="table_view_rows">
