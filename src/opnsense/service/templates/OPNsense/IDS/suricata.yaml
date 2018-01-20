@@ -117,7 +117,10 @@ outputs:
 #        - files:
 #            force-magic: no   # force logging magic on all logged files
 #            force-md5: no     # force logging of md5 checksums
-#        #- drop
+        - drop:
+            alerts: yes      # log alerts that caused drops
+            flows: start     # start or all: 'start' logs only a single drop
+                             # per flow direction. All logs each dropped pkt.
 #        - ssh
 
   # alert output for use with Barnyard2
