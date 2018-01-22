@@ -209,10 +209,10 @@
 
         <!-- JQuery Tokenize (http://zellerda.com/projects/tokenize) -->
         <script type="text/javascript" src="/ui/js/jquery.tokenize.js"></script>
-        <link rel="stylesheet" type="text/css" href="/ui/css/jquery.tokenize.css" />
+        <link rel="stylesheet" type="text/css" href="/ui/themes/{{theme_name}}/build/css/jquery.tokenize.css" />
 
         <!-- Bootgrind (grid system from http://www.jquery-bootgrid.com/ )  -->
-        <link rel="stylesheet" type="text/css" href="/ui/css/jquery.bootgrid.css"/>
+        <link rel="stylesheet" type="text/css" href="/ui/themes/{{theme_name}}/build/css/jquery.bootgrid.css"/>
         <script type="text/javascript" src="/ui/js/jquery.bootgrid.js"></script>
         <script>
         /* patch translations into bootgrid library */

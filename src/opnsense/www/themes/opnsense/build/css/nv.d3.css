@@ -273,7 +273,6 @@ svg.nvd3-svg {
 
 .nvd3 text {
     font: normal 12px Arial, sans-serif;
-                    
 }
 
 .nvd3 .title {
@@ -336,7 +335,6 @@ svg.nvd3-svg {
 
 @media print {
     .nvd3 text {
-                        
         stroke-width: 0;
         fill-opacity: 1;
     }
@@ -403,7 +401,6 @@ svg.nvd3-svg {
 }
 
 .nvd3.nv-pie .nv-slice text {
-                    
     stroke: #000;
     stroke-width: 0;
 }
