@@ -105,7 +105,7 @@ include("head.inc");
 ?>
 
 <body>
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
   // delete entry
   $(".act_delete").click(function(event){

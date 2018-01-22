@@ -324,7 +324,7 @@ include("head.inc");
 ?>
 
 <body>
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     /**
      * Additional BOOTP/DHCP Options extenable table
@@ -376,7 +376,7 @@ include("head.inc");
   });
 </script>
 
-<script type="text/javascript">
+<script>
   function show_shownumbervalue() {
     $("#shownumbervaluebox").hide();
     $("#shownumbervalue").show();

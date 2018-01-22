@@ -270,14 +270,14 @@ include("head.inc");
 
 ?>
 <body>
-<script type="text/javascript" src="/javascript/wizard/autosuggest.js"></script>
-<script type="text/javascript" src="/javascript/wizard/disablekeys.js"></script>
-<script type="text/javascript" src="/javascript/wizard/suggestions.js"></script>
+<script src="/javascript/wizard/autosuggest.js"></script>
+<script src="/javascript/wizard/disablekeys.js"></script>
+<script src="/javascript/wizard/suggestions.js"></script>
 
 <?php include("fbegin.inc"); ?>
 
 <?php if($pkg['step'][$stepid]['fields']['field'] <> "") { ?>
-<script type="text/javascript">
+<script>
 //<![CDATA[
 
 function  FieldValidate(userinput,  regexp,  message)
@@ -899,7 +899,7 @@ function showchange() {
 </section>
 
 
-<script type="text/javascript">
+<script>
 //<![CDATA[
 	if (typeof ext_change != 'undefined') {
 		ext_change();
@@ -950,7 +950,7 @@ $fieldnames_array = Array();
 if($pkg['step'][$stepid]['disableallfieldsbydefault'] <> "") {
 	// create a fieldname loop that can be used with javascript
 	// hide and enable features.
-	echo "\n<script type=\"text/javascript\">\n";
+	echo "\n<script>\n";
 	echo "//<![CDATA[\n";
 	echo "function disableall() {\n";
 	foreach ($pkg['step'][$stepid]['fields']['field'] as $field) {
@@ -999,7 +999,7 @@ if($pkg['step'][$stepid]['disableallfieldsbydefault'] <> "") {
 }
 ?>
 
-<script type="text/javascript">
+<script>
 //<![CDATA[
 
 // After reload/redirect functions are not loaded, so check first.
@@ -1019,7 +1019,7 @@ if($pkg['step'][$stepid]['stepafterformdisplay'] <> "") {
 
 if($pkg['step'][$stepid]['javascriptafterformdisplay'] <> "") {
 	// handle after form display event.
-	echo "\n<script type=\"text/javascript\">\n";
+	echo "\n<script>\n";
 	echo "//<![CDATA[\n";
 	echo $pkg['step'][$stepid]['javascriptafterformdisplay'] . "\n";
 	echo "//]]>\n";

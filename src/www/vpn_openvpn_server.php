@@ -423,7 +423,7 @@ legacy_html_escape_form_data($pconfig);
 
 <body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
   // watch scroll position and set to last known on page load
   watchScrollPosition();

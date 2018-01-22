@@ -27,7 +27,7 @@
 */
 ?>
 
-<script type="text/javascript">
+<script>
   function gateways_widget_update(sender, data)
   {
       var tbody = sender.find('tbody');

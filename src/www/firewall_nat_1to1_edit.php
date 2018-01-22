@@ -167,7 +167,7 @@ include("head.inc");
 ?>
 
 <body>
-  <script type="text/javascript">
+  <script>
   $( document ).ready(function() {
 
     // select / input combination, link behaviour

@@ -533,7 +533,7 @@ if (empty($act)) {
       overflow-y: auto;
     }
   </style>
-  <script type="text/javascript">
+  <script>
   $( document ).ready(function() {
     // delete entry
     $(".act_delete").click(function(event){
@@ -631,7 +631,7 @@ if (empty($act)) {
   </script>
 
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
 //<![CDATA[
   function internalca_change() {

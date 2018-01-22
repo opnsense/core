@@ -259,7 +259,7 @@ include("head.inc");
 ?>
 
 <body>
-  <script type="text/javascript">
+  <script>
     $(document).ready(function() {
         // change type
         $("#type").change(function(){

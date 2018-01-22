@@ -116,7 +116,7 @@ legacy_html_escape_form_data($a_scrub);
 include("head.inc");
 ?>
 <body>
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
   // link delete buttons
   $(".act_delete").click(function(event){

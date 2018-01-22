@@ -95,7 +95,7 @@ class LegacyCSRF
             $buffer = preg_replace('#(<form[^>]*method\s*=\s*["\']post["\'][^>]*>)#i', '$1' . $inputtag, $buffer);
             // csrf token for Ajax type requests
             $script = "
-            <script type=\"text/javascript\">
+            <script>
               $( document ).ready(function() {
                   $.ajaxSetup({
                   'beforeSend': function(xhr) {

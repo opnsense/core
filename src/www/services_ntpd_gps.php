@@ -79,7 +79,7 @@ include("head.inc");
 
 <body>
 
-<script type="text/javascript">
+<script>
 //<![CDATA[
   $( document ).ready(function() {
     $("#gpsprefer").click(function(){

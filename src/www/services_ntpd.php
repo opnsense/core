@@ -137,7 +137,7 @@ include("head.inc");
 ?>
 <body>
 
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     $("#showstatisticsbox").click(function(event){
         $("#showstatisticsbox").parent().hide();

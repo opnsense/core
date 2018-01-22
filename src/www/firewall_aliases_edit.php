@@ -377,7 +377,7 @@ include("head.inc");
 <?php
   include("fbegin.inc");
 ?>
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     /**
      * remove host/port row or clear values on last entry

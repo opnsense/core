@@ -158,7 +158,7 @@ legacy_html_escape_form_data($pconfig);
 ?>
 
 <body>
-  <script type="text/javascript">
+  <script>
     $( document ).ready(function() {
         $("#proto").change(function(){
             if ($("#proto").val() == 'lacp') {
