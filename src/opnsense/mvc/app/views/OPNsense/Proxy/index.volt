@@ -313,7 +313,6 @@
         $('.nav-tabs a').on('shown.bs.tab', function (e) {
             history.pushState(null, null, e.target.hash);
         });
-
     });
 
 
@@ -325,19 +324,19 @@
     <li role="presentation" class="dropdown">
         <a data-toggle="dropdown" href="#" class="dropdown-toggle pull-right visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" role="button">
             <b><span class="caret"></span></b>
-            <a data-toggle="tab" onclick="$('#subtab_item_pac_rules').click();" class="visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" style="border-right:0px;"><b>{{ lang._('PAC')}}</b></a>
-            <ul class="dropdown-menu" role="menu">
-                <li>
-                    <a data-toggle="tab" id="subtab_item_pac_rules" href="#subtab_pac_rules">{{ lang._('Rules') }}</a>
-                </li>
-                <li>
-                    <a data-toggle="tab" id="subtab_item_pac_rules" href="#subtab_pac_proxies">{{ lang._('Proxies') }}</a>
-                </li>
-                <li>
-                    <a data-toggle="tab" id="subtab_item_pac_rules" href="#subtab_pac_matches">{{ lang._('Matches') }}</a>
-                </li>
-            </ul>
         </a>
+        <a data-toggle="tab" onclick="$('#subtab_item_pac_rules').click();" class="visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" style="border-right:0px;"><b>{{ lang._('PAC')}}</b></a>
+        <ul class="dropdown-menu" role="menu">
+            <li>
+                <a data-toggle="tab" id="subtab_item_pac_rules" href="#subtab_pac_rules">{{ lang._('Rules') }}</a>
+            </li>
+            <li>
+                <a data-toggle="tab" id="subtab_item_pac_rules" href="#subtab_pac_proxies">{{ lang._('Proxies') }}</a>
+            </li>
+            <li>
+                <a data-toggle="tab" id="subtab_item_pac_rules" href="#subtab_pac_matches">{{ lang._('Matches') }}</a>
+            </li>
+        </ul>
     </li>
     <li><a data-toggle="tab" href="#remote_acls"><b>{{ lang._('Remote Access Control Lists') }}</b></a></li>
 </ul>
@@ -372,8 +371,6 @@
             <thead>
                 <tr>
                     <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="6em">{{ lang._('Enabled') }}</th>
-                    <!--<th data-column-id="matches" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Matches') }}</th>
-                    <th data-column-id="proxies" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('URL') }}</th>-->
                     <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
                     <th data-column-id="commands" data-width="10em" data-formatter="commands" data-sortable="false">{{ lang._('Actions') }}</th>
                 </tr>
@@ -382,7 +379,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3"></td>
+                    <td colspan="2"></td>
                     <td>
                         <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
                         <button type="button" class="btn btn-xs btn-primary reload-pac-btn"><span class="fa fa-refresh"></span></button>
