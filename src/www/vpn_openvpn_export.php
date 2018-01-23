@@ -1563,12 +1563,12 @@ if (isset($savemsg)) {
                 <tr>
                   <td style="vertical-align:top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Links to OpenVPN clients");?></td>
                   <td>
-                    <a href="http://www.sparklabs.com/viscosity/"><?= gettext("Viscosity") ?></a> - <?= gettext("Recommended client for Mac OSX and Windows") ?><br/>
-                    <a href="http://openvpn.net/index.php/open-source/downloads.html"><?= gettext("OpenVPN Community Client") ?></a> - <?=gettext("Binaries for Windows, Source for other platforms.")?><br/>
-                    <a href="https://play.google.com/store/apps/details?id=de.blinkt.openvpn"><?= gettext("OpenVPN For Android") ?></a> - <?=gettext("Recommended client for Android")?><br/>
-                    <a href="http://www.featvpn.com/"><?= gettext("FEAT VPN For Android") ?></a> - <?=gettext("For older versions of Android")?><br/>
-                    <?= gettext("OpenVPN Connect") ?>: <a href="https://play.google.com/store/apps/details?id=net.openvpn.openvpn"><?=gettext("Android (Google Play)")?></a> or <a href="https://itunes.apple.com/us/app/openvpn-connect/id590379981"><?=gettext("iOS (App Store)")?></a> - <?= gettext("Recommended client for iOS") ?><br/>
-                    <a href="https://tunnelblick.net"><?= gettext("Tunnelblick") ?></a> - <?= gettext("Free client for OSX") ?>
+                    <a href="http://www.sparklabs.com/viscosity/" target="_blank"><?= gettext("Viscosity") ?></a> - <?= gettext("Recommended client for Mac OSX and Windows") ?><br/>
+                    <a href="http://openvpn.net/index.php/open-source/downloads.html" target="_blank"><?= gettext("OpenVPN Community Client") ?></a> - <?=gettext("Binaries for Windows, Source for other platforms.")?><br/>
+                    <a href="https://play.google.com/store/apps/details?id=de.blinkt.openvpn" target="_blank"><?= gettext("OpenVPN For Android") ?></a> - <?=gettext("Recommended client for Android")?><br/>
+                    <a href="http://www.featvpn.com/" target="_blank"><?= gettext("FEAT VPN For Android") ?></a> - <?=gettext("For older versions of Android")?><br/>
+                    <?= gettext("OpenVPN Connect") ?>: <a href="https://play.google.com/store/apps/details?id=net.openvpn.openvpn" target="_blank"><?=gettext("Android (Google Play)")?></a> or <a href="https://itunes.apple.com/us/app/openvpn-connect/id590379981" target="_blank"><?=gettext("iOS (App Store)")?></a> - <?= gettext("Recommended client for iOS") ?><br/>
+                    <a href="https://tunnelblick.net" target="_blank"><?= gettext("Tunnelblick") ?></a> - <?= gettext("Free client for OSX") ?>
                   </td>
                 </tr>
               </table>
