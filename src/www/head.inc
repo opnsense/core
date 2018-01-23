@@ -92,10 +92,10 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 
     <!-- nvd3 -->
-    <link rel="stylesheet" href="/ui/css/nv.d3.css">
+    <link rel="stylesheet" href="/ui/themes/<?= $themename ?>/build/css/nv.d3.css">
 
     <!-- datepicker css -->
-    <link  href="/ui/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+    <link  href="/ui/themes/<?= $themename ?>/build/css/bootstrap-datepicker3.min.css" rel="stylesheet">
 
     <!-- JQuery -->
     <script src="/ui/js/jquery-3.2.1.min.js"></script>
