@@ -73,7 +73,13 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
 ?>
 
 <script>
+    var firewall_logs_widget_updater;
     $( document ).ready(function() {
+
+        // prevent running again on subsequent document ready events
+        if (firewall_logs_widget_updater) return;
+        firewall_logs_widget_updater = true;
+
         // needed to display the widget settings menu
         $("#log-configure").removeClass("disabled");
         // icons
@@ -163,7 +169,8 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                 $("#filter-log-entries > tbody > tr").show();
             });
             // schedule next fetch
-            setTimeout(fetch_log, 2000);
+            clearTimeout(firewall_logs_widget_updater);
+            firewall_logs_widget_updater = setTimeout(fetch_log, 2000);
         }
 
         fetch_log();
