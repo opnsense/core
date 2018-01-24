@@ -5475,8 +5475,15 @@ html, body {
   font-family: 'SourceSansProRegular'; }
 
 body {
-  touch-action: manipulation;
   min-width: 320px; }
+
+/* Eliminate 300 ms tap delay only on user action elements, classes, and ID's. */
+/* This permits double tab zoom to remain enabled elsewhere.  */
+a, button, input, select, label, *[onclick], *[data-toggle],
+a *, button *, input *, select *, label *, *[onclick] *, *[data-toggle] *,
+.btn, .fa, .glyphicon, .fa-toggle-off, .fa-toggle-on, .ipsec-tab,
+#show_all_help_page {
+  touch-action: manipulation; }
 
 .widget-sort-handle {
   touch-action: none; }
