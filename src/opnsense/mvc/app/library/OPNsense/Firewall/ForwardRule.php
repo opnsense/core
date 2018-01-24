@@ -121,6 +121,10 @@ class ForwardRule extends Rule
                     }
                 } elseif (Util::isPort($tmp['local-port'])) {
                     $tmp['localport'] = $tmp['local-port'];
+                    if (!empty($tmp['to_port']) && strpos($tmp['to_port'], ':') !== false) {
+                        $to_ports = explode(':', $tmp['to_port']);
+                        $tmp['localport'] .= ':' . ($tmp['local-port'] + $to_ports[1] - $to_ports[0]);
+                    }
                 } else {
                     $tmp['disabled'] = true;
                 }
