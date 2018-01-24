@@ -129,6 +129,9 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
 
                                         }
                                         break;
+                                    case 'time':
+                                        log_td.text(record[column_name].replace(/:[0-9]{2}$/, ''));
+                                        break;
                                     case 'interface':
                                         if (interface_descriptions[record[column_name]] != undefined) {
                                             log_td.text(interface_descriptions[record[column_name]]);
@@ -136,7 +139,10 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                                             log_td.text(record[column_name]);
                                         }
                                         break;
-                                    case 'address':
+                                    case 'source_address':
+                                        log_td.text(record[column_name]);
+                                        break;
+                                    case 'destination_address':
                                         log_td.text(record[column_name]);
                                         if (record[column_name+'port'] != undefined) {
                                             log_td.text(log_td.text()+':'+record[column_name+'port']);
@@ -186,9 +192,9 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
           </tr>
           <tr>
             <td>
-              <input id="actpass"   name="actpass"   type="checkbox" value="Pass"   <?=in_array('Pass', $nentriesacts) ? "checked=\"checked\"" : "";?>/> Pass
-              <input id="actblock"  name="actblock"  type="checkbox" value="Block"  <?=in_array('Block', $nentriesacts) ? "checked=\"checked\"" : "";?>/> Block
-              <input id="actreject" name="actreject" type="checkbox" value="Reject" <?=in_array('Reject', $nentriesacts) ? "checked=\"checked\"": "";?>/> Reject
+              <input id="actpass"   name="actpass"   type="checkbox" value="Pass"   <?=in_array('Pass', $nentriesacts) ? "checked=\"checked\"" : "";?>/><label for="actpass" style="padding-left: .4em; margin-right: 1.5em">Pass</label>
+              <input id="actblock"  name="actblock"  type="checkbox" value="Block"  <?=in_array('Block', $nentriesacts) ? "checked=\"checked\"" : "";?>/><label for="actblock" style="padding-left: .4em; margin-right: 1.5em">Block</label>
+              <input id="actreject" name="actreject" type="checkbox" value="Reject" <?=in_array('Reject', $nentriesacts) ? "checked=\"checked\"" : "";?>/><label for="actreject" style="padding-left: .4em; margin-right: 1.5em">Reject</label>
             </td>
           </tr>
           <tr>
@@ -220,14 +226,14 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
   </form>
 </div>
 
-<table class="table table-striped"  id="filter-log-entries">
+<table class="table table-striped table-condensed" id="filter-log-entries">
   <thead>
     <tr>
-      <th data-column-id="action" data-type="icon"><?=gettext("Act");?></th>
-      <th data-column-id="__timestamp__" data-type="string"><?=gettext("Time");?></th>
+      <th data-column-id="action" data-type="icon" class="text-center"><?=gettext("Act");?></th>
+      <th data-column-id="__timestamp__" data-type="time"><?=gettext("Time");?></th>
       <th data-column-id="interface" data-type="interface"><?=gettext("Interface");?></th>
-      <th data-column-id="src" data-type="address"><?=gettext("Source");?></th>
-      <th data-column-id="dst" data-type="address"><?=gettext("Destination");?></th>
+      <th data-column-id="src" data-type="source_address"><?=gettext("Source");?></th>
+      <th data-column-id="dst" data-type="destination_address"><?=gettext("Destination");?></th>
     </tr>
   </thead>
   <tbody>
