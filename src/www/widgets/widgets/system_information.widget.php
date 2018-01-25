@@ -135,7 +135,7 @@ require_once("system.inc");
   /**
    * page setup
    */
-  $( document ).ready(function() {
+  $(window).load(function() {
       // draw cpu graph
       nv.addGraph(function() {
           system_information_widget_cpu_chart = nv.models.lineChart()

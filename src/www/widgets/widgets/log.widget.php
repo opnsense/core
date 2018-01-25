@@ -73,7 +73,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
 ?>
 
 <script>
-    $( document ).ready(function() {
+    $(window).load(function() {
         // needed to display the widget settings menu
         $("#log-configure").removeClass("disabled");
         // icons
@@ -161,9 +161,9 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                 }
                 $("#filter-log-entries > tbody > tr:gt("+(parseInt($("#filterlogentries").val())-1)+")").remove();
                 $("#filter-log-entries > tbody > tr").show();
+                // schedule next fetch
             });
-            // schedule next fetch
-            setTimeout(fetch_log, 2000);
+            setTimeout(fetch_log, 5000);
         }
 
         fetch_log();
