@@ -478,25 +478,27 @@ function clockUpdate()
 
 
 <script>
-  function ntp_getstatus() {
-    scroll(0,0);
-    var url = "/widgets/widgets/ntp_status.widget.php";
-    var pars = 'updateme=yes';
-    jQuery.ajax(
-      url,
-      {
-        type: 'get',
-        data: pars,
-        complete: ntpstatuscallback
-      });
-    // Refresh the status every 1 minute
-    setTimeout('ntp_getstatus()', 1*60*1000);
-  }
-  function ntpstatuscallback(transport) {
-    // The server returns formatted html code
-    var responseStringNtp = transport.responseText
-    jQuery('#ntpstatus').prop('innerHTML',responseStringNtp);
-  }
-  // Do the first status check 1 second after the dashboard opens
-  setTimeout('ntp_getstatus()', 1000);
+    $(window).load(function() {
+        function ntp_getstatus() {
+          scroll(0,0);
+          var url = "/widgets/widgets/ntp_status.widget.php";
+          var pars = 'updateme=yes';
+          jQuery.ajax(
+            url,
+            {
+              type: 'get',
+              data: pars,
+              complete: ntpstatuscallback
+            });
+          // Refresh the status every 1 minute
+          setTimeout('ntp_getstatus()', 1*60*1000);
+        }
+        function ntpstatuscallback(transport) {
+          // The server returns formatted html code
+          var responseStringNtp = transport.responseText
+          jQuery('#ntpstatus').prop('innerHTML',responseStringNtp);
+        }
+        // Do the first status check 1 second after the dashboard opens
+        setTimeout('ntp_getstatus()', 1000);
+    });
 </script>

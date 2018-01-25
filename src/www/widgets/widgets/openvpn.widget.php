@@ -35,7 +35,7 @@ $clients = openvpn_get_active_clients();
 
 ?>
 <script>
-    $( document ).ready(function() {
+    $(window).load(function() {
         // link kill buttons
         $(".act_kill_client").click(function(event){
             event.preventDefault();
