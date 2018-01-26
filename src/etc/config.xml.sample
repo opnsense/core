@@ -209,7 +209,7 @@
     <nextuid>2000</nextuid>
     <nextgid>2000</nextgid>
     <timezone>Etc/UTC</timezone>
-    <timeservers>2.opnsense.pool.ntp.org</timeservers>
+    <timeservers>0.opnsense.pool.ntp.org 1.opnsense.pool.ntp.org 2.opnsense.pool.ntp.org 3.opnsense.pool.ntp.org</timeservers>
     <webgui>
       <protocol>https</protocol>
     </webgui>
@@ -358,6 +358,9 @@
       </options>
     </monitor_type>
   </load_balancer>
+  <ntpd>
+    <prefer>0.opnsense.pool.ntp.org</prefer>
+  </ntpd>
   <widgets>
     <sequence>system_information-container:00000000-col3:show,services_status-container:00000001-col4:show,gateways-container:00000002-col4:show,interface_list-container:00000003-col4:show</sequence>
     <column_count>2</column_count>
