@@ -33,19 +33,9 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
 <!--[if IE 9 ]><html lang="<?=system_get_language_code();?>" class="ie ie9 lte9 no-js"><![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--><html lang="<?=system_get_language_code();?>" class="no-js"><!--<![endif]-->
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <meta name="robots" content="noindex, nofollow, noodp, noydir" />
-    <meta name="keywords" content="" />
-    <meta name="description" content="" />
-    <meta name="copyright" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<?php create_head_base_content($pagetitle, $themename); ?>
 
-    <title><?= $pagetitle ?></title>
-
-    <!-- include (theme) style -->
-    <link href="/ui/themes/<?= $themename ?>/build/css/main.css" rel="stylesheet">
 
     <!-- TODO: move to theme style -->
     <style>
@@ -76,9 +66,6 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
         position: absolute;
       }
     </style>
-
-    <!-- Favicon -->
-    <link href="/ui/themes/<?= $themename ?>/build/images/favicon.png" rel="shortcut icon">
 
     <!-- Stylesheet for fancy select/dropdown -->
     <link rel="stylesheet" type="text/css" href="<?=get_themed_filename("/css/bootstrap-select.css");?>">

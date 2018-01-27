@@ -307,6 +307,27 @@ function session_auth(&$Login_Error)
     return true;
 }
 
+function create_head_base_content($page_title, $themename) {
+?>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="robots" content="noindex, nofollow, noodp, noydir" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="copyright" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+
+    <title><?=$page_title?></title>
+
+    <!-- include (theme) style -->
+    <link href="/ui/themes/<?= $themename ?>/build/css/main.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link href="/ui/themes/<?= $themename ?>/build/images/favicon.png" rel="shortcut icon">
+<?php
+}
+
 /* XXX spagehtti code :( */
 $Login_Error = false;
 
@@ -355,19 +376,7 @@ function display_error_form($http_code, $desc)
 <!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
   <head>
 
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-    <meta name="robots" content="noindex, nofollow, noodp, noydir" />
-    <meta name="keywords" content="" />
-    <meta name="description" content="" />
-    <meta name="copyright" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-
-    <title><?=$http_code?></title>
-
-    <link href="/ui/themes/<?= $themename ?>/build/css/main.css" rel="stylesheet">
-    <link href="/ui/themes/<?= $themename ?>/build/images/favicon.png" rel="shortcut icon">
+<?php create_head_base_content($http_code, $themename); ?>
 
     <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
   </head>
@@ -423,19 +432,8 @@ function display_login_form($Login_Error)
 <!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
   <head>
 
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<?php create_head_base_content(gettext("Login"), $themename); ?>
 
-    <meta name="robots" content="noindex, nofollow, noodp, noydir" />
-    <meta name="keywords" content="" />
-    <meta name="description" content="" />
-    <meta name="copyright" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-
-    <title><?=gettext("Login"); ?></title>
-
-    <link href="/ui/themes/<?= $themename ?>/build/css/main.css" rel="stylesheet">
-    <link href="/ui/themes/<?= $themename ?>/build/images/favicon.png" rel="shortcut icon">
 
     <script src="/ui/js/jquery-3.2.1.min.js"></script>
     <script src="/ui/js/jquery-migrate-3.0.1.min.js"></script>
