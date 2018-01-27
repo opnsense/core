@@ -34,45 +34,39 @@
       data.map(function(gateway) {
           var tr_content = [];
           var tr_id = "gateways_widget_gw_" + gateway['name'];
+          var status_color = '';
           if (tbody.find("#"+tr_id).length == 0) {
               // add new gateway
               tr_content.push('<tr id="'+tr_id+'">');
               tr_content.push('<td><small><strong>'+gateway['name']+'</strong><br/>'+gateway['address']+'</small></td>');
               tr_content.push('<td>'+gateway['delay']+'</td>');
               tr_content.push('<td>'+gateway['loss']+'</td>');
-              tr_content.push('<td><font>'+gateway['status_translated']+'</font></td>');
+              tr_content.push('<td><span>'+gateway['status_translated']+'</span></td>');
               tr_content.push('</tr>');
               tbody.append(tr_content.join(''));
           } else {
               // update existing gateway
               $("#"+tr_id+" > td:eq(1)").html(gateway['delay']);
               $("#"+tr_id+" > td:eq(2)").html(gateway['loss']);
-              $("#"+tr_id+" > td:eq(3)").html('<font>'+gateway['status_translated']+'</font>');
+              $("#"+tr_id+" > td:eq(3)").html('<span>'+gateway['status_translated']+'</span>');
           }
           // set color on status text
           switch (gateway['status']) {
             case 'force_down':
-              status_color = 'red';
-              break;
             case 'down':
-              status_color = 'red';
+              status_color = 'danger';
               break;
             case 'loss':
-              status_color = 'purple';
-              break;
             case 'delay':
-              status_color = 'purple';
+              status_color = 'warning';
               break;
             case 'none':
-              status_color = 'green';
-              break;
-            default:
-              status_color = '';
+              status_color = 'success';
               break;
           }
-          $("#"+tr_id+" > td:eq(3) > font").removeAttr('color');
+          $("#"+tr_id+" > td:eq(3) > span").removeClass("label-danger label-warning label-success label");
           if (status_color != '') {
-            $("#"+tr_id+" > td:eq(3) > font").attr('color', status_color);
+            $("#"+tr_id+" > td:eq(3) > span").addClass("label label-" + status_color);
           }
       });
   }
