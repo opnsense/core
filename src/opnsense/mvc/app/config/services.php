@@ -10,6 +10,26 @@ use OPNsense\Core\Config;
 use OPNsense\Core\Routing;
 
 /**
+ * search for a themed filename or return distribution standard
+ * @param string $url relative url
+ * @param array $theme theme name
+ * @return string
+ */
+function view_fetch_themed_filename($url, $theme) {
+    $search_pattern = array(
+        "/themes/{$theme}/build/",
+        "/"
+    );
+    foreach ($search_pattern as $pattern) {
+        $filename = "/usr/local/opnsense/www{$pattern}{$url}";
+        if (file_exists($filename)) {
+            return str_replace("//", "/", "/ui{$pattern}{$url}");
+        }
+    }
+    return $url; // not found, return source
+}
+
+/**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
  */
 $di = new FactoryDefault();
@@ -43,11 +63,7 @@ $di->set('view', function () use ($config) {
                 'compiledSeparator' => '_'
             ));
             // register additional volt template functions
-            $volt->getCompiler()->addFunction('javascript_include_when_exists', function ($local_url) {
-                $chk_path = "str_replace('/ui/','/usr/local/opnsense/www/',".$local_url.")";
-                $js_tag = "'<script src=\"'.$local_url.'\"></script>'";
-                return "file_exists(".$chk_path.") ? ".$js_tag." :''";
-            });
+            $volt->getCompiler()->addFunction('theme_file_or_default', view_fetch_themed_filename);
 
             return $volt;
         },

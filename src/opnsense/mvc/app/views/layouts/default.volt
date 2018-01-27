@@ -236,8 +236,7 @@
         <script src="/ui/js/opnsense.js"></script>
         <script src="/ui/js/opnsense_ui.js"></script>
         <script src="/ui/js/opnsense_bootgrid_plugin.js"></script>
-        {{javascript_include_when_exists('/ui/themes/' ~ theme_name ~ '/build/js/theme.js')}}
-
+        <script src="{{theme_file_or_default('/js/theme.js', theme_name)}}"></script>
   </head>
   <body>
   <header class="page-head">
