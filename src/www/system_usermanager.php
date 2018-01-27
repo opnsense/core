@@ -361,8 +361,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_user[] = $userent;
             }
 
-            local_user_set($userent);
             local_user_set_groups($userent, $pconfig['groups']);
+            local_user_set($userent);
             write_config();
 
             if (!empty($pconfig['chkNewCert'])) {
