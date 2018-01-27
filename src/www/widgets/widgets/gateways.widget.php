@@ -64,9 +64,7 @@
               status_color = 'success';
               break;
           }
-          console.log($("#"+tr_id+" > td:eq(3) > span"))
           $("#"+tr_id+" > td:eq(3) > span").removeClass("label-danger label-warning label-success label");
-          console.log(status_color);
           if (status_color != '') {
             $("#"+tr_id+" > td:eq(3) > span").addClass("label label-" + status_color);
           }
