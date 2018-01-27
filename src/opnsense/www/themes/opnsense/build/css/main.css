@@ -5478,6 +5478,9 @@ body {
   touch-action: manipulation;
   min-width: 320px; }
 
+.widget_sort_handle {
+  touch-action: none; }
+
 .page-head {
   background: #3C3C3B;
   top: 0;
