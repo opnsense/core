@@ -15,7 +15,8 @@ use OPNsense\Core\Routing;
  * @param array $theme theme name
  * @return string
  */
-function view_fetch_themed_filename($url, $theme) {
+function view_fetch_themed_filename($url, $theme)
+{
     $search_pattern = array(
         "/themes/{$theme}/build/",
         "/"
