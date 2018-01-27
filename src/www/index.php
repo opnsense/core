@@ -275,7 +275,7 @@ include("fbegin.inc");?>
 
       // sortable widgets
       $(".dashboard_grid_column").sortable({
-        handle: '.widget_sort_handle',
+        handle: '.widget-sort-handle',
         group: 'dashboard_grid_column',
         itemSelector: '.widgetdiv',
         containerSelector: '.dashboard_grid_column',
@@ -392,7 +392,7 @@ include("fbegin.inc");?>
                     </div>
                   </li>
                 </ul>
-                <div class="container-fluid widget_sort_handle">
+                <div class="container-fluid widget-sort-handle">
                 </div>
               </header>
               <div class="content-box-main collapse in" id="<?= $widgetItem['name'] ?>-container" style="display:<?= $mindiv ?>">
