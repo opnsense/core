@@ -104,7 +104,7 @@ include("head.inc");
                         $gateway_label_class = "success";  // green
                     } else {
                         $online = gettext("Pending");
-                        $gateway_label_class = "info";  // blue (no other color available in bootstrap 3 - its ok but would prefer gray)
+                        $gateway_label_class = "default";  // gray
                     }
 ?>
                       <div class="label label-<?= $gateway_label_class ?>">
