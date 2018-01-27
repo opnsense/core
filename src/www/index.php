@@ -276,8 +276,6 @@ include("fbegin.inc");?>
       // sortable widgets
       $(".dashboard_grid_column").sortable({
         handle: '.widget_sort_handle',
-        delay: 50,
-        distance: 2,
         group: 'dashboard_grid_column',
         itemSelector: '.widgetdiv',
         containerSelector: '.dashboard_grid_column',
