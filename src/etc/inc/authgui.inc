@@ -373,7 +373,7 @@ function display_error_form($http_code, $desc)
   </head>
   <body class="page-login">
     <div id="errordesc">
-      <h1>&nbsp</h1>
+      <h1>&nbsp;</h1>
       <a href="/index.php?logout">
       <p id="errortext" style="vertical-align: middle; text-align: center;">
         <span style="color: #000000; font-weight: bold;">
