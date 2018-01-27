@@ -89,9 +89,9 @@ function geoip_countries()
     foreach (explode("\n", file_get_contents('/usr/local/opnsense/contrib/tzdata/iso3166.tab')) as $line) {
         $line = trim($line);
         if (strlen($line) > 3 && substr($line, 0, 1) != '#') {
-          $code = substr($line, 0, 2);
-          $name = trim(substr($line, 2, 9999));
-          $result[$code] = $name;
+            $code = substr($line, 0, 2);
+            $name = trim(substr($line, 2, 9999));
+            $result[$code] = $name;
         }
     }
     uasort($result, function($a, $b) {return strcasecmp($a, $b);});
@@ -112,7 +112,9 @@ function geoip_regions()
         if (empty($line[2]) || strpos($line[2], '/') === false) {
             continue;
         }
-        $result[$line[0]] = explode('/', $line[2])[0];
+        if (empty($result[$line[0]])) {
+            $result[$line[0]] = explode('/', $line[2])[0];
+        }
     }
     return $result;
 }
