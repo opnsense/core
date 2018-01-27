@@ -157,7 +157,8 @@ function openssh_configure_do($verbose = false, $interface = '')
     $sshconf .= "UseDNS no\n";
     $sshconf .= "X11Forwarding no\n";
     $sshconf .= "PubkeyAuthentication yes\n";
-    $sshconf .= "Subsystem\tsftp\tinternal-sftp\n";
+    $sshconf .= "Subsystem sftp internal-sftp\n";
+    $sshconf .= "AllowGroups wheel\n";
     if (isset($sshcfg['permitrootlogin'])) {
         $sshconf .= "PermitRootLogin yes\n";
     } else {
