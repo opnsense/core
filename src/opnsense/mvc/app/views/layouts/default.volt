@@ -34,10 +34,10 @@
     <link href="/ui/themes/{{theme_name}}/build/images/favicon.png" rel="shortcut icon">
 
     <!-- Stylesheet for fancy select/dropdown -->
-    <link rel="stylesheet" type="text/css" href="/ui/themes/{{theme_name}}/build/css/bootstrap-select.css">
+    <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/bootstrap-select.css', theme_name)}}">
 
     <!-- bootstrap dialog -->
-    <link href="/ui/themes/{{theme_name}}/build/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/bootstrap-dialog.css', theme_name)}}">
 
     <!-- Font awesome -->
     <link rel="stylesheet" href="/ui/css/font-awesome.min.css">
@@ -209,10 +209,10 @@
 
         <!-- JQuery Tokenize (http://zellerda.com/projects/tokenize) -->
         <script src="/ui/js/jquery.tokenize.js"></script>
-        <link rel="stylesheet" type="text/css" href="/ui/css/jquery.tokenize.css" />
+        <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/jquery.tokenize.css', theme_name)}}" />
 
         <!-- Bootgrind (grid system from http://www.jquery-bootgrid.com/ )  -->
-        <link rel="stylesheet" type="text/css" href="/ui/css/jquery.bootgrid.css"/>
+        <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/jquery.bootgrid.css', theme_name)}}" />
         <script src="/ui/js/jquery.bootgrid.js"></script>
         <script>
         /* patch translations into bootgrid library */
