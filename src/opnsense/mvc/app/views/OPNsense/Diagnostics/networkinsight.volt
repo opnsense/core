@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 </style>
 
 <!-- nvd3 -->
-<link rel="stylesheet" href="/ui/css/nv.d3.css">
+<link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/nv.d3.css', ui_theme|default('opnsense'))}}" />
 
 <!-- d3 -->
 <script src="/ui/js/d3.min.js"></script>
