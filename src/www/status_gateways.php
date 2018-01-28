@@ -85,29 +85,29 @@ include("head.inc");
                         $status = $gateways_status[$gname];
                         if (stristr($status['status'], "force_down")) {
                             $online = gettext("Offline (forced)");
-                            $bgcolor = "#F08080";  // lightcoral
+                            $gateway_label_class = "danger";  // red
                         } elseif (stristr($status['status'], "down")) {
                             $online = gettext("Offline");
-                            $bgcolor = "#F08080";  // lightcoral
+                            $gateway_label_class = "danger";  // red
                         } elseif (stristr($status['status'], "loss")) {
                             $online = gettext("Warning, Packetloss").': '.$status['loss'];
-                            $bgcolor = "#F0E68C";  // khaki
+                            $gateway_label_class = "warning";  // yellow
                         } elseif (stristr($status['status'], "delay")) {
                             $online = gettext("Warning, Latency").': '.$status['delay'];
-                            $bgcolor = "#F0E68C";  // khaki
+                            $gateway_label_class = "waning";  // yellow
                         } elseif ($status['status'] == "none") {
                             $online = gettext("Online");
-                            $bgcolor = "#90EE90";  // lightgreen
+                            $gateway_label_class = "success";  // green
                         }
                     } else if (isset($gateway['monitor_disable'])) {
                         $online = gettext("Online");
-                        $bgcolor = "#90EE90";  // lightgreen
+                        $gateway_label_class = "success";  // green
                     } else {
                         $online = gettext("Pending");
-                        $bgcolor = "#D3D3D3";  // lightgray
+                        $gateway_label_class = "default";  // gray
                     }
 ?>
-                      <div style="background: <?=$bgcolor;?>">
+                      <div class="label label-<?= $gateway_label_class ?>">
                         <i class="fa fa-globe"></i>
                         <?=$online;?>
                       </div>
