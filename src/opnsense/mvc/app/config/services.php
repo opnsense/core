@@ -64,7 +64,7 @@ $di->set('view', function () use ($config) {
                 'compiledSeparator' => '_'
             ));
             // register additional volt template functions
-            $volt->getCompiler()->addFunction('theme_file_or_default', view_fetch_themed_filename);
+            $volt->getCompiler()->addFunction('theme_file_or_default', 'view_fetch_themed_filename');
 
             return $volt;
         },
