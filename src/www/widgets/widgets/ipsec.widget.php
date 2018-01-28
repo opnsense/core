@@ -76,8 +76,8 @@ if (isset($config['ipsec']['phase1'])) {
 if (isset($config['ipsec']['phase2'])) {
 ?>
 <script>
-    $(window).load(function() {
-        $(".ipsec-tab").click(function(){
+    $(document).ready(function() {
+        $(".ipsec-tab").unbind('click').click(function(){
             $(".ipsec-tab").css('background-color', '#777777');
             $(".ipsec-tab").css('color', 'white');
             $(this).css('background-color', '#EEEEEE');
