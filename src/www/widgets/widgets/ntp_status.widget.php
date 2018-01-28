@@ -491,7 +491,7 @@ function clockUpdate()
               complete: ntpstatuscallback
             });
           // Refresh the status every 1 minute
-          setTimeout('ntp_getstatus()', 1*60*1000);
+          setTimeout(ntp_getstatus, 1*60*1000);
         }
         function ntpstatuscallback(transport) {
           // The server returns formatted html code
@@ -499,6 +499,6 @@ function clockUpdate()
           jQuery('#ntpstatus').prop('innerHTML',responseStringNtp);
         }
         // Do the first status check 1 second after the dashboard opens
-        setTimeout('ntp_getstatus()', 1000);
+        setTimeout(ntp_getstatus, 1000);
     });
 </script>
