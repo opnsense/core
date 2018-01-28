@@ -85,26 +85,26 @@ include("head.inc");
                         $status = $gateways_status[$gname];
                         if (stristr($status['status'], "force_down")) {
                             $online = gettext("Offline (forced)");
-                            $gateway_label_class = "danger";  // red
+                            $gateway_label_class = 'danger';
                         } elseif (stristr($status['status'], "down")) {
                             $online = gettext("Offline");
-                            $gateway_label_class = "danger";  // red
+                            $gateway_label_class = 'danger';
                         } elseif (stristr($status['status'], "loss")) {
                             $online = gettext("Warning, Packetloss").': '.$status['loss'];
-                            $gateway_label_class = "warning";  // yellow
+                            $gateway_label_class = 'warning';
                         } elseif (stristr($status['status'], "delay")) {
                             $online = gettext("Warning, Latency").': '.$status['delay'];
-                            $gateway_label_class = "waning";  // yellow
+                            $gateway_label_class = 'waning';
                         } elseif ($status['status'] == "none") {
                             $online = gettext("Online");
-                            $gateway_label_class = "success";  // green
+                            $gateway_label_class = 'success';
                         }
                     } else if (isset($gateway['monitor_disable'])) {
                         $online = gettext("Online");
-                        $gateway_label_class = "success";  // green
+                        $gateway_label_class = 'success';
                     } else {
                         $online = gettext("Pending");
-                        $gateway_label_class = "default";  // gray
+                        $gateway_label_class = 'default';
                     }
 ?>
                       <div class="label label-<?= $gateway_label_class ?>">
