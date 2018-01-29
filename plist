@@ -323,6 +323,7 @@
 /usr/local/opnsense/contrib/simplepie/phpunit.xml.dist
 /usr/local/opnsense/contrib/tzdata/iso3166.tab
 /usr/local/opnsense/contrib/tzdata/zone.tab
+/usr/local/opnsense/firmware-message
 /usr/local/opnsense/firmware-product
 /usr/local/opnsense/firmware-upgrade
 /usr/local/opnsense/mvc/app/cache/README
