@@ -105,7 +105,7 @@ $interface_names= array();
 // add this hosts ips
 foreach ($config['interfaces'] as $intf => $intfdata) {
     if (isset($intfdata['ipaddr']) && $intfdata['ipaddr'] != 'dhcp') {
-        $interface_names[$intfdata['ipaddr']] = (!empty($intfdata['descr']) ? $intfdata['descr'] : $intf ) . " " . gettext("address");
+        $interface_names[$intfdata['ipaddr']] = sprintf(gettext('%s address'), !empty($intfdata['descr']) ? $intfdata['descr'] : $intf );
     }
 }
 
