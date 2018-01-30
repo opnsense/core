@@ -115,9 +115,15 @@ class ForwardRule extends Rule
                     // We will keep this for backwards compatibility, although the alias use is very confusing.
                     // Because the target can only be one address or range, we will just use the first one found
                     // in the alias.... confusing.
-                    $tmp_port = Util::getPortAlias($tmp['local-port']);
-                    if (!empty($tmp_port)) {
-                        $tmp['localport'] = $tmp_port[0];
+                    if ("$".$tmp['local-port'] == $tmp['to_port']) {
+                        // destination port alias matches target port, we should skip the target and let pf handle it
+                        $tmp['localport']  = "";
+                    } else {
+                        // pick the first port (backwards compatibility)
+                        $tmp_port = Util::getPortAlias($tmp['local-port']);
+                        if (!empty($tmp_port)) {
+                            $tmp['localport'] = $tmp_port[0];
+                        }
                     }
                 } elseif (Util::isPort($tmp['local-port'])) {
                     $tmp['localport'] = $tmp['local-port'];
