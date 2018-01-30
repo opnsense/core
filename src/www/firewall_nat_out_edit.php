@@ -226,7 +226,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // a bit vague behaviour in "target" and "targetip", if a custom net is given
             // the backend code wants target to be filled with "other-subnet".
             // if any other known net is given, target is used to provide the actual address....
-            // -- can't remove this behaviour now without breaking old confid, so let's reimplement
+            // -- can't remove this behaviour now without breaking old config, so let's reimplement
             $natent['target'] = 'other-subnet';
             $natent['targetip'] = trim($pconfig['targetip']);
             $natent['targetip_subnet'] = $pconfig['targetip_subnet'];
