@@ -35,6 +35,8 @@ require_once("filter.inc");
 require_once("system.inc");
 require_once("services.inc");
 
+$a_group = &config_read_array('system', 'group');
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['webguiinterfaces'] = !empty($config['system']['webgui']['interfaces']) ? explode(',', $config['system']['webgui']['interfaces']) : array();
@@ -57,7 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enablesshd'] = $config['system']['ssh']['enabled'];
     $pconfig['sshport'] = $config['system']['ssh']['port'];
     $pconfig['sshinterfaces'] = !empty($config['system']['ssh']['interfaces']) ? explode(',', $config['system']['ssh']['interfaces']) : array();
-    $pconfig['passwordauth'] = isset($config['system']['ssh']['passwordauth']);
+    /* XXX listtag "fun" */
+    $pconfig['sshlogingroup'] = !empty($config['system']['ssh']['group'][0]) ? $config['system']['ssh']['group'][0] : null;
+    $pconfig['sshpasswordauth'] = isset($config['system']['ssh']['passwordauth']);
     $pconfig['sshdpermitrootlogin'] = isset($config['system']['ssh']['permitrootlogin']);
     $pconfig['quietlogin'] = isset($config['system']['webgui']['quietlogin']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -187,7 +191,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['ssh']['enabled']);
         }
 
-        if (!empty($pconfig['passwordauth'])) {
+        if (!empty($pconfig['sshlogingroup'])) {
+            $config['system']['ssh']['group'] = $pconfig['sshlogingroup'];
+        } elseif (isset($config['system']['ssh']['group'])) {
+            unset($config['system']['ssh']['group']);
+        }
+
+        if (!empty($pconfig['sshpasswordauth'])) {
             $config['system']['ssh']['passwordauth'] = true;
         } elseif (isset($config['system']['ssh']['passwordauth'])) {
             unset($config['system']['ssh']['passwordauth']);
@@ -246,7 +256,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-
 $a_cert = isset($config['cert']) ? $config['cert'] : array();
 $interfaces = get_configured_interface_with_descr();
 
@@ -258,12 +267,13 @@ if (count($a_cert)) {
 if (empty($pconfig['webguiproto']) || !$certs_available) {
     $pconfig['webguiproto'] = "http";
 }
+
 legacy_html_escape_form_data($pconfig);
+legacy_html_escape_form_data($a_group);
 
 include("head.inc");
 
 ?>
-
 <body>
 <?php include("fbegin.inc"); ?>
 <script>
@@ -413,7 +423,7 @@ $(document).ready(function() {
                 <tr class="ssl_opts">
                   <td><a id="help_for_sslciphers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSL Ciphers"); ?></td>
                   <td>
-                      <select name="ssl-ciphers[]" class="selectpicker"  multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
+                      <select name="ssl-ciphers[]" class="formselect selectpicker"  multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
 <?php
                       $ciphers = json_decode(configd_run("system ssl ciphers"), true);
                       if ($ciphers == null) {
@@ -515,7 +525,7 @@ $(document).ready(function() {
                 <tr>
                   <td><a id="help_for_webguiinterfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Listen Interfaces') ?></td>
                     <td>
-                    <select id="webguiinterface" name="webguiinterfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
+                    <select id="webguiinterface" name="webguiinterfaces[]" multiple="multiple" class="formselect selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
 <?php
                     foreach ($interfaces as $iface => $ifacename): ?>
                         <option value="<?= html_safe($iface) ?>" <?= !empty($pconfig['webguiinterfaces']) && in_array($iface, $pconfig['webguiinterfaces']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
@@ -552,6 +562,22 @@ $(document).ready(function() {
                   </td>
                 </tr>
                 <tr>
+                  <td><a id="help_for_sshlogingroup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Login Group') ?></td>
+                    <td>
+                    <select name="sshlogingroup" class="formselect selectpicker">
+                        <option value=""><!-- do not translate: -->wheel</option>
+<?php
+                    foreach ($a_group as $group) :?>
+                        <option value="<?= html_safe($group['name']) ?>" <?= $pconfig['sshlogingroup'] == $group['name'] ? 'selected="selected"' : '' ?>><!-- do not translate: -->wheel, <?= html_safe($group['name']) ?></option>
+<?php
+                    endforeach;?>
+                    </select>
+                    <output class="hidden" for="help_for_sshlogingroup">
+                      <?= gettext('Select the allowed groups for remote login. The "wheel" group is always set for recovery purposes and an additional local group can be selected at will. Do not yield remote access to non-adminstrators as every user can access system files using SSH or SFTP.') ?>
+                    </output>
+                  </td>
+                </tr>
+                <tr>
                   <td><a id="help_for_sshdpermitrootlogin" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Root Login") ?></td>
                   <td>
                     <input name="sshdpermitrootlogin" type="checkbox" value="yes" <?= empty($pconfig['sshdpermitrootlogin']) ? '' : 'checked="checked"' ?> />
@@ -565,11 +591,11 @@ $(document).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_passwordauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Authentication Method") ?></td>
+                  <td><a id="help_for_sshpasswordauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Authentication Method") ?></td>
                   <td>
-                    <input name="passwordauth" type="checkbox" value="yes" <?= empty($pconfig['passwordauth']) ? '' : 'checked="checked"' ?> />
+                    <input name="sshpasswordauth" type="checkbox" value="yes" <?= empty($pconfig['sshpasswordauth']) ? '' : 'checked="checked"' ?> />
                     <strong><?=gettext("Permit password login"); ?></strong>
-                    <output class="hidden" for="help_for_passwordauth">
+                    <output class="hidden" for="help_for_sshpasswordauth">
                       <?=sprintf(gettext("When disabled, authorized keys need to be configured for each %sUser%s that has been granted secure shell access."),
                                 '<a href="system_usermanager.php">', '</a>') ?>
                     </output>
@@ -587,7 +613,7 @@ $(document).ready(function() {
                 <tr>
                   <td><a id="help_for_sshinterfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Listen Interfaces') ?></td>
                     <td>
-                    <select name="sshinterfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
+                    <select name="sshinterfaces[]" multiple="multiple" class="formselect selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
 <?php
                     foreach ($interfaces as $iface => $ifacename): ?>
                         <option value="<?= html_safe($iface) ?>" <?= !empty($pconfig['sshinterfaces']) && in_array($iface, $pconfig['sshinterfaces']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
