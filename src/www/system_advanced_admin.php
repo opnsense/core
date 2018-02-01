@@ -423,7 +423,7 @@ $(document).ready(function() {
                 <tr class="ssl_opts">
                   <td><a id="help_for_sslciphers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSL Ciphers"); ?></td>
                   <td>
-                      <select name="ssl-ciphers[]" class="formselect selectpicker"  multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
+                      <select name="ssl-ciphers[]" class="formselect selectpicker" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
 <?php
                       $ciphers = json_decode(configd_run("system ssl ciphers"), true);
                       if ($ciphers == null) {
