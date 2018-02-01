@@ -5862,7 +5862,7 @@ select {
   background-position: right;
   background-image: url(/ui/themes/opnsense/build/images/caret.png) !important; }
 
-#grid-log th[data-column-id="__timestamp__"], 
+#grid-log th[data-column-id="__timestamp__"],
 #filter-log-entries th[data-column-id="__timestamp__"] {
 	min-width: 3.5em;
 }
