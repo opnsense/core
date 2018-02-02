@@ -79,18 +79,20 @@ include("head.inc");
                   <table class="table">
                     <thead>
                       <tr>
-                        <th colspan="2">
-                          <i class="fa fa-chevron-down" style="cursor: pointer;" data-toggle="collapse" data-target="#<?= htmlspecialchars($ifname) ?>"></i>
+                        <th style="cursor: pointer; width: 100%" data-toggle="collapse" data-target="#<?= htmlspecialchars($ifname) ?>">
+                          <i class="fa fa-chevron-down" style="margin-right: .4em; float: left"></i>
                           <?= htmlspecialchars($ifname) ?> <?= gettext("interface") ?> (<?= htmlspecialchars($ifdescr) ?>, <?= htmlspecialchars($ifinfo['if']) ?>)
-  <?php
-                          if (!isset($first_row)):
-                            $first_row=false; ?>
-                          <div class="pull-right">
-                            <i class="fa fa-expand" id="collapse_all" style="cursor: pointer;"  data-toggle="tooltip" title="<?= gettext("collapse/expand all") ?>"></i> &nbsp;
-                          </div>
-  <?php
-                          endif;?>
                         </th>
+<?php
+                        if (!isset($first_row)):
+                          $first_row=false; ?>
+                        <th id="collapse_all" style="cursor: pointer; padding-left: .5em; padding-right: .5em" data-toggle="tooltip" title="<?= gettext("collapse/expand all") ?>">
+                          <div class="pull-right">
+                            <i class="fa fa-expand"></i>
+                          </div>
+                        </th>
+<?php
+                        endif;?>
                       </tr>
                     </thead>
                   </table>
