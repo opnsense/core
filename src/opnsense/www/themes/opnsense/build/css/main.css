@@ -5864,7 +5864,7 @@ select {
 
 #grid-log th[data-column-id="__timestamp__"],
 #filter-log-entries th[data-column-id="__timestamp__"] {
-  in-width: 3.5em; }
+  min-width: 3.5em; }
 
 @media screen and (max-width: 767px) {
   .table-responsive {
