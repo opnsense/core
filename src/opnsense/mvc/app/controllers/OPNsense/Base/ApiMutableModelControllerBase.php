@@ -2,6 +2,7 @@
 /**
  *    Copyright (C) 2016 IT-assistans Sverige AB
  *    Copyright (C) 2016 Deciso B.V.
+ *    Copyright (C) 2018 Fabian Franz
  *
  *    All rights reserved.
  *
@@ -191,6 +192,146 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                     $result['error'] = $hookErrorMessage;
                 } else {
                     return $this->save();
+                }
+            }
+        }
+        return $result;
+    }
+
+    public function searchBase($path, $fields)
+    {
+        $this->sessionClose();
+        $element = $this->getModel();
+        foreach (explode('.', $path) as $step) {
+            $element = $element->{$step};
+        }
+        $grid = new UIModelGrid($element);
+        return $grid->fetchBindRequest(
+            $this->request,
+            $fields
+        );
+    }
+
+    public function getBase($key_name, $path, $uuid = null)
+    {
+        $mdl = $this->getModel();
+        if ($uuid != null) {
+            $node = $mdl->getNodeByReference($path . '.' . $uuid);
+            if ($node != null) {
+                // return node
+                return array($key_name => $node->getNodes());
+            }
+        } else {
+            foreach (explode('.', $path) as $step) {
+                $mdl = $mdl->{$step};
+            }
+            $node = $mdl->add();
+            return array($key_name => $node->getNodes());
+        }
+        return array();
+    }
+
+    public function addBase($post_field, $path)
+    {
+        $result = array("result" => "failed");
+        if ($this->request->isPost() && $this->request->hasPost($post_field)) {
+            $result = array("result" => "failed", "validations" => array());
+            $mdl = $this->getModel();
+            $tmp = $mdl;
+            foreach (explode('.', $path) as $step) {
+                $tmp = $tmp->{$step};
+            }
+            $node = $tmp->Add();
+            $node->setNodes($this->request->getPost($post_field));
+            $valMsgs = $mdl->performValidation();
+
+            foreach ($valMsgs as $field => $msg) {
+                $fieldnm = str_replace($node->__reference, $post_field, $msg->getField());
+                $result["validations"][$fieldnm] = $msg->getMessage();
+            }
+
+            if (count($result['validations']) == 0) {
+                // save config if validated correctly
+                $mdl->serializeToConfig();
+                Config::getInstance()->save();
+                unset($result['validations']);
+                $result["result"] = "saved";
+            }
+        }
+        return $result;
+    }
+
+    public function delBase($path, $uuid)
+    {
+
+        $result = array("result" => "failed");
+
+        if ($this->request->isPost()) {
+            $mdl = $this->getModel();
+            if ($uuid != null) {
+                $tmp = $mdl;
+                foreach (explode('.', $path) as $step) {
+                    $tmp = $tmp->{$step};
+                }
+                if ($tmp->del($uuid)) {
+                    $mdl->serializeToConfig();
+                    Config::getInstance()->save();
+                    $result['result'] = 'deleted';
+                } else {
+                    $result['result'] = 'not found';
+                }
+            }
+        }
+        return $result;
+    }
+
+    public function setBase($postval, $path, $uuid)
+    {
+        if ($this->request->isPost() && $this->request->hasPost($postval)) {
+            $mdl = $this->getModel();
+            if ($uuid != null) {
+                $node = $mdl->getNodeByReference($path . '.' . $uuid);
+                if ($node != null) {
+                    $result = array("result" => "failed", "validations" => array());
+
+                    $node->setNodes($this->request->getPost($postval));
+                    $valMsgs = $mdl->performValidation();
+                    foreach ($valMsgs as $field => $msg) {
+                        $fieldnm = str_replace($node->__reference, $postval, $msg->getField());
+                        $result["validations"][$fieldnm] = $msg->getMessage();
+                    }
+
+                    if (count($result['validations']) == 0) {
+                        // save config if validated correctly
+                        $mdl->serializeToConfig();
+                        Config::getInstance()->save();
+                        $result = array("result" => "saved");
+                    }
+                    return $result;
+                }
+            }
+        }
+        return array("result" => "failed");
+    }
+
+    public function toggleBase($path, $uuid)
+    {
+        $result = array("result" => "failed");
+        if ($this->request->isPost()) {
+            $mdl = $this->getModel();
+            if ($uuid != null) {
+                $node = $mdl->getNodeByReference($path . '.' . $uuid);
+                if ($node != null) {
+                    if ((string)$node->enabled == "1") {
+                        $result['result'] = "Disabled";
+                        $node->enabled = "0";
+                    } else {
+                        $result['result'] = "Enabled";
+                        $node->enabled = "1";
+                    }
+                    // if item has toggled, serialize to config and save
+                    $mdl->serializeToConfig();
+                    Config::getInstance()->save();
                 }
             }
         }
