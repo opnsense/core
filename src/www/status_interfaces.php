@@ -325,7 +325,7 @@ include("head.inc");
                     endif;
                     if ($ifdescr == 'wan' && file_exists('/etc/resolv.conf')): ?>
                     <tr>
-                      <td><?= gettext("ISP DNS servers") ?></td>
+                      <td><?= gettext("DNS servers") ?></td>
                       <td>
 <?php
                         foreach(get_dns_servers() as $dns):
