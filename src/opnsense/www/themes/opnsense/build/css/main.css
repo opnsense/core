@@ -5869,3 +5869,9 @@ select {
 @media screen and (max-width: 767px) {
   .table-responsive {
     margin-bottom: 0px; } }
+
+label>input[type="checkbox"],
+label>input[type="radio"] {
+  margin-right: .4em;
+  float:left; }
+

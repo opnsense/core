@@ -658,3 +658,10 @@ select {
     margin-bottom: 0;
   }
 }
+
+label>input[type="checkbox"],
+label>input[type="radio"] {
+  margin-right: .4em;
+  float:left;
+}
+
