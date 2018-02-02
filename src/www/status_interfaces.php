@@ -48,6 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 include("head.inc");
 ?>
+<body>
+
 <script>
   $( document ).ready(function() {
     $("#collapse_all").click(function(){
@@ -56,7 +58,6 @@ include("head.inc");
   });
 </script>
 
-<body>
 <?php include("fbegin.inc"); ?>
     <section class="page-content-main">
       <div class="container-fluid">
