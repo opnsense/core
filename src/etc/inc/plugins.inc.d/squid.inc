@@ -48,16 +48,6 @@ function squid_services()
     return $services;
 }
 
-function squid_syslog()
-{
-    $logfacilities = array();
-    $logfacilities['squid.syslog'] = array(
-        'facility' => array('(squid-1)')
-    );
-
-    return $logfacilities;
-}
-
 function squid_xmlrpc_sync()
 {
     $result = array();
