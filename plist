@@ -989,6 +989,7 @@
 /usr/local/www/diag_logs_resolver.php
 /usr/local/www/diag_logs_routing.php
 /usr/local/www/diag_logs_settings.php
+/usr/local/www/diag_logs_suricata.php
 /usr/local/www/diag_logs_template.inc
 /usr/local/www/diag_logs_wireless.php
 /usr/local/www/diag_packet_capture.php
