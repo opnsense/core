@@ -1,9 +1,9 @@
 <?php
-/**
+
+/*
  *    Copyright (C) 2016 IT-assistans Sverige AB
  *    Copyright (C) 2016 Deciso B.V.
  *    Copyright (C) 2018 Fabian Franz
- *
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -26,8 +26,8 @@
  *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *    POSSIBILITY OF SUCH DAMAGE.
- *
  */
+
 namespace OPNsense\Base;
 
 use \OPNsense\Core\Config;
@@ -218,7 +218,6 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     public function searchBase($path, $fields)
     {
-        $this->sessionClose();
         $element = $this->getModel();
         foreach (explode('.', $path) as $step) {
             $element = $element->{$step};
