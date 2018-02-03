@@ -65,6 +65,7 @@ function clear_all_log_files()
         'squid/access',
         'squid/cache',
         'squid/store',
+        'suricata',
     );
 
     foreach ($clog_files as $lfile) {
