@@ -457,13 +457,13 @@ function system_routing_configure($interface = '', $verbose = false)
     $foundgwv6 = false;
     $fargw = false;
 
-    /* XXX eventually this file-based workaround must be removed */
-    foreach (glob('/tmp/*_defaultgw{,v6}', GLOB_BRACE) as $to_delete) {
-        @unlink($to_delete);
-    }
-
     /* tack on all the hard defined gateways as well */
     if (isset($config['gateways']['gateway_item'])) {
+        /* XXX eventually this file-based workaround must be removed */
+        foreach (glob('/tmp/*_defaultgw{,v6}', GLOB_BRACE) as $to_delete) {
+            @unlink($to_delete);
+        }
+
         foreach ($config['gateways']['gateway_item'] as $gateway) {
             if (isset($gateway['defaultgw'])) {
                 if ($gateway['ipprotocol'] != "inet6" && (is_ipaddrv4($gateway['gateway']) || $gateway['gateway'] == "dynamic")) {
@@ -498,9 +498,6 @@ function system_routing_configure($interface = '', $verbose = false)
                     $foundgwv6 = true;
                 }
             }
-            if ($foundgw === true && $foundgwv6 === true) {
-                break;
-            }
         }
     }
 
@@ -510,6 +507,7 @@ function system_routing_configure($interface = '', $verbose = false)
         $gatewayip = get_interface_gateway("wan");
         @touch("/tmp/{$defaultif}_defaultgw");
     }
+
     if (!$foundgwv6) {
         $defaultifv6 = get_real_interface("wan");
         $interfacegwv6 = "wan";
