@@ -502,6 +502,7 @@ function system_routing_configure($interface = '', $verbose = false)
     }
 
     if (!$foundgw) {
+        log_error("ROUTING: no IPv4 default gateway set, trying WAN");
         $defaultif = get_real_interface("wan");
         $interfacegw = "wan";
         $gatewayip = get_interface_gateway("wan");
@@ -509,6 +510,7 @@ function system_routing_configure($interface = '', $verbose = false)
     }
 
     if (!$foundgwv6) {
+        log_error("ROUTING: no IPv6 default gateway set, trying WAN");
         $defaultifv6 = get_real_interface("wan");
         $interfacegwv6 = "wan";
         $gatewayipv6 = get_interface_gateway_v6("wan");
