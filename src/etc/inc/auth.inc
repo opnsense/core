@@ -455,12 +455,6 @@ function local_user_set(&$user, $force_password = false)
         $user_group = 'wheel';
     }
 
-    /* configure shell type */
-    if (userHasPrivilege($user, 'user-shell-access')) {
-        /* XXX override the shell for this privilege so we can zap it in 18.7 */
-        $user_shell = '/bin/csh';
-    }
-
     /* unlock valid shell users */
     if (!is_account_disabled($user_name) && !is_account_expired($user_name)) {
         $lock_account = 'unlock';

@@ -2,9 +2,6 @@
     <user-config-readonly>
         <name>System: Deny config write</name>
     </user-config-readonly>
-    <user-shell-access>
-        <name>System: Shell account access</name>
-    </user-shell-access>
     <user-proxy-auth>
         <name>Proxy: Login</name>
     </user-proxy-auth>
