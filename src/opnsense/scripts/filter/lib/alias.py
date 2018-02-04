@@ -37,11 +37,13 @@ import syslog
 import geoip
 
 class Alias(object):
-    def __init__(self, elem, known_aliases=[], ttl=-1):
+    def __init__(self, elem, known_aliases=[], ttl=-1, ssl_no_verify=False, timeout=120):
         """ construct alias object
             :param elem: ElementTree alias item
             :param known_aliases: all known alias names
             :param ttl: time to live in seconds (for other then ip/network types)
+            :param ssl_no_verify: disable ssl verify when fetching content
+            :param timeout: request timeout in seconds
             :return: None
         """
         self._known_aliases = known_aliases
@@ -50,6 +52,8 @@ class Alias(object):
         self._is_changed = None
         self._has_expired = None
         self._ttl = ttl
+        self._ssl_no_verify = ssl_no_verify
+        self._timeout = timeout
         self._name = None
         self._type = None
         self._proto = None
@@ -78,7 +82,7 @@ class Alias(object):
         # the generated alias contents, without dependencies
         self._filename_alias_content = '/var/db/aliastables/%s.self.txt' % self._name
 
-    def _parse_address(self, address, ssl_no_verify=False, timeout=120):
+    def _parse_address(self, address):
         """ parse addresses and hostnames, yield only valid addresses and networks
             :param address: address or network
             :return: boolean
@@ -116,19 +120,17 @@ class Alias(object):
             except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.exception.Timeout):
                 pass
 
-    def _fetch_url(self, url, ssl_no_verify=False, timeout=120):
+    def _fetch_url(self, url):
         """ return unparsed (raw) alias entries without dependencies
             :param url: url
-            :param ssl_no_verify: disable ssl cert validation
-            :param timeout: timeout
             :return: iterator
         """
         # set request parameters
         req_opts = dict()
         req_opts['url'] = url
         req_opts['stream'] = True
-        req_opts['timeout'] = timeout
-        if ssl_no_verify:
+        req_opts['timeout'] = self._timeout
+        if self._ssl_no_verify:
             req_opts['verify'] = False
         # fetch data
         try:
@@ -148,7 +150,7 @@ class Alias(object):
         except:
             syslog.syslog(syslog.LOG_ERR, 'error fetching alias url %s' % (url))
 
-    def _fetch_geo(self, geoitem, ssl_no_verify=False, timeout=120):
+    def _fetch_geo(self, geoitem):
         """ fetch geoip addresses, if not downloaded or outdated force an update
             :return: iterator
         """
@@ -209,10 +211,8 @@ class Alias(object):
                 self._has_expired = False
         return self._has_expired
 
-    def resolve(self, ssl_no_verify=False, timeout=120, force=False):
+    def resolve(self, force=False):
         """ resolve (fetch) alias content, without dependencies.
-            :param ssl_no_verify: when alias content is fetched from a remote location, disable ssl verify
-            :param timeout: fetch timeout
             :force: force load
             :return: string
         """
@@ -222,7 +222,7 @@ class Alias(object):
                     for item in self.items():
                         address_parser = self.get_parser()
                         if address_parser:
-                            for address in address_parser(item, ssl_no_verify=ssl_no_verify, timeout=timeout):
+                            for address in address_parser(item):
                                 if address not in self._resolve_content:
                                     # flush new alias content (without dependencies) to disk, so progress can easliy
                                     # be followed, large lists of domain names can take quite some resolve time.
