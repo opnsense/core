@@ -37,6 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['ifdescr']) && !empty($_POST['submit'])) {
         $interface = $_POST['ifdescr'];
         if (!empty($_POST['status']) && $_POST['status'] == 'up') {
+			if ($_POST['relinquish_lease']) {
+				dhcp_relinquish_lease($_POST['if'], $_POST['ifdescr'], $_POST['ipv']);
+			}
             interface_bring_down($interface);
         } else {
             interface_configure($interface);
@@ -44,6 +47,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header(url_safe('Location: /status_interfaces.php'));
         exit;
     }
+}
+
+// Relinquish the DHCP lease from the server.
+function dhcp_relinquish_lease($if, $ifdescr, $ipv) {
+	$leases_db = '/var/db/dhclient.leases.' . $if;
+	$conf_file = '/var/etc/dhclient_'.$ifdescr.'.conf';
+	$script_file = '/usr/local/sbin/dhclient-script.ext';
+
+	if (file_exists($leases_db) && file_exists($script_file)) {
+		mwexec('/usr/local/sbin/dhclient -'.$ipv.' -d -r -lf '.$leases_db.' -cf '.$conf_file.' -sf '.$script_file);
+	}
 }
 
 include("head.inc");
@@ -115,6 +129,17 @@ include("head.inc");
                           <input type="hidden" name="status" value="<?= $ifinfo['dhcplink'] ?>" />
                           <?= $ifinfo['dhcplink'] ?>
                           <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['dhcplink'] == "up" ? gettext("Release") : gettext("Renew"); ?>" />
+<?php
+                        if ($ifinfo['dhcplink'] == 'up'): ?>
+                          <label for="relinquish_lease_ipv4" data-toggle="tooltip" title="<?= gettext("Send a gratuitous DHCP release packet to the server.") ?>">
+                            <input id="relinquish_lease_ipv4" type="checkbox" name="relinquish_lease" value="true" />
+                            <?= gettext("Relinquish lease") ?>
+                          </label>
+                          <input type="hidden" name="if" value="<?= $ifinfo['if'] ?>" />
+                          <input type="hidden" name="ipv" value="4" />
+<?php
+                        endif; ?>
+
                         </form>
                       </td>
                     </tr>
@@ -129,6 +154,17 @@ include("head.inc");
                           <input type="hidden" name="status" value="<?= $ifinfo['dhcp6link'] ?>" />
                           <?= $ifinfo['dhcp6link'] ?>
                           <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['dhcp6link'] == "up" ? gettext("Release") : gettext("Renew") ?>" />
+<?php
+                        if ($ifinfo['dhcp6link'] == 'up'): ?>
+                          <label for="relinquish_lease_ipv6" data-toggle="tooltip" title="<?= gettext("Send a gratuitous DHCP release packet to the server.") ?>">
+                            <input id="relinquish_lease_ipv6" type="checkbox" name="relinquish_lease" value="true" />
+                            <?= gettext("Relinquish lease") ?>
+                          </label>
+                          <input type="hidden" name="if" value="<?= $ifinfo['if'] ?>" />
+                          <input type="hidden" name="ipv" value="6" />
+<?php
+                        endif; ?>
+
                         </form>
                       </td>
                     </tr>
