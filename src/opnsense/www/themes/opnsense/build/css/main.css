@@ -5821,6 +5821,7 @@ table {
   padding: 10px 20px; }
 
 .label-opnsense {
+  /* emulates btn */
   border: 1px solid transparent;
   display: inline-block;
   vertical-align: middle;
@@ -5829,9 +5830,11 @@ table {
   border-radius: 3px; }
 
 .label-opnsense-sm {
+  /* emulates btn-sm */
   padding: 5px 10px; }
 
 .label-opnsense-xs {
+  /* emulates btn-xs */
   padding: 1px 5px; }
 
 ::-webkit-scrollbar {
@@ -5875,12 +5878,19 @@ select {
 
 @media screen and (max-width: 767px) {
   .table-responsive {
-    margin-bottom: 0px; } }
+    margin-bottom: 0; }
+    .table-responsive > .table > thead > tr > th,
+    .table-responsive > .table > thead > tr > td,
+    .table-responsive > .table > tbody > tr > th,
+    .table-responsive > .table > tbody > tr > td,
+    .table-responsive > .table > tfoot > tr > th,
+    .table-responsive > .table > tfoot > tr > td {
+      white-space: normal !important; } }
 
-label>input[type="checkbox"],
-label>input[type="radio"] {
+label > input[type="checkbox"],
+label > input[type="radio"] {
   margin-right: .4em;
-  float:left; }
+  float: left; }
 
 #log-settings label[for^="act"] {
   margin-right: 1.5em; }
