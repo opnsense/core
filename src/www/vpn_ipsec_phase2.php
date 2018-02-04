@@ -496,7 +496,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext("Mode"); ?></td>
                   <td>
-                    <select name="mode" id="mode" class="formselect">
+                    <select name="mode" id="mode">
                         <?php
                         $p2_modes = array(
                         'tunnel' => 'Tunnel IPv4',
@@ -567,7 +567,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                 <tr class="opt_remoteid">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Type"); ?>:&nbsp;&nbsp;</td>
                   <td>
-                    <select name="remoteid_type" id="remoteid_type" class="formselect">
+                    <select name="remoteid_type" id="remoteid_type">
                       <option value="address" <?= $pconfig['remoteid_type'] == "address" ? "selected=\"selected\"" : "";?>>
                         <?=gettext("Address"); ?>
                       </option>
@@ -582,7 +582,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <td>
                     <input name="remoteid_address" type="text" class="formfld unknown ipv4v6" id="remoteid_address" size="28" value="<?=$pconfig['remoteid_address'];?>" />
                     /
-                    <select name="remoteid_netbits" class="formselect ipv4v6" id="remoteid_netbits">
+                    <select name="remoteid_netbits" class="ipv4v6" id="remoteid_netbits">
 <?php              for ($i = 128; $i >= 0; $i--) :
 ?>
                       <option value="<?=$i;?>" <?= isset($pconfig['remoteid_netbits']) && $i == $pconfig['remoteid_netbits'] ? "selected=\"selected\"" : "";?> >
@@ -628,7 +628,7 @@ endif; ?>
                       <?=$algodata['name'];?>
 <?php
                       if (isset($algodata['keysel'])) :?>
-                      <select name="keylen_<?=$algo;?>" class="formselect">
+                      <select name="keylen_<?=$algo;?>">
                         <option value="auto"><?=gettext("auto"); ?></option>
 <?php
                         for ($keylen = $algodata['keysel']['hi']; $keylen >= $algodata['keysel']['lo']; $keylen -= $algodata['keysel']['step']) :?>

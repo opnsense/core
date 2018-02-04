@@ -486,7 +486,7 @@ endif; ?>
                 <tr class="auth_ldap auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Transport");?></td>
                   <td>
-                    <select name='ldap_urltype' id='ldap_urltype' class="formselect selectpicker" data-style="btn-default">
+                    <select name="ldap_urltype" id="ldap_urltype" class="selectpicker" data-style="btn-default">
                       <option value="TCP - Standard" data-port="389" <?=$pconfig['ldap_urltype'] == "TCP - Standard" ? "selected=\"selected\"" : "";?>>
                         <?=gettext("TCP - Standard");?>
                       </option>
@@ -504,7 +504,7 @@ endif; ?>
                   <td>
 <?php
                     if (count($config['ca'])) :?>
-                    <select id='ldap_caref' name='ldap_caref' class="formselect selectpicker" data-style="btn-default">
+                    <select id="ldap_caref" name="ldap_caref" class="selectpicker" data-style="btn-default">
 <?php
                     foreach ($config['ca'] as $ca) :
 ?>
@@ -526,7 +526,7 @@ endif; ?>
                 <tr class="auth_ldap auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Protocol version");?></td>
                   <td>
-                    <select name='ldap_protver' id='ldap_protver' class="formselect selectpicker" data-style="btn-default">
+                    <select name="ldap_protver" id="ldap_protver" class="selectpicker" data-style="btn-default">
                       <option value="2" <?=$pconfig['ldap_protver'] == 2 ? "selected=\"selected\"" : "";?>>2</option>
                       <option value="3" <?=$pconfig['ldap_protver'] == 3 ? "selected=\"selected\"" : "";?>>3</option>
                     </select>
@@ -547,7 +547,7 @@ endif; ?>
                 <tr class="auth_ldap auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Search scope");?></td>
                   <td>
-                    <select name='ldap_scope' id='ldap_scope' class="formselect selectpicker" data-style="btn-default">
+                    <select name="ldap_scope" id="ldap_scope" class="selectpicker" data-style="btn-default">
                       <option value="one" <?=$pconfig['ldap_scope'] == 'one' ?  "selected=\"selected\"" : "";?>>
                         <?=gettext('One Level');?>
                       </option>
@@ -591,7 +591,7 @@ endif; ?>
                 <tr class="auth_ldap auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Initial Template");?></td>
                   <td>
-                    <select name='ldap_tmpltype' id='ldap_tmpltype' class="formselect selectpicker" data-style="btn-default">
+                    <select name="ldap_tmpltype" id="ldap_tmpltype" class="selectpicker" data-style="btn-default">
                       <option value="open"><?=gettext('OpenLDAP');?></option>
                       <option value="msad"><?=gettext('Microsoft AD');?></option>
                       <option value="edir"><?=gettext('Novell eDirectory');?></option>
@@ -625,7 +625,7 @@ endif; ?>
                 <tr class="auth_radius auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Services offered");?></td>
                   <td>
-                    <select name='radius_srvcs' id='radius_srvcs' class="formselect selectpicker" data-style="btn-default">
+                    <select name="radius_srvcs" id="radius_srvcs" class="selectpicker" data-style="btn-default">
                       <option value="both" <?=$pconfig['radius_srvcs'] == 'both' ? "selected=\"selected\"" :"";?>>
                         <?=gettext('Authentication and Accounting');?>
                       </option>
