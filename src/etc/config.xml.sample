@@ -195,7 +195,6 @@
       <scope>system</scope>
       <gid>1999</gid>
       <member>0</member>
-      <priv>user-shell-access</priv>
       <priv>page-all</priv>
     </group>
     <user>
@@ -205,6 +204,7 @@
       <groupname>admins</groupname>
       <password>$2b$10$YRVoF4SgskIsrXOvOQjGieB9XqHPRra9R7d80B3BZdbY/j21TwBfS</password>
       <uid>0</uid>
+      <shell>/bin/csh</shell>
     </user>
     <nextuid>2000</nextuid>
     <nextgid>2000</nextgid>
