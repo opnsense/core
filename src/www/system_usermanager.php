@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } elseif ($act == 'new' || $act == 'edit') {
         // edit user, load or init data
-        $fieldnames = array('user_dn', 'descr', 'expires', 'scope', 'uid', 'priv', 'ipsecpsk', 'lifetime', 'otp_seed', 'email', 'comment');
+        $fieldnames = array('user_dn', 'descr', 'expires', 'scope', 'uid', 'priv', 'ipsecpsk', 'lifetime', 'otp_seed', 'email', 'shell', 'comment');
         if (isset($id)) {
             if (isset($a_user[$id]['authorizedkeys'])) {
                 $pconfig['authorizedkeys'] = base64_decode($a_user[$id]['authorizedkeys']);
@@ -352,6 +352,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $userent['comment'] = $pconfig['comment'];
             } elseif (isset($userent['comment'])) {
                 unset($userent['comment']);
+            }
+
+            if (!empty($pconfig['shell'])) {
+                $userent['shell'] = $pconfig['shell'];
+            } elseif (isset($userent['shell'])) {
+                unset($userent['shell']);
             }
 
             if (isset($id)) {
@@ -633,6 +639,18 @@ $( document ).ready(function() {
                     <td>
                       <input name="language" type="hidden" value="<?= $pconfig['language'] ?>" />
                       <?= $pconfig['language'] ?>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Login shell') ?></td>
+                    <td>
+                      <select name="shell" class="selectpicker" data-style="btn-default">
+<?php
+                      foreach (auth_get_shells() as $shell_key => $shell_value) :?>
+                        <option value="<?= html_safe($shell_key) ?>" <?= $pconfig['shell'] == $shell_key ? 'selected="selected"' : '' ?>><?= $shell_value ?></option>
+<?php
+                      endforeach;?>
+                      </select>
                     </td>
                   </tr>
                   <tr>

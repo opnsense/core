@@ -356,6 +356,24 @@ function userHasPrivilege($userent, $privid = false)
     return true;
 }
 
+function auth_get_shells()
+{
+    $shells = array('' => '/sbin/nologin');
+
+    $etc_shells = @file_get_contents('/etc/shells');
+    if (!empty($etc_shells)) {
+        $etc_shells = explode("\n", $etc_shells);
+        foreach ($etc_shells as $shell) {
+            $shell = trim($shell);
+            if (!empty($shell) && strpos($shell, '#') !== 0) {
+                $shells[$shell] = $shell;
+            }
+        }
+    }
+
+    return $shells;
+}
+
 function local_sync_accounts()
 {
     global $config;
@@ -426,7 +444,7 @@ function local_user_set(&$user, $force_password = false)
     $user_name = $user['name'];
     $user_pass = $user['password'];
     $user_home = "/home/{$user_name}";
-    $user_shell = '/sbin/nologin';
+    $user_shell = isset($user['shell']) ? $user['shell'] : '/sbin/nologin';
     $user_group = 'nobody';
     $lock_account = 'lock';
 
@@ -439,6 +457,7 @@ function local_user_set(&$user, $force_password = false)
 
     /* configure shell type */
     if (userHasPrivilege($user, 'user-shell-access')) {
+        /* XXX override the shell for this privilege so we can zap it in 18.7 */
         $user_shell = '/bin/csh';
     }
 
