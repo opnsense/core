@@ -192,9 +192,9 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
           </tr>
           <tr>
             <td>
-              <input id="actpass"   name="actpass"   type="checkbox" value="Pass"   <?=in_array('Pass', $nentriesacts) ? "checked=\"checked\"" : "";?>/><label for="actpass" style="padding-left: .4em; margin-right: 1.5em">Pass</label>
-              <input id="actblock"  name="actblock"  type="checkbox" value="Block"  <?=in_array('Block', $nentriesacts) ? "checked=\"checked\"" : "";?>/><label for="actblock" style="padding-left: .4em; margin-right: 1.5em">Block</label>
-              <input id="actreject" name="actreject" type="checkbox" value="Reject" <?=in_array('Reject', $nentriesacts) ? "checked=\"checked\"" : "";?>/><label for="actreject" style="padding-left: .4em; margin-right: 1.5em">Reject</label>
+              <label for="actpass"><input id="actpass"   name="actpass"   type="checkbox" value="Pass"   <?=in_array('Pass', $nentriesacts) ? "checked=\"checked\"" : "";?>/>Pass</label>
+              <label for="actblock"><input id="actblock"  name="actblock"  type="checkbox" value="Block"  <?=in_array('Block', $nentriesacts) ? "checked=\"checked\"" : "";?>/>Block</label>
+              <label for="actreject"><input id="actreject" name="actreject" type="checkbox" value="Reject" <?=in_array('Reject', $nentriesacts) ? "checked=\"checked\"" : "";?>/>Reject</label>
             </td>
           </tr>
           <tr>
