@@ -656,8 +656,21 @@ select {
 .table-responsive {
   @media screen and (max-width: $screen-xs-max) {
     margin-bottom: 0;
+    > .table {
+      > thead,
+      > tbody,
+      > tfoot {
+        > tr {
+          > th,
+          > td {
+            white-space: normal !important;
+          }
+        }
+      }
+    }
   }
 }
+
 
 label>input[type="checkbox"],
 label>input[type="radio"] {
