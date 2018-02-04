@@ -402,7 +402,7 @@ $(document).ready(function() {
                 <tr class="ssl_opts">
                   <td><a id="help_for_sslcertref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSL Certificate"); ?></td>
                   <td>
-                    <select name="ssl-certref" class="formselect selectpicker" data-style="btn-default">
+                    <select name="ssl-certref" class="selectpicker" data-style="btn-default">
 <?php
                     foreach ($a_cert as $cert) :?>
                       <option value="<?=$cert['refid'];?>" <?=$pconfig['ssl-certref'] == $cert['refid'] ? "selected=\"selected\"" : "";?>>
@@ -423,7 +423,7 @@ $(document).ready(function() {
                 <tr class="ssl_opts">
                   <td><a id="help_for_sslciphers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSL Ciphers"); ?></td>
                   <td>
-                      <select name="ssl-ciphers[]" class="formselect selectpicker" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
+                      <select name="ssl-ciphers[]" class="selectpicker" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
 <?php
                       $ciphers = json_decode(configd_run("system ssl ciphers"), true);
                       if ($ciphers == null) {
@@ -502,7 +502,7 @@ $(document).ready(function() {
                 <tr>
                   <td><a id="help_for_compression" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("HTTP Compression")?></td>
                   <td style="width:78%">
-                    <select name="compression" class="formselect selectpicker">
+                    <select name="compression" class="selectpicker">
                         <option value="" <?=empty($pconfig['compression'])? 'selected="selected"' : '';?>>
                           <?=gettext("Off");?>
                         </option>
@@ -525,7 +525,7 @@ $(document).ready(function() {
                 <tr>
                   <td><a id="help_for_webguiinterfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Listen Interfaces') ?></td>
                     <td>
-                    <select id="webguiinterface" name="webguiinterfaces[]" multiple="multiple" class="formselect selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
+                    <select id="webguiinterface" name="webguiinterfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
 <?php
                     foreach ($interfaces as $iface => $ifacename): ?>
                         <option value="<?= html_safe($iface) ?>" <?= !empty($pconfig['webguiinterfaces']) && in_array($iface, $pconfig['webguiinterfaces']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
@@ -564,7 +564,7 @@ $(document).ready(function() {
                 <tr>
                   <td><a id="help_for_sshlogingroup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Login Group') ?></td>
                     <td>
-                    <select name="sshlogingroup" class="formselect selectpicker">
+                    <select name="sshlogingroup" class="selectpicker">
                         <option value=""><!-- do not translate: -->wheel</option>
 <?php
                     foreach ($a_group as $group) :?>
@@ -613,7 +613,7 @@ $(document).ready(function() {
                 <tr>
                   <td><a id="help_for_sshinterfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Listen Interfaces') ?></td>
                     <td>
-                    <select name="sshinterfaces[]" multiple="multiple" class="formselect selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
+                    <select name="sshinterfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
 <?php
                     foreach ($interfaces as $iface => $ifacename): ?>
                         <option value="<?= html_safe($iface) ?>" <?= !empty($pconfig['sshinterfaces']) && in_array($iface, $pconfig['sshinterfaces']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
@@ -638,7 +638,7 @@ $(document).ready(function() {
                 <tr>
                   <td><a id="help_for_primaryconsole" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Primary Console")?></td>
                   <td style="width:78%">
-                    <select name="primaryconsole" id="primaryconsole" class="formselect selectpicker">
+                    <select name="primaryconsole" id="primaryconsole" class="selectpicker">
 <?php               foreach (system_console_types() as $console_key => $console_type): ?>
                       <option value="<?= html_safe($console_key) ?>" <?= $pconfig['primaryconsole'] == $console_key ? 'selected="selected"' : '' ?>><?= $console_type['name'] ?></option>
 <?                  endforeach ?>
@@ -652,7 +652,7 @@ $(document).ready(function() {
                 <tr>
                   <td><a id="help_for_secondaryconsole" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Secondary Console")?></td>
                   <td style="width:78%">
-                    <select name="secondaryconsole" id="secondaryconsole" class="formselect selectpicker">
+                    <select name="secondaryconsole" id="secondaryconsole" class="selectpicker">
                       <option value="" <?= empty($pconfig['secondaryconsole']) ? 'selected="selected"' : '' ?>><?= gettext('None') ?></option>
 <?php               foreach (system_console_types() as $console_key => $console_type): ?>
                       <option value="<?= html_safe($console_key) ?>" <?= $pconfig['secondaryconsole'] == $console_key ? 'selected="selected"' : '' ?>><?= $console_type['name'] ?></option>
@@ -667,7 +667,7 @@ $(document).ready(function() {
                 <tr>
                   <td><a id="help_for_serialspeed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial Speed")?></td>
                   <td>
-                    <select name="serialspeed" id="serialspeed" class="formselect selectpicker">
+                    <select name="serialspeed" id="serialspeed" class="selectpicker">
                       <option value="115200" <?=$pconfig['serialspeed'] == "115200" ? 'selected="selected"' : '' ?>>115200</option>
                       <option value="57600" <?=$pconfig['serialspeed'] == "57600" ? 'selected="selected"' : '' ?>>57600</option>
                       <option value="38400" <?=$pconfig['serialspeed'] == "38400" ? 'selected="selected"' : '' ?>>38400</option>
@@ -700,7 +700,7 @@ $(document).ready(function() {
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Sudo usage") ?></td>
                   <td style="width:78%">
-                    <select name="sudo_allow_wheel" id="sudo_allow_wheel" class="formselect selectpicker">
+                    <select name="sudo_allow_wheel" id="sudo_allow_wheel" class="selectpicker">
                       <option value="" <?= empty($pconfig['sudo_allow_wheel']) ? 'selected="selected"' : '' ?>><?= gettext('Disallow') ?></option>
                       <option value="1" <?= $pconfig['sudo_allow_wheel'] == 1 ? 'selected="selected"' : '' ?>><?= gettext('Ask password') ?></option>
                       <option value="2" <?= $pconfig['sudo_allow_wheel'] == 2 ? 'selected="selected"' : '' ?>><?= gettext('No password') ?></option>

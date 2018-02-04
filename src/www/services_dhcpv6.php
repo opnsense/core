@@ -493,7 +493,7 @@ include("head.inc");
                             <tr>
                               <td>
                                 <strong><?=gettext("Prefix Delegation Size"); ?>:</strong>
-                                <select name="prefixrange_length" class="formselect" id="prefixrange_length">
+                                <select name="prefixrange_length" id="prefixrange_length">
                                   <option value="48" <?=$pconfig['prefixrange_length'] == 48 ? "selected=\"selected\"" : ""; ?>>48</option>
                                   <option value="52" <?=$pconfig['prefixrange_length'] == 52 ? "selected=\"selected\"" : ""; ?>>52</option>
                                   <option value="56" <?=$pconfig['prefixrange_length'] == 56 ? "selected=\"selected\"" : ""; ?>>56</option>

@@ -335,7 +335,7 @@ include("head.inc");
               <tr>
                 <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Method");?></td>
                 <td style="width:78%">
-                  <select name="crlmethod" id='crlmethod' class="formselect">
+                  <select name="crlmethod" id="crlmethod">
                     <option value="internal" <?=$pconfig['crlmethod'] == "internal" ? "selected=\"selected\"" : "";?>><?=gettext("Create an internal Certificate Revocation List");?></option>
                     <option value="existing" <?=$pconfig['crlmethod'] == "existing" ? "selected=\"selected\"" : "";?>><?=gettext("Import an existing Certificate Revocation List");?></option>
                   </select>

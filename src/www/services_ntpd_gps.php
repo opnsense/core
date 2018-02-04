@@ -315,7 +315,7 @@ SureGPS =    #Sure Electronics SKG16B
                       <td><a id="help_for_gps" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GPS"); ?></td>
                       <td>
                         <!-- Start with the original "Default", list a "Generic" and then specific configs alphabetically -->
-                        <select id="gpstype" name="type" class="formselect">
+                        <select id="gpstype" name="type">
                           <option value="Generic" title="Generic"<?=empty($pconfig['type']) || $pconfig['type'] == 'Generic' ? " selected=\"selected\"" : "";?>><?=gettext('Generic') ?></option>
                           <option value="Default"<?=$pconfig['type'] == 'Default' ? " selected=\"selected\"" : ""; ?>><?=gettext('Default') ?></option>
                           <option value="Garmin" title="$PGRM... Most Garmin"<?=$pconfig['type'] == 'Garmin' ? " selected=\"selected\"" :"";?>><?=gettext('Garmin') ?></option>

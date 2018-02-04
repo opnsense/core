@@ -321,7 +321,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_bogonsinterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Update Frequency");?></td>
                   <td>
-                    <select name="bogonsinterval" class="formselect selectpicker" data-style="btn-default">
+                    <select name="bogonsinterval" class="selectpicker" data-style="btn-default">
                     <option value="monthly" <?=empty($pconfig['bogonsinterval']) || $pconfig['bogonsinterval'] == 'monthly' ? "selected=\"selected\"" : "";?>>
                       <?=gettext("Monthly"); ?>
                     </option>
