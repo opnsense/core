@@ -586,7 +586,7 @@ include("head.inc");
                     <td><a id="help_for_auto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Connection method"); ?></td>
                     <td>
 
-                      <select name="auto" class="formselect">
+                      <select name="auto">
                         <option value="" <?=empty($pconfig['auto']) ?  "selected=\"selected\"" : ""; ?>><?=gettext("default");?></option>
                         <option value="add" <?=$pconfig['auto'] == "add" ?  "selected=\"selected\"" : ""; ?>><?=gettext("Respond only");?></option>
                         <option value="route" <?=$pconfig['auto'] == "route" ?  "selected=\"selected\"" : ""; ?>><?=gettext("Start on traffic");?></option>
@@ -601,7 +601,7 @@ include("head.inc");
                     <td><a id="help_for_iketype" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Key Exchange version"); ?></td>
                     <td>
 
-                      <select name="iketype" id="iketype" class="formselect">
+                      <select name="iketype" id="iketype">
 <?php
                       $keyexchange = array("ikev1" => "V1", "ikev2" => "V2");
                       foreach ($keyexchange as $kidx => $name) :
@@ -620,7 +620,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_protocol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Internet Protocol"); ?></td>
                     <td>
-                      <select name="protocol" class="formselect">
+                      <select name="protocol">
                       <?php
                       $protocols = array("inet" => "IPv4", "inet6" => "IPv6");
                       foreach ($protocols as $protocol => $name) :
@@ -639,7 +639,7 @@ include("head.inc");
                   <tr>
                     <td ><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
                     <td>
-                      <select name="interface" class="formselect">
+                      <select name="interface">
 <?php
                       $interfaces = get_configured_interface_with_descr();
                       $carplist = get_configured_carp_interface_list();
@@ -712,7 +712,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_authmethod" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Authentication method"); ?></td>
                     <td>
-                      <select name="authentication_method" id="authentication_method" class="formselect">
+                      <select name="authentication_method" id="authentication_method">
 <?php
                       foreach ($p1_authentication_methods as $method_type => $method_params) :
                           if (empty($pconfig['mobile']) && $method_params['mobile']) {
@@ -734,7 +734,7 @@ include("head.inc");
                   <tr id="mode_tr">
                     <td><a id="help_for_mode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Negotiation mode"); ?></td>
                     <td>
-                      <select id="mode" name="mode" class="formselect">
+                      <select id="mode" name="mode">
                       <?php
                       $modes = array("main" => "Main", "aggressive" => "Aggressive");
                       foreach ($modes as $mode => $mdescr) :
@@ -753,7 +753,7 @@ include("head.inc");
                   <tr>
                     <td ><i class="fa fa-info-circle text-muted"></i> <?=gettext("My identifier"); ?></td>
                     <td>
-                      <select name="myid_type" id="myid_type" class="formselect">
+                      <select name="myid_type" id="myid_type">
 <?php
                       $my_identifier_list = array(
                         'myaddress' => array( 'desc' => gettext('My IP address'), 'mobile' => true ),
@@ -783,7 +783,7 @@ endforeach; ?>
                   <tr class="auth_opt auth_eap_tls auth_psk">
                     <td ><i class="fa fa-info-circle text-muted"></i> <?=gettext("Peer identifier"); ?></td>
                     <td>
-                      <select name="peerid_type" id="peerid_type" class="formselect">
+                      <select name="peerid_type" id="peerid_type">
 <?php
                       $peer_identifier_list = array(
                         'peeraddress' => array( 'desc' => gettext('Peer IP address'), 'mobile' => false ),
@@ -826,7 +826,7 @@ endforeach; ?>
                   <tr class="auth_opt auth_eap_tls">
                     <td ><a id="help_for_certref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("My Certificate"); ?></td>
                     <td>
-                      <select name="certref" class="formselect">
+                      <select name="certref">
 <?php
                       if (isset($config['cert'])) :
                         foreach ($config['cert'] as $cert) :
@@ -846,7 +846,7 @@ endforeach; ?>
                   <tr class="auth_opt auth_eap_tls_caref">
                     <td><a id="help_for_caref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("My Certificate Authority"); ?></td>
                     <td>
-                      <select name="caref" class="formselect">
+                      <select name="caref">
                       <?php
                     $config__ca = isset($config['ca']) ? $config['ca'] : array();
                         foreach ($config__ca as $ca) :
@@ -907,14 +907,14 @@ endforeach; ?>
 ?>
                       </select>
 
-                      <select name="ealgo_keylen" id="ealgo_keylen" width="30" class="formselect">
+                      <select name="ealgo_keylen" id="ealgo_keylen" width="30">
                       </select>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_halgo" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hash algorithm"); ?></td>
                     <td>
-                      <select name="hash-algorithm" class="formselect">
+                      <select name="hash-algorithm">
                       <?php
                       $p1_halgos = array(
                         'md5' => 'MD5',
@@ -940,7 +940,7 @@ endforeach; ?>
                   <tr>
                     <td><a id="help_for_dhgroup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DH key group"); ?></td>
                     <td>
-                      <select name="dhgroup" class="formselect">
+                      <select name="dhgroup">
 <?php
                       $p1_dhgroups = array(
                         1  => '1 (768 bit)',
@@ -1013,7 +1013,7 @@ endforeach; ?>
                   <tr>
                     <td><a id="help_for_nat_traversal" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("NAT Traversal"); ?></td>
                     <td>
-                      <select name="nat_traversal" class="formselect">
+                      <select name="nat_traversal">
                         <option value="off" <?= isset($pconfig['nat_traversal']) && $pconfig['nat_traversal'] == "off" ? "selected=\"selected\"" :"" ;?> >
                           <?=gettext("Disable"); ?>
                         </option>

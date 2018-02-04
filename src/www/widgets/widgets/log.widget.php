@@ -204,7 +204,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
           </tr>
           <tr>
             <td>
-              <select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces" class="formselect">
+              <select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces">
                 <option value="All"><?= gettext('ALL') ?></option>
 <?php
                   foreach (get_configured_interface_with_descr() as $iface => $ifacename) :?>
