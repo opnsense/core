@@ -106,13 +106,25 @@ $etc_shells = <<<EOF
 # Ftpd will not allow users to connect who are not using
 # one of these shells.
 
-/bin/sh
-/bin/csh
-/bin/tcsh
-/usr/local/etc/rc.initial
-/usr/local/etc/rc.installer
 
 EOF;
+
+$known_shells = array(
+    '/bin/csh',
+    '/bin/sh',
+    '/bin/tcsh',
+    '/usr/local/bin/bash',
+    '/usr/local/bin/scponly',
+    '/usr/local/bin/zsh',
+    '/usr/local/etc/rc.initial',
+    '/usr/local/etc/rc.installer',
+);
+
+foreach ($known_shells as $shell) {
+    if (file_exists($shell)) {
+        $etc_shells .= "{$shell}\n";
+    }
+}
 
 $etc_ttys = <<<EOF
 #
