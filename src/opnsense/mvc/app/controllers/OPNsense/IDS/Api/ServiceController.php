@@ -1,7 +1,6 @@
 <?php
-
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2017 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,7 +47,11 @@ class ServiceController extends ApiMutableServiceControllerBase
     static protected $internalServiceName = 'ids';
 
     /**
-     * reconfigure IDS
+     * Reconfigure IDS
+     * @return array result status
+     * @throws \Exception when configd action fails
+     * @throws \OPNsense\Base\ModelException when unable to construct model
+     * @throws \Phalcon\Validation\Exception when one or more model validations fail
      */
     public function reconfigureAction()
     {
@@ -103,10 +106,10 @@ class ServiceController extends ApiMutableServiceControllerBase
     }
 
     /**
-     * download and update rules
+     * Download and update rules
      * @param null|string $wait wait for update to complete (default) or run in background and return message id
-     * @return array
-     * @throws \Exception
+     * @return array result status
+     * @throws \Exception when configd action fails
      */
     public function updateRulesAction($wait = null)
     {
@@ -137,8 +140,9 @@ class ServiceController extends ApiMutableServiceControllerBase
     }
 
     /**
-     * flush rule configuration to config and reload suricata ruleset (graceful restart)
+     * Flush rule configuration to config and reload suricata ruleset (graceful restart)
      * @return array
+     * @throws \Exception when configd action fails
      */
     public function reloadRulesAction()
     {
@@ -159,8 +163,9 @@ class ServiceController extends ApiMutableServiceControllerBase
     }
 
     /**
-     * query suricata alerts
+     * Query suricata alerts
      * @return array
+     * @throws \Exception when configd action fails
      */
     public function queryAlertsAction()
     {
@@ -203,10 +208,11 @@ class ServiceController extends ApiMutableServiceControllerBase
     }
 
     /**
-     * fetch alert detailed info
+     * Fetch alert detailed info
      * @param string $alertId alert id, position in log file
      * @param string $fileid log file id number (empty for standard)
      * @return array alert info
+     * @throws \Exception when configd action fails
      */
     public function getAlertInfoAction($alertId, $fileid = "")
     {
@@ -224,9 +230,9 @@ class ServiceController extends ApiMutableServiceControllerBase
     }
 
     /**
-     * list all available logs
+     * List all available logs
      * @return array list of alert logs
-     * @throws \Exception
+     * @throws \Exception when configd action fails
      */
     public function getAlertLogsAction()
     {
@@ -247,8 +253,9 @@ class ServiceController extends ApiMutableServiceControllerBase
     }
 
     /**
-     * drop alert log
-     * @return array status
+     * Drop alert log
+     * @return array result status
+     * @throws \Exception when configd action fails
      */
     public function dropAlertLogAction()
     {
