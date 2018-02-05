@@ -663,14 +663,13 @@ select {
         > tr {
           > th,
           > td {
-            white-space: normal !important;
+            white-space: normal;
           }
         }
       }
     }
   }
 }
-
 
 label>input[type="checkbox"],
 label>input[type="radio"] {

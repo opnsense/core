@@ -5885,7 +5885,7 @@ select {
     .table-responsive > .table > tbody > tr > td,
     .table-responsive > .table > tfoot > tr > th,
     .table-responsive > .table > tfoot > tr > td {
-      white-space: normal !important; } }
+      white-space: normal; } }
 
 label > input[type="checkbox"],
 label > input[type="radio"] {
