@@ -1,6 +1,6 @@
 <?php
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2015-2017 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -45,7 +45,9 @@ class SettingsController extends ApiMutableModelControllerBase
     static protected $internalModelClass = '\OPNsense\IDS\IDS';
 
     /**
+     * Query non layered model items
      * @return array plain model settings (non repeating items)
+     * @throws \ReflectionException when not bound to model
      */
     protected function getModelNodes()
     {
@@ -59,8 +61,10 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * search installed ids rules
-     * @return array
+     * Search installed ids rules
+     * @return array query results
+     * @throws \Exception when configd action fails
+     * @throws \ReflectionException when not bound to model
      */
     public function searchInstalledRulesAction()
     {
@@ -144,9 +148,11 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * get rule information
+     * Get rule information
      * @param string|null $sid rule identifier
      * @return array|mixed
+     * @throws \Exception when configd action fails
+     * @throws \ReflectionException when not bound to model
      */
     public function getRuleInfoAction($sid = null)
     {
@@ -209,9 +215,9 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * list available classtypes
+     * List available classtypes
      * @return array
-     * @throws \Exception
+     * @throws \Exception when configd action fails
      */
     public function listRuleClasstypesAction()
     {
@@ -227,8 +233,10 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * list all installable rules including configuration additions
+     * List all installable rules including configuration additions
      * @return array
+     * @throws \Exception when configd action fails
+     * @throws \ReflectionException when not bound to model
      */
     private function listInstallableRules()
     {
@@ -269,8 +277,10 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * list ruleset properties
-     * @return array
+     * List ruleset properties
+     * @return array result status
+     * @throws \Exception when config actions fails
+     * @throws \ReflectionException when not bound to model
      */
     public function getRulesetpropertiesAction()
     {
@@ -293,8 +303,11 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * update ruleset properties
-     * @return array
+     * Update ruleset properties
+     * @return array result status
+     * @throws \Exception when config action fails
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
      */
     public function setRulesetpropertiesAction()
     {
@@ -341,7 +354,7 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * list all installable rules including current status
+     * List all installable rules including current status
      * @return array|mixed list of items when $id is null otherwise the selected item is returned
      * @throws \Exception
      */
@@ -361,9 +374,11 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * get ruleset list info (file)
+     * Get ruleset list info (file)
      * @param string $id list filename
      * @return array|mixed list details
+     * @throws \Exception when configd action fails
+     * @throws \ReflectionException when not bound to model
      */
     public function getRulesetAction($id)
     {
@@ -378,9 +393,12 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * set ruleset attributes
+     * Set ruleset attributes
      * @param $filename rule filename (key)
-     * @return array
+     * @return array result status
+     * @throws \Exception when configd action fails
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
      */
     public function setRulesetAction($filename)
     {
@@ -414,7 +432,7 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * toggle usage of rule file or set enabled / disabled depending on parameters
+     * Toggle usage of rule file or set enabled / disabled depending on parameters
      * @param $filenames (target) rule file name, or list of filenames separated by a comma
      * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array status 0/1 or error
@@ -458,10 +476,13 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * toggle rule enable status
+     * Toggle rule enable status
      * @param string $sids unique id
      * @param string|int $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array empty
+     * @throws \Exception when configd action fails
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
      */
     public function toggleRuleAction($sids, $enabled = null)
     {
@@ -507,9 +528,12 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * set rule action
+     * Set rule action
      * @param $sid item unique id
-     * @return array
+     * @return array result status
+     * @throws \Exception when configd action fails
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
      */
     public function setRuleAction($sid)
     {
@@ -546,7 +570,7 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * search user defined rules
+     * Search user defined rules
      * @return array list of found user rules
      * @throws \ReflectionException when not bound to model
      */
@@ -556,7 +580,7 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * update user defined rules
+     * Update user defined rules
      * @param string $uuid internal id
      * @return array save result + validation output
      * @throws \Phalcon\Validation\Exception when field validations fail
@@ -568,7 +592,7 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * add new user defined rule
+     * Add new user defined rule
      * @return array save result + validation output
      * @throws \Phalcon\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
@@ -579,9 +603,10 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * get properties of user defined rule
+     * Get properties of user defined rule
      * @param null|string $uuid user rule internal id
      * @return array user defined properties
+     * @throws \ReflectionException when not bound to model
      */
     public function getUserRuleAction($uuid = null)
     {
@@ -589,7 +614,7 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * delete user rule item
+     * Delete user rule item
      * @param string $uuid user rule internal id
      * @return array save status
      * @throws \Phalcon\Validation\Exception when field validations fail
@@ -601,7 +626,7 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * toggle user defined rule by uuid (enable/disable)
+     * Toggle user defined rule by uuid (enable/disable)
      * @param $uuid user defined rule internal id
      * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array save result
