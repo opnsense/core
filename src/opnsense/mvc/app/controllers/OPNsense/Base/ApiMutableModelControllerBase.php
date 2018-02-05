@@ -219,6 +219,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     public function searchBase($path, $fields, $defaultSort=null)
     {
+        $this->sessionClose();
         $element = $this->getModel();
         foreach (explode('.', $path) as $step) {
             $element = $element->{$step};
