@@ -51,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // array types
     $pconfig['active_interface'] = !empty($a_unboundcfg['active_interface']) ? explode(",", $a_unboundcfg['active_interface']) : array();
     $pconfig['outgoing_interface'] = !empty($a_unboundcfg['outgoing_interface']) ? explode(",", $a_unboundcfg['outgoing_interface']) : array();
+	$pconfig['system_domain_local_zone_type'] = !empty($a_unboundcfg['system_domain_local_zone_type']) ? $a_unboundcfg['system_domain_local_zone_type'] : 'transparent';
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -108,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // array types
             $a_unboundcfg['active_interface'] = !empty( $pconfig['active_interface']) ? implode(",", $pconfig['active_interface']) : array();
             $a_unboundcfg['outgoing_interface'] = !empty( $pconfig['outgoing_interface']) ? implode(",", $pconfig['outgoing_interface']) : array();
+			$a_unboundcfg['system_domain_local_zone_type'] = $pconfig['system_domain_local_zone_type'];
 
             write_config("DNS Resolver configured.");
             mark_subsystem_dirty('unbound');
@@ -188,6 +190,21 @@ include_once("head.inc");
                           </select>
                           <output class="hidden" for="help_for_active_interface">
                             <?=gettext("Interface IPs used by the DNS Resolver for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.");?>
+                          </output>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_system_domain_local_zone_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("System Domain Local Zone Type"); ?></td>
+                        <td>
+                          <select name="system_domain_local_zone_type" size="3" class="selectpicker" >
+<?php
+                            foreach (unbound_local_zone_types() as $value => $name):?>
+                            <option value="<?=$value;?>" <?=$value == $pconfig['system_domain_local_zone_type'] ? 'selected="selected"' : "";?>><?=htmlspecialchars($name);?></option>
+<?php
+                            endforeach; ?>
+                          </select>
+                          <output class="hidden" for="help_for_system_domain_local_zone_type">
+                            <?=sprintf(gettext("The local-zone type used for the system domain (System | Settings | General | Domain).  Transparent is the default.  Local-Zone type descriptions are available in the unbound %s manual pages."), '<a target="_blank" href="https://www.unbound.net/documentation/unbound.conf.html">'.gettext("conf(5)").'</a>');?>
                           </output>
                         </td>
                       </tr>
