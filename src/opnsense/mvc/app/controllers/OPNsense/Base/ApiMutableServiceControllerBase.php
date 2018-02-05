@@ -67,7 +67,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
 
     /**
      * validate on initialization
-     * @throws Exception
+     * @throws \Exception when not bound to internal service
      */
     public function initialize()
     {
@@ -88,6 +88,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
 
     /**
      * @return null|BaseModel
+     * @throws \ReflectionException when unable to instantiate model class
      */
     protected function getModel()
     {
@@ -101,6 +102,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     /**
      * start service
      * @return array
+     * @throws \Exception when configd action fails
      */
     public function startAction()
     {
@@ -117,6 +119,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     /**
      * stop service
      * @return array
+     * @throws \Exception when configd actions fails
      */
     public function stopAction()
     {
@@ -133,6 +136,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     /**
      * restart service
      * @return array
+     * @throws \Exception
      */
     public function restartAction()
     {
@@ -156,6 +160,9 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
 
     /**
      * reconfigure with optional stop, generate config and start / reload
+     * @return array response message
+     * @throws \Exception when configd action fails
+     * @throws \ReflectionException when model can't be instantiated
      */
     public function reconfigureAction()
     {
@@ -189,8 +196,8 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
 
     /**
      * retrieve status of service
-     * @return array
-     * @throws \Exception
+     * @return array response message
+     * @throws \Exception when configd action fails
      */
     public function statusAction()
     {
