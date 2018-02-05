@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2018 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2011 Scott Ullrich <sullrich@gmail.com>
 # Copyright (c) 2003-2004 Manuel Kasper <mk@neon1.net>
 # All rights reserved.
@@ -8,6 +8,11 @@
 # make sure the user can't kill us
 trap : 2
 trap : 3
+
+if [ "$(id -u)" != "0" ]; then
+	echo "Must be root."
+	exit 1
+fi
 
 # shell started with parameters, passthrough to real shell
 if [ -n "${*}" ]; then

@@ -356,16 +356,21 @@ function userHasPrivilege($userent, $privid = false)
     return true;
 }
 
-function auth_get_shells()
+function auth_get_shells($uid = 0)
 {
     $shells = array('' => '/sbin/nologin');
+
+    if ($uid == 0) {
+        $shells = array('' => '/usr/local/etc/rc.initial');
+    }
 
     $etc_shells = @file_get_contents('/etc/shells');
     if (!empty($etc_shells)) {
         $etc_shells = explode("\n", $etc_shells);
         foreach ($etc_shells as $shell) {
             $shell = trim($shell);
-            if (!empty($shell) && strpos($shell, '#') !== 0) {
+            if (!empty($shell) && strpos($shell, '#') !== 0 &&
+                strpos($shell, '/usr/local/etc/rc') !== 0) {
                 $shells[$shell] = $shell;
             }
         }
@@ -440,13 +445,20 @@ function local_user_set(&$user, $force_password = false)
         return;
     }
 
-    $user_uid = $user['uid'];
-    $user_name = $user['name'];
     $user_pass = $user['password'];
-    $user_home = "/home/{$user_name}";
-    $user_shell = isset($user['shell']) ? $user['shell'] : '/sbin/nologin';
-    $user_group = 'nobody';
+    $user_name = $user['name'];
+    $user_uid = $user['uid'];
     $lock_account = 'lock';
+
+    if ($user_uid == 0) {
+        $user_shell = isset($user['shell']) ? $user['shell'] : '/usr/local/etc/rc.initial';
+        $user_group = 'wheel';
+        $user_home = '/root';
+    } else {
+        $user_shell = isset($user['shell']) ? $user['shell'] : '/sbin/nologin';
+        $user_home = "/home/{$user_name}";
+        $user_group = 'nobody';
+    }
 
     @mkdir('/home', 0755);
 
@@ -465,12 +477,6 @@ function local_user_set(&$user, $force_password = false)
         $user_pass = '*';
     }
 
-    /* root user special handling */
-    if ($user_uid == 0) {
-        $user_shell = isset($user['shell']) ? $user['shell'] : '/usr/local/etc/rc.initial';
-        $user_group = 'wheel';
-        $user_home = '/root';
-    }
 
     /* read from pw db */
     $fd = popen("/usr/sbin/pw usershow -n {$user_name} 2>&1", "r");

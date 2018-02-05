@@ -76,7 +76,6 @@ function get_user_privdesc(& $user)
     return $privs;
 }
 
-// link user section
 $a_user = &config_read_array('system', 'user');
 
 // reset errors and action
@@ -95,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if ($act == "expcert" && isset($id)) {
         // export certificate
-        $cert =& lookup_cert($a_user[$id]['cert'][$_GET['certid']]);
+        $cert = &lookup_cert($a_user[$id]['cert'][$_GET['certid']]);
 
         $exp_name = urlencode("{$a_user[$id]['name']}-{$cert['descr']}.crt");
         $exp_data = base64_decode($cert['crt']);
@@ -108,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } elseif ($act == "expckey" && isset($id)) {
         // export private key
-        $cert =& lookup_cert($a_user[$id]['cert'][$_GET['certid']]);
+        $cert = &lookup_cert($a_user[$id]['cert'][$_GET['certid']]);
         $exp_name = urlencode("{$a_user[$id]['name']}-{$cert['descr']}.key");
         $exp_data = base64_decode($cert['prv']);
         $exp_size = strlen($exp_data);
@@ -304,7 +303,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        if (count($input_errors)==0) {
+        if (!empty($pconfig['shell']) && !in_array($pconfig['shell'], auth_get_shells(isset($id) ? $a_user[$id]['uid'] : $config['system']['nextuid']))) {
+            $input_errors[] = gettext('Invalid login shell provided.');
+        }
+
+        if (!count($input_errors)) {
             $userent = array();
 
             if (isset($id)) {
@@ -646,8 +649,8 @@ $( document ).ready(function() {
                     <td>
                       <select name="shell" class="selectpicker" data-style="btn-default">
 <?php
-                      foreach (auth_get_shells() as $shell_key => $shell_value) :?>
-                        <option value="<?= html_safe($shell_key) ?>" <?= $pconfig['shell'] == $shell_key ? 'selected="selected"' : '' ?>><?= $shell_value ?></option>
+                      foreach (auth_get_shells(isset($id) ? $a_user[$id]['uid'] : $config['system']['nextuid']) as $shell_key => $shell_value) :?>
+                        <option value="<?= html_safe($shell_key) ?>" <?= $pconfig['shell'] == $shell_key ? 'selected="selected"' : '' ?>><?= html_safe($shell_value) ?></option>
 <?php
                       endforeach;?>
                       </select>
