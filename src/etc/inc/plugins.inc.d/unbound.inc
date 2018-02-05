@@ -509,7 +509,14 @@ function unbound_add_host_entries()
 {
     global $config;
 
-    $unbound_entries = "local-zone: \"{$config['system']['domain']}\" transparent\n";
+	// Make sure the config setting is a valid unbound local zone type.  If not use "transparent".
+	if (array_key_exists($config['unbound']['system_domain_local_zone_type'], unbound_local_zone_types())) {
+		$system_domain_local_zone_type = $config['unbound']['system_domain_local_zone_type'];
+	} else {
+		$system_domain_local_zone_type = "transparent";
+	}
+
+	$unbound_entries = "local-zone: \"{$config['system']['domain']}\" $system_domain_local_zone_type\n";
 
     // IPv4 entries
     $unbound_entries .= "local-data-ptr: \"127.0.0.1 localhost\"\n";
@@ -746,4 +753,19 @@ function unbound_hosts_generate()
     unbound_add_host_entries();
 
     killbypid('/var/run/unbound.pid', 'HUP');
+}
+
+// Array of valid unbound local zone types
+function unbound_local_zone_types() {
+	return array(
+		"deny" => gettext("Deny"),
+		"refuse" => gettext("Refuse"),
+		"static" => gettext("Static"),
+		"transparent" => gettext("Transparent"),
+		"typetransparent" => gettext("Type Transparent"),
+		"redirect" => gettext("Redirect"),
+		"inform" => gettext("Inform"),
+		"inform_deny" => gettext("Inform Deny"),
+		"nodefault" => gettext("No Default")
+	);
 }
