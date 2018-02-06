@@ -309,33 +309,8 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function addPACRuleAction()
     {
-        $result = array('result' => 'failed');
-        if ($this->request->isPost() && $this->request->hasPost('pac')) {
-            $result = array('result' => 'failed', 'validations' => array());
-            $postdata = $this->request->getPost('pac');
-            if (!isset($postdata['rule'])) {
-                $result['error'] = 'Wrong PAC form sent.';
-                return $result;
-            }
-            $mdlProxy = $this->getModel();
-            $node = $mdlProxy->pac->rule->Add();
-            $node->setNodes($postdata['rule']);
-            $valMsgs = $mdlProxy->performValidation();
-
-            foreach ($valMsgs as $field => $msg) {
-                $fieldnm = str_replace($node->__reference, 'pac.rule', $msg->getField());
-                $result['validations'][$fieldnm] = $msg->getMessage();
-            }
-
-            if (count($result['validations']) == 0) {
-                // save config if validated correctly
-                $mdlProxy->serializeToConfig();
-                Config::getInstance()->save();
-                $result = array('result' => 'saved');
-            }
-            return $result;
-        }
-        return $result;
+        $this->pac_set_helper();
+        return $this->addBase('rule', 'pac.rule');
     }
     /**
      * update PAC Rule
@@ -345,7 +320,8 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function setPACRuleAction($uuid)
     {
-        return $this->pac_set_helper($uuid, 'pac.rule', 'rule');
+        $this->pac_set_helper();
+        return $this->setBase('rule', 'pac.rule',$uuid);
     }
     /**
      * toggle PAC Rule by uuid (enable/disable)
@@ -392,33 +368,8 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function addPACProxyAction()
     {
-        $result = array('result' => 'failed');
-        if ($this->request->isPost() && $this->request->hasPost('pac')) {
-            $result = array('result' => 'failed', 'validations' => array());
-            $postdata = $this->request->getPost('pac');
-            if (!isset($postdata['proxy'])) {
-                $result['error'] = 'Wrong PAC form sent.';
-                return $result;
-            }
-            $mdlProxy = $this->getModel();
-            $node = $mdlProxy->pac->proxy->Add();
-            $node->setNodes($postdata['proxy']);
-            $valMsgs = $mdlProxy->performValidation();
-
-            foreach ($valMsgs as $field => $msg) {
-                $fieldnm = str_replace($node->__reference, 'pac.proxy', $msg->getField());
-                $result['validations'][$fieldnm] = $msg->getMessage();
-            }
-
-            if (count($result['validations']) == 0) {
-                // save config if validated correctly
-                $mdlProxy->serializeToConfig();
-                Config::getInstance()->save();
-                $result = array('result' => 'saved');
-            }
-            return $result;
-        }
-        return $result;
+        $this->pac_set_helper();
+        return $this->addBase('proxy', 'pac.proxy');
     }
     /**
      * update PAC Proxy
@@ -428,7 +379,8 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function setPACProxyAction($uuid)
     {
-        return $this->pac_set_helper($uuid, 'pac.proxy', 'proxy');
+        $this->pac_set_helper();
+        return $this->setBase('proxy', 'pac.proxy', $uuid);
     }
     /**
      * delete PAC Proxy by uuid
@@ -448,7 +400,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function searchPACMatchAction()
     {
         $this->sessionClose();
-        return $this->searchBase('pac.proxy', array("enabled", "name", "description", "negate", "match_type"), "name");
+        return $this->searchBase('pac.match', array("enabled", "name", "description", "negate", "match_type"), "name");
     }
     /**
      * retrieve PAC Match or return defaults
@@ -466,33 +418,8 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function addPACMatchAction()
     {
-        $result = array('result' => 'failed');
-        if ($this->request->isPost() && $this->request->hasPost('pac')) {
-            $result = array('result' => 'failed', 'validations' => array());
-            $postdata = $this->request->getPost('pac');
-            if (!isset($postdata['match'])) {
-                $result['error'] = 'Wrong PAC form sent.';
-                return $result;
-            }
-            $mdlProxy = $this->getModel();
-            $node = $mdlProxy->pac->match->Add();
-            $node->setNodes($postdata['match']);
-            $valMsgs = $mdlProxy->performValidation();
-
-            foreach ($valMsgs as $field => $msg) {
-                $fieldnm = str_replace($node->__reference, 'pac.match', $msg->getField());
-                $result['validations'][$fieldnm] = $msg->getMessage();
-            }
-
-            if (count($result['validations']) == 0) {
-                // save config if validated correctly
-                $mdlProxy->serializeToConfig();
-                Config::getInstance()->save();
-                $result = array('result' => 'saved');
-            }
-            return $result;
-        }
-        return $result;
+        $this->pac_set_helper();
+        return $this->addBase('match', 'pac.match');
     }
     /**
      * update PAC Rule
@@ -502,7 +429,8 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function setPACMatchAction($uuid)
     {
-        return $this->pac_set_helper($uuid, 'pac.match', 'match');
+        $this->pac_set_helper();
+        return $this->setBase('match', 'pac.match', $uuid);
     }
 
     /**
@@ -516,44 +444,18 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * update PAC whatever
-     * @param string $uuid uuid of the node
-     * @param string $dbref db reference prefix
-     * @param $postfield array key for to extract
-     * @return array result status
-     * @throws \Phalcon\Validation\Exception
+     * flatten post data structure
      */
-    private function pac_set_helper($uuid, $dbref, $postfield)
+    private function pac_set_helper()
     {
         if ($this->request->isPost() && $this->request->hasPost("pac")) {
-            $postdata = $this->request->getPost('pac');
-            if (!isset($postdata[$postfield])) {
-                $result['error'] = 'Wrong PAC form sent.';
-                return $result;
-            }
-            $mdlProxy = $this->getModel();
-            if ($uuid != null) {
-                $node = $mdlProxy->getNodeByReference($dbref . '.' . $uuid);
-                if ($node != null) {
-                    $result = array("result" => "failed", "validations" => array());
-                    $node->setNodes($postdata[$postfield]);
-                    $valMsgs = $mdlProxy->performValidation();
-                    foreach ($valMsgs as $field => $msg) {
-                        $fieldnm = str_replace($node->__reference, $dbref, $msg->getField());
-                        $result["validations"][$fieldnm] = $msg->getMessage();
-                    }
-
-                    if (count($result['validations']) == 0) {
-                        // save config if validated correctly
-                        $mdlProxy->serializeToConfig();
-                        Config::getInstance()->save();
-                        $result = array("result" => "saved");
-                    }
-                    return $result;
+            $pac_data = $this->request->getPost('pac');
+            if (is_array($pac_data)) {
+                foreach ($pac_data as $key => $value) {
+                    $_POST[$key] = $value;
                 }
             }
         }
-        return array("result" => "failed");
     }
 
     /**
