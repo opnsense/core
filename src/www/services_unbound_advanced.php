@@ -240,7 +240,7 @@ include_once("head.inc");
                         <td>
                           <select id="num_queries_per_thread" name="num_queries_per_thread" class="selectpicker">
 <?php
-                          foreach (array("512", "1024", "2048") as $queries) :?>
+                          foreach (array('512', '1024', '2048', '4096', '8192') as $queries) :?>
                             <option value="<?= $queries ?>" <?= $pconfig['num_queries_per_thread'] == $queries ? 'selected="selected"' : '' ?>>
                               <?= $queries ?>
                             </option>
