@@ -125,6 +125,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header(url_safe('Location: /firewall_nat.php'));
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'toggle' && isset($id)) {
+        // toggle nat rule and associated rule if it exists
+        if (!empty($a_nat[$id]['associated-rule-id'])) {
+            foreach ($config['filter']['rule'] as $key => $item) {
+                if (isset($item['associated-rule-id']) && $item['associated-rule-id'] == $a_nat[$id]['associated-rule-id']) {
+                    if (isset($a_nat[$id]['disabled'])) {
+                        unset($config['filter']['rule'][$key]['disabled']);
+                    } else {
+                        $config['filter']['rule'][$key]['disabled'] = true;
+                    }
+                    break;
+                }
+            }
+            mark_subsystem_dirty('filter');
+        };
         // toggle item
         if(isset($a_nat[$id]['disabled'])) {
             unset($a_nat[$id]['disabled']);

@@ -31,7 +31,6 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 
-
 // init config and get reference
 $a_nat = &config_read_array('nat', 'rule');
 
@@ -254,16 +253,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $natent['natreflection'] = $pconfig['natreflection'];
         }
 
-        // If we used to have an associated filter rule, but no-longer should have one
-        if (isset($id) && !empty($a_nat[$id]['associated-rule-id']) && ( empty($natent['associated-rule-id']) || $natent['associated-rule-id'] != $a_nat[$id]['associated-rule-id'] ) ) {
-            // Delete the previous rule
-            foreach ($config['filter']['rule'] as $key => $item){
-                if(isset($item['associated-rule-id']) && $item['associated-rule-id']==$a_nat[$id]['associated-rule-id'] ){
-                    unset($config['filter']['rule'][$key]);
-                    break;
+        if (isset($id) && !empty($a_nat[$id]['associated-rule-id'])) {
+            // If we used to have an associated filter rule, but no-longer should have one
+            if ((empty($natent['associated-rule-id']) || $natent['associated-rule-id'] != $a_nat[$id]['associated-rule-id'])) {
+                // Delete the previous rule
+                foreach ($config['filter']['rule'] as $key => $item) {
+                    if (isset($item['associated-rule-id']) && $item['associated-rule-id'] == $a_nat[$id]['associated-rule-id']) {
+                        unset($config['filter']['rule'][$key]);
+                        break;
+                    }
                 }
+                mark_subsystem_dirty('filter');
             }
-            mark_subsystem_dirty('filter');
+
+            // toggle nat rule and associated rule if it exists
+            if (isset($a_nat[$id]["disabled"]) != $natent['disabled']) {
+                foreach ($config['filter']['rule'] as $key => $item) {
+                    if (isset($item['associated-rule-id']) && $item['associated-rule-id'] == $a_nat[$id]['associated-rule-id']) {
+                        if (!$natent['disabled']) {
+                            unset($config['filter']['rule'][$key]['disabled']);
+                        } else {
+                            $config['filter']['rule'][$key]['disabled'] = true;
+                        }
+                        break;
+                    }
+                }
+                mark_subsystem_dirty('filter');
+            }
         }
 
         $need_filter_rule = false;
