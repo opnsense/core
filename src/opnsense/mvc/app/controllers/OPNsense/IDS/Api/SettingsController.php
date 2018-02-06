@@ -635,6 +635,6 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function toggleUserRuleAction($uuid, $enabled = null)
     {
-        return $this->toggleBase("userDefinedRules.rule", $uuid);
+        return $this->toggleBase("userDefinedRules.rule", $uuid, $enabled);
     }
 }
