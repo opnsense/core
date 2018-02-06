@@ -42,16 +42,16 @@ readonly    :   if true, input fields will be readonly
 
 #}
 
-<tr for="{{ id }}" {% if advanced|default(false)=='true' %} data-advanced="true"{% endif %}>
+<tr id="row_{{ id }}" {% if advanced|default(false)=='true' %} data-advanced="true"{% endif %}>
     <td >
-        <output class="control-label" for="{{ id }}">
+        <div class="control-label" id="control_label_{{ id }}">
             {% if help|default(false) %}
                 <a id="help_for_{{ id }}" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
             {% elseif help|default(false) == false %}
                 <i class="fa fa-info-circle text-muted"></i>
             {% endif %}
             <b>{{label}}</b>
-        </output>
+        </div>
     </td>
     <td >
         {% if type == "text" %}
@@ -60,7 +60,7 @@ readonly    :   if true, input fields will be readonly
             <input type="checkbox" id="{{ id }}" >
         {% elseif type == "select_multiple" %}
             <select multiple="multiple" {% if size|default(false) %}size="{{size}}"{% endif %}  id="{{ id }}" {% if style|default(false) %}class="{{style}}" {% endif %}  {% if hint|default(false) %}data-hint="{{hint}}"{% endif %}  {% if maxheight|default(false) %}data-maxheight="{{maxheight}}"{% endif %} data-width="{{width|default("348px")}}" data-allownew="{{allownew|default("false")}}" data-nbdropdownelements="{{nbDropdownElements|default("10")}}"></select>
-            <br/><a href="#" class="text-danger" id="clear-options" for="{{ id }}"><i class="fa fa-times-circle"></i></a> <small>{{ lang._('Clear All') }}</small>
+            <br/><a href="#" class="text-danger" id="clear-options_{{ id }}"><i class="fa fa-times-circle"></i></a> <small>{{ lang._('Clear All') }}</small>
         {% elseif type == "dropdown" %}
             <select {% if size|default(false) %}size="{{size}}"{% endif %}  id="{{ id }}" class="{{style|default('selectpicker')}}"  data-width="{{width|default("348px")}}"></select>
         {% elseif type == "password" %}
@@ -72,10 +72,12 @@ readonly    :   if true, input fields will be readonly
         {% endif %}
 
         {% if help|default(false) %}
-            <small class="hidden" for="help_for_{{ id }}" >{{help}}</small>
+            <output class="hidden" for="help_for_{{ id }}" >
+                <small>{{help}}</small>
+            </output>
         {% endif %}
     </td>
     <td>
-        <span class="help-block" for="{{ id }}" ></span>
+        <span class="help-block" id="help_block_{{ id }}" ></span>
     </td>
 </tr>
