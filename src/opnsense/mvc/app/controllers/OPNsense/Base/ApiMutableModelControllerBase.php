@@ -213,11 +213,13 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * Model search wrapper
      * @param string $path path to search, relative to this model
      * @param array $fields fieldnames to fetch in result
+     * @param string|null $defaultSort default sort field name
      * @return array
      * @throws \ReflectionException when binding to the model class fails
      */
-    public function searchBase($path, $fields)
+    public function searchBase($path, $fields, $defaultSort = null)
     {
+        $this->sessionClose();
         $element = $this->getModel();
         foreach (explode('.', $path) as $step) {
             $element = $element->{$step};
@@ -225,7 +227,8 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         $grid = new UIModelGrid($element);
         return $grid->fetchBindRequest(
             $this->request,
-            $fields
+            $fields,
+            $defaultSort
         );
     }
 
@@ -367,12 +370,13 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     /**
      * Generic toggle function, assumes our model item has an enabled boolean type field.
      * @param string $path relative model path
-     * @param $uuid node key
+     * @param string $uuid node key
+     * @param string $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
      */
-    public function toggleBase($path, $uuid)
+    public function toggleBase($path, $uuid, $enabled = null)
     {
         $result = array("result" => "failed");
         if ($this->request->isPost()) {
@@ -380,7 +384,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             if ($uuid != null) {
                 $node = $mdl->getNodeByReference($path . '.' . $uuid);
                 if ($node != null) {
-                    if ((string)$node->enabled == "1") {
+                    if ($enabled == "0" || $enabled == "1") {
+                        $node->enabled = (string)$enabled;
+                    } elseif ((string)$node->enabled == "1") {
                         $result['result'] = "Disabled";
                         $node->enabled = "0";
                     } else {
