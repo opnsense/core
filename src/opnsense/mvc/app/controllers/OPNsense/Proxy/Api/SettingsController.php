@@ -291,13 +291,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function searchPACRuleAction()
     {
         $this->sessionClose();
-        $mdlProxy = $this->getModel();
-        $grid = new UIModelGrid($mdlProxy->pac->rule);
-        return $grid->fetchBindRequest(
-            $this->request,
-            array("enabled", "description", "proxies", "matches"),
-            "description"
-        );
+        return $this->searchBase('pac.rule', array("enabled", "description", "proxies", "matches"), "description");
     }
     /**
      * retrieve PAC Rule or return defaults
@@ -306,20 +300,8 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function getPACRuleAction($uuid = null)
     {
-        $mdlProxy = $this->getModel();
-        if ($uuid != null) {
-            $node = $mdlProxy->getNodeByReference('pac.rule.' . $uuid);
-            if ($node != null) {
-                // return node
-                return array("pac" => array('rule' =>$node->getNodes()));
-            }
-        } else {
-            // generate new node, but don't save to disc
-            $node = $mdlProxy->pac->rule->add();
-            return array("pac" => array('rule' =>$node->getNodes()));
-
-        }
-        return array();
+        $this->sessionClose();
+        return array("pac" => $this->getBase('rule', 'pac.rule', $uuid));
     }
     /**
      * add new PAC Rule and set with attributes from post
@@ -372,7 +354,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function togglePACRuleAction($uuid)
     {
-        return $this->toggle_helper($uuid, 'pac.rule');
+        return $this->toggleBase('pac.rule', $uuid);
     }
     /**
      * delete PAC Rule by uuid
@@ -381,23 +363,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function delPACRuleAction($uuid)
     {
-
-        $result = array("result" => "failed");
-
-        if ($this->request->isPost()) {
-            $mdlProxy = $this->getModel();
-            if ($uuid != null) {
-                if ($mdlProxy->pac->rule->del($uuid)) {
-                    // if item is removed, serialize to config and save
-                    $mdlProxy->serializeToConfig();
-                    Config::getInstance()->save();
-                    $result['result'] = 'deleted';
-                } else {
-                    $result['result'] = 'not found';
-                }
-            }
-        }
-        return $result;
+        return $this->delBase('pac.rule', $uuid);
     }
 
     /**
@@ -408,13 +374,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function searchPACProxyAction()
     {
         $this->sessionClose();
-        $mdlProxy = $this->getModel();
-        $grid = new UIModelGrid($mdlProxy->pac->proxy);
-        return $grid->fetchBindRequest(
-            $this->request,
-            array("enabled","proxy_type", "name", "url", "description"),
-            "description"
-        );
+        return $this->searchBase('pac.proxy', array("enabled","proxy_type", "name", "url", "description"), "description");
     }
     /**
      * retrieve PAC Proxy or return defaults
@@ -423,19 +383,8 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function getPACProxyAction($uuid = null)
     {
-        $mdlProxy = $this->getModel();
-        if ($uuid != null) {
-            $node = $mdlProxy->getNodeByReference('pac.proxy.' . $uuid);
-            if ($node != null) {
-                // return node
-                return array("pac" => array('proxy' =>$node->getNodes()));
-            }
-        } else {
-            // generate new node, but don't save to disc
-            $node = $mdlProxy->pac->proxy->add();
-            return array("pac" => array('proxy' =>$node->getNodes()));
-        }
-        return array();
+        $this->sessionClose();
+        return array("pac" => $this->getBase('proxy', 'pac.proxy', $uuid));
     }
     /**
      * add new PAC Proxy and set with attributes from post
@@ -488,23 +437,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function delPACProxyAction($uuid)
     {
-
-        $result = array("result" => "failed");
-
-        if ($this->request->isPost()) {
-            $mdlProxy = $this->getModel();
-            if ($uuid != null) {
-                if ($mdlProxy->pac->proxy->del($uuid)) {
-                    // if item is removed, serialize to config and save
-                    $mdlProxy->serializeToConfig();
-                    Config::getInstance()->save();
-                    $result['result'] = 'deleted';
-                } else {
-                    $result['result'] = 'not found';
-                }
-            }
-        }
-        return $result;
+        return $this->delBase('pac.proxy', $uuid);
     }
 
     /**
@@ -515,13 +448,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function searchPACMatchAction()
     {
         $this->sessionClose();
-        $mdlProxy = $this->getModel();
-        $grid = new UIModelGrid($mdlProxy->pac->match);
-        return $grid->fetchBindRequest(
-            $this->request,
-            array("enabled", "name", "description", "negate", "match_type"),
-            "name"
-        );
+        return $this->searchBase('pac.proxy', array("enabled", "name", "description", "negate", "match_type"), "name");
     }
     /**
      * retrieve PAC Match or return defaults
@@ -530,19 +457,8 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function getPACMatchAction($uuid = null)
     {
-        $mdlProxy = $this->getModel();
-        if ($uuid != null) {
-            $node = $mdlProxy->getNodeByReference('pac.match.' . $uuid);
-            if ($node != null) {
-                // return node
-                return array("pac" => array('match' => $node->getNodes()));
-            }
-        } else {
-            // generate new node, but don't save to disc
-            $node = $mdlProxy->pac->match->add();
-            return array("pac" => array('match' => $node->getNodes()));
-        }
-        return array();
+        $this->sessionClose();
+        return array("pac" => $this->getBase('match', 'pac.match', $uuid));
     }
     /**
      * add new PAC Proxy and set with attributes from post
@@ -596,23 +512,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function delPACMatchAction($uuid)
     {
-
-        $result = array("result" => "failed");
-
-        if ($this->request->isPost()) {
-            $mdlProxy = $this->getModel();
-            if ($uuid != null) {
-                if ($mdlProxy->pac->match->del($uuid)) {
-                    // if item is removed, serialize to config and save
-                    $mdlProxy->serializeToConfig();
-                    Config::getInstance()->save();
-                    $result['result'] = 'deleted';
-                } else {
-                    $result['result'] = 'not found';
-                }
-            }
-        }
-        return $result;
+        return $this->delBase('pac.match', $uuid);
     }
 
     /**
@@ -623,7 +523,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * @return array result status
      * @throws \Phalcon\Validation\Exception
      */
-    public function pac_set_helper($uuid, $dbref, $postfield)
+    private function pac_set_helper($uuid, $dbref, $postfield)
     {
         if ($this->request->isPost() && $this->request->hasPost("pac")) {
             $postdata = $this->request->getPost('pac');
@@ -654,37 +554,6 @@ class SettingsController extends ApiMutableModelControllerBase
             }
         }
         return array("result" => "failed");
-    }
-
-    /**
-     * toggle element by uuid (enable/disable)
-     * @param $uuid item unique id
-     * @return array status
-     */
-    public function toggle_helper($uuid, $reference)
-    {
-
-        $result = array("result" => "failed");
-
-        if ($this->request->isPost()) {
-            $mdlProxy = $this->getModel();
-            if ($uuid != null) {
-                $node = $mdlProxy->getNodeByReference($reference . '.' . $uuid);
-                if ($node != null) {
-                    if ($node->enabled->__toString() == "1") {
-                        $result['result'] = "Disabled";
-                        $node->enabled = "0";
-                    } else {
-                        $result['result'] = "Enabled";
-                        $node->enabled = "1";
-                    }
-                    // if item has toggled, serialize to config and save
-                    $mdlProxy->serializeToConfig();
-                    Config::getInstance()->save();
-                }
-            }
-        }
-        return $result;
     }
 
     /**
