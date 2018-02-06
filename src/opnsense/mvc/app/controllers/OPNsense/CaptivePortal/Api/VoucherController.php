@@ -138,7 +138,7 @@ class VoucherController extends ApiControllerBase
             if ($auth != null && method_exists($auth, 'generateVouchers')) {
                 $count = $this->request->getPost('count', 'int', 0);
                 $validity = $this->request->getPost('validity', 'int', 0);
-				$expirytime = $this->request->getPost('expirytime', 'int', 0);
+                $expirytime = $this->request->getPost('expirytime', 'int', 0);
                 $vouchergroup = $this->request->getPost('vouchergroup', 'striptags', '---');
                 // remove characters which are known to provide issues when using in the url
                 foreach (array("&", "#") as $skip_chars) {

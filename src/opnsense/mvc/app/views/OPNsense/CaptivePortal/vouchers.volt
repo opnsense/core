@@ -412,9 +412,15 @@ POSSIBILITY OF SUCH DAMAGE.
             <div class="modal-body">
             <div id="generatevouchererror" class="alert alert-danger" role="alert" style="display: none"></div>
                 <table class="table table-striped table-condensed table-responsive">
+                    <thead>
+                        <tr>
+                            <th>{{ lang._('Setting') }}</th>
+                            <th>{{ lang._('Value') }}</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         <tr>
-                            <th>{{ lang._('Validity') }}</th>
+                            <td>{{ lang._('Validity') }}</td>
                             <td>
                                 <select id="voucher-validity" class="selectpicker" data-width="200px">
                                     <option value="14400">{{ lang._('4 hours') }}</option>
@@ -433,7 +439,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             </td>
                         </tr>
                         <tr>
-                            <th>{{ lang._('Expires in') }}</th>
+                            <td>{{ lang._('Expires in') }}</td>
                             <td>
                                 <select id="voucher-expiry" class="selectpicker" data-width="200px">
                                     <option value="0">{{ lang._('never') }}</option>
@@ -456,8 +462,8 @@ POSSIBILITY OF SUCH DAMAGE.
                                 <input type="text" id="voucher-expiry-custom-data" style="display:none;">
                             </td>
                         </tr>
-						<tr>
-                            <th>{{ lang._('Number of vouchers') }}</th>
+                        <tr>
+                            <td>{{ lang._('Number of vouchers') }}</td>
                             <td>
                                 <select id="voucher-quantity" class="selectpicker" data-width="200px">
                                     <option value="1">1</option>
@@ -472,8 +478,8 @@ POSSIBILITY OF SUCH DAMAGE.
                                 <input type="text" id="voucher-quantity-custom-data" style="display:none;">
                             </td>
                         </tr>
-						<tr>
-                            <th>{{ lang._('Groupname') }}</th>
+                        <tr>
+                            <td>{{ lang._('Groupname') }}</td>
                             <td>
                                 <input id="voucher-groupname" type="text">
                             </td>
