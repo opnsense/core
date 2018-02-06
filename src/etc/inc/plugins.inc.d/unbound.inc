@@ -105,14 +105,6 @@ function unbound_optimization()
         $optimization['key_cache_slabs'] = "key-cache-slabs: 4";
     }
 
-    // More outgoing connections per thread otherwise assign a default of 4096 for a single thread
-    if ($numprocs > 0) {
-        $or = (1024/$numprocs) - 50;
-        $optimization['outgoing_range'] = "outgoing-range: {$or}";
-    } else {
-        $optimization['outgoing_range'] = "outgoing-range: {4096}";
-    }
-
     return $optimization;
 }
 
@@ -235,6 +227,7 @@ EOF;
     $outgoing_num_tcp = !empty($config['unbound']['outgoing_num_tcp']) ? $config['unbound']['outgoing_num_tcp'] : "10";
     $incoming_num_tcp = !empty($config['unbound']['incoming_num_tcp']) ? $config['unbound']['incoming_num_tcp'] : "10";
     $num_queries_per_thread = !empty($config['unbound']['num_queries_per_thread']) ? $config['unbound']['num_queries_per_thread'] : "4096";
+    $outgoing_range = $num_queries_per_thread * 2;
     $jostle_timeout = !empty($config['unbound']['jostle_timeout']) ? $config['unbound']['jostle_timeout'] : "200";
     $cache_max_ttl = !empty($config['unbound']['cache_max_ttl']) ? $config['unbound']['cache_max_ttl'] : "86400";
     $cache_min_ttl = !empty($config['unbound']['cache_min_ttl']) ? $config['unbound']['cache_min_ttl'] : "0";
@@ -315,6 +308,7 @@ serve-expired: {$serveexpired}
 outgoing-num-tcp: {$outgoing_num_tcp}
 incoming-num-tcp: {$incoming_num_tcp}
 num-queries-per-thread: {$num_queries_per_thread}
+outgoing-range: {$outgoing_range}
 infra-host-ttl: {$infra_host_ttl}
 infra-cache-numhosts: {$infra_cache_numhosts}
 unwanted-reply-threshold: {$unwanted_reply_threshold}
@@ -326,7 +320,6 @@ rrset-cache-size: {$rrsetcachesize}m
 {$optimization['rrset_cache_slabs']}
 {$optimization['infra_cache_slabs']}
 {$optimization['key_cache_slabs']}
-{$optimization['outgoing_range']}
 {$optimization['so_rcvbuf']}
 {$anchor_file}
 prefetch: {$prefetch}
