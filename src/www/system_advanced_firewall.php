@@ -306,7 +306,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_snat_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky oubound NAT");?></td>
+                  <td><a id="help_for_snat_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky outbound NAT");?></td>
                   <td>
                     <input name="snat_use_sticky" type="checkbox" id="snat_use_sticky" <?=!empty($pconfig['snat_use_sticky']) ? "checked=\"checked\"" : "";?> />
                     <output class="hidden" for="help_for_snat_use_sticky">
