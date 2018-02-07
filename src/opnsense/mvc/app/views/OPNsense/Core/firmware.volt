@@ -789,9 +789,9 @@
                                     <div style="display:none;" id="firmware_mirror_other">
                                         <input type="text" id="firmware_mirror_value">
                                     </div>
-                                    <output class="hidden" for="help_for_mirror">
+                                    <div class="hidden" data-for="help_for_mirror">
                                         {{ lang._('Select an alternate firmware mirror.') }}
-                                    </output>
+                                    </div>
                                 </td>
                                 <td></td>
                             </tr>
@@ -803,9 +803,9 @@
                                     <div style="display:none;" id="firmware_flavour_other">
                                         <input type="text" id="firmware_flavour_value">
                                     </div>
-                                    <output class="hidden" for="help_for_flavour">
+                                    <div class="hidden" data-for="help_for_flavour">
                                         {{ lang._('Select the firmware cryptography flavour.') }}
-                                    </output>
+                                    </div>
                                 </td>
                                 <td></td>
                             </tr>
@@ -814,9 +814,9 @@
                                 <td>
                                     <select class="selectpicker" id="firmware_type">
                                     </select>
-                                    <output class="hidden" for="help_for_type">
+                                    <div class="hidden" data-for="help_for_type">
                                         {{ lang._('Select the release type. Use with care.') }}
-                                    </output>
+                                    </div>
                                 </td>
                                 <td></td>
                             </tr>
@@ -824,9 +824,9 @@
                                 <td style="width: 150px;"><a id="help_for_mirror_subscription" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Subscription') }}</td>
                                 <td>
                                     <input type="text" id="firmware_mirror_subscription">
-                                    <output class="hidden" for="help_for_mirror_subscription">
+                                    <div class="hidden" data-for="help_for_mirror_subscription">
                                         {{ lang._('Provide subscription key.') }}
-                                    </output>
+                                    </div>
                                 </td>
                                 <td></td>
                             </tr>

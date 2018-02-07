@@ -486,11 +486,11 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <td style="width:22%"><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                   <td style="width:78%" class="vtable">
                     <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : "" ;?> />
-                    <output class="hidden" for="help_for_disabled">
+                    <div class="hidden" data-for="help_for_disabled">
                         <?=gettext("Disable this phase2 entry"); ?><br/>
                         <?=gettext("Set this option to disable this phase2 entry without " .
                                                   "removing it from the list"); ?>.
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -517,10 +517,10 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                   <td>
                     <input name="descr" type="text" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
-                    <output class="hidden" for="help_for_descr">
+                    <div class="hidden" data-for="help_for_descr">
                         <?=gettext("You may enter a description here " .
                                                     "for your reference (not parsed)"); ?>.
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr class="opt_localid">
@@ -614,9 +614,9 @@ endif; ?>
                     endforeach; ?>
                     </select>
                     <br />
-                    <output class="hidden" for="help_for_proto">
+                    <div class="hidden" data-for="help_for_proto">
                         <?=gettext("ESP is encryption, AH is authentication only"); ?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr id="opt_enc">
@@ -647,11 +647,11 @@ endif; ?>
 <?php
                       endforeach; ?>
 
-                      <output class="hidden" for="help_for_encalg">
+                      <div class="hidden" data-for="help_for_encalg">
                           <?=gettext("Hint: use 3DES for best compatibility or if you have a hardware " .
                                                   "crypto accelerator card. Blowfish is usually the fastest in " .
                                                   "software encryption"); ?>.
-                      </output>
+                      </div>
                   </td>
                 </tr>
                 <tr>
@@ -708,9 +708,9 @@ endif; ?>
                   <td><a id="help_for_pinghost" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatically ping host"); ?></td>
                   <td>
                     <input name="pinghost" type="text" class="formfld unknown" id="pinghost" size="28" value="<?=$pconfig['pinghost'];?>" />
-                    <output class="hidden" for="help_for_pinghost">
+                    <div class="hidden" data-for="help_for_pinghost">
                         <?=gettext("IP address"); ?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
 <?php
@@ -719,13 +719,13 @@ endif; ?>
                   <td><a id="help_for_spd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Manual SPD entries"); ?></td>
                   <td>
                     <input name="spd" type="text" id="spd" value="<?= $pconfig['spd'];?>" />
-                    <output class="hidden" for="help_for_spd">
+                    <div class="hidden" data-for="help_for_spd">
                         <strong><?=gettext("Register additional Security Policy Database entries"); ?></strong><br/>
                         <?=gettext("Strongswan automatically creates SPD policies for the networks defined in this phase2. ".
                                    "If you need to allow other networks to use this ipsec tunnel, you can add them here as a comma seperated list.".
                                    "When configured, you can use network address translation to push packets through this tunnel from these networks."); ?><br/>
                         <small><?=gettext("e.g. 192.168.1.0/24, 192.168.2.0/24"); ?></small>
-                    </output>
+                    </div>
                   </td>
                 </tr>
 <?php

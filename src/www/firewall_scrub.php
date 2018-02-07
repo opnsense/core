@@ -235,35 +235,35 @@ $( document ).ready(function() {
                       <td><a id="help_for_scrub_interface_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable interface scrub");?></td>
                       <td>
                         <input id="scrub_interface_disable" name="scrub_interface_disable" type="checkbox" value="yes" <?=!empty($pconfig['scrub_interface_disable']) ? "checked=\"checked\"" : "";?> />
-                        <output class="hidden" for="help_for_scrub_interface_disable">
+                        <div class="hidden" data-for="help_for_scrub_interface_disable">
                           <?=gettext("Disable all default interface scrubing rules,".
                                      " mss clamping will also be disabled when you check this.".
                                      " Detailed settings specified below will still be used.");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr class="scrub_settings">
                       <td><a id="help_for_scrubnodf" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Do-Not-Fragment");?></td>
                       <td>
                         <input name="scrubnodf" type="checkbox" value="yes" <?=!empty($pconfig['scrubnodf']) ? "checked=\"checked\"" : ""; ?>/>
-                        <output class="hidden" for="help_for_scrubnodf">
+                        <div class="hidden" data-for="help_for_scrubnodf">
                           <?=gettext("This allows for communications with hosts that generate fragmented " .
                                               "packets with the don't fragment (DF) bit set. Linux NFS is known to " .
                                               "do this. This will cause the filter to not drop such packets but " .
                                               "instead clear the don't fragment bit.");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr class="scrub_settings">
                       <td><a id="help_for_scrubrnid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Random id");?></td>
                       <td>
                         <input name="scrubrnid" type="checkbox" value="yes" <?= !empty($pconfig['scrubrnid']) ? "checked=\"checked\"" : "";?> />
-                        <output class="hidden" for="help_for_scrubrnid">
+                        <div class="hidden" data-for="help_for_scrubrnid">
                           <?=gettext("Replaces the IP identification field of packets with random values to " .
                                               "compensate for operating systems that use predictable values. " .
                                               "This option only applies to packets that are not fragmented after the " .
                                               "optional packet reassembly.");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>

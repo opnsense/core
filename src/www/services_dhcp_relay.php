@@ -144,9 +144,9 @@ include("head.inc");
 <?php
                         endforeach;?>
                         </select>
-                        <output class="hidden" for="help_for_interface">
+                        <div class="hidden" data-for="help_for_interface">
                           <?= gettext('Interfaces without an IP address will not be shown.') ?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -154,18 +154,18 @@ include("head.inc");
                       <td>
                           <input name="agentoption" type="checkbox" value="yes" <?=!empty($pconfig['agentoption']) ? "checked=\"checked\"" : ""; ?> />
                           <strong><?=gettext("Append circuit ID and agent ID to requests"); ?></strong><br />
-                          <output class="hidden" for="help_for_agentoption">
+                          <div class="hidden" data-for="help_for_agentoption">
                             <?= gettext('If this is checked, the DHCP relay will append the circuit ID (interface number) and the agent ID to the DHCP request.') ?>
-                          </output>
+                          </div>
                       </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination servers");?></td>
                       <td>
                         <input name="server" type="text" value="<?=!empty($pconfig['server']) ? htmlspecialchars($pconfig['server']):"";?>" />
-                        <output class="hidden" for="help_for_server">
+                        <div class="hidden" data-for="help_for_server">
                           <?=gettext("These are the IP addresses of servers to which DHCP requests are relayed. You can enter multiple server IP addresses, separated by commas. Select \"Proxy requests to DHCP server on WAN subnet\" to relay DHCP packets to the server that was used on the WAN interface.");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
