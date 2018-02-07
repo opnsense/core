@@ -340,9 +340,9 @@ include("head.inc");
                     $mac = `/usr/sbin/arp -an | grep {$ip} | /usr/bin/head -n1 | /usr/bin/cut -d" " -f4`;
                     $mac = str_replace("\n","",$mac);?>
                     <a onclick="$('#mac').val('<?=$mac?>');" href="#"><?=gettext("Copy my MAC address");?></a>
-                    <output class="hidden" for="help_for_mac">
+                    <div class="hidden" data-for="help_for_mac">
                       <?=gettext("Enter a MAC address in the following format: "."xx:xx:xx:xx:xx:xx");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -355,20 +355,20 @@ include("head.inc");
                   <td><a id="help_for_ipaddr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP address");?></td>
                   <td>
                     <input name="ipaddr" type="text" value="<?=$pconfig['ipaddr'];?>" />
-                    <output class="hidden" for="help_for_ipaddr">
+                    <div class="hidden" data-for="help_for_ipaddr">
                       <?=gettext("If an IPv4 address is entered, the address must be outside of the pool.");?>
                       <br />
                       <?=gettext("If no IPv4 address is given, one will be dynamically allocated from the pool.");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_hostname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hostname");?></td>
                   <td>
                     <input name="hostname" type="text" value="<?=$pconfig['hostname'];?>" />
-                    <output class="hidden" for="help_for_hostname">
+                    <div class="hidden" data-for="help_for_hostname">
                       <?=gettext("Name of the host, without domain part.");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
 <?php
@@ -377,18 +377,18 @@ include("head.inc");
                   <td><a id="help_for_filename" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Netboot Filename') ?></td>
                   <td>
                     <input name="filename" type="text" id="filename" size="20" value="<?=$pconfig['filename'];?>" />
-                    <output class="hidden" for="help_for_filename">
+                    <div class="hidden" data-for="help_for_filename">
                       <?= gettext('Name of the file that should be loaded when this host boots off of the network, overrides setting on main page.') ?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_rootpath" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Root Path') ?></td>
                   <td>
                     <input name="rootpath" type="text" value="<?=$pconfig['rootpath'];?>" />
-                    <output class="hidden" for="help_for_rootpath">
+                    <div class="hidden" data-for="help_for_rootpath">
                       <?= gettext("Enter the root-path-string, overrides setting on main page.") ?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
 <?php
@@ -397,18 +397,18 @@ include("head.inc");
                   <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
                   <td>
                     <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                    <output class="hidden" for="help_for_descr">
+                    <div class="hidden" data-for="help_for_descr">
                       <?=gettext("You may enter a description here ". "for your reference (not parsed).");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_arp_table_static_entry" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ARP Table Static Entry");?></td>
                   <td>
                     <input name="arp_table_static_entry" id="arp_table_static_entry" type="checkbox" value="yes" <?=!empty($pconfig['arp_table_static_entry']) ? "checked=\"checked\"" : ""; ?> />
-                    <output class="hidden" for="help_for_arp_table_static_entry">
+                    <div class="hidden" data-for="help_for_arp_table_static_entry">
                       <?=gettext('Create a static ARP table entry for this MAC and IP address pair.');?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -423,56 +423,56 @@ include("head.inc");
                   <td>
                     <input name="dns1" type="text" value="<?=$pconfig['dns1'];?>" /><br/>
                     <input name="dns2" type="text" value="<?=$pconfig['dns2'];?>" />
-                    <output class="hidden" for="help_for_dns">
+                    <div class="hidden" data-for="help_for_dns">
                       <?=gettext("NOTE: leave blank to use the system default DNS servers - this interface's IP if DNS forwarder is enabled, otherwise the servers configured on the General page.");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_gateway" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway");?></td>
                   <td>
                     <input name="gateway" type="text" value="<?=$pconfig['gateway'];?>" />
-                    <output class="hidden" for="help_for_gateway">
+                    <div class="hidden" data-for="help_for_gateway">
                       <?=gettext("The default is to use the IP on this interface of the firewall as the gateway. Specify an alternate gateway here if this is not the correct gateway for your network.");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain name");?></td>
                   <td>
                     <input name="domain" type="text" value="<?=$pconfig['domain'];?>" />
-                    <output class="hidden" for="help_for_domain">
+                    <div class="hidden" data-for="help_for_domain">
                       <?=gettext("The default is to use the domain name of this system as the default domain name provided by DHCP. You may specify an alternate domain name here.");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_domainsearchlist" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain search list");?></td>
                   <td>
                     <input name="domainsearchlist" type="text" id="domainsearchlist" size="20" value="<?=$pconfig['domainsearchlist'];?>" />
-                    <output class="hidden" for="help_for_domainsearchlist">
+                    <div class="hidden" data-for="help_for_domainsearchlist">
                       <?=gettext("The DHCP server can optionally provide a domain search list. Use the semicolon character as separator ");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_defaultleasetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Default lease time");?> (<?=gettext("seconds");?>)</td>
                   <td>
                     <input name="defaultleasetime" type="text" id="deftime" size="10" value="<?=$pconfig['defaultleasetime'];?>" />
-                    <output class="hidden" for="help_for_defaultleasetime">
+                    <div class="hidden" data-for="help_for_defaultleasetime">
                       <?=gettext("This is used for clients that do not ask for a specific " ."expiration time."); ?><br />
                       <?=gettext("The default is 7200 seconds.");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_maxleasetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Maximum lease time");?> (<?=gettext("seconds");?>)</td>
                   <td>
                     <input name="maxleasetime" type="text" value="<?=$pconfig['maxleasetime'];?>" />
-                    <output class="hidden" for="help_for_maxleasetime">
+                    <div class="hidden" data-for="help_for_maxleasetime">
                       <?=gettext("This is the maximum lease time for clients that ask"." for a specific expiration time."); ?><br />
                       <?=gettext("The default is 86400 seconds.");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>

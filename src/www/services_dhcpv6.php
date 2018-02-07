@@ -506,10 +506,10 @@ include("head.inc");
                               <td></td>
                           </tbody>
                         </table>
-                        <output class="hidden" for="help_for_prefixrange">
+                        <div class="hidden" data-for="help_for_prefixrange">
                           <?= gettext("You can define a Prefix range here for DHCP Prefix Delegation. This allows for assigning networks to subrouters. " .
                           "The start and end of the range must end on boundaries of the prefix delegation size."); ?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -517,47 +517,47 @@ include("head.inc");
                       <td>
                         <input name="dns1" type="text" id="dns1" value="<?=$pconfig['dns1'];?>" /><br />
                         <input name="dns2" type="text" id="dns2" value="<?=$pconfig['dns2'];?>" />
-                        <output class="hidden" for="help_for_dns">
+                        <div class="hidden" data-for="help_for_dns">
                           <?=gettext("Leave blank to use the system default DNS servers - this interface's IP if DNS forwarder is enabled, otherwise the servers configured on the General page.");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain name");?></td>
                       <td>
                         <input name="domain" type="text" id="domain" value="<?=$pconfig['domain'];?>" /><br />
-                        <output class="hidden" for="help_for_domain">
+                        <div class="hidden" data-for="help_for_domain">
                           <?=gettext("The default is to use the domain name of this system as the default domain name provided by DHCP. You may specify an alternate domain name here.");?>
-                        </output>
+                        </div>
                      </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_domainsearchlist" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain search list");?></td>
                       <td>
                         <input name="domainsearchlist" type="text" id="domainsearchlist" value="<?=$pconfig['domainsearchlist'];?>" /><br />
-                        <output class="hidden" for="help_for_domainsearchlist">
+                        <div class="hidden" data-for="help_for_domainsearchlist">
                           <?=gettext("The DHCP server can optionally provide a domain search list. Use the semicolon character as separator");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_defaultleasetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Default lease time");?> (<?=gettext("seconds");?>)</td>
                       <td>
                         <input name="defaultleasetime" type="text" value="<?=$pconfig['defaultleasetime'];?>" />
-                        <output class="hidden" for="help_for_defaultleasetime">
+                        <div class="hidden" data-for="help_for_defaultleasetime">
                           <?=gettext("This is used for clients that do not ask for a specific expiration time."); ?><br />
                           <?=gettext("The default is 7200 seconds.");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_maxleasetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Maximum lease time");?> (<?=gettext("seconds");?>)</td>
                       <td>
                         <input name="maxleasetime" type="text" id="maxleasetime" size="10" value="<?=$pconfig['maxleasetime'];?>" />
-                        <output class="hidden" for="help_for_maxleasetime">
+                        <div class="hidden" data-for="help_for_maxleasetime">
                           <?=gettext("This is the maximum lease time for clients that ask for a specific expiration time."); ?><br />
                           <?=gettext("The default is 86400 seconds.");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -567,9 +567,9 @@ include("head.inc");
                         <strong>
                           <?=gettext("Change DHCPv6 display lease time from UTC to local time."); ?>
                         </strong>
-                        <output class="hidden" for="help_for_dhcpv6leaseinlocaltime">
+                        <div class="hidden" data-for="help_for_dhcpv6leaseinlocaltime">
                           <?=gettext("By default DHCPv6 leases are displayed in UTC time. By checking this box DHCPv6 lease time will be displayed in local time and set to time zone selected. This will be used for all DHCPv6 interfaces lease time."); ?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -711,9 +711,9 @@ include("head.inc");
                               </tr>
                             </tfoot>
                           </table>
-                          <output class="hidden" for="help_for_numberoptions">
+                          <div class="hidden" data-for="help_for_numberoptions">
                           <?= sprintf(gettext("Enter the DHCP option number and the value for each item you would like to include in the DHCP lease information. For a list of available options please visit this %sURL%s."),'<a href="http://www.iana.org/assignments/bootp-dhcp-parameters/" target="_blank">','</a>') ?>
-                          </output>
+                          </div>
                         </div>
                       </td>
                     </tr>

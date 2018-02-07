@@ -162,27 +162,27 @@ include("head.inc");
 <?php
                       endforeach;?>
                       </select>
-                      <output class="hidden" for="help_for_if">
+                      <div class="hidden" data-for="help_for_if">
                         <?=gettext("Only QinQ capable interfaces will be shown.");?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_tag" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("First level tag");?></td>
                     <td>
                       <input name="tag" type="text" value="<?=$pconfig['tag'];?>" />
-                      <output class="hidden" for="help_for_tag">
+                      <div class="hidden" data-for="help_for_tag">
                         <?=gettext("This is the first level VLAN tag. On top of this are stacked the member VLANs defined below.");?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                      <output class="hidden" for="help_for_descr">
+                      <div class="hidden" data-for="help_for_descr">
                         <?=gettext("You may enter a description here for your reference (not parsed).");?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>

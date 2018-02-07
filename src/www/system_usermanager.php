@@ -620,27 +620,27 @@ $( document ).ready(function() {
                     <td><a id="help_for_fullname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Full name");?></td>
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" <?= $pconfig['scope'] == "system" || !empty($pconfig['user_dn']) ? "readonly=\"readonly\"" : "";?> />
-                      <output class="hidden" for="help_for_fullname">
+                      <div class="hidden" data-for="help_for_fullname">
                         <?=gettext("User's full name, for your own information only");?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_email" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("E-Mail");?></td>
                     <td>
                       <input name="email" type="text" value="<?= $pconfig['email'] ?>" />
-                      <output class="hidden" for="help_for_email">
+                      <div class="hidden" data-for="help_for_email">
                         <?= gettext('User\'s e-mail address, for your own information only') ?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_comment" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Comment");?></td>
                     <td>
                       <textarea name="comment" id="comment" class="form-control" cols="65" rows="3"><?= $pconfig['comment'] ?></textarea>
-                      <output class="hidden" for="help_for_comment">
+                      <div class="hidden" data-for="help_for_comment">
                         <?= gettext('User comment, for your own information only') ?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -666,9 +666,9 @@ $( document ).ready(function() {
                     <td><a id="help_for_expires" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Expiration date"); ?></td>
                     <td>
                       <input name="expires" type="text" id="expires" class="datepicker" data-date-format="mm/dd/yyyy" value="<?=$pconfig['expires'];?>" />
-                      <output class="hidden" for="help_for_expires">
+                      <div class="hidden" data-for="help_for_expires">
                           <?=gettext("Leave blank if the account shouldn't expire, otherwise enter the expiration date in the following format: mm/dd/yyyy"); ?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -729,9 +729,9 @@ $( document ).ready(function() {
                           </td>
                         </tr>
                       </table>
-                      <output class="hidden" for="help_for_groups">
+                      <div class="hidden" data-for="help_for_groups">
                           <?=gettext("Hold down CTRL (pc)/COMMAND (mac) key to select multiple items");?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
 <?php
@@ -879,10 +879,10 @@ $( document ).ready(function() {
                                   </tr>
                               </tfoot>
                           </table>
-                          <output class="hidden" for="help_for_apikeys">
+                          <div class="hidden" data-for="help_for_apikeys">
                               <hr/>
                               <?=gettext('Manage API keys here for machine to machine interaction using this user\'s credentials.');?>
-                          </output>
+                          </div>
                       </td>
                   </tr>
 <?php
@@ -900,9 +900,9 @@ $( document ).ready(function() {
                     <td>
                       <input name="otp_seed" type="text" value="<?=$pconfig['otp_seed'];?>"/>
                       <input type="checkbox" name="gen_otp_seed"/>&nbsp;<small><?= gettext('Generate new secret (160 bit)') ?></small>
-                      <output class="hidden" for="help_for_otp_seed">
+                      <div class="hidden" data-for="help_for_otp_seed">
                         <?=gettext("OTP (base32) seed to use when a one time password authenticator is used");?><br/>
-                      </output>
+                      </div>
                     </td>
                   </tr>
 <?php
@@ -921,9 +921,9 @@ $( document ).ready(function() {
                         $('#otp_qrcode').qrcode('<?= $otp_url ?>');
                       </script>
                       </div>
-                      <output class="hidden" for="help_for_otp_code">
+                      <div class="hidden" data-for="help_for_otp_code">
                         <?= gettext('Scan this QR code for easy setup with external apps.') ?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
 <?php

@@ -376,9 +376,9 @@ include("head.inc");
                   <td style="width:22%"><a id="help_for_crltext" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("CRL data");?></td>
                   <td style="width:78%">
                     <textarea name="crltext" id="crltext" cols="65" rows="7" class="formfld_crl"><?=$pconfig['crltext'];?></textarea>
-                    <output class="hidden" for="help_for_crltext">
+                    <div class="hidden" data-for="help_for_crltext">
                       <?=gettext("Paste a Certificate Revocation List in X.509 CRL format here.");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -395,18 +395,18 @@ include("head.inc");
                   <td style="width:22%"><a id="help_for_lifetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Lifetime");?> (<?=gettext("days");?>)</td>
                   <td style="width:78%">
                     <input name="lifetime" type="text" id="lifetime" size="5" value="<?=$pconfig['lifetime'];?>"/>
-                    <output class="hidden" for="help_for_lifetime">
+                    <div class="hidden" data-for="help_for_lifetime">
                       <?=gettext("Default: 9999");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_serial" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial");?></td>
                   <td>
                     <input name="serial" type="text" id="serial" size="5" value="<?=$pconfig['serial'];?>"/>
-                    <output class="hidden" for="help_for_serial">
+                    <div class="hidden" data-for="help_for_serial">
                       <?=gettext("Default: 0");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -443,9 +443,9 @@ include("head.inc");
                 <td><a id="help_for_crltext" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("CRL data");?></td>
                 <td>
                   <textarea name="crltext" id="crltext" cols="65" rows="7" class="formfld_crl"><?=$thiscrl['text'];?></textarea>
-                  <output class="hidden" for="help_for_crltext">
+                  <div class="hidden" data-for="help_for_crltext">
                     <?=gettext("Paste a Certificate Revocation List in X.509 CRL format here.");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>

@@ -147,27 +147,27 @@ include("head.inc");
 <?php
                         endforeach;?>
                         </select>
-                        <output class="hidden" for="help_for_interface">
+                        <div class="hidden" data-for="help_for_interface">
                           <?=gettext("Interfaces without an IPv6 address will not be shown."); ?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_agentoption" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Append circuit ID");?></td>
                       <td>
                         <input name="agentoption" type="checkbox" value="yes" <?=!empty($pconfig['agentoption']) ? "checked=\"checked\"" : ""; ?> />
-                        <output class="hidden" for="help_for_agentoption">
+                        <div class="hidden" data-for="help_for_agentoption">
                           <?= gettext('If this is checked, the DHCPv6 relay will append the circuit ID (interface number) and the agent ID to the DHCPv6 request.') ?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination server");?></td>
                       <td>
                         <input name="server" type="text" value="<?=!empty($pconfig['server']) ? htmlspecialchars($pconfig['server']):"";?>" />
-                        <output class="hidden" for="help_for_server">
+                        <div class="hidden" data-for="help_for_server">
                           <?=gettext("This is the IPv6 address of the server to which DHCPv6 requests are relayed. You can enter multiple server IPv6 addresses, separated by commas. ");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
