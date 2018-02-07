@@ -504,8 +504,8 @@ SureGPS =    #Sure Electronics SKG16B
                           <?=gettext("Note: Commands entered here will be sent to the GPS during initialization. Please read and understand your GPS documentation before making any changes here.");?><br /><br />
                           <strong><?=gettext("NMEA checksum calculator");?>:</strong>
                           <br />
-                          <?=gettext('Enter the text between "$" and "*" of a NMEA command string:');?><br /> $<input name="nmeastring" type="text" id="nmeastring" size="30" value="" />*<span id="nmeachecksum"><?=gettext("checksum");?></span>&nbsp;&nbsp;
-                          <input type="button" id="calcnmeachk" value="<?=gettext("Calculate NMEA checksum");?>" />
+                          <?=gettext('Enter the text between "$" and "*" of a NMEA command string:');?><br /> $<input name="nmeastring" type="text" id="nmeastring" size="30" value="" style="display:inline;" />*<span id="nmeachecksum"><?=gettext("checksum");?></span>&nbsp;&nbsp;
+                          <input class="btn btn-primary" type="button" id="calcnmeachk" value="<?=gettext("Calculate NMEA checksum");?>" />
                         </div>
                       </td>
                     </tr>
