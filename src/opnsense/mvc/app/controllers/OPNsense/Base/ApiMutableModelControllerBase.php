@@ -253,7 +253,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             foreach (explode('.', $path) as $step) {
                 $mdl = $mdl->{$step};
             }
-            $node = $mdl->add();
+            $node = $mdl->Add();
             return array($key_name => $node->getNodes());
         }
         return array();
