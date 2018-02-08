@@ -507,7 +507,7 @@ SureGPS =    #Sure Electronics SKG16B
                           <br />
                           <?=gettext('Enter the text between "$" and "*" of a NMEA command string:');?><br /><input name="nmeastring" type="text" id="nmeastring" size="30" value="" style="display:inline;" />
                           <input class="btn btn-primary" type="button" id="calcnmeachk" value="<?=gettext("Calculate NMEA Checksum");?>" /><br />
-                          <?= gettext("Checksum:") ?> <span id="nmeachecksum"></span>
+                          <?= gettext("Checksum:") ?> <span id="nmeachecksum"><?=gettext("Please click the \"Calculate NMEA Checksum\" to get a result.");?></span>
                         </div>
                       </td>
                     </tr>
