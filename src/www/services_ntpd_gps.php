@@ -281,7 +281,7 @@ SureGPS =    #Sure Electronics SKG16B
             hexsum = ("00" + hexsum).slice(-2);
           }
           // Display the result
-          $("#nmeachecksum").html(hexsum);
+          $("#nmeachecksum").text(hexsum);
       });
   });
 
@@ -497,15 +497,17 @@ SureGPS =    #Sure Electronics SKG16B
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('GPS Initialization') ?></td>
                       <td>
                         <div >
-                          <input type="button" id="showgpsinitbox" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show GPS Initialization commands");?>
+                          <input class="btn btn-xs btn-default" type="button" id="showgpsinitbox" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show GPS Initialization commands");?>
                         </div>
                         <div id="showgpsinit" style="display:none">
                           <textarea name="initcmd" class="formpre" id="gpsinitcmd" cols="65" rows="7"><?=base64_decode($pconfig['initcmd']);?></textarea><br />
-                          <?=gettext("Note: Commands entered here will be sent to the GPS during initialization. Please read and understand your GPS documentation before making any changes here.");?><br /><br />
+                          <?=gettext("Note: Commands entered here will be sent to the GPS during initialization. ".
+                                     "Please read and understand your GPS documentation before making any changes here.");?><br /><br />
                           <strong><?=gettext("NMEA checksum calculator");?>:</strong>
                           <br />
-                          <?=gettext('Enter the text between "$" and "*" of a NMEA command string:');?><br /> $<input name="nmeastring" type="text" id="nmeastring" size="30" value="" />*<span id="nmeachecksum"><?=gettext("checksum");?></span>&nbsp;&nbsp;
-                          <input type="button" id="calcnmeachk" value="<?=gettext("Calculate NMEA checksum");?>" />
+                          <?=gettext('Enter the text between "$" and "*" of a NMEA command string:');?><br /><input name="nmeastring" type="text" id="nmeastring" size="30" value="" style="display:inline;" />
+                          <input class="btn btn-primary" type="button" id="calcnmeachk" value="<?=gettext("Calculate NMEA Checksum");?>" /><br />
+                          <?= gettext("Checksum:") ?> <span id="nmeachecksum"><?=gettext("Please click the \"Calculate NMEA Checksum\" to get a result.");?></span>
                         </div>
                       </td>
                     </tr>
