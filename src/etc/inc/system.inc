@@ -1129,7 +1129,7 @@ function system_cron_configure($verbose = false, $defer = false)
     $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '2');
     $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 virusprot', '3');
     $autocron[] = generate_cron_job('/usr/local/etc/rc.expireaccounts', '5');
-    $autocron[] = generate_cron_job('/usr/local/opnsense/scripts/filter/update_tables.py', '10');
+    $autocron[] = generate_cron_job('/usr/local/bin/flock -n -E 0 -o /tmp/filter_update_tables.lock /usr/local/opnsense/scripts/filter/update_tables.py', '*');
 
     /* every now and then */
     $autocron[] = generate_cron_job('/usr/local/sbin/ping_hosts.sh', '*/4');
