@@ -9,16 +9,27 @@
 trap : 2
 trap : 3
 
-# XXX service(8) calls this without being root
-#if [ "$(id -u)" != "0" ]; then
-#	echo "Must be root."
-#	exit 1
-#i
-
-# shell started with parameters, passthrough to real shell
+# rc.d may call this while being root using `su -m user -c ...'
+# and it has arguments to pass through to the shell.  It creates
+# a problem for us as su(1) assumes the root shell and has no
+# way to override it because the target user most likely does
+# not have a shell set.
+#
+# Worse still, su(1) *is* root, but changes to the selected user ID
+# so it creates its own downfall by selecting the root shell to do it.
+# On OpenBSD, su(1) does have the `-s' parameter to override the shell.
+# FreeBSD has the '-s' parameter as well, but it is completely
+# unrelated and the desired functionality does not actually exist.  :(
 if [ -n "${*}" ]; then
 	/bin/csh "${@}"
 	exit ${?}
+fi
+
+# Beyond this point the console menu yields no value to scripting,
+# so we can check for root to avoid permission errors later on.
+if [ "$(id -u)" != "0" ]; then
+	echo "Must be root."
+	exit 1
 fi
 
 # endless loop
