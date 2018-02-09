@@ -153,6 +153,43 @@ function updateServiceStatusUI(status) {
     $('#service_status_container').html(status_html);
 }
 
+function updateServiceControlUI(ServiceName)
+{
+    ajaxCall(url="/api/" + ServiceName + "/service/status", sendData={}, callback=function(data,status) {
+        var status_html = '';
+        if (data['status'] == "running") {
+            status_html += 'btn-success' ;
+        } else if (data['status'] == "stopped") {
+            status_html += 'btn-danger' ;
+        }
+
+        var buttons = '<span id="startService" class="glyphicon glyphicon-play btn ' + status_html + '"></span>';
+        buttons += '<span id="restartService" class="glyphicon glyphicon-refresh btn"></span>';
+        buttons += '<span id="stopService" class="glyphicon glyphicon-stop btn"></span>';
+        $('#service_status_container').html(buttons);
+
+        var commands = ["start", "restart", "stop"];
+        for (var i = 0; i < commands.length; i++) {
+            (function (command) {
+                $("#" + command + "Service").click(function(){
+                    $('#processing-dialog').modal('show');
+                    ajaxCall(url="/api/" + ServiceName + "/service/" + command, sendData={},callback=function(data,status) {
+                        $('#processing-dialog').modal('hide');
+                        ajaxCall(url="/api/" + ServiceName + "/service/status", sendData={}, callback=function(data,status) {
+                            $("#startService").removeClass("btn-danger").removeClass("btn-success");
+                            if (data['status'] == "running") {
+                                $("#startService").addClass("btn-success");
+                            } else if (data['status'] == "stopped") {
+                                $("#startService").addClass("btn-danger");
+                            }
+                        });
+                    });
+                });
+            })((commands[i]));
+        }
+    });
+}
+
 /**
  * reformat all tokenizers on this document
  */
