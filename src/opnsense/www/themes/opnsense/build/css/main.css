@@ -5893,3 +5893,7 @@ label > input[type="radio"] {
 
 #log-settings label[for^="act"] {
   margin-right: 1.5em; }
+
+output[for*="help_for"] {
+  padding-top: 0.4em;
+  padding-bottom: 0.4em; }
