@@ -366,8 +366,7 @@ body{
   border-bottom: none;
 }
 
-.dropdown-menu > li > a,
-.dropdown-header {
+ul.nav > li.dropdown > ul.dropdown-menu > li > a {
   padding: 3px 10px;
 }
 
