@@ -18,13 +18,13 @@
 
 @font-face {
   font-family: 'SourceSansProBold';
-  src: url("/ui/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.woff") format("woff"), url("/ui/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.ttf") format("truetype"); }
+  src: url("../fonts/SourceSansPro-Bold/SourceSansPro-Bold.woff") format("woff"), url("../fonts/SourceSansPro-Bold/SourceSansPro-Bold.ttf") format("truetype"); }
 @font-face {
   font-family: 'SourceSansProSemibold';
-  src: url("/ui/themes/opnsense/build/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.woff") format("woff"), url("/ui/themes/opnsense/build/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.ttf") format("truetype"); }
+  src: url("../fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.woff") format("woff"), url("../fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.ttf") format("truetype"); }
 @font-face {
   font-family: 'SourceSansProRegular';
-  src: url("/ui/themes/opnsense/build/fonts/SourceSansPro-Regular/SourceSansPro-Regular.woff") format("woff"), url("/ui/themes/opnsense/build/fonts/SourceSansPro-Regular/SourceSansPro-Regular.ttf") format("truetype"); }
+  src: url("../fonts/SourceSansPro-Regular/SourceSansPro-Regular.woff") format("woff"), url("../fonts/SourceSansPro-Regular/SourceSansPro-Regular.ttf") format("truetype"); }
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;
@@ -5869,7 +5869,7 @@ select {
   cursor: pointer;
   background-repeat: no-repeat;
   background-position: right;
-  background-image: url(/ui/themes/opnsense/build/images/caret.png) !important; }
+  background-image: url(../images/caret.png) !important; }
 
 #grid-log th[data-column-id="__timestamp__"],
 #filter-log-entries th[data-column-id="__timestamp__"] {
