@@ -1980,7 +1980,7 @@ include("head.inc");
                             </output>
                           </td>
                         </tr>
-                        <tr class="dhcp_basic">
+                        <tr class="dhcp_basic dhcp_advanced">
                           <td><a id="help_for_dhcprejectfrom" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reject Leases From"); ?></td>
                           <td>
                             <input name="dhcprejectfrom" type="text" id="dhcprejectfrom" value="<?=htmlspecialchars($pconfig['dhcprejectfrom']);?>" />
