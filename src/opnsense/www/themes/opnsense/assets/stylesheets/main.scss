@@ -676,11 +676,25 @@ label>input[type="radio"] {
   float:left;
 }
 
+output[for*="help_for"] {
+  padding-top: 0.4em;
+  padding-bottom: 0.4em;
+}
+
 #log-settings label[for^="act"] {
   margin-right: 1.5em;
 }
 
-output[for*="help_for"] {
-  padding-top: 0.4em;
-  padding-bottom: 0.4em;
+#log-settings table>tbody>tr>td {
+  vertical-align: middle;
+}
+
+#log-settings select#filterlogentries,
+#log-settings select#filterlogentriesupdateinterval {
+  width: 5em;
+}
+
+#log-settings select#filterlogentriesinterfaces {
+  min-width: 100%;
+  max-width: 100%;
 }
