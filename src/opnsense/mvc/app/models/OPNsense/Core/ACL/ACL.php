@@ -72,7 +72,7 @@ class ACL
 
     /**
      * get ACL contents as simple named array, containing name and endpoint match criteria
-     * @return Array()
+     * @return array
      */
     public function get()
     {
