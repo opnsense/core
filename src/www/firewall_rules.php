@@ -230,7 +230,7 @@ $( document ).ready(function() {
       });
 
       // hook into tab changes, keep selected category/categories when following link
-      $(".top_tab").each(function(){
+      $("#Firewall_Rules > .menu-level-3-item").each(function(){
           var add_link = "";
           if (selected_values.length > 0) {
               add_link = "&" + $.param({'category': selected_values});
@@ -262,10 +262,33 @@ $( document ).ready(function() {
       $(".rule_select").prop("checked", $(this).prop("checked"));
   });
 
+  // move category block
+  $("#category_block").detach().appendTo($(".page-content-head > .container-fluid > .list-inline"));
+  $("#category_block").addClass("pull-right");
+
 });
 </script>
 
 <?php include("fbegin.inc"); ?>
+  <div class="hidden">
+    <div id="category_block" style="z-index:-100;">
+        <div class="hidden-sm hidden-lg"><br/></div>
+        <select class="selectpicker" data-live-search="true" data-size="5"  multiple placeholder="<?=gettext("Select category");?>" id="fw_category">
+<?php
+            // collect unique list of categories and append to option list
+            $categories = array();
+            foreach ($a_filter as $tmp_rule) {
+              if (!empty($tmp_rule['category']) && !in_array($tmp_rule['category'], $categories)) {
+                  $categories[] = $tmp_rule['category'];
+              }
+            }
+            foreach ($categories as $category):?>
+                <option value="<?=$category;?>" <?=in_array($category, $selected_category) ? "selected=\"selected\"" : "" ;?>><?=$category;?></option>
+<?php
+            endforeach;?>
+        </select>
+    </div>
+  </div>
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
@@ -650,22 +673,7 @@ $( document ).ready(function() {
                   </tr>
                 <?php endif; ?>
                   <tr>
-                    <td colspan="5">
-                      <select class="selectpicker" data-live-search="true" data-size="5"  multiple placeholder="<?=gettext("Select category");?>" id="fw_category">
-<?php
-                        // collect unique list of categories and append to option list
-                        $categories = array();
-                        foreach ($a_filter as $tmp_rule) {
-                            if (!empty($tmp_rule['category']) && !in_array($tmp_rule['category'], $categories)) {
-                                $categories[] = $tmp_rule['category'];
-                            }
-                        }
-                        foreach ($categories as $category):?>
-                        <option value="<?=$category;?>" <?=in_array($category, $selected_category) ? "selected=\"selected\"" : "" ;?>><?=$category;?></option>
-<?php
-                        endforeach;?>
-                      </select>
-                    </td>
+                    <td colspan="5"></td>
                     <td colspan="5" class="hidden-xs hidden-sm"></td>
                     <td>
                       <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("Move selected rules to end");?>" class="act_move btn btn-default btn-xs">
