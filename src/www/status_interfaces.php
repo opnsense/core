@@ -34,8 +34,8 @@ require_once("services.inc");
 require_once("interfaces.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!empty($_POST['if']) && !empty($_POST['submit'])) {
-        $interface = $_POST['if'];
+    if (!empty($_POST['ifdescr']) && !empty($_POST['submit'])) {
+        $interface = $_POST['ifdescr'];
         if ($_POST['submit'] == 'remote') {
             configdp_run('interface reconfigure', array($interface));
         } elseif (!empty($_POST['status']) && $_POST['status'] == 'up') {
@@ -113,7 +113,7 @@ include("head.inc");
                       <td> <?=gettext("DHCP");?></td>
                       <td>
                         <form name="dhcplink_form" method="post">
-                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="ifdescr" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['dhcplink'] ?>" />
                           <?= $ifinfo['dhcplink'] ?>
                           <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
@@ -128,7 +128,7 @@ include("head.inc");
                       <td> <?=gettext("DHCP6");?></td>
                       <td>
                         <form name="dhcp6link_form" method="post">
-                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="ifdescr" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['dhcp6link'] ?>" />
                           <?= $ifinfo['dhcp6link'] ?>
                           <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
@@ -143,7 +143,7 @@ include("head.inc");
                       <td><?=gettext("PPPoE"); ?></td>
                       <td>
                         <form name="pppoelink_form" method="post">
-                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="ifdescr" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['pppoelink'] ?>" />
                           <?= $ifinfo['pppoelink'] ?>
                           <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
@@ -158,7 +158,7 @@ include("head.inc");
                       <td><?= gettext("PPTP") ?></td>
                       <td>
                         <form name="pptplink_form" method="post">
-                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="ifdescr" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['pptplink'] ?>" />
                           <?= $ifinfo['pptplink'] ?>
                           <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
@@ -173,7 +173,7 @@ include("head.inc");
                       <td><?=gettext("L2TP"); ?></td>
                       <td>
                         <form name="l2tplink_form" method="post">
-                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="ifdescr" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['l2tplink'] ?>" />
                           <?=$ifinfo['l2tplink'];?>
                           <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
@@ -188,7 +188,7 @@ include("head.inc");
                       <td><?=gettext("PPP"); ?></td>
                       <td>
                         <form name="ppplink_form" method="post">
-                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="ifdescr" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['ppplink'] ?>" />
                           <?= $ifinfo['pppinfo'] ?>
                           <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
