@@ -230,7 +230,7 @@ $( document ).ready(function() {
       });
 
       // hook into tab changes, keep selected category/categories when following link
-      $(".top_tab").each(function(){
+      $("#Firewall_Rules > .menu-level-3-item").each(function(){
           var add_link = "";
           if (selected_values.length > 0) {
               add_link = "&" + $.param({'category': selected_values});
