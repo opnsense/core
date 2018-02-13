@@ -698,3 +698,8 @@ output[for*="help_for"] {
   min-width: 100%;
   max-width: 100%;
 }
+
+form[name$="link_form"] > input[type="submit"] {
+  margin-left: .7em;
+  margin-right: .7em;
+}

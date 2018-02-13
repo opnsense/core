@@ -5908,3 +5908,7 @@ output[for*="help_for"] {
 #log-settings select#filterlogentriesinterfaces {
   min-width: 100%;
   max-width: 100%; }
+
+form[name$="link_form"] > input[type="submit"] {
+  margin-left: .7em;
+  margin-right: .7em; }

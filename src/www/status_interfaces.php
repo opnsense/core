@@ -113,7 +113,7 @@ include("head.inc");
                         <form name="dhcplink_form" method="post">
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['dhcplink'] ?>" />
-                          <?= $ifinfo['dhcplink'] ?>&nbsp;&nbsp;
+                          <?= $ifinfo['dhcplink'] ?>
                           <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['dhcplink'] == "up" ? gettext("Release") : gettext("Renew"); ?>" />
                         </form>
                       </td>
@@ -127,7 +127,7 @@ include("head.inc");
                         <form name="dhcp6link_form" method="post">
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['dhcp6link'] ?>" />
-                          <?= $ifinfo['dhcp6link'] ?>&nbsp;&nbsp;
+                          <?= $ifinfo['dhcp6link'] ?>
                           <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['dhcp6link'] == "up" ? gettext("Release") : gettext("Renew") ?>" />
                         </form>
                       </td>
@@ -141,7 +141,7 @@ include("head.inc");
                         <form name="pppoelink_form" method="post">
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['pppoelink'] ?>" />
-                          <?= $ifinfo['pppoelink'] ?>&nbsp;&nbsp;
+                          <?= $ifinfo['pppoelink'] ?>
                           <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['pppoelink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?>" />
                         </form>
                       </td>
@@ -155,7 +155,7 @@ include("head.inc");
                         <form name="pptplink_form" method="post">
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['pptplink'] ?>" />
-                          <?= $ifinfo['pptplink'] ?>&nbsp;&nbsp;
+                          <?= $ifinfo['pptplink'] ?>
                           <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['pptplink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?>" />
                         </form>
                       </td>
@@ -169,7 +169,7 @@ include("head.inc");
                         <form name="l2tplink_form" method="post">
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['l2tplink'] ?>" />
-                          <?=$ifinfo['l2tplink'];?>&nbsp;&nbsp;
+                          <?=$ifinfo['l2tplink'];?>
                           <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['l2tplink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?>" />
                         </form>
                       </td>
