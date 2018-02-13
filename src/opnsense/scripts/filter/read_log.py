@@ -49,7 +49,7 @@ fields_ipv4_udp = fields_ipv4 + 'srcport,dstport,datalen'.split(',')
 fields_ipv4_tcp = fields_ipv4 + 'srcport,dstport,datalen,tcpflags,seq,ack,urp,tcpopts'.split(',')
 fields_ipv4_carp = fields_ipv4 + 'type,ttl,vhid,version,advskew,advbase'.split(',')
 
-fields_ipv6 = fields_general + 'class,flowlabel,hlim,protoname,protom,payload-length,src,dst'.split(',')
+fields_ipv6 = fields_general + 'class,flowlabel,hlim,protoname,proto,payload-length,src,dst'.split(',')
 fields_ipv6_udp = fields_ipv6 + 'srcport,dstport,datalen'.split(',')
 fields_ipv6_tcp = fields_ipv6 + 'srcport,dstport,datalen,tcpflags,seq,ack,urp,tcpopts'.split(',')
 fields_ipv6_carp = fields_ipv6 + 'type,ttl,vhid,version2,advskew,advbase'.split(',')
