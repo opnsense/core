@@ -92,6 +92,8 @@ class SNatRule extends Rule
                 }
             } elseif ($rule['target'] == "other-subnet") {
                 $rule['target'] = $rule['targetip'] . '/' . $rule['targetip_subnet'];
+            } elseif (!empty($rule['target']) && Util::isAlias($rule['target'])) {
+                $rule['target'] = "$".$rule['target'];
             }
             foreach (array("sourceport", "dstport", "natport") as $fieldname) {
                 if (!empty($rule[$fieldname]) && Util::isAlias($rule[$fieldname])) {
