@@ -457,10 +457,17 @@ function system_routing_configure($interface = '', $verbose = false)
     $foundgwv6 = false;
     $fargw = false;
 
+    if (!empty($interface)) {
+        log_error("ROUTING: entering configure using '${interface}'");
+    } else {
+        log_error("ROUTING: entering configure using defaults");
+    }
+
     /* tack on all the hard defined gateways as well */
     if (isset($config['gateways']['gateway_item'])) {
         /* XXX eventually this file-based workaround must be removed */
         foreach (glob('/tmp/*_defaultgw{,v6}', GLOB_BRACE) as $to_delete) {
+            log_error("ROUTING: removing {$to_delete}");
             @unlink($to_delete);
         }
 
@@ -479,6 +486,7 @@ function system_routing_configure($interface = '', $verbose = false)
                     if (!empty($gateway['interface'])) {
                         $defaultif = get_real_interface($gateway['interface']);
                         if ($defaultif) {
+                            log_error("ROUTING: creating /tmp/{$defaultif}_defaultgw");
                             @file_put_contents("/tmp/{$defaultif}_defaultgw", $gateway['gateway']);
                         }
                     }
@@ -492,6 +500,7 @@ function system_routing_configure($interface = '', $verbose = false)
                     if (!empty($gateway['interface'])) {
                         $defaultifv6 = get_real_interface($gateway['interface']);
                         if ($defaultifv6) {
+                            log_error("ROUTING: creating /tmp/{$defaultifv6}_defaultgwv6");
                             @file_put_contents("/tmp/{$defaultifv6}_defaultgwv6", $gateway['gateway']);
                         }
                     }
@@ -502,31 +511,31 @@ function system_routing_configure($interface = '', $verbose = false)
     }
 
     if (!$foundgw) {
-        log_error("ROUTING: no IPv4 default gateway set, trying WAN");
         $defaultif = get_real_interface("wan");
         $interfacegw = "wan";
         $gatewayip = get_interface_gateway("wan");
         @touch("/tmp/{$defaultif}_defaultgw");
+        log_error("ROUTING: no IPv4 default gateway set, trying ${interfacegw} on '{$defaultif}' ({$gatewayip})");
     }
 
     if (!$foundgwv6) {
-        log_error("ROUTING: no IPv6 default gateway set, trying WAN");
         $defaultifv6 = get_real_interface("wan");
         $interfacegwv6 = "wan";
         $gatewayipv6 = get_interface_gateway_v6("wan");
         @touch("/tmp/{$defaultif}_defaultgwv6");
+        log_error("ROUTING: no IPv6 default gateway set, trying ${interfacegwv6} on '{$defaultifv6}' ({$gatewayipv6})");
     }
 
-    if (!empty($interface) && $interface != $interfacegw)
-        ;
-    elseif (is_ipaddrv4($gatewayip)) {
+    if (!empty($interface) && $interface != $interfacegw) {
+        log_error("ROUTING: skipping IPv4 default route to {$interfacegw}");
+    } elseif (is_ipaddrv4($gatewayip)) {
         log_error("ROUTING: setting IPv4 default route to {$gatewayip}");
         system_default_route($gatewayip, $fargw ? $defaultif : null);
     }
 
-    if (!empty($interface) && $interface != $interfacegwv6)
-      ;
-    elseif (is_ipaddrv6($gatewayipv6)) {
+    if (!empty($interface) && $interface != $interfacegwv6) {
+        log_error("ROUTING: skipping IPv4 default route to {$interfacegwv6}");
+    } elseif (is_ipaddrv6($gatewayipv6)) {
         log_error("ROUTING: setting IPv6 default route to {$gatewayipv6}");
         system_default_route($gatewayipv6, $defaultifv6);
     }
