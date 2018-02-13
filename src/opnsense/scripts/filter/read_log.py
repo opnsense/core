@@ -44,12 +44,12 @@ filter_log = '/var/log/filter.log'
 # define log layouts, every endpoint contains all options
 # source : https://github.com/opnsense/ports/blob/master/opnsense/filterlog/files/description.txt
 fields_general = 'rulenr,subrulenr,anchorname,ridentifier,interface,reason,action,dir,version'.split(',')
-fields_ipv4 = fields_general + 'tos,ecn,ttl,id,offset,ipflags,protonum,protoname,length,src,dst'.split(',')
+fields_ipv4 = fields_general + 'tos,ecn,ttl,id,offset,ipflags,proto,protoname,length,src,dst'.split(',')
 fields_ipv4_udp = fields_ipv4 + 'srcport,dstport,datalen'.split(',')
 fields_ipv4_tcp = fields_ipv4 + 'srcport,dstport,datalen,tcpflags,seq,ack,urp,tcpopts'.split(',')
 fields_ipv4_carp = fields_ipv4 + 'type,ttl,vhid,version,advskew,advbase'.split(',')
 
-fields_ipv6 = fields_general + 'class,flowlabel,hlim,protoname,protonum,payload-length,src,dst'.split(',')
+fields_ipv6 = fields_general + 'class,flowlabel,hlim,protoname,protom,payload-length,src,dst'.split(',')
 fields_ipv6_udp = fields_ipv6 + 'srcport,dstport,datalen'.split(',')
 fields_ipv6_tcp = fields_ipv6 + 'srcport,dstport,datalen,tcpflags,seq,ack,urp,tcpopts'.split(',')
 fields_ipv6_carp = fields_ipv6 + 'type,ttl,vhid,version2,advskew,advbase'.split(',')
