@@ -115,7 +115,7 @@ include("head.inc");
                         <form name="dhcplink_form" method="post">
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['dhcplink'] ?>" />
-                          <?= $ifinfo['dhcplink'] ?>&nbsp;&nbsp;
+                          <?= $ifinfo['dhcplink'] ?>
                           <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
                           <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['dhcplink'] == "up" ? gettext("Release") : gettext("Renew") ?></button>
                         </form>
@@ -130,7 +130,7 @@ include("head.inc");
                         <form name="dhcp6link_form" method="post">
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['dhcp6link'] ?>" />
-                          <?= $ifinfo['dhcp6link'] ?>&nbsp;&nbsp;
+                          <?= $ifinfo['dhcp6link'] ?>
                           <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
                           <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['dhcp6link'] == "up" ? gettext("Release") : gettext("Renew") ?></button>
                         </form>
@@ -145,7 +145,7 @@ include("head.inc");
                         <form name="pppoelink_form" method="post">
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['pppoelink'] ?>" />
-                          <?= $ifinfo['pppoelink'] ?>&nbsp;&nbsp;
+                          <?= $ifinfo['pppoelink'] ?>
                           <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
                           <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['pppoelink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?></button>
                         </form>
@@ -160,7 +160,7 @@ include("head.inc");
                         <form name="pptplink_form" method="post">
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['pptplink'] ?>" />
-                          <?= $ifinfo['pptplink'] ?>&nbsp;&nbsp;
+                          <?= $ifinfo['pptplink'] ?>
                           <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
                           <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['pptplink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?></button>
                         </form>
@@ -175,7 +175,7 @@ include("head.inc");
                         <form name="l2tplink_form" method="post">
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['l2tplink'] ?>" />
-                          <?=$ifinfo['l2tplink'];?>&nbsp;&nbsp;
+                          <?=$ifinfo['l2tplink'];?>
                           <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
                           <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['l2tplink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?></button>
                         </form>

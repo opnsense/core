@@ -846,3 +846,8 @@ div[data-for*="help_for"] {
   margin-top: 0px;
   margin-bottom: 0px;
 }
+
+form[name$="link_form"] > button[type="submit"] {
+  margin-left: .7em;
+  margin-right: .7em;
+}

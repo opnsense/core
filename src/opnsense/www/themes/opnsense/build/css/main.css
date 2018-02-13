@@ -7545,6 +7545,11 @@ div[data-for*=help_for] {
   max-width: 100%;
 }
 
+form[name$="link_form"] > button[type="submit"] {
+  margin-left: .7em;
+  margin-right: .7em;
+}
+
 /* fields in firewall schedule */
 [data-state=lightcoral] {
   background-color: lightcoral;
