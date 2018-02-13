@@ -34,8 +34,8 @@ require_once("services.inc");
 require_once("interfaces.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!empty($_POST['if']) && !empty($_POST['submit'])) {
-        $interface = $_POST['if'];
+    if (!empty($_POST['ifdescr']) && !empty($_POST['submit'])) {
+        $interface = $_POST['ifdescr'];
         if (!empty($_POST['status']) && $_POST['status'] == 'up') {
             interface_bring_down($interface);
         } else {
@@ -111,7 +111,7 @@ include("head.inc");
                       <td> <?=gettext("DHCP");?></td>
                       <td>
                         <form name="dhcplink_form" method="post">
-                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="ifdescr" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['dhcplink'] ?>" />
                           <?= $ifinfo['dhcplink'] ?>
                           <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['dhcplink'] == "up" ? gettext("Release") : gettext("Renew"); ?>" />
@@ -125,7 +125,7 @@ include("head.inc");
                       <td> <?=gettext("DHCP6");?></td>
                       <td>
                         <form name="dhcp6link_form" method="post">
-                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="ifdescr" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['dhcp6link'] ?>" />
                           <?= $ifinfo['dhcp6link'] ?>
                           <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['dhcp6link'] == "up" ? gettext("Release") : gettext("Renew") ?>" />
@@ -139,7 +139,7 @@ include("head.inc");
                       <td><?=gettext("PPPoE"); ?></td>
                       <td>
                         <form name="pppoelink_form" method="post">
-                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="ifdescr" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['pppoelink'] ?>" />
                           <?= $ifinfo['pppoelink'] ?>
                           <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['pppoelink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?>" />
@@ -153,7 +153,7 @@ include("head.inc");
                       <td><?= gettext("PPTP") ?></td>
                       <td>
                         <form name="pptplink_form" method="post">
-                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="ifdescr" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['pptplink'] ?>" />
                           <?= $ifinfo['pptplink'] ?>
                           <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['pptplink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?>" />
@@ -167,7 +167,7 @@ include("head.inc");
                       <td><?=gettext("L2TP"); ?></td>
                       <td>
                         <form name="l2tplink_form" method="post">
-                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="ifdescr" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['l2tplink'] ?>" />
                           <?=$ifinfo['l2tplink'];?>
                           <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['l2tplink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?>" />
@@ -181,7 +181,7 @@ include("head.inc");
                       <td><?=gettext("PPP"); ?></td>
                       <td>
                         <form name="ppplink_form" method="post">
-                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="ifdescr" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['ppplink'] ?>" />
                           <?= $ifinfo['pppinfo'] ?>
                           <?php if ($ifinfo['ppplink'] == "up"): ?>
