@@ -44,7 +44,7 @@ filter_log = '/var/log/filter.log'
 # define log layouts, every endpoint contains all options
 # source : https://github.com/opnsense/ports/blob/master/opnsense/filterlog/files/description.txt
 fields_general = 'rulenr,subrulenr,anchorname,ridentifier,interface,reason,action,dir,version'.split(',')
-fields_ipv4 = fields_general + 'tos,ecn,ttl,id,offset,flags,proto,protoname,length,src,dst'.split(',')
+fields_ipv4 = fields_general + 'tos,ecn,ttl,id,offset,ipflags,proto,protoname,length,src,dst'.split(',')
 fields_ipv4_udp = fields_ipv4 + 'srcport,dstport,datalen'.split(',')
 fields_ipv4_tcp = fields_ipv4 + 'srcport,dstport,datalen,tcpflags,seq,ack,urp,tcpopts'.split(',')
 fields_ipv4_carp = fields_ipv4 + 'type,ttl,vhid,version,advskew,advbase'.split(',')
