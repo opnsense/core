@@ -87,7 +87,7 @@ class OptionField extends BaseField
                     if ($key === "__empty__") {
                         $this->internalOptionList[""] = $value;
                     } else {
-                        $this->internalOptionList[$key] = $value;
+                        $this->internalOptionList[$key] = gettext($value);
                     }
                 }
             }
