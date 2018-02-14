@@ -121,8 +121,6 @@ class Voucher extends Base implements IAuthConnector
                 $this->dbHandle->exec("alter table vouchers add expirytime integer default 0");
             }
         }
-
-
     }
 
     /**
