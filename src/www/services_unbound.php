@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // array types
     $pconfig['active_interface'] = !empty($a_unboundcfg['active_interface']) ? explode(",", $a_unboundcfg['active_interface']) : array();
     $pconfig['outgoing_interface'] = !empty($a_unboundcfg['outgoing_interface']) ? explode(",", $a_unboundcfg['outgoing_interface']) : array();
-	$pconfig['system_domain_local_zone_type'] = !empty($a_unboundcfg['system_domain_local_zone_type']) ? $a_unboundcfg['system_domain_local_zone_type'] : 'transparent';
+    $pconfig['local_zone_type'] = !empty($a_unboundcfg['local_zone_type']) ? $a_unboundcfg['local_zone_type'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -82,9 +82,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['port']) && !is_port($pconfig['port'])) {
             $input_errors[] = gettext("You must specify a valid port number.");
         }
+        if (!empty($pconfig['local_zone_type']) && !array_key_exists($pconfig['local_zone_type'], unbound_local_zone_types())) {
+            $input_errors[] = sprintf(gettext('Local zone type "%" is not known.'), $pconfig['local_zone_type']);
+        }
 
         if (count($input_errors) == 0) {
-            // save form data
             // text types
             if (!empty($pconfig['port'])) {
                 $a_unboundcfg['port'] = $pconfig['port'];
@@ -96,7 +98,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } elseif (isset($a_unboundcfg['regdhcpdomain'])) {
                 unset($a_unboundcfg['regdhcpdomain']);
             }
+            if (!empty($pconfig['local_zone_type'])) {
+                $a_unboundcfg['local_zone_type'] = $pconfig['local_zone_type'];
+            } elseif (isset($a_unboundcfg['local_zone_type'])) {
+                unset($a_unboundcfg['local_zone_type']);
+            }
+
             $a_unboundcfg['custom_options'] = !empty($pconfig['custom_options']) ? str_replace("\r\n", "\n", $pconfig['custom_options']) : null;
+
             // boolean values
             $a_unboundcfg['enable'] = !empty($pconfig['enable']);
             $a_unboundcfg['dnssec'] = !empty($pconfig['dnssec']);
@@ -109,7 +118,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // array types
             $a_unboundcfg['active_interface'] = !empty( $pconfig['active_interface']) ? implode(",", $pconfig['active_interface']) : array();
             $a_unboundcfg['outgoing_interface'] = !empty( $pconfig['outgoing_interface']) ? implode(",", $pconfig['outgoing_interface']) : array();
-			$a_unboundcfg['system_domain_local_zone_type'] = $pconfig['system_domain_local_zone_type'];
 
             write_config("DNS Resolver configured.");
             mark_subsystem_dirty('unbound');
@@ -194,17 +202,17 @@ include_once("head.inc");
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_system_domain_local_zone_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("System Domain Local Zone Type"); ?></td>
+                        <td><a id="help_for_local_zone_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local Zone Type"); ?></td>
                         <td>
-                          <select name="system_domain_local_zone_type" size="3" class="selectpicker" >
+                          <select name="local_zone_type" size="3" class="selectpicker" >
 <?php
                             foreach (unbound_local_zone_types() as $value => $name):?>
-                            <option value="<?=$value;?>" <?=$value == $pconfig['system_domain_local_zone_type'] ? 'selected="selected"' : "";?>><?=htmlspecialchars($name);?></option>
+                            <option value="<?= html_safe($value) ?>" <?= $value == $pconfig['local_zone_type'] ? 'selected="selected"' : '' ?>><?= html_safe($name) ?></option>
 <?php
                             endforeach; ?>
                           </select>
-                          <output class="hidden" for="help_for_system_domain_local_zone_type">
-                            <?=sprintf(gettext("The local-zone type used for the system domain (System | Settings | General | Domain).  Transparent is the default.  Local-Zone type descriptions are available in the unbound %s manual pages."), '<a target="_blank" href="https://www.unbound.net/documentation/unbound.conf.html">'.gettext("conf(5)").'</a>');?>
+                          <output class="hidden" for="help_for_local_zone_type">
+                            <?=sprintf(gettext('The local zone type used for the system domain. Type descriptions are available under "local-zone:" in the %s manual page.'), '<a target="_blank" href="https://www.unbound.net/documentation/unbound.conf.html">unbound.conf(5)</a>');?>
                           </output>
                         </td>
                       </tr>
