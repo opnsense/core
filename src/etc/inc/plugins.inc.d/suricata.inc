@@ -47,6 +47,17 @@ function suricata_services()
     return $services;
 }
 
+function suricata_syslog()
+{
+    $logfacilities = array();
+
+    $logfacilities['suricata'] = array(
+        'facility' => array('suricata'),
+    );
+
+    return $logfacilities;
+}
+
 function suricata_xmlrpc_sync()
 {
     $result = array();

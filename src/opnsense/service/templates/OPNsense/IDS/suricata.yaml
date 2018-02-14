@@ -749,9 +749,6 @@ logging:
   outputs:
   - console:
       enabled: no
-  - file:
-      enabled: yes
-      filename: /var/log/suricata.log
   - syslog:
       enabled: {% if helpers.exists('OPNsense.IDS.general.syslog') and OPNsense.IDS.general.syslog|default('0') == '0' %}no{% else %}yes{% endif %}
 
