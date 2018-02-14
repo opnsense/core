@@ -242,6 +242,10 @@ class MenuSystem
                 'visiblename' => $descr,
                 'order' => $ordid++,
             ));
+            $this->appendItem('Firewall.Rules.' . $key, 'Select' . $key, array(
+                'url' => '/firewall_rules.php?if='. $key. '&*',
+                'visibility' => 'hidden',
+            ));
             if ($key == 'FloatingRules') {
                 $this->appendItem('Firewall.Rules.' . $key, 'Top' . $key, array(
                     'url' => '/firewall_rules.php',
