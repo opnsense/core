@@ -1,7 +1,7 @@
 <?php
 
 $logfile = '/var/log/suricata.log';
-$logclog = false;
+$logclog = true;
 
 $service_hook = 'suricata';
 
