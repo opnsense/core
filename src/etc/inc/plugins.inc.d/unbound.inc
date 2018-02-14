@@ -509,21 +509,18 @@ function unbound_add_host_entries()
 {
     global $config;
 
-	// Make sure the config setting is a valid unbound local zone type.  If not use "transparent".
-	if (array_key_exists($config['unbound']['system_domain_local_zone_type'], unbound_local_zone_types())) {
-		$system_domain_local_zone_type = $config['unbound']['system_domain_local_zone_type'];
-	} else {
-		$system_domain_local_zone_type = "transparent";
-	}
+    $local_zone_type = 'transparent';
 
-	$unbound_entries = "local-zone: \"{$config['system']['domain']}\" $system_domain_local_zone_type\n";
+    if (!empty($config['unbound']['local_zone_type'])) {
+        $local_zone_type = $config['unbound']['local_zone_type'];
+    }
 
-    // IPv4 entries
+    $unbound_entries = "local-zone: \"{$config['system']['domain']}\" {$local_zone_type}\n";
+
     $unbound_entries .= "local-data-ptr: \"127.0.0.1 localhost\"\n";
     $unbound_entries .= "local-data: \"localhost A 127.0.0.1\"\n";
     $unbound_entries .= "local-data: \"localhost.{$config['system']['domain']} A 127.0.0.1\"\n";
 
-    // IPv6 entries
     $unbound_entries .= "local-data-ptr: \"::1 localhost\"\n";
     $unbound_entries .= "local-data: \"localhost AAAA ::1\"\n";
     $unbound_entries .= "local-data: \"localhost.{$config['system']['domain']} AAAA ::1\"\n";
@@ -755,17 +752,20 @@ function unbound_hosts_generate()
     killbypid('/var/run/unbound.pid', 'HUP');
 }
 
-// Array of valid unbound local zone types
-function unbound_local_zone_types() {
-	return array(
-		"deny" => gettext("Deny"),
-		"refuse" => gettext("Refuse"),
-		"static" => gettext("Static"),
-		"transparent" => gettext("Transparent"),
-		"typetransparent" => gettext("Type Transparent"),
-		"redirect" => gettext("Redirect"),
-		"inform" => gettext("Inform"),
-		"inform_deny" => gettext("Inform Deny"),
-		"nodefault" => gettext("No Default")
-	);
+function unbound_local_zone_types()
+{
+    return array(
+        'deny' => 'deny',
+        'refuse' => 'refuse',
+        'static' => 'static',
+        '' => 'transparent',
+        'typetransparent' => 'typetransparent',
+        'redirect' => 'redirect',
+	'inform' => 'inform',
+	'inform_deny' => 'inform_deny',
+	'always_transparent' => 'always_transparent',
+	'always_refuse' => 'always_refuse',
+	'always_nxdomain' => 'always_nxdomain',
+	'nodefault' => 'nodefault',
+    );
 }
