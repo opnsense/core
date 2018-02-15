@@ -49,16 +49,15 @@
             <Log order="100" VisibleName="Log File" url="/diag_logs_routing.php"/>
         </Routes>
         <Gateways order="30" cssClass="fa fa-location-arrow fa-fw">
-            <All url="/system_gateways.php">
-                <All url="/system_gateways.php*" visibility="hidden"/>
+            <Single order="10" url="/system_gateways.php">
+                <List url="/system_gateways.php*" visibility="hidden"/>
                 <Edit url="/system_gateways_edit.php*" visibility="hidden"/>
-            </All>
-            <AllStatus VisibleName="Status" url="/status_gateways.php"/>
-            <Group url="/system_gateway_groups.php">
+            </Single>
+            <Group order="20" url="/system_gateway_groups.php">
                 <Edit url="/system_gateway_groups_edit.php*" visibility="hidden"/>
             </Group>
-            <GroupStatus VisibleName="Group Status" url="/status_gateway_groups.php"/>
-            <Log VisibleName="Log File" url="/diag_logs_gateways.php"/>
+            <GroupStatus order="21" VisibleName="Group Status" url="/status_gateway_groups.php"/>
+            <Log VisibleName="Log File" order="30" url="/diag_logs_gateways.php"/>
         </Gateways>
         <Settings order="20" cssClass="fa fa-cogs fa-fw">
             <General order="100" url="/system_general.php">

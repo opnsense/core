@@ -1077,7 +1077,6 @@
 /usr/local/www/status_dhcp_leases.php
 /usr/local/www/status_dhcpv6_leases.php
 /usr/local/www/status_gateway_groups.php
-/usr/local/www/status_gateways.php
 /usr/local/www/status_graph.php
 /usr/local/www/status_habackup.php
 /usr/local/www/status_interfaces.php
