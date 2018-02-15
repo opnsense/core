@@ -518,12 +518,6 @@
             <pattern>status_gateway_groups.php*</pattern>
         </patterns>
     </page-status-gatewaygroups>
-    <page-status-gateways>
-        <name>Status: Gateways</name>
-        <patterns>
-            <pattern>status_gateways.php*</pattern>
-        </patterns>
-    </page-status-gateways>
     <page-status-interfaces>
         <name>Status: Interfaces</name>
         <patterns>
