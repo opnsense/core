@@ -210,7 +210,7 @@ function print_info_box_apply($msg)
     $value = 'Apply changes';
     $name= 'apply';
 
-    $savebutton = sprintf('<form action="' . $_SERVER['REQUEST_URI'] . '" method="post">', $_SERVER['REQUEST_URI']);
+    $savebutton = '<form method="post">';
     $savebutton .= sprintf(
         '<button type="submit" name="%s" id="%s" class="btn btn-primary pull-right" value="%s">%s</button>',
         $name,
