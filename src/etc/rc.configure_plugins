@@ -29,6 +29,7 @@
 
 require_once 'config.inc';
 require_once 'system.inc';
+require_once 'interfaces.inc';
 require_once 'util.inc';
 
 /* assume standard operation mode as post-install */
