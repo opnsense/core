@@ -38,6 +38,7 @@ if (!file_exists('/conf/config.xml')) {
 require_once 'config.inc';
 require_once 'auth.inc';
 require_once 'util.inc';
+require_once 'interfaces.inc';
 require_once 'system.inc';
 
 /* upgrade config before doing anything else */
