@@ -297,6 +297,24 @@ $( document ).ready(function() {
                       </th>
                       <th></th>
                   </tr>
+                  <tr>
+                      <th colspan="11" style="padding-top:1px; padding-bottom:1px;">
+                          <select class="selectpicker" data-live-search="true" data-size="5"  multiple placeholder="<?=gettext("Select category");?>" id="fw_category">
+<?php
+                            // collect unique list of categories and append to option list
+                            $categories = array();
+                            foreach ($a_filter as $tmp_rule) {
+                                if (!empty($tmp_rule['category']) && !in_array($tmp_rule['category'], $categories)) {
+                                    $categories[] = $tmp_rule['category'];
+                                }
+                            }
+                            foreach ($categories as $category):?>
+                            <option value="<?=$category;?>" <?=in_array($category, $selected_category) ? "selected=\"selected\"" : "" ;?>><?=$category;?></option>
+<?php
+                            endforeach;?>
+                        </select>
+                    </th>
+                  </tr>
                 </thead>
                 <tbody>
 <?php
@@ -650,22 +668,7 @@ $( document ).ready(function() {
                   </tr>
                 <?php endif; ?>
                   <tr>
-                    <td colspan="5">
-                      <select class="selectpicker" data-live-search="true" data-size="5"  multiple placeholder="<?=gettext("Select category");?>" id="fw_category">
-<?php
-                        // collect unique list of categories and append to option list
-                        $categories = array();
-                        foreach ($a_filter as $tmp_rule) {
-                            if (!empty($tmp_rule['category']) && !in_array($tmp_rule['category'], $categories)) {
-                                $categories[] = $tmp_rule['category'];
-                            }
-                        }
-                        foreach ($categories as $category):?>
-                        <option value="<?=$category;?>" <?=in_array($category, $selected_category) ? "selected=\"selected\"" : "" ;?>><?=$category;?></option>
-<?php
-                        endforeach;?>
-                      </select>
-                    </td>
+                    <td colspan="5"></td>
                     <td colspan="5" class="hidden-xs hidden-sm"></td>
                     <td>
                       <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("Move selected rules to end");?>" class="act_move btn btn-default btn-xs">
