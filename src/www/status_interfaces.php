@@ -80,9 +80,9 @@ include("head.inc");
                   <table class="table">
                     <thead>
                       <tr>
-                        <th style="cursor: pointer; width: 100%" data-toggle="collapse" data-target="#<?= htmlspecialchars($ifname) ?>">
+                        <th style="cursor: pointer; width: 100%" data-toggle="collapse" data-target="#status_interfaces_<?=$ifname?>">
                           <i class="fa fa-chevron-down" style="margin-right: .4em; float: left"></i>
-                          <?= htmlspecialchars($ifname) ?> <?= gettext("interface") ?> (<?= htmlspecialchars($ifdescr) ?>, <?= htmlspecialchars($ifinfo['if']) ?>)
+                          <?= $ifname ?> <?= gettext("interface") ?> (<?= $ifdescr ?>, <?= htmlspecialchars($ifinfo['if']) ?>)
                         </th>
 <?php
                         if (!isset($first_row)):
@@ -98,7 +98,7 @@ include("head.inc");
                     </thead>
                   </table>
                 </div>
-                <div class="interface_details collapse table-responsive"  id="<?= htmlspecialchars($ifname) ?>">
+                <div class="interface_details collapse table-responsive"  id="status_interfaces_<?=$ifname?>">
                   <table class="table table-striped">
                   <tbody>
                     <tr>
