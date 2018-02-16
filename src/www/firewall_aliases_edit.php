@@ -410,7 +410,7 @@ include("head.inc");
                 if (used) {
                     return false;
                 } else {
-                    return ~item.toLowerCase().indexOf(this.query)
+                    return ~item.toLowerCase().indexOf(this.query.toLowerCase())
                 }
             }
         });
