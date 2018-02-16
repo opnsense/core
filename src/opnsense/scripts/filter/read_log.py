@@ -100,7 +100,7 @@ if __name__ == '__main__':
             tmp = record['line'].split('filterlog:')[0].split()
             metadata['__digest__'] = md5.new(record['line']).hexdigest()
             metadata['__host__'] = tmp.pop()
-            metadata['__timestamp__'] =  ' '.join(tmp)
+            metadata['__timestamp__'] = ' '.join(tmp)
             rulep = record['line'].split('filterlog:')[1].strip().split(',')
             update_rule(rule, metadata, rulep, fields_general)
 
@@ -110,18 +110,18 @@ if __name__ == '__main__':
                     if 'proto' in rule:
                         if rule['proto'] == '17': # UDP
                             update_rule(rule, metadata, rulep, fields_ipv4_udp)
-                        elif  rule['proto'] == '6': # TCP
+                        elif rule['proto'] == '6': # TCP
                             update_rule(rule, metadata, rulep, fields_ipv4_tcp)
-                        elif  rule['proto'] == '112': # CARP
+                        elif rule['proto'] == '112': # CARP
                             update_rule(rule, metadata, rulep, fields_ipv4_carp)
                 elif rule['version'] == '6':
                     update_rule(rule, metadata, rulep, fields_ipv6)
-                    if 'next' in rule:
-                        if rule['next'] == '17': # UDP
+                    if 'proto' in rule:
+                        if rule['proto'] == '17': # UDP
                             update_rule(rule, metadata, rulep, fields_ipv6_udp)
-                        elif  rule['next'] == '6': # TCP
+                        elif rule['proto'] == '6': # TCP
                             update_rule(rule, metadata, rulep, fields_ipv6_tcp)
-                        elif  rule['next'] == '112': # CARP
+                        elif rule['proto'] == '112': # CARP
                             update_rule(rule, metadata, rulep, fields_ipv6_carp)
 
             rule.update(metadata)
