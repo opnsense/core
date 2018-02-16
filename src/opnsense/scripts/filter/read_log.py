@@ -44,14 +44,14 @@ filter_log = '/var/log/filter.log'
 # define log layouts, every endpoint contains all options
 # source : https://github.com/opnsense/ports/blob/master/opnsense/filterlog/files/description.txt
 fields_general = 'rulenr,subrulenr,anchorname,ridentifier,interface,reason,action,dir,version'.split(',')
-fields_ipv4 = fields_general + 'tos,ecn,ttl,id,offset,flags,proto,protoname,length,src,dst'.split(',')
+fields_ipv4 = fields_general + 'tos,ecn,ttl,id,offset,ipflags,proto,protoname,length,src,dst'.split(',')
 fields_ipv4_udp = fields_ipv4 + 'srcport,dstport,datalen'.split(',')
-fields_ipv4_tcp = fields_ipv4 + 'srcport,dstport,datalen,flags,error_options'.split(',')
+fields_ipv4_tcp = fields_ipv4 + 'srcport,dstport,datalen,tcpflags,seq,ack,urp,tcpopts'.split(',')
 fields_ipv4_carp = fields_ipv4 + 'type,ttl,vhid,version,advskew,advbase'.split(',')
 
 fields_ipv6 = fields_general + 'class,flowlabel,hlim,protoname,proto,payload-length,src,dst'.split(',')
 fields_ipv6_udp = fields_ipv6 + 'srcport,dstport,datalen'.split(',')
-fields_ipv6_tcp = fields_ipv6 + 'srcport,dstport,datalen,flags,error_options'.split(',')
+fields_ipv6_tcp = fields_ipv6 + 'srcport,dstport,datalen,tcpflags,seq,ack,urp,tcpopts'.split(',')
 fields_ipv6_carp = fields_ipv6 + 'type,ttl,vhid,version2,advskew,advbase'.split(',')
 
 def update_rule(target, metadata_target, ruleparts, spec):
@@ -100,7 +100,7 @@ if __name__ == '__main__':
             tmp = record['line'].split('filterlog:')[0].split()
             metadata['__digest__'] = md5.new(record['line']).hexdigest()
             metadata['__host__'] = tmp.pop()
-            metadata['__timestamp__'] =  ' '.join(tmp)
+            metadata['__timestamp__'] = ' '.join(tmp)
             rulep = record['line'].split('filterlog:')[1].strip().split(',')
             update_rule(rule, metadata, rulep, fields_general)
 
@@ -110,18 +110,18 @@ if __name__ == '__main__':
                     if 'proto' in rule:
                         if rule['proto'] == '17': # UDP
                             update_rule(rule, metadata, rulep, fields_ipv4_udp)
-                        elif  rule['proto'] == '6': # TCP
+                        elif rule['proto'] == '6': # TCP
                             update_rule(rule, metadata, rulep, fields_ipv4_tcp)
-                        elif  rule['proto'] == '112': # CARP
+                        elif rule['proto'] == '112': # CARP
                             update_rule(rule, metadata, rulep, fields_ipv4_carp)
                 elif rule['version'] == '6':
                     update_rule(rule, metadata, rulep, fields_ipv6)
-                    if 'next' in rule:
-                        if rule['next'] == '17': # UDP
+                    if 'proto' in rule:
+                        if rule['proto'] == '17': # UDP
                             update_rule(rule, metadata, rulep, fields_ipv6_udp)
-                        elif  rule['next'] == '6': # TCP
+                        elif rule['proto'] == '6': # TCP
                             update_rule(rule, metadata, rulep, fields_ipv6_tcp)
-                        elif  rule['next'] == '112': # CARP
+                        elif rule['proto'] == '112': # CARP
                             update_rule(rule, metadata, rulep, fields_ipv6_carp)
 
             rule.update(metadata)
