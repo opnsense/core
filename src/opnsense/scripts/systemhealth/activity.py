@@ -44,7 +44,7 @@ if __name__ == '__main__':
         output_stream.seek(0)
         rownum = 0
         for line in output_stream.read().strip().split('\n'):
-            if rownum <= 6:
+            if rownum <= 7:
                 # parse headers from top command, add to result
                 if len(line.strip()) > 0:
                     result['headers'].append(line)
