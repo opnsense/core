@@ -153,9 +153,9 @@ function updateServiceStatusUI(status) {
     $('#service_status_container').html(status_html);
 }
 
-function updateServiceControlUI(ServiceName)
+function updateServiceControlUI(serviceName)
 {
-    ajaxCall(url="/api/" + ServiceName + "/service/status", sendData={}, callback=function(data,status) {
+    ajaxCall(url="/api/" + serviceName + "/service/status", sendData={}, callback=function(data,status) {
         var status_html = '';
         if (data['status'] == "running") {
             status_html += 'btn-success' ;
@@ -163,9 +163,9 @@ function updateServiceControlUI(ServiceName)
             status_html += 'btn-danger' ;
         }
 
-        var buttons = '<span id="startService" class="glyphicon glyphicon-play btn ' + status_html + '"></span>';
-        buttons += '<span id="restartService" class="glyphicon glyphicon-refresh btn"></span>';
-        buttons += '<span id="stopService" class="glyphicon glyphicon-stop btn"></span>';
+        var buttons = '<span id="startService" class="btn ' +  status_html + ' glyphicon glyphicon-play"></span>';
+        buttons += '<span id="restartService" class="btn btn-default srv_status_act glyphicon glyphicon-refresh"></span>';
+        buttons += '<span id="stopService" class="btn btn-default srv_status_act glyphicon glyphicon-stop"></span>';
         $('#service_status_container').html(buttons);
 
         var commands = ["start", "restart", "stop"];
@@ -173,9 +173,9 @@ function updateServiceControlUI(ServiceName)
             (function (command) {
                 $("#" + command + "Service").click(function(){
                     $('#processing-dialog').modal('show');
-                    ajaxCall(url="/api/" + ServiceName + "/service/" + command, sendData={},callback=function(data,status) {
+                    ajaxCall(url="/api/" + serviceName + "/service/" + command, sendData={},callback=function(data,status) {
                         $('#processing-dialog').modal('hide');
-                        ajaxCall(url="/api/" + ServiceName + "/service/status", sendData={}, callback=function(data,status) {
+                        ajaxCall(url="/api/" + serviceName + "/service/status", sendData={}, callback=function(data,status) {
                             $("#startService").removeClass("btn-danger").removeClass("btn-success");
                             if (data['status'] == "running") {
                                 $("#startService").addClass("btn-success");
@@ -185,7 +185,7 @@ function updateServiceControlUI(ServiceName)
                         });
                     });
                 });
-            })((commands[i]));
+            })(commands[i]);
         }
     });
 }
