@@ -175,9 +175,9 @@ function services_radvd_configure($blacklist = array())
         $stanzas = array();
         $ifcfgsnv6 = get_interface_subnetv6($dhcpv6if);
         if (!empty($ifcfgsnv6)) {
-			$subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
-			$stanzas[] = "{$subnetv6}/{$ifcfgsnv6}";
-		}
+            $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
+            $stanzas[] = "{$subnetv6}/{$ifcfgsnv6}";
+        }
 
         $viparr = &config_read_array('virtualip', 'vip');
         foreach ($viparr as $vip) {
