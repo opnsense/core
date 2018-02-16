@@ -262,10 +262,33 @@ $( document ).ready(function() {
       $(".rule_select").prop("checked", $(this).prop("checked"));
   });
 
+  // move category block
+  $("#category_block").detach().appendTo($(".page-content-head > .container-fluid > .list-inline"));
+  $("#category_block").addClass("pull-right");
+
 });
 </script>
 
 <?php include("fbegin.inc"); ?>
+  <div class="hidden">
+    <div id="category_block" style="z-index:-100;">
+        <div class="hidden-sm hidden-lg"><br/></div>
+        <select class="selectpicker" data-live-search="true" data-size="5"  multiple placeholder="<?=gettext("Select category");?>" id="fw_category">
+<?php
+            // collect unique list of categories and append to option list
+            $categories = array();
+            foreach ($a_filter as $tmp_rule) {
+              if (!empty($tmp_rule['category']) && !in_array($tmp_rule['category'], $categories)) {
+                  $categories[] = $tmp_rule['category'];
+              }
+            }
+            foreach ($categories as $category):?>
+                <option value="<?=$category;?>" <?=in_array($category, $selected_category) ? "selected=\"selected\"" : "" ;?>><?=$category;?></option>
+<?php
+            endforeach;?>
+        </select>
+    </div>
+  </div>
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
@@ -296,24 +319,6 @@ $( document ).ready(function() {
                           <i class="fa fa-question-circle" data-toggle="collapse" data-target=".rule_md5_hash" ></i>
                       </th>
                       <th></th>
-                  </tr>
-                  <tr>
-                      <th colspan="11" style="padding-top:1px; padding-bottom:1px;">
-                          <select class="selectpicker" data-live-search="true" data-size="5"  multiple placeholder="<?=gettext("Select category");?>" id="fw_category">
-<?php
-                            // collect unique list of categories and append to option list
-                            $categories = array();
-                            foreach ($a_filter as $tmp_rule) {
-                                if (!empty($tmp_rule['category']) && !in_array($tmp_rule['category'], $categories)) {
-                                    $categories[] = $tmp_rule['category'];
-                                }
-                            }
-                            foreach ($categories as $category):?>
-                            <option value="<?=$category;?>" <?=in_array($category, $selected_category) ? "selected=\"selected\"" : "" ;?>><?=$category;?></option>
-<?php
-                            endforeach;?>
-                        </select>
-                    </th>
                   </tr>
                 </thead>
                 <tbody>
