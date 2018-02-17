@@ -289,7 +289,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   $config['interfaces'][$ifname]['if'] = $ifport;
                   if ($interfaces[$ifport]['section'] == 'ppps.ppp') {
                       $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifport]['type'];
-                  }
+                  } else {
+					  $config['interfaces'][$ifname]['ipaddr'] = 'dhcp';
 
                   if (substr($ifport, 0, 3) == 'gre' || substr($ifport, 0, 3) == 'gif') {
                       unset($config['interfaces'][$ifname]['ipaddr']);
