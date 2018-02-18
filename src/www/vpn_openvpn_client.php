@@ -562,7 +562,9 @@ $( document ).ready(function() {
             <tr>
               <td><a id="help_for_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
               <td>
-                <input name="disable" type="checkbox" value="yes" <?= !empty($pconfig['disable']) ? "checked=\"checked\"" : "";?> />
+                <label for="disable">
+                  <input name="disable" id="disable" type="checkbox" value="yes" <?= !empty($pconfig['disable']) ? "checked=\"checked\"" : "";?> />
+                </label>
                 <div class="hidden" data-for="help_for_disable">
                   <small><?=gettext("Set this option to disable this client without removing it from the list"); ?>.</small>
                 </div>
@@ -708,15 +710,19 @@ $( document ).ready(function() {
                 </tbody>
               </table>
               <br/>
-              <input name="remote_random" type="checkbox" value="yes" <?= !empty($pconfig['remote_random']) ? 'checked="checked"' : '' ?>/>
-              <?= gettext('Select remote server at random') ?>
+              <label for="remote_random">
+                <input name="remote_random" id="remote_random" type="checkbox" value="yes" <?= !empty($pconfig['remote_random']) ? 'checked="checked"' : '' ?>/>
+                <?= gettext('Select remote server at random') ?>
+              </label>
             </td>
           </tr>
           <tr>
             <td><a id="help_for_resolve_retry" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Retry DNS resolution"); ?></td>
             <td>
-              <input name="resolve_retry" type="checkbox" value="yes" <?= !empty($pconfig['resolve_retry']) ? 'checked="checked"' : '' ?>/>
-              <?= gettext('Infinitely resolve remote server') ?>
+              <label for="resolve_retry">
+                <input name="resolve_retry" id="resolve_retry" type="checkbox" value="yes" <?= !empty($pconfig['resolve_retry']) ? 'checked="checked"' : '' ?>/>
+                <?= gettext('Infinitely resolve remote server') ?>
+              </label>
               <div class="hidden" data-for="help_for_resolve_retry">
                 <div><small><?=gettext("Continuously attempt to resolve the server host name. Useful when communicating with a server that is not permanently connected to the Internet"); ?></small></div>
               </div>
@@ -808,6 +814,7 @@ $( document ).ready(function() {
           <tr class="tls_option">
             <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("TLS Authentication"); ?></td>
             <td>
+              <label for="tlsmode">
                 <select id="tlsmode" name='tlsmode' class="form-control">
                     <option value="" <?= empty($pconfig['tlsmode']) ? "selected=\"selected\"" : "";?>>
                         <?=gettext("Disabled");?>
@@ -819,6 +826,7 @@ $( document ).ready(function() {
                         <?=gettext("Enabled - Authentication & encryption");?>
                     </option>
                 </select>
+              </label>
             </td>
           </tr>
           <tr class="tls_option">
@@ -826,8 +834,10 @@ $( document ).ready(function() {
             <td>
 <?php
               if (empty($pconfig['tls'])) :?>
-              <input name="autotls_enable" id="autotls_enable" class="tls_input_field" type="checkbox" value="yes" <?= !empty($pconfig['autotls_enable']) ? "checked=\"checked\"" : "";?> >
-              <?=gettext("Automatically generate a shared TLS authentication key"); ?>.
+                <label for="autotls_enable">
+                  <input name="autotls_enable" id="autotls_enable" class="tls_input_field" type="checkbox" value="yes" <?= !empty($pconfig['autotls_enable']) ? "checked=\"checked\"" : "";?> >
+                  <?=gettext("Automatically generate a shared TLS authentication key"); ?>.
+                </label>
 <?php
               endif; ?>
               <div id="autotls_opts">
@@ -905,8 +915,10 @@ $( document ).ready(function() {
             <td>
 <?php
               if (empty($pconfig['shared_key'])) :?>
-              <input name="autokey_enable" id="autokey_enable" type="checkbox" value="yes" <?= !empty($pconfig['autokey_enable']) ? "checked=\"checked\"" : "";?> />
-              <?=gettext("Automatically generate a shared key"); ?>.
+              <label for="autokey_enable">
+                <input name="autokey_enable" id="autokey_enable" type="checkbox" value="yes" <?= !empty($pconfig['autokey_enable']) ? "checked=\"checked\"" : "";?> />
+                <?=gettext("Automatically generate a shared key"); ?>.
+              </label>
 <?php
               endif; ?>
               <div id="autokey_opts">
@@ -1058,7 +1070,9 @@ $( document ).ready(function() {
           <tr>
             <td><a id="help_for_passtos" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type-of-Service"); ?></td>
             <td>
-              <input name="passtos" type="checkbox" value="yes" <?=!empty($pconfig['passtos']) ? "checked=\"checked\"" : "" ;?>  />
+              <label for="passtos">
+                <input name="passtos" id="passtos" type="checkbox" value="yes" <?=!empty($pconfig['passtos']) ? "checked=\"checked\"" : "" ;?>  />
+              </label>
               <div class="hidden" data-for="help_for_passtos">
                 <?=gettext("Set the TOS IP header value of tunnel packets to match the encapsulated packet value"); ?>.
               </div>
@@ -1067,7 +1081,9 @@ $( document ).ready(function() {
           <tr id="chkboxRouteNoPull">
             <td><a id="help_for_route_no_pull" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Don't pull routes"); ?></td>
             <td>
-              <input name="route_no_pull" type="checkbox" value="yes" <?=!empty($pconfig['route_no_pull']) ? "checked=\"checked\"" : "" ;?> />
+              <label for="route_no_pull">
+                <input name="route_no_pull" id="route_no_pull" type="checkbox" value="yes" <?=!empty($pconfig['route_no_pull']) ? "checked=\"checked\"" : "" ;?> />
+              </label>
               <div class="hidden" data-for="help_for_route_no_pull">
                 <?=gettext("This option effectively bars the server from adding routes to the client's routing table, however note that this option still allows the server to set the TCP/IP properties of the client's TUN/TAP interface"); ?>.
               </div>
@@ -1076,7 +1092,9 @@ $( document ).ready(function() {
           <tr id="chkboxRouteNoExec">
             <td><a id="help_for_route_no_exec" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Don't add/remove routes"); ?></td>
             <td>
-              <input name="route_no_exec" type="checkbox" value="yes" <?=!empty($pconfig['route_no_exec']) ? "checked=\"checked\"" : "" ;?> />
+              <label for="route_no_exec">
+                <input name="route_no_exec" id="route_no_exec" type="checkbox" value="yes" <?=!empty($pconfig['route_no_exec']) ? "checked=\"checked\"" : "" ;?> />
+              </label>
               <div class="hidden" data-for="help_for_route_no_exec">
                 <?= gettext('Do not add or remove routes automatically. Instead pass routes to "--route-up" script using environmental variables.') ?>
               </div>
@@ -1190,8 +1208,9 @@ $( document ).ready(function() {
               } ?>
               <tr>
                 <td>
-                  <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
-                  &nbsp;
+                  <label>
+                    <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
+                  </label>
                   <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($client['disable'])) ? gettext("Disable") : gettext("Enable");?>">
                     <span class="fa fa-play fa-fw <?=(empty($client['disable'])) ? "text-success" : "text-muted";?>"></span>
                   </a>

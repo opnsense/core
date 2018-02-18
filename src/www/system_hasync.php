@@ -137,7 +137,9 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_disablepreempt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable preempt') ?></td>
                   <td>
-                    <input type="checkbox" name="disablepreempt" value="on" <?= !empty($pconfig['disablepreempt']) ? "checked=\"checked\"" : "";?> />
+                    <label for="disablepreempt">
+                      <input type="checkbox" name="disablepreempt" value="on" <?= !empty($pconfig['disablepreempt']) ? "checked=\"checked\"" : "";?> />
+                    </label>
                     <div class="hidden" data-for="help_for_disablepreempt">
                       <?=gettext("When this device is configured as CARP master it will try to switch to master when powering up, this option will keep this one slave if there already is a master on the network. A reboot is required to take effect.");?>
                     </div>
@@ -146,7 +148,9 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_disconnectppps" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disconnect dialup interfaces') ?></td>
                   <td>
-                    <input type="checkbox" name="disconnectppps" value="on" <?= !empty($pconfig['disconnectppps']) ? "checked=\"checked\"" : "";?> />
+                    <label for="disablepreempt">
+                      <input type="checkbox" name="disconnectppps" value="on" <?= !empty($pconfig['disconnectppps']) ? "checked=\"checked\"" : "";?> />
+                    </label>
                     <div class="hidden" data-for="help_for_disconnectppps">
                       <?=gettext("When this device is configured as CARP backup it will disconnect all PPP type interfaces and try to reconnect them when becoming master again.");?>
                     </div>
@@ -155,7 +159,9 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_pfsyncenabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize States') ?></td>
                   <td>
-                    <input type="checkbox" name="pfsyncenabled" value="on" <?= !empty($pconfig['pfsyncenabled']) ? "checked=\"checked\"" : "";?> />
+                    <label for="pfsyncenabled">
+                      <input type="checkbox" name="pfsyncenabled" id="pfsyncenabled" value="on" <?= !empty($pconfig['pfsyncenabled']) ? "checked=\"checked\"" : "";?> />
+                    </label>
                     <div class="hidden" data-for="help_for_pfsyncenabled">
                       <?= sprintf(gettext('pfsync transfers state insertion, update, and deletion messages between firewalls.%s' .
                         'Each firewall sends these messages out via multicast on a specified interface, using the PFSYNC protocol (%sIP Protocol 240%s).%s' .
@@ -256,7 +262,9 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_synchronize<?=$syncid?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=$synccnf['description'];?></td>
                   <td>
-                    <input type="checkbox" name="synchronize<?=$syncid?>" value="on" <?=!empty($pconfig['synchronize'.$syncid]) ? "checked=\"checked\"" :"";?> />
+                    <label for="synchronize<?=$syncid?>">
+                      <input type="checkbox" name="synchronize<?=$syncid?>" id="synchronize<?=$syncid?>" value="on" <?=!empty($pconfig['synchronize'.$syncid]) ? "checked=\"checked\"" :"";?> />
+                    </label>
                     <div class="hidden" data-for="help_for_synchronize<?=$syncid?>">
                       <?=$synccnf['help'];?>
                     </div>

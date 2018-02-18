@@ -68,6 +68,7 @@
         </tr>
 {% endif %}
         {% for field in fields|default({})%}
+            {% set input_label=false %}
             {% if field['type'] == 'header' %}
               {# close table and start new one with header #}
 

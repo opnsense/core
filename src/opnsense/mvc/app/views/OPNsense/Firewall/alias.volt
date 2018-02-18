@@ -528,7 +528,7 @@
                         <thead>
                         <tr>
                             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                            <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                            <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle" data-css-class="text-center" data-header-css-class="text-center">{{ lang._('Enabled') }}</th>
                             <th data-column-id="name" data-width="20em" data-type="string">{{ lang._('Name') }}</th>
                             <th data-column-id="type" data-width="12em" data-type="string">{{ lang._('Type') }}</th>
                             <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
@@ -620,7 +620,9 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <input type="checkbox" id="alias.enabled">
+                                        <label for="alias.enabled">
+                                          <input type="checkbox" id="alias.enabled">
+                                        </label>
                                         <div class="hidden" data-for="help_for_alias.enabled">
                                             <small>{{lang._('Enable this alias')}}</small>
                                         </div>
@@ -766,7 +768,9 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <input type="checkbox" id="alias.counters">
+                                        <label for="alias.counters">
+                                          <input type="checkbox" id="alias.counters">
+                                        </label>
                                         <div class="hidden" data-for="help_for_alias.counters">
                                             <small>{{lang._('Maintain a set of counters for each table entry')}}</small>
                                         </div>

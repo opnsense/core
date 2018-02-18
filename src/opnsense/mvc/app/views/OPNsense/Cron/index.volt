@@ -103,7 +103,7 @@
             <thead>
             <tr>
                 <th data-column-id="origin" data-type="string" data-visible="false">{{ lang._('Origin') }}</th>
-                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle" data-css-class="text-center" data-header-css-class="text-center">{{ lang._('Enabled') }}</th>
                 <th data-column-id="minutes" data-type="string">{{ lang._('Minutes') }}</th>
                 <th data-column-id="hours" data-type="string">{{ lang._('Hours') }}</th>
                 <th data-column-id="days" data-type="string">{{ lang._('Days') }}</th>

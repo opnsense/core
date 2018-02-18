@@ -362,8 +362,10 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable")?></td>
                     <td>
-                      <input name="enable" type="checkbox" id="enable" value="yes" <?= !empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
-                      <?=gettext("Enable IPsec Mobile Client Support"); ?>
+                      <label for="enable">
+                        <input name="enable" type="checkbox" id="enable" value="yes" <?= !empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
+                        <?=gettext("Enable IPsec Mobile Client Support"); ?>
+                      </label>
                     </td>
                   </tr>
                     <tr>
@@ -407,8 +409,10 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                   <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Virtual IPv4 Address Pool"); ?></td>
                       <td>
-                          <input name="pool_enable" type="checkbox" id="pool_enable" value="yes" <?= !empty($pconfig['pool_address'])&&!empty($pconfig['pool_netbits']) ? "checked=\"checked\"" : "";?> onclick="pool_change()" />
-                          <?=gettext("Provide a virtual IPv4 address to clients"); ?>
+                          <label for="pool_enable">
+                            <input name="pool_enable" type="checkbox" id="pool_enable" value="yes" <?= !empty($pconfig['pool_address'])&&!empty($pconfig['pool_netbits']) ? "checked=\"checked\"" : "";?> onclick="pool_change()" />
+                            <?=gettext("Provide a virtual IPv4 address to clients"); ?>
+                          </label><br />
                           <div class="input-group">
                               <input name="pool_address" type="text" class="form-control" id="pool_address" size="20" value="<?=$pconfig['pool_address'];?>" style="width:200px;" />
                               <select name="pool_netbits" class="selectpicker form-control" id="pool_netbits" data-width="70px" data-size="10">
@@ -426,8 +430,10 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                   <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Virtual IPv6 Address Pool"); ?></td>
                       <td>
-                          <input name="pool_enable_v6" type="checkbox" id="pool_enable_v6" value="yes" <?= !empty($pconfig['pool_address_v6'])&&!empty($pconfig['pool_netbits_v6']) ? "checked=\"checked\"" : "";?> onclick="pool_v6_change()" />
-                          <?=gettext("Provide a virtual IPv6 address to clients"); ?>
+                          <label for="pool_enable_v6">
+                            <input name="pool_enable_v6" type="checkbox" id="pool_enable_v6" value="yes" <?= !empty($pconfig['pool_address_v6'])&&!empty($pconfig['pool_netbits_v6']) ? "checked=\"checked\"" : "";?> onclick="pool_v6_change()" />
+                            <?=gettext("Provide a virtual IPv6 address to clients"); ?>
+                          </label>
                           <div class="input-group">
                               <input name="pool_address_v6" type="text" class="form-control" id="pool_address_v6" size="20" value="<?=$pconfig['pool_address_v6'];?>" style="width:200px;" />
                               <select name="pool_netbits_v6" class="selectpicker form-control" id="pool_netbits_v6" data-width="70px" data-size="10">
@@ -445,15 +451,19 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Network List') ?></td>
                     <td>
-                      <input name="net_list" type="checkbox" id="net_list_enable" value="yes" <?= !empty($pconfig['net_list']) ? "checked=\"checked\"" : "";?> />
-                      <?= gettext('Provide a list of accessible networks to clients') ?>
+                      <label for="net_list_enable">
+                        <input name="net_list" type="checkbox" id="net_list_enable" value="yes" <?= !empty($pconfig['net_list']) ? "checked=\"checked\"" : "";?> />
+                        <?= gettext('Provide a list of accessible networks to clients') ?>
+                      </label>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_save_passwd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Save Xauth Password"); ?></td>
                     <td>
-                      <input name="save_passwd" type="checkbox" id="save_passwd_enable" value="yes" <?= !empty($pconfig['save_passwd']) ? "checked=\"checked\"" : "";?> />
-                      <?= gettext('Allow clients to save Xauth passwords (Cisco VPN client only)') ?>
+                      <label for="save_passwd_enable">
+                        <input name="save_passwd" type="checkbox" id="save_passwd_enable" value="yes" <?= !empty($pconfig['save_passwd']) ? "checked=\"checked\"" : "";?> />
+                        <?= gettext('Allow clients to save Xauth passwords (Cisco VPN client only)') ?>
+                      </label>
                       <div class="hidden" data-for="help_for_save_passwd">
                         <?=gettext("With iPhone clients, this does not work when deployed via the iPhone configuration utility, only by manual entry."); ?>
                       </div>
@@ -462,16 +472,20 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("DNS Default Domain"); ?></td>
                     <td>
-                      <input name="dns_domain_enable" type="checkbox" id="dns_domain_enable" value="yes"  <?= !empty($pconfig['dns_domain']) ? "checked=\"checked\"" : "";?> onclick="dns_domain_change()" />
-                      <?=gettext("Provide a default domain name to clients"); ?>
+                      <label for="dns_domain_enable">
+                        <input name="dns_domain_enable" type="checkbox" id="dns_domain_enable" value="yes"  <?= !empty($pconfig['dns_domain']) ? "checked=\"checked\"" : "";?> onclick="dns_domain_change()" />
+                        <?=gettext("Provide a default domain name to clients"); ?>
+                      </label>
                       <input name="dns_domain" type="text" id="dns_domain" size="30" value="<?=$pconfig['dns_domain'];?>" />
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_dns_split_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Split DNS"); ?></td>
                     <td>
-                      <input name="dns_split_enable" type="checkbox" id="dns_split_enable" value="yes" <?= !empty($pconfig['dns_split']) ? "checked=\"checked\"" : "";?> onclick="dns_split_change()" />
-                      <?= gettext('Provide a list of split DNS domain names to clients') ?>
+                      <label for="dns_split_enable">
+                        <input name="dns_split_enable" type="checkbox" id="dns_split_enable" value="yes" <?= !empty($pconfig['dns_split']) ? "checked=\"checked\"" : "";?> onclick="dns_split_change()" />
+                        <?= gettext('Provide a list of split DNS domain names to clients') ?>
+                      </label>
                       <input name="dns_split" type="text" class="form-control" id="dns_split" size="30" value="<?=$pconfig['dns_split'];?>" />
                       <div class="hidden" data-for="help_for_dns_split_enable">
                         <?= gettext('Enter a comma-separated list. If left blank, and a default domain is set, it will be used for this value.') ?>
@@ -481,8 +495,10 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('DNS Servers') ?></td>
                     <td>
-                      <input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes"  <?= !empty($pconfig['dns_server1']) || !empty($pconfig['dns_server2']) || !empty($pconfig['dns_server3']) || !empty($pconfig['dns_server4']) ? "checked=\"checked\"" : "";?> onclick="dns_server_change()" />
-                      <?=gettext("Provide a DNS server list to clients"); ?>
+                      <label for="dns_server_enable">
+                        <input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes"  <?= !empty($pconfig['dns_server1']) || !empty($pconfig['dns_server2']) || !empty($pconfig['dns_server3']) || !empty($pconfig['dns_server4']) ? "checked=\"checked\"" : "";?> onclick="dns_server_change()" />
+                        <?=gettext("Provide a DNS server list to clients"); ?>
+                      </label>
                       <div id="dns_server_enable_inputs">
                         <?=gettext("Server"); ?> #1:
                         <input name="dns_server1" type="text" class="form-control" id="dns_server1" size="20" value="<?=$pconfig['dns_server1'];?>" />
@@ -498,8 +514,10 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WINS Servers"); ?></td>
                     <td>
-                      <input name="wins_server_enable" type="checkbox" id="wins_server_enable" value="yes" <?= !empty($pconfig['wins_server1']) || !empty($pconfig['wins_server2']) ? "checked=\"checked\"" : "";?> onclick="wins_server_change()" />
-                      <?= gettext('Provide a WINS server list to clients') ?>
+                      <label for="wins_server_enable">
+                        <input name="wins_server_enable" type="checkbox" id="wins_server_enable" value="yes" <?= !empty($pconfig['wins_server1']) || !empty($pconfig['wins_server2']) ? "checked=\"checked\"" : "";?> onclick="wins_server_change()" />
+                        <?= gettext('Provide a WINS server list to clients') ?>
+                      </label>
                       <div id="wins_server_enable_inputs">
                         <?=gettext("Server"); ?> #1:
                         <input name="wins_server1" type="text" class="form-control" id="wins_server1" size="20" value="<?=$pconfig['wins_server1'];?>" />
@@ -551,8 +569,10 @@ endforeach;
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Login Banner') ?></td>
                     <td>
-                      <input name="login_banner_enable" type="checkbox" id="login_banner_enable" value="yes" <?= !empty($pconfig['login_banner']) ? "checked=\"checked\"" : "";?> onclick="login_banner_change()" />
-                      <?=gettext("Provide a login banner to clients"); ?>
+                      <label for="login_banner_enable">
+                        <input name="login_banner_enable" type="checkbox" id="login_banner_enable" value="yes" <?= !empty($pconfig['login_banner']) ? "checked=\"checked\"" : "";?> onclick="login_banner_change()" />
+                        <?=gettext("Provide a login banner to clients"); ?>
+                      </label>
                       <textarea name="login_banner" cols="65" rows="7" id="login_banner" class="formpre"><?=$pconfig['login_banner'];?></textarea>
                     </td>
                   </tr>

@@ -155,7 +155,7 @@
         <table id="grid-zones" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="changeMessage" data-editDialog="DialogZone">
             <thead>
             <tr>
-                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle" data-css-class="text-center" data-header-css-class="text-center">{{ lang._('Enabled') }}</th>
                 <th data-column-id="zoneid" data-type="number" data-visible="false">{{ lang._('Zoneid') }}</th>
                 <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                 <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>

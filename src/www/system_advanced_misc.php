@@ -393,7 +393,9 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_powerd_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use PowerD"); ?></td>
                 <td>
-                  <input name="powerd_enable" type="checkbox" id="powerd_enable" value="yes" <?=!empty($pconfig['powerd_enable']) ? "checked=\"checked\"" : "";?> />
+                  <label for="powerd_enable">
+                    <input name="powerd_enable" type="checkbox" id="powerd_enable" value="yes" <?=!empty($pconfig['powerd_enable']) ? "checked=\"checked\"" : "";?> />
+                  </label>
                   <div class="hidden" data-for="help_for_powerd_enable">
                     <?=gettext("The powerd utility monitors the system state and sets various power control " .
                                         "options accordingly. It offers four modes (maximum, minimum, adaptive " .
@@ -480,15 +482,19 @@ include("head.inc");
               <tr>
                 <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('Swap file'); ?></td>
                 <td style="width=78%">
-                  <input name="use_swap_file" type="checkbox" id="use_swap_file" value="yes" <?=!empty($pconfig['use_swap_file']) ? 'checked="checked"' : '';?>/>
-                  <?= gettext('Add a 2 GB swap file to the system') ?>
+                  <label for="use_swap_file">
+                    <input name="use_swap_file" type="checkbox" id="use_swap_file" value="yes" <?=!empty($pconfig['use_swap_file']) ? 'checked="checked"' : '';?>/>
+                    <?= gettext('Add a 2 GB swap file to the system') ?>
+                  </label>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_use_mfs_var" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/var RAM disk'); ?></td>
                 <td>
-                  <input name="use_mfs_var" type="checkbox" id="use_mfs_var" value="yes" <?=!empty($pconfig['use_mfs_var']) ? 'checked="checked"' : '';?>/>
-                  <?=gettext("Use memory file system for /var"); ?>
+                  <label for="use_mfs_var">
+                    <input name="use_mfs_var" type="checkbox" id="use_mfs_var" value="yes" <?=!empty($pconfig['use_mfs_var']) ? 'checked="checked"' : '';?>/>
+                    <?=gettext("Use memory file system for /var"); ?>
+                  </label>
                   <div class="hidden" data-for="help_for_use_mfs_var">
                     <?=gettext("Set this if you wish to use /var as a RAM disk (memory file system disks) " .
                       "rather than using the hard disk. Setting this will cause the data /var to be lost on reboot, including log data."); ?>
@@ -498,8 +504,10 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_use_mfs_tmp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/tmp RAM disk'); ?></td>
                 <td>
-                  <input name="use_mfs_tmp" type="checkbox" id="use_mfs_tmp" value="yes" <?=!empty($pconfig['use_mfs_tmp']) ? 'checked="checked"' : '';?>/>
-                  <?=gettext('Use memory file system for /tmp'); ?>
+                  <label for="use_mfs_tmp">
+                    <input name="use_mfs_tmp" type="checkbox" id="use_mfs_tmp" value="yes" <?=!empty($pconfig['use_mfs_tmp']) ? 'checked="checked"' : '';?>/>
+                    <?=gettext('Use memory file system for /tmp'); ?>
+                  </label>
                   <div class="hidden" data-for="help_for_use_mfs_tmp">
                     <?= gettext('Set this if you wish to use /tmp as a RAM disk (memory file system disk) rather than using the hard disk.') ?>
                   </div>
@@ -516,8 +524,10 @@ include("head.inc");
                 <tr>
                     <td><a id="help_for_disablebeep" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Startup/Shutdown Sound"); ?></td>
                     <td>
-                        <input name="disablebeep" type="checkbox" id="disablebeep" value="yes" <?=!empty($pconfig['disablebeep']) ? 'checked="checked"' : '';?>/>
-                        <?=gettext("Disable the startup/shutdown beep"); ?>
+                        <label for="disablebeep">
+                            <input name="disablebeep" type="checkbox" id="disablebeep" value="yes" <?=!empty($pconfig['disablebeep']) ? 'checked="checked"' : '';?>/>
+                            <?=gettext("Disable the startup/shutdown beep"); ?>
+                        </label>
                         <div class="hidden" data-for="help_for_disablebeep">
                             <?=gettext("When this is checked, startup and shutdown sounds will no longer play."); ?>
                         </div>

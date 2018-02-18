@@ -350,7 +350,9 @@ include("head.inc");
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Advertise Default Gateway') ?></td>
                     <td>
-                      <input id="radefault" name="radefault" type="checkbox" value="yes" <?= !empty($pconfig['radefault']) ? 'checked="checked"' : '' ?>/>
+                      <label for="radefault">
+                        <input id="radefault" name="radefault" type="checkbox" value="yes" <?= !empty($pconfig['radefault']) ? 'checked="checked"' : '' ?>/>
+                      </label>
                     </td>
                   </tr>
                   <tr>
@@ -419,11 +421,15 @@ include("head.inc");
                         <?= gettext('Leave blank to use the system default DNS servers: This interface IP address if a DNS service is enabled or the configured global DNS servers.') ?>
                       </div>
                       <br />
-                      <input id="rasamednsasdhcp6" name="rasamednsasdhcp6" type="checkbox" value="yes" <?=!empty($pconfig['rasamednsasdhcp6']) ? "checked='checked'" : "";?> />
-                      <?= gettext('Use the DNS settings of the DHCPv6 server') ?>
+                      <label for="rasamednsasdhcp6">
+                        <input id="rasamednsasdhcp6" name="rasamednsasdhcp6" type="checkbox" value="yes" <?=!empty($pconfig['rasamednsasdhcp6']) ? "checked='checked'" : "";?> />
+                        <?= gettext('Use the DNS settings of the DHCPv6 server') ?>
+                      </label>
                       <br />
-                      <input name="radisablerdnss" type="checkbox" id="radisablerdnss" value="yes" <?=!empty($pconfig['radisablerdnss']) ? 'checked="checked"' : '' ?> />
-                      <?= gettext('Do not send DNS settings to clients') ?>
+                      <label for="radisablerdnss">
+                        <input name="radisablerdnss" type="checkbox" id="radisablerdnss" value="yes" <?=!empty($pconfig['radisablerdnss']) ? 'checked="checked"' : '' ?> />
+                        <?= gettext('Do not send DNS settings to clients') ?>
+                      </label>
                     </td>
                   </tr>
                   <tr>

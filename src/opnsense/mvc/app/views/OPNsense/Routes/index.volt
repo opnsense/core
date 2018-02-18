@@ -48,7 +48,7 @@
     <table id="grid-routes" class="table table-responsive" data-editDialog="DialogRoute" data-editAlert="routeChangeMessage">
         <thead>
             <tr>
-                <th data-column-id="disabled" data-type="string" data-formatter="rowtoggle">{{ lang._('Disabled') }}</th>
+                <th data-column-id="disabled" data-type="string" data-formatter="rowtoggle" data-css-class="text-center" data-header-css-class="text-center">{{ lang._('Disabled') }}</th>
                 <th data-column-id="network" data-type="string" data-visible="true">{{ lang._('Network') }}</th>
                 <th data-column-id="gateway" data-type="string" data-visible="true">{{ lang._('Gateway') }}</th>
                 <th data-column-id="descr" data-type="string" data-visible="true">{{ lang._('Description') }}</th>

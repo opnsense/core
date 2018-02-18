@@ -141,7 +141,7 @@ include("head.inc");
             event.preventDefault();
             $(".acl_item").each(function(){
                 if ($(this).is(':visible')) {
-                    $(this).find('td > input').prop('checked', true);
+                    $(this).find('td > label > input').prop('checked', true);
                 }
             });
         });
@@ -150,7 +150,7 @@ include("head.inc");
             event.preventDefault();
             $(".acl_item").each(function(){
                 if ($(this).is(':visible')) {
-                    $(this).find('td > input').prop('checked', false);
+                    $(this).find('td > label > input').prop('checked', false);
                 }
             });
         });
@@ -197,7 +197,10 @@ include("head.inc");
                             </tr>
                             <tr>
                                 <th>
-                                    <input type="checkbox" id="search_selected"> <small><?=gettext("(filter)");?></small>
+                                    <label for="search_selected">
+                                      <input type="checkbox" id="search_selected">
+                                      <small><?=gettext("(filter)");?></small>
+                                    </label>
                                 </th>
                                 <th>
                                     <input type="text" placeholder="<?=gettext("search");?>" id="search">
@@ -209,8 +212,6 @@ include("head.inc");
                         <table class="table table-condensed table-hoover">
                             <thead>
                                 <tr>
-                                    <th style="width:70px;"></th>
-                                    <th style="width:50px;"></th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -231,14 +232,15 @@ include("head.inc");
                                  } ?>
                                 <tr class="acl_item" data-search-phrase="<?= $pdesc . ' ' . $pnamesafe ?>">
                                     <td>
-                                        <input name="sysprivs[]" type="checkbox" value="<?= $pname ?>" <?= !empty($a_privs) && in_array($pname, $a_privs) ? 'checked="checked"' : '' ?>>
-                                    </td>
-                                    <td><?= $pdesc ?></td>
-                                    <td><?= $pnamesafe ?>
+                                        <label>
+                                          <input name="sysprivs[]" type="checkbox" value="<?= $pname ?>" <?= !empty($a_privs) && in_array($pname, $a_privs) ? 'checked="checked"' : '' ?>>
+                                          <div style="display:table-cell; width:3em; text-align:center"><?= $pdesc ?></div>
+                                          <div style="display:table-cell"><?= $pnamesafe ?></div>
+                                        </label>
 <?php
                                       if (!empty($pdata['match'])):?>
-                                      <i class="fa fa-info-circle" style="cursor: pointer" data-toggle="collapse" href="#<?=$pname;?>"></i>
-                                      <div class="collapse" id="<?=$pname;?>">
+                                      <i class="fa fa-info-circle" style="float:right; cursor: pointer" data-toggle="collapse" href="#<?=$pname;?>"></i>
+                                      <div style="margin-left:2em" class="collapse" id="<?=$pname;?>">
                                         <table class="table table-condensed">
                                           <thead>
                                             <tr>
@@ -266,12 +268,20 @@ include("head.inc");
                     <table class="table table-condensed table-hoover">
                         <thead>
                             <tr>
-                                <th style="width:50px;"><input type="checkbox" id="selectall"></th>
-                                <th><?=gettext("Select all (visible)");?></th>
+                                <th style="width:50px;">
+                                  <label for="selectall">
+                                    <input type="checkbox" id="selectall">
+                                    <span><?=gettext("Select all (visible)");?></span>
+                                  </label>
+                                </th>
                             </tr>
                             <tr>
-                                <th style="width:50px;"><input type="checkbox" id="deselectall"></th>
-                                <th><?=gettext("Deselect all (visible)");?></th>
+                                <th style="width:50px;">
+                                  <label for="deselectall">
+                                    <input type="checkbox" id="deselectall">
+                                    <span><?=gettext("Deselect all (visible)");?></span>
+                                  </label>
+                                </th>
                             </tr>
                         </thead>
                     </table>

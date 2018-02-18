@@ -199,8 +199,10 @@ include_once("head.inc");
                       <tr>
                         <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?></td>
                         <td>
-                          <input name="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : '';?> />
-                          <?= gettext('Enable Unbound') ?>
+                          <label for="enable">
+                            <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : '';?> />
+                            <?= gettext('Enable Unbound') ?>
+                          </label>
                         </td>
                       </tr>
                       <tr>
@@ -228,15 +230,19 @@ include_once("head.inc");
                       <tr>
                         <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("DNSSEC");?></td>
                         <td>
-                          <input name="dnssec" type="checkbox" value="yes" <?=!empty($pconfig['dnssec']) ? 'checked="checked"' : '';?> />
-                          <?= gettext('Enable DNSSEC Support') ?>
+                          <label for="dnssec">
+                            <input name="dnssec" type="checkbox" id="dnssec" value="yes" <?=!empty($pconfig['dnssec']) ? 'checked="checked"' : '';?> />
+                            <?=gettext("Enable DNSSEC Support") ?>
+                          </label>
                         </td>
                       </tr>
                       <tr>
                         <td><a id="help_for_dns64" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS64");?></td>
                         <td>
-                          <input name="dns64" type="checkbox" id="dns64" value="yes" <?=!empty($pconfig['dns64']) ? 'checked="checked"' : '';?> />
-                          <?= gettext('Enable DNS64 Support') ?>
+                          <label for="dns64">
+                            <input name="dns64" type="checkbox" id="dns64" value="yes" <?=!empty($pconfig['dns64']) ? 'checked="checked"' : '';?> />
+                            <?= gettext('Enable DNS64 Support') ?>
+                          </label>
                           <div class="hidden" data-for="help_for_dns64">
                             <?= gettext("If this option is set, Unbound will synthesize AAAA " .
                             "records from A records if no actual AAAA records are present."); ?>
@@ -251,8 +257,10 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_regdhcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Registration");?></td>
                         <td>
-                          <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? 'checked="checked"' : '';?> />
-                          <?= gettext('Register DHCP leases') ?>
+                          <label for="regdhcp">
+                            <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? 'checked="checked"' : '';?> />
+                            <?= gettext('Register DHCP leases') ?>
+                          </label>
                           <div class="hidden" data-for="help_for_regdhcp">
                             <?= gettext("If this option is set, then machines that specify " .
                             "their hostname when requesting a DHCP lease will be registered " .
@@ -272,8 +280,10 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_regdhcpstatic" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('DHCP Static Mappings');?></td>
                         <td>
-                          <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? 'checked="checked"' : '';?> />
-                          <?= gettext('Register DHCP static mappings') ?>
+                          <label for="regdhcpstatic">
+                            <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? 'checked="checked"' : '';?> />
+                            <?= gettext('Register DHCP static mappings') ?>
+                          </label>
                           <div class="hidden" data-for="help_for_regdhcpstatic">
                             <?= sprintf(gettext("If this option is set, then DHCP static mappings will ".
                                 "be registered in Unbound, so that their name can be ".
@@ -285,8 +295,10 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_reglladdr6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('IPv6 Link-local') ?></td>
                         <td>
-                          <input name="reglladdr6" type="checkbox" id="reglladdr6" value="yes" <?= !empty($pconfig['reglladdr6']) ? 'checked="checked"' : '' ?>/>
-                          <?= gettext('Register IPv6 link-local addresses') ?>
+                          <label for="reglladdr6">
+                            <input name="reglladdr6" type="checkbox" id="reglladdr6" value="yes" <?= !empty($pconfig['reglladdr6']) ? 'checked="checked"' : '' ?>/>
+                            <?= gettext('Register IPv6 link-local addresses') ?>
+                          </label>
                           <div class="hidden" data-for="help_for_reglladdr6">
                             <?= gettext("If this option is unset, then IPv6 link-local " .
                             "addresses will not be registered in Unbound, preventing " .
@@ -298,8 +310,10 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_txtsupport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TXT Comment Support");?></td>
                         <td>
-                          <input name="txtsupport" type="checkbox" value="yes" <?=!empty($pconfig['txtsupport']) ? 'checked="checked"' : '';?> />
-                          <?= gettext('Create corresponding TXT records') ?>
+                          <label for="txtsupport">
+                            <input name="txtsupport" type="checkbox" id="txtsupport" value="yes" <?=!empty($pconfig['txtsupport']) ? 'checked="checked"' : '';?> />
+                            <?= gettext('Create corresponding TXT records') ?>
+                          </label>
                           <div class="hidden" data-for="help_for_txtsupport">
                             <?=gettext("If this option is set, then any descriptions associated with Host entries and DHCP Static mappings will create a corresponding TXT record.");?>
                           </div>
@@ -308,8 +322,10 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_cacheflush" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('DNS Cache');?></td>
                         <td>
-                          <input name="cacheflush" type="checkbox" value="yes" <?=!empty($pconfig['cacheflush']) ? 'checked="checked"' : '';?> />
-                          <?= gettext('Flush DNS cache during reload') ?>
+                          <label for="cacheflush">
+                            <input name="cacheflush" type="checkbox" id="cacheflush" value="yes" <?=!empty($pconfig['cacheflush']) ? 'checked="checked"' : '';?> />
+                            <?= gettext('Flush DNS cache during reload') ?>
+                          </label>
                           <div class="hidden" data-for="help_for_cacheflush">
                             <?= gettext('If this option is set, the DNS cache will be flushed during each daemon reload. This is the default behavior for Unbound, but may be undesired when multiple dynamic interfaces require frequent reloading.') ?>
                           </div>
@@ -352,7 +368,9 @@ include_once("head.inc");
                       <tr class="showadv" style="display:none">
                         <td><a id="help_for_enable_wpad" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WPAD Records");?></td>
                         <td>
-                          <input id="enable_wpad" name="enable_wpad" type="checkbox" value="yes" <?=!empty($pconfig['enable_wpad']) ? 'checked="checked"' : '';?> />
+                          <label for="enable_wpad">
+                            <input name="enable_wpad" type="checkbox" id="enable_wpad" value="yes" <?=!empty($pconfig['enable_wpad']) ? 'checked="checked"' : '';?> />
+                          </label>
                           <div class="hidden" data-for="help_for_enable_wpad">
                             <?=gettext("If this option is set, CNAME records for the WPAD host of all configured domains will be automatically added as well as overrides for TXT records for domains. " .
                                        "This allows automatic proxy configuration in your network but you should not enable it if you are not using WPAD or if you want to configure it by yourself.");?><br />

@@ -167,7 +167,9 @@ $( document ).ready(function() {
                   <tr>
                     <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                     <td>
-                      <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                      <label for="disabled">
+                        <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                      </label>
                       <div class="hidden" data-for="help_for_disabled">
                         <strong><?=gettext("Disable this rule"); ?></strong><br />
                         <?=gettext("Set this option to disable this rule without removing it from the list."); ?>

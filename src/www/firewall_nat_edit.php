@@ -536,8 +536,10 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                   <td>
-                    <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
-                    <?=gettext("Disable this rule"); ?>
+                    <label for="disabled">
+                      <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                      <?=gettext("Disable this rule"); ?>
+                    </label>
                     <div class="hidden" data-for="help_for_disabled">
                       <?=gettext("Set this option to disable this rule without removing it from the list."); ?>
                     </div>
@@ -546,7 +548,9 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_nordr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("No RDR (NOT)"); ?></td>
                   <td>
-                    <input type="checkbox" name="nordr" id="nordr" <?= !empty($pconfig['nordr']) ? "checked=\"checked\"" : ""; ?> />
+                    <label for="nordr">
+                      <input type="checkbox" name="nordr" id="nordr" <?= !empty($pconfig['nordr']) ? "checked=\"checked\"" : ""; ?> />
+                    </label>
                     <div class="hidden" data-for="help_for_nordr">
                       <?=gettext("Enabling this option will disable redirection for traffic matching this rule."); ?>
                       <br /><?=gettext("Hint: this option is rarely needed, don't use this unless you know what you're doing."); ?>
@@ -619,7 +623,9 @@ $( document ).ready(function() {
                 <tr class="advanced_opt_src hidden">
                     <td> <a id="help_for_src_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
                     <td>
-                      <input name="srcnot" type="checkbox" id="srcnot" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" : "";?> />
+                      <label for="srcnot">
+                        <input name="srcnot" type="checkbox" id="srcnot" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" : "";?> />
+                      </label>
                       <div class="hidden" data-for="help_for_src_invert">
                         <?=gettext("Use this option to invert the sense of the match."); ?>
                       </div>
@@ -733,7 +739,9 @@ $( document ).ready(function() {
                 <tr>
                   <td> <a id="help_for_dst_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
                   <td>
-                    <input name="dstnot" type="checkbox" id="dstnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
+                    <label for="dstnot">
+                      <input name="dstnot" type="checkbox" id="dstnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
+                    </label>
                     <div class="hidden" data-for="help_for_dst_invert">
                       <?=gettext("Use this option to invert the sense of the match."); ?>
                     </div>
@@ -982,7 +990,9 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_log" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Log') ?></td>
                   <td>
-                    <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? 'checked="checked"' : '' ?>/>
+                    <label for="log">
+                      <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? 'checked="checked"' : '' ?>/>
+                    </label>
                     <div class="hidden" data-for="help_for_log">
                       <?=gettext("Log packets that are handled by this rule");?><br/>
                       <?=sprintf(gettext("Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a %sremote syslog server%s."),'<a href="diag_logs_settings.php">','</a>') ?>
@@ -1033,7 +1043,9 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_nosync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("No XMLRPC Sync"); ?></td>
                   <td>
-                    <input type="checkbox" value="yes" name="nosync" <?=!empty($pconfig['nosync']) ? "checked=\"checked\"" :"";?> />
+                    <label for="nosync">
+                      <input type="checkbox" value="yes" name="nosync" id="nosync" <?=!empty($pconfig['nosync']) ? "checked=\"checked\"" :"";?> />
+                    </label>
                     <div class="hidden" data-for="help_for_nosync">
                       <?=gettext("Hint: This prevents the rule on Master from automatically syncing to other CARP members. This does NOT prevent the rule from being overwritten on Slave.");?>
                     </div>

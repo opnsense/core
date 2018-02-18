@@ -344,10 +344,14 @@ $( document ).ready(function() {
                 </tr>
                 <tr>
                   <td>
-                    <input name="donotbackuprrd" type="checkbox" id="dotnotbackuprrd" checked="checked" />
-                    <?=gettext("Do not backup RRD data."); ?><br/>
-                    <input name="encrypt" type="checkbox" id="encryptconf" />
-                    <?=gettext("Encrypt this configuration file."); ?><br/>
+                    <label for="dotnotbackuprrd">
+                      <input name="donotbackuprrd" type="checkbox" id="dotnotbackuprrd" checked="checked" />
+                      <?=gettext("Do not backup RRD data."); ?>
+                    </label><br/>
+                    <label for="encryptconf">
+                      <input name="encrypt" type="checkbox" id="encryptconf" />
+                      <?=gettext("Encrypt this configuration file."); ?>
+                    </label><br/>
                     <div class="hidden table-responsive __mt" id="encrypt_opts">
                       <table class="table table-condensed">
                         <tr>
@@ -393,10 +397,14 @@ $( document ).ready(function() {
                       </select>
                     </div>
                     <input name="conffile" type="file" id="conffile" /><br/>
-                    <input name="rebootafterrestore" type="checkbox" id="rebootafterrestore" checked="checked" />
-                    <?=gettext("Reboot after a successful restore."); ?><br/>
-                    <input name="decrypt" type="checkbox" id="decryptconf"/>
-                    <?=gettext("Configuration file is encrypted."); ?>
+                    <label for="rebootafterrestore">
+                      <input name="rebootafterrestore" type="checkbox" id="rebootafterrestore" checked="checked" />
+                      <?=gettext("Reboot after a successful restore."); ?>
+                    </label><br/>
+                    <label for="decryptconf">
+                      <input name="decrypt" type="checkbox" id="decryptconf"/>
+                      <?=gettext("Configuration file is encrypted."); ?>
+                    </label>
                     <div class="hidden table-responsive __mt" id="decrypt_opts">
                       <table class="table table-condensed">
                         <tr>
@@ -442,7 +450,9 @@ $( document ).ready(function() {
                         <td style="width:78%">
 <?php
                         if ($field['type'] == 'checkbox'):?>
-                        <input name="<?=$fieldId;?>" type="checkbox" <?=!empty($pconfig[$fieldId]) ? "checked" : "";?> >
+                        <label for="<?=$fieldId;?>">
+                          <input name="<?=$fieldId;?>" type="checkbox" id="<?=$fieldId;?>" <?=!empty($pconfig[$fieldId]) ? "checked" : "";?> >
+                        </label>
 <?php
                         elseif ($field['type'] == 'text'):?>
                         <input name="<?=$fieldId;?>" value="<?=$pconfig[$fieldId];?>" type="text">

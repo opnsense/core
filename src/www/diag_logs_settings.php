@@ -200,8 +200,10 @@ $(document).ready(function() {
                   <tr>
                     <td><a id="help_for_logdefaultblock" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Log Firewall Default Blocks') ?></td>
                     <td>
-                      <input name="logdefaultblock" type="checkbox" value="yes" <?=!empty($pconfig['logdefaultblock']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Log packets matched from the default block rules put in the ruleset");?>
+                      <label for="logdefaultblock">
+                        <input name="logdefaultblock" type="checkbox" id="logdefaultblock" value="yes" <?=!empty($pconfig['logdefaultblock']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Log packets matched from the default block rules put in the ruleset");?>
+                      </label>
                       <div class="hidden" data-for="help_for_logdefaultblock">
                         <?=gettext("Hint: packets that are blocked by the implicit default block rule will not be logged if you uncheck this option. Per-rule logging options are still respected.");?>
                       </div>
@@ -210,8 +212,10 @@ $(document).ready(function() {
                   <tr>
                     <td></td>
                     <td>
-                      <input name="logdefaultpass" type="checkbox" id="logdefaultpass" value="yes" <?=!empty($pconfig['logdefaultpass']) ? "checked=\"checked\"" :""; ?> />
-                      <?=gettext("Log packets matched from the default pass rules put in the ruleset");?>
+                      <label for="logdefaultpass">
+                        <input name="logdefaultpass" type="checkbox" id="logdefaultpass" value="yes" <?=!empty($pconfig['logdefaultpass']) ? "checked=\"checked\"" :""; ?> />
+                        <?=gettext("Log packets matched from the default pass rules put in the ruleset");?>
+                      </label>
                       <div class="hidden" data-for="help_for_logdefaultblock">
                         <?=gettext("Hint: packets that are allowed by the implicit default pass rule will be logged if you check this option. Per-rule logging options are still respected.");?>
                       </div>
@@ -220,29 +224,37 @@ $(document).ready(function() {
                   <tr>
                     <td></td>
                     <td>
-                      <input name="logoutboundnat" type="checkbox" id="logoutboundnat" value="yes" <?php if ($pconfig['logoutboundnat']) echo "checked=\"checked\""; ?> />
-                      <?= gettext('Log packets processed by automatic outbound NAT rules') ?>
+                      <label for="logoutboundnat">
+                        <input name="logoutboundnat" type="checkbox" id="logoutboundnat" value="yes" <?php if ($pconfig['logoutboundnat']) echo "checked=\"checked\""; ?> />
+                        <?= gettext('Log packets processed by automatic outbound NAT rules') ?>
+                      </label>
                     </td>
                   </tr>
                   <tr>
                     <td></td>
                     <td>
-                      <input name="logbogons" type="checkbox" id="logbogons" value="yes" <?=!empty($pconfig['logbogons']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Log packets blocked by 'Block Bogon Networks' rules");?>
+                      <label for="logbogons">
+                        <input name="logbogons" type="checkbox" id="logbogons" value="yes" <?=!empty($pconfig['logbogons']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Log packets blocked by 'Block Bogon Networks' rules");?>
+                      </label>
                     </td>
                   </tr>
                   <tr>
                     <td></td>
                     <td>
-                      <input name="logprivatenets" type="checkbox" id="logprivatenets" value="yes" <?php if ($pconfig['logprivatenets']) echo "checked=\"checked\""; ?> />
-                      <?=gettext("Log packets blocked by 'Block Private Networks' rules");?>
+                      <label for="logprivatenets">
+                        <input name="logprivatenets" type="checkbox" id="logprivatenets" value="yes" <?php if ($pconfig['logprivatenets']) echo "checked=\"checked\""; ?> />
+                        <?=gettext("Log packets blocked by 'Block Private Networks' rules");?>
+                      </label>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_loglighttpd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Web Server Log') ?></td>
                     <td>
-                      <input name="loglighttpd" type="checkbox" id="loglighttpd" value="yes" <?=!empty($pconfig['loglighttpd']) ? "checked=\"checked\"" :""; ?> />
-                      <?=gettext("Log errors from the web server process.");?>
+                      <label for="loglighttpd">
+                        <input name="loglighttpd" type="checkbox" id="loglighttpd" value="yes" <?=!empty($pconfig['loglighttpd']) ? "checked=\"checked\"" :""; ?> />
+                        <?=gettext("Log errors from the web server process.");?>
+                      </label>
                       <div class="hidden" data-for="help_for_loglighttpd">
                         <?=gettext('Hint: If this is checked, errors from the lighttpd web server process for the GUI or Captive Portal will appear in the main system log.');?>
                       </div>
@@ -250,8 +262,12 @@ $(document).ready(function() {
                   </tr>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Local Logging') ?></td>
-                    <td> <input name="disablelocallogging" type="checkbox" id="disablelocallogging" value="yes" <?=!empty($pconfig['disablelocallogging']) ? "checked=\"checked\"" :""; ?>  />
-                      <?=gettext("Disable writing log files to the local disk");?></td>
+                    <td>
+                      <label for="disablelocallogging">
+                        <input name="disablelocallogging" type="checkbox" id="disablelocallogging" value="yes" <?=!empty($pconfig['disablelocallogging']) ? "checked=\"checked\"" :""; ?>  />
+                        <?=gettext("Disable writing log files to the local disk");?>
+                      </label>
+                    </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_resetlogs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Reset Logs') ?></td>

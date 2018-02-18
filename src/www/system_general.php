@@ -372,7 +372,9 @@ $( document ).ready(function() {
             <tr>
               <td><a id="help_for_trust_store_intermediate_certs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Store intermediate"); ?></td>
               <td>
-                <input name="store_intermediate_certs" type="checkbox" id="store_intermediate_certs" <?= !empty($pconfig['store_intermediate_certs']) ? "checked=\"checked\"" : "";?> />
+                <label for="store_intermediate_certs">
+                  <input name="store_intermediate_certs" type="checkbox" id="store_intermediate_certs" <?= !empty($pconfig['store_intermediate_certs']) ? "checked=\"checked\"" : "";?> />
+                </label>
                 <div class="hidden" data-for="help_for_trust_store_intermediate_certs">
                   <?=gettext(
                     "Allow local defined intermediate certificate authorities to be used in the local trust store. ".
@@ -394,8 +396,10 @@ $( document ).ready(function() {
             <tr>
               <td><a id="help_for_prefer_ipv4" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer IPv4 over IPv6"); ?></td>
               <td>
-                <input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?= !empty($pconfig['prefer_ipv4']) ? "checked=\"checked\"" : "";?> />
-                <?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?>
+                <label for="prefer_ipv4">
+                  <input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?= !empty($pconfig['prefer_ipv4']) ? "checked=\"checked\"" : "";?> />
+                  <?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?>
+                </label>
                 <div class="hidden" data-for="help_for_prefer_ipv4">
                   <?=gettext("By default, if a hostname resolves IPv6 and IPv4 addresses ".
                                       "IPv6 will be used, if you check this option, IPv4 will be " .
@@ -464,8 +468,10 @@ $( document ).ready(function() {
             <tr>
               <td><a id="help_for_dnsservers_opt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS server options"); ?></td>
               <td>
-                <input name="dnsallowoverride" id="dnsallowoverride" type="checkbox" value="yes" <?= $pconfig['dnsallowoverride'] ? 'checked="checked"' : '' ?>/>
-                <?=gettext("Allow DNS server list to be overridden by DHCP/PPP on WAN"); ?>
+                <label for="dnsallowoverride">
+                  <input name="dnsallowoverride" id="dnsallowoverride" type="checkbox" value="yes" <?= $pconfig['dnsallowoverride'] ? 'checked="checked"' : '' ?>/>
+                  <?=gettext("Allow DNS server list to be overridden by DHCP/PPP on WAN"); ?>
+                </label>
                 <div class="hidden" data-for="help_for_dnsservers_opt">
                   <?= gettext("If this option is set, DNS servers " .
                   "assigned by a DHCP/PPP server on WAN will be used " .
@@ -491,8 +497,10 @@ $( document ).ready(function() {
             <tr>
               <td></td>
               <td>
-                <input name="dnslocalhost" type="checkbox" value="yes" <?=$pconfig['dnslocalhost'] ? "checked=\"checked\"" : ""; ?> />
-                <?= gettext('Do not use the local DNS service as a nameserver for this system') ?>
+                <label for="dnslocalhost">
+                  <input name="dnslocalhost" type="checkbox" id="dnslocalhost" value="yes" <?=$pconfig['dnslocalhost'] ? "checked=\"checked\"" : ""; ?> />
+                  <?=gettext("Do not use the DNS Forwarder/Resolver as a DNS server for the firewall"); ?>
+                </label>
                 <div class="hidden" data-for="help_for_dnsservers_opt">
                   <?=gettext("By default localhost (127.0.0.1) will be used as the first nameserver when e.g. Dnsmasq or Unbound is enabled, so system can use the local DNS service to perform lookups. ".
                   "Checking this box omits localhost from the list of DNS servers."); ?>
@@ -502,8 +510,10 @@ $( document ).ready(function() {
               <tr>
                 <td><a id="help_for_gw_switch_default" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Gateway switching') ?></td>
                 <td>
-                  <input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?= !empty($pconfig['gw_switch_default']) ? 'checked="checked"' : '' ?> />
-                  <?=gettext("Allow default gateway switching"); ?>
+                  <label for="gw_switch_default">
+                    <input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?= !empty($pconfig['gw_switch_default']) ? 'checked="checked"' : '' ?> />
+                    <?=gettext("Allow default gateway switching"); ?>
+                  </label>
                   <div class="hidden" data-for="help_for_gw_switch_default">
                     <?= gettext('If the link where the default gateway resides fails switch the default gateway to another available one.') ?>
                   </div>

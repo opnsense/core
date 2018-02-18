@@ -104,7 +104,9 @@
                     <table class="table">
                         <tr>
                             <td>
-                                <input type="checkbox" id="resolve" name="resolve" value="yes">
+                                <label for="resolve">
+                                    <input type="checkbox" id="resolve" name="resolve" value="yes">
+                                </label>
                             </td>
                             <td>
                                 <strong><?=gettext("Name resolution");?></strong>

@@ -481,7 +481,9 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                   <td>
-                    <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                    <label for="disabled">
+                      <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                    </label>
                     <div class="hidden" data-for="help_for_disabled">
                       <?=gettext("Set this option to disable this gateway without removing it from the list.");?>
                     </div>
@@ -541,7 +543,9 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_defaultgw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Upstream Gateway"); ?></td>
                   <td>
-                    <input name="defaultgw" type="checkbox" value="yes" <?=!empty($pconfig['defaultgw']) ? "checked=\"checked\"" : "";?> />
+                    <label for="defaultgw">
+                      <input name="defaultgw" id="defaultgw" type="checkbox" value="yes" <?=!empty($pconfig['defaultgw']) ? "checked=\"checked\"" : "";?> />
+                    </label>
                     <div class="hidden" data-for="help_for_defaultgw">
                       <?= gettext('This will select the above gateway as a default gateway candidate.') ?>
                     </div>
@@ -550,7 +554,9 @@ $( document ).ready(function() {
                 <tr id="fargw_opts">
                   <td><a id="help_for_fargw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Far Gateway"); ?></td>
                   <td>
-                    <input name="fargw" type="checkbox" value="yes" <?=!empty($pconfig['fargw']) ? 'checked="checked"' : '';?> />
+                    <label for="fargw">
+                      <input name="fargw" id="fargw" type="checkbox" value="yes" <?=!empty($pconfig['fargw']) ? 'checked="checked"' : '';?> />
+                    </label>
                     <div class="hidden" data-for="help_for_fargw">
                       <?=gettext("This will allow the gateway to exist outside of the interface subnet."); ?>
                     </div>
@@ -559,7 +565,9 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_monitor_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable Gateway Monitoring"); ?></td>
                   <td>
-                    <input name="monitor_disable" type="checkbox" value="yes" <?=!empty($pconfig['monitor_disable']) ? "checked=\"checked\"" : "";?>/>
+                    <label for="monitor_disable">
+                      <input name="monitor_disable" id="monitor_disable" type="checkbox" value="yes" <?=!empty($pconfig['monitor_disable']) ? "checked=\"checked\"" : "";?>/>
+                    </label>
                     <div class="hidden" data-for="help_for_monitor_disable">
                       <?= gettext('This will consider this gateway as always being "up".') ?>
                     </div>
@@ -579,7 +587,9 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_force_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Mark Gateway as Down"); ?></td>
                   <td>
-                    <input name="force_down" type="checkbox" value="yes" <?=!empty($pconfig['force_down']) ? "checked=\"checked\"" : "";?>/>
+                    <label for="force_down">
+                      <input name="force_down" id="force_down" type="checkbox" value="yes" <?=!empty($pconfig['force_down']) ? "checked=\"checked\"" : "";?>/>
+                    </label>
                     <div class="hidden" data-for="help_for_force_down">
                       <?= gettext('This will force this gateway to be considered "down".') ?>
                     </div>

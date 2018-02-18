@@ -146,7 +146,7 @@
             <thead>
             <tr>
                 <th data-column-id="origin" data-type="string" data-visible="false">{{ lang._('Origin') }}</th>
-                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle" data-css-class="text-center" data-header-css-class="text-center">{{ lang._('Enabled') }}</th>
                 <th data-column-id="number" data-type="number"  data-visible="false">{{ lang._('Number') }}</th>
                 <th data-column-id="bandwidth" data-type="number">{{ lang._('Bandwidth') }}</th>
                 <th data-column-id="bandwidthMetric" data-type="string">{{ lang._('Metric') }}</th>
@@ -176,7 +176,7 @@
             <thead>
             <tr>
                 <th data-column-id="origin" data-type="string" data-visible="false">{{ lang._('Origin') }}</th>
-                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle" data-css-class="text-center" data-header-css-class="text-center">{{ lang._('Enabled') }}</th>
                 <th data-column-id="number" data-type="number" data-visible="false">{{ lang._('Number') }}</th>
                 <th data-column-id="pipe" data-type="string">{{ lang._('Pipe') }}</th>
                 <th data-column-id="weight" data-type="string">{{ lang._('Weight') }}</th>
@@ -203,7 +203,7 @@
         <table id="grid-rules" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRule"  data-editAlert="shaperChangeMessage">
             <thead>
             <tr>
-                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle" data-css-class="text-center" data-header-css-class="text-center">{{ lang._('Enabled') }}</th>
                 <th data-column-id="sequence"  data-width="6em" data-type="number">{{ lang._('#') }}</th>
                 <th data-column-id="origin" data-type="string"  data-visible="false">{{ lang._('Origin') }}</th>
                 <th data-column-id="interface" data-type="string">{{ lang._('Interface') }}</th>

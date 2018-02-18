@@ -838,10 +838,10 @@ POSSIBILITY OF SUCH DAMAGE.
             <tfoot>
             <tr>
                 <td>
-                    <button title="{{ lang._('Disable selected') }}" id="disableSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o fa-fw"></span></button>
-                    <button title="{{ lang._('Enable selected') }}" id="enableSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o fa-fw"></span></button>
-                    <button title="{{ lang._('Alert selected') }}" id="alertSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa"></span>{{ lang._('Alert') }}</button>
-                    <button title="{{ lang._('Drop selected') }}" id="dropSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa"></span>{{ lang._('Drop') }}</button>
+                    <button title="{{ lang._('Disable selected') }}" id="disableSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default" style="margin-right: 1em"><span class="fa fa-square-o fa-fw"></span></button>
+                    <button title="{{ lang._('Enable selected') }}" id="enableSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default" style="margin-right: 1em"><span class="fa fa-check-square-o fa-fw"></span></button>
+                    <button title="{{ lang._('Alert selected') }}" id="alertSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default" style="margin-right: 1em"><span class="fa"></span>{{ lang._('Alert') }}</button>
+                    <button title="{{ lang._('Drop selected') }}" id="dropSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default" style="margin-right: 1em"><span class="fa"></span>{{ lang._('Drop') }}</button>
                 </td>
                 <td></td>
             </tr>
@@ -867,7 +867,7 @@ POSSIBILITY OF SUCH DAMAGE.
         <table id="grid-userrules" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="userdefineChangeMessage" data-editDialog="DialogUserDefined">
             <thead>
                 <tr>
-                    <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false" data-width="10em">{{ lang._('Enabled') }}</th>
+                    <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false" data-width="10em" data-css-class="text-center" data-header-css-class="text-center">{{ lang._('Enabled') }}</th>
                     <th data-column-id="action" data-type="string" data-sortable="true">{{ lang._('Action') }}</th>
                     <th data-column-id="description" data-type="string" data-sortable="true">{{ lang._('Description') }}</th>
                     <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>

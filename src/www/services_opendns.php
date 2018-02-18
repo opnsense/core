@@ -140,8 +140,10 @@ include 'head.inc';
                 <tr>
                   <td><a id="help_for_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Enable'); ?></td>
                   <td>
-                    <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : "";?> />
-                    <?= gettext('Filter DNS requests using OpenDNS') ?>
+                    <label for="enable">
+                      <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : "";?> />
+                      <?= gettext('Filter DNS requests using OpenDNS') ?>
+                    </label>
                     <div class="hidden" data-for="help_for_enable">
                       <?= sprintf(gettext(
                         'Enabling the OpenDNS service will overwrite DNS servers configured ' .
@@ -155,8 +157,10 @@ include 'head.inc';
                 <tr>
                   <td><a id="help_for_standalone" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Standalone'); ?></td>
                   <td>
-                    <input name="standalone" type="checkbox" id="standalone" value="yes" <?=!empty($pconfig['standalone']) ? 'checked="checked"' : "";?> />
-                    <?= gettext('Do not alter system DNS server settings') ?>
+                    <label for="standalone">
+                      <input name="standalone" type="checkbox" id="standalone" value="yes" <?=!empty($pconfig['standalone']) ? 'checked="checked"' : "";?> />
+                      <?= gettext('Do not alter system DNS server settings') ?>
+                    </label>
                     <div class="hidden" data-for="help_for_standalone">
                       <?= sprintf(gettext(
                         'Enable this mode when the OpenDNS servers are used by a different ' .

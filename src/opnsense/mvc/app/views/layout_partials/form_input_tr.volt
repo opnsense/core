@@ -38,6 +38,7 @@
  #                   hidden             hidden fields not for user interaction
  #                   info               static text (help icon, no input or editing)
  # label       :   attribute label (visible text)
+ # input_label :   input control label (typically used on checkboxes and radio buttons)
  # size        :   size (width in characters) attribute if applicable
  # height      :   height (length in characters) attribute if applicable
  # help        :   help text
@@ -72,7 +73,12 @@
         {% elseif type == "hidden" %}
             <input type="hidden" id="{{ id }}" class="{{style|default('')}}" >
         {% elseif type == "checkbox" %}
-            <input type="checkbox"  class="{{style|default('')}}" id="{{ id }}">
+            <label for="{{ id }}">
+              <input type="checkbox"  class="{{style|default('')}}" id="{{ id }}">
+              {% if input_label|default(false) %}
+                {{input_label}}
+              {% endif %}
+            </label>
         {% elseif type in ["select_multiple", "dropdown"] %}
             <select {% if type == 'select_multiple' %}multiple="multiple"{% endif %}
                     {% if size|default(false) %}data-size="{{size}}"{% endif %}

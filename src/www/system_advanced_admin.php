@@ -501,11 +501,14 @@ $(document).ready(function() {
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Protocol"); ?></td>
                 <td>
-                  <input name="webguiproto" class="proto" id="http_proto" type="radio" value="http" <?= $pconfig['webguiproto'] == "http" ? 'checked="checked"' :'' ?>/>
-                  <?=gettext("HTTP"); ?>
-                  &nbsp;&nbsp;&nbsp;
-                  <input name="webguiproto" class="proto" id="https_proto" type="radio" value="https" <?= $pconfig['webguiproto'] == "https" ? 'checked="checked"' : '' ?> <?=$certs_available ? '' : 'disabled="disabled"' ?>/>
-                  <?=gettext("HTTPS"); ?>
+                  <label for="http_proto">
+                    <input name="webguiproto" class="proto" type="radio" id="http_proto" value="http" <?= $pconfig['webguiproto'] == "http" ? 'checked="checked"' :'' ?>/>
+                    <?=gettext("HTTP"); ?>
+                  </label>
+                  <label for="https_proto">
+                    <input name="webguiproto" class="proto" type="radio" id="https_proto" value="https" <?= $pconfig['webguiproto'] == "https" ? 'checked="checked"' : '' ?> <?=$certs_available ? '' : 'disabled="disabled"' ?>/>
+                    <?=gettext("HTTPS"); ?>
+                  </label>
 
 <?php
                   if (!$certs_available) :?>
@@ -561,8 +564,10 @@ $(document).ready(function() {
               <tr>
                 <td><a id="help_for_sslhsts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('HTTP Strict Transport Security') ?></td>
                 <td>
-                  <input name="ssl-hsts" type="checkbox" value="yes" <?= empty($pconfig['ssl-hsts']) ? '' : 'checked="checked"' ?>/>
-                  <?= gettext('Enable HTTP Strict Transport Security') ?>
+                  <label for="ssl-hsts">
+                    <input name="ssl-hsts" type="checkbox" id="ssl-hsts" value="yes" <?= empty($pconfig['ssl-hsts']) ? '' : 'checked="checked"' ?>/>
+                    <?= gettext('Enable HTTP Strict Transport Security') ?>
+                  </label>
                   <div class="hidden" data-for="help_for_sslhsts">
                     <?=gettext("HTTP Strict Transport Security (HSTS) is a web security policy mechanism that helps to protect websites against protocol downgrade attacks and cookie hijacking.");?>
                   </div>
@@ -582,8 +587,10 @@ $(document).ready(function() {
               <tr class="ssl_opts">
                 <td><a id="help_for_disablehttpredirect" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('HTTP Redirect'); ?></td>
                 <td>
-                  <input name="disablehttpredirect" type="checkbox" value="yes" <?= empty($pconfig['disablehttpredirect']) ? '' : 'checked="checked"';?> />
-                  <?= gettext('Disable web GUI redirect rule') ?>
+                  <label for="disablehttpredirect">
+                    <input name="disablehttpredirect" type="checkbox" id="disablehttpredirect" value="yes" <?= empty($pconfig['disablehttpredirect']) ? '' : 'checked="checked"';?> />
+                    <?= gettext('Disable web GUI redirect rule') ?>
+                  </label>
                   <div class="hidden" data-for="help_for_disablehttpredirect">
                     <?= gettext("When this is unchecked, access to the web GUI " .
                                         "is always permitted even on port 80, regardless of the listening port configured. " .
@@ -595,8 +602,10 @@ $(document).ready(function() {
               <tr>
                 <td><a id="help_for_quietlogin" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Login Messages") ?></td>
                 <td>
-                  <input name="quietlogin" type="checkbox" value="yes" <?= empty($pconfig['quietlogin']) ? '' : 'checked="checked"' ?>/>
-                  <?= gettext('Disable logging of web GUI successful logins') ?>
+                  <label for="quietlogin">
+                    <input name="quietlogin" type="checkbox" id="quietlogin" value="yes" <?= empty($pconfig['quietlogin']) ? '' : 'checked="checked"' ?>/>
+                    <?= gettext('Disable logging of web GUI successful logins') ?>
+                  </label>
                   <div class="hidden" data-for="help_for_quietlogin">
                     <?=gettext("When this is checked, successful logins to the web GUI will not be logged.");?>
                   </div>
@@ -614,8 +623,10 @@ $(document).ready(function() {
               <tr>
                 <td><a id="help_for_nodnsrebindcheck" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Rebind Check"); ?></td>
                 <td>
-                  <input name="nodnsrebindcheck" type="checkbox" value="yes" <?= empty($pconfig['nodnsrebindcheck']) ? '' : 'checked="checked"';?>/>
-                  <?=gettext("Disable DNS Rebinding Checks"); ?>
+                  <label for="nodnsrebindcheck">
+                    <input name="nodnsrebindcheck" type="checkbox" id="nodnsrebindcheck" value="yes" <?= empty($pconfig['nodnsrebindcheck']) ? '' : 'checked="checked"';?>/>
+                    <?=gettext("Disable DNS Rebinding Checks"); ?>
+                  </label>
                   <div class="hidden" data-for="help_for_nodnsrebindcheck">
                     <?= sprintf(gettext("When this is unchecked, your system is protected against %sDNS Rebinding attacks%s. " .
                                         "This blocks private IP responses from your configured DNS servers. Check this box to disable this protection if it interferes with " .
@@ -660,8 +671,10 @@ $(document).ready(function() {
               <tr>
                 <td><a id="help_for_httpaccesslog" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Access log"); ?></td>
                 <td>
-                  <input name="httpaccesslog" type="checkbox" value="yes" <?= empty($pconfig['httpaccesslog']) ? '' : 'checked="checked"' ?> />
-                  <?=gettext("Enable access log"); ?>
+                  <label for="httpaccesslog">
+                    <input name="httpaccesslog" type="checkbox" id="httpaccesslog" value="yes" <?= empty($pconfig['httpaccesslog']) ? '' : 'checked="checked"' ?> />
+                    <?=gettext("Enable access log"); ?>
+                  </label>
                   <div class="hidden" data-for="help_for_httpaccesslog">
                     <?=gettext("Enable access logging on the webinterface for debugging and analysis purposes.") ?>
                   </div>
@@ -683,8 +696,10 @@ $(document).ready(function() {
               <tr>
                 <td><a id="help_for_nohttpreferercheck" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("HTTP_REFERER enforcement"); ?></td>
                 <td>
-                  <input name="nohttpreferercheck" type="checkbox" value="yes" <?= empty($pconfig['nohttpreferercheck']) ? '' : 'checked="checked"' ?> />
-                  <?=gettext("Disable HTTP_REFERER enforcement check"); ?>
+                  <label for="nohttpreferercheck">
+                    <input name="nohttpreferercheck" type="checkbox" id="nohttpreferercheck" value="yes" <?= empty($pconfig['nohttpreferercheck']) ? '' : 'checked="checked"' ?> />
+                    <?=gettext("Disable HTTP_REFERER enforcement check"); ?>
+                  </label>
                   <div class="hidden" data-for="help_for_nohttpreferercheck">
                     <?=sprintf(gettext("When this is unchecked, access to the web GUI " .
                                         "is protected against HTTP_REFERER redirection attempts. " .
@@ -705,8 +720,10 @@ $(document).ready(function() {
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Secure Shell Server"); ?></td>
                 <td>
-                  <input name="enablesshd" type="checkbox" value="yes" <?= empty($pconfig['enablesshd']) ? '' : 'checked="checked"' ?> />
-                  <?=gettext("Enable Secure Shell"); ?>
+                  <label for="enablesshd">
+                    <input name="enablesshd" type="checkbox" id="enablesshd" value="yes" <?= empty($pconfig['enablesshd']) ? '' : 'checked="checked"' ?> />
+                    <?=gettext("Enable Secure Shell"); ?>
+                  </label>
                 </td>
               </tr>
               <tr>
@@ -726,8 +743,10 @@ $(document).ready(function() {
               <tr>
                 <td><a id="help_for_sshdpermitrootlogin" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Root Login") ?></td>
                 <td>
-                  <input name="sshdpermitrootlogin" type="checkbox" value="yes" <?= empty($pconfig['sshdpermitrootlogin']) ? '' : 'checked="checked"' ?> />
-                  <?=gettext("Permit root user login"); ?>
+                  <label for="sshdpermitrootlogin">
+                    <input name="sshdpermitrootlogin" type="checkbox" id="sshdpermitrootlogin" value="yes" <?= empty($pconfig['sshdpermitrootlogin']) ? '' : 'checked="checked"' ?> />
+                    <?=gettext("Permit root user login"); ?>
+                  </label>
                   <div class="hidden" data-for="help_for_sshdpermitrootlogin">
                     <?= gettext(
                       'Root login is generally discouraged. It is advised ' .
@@ -739,8 +758,10 @@ $(document).ready(function() {
               <tr>
                 <td><a id="help_for_sshpasswordauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Authentication Method") ?></td>
                 <td>
-                  <input name="sshpasswordauth" type="checkbox" value="yes" <?= empty($pconfig['sshpasswordauth']) ? '' : 'checked="checked"' ?> />
-                  <?=gettext("Permit password login"); ?>
+                  <label for="sshpasswordauth">
+                    <input name="sshpasswordauth" type="checkbox" id="sshpasswordauth" value="yes" <?= empty($pconfig['sshpasswordauth']) ? '' : 'checked="checked"' ?> />
+                    <?=gettext("Permit password login"); ?>
+                  </label>
                   <div class="hidden" data-for="help_for_sshpasswordauth">
                     <?=sprintf(gettext("When disabled, authorized keys need to be configured for each %sUser%s that has been granted secure shell access."),
                               '<a href="system_usermanager.php">', '</a>') ?>
@@ -862,8 +883,10 @@ $(document).ready(function() {
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Console driver') ?></td>
                 <td>
-                  <input name="usevirtualterminal" type="checkbox" value="yes" <?= empty($pconfig['usevirtualterminal']) ? '' : 'checked="checked"' ?>  />
-                  <?= gettext('Use the virtual terminal driver (vt)') ?>
+                  <label for="usevirtualterminal">
+                    <input name="usevirtualterminal" type="checkbox" id="usevirtualterminal" value="yes" <?= empty($pconfig['usevirtualterminal']) ? '' : 'checked="checked"' ?>  />
+                    <?= gettext('Use the virtual terminal driver (vt)') ?>
+                  </label>
                 </td>
               </tr>
               <tr>
@@ -914,15 +937,19 @@ $(document).ready(function() {
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('USB-based serial') ?></td>
                 <td>
-                  <input name="serialusb" type="checkbox" value="yes" <?= empty($pconfig['serialusb']) ? '' : 'checked="checked"' ?>  />
-                  <?= gettext('Use USB-based serial ports') ?>
+                  <label for="serialusb">
+                    <input name="serialusb" type="checkbox" id="serialusb" value="yes" <?= empty($pconfig['serialusb']) ? '' : 'checked="checked"' ?>  />
+                    <?= gettext('Use USB-based serial ports') ?>
+                  </label>
                 </td>
               </tr>
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Console menu") ?></td>
                 <td>
-                  <input name="disableconsolemenu" type="checkbox" value="yes" <?= empty($pconfig['disableconsolemenu']) ? '' : 'checked="checked"' ?>  />
-                  <?=gettext("Password protect the console menu"); ?>
+                  <label for="disableconsolemenu">
+                    <input name="disableconsolemenu" type="checkbox" id="disableconsolemenu" value="yes" <?= empty($pconfig['disableconsolemenu']) ? '' : 'checked="checked"' ?>  />
+                    <?=gettext("Password protect the console menu"); ?>
+                  </label>
                 </td>
               </tr>
             </table>
@@ -972,8 +999,10 @@ $(document).ready(function() {
               <tr>
                 <td></td>
                 <td>
-                  <input name="disableintegratedauth" type="checkbox" value="yes" <?= empty($pconfig['disableintegratedauth']) ? '' : 'checked="checked"' ?>  />
-                  <?=gettext("Disable integrated authentication"); ?>
+                  <label for="disableintegratedauth">
+                    <input name="disableintegratedauth" id="disableintegratedauth" type="checkbox" value="yes" <?= empty($pconfig['disableintegratedauth']) ? '' : 'checked="checked"' ?>  />
+                    <?=gettext("Disable integrated authentication"); ?>
+                  </label>
                   <div class="hidden" data-for="help_for_authmode">
                     <?= gettext('When set, console login, SSH, and other system services can only use standard UNIX account authentication.') ?>
                   </div>

@@ -133,7 +133,9 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_hideidentity" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Hide Identity") ?></td>
                         <td>
-                          <input name="hideidentity" type="checkbox" id="hideidentity" value="yes" <?= empty($pconfig['hideidentity']) ? '' : 'checked="checked"' ?> />
+                          <label for="hideidentity">
+                            <input name="hideidentity" type="checkbox" id="hideidentity" value="yes" <?= empty($pconfig['hideidentity']) ? '' : 'checked="checked"' ?> />
+                          </label>
                           <div class="hidden" data-for="help_for_hideidentity">
                             <?=gettext("If enabled, id.server and hostname.bind queries are refused.");?>
                           </div>
@@ -142,7 +144,9 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_hideversion" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hide Version");?></td>
                         <td>
-                          <input name="hideversion" type="checkbox" id="hideversion" value="yes" <?= empty($pconfig['hideversion']) ? '' : 'checked="checked"' ?> />
+                          <label for="hideversion">
+                            <input name="hideversion" type="checkbox" id="hideversion" value="yes" <?= empty($pconfig['hideversion']) ? '' : 'checked="checked"' ?> />
+                          </label>
                           <div class="hidden" data-for="help_for_hideversion">
                             <?= gettext("If enabled, version.server and version.bind queries are refused.") ?>
                           </div>
@@ -151,7 +155,9 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_prefetch" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Prefetch Support") ?></td>
                         <td>
-                          <input name="prefetch" type="checkbox" id="prefetch" value="yes" <?= empty($pconfig['prefetch']) ? '': 'checked="checked"' ?> />
+                          <label for="prefetch">
+                            <input name="prefetch" type="checkbox" id="prefetch" value="yes" <?= empty($pconfig['prefetch']) ? '': 'checked="checked"' ?> />
+                          </label>
                           <div class="hidden" data-for="help_for_prefetch">
                             <?= gettext("Message cache elements are prefetched before they expire to help keep the cache up to date. When enabled, this option can cause an increase of around 10% more DNS traffic and load on the server, but frequently requested items will not expire from the cache.") ?>
                           </div>
@@ -160,7 +166,9 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_prefetchkey" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Prefetch DNS Key Support") ?></td>
                         <td>
-                          <input name="prefetchkey" type="checkbox" id="prefetchkey" value="yes" <?= empty($pconfig['prefetchkey']) ? '' : 'checked="checked"' ?> />
+                          <label for="prefetchkey">
+                            <input name="prefetchkey" type="checkbox" id="prefetchkey" value="yes" <?= empty($pconfig['prefetchkey']) ? '' : 'checked="checked"' ?> />
+                          </label>
                           <div class="hidden" data-for="help_for_prefetchkey">
                             <?= sprintf(gettext("DNSKEY's are fetched earlier in the validation process when a %sDelegation signer%s is encountered. This helps lower the latency of requests but does utilize a little more CPU."), "<a href='http://en.wikipedia.org/wiki/List_of_DNS_record_types'>", "</a>") ?>
                           </div>
@@ -169,7 +177,9 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_dnssecstripped" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Harden DNSSEC data");?></td>
                         <td>
-                          <input name="dnssecstripped" type="checkbox" id="dnssecstripped" value="yes" <?= empty($pconfig['dnssecstripped']) ? '' : 'checked="checked"' ?> />
+                          <label for="dnssecstripped">
+                            <input name="dnssecstripped" type="checkbox" id="dnssecstripped" value="yes" <?= empty($pconfig['dnssecstripped']) ? '' : 'checked="checked"' ?> />
+                          </label>
                           <div class="hidden" data-for="help_for_dnssecstripped">
                             <?= gettext("DNSSEC data is required for trust-anchored zones. If such data is absent, the zone becomes bogus. If this is disabled and no DNSSEC data is received, then the zone is made insecure.") ?>
                           </div>
@@ -178,7 +188,9 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_serveexpired" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Serve expired responses') ?></td>
                         <td>
-                          <input name="serveexpired" type="checkbox" id="serveexpired" value="yes" <?= empty($pconfig['serveexpired']) ? '' : 'checked="checked"' ?> />
+                          <label for="serveexpired">
+                            <input name="serveexpired" type="checkbox" id="serveexpired" value="yes" <?= empty($pconfig['serveexpired']) ? '' : 'checked="checked"' ?> />
+                          </label>
                           <div class="hidden" data-for="help_for_serveexpired">
                             <?= gettext('Serve expired responses from the cache with a TTL of 0 without waiting for the actual resolution to finish.') ?>
                           </div>
@@ -187,7 +199,9 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_qnameminstrict" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Strict QNAME minimisation') ?></td>
                         <td>
-                          <input name="qnameminstrict" type="checkbox" id="qnameminstrict" value="yes" <?= empty($pconfig['qnameminstrict']) ? '' : 'checked="checked"' ?> />
+                          <label for="qnameminstrict">
+                            <input name="qnameminstrict" type="checkbox" id="qnameminstrict" value="yes" <?= empty($pconfig['qnameminstrict']) ? '' : 'checked="checked"' ?> />
+                          </label>
                           <div class="hidden" data-for="help_for_qnameminstrict">
                             <?= gettext('Send minimum amount of information to upstream servers to enhance privacy. ' .
                                   'Do not fall-back to sending full QNAME to potentially broken nameservers. ' .
@@ -365,7 +379,9 @@ include_once("head.inc");
                       <tr>
                           <td><a id="help_for_extended_statistics" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Extended statistics') ?></td>
                           <td>
-                              <input name="extended_statistics" type="checkbox" id="extended_statistics" value="yes" <?= empty($pconfig['extended_statistics']) ? '' : 'checked="checked"' ?> />
+                              <label for="extended_statistics">
+                                <input name="extended_statistics" type="checkbox" id="extended_statistics" value="yes" <?= empty($pconfig['extended_statistics']) ? '' : 'checked="checked"' ?> />
+                              </label>
                               <div class="hidden" data-for="help_for_extended_statistics">
                                   <?= gettext("If enabled, extended statistics are printed.") ?>
                               </div>
@@ -374,7 +390,9 @@ include_once("head.inc");
                       <tr>
                           <td><a id="help_for_log_queries" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Log Queries') ?></td>
                           <td>
-                              <input name="log_queries" type="checkbox" id="log_queries" value="yes" <?= empty($pconfig['log_queries']) ? '' : 'checked="checked"' ?> />
+                              <label for="log_queries">
+                                <input name="log_queries" type="checkbox" id="log_queries" value="yes" <?= empty($pconfig['log_queries']) ? '' : 'checked="checked"' ?> />
+                              </label>
                               <div class="hidden" data-for="help_for_log_queries">
                                   <?= gettext("If enabled, prints one line per query to the log, with the log timestamp and IP address, name, type and class.") ?>
                               </div>

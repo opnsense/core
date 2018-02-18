@@ -388,7 +388,7 @@
         <table id="grid-pac-rule" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditPACRule">
             <thead>
                 <tr>
-                    <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="6em">{{ lang._('Enabled') }}</th>
+                    <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="6em" data-css-class="text-center" data-header-css-class="text-center">{{ lang._('Enabled') }}</th>
                     <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
                     <th data-column-id="commands" data-width="10em" data-formatter="commands" data-sortable="false">{{ lang._('Actions') }}</th>
                 </tr>
@@ -468,7 +468,7 @@
                     <table id="grid-remote-blacklists" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditBlacklist" data-editAlert="remoteACLchangeMessage">
                         <thead>
                         <tr>
-                            <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="6em">{{ lang._('Enabled') }}</th>
+                            <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="6em" data-css-class="text-center" data-header-css-class="text-center">{{ lang._('Enabled') }}</th>
                             <th data-column-id="filename" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Filename') }}</th>
                             <th data-column-id="url" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('URL') }}</th>
                             <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>

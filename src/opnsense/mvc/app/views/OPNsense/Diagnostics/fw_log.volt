@@ -765,7 +765,7 @@
                   </div>
                   <div class="pull-right">
                     <div class="checkbox-inline">
-                      <label>
+                      <label for="auto_refresh">
                         <input id="auto_refresh" type="checkbox" checked="checked">
                         <span class="fa fa-refresh"></span> {{ lang._('Auto refresh') }}
                       </label>

@@ -221,8 +221,10 @@ $( document ).ready(function() {
                 <tr>
                   <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?></td>
                   <td style="width:78%">
-                    <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
-                    <?= gettext('Enable Dnsmasq') ?>
+                    <label for="enable">
+                      <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
+                      <?= gettext('Enable Dnsmasq') ?>
+                    </label>
                   </td>
                 </tr>
                 <tr>
@@ -252,8 +254,10 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_strictbind" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Bind Mode') ?></td>
                   <td>
-                    <input name="strictbind" type="checkbox" id="strictbind" value="yes" <?= !empty($pconfig['strictbind']) ? "checked=\"checked\"" : "";?> />
-                    <?= gettext('Strict Interface Binding') ?>
+                    <label for="strictbind">
+                      <input name="strictbind" id="strictbind" type="checkbox" id="strictbind" value="yes" <?= !empty($pconfig['strictbind']) ? "checked=\"checked\"" : "";?> />
+                      <?= gettext('Strict Interface Binding') ?>
+                    </label>
                     <div class="hidden" data-for="help_for_strictbind">
                       <?= gettext("If this option is set, Dnsmasq will only bind to the interfaces containing the IP addresses selected above, rather than binding to all interfaces and discarding queries to other addresses."); ?>
                       <?= gettext("This option does not work with IPv6. If set, Dnsmasq will not bind to IPv6 addresses."); ?>
@@ -263,15 +267,19 @@ $( document ).ready(function() {
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('DNSSEC') ?></td>
                   <td>
-                    <input name="dnssec" type="checkbox" value="yes" <?=!empty($pconfig['dnssec']) ? 'checked="checked"' : '' ?> />
-                    <?= gettext('Enable DNSSEC Support') ?>
+                    <label for="dnssec">
+                      <input name="dnssec" type="checkbox" id="dnssec" value="yes" <?=!empty($pconfig['dnssec']) ? 'checked="checked"' : '' ?> />
+                      <?= gettext('Enable DNSSEC Support') ?>
+                    </label>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_regdhcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Registration");?></td>
                   <td>
-                    <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? "checked=\"checked\"" : "";?> />
-                    <?= gettext('Register DHCP leases') ?>
+                    <label for="regdhcp">
+                      <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? "checked=\"checked\"" : "";?> />
+                      <?= gettext('Register DHCP leases') ?>
+                    </label>
                     <div class="hidden" data-for="help_for_regdhcp">
                       <?= gettext("If this option is set, then machines that specify " .
                         "their hostname when requesting a DHCP lease will be registered " .
@@ -294,8 +302,10 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_regdhcpstatic" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Static DHCP");?></td>
                   <td>
-                    <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? "checked=\"checked\"" : "";?> />
-                    <?= gettext('Register DHCP static mappings') ?>
+                    <label for="regdhcpstatic">
+                      <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? "checked=\"checked\"" : "";?> />
+                      <?= gettext('Register DHCP static mappings') ?>
+                    </label>
                     <div class="hidden" data-for="help_for_regdhcpstatic">
                       <?= sprintf(gettext("If this option is set, then DHCP static mappings will ".
                           "be registered in Dnsmasq, so that their name can be ".
@@ -307,8 +317,10 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_dhcpfirst" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer DHCP");?></td>
                   <td>
-                    <input name="dhcpfirst" type="checkbox" id="dhcpfirst" value="yes" <?=!empty($pconfig['dhcpfirst']) ? "checked=\"checked\"" : "";?> />
-                    <?= gettext('Resolve DHCP mappings first') ?>
+                    <label for="dhcpfirst">
+                      <input name="dhcpfirst" type="checkbox" id="dhcpfirst" value="yes" <?=!empty($pconfig['dhcpfirst']) ? "checked=\"checked\"" : "";?> />
+                      <?= gettext('Resolve DHCP mappings first') ?>
+                    </label>
                     <div class="hidden" data-for="help_for_dhcpfirst">
                       <?= sprintf(gettext("If this option is set, then DHCP mappings will ".
                           "be resolved before the manual list of names below. This only ".
@@ -319,8 +331,10 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_strict_order" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Query Forwarding");?></td>
                   <td>
-                    <input name="strict_order" type="checkbox" id="strict_order" value="yes" <?=!empty($pconfig['strict_order']) ? "checked=\"checked\"" : "";?> />
-                    <?= gettext('Query DNS servers sequentially') ?>
+                    <label for="strict_order">
+                      <input name="strict_order" type="checkbox" id="strict_order" value="yes" <?=!empty($pconfig['strict_order']) ? "checked=\"checked\"" : "";?> />
+                      <?= gettext('Query DNS servers sequentially') ?>
+                    </label>
                     <div class="hidden" data-for="help_for_strict_order">
                       <?= gettext("If this option is set, Dnsmasq will ".
                         "query the DNS servers sequentially in the order specified (System: " .
@@ -331,8 +345,10 @@ $( document ).ready(function() {
                 <tr>
                   <td></td>
                   <td>
-                    <input name="domain_needed" type="checkbox" id="domain_needed" value="yes" <?=!empty($pconfig['domain_needed']) ? "checked=\"checked\"" : "";?> />
-                    <?= gettext('Require domain') ?>
+                    <label for="domain_needed">
+                      <input name="domain_needed" type="checkbox" id="domain_needed" value="yes" <?=!empty($pconfig['domain_needed']) ? "checked=\"checked\"" : "";?> />
+                      <?= gettext('Require domain') ?>
+                    </label>
                     <div class="hidden" data-for="help_for_strict_order">
                       <?= gettext('If this option is set, Dnsmasq will '.
                         'not forward A or AAAA queries for plain names, without dots or ' .
@@ -344,8 +360,10 @@ $( document ).ready(function() {
                 <tr>
                   <td></td>
                   <td>
-                    <input name="no_private_reverse" type="checkbox" id="no_private_reverse" value="yes" <?=!empty($pconfig['no_private_reverse']) ? "checked=\"checked\"" : "";?> />
-                    <?= gettext('Do not forward private reverse lookups') ?>
+                    <label for="no_private_reverse">
+                      <input name="no_private_reverse" type="checkbox" id="no_private_reverse" value="yes" <?=!empty($pconfig['no_private_reverse']) ? "checked=\"checked\"" : "";?> />
+                      <?= gettext('Do not forward private reverse lookups') ?>
+                    </label>
                     <div class="hidden" data-for="help_for_strict_order">
                       <?= gettext('If this option is set, Dnsmasq will '.
                         'not forward reverse DNS lookups (PTR) for private addresses ' .
@@ -367,8 +385,10 @@ $( document ).ready(function() {
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Log Queries') ?></td>
                   <td>
-                    <input name="log_queries" type="checkbox" id="log_queries" value="yes" <?= !empty($pconfig['log_queries']) ? 'checked="checked"' : '' ?> />
-                    <?= gettext('Log the results of DNS queries') ?>
+                    <label for="log_queries">
+                      <input name="log_queries" type="checkbox" id="log_queries" value="yes" <?= !empty($pconfig['log_queries']) ? 'checked="checked"' : '' ?> />
+                      <?= gettext('Log the results of DNS queries') ?>
+                    </label>
                   </td>
                 </tr>
                 <tr>

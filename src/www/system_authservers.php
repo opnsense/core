@@ -561,8 +561,10 @@ endif; ?>
                 <tr class="auth_local auth_options hidden">
                   <td><a id="help_for_enable_password_policy_constraints" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Policy'); ?></td>
                   <td>
-                    <input id="enable_password_policy_constraints" name="enable_password_policy_constraints" type="checkbox" <?= empty($pconfig['enable_password_policy_constraints']) ? '' : 'checked="checked"';?> />
-                    <?= gettext('Enable password policy constraints') ?>
+                    <label for="enable_password_policy_constraints">
+                      <input id="enable_password_policy_constraints" name="enable_password_policy_constraints" type="checkbox" <?= empty($pconfig['enable_password_policy_constraints']) ? '' : 'checked="checked"';?> />
+                      <?= gettext('Enable password policy constraints') ?>
+                    </label>
                     <div class="hidden" data-for="help_for_enable_password_policy_constraints">
                       <?= gettext('Use hardened security policies for local accounts. Methods other than local these will usually be configured by the respective provider (e.g. LDAP, RADIUS, ...).');?>
                     </div>
@@ -604,8 +606,10 @@ endif; ?>
                 <tr class="auth_local auth_options password_policy_constraints hidden">
                   <td><a id="help_for_password_policy_complexity" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Complexity'); ?></td>
                   <td>
-                    <input id="password_policy_complexity" name="password_policy_complexity" type="checkbox" <?= empty($pconfig['password_policy_complexity']) ? '' : 'checked="checked"';?> />
-                    <?= gettext('Enable complexity requirements') ?>
+                    <label for="password_policy_complexity">
+                      <input id="password_policy_complexity" name="password_policy_complexity" type="checkbox" <?= empty($pconfig['password_policy_complexity']) ? '' : 'checked="checked"';?> />
+                      <?= gettext('Enable complexity requirements') ?>
+                    </label>
                     <div class="hidden" data-for="help_for_password_policy_complexity">
                       <?= gettext("Require passwords to meet complexity rules");?>
                     </div>
@@ -735,7 +739,9 @@ endif; ?>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
                   <td><a id="help_for_ldap_read_properties" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Read properties'); ?></td>
                   <td>
-                    <input id="ldap_read_properties" name="ldap_read_properties" type="checkbox" <?= empty($pconfig['ldap_read_properties']) ? '' : 'checked="checked"';?> />
+                    <label for="ldap_read_properties">
+                      <input id="ldap_read_properties" name="ldap_read_properties" type="checkbox" <?= empty($pconfig['ldap_read_properties']) ? '' : 'checked="checked"';?> />
+                    </label>
                     <div class="hidden" data-for="help_for_ldap_read_properties">
                       <?= gettext("Normally the authentication only tries to bind to the remote server, ".
                                   "when this option is enabled also the objects properties are fetched, can be practical for debugging purposes.");?>
@@ -745,7 +751,9 @@ endif; ?>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
                   <td><a id="help_for_ldap_sync_memberof" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize groups'); ?></td>
                   <td>
-                    <input id="ldap_sync_memberof" name="ldap_sync_memberof" type="checkbox" <?= empty($pconfig['ldap_sync_memberof']) ? '' : 'checked="checked"';?> />
+                    <label for="ldap_sync_memberof">
+                      <input id="ldap_sync_memberof" name="ldap_sync_memberof" type="checkbox" <?= empty($pconfig['ldap_sync_memberof']) ? '' : 'checked="checked"';?> />
+                    </label>
                     <div class="hidden" data-for="help_for_ldap_sync_memberof">
                       <?= gettext("Synchronize groups specified by memberOf attribute after login, this option requires to enable read properties. ".
                                   "Groups will be extracted from the first CN= section and will only be considered when already existing in OPNsense. ".
@@ -774,7 +782,9 @@ endif; ?>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
                   <td><a id="help_for_ldap_sync_create_local_users" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatic user creation"); ?></td>
                   <td>
-                    <input id="ldap_sync_create_local_users" name="ldap_sync_create_local_users" type="checkbox" <?= empty($pconfig['ldap_sync_create_local_users']) ? '' : 'checked="checked"';?> />
+                    <label for="ldap_sync_create_local_users">
+                      <input id="ldap_sync_create_local_users" name="ldap_sync_create_local_users" type="checkbox" <?= empty($pconfig['ldap_sync_create_local_users']) ? '' : 'checked="checked"';?> />
+                    </label>
                     <div class="hidden" data-for="help_for_ldap_sync_create_local_users">
                       <?= gettext(
                         "To be used in combination with synchronize groups, allow the authenticator to create new local users after ".
@@ -867,7 +877,9 @@ endif; ?>
                         </select>
 <?php
                         elseif ($field['type'] == 'checkbox'):?>
-                        <input name="<?=$fieldname;?>" type="checkbox" value="1" <?=!empty($pconfig[$fieldname]) ? "checked=\"checked\"" : ""; ?>/>
+                        <label for="<?=$fieldname;?>">
+                          <input name="<?=$fieldname;?>" type="checkbox" id="<?=$fieldname;?>" value="1" <?=!empty($pconfig[$fieldname]) ? "checked=\"checked\"" : ""; ?>/>
+                        </label>
 <?php
                         endif;?>
                         <div class="hidden" data-for="help_for_field_<?=$typename;?>_<?=$fieldname;?>">
