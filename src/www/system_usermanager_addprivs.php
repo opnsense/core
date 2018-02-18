@@ -128,10 +128,32 @@ include("head.inc");
 
                 $("#priv_container").scrollTop(0);
             })
+            all_selections_state();
+        });
+
+        // Set the select all and deselect all checkboxes accordingly.
+        function all_selections_state() {
+            var allselected = true;
+            var noneselected = true;
+            $(".acl_item").each(function(){
+                if ($(this).is(':visible')) {
+                    var selected = ($(this).find('td > label > input').prop('checked'));
+                    allselected = allselected && selected ? allselected : false;
+                    noneselected = noneselected && !selected ? noneselected : false;
+                }
+            });
+            $("#selectall").prop('checked', allselected);
+            $("#deselectall").prop('checked', noneselected);
+        };
+
+        all_selections_state();
+
+        $("input[name^='sysprivs']").click(function(event){
+            all_selections_state();
         });
 
         $("#selectall").click(function(event){
-            event.preventDefault();
+            $("#deselectall").prop('checked', false);
             $(".acl_item").each(function(){
                 if ($(this).is(':visible')) {
                     $(this).find('td > input').prop('checked', true);
@@ -140,7 +162,7 @@ include("head.inc");
         });
 
         $("#deselectall").click(function(event){
-            event.preventDefault();
+            $("#selectall").prop('checked', false);
             $(".acl_item").each(function(){
                 if ($(this).is(':visible')) {
                     $(this).find('td > input').prop('checked', false);
