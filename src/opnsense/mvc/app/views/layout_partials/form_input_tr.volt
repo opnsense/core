@@ -29,6 +29,7 @@
  #
  # id          :   unique id of the attribute
  # label       :   attribute label (visible text)
+ # input_label :   input control label (typically used on checkboxes and radio buttons)
  # size        :   size (width in characters) attribute if applicable
  # height      :   height (length in characters) attribute if applicable
  # help        :   help text
@@ -56,7 +57,10 @@
         {% if type == "text" %}
             <input type="text" class="form-control" size="{{size|default("50")}}" id="{{ id }}" {{ readonly ? 'readonly="readonly"' : '' }} >
         {% elseif type == "checkbox" %}
-            <input type="checkbox" id="{{ id }}">
+            <label for="{{ id }}">
+              <input type="checkbox" id="{{ id }}">
+              {{input_label}}
+            </label>
         {% elseif type == "select_multiple" %}
             <select multiple="multiple" {% if size|default(false) %}size="{{size}}"{% endif %} id="{{ id }}" {% if style|default(false) %}class="{{style}}" {% endif %} {% if hint|default(false) %}data-hint="{{hint}}"{% endif %} {% if maxheight|default(false) %}data-maxheight="{{maxheight}}"{% endif %} data-width="{{width|default("334px")}}" data-allownew="{{allownew|default("false")}}" data-nbdropdownelements="{{nbDropdownElements|default("10")}}"></select>
             <br/><a href="#" class="text-danger" id="clear-options_{{ id }}"><i class="fa fa-times-circle"></i></a> <small>{{ lang._('Clear All') }}</small>

@@ -705,7 +705,7 @@ POSSIBILITY OF SUCH DAMAGE.
               <select class="selectpicker" id="interface_select">
               </select>
               <div class="checkbox-inline pull-right">
-                <label>
+                <label for="reverse_lookup">
                   <input id="reverse_lookup" type="checkbox">
                   <span class="fa fa-search"></span> {{ lang._('Reverse lookup') }}
                 </label>

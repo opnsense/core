@@ -333,8 +333,10 @@ include("head.inc");
             <tr>
               <td><a id="help_for_prefer_ipv4" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer IPv4 over IPv6"); ?></td>
               <td>
-                <input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?= !empty($pconfig['prefer_ipv4']) ? "checked=\"checked\"" : "";?> />
-                <?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?>
+                <label for="prefer_ipv4">
+                  <input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?= !empty($pconfig['prefer_ipv4']) ? "checked=\"checked\"" : "";?> />
+                  <?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?>
+                </label>
                 <div class="hidden" data-for="help_for_prefer_ipv4">
                   <?=gettext("By default, if a hostname resolves IPv6 and IPv4 addresses ".
                                       "IPv6 will be used, if you check this option, IPv4 will be " .
@@ -402,8 +404,10 @@ include("head.inc");
             <tr>
               <td><a id="help_for_dnsservers_opt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS server options"); ?></td>
               <td>
-                <input name="dnsallowoverride" type="checkbox" value="yes" <?= $pconfig['dnsallowoverride'] ? 'checked="checked"' : '' ?>/>
-                <?=gettext("Allow DNS server list to be overridden by DHCP/PPP on WAN"); ?>
+                <label for="dnsallowoverride">
+                  <input name="dnsallowoverride" type="checkbox" id="dnsallowoverride" value="yes" <?= $pconfig['dnsallowoverride'] ? 'checked="checked"' : '' ?>/>
+                  <?=gettext("Allow DNS server list to be overridden by DHCP/PPP on WAN"); ?>
+                </label>
                 <div class="hidden" data-for="help_for_dnsservers_opt">
                   <?= gettext("If this option is set, DNS servers " .
                   "assigned by a DHCP/PPP server on WAN will be used " .
@@ -416,8 +420,10 @@ include("head.inc");
             </tr>
               <td></td>
               <td>
-                <input name="dnslocalhost" type="checkbox" value="yes" <?=$pconfig['dnslocalhost'] ? "checked=\"checked\"" : ""; ?> />
-                <?=gettext("Do not use the DNS Forwarder/Resolver as a DNS server for the firewall"); ?>
+                <label for="dnslocalhost">
+                  <input name="dnslocalhost" type="checkbox" id="dnslocalhost" value="yes" <?=$pconfig['dnslocalhost'] ? "checked=\"checked\"" : ""; ?> />
+                  <?=gettext("Do not use the DNS Forwarder/Resolver as a DNS server for the firewall"); ?>
+                </label>
                 <div class="hidden" data-for="help_for_dnsservers_opt">
                   <?=gettext("By default localhost (127.0.0.1) will be used as the first DNS server where the DNS Forwarder or DNS Resolver is enabled and set to listen on Localhost, so system can use the local DNS service to perform lookups. ".
                   "Checking this box omits localhost from the list of DNS servers."); ?>

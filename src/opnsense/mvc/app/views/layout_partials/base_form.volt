@@ -72,6 +72,7 @@ data_title      :   data-title to set on form
             {# looks a bit buggy in the volt templates, field parameters won't reset properly here #}
             {% set advanced=false %}
             {% set help=false %}
+            {% set input_label=false %}
             {% set hint=false %}
             {% set style=false %}
             {% set maxheight=false %}

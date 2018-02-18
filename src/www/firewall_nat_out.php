@@ -208,17 +208,15 @@ include("head.inc");
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th colspan="4"><?=gettext("Mode:"); ?></th>
+                    <th colspan="2"><?=gettext("Mode:"); ?></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>
-                      <input name="mode" type="radio" id="mode_automatic"
-                          value="automatic" <?= $mode == "automatic" ? "checked=\"checked\"" : "";?> />
-                    </td>
-                    <td>
                       <label for="mode_automatic">
+                        <input name="mode" type="radio" id="mode_automatic"
+                            value="automatic" <?= $mode == "automatic" ? "checked=\"checked\"" : "";?> />
                         <strong>
                           <?=gettext("Automatic outbound NAT rule generation"); ?><br />
                           <?=gettext("(no manual rules can be used)");?>
@@ -226,11 +224,9 @@ include("head.inc");
                       </label>
                     </td>
                     <td>
-                      <input name="mode" type="radio" id="mode_hybrid"
-                          value="hybrid" <?= $mode == "hybrid" ? "checked=\"checked\"" : "";?> />
-                    </td>
-                    <td>
                       <label for="mode_hybrid">
+                        <input name="mode" type="radio" id="mode_hybrid"
+                            value="hybrid" <?= $mode == "hybrid" ? "checked=\"checked\"" : "";?> />
                         <strong>
                           <?=gettext("Hybrid outbound NAT rule generation"); ?><br />
                           <?=gettext("(automatically generated rules are applied after manual rules)");?>
@@ -240,11 +236,9 @@ include("head.inc");
                   </tr>
                   <tr>
                     <td>
-                      <input name="mode" type="radio" id="mode_advanced"
-                          value="advanced" <?= $mode == "advanced" ? "checked=\"checked\"" : "";?> />
-                    </td>
-                    <td>
                       <label for="mode_advanced">
+                        <input name="mode" type="radio" id="mode_advanced"
+                            value="advanced" <?= $mode == "advanced" ? "checked=\"checked\"" : "";?> />
                         <strong>
                           <?=gettext("Manual outbound NAT rule generation"); ?><br />
                           <?=gettext("(no automatic rules are being generated)");?>
@@ -252,11 +246,9 @@ include("head.inc");
                       </label>
                     </td>
                     <td>
-                      <input name="mode" type="radio" id="mode_disabled"
-                          value="disabled" <?= $mode == "disabled" ? "checked=\"checked\"" : "";?> />
-                    </td>
-                    <td>
                       <label for="mode_disabled">
+                        <input name="mode" type="radio" id="mode_disabled"
+                            value="disabled" <?= $mode == "disabled" ? "checked=\"checked\"" : "";?> />
                         <strong>
                           <?=gettext("Disable outbound NAT rule generation"); ?><br />
                           <?=gettext("(outbound NAT is disabled)");?>
@@ -265,7 +257,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td colspan="4">
+                    <td colspan="2">
                       <button name="save" type="submit" class="btn btn-primary" value="Save"><?= gettext('Save') ?></button>
                     </td>
                   </tr>

@@ -163,8 +163,10 @@ $(document).ready(function() {
                   <tr>
                     <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Round-Robin-Database");?></td>
                     <td>
-                      <input name="rrdenable" type="checkbox" id="rrdenable" value="yes" <?=!empty($pconfig['rrdenable']) ? "checked=\"checked\"" : ""?> />
-                      &nbsp;<strong><?=gettext("Enables the RRD graphing backend.");?></strong>
+                      <label for="rrdenable">
+                        <input name="rrdenable" type="checkbox" id="rrdenable" value="yes" <?=!empty($pconfig['rrdenable']) ? "checked=\"checked\"" : ""?> />
+                        <strong><?=gettext("Enables the RRD graphing backend.");?></strong>
+                      </label>
                     </td>
                   </tr>
                   <tr>

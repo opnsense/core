@@ -126,7 +126,9 @@ include("head.inc");
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Enable') ?></td>
                       <td>
-                        <input name="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : ""; ?> onclick="enable_change(false)" />
+                        <label for="enable">
+                          <input name="enable" id="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : ""; ?> onclick="enable_change(false)" />
+                        </label>
                       </td>
                     </tr>
                     <tr>
@@ -152,8 +154,10 @@ include("head.inc");
                     <tr>
                       <td><a id="help_for_agentoption" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Append circuit ID");?></td>
                       <td>
-                          <input name="agentoption" type="checkbox" value="yes" <?=!empty($pconfig['agentoption']) ? "checked=\"checked\"" : ""; ?> />
-                          <strong><?=gettext("Append circuit ID and agent ID to requests"); ?></strong><br />
+                          <label for="agentoption">
+                            <input name="agentoption" id="agentoption" type="checkbox" value="yes" <?=!empty($pconfig['agentoption']) ? "checked=\"checked\"" : ""; ?> />
+                            <strong><?=gettext("Append circuit ID and agent ID to requests"); ?></strong>
+                          </label><br />
                           <div class="hidden" data-for="help_for_agentoption">
                             <?= gettext('If this is checked, the DHCP relay will append the circuit ID (interface number) and the agent ID to the DHCP request.') ?>
                           </div>

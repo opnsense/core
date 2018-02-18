@@ -239,15 +239,19 @@ $( document ).ready(function() {
                 <tr>
                   <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?></td>
                   <td style="width:78%">
-                    <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
-                     <strong><?=gettext("Enable DNS Forwarder");?></strong>
+                    <label for="enable">
+                      <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
+                      <strong><?=gettext("Enable DNS Forwarder");?></strong>
+                    </label>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_regdhcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Registration");?></td>
                   <td>
-                    <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Register DHCP leases in DNS forwarder");?></strong>
+                    <label for="regdhcp">
+                      <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? "checked=\"checked\"" : "";?> />
+                      <strong><?=gettext("Register DHCP leases in DNS forwarder");?></strong>
+                    </label>
                     <div class="hidden" data-for="help_for_regdhcp">
                       <?= gettext("If this option is set, then machines that specify " .
                         "their hostname when requesting a DHCP lease will be registered " .
@@ -270,8 +274,10 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_regdhcpstatic" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Static DHCP");?></td>
                   <td>
-                    <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Register DHCP static mappings in DNS forwarder");?></strong>
+                    <label for="regdhcpstatic">
+                      <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? "checked=\"checked\"" : "";?> />
+                      <strong><?=gettext("Register DHCP static mappings in DNS forwarder");?></strong>
+                    </label>
                     <div class="hidden" data-for="help_for_regdhcpstatic">
                       <?= sprintf(gettext("If this option is set, then DHCP static mappings will ".
                           "be registered in the DNS forwarder, so that their name can be ".
@@ -283,8 +289,10 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_dhcpfirst" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer DHCP");?></td>
                   <td>
-                    <input name="dhcpfirst" type="checkbox" id="dhcpfirst" value="yes" <?=!empty($pconfig['dhcpfirst']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Resolve DHCP mappings first");?></strong>
+                    <label for="dhcpfirst">
+                      <input name="dhcpfirst" type="checkbox" id="dhcpfirst" value="yes" <?=!empty($pconfig['dhcpfirst']) ? "checked=\"checked\"" : "";?> />
+                      <strong><?=gettext("Resolve DHCP mappings first");?></strong>
+                    </label>
                     <div class="hidden" data-for="help_for_dhcpfirst">
                       <?= sprintf(gettext("If this option is set, then DHCP mappings will ".
                           "be resolved before the manual list of names below. This only ".
@@ -298,8 +306,10 @@ $( document ).ready(function() {
                     <table class="table table-striped table-condensed">
                       <tr>
                         <td>
-                          <input name="strict_order" type="checkbox" id="strict_order" value="yes" <?=!empty($pconfig['strict_order']) ? "checked=\"checked\"" : "";?> />
-                          <strong><?=gettext("Query DNS servers sequentially");?></strong>
+                          <label for="strict_order">
+                            <input name="strict_order" type="checkbox" id="strict_order" value="yes" <?=!empty($pconfig['strict_order']) ? "checked=\"checked\"" : "";?> />
+                            <strong><?=gettext("Query DNS servers sequentially");?></strong>
+                          </label>
                           <div class="hidden" data-for="help_for_strict_order">
                             <?= gettext("If this option is set, the DNS Forwarder (dnsmasq) will ".
                               "query the DNS servers sequentially in the order specified (System: " .
@@ -309,8 +319,10 @@ $( document ).ready(function() {
                       </tr>
                       <tr>
                         <td>
-                          <input name="domain_needed" type="checkbox" id="domain_needed" value="yes" <?=!empty($pconfig['domain_needed']) ? "checked=\"checked\"" : "";?> />
-                          <strong><?=gettext("Require domain");?></strong>
+                          <label for="domain_needed">
+                            <input name="domain_needed" type="checkbox" id="domain_needed" value="yes" <?=!empty($pconfig['domain_needed']) ? "checked=\"checked\"" : "";?> />
+                            <strong><?=gettext("Require domain");?></strong>
+                          </label>
                           <div class="hidden" data-for="help_for_strict_order">
                             <?= gettext('If this option is set, the DNS Forwarder (dnsmasq) will '.
                               'not forward A or AAAA queries for plain names, without dots or ' .
@@ -321,8 +333,10 @@ $( document ).ready(function() {
                       </tr>
                       <tr>
                         <td>
-                          <input name="no_private_reverse" type="checkbox" id="no_private_reverse" value="yes" <?=!empty($pconfig['no_private_reverse']) ? "checked=\"checked\"" : "";?> />
-                          <strong><?=gettext("Do not forward private reverse lookups");?></strong>
+                          <label for="no_private_reverse">
+                            <input name="no_private_reverse" type="checkbox" id="no_private_reverse" value="yes" <?=!empty($pconfig['no_private_reverse']) ? "checked=\"checked\"" : "";?> />
+                            <strong><?=gettext("Do not forward private reverse lookups");?></strong>
+                          </label>
                           <div class="hidden" data-for="help_for_strict_order">
                             <?= gettext('If this option is set, the DNS Forwarder (dnsmasq) will '.
                               'not forward reverse DNS lookups (PTR) for private addresses ' .
@@ -365,8 +379,10 @@ $( document ).ready(function() {
                       <?=gettext("Interface IPs used by the DNS Forwarder for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.");?>
                     </div>
                     <br/>
-                    <input name="strictbind" type="checkbox" id="strictbind" value="yes" <?= !empty($pconfig['strictbind']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Strict Interface Binding");?></strong>
+                    <label for="strictbind">
+                      <input name="strictbind" type="checkbox" id="strictbind" value="yes" <?= !empty($pconfig['strictbind']) ? "checked=\"checked\"" : "";?> />
+                      <strong><?=gettext("Strict Interface Binding");?></strong>
+                    </label>
                     <div class="hidden" data-for="help_for_interfaces">
                       <?= gettext("If this option is set, the DNS forwarder will only bind to the interfaces containing the IP addresses selected above, rather than binding to all interfaces and discarding queries to other addresses."); ?>
                       <br /><br />

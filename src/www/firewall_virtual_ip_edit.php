@@ -409,7 +409,9 @@ $( document ).ready(function() {
                   <tr id="noexpandrow">
                       <td><a id="help_for_noexpand" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Expansion");?> </td>
                       <td>
-                          <input id="noexpand" name="noexpand" type="checkbox" class="form-control unknown" id="noexpand" <?= !empty($pconfig['noexpand']) ? "checked=\"checked\"" : "" ; ?> />
+                          <label for="noexpand">
+                            <input id="noexpand" name="noexpand" type="checkbox" class="form-control unknown" <?= !empty($pconfig['noexpand']) ? "checked=\"checked\"" : "" ; ?> />
+                          </label>
                           <div class="hidden" data-for="help_for_noexpand">
                             <?=gettext("Disable expansion of this entry into IPs on NAT lists (e.g. 192.168.1.0/24 expands to 256 entries.");?>
                           </div>

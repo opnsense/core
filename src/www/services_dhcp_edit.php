@@ -405,7 +405,9 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_arp_table_static_entry" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ARP Table Static Entry");?></td>
                   <td>
-                    <input name="arp_table_static_entry" id="arp_table_static_entry" type="checkbox" value="yes" <?=!empty($pconfig['arp_table_static_entry']) ? "checked=\"checked\"" : ""; ?> />
+                    <label for="arp_table_static_entry">
+                      <input name="arp_table_static_entry" id="arp_table_static_entry" type="checkbox" value="yes" <?=!empty($pconfig['arp_table_static_entry']) ? "checked=\"checked\"" : ""; ?> />
+                    </label>
                     <div class="hidden" data-for="help_for_arp_table_static_entry">
                       <?=gettext('Create a static ARP table entry for this MAC and IP address pair.');?>
                     </div>
@@ -482,8 +484,10 @@ include("head.inc");
                       <input type="button" onclick="show_ddns_config()" class="btn btn-xs btn-default" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Dynamic DNS");?>
                     </div>
                     <div id="showddns" style="display:none">
-                      <input style="vertical-align:middle" type="checkbox" value="yes" name="ddnsupdate" id="ddnsupdate" <?=!empty($pconfig['ddnsupdate']) ? "checked=\"checked\"" : ""; ?> />
-                      <b><?=gettext("Enable registration of DHCP client names in DNS.");?></b><br />
+                      <label for="ddnsupdate">
+                        <input style="vertical-align:middle" type="checkbox" value="yes" name="ddnsupdate" id="ddnsupdate" <?=!empty($pconfig['ddnsupdate']) ? "checked=\"checked\"" : ""; ?> />
+                        <b><?=gettext("Enable registration of DHCP client names in DNS.");?></b>
+                      </label><br />
                       <?=gettext("Note: Leave blank to disable dynamic DNS registration.");?><br />
                       <?=gettext("Enter the dynamic DNS domain which will be used to register client names in the DNS server.");?>
                       <input name="ddnsdomain" type="text" id="ddnsdomain" size="20" value="<?=$pconfig['ddnsdomain'];?>" />

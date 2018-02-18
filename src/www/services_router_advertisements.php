@@ -290,7 +290,9 @@ include("head.inc");
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Advertise Default Gateway') ?></td>
                     <td>
-                      <input id="radefault" name="radefault" type="checkbox" value="yes" <?= !empty($pconfig['radefault']) ? 'checked="checked"' : '' ?>/>
+                      <label for="radefault">
+                        <input id="radefault" name="radefault" type="checkbox" value="yes" <?= !empty($pconfig['radefault']) ? 'checked="checked"' : '' ?>/>
+                      </label>
                     </td>
                   </tr>
                   <tr>
@@ -364,8 +366,10 @@ include("head.inc");
                         <?=gettext("NOTE: leave blank to use the system default DNS servers - this interface's IP if DNS forwarder is enabled, otherwise the servers configured on the General page.");?>
                       </div>
                       <br />
-                      <input id="rasamednsasdhcp6" name="rasamednsasdhcp6" type="checkbox" value="yes" <?=!empty($pconfig['rasamednsasdhcp6']) ? "checked='checked'" : "";?> />
-                      <strong><?= gettext("Use the DNS settings of the DHCPv6 server"); ?></strong>
+                      <label for="rasamednsasdhcp6">
+                        <input id="rasamednsasdhcp6" name="rasamednsasdhcp6" type="checkbox" value="yes" <?=!empty($pconfig['rasamednsasdhcp6']) ? "checked='checked'" : "";?> />
+                        <strong><?= gettext("Use the DNS settings of the DHCPv6 server"); ?></strong>
+                      </label>
                     </td>
                   </tr>
                   <tr>
@@ -380,7 +384,9 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_rasend" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('RA Sending') ?></td>
                     <td>
-                      <input id="rasend" name="rasend" type="checkbox" value="yes" <?= !empty($pconfig['rasend']) ? 'checked="checked"' : '' ?>/>
+                      <label for="rasend">
+                        <input id="rasend" name="rasend" type="checkbox" value="yes" <?= !empty($pconfig['rasend']) ? 'checked="checked"' : '' ?>/>
+                      </label>
                       <div class="hidden" data-for="help_for_rasend">
                         <?= gettext('Enable the periodic sending of router advertisements and responding to router solicitations.') ?>
                       </div>

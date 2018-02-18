@@ -156,15 +156,19 @@ if (isset($input_errors) && count($input_errors) > 0) {
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Disable Auto-added VPN rules') ?></td>
                       <td>
-                        <input name="disablevpnrules" type="checkbox" value="yes" <?=!empty($pconfig['disablevpnrules']) ? "checked=\"checked\"" :"";?> />
-                        <strong><?=gettext("Disable all auto-added VPN rules.");?></strong>
+                        <label for="disablevpnrules">
+                          <input name="disablevpnrules" type="checkbox" id="disablevpnrules" value="yes" <?=!empty($pconfig['disablevpnrules']) ? "checked=\"checked\"" :"";?> />
+                          <strong><?=gettext("Disable all auto-added VPN rules.");?></strong>
+                        </label>
                       </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_preferoldsa_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Security Associations"); ?></td>
                       <td style="width:78%" class="vtable">
-                        <input name="preferoldsa_enable" type="checkbox" id="preferoldsa_enable" value="yes" <?= !empty($pconfig['preferoldsa_enable']) ? "checked=\"checked\"" : "";?> />
-                        <strong><?=gettext("Prefer older IPsec SAs"); ?></strong>
+                        <label for="preferoldsa_enable">
+                          <input name="preferoldsa_enable" type="checkbox" id="preferoldsa_enable" value="yes" <?= !empty($pconfig['preferoldsa_enable']) ? "checked=\"checked\"" : "";?> />
+                          <strong><?=gettext("Prefer older IPsec SAs"); ?></strong>
+                        </label>
                         <div class="hidden" data-for="help_for_preferoldsa_enable">
                             <?=gettext("By default, if several SAs match, the newest one is " .
                                                   "preferred if it's at least 30 seconds old. Select this " .
@@ -190,8 +194,10 @@ if (isset($input_errors) && count($input_errors) > 0) {
                     <tr>
                       <td><a id="help_for_auto_routes_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Do not install routes"); ?></td>
                       <td style="width:78%" class="vtable">
-                        <input name="auto_routes_disable" type="checkbox" id="auto_routes_disable" value="yes" <?= !empty($pconfig['auto_routes_disable']) ? "checked=\"checked\"" : "";?> />
-                        <strong><?=gettext("Do not automatically install routes"); ?></strong>
+                        <label for="auto_routes_disable">
+                          <input name="auto_routes_disable" type="checkbox" id="auto_routes_disable" value="yes" <?= !empty($pconfig['auto_routes_disable']) ? "checked=\"checked\"" : "";?> />
+                          <strong><?=gettext("Do not automatically install routes"); ?></strong>
+                        </label>
                         <div class="hidden" data-for="help_for_auto_routes_disable">
                             <?=gettext("By default, IPsec installs routes when a tunnel becomes active. " .
                                                   "Select this option to prevent automatically adding routes" .

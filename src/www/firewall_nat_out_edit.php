@@ -401,8 +401,10 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                   <td>
-                    <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
-                    <strong><?=gettext("Disable this rule"); ?></strong>
+                    <label for="disabled">
+                      <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                      <strong><?=gettext("Disable this rule"); ?></strong>
+                    </label>
                     <div class="hidden" data-for="help_for_disabled">
                       <?=gettext("Set this option to disable this rule without removing it from the list."); ?>
                     </div>
@@ -411,7 +413,9 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_do_not_nat" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Do not NAT");?></td>
                   <td style="width:78%" class="vtable">
-                    <input type="checkbox" name="nonat" <?=!empty($pconfig['nonat']) ? " checked=\"checked\"" : ""; ?> />
+                    <label for="nonat">
+                      <input type="checkbox" name="nonat" id="nonat" <?=!empty($pconfig['nonat']) ? " checked=\"checked\"" : ""; ?> />
+                    </label>
                     <div class="hidden" data-for="help_for_do_not_nat">
                       <?=gettext("Enabling this option will disable NAT for traffic matching this rule and stop processing Outbound NAT rules.");?><br />
                       <?=gettext("Hint: in most cases, you won't use this option.");?>
@@ -474,7 +478,9 @@ include("head.inc");
                 <tr>
                   <td> <a id="help_for_src_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Source invert') ?></td>
                   <td>
-                    <input name="source_not" type="checkbox" value="yes" <?= !empty($pconfig['source_not']) ? 'checked="checked"' : '' ?> />
+                    <label for="source_not">
+                      <input name="source_not" id="source_not" type="checkbox" value="yes" <?= !empty($pconfig['source_not']) ? 'checked="checked"' : '' ?> />
+                    </label>
                     <div class="hidden" data-for="help_for_src_invert">
                       <?=gettext("Use this option to invert the sense of the match."); ?>
                     </div>
@@ -557,7 +563,9 @@ include("head.inc");
                 <tr>
                   <td> <a id="help_for_dst_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Destination invert') ?></td>
                   <td>
-                    <input name="destination_not" type="checkbox" value="yes" <?= !empty($pconfig['destination_not']) ? 'checked="checked"' : '' ?> />
+                    <label for="destination_not">
+                      <input name="destination_not" id="destination_not" type="checkbox" value="yes" <?= !empty($pconfig['destination_not']) ? 'checked="checked"' : '' ?> />
+                    </label>
                     <div class="hidden" data-for="help_for_dst_invert">
                       <?=gettext("Use this option to invert the sense of the match."); ?>
                     </div>
@@ -677,8 +685,10 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_log" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Log");?></td>
                   <td>
-                    <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? "checked=\"checked\"" : ""; ?> />
-                    <strong><?=gettext("Log packets that are handled by this rule");?></strong>
+                    <label for="log">
+                      <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? "checked=\"checked\"" : ""; ?> />
+                      <strong><?=gettext("Log packets that are handled by this rule");?></strong>
+                    </label>
                     <div class="hidden" data-for="help_for_log">
                       <?=sprintf(gettext("Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a %sremote syslog server%s."),'<a href="diag_logs_settings.php">','</a>') ?>
                     </div>
@@ -696,7 +706,9 @@ include("head.inc");
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Static-port:");?></td>
                   <td>
-                    <input name="staticnatport" type="checkbox" <?=!empty($pconfig['staticnatport']) ? " checked=\"checked\"" : "";?> >
+                    <label for="staticnatport">
+                      <input name="staticnatport" id="staticnatport" type="checkbox" <?=!empty($pconfig['staticnatport']) ? " checked=\"checked\"" : "";?> >
+                    </label>
                   </td>
                 </tr>
                 <tr>
@@ -756,7 +768,9 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_nosync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("No XMLRPC Sync"); ?></td>
                   <td>
-                    <input type="checkbox" value="yes" name="nosync" <?=!empty($pconfig['nosync']) ? "checked=\"checked\"" :"";?> />
+                    <label for="nosync">
+                      <input type="checkbox" value="yes" name="nosync" id="nosync" <?=!empty($pconfig['nosync']) ? "checked=\"checked\"" :"";?> />
+                    </label>
                     <div class="hidden" data-for="help_for_nosync">
                       <?=gettext("Hint: This prevents the rule on Master from automatically syncing to other CARP members. This does NOT prevent the rule from being overwritten on Slave.");?>
                     </div>

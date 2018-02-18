@@ -420,59 +420,59 @@ SureGPS =    #Sure Electronics SKG16B
                         <table class="table table-condensed">
                           <tr>
                             <td>
-                              <input name="prefer" type="checkbox" id="gpsprefer" <?=empty($pconfig['prefer']) ? " checked=\"checked\"" : ""; ?> />
-                            </td>
-                            <td>
-                              <?=gettext("NTP should prefer this clock (default: enabled)."); ?>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <input name="noselect" type="checkbox" id="gpsselect" <?=!empty($pconfig['noselect']) ? " checked=\"checked\"" : ""; ?> />
-                            </td>
-                            <td>
-                              <?=gettext("NTP should not use this clock, it will be displayed for reference only (default: disabled)."); ?>
+                              <label for="gpsprefer">
+                                <input name="prefer" type="checkbox" id="gpsprefer" <?=empty($pconfig['prefer']) ? " checked=\"checked\"" : ""; ?> />
+                                <?=gettext("NTP should prefer this clock (default: enabled)."); ?>
+                              </label>
                             </td>
                           </tr>
                           <tr>
                             <td>
-                              <input name="flag1" type="checkbox" id="gpsflag1"<?=!empty($pconfig['flag1']) ? " checked=\"checked\"" : ""; ?> />
-                            </td>
-                            <td>
-                              <?=gettext("Enable PPS signal processing (default: enabled)."); ?>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <input name="flag2" type="checkbox" id="gpsflag2"<?=!empty($pconfig['flag2']) ? " checked=\"checked\"" : ""; ?> />
-                            </td>
-                            <td>
-                              <?=gettext("Enable falling edge PPS signal processing (default: rising edge)."); ?>
+                              <label for="gpsselect">
+                                <input name="noselect" type="checkbox" id="gpsselect" <?=!empty($pconfig['noselect']) ? " checked=\"checked\"" : ""; ?> />
+                                <?=gettext("NTP should not use this clock, it will be displayed for reference only (default: disabled)."); ?>
+                              </label>
                             </td>
                           </tr>
                           <tr>
                             <td>
-                              <input name="flag3" type="checkbox" id="gpsflag3"<?=!empty($pconfig['flag3']) ? " checked=\"checked\"" : ""; ?> />
-                            </td>
-                            <td>
-                              <?=gettext("Enable kernel PPS clock discipline (default: enabled)."); ?>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <input name="flag4" type="checkbox" id="gpsflag4"<?=!empty($pconfig['flag4']) ? " checked=\"checked\"" : ""; ?> />
-                            </td>
-                            <td>
-                              <?=gettext("Obscure location in timestamp (default: unobscured)."); ?>
+                              <label for="gpsflag1">
+                                <input name="flag1" type="checkbox" id="gpsflag1"<?=!empty($pconfig['flag1']) ? " checked=\"checked\"" : ""; ?> />
+                                <?=gettext("Enable PPS signal processing (default: enabled)."); ?>
+                              </label>
                             </td>
                           </tr>
                           <tr>
                             <td>
-                              <input name="subsec" type="checkbox" id="gpssubsec"<?=!empty($pconfig['subsec']) ? " checked=\"checked\"" : ""; ?> />
+                              <label for="gpsflag2">
+                                <input name="flag2" type="checkbox" id="gpsflag2"<?=!empty($pconfig['flag2']) ? " checked=\"checked\"" : ""; ?> />
+                                <?=gettext("Enable falling edge PPS signal processing (default: rising edge)."); ?>
+                              </label>
                             </td>
+                          </tr>
+                          <tr>
                             <td>
-                              <?= gettext("Log the sub-second fraction of the received time stamp (default: Not logged).") ?><br />
-                              <?= gettext("Enabling this will rapidly fill the log, but is useful for tuning Fudge time 2.") ?>
+                              <label for="gpsflag3">
+                                <input name="flag3" type="checkbox" id="gpsflag3"<?=!empty($pconfig['flag3']) ? " checked=\"checked\"" : ""; ?> />
+                                <?=gettext("Enable kernel PPS clock discipline (default: enabled)."); ?>
+                              </label>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <label for="gpsflag4">
+                                <input name="flag4" type="checkbox" id="gpsflag4"<?=!empty($pconfig['flag4']) ? " checked=\"checked\"" : ""; ?> />
+                                <?=gettext("Obscure location in timestamp (default: unobscured)."); ?>
+                              </label>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <label for="gpssubsec">
+                                <input name="subsec" type="checkbox" id="gpssubsec"<?=!empty($pconfig['subsec']) ? " checked=\"checked\"" : ""; ?> />
+                                <?= gettext("Log the sub-second fraction of the received time stamp (default: Not logged).") ?>
+                              </label>
+                              <div><?= gettext("Enabling this will rapidly fill the log, but is useful for tuning Fudge time 2.") ?></div>
                             </td>
                           </tr>
                         </table>

@@ -615,7 +615,9 @@ $( document ).ready(function() {
                       </td>
                       <td>
                         <div>
-                          <input name="disable" type="checkbox" value="yes" <?= !empty($pconfig['disable']) ? "checked=\"checked\"" : "";?> />
+                          <label for="disable">
+                            <input name="disable" id="disable" type="checkbox" value="yes" <?= !empty($pconfig['disable']) ? "checked=\"checked\"" : "";?> />
+                          </label>
                         </div>
                         <div class="hidden" data-for="help_for_disable">
                         <?=gettext("Set this option to disable this server without removing it from the list"); ?>.
@@ -797,14 +799,18 @@ $( document ).ready(function() {
                       <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("TLS Authentication"); ?></td>
                       <td style="width:78%">
                         <div>
-                          <input name="tlsauth_enable" id="tlsauth_enable" type="checkbox" value="yes" <?=!empty($pconfig['tlsauth_enable']) ? "checked=\"checked\"" : "" ;?>/>
-                          <?=gettext("Enable authentication of TLS packets"); ?>.
+                          <label for="tlsauth_enable">
+                            <input name="tlsauth_enable" id="tlsauth_enable" type="checkbox" value="yes" <?=!empty($pconfig['tlsauth_enable']) ? "checked=\"checked\"" : "" ;?>/>
+                            <?=gettext("Enable authentication of TLS packets"); ?>.
+                          </label>
                         </div>
                         <?php if (!$pconfig['tls']) :
 ?>
                         <div>
-                          <input name="autotls_enable" id="autotls_enable" type="checkbox" value="yes" <?=!empty($pconfig['autotls_enable']) ? "checked=\"checked\"" : "" ;?>  />
-                          <?=gettext("Automatically generate a shared TLS authentication key"); ?>.
+                          <label for="autotls_enable">
+                            <input name="autotls_enable" id="autotls_enable" type="checkbox" value="yes" <?=!empty($pconfig['autotls_enable']) ? "checked=\"checked\"" : "" ;?>  />
+                            <?=gettext("Automatically generate a shared TLS authentication key"); ?>.
+                          </label>
                          </div>
                         <?php
 endif; ?>
@@ -934,8 +940,10 @@ endif; ?>
 <?php
                         if (empty($pconfig['shared_key'])) :?>
                         <div>
-                          <input name="autokey_enable" id="autokey_enable" type="checkbox" value="yes"  <?=!empty($pconfig['autokey_enable']) ? "checked=\"checked\"" : "" ;?>  />
-                          <?=gettext("Automatically generate a shared key"); ?>.
+                          <label for="autokey_enable">
+                            <input name="autokey_enable" id="autokey_enable" type="checkbox" value="yes"  <?=!empty($pconfig['autokey_enable']) ? "checked=\"checked\"" : "" ;?>  />
+                            <?=gettext("Automatically generate a shared key"); ?>.
+                          </label>
                         </div>
 <?php
                         endif; ?>
@@ -1049,7 +1057,9 @@ endif; ?>
                     <tr class="opt_mode opt_mode_server_tls_user">
                       <td style="width:22%"><a id="help_for_strictusercn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Strict User/CN Matching"); ?></td>
                       <td>
-                        <input name="strictusercn" type="checkbox" value="yes" <?=!empty($pconfig['strictusercn']) ? "checked=\"checked\"" : "" ;?> />
+                        <label for="strictusercn">
+                          <input name="strictusercn" id="strictusercn" type="checkbox" value="yes" <?=!empty($pconfig['strictusercn']) ? "checked=\"checked\"" : "" ;?> />
+                        </label>
                         <div class="hidden" data-for="help_for_strictusercn">
                           <span>
                               <?=gettext("When authenticating users, enforce a match between the Common Name of the client certificate and the username given at login."); ?>
@@ -1101,7 +1111,9 @@ endif; ?>
                     <tr class="dev_mode dev_mode_tap">
                       <td style="width:22%"><a id="help_for_serverbridge_dhcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Bridge DHCP"); ?></td>
                       <td>
-                              <input id="serverbridge_dhcp" name="serverbridge_dhcp" type="checkbox" value="yes" <?=!empty($pconfig['serverbridge_dhcp']) ? "checked=\"checked\"" : "" ;?>/>
+                              <label for="serverbridge_dhcp">
+                                <input id="serverbridge_dhcp" name="serverbridge_dhcp" type="checkbox" value="yes" <?=!empty($pconfig['serverbridge_dhcp']) ? "checked=\"checked\"" : "" ;?>/>
+                              </label>
                               <div class="hidden" data-for="help_for_serverbridge_dhcp">
                                 <span>
                                     <?=gettext("Allow clients on the bridge to obtain DHCP."); ?><br />
@@ -1169,7 +1181,9 @@ endif; ?>
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_p2p_shared_key opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
                       <td style="width:22%"><a id="help_for_gwredir" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Redirect Gateway"); ?></td>
                       <td>
-                        <input name="gwredir" id="gwredir" type="checkbox" value="yes" <?=!empty($pconfig['gwredir']) ? "checked=\"checked\"" : "" ;?> />
+                        <label for="gwredir">
+                          <input name="gwredir" id="gwredir" type="checkbox" value="yes" <?=!empty($pconfig['gwredir']) ? "checked=\"checked\"" : "" ;?> />
+                        </label>
                         <div class="hidden" data-for="help_for_gwredir">
                             <span>
                                 <?=gettext("Force all client generated traffic through the tunnel"); ?>.
@@ -1267,7 +1281,9 @@ endif; ?>
                     <tr>
                       <td style="width:22%"><a id="help_for_passtos" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type-of-Service"); ?></td>
                       <td>
-                        <input name="passtos" type="checkbox" value="yes" <?=!empty($pconfig['passtos']) ? "checked=\"checked\"" : "" ;?> />
+                        <label for="passtos">
+                          <input name="passtos" id="passtos" type="checkbox" value="yes" <?=!empty($pconfig['passtos']) ? "checked=\"checked\"" : "" ;?> />
+                        </label>
                         <div class="hidden" data-for="help_for_passtos">
                           <span>
                             <?=gettext("Set the TOS IP header value of tunnel packets to match the encapsulated packet value"); ?>.
@@ -1278,7 +1294,9 @@ endif; ?>
                     <tr class="opt_mode opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
                       <td style="width:22%"><a id="help_for_client2client" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Inter-client communication"); ?></td>
                       <td>
-                          <input name="client2client" type="checkbox" value="yes"  <?=!empty($pconfig['client2client']) ? "checked=\"checked\"" : "" ;?> />
+                          <label for="client2client">
+                            <input name="client2client" id="client2client" type="checkbox" value="yes"  <?=!empty($pconfig['client2client']) ? "checked=\"checked\"" : "" ;?> />
+                          </label>
                           <div class="hidden" data-for="help_for_client2client">
                             <span>
                                 <?=gettext("Allow communication between clients connected to this server"); ?>
@@ -1289,7 +1307,9 @@ endif; ?>
                     <tr id="duplicate_cn">
                       <td style="width:22%"><a id="help_for_duplicate_cn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Duplicate Connections"); ?></td>
                       <td>
-                            <input name="duplicate_cn" type="checkbox" value="yes" <?=!empty($pconfig['duplicate_cn']) ? "checked=\"checked\"" : "" ;?> />
+                            <label for="duplicate_cn">
+                              <input name="duplicate_cn" id="duplicate_cn" type="checkbox" value="yes" <?=!empty($pconfig['duplicate_cn']) ? "checked=\"checked\"" : "" ;?> />
+                            </label>
                             <div class="hidden" data-for="help_for_duplicate_cn">
                               <span>
                                 <?=gettext("Allow multiple concurrent connections from clients using the same Common Name.<br />NOTE: This is not generally recommended, but may be needed for some scenarios."); ?>
@@ -1300,7 +1320,9 @@ endif; ?>
                     <tr class="dev_mode dev_mode_tun">
                       <td style="width:22%"><a id="help_for_no_tun_ipv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable IPv6"); ?></td>
                       <td>
-                        <input name="no_tun_ipv6" type="checkbox" value="yes" <?=!empty($pconfig['no_tun_ipv6']) ? "checked=\"checked\"" : "" ;?> />
+                        <label for="no_tun_ipv6">
+                          <input name="no_tun_ipv6" id="no_tun_ipv6" type="checkbox" value="yes" <?=!empty($pconfig['no_tun_ipv6']) ? "checked=\"checked\"" : "" ;?> />
+                        </label>
                         <div class="hidden" data-for="help_for_no_tun_ipv6">
                           <span>
                             <?=gettext("Don't forward IPv6 traffic"); ?>.
@@ -1322,7 +1344,9 @@ endif; ?>
                     <tr>
                       <td style="width:22%"><a id="help_for_dynamic_ip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Dynamic IP"); ?></td>
                       <td style="width:78%">
-                        <input name="dynamic_ip" type="checkbox" id="dynamic_ip" value="yes" <?=!empty($pconfig['dynamic_ip']) ? "checked=\"checked\"" : "" ;?> />
+                        <label for="dynamic_ip">
+                          <input name="dynamic_ip" type="checkbox" id="dynamic_ip" value="yes" <?=!empty($pconfig['dynamic_ip']) ? "checked=\"checked\"" : "" ;?> />
+                        </label>
                         <div class="hidden" data-for="help_for_dynamic_ip">
                           <span>
                             <?=gettext("Allow connected clients to retain their connections if their IP address changes"); ?>.<br />
@@ -1333,7 +1357,9 @@ endif; ?>
                     <tr>
                       <td style="width:22%"><a id="help_for_pool_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Address Pool"); ?></td>
                       <td>
-                        <input name="pool_enable" type="checkbox" id="pool_enable" value="yes" <?=!empty($pconfig['pool_enable']) ? "checked=\"checked\"" : "" ;?> />
+                        <label for="pool_enable">
+                          <input name="pool_enable" type="checkbox" id="pool_enable" value="yes" <?=!empty($pconfig['pool_enable']) ? "checked=\"checked\"" : "" ;?> />
+                        </label>
                         <div class="hidden" data-for="help_for_pool_enable">
                           <span>
                             <?=gettext("Provide a virtual adapter IP address to clients (see Tunnel Network)"); ?><br />
@@ -1344,7 +1370,9 @@ endif; ?>
                     <tr class="dev_mode dev_mode_tun" id="topology_subnet_opt">
                       <td style="width:22%"><a id="help_for_topology_subnet" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Topology"); ?></td>
                       <td>
-                        <input name="topology_subnet" type="checkbox" id="topology_subnet" value="yes"  <?=!empty($pconfig['topology_subnet']) ? "checked=\"checked\"" : "" ;?> />
+                        <label for="topology_subnet">
+                          <input name="topology_subnet" type="checkbox" id="topology_subnet" value="yes"  <?=!empty($pconfig['topology_subnet']) ? "checked=\"checked\"" : "" ;?> />
+                        </label>
                         <div class="hidden" data-for="help_for_topology_subnet">
                           <span>
                             <?=gettext("Allocate only one IP per client (topology subnet), rather than an isolated subnet per client (topology net30)."); ?><br />
@@ -1357,7 +1385,9 @@ endif; ?>
                     <tr>
                       <td style="width:22%"><a id="help_for_dns_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Default Domain"); ?></td>
                       <td>
-                        <input name="dns_domain_enable" type="checkbox" id="dns_domain_enable" value="yes" <?=!empty($pconfig['dns_domain']) ? "checked=\"checked\"" : "" ;?> />
+                        <label for="dns_domain_enable">
+                          <input name="dns_domain_enable" type="checkbox" id="dns_domain_enable" value="yes" <?=!empty($pconfig['dns_domain']) ? "checked=\"checked\"" : "" ;?> />
+                        </label>
                         <div id="dns_domain_data">
                               <input name="dns_domain" type="text" class="form-control unknown" id="dns_domain" size="30" value="<?=htmlspecialchars($pconfig['dns_domain']);?>" />
                         </div>
@@ -1371,7 +1401,9 @@ endif; ?>
                     <tr>
                       <td style="width:22%"><a id="help_for_dns_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Servers"); ?></td>
                       <td>
-                        <input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes" <?=!empty($pconfig['dns_server1']) || !empty($pconfig['dns_server2']) || !empty($pconfig['dns_server3']) || !empty($pconfig['dns_server4']) ? "checked=\"checked\"" : "" ;?> />
+                        <label for="dns_server_enable">
+                          <input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes" <?=!empty($pconfig['dns_server1']) || !empty($pconfig['dns_server2']) || !empty($pconfig['dns_server3']) || !empty($pconfig['dns_server4']) ? "checked=\"checked\"" : "" ;?> />
+                        </label>
                         <div id="dns_server_data">
                               <span>
                                 <?=gettext("Server #1:"); ?>&nbsp;
@@ -1400,7 +1432,9 @@ endif; ?>
                     <tr id="chkboxPushRegisterDNS">
                       <td style="width:22%"><a id="help_for_push_register_dns" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Force DNS cache update"); ?></td>
                       <td>
-                        <input name="push_register_dns" type="checkbox" value="yes" <?=!empty($pconfig['push_register_dns']) ? "checked=\"checked\"" : "" ;?> />
+                        <label for="push_register_dns">
+                          <input name="push_register_dns" type="checkbox" id="push_register_dns" value="yes" <?=!empty($pconfig['push_register_dns']) ? "checked=\"checked\"" : "" ;?> />
+                        </label>
                         <div class="hidden" data-for="help_for_push_register_dns">
                           <span>
                             <?=gettext("Run ''net stop dnscache'', ''net start dnscache'', ''ipconfig /flushdns'' and ''ipconfig /registerdns'' on connection initiation. This is known to kick Windows into recognizing pushed DNS servers."); ?><br />
@@ -1411,7 +1445,9 @@ endif; ?>
                     <tr>
                       <td style="width:22%"><a id="help_for_ntp_server_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("NTP Servers"); ?></td>
                       <td>
-                        <input name="ntp_server_enable" type="checkbox" id="ntp_server_enable" value="yes" <?=!empty($pconfig['ntp_server1']) || !empty($pconfig['ntp_server2']) ? "checked=\"checked\"" : "" ;?>  />
+                        <label for="ntp_server_enable">
+                          <input name="ntp_server_enable" type="checkbox" id="ntp_server_enable" value="yes" <?=!empty($pconfig['ntp_server1']) || !empty($pconfig['ntp_server2']) ? "checked=\"checked\"" : "" ;?>  />
+                        </label>
                         <div id="ntp_server_data">
                           <span>
                             <?=gettext("Server #1:"); ?>&nbsp;
@@ -1432,7 +1468,9 @@ endif; ?>
                     <tr>
                       <td style="width:22%"><a id="help_for_netbios_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("NetBIOS Options"); ?></td>
                       <td>
-                        <input name="netbios_enable" type="checkbox" id="netbios_enable" value="yes" <?=!empty($pconfig['netbios_enable']) ? "checked=\"checked\"" : "" ;?>  />
+                        <label for="netbios_enable">
+                          <input name="netbios_enable" type="checkbox" id="netbios_enable" value="yes" <?=!empty($pconfig['netbios_enable']) ? "checked=\"checked\"" : "" ;?>  />
+                        </label>
                         <div class="hidden" data-for="help_for_netbios_enable">
                           <span>
                             <?=gettext("Enable NetBIOS over TCP/IP"); ?><br />
@@ -1478,7 +1516,9 @@ endif; ?>
                     <tr id="wins_opts">
                       <td style="width:22%"><a id="help_for_wins_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WINS Servers"); ?></td>
                       <td>
-                        <input name="wins_server_enable" type="checkbox" id="wins_server_enable" value="yes" <?=!empty($pconfig['wins_server1']) || !empty($pconfig['wins_server2']) ? "checked=\"checked\"" : "" ;?> />
+                        <label for="wins_server_enable">
+                          <input name="wins_server_enable" type="checkbox" id="wins_server_enable" value="yes" <?=!empty($pconfig['wins_server1']) || !empty($pconfig['wins_server2']) ? "checked=\"checked\"" : "" ;?> />
+                        </label>
                         <div class="hidden" data-for="help_for_wins_server">
                           <span>
                             <?=gettext("Provide a WINS server list to clients"); ?><br />
@@ -1499,7 +1539,9 @@ endif; ?>
                     <tr>
                       <td style="width:22%"><a id="help_for_client_mgmt_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Client Management Port"); ?></td>
                       <td>
-                        <input name="client_mgmt_port_enable" type="checkbox" id="client_mgmt_port_enable" value="yes" <?=!empty($pconfig['client_mgmt_port']) ? "checked=\"checked\"" : "" ;?> />
+                        <label for="client_mgmt_port_enable">
+                          <input name="client_mgmt_port_enable" type="checkbox" id="client_mgmt_port_enable" value="yes" <?=!empty($pconfig['client_mgmt_port']) ? "checked=\"checked\"" : "" ;?> />
+                        </label>
                         <div id="client_mgmt_port_data">
                               <input name="client_mgmt_port" type="text" class="form-control unknown" id="client_mgmt_port" size="30" value="<?=htmlspecialchars($pconfig['client_mgmt_port']);?>" />
                         </div>
@@ -1513,7 +1555,9 @@ endif; ?>
                     <tr class="opt_mode opt_mode_server_tls_user">
                       <td style="width:22%"><a id="help_for_use-common-name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use common name"); ?></td>
                       <td>
-                        <input name="use-common-name" type="checkbox" value="1" <?=!empty($pconfig['use-common-name']) ? "checked=\"checked\"" : "" ;?> />
+                        <label for="use-common-name">
+                          <input name="use-common-name" type="checkbox" id="use-common-name" value="1" <?=!empty($pconfig['use-common-name']) ? "checked=\"checked\"" : "" ;?> />
+                        </label>
                         <div class="hidden" data-for="help_for_use-common-name">
                           <span>
                             <?=gettext("When using a client certificate, use certificate common name for indexing purposes instead of username"); ?><br />

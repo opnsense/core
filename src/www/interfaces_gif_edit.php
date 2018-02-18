@@ -239,7 +239,9 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_link0" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Route caching"); ?></td>
                     <td>
-                      <input name="link0" type="checkbox" id="link0" <?=!empty($pconfig['link0']) ? "checked=\"checked\"" :"";?> />
+                      <label for="link0">
+                        <input name="link0" type="checkbox" id="link0" <?=!empty($pconfig['link0']) ? "checked=\"checked\"" :"";?> />
+                      </label>
                       <div class="hidden" data-for="help_for_link0">
                         <?=gettext("Specify if route caching can be enabled. Be careful with these settings on dynamic networks."); ?>
                       </div>
@@ -248,7 +250,9 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_link1" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ECN friendly behavior"); ?></td>
                     <td>
-                      <input name="link1" type="checkbox" id="link1" <?=!empty($pconfig['link1']) ? "checked=\"checked\"" : "";?> />
+                      <label for="link1">
+                        <input name="link1" type="checkbox" id="link1" <?=!empty($pconfig['link1']) ? "checked=\"checked\"" : "";?> />
+                      </label>
                       <div class="hidden" data-for="help_for_link1">
                         <?=gettext("Note that the ECN friendly behavior violates RFC2893. This should be used in mutual agreement with the peer."); ?>
                       </div>

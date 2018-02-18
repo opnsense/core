@@ -172,8 +172,10 @@ include_once("head.inc");
                       <tr>
                         <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?></td>
                         <td>
-                          <input name="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
-                          <strong><?=gettext("Enable DNS Resolver");?></strong>
+                          <label for="enable">
+                            <input name="enable" id="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
+                            <strong><?=gettext("Enable DNS Resolver");?></strong>
+                          </label>
                         </td>
                       </tr>
                       <tr>
@@ -219,15 +221,19 @@ include_once("head.inc");
                       <tr>
                         <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("DNSSEC");?></td>
                         <td>
-                          <input name="dnssec" type="checkbox" value="yes" <?=!empty($pconfig['dnssec']) ? "checked=\"checked\"" : "";?> />
-                          <strong><?=gettext("Enable DNSSEC Support");?></strong>
+                          <label for="dnssec">
+                            <input name="dnssec" id="dnssec" type="checkbox" value="yes" <?=!empty($pconfig['dnssec']) ? "checked=\"checked\"" : "";?> />
+                            <strong><?=gettext("Enable DNSSEC Support");?></strong>
+                          </label>
                         </td>
                       </tr>
                       <tr>
                         <td><a id="help_for_forwarding" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Query Forwarding");?></td>
                         <td>
-                          <input name="forwarding" type="checkbox" value="yes" <?=!empty($pconfig['forwarding']) ? "checked=\"checked\"" : "";?> />
-                          <strong><?=gettext("Enable Forwarding Mode");?></strong>
+                          <label for="forwarding">
+                            <input name="forwarding" id="forwarding" type="checkbox" value="yes" <?=!empty($pconfig['forwarding']) ? "checked=\"checked\"" : "";?> />
+                            <strong><?=gettext("Enable Forwarding Mode");?></strong>
+                          </label>
                           <div class="hidden" data-for="help_for_forwarding">
                             <?= gettext('The configured system nameservers will be used to forward queries to.') ?>
                           </div>
@@ -236,8 +242,10 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_regdhcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Registration");?></td>
                         <td>
-                          <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? "checked=\"checked\"" : "";?> />
-                          <strong><?=gettext("Register DHCP leases in the DNS Resolver");?></strong>
+                          <label for="regdhcp">
+                            <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? "checked=\"checked\"" : "";?> />
+                            <strong><?=gettext("Register DHCP leases in the DNS Resolver");?></strong>
+                          </label>
                           <div class="hidden" data-for="help_for_regdhcp">
                             <?= gettext("If this option is set, then machines that specify " .
                             "their hostname when requesting a DHCP lease will be registered " .
@@ -260,8 +268,10 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_regdhcpstatic" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('DHCP Static Mappings');?></td>
                         <td>
-                          <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? "checked=\"checked\"" : "";?> />
-                          <strong><?=gettext("Register DHCP static mappings in the DNS Resolver");?></strong>
+                          <label for="regdhcpstatic">
+                            <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? "checked=\"checked\"" : "";?> />
+                            <strong><?=gettext("Register DHCP static mappings in the DNS Resolver");?></strong>
+                          </label>
                           <div class="hidden" data-for="help_for_regdhcpstatic">
                             <?= sprintf(gettext("If this option is set, then DHCP static mappings will ".
                                 "be registered in the DNS Resolver, so that their name can be ".
@@ -273,8 +283,10 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_reglladdr6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('DHCP IPv6 Link-local') ?></td>
                         <td>
-                          <input name="reglladdr6" type="checkbox" id="reglladdr6" value="yes" <?= !empty($pconfig['reglladdr6']) ? 'checked="checked"' : '' ?>/>
-                          <strong><?= gettext('Register IPv6 link-local addresses in the DNS Resolver') ?></strong>
+                          <label for="reglladdr6">
+                            <input name="reglladdr6" type="checkbox" id="reglladdr6" value="yes" <?= !empty($pconfig['reglladdr6']) ? 'checked="checked"' : '' ?>/>
+                            <strong><?= gettext('Register IPv6 link-local addresses in the DNS Resolver') ?></strong>
+                          </label>
                           <div class="hidden" data-for="help_for_reglladdr6">
                             <?= gettext("If this option is unset, then IPv6 link-local " .
                             "addresses will not be registered in the DNS Resolver, preventing " .
@@ -286,7 +298,9 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_txtsupport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TXT Comment Support");?></td>
                         <td>
-                          <input name="txtsupport" type="checkbox" value="yes" <?=!empty($pconfig['txtsupport']) ? "checked=\"checked\"" : "";?> />
+                          <label for="txtsupport">
+                            <input name="txtsupport" id="txtsupport" type="checkbox" value="yes" <?=!empty($pconfig['txtsupport']) ? "checked=\"checked\"" : "";?> />
+                          </label>
                           <div class="hidden" data-for="help_for_txtsupport">
                             <?=gettext("If this option is set, then any descriptions associated with Host entries and DHCP Static mappings will create a corresponding TXT record.");?><br />
                           </div>

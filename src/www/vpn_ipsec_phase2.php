@@ -485,7 +485,9 @@ if (isset($input_errors) && count($input_errors) > 0) {
                 <tr>
                   <td style="width:22%"><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                   <td style="width:78%" class="vtable">
-                    <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : "" ;?> />
+                    <label for="disabled">
+                      <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : "" ;?> />
+                    </label>
                     <div class="hidden" data-for="help_for_disabled">
                         <?=gettext("Disable this phase2 entry"); ?><br/>
                         <?=gettext("Set this option to disable this phase2 entry without " .
@@ -624,8 +626,10 @@ endif; ?>
                   <td>
 <?php
                   foreach ($p2_ealgos as $algo => $algodata) :?>
-                    <input type="checkbox" name="ealgos[]" value="<?=$algo;?>" <?=isset($pconfig['ealgos']) && in_array($algo, $pconfig['ealgos']) ? "checked=\"checked\"" : ""; ?> />
+                    <label>
+                      <input type="checkbox" name="ealgos[]" value="<?=$algo;?>" <?=isset($pconfig['ealgos']) && in_array($algo, $pconfig['ealgos']) ? "checked=\"checked\"" : ""; ?> />
                       <?=$algodata['name'];?>
+                    </label>
 <?php
                       if (isset($algodata['keysel'])) :?>
                       <select name="keylen_<?=$algo;?>">
@@ -659,9 +663,10 @@ endif; ?>
                   <td style="width:78%" class="vtable">
 <?php
                   foreach ($p2_halgos as $algo => $algoname) :?>
-                    <input type="checkbox" name="hash-algorithm-option[]" value="<?=$algo;?>" <?= isset($pconfig['hash-algorithm-option']) && in_array($algo, $pconfig['hash-algorithm-option']) ?  'checked="checked"' : '';?>/>
-                    <?=$algoname;?>
-                    </br>
+                    <label>
+                      <input type="checkbox" name="hash-algorithm-option[]" value="<?=$algo;?>" <?= isset($pconfig['hash-algorithm-option']) && in_array($algo, $pconfig['hash-algorithm-option']) ?  'checked="checked"' : '';?>/>
+                      <?=$algoname;?>
+                    </label><br/>
 <?php
                   endforeach; ?>
                   </td>

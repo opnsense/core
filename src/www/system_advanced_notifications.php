@@ -164,7 +164,9 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_disable_growl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable Growl Notifications"); ?></td>
                 <td>
-                  <input type='checkbox' name='disable_growl' value="yes" <?=!empty($pconfig['disable_growl']) ? "checked=\"checked\"" : "";?>/>
+                  <label for="disable_growl">
+                    <input type='checkbox' name='disable_growl' id='disable_growl' value="yes" <?=!empty($pconfig['disable_growl']) ? "checked=\"checked\"" : "";?>/>
+                  </label>
                   <div class="hidden" data-for="help_for_disable_growl">
                     <?=gettext("Check this option to disable growl notifications but preserve the settings below."); ?>
                   </div>
@@ -217,7 +219,9 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_disable_smtp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable SMTP Notifications"); ?></td>
                 <td>
-                  <input type="checkbox" name="disable_smtp" value="yes" <?=!empty($pconfig['disable_smtp']) ? "checked=\"checked\"" : "";?>/>
+                  <label for="disable_smtp">
+                    <input type="checkbox" name="disable_smtp" id="disable_smtp" value="yes" <?=!empty($pconfig['disable_smtp']) ? "checked=\"checked\"" : "";?>/>
+                  </label>
                   <div class="hidden" data-for="help_for_disable_smtp">
                     <?=gettext("Check this option to disable SMTP notifications but preserve the settings below. Some other mechanisms, such as packages, may need these settings in place to function."); ?>
                   </div>
@@ -244,10 +248,14 @@ include("head.inc");
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Secure SMTP Connection"); ?></td>
                 <td>
-                  <input type="checkbox" id="smtpssl" name="smtpssl" <?=!empty($pconfig['smtpssl']) ? "checked=\"checked\"" : "";?> />
-                  <?=gettext('Enable SMTP over SSL/TLS');?><br/>
-                  <input type="checkbox" id="smtptls" name="smtptls" <?=!empty($pconfig['smtptls']) ? "checked=\"checked\"" : "";?> />
-                  <?=gettext('Enable STARTTLS');?><br/>
+                  <label for="smtpssl">
+                    <input type="checkbox" id="smtpssl" name="smtpssl" <?=!empty($pconfig['smtpssl']) ? "checked=\"checked\"" : "";?> />
+                    <?=gettext('Enable SMTP over SSL/TLS');?>
+                  </label><br/>
+                  <label for="smtptls">
+                    <input type="checkbox" id="smtptls" name="smtptls" <?=!empty($pconfig['smtptls']) ? "checked=\"checked\"" : "";?> />
+                    <?=gettext('Enable STARTTLS');?>
+                  </label><br/>
                 </td>
               </tr>
               <tr>
@@ -297,8 +305,10 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_disablebeep" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Startup/Shutdown Sound"); ?></td>
                 <td>
-                  <input name="disablebeep" type="checkbox" id="disablebeep" value="yes" <?=!empty($pconfig['disablebeep']) ? "checked=\"checked\"" : "";?>/>
-                  <?=gettext("Disable the startup/shutdown beep"); ?>
+                  <label for="disablebeep">
+                    <input name="disablebeep" type="checkbox" id="disablebeep" value="yes" <?=!empty($pconfig['disablebeep']) ? "checked=\"checked\"" : "";?>/>
+                    <?=gettext("Disable the startup/shutdown beep"); ?>
+                  </label>
                   <div class="hidden" data-for="help_for_disablebeep">
                     <?=gettext("When this is checked, startup and shutdown sounds will no longer play."); ?>
                   </div>

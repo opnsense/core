@@ -5892,8 +5892,18 @@ label > input[type="radio"] {
 div[data-for*="help_for"] {
   padding-top: .4em; }
 
+label[for="http_proto"],
+label[for="https_proto"],
 #log-settings label[for^="act"] {
   margin-right: 1.5em; }
+
+label[for^="mode_"] > input[name="mode"][type="radio"] + strong {
+  float: left; }
+
+.acl_item  label > input[name^="sysprivs"] ~ span,
+label[for$="selectall"] > input[type="checkbox"] ~ span,
+label[for="gpssubsec"] + div {
+  margin-left: 1.5em; }
 
 #log-settings table>tbody>tr>td {
   vertical-align: middle; }

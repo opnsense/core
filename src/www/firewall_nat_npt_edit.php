@@ -153,7 +153,9 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                     <td>
-                      <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                      <label for="disabled">
+                        <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                      </label>
                       <div class="hidden" data-for="help_for_disabled">
                         <strong><?=gettext("Disable this rule"); ?></strong><br />
                         <?=gettext("Set this option to disable this rule without removing it from the list."); ?>
@@ -185,7 +187,9 @@ include("head.inc");
                   <tr>
                       <td><a id="help_for_srcnot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
                       <td>
-                        <input name="srcnot" type="checkbox" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" :"";?> />
+                        <label for="srcnot">
+                          <input name="srcnot" id="srcnot" type="checkbox" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" :"";?> />
+                        </label>
                         <div class="hidden" data-for="help_for_srcnot">
                             <?=gettext("Use this option to invert the sense of the match."); ?>
                         </div>
@@ -223,7 +227,9 @@ include("head.inc");
                   <tr>
                       <td><a id="help_for_dstnot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
                       <td>
-                        <input name="dstnot" type="checkbox" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" :"";?> />
+                        <label for="dstnot">
+                          <input name="dstnot" id="dstnot" type="checkbox" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" :"";?> />
+                        </label>
                         <div class="hidden" data-for="help_for_dstnot">
                             <?=gettext("Use this option to invert the sense of the match."); ?>
                         </div>

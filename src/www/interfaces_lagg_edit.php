@@ -278,7 +278,9 @@ legacy_html_escape_form_data($pconfig);
                   <tr id="lacp_fast_timeout_option">
                     <td><a id="help_for_lacp_fast_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Fast timeout"); ?></td>
                     <td>
-                      <input name="lacp_fast_timeout" id="lacp_fast_timeout" type="checkbox" value="yes" <?=!empty($pconfig['lacp_fast_timeout']) ? "checked=\"checked\"" : "" ;?>/>
+                      <label for="lacp_fast_timeout">
+                        <input name="lacp_fast_timeout" id="lacp_fast_timeout" type="checkbox" value="yes" <?=!empty($pconfig['lacp_fast_timeout']) ? "checked=\"checked\"" : "" ;?>/>
+                      </label>
                       <div class="hidden" data-for="help_for_lacp_fast_timeout">
                         <?=gettext("Enable lacp fast-timeout on the interface."); ?>
                       </div>

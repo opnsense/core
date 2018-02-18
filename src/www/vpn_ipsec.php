@@ -642,8 +642,10 @@ $( document ).ready(function() {
                     </tr>
                     <tr>
                       <td colspan=9>
-                        <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($config['ipsec']['enable']) ? "checked=\"checked\"":"";?>/>
-                        <strong><?=gettext("Enable IPsec"); ?></strong>
+                        <label for="enable">
+                          <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($config['ipsec']['enable']) ? "checked=\"checked\"":"";?>/>
+                          <strong><?=gettext("Enable IPsec"); ?></strong>
+                        </label>
                       </td>
                     </tr>
                     <tr>

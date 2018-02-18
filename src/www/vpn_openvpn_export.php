@@ -1344,7 +1344,9 @@ if (isset($savemsg)) {
               <tr class="mode_server">
                 <td><a id="help_for_random_local_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use Random Local Port");?></td>
                 <td>
+                    <label for="randomlocalport">
                       <input name="randomlocalport" id="randomlocalport" type="checkbox" value="yes" checked="CHECKED" />
+                    </label>
                       <div class="hidden" data-for="help_for_random_local_port">
                         <?=gettext("Use a random local source port (lport) for traffic from the client. Without this set, two clients may not run concurrently.");?>
                         <br/>
@@ -1355,12 +1357,16 @@ if (isset($savemsg)) {
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Certificate Export Options");?></td>
                 <td>
                       <div>
-                        <input name="usetoken" id="usetoken" type="checkbox" value="yes" />
-                        <?=gettext("Use Microsoft Certificate Storage instead of local files.");?>
+                        <label for="usetoken">
+                          <input name="usetoken" id="usetoken" type="checkbox" value="yes" />
+                          <?=gettext("Use Microsoft Certificate Storage instead of local files.");?>
+                        </label>
                       </div>
                       <div>
-                        <input name="usepass" id="usepass" type="checkbox" value="yes" />
-                        <?=gettext("Use a password to protect the pkcs12 file contents or key in Viscosity bundle.");?>
+                        <label for="usepass">
+                          <input name="usepass" id="usepass" type="checkbox" value="yes" />
+                          <?=gettext("Use a password to protect the pkcs12 file contents or key in Viscosity bundle.");?>
+                        </label>
                       </div>
                       <div id="usepass_opts" style="display:none">
                         <label for="pass"><?=gettext("Password");?></label>
@@ -1373,7 +1379,9 @@ if (isset($savemsg)) {
               <tr>
                 <td><a id="help_for_http_proxy" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use Proxy");?></td>
                 <td>
-                      <input name="useproxy" id="useproxy" type="checkbox" value="yes" />
+                      <label for="useproxy">
+                        <input name="useproxy" id="useproxy" type="checkbox" value="yes" />
+                      </label>
                       <div class="hidden" data-for="help_for_http_proxy">
                         <?=gettext("Use a proxy to communicate with the server.");?>
                       </div>
@@ -1409,7 +1417,9 @@ if (isset($savemsg)) {
               <tr class="mode_server">
                 <td><a id="help_for_openvpnmanager" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Management Interface OpenVPN Manager");?></td>
                 <td>
-                      <input name="openvpnmanager" id="openvpnmanager" type="checkbox" value="yes" />
+                      <label for="openvpnmanager">
+                        <input name="openvpnmanager" id="openvpnmanager" type="checkbox" value="yes" />
+                      </label>
                       <div class="hidden" data-for="help_for_openvpnmanager">
                         <?=gettext('This will change the generated .ovpn configuration to allow for usage of the management interface. '.
                         'With this OpenVPN can be used also by non-administrator users. '.

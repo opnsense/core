@@ -278,10 +278,14 @@ include("head.inc");
                               <input name="timeservers_host[]" type="text" value="<?=$timeserver;?>" />
                             </td>
                             <td>
-                              <input name="timeservers_prefer[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_prefer']) && in_array($timeserver, $pconfig['timeservers_prefer']) ? 'checked="checked"' : '' ?>/>
+                              <label>
+                                <input name="timeservers_prefer[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_prefer']) && in_array($timeserver, $pconfig['timeservers_prefer']) ? 'checked="checked"' : '' ?>/>
+                              </label>
                             </td>
                             <td>
-                              <input name="timeservers_noselect[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_noselect']) && in_array($timeserver,  $pconfig['timeservers_noselect']) ? 'checked="checked"' : '' ?>/>
+                              <label>
+                                <input name="timeservers_noselect[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_noselect']) && in_array($timeserver,  $pconfig['timeservers_noselect']) ? 'checked="checked"' : '' ?>/>
+                              </label>
                             </td>
                           </tr>
 <?php
@@ -317,7 +321,9 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_statsgraph" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('NTP graphs') ?></td>
                     <td>
-                      <input name="statsgraph" type="checkbox" id="statsgraph" <?=!empty($pconfig['statsgraph']) ? " checked=\"checked\"" : ""; ?> />
+                      <label for="statsgraph">
+                        <input name="statsgraph" type="checkbox" id="statsgraph" <?=!empty($pconfig['statsgraph']) ? " checked=\"checked\"" : ""; ?> />
+                      </label>
                       <div class="hidden" data-for="help_for_statsgraph">
                         <?=gettext("Enable rrd graphs of NTP statistics (default: disabled)."); ?>
                       </div>
@@ -326,11 +332,14 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_syslog" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Syslog logging') ?></td>
                     <td>
-                      <input name="logpeer" type="checkbox" <?=!empty($pconfig['logpeer']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Enable logging of peer messages (default: disabled)."); ?>
-                      <br />
-                      <input name="logsys" type="checkbox" <?=!empty($pconfig['logsys']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Enable logging of system messages (default: disabled)."); ?>
+                      <label for="logpeer">
+                        <input name="logpeer" id="logpeer" type="checkbox" <?=!empty($pconfig['logpeer']) ? " checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Enable logging of peer messages (default: disabled)."); ?>
+                      </label><br />
+                      <label for="logsys">
+                        <input name="logsys" id="logsys" type="checkbox" <?=!empty($pconfig['logsys']) ? " checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Enable logging of system messages (default: disabled)."); ?>
+                      </label>
                       <div class="hidden" data-for="help_for_syslog">
                         <?=gettext("These options enable additional messages from NTP to be written to the System Log");?> (<a href="diag_logs_ntpd.php"><?=gettext("Status > System Logs > NTP"); ?></a>).
                       </div>
@@ -345,14 +354,18 @@ include("head.inc");
                       <div id="showstatistics" style="display:none">
                       <?= gettext("These options will create persistent daily log files in /var/log/ntp.") ?>
                       <br /><br />
-                      <input name="clockstats" type="checkbox" id="clockstats"<?=!empty($pconfig['clockstats']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Enable logging of reference clock statistics (default: disabled)."); ?>
-                      <br />
-                      <input name="loopstats" type="checkbox" id="loopstats"<?=!empty($pconfig['loopstats']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Enable logging of clock discipline statistics (default: disabled)."); ?>
-                      <br />
-                      <input name="peerstats" type="checkbox" id="peerstats"<?=!empty($pconfig['peerstats']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Enable logging of NTP peer statistics (default: disabled)."); ?>
+                      <label for="clockstats">
+                        <input name="clockstats" type="checkbox" id="clockstats"<?=!empty($pconfig['clockstats']) ? " checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Enable logging of reference clock statistics (default: disabled)."); ?>
+                      </label><br />
+                      <label for="loopstats">
+                        <input name="loopstats" type="checkbox" id="loopstats"<?=!empty($pconfig['loopstats']) ? " checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Enable logging of clock discipline statistics (default: disabled)."); ?>
+                      </label><br />
+                      <label for="peerstats">
+                        <input name="peerstats" type="checkbox" id="peerstats"<?=!empty($pconfig['peerstats']) ? " checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Enable logging of NTP peer statistics (default: disabled)."); ?>
+                      </label>
                       </div>
                     </td>
                   </tr>
@@ -365,23 +378,30 @@ include("head.inc");
                       <div id="showrestrict" style="display:none">
                       <?=gettext("these options control access to NTP from the WAN."); ?>
                       <br /><br />
-                      <input name="kod" type="checkbox" id="kod"<?=empty($pconfig['kod']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Enable Kiss-o'-death packets (default: enabled)."); ?>
-                      <br />
-                      <input name="nomodify" type="checkbox" id="nomodify"<?=empty($pconfig['nomodify']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Deny state modifications (i.e. run time configuration) by ntpq and ntpdc (default: enabled)."); ?>
-                      <br />
-                      <input name="noquery" type="checkbox" id="noquery"<?=!empty($pconfig['noquery']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Disable ntpq and ntpdc queries (default: disabled)."); ?>
-                      <br />
-                      <input name="noserve" type="checkbox" id="noserve"<?=!empty($pconfig['noserve']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Disable all except ntpq and ntpdc queries (default: disabled)."); ?>
-                      <br />
-                      <input name="nopeer" type="checkbox" id="nopeer"<?=empty($pconfig['nopeer']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Deny packets that attempt a peer association (default: enabled)."); ?>
-                      <br />
-                      <input name="notrap" type="checkbox" id="notrap"<?=empty($pconfig['notrap']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Deny mode 6 control message trap service (default: enabled)."); ?>
+                      <label for="kod">
+                        <input name="kod" type="checkbox" id="kod"<?=empty($pconfig['kod']) ? " checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Enable Kiss-o'-death packets (default: enabled)."); ?>
+                      </label><br />
+                      <label for="nomodify">
+                        <input name="nomodify" type="checkbox" id="nomodify"<?=empty($pconfig['nomodify']) ? " checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Deny state modifications (i.e. run time configuration) by ntpq and ntpdc (default: enabled)."); ?>
+                      </label><br />
+                      <label for="noquery">
+                        <input name="noquery" type="checkbox" id="noquery"<?=!empty($pconfig['noquery']) ? " checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Disable ntpq and ntpdc queries (default: disabled)."); ?>
+                      </label><br />
+                      <label for="noserve">
+                        <input name="noserve" type="checkbox" id="noserve"<?=!empty($pconfig['noserve']) ? " checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Disable all except ntpq and ntpdc queries (default: disabled)."); ?>
+                      </label><br />
+                      <label for="nopeer">
+                        <input name="nopeer" type="checkbox" id="nopeer"<?=empty($pconfig['nopeer']) ? " checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Deny packets that attempt a peer association (default: enabled)."); ?>
+                      </label><br />
+                      <label for="notrap">
+                        <input name="notrap" type="checkbox" id="notrap"<?=empty($pconfig['notrap']) ? " checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Deny mode 6 control message trap service (default: enabled)."); ?>
+                      </label>
                       </div>
                     </td>
                   </tr>

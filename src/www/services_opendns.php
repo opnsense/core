@@ -140,8 +140,10 @@ include 'head.inc';
                 <tr>
                   <td><a id="help_for_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Enable'); ?></td>
                   <td>
-                    <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : "";?> />
-                    <strong><?=gettext('Filter DNS requests using OpenDNS'); ?></strong>
+                    <label for="enable">
+                      <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : "";?> />
+                      <strong><?=gettext('Filter DNS requests using OpenDNS'); ?></strong>
+                    </label>
                     <div class="hidden" data-for="help_for_enable">
                       <?= sprintf(gettext(
                         'Enabling the OpenDNS service will overwrite DNS servers configured ' .
