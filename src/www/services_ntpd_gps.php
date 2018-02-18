@@ -415,14 +415,9 @@ SureGPS =    #Sure Electronics SKG16B
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Flags') ?></td>
+                      <td><a id="help_for_flags" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Flags') ?></td>
                       <td>
                         <table class="table table-condensed">
-                          <tr>
-                            <td colspan="2">
-                              <?=gettext("Normally there should be no need to change these options from the defaults."); ?><br />
-                            </td>
-                          </tr>
                           <tr>
                             <td>
                               <input name="prefer" type="checkbox" id="gpsprefer" <?=empty($pconfig['prefer']) ? " checked=\"checked\"" : ""; ?> />
@@ -481,6 +476,9 @@ SureGPS =    #Sure Electronics SKG16B
                             </td>
                           </tr>
                         </table>
+                        <div class="hidden" data-for="help_for_flags">
+                          <?=gettext("Normally there should be no need to change these options from the defaults."); ?>
+                        </div>
                       </td>
                     </tr>
                     <tr>
