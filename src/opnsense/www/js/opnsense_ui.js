@@ -169,24 +169,22 @@ function updateServiceControlUI(serviceName)
         $('#service_status_container').html(buttons);
 
         var commands = ["start", "restart", "stop"];
-        for (var i = 0; i < commands.length; i++) {
-            (function (command) {
-                $("#" + command + "Service").click(function(){
-                    $('#processing-dialog').modal('show');
-                    ajaxCall(url="/api/" + serviceName + "/service/" + command, sendData={},callback=function(data,status) {
-                        $('#processing-dialog').modal('hide');
-                        ajaxCall(url="/api/" + serviceName + "/service/status", sendData={}, callback=function(data,status) {
-                            $("#startService").removeClass("btn-danger").removeClass("btn-success");
-                            if (data['status'] == "running") {
-                                $("#startService").addClass("btn-success");
-                            } else if (data['status'] == "stopped") {
-                                $("#startService").addClass("btn-danger");
-                            }
-                        });
+        commands.forEach(function(command) {
+            $("#" + command + "Service").click(function(){
+                $('#processing-dialog').modal('show');
+                ajaxCall(url="/api/" + serviceName + "/service/" + command, sendData={},callback=function(data,status) {
+                    $('#processing-dialog').modal('hide');
+                    ajaxCall(url="/api/" + serviceName + "/service/status", sendData={}, callback=function(data,status) {
+                        $("#startService").removeClass("btn-danger").removeClass("btn-success");
+                        if (data['status'] == "running") {
+                            $("#startService").addClass("btn-success");
+                        } else if (data['status'] == "stopped") {
+                            $("#startService").addClass("btn-danger");
+                        }
                     });
                 });
-            })(commands[i]);
-        }
+            });
+        });
     });
 }
 
