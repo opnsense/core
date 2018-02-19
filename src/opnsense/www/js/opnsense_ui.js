@@ -153,7 +153,7 @@ function updateServiceStatusUI(status) {
     $('#service_status_container').html(status_html);
 }
 
-function updateServiceControlUI(serviceName)
+function updateServiceControlUI(serviceName, processingDialog)
 {
     ajaxCall(url="/api/" + serviceName + "/service/status", sendData={}, callback=function(data,status) {
         var status_html = '';
@@ -171,9 +171,13 @@ function updateServiceControlUI(serviceName)
         var commands = ["start", "restart", "stop"];
         commands.forEach(function(command) {
             $("#" + command + "Service").click(function(){
-                $('#processing-dialog').modal('show');
+                if (processingDialog !== undefined) {
+                    $('#' + processingDialog).modal('show');
+                }
                 ajaxCall(url="/api/" + serviceName + "/service/" + command, sendData={},callback=function(data,status) {
-                    $('#processing-dialog').modal('hide');
+                    if (processingDialog !== undefined) {
+                        $('#' + processingDialog).modal('hide');
+                    }
                     ajaxCall(url="/api/" + serviceName + "/service/status", sendData={}, callback=function(data,status) {
                         $("#startService").removeClass("btn-danger").removeClass("btn-success");
                         if (data['status'] == "running") {
