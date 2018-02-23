@@ -613,9 +613,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 }
             case "dhcp":
-                if (in_array($a_interfaces[$if]['ipaddr'], array("ppp", "pppoe", "pptp", "l2tp"))) {
-                    $input_errors[] = sprintf(gettext("You have to reassign the interface to be able to configure as %s."),$pconfig['type']);
-                }
                 if (!empty($pconfig['adv_dhcp_config_file_override'] && !file_exists($pconfig['adv_dhcp_config_file_override_path']))) {
                     $input_errors[] = sprintf(gettext('The DHCP override file "%s" does not exist.'), $pconfig['adv_dhcp_config_file_override_path']);
                 }
