@@ -511,11 +511,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (file_exists('/tmp/.interfaces.apply')) {
                 $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
                 foreach ($toapplylist as $ifapply => $ifcfgo) {
+                    interface_bring_down($ifapply, $ifcfgo);
                     if (isset($config['interfaces'][$ifapply]['enable'])) {
-                        interface_bring_down($ifapply, $ifcfgo);
                         interface_configure($ifapply, true);
-                    } else {
-                        interface_bring_down($ifapply, $ifcfgo);
                     }
                 }
             }
@@ -557,10 +555,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } else {
             $toapplylist = array();
         }
-        $toapplylist[$if]['ifcfg'] = $a_interfaces[$if];
-        $toapplylist[$if]['ppps'] = $a_ppps;
-        /* we need to be able remove IP aliases for IPv6 */
-        file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
+        if (empty($toapplylist[$if])) {
+            // only flush if the running config is not in our list yet
+            $toapplylist[$if]['ifcfg'] = $a_interfaces[$if];
+            $toapplylist[$if]['ifcfg']['realif'] = get_real_interface($if);
+            $toapplylist[$if]['ifcfg']['realifv6'] = get_real_interface($if, "inet6");
+            $toapplylist[$if]['ppps'] = $a_ppps;
+            file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
+        }
         header(url_safe('Location: /interfaces.php?if=%s', array($if)));
         exit;
     } else {
@@ -925,6 +927,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // save form data
         if (count($input_errors) == 0) {
             $old_config = $a_interfaces[$if];
+            // retrieve our interface names before anything changes
+            $old_config['realif'] = get_real_interface($if);
+            $old_config['realifv6'] = get_real_interface($if, "inet6");
             $new_config = array();
             $new_ppp_config = array();
 
@@ -1253,6 +1258,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $new_config['if'] = $a_ppps[$pppid]['ports'];
                 unset($a_ppps[$pppid]);
             }
+
             // save interface details
             $a_interfaces[$if] = $new_config;
 
@@ -1276,11 +1282,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } else {
                 $toapplylist = array();
             }
-            $old_config['realif'] = get_real_interface($if);
-            $toapplylist[$if]['ifcfg'] = $old_config;
-            $toapplylist[$if]['ppps'] = $old_ppps;
 
-            file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
+            if (empty($toapplylist[$if])) {
+                // only flush if the running config is not in our list yet
+                $toapplylist[$if]['ifcfg'] = $old_config;
+                $toapplylist[$if]['ppps'] = $old_ppps;
+                file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
+            }
 
             mark_subsystem_dirty('interfaces');
 

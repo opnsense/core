@@ -1112,47 +1112,51 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
 {
     global $config;
 
-    if (!isset($config['interfaces'][$interface])) {
+    if (!isset($config['interfaces'][$interface]) || ($ifacecfg !== false && !is_array($ifacecfg))) {
+        // exit on invalid input
         return;
     }
 
-    $realif = get_real_interface($interface);
-    $realifv6 = get_real_interface($interface, "inet6");
+    if ($ifacecfg === false) {
+        $realif = get_real_interface($interface);
+        $realifv6 = get_real_interface($interface, "inet6");
+        $ifcfg = $config['interfaces'][$interface];
+        $ppps = isset($config['ppps']['ppp']) ? $config['ppps']['ppp'] : array();
+    } else {
+        $ifcfg = $ifacecfg['ifcfg'];
+        $ppps = $ifacecfg['ppps'];
+        /* When $ifacecfg is passed, it should contain the original interfaces */
+        $realif = $ifacecfg['ifcfg']['realif'];
+        $realifv6 = $ifacecfg['ifcfg']['realifv6'];
+    }
+    $ipaddrv6 = empty($ifcfg['ipaddrv6']) ? null : $ifcfg['ipaddrv6'];
     if (!in_array($interface, array('openvpn', 'ppp', 'ipsec', 'enc0'))) {
         /**
          * NOTE: The $realifv6 is needed when WANv4 is type PPP and v6 is DHCP and the option v6 from v4 is used.
          * XXX: we kept this in place due to dropping the $realv6iface parameter from get_real_interface(),
         */
-        $cfg = &config_read_array('interfaces', $interface);
-        $ipaddrv6 = empty($cfg['ipaddrv6']) ? null : $cfg['ipaddrv6'];
         if (!in_array($ipaddrv6, array('6rd', '6to4', 'pppoe', 'ppp', 'l2tp', 'pptp'))) {
-            $ipaddr = empty($cfg['ipaddr']) ? null : $cfg['ipaddr'];
+            $ipaddr = empty($ifcfg['ipaddr']) ? null : $ifcfg['ipaddr'];
             if (in_array($ipaddr, array('pppoe', 'ppp', 'l2tp', 'pptp'))) {
-                $parents = get_parent_interface($interface);
-                $realifv6 = !empty($parents[0]) ? $parents[0] : $cfg['if'];
+                foreach ($ppps as $ppp) {
+                    if ($ifcfg['if'] == $ppp['if']) {
+                        $ports = explode(',', $ppp['ports']);
+                        foreach ($ports as $pid => $parent_if) {
+                            $realifv6 = $parent_if;
+                            break;
+                        }
+                    }
+                }
             }
         }
     }
-    if ($ifacecfg === false) {
-        $ifcfg = $config['interfaces'][$interface];
-        $ppps = array();
-        if (isset($config['ppps']['ppp'])) {
-            $ppps = $config['ppps']['ppp'];
-        }
-    } elseif (!is_array($ifacecfg)) {
-        log_error('Wrong parameters used during interface_bring_down()');
-        $ifcfg = $config['interfaces'][$interface];
-        $ppps = array();
-        if (isset($config['ppps']['ppp'])) {
-            $ppps = $config['ppps']['ppp'];
-        }
-    } else {
-        $ifcfg = $ifacecfg['ifcfg'];
-        $ppps = $ifacecfg['ppps'];
-        if (isset($ifacecfg['ifcfg']['realif'])) {
-            $realif = $ifacecfg['ifcfg']['realif'];
-            /* XXX: Any better way? */
-            $realifv6 = $realif;
+
+    // force VIPs to go down
+    if (isset($config['virtualip']['vip'])) {
+        foreach ($config['virtualip']['vip'] as $vip) {
+            if ($vip['interface'] == $interface) {
+                interface_vip_bring_down($vip);
+            }
         }
     }
 
@@ -1161,10 +1165,10 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         case "pppoe":
         case "pptp":
         case "l2tp":
-            if (is_array($ppps) && count($ppps)) {
-                foreach ($ppps as $pppid => $ppp) {
-                    if ($realif == $ppp['if']) {
-                        if (isset($ppp['ondemand']) && !$destroy) {
+            if (!empty($ppps)) {
+                foreach ($ppps as $ppp) {
+                    if ($ifcfg['if'] == $ppp['if']) {
+                        if (isset($ppp['ondemand']) && $ifacecfg === false) {
                             configd_run("interface reconfigure {$interface}");
                             break;
                         }
@@ -1176,6 +1180,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                         break;
                     }
                 }
+                return;
             }
             break;
         case "dhcp":
@@ -1183,7 +1188,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
             @unlink("/var/etc/dhclient_{$interface}.conf");
             if (does_interface_exist("$realif")) {
                 mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " delete", true);
-                interface_ipalias_cleanup($interface);
                 if ($destroy) {
                     legacy_interface_flags($realif, 'down');
                 }
@@ -1193,7 +1197,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         default:
             if (does_interface_exist("$realif")) {
                 mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " delete", true);
-                interface_ipalias_cleanup($interface);
                 if ($destroy) {
                     legacy_interface_flags($realif, 'down');
                 }
@@ -1203,11 +1206,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     }
 
     $track6 = array();
-    if (isset($ifcfg['ipaddrv6'])) {
-        $ipaddrv6 = $ifcfg['ipaddrv6'];
-    } else {
-        $ipaddrv6 = null;
-    }
     switch ($ipaddrv6) {
         case "slaac":
         case "dhcp6":
@@ -1218,7 +1216,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                 if (is_ipaddrv6($ip6) && $ip6 != "::") {
                     mwexec("/sbin/ifconfig " . escapeshellarg($realifv6) . " inet6 {$ip6} delete", true);
                 }
-                interface_ipalias_cleanup($interface, "inet6");
                 if ($destroy) {
                     legacy_interface_flags($realif, 'down');
                 }
@@ -1234,8 +1231,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                 if (is_ipaddrv6($ip6)) {
                     mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$ip6} delete", true);
                 }
-                interface_ipalias_cleanup($interface, "inet6");
-                if ($destroy) {
+                if ($ifacecfg !== false) {
                     legacy_interface_flags($realif, 'down');
                 }
             }
@@ -1250,7 +1246,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                 if (!empty($ifcfg['ipaddrv6']) && is_ipaddrv6($ifcfg['ipaddrv6'])) {
                     mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$ifcfg['ipaddrv6']} delete", true);
                 }
-                interface_ipalias_cleanup($interface, "inet6");
                 if ($destroy) {
                     legacy_interface_flags($realif, 'down');
                 }
@@ -1260,19 +1255,17 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
             break;
     }
 
-    if (!empty($track6) && is_array($track6)) {
+    if (!empty($track6)) {
         /* Bring down radvd and dhcp6 on these interfaces */
         services_dhcpd_configure('inet6', $track6);
     }
 
-    $old_router = '';
     if (file_exists("/tmp/{$realif}_router")) {
         $old_router = trim(file_get_contents("/tmp/{$realif}_router"));
-    }
-
-    if (!empty($old_router)) {
-        log_error("Clearing states to old gateway {$old_router}.");
-        mwexec("/sbin/pfctl -i " . escapeshellarg($realif) . " -Fs");
+        if (!empty($old_router)) {
+            log_error("Clearing states to old gateway {$old_router}.");
+            mwexec("/sbin/pfctl -i " . escapeshellarg($realif) . " -Fs");
+        }
     }
 
     @unlink("/var/db/{$interface}_ip");
@@ -1290,7 +1283,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
 
     /* hostapd and wpa_supplicant do not need to be running when the interface is down.
      * They will also use 100% CPU if running after the wireless clone gets deleted. */
-    if (isset($ifcfg['wireless']) && is_array($ifcfg['wireless'])) {
+    if (!empty($ifcfg['wireless'])) {
         kill_hostapd($realif);
         mwexec(kill_wpasupplicant($realif));
     }
@@ -1762,22 +1755,6 @@ function interface_proxyarp_configure($interface = '')
     }
 }
 
-function interface_ipalias_cleanup($interface, $inet = 'inet4')
-{
-    global $config;
-
-    if (isset($config['virtualip']['vip'])) {
-        foreach ($config['virtualip']['vip'] as $vip) {
-            if ($vip['mode'] == 'ipalias' && $vip['interface'] == $interface) {
-                if ($inet == 'inet6' && is_ipaddrv6($vip['subnet'])) {
-                    interface_vip_bring_down($vip);
-                } elseif ($inet == 'inet4' && is_ipaddrv4($vip['subnet'])) {
-                    interface_vip_bring_down($vip);
-                }
-            }
-        }
-    }
-}
 
 function interfaces_vips_configure($interface = '', $verbose = false)
 {
