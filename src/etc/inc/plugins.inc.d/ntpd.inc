@@ -234,6 +234,9 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
             $ntpcfg .= ' refid ';
             $ntpcfg .= $config['ntpd']['pps']['refid'];
         }
+        if (!empty($config['ntpd']['pps']['stratum'])) {
+            $ntpcfg .= ' stratum ' . $config['ntpd']['pps']['stratum'];
+        }
         $ntpcfg .= "\n";
     }
     /* End PPS configuration */
@@ -297,6 +300,9 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
         if (!empty($config['ntpd']['gps']['refid'])) {
             $ntpcfg .= ' refid ';
             $ntpcfg .= $config['ntpd']['gps']['refid'];
+        }
+        if (!empty($config['ntpd']['gps']['stratum'])) {
+            $ntpcfg .= ' stratum ' . $config['ntpd']['gps']['stratum'];
         }
         $ntpcfg .= "\n";
     }
