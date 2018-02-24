@@ -880,9 +880,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
 
         $cnf_add_to_charon_section = "";
         $cnf_add_to_charon_section .= $aggressive_psk ? "\ti_dont_care_about_security_and_use_aggressive_mode_psk=yes\n":"";
-		if(isset($config['ipsec']['auto_routes_disable'])) {
-		    $cnf_add_to_charon_section .= "\tinstall_routes = no\n";
-		}
+        $cnf_add_to_charon_section .= !empty($config['ipsec']['auto_routes_disable']) ? "\tinstall_routes = no\n" : "";
         if (isset($a_client['enable']) && isset($a_client['net_list'])) {
             $cnf_add_to_charon_section .= "\tcisco_unity = yes\n";
         }
