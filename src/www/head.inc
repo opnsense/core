@@ -28,12 +28,6 @@ $themename = html_safe(get_current_theme());
 $pagetitle = gentitle(array_reverse($menuBreadcrumbs), ' | ');
 $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $config['system']['domain']));
 
-// hardening
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' 'unsafe-eval';");
-header('X-Frame-Options: SAMEORIGIN');
-header('X-Content-Type-Options: nosniff');
-header('X-XSS-Protection: 1; mode=block');
-header('Referrer-Policy: same-origin');
 
 ?><!doctype html>
 <!--[if IE 8 ]><html lang="<?=system_get_language_code();?>" class="ie ie8 lte9 lte8 no-js"><![endif]-->
