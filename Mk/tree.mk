@@ -48,7 +48,7 @@ ROOT_${TARGET}=${ROOT}
 # fixup root target dir
 ROOT_${TARGET}:=${ROOT_${TARGET}:S/^\/$//}
 
-install-${TARGET}: force
+install-${TARGET}:
 .for TREE in ${TREES_${TARGET}}
 	@REALTARGET=/$$(dirname ${TREE}); \
 	mkdir -p ${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}; \
@@ -81,7 +81,7 @@ install-${TARGET}: force
 	done
 .endfor
 
-plist-${TARGET}: force
+plist-${TARGET}:
 .for TREE in ${TREES_${TARGET}}
 	@(cd ${TREE}; find * -type f ${_IGNORES} -o -type l) | while read FILE; do \
 		FILE="$${FILE%%.in}"; PREFIX=""; \
