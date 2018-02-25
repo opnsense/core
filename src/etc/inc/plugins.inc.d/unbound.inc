@@ -755,17 +755,17 @@ function unbound_hosts_generate()
 function unbound_local_zone_types()
 {
     return array(
+        '' => 'transparent',
+        'always_nxdomain' => 'always_nxdomain',
+        'always_refuse' => 'always_refuse',
+        'always_transparent' => 'always_transparent',
         'deny' => 'deny',
+        'inform' => 'inform',
+        'inform_deny' => 'inform_deny',
+        'nodefault' => 'nodefault',
+        'redirect' => 'redirect',
         'refuse' => 'refuse',
         'static' => 'static',
-        '' => 'transparent',
         'typetransparent' => 'typetransparent',
-        'redirect' => 'redirect',
-	'inform' => 'inform',
-	'inform_deny' => 'inform_deny',
-	'always_transparent' => 'always_transparent',
-	'always_refuse' => 'always_refuse',
-	'always_nxdomain' => 'always_nxdomain',
-	'nodefault' => 'nodefault',
     );
 }
