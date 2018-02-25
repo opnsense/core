@@ -71,13 +71,17 @@ Options are passed in the following form:
 
     # make package CORE_NAME=my_new_name
 
+make update
+-----------
+
+Update will pull the latest commits from the current branch from the
+upstream repository.
+
 make upgrade
 ------------
 
-Upgrade will run the package build and attempt to replace the currently
-installed package in the system.  Safety measures may prevent the target
-from succeeding.  Instructions on how to proceed in case of failures are
-given inline.
+Upgrade will run the package build and replace the currently installed
+package in the system.
 
 make lint
 ---------
