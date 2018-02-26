@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
+    Copyright (C) 2014-2018 Deciso B.V.
     Copyright (C) 2007 Scott Ullrich <sullrich@gmail.com>
     All rights reserved.
 
@@ -29,88 +29,35 @@
 
 require_once("guiconfig.inc");
 require_once("auth.inc");
-
-include('head.inc');
-
-$ous = array();
-if (isset($_GET['basedn']) && isset($_GET['host'])) {
-    if (isset($_GET['cert'])) {
+$result = array();
+if (isset($_POST['basedn']) && isset($_POST['host'])) {
+    if (isset($_POST['cert'])) {
         $authcfg = array();
-        $authcfg['ldap_caref'] = $_GET['cert'];
+        $authcfg['ldap_caref'] = $_POST['cert'];
         $authcfg['ldap_urltype'] = 'SSL';
         ldap_setup_caenv($authcfg);
     }
 
-    $ldap_authcn = isset($_GET['authcn']) ? explode(";", $_GET['authcn']) : array();
-    if (isset($_GET['urltype']) && strstr($_GET['urltype'], "Standard")) {
+    $ldap_authcn = isset($_POST['authcn']) ? explode(";", $_POST['authcn']) : array();
+    if (isset($_POST['urltype']) && strstr($_POST['urltype'], "Standard")) {
         $ldap_full_url = "ldap://";
     } else {
         $ldap_full_url = "ldaps://";
     }
-    $ldap_full_url .= is_ipaddrv6($_GET['host']) ? "[{$_GET['host']}]" : $_GET['host'];
-    if (!empty($_GET['port'])) {
-        $ldap_full_url .= ":{$_GET['port']}";
+    $ldap_full_url .= is_ipaddrv6($_POST['host']) ? "[{$_POST['host']}]" : $_POST['host'];
+    if (!empty($_POST['port'])) {
+        $ldap_full_url .= ":{$_POST['port']}";
     }
 
-    $ldap_auth = new OPNsense\Auth\LDAP($_GET['basedn'], isset($_GET['proto']) ? $_GET['proto'] : 3);
+    $ldap_auth = new OPNsense\Auth\LDAP($_POST['basedn'], isset($_POST['proto']) ? $_POST['proto'] : 3);
     $ldap_is_connected = $ldap_auth->connect($ldap_full_url
-                                            , !empty($_GET['binddn']) ? $_GET['binddn'] : null
-    , !empty($_GET['bindpw']) ? $_GET['bindpw'] : null
+                                            , !empty($_POST['binddn']) ? $_POST['binddn'] : null
+    , !empty($_POST['bindpw']) ? $_POST['bindpw'] : null
     );
     if ($ldap_is_connected) {
-        $ous = $ldap_auth->listOUs();
+        foreach ($ldap_auth->listOUs() as $ou) {
+            $result[] = array("value" => $ou, "selected" => in_array($ou, $ldap_authcn));
+        }
     }
 }
-?>
-
- <body>
-  <script>
-      function post_choices() {
-        var ous = <?= html_safe(count($ous)) ?>;
-        var i;
-        var values = $("#ou:checked").map(function(){
-                        return $(this).val();
-                     }).get().join(';');
-        window.opener.document.getElementById('ldapauthcontainers').value=values;
-        window.close();
-      }
-  </script>
- <form method="post">
-<?php
-  if (empty($ous)) :?>
-  <p><?=gettext("Could not connect to the LDAP server. Please check your LDAP configuration.");?></p>
-  <input type='button' class="btn btn-default" value='<?=gettext("Close"); ?>' onClick="window.close();">
-<?php
-  else :?>
-  <section class="page-content-main">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="table-responsive">
-          <table class="table table-striped">
-            <tbody>
-              <tr>
-                <th><?=gettext("Please select which containers to Authenticate against:");?></th>
-              </tr>
-<?php
-              foreach ($ous as $ou):?>
-              <tr>
-                <td><input type='checkbox' value='<?=$ou;?>' id='ou' name='ou[]' <?=in_array($ou, $ldap_authcn) ? "CHECKED": "";?>> <?=$ou;?></td>
-              </tr>
-<?php
-              endforeach;?>
-              <tr>
-                <td style="text-align:right">
-                  <input type='button' class="btn btn-primary" value='<?=gettext("Save");?>' onClick="post_choices();">
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </section>
-<?php
-  endif; ?>
- </form>
-</body>
-</html>
+echo json_encode($result);

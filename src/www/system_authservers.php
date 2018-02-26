@@ -380,29 +380,65 @@ $( document ).ready(function() {
     $("#type").change();
 
     $("#act_select").click(function() {
+        var request_data = {
+            'port': $("#ldap_port").val(),
+            'host': $("#ldap_host").val(),
+            'scope': $("#ldap_scope").val(),
+            'basedn': $("#ldap_basedn").val(),
+            'binddn': $("#ldap_binddn").val(),
+            'bindpw': $("#ldap_bindpw").val(),
+            'urltype': $("#ldap_urltype").val(),
+            'proto': $("#ldap_protver").val(),
+            'authcn': $("#ldapauthcontainers").val(),
+        };
+        if ($("#ldap_caref").val() != undefined) {
+            request_data['cert'] = $("#ldap_caref").val();
+        }
+        //
         if ($("#ldap_port").val() == '' || $("#ldap_host").val() == '' || $("#ldap_scope").val() == '' || $("#ldap_basedn").val() == '') {
-            alert("<?=gettext("Please fill the required values.");?>");
-            return;
+            BootstrapDialog.show({
+              type: BootstrapDialog.TYPE_DANGER,
+              title: "<?= gettext("Server");?>",
+              message: "<?=gettext("Please fill the required values.");?>",
+              buttons: [{
+                        label: "<?= gettext("Close");?>",
+                        action: function(dialogRef) {
+                            dialogRef.close();
+                        }
+                    }]
+            });
         } else {
-            var url = 'system_usermanager_settings_ldapacpicker.php?';
-            url += 'port=' + $("#ldap_port").val();
-            url += '&host=' + $("#ldap_host").val();
-            url += '&scope=' + $("#ldap_scope").val();
-            url += '&basedn=' + $("#ldap_basedn").val();
-            url += '&binddn=' + $("#ldap_binddn").val();
-            url += '&bindpw=' + $("#ldap_bindpw").val();
-            url += '&urltype=' + $("#ldap_urltype").val();
-            url += '&proto=' + $("#ldap_protver").val();
-            url += '&authcn=' + $("#ldapauthcontainers").val();
-            if ($("#ldap_caref").val() != undefined) {
-                url += '&cert=' + $("#ldap_caref").val();
-            } else {
-                url += '&cert=';
-            }
-            var oWin = window.open(url, "OPNsense", "width=620,height=400,top=150,left=150, scrollbars=yes");
-            if (oWin==null || typeof(oWin)=="undefined") {
-                alert("<?=gettext('Popup blocker detected. Action aborted.');?>");
-            }
+            $.post('system_usermanager_settings_ldapacpicker.php', request_data, function(data) {
+                var tbl  = $("<table/>");
+                var tbl_body = $("<tbody/>");
+                for (var i=0; i < data.length ; ++i) {
+                    var tr = $("<tr/>");
+                    tr.append($("<td/>").append(
+                        $("<input type='checkbox' class='ldap_item_select'>")
+                            .prop('checked', data[i].selected)
+                            .prop('value', data[i].value)
+                    ));
+                    tr.append($("<td/>").text(data[i].value));
+                    tbl_body.append(tr);
+                }
+                tbl.append(tbl_body);
+                BootstrapDialog.show({
+                  type: BootstrapDialog.TYPE_PRIMARY,
+                  title: "<?=gettext("Please select which containers to Authenticate against:");?>",
+                  message: tbl,
+                  buttons: [{
+                            label: "<?= gettext("Close");?>",
+                            action: function(dialogRef) {
+
+                                var values = $(".ldap_item_select:checked").map(function(){
+                                    return $(this).val();
+                                }).get().join(';');
+                                $("#ldapauthcontainers").val(values);
+                                dialogRef.close();
+                            }
+                        }]
+                });
+            }, dataType="json");
         }
     });
 });
