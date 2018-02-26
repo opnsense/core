@@ -34,6 +34,8 @@ require_once("services.inc");
 require_once("rrd.inc");
 
 $a_gateway_groups = &config_read_array('gateways', 'gateway_group');
+$gateways_status = return_gateways_status(true);
+$a_gateways = return_gateways_array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['act']) && $_POST['act'] == "del" ) {
@@ -77,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 legacy_html_escape_form_data($a_gateway_groups);
+legacy_html_escape_form_data($a_gateways);
 
 $service_hook = 'apinger';
 
@@ -133,54 +136,96 @@ $( document ).ready(function() {
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <td><?= gettext("Group Name") ?></td>
-                      <td class="hidden-xs"><?= gettext("Gateways") ?></td>
-                      <td class="hidden-xs"><?= gettext("Priority") ?></td>
-                      <td><?=gettext("Description");?></td>
-                      <td></td>
+                      <td><?= gettext('Name') ?></td>
+                      <td><?= gettext('Gateways') ?></td>
+                      <td class="hidden-xs"><?= gettext('Description') ?></td>
+                      <td class="text-nowrap"></td>
                     </tr>
                   </thead>
                   <tbody>
 <?php
                   $i = 0;
-                  foreach ($a_gateway_groups as $gateway_group) :
+                  foreach ($a_gateway_groups as $gateway_group):
+                    $priorities = array();
+                    foreach($gateway_group['item'] as $item) {
+                      $itemsplit = explode("|", $item);
+                      if (!isset($priorities[$itemsplit[1]])) {
+                          $priorities[$itemsplit[1]] = array();
+                      }
+                      if (!empty($a_gateways[$itemsplit[0]])) {
+                          $priorities[$itemsplit[1]][$itemsplit[0]] = $a_gateways[$itemsplit[0]];
+                      }
+                    }
+                    ksort($priorities);
 ?>
                     <tr>
-                      <td> <?=$gateway_group['name'];?> </td>
-                      <td class="hidden-xs">
+                        <td><?= $gateway_group['name'] ?></td>
+                        <td>
+                          <table class="table table-condensed">
 <?php
-                      foreach ($gateway_group['item'] as $item):?>
-                           <?=strtoupper(explode("|", $item)[0]);?> <br/>
+                          foreach ($priorities as $priority => $gateways):?>
+                          <tr>
+                            <td class="text-nowrap"><?=sprintf(gettext("Tier %s"), $priority);?></td>
+                            <td>
 <?php
-                      endforeach;?>
+                            foreach ($gateways as $gname => $gateway):
+                              $online = gettext('Pending');
+                              $gateway_label_class = 'default';
+                              if ($gateways_status[$gname]) {
+                                  $status = $gateways_status[$gname]['status'];
+                                      if (stristr($status, 'force_down')) {
+                                          $online = gettext('Offline (forced)');
+                                          $gateway_label_class = 'danger';
+                                      } elseif (stristr($status, 'down')) {
+                                          $online = gettext('Offline');
+                                          $gateway_label_class = 'danger';
+                                      } elseif (stristr($status, 'loss')) {
+                                          $online = gettext('Warning (packetloss)');
+                                          $gateway_label_class = 'warning';
+                                      } elseif (stristr($status, 'delay')) {
+                                          $online = gettext('Warning (latency)');
+                                          $gateway_label_class = 'warning';
+                                      } elseif ($status == 'none') {
+                                          $online = gettext('Online');
+                                          $gateway_label_class = 'success';
+                                  } elseif (!empty($gateway['monitor_disable']))  {
+                                      $online = gettext('Online');
+                                      $gateway_label_class = 'success';
+                                  }
+                              }
+?>
+                                <div class="label label-<?= $gateway_label_class ?>" style="margin-right:4px">
+                                  <i class="fa fa-globe"></i>
+                                  <?=$gateway['name'];?>, <?=$online;?>
+                                </div>
+<?php
+                          endforeach;?>
+                          </td>
+                        </tr>
+<?php
+                        endforeach; ?>
+                        </table>
                       </td>
-                      <td class="hidden-xs">
-<?php
-                        foreach ($gateway_group['item'] as $item):?>
-                             <?= sprintf(gettext('Tier %s'),explode("|", $item)[1]) ?> <br/>
-<?php
-                        endforeach;?>
-                      </td>
-                      <td><?=$gateway_group['descr'];?></td>
-                      <td>
+                      <td class="hidden-xs"><?=$gateway_group['descr'];?></td>
+                      <td class="text-nowrap">
                         <a href="system_gateway_groups_edit.php?id=<?= $i ?>" class="btn btn-default btn-xs"
-                            title="edit group" data-toggle="tooltip">
+                            title="<?= html_safe(gettext('Edit')) ?>" data-toggle="tooltip">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </a>
                         <button type="button" class="btn btn-default btn-xs act-del-group"
-                            data-id="<?= $i ?>" title="<?= gettext("delete group") ?>" data-toggle="tooltip">
+                            data-id="<?= $i ?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip">
                           <span class="fa fa-trash text-muted"></span>
                         </button>
                         <a href="system_gateway_groups_edit.php?dup=<?= $i ?>" class="btn btn-default btn-xs"
-                            title="clone group" data-toggle="tooltip">
+                            title="<?= html_safe(gettext('Clone')) ?>" data-toggle="tooltip">
                           <span class="fa fa-clone text-muted"></span>
                         </a>
                       </td>
                     </tr>
 <?php $i++;
                     endforeach; ?>
-                    <tr class="hidden-xs">
-                      <td colspan="5">
+                    <tr>
+                      <td colspan="4">
                         <?= gettext("Remember to use these Gateway Groups in firewall rules in order to enable load balancing, failover, or policy-based routing. Without rules directing traffic into the Gateway Groups, they will not be used.") ?>
                       </td>
                     </tr>
