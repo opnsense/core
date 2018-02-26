@@ -87,9 +87,9 @@ class Config extends Singleton
     /**
      * serialize xml to array structure (backwards compatibility mode)
      * @param null|array $forceList force specific tags to be contained in a list.
-     * @param DOMNode $node
-     * @return string|array
-     * @throws ConfigException
+     * @param DOMNode $node node to read
+     * @return string|array converted node data
+     * @throws ConfigException when config couldn't be parsed
      */
     public function toArray($forceList = null, $node = null)
     {
@@ -157,9 +157,11 @@ class Config extends Singleton
 
 
     /**
-     * @param $filename
-     * @param null $forceList
-     * @return array|string
+     * convert an arbitrary config xml file to an array
+     * @param $filename config xml filename to parse
+     * @param null $forceList items to treat as list
+     * @return array interpretation of config file
+     * @throws ConfigException when config couldn't be parsed
      */
     public function toArrayFromFile($filename, $forceList = null)
     {
@@ -172,7 +174,7 @@ class Config extends Singleton
      * @param $source source array structure
      * @param null $node simplexml node
      * @param null|string $parentTagName
-     * @throws ConfigException
+     * @throws ConfigException when config couldn't be parsed
      */
     public function fromArray($source, $node = null, $parentTagName = null)
     {
@@ -229,7 +231,7 @@ class Config extends Singleton
 
     /**
      * check if there's a valid config loaded, throws an error if config isn't valid.
-     * @throws ConfigException
+     * @throws ConfigException when config couldn't be parsed
      */
     private function checkvalid()
     {
@@ -241,9 +243,9 @@ class Config extends Singleton
 
     /**
      * Execute a xpath expression on config.xml (full DOM implementation)
-     * @param $query
-     * @return \DOMNodeList
-     * @throws ConfigException
+     * @param $query xpath expression
+     * @return \DOMNodeList nodes
+     * @throws ConfigException when config couldn't be parsed
      */
     public function xpath($query)
     {
@@ -260,8 +262,8 @@ class Config extends Singleton
 
     /**
      * object representation of xml document via simplexml, references the same underlying model
-     * @return SimpleXML
-     * @throws ConfigException
+     * @return SimpleXML configuration object
+     * @throws ConfigException when config couldn't be parsed
      */
     public function object()
     {
@@ -305,9 +307,9 @@ class Config extends Singleton
 
     /**
      * load xml config from file
-     * @param $filename
-     * @return \SimpleXMLElement
-     * @throws ConfigException
+     * @param $filename config xml source
+     * @return \SimpleXMLElement root node
+     * @throws ConfigException when config couldn't be parsed
      */
     private function loadFromFile($filename)
     {
@@ -452,6 +454,7 @@ class Config extends Singleton
      * return list of config backups
      * @param bool $fetchRevisionInfo fetch revision information and return detailed information. (key/value)
      * @return array list of backups
+     * @throws ConfigException when config couldn't be parsed
      */
     public function getBackups($fetchRevisionInfo = false)
     {
@@ -517,7 +520,7 @@ class Config extends Singleton
      * save config to filesystem
      * @param array|null $revision revision tag (associative array)
      * @param bool $backup do not backup current config
-     * @throws ConfigException
+     * @throws ConfigException when config couldn't be parsed
      */
     public function save($revision = null, $backup = true)
     {
