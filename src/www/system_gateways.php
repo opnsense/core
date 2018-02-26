@@ -358,30 +358,29 @@ $( document ).ready(function() {
                       </td>
                       <td>
   <?php
+                      $online = gettext('Pending');
+                      $gateway_label_class = 'default';
                       if ($gateways_status[$gateway['gname']]) {
                           $status = $gateways_status[$gateway['gname']];
-                          if (stristr($status['status'], "force_down")) {
-                              $online = gettext("Offline (forced)");
+                          if (stristr($status['status'], 'force_down')) {
+                              $online = gettext('Offline (forced)');
                               $gateway_label_class = 'danger';
-                          } elseif (stristr($status['status'], "down")) {
-                              $online = gettext("Offline");
+                          } elseif (stristr($status['status'], 'down')) {
+                              $online = gettext('Offline');
                               $gateway_label_class = 'danger';
-                          } elseif (stristr($status['status'], "loss")) {
-                              $online = gettext("Warning, Packetloss").': '.$status['loss'];
+                          } elseif (stristr($status['status'], 'loss')) {
+                              $online = gettext('Warning, Packetloss').': '.$status['loss'];
                               $gateway_label_class = 'warning';
-                          } elseif (stristr($status['status'], "delay")) {
-                              $online = gettext("Warning, Latency").': '.$status['delay'];
-                              $gateway_label_class = 'waning';
-                          } elseif ($status['status'] == "none") {
-                              $online = gettext("Online");
+                          } elseif (stristr($status['status'], 'delay')) {
+                              $online = gettext('Warning, Latency').': '.$status['delay'];
+                              $gateway_label_class = 'warning';
+                          } elseif ($status['status'] == 'none') {
+                              $online = gettext('Online');
                               $gateway_label_class = 'success';
                           }
-                      } else if (isset($gateway['monitor_disable'])) {
-                          $online = gettext("Online");
+                      } elseif (isset($gateway['monitor_disable'])) {
+                          $online = gettext('Online');
                           $gateway_label_class = 'success';
-                      } else {
-                          $online = gettext("Pending");
-                          $gateway_label_class = 'default';
                       }
   ?>
                         <div class="label label-<?= $gateway_label_class ?>">
