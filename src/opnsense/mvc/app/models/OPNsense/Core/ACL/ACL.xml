@@ -512,12 +512,6 @@
             <pattern>status_dhcpv6_leases.php*</pattern>
         </patterns>
     </page-status-dhcpv6leases>
-    <page-status-gatewaygroups>
-        <name>Status: Gateway Groups</name>
-        <patterns>
-            <pattern>status_gateway_groups.php*</pattern>
-        </patterns>
-    </page-status-gatewaygroups>
     <page-status-interfaces>
         <name>Status: Interfaces</name>
         <patterns>

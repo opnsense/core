@@ -54,9 +54,9 @@
                 <Edit url="/system_gateways_edit.php*" visibility="hidden"/>
             </Single>
             <Group order="20" url="/system_gateway_groups.php">
+                <List url="/system_gateway_groups.php*" visibility="hidden"/>
                 <Edit url="/system_gateway_groups_edit.php*" visibility="hidden"/>
             </Group>
-            <GroupStatus order="21" VisibleName="Group Status" url="/status_gateway_groups.php"/>
             <Log VisibleName="Log File" order="30" url="/diag_logs_gateways.php"/>
         </Gateways>
         <Settings order="20" cssClass="fa fa-cogs fa-fw">

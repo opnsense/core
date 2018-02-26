@@ -369,10 +369,10 @@ $( document ).ready(function() {
                               $online = gettext('Offline');
                               $gateway_label_class = 'danger';
                           } elseif (stristr($status['status'], 'loss')) {
-                              $online = gettext('Warning, Packetloss').': '.$status['loss'];
+                              $online = gettext('Warning (packetloss)');
                               $gateway_label_class = 'warning';
                           } elseif (stristr($status['status'], 'delay')) {
-                              $online = gettext('Warning, Latency').': '.$status['delay'];
+                              $online = gettext('Warning (latency)');
                               $gateway_label_class = 'warning';
                           } elseif ($status['status'] == 'none') {
                               $online = gettext('Online');
@@ -393,19 +393,19 @@ $( document ).ready(function() {
                       </td>
                       <td class="text-nowrap">
                         <a href="system_gateways_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"
-                          data-toggle="tooltip" title="<?=gettext("Edit");?>">
+                          data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </a>
 <?php
                         if (is_numeric($gateway['attribute'])) :?>
-                          <button data-id="<?=$i;?>" title="<?=gettext("Delete"); ?>" data-toggle="tooltip"
+                          <button data-id="<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"
                                   class="act_delete btn btn-default btn-xs">
                             <span class="fa fa-trash text-muted"></span>
                           </button>
 <?php
                         endif;?>
                           <a href="system_gateways_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs"
-                             data-toggle="tooltip" title="<?=gettext("Clone");?>">
+                             data-toggle="tooltip" title="<?= html_safe(gettext('Clone')) ?>">
                             <span class="fa fa-clone text-muted"></span>
                           </a>
                         </td>
@@ -428,7 +428,7 @@ $( document ).ready(function() {
                       if ($i > 0) :
                                       ?>
                           <button type="submit" id="btn_delete" name="del_x" class="btn btn-default btn-xs" data-toggle="tooltip"
-                                  title="<?=gettext("Delete selected items");?>">
+                                  title="<?= html_safe(gettext('Delete selected items')) ?>">
                               <span class="fa fa-trash text-muted"></span>
                           </button>
 <?php
