@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ruleset documentation_url="http://doc.emergingthreats.net/bin/view/Main/EmergingFAQ">
-    <location url="https://rules.emergingthreats.net/open/suricata-1.3-enhanced/emerging.rules.tar.gz" prefix="ET open"/>
+    <location url="https://rules.emergingthreats.net/open/suricata-4.0/emerging.rules.tar.gz" prefix="ET open"/>
     <files>
         <file description="botcc.portgrouped" url="inline::rules/botcc.portgrouped.rules">botcc.portgrouped.rules</file>
         <file description="botcc" url="inline::rules/botcc.rules">botcc.rules</file>
