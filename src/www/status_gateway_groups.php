@@ -88,32 +88,32 @@ include("head.inc");
                             <td>
 <?php
                             foreach ($gateways as $gname => $gateway):
-                              $status = $gateways_status[$gname]['status'];
-                              if (stristr($status, "force_down")) {
-                                  $online = gettext("Offline (forced)");
-                                  $bgcolor = "#F08080";  // lightcoral
-                              } elseif (stristr($status, "down")) {
-                                  $online = gettext("Offline");
-                                  $bgcolor = "#F08080";  // lightcoral
-                              } elseif (stristr($status, "loss")) {
-                                  $online = gettext("Warning, Packetloss");
-                                  $bgcolor = "#F0E68C";  // khaki
-                              } elseif (stristr($status, "delay")) {
-                                  $online = gettext("Warning, Latency");
-                                  $bgcolor = "#F0E68C";  // khaki
-                              } elseif ($status == "none") {
-                                  $online = gettext("Online");
-                                  $bgcolor = "#90EE90";  // lightgreen
-                              } elseif (!empty($gateway['monitor_disable']))  {
-                                  $online = gettext("Monitoring disabled");
-                                  $bgcolor = "#F0E68C";  // lightcoral
-                              } else {
-                                  $online = gettext("Gathering data");
-                                  $bgcolor = "#ADD8E6";  // lightblue
-                              }
+                                $online = gettext('Pending');
+                                $gateway_label_class = 'default';
+                                if ($gateways_status[$gname]) {
+                                    $status = $gateways_status[$gname]['status'];
+                                        if (stristr($status, 'force_down')) {
+                                            $online = gettext('Offline (forced)');
+                                            $gateway_label_class = 'danger';
+                                        } elseif (stristr($status, 'down')) {
+                                            $online = gettext('Offline');
+                                            $gateway_label_class = 'danger';
+                                        } elseif (stristr($status, 'loss')) {
+                                            $online = gettext('Warning, Packetloss').': '.$status['loss'];
+                                            $gateway_label_class = 'warning';
+                                        } elseif (stristr($status, 'delay')) {
+                                            $online = gettext('Warning, Latency').': '.$status['delay'];
+                                            $gateway_label_class = 'warning';
+                                        } elseif ($status == 'none') {
+                                            $online = gettext('Online');
+                                            $gateway_label_class = 'success';
+                                    } elseif (!empty($gateway['monitor_disable']))  {
+                                        $online = gettext('Online');
+                                        $gateway_label_class = 'success';
+                                    }
+                                }
 ?>
-                                  <div style="background: <?=$bgcolor;?>">
-                                    &nbsp;
+                                  <div class="label label-<?= $gateway_label_class ?>" style="margin-right:4px">
                                     <i class="fa fa-globe"></i>
                                     <?=$gateway['name'];?>, <?=$online;?>
                                   </div>
