@@ -340,7 +340,7 @@ clean-src:
 	    ${GIT} clean -xdqf ${.CURDIR}/src
 
 clean-work:
-	@rm -rf ${WRKSRC} ${PKGDIR}
+	@rm -rf ${WRKSRC}
 
 clean: clean-src clean-work
 
