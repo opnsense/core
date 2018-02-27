@@ -164,10 +164,18 @@ function formatTokenizersUI() {
             number_of_items = $(this).prop("size");
             maxDropdownHeight=String(36*number_of_items)+"px";
         }
+        hint=$(this).data("hint");
         width=$(this).data("width");
+        allownew=$(this).data("allownew");
+        nbDropdownElements=$(this).data("nbdropdownelements");
         maxTokenContainerHeight=$(this).data("maxheight");
 
-        $tokenizer = $(this).tokenize();
+        $tokenizer = $(this).tokenize({
+            displayDropdownOnFocus: true,
+            newElements: allownew,
+            nbDropdownElements: nbDropdownElements,
+            placeholder:hint
+        });
         $tokenizer.resizeSearchInput();
         $tokenizer.remap(true);
         $tokenizer.updatePlaceholder();
