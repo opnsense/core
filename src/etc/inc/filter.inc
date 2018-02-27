@@ -323,7 +323,6 @@ function filter_configure_sync($verbose = false)
         flush();
     }
 
-    /* XXX deprectated feature, only called on reconfigure */
     if (isset($config['system']['gw_switch_default'])) {
         $gateways_status = return_gateways_status(true);
         $gateways_arr = return_gateways_array();

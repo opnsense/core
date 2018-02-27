@@ -368,7 +368,7 @@ include("head.inc");
                     <input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?= !empty($pconfig['gw_switch_default']) ? 'checked="checked"' : '' ?> />
                     <strong><?=gettext("Allow default gateway switching"); ?></strong><br />
                     <output class="hidden" for="help_for_gw_switch_default">
-                      <?= gettext('If the link where the default gateway resides fails switch the default gateway to another available one. This feature has been deprecated.') ?>
+                      <?= gettext('If the link where the default gateway resides fails switch the default gateway to another available one.') ?>
                     </output>
                   </td>
                 </tr>

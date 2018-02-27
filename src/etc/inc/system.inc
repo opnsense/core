@@ -554,8 +554,6 @@ function system_routing_configure($interface = '', $verbose = false)
     if ($verbose) {
         echo "done.\n";
     }
-
-    return 0;
 }
 
 
