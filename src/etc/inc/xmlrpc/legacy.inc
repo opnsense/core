@@ -127,9 +127,9 @@ function filter_configure_xmlrpc()
     require_once("services.inc");
     require_once("rrd.inc");
 
-    filter_configure();
     system_routing_configure();
     setup_gateways_monitor();
+    filter_configure();
     system_hosts_generate();
     local_sync_accounts();
     plugins_configure('dns');
