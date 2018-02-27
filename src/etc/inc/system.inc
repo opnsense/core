@@ -465,7 +465,6 @@ function system_routing_configure($interface = '', $verbose = false)
 
     /* tack on all the hard defined gateways as well */
     if (isset($config['gateways']['gateway_item'])) {
-        /* XXX eventually this file-based workaround must be removed */
         foreach (glob('/tmp/*_defaultgw{,v6}', GLOB_BRACE) as $to_delete) {
             log_error("ROUTING: removing {$to_delete}");
             @unlink($to_delete);
@@ -473,10 +472,7 @@ function system_routing_configure($interface = '', $verbose = false)
 
         foreach ($config['gateways']['gateway_item'] as $gateway) {
             if (isset($gateway['defaultgw'])) {
-                if ($gateway['ipprotocol'] != "inet6" && (is_ipaddrv4($gateway['gateway']) || $gateway['gateway'] == "dynamic")) {
-                    if (strstr($gateway['gateway'], ":")) {
-                        continue;
-                    }
+                if ($foundgw == false && $gateway['ipprotocol'] != "inet6" && (is_ipaddrv4($gateway['gateway']) || $gateway['gateway'] == "dynamic")) {
                     if ($gateway['gateway'] == "dynamic") {
                         $gateway['gateway'] = get_interface_gateway($gateway['interface']);
                     }
@@ -491,7 +487,7 @@ function system_routing_configure($interface = '', $verbose = false)
                         }
                     }
                     $foundgw = true;
-                } elseif ($gateway['ipprotocol'] == "inet6" && (is_ipaddrv6($gateway['gateway']) || $gateway['gateway'] == "dynamic")) {
+                } elseif ($foundgwv6 == false && $gateway['ipprotocol'] == "inet6" && (is_ipaddrv6($gateway['gateway']) || $gateway['gateway'] == "dynamic")) {
                     if ($gateway['gateway'] == "dynamic") {
                         $gateway['gateway'] = get_interface_gateway_v6($gateway['interface']);
                     }
@@ -510,11 +506,19 @@ function system_routing_configure($interface = '', $verbose = false)
         }
     }
 
+    /*
+     * From the looks of the code below we cannot cope with
+     * multi-WAN without setting explicit gateways.  This is
+     * probably where the default gateway switching comes into
+     * play because this facility is allowed to use dynamically
+     * created gateways while the former code does not.
+     */
+
     if (!$foundgw) {
         $defaultif = get_real_interface("wan");
         $interfacegw = "wan";
         $gatewayip = get_interface_gateway("wan");
-        @touch("/tmp/{$defaultif}_defaultgw");
+        @file_put_contents("/tmp/{$defaultif}_defaultgw", $gatewayip);
         log_error("ROUTING: no IPv4 default gateway set, trying ${interfacegw} on '{$defaultif}' ({$gatewayip})");
     }
 
@@ -522,7 +526,7 @@ function system_routing_configure($interface = '', $verbose = false)
         $defaultifv6 = get_real_interface("wan");
         $interfacegwv6 = "wan";
         $gatewayipv6 = get_interface_gateway_v6("wan");
-        @touch("/tmp/{$defaultif}_defaultgwv6");
+        @file_put_contents("/tmp/{$defaultifv6}_defaultgwv6", $gatewayipv6);
         log_error("ROUTING: no IPv6 default gateway set, trying ${interfacegwv6} on '{$defaultifv6}' ({$gatewayipv6})");
     }
 
