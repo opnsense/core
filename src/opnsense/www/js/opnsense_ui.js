@@ -198,15 +198,10 @@ function updateServiceControlUI(serviceName)
 /**
  * reformat all tokenizers on this document
  */
-function formatTokenizersUI(){
-    // remove old tokenizers (if any)
-    $('div[class="tokenize Tokenize"]').each(function(){
-        $(this).remove();
-    });
-    $('select[class="tokenize"]').each(function(){
+function formatTokenizersUI() {
+    $('select[class="tokenize"]').each(function () {
         if ($(this).prop("size")==0) {
             maxDropdownHeight=String(36*5)+"px"; // default number of items
-
         } else {
             number_of_items = $(this).prop("size");
             maxDropdownHeight=String(36*number_of_items)+"px";
@@ -217,12 +212,16 @@ function formatTokenizersUI(){
         nbDropdownElements=$(this).data("nbdropdownelements");
         maxTokenContainerHeight=$(this).data("maxheight");
 
-        $(this).tokenize({
+        $tokenizer = $(this).tokenize({
             displayDropdownOnFocus: true,
             newElements: allownew,
             nbDropdownElements: nbDropdownElements,
             placeholder:hint
         });
+        $tokenizer.resizeSearchInput();
+        $tokenizer.remap(true);
+        $tokenizer.updatePlaceholder();
+
         $(this).parent().find('ul[class="TokensContainer"]').parent().css("width",width);
         $(this).parent().find('ul[class="Dropdown"]').css("max-height", maxDropdownHeight);
         if ( maxDropdownHeight != undefined ) {
