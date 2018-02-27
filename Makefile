@@ -265,7 +265,7 @@ upgrade-check:
 		exit 1; \
 	fi
 
-upgrade: plist-check upgrade-check package
+upgrade: plist-check upgrade-check clean-package package
 	@${PKG} delete -fy ${CORE_NAME}
 	@${PKG} add ${PKGDIR}/*.txz
 	@/usr/local/etc/rc.restart_webgui
@@ -334,6 +334,9 @@ test: want-phpunit6
 	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
 	    phpunit --configuration PHPunit.xml
 
+clean-package:
+	@rm -rf ${PKGDIR}
+
 clean-src:
 	@${GIT} reset -q ${.CURDIR}/src && \
 	    ${GIT} checkout -f ${.CURDIR}/src && \
@@ -342,6 +345,6 @@ clean-src:
 clean-work:
 	@rm -rf ${WRKSRC}
 
-clean: clean-src clean-work
+clean: clean-package clean-src clean-work
 
 .PHONY: license plist
