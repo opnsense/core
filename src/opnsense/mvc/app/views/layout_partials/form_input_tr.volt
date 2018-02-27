@@ -55,16 +55,16 @@ readonly    :   if true, input fields will be readonly
     </td>
     <td >
         {% if type == "text" %}
-            <input type="text" class="form-control" size="{{size|default("50")}}" id="{{ id }}" {{ readonly ?  'readonly="readonly"' : '' }} >
-        {% elseif type == "checkbox"  %}
+            <input type="text" class="form-control" size="{{size|default("50")}}" id="{{ id }}" {{ readonly ? 'readonly="readonly"' : '' }} >
+        {% elseif type == "checkbox" %}
             <input type="checkbox" id="{{ id }}" >
         {% elseif type == "select_multiple" %}
-            <select multiple="multiple" {% if size|default(false) %}size="{{size}}"{% endif %}  id="{{ id }}" {% if style|default(false) %}class="{{style}}" {% endif %}  {% if hint|default(false) %}data-hint="{{hint}}"{% endif %}  {% if maxheight|default(false) %}data-maxheight="{{maxheight}}"{% endif %} data-width="{{width|default("348px")}}" data-allownew="{{allownew|default("false")}}" data-nbdropdownelements="{{nbDropdownElements|default("10")}}"></select>
+            <select multiple="multiple" {% if size|default(false) %}size="{{size}}"{% endif %} id="{{ id }}" {% if style|default(false) %}class="{{style}}" {% endif %} {% if hint|default(false) %}data-hint="{{hint}}"{% endif %} {% if maxheight|default(false) %}data-maxheight="{{maxheight}}"{% endif %} data-width="{{width|default("334px")}}" data-allownew="{{allownew|default("false")}}" data-nbdropdownelements="{{nbDropdownElements|default("10")}}"></select>
             <br/><a href="#" class="text-danger" id="clear-options_{{ id }}"><i class="fa fa-times-circle"></i></a> <small>{{ lang._('Clear All') }}</small>
         {% elseif type == "dropdown" %}
-            <select {% if size|default(false) %}size="{{size}}"{% endif %}  id="{{ id }}" class="{{style|default('selectpicker')}}"  data-width="{{width|default("348px")}}"></select>
+            <select {% if size|default(false) %}size="{{size}}"{% endif %} id="{{ id }}" class="{{style|default('selectpicker')}}" data-width="{{width|default("334px")}}"></select>
         {% elseif type == "password" %}
-            <input type="password" class="form-control" size="{{size|default("50")}}" id="{{ id }}"  {{ readonly ?  'readonly="readonly"' : '' }} >
+            <input type="password" class="form-control" size="{{size|default("50")}}" id="{{ id }}" {{ readonly ? 'readonly="readonly"' : '' }} >
         {% elseif type == "textbox" %}
             <textarea rows="{{height|default("5")}}" id="{{ id }}" {{ readonly ? 'readonly="readonly"' : '' }}></textarea>
         {% elseif type == "info" %}
