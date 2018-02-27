@@ -43,5 +43,5 @@ foreach (glob("/tmp/delete_route_*.todo") as $filename) {
 }
 
 system_routing_configure('', true);
-filter_configure_sync(true);
 setup_gateways_monitor(true);
+filter_configure_sync(true);

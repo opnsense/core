@@ -129,14 +129,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if (isset($pconfig['apply'])) {
         // apply changes, reconfigure
-        $retval = 0;
-        $retval = system_routing_configure();
-        filter_configure();
-        /* reconfigure our gateway monitor */
+        system_routing_configure();
+        clear_subsystem_dirty('staticroutes');
         setup_gateways_monitor();
-        if ($retval == 0) {
-            clear_subsystem_dirty('staticroutes');
-        }
+        filter_configure();
         header(url_safe('Location: /system_gateways.php?displaysave=true'));
         exit;
     } elseif (isset($id) && isset($pconfig['act']) && $pconfig['act'] == "del") {

@@ -525,12 +525,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             plugins_configure('newwanip');
 
             /* sync filter configuration */
+            system_routing_configure();
             setup_gateways_monitor();
             filter_configure();
             rrd_configure();
-            if (is_subsystem_dirty('staticroutes') && (system_routing_configure() == 0)) {
-                clear_subsystem_dirty('staticroutes');
-            }
         }
         @unlink('/tmp/.interfaces.apply');
         header(url_safe('Location: /interfaces.php?if=%s', array($if)));

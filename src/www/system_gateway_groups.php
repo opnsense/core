@@ -52,19 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
     } elseif (isset($_POST['apply'])) {
-        $retval = 0;
-        $retval = system_routing_configure();
+        system_routing_configure();
+        clear_subsystem_dirty('staticroutes');
+        setup_gateways_monitor();
 
         configd_run('dyndns reload');
         configd_run('rfc2136 reload');
         configd_run('filter reload');
-
-        /* reconfigure our gateway monitor */
-        setup_gateways_monitor();
-
-        if ($retval == 0) {
-            clear_subsystem_dirty('staticroutes');
-        }
 
         foreach ($a_gateway_groups as $gateway_group) {
             $gw_subsystem = 'gwgroup.' . $gateway_group['name'];
@@ -73,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 clear_subsystem_dirty($gw_subsystem);
             }
         }
+
         header(url_safe('Location: /system_gateway_groups.php'));
         exit;
     }
