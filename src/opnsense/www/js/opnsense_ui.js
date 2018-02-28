@@ -153,6 +153,45 @@ function updateServiceStatusUI(status) {
     $('#service_status_container').html(status_html);
 }
 
+function updateServiceControlUI(serviceName, processingDialog)
+{
+    ajaxCall(url="/api/" + serviceName + "/service/status", sendData={}, callback=function(data,status) {
+        var status_html = '';
+        if (data['status'] == "running") {
+            status_html += 'btn-success' ;
+        } else if (data['status'] == "stopped") {
+            status_html += 'btn-danger' ;
+        }
+
+        var buttons = '<span id="startService" class="btn ' +  status_html + ' glyphicon glyphicon-play"></span>';
+        buttons += '<span id="restartService" class="btn btn-default srv_status_act glyphicon glyphicon-refresh"></span>';
+        buttons += '<span id="stopService" class="btn btn-default srv_status_act glyphicon glyphicon-stop"></span>';
+        $('#service_status_container').html(buttons);
+
+        var commands = ["start", "restart", "stop"];
+        commands.forEach(function(command) {
+            $("#" + command + "Service").click(function(){
+                if (processingDialog !== undefined) {
+                    $('#' + processingDialog).modal('show');
+                }
+                ajaxCall(url="/api/" + serviceName + "/service/" + command, sendData={},callback=function(data,status) {
+                    if (processingDialog !== undefined) {
+                        $('#' + processingDialog).modal('hide');
+                    }
+                    ajaxCall(url="/api/" + serviceName + "/service/status", sendData={}, callback=function(data,status) {
+                        $("#startService").removeClass("btn-danger").removeClass("btn-success");
+                        if (data['status'] == "running") {
+                            $("#startService").addClass("btn-success");
+                        } else if (data['status'] == "stopped") {
+                            $("#startService").addClass("btn-danger");
+                        }
+                    });
+                });
+            });
+        });
+    });
+}
+
 /**
  * reformat all tokenizers on this document
  */
