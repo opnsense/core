@@ -264,6 +264,20 @@
       </footer>
     </main>
 
+    <!-- dialog "wait for (service) action" -->
+    <div class="modal fade" id="OPNsenseStdWaitDialog" tabindex="-1" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p><strong>{{ lang._('Please wait...') }}</strong></p>
+            <div class="progress">
+               <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- bootstrap script -->
     <script src="/ui/js/bootstrap.min.js"></script>
     <script src="/ui/js/bootstrap-select.min.js"></script>
