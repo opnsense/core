@@ -51,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // array types
     $pconfig['active_interface'] = !empty($a_unboundcfg['active_interface']) ? explode(",", $a_unboundcfg['active_interface']) : array();
     $pconfig['outgoing_interface'] = !empty($a_unboundcfg['outgoing_interface']) ? explode(",", $a_unboundcfg['outgoing_interface']) : array();
+    $pconfig['local_zone_type'] = !empty($a_unboundcfg['local_zone_type']) ? $a_unboundcfg['local_zone_type'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -81,9 +82,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['port']) && !is_port($pconfig['port'])) {
             $input_errors[] = gettext("You must specify a valid port number.");
         }
+        if (!empty($pconfig['local_zone_type']) && !array_key_exists($pconfig['local_zone_type'], unbound_local_zone_types())) {
+            $input_errors[] = sprintf(gettext('Local zone type "%" is not known.'), $pconfig['local_zone_type']);
+        }
 
         if (count($input_errors) == 0) {
-            // save form data
             // text types
             if (!empty($pconfig['port'])) {
                 $a_unboundcfg['port'] = $pconfig['port'];
@@ -95,7 +98,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } elseif (isset($a_unboundcfg['regdhcpdomain'])) {
                 unset($a_unboundcfg['regdhcpdomain']);
             }
+            if (!empty($pconfig['local_zone_type'])) {
+                $a_unboundcfg['local_zone_type'] = $pconfig['local_zone_type'];
+            } elseif (isset($a_unboundcfg['local_zone_type'])) {
+                unset($a_unboundcfg['local_zone_type']);
+            }
+
             $a_unboundcfg['custom_options'] = !empty($pconfig['custom_options']) ? str_replace("\r\n", "\n", $pconfig['custom_options']) : null;
+
             // boolean values
             $a_unboundcfg['enable'] = !empty($pconfig['enable']);
             $a_unboundcfg['dnssec'] = !empty($pconfig['dnssec']);
@@ -188,6 +198,21 @@ include_once("head.inc");
                           </select>
                           <output class="hidden" for="help_for_active_interface">
                             <?=gettext("Interface IPs used by the DNS Resolver for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.");?>
+                          </output>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_local_zone_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local Zone Type"); ?></td>
+                        <td>
+                          <select name="local_zone_type" size="3" class="selectpicker" >
+<?php
+                            foreach (unbound_local_zone_types() as $value => $name):?>
+                            <option value="<?= html_safe($value) ?>" <?= $value == $pconfig['local_zone_type'] ? 'selected="selected"' : '' ?>><?= html_safe($name) ?></option>
+<?php
+                            endforeach; ?>
+                          </select>
+                          <output class="hidden" for="help_for_local_zone_type">
+                            <?=sprintf(gettext('The local zone type used for the system domain. Type descriptions are available under "local-zone:" in the %sunbound.conf(5)%s manual page. The default is \'transparent\'.'), '<a target="_blank" href="https://www.unbound.net/documentation/unbound.conf.html">', '</a>');?>
                           </output>
                         </td>
                       </tr>

@@ -509,14 +509,18 @@ function unbound_add_host_entries()
 {
     global $config;
 
-    $unbound_entries = "local-zone: \"{$config['system']['domain']}\" transparent\n";
+    $local_zone_type = 'transparent';
 
-    // IPv4 entries
+    if (!empty($config['unbound']['local_zone_type'])) {
+        $local_zone_type = $config['unbound']['local_zone_type'];
+    }
+
+    $unbound_entries = "local-zone: \"{$config['system']['domain']}\" {$local_zone_type}\n";
+
     $unbound_entries .= "local-data-ptr: \"127.0.0.1 localhost\"\n";
     $unbound_entries .= "local-data: \"localhost A 127.0.0.1\"\n";
     $unbound_entries .= "local-data: \"localhost.{$config['system']['domain']} A 127.0.0.1\"\n";
 
-    // IPv6 entries
     $unbound_entries .= "local-data-ptr: \"::1 localhost\"\n";
     $unbound_entries .= "local-data: \"localhost AAAA ::1\"\n";
     $unbound_entries .= "local-data: \"localhost.{$config['system']['domain']} AAAA ::1\"\n";
@@ -746,4 +750,22 @@ function unbound_hosts_generate()
     unbound_add_host_entries();
 
     killbypid('/var/run/unbound.pid', 'HUP');
+}
+
+function unbound_local_zone_types()
+{
+    return array(
+        '' => 'transparent',
+        'always_nxdomain' => 'always_nxdomain',
+        'always_refuse' => 'always_refuse',
+        'always_transparent' => 'always_transparent',
+        'deny' => 'deny',
+        'inform' => 'inform',
+        'inform_deny' => 'inform_deny',
+        'nodefault' => 'nodefault',
+        'redirect' => 'redirect',
+        'refuse' => 'refuse',
+        'static' => 'static',
+        'typetransparent' => 'typetransparent',
+    );
 }
