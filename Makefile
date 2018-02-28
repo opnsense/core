@@ -214,6 +214,14 @@ install:
 	    CORE_PACKAGESITE=${CORE_PACKAGESITE} \
 	    CORE_REPOSITORY=${CORE_REPOSITORY}
 
+collect:
+	@(cd ${.CURDIR}/src; find * -type f) | while read FILE; do \
+		if [ -f ${DESTDIR}${LOCALBASE}/$${FILE} ]; then \
+			tar -C ${DESTDIR}${LOCALBASE} -cpf - $${FILE} | \
+			    tar -C ${.CURDIR}/src -xpf -; \
+		fi; \
+	done
+
 bootstrap:
 	@${MAKE} -C ${.CURDIR}/src install-bootstrap DESTDIR=${DESTDIR} \
 	    NO_SAMPLE=please CORE_PACKAGESITE=${CORE_PACKAGESITE} \
