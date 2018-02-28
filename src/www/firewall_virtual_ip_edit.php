@@ -238,7 +238,7 @@ include("head.inc");
 
 <?php include("fbegin.inc");?>
 
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
     $("#mode").change(function(){
         //$("#subnet").attr('disabled', true);

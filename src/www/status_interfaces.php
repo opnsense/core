@@ -48,7 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 include("head.inc");
 ?>
-<script type="text/javascript">
+<body>
+
+<script>
   $( document ).ready(function() {
     $("#collapse_all").click(function(){
         $(".interface_details").collapse('toggle');
@@ -56,7 +58,6 @@ include("head.inc");
   });
 </script>
 
-<body>
 <?php include("fbegin.inc"); ?>
     <section class="page-content-main">
       <div class="container-fluid">
@@ -79,23 +80,25 @@ include("head.inc");
                   <table class="table">
                     <thead>
                       <tr>
-                        <th colspan="2">
-                          <i class="fa fa-chevron-down" style="cursor: pointer;" data-toggle="collapse" data-target="#<?= htmlspecialchars($ifname) ?>"></i>
-                          <?= htmlspecialchars($ifname) ?> <?= gettext("interface") ?> (<?= htmlspecialchars($ifdescr) ?>, <?= htmlspecialchars($ifinfo['if']) ?>)
-  <?php
-                          if (!isset($first_row)):
-                            $first_row=false; ?>
-                          <div class="pull-right">
-                            <i class="fa fa-expand" id="collapse_all" style="cursor: pointer;"  data-toggle="tooltip" title="<?= gettext("collapse/expand all") ?>"></i> &nbsp;
-                          </div>
-  <?php
-                          endif;?>
+                        <th style="cursor: pointer; width: 100%" data-toggle="collapse" data-target="#status_interfaces_<?=$ifname?>">
+                          <i class="fa fa-chevron-down" style="margin-right: .4em; float: left"></i>
+                          <?= $ifname ?> <?= gettext("interface") ?> (<?= $ifdescr ?>, <?= htmlspecialchars($ifinfo['if']) ?>)
                         </th>
+<?php
+                        if (!isset($first_row)):
+                          $first_row=false; ?>
+                        <th id="collapse_all" style="cursor: pointer; padding-left: .5em; padding-right: .5em" data-toggle="tooltip" title="<?= gettext("collapse/expand all") ?>">
+                          <div class="pull-right">
+                            <i class="fa fa-expand"></i>
+                          </div>
+                        </th>
+<?php
+                        endif;?>
                       </tr>
                     </thead>
                   </table>
                 </div>
-                <div class="interface_details collapse table-responsive"  id="<?= htmlspecialchars($ifname) ?>">
+                <div class="interface_details collapse table-responsive"  id="status_interfaces_<?=$ifname?>">
                   <table class="table table-striped">
                   <tbody>
                     <tr>
@@ -323,7 +326,7 @@ include("head.inc");
                     endif;
                     if ($ifdescr == 'wan' && file_exists('/etc/resolv.conf')): ?>
                     <tr>
-                      <td><?= gettext("ISP DNS servers") ?></td>
+                      <td><?= gettext("DNS servers") ?></td>
                       <td>
 <?php
                         foreach(get_dns_servers() as $dns):
@@ -396,19 +399,19 @@ include("head.inc");
                     endif; ?>
                     <tr>
                       <td><?= gettext("In/out packets") ?></td>
-                      <td> <?= $ifpfcounters['inpkts'] ?> / <?= $ifpfcounters['outpkts'] ?>
+                      <td class="text-nowrap"> <?= $ifpfcounters['inpkts'] ?> / <?= $ifpfcounters['outpkts'] ?><wbr>
                           (<?= format_bytes($ifpfcounters['inbytes']);?> / <?=format_bytes($ifpfcounters['outbytes']);?> )
                       </td>
                     </tr>
                     <tr>
                       <td><?= gettext("In/out packets (pass)") ?></td>
-                      <td> <?= $ifpfcounters['inpktspass'] ?> / <?= $ifpfcounters['outpktspass'] ?>
+                      <td class="text-nowrap"> <?= $ifpfcounters['inpktspass'] ?> / <?= $ifpfcounters['outpktspass'] ?><wbr>
                           (<?= format_bytes($ifpfcounters['inbytespass']) ?> / <?= format_bytes($ifpfcounters['outbytespass']) ?> )
                       </td>
                     </tr>
                     <tr>
                       <td><?= gettext("In/out packets (block)") ?></td>
-                      <td> <?= $ifpfcounters['inpktsblock'] ?> / <?= $ifpfcounters['outpktsblock'] ?>
+                      <td class="text-nowrap"> <?= $ifpfcounters['inpktsblock'] ?> / <?= $ifpfcounters['outpktsblock'] ?><wbr>
                           (<?= format_bytes($ifpfcounters['inbytesblock']) ?> / <?= format_bytes($ifpfcounters['outbytesblock']) ?> )
                       </td>
                     </tr>

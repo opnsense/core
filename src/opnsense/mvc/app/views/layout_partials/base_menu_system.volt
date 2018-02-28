@@ -1,6 +1,6 @@
 <aside id="navigation" class="page-side col-xs-12 col-sm-3 col-lg-2 hidden-xs">
     <div class="row">
-        <nav class="page-side-nav" role="navigation">
+        <nav class="page-side-nav">
             <div id="mainmenu" class="panel" style="border:0px" >
                 <div class="panel list-group" style="border:0px">
                 {% for topMenuItem in menuSystem %}

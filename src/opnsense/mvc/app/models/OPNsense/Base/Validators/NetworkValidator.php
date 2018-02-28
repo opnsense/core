@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2015-2017 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -39,15 +39,13 @@ use \Phalcon\Validation\Message;
  */
 class NetworkValidator extends Validator implements ValidatorInterface
 {
-    const VERSION_4  = FILTER_FLAG_IPV4;
-    const VERSION_6  = FILTER_FLAG_IPV6;
-
     /**
      * Executes network / ip validation, accepts the following parameters as attributes:
      *      version     : ipv4, ipv6, all (default)
      *      noReserved  : true, false (default)
      *      noPrivate   : true, false (default)
      *      noSubnet    : true, false (default)
+     *      netMaskRequired : true, false (default)
      *
      *
      * @param \Phalcon\Validation $validator

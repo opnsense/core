@@ -32,7 +32,7 @@
 
 ?>
 
-<script type="text/javascript">
+<script>
   var traffic_graph_widget_data = [];
   var traffic_graph_widget_chart_in = null;
   var traffic_graph_widget_chart_data_in = null;
@@ -114,7 +114,7 @@
   /**
    * page setup
    */
-  $( document ).ready(function() {
+  $(window).load(function() {
       // draw traffic in graph
       nv.addGraph(function() {
           traffic_graph_widget_chart_in = nv.models.lineChart()

@@ -76,7 +76,6 @@ function get_user_privdesc(& $user)
     return $privs;
 }
 
-// link user section
 $a_user = &config_read_array('system', 'user');
 
 // reset errors and action
@@ -95,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if ($act == "expcert" && isset($id)) {
         // export certificate
-        $cert =& lookup_cert($a_user[$id]['cert'][$_GET['certid']]);
+        $cert = &lookup_cert($a_user[$id]['cert'][$_GET['certid']]);
 
         $exp_name = urlencode("{$a_user[$id]['name']}-{$cert['descr']}.crt");
         $exp_data = base64_decode($cert['crt']);
@@ -108,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } elseif ($act == "expckey" && isset($id)) {
         // export private key
-        $cert =& lookup_cert($a_user[$id]['cert'][$_GET['certid']]);
+        $cert = &lookup_cert($a_user[$id]['cert'][$_GET['certid']]);
         $exp_name = urlencode("{$a_user[$id]['name']}-{$cert['descr']}.key");
         $exp_data = base64_decode($cert['prv']);
         $exp_size = strlen($exp_data);
@@ -120,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } elseif ($act == 'new' || $act == 'edit') {
         // edit user, load or init data
-        $fieldnames = array('user_dn', 'descr', 'expires', 'scope', 'uid', 'priv', 'ipsecpsk', 'lifetime', 'otp_seed', 'email', 'comment');
+        $fieldnames = array('user_dn', 'descr', 'expires', 'scope', 'uid', 'priv', 'ipsecpsk', 'lifetime', 'otp_seed', 'email', 'shell', 'comment');
         if (isset($id)) {
             if (isset($a_user[$id]['authorizedkeys'])) {
                 $pconfig['authorizedkeys'] = base64_decode($a_user[$id]['authorizedkeys']);
@@ -304,7 +303,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        if (count($input_errors)==0) {
+        if (!empty($pconfig['shell']) && !in_array($pconfig['shell'], auth_get_shells(isset($id) ? $a_user[$id]['uid'] : $config['system']['nextuid']))) {
+            $input_errors[] = gettext('Invalid login shell provided.');
+        }
+
+        if (!count($input_errors)) {
             $userent = array();
 
             if (isset($id)) {
@@ -354,6 +357,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 unset($userent['comment']);
             }
 
+            if (!empty($pconfig['shell'])) {
+                $userent['shell'] = $pconfig['shell'];
+            } elseif (isset($userent['shell'])) {
+                unset($userent['shell']);
+            }
+
             if (isset($id)) {
                 $a_user[$id] = $userent;
             } else {
@@ -361,8 +370,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_user[] = $userent;
             }
 
-            local_user_set($userent);
             local_user_set_groups($userent, $pconfig['groups']);
+            local_user_set($userent);
             write_config();
 
             if (!empty($pconfig['chkNewCert'])) {
@@ -387,14 +396,14 @@ legacy_html_escape_form_data($a_user);
 include("head.inc");
 
 ?>
-<script type="text/javascript" src="/ui/js/jquery.qrcode.js"></script>
-<script type="text/javascript" src="/ui/js/qrcode.js"></script>
+<script src="/ui/js/jquery.qrcode.js"></script>
+<script src="/ui/js/qrcode.js"></script>
 
 <body>
 
 <?php include("fbegin.inc"); ?>
 
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
     // unhide otp QR code if found
     $('#otp_unhide').click(function () {
@@ -633,6 +642,18 @@ $( document ).ready(function() {
                     <td>
                       <input name="language" type="hidden" value="<?= $pconfig['language'] ?>" />
                       <?= $pconfig['language'] ?>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Login shell') ?></td>
+                    <td>
+                      <select name="shell" class="selectpicker" data-style="btn-default">
+<?php
+                      foreach (auth_get_shells(isset($id) ? $a_user[$id]['uid'] : $config['system']['nextuid']) as $shell_key => $shell_value) :?>
+                        <option value="<?= html_safe($shell_key) ?>" <?= $pconfig['shell'] == $shell_key ? 'selected="selected"' : '' ?>><?= html_safe($shell_value) ?></option>
+<?php
+                      endforeach;?>
+                      </select>
                     </td>
                   </tr>
                   <tr>
@@ -890,7 +911,7 @@ $( document ).ready(function() {
                     <td>
                       <label class="btn btn-primary" id="otp_unhide"><?= gettext('Click to unhide') ?></label>
                       <div style="display:none;" id="otp_qrcode"></div>
-                      <script type="text/javascript">
+                      <script>
                         $('#otp_qrcode').qrcode('<?= $otp_url ?>');
                       </script>
                       </div>

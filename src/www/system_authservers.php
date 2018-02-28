@@ -308,7 +308,7 @@ if (!isset($_GET['act']) || $_GET['act'] != 'new')
 
 <body>
 
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
     $("#type").change(function(){
         $(".auth_options").addClass('hidden');
@@ -380,29 +380,65 @@ $( document ).ready(function() {
     $("#type").change();
 
     $("#act_select").click(function() {
+        var request_data = {
+            'port': $("#ldap_port").val(),
+            'host': $("#ldap_host").val(),
+            'scope': $("#ldap_scope").val(),
+            'basedn': $("#ldap_basedn").val(),
+            'binddn': $("#ldap_binddn").val(),
+            'bindpw': $("#ldap_bindpw").val(),
+            'urltype': $("#ldap_urltype").val(),
+            'proto': $("#ldap_protver").val(),
+            'authcn': $("#ldapauthcontainers").val(),
+        };
+        if ($("#ldap_caref").val() != undefined) {
+            request_data['cert'] = $("#ldap_caref").val();
+        }
+        //
         if ($("#ldap_port").val() == '' || $("#ldap_host").val() == '' || $("#ldap_scope").val() == '' || $("#ldap_basedn").val() == '') {
-            alert("<?=gettext("Please fill the required values.");?>");
-            return;
+            BootstrapDialog.show({
+              type: BootstrapDialog.TYPE_DANGER,
+              title: "<?= gettext("Server");?>",
+              message: "<?=gettext("Please fill the required values.");?>",
+              buttons: [{
+                        label: "<?= gettext("Close");?>",
+                        action: function(dialogRef) {
+                            dialogRef.close();
+                        }
+                    }]
+            });
         } else {
-            var url = 'system_usermanager_settings_ldapacpicker.php?';
-            url += 'port=' + $("#ldap_port").val();
-            url += '&host=' + $("#ldap_host").val();
-            url += '&scope=' + $("#ldap_scope").val();
-            url += '&basedn=' + $("#ldap_basedn").val();
-            url += '&binddn=' + $("#ldap_binddn").val();
-            url += '&bindpw=' + $("#ldap_bindpw").val();
-            url += '&urltype=' + $("#ldap_urltype").val();
-            url += '&proto=' + $("#ldap_protver").val();
-            url += '&authcn=' + $("#ldapauthcontainers").val();
-            if ($("#ldap_caref").val() != undefined) {
-                url += '&cert=' + $("#ldap_caref").val();
-            } else {
-                url += '&cert=';
-            }
-            var oWin = window.open(url, "OPNsense", "width=620,height=400,top=150,left=150, scrollbars=yes");
-            if (oWin==null || typeof(oWin)=="undefined") {
-                alert("<?=gettext('Popup blocker detected. Action aborted.');?>");
-            }
+            $.post('system_usermanager_settings_ldapacpicker.php', request_data, function(data) {
+                var tbl  = $("<table/>");
+                var tbl_body = $("<tbody/>");
+                for (var i=0; i < data.length ; ++i) {
+                    var tr = $("<tr/>");
+                    tr.append($("<td/>").append(
+                        $("<input type='checkbox' class='ldap_item_select'>")
+                            .prop('checked', data[i].selected)
+                            .prop('value', data[i].value)
+                    ));
+                    tr.append($("<td/>").text(data[i].value));
+                    tbl_body.append(tr);
+                }
+                tbl.append(tbl_body);
+                BootstrapDialog.show({
+                  type: BootstrapDialog.TYPE_PRIMARY,
+                  title: "<?=gettext("Please select which containers to Authenticate against:");?>",
+                  message: tbl,
+                  buttons: [{
+                            label: "<?= gettext("Close");?>",
+                            action: function(dialogRef) {
+
+                                var values = $(".ldap_item_select:checked").map(function(){
+                                    return $(this).val();
+                                }).get().join(';');
+                                $("#ldapauthcontainers").val(values);
+                                dialogRef.close();
+                            }
+                        }]
+                });
+            }, dataType="json");
         }
     });
 });
@@ -486,7 +522,7 @@ endif; ?>
                 <tr class="auth_ldap auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Transport");?></td>
                   <td>
-                    <select name='ldap_urltype' id='ldap_urltype' class="formselect selectpicker" data-style="btn-default">
+                    <select name="ldap_urltype" id="ldap_urltype" class="selectpicker" data-style="btn-default">
                       <option value="TCP - Standard" data-port="389" <?=$pconfig['ldap_urltype'] == "TCP - Standard" ? "selected=\"selected\"" : "";?>>
                         <?=gettext("TCP - Standard");?>
                       </option>
@@ -504,7 +540,7 @@ endif; ?>
                   <td>
 <?php
                     if (count($config['ca'])) :?>
-                    <select id='ldap_caref' name='ldap_caref' class="formselect selectpicker" data-style="btn-default">
+                    <select id="ldap_caref" name="ldap_caref" class="selectpicker" data-style="btn-default">
 <?php
                     foreach ($config['ca'] as $ca) :
 ?>
@@ -526,7 +562,7 @@ endif; ?>
                 <tr class="auth_ldap auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Protocol version");?></td>
                   <td>
-                    <select name='ldap_protver' id='ldap_protver' class="formselect selectpicker" data-style="btn-default">
+                    <select name="ldap_protver" id="ldap_protver" class="selectpicker" data-style="btn-default">
                       <option value="2" <?=$pconfig['ldap_protver'] == 2 ? "selected=\"selected\"" : "";?>>2</option>
                       <option value="3" <?=$pconfig['ldap_protver'] == 3 ? "selected=\"selected\"" : "";?>>3</option>
                     </select>
@@ -547,7 +583,7 @@ endif; ?>
                 <tr class="auth_ldap auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Search scope");?></td>
                   <td>
-                    <select name='ldap_scope' id='ldap_scope' class="formselect selectpicker" data-style="btn-default">
+                    <select name="ldap_scope" id="ldap_scope" class="selectpicker" data-style="btn-default">
                       <option value="one" <?=$pconfig['ldap_scope'] == 'one' ?  "selected=\"selected\"" : "";?>>
                         <?=gettext('One Level');?>
                       </option>
@@ -591,7 +627,7 @@ endif; ?>
                 <tr class="auth_ldap auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Initial Template");?></td>
                   <td>
-                    <select name='ldap_tmpltype' id='ldap_tmpltype' class="formselect selectpicker" data-style="btn-default">
+                    <select name="ldap_tmpltype" id="ldap_tmpltype" class="selectpicker" data-style="btn-default">
                       <option value="open"><?=gettext('OpenLDAP');?></option>
                       <option value="msad"><?=gettext('Microsoft AD');?></option>
                       <option value="edir"><?=gettext('Novell eDirectory');?></option>
@@ -625,7 +661,7 @@ endif; ?>
                 <tr class="auth_radius auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Services offered");?></td>
                   <td>
-                    <select name='radius_srvcs' id='radius_srvcs' class="formselect selectpicker" data-style="btn-default">
+                    <select name="radius_srvcs" id="radius_srvcs" class="selectpicker" data-style="btn-default">
                       <option value="both" <?=$pconfig['radius_srvcs'] == 'both' ? "selected=\"selected\"" :"";?>>
                         <?=gettext('Authentication and Accounting');?>
                       </option>

@@ -306,7 +306,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_snat_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky oubound NAT");?></td>
+                  <td><a id="help_for_snat_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky outbound NAT");?></td>
                   <td>
                     <input name="snat_use_sticky" type="checkbox" id="snat_use_sticky" <?=!empty($pconfig['snat_use_sticky']) ? "checked=\"checked\"" : "";?> />
                     <output class="hidden" for="help_for_snat_use_sticky">
@@ -321,7 +321,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_bogonsinterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Update Frequency");?></td>
                   <td>
-                    <select name="bogonsinterval" class="formselect selectpicker" data-style="btn-default">
+                    <select name="bogonsinterval" class="selectpicker" data-style="btn-default">
                     <option value="monthly" <?=empty($pconfig['bogonsinterval']) || $pconfig['bogonsinterval'] == 'monthly' ? "selected=\"selected\"" : "";?>>
                       <?=gettext("Monthly"); ?>
                     </option>
@@ -368,7 +368,7 @@ include("head.inc");
                     <input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?= !empty($pconfig['gw_switch_default']) ? 'checked="checked"' : '' ?> />
                     <strong><?=gettext("Allow default gateway switching"); ?></strong><br />
                     <output class="hidden" for="help_for_gw_switch_default">
-                      <?= gettext('If the link where the default gateway resides fails switch the default gateway to another available one. This feature has been deprecated.') ?>
+                      <?= gettext('If the link where the default gateway resides fails switch the default gateway to another available one.') ?>
                     </output>
                   </td>
                 </tr>

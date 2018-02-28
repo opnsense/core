@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2018 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2014-2015 Deciso B.V.
  * Copyright (C) 2005-2010 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
@@ -35,6 +35,8 @@ require_once("filter.inc");
 require_once("system.inc");
 require_once("services.inc");
 
+$a_group = &config_read_array('system', 'group');
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['webguiinterfaces'] = !empty($config['system']['webgui']['interfaces']) ? explode(',', $config['system']['webgui']['interfaces']) : array();
@@ -57,7 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enablesshd'] = $config['system']['ssh']['enabled'];
     $pconfig['sshport'] = $config['system']['ssh']['port'];
     $pconfig['sshinterfaces'] = !empty($config['system']['ssh']['interfaces']) ? explode(',', $config['system']['ssh']['interfaces']) : array();
-    $pconfig['passwordauth'] = isset($config['system']['ssh']['passwordauth']);
+    /* XXX listtag "fun" */
+    $pconfig['sshlogingroup'] = !empty($config['system']['ssh']['group'][0]) ? $config['system']['ssh']['group'][0] : null;
+    $pconfig['sshpasswordauth'] = isset($config['system']['ssh']['passwordauth']);
     $pconfig['sshdpermitrootlogin'] = isset($config['system']['ssh']['permitrootlogin']);
     $pconfig['quietlogin'] = isset($config['system']['webgui']['quietlogin']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -187,7 +191,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['ssh']['enabled']);
         }
 
-        if (!empty($pconfig['passwordauth'])) {
+        if (!empty($pconfig['sshlogingroup'])) {
+            $config['system']['ssh']['group'] = $pconfig['sshlogingroup'];
+        } elseif (isset($config['system']['ssh']['group'])) {
+            unset($config['system']['ssh']['group']);
+        }
+
+        if (!empty($pconfig['sshpasswordauth'])) {
             $config['system']['ssh']['passwordauth'] = true;
         } elseif (isset($config['system']['ssh']['passwordauth'])) {
             unset($config['system']['ssh']['passwordauth']);
@@ -246,7 +256,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-
 $a_cert = isset($config['cert']) ? $config['cert'] : array();
 $interfaces = get_configured_interface_with_descr();
 
@@ -258,17 +267,19 @@ if (count($a_cert)) {
 if (empty($pconfig['webguiproto']) || !$certs_available) {
     $pconfig['webguiproto'] = "http";
 }
+
 legacy_html_escape_form_data($pconfig);
+legacy_html_escape_form_data($a_group);
 
 include("head.inc");
 
 ?>
-
 <body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
-  $(document).ready(function() {
-      $(".proto").change(function(){
+<script>
+
+$(document).ready(function() {
+     $(".proto").change(function(){
          if ($("#https_proto").prop('checked')) {
              $("#webguiport").attr('placeholder', '443');
              $(".ssl_opts").show();
@@ -276,8 +287,34 @@ include("head.inc");
              $("#webguiport").attr('placeholder', '80');
              $(".ssl_opts").hide();
          }
-      });
-      $(".proto").change();
+     });
+     $(".proto").change();
+
+     $('#webguiinterface').change(function () {
+         if ($('#webguiinterface option:selected').text() == '') {
+             $.webguiinterface_warned = 0;
+         } else if ($.webguiinterface_warned != 1) {
+             $.webguiinterface_warned = 1;
+             BootstrapDialog.confirm({
+                 title: '<?= html_safe(gettext('Warning!')) ?>',
+                 message: '<?= html_safe(gettext('Changing the listen interfaces of the web GUI may ' .
+                     'prevent you from accessing this page if you continue. It is recommended to keep ' .
+                     'this set to the default unless you know what you are doing.')) ?>',
+                 type: BootstrapDialog.TYPE_WARNING,
+                 btnOKClass: 'btn-warning',
+                 btnOKLabel: '<?= html_safe(gettext('I know what I am doing')) ?>',
+                 btnCancelLabel: '<?= html_safe(gettext('Use the default')) ?>',
+                 callback: function(result) {
+                     if (!result) {
+                         $('#webguiinterface option:selected').removeAttr('selected');
+                         $('#webguiinterface').selectpicker('refresh');
+                         $.webguiinterface_warned = 0;
+                     }
+                 }
+             });
+         }
+     });
+     $.webguiinterface_warned = 0;
 
  <?php
     if (isset($restart_webgui) && $restart_webgui): ?>
@@ -290,8 +327,6 @@ include("head.inc");
                 dialogRef.getModalBody().html(
                     '<?= html_safe(gettext('The web GUI is reloading at the moment, please wait...')) ?>' +
                     ' <i class="fa fa-cog fa-spin"></i><br /><br />' +
-                    ' <?= html_safe(gettext('You will have 5 minutes to confirm the changes before the GUI ' .
-                        'will revert to its previous configuration as an automatic recovery.')) ?><br /><br />' +
                     ' <?= html_safe(gettext('If the page does not reload go here:')) ?>' +
                     ' <a href="<?= html_safe($url) ?>" target="_blank"><?= html_safe($url) ?></a>'
                 );
@@ -367,7 +402,7 @@ include("head.inc");
                 <tr class="ssl_opts">
                   <td><a id="help_for_sslcertref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSL Certificate"); ?></td>
                   <td>
-                    <select name="ssl-certref" class="formselect selectpicker" data-style="btn-default">
+                    <select name="ssl-certref" class="selectpicker" data-style="btn-default">
 <?php
                     foreach ($a_cert as $cert) :?>
                       <option value="<?=$cert['refid'];?>" <?=$pconfig['ssl-certref'] == $cert['refid'] ? "selected=\"selected\"" : "";?>>
@@ -388,7 +423,7 @@ include("head.inc");
                 <tr class="ssl_opts">
                   <td><a id="help_for_sslciphers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSL Ciphers"); ?></td>
                   <td>
-                      <select name="ssl-ciphers[]" class="selectpicker"  multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
+                      <select name="ssl-ciphers[]" class="selectpicker" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
 <?php
                       $ciphers = json_decode(configd_run("system ssl ciphers"), true);
                       if ($ciphers == null) {
@@ -467,7 +502,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_compression" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("HTTP Compression")?></td>
                   <td style="width:78%">
-                    <select name="compression" class="formselect selectpicker">
+                    <select name="compression" class="selectpicker">
                         <option value="" <?=empty($pconfig['compression'])? 'selected="selected"' : '';?>>
                           <?=gettext("Off");?>
                         </option>
@@ -490,7 +525,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_webguiinterfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Listen Interfaces') ?></td>
                     <td>
-                    <select name="webguiinterfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
+                    <select id="webguiinterface" name="webguiinterfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
 <?php
                     foreach ($interfaces as $iface => $ifacename): ?>
                         <option value="<?= html_safe($iface) ?>" <?= !empty($pconfig['webguiinterfaces']) && in_array($iface, $pconfig['webguiinterfaces']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
@@ -527,6 +562,22 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
+                  <td><a id="help_for_sshlogingroup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Login Group') ?></td>
+                    <td>
+                    <select name="sshlogingroup" class="selectpicker">
+                        <option value=""><!-- do not translate: -->wheel</option>
+<?php
+                    foreach ($a_group as $group) :?>
+                        <option value="<?= html_safe($group['name']) ?>" <?= $pconfig['sshlogingroup'] == $group['name'] ? 'selected="selected"' : '' ?>><!-- do not translate: -->wheel, <?= html_safe($group['name']) ?></option>
+<?php
+                    endforeach;?>
+                    </select>
+                    <output class="hidden" for="help_for_sshlogingroup">
+                      <?= gettext('Select the allowed groups for remote login. The "wheel" group is always set for recovery purposes and an additional local group can be selected at will. Do not yield remote access to non-adminstrators as every user can access system files using SSH or SFTP.') ?>
+                    </output>
+                  </td>
+                </tr>
+                <tr>
                   <td><a id="help_for_sshdpermitrootlogin" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Root Login") ?></td>
                   <td>
                     <input name="sshdpermitrootlogin" type="checkbox" value="yes" <?= empty($pconfig['sshdpermitrootlogin']) ? '' : 'checked="checked"' ?> />
@@ -540,11 +591,11 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_passwordauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Authentication Method") ?></td>
+                  <td><a id="help_for_sshpasswordauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Authentication Method") ?></td>
                   <td>
-                    <input name="passwordauth" type="checkbox" value="yes" <?= empty($pconfig['passwordauth']) ? '' : 'checked="checked"' ?> />
+                    <input name="sshpasswordauth" type="checkbox" value="yes" <?= empty($pconfig['sshpasswordauth']) ? '' : 'checked="checked"' ?> />
                     <strong><?=gettext("Permit password login"); ?></strong>
-                    <output class="hidden" for="help_for_passwordauth">
+                    <output class="hidden" for="help_for_sshpasswordauth">
                       <?=sprintf(gettext("When disabled, authorized keys need to be configured for each %sUser%s that has been granted secure shell access."),
                                 '<a href="system_usermanager.php">', '</a>') ?>
                     </output>
@@ -587,7 +638,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_primaryconsole" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Primary Console")?></td>
                   <td style="width:78%">
-                    <select name="primaryconsole" id="primaryconsole" class="formselect selectpicker">
+                    <select name="primaryconsole" id="primaryconsole" class="selectpicker">
 <?php               foreach (system_console_types() as $console_key => $console_type): ?>
                       <option value="<?= html_safe($console_key) ?>" <?= $pconfig['primaryconsole'] == $console_key ? 'selected="selected"' : '' ?>><?= $console_type['name'] ?></option>
 <?                  endforeach ?>
@@ -601,7 +652,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_secondaryconsole" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Secondary Console")?></td>
                   <td style="width:78%">
-                    <select name="secondaryconsole" id="secondaryconsole" class="formselect selectpicker">
+                    <select name="secondaryconsole" id="secondaryconsole" class="selectpicker">
                       <option value="" <?= empty($pconfig['secondaryconsole']) ? 'selected="selected"' : '' ?>><?= gettext('None') ?></option>
 <?php               foreach (system_console_types() as $console_key => $console_type): ?>
                       <option value="<?= html_safe($console_key) ?>" <?= $pconfig['secondaryconsole'] == $console_key ? 'selected="selected"' : '' ?>><?= $console_type['name'] ?></option>
@@ -616,7 +667,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_serialspeed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial Speed")?></td>
                   <td>
-                    <select name="serialspeed" id="serialspeed" class="formselect selectpicker">
+                    <select name="serialspeed" id="serialspeed" class="selectpicker">
                       <option value="115200" <?=$pconfig['serialspeed'] == "115200" ? 'selected="selected"' : '' ?>>115200</option>
                       <option value="57600" <?=$pconfig['serialspeed'] == "57600" ? 'selected="selected"' : '' ?>>57600</option>
                       <option value="38400" <?=$pconfig['serialspeed'] == "38400" ? 'selected="selected"' : '' ?>>38400</option>
@@ -649,7 +700,7 @@ include("head.inc");
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Sudo usage") ?></td>
                   <td style="width:78%">
-                    <select name="sudo_allow_wheel" id="sudo_allow_wheel" class="formselect selectpicker">
+                    <select name="sudo_allow_wheel" id="sudo_allow_wheel" class="selectpicker">
                       <option value="" <?= empty($pconfig['sudo_allow_wheel']) ? 'selected="selected"' : '' ?>><?= gettext('Disallow') ?></option>
                       <option value="1" <?= $pconfig['sudo_allow_wheel'] == 1 ? 'selected="selected"' : '' ?>><?= gettext('Ask password') ?></option>
                       <option value="2" <?= $pconfig['sudo_allow_wheel'] == 2 ? 'selected="selected"' : '' ?>><?= gettext('No password') ?></option>

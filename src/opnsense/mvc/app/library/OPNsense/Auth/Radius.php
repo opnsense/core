@@ -400,6 +400,15 @@ class Radius extends Base implements IAuthConnector
                                 case 85: // Acct-Interim-Interval
                                     $this->lastAuthProperties['Acct-Interim-Interval'] =  radius_cvt_int($resa['data']);
                                     break;
+                                case RADIUS_FRAMED_IP_ADDRESS:
+                                    $this->lastAuthProperties['Framed-IP-Address'] =  radius_cvt_addr($resa['data']);
+                                    break;
+                                case RADIUS_FRAMED_IP_NETMASK:
+                                    $this->lastAuthProperties['Framed-IP-Netmask'] =  radius_cvt_addr($resa['data']);
+                                    break;
+                                case RADIUS_FRAMED_ROUTE:
+                                    $this->lastAuthProperties['Framed-Route'] =  radius_cvt_addr($resa['data']);
+                                    break;
                                 default:
                                     break;
                             }

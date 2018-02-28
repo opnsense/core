@@ -67,9 +67,9 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20160104
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20160630
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20161210
+/usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20170625
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/opnsense-update.deciso.com.20160725
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/opnsense-update.deciso.com.20170721
-/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20170625
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20171219
 /usr/local/etc/rc
 /usr/local/etc/rc.backup_captiveportal
@@ -134,11 +134,13 @@
 /usr/local/etc/rc.subr.d/livemode
 /usr/local/etc/rc.subr.d/recover
 /usr/local/etc/rc.subr.d/swapon
+/usr/local/etc/rc.subr.d/tmp
 /usr/local/etc/rc.subr.d/var
 /usr/local/etc/rc.syshook
 /usr/local/etc/rc.syshook.d/05-beep.stop
 /usr/local/etc/rc.syshook.d/05-update.early
 /usr/local/etc/rc.syshook.d/10-configd.early
+/usr/local/etc/rc.syshook.d/10-newwanip.start
 /usr/local/etc/rc.syshook.d/15-php.early
 /usr/local/etc/rc.syshook.d/20-backup.early
 /usr/local/etc/rc.syshook.d/20-freebsd.start
@@ -322,7 +324,6 @@
 /usr/local/opnsense/contrib/tzdata/iso3166.tab
 /usr/local/opnsense/contrib/tzdata/zone.tab
 /usr/local/opnsense/firmware-product
-/usr/local/opnsense/firmware-upgrade
 /usr/local/opnsense/mvc/app/cache/README
 /usr/local/opnsense/mvc/app/config/config.php
 /usr/local/opnsense/mvc/app/config/loader.php
@@ -823,6 +824,7 @@
 /usr/local/opnsense/www/js/opnsense_bootgrid_plugin.js
 /usr/local/opnsense/www/js/opnsense_ui.js
 /usr/local/opnsense/www/js/qrcode.js
+/usr/local/opnsense/www/js/theme.js
 /usr/local/opnsense/www/themes/opnsense/LICENSE
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.otf
@@ -987,6 +989,7 @@
 /usr/local/www/diag_logs_resolver.php
 /usr/local/www/diag_logs_routing.php
 /usr/local/www/diag_logs_settings.php
+/usr/local/www/diag_logs_suricata.php
 /usr/local/www/diag_logs_template.inc
 /usr/local/www/diag_logs_wireless.php
 /usr/local/www/diag_packet_capture.php
@@ -1073,8 +1076,6 @@
 /usr/local/www/services_unbound_overrides.php
 /usr/local/www/status_dhcp_leases.php
 /usr/local/www/status_dhcpv6_leases.php
-/usr/local/www/status_gateway_groups.php
-/usr/local/www/status_gateways.php
 /usr/local/www/status_graph.php
 /usr/local/www/status_habackup.php
 /usr/local/www/status_interfaces.php
@@ -1125,8 +1126,8 @@
 /usr/local/www/widgets/api/plugins/traffic.inc
 /usr/local/www/widgets/include/carp_status.inc
 /usr/local/www/widgets/include/gateways.inc
+/usr/local/www/widgets/include/interface_list.inc
 /usr/local/www/widgets/include/interface_statistics.inc
-/usr/local/www/widgets/include/interfaces.inc
 /usr/local/www/widgets/include/ipsec.inc
 /usr/local/www/widgets/include/log.inc
 /usr/local/www/widgets/include/ntp_status.inc

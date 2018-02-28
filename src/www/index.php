@@ -101,7 +101,7 @@ include("fbegin.inc");?>
 ?>
 <?php
   if (isset($config['trigger_initial_wizard']) || isset($_GET['wizard_done'])): ?>
-  <script type="text/javascript">
+  <script>
       $( document ).ready(function() {
         $(".page-content-head:first").hide();
       });
@@ -158,7 +158,7 @@ include("fbegin.inc");?>
   else:?>
 
 <script src='/ui/js/jquery-sortable.js'></script>
-<script type="text/javascript">
+<script>
   function addWidget(selectedDiv) {
       $('#'+selectedDiv).show();
       $('#add_widget_'+selectedDiv).hide();
@@ -253,7 +253,7 @@ include("fbegin.inc");?>
   }
 </script>
 
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
       // rearrange widgets to stored column
       $(".widgetdiv").each(function(){
@@ -275,7 +275,7 @@ include("fbegin.inc");?>
 
       // sortable widgets
       $(".dashboard_grid_column").sortable({
-        handle: '.content-box-head',
+        handle: '.widget-sort-handle',
         group: 'dashboard_grid_column',
         itemSelector: '.widgetdiv',
         containerSelector: '.dashboard_grid_column',
@@ -392,6 +392,8 @@ include("fbegin.inc");?>
                     </div>
                   </li>
                 </ul>
+                <div class="container-fluid widget-sort-handle">
+                </div>
               </header>
               <div class="content-box-main collapse in" id="<?= $widgetItem['name'] ?>-container" style="display:<?= $mindiv ?>">
                 <input type="hidden" value="<?= $inputdisplay ?>" id="<?= $widgetItem['name'] ?>-config" name="<?= $widgetItem['name'] ?>-config" />

@@ -1127,7 +1127,7 @@ include("head.inc");
 
 <body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
     $( document ).ready(function() {
         $("#server").change(function(){
             $('.server_item').hide();
@@ -1280,7 +1280,7 @@ if (isset($savemsg)) {
               <tr>
                 <td style="vertical-align:top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Remote Access Server");?></td>
                 <td>
-                  <select name="server" id="server" class="formselect">
+                  <select name="server" id="server">
 <?php
                     foreach ($ras_server as $server) :?>
                     <option value="<?=$server['index'];?>" data-mode="<?=$server['mode'];?>"><?=htmlspecialchars($server['name']);?></option>
@@ -1328,7 +1328,7 @@ if (isset($savemsg)) {
               <tr class="mode_server">
                 <td style="vertical-align:top"><a id="help_for_verify_server_cn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Verify Server CN");?></td>
                 <td >
-                      <select name="verifyservercn" id="verifyservercn" class="formselect">
+                      <select name="verifyservercn" id="verifyservercn">
                         <option value="auto"><?=gettext("Automatic - Use verify-x509-name (OpenVPN 2.3+) where possible");?></option>
                         <option value="tls-remote"><?=gettext("Use tls-remote (deprecated, use only on clients prior to OpenVPN 2.3)");?></option>
                         <option value="tls-remote-quote"><?=gettext("Use tls-remote and quote the server CN");?></option>
@@ -1379,7 +1379,7 @@ if (isset($savemsg)) {
                       </output>
                       <div id="useproxy_opts" style="display:none" >
                         <label for="useproxytype"><?=gettext("Type");?></label>
-                        <select name="useproxytype" id="useproxytype" class="formselect">
+                        <select name="useproxytype" id="useproxytype">
                           <option value="http"><?=gettext("HTTP");?></option>
                           <option value="socks"><?=gettext("SOCKS");?></option>
                         </select>
@@ -1389,7 +1389,7 @@ if (isset($savemsg)) {
                         <input name="proxyport" id="proxyport" type="text" class="formfld unknown" size="5" value="" />
                         <div>
                           <label for="useproxypass"><?=gettext("Choose proxy authentication if any.");?></label>
-                          <select name="useproxypass" id="useproxypass" class="formselect">
+                          <select name="useproxypass" id="useproxypass">
                             <option value="none"><?=gettext("none");?></option>
                             <option value="basic"><?=gettext("basic");?></option>
                             <option value="ntlm"><?=gettext("ntlm");?></option>
@@ -1563,12 +1563,12 @@ if (isset($savemsg)) {
                 <tr>
                   <td style="vertical-align:top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Links to OpenVPN clients");?></td>
                   <td>
-                    <a href="http://www.sparklabs.com/viscosity/"><?= gettext("Viscosity") ?></a> - <?= gettext("Recommended client for Mac OSX and Windows") ?><br/>
-                    <a href="http://openvpn.net/index.php/open-source/downloads.html"><?= gettext("OpenVPN Community Client") ?></a> - <?=gettext("Binaries for Windows, Source for other platforms.")?><br/>
-                    <a href="https://play.google.com/store/apps/details?id=de.blinkt.openvpn"><?= gettext("OpenVPN For Android") ?></a> - <?=gettext("Recommended client for Android")?><br/>
-                    <a href="http://www.featvpn.com/"><?= gettext("FEAT VPN For Android") ?></a> - <?=gettext("For older versions of Android")?><br/>
-                    <?= gettext("OpenVPN Connect") ?>: <a href="https://play.google.com/store/apps/details?id=net.openvpn.openvpn"><?=gettext("Android (Google Play)")?></a> or <a href="https://itunes.apple.com/us/app/openvpn-connect/id590379981"><?=gettext("iOS (App Store)")?></a> - <?= gettext("Recommended client for iOS") ?><br/>
-                    <a href="https://tunnelblick.net"><?= gettext("Tunnelblick") ?></a> - <?= gettext("Free client for OSX") ?>
+                    <a href="http://www.sparklabs.com/viscosity/" target="_blank"><?= gettext("Viscosity") ?></a> - <?= gettext("Recommended client for Mac OSX and Windows") ?><br/>
+                    <a href="http://openvpn.net/index.php/open-source/downloads.html" target="_blank"><?= gettext("OpenVPN Community Client") ?></a> - <?=gettext("Binaries for Windows, Source for other platforms.")?><br/>
+                    <a href="https://play.google.com/store/apps/details?id=de.blinkt.openvpn" target="_blank"><?= gettext("OpenVPN For Android") ?></a> - <?=gettext("Recommended client for Android")?><br/>
+                    <a href="http://www.featvpn.com/" target="_blank"><?= gettext("FEAT VPN For Android") ?></a> - <?=gettext("For older versions of Android")?><br/>
+                    <?= gettext("OpenVPN Connect") ?>: <a href="https://play.google.com/store/apps/details?id=net.openvpn.openvpn" target="_blank"><?=gettext("Android (Google Play)")?></a> or <a href="https://itunes.apple.com/us/app/openvpn-connect/id590379981" target="_blank"><?=gettext("iOS (App Store)")?></a> - <?= gettext("Recommended client for iOS") ?><br/>
+                    <a href="https://tunnelblick.net" target="_blank"><?= gettext("Tunnelblick") ?></a> - <?= gettext("Free client for OSX") ?>
                   </td>
                 </tr>
               </table>

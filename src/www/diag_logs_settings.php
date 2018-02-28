@@ -56,6 +56,7 @@ function clear_all_log_files()
         'relayd',
         'resolver',
         'routing',
+        'suricata',
         'system',
         'vpn',
         'wireless',
@@ -218,7 +219,7 @@ include("head.inc");
 
 
 <body>
-<script type="text/javascript">
+<script>
 //<![CDATA[
 function enable_change(enable_over) {
   if (document.iform.enable.checked || enable_over) {

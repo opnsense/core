@@ -307,7 +307,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig["dn_commonname"])) {
                         $input_errors[] = gettext("The field 'Distinguished name Common Name' contains invalid characters.");
                     }
-                } elseif (($reqdfields[$i] != "descr") && preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\.\"\']/", $pconfig["$reqdfields[$i]"])) {
+                } elseif (($reqdfields[$i] != "descr") && preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig["$reqdfields[$i]"])) {
                     $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $reqdfieldsn[$i]);
                 }
             }
@@ -410,7 +410,7 @@ $main_buttons = array(
 ?>
 
 <body>
-  <script type="text/javascript">
+  <script>
   $( document ).ready(function() {
     // delete entry
     $(".act_delete").click(function(event){

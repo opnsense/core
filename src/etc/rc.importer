@@ -27,6 +27,11 @@
 INSTALL="/.probe.for.install.media"
 MNT="/tmp/hdrescue"
 
+if [ "$(id -u)" != "0" ]; then
+	echo "Must be root."
+	exit 1
+fi
+
 bootstrap_and_exit()
 {
 	# ensure config directory structure

@@ -76,11 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     config_read_array('dhcpdv6', $if, 'staticmap');
 
     /* input validation */
-    $reqdfields = explode(" ", "duid");
-    $reqdfieldsn = array(gettext("DUID Identifier"));
-
-    do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
-
     if (!empty($pconfig['hostname'])) {
         preg_match("/\-\$/", $pconfig['hostname'], $matches);
         if ($matches) {
@@ -95,7 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['ipaddrv6']) && !is_ipaddrv6($pconfig['ipaddrv6'])) {
         $input_errors[] = gettext("A valid IPv6 address must be specified.");
     }
-    if (empty($pconfig['duid'])) {
+
+    if (empty($pconfig['duid']) || preg_match('/^([a-fA-F0-9]{2}[:])*([a-fA-F0-9]{2}){1}$/', $pconfig['duid']) !== 1) {
         $input_errors[] = gettext("A valid DUID Identifier must be specified.");
     }
 

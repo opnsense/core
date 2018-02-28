@@ -114,7 +114,7 @@ include("head.inc");
 ?>
 
 <body>
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     hook_ipv4v6('ipv4v6net', 'network-id');
   });

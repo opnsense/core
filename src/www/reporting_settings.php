@@ -73,7 +73,7 @@ include("head.inc");
 
 ?>
 <body>
-<script type="text/javascript">
+<script>
 //<![CDATA[
 $(document).ready(function() {
     // messagebox, flush all rrd graphs

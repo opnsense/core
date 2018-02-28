@@ -301,7 +301,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("Cannot enable static ARP when you have static map entries without IP addresses. Ensure all static maps have IP addresses and try again.");
         }
         if (!empty($pconfig['interface_mtu']) && (
-          (string)((int)$pconfig['interface_mtu']) != $pconfig['interface_mtu'] || $pconfig['interface_mtu'] < 68)
+          (string)((int)$pconfig['interface_mtu']) != $pconfig['interface_mtu'] || $pconfig['interface_mtu'] < 68 || $pconfig['interface_mtu'] > 65535)
         ) {
             $input_errors[] = gettext("A valid MTU value must be specified.");
         }
@@ -495,7 +495,7 @@ include("head.inc");
 
 <body>
 
-<script type="text/javascript">
+<script>
 //<![CDATA[
     function show_shownumbervalue() {
         $("#shownumbervaluebox").html('');
@@ -534,7 +534,7 @@ include("head.inc");
 //]]>
 </script>
 
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     /**
      * Additional BOOTP/DHCP Options extenable table

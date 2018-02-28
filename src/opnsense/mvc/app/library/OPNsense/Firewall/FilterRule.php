@@ -222,14 +222,14 @@ class FilterRule extends Rule
             }
             // icmp-type switch (ipv4/ipv6)
             if ($rule['protocol'] == "icmp" && !empty($rule['icmptype'])) {
-                if ($ipproto == 'inet') {
+                if ($rule['ipprotocol'] == 'inet') {
                     $rule['icmp-type'] = $rule['icmptype'];
-                } elseif ($ipproto == 'inet6') {
+                } elseif ($rule['ipprotocol']== 'inet6') {
                     $rule['icmp6-type'] = $rule['icmptype'];
                 }
             }
             // icmpv6
-            if ($ipproto == 'inet6' && !empty($rule['protocol']) && $rule['protocol'] == "icmp") {
+            if ($rule['ipprotocol'] == 'inet6' && !empty($rule['protocol']) && $rule['protocol'] == "icmp") {
                 $rule['protocol'] = 'ipv6-icmp';
             }
             // set prio

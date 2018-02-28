@@ -56,6 +56,28 @@ function html_safe($text)
     return htmlspecialchars($text, ENT_QUOTES | ENT_HTML401);
 }
 
+/**
+ * search for a themed filename or return distribution standard
+ * @param string $url relative url
+ * @return string
+ */
+function get_themed_filename($url)
+{
+    $theme = get_current_theme();
+    $search_pattern = array(
+        "/themes/{$theme}/build/",
+        "/"
+    );
+    foreach ($search_pattern as $pattern) {
+        $filename = "/usr/local/opnsense/www{$pattern}{$url}";
+        if (file_exists($filename)) {
+            return str_replace("//", "/", "/ui{$pattern}{$url}");
+        }
+    }
+    return $url; // not found, return source
+}
+
+
 require_once("authgui.inc");
 
 /* Reserved table names to avoid colision */
@@ -188,7 +210,7 @@ function print_info_box_apply($msg)
     $value = 'Apply changes';
     $name= 'apply';
 
-    $savebutton = sprintf('<form action="' . $_SERVER['REQUEST_URI'] . '" method="post">', $_SERVER['REQUEST_URI']);
+    $savebutton = '<form method="post">';
     $savebutton .= sprintf(
         '<button type="submit" name="%s" id="%s" class="btn btn-primary pull-right" value="%s">%s</button>',
         $name,

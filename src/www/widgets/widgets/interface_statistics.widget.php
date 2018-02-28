@@ -31,7 +31,7 @@
 */
 ?>
 
-<script type="text/javascript">
+<script>
   /**
    * update interface statistics
    */

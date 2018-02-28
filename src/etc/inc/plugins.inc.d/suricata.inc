@@ -50,8 +50,9 @@ function suricata_services()
 function suricata_syslog()
 {
     $logfacilities = array();
-    $logfacilities['suricata.syslog'] = array(
-        'facility' => array('suricata')
+
+    $logfacilities['suricata'] = array(
+        'facility' => array('suricata'),
     );
 
     return $logfacilities;

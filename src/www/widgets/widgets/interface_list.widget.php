@@ -31,12 +31,12 @@
 */
 
 require_once("guiconfig.inc");
-require_once("widgets/include/interfaces.inc");
+require_once("widgets/include/interface_list.inc");
 require_once("interfaces.inc");
 
 ?>
 
-<script type="text/javascript">
+<script>
   /**
    * Hybrid widget only update interface status using ajax
    */

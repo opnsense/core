@@ -34,13 +34,13 @@
 </style>
 
 <!-- nvd3 -->
-<link rel="stylesheet" href="/ui/css/nv.d3.css">
+<link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/nv.d3.css', ui_theme|default('opnsense'))}}" />
 
 <!-- d3 -->
-<script type="text/javascript" src="/ui/js/d3.min.js"></script>
+<script src="/ui/js/d3.min.js"></script>
 
 <!-- nvd3 -->
-<script type="text/javascript" src="/ui/js/nv.d3.min.js"></script>
+<script src="/ui/js/nv.d3.min.js"></script>
 
 <!-- System Health -->
 <style>
@@ -52,7 +52,7 @@
 </style>
 
 
-<script type="application/javascript">
+<script>
     var chart;
     var data = [];
     var fetching_data = true;

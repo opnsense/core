@@ -120,7 +120,7 @@ include("head.inc");
 
 ?>
 
-<script type="text/javascript">
+<script>
 //<![CDATA[
   $(document).ready(function() {
     if ($('#smtpssl').is(':checked')) {

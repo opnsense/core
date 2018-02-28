@@ -2180,6 +2180,13 @@ table th[class*="col-"] {
     -webkit-overflow-scrolling: touch; }
     .table-responsive > .table {
       margin-bottom: 0; }
+      .table-responsive > .table > thead > tr > th,
+      .table-responsive > .table > thead > tr > td,
+      .table-responsive > .table > tbody > tr > th,
+      .table-responsive > .table > tbody > tr > td,
+      .table-responsive > .table > tfoot > tr > th,
+      .table-responsive > .table > tfoot > tr > td {
+        white-space: nowrap; }
     .table-responsive > .table-bordered {
       border: 0; }
       .table-responsive > .table-bordered > thead > tr > th:first-child,
@@ -5478,6 +5485,9 @@ body {
   touch-action: manipulation;
   min-width: 320px; }
 
+.widget-sort-handle {
+  touch-action: none; }
+
 .page-head {
   background: #3C3C3B;
   top: 0;
@@ -5643,8 +5653,7 @@ body {
 .collapse .list-group-item:last-child {
   border-bottom: none; }
 
-.dropdown-menu > li > a,
-.dropdown-header {
+ul.nav > li.dropdown > ul.dropdown-menu > li > a {
   padding: 3px 10px; }
 
 .nav-tabs {
@@ -5811,6 +5820,7 @@ table {
   padding: 10px 20px; }
 
 .label-opnsense {
+  /* emulates btn */
   border: 1px solid transparent;
   display: inline-block;
   vertical-align: middle;
@@ -5819,9 +5829,11 @@ table {
   border-radius: 3px; }
 
 .label-opnsense-sm {
+  /* emulates btn-sm */
   padding: 5px 10px; }
 
 .label-opnsense-xs {
+  /* emulates btn-xs */
   padding: 1px 5px; }
 
 ::-webkit-scrollbar {
@@ -5858,3 +5870,41 @@ select {
   background-repeat: no-repeat;
   background-position: right;
   background-image: url(/ui/themes/opnsense/build/images/caret.png) !important; }
+
+#grid-log th[data-column-id="__timestamp__"],
+#filter-log-entries th[data-column-id="__timestamp__"] {
+  min-width: 3.5em; }
+
+@media screen and (max-width: 767px) {
+  .table-responsive {
+    margin-bottom: 0; }
+    .table-responsive > .table > thead > tr > th,
+    .table-responsive > .table > thead > tr > td,
+    .table-responsive > .table > tbody > tr > th,
+    .table-responsive > .table > tbody > tr > td,
+    .table-responsive > .table > tfoot > tr > th,
+    .table-responsive > .table > tfoot > tr > td {
+      white-space: normal; } }
+
+label > input[type="checkbox"],
+label > input[type="radio"] {
+  margin-right: .4em;
+  float: left; }
+
+output[for*="help_for"] {
+  padding-top: 0.4em;
+  padding-bottom: 0.4em; }
+
+#log-settings label[for^="act"] {
+  margin-right: 1.5em; }
+
+#log-settings table>tbody>tr>td {
+  vertical-align: middle; }
+
+#log-settings select#filterlogentries,
+#log-settings select#filterlogentriesupdateinterval {
+  width: 5em; }
+
+#log-settings select#filterlogentriesinterfaces {
+  min-width: 100%;
+  max-width: 100%; }

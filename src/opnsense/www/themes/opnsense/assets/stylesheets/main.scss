@@ -125,6 +125,9 @@ body{
   min-width: 320px;
 }
 
+.widget-sort-handle {
+  touch-action: none; }
+
 .page-head{
   background: map-get($colors, darkgrey);
   top: 0;
@@ -363,8 +366,7 @@ body{
   border-bottom: none;
 }
 
-.dropdown-menu > li > a,
-.dropdown-header {
+ul.nav > li.dropdown > ul.dropdown-menu > li > a {
   padding: 3px 10px;
 }
 
@@ -644,3 +646,55 @@ select {
   background-repeat: no-repeat;
   background-position: right;
   background-image: url(/ui/themes/opnsense/build/images/caret.png) !important;}
+
+#grid-log th[data-column-id="__timestamp__"],
+#filter-log-entries th[data-column-id="__timestamp__"] {
+  min-width: 3.5em;
+}
+
+.table-responsive {
+  @media screen and (max-width: $screen-xs-max) {
+    margin-bottom: 0;
+    > .table {
+      > thead,
+      > tbody,
+      > tfoot {
+        > tr {
+          > th,
+          > td {
+            white-space: normal;
+          }
+        }
+      }
+    }
+  }
+}
+
+label>input[type="checkbox"],
+label>input[type="radio"] {
+  margin-right: .4em;
+  float:left;
+}
+
+output[for*="help_for"] {
+  padding-top: 0.4em;
+  padding-bottom: 0.4em;
+}
+
+#log-settings label[for^="act"] {
+  margin-right: 1.5em;
+}
+
+#log-settings table>tbody>tr>td {
+  vertical-align: middle;
+}
+
+#log-settings select#filterlogentries,
+#log-settings select#filterlogentriesupdateinterval {
+  width: 5em;
+}
+
+#log-settings select#filterlogentriesinterfaces {
+  min-width: 100%;
+  max-width: 100%;
+}

@@ -68,51 +68,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         curl_close($ch);
         $test_results = explode("\r\n", $output);
     } elseif (count($input_errors) == 0) {
-        $refresh = $pconfig['enable'] != $config['opendns']['enable'];
         $config['opendns']['enable'] = !empty($pconfig['enable']);
         $config['opendns']['username'] = $pconfig['username'];
         $config['opendns']['password'] = $pconfig['password'];
         $config['opendns']['host'] = $pconfig['host'];
-        if ($refresh) {
-            if ($config['opendns']['enable']) {
-                $config['system']['dnsserver'] = array();
-                $v4_server = array('208.67.222.222', '208.67.220.220');
-                $v6_server = array('2620:0:ccc::2', '2620:0:ccd::2');
-                if (isset($config['system']['prefer_ipv4'])) {
-                    $config['system']['dnsserver'][] = $v4_server[0];
-                    $config['system']['dnsserver'][] = $v4_server[1];
-                    if (isset($config['system']['ipv6allow'])) {
-                        $config['system']['dnsserver'][] = $v6_server[0];
-                        $config['system']['dnsserver'][] = $v6_server[1];
-                    }
-                } else {
-                    if (isset($config['system']['ipv6allow'])) {
-                        $config['system']['dnsserver'][] = $v6_server[0];
-                        $config['system']['dnsserver'][] = $v6_server[1];
-                    }
-                    $config['system']['dnsserver'][] = $v4_server[0];
-                    $config['system']['dnsserver'][] = $v4_server[1];
+        if ($config['opendns']['enable']) {
+            $config['system']['dnsserver'] = array();
+            $v4_server = array('208.67.222.222', '208.67.220.220');
+            $v6_server = array('2620:0:ccc::2', '2620:0:ccd::2');
+            if (isset($config['system']['prefer_ipv4'])) {
+                $config['system']['dnsserver'][] = $v4_server[0];
+                $config['system']['dnsserver'][] = $v4_server[1];
+                if (isset($config['system']['ipv6allow'])) {
+                    $config['system']['dnsserver'][] = $v6_server[0];
+                    $config['system']['dnsserver'][] = $v6_server[1];
                 }
-                $config['system']['dnsallowoverride'] = false;
             } else {
-                $config['system']['dnsserver'] = array();
-                $config['system']['dnsserver'][] = '';
-                $config['system']['dnsallowoverride'] = true;
+                if (isset($config['system']['ipv6allow'])) {
+                    $config['system']['dnsserver'][] = $v6_server[0];
+                    $config['system']['dnsserver'][] = $v6_server[1];
+                }
+                $config['system']['dnsserver'][] = $v4_server[0];
+                $config['system']['dnsserver'][] = $v4_server[1];
             }
+            $config['system']['dnsallowoverride'] = false;
+        } else {
+            $config['system']['dnsserver'] = array();
+            $config['system']['dnsserver'][] = '';
+            $config['system']['dnsallowoverride'] = true;
         }
         write_config('OpenDNS filter configuration change');
-        if ($refresh) {
-            system_resolvconf_generate();
-            services_dhcpd_configure();
-            $savemsg = get_std_save_message();
-        }
+        system_resolvconf_generate();
+        services_dhcpd_configure();
+        $savemsg = get_std_save_message();
     }
 }
 
 legacy_html_escape_form_data($pconfig);
-include 'head.inc';
-?>
 
+include 'head.inc';
+
+?>
 <body>
 
 <?php include 'fbegin.inc'; ?>

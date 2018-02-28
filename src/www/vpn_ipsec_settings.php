@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig  = array();
     $pconfig['disablevpnrules'] = isset($config['system']['disablevpnrules']);
     $pconfig['preferoldsa_enable'] = isset($config['ipsec']['preferoldsa']);
+    $pconfig['auto_routes_disable'] = isset($config['ipsec']['auto_routes_disable']);
     if (!empty($config['ipsec']['passthrough_networks'])) {
         $pconfig['passthrough_networks'] = explode(',', $config['ipsec']['passthrough_networks']);
     } else {
@@ -95,6 +96,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif (isset($config['ipsec']['passthrough_networks'])) {
             unset($config['ipsec']['passthrough_networks']);
         }
+        if (!empty($pconfig['auto_routes_disable'])) {
+            $config['ipsec']['auto_routes_disable'] = true;
+        } elseif (isset($config['ipsec']['auto_routes_disable'])) {
+            unset($config['ipsec']['auto_routes_disable']);
+        }
 
         write_config();
         $savemsg = get_std_save_message();
@@ -111,12 +117,11 @@ include("head.inc");
 ?>
 
 <!-- JQuery Tokenize (http://zellerda.com/projects/tokenize) -->
-<script type="text/javascript" src="/ui/js/jquery.tokenize.js"></script>
-<link rel="stylesheet" type="text/css" href="/ui/css/jquery.tokenize.css" />
+<script src="/ui/js/jquery.tokenize.js"></script>
+<link rel="stylesheet" type="text/css" href="<?=get_themed_filename("/css/jquery.tokenize.css");?>">
+<script src="/ui/js/opnsense_ui.js"></script>
 
-<script type="text/javascript" src="/ui/js/opnsense_ui.js"></script>
-
- <script type="text/javascript">
+ <script>
     $( document ).ready(function() {
         formatTokenizersUI();
     });
@@ -179,6 +184,18 @@ if (isset($input_errors) && count($input_errors) > 0) {
                         <output class="hidden" for="help_for_passthrough_networks">
                             <?=gettext("This exempts traffic for one or more subnets from getting processed by the IPsec stack in the kernel. ".
                                         "When sending all traffic to the remote location, you probably want to add your lan network(s) here"); ?>
+                        </output>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_auto_routes_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Do not install routes"); ?></td>
+                      <td style="width:78%" class="vtable">
+                        <input name="auto_routes_disable" type="checkbox" id="auto_routes_disable" value="yes" <?= !empty($pconfig['auto_routes_disable']) ? "checked=\"checked\"" : "";?> />
+                        <strong><?=gettext("Do not automatically install routes"); ?></strong>
+                        <output class="hidden" for="help_for_auto_routes_disable">
+                            <?=gettext("By default, IPsec installs routes when a tunnel becomes active. " .
+                                                  "Select this option to prevent automatically adding routes" .
+                                                  " to the system routing table. See charon.install_routes"); ?>
                         </output>
                       </td>
                     </tr>

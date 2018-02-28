@@ -25,7 +25,7 @@
  # POSSIBILITY OF SUCH DAMAGE.
  #}
 
-<script type="text/javascript">
+<script>
 
     /**
      * prepare for checking update status

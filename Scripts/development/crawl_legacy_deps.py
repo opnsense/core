@@ -48,7 +48,7 @@ if not os.path.exists(target_directory):
 crawler = DependancyCrawler(src_root)
 print '[%.2f] started ' % (time.time())
 crawler.crawl()
-print '[%.2f] collected %d dependancies in %d files' % (time.time(),
+print '[%.2f] collected %d dependencies in %d files' % (time.time(),
                                                         crawler.get_total_dependencies(),
                                                         crawler.get_total_files())
 

@@ -28,6 +28,7 @@
     --------------------------------------------------------------------------------------
     update aliases
 """
+
 import os
 import sys
 import argparse
@@ -47,11 +48,22 @@ class AliasParser(object):
         self._aliases = dict()
 
     def read(self):
-        known_aliases_list = map(lambda x: x.text, self._source_tree.iterfind('table/name'))
+        """ read aliases
+            :return: None
+        """
         self._aliases = dict()
+        alias_parameters = dict()
+        alias_parameters['known_aliases'] = map(lambda x: x.text, self._source_tree.iterfind('table/name'))
+
+        # parse general alias settings
+        conf_general = self._source_tree.find('general')
+        if conf_general:
+            if conf_general.find('ssl_no_verify') is not None and conf_general.find('ssl_no_verify').text == "1":
+                alias_parameters['ssl_no_verify'] = True
+
+        # loop through aliases
         for elem in self._source_tree.iterfind('table'):
-            alias = Alias(elem, known_aliases=known_aliases_list)
-            alias.resolve()
+            alias = Alias(elem, **alias_parameters)
             self._aliases[alias.get_name()] = alias
 
     def get_alias_deps(self, alias, alias_deps=None):
@@ -103,6 +115,7 @@ if __name__ == '__main__':
 
     aliases = AliasParser(source_tree)
     aliases.read()
+
     for alias in aliases:
         # fetch alias content including dependencies
         alias_name = alias.get_name()

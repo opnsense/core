@@ -174,8 +174,10 @@ function services_radvd_configure($blacklist = array())
 
         $stanzas = array();
         $ifcfgsnv6 = get_interface_subnetv6($dhcpv6if);
-        $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
-        $stanzas[] = "{$subnetv6}/{$ifcfgsnv6}";
+        if (!empty($ifcfgsnv6)) {
+            $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
+            $stanzas[] = "{$subnetv6}/{$ifcfgsnv6}";
+        }
 
         $viparr = &config_read_array('virtualip', 'vip');
         foreach ($viparr as $vip) {
@@ -813,7 +815,7 @@ EOD;
             if (!empty($dhcpifconf['filename']) && !empty($dhcpifconf['filename32']) && !empty($dhcpifconf['filename64'])) {
                 $dhcpdconf .= "  if option arch = 00:06 {\n";
                 $dhcpdconf .= "    filename \"{$dhcpifconf['filename32']}\";\n";
-                $dhcpdconf .= "  } else if option arch = 00:07 {\n";
+                $dhcpdconf .= "  } else if option arch = 00:09 {\n";
                 $dhcpdconf .= "    filename \"{$dhcpifconf['filename64']}\";\n";
                 $dhcpdconf .= "  } else {\n";
                 $dhcpdconf .= "    filename \"{$dhcpifconf['filename']}\";\n";

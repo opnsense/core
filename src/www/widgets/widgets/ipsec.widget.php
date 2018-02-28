@@ -75,28 +75,28 @@ if (isset($config['ipsec']['phase1'])) {
 
 if (isset($config['ipsec']['phase2'])) {
 ?>
-<script type="text/javascript">
+<script>
     $(document).ready(function() {
-        $(".ipsec-tab").click(function(){
+        $(".ipsec-tab").unbind('click').click(function(){
             $(".ipsec-tab").css('background-color', '#777777');
             $(".ipsec-tab").css('color', 'white');
             $(this).css('background-color', '#EEEEEE');
             $(this).css('color', 'black');
             $(".ipsec-tab-content").hide();
-            $("#"+$(this).attr('for')).show();
+            $("#"+$(this).attr('data-for')).show();
         });
     });
 </script>
 <div id="tabs">
-    <output for="ipsec-Overview" class="ipsec-tab table-cell" style="background-color:#EEEEEE; color:black; cursor: pointer; display:table-cell">
+    <div data-for="ipsec-Overview" class="ipsec-tab table-cell" style="background-color:#EEEEEE; color:black; cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Overview");?>&nbsp;&nbsp;</strong>
-    </output>
-    <output for="ipsec-tunnel" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
+    </div>
+    <div data-for="ipsec-tunnel" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Tunnels");?>&nbsp;&nbsp;</strong>
-    </output>
-    <output for="ipsec-mobile" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
+    </div>
+    <div data-for="ipsec-mobile" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Mobile");?>&nbsp;&nbsp;</strong>
-    </output>
+    </div>
 </div>
 
 <div id="ipsec-Overview" class="ipsec-tab-content" style="display:block;background-color:#EEEEEE;">
