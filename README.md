@@ -79,6 +79,11 @@ installed package in the system.  Safety measures may prevent the target
 from succeeding.  Instructions on how to proceed in case of failures are
 given inline.
 
+make collect
+------------
+
+Fetch changes from the running system for all known files.
+
 make lint
 ---------
 
