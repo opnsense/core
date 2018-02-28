@@ -3577,6 +3577,9 @@ function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
     $dhclientconf .= "{$option_modifiers}";
     $dhclientconf .= "\n";
     $dhclientconf .= "\tscript \"/usr/local/sbin/dhclient-script.ext\";\n";
+    if (is_ipaddrv4($wancfg['dhcprejectfrom'])) {
+        $dhclientconf .= "\treject {$wancfg['dhcprejectfrom']};\n";
+    }
     $dhclientconf .= "}\n";
 
     $dhclientconf = DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf);
