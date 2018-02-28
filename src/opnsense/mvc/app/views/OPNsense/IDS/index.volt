@@ -38,7 +38,7 @@ POSSIBILITY OF SUCH DAMAGE.
         width: 150px;
     }
     @media (min-width: 768px) {
-        .modal-dialog {
+        .suricata-alert > .modal-dialog {
             width: 90%;
             max-width:1200px;
         }
@@ -56,9 +56,7 @@ POSSIBILITY OF SUCH DAMAGE.
          * update service status
          */
         function updateStatus() {
-            ajaxCall(url="/api/ids/service/status", sendData={}, callback=function(data,status) {
-                updateServiceStatusUI(data['status']);
-            });
+            updateServiceControlUI('ids');
         }
 
         /**
@@ -472,7 +470,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                         }
 
                                         tbl.append(tbl_tbody);
-                                        stdDialogInform("{{ lang._('Alert info') }}", tbl, "{{ lang._('Close') }}", undefined, "info");
+                                        stdDialogInform("{{ lang._('Alert info') }}", tbl, "{{ lang._('Close') }}", undefined, "info", 'suricata-alert');
                                   });
                                 }
                             });

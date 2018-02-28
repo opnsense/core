@@ -136,8 +136,8 @@ function mapDataToFormUI(data_get_map) {
 /**
  * update service status buttons in user interface
  */
-function updateServiceStatusUI(status) {
-
+function updateServiceStatusUI(status)
+{
     var status_html = '<span class="label label-opnsense label-opnsense-sm ';
 
     if (status == "running") {
@@ -151,6 +151,48 @@ function updateServiceStatusUI(status) {
     status_html += '"><i class="fa fa-play fa-fw"/></span>';
 
     $('#service_status_container').html(status_html);
+}
+
+/**
+ * operate service status buttons in user interface
+ */
+function updateServiceControlUI(serviceName)
+{
+    ajaxCall(url="/api/" + serviceName + "/service/status", sendData={}, callback=function(data,status) {
+        var status_html = '<span class="label label-opnsense label-opnsense-sm ';
+        var status_icon = '';
+        var buttons = '';
+
+        if (data['status'] == "running") {
+            status_html += 'label-success';
+            status_icon = 'play';
+            buttons += '<span id="restartService" class="btn btn-sm btn-default"><i class="fa fa-refresh fa-fw"></i></span> ';
+            buttons += '<span id="stopService" class="btn btn-sm btn-default"><i class="fa fa-stop fa-fw"></span>';
+        } else if (data['status'] == "stopped") {
+            status_html += 'label-danger';
+            status_icon = 'stop';
+            buttons += '<span id="startService" class="btn btn-sm btn-default"><i class="fa fa-play fa-fw"></i></span>';
+        } else {
+            status_html += 'hidden';
+        }
+
+        status_html += '"><i class="fa fa-' + status_icon + ' fa-fw"/></span>';
+
+        $('#service_status_container').html(status_html + " " + buttons);
+
+        var commands = ["start", "restart", "stop"];
+        commands.forEach(function(command) {
+            $("#" + command + "Service").click(function(){
+                $('#OPNsenseStdWaitDialog').modal('show');
+                ajaxCall(url="/api/" + serviceName + "/service/" + command, sendData={},callback=function(data,status) {
+                    $('#OPNsenseStdWaitDialog').modal('hide');
+                    ajaxCall(url="/api/" + serviceName + "/service/status", sendData={}, callback=function(data,status) {
+                        updateServiceControlUI(serviceName);
+                    });
+                });
+            });
+        });
+    });
 }
 
 /**
@@ -302,7 +344,7 @@ function initFormAdvancedUI() {
 /**
  * standard dialog when information is required, wrapper around BootstrapDialog
  */
-function stdDialogInform(title, message, close, callback, type) {
+function stdDialogInform(title, message, close, callback, type, cssClass) {
      var types = {
          "danger": BootstrapDialog.TYPE_DANGER,
          "default": BootstrapDialog.TYPE_DEFAULT,
@@ -314,9 +356,13 @@ function stdDialogInform(title, message, close, callback, type) {
     if (!(type in types)) {
         type = 'info';
     }
+    if (cssClass == undefined) {
+        cssClass = '';
+    }
     BootstrapDialog.show({
         title: title,
         message: message,
+        cssClass: cssClass,
         type: types[type],
         buttons: [{
             label: close,
