@@ -56,9 +56,7 @@ POSSIBILITY OF SUCH DAMAGE.
          * update service status
          */
         function updateStatus() {
-            ajaxCall(url="/api/ids/service/status", sendData={}, callback=function(data,status) {
-                updateServiceStatusUI(data['status']);
-            });
+            updateServiceControlUI('ids');
         }
 
         /**
