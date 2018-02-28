@@ -136,8 +136,8 @@ function mapDataToFormUI(data_get_map) {
 /**
  * update service status buttons in user interface
  */
-function updateServiceStatusUI(status) {
-
+function updateServiceStatusUI(status)
+{
     var status_html = '<span class="label label-opnsense label-opnsense-sm ';
 
     if (status == "running") {
@@ -153,38 +153,41 @@ function updateServiceStatusUI(status) {
     $('#service_status_container').html(status_html);
 }
 
-function updateServiceControlUI(serviceName, processingDialog)
+/**
+ * operate service status buttons in user interface
+ */
+function updateServiceControlUI(serviceName)
 {
     ajaxCall(url="/api/" + serviceName + "/service/status", sendData={}, callback=function(data,status) {
-        var status_html = '';
+        var status_html = '<span class="label label-opnsense label-opnsense-sm ';
+        var status_icon = '';
+        var buttons = '';
+
         if (data['status'] == "running") {
-            status_html += 'btn-success' ;
+            status_html += 'label-success';
+            status_icon = 'play';
+            buttons += '<span id="restartService" class="btn btn-sm btn-default"><i class="fa fa-refresh fa-fw"></i></span> ';
+            buttons += '<span id="stopService" class="btn btn-sm btn-default"><i class="fa fa-stop fa-fw"></span>';
         } else if (data['status'] == "stopped") {
-            status_html += 'btn-danger' ;
+            status_html += 'label-danger';
+            status_icon = 'stop';
+            buttons += '<span id="startService" class="btn btn-sm btn-default"><i class="fa fa-play fa-fw"></i></span>';
+        } else {
+            status_html += 'hidden';
         }
 
-        var buttons = '<span id="startService" class="btn ' +  status_html + ' glyphicon glyphicon-play"></span>';
-        buttons += '<span id="restartService" class="btn btn-default srv_status_act glyphicon glyphicon-refresh"></span>';
-        buttons += '<span id="stopService" class="btn btn-default srv_status_act glyphicon glyphicon-stop"></span>';
-        $('#service_status_container').html(buttons);
+        status_html += '"><i class="fa fa-' + status_icon + ' fa-fw"/></span>';
+
+        $('#service_status_container').html(status_html + " " + buttons);
 
         var commands = ["start", "restart", "stop"];
         commands.forEach(function(command) {
             $("#" + command + "Service").click(function(){
-                if (processingDialog !== undefined) {
-                    $('#' + processingDialog).modal('show');
-                }
+                $('#OPNsenseStdWaitDialog').modal('show');
                 ajaxCall(url="/api/" + serviceName + "/service/" + command, sendData={},callback=function(data,status) {
-                    if (processingDialog !== undefined) {
-                        $('#' + processingDialog).modal('hide');
-                    }
+                    $('#OPNsenseStdWaitDialog').modal('hide');
                     ajaxCall(url="/api/" + serviceName + "/service/status", sendData={}, callback=function(data,status) {
-                        $("#startService").removeClass("btn-danger").removeClass("btn-success");
-                        if (data['status'] == "running") {
-                            $("#startService").addClass("btn-success");
-                        } else if (data['status'] == "stopped") {
-                            $("#startService").addClass("btn-danger");
-                        }
+                        updateServiceControlUI(serviceName);
                     });
                 });
             });
