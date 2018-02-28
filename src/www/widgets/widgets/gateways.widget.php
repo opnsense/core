@@ -39,8 +39,8 @@
               // add new gateway
               tr_content.push('<tr id="'+tr_id+'">');
               tr_content.push('<td><small><strong>'+gateway['name']+'</strong><br/>'+gateway['address']+'</small></td>');
-              tr_content.push('<td>'+gateway['delay']+'</td>');
-              tr_content.push('<td>'+gateway['loss']+'</td>');
+              tr_content.push('<td class="text-nowrap">'+gateway['delay']+'</td>');
+              tr_content.push('<td class="text-nowrap">'+gateway['loss']+'</td>');
               tr_content.push('<td><span>'+gateway['status_translated']+'</span></td>');
               tr_content.push('</tr>');
               tbody.append(tr_content.join(''));
