@@ -1,7 +1,7 @@
 #!/usr/local/bin/python2.7
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2018 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -87,4 +87,5 @@ if __name__ == '__main__':
                     else:
                         auth = None
                     dl.download(proto=download_proto, url=rule['url'], url_filename=rule['url_filename'],
-                                filename=rule['filename'], input_filter=input_filter, auth=auth)
+                                filename=rule['filename'], input_filter=input_filter, auth=auth,
+                                headers=rule['http_headers'])

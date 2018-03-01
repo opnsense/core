@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2018 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -110,12 +110,14 @@ class Downloader(object):
         else:
             return src.read()
 
-    def download(self, proto, url, url_filename, filename, input_filter, auth = None):
+    def download(self, proto, url, url_filename, filename, input_filter, auth = None, headers=None):
         """ download ruleset file
             :param proto: protocol (http,https)
             :param url: download url
             :param filename: target filename
             :param input_filter: filter to use on received data before save
+            :param auth: authentication
+            :param headers: headers to send
         """
         if proto in ('http', 'https'):
             frm_url = url.replace('//', '/').replace(':/', '://')
@@ -126,6 +128,8 @@ class Downloader(object):
                 req_opts['stream'] = True
                 if auth is not None:
                     req_opts['auth'] = auth
+                if headers is not None:
+                    req_opts['headers'] = headers
                 req = requests.get(**req_opts)
 
                 if req.status_code == 200:
