@@ -1575,34 +1575,44 @@ function get_dyndns_ip($int, $ipver = 4)
     global $config;
 
     $ip_address = $ipver == 6 ? get_interface_ipv6($int) : get_interface_ip($int);
+    $gateways_status = return_gateways_status(true);
 
-    if ($ipver == 6 || is_private_ip($ip_address)) {
-        $gateways_status = return_gateways_status(true);
-        /*
-         * If the gateway for this interface is down, then the external
-         * check cannot work. Avoid the long wait for the external check
-         * to timeout.
-         */
-        if (stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')) {
-            return 'down';
-        }
+    /*
+     * If the gateway for this interface is down, then the external
+     * check cannot work. Avoid the long wait for the external check
+     * to timeout.
+     */
+    if (stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')) {
+        return 'down';
+    }
+
+    if ($ipver == 4 && is_private_ip($ip_address)) {
         /* Chinese alternative is http://ip.3322.net/ */
-        $hosttocheck = $ipver == 6 ? 'http://checkipv6.dyndns.org' : 'http://checkip.dyndns.org';
+        $hosttocheck = 'http://checkip.dyndns.org';
         $ip_ch = curl_init($hosttocheck);
         curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ip_ch, CURLOPT_INTERFACE, $ip_address);
         curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ip_ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ip_ch, CURLOPT_IPRESOLVE, $ipver == 6 ? CURL_IPRESOLVE_V6 : CURL_IPRESOLVE_V4);
+        curl_setopt($ip_ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
         $ip_result = curl_exec($ip_ch);
         if ($ip_result !== false) {
             preg_match('=<body>Current IP Address: (.*)</body>=siU', $ip_result, $matches);
             $ip_address = trim($matches[1]);
         } else {
-            log_error('Aborted IP detection: ' . curl_error($ip_ch));
+            log_error('Aborted IPv4 detection: ' . curl_error($ip_ch));
         }
         curl_close($ip_ch);
-        if (($ipver == 6 && !is_ipaddrv6($ip_address)) || ($ipver != 6 && !is_ipaddrv4($ip_address))) {
+        if (!is_ipaddrv4($ip_address)) {
+            return 'down';
+        }
+    } elseif ($ipver == 6) {
+	/* link-local cannot establish a connection to a global address */
+	$local = is_linklocal($ip_address);
+        if (!is_ipaddrv6($ip_address) || $local) {
+            if ($loca) {
+                log_error('Aborted IPv6 detection: link-local address');
+            }
             return 'down';
         }
     }
