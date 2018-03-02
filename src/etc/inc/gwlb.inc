@@ -719,6 +719,7 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
 {
     foreach (array("inet", "inet6") as $ipprotocol) {
         $dfltgwname = null;
+        $dfltgwip = null;
         $count = 0;
 
         foreach ($gateways_arr as $gwname => $gwsttng) {
@@ -735,8 +736,26 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
                 continue;
             }
 
+            $gwip = '';
+
+            if ($gateways_arr[$gwname]['gateway'] == "dynamic") {
+                if ($ipprotocol == 'inet') {
+                    $gwip = get_interface_gateway($gateways_arr[$gwname]['friendlyiface']);
+                } else {
+                    $gwip = get_interface_gateway_v6($gateways_arr[$gwname]['friendlyiface']);
+                }
+            } else {
+                $gwip = $gateways_arr[$gwname]['gateway'];
+            }
+
+            if (!is_ipaddr($gwip)) {
+                log_error("Cannot switch gateway $gwname with undefined address");
+                continue;
+            }
+
             /* can use this gateway */
             $dfltgwname = $gwname;
+            $dfltgwip = $gwip;
             $count += 1;
 
             if (isset($gwsttng['defaultgw'])) {
@@ -746,30 +765,13 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
         }
 
         if (empty($dfltgwname)) {
-            if ($count) {
-                log_error("Cannot switch while all $count $ipprotocol gateways are down");
-            }
-            continue;
-        }
-
-        if ($gateways_arr[$dfltgwname]['gateway'] == "dynamic") {
-            if ($ipprotocol == 'inet') {
-                $gwip = get_interface_gateway($gateways_arr[$dfltgwname]['friendlyiface']);
-            } else {
-                $gwip = get_interface_gateway_v6($gateways_arr[$dfltgwname]['friendlyiface']);
-            }
-        } else {
-            $gwip = $gateways_arr[$dfltgwname]['gateway'];
-        }
-
-        if (!is_ipaddr($gwip)) {
-            log_error("Cannot switch gateway $dfltgwname with undefined address");
+            log_error("Cannot switch while $count $ipprotocol gateways are up");
             continue;
         }
 
         $defaultif = get_real_interface($gateways_arr[$dfltgwname]['friendlyiface']);
-        $gwipmatch = $gwip;
-        if (is_linklocal($gwip)) {
+        $gwipmatch = $dfltgwip;
+        if (is_linklocal($dfltgwip)) {
             /* correct match in IPv6 case */
             $gwipmatch .= "%{$defaultif}";
         }
@@ -777,9 +779,14 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
         $tmpcmd = "/sbin/route -n get -{$ipprotocol} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
         $defaultgw = trim(exec($tmpcmd), " \n");
         if ($defaultgw != $gwipmatch) {
-            log_error("Switching default gateway to $dfltgwname ($gwip)");
+            foreach (glob('/tmp/*_defaultgw' . ($ipprotocol == 'inet' ? '' : 'v6')) as $to_delete) {
+                log_error("GATEWAYS: removing {$to_delete}");
+                @unlink($to_delete);
+            }
+            log_error("Switching default gateway to $dfltgwname ($dfltgwip on $defaultif)");
+            @file_put_contents("/tmp/{$defaultif}_defaultgw" . ($ipprotocol == 'inet' ? '' : 'v6'), $dfltgwip);
             /* XXX fargw and IPv6 should be cleaned up to make it easier to read */
-            system_default_route($gwip, !isset($gateways_arr[$dfltgwname]['fargw']) && $ipprotocol == 'inet' ? null : $defaultif);
+            system_default_route($dfltgwip, !isset($gateways_arr[$dfltgwname]['fargw']) && $ipprotocol == 'inet' ? null : $defaultif);
         }
     }
 }
