@@ -461,6 +461,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/CaptivePortal.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/CheckIP/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/CheckIP/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.xml
@@ -1054,6 +1056,8 @@
 /usr/local/www/license.php
 /usr/local/www/reboot.php
 /usr/local/www/reporting_settings.php
+/usr/local/www/services_checkip.php
+/usr/local/www/services_checkip_edit.php
 /usr/local/www/services_dhcp.php
 /usr/local/www/services_dhcp_edit.php
 /usr/local/www/services_dhcp_relay.php
