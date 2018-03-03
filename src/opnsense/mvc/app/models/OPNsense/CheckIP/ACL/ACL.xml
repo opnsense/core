@@ -1,0 +1,10 @@
+<acl>
+    <page-services-checkip>
+        <name>Services: Check IP</name>
+        <description>Allow access to the Check IP service module</description>
+        <patterns>
+            <pattern>services_checkip.php*</pattern>
+            <pattern>services_checkip_edit.php*</pattern>
+        </patterns>
+    </page-services-checkip>
+</acl>

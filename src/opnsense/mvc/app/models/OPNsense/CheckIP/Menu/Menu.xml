@@ -1,0 +1,7 @@
+<menu>
+    <Services>
+        <CheckIP VisibleName="Check IP" url="/services_checkip.php" cssClass="fa fa-tags fa-fw">
+            <Edit url="/services_checkip_edit.php*" visibility="hidden"/>
+        </CheckIP>
+    </Services>
+</menu>
