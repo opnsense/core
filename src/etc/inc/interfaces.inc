@@ -3167,11 +3167,9 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
 
     /* wide-dhcp6c works for now. */
     if (!@file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf)) {
-        printf("Error: cannot open dhcp6c_{$interface}.conf in interface_dhcpv6_configure() for writing.\n");
-        unset($dhcp6cconf);
-        return 1;
+        log_error("Error: cannot open dhcp6c_{$interface}.conf in interface_dhcpv6_configure() for writing.\n");
+        return;
     }
-    unset($dhcp6cconf);
 
     $dhcp6cscript = "#!/bin/sh\n";
     $dhcp6cscript .= "if [ -n '" . (!empty($wancfg['adv_dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
@@ -3187,11 +3185,10 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     $dhcp6cscript .= "esac\n";
 
     if (!@file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript)) {
-        printf("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.\n");
-        unset($dhcp6cscript);
-        return 1;
+        log_error("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.\n");
+        return;
     }
-    unset($dhcp6cscript);
+
     chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
     $dhcp6ccommand = exec_safe(
@@ -3218,11 +3215,10 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     $rtsoldscript .= "$dhcp6ccommand\n";
 
     if (!@file_put_contents("/var/etc/rtsold_{$wanif}_script.sh", $rtsoldscript)) {
-        printf("Error: cannot open rtsold_{$wanif}_script.sh in interface_dhcpv6_configure() for writing.\n");
-        unset($rtsoldscript);
-        return 1;
+        log_error("Error: cannot open rtsold_{$wanif}_script.sh in interface_dhcpv6_configure() for writing.\n");
+        return;
     }
-    unset($rtsoldscript);
+
     chmod("/var/etc/rtsold_{$wanif}_script.sh", 0755);
 
     /* accept router advertisements for this interface */
@@ -3251,8 +3247,6 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     if (isset($wancfg['dhcp6sendsolicit'])) {
         mwexec("/var/etc/rtsold_{$wanif}_script.sh");
     }
-
-    return 0;
 }
 
 function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
@@ -3409,11 +3403,8 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
 
 function DHCP6_Config_File_Substitutions($wancfg, $wanif, $dhcp6cconf)
 {
-    $dhcp6cconf = DHCP_Config_File_Substitutions($wancfg, $wanif, $dhcp6cconf);
-
-    return $dhcp6cconf;
+    return DHCP_Config_File_Substitutions($wancfg, $wanif, $dhcp6cconf);
 }
-
 
 function interface_dhcp_configure($interface = 'wan')
 {
@@ -3428,8 +3419,8 @@ function interface_dhcp_configure($interface = 'wan')
     /* generate dhclient_wan.conf */
     $fd = fopen("/var/etc/dhclient_{$interface}.conf", "w");
     if (!$fd) {
-        printf(printf(gettext("Error: cannot open dhclient_%s.conf in interface_dhcp_configure() for writing.%s"), $interface, "\n"));
-        return 1;
+        log_error(sprintf("Error: cannot open dhclient_%s.conf in interface_dhcp_configure() for writing.%s", $interface, "\n"));
+        return;
     }
 
     if ($wancfg['dhcphostname']) {
@@ -3442,10 +3433,10 @@ function interface_dhcp_configure($interface = 'wan')
     $wanif = get_real_interface($interface);
     if (empty($wanif)) {
         log_error(sprintf('Invalid interface "%s" in interface_dhcp_configure()', $interface));
-        return 0;
+        return;
     }
-    $dhclientconf = "";
 
+    $dhclientconf = "";
     $dhclientconf .= <<<EOD
 interface "{$wanif}" {
 timeout 60;
@@ -3511,8 +3502,6 @@ EOD;
 
     /* fire up dhclient */
     mwexec("/sbin/dhclient -c /var/etc/dhclient_{$interface}.conf {$wanif} > /tmp/{$wanif}_output 2> /tmp/{$wanif}_error_output");
-
-    return 0;
 }
 
 function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
