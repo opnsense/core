@@ -154,7 +154,8 @@ $main_buttons = array(
                         <?=htmlspecialchars($checkipservice['name'])?>
                       </td>
                       <td>
-                        <a target="Check_IP" rel="noopener noreferrer" href="<?=$checkipservice['url']?>"><?=htmlspecialchars($checkipservice['url'])?></a>                      </td>
+                        <a target="Check_IP" rel="noopener noreferrer" href="<?=$checkipservice['url']?>"><?=htmlspecialchars($checkipservice['url'])?></a>
+                      </td>
                       <td class="text-center">
                         <i<?=(isset($checkipservice['verifysslpeer'])) ? ' class="fa fa-check"' : '';?>></i>
                       </td>
