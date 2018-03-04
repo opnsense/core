@@ -1575,6 +1575,10 @@ function get_dyndns_ip($int, $ipver = 4)
     global $config;
 
     $ip_address = $ipver == 6 ? get_interface_ipv6($int) : get_interface_ip($int);
+    if (empty($ip_address)) {
+            return 'down';
+    }
+
     $gateways_status = return_gateways_status(true);
 
     /*
@@ -1582,7 +1586,8 @@ function get_dyndns_ip($int, $ipver = 4)
      * check cannot work. Avoid the long wait for the external check
      * to timeout.
      */
-    if (stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')) {
+    if (!empty($gateways_status[$config['interfaces'][$int]['gateway']]['status']) &&
+	stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')) {
         return 'down';
     }
 
@@ -1610,12 +1615,14 @@ function get_dyndns_ip($int, $ipver = 4)
 	/* link-local cannot establish a connection to a global address */
 	$local = is_linklocal($ip_address);
         if (!is_ipaddrv6($ip_address) || $local) {
-            if ($loca) {
+            if ($local) {
                 log_error('Aborted IPv6 detection: link-local address');
             }
             return 'down';
         }
     }
+
+    log_error("Detected IP result: '$ip_address'");
 
     return $ip_address;
 }
