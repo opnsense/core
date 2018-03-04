@@ -146,14 +146,14 @@ include("head.inc");
                     $icon = "";
                     $intf_status = get_carp_interface_status("{$carp['interface']}_vip{$carp['vhid']}");
                     if (($carpcount > 0 && !$status)) {
-                        $icon = "glyphicon glyphicon-remove text-danger";
+                        $icon = "fa fa-remove fa-fw text-danger";
                         $intf_status = "DISABLED";
                     } elseif ($intf_status == "MASTER") {
-                        $icon = "fa fa-play text-success";
+                        $icon = "fa fa-play fa-fw text-success";
                     } elseif ($intf_status == "BACKUP") {
-                        $icon = "fa fa-play text-muted";
+                        $icon = "fa fa-play fa-fw text-muted";
                     } elseif ($intf_status == "INIT") {
-                        $icon = "glyphicon glyphicon-info-sign";
+                        $icon = "fa fa-info-circle fa-fw";
                     }?>
                 <tr>
                   <td><?=convert_friendly_interface_to_friendly_descr($carp['interface']) . "@{$carp['vhid']}" ;?></td>

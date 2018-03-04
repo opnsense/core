@@ -159,13 +159,13 @@ include("head.inc");
                             <form method="post">
                               <input type="hidden" value="<?=$ipsec_conn_key;?>" name="connid"/>
                               <button type="submit" class="btn btn-xs" name="action" value="disconnect">
-                                <span class="glyphicon glyphicon-remove text-default"/>
+                                <i class="fa fa-remove fa-fw text-default"></i>
                               </button>
                               <button type="submit" class="btn btn-xs" name="action" value="connect">
-                                  <span class="fa fa-play text-success" title="" alt=""></span>
+                                <i class="fa fa-play fa-fw text-success"></i>
                               </button>
                               <button type="none" class="btn btn-xs ipsec_info" data-target="info_<?=$ipsec_conn_key?>">
-                                  <span class="glyphicon glyphicon-info-sign"></i>
+                                <i class="fa fa-info-circle fa-fw"></i>
                               </button>
                             </form>
                             <?php else:
@@ -173,7 +173,7 @@ include("head.inc");
                             <form method="post">
                               <input type="hidden" value="<?=$ipsec_conn_key;?>" name="connid"/>
                               <button type="submit" class="btn btn-xs" name="action" value="connect">
-                                <span class="fa fa-play text-warning"></span>
+                                <i class="fa fa-play fa-fw text-warning"></i>
                               </button>
                             </form>
                             <?php endif;

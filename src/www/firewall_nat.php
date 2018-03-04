@@ -276,7 +276,7 @@ $( document ).ready(function() {
 ?>
                     <tr>
                       <td></td>
-                      <td><i class="fa fa-exclamation text-success"></i></td>
+                      <td><i class="fa fa-exclamation fa-fw text-success"></i></td>
                       <td></td>
                       <td><?=$lockout_intf_name?></td>
                       <td>TCP</td>
@@ -299,21 +299,21 @@ $( document ).ready(function() {
                       </td>
                       <td>
 <?php                 if (isset($natent['nordr'])): ?>
-                        <i class="fa fa-exclamation <?=isset($natent['disabled']) ? "text-muted" : "text-success" ;?>"></i>
+                        <i class="fa fa-exclamation fa-fw <?=isset($natent['disabled']) ? "text-muted" : "text-success" ;?>"></i>
 <?php                 endif; ?>
                       </td>
                       <td>
                         <a href="#" class="act_toggle" id="toggle_<?=$nnats;?>" data-toggle="tooltip" title="<?=(!isset($natent['disabled'])) ? gettext("Disable") : gettext("Enable");?>">
 <?php                     if (!empty($natent['associated-rule-id'])): ?>
 <?php                     if(isset($natent['disabled'])):?>
-                          <span class="glyphicon glyphicon-resize-horizontal text-muted"></span>
+                          <i class="fa fa-arrows-h fa-fw text-muted"></i>
 <?php                        else:?>
-                          <span class="glyphicon glyphicon-resize-horizontal text-success"></span>
+                          <i class="fa fa-arrows-h fa-fw text-success"></i>
 <?php                     endif; ?>
 <?php                        elseif(isset($natent['disabled'])):?>
-                          <span class="fa fa-play text-muted"></span>
+                          <i class="fa fa-play fa-fw text-muted"></i>
 <?php                        else:?>
-                          <span class="fa fa-play text-success"></span>
+                          <i class="fa fa-play fa-fw text-success"></i>
 <?php                     endif; ?>
                         </a>
                       </td>
@@ -414,17 +414,17 @@ $( document ).ready(function() {
                       </td>
 
                       <td>
-                        <a type="submit" id="move_<?=$nnats;?>" name="move_<?=$nnats;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-arrow-left"></span>
+                        <a type="submit" id="move_<?=$nnats;?>" name="move_<?=$nnats;?>_x" data-toggle="tooltip" title="<?=html_safe(gettext("Move selected rules before this rule"))?>" class="act_move btn btn-default btn-xs">
+                          <i class="fa fa-arrow-left fa-fw text-muted"></i>
                         </a>
-                        <a href="firewall_nat_edit.php?id=<?=$nnats;?>" data-toggle="tooltip" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-pencil"></span>
+                        <a href="firewall_nat_edit.php?id=<?=$nnats;?>" data-toggle="tooltip" title="<?=html_safe(gettext("Edit rule"))?>" class="btn btn-default btn-xs">
+                          <i class="fa fa-pencil fa-fw text-muted"></i>
                         </a>
-                        <a id="del_<?=$nnats;?>" title="<?=gettext("delete rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                          <span class="fa fa-trash text-muted"></span>
+                        <a id="del_<?=$nnats;?>" title="<?=html_safe(gettext("Delete rule"))?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                          <i class="fa fa-trash fa-fw text-muted"></i>
                         </a>
-                        <a href="firewall_nat_edit.php?dup=<?=$nnats;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone rule");?>">
-                          <span class="fa fa-clone text-muted"></span>
+                        <a href="firewall_nat_edit.php?dup=<?=$nnats;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=html_safe(gettext("Clone rule"))?>">
+                          <i class="fa fa-clone fa-fw text-muted"></i>
                         </a>
                       </td>
                      </tr>
@@ -435,23 +435,23 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm" colspan="4"> </td>
                     <td>
 <?php               if ($nnats == 0): ?>
-                        <span class="btn btn-default btn-xs text-muted">
-                          <span class="glyphicon glyphicon-arrow-left"></span>
+                        <span class="btn btn-default btn-xs">
+                          <i class="fa fa-arrow-left fa-fw text-muted"></i>
                         </span>
 <?php               else: ?>
-                        <a type="submit" id="move_<?=$nnats;?>" name="move_<?=$nnats;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules to end");?>" class="act_move btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-arrow-left"></span>
+                        <a type="submit" id="move_<?=$nnats;?>" name="move_<?=$nnats;?>_x" data-toggle="tooltip" title="<?=html_safe(gettext("Move selected rules to end"))?>" class="act_move btn btn-default btn-xs">
+                          <i class="fa fa-arrow-left fa-fw text-muted"></i>
                         </a>
 <?php                   endif; ?>
 <?php                   if (count($a_nat) == 0): ?>
-                      <span class="btn btn-default btn-xs text-muted"  data-toggle="tooltip" title="<?=gettext("delete selected rules");?>"><span class="fa fa-trash text-muted" ></span></span>
+                      <span class="btn btn-default btn-xs text-muted"  data-toggle="tooltip" title="<?=html_safe(gettext("Delete selected rules"))?>"><i class="fa fa-trash fa-fw text-muted" ></i></span>
 <?php                   else: ?>
-                        <a id="del_x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                          <span class="fa fa-trash text-muted"></span>
+                        <a id="del_x" title="<?=html_safe(gettext("Delete selected rules"))?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                          <i class="fa fa-trash fa-fw text-muted"></i>
                         </a>
 <?php                   endif; ?>
-                        <a href="firewall_nat_edit.php" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("add new rule");?>">
-                          <span class="glyphicon glyphicon-plus"></span>
+                        <a href="firewall_nat_edit.php" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=html_safe(gettext("Add new rule"))?>">
+                          <i class="fa fa-plus fa-fw text-muted"></i>
                         </a>
                     </td>
                   </tr>
@@ -461,23 +461,23 @@ $( document ).ready(function() {
                       <td colspan="13">&nbsp;</td>
                     </tr>
                     <tr>
-                      <td style="width:16px"><span class="fa fa-play text-success"></span></td>
+                      <td style="width:16px"><i class="fa fa-play fa-fw text-success"></i></td>
                       <td colspan="12"><?=gettext("Enabled rule"); ?></td>
                     </tr>
                     <tr>
-                      <td><span class="fa fa-play text-muted"></span></td>
+                      <td><i class="fa fa-play fa-fw text-muted"></i></td>
                       <td colspan="12"><?=gettext("Disabled rule"); ?></td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-exclamation text-success"></i></td>
+                      <td><i class="fa fa-exclamation fa-fw text-success"></i></td>
                       <td colspan="12"><?=gettext("No redirect"); ?></td>
                     </tr>
                     <tr>
-                      <td><span class="glyphicon glyphicon-resize-horizontal text-success"></span></td>
-                      <td colspan="12"><?=gettext("linked rule");?></td>
+                      <td><i class="fa fa-arrows-h fa-fw text-success"></i></td>
+                      <td colspan="12"><?=gettext("Linked rule");?></td>
                     </tr>
                     <tr>
-                      <td><a><i class="fa fa-list"></i></a></td>
+                      <td><i class="fa fa-list fa-fw text-primary"></i></td>
                       <td colspan="12"><?=gettext("Alias (click to view/edit)");?></td>
                     </tr>
                   </tfoot>
