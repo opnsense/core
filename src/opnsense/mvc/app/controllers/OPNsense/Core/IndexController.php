@@ -41,8 +41,9 @@ class IndexController extends \OPNsense\Base\IndexController
      */
     public function indexAction()
     {
-        //$this->view->pick('OPNsense/Core/index');
-        $this->response->redirect('/index.php', true);
+        $this->view->title = gettext("Page not found");
+        $this->view->pick('OPNsense/Core/index');
+        $this->response->setStatusCode(404, "Not Found");
         return;
     }
 }
