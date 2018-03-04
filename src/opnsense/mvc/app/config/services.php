@@ -52,9 +52,16 @@ $di->set('url', function () use ($config) {
 $di->set('view', function () use ($config) {
 
     $view = new View();
-
-    $view->setViewsDir($config->application->viewsDir);
-
+    // if configuration defines more view locations, convert phalcon config items to array
+    if (is_string($config->application->viewsDir)) {
+        $view->setViewsDir($config->application->viewsDir);
+    } else {
+        $viewDirs = array();
+        foreach ($config->application->viewsDir as $viewDir) {
+            $viewDirs[] = $viewDir;
+        }
+        $view->setViewsDir($viewDirs);
+    }
     $view->registerEngines(array(
         '.volt' => function ($view, $di) use ($config) {
 
