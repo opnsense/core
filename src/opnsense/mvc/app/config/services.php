@@ -107,9 +107,8 @@ $di->set('config', $config);
 /**
  * Setup router
  */
-$di->set('router', function () {
-
-    $routing = new Routing(__DIR__."/../controllers/", "ui");
+$di->set('router', function () use ($config) {
+    $routing = new Routing($config->application->controllersDir, "ui");
     $routing->getRouter()->handle();
     return $routing->getRouter();
 });
