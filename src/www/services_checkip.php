@@ -33,7 +33,16 @@ require_once("services.inc");
 $a_checkipservices = &config_read_array('checkipservices', 'service');
 
 // Append the factory default check IP service to the list.
-$a_checkipservices[] = factory_default_checkipservice();
+$a_checkipservices[] = array(
+    "enable" => true,
+    "name" => 'Default',
+    "url" => 'http://checkip.dyndns.org',
+    #"url" => 'http://ip.3322.net/',    /* Chinese alternative */
+    #"username" => '',
+    #"password" => '',
+    #"verifysslpeer" => true,
+    "descr" => 'Factory Default Check IP Service'
+);
 $factory_default = count($a_checkipservices) - 1;
 
 // Is the factory default check IP service disabled?
@@ -146,15 +155,15 @@ $main_buttons = array(
 ?>
                     <tr>
                       <td class="text-left" style="width:0px">
-                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(!empty($checkipservice['enable'])) ? gettext("disable") : gettext("enable");?>">
-                          <i style="width:15px" class="glyphicon glyphicon-play <?=(!empty($checkipservice['enable'])) ? "text-success" : "text-muted";?>"></i>
+                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(!empty($checkipservice['enable'])) ? gettext("Disable") : gettext("Enable");?>">
+                          <i style="width:15px" class="fa fa-play <?=(!empty($checkipservice['enable'])) ? "text-success" : "text-muted";?>"></i>
                         </a>
                       </td>
                       <td>
                         <?=htmlspecialchars($checkipservice['name'])?>
                       </td>
                       <td>
-                        <a target="Check_IP" rel="noopener noreferrer" href="<?=$checkipservice['url']?>"><?=htmlspecialchars($checkipservice['url'])?></a>
+                        <a target="Check_IP" rel="noopener noreferrer" href="<?= html_safe($checkipservice['url']) ?>"><?=htmlspecialchars($checkipservice['url'])?></a>
                       </td>
                       <td class="text-center">
                         <i<?=(isset($checkipservice['verifysslpeer'])) ? ' class="fa fa-check"' : '';?>></i>
@@ -164,10 +173,10 @@ $main_buttons = array(
                       </td>
                       <td>
                         <a href="services_checkip_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs <?=$visibility?>">
-                          <i class="glyphicon glyphicon-pencil"></i>
+                          <i class="fa fa-pencil"></i>
                         </a>
                         <a href="#" data-id="<?=$i;?>" class="act_delete_service btn btn-default btn-xs <?=$visibility?>">
-                          <i class="glyphicon glyphicon-trash"></i>
+                          <i class="fa fa-trash"></i>
                         </a>
                       </td>
                     </tr>

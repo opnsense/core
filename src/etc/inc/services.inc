@@ -1570,21 +1570,6 @@ function services_dhcrelay6_configure($verbose = false)
     }
 }
 
-/* Factory default check IP service. */
-function factory_default_checkipservice()
-{
-    return array(
-        "enable" => true,
-        "name" => 'Default',
-        "url" => 'http://checkip.dyndns.org',
-#       "url" => 'http://ip.3322.net/',    /* Chinese alternative */
-#       "username" => '',
-#       "password" => '',
-#       "verifysslpeer" => true,
-        "descr" => 'Factory Default Check IP Service'
-    );
-}
-
 function get_dyndns_ip($int, $ipver = 4)
 {
     global $config;
@@ -1607,26 +1592,24 @@ function get_dyndns_ip($int, $ipver = 4)
     }
 
     if ($ipver == 4 && is_private_ip($ip_address)) {
-
-        /* Append the factory default check IP service to the list (if not disabled). */
-        if (!isset($config['checkipservices']['disable_factory_default'])) {
-            $config['checkipservices']['service'][] = factory_default_checkipservice();
-        }
+        $hosttocheck = 'http://checkip.dyndns.org';
+        $verifysslpeer = false;
+        $username = null;
+        $password = null;
 
         /* Use the first enabled check IP service as the default. */
-        if (is_array($config['checkipservices']['service'])) {
+        if (isset($config['checkipservices']['service'])) {
             foreach ($config['checkipservices']['service'] as $i => $checkipservice) {
                 if (isset($checkipservice['enable'])) {
-                    $url = $checkipservice['url'];
+                    $verifysslpeer = isset($checkipservice['verifysslpeer']);
                     $username = $checkipservice['username'];
                     $password = $checkipservice['password'];
-                    $verifysslpeer = isset($checkipservice['verifysslpeer']);
+                    $hosttocheck = $checkipservice['url'];
                     break;
                 }
             }
         }
 
-        $hosttocheck = $url;
         $ip_ch = curl_init($hosttocheck);
         curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ip_ch, CURLOPT_SSL_VERIFYPEER, $verifysslpeer);
@@ -1634,8 +1617,11 @@ function get_dyndns_ip($int, $ipver = 4)
         curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ip_ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ip_ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        curl_setopt($ip_ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-        curl_setopt($ip_ch, CURLOPT_USERPWD, "{$username}:{$password}");
+        if (!empty($username) && !empty($password)) {
+            curl_setopt($ip_ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+            curl_setopt($ip_ch, CURLOPT_USERPWD, "{$username}:{$password}");
+        }
+
         $ip_result = curl_exec($ip_ch);
         if ($ip_result !== false) {
             preg_match('=<body>Current IP Address: (.*)</body>=siU', $ip_result, $matches);
