@@ -34,6 +34,7 @@ function view_fetch_themed_filename($url, $theme)
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
  */
 $di = new FactoryDefault();
+$di->set('config', $config);
 
 /**
  * The URL component is used to generate all kind of urls in the application
@@ -100,8 +101,6 @@ $di->setShared('session', function () {
     return $session;
 });
 
-
-$di->set('config', $config);
 
 
 /**
