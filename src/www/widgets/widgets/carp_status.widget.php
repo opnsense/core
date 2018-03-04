@@ -56,9 +56,9 @@ config_read_array('virtualip', 'vip');
           $status = gettext("DISABLED");
           echo "<span class=\"glyphicon glyphicon-remove text-danger\" title=\"$status\" alt=\"$status\" ></span>";
       } elseif ($status == gettext("MASTER")) {
-          echo "<span class=\"glyphicon glyphicon-play text-success\" title=\"$status\" alt=\"$status\" ></span>";
+          echo "<span class=\"fa fa-play text-success\" title=\"$status\" alt=\"$status\" ></span>";
       } elseif ($status == gettext("BACKUP")) {
-          echo "<span class=\"glyphicon glyphicon-play text-muted\" title=\"$status\" alt=\"$status\" ></span>";
+          echo "<span class=\"fa fa-play text-muted\" title=\"$status\" alt=\"$status\" ></span>";
       } elseif ($status == gettext("INIT")) {
           echo "<span class=\"glyphicon glyphicon-info-sign\" title=\"$status\" alt=\"$status\" ></span>";
       }

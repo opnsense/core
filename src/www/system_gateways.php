@@ -325,11 +325,11 @@ $( document ).ready(function() {
 <?php
                     elseif (is_numeric($gateway['attribute'])) :?>
                         <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(!isset($gateway['disabled'])) ? gettext("Disable") : gettext("Enable");?>">
-                          <span class="glyphicon glyphicon-play <?=isset($gateway['disabled']) || isset($gateway['inactive']) ? "text-muted" : "text-success";?>"></span>
+                          <span class="fa fa-play <?=isset($gateway['disabled']) || isset($gateway['inactive']) ? "text-muted" : "text-success";?>"></span>
                         </a>
 <?php
                     else :?>
-                        <span class="glyphicon glyphicon-play <?=isset($gateway['disabled']) || isset($gateway['inactive']) ? "text-muted" : "text-success";?>" data-toggle="tooltip" title="<?=(!isset($filterent['disabled'])) ? gettext("Disable") : gettext("Enable");?>"></span>
+                        <span class="fa fa-play <?=isset($gateway['disabled']) || isset($gateway['inactive']) ? "text-muted" : "text-success";?>" data-toggle="tooltip" title="<?=(!isset($filterent['disabled'])) ? gettext("Disable") : gettext("Enable");?>"></span>
 <?php
                     endif;?>
                       </td>

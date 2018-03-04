@@ -341,8 +341,8 @@ $( document ).ready(function() {
                       <td>
                         <button data-id="<?=$i; ?>" data-act="togglep1" type="submit"
                             type="submit" class="act_move btn btn-<?= isset($ph1ent['disabled'])? "default":"success"?> btn-xs"
-                            title="<?=(isset($ph1ent['disabled'])) ? gettext("enable phase 1 entry") : gettext("disable phase 1 entry");?>" data-toggle="tooltip">
-                          <span class="glyphicon glyphicon-play"></span>
+                            title="<?=(isset($ph1ent['disabled'])) ? gettext("Enable phase 1 entry") : gettext("Disable phase 1 entry");?>" data-toggle="tooltip">
+                          <span class="fa fa-play"></span>
                         </button>
                       </td>
                       <td class="hidden-xs">
@@ -494,9 +494,9 @@ $( document ).ready(function() {
                                 </td>
                                 <td>
                                   <button data-id="<?=$ph2index; ?>" data-act="togglep2" type="submit"
-                                      title="<?=(isset($ph2ent['disabled'])) ? gettext("enable phase 2 entry") : gettext("disable phase 2 entry"); ?>" data-toggle="tooltip"
+                                      title="<?=(isset($ph2ent['disabled'])) ? gettext("Enable phase 2 entry") : gettext("Disable phase 2 entry"); ?>" data-toggle="tooltip"
                                       class="act_move btn btn-<?= isset($ph2ent['disabled'])?"default":"success";?> btn-xs">
-                                    <span class="glyphicon glyphicon-play"></span>
+                                    <span class="fa fa-play"></span>
                                   </button>
                                 </td>
                                 <td class="hidden-xs">

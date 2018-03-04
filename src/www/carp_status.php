@@ -149,9 +149,9 @@ include("head.inc");
                         $icon = "glyphicon glyphicon-remove text-danger";
                         $intf_status = "DISABLED";
                     } elseif ($intf_status == "MASTER") {
-                        $icon = "glyphicon glyphicon-play text-success";
+                        $icon = "fa fa-play text-success";
                     } elseif ($intf_status == "BACKUP") {
-                        $icon = "glyphicon glyphicon-play text-muted";
+                        $icon = "fa fa-play text-muted";
                     } elseif ($intf_status == "INIT") {
                         $icon = "glyphicon glyphicon-info-sign";
                     }?>

@@ -307,12 +307,12 @@ include("head.inc");
 <?php
                     if ($mode == "disabled" || $mode == "automatic"):
 ?>
-                      <span data-toggle="tooltip" title="<?=gettext("All manual rules are being ignored");?>" class="glyphicon glyphicon-play <?=$mode == "disabled" || $mode == "automatic" || isset($natent['disabled']) ? "text-muted" : "text-success";?>"></span>
+                      <span data-toggle="tooltip" title="<?=gettext("All manual rules are being ignored");?>" class="fa fa-play <?=$mode == "disabled" || $mode == "automatic" || isset($natent['disabled']) ? "text-muted" : "text-success";?>"></span>
 <?php
                     else:
 ?>
-                      <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(!isset($natent['disabled'])) ? gettext("disable rule") : gettext("enable rule");?>" class="btn btn-default btn-xs <?=isset($natent['disabled']) ? "text-muted" : "text-success";?>">
-                        <span class="glyphicon glyphicon-play <?=isset($natent['disabled']) ? "text-muted" : "text-success";?>  "></span>
+                      <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(!isset($natent['disabled'])) ? gettext("Disable") : gettext("Enable");?>" class="btn btn-default btn-xs <?=isset($natent['disabled']) ? "text-muted" : "text-success";?>">
+                        <span class="fa fa-play <?=isset($natent['disabled']) ? "text-muted" : "text-success";?>  "></span>
                       </a>
 <?php
                     endif;
@@ -484,11 +484,11 @@ include("head.inc");
                   <td colspan="12">&nbsp;</td>
                 </tr>
                 <tr>
-                  <td style="width:16px"><span class="glyphicon glyphicon-play text-success"></span></td>
+                  <td style="width:16px"><span class="fa fa-play text-success"></span></td>
                   <td colspan="11"><?=gettext("Enabled rule"); ?></td>
                 </tr>
                 <tr>
-                  <td><span class="glyphicon glyphicon-play text-muted"></span></td>
+                  <td><span class="fa fa-play text-muted"></span></td>
                   <td colspan="11"><?=gettext("Disabled rule"); ?></td>
                 </tr>
               </tfoot>
@@ -539,7 +539,7 @@ include("head.inc");
                 <tr>
                   <td>&nbsp;</td>
                   <td>
-                    <span class="glyphicon glyphicon-play text-success" data-toggle="tooltip" title="<?=gettext("automatic outbound nat");?>"></span>
+                    <span class="fa fa-play text-success" data-toggle="tooltip" title="<?=gettext("automatic outbound nat");?>"></span>
                   </td>
                   <td><?= htmlspecialchars($natintf['descr']); ?></td>
                   <td><?= implode(', ', $intfv4);?></td>
@@ -554,7 +554,7 @@ include("head.inc");
                 <tr>
                   <td>&nbsp;</td>
                   <td>
-                    <span class="glyphicon glyphicon-play text-success" data-toggle="tooltip" title="<?=gettext("automatic outbound nat");?>"></span>
+                    <span class="fa fa-play text-success" data-toggle="tooltip" title="<?=gettext("automatic outbound nat");?>"></span>
                   </td>
                   <td><?= htmlspecialchars($natintf['descr']); ?></td>
                   <td><?= implode(', ', $intfv4);?></td>

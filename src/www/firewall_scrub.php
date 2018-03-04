@@ -304,8 +304,8 @@ $( document ).ready(function() {
                   <tr>
                     <td>
                         <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
-                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($scrubEntry['disabled'])) ? gettext("disable") : gettext("enable");?>">
-                          <span class="glyphicon glyphicon-play <?=(empty($scrubEntry['disabled'])) ? "text-success" : "text-muted";?>"></span>
+                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($scrubEntry['disabled'])) ? gettext("Disable") : gettext("Enable");?>">
+                          <span class="fa fa-play <?=(empty($scrubEntry['disabled'])) ? "text-success" : "text-muted";?>"></span>
                         </a>
                     </td>
                     <td><?=strtoupper($scrubEntry['interface']);?></td>

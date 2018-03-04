@@ -303,7 +303,7 @@ $( document ).ready(function() {
 <?php                 endif; ?>
                       </td>
                       <td>
-                        <a href="#" class="act_toggle" id="toggle_<?=$nnats;?>" data-toggle="tooltip" title="<?=(!isset($natent['disabled'])) ? gettext("disable rule") : gettext("enable rule");?>">
+                        <a href="#" class="act_toggle" id="toggle_<?=$nnats;?>" data-toggle="tooltip" title="<?=(!isset($natent['disabled'])) ? gettext("Disable") : gettext("Enable");?>">
 <?php                     if (!empty($natent['associated-rule-id'])): ?>
 <?php                     if(isset($natent['disabled'])):?>
                           <span class="glyphicon glyphicon-resize-horizontal text-muted"></span>
@@ -311,9 +311,9 @@ $( document ).ready(function() {
                           <span class="glyphicon glyphicon-resize-horizontal text-success"></span>
 <?php                     endif; ?>
 <?php                        elseif(isset($natent['disabled'])):?>
-                          <span class="glyphicon glyphicon-play text-muted"></span>
+                          <span class="fa fa-play text-muted"></span>
 <?php                        else:?>
-                          <span class="glyphicon glyphicon-play text-success"></span>
+                          <span class="fa fa-play text-success"></span>
 <?php                     endif; ?>
                         </a>
                       </td>
@@ -461,11 +461,11 @@ $( document ).ready(function() {
                       <td colspan="13">&nbsp;</td>
                     </tr>
                     <tr>
-                      <td style="width:16px"><span class="glyphicon glyphicon-play text-success"></span></td>
+                      <td style="width:16px"><span class="fa fa-play text-success"></span></td>
                       <td colspan="12"><?=gettext("Enabled rule"); ?></td>
                     </tr>
                     <tr>
-                      <td><span class="glyphicon glyphicon-play text-muted"></span></td>
+                      <td><span class="fa fa-play text-muted"></span></td>
                       <td colspan="12"><?=gettext("Disabled rule"); ?></td>
                     </tr>
                     <tr>

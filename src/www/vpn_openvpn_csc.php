@@ -705,8 +705,8 @@ if ($act!="new" && $act!="edit") {
                       <td>
                         <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
                         &nbsp;
-                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($csc['disable'])) ? gettext("disable") : gettext("enable");?>">
-                          <span class="glyphicon glyphicon-play <?=(empty($csc['disable'])) ? "text-success" : "text-muted";?>"></span>
+                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($csc['disable'])) ? gettext("Disable") : gettext("Enable");?>">
+                          <span class="fa fa-play <?=(empty($csc['disable'])) ? "text-success" : "text-muted";?>"></span>
                         </a>
                       </td>
                       <td>

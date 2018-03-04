@@ -1194,8 +1194,8 @@ $( document ).ready(function() {
                 <td>
                   <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
                   &nbsp;
-                  <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($client['disable'])) ? gettext("disable") : gettext("enable");?>">
-                    <span class="glyphicon glyphicon-play <?=(empty($client['disable'])) ? "text-success" : "text-muted";?>"></span>
+                  <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($client['disable'])) ? gettext("Disable") : gettext("Enable");?>">
+                    <span class="fa fa-play <?=(empty($client['disable'])) ? "text-success" : "text-muted";?>"></span>
                   </a>
                 </td>
                 <td><?= htmlspecialchars($client['protocol']) ?></td>

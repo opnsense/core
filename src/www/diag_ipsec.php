@@ -162,7 +162,7 @@ include("head.inc");
                                 <span class="glyphicon glyphicon-remove text-default"/>
                               </button>
                               <button type="submit" class="btn btn-xs" name="action" value="connect">
-                                  <span class="glyphicon glyphicon-play text-success" title="" alt=""></span>
+                                  <span class="fa fa-play text-success" title="" alt=""></span>
                               </button>
                               <button type="none" class="btn btn-xs ipsec_info" data-target="info_<?=$ipsec_conn_key?>">
                                   <span class="glyphicon glyphicon-info-sign"></i>
@@ -173,7 +173,7 @@ include("head.inc");
                             <form method="post">
                               <input type="hidden" value="<?=$ipsec_conn_key;?>" name="connid"/>
                               <button type="submit" class="btn btn-xs" name="action" value="connect">
-                                <span class="glyphicon glyphicon-play text-warning"></span>
+                                <span class="fa fa-play text-warning"></span>
                               </button>
                             </form>
                             <?php endif;
