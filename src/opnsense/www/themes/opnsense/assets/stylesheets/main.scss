@@ -605,9 +605,10 @@ table{
   padding: 5px 10px;
 }
 
-.label-opnsense-xs {
+.label-opnsense-xs,
+.btn-xs {
   /* emulates btn-xs */
-  padding: 1px 5px;
+  padding: 1px 3px;
 }
 
 ::-webkit-scrollbar {

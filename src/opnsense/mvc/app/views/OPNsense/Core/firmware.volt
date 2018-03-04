@@ -376,16 +376,16 @@
                     '<td>' +
                     '<button class="btn btn-default btn-xs act_license" data-package="' + row['name'] + '" ' +
                     '  data-toggle="tooltip" title="View ' + row['name'] + ' license">' +
-                    '<span class="fa fa-balance-scale"></span></button> ' +
+                    '<i class="fa fa-balance-scale fa-fw"></i></button> ' +
                     '<button class="btn btn-default btn-xs act_reinstall" data-package="' + row['name'] + '" ' +
                     '  data-toggle="tooltip" title="Reinstall ' + row['name'] + '">' +
-                    '<span class="fa fa-recycle"></span></button> ' + (row['locked'] === '1' ?
+                    '<i class="fa fa-recycle fa-fw"></i></button> ' + (row['locked'] === '1' ?
                         '<button data-toggle="tooltip" title="Unlock ' + row['name'] + '" class="btn btn-default btn-xs act_unlock" data-package="' + row['name'] + '">' +
-                        '<span class="fa fa-lock">' +
-                        '</span></button>' :
+                        '<i class="fa fa-lock fa-fw">' +
+                        '</i></button>' :
                         '<button class="btn btn-default btn-xs act_lock" data-package="' + row['name'] + '" ' +
                         '  data-toggle="tooltip" title="Lock ' + row['name'] + '" >' +
-                        '<span class="fa fa-unlock"></span></button>'
+                        '<i class="fa fa-unlock fa-fw"></i></button>'
                     ) + '</td>' +
                     '</tr>'
                 );
@@ -420,16 +420,16 @@
                     '<td>' + bold_on + row['comment'] + bold_off + '</td>' +
                     '<td><button class="btn btn-default btn-xs act_details" data-package="' + row['name'] + '" ' +
                         ' data-toggle="tooltip" title="More about ' + row['name'] + '">' +
-                        '<span class="fa fa-info-circle"></span></button>' +
+                        '<i class="fa fa-info-circle fa-fw"></i></button>' +
                         (row['installed'] == "1" ?
                         '<button class="btn btn-default btn-xs act_remove" data-package="' + row['name'] + '" '+
                         '  data-toggle="tooltip" title="Remove ' + row['name'] + '">' +
-                        '<span class="fa fa-trash">' +
-                        '</span></button>' :
+                        '<i class="fa fa-trash fa-fw">' +
+                        '</i></button>' :
                         '<button class="btn btn-default btn-xs act_install" data-package="' + row['name'] + '" ' +
                         ' data-toggle="tooltip" title="Install ' + row['name'] + '">' +
-                        '<span class="fa fa-plus">' +
-                        '</span></button>'
+                        '<i class="fa fa-plus fa-fw">' +
+                        '</i></button>'
                     ) + '</td>' + '</tr>'
                 );
             });
@@ -465,7 +465,7 @@
                         '><td>' + bold_on + row['version'] + status_text + bold_off + '</td><td>' + bold_on + row['date'] + bold_off + '</td>' +
                         '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
                         'data-toggle="tooltip" title="View ' + row['version'] + '">' +
-                        '<span class="fa fa-book"></span></button></td></tr>'
+                        '<i class="fa fa-book fa-fw"></i></button></td></tr>'
                     );
                 });
 

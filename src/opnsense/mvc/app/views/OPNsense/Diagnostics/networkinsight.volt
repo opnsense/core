@@ -779,7 +779,7 @@ POSSIBILITY OF SUCH DAMAGE.
             </td>
             <td><input type="text" id="service_port_detail"></td>
             <td><input type="text" id="address_detail"></td>
-            <td><button id="refresh_details" type="button" class="btn glyphicon glyphicon-refresh"></button></td>
+            <td><span id="refresh_details" class="btn btn-default"><i class="fa fa-refresh"></i></span></td>
           </tr>
         </tbody>
       </table>

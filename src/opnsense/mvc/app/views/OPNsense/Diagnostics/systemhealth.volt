@@ -725,7 +725,7 @@
                     </form>
                     <div class="btn btn-xs btn-primary inline"
                          onclick='downloadCSV({ filename: rrd+".csv" });'><i
-                            class="glyphicon glyphicon-download-alt"></i>{{ lang._('Download as CSV') }}
+                            class="fa fa-download"></i> {{ lang._('Download as CSV') }}
                     </div>
                 </div>
 
