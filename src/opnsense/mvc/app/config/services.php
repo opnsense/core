@@ -22,7 +22,7 @@ function view_fetch_themed_filename($url, $theme)
         "/"
     );
     foreach ($search_pattern as $pattern) {
-        $filename = "/usr/local/opnsense/www{$pattern}{$url}";
+        $filename = __DIR__ . "/../../../www{$pattern}{$url}";
         if (file_exists($filename)) {
             return str_replace("//", "/", "/ui{$pattern}{$url}");
         }
