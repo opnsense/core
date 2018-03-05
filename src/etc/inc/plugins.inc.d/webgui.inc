@@ -430,7 +430,7 @@ EOD;
 
 ## error-handler for status 404
 #server.error-handler-404   = "/error-handler.html"
-#server.error-handler-404   = "/error-handler.php"
+server.error-handler-404   = "/ui/404"
 
 ## to help the rc.scripts
 server.pid-file            = "/var/run/lighty-webConfigurator.pid"
