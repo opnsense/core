@@ -174,12 +174,15 @@ class ControllerBase extends ControllerRoot
 
         // set theme in ui_theme template var, let template handle its defaults (if there is no theme).
         if ($cnf->object()->theme->count() > 0 && !empty($cnf->object()->theme) &&
-            is_dir('/usr/local/opnsense/www/themes/'.(string)$cnf->object()->theme)
+            (
+                is_dir('/usr/local/opnsense/www/themes/'.(string)$cnf->object()->theme) ||
+                !is_dir('/usr/local/opnsense/www/themes')
+            )
         ) {
             $this->view->ui_theme = $cnf->object()->theme;
         }
 
-        $product_vars = json_decode(file_get_contents('/usr/local/opnsense/firmware-product'), true);
+        $product_vars = json_decode(file_get_contents(__DIR__.'/../../../../../firmware-product'), true);
         foreach ($product_vars as $product_key => $product_var) {
             $this->view->$product_key = $product_var;
         }
