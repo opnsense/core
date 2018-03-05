@@ -37,7 +37,7 @@ function upload_crash_report($files, $agent)
 
     foreach ($files as $filename) {
         if (is_link($filename) || $filename == '/var/crash/minfree.gz' || $filename == '/var/crash/bounds.gz'
-            || filesize($filename) > 2097152 ) {
+            || filesize($filename) > 5 * 1024 * 1024) {
             continue;
         }
         $post["file{$counter}"] = curl_file_create($filename, "application/x-gzip", basename($filename));
@@ -156,7 +156,7 @@ if ($has_crashed) {
     $crash_reports['System Information'] = trim($crash_report_header);
     if (file_exists('/tmp/PHP_errors.log')) {
         $php_errors_size = @filesize('/tmp/PHP_errors.log');
-        $max_php_errors_size = 2 * 1024 * 1024;
+        $max_php_errors_size = 1 * 1024 * 1024;
         // limit reporting for PHP_errors.log to $max_php_errors_size characters
         if ($php_errors_size > $max_php_errors_size) {
             // if file is to large, only display last $max_php_errors_size characters
