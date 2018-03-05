@@ -1592,36 +1592,14 @@ function get_dyndns_ip($int, $ipver = 4)
     }
 
     if ($ipver == 4 && is_private_ip($ip_address)) {
+        /* Chinese alternative is http://ip.3322.net/ */
         $hosttocheck = 'http://checkip.dyndns.org';
-        $verifysslpeer = false;
-        $username = null;
-        $password = null;
-
-        /* Use the first enabled check IP service as the default. */
-        if (isset($config['checkipservices']['service'])) {
-            foreach ($config['checkipservices']['service'] as $i => $checkipservice) {
-                if (isset($checkipservice['enable'])) {
-                    $verifysslpeer = isset($checkipservice['verifysslpeer']);
-                    $username = $checkipservice['username'];
-                    $password = $checkipservice['password'];
-                    $hosttocheck = $checkipservice['url'];
-                    break;
-                }
-            }
-        }
-
         $ip_ch = curl_init($hosttocheck);
         curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ip_ch, CURLOPT_SSL_VERIFYPEER, $verifysslpeer);
         curl_setopt($ip_ch, CURLOPT_INTERFACE, $ip_address);
         curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ip_ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ip_ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        if (!empty($username) && !empty($password)) {
-            curl_setopt($ip_ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-            curl_setopt($ip_ch, CURLOPT_USERPWD, "{$username}:{$password}");
-        }
-
         $ip_result = curl_exec($ip_ch);
         if ($ip_result !== false) {
             preg_match('=<body>Current IP Address: (.*)</body>=siU', $ip_result, $matches);
