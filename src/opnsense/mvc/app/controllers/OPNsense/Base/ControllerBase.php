@@ -179,7 +179,7 @@ class ControllerBase extends ControllerRoot
             $this->view->ui_theme = $cnf->object()->theme;
         }
 
-        $product_vars = json_decode(file_get_contents('/usr/local/opnsense/firmware-product'), true);
+        $product_vars = json_decode(file_get_contents(__DIR__.'/../../../../../firmware-product'), true);
         foreach ($product_vars as $product_key => $product_var) {
             $this->view->$product_key = $product_var;
         }
