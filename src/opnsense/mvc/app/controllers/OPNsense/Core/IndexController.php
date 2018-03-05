@@ -42,8 +42,11 @@ class IndexController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->title = gettext("Page not found");
-        $this->view->pick('OPNsense/Core/index');
-        $this->response->setStatusCode(404, "Not Found");
+        $this->view->pick('OPNsense/Core/not_found');
+        if ( $this->response->getStatusCode() != '302') {
+            // don't send 404 when redirecting to login page
+            $this->response->setStatusCode(404, "Not Found");
+        }
         return;
     }
 }
