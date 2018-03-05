@@ -501,7 +501,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/firmware.volt
-/usr/local/opnsense/mvc/app/views/OPNsense/Core/index.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Core/not_found.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Cron/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_log.volt
