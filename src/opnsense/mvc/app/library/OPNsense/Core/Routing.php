@@ -101,21 +101,24 @@ class Routing
         // we should consider some kind of caching here
         //
         $registered_modules = array();
-        foreach (glob($this->rootDir."*", GLOB_ONLYDIR) as $namespace_base) {
-            foreach (glob($namespace_base."/*", GLOB_ONLYDIR) as $module_base) {
-                if (is_dir($module_base.$this->suffix)) {
-                    $basename = strtolower(basename($module_base));
-                    $api_base = $module_base . $this->suffix;
-                    $namespace_name = str_replace('/', '\\', str_replace($this->rootDir, '', $api_base));
-                    if (empty($registered_modules[$basename])) {
-                        $registered_modules[$basename] = array();
+        $rootDirs = is_string($this->rootDir) ? array($this->rootDir) : $this->rootDir ;
+        foreach ($rootDirs as $rootDir) {
+            foreach (glob($rootDir."*", GLOB_ONLYDIR) as $namespace_base) {
+                foreach (glob($namespace_base."/*", GLOB_ONLYDIR) as $module_base) {
+                    if (is_dir($module_base.$this->suffix)) {
+                        $basename = strtolower(basename($module_base));
+                        $api_base = $module_base . $this->suffix;
+                        $namespace_name = str_replace('/', '\\', str_replace($this->rootDir, '', $api_base));
+                        if (empty($registered_modules[$basename])) {
+                            $registered_modules[$basename] = array();
+                        }
+                        // always place OPNsense components on top
+                        $sortOrder = stristr($module_base, '/OPNsense/') ? "0" : count($registered_modules[$basename]) + 1;
+                        $registered_modules[$basename][$sortOrder] = array();
+                        $registered_modules[$basename][$sortOrder]['namespace'] = $namespace_name;
+                        $registered_modules[$basename][$sortOrder]['path'] = $api_base;
+                        ksort($registered_modules[$basename]);
                     }
-                    // always place OPNsense components on top
-                    $sortOrder = stristr($module_base, '/OPNsense/') ? "0" : count($registered_modules[$basename]) + 1;
-                    $registered_modules[$basename][$sortOrder] = array();
-                    $registered_modules[$basename][$sortOrder]['namespace'] = $namespace_name;
-                    $registered_modules[$basename][$sortOrder]['path'] = $api_base;
-                    ksort($registered_modules[$basename]);
                 }
             }
         }
