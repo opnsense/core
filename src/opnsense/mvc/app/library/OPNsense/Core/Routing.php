@@ -101,7 +101,7 @@ class Routing
         // we should consider some kind of caching here
         //
         $registered_modules = array();
-        $rootDirs = is_string($this->rootDir) ? array($this->rootDir) : $this->rootDir ;
+        $rootDirs = is_object($this->rootDir) || is_array($this->rootDir) ? $this->rootDir : array($this->rootDir);
         foreach ($rootDirs as $rootDir) {
             foreach (glob($rootDir."*", GLOB_ONLYDIR) as $namespace_base) {
                 foreach (glob($namespace_base."/*", GLOB_ONLYDIR) as $module_base) {
