@@ -131,7 +131,6 @@ class MenuSystem
             foreach (glob(preg_replace('#/+#','/', "{$modelDir}/*")) as $vendor) {
                 foreach (glob($vendor.'/*') as $module) {
                     $menu_cfg_xml = $module.'/Menu/Menu.xml';
-                    echo "{$menu_cfg_xml}<br/>";
                     if (file_exists($menu_cfg_xml)) {
                         $domNode = dom_import_simplexml($this->addXML($menu_cfg_xml));
                         $domNode = $root->ownerDocument->importNode($domNode, true);
