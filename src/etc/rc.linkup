@@ -41,7 +41,7 @@ function handle_argument_group($iface, $argument2)
 
     if (isset($config['interfaces'][$iface])) {
         // set defaults
-        $ipaddr = "0.0.0.0" ;
+        $ipaddr = '0.0.0.0';
         $ip6addr = '::';
         if (isset($config['interfaces'][$iface]['ipaddr'])) {
             $ipaddr = $config['interfaces'][$iface]['ipaddr'];
