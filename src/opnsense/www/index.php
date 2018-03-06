@@ -2,6 +2,27 @@
 
 error_reporting(E_ALL);
 
+/**
+ * search for a themed filename or return distribution standard
+ * @param string $url relative url
+ * @param array $theme theme name
+ * @return string
+ */
+function view_fetch_themed_filename($url, $theme)
+{
+    $search_pattern = array(
+        "/themes/{$theme}/build/",
+        "/"
+    );
+    foreach ($search_pattern as $pattern) {
+        $filename = __DIR__ . "{$pattern}{$url}";
+        if (file_exists($filename)) {
+            return str_replace("//", "/", "/ui{$pattern}{$url}");
+        }
+    }
+    return $url; // not found, return source
+}
+
 try {
     /**
      * Read the configuration
