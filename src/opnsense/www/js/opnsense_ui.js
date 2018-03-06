@@ -343,7 +343,7 @@ function initFormAdvancedUI() {
 /**
  * standard dialog when information is required, wrapper around BootstrapDialog
  */
-function stdDialogInform(title, message, close, callback, type) {
+function stdDialogInform(title, message, close, callback, type, cssClass) {
      var types = {
          "danger": BootstrapDialog.TYPE_DANGER,
          "default": BootstrapDialog.TYPE_DEFAULT,
@@ -355,9 +355,13 @@ function stdDialogInform(title, message, close, callback, type) {
     if (!(type in types)) {
         type = 'info';
     }
+    if (cssClass == undefined) {
+        cssClass = '';
+    }
     BootstrapDialog.show({
         title: title,
         message: message,
+        cssClass: cssClass,
         type: types[type],
         buttons: [{
             label: close,
