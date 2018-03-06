@@ -108,7 +108,7 @@ class Routing
                     if (is_dir($module_base.$this->suffix)) {
                         $basename = strtolower(basename($module_base));
                         $api_base = $module_base . $this->suffix;
-                        $namespace_name = str_replace('/', '\\', str_replace($this->rootDir, '', $api_base));
+                        $namespace_name = str_replace('/', '\\', str_replace($rootDir, '', $api_base));
                         if (empty($registered_modules[$basename])) {
                             $registered_modules[$basename] = array();
                         }
