@@ -29,6 +29,7 @@
 namespace OPNsense\Base\Menu;
 
 use OPNsense\Core\Config;
+use \Phalcon\DI\FactoryDefault;
 
 /**
  * Class MenuSystem
@@ -110,18 +111,32 @@ class MenuSystem
      */
     public function persist($nowait = true)
     {
+        // fetch our model locations
+        if (!empty(FactoryDefault::getDefault()->get('config')->application->modelsDir)) {
+            $modelDirs = FactoryDefault::getDefault()->get('config')->application->modelsDir;
+            if (!is_array($modelDirs) && !is_object($modelDirs)) {
+                $modelDirs = array($modelDirs);
+            }
+        } else {
+            // failsafe, if we don't have a Phalcon Dependency Injector object, use our relative location
+            $modelDirs = array("__DIR__.'/../../../");
+        }
+
         // collect all XML menu definitions into a single file
         $menuXml = new \DOMDocument('1.0');
         $root = $menuXml->createElement('menu');
         $menuXml->appendChild($root);
         // crawl all vendors and modules and add menu definitions
-        foreach (glob(__DIR__.'/../../../*') as $vendor) {
-            foreach (glob($vendor.'/*') as $module) {
-                $menu_cfg_xml = $module.'/Menu/Menu.xml';
-                if (file_exists($menu_cfg_xml)) {
-                    $domNode = dom_import_simplexml($this->addXML($menu_cfg_xml));
-                    $domNode = $root->ownerDocument->importNode($domNode, true);
-                    $root->appendChild($domNode);
+        foreach ($modelDirs as $modelDir) {
+            foreach (glob(preg_replace('#/+#','/', "{$modelDir}/*")) as $vendor) {
+                foreach (glob($vendor.'/*') as $module) {
+                    $menu_cfg_xml = $module.'/Menu/Menu.xml';
+                    echo "{$menu_cfg_xml}<br/>";
+                    if (file_exists($menu_cfg_xml)) {
+                        $domNode = dom_import_simplexml($this->addXML($menu_cfg_xml));
+                        $domNode = $root->ownerDocument->importNode($domNode, true);
+                        $root->appendChild($domNode);
+                    }
                 }
             }
         }
