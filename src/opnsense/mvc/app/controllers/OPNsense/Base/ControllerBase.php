@@ -174,7 +174,10 @@ class ControllerBase extends ControllerRoot
 
         // set theme in ui_theme template var, let template handle its defaults (if there is no theme).
         if ($cnf->object()->theme->count() > 0 && !empty($cnf->object()->theme) &&
-            is_dir('/usr/local/opnsense/www/themes/'.(string)$cnf->object()->theme)
+            (
+                is_dir('/usr/local/opnsense/www/themes/'.(string)$cnf->object()->theme) ||
+                !is_dir('/usr/local/opnsense/www/themes')
+            )
         ) {
             $this->view->ui_theme = $cnf->object()->theme;
         }
