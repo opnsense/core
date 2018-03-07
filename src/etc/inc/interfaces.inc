@@ -1209,7 +1209,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     switch ($ipaddrv6) {
         case "slaac":
         case "dhcp6":
-            killbypid("/var/run/dhcp6c_{$realif}.pid", 'TERM', true);
+            kill_dhcp6client_process($interface,true,false);
             @unlink("/var/etc/dhcp6c_{$interface}.conf");
             if (does_interface_exist($realifv6)) {
                 $ip6 = find_interface_ipv6($realifv6);
@@ -2479,7 +2479,100 @@ function kill_dhclient_process($interface)
 
     killbypid(find_dhclient_process($interface), 'TERM', true);
 }
+function find_dhcp6c_process($interface) {
+    global $g;
+    log_error("dhcp6c find interface is {$interface}");
+    if ($interface && isvalidpid("/var/run/dhcp6c_{$interface}.pid")) {
+        $pid = trim(file_get_contents("/var/run/dhcp6c_{$interface}.pid"), " \n");
+    } else {
+        return(false);
+    }
+    return intval($pid);
+}
 
+function kill_dhcp6client_process($interface, $force, $release = false) {
+    global $g;
+
+    $i = 0;
+    $realif = get_real_interface($interface);
+    log_error("dhcp6c kill interface is {$interface}");
+    /*********** marjohn56's Notes on signals for dhcp6c and this function *************
+
+    If we have Taken the WAN interface down, then dhcp6c sits there sending
+    a release and waiting for the response that never comes.
+    So we need to tell it that the interface is down and to just die quickly
+    otherwise a new client may launch and we have duplicate proceses.
+    In this case use SIGUSR1.
+
+    If we want to exit normally obeying the no release flag then use SIGTERM.
+    If we want to exit with a release overiding the no release flag then
+    use SIGUSR2.
+
+    If $Force is true it will use SIGUSR1, thus forcing dhcp6c to
+    exit quickly without sending release signals.
+
+    If $Force is set to false and $release is also set to false dhcp6c will
+    follow the no-release flag.
+
+    If $Force is set to false and $release is true then dhcp6c will send a
+    release regardless of the no-release flag.
+    ***********************************************************************/
+
+    if ($force == true) {
+        $psig=SIGUSR1;
+    } else if ($release == false) {
+        $psig=SIGTERM;
+    } else {
+        $psig=SIGUSR2;
+    }
+
+    while ((($pid = find_dhcp6c_process($realif)) != 0) && ($i < 3)) {
+        /* 3rd time make it die for sure */
+        $sig = ($i == 2 ? SIGKILL : $psig);
+        killbypid($pid, $sig);
+        sleep(1);
+        $i++;
+    }
+  }
+function reset_dhcp6client_process($interface) 
+{
+    $realif = get_real_interface($interface);
+    log_error("dhcp6c reset interface is {$interface}");
+    $pid = find_dhcp6c_process($interface);
+
+    if($pid != 0) {
+        killbypid($pid, HUP);
+    }
+}
+
+function run_dhcp6client_process($interface) {
+    global $config;
+
+    $wancfg = $config['interfaces'][$interface];
+    $realif = get_real_interface($interface);
+    $debugOption = isset($wancfg['adv_dhcp6_debug']) ? "-D" : "-d";
+    $noreleaseOption = isset($wancfg['dhcp6norelease']) ? "-n" : "";
+
+    /*
+     * Only run this if the lock does not exist. In theory the lock being
+     * there in this mode means the user has selected dhcp6sendsolicit while
+     * a session is active in the other mode.
+     *
+     * It should not happen as the process should have been killed and the
+     * lock deleted.
+     */
+    log_error("dhcp6c run interface is {$interface} name is {$realif}");
+    if(find_dhcp6c_process($realif)) {
+        reset_dhcp6client_process($interface);
+    } else {
+        // Start dhcp6c
+        mwexec("/usr/local/sbin/dhcp6c {$debugOption} " .
+           "{$noreleaseOption} " .
+           "-c /var/etc/dhcp6c_{$interface}.conf " .
+           "-p /var/run/dhcp6c_{$realif}.pid " .
+           $realif);
+    }
+}
 function interface_virtual_create($interface)
 {
     global $config;
@@ -2627,6 +2720,15 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
             }
             break;
     }
+    
+    /* configure all ipv6 dhcp conf & scripts at this point  */
+    /* We need to take into account that a LAN change        */
+    /* may also affect it. It will get called everytime      */
+    /* interface is reconfigured, but we have to watch       */
+    /* all interfaces not just WAN.Initialy this will        */
+    /* only suppone one WAN interface with dhcp6.            */
+
+    configure_dhcp6c_conf('wan', $config['interfaces']['wan']);
 
     if (isset($wancfg['ipaddrv6'])) {
         switch ($wancfg['ipaddrv6']) {
@@ -3077,7 +3179,6 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
 
     return 0;
 }
-
 function interface_dhcpv6_configure($interface = 'wan', $wancfg)
 {
     global $config;
@@ -3088,7 +3189,6 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
 
     $wanif = get_real_interface($interface, "inet6");
     $dhcp6cconf = "";
-    $dhcp6cconf .= "interface {$wanif} {\n";
 
     /* write DUID if override was set */
     if (!empty($config['system']['ipv6duid'])) {
@@ -3101,131 +3201,6 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
         }
     }
 
-    /* for SLAAC interfaces we do fire off a dhcp6 client for just our name servers */
-    if ($wancfg['ipaddrv6'] == "slaac") {
-        $dhcp6cconf .= "  information-only;\n";
-        $dhcp6cconf .= "  request domain-name-servers;\n";
-        $dhcp6cconf .= "  request domain-name;\n";
-        $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\"; # we'd like some nameservers please\n";
-        $dhcp6cconf .= "};\n";
-    } else {
-        /* skip address request if this is set */
-        if (!isset($wancfg['dhcp6prefixonly'])) {
-            $dhcp6cconf .= "  send ia-na 0; # request stateful address\n";
-        }
-        if (is_numeric($wancfg['dhcp6-ia-pd-len'])) {
-            $dhcp6cconf .= "  send ia-pd 0; # request prefix delegation\n";
-        }
-
-        $dhcp6cconf .= "  request domain-name-servers;\n";
-        $dhcp6cconf .= "  request domain-name;\n";
-        $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\"; # we'd like some nameservers please\n";
-
-        $dhcp6cconf .= "};\n";
-
-        if (!isset($wancfg['dhcp6prefixonly'])) {
-            $dhcp6cconf .= "id-assoc na 0 { };\n";
-        }
-
-        if (is_numeric($wancfg['dhcp6-ia-pd-len'])) {
-            /* Setup the prefix delegation */
-            $dhcp6cconf .= "id-assoc pd 0 {\n";
-            $preflen = 64 - $wancfg['dhcp6-ia-pd-len'];
-            if (isset($wancfg['dhcp6-ia-pd-send-hint'])) {
-                $dhcp6cconf .= "  prefix ::/{$preflen} infinity;\n";
-            }
-            $iflist = link_interface_to_track6($interface);
-            foreach ($iflist as $friendly => $ifcfg) {
-                if (is_numeric($ifcfg['track6-prefix-id'])) {
-                    $realif = get_real_interface($friendly);
-                    $dhcp6cconf .= "  prefix-interface {$realif} {\n";
-                    $dhcp6cconf .= "    sla-id {$ifcfg['track6-prefix-id']};\n";
-                    $dhcp6cconf .= "    sla-len {$wancfg['dhcp6-ia-pd-len']};\n";
-                    $dhcp6cconf .= "  };\n";
-                }
-            }
-            unset($preflen, $iflist, $ifcfg);
-            $dhcp6cconf .= "};\n";
-        }
-    }
-
-    // DHCP6 Config File Advanced
-    if ($wancfg['adv_dhcp6_config_advanced']) {
-        $dhcp6cconf = DHCP6_Config_File_Advanced($interface, $wancfg, $wanif);
-    }
-
-    // DHCP6 Config File Override
-    if (!empty($wancfg['adv_dhcp6_config_file_override'])) {
-        $dhcp6cfile = $wancfg['adv_dhcp6_config_file_override_path'];
-        if (file_exists($dhcp6cfile)) {
-            $dhcp6cconf = file_get_contents($dhcp6cfile);
-            $dhcp6cconf = DHCP6_Config_File_Substitutions($wancfg, $wanif, $dhcp6cconf);
-        } else {
-            log_error(sprintf('DHCP6 config file override does not exist: "%s"', $dhcp6cfile));
-        }
-    }
-
-    /* wide-dhcp6c works for now. */
-    if (!@file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf)) {
-        printf("Error: cannot open dhcp6c_{$interface}.conf in interface_dhcpv6_configure() for writing.\n");
-        unset($dhcp6cconf);
-        return 1;
-    }
-    unset($dhcp6cconf);
-
-    $dhcp6cscript = "#!/bin/sh\n";
-    $dhcp6cscript .= "if [ -n '" . (!empty($wancfg['adv_dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
-    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
-    $dhcp6cscript .= "fi\n";
-    $dhcp6cscript .= "case \$REASON in\n";
-    $dhcp6cscript .= "REQUEST|" . (!empty($wancfg['dhcp6norelease']) ? 'EXIT' : 'RELEASE') . ")\n";
-    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
-    $dhcp6cscript .= "\t/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
-    $dhcp6cscript .= "\t;;\n";
-    $dhcp6cscript .= "*)\n";
-    $dhcp6cscript .= "\t;;\n";
-    $dhcp6cscript .= "esac\n";
-
-    if (!@file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript)) {
-        printf("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.\n");
-        unset($dhcp6cscript);
-        return 1;
-    }
-    unset($dhcp6cscript);
-    chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
-
-    $dhcp6ccommand = exec_safe(
-        "/usr/local/sbin/dhcp6c %s -c %s -p %s %s",
-        array(
-            '-' . (empty($wancfg['adv_dhcp6_debug']) ? 'd' : 'D' ) . (!empty($wancfg['dhcp6norelease']) ? 'n' : ''),
-            "/var/etc/dhcp6c_{$interface}.conf",
-            "/var/run/dhcp6c_{$wanif}.pid",
-            "{$wanif}"
-        )
-    );
-
-    $rtsoldscript = "#!/bin/sh\n";
-    $rtsoldscript .= "# this file was auto-generated, do not edit\n";
-    $rtsoldscript .= "if [ -n \"\${2}\" ]; then\n";
-    $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_routerv6\n";
-    $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_defaultgwv6\n";
-    $rtsoldscript .= "fi\n";
-    $rtsoldscript .= "PID=$(cat /var/run/dhcp6c_{$wanif}.pid)\n";
-    $rtsoldscript .= "if [ -n \"\${PID}\" ]; then\n";
-    $rtsoldscript .= "\t/bin/kill \${PID}\n";
-    $rtsoldscript .= "\t/bin/pwait \${PID}\n";
-    $rtsoldscript .= "fi\n";
-    $rtsoldscript .= "/usr/bin/logger -t rtsold \"Starting dhcp6 client for interface {$interface}({$wanif})\"\n";
-    $rtsoldscript .= "$dhcp6ccommand\n";
-
-    if (!@file_put_contents("/var/etc/rtsold_{$wanif}_script.sh", $rtsoldscript)) {
-        printf("Error: cannot open rtsold_{$wanif}_script.sh in interface_dhcpv6_configure() for writing.\n");
-        unset($rtsoldscript);
-        return 1;
-    }
-    unset($rtsoldscript);
-    chmod("/var/etc/rtsold_{$wanif}_script.sh", 0755);
-
     /* accept router advertisements for this interface */
     set_single_sysctl("net.inet6.ip6.accept_rtadv", "1");
     log_error("Accept router advertisements on interface {$wanif} ");
@@ -3237,23 +3212,267 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     /* always kill rtsold in case of reconfigure */
     killbypid("/var/run/rtsold_{$wanif}.pid", 'TERM', true);
 
-    /* fire up rtsold for IPv6 RAs first */
-    mwexecf(
-        '/usr/sbin/rtsold -p %s -O %s -R %s %s %s',
-        array(
-            "/var/run/rtsold_{$wanif}.pid",
-            "/var/etc/rtsold_{$wanif}_script.sh",
-            '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
-            empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
-            $wanif
-        )
-    );
-
-    if (isset($wancfg['dhcp6sendsolicit'])) {
-        mwexec("/var/etc/rtsold_{$wanif}_script.sh");
+   if (isset($wancfg['dhcp6sendsolicit'])) {
+        /*
+        * Start dhcp6c here if we don't want to wait for ra - calls
+        * seperate function
+        *
+        * In this mode dhcp6c launches rtsold via its script. RTSOLD
+        * will then run the configure on receipt of the RA.
+        *
+        * Already started. interface_dhcpv6_configure() appears to get
+        * called multiple times.
+        *
+        * Taking the interface down changing WAN or LAN config will kill the client.
+        */
+        log_error("call to start dhcp6c, mode sensdsolicit ");
+      
+        run_dhcp6client_process($interface);
+    } else {
+        /*
+        * Fire up rtsold for IPv6 RAs, this backgrounds immediately
+        * ( it does not background, it exits! ) It will launch dhcp6c
+        * if dhcp6sendsolicit is not set
+        */
+        log_error("Starting rtsold mode not sensdsolicit .");
+        mwexecf(
+            '/usr/sbin/rtsold -p %s -O %s -R %s %s %s',
+            array(
+                "/var/run/rtsold_{$wanif}.pid",
+                "/var/etc/rtsold_{$wanif}_script.sh",
+                '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
+                empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
+                $wanif
+            )
+        );
     }
-
     return 0;
+}
+function configure_dhcp6c_conf($interface, $wancfg)
+{
+    /* It's OK to SIGHUP dhcp6c,but the dhcp6_conf_will need to be reset */
+    /* and you'll need the modified dhcp6c client anyway */
+
+    $wanif = get_real_interface($interface, "inet6");
+
+    // Delete rtsold script 
+    @unlink("/var/etc/rtsold_{$wanif}_script.sh");
+
+	$dhcp6cconf = DHCP6_Config_File_Basic($interface,$wancfg);
+
+    // DHCP6 Config File Advanced
+    if ($wancfg['adv_dhcp6_config_advanced']) {
+        $dhcp6cconf = DHCP6_Config_File_Advanced($interface, $wancfg, $wanif);
+    }
+    // DHCP6 Config File Override
+    if (!empty($wancfg['adv_dhcp6_config_file_override'])) {
+        $dhcp6cfile = $wancfg['adv_dhcp6_config_file_override_path'];
+        if (file_exists($dhcp6cfile)) {
+            $dhcp6cconf = file_get_contents($dhcp6cfile);
+            $dhcp6cconf = DHCP6_Config_File_Substitutions($wancfg, $wanif, $dhcp6cconf);
+        } else {
+            log_error(sprintf('DHCP6 config file override does not exist: "%s"', $dhcp6cfile));
+        }
+    }
+	if (!@file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf)) {
+		log_error("Error: cannot open dhcp6c_{$interface}.conf in interface_dhcpv6_configure() for writing.\n");
+		unset($dhcp6cconf);
+		return 1;
+	}
+
+    unset($dhcp6cconf);
+
+    /* non ipoe Process */
+    if (!isset($wancfg['dhcp6sendsolicit'])) {
+        /*
+        * We only want this script to run once, and if it runs twice
+        * then do not launch dhcp6c again, this only happens if
+        * dhcp6sendsolicit is not set.
+        */
+
+        $noreleaseOption = isset($wancfg['dhcp6norelease']) ? "-n" : "";
+
+        $dhcp6ccommand = exec_safe(
+        "/usr/local/sbin/dhcp6c %s {$noreleaseOption} -c %s -p %s %s",
+            array(
+                empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
+                "/var/etc/dhcp6c_{$interface}.conf",
+                "/var/run/dhcp6c_{$wanif}.pid",
+                "{$wanif}"
+            )
+        );
+
+        $rtsoldscript = "#!/bin/sh\n";
+        $rtsoldscript .= "# this file was auto-generated, do not edit\n";
+        $rtsoldscript .= "if [ -n \"\${2}\" ]; then\n";
+        $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_routerv6\n";
+        $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_defaultgwv6\n";
+        $rtsoldscript .= "fi\n";
+        $rtsoldscript .= "if [ -f /var/run/dhcp6c_{$wanif}.pid ]; then\n";
+        $rtsoldscript .= "\tdhcp6c_pid=\$(cat \"/var/run/dhcp6c_{$wanif}.pid\")\n";
+        $rtsoldscript .= "\t/bin/kill -HUP \${dhcp6c_pid}\n";
+        $rtsoldscript .= "\t/usr/bin/logger -t dhcpd \"RTSOLD script sending SIGHUP to dhcp6c\"\n";
+        $rtsoldscript .= "\t/bin/sleep 1\n";
+        $rtsoldscript .= "else\n";
+        $rtsoldscript .= "\t/usr/bin/logger -t dhcpd \" RTSOLD script - Starting dhcp6 client for interface {$interface}({$wanif})\"\n";
+        $rtsoldscript .= "\t$dhcp6ccommand\n";
+        $rtsoldscript .= "fi\n";
+    } else {
+        /*
+        * The script needs to run in dhcp6sendsolicit mode as RA may
+        * not have been received, or there can be a delay with
+        * certain ISPs
+        */
+        $rtsoldscript = "#!/bin/sh\n";
+        $rtsoldscript .= "# This shell script launches dhcp6c and configured gateways for this interface.\n";
+        $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_routerv6\n";
+        $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_defaultgwv6\n";
+        $rtsoldscript .= "/usr/bin/logger -t opnsense \"Received RA specifying route \$2 for interface {$interface}({$wanif})\"\n";
+        $rtsoldscript .= "/bin/sleep 1\n";
+        $rtsoldscript .= "/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
+    }
+    /* Add wide-dhcp6c shell script here. Because we can not pass a argument to it. */
+    if (!@file_put_contents("/var/etc/rtsold_{$wanif}_script.sh", $rtsoldscript)) {
+        log_error("Error: cannot open rtsold_{$wanif}_script.sh for writing.\n");
+        unset($rtsoldscript);
+        return 1;
+    }
+    unset($rtsoldscript);
+    @chmod("/var/etc/rtsold_{$wanif}_script.sh", 0755);
+    
+     /*************** Script Debug Logging ***************************
+    Both dhcp6 scripts now have a logging message built in.
+    These logging messages ONLY appear if dhcp6c debug logging is set.
+    The logging messages appear in the dhcp section of the logs,
+    not in system.
+
+    These scripts now also take advantage of the REASON= env vars
+    supplied by dhcp6c.
+    ****************************************************************/
+    /* Script create for dhcp6sendsolicit mode */
+    /* dhcp6c will launch rtsold. rtsold will then run the wan ipv6 configure */
+    if (isset($wancfg['dhcp6sendsolicit'])) {
+         $rtsold_cmd =  exec_safe(
+        "/usr/sbin/rtsold -p %s -O %s -R %s %s %s",
+            array(
+                "/var/run/rtsold_{$wanif}.pid",
+                "/var/etc/rtsold_{$wanif}_script.sh",
+                "/usr/bin/true", /* XXX missing proper script to refresh resolv.conf */
+                empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
+                "{$wanif}"
+            )
+        );
+        $dhcp6cscript = "#!/bin/sh\n";
+        $dhcp6cscript .= "if [ -n '" . (!empty($wancfg['adv_dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
+        $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
+        $dhcp6cscript .= "fi\n";
+        $dhcp6cscript .= "case \$REASON in\n";
+        $dhcp6cscript .= "REQUEST)\n";
+        $dhcp6cscript .= "\t/bin/sleep 1\n";
+        $dhcp6cscript .= "\t$rtsold_cmd\n";
+        $dhcp6cscript .= "\t;;\n";
+        $dhcp6cscript .= "*)\n";
+        $dhcp6cscript .= "\t;;\n";
+        $dhcp6cscript .= "esac\n";
+        if (!@file_put_contents(
+            "/var/etc/dhcp6c_{$interface}_script.sh",
+            $dhcp6cscript)) {
+            log_error("Error: cannot open " .
+               "dhcp6c_{$interface}_dhcp6c_script.sh in " .
+               "interface_dhcpv6_configure() for writing.\n");
+            unset($dhcp6script);
+            return 1;
+        } else { 
+            chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
+        }
+    } else {
+        $dhcp6cscript  = "#!/bin/sh\n";
+        $dhcp6cscript .= "# This shell script launches /etc/rc.newwanipv6 with a interface argument.\n";
+        $dhcp6cscript = "#!/bin/sh\n";
+        $dhcp6cscript .= "if [ -n '" . (!empty($wancfg['adv_dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
+        $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
+        $dhcp6cscript .= "fi\n";
+        $dhcp6cscript .= "case \$REASON in\n";
+        $dhcp6cscript .= "REQUEST|" . (!empty($wancfg['dhcp6norelease']) ? 'EXIT' : 'RELEASE') . ")\n";
+        $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
+        $dhcp6cscript .= "\t/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
+        $dhcp6dscript .= "/usr/bin/logger -t opnsense \"Received RA specifying route \$2 for interface {$interface}({$wanif})\"\n";
+        $dhcp6cscript .= "\t;;\n";
+        $dhcp6cscript .= "*)\n";
+        $dhcp6cscript .= "\t;;\n";
+        $dhcp6cscript .= "esac\n";
+
+        if (!@file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript)) {
+            printf("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.\n");
+            unset($dhcp6cscript);
+            return 1;
+        } else { 
+            chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
+        }
+    }
+    unset($dhcp6cscript);
+
+}
+
+function DHCP6_Config_File_Basic($interface,$wancfg)
+{
+    global $config;
+
+    $wanif = get_real_interface($interface, "inet6");
+    $iflist = link_interface_to_track6($interface);
+    $dhcp6c_conf = "";
+
+     if ($wancfg['ipaddrv6'] == "slaac")  {
+        $dhcp6c_conf .= "interface {$wanif} {\n";
+        /* for SLAAC interfaces we do fire off a dhcp6 client for just our name servers */
+        $dhcp6c_conf .= "  information-only;\n";
+        $dhcp6c_conf .= "  request domain-name-servers;\n";
+        $dhcp6c_conf .= "  request domain-name;\n";
+        $dhcp6c_conf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\"; # we'd like some nameservers please\n";
+        $dhcp6c_conf .= "};\n";
+
+    } else {
+        $dhcp6c_conf .= "interface {$wanif} {\n";
+        if (!isset($wancfg['dhcp6prefixonly'])) {
+            $dhcp6c_conf .= "  send ia-na 0; # request stateful address for $friendly\n";
+        }
+        $dhcp6c_conf .= "  send ia-pd 0; # request prefix delegation for $friendly\n";
+        $dhcp6c_conf .= "  request domain-name-servers;\n";
+        $dhcp6c_conf .= "  request domain-name;\n";
+        $dhcp6c_conf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\"; # we'd like some nameservers please\n";
+        $dhcp6c_conf .= "};\n";
+        
+        $count = 0;
+
+        if (!isset($wancfg['dhcp6prefixonly'])) {
+                $dhcp6c_conf .= "id-assoc na 0 { };\n";
+        }
+        $dhcp6c_conf .= "id-assoc pd 0 {\n"; 
+        $preflen = 64 - $wancfg['dhcp6-ia-pd-len'];
+        if (isset($wancfg['dhcp6-ia-pd-send-hint'])) {
+            $dhcp6c_conf .= "  prefix ::/{$preflen} infinity;\n";
+        }
+        foreach ($iflist as $friendly => $ifcfg) {
+            if (is_numeric($wancfg['dhcp6-ia-pd-len'])) {
+                /* Setup the prefix delegation */ 
+                if (isset($wancfg['dhcp6incslaid'])) {
+                    $sla_id = $count;
+                } else {
+                    $sla_id = 0;
+                }
+                if (is_numeric($ifcfg['track6-prefix-id'])) {
+                    $realif = get_real_interface($friendly);
+                    $dhcp6c_conf .= "  prefix-interface {$realif} {\n";
+                    $dhcp6c_conf .= "    sla-len {$wancfg['dhcp6-ia-pd-len']};\n";
+                    $dhcp6c_conf .= "    sla-id {$ifcfg['track6-prefix-id']};\n";
+                    $dhcp6c_conf .= "  };\n";
+                }
+            }
+            $count += 1;
+        }
+        $dhcp6c_conf .= "};\n";
+    }
+    return $dhcp6c_conf;
 }
 
 function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
@@ -3341,26 +3560,32 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
             }
             $id_assoc_statement_prefix .= ";";
         }
-
-        if (is_numeric($wancfg['adv_dhcp6_prefix_interface_statement_sla_id'])) {
-            $id_assoc_statement_prefix .= "\n\tprefix-interface";
-            $id_assoc_statement_prefix .= " {$wanif}";
-            $id_assoc_statement_prefix .= " {\n";
-            $id_assoc_statement_prefix .= "\t\tsla-id {$wancfg['adv_dhcp6_prefix_interface_statement_sla_id']};\n";
-            if (($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] >= 0) &&
-                ($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] <= 128)
-            ) {
-                $id_assoc_statement_prefix .= "\t\tsla-len {$wancfg['adv_dhcp6_prefix_interface_statement_sla_len']};\n";
+        
+        $iflist = link_interface_to_track6($interface);
+        
+        $count = 0;
+        foreach ($iflist as $friendly => $ifcfg) {
+            $realif = get_real_interface($friendly);
+            if (is_numeric($wancfg['adv_dhcp6_prefix_interface_statement_sla_id'])) {
+                $id_assoc_statement_prefix .= "\n\tprefix-interface";
+                $id_assoc_statement_prefix .= " {$realif}";
+                $id_assoc_statement_prefix .= " {\n";
+                $sla_id_val = $wancfg['adv_dhcp6_prefix_interface_statement_sla_id']+$count;
+                $id_assoc_statement_prefix .= "\t\tsla-id {$sla_id_val};\n";
+                if (($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] >= 0) &&
+                    ($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] <= 128)
+                ) {
+                    $id_assoc_statement_prefix .= "\t\tsla-len {$wancfg['adv_dhcp6_prefix_interface_statement_sla_len']};\n";
+                }
+                $id_assoc_statement_prefix .= "\t};";
             }
-            $id_assoc_statement_prefix .= "\t};";
+            if (($wancfg['adv_dhcp6_id_assoc_statement_prefix'] != '') ||
+                (is_numeric($wancfg['adv_dhcp6_prefix_interface_statement_sla_id']))
+              ) {
+                $id_assoc_statement_prefix .= "\n";
+            }
+            $count += 1;
         }
-
-        if (($wancfg['adv_dhcp6_id_assoc_statement_prefix'] != '') ||
-            (is_numeric($wancfg['adv_dhcp6_prefix_interface_statement_sla_id']))
-          ) {
-            $id_assoc_statement_prefix .= "\n";
-        }
-
         $id_assoc_statement_prefix  .= "};\n";
     }
 
@@ -3414,7 +3639,6 @@ function DHCP6_Config_File_Substitutions($wancfg, $wanif, $dhcp6cconf)
 
     return $dhcp6cconf;
 }
-
 
 function interface_dhcp_configure($interface = 'wan')
 {
