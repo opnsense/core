@@ -1257,7 +1257,7 @@ function openvpn_get_server_status($server, $socket)
         stream_set_timeout($fp, 1);
 
         /* send our status request */
-        fputs($fp, "status 2\n");
+        fputs($fp, "status 3\n");
 
         /* recv all response lines */
         while (!feof($fp)) {
@@ -1277,7 +1277,7 @@ function openvpn_get_server_status($server, $socket)
             }
             /* parse client list line */
             if (strstr($line, "CLIENT_LIST")) {
-                $list = explode(",", $line);
+                $list = explode("\t", $line);
                 $conn = array();
                 $conn['common_name'] = $list[1];
                 $conn['remote_host'] = $list[2];
@@ -1289,7 +1289,7 @@ function openvpn_get_server_status($server, $socket)
             }
             /* parse routing table lines */
             if (strstr($line, "ROUTING_TABLE")) {
-                $list = explode(",", $line);
+                $list = explode("\t", $line);
                 $conn = array();
                 $conn['virtual_addr'] = $list[1];
                 $conn['common_name'] = $list[2];
