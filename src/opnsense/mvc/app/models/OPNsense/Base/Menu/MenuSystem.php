@@ -128,7 +128,7 @@ class MenuSystem
         $menuXml->appendChild($root);
         // crawl all vendors and modules and add menu definitions
         foreach ($modelDirs as $modelDir) {
-            foreach (glob(preg_replace('#/+#','/', "{$modelDir}/*")) as $vendor) {
+            foreach (glob(preg_replace('#/+#', '/', "{$modelDir}/*")) as $vendor) {
                 foreach (glob($vendor.'/*') as $module) {
                     $menu_cfg_xml = $module.'/Menu/Menu.xml';
                     if (file_exists($menu_cfg_xml)) {
