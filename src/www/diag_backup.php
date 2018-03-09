@@ -34,6 +34,7 @@ require_once("filter.inc");
 require_once("services.inc");
 require_once("rrd.inc");
 require_once("system.inc");
+require_once("legacy_bindings.inc");
 
 /**
  * restore config section
@@ -118,6 +119,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['GDriveFolderID'] = isset($config['system']['remotebackup']['GDriveFolderID']) ? $config['system']['remotebackup']['GDriveFolderID'] : null;
     $pconfig['GDriveBackupCount'] = isset($config['system']['remotebackup']['GDriveBackupCount']) ? $config['system']['remotebackup']['GDriveBackupCount'] : null;
     $pconfig['GDrivePassword'] = isset($config['system']['remotebackup']['GDrivePassword']) ? $config['system']['remotebackup']['GDrivePassword'] : null;
+
+    $pconfig['nextcloud_enabled'] = isset($config['system']['remotebackup']['nextcloud_enabled']) ? $config['system']['remotebackup']['nextcloud_enabled'] : null;
+    $pconfig['nextcloud_url'] = isset($config['system']['remotebackup']['nextcloud_url']) ? $config['system']['remotebackup']['nextcloud_url'] : null;
+    $pconfig['nextcloud_user'] = isset($config['system']['remotebackup']['nextcloud_user']) ? $config['system']['remotebackup']['nextcloud_user'] : null;
+    $pconfig['nextcloud_password'] = isset($config['system']['remotebackup']['nextcloud_password']) ? $config['system']['remotebackup']['nextcloud_password'] : null;
+    $pconfig['nextcloud_backupdir'] = isset($config['system']['remotebackup']['nextcloud_backupdir']) ? $config['system']['remotebackup']['nextcloud_backupdir'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -128,6 +135,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $mode = "download";
     } elseif (!empty($_POST['setup_gdrive'])) {
         $mode = "setup_gdrive";
+    } elseif (!empty($_POST['setup_nextcloud'])) {
+        $mode = "setup_nextcloud";
     } else {
         $mode = false;
     }
@@ -290,6 +299,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 /* unused */
             } elseif (count($filesInBackup) == 0) {
                 $input_errors[] = gettext("Google Drive communication failure");
+            } else {
+                $input_messages = gettext("Backup successful, current file list:") . "<br>";
+                foreach ($filesInBackup as $filename => $file) {
+                     $input_messages = $input_messages . "<br>" . $filename;
+                }
+            }
+        }
+    } elseif ( $mode == "setup_nextcloud" ){
+        if (!isset($config['system']['remotebackup'])) {
+            $config['system']['remotebackup'] = array() ;
+        }
+        $config['system']['remotebackup']['nextcloud_enabled'] = $_POST['nextcloud_enabled'];
+        $config['system']['remotebackup']['nextcloud_password'] =   $_POST['nextcloud_password'] ;
+        $config['system']['remotebackup']['nextcloud_url'] = $_POST['nextcloud_url'];
+        $config['system']['remotebackup']['nextcloud_user'] = $_POST['nextcloud_user'];
+        $config['system']['remotebackup']['nextcloud_backupdir'] = $_POST['nextcloud_backupdir'];
+
+        if (isset($_POST['nextcloud_backupdir']) && preg_match('/^[a-z0.9-]+$/', $_POST['nextcloud_backupdir'])) {
+            $config['system']['remotebackup']['nextcloud_backupdir'] = $_POST['nextcloud_backupdir'];
+        } else {
+            $config['system']['remotebackup']['nextcloud_backupdir'] = 'OPNsense-Backup';
+        }
+        if (isset($config['system']['remotebackup']['nextcloud_enabled']) && $config['system']['remotebackup']['nextcloud_enabled'])
+        {
+            $fieldval = array(
+                'nextcloud_url' => gettext('An URL for the Nextcloud server must be set.'),
+                'nextcloud_user' => gettext('An user for the Nextcloud server must be set.'),
+                'nextcloud_password' => gettext('An password for a Nextcloud server must be set.')
+            );
+            foreach ($fieldval as $fieldname => $errormsg) {
+                if (empty($config['system']['remotebackup'][$fieldname])) {
+                    $input_errors[] = $errormsg;
+                }
+            }
+        }
+
+        if (count($input_errors) == 0) {
+
+            $savemsg = gettext("Nextcloud backup settings have been saved.");
+
+            write_config();
+            system_cron_configure();
+
+            $configd_result = trim(configd_run('system nextcloud backup'));
+            var_dump($configd_result);
+
+            if (empty($config['system']['remotebackup']['nextcloud_enabled'])) {
+                /* unused */
+            } elseif ($configd_result != '[OK]') {
+                $input_errors[] = gettext("Nextcloud communication failure");
             } else {
                 $input_messages = gettext("Backup successful, current file list:") . "<br>";
                 foreach ($filesInBackup as $filename => $file) {
@@ -495,6 +554,59 @@ $( document ).ready(function() {
                 <tr>
                   <td>
                     <input name="setup_gdrive" class="btn btn-primary" id="Gdrive" value="<?=gettext("Setup/Test Google Drive");?>" type="submit">
+                  </td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive">
+            <table class="table table-striped opnsense_standard_table_form">
+              <thead style="display: none;">
+                <tr>
+                  <th class="col-sm-1"></th>
+                  <th class="col-sm-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th colspan="2" style="vertical-align:top" class="listtopic">
+                    <?=gettext("Nextcloud"); ?>
+                  </th>
+                </tr>
+                <tr>
+                  <td><?=gettext("Enable"); ?> </td>
+                  <td>
+                    <input name="nextcloud_enabled" type="checkbox" <?=!empty($pconfig['nextcloud_enabled']) ? "checked" : "";?> >
+                  </td>
+                </tr>
+                <tr>
+                  <td><?=gettext("URL"); ?> </td>
+                  <td>
+                    <input name="nextcloud_url" value="<?=$pconfig['nextcloud_url'];?>" type="text">
+                  </td>
+                </tr>
+                <tr>
+                  <td><?=gettext("User"); ?> </td>
+                  <td>
+                    <input name="nextcloud_user" value="<?=$pconfig['nextcloud_user'];?>" type="text">
+                  </td>
+                </tr>
+                <tr>
+                  <td><?=gettext("Password"); ?> </td>
+                  <td>
+                    <input name="nextcloud_password" value="<?=$pconfig['nextcloud_password'];?>" type="text">
+                  </td>
+                </tr>
+                <tr>
+                  <td><?=gettext("Backup Directory"); ?> </td>
+                  <td>
+                    <input name="nextcloud_backupdir" value="<?=$pconfig['nextcloud_backupdir'];?>" type="text">
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input name="setup_nextcloud" class="btn btn-primary" id="Nextcloud" value="<?=gettext("Setup/Test Nextcloud");?>" type="submit">
                   </td>
                   <td></td>
                 </tr>
