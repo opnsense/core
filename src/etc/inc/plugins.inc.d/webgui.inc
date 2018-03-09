@@ -185,8 +185,10 @@ EOD;
 
     if (!isset($config['syslog']['nologlighttpd'])) {
         $lighty_use_syslog = <<<EOD
-## where to send error-messages to
+## where to send error/access-messages to
 server.errorlog-use-syslog="enable"
+accesslog.use-syslog="enable"
+server.syslog-facility = "lighttpd"
 EOD;
     }
 
@@ -211,6 +213,9 @@ fastcgi.server = ( ".php" =>
 
 EOD;
 
+    $lighty_modules = !empty($config['system']['webgui']['httpaccesslog']) ? ', "mod_accesslog"' : "";
+
+
     $lighty_config = <<<EOD
 #
 # lighttpd configuration file
@@ -225,7 +230,7 @@ server.network-backend  = "writev"
 ## modules to load
 server.modules              =   (
   "mod_access", "mod_expire", "mod_compress", "mod_redirect",
-  "mod_cgi", "mod_fastcgi","mod_alias", "mod_rewrite", "mod_openssl"
+  "mod_cgi", "mod_fastcgi","mod_alias", "mod_rewrite", "mod_openssl" {$lighty_modules}
 )
 
 server.max-keep-alive-requests = 15

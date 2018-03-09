@@ -693,6 +693,7 @@ function system_syslogd_start($verbose = false)
          */
         $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay', 'dhclient', 'dhcp6c'), 'local' => '/var/dhcpd/var/run/log', 'remote' => 'dhcp');
         $syslogconfs['filter'] = array('facility' => array('filterlog'), 'remote' => 'filter');
+        $syslogconfs['lighttpd'] = array('facility' => array('lighttpd'), 'remote' => 'lighttpd');
         $syslogconfs['gateways'] = array('facility' => array('apinger'), 'remote' => 'apinger');
         $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');
         $syslogconfs['ppps'] = array('facility' => array('ppp'));
@@ -787,7 +788,7 @@ EOD;
         // setup log files for all facilities including default
         $default_logfile_size = !empty($syslogcfg['logfilesize']) ? $syslogcfg['logfilesize'] : '511488';
         $syslog_files = array_keys($syslogconfs);
-        $syslog_files = array_merge($syslog_files, array('system', 'vpn', 'lighttpd'));
+        $syslog_files = array_merge($syslog_files, array('system', 'vpn'));
         foreach ($syslog_files as $syslog_fn) {
             $filename = "/var/log/".basename($syslog_fn).".log";
             if (!file_exists($filename)) {

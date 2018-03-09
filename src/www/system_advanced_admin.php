@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['compression'] = isset($config['system']['webgui']['compression']) ? $config['system']['webgui']['compression'] : null;
     $pconfig['ssl-ciphers'] = !empty($config['system']['webgui']['ssl-ciphers']) ? explode(':', $config['system']['webgui']['ssl-ciphers']) : array();
     $pconfig['disablehttpredirect'] = isset($config['system']['webgui']['disablehttpredirect']);
+    $pconfig['httpaccesslog'] = isset($config['system']['webgui']['httpaccesslog']);
     $pconfig['disableconsolemenu'] = isset($config['system']['disableconsolemenu']);
     $pconfig['usevirtualterminal'] = isset($config['system']['usevirtualterminal']);
     $pconfig['disableintegratedauth'] = !empty($config['system']['disableintegratedauth']);
@@ -100,6 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['compression'] != $pconfig['compression'] ||
             $config['system']['webgui']['ssl-ciphers'] != $newciphers ||
             $config['system']['webgui']['interfaces'] != $newinterfaces ||
+            (empty($pconfig['httpaccesslog'])) != empty($config['system']['webgui']['httpaccesslog']) ||
             ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect']);
 
         $config['system']['webgui']['protocol'] = $pconfig['webguiproto'];
@@ -113,6 +115,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['disablehttpredirect'] = true;
         } elseif (isset($config['system']['webgui']['disablehttpredirect'])) {
             unset($config['system']['webgui']['disablehttpredirect']);
+        }
+
+        if (!empty($pconfig['httpaccesslog'])) {
+            $config['system']['webgui']['httpaccesslog'] = true;
+        } elseif (isset($config['system']['webgui']['httpaccesslog'])) {
+            unset($config['system']['webgui']['httpaccesslog']);
         }
 
         if ($pconfig['quietlogin'] == "yes") {
@@ -521,6 +529,16 @@ $(document).ready(function() {
                       <?=gettext("Transfer less data to the client for an additional cost in processing power.");?>
                     </output>
                   </td>
+                </tr>
+                <tr>
+                    <td><a id="help_for_httpaccesslog" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Access log"); ?></td>
+                    <td>
+                      <input name="httpaccesslog" type="checkbox" value="yes" <?= empty($pconfig['httpaccesslog']) ? '' : 'checked="checked"' ?> />
+                      <strong><?=gettext("Enable access log"); ?></strong>
+                      <output class="hidden" for="help_for_httpaccesslog">
+                        <?=gettext("Enable access logging on the webinterface for debugging and analysis purposes.") ?>
+                      </output>
+                    </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_webguiinterfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Listen Interfaces') ?></td>

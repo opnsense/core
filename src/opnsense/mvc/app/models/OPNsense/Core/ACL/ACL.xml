@@ -110,6 +110,7 @@
         <name>Diagnostics: Logs: System</name>
         <patterns>
             <pattern>diag_logs.php*</pattern>
+            <pattern>httpd_logs.php*</pattern>
         </patterns>
     </page-diagnostics-logs-system>
     <page-diagnostics-packetcapture>
