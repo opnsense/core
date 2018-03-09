@@ -317,7 +317,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['remotebackup']['nextcloud_user'] = $_POST['nextcloud_user'];
         $config['system']['remotebackup']['nextcloud_backupdir'] = $_POST['nextcloud_backupdir'];
 
-        if (isset($_POST['nextcloud_backupdir']) && preg_match('/^[a-z0.9-]+$/', $_POST['nextcloud_backupdir'])) {
+        if (isset($_POST['nextcloud_backupdir']) && preg_match('/^[a-z0.9-]+$/i', $_POST['nextcloud_backupdir'])) {
             $config['system']['remotebackup']['nextcloud_backupdir'] = $_POST['nextcloud_backupdir'];
         } else {
             $config['system']['remotebackup']['nextcloud_backupdir'] = 'OPNsense-Backup';
