@@ -28,14 +28,6 @@ all:
 
 .include "Mk/defaults.mk"
 
-WANTS=		p5-File-Slurp php${CORE_PHP}-pear-PHP_CodeSniffer \
-		phpunit6-php${CORE_PHP}
-
-.for WANT in ${WANTS}
-want-${WANT}:
-	@${PKG} info ${WANT} > /dev/null
-.endfor
-
 CORE_COMMIT!=	${.CURDIR}/Scripts/version.sh
 CORE_VERSION=	${CORE_COMMIT:C/-.*$//1}
 CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
@@ -141,6 +133,14 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 WRKDIR?=${.CURDIR}/work
 WRKSRC?=${WRKDIR}/src
 PKGDIR?=${WRKDIR}/pkg
+
+WANTS=		p5-File-Slurp php${CORE_PHP}-pear-PHP_CodeSniffer \
+		phpunit6-php${CORE_PHP}
+
+.for WANT in ${WANTS}
+want-${WANT}:
+	@${PKG} info ${WANT} > /dev/null
+.endfor
 
 mount:
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
@@ -312,7 +312,7 @@ sweep:
 
 STYLEDIRS?=	src/etc/inc/plugins.inc.d src/opnsense
 
-style: want-pear-PHP_CodeSniffer
+style: want-php${CORE_PHP}-pear-PHP_CodeSniffer
 	@: > ${WRKDIR}/style.out
 .for STYLEDIR in ${STYLEDIRS}
 	@(phpcs --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} \
@@ -325,7 +325,7 @@ style: want-pear-PHP_CodeSniffer
 	@cat ${WRKDIR}/style.out | ${PAGER}
 	@rm ${WRKDIR}/style.out
 
-style-fix: want-pear-PHP_CodeSniffer
+style-fix: want-php${CORE_PHP}-pear-PHP_CodeSniffer
 .for STYLEDIR in ${STYLEDIRS}
 	phpcbf --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} || true
 .endfor
@@ -339,7 +339,7 @@ dhparam:
 	    ${.CURDIR}/src/etc/dh-parameters.${BITS} ${BITS}
 .endfor
 
-test: want-phpunit6
+test: want-phpunit6-php${CORE_PHP}
 	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
 	    phpunit --configuration PHPunit.xml
 
