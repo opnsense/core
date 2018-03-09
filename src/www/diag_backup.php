@@ -1,6 +1,7 @@
 <?php
 
 /*
+    Copyright (C) 2018 Fabian Franz
     Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -343,17 +344,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             system_cron_configure();
 
             $configd_result = trim(configd_run('system nextcloud backup'));
-            var_dump($configd_result);
 
             if (empty($config['system']['remotebackup']['nextcloud_enabled'])) {
                 /* unused */
-            } elseif ($configd_result != '[OK]') {
+            } elseif ($configd_result != 'OK') {
                 $input_errors[] = gettext("Nextcloud communication failure");
             } else {
-                $input_messages = gettext("Backup successful, current file list:") . "<br>";
-                foreach ($filesInBackup as $filename => $file) {
-                     $input_messages = $input_messages . "<br>" . $filename;
-                }
+                $input_messages = gettext("Backup successful");
             }
         }
 
