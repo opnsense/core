@@ -28,7 +28,8 @@ all:
 
 .include "Mk/defaults.mk"
 
-WANTS=		p5-File-Slurp pear-PHP_CodeSniffer phpunit6
+WANTS=		p5-File-Slurp php${CORE_PHP}-pear-PHP_CodeSniffer \
+		phpunit6-php${CORE_PHP}
 
 .for WANT in ${WANTS}
 want-${WANT}:
@@ -94,9 +95,8 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			opnsense-lang \
 			opnsense-update \
 			pam_opnsense \
-			pecl-radius \
 			pftop \
-			phalcon \
+			phalcon-php${CORE_PHP} \
 			php${CORE_PHP}-ctype \
 			php${CORE_PHP}-curl \
 			php${CORE_PHP}-dom \
@@ -109,6 +109,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			php${CORE_PHP}-mcrypt \
 			php${CORE_PHP}-openssl \
 			php${CORE_PHP}-pdo \
+			php${CORE_PHP}-pecl-radius \
 			php${CORE_PHP}-session \
 			php${CORE_PHP}-simplexml \
 			php${CORE_PHP}-sockets \
