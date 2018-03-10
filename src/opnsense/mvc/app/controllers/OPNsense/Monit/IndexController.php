@@ -32,7 +32,7 @@ namespace OPNsense\Monit;
 
 /**
  * Class IndexController
- * @package OPNsense\FtpProxy
+ * @package OPNsense\Monit
  */
 class IndexController extends \OPNsense\Base\IndexController
 {

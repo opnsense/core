@@ -493,6 +493,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Monit/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Monit.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Monit.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/ACL/ACL.xml
@@ -588,7 +589,6 @@
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/set_session_restrictions.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/sql/init.sql
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/strip_template.py
-/usr/local/opnsense/scripts/OPNsense/Monit/post-install.php
 /usr/local/opnsense/scripts/OPNsense/Monit/setup.sh
 /usr/local/opnsense/scripts/dhcp/get_leases.py
 /usr/local/opnsense/scripts/dhcp/prefixes.php

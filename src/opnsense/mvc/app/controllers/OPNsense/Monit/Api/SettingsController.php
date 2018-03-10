@@ -69,8 +69,8 @@ class SettingsController extends ApiControllerBase
                 }
             }
             if ($node != null) {
-                $result[$nodeType] = $node->getNodes();
-                $result["result"] = "ok";
+                $result['monit'] = array($nodeType => $node->getNodes());
+                $result['result'] = 'ok';
             }
         }
         return $result;

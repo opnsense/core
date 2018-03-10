@@ -83,7 +83,6 @@ POSSIBILITY OF SUCH DAMAGE.
       /**
        * general settings
        */
-      // load data
       mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/get/general/"}).done(function(){
          formatTokenizersUI();
          $('.selectpicker').selectpicker('refresh');
@@ -95,17 +94,17 @@ POSSIBILITY OF SUCH DAMAGE.
       // show/hide httpd/mmonit options
       function ShowHideGeneralFields(){
          if ($('#monit\\.general\\.httpdEnabled')[0].checked) {
-            $('tr[for="monit.general.httpdPort"]').removeClass('hidden');
-            $('tr[for="monit.general.httpdAllow"]').removeClass('hidden');
-            $('tr[for="monit.general.mmonitUrl"]').removeClass('hidden');
-            $('tr[for="monit.general.mmonitTimeout"]').removeClass('hidden');
-            $('tr[for="monit.general.mmonitRegisterCredentials"]').removeClass('hidden');
+            $('tr[id="row_monit.general.httpdPort"]').removeClass('hidden');
+            $('tr[id="row_monit.general.httpdAllow"]').removeClass('hidden');
+            $('tr[id="row_monit.general.mmonitUrl"]').removeClass('hidden');
+            $('tr[id="row_monit.general.mmonitTimeout"]').removeClass('hidden');
+            $('tr[id="row_monit.general.mmonitRegisterCredentials"]').removeClass('hidden');
          } else {
-            $('tr[for="monit.general.httpdPort"]').addClass('hidden');
-            $('tr[for="monit.general.httpdAllow"]').addClass('hidden');
-            $('tr[for="monit.general.mmonitUrl"]').addClass('hidden');
-            $('tr[for="monit.general.mmonitTimeout"]').addClass('hidden');
-            $('tr[for="monit.general.mmonitRegisterCredentials"]').addClass('hidden');
+            $('tr[id="row_monit.general.httpdPort"]').addClass('hidden');
+            $('tr[id="row_monit.general.httpdAllow"]').addClass('hidden');
+            $('tr[id="row_monit.general.mmonitUrl"]').addClass('hidden');
+            $('tr[id="row_monit.general.mmonitTimeout"]').addClass('hidden');
+            $('tr[id="row_monit.general.mmonitRegisterCredentials"]').addClass('hidden');
          }
       };
       $('#monit\\.general\\.httpdEnabled').unbind('click').click(function(){
@@ -162,52 +161,51 @@ POSSIBILITY OF SUCH DAMAGE.
       // show hide fields according to selected service type
       function ShowHideFields(){
          var servicetype = $('#monit\\.service\\.type').val();
-         $('tr[for="monit.service.pidfile"]').addClass('hidden');
-         $('tr[for="monit.service.match"]').addClass('hidden');
-         $('tr[for="monit.service.path"]').addClass('hidden');
-         $('tr[for="monit.service.address"]').addClass('hidden');
-         $('tr[for="monit.service.interface"]').addClass('hidden');
-         $('tr[for="monit.service.start"]').removeClass('hidden');
-         $('tr[for="monit.service.stop"]').removeClass('hidden');
+         $('tr[id="row_monit.service.pidfile"]').addClass('hidden');
+         $('tr[id="row_monit.service.match"]').addClass('hidden');
+         $('tr[id="row_monit.service.path"]').addClass('hidden');
+         $('tr[id="row_monit.service.address"]').addClass('hidden');
+         $('tr[id="row_monit.service.interface"]').addClass('hidden');
+         $('tr[id="row_monit.service.start"]').removeClass('hidden');
+         $('tr[id="row_monit.service.stop"]').removeClass('hidden');
          switch (servicetype) {
             case 'process':
                var pidfile = $('#monit\\.service\\.pidfile').val();
                var match = $('#monit\\.service\\.match').val();
                if (pidfile !== '') {
-                  $('tr[for="monit.service.pidfile"]').removeClass('hidden');
-                  $('tr[for="monit.service.match"]').addClass('hidden');
+                  $('tr[id="row_monit.service.pidfile"]').removeClass('hidden');
+                  $('tr[id="row_monit.service.match"]').addClass('hidden');
                } else if (match !== '') {
-                  $('tr[for="monit.service.pidfile"]').addClass('hidden');
-                  $('tr[for="monit.service.match"]').removeClass('hidden');
+                  $('tr[id="row_monit.service.pidfile"]').addClass('hidden');
+                  $('tr[id="row_monit.service.match"]').removeClass('hidden');
                } else {
-                  $('tr[for="monit.service.pidfile"]').removeClass('hidden');
-                  $('tr[for="monit.service.match"]').removeClass('hidden');
+                  $('tr[id="row_monit.service.pidfile"]').removeClass('hidden');
+                  $('tr[id="row_monit.service.match"]').removeClass('hidden');
                }
                break;
             case 'host':
-               $('tr[for="monit.service.address"]').removeClass('hidden');
+               $('tr[id="row_monit.service.address"]').removeClass('hidden');
                break;
             case 'network':
                var address = $('#monit\\.service\\.address').val();
                var interface = $('#monit\\.service\\.interface').val();
-               console.log('-' + address + '-' + interface + '-');
                if (address !== '') {
-                  $('tr[for="monit.service.address"]').removeClass('hidden');
-                  $('tr[for="monit.service.interface"]').addClass('hidden');
+                  $('tr[id="row_monit.service.address"]').removeClass('hidden');
+                  $('tr[id="row_monit.service.interface"]').addClass('hidden');
                } else if (interface !== '') {
-                  $('tr[for="monit.service.address"]').addClass('hidden');
-                  $('tr[for="monit.service.interface"]').removeClass('hidden');
+                  $('tr[id="row_monit.service.address"]').addClass('hidden');
+                  $('tr[id="row_monit.service.interface"]').removeClass('hidden');
                } else {
-                  $('tr[for="monit.service.address"]').removeClass('hidden');
-                  $('tr[for="monit.service.interface"]').removeClass('hidden');
+                  $('tr[id="row_monit.service.address"]').removeClass('hidden');
+                  $('tr[id="row_monit.service.interface"]').removeClass('hidden');
                }
                break;
             case 'system':
-               $('tr[for="monit.service.start"]').addClass('hidden');
-               $('tr[for="monit.service.stop"]').addClass('hidden');
+               $('tr[id="row_monit.service.start"]').addClass('hidden');
+               $('tr[id="row_monit.service.stop"]').addClass('hidden');
                break;
             default:
-               $('tr[for="monit.service.path"]').removeClass('hidden');
+               $('tr[id="row_monit.service.path"]').removeClass('hidden');
          }
       };
       $('#DialogEditService').on('shown.bs.modal', function() {ShowHideFields();});
@@ -235,9 +233,9 @@ POSSIBILITY OF SUCH DAMAGE.
       // show hide execute field
       function ShowHideExecField(){
          var actiontype = $('#monit\\.test\\.action').val();
-         $('tr[for="monit.test.path"]').addClass('hidden');
+         $('tr[id="row_monit.test.path"]').addClass('hidden');
          if (actiontype === 'exec') {
-            $('tr[for="monit.test.path"]').removeClass('hidden');
+            $('tr[id="row_monit.test.path"]').removeClass('hidden');
          }
       };
       $('#DialogEditTest').on('shown.bs.modal', function() {ShowHideExecField();});
@@ -282,7 +280,6 @@ POSSIBILITY OF SUCH DAMAGE.
 </ul>
 <div class="tab-content content-box tab-content">
    <div id="general" class="tab-pane fade in active">
-      <!-- monit general settings -->
       {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_GeneralSettings','apply_btn_id':'btn_ApplyGeneralSettings'])}}
    </div>
    <div id="alerts" class="tab-pane fade in">
