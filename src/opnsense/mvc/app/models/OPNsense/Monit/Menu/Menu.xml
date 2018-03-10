@@ -1,0 +1,8 @@
+<menu>
+   <Services>
+      <Monit VisibleName="Monit" cssClass="fa fa-heartbeat fa-fw">
+         <Settings url="/ui/monit/"/>
+         <Status url="/ui/monit/status/"/>
+      </Monit>
+   </Services>
+</menu>

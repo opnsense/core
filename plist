@@ -35,6 +35,7 @@
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc
 /usr/local/etc/inc/plugins.inc.d/ipsec.inc
 /usr/local/etc/inc/plugins.inc.d/ipsec/auth-user.php
+/usr/local/etc/inc/plugins.inc.d/monit.inc
 /usr/local/etc/inc/plugins.inc.d/netflow.inc
 /usr/local/etc/inc/plugins.inc.d/ntpd.inc
 /usr/local/etc/inc/plugins.inc.d/ntpd/ntpdate_sync_once.sh
@@ -374,6 +375,15 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/dialogRuleset.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/dialogUserDefined.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/generalSettings.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/StatusController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/IndexController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/StatusController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/forms/alerts.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/forms/general.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/forms/services.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/forms/tests.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/IndexController.php
@@ -481,6 +491,10 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/IDS.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Monit/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Monit/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Monit/Monit.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Monit/Monit.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/ACL/ACL.xml
@@ -512,6 +526,8 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Monit/index.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Monit/status.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Proxy/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Routes/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt
@@ -572,6 +588,8 @@
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/set_session_restrictions.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/sql/init.sql
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/strip_template.py
+/usr/local/opnsense/scripts/OPNsense/Monit/post-install.php
+/usr/local/opnsense/scripts/OPNsense/Monit/setup.sh
 /usr/local/opnsense/scripts/dhcp/get_leases.py
 /usr/local/opnsense/scripts/dhcp/prefixes.php
 /usr/local/opnsense/scripts/dns/unbound_dhcpd.py
@@ -681,6 +699,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_interface.conf
 /usr/local/opnsense/service/conf/actions.d/actions_ipfw.conf
 /usr/local/opnsense/service/conf/actions.d/actions_ipsec.conf
+/usr/local/opnsense/service/conf/actions.d/actions_monit.conf
 /usr/local/opnsense/service/conf/actions.d/actions_netflow.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
@@ -733,6 +752,9 @@
 /usr/local/opnsense/service/templates/OPNsense/IPFW/ipfw.fw.conf
 /usr/local/opnsense/service/templates/OPNsense/IPFW/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Macros/interface.macro
+/usr/local/opnsense/service/templates/OPNsense/Monit/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/Monit/monitrc
+/usr/local/opnsense/service/templates/OPNsense/Monit/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Netflow/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Netflow/flowd.conf
 /usr/local/opnsense/service/templates/OPNsense/Netflow/flowd.rc.conf.d

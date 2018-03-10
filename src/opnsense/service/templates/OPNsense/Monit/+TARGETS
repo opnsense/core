@@ -1,0 +1,2 @@
+monitrc:/usr/local/etc/monitrc
+rc.conf.d:/etc/rc.conf.d/monit
