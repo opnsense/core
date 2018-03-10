@@ -186,10 +186,13 @@ EOD;
     if (!isset($config['syslog']['nologlighttpd'])) {
         $lighty_use_syslog = <<<EOD
 ## where to send error/access-messages to
-server.errorlog-use-syslog="enable"
-accesslog.use-syslog="enable"
 server.syslog-facility = "lighttpd"
+server.errorlog-use-syslog="enable"
+
 EOD;
+    }
+    if (!empty($config['system']['webgui']['httpaccesslog'])) {
+        $lighty_use_syslog .= 'accesslog.use-syslog="enable"' . "\n";
     }
 
     $fast_cgi_path = "/tmp/php-fastcgi.socket";
