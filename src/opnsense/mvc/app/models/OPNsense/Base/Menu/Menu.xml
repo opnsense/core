@@ -71,10 +71,10 @@
                 <Edit url="/system_advanced_sysctl.php*" visibility="hidden"/>
             </Tunables>
         </Settings>
-        <LogFile order="150" VisibleName="Log File" cssClass="fa fa-eye fa-fw">
+        <LogFiles order="150" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
             <General order="100" VisibleName="General" url="/diag_logs.php"/>
             <WebGUI order="200" VisibleName="Web GUI" url="/httpd_logs.php"/>
-        </LogFile>
+        </LogFiles>
         <Wizard order="140" url="/wizard.php?xml=system" cssClass="fa fa-magic fa-fw">
             <Step url="/wizard.php?xml=system*" visibility="hidden"/>
         </Wizard>
