@@ -186,7 +186,7 @@ EOD;
     if (!isset($config['syslog']['nologlighttpd'])) {
         $lighty_use_syslog = <<<EOD
 ## where to send error/access-messages to
-server.syslog-facility = "lighttpd"
+server.syslog-facility = "daemon"
 server.errorlog-use-syslog="enable"
 
 EOD;
