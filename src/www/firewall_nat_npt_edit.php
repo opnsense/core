@@ -199,7 +199,7 @@ include("head.inc");
                           <td style="width:348px">
                             <input name="src" type="text" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
                           </td>
-                          <td >
+                          <td>
                             <select name="srcmask" class="selectpicker" data-size="5"  data-width="auto">
                               <?php for ($i = 128; $i > 0; $i--): ?>
                                 <option value="<?=$i;?>" <?= $i == $pconfig['srcmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
@@ -237,7 +237,7 @@ include("head.inc");
                           <td style="width:348px">
                             <input name="dst" type="text" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("Source address");?>"/>
                           </td>
-                          <td >
+                          <td>
                             <select name="dstmask" class="selectpicker" data-size="5"  data-width="auto">
                               <?php for ($i = 128; $i > 0; $i--): ?>
                                 <option value="<?=$i;?>" <?= $i == $pconfig['dstmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>

@@ -658,7 +658,7 @@ $( document ).ready(function() {
                       </thead>
                       <tbody>
                         <tr>
-                          <td >
+                          <td>
                             <select id="srcbeginport" name="srcbeginport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                               <option data-other=true value="<?=$pconfig['srcbeginport'];?>">(<?=gettext("other"); ?>)</option>
                               <optgroup label="<?=gettext("Aliases");?>">
@@ -802,7 +802,7 @@ $( document ).ready(function() {
                       </thead>
                       <tbody>
                         <tr>
-                          <td >
+                          <td>
                             <select id="dstbeginport" name="dstbeginport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                               <option data-other=true value="<?=$pconfig['dstbeginport'];?>">(<?=gettext("other"); ?>)</option>
                               <optgroup label="<?=gettext("Aliases");?>">

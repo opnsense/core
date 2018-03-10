@@ -147,7 +147,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">
                     <tr>
-                      <td ><strong><?=gettext("IPsec Advanced Settings"); ?></strong></td>
+                      <td><strong><?=gettext("IPsec Advanced Settings"); ?></strong></td>
                       <td style="text-align:right">
                         <small><?=gettext("full help"); ?> </small>
                         <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>

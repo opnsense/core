@@ -1327,7 +1327,7 @@ if (isset($savemsg)) {
               </tr>
               <tr class="mode_server">
                 <td style="vertical-align:top"><a id="help_for_verify_server_cn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Verify Server CN");?></td>
-                <td >
+                <td>
                       <select name="verifyservercn" id="verifyservercn">
                         <option value="auto"><?=gettext("Automatic - Use verify-x509-name (OpenVPN 2.3+) where possible");?></option>
                         <option value="tls-remote"><?=gettext("Use tls-remote (deprecated, use only on clients prior to OpenVPN 2.3)");?></option>
@@ -1343,7 +1343,7 @@ if (isset($savemsg)) {
               </tr>
               <tr class="mode_server">
                 <td style="vertical-align:top"><a id="help_for_random_local_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use Random Local Port");?></td>
-                <td >
+                <td>
                       <input name="randomlocalport" id="randomlocalport" type="checkbox" value="yes" checked="CHECKED" />
                       <output class="hidden" for="help_for_random_local_port">
                         <?=gettext("Use a random local source port (lport) for traffic from the client. Without this set, two clients may not run concurrently.");?>
@@ -1353,7 +1353,7 @@ if (isset($savemsg)) {
               </tr>
               <tr class="mode_server">
                 <td style="vertical-align:top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Certificate Export Options");?></td>
-                <td >
+                <td>
                       <div>
                         <input name="usetoken" id="usetoken" type="checkbox" value="yes" />
                         <?=gettext("Use Microsoft Certificate Storage instead of local files.");?>
@@ -1372,7 +1372,7 @@ if (isset($savemsg)) {
               </tr>
               <tr>
                 <td style="vertical-align:top"><a id="help_for_http_proxy" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use Proxy");?></td>
-                <td >
+                <td>
                       <input name="useproxy" id="useproxy" type="checkbox" value="yes" />
                       <output class="hidden" for="help_for_http_proxy">
                         <?=gettext("Use a proxy to communicate with the server.");?>
@@ -1408,7 +1408,7 @@ if (isset($savemsg)) {
               </tr>
               <tr class="mode_server">
                 <td style="vertical-align:top"><a id="help_for_openvpnmanager" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Management Interface OpenVPN Manager");?></td>
-                <td >
+                <td>
                       <input name="openvpnmanager" id="openvpnmanager" type="checkbox" value="yes" />
                       <output class="hidden" for="help_for_openvpnmanager">
                         <?=gettext('This will change the generated .ovpn configuration to allow for usage of the management interface. '.
@@ -1419,7 +1419,7 @@ if (isset($savemsg)) {
               </tr>
               <tr class="mode_server">
                 <td style="vertical-align:top"><a id="help_for_advancedoptions" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Additional configuration options");?></td>
-                <td >
+                <td>
                       <textarea rows="6" cols="68" name="advancedoptions" id="advancedoptions"></textarea><br/>
                       <output class="hidden" for="help_for_advancedoptions">
                         <?=gettext("Enter any additional options you would like to add to the OpenVPN client export configuration here, separated by a line break or semicolon"); ?><br/>

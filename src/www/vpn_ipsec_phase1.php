@@ -637,7 +637,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td ><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
+                    <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
                     <td>
                       <select name="interface">
 <?php
@@ -683,7 +683,7 @@ include("head.inc");
 ?>
 
                   <tr>
-                    <td ><a id="help_for_remotegw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Remote gateway"); ?></td>
+                    <td><a id="help_for_remotegw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Remote gateway"); ?></td>
                     <td>
                       <input name="remote-gateway" type="text" class="formfld unknown" id="remotegw" size="28" value="<?=$pconfig['remote-gateway'];?>" />
                       <output class="hidden" for="help_for_remotegw">
@@ -751,7 +751,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td ><i class="fa fa-info-circle text-muted"></i> <?=gettext("My identifier"); ?></td>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("My identifier"); ?></td>
                     <td>
                       <select name="myid_type" id="myid_type">
 <?php
@@ -781,7 +781,7 @@ endforeach; ?>
 <?php
                   if (empty($pconfig['mobile'])):?>
                   <tr class="auth_opt auth_eap_tls auth_psk">
-                    <td ><i class="fa fa-info-circle text-muted"></i> <?=gettext("Peer identifier"); ?></td>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Peer identifier"); ?></td>
                     <td>
                       <select name="peerid_type" id="peerid_type">
 <?php
@@ -814,7 +814,7 @@ endforeach; ?>
 <?php
                   endif;?>
                   <tr class="auth_opt auth_psk">
-                    <td ><a id="help_for_psk" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Pre-Shared Key"); ?></td>
+                    <td><a id="help_for_psk" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Pre-Shared Key"); ?></td>
                     <td>
                       <input name="pre-shared-key" type="text" class="formfld unknown" id="pskey" size="40"
                              value="<?= $pconfig['authentication_method'] == "pre_shared_key" || $pconfig['authentication_method'] == "xauth_psk_server" ? $pconfig['pre-shared-key'] : "";?>" />
@@ -824,7 +824,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr class="auth_opt auth_eap_tls">
-                    <td ><a id="help_for_certref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("My Certificate"); ?></td>
+                    <td><a id="help_for_certref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("My Certificate"); ?></td>
                     <td>
                       <select name="certref">
 <?php
