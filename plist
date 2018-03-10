@@ -1027,6 +1027,7 @@
 /usr/local/www/getserviceproviders.php
 /usr/local/www/guiconfig.inc
 /usr/local/www/head.inc
+/usr/local/www/httpd_logs.php
 /usr/local/www/index.php
 /usr/local/www/interfaces.php
 /usr/local/www/interfaces_assign.php
