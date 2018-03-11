@@ -41,6 +41,7 @@ function clear_all_log_files()
 
     $clog_files = array(
         'dhcpd',
+        'configd',
         'filter',
         'gateways',
         'ipsec',
