@@ -33,10 +33,17 @@ require_once("guiconfig.inc");
 $save_and_test = false;
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    $pconfig['session_timeout'] = $config['system']['webgui']['session_timeout'];
-    $pconfig['authmode'] = $config['system']['webgui']['authmode'];
     $pconfig['authmode_fallback'] = !empty($config['system']['webgui']['authmode_fallback']) ? $config['system']['webgui']['authmode_fallback'] : "Local Database";
-    $pconfig['backend'] = $config['system']['webgui']['backend'];
+    foreach (array('session_timeout', 'authmode', 'password_policy_duration',
+                   'enable_password_policy_constraints',
+                   'password_policy_complexity', 'password_policy_length') as $fieldname) {
+        if (!empty($config['system']['webgui'][$fieldname])) {
+            $pconfig[$fieldname] = $config['system']['webgui'][$fieldname];
+        } else {
+            $pconfig[$fieldname] = null;
+        }
+    }
+
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $input_errors = array();
@@ -54,23 +61,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        if (!empty($pconfig['session_timeout'])) {
-            $config['system']['webgui']['session_timeout'] = intval($pconfig['session_timeout']);
-        } elseif (isset($config['system']['webgui']['session_timeout'])) {
-            unset($config['system']['webgui']['session_timeout']);
+        foreach (array('session_timeout', 'authmode', 'authmode_fallback', 'password_policy_duration',
+                       'enable_password_policy_constraints',
+                       'password_policy_complexity', 'password_policy_length') as $fieldname) {
+            if (!empty($pconfig[$fieldname])) {
+                $config['system']['webgui'][$fieldname] = $pconfig[$fieldname];
+            } elseif (isset($config['system']['webgui'][$fieldname])) {
+                unset($config['system']['webgui'][$fieldname]);
+            }
         }
 
-        if (!empty($pconfig['authmode'])) {
-            $config['system']['webgui']['authmode'] = $pconfig['authmode'];
-        } elseif (isset($config['system']['webgui']['authmode'])) {
-            unset($config['system']['webgui']['authmode']);
-        }
-
-        if (!empty($pconfig['authmode_fallback'])) {
-            $config['system']['webgui']['authmode_fallback'] = $pconfig['authmode_fallback'];
-        } elseif (isset($config['system']['webgui']['authmode_fallback'])) {
-            unset($config['system']['webgui']['authmode_fallback']);
-        }
 
         write_config();
     }
@@ -81,7 +81,24 @@ include("head.inc");
 ?>
 
 <body>
+<style>
+    .password_policy_constraints {
+        display:none;
+    }
+</style>
+<script>
+    $(document).ready(function() {
+        $("#enable_password_policy_constraints").change(function(){
+            if ($("#enable_password_policy_constraints").prop('checked')) {
+                $(".password_policy_constraints").show();
+            } else {
+                $(".password_policy_constraints").hide();
+            }
+        });
+        $("#enable_password_policy_constraints").change();
+    });
 
+</script>
 <?php
 if ($save_and_test):?>
 <script>
@@ -146,7 +163,59 @@ endif;?>
                           </option>
                         </select>
                       </td>
-                    </tr>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_enable_password_policy_constraints" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Policy'); ?></td>
+                    <td>
+                      <input id="enable_password_policy_constraints" name="enable_password_policy_constraints" type="checkbox"  <?= empty($pconfig['enable_password_policy_constraints']) ? '' : 'checked="checked"';?> />
+                      <strong><?= gettext('Enable password policy constraints') ?></strong>
+                      <output class="hidden" for="help_for_enable_password_policy_constraints">
+                        <?= gettext("Harden security on local accounts, for methods other then local these will usually be configured on the " .
+                                            "respective provider (e.g. ldap/radius/..). ");?>
+                      </output>
+                    </td>
+                  </tr>
+                  <tr class="password_policy_constraints">
+                      <td><a id="help_for_password_policy_duration" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Duration'); ?></td>
+                      <td>
+                          <select id="password_policy_duration" name="password_policy_duration" class="selectpicker" data-style="btn-default">
+                              <option <?=empty($pconfig['password_policy_duration']) ? "selected=\"selected\"" : "";?> value="0"><?=gettext("Disable");?></option>
+                              <option <?=$pconfig['password_policy_duration'] == '30' ? "selected=\"selected\"" : "";?> value="30"><?=sprintf(gettext("%d days"), "30");?></option>
+                              <option <?=$pconfig['password_policy_duration'] == '90' ? "selected=\"selected\"" : "";?> value="90"><?=sprintf(gettext("%d days"), "90");?></option>
+                              <option <?=$pconfig['password_policy_duration'] == '180' ? "selected=\"selected\"" : "";?> value="180"><?=sprintf(gettext("%d days"), "180");?></option>
+                              <option <?=$pconfig['password_policy_duration'] == '360' ? "selected=\"selected\"" : "";?> value="360"><?=sprintf(gettext("%d days"), "360");?></option>
+                          </select>
+                          <output class="hidden" for="help_for_password_policy_duration">
+                            <?= gettext("Password duration settings, the interval in days in which passwords stay valid. ".
+                                        "When reached, the user will be forced to change his or her password before continuing.");?>
+                          </output>
+                      </td>
+                  </tr>
+                  <tr class="password_policy_constraints">
+                      <td><a id="help_for_password_policy_length" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Length'); ?></td>
+                      <td>
+                          <select id="password_policy_length" name="password_policy_length" class="selectpicker" data-style="btn-default">
+                              <option <?=empty($pconfig['password_policy_length'])  || $pconfig['password_policy_length'] == '8' ? "selected=\"selected\"" : "";?> value="8">8</option>
+                              <option <?=$pconfig['password_policy_length'] == '10' ? "selected=\"selected\"" : "";?> value="10">10</option>
+                              <option <?=$pconfig['password_policy_length'] == '12' ? "selected=\"selected\"" : "";?> value="12">12</option>
+                              <option <?=$pconfig['password_policy_length'] == '14' ? "selected=\"selected\"" : "";?> value="14">14</option>
+                              <option <?=$pconfig['password_policy_length'] == '16' ? "selected=\"selected\"" : "";?> value="16">16</option>
+                          </select>
+                          <output class="hidden" for="help_for_password_policy_length">
+                            <?= gettext("Sets the minimum length for a password");?>
+                          </output>
+                      </td>
+                  </tr>
+                  <tr class="password_policy_constraints">
+                    <td><a id="help_for_password_policy_complexity" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Complexity'); ?></td>
+                    <td>
+                      <input id="password_policy_complexity" name="password_policy_complexity" type="checkbox"  <?= empty($pconfig['password_policy_complexity']) ? '' : 'checked="checked"';?> />
+                      <strong><?= gettext('Enable complexity requirements') ?></strong>
+                      <output class="hidden" for="help_for_password_policy_complexity">
+                        <?= gettext("Require passwords to meet complexity rules");?>
+                      </output>
+                    </td>
+                  </tr>
                   <tr>
                     <td></td>
                     <td>

@@ -65,6 +65,68 @@ class Local extends Base implements IAuthConnector
     }
 
     /**
+     * check if password meets policy constraints
+     * @param string $username username to check
+     * @param string $old_password current password
+     * @param string $new_password password to check
+     * @return array of unmet policy constraints
+     */
+    public function checkPolicy($username, $old_password, $new_password)
+    {
+        $result = array();
+        $configObj = Config::getInstance()->object();
+        if (!empty($configObj->system->webgui->enable_password_policy_constraints)) {
+            if (!empty($configObj->system->webgui->password_policy_length)) {
+                if (strlen($new_password) < $configObj->system->webgui->password_policy_length) {
+                    $result[] = sprintf(gettext("Password must have at least %d characters"),
+                                        $configObj->system->webgui->password_policy_length);
+                }
+            }
+            if (!empty($configObj->system->webgui->password_policy_complexity)) {
+                $pwd_has_upper = preg_match_all('/[A-Z]/',$new_password, $o) > 0;
+                $pwd_has_lower = preg_match_all('/[a-z]/',$new_password, $o) > 0;
+                $pwd_has_number = preg_match_all('/[0-9]/',$new_password, $o) > 0;
+                $pwd_has_special = preg_match_all('/[!@#$%^&*()\-_=+{};:,<.>]/',$new_password, $o) > 0;
+                if ($old_password == $new_password) {
+                    // equal password is not allowed
+                    $result[] = gettext("Current password equals new password");
+                }
+                if (($pwd_has_upper+$pwd_has_lower+$pwd_has_number+$pwd_has_special) < 3) {
+                    // passwords should at least contain 3 of the 4 available character types
+                    $result[] = gettext("Password should contain at least 3 of the 4 different character groups".
+                                        " (lowercase, uppercase, number, special)");
+                } elseif (strpos($new_password, $username) !== false) {
+                    $result[] = gettext("The username may not be a part of the password");
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * check if the user should change his or hers password, calculated by the time difference of the last pwd change
+     * @param string $username username to check
+     */
+    public function shouldChangePassword($username)
+    {
+        $configObj = Config::getInstance()->object();
+        if (!empty($configObj->system->webgui->enable_password_policy_constraints)) {
+            if (!empty($configObj->system->webgui->password_policy_duration)) {
+                $duration = $configObj->system->webgui->password_policy_duration;
+                $userObject = $this->getUser($username);
+                if ($userObject != null) {
+                    $now = microtime(true);
+                    $pwdChangedAt = empty($userObject->pwd_changed_at) ? 0 : $userObject->pwd_changed_at;
+                    if (abs($now - $pwdChangedAt)/60/60/24 >= $configObj->system->webgui->password_policy_duration) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * authenticate user against local database (in config.xml)
      * @param string|SimpleXMLElement $username username (or xml object) to authenticate
      * @param string $password user password

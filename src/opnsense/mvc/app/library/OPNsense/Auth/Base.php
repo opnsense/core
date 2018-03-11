@@ -66,6 +66,28 @@ abstract class Base
     }
 
     /**
+     * check if password meets policy constraints, needs implementation if it applies.
+     * @param string $username username to check
+     * @param string $old_password current password
+     * @param string $new_password password to check
+     * @return array of unmet policy constraints
+     */
+    public function checkPolicy($username, $old_password, $new_password)
+    {
+        return array();
+    }
+
+    /**
+     * check if the user should change his or hers password, needs implementation if it applies.
+     * @param string $username username to check
+     * @return boolean
+     */
+    public function shouldChangePassword($username)
+    {
+        return false;
+    }
+
+    /**
      * user allowed in local group
      * @param string $username username to check
      * @param string $gid group id
