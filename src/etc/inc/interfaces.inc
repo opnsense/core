@@ -2637,34 +2637,54 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 	/* with dhcp6.            							     */
 	/* We call the function configure_dhcp6c_conf() when     */
 	/* either its a WAN dhcpv6 or a LAN track6 setting.      */
+	
+	/* We need to know the WAN interface that's using dhcp6c */
+	/* In this itaration, the first one, we only support     */
+	/* one for now.                                          */
+    
+    $iflist = get_configured_interface_list();
+	foreach ($iflist as $if => $ifname) {
+        if (!empty($config['interfaces'][$if]['ipaddrv6']) && $config['interfaces'][$if]['ipaddrv6'] == 'dhcp6') {
+            $dhcp6if = $ifname;
+            $dhcp6cfg = $config['interfaces'][$dhcp6if];
+            break;
+        } 
+    }
 
     if (isset($wancfg['ipaddrv6'])) {
         switch ($wancfg['ipaddrv6']) {
             case 'slaac':
             case 'dhcp6':
-				configure_dhcp6c_conf('wan', $config['interfaces']['wan']);
+                configure_dhcp6c_conf($dhcp6if, $dhcp6cfg);
                 interface_dhcpv6_configure($interface, $wancfg);
                 break;
             case '6rd':
+                configure_dhcp6c_conf($dhcp6if, $dhcp6cfg);
                 interface_6rd_configure($interface, $wancfg);
                 break;
             case '6to4':
+                configure_dhcp6c_conf($dhcp6if, $dhcp6cfg);
                 interface_6to4_configure($interface, $wancfg);
                 break;
             case 'track6':
-				configure_dhcp6c_conf('wan', $config['interfaces']['wan']);
+				configure_dhcp6c_conf($dhcp6if, $dhcp6cfg);
                 interface_track6_configure($interface, $wancfg, $reloadall || $linkupevent);
                 break;
             default:
                 /* XXX: Kludge for now related to #3280 */
                 if (!in_array($tunnelif, array("gif", "gre", "ovp"))) {
+                    configure_dhcp6c_conf($dhcp6if, $dhcp6cfg);
                     if (is_ipaddrv6($wancfg['ipaddrv6']) && $wancfg['subnetv6'] <> "") {
                         mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$wancfg['ipaddrv6']} prefixlen " . escapeshellarg($wancfg['subnetv6']));
                     }
                 }
                 break;
-        }
+            } 
+        } else {
+            // if we have gone from track interface to nothing on the LAN, then remove the tracking info from dhcp6c*.config
+            configure_dhcp6c_conf($dhcp6if, $dhcp6cfg);
     }
+
     $intf_stats = legacy_interface_stats();
     if (!empty($wancfg['mtu'])) {
         if (stristr($realif, "_vlan")) {
@@ -3172,7 +3192,6 @@ function configure_dhcp6c_conf($interface, $wancfg)
     }
 	if (!@file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf)) {
 		log_error("Error: cannot open dhcp6c_{$interface}.conf in interface_dhcpv6_configure() for writing.\n");
-		unset($dhcp6cconf);
 		return 1;
 	}
 
@@ -3192,11 +3211,10 @@ function configure_dhcp6c_conf($interface, $wancfg)
     $dhcp6cscript .= "esac\n";
 
     if (!@file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript)) {
-        printf("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.\n");
-        unset($dhcp6cscript);
+        log_error("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.\n");
         return 1;
     }
-    unset($dhcp6cscript);
+    
     chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
     $dhcp6ccommand = exec_safe(
@@ -3224,11 +3242,10 @@ function configure_dhcp6c_conf($interface, $wancfg)
     $rtsoldscript .= "$dhcp6ccommand\n";
 
     if (!@file_put_contents("/var/etc/rtsold_{$wanif}_script.sh", $rtsoldscript)) {
-        printf("Error: cannot open rtsold_{$wanif}_script.sh in interface_dhcpv6_configure() for writing.\n");
-        unset($rtsoldscript);
+        log_error("Error: cannot open rtsold_{$wanif}_script.sh in interface_dhcpv6_configure() for writing.\n");
         return 1;
     }
-    unset($rtsoldscript);
+
     chmod("/var/etc/rtsold_{$wanif}_script.sh", 0755);
 
 }
