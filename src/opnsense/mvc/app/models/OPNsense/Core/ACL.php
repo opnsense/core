@@ -223,6 +223,9 @@ class ACL
         if ($url == '/index.php?logout') {
             // always allow logout, could use better structuring...
             return true;
+        } elseif (!empty($_SESSION['user_shouldChangePassword'])) {
+            // when a password change is enforced, lock all other endpoints
+            return $this->urlMatch($url, 'system_usermanager_passwordmg.php*');
         }
 
         if (array_key_exists($username, $this->userDatabase)) {

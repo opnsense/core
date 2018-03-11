@@ -195,7 +195,7 @@ function session_auth(&$Login_Error)
     }
 
     // Detect protocol change
-    if (!isset($_POST['login']) && !empty($_SESSION['Logged_In']) && $_SESSION['protocol'] != $config['system']['webgui']['protocol']) {
+    if (!isset($_POST['login']) && !empty($_SESSION['Username']) && $_SESSION['protocol'] != $config['system']['webgui']['protocol']) {
         session_write_close();
         return false;
     }
@@ -224,20 +224,34 @@ function session_auth(&$Login_Error)
         }
 
         // authenticate using config settings, or local if failed
-        if (authenticate_user($_POST['usernamefld'], $_POST['passwordfld'], $authcfg) ||
-            ($authcfg_fallback !== false && authenticate_user($_POST['usernamefld'], $_POST['passwordfld'], $authcfg_fallback))
-            ) {
+        $authenticator = get_authenticator($authcfg);
+        $is_authenticated = false;
+        if ($authenticator != null && $authenticator->authenticate($_POST['usernamefld'], $_POST['passwordfld'])) {
+            $is_authenticated = true;
+        }
+        if (!$is_authenticated && $authcfg_fallback !== false) {
+            $authenticator = get_authenticator($authcfg_fallback);
+            if ($authenticator != null && $authenticator->authenticate($_POST['usernamefld'], $_POST['passwordfld'])) {
+                $is_authenticated = true;
+            }
+        }
+
+        if ($is_authenticated) {
             // Generate a new id to avoid session fixation
             session_regenerate_id();
-            $_SESSION['Logged_In'] = "True";
             $_SESSION['Username'] = $_POST['usernamefld'];
             $_SESSION['last_access'] = time();
             $_SESSION['protocol'] = $config['system']['webgui']['protocol'];
+            if ($authenticator->shouldChangePassword($_SESSION['Username'])) {
+                $_SESSION['user_shouldChangePassword'] = true;
+            }
             if (!isset($config['system']['webgui']['quietlogin'])) {
                 log_error(sprintf("Successful login for user '%s' from: %s", $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']));
             }
             if (!empty($_GET['url'])) {
                 header(url_safe("Location: {$_GET['url']}"));
+            } elseif (!empty($_SESSION['user_shouldChangePassword'])) {
+                header("Location: system_usermanager_passwordmg.php");
             } else {
                 header(url_safe("Location: {$_SERVER['REQUEST_URI']}"));
             }
@@ -249,7 +263,7 @@ function session_auth(&$Login_Error)
     }
 
     /* Show login page if they aren't logged in */
-    if (empty($_SESSION['Logged_In'])) {
+    if (empty($_SESSION['Username'])) {
         session_write_close();
         return false;
     }

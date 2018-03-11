@@ -788,7 +788,12 @@ function auth_get_authserver_list()
     return $list;
 }
 
-function authenticate_user($username, $password, $authcfg = NULL)
+/**
+ * return authenticator object
+ * @param array|null $authcfg configuration
+ * @return Auth\Base type object
+ */
+function get_authenticator($authcfg = NULL)
 {
     if (empty($authcfg)) {
         $authName = 'Local Database';
@@ -804,8 +809,12 @@ function authenticate_user($username, $password, $authcfg = NULL)
     }
 
     $authFactory = new OPNsense\Auth\AuthenticationFactory;
-    $authenticator = $authFactory->get($authName);
+    return $authFactory->get($authName);
+}
 
+function authenticate_user($username, $password, $authcfg = NULL)
+{
+    $authenticator = get_authenticator($authcfg);
     if ($authenticator != null) {
         return $authenticator->authenticate($username, $password) ;
     } else {
