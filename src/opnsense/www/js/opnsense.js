@@ -56,7 +56,7 @@ function getFormData(parent) {
             // we need an id.
             return;
         }
-        var node = data ; // target node
+        var node = data; // target node
         var sourceNode = $(this); // document node to fetch data from
         var keyparts = sourceNode.prop('id').split('.');
         $.each(keyparts,function(indx,keypart){
@@ -79,9 +79,9 @@ function getFormData(parent) {
                 } else if (sourceNode.prop("type") == "checkbox") {
                     // checkbox input type
                     if (sourceNode.prop("checked")) {
-                        node[keypart] = "1" ;
+                        node[keypart] = "1";
                     } else {
-                        node[keypart] = "0" ;
+                        node[keypart] = "0";
                     }
                 } else {
                     // regular input type
@@ -108,16 +108,16 @@ function getFormData(parent) {
  */
 function setFormData(parent,data) {
     $( "#"+parent+"  input,#"+parent+" select,#"+parent+" span,#"+parent+" textarea" ).each(function( index ) {
-        if ($(this).prop('id') == undefined) {
+        if ($(this).prop('id') == undefined || $(this).prop('id') == "") {
             // we need an id.
             return;
         }
-        var node = data ;
+        var node = data;
         var targetNode = $(this); // document node to fetch data to
         var keyparts = $(this).prop('id').split('.');
         $.each(keyparts,function(indx,keypart){
             if (keypart in node) {
-                if (indx < keyparts.length - 1 ) {
+                if (indx < keyparts.length - 1) {
                     node = node[keypart];
                 } else {
                     // data node found, handle per type
@@ -134,9 +134,9 @@ function setFormData(parent,data) {
                     } else if (targetNode.prop("type") == "checkbox") {
                         // checkbox type
                         if (node[keypart] != 0) {
-                            targetNode.prop("checked",true) ;
+                            targetNode.prop("checked",true);
                         } else {
-                            targetNode.prop("checked",false) ;
+                            targetNode.prop("checked",false);
                         }
                     } else if (targetNode.is("span")) {
                         if (node[keypart] != null) {
