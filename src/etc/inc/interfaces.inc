@@ -4451,14 +4451,6 @@ function get_interface_mac($interface)
     return $macinfo["macaddr"];
 }
 
-function is_jumbo_capable($iface)
-{
-    $intf_details = legacy_interface_details(trim($iface));
-
-    return isset($intf_details['capabilities']) &&
-        in_array('vlan_mtu', $intf_details['capabilities']);
-}
-
 function get_vip_descr($ipaddress)
 {
     global $config;

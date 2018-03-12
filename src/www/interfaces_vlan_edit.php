@@ -174,10 +174,7 @@ include("head.inc");
                               $portlist[$lagg['laggif']] = $lagg;
                           }
                       }
-                      foreach ($portlist as $ifn => $ifinfo):
-                        if (!is_jumbo_capable($ifn)) {
-                            continue;
-                        }?>
+                      foreach ($portlist as $ifn => $ifinfo): ?>
                         <option value="<?=$ifn;?>" <?=$ifn == $pconfig['if'] ? " selected=\"selected\"" : "";?>>
                           <?=htmlspecialchars($ifn);?>
                           ( <?= !empty($ifinfo['mac']) ? $ifinfo['mac'] :"" ;?> )
