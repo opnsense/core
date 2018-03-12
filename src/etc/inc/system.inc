@@ -125,7 +125,7 @@ function get_default_sysctl_value($id)
     return null;
 }
 
-function activate_sysctls()
+function system_sysctl_get()
 {
     global $config;
 
@@ -147,7 +147,7 @@ function activate_sysctls()
         }
     }
 
-    set_sysctl($sysctls);
+    return $sysctls;
 }
 
 function system_resolvconf_generate($verbose = false)
@@ -960,7 +960,7 @@ function system_sysctl_configure($verbose = false)
         flush();
     }
 
-    activate_sysctls();
+    set_sysctl(system_sysctl_get());
     system_arp_wrong_if();
 
     if ($verbose) {
@@ -1311,8 +1311,13 @@ function system_login_configure($verbose = false)
     /* copy settings already there */
     $new_loader_conf = @file_get_contents('/boot/loader.conf');
 
-    /* append our console options */
-    $new_loader_conf .= "# dynamically generated settings follow\n";
+    $new_loader_conf .= "# dynamically generated tunables settings follow\n";
+    foreach (system_sysctl_get() as $param => $value) {
+        $new_loader_conf .= "{$param}=\"{$value}\"\n";
+    }
+    $new_loader_conf .= "\n";
+
+    $new_loader_conf .= "# dynamically generated console settings follow\n";
     foreach ($new_boot_config as $param => $value) {
         if (!empty($value)) {
             $new_loader_conf .= "{$param}={$value}\n";
