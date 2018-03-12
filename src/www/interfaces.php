@@ -2362,11 +2362,9 @@ include("head.inc");
                                 <td>
                                   <select name="subnetv6" class="selectpicker" data-style="btn-default" data-width="auto" data-size="10" data-id="subnetv6">
 <?php
-                                    for ($i = 128; $i > 0; $i--):
-                                      if ($i <> 127):?>
+                                    for ($i = 128; $i > 0; $i--): ?>
                                       <option value="<?=$i;?>" <?=$i == $pconfig['subnetv6'] ? "selected=\"selected\"" : "";?>><?=$i;?></option>
 <?php
-                                      endif;
                                     endfor;?>
                                   </select>
                                 </td>
