@@ -256,19 +256,19 @@ function interface_qinq_configure(&$vlan, $fd = null)
     global $config;
 
     if (!is_array($vlan)) {
-        log_error(sprintf('QinQ compat VLAN: called with wrong options. Problems with config!'));
+        log_error('QinQ compat VLAN: called with wrong options. Problems with config!');
         return;
     }
 
     $qinqif = $vlan['if'];
     $tag = $vlan['tag'];
     if (empty($qinqif)) {
-        log_error(sprintf('interface_qinq_configure called with if undefined.'));
+        log_error('interface_qinq_configure called with if undefined.');
         return;
     }
 
     if (!does_interface_exist($qinqif)) {
-        log_error(sprintf('interface_qinq_configure called with invalid if.'));
+        log_error('interface_qinq_configure called with invalid if.');
         return;
     }
 
@@ -354,7 +354,7 @@ function interface_qinq2_configure(&$qinq, $fd, $macaddr)
     global $config;
 
     if (!is_array($qinq)) {
-        log_error(sprintf('QinQ compat VLAN: called with wrong options. Problems with config!'));
+        log_error('QinQ compat VLAN: called with wrong options. Problems with config!');
         return;
     }
 
@@ -362,7 +362,7 @@ function interface_qinq2_configure(&$qinq, $fd, $macaddr)
     $tag = $qinq['tag'];
     $vlanif = "{$if}_{$tag}";
     if (empty($if)) {
-        log_error(sprintf('interface_qinq2_configure called with if undefined.'));
+        log_error('interface_qinq2_configure called with if undefined.');
         return;
     }
 
@@ -464,7 +464,6 @@ function interfaces_bridge_configure($checkmember = 0, $realif = '')
                     }
                 }
             }
-            /* XXX: Maybe we should report any errors?! */
             interface_bridge_configure($bridge, $checkmember);
             $i++;
         }
@@ -480,7 +479,7 @@ function interface_bridge_configure(&$bridge, $checkmember = 0)
     }
 
     if (empty($bridge['members'])) {
-        log_error(sprintf('No members found on %s', $bridge['bridgeif']));
+        log_error("No members found on {$bridge['bridgeif']}");
         return;
     }
 
@@ -1350,7 +1349,7 @@ function interface_ppps_configure($interface)
         }
     }
     if (!isset($ppp) || $ifcfg['if'] != $ppp['if']) {
-        log_error(sprintf('Can\'t find PPP config for %s in interface_ppps_configure().', $ifcfg['if']));
+        log_error("Can't find PPP config for {$ifcfg['if']} in interface_ppps_configure().");
         return 0;
     }
 
@@ -1397,22 +1396,22 @@ function interface_ppps_configure($interface)
                 }
 
                 if (!is_ipaddr($localips[$pid])) {
-                    log_error("Could not get a Local IP address for PPTP/L2TP link on {$port} in interfaces_ppps_configure. Using 0.0.0.0 ip!");
+                    log_error("Could not get a Local IP address for PPTP/L2TP link on {$port}. Using 0.0.0.0!");
                     $localips[$pid] = "0.0.0.0";
                 }
                 if (!is_ipaddr($gateways[$pid])) {
-                    log_error(sprintf('Could not get a PPTP/L2TP Remote IP address from %s for %s in interfaces_ppps_configure.', $dhcp_gateway, $gway));
+                    log_error("Could not get a Remote IP address for PPTP/L2TP link on {$port}.");
                     return 0;
                 }
                 break;
             case "ppp":
                 if (!file_exists("{$port}")) {
-                    log_error(sprintf('Device %s does not exist. PPP link cannot start without the modem device.', $port));
+                    log_error("Device {$port} does not exist. PPP link cannot start without the modem device.");
                     return 0;
                 }
                 break;
             default:
-                log_error(sprintf('Unkown %s configured as ppp interface.', $ppp['type']));
+                log_error("Unkown {$ppp['type']} configured as ppp interface.");
                 break;
         }
     }
@@ -1617,7 +1616,7 @@ EOD;
     } else {
         $fd = fopen("/var/etc/mpd_{$interface}.conf", "w");
         if (!$fd) {
-            log_error(sprintf('Error: cannot open mpd_%s.conf in interface_ppps_configure().', $interface));
+            log_error("Error: cannot open mpd_{$interface}.conf in interface_ppps_configure().");
             return 0;
         }
         // Write out mpd_ppp.conf
@@ -1908,15 +1907,15 @@ function interface_wireless_clone($realif, $wlcfg)
         exec("/sbin/ifconfig " . escapeshellarg($realif), $output, $ret);
         $ifconfig_str = implode($output);
         if (($wlcfg_mode == "hostap") && (! preg_match("/hostap/si", $ifconfig_str))) {
-            log_error(sprintf('Interface %s changed to hostap mode', $realif));
+            log_error("Interface {$realif} changed to hostap mode");
             $needs_clone = true;
         }
         if (($wlcfg_mode == "adhoc") && (! preg_match("/adhoc/si", $ifconfig_str))) {
-            log_error(sprintf('Interface %s changed to adhoc mode', $realif));
+            log_error("Interface {$realif} changed to adhoc mode");
             $needs_clone = true;
         }
         if (($wlcfg_mode == "bss") && (preg_match("/hostap|adhoc/si", $ifconfig_str))) {
-            log_error(sprintf('Interface %s changed to infrastructure mode', $realif));
+            log_error("Interface {$realif} changed to infrastructure mode");
             $needs_clone = true;
         }
     } else {
@@ -1929,10 +1928,10 @@ function interface_wireless_clone($realif, $wlcfg)
             legacy_interface_destroy($realif);
         }
 
-        log_error(sprintf('Cloning new wireless interface %s', $realif));
+        log_error("Cloning new wireless interface {$realif}");
         exec("/sbin/ifconfig wlan create wlandev {$baseif} {$mode} bssid name {$realif} 2>&1", $out, $ret);
         if ($ret <> 0) {
-            log_error(sprintf('Failed to clone interface %s with error code %s, output %s', $baseif, $ret, $out[0]));
+            log_error("Failed to clone interface {$baseif} with error code {$ret}, output {$out[0]}");
             return false;
         }
         file_put_contents("/tmp/{$realif}_oldmac", get_interface_mac($realif));
@@ -3161,13 +3160,12 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
             $dhcp6cconf = file_get_contents($dhcp6cfile);
             $dhcp6cconf = DHCP6_Config_File_Substitutions($wancfg, $wanif, $dhcp6cconf);
         } else {
-            log_error(sprintf('DHCP6 config file override does not exist: "%s"', $dhcp6cfile));
+            log_error("DHCP6 config file override does not exist: '{$dhcp6cfile}'");
         }
     }
 
-    /* wide-dhcp6c works for now. */
     if (!@file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf)) {
-        log_error("Error: cannot open dhcp6c_{$interface}.conf in interface_dhcpv6_configure() for writing.\n");
+        log_error("Error: cannot open dhcp6c_{$interface}.conf in interface_dhcpv6_configure() for writing.");
         return;
     }
 
@@ -3185,7 +3183,7 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     $dhcp6cscript .= "esac\n";
 
     if (!@file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript)) {
-        log_error("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.\n");
+        log_error("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.");
         return;
     }
 
@@ -3215,7 +3213,7 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     $rtsoldscript .= "$dhcp6ccommand\n";
 
     if (!@file_put_contents("/var/etc/rtsold_{$wanif}_script.sh", $rtsoldscript)) {
-        log_error("Error: cannot open rtsold_{$wanif}_script.sh in interface_dhcpv6_configure() for writing.\n");
+        log_error("Error: cannot open rtsold_{$wanif}_script.sh in interface_dhcpv6_configure() for writing.");
         return;
     }
 
@@ -3419,7 +3417,7 @@ function interface_dhcp_configure($interface = 'wan')
     /* generate dhclient_wan.conf */
     $fd = fopen("/var/etc/dhclient_{$interface}.conf", "w");
     if (!$fd) {
-        log_error(sprintf("Error: cannot open dhclient_%s.conf in interface_dhcp_configure() for writing.%s", $interface, "\n"));
+        log_error("Error: cannot open dhclient_{$interface}.conf in interface_dhcp_configure() for writing.");
         return;
     }
 
@@ -3432,7 +3430,7 @@ function interface_dhcp_configure($interface = 'wan')
 
     $wanif = get_real_interface($interface);
     if (empty($wanif)) {
-        log_error(sprintf('Invalid interface "%s" in interface_dhcp_configure()', $interface));
+        log_error("Invalid interface '{$interface}' in interface_dhcp_configure()");
         return;
     }
 
@@ -3483,7 +3481,7 @@ EOD;
             $dhclientconf = file_get_contents($dhclientfile);
             $dhclientconf = DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf);
         } else {
-            log_error(sprintf('DHCP config file override does not exist: "%s"', $dhclientfile));
+            log_error("DHCP config file override does not exist: '{$dhclientfile}'");
         }
     }
 
@@ -3494,7 +3492,7 @@ EOD;
     if ($wanif) {
         interfaces_bring_up($wanif);
     } else {
-        log_error(sprintf('Could not bring up %s interface in interface_dhcp_configure()', $wanif));
+        log_error("Could not bring up {$wanif} interface in interface_dhcp_configure()");
     }
 
     /* Make sure dhclient is not running */
