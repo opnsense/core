@@ -3185,8 +3185,8 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     }
 
     $wanif = get_real_interface($interface, "inet6");
-    $dhcp6cconf = "";
-    $dhcp6cconf .= "interface {$wanif} {\n";
+
+    $dhcp6cconf = "interface {$wanif} {\n";
 
     /* for SLAAC interfaces we do fire off a dhcp6 client for just our name servers */
     if ($wancfg['ipaddrv6'] == "slaac") {
@@ -3231,7 +3231,6 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
                     $dhcp6cconf .= "  };\n";
                 }
             }
-            unset($preflen, $iflist, $ifcfg);
             $dhcp6cconf .= "};\n";
         }
     }
