@@ -2631,6 +2631,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
         switch ($wancfg['ipaddrv6']) {
             case 'slaac':
             case 'dhcp6':
+                interface_dhcpv6_prepare($interface, $wancfg);
                 interface_dhcpv6_configure($interface, $wancfg);
                 break;
             case '6rd':
@@ -2652,6 +2653,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
                 break;
         }
     }
+
     $intf_stats = legacy_interface_stats();
     if (!empty($wancfg['mtu'])) {
         if (stristr($realif, "_vlan")) {
@@ -3085,8 +3087,6 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
         return;
     }
 
-    interface_dhcpv6_prepare($interface, $wancfg);
-
     /* write DUID if override was set */
     if (!empty($config['system']['ipv6duid'])) {
         $temp = str_replace(':', '', $config['system']['ipv6duid']);
@@ -3099,56 +3099,6 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     }
 
     $wanif = get_real_interface($interface, "inet6");
-
-    $dhcp6cscript = "#!/bin/sh\n";
-    $dhcp6cscript .= "if [ -n '" . (!empty($wancfg['adv_dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
-    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
-    $dhcp6cscript .= "fi\n";
-    $dhcp6cscript .= "case \$REASON in\n";
-    $dhcp6cscript .= "REQUEST|" . (!empty($wancfg['dhcp6norelease']) ? 'EXIT' : 'RELEASE') . ")\n";
-    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
-    $dhcp6cscript .= "\t/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
-    $dhcp6cscript .= "\t;;\n";
-    $dhcp6cscript .= "*)\n";
-    $dhcp6cscript .= "\t;;\n";
-    $dhcp6cscript .= "esac\n";
-
-    if (!@file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript)) {
-        log_error("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.");
-        return;
-    }
-
-    chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
-
-    $dhcp6ccommand = exec_safe(
-        "/usr/local/sbin/dhcp6c %s -c %s -p %s %s",
-        array(
-            '-' . (empty($wancfg['adv_dhcp6_debug']) ? 'd' : 'D' ) . (!empty($wancfg['dhcp6norelease']) ? 'n' : ''),
-            "/var/etc/dhcp6c_{$interface}.conf",
-            "/var/run/dhcp6c_{$wanif}.pid",
-            "{$wanif}"
-        )
-    );
-
-    $rtsoldscript = "#!/bin/sh\n";
-    $rtsoldscript .= "# this file was auto-generated, do not edit\n";
-    $rtsoldscript .= "if [ -n \"\${2}\" ]; then\n";
-    $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_routerv6\n";
-    $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_defaultgwv6\n";
-    $rtsoldscript .= "fi\n";
-    $rtsoldscript .= "if [ -f /var/run/dhcp6c_{$wanif}.pid ]; then\n";
-    $rtsoldscript .= "\t/bin/pkill -F /var/run/dhcp6c_{$wanif}.pid\n";
-    $rtsoldscript .= "\t/bin/sleep 1\n";
-    $rtsoldscript .= "fi\n";
-    $rtsoldscript .= "/usr/bin/logger -t rtsold \"Starting dhcp6 client for interface {$interface}({$wanif})\"\n";
-    $rtsoldscript .= "$dhcp6ccommand\n";
-
-    if (!@file_put_contents("/var/etc/rtsold_{$wanif}_script.sh", $rtsoldscript)) {
-        log_error("Error: cannot open rtsold_{$wanif}_script.sh in interface_dhcpv6_configure() for writing.");
-        return;
-    }
-
-    chmod("/var/etc/rtsold_{$wanif}_script.sh", 0755);
 
     /* accept router advertisements for this interface */
     set_single_sysctl("net.inet6.ip6.accept_rtadv", "1");
@@ -3254,6 +3204,56 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     if (!@file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf)) {
         log_error("Error: cannot open dhcp6c_{$interface}.conf in interface_dhcpv6_configure() for writing.");
     }
+    
+    $dhcp6cscript = "#!/bin/sh\n";
+    $dhcp6cscript .= "if [ -n '" . (!empty($wancfg['adv_dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
+    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
+    $dhcp6cscript .= "fi\n";
+    $dhcp6cscript .= "case \$REASON in\n";
+    $dhcp6cscript .= "REQUEST|" . (!empty($wancfg['dhcp6norelease']) ? 'EXIT' : 'RELEASE') . ")\n";
+    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
+    $dhcp6cscript .= "\t/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
+    $dhcp6cscript .= "\t;;\n";
+    $dhcp6cscript .= "*)\n";
+    $dhcp6cscript .= "\t;;\n";
+    $dhcp6cscript .= "esac\n";
+
+    if (!@file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript)) {
+        log_error("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.");
+        return;
+    }
+
+    chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
+
+    $dhcp6ccommand = exec_safe(
+        "/usr/local/sbin/dhcp6c %s -c %s -p %s %s",
+        array(
+            '-' . (empty($wancfg['adv_dhcp6_debug']) ? 'd' : 'D' ) . (!empty($wancfg['dhcp6norelease']) ? 'n' : ''),
+            "/var/etc/dhcp6c_{$interface}.conf",
+            "/var/run/dhcp6c_{$wanif}.pid",
+            "{$wanif}"
+        )
+    );
+
+    $rtsoldscript = "#!/bin/sh\n";
+    $rtsoldscript .= "# this file was auto-generated, do not edit\n";
+    $rtsoldscript .= "if [ -n \"\${2}\" ]; then\n";
+    $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_routerv6\n";
+    $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_defaultgwv6\n";
+    $rtsoldscript .= "fi\n";
+    $rtsoldscript .= "if [ -f /var/run/dhcp6c_{$wanif}.pid ]; then\n";
+    $rtsoldscript .= "\t/bin/pkill -F /var/run/dhcp6c_{$wanif}.pid\n";
+    $rtsoldscript .= "\t/bin/sleep 1\n";
+    $rtsoldscript .= "fi\n";
+    $rtsoldscript .= "/usr/bin/logger -t rtsold \"Starting dhcp6 client for interface {$interface}({$wanif})\"\n";
+    $rtsoldscript .= "$dhcp6ccommand\n";
+
+    if (!@file_put_contents("/var/etc/rtsold_{$wanif}_script.sh", $rtsoldscript)) {
+        log_error("Error: cannot open rtsold_{$wanif}_script.sh in interface_dhcpv6_configure() for writing.");
+        return;
+    }
+
+    chmod("/var/etc/rtsold_{$wanif}_script.sh", 0755);
 }
 
 function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
