@@ -118,6 +118,11 @@ abstract class BaseField
     private $internalFieldLoaded = false;
 
     /**
+     * @var BaseModel|null keep record of the model which originally created this field
+     */
+    private $internalParentModel = null;
+
+    /**
      * generate a new UUID v4 number
      * @return string uuid v4 number
      */
@@ -145,6 +150,25 @@ abstract class BaseField
         return;
     }
 
+    /**
+     * @param BaseModel $object to which this field is attached
+     */
+    public function setParentModel(&$object)
+    {
+        if (empty($this->internalParentModel)){
+            // read only attribute, set from model
+            $this->internalParentModel = $object;
+        }
+    }
+
+    /**
+     * Retrieve the model to which this field is attached
+     * @return BaseModel parent model
+     */
+    public function getParentModel()
+    {
+        return $this->internalParentModel;
+    }
 
     /**
      * trigger post loading event. (executed by BaseModel)
