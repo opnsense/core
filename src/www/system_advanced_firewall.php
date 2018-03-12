@@ -66,7 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['natreflection'] = empty($config['system']['disablenatreflection']);
     $pconfig['enablebinatreflection'] = !empty($config['system']['enablebinatreflection']);
     $pconfig['enablenatreflectionhelper'] = isset($config['system']['enablenatreflectionhelper']) ? $config['system']['enablenatreflectionhelper'] : null;
-    $pconfig['snat_use_sticky'] = !empty($config['system']['snat_use_sticky']);
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
@@ -166,8 +165,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif (isset($config['system']['enablebinatreflection'])) {
             unset($config['system']['enablebinatreflection']);
         }
-
-        $config['system']['snat_use_sticky'] = !empty($pconfig['snat_use_sticky']);
 
         if (!empty($pconfig['disablereplyto'])) {
             $config['system']['disablereplyto'] = $pconfig['disablereplyto'];
@@ -302,15 +299,6 @@ include("head.inc");
                     <input name="enablenatreflectionhelper" type="checkbox" id="enablenatreflectionhelper" value="yes" <?=!empty($pconfig['enablenatreflectionhelper']) ? "checked=\"checked\"" : "";?> />
                     <output class="hidden" for="help_for_enablenatreflectionhelper">
                       <?=gettext("Automatically create outbound NAT rules which assist inbound NAT rules that direct traffic back out to the same subnet it originated from.");?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_snat_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky outbound NAT");?></td>
-                  <td>
-                    <input name="snat_use_sticky" type="checkbox" id="snat_use_sticky" <?=!empty($pconfig['snat_use_sticky']) ? "checked=\"checked\"" : "";?> />
-                    <output class="hidden" for="help_for_snat_use_sticky">
-                      <?=gettext("When using automatic outbound NAT rules this makes the handled connections stick to a specific address when there are multiple addresses configured on the same interface.");?>
                     </output>
                   </td>
                 </tr>

@@ -79,11 +79,11 @@ class SNatRule extends Rule
                     ) {
                         // When pool options are set, we may not specify our interface as a list
                         // (which doesn't require the same network validations as single items do).
-                        $rule['target'] = "{$interf_settings['if']}";
+                        $rule['target'] = "{$interf_settings['if']}:0";
                     } elseif (!empty($interf_settings['if'])) {
                         // Define target as list, to prevent "no IP address found for *Interface*" when pf can't
                         // find an address on the interface for the same protocol family.
-                        $rule['target'] = "({$interf_settings['if']})";
+                        $rule['target'] = "({$interf_settings['if']}:0)";
                     }
                 }
                 if (empty($rule['target'])) {
