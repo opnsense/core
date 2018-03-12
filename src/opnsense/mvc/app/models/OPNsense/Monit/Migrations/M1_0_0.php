@@ -131,9 +131,6 @@ class M1_0_0 extends BaseModelMigration
         $systemService['tests'] = substr($systemService['tests'], 0, -1);
         $rootFsService['tests'] = substr($rootFsService['tests'], 0, -1);
 
-        /* XXX storing fails if we reference UUIDs created earlier... */
-        $model->serializeToConfig();
-
         /* add system service */
         $serviceNode = $model->service->add();
         $serviceNode->setNodes($systemService);
