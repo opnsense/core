@@ -243,11 +243,19 @@ $(document).ready(function() {
                       <td>
                         <select name="members[]" multiple="multiple" class="selectpicker" data-size="5" data-live-search="true">
 <?php
-                        foreach ($ifacelist as $ifn => $ifinfo):?>
+                        $bridge_interfaces = array();
+                        foreach ($a_bridges as $idx => $bridge_item) {
+                            if (!isset($id) || $idx != $id) {
+                                $bridge_interfaces = array_merge(explode(',', $bridge_item['members']), $bridge_interfaces);
+                            }
+                        }
+                        foreach ($ifacelist as $ifn => $ifinfo):
+                            if (!in_array($ifn, $bridge_interfaces)):?>
                             <option value="<?=$ifn;?>" <?=!empty($pconfig['members']) && in_array($ifn, $pconfig['members']) ? 'selected="selected"' : "";?>>
                                 <?=$ifinfo;?>
                             </option>
 <?php
+                            endif;
                         endforeach;?>
                         </select>
                         <output class="hidden" for="help_for_members">
