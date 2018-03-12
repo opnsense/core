@@ -201,7 +201,8 @@ class Voucher extends Base implements IAuthConnector
                     for ($i = 0; $i < strlen($random_bytes); $i++) {
                         $chr_ord = ord($random_bytes[$i]);
                         if (($chr_ord >= 50 && $chr_ord <= 57) || // 2..9
-                            ($chr_ord >= 65 && $chr_ord <= 78) || // A..N
+                            ($chr_ord >= 65 && $chr_ord <= 72) || // A..H
+                            ($chr_ord >= 74 && $chr_ord <= 78) || // J..N
                             ($chr_ord >= 80 && $chr_ord <= 90) || // P..Z
                             ($chr_ord >= 97 && $chr_ord <= 107) || // a..k
                             ($chr_ord >= 109 && $chr_ord <= 110) || // m..n
