@@ -184,9 +184,9 @@ function print_alert_box($msg, $alert = 'warning', $button = '')
 {
     echo <<<EOFnp
 <div class="col-xs-12">
-  <div class="alert alert-{$alert}" role="alert">
+  <div class="alert alert-{$alert}" role="alert" style="min-height: 65px;">
     {$button}
-    <p>{$msg}</p>
+    <div style="margin-top: 8px;">{$msg}</div>
   </div>
 </div>
 EOFnp;

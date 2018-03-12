@@ -72,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } else if (!empty($pconfig['apply'])) {
         system_sysctl_configure();
+        system_login_configure();
         clear_subsystem_dirty('sysctl');
         header(url_safe('Location: /system_advanced_sysctl.php'));
         exit;
@@ -92,18 +93,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header(url_safe('Location: /system_advanced_sysctl.php'));
         exit;
     }
-
 }
 
 legacy_html_escape_form_data($a_tunable);
+
 if ($act != 'edit') {
     $main_buttons = array(
         array('href' => 'system_advanced_sysctl.php?act=edit', 'label' => gettext('Add a new tunable')),
     );
 }
-include("head.inc");
-?>
 
+include("head.inc");
+
+?>
 <body>
 <script>
 $( document ).ready(function() {
@@ -186,6 +188,12 @@ $( document ).ready(function() {
                 </tr>
 <?php
                 $i++; endforeach; ?>
+                <tr>
+                  <td colspan="4">
+                    <?= gettext('Tunables are composed of runtime settings for sysctl.conf which take effect ' .
+                      'immediately after apply and boot settings for loader.conf which require a reboot.') ?>
+                  </td>
+                </tr>
               </tbody>
             </table>
 <?php
