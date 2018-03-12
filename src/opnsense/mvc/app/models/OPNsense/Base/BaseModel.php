@@ -178,6 +178,7 @@ abstract class BaseModel
                 $new_ref = $internal_data->__reference . "." . $tagName;
             }
             $fieldObject = $field_rfcls->newInstance($new_ref, $tagName);
+            $fieldObject->setParentModel($this);
 
             // now add content to this model (recursive)
             if ($fieldObject->isContainer() == false) {

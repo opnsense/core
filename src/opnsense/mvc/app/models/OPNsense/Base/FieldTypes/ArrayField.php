@@ -89,6 +89,8 @@ class ArrayField extends BaseField
             $this->__reference . "." . $nodeUUID,
             $this->internalXMLTagName
         );
+        $parentmodel = $this->getParentModel();
+        $container_node->setParentModel($parentmodel);
 
         foreach ($new_record as $key => $node) {
             // initialize field with new internal id and defined default value

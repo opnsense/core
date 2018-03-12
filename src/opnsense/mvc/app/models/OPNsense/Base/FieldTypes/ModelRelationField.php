@@ -58,29 +58,31 @@ class ModelRelationField extends BaseField
     private static $internalOptionList = array();
 
     /**
+     * @var array|null model settings to use for validation
+     */
+     private $mdlStructure = null;
+
+     /**
+      * @var boolean selected options from the same model
+      */
+     private $internalOptionsFromThisModel = false;
+
+    /**
      * @var string cache relations
      */
     private $internalCacheKey = "";
 
     /**
-     * Set model as reference list, use uuid's as key
-     * @param $mdlStructure nested array structure defining the usable datasources.
+     * load model option list
+     * @param $force force option load if we already seen this model before
      */
-    public function setModel($mdlStructure)
+    private function loadModelOptions($force=false)
     {
-        // only handle array type input
-        if (!is_array($mdlStructure)) {
-            return;
-        }
-
-        // set internal key for this node based on sources and filter criteria
-        $this->internalCacheKey = md5(serialize($mdlStructure));
-
         // only collect options once per source/filter combination, we use a static to save our unique option
         // combinations over the running application.
-        if (!isset(self::$internalOptionList[$this->internalCacheKey])) {
+        if (!isset(self::$internalOptionList[$this->internalCacheKey]) || $force) {
             self::$internalOptionList[$this->internalCacheKey] = array();
-            foreach ($mdlStructure as $modelData) {
+            foreach ($this->mdlStructure as $modelData) {
                 // only handle valid model sources
                 if (!isset($modelData['source']) || !isset($modelData['items']) || !isset($modelData['display'])) {
                     continue;
@@ -91,46 +93,70 @@ class ModelRelationField extends BaseField
                 if (!class_exists($className)) {
                     continue;
                 }
-
-                $modelObj = new $className;
+                if (strcasecmp(get_class($this->getParentModel()), $className) === 0) {
+                    // model options from the same model, use this model in stead of creating something new
+                    $modelObj = $this->getParentModel();
+                    $this->internalOptionsFromThisModel = true;
+                } else {
+                    $modelObj = new $className;
+                }
 
                 $groupKey = isset($modelData['group']) ? $modelData['group'] : null;
                 $displayKey = $modelData['display'];
                 $groups = array();
 
-                foreach ($modelObj->getNodeByReference($modelData['items'])->__items as $node) {
-                    if (!isset($node->getAttributes()['uuid']) || $node->$displayKey == null) {
-                        continue;
-                    }
+                $searchItems = $modelObj->getNodeByReference($modelData['items']);
+                if (!empty($searchItems)){
+                    foreach ($modelObj->getNodeByReference($modelData['items'])->__items as $node) {
+                        if (!isset($node->getAttributes()['uuid']) || $node->$displayKey == null) {
+                            continue;
+                        }
 
-                    if (isset($modelData['filters'])) {
-                        foreach ($modelData['filters'] as $filterKey => $filterValue) {
-                            $fieldData = $node->$filterKey;
-                            if (!preg_match($filterValue, $fieldData) && $fieldData != null) {
-                                continue 2;
+                        if (isset($modelData['filters'])) {
+                            foreach ($modelData['filters'] as $filterKey => $filterValue) {
+                                $fieldData = $node->$filterKey;
+                                if (!preg_match($filterValue, $fieldData) && $fieldData != null) {
+                                    continue 2;
+                                }
                             }
                         }
-                    }
 
-                    if (!empty($groupKey)) {
-                        if ($node->$groupKey == null) {
-                            continue;
+                        if (!empty($groupKey)) {
+                            if ($node->$groupKey == null) {
+                                continue;
+                            }
+                            $group = $node->$groupKey->__toString();
+                            if (isset($groups[$group])) {
+                                continue;
+                            }
+                            $groups[$group] = 1;
                         }
-                        $group = $node->$groupKey->__toString();
-                        if (isset($groups[$group])) {
-                            continue;
-                        }
-                        $groups[$group] = 1;
-                    }
 
-                    $uuid = $node->getAttributes()['uuid'];
-                    self::$internalOptionList[$this->internalCacheKey][$uuid] =
-                        $node->$displayKey->__toString();
+                        $uuid = $node->getAttributes()['uuid'];
+                        self::$internalOptionList[$this->internalCacheKey][$uuid] =
+                            $node->$displayKey->__toString();
+                    }
                 }
-
                 unset($modelObj);
             }
         }
+    }
+
+    /**
+     * Set model as reference list, use uuid's as key
+     * @param $mdlStructure nested array structure defining the usable datasources.
+     */
+    public function setModel($mdlStructure)
+    {
+        // only handle array type input
+        if (!is_array($mdlStructure)) {
+            return;
+        } else {
+            $this->mdlStructure = $mdlStructure;
+            // set internal key for this node based on sources and filter criteria
+            $this->internalCacheKey = md5(serialize($mdlStructure));
+        }
+        $this->loadModelOptions();
     }
 
     /**
@@ -182,6 +208,8 @@ class ModelRelationField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
+            // if our options come from the same model, make sure to reload the options before validating them
+            $this->loadModelOptions($this->internalOptionsFromThisModel);
             if ($this->internalMultiSelect) {
                 // field may contain more than one entries
                 $validators[] = new CsvListValidator(array(
