@@ -3581,8 +3581,7 @@ function DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf)
 {
 
     /* Apply Interface Substitutions */
-    $dhclientconf = str_replace("{interface}", "{
-                        $wanif}", $dhclientconf);
+    $dhclientconf = str_replace("{interface}", "{$wanif}", $dhclientconf);
 
     /* Apply Hostname Substitutions */
     $dhclientconf = str_replace("{hostname}", $wancfg['dhcphostname'], $dhclientconf);
