@@ -1367,20 +1367,20 @@ function openvpn_get_client_status($client, $socket)
 
             /* Get the client state */
             $list = explode(",", $line);
+            if (count($list) > 1) {
+                $client['connect_time'] = date('Y-m-d H:i:s', $list[0]);
+            }
             if (strstr($line, "CONNECTED")) {
                 $client['status']="up";
-                $client['connect_time'] = date('Y-m-d H:i:s', $list[0]);
                 $client['virtual_addr'] = $list[3];
                 $client['remote_host'] = $list[4];
             } elseif (strstr($line, "CONNECTING")) {
                 $client['status']="connecting";
             } elseif (strstr($line, "ASSIGN_IP")) {
-                $client['status']="waiting";
-                $client['connect_time'] = date('Y-m-d H:i:s', $list[0]);
+                $client['status'] = "waiting";
                 $client['virtual_addr'] = $list[3];
             } elseif (strstr($line, "RECONNECTING")) {
-                $client['status']="reconnecting";
-                $client['connect_time'] = date('Y-m-d H:i:s', $list[0]);
+                $client['status'] = "reconnecting";
                 $client['status'] .= "; " . $list[2];
             } elseif (strstr($line, "END") || strstr($line, "ERROR")) {
                 /* parse end of output line */
