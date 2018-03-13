@@ -1353,7 +1353,7 @@ function openvpn_get_client_status($client, $socket)
     if ($fp) {
         stream_set_timeout($fp, 1);
         /* send our status request */
-        fputs($fp, "state 1\n");
+        fputs($fp, "state all\n");
 
         /* recv all response lines */
         while (!feof($fp)) {
@@ -1366,31 +1366,24 @@ function openvpn_get_client_status($client, $socket)
             }
 
             /* Get the client state */
+            $list = explode(",", $line);
             if (strstr($line, "CONNECTED")) {
                 $client['status']="up";
-                $list = explode(",", $line);
-
                 $client['connect_time'] = date('Y-m-d H:i:s', $list[0]);
                 $client['virtual_addr'] = $list[3];
                 $client['remote_host'] = $list[4];
-            }
-            if (strstr($line, "CONNECTING")) {
+            } elseif (strstr($line, "CONNECTING")) {
                 $client['status']="connecting";
-            }
-            if (strstr($line, "ASSIGN_IP")) {
+            } elseif (strstr($line, "ASSIGN_IP")) {
                 $client['status']="waiting";
-                $list = explode(",", $line);
                 $client['connect_time'] = date('Y-m-d H:i:s', $list[0]);
                 $client['virtual_addr'] = $list[3];
-            }
-            if (strstr($line, "RECONNECTING")) {
+            } elseif (strstr($line, "RECONNECTING")) {
                 $client['status']="reconnecting";
-                $list = explode(",", $line);
                 $client['connect_time'] = date('Y-m-d H:i:s', $list[0]);
                 $client['status'] .= "; " . $list[2];
-            }
-            /* parse end of output line */
-            if (strstr($line, "END") || strstr($line, "ERROR")) {
+            } elseif (strstr($line, "END") || strstr($line, "ERROR")) {
+                /* parse end of output line */
                 break;
             }
         }
@@ -1408,18 +1401,13 @@ function openvpn_get_client_status($client, $socket)
                     break;
                 }
 
+                $list = explode(",", $line);
                 if (strstr($line, "TCP/UDP read bytes")) {
-                    $list = explode(",", $line);
                     $client['bytes_recv'] = $list[1];
-                }
-
-                if (strstr($line, "TCP/UDP write bytes")) {
-                    $list = explode(",", $line);
+                } elseif (strstr($line, "TCP/UDP write bytes")) {
                     $client['bytes_sent'] = $list[1];
-                }
-
-                /* parse end of output line */
-                if (strstr($line, "END")) {
+                } elseif (strstr($line, "END")) {
+                    /* parse end of output line */
                     break;
                 }
             }
