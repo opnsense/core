@@ -481,9 +481,9 @@ function system_routing_configure($interface = '', $verbose = false)
                     $interfacegw = $gateway['interface'];
                     if (!empty($gateway['interface'])) {
                         $defaultif = get_real_interface($gateway['interface']);
-                        if ($defaultif) {
+                        if ($defaultif && is_ipaddrv4($gatewayip)) {
                             log_error("ROUTING: creating /tmp/{$defaultif}_defaultgw");
-                            @file_put_contents("/tmp/{$defaultif}_defaultgw", $gateway['gateway']);
+                            @file_put_contents("/tmp/{$defaultif}_defaultgw", $gatewayip);
                         }
                     }
                     $foundgw = true;
@@ -495,9 +495,9 @@ function system_routing_configure($interface = '', $verbose = false)
                     $interfacegwv6 = $gateway['interface'];
                     if (!empty($gateway['interface'])) {
                         $defaultifv6 = get_real_interface($gateway['interface']);
-                        if ($defaultifv6) {
+                        if ($defaultifv6 && is_ipaddrv6($gatewayipv6)) {
                             log_error("ROUTING: creating /tmp/{$defaultifv6}_defaultgwv6");
-                            @file_put_contents("/tmp/{$defaultifv6}_defaultgwv6", $gateway['gateway']);
+                            @file_put_contents("/tmp/{$defaultifv6}_defaultgwv6", $gatewayipv6);
                         }
                     }
                     $foundgwv6 = true;
@@ -512,43 +512,56 @@ function system_routing_configure($interface = '', $verbose = false)
      * probably where the default gateway switching comes into
      * play because this facility is allowed to use dynamically
      * created gateways while the former code does not.
+     *
+     * In fact the following code is a mini gateway switcher
+     * facility which can only switch one hardcoded gateway and
+     * may obscure a problem with the setup for a long time... :(
      */
 
     if (!$foundgw) {
-        $defaultif = get_real_interface("wan");
-        $interfacegw = "wan";
-        $gatewayip = get_interface_gateway("wan");
-        @file_put_contents("/tmp/{$defaultif}_defaultgw", $gatewayip);
-        log_error("ROUTING: no IPv4 default gateway set, trying ${interfacegw} on '{$defaultif}' ({$gatewayip})");
+        $interfacegw = 'wan';
+        $defaultif = get_real_interface($interfacegw);
+        $gatewayip = get_interface_gateway($interfacegw);
+        if (is_ipaddrv4($gatewayip)) {
+            log_error("ROUTING: no IPv4 default gateway set, assuming {$interfacegw} on '{$defaultif}' ({$gatewayip})");
+            @file_put_contents("/tmp/{$defaultif}_defaultgw", $gatewayip);
+        } else {
+            log_error("ROUTING: no IPv4 default gateway set, skipping {$interfacegw} on '{$defaultif}'");
+        }
     }
 
     if (!$foundgwv6) {
-        $defaultifv6 = get_real_interface("wan");
-        $interfacegwv6 = "wan";
-        $gatewayipv6 = get_interface_gateway_v6("wan");
-        @file_put_contents("/tmp/{$defaultifv6}_defaultgwv6", $gatewayipv6);
-        log_error("ROUTING: no IPv6 default gateway set, trying ${interfacegwv6} on '{$defaultifv6}' ({$gatewayipv6})");
+        $interfacegwv6 = 'wan';
+        $defaultifv6 = get_real_interface($interfacegwv6);
+        $gatewayipv6 = get_interface_gateway_v6($interfacegwv6);
+        if (is_ipaddrv6($gatewayipv6)) {
+            log_error("ROUTING: no IPv6 default gateway set, trying {$interfacegwv6} on '{$defaultifv6}' ({$gatewayipv6})");
+            @file_put_contents("/tmp/{$defaultifv6}_defaultgwv6", $gatewayipv6);
+        } else {
+            log_error("ROUTING: no IPv6 default gateway set, skipping {$interfacegwv6} on '{$defaultifv6}'");
+            $interfacegwv6 = '';
+        }
     }
 
-    if (!empty($interface) && $interface != $interfacegw) {
-        log_error("ROUTING: skipping IPv4 default route to {$interfacegw}");
-    } elseif (is_ipaddrv4($gatewayip)) {
+    if ((empty($interface) || $interface == $interfacegw) && is_ipaddrv4($gatewayip)) {
         log_error("ROUTING: setting IPv4 default route to {$gatewayip}");
         system_default_route($gatewayip, $fargw ? $defaultif : null);
+    } else {
+        log_error("ROUTING: skipping IPv4 default route");
     }
 
-    if (!empty($interface) && $interface != $interfacegwv6) {
-        log_error("ROUTING: skipping IPv4 default route to {$interfacegwv6}");
-    } elseif (is_ipaddrv6($gatewayipv6)) {
+    if ((empty($interface) || $interface == $interfacegwv6) && is_ipaddrv6($gatewayipv6)) {
         log_error("ROUTING: setting IPv6 default route to {$gatewayipv6}");
         system_default_route($gatewayipv6, $defaultifv6);
+    } else {
+        log_error("ROUTING: skipping IPv6 default route");
     }
 
     system_staticroutes_configure($interface);
 
     set_sysctl(array(
-      'net.inet.ip.forwarding' => '1',
-      'net.inet6.ip6.forwarding' => '1'
+        'net.inet.ip.forwarding' => '1',
+        'net.inet6.ip6.forwarding' => '1',
     ));
 
     if ($verbose) {
