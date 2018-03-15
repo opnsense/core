@@ -995,7 +995,7 @@ function interface_gif_configure(&$gif, $gifkey = "")
     foreach ($iflist as $ifname) {
         if ($config['interfaces'][$ifname]['if'] == $gifif) {
             if (get_interface_gateway($ifname) || get_interface_gateway_v6($ifname)) {
-                system_routing_configure($ifname);
+                system_routing_configure(false, $ifname);
                 break;
             }
         }
@@ -1076,7 +1076,7 @@ function interfaces_configure($verbose = false)
     interfaces_group_setup();
 
     if ($reload) {
-        system_routing_configure('', $verbose);
+        system_routing_configure($verbose);
         ipsec_configure_do($verbose);
         plugins_configure('dns', $verbose);
         services_dhcpd_configure('all', array(), $verbose);
@@ -2713,7 +2713,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
         }
 
         if ($reloadall == true) {
-            system_routing_configure($interface);
+            system_routing_configure(false, $interface);
             ipsec_configure_do();
             plugins_configure('dns');
             services_dhcpd_configure();

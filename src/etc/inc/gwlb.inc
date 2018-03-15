@@ -1,6 +1,7 @@
 <?php
 
 /*
+    Copyright (C) 2016-2018 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>
     Copyright (C) 2008 Seth Mos <seth.mos@dds.nl>
     Copyright (C) 2010 Ermal Luçi
@@ -769,25 +770,8 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
             continue;
         }
 
-        $defaultif = get_real_interface($gateways_arr[$dfltgwname]['friendlyiface']);
-        $gwipmatch = $dfltgwip;
-        if (is_linklocal($dfltgwip)) {
-            /* correct match in IPv6 case */
-            $gwipmatch .= "%{$defaultif}";
-        }
-
-        $tmpcmd = "/sbin/route -n get -{$ipprotocol} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
-        $defaultgw = trim(exec($tmpcmd), " \n");
-        if ($defaultgw != $gwipmatch) {
-            foreach (glob('/tmp/*_defaultgw' . ($ipprotocol == 'inet' ? '' : 'v6')) as $to_delete) {
-                log_error("GATEWAYS: removing {$to_delete}");
-                @unlink($to_delete);
-            }
-            log_error("Switching default gateway to $dfltgwname ($dfltgwip on $defaultif)");
-            @file_put_contents("/tmp/{$defaultif}_defaultgw" . ($ipprotocol == 'inet' ? '' : 'v6'), $dfltgwip);
-            /* XXX fargw and IPv6 should be cleaned up to make it easier to read */
-            system_default_route($dfltgwip, !isset($gateways_arr[$dfltgwname]['fargw']) && $ipprotocol == 'inet' ? null : $defaultif);
-        }
+        /* switch only if another gateway is set aa the default */
+        system_default_route($dfltgwip, $ipprotocol, $gateways_arr[$dfltgwname]['friendlyiface'], isset($gateways_arr[$dfltgwname]['fargw']), true);
     }
 }
 
