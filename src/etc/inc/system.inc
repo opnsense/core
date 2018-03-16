@@ -568,7 +568,7 @@ function system_routing_configure($verbose = false, $interface = '')
 
     if ((empty($interface) || $interface == $interfacegwv6) && is_ipaddrv6($gatewayipv6)) {
         log_error("ROUTING: setting IPv6 default route to {$gatewayipv6}");
-        system_default_route($gatewayipv6, 'inet6', $interfacegwv6, false);
+        system_default_route($gatewayipv6, 'inet6', $interfacegwv6);
     } else {
         log_error("ROUTING: skipping IPv6 default route");
     }
