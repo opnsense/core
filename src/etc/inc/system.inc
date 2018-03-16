@@ -417,7 +417,7 @@ function system_host_route($host, $gateway, $delete = true, $add = true)
     }
 }
 
-function system_default_route($gateway, $family, $interface, $far = false, $keep = false)
+function system_default_route($gateway, $family, $interface, $far = false, $keep = true)
 {
     $realif = get_real_interface($interface);
 
@@ -434,6 +434,7 @@ function system_default_route($gateway, $family, $interface, $far = false, $keep
             return;
     }
 
+    /* XXX we can hardcode this as soon as testing goes ok */
     if ($keep) {
         $tmpcmd = "/sbin/route -n get -{$family} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
         $current = trim(exec($tmpcmd), " \n");

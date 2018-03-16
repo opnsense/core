@@ -770,8 +770,7 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
             continue;
         }
 
-        /* switch only if another gateway is set aa the default */
-        system_default_route($dfltgwip, $ipprotocol, $gateways_arr[$dfltgwname]['friendlyiface'], isset($gateways_arr[$dfltgwname]['fargw']), true);
+        system_default_route($dfltgwip, $ipprotocol, $gateways_arr[$dfltgwname]['friendlyiface'], isset($gateways_arr[$dfltgwname]['fargw']));
     }
 }
 
