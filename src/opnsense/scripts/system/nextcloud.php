@@ -61,7 +61,7 @@ function upload_file_nextcloud($cfg, $file)
     $info = curl_getinfo($curl);
     if (!($info['http_code'] == 200 || $info['http_code'] == 207)) {
         echo "cannot execute PROPFIND";
-        echo print_r($info);
+        print_r($info);
         return -1;
     }
     curl_close($curl);
@@ -88,7 +88,7 @@ function upload_file_nextcloud($cfg, $file)
         if (!($info['http_code'] == 200 || $info['http_code'] == 207 || $info['http_code'] == 201))
         {
             echo "cannot execute MKCOL";
-            echo print_r($info);
+            print_r($info);
             return -1;
         }
     }
@@ -118,7 +118,7 @@ function upload_file_nextcloud($cfg, $file)
     $info = curl_getinfo($curl);
     if (!($info['http_code'] == 201)) {
         echo "cannot execute MKCOL";
-        echo print_r($info);
+        print_r($info);
         return -1;
     }
     curl_close($curl);
