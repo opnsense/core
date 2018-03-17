@@ -1778,9 +1778,7 @@ include("head.inc");
                           <td>
                             <input name="mtu" id="mtu" type="text" value="<?=$pconfig['mtu'];?>" />
                             <div id="mtu_calc" style="display:none">
-                              <i class="fa fa-info-circle"></i>
-                              <?=gettext("calculated ppp mtu :");?>
-                              <label></label>
+                              <?= gettext('Calculated PPP MTU') ?>: <label></label>
                             </div>
                             <div class="hidden" data-for="help_for_mtu">
                               <?= gettext("If you leave this field blank, the adapter's default MTU will " .
