@@ -43,7 +43,7 @@ readonly    :   if true, input fields will be readonly
 #}
 
 <tr for="{{ id }}" {% if advanced|default(false)=='true' %} data-advanced="true"{% endif %}>
-    <td >
+    <td>
         <output class="control-label" for="{{ id }}">
             {% if help|default(false) %}
                 <a id="help_for_{{ id }}" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
@@ -53,7 +53,7 @@ readonly    :   if true, input fields will be readonly
             <b>{{label}}</b>
         </output>
     </td>
-    <td >
+    <td>
         {% if type == "text" %}
             <input type="text" class="form-control" size="{{size|default("50")}}" id="{{ id }}" {{ readonly ? 'readonly="readonly"' : '' }} >
         {% elseif type == "checkbox" %}

@@ -378,7 +378,7 @@ $( document ).ready(function() {
                             <td style="width:348px">
                               <input name="subnet" type="text" class="form-control" id="subnet" size="28" value="<?=$pconfig['subnet'];?>" />
                             </td>
-                            <td >
+                            <td>
                               <select name="subnet_bits" data-network-id="subnet" class="selectpicker ipv4v6net" data-size="10"  data-width="auto" id="subnet_bits">
                                 <option disabled="disabled"></option> <!-- workaround for selectpicker -->
 <?php
