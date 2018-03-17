@@ -1576,7 +1576,7 @@ function get_dyndns_ip($int, $ipver = 4)
 
     $ip_address = $ipver == 6 ? get_interface_ipv6($int) : get_interface_ip($int);
     if (empty($ip_address)) {
-            return 'down';
+        return 'down';
     }
 
     $gateways_status = return_gateways_status(true);
@@ -1621,8 +1621,6 @@ function get_dyndns_ip($int, $ipver = 4)
             return 'down';
         }
     }
-
-    log_error("Detected IP result: '$ip_address'");
 
     return $ip_address;
 }
