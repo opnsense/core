@@ -213,7 +213,7 @@
                 </div>
                 </td>
                 <td>
-                  <small class="hidden" for="help_for_proxy.forward.acl.remoteACLs.blacklist">
+                  <small class="hidden" data-for="help_for_proxy.forward.acl.remoteACLs.blacklist">
                       {{ lang._('
                       Add an item to the table to fetch a remote acl for blacklisting.%s
                       You can enable or disable the blacklist list.%s

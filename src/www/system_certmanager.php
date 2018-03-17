@@ -746,18 +746,18 @@ $( document ).ready(function() {
                   <td style="width:22%"><a id="help_for_cert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Certificate data");?></td>
                   <td style="width:78%">
                     <textarea name="cert" id="cert" cols="65" rows="7"><?=$pconfig['cert'];?></textarea>
-                    <output class="hidden" for="help_for_cert">
+                    <div class="hidden" data-for="help_for_cert">
                       <?=gettext("Paste a certificate in X.509 PEM format here.");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_key" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Private key data");?></td>
                   <td>
                     <textarea name="key" id="key" cols="65" rows="7" class="formfld_cert"><?=$pconfig['key'];?></textarea>
-                    <output class="hidden" for="help_for_key">
+                    <div class="hidden" data-for="help_for_key">
                       <?=gettext("Paste a private key in X.509 PEM format here.");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -796,9 +796,9 @@ $( document ).ready(function() {
                         <option value="server_cert" <?=$pconfig['cert_type'] == 'server_cert' ? "selected=\"selected\"" : "";?>> <?=gettext("Server Certificate");?> </option>
                         <option value="v3_ca" <?=$pconfig['cert_type'] == 'v3_ca' ? "selected=\"selected\"" : "";?>> <?=gettext("Certificate Authority");?> </option>
                     </select>
-                    <output class="hidden" for="help_for_digest_cert_type">
+                    <div class="hidden" data-for="help_for_digest_cert_type">
                       <?=gettext("Choose the type of certificate to generate here, the type defines it's constraints");?>
-                    </output>
+                    </div>
                 </td>
               </tr>
               <tr>
@@ -825,9 +825,9 @@ $( document ).ready(function() {
 <?php
                   endforeach; ?>
                   </select>
-                  <output class="hidden" for="help_for_digest_alg">
+                  <div class="hidden" data-for="help_for_digest_alg">
                     <?= gettext("NOTE: It is recommended to use an algorithm stronger than SHA1 when possible.") ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -857,55 +857,55 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_dn_state" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State or Province");?> : &nbsp;</td>
                 <td>
                   <input name="dn_state" id="dn_state" type="text" size="40" value="<?=$pconfig['dn_state'];?>"/>
-                  <output class="hidden" for="help_for_digest_dn_state">
+                  <div class="hidden" data-for="help_for_digest_dn_state">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("Sachsen");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_dn_city" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("City");?> : &nbsp;</td>
                 <td>
                   <input name="dn_city" id="dn_city" type="text" size="40" value="<?=$pconfig['dn_city'];?>"/>
-                  <output class="hidden" for="help_for_digest_dn_city">
+                  <div class="hidden" data-for="help_for_digest_dn_city">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("Leipzig");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_dn_organization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organization");?> : &nbsp;</td>
                 <td>
                   <input name="dn_organization" id="dn_organization" type="text" size="40" value="<?=$pconfig['dn_organization'];?>"/>
-                  <output class="hidden" for="help_for_digest_dn_organization">
+                  <div class="hidden" data-for="help_for_digest_dn_organization">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("My Company Inc");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_dn_email" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email Address");?> : &nbsp;</td>
                 <td>
                   <input name="dn_email" id="dn_email" type="text" size="25" value="<?=$pconfig['dn_email'];?>"/>
-                  <output class="hidden" for="help_for_digest_dn_email">
+                  <div class="hidden" data-for="help_for_digest_dn_email">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("admin@mycompany.com");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_dn_commonname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Common Name");?> : &nbsp;</td>
                 <td>
                   <input name="dn_commonname" id="dn_commonname" type="text" size="25" value="<?=$pconfig['dn_commonname'];?>"/>
-                  <output class="hidden" for="help_for_digest_dn_commonname">
+                  <div class="hidden" data-for="help_for_digest_dn_commonname">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("internal-ca");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -1009,9 +1009,9 @@ $( document ).ready(function() {
 <?php
                   endforeach; ?>
                   </select>
-                  <output class="hidden" for="help_for_csr_digest_alg">
+                  <div class="hidden" data-for="help_for_csr_digest_alg">
                     <?= gettext("NOTE: It is recommended to use an algorithm stronger than SHA1 when possible.") ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -1035,66 +1035,66 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_csr_dn_state" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State or Province");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_state" type="text" size="40" value="<?=$pconfig['csr_dn_state'];?>"/>
-                  <output class="hidden" for="help_for_digest_csr_dn_state">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_state">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("Sachsen");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_csr_dn_city" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("City");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_city" type="text" size="40" value="<?=$pconfig['csr_dn_city'];?>"/>
-                  <output class="hidden" for="help_for_digest_csr_dn_city">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_city">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("Leipzig");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_csr_dn_organization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organization");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_organization" type="text" size="40" value="<?=$pconfig['csr_dn_organization'];?>"/>
-                  <output class="hidden" for="help_for_digest_csr_dn_organization">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_organization">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("My Company Inc");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_csr_dn_organizationalunit" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organizational Unit");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_organizationalunit" type="text" size="40" value="<?=$pconfig['csr_dn_organizationalunit'];?>"/>
-                  <output class="hidden" for="help_for_digest_csr_dn_organizationalunit">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_organizationalunit">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("IT department");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_csr_dn_email" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email Address");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_email" type="text" size="25" value="<?=$pconfig['csr_dn_email'];?>"/>
-                  <output class="hidden" for="help_for_digest_csr_dn_email">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_email">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("admin@mycompany.com");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_csr_dn_commonname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Common Name");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_commonname" type="text" size="25" value="<?=$pconfig['csr_dn_commonname'];?>"/>
-                  <output class="hidden" for="help_for_digest_csr_dn_commonname">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_commonname">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("internal-ca");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
             </tbody>

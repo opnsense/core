@@ -165,11 +165,11 @@ if (isset($input_errors) && count($input_errors) > 0) {
                       <td style="width:78%" class="vtable">
                         <input name="preferoldsa_enable" type="checkbox" id="preferoldsa_enable" value="yes" <?= !empty($pconfig['preferoldsa_enable']) ? "checked=\"checked\"" : "";?> />
                         <strong><?=gettext("Prefer older IPsec SAs"); ?></strong>
-                        <output class="hidden" for="help_for_preferoldsa_enable">
+                        <div class="hidden" data-for="help_for_preferoldsa_enable">
                             <?=gettext("By default, if several SAs match, the newest one is " .
                                                   "preferred if it's at least 30 seconds old. Select this " .
                                                   "option to always prefer old SAs over new ones."); ?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -181,10 +181,10 @@ if (isset($input_errors) && count($input_errors) > 0) {
                           <option value="<?=$ptnet;?>" selected="selected"><?=$ptnet;?></option>
 <?php                   endforeach; ?>
                         </select>
-                        <output class="hidden" for="help_for_passthrough_networks">
+                        <div class="hidden" data-for="help_for_passthrough_networks">
                             <?=gettext("This exempts traffic for one or more subnets from getting processed by the IPsec stack in the kernel. ".
                                         "When sending all traffic to the remote location, you probably want to add your lan network(s) here"); ?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -192,19 +192,19 @@ if (isset($input_errors) && count($input_errors) > 0) {
                       <td style="width:78%" class="vtable">
                         <input name="auto_routes_disable" type="checkbox" id="auto_routes_disable" value="yes" <?= !empty($pconfig['auto_routes_disable']) ? "checked=\"checked\"" : "";?> />
                         <strong><?=gettext("Do not automatically install routes"); ?></strong>
-                        <output class="hidden" for="help_for_auto_routes_disable">
+                        <div class="hidden" data-for="help_for_auto_routes_disable">
                             <?=gettext("By default, IPsec installs routes when a tunnel becomes active. " .
                                                   "Select this option to prevent automatically adding routes" .
                                                   " to the system routing table. See charon.install_routes"); ?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_ipsec_debug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPsec Debug"); ?></td>
                       <td>
-                        <output class="hidden" for="help_for_ipsec_debug">
+                        <div class="hidden" data-for="help_for_ipsec_debug">
                                       <strong><?=gettext("Start IPsec in debug mode based on sections selected"); ?></strong> <br/>
-                        </output>
+                        </div>
 <?php                   foreach ($ipsec_loglevels as $lkey => $ldescr) :
 ?>
                         <?=$ldescr?>
@@ -220,9 +220,9 @@ endforeach; ?>
                         </select>
 <?php
 endforeach; ?>
-                        <output class="hidden" for="help_for_ipsec_debug">
+                        <div class="hidden" data-for="help_for_ipsec_debug">
                         <?=gettext("Launch IPsec in debug mode so that more verbose logs will be generated to aid in troubleshooting."); ?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>

@@ -165,45 +165,45 @@ include("head.inc");
                 <td><a id="help_for_disable_growl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable Growl Notifications"); ?></td>
                 <td>
                   <input type='checkbox' name='disable_growl' value="yes" <?=!empty($pconfig['disable_growl']) ? "checked=\"checked\"" : "";?>/>
-                  <output class="hidden" for="help_for_disable_growl">
+                  <div class="hidden" data-for="help_for_disable_growl">
                     <?=gettext("Check this option to disable growl notifications but preserve the settings below."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Registration Name"); ?></td>
                 <td>
                   <input name="name" type="text" value="<?=$pconfig['name']; ?>"/>
-                  <output class="hidden" for="help_for_name">
+                  <div class="hidden" data-for="help_for_name">
                     <?=gettext("Enter the name to register with the Growl server (default: PHP-Growl)."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_notification_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Notification Name"); ?></td>
                 <td>
                   <input name='notification_name' type='text' value='<?=$pconfig['notification_name']; ?>' /><br />
-                  <output class="hidden" for="help_for_notification_name">
+                  <div class="hidden" data-for="help_for_notification_name">
                     <?=sprintf(gettext("Enter a name for the Growl notifications (default: %s growl alert)."), $g['product_name']); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_ipaddress" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Address"); ?></td>
                 <td>
                   <input name="ipaddress" type="text" value="<?=$pconfig['ipaddress']; ?>" /><br />
-                  <output class="hidden" for="help_for_ipaddress">
+                  <div class="hidden" data-for="help_for_ipaddress">
                     <?=gettext("This is the IP address that you would like to send growl notifications to."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_password" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Password"); ?></td>
                 <td>
                   <input name="password" type="password" value="<?=$pconfig['password']; ?>"/><br />
-                  <output class="hidden" for="help_for_password">
+                  <div class="hidden" data-for="help_for_password">
                     <?=gettext("Enter the password of the remote growl notification device."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -213,27 +213,27 @@ include("head.inc");
                 <td><a id="help_for_disable_smtp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable SMTP Notifications"); ?></td>
                 <td>
                   <input type="checkbox" name="disable_smtp" value="yes" <?=!empty($pconfig['disable_smtp']) ? "checked=\"checked\"" : "";?>/>
-                  <output class="hidden" for="help_for_disable_smtp">
+                  <div class="hidden" data-for="help_for_disable_smtp">
                     <?=gettext("Check this option to disable SMTP notifications but preserve the settings below. Some other mechanisms, such as packages, may need these settings in place to function."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_smtpipaddress" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email server"); ?></td>
                 <td>
                   <input name="smtpipaddress" type="text" value="<?=$pconfig['smtpipaddress']; ?>" />
-                  <output class="hidden" for="help_for_smtpipaddress">
+                  <div class="hidden" data-for="help_for_smtpipaddress">
                     <?=gettext("This is the FQDN or IP address of the SMTP Email server to which notifications will be sent."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_smtpport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SMTP Port of Email server"); ?></td>
                 <td>
                   <input name="smtpport" type="text" value="<?=$pconfig['smtpport']; ?>" />
-                  <output class="hidden" for="help_for_smtpport">
+                  <div class="hidden" data-for="help_for_smtpport">
                     <?=gettext("This is the port of the SMTP Email server, typically 25, 587 (submission) or 465 (smtps)"); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -249,38 +249,38 @@ include("head.inc");
                 <td><a id="help_for_smtpfromaddress" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sender address"); ?></td>
                 <td>
                   <input name="smtpfromaddress" type="text" value="<?=$pconfig['smtpfromaddress']; ?>" />
-                  <output class="hidden" for="help_for_smtpfromaddress">
+                  <div class="hidden" data-for="help_for_smtpfromaddress">
                     <?=gettext("This is the email address that will appear as the email notification sender."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_smtpnotifyemailaddress" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Recipient address"); ?></td>
                 <td>
                   <input name="smtpnotifyemailaddress" type="text" value="<?=$pconfig['smtpnotifyemailaddress'];?>" />
-                  <output class="hidden" for="help_for_smtpnotifyemailaddress">
+                  <div class="hidden" data-for="help_for_smtpnotifyemailaddress">
                     <?=gettext("Enter the email address that you would like email notifications sent to."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_smtpusername" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email auth username"); ?></td>
                 <td>
                   <input name="smtpusername" type="text" value="<?=$pconfig['smtpusername']; ?>" />
-                  <output class="hidden" for="help_for_smtpusername">
+                  <div class="hidden" data-for="help_for_smtpusername">
                     <small><?=gettext("(optional)");?></small><br/>
                     <?=gettext("Enter the email address username for SMTP authentication."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_smtppassword" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email auth password"); ?></td>
                 <td>
                   <input name='smtppassword' type='password' value='<?=$pconfig['smtppassword']; ?>' /><br />
-                  <output class="hidden" for="help_for_smtppassword">
+                  <div class="hidden" data-for="help_for_smtppassword">
                     <small><?=gettext("(optional)");?></small><br/>
                     <?=gettext("Enter the email address password for SMTP authentication."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -296,9 +296,9 @@ include("head.inc");
                   <input name="disablebeep" type="checkbox" id="disablebeep" value="yes" <?=!empty($pconfig['disablebeep']) ? "checked=\"checked\"" : "";?>/>
                   <strong><?=gettext("Disable the startup/shutdown beep"); ?></strong>
                   <br />
-                  <output class="hidden" for="help_for_disablebeep">
+                  <div class="hidden" data-for="help_for_disablebeep">
                     <span class="vexpl"><?=gettext("When this is checked, startup and shutdown sounds will no longer play."); ?></span>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>

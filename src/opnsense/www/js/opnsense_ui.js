@@ -277,6 +277,7 @@ function initFormHelpUI() {
     // handle help messages show/hide
     $("a[class='showhelp']").click(function (event) {
         $("*[for='" + $(this).attr('id') + "']").toggleClass("hidden show");
+        $("*[data-for='" + $(this).attr('id') + "']").toggleClass("hidden show");
         event.preventDefault();
     });
 
@@ -290,9 +291,13 @@ function initFormHelpUI() {
             }
             $('[for*="help_for"]').addClass("show");
             $('[for*="help_for"]').removeClass("hidden");
+            $('[data-for*="help_for"]').addClass("show");
+            $('[data-for*="help_for"]').removeClass("hidden");
         } else {
             $('[for*="help_for"]').addClass("hidden");
             $('[for*="help_for"]').removeClass("show");
+            $('[data-for*="help_for"]').addClass("hidden");
+            $('[data-for*="help_for"]').removeClass("show");
             if (window.sessionStorage) {
                 sessionStorage.setItem('all_help_preset', 0);
             }
@@ -305,6 +310,8 @@ function initFormHelpUI() {
         $('[id*="show_all_help"]').toggleClass("text-success text-danger");
         $('[for*="help_for"]').addClass("show");
         $('[for*="help_for"]').removeClass("hidden");
+        $('[data-for*="help_for"]').addClass("show");
+        $('[data-for*="help_for"]').removeClass("hidden");
     }
 }
 

@@ -190,18 +190,18 @@ include("head.inc");
                       endforeach;?>
 
                       </select>
-                      <output class="hidden" for="help_for_if">
+                      <div class="hidden" data-for="help_for_if">
                         <?=gettext("Only VLAN capable interfaces will be shown.");?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_tag" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN tag");?></td>
                     <td>
                       <input name="tag" type="text" value="<?=$pconfig['tag'];?>" />
-                      <output class="hidden" for="help_for_tag">
+                      <div class="hidden" data-for="help_for_tag">
                         <?=gettext("802.1Q VLAN tag (between 1 and 4094)");?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -212,18 +212,18 @@ include("head.inc");
                         <option value="<?=$pcp;?>"<?=($pconfig['pcp'] == $pcp ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
 <? endforeach ?>
                       </select>
-                      <output class="hidden" for="help_for_pcp">
+                      <div class="hidden" data-for="help_for_pcp">
                         <?=gettext('802.1Q VLAN PCP (priority code point)');?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                      <output class="hidden" for="help_for_descr">
+                      <div class="hidden" data-for="help_for_descr">
                         <?=gettext("You may enter a description here for your reference (not parsed).");?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>

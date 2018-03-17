@@ -265,7 +265,7 @@ $( document ).ready(function() {
 <?php
                         endforeach;?>
                       </table>
-                      <output for="help_for_gatewayprio" class="hidden">
+                      <div data-for="help_for_gatewayprio" class="hidden">
                           <br>
                           <strong><?=gettext("Link Priority"); ?></strong> <br />
                           <?=gettext("The priority selected here defines in what order failover and balancing of links will be done. " .
@@ -275,7 +275,7 @@ $( document ).ready(function() {
                           <br />
                           <strong><?=gettext("Virtual IP"); ?></strong> <br />
                           <?=gettext("The virtual IP field selects what (virtual) IP should be used when this group applies to a local Dynamic DNS, IPsec or OpenVPN endpoint") ?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -287,18 +287,18 @@ $( document ).ready(function() {
                         <option value="downlatency" <?=$pconfig['trigger'] == "downlatency" ? "selected=\"selected\"" :"";?> ><?=gettext("High Latency");?></option>
                         <option value="downlosslatency" <?=$pconfig['trigger'] == "downlosslatency" ? "selected=\"selected\"" :"";?> ><?=gettext("Packet Loss or High Latency");?></option>
                       </select>
-                      <output for="help_for_triggerlvl" class="hidden">
+                      <div data-for="help_for_triggerlvl" class="hidden">
                         <?=gettext("When to trigger exclusion of a member"); ?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                      <output for="help_for_descr" class="hidden">
+                      <div data-for="help_for_descr" class="hidden">
                         <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>

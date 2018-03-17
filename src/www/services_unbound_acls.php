@@ -210,9 +210,9 @@ include("head.inc");
                   <td><a id="help_for_aclname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Access List name");?></td>
                   <td>
                     <input name="aclname" type="text" value="<?=$pconfig['aclname'];?>" />
-                    <output class="hidden" for="help_for_aclname">
+                    <div class="hidden" data-for="help_for_aclname">
                       <?=gettext("Provide an Access List name.");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -232,13 +232,13 @@ include("head.inc");
                       <?=gettext("Allow Snoop");?>
                       </option>
                     </select>
-                    <output class="hidden" for="help_for_aclaction">
+                    <div class="hidden" data-for="help_for_aclaction">
                         <?=gettext("Choose what to do with DNS requests that match the criteria specified below.");?> <br />
                         <?=gettext("Deny: This action stops queries from hosts within the netblock defined below.")?> <br />
                         <?=gettext("Refuse: This action also stops queries from hosts within the netblock defined below, but sends a DNS rcode REFUSED error message back to the client.")?> <br />
                         <?=gettext("Allow: This action allows queries from hosts within the netblock defined below.")?> <br />
                         <?=gettext("Allow Snoop: This action allows recursive and nonrecursive access from hosts within the netblock defined below. Used for cache snooping and ideally should only be configured for your administrative host.")?> <br />
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -301,9 +301,9 @@ include("head.inc");
                   <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
                   <td>
                     <input name="description" type="text" value="<?=$pconfig['description'];?>" />
-                    <output class="hidden" for="help_for_description">
+                    <div class="hidden" data-for="help_for_description">
                       <?=gettext("You may enter a description here for your reference.");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>

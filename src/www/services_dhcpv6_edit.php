@@ -165,40 +165,40 @@ include("head.inc");
                     <td><a id="help_for_duid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DUID Identifier");?></td>
                     <td>
                       <input name="duid" type="text" value="<?=$pconfig['duid'];?>" />
-                      <output class="hidden" for="help_for_duid">
+                      <div class="hidden" data-for="help_for_duid">
                         <?=gettext("Enter a DUID Identifier in the following format: ");?><br />
                         "<?= gettext('DUID-LLT - ETH -- TIME --- ---- ADDR ----') ?>" <br />
                         "xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx"
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_ipaddrv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 address");?></td>
                     <td>
                       <input name="ipaddrv6" type="text" value="<?=$pconfig['ipaddrv6'];?>" />
-                      <output class="hidden" for="help_for_ipaddrv6">
+                      <div class="hidden" data-for="help_for_ipaddrv6">
                         <?=gettext("If an IPv6 address is entered, the address must be outside of the pool.");?>
                         <br />
                         <?=gettext("If no IPv6 address is given, one will be dynamically allocated from the pool.");?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_hostname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hostname");?></td>
                     <td>
                       <input name="hostname" type="text" value="<?=$pconfig['hostname'];?>" />
-                      <output class="hidden" for="help_for_hostname">
+                      <div class="hidden" data-for="help_for_hostname">
                         <?=gettext("Name of the host, without domain part.");?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain name");?></td>
                     <td>
                       <input name="domain" type="text" value="<?=$pconfig['domain'];?>" />
-                      <output class="hidden" for="help_for_domain">
+                      <div class="hidden" data-for="help_for_domain">
                         <?=gettext("The default is to use the domain name of this system as the default domain name provided by DHCP. You may specify an alternate domain name here.");?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
 <?php if (isset($config['dhcpdv6'][$if]['netboot'])): ?>
@@ -206,18 +206,18 @@ include("head.inc");
                     <td><a id="help_for_filename" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Netboot filename') ?></td>
                     <td>
                       <input name="filename" type="text" value="<?=$pconfig['filename'];?>" />
-                      <output class="hidden" for="help_for_filename">
+                      <div class="hidden" data-for="help_for_filename">
                         <?= gettext('Name of the file that should be loaded when this host boots off of the network, overrides setting on main page.') ?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_rootpath" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Root Path') ?></td>
                     <td>
                       <input name="rootpath" type="text" value="<?=$pconfig['rootpath'];?>" />
-                      <output class="hidden" for="help_for_rootpath">
+                      <div class="hidden" data-for="help_for_rootpath">
                         <?= gettext('Enter the root-path-string, overrides setting on main page.') ?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
 <?php
@@ -226,9 +226,9 @@ include("head.inc");
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                      <output class="hidden" for="help_for_descr">
+                      <div class="hidden" data-for="help_for_descr">
                         <?=gettext("You may enter a description here "."for your reference (not parsed).");?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>

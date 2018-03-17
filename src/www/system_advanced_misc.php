@@ -244,7 +244,7 @@ include("head.inc");
 <?php
                     endforeach; ?>
                   </select>
-                  <output class="hidden" for="help_for_crypto_hardware">
+                  <div class="hidden" data-for="help_for_crypto_hardware">
                     <?=gettext("A cryptographic accelerator module will use hardware support to speed up some " .
                                             "cryptographic functions on systems which have the chip. Do not enable this " .
                                             "option if you have a Hifn cryptographic acceleration card, as this will take " .
@@ -255,7 +255,7 @@ include("head.inc");
                   <br /><br />
                   <?=gettext("If you do not have a crypto chip in your system, this option will have no " .
                                       "effect. To unload the selected module, set this option to 'none' and then reboot."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -263,13 +263,13 @@ include("head.inc");
                 <td>
                   <input name="cryptodev_enable" type="checkbox" id="cryptodev_enable" value="yes" <?= !empty($pconfig['cryptodev_enable']) ? "checked=\"checked\"" : "";?> />
                   <strong><?=gettext("Enable old userland device for cryptographic acceleration"); ?></strong>
-                  <output class="hidden" for="help_for_cryptodev_enable">
+                  <div class="hidden" data-for="help_for_cryptodev_enable">
                     <?=gettext("Old hardware accelerators like 'safe', 'hifn' or 'ubsec' may only provide userland acceleration to e.g. " .
                                             "OpenVPN by means of the /dev/crypto interface, which can be accessed via the OpenSSL " .
                                             "engine framework. Note that LibreSSL does not have support for this device and " .
                                             "instead solely relies on embedded acceleration methods e.g. AES-NI. The default is " .
                                             "to disable this device as it is likely not needed on modern systems."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -288,14 +288,14 @@ include("head.inc");
 <?php
                     endforeach; ?>
                   </select>
-                  <output class="hidden" for="help_for_thermal_hardware">
+                  <div class="hidden" data-for="help_for_thermal_hardware">
                     <?=gettext("If you have a supported CPU, selecting a themal sensor will load the appropriate " .
                                               "driver to read its temperature. Setting this to 'None' will attempt to read the " .
                                               "temperature from an ACPI-compliant motherboard sensor instead, if one is present."); ?>
                     <br /><br />
                     <?=gettext("If you do not have a supported thermal sensor chip in your system, this option will have no " .
                                           "effect. To unload the selected module, set this option to 'none' and then reboot."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -315,9 +315,9 @@ include("head.inc");
                       endfor; ?>
                   </select>
                   <br />
-                  <output class="hidden" for="help_for_rrdbackup">
+                  <div class="hidden" data-for="help_for_rrdbackup">
                     <?=gettext("This will periodically backup the RRD data so it can be restored automatically on the next boot.");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -333,9 +333,9 @@ include("head.inc");
 <?php
                     endfor; ?>
                   </select>
-                  <output class="hidden" for="help_for_dhcpbackup">
+                  <div class="hidden" data-for="help_for_dhcpbackup">
                     <?=gettext("This will periodically backup the DHCP leases data so it can be restored automatically on the next boot.");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -351,9 +351,9 @@ include("head.inc");
 <?php
                     endfor; ?>
                   </select>
-                  <output class="hidden" for="help_for_netflowbackup">
+                  <div class="hidden" data-for="help_for_netflowbackup">
                     <?=gettext("This will periodically backup the NetFlow data aggregation so it can be restored automatically on the next boot.");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -369,9 +369,9 @@ include("head.inc");
 <?php
                     endfor; ?>
                   </select>
-                  <output class="hidden" for="help_for_captiveportalbackup">
+                  <div class="hidden" data-for="help_for_captiveportalbackup">
                     <?=gettext("This will periodically backup the captive portal session data so it can be restored automatically on the next boot.");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -381,7 +381,7 @@ include("head.inc");
                 <td><a id="help_for_powerd_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use PowerD"); ?></td>
                 <td>
                   <input name="powerd_enable" type="checkbox" id="powerd_enable" value="yes" <?=!empty($pconfig['powerd_enable']) ? "checked=\"checked\"" : "";?> />
-                  <output class="hidden" for="help_for_powerd_enable">
+                  <div class="hidden" data-for="help_for_powerd_enable">
                     <?=gettext("The powerd utility monitors the system state and sets various power control " .
                                         "options accordingly. It offers four modes (maximum, minimum, adaptive " .
                                         "and hiadaptive) that can be individually selected while on AC power or batteries. " .
@@ -395,7 +395,7 @@ include("head.inc");
                                         "tuned for systems where performance and interactivity are more important " .
                                         "than power consumption. It raises frequency faster, drops slower and " .
                                         "keeps twice lower CPU load."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -452,9 +452,9 @@ include("head.inc");
                       <?=gettext("Maximum");?>
                     </option>
                   </select>
-                  <output class="hidden" for="help_for_powerd_normal_mode">
+                  <div class="hidden" data-for="help_for_powerd_normal_mode">
                     <?=gettext("If the powerd utility can not determine the power state it uses \"normal\" for control."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -472,10 +472,10 @@ include("head.inc");
                 <td>
                   <input name="use_mfs_var" type="checkbox" id="use_mfs_var" value="yes" <?=!empty($pconfig['use_mfs_var']) ? 'checked="checked"' : '';?>/>
                   <strong><?=gettext("Use memory file system for /var"); ?></strong>
-                  <output class="hidden" for="help_for_use_mfs_var">
+                  <div class="hidden" data-for="help_for_use_mfs_var">
                     <?=gettext("Set this if you wish to use /var as a RAM disk (memory file system disks) " .
                       "rather than using the hard disk. Setting this will cause the data /var to be lost on reboot, including log data."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -483,9 +483,9 @@ include("head.inc");
                 <td>
                   <input name="use_mfs_tmp" type="checkbox" id="use_mfs_tmp" value="yes" <?=!empty($pconfig['use_mfs_tmp']) ? 'checked="checked"' : '';?>/>
                   <strong><?=gettext('Use memory file system for /tmp'); ?></strong>
-                  <output class="hidden" for="help_for_use_mfs_tmp">
+                  <div class="hidden" data-for="help_for_use_mfs_tmp">
                     <?= gettext('Set this if you wish to use /tmp as a RAM disk (memory file system disk) rather than using the hard disk.') ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
