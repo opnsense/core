@@ -1777,7 +1777,7 @@ include("head.inc");
                           <td><a id="help_for_mtu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MTU"); ?></td>
                           <td>
                             <input name="mtu" id="mtu" type="text" value="<?=$pconfig['mtu'];?>" />
-                            <div id="mtu_calc" style="display:none" data-for="mtu">
+                            <div id="mtu_calc" style="display:none">
                               <i class="fa fa-info-circle"></i>
                               <?=gettext("calculated ppp mtu :");?>
                               <label></label>

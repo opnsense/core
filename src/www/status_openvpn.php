@@ -111,7 +111,7 @@ $( document ).ready(function() {
   });
   // link show/hide routes
   $(".act_show_routes").click(function(){
-    $("*[for='" + $(this).attr('id') + "']").toggleClass("hidden show");
+    $("*[data-for='" + $(this).attr('id') + "']").toggleClass("hidden show");
   });
 
   // minimize all buttons, some of the buttons come from the shared service
@@ -187,7 +187,7 @@ $( document ).ready(function() {
                     <button class="btn btn-default act_show_routes" type="button" id="showroutes_<?=$i?>"><i class="fa fa-info"></i>
                       <?=gettext("Show/Hide Routing Table"); ?>
                     </button>
-                    <div  class="hidden"  data-for="showroutes_<?=$i?>">
+                    <div class="hidden" data-for="showroutes_<?=$i?>">
                       <small>
                         <?=$server['name'];?> <?=gettext("Routing Table"); ?>
                       </small>
