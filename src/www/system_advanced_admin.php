@@ -531,14 +531,14 @@ $(document).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                    <td><a id="help_for_httpaccesslog" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Access log"); ?></td>
-                    <td>
-                      <input name="httpaccesslog" type="checkbox" value="yes" <?= empty($pconfig['httpaccesslog']) ? '' : 'checked="checked"' ?> />
-                      <strong><?=gettext("Enable access log"); ?></strong>
-                      <output class="hidden" for="help_for_httpaccesslog">
-                        <?=gettext("Enable access logging on the webinterface for debugging and analysis purposes.") ?>
-                      </output>
-                    </td>
+                  <td><a id="help_for_httpaccesslog" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Access log"); ?></td>
+                  <td>
+                    <input name="httpaccesslog" type="checkbox" value="yes" <?= empty($pconfig['httpaccesslog']) ? '' : 'checked="checked"' ?> />
+                    <strong><?=gettext("Enable access log"); ?></strong>
+                    <div class="hidden" data-for="help_for_httpaccesslog">
+                      <?=gettext("Enable access logging on the webinterface for debugging and analysis purposes.") ?>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_webguiinterfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Listen Interfaces') ?></td>

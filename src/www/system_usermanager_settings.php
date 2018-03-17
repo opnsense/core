@@ -169,10 +169,10 @@ endif;?>
                     <td>
                       <input id="enable_password_policy_constraints" name="enable_password_policy_constraints" type="checkbox"  <?= empty($pconfig['enable_password_policy_constraints']) ? '' : 'checked="checked"';?> />
                       <strong><?= gettext('Enable password policy constraints') ?></strong>
-                      <output class="hidden" for="help_for_enable_password_policy_constraints">
+                      <div class="hidden" data-for="help_for_enable_password_policy_constraints">
                         <?= gettext("Harden security on local accounts, for methods other then local these will usually be configured on the " .
                                             "respective provider (e.g. ldap/radius/..). ");?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr class="password_policy_constraints">
@@ -185,10 +185,10 @@ endif;?>
                               <option <?=$pconfig['password_policy_duration'] == '180' ? "selected=\"selected\"" : "";?> value="180"><?=sprintf(gettext("%d days"), "180");?></option>
                               <option <?=$pconfig['password_policy_duration'] == '360' ? "selected=\"selected\"" : "";?> value="360"><?=sprintf(gettext("%d days"), "360");?></option>
                           </select>
-                          <output class="hidden" for="help_for_password_policy_duration">
+                          <div class="hidden" data-for="help_for_password_policy_duration">
                             <?= gettext("Password duration settings, the interval in days in which passwords stay valid. ".
                                         "When reached, the user will be forced to change his or her password before continuing.");?>
-                          </output>
+                          </div>
                       </td>
                   </tr>
                   <tr class="password_policy_constraints">
@@ -201,9 +201,9 @@ endif;?>
                               <option <?=$pconfig['password_policy_length'] == '14' ? "selected=\"selected\"" : "";?> value="14">14</option>
                               <option <?=$pconfig['password_policy_length'] == '16' ? "selected=\"selected\"" : "";?> value="16">16</option>
                           </select>
-                          <output class="hidden" for="help_for_password_policy_length">
+                          <div class="hidden" data-for="help_for_password_policy_length">
                             <?= gettext("Sets the minimum length for a password");?>
-                          </output>
+                          </div>
                       </td>
                   </tr>
                   <tr class="password_policy_constraints">
@@ -211,9 +211,9 @@ endif;?>
                     <td>
                       <input id="password_policy_complexity" name="password_policy_complexity" type="checkbox"  <?= empty($pconfig['password_policy_complexity']) ? '' : 'checked="checked"';?> />
                       <strong><?= gettext('Enable complexity requirements') ?></strong>
-                      <output class="hidden" for="help_for_password_policy_complexity">
+                      <div class="hidden" data-for="help_for_password_policy_complexity">
                         <?= gettext("Require passwords to meet complexity rules");?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
