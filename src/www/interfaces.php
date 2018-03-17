@@ -2716,7 +2716,7 @@ include("head.inc");
                           <td><a id="help_for_gateway-6rd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("6RD Border Relay"); ?></td>
                           <td>
                             <input name="gateway-6rd" type="text" id="gateway-6rd" value="<?=$pconfig['gateway-6rd'];?>" />
-                            <div class="help_for_gateway-6rd">
+                            <div class="hidden" data-for="help_for_gateway-6rd">
                               <?=gettext("The value in this field is 6RD IPv4 gateway address assigned by your ISP") ?>
                             </div>
                           </td>
