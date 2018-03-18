@@ -593,7 +593,7 @@ $( document ).ready(function() {
               <td>
                 <select name='protocol' class="form-control">
 <?php
-                foreach (array("UDP", "UDP6", "TCP", "TCP6") as $prot) :
+                foreach (openvpn_get_protocols() as $prot):
                     $selected = "";
                     if ($pconfig['protocol'] == $prot) {
                         $selected = "selected=\"selected\"";
@@ -1044,7 +1044,7 @@ $( document ).ready(function() {
             <td>
               <select name="compression" class="form-control">
                 <?php
-                                foreach ($openvpn_compression_modes as $cmode => $cmodedesc) :
+                                foreach (openvpn_compression_modes() as $cmode => $cmodedesc):
                                     $selected = "";
                                     if ($cmode == $pconfig['compression']) {
                                         $selected = " selected=\"selected\"";
@@ -1120,7 +1120,7 @@ $( document ).ready(function() {
               <td>
               <select name="verbosity_level" class="form-control">
               <?php
-                            foreach ($openvpn_verbosity_level as $verb_value => $verb_desc) :
+                            foreach (openvpn_verbosity_level() as $verb_value => $verb_desc):
                                 $selected = '';
                                 if ($pconfig['verbosity_level'] == $verb_value) {
                                     $selected = 'selected="selected"';

@@ -359,8 +359,7 @@ function step10_stepbeforeformdisplay()
     foreach ($pkg['step'][$stepid]['fields']['field'] as $idx => $field) {
         if ($field['name'] == "crypto") {
             $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
-            $cipherlist = openvpn_get_cipherlist();
-            foreach ($cipherlist as $name => $desc) {
+            foreach (openvpn_get_cipherlist() as $name => $desc) {
                 $opt = array();
                 $opt['name'] = $desc;
                 $opt['value'] = $name;
@@ -368,17 +367,15 @@ function step10_stepbeforeformdisplay()
             }
         } elseif ($field['name'] == "digest") {
             $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
-            $digestlist = openvpn_get_digestlist();
-            foreach ($digestlist as $name => $desc) {
+            foreach (openvpn_get_digestlist() as $name => $desc) {
                 $opt = array();
                 $opt['name'] = $desc;
                 $opt['value'] = $name;
                 $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'][] = $opt;
             }
         } elseif ($field['name'] == "compression") {
-            global $openvpn_compression_modes;
             $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
-            foreach ($openvpn_compression_modes as $name => $desc) {
+            foreach (openvpn_compression_modes() as $name => $desc) {
                 $opt = array();
                 $opt['name'] = $desc;
                 $opt['value'] = $name;
@@ -386,15 +383,14 @@ function step10_stepbeforeformdisplay()
             }
         } elseif ($field['name'] == "engine") {
             $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
-            $engines = openvpn_get_engines();
-            foreach ($engines as $name => $desc) {
+            foreach (openvpn_get_engines() as $name => $desc) {
                 $opt = array();
                 $opt['name'] = $desc;
                 $opt['value'] = $name;
                 $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'][] = $opt;
             }
         } elseif ($field['name'] == "nbttype") {
-              $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
+            $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
             foreach ($netbios_nodetypes as $type => $name) {
                 $opt = array();
                 $opt['name'] = $name;

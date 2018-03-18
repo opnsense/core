@@ -116,27 +116,38 @@ function openvpn_xmlrpc_sync()
     return $result;
 }
 
-$openvpn_verbosity_level = array(
-    0 => gettext('0 (none)'),
-    1 => gettext('1 (default)'),
-    2 => gettext('2'),
-    3 => gettext('3 (recommended)'),
-    4 => gettext('4'),
-    5 => gettext('5'),
-    6 => gettext('6'),
-    7 => gettext('7'),
-    8 => gettext('8'),
-    9 => gettext('9'),
-    10 => gettext('10'),
-    11 => gettext('11'),
-);
+function openvpn_verbosity_level()
+{
+    return array(
+       0 => gettext('0 (none)'),
+       1 => gettext('1 (default)'),
+       2 => gettext('2'),
+       3 => gettext('3 (recommended)'),
+       4 => gettext('4'),
+       5 => gettext('5'),
+       6 => gettext('6'),
+       7 => gettext('7'),
+       8 => gettext('8'),
+       9 => gettext('9'),
+       10 => gettext('10'),
+       11 => gettext('11'),
+    );
+}
 
-$openvpn_compression_modes = array(
-    '' => gettext('No Preference'),
-    'no' => gettext('Disabled - No Compression'),
-    'adaptive' => gettext('Enabled with Adaptive Compression'),
-    'yes' => gettext('Enabled without Adaptive Compression'),
-);
+function openvpn_compression_modes()
+{
+    return array(
+        '' => gettext('No Preference'),
+        'no' => gettext('Disabled - No Compression'),
+        'adaptive' => gettext('Enabled with Adaptive Compression'),
+        'yes' => gettext('Enabled without Adaptive Compression'),
+    );
+}
+
+function openvpn_get_protocols()
+{
+    return array('UDP', 'UDP6', 'TCP', 'TCP6');
+}
 
 function openvpn_create_key()
 {
