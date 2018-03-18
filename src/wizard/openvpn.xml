@@ -42,7 +42,7 @@
 			<type>select</type>
 			<displayname>Type of Server</displayname>
 			<name>authtype</name>
-			<description>If you are unsure, leave this set to "Local User Access."</description>
+			<description>If you are unsure, leave this set to "Local User Access".</description>
 			<bindstofield>wizardtemp->step1->type</bindstofield>
 			<options>
 				<option>
@@ -470,7 +470,7 @@ if (isset($config['wizardtemp'])) {
 		<field>
 			<name>descr</name>
 			<displayname>Descriptive name</displayname>
-			<description>A name for your reference, to identify this certificate. This is also known as the certificate's "Common Name."</description>
+			<description>A name for your reference, to identify this certificate. This is also known as the certificate's "Common Name".</description>
 			<type>input</type>
 			<size>20</size>
 			<bindstofield>wizardtemp->step9->certname</bindstofield>
@@ -569,7 +569,9 @@ if (isset($config['wizardtemp'])) {
 		<field>
 			<name>interface</name>
 			<type>interfaces_selection</type>
-			<description>The interface where OpenVPN will listen for incoming connections (typically WAN.)</description>
+                        <subtype>openvpn</subtype>
+                        <value>any</value>
+			<description>The interface where OpenVPN will listen for incoming connections.</description>
 			<displayname>Interface</displayname>
 			<bindstofield>wizardtemp->step10->interface</bindstofield>
 		</field>
@@ -583,8 +585,24 @@ if (isset($config['wizardtemp'])) {
 					<value>UDP</value>
 				</option>
 				<option>
+					<name>UDP4</name>
+					<value>UDP4</value>
+				</option>
+				<option>
+					<name>UDP6</name>
+					<value>UDP6</value>
+				</option>
+				<option>
 					<name>TCP</name>
 					<value>TCP</value>
+				</option>
+				<option>
+					<name>TCP4</name>
+					<value>TCP4</value>
+				</option>
+				<option>
+					<name>TCP6</name>
+					<value>TCP6</value>
 				</option>
 			</options>
 			<description>Protocol to use for OpenVPN connections. If you are unsure, leave this set to UDP.</description>
@@ -700,12 +718,20 @@ if (isset($config['wizardtemp'])) {
 			<name>Tunnel Settings</name>
 		</field>
 		<field>
-			<displayname>Tunnel Network</displayname>
+			<displayname>IPv4 Tunnel Network</displayname>
 			<name>tunnelnet</name>
 			<type>input</type>
 			<size>20</size>
 			<bindstofield>wizardtemp->step10->tunnelnet</bindstofield>
-			<description>This is the IPv4 virtual network used for private communications between this server and client hosts expressed using CIDR notation (eg. 10.0.8.0/24). The first network address will be assigned to the server virtual interface. The remaining network addresses can optionally be assigned to connecting clients. (see Address Pool)</description>
+			<description>This is the IPv4 virtual network used for private communications between this server and client hosts expressed using CIDR (eg. 10.0.8.0/24). The first network address will be assigned to the server virtual interface. The remaining network addresses can optionally be assigned to connecting clients. (see Address Pool)</description>
+		</field>
+		<field>
+			<displayname>IPv6 Tunnel Network</displayname>
+			<name>tunnelnetv6</name>
+			<type>input</type>
+			<size>20</size>
+			<bindstofield>wizardtemp->step10->tunnelnetv6</bindstofield>
+			<description>This is the IPv6 virtual network used for private communications between this server and client hosts expressed using CIDR (eg. fe80::/64). The first network address will be assigned to the server virtual interface. The remaining network addresses can optionally be assigned to connecting clients. (see Address Pool)</description>
 		</field>
 		<field>
 			<displayname>Redirect Gateway</displayname>
@@ -715,12 +741,20 @@ if (isset($config['wizardtemp'])) {
 			<bindstofield>wizardtemp->step10->rdrgw</bindstofield>
 		</field>
 		<field>
-			<displayname>Local Network</displayname>
+			<displayname>IPv4 Local Network</displayname>
 			<name>localnet</name>
 			<type>input</type>
 			<size>20</size>
 			<bindstofield>wizardtemp->step10->localnet</bindstofield>
-			<description>This is the network that will be accessible from the remote endpoint, expressed as a CIDR range. You may leave this blank if you don't want to add a route to the local network through this tunnel on the remote machine. This is generally set to your LAN network.</description>
+			<description>These are the IPv4 networks that will be accessible from the remote endpoint. Expressed as a comma-separated list of one or more CIDR ranges. You may leave this blank if you don't want to add a route to the local network through this tunnel on the remote machine. This is generally set to your LAN network.</description>
+		</field>
+		<field>
+			<displayname>IPv6 Local Network</displayname>
+			<name>localnetv6</name>
+			<type>input</type>
+			<size>20</size>
+			<bindstofield>wizardtemp->step10->localnetv6</bindstofield>
+			<description>These are the IPv6 networks that will be accessible from the remote endpoint. Expressed as a comma-separated list of one or more IP/PREFIX. You may leave this blank if you don't want to add a route to the local network through this tunnel on the remote machine. This is generally set to your LAN network.</description>
 		</field>
 		<field>
 			<displayname>Concurrent Connections</displayname>

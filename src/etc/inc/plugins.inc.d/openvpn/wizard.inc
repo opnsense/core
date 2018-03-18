@@ -417,11 +417,19 @@ function step10_submitphpaction()
         $input_errors[] = $result;
     }
 
-    if ($result = openvpn_validate_cidr($_POST['tunnelnet'], 'Tunnel Network', false, "ipv4")) {
+    if ($result = openvpn_validate_cidr($_POST['tunnelnet'], 'IPv4 Tunnel Network', false, 'ipv4')) {
         $input_errors[] = $result;
     }
 
-    if ($result = openvpn_validate_cidr($_POST['localnet'], 'Local Network', true, "ipv4")) {
+    if ($result = openvpn_validate_cidr($_POST['tunnelnetv6'], 'IPv6 Tunnel Network', false, 'ipv6')) {
+        $input_errors[] = $result;
+    }
+
+    if ($result = openvpn_validate_cidr($_POST['localnet'], 'IPv4 Local Network', true, 'ipv4')) {
+        $input_errors[] = $result;
+    }
+
+    if ($result = openvpn_validate_cidr($_POST['localnetv6'], 'IPv6 Local Network', true, 'ipv6')) {
         $input_errors[] = $result;
     }
 
@@ -468,7 +476,7 @@ function step10_submitphpaction()
         $input_errors[] = gettext("The field 'Concurrent connections' must be numeric.");
     }
 
-    if (empty($_POST['tunnelnet'])) {
+    if (empty($_POST['tunnelnet']) && empty($_POST['tunnelnetv6'])) {
         $input_errors[] = gettext("You must specify a 'Tunnel network'.");
     }
 
@@ -633,12 +641,20 @@ function step12_submitphpaction()
         $server['tls'] = base64_encode($tlskey);
     }
     $server['dh_length'] = $pconfig['step10']['dhkey'];
-    $server['tunnel_network'] = $pconfig['step10']['tunnelnet'];
+    if (isset($pconfig['step10']['tunnelnet'])) {
+        $server['tunnel_network'] = $pconfig['step10']['tunnelnet'];
+    }
+    if (isset($pconfig['step10']['tunnelnetv6'])) {
+        $server['tunnel_networkv6'] = $pconfig['step10']['tunnelnetv6'];
+    }
     if (isset($pconfig['step10']['rdrgw'])) {
         $server['gwredir'] = $pconfig['step10']['rdrgw'];
     }
     if (isset($pconfig['step10']['localnet'])) {
         $server['local_network'] = $pconfig['step10']['localnet'];
+    }
+    if (isset($pconfig['step10']['localnetv6'])) {
+        $server['local_networkv6'] = $pconfig['step10']['localnetv6'];
     }
     if (isset($pconfig['step10']['concurrentcon'])) {
         $server['maxclients'] = $pconfig['step10']['concurrentcon'];

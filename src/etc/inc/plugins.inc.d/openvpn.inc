@@ -207,7 +207,7 @@ function openvpn_port_used($prot, $interface, $port, $curvpnid = 0)
                 continue;
             }
 
-            if ($port == $settings['local_port'] && $prot == $settings['protocol'] &&
+            if ($port == $settings['local_port'] && strpos($settings['protocol'], $prot) === 0 &&
               ($interface == $settings['interface'] || $interface == "any" || $settings['interface'] == "any")) {
                 return $settings['vpnid'];
             }
@@ -224,7 +224,7 @@ function openvpn_port_used($prot, $interface, $port, $curvpnid = 0)
                 continue;
             }
 
-            if ($port == $settings['local_port'] && $prot == $settings['protocol'] &&
+            if ($port == $settings['local_port'] && strpos($settings['protocol'], $prot) === 0 &&
               ($interface == $settings['interface'] || $interface == "any" || $settings['interface'] == "any")) {
                 return $settings['vpnid'];
             }
@@ -236,9 +236,16 @@ function openvpn_port_used($prot, $interface, $port, $curvpnid = 0)
 function openvpn_port_next($prot, $interface = "wan")
 {
     $port = 1194;
+
+    if (strlen($prot) > 3) {
+        /* ignore "4" or "6" if given */
+        $prot = substr($prot, 0, 3);
+    }
+
     while (openvpn_port_used($prot, $interface, $port)) {
         $port++;
     }
+
     while (openvpn_port_used($prot, "any", $port)) {
         $port++;
     }

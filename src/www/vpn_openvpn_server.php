@@ -1638,14 +1638,14 @@ endif; ?>
 <?php
                   $i++;
                   endforeach;?>
-                  <tr><td colspan="5">&nbsp;</td></tr>
+                  <tr>
+                    <td colspan="5">
+                      <a href="wizard.php?xml=openvpn" class="btn btn-default">
+                        <i class="fa fa-magic"></i> <?= gettext('Use a wizard to setup a new server') ?>
+                       </a>
+                    </td>
+                  </tr>
                 </tbody>
-                <tfoot>
-                  <tr><td colspan="5">
-                    <a href="wizard.php?xml=openvpn" class="btn btn-default btn-xs"><span class="fa fa-magic"></span></a>
-                    &nbsp;<?=gettext("Use a wizard to setup a new server");?>
-                  </td></tr>
-                </tfoot>
               </table>
             </div>
           </section>

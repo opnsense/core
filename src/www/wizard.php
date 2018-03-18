@@ -508,7 +508,6 @@ function showchange() {
 				}
 				break;
 			case "interfaces_selection":
-			case "interface_select":
 				$size = "";
 				$multiple = "";
 				$name = strtolower($name);
@@ -527,16 +526,12 @@ function showchange() {
 					if($field['add_to_interfaces_selection'] == $value) $SELECTED = " selected=\"selected\"";
 					echo "<option value='" . $field['add_to_interfaces_selection'] . "'" . $SELECTED . ">" . $field['add_to_interfaces_selection'] . "</option>\n";
 				}
-				if($field['type'] == "interface_select")
-					$interfaces = get_interface_list();
-				else
-					$interfaces = get_configured_interface_with_descr();
+				$interfaces = get_configured_interface_with_descr();
+				if (!empty($field['subtype']) && $field['subtype'] == 'openvpn') {
+					$interfaces['lo0'] = 'Localhost';
+					$interfaces['any'] = 'any';
+				}
 				foreach ($interfaces as $ifname => $iface) {
-					if ($field['type'] == "interface_select") {
-						$iface = $ifname;
-						if ($iface['mac'])
-							$iface .= " ({$iface['mac']})";
-					}
 					$SELECTED = "";
 					if ($value == $ifname) $SELECTED = " selected=\"selected\"";
 					$to_echo = "<option value='" . $ifname . "'" . $SELECTED . ">" . $iface . "</option>\n";
