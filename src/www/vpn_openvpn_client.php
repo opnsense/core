@@ -251,15 +251,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
         }
-        if (!empty($pconfig['tunnel_network'])) {
-            if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], 'IPv4 Tunnel Network', false, "ipv4")) {
-                $input_errors[] = $result;
-            }
+        if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], 'IPv4 Tunnel Network', false, "ipv4")) {
+            $input_errors[] = $result;
         }
-        if (!empty($pconfig['tunnel_networkv6'])) {
-            if ($result = openvpn_validate_cidr($pconfig['tunnel_networkv6'], 'IPv6 Tunnel Network', false, "ipv6")) {
-                $input_errors[] = $result;
-            }
+        if ($result = openvpn_validate_cidr($pconfig['tunnel_networkv6'], 'IPv6 Tunnel Network', false, "ipv6")) {
+            $input_errors[] = $result;
         }
         if ($result = openvpn_validate_cidr($pconfig['remote_network'], 'IPv4 Remote Network', true, "ipv4")) {
             $input_errors[] = $result;

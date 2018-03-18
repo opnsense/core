@@ -295,10 +295,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if ($pconfig['dev_mode'] != "tap") {
-            $reqdfields[] = 'tunnel_network';
-            $reqdfieldsn[] = gettext('Tunnel network');
+            $reqdfields[] = 'tunnel_network,tunnel_networkv6';
+            $reqdfieldsn[] = gettext('Tunnel Network');
         } else {
-            if ($pconfig['serverbridge_dhcp'] && $pconfig['tunnel_network']) {
+            if ($pconfig['serverbridge_dhcp'] && ($pconfig['tunnel_network'] || $pconfig['tunnel_networkv6'])) {
                 $input_errors[] = gettext("Using a tunnel network and server bridge settings together is not allowed.");
             }
             if (($pconfig['serverbridge_dhcp_start'] && !$pconfig['serverbridge_dhcp_end'])
@@ -318,6 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($pconfig['reneg-sec']) && $pconfig['reneg-sec'] != "" && (string)((int)$pconfig['reneg-sec']) != $pconfig['reneg-sec']) {
             $input_errors[] = gettext("Renegotiate time should contain a valid number of seconds.");
         }
+
         do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
         if (count($input_errors) == 0) {
@@ -1622,8 +1623,9 @@ endif; ?>
                         <?=htmlspecialchars($server['protocol']);?> / <?=htmlspecialchars($server['local_port']);?>
                     </td>
                     <td>
-                        <?=htmlspecialchars($server['tunnel_network']);?> <?=!empty($server['tunnel_networkv6']) ? "," :""?>
-                        <?=htmlspecialchars($server['tunnel_networkv6']);?>
+                        <?= htmlspecialchars($server['tunnel_network'])  ?>
+                        <?= !empty($server['tunnel_networkv6']) && !empty($server['tunnel_network']) ? ',' : '' ?>
+                        <?= htmlspecialchars($server['tunnel_networkv6']) ?>
                     </td>
                     <td>
                         <?=htmlspecialchars($server['description']);?>
