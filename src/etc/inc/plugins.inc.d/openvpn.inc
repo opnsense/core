@@ -146,7 +146,7 @@ function openvpn_compression_modes()
 
 function openvpn_get_protocols()
 {
-    return array('UDP', 'UDP6', 'TCP', 'TCP6');
+    return array('UDP', 'UDP4', 'UDP6', 'TCP', 'TCP4', 'TCP6');
 }
 
 function openvpn_create_key()

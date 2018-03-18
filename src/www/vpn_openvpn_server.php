@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['tlsauth_enable'] = "yes";
         $pconfig['dh_length'] = 1024;
         $pconfig['dev_mode'] = "tun";
-        $pconfig['interface'] = "wan";
+        $pconfig['interface'] = 'any';
         $pconfig['local_port'] = openvpn_port_next('UDP');
         $pconfig['pool_enable'] = "yes";
         $pconfig['cert_depth'] = 1;
@@ -687,7 +687,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Protocol");?></td>
+                      <td><a id="help_for_protocol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol");?></td>
                         <td>
                           <select name='protocol' class="form-control">
 <?php
@@ -700,6 +700,11 @@ $( document ).ready(function() {
 <?php
                           endforeach; ?>
                         </select>
+                        <div class="hidden" data-for="help_for_protocol">
+                          <?= gettext('Select the protocol family to be used. Note that using both families with UDP/TCP ' .
+                                      'does not work with an explicit interface as OpenVPN does not support listening to more ' .
+                                      'than one explicit IP address.  In this case IPv4 is selected.') ?>
+                        </div>
                       </td>
                     </tr>
                     <tr>

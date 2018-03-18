@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     } elseif ($act=="new") {
         // create new
-        $pconfig['interface'] = "wan";
+        $pconfig['interface'] = 'any';
         $init_fields = "auth_user,auth_pass,disable,mode,protocol,interface
             ,local_port,server_addr,server_port,resolve_retry,remote_random,reneg-sec
             ,proxy_addr,proxy_port,proxy_user,proxy_passwd,proxy_authtype,description
@@ -589,7 +589,7 @@ $( document ).ready(function() {
               </td>
             </tr>
             <tr>
-              <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Protocol");?></td>
+              <td><a id="help_for_protocol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol");?></td>
               <td>
                 <select name='protocol' class="form-control">
 <?php
@@ -602,6 +602,11 @@ $( document ).ready(function() {
 <?php
                 endforeach; ?>
               </select>
+              <div class="hidden" data-for="help_for_protocol">
+                <?= gettext('Select the protocol family to be used. Note that using both families with UDP/TCP ' .
+                            'does not work with an explicit interface as OpenVPN does not support listening to more ' .
+                            'than one explicit IP address.  In this case IPv4 is selected.') ?>
+              </div>
             </td>
           </tr>
           <tr>
