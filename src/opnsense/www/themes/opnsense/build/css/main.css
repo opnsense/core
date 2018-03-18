@@ -5892,11 +5892,9 @@ label > input[type="radio"] {
   margin-right: .4em;
   float: left; }
 
-small[data-for*="help_for"],
 div[data-for*="help_for"] {
   padding-top: .4em;
   padding-bottom: .4em; }
-
 
 #log-settings label[for^="act"] {
   margin-right: 1.5em; }
