@@ -70,7 +70,9 @@
             <span id="{{ id }}"></span>
         {% endif %}
         {% if help|default(false) %}
-            <div class="hidden" data-for="help_for_{{ id }}">{{help}}</div>
+            <div class="hidden" data-for="help_for_{{ id }}">
+                <small>{{help}}</small>
+            </div>
         {% endif %}
     </td>
     <td>

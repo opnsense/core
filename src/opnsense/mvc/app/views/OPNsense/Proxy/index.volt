@@ -214,11 +214,12 @@
                 </td>
                 <td>
                   <div class="hidden" data-for="help_for_proxy.forward.acl.remoteACLs.blacklist">
-                      {{ lang._('
-                      Add an item to the table to fetch a remote acl for blacklisting.%s
+                      <small>
+                      {{ lang._('Add an item to the table to fetch a remote acl for blacklisting.%s
                       You can enable or disable the blacklist list.%s
-                      The active blacklists will be merged with the settings under %sForward Proxy -> Access Control List%s.
-                      ') | format('<br/>','<br/>','<b>','</b>') }}
+                      The active blacklists will be merged with the settings under %sForward Proxy -> Access Control List%s.') |
+                           format('<br/>','<br/>','<b>','</b>') }}
+                      </small>
                   </div>
                 </td>
             </tr>
