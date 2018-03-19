@@ -710,7 +710,7 @@ $( document ).ready(function() {
                         <div class="hidden" data-for="help_for_protocol">
                           <?= gettext('Select the protocol family to be used. Note that using both families with UDP/TCP ' .
                                       'does not work with an explicit interface as OpenVPN does not support listening to more ' .
-                                      'than one explicit IP address.  In this case IPv4 is selected.') ?>
+                                      'than one specified IP address. In this case IPv4 is currently assumed.') ?>
                         </div>
                       </td>
                     </tr>
