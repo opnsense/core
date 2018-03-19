@@ -346,12 +346,19 @@ function openvpn_validate_port($value, $name)
 
 function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = 'ipv4', $allow_hosts = false)
 {
+    $error_multi = gettext("The field '%s' must contain only valid %s CIDR range(s) separated by commas.");
+    $error_single = gettext("The field '%s' must contain a single valid %s CIDR range.");
+
     $value = trim($value);
     $error = false;
     if (empty($value)) {
         return false;
     }
     $networks = explode(',', $value);
+
+    if (!$multiple && (count($networks) > 1)) {
+        return sprintf($error_single, $name, $ipproto);
+    }
 
     foreach ($networks as $network) {
         if ($ipproto == 'ipv4') {
@@ -366,10 +373,10 @@ function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = 'ipv
 
     if ($error) {
         if (!$multiple) {
-            return sprintf(gettext("The field '%s' must contain a single valid %s CIDR range."), $name, $ipproto);
+            return sprintf($error_single, $name, $ipproto);
         }
 
-        return sprintf(gettext("The field '%s' must contain only valid %s CIDR range(s) separated by commas."), $name, $ipproto);
+        return sprintf($error_multi, $name, $ipproto);
     }
 
     return false;
