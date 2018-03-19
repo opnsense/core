@@ -113,8 +113,8 @@ services_dhcrelay_configure(true);
 services_dhcrelay6_configure(true);
 
 prefer_ipv4_or_ipv6();
-plugins_configure('vpn', true);
 filter_configure_sync(true);
+plugins_configure('vpn', true);
 plugins_configure('bootup', true);
 rrd_configure(true);
 
