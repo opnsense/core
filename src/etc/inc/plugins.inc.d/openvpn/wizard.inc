@@ -397,22 +397,18 @@ function step10_stepbeforeformdisplay()
                 $opt['value'] = $type;
                 $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'][] = $opt;
             }
-        } elseif ($field['name'] == "localport") {
-            $pkg['step'][$stepid]['fields']['field'][$idx]['value'] = openvpn_port_next('UDP');
         }
     }
 }
 
 function step10_submitphpaction()
 {
-    global $input_errors, $stepid;
+    global $input_errors, $stepid, $config;
 
-    /* Default OpenVPN port to next available port if left empty. */
     if (empty($_POST['localport'])) {
-        $pconfig["step10"]["localport"] = openvpn_port_next('UDP');
+        $config['wizardtemp']['step10']['localport'] = $_POST['localport'] = openvpn_port_next($_POST['protocol']);
     }
 
-    /* input validation */
     if ($result = openvpn_validate_port($_POST['localport'], 'Local port')) {
         $input_errors[] = $result;
     }
@@ -430,6 +426,14 @@ function step10_submitphpaction()
     }
 
     if ($result = openvpn_validate_cidr($_POST['localnetv6'], 'IPv6 Local Network', true, 'ipv6')) {
+        $input_errors[] = $result;
+    }
+
+    if ($result = openvpn_validate_cidr($_POST['remotenet'], 'IPv4 Remote Network', true, 'ipv4')) {
+        $input_errors[] = $result;
+    }
+
+    if ($result = openvpn_validate_cidr($_POST['remotenetv6'], 'IPv6 Remote Network', true, 'ipv6')) {
         $input_errors[] = $result;
     }
 
@@ -623,9 +627,7 @@ function step12_submitphpaction()
     $server['certref'] = $cert['refid'];
     $server['protocol'] = $pconfig['step10']['protocol'];
     $server['interface'] = $pconfig['step10']['interface'];
-    if (isset($pconfig['step10']['localport'])) {
-        $server['local_port'] = $pconfig['step10']['localport'];
-    }
+    $server['local_port'] = $pconfig['step10']['localport'];
 
     if (strlen($pconfig['step10']['descr']) > 30) {
         $pconfig['step10']['descr'] = substr($pconfig['step10']['descr'], 0, 30);
@@ -655,6 +657,12 @@ function step12_submitphpaction()
     }
     if (isset($pconfig['step10']['localnetv6'])) {
         $server['local_networkv6'] = $pconfig['step10']['localnetv6'];
+    }
+    if (isset($pconfig['step10']['remotenet'])) {
+        $server['remote_network'] = $pconfig['step10']['remotenet'];
+    }
+    if (isset($pconfig['step10']['remotenetv6'])) {
+        $server['remote_networkv6'] = $pconfig['step10']['remotenetv6'];
     }
     if (isset($pconfig['step10']['concurrentcon'])) {
         $server['maxclients'] = $pconfig['step10']['concurrentcon'];
@@ -743,7 +751,6 @@ function step12_submitphpaction()
         $rule['source']['any'] = true;
         $rule['destination']['any'] = true;
         $rule['interface'] = "openvpn";
-        //$rule['protocol'] = $server['protocol'];
         $rule['type'] = "pass";
         $rule['enabled'] = "on";
         $rule['created'] = make_config_revision_entry();

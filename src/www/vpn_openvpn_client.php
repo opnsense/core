@@ -201,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("An IPv6 protocol was selected, but the selected interface has no IPv6 address.");
         }
         if (!empty($pconfig['local_port'])) {
-            if (empty($pconfig['local_port']) || !is_numeric($pconfig['local_port']) || $pconfig['local_port'] < 0 || ($pconfig['local_port'] > 65535)) {
+            if (!is_numeric($pconfig['local_port']) || $pconfig['local_port'] < 0 || ($pconfig['local_port'] > 65535)) {
                 $input_errors[] = gettext("The field 'Local port' must contain a valid port, ranging from 0 to 65535.");
             }
             $portused = openvpn_port_used($pconfig['protocol'], $pconfig['interface'], $pconfig['local_port'], $vpnid);

@@ -579,6 +579,7 @@ if (isset($config['wizardtemp'])) {
 			<name>Protocol</name>
 			<type>select</type>
 			<bindstofield>wizardtemp->step10->protocol</bindstofield>
+			<value>UDP</value>
 			<options>
 				<option>
 					<name>UDP</name>
@@ -610,7 +611,7 @@ if (isset($config['wizardtemp'])) {
 		<field>
 			<name>localport</name>
 			<displayname>Local Port</displayname>
-			<description>Local port upon which OpenVPN will listen for connections. The default port is 1194. Leave this blank unless you need to use a different port.</description>
+			<description>Local port upon which OpenVPN will listen for connections. The default port is 1194. Leave this blank to auto-select an unused port.</description>
 			<type>input</type>
 			<size>10</size>
 			<bindstofield>wizardtemp->step10->localport</bindstofield>
@@ -755,6 +756,22 @@ if (isset($config['wizardtemp'])) {
 			<size>20</size>
 			<bindstofield>wizardtemp->step10->localnetv6</bindstofield>
 			<description>These are the IPv6 networks that will be accessible from the remote endpoint. Expressed as a comma-separated list of one or more IP/PREFIX. You may leave this blank if you don't want to add a route to the local network through this tunnel on the remote machine. This is generally set to your LAN network.</description>
+		</field>
+		<field>
+			<displayname>IPv4 Remote Network</displayname>
+			<name>remotenet</name>
+			<type>input</type>
+			<size>20</size>
+			<bindstofield>wizardtemp->step10->remotenet</bindstofield>
+			<description>These are the IPv4 networks that will be routed through the tunnel, so that a site-to-site VPN can be established without manually changing the routing tables. Expressed as a comma-separated list of one or more CIDR ranges. If this is a site-to-site VPN, enter the remote LAN/s here. You may leave this blank if you don't want a site-to-site VPN.</description>
+		</field>
+		<field>
+			<displayname>IPv6 Remote Network</displayname>
+			<name>remotenetv6</name>
+			<type>input</type>
+			<size>20</size>
+			<bindstofield>wizardtemp->step10->remotenetv6</bindstofield>
+			<description>These are the IPv6 networks that will be routed through the tunnel, so that a site-to-site VPN can be established without manually changing the routing tables. Expressed as a comma-separated list of one or more IP/PREFIX. If this is a site-to-site VPN, enter the remote LAN/s here. You may leave this blank if you don't want a site-to-site VPN.</description>
 		</field>
 		<field>
 			<displayname>Concurrent Connections</displayname>

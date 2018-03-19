@@ -221,9 +221,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = $result;
         }
 
-        $portused = openvpn_port_used($pconfig['protocol'], $pconfig['interface'], $pconfig['local_port'], $vpnid);
-        if (($portused != $vpnid) && ($portused != 0)) {
-            $input_errors[] = gettext("The specified 'Local port' is in use. Please select another value");
+        if (!empty($pconfig['local_port'])) {
+            $portused = openvpn_port_used($pconfig['protocol'], $pconfig['interface'], $pconfig['local_port'], $vpnid);
+            if ($portused != $vpnid && $portused != 0) {
+                $input_errors[] = gettext("The specified 'Local port' is in use. Please select another value");
+            }
         }
 
         if (!$tls_mode && empty($pconfig['autokey_enable'])) {
@@ -294,6 +296,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $reqdfields = array('shared_key');
             $reqdfieldsn = array(gettext('Shared key'));
         }
+
+        $reqdfields[] = 'local_port';
+        $reqdfieldsn[] = gettext('Local port');
 
         if ($pconfig['dev_mode'] != "tap") {
             $reqdfields[] = 'tunnel_network,tunnel_networkv6';

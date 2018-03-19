@@ -197,6 +197,11 @@ function openvpn_port_used($prot, $interface, $port, $curvpnid = 0)
 {
     global $config;
 
+    if (strlen($prot) > 3) {
+        /* ignore "4" or "6" if given */
+        $prot = substr($prot, 0, 3);
+    }
+
     if (isset($config['openvpn']['openvpn-server'])) {
         foreach ($config['openvpn']['openvpn-server'] as & $settings) {
             if (isset($settings['disable'])) {
@@ -230,17 +235,13 @@ function openvpn_port_used($prot, $interface, $port, $curvpnid = 0)
             }
         }
     }
+
     return 0;
 }
 
 function openvpn_port_next($prot, $interface = "wan")
 {
     $port = 1194;
-
-    if (strlen($prot) > 3) {
-        /* ignore "4" or "6" if given */
-        $prot = substr($prot, 0, 3);
-    }
 
     while (openvpn_port_used($prot, $interface, $port)) {
         $port++;
@@ -352,10 +353,6 @@ function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = 'ipv
     }
     $networks = explode(',', $value);
 
-    if (!$multiple && (count($networks) > 1)) {
-        return sprintf(gettext("The field '%s' must contain a single valid %s CIDR range."), $name, $ipproto);
-    }
-
     foreach ($networks as $network) {
         if ($ipproto == 'ipv4') {
             $error = !openvpn_validate_cidr_ipv4($network, $allow_hosts);
@@ -368,11 +365,14 @@ function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = 'ipv
     }
 
     if ($error) {
-        return sprintf(gettext("The field '%s' must contain only valid %s CIDR range(s) " .
-            "separated by commas."), $name, $ipproto);
-    } else {
-        return false;
+        if (!$multiple) {
+            return sprintf(gettext("The field '%s' must contain a single valid %s CIDR range."), $name, $ipproto);
+        }
+
+        return sprintf(gettext("The field '%s' must contain only valid %s CIDR range(s) separated by commas."), $name, $ipproto);
     }
+
+    return false;
 }
 
 function openvpn_validate_cidr_ipv4($value, $allow_hosts = false)
