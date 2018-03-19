@@ -99,7 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['dh_length'] = 1024;
         $pconfig['dev_mode'] = "tun";
         $pconfig['interface'] = 'any';
-        $pconfig['local_port'] = openvpn_port_next('UDP');
+        $pconfig['protocol'] = 'UDP';
+        $pconfig['local_port'] = openvpn_port_next($pconfig['protocol']);
         $pconfig['pool_enable'] = "yes";
         $pconfig['cert_depth'] = 1;
         // init all fields used in the form
