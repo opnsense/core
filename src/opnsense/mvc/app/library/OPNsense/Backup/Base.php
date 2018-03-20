@@ -48,7 +48,7 @@ abstract class Base
         @unlink($file);
 
         file_put_contents("{$file}.dec", $data);
-        exec(sprintf('/usr/local/bin/openssl enc -e -aes-256-cbc -in %s -out %s -k %s',
+        exec(sprintf('/usr/local/bin/openssl enc -e -aes-256-cbc -in %s -out %s -pass pass:%s',
             escapeshellarg("{$file}.dec"), escapeshellarg("{$file}.enc"), escapeshellarg($pass)
         ));
         @unlink("{$file}.dec");
@@ -75,7 +75,7 @@ abstract class Base
         @unlink($file);
 
         file_put_contents("{$file}.dec", base64_decode($data));
-        exec(sprintf('/usr/local/bin/openssl enc -d -aes-256-cbc -in %s -out %s -k %s',
+        exec(sprintf('/usr/local/bin/openssl enc -d -aes-256-cbc -in %s -out %s -pass pass:%s',
             escapeshellarg("{$file}.dec"), escapeshellarg("{$file}.enc"), escapeshellarg($pass)
         ));
         @unlink("{$file}.dec");
