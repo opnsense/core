@@ -70,7 +70,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 if ($node != null) {
                     $result = array("result" => "failed", "validations" => array());
                     $jobInfo = $this->request->getPost("job");
-                    if ($node->origin->__toString() != "cron") {
+                    if ((string)$node->origin != "cron") {
                         if ($jobInfo["command"] != (string)$node->command) {
                             $result["validations"]["job.command"] = gettext("This item has been created by " .
                                 "another service, command and parameter may not be changed.");
@@ -78,7 +78,7 @@ class SettingsController extends ApiMutableModelControllerBase
                         if ($jobInfo["parameters"] != (string)$node->parameters) {
                             $result["validations"]["job.parameters"] = sprintf(gettext("This item has been created by " .
                                 "another service, command and parameter may not be changed. (was: %s)"),
-                                (String)$node->parameters);
+                                (string)$node->parameters);
                         }
                     }
 
