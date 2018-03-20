@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  Copyright (C) 2015 Deciso B.V.
+ *  Copyright (C) 2015-2018 Deciso B.V.
  *  Copyright (C) 2017 Fabian Franz
  *  All rights reserved.
  *
@@ -29,7 +29,7 @@
 
 namespace OPNsense\Routes\Api;
 
-use \OPNsense\Base\ApiControllerBase;
+use \OPNsense\Base\ApiMutableModelControllerBase;
 use \OPNsense\Core\Backend;
 use \OPNsense\Core\Config;
 use \OPNsense\Base\UIModelGrid;
@@ -38,101 +38,80 @@ use \OPNsense\Routes\Route;
 /**
  * @package OPNsense\Routes
  */
-class RoutesController extends ApiControllerBase
+class RoutesController extends ApiMutableModelControllerBase
 {
+
+    static protected $internalModelName = 'route';
+    static protected $internalModelClass = '\OPNsense\Routes\Route';
+
     public function searchrouteAction()
     {
-        $this->sessionClose();
-        $mdlRoute = new Route();
-        $grid = new UIModelGrid($mdlRoute->route);
-        return $grid->fetchBindRequest(
-            $this->request,
+        return $this->searchBase(
+            "route",
             array('disabled', 'network', 'gateway', 'descr'),
-            'description'
+            "description"
         );
     }
 
+    /**
+     * Update route with given properties
+     * @param string $uuid internal id
+     * @return array save result + validation output
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
     public function setrouteAction($uuid)
     {
-        $result = array('result'=>'failed');
-        if ($this->request->isPost() && $this->request->hasPost('route')) {
-            $mdlRoute = new Route();
-            if ($uuid != null) {
-                $node = $mdlRoute->getNodeByReference('route.'.$uuid);
-                if ($node != null) {
-                    $node->setNodes($this->request->getPost('route'));
-                    $validations = $mdlRoute->validate($node->__reference, 'route');
-                    if (count($validations)) {
-                        $result['validations'] = $validations;
-                    } else {
-                        // serialize model to config and save
-                        $mdlRoute->serializeToConfig();
-                        Config::getInstance()->save();
-                        $result['result'] = 'saved';
-                    }
-                }
-            }
-        }
-        return $result;
+        return $this->setBase("route", "route", $uuid);
     }
 
+    /**
+     * Add new route and set with attributes from post
+     * @return array save result + validation output
+     * @throws \OPNsense\Base\ModelException when not bound to model
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     */
     public function addrouteAction()
     {
-        $result = array('result'=>'failed');
-        if ($this->request->isPost() && $this->request->hasPost('route')) {
-            $mdlRoute = new Route();
-            $node = $mdlRoute->route->Add();
-            $node->setNodes($this->request->getPost('route'));
-            $validations = $mdlRoute->validate($node->__reference, 'route');
-            if (count($validations)) {
-                $result['validations'] = $validations;
-            } else {
-                // serialize model to config and save
-                $mdlRoute->serializeToConfig();
-                Config::getInstance()->save();
-                $result['result'] = 'saved';
-            }
-        }
-        return $result;
+        return $this->addBase("route", "route");
     }
 
+    /**
+     * Retrieve route settings or return defaults for new one
+     * @param $uuid item unique id
+     * @return array route content
+     * @throws \ReflectionException when not bound to model
+     */
     public function getrouteAction($uuid = null)
     {
-        $mdlRoute = new Route();
-        if ($uuid != null) {
-            $node = $mdlRoute->getNodeByReference('route.'.$uuid);
-            if ($node != null) {
-                // return node
-                return array('route' => $node->getNodes());
-            }
-        } else {
-            // generate new node, but don't save to disc
-            $node = $mdlRoute->route->add();
-            return array('route' => $node->getNodes());
-        }
-        return array();
+        return $this->getBase("route", "route", $uuid);
     }
 
+    /**
+     * Delete route by uuid, save contents to tmp for removal on apply
+     * @param string $uuid internal id
+     * @return array save status
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
     public function delrouteAction($uuid)
     {
-        $result = array('result'=>'failed');
-        if ($this->request->isPost() && $uuid != null) {
-            $mdlRoute = new Route();
-            $node = $mdlRoute->getNodeByReference('route.'.$uuid);
-            if ($mdlRoute->route->del($uuid)) {
-                // if item is removed, serialize to config and save
-                $mdlRoute->serializeToConfig();
-                // we don't know for sure if this route was already removed, flush to disk to remove on apply
-                file_put_contents("/tmp/delete_route_{$uuid}.todo", (string)$node->network);
-                Config::getInstance()->save();
-                $result['result'] = 'deleted';
-            } else {
-                $result['result'] = 'not found';
-            }
+        $node = (new Route())->getNodeByReference('route.'.$uuid);
+        $response = $this->delBase("route", $uuid);
+        if (!empty($response['result']) && $response['result'] == 'deleted') {
+            // we don't know for sure if this route was already removed, flush to disk to remove on apply
+            file_put_contents("/tmp/delete_route_{$uuid}.todo", (string)$node->network);
         }
-        return $result;
+        return $response;
     }
 
+    /**
+     * toggle, we can not use our default action here since enabled/disabled are swapped
+     * @param string $uuid id to toggled
+     * @param string|null $disabled set disabled by default
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
     public function togglerouteAction($uuid, $disabled = null)
     {
         $result = array("result" => "failed");
@@ -156,6 +135,10 @@ class RoutesController extends ApiControllerBase
         return $result;
     }
 
+    /**
+     * reconfigure routes
+     * @return array reconfigure status
+     */
     public function reconfigureAction()
     {
         if ($this->request->isPost()) {
