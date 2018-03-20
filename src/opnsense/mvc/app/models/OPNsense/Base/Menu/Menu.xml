@@ -124,9 +124,6 @@
             <LAGG url="/interfaces_lagg.php">
                 <Edit url="/interfaces_lagg_edit.php*" visibility="hidden"/>
             </LAGG>
-            <QinQ url="/interfaces_qinq.php">
-                <Edit url="/interfaces_qinq_edit.php*" visibility="hidden"/>
-            </QinQ>
             <VLAN url="/interfaces_vlan.php">
                 <Edit url="/interfaces_vlan_edit.php*" visibility="hidden"/>
             </VLAN>

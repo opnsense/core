@@ -1070,8 +1070,6 @@
 /usr/local/www/interfaces_lagg_edit.php
 /usr/local/www/interfaces_ppps.php
 /usr/local/www/interfaces_ppps_edit.php
-/usr/local/www/interfaces_qinq.php
-/usr/local/www/interfaces_qinq_edit.php
 /usr/local/www/interfaces_vlan.php
 /usr/local/www/interfaces_vlan_edit.php
 /usr/local/www/interfaces_wireless.php

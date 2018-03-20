@@ -394,18 +394,6 @@
             <pattern>interfaces_ppps_edit.php*</pattern>
         </patterns>
     </page-interfaces-ppps-edit>
-    <page-interfaces-qinq>
-        <name>Interfaces: QinQ</name>
-        <patterns>
-            <pattern>interfaces_qinq.php*</pattern>
-        </patterns>
-    </page-interfaces-qinq>
-    <page-interfaces-qinq-edit>
-        <name>Interfaces: QinQ: Edit</name>
-        <patterns>
-            <pattern>interfaces_qinq_edit.php*</pattern>
-        </patterns>
-    </page-interfaces-qinq-edit>
     <page-interfaces-vlan>
         <name>Interfaces: VLAN</name>
         <patterns>

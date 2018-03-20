@@ -251,130 +251,6 @@ function interface_vlan_configure(&$vlan)
     return $vlanif;
 }
 
-function interface_qinq_configure(&$vlan, $fd = null)
-{
-    global $config;
-
-    if (!is_array($vlan)) {
-        log_error('QinQ compat VLAN: called with wrong options. Problems with config!');
-        return;
-    }
-
-    $qinqif = $vlan['if'];
-    $tag = $vlan['tag'];
-    if (empty($qinqif)) {
-        log_error('interface_qinq_configure called with if undefined.');
-        return;
-    }
-
-    if (!does_interface_exist($qinqif)) {
-        log_error('interface_qinq_configure called with invalid if.');
-        return;
-    }
-
-    $vlanif = interface_vlan_configure($vlan);
-
-    if ($fd == null) {
-        $exec = true;
-        $fd = fopen('/tmp/netgraphcmd', 'w');
-    } else {
-        $exec = false;
-    }
-
-    /* make sure the parent is converted to ng_vlan(4) and is up */
-    interfaces_bring_up($qinqif);
-
-    if (!empty($vlanif) && does_interface_exist($vlanif)) {
-        exec("/usr/sbin/ngctl msg {$vlanif}qinq: gettable", $result);
-        if (empty($result)) {
-            fwrite($fd, "mkpeer {$vlanif}: vlan lower downstream\n");
-            fwrite($fd, "name {$vlanif}:lower {$vlanif}qinq\n");
-            fwrite($fd, "connect {$vlanif}: {$vlanif}qinq: upper nomatch\n");
-        }
-    } else {
-        fwrite($fd, "mkpeer {$vlanif}: vlan lower downstream\n");
-        fwrite($fd, "name {$vlanif}:lower {$vlanif}qinq\n");
-        fwrite($fd, "connect {$vlanif}: {$vlanif}qinq: upper nomatch\n");
-    }
-
-    if (!stristr($qinqif, "_vlan")) {
-        mwexec("/sbin/ifconfig {$qinqif} promisc\n");
-    }
-
-    $macaddr = get_interface_mac($qinqif);
-    if (!empty($vlan['members'])) {
-        $members = explode(" ", $vlan['members']);
-        foreach ($members as $qtag) {
-            $qinq = array();
-            $qinq['tag'] = $qtag;
-            $qinq['if'] = $vlanif;
-            interface_qinq2_configure($qinq, $fd, $macaddr);
-        }
-    }
-    if ($exec) {
-        fclose($fd);
-        mwexec('/usr/sbin/ngctl -f /tmp/netgraphcmd');
-    }
-
-    interfaces_bring_up($qinqif);
-    if (!empty($vlan['members'])) {
-        $members = explode(" ", $vlan['members']);
-        foreach ($members as $qif) {
-            interfaces_bring_up("{$vlanif}_{$qif}");
-        }
-    }
-
-    return $vlanif;
-}
-
-function interfaces_qinq_configure($verbose = false)
-{
-    global $config;
-
-    if (!isset($config['qinqs']['qinqentry'])) {
-        return;
-    }
-
-    if ($verbose) {
-        echo 'Configuring QinQ interfaces...';
-        flush();
-    }
-
-    foreach ($config['qinqs']['qinqentry'] as $qinq) {
-        interface_qinq_configure($qinq);
-    }
-
-    if ($verbose) {
-        echo "done.\n";
-    }
-}
-
-function interface_qinq2_configure(&$qinq, $fd, $macaddr)
-{
-    global $config;
-
-    if (!is_array($qinq)) {
-        log_error('QinQ compat VLAN: called with wrong options. Problems with config!');
-        return;
-    }
-
-    $if = $qinq['if'];
-    $tag = $qinq['tag'];
-    $vlanif = "{$if}_{$tag}";
-    if (empty($if)) {
-        log_error('interface_qinq2_configure called with if undefined.');
-        return;
-    }
-
-    fwrite($fd, "mkpeer {$if}qinq: eiface {$if}{$tag} ether\n");
-    fwrite($fd, "name {$if}qinq:{$if}{$tag} {$if}h{$tag}\n");
-    fwrite($fd, "msg {$if}qinq: addfilter { vlan={$tag} hook=\"{$if}{$tag}\" }\n");
-    fwrite($fd, "msg {$if}h{$tag}: setifname \"{$vlanif}\"\n");
-    fwrite($fd, "msg {$if}h{$tag}: set {$macaddr}\n");
-
-    return $vlanif;
-}
-
 function interfaces_test_wireless_capability($if, $cap)
 {
     $caps = array('hostap' => 'HOSTAP', 'adhoc' => 'IBSS');
@@ -1022,7 +898,6 @@ function interfaces_configure($verbose = false)
     interfaces_create_wireless_clones($verbose);
     interfaces_lagg_configure('', $verbose);
     interfaces_vlan_configure('', $verbose);
-    interfaces_qinq_configure($verbose);
 
     $iflist = get_configured_interface_with_descr();
     $delayed_list = array();
@@ -3204,7 +3079,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     if (!@file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf)) {
         log_error("Error: cannot open dhcp6c_{$interface}.conf in interface_dhcpv6_configure() for writing.");
     }
-    
+
     $dhcp6cscript = "#!/bin/sh\n";
     $dhcp6cscript .= "if [ -n '" . (!empty($wancfg['adv_dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
     $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
