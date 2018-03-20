@@ -30,38 +30,31 @@
 
 namespace OPNsense\Cron\Api;
 
-use \OPNsense\Base\ApiControllerBase;
+use \OPNsense\Base\ApiMutableModelControllerBase;
 use \OPNsense\Core\Config;
 use \OPNsense\Cron\Cron;
-use \OPNsense\Base\UIModelGrid;
 
 /**
  * Class SettingsController Handles settings related API actions for the Cron
  * @package OPNsense\Cron
  */
-class SettingsController extends ApiControllerBase
+class SettingsController extends ApiMutableModelControllerBase
 {
+
+    static protected $internalModelName = 'job';
+    static protected $internalModelClass = '\OPNsense\Cron\Cron';
+
     /**
-     * retrieve job settings or return defaults
+     * etrieve job settings or return defaults
      * @param $uuid item unique id
-     * @return array
+     * @return array job contents
+     * @throws \ReflectionException when not bound to model
      */
     public function getJobAction($uuid = null)
     {
-        $mdlCron = new Cron();
-        if ($uuid != null) {
-            $node = $mdlCron->getNodeByReference('jobs.job.' . $uuid);
-            if ($node != null) {
-                // return node
-                return array("job" => $node->getNodes());
-            }
-        } else {
-            // generate new node, but don't save to disc
-            $node = $mdlCron->jobs->job->add();
-            return array("job" => $node->getNodes());
-        }
-        return array();
+        return $this->getBase("job", "jobs.job", $uuid);
     }
+
 
     /**
      * update job with given properties
@@ -78,14 +71,14 @@ class SettingsController extends ApiControllerBase
                     $result = array("result" => "failed", "validations" => array());
                     $jobInfo = $this->request->getPost("job");
                     if ($node->origin->__toString() != "cron") {
-                        if ($jobInfo["command"]!=$node->command->__toString()) {
-                            $result["validations"]["job.command"] = "This item has been created by " .
-                                "another service, command and parameter may not be changed.";
+                        if ($jobInfo["command"] != (string)$node->command) {
+                            $result["validations"]["job.command"] = gettext("This item has been created by " .
+                                "another service, command and parameter may not be changed.");
                         }
-                        if ($jobInfo["parameters"]!=$node->parameters->__toString()) {
-                            $result["validations"]["job.parameters"] = "This item has been created by " .
-                                "another service, command and parameter may not be changed. (was: " .
-                                $node->parameters->__toString() . " )";
+                        if ($jobInfo["parameters"] != (string)$node->parameters) {
+                            $result["validations"]["job.parameters"] = sprintf(gettext("This item has been created by " .
+                                "another service, command and parameter may not be changed. (was: %s)"),
+                                (String)$node->parameters);
                         }
                     }
 
@@ -111,117 +104,61 @@ class SettingsController extends ApiControllerBase
 
     /**
      * add new job and set with attributes from post
-     * @return array
+     * @return array save result + validation output
+     * @throws \OPNsense\Base\ModelException when not bound to model
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException
      */
     public function addJobAction()
     {
-        $result = array("result" => "failed");
-        if ($this->request->isPost() && $this->request->hasPost("job")) {
-            $result = array("result" => "failed", "validations" => array());
-            $mdlCron = new Cron();
-            $node = $mdlCron->jobs->job->Add();
-            $node->setNodes($this->request->getPost("job"));
-            $node->origin = "cron"; // set origin to this component - cron are manually created rules.
-            $valMsgs = $mdlCron->performValidation();
-
-            foreach ($valMsgs as $field => $msg) {
-                $fieldnm = str_replace($node->__reference, "job", $msg->getField());
-                $result["validations"][$fieldnm] = $msg->getMessage();
-            }
-
-            if (count($result['validations']) == 0) {
-                // save config if validated correctly
-                $mdlCron->serializeToConfig();
-                Config::getInstance()->save();
-                $result = array("result" => "saved");
-            }
-            return $result;
-        }
-        return $result;
+        return $this->addBase("job", "jobs.job");
     }
+
 
     /**
      * delete job by uuid ( only if origin is cron)
-     * @param $uuid item unique id
+     * @param string $uuid item unique id
      * @return array status
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     * @throws \OPNsense\Base\ModelException when not bound to model
      */
     public function delJobAction($uuid)
     {
-
-        $result = array("result" => "failed");
-        if ($this->request->isPost()) {
-            $mdlCron = new Cron();
-            if ($uuid != null) {
-                $node = $mdlCron->getNodeByReference('jobs.job.' . $uuid);
-                if ($node != null && (string)$node->origin == "cron" && $mdlCron->jobs->job->del($uuid) == true) {
-                    // if item is removed, serialize to config and save
-                    $mdlCron->serializeToConfig();
-                    Config::getInstance()->save();
-                    $result['result'] = 'deleted';
-                } else {
-                    $result['result'] = 'not found';
-                }
+        if ($uuid != null) {
+            $node = (new Cron())->getNodeByReference('jobs.job.' . $uuid);
+            if ($node->origin == "cron") {
+                return $this->delBase("jobs.job", $uuid);
             }
         }
-        return $result;
+        return array("result" => "failed");
     }
 
     /**
      * toggle job by uuid (enable/disable)
      * @param $uuid item unique id
+     * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array status
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
      */
-    public function toggleJobAction($uuid)
+    public function toggleJobAction($uuid, $enabled = null)
     {
-
-        $result = array("result" => "failed");
-
-        if ($this->request->isPost()) {
-            $mdlCron = new Cron();
-            if ($uuid != null) {
-                $node = $mdlCron->getNodeByReference('jobs.job.' . $uuid);
-                if ($node != null) {
-                    if ($node->enabled->__toString() == "1") {
-                        $result['result'] = "Disabled";
-                        $node->enabled = "0";
-                    } else {
-                        $result['result'] = "Enabled";
-                        $node->enabled = "1";
-                    }
-                    // if item has toggled, serialize to config and save
-                    $mdlCron->serializeToConfig();
-                    Config::getInstance()->save();
-                }
-            }
-        }
-        return $result;
+        return $this->toggleBase("jobs.job", $uuid, $enabled);
     }
 
+
     /**
-     *
      * search cron jobs
-     * @return array
+     * @return array search results
+     * @throws \ReflectionException
      */
     public function searchJobsAction()
     {
-        $this->sessionClose();
-        $fields = array(
-            "enabled",
-            "minutes",
-            "hours",
-            "days",
-            "months",
-            "weekdays",
-            "description",
-            "command",
-            "origin",
-            "cronPermissions"
-        );
-        $mdlCron = new Cron();
-        $grid = new UIModelGrid($mdlCron->jobs->job);
-        return $grid->fetchBindRequest(
-            $this->request,
-            $fields,
+        return $this->searchBase(
+            "jobs.job",
+            array("enabled", "minutes","hours", "days", "months", "weekdays", "description", "command", "origin",
+                  "cronPermissions"),
             "description"
         );
     }
