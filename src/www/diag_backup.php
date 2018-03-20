@@ -109,6 +109,7 @@ $areas = array(
 );
 
 $do_reboot = false;
+$backupFactory = new OPNsense\Backup\BackupFactory();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -283,7 +284,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             system_cron_configure();
 
             try {
-                $filesInBackup = backup_to_google_drive();
+                $provider = $backupFactory->getProvider("GDrive");
+                $filesInBackup = $provider['handle']->backup();
             } catch (Exception $e) {
                 $filesInBackup = array();
             }
@@ -294,8 +296,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("Google Drive communication failure");
             } else {
                 $input_messages = gettext("Backup successful, current file list:") . "<br>";
-                foreach ($filesInBackup as $filename => $file) {
-                     $input_messages = $input_messages . "<br>" . $filename;
+                foreach ($filesInBackup as $filename) {
+                     $input_messages .= "<br>" . $filename;
                 }
             }
         }

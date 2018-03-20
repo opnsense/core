@@ -125,25 +125,25 @@ class Gdrive extends Base implements IBackupProvider
                     $fileprefix = "config-";
                 }
                 try {
-                    $client = new Google\API\Drive();
-                    $client->login($config->system->remotebackup->GDriveEmail->__toString(),
-                        $config->system->remotebackup->GDriveP12key->__toString());
+                    $client = new \Google\API\Drive();
+                    $client->login((string)$config->system->remotebackup->GDriveEmail,
+                        (string)$config->system->remotebackup->GDriveP12key);
                 } catch (Exception $e) {
-                    log_error("error connecting to Google Drive");
+                    syslog(LOG_ERR, "error connecting to Google Drive");
                     return array();
                 }
 
                 // backup source data to local strings (plain/encrypted)
                 $confdata = file_get_contents('/conf/config.xml');
                 $confdata_enc = chunk_split(
-                    $this->encrypt($confdata, $config->system->remotebackup->GDrivePassword->__toString())
+                    $this->encrypt($confdata, (string)$config->system->remotebackup->GDrivePassword)
                 );
 
                 // read filelist ({prefix}*.xml)
                 try {
-                    $files = $client->listFiles($config->system->remotebackup->GDriveFolderID->__toString());
+                    $files = $client->listFiles((string)$config->system->remotebackup->GDriveFolderID);
                 } catch (Exception $e) {
-                    log_error("error while fetching filelist from Google Drive");
+                    syslog(LOG_ERR, "error while fetching filelist from Google Drive");
                     return array();
                 }
 
@@ -162,21 +162,30 @@ class Gdrive extends Base implements IBackupProvider
                     // compare last backup with current, only save new
                     try {
                         $bck_data_enc = $client->download($configfiles[array_keys($configfiles)[0]]);
+                        if (strpos(substr($bck_data_enc, 0, 100), '---') !== false) {
+                            // base64 string is wrapped into tags
+                            $start_at = strpos($bck_data_enc, "---\n") + 4 ;
+                            $end_at = strpos($bck_data_enc, "\n---");
+                            $bck_data_enc = substr($bck_data_enc, $start_at, ($end_at-$start_at));
+                        }
                         $bck_data = $this->decrypt($bck_data_enc,
-                            $config->system->remotebackup->GDrivePassword->__toString());
+                            (string)$config->system->remotebackup->GDrivePassword);
                         if ($bck_data == $confdata) {
                             $target_filename = null;
                         }
                     } catch (Exception $e) {
-                        log_error("unable to download " . $configfiles[array_keys($configfiles)[0]]->description . " from Google Drive (" . $e . ")");
+                        syslog(LOG_ERR, "unable to download " .
+                            $configfiles[array_keys($configfiles)[0]]->description . " from Google Drive (" . $e . ")"
+                        );
                     }
                 }
                 if (!is_null($target_filename)) {
-                    log_error("backup configuration as " . $target_filename);
+                    syslog(LOG_ERR, "backup configuration as " . $target_filename);
                     try {
-                        $configfiles[$target_filename] = $client->upload($config->system->remotebackup->GDriveFolderID->__toString(), $target_filename, $confdata_enc);
+                        $configfiles[$target_filename] = $client->upload(
+                            (string)$config->system->remotebackup->GDriveFolderID, $target_filename, $confdata_enc);
                     } catch (Exception $e) {
-                        log_error("unable to upload " . $target_filename . " to Google Drive (" . $e . ")");
+                        syslog(LOG_ERR, "unable to upload " . $target_filename . " to Google Drive (" . $e . ")");
                         return array();
                     }
 
@@ -184,15 +193,16 @@ class Gdrive extends Base implements IBackupProvider
                 }
 
                 // cleanup old files
-                if (isset($config->system->remotebackup->GDriveBackupCount) && is_numeric($config->system->remotebackup->GDriveBackupCount->__toString())) {
+                if (isset($config->system->remotebackup->GDriveBackupCount)
+                        && is_numeric((string)$config->system->remotebackup->GDriveBackupCount)) {
                     $fcount = 0;
                     foreach ($configfiles as $filename => $file) {
-                        if ($fcount >= $config->system->remotebackup->GDriveBackupCount->__toString()) {
-                            log_error("remove " . $filename . " from Google Drive");
+                        if ($fcount >= (string)$config->system->remotebackup->GDriveBackupCount) {
+                            syslog(LOG_ERR, "remove " . $filename . " from Google Drive");
                             try {
                                 $client->delete($file);
                             } catch (Google_Service_Exception $e) {
-                                log_error("unable to remove " . $filename . " from Google Drive");
+                                syslog(LOG_ERR, "unable to remove " . $filename . " from Google Drive");
                             }
                         }
                         $fcount++;
@@ -200,7 +210,7 @@ class Gdrive extends Base implements IBackupProvider
                 }
 
                 // return filelist
-                return $configfiles;
+                return array_keys($configfiles);
             }
         }
 

@@ -58,7 +58,7 @@ abstract class Base
             @unlink("{$file}.enc");
             return base64_encode($result);
         } else {
-            log_error('Failed to encrypt/decrypt data!');
+            syslog(LOG_ERR, 'Failed to encrypt/decrypt data!');
             return null;
         }
     }
@@ -85,7 +85,7 @@ abstract class Base
             @unlink("{$file}.enc");
             return $result;
         } else {
-            log_error('Failed to encrypt/decrypt data!');
+            syslog(LOG_ERR, 'Failed to encrypt/decrypt data!');
             return null;
         }
     }
