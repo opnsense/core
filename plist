@@ -411,6 +411,10 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Radius.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/TOTP.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Voucher.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Backup/BackupFactory.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Backup/Base.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Backup/GDrive.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Backup/IBackupProvider.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Base/Filters/QueryFilter.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Base/UIModelGrid.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Base/ViewTranslator.php
