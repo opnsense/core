@@ -44,6 +44,11 @@ class RoutesController extends ApiMutableModelControllerBase
     static protected $internalModelName = 'route';
     static protected $internalModelClass = '\OPNsense\Routes\Route';
 
+    /**
+     * search routes
+     * @return array search results
+     * @throws \ReflectionException
+     */
     public function searchrouteAction()
     {
         return $this->searchBase(
@@ -70,6 +75,7 @@ class RoutesController extends ApiMutableModelControllerBase
      * @return array save result + validation output
      * @throws \OPNsense\Base\ModelException when not bound to model
      * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException
      */
     public function addrouteAction()
     {
@@ -93,6 +99,7 @@ class RoutesController extends ApiMutableModelControllerBase
      * @return array save status
      * @throws \Phalcon\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
+     * @throws \OPNsense\Base\ModelException when not bound to model
      */
     public function delrouteAction($uuid)
     {
@@ -109,8 +116,10 @@ class RoutesController extends ApiMutableModelControllerBase
      * toggle, we can not use our default action here since enabled/disabled are swapped
      * @param string $uuid id to toggled
      * @param string|null $disabled set disabled by default
+     * @return array status
      * @throws \Phalcon\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
+     * @throws \OPNsense\Base\ModelException when not bound to model
      */
     public function togglerouteAction($uuid, $disabled = null)
     {
@@ -138,6 +147,7 @@ class RoutesController extends ApiMutableModelControllerBase
     /**
      * reconfigure routes
      * @return array reconfigure status
+     * @throws \Exception when unable to execute configd command
      */
     public function reconfigureAction()
     {
