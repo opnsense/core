@@ -2,7 +2,7 @@
     <System>
         <Settings>
             <Cron order="1000" url="/ui/cron/">
-                <workAround url="/ui/cron/*" />
+                <item url="/ui/cron/*" visibility="hidden"/>
             </Cron>
         </Settings>
     </System>
