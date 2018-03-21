@@ -76,9 +76,11 @@ class SettingsController extends ApiMutableModelControllerBase
                                 "another service, command and parameter may not be changed.");
                         }
                         if ($jobInfo["parameters"] != (string)$node->parameters) {
-                            $result["validations"]["job.parameters"] = sprintf(gettext("This item has been created by " .
+                            $result["validations"]["job.parameters"] = sprintf(
+                                gettext("This item has been created by " .
                                 "another service, command and parameter may not be changed. (was: %s)"),
-                                (string)$node->parameters);
+                                (string)$node->parameters
+                            );
                         }
                     }
 

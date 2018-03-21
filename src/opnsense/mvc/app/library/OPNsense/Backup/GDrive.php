@@ -28,8 +28,8 @@
  */
 
 namespace OPNsense\Backup;
-use OPNsense\Core\Config;
 
+use OPNsense\Core\Config;
 
 /**
  * Class google drive backup
@@ -126,8 +126,10 @@ class Gdrive extends Base implements IBackupProvider
                 }
                 try {
                     $client = new \Google\API\Drive();
-                    $client->login((string)$config->system->remotebackup->GDriveEmail,
-                        (string)$config->system->remotebackup->GDriveP12key);
+                    $client->login(
+                        (string)$config->system->remotebackup->GDriveEmail,
+                        (string)$config->system->remotebackup->GDriveP12key
+                    );
                 } catch (Exception $e) {
                     syslog(LOG_ERR, "error connecting to Google Drive");
                     return array();
@@ -164,26 +166,30 @@ class Gdrive extends Base implements IBackupProvider
                         $bck_data_enc = $client->download($configfiles[array_keys($configfiles)[0]]);
                         if (strpos(substr($bck_data_enc, 0, 100), '---') !== false) {
                             // base64 string is wrapped into tags
-                            $start_at = strpos($bck_data_enc, "---\n") + 4 ;
+                            $start_at = strpos($bck_data_enc, "---\n") + 4;
                             $end_at = strpos($bck_data_enc, "\n---");
                             $bck_data_enc = substr($bck_data_enc, $start_at, ($end_at-$start_at));
                         }
-                        $bck_data = $this->decrypt($bck_data_enc,
-                            (string)$config->system->remotebackup->GDrivePassword);
+                        $bck_data = $this->decrypt(
+                            $bck_data_enc,
+                            (string)$config->system->remotebackup->GDrivePassword
+                        );
                         if ($bck_data == $confdata) {
                             $target_filename = null;
                         }
                     } catch (Exception $e) {
                         syslog(LOG_ERR, "unable to download " .
-                            $configfiles[array_keys($configfiles)[0]]->description . " from Google Drive (" . $e . ")"
-                        );
+                            $configfiles[array_keys($configfiles)[0]]->description . " from Google Drive (" . $e . ")");
                     }
                 }
                 if (!is_null($target_filename)) {
                     syslog(LOG_ERR, "backup configuration as " . $target_filename);
                     try {
                         $configfiles[$target_filename] = $client->upload(
-                            (string)$config->system->remotebackup->GDriveFolderID, $target_filename, $confdata_enc);
+                            (string)$config->system->remotebackup->GDriveFolderID,
+                            $target_filename,
+                            $confdata_enc
+                        );
                     } catch (Exception $e) {
                         syslog(LOG_ERR, "unable to upload " . $target_filename . " to Google Drive (" . $e . ")");
                         return array();

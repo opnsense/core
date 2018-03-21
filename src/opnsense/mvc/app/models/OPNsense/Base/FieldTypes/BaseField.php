@@ -155,7 +155,7 @@ abstract class BaseField
      */
     public function setParentModel(&$object)
     {
-        if (empty($this->internalParentModel)){
+        if (empty($this->internalParentModel)) {
             // read only attribute, set from model
             $this->internalParentModel = $object;
         }
