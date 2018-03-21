@@ -356,6 +356,29 @@ function userHasPrivilege($userent, $privid = false)
     return true;
 }
 
+function auth_get_shells($uid = 0)
+{
+    $shells = array('' => '/sbin/nologin');
+
+    if ($uid == 0) {
+        $shells = array('' => '/usr/local/etc/rc.initial');
+    }
+
+    $etc_shells = @file_get_contents('/etc/shells');
+    if (!empty($etc_shells)) {
+        $etc_shells = explode("\n", $etc_shells);
+        foreach ($etc_shells as $shell) {
+            $shell = trim($shell);
+            if (!empty($shell) && strpos($shell, '#') !== 0 &&
+                strpos($shell, '/usr/local/etc/rc') !== 0) {
+                $shells[$shell] = $shell;
+            }
+        }
+    }
+
+    return $shells;
+}
+
 function local_sync_accounts()
 {
     global $config;
