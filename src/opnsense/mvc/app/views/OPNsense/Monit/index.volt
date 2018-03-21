@@ -57,9 +57,7 @@ POSSIBILITY OF SUCH DAMAGE.
          ajaxCall(url="/api/monit/service/reconfigure", sendData={}, callback=function(data,status) {
             $('#btn_reload_progress').removeClass("fa fa-spinner fa-pulse");
             $('#btn_reload').blur();
-            ajaxCall(url="/api/monit/service/status", sendData={}, callback=function(data,status) {
-               updateServiceStatusUI(data['status']);
-            });
+            updateServiceControlUI('monit');
          });
       });
 
@@ -72,9 +70,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/get/general/"}).done(function(){
                     formatTokenizersUI();
                     $('.selectpicker').selectpicker('refresh');
-                    ajaxCall(url="/api/monit/service/status", sendData={}, callback=function(data,status) {
-                       updateServiceStatusUI(data['status']);
-                    });
+                    updateServiceControlUI('monit');
                  });
              });
           });
@@ -86,9 +82,7 @@ POSSIBILITY OF SUCH DAMAGE.
       mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/get/general/"}).done(function(){
          formatTokenizersUI();
          $('.selectpicker').selectpicker('refresh');
-         ajaxCall(url="/api/monit/service/status", sendData={}, callback=function(data,status) {
-            updateServiceStatusUI(data['status']);
-         });
+         updateServiceControlUI('monit');
       });
 
       // show/hide httpd/mmonit options
@@ -118,9 +112,7 @@ POSSIBILITY OF SUCH DAMAGE.
 	   $("#frm_GeneralSettings_progress").addClass("fa fa-spinner fa-pulse");
          var frm_id = 'frm_GeneralSettings';
          saveFormToEndpoint(url = "/api/monit/settings/set/general/",formid=frm_id,callback_ok=function(){
-		   ajaxCall(url="/api/monit/service/status", sendData={}, callback=function(data,status) {
-			   updateServiceStatusUI(data['status']);
-            });
+            updateServiceControlUI('monit');
          });
          $("#"+frm_id+"_progress").removeClass("fa fa-spinner fa-pulse");
          $("#btn_ApplyGeneralSettings").blur();
