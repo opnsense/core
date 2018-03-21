@@ -78,15 +78,17 @@ class Local extends Base implements IAuthConnector
         if (!empty($configObj->system->webgui->enable_password_policy_constraints)) {
             if (!empty($configObj->system->webgui->password_policy_length)) {
                 if (strlen($new_password) < $configObj->system->webgui->password_policy_length) {
-                    $result[] = sprintf(gettext("Password must have at least %d characters"),
-                                        $configObj->system->webgui->password_policy_length);
+                    $result[] = sprintf(
+                        gettext("Password must have at least %d characters"),
+                        $configObj->system->webgui->password_policy_length
+                    );
                 }
             }
             if (!empty($configObj->system->webgui->password_policy_complexity)) {
-                $pwd_has_upper = preg_match_all('/[A-Z]/',$new_password, $o) > 0;
-                $pwd_has_lower = preg_match_all('/[a-z]/',$new_password, $o) > 0;
-                $pwd_has_number = preg_match_all('/[0-9]/',$new_password, $o) > 0;
-                $pwd_has_special = preg_match_all('/[!@#$%^&*()\-_=+{};:,<.>]/',$new_password, $o) > 0;
+                $pwd_has_upper = preg_match_all('/[A-Z]/', $new_password, $o) > 0;
+                $pwd_has_lower = preg_match_all('/[a-z]/', $new_password, $o) > 0;
+                $pwd_has_number = preg_match_all('/[0-9]/', $new_password, $o) > 0;
+                $pwd_has_special = preg_match_all('/[!@#$%^&*()\-_=+{};:,<.>]/', $new_password, $o) > 0;
                 if ($old_password == $new_password) {
                     // equal password is not allowed
                     $result[] = gettext("Current password equals new password");
