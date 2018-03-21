@@ -334,7 +334,7 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
         } elseif (substr($expformat, 0, 6) != "inline") {
             $conf .= "pkcs12 {$prefix}.p12{$nl}";
         }
-    } else if ($settings['mode'] == "server_user") {
+    } elseif ($settings['mode'] == "server_user") {
         if (substr($expformat, 0, 6) != "inline") {
             $conf .= "ca {$cafile}{$nl}";
         }
@@ -783,7 +783,7 @@ function openvpn_client_export_build_remote_lines($settings, $useaddr, $interfac
                 $server_host = get_interface_ip($interface);
             }
         }
-    } else if ($useaddr == "serverhostname" || empty($useaddr)) {
+    } elseif ($useaddr == "serverhostname" || empty($useaddr)) {
         $server_host = empty($config['system']['hostname']) ? "" : "{$config['system']['hostname']}.";
         $server_host .= "{$config['system']['domain']}";
     } else {
