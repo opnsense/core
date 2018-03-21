@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enablesshd'] = $config['system']['ssh']['enabled'];
     $pconfig['sshport'] = $config['system']['ssh']['port'];
     $pconfig['sshinterfaces'] = !empty($config['system']['ssh']['interfaces']) ? explode(',', $config['system']['ssh']['interfaces']) : array();
-    $pconfig['passwordauth'] = isset($config['system']['ssh']['passwordauth']);
+    $pconfig['sshpasswordauth'] = isset($config['system']['ssh']['passwordauth']);
     $pconfig['sshdpermitrootlogin'] = isset($config['system']['ssh']['permitrootlogin']);
     $pconfig['quietlogin'] = isset($config['system']['webgui']['quietlogin']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -195,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['ssh']['enabled']);
         }
 
-        if (!empty($pconfig['passwordauth'])) {
+        if (!empty($pconfig['sshpasswordauth'])) {
             $config['system']['ssh']['passwordauth'] = true;
         } elseif (isset($config['system']['ssh']['passwordauth'])) {
             unset($config['system']['ssh']['passwordauth']);
@@ -583,11 +583,11 @@ $(document).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_passwordauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Authentication Method") ?></td>
+                  <td><a id="help_for_sshpasswordauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Authentication Method") ?></td>
                   <td>
-                    <input name="passwordauth" type="checkbox" value="yes" <?= empty($pconfig['passwordauth']) ? '' : 'checked="checked"' ?> />
+                    <input name="sshpasswordauth" type="checkbox" value="yes" <?= empty($pconfig['sshpasswordauth']) ? '' : 'checked="checked"' ?> />
                     <strong><?=gettext("Permit password login"); ?></strong>
-                    <div class="hidden" data-for="help_for_passwordauth">
+                    <div class="hidden" data-for="help_for_sshpasswordauth">
                       <?=sprintf(gettext("When disabled, authorized keys need to be configured for each %sUser%s that has been granted secure shell access."),
                                 '<a href="system_usermanager.php">', '</a>') ?>
                     </div>
