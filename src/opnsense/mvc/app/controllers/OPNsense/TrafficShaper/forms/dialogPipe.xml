@@ -1,31 +1,31 @@
 <form>
     <field>
         <id>pipe.enabled</id>
-        <label>enabled</label>
+        <label>Enabled</label>
         <type>checkbox</type>
-        <help>enable this pipe and it's related queues and rules</help>
+        <help>Enable this pipe and it's related queues and rules</help>
     </field>
     <field>
         <id>pipe.bandwidth</id>
-        <label>bandwidth</label>
+        <label>Bandwidth</label>
         <type>text</type>
         <help>Total bandwidth for this pipe</help>
     </field>
     <field>
         <id>pipe.bandwidthMetric</id>
-        <label>bandwidth Metric</label>
+        <label>Bandwidth Metric</label>
         <type>dropdown</type>
     </field>
     <field>
         <id>pipe.queue</id>
-        <label>queue</label>
+        <label>Queue</label>
         <type>text</type>
-        <help>number of dynamic queues, leave empty for default</help>
+        <help>Number of dynamic queues, leave empty for default</help>
         <advanced>true</advanced>
     </field>
     <field>
         <id>pipe.mask</id>
-        <label>mask</label>
+        <label>Mask</label>
         <type>dropdown</type>
         <help><![CDATA[Dynamic queue creation by source or destination address.
         <li> choose destination here to share the total bandwidth of this pipe among all connected clients. </li>
@@ -34,7 +34,7 @@
     </field>
     <field>
         <id>pipe.scheduler</id>
-        <label>Scheduler type</label>
+        <label>Scheduler Type</label>
         <type>dropdown</type>
         <advanced>true</advanced>
         <help>Specify the scheduling algorithm to use</help>
@@ -47,14 +47,14 @@
     </field>
     <field>
         <id>pipe.codel_target</id>
-        <label>(FQ-)CoDel target</label>
+        <label>(FQ-)CoDel Target</label>
         <type>text</type>
         <advanced>true</advanced>
         <help>Minimum acceptable persistent queue delay (in ms), leave empty for default</help>
     </field>
     <field>
         <id>pipe.codel_interval</id>
-        <label>(FQ-)CoDel interval</label>
+        <label>(FQ-)CoDel Interval</label>
         <type>text</type>
         <advanced>true</advanced>
         <help>Interval before dropping packets (in ms), leave empty for default</help>
@@ -68,28 +68,28 @@
     </field>
     <field>
         <id>pipe.fqcodel_quantum</id>
-        <label>FQ-CoDel quantum</label>
+        <label>FQ-CoDel Quantum</label>
         <type>text</type>
         <advanced>true</advanced>
         <help>The number of bytes a queue can serve before being moved to the tail of old queues list (bytes), leave empty for defaults</help>
     </field>
     <field>
         <id>pipe.fqcodel_limit</id>
-        <label>FQ-CoDel limit</label>
+        <label>FQ-CoDel Limit</label>
         <type>text</type>
         <advanced>true</advanced>
         <help>The hard size limit of all queues managed by this instance, leave empty for defaults</help>
     </field>
     <field>
         <id>pipe.fqcodel_flows</id>
-        <label>FQ-CoDel flows</label>
+        <label>FQ-CoDel Flows</label>
         <type>text</type>
         <advanced>true</advanced>
         <help>The number of flow queues that are created and managed, leave empty for defaults</help>
     </field>
     <field>
         <id>pipe.description</id>
-        <label>description</label>
+        <label>Description</label>
         <type>text</type>
         <help>Description to identify this pipe.</help>
     </field>
