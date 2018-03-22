@@ -1625,7 +1625,7 @@ function get_dyndns_ip($int, $ipver = 4)
     return $ip_address;
 }
 
-function is_apinger_enabled()
+function is_dpinger_enabled()
 {
     global $config;
 

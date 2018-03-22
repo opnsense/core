@@ -4770,3 +4770,21 @@ function get_carp_interface_status($carpinterface)
     }
     return;
 }
+/* dpinger check for ipv6 */
+function interface_wait_tentative($interface, $timeout = 10) {
+	if (!does_interface_exist($interface)) {
+		return false;
+	}
+
+	$time = 0;
+	while ($time <= $timeout) {
+		$if = get_interface_gateway_v6($Interface);
+		if ($if != null) {
+			return true;
+		}
+		sleep(1);
+		$time++;
+	}
+
+	return false;
+}

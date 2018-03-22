@@ -37,7 +37,7 @@ foreach ($a_gateways as $gw) {
     $a_gateways_arr[] = $gw;
 }
 $a_gateways = $a_gateways_arr;
-$apinger_default = return_apinger_defaults();
+$apinger_default = return_dpinger_defaults();
 
 
 // form processing
