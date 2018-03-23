@@ -49,43 +49,72 @@ class Gdrive extends Base implements IBackupProvider
         $fields[] = array(
             "name" => "GDriveEnabled",
             "type" => "checkbox",
-            "label" => gettext("Enable")
+            "label" => gettext("Enable"),
+            "value" => null
         );
         $fields[] = array(
             "name" => "GDriveEmail",
             "type" => "text",
-            "label" => gettext("Email Address")
+            "label" => gettext("Email Address"),
+            "help" => gettext("Client-ID in the Google cloud console"),
+            "value" => null
         );
         $fields[] = array(
-            "name" => "GDriveP12file",
+            "name" => "GDriveP12key",
             "type" => "file",
-            "label" => gettext("P12 key (not loaded)")
+            "label" => gettext("P12 key"),
+            "help" => sprintf(gettext("You need a private key in p12 format to use Google Drive, ".
+            "instructions on how to aquire one can be found here %s "),
+                    "<a href='https://cloud.google.com/storage/docs/authentication#generating-a-private-key'
+                        target='_blank'>
+                    https://cloud.google.com/storage/docs/authentication#generating-a-private-key</a>"),
+            "value" => null
         );
         $fields[] = array(
             "name" => "GDriveFolderID",
             "type" => "text",
-            "label" => gettext("Folder ID")
+            "label" => gettext("Folder ID"),
+            "value" => null
         );
         $fields[] = array(
             "name" => "GDrivePrefixHostname",
-            "type" => "text",
-            "label" => gettext("Prefix hostname to backupfile")
+            "type" => "checkbox",
+            "label" => gettext("Prefix hostname to backupfile"),
+            "help" => gettext("Normally the config xml will be written as config-stamp.xml, with this option set " .
+            "the filename will use the systems host and domain name."),
+            "value" => null
         );
         $fields[] = array(
             "name" => "GDriveBackupCount",
             "type" => "text",
-            "label" => gettext("Backup Count")
+            "label" => gettext("Backup Count"),
+            "value" => 60
         );
         $fields[] = array(
             "name" => "GDrivePassword",
             "type" => "password",
-            "label" => gettext("Password")
+            "label" => gettext("Password"),
+            "value" => null
         );
         $fields[] = array(
             "name" => "GDrivePasswordConfirm",
             "type" => "password",
-            "label" => gettext("Confirm")
+            "label" => gettext("Confirm"),
+            "value" => null
         );
+        $cnf = Config::getInstance();
+        if ($cnf->isValid()) {
+            $config = $cnf->object();
+            foreach ($fields as &$field) {
+                $fieldname = $field['name'];
+                if (isset($config->system->remotebackup->$fieldname)) {
+                    $field['value'] = (string)$config->system->remotebackup->$fieldname;
+                } elseif ($fieldname == "GDrivePasswordConfirm" &&
+                        isset($config->system->remotebackup->GDrivePassword)) {
+                    $field['value'] = (string)$config->system->remotebackup->GDrivePassword;
+                }
+            }
+        }
 
         return $fields;
     }
@@ -102,11 +131,42 @@ class Gdrive extends Base implements IBackupProvider
     /**
      * validate and set configuration
      * @param array $conf configuration array
-     * @return array of validation errors
+     * @return array of validation errors when not saved
      */
     public function setConfiguration($conf)
     {
-        // TODO: Implement setConfiguration() method.
+        $input_errors = array();
+        if ($conf['GDrivePasswordConfirm'] != $conf['GDrivePassword']) {
+            $input_errors[] = gettext("The supplied 'Password' and 'Confirm' field values must match.");
+        }
+        if (count($input_errors) == 0) {
+            $config = Config::getInstance()->object();
+            if (!isset($config->system->remotebackup)) {
+                $config->system->remotebackup = array();
+            }
+            foreach ($this->getConfigurationFields() as $field) {
+                $fieldname = $field['name'];
+                if ($field['type'] == 'file') {
+                    if (!empty($conf[$field['name']])) {
+                        $config->system->remotebackup->$fieldname = base64_encode($conf[$field['name']]);
+                    }
+                } elseif ($field['name'] == 'GDrivePasswordConfirm') {
+                    null; // skip password confirm field
+                } elseif (!empty($conf[$field['name']])) {
+                    $config->system->remotebackup->$fieldname = $conf[$field['name']];
+                } else {
+                    unset($config->system->remotebackup->$fieldname);
+                }
+            }
+            // remove private key when disabled
+            if (empty($config->system->remotebackup->GDriveEnabled) &&
+                    isset($config->system->remotebackup->GDriveP12key)) {
+                unset($config->system->remotebackup->GDriveP12key);
+            }
+            Config::getInstance()->save();
+        }
+
+        return $input_errors;
     }
 
     /**

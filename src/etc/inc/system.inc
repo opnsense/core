@@ -1183,9 +1183,7 @@ function system_cron_configure($verbose = false, $defer = false)
         $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_captiveportal', '0', '*/' . $config['system']['captiveportalbackup']);
     }
 
-    if (!empty($config['system']['remotebackup']['GDriveEnabled'])) {
-        $autocron[] = generate_cron_job('/usr/local/opnsense/scripts/remote_backup.php', 0, 1);
-    }
+    $autocron[] = generate_cron_job('/usr/local/opnsense/scripts/remote_backup.php', 0, 1);
 
     /* bogons fetch always set in default config.xml */
     switch ($config['system']['bogons']['interval']) {

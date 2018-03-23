@@ -113,25 +113,28 @@ $backupFactory = new OPNsense\Backup\BackupFactory();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    $pconfig['GDriveEnabled'] = isset($config['system']['remotebackup']['GDriveEnabled']) ? $config['system']['remotebackup']['GDriveEnabled'] : null;
-    $pconfig['GDrivePrefixHostname'] = isset($config['system']['remotebackup']['GDrivePrefixHostname']) ? $config['system']['remotebackup']['GDrivePrefixHostname'] : null;
-    $pconfig['GDriveEmail'] = isset($config['system']['remotebackup']['GDriveEmail']) ? $config['system']['remotebackup']['GDriveEmail'] : null;
-    $pconfig['GDriveP12key'] = isset($config['system']['remotebackup']['GDriveP12key']) ? $config['system']['remotebackup']['GDriveP12key'] : null;
-    $pconfig['GDriveFolderID'] = isset($config['system']['remotebackup']['GDriveFolderID']) ? $config['system']['remotebackup']['GDriveFolderID'] : null;
-    $pconfig['GDriveBackupCount'] = isset($config['system']['remotebackup']['GDriveBackupCount']) ? $config['system']['remotebackup']['GDriveBackupCount'] : null;
-    $pconfig['GDrivePassword'] = isset($config['system']['remotebackup']['GDrivePassword']) ? $config['system']['remotebackup']['GDrivePassword'] : null;
+    // collect all settings from backup providers
+    foreach ($backupFactory->listProviders() as $providerId => $provider) {
+        foreach ($provider['handle']->getConfigurationFields() as $field) {
+            $fieldId = $providerId . "_" .$field['name'];
+            $pconfig[$fieldId] = $field['value'];
+        }
+    }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
-
-    if (!empty($_POST['restore'])) {
-        $mode = "restore";
-    } elseif (!empty($_POST['download'])) {
-        $mode = "download";
-    } elseif (!empty($_POST['setup_gdrive'])) {
-        $mode = "setup_gdrive";
-    } else {
-        $mode = false;
+    $mode = null;
+    foreach (array_keys($backupFactory->listProviders()) as $providerName) {
+        if (!empty($pconfig["setup_{$providerName}"])) {
+            $mode = "setup_{$providerName}";
+        }
+    }
+    if (!empty($mode)) {
+        if (!empty($pconfig['restore'])) {
+            $mode = "restore";
+        } elseif (!empty($pconfig['download'])) {
+            $mode = "download";
+        }
     }
 
     if ($mode == "download") {
@@ -250,58 +253,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $savemsg .= ' ' . gettext("The system is rebooting now. This may take one minute.");
             }
         }
-    } elseif ( $mode == "setup_gdrive" ){
-        if (!isset($config['system']['remotebackup'])) {
-            $config['system']['remotebackup'] = array() ;
-        }
-        $config['system']['remotebackup']['GDriveEnabled'] = $_POST['GDriveEnabled'];
-        $config['system']['remotebackup']['GDrivePrefixHostname'] = $_POST['GDrivePrefixHostname'];
-        $config['system']['remotebackup']['GDriveEmail'] =   $_POST['GDriveEmail'] ;
-        $config['system']['remotebackup']['GDriveFolderID'] = $_POST['GDriveFolderID'];
-        $config['system']['remotebackup']['GDrivePassword'] = $_POST['GDrivePassword'];
-        if (is_numeric($_POST['GDriveBackupCount'])) {
-            $config['system']['remotebackup']['GDriveBackupCount'] = $_POST['GDriveBackupCount'];
-        } else {
-            $config['system']['remotebackup']['GDriveBackupCount'] = 60;
-        }
-
-        if ( $_POST['GDrivePasswordConfirm'] != $_POST['GDrivePassword'] ) {
-            // log error, but continue
-            $input_errors[] = gettext("The supplied 'Password' and 'Confirm' field values must match.");
-        }
-
-        if (count($input_errors) == 0) {
-            if (is_uploaded_file($_FILES['GDriveP12file']['tmp_name'])) {
-                $data = file_get_contents($_FILES['GDriveP12file']['tmp_name']);
-                $config['system']['remotebackup']['GDriveP12key'] = base64_encode($data);
-            } elseif ($config['system']['remotebackup']['GDriveEnabled'] != "on") {
-                unset($config['system']['remotebackup']['GDriveP12key']);
-            }
-
-            $savemsg = gettext("Google Drive backup settings have been saved.");
-
-            write_config();
-            system_cron_configure();
-
-            try {
-                $provider = $backupFactory->getProvider("GDrive");
-                $filesInBackup = $provider['handle']->backup();
-            } catch (Exception $e) {
-                $filesInBackup = array();
-            }
-
-            if (empty($config['system']['remotebackup']['GDriveEnabled'])) {
-                /* unused */
-            } elseif (count($filesInBackup) == 0) {
-                $input_errors[] = gettext("Google Drive communication failure");
+    } elseif (!empty($mode)){
+        // setup backup provider, collect provider settings and save/validate
+        $providerId = substr($mode, 6);
+        $provider = $backupFactory->getProvider($providerId);
+        $providerSet = array();
+        foreach ($provider['handle']->getConfigurationFields() as $field) {
+            $fieldId = $providerId . "_" .$field['name'];
+            if ($field['type'] == 'file') {
+                // extract file to sent to setConfiguration()
+                if (is_uploaded_file($_FILES[$fieldId]['tmp_name'])) {
+                    $providerSet[$field['name']] = file_get_contents($_FILES[$fieldId]['tmp_name']);
+                } else {
+                    $providerSet[$field['name']] = null;
+                }
             } else {
-                $input_messages = gettext("Backup successful, current file list:") . "<br>";
-                foreach ($filesInBackup as $filename) {
-                     $input_messages .= "<br>" . $filename;
+                $providerSet[$field['name']] = $pconfig[$fieldId];
+            }
+        }
+        $input_errors = $provider['handle']->setConfiguration($providerSet);
+        if (count($input_errors) == 0) {
+            if ($provider['handle']->isEnabled()) {
+                try {
+                    $filesInBackup = $provider['handle']->backup();
+                } catch (Exception $e) {
+                    $filesInBackup = array();
+                }
+
+                if (count($filesInBackup) == 0) {
+                    $input_errors[] = gettext("communication failure");
+                } else {
+                    $input_messages = gettext("Backup successful, current file list:") . "<br>";
+                    foreach ($filesInBackup as $filename) {
+                         $input_messages .= "<br>" . $filename;
+                    }
                 }
             }
+            system_cron_configure();
         }
-
     }
 }
 
@@ -437,80 +426,65 @@ $( document ).ready(function() {
               </tbody>
             </table>
           </div>
-          <div class="content-box tab-content table-responsive">
+
+
+<?php
+          foreach ($backupFactory->listProviders() as $providerId => $provider):?>
+          <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
-              <thead style="display: none;">
-                <tr>
-                  <th class="col-sm-1"></th>
-                  <th class="col-sm-3"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th colspan="2" style="vertical-align:top" class="listtopic">
-                    <?=gettext("Google Drive"); ?>
-                  </th>
-                </tr>
-                <tr>
-                  <td><?=gettext("Enable"); ?> </td>
-                  <td>
-                    <input name="GDriveEnabled" type="checkbox" <?=!empty($pconfig['GDriveEnabled']) ? "checked" : "";?> >
-                  </td>
-                </tr>
-                <tr>
-                  <td><?=gettext("Email Address"); ?> </td>
-                  <td>
-                    <input name="GDriveEmail" value="<?=$pconfig['GDriveEmail'];?>" type="text">
-                  </td>
-                </tr>
-                <tr>
-                  <td><?=gettext("P12 key"); ?> <?=!empty($pconfig['GDriveP12key']) ? gettext("(replace)") : gettext("(not loaded)"); ?> </td>
-                  <td>
-                    <input name="GDriveP12file" type="file">
-                  </td>
-                </tr>
-                <tr>
-                  <td><?=gettext("Folder ID"); ?> </td>
-                  <td>
-                    <input name="GDriveFolderID" value="<?=$pconfig['GDriveFolderID'];?>" type="text">
-                  </td>
-                </tr>
-                <tr>
-                  <td><?=gettext("Prefix hostname to backupfile"); ?> </td>
-                  <td>
-                    <input name="GDrivePrefixHostname" type="checkbox" <?=!empty($pconfig['GDrivePrefixHostname']) ? "checked" : "";?> >
-                  </td>
-                </tr>
-                <tr>
-                  <td><?=gettext("Backup Count"); ?> </td>
-                  <td>
-                    <input name="GDriveBackupCount" value="<?=$pconfig['GDriveBackupCount'];?>"  type="text">
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan=2><?=gettext("Password protect your data"); ?> :</td>
-                </tr>
-                <tr>
-                  <td><?=gettext("Password :"); ?></td>
-                  <td>
-                    <input name="GDrivePassword" type="password" value="<?=$pconfig['GDrivePassword'];?>" />
-                  </td>
-                </tr>
-                <tr>
-                  <td><?=gettext("Confirm :"); ?></td>
-                  <td>
-                    <input name="GDrivePasswordConfirm" type="password" value="<?=$pconfig['GDrivePassword'];?>" />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <input name="setup_gdrive" class="btn btn-primary" id="Gdrive" value="<?=gettext("Setup/Test Google Drive");?>" type="submit">
-                  </td>
-                  <td></td>
-                </tr>
-              </tbody>
+                <thead>
+                    <tr>
+                        <th colspan="2"><?=$provider['handle']->getName();?></th>
+                    </tr>
+                </thead>
+                <tbody>
+<?php
+                foreach ($provider['handle']->getConfigurationFields() as $field):
+                    $fieldId = $providerId . "_" .$field['name'];?>
+                    <tr>
+                        <td style="width:22%;">
+                            <a id="help_for_<?=$fieldId;?>" href="#" class="showhelp">
+                                <i class="fa fa-info-circle <?=empty($field['help']) ? "text-muted" : "";?>"></i></a> <?=$field['label'];?>
+                        </td>
+                        <td>
+<?php
+                        if ($field['type'] == 'checkbox'):?>
+                        <input name="<?=$fieldId;?>" type="checkbox" <?=!empty($pconfig[$fieldId]) ? "checked" : "";?> >
+<?php
+                        elseif ($field['type'] == 'text'):?>
+                        <input name="<?=$fieldId;?>" value="<?=$pconfig[$fieldId];?>" type="text">
+
+<?php
+                        elseif ($field['type'] == 'file'):?>
+                        <input name="<?=$fieldId;?>" type="file">
+<?php
+                        elseif ($field['type'] == 'password'):?>
+
+                        <input name="<?=$fieldId;?>" type="password" value="<?=$field['value'];?>" />
+<?php
+                        endif;?>
+                        <div class="hidden" data-for="help_for_<?=$fieldId;?>">
+                            <?=!empty($field['help']) ? $field['help'] : "";?>
+                        </div>
+                        </td>
+                    </tr>
+<?php
+                endforeach;?>
+
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2">
+                            <input name="setup_<?=$providerId;?>" class="btn btn-primary"
+                            value="<?=sprintf(gettext("Setup/Test %s"), $provider['handle']->getName());?>"
+                            type="submit">
+                        </td>
+                    </tr>
+                </tfoot>
             </table>
           </div>
+<?php
+          endforeach;?>
         </section>
       </form>
     </div>
