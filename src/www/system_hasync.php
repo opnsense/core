@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if (!empty($pconfig['pfsyncpeerip']) && is_ipaddrv4($pconfig['pfsyncpeerip'])) {
+    if (!empty($pconfig['pfsyncpeerip']) && !is_ipaddrv4($pconfig['pfsyncpeerip'])) {
         $input_errors[] = gettext('The synchronize peer IP must be an IPv4 address or left empty.');
     }
 
