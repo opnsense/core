@@ -335,12 +335,10 @@ $( document ).ready(function() {
       <form method="post" enctype="multipart/form-data">
         <section class="col-xs-12">
           <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped ">
+            <table class="table table-striped">
               <tbody>
                 <tr>
-                  <th colspan="2" style="vertical-align:top" class="listtopic">
-                    <?=gettext("Download"); ?>
-                  </th>
+                  <th colspan="2"><?= gettext('Download') ?></th>
                 </tr>
                 <tr>
                   <td>
@@ -376,12 +374,10 @@ $( document ).ready(function() {
             </table>
           </div>
           <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped ">
+            <table class="table table-striped">
               <tbody>
                 <tr>
-                  <th colspan="2" style="vertical-align:top" class="listtopic">
-                    <?=gettext("Restore"); ?>
-                  </th>
+                  <th colspan="2"><?= gettext('Restore') ?></th>
                 </tr>
                 <tr>
                   <td>
@@ -427,17 +423,14 @@ $( document ).ready(function() {
             </table>
           </div>
 
-
 <?php
           foreach ($backupFactory->listProviders() as $providerId => $provider):?>
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
-                <thead>
-                    <tr>
-                        <th colspan="2"><?=$provider['handle']->getName();?></th>
-                    </tr>
-                </thead>
                 <tbody>
+                    <tr>
+                        <th colspan="2"><?= $provider['handle']->getName() ?></th>
+                    </tr>
 <?php
                 foreach ($provider['handle']->getConfigurationFields() as $field):
                     $fieldId = $providerId . "_" .$field['name'];?>
