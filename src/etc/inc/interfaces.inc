@@ -1571,8 +1571,8 @@ function interfaces_carp_setup($verbose = false)
     }
 
     if (!empty($carp_sync_int) && isset($config['hasync']['pfsyncenabled'])) {
-        if (isset($config['hasync']['pfsyncpeerip']) && is_ipaddr($config['hasync']['pfsyncpeerip'])) {
-            $syncpeer = "syncpeer " . $config['hasync']['pfsyncpeerip'];
+        if (!empty($config['hasync']['pfsyncpeerip']) && is_ipaddrv4($config['hasync']['pfsyncpeerip'])) {
+            $syncpeer = "syncpeer {$config['hasync']['pfsyncpeerip']}";
         } else {
             $syncpeer = "-syncpeer";
         }

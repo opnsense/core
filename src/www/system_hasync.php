@@ -69,9 +69,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$tag] = null;
         }
     }
-
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_errors = array();
     $pconfig = $_POST;
+
     foreach ($checkbox_names as $name) {
         if (isset($pconfig[$name])) {
             $a_hasync[$name] = $pconfig[$name];
@@ -79,27 +80,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_hasync[$name] = false;
         }
     }
-    $a_hasync['pfsyncpeerip']    = $pconfig['pfsyncpeerip'];
-    $a_hasync['pfsyncinterface'] = $pconfig['pfsyncinterface'];
-    $a_hasync['synchronizetoip'] = $pconfig['synchronizetoip'];
-    $a_hasync['username']        = $pconfig['username'];
-    $a_hasync['password']        = $pconfig['password'];
-    write_config("Updated High Availability configuration");
-    interfaces_carp_setup();
-    header(url_safe('Location: /system_hasync.php'));
-    exit;
+
+    if (!empty($pconfig['pfsyncpeerip']) && is_ipaddrv4($pconfig['pfsyncpeerip'])) {
+        $input_errors[] = gettext('The synchronize peer IP must be an IPv4 address or left empty.');
+    }
+
+    if (!count($input_errors)) {
+        $a_hasync['pfsyncinterface'] = $pconfig['pfsyncinterface'];
+        $a_hasync['synchronizetoip'] = $pconfig['synchronizetoip'];
+        $a_hasync['username'] = $pconfig['username'];
+        $a_hasync['password'] = $pconfig['password'];
+
+        if (!empty($pconfig['pfsyncpeerip'])) {
+            $a_hasync['pfsyncpeerip'] = $pconfig['pfsyncpeerip'];
+        } elseif (isset($a_hasync['pfsyncpeerip'])) {
+            unset($a_hasync['pfsyncpeerip']);
+        }
+
+        write_config('Updated High Availability configuration');
+        interfaces_carp_setup();
+
+        header(url_safe('Location: /system_hasync.php'));
+        exit;
+    }
 }
 
 legacy_html_escape_form_data($pconfig);
-include("head.inc");
-?>
 
+include("head.inc");
+
+?>
 <body>
 <?php include("fbegin.inc"); ?>
 <section class="page-content-main">
   <form method="post">
     <div class="container-fluid">
       <div class="row">
+<?php
+    if (isset($input_errors) && count($input_errors)) {
+        print_input_errors($input_errors);
+    }
+?>
         <section class="col-xs-12">
           <div class="tab-content content-box col-xs-12 __mb">
             <div class="table-responsive">
@@ -163,7 +184,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_pfsyncpeerip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize Peer IP') ?></td>
                   <td>
-                    <input name="pfsyncpeerip" type="text" value="<?=$pconfig['pfsyncpeerip']; ?>" />
+                    <input name="pfsyncpeerip" type="text" placeholder="224.0.0.240" value="<?=$pconfig['pfsyncpeerip']; ?>" />
                     <div class="hidden" data-for="help_for_pfsyncpeerip">
                       <?=gettext('Setting this option will force pfsync to synchronize its state table to this IP address. The default is directed multicast.') ?>
                     </div>
