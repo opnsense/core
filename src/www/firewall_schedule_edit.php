@@ -987,7 +987,7 @@ function removeRow(el) {
                         </td>
                       </tr>
                       <tr>
-                        <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Schedule repeat");?></td>
+                        <th colspan="2"><?= gettext('Schedule repeat') ?></th>
                       </tr>
                       <tr>
                         <td><?=gettext("Configured Ranges");?></td>

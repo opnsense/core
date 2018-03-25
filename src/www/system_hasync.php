@@ -126,10 +126,10 @@ include("head.inc");
             <div class="table-responsive">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <td style="width:22%"><strong><?=gettext('State Synchronization') ?></strong></td>
+                  <td style="width:22%"><?= gettext('State Synchronization') ?></td>
                   <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
-                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                    <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
                   </td>
                 </tr>
                 <tr>
@@ -197,19 +197,19 @@ include("head.inc");
             <div class="table-responsive">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <th colspan="2" class="listtopic"><?=gettext('Configuration Synchronization Settings (XMLRPC Sync)') ?></th>
+                  <td colspan="2"><?= gettext('Configuration Synchronization Settings (XMLRPC Sync)') ?></td>
                 </tr>
                 <tr>
-                  <td style="width:22%"><a id="help_for_synchronizetoip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize Config to IP') ?></td>
+                  <td style="width:22%"><a id="help_for_synchronizetoip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Synchronize Config to IP') ?></td>
                   <td>
                     <input name="synchronizetoip" type="text" value="<?=$pconfig['synchronizetoip']; ?>" />
                     <div class="hidden" data-for="help_for_synchronizetoip">
                       <?=gettext('Enter the IP address of the firewall to which the selected configuration sections should be synchronized.') ?><br />
                       <div class="well">
-                        <lu>
+                        <ul>
                           <li><?=sprintf(gettext('When using XMLRPC sync to a backup machine running on another port/protocol please input the full url (example: %s)'), 'https://192.168.1.1:444/') ?></li>
                           <li><?=gettext('For setting up the backup machine leave this field empty, and do not forget to allow incoming connections on the specified interface for synchronization.') ?></li>
-                        </lu>
+                        </ul>
                       </div>
                     </div>
                   </td>
@@ -342,8 +342,14 @@ include("head.inc");
                 </tr>
 <?php
                 endforeach;?>
+              </table>
+            </div>
+          </div>
+          <div class="tab-content content-box col-xs-12">
+            <div class="table-responsive">
+              <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <td></td>
+                  <td style="width:22%"></td>
                   <td>
                     <input name="Submit" type="submit" class="btn btn-primary" value="Save" />
                     <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/system_hasync.php'" />

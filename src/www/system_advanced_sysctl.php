@@ -200,12 +200,11 @@ $( document ).ready(function() {
             else : ?>
             <form method="post">
               <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Edit system tunable"); ?></th>
-                  </tr>
-                </thead>
                 <tbody>
+                  <tr>
+                    <td style="width:22%"><?= gettext('Edit system tunable') ?></td>
+                    <td style="width:78%"></td>
+                  </tr>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Tunable"); ?></td>
                     <td>

@@ -730,7 +730,7 @@ function showchange() {
 
 				break;
 			case "listtopic":
-				echo "<td colspan=\"2\" class=\"listtopic\"><strong>" . gettext($field['name']) . "</strong>\n";
+				echo "<td colspan=\"2\"><strong>" . gettext($field['name']) . "</strong>\n";
 
 				break;
 			case "subnet_select":

@@ -238,11 +238,11 @@ include("head.inc");
     }
 ?>
     <section class="col-xs-12">
-      <div class="content-box tab-content">
-        <form method="post">
+      <form method="post">
+        <div class="content-box tab-content __mb">
           <table class="table table-striped opnsense_standard_table_form">
             <tr>
-              <td style="width:22%"><strong><?=gettext("System");?></strong></td>
+              <td style="width:22%"><?= gettext('System') ?></td>
               <td style="width:78%; text-align:right">
                 <small><?=gettext("full help"); ?> </small>
                 <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
@@ -326,8 +326,13 @@ include("head.inc");
                 </div>
               </td>
             </tr>
+          </table>
+        </div>
+        <div class="content-box tab-content __mb">
+          <table class="table table-striped opnsense_standard_table_form">
             <tr>
-              <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Networking"); ?></th>
+              <td style="width:22%"><?= gettext('Networking') ?></td>
+              <td style="width:78%"></td>
             </tr>
             <tr>
               <td><a id="help_for_prefer_ipv4" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer IPv4 over IPv6"); ?></td>
@@ -423,15 +428,19 @@ include("head.inc");
                 </div>
               </td>
             </tr>
+          </table>
+        </div>
+        <div class="content-box tab-content">
+          <table class="table table-striped opnsense_standard_table_form">
             <tr>
-              <td></td>
+              <td style="width:22%"></td>
               <td>
                 <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
               </td>
             </tr>
           </table>
-        </form>
-      </div>
+        </div>
+      </form>
     </section>
     </div>
   </div>
