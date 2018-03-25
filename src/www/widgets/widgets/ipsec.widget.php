@@ -210,12 +210,7 @@ else {
    <table class="table table-striped" style="width:100%; border:0; cellpadding:0; cellspacing:0;">
     <tr>
       <td>
-        <span class="red">
-          <strong>
-            <?= gettext('Note: There are no configured IPsec Tunnels') ?><br />
-          </strong>
-        </span>
-        <?= sprintf(gettext('You can configure your IPsec %shere%s.'), '<a href="vpn_ipsec.php">', '</a>'); ?>
+        <?= gettext('Note: There are no configured IPsec Tunnels') ?>
       </td>
     </tr>
   </table>
