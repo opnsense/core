@@ -108,12 +108,12 @@ $areas = array(
     'wol' => gettext('Wake on LAN'),
 );
 
-$do_reboot = false;
 $backupFactory = new OPNsense\Backup\BackupFactory();
+$do_reboot = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    // collect all settings from backup providers
+
     foreach ($backupFactory->listProviders() as $providerId => $provider) {
         foreach ($provider['handle']->getConfigurationFields() as $field) {
             $fieldId = $providerId . "_" .$field['name'];
@@ -124,12 +124,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
     $pconfig = $_POST;
     $mode = null;
+
     foreach (array_keys($backupFactory->listProviders()) as $providerName) {
         if (!empty($pconfig["setup_{$providerName}"])) {
             $mode = "setup_{$providerName}";
         }
     }
-    if (!empty($mode)) {
+
+    if (empty($mode)) {
         if (!empty($pconfig['restore'])) {
             $mode = "restore";
         } elseif (!empty($pconfig['download'])) {
@@ -427,19 +429,18 @@ $( document ).ready(function() {
           foreach ($backupFactory->listProviders() as $providerId => $provider):?>
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
-                <tbody>
                     <tr>
-                        <th colspan="2"><?= $provider['handle']->getName() ?></th>
+                        <td colspan="2"><strong><?= $provider['handle']->getName() ?></strong></td>
                     </tr>
 <?php
                 foreach ($provider['handle']->getConfigurationFields() as $field):
                     $fieldId = $providerId . "_" .$field['name'];?>
                     <tr>
-                        <td style="width:22%;">
+                        <td style="width:22%">
                             <a id="help_for_<?=$fieldId;?>" href="#" class="showhelp">
                                 <i class="fa fa-info-circle <?=empty($field['help']) ? "text-muted" : "";?>"></i></a> <?=$field['label'];?>
                         </td>
-                        <td>
+                        <td style="width:78%">
 <?php
                         if ($field['type'] == 'checkbox'):?>
                         <input name="<?=$fieldId;?>" type="checkbox" <?=!empty($pconfig[$fieldId]) ? "checked" : "";?> >
@@ -464,16 +465,14 @@ $( document ).ready(function() {
 <?php
                 endforeach;?>
 
-                </tbody>
-                <tfoot>
                     <tr>
-                        <td colspan="2">
-                            <input name="setup_<?=$providerId;?>" class="btn btn-primary"
-                            value="<?=sprintf(gettext("Setup/Test %s"), $provider['handle']->getName());?>"
-                            type="submit">
+                        <td></td>
+                        <td>
+                            <button type="submit" name="setup_<?=$providerId;?>" value="yes" class="btn btn-primary">
+                              <?= sprintf(gettext("Setup/Test %s"), $provider['handle']->getName()) ?>
+                            </button>
                         </td>
                     </tr>
-                </tfoot>
             </table>
           </div>
 <?php
