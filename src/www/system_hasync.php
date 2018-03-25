@@ -126,7 +126,7 @@ include("head.inc");
             <div class="table-responsive">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <td style="width:22%"><?= gettext('State Synchronization') ?></td>
+                  <td style="width:22%"><strong><?= gettext('State Synchronization') ?></strong></td>
                   <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
                     <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
@@ -197,7 +197,7 @@ include("head.inc");
             <div class="table-responsive">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <td colspan="2"><?= gettext('Configuration Synchronization Settings (XMLRPC Sync)') ?></td>
+                  <td colspan="2"><strong><?= gettext('Configuration Synchronization Settings (XMLRPC Sync)') ?></strong></td>
                 </tr>
                 <tr>
                   <td style="width:22%"><a id="help_for_synchronizetoip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Synchronize Config to IP') ?></td>
