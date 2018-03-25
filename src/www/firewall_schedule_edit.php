@@ -622,7 +622,7 @@ function insertElements(tempFriendlyTime, starttimehour, starttimemin, stoptimeh
     tbody = d.getElementById("scheduletable").getElementsByTagName("tbody").item(0);
     tr = d.createElement("tr");
     td = d.createElement("td");
-    td.innerHTML= "<span class='vexpl'>" + tempFriendlyTime + "<\/span>";
+    td.innerHTML= "<span>" + tempFriendlyTime + "<\/span>";
     tr.appendChild(td);
 
     td = d.createElement("td");
@@ -876,20 +876,20 @@ function removeRow(el) {
                                         echo "<tr>";
                                       }
                                       if ($firstdayofmonth == $positioncounter){?>
-                                        <td style="text-align:center; cursor: pointer;" class="listr" id="w<?=$weekcounter;?>p<?=$positioncounter;?>" onclick="daytoggle('w<?=$weekcounter;?>p<?=$positioncounter;?>-m<?=$monthcounter;?>d<?=$daycounter;?>');">
+                                        <td style="text-align:center; cursor: pointer;" id="w<?=$weekcounter;?>p<?=$positioncounter;?>" onclick="daytoggle('w<?=$weekcounter;?>p<?=$positioncounter;?>-m<?=$monthcounter;?>d<?=$daycounter;?>');">
                                         <?php
                                           echo $daycounter;
                                           $daycounter++;
                                           $firstdayprinted = TRUE;
                                           echo "</td>";
                                       } elseif ($firstdayprinted == TRUE && $daycounter <= $numberofdays){?>
-                                      <td style="text-align:center; cursor: pointer;" class="listr" id="w<?=$weekcounter;?>p<?=$positioncounter;?>" onclick="daytoggle('w<?=$weekcounter;?>p<?=$positioncounter;?>-m<?=$monthcounter;?>d<?=$daycounter;?>');">
+                                      <td style="text-align:center; cursor: pointer;" id="w<?=$weekcounter;?>p<?=$positioncounter;?>" onclick="daytoggle('w<?=$weekcounter;?>p<?=$positioncounter;?>-m<?=$monthcounter;?>d<?=$daycounter;?>');">
                                         <?php
                                           echo $daycounter;
                                           $daycounter++;
                                           echo "</td>";
                                       } else {
-                                        echo "<td style=\"text-align:center\" class=\"listr\"></td>";
+                                        echo "<td style=\"text-align:center\"></td>";
                                       }
 
                                       if ($positioncounter == 7 || $daycounter > $numberofdays) {

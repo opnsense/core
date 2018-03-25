@@ -807,7 +807,7 @@ include("head.inc");
                   <table class="table table-striped">
                     <tbody>
                       <tr>
-                        <td style="width:22%; vertical-align:top">&nbsp;</td>
+                        <td style="width:22%">&nbsp;</td>
                         <td style="width:78%">
                           <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                           <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_ppps.php'" />

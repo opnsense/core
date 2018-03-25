@@ -202,7 +202,7 @@ $( document ).ready(function() {
               <table class="table table-striped">
                 <tbody>
                   <tr>
-                    <td style="width:22%"><?= gettext('Edit system tunable') ?></td>
+                    <td style="width:22%"><strong><?= gettext('Edit system tunable') ?></strong></td>
                     <td style="width:78%"></td>
                   </tr>
                   <tr>

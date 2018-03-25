@@ -225,7 +225,7 @@ include("head.inc");
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td style="width:22%"><?= gettext('Cryptographic Hardware Acceleration') ?></td>
+                <td style="width:22%"><strong><?= gettext('Cryptographic Hardware Acceleration') ?></strong></td>
                 <td style="width:78%; text-align:right">
                   <small><?=gettext("full help"); ?> </small>
                   <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
@@ -277,7 +277,7 @@ include("head.inc");
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td style="width:22%"><?= gettext('Thermal Sensors') ?></td>
+                <td style="width:22%"><strong><?= gettext('Thermal Sensors') ?></strong></td>
                 <td style="witdh:78%"></td>
               </tr>
               <tr>
@@ -308,7 +308,7 @@ include("head.inc");
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td style="width:22%"><?= gettext('Periodic Backups') ?></td>
+                <td style="width:22%"><strong><?= gettext('Periodic Backups') ?></strong></td>
                 <td style="witdh:78%"></td>
               </tr>
               <tr>
@@ -389,7 +389,7 @@ include("head.inc");
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td style="width:22%"><?= gettext('Power Savings') ?></td>
+                <td style="width:22%"><strong><?= gettext('Power Savings') ?></strong></td>
                 <td style="witdh:78%"></td>
               </tr>
               <tr>
@@ -477,7 +477,7 @@ include("head.inc");
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td colspan="2"><?= gettext('Disk / Memory Settings (reboot to apply changes)') ?></td>
+                <td colspan="2"><strong><?= gettext('Disk / Memory Settings (reboot to apply changes)') ?></strong></td>
               </tr>
               <tr>
                 <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('Swap file'); ?></td>

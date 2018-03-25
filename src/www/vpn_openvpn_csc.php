@@ -670,7 +670,7 @@ if ($act!="new" && $act!="edit") {
                     </td>
                   </tr>
                   <tr>
-                    <td style="vertical-align:top">&nbsp;</td>
+                    <td>&nbsp;</td>
                     <td>
                       <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                       <input name="act" type="hidden" value="<?=$act;?>" />

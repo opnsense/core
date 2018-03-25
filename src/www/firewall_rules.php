@@ -327,7 +327,7 @@ $( document ).ready(function() {
                 if (!isset($config['system']['ipv6allow']) &&
                         ($selected_if == 'FloatingRules')):
 ?>
-                  <tr style="vertical-align:top">
+                  <tr>
                     <td>&nbsp;</td>
                     <td><span class="glyphicon glyphicon-remove text-danger"></span></td>
                     <td>IPv6 *</td>
@@ -349,7 +349,7 @@ $( document ).ready(function() {
                         || ((count($config['interfaces']) == 1) && ($selected_if == 'wan')))):
                         $alports = implode('<br />', filter_core_antilockout_ports());
 ?>
-                  <tr style="vertical-align:top">
+                  <tr>
                     <td>&nbsp;</td>
                     <td><span class="fa fa-play text-success"></span></td>
                     <td>*</td>
@@ -386,14 +386,14 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">*</td>
                     <td class="hidden-xs hidden-sm">&nbsp;</td>
                     <td class="hidden-xs hidden-sm"><?=gettext("Block private networks");?></td>
-                    <td style="vertical-align:middle" class="list nowrap">
-                        <a href="interfaces.php?if=<?=$selected_if?>#rfc1918" data-toggle="tooltip" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <td class="nowrap">
+                      <a href="interfaces.php?if=<?=$selected_if?>#rfc1918" data-toggle="tooltip" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
                     </td>
                   </tr>
 <?php
               endif;
               if (isset($config['interfaces'][$selected_if]['blockbogons'])): ?>
-                  <tr style="vertical-align:top" id="frrfc1918">
+                  <tr id="frrfc1918">
                     <td>&nbsp;</td>
                     <td>
                       <span class="glyphicon glyphicon-remove text-danger"></span>
@@ -658,7 +658,7 @@ $( document ).ready(function() {
                   if (!$interface_has_rules):
 ?>
                   <tr>
-                    <td colspan="11" style="text-align:center; vertical-align:middle">
+                    <td colspan="11">
                     <span class="text-muted">
                 <?php if ($selected_if == 'FloatingRules'): ?>
                       <?= gettext('No floating rules are currently defined. Floating rules are ' .

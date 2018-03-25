@@ -454,11 +454,11 @@ function showchange() {
 			switch ($field['type']) {
 			case "input":
 				if ($field['displayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['displayname']);
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['name']);
 					echo ":</td>\n";
 				}
@@ -477,18 +477,18 @@ function showchange() {
 				}
 				break;
 			case "text":
-				echo "<td colspan=\"2\" style=\"text-align:center\" class=\"vncell\">\n";
+				echo "<td colspan=\"2\" style=\"text-align:center\">\n";
 				if($field['description'] <> "") {
 					echo "<center><br /> " . gettext($field['description']) . "</center>";
 				}
 				break;
 			case "inputalias":
 				if ($field['displayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['displayname']);
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['name']);
 					echo ":</td>\n";
 				}
@@ -511,7 +511,7 @@ function showchange() {
 				$size = "";
 				$multiple = "";
 				$name = strtolower($name);
-				echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+				echo "<td style=\"width:22%; text-align:right\">\n";
 				echo ($field['displayname'] ? gettext($field['displayname']) : gettext($field['name'])) . ":\n";
 				echo "</td>";
 				echo "<td class=\"vtable\">\n";
@@ -554,11 +554,11 @@ function showchange() {
 				break;
 			case "password":
 				if ($field['displayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['displayname']);
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['name']);
 					echo ":</td>\n";
 				}
@@ -578,7 +578,7 @@ function showchange() {
 				$size = "";
 				$multiple = "";
 				$name = strtolower($name);
-				echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+				echo "<td style=\"width:22%; text-align:right\">\n";
 				echo ($field['displayname'] ? gettext($field['displayname']) : gettext($field['name'])) . ":\n";
 				echo "</td>";
 				echo "<td class=\"vtable\">\n";
@@ -619,7 +619,7 @@ function showchange() {
 				$size = "";
 				$multiple = "";
 				$name = strtolower($name);
-				echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+				echo "<td style=\"width:22%; text-align:right\">\n";
 				echo ($field['displayname'] ? gettext($field['displayname']) : gettext($field['name'])) . ":\n";
 				echo "</td>";
 				echo "<td class=\"vtable\">\n";
@@ -657,11 +657,11 @@ function showchange() {
 				break;
 			case "select":
 				if ($field['displayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['displayname']);
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['name']);
 					echo ":</td>\n";
 				}
@@ -697,11 +697,11 @@ function showchange() {
 				break;
 			case "textarea":
 				if ($field['displayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['displayname']);
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['name']);
 					echo ":</td>";
 				}
@@ -735,11 +735,11 @@ function showchange() {
 				break;
 			case "subnet_select":
 				if ($field['displayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['displayname']);
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['name']);
 					echo ":</td>";
 				}
@@ -771,11 +771,11 @@ function showchange() {
 				$languagelist = get_locale_list();
 
 				if ($field['displayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['displayname']);
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['name']);
 					echo ":</td>";
 				}
@@ -800,11 +800,11 @@ function showchange() {
 				$timezonelist = get_zoneinfo();
 
 				if ($field['displayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['displayname']);
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['name']);
 					echo ":</td>";
 				}
@@ -829,11 +829,11 @@ function showchange() {
 				break;
 			case "checkbox":
 				if ($field['displayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['displayname']);
 					echo ":</td>\n";
 				} else if(!$field['dontdisplayname']) {
-					echo "<td style=\"width:22%; text-align:right\" class=\"vncellreq\">\n";
+					echo "<td style=\"width:22%; text-align:right\">\n";
 					echo gettext($field['name']);
 					echo ":</td>";
 				}
