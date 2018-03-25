@@ -43,9 +43,9 @@ class M1_0_0 extends BaseModelMigration
         srand();
         $model->general->httpdUsername = 'root';
         $model->general->httpdPassword = substr(
-             str_shuffle(str_repeat('0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz', 32)),
-             rand(0, 16),
-             rand(17, 32)
+            str_shuffle(str_repeat('0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz', 32)),
+            rand(0, 16),
+            rand(17, 32)
         );
 
         /* get number of cpus and calculate load average limits */

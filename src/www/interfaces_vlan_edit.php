@@ -86,13 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             break;
         }
     }
-    if (isset($config['qinqs']['qinqentry'])) {
-        foreach ($config['qinqs']['qinqentry'] as $qinq) {
-            if ($qinq['tag'] == $pconfig['tag'] && $qinq['if'] == $pconfig['if']) {
-                $input_errors[] = gettext("A QinQ VLAN exists with this tag please remove it to use this tag with.");
-            }
-        }
-    }
 
     if (count($input_errors) == 0) {
         $confif = "";

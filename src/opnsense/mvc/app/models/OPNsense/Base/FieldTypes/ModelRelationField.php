@@ -60,12 +60,12 @@ class ModelRelationField extends BaseField
     /**
      * @var array|null model settings to use for validation
      */
-     private $mdlStructure = null;
+    private $mdlStructure = null;
 
      /**
       * @var boolean selected options from the same model
       */
-     private $internalOptionsFromThisModel = false;
+    private $internalOptionsFromThisModel = false;
 
     /**
      * @var string cache relations
@@ -76,7 +76,7 @@ class ModelRelationField extends BaseField
      * load model option list
      * @param $force force option load if we already seen this model before
      */
-    private function loadModelOptions($force=false)
+    private function loadModelOptions($force = false)
     {
         // only collect options once per source/filter combination, we use a static to save our unique option
         // combinations over the running application.
@@ -106,7 +106,7 @@ class ModelRelationField extends BaseField
                 $groups = array();
 
                 $searchItems = $modelObj->getNodeByReference($modelData['items']);
-                if (!empty($searchItems)){
+                if (!empty($searchItems)) {
                     foreach ($modelObj->getNodeByReference($modelData['items'])->__items as $node) {
                         if (!isset($node->getAttributes()['uuid']) || $node->$displayKey == null) {
                             continue;

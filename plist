@@ -123,7 +123,6 @@
 /usr/local/etc/rc.newwanip
 /usr/local/etc/rc.newwanipv6
 /usr/local/etc/rc.openvpn
-/usr/local/etc/rc.plugins_configure
 /usr/local/etc/rc.reboot
 /usr/local/etc/rc.reload_all
 /usr/local/etc/rc.reload_interfaces
@@ -411,6 +410,10 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Radius.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/TOTP.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Voucher.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Backup/BackupFactory.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Backup/Base.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Backup/GDrive.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Backup/IBackupProvider.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Base/Filters/QueryFilter.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Base/UIModelGrid.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Base/ViewTranslator.php
@@ -1067,8 +1070,6 @@
 /usr/local/www/interfaces_lagg_edit.php
 /usr/local/www/interfaces_ppps.php
 /usr/local/www/interfaces_ppps_edit.php
-/usr/local/www/interfaces_qinq.php
-/usr/local/www/interfaces_qinq_edit.php
 /usr/local/www/interfaces_vlan.php
 /usr/local/www/interfaces_vlan_edit.php
 /usr/local/www/interfaces_wireless.php

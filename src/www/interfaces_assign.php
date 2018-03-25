@@ -102,15 +102,6 @@ function list_interfaces() {
             }
         }
     }
-    /* QinQ interfaces can't be directly extracted from config without additional logic */
-    if (isset($config['qinqs']['qinqentry'])) {
-        foreach ($config['qinqs']['qinqentry'] as $qinq) {
-            $interfaces["vlan{$qinq['tag']}"]= array('descr' => "VLAN {$qinq['tag']}");
-            foreach (explode(' ', $qinq['members']) as $qinqif) { // QinQ members
-                $interfaces["vlan{$qinq['tag']}_{$qinqif}"] = array( 'descr' => "QinQ {$qinqif}");
-            }
-        }
-    }
 
     // enforce constraints
     foreach ($interfaces as $intf_id => $intf_details) {

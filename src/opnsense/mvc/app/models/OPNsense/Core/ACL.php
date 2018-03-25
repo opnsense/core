@@ -107,11 +107,8 @@ class ACL
                     $this->userDatabase[$node->name->__toString()]['groups'] = array();
                     $this->userDatabase[$node->name->__toString()]['priv'] = array();
                     foreach ($node->priv as $priv) {
-                        if (substr($priv, 0, 5) == 'page-') {
-                            if (array_key_exists($priv->__toString(), $pageMap)) {
-                                $this->userDatabase[$node->name->__toString()]['priv'][] =
-                                    $pageMap[$priv->__toString()];
-                            }
+                        if (array_key_exists($priv->__toString(), $pageMap)) {
+                            $this->userDatabase[$node->name->__toString()]['priv'][] = $pageMap[$priv->__toString()];
                         }
                     }
                 } elseif ($key == 'group') {
@@ -130,7 +127,7 @@ class ACL
                             $this->userDatabase[$username]["groups"][] = $groupkey;
                         }
                     }
-                } elseif ($node->getName() == "priv" && substr($node->__toString(), 0, 5) == "page-") {
+                } elseif ($node->getName() == "priv") {
                     if (array_key_exists($node->__toString(), $pageMap)) {
                         $this->allGroupPrivs[$groupkey][] = $pageMap[$node->__toString()];
                     }

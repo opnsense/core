@@ -251,130 +251,6 @@ function interface_vlan_configure(&$vlan)
     return $vlanif;
 }
 
-function interface_qinq_configure(&$vlan, $fd = null)
-{
-    global $config;
-
-    if (!is_array($vlan)) {
-        log_error('QinQ compat VLAN: called with wrong options. Problems with config!');
-        return;
-    }
-
-    $qinqif = $vlan['if'];
-    $tag = $vlan['tag'];
-    if (empty($qinqif)) {
-        log_error('interface_qinq_configure called with if undefined.');
-        return;
-    }
-
-    if (!does_interface_exist($qinqif)) {
-        log_error('interface_qinq_configure called with invalid if.');
-        return;
-    }
-
-    $vlanif = interface_vlan_configure($vlan);
-
-    if ($fd == null) {
-        $exec = true;
-        $fd = fopen('/tmp/netgraphcmd', 'w');
-    } else {
-        $exec = false;
-    }
-
-    /* make sure the parent is converted to ng_vlan(4) and is up */
-    interfaces_bring_up($qinqif);
-
-    if (!empty($vlanif) && does_interface_exist($vlanif)) {
-        exec("/usr/sbin/ngctl msg {$vlanif}qinq: gettable", $result);
-        if (empty($result)) {
-            fwrite($fd, "mkpeer {$vlanif}: vlan lower downstream\n");
-            fwrite($fd, "name {$vlanif}:lower {$vlanif}qinq\n");
-            fwrite($fd, "connect {$vlanif}: {$vlanif}qinq: upper nomatch\n");
-        }
-    } else {
-        fwrite($fd, "mkpeer {$vlanif}: vlan lower downstream\n");
-        fwrite($fd, "name {$vlanif}:lower {$vlanif}qinq\n");
-        fwrite($fd, "connect {$vlanif}: {$vlanif}qinq: upper nomatch\n");
-    }
-
-    if (!stristr($qinqif, "_vlan")) {
-        mwexec("/sbin/ifconfig {$qinqif} promisc\n");
-    }
-
-    $macaddr = get_interface_mac($qinqif);
-    if (!empty($vlan['members'])) {
-        $members = explode(" ", $vlan['members']);
-        foreach ($members as $qtag) {
-            $qinq = array();
-            $qinq['tag'] = $qtag;
-            $qinq['if'] = $vlanif;
-            interface_qinq2_configure($qinq, $fd, $macaddr);
-        }
-    }
-    if ($exec) {
-        fclose($fd);
-        mwexec('/usr/sbin/ngctl -f /tmp/netgraphcmd');
-    }
-
-    interfaces_bring_up($qinqif);
-    if (!empty($vlan['members'])) {
-        $members = explode(" ", $vlan['members']);
-        foreach ($members as $qif) {
-            interfaces_bring_up("{$vlanif}_{$qif}");
-        }
-    }
-
-    return $vlanif;
-}
-
-function interfaces_qinq_configure($verbose = false)
-{
-    global $config;
-
-    if (!isset($config['qinqs']['qinqentry'])) {
-        return;
-    }
-
-    if ($verbose) {
-        echo 'Configuring QinQ interfaces...';
-        flush();
-    }
-
-    foreach ($config['qinqs']['qinqentry'] as $qinq) {
-        interface_qinq_configure($qinq);
-    }
-
-    if ($verbose) {
-        echo "done.\n";
-    }
-}
-
-function interface_qinq2_configure(&$qinq, $fd, $macaddr)
-{
-    global $config;
-
-    if (!is_array($qinq)) {
-        log_error('QinQ compat VLAN: called with wrong options. Problems with config!');
-        return;
-    }
-
-    $if = $qinq['if'];
-    $tag = $qinq['tag'];
-    $vlanif = "{$if}_{$tag}";
-    if (empty($if)) {
-        log_error('interface_qinq2_configure called with if undefined.');
-        return;
-    }
-
-    fwrite($fd, "mkpeer {$if}qinq: eiface {$if}{$tag} ether\n");
-    fwrite($fd, "name {$if}qinq:{$if}{$tag} {$if}h{$tag}\n");
-    fwrite($fd, "msg {$if}qinq: addfilter { vlan={$tag} hook=\"{$if}{$tag}\" }\n");
-    fwrite($fd, "msg {$if}h{$tag}: setifname \"{$vlanif}\"\n");
-    fwrite($fd, "msg {$if}h{$tag}: set {$macaddr}\n");
-
-    return $vlanif;
-}
-
 function interfaces_test_wireless_capability($if, $cap)
 {
     $caps = array('hostap' => 'HOSTAP', 'adhoc' => 'IBSS');
@@ -1022,7 +898,6 @@ function interfaces_configure($verbose = false)
     interfaces_create_wireless_clones($verbose);
     interfaces_lagg_configure('', $verbose);
     interfaces_vlan_configure('', $verbose);
-    interfaces_qinq_configure($verbose);
 
     $iflist = get_configured_interface_with_descr();
     $delayed_list = array();
@@ -1696,8 +1571,8 @@ function interfaces_carp_setup($verbose = false)
     }
 
     if (!empty($carp_sync_int) && isset($config['hasync']['pfsyncenabled'])) {
-        if (isset($config['hasync']['pfsyncpeerip']) && is_ipaddr($config['hasync']['pfsyncpeerip'])) {
-            $syncpeer = "syncpeer " . $config['hasync']['pfsyncpeerip'];
+        if (!empty($config['hasync']['pfsyncpeerip']) && is_ipaddrv4($config['hasync']['pfsyncpeerip'])) {
+            $syncpeer = "syncpeer {$config['hasync']['pfsyncpeerip']}";
         } else {
             $syncpeer = "-syncpeer";
         }
@@ -2631,6 +2506,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
         switch ($wancfg['ipaddrv6']) {
             case 'slaac':
             case 'dhcp6':
+                interface_dhcpv6_prepare($interface, $wancfg);
                 interface_dhcpv6_configure($interface, $wancfg);
                 break;
             case '6rd':
@@ -2652,6 +2528,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
                 break;
         }
     }
+
     $intf_stats = legacy_interface_stats();
     if (!empty($wancfg['mtu'])) {
         if (stristr($realif, "_vlan")) {
@@ -3085,8 +2962,6 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
         return;
     }
 
-    interface_dhcpv6_prepare($interface, $wancfg);
-
     /* write DUID if override was set */
     if (!empty($config['system']['ipv6duid'])) {
         $temp = str_replace(':', '', $config['system']['ipv6duid']);
@@ -3099,56 +2974,6 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     }
 
     $wanif = get_real_interface($interface, "inet6");
-
-    $dhcp6cscript = "#!/bin/sh\n";
-    $dhcp6cscript .= "if [ -n '" . (!empty($wancfg['adv_dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
-    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
-    $dhcp6cscript .= "fi\n";
-    $dhcp6cscript .= "case \$REASON in\n";
-    $dhcp6cscript .= "REQUEST|" . (!empty($wancfg['dhcp6norelease']) ? 'EXIT' : 'RELEASE') . ")\n";
-    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
-    $dhcp6cscript .= "\t/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
-    $dhcp6cscript .= "\t;;\n";
-    $dhcp6cscript .= "*)\n";
-    $dhcp6cscript .= "\t;;\n";
-    $dhcp6cscript .= "esac\n";
-
-    if (!@file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript)) {
-        log_error("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.");
-        return;
-    }
-
-    chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
-
-    $dhcp6ccommand = exec_safe(
-        "/usr/local/sbin/dhcp6c %s -c %s -p %s %s",
-        array(
-            '-' . (empty($wancfg['adv_dhcp6_debug']) ? 'd' : 'D' ) . (!empty($wancfg['dhcp6norelease']) ? 'n' : ''),
-            "/var/etc/dhcp6c_{$interface}.conf",
-            "/var/run/dhcp6c_{$wanif}.pid",
-            "{$wanif}"
-        )
-    );
-
-    $rtsoldscript = "#!/bin/sh\n";
-    $rtsoldscript .= "# this file was auto-generated, do not edit\n";
-    $rtsoldscript .= "if [ -n \"\${2}\" ]; then\n";
-    $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_routerv6\n";
-    $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_defaultgwv6\n";
-    $rtsoldscript .= "fi\n";
-    $rtsoldscript .= "if [ -f /var/run/dhcp6c_{$wanif}.pid ]; then\n";
-    $rtsoldscript .= "\t/bin/pkill -F /var/run/dhcp6c_{$wanif}.pid\n";
-    $rtsoldscript .= "\t/bin/sleep 1\n";
-    $rtsoldscript .= "fi\n";
-    $rtsoldscript .= "/usr/bin/logger -t rtsold \"Starting dhcp6 client for interface {$interface}({$wanif})\"\n";
-    $rtsoldscript .= "$dhcp6ccommand\n";
-
-    if (!@file_put_contents("/var/etc/rtsold_{$wanif}_script.sh", $rtsoldscript)) {
-        log_error("Error: cannot open rtsold_{$wanif}_script.sh in interface_dhcpv6_configure() for writing.");
-        return;
-    }
-
-    chmod("/var/etc/rtsold_{$wanif}_script.sh", 0755);
 
     /* accept router advertisements for this interface */
     set_single_sysctl("net.inet6.ip6.accept_rtadv", "1");
@@ -3254,6 +3079,56 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     if (!@file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf)) {
         log_error("Error: cannot open dhcp6c_{$interface}.conf in interface_dhcpv6_configure() for writing.");
     }
+
+    $dhcp6cscript = "#!/bin/sh\n";
+    $dhcp6cscript .= "if [ -n '" . (!empty($wancfg['adv_dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
+    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
+    $dhcp6cscript .= "fi\n";
+    $dhcp6cscript .= "case \$REASON in\n";
+    $dhcp6cscript .= "REQUEST|" . (!empty($wancfg['dhcp6norelease']) ? 'EXIT' : 'RELEASE') . ")\n";
+    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
+    $dhcp6cscript .= "\t/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
+    $dhcp6cscript .= "\t;;\n";
+    $dhcp6cscript .= "*)\n";
+    $dhcp6cscript .= "\t;;\n";
+    $dhcp6cscript .= "esac\n";
+
+    if (!@file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript)) {
+        log_error("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.");
+        return;
+    }
+
+    chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
+
+    $dhcp6ccommand = exec_safe(
+        "/usr/local/sbin/dhcp6c %s -c %s -p %s %s",
+        array(
+            '-' . (empty($wancfg['adv_dhcp6_debug']) ? 'd' : 'D' ) . (!empty($wancfg['dhcp6norelease']) ? 'n' : ''),
+            "/var/etc/dhcp6c_{$interface}.conf",
+            "/var/run/dhcp6c_{$wanif}.pid",
+            "{$wanif}"
+        )
+    );
+
+    $rtsoldscript = "#!/bin/sh\n";
+    $rtsoldscript .= "# this file was auto-generated, do not edit\n";
+    $rtsoldscript .= "if [ -n \"\${2}\" ]; then\n";
+    $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_routerv6\n";
+    $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_defaultgwv6\n";
+    $rtsoldscript .= "fi\n";
+    $rtsoldscript .= "if [ -f /var/run/dhcp6c_{$wanif}.pid ]; then\n";
+    $rtsoldscript .= "\t/bin/pkill -F /var/run/dhcp6c_{$wanif}.pid\n";
+    $rtsoldscript .= "\t/bin/sleep 1\n";
+    $rtsoldscript .= "fi\n";
+    $rtsoldscript .= "/usr/bin/logger -t rtsold \"Starting dhcp6 client for interface {$interface}({$wanif})\"\n";
+    $rtsoldscript .= "$dhcp6ccommand\n";
+
+    if (!@file_put_contents("/var/etc/rtsold_{$wanif}_script.sh", $rtsoldscript)) {
+        log_error("Error: cannot open rtsold_{$wanif}_script.sh in interface_dhcpv6_configure() for writing.");
+        return;
+    }
+
+    chmod("/var/etc/rtsold_{$wanif}_script.sh", 0755);
 }
 
 function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)

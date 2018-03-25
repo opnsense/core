@@ -80,6 +80,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			isc-dhcp43-relay \
 			isc-dhcp43-server \
 			lighttpd \
+			monit \
 			mpd5 \
 			ntp \
 			openssh-portable \
