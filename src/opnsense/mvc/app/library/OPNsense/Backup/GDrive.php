@@ -63,11 +63,13 @@ class Gdrive extends Base implements IBackupProvider
             "name" => "GDriveP12key",
             "type" => "file",
             "label" => gettext("P12 key"),
-            "help" => sprintf(gettext("You need a private key in p12 format to use Google Drive, ".
-            "instructions on how to aquire one can be found here %s "),
-                    "<a href='https://cloud.google.com/storage/docs/authentication#generating-a-private-key'
+            "help" => sprintf(
+                gettext("You need a private key in p12 format to use Google Drive, ".
+                "instructions on how to aquire one can be found here %s "),
+                "<a href='https://cloud.google.com/storage/docs/authentication#generating-a-private-key'
                         target='_blank'>
-                    https://cloud.google.com/storage/docs/authentication#generating-a-private-key</a>"),
+                    https://cloud.google.com/storage/docs/authentication#generating-a-private-key</a>"
+            ),
             "value" => null
         );
         $fields[] = array(
