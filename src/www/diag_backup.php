@@ -337,10 +337,9 @@ $( document ).ready(function() {
       <form method="post" enctype="multipart/form-data">
         <section class="col-xs-12">
           <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped">
-              <tbody>
+            <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <th colspan="2"><?= gettext('Download') ?></th>
+                  <td><strong><?= gettext('Download') ?></strong></td>
                 </tr>
                 <tr>
                   <td>
@@ -372,14 +371,12 @@ $( document ).ready(function() {
                     <?=gettext("Click this button to download the system configuration in XML format."); ?>
                   </td>
                 </tr>
-              </tbody>
             </table>
           </div>
           <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped">
-              <tbody>
+            <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <th colspan="2"><?= gettext('Restore') ?></th>
+                  <td><strong><?= gettext('Restore') ?></strong></td>
                 </tr>
                 <tr>
                   <td>
@@ -421,7 +418,6 @@ $( document ).ready(function() {
                     <?=gettext("Open a configuration XML file and click the button below to restore the configuration."); ?><br/>
                   </td>
                 </tr>
-              </tbody>
             </table>
           </div>
 
