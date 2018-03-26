@@ -31,6 +31,7 @@
 namespace OPNsense\Backup;
 
 use OPNsense\Core\Config;
+use OPNsense\Backup\NextcloudSettings;
 
 /**
  * Class Nextcloud backup
@@ -85,8 +86,8 @@ class Nextcloud extends Base implements IBackupProvider
             $config = $cnf->object();
             foreach ($fields as &$field) {
                 $fieldname = $field['name'];
-                if (isset($config->system->remotebackup->$fieldname)) {
-                    $field['value'] = (string)$config->system->remotebackup->$fieldname;
+                if (isset($config->OPNsense->system->backup->nextcloud->$fieldname)) {
+                    $field['value'] = (string)$config->OPNsense->system->backup->nextcloud->$fieldname;
                 }
             }
         }
@@ -110,46 +111,31 @@ class Nextcloud extends Base implements IBackupProvider
      */
     public function setConfiguration($conf)
     {
-        $input_errors = array();
-        // format of backup directory name
-        if (isset($_POST['nextcloud_backupdir']) && preg_match('/^[a-z0.9-]+$/i', $_POST['nextcloud_backupdir'])) {
-            $input_errors[] = gettext('The Backup Directory can only consist of alphanumeric characters.');
-        }
-        // required fields
-        if (isset($config['system']['remotebackup']['nextcloud_enabled']) && $config['system']['remotebackup']['nextcloud_enabled'])
-        {
-            $fieldval = array(
-                'nextcloud_url' => gettext('An URL for the Nextcloud server must be set.'),
-                'nextcloud_user' => gettext('An user for the Nextcloud server must be set.'),
-                'nextcloud_password' => gettext('An password for a Nextcloud server must be set.')
-            );
-            foreach ($fieldval as $fieldname => $errormsg) {
-                if (empty($config['system']['remotebackup'][$fieldname])) {
-                    $input_errors[] = $errormsg;
-                }
+        $nextcloud = new NextcloudSettings();
+        $unprefixed = array();
+        foreach ($_POST as $postkey => $postvalue) {
+            if(stripos($postkey, 'Nextcloud_') === 0) {
+                $unprefixed[str_replace( 'Nextcloud_' , '' , $postkey)] = $postvalue;
             }
         }
-        if (count($input_errors) == 0) {
-            $config = Config::getInstance()->object();
-            if (!isset($config->system->remotebackup)) {
-                $config->system->remotebackup = array();
-            }
-            foreach ($this->getConfigurationFields() as $field) {
-                $fieldname = $field['name'];
-                if ($field['type'] == 'file') {
-                    if (!empty($conf[$field['name']])) {
-                        $config->system->remotebackup->$fieldname = base64_encode($conf[$field['name']]);
-                    }
-                } elseif (!empty($conf[$field['name']])) {
-                    $config->system->remotebackup->$fieldname = $conf[$field['name']];
-                } else {
-                    unset($config->system->remotebackup->$fieldname);
-                }
-            }
+        if (!isset($unprefixed['nextcloud_enabled'])) {
+            $unprefixed['nextcloud_enabled'] = '0';
+        } else {
+            $unprefixed['nextcloud_enabled'] = $unprefixed['nextcloud_enabled'] == 'on' ? '1' : '0';
+        }
+        $nextcloud->setNodes($unprefixed);
+        $validation_messages = $nextcloud->performValidation();
+
+        if ($validation_messages->count() == 0) {
+            $nextcloud->serializeToConfig();
             Config::getInstance()->save();
         }
-
-        return $input_errors;
+        // convert validation data to array
+        $validation_messages2 = array();
+        foreach ($validation_messages as $validation_message) {
+            $validation_messages2[] = $validation_message;
+        }
+        return $validation_messages2;
     }
 
     /**
@@ -157,26 +143,24 @@ class Nextcloud extends Base implements IBackupProvider
      */
     function backup() {
         $cnf = Config::getInstance();
+        $nextcloud = new NextcloudSettings();
         if ($cnf->isValid()) {
             $config = $cnf->object();
-            if (isset($config->system->remotebackup)
-                    && isset($config->system->remotebackup->nextcloud_enabled)
-                    && !empty($config->system->remotebackup->nextcloud_enabled)) {
-                $config_remote = $config->system->remotebackup;
-                $url = $config_remote->nextcloud_url;
-                $username = $config_remote->nextcloud_user;
-                $password = $config_remote->nextcloud_password;
-                $backupdir = $config_remote->nextcloud_backupdir;
+            if ($nextcloud->nextcloud_enabled == true) {
+                $url = (string)$nextcloud->nextcloud_url;
+                $username = (string)$nextcloud->nextcloud_user;
+                $password = (string)$nextcloud->nextcloud_password;
+                $backupdir = (string)$nextcloud->nextcloud_backupdir;
                 $hostname = $config->system->hostname . '.' .$config->system->domain;
                 $configname = 'config-' . $hostname . '-' .  date("Y-m-d_h:m:s") . '.xml';
                 // backup source data to local strings (plain/encrypted)
                 $confdata = file_get_contents('/conf/config.xml');
                 $confdata_enc = chunk_split(
-                    $this->encrypt($confdata, (string)$config->system->remotebackup->nextcloud_password)
+                    $this->encrypt($confdata, (string)$nextcloud->nextcloud_password)
                 );
                 try {
                     $directories = $this->listFiles($url, $username, $password, '/');
-                    if (!in_array("/$backupdir/",$directories)) {
+                    if (!in_array("/$backupdir/", $directories)) {
                         $this->create_directory($url, $username, $password, $backupdir);
                     }
                     $this->upload_file_content(
@@ -280,12 +264,7 @@ class Nextcloud extends Base implements IBackupProvider
      */
     public function isEnabled()
     {
-        $cnf = Config::getInstance();
-        if ($cnf->isValid()) {
-            $config =$cnf->object();
-            return isset($config->system->remotebackup) && isset($config->system->remotebackup->nextcloud_enabled)
-                && !empty($config->system->remotebackup->nextcloud_enabled);
-        }
-        return false;
+        $nextcloud = new NextcloudSettings();
+        return $nextcloud->nextcloud_enabled == true;
     }
 }
