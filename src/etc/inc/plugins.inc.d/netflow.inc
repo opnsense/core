@@ -51,5 +51,16 @@ function netflow_services()
         'name' => 'samplicate',
     );
 
+    $services[] = array(
+        'description' => gettext('NetFlow Data aggregator'),
+        'configd' => array(
+            'restart' => array('netflow aggregate restart'),
+            'start' => array('netflow aggregate start'),
+            'stop' => array('netflow aggregate stop'),
+        ),
+        'pidfile' => '/var/run/flowd_aggregate.pid',
+        'name' => 'flowd_aggregate',
+    );
+
     return $services;
 }
