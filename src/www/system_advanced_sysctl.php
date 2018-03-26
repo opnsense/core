@@ -158,85 +158,79 @@ $( document ).ready(function() {
 <?php
         if ($act != "edit") :?>
           <table class="table table-striped">
-            <thead>
+            <tr>
+              <th><?=gettext("Tunable Name"); ?></th>
+              <th><?=gettext("Description"); ?></th>
+              <th><?=gettext("Value"); ?></th>
+              <th></th>
+            </tr>
+<?php
+              $i = 0;
+              foreach ($a_tunable as $tunable) :?>
               <tr>
-                <th><?=gettext("Tunable Name"); ?></th>
-                <th><?=gettext("Description"); ?></th>
-                <th><?=gettext("Value"); ?></th>
-                <th></th>
+                <td><?=$tunable['tunable']; ?></td>
+                <td><?=$tunable['descr']; ?></td>
+                <td>
+                  <?=$tunable['value']; ?>
+                  <?=$tunable['value'] == "default" ? "(" . get_default_sysctl_value($tunable['tunable']) . ")" : "";?>
+                </td>
+                <td style="white-space: nowrap;">
+                  <a href="system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs">
+                      <span data-toggle="tooltip" title="<?=gettext("Edit Tunable"); ?>" class="glyphicon glyphicon-pencil"></span>
+                  </a>
+                  <a id="del_<?=$i;?>" data-id="<?=$i;?>" title="<?=gettext("Delete Tunable"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                    <span class="fa fa-trash text-muted"></span>
+                  </a>
+                </td>
               </tr>
-              </thead>
-              <tbody>
 <?php
-                $i = 0;
-                foreach ($a_tunable as $tunable) :?>
-                <tr>
-                  <td><?=$tunable['tunable']; ?></td>
-                  <td><?=$tunable['descr']; ?></td>
-                  <td>
-                    <?=$tunable['value']; ?>
-                    <?=$tunable['value'] == "default" ? "(" . get_default_sysctl_value($tunable['tunable']) . ")" : "";?>
-                  </td>
-                  <td style="white-space: nowrap;">
-                    <a href="system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs">
-                        <span data-toggle="tooltip" title="<?=gettext("Edit Tunable"); ?>" class="glyphicon glyphicon-pencil"></span>
-                    </a>
-                    <a id="del_<?=$i;?>" data-id="<?=$i;?>" title="<?=gettext("Delete Tunable"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                      <span class="fa fa-trash text-muted"></span>
-                    </a>
-                  </td>
-                </tr>
-<?php
-                $i++; endforeach; ?>
-                <tr>
-                  <td colspan="4">
-                    <?= gettext('Tunables are composed of runtime settings for sysctl.conf which take effect ' .
-                      'immediately after apply and boot settings for loader.conf which require a reboot.') ?>
-                  </td>
-                </tr>
-              </tbody>
+              $i++; endforeach; ?>
+              <tr>
+                <td colspan="4">
+                  <?= gettext('Tunables are composed of runtime settings for sysctl.conf which take effect ' .
+                    'immediately after apply and boot settings for loader.conf which require a reboot.') ?>
+                </td>
+              </tr>
             </table>
 <?php
             else : ?>
             <form method="post">
-              <table class="table table-striped">
-                <tbody>
-                  <tr>
-                    <td style="width:22%"><strong><?= gettext('Edit system tunable') ?></strong></td>
-                    <td style="width:78%"></td>
-                  </tr>
-                  <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Tunable"); ?></td>
-                    <td>
-                      <input type="text" name="tunable" value="<?=$pconfig['tunable']; ?>" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Description"); ?></td>
-                    <td>
-                      <textarea name="descr"><?=$pconfig['descr']; ?></textarea>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Value"); ?></td>
-                    <td>
-                      <input name="value" type="text" value="<?=$pconfig['value']; ?>" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>&nbsp;</td>
-                    <td>
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/system_advanced_sysctl.php'" />
+              <table class="table table-striped opnsense_standard_table_form">
+                <tr>
+                  <td style="width:22%"><strong><?= gettext('Edit system tunable') ?></strong></td>
+                  <td style="width:78%"></td>
+                </tr>
+                <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Tunable"); ?></td>
+                  <td>
+                    <input type="text" name="tunable" value="<?=$pconfig['tunable']; ?>" />
+                  </td>
+                </tr>
+                <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Description"); ?></td>
+                  <td>
+                    <textarea name="descr"><?=$pconfig['descr']; ?></textarea>
+                  </td>
+                </tr>
+                <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Value"); ?></td>
+                  <td>
+                    <input name="value" type="text" value="<?=$pconfig['value']; ?>" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>
+                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/system_advanced_sysctl.php'" />
 
 <?php
-                      if (isset($id)) :?>
-                      <input name="id" type="hidden" value="<?=$id;?>" />
+                    if (isset($id)) :?>
+                    <input name="id" type="hidden" value="<?=$id;?>" />
 <?php
-                      endif; ?>
-                    </td>
-                  </tr>
-                </tbody>
+                    endif; ?>
+                  </td>
+                </tr>
               </table>
             </form>
 <?php
