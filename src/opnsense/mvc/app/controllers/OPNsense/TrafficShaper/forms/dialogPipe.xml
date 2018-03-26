@@ -89,6 +89,13 @@
         <help>The number of flow queues that are created and managed, leave empty for defaults</help>
     </field>
     <field>
+        <id>pipe.delay</id>
+        <label>Delay</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Add delay in ms to this pipe.</help>
+    </field>
+    <field>
         <id>pipe.description</id>
         <label>description</label>
         <type>text</type>
