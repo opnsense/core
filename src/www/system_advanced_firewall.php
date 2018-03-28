@@ -414,7 +414,7 @@ include("head.inc");
                     <?= gettext('Using policy routing in the packet filter rules causes packets to skip ' .
                                 'processing for the traffic shaper and captive portal tasks. ' .
                                 'Using this option enables the sharing of such forwarding decisions ' .
-                                'between all components to accomodate complex setups. Use with care.') ?>
+                                'between all components to accomodate complex setups.') ?>
                   </div>
                 </td>
               </tr>
