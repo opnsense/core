@@ -263,7 +263,7 @@ package-check:
 
 package: package-check clean-work
 .for CORE_DEPEND in ${CORE_DEPENDS}
-	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yA ${CORE_DEPEND}; fi
+	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yfA ${CORE_DEPEND}; fi
 .endfor
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} metadata
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
@@ -277,9 +277,9 @@ upgrade-check:
 	fi
 
 upgrade: plist-check upgrade-check clean-package package
-	@${PKG} delete -fy ${CORE_NAME}
+	@${PKG} delete -fy ${CORE_NAME} || true
 	@${PKG} add ${PKGDIR}/*.txz
-	@/usr/local/etc/rc.restart_webgui
+	@${LOCALBASE}/etc/rc.restart_webgui
 
 update:
 	@${GIT} pull
