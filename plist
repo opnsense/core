@@ -1152,6 +1152,7 @@
 /usr/local/www/widgets/api/plugins/temperature.inc
 /usr/local/www/widgets/api/plugins/traffic.inc
 /usr/local/www/widgets/include/carp_status.inc
+/usr/local/www/widgets/include/cpu_usage.inc
 /usr/local/www/widgets/include/gateways.inc
 /usr/local/www/widgets/include/interface_list.inc
 /usr/local/www/widgets/include/interface_statistics.inc
@@ -1164,6 +1165,7 @@
 /usr/local/www/widgets/include/thermal_sensors.inc
 /usr/local/www/widgets/include/traffic_graph.inc
 /usr/local/www/widgets/widgets/carp_status.widget.php
+/usr/local/www/widgets/widgets/cpu_usage.widget.php
 /usr/local/www/widgets/widgets/gateways.widget.php
 /usr/local/www/widgets/widgets/interface_list.widget.php
 /usr/local/www/widgets/widgets/interface_statistics.widget.php
