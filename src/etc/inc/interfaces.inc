@@ -1084,7 +1084,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         case "slaac":
         case "dhcp6":
             killbypid("/var/run/dhcp6c_{$realif}.pid", 'TERM', true);
-            @unlink("/var/etc/dhcp6c_{$interface}.conf");
             if (does_interface_exist($realifv6)) {
                 $ip6 = find_interface_ipv6($realifv6);
                 if (is_ipaddrv6($ip6) && $ip6 != "::") {
