@@ -239,10 +239,10 @@ include("head.inc");
               <div class="table-responsive">
                 <table class="table table-striped opnsense_standard_table_form">
                   <tr>
-                    <td style="vertical-align:top"><?=gettext("Edit NAT 1:1 entry"); ?></td>
-                    <td style="text-align:right">
+                    <td style="width:22%"><strong><?= gettext('Edit NAT 1:1 entry') ?></strong></td>
+                    <td style="width:78%;text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                      <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
                     </td>
                   </tr>
                   <tr>
@@ -338,7 +338,7 @@ include("head.inc");
                         <tr>
                           <td>
                             <div class="input-group">
-                            <!-- updates to "other" option in  src -->
+                            <!-- updates to "other" option in src -->
                             <input type="text" for="src" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
                             <select name="srcmask" class="selectpicker" data-size="5" id="srcmask"  data-width="auto" for="src" >
                             <?php for ($i = 32; $i > 0; $i--): ?>
@@ -389,7 +389,7 @@ include("head.inc");
                         <tr>
                           <td>
                             <div class="input-group">
-                            <!-- updates to "other" option in  src -->
+                            <!-- updates to "other" option in src -->
                             <input type="text" for="dst" value="<?= !is_specialnet($pconfig['dst']) ? $pconfig['dst'] : "";?>" aria-label="<?=gettext("Destination address");?>"/>
                             <select name="dstmask" class="selectpicker" data-size="5" id="dstmask"  data-width="auto" for="dst" >
                             <?php for ($i = 32; $i > 0; $i--): ?>

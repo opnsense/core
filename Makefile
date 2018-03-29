@@ -37,6 +37,7 @@ CORE_ARCH?=	${ARCH}
 CORE_OPENVPN?=	# empty
 CORE_PHP?=	71
 CORE_PY?=	27
+CORE_SURICATA?=	# empty
 
 _FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
 FLAVOUR?=	${_FLAVOUR:[1]}
@@ -124,7 +125,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			sshlockout_pf \
 			strongswan \
 			sudo \
-			suricata \
+			suricata${CORE_SURICATA} \
 			syslog-ng \
 			syslogd \
 			unbound \
@@ -262,7 +263,7 @@ package-check:
 
 package: package-check clean-work
 .for CORE_DEPEND in ${CORE_DEPENDS}
-	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yA ${CORE_DEPEND}; fi
+	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yfA ${CORE_DEPEND}; fi
 .endfor
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} metadata
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
@@ -276,9 +277,9 @@ upgrade-check:
 	fi
 
 upgrade: plist-check upgrade-check clean-package package
-	@${PKG} delete -fy ${CORE_NAME}
+	@${PKG} delete -fy ${CORE_NAME} || true
 	@${PKG} add ${PKGDIR}/*.txz
-	@/usr/local/etc/rc.restart_webgui
+	@${LOCALBASE}/etc/rc.restart_webgui
 
 update:
 	@${GIT} pull

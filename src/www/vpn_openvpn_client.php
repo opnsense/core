@@ -657,7 +657,7 @@ $( document ).ready(function() {
               <option value="<?=$iface;?>" <?=$selected;?>><?=htmlspecialchars($ifacename);?></option>
 <?php
               endforeach; ?>
-              </select> <br />
+              </select>
             </td>
           </tr>
           <tr>
@@ -709,14 +709,14 @@ $( document ).ready(function() {
               </table>
               <br/>
               <input name="remote_random" type="checkbox" value="yes" <?= !empty($pconfig['remote_random']) ? 'checked="checked"' : '' ?>/>
-              <strong><?= gettext('Select remote server at random') ?></strong>
+              <?= gettext('Select remote server at random') ?>
             </td>
           </tr>
           <tr>
             <td><a id="help_for_resolve_retry" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Retry DNS resolution"); ?></td>
             <td>
               <input name="resolve_retry" type="checkbox" value="yes" <?= !empty($pconfig['resolve_retry']) ? 'checked="checked"' : '' ?>/>
-              <strong><?= gettext('Infinitely resolve remote server') ?></strong>
+              <?= gettext('Infinitely resolve remote server') ?>
               <div class="hidden" data-for="help_for_resolve_retry">
                 <div><small><?=gettext("Continuously attempt to resolve the server host name. Useful when communicating with a server that is not permanently connected to the Internet"); ?></small></div>
               </div>
@@ -1110,7 +1110,7 @@ $( document ).ready(function() {
           <tr>
             <td style="width:22%"><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
             <td style="width:78%">
-              <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
+              <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
               <div class="hidden" data-for="help_for_custom_options">
                 <?=gettext("Enter any additional options you would like to add to the configuration file here."); ?>
               </div>

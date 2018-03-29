@@ -529,8 +529,8 @@ endif;?>
                     <?=!empty($mappings[$data['iaid'] . $data['duid']]) ? $mappings[$data['iaid'] . $data['duid']] : "";?>
                     <?=$data['prefix'];?>
                   </td>
-                  <td><?=$data['prefix'];?></td>
                   <td><?=$data['iaid'];?></td>
+                  <td><?=$data['duid'];?></td>
                   <td><?=$data['type'] != "static" ? adjust_gmt($data['start']) : "";?></td>
                   <td><?=$data['type'] != "static" ? adjust_gmt($data['end']) : "";?></td>
                   <td><?=$data['act'];?></td>

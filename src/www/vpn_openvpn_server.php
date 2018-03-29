@@ -610,7 +610,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td class="vncellreq">
+                      <td>
                         <a id="help_for_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?>
                       </td>
                       <td>
@@ -773,7 +773,7 @@ $( document ).ready(function() {
                           <option value="<?=$iface; ?>"<?=$selected;?>><?=htmlspecialchars($ifacename);?></option>
 <?php
                         endforeach; ?>
-                        </select> <br />
+                        </select>
                       </td>
                     </tr>
                     <tr>
@@ -926,9 +926,6 @@ endif; ?>
 <?php
                         endforeach; ?>
                         </select>
-                        <span>
-                          <?=gettext("bits"); ?>
-                        </span>
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_shared_key">
@@ -1538,7 +1535,7 @@ endif; ?>
                     <tr>
                       <td style="width:22%"><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
                       <td>
-                        <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
+                        <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
                         <div class="hidden" data-for="help_for_custom_options">
                           <?=gettext("Enter any additional options you would like to add to the configuration file here."); ?>
                         </div>

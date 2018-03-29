@@ -421,8 +421,8 @@ include("head.inc");
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">
                     <tr>
-                      <td style="width:22%; vertical-align:top"></td>
-                      <td style="width:78; text-align:right">
+                      <td style="width:22%"></td>
+                      <td style="width:78%; text-align:right">
                         <small><?=gettext("full help"); ?> </small>
                         <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                       </td>
@@ -579,7 +579,7 @@ include("head.inc");
                           <input type="button" onclick="show_ddns_config()" value="<?=gettext("Advanced");?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Dynamic DNS");?>
                         </div>
                         <div id="showddns" style="display:none">
-                          <input style="vertical-align:middle" type="checkbox" value="yes" name="ddnsupdate" id="ddnsupdate" <?php if($pconfig['ddnsupdate']) echo " checked=\"checked\""; ?> />&nbsp;
+                          <input type="checkbox" value="yes" name="ddnsupdate" id="ddnsupdate" <?php if($pconfig['ddnsupdate']) echo " checked=\"checked\""; ?> />&nbsp;
                           <b><?=gettext("Enable registration of DHCP client names in DNS.");?></b><br />
                           <?=gettext("Note: Leave blank to disable dynamic DNS registration.");?><br />
                           <?=gettext("Enter the dynamic DNS domain which will be used to register client names in the DNS server.");?>
@@ -624,7 +624,7 @@ include("head.inc");
                           <input type="button" onclick="show_netboot_config()" value="<?=gettext("Advanced");?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Network booting");?>
                         </div>
                         <div id="shownetboot" style="display:none">
-                          <input style="vertical-align:middle" type="checkbox" value="yes" name="netboot" id="netboot" <?=!empty($pconfig['netboot']) ? 'checked="checked"' : ""; ?> />
+                          <input type="checkbox" value="yes" name="netboot" id="netboot" <?=!empty($pconfig['netboot']) ? 'checked="checked"' : ""; ?> />
                           <b><?=gettext("Enables network booting.");?></b>
                           <br/>
                           <?=gettext("Enter the Bootfile URL");?>
@@ -735,8 +735,7 @@ include("head.inc");
                 <div class="table-responsive">
                   <table class="tabcont table table-striped" style="width:100%; border:0; cellpadding:0; cellspacing:0">
                     <tr>
-                      <td colspan="4" class="listtopic"><?=gettext("DHCPv6 Static Mappings for this interface.");?></td>
-                      <td>&nbsp;</td>
+                      <th colspan="5"><?= gettext('DHCPv6 Static Mappings for this interface.') ?></th>
                     </tr>
                     <tr>
                       <td><?=gettext("DUID");?></td>

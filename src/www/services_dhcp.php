@@ -629,7 +629,7 @@ include("head.inc");
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">
                     <tr>
-                      <td style="width:22%; vertical-align:top"></td>
+                      <td style="width:22%"></td>
                       <td style="width:78%; text-align:right">
                         <small><?=gettext("full help"); ?> </small>
                         <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
@@ -1089,8 +1089,7 @@ include("head.inc");
               <div class="table-responsive">
                 <table class="table table-striped">
                   <tr>
-                    <td colspan="5" style="vertical-align:top"><?=gettext("DHCP Static Mappings for this interface.");?></td>
-                    <td>&nbsp;</td>
+                    <td colspan="6"><strong><?=gettext("DHCP Static Mappings for this interface.");?></strong></td>
                   </tr>
                   <tr>
                     <td><?=gettext("Static ARP");?></td>

@@ -220,7 +220,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td style="width:22%; vertical-align:top">&nbsp;</td>
+                    <td style="width:22%">&nbsp;</td>
                     <td style="width:78%">
                       <input type="hidden" name="vlanif" value="<?=$pconfig['vlanif']; ?>" />
                       <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />

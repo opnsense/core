@@ -41,7 +41,7 @@ function squid_services()
                 'start' => array('proxy start'),
                 'stop' => array('proxy stop'),
             ),
-            'pid' => '/var/run/squid/squid.pid',
+            'pidfile' => '/var/run/squid/squid.pid',
             'name' => 'squid',
         );
     }
