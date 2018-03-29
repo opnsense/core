@@ -3116,11 +3116,12 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_defaultgwv6\n";
     $rtsoldscript .= "fi\n";
     $rtsoldscript .= "if [ -f /var/run/dhcp6c_{$wanif}.pid ]; then\n";
-    $rtsoldscript .= "\t/bin/pkill -F /var/run/dhcp6c_{$wanif}.pid\n";
-    $rtsoldscript .= "\t/bin/sleep 1\n";
+    $rtsoldscript .= "\t/bin/pkill -HUP -F /var/run/dhcp6c_{$wanif}.pid\n";
+    $rtsoldscript .= "\t/usr/bin/logger -t dhcpd \"RTSOLD script sending SIGHUP to dhcp6c\"\n";
+    $rtsoldscript .= "else\n";
+    $rtsoldscript .= "\t/usr/bin/logger -t dhcpd \" RTSOLD script - Starting dhcp6 client for interface {$interface}({$wanif})\"\n";
+    $rtsoldscript .= "\t$dhcp6ccommand\n";
     $rtsoldscript .= "fi\n";
-    $rtsoldscript .= "/usr/bin/logger -t rtsold \"Starting dhcp6 client for interface {$interface}({$wanif})\"\n";
-    $rtsoldscript .= "$dhcp6ccommand\n";
 
     if (!@file_put_contents("/var/etc/rtsold_{$wanif}_script.sh", $rtsoldscript)) {
         log_error("Error: cannot open rtsold_{$wanif}_script.sh in interface_dhcpv6_configure() for writing.");
