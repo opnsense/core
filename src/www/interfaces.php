@@ -1265,11 +1265,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 kill_dhclient_process($old_config['if']);
             }
 
-            if (!empty($old_config['ipaddrv6']) && $old_config['ipaddrv6'] == 'dhcp6' && $new_config['ipaddrv6'] != 'dhcp6') {
-                // change from dhcp to something else, kill dhcp6c
-                killbypid("/var/run/dhcp6c_{$old_config['if']}.pid");
-            }
-
             // save to config
             write_config();
 
