@@ -5890,8 +5890,7 @@ label > input[type="radio"] {
   float: left; }
 
 div[data-for*="help_for"] {
-  padding-top: .4em;
-  padding-bottom: .4em; }
+  padding-top: .4em; }
 
 #log-settings label[for^="act"] {
   margin-right: 1.5em; }
