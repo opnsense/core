@@ -657,7 +657,7 @@ function interfaces_tun_get_configured_address($realif, $local = true)
     global $config;    
     switch (substr($realif, 0, strlen($realif)-1)) {
     	case "gre":
-	    // Travers thru configured GRE tunnels
+	    // Lookup thru configured GRE tunnels
 	    if (isset($config['gres']['gre'])) {
 		    foreach ($config['gres']['gre'] as $i => $gre) {
 		        if (empty($gre['greif'])) {
@@ -676,7 +676,7 @@ function interfaces_tun_get_configured_address($realif, $local = true)
 	    break;
 	    
     	case "gif":
-	    // Travers thru configured GIF tunnels
+	    // Lookup thru configured GIF tunnels
 	    if (isset($config['gifs']['gif'])) {
 		    foreach ($config['gifs']['gif'] as $i => $gif) {
 		        if (empty($gif['gifif'])) {
