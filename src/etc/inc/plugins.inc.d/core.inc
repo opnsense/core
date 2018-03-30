@@ -131,7 +131,7 @@ function core_services()
     );
 
     $services[] = array(
-        'description' => gettext('login (sync users and groups)'),
+        'description' => gettext('Users and Groups'),
         'php' => array(
             "restart" => array('system_login_configure')
         ),
