@@ -115,7 +115,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['logbogons'] = empty($config['syslog']['nologbogons']);
     $pconfig['logprivatenets'] = empty($config['syslog']['nologprivatenets']);
     $pconfig['loglighttpd'] = empty($config['syslog']['nologlighttpd']);
-    $pconfig['filterdescriptions'] = !empty($config['syslog']['filterdescriptions']) ? $config['syslog']['filterdescriptions'] : null;
     $pconfig['disablelocallogging'] = isset($config['syslog']['disablelocallogging']);
     $pconfig['logfilesize'] =  !empty($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -183,11 +182,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['syslog']['nologbogons'] = empty($pconfig['logbogons']);
             $config['syslog']['nologprivatenets'] = empty($pconfig['logprivatenets']);
             $config['syslog']['nologlighttpd'] = empty($pconfig['loglighttpd']);
-            if (is_numeric($pconfig['filterdescriptions']) && $pconfig['filterdescriptions'] > 0)
-                $config['syslog']['filterdescriptions'] = $pconfig['filterdescriptions'];
-            elseif (isset($config['syslog']['filterdescriptions'])) {
-                unset($config['syslog']['filterdescriptions']);
-            }
 
             write_config();
 
@@ -404,21 +398,6 @@ $(document).ready(function() {
                         <?=gettext("Hint: If this is checked, errors from the lighttpd web server process for the GUI or Captive Portal will appear in the main system log.");?></td>
                       </div>
                   </tr>
-                  <tr>
-                      <td><a id="help_for_filterdescriptions" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Filter descriptions') ?></td>
-                      <td>
-                        <select name="filterdescriptions" id="filterdescriptions" class="form-control">
-                          <option value="0"<?=!isset($pconfig['filterdescriptions'])?" selected=\"selected\"":""?>><?=gettext('Omit descriptions') ?></option>
-                          <option value="1"<?=($pconfig['filterdescriptions'])==="1"?" selected=\"selected\"":""?>><?=gettext('Display as column') ?></option>
-                          <option value="2"<?=($pconfig['filterdescriptions'])==="2"?" selected=\"selected\"":""?>><?=gettext('Display as second row') ?></option>
-                        </select>
-                        <div class="hidden" data-for="help_for_filterdescriptions">
-                          <strong><?=gettext("Show the applied rule description below or in the firewall log rows.");?></strong>
-                          <br />
-                          <?=gettext("Displaying rule descriptions for all lines in the log might affect performance with large rule sets.");?>
-                        </div>
-                      </td>
-                    </tr>
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext('Local Logging') ?></td>
                       <td> <input name="disablelocallogging" type="checkbox" id="disablelocallogging" value="yes" <?=!empty($pconfig['disablelocallogging']) ? "checked=\"checked\"" :""; ?> onclick="enable_change(false)" />
