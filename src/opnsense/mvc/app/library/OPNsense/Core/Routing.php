@@ -151,6 +151,8 @@ class Routing
                 "params" => 3
             ));
 
+            // In case we have overlapping modules, map additional controllers on top.
+            // This can normally only happens with 3rd party plugins hooking into standard functionality
             if (count($module_configs) > 0) {
                 foreach ($module_configs as $module_config) {
                     foreach (glob($module_config['path']."/*.php") as $filename) {
