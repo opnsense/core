@@ -866,7 +866,6 @@ include("head.inc");
 <?php
                       endforeach; ?>
                       </select>
-                      <br />
                       <div class="hidden" data-for="help_for_icmptype">
                         <?=gettext("If you selected ICMP for the protocol above, you may specify an ICMP type here.");?>
                       </div>
@@ -1402,9 +1401,9 @@ include("head.inc");
                   <tr class="opt_advanced hidden">
                       <td><a id="help_for_statetimeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State timeout");?></td>
                       <td>
-                        <input name="statetimeout" type="text" value="<?=$pconfig['statetimeout'];?>" /><br />
+                        <input name="statetimeout" type="text" value="<?=$pconfig['statetimeout'];?>" />
                         <div class="hidden" data-for="help_for_statetimeout">
-                          <?=gettext("State Timeout in seconds (TCP only)");?><br/>
+                          <?=gettext("State Timeout in seconds (TCP only)");?>
                         </div>
                       </td>
                   </tr>
@@ -1451,7 +1450,7 @@ include("head.inc");
                         <td>
                           <input name="nopfsync" type="checkbox" value="yes" <?= !empty($pconfig['nopfsync']) ? "checked=\"checked\"" : "";?> />
                           <div class="hidden" data-for="help_for_nopfsync">
-                            <?=gettext("Hint: This prevents states created by this rule to be sync'ed over pfsync.");?><br />
+                            <?=gettext("Hint: This prevents states created by this rule to be sync'ed over pfsync.");?>
                           </div>
                         </td>
                     </tr>
