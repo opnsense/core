@@ -30,7 +30,7 @@ function netflow_enabled()
 {
     $mdl = new \OPNsense\Diagnostics\Netflow();
 
-    return !empty((string)$mdlNetflow->capture->targets) && !empty((string)$mdlNetflow->capture->interfaces);
+    return !empty((string)$mdl->capture->targets) && !empty((string)$mdl->capture->interfaces);
 }
 
 function netflow_local_enabled()
