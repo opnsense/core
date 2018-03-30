@@ -84,8 +84,6 @@ $showAllOption = $showAll ? "" : "?showAll";
                   } else {
                       print("<td>$entry</td>\n");
                   }
-                  if ($i > 0)
-                    $class = 'listr';
                   $j++;
                 }
                 print("</tr>\n");
