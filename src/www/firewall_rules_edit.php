@@ -699,7 +699,6 @@ include("head.inc");
                         <?=gettext("Choose what to do with packets that match the criteria specified below.");?> <br />
                         <?=gettext("Hint: the difference between block and reject is that with reject, a packet (TCP RST or ICMP port unreachable for UDP) is returned to the sender, whereas with block the packet is dropped silently. In either case, the original packet is discarded.");?>
                       </div>
-                      <br />
                     </td>
                   </tr>
                   <tr>
