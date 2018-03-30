@@ -723,9 +723,8 @@
                             </label>
                         </div>
                     </form>
-                    <div class="btn btn-xs btn-primary inline"
-                         onclick='downloadCSV({ filename: rrd+".csv" });'><i
-                            class="fa fa-download"></i> {{ lang._('Download as CSV') }}
+                    <div class="btn btn-xs btn-primary inline" onclick='downloadCSV({ filename: rrd+".csv" });'>
+                        <i class="fa fa-download"></i> {{ lang._('Download as CSV') }}
                     </div>
                 </div>
 
