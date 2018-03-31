@@ -590,14 +590,13 @@ function unbound_add_host_entries()
             switch ($host['rr']) {
                 case 'A':
                 case 'AAAA':
-                    // handle wildcard entries which have * as a hostname. Since we added a . above, we match on *.
-                    if( trim($host['host']) == "*." ) {
-                      $unbound_entries .= "local-zone: \"{$host['domain']}\" redirect\n";
-                      $unbound_entries .= "local-data: \"{$host['domain']} IN {$host['rr']} {$host['ip']}\"\n";
-                    }
-                    else {
-                      $unbound_entries .= "local-data-ptr: \"{$host['ip']} {$host['host']}{$host['domain']}\"\n";
-                      $unbound_entries .= "local-data: \"{$host['host']}{$host['domain']} IN {$host['rr']} {$host['ip']}\"\n";
+                    /* Handle wildcard entries which have "*" as a hostname. Since we added a . above, we match on "*.". */
+                    if (trim($host['host']) == '*.') {
+                        $unbound_entries .= "local-zone: \"{$host['domain']}\" redirect\n";
+                        $unbound_entries .= "local-data: \"{$host['domain']} IN {$host['rr']} {$host['ip']}\"\n";
+                    } else {
+                        $unbound_entries .= "local-data-ptr: \"{$host['ip']} {$host['host']}{$host['domain']}\"\n";
+                        $unbound_entries .= "local-data: \"{$host['host']}{$host['domain']} IN {$host['rr']} {$host['ip']}\"\n";
                     }
                     break;
                 case 'MX':
