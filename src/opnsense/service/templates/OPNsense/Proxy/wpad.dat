@@ -25,6 +25,9 @@ function FindProxyForURL(url, host) {
 
 {% if helpers.exists('OPNsense.proxy.pac.rule') %}
 {%   for rule in helpers.toList('OPNsense.proxy.pac.rule') %}
+{%     if not rule.enabled == '1' %}
+{%       continue %}
+{%     endif %}
 {%     set expression = [] %}
 {# Join type is used to join the checks of the if statement #}
 {%     set join_type = ' && ' %}
