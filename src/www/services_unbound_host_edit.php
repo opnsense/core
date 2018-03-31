@@ -67,8 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-   // either allow to be a valid, sanatized hostname, or be a special case * for wildcards
-   if (!empty($pconfig['host']) && (!is_hostname($pconfig['host']) || $pconfig['host'] == "*")) {
+    if (!empty($pconfig['host']) && (!is_hostname($pconfig['host']) || $pconfig['host'] != '*')) {
         $input_errors[] = gettext("The hostname can only contain the characters A-Z, 0-9 and '-'.");
     }
 
