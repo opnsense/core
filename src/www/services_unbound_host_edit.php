@@ -180,8 +180,7 @@ include("head.inc");
                     <td>
                       <input name="host" type="text" value="<?=$pconfig['host'];?>" />
                       <div class="hidden" data-for="help_for_host">
-                        <?=gettext("Name of the host, without domain part. Use '*' to create a wildcard-entry"); ?>
-                        <?=gettext("e.g."); ?> <em><?=gettext("myhost"); ?></em> or <em>*</em>
+                        <?= gettext('Name of the host, without domain part. Use "*" to create a wildcard entry.') ?>
                       </div>
                     </td>
                   </tr>
