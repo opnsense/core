@@ -137,7 +137,7 @@ WRKSRC?=${WRKDIR}/src
 PKGDIR?=${WRKDIR}/pkg
 
 WANTS=		p5-File-Slurp php${CORE_PHP}-pear-PHP_CodeSniffer \
-		phpunit6-php${CORE_PHP}
+		phpunit6-php${CORE_PHP} py27-pep8
 
 .for WANT in ${WANTS}
 want-${WANT}:
