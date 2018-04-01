@@ -33,7 +33,7 @@ DUMMY_UPDATE=$(${PKG} update 2>&1)
 LQUERY=$(${PKG} query %v opnsense-update 2> /dev/null)
 RQUERY=$(${PKG} rquery %v opnsense-update 2> /dev/null)
 
-if [ "${LQUERY%%_*}" != "${RQUERY%%_*}" ]; then
+if [ -n "${LQUERY}" -a -n "${RQUERY}" -a "${LQUERY%%_*}" != "${RQUERY%%_*}" ]; then
 	WANT_REBOOT=0
 elif opnsense-update -cbf; then
 	WANT_REBOOT=0
