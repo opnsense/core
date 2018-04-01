@@ -36,8 +36,8 @@ echo -n "Fetching change log information, please wait... "
 if /usr/local/opnsense/scripts/firmware/changelog.sh fetch; then
 	echo "done"
 fi
-echo
 
+echo
 echo "This will automatically fetch all available updates, apply them,"
 echo "and reboot if necessary."
 echo
@@ -56,6 +56,9 @@ if [ -f ${UPGRADE} ]; then
 	echo
 
 	PROMPT="[${NAME}/y/N]"
+elif /usr/local/opnsense/scripts/firmware/reboot.sh; then
+	echo "This update requires a reboot."
+	echo
 fi
 
 read -p "Proceed with this action? ${PROMPT}: " YN
