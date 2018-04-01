@@ -30,7 +30,7 @@ PKG=pkg-static
 
 WANT_REBOOT=1
 
-$(${PKG} update)
+DUMMY_UPDATE=$(${PKG} update)
 
 LQUERY=$(${PKG} query %v opnsense-update)
 RQUERY=$(${PKG} rquery %v opnsense-update)
