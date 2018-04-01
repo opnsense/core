@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -36,9 +36,6 @@
 # downgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 # upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 
-# TODO: Add object with items that will be removed
-
-# Variables used
 connection="error"
 repository="error"
 upgrade_needs_reboot="0"
@@ -49,15 +46,15 @@ pkg_running=""
 packes_output=""
 last_check="unknown"
 packages_upgraded=""
+pkg_upgraded=""
 packages_downgraded=""
 packages_new=""
 download_size=""
 itemcount=0
 linecount=0
 timer=0
-timeout=60 # Wait for a maximum number of seconds to determine connection issues
+timeout=60
 
-# File location variables
 tmp_pkg_output_file="/tmp/packages.output"
 tmp_pkg_update_file="/tmp/pkg_updates.output"
 
@@ -70,8 +67,7 @@ if [ "$pkg_running" == "" ]; then
       timer=$timeout # Reset our timer
 
       # Timeout loop for pkg update -f
-      while [ "$pkg_running" != "" ] && [ $timer -ne 0 ];
-      do
+      while [ "$pkg_running" != "" ] && [ $timer -ne 0 ]; do
         sleep 1 # wait for 1 second
         pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
         timer=`echo $timer - 1 | bc`
@@ -88,8 +84,7 @@ if [ "$pkg_running" == "" ]; then
         pkg_running="started" # Set running state to arbitrary value
 
         # Timeout loop for pkg upgrade -n
-        while [ "$pkg_running" != "" ] && [ $timer -ne 0 ];
-        do
+        while [ "$pkg_running" != "" ] && [ $timer -ne 0 ]; do
           sleep 1 # wait for 1 second
           #pkg_running=`ps | grep 'pkg update -f' | grep -v 'grep' | tail -n 1 | awk -F '[ ]' '{print $1}'`
           pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
@@ -110,6 +105,7 @@ if [ "$pkg_running" == "" ]; then
             else
               download_size=`cat $tmp_pkg_output_file | grep 'to be downloaded' | awk -F '[ ]' '{print $1$2}'`
 
+              # see if packages indicate a new version (not revision) of base / kernel
               LQUERY=$(pkg query %v opnsense-update)
               RQUERY=$(pkg rquery %v opnsense-update)
               if [ "${LQUERY%%_*}" != "${RQUERY%%_*}" ]; then
@@ -179,6 +175,10 @@ if [ "$pkg_running" == "" ]; then
                     else
                       i=`echo $i | tr -d :`
                       if [ "$packages_upgraded" == "" ]; then
+                        if [ "$i" = "pkg" ]; then
+                          # prevents leaking base / kernel advertising here
+                          pkg_upgraded="yes"
+                        fi
                         packages_upgraded=$packages_upgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a seperator
                       else
                         packages_upgraded=$packages_upgraded", {\"name\":\"$i\","
@@ -227,14 +227,19 @@ if [ "$pkg_running" == "" ]; then
                   itemcount=`echo $linecount + 4 | bc`
                 fi
               done
+
             fi
-            if opnsense-update -cbf; then
-              # the main update from package will override this during upgrade
-              if [ -z "$base_to_reboot" ]; then
+
+            # the main update from package will provide this during upgrade
+            if [ -z "$base_to_reboot" -a -z "$pkg_upgraded" ]; then
+              if opnsense-update -cbf; then
                   base_to_reboot="$(opnsense-update -v)"
                   base_to_reboot="${base_to_reboot%-*}"
               fi
+            else
+              base_to_reboot=
             fi
+
             if [ -n "$base_to_reboot" ]; then
               base_to_delete="$(opnsense-update -bv)"
               base_to_delete="${base_to_delete%-*}"
@@ -252,13 +257,17 @@ if [ "$pkg_running" == "" ]; then
                 updates=$(expr $updates + 1)
               fi
             fi
-            if opnsense-update -cfk; then
-              # the main update from package will override this during upgrade
-              if [ -z "$kernel_to_reboot" ]; then
+
+            # the main update from package will provide this during upgrade
+            if [ -z "$kernel_to_reboot" -a -z "$pkg_upgraded" ]; then
+              if opnsense-update -cfk; then
                   kernel_to_reboot="$(opnsense-update -v)"
                   kernel_to_reboot="${kernel_to_reboot%-*}"
               fi
+            else
+              kernel_to_reboot=
             fi
+
             if [ -n "$kernel_to_reboot" ]; then
               kernel_to_delete="$(opnsense-update -kv)"
               kernel_to_delete="${kernel_to_delete%-*}"
@@ -286,12 +295,12 @@ if [ "$pkg_running" == "" ]; then
           fi
         fi
       else
-          # We have an connection issue and could not reach the pkg repository in timely fashion
-          # Kill all running pkg instances
-          pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
-          if [ "$pkg_running" != "" ]; then
-            killall pkg
-          fi
+        # We have an connection issue and could not reach the pkg repository in timely fashion
+        # Kill all running pkg instances
+        pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
+        if [ "$pkg_running" != "" ]; then
+          killall pkg
+        fi
       fi
 
       product_version=$(cat /usr/local/opnsense/version/opnsense)
@@ -299,6 +308,6 @@ if [ "$pkg_running" == "" ]; then
       os_version=$(uname -sr)
       last_check=$(date)
 
-      # Write our json structure to disk
+      # write our json structure
       echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"product_version\":\"$product_version\",\"product_name\":\"$product_name\",\"os_version\":\"$os_version\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"download_size\":\"$download_size\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded],\"downgrade_packages\":[$packages_downgraded],\"upgrade_needs_reboot\":\"$upgrade_needs_reboot\"}"
 fi
