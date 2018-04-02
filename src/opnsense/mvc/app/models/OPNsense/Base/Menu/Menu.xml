@@ -12,7 +12,8 @@
         <Logout order="3" url="/index.php?logout" cssClass="fa fa-sign-out fa-fw"/>
     </Lobby>
     <Reporting order="15" cssClass="fa fa-area-chart">
-        <Traffic order="100" VisibleName="Traffic Graph" url="/status_graph.php" cssClass="fa fa-line-chart fa-fw"/>
+        <Settings url="/reporting_settings.php" cssClass="fa fa-cog fa-fw"/>
+        <Traffic url="/status_graph.php" cssClass="fa fa-line-chart fa-fw"/>
     </Reporting>
     <System order="20" cssClass="fa fa-server">
         <Access cssClass="fa fa-users fa-fw">
