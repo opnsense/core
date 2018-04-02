@@ -95,6 +95,11 @@
             <Configd order="150" VisibleName="Configd" url="/configd_logs.php"/>
             <WebGUI order="200" VisibleName="Web GUI" url="/httpd_logs.php"/>
         </LogFiles>
+        <Diagnostics order="160" cssClass="fa fa-medkit fa-fw">
+            <Services url="/status_services.php">
+                <All url="/status_services.php?*" visibility="hidden"/>
+            </Services>
+        </Diagnostics>
     </System>
     <Interfaces order="30" cssClass="fa fa-sitemap">
         <Assignments order="900" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
@@ -215,9 +220,6 @@
         </DHCPv6>
         <OpenDNS VisibleName="OpenDNS" url="/services_opendns.php" cssClass="fa fa-tags fa-fw"/>
         <RouterAdv VisibleName="Router Advertisements" cssClass="fa fa-bullseye fa-fw" />
-        <Diagnostics order="900" cssClass="fa fa-medkit fa-fw" url="/status_services.php">
-          <All url="/status_services.php?*" visibility="hidden"/>
-        </Diagnostics>
     </Services>
     <VPN order="50" cssClass="fa fa-globe">
         <IPsec cssClass="fa fa-lock fa-fw" order="10">
