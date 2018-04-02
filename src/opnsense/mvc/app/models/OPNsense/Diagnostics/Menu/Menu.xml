@@ -8,10 +8,12 @@
         <Diagnostics>
             <Activity url="/ui/diagnostics/activity" cssClass="fa fa-medkit fa-fw"/>
         </Diagnostics>
-        <Routes>
-            <Status order="20" url="/ui/diagnostics/interface/routes"/>
-        </Routes>
     </System>
+    <Routing>
+        <Diagnostics>
+            <Routes order="20" url="/ui/diagnostics/interface/routes"/>
+        </Diagnostics>
+    </Routing>
     <Interfaces>
         <Diagnostics>
             <ARPTable VisibleName="ARP Table" url="/ui/diagnostics/interface/arp"/>
