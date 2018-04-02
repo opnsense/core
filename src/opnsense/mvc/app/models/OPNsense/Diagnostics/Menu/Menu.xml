@@ -1,9 +1,8 @@
 <menu>
     <Reporting>
-        <Health order="10" url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat fa-fw"/>
-        <Settings order="20" url="/reporting_settings.php" cssClass="fa fa-cog fa-fw"/>
-        <Insight order="30" url="/ui/diagnostics/networkinsight/" cssClass="fa fa-binoculars fa-fw" />
-        <NetFlow order="40" url="/ui/diagnostics/netflow/" cssClass="fa fa-rss fa-fw"/>
+        <Health url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat fa-fw"/>
+        <Insight url="/ui/diagnostics/networkinsight/" cssClass="fa fa-binoculars fa-fw" />
+        <NetFlow url="/ui/diagnostics/netflow/" cssClass="fa fa-rss fa-fw"/>
     </Reporting>
     <System>
         <Activity order="160" url="/ui/diagnostics/activity/" cssClass="fa fa-medkit fa-fw"/>
