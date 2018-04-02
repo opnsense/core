@@ -48,50 +48,43 @@ class Nextcloud extends Base implements IBackupProvider
     {
         $fields = array(
             array(
-                "name" => "nextcloud_enabled",
+                "name" => "enabled",
                 "type" => "checkbox",
                 "label" => gettext("Enable"),
                 "value" => null
             ),
             array(
-                "name" => "nextcloud_url",
+                "name" => "url",
                 "type" => "text",
                 "label" => gettext("URL"),
                 "help" => gettext("The Base URL to Nextcloud. For example: https://cloud.example.com"),
                 "value" => null
             ),
             array(
-                "name" => "nextcloud_user",
+                "name" => "user",
                 "type" => "text",
                 "label" => gettext("User Name"),
                 "help" => gettext("The name you use for logging into your Nextcloud account"),
                 "value" => null
             ),
             array(
-                "name" => "nextcloud_password",
+                "name" => "password",
                 "type" => "password",
                 "label" => gettext("Password"),
                 "help" => gettext("The app password which has been generated for you"),
                 "value" => null
             ),
             array(
-                "name" => "nextcloud_backupdir",
+                "name" => "backupdir",
                 "type" => "text",
                 "label" => gettext("Directory Name"),
                 "value" => 'OPNsense-Backup'
             )
         );
-        $cnf = Config::getInstance();
-        if ($cnf->isValid()) {
-            $config = $cnf->object();
-            foreach ($fields as &$field) {
-                $fieldname = $field['name'];
-                if (isset($config->OPNsense->system->backup->nextcloud->$fieldname)) {
-                    $field['value'] = (string)$config->OPNsense->system->backup->nextcloud->$fieldname;
-                }
-            }
+        $nextcloud = new NextcloudSettings();
+        foreach ($fields as &$field) {
+            $field['value'] = (string)$nextcloud->getNodeByReference($field['name']);
         }
-
         return $fields;
     }
 
@@ -112,77 +105,70 @@ class Nextcloud extends Base implements IBackupProvider
     public function setConfiguration($conf)
     {
         $nextcloud = new NextcloudSettings();
-        $unprefixed = array();
-        foreach ($_POST as $postkey => $postvalue) {
-            if(stripos($postkey, 'Nextcloud_') === 0) {
-                $unprefixed[str_replace( 'Nextcloud_' , '' , $postkey)] = $postvalue;
-            }
-        }
-        if (!isset($unprefixed['nextcloud_enabled'])) {
-            $unprefixed['nextcloud_enabled'] = '0';
-        } else {
-            $unprefixed['nextcloud_enabled'] = $unprefixed['nextcloud_enabled'] == 'on' ? '1' : '0';
-        }
-        $nextcloud->setNodes($unprefixed);
-        $validation_messages = $nextcloud->performValidation();
-
-        if ($validation_messages->count() == 0) {
+        $this->setModelProperties($nextcloud, $conf);
+        $validation_messages = $this->validateModel($nextcloud);
+        if (empty($validation_messages)) {
             $nextcloud->serializeToConfig();
             Config::getInstance()->save();
         }
-        // convert validation data to array
-        $validation_messages2 = array();
-        foreach ($validation_messages as $validation_message) {
-            $validation_messages2[] = $validation_message;
-        }
-        return $validation_messages2;
+        return $validation_messages;
     }
 
     /**
+     * perform backup
      * @return array filelist
      */
     function backup() {
         $cnf = Config::getInstance();
         $nextcloud = new NextcloudSettings();
-        if ($cnf->isValid()) {
+        if ($cnf->isValid() && !empty((string)$nextcloud->enabled)) {
             $config = $cnf->object();
-            if ($nextcloud->nextcloud_enabled == true) {
-                $url = (string)$nextcloud->nextcloud_url;
-                $username = (string)$nextcloud->nextcloud_user;
-                $password = (string)$nextcloud->nextcloud_password;
-                $backupdir = (string)$nextcloud->nextcloud_backupdir;
-                $hostname = $config->system->hostname . '.' .$config->system->domain;
-                $configname = 'config-' . $hostname . '-' .  date("Y-m-d_h:m:s") . '.xml';
-                // backup source data to local strings (plain/encrypted)
-                $confdata = file_get_contents('/conf/config.xml');
-                $confdata_enc = chunk_split(
-                    $this->encrypt($confdata, (string)$nextcloud->nextcloud_password)
-                );
-                try {
-                    $directories = $this->listFiles($url, $username, $password, '/');
-                    if (!in_array("/$backupdir/", $directories)) {
-                        $this->create_directory($url, $username, $password, $backupdir);
-                    }
-                    $this->upload_file_content(
-                        $url,
-                        $username,
-                        $password,
-                        $backupdir,
-                        $configname,
-                        $confdata_enc);
-                    // do not list directories
-                    return array_filter(
-                        $this->listFiles($url, $username, $password, "/$backupdir/", false),
-                        function ($filename){
-                            return (substr($filename, -1) !== '/');
-                        }
-                    );
-                } catch (\Exception $e) {
-                    return array();
+            $url = (string)$nextcloud->url;
+            $username = (string)$nextcloud->user;
+            $password = (string)$nextcloud->password;
+            $backupdir = (string)$nextcloud->backupdir;
+            $hostname = $config->system->hostname . '.' .$config->system->domain;
+            $configname = 'config-' . $hostname . '-' .  date("Y-m-d_h:m:s") . '.xml';
+            // backup source data to local strings (plain/encrypted)
+            $confdata = file_get_contents('/conf/config.xml');
+            $confdata_enc = chunk_split(
+                $this->encrypt($confdata, (string)$nextcloud->password)
+            );
+            try {
+                $directories = $this->listFiles($url, $username, $password, '/');
+                if (!in_array("/$backupdir/", $directories)) {
+                    $this->create_directory($url, $username, $password, $backupdir);
                 }
+                $this->upload_file_content(
+                    $url,
+                    $username,
+                    $password,
+                    $backupdir,
+                    $configname,
+                    $confdata_enc);
+                // do not list directories
+                return array_filter(
+                    $this->listFiles($url, $username, $password, "/$backupdir/", false),
+                    function ($filename){
+                        return (substr($filename, -1) !== '/');
+                    }
+                );
+            } catch (\Exception $e) {
+                return array();
             }
         }
     }
+
+    /**
+     * dir listing
+     * @param string $url remote location
+     * @param string $username username
+     * @param string $password password to use
+     * @param string $directory location to list
+     * @param bool $only_dirs only list directories
+     * @return array
+     * @throws \Exception
+     */
     public function listFiles($url, $username, $password, $directory = '/', $only_dirs=true) {
         $result = $this->curl_request(
             "$url/remote.php/dav/files/$username$directory",
@@ -211,6 +197,17 @@ class Nextcloud extends Base implements IBackupProvider
         }
         return $ret;
     }
+
+    /**
+     * upload file
+     * @param string $url remote location
+     * @param string $username remote user
+     * @param string $password password to use
+     * @param string $backupdir remote directory
+     * @param string $filename filename to use
+     * @param string $local_file_content contents to save
+     * @throws \Exception when upload fails
+     */
     public function upload_file_content($url, $username, $password, $backupdir, $filename, $local_file_content) {
         $this->curl_request(
             $url . "/remote.php/dav/files/$username/$backupdir/$filename",
@@ -221,6 +218,15 @@ class Nextcloud extends Base implements IBackupProvider
             $local_file_content
             );
     }
+
+    /**
+     * create new remote directory
+     * @param string $url remote location
+     * @param string $username remote user
+     * @param string $password password to use
+     * @param string $backupdir remote directory
+     * @throws \Exception when create dir fails
+     */
     public function create_directory($url, $username, $password, $backupdir) {
         $this->curl_request($url . "/remote.php/dav/files/$username/$backupdir",
             $username,
@@ -228,6 +234,17 @@ class Nextcloud extends Base implements IBackupProvider
             'MKCOL',
             'cannot execute MKCOL');
     }
+
+    /**
+     * @param string $url remote location
+     * @param string $username remote user
+     * @param string $password password to use
+     * @param string $method http method, PUT, GET, ...
+     * @param string $error_message message to log on failure
+     * @param null|string $postdata http body
+     * @return array response status
+     * @throws \Exception when request fails
+     */
     public function curl_request($url, $username, $password, $method, $error_message, $postdata = null) {
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -265,6 +282,6 @@ class Nextcloud extends Base implements IBackupProvider
     public function isEnabled()
     {
         $nextcloud = new NextcloudSettings();
-        return $nextcloud->nextcloud_enabled == true;
+        return (string)$nextcloud->enabled === "1";
     }
 }
