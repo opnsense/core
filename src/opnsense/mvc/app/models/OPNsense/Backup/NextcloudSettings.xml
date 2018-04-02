@@ -1,0 +1,35 @@
+<model>
+    <mount>//system/backup/nextcloud</mount>
+    <version>1.0.0</version>
+    <description>
+        OPNsense Nextcloud Backup Settings
+    </description>
+    <items>
+        <nextcloud_enabled type="BooleanField">
+          <default>N</default>
+          <Required>Y</Required>
+        </nextcloud_enabled>
+        <nextcloud_url type="TextField">
+            <Required>Y</Required>
+            <multiple>N</multiple>
+            <ValidationMessage>An URL for the Nextcloud server must be set.</ValidationMessage>
+        </nextcloud_url>
+        <nextcloud_user type="TextField">
+            <Required>Y</Required>
+            <multiple>N</multiple>
+            <ValidationMessage>An user for the Nextcloud server must be set.</ValidationMessage>
+        </nextcloud_user>
+        <nextcloud_password type="TextField">
+            <Required>Y</Required>
+            <multiple>N</multiple>
+            <ValidationMessage>A password for a Nextcloud server must be set.</ValidationMessage>
+        </nextcloud_password>
+        <nextcloud_backupdir type="TextField">
+            <Required>Y</Required>
+            <multiple>N</multiple>
+            <mask>/[a-z0-9\-]+/i</mask>
+            <default>OPNsense-Backup</default>
+            <ValidationMessage>The Backup Directory can only consist of alphanumeric characters.</ValidationMessage>
+        </nextcloud_backupdir>
+    </items>
+</model>
