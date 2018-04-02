@@ -475,6 +475,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
     $found_defaultv6 = 0;
 
     $iflist = get_configured_interface_with_descr();
+    $ifdetails = legacy_interfaces_details();
 
     /* Process/add dynamic v4 gateways. */
     foreach ($iflist as $ifname => $friendly) {
@@ -504,6 +505,10 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
                     }
 
                     $ctype = "VPNv4";
+                } elseif (in_array(substr($ifcfg['if'], 0, 3), array('gif', 'gre'))) {
+                    if (!empty($ifcfg['if']) && !empty($ifdetails[$ifcfg['if']]['ipv4'])) {
+                        $ctype = "TUNNELv4";
+                    }
                 }
                 break;
         }
@@ -572,7 +577,6 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
                 $ctype = $ifcfg['ipaddrv6'];
                 break;
             default:
-                $tunnelif = substr($ifcfg['if'], 0, 3);
                 if (substr($ifcfg['if'], 0, 4) ==  "ovpn") {
                     // if current iface is an ovpn server endpoint then skip it
                     if (substr($ifcfg['if'], 4, 1) == 's') {
@@ -580,8 +584,11 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
                     }
 
                     $ctype = "VPNv6";
-                } elseif ($tunnelif == "gif" || $tunnelif == "gre") {
-                    $ctype = "TUNNELv6";
+                } elseif (in_array(substr($ifcfg['if'], 0, 3), array('gif', 'gre'))) {
+                    if (!empty($ifcfg['if']) && !empty($ifdetails[$ifcfg['if']]['ipv6'])
+                            && $ifdetails[$ifcfg['if']]['ipv6'][0]['link-local'] != 1) {
+                        $ctype = "TUNNELv6";
+                    }
                 }
                 break;
         }
