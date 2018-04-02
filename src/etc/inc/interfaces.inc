@@ -648,6 +648,57 @@ function interface_lagg_configure(&$lagg)
     return $laggif;
 }
 
+function interfaces_tun_get_configured_address($realif, $local = true)
+{
+    if (empty($realif)) {
+    	return;
+    }
+    
+    global $config;    
+    switch (substr($realif, 0, strlen($realif)-1)) {
+    	case "gre":
+	    // Lookup thru configured GRE tunnels
+	    if (isset($config['gres']['gre'])) {
+		    foreach ($config['gres']['gre'] as $i => $gre) {
+		        if (empty($gre['greif'])) {
+		            $gre['greif'] = "gre{$i}";
+		        }
+		        
+		        if ($realif == $gre['greif']) {
+		            if ($local) {
+		               return $gre['tunnel-local-addr'];
+		            } else {
+		               return $gre['tunnel-remote-addr'];
+		            }
+		        }
+		    }          
+	    }	    	
+	    break;
+	    
+    	case "gif":
+	    // Lookup thru configured GIF tunnels
+	    if (isset($config['gifs']['gif'])) {
+		    foreach ($config['gifs']['gif'] as $i => $gif) {
+		        if (empty($gif['gifif'])) {
+		            $gif['gifif'] = "gif{$i}";
+		        }
+		        
+		        if ($realif == $gif['gifif']) {
+		            if ($local) {
+		               return $gif['tunnel-local-addr'];
+		            } else {
+		               return $gif['tunnel-remote-addr'];
+		            }
+		        }
+		    }          
+	    }	    
+	    break;	
+	    
+	default:
+		return;
+    }
+}
+
 function interfaces_gre_configure($checkparent = 0, $verbose = false, $realif = '')
 {
     global $config;

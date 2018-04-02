@@ -498,6 +498,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
                 $ctype = $ifcfg['ipaddr'];
                 break;
             default:
+                $tunnelif = substr($ifcfg['if'], 0, 3);
                 if (substr($ifcfg['if'], 0, 4) ==  "ovpn") {
                     // if current iface is an ovpn server endpoint then skip it
                     if (substr($ifcfg['if'], 4, 1) == 's') {
@@ -505,6 +506,10 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
                     }
 
                     $ctype = "VPNv4";
+                } elseif ($tunnelif == "gif" || $tunnelif == "gre") {
+                    if (is_ipaddrv4(interfaces_tun_get_configured_address($ifcfg['if']))) {
+                        $ctype = "TUNNELv4";
+                    }
                 }
                 break;
         }
@@ -582,7 +587,9 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 
                     $ctype = "VPNv6";
                 } elseif ($tunnelif == "gif" || $tunnelif == "gre") {
-                    $ctype = "TUNNELv6";
+                    if (is_ipaddrv6(interfaces_tun_get_configured_address($ifcfg['if']))) {
+                        $ctype = "TUNNELv6";
+                    }
                 }
                 break;
         }
