@@ -94,4 +94,36 @@ abstract class Base
             return null;
         }
     }
+
+    /**
+     * set model properties
+     * @param OPNsense\Base\BaseModel $mdl model to set properties to
+     * @param array $properties named
+     */
+    protected function setModelProperties($mdl, $properties)
+    {
+        foreach ($properties as $key => $value) {
+            $node = $mdl->getNodeByReference($key);
+            $node_class = get_class($node);
+            if ( $node_class == "OPNsense\Base\FieldTypes\BooleanField") {
+                $node->setValue(empty($value) ? "0" : "1");
+            } else {
+                $node->setValue($value);
+            }
+        }
+    }
+
+    /**
+     * validate model and return simple array with validation messages
+     * @param OPNsense\Base\BaseModel $mdl model to set properties to
+     * @return array
+     */
+    protected function validateModel($mdl)
+    {
+        $result = array();
+        foreach ($mdl->performValidation() as $validation_message) {
+            $result[] = (string)$validation_message;
+        }
+        return $result;
+    }
 }
