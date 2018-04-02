@@ -15,71 +15,7 @@
         <Traffic order="100" VisibleName="Traffic Graph" url="/status_graph.php" cssClass="fa fa-line-chart fa-fw"/>
     </Reporting>
     <System order="20" cssClass="fa fa-server">
-        <Trust order="120" cssClass="fa fa-certificate fa-fw">
-            <Certificates url="/system_certmanager.php">
-                <workAround url="/system_certmanager.php*" visibility="hidden"/>
-            </Certificates>
-            <Authorities url="/system_camanager.php">
-                <workAround url="/system_camanager.php*" visibility="hidden"/>
-            </Authorities>
-            <Revocation url="/system_crlmanager.php">
-                <workAround url="/system_crlmanager.php*" visibility="hidden"/>
-            </Revocation>
-        </Trust>
-        <Configuration order="80" cssClass="fa fa-history fa-fw">
-            <History url="/diag_confbak.php">
-                <none url="/diag_confbak.php*" visibility="hidden"/>
-            </History>
-            <Backups url="/diag_backup.php"/>
-        </Configuration>
-        <Firmware order="5" cssClass="fa fa-building-o fa-fw">
-            <Updates order="10" url="/ui/core/firmware/#updates"/>
-            <Plugins order="20" url="/ui/core/firmware/#plugins"/>
-            <Packages order="30" url="/ui/core/firmware/#packages"/>
-            <Settings order="40" url="/ui/core/firmware/#settings"/>
-            <Reporter order="50" url="/crash_reporter.php"/>
-            <Defaults order="60" url="/diag_defaults.php"/>
-        </Firmware>
-        <HighAvailability order="50" VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">
-            <Settings order="100" url="/system_hasync.php"/>
-            <Status order="200" url="/status_habackup.php"/>
-        </HighAvailability>
-        <Routes order="40" cssClass="fa fa-map-signs fa-fw">
-            <Configuration order="10" url="/ui/routes/" />
-            <Log order="100" VisibleName="Log File" url="/diag_logs_routing.php"/>
-        </Routes>
-        <Gateways order="30" cssClass="fa fa-location-arrow fa-fw">
-            <Single order="10" url="/system_gateways.php">
-                <List url="/system_gateways.php*" visibility="hidden"/>
-                <Edit url="/system_gateways_edit.php*" visibility="hidden"/>
-            </Single>
-            <Group order="20" url="/system_gateway_groups.php">
-                <List url="/system_gateway_groups.php*" visibility="hidden"/>
-                <Edit url="/system_gateway_groups_edit.php*" visibility="hidden"/>
-            </Group>
-            <Log VisibleName="Log File" order="30" url="/diag_logs_gateways.php"/>
-        </Gateways>
-        <Settings order="20" cssClass="fa fa-cogs fa-fw">
-            <General order="100" url="/system_general.php">
-                <workAround url="/system_general.php*" visibility="hidden"/>
-            </General>
-            <Administration order="200" url="/system_advanced_admin.php"/>
-            <Logging order="300" url="/diag_logs_settings.php"/>
-            <Notifications order="400" url="/system_advanced_notifications.php"/>
-            <Miscellaneous order="500" url="/system_advanced_misc.php"/>
-            <Tunables VisibleName="Tunables" order="600" url="/system_advanced_sysctl.php">
-                <Edit url="/system_advanced_sysctl.php*" visibility="hidden"/>
-            </Tunables>
-        </Settings>
-        <LogFiles order="150" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
-            <General order="100" VisibleName="General" url="/diag_logs.php"/>
-            <Configd order="150" VisibleName="Configd" url="/configd_logs.php"/>
-            <WebGUI order="200" VisibleName="Web GUI" url="/httpd_logs.php"/>
-        </LogFiles>
-        <Wizard order="140" url="/wizard.php?xml=system" cssClass="fa fa-magic fa-fw">
-            <Step url="/wizard.php?xml=system*" visibility="hidden"/>
-        </Wizard>
-        <Access order="10" cssClass="fa fa-users fa-fw">
+        <Access cssClass="fa fa-users fa-fw">
             <Users order="10" url="/system_usermanager.php">
                 <All url="/system_usermanager.php*" visibility="hidden"/>
                 <Privileges url="/system_usermanager_addprivs.php*" visibility="hidden"/>
@@ -94,6 +30,70 @@
             </Servers>
             <Tester order="50" url="/diag_authentication.php"/>
         </Access>
+        <Configuration cssClass="fa fa-history fa-fw">
+            <History url="/diag_confbak.php">
+                <none url="/diag_confbak.php*" visibility="hidden"/>
+            </History>
+            <Backups url="/diag_backup.php"/>
+        </Configuration>
+        <Firmware cssClass="fa fa-building-o fa-fw">
+            <Updates order="10" url="/ui/core/firmware/#updates"/>
+            <Plugins order="20" url="/ui/core/firmware/#plugins"/>
+            <Packages order="30" url="/ui/core/firmware/#packages"/>
+            <Settings order="40" url="/ui/core/firmware/#settings"/>
+            <Reporter order="50" url="/crash_reporter.php"/>
+            <Defaults order="60" url="/diag_defaults.php"/>
+        </Firmware>
+        <Gateways cssClass="fa fa-location-arrow fa-fw">
+            <Single order="10" url="/system_gateways.php">
+                <List url="/system_gateways.php*" visibility="hidden"/>
+                <Edit url="/system_gateways_edit.php*" visibility="hidden"/>
+            </Single>
+            <Group order="20" url="/system_gateway_groups.php">
+                <List url="/system_gateway_groups.php*" visibility="hidden"/>
+                <Edit url="/system_gateway_groups_edit.php*" visibility="hidden"/>
+            </Group>
+            <Log VisibleName="Log File" order="30" url="/diag_logs_gateways.php"/>
+        </Gateways>
+        <HighAvailability VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">
+            <Settings order="100" url="/system_hasync.php"/>
+            <Status order="200" url="/status_habackup.php"/>
+        </HighAvailability>
+        <Routes cssClass="fa fa-map-signs fa-fw">
+            <Configuration order="10" url="/ui/routes/" />
+            <Log order="100" VisibleName="Log File" url="/diag_logs_routing.php"/>
+        </Routes>
+        <Settings cssClass="fa fa-cogs fa-fw">
+            <General order="100" url="/system_general.php">
+                <workAround url="/system_general.php*" visibility="hidden"/>
+            </General>
+            <Administration order="200" url="/system_advanced_admin.php"/>
+            <Logging order="300" url="/diag_logs_settings.php"/>
+            <Notifications order="400" url="/system_advanced_notifications.php"/>
+            <Miscellaneous order="500" url="/system_advanced_misc.php"/>
+            <Tunables VisibleName="Tunables" order="600" url="/system_advanced_sysctl.php">
+                <Edit url="/system_advanced_sysctl.php*" visibility="hidden"/>
+            </Tunables>
+        </Settings>
+        <Trust cssClass="fa fa-certificate fa-fw">
+            <Certificates url="/system_certmanager.php">
+                <workAround url="/system_certmanager.php*" visibility="hidden"/>
+            </Certificates>
+            <Authorities url="/system_camanager.php">
+                <workAround url="/system_camanager.php*" visibility="hidden"/>
+            </Authorities>
+            <Revocation url="/system_crlmanager.php">
+                <workAround url="/system_crlmanager.php*" visibility="hidden"/>
+            </Revocation>
+        </Trust>
+        <Wizard url="/wizard.php?xml=system" cssClass="fa fa-magic fa-fw">
+            <Step url="/wizard.php?xml=system*" visibility="hidden"/>
+        </Wizard>
+        <LogFiles order="150" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
+            <General order="100" VisibleName="General" url="/diag_logs.php"/>
+            <Configd order="150" VisibleName="Configd" url="/configd_logs.php"/>
+            <WebGUI order="200" VisibleName="Web GUI" url="/httpd_logs.php"/>
+        </LogFiles>
     </System>
     <Interfaces order="30" cssClass="fa fa-sitemap">
         <Assignments order="900" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
