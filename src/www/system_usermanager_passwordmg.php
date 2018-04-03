@@ -160,9 +160,7 @@ include("head.inc");
                         endforeach;?>
                       </select>
                       <div class="hidden" data-for="help_for_language">
-                        <strong>
-                          <?= gettext('Choose a language for the web GUI.') ?>
-                        </strong>
+                        <?= gettext('Choose a language for the web GUI.') ?>
                       </div>
                     </td>
                   </tr>
