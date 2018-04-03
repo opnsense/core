@@ -438,6 +438,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModelMigration.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/AllOrNoneConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/BaseConstraint.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/DependConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/UniqueConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/ArrayField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/AuthGroupField.php
