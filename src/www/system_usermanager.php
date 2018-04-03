@@ -978,12 +978,12 @@ $( document ).ready(function() {
                     <tr>
                       <td>
 <?php
-                        if ($userent['scope'] != "user") {
-                            $usrimg = "glyphicon glyphicon-user text-danger";
-                        } elseif (isset($userent['disabled'])) {
-                                $usrimg = "glyphicon glyphicon-user text-muted";
+                        if (isset($userent['disabled'])) {
+                            $usrimg = 'glyphicon glyphicon-user text-muted';
+                        } elseif ($userent['scope'] != 'user') {
+                            $usrimg = 'glyphicon glyphicon-user text-danger';
                         } else {
-                                $usrimg = "glyphicon glyphicon-user text-info";
+                            $usrimg = 'glyphicon glyphicon-user text-info';
                         }?>
                         <span class="<?=$usrimg;?>"></span> <?=$userent['name'];?>
                       </td>
