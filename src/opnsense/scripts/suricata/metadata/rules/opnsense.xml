@@ -1,7 +1,12 @@
 <?xml version="1.0"?>
-<ruleset documentation_url="http://docs.opnsense.org/">
-    <location url="https://rulesets.opnsense.org/suricata/" prefix="OPNsense"/>
+<ruleset documentation_url="https://github.com/opnsense/rules">
+    <location url="https://rulesets.opnsense.org/suricata/" prefix="OPNsense-App-detect"/>
     <files>
-        <file description="test rules">opnsense.test.rules</file>
+        <file description="test">opnsense.test.rules</file>
+        <file description="file-transfer">opnsense.file_transfer.rules</file>
+        <file description="mail">opnsense.mail.rules</file>
+        <file description="media-streaming">opnsense.media_streaming.rules</file>
+        <file description="messaging">opnsense.messaging.rules</file>
+        <file description="social-networking">opnsense.social_media.rules</file>
     </files>
 </ruleset>
