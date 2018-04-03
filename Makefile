@@ -68,7 +68,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			ca_root_nss \
 			choparp \
 			cpustats \
-			dhcp6 \
+			dhcp6c \
 			dhcpleases \
 			dnsmasq \
 			dpinger \
