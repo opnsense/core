@@ -350,7 +350,10 @@ $( document ).ready(function() {
                         <?=	!empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['delay'] : gettext("Pending") ;?>
                       </td>
                       <td class="text-nowrap hidden-xs">
-                        <?=	!empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['loss'] : gettext("Pending"); ?>
+                        <?= !empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['stddev'] : gettext("Pending") ;?>
+                      </td>
+                      <td class="text-nowrap hidden-xs">  
+                        <?= !empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['loss'] : gettext("Pending"); ?>
                       </td>
                       <td>
   <?php
