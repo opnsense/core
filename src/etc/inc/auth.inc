@@ -437,6 +437,18 @@ function local_user_set(&$user, $force_password = false)
 {
     global $config;
 
+    /* load SSH Key DB*/
+    $available_ssh_keys_raw = config_read_array('OPNsense', 'ssh-keys', 'key_pair');
+    if (!is_array($available_ssh_keys_raw)) {
+        $available_ssh_keys_raw = array();
+    }
+    // like in a template: we need to add it to an array if we only got a single element
+    if (array_key_exists('key_name', $available_ssh_keys_raw)) {
+        $available_ssh_keys = array($available_ssh_keys_raw);
+    } else {
+        $available_ssh_keys = $available_ssh_keys_raw;
+    }
+
     if (empty($user['password'])) {
         log_error(sprintf(
           gettext('There is something wrong in your config because user %s password is missing!'),
@@ -509,7 +521,26 @@ function local_user_set(&$user, $force_password = false)
     if (isset($user['authorizedkeys'])) {
         @mkdir("{$user_home}/.ssh", 0700);
         @chown("{$user_home}/.ssh", $user_name);
-        $keys = base64_decode($user['authorizedkeys']);
+        // TODO
+        $ssh_keys_assigned = explode(',',$user['authorizedkeys']);
+        $tmp_key_array = array();
+        // BEGIN READ KEYS from Key DB
+        foreach ($ssh_keys_assigned as $selected_key) {
+            $found = false;
+            foreach ($available_ssh_keys as $sshkey) {
+                if ($sshkey['@attributes']['uuid'] == $selected_key) {
+                    $found = true;
+                    $tmp_key_array[] = $sshkey['public_key'];
+                    break;
+                }
+            }
+            if (!$found) {
+                log_error( "SSH key for user not found.");
+            }
+        }
+        $keys = implode("\n", $tmp_key_array);
+        // END READ KEYS from Key DB
+        //$keys = base64_decode($user['authorizedkeys']);
         $keys = preg_split('/[\n\r]+/', $keys);
         $keys[] = '';
         $keys = implode($keys, "\n");

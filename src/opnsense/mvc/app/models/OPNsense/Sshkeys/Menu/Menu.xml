@@ -1,0 +1,7 @@
+<menu>
+  <System>
+    <Access>
+      <ssh-keys VisibleName="SSH Keys" url="/ui/sshkeys/" />
+    </Access>
+  </System>
+</menu>
