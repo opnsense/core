@@ -779,6 +779,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Proxy/post-auth.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/pre-auth.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/rc.conf.d
+/usr/local/opnsense/service/templates/OPNsense/Proxy/snmp.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/squid.acl.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/squid.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/squid.user.local_auth.conf
