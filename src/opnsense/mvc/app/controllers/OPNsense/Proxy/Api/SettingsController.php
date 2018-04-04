@@ -294,9 +294,6 @@ class SettingsController extends ApiMutableModelControllerBase
         $result = array();
         foreach (explode(",", $domains) as $domain) {
             $result[] = ($domain[0] == "." ? "." : "") . idn_to_ascii($domain);
-            if ($domain != "") {
-                $result[] = ($domain[0] == "." ? "." : "") . idn_to_ascii($domain);
-            }
         }
         return implode(",", $result);
     }
