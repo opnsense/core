@@ -268,15 +268,16 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         $result = parent::setAction();
         $mdlProxy = $this->getModel();
-        if (isset($mdlProxy->forward->acl->whiteList)) {
-            $mdlProxy->forward->acl->whiteList = self::decode($mdlProxy->forward->acl->whiteList);
+        if (($whiteList = $mdlProxy->forward->acl->whiteList) != null) {
+            $mdlProxy->forward->acl->whiteList = self::encode($whiteList->__toString());
         }
-        if (isset($mdlProxy->forward->acl->blackList)) {
-            $mdlProxy->forward->acl->blackList = self::decode($mdlProxy->forward->acl->blackList);
+        if (($blackList = $mdlProxy->forward->acl->blackList) != null) {
+            $mdlProxy->forward->acl->blackList = self::encode($blackList->__toString());
         }
-        if (isset($mdlProxy->forward->icap->exclude)) {
-            $mdlProxy->forward->icap->exclude = self::decode($mdlProxy->forward->icap->exclude);
+        if (($exclude = $mdlProxy->forward->icap->exclude) != null) {
+            $mdlProxy->forward->icap->exclude = self::encode($exclude->__toString());
         }
+        $this->save();
         return $result;
     }
 
@@ -287,8 +288,12 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public static function encode($domains)
     {
+        if (($domains = $domains) == "") {
+            return "";
+        }
         $result = array();
         foreach (explode(",", $domains) as $domain) {
+            $result[] = ($domain[0] == "." ? "." : "") . idn_to_ascii($domain);
             if ($domain != "") {
                 $result[] = ($domain[0] == "." ? "." : "") . idn_to_ascii($domain);
             }
