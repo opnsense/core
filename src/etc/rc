@@ -119,6 +119,10 @@ fi
 # regenerate groups and users for base
 /usr/local/etc/rc.subr.d/recover base > /dev/null
 
+# generate hostid and save it permanenty
+/etc/rc.d/hostid start
+/etc/rc.d/hostid_save start
+
 # set keyboard map if needed
 /etc/rc.d/syscons onestart
 

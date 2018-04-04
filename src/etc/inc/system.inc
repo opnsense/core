@@ -379,11 +379,7 @@ function system_hostname_configure($verbose = false)
 
     $hostname = "{$syscfg['hostname']}.{$syscfg['domain']}";
 
-    /* set hostname */
     mwexecf('/bin/hostname %s', $hostname);
-
-    /* Setup host GUID ID.  This is used by ZFS. */
-    mwexec("/etc/rc.d/hostid start");
 
     if ($verbose) {
         echo "{$hostname}\n";
@@ -690,8 +686,6 @@ function system_syslogd_start($verbose = false)
     }
 
     configd_run('template reload OPNsense/Syslog');
-
-    mwexec('/etc/rc.d/hostid start');
 
     $syslogcfg = $config['syslog'];
 
