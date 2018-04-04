@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2015-2017 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -32,7 +32,6 @@ namespace OPNsense\Base\FieldTypes;
 use OPNsense\Base\Validators\NetworkValidator;
 
 /**
- * Class PortField field type for ports, includes validation for services in /etc/services or valid number ranges.
  * @package OPNsense\Base\FieldTypes
  */
 class NetworkField extends BaseField

@@ -5,13 +5,13 @@
   <head>
 
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <meta name="robots" content="noindex, nofollow, noodp, noydir" />
     <meta name="keywords" content="" />
     <meta name="description" content="" />
     <meta name="copyright" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
     <title>{{headTitle|default("OPNsense") }} | {{system_hostname}}.{{system_domain}}</title>
     {% set theme_name = ui_theme|default('opnsense') %}
@@ -34,18 +34,18 @@
     <link href="/ui/themes/{{theme_name}}/build/images/favicon.png" rel="shortcut icon">
 
     <!-- Stylesheet for fancy select/dropdown -->
-    <link rel="stylesheet" type="text/css" href="/ui/themes/{{theme_name}}/build/css/bootstrap-select.css">
+    <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/bootstrap-select.css', theme_name)}}">
 
     <!-- bootstrap dialog -->
-    <link href="/ui/themes/{{theme_name}}/build/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/bootstrap-dialog.css', theme_name)}}">
 
     <!-- Font awesome -->
     <link rel="stylesheet" href="/ui/css/font-awesome.min.css">
 
     <!-- JQuery -->
-    <script type="text/javascript" src="/ui/js/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript" src="/ui/js/jquery-migrate-3.0.1.min.js"></script>
-    <script type="text/javascript">
+    <script src="/ui/js/jquery-3.2.1.min.js"></script>
+    <script src="/ui/js/jquery-migrate-3.0.1.min.js"></script>
+    <script>
             // setup default scripting after page loading.
             $( document ).ready(function() {
                 // hook into jquery ajax requests to ensure csrf handling.
@@ -95,48 +95,6 @@
                             }
                         });
                     }
-                });
-                // Side menu navigation for long item lists, when top level items tend to scroll above visible the area
-                // they will clip on top of the menu system. Scroll out will move them back into their normal positions.
-                $("#navigation").scroll(function(){
-                    var collapsed_menu_item = $("#mainmenu .collapse.in").first();
-                    if (collapsed_menu_item.position().top < 5) {
-                        var top_pos = parseInt($("header").height());
-                        $("#mainmenu .collapse.in").each(function(){
-                            var menuref = $('a[href="#'+$(this).attr('id')+'"]');
-                            if (!menuref.hasClass('mainmenu_clipped_on_top')) {
-                                menuref.addClass('mainmenu_clipped_on_top');
-                                menuref.data('__original_style__', {
-                                  'z-index': menuref.css('z-index'),
-                                  'width': menuref.css('width'),
-                                  'position': menuref.css('position'),
-                                  'background': menuref.css('background'),
-                                  'top': menuref.css('top')
-                                });
-                            }
-                            menuref.css('z-index', 10);
-                            menuref.css('top', top_pos);
-                            menuref.css('width', collapsed_menu_item.outerWidth() + 'px');
-                            menuref.css('position', 'fixed');
-                            menuref.css('background', '#fff');
-                            top_pos += menuref.outerHeight();
-                        });
-                    } else {
-                        // scroll-back, move menu items back in normal location
-                        $(".mainmenu_clipped_on_top").each(function(){
-                            var menuref = $(this);
-                            $.each(menuref.data('__original_style__'), function(key, value){
-                                menuref.css(key, value);
-                            });
-                            $(this).removeClass('mainmenu_clipped_on_top');
-                        });
-                    }
-                });
-                // Side menu navigation, always force selected item in center when the menu contains more items then fits the view area
-                $(".list-group-item.active").each(function(){
-                    var navbar_center = ($( window ).height() - $(".collapse.navbar-collapse").height())/2;
-                    var x = $(this).offset().top - navbar_center;
-                    $('html,aside').scrollTop(x);
                 });
 
                 initFormHelpUI();
@@ -208,12 +166,12 @@
 
 
         <!-- JQuery Tokenize (http://zellerda.com/projects/tokenize) -->
-        <script type="text/javascript" src="/ui/js/jquery.tokenize.js"></script>
-        <link rel="stylesheet" type="text/css" href="/ui/css/jquery.tokenize.css" />
+        <script src="/ui/js/jquery.tokenize.js"></script>
+        <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/jquery.tokenize.css', theme_name)}}" />
 
         <!-- Bootgrind (grid system from http://www.jquery-bootgrid.com/ )  -->
-        <link rel="stylesheet" type="text/css" href="/ui/css/jquery.bootgrid.css"/>
-        <script type="text/javascript" src="/ui/js/jquery.bootgrid.js"></script>
+        <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/jquery.bootgrid.css', theme_name)}}" />
+        <script src="/ui/js/jquery.bootgrid.js"></script>
         <script>
         /* patch translations into bootgrid library */
         Object.assign(
@@ -230,18 +188,17 @@
         </script>
 
         <!-- Bootstrap type ahead -->
-        <script type="text/javascript" src="/ui/js/bootstrap3-typeahead.min.js"></script>
+        <script src="/ui/js/bootstrap3-typeahead.min.js"></script>
 
         <!-- OPNsense standard toolkit -->
-        <script type="text/javascript" src="/ui/js/opnsense.js"></script>
-        <script type="text/javascript" src="/ui/js/opnsense_ui.js"></script>
-        <script type="text/javascript" src="/ui/js/opnsense_bootgrid_plugin.js"></script>
-        {{javascript_include_when_exists('/ui/themes/' ~ theme_name ~ '/build/js/theme.js')}}
-
+        <script src="/ui/js/opnsense.js"></script>
+        <script src="/ui/js/opnsense_ui.js"></script>
+        <script src="/ui/js/opnsense_bootgrid_plugin.js"></script>
+        <script src="{{theme_file_or_default('/js/theme.js', theme_name)}}"></script>
   </head>
   <body>
   <header class="page-head">
-    <nav class="navbar navbar-default" role="navigation">
+    <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
           <a class="navbar-brand" href="/">
@@ -307,9 +264,23 @@
       </footer>
     </main>
 
+    <!-- dialog "wait for (service) action" -->
+    <div class="modal fade" id="OPNsenseStdWaitDialog" tabindex="-1" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p><strong>{{ lang._('Please wait...') }}</strong></p>
+            <div class="progress">
+               <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- bootstrap script -->
-    <script type="text/javascript" src="/ui/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/ui/js/bootstrap-select.min.js"></script>
+    <script src="/ui/js/bootstrap.min.js"></script>
+    <script src="/ui/js/bootstrap-select.min.js"></script>
     <!-- bootstrap dialog -->
     <script src="/ui/js/bootstrap-dialog.min.js"></script>
 

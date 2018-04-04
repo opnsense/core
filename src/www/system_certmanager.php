@@ -379,7 +379,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig[$reqdfields[$i]])) {
                         $input_errors[] = gettext("The field 'Distinguished name Common Name' contains invalid characters.");
                     }
-                } elseif (($reqdfields[$i] != "descr") && preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\.\"\']/", $pconfig[$reqdfields[$i]])) {
+                } elseif (($reqdfields[$i] != "descr") && preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig[$reqdfields[$i]])) {
                     $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $reqdfieldsn[$i]);
                 }
             }
@@ -533,7 +533,7 @@ if (empty($act)) {
       overflow-y: auto;
     }
   </style>
-  <script type="text/javascript">
+  <script>
   $( document ).ready(function() {
     // delete entry
     $(".act_delete").click(function(event){
@@ -631,7 +631,7 @@ if (empty($act)) {
   </script>
 
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
 //<![CDATA[
   function internalca_change() {
@@ -707,10 +707,10 @@ $( document ).ready(function() {
             endif;?>
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td width="22%"></td>
-                <td  width="78%" align="right">
+                <td style="width:22%"></td>
+                <td  style="width:78%; text-align:right">
                   <small><?=gettext("full help"); ?> </small>
-                  <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                  <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                 </td>
               </tr>
               <tr>
@@ -743,10 +743,10 @@ $( document ).ready(function() {
               </thead>
               <tbody>
                 <tr>
-                  <td width="22%"><a id="help_for_cert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Certificate data");?></td>
-                  <td width="78%">
+                  <td style="width:22%"><a id="help_for_cert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Certificate data");?></td>
+                  <td style="width:78%">
                     <textarea name="cert" id="cert" cols="65" rows="7"><?=$pconfig['cert'];?></textarea>
-                    <div class="hidden" for="help_for_cert">
+                    <div class="hidden" data-for="help_for_cert">
                       <?=gettext("Paste a certificate in X.509 PEM format here.");?>
                     </div>
                   </td>
@@ -755,7 +755,7 @@ $( document ).ready(function() {
                   <td><a id="help_for_key" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Private key data");?></td>
                   <td>
                     <textarea name="key" id="key" cols="65" rows="7" class="formfld_cert"><?=$pconfig['key'];?></textarea>
-                    <div class="hidden" for="help_for_key">
+                    <div class="hidden" data-for="help_for_key">
                       <?=gettext("Paste a private key in X.509 PEM format here.");?>
                     </div>
                   </td>
@@ -771,8 +771,8 @@ $( document ).ready(function() {
               </thead>
               <tbody>
               <tr>
-                <td width="22%"><?=gettext("Certificate authority");?></td>
-                <td width="78%">
+                <td style="width:22%"><?=gettext("Certificate authority");?></td>
+                <td style="width:78%">
                   <select name='caref' id='caref'>
 <?php
                   foreach ($a_ca as $ca) :
@@ -796,7 +796,7 @@ $( document ).ready(function() {
                         <option value="server_cert" <?=$pconfig['cert_type'] == 'server_cert' ? "selected=\"selected\"" : "";?>> <?=gettext("Server Certificate");?> </option>
                         <option value="v3_ca" <?=$pconfig['cert_type'] == 'v3_ca' ? "selected=\"selected\"" : "";?>> <?=gettext("Certificate Authority");?> </option>
                     </select>
-                    <div class="hidden" for="help_for_digest_cert_type">
+                    <div class="hidden" data-for="help_for_digest_cert_type">
                       <?=gettext("Choose the type of certificate to generate here, the type defines it's constraints");?>
                     </div>
                 </td>
@@ -825,7 +825,7 @@ $( document ).ready(function() {
 <?php
                   endforeach; ?>
                   </select>
-                  <div class="hidden" for="help_for_digest_alg">
+                  <div class="hidden" data-for="help_for_digest_alg">
                     <?= gettext("NOTE: It is recommended to use an algorithm stronger than SHA1 when possible.") ?>
                   </div>
                 </td>
@@ -857,7 +857,7 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_dn_state" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State or Province");?> : &nbsp;</td>
                 <td>
                   <input name="dn_state" id="dn_state" type="text" size="40" value="<?=$pconfig['dn_state'];?>"/>
-                  <div class="hidden" for="help_for_digest_dn_state">
+                  <div class="hidden" data-for="help_for_digest_dn_state">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("Sachsen");?>
@@ -868,7 +868,7 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_dn_city" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("City");?> : &nbsp;</td>
                 <td>
                   <input name="dn_city" id="dn_city" type="text" size="40" value="<?=$pconfig['dn_city'];?>"/>
-                  <div class="hidden" for="help_for_digest_dn_city">
+                  <div class="hidden" data-for="help_for_digest_dn_city">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("Leipzig");?>
@@ -879,7 +879,7 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_dn_organization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organization");?> : &nbsp;</td>
                 <td>
                   <input name="dn_organization" id="dn_organization" type="text" size="40" value="<?=$pconfig['dn_organization'];?>"/>
-                  <div class="hidden" for="help_for_digest_dn_organization">
+                  <div class="hidden" data-for="help_for_digest_dn_organization">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("My Company Inc");?>
@@ -890,7 +890,7 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_dn_email" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email Address");?> : &nbsp;</td>
                 <td>
                   <input name="dn_email" id="dn_email" type="text" size="25" value="<?=$pconfig['dn_email'];?>"/>
-                  <div class="hidden" for="help_for_digest_dn_email">
+                  <div class="hidden" data-for="help_for_digest_dn_email">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("admin@mycompany.com");?>
@@ -901,7 +901,7 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_dn_commonname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Common Name");?> : &nbsp;</td>
                 <td>
                   <input name="dn_commonname" id="dn_commonname" type="text" size="25" value="<?=$pconfig['dn_commonname'];?>"/>
-                  <div class="hidden" for="help_for_digest_dn_commonname">
+                  <div class="hidden" data-for="help_for_digest_dn_commonname">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("internal-ca");?>
@@ -985,8 +985,8 @@ $( document ).ready(function() {
               </thead>
               <tbody>
                 <tr>
-                  <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
-                  <td width="78%">
+                  <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
+                  <td style="width:78%">
                     <select name='csr_keylen' class="selectpicker">
 <?php
                     foreach ($cert_keylens as $len) :?>
@@ -1009,7 +1009,7 @@ $( document ).ready(function() {
 <?php
                   endforeach; ?>
                   </select>
-                  <div class="hidden" for="help_for_csr_digest_alg">
+                  <div class="hidden" data-for="help_for_csr_digest_alg">
                     <?= gettext("NOTE: It is recommended to use an algorithm stronger than SHA1 when possible.") ?>
                   </div>
                 </td>
@@ -1035,7 +1035,7 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_csr_dn_state" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State or Province");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_state" type="text" size="40" value="<?=$pconfig['csr_dn_state'];?>"/>
-                  <div class="hidden" for="help_for_digest_csr_dn_state">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_state">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("Sachsen");?>
@@ -1046,7 +1046,7 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_csr_dn_city" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("City");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_city" type="text" size="40" value="<?=$pconfig['csr_dn_city'];?>"/>
-                  <div class="hidden" for="help_for_digest_csr_dn_city">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_city">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("Leipzig");?>
@@ -1057,7 +1057,7 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_csr_dn_organization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organization");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_organization" type="text" size="40" value="<?=$pconfig['csr_dn_organization'];?>"/>
-                  <div class="hidden" for="help_for_digest_csr_dn_organization">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_organization">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("My Company Inc");?>
@@ -1068,7 +1068,7 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_csr_dn_organizationalunit" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organizational Unit");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_organizationalunit" type="text" size="40" value="<?=$pconfig['csr_dn_organizationalunit'];?>"/>
-                  <div class="hidden" for="help_for_digest_csr_dn_organizationalunit">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_organizationalunit">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("IT department");?>
@@ -1079,7 +1079,7 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_csr_dn_email" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email Address");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_email" type="text" size="25" value="<?=$pconfig['csr_dn_email'];?>"/>
-                  <div class="hidden" for="help_for_digest_csr_dn_email">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_email">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("admin@mycompany.com");?>
@@ -1090,7 +1090,7 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_csr_dn_commonname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Common Name");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_commonname" type="text" size="25" value="<?=$pconfig['csr_dn_commonname'];?>"/>
-                  <div class="hidden" for="help_for_digest_csr_dn_commonname">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_commonname">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("internal-ca");?>
@@ -1108,8 +1108,8 @@ $( document ).ready(function() {
             </thead>
               <tbody>
               <tr>
-                <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Existing Certificates");?></td>
-                <td width="78%">
+                <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Existing Certificates");?></td>
+                <td style="width:78%">
                   <select name='certref'>
 <?php
                   foreach ($config['cert'] as $cert) :
@@ -1139,8 +1139,8 @@ $( document ).ready(function() {
             <!-- submit -->
             <table class="table">
               <tr>
-                <td width="22%">&nbsp;</td>
-                <td width="78%">
+                <td style="width:22%">&nbsp;</td>
+                <td style="width:78%">
                   <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
                 </td>
               </tr>
@@ -1159,8 +1159,8 @@ $( document ).ready(function() {
             endif;?>
             <table class="table table-striped">
               <tr>
-                <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Descriptive name");?></td>
-                <td width="78%">
+                <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Descriptive name");?></td>
+                <td style="width:78%">
                   <input name="descr" type="text" id="descr" readonly="readonly" value="<?=$pconfig['descr'];?>"/>
                 </td>
               </tr>
@@ -1200,7 +1200,7 @@ $( document ).ready(function() {
             <input type="hidden" name="id" id="id" value="<?=isset($id) ? $id :"";?>"/>
             <input type="hidden" name="act" id="action" value="<?=$act;?>"/>
           </form>
-          <table summary="details"  class="table table-striped">
+          <table class="table table-striped">
             <thead>
               <tr>
                 <th><?=gettext("Name");?></th>
@@ -1252,11 +1252,11 @@ $( document ).ready(function() {
                 </td>
                 <td><?=$caname;?>&nbsp;</td>
                 <td><?=$subj;?>&nbsp;<br />
-                  <table summary="valid">
+                  <table>
                       <tr>
-                          <td width="10%">&nbsp;</td>
-                          <td width="20%"><?=gettext("Valid From")?>:</td>
-                          <td width="70%"><?= $startdate ?></td>
+                          <td style="width:10%">&nbsp;</td>
+                          <td style="width:20%"><?=gettext("Valid From")?>:</td>
+                          <td style="width:70%"><?= $startdate ?></td>
                       </tr>
                       <tr>
                           <td>&nbsp;</td>

@@ -1,8 +1,7 @@
 <?php
 
-/**
+/*
  *    Copyright (C) 2015 Deciso B.V.
- *
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -25,11 +24,12 @@
  *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *    POSSIBILITY OF SUCH DAMAGE.
- *
  */
+
 namespace OPNsense\Base\Menu;
 
 use OPNsense\Core\Config;
+use \Phalcon\DI\FactoryDefault;
 
 /**
  * Class MenuSystem
@@ -55,6 +55,7 @@ class MenuSystem
     /**
      * add menu structure to root
      * @param string $filename menu xml filename
+     * @return \SimpleXMLElement
      * @throws MenuInitException unloadable menu xml
      */
     private function addXML($filename)
@@ -106,21 +107,35 @@ class MenuSystem
      * Load and persist Menu configuration to disk.
      * @param bool $nowait when the cache is locked, skip waiting for it to become available.
      * @return SimpleXMLElement
+     * @throws MenuInitException
      */
     public function persist($nowait = true)
     {
+        // fetch our model locations
+        if (!empty(FactoryDefault::getDefault()->get('config')->application->modelsDir)) {
+            $modelDirs = FactoryDefault::getDefault()->get('config')->application->modelsDir;
+            if (!is_array($modelDirs) && !is_object($modelDirs)) {
+                $modelDirs = array($modelDirs);
+            }
+        } else {
+            // failsafe, if we don't have a Phalcon Dependency Injector object, use our relative location
+            $modelDirs = array("__DIR__.'/../../../");
+        }
+
         // collect all XML menu definitions into a single file
         $menuXml = new \DOMDocument('1.0');
         $root = $menuXml->createElement('menu');
         $menuXml->appendChild($root);
         // crawl all vendors and modules and add menu definitions
-        foreach (glob(__DIR__.'/../../../*') as $vendor) {
-            foreach (glob($vendor.'/*') as $module) {
-                $menu_cfg_xml = $module.'/Menu/Menu.xml';
-                if (file_exists($menu_cfg_xml)) {
-                    $domNode = dom_import_simplexml($this->addXML($menu_cfg_xml));
-                    $domNode = $root->ownerDocument->importNode($domNode, true);
-                    $root->appendChild($domNode);
+        foreach ($modelDirs as $modelDir) {
+            foreach (glob(preg_replace('#/+#', '/', "{$modelDir}/*")) as $vendor) {
+                foreach (glob($vendor.'/*') as $module) {
+                    $menu_cfg_xml = $module.'/Menu/Menu.xml';
+                    if (file_exists($menu_cfg_xml)) {
+                        $domNode = dom_import_simplexml($this->addXML($menu_cfg_xml));
+                        $domNode = $root->ownerDocument->importNode($domNode, true);
+                        $root->appendChild($domNode);
+                    }
                 }
             }
         }
@@ -241,6 +256,10 @@ class MenuSystem
                 'visiblename' => $descr,
                 'order' => $ordid++,
             ));
+            $this->appendItem('Firewall.Rules.' . $key, 'Select' . $key, array(
+                'url' => '/firewall_rules.php?if='. $key. '&*',
+                'visibility' => 'hidden',
+            ));
             if ($key == 'FloatingRules') {
                 $this->appendItem('Firewall.Rules.' . $key, 'Top' . $key, array(
                     'url' => '/firewall_rules.php',
@@ -265,11 +284,15 @@ class MenuSystem
                 'visiblename' => "[$descr]",
                 'order' => $ordid++,
             ));
-            $this->appendItem('Services.DHCPv4.' . $key, 'Add' . $key, array(
+            $this->appendItem('Services.DHCPv4.' . $key, 'Edit' . $key, array(
+                'url' => '/services_dhcp.php?if='. $key . '&*',
+                'visibility' => 'hidden',
+            ));
+            $this->appendItem('Services.DHCPv4.' . $key, 'AddStatic' . $key, array(
                 'url' => '/services_dhcp_edit.php?if='. $key,
                 'visibility' => 'hidden',
             ));
-            $this->appendItem('Services.DHCP4.' . $key, 'Edit' . $key, array(
+            $this->appendItem('Services.DHCPv4.' . $key, 'EditStatic' . $key, array(
                 'url' => '/services_dhcp_edit.php?if='. $key . '&*',
                 'visibility' => 'hidden',
             ));

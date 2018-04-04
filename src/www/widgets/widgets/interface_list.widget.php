@@ -31,12 +31,12 @@
 */
 
 require_once("guiconfig.inc");
-require_once("widgets/include/interfaces.inc");
+require_once("widgets/include/interface_list.inc");
 require_once("interfaces.inc");
 
 ?>
 
-<script type="text/javascript">
+<script>
   /**
    * Hybrid widget only update interface status using ajax
    */
@@ -77,24 +77,24 @@ require_once("interfaces.inc");
         <td>
 <?php
           if (isset($ifinfo['ppplink'])):?>
-            <span alt="3g" class="glyphicon glyphicon-phone text-success"></span>
+            <span title="3g" class="glyphicon glyphicon-phone text-success"></span>
 <?php
           elseif ($iswireless):
             if ($ifinfo['status'] == 'associated' || $ifinfo['status'] == 'up'):?>
-            <span alt="wlan" class="glyphicon glyphicon-signal text-success"></span>
+            <span title="wlan" class="glyphicon glyphicon-signal text-success"></span>
 <?php
             else:?>
-            <span alt="wlan_d" class="glyphicon glyphicon-signal text-danger"></span>
+            <span title="wlan_d" class="glyphicon glyphicon-signal text-danger"></span>
 <?php
             endif;?>
 <?php
           else:?>
 <?php
             if ($ifinfo['status'] == "up"):?>
-              <span alt="cablenic" class="glyphicon glyphicon-transfer text-success"></span>
+              <span title="cablenic" class="glyphicon glyphicon-transfer text-success"></span>
 <?php
             else:?>
-              <span alt="cablenic" class="glyphicon glyphicon-transfer text-danger"></span>
+              <span title="cablenic" class="glyphicon glyphicon-transfer text-danger"></span>
 <?php
             endif;?>
 <?php

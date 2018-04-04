@@ -1,33 +1,31 @@
 {#
+ # Copyright (c) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ # Copyright (c) 2015-2016 Deciso B.V.
+ # All rights reserved.
+ #
+ # Redistribution and use in source and binary forms, with or without modification,
+ # are permitted provided that the following conditions are met:
+ #
+ # 1.  Redistributions of source code must retain the above copyright notice,
+ # this list of conditions and the following disclaimer.
+ #
+ # 2.  Redistributions in binary form must reproduce the above copyright notice,
+ # this list of conditions and the following disclaimer in the documentation
+ # and/or other materials provided with the distribution.
+ #
+ # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ # OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ # POSSIBILITY OF SUCH DAMAGE.
+ #}
 
-Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
-Copyright (c) 2015-2016 Deciso B.V.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-1.  Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-
-2.  Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
-#}
-
-<script type="text/javascript">
+<script>
 
     /**
      * prepare for checking update status
@@ -130,7 +128,7 @@ POSSIBILITY OF SUCH DAMAGE.
      * perform audit, install poller to update status
      */
     function audit($type) {
-        $.upgrade_action = $type;
+        $.upgrade_action = 'audit';
         $('#updatelist').hide();
         $('#update_status').show();
         $('#updatetab > a').tab('show');
@@ -378,16 +376,16 @@ POSSIBILITY OF SUCH DAMAGE.
                     '<td>' +
                     '<button class="btn btn-default btn-xs act_license" data-package="' + row['name'] + '" ' +
                     '  data-toggle="tooltip" title="View ' + row['name'] + ' license">' +
-                    '<span class="fa fa-balance-scale"></span></button> ' +
+                    '<i class="fa fa-balance-scale fa-fw"></i></button> ' +
                     '<button class="btn btn-default btn-xs act_reinstall" data-package="' + row['name'] + '" ' +
                     '  data-toggle="tooltip" title="Reinstall ' + row['name'] + '">' +
-                    '<span class="fa fa-recycle"></span></button> ' + (row['locked'] === '1' ?
+                    '<i class="fa fa-recycle fa-fw"></i></button> ' + (row['locked'] === '1' ?
                         '<button data-toggle="tooltip" title="Unlock ' + row['name'] + '" class="btn btn-default btn-xs act_unlock" data-package="' + row['name'] + '">' +
-                        '<span class="fa fa-lock">' +
-                        '</span></button>' :
+                        '<i class="fa fa-lock fa-fw">' +
+                        '</i></button>' :
                         '<button class="btn btn-default btn-xs act_lock" data-package="' + row['name'] + '" ' +
                         '  data-toggle="tooltip" title="Lock ' + row['name'] + '" >' +
-                        '<span class="fa fa-unlock"></span></button>'
+                        '<i class="fa fa-unlock fa-fw"></i></button>'
                     ) + '</td>' +
                     '</tr>'
                 );
@@ -422,16 +420,16 @@ POSSIBILITY OF SUCH DAMAGE.
                     '<td>' + bold_on + row['comment'] + bold_off + '</td>' +
                     '<td><button class="btn btn-default btn-xs act_details" data-package="' + row['name'] + '" ' +
                         ' data-toggle="tooltip" title="More about ' + row['name'] + '">' +
-                        '<span class="fa fa-info-circle"></span></button>' +
+                        '<i class="fa fa-info-circle fa-fw"></i></button>' +
                         (row['installed'] == "1" ?
                         '<button class="btn btn-default btn-xs act_remove" data-package="' + row['name'] + '" '+
                         '  data-toggle="tooltip" title="Remove ' + row['name'] + '">' +
-                        '<span class="fa fa-trash">' +
-                        '</span></button>' :
+                        '<i class="fa fa-trash fa-fw">' +
+                        '</i></button>' :
                         '<button class="btn btn-default btn-xs act_install" data-package="' + row['name'] + '" ' +
                         ' data-toggle="tooltip" title="Install ' + row['name'] + '">' +
-                        '<span class="fa fa-plus">' +
-                        '</span></button>'
+                        '<i class="fa fa-plus fa-fw">' +
+                        '</i></button>'
                     ) + '</td>' + '</tr>'
                 );
             });
@@ -467,7 +465,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         '><td>' + bold_on + row['version'] + status_text + bold_off + '</td><td>' + bold_on + row['date'] + bold_off + '</td>' +
                         '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
                         'data-toggle="tooltip" title="View ' + row['version'] + '">' +
-                        '<span class="fa fa-book"></span></button></td></tr>'
+                        '<i class="fa fa-book fa-fw"></i></button></td></tr>'
                     );
                 });
 
@@ -742,7 +740,7 @@ POSSIBILITY OF SUCH DAMAGE.
             </ul>
             <div class="tab-content content-box tab-content">
                 <div id="updates" class="tab-pane fade in active">
-                    <textarea name="output" id="update_status" class="form-control" rows="25" wrap="hard" readonly style="max-width:100%; font-family: monospace; display: none;"></textarea>
+                    <textarea name="output" id="update_status" class="form-control" rows="25" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace; display: none;"></textarea>
                     <table class="table table-striped table-condensed table-responsive" id="updatelist">
                         <thead>
                         </thead>
@@ -791,7 +789,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                     <div style="display:none;" id="firmware_mirror_other">
                                         <input type="text" id="firmware_mirror_value">
                                     </div>
-                                    <div class="hidden" for="help_for_mirror">
+                                    <div class="hidden" data-for="help_for_mirror">
                                         {{ lang._('Select an alternate firmware mirror.') }}
                                     </div>
                                 </td>
@@ -805,7 +803,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                     <div style="display:none;" id="firmware_flavour_other">
                                         <input type="text" id="firmware_flavour_value">
                                     </div>
-                                    <div class="hidden" for="help_for_flavour">
+                                    <div class="hidden" data-for="help_for_flavour">
                                         {{ lang._('Select the firmware cryptography flavour.') }}
                                     </div>
                                 </td>
@@ -816,7 +814,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                 <td>
                                     <select class="selectpicker" id="firmware_type">
                                     </select>
-                                    <div class="hidden" for="help_for_type">
+                                    <div class="hidden" data-for="help_for_type">
                                         {{ lang._('Select the release type. Use with care.') }}
                                     </div>
                                 </td>
@@ -826,7 +824,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                 <td style="width: 150px;"><a id="help_for_mirror_subscription" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Subscription') }}</td>
                                 <td>
                                     <input type="text" id="firmware_mirror_subscription">
-                                    <div class="hidden" for="help_for_mirror_subscription">
+                                    <div class="hidden" data-for="help_for_mirror_subscription">
                                         {{ lang._('Provide subscription key.') }}
                                     </div>
                                 </td>

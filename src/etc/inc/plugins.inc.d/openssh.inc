@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2004 Fred Mol <fredmol@xs4all.nl>.
- * Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,8 +47,6 @@ function openssh_configure()
 
 function openssh_services()
 {
-    global $config;
-
     $services = array();
 
     if (openssh_enabled()) {
@@ -159,9 +157,16 @@ function openssh_configure_do($verbose = false, $interface = '')
     $sshconf .= "UseDNS no\n";
     $sshconf .= "X11Forwarding no\n";
     $sshconf .= "PubkeyAuthentication yes\n";
-    $sshconf .= "Subsystem\tsftp\tinternal-sftp\n";
+    $sshconf .= "Subsystem sftp internal-sftp\n";
+    $sshconf .= "AllowGroups wheel";
+    if (!empty($sshcfg['group'][0])) {
+        $sshconf .= " {$sshcfg['group'][0]}";
+    }
+    $sshconf .= "\n";
     if (isset($sshcfg['permitrootlogin'])) {
         $sshconf .= "PermitRootLogin yes\n";
+    } else {
+        $sshconf .= "PermitRootLogin no\n";
     }
     if (isset($sshcfg['passwordauth'])) {
         $sshconf .= "ChallengeResponseAuthentication yes\n";

@@ -34,7 +34,12 @@ require_once("config.inc");
 
 /* CSRF BEGIN: CHECK MUST BE EXECUTED FIRST; NO EXCEPTIONS */
 require_once('csrf.inc');
+// hardening
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' 'unsafe-eval';");
 header('X-Frame-Options: SAMEORIGIN');
+header('X-Content-Type-Options: nosniff');
+header('X-XSS-Protection: 1; mode=block');
+header('Referrer-Policy: same-origin');
 /* CSRF END: THANK YOU FOR YOUR COOPERATION */
 
 function get_current_theme()
@@ -55,6 +60,28 @@ function html_safe($text)
     /* gettext() embedded in JavaScript can cause syntax errors */
     return htmlspecialchars($text, ENT_QUOTES | ENT_HTML401);
 }
+
+/**
+ * search for a themed filename or return distribution standard
+ * @param string $url relative url
+ * @return string
+ */
+function get_themed_filename($url)
+{
+    $theme = get_current_theme();
+    $search_pattern = array(
+        "/themes/{$theme}/build/",
+        "/"
+    );
+    foreach ($search_pattern as $pattern) {
+        $filename = "/usr/local/opnsense/www{$pattern}{$url}";
+        if (file_exists($filename)) {
+            return str_replace("//", "/", "/ui{$pattern}{$url}");
+        }
+    }
+    return $url; // not found, return source
+}
+
 
 require_once("authgui.inc");
 
@@ -139,7 +166,16 @@ function do_input_validation($postdata, $reqdfields, $reqdfieldsn, &$input_error
     }
 
     for ($i = 0; $i < count($reqdfields); $i++) {
-        if (empty($postdata[$reqdfields[$i]])) {
+        $fields = explode(',', $reqdfields[$i]);
+        $found = false;
+
+        foreach ($fields as $field) {
+            if (!empty($postdata[$field])) {
+                $found = true;
+            }
+        }
+
+        if (!$found) {
             $input_errors[] = sprintf(gettext("The field %s is required."), $reqdfieldsn[$i]);
         }
     }
@@ -162,9 +198,9 @@ function print_alert_box($msg, $alert = 'warning', $button = '')
 {
     echo <<<EOFnp
 <div class="col-xs-12">
-  <div class="alert alert-{$alert}" role="alert">
+  <div class="alert alert-{$alert}" role="alert" style="min-height: 65px;">
     {$button}
-    <p>{$msg}</p>
+    <div style="margin-top: 8px;">{$msg}</div>
   </div>
 </div>
 EOFnp;
@@ -188,7 +224,7 @@ function print_info_box_apply($msg)
     $value = 'Apply changes';
     $name= 'apply';
 
-    $savebutton = sprintf('<form action="' . $_SERVER['REQUEST_URI'] . '" method="post">', $_SERVER['REQUEST_URI']);
+    $savebutton = '<form method="post">';
     $savebutton .= sprintf(
         '<button type="submit" name="%s" id="%s" class="btn btn-primary pull-right" value="%s">%s</button>',
         $name,
@@ -236,10 +272,9 @@ function print_service_banner($service)
                 break;
             }
             print_alert_box(
-                gettext('You are currently running in LiveCD mode. A reboot will reset the configuration.') .' ' .
+                gettext('You are currently running in LiveCD mode. A reboot will reset the configuration.') . ' ' .
                 (!isset($config['system']['ssh']['noauto']) && is_process_running('sshd') ?
-                gettext('SSH remote login is enabled for the users "root" and ' .
-                '"installer" using the same password.') : gettext('SSH remote login is disabled.'))
+                gettext('SSH remote login is enabled for the users "root" and "installer" using the same password.') : '')
             );
         default:
             break;

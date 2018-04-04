@@ -97,6 +97,12 @@
                     <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
                     <ValidationMessage>Origin should be regular text of max 30 characters</ValidationMessage>
                 </origin>
+                <delay type="IntegerField">
+                    <Required>N</Required>
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>3000</MaximumValue>
+                    <ValidationMessage>Please choose a value between 1 and 3000</ValidationMessage>
+                </delay>
                 <description type="TextField">
                     <Required>Y</Required>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>

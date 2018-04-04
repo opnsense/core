@@ -221,14 +221,14 @@ include("head.inc");
     }
 ?>
       <section class="col-xs-12">
-        <div class="content-box tab-content table-responsive">
-          <form method="post" name="iform" id="iform">
+        <form method="post" name="iform" id="iform">
+          <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td width="22%"><strong><?= gettext('Cryptographic Hardware Acceleration') ?></strong></td>
-                <td width="78%" align="right">
+                <td style="width:22%"><strong><?= gettext('Cryptographic Hardware Acceleration') ?></strong></td>
+                <td style="width:78%; text-align:right">
                   <small><?=gettext("full help"); ?> </small>
-                  <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                  <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                 </td>
               </tr>
               <tr>
@@ -244,7 +244,7 @@ include("head.inc");
 <?php
                     endforeach; ?>
                   </select>
-                  <div class="hidden" for="help_for_crypto_hardware">
+                  <div class="hidden" data-for="help_for_crypto_hardware">
                     <?=gettext("A cryptographic accelerator module will use hardware support to speed up some " .
                                             "cryptographic functions on systems which have the chip. Do not enable this " .
                                             "option if you have a Hifn cryptographic acceleration card, as this will take " .
@@ -255,14 +255,15 @@ include("head.inc");
                   <br /><br />
                   <?=gettext("If you do not have a crypto chip in your system, this option will have no " .
                                       "effect. To unload the selected module, set this option to 'none' and then reboot."); ?>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_cryptodev_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use /dev/crypto");?> </td>
                 <td>
                   <input name="cryptodev_enable" type="checkbox" id="cryptodev_enable" value="yes" <?= !empty($pconfig['cryptodev_enable']) ? "checked=\"checked\"" : "";?> />
-                  <strong><?=gettext("Enable old userland device for cryptographic acceleration"); ?></strong>
-                  <div class="hidden" for="help_for_cryptodev_enable">
+                  <?= gettext('Enable old userland device for cryptographic acceleration') ?>
+                  <div class="hidden" data-for="help_for_cryptodev_enable">
                     <?=gettext("Old hardware accelerators like 'safe', 'hifn' or 'ubsec' may only provide userland acceleration to e.g. " .
                                             "OpenVPN by means of the /dev/crypto interface, which can be accessed via the OpenSSL " .
                                             "engine framework. Note that LibreSSL does not have support for this device and " .
@@ -271,8 +272,13 @@ include("head.inc");
                   </div>
                 </td>
               </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Thermal Sensors"); ?></th>
+                <td style="width:22%"><strong><?= gettext('Thermal Sensors') ?></strong></td>
+                <td style="witdh:78%"></td>
               </tr>
               <tr>
                 <td><a id="help_for_thermal_hardware" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware");?> </td>
@@ -287,7 +293,7 @@ include("head.inc");
 <?php
                     endforeach; ?>
                   </select>
-                  <div class="hidden" for="help_for_thermal_hardware">
+                  <div class="hidden" data-for="help_for_thermal_hardware">
                     <?=gettext("If you have a supported CPU, selecting a themal sensor will load the appropriate " .
                                               "driver to read its temperature. Setting this to 'None' will attempt to read the " .
                                               "temperature from an ACPI-compliant motherboard sensor instead, if one is present."); ?>
@@ -297,8 +303,13 @@ include("head.inc");
                   </div>
                 </td>
               </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Periodic Backups"); ?></th>
+                <td style="width:22%"><strong><?= gettext('Periodic Backups') ?></strong></td>
+                <td style="witdh:78%"></td>
               </tr>
               <tr>
                 <td><a id="help_for_rrdbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic RRD Backup");?></td>
@@ -314,7 +325,7 @@ include("head.inc");
                       endfor; ?>
                   </select>
                   <br />
-                  <div class="hidden" for="help_for_rrdbackup">
+                  <div class="hidden" data-for="help_for_rrdbackup">
                     <?=gettext("This will periodically backup the RRD data so it can be restored automatically on the next boot.");?>
                   </div>
                 </td>
@@ -332,7 +343,7 @@ include("head.inc");
 <?php
                     endfor; ?>
                   </select>
-                  <div class="hidden" for="help_for_dhcpbackup">
+                  <div class="hidden" data-for="help_for_dhcpbackup">
                     <?=gettext("This will periodically backup the DHCP leases data so it can be restored automatically on the next boot.");?>
                   </div>
                 </td>
@@ -350,7 +361,7 @@ include("head.inc");
 <?php
                     endfor; ?>
                   </select>
-                  <div class="hidden" for="help_for_netflowbackup">
+                  <div class="hidden" data-for="help_for_netflowbackup">
                     <?=gettext("This will periodically backup the NetFlow data aggregation so it can be restored automatically on the next boot.");?>
                   </div>
                 </td>
@@ -368,19 +379,24 @@ include("head.inc");
 <?php
                     endfor; ?>
                   </select>
-                  <div class="hidden" for="help_for_captiveportalbackup">
+                  <div class="hidden" data-for="help_for_captiveportalbackup">
                     <?=gettext("This will periodically backup the captive portal session data so it can be restored automatically on the next boot.");?>
                   </div>
                 </td>
               </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Power Savings"); ?></th>
+                <td style="width:22%"><strong><?= gettext('Power Savings') ?></strong></td>
+                <td style="witdh:78%"></td>
               </tr>
               <tr>
                 <td><a id="help_for_powerd_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use PowerD"); ?></td>
                 <td>
                   <input name="powerd_enable" type="checkbox" id="powerd_enable" value="yes" <?=!empty($pconfig['powerd_enable']) ? "checked=\"checked\"" : "";?> />
-                  <div class="hidden" for="help_for_powerd_enable">
+                  <div class="hidden" data-for="help_for_powerd_enable">
                     <?=gettext("The powerd utility monitors the system state and sets various power control " .
                                         "options accordingly. It offers four modes (maximum, minimum, adaptive " .
                                         "and hiadaptive) that can be individually selected while on AC power or batteries. " .
@@ -451,27 +467,31 @@ include("head.inc");
                       <?=gettext("Maximum");?>
                     </option>
                   </select>
-                  <div class="hidden" for="help_for_powerd_normal_mode">
+                  <div class="hidden" data-for="help_for_powerd_normal_mode">
                     <?=gettext("If the powerd utility can not determine the power state it uses \"normal\" for control."); ?>
                   </div>
                 </td>
               </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Disk / Memory Settings (reboot to apply changes)"); ?></th>
+                <td colspan="2"><strong><?= gettext('Disk / Memory Settings (reboot to apply changes)') ?></strong></td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Swap file'); ?></td>
-                <td>
+                <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('Swap file'); ?></td>
+                <td style="width=78%">
                   <input name="use_swap_file" type="checkbox" id="use_swap_file" value="yes" <?=!empty($pconfig['use_swap_file']) ? 'checked="checked"' : '';?>/>
-                  <strong><?= gettext('Add a 2 GB swap file to the system') ?></strong>
+                  <?= gettext('Add a 2 GB swap file to the system') ?>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_use_mfs_var" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/var RAM disk'); ?></td>
                 <td>
                   <input name="use_mfs_var" type="checkbox" id="use_mfs_var" value="yes" <?=!empty($pconfig['use_mfs_var']) ? 'checked="checked"' : '';?>/>
-                  <strong><?=gettext("Use memory file system for /var"); ?></strong>
-                  <div class="hidden" for="help_for_use_mfs_var">
+                  <?=gettext("Use memory file system for /var"); ?>
+                  <div class="hidden" data-for="help_for_use_mfs_var">
                     <?=gettext("Set this if you wish to use /var as a RAM disk (memory file system disks) " .
                       "rather than using the hard disk. Setting this will cause the data /var to be lost on reboot, including log data."); ?>
                   </div>
@@ -481,21 +501,25 @@ include("head.inc");
                 <td><a id="help_for_use_mfs_tmp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/tmp RAM disk'); ?></td>
                 <td>
                   <input name="use_mfs_tmp" type="checkbox" id="use_mfs_tmp" value="yes" <?=!empty($pconfig['use_mfs_tmp']) ? 'checked="checked"' : '';?>/>
-                  <strong><?=gettext('Use memory file system for /tmp'); ?></strong>
-                  <div class="hidden" for="help_for_use_mfs_tmp">
+                  <?=gettext('Use memory file system for /tmp'); ?>
+                  <div class="hidden" data-for="help_for_use_mfs_tmp">
                     <?= gettext('Set this if you wish to use /tmp as a RAM disk (memory file system disk) rather than using the hard disk.') ?>
                   </div>
                 </td>
               </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive">
+            <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td>&nbsp;</td>
-                <td>
+                <td style="width:22%"></td>
+                <td style="width:78%">
                   <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
                 </td>
               </tr>
             </table>
-          </form>
-        </div>
+          </div>
+        </form>
       </section>
     </div>
   </div>

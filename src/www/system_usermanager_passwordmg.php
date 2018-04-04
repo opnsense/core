@@ -47,6 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (isset($_GET['savemsg'])) {
         $savemsg = htmlspecialchars(gettext($_GET['savemsg']));
+    } elseif (!empty($_SESSION['user_shouldChangePassword'])) {
+        $savemsg = gettext("Your password has expired, please provide a new one");
     }
 
     if ($userFound) {
@@ -68,12 +70,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (!$userFound) {
             $input_errors[] = gettext("Sorry, you cannot change settings for a non-local user.");
+        } elseif (count($input_errors) == 0) {
+            $authenticator = get_authenticator();
+            $input_errors = $authenticator->checkPolicy($username, $pconfig['passwordfld0'], $pconfig['passwordfld1']);
         }
     }
 
     if (count($input_errors) == 0) {
         $config['system']['user'][$userindex[$username]]['language'] = $pconfig['language'];
-
+        // only update password change date if there is a policy constraint
+        if (!empty($config['system']['webgui']['enable_password_policy_constraints']) &&
+            !empty($config['system']['webgui']['password_policy_length'])
+        ) {
+            $config['system']['user'][$userindex[$username]]['pwd_changed_at'] = microtime(true);
+        }
+        if (!empty($_SESSION['user_shouldChangePassword'])) {
+            unset($_SESSION['user_shouldChangePassword']);
+        }
         if ($pconfig['passwordfld1'] !== '' || $pconfig['passwordfld2'] !== '') {
             local_user_set_password($config['system']['user'][$userindex[$username]], $pconfig['passwordfld1']);
             local_user_set($config['system']['user'][$userindex[$username]]);
@@ -110,10 +123,10 @@ include("head.inc");
               <div class="table-responsive">
                 <table class="table table-striped">
                   <tr>
-                    <td width="22%"><strong><?= gettext('User Settings') ?></strong></td>
-                    <td width="78%" align="right">
+                    <td style="width:22%"><strong><?= gettext('User Settings') ?></strong></td>
+                    <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                     </td>
                   </tr>
                   <tr>
@@ -146,10 +159,8 @@ include("head.inc");
 <?php
                         endforeach;?>
                       </select>
-                      <div class="hidden" for="help_for_language">
-                        <strong>
-                          <?= gettext('Choose a language for the web GUI.') ?>
-                        </strong>
+                      <div class="hidden" data-for="help_for_language">
+                        <?= gettext('Choose a language for the web GUI.') ?>
                       </div>
                     </td>
                   </tr>

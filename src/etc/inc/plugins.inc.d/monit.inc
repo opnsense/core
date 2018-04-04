@@ -1,8 +1,7 @@
-#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (C) 2017 Alexander Shursha <kekek2@ya.ru>
+ * Copyright (C) 2017 EURO-LOG AG
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,22 +26,44 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once 'config.inc';
-require_once 'util.inc';
-require_once 'system.inc';
-require_once 'interfaces.inc';
-require_once 'filter.inc';
-require_once 'services.inc';
-require_once 'auth.inc';
-require_once 'rrd.inc';
+/**
+ * register service
+ * @return array
+ */
+function monit_services()
+{
+    global $config;
 
-if (!empty($argv[1])) {
-    /* we have a hook specified, copy args */
-    $args = $argv;
-    /* first argument is command */
-    array_shift($args);
-    /* second argument is hook */
-    $hook = array_shift($args);
-    /* other arguments are passed as is */
-    plugins_configure($hook, true, $args);
+    $services = array();
+
+    if (isset($config['OPNsense']['monit']['general']['enabled']) &&
+        $config['OPNsense']['monit']['general']['enabled'] == 1) {
+        $services[] = array(
+                'description' => gettext('Monit System Monitoring'),
+                'configd' => array(
+                        'restart' => array('monit restart'),
+                        'start' => array('monit start'),
+                        'stop' => array('monit stop'),
+                ),
+                'name' => 'monit',
+        );
+    }
+    return $services;
+}
+
+/**
+ *  sync configuration via xmlrpc
+ * @return array
+ */
+function monit_xmlrpc_sync()
+{
+    $result = array();
+
+    $result[] = array(
+        'description' => gettext('Monit System Monitoring'),
+        'section' => 'OPNsense.monit',
+        'id' => 'monit',
+    );
+
+    return $result;
 }

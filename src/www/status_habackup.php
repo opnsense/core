@@ -111,7 +111,7 @@ include("head.inc");
 ?>
 
 <body>
-<script type="text/javascript">
+<script>
     //<![CDATA[
     $( document ).ready(function() {
         function perform_actions_reload(todo)
@@ -254,7 +254,7 @@ include("head.inc");
                                             data-service_name="<?=$service['name'];?>"
                                             data-toggle="tooltip"
                                             title="<?=sprintf(gettext('Stop %sService'), $service['name']);?>"
-                                            class="btn btn-xs btn-default xmlrpc_srv_status_act glyphicon glyphicon-stop">
+                                            class="btn btn-xs btn-default xmlrpc_srv_status_act fa fa-stop">
                                         </span>
 <?php
                                           endif;
@@ -265,7 +265,7 @@ include("head.inc");
                                             data-service_name="<?=$service['name'];?>"
                                             data-toggle="tooltip"
                                             title="<?=sprintf(gettext('Start %sService'), $service['name']);?>"
-                                            class="btn btn-xs btn-default xmlrpc_srv_status_act glyphicon glyphicon-play">
+                                            class="btn btn-xs btn-default xmlrpc_srv_status_act fa fa-play">
                                         </span>
 <?php
                                         endif;?>

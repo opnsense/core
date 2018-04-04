@@ -85,12 +85,12 @@ include("head.inc");
                 <table class="table table-striped opnsense_standard_table_form">
                   <thead>
                     <tr>
-                      <td width="22%">
+                      <td style="width:22%">
                         <strong><?=gettext("NTP PPS Configuration"); ?></strong>
                       </td>
-                      <td width="78%" align="right">
+                      <td style="width:78%; text-align:right">
                         <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                         &nbsp;&nbsp;
                       </td>
                     </tr>
@@ -112,7 +112,7 @@ include("head.inc");
 <?php
                           endforeach; ?>
                         </select>
-                        <div class="hidden" for="help_for_gpsport">
+                        <div class="hidden" data-for="help_for_gpsport">
                           <?=gettext("All serial ports are listed, be sure to pick the port with the PPS source attached."); ?>
                         </div>
                       </td>
@@ -123,7 +123,7 @@ include("head.inc");
                       <td><a id="help_for_fudge1" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Fudge time') ?> (<?=gettext("seconds");?>)</td>
                       <td>
                         <input name="fudge1" type="text" value="<?=$pconfig['fudge1'];?>" />
-                        <div class="hidden" for="help_for_fudge1">
+                        <div class="hidden" data-for="help_for_fudge1">
                           <?=gettext("Fudge time is used to specify the PPS signal offset from the actual second such as the transmission delay between the transmitter and the receiver.");?> (<?=gettext("default");?>: 0.0).</td>
                         </div>
                     </tr>
@@ -131,7 +131,7 @@ include("head.inc");
                       <td><a id="help_for_stratum" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Stratum') ?></td>
                       <td>
                         <input name="stratum" type="text" value="<?=$pconfig['stratum'];?>" />
-                        <div class="hidden" for="help_for_stratum">
+                        <div class="hidden" data-for="help_for_stratum">
                           <?=gettext("(0-16)");?><br />
                           <?=gettext("This may be used to change the PPS Clock stratum");?> (<?=gettext("default");?>: 0). <?=gettext("This may be useful if, for some reason, you want ntpd to prefer a different clock and just monitor this source."); ?></td>
                         </div>
@@ -165,7 +165,7 @@ include("head.inc");
                             </td>
                           </tr>
                         </table>
-                        <div class="hidden" for="help_for_flags">
+                        <div class="hidden" data-for="help_for_flags">
                           <?=gettext("Normally there should be no need to change these options from the defaults."); ?><br />
                         </div>
                       </td>
@@ -174,7 +174,7 @@ include("head.inc");
                       <td><a id="help_for_refid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Clock ID') ?></td>
                       <td>
                         <input name="refid" type="text" value="<?=$pconfig['refid'];?>" />
-                        <div class="hidden" for="help_for_refid">
+                        <div class="hidden" data-for="help_for_refid">
                           <?=gettext("(1 to 4 characters)");?><br />
                           <?=gettext("This may be used to change the PPS Clock ID");?> (<?=gettext("default");?>: PPS).
                         </div>

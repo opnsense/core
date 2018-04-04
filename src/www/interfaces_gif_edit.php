@@ -140,7 +140,7 @@ include("head.inc");
 ?>
 
 <body>
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     hook_ipv4v6('ipv4v6net', 'network-id');
   });
@@ -157,18 +157,18 @@ include("head.inc");
               <table class="table table-striped opnsense_standard_table_form">
                 <thead>
                   <tr>
-                    <td width="22%"><strong><?=gettext("GIF configuration");?></strong></td>
-                    <td width="78%" align="right">
+                    <td style="width:22%"><strong><?=gettext("GIF configuration");?></strong></td>
+                    <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                       &nbsp;
                     </td>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td width="22%"><a id="help_for_if" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Parent interface"); ?></td>
-                    <td width="78%">
+                    <td style="width:22%"><a id="help_for_if" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Parent interface"); ?></td>
+                    <td style="width:78%">
                       <select name="if" class="selectpicker" data-live-search="true">
 <?php
                       $portlist = get_configured_interface_with_descr();
@@ -187,7 +187,7 @@ include("head.inc");
 <?php
                       endforeach;?>
                       </select>
-                      <div class="hidden" for="help_for_if">
+                      <div class="hidden" data-for="help_for_if">
                         <?=gettext("The interface here serves as the local address to be used for the gif tunnel."); ?>
                       </div>
                     </td>
@@ -196,7 +196,7 @@ include("head.inc");
                     <td><a id="help_for_remote-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GIF remote address"); ?></td>
                     <td>
                       <input name="remote-addr" type="text" value="<?=$pconfig['remote-addr'];?>" />
-                      <div class="hidden" for="help_for_remote-addr">
+                      <div class="hidden" data-for="help_for_remote-addr">
                         <?=gettext("Peer address where encapsulated gif packets will be sent. "); ?>
                       </div>
                     </td>
@@ -205,7 +205,7 @@ include("head.inc");
                     <td><a id="help_for_tunnel-local-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GIF tunnel local address"); ?></td>
                     <td>
                       <input name="tunnel-local-addr" type="text" value="<?=$pconfig['tunnel-local-addr'];?>" />
-                      <div class="hidden" for="help_for_tunnel-local-addr">
+                      <div class="hidden" data-for="help_for_tunnel-local-addr">
                         <?=gettext("Local gif tunnel endpoint"); ?>
                       </div>
                     </td>
@@ -215,7 +215,7 @@ include("head.inc");
                     <td>
                       <table class="table table-condensed">
                         <tr>
-                          <td width="285px">
+                          <td style="width:285px">
                             <input name="tunnel-remote-addr" type="text" id="tunnel-remote-addr" value="<?=$pconfig['tunnel-remote-addr'];?>" />
                           </td>
                           <td>
@@ -231,7 +231,7 @@ include("head.inc");
                           </td>
                         </tr>
                       </table>
-                      <div class="hidden" for="help_for_tunnel-remote-addr">
+                      <div class="hidden" data-for="help_for_tunnel-remote-addr">
                         <?=gettext("Remote gif address endpoint. The subnet part is used for determining the network that is tunnelled."); ?>
                       </div>
                     </td>
@@ -240,7 +240,7 @@ include("head.inc");
                     <td><a id="help_for_link0" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Route caching"); ?></td>
                     <td>
                       <input name="link0" type="checkbox" id="link0" <?=!empty($pconfig['link0']) ? "checked=\"checked\"" :"";?> />
-                      <div class="hidden" for="help_for_link0">
+                      <div class="hidden" data-for="help_for_link0">
                         <?=gettext("Specify if route caching can be enabled. Be careful with these settings on dynamic networks."); ?>
                       </div>
                     </td>
@@ -249,7 +249,7 @@ include("head.inc");
                     <td><a id="help_for_link1" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ECN friendly behavior"); ?></td>
                     <td>
                       <input name="link1" type="checkbox" id="link1" <?=!empty($pconfig['link1']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" for="help_for_link1">
+                      <div class="hidden" data-for="help_for_link1">
                         <?=gettext("Note that the ECN friendly behavior violates RFC2893. This should be used in mutual agreement with the peer."); ?>
                       </div>
                     </td>
@@ -258,7 +258,7 @@ include("head.inc");
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                      <div class="hidden" for="help_for_descr">
+                      <div class="hidden" data-for="help_for_descr">
                         <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
                       </div>
                     </td>

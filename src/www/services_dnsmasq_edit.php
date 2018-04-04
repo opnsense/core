@@ -143,7 +143,7 @@ include("head.inc");
 
 <body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     /**
      *  Aliases
@@ -180,17 +180,17 @@ include("head.inc");
             <div class="table-responsive">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <td width="22%"><strong><?=gettext("Edit DNS Forwarder entry");?></strong></td>
-                  <td width="78%" align="right">
+                  <td style="width:22%"><strong><?=gettext("Edit DNS Forwarder entry");?></strong></td>
+                  <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
-                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_host" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Host");?></td>
                   <td>
                     <input name="host" type="text" id="host" value="<?=$pconfig['host'];?>" />
-                    <div class="hidden" for="help_for_host">
+                    <div class="hidden" data-for="help_for_host">
                       <?=gettext("Name of the host, without"." domain part"); ?><br />
                       <?=gettext("e.g."); ?> <em><?=gettext("myhost"); ?></em>
                     </div>
@@ -200,7 +200,7 @@ include("head.inc");
                   <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain");?></td>
                   <td>
                     <input name="domain" type="text" id="domain" value="<?=$pconfig['domain'];?>" />
-                    <div class="hidden" for="help_for_domain">
+                    <div class="hidden" data-for="help_for_domain">
                       <?=gettext("Domain of the host"); ?><br />
                       <?=gettext("e.g."); ?> <em><?=gettext("example.com"); ?></em>
                     </div>
@@ -210,7 +210,7 @@ include("head.inc");
                   <td><a id="help_for_ip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP address");?></td>
                   <td>
                     <input name="ip" type="text" id="ip" value="<?=$pconfig['ip'];?>" />
-                    <div class="hidden" for="help_for_ip">
+                    <div class="hidden" data-for="help_for_ip">
                       <?=gettext("IP address of the host"); ?><br />
                       <?=gettext("e.g."); ?> <em>192.168.100.100</em> <?=gettext("or"); ?> <em>fd00:abcd::1</em><
                     </div>
@@ -220,7 +220,7 @@ include("head.inc");
                   <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
                   <td>
                     <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
-                    <div class="hidden" for="help_for_descr">
+                    <div class="hidden" data-for="help_for_descr">
                       <?=gettext("You may enter a description here"." for your reference (not parsed).");?>
                     </div>
                   </td>
@@ -271,7 +271,7 @@ include("head.inc");
                         </tr>
                       </tfoot>
                     </table>
-                    <div class="hidden" for="help_for_alias">
+                    <div class="hidden" data-for="help_for_alias">
                       <?=gettext("Enter additional names for this host."); ?>
                     </div>
                   </td>

@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $a_npt[$id]['disabled'] = true;
         }
-        write_config('Toggled NAT NPT rule');
+        write_config('Toggled NAT NPTv6 rule');
         mark_subsystem_dirty('natconf');
         header(url_safe('Location: /firewall_nat_npt.php'));
         exit;
@@ -101,7 +101,7 @@ $main_buttons = array(
 
 
 <body>
-  <script type="text/javascript">
+  <script>
   $( document ).ready(function() {
     // link delete buttons
     $(".act_delete").click(function(){
@@ -110,7 +110,7 @@ $main_buttons = array(
         // delete single
         BootstrapDialog.show({
           type:BootstrapDialog.TYPE_DANGER,
-          title: "<?=gettext("NPT");?>",
+          title: "<?=gettext("NPTv6");?>",
           message: "<?=gettext("Do you really want to delete this rule?");?>",
           buttons: [{
                     label: "<?= gettext("No");?>",
@@ -129,7 +129,7 @@ $main_buttons = array(
         // delete selected
         BootstrapDialog.show({
           type:BootstrapDialog.TYPE_DANGER,
-          title: "<?= gettext("NPT");?>",
+          title: "<?= gettext("NPTv6");?>",
           message: "<?=gettext("Do you really want to delete the selected rules?");?>",
           buttons: [{
                     label: "<?= gettext("No");?>",
@@ -193,9 +193,9 @@ $main_buttons = array(
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th width="2%">&nbsp;</th>
-                      <th width="2%"><input type="checkbox" id="selectAll"></th>
-                      <th width="2%">&nbsp;</th>
+                      <th style="width:2%">&nbsp;</th>
+                      <th style="width:2%"><input type="checkbox" id="selectAll"></th>
+                      <th style="width:2%">&nbsp;</th>
                       <th><?=gettext("Interface"); ?></th>
                       <th><?=gettext("External Prefix"); ?></th>
                       <th><?=gettext("Internal prefix"); ?></th>
@@ -213,11 +213,11 @@ $main_buttons = array(
                           <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
                       </td>
                       <td>
-                        <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(!isset($natent['disabled'])) ? gettext("disable rule") : gettext("enable rule");?>">
+                        <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(!isset($natent['disabled'])) ? gettext("Disable") : gettext("Enable");?>">
 <?php                     if(isset($natent['disabled'])):?>
-                          <span class="glyphicon glyphicon-play text-muted"></span>
+                          <span class="fa fa-play text-muted"></span>
 <?php                        else:?>
-                          <span class="glyphicon glyphicon-play text-success"></span>
+                          <span class="fa fa-play text-success"></span>
 <?php                     endif; ?>
                         </a>
                       </td>
@@ -279,11 +279,11 @@ $main_buttons = array(
                       <td colspan="8">&nbsp;</td>
                     </tr>
                     <tr>
-                      <td><span class="glyphicon glyphicon-play text-success"></span></td>
+                      <td><span class="fa fa-play text-success"></span></td>
                       <td colspan="7"><?=gettext("Enabled rule"); ?></td>
                     </tr>
                     <tr>
-                      <td><span class="glyphicon glyphicon-play text-muted"></span></td>
+                      <td><span class="fa fa-play text-muted"></span></td>
                       <td colspan="7"><?=gettext("Disabled rule"); ?></td>
                     </tr>
                   </tfoot>

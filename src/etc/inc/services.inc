@@ -174,8 +174,10 @@ function services_radvd_configure($blacklist = array())
 
         $stanzas = array();
         $ifcfgsnv6 = get_interface_subnetv6($dhcpv6if);
-        $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
-        $stanzas[] = "{$subnetv6}/{$ifcfgsnv6}";
+        if (!empty($ifcfgsnv6)) {
+            $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
+            $stanzas[] = "{$subnetv6}/{$ifcfgsnv6}";
+        }
 
         $viparr = &config_read_array('virtualip', 'vip');
         foreach ($viparr as $vip) {
@@ -313,7 +315,7 @@ function services_radvd_configure($blacklist = array())
         $mtu = legacy_interface_stats($realif)['mtu'];
         $radvdconf .= "\tAdvLinkMTU ". (is_numeric($mtu) ? $mtu : 1280) .";\n";
         $radvdconf .= "\tAdvOtherConfigFlag on;\n";
-        $radvdconf .= "\t\tprefix {$subnetv6}/{$ifcfgsnv6} {\n";
+        $radvdconf .= "\tprefix {$subnetv6}/{$ifcfgsnv6} {\n";
         $radvdconf .= "\t\tAdvOnLink on;\n";
         $radvdconf .= "\t\tAdvAutonomous on;\n";
         $radvdconf .= "\t\tAdvRouterAddr on;\n";
@@ -813,7 +815,7 @@ EOD;
             if (!empty($dhcpifconf['filename']) && !empty($dhcpifconf['filename32']) && !empty($dhcpifconf['filename64'])) {
                 $dhcpdconf .= "  if option arch = 00:06 {\n";
                 $dhcpdconf .= "    filename \"{$dhcpifconf['filename32']}\";\n";
-                $dhcpdconf .= "  } else if option arch = 00:07 {\n";
+                $dhcpdconf .= "  } else if option arch = 00:09 {\n";
                 $dhcpdconf .= "    filename \"{$dhcpifconf['filename64']}\";\n";
                 $dhcpdconf .= "  } else {\n";
                 $dhcpdconf .= "    filename \"{$dhcpifconf['filename']}\";\n";
@@ -1324,7 +1326,10 @@ EOD;
     /* fire up dhcpd in a chroot */
     if (count($dhcpdv6ifs) > 0) {
         mwexec('/usr/local/sbin/dhcpd -6 -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpdv6.conf -pf /var/run/dhcpdv6.pid ' . join(' ', $dhcpdv6ifs));
-        mwexec('/usr/local/sbin/dhcpleases6 -c "/usr/local/bin/php -f /usr/local/sbin/prefixes.php|/bin/sh" -l /var/dhcpd/var/db/dhcpd6.leases');
+        mwexecf('/usr/local/sbin/dhcpleases6 -c %s -l %s', array(
+            '/usr/local/sbin/configctl dhcpd update prefixes',
+            '/var/dhcpd/var/db/dhcpd6.leases',
+        ));
     }
 
     if ($verbose) {
@@ -1570,34 +1575,49 @@ function get_dyndns_ip($int, $ipver = 4)
     global $config;
 
     $ip_address = $ipver == 6 ? get_interface_ipv6($int) : get_interface_ip($int);
+    if (empty($ip_address)) {
+        return 'down';
+    }
 
-    if ($ipver == 6 || is_private_ip($ip_address)) {
-        $gateways_status = return_gateways_status(true);
-        /*
-         * If the gateway for this interface is down, then the external
-         * check cannot work. Avoid the long wait for the external check
-         * to timeout.
-         */
-        if (stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')) {
-            return 'down';
-        }
+    $gateways_status = return_gateways_status(true);
+
+    /*
+     * If the gateway for this interface is down, then the external
+     * check cannot work. Avoid the long wait for the external check
+     * to timeout.
+     */
+    if (!empty($gateways_status[$config['interfaces'][$int]['gateway']]['status']) &&
+	stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')) {
+        return 'down';
+    }
+
+    if ($ipver == 4 && is_private_ip($ip_address)) {
         /* Chinese alternative is http://ip.3322.net/ */
-        $hosttocheck = $ipver == 6 ? 'http://checkipv6.dyndns.org' : 'http://checkip.dyndns.org';
+        $hosttocheck = 'http://checkip.dyndns.org';
         $ip_ch = curl_init($hosttocheck);
         curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ip_ch, CURLOPT_INTERFACE, $ip_address);
         curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ip_ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ip_ch, CURLOPT_IPRESOLVE, $ipver == 6 ? CURL_IPRESOLVE_V6 : CURL_IPRESOLVE_V4);
+        curl_setopt($ip_ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
         $ip_result = curl_exec($ip_ch);
         if ($ip_result !== false) {
             preg_match('=<body>Current IP Address: (.*)</body>=siU', $ip_result, $matches);
             $ip_address = trim($matches[1]);
         } else {
-            log_error('Aborted IP detection: ' . curl_error($ip_ch));
+            log_error('Aborted IPv4 detection: ' . curl_error($ip_ch));
         }
         curl_close($ip_ch);
-        if (($ipver == 6 && !is_ipaddrv6($ip_address)) || ($ipver != 6 && !is_ipaddrv4($ip_address))) {
+        if (!is_ipaddrv4($ip_address)) {
+            return 'down';
+        }
+    } elseif ($ipver == 6) {
+	/* link-local cannot establish a connection to a global address */
+	$local = is_linklocal($ip_address);
+        if (!is_ipaddrv6($ip_address) || $local) {
+            if ($local) {
+                log_error('Aborted IPv6 detection: link-local address');
+            }
             return 'down';
         }
     }
@@ -1631,104 +1651,6 @@ function services_get()
     global $config;
 
     $services = array();
-
-    if (is_radvd_enabled()) {
-        $pconfig = array();
-        $pconfig['name'] = "radvd";
-        $pconfig['description'] = gettext("Router Advertisement Daemon");
-        $pconfig['php']['restart'] = array('services_radvd_configure');
-        $pconfig['php']['start'] = array('services_radvd_configure');
-        $pconfig['pidfile'] = '/var/run/radvd.pid';
-        $services[] = $pconfig;
-    }
-
-    if (isset($config['dhcrelay']['enable'])) {
-        $pconfig = array();
-        $pconfig['name'] = "dhcrelay";
-        $pconfig['description'] = gettext("DHCP Relay");
-        $pconfig['php']['restart'] = array('services_dhcrelay_configure');
-        $pconfig['php']['start'] = array('services_dhcrelay_configure');
-        $pconfig['pidfile'] = '/var/run/dhcrelay.pid';
-        $services[] = $pconfig;
-    }
-
-    if (isset($config['dhcrelay6']['enable'])) {
-        $pconfig = array();
-        $pconfig['name'] = "dhcrelay6";
-        $pconfig['description'] = gettext("DHCPv6 Relay");
-        $pconfig['php']['restart'] = array('services_dhcrelay6_configure');
-        $pconfig['php']['start'] = array('services_dhcrelay6_configure');
-        $pconfig['pidfile'] = '/var/run/dhcrelay6.pid';
-        $services[] = $pconfig;
-    }
-
-    if (is_dhcpv4_server_enabled()) {
-        $pconfig = array();
-        $pconfig['name'] = 'dhcpd';
-        $pconfig['description'] = gettext("DHCP Server");
-        $pconfig['php']['restart'] = array('services_dhcpdv4_configure');
-        $pconfig['php']['start'] = array('services_dhcpdv4_configure');
-        $pconfig['pidfile'] = '/var/dhcpd/var/run/dhcpd.pid';
-        $services[] = $pconfig;
-    }
-
-    if (is_dhcpv6_server_enabled()) {
-        $pconfig = array();
-        $pconfig['name'] = 'dhcpd6';
-        $pconfig['description'] = gettext("DHCPv6 Server");
-        $pconfig['php']['restart'] = array('services_dhcpdv6_configure');
-        $pconfig['php']['start'] = array('services_dhcpdv6_configure');
-        $pconfig['pidfile'] = '/var/dhcpd/var/run/dhcpdv6.pid';
-        $services[] = $pconfig;
-    }
-
-    if (is_apinger_enabled()) {
-        $pconfig = array();
-        $pconfig['name'] = "apinger";
-        $pconfig['description'] = gettext("Gateway Monitoring Daemon");
-        $pconfig['php']['restart'] = array('setup_gateways_monitor');
-        $pconfig['php']['start'] = array('setup_gateways_monitor');
-        $pconfig['pidfile'] = '/var/run/apinger.pid';
-        $services[] = $pconfig;
-    }
-
-    if (isset($config['OPNsense']['captiveportal']['zones']['zone'])) {
-        $enabled = false;
-        if (!empty($config['OPNsense']['captiveportal']['zones']['zone']['enabled'])) {
-            // single zone and enabled
-            $enabled = true;
-        } else {
-            // possible more zones, traverse items
-            foreach ($config['OPNsense']['captiveportal']['zones']['zone'] as $zone) {
-                if (!empty($zone['enabled'])) {
-                    $enabled = true;
-                }
-            }
-        }
-        if ($enabled) {
-            $services[] = array(
-                'pidfile' => '/var/run/lighttpd-api-dispatcher.pid',
-                'description' => gettext('Captive Portal'),
-                'configd' => array(
-                    'restart' => array('captiveportal restart'),
-                    'start' => array('captiveportal start'),
-                    'stop' => array('captiveportal stop'),
-                ),
-                'name' => 'captiveportal',
-            );
-        }
-    }
-
-    $services[] = array(
-        'description' => gettext('System Configuration Daemon'),
-        'pidfile' => '/var/run/configd.pid',
-        'mwexec' => array(
-            'restart' => array('/usr/local/etc/rc.d/configd restart'),
-            'start' => array('/usr/local/etc/rc.d/configd start'),
-            'stop' => array('/usr/local/etc/rc.d/configd stop'),
-        ),
-        'name' => 'configd',
-    );
 
     foreach (plugins_services() as $service) {
         $services[] = $service;

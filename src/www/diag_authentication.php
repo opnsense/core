@@ -47,12 +47,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
-        if (authenticate_user($_POST['username'], $_POST['password'], $authcfg)) {
+        $authName = $authcfg['name'];
+        if ($authcfg['type'] == 'local') {
+            // avoid gettext type issues on Local Database, authenticator should always be named "Local Database"
+            $authName = 'Local Database';
+        } elseif ($authcfg['type'] == 'ldap') {
+            // temporary fix, ldap handler doesn't do this init yet.
+            ldap_setup_caenv($authcfg);
+        }
+
+        $authFactory = new OPNsense\Auth\AuthenticationFactory;
+        $authenticator = $authFactory->get($authName);
+        if ($authenticator->authenticate($_POST['username'], $_POST['password'])) {
             $savemsg = gettext("User") . ": " . $_POST['username'] . " " . gettext("authenticated successfully.");
             $groups = getUserGroups($_POST['username']);
             $savemsg .= "<br />" . gettext("This user is a member of these groups") . ": <br />";
             foreach ($groups as $group) {
                 $savemsg .= "{$group} ";
+            }
+            if (!empty($authenticator->getLastAuthProperties())) {
+                $savemsg .= "<br/><br/>" . gettext("Attributes received from server") . ": <br />";
+            }
+            foreach ($authenticator->getLastAuthProperties() as $attr_name => $attr_value) {
+                $savemsg .= "{$attr_name} => {$attr_value}<br/>";
             }
         } else {
             $input_errors[] = gettext("Authentication failed.");
@@ -78,8 +95,8 @@ include("head.inc");
             <table class="table table-striped opnsense_standard_table_form">
               <tbody>
                 <tr>
-                  <td width="22%"><?=gettext("Authentication Server"); ?></td>
-                  <td width="78%">
+                  <td style="width:22%"><?=gettext("Authentication Server"); ?></td>
+                  <td style="width:78%">
                     <select name="authmode" id="authmode" class="form-control" >
 <?php
                     foreach (auth_get_authserver_list() as $auth_server_id => $auth_server):?>
@@ -92,16 +109,16 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td width="22%"><?=gettext("Username"); ?></td>
-                  <td width="78%"><input type="text" name="username" value="<?=htmlspecialchars($pconfig['username']);?>"></td>
+                  <td style="width:22%"><?=gettext("Username"); ?></td>
+                  <td style="width:78%"><input type="text" name="username" value="<?=htmlspecialchars($pconfig['username']);?>"></td>
                 </tr>
                 <tr>
-                  <td width="22%"><?=gettext("Password"); ?></td>
-                  <td width="78%"><input type="password" name="password" value="<?=htmlspecialchars($pconfig['password']);?>"></td>
+                  <td style="width:22%"><?=gettext("Password"); ?></td>
+                  <td style="width:78%"><input type="password" name="password" value="<?=htmlspecialchars($pconfig['password']);?>"></td>
                 </tr>
                 <tr>
-                  <td width="22%">&nbsp;</td>
-                  <td width="78%"><input id="save" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Test");?>" /></td>
+                  <td style="width:22%">&nbsp;</td>
+                  <td style="width:78%"><input id="save" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Test");?>" /></td>
                 </tr>
               </tbody>
             </table>

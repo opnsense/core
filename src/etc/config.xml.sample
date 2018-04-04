@@ -9,7 +9,7 @@
       <value>default</value>
     </item>
     <item>
-      <descr><![CDATA[Increase UFS read-ahead speeds to match current state of hard drives and NCQ. More information here: http://ivoras.sharanet.org/blog/tree/2010-11-19.ufs-read-ahead.html]]></descr>
+      <descr><![CDATA[Increase UFS read-ahead speeds to match the state of hard drives and NCQ.]]></descr>
       <tunable>vfs.read_max</tunable>
       <value>default</value>
     </item>
@@ -124,6 +124,11 @@
       <value>default</value>
     </item>
     <item>
+      <descr><![CDATA[Set to 1 to additionally filter on the physical interface for locally destined packets]]></descr>
+      <tunable>net.link.bridge.pfil_local_phys</tunable>
+      <value>default</value>
+    </item>
+    <item>
       <descr><![CDATA[Set to 0 to disable filtering on the incoming and outgoing member interfaces.]]></descr>
       <tunable>net.link.bridge.pfil_member</tunable>
       <value>default</value>
@@ -178,6 +183,16 @@
       <tunable>kern.ipc.maxsockbuf</tunable>
       <value>default</value>
     </item>
+    <item>
+      <descr><![CDATA[Page Table Isolation (Meltdown mitigation, requires reboot.)]]></descr>
+      <tunable>vm.pmap.pti</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Disable Indirect Branch Restricted Speculation (Spectre V2 mitigation)]]></descr>
+      <tunable>hw.ibrs_disable</tunable>
+      <value>default</value>
+    </item>
   </sysctl>
   <system>
     <optimization>normal</optimization>
@@ -190,7 +205,6 @@
       <scope>system</scope>
       <gid>1999</gid>
       <member>0</member>
-      <priv>user-shell-access</priv>
       <priv>page-all</priv>
     </group>
     <user>
@@ -204,7 +218,7 @@
     <nextuid>2000</nextuid>
     <nextgid>2000</nextgid>
     <timezone>Etc/UTC</timezone>
-    <timeservers>2.opnsense.pool.ntp.org</timeservers>
+    <timeservers>0.opnsense.pool.ntp.org 1.opnsense.pool.ntp.org 2.opnsense.pool.ntp.org 3.opnsense.pool.ntp.org</timeservers>
     <webgui>
       <protocol>https</protocol>
     </webgui>
@@ -226,6 +240,9 @@
     <crypto_hardware>aesni</crypto_hardware>
     <pf_share_forward>1</pf_share_forward>
     <lb_use_sticky>1</lb_use_sticky>
+    <ssh>
+      <group>admins</group>
+    </ssh>
   </system>
   <interfaces>
     <wan>
@@ -353,6 +370,9 @@
       </options>
     </monitor_type>
   </load_balancer>
+  <ntpd>
+    <prefer>0.opnsense.pool.ntp.org</prefer>
+  </ntpd>
   <widgets>
     <sequence>system_information-container:00000000-col3:show,services_status-container:00000001-col4:show,gateways-container:00000002-col4:show,interface_list-container:00000003-col4:show</sequence>
     <column_count>2</column_count>

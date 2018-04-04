@@ -541,7 +541,7 @@ include("head.inc");
 
 ?>
 <body>
-  <script type="text/javascript">
+  <script>
   $( document ).ready(function() {
       // show source fields (advanced)
       $("#showadvancedboxsrc").click(function(){
@@ -676,15 +676,15 @@ include("head.inc");
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">
                   <tr>
-                    <td valign="top"><strong><?=gettext("Edit Firewall rule");?></strong></td>
-                    <td align="right">
+                    <td style="width:22%"><strong><?=gettext("Edit Firewall rule");?></strong></td>
+                    <td style="width:78%;text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                     </td>
                   </tr>
                   <tr>
-                    <td width="22%"><a id="help_for_action" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Action");?></td>
-                    <td width="78%">
+                    <td style="width:22%"><a id="help_for_action" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Action");?></td>
+                    <td style="width:78%">
                       <select name="type" class="selectpicker" data-live-search="true" data-size="5" >
 <?php
                         $type_options = array('Pass' => gettext('Pass'), 'Block' => gettext('Block'), 'Reject' => gettext('Reject'));
@@ -695,11 +695,10 @@ include("head.inc");
 <?php
                         endforeach; ?>
                       </select>
-                      <div class="hidden" for="help_for_action">
+                      <div class="hidden" data-for="help_for_action">
                         <?=gettext("Choose what to do with packets that match the criteria specified below.");?> <br />
                         <?=gettext("Hint: the difference between block and reject is that with reject, a packet (TCP RST or ICMP port unreachable for UDP) is returned to the sender, whereas with block the packet is dropped silently. In either case, the original packet is discarded.");?>
                       </div>
-                      <br />
                     </td>
                   </tr>
                   <tr>
@@ -707,7 +706,7 @@ include("head.inc");
                     <td>
                       <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
                       <strong><?=gettext("Disable this rule"); ?></strong>
-                      <div class="hidden" for="help_for_disabled">
+                      <div class="hidden" data-for="help_for_disabled">
                         <?=gettext("Set this option to disable this rule without removing it from the list."); ?>
                       </div>
                     </td>
@@ -720,7 +719,7 @@ include("head.inc");
                     <td>
                       <input name="quick" type="checkbox" id="quick" value="yes" <?php if ($pconfig['quick']) echo "checked=\"checked\""; ?> />
                       <strong><?=gettext("Apply the action immediately on match.");?></strong>
-                      <div class="hidden" for="help_for_quick">
+                      <div class="hidden" data-for="help_for_quick">
                         <?=gettext("Set this option if you need to apply this action to traffic that matches this rule immediately.");?>
                       </div>
                     </td>
@@ -777,7 +776,7 @@ include("head.inc");
 <?php
                     endforeach; ?>
                         </select>
-                        <div class="hidden" for="help_for_interface">
+                        <div class="hidden" data-for="help_for_interface">
                           <?=gettext("Choose on which interface packets must come in to match this rule.");?>
                         </div>
                     </td>
@@ -812,7 +811,7 @@ include("head.inc");
 <?php
                       endforeach; ?>
                       </select>
-                      <div class="hidden" for="help_for_ipv46">
+                      <div class="hidden" data-for="help_for_ipv46">
                         <?=gettext("Select the Internet Protocol version this rule applies to");?>
                       </div>
                     </td>
@@ -829,7 +828,7 @@ include("head.inc");
 <?php
                       endforeach; ?>
                       </select>
-                      <div class="hidden" for="help_for_protocol">
+                      <div class="hidden" data-for="help_for_protocol">
                         <?=gettext("Choose which IP protocol this rule should match.");?> <br />
                         <?= gettext("Hint: in most cases, you should specify TCP here.") ?>
                       </div>
@@ -867,8 +866,7 @@ include("head.inc");
 <?php
                       endforeach; ?>
                       </select>
-                      <br />
-                      <div class="hidden" for="help_for_icmptype">
+                      <div class="hidden" data-for="help_for_icmptype">
                         <?=gettext("If you selected ICMP for the protocol above, you may specify an ICMP type here.");?>
                       </div>
                     </td>
@@ -877,7 +875,7 @@ include("head.inc");
                     <td> <a id="help_for_src_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
                     <td>
                       <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  name="srcnot" type="checkbox" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" for="help_for_src_invert">
+                      <div class="hidden" data-for="help_for_src_invert">
                         <?=gettext("Use this option to invert the sense of the match."); ?>
                       </div>
                     </td>
@@ -908,10 +906,10 @@ include("head.inc");
                         <tr>
                           <td>
                             <div>
-                              <table border="0" cellpadding="0" cellspacing="0">
+                              <table style="border:0; cellpadding:0; cellspacing:0">
                                 <tbody>
                                   <tr>
-                                      <td width="348px">
+                                      <td style="width:348px">
                                         <!-- updates to "other" option in  src -->
                                         <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  type="text" id="src_address" for="src" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
                                       </td>
@@ -935,7 +933,7 @@ include("head.inc");
                     <td><?=gettext("Source"); ?></td>
                     <td>
                       <input type="button" class="btn btn-default" value="<?=gettext("Advanced"); ?>" id="showadvancedboxsrc" />
-                      <div class="hidden" for="help_for_source">
+                      <div class="hidden" data-for="help_for_source">
                         <?=gettext("Show source address and port range"); ?>
                       </div>
                     </td>
@@ -952,7 +950,7 @@ include("head.inc");
                         </thead>
                         <tbody>
                           <tr>
-                            <td >
+                            <td>
                               <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  id="srcbeginport" name="srcbeginport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                                 <option data-other=true value="<?=$pconfig['srcbeginport'];?>">(<?=gettext("other"); ?>)</option>
                                 <optgroup label="<?=gettext("Aliases");?>">
@@ -997,7 +995,7 @@ include("head.inc");
                           </tr>
                         </tbody>
                       </table>
-                      <div class="hidden" for="help_for_srcport">
+                      <div class="hidden" data-for="help_for_srcport">
                         <?=gettext("Specify the source port or port range for this rule."); ?>
                         <b><?= gettext("This is usually random and almost never equal to the destination port range (and should usually be 'any').") ?></b>
                       </div>
@@ -1007,7 +1005,7 @@ include("head.inc");
                     <td> <a id="help_for_dst_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
                     <td>
                       <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="dstnot" type="checkbox" id="srcnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" for="help_for_dst_invert">
+                      <div class="hidden" data-for="help_for_dst_invert">
                         <?=gettext("Use this option to invert the sense of the match."); ?>
                       </div>
                     </td>
@@ -1037,10 +1035,10 @@ include("head.inc");
                         </tr>
                         <tr>
                           <td>
-                            <table border="0" cellpadding="0" cellspacing="0">
+                            <table style="border:0; cellpadding:0; cellspacing:0">
                               <tbody>
                                 <tr>
-                                    <td width="348px">
+                                    <td style="width:348px">
                                       <!-- updates to "other" option in  src -->
                                       <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  type="text" id="dst_address" for="dst" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("Destination address");?>"/>
                                     </td>
@@ -1071,7 +1069,7 @@ include("head.inc");
                         </thead>
                         <tbody>
                           <tr>
-                            <td >
+                            <td>
                               <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> id="dstbeginport" name="dstbeginport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                                 <option data-other=true value="<?=$pconfig['dstbeginport'];?>">(<?=gettext("other"); ?>)</option>
                                 <optgroup label="<?=gettext("Aliases");?>">
@@ -1116,7 +1114,7 @@ include("head.inc");
                           </tr>
                         </tbody>
                       </table>
-                      <div class="hidden" for="help_for_dstport">
+                      <div class="hidden" data-for="help_for_dstport">
                         <?=gettext("Specify the port or port range for the destination of the packet for this mapping."); ?>
                       </div>
                     </td>
@@ -1126,7 +1124,7 @@ include("head.inc");
                     <td>
                       <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? "checked=\"checked\"" : ""; ?> />
                       <strong><?=gettext("Log packets that are handled by this rule");?></strong>
-                      <div class="hidden" for="help_for_log">
+                      <div class="hidden" data-for="help_for_log">
                         <?=sprintf(gettext("Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a %sremote syslog server%s."),'<a href="diag_logs_settings.php">','</a>') ?>
                       </div>
                     </td>
@@ -1135,7 +1133,7 @@ include("head.inc");
                     <td><a id="help_for_category" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Category"); ?></td>
                     <td>
                       <input name="category" type="text" class="formfld unknown" id="category" size="40" value="<?=$pconfig['category'];?>" />
-                      <div class="hidden" for="help_for_category">
+                      <div class="hidden" data-for="help_for_category">
                         <?=gettext("You may enter or select a category here to group firewall rules (not parsed)."); ?>
                       </div>
                       <select class="hidden" id="existing_categories">
@@ -1156,7 +1154,7 @@ include("head.inc");
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
-                      <div class="hidden" for="help_for_descr">
+                      <div class="hidden" data-for="help_for_descr">
                         <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
                       </div>
                   </tr>
@@ -1176,7 +1174,7 @@ include("head.inc");
 <?php
                         endforeach;?>
                         </select>
-                        <div class="hidden" for="help_for_sourceos">
+                        <div class="hidden" data-for="help_for_sourceos">
                           <strong><?=gettext("OS Type:");?></strong><br/>
                           <?=gettext("Note: this only works for TCP rules. General OS choice matches all subtypes.");?>
                         </div>
@@ -1186,7 +1184,7 @@ include("head.inc");
                     <td><a id="help_for_nosync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("No XMLRPC Sync"); ?></td>
                     <td>
                       <input type="checkbox" value="yes" name="nosync" <?=!empty($pconfig['nosync']) ? "checked=\"checked\"" :"";?> />
-                      <div class="hidden" for="help_for_nosync">
+                      <div class="hidden" data-for="help_for_nosync">
                         <?=gettext("Hint: This prevents the rule on Master from automatically syncing to other CARP members. This does NOT prevent the rule from being overwritten on Slave.");?>
                       </div>
                     </td>
@@ -1209,7 +1207,7 @@ include("head.inc");
                         endforeach;
                         endif;?>
                         </select>
-                        <div class="hidden" for="help_for_schedule">
+                        <div class="hidden" data-for="help_for_schedule">
                             <p><?=gettext("Leave as 'none' to leave the rule enabled all the time.");?></p>
                         </div>
                     </td>
@@ -1237,7 +1235,7 @@ include("head.inc");
 <?php
                         endforeach;?>
                         </select>
-                        <div class="hidden" for="help_for_gateway">
+                        <div class="hidden" data-for="help_for_gateway">
                           <?=gettext("Leave as 'default' to use the system routing table. Or choose a gateway to utilize policy based routing.");?>
                         </div>
                     </td>
@@ -1256,7 +1254,7 @@ include("head.inc");
                       <td><a id="help_for_allowopts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("allow options");?> </td>
                       <td>
                         <input type="checkbox" value="yes" name="allowopts"<?= !empty($pconfig['allowopts']) ? " checked=\"checked\"" : ""; ?> />
-                        <div class="hidden" for="help_for_allowopts">
+                        <div class="hidden" data-for="help_for_allowopts">
                           <?=gettext("This allows packets with IP options to pass. Otherwise they are blocked by default. This is usually only seen with multicast traffic.");?>
                         </div>
                       </td>
@@ -1265,7 +1263,7 @@ include("head.inc");
                       <td><a id="help_for_disable_replyto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("disable reply-to");?> </td>
                       <td>
                         <input type="checkbox" value="yes" name="disablereplyto"<?= !empty($pconfig['disablereplyto']) ? " checked=\"checked\"" :""; ?> />
-                        <div class="hidden" for="help_for_disable_replyto">
+                        <div class="hidden" data-for="help_for_disable_replyto">
                           <?=gettext("This will disable auto generated reply-to for this rule.");?>
                         </div>
                       </td>
@@ -1297,7 +1295,7 @@ include("head.inc");
                                   </td>
                               </tr>
                           </table>
-                          <div class="hidden" for="help_for_set-prio">
+                          <div class="hidden" data-for="help_for_set-prio">
                               <?= gettext('Set the priority of packets matching this rule. If both priorities are set here, packets with a TOS of "lowdelay" or TCP ACKs with no data payload will be assigned the latter. If the packets are transmitted on a VLAN interface, the queueing priority will be written as the priority code point in the 802.1Q VLAN header.') ?>
                           </div>
                     </td>
@@ -1311,7 +1309,7 @@ include("head.inc");
                             <option value="<?=$prio;?>"<?=(isset($pconfig['prio']) && $pconfig['prio'] !== '' && $pconfig['prio'] == $prio ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
 <? endforeach ?>
                         </select>
-                        <div class="hidden" for="help_for_prio">
+                        <div class="hidden" data-for="help_for_prio">
                           <?=gettext('Match on the priority of packets.');?>
                         </div>
                       </td>
@@ -1320,7 +1318,7 @@ include("head.inc");
                       <td><a id="help_for_tag" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Set local tag"); ?></td>
                       <td>
                         <input name="tag" type="text" value="<?=$pconfig['tag'];?>" />
-                        <div class="hidden" for="help_for_tag">
+                        <div class="hidden" data-for="help_for_tag">
                           <?= gettext("You can mark a packet matching this rule and use this mark to match on other NAT/filter rules.") ?>
                         </div>
                       </td>
@@ -1329,7 +1327,7 @@ include("head.inc");
                       <td><a id="help_for_tagged" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Match local tag"); ?>   </td>
                       <td>
                         <input name="tagged" type="text" value="<?=$pconfig['tagged'];?>" />
-                        <div class="hidden" for="help_for_tagged">
+                        <div class="hidden" data-for="help_for_tagged">
                           <?=gettext("You can match packet on a mark placed before on another rule.")?>
                         </div>
                       </td>
@@ -1338,7 +1336,7 @@ include("head.inc");
                       <td><a id="help_for_max" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Max states");?> </td>
                       <td>
                         <input name="max" type="text" value="<?=$pconfig['max'];?>" />
-                        <div class="hidden" for="help_for_max">
+                        <div class="hidden" data-for="help_for_max">
                           <?=gettext("Maximum state entries this rule can create");?>
                         </div>
                       </td>
@@ -1347,7 +1345,7 @@ include("head.inc");
                       <td><a id="help_for_max-src-nodes" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Max source nodes");?> </td>
                       <td>
                         <input name="max-src-nodes" type="text" value="<?=$pconfig['max-src-nodes'];?>"/>
-                        <div class="hidden" for="help_for_max-src-nodes">
+                        <div class="hidden" data-for="help_for_max-src-nodes">
                           <?=gettext(" Maximum number of unique source hosts");?>
                         </div>
                       </td>
@@ -1356,7 +1354,7 @@ include("head.inc");
                       <td><a id="help_for_max-src-conn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Max established");?> </td>
                       <td>
                         <input name="max-src-conn" type="text" value="<?= $pconfig['max-src-conn'];?>" />
-                        <div class="hidden" for="help_for_max-src-conn">
+                        <div class="hidden" data-for="help_for_max-src-conn">
                             <?=gettext(" Maximum number of established connections per host (TCP only)");?>
                         </div>
                       </td>
@@ -1365,7 +1363,7 @@ include("head.inc");
                       <td><a id="help_for_max-src-states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Max source states");?> </td>
                       <td>
                         <input name="max-src-states" type="text" value="<?=$pconfig['max-src-states'];?>" />
-                        <div class="hidden" for="help_for_max-src-states">
+                        <div class="hidden" data-for="help_for_max-src-states">
                             <?=gettext(" Maximum state entries per host");?>
                         </div>
                       </td>
@@ -1373,7 +1371,7 @@ include("head.inc");
                   <tr class="opt_advanced hidden">
                       <td><a id="help_for_max-src-conn-rate" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Max new connections");?> </td>
                       <td>
-                        <table border="0" cellspacing="0" cellpadding="0">
+                        <table style="border:0; cellspacing:0; cellpadding:0">
                           <tbody>
                             <tr>
                               <td>
@@ -1395,7 +1393,7 @@ include("head.inc");
                             </tr>
                           </tbody>
                         </table>
-                        <div class="hidden" for="help_for_max-src-conn-rate">
+                        <div class="hidden" data-for="help_for_max-src-conn-rate">
                             <?=gettext("Maximum new connections per host / per second(s) (TCP only)");?>
                         </div>
                       </td>
@@ -1403,9 +1401,9 @@ include("head.inc");
                   <tr class="opt_advanced hidden">
                       <td><a id="help_for_statetimeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State timeout");?></td>
                       <td>
-                        <input name="statetimeout" type="text" value="<?=$pconfig['statetimeout'];?>" /><br />
-                        <div class="hidden" for="help_for_statetimeout">
-                          <?=gettext("State Timeout in seconds (TCP only)");?><br/>
+                        <input name="statetimeout" type="text" value="<?=$pconfig['statetimeout'];?>" />
+                        <div class="hidden" data-for="help_for_statetimeout">
+                          <?=gettext("State Timeout in seconds (TCP only)");?>
                         </div>
                       </td>
                   </tr>
@@ -1442,7 +1440,7 @@ include("head.inc");
                           </td>
                         <tr>
                         </table>
-                        <div class="hidden" for="help_for_tcpflags">
+                        <div class="hidden" data-for="help_for_tcpflags">
                             <?=gettext("Use this to choose TCP flags that must be set or cleared for this rule to match.");?>
                         </div>
                       </td>
@@ -1451,8 +1449,8 @@ include("head.inc");
                         <td><a id="help_for_nopfsync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State Type");?> / <?=gettext("NO pfsync");?> </td>
                         <td>
                           <input name="nopfsync" type="checkbox" value="yes" <?= !empty($pconfig['nopfsync']) ? "checked=\"checked\"" : "";?> />
-                          <div class="hidden" for="help_for_nopfsync">
-                            <?=gettext("Hint: This prevents states created by this rule to be sync'ed over pfsync.");?><br />
+                          <div class="hidden" data-for="help_for_nopfsync">
+                            <?=gettext("Hint: This prevents states created by this rule to be sync'ed over pfsync.");?>
                           </div>
                         </td>
                     </tr>
@@ -1476,7 +1474,7 @@ include("head.inc");
                               <?=gettext("none");?>
                             </option>
                           </select>
-                          <div class="hidden" for="help_for_statetype">
+                          <div class="hidden" data-for="help_for_statetype">
                             <span>
                               <?=gettext("Hint: Select which type of state tracking mechanism you would like to use. If in doubt, use keep state.");?>
                             </span>

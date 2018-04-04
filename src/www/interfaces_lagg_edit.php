@@ -158,7 +158,7 @@ legacy_html_escape_form_data($pconfig);
 ?>
 
 <body>
-  <script type="text/javascript">
+  <script>
     $( document ).ready(function() {
         $("#proto").change(function(){
             if ($("#proto").val() == 'lacp') {
@@ -185,10 +185,10 @@ legacy_html_escape_form_data($pconfig);
               <table class="table table-striped opnsense_standard_table_form">
                 <thead>
                   <tr>
-                    <td width="22%"><strong><?=gettext("LAGG configuration");?></strong></td>
-                    <td width="78%" align="right">
+                    <td style="width:22%"><strong><?=gettext("LAGG configuration");?></strong></td>
+                    <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                       &nbsp;
                     </td>
                   </tr>
@@ -206,7 +206,7 @@ legacy_html_escape_form_data($pconfig);
 <?php
                         endforeach;?>
                       </select>
-                      <div class="hidden" for="help_for_members">
+                      <div class="hidden" data-for="help_for_members">
                         <?=gettext("Choose the members that will be used for the link aggregation"); ?>
                       </div>
                     </td>
@@ -223,7 +223,7 @@ legacy_html_escape_form_data($pconfig);
 <?php
                       endforeach;?>
                       </select>
-                      <div class="hidden" for="help_for_proto">
+                      <div class="hidden" data-for="help_for_proto">
                         <ul>
                           <li><b><?=gettext("failover"); ?></b></li>
                                 <?=gettext("Sends and receives traffic only through the master port. " .
@@ -270,7 +270,7 @@ legacy_html_escape_form_data($pconfig);
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                      <div class="hidden" for="help_for_descr">
+                      <div class="hidden" data-for="help_for_descr">
                         <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
                       </div>
                     </td>
@@ -279,7 +279,7 @@ legacy_html_escape_form_data($pconfig);
                     <td><a id="help_for_lacp_fast_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Fast timeout"); ?></td>
                     <td>
                       <input name="lacp_fast_timeout" id="lacp_fast_timeout" type="checkbox" value="yes" <?=!empty($pconfig['lacp_fast_timeout']) ? "checked=\"checked\"" : "" ;?>/>
-                      <div class="hidden" for="help_for_lacp_fast_timeout">
+                      <div class="hidden" data-for="help_for_lacp_fast_timeout">
                         <?=gettext("Enable lacp fast-timeout on the interface."); ?>
                       </div>
                     </td>
@@ -288,14 +288,14 @@ legacy_html_escape_form_data($pconfig);
                     <td><a id="help_for_mtu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MTU"); ?></td>
                     <td>
                       <input name="mtu" id="mtu" type="text" value="<?=$pconfig['mtu'];?>" />
-                      <div class="hidden" for="help_for_mtu">
+                      <div class="hidden" data-for="help_for_mtu">
                         <?= gettext("If you leave this field blank, the smallest mtu of this laggs children will be used.");?>
                       </div>
                     </td>
                   </tr>
                   <tr>
-                    <td width="22%" valign="top">&nbsp;</td>
-                    <td width="78%">
+                    <td style="width:22%">&nbsp;</td>
+                    <td style="width:78%">
                       <input type="hidden" name="laggif" value="<?=$pconfig['laggif']; ?>" />
                       <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                       <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_lagg.php'" />

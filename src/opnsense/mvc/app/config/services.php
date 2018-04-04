@@ -13,6 +13,7 @@ use OPNsense\Core\Routing;
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
  */
 $di = new FactoryDefault();
+$di->set('config', $config);
 
 /**
  * The URL component is used to generate all kind of urls in the application
@@ -30,9 +31,16 @@ $di->set('url', function () use ($config) {
 $di->set('view', function () use ($config) {
 
     $view = new View();
-
-    $view->setViewsDir($config->application->viewsDir);
-
+    // if configuration defines more view locations, convert phalcon config items to array
+    if (is_string($config->application->viewsDir)) {
+        $view->setViewsDir($config->application->viewsDir);
+    } else {
+        $viewDirs = array();
+        foreach ($config->application->viewsDir as $viewDir) {
+            $viewDirs[] = $viewDir;
+        }
+        $view->setViewsDir($viewDirs);
+    }
     $view->registerEngines(array(
         '.volt' => function ($view, $di) use ($config) {
 
@@ -43,11 +51,7 @@ $di->set('view', function () use ($config) {
                 'compiledSeparator' => '_'
             ));
             // register additional volt template functions
-            $volt->getCompiler()->addFunction('javascript_include_when_exists', function ($local_url) {
-                $chk_path = "str_replace('/ui/','/usr/local/opnsense/www/',".$local_url.")";
-                $js_tag = "'<script type=\"text/javascript\" src=\"'.$local_url.'\"></script>'";
-                return "file_exists(".$chk_path.") ? ".$js_tag." :''";
-            });
+            $volt->getCompiler()->addFunction('theme_file_or_default', 'view_fetch_themed_filename');
 
             return $volt;
         },
@@ -84,15 +88,12 @@ $di->setShared('session', function () {
 });
 
 
-$di->set('config', $config);
-
 
 /**
  * Setup router
  */
-$di->set('router', function () {
-
-    $routing = new Routing(__DIR__."/../controllers/", "ui");
+$di->set('router', function () use ($config) {
+    $routing = new Routing($config->application->controllersDir, "ui");
     $routing->getRouter()->handle();
     return $routing->getRouter();
 });

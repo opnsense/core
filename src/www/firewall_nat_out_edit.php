@@ -226,7 +226,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // a bit vague behaviour in "target" and "targetip", if a custom net is given
             // the backend code wants target to be filled with "other-subnet".
             // if any other known net is given, target is used to provide the actual address....
-            // -- can't remove this behaviour now without breaking old confid, so let's reimplement
+            // -- can't remove this behaviour now without breaking old config, so let's reimplement
             $natent['target'] = 'other-subnet';
             $natent['targetip'] = trim($pconfig['targetip']);
             $natent['targetip_subnet'] = $pconfig['targetip_subnet'];
@@ -327,7 +327,7 @@ include("head.inc");
 
 ?>
 <body>
-  <script type="text/javascript">
+  <script>
   $( document ).ready(function() {
 
     // select / input combination, link behaviour
@@ -390,9 +390,9 @@ include("head.inc");
                     <table>
                         <tr>
                             <td><?=gettext("Edit Advanced Outbound NAT entry");?></td>
-                            <td colspan="2" align="right">
+                            <td colspan="2" style="text-align:right">
                                 <small><?=gettext("full help"); ?> </small>
-                                <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                                <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                             </td>
                         </tr>
                     </table>
@@ -403,16 +403,16 @@ include("head.inc");
                   <td>
                     <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
                     <strong><?=gettext("Disable this rule"); ?></strong>
-                    <div class="hidden" for="help_for_disabled">
+                    <div class="hidden" data-for="help_for_disabled">
                       <?=gettext("Set this option to disable this rule without removing it from the list."); ?>
                     </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_do_not_nat" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Do not NAT");?></td>
-                  <td width="78%" class="vtable">
+                  <td style="width:78%" class="vtable">
                     <input type="checkbox" name="nonat" <?=!empty($pconfig['nonat']) ? " checked=\"checked\"" : ""; ?> />
-                    <div class="hidden" for="help_for_do_not_nat">
+                    <div class="hidden" data-for="help_for_do_not_nat">
                       <?=gettext("Enabling this option will disable NAT for traffic matching this rule and stop processing Outbound NAT rules.");?><br />
                       <?=gettext("Hint: in most cases, you won't use this option.");?>
                     </div>
@@ -431,7 +431,7 @@ include("head.inc");
                         <?php endforeach; ?>
                       </select>
                     </div>
-                    <div class="hidden" for="help_for_interface">
+                    <div class="hidden" data-for="help_for_interface">
                       <?=gettext("Choose which interface this rule applies to"); ?>.<br />
                       <?=gettext("Hint: in most cases, you'll want to use WAN here"); ?>
                     </div>
@@ -449,7 +449,7 @@ include("head.inc");
 <?php
                     endforeach; ?>
                     </select>
-                    <div class="hidden" for="help_for_ipv46">
+                    <div class="hidden" data-for="help_for_ipv46">
                       <?=gettext("Select the Internet Protocol version this rule applies to");?>
                     </div>
                   </td>
@@ -465,7 +465,7 @@ include("head.inc");
 <?php                endforeach; ?>
               </select>
                     </div>
-                    <div class="hidden" for="help_for_proto">
+                    <div class="hidden" data-for="help_for_proto">
                       <?=gettext("Choose which IP protocol " ."this rule should match."); ?><br/>
                       <?=gettext("Hint: in most cases, you should specify"); ?> <em><?=gettext("TCP"); ?></em> &nbsp;<?=gettext("here."); ?>
                     </div>
@@ -475,7 +475,7 @@ include("head.inc");
                   <td> <a id="help_for_src_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Source invert') ?></td>
                   <td>
                     <input name="source_not" type="checkbox" value="yes" <?= !empty($pconfig['source_not']) ? 'checked="checked"' : '' ?> />
-                    <div class="hidden" for="help_for_src_invert">
+                    <div class="hidden" data-for="help_for_src_invert">
                       <?=gettext("Use this option to invert the sense of the match."); ?>
                     </div>
                   </td>
@@ -513,7 +513,7 @@ include("head.inc");
                         </td>
                       </tr>
                     </table>
-                    <div class="hidden" for="help_for_source">
+                    <div class="hidden" data-for="help_for_source">
                       <?=gettext("Enter the source network for the outbound NAT mapping.");?>
                     </div>
                   </td>
@@ -549,7 +549,7 @@ include("head.inc");
                         </tr>
                       </tbody>
                     </table>
-                    <div class="hidden" for="help_for_src_port">
+                    <div class="hidden" data-for="help_for_src_port">
                       <?=gettext("(leave blank for any)");?>
                     </div>
                   </td>
@@ -558,7 +558,7 @@ include("head.inc");
                   <td> <a id="help_for_dst_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Destination invert') ?></td>
                   <td>
                     <input name="destination_not" type="checkbox" value="yes" <?= !empty($pconfig['destination_not']) ? 'checked="checked"' : '' ?> />
-                    <div class="hidden" for="help_for_dst_invert">
+                    <div class="hidden" data-for="help_for_dst_invert">
                       <?=gettext("Use this option to invert the sense of the match."); ?>
                     </div>
                   </td>
@@ -595,7 +595,7 @@ include("head.inc");
                         </td>
                       </tr>
                     </table>
-                    <div class="hidden" for="help_for_destination">
+                    <div class="hidden" data-for="help_for_destination">
                       <?=gettext("Enter the source network for the outbound NAT mapping.");?>
                     </div>
                   </td>
@@ -631,7 +631,7 @@ include("head.inc");
                         </tr>
                       </tbody>
                     </table>
-                    <div class="hidden" for="help_for_dstport">
+                    <div class="hidden" data-for="help_for_dstport">
                       <?=gettext("(leave blank for any)");?>
                     </div>
                   </td>
@@ -667,7 +667,7 @@ include("head.inc");
                           </td>
                         </tr>
                       </table>
-                      <div class="hidden" for="help_for_target">
+                      <div class="hidden" data-for="help_for_target">
                         <?=gettext("Packets matching this rule will be mapped to the IP address given here.");?><br />
                         <?=sprintf(gettext("If you want this rule to apply to another IP address rather than the IP address of the interface chosen above, ".
                                 "select it here (you will need to define %sVirtual IP addresses%s on the interface first)."),'<a href="firewall_virtual_ip.php">','</a>')?>
@@ -679,7 +679,7 @@ include("head.inc");
                   <td>
                     <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? "checked=\"checked\"" : ""; ?> />
                     <strong><?=gettext("Log packets that are handled by this rule");?></strong>
-                    <div class="hidden" for="help_for_log">
+                    <div class="hidden" data-for="help_for_log">
                       <?=sprintf(gettext("Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a %sremote syslog server%s."),'<a href="diag_logs_settings.php">','</a>') ?>
                     </div>
                   </td>
@@ -688,7 +688,7 @@ include("head.inc");
                   <td><a id="help_for_natport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Translation") . " / " .gettext("port:");?></td>
                   <td>
                     <input name="natport" type="text" value="<?=$pconfig['natport'];?>" />
-                    <div class="hidden" for="help_for_natport">
+                    <div class="hidden" data-for="help_for_natport">
                       <?=gettext("Enter the source port for the outbound NAT mapping.");?>
                     </div>
                   </td>
@@ -725,7 +725,7 @@ include("head.inc");
                         <?=gettext("Bitmask");?>
                       </option>
                     </select>
-                    <div class="hidden" for="help_for_poolopts">
+                    <div class="hidden" data-for="help_for_poolopts">
                       <?=gettext("Only Round Robin types work with Host Aliases. Any type can be used with a Subnet.");?><br />
                       * <?=gettext("Round Robin: Loops through the translation addresses.");?><br />
                       * <?=gettext("Random: Selects an address from the translation address pool at random.");?><br />
@@ -739,7 +739,7 @@ include("head.inc");
                     <td><a id="help_for_tag" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Set local tag"); ?></td>
                     <td>
                       <input name="tag" type="text" value="<?=$pconfig['tag'];?>" />
-                      <div class="hidden" for="help_for_tag">
+                      <div class="hidden" data-for="help_for_tag">
                         <?= gettext("You can mark a packet matching this rule and use this mark to match on other NAT/filter rules.") ?>
                       </div>
                     </td>
@@ -748,7 +748,7 @@ include("head.inc");
                     <td><a id="help_for_tagged" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Match local tag"); ?>   </td>
                     <td>
                       <input name="tagged" type="text" value="<?=$pconfig['tagged'];?>" />
-                      <div class="hidden" for="help_for_tagged">
+                      <div class="hidden" data-for="help_for_tagged">
                         <?=gettext("You can match packet on a mark placed before on another rule.")?>
                       </div>
                     </td>
@@ -757,7 +757,7 @@ include("head.inc");
                   <td><a id="help_for_nosync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("No XMLRPC Sync"); ?></td>
                   <td>
                     <input type="checkbox" value="yes" name="nosync" <?=!empty($pconfig['nosync']) ? "checked=\"checked\"" :"";?> />
-                    <div class="hidden" for="help_for_nosync">
+                    <div class="hidden" data-for="help_for_nosync">
                       <?=gettext("Hint: This prevents the rule on Master from automatically syncing to other CARP members. This does NOT prevent the rule from being overwritten on Slave.");?>
                     </div>
                   </td>
@@ -766,7 +766,7 @@ include("head.inc");
                   <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                   <td>
                     <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
-                    <div class="hidden" for="help_for_descr">
+                    <div class="hidden" data-for="help_for_descr">
                       <?=gettext("You may enter a description here " ."for your reference (not parsed)."); ?>
                     </div>
                 </tr>

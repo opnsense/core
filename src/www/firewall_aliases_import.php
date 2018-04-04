@@ -170,10 +170,10 @@ include("head.inc");
             <form method="post" name="iform">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <td width="22%"><strong><?=gettext("Alias Import");?></strong></td>
-                  <td width="78%" align="right">
+                  <td style="width:22%"><strong><?=gettext("Alias Import");?></strong></td>
+                  <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
-                    <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                    <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
                   </td>
                 </tr>
                 <tr>
@@ -183,7 +183,7 @@ include("head.inc");
                       <option value="host" <?=$pconfig['type'] == "host" ? "selected=\"selected\"" : ""; ?>><?=gettext("Host(s)"); ?></option>
                       <option value="network" <?=$pconfig['type'] == "network" ? "selected=\"selected\"" : ""; ?>><?=gettext("Network(s)"); ?></option>
                     </select>
-                    <div class="hidden" for="help_for_type">
+                    <div class="hidden" data-for="help_for_type">
                       <span class="text-info">
                         <?=gettext("Networks")?><br/>
                       </span>
@@ -202,10 +202,10 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td width="22%"><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Name') ?></td>
-                  <td width="78%">
+                  <td style="width:22%"><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Name') ?></td>
+                  <td style="width:78%">
                     <input name="name" type="text" class="form-control unknown" size="40" maxlength="31" value="<?=$pconfig['name'];?>" />
-                    <div class="hidden" for="help_for_name">
+                    <div class="hidden" data-for="help_for_name">
                       <?=gettext("The name of the alias may only consist of the characters \"a-z, A-Z and 0-9\"."); ?>
                     </div>
                   </td>
@@ -214,7 +214,7 @@ include("head.inc");
                   <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                   <td>
                     <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                    <div class="hidden" for="help_for_description">
+                    <div class="hidden" data-for="help_for_description">
                       <?=gettext("You may enter a description here for your reference (not parsed)"); ?>.
                     </div>
                   </td>
@@ -223,7 +223,7 @@ include("head.inc");
                   <td><a id="help_for_alias" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Aliases') ?></td>
                   <td>
                     <textarea name="aliasimport" rows="15" cols="40"><?=$pconfig['aliasimport'];?></textarea>
-                    <div class="hidden" for="help_for_alias">
+                    <div class="hidden" data-for="help_for_alias">
                       <?=gettext("Paste in the aliases to import separated by a carriage return. Common examples are lists of IPs, networks, blacklists, etc."); ?>
                       <br />
                       <?=gettext("The list may contain IP addresses, with or without CIDR prefix, IP ranges, blank lines (ignored) and an optional description after each IP. e.g.:"); ?>

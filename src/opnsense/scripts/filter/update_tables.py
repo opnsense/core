@@ -28,6 +28,7 @@
     --------------------------------------------------------------------------------------
     update aliases
 """
+
 import os
 import sys
 import argparse
@@ -47,11 +48,22 @@ class AliasParser(object):
         self._aliases = dict()
 
     def read(self):
-        known_aliases_list = map(lambda x: x.text, self._source_tree.iterfind('table/name'))
+        """ read aliases
+            :return: None
+        """
         self._aliases = dict()
+        alias_parameters = dict()
+        alias_parameters['known_aliases'] = map(lambda x: x.text, self._source_tree.iterfind('table/name'))
+
+        # parse general alias settings
+        conf_general = self._source_tree.find('general')
+        if conf_general:
+            if conf_general.find('ssl_no_verify') is not None and conf_general.find('ssl_no_verify').text == "1":
+                alias_parameters['ssl_no_verify'] = True
+
+        # loop through aliases
         for elem in self._source_tree.iterfind('table'):
-            alias = Alias(elem, known_aliases=known_aliases_list)
-            alias.resolve()
+            alias = Alias(elem, **alias_parameters)
             self._aliases[alias.get_name()] = alias
 
     def get_alias_deps(self, alias, alias_deps=None):
@@ -91,6 +103,9 @@ if __name__ == '__main__':
     parser.add_argument('--output', help='output type [json/text]', default='json')
     parser.add_argument('--source_conf', help='configuration xml', default='/usr/local/etc/filter_tables.conf')
     inputargs = parser.parse_args()
+    # make sure our target directory exists
+    if not os.path.isdir('/var/db/aliastables'):
+        os.makedirs('/var/db/aliastables')
 
     try:
         source_tree = ET.ElementTree(file=inputargs.source_conf)
@@ -100,6 +115,7 @@ if __name__ == '__main__':
 
     aliases = AliasParser(source_tree)
     aliases.read()
+
     for alias in aliases:
         # fetch alias content including dependencies
         alias_name = alias.get_name()
@@ -114,10 +130,6 @@ if __name__ == '__main__':
         # when the alias or any of it's dependencies has changed, generate new
         if alias_changed_or_expired:
             alias_content_txt = '\n'.join(sorted(alias_content))
-            if not os.path.isdir('/var/db/aliastables'):
-                if not os.path.isdir('/var/db'):
-                    os.mkdir('/var/db')
-                os.mkdir('/var/db/aliastables')
             open('/var/db/aliastables/%s.txt' % alias_name, 'w').write(alias_content_txt)
         elif os.path.isfile('/var/db/aliastables/%s.txt' % alias_name):
             alias_content_txt = open('/var/db/aliastables/%s.txt' % alias_name, 'r').read()

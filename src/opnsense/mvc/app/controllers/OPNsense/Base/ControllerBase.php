@@ -174,12 +174,15 @@ class ControllerBase extends ControllerRoot
 
         // set theme in ui_theme template var, let template handle its defaults (if there is no theme).
         if ($cnf->object()->theme->count() > 0 && !empty($cnf->object()->theme) &&
-            is_dir('/usr/local/opnsense/www/themes/'.(string)$cnf->object()->theme)
+            (
+                is_dir('/usr/local/opnsense/www/themes/'.(string)$cnf->object()->theme) ||
+                !is_dir('/usr/local/opnsense/www/themes')
+            )
         ) {
             $this->view->ui_theme = $cnf->object()->theme;
         }
 
-        $product_vars = json_decode(file_get_contents('/usr/local/opnsense/firmware-product'), true);
+        $product_vars = json_decode(file_get_contents(__DIR__.'/../../../../../firmware-product'), true);
         foreach ($product_vars as $product_key => $product_var) {
             $this->view->$product_key = $product_var;
         }
@@ -204,5 +207,10 @@ class ControllerBase extends ControllerRoot
 
         // append ACL object to view
         $this->view->acl = new \OPNsense\Core\ACL();
+        $this->response->setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' 'unsafe-eval';");
+        $this->response->setHeader('X-Frame-Options', "SAMEORIGIN");
+        $this->response->setHeader('X-Content-Type-Options', "nosniff");
+        $this->response->setHeader('X-XSS-Protection', "1; mode=block");
+        $this->response->setHeader('Referrer-Policy', "same-origin");
     }
 }

@@ -114,7 +114,7 @@ include("head.inc");
 ?>
 
 <body>
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     hook_ipv4v6('ipv4v6net', 'network-id');
   });
@@ -132,10 +132,10 @@ include("head.inc");
               <table class="table table-striped opnsense_standard_table_form">
                 <thead>
                   <tr>
-                    <td width="22%"><strong><?=gettext("GRE configuration");?></strong></td>
-                    <td width="78%" align="right">
+                    <td style="width:22%"><strong><?=gettext("GRE configuration");?></strong></td>
+                    <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                       &nbsp;
                     </td>
                   </tr>
@@ -164,7 +164,7 @@ include("head.inc");
 <?php
                       endforeach;?>
                       </select>
-                      <div class="hidden" for="help_for_if">
+                      <div class="hidden" data-for="help_for_if">
                           <?=gettext("The interface here serves as the local address to be used for the GRE tunnel.");?>
                       </div>
                     </td>
@@ -173,7 +173,7 @@ include("head.inc");
                     <td><a id="help_for_remote-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GRE remote address");?></td>
                     <td>
                       <input name="remote-addr" type="text" value="<?=$pconfig['remote-addr'];?>" />
-                      <div class="hidden" for="help_for_remote-addr">
+                      <div class="hidden" data-for="help_for_remote-addr">
                         <?=gettext("Peer address where encapsulated GRE packets will be sent.");?>
                       </div>
                     </td>
@@ -182,7 +182,7 @@ include("head.inc");
                     <td><a id="help_for_tunnel-local-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GRE tunnel local address");?></td>
                     <td>
                       <input name="tunnel-local-addr" type="text" value="<?=$pconfig['tunnel-local-addr'];?>" />
-                      <div class="hidden" for="help_for_tunnel-local-addr">
+                      <div class="hidden" data-for="help_for_tunnel-local-addr">
                         <?=gettext("Local GRE tunnel endpoint");?>
                       </div>
                     </td>
@@ -192,7 +192,7 @@ include("head.inc");
                     <td>
                       <table class="table table-condensed">
                         <tr>
-                          <td width="285px">
+                          <td style="width:285px">
                             <input name="tunnel-remote-addr" type="text" id="tunnel-remote-addr" value="<?=$pconfig['tunnel-remote-addr'];?>" />
                           </td>
                           <td>
@@ -208,7 +208,7 @@ include("head.inc");
                           </td>
                         </tr>
                       </table>
-                      <div class="hidden" for="help_for_tunnel-remote-addr">
+                      <div class="hidden" data-for="help_for_tunnel-remote-addr">
                         <?=gettext("Remote GRE address endpoint. The subnet part is used for the determining the network that is tunneled.");?>
                       </div>
                     </td>
@@ -217,7 +217,7 @@ include("head.inc");
                     <td><a id="help_for_link0" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Mobile tunnel");?></td>
                     <td>
                       <input name="link0" type="checkbox" id="link0" <?= !empty($pconfig['link0']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" for="help_for_link0">
+                      <div class="hidden" data-for="help_for_link0">
                         <?=gettext("Specify which encapsulation method the tunnel should use.");?>
                       </div>
                     </td>
@@ -226,7 +226,7 @@ include("head.inc");
                     <td><a id="help_for_link1" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Route search type");?></td>
                     <td>
                       <input name="link1" type="checkbox" id="link1" <?= !empty($pconfig['link1']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" for="help_for_link1">
+                      <div class="hidden" data-for="help_for_link1">
                         <?=gettext("For correct operation, the GRE device needs a route to the destination ".
                        "that is less specific than the one over the tunnel. (Basically, there ".
                        "needs to be a route to the decapsulating host that does not run over the ".
@@ -238,7 +238,7 @@ include("head.inc");
                     <td><a id="help_for_link2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WCCP version");?></td>
                     <td>
                       <input name="link2" type="checkbox" id="link2" <?= !empty($pconfig['link2']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" for="help_for_link2">
+                      <div class="hidden" data-for="help_for_link2">
                         <?=gettext("Check this box for WCCP encapsulation version 2, or leave unchecked for version 1.");?>
                       </div>
                     </td>
@@ -247,14 +247,14 @@ include("head.inc");
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                      <div class="hidden" for="help_for_descr">
+                      <div class="hidden" data-for="help_for_descr">
                         <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
                       </div>
                     </td>
                   </tr>
                   <tr>
-                    <td width="22%" valign="top">&nbsp;</td>
-                    <td width="78%">
+                    <td style="width:22%">&nbsp;</td>
+                    <td style="width:78%">
                       <input type="hidden" name="greif" value="<?=$pconfig['greif']; ?>" />
                       <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
                       <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_gre.php'" />

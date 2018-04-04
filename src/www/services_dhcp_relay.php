@@ -117,10 +117,10 @@ include("head.inc");
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">
                     <tr>
-                      <td width="22%" valign="top"><strong><?=gettext("DHCP Relay configuration"); ?></strong></td>
-                      <td width="78%" align="right">
+                      <td style="width:22%"><strong><?=gettext("DHCP Relay configuration"); ?></strong></td>
+                      <td style="width:78%; text-align:right">
                         <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                       </td>
                     </tr>
                     <tr>
@@ -144,7 +144,7 @@ include("head.inc");
 <?php
                         endforeach;?>
                         </select>
-                        <div class="hidden" for="help_for_interface">
+                        <div class="hidden" data-for="help_for_interface">
                           <?= gettext('Interfaces without an IP address will not be shown.') ?>
                         </div>
                       </td>
@@ -154,7 +154,7 @@ include("head.inc");
                       <td>
                           <input name="agentoption" type="checkbox" value="yes" <?=!empty($pconfig['agentoption']) ? "checked=\"checked\"" : ""; ?> />
                           <strong><?=gettext("Append circuit ID and agent ID to requests"); ?></strong><br />
-                          <div class="hidden" for="help_for_agentoption">
+                          <div class="hidden" data-for="help_for_agentoption">
                             <?= gettext('If this is checked, the DHCP relay will append the circuit ID (interface number) and the agent ID to the DHCP request.') ?>
                           </div>
                       </td>
@@ -163,7 +163,7 @@ include("head.inc");
                       <td><a id="help_for_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination servers");?></td>
                       <td>
                         <input name="server" type="text" value="<?=!empty($pconfig['server']) ? htmlspecialchars($pconfig['server']):"";?>" />
-                        <div class="hidden" for="help_for_server">
+                        <div class="hidden" data-for="help_for_server">
                           <?=gettext("These are the IP addresses of servers to which DHCP requests are relayed. You can enter multiple server IP addresses, separated by commas. Select \"Proxy requests to DHCP server on WAN subnet\" to relay DHCP packets to the server that was used on the WAN interface.");?>
                         </div>
                       </td>

@@ -40,7 +40,7 @@ include("fbegin.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['Submit'])): ?>
 
-<script type="text/javascript">
+<script>
 $(document).ready(function() {
     BootstrapDialog.show({
         type:BootstrapDialog.TYPE_INFO,

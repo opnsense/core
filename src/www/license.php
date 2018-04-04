@@ -38,10 +38,10 @@ include("head.inc");
   <div class="container-fluid ">
     <div class="row">
       <section class="col-xs-11">
-        <p><a href="https://opnsense.org/" target="_blank">OPNsense&reg;</a></span> is Copyright &copy; <?=$g['product_copyright_years'];?> <?= $g['product_copyright_owner'] ?><br>All rights reserved.</p>
+        <p><a href="https://opnsense.org/" target="_blank">OPNsense&reg;</a> is Copyright &copy; <?=$g['product_copyright_years'];?> <?= $g['product_copyright_owner'] ?><br>All rights reserved.</p>
         <p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
-        <p><ol><li>Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.</li>
-        <li>Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.</li></ol></p>
+        <ol><li>Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.</li>
+        <li>Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.</li></ol>
         <p>THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
         INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
         AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL

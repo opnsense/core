@@ -31,10 +31,12 @@
 /usr/local/etc/inc/notices.sasl.inc
 /usr/local/etc/inc/notices.smtp.inc
 /usr/local/etc/inc/plugins.inc
+/usr/local/etc/inc/plugins.inc.d/core.inc
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc
 /usr/local/etc/inc/plugins.inc.d/ipsec.inc
 /usr/local/etc/inc/plugins.inc.d/ipsec/auth-user.php
+/usr/local/etc/inc/plugins.inc.d/monit.inc
 /usr/local/etc/inc/plugins.inc.d/netflow.inc
 /usr/local/etc/inc/plugins.inc.d/ntpd.inc
 /usr/local/etc/inc/plugins.inc.d/ntpd/ntpdate_sync_once.sh
@@ -67,9 +69,9 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20160104
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20160630
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20161210
+/usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20170625
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/opnsense-update.deciso.com.20160725
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/opnsense-update.deciso.com.20170721
-/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20170625
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20171219
 /usr/local/etc/rc
 /usr/local/etc/rc.backup_captiveportal
@@ -121,7 +123,6 @@
 /usr/local/etc/rc.newwanip
 /usr/local/etc/rc.newwanipv6
 /usr/local/etc/rc.openvpn
-/usr/local/etc/rc.plugins_configure
 /usr/local/etc/rc.reboot
 /usr/local/etc/rc.reload_all
 /usr/local/etc/rc.reload_interfaces
@@ -134,11 +135,13 @@
 /usr/local/etc/rc.subr.d/livemode
 /usr/local/etc/rc.subr.d/recover
 /usr/local/etc/rc.subr.d/swapon
+/usr/local/etc/rc.subr.d/tmp
 /usr/local/etc/rc.subr.d/var
 /usr/local/etc/rc.syshook
 /usr/local/etc/rc.syshook.d/05-beep.stop
 /usr/local/etc/rc.syshook.d/05-update.early
 /usr/local/etc/rc.syshook.d/10-configd.early
+/usr/local/etc/rc.syshook.d/10-newwanip.start
 /usr/local/etc/rc.syshook.d/15-php.early
 /usr/local/etc/rc.syshook.d/20-backup.early
 /usr/local/etc/rc.syshook.d/20-freebsd.start
@@ -322,7 +325,6 @@
 /usr/local/opnsense/contrib/tzdata/iso3166.tab
 /usr/local/opnsense/contrib/tzdata/zone.tab
 /usr/local/opnsense/firmware-product
-/usr/local/opnsense/firmware-upgrade
 /usr/local/opnsense/mvc/app/cache/README
 /usr/local/opnsense/mvc/app/config/config.php
 /usr/local/opnsense/mvc/app/config/loader.php
@@ -373,6 +375,15 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/dialogRuleset.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/dialogUserDefined.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/generalSettings.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/StatusController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/IndexController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/StatusController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/forms/alerts.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/forms/general.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/forms/services.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/forms/tests.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/IndexController.php
@@ -399,6 +410,12 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Radius.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/TOTP.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Voucher.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Backup/BackupFactory.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Backup/Base.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Backup/GDrive.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Backup/IBackupProvider.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Backup/Nextcloud.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Backup/Scp.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Base/Filters/QueryFilter.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Base/UIModelGrid.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Base/ViewTranslator.php
@@ -416,10 +433,15 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Rule.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/SNatRule.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Util.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Backup/NextcloudSettings.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Backup/NextcloudSettings.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Backup/ScpSettings.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Backup/ScpSettings.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModel.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModelMigration.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/AllOrNoneConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/BaseConstraint.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/DependConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/UniqueConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/ArrayField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/AuthGroupField.php
@@ -433,6 +455,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/ContainerField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/CountryField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/EmailField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/HostnameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/IntegerField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/InterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/JsonKeyValueStoreField.php
@@ -450,6 +473,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuSystem.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/ModelException.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/CsvListValidator.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/HostValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/IntegerValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/MinMaxValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/NetworkValidator.php
@@ -478,6 +502,11 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/IDS.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Monit/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Monit/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Monit/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Monit/Monit.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Monit/Monit.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/ACL/ACL.xml
@@ -498,6 +527,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/firmware.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Core/not_found.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Cron/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_log.volt
@@ -508,6 +538,8 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Monit/index.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Monit/status.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Proxy/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Routes/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt
@@ -568,7 +600,9 @@
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/set_session_restrictions.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/sql/init.sql
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/strip_template.py
+/usr/local/opnsense/scripts/OPNsense/Monit/setup.sh
 /usr/local/opnsense/scripts/dhcp/get_leases.py
+/usr/local/opnsense/scripts/dhcp/prefixes.php
 /usr/local/opnsense/scripts/dns/unbound_dhcpd.py
 /usr/local/opnsense/scripts/filter/delete_table.py
 /usr/local/opnsense/scripts/filter/download_geoip.py
@@ -594,6 +628,7 @@
 /usr/local/opnsense/scripts/firmware/license.sh
 /usr/local/opnsense/scripts/firmware/lock.sh
 /usr/local/opnsense/scripts/firmware/plugin.sh
+/usr/local/opnsense/scripts/firmware/reboot.sh
 /usr/local/opnsense/scripts/firmware/reinstall.sh
 /usr/local/opnsense/scripts/firmware/remove.sh
 /usr/local/opnsense/scripts/firmware/running.sh
@@ -676,6 +711,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_interface.conf
 /usr/local/opnsense/service/conf/actions.d/actions_ipfw.conf
 /usr/local/opnsense/service/conf/actions.d/actions_ipsec.conf
+/usr/local/opnsense/service/conf/actions.d/actions_monit.conf
 /usr/local/opnsense/service/conf/actions.d/actions_netflow.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
@@ -728,6 +764,9 @@
 /usr/local/opnsense/service/templates/OPNsense/IPFW/ipfw.fw.conf
 /usr/local/opnsense/service/templates/OPNsense/IPFW/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Macros/interface.macro
+/usr/local/opnsense/service/templates/OPNsense/Monit/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/Monit/monitrc
+/usr/local/opnsense/service/templates/OPNsense/Monit/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Netflow/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Netflow/flowd.conf
 /usr/local/opnsense/service/templates/OPNsense/Netflow/flowd.rc.conf.d
@@ -744,6 +783,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Proxy/post-auth.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/pre-auth.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/rc.conf.d
+/usr/local/opnsense/service/templates/OPNsense/Proxy/snmp.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/squid.acl.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/squid.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/squid.user.local_auth.conf
@@ -820,6 +860,7 @@
 /usr/local/opnsense/www/js/opnsense_bootgrid_plugin.js
 /usr/local/opnsense/www/js/opnsense_ui.js
 /usr/local/opnsense/www/js/qrcode.js
+/usr/local/opnsense/www/js/theme.js
 /usr/local/opnsense/www/themes/opnsense/LICENSE
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.otf
@@ -951,10 +992,10 @@
 /usr/local/sbin/ppp-linkup
 /usr/local/sbin/ppp-log-uptime.sh
 /usr/local/sbin/ppp-uptime.sh
-/usr/local/sbin/prefixes.php
 /usr/local/wizard/openvpn.xml
 /usr/local/wizard/system.xml
 /usr/local/www/carp_status.php
+/usr/local/www/configd_logs.php
 /usr/local/www/crash_reporter.php
 /usr/local/www/csrf.inc
 /usr/local/www/diag_authentication.php
@@ -985,6 +1026,7 @@
 /usr/local/www/diag_logs_resolver.php
 /usr/local/www/diag_logs_routing.php
 /usr/local/www/diag_logs_settings.php
+/usr/local/www/diag_logs_suricata.php
 /usr/local/www/diag_logs_template.inc
 /usr/local/www/diag_logs_wireless.php
 /usr/local/www/diag_packet_capture.php
@@ -1021,6 +1063,7 @@
 /usr/local/www/getserviceproviders.php
 /usr/local/www/guiconfig.inc
 /usr/local/www/head.inc
+/usr/local/www/httpd_logs.php
 /usr/local/www/index.php
 /usr/local/www/interfaces.php
 /usr/local/www/interfaces_assign.php
@@ -1036,8 +1079,6 @@
 /usr/local/www/interfaces_lagg_edit.php
 /usr/local/www/interfaces_ppps.php
 /usr/local/www/interfaces_ppps_edit.php
-/usr/local/www/interfaces_qinq.php
-/usr/local/www/interfaces_qinq_edit.php
 /usr/local/www/interfaces_vlan.php
 /usr/local/www/interfaces_vlan_edit.php
 /usr/local/www/interfaces_wireless.php
@@ -1071,8 +1112,6 @@
 /usr/local/www/services_unbound_overrides.php
 /usr/local/www/status_dhcp_leases.php
 /usr/local/www/status_dhcpv6_leases.php
-/usr/local/www/status_gateway_groups.php
-/usr/local/www/status_gateways.php
 /usr/local/www/status_graph.php
 /usr/local/www/status_habackup.php
 /usr/local/www/status_interfaces.php
@@ -1122,9 +1161,10 @@
 /usr/local/www/widgets/api/plugins/temperature.inc
 /usr/local/www/widgets/api/plugins/traffic.inc
 /usr/local/www/widgets/include/carp_status.inc
+/usr/local/www/widgets/include/cpu_usage.inc
 /usr/local/www/widgets/include/gateways.inc
+/usr/local/www/widgets/include/interface_list.inc
 /usr/local/www/widgets/include/interface_statistics.inc
-/usr/local/www/widgets/include/interfaces.inc
 /usr/local/www/widgets/include/ipsec.inc
 /usr/local/www/widgets/include/log.inc
 /usr/local/www/widgets/include/ntp_status.inc
@@ -1134,6 +1174,7 @@
 /usr/local/www/widgets/include/thermal_sensors.inc
 /usr/local/www/widgets/include/traffic_graph.inc
 /usr/local/www/widgets/widgets/carp_status.widget.php
+/usr/local/www/widgets/widgets/cpu_usage.widget.php
 /usr/local/www/widgets/widgets/gateways.widget.php
 /usr/local/www/widgets/widgets/interface_list.widget.php
 /usr/local/www/widgets/widgets/interface_statistics.widget.php
@@ -1153,5 +1194,6 @@
 @sample /usr/local/etc/bogons.sample
 @sample /usr/local/etc/bogonsv6.sample
 @sample /usr/local/etc/config.xml.sample
+@sample /usr/local/opnsense/service/templates/OPNsense/IDS/custom.yaml.sample
 @shadow /usr/local/etc/pkg/repos/FreeBSD.conf.sample
 @shadow /usr/local/etc/pkg/repos/origin.conf.sample

@@ -110,17 +110,17 @@ include("head.inc");
               <div class="table-responsive">
                 <table class="table table-striped opnsense_standard_table_form">
                   <tr>
-                    <td width="22%"><strong><?=gettext("Edit Domain Override entry");?></strong></td>
-                    <td width="78%" align="right">
+                    <td style="width:22%"><strong><?=gettext("Edit Domain Override entry");?></strong></td>
+                    <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain");?></td>
                     <td>
                       <input name="domain" type="text" id="domain" size="40" value="<?=$pconfig['domain'];?>" />
-                      <div class="hidden" for="help_for_domain">
+                      <div class="hidden" data-for="help_for_domain">
                           <?=gettext("Domain to override (NOTE: this does not have to be a valid TLD!)"); ?><br />
                           <?=gettext("e.g."); ?> <em><?=gettext("test"); ?></em> <?=gettext("or"); ?> <em>mycompany.localdomain</em> <?=gettext("or"); ?> <em>1.168.192.in-addr.arpa</em>
                       </div>
@@ -130,7 +130,7 @@ include("head.inc");
                     <td><a id="help_for_ip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP address");?></td>
                     <td>
                         <input name="ip" type="text" id="ip" size="40" value="<?=$pconfig['ip'];?>" />
-                        <div class="hidden" for="help_for_ip">
+                        <div class="hidden" data-for="help_for_ip">
                           <?=gettext("IP address of the authoritative DNS server for this domain"); ?><br />
                           <?=gettext("e.g."); ?> <em>192.168.100.100</em><br />
                           <?=gettext("To use a nondefault port for communication, append an '@' with the port number."); ?><br />
@@ -141,7 +141,7 @@ include("head.inc");
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
                     <td>
                       <input name="descr" type="text" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
-                      <div class="hidden" for="help_for_descr">
+                      <div class="hidden" data-for="help_for_descr">
                         <?=gettext("You may enter a description here for your reference (not parsed).");?>
                       </div>
                     </td>

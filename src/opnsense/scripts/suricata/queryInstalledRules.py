@@ -33,10 +33,11 @@
         parameters: list of parameters used
 """
 
+import sys
+sys.path.insert(0, "/usr/local/opnsense/site-python")
 import ujson
 from lib.rulecache import RuleCache
-from lib.params import update_params
-
+from params import update_params
 
 # Because rule parsing isn't very useful when the rule definitions didn't change we create a single json file
 # to hold the last results (combined with creation date and number of files).

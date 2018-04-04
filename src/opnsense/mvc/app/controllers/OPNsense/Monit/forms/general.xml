@@ -1,0 +1,124 @@
+<form>
+   <field>
+      <id>monit.general.enabled</id>
+      <label>Enable monit</label>
+      <type>checkbox</type>
+      <help><![CDATA[Enable or disable monit.]]></help>
+   </field>
+   <field>
+      <id>monit.general.interval</id>
+      <label>Polling Interval</label>
+      <type>text</type>
+      <help><![CDATA[Polling interval in seconds]]></help>
+   </field>
+   <field>
+      <id>monit.general.startdelay</id>
+      <label>Start Delay</label>
+      <type>text</type>
+      <help><![CDATA[On system boot wait before Monit starts checking services.]]></help>
+   </field>
+   <field>
+      <id>monit.general.mailserver</id>
+      <label>Mail Server</label>
+      <type>select_multiple</type>
+      <allownew>true</allownew>
+      <style>tokenize</style>
+      <help><![CDATA[Comma separated list of SMTP servers for alert delivery.]]></help>
+   </field>
+   <field>
+      <id>monit.general.port</id>
+      <label>Mail Server Port</label>
+      <type>text</type>
+      <help><![CDATA[The port of the mail server. Typically 465 for SSL or 25 for TLS and non secure connections.]]></help>
+   </field>
+   <field>
+      <id>monit.general.username</id>
+      <label>Username</label>
+      <type>text</type>
+      <help><![CDATA[The username for authentication.]]></help>
+   </field>
+   <field>
+      <id>monit.general.password</id>
+      <label>Password</label>
+      <type>password</type>
+      <help><![CDATA[The password for authentication.]]></help>
+   </field>
+   <field>
+      <id>monit.general.ssl</id>
+      <label>Secure Connection</label>
+      <type>checkbox</type>
+      <help><![CDATA[Enable encryption.]]></help>
+   </field>
+   <field>
+      <id>monit.general.logfile</id>
+      <label>Log File</label>
+      <type>text</type>
+      <help><![CDATA[The log file of the Monit process. This can be the keyword <i>syslog</i> or the path to a file.]]></help>
+      <advanced>true</advanced>
+   </field>
+   <field>
+      <id>monit.general.statefile</id>
+      <label>State File</label>
+      <type>text</type>
+      <help><![CDATA[The state file of the Monit process.]]></help>
+      <advanced>true</advanced>
+   </field>
+   <field>
+      <id>monit.general.eventqueuePath</id>
+      <label>Eventqueue Path</label>
+      <type>text</type>
+      <help><![CDATA[The path to the eventqueue directory.]]></help>
+      <advanced>true</advanced>
+   </field>
+   <field>
+      <id>monit.general.eventqueueSlots</id>
+      <label>Eventqueue Slots</label>
+      <type>text</type>
+      <help><![CDATA[The number of eventqueue slots.]]></help>
+      <advanced>true</advanced>
+   </field>
+   <field>
+      <id>monit.general.httpdEnabled</id>
+      <label>Enable HTTPD</label>
+      <type>checkbox</type>
+      <help><![CDATA[Start the Monit httpd service.]]></help>
+      <advanced>true</advanced>
+   </field>
+   <field>
+      <id>monit.general.httpdPort</id>
+      <label>Monit HTTPD Port</label>
+      <type>text</type>
+      <help><![CDATA[The listen port of the Monit httpd service.]]></help>
+      <advanced>true</advanced>
+   </field>
+   <field>
+      <id>monit.general.httpdAllow</id>
+      <label>Monit HTTPD Access List</label>
+      <type>select_multiple</type>
+      <style>tokenize</style>
+      <allownew>true</allownew>
+      <help><![CDATA[The username:password or host/network etc. for accessing the Monit httpd service.<br>See <a rel="help" target="_blank" href="https://mmonit.com/monit/documentation/monit.html#Authentication">Monit Authentication</a>]]></help>
+      <advanced>true</advanced>
+      <hint>user:password, @group... Finish with TAB.</hint>
+   </field>
+   <field>
+      <id>monit.general.mmonitUrl</id>
+      <label>M/Monit URL</label>
+      <type>text</type>
+      <help><![CDATA[The M/Monit URL.<br><i>https://user:pass@192.168.1.10:8443/collector</i><br>If you want to control Monit services from your M/Monit instance you have to configure the Monit Port too and add corresponding firewall rules as well.]]></help>
+      <advanced>true</advanced>
+   </field>
+   <field>
+      <id>monit.general.mmonitTimeout</id>
+      <label>M/Monit Timeout</label>
+      <type>text</type>
+      <advanced>true</advanced>
+   </field>
+   <field>
+      <id>monit.general.mmonitRegisterCredentials</id>
+      <label>M/Monit Register Credentials</label>
+      <type>checkbox</type>
+      <help><![CDATA[Automatically register in M/Monit by sending Monit credentials (see Monit Access List above).]]></help>
+      <advanced>true</advanced>
+   </field>
+</form>

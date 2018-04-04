@@ -1,8 +1,9 @@
 <?php
-/**
+
+/*
  *    Copyright (C) 2016 IT-assistans Sverige AB
  *    Copyright (C) 2016 Deciso B.V.
- *
+ *    Copyright (C) 2018 Fabian Franz
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -25,8 +26,8 @@
  *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *    POSSIBILITY OF SUCH DAMAGE.
- *
  */
+
 namespace OPNsense\Base;
 
 use \OPNsense\Core\Config;
@@ -57,8 +58,8 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     private $modelHandle = null;
 
     /**
-     * validate on initialization
-     * @throws Exception
+     * Validate on initialization
+     * @throws \Exception when not bound to a model class or a set/get reference is missing
      */
     public function initialize()
     {
@@ -72,8 +73,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     }
 
     /**
-     * retrieve model settings
+     * Retrieve model settings
      * @return array settings
+     * @throws \ReflectionException when not bound to a valid model
      */
     public function getAction()
     {
@@ -86,8 +88,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     }
 
     /**
-     * override this to customize what part of the model gets exposed
+     * Override this to customize what part of the model gets exposed
      * @return array
+     * @throws \ReflectionException
      */
     protected function getModelNodes()
     {
@@ -95,7 +98,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     }
 
     /**
+     * Get (or create) model object
      * @return null|BaseModel
+     * @throws \ReflectionException
      */
     protected function getModel()
     {
@@ -107,12 +112,14 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     }
 
     /**
-     * validate and save model after update or insertion.
+     * Validate and save model after update or insertion.
      * Use the reference node and tag to rename validation output for a specific node to a new offset, which makes
      * it easier to reference specific uuids without having to use them in the frontend descriptions.
-     * @param $node reference node, to use as relative offset
-     * @param $prefix prefix to use when $node is provided (defaults to static::$internalModelName)
+     * @param string $node reference node, to use as relative offset
+     * @param string $prefix prefix to use when $node is provided (defaults to static::$internalModelName)
      * @return array result / validation output
+     * @throws \Phalcon\Validation\Exception on validation issues
+     * @throws \ReflectionException when binding to the model class fails
      */
     protected function validateAndSave($node = null, $prefix = null)
     {
@@ -124,10 +131,11 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     }
 
     /**
-     * validate this model
+     * Validate this model
      * @param $node reference node, to use as relative offset
      * @param $prefix prefix to use when $node is provided (defaults to static::$internalModelName)
      * @return array result / validation output
+     * @throws \ReflectionException when binding to the model class fails
      */
     protected function validate($node = null, $prefix = null)
     {
@@ -152,8 +160,10 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     }
 
     /**
-     * save model after update or insertion, validate() first to avoid raising exceptions
+     * Save model after update or insertion, validate() first to avoid raising exceptions
      * @return array result / validation output
+     * @throws \Phalcon\Validation\Exception on validation issues
+     * @throws \ReflectionException when binding to the model class fails
      */
     protected function save()
     {
@@ -163,19 +173,21 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     }
 
     /**
-     * hook to be overridden if the controller is to take an action when
+     * Hook to be overridden if the controller is to take an action when
      * setAction is called. This hook is called after a model has been
      * constructed and validated but before it serialized to the configuration
      * and written to disk
-     * @return Error message on error, or null/void on success
+     * @return string error message on error, or null/void on success
      */
     protected function setActionHook()
     {
     }
 
     /**
-     * update model settings
+     * Update model settings
      * @return array status / validation errors
+     * @throws \Phalcon\Validation\Exception on validation issues
+     * @throws \ReflectionException when binding to the model class fails
      */
     public function setAction()
     {
@@ -191,6 +203,199 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                     $result['error'] = $hookErrorMessage;
                 } else {
                     return $this->save();
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Model search wrapper
+     * @param string $path path to search, relative to this model
+     * @param array $fields fieldnames to fetch in result
+     * @param string|null $defaultSort default sort field name
+     * @return array
+     * @throws \ReflectionException when binding to the model class fails
+     */
+    public function searchBase($path, $fields, $defaultSort = null)
+    {
+        $this->sessionClose();
+        $element = $this->getModel();
+        foreach (explode('.', $path) as $step) {
+            $element = $element->{$step};
+        }
+        $grid = new UIModelGrid($element);
+        return $grid->fetchBindRequest(
+            $this->request,
+            $fields,
+            $defaultSort
+        );
+    }
+
+    /**
+     * Model get wrapper, fetches an array item and returns it's contents
+     * @param string $key_name result root key
+     * @param string $path path to fetch, relative to our model
+     * @param null|string $uuid node key
+     * @return array
+     * @throws \ReflectionException when binding to the model class fails
+     */
+    public function getBase($key_name, $path, $uuid = null)
+    {
+        $mdl = $this->getModel();
+        if ($uuid != null) {
+            $node = $mdl->getNodeByReference($path . '.' . $uuid);
+            if ($node != null) {
+                // return node
+                return array($key_name => $node->getNodes());
+            }
+        } else {
+            foreach (explode('.', $path) as $step) {
+                $mdl = $mdl->{$step};
+            }
+            $node = $mdl->Add();
+            return array($key_name => $node->getNodes());
+        }
+        return array();
+    }
+
+    /**
+     * Model add wrapper, adds a new item to an array field using a specified post variable
+     * @param string $post_field root key to retrieve item content from
+     * @param string $path relative model path
+     * @return array
+     * @throws \Phalcon\Validation\Exception on validation issues
+     * @throws \ReflectionException when binding to the model class fails
+     */
+    public function addBase($post_field, $path)
+    {
+        $result = array("result" => "failed");
+        if ($this->request->isPost() && $this->request->hasPost($post_field)) {
+            $result = array("result" => "failed", "validations" => array());
+            $mdl = $this->getModel();
+            $tmp = $mdl;
+            foreach (explode('.', $path) as $step) {
+                $tmp = $tmp->{$step};
+            }
+            $node = $tmp->Add();
+            $node->setNodes($this->request->getPost($post_field));
+            $valMsgs = $mdl->performValidation();
+
+            foreach ($valMsgs as $field => $msg) {
+                $fieldnm = str_replace($node->__reference, $post_field, $msg->getField());
+                $result["validations"][$fieldnm] = $msg->getMessage();
+            }
+
+            if (count($result['validations']) == 0) {
+                // save config if validated correctly
+                $mdl->serializeToConfig();
+                Config::getInstance()->save();
+                unset($result['validations']);
+                $result["result"] = "saved";
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Model delete wrapper, removes an item specified by path and uuid
+     * @param string $path relative model path
+     * @param null|string $uuid node key
+     * @return array
+     * @throws \Phalcon\Validation\Exception on validation issues
+     * @throws \ReflectionException when binding to the model class fails
+     */
+    public function delBase($path, $uuid)
+    {
+
+        $result = array("result" => "failed");
+
+        if ($this->request->isPost()) {
+            $mdl = $this->getModel();
+            if ($uuid != null) {
+                $tmp = $mdl;
+                foreach (explode('.', $path) as $step) {
+                    $tmp = $tmp->{$step};
+                }
+                if ($tmp->del($uuid)) {
+                    $mdl->serializeToConfig();
+                    Config::getInstance()->save();
+                    $result['result'] = 'deleted';
+                } else {
+                    $result['result'] = 'not found';
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Model setter wrapper, sets the contents of an array item using this requests post variable and path settings
+     * @param string $post_field root key to retrieve item content from
+     * @param string $path relative model path
+     * @param $uuid node key
+     * @return array
+     * @throws \Phalcon\Validation\Exception on validation issues
+     * @throws \ReflectionException when binding to the model class fails
+     */
+    public function setBase($post_field, $path, $uuid)
+    {
+        if ($this->request->isPost() && $this->request->hasPost($post_field)) {
+            $mdl = $this->getModel();
+            if ($uuid != null) {
+                $node = $mdl->getNodeByReference($path . '.' . $uuid);
+                if ($node != null) {
+                    $result = array("result" => "failed", "validations" => array());
+
+                    $node->setNodes($this->request->getPost($post_field));
+                    $valMsgs = $mdl->performValidation();
+                    foreach ($valMsgs as $field => $msg) {
+                        $fieldnm = str_replace($node->__reference, $post_field, $msg->getField());
+                        $result["validations"][$fieldnm] = $msg->getMessage();
+                    }
+
+                    if (count($result['validations']) == 0) {
+                        // save config if validated correctly
+                        $mdl->serializeToConfig();
+                        Config::getInstance()->save();
+                        $result = array("result" => "saved");
+                    }
+                    return $result;
+                }
+            }
+        }
+        return array("result" => "failed");
+    }
+
+    /**
+     * Generic toggle function, assumes our model item has an enabled boolean type field.
+     * @param string $path relative model path
+     * @param string $uuid node key
+     * @param string $enabled desired state enabled(1)/disabled(1), leave empty for toggle
+     * @return array
+     * @throws \Phalcon\Validation\Exception on validation issues
+     * @throws \ReflectionException when binding to the model class fails
+     */
+    public function toggleBase($path, $uuid, $enabled = null)
+    {
+        $result = array("result" => "failed");
+        if ($this->request->isPost()) {
+            $mdl = $this->getModel();
+            if ($uuid != null) {
+                $node = $mdl->getNodeByReference($path . '.' . $uuid);
+                if ($node != null) {
+                    if ($enabled == "0" || $enabled == "1") {
+                        $node->enabled = (string)$enabled;
+                    } elseif ((string)$node->enabled == "1") {
+                        $result['result'] = "Disabled";
+                        $node->enabled = "0";
+                    } else {
+                        $result['result'] = "Enabled";
+                        $node->enabled = "1";
+                    }
+                    // if item has toggled, serialize to config and save
+                    $mdl->serializeToConfig();
+                    Config::getInstance()->save();
                 }
             }
         }

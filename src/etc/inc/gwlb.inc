@@ -1,6 +1,7 @@
 <?php
 
 /*
+    Copyright (C) 2016-2018 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>
     Copyright (C) 2008 Seth Mos <seth.mos@dds.nl>
     Copyright (C) 2010 Ermal Luçi
@@ -93,8 +94,8 @@ rrd interval 60s;
 
 ## These parameters can be overridden in a specific alarm configuration
 alarm default {
-  command on "/usr/local/opnsense/service/configd_ctl.py -m 'dyndns reload %T' 'rfc2136 reload %T' 'openvpn reload %T'  'filter reload' "
-  command off "/usr/local/opnsense/service/configd_ctl.py -m 'dyndns reload %T' 'rfc2136 reload %T' 'openvpn reload %T' 'filter reload' "
+  command on "/usr/local/opnsense/service/configd_ctl.py -m 'filter reload' 'openvpn reload %T' 'dyndns reload %T' 'rfc2136 reload %T'"
+  command off "/usr/local/opnsense/service/configd_ctl.py -m 'filter reload' 'openvpn reload %T' 'dyndns reload %T' 'rfc2136 reload %T'"
   combine 10s
 }
 
@@ -475,6 +476,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
     $found_defaultv6 = 0;
 
     $iflist = get_configured_interface_with_descr();
+    $ifdetails = legacy_interfaces_details();
 
     /* Process/add dynamic v4 gateways. */
     foreach ($iflist as $ifname => $friendly) {
@@ -504,6 +506,10 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
                     }
 
                     $ctype = "VPNv4";
+                } elseif (in_array(substr($ifcfg['if'], 0, 3), array('gif', 'gre'))) {
+                    if (!empty($ifcfg['if']) && !empty($ifdetails[$ifcfg['if']]['ipv4'])) {
+                        $ctype = "TUNNELv4";
+                    }
                 }
                 break;
         }
@@ -572,7 +578,6 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
                 $ctype = $ifcfg['ipaddrv6'];
                 break;
             default:
-                $tunnelif = substr($ifcfg['if'], 0, 3);
                 if (substr($ifcfg['if'], 0, 4) ==  "ovpn") {
                     // if current iface is an ovpn server endpoint then skip it
                     if (substr($ifcfg['if'], 4, 1) == 's') {
@@ -580,8 +585,11 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
                     }
 
                     $ctype = "VPNv6";
-                } elseif ($tunnelif == "gif" || $tunnelif == "gre") {
-                    $ctype = "TUNNELv6";
+                } elseif (in_array(substr($ifcfg['if'], 0, 3), array('gif', 'gre'))) {
+                    if (!empty($ifcfg['if']) && !empty($ifdetails[$ifcfg['if']]['ipv6'])
+                            && $ifdetails[$ifcfg['if']]['ipv6'][0]['link-local'] != 1) {
+                        $ctype = "TUNNELv6";
+                    }
                 }
                 break;
         }
@@ -719,6 +727,7 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
 {
     foreach (array("inet", "inet6") as $ipprotocol) {
         $dfltgwname = null;
+        $dfltgwip = null;
         $count = 0;
 
         foreach ($gateways_arr as $gwname => $gwsttng) {
@@ -735,8 +744,26 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
                 continue;
             }
 
+            $gwip = '';
+
+            if ($gateways_arr[$gwname]['gateway'] == "dynamic") {
+                if ($ipprotocol == 'inet') {
+                    $gwip = get_interface_gateway($gateways_arr[$gwname]['friendlyiface']);
+                } else {
+                    $gwip = get_interface_gateway_v6($gateways_arr[$gwname]['friendlyiface']);
+                }
+            } else {
+                $gwip = $gateways_arr[$gwname]['gateway'];
+            }
+
+            if (!is_ipaddr($gwip)) {
+                log_error("Cannot switch gateway $gwname with undefined address");
+                continue;
+            }
+
             /* can use this gateway */
             $dfltgwname = $gwname;
+            $dfltgwip = $gwip;
             $count += 1;
 
             if (isset($gwsttng['defaultgw'])) {
@@ -746,41 +773,11 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
         }
 
         if (empty($dfltgwname)) {
-            if ($count) {
-                log_error("Cannot switch while all $count $ipprotocol gateways are down");
-            }
+            log_error("Cannot switch while $count $ipprotocol gateways are up");
             continue;
         }
 
-        if ($gateways_arr[$dfltgwname]['gateway'] == "dynamic") {
-            if ($ipprotocol == 'inet') {
-                $gwip = get_interface_gateway($gateways_arr[$dfltgwname]['friendlyiface']);
-            } else {
-                $gwip = get_interface_gateway_v6($gateways_arr[$dfltgwname]['friendlyiface']);
-            }
-        } else {
-            $gwip = $gateways_arr[$dfltgwname]['gateway'];
-        }
-
-        if (!is_ipaddr($gwip)) {
-            log_error("Cannot switch gateway $dfltgwname with undefined address");
-            continue;
-        }
-
-        $defaultif = get_real_interface($gateways_arr[$dfltgwname]['friendlyiface']);
-        $gwipmatch = $gwip;
-        if (is_linklocal($gwip)) {
-            /* correct match in IPv6 case */
-            $gwipmatch .= "%{$defaultif}";
-        }
-
-        $tmpcmd = "/sbin/route -n get -{$ipprotocol} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
-        $defaultgw = trim(exec($tmpcmd), " \n");
-        if ($defaultgw != $gwipmatch) {
-            log_error("Switching default gateway to $dfltgwname ($gwip)");
-            /* XXX fargw and IPv6 should be cleaned up to make it easier to read */
-            system_default_route($gwip, !isset($gateways_arr[$dfltgwname]['fargw']) && $ipprotocol == 'inet' ? null : $defaultif);
-        }
+        system_default_route($dfltgwip, $ipprotocol, $gateways_arr[$dfltgwname]['friendlyiface'], isset($gateways_arr[$dfltgwname]['fargw']));
     }
 }
 

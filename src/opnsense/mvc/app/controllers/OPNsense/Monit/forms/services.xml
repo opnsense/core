@@ -1,0 +1,74 @@
+<form>
+   <field>
+      <id>monit.service.enabled</id>
+      <label>Enable service checks</label>
+      <type>checkbox</type>
+      <help><![CDATA[Enable or disable service checks.]]></help>
+   </field>
+   <field>
+      <id>monit.service.name</id>
+      <label>Name</label>
+      <type>text</type>
+      <help><![CDATA[The name of the service.]]></help>
+   </field>
+   <field>
+      <id>monit.service.type</id>
+      <label>Type</label>
+      <type>dropdown</type>
+      <help><![CDATA[The service check type.]]></help>
+   </field>
+   <field>
+      <id>monit.service.pidfile</id>
+      <label>PID File</label>
+      <type>text</type>
+      <help><![CDATA[The PID file of the process.]]></help>
+   </field>
+   <field>
+      <id>monit.service.match</id>
+      <label>Match</label>
+      <type>text</type>
+      <help><![CDATA[Find the process by regular expression. Test your pattern with <br><b>monit procmatch &lt;PATTERN&gt;</b>]]></help>
+   </field>
+   <field>
+      <id>monit.service.path</id>
+      <label>Path</label>
+      <type>text</type>
+      <help><![CDATA[According to the service type path can be a file or a directory.]]></help>
+   </field>
+   <field>
+      <id>monit.service.address</id>
+      <label>Address</label>
+      <type>text</type>
+      <help><![CDATA[The target IP address for 'Remote Host' and 'Network' checks.]]></help>
+   </field>
+   <field>
+      <id>monit.service.interface</id>
+      <label>Interface</label>
+      <type>dropdown</type>
+      <help><![CDATA[The Interface for 'Network' checks.]]></help>
+   </field>
+   <field>
+      <id>monit.service.start</id>
+      <label>Start</label>
+      <type>text</type>
+      <help><![CDATA[The start skript of the service.]]></help>
+   </field>
+   <field>
+      <id>monit.service.stop</id>
+      <label>Stop</label>
+      <type>text</type>
+      <help><![CDATA[The stop skript of the service.]]></help>
+   </field>
+   <field>
+      <id>monit.service.tests</id>
+      <label>Tests</label>
+      <type>select_multiple</type>
+      <style>tokenize</style>
+      <help><![CDATA[This is a list with service tests.]]></help>
+   </field>
+   <field>
+      <id>monit.service.description</id>
+      <label>Description</label>
+      <type>text</type>
+   </field>
+</form>

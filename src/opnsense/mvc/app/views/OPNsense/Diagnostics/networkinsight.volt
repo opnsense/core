@@ -34,15 +34,15 @@ POSSIBILITY OF SUCH DAMAGE.
 </style>
 
 <!-- nvd3 -->
-<link rel="stylesheet" href="/ui/css/nv.d3.css">
+<link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/nv.d3.css', ui_theme|default('opnsense'))}}" />
 
 <!-- d3 -->
-<script type="text/javascript" src="/ui/js/d3.min.js"></script>
+<script src="/ui/js/d3.min.js"></script>
 
 <!-- nvd3 -->
-<script type="text/javascript" src="/ui/js/nv.d3.min.js"></script>
+<script src="/ui/js/nv.d3.min.js"></script>
 
-<script type="text/javascript">
+<script>
     $( document ).ready(function() {
       var resizeEnd ;
       $(window).on('resize', function() {
@@ -779,7 +779,7 @@ POSSIBILITY OF SUCH DAMAGE.
             </td>
             <td><input type="text" id="service_port_detail"></td>
             <td><input type="text" id="address_detail"></td>
-            <td><button id="refresh_details" type="button" class="btn glyphicon glyphicon-refresh"></button></td>
+            <td><span id="refresh_details" class="btn btn-default"><i class="fa fa-refresh"></i></span></td>
           </tr>
         </tbody>
       </table>

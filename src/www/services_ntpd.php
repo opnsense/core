@@ -137,7 +137,7 @@ include("head.inc");
 ?>
 <body>
 
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     $("#showstatisticsbox").click(function(event){
         $("#showstatisticsbox").parent().hide();
@@ -208,12 +208,12 @@ include("head.inc");
               <table class="table table-striped opnsense_standard_table_form">
                 <thead>
                   <tr>
-                    <td width="22%">
+                    <td style="width:22%">
                       <strong><?=gettext("NTP Server Configuration"); ?></strong>
                     </td>
-                    <td width="78%" align="right">
+                    <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                       &nbsp;&nbsp;
                     </td>
                   </tr>
@@ -244,7 +244,7 @@ include("head.inc");
 <?php
                       endforeach;?>
                       </select>
-                      <div class="hidden" for="help_for_interfaces">
+                      <div class="hidden" data-for="help_for_interfaces">
                         <?=gettext("Interfaces without an IP address will not be shown."); ?>
                         <br />
                         <br /><?=gettext("Selecting no interfaces will listen on all interfaces with a wildcard."); ?>
@@ -295,7 +295,7 @@ include("head.inc");
                           </tr>
                         </tfoot>
                       </table>
-                      <div class="hidden" for="help_for_timeservers">
+                      <div class="hidden" data-for="help_for_timeservers">
                         <?=gettext('For best results three to five servers should be configured here.'); ?>
                         <br />
                         <?= gettext('The "prefer" option indicates that NTP should favor the use of this server more than all others.') ?>
@@ -308,7 +308,7 @@ include("head.inc");
                     <td><a id="help_for_orphan" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Orphan mode') ?></td>
                     <td>
                       <input name="orphan" type="text" value="<?=$pconfig['orphan']?>" />
-                      <div class="hidden" for="help_for_orphan">
+                      <div class="hidden" data-for="help_for_orphan">
                         <?=gettext("(0-15)");?><br />
                         <?=gettext("Orphan mode allows the system clock to be used when no other clocks are available. The number here specifies the stratum reported during orphan mode and should normally be set to a number high enough to insure that any other servers available to clients are preferred over this server. (default: 12)."); ?>
                       </div>
@@ -318,7 +318,7 @@ include("head.inc");
                     <td><a id="help_for_statsgraph" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('NTP graphs') ?></td>
                     <td>
                       <input name="statsgraph" type="checkbox" id="statsgraph" <?=!empty($pconfig['statsgraph']) ? " checked=\"checked\"" : ""; ?> />
-                      <div class="hidden" for="help_for_statsgraph">
+                      <div class="hidden" data-for="help_for_statsgraph">
                         <?=gettext("Enable rrd graphs of NTP statistics (default: disabled)."); ?>
                       </div>
                     </td>
@@ -331,7 +331,7 @@ include("head.inc");
                       <br />
                       <input name="logsys" type="checkbox" <?=!empty($pconfig['logsys']) ? " checked=\"checked\"" : ""; ?> />
                       <?=gettext("Enable logging of system messages (default: disabled)."); ?>
-                      <div class="hidden" for="help_for_syslog">
+                      <div class="hidden" data-for="help_for_syslog">
                         <?=gettext("These options enable additional messages from NTP to be written to the System Log");?> (<a href="diag_logs_ntpd.php"><?=gettext("Status > System Logs > NTP"); ?></a>).
                       </div>
                     </td>
@@ -416,8 +416,8 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td width="22%" valign="top">&nbsp;</td>
-                    <td width="78%">
+                    <td style="width:22%">&nbsp;</td>
+                    <td style="width:78%">
                     <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
                     </td>
                   </tr>

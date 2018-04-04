@@ -107,11 +107,8 @@ class ACL
                     $this->userDatabase[$node->name->__toString()]['groups'] = array();
                     $this->userDatabase[$node->name->__toString()]['priv'] = array();
                     foreach ($node->priv as $priv) {
-                        if (substr($priv, 0, 5) == 'page-') {
-                            if (array_key_exists($priv->__toString(), $pageMap)) {
-                                $this->userDatabase[$node->name->__toString()]['priv'][] =
-                                    $pageMap[$priv->__toString()];
-                            }
+                        if (array_key_exists($priv->__toString(), $pageMap)) {
+                            $this->userDatabase[$node->name->__toString()]['priv'][] = $pageMap[$priv->__toString()];
                         }
                     }
                 } elseif ($key == 'group') {
@@ -130,7 +127,7 @@ class ACL
                             $this->userDatabase[$username]["groups"][] = $groupkey;
                         }
                     }
-                } elseif ($node->getName() == "priv" && substr($node->__toString(), 0, 5) == "page-") {
+                } elseif ($node->getName() == "priv") {
                     if (array_key_exists($node->__toString(), $pageMap)) {
                         $this->allGroupPrivs[$groupkey][] = $pageMap[$node->__toString()];
                     }
@@ -223,6 +220,9 @@ class ACL
         if ($url == '/index.php?logout') {
             // always allow logout, could use better structuring...
             return true;
+        } elseif (!empty($_SESSION['user_shouldChangePassword'])) {
+            // when a password change is enforced, lock all other endpoints
+            return $this->urlMatch($url, 'system_usermanager_passwordmg.php*');
         }
 
         if (array_key_exists($username, $this->userDatabase)) {

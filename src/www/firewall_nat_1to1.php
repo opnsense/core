@@ -99,7 +99,7 @@ $main_buttons = array(
 
 ?>
 <body>
-  <script type="text/javascript">
+  <script>
   $( document ).ready(function() {
     // link delete buttons
     $(".act_delete").click(function(){
@@ -209,16 +209,16 @@ $main_buttons = array(
                 $i = 0;
                 foreach ($a_1to1 as $natent):
 ?>
-                  <tr <?=isset($natent['disabled'])?"class=\"text-muted\"":"";?> valign="top" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
+                  <tr <?=isset($natent['disabled'])?"class=\"text-muted\"":"";?> ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
                     <td>
                       <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>" />
                     </td>
                     <td>
-                      <a href="#" type="submit" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(!isset($natent['disabled'])) ? gettext("disable rule") : gettext("enable rule");?>" class="act_toggle">
+                      <a href="#" type="submit" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(!isset($natent['disabled'])) ? gettext("Disable") : gettext("Enable");?>" class="act_toggle">
 <?php                   if(isset($natent['disabled'])):?>
-                          <span class="glyphicon glyphicon-play text-muted"></span>
+                          <span class="fa fa-play text-muted"></span>
 <?php                   else:?>
-                          <span class="glyphicon glyphicon-play text-success"></span>
+                          <span class="fa fa-play text-success"></span>
 <?php                   endif; ?>
                       </a>
                     </td>
@@ -316,11 +316,11 @@ $main_buttons = array(
                     <td colspan="9">&nbsp;</td>
                   </tr>
                   <tr>
-                    <td width="16"><span class="glyphicon glyphicon-play text-success"></span></td>
+                    <td style="width:16px"><span class="fa fa-play text-success"></span></td>
                     <td colspan="8"><?=gettext("Enabled rule"); ?></td>
                   </tr>
                   <tr>
-                    <td><span class="glyphicon glyphicon-play text-muted"></span></td>
+                    <td><span class="fa fa-play text-muted"></span></td>
                     <td colspan="8"><?=gettext("Disabled rule"); ?></td>
                   </tr>
                   <tr>

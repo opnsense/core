@@ -75,26 +75,26 @@ if (isset($config['ipsec']['phase1'])) {
 
 if (isset($config['ipsec']['phase2'])) {
 ?>
-<script type="text/javascript">
+<script>
     $(document).ready(function() {
-        $(".ipsec-tab").click(function(){
+        $(".ipsec-tab").unbind('click').click(function(){
             $(".ipsec-tab").css('background-color', '#777777');
             $(".ipsec-tab").css('color', 'white');
             $(this).css('background-color', '#EEEEEE');
             $(this).css('color', 'black');
             $(".ipsec-tab-content").hide();
-            $("#"+$(this).attr('for')).show();
+            $("#"+$(this).attr('data-for')).show();
         });
     });
 </script>
 <div id="tabs">
-    <div for="ipsec-Overview" class="ipsec-tab table-cell" style="background-color:#EEEEEE; color:black; cursor: pointer; display:table-cell">
+    <div data-for="ipsec-Overview" class="ipsec-tab table-cell" style="background-color:#EEEEEE; color:black; cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Overview");?>&nbsp;&nbsp;</strong>
     </div>
-    <div for="ipsec-tunnel" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
+    <div data-for="ipsec-tunnel" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Tunnels");?>&nbsp;&nbsp;</strong>
     </div>
-    <div for="ipsec-mobile" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
+    <div data-for="ipsec-mobile" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Mobile");?>&nbsp;&nbsp;</strong>
     </div>
 </div>
@@ -207,18 +207,11 @@ if (isset($config['ipsec']['phase2'])) {
 else {
 ?>
 <div style="display:block">
-   <table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="note">
+   <table class="table table-striped" style="width:100%; border:0; cellpadding:0; cellspacing:0;">
     <tr>
-      <td colspan="4">
-          <span class="vexpl">
-            <span class="red">
-              <strong>
-                <?= gettext('Note: There are no configured IPsec Tunnels') ?><br />
-              </strong>
-            </span>
-            <?= sprintf(gettext('You can configure your IPsec %shere%s.'), '<a href="vpn_ipsec.php">', '</a>'); ?>
-          </span>
-    </td>
+      <td>
+        <?= gettext('Note: There are no configured IPsec Tunnels') ?>
+      </td>
     </tr>
   </table>
 </div>

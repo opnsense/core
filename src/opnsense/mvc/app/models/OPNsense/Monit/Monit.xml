@@ -1,0 +1,269 @@
+<model>
+   <mount>//OPNsense/monit</mount>
+   <version>1.0.3</version>
+   <description>Monit settings</description>
+   <items>
+      <general>
+         <enabled type="BooleanField">
+            <default>0</default>
+            <Required>Y</Required>
+         </enabled>
+         <interval type="IntegerField">
+            <default>120</default>
+            <Required>Y</Required>
+            <MinimumValue>0</MinimumValue>
+            <MaximumValue>86400</MaximumValue>
+            <ValidationMessage>Polling Interval needs to be an integer value between 0 and 86400</ValidationMessage>
+         </interval>
+         <startdelay type="IntegerField">
+            <default>120</default>
+            <Required>Y</Required>
+            <MinimumValue>0</MinimumValue>
+            <MaximumValue>86400</MaximumValue>
+            <ValidationMessage>Start Delay needs to be an integer value between 0 and 86400</ValidationMessage>
+         </startdelay>
+         <mailserver type="CSVListField">
+            <default>127.0.0.1</default>
+            <Required>Y</Required>
+            <multiple>Y</multiple>
+            <mask>/^([0-9a-zA-Z\.,_\-:]){0,1024}$/u</mask>
+            <ChangeCase>lower</ChangeCase>
+            <ValidationMessage>Please specify a valid servername or IP address.</ValidationMessage>
+         </mailserver>
+         <port type="IntegerField">
+            <Required>Y</Required>
+            <default>25</default>
+            <MinimumValue>0</MinimumValue>
+            <MaximumValue>65535</MaximumValue>
+            <ValidationMessage>Port needs to be an integer value between 0 and 65535</ValidationMessage>
+         </port>
+         <username type="TextField">
+            <Required>N</Required>
+         </username>
+         <password type="TextField">
+            <Required>N</Required>
+         </password>
+         <ssl type="BooleanField">
+            <default>0</default>
+            <Required>Y</Required>
+         </ssl>
+         <logfile type="TextField">
+            <Required>N</Required>
+            <default>syslog facility log_daemon</default>
+            <mask>/^(\/[^\/ ]*)+\/?|syslog.*$/</mask>
+            <ValidationMessage>Should be a valid absolute path to the log file or the keyword "syslog".</ValidationMessage>
+         </logfile>
+         <statefile type="TextField">
+            <Required>N</Required>
+            <mask>/^(\/[^\/ ]*)+\/?$/</mask>
+            <ValidationMessage>Should be a valid absolute path to the state file.</ValidationMessage>
+         </statefile>
+         <eventqueuePath type="TextField">
+            <Required>N</Required>
+            <mask>/^(\/[^\/ ]*)+\/?$/</mask>
+            <ValidationMessage>Should be a valid absolute path to the eventqueue directory.</ValidationMessage>
+         </eventqueuePath>
+         <eventqueueSlots type="IntegerField">
+            <Required>N</Required>
+            <ValidationMessage>Eventqueue Slots must be a numeric value.</ValidationMessage>
+         </eventqueueSlots>
+         <httpdEnabled type="BooleanField">
+            <default>0</default>
+            <Required>Y</Required>
+         </httpdEnabled>
+         <httpdUsername type="TextField"/>
+         <httpdPassword type="TextField"/>
+         <httpdPort type="IntegerField">
+            <default>2812</default>
+            <Required>Y</Required>
+            <MinimumValue>1</MinimumValue>
+            <MaximumValue>65535</MaximumValue>
+            <ValidationMessage>Local Monit Port needs to be an integer value between 0 and 65535</ValidationMessage>
+         </httpdPort>
+         <httpdAllow type="CSVListField">
+            <Required>N</Required>
+            <multiple>Y</multiple>
+         </httpdAllow>
+         <mmonitUrl type="TextField">
+            <Required>N</Required>
+         </mmonitUrl>
+         <mmonitTimeout type="IntegerField">
+            <default>5</default>
+            <Required>Y</Required>
+            <MinimumValue>0</MinimumValue>
+            <MaximumValue>86400</MaximumValue>
+            <ValidationMessage>M/Monit Timeout needs to be an integer value between 0 and 86400</ValidationMessage>
+         </mmonitTimeout>
+         <mmonitRegisterCredentials type="BooleanField">
+            <default>1</default>
+            <Required>Y</Required>
+         </mmonitRegisterCredentials>
+      </general>
+      <alert type="ArrayField">
+         <enabled type="BooleanField">
+            <default>0</default>
+            <Required>Y</Required>
+         </enabled>
+         <recipient type="EmailField">
+            <default>root@localhost.local</default>
+            <Required>Y</Required>
+            <ValidationMessage>Please enter a valid email address.</ValidationMessage>
+         </recipient>
+         <noton type="BooleanField">
+            <Required>Y</Required>
+            <default>0</default>
+         </noton>
+         <events type="CSVListField">
+            <Required>N</Required>
+            <SelectOptions>
+               <action>Action done</action>
+               <checksum>Checksum failed</checksum>
+               <bytein>Download bytes exceeded</bytein>
+               <byteout>Upload bytes exceeded</byteout>
+               <connection>Connection failed</connection>
+               <content>Content failed</content>
+               <data>Data access error</data>
+               <exec>Execution failed</exec>
+               <fsflags>Filesystem flags failed</fsflags>
+               <gid>GID failed</gid>
+               <icmp>Ping failed</icmp>
+               <instance>Monit instance changed</instance>
+               <invalid>Invalid type</invalid>
+               <nonexist>Does not exist</nonexist>
+               <packetin>Download packets exceeded</packetin>
+               <packetout>Upload packets exceeded</packetout>
+               <permission>Permission failed</permission>
+               <pid>PID failed</pid>
+               <ppid>PPID failed</ppid>
+               <resource>Resource limit matched</resource>
+               <saturation>Saturation exceeded</saturation>
+               <size>Size failed</size>
+               <speed>Speed failed</speed>
+               <status>Status failed</status>
+               <timeout>Timeout</timeout>
+               <timestamp>Timestamp failed</timestamp>
+               <uid>UID failed</uid>
+               <uptime>Uptime failed</uptime>
+            </SelectOptions>
+         </events>
+         <format type="TextField">
+            <Required>N</Required>
+            <mask>/^.{1,255}$/u</mask>
+            <ValidationMessage>Message format should be a string between 1 and 255 characters.</ValidationMessage>
+         </format>
+         <reminder type="IntegerField">
+            <default>10</default>
+            <Required>N</Required>
+            <MinimumValue>0</MinimumValue>
+            <MaximumValue>86400</MaximumValue>
+            <ValidationMessage>Reminder needs to be an integer value between 0 and 86400</ValidationMessage>
+         </reminder>
+         <description type="TextField">
+            <Required>N</Required>
+            <mask>/^.{1,255}$/u</mask>
+            <ValidationMessage>Enter a description.</ValidationMessage>
+         </description>
+      </alert>
+      <service type="ArrayField">
+         <enabled type="BooleanField">
+            <default>0</default>
+            <Required>Y</Required>
+         </enabled>
+         <name type="TextField">
+            <Required>Y</Required>
+            <mask>/^([0-9a-zA-Z\._\-\$]){1,255}$/u</mask>
+            <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as underscore, minus, dot and the dollar sign.</ValidationMessage>
+         </name>
+         <type type="OptionField">
+            <Required>Y</Required>
+            <OptionValues>
+               <process>Process</process>
+               <file>File</file>
+               <fifo>Fifo</fifo>
+               <filesystem>Filesystem</filesystem>
+               <directory>Directory</directory>
+               <host>Remote Host</host>
+               <system>System</system>
+               <custom>Custom</custom>
+               <network>Network</network>
+            </OptionValues>
+         </type>
+         <pidfile type="TextField">
+            <Required>N</Required>
+            <mask>/^(\/[^\/ ]*)+\/?$/</mask>
+            <ValidationMessage>Should be a valid absolute path to the PID file of the process.</ValidationMessage>
+         </pidfile>
+         <match type="TextField">
+            <Required>N</Required>
+         </match>
+         <path type="TextField">
+            <Required>N</Required>
+            <mask>/^(\/[^\/ ]*)+\/?.*$/</mask>
+            <ValidationMessage>Should be a valid absolute file or folder path.</ValidationMessage>
+         </path>
+         <address type="TextField">
+            <Required>N</Required>
+            <mask>/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-4]|2[0-5][0-9]|[01]?[0-9][0-9]?)$/</mask>
+            <ValidationMessage>Address must be a valid IPv4 address</ValidationMessage>
+         </address>
+         <interface type="InterfaceField">
+            <Required>N</Required>
+            <multiple>N</multiple>
+            <filters>
+                <enable>/^(?!0).*$/</enable>
+                <ipaddr>/^((?!dhcp).)*$/</ipaddr>
+            </filters>
+         </interface>
+         <start type="TextField">
+            <Required>N</Required>
+            <mask>/^(\/[^\/ ]*)+\/? .*$/</mask>
+            <ValidationMessage>Should be a valid absolute path to the executable with its arguments.</ValidationMessage>
+         </start>
+         <stop type="TextField">
+            <Required>N</Required>
+            <mask>/^(\/[^\/ ]*)+\/? .*$/</mask>
+            <ValidationMessage>Should be a valid absolute path to the executable with its arguments.</ValidationMessage>
+         </stop>
+         <tests type="ModelRelationField">
+            <Model>
+               <template>
+                  <source>OPNsense.monit.monit</source>
+                  <items>test</items>
+                  <display>name</display>
+               </template>
+            </Model>
+            <ValidationMessage>Related item not found</ValidationMessage>
+            <multiple>Y</multiple>
+            <Required>N</Required>
+         </tests>
+      </service>
+      <test type="ArrayField">
+         <name type="TextField">
+            <Required>Y</Required>
+            <mask>/^([0-9a-zA-Z\._\- ]){1,255}$/u</mask>
+            <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as underscore, minus, dot and space.</ValidationMessage>
+         </name>
+         <condition type="TextField">
+            <Required>Y</Required>
+            <mask>/^.{1,255}$/u</mask>
+            <ValidationMessage>Should be a string between 1 and 255 characters.</ValidationMessage>
+         </condition>
+         <action type="OptionField">
+            <Required>Y</Required>
+            <OptionValues>
+               <alert>Alert</alert>
+               <restart>Restart</restart>
+               <start>Start</start>
+               <stop>Stop</stop>
+               <exec>Execute</exec>
+               <unmonitor>Unmonitor</unmonitor>
+            </OptionValues>
+         </action>
+         <path type="TextField">
+            <Required>N</Required>
+            <mask>/^(\/[^\/ ]*)+\/?.*$/</mask>
+            <ValidationMessage>Should be a valid absolute file path.</ValidationMessage>
+         </path>
+      </test>
+   </items>
+</model>

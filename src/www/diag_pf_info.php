@@ -44,7 +44,7 @@ include("head.inc");
 ?>
 <body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
   function getpfinfo() {
     jQuery.ajax({

@@ -489,11 +489,9 @@ EOD;
         } else {
             $vlan_capable=0;
             foreach ($iflist as $iface => $ifa) {
-                if (is_jumbo_capable($iface)) {
-                    echo sprintf("% -8s%s%s\n", $iface, $ifa['mac'],
-                        $ifa['up'] ? "   (up)" : "");
-                    $vlan_capable++;
-                }
+                echo sprintf("% -8s%s%s\n", $iface, $ifa['mac'],
+                    $ifa['up'] ? "   (up)" : "");
+                $vlan_capable++;
             }
         }
 
@@ -506,8 +504,7 @@ EOD;
         $vlan['if'] = chop(fgets($fp));
 
         if ($vlan['if']) {
-            if (!array_key_exists($vlan['if'], $iflist) or
-                !is_jumbo_capable($vlan['if'])) {
+            if (!array_key_exists($vlan['if'], $iflist)) {
                 printf("\nInvalid interface name '%s'\n", $vlan['if']);
                 continue;
             }

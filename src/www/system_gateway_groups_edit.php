@@ -146,7 +146,7 @@ include("head.inc");
 
 ?>
 
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
     // force protocol on initial selection (only relevant for new items)
     $("select.act-tier-change").change(function(){
@@ -172,12 +172,12 @@ $( document ).ready(function() {
           <div class="tab-content content-box col-xs-12">
             <div class="table-responsive">
               <form method="post" name="iform" id="iform">
-                <table class="table table-striped opnsense_standard_table_form" summary="system groups edit">
+                <table class="table table-striped opnsense_standard_table_form">
                   <tr>
-                    <td width="22%"></td>
-                    <td width="78%" align="right">
+                    <td style="width:22%"></td>
+                    <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                     </td>
                   </tr>
                   <tr>
@@ -265,7 +265,7 @@ $( document ).ready(function() {
 <?php
                         endforeach;?>
                       </table>
-                      <div for="help_for_gatewayprio" class="hidden">
+                      <div data-for="help_for_gatewayprio" class="hidden">
                           <br>
                           <strong><?=gettext("Link Priority"); ?></strong> <br />
                           <?=gettext("The priority selected here defines in what order failover and balancing of links will be done. " .
@@ -287,7 +287,7 @@ $( document ).ready(function() {
                         <option value="downlatency" <?=$pconfig['trigger'] == "downlatency" ? "selected=\"selected\"" :"";?> ><?=gettext("High Latency");?></option>
                         <option value="downlosslatency" <?=$pconfig['trigger'] == "downlosslatency" ? "selected=\"selected\"" :"";?> ><?=gettext("Packet Loss or High Latency");?></option>
                       </select>
-                      <div for="help_for_triggerlvl" class="hidden">
+                      <div data-for="help_for_triggerlvl" class="hidden">
                         <?=gettext("When to trigger exclusion of a member"); ?>
                       </div>
                     </td>
@@ -296,7 +296,7 @@ $( document ).ready(function() {
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                      <div for="help_for_descr" class="hidden">
+                      <div data-for="help_for_descr" class="hidden">
                         <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
                       </div>
                     </td>

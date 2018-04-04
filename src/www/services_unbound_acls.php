@@ -122,7 +122,7 @@ include("head.inc");
 ?>
 
 <body>
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     /**
      *  Aliases
@@ -200,17 +200,17 @@ include("head.inc");
               <input name="act" type="hidden" value="<?=$act;?>" />
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <td width="22%"><strong><?=ucwords(sprintf(gettext("%s Access List"),$act));?></strong></td>
-                  <td width="78%" align="right">
+                  <td style="width:22%"><strong><?=ucwords(sprintf(gettext("%s Access List"),$act));?></strong></td>
+                  <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
-                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_aclname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Access List name");?></td>
                   <td>
                     <input name="aclname" type="text" value="<?=$pconfig['aclname'];?>" />
-                    <div class="hidden" for="help_for_aclname">
+                    <div class="hidden" data-for="help_for_aclname">
                       <?=gettext("Provide an Access List name.");?>
                     </div>
                   </td>
@@ -232,7 +232,7 @@ include("head.inc");
                       <?=gettext("Allow Snoop");?>
                       </option>
                     </select>
-                    <div class="hidden" for="help_for_aclaction">
+                    <div class="hidden" data-for="help_for_aclaction">
                         <?=gettext("Choose what to do with DNS requests that match the criteria specified below.");?> <br />
                         <?=gettext("Deny: This action stops queries from hosts within the netblock defined below.")?> <br />
                         <?=gettext("Refuse: This action also stops queries from hosts within the netblock defined below, but sends a DNS rcode REFUSED error message back to the client.")?> <br />
@@ -301,7 +301,7 @@ include("head.inc");
                   <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
                   <td>
                     <input name="description" type="text" value="<?=$pconfig['description'];?>" />
-                    <div class="hidden" for="help_for_description">
+                    <div class="hidden" data-for="help_for_description">
                       <?=gettext("You may enter a description here for your reference.");?>
                     </div>
                   </td>
@@ -397,7 +397,7 @@ include("head.inc");
                     </td>
                     <td>
                       <a href="services_unbound_acls.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                      <a href="#" data-id="<?=$i;?>" class="act_delete_acl"><button type="button" class="btn btn-xs btn-default"><span class="fa fa-trash text-muted"></span></button></a>
+                      <a href="#" data-id="<?=$i;?>" class="act_delete_acl btn btn-xs btn-default"><i class="fa fa-trash text-muted"></i></a>
                     </td>
                   </tr>
 <?php

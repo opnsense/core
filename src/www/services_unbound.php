@@ -51,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // array types
     $pconfig['active_interface'] = !empty($a_unboundcfg['active_interface']) ? explode(",", $a_unboundcfg['active_interface']) : array();
     $pconfig['outgoing_interface'] = !empty($a_unboundcfg['outgoing_interface']) ? explode(",", $a_unboundcfg['outgoing_interface']) : array();
+    $pconfig['local_zone_type'] = !empty($a_unboundcfg['local_zone_type']) ? $a_unboundcfg['local_zone_type'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -81,9 +82,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['port']) && !is_port($pconfig['port'])) {
             $input_errors[] = gettext("You must specify a valid port number.");
         }
+        if (!empty($pconfig['local_zone_type']) && !array_key_exists($pconfig['local_zone_type'], unbound_local_zone_types())) {
+            $input_errors[] = sprintf(gettext('Local zone type "%" is not known.'), $pconfig['local_zone_type']);
+        }
 
         if (count($input_errors) == 0) {
-            // save form data
             // text types
             if (!empty($pconfig['port'])) {
                 $a_unboundcfg['port'] = $pconfig['port'];
@@ -95,7 +98,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } elseif (isset($a_unboundcfg['regdhcpdomain'])) {
                 unset($a_unboundcfg['regdhcpdomain']);
             }
+            if (!empty($pconfig['local_zone_type'])) {
+                $a_unboundcfg['local_zone_type'] = $pconfig['local_zone_type'];
+            } elseif (isset($a_unboundcfg['local_zone_type'])) {
+                unset($a_unboundcfg['local_zone_type']);
+            }
+
             $a_unboundcfg['custom_options'] = !empty($pconfig['custom_options']) ? str_replace("\r\n", "\n", $pconfig['custom_options']) : null;
+
             // boolean values
             $a_unboundcfg['enable'] = !empty($pconfig['enable']);
             $a_unboundcfg['dnssec'] = !empty($pconfig['dnssec']);
@@ -124,7 +134,7 @@ include_once("head.inc");
 ?>
 
 <body>
-<script type="text/javascript">
+<script>
     $( document ).ready(function() {
         $("#show_advanced_dns").click(function(){
             $(this).parent().parent().hide();
@@ -153,10 +163,10 @@ include_once("head.inc");
                   <table class="table table-striped opnsense_standard_table_form">
                     <tbody>
                       <tr>
-                        <td width="22%"><strong><?=gettext("General DNS Resolver Options");?></strong></td>
-                        <td width="78%" align="right">
+                        <td style="width:22%"><strong><?=gettext("General DNS Resolver Options");?></strong></td>
+                        <td style="width:78%; text-align:right">
                           <small><?=gettext("full help"); ?> </small>
-                          <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                          <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                         </td>
                       </tr>
                       <tr>
@@ -170,7 +180,7 @@ include_once("head.inc");
                         <td><a id="help_for_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Listen Port");?></td>
                         <td>
                             <input name="port" type="text" id="port" size="6" value="<?=$pconfig['port'];?>" />
-                            <div class="hidden" for="help_for_port">
+                            <div class="hidden" data-for="help_for_port">
                                 <?=gettext("The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53.");?>
                             </div>
                         </td>
@@ -186,8 +196,23 @@ include_once("head.inc");
 <?php
                             endforeach; ?>
                           </select>
-                          <div class="hidden" for="help_for_active_interface">
+                          <div class="hidden" data-for="help_for_active_interface">
                             <?=gettext("Interface IPs used by the DNS Resolver for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.");?>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_local_zone_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local Zone Type"); ?></td>
+                        <td>
+                          <select name="local_zone_type" size="3" class="selectpicker" >
+<?php
+                            foreach (unbound_local_zone_types() as $value => $name):?>
+                            <option value="<?= html_safe($value) ?>" <?= $value == $pconfig['local_zone_type'] ? 'selected="selected"' : '' ?>><?= html_safe($name) ?></option>
+<?php
+                            endforeach; ?>
+                          </select>
+                          <div class="hidden" data-for="help_for_local_zone_type">
+                            <?=sprintf(gettext('The local zone type used for the system domain. Type descriptions are available under "local-zone:" in the %sunbound.conf(5)%s manual page. The default is \'transparent\'.'), '<a target="_blank" href="https://www.unbound.net/documentation/unbound.conf.html">', '</a>');?>
                           </div>
                         </td>
                       </tr>
@@ -203,7 +228,7 @@ include_once("head.inc");
                         <td>
                           <input name="forwarding" type="checkbox" value="yes" <?=!empty($pconfig['forwarding']) ? "checked=\"checked\"" : "";?> />
                           <strong><?=gettext("Enable Forwarding Mode");?></strong>
-                          <div class="hidden" for="help_for_forwarding">
+                          <div class="hidden" data-for="help_for_forwarding">
                             <?= gettext('The configured system nameservers will be used to forward queries to.') ?>
                           </div>
                         </td>
@@ -213,7 +238,7 @@ include_once("head.inc");
                         <td>
                           <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? "checked=\"checked\"" : "";?> />
                           <strong><?=gettext("Register DHCP leases in the DNS Resolver");?></strong>
-                          <div class="hidden" for="help_for_regdhcp">
+                          <div class="hidden" data-for="help_for_regdhcp">
                             <?= gettext("If this option is set, then machines that specify " .
                             "their hostname when requesting a DHCP lease will be registered " .
                             "in the DNS Resolver, so that their name can be resolved."); ?>
@@ -224,7 +249,7 @@ include_once("head.inc");
                         <td><a id="help_for_regdhcpdomain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Domain Override");?></td>
                         <td>
                           <input name="regdhcpdomain" type="text" id="regdhcpdomain" value="<?= $pconfig['regdhcpdomain'] ?>"/>
-                          <div class="hidden" for="help_for_regdhcpdomain">
+                          <div class="hidden" data-for="help_for_regdhcpdomain">
                             <?= gettext("The domain name to use for DHCP hostname registration. " .
                               "If empty, the default system domain is used. Note that all DHCP " .
                               "leases will be assigned to the same domain. If this is undesired, " .
@@ -237,7 +262,7 @@ include_once("head.inc");
                         <td>
                           <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? "checked=\"checked\"" : "";?> />
                           <strong><?=gettext("Register DHCP static mappings in the DNS Resolver");?></strong>
-                          <div class="hidden" for="help_for_regdhcpstatic">
+                          <div class="hidden" data-for="help_for_regdhcpstatic">
                             <?= sprintf(gettext("If this option is set, then DHCP static mappings will ".
                                 "be registered in the DNS Resolver, so that their name can be ".
                                 "resolved. You should also set the domain in %s".
@@ -250,7 +275,7 @@ include_once("head.inc");
                         <td>
                           <input name="reglladdr6" type="checkbox" id="reglladdr6" value="yes" <?= !empty($pconfig['reglladdr6']) ? 'checked="checked"' : '' ?>/>
                           <strong><?= gettext('Register IPv6 link-local addresses in the DNS Resolver') ?></strong>
-                          <div class="hidden" for="help_for_reglladdr6">
+                          <div class="hidden" data-for="help_for_reglladdr6">
                             <?= gettext("If this option is unset, then IPv6 link-local " .
                             "addresses will not be registered in the DNS Resolver, preventing " .
                             "return of unreachable address from the DNS resolver when more " .
@@ -262,7 +287,7 @@ include_once("head.inc");
                         <td><a id="help_for_txtsupport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TXT Comment Support");?></td>
                         <td>
                           <input name="txtsupport" type="checkbox" value="yes" <?=!empty($pconfig['txtsupport']) ? "checked=\"checked\"" : "";?> />
-                          <div class="hidden" for="help_for_txtsupport">
+                          <div class="hidden" data-for="help_for_txtsupport">
                             <?=gettext("If this option is set, then any descriptions associated with Host entries and DHCP Static mappings will create a corresponding TXT record.");?><br />
                           </div>
                         </td>
@@ -277,7 +302,7 @@ include_once("head.inc");
                         <td><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Custom options') ?></td>
                         <td>
                           <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
-                          <div class="hidden" for="help_for_custom_options">
+                          <div class="hidden" data-for="help_for_custom_options">
                             <?=gettext("Enter any additional options you would like to add to the DNS Resolver configuration here."); ?>
                           </div>
                         </td>
@@ -296,7 +321,7 @@ include_once("head.inc");
                             endforeach; ?>
 
                           </select>
-                          <div class="hidden" for="help_for_outgoing_interface">
+                          <div class="hidden" data-for="help_for_outgoing_interface">
                             <?=gettext("Utilize different network interface(s) that the DNS Resolver will use to send queries to authoritative servers and receive their replies. By default all interfaces are used. Note that setting explicit outgoing interfaces only works when they are statically configured.");?>
                           </div>
                         </td>

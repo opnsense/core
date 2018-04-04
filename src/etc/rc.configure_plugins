@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2018 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,18 @@
  */
 
 require_once 'config.inc';
+require_once 'system.inc';
+require_once 'interfaces.inc';
+require_once 'util.inc';
 
-/* flush cache */
+/* assume standard operation mode as post-install */
+$script = !empty($argv[1]) ? $argv[1] : 'POST_INSTALL';
+
+/* reload subsystem that may have changed */
+if ($script == 'POST_INSTALL') {
+	system_syslogd_start(true);
+}
+
+/* flush user-facing caches */
 (new OPNsense\Core\ACL())->invalidateCache();
 (new OPNsense\Base\Menu\MenuSystem())->invalidateCache();

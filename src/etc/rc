@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2018 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2010 Scott Ullrich <sullrich@gmail.com>
 # Copyright (c) 2003-2004 Manuel Kasper <mk@neon1.net>
 # All rights reserved.
@@ -110,7 +110,7 @@ if _tmpdir=$(mktemp -d -q /.diskless.XXXXXX); then
 	rmdir ${_tmpdir}
 else
 	# fake a writeable environment in some subdirs
-	for i in conf etc home root usr var; do
+	for i in boot conf etc home root usr var; do
 		mkdir -p /tmp/.cdrom/${i}
 		mount_unionfs /tmp/.cdrom/${i} /${i}
 	done
@@ -118,6 +118,10 @@ fi
 
 # regenerate groups and users for base
 /usr/local/etc/rc.subr.d/recover base > /dev/null
+
+# generate hostid and save it permanenty
+/etc/rc.d/hostid start
+/etc/rc.d/hostid_save start
 
 # set keyboard map if needed
 /etc/rc.d/syscons onestart
@@ -134,15 +138,8 @@ fi
 # write /var/run/dmesg.boot
 /etc/rc.d/dmesg onestart
 
-# XXX pre-17.1 compat: avoid matching use_mfs_tmpvar
-USE_MFS_TMP=`/usr/bin/grep -c 'use_mfs_tmp[^_]' /conf/config.xml`
-
-if [ ${USE_MFS_TMP} -ne 0 ]; then
-	mount -t tmpfs -o mode=01777 tmpfs /tmp
-else
-	rm -rf /tmp/*
-	chmod 1777 /tmp
-fi
+# all sorts of maintenance tasks for /tmp
+/usr/local/etc/rc.subr.d/tmp
 
 # set up and recover a crash dump before activating swap
 /usr/local/etc/rc.subr.d/crashdump

@@ -34,8 +34,8 @@ require_once("guiconfig.inc");
 require_once("system.inc");
 
 ?>
-<script src="/ui/js/moment-with-locales.min.js" type="text/javascript"></script>
-<script type="text/javascript">
+<script src="/ui/js/moment-with-locales.min.js"></script>
+<script>
   var system_information_widget_cpu_data = []; // reference to measures
   var system_information_widget_cpu_chart = null; // reference to chart object
   var system_information_widget_cpu_chart_data = null; // reference to chart data object
@@ -135,7 +135,7 @@ require_once("system.inc");
   /**
    * page setup
    */
-  $( document ).ready(function() {
+  $(window).load(function() {
       // draw cpu graph
       nv.addGraph(function() {
           system_information_widget_cpu_chart = nv.models.lineChart()
@@ -158,7 +158,7 @@ require_once("system.inc");
 <table class="table table-striped table-condensed" data-plugin="system" data-callback="system_information_widget_update">
   <tbody>
     <tr>
-      <td width="30%"><?=gettext("Name");?></td>
+      <td style="width:30%"><?=gettext("Name");?></td>
       <td><?=$config['system']['hostname'] . "." . $config['system']['domain']; ?></td>
     </tr>
     <tr>

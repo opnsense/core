@@ -291,7 +291,7 @@ function console_configure_ip_address($version)
     global $config, $interface, $restart_dhcpd, $ifaceassigned, $fp;
 
     $label_IPvX = ($version === 6) ? 'IPv6' : 'IPv4';
-    $maxbits = ($version === 6) ? 127 : 31;
+    $maxbits = ($version === 6) ? 128 : 32;
     $label_DHCP = ($version === 6) ? 'DHCP6' : 'DHCP';
 
     $upperifname = strtoupper($interface);

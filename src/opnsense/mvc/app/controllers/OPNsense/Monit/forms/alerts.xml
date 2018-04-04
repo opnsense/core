@@ -1,0 +1,47 @@
+<form>
+   <field>
+      <id>monit.alert.enabled</id>
+      <label>Enable alert</label>
+      <type>checkbox</type>
+      <help><![CDATA[Enable or disable alert.]]></help>
+   </field>
+   <field>
+      <id>monit.alert.recipient</id>
+      <label>Recipient</label>
+      <type>text</type>
+      <style>tokenize</style>
+      <help><![CDATA[The email address to send alerts to.]]></help>
+   </field>
+   <field>
+      <id>monit.alert.noton</id>
+      <label>Not on</label>
+      <type>checkbox</type>
+      <help><![CDATA[Do not send alerts for the following events but on all others.]]></help>
+   </field>
+   <field>
+      <id>monit.alert.events</id>
+      <label>Events</label>
+      <type>select_multiple</type>
+      <nbDropdownElements>28</nbDropdownElements>
+      <style>tokenize</style>
+      <help><![CDATA[List with events. Leave it empty for all events.]]></help>
+   </field>
+   <field>
+      <id>monit.alert.format</id>
+      <label>Mail format</label>
+      <type>text</type>
+      <style>tokenize</style>
+      <help><![CDATA[The email format for alerts.<br><i>Subject: $SERVICE on $HOST failed</i>]]></help>
+   </field>
+   <field>
+      <id>monit.alert.reminder</id>
+      <label>Reminder</label>
+      <type>text</type>
+      <help><![CDATA[Send a reminder after some cycles]]></help>
+   </field>
+   <field>
+      <id>monit.alert.description</id>
+      <label>Description</label>
+      <type>text</type>
+   </field>
+</form>

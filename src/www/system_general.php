@@ -238,21 +238,21 @@ include("head.inc");
     }
 ?>
     <section class="col-xs-12">
-      <div class="content-box tab-content">
-        <form method="post">
+      <form method="post">
+        <div class="content-box tab-content __mb">
           <table class="table table-striped opnsense_standard_table_form">
             <tr>
-              <td width="22%"><strong><?=gettext("System");?></strong></td>
-              <td width="78%" align="right">
+              <td style="width:22%"><strong><?= gettext('System') ?></strong></td>
+              <td style="width:78%; text-align:right">
                 <small><?=gettext("full help"); ?> </small>
-                <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
               </td>
             </tr>
             <tr>
               <td><a id="help_for_hostname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hostname"); ?></td>
               <td>
                 <input name="hostname" type="text" size="40" value="<?=$pconfig['hostname'];?>" />
-                <div class="hidden" for="help_for_hostname">
+                <div class="hidden" data-for="help_for_hostname">
                   <?=gettext("Name of the firewall host, without domain part"); ?>
                   <br />
                   <?=gettext("e.g."); ?> <em><?=gettext("firewall");?></em>
@@ -263,7 +263,7 @@ include("head.inc");
               <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain"); ?></td>
               <td>
                 <input name="domain" type="text" value="<?=$pconfig['domain'];?>" />
-                <div class="hidden" for="help_for_domain">
+                <div class="hidden" data-for="help_for_domain">
                   <?=gettext("Do not use 'local' as a domain name. It will cause local hosts running mDNS (avahi, bonjour, etc.) to be unable to resolve local hosts not running mDNS."); ?>
                   <br />
                   <?=sprintf(gettext("e.g. %smycorp.com, home, office, private, etc.%s"),'<em>','</em>') ?>
@@ -282,7 +282,7 @@ include("head.inc");
 <?php
                   endforeach; ?>
                 </select>
-                <div class="hidden" for="help_for_timezone">
+                <div class="hidden" data-for="help_for_timezone">
                   <?=gettext("Select the location closest to you"); ?>
                 </div>
               </td>
@@ -299,10 +299,8 @@ include("head.inc");
 <?php
                   endforeach;?>
                 </select>
-                <div class="hidden" for="help_for_language">
-                  <strong>
-                    <?= gettext('Choose a language for the web GUI.') ?>
-                  </strong>
+                <div class="hidden" data-for="help_for_language">
+                  <?= gettext('Choose a language for the web GUI.') ?>
                 </div>
               </td>
             </tr>
@@ -319,22 +317,25 @@ include("head.inc");
 <?php
                 endforeach; ?>
                 </select>
-                <div class="hidden" for="help_for_theme">
-                  <strong>
-                    <?= gettext('This will change the look and feel of the GUI.') ?>
-                  </strong>
+                <div class="hidden" data-for="help_for_theme">
+                  <?= gettext('This will change the look and feel of the GUI.') ?>
                 </div>
               </td>
             </tr>
+          </table>
+        </div>
+        <div class="content-box tab-content __mb">
+          <table class="table table-striped opnsense_standard_table_form">
             <tr>
-              <th colspan="2" valign="top" class="listtopic"><?=gettext("Networking"); ?></th>
+              <td style="width:22%"><strong><?= gettext('Networking') ?></strong></td>
+              <td style="width:78%"></td>
             </tr>
             <tr>
               <td><a id="help_for_prefer_ipv4" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer IPv4 over IPv6"); ?></td>
               <td>
                 <input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?= !empty($pconfig['prefer_ipv4']) ? "checked=\"checked\"" : "";?> />
-                <strong><?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?></strong>
-                <div class="hidden" for="help_for_prefer_ipv4">
+                <?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?>
+                <div class="hidden" data-for="help_for_prefer_ipv4">
                   <?=gettext("By default, if a hostname resolves IPv6 and IPv4 addresses ".
                                       "IPv6 will be used, if you check this option, IPv4 will be " .
                                       "used instead of IPv6."); ?>
@@ -388,7 +389,7 @@ include("head.inc");
                     endfor; ?>
                   </tbody>
                 </table>
-                <div class="hidden" for="help_for_dnsservers">
+                <div class="hidden" data-for="help_for_dnsservers">
                   <?=gettext("Enter IP addresses to be used by the system for DNS resolution. " .
                   "These are also used for the DHCP service, DNS forwarder and for PPTP VPN clients."); ?>
                   <br />
@@ -402,36 +403,40 @@ include("head.inc");
               <td><a id="help_for_dnsservers_opt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS server options"); ?></td>
               <td>
                 <input name="dnsallowoverride" type="checkbox" value="yes" <?= $pconfig['dnsallowoverride'] ? 'checked="checked"' : '' ?>/>
-                <strong>
-                  <?=gettext("Allow DNS server list to be overridden by DHCP/PPP on WAN"); ?>
-                </strong>
-                <div class="hidden" for="help_for_dnsservers_opt">
+                <?=gettext("Allow DNS server list to be overridden by DHCP/PPP on WAN"); ?>
+                <div class="hidden" data-for="help_for_dnsservers_opt">
                   <?= gettext("If this option is set, DNS servers " .
                   "assigned by a DHCP/PPP server on WAN will be used " .
                   "for its own purposes (including the DNS forwarder). " .
                   "However, they will not be assigned to DHCP and PPTP " .
                   "VPN clients.") ?>
                 </div>
-                <br/>
+              </td>
+            </tr>
+            </tr>
+              <td></td>
+              <td>
                 <input name="dnslocalhost" type="checkbox" value="yes" <?=$pconfig['dnslocalhost'] ? "checked=\"checked\"" : ""; ?> />
-                <strong>
-                  <?=gettext("Do not use the DNS Forwarder/Resolver as a DNS server for the firewall"); ?>
-                </strong>
-                <div class="hidden" for="help_for_dnsservers_opt">
+                <?=gettext("Do not use the DNS Forwarder/Resolver as a DNS server for the firewall"); ?>
+                <div class="hidden" data-for="help_for_dnsservers_opt">
                   <?=gettext("By default localhost (127.0.0.1) will be used as the first DNS server where the DNS Forwarder or DNS Resolver is enabled and set to listen on Localhost, so system can use the local DNS service to perform lookups. ".
                   "Checking this box omits localhost from the list of DNS servers."); ?>
                 </div>
               </td>
             </tr>
+          </table>
+        </div>
+        <div class="content-box tab-content">
+          <table class="table table-striped opnsense_standard_table_form">
             <tr>
-              <td></td>
+              <td style="width:22%"></td>
               <td>
                 <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
               </td>
             </tr>
           </table>
-        </form>
-      </div>
+        </div>
+      </form>
     </section>
     </div>
   </div>

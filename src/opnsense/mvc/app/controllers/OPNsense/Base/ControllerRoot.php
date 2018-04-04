@@ -40,6 +40,11 @@ use OPNsense\Core\ACL;
 class ControllerRoot extends Controller
 {
     /**
+     * @var null|ViewTranslator translator to use
+     */
+    public $translator;
+
+    /**
      * Wrap close session, for long running operations.
      */
     protected function sessionClose()

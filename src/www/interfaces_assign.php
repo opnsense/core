@@ -102,15 +102,6 @@ function list_interfaces() {
             }
         }
     }
-    /* QinQ interfaces can't be directly extracted from config without additional logic */
-    if (isset($config['qinqs']['qinqentry'])) {
-        foreach ($config['qinqs']['qinqentry'] as $qinq) {
-            $interfaces["vlan{$qinq['tag']}"]= array('descr' => "VLAN {$qinq['tag']}");
-            foreach (explode(' ', $qinq['members']) as $qinqif) { // QinQ members
-                $interfaces["vlan{$qinq['tag']}_{$qinqif}"] = array( 'descr' => "QinQ {$qinqif}");
-            }
-        }
-    }
 
     // enforce constraints
     foreach ($interfaces as $intf_id => $intf_details) {
@@ -164,6 +155,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (match_wireless_interface($_POST['if_add'])) {
             $config['interfaces'][$newifname]['wireless'] = array();
             interface_sync_wireless_clones($config['interfaces'][$newifname], false);
+        }
+        /* lock known-to-be unreliable interfaces by default */
+        if (in_array(substr($_POST['if_add'], 0, 2), array('ue', 'zt'))) {
+            $config['interfaces'][$newifname]['lock'] = true;
         }
 
         write_config();
@@ -354,7 +349,7 @@ include("head.inc");
 ?>
 
 <body>
-  <script type="text/javascript">
+  <script>
   $( document ).ready(function() {
     // link delete buttons
     $(".act_delete").click(function(event){

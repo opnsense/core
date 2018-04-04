@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     } elseif ($act=="new") {
         // create new
-        $pconfig['interface'] = "wan";
+        $pconfig['interface'] = 'any';
         $init_fields = "auth_user,auth_pass,disable,mode,protocol,interface
             ,local_port,server_addr,server_port,resolve_retry,remote_random,reneg-sec
             ,proxy_addr,proxy_port,proxy_user,proxy_passwd,proxy_authtype,description
@@ -201,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("An IPv6 protocol was selected, but the selected interface has no IPv6 address.");
         }
         if (!empty($pconfig['local_port'])) {
-            if (empty($pconfig['local_port']) || !is_numeric($pconfig['local_port']) || $pconfig['local_port'] < 0 || ($pconfig['local_port'] > 65535)) {
+            if (!is_numeric($pconfig['local_port']) || $pconfig['local_port'] < 0 || ($pconfig['local_port'] > 65535)) {
                 $input_errors[] = gettext("The field 'Local port' must contain a valid port, ranging from 0 to 65535.");
             }
             $portused = openvpn_port_used($pconfig['protocol'], $pconfig['interface'], $pconfig['local_port'], $vpnid);
@@ -251,15 +251,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
         }
-        if (!empty($pconfig['tunnel_network'])) {
-            if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], 'IPv4 Tunnel Network', false, "ipv4")) {
-                $input_errors[] = $result;
-            }
+        if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], 'IPv4 Tunnel Network', false, "ipv4")) {
+            $input_errors[] = $result;
         }
-        if (!empty($pconfig['tunnel_networkv6'])) {
-            if ($result = openvpn_validate_cidr($pconfig['tunnel_networkv6'], 'IPv6 Tunnel Network', false, "ipv6")) {
-                $input_errors[] = $result;
-            }
+        if ($result = openvpn_validate_cidr($pconfig['tunnel_networkv6'], 'IPv6 Tunnel Network', false, "ipv6")) {
+            $input_errors[] = $result;
         }
         if ($result = openvpn_validate_cidr($pconfig['remote_network'], 'IPv4 Remote Network', true, "ipv4")) {
             $input_errors[] = $result;
@@ -374,7 +370,7 @@ $main_buttons = array(
 
 <body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
 //<![CDATA[
 $( document ).ready(function() {
   // link delete buttons
@@ -545,17 +541,17 @@ $( document ).ready(function() {
           <div class="table-responsive">
           <table class="table table-striped opnsense_standard_table_form">
             <tr>
-              <td width="22%"><strong><?=gettext("General information"); ?></strong></td>
-              <td width="78%" align="right">
+              <td style="width:22%"><strong><?=gettext("General information"); ?></strong></td>
+              <td style="width:78%; text-align:right">
                 <small><?=gettext("full help"); ?> </small>
-                <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
               </td>
             </tr>
             <tr>
               <td><a id="help_for_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
               <td>
                 <input name="disable" type="checkbox" value="yes" <?= !empty($pconfig['disable']) ? "checked=\"checked\"" : "";?> />
-                <div class="hidden" for="help_for_disable">
+                <div class="hidden" data-for="help_for_disable">
                   <small><?=gettext("Set this option to disable this client without removing it from the list"); ?>.</small>
                 </div>
               </td>
@@ -564,7 +560,7 @@ $( document ).ready(function() {
               <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
               <td>
                 <input name="description" type="text" class="form-control unknown" size="30" value="<?=$pconfig['description'];?>" />
-                <div class="hidden" for="help_for_description">
+                <div class="hidden" data-for="help_for_description">
                   <small><?=gettext("You may enter a description here for your reference (not parsed)"); ?>.</small>
                 </div>
               </td>
@@ -589,11 +585,11 @@ $( document ).ready(function() {
               </td>
             </tr>
             <tr>
-              <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Protocol");?></td>
+              <td><a id="help_for_protocol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol");?></td>
               <td>
                 <select name='protocol' class="form-control">
 <?php
-                foreach (array("UDP", "UDP6", "TCP", "TCP6") as $prot) :
+                foreach (openvpn_get_protocols() as $prot):
                     $selected = "";
                     if ($pconfig['protocol'] == $prot) {
                         $selected = "selected=\"selected\"";
@@ -602,6 +598,11 @@ $( document ).ready(function() {
 <?php
                 endforeach; ?>
               </select>
+              <div class="hidden" data-for="help_for_protocol">
+                <?= gettext('Select the protocol family to be used. Note that using both families with UDP/TCP ' .
+                            'does not work with an explicit interface as OpenVPN does not support listening to more ' .
+                            'than one specified IP address. In this case IPv4 is currently assumed.') ?>
+              </div>
             </td>
           </tr>
           <tr>
@@ -656,7 +657,7 @@ $( document ).ready(function() {
               <option value="<?=$iface;?>" <?=$selected;?>><?=htmlspecialchars($ifacename);?></option>
 <?php
               endforeach; ?>
-              </select> <br />
+              </select>
             </td>
           </tr>
           <tr>
@@ -708,15 +709,15 @@ $( document ).ready(function() {
               </table>
               <br/>
               <input name="remote_random" type="checkbox" value="yes" <?= !empty($pconfig['remote_random']) ? 'checked="checked"' : '' ?>/>
-              <strong><?= gettext('Select remote server at random') ?></strong>
+              <?= gettext('Select remote server at random') ?>
             </td>
           </tr>
           <tr>
             <td><a id="help_for_resolve_retry" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Retry DNS resolution"); ?></td>
             <td>
               <input name="resolve_retry" type="checkbox" value="yes" <?= !empty($pconfig['resolve_retry']) ? 'checked="checked"' : '' ?>/>
-              <strong><?= gettext('Infinitely resolve remote server') ?></strong>
-              <div class="hidden" for="help_for_resolve_retry">
+              <?= gettext('Infinitely resolve remote server') ?>
+              <div class="hidden" data-for="help_for_resolve_retry">
                 <div><small><?=gettext("Continuously attempt to resolve the server host name. Useful when communicating with a server that is not permanently connected to the Internet"); ?></small></div>
               </div>
             </td>
@@ -754,7 +755,7 @@ $( document ).ready(function() {
             <td><a id="help_for_local_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local port");?></td>
             <td>
               <input name="local_port" type="text" class="form-control unknown" size="5" value="<?=$pconfig['local_port'];?>" />
-              <div class="hidden" for="help_for_local_port">
+              <div class="hidden" data-for="help_for_local_port">
                 <em><small><?=gettext("Set this option if you would like to bind to a specific port. Leave this blank or enter 0 for a random dynamic port."); ?></small></em>
               </div>
             </td>
@@ -771,13 +772,13 @@ $( document ).ready(function() {
             <td colspan="2"><strong><?=gettext("User Authentication Settings"); ?></strong></td>
           </tr>
           <tr>
-            <td width="22%"><a id="help_for_auth_user_pass" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("User name/pass"); ?></td>
-            <td width="78%">
+            <td style="width:22%"><a id="help_for_auth_user_pass" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("User name/pass"); ?></td>
+            <td style="width:78%">
               <div><?=gettext("Username"); ?></div>
               <div><input name="auth_user" id="auth_user" class="form-control unknown" type="text" size="20" value="<?=$pconfig['auth_user'];?>" /></div>
               <div><?=gettext("Password"); ?></div>
               <div><input name="auth_pass" id="auth_pass" type="password" class="form-control pwd" size="20" value="<?=$pconfig['auth_pass'];?>" /></div>
-              <div class="hidden" for="help_for_auth_user_pass">
+              <div class="hidden" data-for="help_for_auth_user_pass">
                 <?=gettext("Leave empty when no user name and password are needed."); ?>
               </div>
               <br/>
@@ -787,7 +788,7 @@ $( document ).ready(function() {
             <td><a id="help_for_reneg-sec" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Renegotiate time"); ?></td>
             <td>
               <input type="text" name="reneg-sec" value="<?=$pconfig['reneg-sec'];?>">
-              <div class="hidden" for="help_for_reneg-sec">
+              <div class="hidden" data-for="help_for_reneg-sec">
                 <?= gettext('Renegotiate data channel key after n seconds (default=3600). Set to 0 to disable.') ?>
               </div>
             </td>
@@ -801,8 +802,8 @@ $( document ).ready(function() {
          <div class="table-responsive">
           <table class="table table-striped opnsense_standard_table_form">
           <tr>
-            <td width="22%"><strong><?=gettext("Cryptographic Settings"); ?></strong></td>
-            <td width="78%"></td>
+            <td style="width:22%"><strong><?=gettext("Cryptographic Settings"); ?></strong></td>
+            <td style="width:78%"></td>
           </tr>
           <tr class="tls_option">
             <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("TLS Authentication"); ?></td>
@@ -934,7 +935,7 @@ $( document ).ready(function() {
 <?php
               endforeach; ?>
               </select>
-              <div class="hidden" for="help_for_digest">
+              <div class="hidden" data-for="help_for_digest">
                 <?=gettext("NOTE: Leave this set to SHA1 unless the server is set to match. SHA1 is the default for OpenVPN."); ?>
               </div>
             </td>
@@ -968,10 +969,10 @@ $( document ).ready(function() {
             <td colspan="2"><strong><?=gettext("Tunnel Settings"); ?></strong></td>
           </tr>
           <tr>
-            <td width="22%"><a id="help_for_tunnel_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Tunnel Network"); ?></td>
-            <td width="78%">
+            <td style="width:22%"><a id="help_for_tunnel_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Tunnel Network"); ?></td>
+            <td style="width:78%">
               <input name="tunnel_network" type="text" class="form-control unknown" size="20" value="<?=$pconfig['tunnel_network'];?>" />
-              <div class="hidden" for="help_for_tunnel_network">
+              <div class="hidden" data-for="help_for_tunnel_network">
                 <?=gettext("This is the IPv4 virtual network used for private " .
                                 "communications between this client and the " .
                                 "server expressed using CIDR (eg. 10.0.8.0/24). " .
@@ -986,7 +987,7 @@ $( document ).ready(function() {
             <td><a id="help_for_tunnel_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Tunnel Network"); ?></td>
             <td>
               <input name="tunnel_networkv6" type="text" class="form-control unknown" size="20" value="<?=$pconfig['tunnel_networkv6'];?>" />
-              <div class="hidden" for="help_for_tunnel_networkv6">
+              <div class="hidden" data-for="help_for_tunnel_networkv6">
                 <?=gettext("This is the IPv6 virtual network used for private " .
                                 "communications between this client and the " .
                                 "server expressed using CIDR (eg. fe80::/64). " .
@@ -1001,7 +1002,7 @@ $( document ).ready(function() {
             <td><a id="help_for_remote_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Remote Network"); ?></td>
             <td>
               <input name="remote_network" type="text" class="form-control unknown" size="40" value="<?=$pconfig['remote_network'];?>" />
-              <div class="hidden" for="help_for_remote_network">
+              <div class="hidden" data-for="help_for_remote_network">
                 <?=gettext("These are the IPv4 networks that will be routed through " .
                                 "the tunnel, so that a site-to-site VPN can be " .
                                 "established without manually changing the routing tables. " .
@@ -1016,7 +1017,7 @@ $( document ).ready(function() {
             <td><a id="help_for_remote_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Remote Network"); ?></td>
             <td>
               <input name="remote_networkv6" type="text" class="form-control unknown" size="40" value="<?=$pconfig['remote_networkv6'];?>" />
-              <div class="hidden" for="help_for_remote_networkv6">
+              <div class="hidden" data-for="help_for_remote_networkv6">
                 <?=gettext("These are the IPv6 networks that will be routed through " .
                                 "the tunnel, so that a site-to-site VPN can be " .
                                 "established without manually changing the routing tables. " .
@@ -1031,7 +1032,7 @@ $( document ).ready(function() {
             <td><a id="help_for_use_shaper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Limit outgoing bandwidth");?></td>
             <td>
               <input name="use_shaper" type="text" class="form-control unknown" size="5" value="<?=$pconfig['use_shaper'];?>" />
-              <div class="hidden" for="help_for_use_shaper">
+              <div class="hidden" data-for="help_for_use_shaper">
                 <?=gettext("Maximum outgoing bandwidth for this tunnel. " .
                                 "Leave empty for no limit. The input value has " .
                                 "to be something between 100 bytes/sec and 100 " .
@@ -1044,7 +1045,7 @@ $( document ).ready(function() {
             <td>
               <select name="compression" class="form-control">
                 <?php
-                                foreach ($openvpn_compression_modes as $cmode => $cmodedesc) :
+                                foreach (openvpn_compression_modes() as $cmode => $cmodedesc):
                                     $selected = "";
                                     if ($cmode == $pconfig['compression']) {
                                         $selected = " selected=\"selected\"";
@@ -1054,7 +1055,7 @@ $( document ).ready(function() {
                 <?php
                                 endforeach; ?>
               </select>
-              <div class="hidden" for="help_for_compression">
+              <div class="hidden" data-for="help_for_compression">
                 <?=gettext("Compress tunnel packets using the LZO algorithm. Adaptive compression will dynamically disable compression for a period of time if OpenVPN detects that the data in the packets is not being compressed efficiently."); ?>
               </div>
             </td>
@@ -1063,7 +1064,7 @@ $( document ).ready(function() {
             <td><a id="help_for_passtos" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type-of-Service"); ?></td>
             <td>
               <input name="passtos" type="checkbox" value="yes" <?=!empty($pconfig['passtos']) ? "checked=\"checked\"" : "" ;?>  />
-              <div class="hidden" for="help_for_passtos">
+              <div class="hidden" data-for="help_for_passtos">
                 <?=gettext("Set the TOS IP header value of tunnel packets to match the encapsulated packet value"); ?>.
               </div>
             </td>
@@ -1072,7 +1073,7 @@ $( document ).ready(function() {
             <td><a id="help_for_no_tun_ipv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable IPv6"); ?></td>
             <td>
               <input name="no_tun_ipv6" type="checkbox" value="yes" <?=!empty($pconfig['no_tun_ipv6']) ? "checked=\"checked\"" : "" ;?> />
-              <div class="hidden" for="help_for_no_tun_ipv6">
+              <div class="hidden" data-for="help_for_no_tun_ipv6">
                 <?=gettext("Don't forward IPv6 traffic"); ?>.
               </div>
             </td>
@@ -1081,7 +1082,7 @@ $( document ).ready(function() {
             <td><a id="help_for_route_no_pull" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Don't pull routes"); ?></td>
             <td>
               <input name="route_no_pull" type="checkbox" value="yes" <?=!empty($pconfig['route_no_pull']) ? "checked=\"checked\"" : "" ;?> />
-              <div class="hidden" for="help_for_route_no_pull">
+              <div class="hidden" data-for="help_for_route_no_pull">
                 <?=sprintf(gettext("Don't add or remove routes automatically. Instead pass routes to %s--route-up%s script using environmental variables"),'<strong>','</strong>') ?>.
               </div>
             </td>
@@ -1090,7 +1091,7 @@ $( document ).ready(function() {
             <td><a id="help_for_route_no_exec" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Don't add/remove routes"); ?></td>
             <td>
               <input name="route_no_exec" type="checkbox" value="yes" <?=!empty($pconfig['route_no_exec']) ? "checked=\"checked\"" : "" ;?> />
-              <div class="hidden" for="help_for_route_no_exec">
+              <div class="hidden" data-for="help_for_route_no_exec">
                 <?=gettext("This option effectively bars the server from adding routes to the client's routing table, however note that this option still allows the server to set the TCP/IP properties of the client's TUN/TAP interface"); ?>.
               </div>
             </td>
@@ -1107,10 +1108,10 @@ $( document ).ready(function() {
             <td colspan="2"><strong><?=gettext("Advanced configuration"); ?></strong></td>
           </tr>
           <tr>
-            <td width="22%"><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
-            <td width="78%">
-              <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
-              <div class="hidden" for="help_for_custom_options">
+            <td style="width:22%"><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
+            <td style="width:78%">
+              <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
+              <div class="hidden" data-for="help_for_custom_options">
                 <?=gettext("Enter any additional options you would like to add to the configuration file here."); ?>
               </div>
             </td>
@@ -1120,7 +1121,7 @@ $( document ).ready(function() {
               <td>
               <select name="verbosity_level" class="form-control">
               <?php
-                            foreach ($openvpn_verbosity_level as $verb_value => $verb_desc) :
+                            foreach (openvpn_verbosity_level() as $verb_value => $verb_desc):
                                 $selected = '';
                                 if ($pconfig['verbosity_level'] == $verb_value) {
                                     $selected = 'selected="selected"';
@@ -1129,7 +1130,7 @@ $( document ).ready(function() {
                             <option value="<?=$verb_value; ?>" <?=$selected; ?>><?=$verb_desc;?></option>
               <?php endforeach; ?>
               </select>
-              <div class="hidden" for="help_for_verbosity_level">
+              <div class="hidden" data-for="help_for_verbosity_level">
                 <?=gettext("Each level shows all info from the previous levels. Level 3 is recommended if you want a good summary of what's happening without being swamped by output.") ?> <br /> <br />
                 <?=sprintf(gettext("%snone%s -- No output except fatal errors."),'<strong>','</strong>') ?> <br />
                 <?=sprintf(gettext("%sdefault%s-%s4%s -- Normal usage range."),'<strong>','</strong>','<strong>','</strong>'); ?> <br />
@@ -1148,7 +1149,7 @@ $( document ).ready(function() {
         <table class="table table-striped opnsense_standard_table_form">
           <tr>
             <td>&nbsp;</td>
-            <td width="78%">
+            <td style="width:78%">
               <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
               <input name="act" type="hidden" value="<?=$act;?>" />
 <?php
@@ -1194,8 +1195,8 @@ $( document ).ready(function() {
                 <td>
                   <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
                   &nbsp;
-                  <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($client['disable'])) ? gettext("disable") : gettext("enable");?>">
-                    <span class="glyphicon glyphicon-play <?=(empty($client['disable'])) ? "text-success" : "text-muted";?>"></span>
+                  <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($client['disable'])) ? gettext("Disable") : gettext("Enable");?>">
+                    <span class="fa fa-play <?=(empty($client['disable'])) ? "text-success" : "text-muted";?>"></span>
                   </a>
                 </td>
                 <td><?= htmlspecialchars($client['protocol']) ?></td>

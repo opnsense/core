@@ -162,7 +162,7 @@ include("head.inc");
 
 <body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
     // remove group
     $(".act-del-group").click(function(event){
@@ -241,7 +241,7 @@ $( document ).ready(function() {
                 <td><a id="help_for_desc" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
                 <td>
                   <input name="description" type="text" value="<?=$pconfig['description'];?>" />
-                  <div class="hidden" for="help_for_desc">
+                  <div class="hidden" data-for="help_for_desc">
                     <?=gettext("Group description, for your own information only");?>
                   </div>
                 </td>
@@ -249,7 +249,7 @@ $( document ).ready(function() {
               <tr>
                 <td><a id="help_for_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Group Memberships");?></td>
                 <td>
-                  <table class="table" width="100%" border="0" cellpadding="0" cellspacing="0">
+                  <table class="table" style="width:100%; border:0; cellpadding:0; cellspacing:0">
                     <thead>
                       <tr>
                         <th><?=gettext("Not Member Of"); ?></th>
@@ -302,7 +302,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                   </table>
-                  <div class="hidden" for="help_for_groups">
+                  <div class="hidden" data-for="help_for_groups">
                       <?=gettext("Hold down CTRL (pc)/COMMAND (mac) key to select multiple items");?>
                   </div>
                 </td>
