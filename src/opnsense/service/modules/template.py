@@ -43,6 +43,7 @@ import addons.template_helpers
 
 __author__ = 'Ad Schellevis'
 
+
 class Template(object):
     def __init__(self, target_root_directory="/"):
         """ constructor
@@ -95,7 +96,7 @@ class Template(object):
 
         :return: list (dict) of registered modules
         """
-        result =list()
+        result = list()
         for root, dirs, files in os.walk(self._template_dir):
             if root.count('/') > self._template_dir.count('/'):
                 module_name = root.replace(self._template_dir, '')
@@ -191,7 +192,7 @@ class Template(object):
         for fpart in filename.strip().split('/')[:-1]:
             fparts.append(fpart)
             if len(fpart) > 1:
-                tmppart = '/'.join(fparts);
+                tmppart = '/'.join(fparts)
                 if os.path.isfile(tmppart):
                     os.remove(tmppart)
                 if not os.path.exists(tmppart):
@@ -319,7 +320,6 @@ class Template(object):
                                                                                          traceback.format_exc()))
                 else:
                     raise render_exception
-
 
         return result
 

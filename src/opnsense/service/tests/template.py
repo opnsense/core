@@ -112,12 +112,12 @@ class TestTemplateMethods(unittest.TestCase):
                     for line in open(filename).read().split('\n'):
                         line = line.strip()
                         if len(line) > 1 and line[0] != '#' and line.find('[') == -1:
-                            expected_filename = ('%s%s'%(self.output_path, line.split(':')[-1])).replace('//', '/')
+                            expected_filename = ('%s%s' % (self.output_path, line.split(':')[-1])).replace('//', '/')
                             self.expected_filenames[expected_filename] = {'src': filename}
 
         for filename in self.tmpl.generate('*'):
             self.generated_filenames.append(filename.replace('//', '/'))
 
-        for expected_filename in self.expected_filenames :
+        for expected_filename in self.expected_filenames:
             message = 'missing %s (%s' % (expected_filename, self.expected_filenames[expected_filename]['src'])
             self.assertIn(expected_filename, self.generated_filenames, message)

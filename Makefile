@@ -331,7 +331,7 @@ style-fix: want-php${CORE_PHP}-pear-PHP_CodeSniffer
 .endfor
 
 style-python: want-py${CORE_PYTHON}-pycodestyle
-	@pycodestyle ${.CURDIR}/src || true
+	@pycodestyle --ignore=E501 ${.CURDIR}/src || true
 
 license: want-p5-File-Slurp
 	@${.CURDIR}/Scripts/license > ${.CURDIR}/LICENSE
