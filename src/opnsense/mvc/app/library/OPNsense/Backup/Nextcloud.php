@@ -118,7 +118,8 @@ class Nextcloud extends Base implements IBackupProvider
      * perform backup
      * @return array filelist
      */
-    function backup() {
+    function backup()
+    {
         $cnf = Config::getInstance();
         $nextcloud = new NextcloudSettings();
         if ($cnf->isValid() && !empty((string)$nextcloud->enabled)) {
@@ -145,11 +146,12 @@ class Nextcloud extends Base implements IBackupProvider
                     $password,
                     $backupdir,
                     $configname,
-                    $confdata_enc);
+                    $confdata_enc
+                );
                 // do not list directories
                 return array_filter(
                     $this->listFiles($url, $username, $password, "/$backupdir/", false),
-                    function ($filename){
+                    function ($filename) {
                         return (substr($filename, -1) !== '/');
                     }
                 );
@@ -169,28 +171,28 @@ class Nextcloud extends Base implements IBackupProvider
      * @return array
      * @throws \Exception
      */
-    public function listFiles($url, $username, $password, $directory = '/', $only_dirs=true) {
+    public function listFiles($url, $username, $password, $directory = '/', $only_dirs = true)
+    {
         $result = $this->curl_request(
             "$url/remote.php/dav/files/$username$directory",
             $username,
             $password,
             'PROPFIND',
-            "Error while fetching filelist from Nextcloud");
+            "Error while fetching filelist from Nextcloud"
+        );
         // workaround - simplexml seems to be broken when using namespaces - remove them.
-        $xml = simplexml_load_string(str_replace( ['<d:', '</d:'], ['<', '</'] , $result['response']));
+        $xml = simplexml_load_string(str_replace(['<d:', '</d:'], ['<', '</'], $result['response']));
         $ret = array();
-        foreach ($xml->children() as $response)
-        {
+        foreach ($xml->children() as $response) {
             // d:response
             if ($response->getName() == 'response') {
                 $fileurl =  (string)$response->href;
-                $dirname = explode( "/remote.php/dav/files/$username", $fileurl,2)[1];
+                $dirname = explode("/remote.php/dav/files/$username", $fileurl, 2)[1];
                 if ($response->propstat->prop->resourcetype->children()->count() > 0 &&
                     $response->propstat->prop->resourcetype->children()[0]->getName() == 'collection' &&
-                    $only_dirs)
-                {
+                    $only_dirs) {
                     $ret[] = $dirname;
-                } elseif(!$only_dirs) {
+                } elseif (!$only_dirs) {
                     $ret[] = $dirname;
                 }
             }
@@ -208,7 +210,8 @@ class Nextcloud extends Base implements IBackupProvider
      * @param string $local_file_content contents to save
      * @throws \Exception when upload fails
      */
-    public function upload_file_content($url, $username, $password, $backupdir, $filename, $local_file_content) {
+    public function upload_file_content($url, $username, $password, $backupdir, $filename, $local_file_content)
+    {
         $this->curl_request(
             $url . "/remote.php/dav/files/$username/$backupdir/$filename",
             $username,
@@ -216,7 +219,7 @@ class Nextcloud extends Base implements IBackupProvider
             'PUT',
             'cannot execute PUT',
             $local_file_content
-            );
+        );
     }
 
     /**
@@ -227,12 +230,15 @@ class Nextcloud extends Base implements IBackupProvider
      * @param string $backupdir remote directory
      * @throws \Exception when create dir fails
      */
-    public function create_directory($url, $username, $password, $backupdir) {
-        $this->curl_request($url . "/remote.php/dav/files/$username/$backupdir",
+    public function create_directory($url, $username, $password, $backupdir)
+    {
+        $this->curl_request(
+            $url . "/remote.php/dav/files/$username/$backupdir",
             $username,
             $password,
             'MKCOL',
-            'cannot execute MKCOL');
+            'cannot execute MKCOL'
+        );
     }
 
     /**
@@ -245,7 +251,8 @@ class Nextcloud extends Base implements IBackupProvider
      * @return array response status
      * @throws \Exception when request fails
      */
-    public function curl_request($url, $username, $password, $method, $error_message, $postdata = null) {
+    public function curl_request($url, $username, $password, $method, $error_message, $postdata = null)
+    {
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => $url,
@@ -268,7 +275,7 @@ class Nextcloud extends Base implements IBackupProvider
         $info = curl_getinfo($curl);
         if (!($info['http_code'] == 200 || $info['http_code'] == 207 || $info['http_code'] == 201) || $err) {
             syslog(LOG_ERR, $error_message);
-            syslog(LOG_ERR,json_encode($info));
+            syslog(LOG_ERR, json_encode($info));
             throw new \Exception();
         }
         curl_close($curl);
