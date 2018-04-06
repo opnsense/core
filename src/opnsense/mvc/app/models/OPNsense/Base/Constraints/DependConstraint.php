@@ -41,7 +41,7 @@ class DependConstraint extends BaseConstraint
     private function isEmpty($node)
     {
         $node_class = get_class($node);
-        if ( $node_class == "OPNsense\Base\FieldTypes\BooleanField") {
+        if ($node_class == "OPNsense\Base\FieldTypes\BooleanField") {
             return empty((string)$node);
         } elseif (empty((string)$node) || (string)$node == "0") {
             return true;
