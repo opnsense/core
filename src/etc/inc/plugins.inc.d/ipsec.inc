@@ -99,18 +99,6 @@ $p2_protos = array(
     'ah' => 'AH'
 );
 
-$p2_pfskeygroups = array(
-    0 => 'off',
-    1  => '1 (768 bit)',
-    2  => '2 (1024 bit)',
-    5  => '5 (1536 bit)',
-    14 => '14 (2048 bit)',
-    15 => '15 (3072 bit)',
-    16 => '16 (4096 bit)',
-    17 => '17 (6144 bit)',
-    18 => '18 (8192 bit)'
-);
-
 function ipsec_configure()
 {
     return array(

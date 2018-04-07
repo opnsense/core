@@ -186,6 +186,22 @@ legacy_html_escape_form_data($a_phase2);
 $service_hook = 'ipsec';
 
 include("head.inc");
+$dhgroups = array(
+  1  => '1 (768&nbsp;bits)',
+  2  => '2 (1024&nbsp;bits)',
+  5  => '5 (1536&nbsp;bits)',
+  14 => '14 (2048&nbsp;bits)',
+  15 => '15 (3072&nbsp;bits)',
+  16 => '16 (4096&nbsp;bits)',
+  17 => '17 (6144&nbsp;bits)',
+  18 => '18 (8192&nbsp;bits)',
+  19 => '19 (256&nbsp;bit&nbsp;elliptic&nbsp;curve)',
+  20 => '20 (384&nbsp;bit&nbsp;elliptic&nbsp;curve)',
+  21 => '21 (521&nbsp;bit&nbsp;elliptic&nbsp;curve)',
+  22 => '22 (1024(sub 160)&nbsp;bits)',
+  23 => '23 (2048(sub 224)&nbsp;bits)',
+  24 => '24 (2048(sub 256)&nbsp;bits)'
+);
 ?>
 
 <body>
@@ -399,26 +415,7 @@ $( document ).ready(function() {
                         }?> +
 
                         <?=strtoupper($ph1ent['hash-algorithm']);?> +
-
-<?php
-                          $p1_dhgroups = array(
-                            1  => '1 (768&nbsp;bits)',
-                            2  => '2 (1024&nbsp;bits)',
-                            5  => '5 (1536&nbsp;bits)',
-                            14 => '14 (2048&nbsp;bits)',
-                            15 => '15 (3072&nbsp;bits)',
-                            16 => '16 (4096&nbsp;bits)',
-                            17 => '17 (6144&nbsp;bits)',
-                            18 => '18 (8192&nbsp;bits)',
-                            19 => '19 (256&nbsp;bit&nbsp;elliptic&nbsp;curve)',
-                            20 => '20 (384&nbsp;bit&nbsp;elliptic&nbsp;curve)',
-                            21 => '21 (521&nbsp;bit&nbsp;elliptic&nbsp;curve)',
-                            22 => '22 (1024(sub 160)&nbsp;bits)',
-                            23 => '23 (2048(sub 224)&nbsp;bits)',
-                            24 => '24 (2048(sub 256)&nbsp;bits)'
-                          );
-?>
-                          <?=gettext("DH Group"); ?>&nbsp;<?=$p1_dhgroups[$ph1ent['dhgroup']];?>
+                          <?=gettext("DH Group"); ?>&nbsp;<?=$dhgroups[$ph1ent['dhgroup']];?>
                       </td>
                       <td class="hidden-xs">
                           <?= html_safe($p1_authentication_methods[$ph1ent['authentication_method']]['name']) ?>
@@ -548,7 +545,7 @@ $( document ).ready(function() {
                                 </td>
 <?php
                                 if (isset($ph2ent['pfsgroup'])): ?>
-                                <td class="hidden-xs"><?=gettext("Group"); ?> <?=$p2_pfskeygroups[$ph2ent['pfsgroup']];?> </td>
+                                <td class="hidden-xs"><?=gettext("Group"); ?> <?=$dhgroups[$ph2ent['pfsgroup']];?> </td>
 <?php
                                 else: ?>
                                 <td class="hidden-xs"><?=gettext("off"); ?></td>

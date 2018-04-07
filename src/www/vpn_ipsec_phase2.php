@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // initialize form data
     $pconfig = array();
 
-    $phase2_fields = "ikeid,mode,descr,uniqid,proto,hash-algorithm-option,pfsgroup,pfsgroup,lifetime,pinghost,protocol,spd";
+    $phase2_fields = "ikeid,mode,descr,uniqid,proto,hash-algorithm-option,pfsgroup,lifetime,pinghost,protocol,spd";
     if ($p2index !== null) {
         // 1-on-1 copy
         foreach (explode(",", $phase2_fields) as $fieldname) {
@@ -673,7 +673,24 @@ endif; ?>
                   if (!isset($pconfig['mobile']) || !isset($config['ipsec']['client']['pfs_group'])) :?>
                     <select name="pfsgroup">
 <?php
-                    foreach ($p2_pfskeygroups as $keygroup => $keygroupname) :?>
+                    $p2_dhgroups = array(
+                      1  => '1 (768 bit)',
+                      2  => '2 (1024 bit)',
+                      5  => '5 (1536 bit)',
+                      14 => '14 (2048 bit)',
+                      15 => '15 (3072 bit)',
+                      16 => '16 (4096 bit)',
+                      17 => '17 (6144 bit)',
+                      18 => '18 (8192 bit)',
+                      19 => '19 (256 bit elliptic curve)',
+                      20 => '20 (384 bit elliptic curve)',
+                      21 => '21 (521 bit elliptic curve)',
+                      22 => '22 (1024(sub 160) bit)',
+                      23 => '23 (2048(sub 224) bit)',
+                      24 => '24 (2048(sub 256) bit)'
+                    );
+
+                    foreach ($p2_dhgroups as $keygroup => $keygroupname) :?>
                       <option value="<?=$keygroup;?>" <?= $keygroup == $pconfig['pfsgroup'] ? "selected=\"selected\"" : "";?>>
                         <?=$keygroupname;?>
                       </option>
