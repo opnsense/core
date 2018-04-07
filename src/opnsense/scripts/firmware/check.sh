@@ -175,7 +175,7 @@ if [ "$pkg_running" == "" ]; then
                     else
                       i=`echo $i | tr -d :`
                       if [ "$packages_upgraded" == "" ]; then
-                        if [ "$i" = "pkg" ]; then
+                        if [ "$i" = "pkg" ]; then
                           # prevents leaking base / kernel advertising here
                           pkg_upgraded="yes"
                         fi
