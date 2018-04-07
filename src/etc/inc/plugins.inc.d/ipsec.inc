@@ -1489,7 +1489,9 @@ EOD;
                             // name from the first configured tunnel ($idx == 0):
                             $conn_suffix = $idx ? sprintf('-%03d', $idx) : '';
                             $tmpconf[] = "conn con{$ph1ent['ikeid']}{$conn_suffix}";
-                            $tmpconf[] = "\trightsubnet = {$rightsubnet_spec[$idx]}";
+                            if (!empty($rightsubnet_spec[$idx])) {
+                                $tmpconf[] = "\trightsubnet = {$rightsubnet_spec[$idx]}";
+                            }
                             $tmpconf[] = "\tleftsubnet = {$leftsubnet_spec[$idx]}";
                             if (!empty($ealgoESPsp2arr[$idx])) {
                                 $tmpconf[] = "\tesp = " . join(',', $ealgoESPsp2arr[$idx]) . '!';
