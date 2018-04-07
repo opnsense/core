@@ -1330,8 +1330,6 @@ EOD;
                             if (!isset($ph2ent['mobile'])) {
                                 $tmpsubnet = ipsec_idinfo_to_cidr($ph2ent['remoteid'], false, $ph2ent['mode']);
                                 $rightsubnet_spec[] = $tmpsubnet;
-                            } elseif (!empty($a_client['pool_address'])) {
-                                $rightsubnet_spec[] = "{$a_client['pool_address']}/{$a_client['pool_netbits']}";
                             }
                         } else {
                             $tunneltype = "type = transport";
