@@ -504,8 +504,24 @@ endfor; ?>
                         <input name="pfs_group_enable" type="checkbox" id="pfs_group_enable" value="yes" <?= !empty($pconfig['pfs_group']) ? "checked=\"checked\"" : "";?>  onclick="pfs_group_change()" />
 
                         <select name="pfs_group" class="form-control" id="pfs_group">
-<?php                     foreach ($p2_pfskeygroups as $keygroup => $keygroupname) :
-?>
+<?php
+                        $p2_dhgroups = array(
+                          1  => '1 (768 bit)',
+                          2  => '2 (1024 bit)',
+                          5  => '5 (1536 bit)',
+                          14 => '14 (2048 bit)',
+                          15 => '15 (3072 bit)',
+                          16 => '16 (4096 bit)',
+                          17 => '17 (6144 bit)',
+                          18 => '18 (8192 bit)',
+                          19 => '19 (256 bit elliptic curve)',
+                          20 => '20 (384 bit elliptic curve)',
+                          21 => '21 (521 bit elliptic curve)',
+                          22 => '22 (1024(sub 160) bit)',
+                          23 => '23 (2048(sub 224) bit)',
+                          24 => '24 (2048(sub 256) bit)'
+                        );
+                        foreach ($p2_dhgroups as $keygroup => $keygroupname) :?>
                           <option value="<?=$keygroup;
 ?>" <?= $pconfig['pfs_group'] == $keygroup ? "selected=\"selected\"" : "" ; ?>>
                             <?=$keygroupname;?>
