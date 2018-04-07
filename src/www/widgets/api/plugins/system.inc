@@ -79,7 +79,7 @@ function system_api_kernel()
     $result = array();
 
     $result['pf'] = array();
-    $result['pf']['maxstates'] = !empty($config['system']['maximumstates']) ? $config['system']['maximumstates'] : default_state_size();
+    $result['pf']['maxstates'] = !empty($config['system']['maximumstates']) ? $config['system']['maximumstates'] : state_size('active');
     exec('/sbin/pfctl -si |grep "current entries" 2>/dev/null', $states);
     $result['pf']['states'] = count($states) >  0 ? filter_var($states[0], FILTER_SANITIZE_NUMBER_INT) : 0;
 
