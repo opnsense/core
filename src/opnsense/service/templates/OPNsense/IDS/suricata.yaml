@@ -240,6 +240,7 @@ outputs:
   # a line based alerts log similar to fast.log into syslog
   - syslog:
       enabled: {% if helpers.exists('OPNsense.IDS.general.syslog') and OPNsense.IDS.general.syslog|default('0') == '0' %}no{% else %}yes{% endif %}
+
       # reported identity to syslog. If ommited the program name (usually
       # suricata) will be used.
       #identity: "suricata"
@@ -750,8 +751,7 @@ logging:
   - console:
       enabled: no
   - syslog:
-      enabled: {% if helpers.exists('OPNsense.IDS.general.syslog') and OPNsense.IDS.general.syslog|default('0') == '0' %}no{% else %}yes{% endif %}
-
+      enabled: yes
       facility: local5
       format: "[%i] <%d> -- "
 

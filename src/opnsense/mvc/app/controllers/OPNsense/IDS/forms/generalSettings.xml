@@ -19,9 +19,9 @@
     </field>
     <field>
         <id>ids.general.syslog</id>
-        <label>Enable syslog</label>
+        <label>Enable syslog alerts</label>
         <type>checkbox</type>
-        <help><![CDATA[Enable syslog, sends alerts (in fast log format) and messages to syslog. This won't change the alert logging used by the product itself.]]></help>
+        <help><![CDATA[Send alerts to system log in fast log format. This will not change the alert logging used by the product itself.]]></help>
     </field>
     <field>
         <id>ids.general.MPMAlgo</id>
