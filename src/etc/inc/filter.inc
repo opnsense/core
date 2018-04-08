@@ -364,7 +364,7 @@ function filter_configure_sync($verbose = false)
         $limitrules .= "set limit table-entries {$config['system']['maximumtableentries']}\n";
     } elseif (is_bogonsv6_used()) {
         $max_table_entries = default_table_entries_size();
-        if ($max_table_entries < 500000) {
+        if ($max_table_entries <= 500000) {
             $limitrules .= "set limit table-entries 500000\n";
         }
     }
