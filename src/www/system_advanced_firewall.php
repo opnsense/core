@@ -33,12 +33,6 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("system.inc");
 
-function default_table_entries_size()
-{
-    $current = `pfctl -sm | grep table-entries | awk '{print $4};'`;
-    return $current;
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['ipv6allow'] = isset($config['system']['ipv6allow']);
@@ -600,7 +594,7 @@ include("head.inc");
                 <td>
                   <input name="maximumtableentries" type="text" id="maximumtableentries" value="<?= html_safe($pconfig['maximumtableentries']) ?>"/>
                   <div class="hidden" data-for="help_for_maximumtableentries">
-                    <?=gettext("Maximum number of table entries for systems such as aliases, sshlockout, snort, etc, combined.");?><br/>
+                    <?= gettext('Maximum number of table entries for systems such as aliases, sshlockout, bogons, etc, combined.') ?><br/>
                     <?=gettext("Note: Leave this blank for the default.");?>
 <?php
                      if (empty($pconfig['maximumtableentries'])) :?>
