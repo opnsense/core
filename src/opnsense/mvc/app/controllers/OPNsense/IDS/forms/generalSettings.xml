@@ -18,12 +18,6 @@
         <help><![CDATA[Enable promiscuous mode, for certain setups (like IPS with vlans), this is required to actually capture data on the physical interface.]]></help>
     </field>
     <field>
-        <id>ids.general.syslog</id>
-        <label>Enable syslog</label>
-        <type>checkbox</type>
-        <help><![CDATA[Enable syslog, sends alerts (in fast log format) and messages to syslog. This won't change the alert logging used by the product itself.]]></help>
-    </field>
-    <field>
         <id>ids.general.MPMAlgo</id>
         <label>Pattern matcher</label>
         <type>dropdown</type>
