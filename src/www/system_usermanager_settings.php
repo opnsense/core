@@ -167,8 +167,10 @@ endif;?>
                   <tr>
                     <td><a id="help_for_enable_password_policy_constraints" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Policy'); ?></td>
                     <td>
-                      <input id="enable_password_policy_constraints" name="enable_password_policy_constraints" type="checkbox"  <?= empty($pconfig['enable_password_policy_constraints']) ? '' : 'checked="checked"';?> />
-                      <strong><?= gettext('Enable password policy constraints') ?></strong>
+                      <label for="enable_password_policy_constraints">
+                        <input id="enable_password_policy_constraints" name="enable_password_policy_constraints" type="checkbox"  <?= empty($pconfig['enable_password_policy_constraints']) ? '' : 'checked="checked"';?> />
+                        <strong><?= gettext('Enable password policy constraints') ?></strong>
+                      </label>
                       <div class="hidden" data-for="help_for_enable_password_policy_constraints">
                         <?= gettext("Harden security on local accounts, for methods other then local these will usually be configured on the " .
                                             "respective provider (e.g. ldap/radius/..). ");?>
@@ -209,8 +211,10 @@ endif;?>
                   <tr class="password_policy_constraints">
                     <td><a id="help_for_password_policy_complexity" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Complexity'); ?></td>
                     <td>
-                      <input id="password_policy_complexity" name="password_policy_complexity" type="checkbox"  <?= empty($pconfig['password_policy_complexity']) ? '' : 'checked="checked"';?> />
-                      <strong><?= gettext('Enable complexity requirements') ?></strong>
+                      <label for="password_policy_complexity">
+                        <input id="password_policy_complexity" name="password_policy_complexity" type="checkbox"  <?= empty($pconfig['password_policy_complexity']) ? '' : 'checked="checked"';?> />
+                        <strong><?= gettext('Enable complexity requirements') ?></strong>
+                      </label>
                       <div class="hidden" data-for="help_for_password_policy_complexity">
                         <?= gettext("Require passwords to meet complexity rules");?>
                       </div>

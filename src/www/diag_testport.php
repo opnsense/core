@@ -176,7 +176,9 @@ include("head.inc"); ?>
                     <tr>
                       <td><a id="help_for_showtext" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Show Remote Text"); ?></td>
                       <td>
-                        <input name="showtext" type="checkbox" id="showtext" <?= !empty($pconfig['showtext']) ? "checked=\"checked\"" : "";?> />
+                        <label for="showtext">
+                          <input name="showtext" type="checkbox" id="showtext" <?= !empty($pconfig['showtext']) ? "checked=\"checked\"" : "";?> />
+                        </label>
                         <div class="hidden" data-for="help_for_showtext">
                           <?=gettext("Shows the text given by the server when connecting to the port. Will take 10+ seconds to display if checked."); ?>
                         </div>

@@ -704,8 +704,10 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                     <td>
-                      <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
-                      <strong><?=gettext("Disable this rule"); ?></strong>
+                      <label for="disabled">
+                        <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                        <strong><?=gettext("Disable this rule"); ?></strong>
+                      </label>
                       <div class="hidden" data-for="help_for_disabled">
                         <?=gettext("Set this option to disable this rule without removing it from the list."); ?>
                       </div>
@@ -717,8 +719,10 @@ include("head.inc");
                     <td><a id="help_for_quick" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Quick");?>
                     </td>
                     <td>
-                      <input name="quick" type="checkbox" id="quick" value="yes" <?php if ($pconfig['quick']) echo "checked=\"checked\""; ?> />
-                      <strong><?=gettext("Apply the action immediately on match.");?></strong>
+                      <label for="quick">
+                        <input name="quick" type="checkbox" id="quick" value="yes" <?php if ($pconfig['quick']) echo "checked=\"checked\""; ?> />
+                        <strong><?=gettext("Apply the action immediately on match.");?></strong>
+                      </label>
                       <div class="hidden" data-for="help_for_quick">
                         <?=gettext("Set this option if you need to apply this action to traffic that matches this rule immediately.");?>
                       </div>
@@ -874,7 +878,9 @@ include("head.inc");
                   <tr>
                     <td> <a id="help_for_src_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
                     <td>
-                      <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  name="srcnot" type="checkbox" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" : "";?> />
+                      <label for="srcnot">
+                        <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  name="srcnot" id="srcnot" type="checkbox" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" : "";?> />
+                      </label>
                       <div class="hidden" data-for="help_for_src_invert">
                         <?=gettext("Use this option to invert the sense of the match."); ?>
                       </div>
@@ -1004,7 +1010,9 @@ include("head.inc");
                   <tr>
                     <td> <a id="help_for_dst_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
                     <td>
-                      <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="dstnot" type="checkbox" id="srcnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
+                      <label for="dstnot">
+                        <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="dstnot" id="dstnot" type="checkbox" id="srcnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
+                      </label>
                       <div class="hidden" data-for="help_for_dst_invert">
                         <?=gettext("Use this option to invert the sense of the match."); ?>
                       </div>
@@ -1122,8 +1130,10 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_log" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Log");?></td>
                     <td>
-                      <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? "checked=\"checked\"" : ""; ?> />
-                      <strong><?=gettext("Log packets that are handled by this rule");?></strong>
+                      <label for="log">
+                        <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? "checked=\"checked\"" : ""; ?> />
+                        <strong><?=gettext("Log packets that are handled by this rule");?></strong>
+                      </label>
                       <div class="hidden" data-for="help_for_log">
                         <?=sprintf(gettext("Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a %sremote syslog server%s."),'<a href="diag_logs_settings.php">','</a>') ?>
                       </div>
@@ -1183,7 +1193,9 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_nosync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("No XMLRPC Sync"); ?></td>
                     <td>
-                      <input type="checkbox" value="yes" name="nosync" <?=!empty($pconfig['nosync']) ? "checked=\"checked\"" :"";?> />
+                      <label for="nosync">
+                        <input type="checkbox" value="yes" name="nosync" id="nosync" <?=!empty($pconfig['nosync']) ? "checked=\"checked\"" :"";?> />
+                      </label>
                       <div class="hidden" data-for="help_for_nosync">
                         <?=gettext("Hint: This prevents the rule on Master from automatically syncing to other CARP members. This does NOT prevent the rule from being overwritten on Slave.");?>
                       </div>
@@ -1253,7 +1265,9 @@ include("head.inc");
                   <tr class="opt_advanced hidden">
                       <td><a id="help_for_allowopts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("allow options");?> </td>
                       <td>
-                        <input type="checkbox" value="yes" name="allowopts"<?= !empty($pconfig['allowopts']) ? " checked=\"checked\"" : ""; ?> />
+                        <label for="allowopts">
+                          <input type="checkbox" value="yes" name="allowopts" id="allowopts" <?= !empty($pconfig['allowopts']) ? "checked=\"checked\"" : ""; ?> />
+                        </label>
                         <div class="hidden" data-for="help_for_allowopts">
                           <?=gettext("This allows packets with IP options to pass. Otherwise they are blocked by default. This is usually only seen with multicast traffic.");?>
                         </div>
@@ -1262,7 +1276,9 @@ include("head.inc");
                   <tr class="opt_advanced hidden">
                       <td><a id="help_for_disable_replyto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("disable reply-to");?> </td>
                       <td>
-                        <input type="checkbox" value="yes" name="disablereplyto"<?= !empty($pconfig['disablereplyto']) ? " checked=\"checked\"" :""; ?> />
+                        <label for="disablereplyto">
+                          <input type="checkbox" value="yes" name="disablereplyto" id="disablereplyto" <?= !empty($pconfig['disablereplyto']) ? "checked=\"checked\"" :""; ?> />
+                        </label>
                         <div class="hidden" data-for="help_for_disable_replyto">
                           <?=gettext("This will disable auto generated reply-to for this rule.");?>
                         </div>
@@ -1435,8 +1451,10 @@ include("head.inc");
                         <tr>
                           <td></td>
                           <td colspan="10">
-                            <input type='checkbox' class="input_tcpflags_any" name='tcpflags_any' value='on' <?= !empty($pconfig['tcpflags_any']) ? "checked=\"checked\"" :""; ?> />
-                            <strong><?=gettext("Any flags.");?></strong>
+                            <label for="tcpflags_any">
+                              <input type='checkbox' class="input_tcpflags_any" name='tcpflags_any' id='tcpflags_any' value='on' <?= !empty($pconfig['tcpflags_any']) ? "checked=\"checked\"" :""; ?> />
+                              <strong><?=gettext("Any flags.");?></strong>
+                            </label>
                           </td>
                         <tr>
                         </table>
@@ -1448,7 +1466,9 @@ include("head.inc");
                     <tr class="opt_advanced hidden">
                         <td><a id="help_for_nopfsync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State Type");?> / <?=gettext("NO pfsync");?> </td>
                         <td>
-                          <input name="nopfsync" type="checkbox" value="yes" <?= !empty($pconfig['nopfsync']) ? "checked=\"checked\"" : "";?> />
+                          <label for="nopfsync">
+                            <input name="nopfsync" id="nopfsync" type="checkbox" value="yes" <?= !empty($pconfig['nopfsync']) ? "checked=\"checked\"" : "";?> />
+                          </label>
                           <div class="hidden" data-for="help_for_nopfsync">
                             <?=gettext("Hint: This prevents states created by this rule to be sync'ed over pfsync.");?>
                           </div>

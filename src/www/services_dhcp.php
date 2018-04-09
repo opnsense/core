@@ -640,8 +640,10 @@ include("head.inc");
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?> </td>
                       <td>
-                        <input name="enable" id="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : ""; ?> />
-                        <strong><?= sprintf(gettext("Enable DHCP server on the %s interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));?></strong>
+                        <label for="enable">
+                          <input name="enable" id="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : ""; ?> />
+                          <strong><?= sprintf(gettext("Enable DHCP server on the %s interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));?></strong>
+                        </label>
                       </td>
                     </tr>
 <?php
@@ -660,7 +662,9 @@ include("head.inc");
                     <tr>
                       <td><a id="help_for_denyunknown" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Deny unknown clients");?></td>
                       <td>
-                        <input name="denyunknown" type="checkbox" value="yes" <?=!empty($pconfig['denyunknown']) ? "checked=\"checked\"" : ""; ?> />
+                        <label for="denyunknown">
+                          <input name="denyunknown" id="denyunknown" type="checkbox" value="yes" <?=!empty($pconfig['denyunknown']) ? "checked=\"checked\"" : ""; ?> />
+                        </label>
                         <div class="hidden" data-for="help_for_denyunknown">
                           <?=gettext("If this is checked, only the clients defined below will get DHCP leases from this server.");?>
                         </div>
@@ -842,8 +846,10 @@ include("head.inc");
                     <tr>
                       <td><a id="help_for_failover_staticarp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Static ARP");?></td>
                       <td>
-                        <input type="checkbox" value="yes" name="staticarp" <?=!empty($pconfig['staticarp']) ? " checked=\"checked\"" : ""; ?> />&nbsp;
-                        <strong><?=gettext("Enable Static ARP entries");?></strong>
+                        <label for="staticarp">
+                          <input type="checkbox" value="yes" name="staticarp" id="staticarp" <?=!empty($pconfig['staticarp']) ? " checked=\"checked\"" : ""; ?> />&nbsp;
+                          <strong><?=gettext("Enable Static ARP entries");?></strong>
+                        </label>
                         <div class="hidden" data-for="help_for_failover_staticarp">
                           <?=gettext("Warning: This option persists even if DHCP server is disabled. Only the machines listed below will be able to communicate with the firewall on this NIC.");?>
                         </div>
@@ -852,9 +858,10 @@ include("head.inc");
                     <tr>
                       <td><a id="help_for_failover_dhcpleaseinlocaltime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time format change"); ?></td>
                       <td>
-                        <input name="dhcpleaseinlocaltime" type="checkbox" id="dhcpleaseinlocaltime" value="yes" <?= !empty($pconfig['dhcpleaseinlocaltime']) ? "checked=\"checked\"" : ""; ?> />
-                        <strong><?=gettext("Change DHCP display lease time from UTC to local time."); ?></strong>
-
+                        <label for="dhcpleaseinlocaltime">
+                          <input name="dhcpleaseinlocaltime" type="checkbox" id="dhcpleaseinlocaltime" value="yes" <?= !empty($pconfig['dhcpleaseinlocaltime']) ? "checked=\"checked\"" : ""; ?> />
+                          <strong><?=gettext("Change DHCP display lease time from UTC to local time."); ?></strong>
+                        </label>
                         <div class="hidden" data-for="help_for_failover_dhcpleaseinlocaltime">
                           <?=gettext("Warning: By default DHCP leases are displayed in UTC time. By checking this " .
                           "box DHCP lease time will be displayed in local time and set to time zone selected. This " .
@@ -871,8 +878,10 @@ include("head.inc");
                         <input type="button" onclick="show_ddns_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Dynamic DNS");?>
                       </div>
                       <div id="showddns" style="display:none">
-                        <input type="checkbox" value="yes" name="ddnsupdate" <?=!empty($pconfig['ddnsupdate']) ? " checked=\"checked\"" :""; ?> />
-                        <strong><?=gettext("Enable registration of DHCP client names in DNS.");?></strong><br />
+                        <label for="ddnsupdate">
+                          <input type="checkbox" value="yes" name="ddnsupdate" id="ddnsupdate" <?=!empty($pconfig['ddnsupdate']) ? " checked=\"checked\"" :""; ?> />
+                          <strong><?=gettext("Enable registration of DHCP client names in DNS.");?></strong>
+                        </label><br />
                         <?=gettext("Enter the dynamic DNS domain which will be used to register client names in the DNS server.");?>
                         <?=gettext("Note: Leave blank to disable dynamic DNS registration.");?><br />
                         <input name="ddnsdomain" type="text" value="<?=$pconfig['ddnsdomain'];?>" />
@@ -942,8 +951,10 @@ include("head.inc");
                           <input type="button" onclick="show_netboot_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Network booting");?>
                         </div>
                         <div id="shownetboot" style="display:none">
-                          <input type="checkbox" value="yes" name="netboot" id="netboot" <?=!empty($pconfig['netboot']) ? " checked=\"checked\"" : ""; ?> />
-                          <strong><?=gettext("Enables network booting.");?></strong>
+                          <label for="netboot">
+                            <input type="checkbox" value="yes" name="netboot" id="netboot" <?=!empty($pconfig['netboot']) ? " checked=\"checked\"" : ""; ?> />
+                            <strong><?=gettext("Enables network booting.");?></strong>
+                          </label>
                           <br/><br/>
                           <?=gettext('Set next-server IP');?>
                           <input name="nextserver" type="text" id="nextserver" value="<?=$pconfig['nextserver'];?>" /><br />

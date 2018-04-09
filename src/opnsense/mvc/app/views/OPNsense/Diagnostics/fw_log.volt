@@ -212,7 +212,7 @@ POSSIBILITY OF SUCH DAMAGE.
                   <input type="text" id="filter" class="form-control" placeholder="filter">
                 </div>
                 <div class="checkbox-inline pull-right">
-                  <label>
+                  <label for="auto_refresh">
                     <input id="auto_refresh" type="checkbox" checked="checked">
                     <span class="fa fa-refresh"></span> {{ lang._('Auto refresh') }}
                   </label>

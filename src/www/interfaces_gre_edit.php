@@ -216,7 +216,9 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_link0" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Mobile tunnel");?></td>
                     <td>
-                      <input name="link0" type="checkbox" id="link0" <?= !empty($pconfig['link0']) ? "checked=\"checked\"" : "";?> />
+                      <label for="link0">
+                        <input name="link0" type="checkbox" id="link0" <?= !empty($pconfig['link0']) ? "checked=\"checked\"" : "";?> />
+                      </label>
                       <div class="hidden" data-for="help_for_link0">
                         <?=gettext("Specify which encapsulation method the tunnel should use.");?>
                       </div>
@@ -225,7 +227,9 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_link1" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Route search type");?></td>
                     <td>
-                      <input name="link1" type="checkbox" id="link1" <?= !empty($pconfig['link1']) ? "checked=\"checked\"" : "";?> />
+                      <label for="link1">
+                        <input name="link1" type="checkbox" id="link1" <?= !empty($pconfig['link1']) ? "checked=\"checked\"" : "";?> />
+                      </label>
                       <div class="hidden" data-for="help_for_link1">
                         <?=gettext("For correct operation, the GRE device needs a route to the destination ".
                        "that is less specific than the one over the tunnel. (Basically, there ".
@@ -237,7 +241,9 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_link2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WCCP version");?></td>
                     <td>
-                      <input name="link2" type="checkbox" id="link2" <?= !empty($pconfig['link2']) ? "checked=\"checked\"" : "";?> />
+                      <label for="link2">
+                        <input name="link2" type="checkbox" id="link2" <?= !empty($pconfig['link2']) ? "checked=\"checked\"" : "";?> />
+                      </label>
                       <div class="hidden" data-for="help_for_link2">
                         <?=gettext("Check this box for WCCP encapsulation version 2, or leave unchecked for version 1.");?>
                       </div>

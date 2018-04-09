@@ -430,8 +430,10 @@ include("head.inc");
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext("Enable");?></td>
                       <td>
-                        <input name="enable" type="checkbox" value="yes" <?php if ($pconfig['enable']) echo "checked=\"checked\""; ?> />
-                        <strong><?= sprintf(gettext("Enable DHCPv6 server on " . "%s " ."interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));?></strong>
+                        <label for="enable">
+                          <input name="enable" id="enable" type="checkbox" value="yes" <?php if ($pconfig['enable']) echo "checked=\"checked\""; ?> />
+                          <strong><?= sprintf(gettext("Enable DHCPv6 server on " . "%s " ."interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));?></strong>
+                        </label>
                       </td>
                     </tr>
                     <tr>
@@ -563,10 +565,10 @@ include("head.inc");
                     <tr>
                       <td><a id="help_for_dhcpv6leaseinlocaltime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time format change"); ?></td>
                       <td>
-                        <input name="dhcpv6leaseinlocaltime" type="checkbox" id="dhcpv6leaseinlocaltime" value="yes" <?=!empty($pconfig['dhcpv6leaseinlocaltime']) ? "checked=\"checked\"" : ""; ?> />
-                        <strong>
-                          <?=gettext("Change DHCPv6 display lease time from UTC to local time."); ?>
-                        </strong>
+                        <label for="dhcpv6leaseinlocaltime">
+                          <input name="dhcpv6leaseinlocaltime" type="checkbox" id="dhcpv6leaseinlocaltime" value="yes" <?=!empty($pconfig['dhcpv6leaseinlocaltime']) ? "checked=\"checked\"" : ""; ?> />
+                          <strong><?=gettext("Change DHCPv6 display lease time from UTC to local time."); ?></strong>
+                        </label>
                         <div class="hidden" data-for="help_for_dhcpv6leaseinlocaltime">
                           <?=gettext("By default DHCPv6 leases are displayed in UTC time. By checking this box DHCPv6 lease time will be displayed in local time and set to time zone selected. This will be used for all DHCPv6 interfaces lease time."); ?>
                         </div>
@@ -579,8 +581,10 @@ include("head.inc");
                           <input type="button" onclick="show_ddns_config()" value="<?=gettext("Advanced");?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Dynamic DNS");?>
                         </div>
                         <div id="showddns" style="display:none">
-                          <input type="checkbox" value="yes" name="ddnsupdate" id="ddnsupdate" <?php if($pconfig['ddnsupdate']) echo " checked=\"checked\""; ?> />&nbsp;
-                          <b><?=gettext("Enable registration of DHCP client names in DNS.");?></b><br />
+                          <label for="ddnsupdate">
+                            <input type="checkbox" value="yes" name="ddnsupdate" id="ddnsupdate" <?php if($pconfig['ddnsupdate']) echo " checked=\"checked\""; ?> />
+                            <b><?=gettext("Enable registration of DHCP client names in DNS.");?></b>
+                          </label><br />
                           <?=gettext("Note: Leave blank to disable dynamic DNS registration.");?><br />
                           <?=gettext("Enter the dynamic DNS domain which will be used to register client names in the DNS server.");?>
                           <input name="ddnsdomain" type="text" id="ddnsdomain" value="<?=$pconfig['ddnsdomain'];?>" />
@@ -624,9 +628,10 @@ include("head.inc");
                           <input type="button" onclick="show_netboot_config()" value="<?=gettext("Advanced");?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Network booting");?>
                         </div>
                         <div id="shownetboot" style="display:none">
-                          <input type="checkbox" value="yes" name="netboot" id="netboot" <?=!empty($pconfig['netboot']) ? 'checked="checked"' : ""; ?> />
-                          <b><?=gettext("Enables network booting.");?></b>
-                          <br/>
+                          <label for="netboot">
+                            <input type="checkbox" value="yes" name="netboot" id="netboot" <?=!empty($pconfig['netboot']) ? 'checked="checked"' : ""; ?> />
+                            <b><?=gettext("Enables network booting.");?></b>
+                          </label><br/>
                           <?=gettext("Enter the Bootfile URL");?>
                           <input name="bootfile_url" type="text" id="bootfile_url" value="<?=$pconfig['bootfile_url'];?>" />
                         </div>

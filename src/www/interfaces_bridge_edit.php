@@ -295,7 +295,9 @@ $(document).ready(function() {
                     <tr>
                       <td style="width:22%"><a id="help_for_enablestp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable");?></td>
                       <td style="width:78%">
-                        <input type="checkbox" name="enablestp" <?= !empty($pconfig['enablestp']) ? 'checked="checked"' : "";?> />
+                        <label for="enablestp">
+                          <input type="checkbox" name="enablestp" id="enablestp" <?= !empty($pconfig['enablestp']) ? 'checked="checked"' : "";?> />
+                        </label>
                         <div class="hidden" data-for="help_for_enablestp">
                           <?=gettext("Enable spanning tree options for this bridge."); ?>
                         </div>

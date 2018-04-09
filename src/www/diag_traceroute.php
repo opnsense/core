@@ -155,13 +155,17 @@ include("head.inc");
                     <tr>
                       <td><?=gettext("Reverse Address Lookup");?></td>
                       <td>
-                        <input name="resolve" type="checkbox"<?=!empty($pconfig['resolve']) ? " checked=\"checked\"" : ""; ?> />
+                        <label for="resolve">
+                          <input name="resolve" type="checkbox"<?=!empty($pconfig['resolve']) ? " checked=\"checked\"" : ""; ?> id="resolve" />
+                        </label>
                       </td>
                     </tr>
                     <tr>
                       <td><?=gettext("Use ICMP");?></td>
                       <td>
-                        <input name="useicmp" type="checkbox" <?=!empty($pconfig['useicmp']) ? " checked=\"checked\"" : ""; ?> />
+                        <label for="useicmp">
+                          <input name="useicmp" type="checkbox" <?=!empty($pconfig['useicmp']) ? " checked=\"checked\"" : ""; ?> id="useicmp" />
+                        </label>
                       </td>
                     </tr>
                     <tr>

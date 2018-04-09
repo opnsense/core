@@ -142,26 +142,26 @@ include("head.inc");
                         <table class="table table-condensed">
                           <tr>
                             <td>
-                              <input name="flag2" type="checkbox" <?=!empty($pconfig['flag2']) ? " checked=\"checked\"" : ""; ?> />
-                            </td>
-                            <td>
-                              <?=gettext("Enable falling edge PPS signal processing (default: rising edge)."); ?>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <input name="flag3" type="checkbox" <?=!empty($pconfig['flag3']) ? " checked=\"checked\"" : ""; ?> />
-                            </td>
-                            <td>
-                              <?=gettext("Enable kernel PPS clock discipline (default: disabled)."); ?>
+                              <label for="flag2">
+                                <input name="flag2" id="flag2" type="checkbox" <?=!empty($pconfig['flag2']) ? " checked=\"checked\"" : ""; ?> />
+                                <?=gettext("Enable falling edge PPS signal processing (default: rising edge)."); ?>
+                              </label>
                             </td>
                           </tr>
                           <tr>
                             <td>
-                              <input name="flag4" type="checkbox" <?=!empty($pconfig['flag4']) ? " checked=\"checked\"" : ""; ?> />
+                              <label for="flag3">
+                                <input name="flag3" id="flag3" type="checkbox" <?=!empty($pconfig['flag3']) ? " checked=\"checked\"" : ""; ?> />
+                                <?=gettext("Enable kernel PPS clock discipline (default: disabled)."); ?>
+                              </label>
                             </td>
+                          </tr>
+                          <tr>
                             <td>
-                              <?=gettext("Record a timestamp once for each second, useful for constructing Allan deviation plots (default: disabled)."); ?>
+                              <label for="flag4">
+                                <input name="flag4" id="flag4" type="checkbox" <?=!empty($pconfig['flag4']) ? " checked=\"checked\"" : ""; ?> />
+                                <?=gettext("Record a timestamp once for each second, useful for constructing Allan deviation plots (default: disabled)."); ?>
+                              </label>
                             </td>
                           </tr>
                         </table>

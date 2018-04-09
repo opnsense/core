@@ -569,7 +569,9 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                   <td>
-                    <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                    <label for="disabled">
+                      <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                    </label>
                     <div class="hidden" data-for="help_for_disabled">
                       <strong><?=gettext("Disable this gateway");?></strong><br />
                       <?=gettext("Set this option to disable this gateway without removing it from the list.");?>
@@ -630,7 +632,9 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_defaultgw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Default Gateway"); ?></td>
                   <td>
-                    <input name="defaultgw" type="checkbox" value="yes" <?=!empty($pconfig['defaultgw']) ? "checked=\"checked\"" : "";?> />
+                    <label for="defaultgw">
+                      <input name="defaultgw" id="defaultgw" type="checkbox" value="yes" <?=!empty($pconfig['defaultgw']) ? "checked=\"checked\"" : "";?> />
+                    </label>
                     <div class="hidden" data-for="help_for_defaultgw">
                       <?=gettext("This will select the above gateway as the default gateway"); ?>
                     </div>
@@ -639,7 +643,9 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_fargw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Far Gateway"); ?></td>
                   <td>
-                    <input name="fargw" type="checkbox" value="yes" <?=!empty($pconfig['fargw']) ? 'checked="checked"' : '';?> />
+                    <label for="fargw">
+                      <input name="fargw" id="fargw" type="checkbox" value="yes" <?=!empty($pconfig['fargw']) ? 'checked="checked"' : '';?> />
+                    </label>
                     <div class="hidden" data-for="help_for_fargw">
                       <?=gettext("This will allow the gateway to exist outside of the interface subnet."); ?>
                     </div>
@@ -648,7 +654,9 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_monitor_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable Gateway Monitoring"); ?></td>
                   <td>
-                    <input name="monitor_disable" type="checkbox" value="yes" <?=!empty($pconfig['monitor_disable']) ? "checked=\"checked\"" : "";?>/>
+                    <label for="monitor_disable">
+                      <input name="monitor_disable" id="monitor_disable" type="checkbox" value="yes" <?=!empty($pconfig['monitor_disable']) ? "checked=\"checked\"" : "";?>/>
+                    </label>
                     <div class="hidden" data-for="help_for_monitor_disable">
                       <?=gettext("This will consider this gateway as always being up"); ?>
                     </div>
@@ -669,7 +677,9 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_force_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Mark Gateway as Down"); ?></td>
                   <td>
-                    <input name="force_down" type="checkbox" value="yes" <?=!empty($pconfig['force_down']) ? "checked=\"checked\"" : "";?>/>
+                    <label for="force_down">
+                      <input name="force_down" id="force_down" type="checkbox" value="yes" <?=!empty($pconfig['force_down']) ? "checked=\"checked\"" : "";?>/>
+                    </label>
                     <div class="hidden" data-for="help_for_force_down">
                       <strong><?=gettext("Mark Gateway as Down"); ?></strong><br />
                       <?=gettext("This will force this gateway to be considered Down"); ?>
@@ -777,8 +787,10 @@ $( document ).ready(function() {
                   <td><a id="help_for_avg_delay_samples" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Avg Delay Replies Qty");?></td>
                   <td>
                     <input name="avg_delay_samples" id="avg_delay_samples" type="text" value="<?=$pconfig['avg_delay_samples'];?>" onchange="calculated_change()"  />
-                    <input name="avg_delay_samples_calculated" type="checkbox" id="avg_delay_samples_calculated" value="yes" <?=!empty($pconfig['avg_delay_samples_calculated']) ? "checked=\"checked\"" : "";?> onclick="calculated_change()" />
-                    <?=gettext("Use calculated value."); ?>
+                    <label for="avg_delay_samples_calculated">
+                      <input name="avg_delay_samples_calculated" type="checkbox" id="avg_delay_samples_calculated" value="yes" <?=!empty($pconfig['avg_delay_samples_calculated']) ? "checked=\"checked\"" : "";?> onclick="calculated_change()" />
+                      <?=gettext("Use calculated value."); ?>
+                    </label>
                     <div class="hidden" data-for="help_for_avg_delay_samples">
                       <?= sprintf(gettext('How many replies should be used to compute average delay for controlling "delay" alarms? Default is %d.'), $apinger_default['avg_delay_samples']) ?>
                     </div>
@@ -788,8 +800,10 @@ $( document ).ready(function() {
                   <td><a id="help_for_avg_loss_samples" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Avg Packet Loss Probes Qty");?></td>
                   <td>
                     <input name="avg_loss_samples" type="text" id="avg_loss_samples" value="<?=$pconfig['avg_loss_samples'];?>" onchange="calculated_change()" />
-                    <input name="avg_loss_samples_calculated" type="checkbox" id="avg_loss_samples_calculated" value="yes" <?= !empty($pconfig['avg_loss_samples_calculated']) ? "checked=\"checked\"" : "";?> onclick="calculated_change()" />
-                    <?=gettext("Use calculated value."); ?>
+                    <label for="avg_loss_samples_calculated">
+                      <input name="avg_loss_samples_calculated" type="checkbox" id="avg_loss_samples_calculated" value="yes" <?= !empty($pconfig['avg_loss_samples_calculated']) ? "checked=\"checked\"" : "";?> onclick="calculated_change()" />
+                      <?=gettext("Use calculated value."); ?>
+                    </label>
 
                     <div class="hidden" data-for="help_for_avg_loss_samples">
                       <?= sprintf(gettext('How many probes should be used to compute average packet loss? Default is %d.'), $apinger_default['avg_loss_samples']) ?>
@@ -800,8 +814,10 @@ $( document ).ready(function() {
                   <td><a id="help_for_avg_loss_delay_samples" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Lost Probe Delay");?></td>
                   <td>
                     <input name="avg_loss_delay_samples" type="text" id="avg_loss_delay_samples" value="<?=$pconfig['avg_loss_delay_samples'];?>" onchange="calculated_change()"  />
-                    <input name="avg_loss_delay_samples_calculated" type="checkbox" id="avg_loss_delay_samples_calculated" value="yes" <?= !empty($pconfig['avg_loss_delay_samples_calculated']) ? "checked=\"checked\"" : "";?> onclick="calculated_change()" />
-                    <?=gettext("Use calculated value."); ?>
+                    <label for="avg_loss_delay_samples_calculated">
+                      <input name="avg_loss_delay_samples_calculated" type="checkbox" id="avg_loss_delay_samples_calculated" value="yes" <?= !empty($pconfig['avg_loss_delay_samples_calculated']) ? "checked=\"checked\"" : "";?> onclick="calculated_change()" />
+                      <?=gettext("Use calculated value."); ?>
+                    </label>
 
                     <div class="hidden" data-for="help_for_avg_loss_delay_samples">
                       <?= sprintf(gettext('The delay (in qty of probe samples) after which loss is computed. Without this, delays longer than the probe interval would be treated as packet loss. Default is %d.'), $apinger_default['avg_loss_delay_samples']) ?>

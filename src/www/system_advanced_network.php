@@ -212,8 +212,10 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_disablechecksumoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware CRC"); ?></td>
                 <td>
-                  <input name="disablechecksumoffloading" type="checkbox" id="disablechecksumoffloading" value="yes" <?= !empty($pconfig['disablechecksumoffloading']) ? "checked=\"checked\"" :"";?> />
-                  <strong><?=gettext("Disable hardware checksum offload"); ?></strong>
+                  <label for="disablechecksumoffloading">
+                    <input name="disablechecksumoffloading" type="checkbox" id="disablechecksumoffloading" value="yes" <?= !empty($pconfig['disablechecksumoffloading']) ? "checked=\"checked\"" :"";?> />
+                    <strong><?=gettext("Disable hardware checksum offload"); ?></strong>
+                  </label>
                   <div class="hidden" data-for="help_for_disablechecksumoffloading">
                     <?=gettext("Checking this option will disable hardware checksum offloading. Checksum offloading is broken in some hardware, particularly some Realtek cards. Rarely, drivers may have problems with checksum offloading and some specific NICs."); ?>
                   </div>
@@ -222,8 +224,10 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_disablesegmentationoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware TSO"); ?></td>
                 <td>
-                  <input name="disablesegmentationoffloading" type="checkbox" id="disablesegmentationoffloading" value="yes" <?= !empty($pconfig['disablesegmentationoffloading']) ? "checked=\"checked\"" :"";?>/>
-                  <strong><?=gettext("Disable hardware TCP segmentation offload"); ?></strong><br />
+                  <label for="disablesegmentationoffloading">
+                    <input name="disablesegmentationoffloading" type="checkbox" id="disablesegmentationoffloading" value="yes" <?= !empty($pconfig['disablesegmentationoffloading']) ? "checked=\"checked\"" :"";?>/>
+                    <strong><?=gettext("Disable hardware TCP segmentation offload"); ?></strong><br />
+                  </label>
                   <div class="hidden" data-for="help_for_disablesegmentationoffloading">
                     <?=gettext("Checking this option will disable hardware TCP segmentation offloading (TSO, TSO4, TSO6). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
                   </div>
@@ -232,8 +236,10 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_disablelargereceiveoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware LRO"); ?></td>
                 <td>
-                  <input name="disablelargereceiveoffloading" type="checkbox" id="disablelargereceiveoffloading" value="yes" <?= !empty($pconfig['disablelargereceiveoffloading']) ? "checked=\"checked\"" :"";?>/>
-                  <strong><?=gettext("Disable hardware large receive offload"); ?></strong><br />
+                  <label for="disablelargereceiveoffloading">
+                    <input name="disablelargereceiveoffloading" type="checkbox" id="disablelargereceiveoffloading" value="yes" <?= !empty($pconfig['disablelargereceiveoffloading']) ? "checked=\"checked\"" :"";?>/>
+                    <strong><?=gettext("Disable hardware large receive offload"); ?></strong><br />
+                  </label>
                   <div class="hidden" data-for="help_for_disablelargereceiveoffloading">
                     <?=gettext("Checking this option will disable hardware large receive offloading (LRO). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
                   </div>
@@ -261,8 +267,10 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_sharednet" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ARP Handling"); ?></td>
                 <td>
-                  <input name="sharednet" type="checkbox" id="sharednet" value="yes" <?= !empty($pconfig['sharednet']) ? "checked=\"checked\"" :"";?>/>
-                  <strong><?=gettext("Suppress ARP messages"); ?></strong><br />
+                  <label for="sharednet">
+                    <input name="sharednet" type="checkbox" id="sharednet" value="yes" <?= !empty($pconfig['sharednet']) ? "checked=\"checked\"" :"";?>/>
+                    <strong><?=gettext("Suppress ARP messages"); ?></strong><br />
+                  </label>
                   <div class="hidden" data-for="help_for_sharednet">
                     <?=gettext("This option will suppress ARP log messages when multiple interfaces reside on the same broadcast domain"); ?>
                   </div>

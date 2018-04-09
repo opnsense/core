@@ -341,7 +341,9 @@ $(document).ready(function() {
                   <tr>
                     <td><a id="help_for_reverse" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Reverse Display') ?></td>
                     <td>
-                      <input name="reverse" type="checkbox" id="reverse" value="yes" <?=!empty($pconfig['reverse']) ? "checked=\"checked\"" : ""; ?> />
+                      <label for="reverse">
+                        <input name="reverse" type="checkbox" id="reverse" value="yes" <?=!empty($pconfig['reverse']) ? "checked=\"checked\"" : ""; ?> />
+                      </label>
                       <div class="hidden" data-for="help_for_reverse">
                         <?=gettext("Show log entries in reverse order (newest entries on top)");?>
                       </div>
@@ -373,8 +375,10 @@ $(document).ready(function() {
                   <tr>
                     <td><a id="help_for_logdefaultblock" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Log Firewall Default Blocks') ?></td>
                     <td>
-                      <input name="logdefaultblock" type="checkbox" value="yes" <?=!empty($pconfig['logdefaultblock']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Log packets matched from the default block rules put in the ruleset");?>
+                      <label for="logdefaultblock">
+                        <input name="logdefaultblock" type="checkbox" id="logdefaultblock" value="yes" <?=!empty($pconfig['logdefaultblock']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Log packets matched from the default block rules put in the ruleset");?>
+                      </label>
                       <div class="hidden" data-for="help_for_logdefaultblock">
                         <?=gettext("Hint: packets that are blocked by the implicit default block rule will not be logged if you uncheck this option. Per-rule logging options are still respected.");?>
                       </div>
@@ -383,8 +387,10 @@ $(document).ready(function() {
                   <tr>
                     <td></td>
                     <td>
-                      <input name="logdefaultpass" type="checkbox" id="logdefaultpass" value="yes" <?=!empty($pconfig['logdefaultpass']) ? "checked=\"checked\"" :""; ?> />
-                      <?=gettext("Log packets matched from the default pass rules put in the ruleset");?>
+                      <label for="logdefaultpass">
+                        <input name="logdefaultpass" type="checkbox" id="logdefaultpass" value="yes" <?=!empty($pconfig['logdefaultpass']) ? "checked=\"checked\"" :""; ?> />
+                        <?=gettext("Log packets matched from the default pass rules put in the ruleset");?>
+                      </label>
                       <div class="hidden" data-for="help_for_logdefaultblock">
                         <?=gettext("Hint: packets that are allowed by the implicit default pass rule will be logged if you check this option. Per-rule logging options are still respected.");?>
                       </div>
@@ -393,30 +399,40 @@ $(document).ready(function() {
                   <tr>
                     <td></td>
                     <td>
-                      <input name="logbogons" type="checkbox" id="logbogons" value="yes" <?=!empty($pconfig['logbogons']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Log packets blocked by 'Block Bogon Networks' rules");?>
+                      <label for="logbogons">
+                        <input name="logbogons" type="checkbox" id="logbogons" value="yes" <?=!empty($pconfig['logbogons']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Log packets blocked by 'Block Bogon Networks' rules");?>
+                      </label>
                     </td>
                   </tr>
                   <tr>
                     <td></td>
                     <td>
-                      <input name="logprivatenets" type="checkbox" id="logprivatenets" value="yes" <?php if ($pconfig['logprivatenets']) echo "checked=\"checked\""; ?> />
-                      <?=gettext("Log packets blocked by 'Block Private Networks' rules");?>
+                      <label for="logprivatenets">
+                        <input name="logprivatenets" type="checkbox" id="logprivatenets" value="yes" <?php if ($pconfig['logprivatenets']) echo "checked=\"checked\""; ?> />
+                        <?=gettext("Log packets blocked by 'Block Private Networks' rules");?>
+                      </label>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_loglighttpd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Web Server Log') ?></td>
                     <td>
-                      <input name="loglighttpd" type="checkbox" id="loglighttpd" value="yes" <?=!empty($pconfig['loglighttpd']) ? "checked=\"checked\"" :""; ?> />
-                      <?=gettext("Log errors from the web server process.");?>
+                      <label for="loglighttpd">
+                        <input name="loglighttpd" type="checkbox" id="loglighttpd" value="yes" <?=!empty($pconfig['loglighttpd']) ? "checked=\"checked\"" :""; ?> />
+                        <?=gettext("Log errors from the web server process.");?>
+                      </label>
                       <div class="hidden" data-for="help_for_loglighttpd">
                         <?=gettext("Hint: If this is checked, errors from the lighttpd web server process for the GUI or Captive Portal will appear in the main system log.");?></td>
                       </div>
                   </tr>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext('Local Logging') ?></td>
-                    <td> <input name="disablelocallogging" type="checkbox" id="disablelocallogging" value="yes" <?=!empty($pconfig['disablelocallogging']) ? "checked=\"checked\"" :""; ?> onclick="enable_change(false)" />
-                      <?=gettext("Disable writing log files to the local disk");?></td>
+                    <td>
+                      <label for="disablelocallogging">
+                        <input name="disablelocallogging" type="checkbox" id="disablelocallogging" value="yes" <?=!empty($pconfig['disablelocallogging']) ? "checked=\"checked\"" :""; ?> onclick="enable_change(false)" />
+                        <?=gettext("Disable writing log files to the local disk");?>
+                      </label>
+                    </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_resetlogs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Reset Logs') ?></td>
@@ -473,8 +489,10 @@ $(document).ready(function() {
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable Remote Logging");?></td>
                     <td>
-                      <input name="enable" type="checkbox" id="enable" value="yes" <?= !empty($pconfig['enable']) ? "checked=\"checked\"" :""; ?> onclick="enable_change(false)" />
-                      <?=gettext("Send log messages to remote syslog server");?>
+                      <label for="enable">
+                        <input name="enable" type="checkbox" id="enable" value="yes" <?= !empty($pconfig['enable']) ? "checked=\"checked\"" :""; ?> onclick="enable_change(false)" />
+                        <?=gettext("Send log messages to remote syslog server");?>
+                      </label>
                     </td>
                   </tr>
                   <tr>
@@ -502,28 +520,50 @@ $(document).ready(function() {
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Remote Syslog Contents");?></td>
                     <td>
-                      <input name="logall" id="logall" type="checkbox" value="yes" <?=!empty($pconfig['logall']) ? "checked=\"checked\"" : ""; ?> onclick="check_everything();" />
-                      <?=gettext("Everything");?><br /><br />
-                      <input name="system" id="system" type="checkbox" value="yes" onclick="enable_change(false)" <?=!empty($pconfig['system']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("System events");?><br />
-                      <input name="filter" id="filter" type="checkbox" value="yes" <?=!empty($pconfig['filter']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Firewall events");?><br />
-                      <input name="dhcp" id="dhcp" type="checkbox" value="yes" <?=!empty($pconfig['dhcp']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("DHCP service events");?><br />
-                      <input name="dns" id="dns" type="checkbox" value="yes" <?=!empty($pconfig['dns']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("DNS service events");?><br />
-                      <input name="mail" id="mail" type="checkbox" value="yes" <?=!empty($pconfig['mail']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Mail service events");?><br />
-                      <input name="portalauth" id="portalauth" type="checkbox" value="yes" <?=!empty($pconfig['portalauth']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Portal Auth events");?><br />
-                      <input name="vpn" id="vpn" type="checkbox" value="yes" <?=!empty($pconfig['vpn']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("VPN (PPTP, IPsec, OpenVPN) events");?><br />
-                      <input name="apinger" id="apinger" type="checkbox" value="yes" <?=!empty($pconfig['apinger']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Gateway Monitor events");?><br />
-                      <input name="relayd" id="relayd" type="checkbox" value="yes" <?=!empty($pconfig['relayd']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Server Load Balancer events");?><br />
-                      <input name="hostapd" id="hostapd" type="checkbox" value="yes" <?=!empty($pconfig['hostapd']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Wireless events");?><br />
+                      <label for="logall">
+                        <input name="logall" id="logall" type="checkbox" value="yes" <?=!empty($pconfig['logall']) ? "checked=\"checked\"" : ""; ?> onclick="check_everything();" />
+                        <?=gettext("Everything");?>
+                      </label><br /><br />
+                      <label for="system">
+                        <input name="system" id="system" type="checkbox" value="yes" onclick="enable_change(false)" <?=!empty($pconfig['system']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("System events");?>
+                      </label><br />
+                      <label for="filter">
+                        <input name="filter" id="filter" type="checkbox" value="yes" <?=!empty($pconfig['filter']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Firewall events");?>
+                      </label><br />
+                      <label for="dhcp">
+                        <input name="dhcp" id="dhcp" type="checkbox" value="yes" <?=!empty($pconfig['dhcp']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("DHCP service events");?>
+                      </label><br />
+                      <label for="dns">
+                        <input name="dns" id="dns" type="checkbox" value="yes" <?=!empty($pconfig['dns']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("DNS service events");?>
+                      </label><br />
+                      <label for="mail">
+                        <input name="mail" id="mail" type="checkbox" value="yes" <?=!empty($pconfig['mail']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Mail service events");?>
+                      </label><br />
+                      <label for="portalauth">
+                        <input name="portalauth" id="portalauth" type="checkbox" value="yes" <?=!empty($pconfig['portalauth']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Portal Auth events");?>
+                      </label><br />
+                      <label for="vpn">
+                        <input name="vpn" id="vpn" type="checkbox" value="yes" <?=!empty($pconfig['vpn']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("VPN (PPTP, IPsec, OpenVPN) events");?>
+                      </label><br />
+                      <label for="apinger">
+                        <input name="apinger" id="apinger" type="checkbox" value="yes" <?=!empty($pconfig['apinger']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Gateway Monitor events");?>
+                      </label><br />
+                      <label for="relayd">
+                        <input name="relayd" id="relayd" type="checkbox" value="yes" <?=!empty($pconfig['relayd']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Server Load Balancer events");?>
+                      </label><br />
+                      <label for="hostapd">
+                        <input name="hostapd" id="hostapd" type="checkbox" value="yes" <?=!empty($pconfig['hostapd']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Wireless events");?>
+                      </label><br />
                     </td>
                   </tr>
                   <tr>

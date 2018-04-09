@@ -692,16 +692,20 @@ foreach ($unique as $region): ?>
                     <table class="table table-striped table-condensed geoip_table">
                       <tr>
                         <td colspan="3">
-                          <input type="checkbox" class="region_toggle" data="<?= html_safe($region) ?>" />
-                          <strong><?= $region ?> (<?= gettext('toggle all') ?>)</strong>
+                          <label>
+                            <input type="checkbox" class="region_toggle" data="<?= html_safe($region) ?>" />
+                            <strong><?= $region ?> (<?= gettext('toggle all') ?>)</strong>
+                          </label>
                         </td>
                       </tr>
                       <tr>
 <?php $i = 0; foreach (geoip_countries() as $code => $name):
     if ($region == $where[$code]): ?>
                         <td>
-                          <input type="checkbox" name="host_url[]" class="geoip_item region_<?= html_safe($region) ?>" value="<?= html_safe($code) ?>" <?= in_array($code, $pconfig['host_url']) ? 'checked="checked"' : '' ?>/>
-                          <strong><?= $name ?></strong>
+                          <label>
+                            <input type="checkbox" name="host_url[]" class="geoip_item region_<?= html_safe($region) ?>" value="<?= html_safe($code) ?>" <?= in_array($code, $pconfig['host_url']) ? 'checked="checked"' : '' ?>/>
+                            <strong><?= $name ?></strong>
+                          </label>
                         </td>
 <?php $i += 1;
 if ($i % 3 == 0): ?>
