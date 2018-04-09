@@ -89,6 +89,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (count($input_errors) == 0) {
         $confif = "";
+        $vlan = array();
+        $vlan['if'] = $_POST['if'];
+        $vlan['tag'] = $_POST['tag'];
+        $vlan['pcp'] = $pconfig['pcp'];
+        $vlan['descr'] = $_POST['descr'];
+        $vlan['vlanif'] = "{$_POST['if']}_vlan{$_POST['tag']}";
         if (isset($id)) {
             if (($a_vlans[$id]['if'] != $pconfig['if']) || ($a_vlans[$id]['tag'] != $pconfig['tag']) || ($a_vlans[$id]['pcp'] != $pconfig['pcp'])) {
                 if (!empty($a_vlans[$id]['vlanif'])) {
@@ -101,15 +107,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($confif <> "") {
                     $config['interfaces'][$confif]['if'] = "{$_POST['if']}_vlan{$_POST['tag']}";
                 }
+                $vlan['vlanif'] = interface_vlan_configure($vlan);
             }
+        } else {
+            $vlan['vlanif'] = interface_vlan_configure($vlan);
         }
-        $vlan = array();
-        $vlan['if'] = $_POST['if'];
-        $vlan['tag'] = $_POST['tag'];
-        $vlan['pcp'] = $pconfig['pcp'];
-        $vlan['descr'] = $_POST['descr'];
-        $vlan['vlanif'] = "{$_POST['if']}_vlan{$_POST['tag']}";
-        $vlan['vlanif'] = interface_vlan_configure($vlan);
         if ($vlan['vlanif'] == "" || !stristr($vlan['vlanif'], "vlan")) {
             $input_errors[] = gettext("Error occurred creating interface, please retry.");
         } else {
