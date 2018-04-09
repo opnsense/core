@@ -170,7 +170,7 @@ function filter_delete_states_for_down_gateways()
 
 function filter_configure_sync($verbose = false)
 {
-    global $config;
+    global $config, $rl_arr;
 
     $sched_kill_states = array(); // kill states for schedules
 
@@ -358,15 +358,17 @@ function filter_configure_sync($verbose = false)
         flush();
     }
 
+    // adjust max table entries size default for IPv6 bogons
+    if (is_bogonsv6_used() && table_entries_size('default') <= 500000) {
+        $rl_arr['table-entries']['default'] = 500000;
+    }
+
     $limitrules = '';
 
     if (!empty($config['system']['maximumtableentries'])) {
         $limitrules .= "set limit table-entries {$config['system']['maximumtableentries']}\n";
-    } elseif (is_bogonsv6_used()) {
-        $max_table_entries = default_table_entries_size();
-        if ($max_table_entries <= 500000) {
-            $limitrules .= "set limit table-entries 500000\n";
-        }
+    } else {
+        $limitrules .= "set limit table-entries {$rl_arr['table-entries']['default']}\n";
     }
 
     if (!empty($config['system']['rulesetoptimization'])) {
@@ -394,7 +396,7 @@ function filter_configure_sync($verbose = false)
         $limitrules .= "set limit states {$config['system']['maximumstates']}\n";
         $limitrules .= "set limit src-nodes {$config['system']['maximumstates']}\n";
     } else {
-        $max_states = default_state_size();
+        $max_states = state_size('default');
         $limitrules .= "set limit states {$max_states}\n";
         $limitrules .= "set limit src-nodes {$max_states}\n";
     }
@@ -433,9 +435,28 @@ function filter_configure_sync($verbose = false)
         return;
     }
 
+    // Get pf rules limits array
+    if (!file_exists("/var/run/booting") && file_exists("/tmp/rules.limits_json")) {
+        $rl_arr = json_decode(file_get_contents("/tmp/rules.limits_json"), true);
+    }
+
+    // Apply configured pf rules limits settings
     @file_put_contents('/tmp/rules.limits', $limitrules);
     mwexec('/sbin/pfctl -Of /tmp/rules.limits');
     exec('/sbin/pfctl -o basic -f /tmp/rules.debug 2>&1', $rules_error, $rules_loading);
+
+    // Capture active pf rules limits settings
+    $rl_lines = str_getCSV(`pfctl -sm`, "\n");
+    foreach ($rl_lines as $rl_line) {
+        $rl_line_arr = preg_split('/[\s\t]+/', $rl_line);
+        $rl_arr[reset($rl_line_arr)]['active'] = end($rl_line_arr);
+    }
+
+    // Save default and active pf rules limits settings array so are available
+    $rl_arr_json = json_encode($rl_arr);
+    if (@file_get_contents("/tmp/rules.limits_json") !== $rl_arr_json) {
+        @file_put_contents("/tmp/rules.limits_json", $rl_arr_json);
+    }
 
     foreach ($sched_kill_states as $label) {
         mwexecf('/sbin/pfctl -k label -k %s', $label);
@@ -809,15 +830,10 @@ function filter_setup_logging_interfaces(&$FilterIflist)
     return $rules;
 }
 
-function default_table_entries_size()
+function state_size($item = 'active')
 {
-    $current = `pfctl -sm | grep table-entries | awk '{print $4};'`;
+    $rl_arr = json_decode(@file_get_contents("/tmp/rules.limits_json"), true);
 
-    return $current;
-}
-
-function default_state_size()
-{
     /* get system memory amount */
     $memory = get_memory();
     $physmem = $memory[0];
@@ -826,6 +842,24 @@ function default_state_size()
     $max_states = (int) ($physmem/10)*1000;
 
     return $max_states;
+
+    $rl_arr['states']['default'] = $max_states;
+    return is_numeric($rl_arr['states'][$item]) ? $rl_arr['states'][$item] : '';
+}
+
+function tables_size($item = 'active') {
+    $rl_arr = json_decode(@file_get_contents("/tmp/rules.limits_json"), true);
+    return is_numeric($rl_arr['tables'][$item]) ? $rl_arr['tables'][$item] : '';
+}
+
+function table_entries_size($item = 'active') {
+    $rl_arr = json_decode(@file_get_contents("/tmp/rules.limits_json"), true);
+    return is_numeric($rl_arr['table-entries'][$item]) ? $rl_arr['table-entries'][$item] : '';
+}
+
+function fragment_entries_size($item = 'active') {
+    $rl_arr = json_decode(@file_get_contents("/tmp/rules.limits_json"), true);
+    return is_numeric($rl_arr['frags'][$item]) ? $rl_arr['frags'][$item] : '';
 }
 
 function get_protocols()

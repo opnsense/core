@@ -36,6 +36,13 @@ echo "done.\n";
 echo "Initializing...";
 flush();
 
+/* Capture system default pf rules limits */
+$rl_lines = str_getCSV(`pfctl -sm`, "\n");
+foreach ($rl_lines as $rl_line) {
+    $rl_line_arr = preg_split('/[\s\t]+/', $rl_line);
+    $rl_arr[reset($rl_line_arr)]['default'] = end($rl_line_arr);
+}
+
 $inc_files = array(
     'config.inc',
     'console.inc',

@@ -570,37 +570,44 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
+<?
+$pf_state_size_default = state_size('default');
+$pf_state_size_default = is_numeric($pf_state_size_default) ? $pf_state_size_default : gettext('undetermined');
+?>
                 <td><a id="help_for_maximumstates" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Maximum States");?></td>
                 <td>
-                  <input name="maximumstates" type="text" id="maximumstates" value="<?=$pconfig['maximumstates'];?>" />
+                  <input name="maximumstates" type="text" id="maximumstates" value="<?=$pconfig['maximumstates'];?>" placeholder="<?=$pf_state_size_default?>" />
                   <div class="hidden" data-for="help_for_maximumstates">
                     <?=gettext("Maximum number of connections to hold in the firewall state table.");?><br/>
-                    <?=gettext("Note: Leave this blank for the default. On your system the default size is:");?> <?= default_state_size() ?>
+                    <?=gettext("Note: Leave this blank for the default. On your system the default size is:");?> <?= $pf_state_size_default ?>
                   </div>
                 </td>
               </tr>
+<?
+$pf_frag_entries_size_default = fragment_entries_size('default');
+$pf_frag_entries_size_default = is_numeric($pf_frag_entries_size_default) ? $pf_frag_entries_size_default : gettext('undetermined');
+?>
               <tr>
                 <td><a id="help_for_maximumfrags" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Maximum Fragments");?></td>
                 <td>
-                  <input name="maximumfrags" type="text" id="maximumfrags" value="<?=$pconfig['maximumfrags'];?>" />
+                  <input name="maximumfrags" type="text" id="maximumfrags" value="<?=$pconfig['maximumfrags'];?>" placeholder="<?=$pf_frag_entries_size_default?>"/>
                   <div class="hidden" data-for="help_for_maximumfrags">
                     <?=gettext("Sets the maximum number of entries in the memory pool used for fragment reassembly.");?><br/>
-                    <?=gettext("Note: Leave this blank for the default.");?>
+                    <?=gettext("Note: Leave this blank for the default");?> (<?=$pf_frag_entries_size_default?>)
                   </div>
                 </td>
               </tr>
+<?
+$pf_table_entries_size_default = table_entries_size('default');
+$pf_table_entries_size_default = is_numeric($pf_table_entries_size_default) ? $pf_table_entries_size_default : gettext('undetermined');
+?>
               <tr>
                 <td><a id="help_for_maximumtableentries" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Maximum Table Entries");?></td>
                 <td>
-                  <input name="maximumtableentries" type="text" id="maximumtableentries" value="<?= html_safe($pconfig['maximumtableentries']) ?>"/>
+                  <input name="maximumtableentries" type="text" id="maximumtableentries" value="<?= html_safe($pconfig['maximumtableentries']) ?>" placeholder="<?=$pf_table_entries_size_default?>"/>
                   <div class="hidden" data-for="help_for_maximumtableentries">
                     <?= gettext('Maximum number of table entries for systems such as aliases, sshlockout, bogons, etc, combined.') ?><br/>
-                    <?=gettext("Note: Leave this blank for the default.");?>
-<?php
-                     if (empty($pconfig['maximumtableentries'])) :?>
-                        <?= gettext("On your system the default size is:");?> <?= default_table_entries_size(); ?>
-<?php
-                      endif;?>
+                    <?=gettext("Note: Leave this blank for the default. On your system the default size is:");?> <?=$pf_table_entries_size_default?>
                   </div>
                 </td>
               </tr>
