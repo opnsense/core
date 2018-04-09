@@ -122,21 +122,29 @@ include("head.inc");
 ?>
 <body>
 <?php include("fbegin.inc"); ?>
-<style>
-.minigraph path {
-    stroke: steelblue;
-    stroke-width: 1px;
-    fill: none;
-}
-.minigraph {
-    border-style: solid;
-    border-color: lightgray;
-    border-width: 0px 1px 1px 1px;
-    padding: 0px;
-    margin: 0px;
-    margin-bottom: -5px;
-}
-</style>
+
+<script>
+    var sheet = document.createElement('style');
+
+    sheet.innerHTML = '\
+.minigraph path {\
+    stroke: steelblue;\
+    stroke-width: 1px;\
+    fill: none;\
+}\
+.minigraph {\
+    border-style: solid;\
+    border-color: lightgray;\
+    border-width: 0px 1px 1px 1px;\
+    padding: 0px;\
+    margin: 10px;\
+    margin-bottom: -5px;\
+}\
+';
+
+    document.body.appendChild(sheet);
+</script>
+
 <script>
     var graphtable = {};
     function formatSizeUnits(bytes){
@@ -408,6 +416,7 @@ include("head.inc");
                  </tr>
                 </thead>
                 <tbody id="bandwidth_details">
+                    <!-- dynamic content --> <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
                 </tbody>
               </table>
             </div>

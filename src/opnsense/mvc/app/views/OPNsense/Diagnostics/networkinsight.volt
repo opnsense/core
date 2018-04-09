@@ -26,12 +26,18 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #}
 
-<style type="text/css">
-.panel-heading-sm{
-    height: 28px;
-    padding: 4px 10px;
-}
-</style>
+<script>
+    var sheet = document.createElement('style');
+
+    sheet.innerHTML = '\
+.panel-heading-sm {\
+    height: 28px;\
+    padding: 4px 10px;\
+}\
+';
+
+    document.body.appendChild(sheet);
+</script>
 
 <!-- nvd3 -->
 <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/nv.d3.css', ui_theme|default('opnsense'))}}" />
@@ -764,6 +770,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <th>{{ lang._('Interface') }}</th>
             <th>{{ lang._('(dst) Port') }}</th>
             <th>{{ lang._('(src) Address') }}</th>
+			<th></th>
           </tr>
         </thead>
         <tbody>
@@ -801,6 +808,7 @@ POSSIBILITY OF SUCH DAMAGE.
           <tr>
             <td colspan="3">{{ lang._('Total (selection)') }}</td>
             <td id="netflow_details_total"></td>
+			<td colspan="2"></td>
           </tr>
         </tfoot>
       </table>
