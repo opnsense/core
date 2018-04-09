@@ -3753,7 +3753,7 @@ function interface_get_wireless_clone($wlif)
     }
 }
 
-function get_real_interface($interface = "wan", $family = "all", $flush = true)
+function get_real_interface($interface = 'wan', $family = 'all')
 {
     global $config;
 
@@ -3770,9 +3770,12 @@ function get_real_interface($interface = "wan", $family = "all", $flush = true)
             break;
         default:
             if (empty($config['interfaces'][$interface])) {
-                // leftover from legacy code, it's not a very bright idea to use the same function call
-                // for both virtual as real interface names. does_interface_exist() is quite expensive.
-                if (does_interface_exist($interface, $flush)) {
+                /*
+                 * Leftover from legacy code.  It's not a very bright idea
+                 * to use the same function call for both virtual as real
+                 * interface names. does_interface_exist() is quite expensive.
+                 */
+                if (does_interface_exist($interface)) {
                     $wanif = $interface;
                 }
                 break;
@@ -4036,17 +4039,22 @@ function find_interface_ipv6($interface)
 function find_interface_ipv6_ll($interface)
 {
     $interface = trim($interface);
-    if (does_interface_exist($interface)) {
-        $ifinfo = legacy_getall_interface_addresses($interface);
-        foreach ($ifinfo as $line) {
-            if (strstr($line, ":")) {
-                $parts = explode("/", $line);
-                if (is_linklocal($parts[0])) {
-                    return $parts[0];
-                }
+
+    if (!does_interface_exist($interface)) {
+        return null;
+    }
+
+    $ifinfo = legacy_getall_interface_addresses($interface);
+
+    foreach ($ifinfo as $line) {
+        if (strstr($line, ':')) {
+            $parts = explode('/', $line);
+            if (is_linklocal($parts[0])) {
+                return $parts[0];
             }
         }
     }
+
     return null;
 }
 
@@ -4119,7 +4127,7 @@ function get_interface_ip($interface = "wan")
     }
 }
 
-function get_interface_ipv6($interface = "wan", $flush = false)
+function get_interface_ipv6($interface = 'wan')
 {
     global $config;
 
@@ -4148,14 +4156,14 @@ function get_interface_ipv6($interface = "wan", $flush = false)
                 break;
         }
         if (isset($config['interfaces'][$interface]['dhcp6prefixonly'])) {
-            $curip = find_interface_ipv6_ll($realif, $flush);
+            $curip = find_interface_ipv6_ll($realif);
             if ($curip && is_ipaddrv6($curip) && ($curip != "::")) {
                 return $curip;
             }
         }
     }
 
-    $curip = find_interface_ipv6($realif, $flush);
+    $curip = find_interface_ipv6($realif);
     if ($curip && is_ipaddrv6($curip) && ($curip != "::")) {
         return $curip;
     } else {

@@ -688,9 +688,9 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 
             /* special treatment for tunnel interfaces */
             if ($gateway['ipprotocol'] == "inet6") {
-                $gateway['interface'] = get_real_interface($gateway['interface'], "inet6", false);
+                $gateway['interface'] = get_real_interface($gateway['interface'], 'inet6');
             } else {
-                $gateway['interface'] = get_real_interface($gateway['interface'], "all", false);
+                $gateway['interface'] = get_real_interface($gateway['interface'], 'all');
             }
 
             /* entry has a default flag, use it */
