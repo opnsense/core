@@ -513,7 +513,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 foreach ($toapplylist as $ifapply => $ifcfgo) {
                     interface_bring_down($ifapply, $ifcfgo);
                     if (isset($config['interfaces'][$ifapply]['enable'])) {
-                        interface_configure($ifapply, true);
+                        interface_configure($ifapply, INTERFACE_RELOAD_SINGLE);
                     }
                 }
             }

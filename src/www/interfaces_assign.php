@@ -309,7 +309,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                           interface_sync_wireless_clones($config['interfaces'][$ifname], false);
                       }
                       /* Reload all for the interface. */
-                      interface_configure($ifname, true);
+                      interface_configure($ifname, INTERFACE_RELOAD_SINGLE);
                       // count changes
                       $changes++;
                   }
