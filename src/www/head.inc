@@ -42,6 +42,37 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <meta name="copyright" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
+    <script>
+        // Prevent Chrome from disabling double tap zoom based on viewport width <= device-width.
+
+        viewport_width_set(window.innerWidth + 1);
+
+        window.addEventListener('orientationchange', function() {
+            orientationChanged().then(function() {
+                viewport_width_set(window.innerWidth + 1);
+            });
+        });
+
+        // Wait until innerWidth changes, for max 120 frames
+        function orientationChanged() {
+            const timeout = 120;
+            return new window.Promise(function(resolve) {
+                const go = (i, width0) => {
+                    window.innerWidth != width0 || i >= timeout ?
+                    resolve() :
+                    window.requestAnimationFrame(() => go(i + 1, width0));
+                };
+                go(0, window.innerWidth);
+            });
+        }
+
+        function viewport_width_set(device_width) {
+            device_width = isNaN(device_width) ? "device-width" : device_width;
+            var viewportmeta = document.querySelector("meta[name=viewport]");
+            viewportmeta.content = viewportmeta.content.replace(/width=[^,]+/, 'width=' + device_width);
+        }
+    </script>
+
     <title><?= $pagetitle ?></title>
 
     <!-- include (theme) style -->
