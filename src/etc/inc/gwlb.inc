@@ -94,8 +94,8 @@ rrd interval 60s;
 
 ## These parameters can be overridden in a specific alarm configuration
 alarm default {
-  command on "/usr/local/opnsense/service/configd_ctl.py -m 'filter reload' 'openvpn reload %T' 'dyndns reload %T' 'rfc2136 reload %T'"
-  command off "/usr/local/opnsense/service/configd_ctl.py -m 'filter reload' 'openvpn reload %T' 'dyndns reload %T' 'rfc2136 reload %T'"
+  command on "/usr/local/etc/rc.monitor %T"
+  command off "/usr/local/etc/rc.monitor %T"
   combine 10s
 }
 
