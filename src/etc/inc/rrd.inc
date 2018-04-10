@@ -525,7 +525,61 @@ function rrd_configure($verbose = false)
         $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$cputemp N:\${CPUTEMP}\n";
         /* end CPU Temp gathering */
 
-        $rrdupdatesh .= "sleep 60\n";
+        if (isset($config['system']['prefer_dpinger'])) {
+            /* Start gateway quality */
+            $rrdupdatesh .= <<<EOD
+
+           # Gateway quality graphs
+            for sock in /var/run/dpinger_*.sock;do
+            if [ ! -S "\$sock" ]; then
+                continue
+            fi
+
+            t=\$(/usr/bin/nc -U \$sock)
+            if [ -z "\$t" ]; then
+                continue
+            fi
+
+            gw=\$(echo "\$t" | awk '{ print \$1 }')
+            delay=\$(echo "\$t" | awk '{ print \$2 }')
+            stddev=\$(echo "\$t" | awk '{ print \$3 }')
+            loss=\$(echo "\$t" | awk '{ print \$4 }')
+
+            if echo "\$loss" | grep -Eqv '^[0-9]+\$'; then
+                loss="U"
+            fi
+            if echo "\$delay" | grep -Eqv '^[0-9]+\$'; then
+                delay="U"
+            else
+                # Convert delay from microseconds to seconds
+                delay=\$(echo "scale=7; \$delay / 1000 / 1000" | /usr/bin/bc)
+            fi
+            if echo "\$stddev" | grep -Eqv '^[0-9]+\$'; then
+                stddev="U"
+            else
+                # Convert stddev from microseconds to seconds
+                stddev=\$(echo "scale=7; \$stddev / 1000 / 1000" | /usr/bin/bc)
+            fi
+
+            if [ ! -f {$rrddbpath}\$gw-quality.rrd ]; then
+                {$rrdtool} create {$rrddbpath}\$gw-quality.rrd --step 60 \\
+                DS:loss:GAUGE:120:0:100 \\
+                DS:delay:GAUGE:120:0:100000 \\
+                DS:stddev:GAUGE:120:0:100000 \\
+                RRA:AVERAGE:0.5:1:1200 \\
+                RRA:AVERAGE:0.5:5:720 \\
+                RRA:AVERAGE:0.5:60:1860 \\
+                RRA:AVERAGE:0.5:1440:2284
+
+                {$rrdtool} update {$rrddbpath}\$gw-quality.rrd -t loss:delay:stddev N:U:U:U
+            fi
+            {$rrdtool} update {$rrddbpath}\$gw-quality.rrd -t loss:delay:stddev N:\$loss:\$delay:\$stddev
+
+     done
+EOD;
+       }
+
+        $rrdupdatesh .= "\nsleep 60\n";
         $rrdupdatesh .= "done\n";
 
         /* write the rrd update script */

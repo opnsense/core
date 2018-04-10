@@ -37,3 +37,13 @@ fi
     "openvpn reload ${GATEWAY}" \
     "dyndns reload ${GATEWAY}" \
     "rfc2136 reload ${GATEWAY}"
+
+ALARM_ADDR="${2}"
+ALARM_FLAG="${3}"
+ALARM_RTT="${4}"
+ALARM_RTTSD="${5}"
+ALARM_LOSS="${6}"
+
+if [ ${#} -gt 1 ]; then
+    echo ">>> Gateway alarm: ${GATEWAY} (Addr:${ALARM_ADDR} Alarm:${ALARM_FLAG} RTT:${ALARM_RTT}ms STDEV:${ALARM_RTTSD}ms Loss:${ALARM_LOSS}%)" | /usr/bin/logger -p daemon.info -i -t rc.monitor
+fi

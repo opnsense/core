@@ -39,6 +39,9 @@ foreach ($a_gateways as $gw) {
 $a_gateways = $a_gateways_arr;
 $apinger_default = return_apinger_defaults();
 
+if (isset($config['system']['prefer_dpinger'])) {
+    $apinger_default = return_dpinger_defaults();
+}
 
 // form processing
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -764,6 +767,7 @@ $( document ).ready(function() {
                     </div>
                   </td>
                 </tr>
+<?php           if (!isset($config['system']['prefer_dpinger'])):?>
                 <tr class="advanced hidden">
                   <td><a id="help_for_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Down");?></td>
                   <td>
@@ -817,6 +821,8 @@ $( document ).ready(function() {
                     </small>
                   </td>
                 </tr>
+<?php
+                endif;?>
                 <tr>
                   <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                   <td>
