@@ -1629,6 +1629,10 @@ function is_apinger_enabled()
 {
     global $config;
 
+    if (isset($config['system']['prefer_dpinger'])) {
+        return false;
+    }
+
     $gwcount=0;
 
     if (isset($config['gateways']['gateway_item'])) {
@@ -1896,4 +1900,31 @@ function service_control_restart($name, $extras)
     }
 
     return sprintf(gettext("%s has been restarted."), htmlspecialchars($name));
+}
+
+function is_dpinger_enabled()
+{
+    global $config;
+
+    if (!isset($config['system']['prefer_dpinger'])) {
+        return false;
+    }
+    
+    $gwcount=0;
+
+    if (isset($config['gateways']['gateway_item'])) {
+        foreach($config['gateways']['gateway_item'] as $gwkey => $gateway) {
+            if (!isset($gateway['monitor_disable']) || $gateway['monitor_disable'] == "0") {
+                if (isset($config['system']['prefer_dpinger'])) {
+                    $gwcount += 1;
+                }
+            }
+        }
+    }
+
+    if ($gwcount == 0) {
+        return false;
+    }
+
+    return is_array(return_gateways_array());
 }
