@@ -104,7 +104,7 @@ filter_pflog_start(true);
 setup_gateways_monitor(true);
 plugins_configure('earlybootup', true);
 system_cron_configure(true, true);
-system_routing_configure('', true);
+system_routing_configure(true);
 
 plugins_configure('dns', true);
 services_dhcpd_configure('all', array(), true);

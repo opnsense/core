@@ -142,7 +142,7 @@ if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
 
     @unlink($cacheip_file);
 
-    system_routing_configure($interface);
+    system_routing_configure(false, $interface);
     setup_gateways_monitor();
     filter_configure_sync();
 
