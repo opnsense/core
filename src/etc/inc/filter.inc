@@ -33,10 +33,6 @@
 
 require_once('filter.lib.inc');
 
-/* Create a global array to avoid errors on rulesets. */
-$GatewaysList = array();
-
-
 function fix_rule_label($descr)
 {
     $descr = str_replace('"', '', $descr);
@@ -144,10 +140,10 @@ function filter_configure()
 
 function filter_delete_states_for_down_gateways()
 {
-    global $config, $GatewaysList;
-
-    $any_gateway_down = false;
+    $GatewaysList = return_gateways_array(false, true) + return_gateway_groups_array();
     $a_gateways = return_gateways_status();
+    $any_gateway_down = false;
+
     if (is_array($GatewaysList)) {
         foreach ($GatewaysList as $gwname => $gateway) {
           if (empty($gateway['monitor'])) {
@@ -159,13 +155,14 @@ function filter_delete_states_for_down_gateways()
           } elseif (empty($a_gateways[$gateway['monitor']])) {
               continue;
           }
-          $gwstatus =& $a_gateways[$gateway['monitor']];
+          $gwstatus = &$a_gateways[$gateway['monitor']];
           if (strstr($gwstatus['status'], "down")) {
               $any_gateway_down = true;
               break;
           }
         }
     }
+
     if ($any_gateway_down == true) {
         mwexec("/sbin/pfctl -Fs");
     }
@@ -173,11 +170,9 @@ function filter_delete_states_for_down_gateways()
 
 function filter_configure_sync($verbose = false)
 {
-    global $config, $GatewaysList;
-    $sched_kill_states = array(); // kill states for schedules
+    global $config;
 
-    // Temporary fill $GatewaysList, the global is still used by some old functions
-    $GatewaysList = return_gateways_array(false, true) + return_gateway_groups_array();
+    $sched_kill_states = array(); // kill states for schedules
 
     /* Use filter lock to not allow concurrent filter reloads during this run. */
     $filterlck = lock('filter', LOCK_EX);
