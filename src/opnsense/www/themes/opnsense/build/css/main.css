@@ -5562,9 +5562,6 @@ body {
   .tab-content .tab-content:last-child {
     margin-bottom: 0; }
 
-.page-content-main [class^="col-"] + [class^="col-"] {
-  padding-top: 20px; }
-
 .brand-logo {
   display: none; }
   @media (min-width: 768px) {
