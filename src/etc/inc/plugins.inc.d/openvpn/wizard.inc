@@ -359,8 +359,7 @@ function step10_stepbeforeformdisplay()
     foreach ($pkg['step'][$stepid]['fields']['field'] as $idx => $field) {
         if ($field['name'] == "crypto") {
             $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
-            $cipherlist = openvpn_get_cipherlist();
-            foreach ($cipherlist as $name => $desc) {
+            foreach (openvpn_get_cipherlist() as $name => $desc) {
                 $opt = array();
                 $opt['name'] = $desc;
                 $opt['value'] = $name;
@@ -368,17 +367,15 @@ function step10_stepbeforeformdisplay()
             }
         } elseif ($field['name'] == "digest") {
             $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
-            $digestlist = openvpn_get_digestlist();
-            foreach ($digestlist as $name => $desc) {
+            foreach (openvpn_get_digestlist() as $name => $desc) {
                 $opt = array();
                 $opt['name'] = $desc;
                 $opt['value'] = $name;
                 $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'][] = $opt;
             }
         } elseif ($field['name'] == "compression") {
-            global $openvpn_compression_modes;
             $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
-            foreach ($openvpn_compression_modes as $name => $desc) {
+            foreach (openvpn_compression_modes() as $name => $desc) {
                 $opt = array();
                 $opt['name'] = $desc;
                 $opt['value'] = $name;
@@ -386,46 +383,57 @@ function step10_stepbeforeformdisplay()
             }
         } elseif ($field['name'] == "engine") {
             $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
-            $engines = openvpn_get_engines();
-            foreach ($engines as $name => $desc) {
+            foreach (openvpn_get_engines() as $name => $desc) {
                 $opt = array();
                 $opt['name'] = $desc;
                 $opt['value'] = $name;
                 $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'][] = $opt;
             }
         } elseif ($field['name'] == "nbttype") {
-              $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
+            $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
             foreach ($netbios_nodetypes as $type => $name) {
                 $opt = array();
                 $opt['name'] = $name;
                 $opt['value'] = $type;
                 $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'][] = $opt;
             }
-        } elseif ($field['name'] == "localport") {
-            $pkg['step'][$stepid]['fields']['field'][$idx]['value'] = openvpn_port_next('UDP');
         }
     }
 }
 
 function step10_submitphpaction()
 {
-    global $input_errors, $stepid;
+    global $input_errors, $stepid, $config;
 
-    /* Default OpenVPN port to next available port if left empty. */
     if (empty($_POST['localport'])) {
-        $pconfig["step10"]["localport"] = openvpn_port_next('UDP');
+        $config['wizardtemp']['step10']['localport'] = $_POST['localport'] = openvpn_port_next($_POST['protocol']);
     }
 
-    /* input validation */
     if ($result = openvpn_validate_port($_POST['localport'], 'Local port')) {
         $input_errors[] = $result;
     }
 
-    if ($result = openvpn_validate_cidr($_POST['tunnelnet'], 'Tunnel Network', false, "ipv4")) {
+    if ($result = openvpn_validate_cidr($_POST['tunnelnet'], 'IPv4 Tunnel Network', false, 'ipv4')) {
         $input_errors[] = $result;
     }
 
-    if ($result = openvpn_validate_cidr($_POST['localnet'], 'Local Network', true, "ipv4")) {
+    if ($result = openvpn_validate_cidr($_POST['tunnelnetv6'], 'IPv6 Tunnel Network', false, 'ipv6')) {
+        $input_errors[] = $result;
+    }
+
+    if ($result = openvpn_validate_cidr($_POST['localnet'], 'IPv4 Local Network', true, 'ipv4')) {
+        $input_errors[] = $result;
+    }
+
+    if ($result = openvpn_validate_cidr($_POST['localnetv6'], 'IPv6 Local Network', true, 'ipv6')) {
+        $input_errors[] = $result;
+    }
+
+    if ($result = openvpn_validate_cidr($_POST['remotenet'], 'IPv4 Remote Network', true, 'ipv4')) {
+        $input_errors[] = $result;
+    }
+
+    if ($result = openvpn_validate_cidr($_POST['remotenetv6'], 'IPv6 Remote Network', true, 'ipv6')) {
         $input_errors[] = $result;
     }
 
@@ -472,7 +480,7 @@ function step10_submitphpaction()
         $input_errors[] = gettext("The field 'Concurrent connections' must be numeric.");
     }
 
-    if (empty($_POST['tunnelnet'])) {
+    if (empty($_POST['tunnelnet']) && empty($_POST['tunnelnetv6'])) {
         $input_errors[] = gettext("You must specify a 'Tunnel network'.");
     }
 
@@ -619,9 +627,7 @@ function step12_submitphpaction()
     $server['certref'] = $cert['refid'];
     $server['protocol'] = $pconfig['step10']['protocol'];
     $server['interface'] = $pconfig['step10']['interface'];
-    if (isset($pconfig['step10']['localport'])) {
-        $server['local_port'] = $pconfig['step10']['localport'];
-    }
+    $server['local_port'] = $pconfig['step10']['localport'];
 
     if (strlen($pconfig['step10']['descr']) > 30) {
         $pconfig['step10']['descr'] = substr($pconfig['step10']['descr'], 0, 30);
@@ -637,12 +643,26 @@ function step12_submitphpaction()
         $server['tls'] = base64_encode($tlskey);
     }
     $server['dh_length'] = $pconfig['step10']['dhkey'];
-    $server['tunnel_network'] = $pconfig['step10']['tunnelnet'];
+    if (isset($pconfig['step10']['tunnelnet'])) {
+        $server['tunnel_network'] = $pconfig['step10']['tunnelnet'];
+    }
+    if (isset($pconfig['step10']['tunnelnetv6'])) {
+        $server['tunnel_networkv6'] = $pconfig['step10']['tunnelnetv6'];
+    }
     if (isset($pconfig['step10']['rdrgw'])) {
         $server['gwredir'] = $pconfig['step10']['rdrgw'];
     }
     if (isset($pconfig['step10']['localnet'])) {
         $server['local_network'] = $pconfig['step10']['localnet'];
+    }
+    if (isset($pconfig['step10']['localnetv6'])) {
+        $server['local_networkv6'] = $pconfig['step10']['localnetv6'];
+    }
+    if (isset($pconfig['step10']['remotenet'])) {
+        $server['remote_network'] = $pconfig['step10']['remotenet'];
+    }
+    if (isset($pconfig['step10']['remotenetv6'])) {
+        $server['remote_networkv6'] = $pconfig['step10']['remotenetv6'];
     }
     if (isset($pconfig['step10']['concurrentcon'])) {
         $server['maxclients'] = $pconfig['step10']['concurrentcon'];
@@ -731,7 +751,6 @@ function step12_submitphpaction()
         $rule['source']['any'] = true;
         $rule['destination']['any'] = true;
         $rule['interface'] = "openvpn";
-        //$rule['protocol'] = $server['protocol'];
         $rule['type'] = "pass";
         $rule['enabled'] = "on";
         $rule['created'] = make_config_revision_entry();

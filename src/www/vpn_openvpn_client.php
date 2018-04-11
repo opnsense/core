@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     } elseif ($act=="new") {
         // create new
-        $pconfig['interface'] = "wan";
+        $pconfig['interface'] = 'any';
         $init_fields = "auth_user,auth_pass,disable,mode,protocol,interface
             ,local_port,server_addr,server_port,resolve_retry,remote_random,reneg-sec
             ,proxy_addr,proxy_port,proxy_user,proxy_passwd,proxy_authtype,description
@@ -201,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("An IPv6 protocol was selected, but the selected interface has no IPv6 address.");
         }
         if (!empty($pconfig['local_port'])) {
-            if (empty($pconfig['local_port']) || !is_numeric($pconfig['local_port']) || $pconfig['local_port'] < 0 || ($pconfig['local_port'] > 65535)) {
+            if (!is_numeric($pconfig['local_port']) || $pconfig['local_port'] < 0 || ($pconfig['local_port'] > 65535)) {
                 $input_errors[] = gettext("The field 'Local port' must contain a valid port, ranging from 0 to 65535.");
             }
             $portused = openvpn_port_used($pconfig['protocol'], $pconfig['interface'], $pconfig['local_port'], $vpnid);
@@ -251,15 +251,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
         }
-        if (!empty($pconfig['tunnel_network'])) {
-            if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], 'IPv4 Tunnel Network', false, "ipv4")) {
-                $input_errors[] = $result;
-            }
+        if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], 'IPv4 Tunnel Network', false, "ipv4")) {
+            $input_errors[] = $result;
         }
-        if (!empty($pconfig['tunnel_networkv6'])) {
-            if ($result = openvpn_validate_cidr($pconfig['tunnel_networkv6'], 'IPv6 Tunnel Network', false, "ipv6")) {
-                $input_errors[] = $result;
-            }
+        if ($result = openvpn_validate_cidr($pconfig['tunnel_networkv6'], 'IPv6 Tunnel Network', false, "ipv6")) {
+            $input_errors[] = $result;
         }
         if ($result = openvpn_validate_cidr($pconfig['remote_network'], 'IPv4 Remote Network', true, "ipv4")) {
             $input_errors[] = $result;
@@ -589,11 +585,11 @@ $( document ).ready(function() {
               </td>
             </tr>
             <tr>
-              <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Protocol");?></td>
+              <td><a id="help_for_protocol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol");?></td>
               <td>
                 <select name='protocol' class="form-control">
 <?php
-                foreach (array("UDP", "UDP6", "TCP", "TCP6") as $prot) :
+                foreach (openvpn_get_protocols() as $prot):
                     $selected = "";
                     if ($pconfig['protocol'] == $prot) {
                         $selected = "selected=\"selected\"";
@@ -602,6 +598,11 @@ $( document ).ready(function() {
 <?php
                 endforeach; ?>
               </select>
+              <div class="hidden" data-for="help_for_protocol">
+                <?= gettext('Select the protocol family to be used. Note that using both families with UDP/TCP ' .
+                            'does not work with an explicit interface as OpenVPN does not support listening to more ' .
+                            'than one specified IP address. In this case IPv4 is currently assumed.') ?>
+              </div>
             </td>
           </tr>
           <tr>
@@ -656,7 +657,7 @@ $( document ).ready(function() {
               <option value="<?=$iface;?>" <?=$selected;?>><?=htmlspecialchars($ifacename);?></option>
 <?php
               endforeach; ?>
-              </select> <br />
+              </select>
             </td>
           </tr>
           <tr>
@@ -708,14 +709,14 @@ $( document ).ready(function() {
               </table>
               <br/>
               <input name="remote_random" type="checkbox" value="yes" <?= !empty($pconfig['remote_random']) ? 'checked="checked"' : '' ?>/>
-              <strong><?= gettext('Select remote server at random') ?></strong>
+              <?= gettext('Select remote server at random') ?>
             </td>
           </tr>
           <tr>
             <td><a id="help_for_resolve_retry" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Retry DNS resolution"); ?></td>
             <td>
               <input name="resolve_retry" type="checkbox" value="yes" <?= !empty($pconfig['resolve_retry']) ? 'checked="checked"' : '' ?>/>
-              <strong><?= gettext('Infinitely resolve remote server') ?></strong>
+              <?= gettext('Infinitely resolve remote server') ?>
               <div class="hidden" data-for="help_for_resolve_retry">
                 <div><small><?=gettext("Continuously attempt to resolve the server host name. Useful when communicating with a server that is not permanently connected to the Internet"); ?></small></div>
               </div>
@@ -1044,7 +1045,7 @@ $( document ).ready(function() {
             <td>
               <select name="compression" class="form-control">
                 <?php
-                                foreach ($openvpn_compression_modes as $cmode => $cmodedesc) :
+                                foreach (openvpn_compression_modes() as $cmode => $cmodedesc):
                                     $selected = "";
                                     if ($cmode == $pconfig['compression']) {
                                         $selected = " selected=\"selected\"";
@@ -1109,7 +1110,7 @@ $( document ).ready(function() {
           <tr>
             <td style="width:22%"><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
             <td style="width:78%">
-              <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
+              <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
               <div class="hidden" data-for="help_for_custom_options">
                 <?=gettext("Enter any additional options you would like to add to the configuration file here."); ?>
               </div>
@@ -1120,7 +1121,7 @@ $( document ).ready(function() {
               <td>
               <select name="verbosity_level" class="form-control">
               <?php
-                            foreach ($openvpn_verbosity_level as $verb_value => $verb_desc) :
+                            foreach (openvpn_verbosity_level() as $verb_value => $verb_desc):
                                 $selected = '';
                                 if ($pconfig['verbosity_level'] == $verb_value) {
                                     $selected = 'selected="selected"';
@@ -1194,8 +1195,8 @@ $( document ).ready(function() {
                 <td>
                   <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
                   &nbsp;
-                  <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($client['disable'])) ? gettext("disable") : gettext("enable");?>">
-                    <span class="glyphicon glyphicon-play <?=(empty($client['disable'])) ? "text-success" : "text-muted";?>"></span>
+                  <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($client['disable'])) ? gettext("Disable") : gettext("Enable");?>">
+                    <span class="fa fa-play <?=(empty($client['disable'])) ? "text-success" : "text-muted";?>"></span>
                   </a>
                 </td>
                 <td><?= htmlspecialchars($client['protocol']) ?></td>

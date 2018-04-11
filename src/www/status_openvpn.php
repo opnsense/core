@@ -127,19 +127,18 @@ $( document ).ready(function() {
   <div class="container-fluid">
     <div class="row">
       <section class="col-xs-12">
-        <header class="content-box-head container-fluid"> <h3><?=gettext("OpenVPN Status");?></h3>
-        </header>
         <div class="content-box-main col-xs-12">
           <form method="get" name="iform">
             <div class="table-responsive">
               <table class="table table-striped">
+                <tr>
+	          <th colspan="8"><?= gettext('OpenVPN Status') ?></th>
+                </tr>
 <?php
                 $i = 0;
                 foreach ($servers as $server): ?>
                 <tr>
-                  <td colspan="8" class="listtopic">
-                    <b><?=$server['name'];?> <?=gettext("Client connections"); ?></b>
-                  </td>
+                  <td colspan="8"><b><?= $server['name'] ?> <?= gettext('Client connections') ?></b></td>
                 </tr>
                 <tr>
                   <td><?=gettext("Common Name"); ?></td>
@@ -227,9 +226,7 @@ $( document ).ready(function() {
                 endforeach;
               if (!empty($sk_servers)): ?>
                 <tr>
-                  <td colspan="8" class="listtopic">
-                    <b><?=gettext("Peer to Peer Server Instance Statistics"); ?></b>
-                  </td>
+                  <td colspan="8"><b><?= gettext('Peer to Peer Server Instance Statistics') ?></b></td>
                 </tr>
                 <tr>
                   <td><?=gettext("Name"); ?></td>
@@ -267,9 +264,7 @@ $( document ).ready(function() {
               if (!empty($clients)):?>
               <tr>
                 <tr>
-                  <td colspan="8" class="listtopic">
-                    <b><?=gettext("Client Instance Statistics"); ?><b>
-                  </td>
+                  <td colspan="8"><b><?= gettext('Client Instance Statistics') ?><b></td>
                 </tr>
                 <tr>
                   <td><?=gettext("Name"); ?></td>
@@ -301,13 +296,16 @@ $( document ).ready(function() {
                 </tr>
 <?php
                 endforeach; ?>
-              </table>
-            </div>
 <?php
             endif;
-            if ((empty($clients)) && (empty($servers)) && (empty($sk_servers))) {
-              echo gettext("No OpenVPN instance defined");
-            }?>
+            if ((empty($clients)) && (empty($servers)) && (empty($sk_servers))): ?>
+                <tr>
+                  <td colspan="8"><?= gettext('No OpenVPN instance defined') ?></td>
+                </tr>
+<?php
+            endif ?>
+              </table>
+            </div>
           </form>
         </div>
       </section>

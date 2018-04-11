@@ -98,8 +98,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['tlsauth_enable'] = "yes";
         $pconfig['dh_length'] = 1024;
         $pconfig['dev_mode'] = "tun";
-        $pconfig['interface'] = "wan";
-        $pconfig['local_port'] = openvpn_port_next('UDP');
+        $pconfig['interface'] = 'any';
+        $pconfig['protocol'] = 'UDP';
+        $pconfig['local_port'] = openvpn_port_next($pconfig['protocol']);
         $pconfig['pool_enable'] = "yes";
         $pconfig['cert_depth'] = 1;
         // init all fields used in the form
@@ -220,9 +221,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = $result;
         }
 
-        $portused = openvpn_port_used($pconfig['protocol'], $pconfig['interface'], $pconfig['local_port'], $vpnid);
-        if (($portused != $vpnid) && ($portused != 0)) {
-            $input_errors[] = gettext("The specified 'Local port' is in use. Please select another value");
+        if (!empty($pconfig['local_port'])) {
+            $portused = openvpn_port_used($pconfig['protocol'], $pconfig['interface'], $pconfig['local_port'], $vpnid);
+            if ($portused != $vpnid && $portused != 0) {
+                $input_errors[] = gettext("The specified 'Local port' is in use. Please select another value");
+            }
         }
 
         if (!$tls_mode && empty($pconfig['autokey_enable'])) {
@@ -294,11 +297,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $reqdfieldsn = array(gettext('Shared key'));
         }
 
+        $reqdfields[] = 'local_port';
+        $reqdfieldsn[] = gettext('Local port');
+
         if ($pconfig['dev_mode'] != "tap") {
-            $reqdfields[] = 'tunnel_network';
-            $reqdfieldsn[] = gettext('Tunnel network');
+            $reqdfields[] = 'tunnel_network,tunnel_networkv6';
+            $reqdfieldsn[] = gettext('Tunnel Network');
         } else {
-            if ($pconfig['serverbridge_dhcp'] && $pconfig['tunnel_network']) {
+            if ($pconfig['serverbridge_dhcp'] && ($pconfig['tunnel_network'] || $pconfig['tunnel_networkv6'])) {
                 $input_errors[] = gettext("Using a tunnel network and server bridge settings together is not allowed.");
             }
             if (($pconfig['serverbridge_dhcp_start'] && !$pconfig['serverbridge_dhcp_end'])
@@ -318,6 +324,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($pconfig['reneg-sec']) && $pconfig['reneg-sec'] != "" && (string)((int)$pconfig['reneg-sec']) != $pconfig['reneg-sec']) {
             $input_errors[] = gettext("Renegotiate time should contain a valid number of seconds.");
         }
+
         do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
         if (count($input_errors) == 0) {
@@ -603,7 +610,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td class="vncellreq">
+                      <td>
                         <a id="help_for_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?>
                       </td>
                       <td>
@@ -687,11 +694,11 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Protocol");?></td>
+                      <td><a id="help_for_protocol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol");?></td>
                         <td>
                           <select name='protocol' class="form-control">
 <?php
-                          foreach (array("UDP", "UDP6", "TCP", "TCP6") as $prot) :
+                          foreach (openvpn_get_protocols() as $prot):
                               $selected = "";
                               if ($pconfig['protocol'] == $prot) {
                                   $selected = "selected=\"selected\"";
@@ -700,6 +707,11 @@ $( document ).ready(function() {
 <?php
                           endforeach; ?>
                         </select>
+                        <div class="hidden" data-for="help_for_protocol">
+                          <?= gettext('Select the protocol family to be used. Note that using both families with UDP/TCP ' .
+                                      'does not work with an explicit interface as OpenVPN does not support listening to more ' .
+                                      'than one specified IP address. In this case IPv4 is currently assumed.') ?>
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -761,7 +773,7 @@ $( document ).ready(function() {
                           <option value="<?=$iface; ?>"<?=$selected;?>><?=htmlspecialchars($ifacename);?></option>
 <?php
                         endforeach; ?>
-                        </select> <br />
+                        </select>
                       </td>
                     </tr>
                     <tr>
@@ -914,9 +926,6 @@ endif; ?>
 <?php
                         endforeach; ?>
                         </select>
-                        <span>
-                          <?=gettext("bits"); ?>
-                        </span>
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_shared_key">
@@ -1240,7 +1249,7 @@ endif; ?>
                       <td>
                         <select name="compression" class="form-control">
 <?php
-                        foreach ($openvpn_compression_modes as $cmode => $cmodedesc) :
+                        foreach (openvpn_compression_modes() as $cmode => $cmodedesc):
                             $selected = "";
                             if ($cmode == $pconfig['compression']) {
                                 $selected = " selected=\"selected\"";
@@ -1526,7 +1535,7 @@ endif; ?>
                     <tr>
                       <td style="width:22%"><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
                       <td>
-                        <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
+                        <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
                         <div class="hidden" data-for="help_for_custom_options">
                           <?=gettext("Enter any additional options you would like to add to the configuration file here."); ?>
                         </div>
@@ -1537,7 +1546,7 @@ endif; ?>
                       <td>
                         <select name="verbosity_level" class="form-control">
 <?php
-                        foreach ($openvpn_verbosity_level as $verb_value => $verb_desc) :
+                        foreach (openvpn_verbosity_level() as $verb_value => $verb_desc):
                             $selected = '';
                             if ($pconfig['verbosity_level'] == $verb_value) {
                                 $selected = 'selected="selected"';
@@ -1609,16 +1618,17 @@ endif; ?>
                   foreach ($a_server as $server) :?>
                   <tr>
                     <td>
-                      <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($server['disable'])) ? gettext("disable") : gettext("enable");?>">
-                        <span class="glyphicon glyphicon-play <?=(empty($server['disable'])) ? "text-success" : "text-muted";?>"></span>
+                      <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($server['disable'])) ? gettext("Disable") : gettext("Enable");?>">
+                        <span class="fa fa-play <?=(empty($server['disable'])) ? "text-success" : "text-muted";?>"></span>
                       </a>
                     </td>
                     <td>
                         <?=htmlspecialchars($server['protocol']);?> / <?=htmlspecialchars($server['local_port']);?>
                     </td>
                     <td>
-                        <?=htmlspecialchars($server['tunnel_network']);?> <?=!empty($server['tunnel_networkv6']) ? "," :""?>
-                        <?=htmlspecialchars($server['tunnel_networkv6']);?>
+                        <?= htmlspecialchars($server['tunnel_network'])  ?>
+                        <?= !empty($server['tunnel_networkv6']) && !empty($server['tunnel_network']) ? ',' : '' ?>
+                        <?= htmlspecialchars($server['tunnel_networkv6']) ?>
                     </td>
                     <td>
                         <?=htmlspecialchars($server['description']);?>
@@ -1631,14 +1641,14 @@ endif; ?>
 <?php
                   $i++;
                   endforeach;?>
-                  <tr><td colspan="5">&nbsp;</td></tr>
+                  <tr>
+                    <td colspan="5">
+                      <a href="wizard.php?xml=openvpn" class="btn btn-default">
+                        <i class="fa fa-magic"></i> <?= gettext('Use a wizard to setup a new server') ?>
+                       </a>
+                    </td>
+                  </tr>
                 </tbody>
-                <tfoot>
-                  <tr><td colspan="5">
-                    <a href="wizard.php?xml=openvpn" class="btn btn-default btn-xs"><span class="fa fa-magic"></span></a>
-                    &nbsp;<?=gettext("Use a wizard to setup a new server");?>
-                  </td></tr>
-                </tfoot>
               </table>
             </div>
           </section>
