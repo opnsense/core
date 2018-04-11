@@ -799,15 +799,22 @@ function filter_tdr_month($schedule)
 
 function filter_setup_logging_interfaces(&$FilterIflist)
 {
-    global $config;
-
     $rules = '';
+
     if (isset($FilterIflist['lan'])) {
         $rules .= "set loginterface {$FilterIflist['lan']['if']}\n";
     } elseif (isset($FilterIflist['wan'])) {
         $rules .= "set loginterface {$FilterIflist['wan']['if']}\n";
     }
+
     return $rules;
+}
+
+function default_table_entries_size()
+{
+    $current = `pfctl -sm | grep table-entries | awk '{print $4};'`;
+
+    return $current;
 }
 
 function default_state_size()
