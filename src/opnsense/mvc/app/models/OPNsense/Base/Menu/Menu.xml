@@ -32,10 +32,11 @@
             <Tester order="50" url="/diag_authentication.php"/>
         </Access>
         <Configuration cssClass="fa fa-history fa-fw">
+            <Backups url="/diag_backup.php"/>
+            <Defaults url="/diag_defaults.php"/>
             <History url="/diag_confbak.php">
                 <none url="/diag_confbak.php*" visibility="hidden"/>
             </History>
-            <Backups url="/diag_backup.php"/>
         </Configuration>
         <Firmware cssClass="fa fa-building-o fa-fw">
             <Updates order="10" url="/ui/core/firmware/#updates"/>
@@ -43,7 +44,6 @@
             <Packages order="30" url="/ui/core/firmware/#packages"/>
             <Settings order="40" url="/ui/core/firmware/#settings"/>
             <Reporter order="50" url="/crash_reporter.php"/>
-            <Defaults order="60" url="/diag_defaults.php"/>
         </Firmware>
         <Gateways cssClass="fa fa-location-arrow fa-fw">
             <Single order="10" url="/system_gateways.php">
