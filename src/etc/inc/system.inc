@@ -1356,19 +1356,15 @@ function system_login_configure($verbose = false)
     exec('/bin/kill -HUP 1');
 }
 
-/****f* config/reset_factory_defaults
- * NAME
- *   reset_factory_defaults - Reset the system to its default configuration.
- ******/
 function reset_factory_defaults($sync = true)
 {
-    mwexec('/bin/rm -r /conf/*');
+    mwexec('/bin/rm -fr /conf/* /var/log/* /root/.history');
     disable_security_checks();
 
     mwexec('/usr/local/sbin/beep.sh stop');
 
-    /* as we go through a special case directly reboot */
-    $shutdown_cmd = '/sbin/shutdown -or now';
+    /* as we go through a special case directly shut down */
+    $shutdown_cmd = '/sbin/shutdown -op now';
     if ($sync) {
         mwexec($shutdown_cmd);
     } else {
