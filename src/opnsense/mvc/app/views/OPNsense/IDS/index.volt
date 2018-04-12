@@ -835,7 +835,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <div class="row">
                 <div class="col-sm-12 actionBar">
                     <select id="alert-logfile" class="selectpicker" data-width="200px"></select>
-                    <span id="actDeleteLog" class="btn btn-lg fa fa-trash" style="cursor: pointer;" title="Delete Alert Log"></span>
+                    <span id="actDeleteLog" class="btn btn-lg fa fa-trash" style="cursor: pointer;" title="{{ lang._('Delete Alert Log') }}"></span>
                     <select id="alert-logfile-max" class="selectpicker" data-width="80px">
                         <option value="7">7</option>
                         <option value="50">50</option>
