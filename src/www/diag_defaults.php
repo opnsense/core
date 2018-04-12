@@ -43,7 +43,7 @@ include("head.inc");
       <section class="col-xs-12">
 <?php
       if (!empty($_POST['Submit'])):
-        print_info_box(gettext("The system has been reset to factory defaults and is now rebooting. This may take a few minutes, depending on your hardware.")); ?>
+        print_info_box(gettext('The system has been reset to factory defaults and is shutting down.')); ?>
 <?php
       else: ?>
         <form method="post">
@@ -52,9 +52,9 @@ include("head.inc");
             <li><?= gettext('Reset to factory defaults') ?></li>
             <li><?= gettext('LAN IP address will be reset to 192.168.1.1') ?></li>
             <li><?= gettext('System will be configured as a DHCP server on the default LAN interface') ?></li>
-            <li><?= gettext('Reboot after changes are installed') ?></li>
             <li><?= gettext('WAN interface will be set to obtain an address automatically from a DHCP server') ?></li>
             <li><?= gettext('Admin user name and password will be reset') ?></li>
+            <li><?= gettext('Shut down after changes are complete') ?></li>
           </ul>
           <p><strong><?=gettext("Are you sure you want to proceed?");?></strong></p>
           <div class="btn-group">

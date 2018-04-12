@@ -36,7 +36,7 @@ $yes_no_prompt = '[y/N]: ';
 
 echo <<<EOD
 You are about to reset the firewall to factory defaults.
-The firewall will reboot after resetting the configuration.
+The firewall will shut down directly after completion.
 
 Do you want to proceed? {$yes_no_prompt}
 EOD;
