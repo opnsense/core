@@ -303,11 +303,32 @@ if [ "$pkg_running" == "" ]; then
         fi
       fi
 
+      upgrade_major_message=$(cat /usr/local/opnsense/firmware-message 2> /dev/null | sed 's/"/\\&/g' | tr '\n' ' ')
+      upgrade_major_version=$(cat /usr/local/opnsense/firmware-upgrade 2> /dev/null)
       product_version=$(cat /usr/local/opnsense/version/opnsense)
       product_name=$(cat /usr/local/opnsense/version/opnsense.name)
       os_version=$(uname -sr)
       last_check=$(date)
 
       # write our json structure
-      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"product_version\":\"$product_version\",\"product_name\":\"$product_name\",\"os_version\":\"$os_version\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"download_size\":\"$download_size\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded],\"downgrade_packages\":[$packages_downgraded],\"upgrade_needs_reboot\":\"$upgrade_needs_reboot\"}"
+      cat << EOF
+{
+	"connection":"$connection",
+	"downgrade_packages":[$packages_downgraded],
+	"download_size":"$download_size",
+	"last_check":"$last_check",
+	"new_packages":[$packages_new],
+	"os_version":"$os_version",
+	"product_name":"$product_name",
+	"product_version":"$product_version",
+	"reinstall_packages":[$packages_reinstall],
+	"repository":"$repository",
+	"updates":"$updates",
+	"upgrade_needs_reboot":"$upgrade_needs_reboot",
+	"upgrade_major_message":"$upgrade_major_message",
+	"upgrade_major_version":"$upgrade_major_version",
+	"upgrade_packages":[$packages_upgraded]
+}
+EOF
+
 fi

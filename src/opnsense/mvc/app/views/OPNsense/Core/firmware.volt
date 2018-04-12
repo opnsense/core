@@ -45,6 +45,8 @@
     function updateStatus() {
         // update UI
         updateStatusPrepare(false);
+        $('#major-upgrade').hide();
+        $('#upgrade_maj').prop('disabled', true);
 
         // request status
         ajaxGet('/api/core/firmware/status',{},function(data,status){
@@ -98,6 +100,14 @@
 
                 // update list so plugins sync as well (all)
                 packagesInfo(true);
+            }
+
+            $.upgrade_major_message = data['upgrade_major_message'];
+            $.upgrade_major_version = data['upgrade_major_version'];
+
+            if ($.upgrade_major_version != "") {
+                $('#upgrade-version').text($.upgrade_major_version);
+                $('#major-upgrade').show();
             }
         });
     }
@@ -302,7 +312,6 @@
                 $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
                 $("#audit_progress").removeClass("fa fa-spinner fa-pulse");
                 $("#audit_progress").addClass("caret");
-                $("#upgrade_maj").attr("style","display:none");
                 $("#upgrade").attr("style","display:none");
                 $("#audit_all").attr("style","");
                 if ($.upgrade_action == 'pkg') {
@@ -355,7 +364,7 @@
             var local_count = 0;
             var plugin_count = 0;
             var changelog_count = 0;
-            var changelog_max = 12;
+            var changelog_max = 15;
             if ($.changelog_keep_full != undefined) {
                 changelog_max = 9999;
             }
@@ -538,33 +547,32 @@
             upgrade_ui();
         });
         $('#checkupdate_maj').click(function () {
-            $("#checkupdate_progress_maj").addClass("fa fa-spinner fa-pulse");
-            // empty call refreshes changelogs in the background
-            ajaxCall('/api/core/firmware/changelog/update', {}, function () {
-                $("#checkupdate_progress_maj").removeClass("fa fa-spinner fa-pulse");
+            if ($.upgrade_major_message == "") {
+                $('#upgrade_maj').prop('disabled', false);
+                changelog($.upgrade_major_version);
+            } else {
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_WARNING,
                     title: "{{ lang._('Upgrade instructions') }}",
-                    message: $('#firmware-message').html(),
+                    /* we trust this data, it was signed by us and secured by csrf */
+                    message: htmlDecode($.upgrade_major_message),
                     buttons: [{
-<?php if (file_exists('/usr/local/opnsense/firmware-upgrade')): ?>
-                        label: "{{ lang._('Unlock upgrade') }}",
+                        label: "{{ lang._('Unlock') }}",
                         cssClass: 'btn-warning',
                         action: function (dialogRef) {
                             dialogRef.close();
-                            $("#upgrade_maj").attr("style","");
-                            changelog($('#firmware-upgrade').text());
+                            $('#upgrade_maj').prop('disabled', false);
+                            changelog($.upgrade_major_version);
                         }
                     },{
-<?php endif ?>
-                        label: "{{ lang._('Close') }}",
+                        label: "{{ lang._('Cancel') }}",
                         action: function (dialogRef) {
                             dialogRef.close();
                         }
                     }]
                 });
                 packagesInfo(true);
-            });
+            }
         });
 
         // populate package information
@@ -706,16 +714,7 @@
 
 <div class="container-fluid">
     <div class="row">
-<?php if (file_exists('/usr/local/opnsense/firmware-message')): ?>
-        <div id="firmware-upgrade" style="display:none;"><?= @file_get_contents('/usr/local/opnsense/firmware-upgrade') ?></div>
-        <div id="firmware-message" style="display:none;"><?= str_replace(PHP_EOL, ' ', @file_get_contents('/usr/local/opnsense/firmware-message')) ?></div>
-        <div class="alert alert-warning" role="alert" style="min-height: 65px;">
-            <button class='btn btn-primary pull-right' id="upgrade_maj" style="display:none;">{{ lang._('Upgrade now') }} <i id="upgrade_progress_maj"></i> </button>
-            <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;">{{ lang._('Check for upgrade') }} <i id="checkupdate_progress_maj"></i></button>
-            <div style="margin-top: 8px;">{{ lang._('This software release has reached its designated end of life.') }}</div>
-        </div>
-<?php endif ?>
-        <div class="alert alert-info" role="alert" style="min-height: 65px;">
+        <div id="minor-upgrade" class="alert alert-info" role="alert" style="min-height:65px;">
             <button class='btn btn-primary pull-right' id="upgrade" style="display:none">{{ lang._('Update now') }} <i id="upgrade_progress"></i></button>
             <div class="btn-group pull-right">
                 <button type="button" id="audit_all" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -728,6 +727,15 @@
             </div>
             <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;">{{ lang._('Check for updates') }} <i id="checkupdate_progress"></i></button>
             <div style="margin-top: 8px;" id="updatestatus">{{ lang._('Click to check for updates.')}}</div>
+        </div>
+        <div id="major-upgrade" class="alert alert-warning" role="alert" style="min-height:65px;display:none;">
+            <button class='btn btn-primary pull-right' id="upgrade_maj" disabled="disabled">{{ lang._('Upgrade now') }} <i id="upgrade_progress_maj"></i> </button>
+            <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;">{{ lang._('Unlock this upgrade') }}</button>
+            <div style="margin-top: 8px;">
+                {{ lang._('This software release has reached its designated end of life.') }}
+                {{ lang._('The next major release is:') }}
+                <span id="upgrade-version"></span>
+            </div>
         </div>
     </div>
     <div class="row">
