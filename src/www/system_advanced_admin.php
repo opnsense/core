@@ -69,11 +69,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
     $pconfig = $_POST;
 
-    /* input validation */
-    if (!empty($pconfig['webguiport'])) {
-        if (!is_port($pconfig['webguiport'])) {
-            $input_errors[] = gettext('You must specify a valid web GUI port number');
-        }
+    if (!empty($pconfig['webguiport']) && !is_port($pconfig['webguiport'])) {
+        $input_errors[] = gettext('You must specify a valid web GUI port number.');
+    }
+
+    if (empty($pconfig['webguiproto']) || !in_array($pconfig['webguiproto'], array('http', 'https'))) {
+        $input_errors[] = gettext('You must specify a valid web GUI protocol.');
     }
 
     if (!empty($pconfig['althostnames'])) {
@@ -85,10 +86,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if (!empty($pconfig['sshport'])) {
-        if (!is_port($pconfig['sshport'])) {
-            $input_errors[] = gettext("You must specify a valid port number");
-        }
+    if (!empty($pconfig['sshport']) && !is_port($pconfig['sshport'])) {
+        $input_errors[] = gettext('You must specify a valid SSH port number.');
     }
 
     if (count($input_errors) == 0) {
