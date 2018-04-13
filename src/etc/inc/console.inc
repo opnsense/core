@@ -479,8 +479,6 @@ EOD;
         if (strcasecmp(chop(fgets($fp)), "y") != 0) {
             return;
         }
-
-        echo "\n";
     }
 
     $vlancfg = array();
