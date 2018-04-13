@@ -78,15 +78,15 @@ function set_networking_interfaces_ports($probe = false)
     $interactive = true;
     $key = null;
 
-    $iflist = get_interface_list(false, true);
-    $vlanlist = array();
+    $iflist_all = get_interface_list(false, true);
+    $iflist = array();
 
     foreach ($iflist as $iface => $ifa) {
         $iftype = preg_split('/\d/', $iface);
-        if (array_shift($iftype) == '_vlan') {
+        if (isset($iftype[1]) && $iftype[1] == '_vlan') {
             continue;
         }
-        $vlanlist[$iface] = $ifa;
+        $iflist[$iface] = $ifa;
     }
 
     if ($probe) {
@@ -135,15 +135,15 @@ EOD;
     }
 
     if (in_array($key, array('y', 'Y'))) {
-        vlan_setup($vlanlist, $fp);
+        vlan_setup($iflist, $fp);
     }
 
     if (isset($config['vlans']['vlan'])) {
-        echo "\nVLAN interfaces:\n";
+        echo "\nVLAN interfaces:\n\n";
         foreach ($config['vlans']['vlan'] as $vlan) {
             echo sprintf("% -16s%s\n", "{$vlan['if']}_vlan{$vlan['tag']}",
                 "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}");
-            $iflist[$vlan['if'] . '_vlan' . $vlan['tag']] = array();
+            $iflist_all[$vlan['if'] . '_vlan' . $vlan['tag']] = array();
         }
     }
 
@@ -177,7 +177,7 @@ EOD;
             }
         }
 
-        if (!array_key_exists($wanif, $iflist)) {
+        if (!array_key_exists($wanif, $iflist_all)) {
             printf("\nInvalid interface name '%s'\n", $wanif);
             unset($wanif);
         }
@@ -207,7 +207,7 @@ EOD;
             }
         }
 
-        if (!array_key_exists($lanif, $iflist)) {
+        if (!array_key_exists($lanif, $iflist_all)) {
             printf("\nInvalid interface name '%s'\n", $lanif);
             unset($lanif);
         }
@@ -264,7 +264,7 @@ EOD;
                 $optif[$i] = $ad;
             }
 
-            if (!array_key_exists($optif[$i], $iflist)) {
+            if (!array_key_exists($optif[$i], $iflist_all)) {
                 printf("\nInvalid interface name '%s'\n", $optif[$i]);
                 unset($optif[$i]);
                 continue;
@@ -490,7 +490,7 @@ EOD;
     while (1) {
         $vlan = array();
 
-        echo "\nVLAN-capable interfaces:\n";
+        echo "\nVLAN-capable interfaces:\n\n";
         if (!is_array($iflist)) {
             echo "No interfaces found!\n";
         } else {
