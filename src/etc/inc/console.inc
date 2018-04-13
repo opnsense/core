@@ -81,7 +81,7 @@ function set_networking_interfaces_ports($probe = false)
     $iflist_all = get_interface_list(false, true);
     $iflist = array();
 
-    foreach ($iflist as $iface => $ifa) {
+    foreach ($iflist_all as $iface => $ifa) {
         $iftype = preg_split('/\d/', $iface);
         if (isset($iftype[1]) && $iftype[1] == '_vlan') {
             continue;
@@ -108,14 +108,13 @@ Valid interfaces are:
 
 EOD;
 
-    if (!is_array($iflist)) {
-        echo "No interfaces found!\n";
-        $iflist = array();
-    } else {
+    if (count($iflist)) {
         foreach ($iflist as $iface => $ifa) {
             interfaces_bring_up($iface);
             echo sprintf("%-16s %s %s\n", $iface, $ifa['mac'], $ifa['dmesg']);
         }
+    } else {
+        echo "No interfaces found!\n";
     }
 
     $ifnames = array_keys($iflist);
