@@ -124,7 +124,7 @@ EOD;
 You now have the opportunity to configure VLANs.  If you don't require VLANs
 for initial connectivity, say no here and use the GUI to configure VLANs later.
 
-Do you want to set up VLANs now? ${yes_no_prompt}
+Do you want to configure VLANs now? ${yes_no_prompt}
 EOD;
     if ($interactive) {
         $key = chop(fgets($fp));
