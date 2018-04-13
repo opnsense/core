@@ -75,12 +75,12 @@ function startElement_attr($parser, $name, $attrs) {
             }
             $attrptr[count($ptr)] = $attrs;
         }
-    } else if (isset($ptr)) {
+    } elseif (isset($ptr)) {
         /* multiple entries not allowed for this element, bail out */
         die(sprintf(gettext('XML error: %s at line %d cannot occur more than once') . "\n",
             $name,
             xml_get_current_line_number($parser)));
-    } else if (isset($writeattrs)) {
+    } elseif (isset($writeattrs)) {
         $attrptr = $attrs;
     }
 
@@ -265,14 +265,14 @@ function get_wireless_modes($interface) {
                     if (!isset($wireless_modes["11b"])) {
                         $wireless_modes["11b"] = array();
                     }
-                } else if ($wireless_mode == "11g ht") {
+                } elseif ($wireless_mode == "11g ht") {
                     if (!isset($wireless_modes["11b"])) {
                         $wireless_modes["11b"] = array();
                     } elseif (!isset($wireless_modes["11g"])) {
                         $wireless_modes["11g"] = array();
                     }
                     $wireless_mode = "11ng";
-                } else if ($wireless_mode == "11a ht") {
+                } elseif ($wireless_mode == "11a ht") {
                     if (!isset($wireless_modes["11a"])) {
                         $wireless_modes["11a"] = array();
                     }
@@ -1231,16 +1231,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 //       this construction implements a lot of weirness (more info interface_sync_wireless_clones)
                 $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
                 if (!empty($pconfig['persistcommonwireless'])) {
-                    if (!isset($config['wireless']) || !is_array($config['wireless'])) {
-                        $config['wireless'] = array();
-                    }
-                    if (!isset($config['wireless']['interfaces']) || !is_array($config['wireless']['interfaces'])) {
-                        $config['wireless']['interfaces'] = array();
-                    }
-                    if (empty($config['wireless']['interfaces'][$wlanbaseif])) {
-                        $config['wireless']['interfaces'][$wlanbaseif] = array();
-                    }
-                } else if (isset($config['wireless']['interfaces'][$wlanbaseif])) {
+                    config_read_array('wireless', 'interfaces', $wlanbaseif);
+                } elseif (isset($config['wireless']['interfaces'][$wlanbaseif])) {
                     unset($config['wireless']['interfaces'][$wlanbaseif]);
                 }
 

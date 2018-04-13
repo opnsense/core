@@ -291,9 +291,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                   /* check for wireless interfaces, set or clear ['wireless'] */
                   if (match_wireless_interface($ifport)) {
-                      if (empty($config['interfaces'][$ifname]['wireless'])) {
-                          $config['interfaces'][$ifname]['wireless'] = array();
-                      }
+                      config_read_array('interfaces', $ifname, 'wireless');
                   } elseif (isset($config['interfaces'][$ifname]['wireless'])) {
                       unset($config['interfaces'][$ifname]['wireless']);
                   }

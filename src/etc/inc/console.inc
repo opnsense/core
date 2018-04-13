@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -456,11 +456,10 @@ EOD;
 
 function vlan_setup($iflist, $fp)
 {
-    global $config;
-
+    $vlancfg = &config_read_array('vlans', 'vlan');
     $yes_no_prompt = '[y/N]: ';
 
-    if (isset($config['vlans']['vlan'])) {
+    if (count($vlancfg)) {
 
     echo <<<EOD
 
@@ -474,10 +473,9 @@ EOD;
         }
     }
 
-    config_read_array('vlans', 'vlan');
-
     echo "\n";
 
+    $vlancfg = array();
     $vlanif = 0;
 
     while (1) {
@@ -520,7 +518,7 @@ EOD;
             continue;
         }
 
-        $config['vlans']['vlan'][] = $vlan;
+        $vlancfg[] = $vlan;
         $vlanif++;
     }
 }
