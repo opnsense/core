@@ -137,7 +137,7 @@ EOD;
         vlan_setup($iflist, $fp);
     }
 
-    if (isset($config['vlans']['vlan'])) {
+    if (isset($config['vlans']['vlan'][0])) {
         echo "\nVLAN interfaces:\n\n";
         foreach ($config['vlans']['vlan'] as $vlan) {
             echo sprintf("% -16s%s\n", "{$vlan['if']}_vlan{$vlan['tag']}",
