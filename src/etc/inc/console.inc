@@ -79,6 +79,15 @@ function set_networking_interfaces_ports($probe = false)
     $key = null;
 
     $iflist = get_interface_list(false, true);
+    $vlanlist = array();
+
+    foreach ($iflist as $iface => $ifa) {
+        $iftype = preg_split('/\d/', $iface);
+        if (array_shift($iftype) == '_vlan') {
+            continue;
+        }
+        $vlanlist[$iface] = $ifa;
+    }
 
     if ($probe) {
         echo PHP_EOL . 'Press any key to start the manual interface assignment:  ';
@@ -126,11 +135,11 @@ EOD;
     }
 
     if (in_array($key, array('y', 'Y'))) {
-        vlan_setup($iflist, $fp);
+        vlan_setup($vlanlist, $fp);
     }
 
     if (isset($config['vlans']['vlan'])) {
-        echo "\n\nVLAN interfaces:\n\n";
+        echo "\nVLAN interfaces:\n";
         foreach ($config['vlans']['vlan'] as $vlan) {
             echo sprintf("% -16s%s\n", "{$vlan['if']}_vlan{$vlan['tag']}",
                 "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}");
@@ -471,9 +480,9 @@ EOD;
         if (strcasecmp(chop(fgets($fp)), "y") != 0) {
             return;
         }
-    }
 
-    echo "\n";
+        echo "\n";
+    }
 
     $vlancfg = array();
     $vlanif = 0;
@@ -481,11 +490,11 @@ EOD;
     while (1) {
         $vlan = array();
 
-        echo "\n\nVLAN-capable interfaces:\n\n";
-        if(!is_array($iflist)) {
+        echo "\nVLAN-capable interfaces:\n";
+        if (!is_array($iflist)) {
             echo "No interfaces found!\n";
         } else {
-            $vlan_capable=0;
+            $vlan_capable = 0;
             foreach ($iflist as $iface => $ifa) {
                 echo sprintf("% -8s%s%s\n", $iface, $ifa['mac'],
                     $ifa['up'] ? "   (up)" : "");
@@ -493,7 +502,7 @@ EOD;
             }
         }
 
-        if($vlan_capable == 0) {
+        if ($vlan_capable == 0) {
             echo "No VLAN-capable interfaces detected.\n";
             return;
         }
