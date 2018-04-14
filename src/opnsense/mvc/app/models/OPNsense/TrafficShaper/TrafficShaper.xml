@@ -48,6 +48,12 @@
                         <dst-ip>destination</dst-ip>
                     </OptionValues>
                 </mask>
+                <buckets type="IntegerField">
+                    <Required>N</Required>
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <ValidationMessage>bucket size should be between 1...65535</ValidationMessage>
+                </buckets>
                 <scheduler type="OptionField">
                   <Required>N</Required>
                   <default></default>
@@ -149,6 +155,12 @@
                         <dst-ip>destination</dst-ip>
                     </OptionValues>
                 </mask>
+                <buckets type="IntegerField">
+                    <Required>N</Required>
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <ValidationMessage>bucket size should be between 1...65535</ValidationMessage>
+                </buckets>
                 <codel_enable type="BooleanField">
                   <default>0</default>
                   <Required>Y</Required>
