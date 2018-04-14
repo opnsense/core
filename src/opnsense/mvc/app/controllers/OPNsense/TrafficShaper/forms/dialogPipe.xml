@@ -34,6 +34,13 @@
         ]]></help>
     </field>
     <field>
+        <id>pipe.buckets</id>
+        <label>buckets</label>
+        <type>text</type>
+        <help>Specifies the size of the hash table used for storing the various dynamic pipes configured with the mask setting</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <id>pipe.scheduler</id>
         <label>Scheduler type</label>
         <type>dropdown</type>

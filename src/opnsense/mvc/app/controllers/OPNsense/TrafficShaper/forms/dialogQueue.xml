@@ -28,6 +28,13 @@
         ]]></help>
     </field>
     <field>
+        <id>queue.buckets</id>
+        <label>buckets</label>
+        <type>text</type>
+        <help>Specifies the size of the hash table used for storing the various dynamic queues configured with the mask setting</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <id>queue.codel_enable</id>
         <label>Enable CoDel</label>
         <type>checkbox</type>
