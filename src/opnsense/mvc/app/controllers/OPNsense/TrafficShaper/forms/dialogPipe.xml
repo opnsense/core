@@ -27,7 +27,7 @@
         <id>pipe.mask</id>
         <label>mask</label>
         <type>dropdown</type>
-        <help><![CDATA[Dynamic queue creation by source or destination address.
+        <help><![CDATA[Dynamic pipe creation by source or destination address.
         <li>Choose destination to give every IP in destination field of rules the specified bandwith. A pipe with 1Mbit e.g. would let 3 clients lend 1Mbit each so 3Mbit max. Normally this is used for download pipes.</li>
         <li>Choose source to give every IP in the source field of rules the specified bandwith. Normally this is used for download pipes.</li>
         <li>Leave this value empty if you want to create a pipe with a fixed bandwith.</li>
