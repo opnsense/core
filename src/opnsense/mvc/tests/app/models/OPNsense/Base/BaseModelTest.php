@@ -277,9 +277,9 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         BaseModelTest::$model->AllOrNone->value2 = "";
         BaseModelTest::$model->AllOrNone->value3 = "";
         BaseModelTest::$model->serializeToConfig();
-        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value1, '');
-        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value2, '');
-        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value3, '');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value1, '');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value2, '');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value3, '');
     }
 
     /**
@@ -293,9 +293,9 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         BaseModelTest::$model->AllOrNone->value2 = "X";
         BaseModelTest::$model->AllOrNone->value3 = "";
         BaseModelTest::$model->serializeToConfig();
-        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value1, '');
-        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value2, 'X');
-        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value3, '');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value1, '');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value2, 'X');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value3, '');
     }
 
     /**
@@ -307,8 +307,63 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         BaseModelTest::$model->AllOrNone->value2 = "X2";
         BaseModelTest::$model->AllOrNone->value3 = "X3";
         BaseModelTest::$model->serializeToConfig();
-        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value1, null);
-        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value2, null);
-        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->AllOrNone->value3, null);
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value1, "X1");
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value2, "X2");
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value3, "X3");
+    }
+
+    /**
+     * @depends testRunMigrations
+     */
+    public function testDependConstraintInitial()
+    {
+        BaseModelTest::$model->DependConstraint->value1 = "0";
+        BaseModelTest::$model->DependConstraint->value2 = "";
+        BaseModelTest::$model->serializeToConfig();
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value1, "0");
+        $this->assertEquals(
+            Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value2, ""
+        );
+    }
+
+    /**
+     * @depends testDependConstraintInitial
+     * @expectedException Exception
+     * @expectedExceptionMessage when value1 is enabled value2 is required
+     */
+    public function testDependConstraintNok()
+    {
+        BaseModelTest::$model->DependConstraint->value1 = "1";
+        BaseModelTest::$model->DependConstraint->value2 = "";
+        BaseModelTest::$model->serializeToConfig();
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value1, "0");
+    }
+
+    /**
+     * @depends testDependConstraintInitial
+     */
+    public function testDependConstraintOk1()
+    {
+        BaseModelTest::$model->DependConstraint->value1 = "1";
+        BaseModelTest::$model->DependConstraint->value2 = "xxx";
+        BaseModelTest::$model->serializeToConfig();
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value1, "1");
+        $this->assertEquals(
+            Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value2, "xxx"
+        );
+    }
+
+    /**
+     * @depends testDependConstraintInitial
+     */
+    public function testDependConstraintOk2()
+    {
+        BaseModelTest::$model->DependConstraint->value1 = "0";
+        BaseModelTest::$model->DependConstraint->value2 = "xxx";
+        BaseModelTest::$model->serializeToConfig();
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value1, "0");
+        $this->assertEquals(
+            Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value2, "xxx"
+        );
     }
 }
