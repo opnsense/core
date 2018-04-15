@@ -1707,22 +1707,6 @@ function interface_carp_configure(&$vip)
         return;
     }
 
-    if (is_ipaddrv4($vip['subnet'])) {
-        /* Ensure a IP on this interface exists prior to configuring CARP. */
-        $ww_subnet_ip = find_interface_ip($realif);
-        if (!is_ipaddrv4($ww_subnet_ip)) {
-            file_notice("CARP", sprintf(gettext("Sorry but we could not find a required assigned ip address on the interface for the virtual IP address %s."), $vip['subnet']), "Firewall: Virtual IP", "");
-            return;
-        }
-    } elseif (is_ipaddrv6($vip['subnet'])) {
-        /* Ensure a IP on this interface exists prior to configuring CARP. */
-        $ww_subnet_ip = find_interface_ipv6($realif);
-        if (!is_ipaddrv6($ww_subnet_ip)) {
-            file_notice("CARP", sprintf(gettext("Sorry but we could not find a required assigned ip address on the interface for the virtual IPv6 address %s."), $vip['subnet']), "Firewall: Virtual IP", "");
-            return;
-        }
-    }
-
     $vip_password = $vip['password'];
     $vip_password = escapeshellarg(addslashes(str_replace(" ", "", $vip_password)));
     if ($vip['password'] != "") {

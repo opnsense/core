@@ -113,13 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("A valid IP address must be specified.");
         }
 
-        $natiflist = get_configured_interface_with_descr();
-        foreach ($natiflist as $natif => $natdescr) {
-            if ($pconfig['interface'] == $natif && (empty($config['interfaces'][$natif]['ipaddr']) && empty($config['interfaces'][$natif]['ipaddrv6']))) {
-                $input_errors[] = gettext("The interface chosen for the VIP has no IPv4 or IPv6 address configured so it cannot be used as a parent for the VIP.");
-            }
-        }
-
         /* ipalias and carp should not use network or broadcast address */
         if ($pconfig['mode'] == "ipalias" || $pconfig['mode'] == "carp") {
             if (is_ipaddrv4($pconfig['subnet']) && $pconfig['subnet_bits'] != "32") {
