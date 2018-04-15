@@ -1,6 +1,6 @@
 {#
  # Copyright (c) 2015-2018 Franco Fichtner <franco@opnsense.org>
- # Copyright (c) 2015-2016 Deciso B.V.
+ # Copyright (c) 2015-2018 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -607,13 +607,15 @@
                             .prop('selected', selected)
                     );
                 });
-                $("#firmware_mirror").prepend($("<option/>")
+                if (firmwareoptions['allow_custom']) {
+                    $("#firmware_mirror").prepend($("<option/>")
                         .attr("value", firmwareconfig['mirror'])
                         .text("(other)")
                         .data("other", 1)
                         .data("has_subscription", false)
                         .prop('selected', other_selected)
-                );
+                    );
+                }
 
                 if ($("#firmware_mirror option:selected").data("has_subscription") == true) {
                     $("#firmware_mirror_subscription").val(firmwareconfig['mirror'].substr($("#firmware_mirror").val().length+1));
@@ -636,12 +638,14 @@
                             .prop('selected', selected)
                     );
                 });
-                $("#firmware_flavour").prepend($("<option/>")
-                        .attr("value",firmwareconfig['flavour'])
+                if (firmwareoptions['allow_custom']) {
+                    $("#firmware_flavour").prepend($("<option/>")
+                        .attr("value", firmwareconfig['flavour'])
                         .text("(other)")
                         .data("other", 1)
                         .prop('selected', other_selected)
-                );
+                    );
+                }
                 $("#firmware_flavour").selectpicker('refresh');
                 $("#firmware_flavour").change();
 

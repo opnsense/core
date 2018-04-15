@@ -1,0 +1,108 @@
+<firmware>
+    <mirrors allow_custom="true">
+        <mirror>
+            <url/>
+            <description>(default)</description>
+        </mirror>
+        <mirror>
+            <url>https://opnsense.aivian.org</url>
+            <description>Aivian (Shaoxing, CN)</description>
+        </mirror>
+        <mirror has_subscription="True">
+            <url>https://opnsense-update.deciso.com</url>
+            <description>Deciso (NL, Commercial)</description>
+        </mirror>
+        <mirror>
+            <url>https://mirror.dns-root.de/opnsense</url>
+            <description>dns-root.de (Cloudflare CDN)</description>
+        </mirror>
+        <mirror>
+            <url>https://opnsense.c0urier.net</url>
+            <description>c0urier.net (Lund, SE)</description>
+        </mirror>
+        <mirror>
+            <url>https://ftp.yzu.edu.tw/opnsense</url>
+            <description>Dept. of CSE, Yuan Ze University (Taoyuan City, TW)</description>
+        </mirror>
+        <mirror>
+            <url>https://fourdots.com/mirror/OPNSense</url>
+            <description>FourDots (Belgrade, RS)</description>
+        </mirror>
+        <mirror>
+            <url>https://opnsense-mirror.hiho.ch</url>
+            <description>HiHo (Zurich, CH)</description>
+        </mirror>
+        <mirror>
+            <url>https://opnsense.ieji.de</url>
+            <description>ieji.de (Frankfurt, DE)</description>
+        </mirror>
+        <mirror>
+            <url>https://mirrors.dotsrc.org/opnsense/</url>
+            <description>Aalborg University (Aalborg, DK)</description>
+        </mirror>
+        <mirror>
+            <url>http://mirror.ams1.nl.leaseweb.net/opnsense</url>
+            <description>LeaseWeb (Amsterdam, NL)</description>
+        </mirror>
+        <mirror>
+            <url>http://mirror.fra10.de.leaseweb.net/opnsense</url>
+            <description>LeaseWeb (Frankfurt, DE)</description>
+        </mirror>
+        <mirror>
+            <url>http://mirror.sfo12.us.leaseweb.net/opnsense</url>
+            <description>LeaseWeb (San Francisco, US)</description>
+        </mirror>
+        <mirror>
+            <url>http://mirror.wdc1.us.leaseweb.net/opnsense</url>
+            <description>LeaseWeb (Washington, D.C., US)</description>
+        </mirror>
+        <mirror>
+            <url>http://mirrors.nycbug.org/pub/opnsense</url>
+            <description>NYC*BUG (New York, US)</description>
+        </mirror>
+        <mirror>
+            <url>http://pkg.opnsense.org</url>
+            <description>OPNsense (Amsterdam, NL)</description>
+        </mirror>
+        <mirror>
+            <url>http://mirror.ragenetwork.de/opnsense</url>
+            <description>RageNetwork (Munich, DE)</description>
+        </mirror>
+        <mirror>
+            <url>http://mirror.upb.edu.co/opnsense</url>
+            <description>Universidad Pontificia Bolivariana (Medellin, CO)</description>
+        </mirror>
+        <mirror>
+            <url>http://mirror.venturasystems.tech/opnsense</url>
+            <description>Ventura Systems (Medellin, CO)</description>
+        </mirror>
+        <mirror>
+            <url>http://mirror.wjcomms.co.uk/opnsense</url>
+            <description>WJComms (London, GB)</description>
+        </mirror>
+    </mirrors>
+    <flavours>
+        <flavour>
+            <name/>
+            <description>(default)</description>
+        </flavour>
+        <flavour>
+            <name>libressl</name>
+            <description>LibreSSL</description>
+        </flavour>
+        <flavour>
+            <name>latest</name>
+            <description>OpenSSL</description>
+        </flavour>
+    </flavours>
+    <families>
+        <family>
+            <name/>
+            <description>Production</description>
+        </family>
+        <family>
+            <name>devel</name>
+            <description>Development</description>
+        </family>
+    </families>
+</firmware>

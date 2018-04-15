@@ -2,7 +2,7 @@
 
 /*
  * Copyright (c) 2015-2018 Franco Fichtner <franco@opnsense.org>
- * Copyright (c) 2015-2016 Deciso B.V.
+ * Copyright (c) 2015-2018 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -745,48 +745,78 @@ class FirmwareController extends ApiControllerBase
     public function getFirmwareOptionsAction()
     {
         $this->sessionClose(); // long running action, close session
-
-        /* XXX we might want to move these into configuration files later */
         $mirrors = array();
-        $mirrors[''] = '(default)';
-        $mirrors['https://opnsense.aivian.org'] = 'Aivian (Shaoxing, CN)';
-        $mirrors['https://opnsense-update.deciso.com'] = 'Deciso (NL, Commercial)';
-        $mirrors['https://mirror.dns-root.de/opnsense'] = 'dns-root.de (Cloudflare CDN)';
-        $mirrors['https://opnsense.c0urier.net'] = 'c0urier.net (Lund, SE)';
-        $mirrors['https://ftp.yzu.edu.tw/opnsense'] = 'Dept. of CSE, Yuan Ze University (Taoyuan City, TW)';
-        $mirrors['https://fourdots.com/mirror/OPNSense'] = 'FourDots (Belgrade, RS)';
-        $mirrors['https://opnsense-mirror.hiho.ch'] = 'HiHo (Zurich, CH)';
-        $mirrors['https://opnsense.ieji.de'] = 'ieji.de (Frankfurt, DE)';
-        $mirrors['https://mirrors.dotsrc.org/opnsense/'] = 'Aalborg University (Aalborg, DK)';
-        $mirrors['http://mirror.ams1.nl.leaseweb.net/opnsense'] = 'LeaseWeb (Amsterdam, NL)';
-        $mirrors['http://mirror.fra10.de.leaseweb.net/opnsense'] = 'LeaseWeb (Frankfurt, DE)';
-        $mirrors['http://mirror.sfo12.us.leaseweb.net/opnsense'] = 'LeaseWeb (San Francisco, US)';
-        $mirrors['http://mirror.wdc1.us.leaseweb.net/opnsense'] = 'LeaseWeb (Washington, D.C., US)';
-        $mirrors['http://mirrors.nycbug.org/pub/opnsense'] = 'NYC*BUG (New York, US)';
-        $mirrors['http://pkg.opnsense.org'] = 'OPNsense (Amsterdam, NL)';
-        $mirrors['http://mirror.ragenetwork.de/opnsense'] = 'RageNetwork (Munich, DE)';
-        $mirrors['http://mirror.upb.edu.co/opnsense'] = 'Universidad Pontificia Bolivariana (Medellin, CO)';
-        $mirrors['http://mirror.venturasystems.tech/opnsense'] = 'Ventura Systems (Medellin, CO)';
-        $mirrors['http://mirror.wjcomms.co.uk/opnsense'] = 'WJComms (London, GB)';
-
-        $has_subscription = array();
-        $has_subscription[] = 'https://opnsense-update.deciso.com';
-
         $flavours = array();
-        $flavours[''] = '(default)';
-        $flavours['libressl'] = 'LibreSSL';
-        $flavours['latest'] = 'OpenSSL';
-
         $families = array();
-        $families[''] = gettext('Production');
-        $families['devel'] = gettext('Development');
-
+        $has_subscription = array();
+        $allow_custom = false;
+        // parse firmware options
+        foreach (glob(__DIR__. "/repositories/*.xml") as $xml) {
+            $repositoryXml = simplexml_load_file($xml);
+            if ($repositoryXml === false || $repositoryXml->getName() != 'firmware') {
+                syslog(LOG_ERR, 'unable to parse firmware file '. $xml);
+            } else {
+                if (isset($repositoryXml->mirrors->mirror)) {
+                    if (isset($repositoryXml->mirrors->attributes()->allow_custom)) {
+                        $allow_custom = (strtolower($repositoryXml->mirrors->attributes()->allow_custom) == "true");
+                    }
+                    foreach ($repositoryXml->mirrors->mirror as $mirror) {
+                        $mirrors[(string)$mirror->url] = (string)$mirror->description;
+                        $attr = $mirror->attributes();
+                        if (isset($attr->has_subscription) && strtolower($attr->has_subscription) == "true") {
+                            $has_subscription[] = (string)$mirror->url;
+                        }
+                    }
+                }
+                if (isset($repositoryXml->flavours->flavour)) {
+                    foreach ($repositoryXml->flavours->flavour as $flavour) {
+                        $flavours[(string)$flavour->name] = (string)$flavour->description;
+                    }
+                }
+                if (isset($repositoryXml->families->family)) {
+                    foreach ($repositoryXml->families->family as $family) {
+                        $families[(string)$family->name] = (string)$family->description;
+                    }
+                }
+            }
+        }
         return array(
             'has_subscription' => $has_subscription,
             'flavours' => $flavours,
             'families' => $families,
             'mirrors' => $mirrors,
+            'allow_custom' => $allow_custom
         );
+    }
+
+    /**
+     * Validate firmware options
+     * @param $selectedMirror selected mirror url
+     * @param $selectedFlavour selected flavour
+     * @param $selectedType selected family type
+     * @param $selSubscription selected subscription id
+     * @return array|bool is valid config
+     */
+    private function validateFirmwareOptions($selectedMirror, $selectedFlavour, $selectedType, $selSubscription)
+    {
+        $validOptions = $this->getFirmwareOptionsAction();
+        if ($validOptions['allow_custom']) {
+            // custom options allowed, skip validations
+            return true;
+        } elseif (!isset($validOptions['flavours'][$selectedFlavour])) {
+            syslog(LOG_ERR, 'unable to set invalid firmware flavour '. $selectedFlavour);
+            return false;
+        } elseif (!isset($validOptions['families'][$selectedType])) {
+            syslog(LOG_ERR, 'unable to set invalid firmware release type '. $selectedFlavour);
+            return false;
+        } elseif (!isset($validOptions['mirrors'][$selectedMirror])) {
+            syslog(LOG_ERR, 'unable to set invalid firmware mirror '. $selectedMirror);
+            return false;
+        } elseif (!empty($selSubscription) && !in_array($selectedMirror, $validOptions['has_subscription'])) {
+            syslog(LOG_ERR, 'unable to set subscription for firmware mirror '. $selectedMirror);
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -835,48 +865,53 @@ class FirmwareController extends ApiControllerBase
             $selectedType = filter_var($this->request->getPost("type", null, ""), FILTER_SANITIZE_URL);
             $selSubscription = filter_var($this->request->getPost("subscription", null, ""), FILTER_SANITIZE_URL);
 
-            // config data without model, prepare xml structure and write data
-            if (!isset($config->system->firmware)) {
-                $config->system->addChild('firmware');
-            }
+            if ($this->validateFirmwareOptions($selectedMirror, $selectedFlavour, $selectedType, $selSubscription)) {
+                // config data without model, prepare xml structure and write data
+                if (!isset($config->system->firmware)) {
+                    $config->system->addChild('firmware');
+                }
 
-            if (!isset($config->system->firmware->mirror)) {
-                $config->system->firmware->addChild('mirror');
-            }
-            if (empty($selSubscription)) {
-                $config->system->firmware->mirror = $selectedMirror;
+                if (!isset($config->system->firmware->mirror)) {
+                    $config->system->firmware->addChild('mirror');
+                }
+                if (empty($selSubscription)) {
+                    $config->system->firmware->mirror = $selectedMirror;
+                } else {
+                    // prepend subscription
+                    $config->system->firmware->mirror = $selectedMirror . '/' . $selSubscription;
+                }
+                if (empty($config->system->firmware->mirror)) {
+                    unset($config->system->firmware->mirror);
+                }
+
+                if (!isset($config->system->firmware->flavour)) {
+                    $config->system->firmware->addChild('flavour');
+                }
+                $config->system->firmware->flavour = $selectedFlavour;
+                if (empty($config->system->firmware->flavour)) {
+                    unset($config->system->firmware->flavour);
+                }
+
+                if (!isset($config->system->firmware->type)) {
+                    $config->system->firmware->addChild('type');
+                }
+                $config->system->firmware->type = $selectedType;
+                if (empty($config->system->firmware->type)) {
+                    unset($config->system->firmware->type);
+                }
+
+                if (!@count($config->system->firmware->children())) {
+                    unset($config->system->firmware);
+                }
+
+                Config::getInstance()->save();
+
+                $backend = new Backend();
+                $backend->configdRun("firmware configure");
             } else {
-                // prepend subscription
-                $config->system->firmware->mirror = $selectedMirror . '/' . $selSubscription;
-            }
-            if (empty($config->system->firmware->mirror)) {
-                unset($config->system->firmware->mirror);
+                $response['status'] = "failed";
             }
 
-            if (!isset($config->system->firmware->flavour)) {
-                $config->system->firmware->addChild('flavour');
-            }
-            $config->system->firmware->flavour = $selectedFlavour;
-            if (empty($config->system->firmware->flavour)) {
-                unset($config->system->firmware->flavour);
-            }
-
-            if (!isset($config->system->firmware->type)) {
-                $config->system->firmware->addChild('type');
-            }
-            $config->system->firmware->type = $selectedType;
-            if (empty($config->system->firmware->type)) {
-                unset($config->system->firmware->type);
-            }
-
-            if (!@count($config->system->firmware->children())) {
-                unset($config->system->firmware);
-            }
-
-            Config::getInstance()->save();
-
-            $backend = new Backend();
-            $backend->configdRun("firmware configure");
         }
 
         return $response;
