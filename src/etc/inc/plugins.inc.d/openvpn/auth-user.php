@@ -4,6 +4,7 @@
 /*
     Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     Copyright (C) 2010 Ermal Luçi
+    Copyright (C) 2018 Deciso B.V.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -39,6 +40,19 @@ require_once("auth.inc");
 require_once("util.inc");
 require_once("interfaces.inc");
 
+function get_openvpn_server($serverid)
+{
+    global $config;
+    if (isset($config['openvpn']['openvpn-server'])) {
+        foreach ($config['openvpn']['openvpn-server'] as $server) {
+            if ("server{$server['vpnid']}" == $serverid) {
+                return $server;
+            }
+        }
+    }
+    return null;
+}
+
 /* setup syslog logging */
 openlog("openvpn", LOG_ODELAY, LOG_AUTH);
 
@@ -49,82 +63,54 @@ if (count($argv) > 6) {
     $common_name = $argv[3];
     $modeid = $argv[6];
     $strictusercn = $argv[4] == 'false' ? false : true;
-}
 
-if (!$username || !$password) {
+    $a_server = get_openvpn_server($modeid);
+
+    // primary input validation
+    $error_message = null;
+    if (($strictusercn === true) && ($common_name != $username)) {
+        $error_message = sprintf(
+            "Username does not match certificate common name (%s != %s), access denied.",
+            $username, $common_name
+        );
+    } elseif (!is_array($authmodes)) {
+        $error_message = 'No authentication server has been selected to authenticate against. ' .
+            "Denying authentication for user {$username}";
+    } elseif ($a_server == null) {
+        $error_message = "OpenVPN '$modeid' was not found. Denying authentication for user {$username}";
+    } elseif (!empty($a_server['local_group']) && !in_array($a_server['local_group'], getUserGroups($username))) {
+        $error_message = "OpenVPN '$modeid' requires the local group {$a_server['local_group']}. " .
+            "Denying authentication for user {$username}";
+    }
+    if ($error_message != null) {
+        syslog(LOG_WARNING, $error_message);
+        closelog();
+        exit(1);
+    }
+
+    if (file_exists("/var/etc/openvpn/{$modeid}.ca")) {
+        putenv("LDAPTLS_CACERT=/var/etc/openvpn/{$modeid}.ca");
+        putenv("LDAPTLS_REQCERT=never");
+    }
+
+    // perform the actual authentication
+    $authFactory = new OPNsense\Auth\AuthenticationFactory;
+    foreach ($authmodes as $authName) {
+        $authenticator = $authFactory->get($authName);
+        if ($authenticator) {
+            if ($authenticator->authenticate($username, $password)) {
+                syslog(LOG_NOTICE, "user '{$username}' authenticated using '{$authName}'");
+                closelog();
+                exit(0);
+            }
+        }
+    }
+    // deny access and log
+    syslog(LOG_WARNING, "user '{$username}' could not authenticate.\n");
+    closelog();
+    exit(-1);
+} else {
     syslog(LOG_ERR, "invalid user authentication environment");
     closelog();
     exit(-1);
 }
-
-/* Replaced by a sed with propper variables used below(ldap parameters). */
-//<template>
-
-if (file_exists("/var/etc/openvpn/{$modeid}.ca")) {
-    putenv("LDAPTLS_CACERT=/var/etc/openvpn/{$modeid}.ca");
-    putenv("LDAPTLS_REQCERT=never");
-}
-
-$authenticated = false;
-if (($strictusercn === true) && ($common_name != $username)) {
-    syslog(LOG_WARNING, 'Username does not match certificate common name ' .
-        "({$username} != {$common_name}), access denied.\n");
-    closelog();
-    exit(1);
-}
-
-if (!is_array($authmodes)) {
-    syslog(LOG_WARNING, 'No authentication server has been selected to authenticate against. ' .
-        "Denying authentication for user {$username}");
-    closelog();
-    exit(1);
-}
-
-$a_server = null;
-
-if (isset($config['openvpn']['openvpn-server'])) {
-    foreach ($config['openvpn']['openvpn-server'] as $server) {
-        if ("server{$server['vpnid']}" == $modeid) {
-            $a_server = $server;
-            break;
-        }
-    }
-}
-
-if ($a_server == null) {
-    syslog(LOG_WARNING, "OpenVPN '$modeid' was not found. Denying authentication for user {$username}");
-    closelog();
-    exit(1);
-}
-
-if (!empty($a_server['local_group']) && !in_array($a_server['local_group'], getUserGroups($username))) {
-    syslog(LOG_WARNING, "OpenVPN '$modeid' requires the local group {$a_server['local_group']}. " .
-        "Denying authentication for user {$username}");
-    closelog();
-    exit(1);
-}
-
-foreach ($authmodes as $authmode) {
-    $authcfg = auth_get_authserver($authmode);
-
-    /* XXX this doesn't look right... */
-    if (!$authcfg && $authmode != "local") {
-        continue;
-    }
-
-    $authenticated = authenticate_user($username, $password, $authcfg);
-    if ($authenticated == true) {
-        break;
-    }
-}
-
-if ($authenticated == false) {
-    syslog(LOG_WARNING, "user '{$username}' could not authenticate.\n");
-    closelog();
-    exit(-1);
-}
-
-syslog(LOG_NOTICE, "user '{$username}' authenticated\n");
-closelog();
-
-exit(0);
