@@ -358,10 +358,15 @@ function filter_configure_sync($verbose = false)
         flush();
     }
 
-    $limitrules = "";
-    /* User defined maximum table entries in Advanced menu. */
-    if (!empty($config['system']['maximumtableentries']) && is_numeric($config['system']['maximumtableentries'])) {
+    $limitrules = '';
+
+    if (!empty($config['system']['maximumtableentries'])) {
         $limitrules .= "set limit table-entries {$config['system']['maximumtableentries']}\n";
+    } elseif (is_bogonsv6_used()) {
+        $max_table_entries = default_table_entries_size();
+        if ($max_table_entries <= 500000) {
+            $limitrules .= "set limit table-entries 500000\n";
+        }
     }
 
     if (!empty($config['system']['rulesetoptimization'])) {
@@ -385,8 +390,7 @@ function filter_configure_sync($verbose = false)
         $limitrules .= "set timeout { adaptive.start 0, adaptive.end 0 }\n";
     }
 
-    if (!empty($config['system']['maximumstates']) && is_numeric($config['system']['maximumstates'])) {
-        /* User defined maximum states in Advanced menu. */
+    if (!empty($config['system']['maximumstates'])) {
         $limitrules .= "set limit states {$config['system']['maximumstates']}\n";
         $limitrules .= "set limit src-nodes {$config['system']['maximumstates']}\n";
     } else {
