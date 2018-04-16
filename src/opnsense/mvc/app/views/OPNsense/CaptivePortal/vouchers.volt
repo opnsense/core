@@ -99,7 +99,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             return moment(parseInt(value) * 1000);
                         },
                         to: function (value) {
-                            return value.format("lll");
+                            return value == 0 ? "" :  value.format("lll");
                         }
                     }
                 }
@@ -108,7 +108,7 @@ POSSIBILITY OF SUCH DAMAGE.
             ajaxGet(url = "/api/captiveportal/voucher/listVouchers/" + voucher_provider + "/" + voucher_group + "/",
                     sendData = {}, callback = function (data, status) {
                         if (status == "success") {
-                            $("#grid-vouchers > tbody").html('');
+                            $("#grid-vouchers > tbody > tr").remove();
                             $.each(data, function (key, value) {
                                 var fields = ["username", "starttime", "endtime", "expirytime", "state"];
                                 tr_str = '<tr>';
@@ -123,7 +123,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                 $("#grid-vouchers > tbody").append(tr_str);
                             });
                         }
-                        var grid_clients = $("#grid-vouchers").bootgrid(gridopt);
+                        $("#grid-vouchers").bootgrid(gridopt);
                     }
             );
         }
