@@ -28,10 +28,11 @@
             </Revocation>
         </Trust>
         <Configuration order="80" cssClass="fa fa-history fa-fw">
+            <Backups url="/diag_backup.php"/>
+            <Defaults url="/diag_defaults.php"/>
             <History url="/diag_confbak.php">
                 <none url="/diag_confbak.php*" visibility="hidden"/>
             </History>
-            <Backups url="/diag_backup.php"/>
         </Configuration>
         <Firmware order="5" cssClass="fa fa-building-o fa-fw">
             <Updates order="10" url="/ui/core/firmware/#updates"/>
@@ -39,7 +40,6 @@
             <Packages order="30" url="/ui/core/firmware/#packages"/>
             <Settings order="40" url="/ui/core/firmware/#settings"/>
             <Reporter order="50" url="/crash_reporter.php"/>
-            <Defaults order="60" url="/diag_defaults.php"/>
         </Firmware>
         <HighAvailability order="50" VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">
             <Settings order="100" url="/system_hasync.php"/>
