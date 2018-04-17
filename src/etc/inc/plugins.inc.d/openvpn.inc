@@ -1008,7 +1008,7 @@ function openvpn_delete($mode, &$settings)
  * @param array $server openvpn server item
  * @return string|boolean filename or false when unable to (missing common name or vpnid)
  */
-function write_openvpn_csc_conf($settings, $server)
+function openvpn_csc_conf_write($settings, $server)
 {
     if (empty($settings['common_name']) || empty($server['vpnid'])) {
         return false;
@@ -1129,7 +1129,7 @@ function openvpn_configure_csc()
             if (!isset($generated_cscs[$vpnid])) {
                 $generated_cscs[$vpnid] = array();
             }
-            $generated_cscs[$vpnid][] = write_openvpn_csc_conf($settings, $server);
+            $generated_cscs[$vpnid][] = openvpn_csc_conf_write($settings, $server);
         }
     }
 
