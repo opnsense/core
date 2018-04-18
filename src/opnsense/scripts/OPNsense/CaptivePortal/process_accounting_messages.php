@@ -41,12 +41,12 @@ $result = $db->query('
     select      c.zoneid
     ,           c.sessionid
     ,           c.username
-	,           c.ip_address
+    ,           c.ip_address
     ,           c.authenticated_via
     ,           c.deleted
     ,           c.created
-	,           si.bytes_in
-	,           si.bytes_out
+    ,           si.bytes_in
+    ,           si.bytes_out
     ,           accs.state
     from        cp_clients c
     inner join  session_restrictions sr on sr.zoneid = c.zoneid and sr.sessionid = c.sessionid
