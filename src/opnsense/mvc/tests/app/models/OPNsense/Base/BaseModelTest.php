@@ -322,7 +322,8 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         BaseModelTest::$model->serializeToConfig();
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value1, "0");
         $this->assertEquals(
-            Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value2, ""
+            Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value2,
+            ""
         );
     }
 
@@ -349,7 +350,8 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         BaseModelTest::$model->serializeToConfig();
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value1, "1");
         $this->assertEquals(
-            Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value2, "xxx"
+            Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value2,
+            "xxx"
         );
     }
 
@@ -363,7 +365,8 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         BaseModelTest::$model->serializeToConfig();
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value1, "0");
         $this->assertEquals(
-            Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value2, "xxx"
+            Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value2,
+            "xxx"
         );
     }
 }
