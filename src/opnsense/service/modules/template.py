@@ -60,6 +60,10 @@ class Template(object):
         self._j2_env = jinja2.Environment(loader=jinja2.FileSystemLoader(self._template_dir), trim_blocks=True,
                                           extensions=["jinja2.ext.do", "jinja2.ext.loopcontrols"])
 
+        # register additional filters
+        self._j2_env.filters['decode_idna'] = lambda x:x.decode('idna')
+        self._j2_env.filters['encode_idna'] = lambda x:x.encode('idna')
+
     def list_module(self, module_name):
         """ list single module content
         :param module_name: module name in dot notation ( company.module )
