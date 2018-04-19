@@ -207,7 +207,7 @@ class ControllerBase extends ControllerRoot
 
         // append ACL object to view
         $this->view->acl = new \OPNsense\Core\ACL();
-        $this->response->setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' 'unsafe-eval';");
+        $this->response->setHeader('Content-Security-Policy', "script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' 'unsafe-eval';");
         $this->response->setHeader('X-Frame-Options', "SAMEORIGIN");
         $this->response->setHeader('X-Content-Type-Options', "nosniff");
         $this->response->setHeader('X-XSS-Protection', "1; mode=block");
