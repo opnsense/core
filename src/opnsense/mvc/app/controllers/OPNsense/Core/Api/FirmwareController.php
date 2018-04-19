@@ -911,7 +911,6 @@ class FirmwareController extends ApiControllerBase
             } else {
                 $response['status'] = "failed";
             }
-
         }
 
         return $response;

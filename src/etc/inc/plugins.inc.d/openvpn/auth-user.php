@@ -71,7 +71,8 @@ if (count($argv) > 6) {
     if (($strictusercn === true) && ($common_name != $username)) {
         $error_message = sprintf(
             "Username does not match certificate common name (%s != %s), access denied.",
-            $username, $common_name
+            $username,
+            $common_name
         );
     } elseif (!is_array($authmodes)) {
         $error_message = 'No authentication server has been selected to authenticate against. ' .
