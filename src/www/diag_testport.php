@@ -51,7 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $reqdfieldsn = array(gettext("Host"),gettext("Port"));
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-    if (!is_ipaddr($pconfig['host']) && !is_hostname($pconfig['host'])) {
+    $host_utf = trim($pconfig['host']);
+    $host = idn_to_ascii($host_utf);
+    if (!is_ipaddr($pconfig['host']) && !is_hostname($host)) {
         $input_errors[] = gettext("Please enter a valid IP or hostname.");
     }
 
@@ -96,11 +98,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        $cmd_action = "/usr/bin/nc {$nc_args} " . escapeshellarg($pconfig['host']) . " " . escapeshellarg($pconfig['port']) . " 2>&1";
+        $cmd_action = "/usr/bin/nc {$nc_args} " . escapeshellarg($host) . " " . escapeshellarg($pconfig['port']) . " 2>&1";
         $process = proc_open($cmd_action, array(array("pipe", "r"), array("pipe", "w"), array("pipe", "w")), $pipes);
         if (is_resource($process)) {
              $cmd_output = stream_get_contents($pipes[1]);
              $cmd_output .= stream_get_contents($pipes[2]);
+             $cmd_output = str_replace($host, $host_utf, $cmd_output);
         }
     }
 }

@@ -71,7 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } else {
             $ifaddr = is_ipaddr($pconfig['sourceip']) ? $pconfig['sourceip'] : get_interface_ip($pconfig['sourceip']);
         }
-        $host = trim($pconfig['host']);
+        $host_utf8 = trim($pconfig['host']);
+        $host = idn_to_ascii($host_utf8);
         $srcip = "";
         if (!empty($ifaddr) && (is_ipaddr($pconfig['host']) || is_hostname($pconfig['host']))) {
             $srcip = "-S" . escapeshellarg($ifaddr);
@@ -85,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (is_resource($process)) {
              $cmd_output = stream_get_contents($pipes[1]);
              $cmd_output .= stream_get_contents($pipes[2]);
+             $cmd_output = str_replace($host, $host_utf, $cmd_output);
         }
     }
 }

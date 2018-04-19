@@ -217,7 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (empty($pconfig['server_addr'][$i]) && empty($pconfig['server_port'][$i])) {
                 continue;
             }
-            if (empty($pconfig['server_addr'][$i]) || (!is_domain($pconfig['server_addr'][$i]) && !is_ipaddr($pconfig['server_addr'][$i]))) {
+            if (empty($pconfig['server_addr'][$i]) || (!is_domain(idn_to_ascii($pconfig['server_addr'][$i])) && !is_ipaddr($pconfig['server_addr'][$i]))) {
                 $input_errors[] = gettext("The field 'Server host or address' must contain a valid IP address or domain name.") ;
             }
             if (empty($pconfig['server_port'][$i]) || !is_numeric($pconfig['server_port'][$i]) || $pconfig['server_port'][$i] < 0 || $pconfig['server_port'][$i] > 65535) {
