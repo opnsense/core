@@ -39,6 +39,7 @@ require_once("config.inc");
 require_once("auth.inc");
 require_once("util.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/openvpn.inc");
 
 function get_openvpn_server($serverid)
 {
@@ -51,6 +52,16 @@ function get_openvpn_server($serverid)
         }
     }
     return null;
+}
+
+function parse_auth_properties($props)
+{
+    $result = array();
+    if (!empty($props['Framed-IP-Address']) && !empty($props['Framed-IP-Netmask'])) {
+        $cidrmask = 32-log((ip2long($props['Framed-IP-Netmask']) ^ ip2long('255.255.255.255'))+1,2);
+        $result['tunnel_network'] = $props['Framed-IP-Address'] . "/" . $cidrmask;
+    }
+    return $result;
 }
 
 /* setup syslog logging */
@@ -100,7 +111,21 @@ if (count($argv) > 6) {
         $authenticator = $authFactory->get($authName);
         if ($authenticator) {
             if ($authenticator->authenticate($username, $password)) {
-                syslog(LOG_NOTICE, "user '{$username}' authenticated using '{$authName}'");
+                $vpnid = filter_var($a_server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
+                // fetch or  create client specif override
+                $all_cso = openvpn_fetch_csc_list();
+                if (!empty($all_cso[$vpnid][$common_name])) {
+                    $cso = $all_cso[$vpnid][$common_name];
+                } else {
+                    $cso = array("common_name" => $common_name);
+                }
+                $cso = array_merge($cso, parse_auth_properties($authenticator->getLastAuthProperties()));
+                $cso_filename = openvpn_csc_conf_write($cso, $a_server);
+                if (!empty($cso_filename)) {
+                    syslog(LOG_NOTICE, "user '{$username}' authenticated using '{$authName}' cso :{$cso_filename}");
+                } else {
+                    syslog(LOG_NOTICE, "user '{$username}' authenticated using '{$authName}'");
+                }
                 closelog();
                 exit(0);
             }
