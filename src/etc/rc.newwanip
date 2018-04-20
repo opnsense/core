@@ -42,7 +42,7 @@ $argument = isset($argv[1]) ? trim($argv[1]) : '';
 
 if (file_exists('/var/run/booting')) {
     log_error("IP renewal deferred during boot on '{$argument}'");
-    file_put_contents('/tmp/newwanip_' . uniqid(), $argument);
+    file_put_contents('/tmp/newwanip_' . $argument, $argument);
     return;
 }
 
