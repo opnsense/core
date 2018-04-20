@@ -1606,6 +1606,7 @@ function get_dyndns_ip($int, $ipver = 4)
             $ip_address = trim($matches[1]);
         } else {
             log_error('Aborted IPv4 detection: ' . curl_error($ip_ch));
+            $ip_address = '';
         }
         curl_close($ip_ch);
         if (!is_ipaddrv4($ip_address)) {
