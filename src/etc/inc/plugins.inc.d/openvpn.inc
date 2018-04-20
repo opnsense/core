@@ -1071,11 +1071,15 @@ function openvpn_csc_conf_write($settings, $server)
 
     $vpnid = filter_var($server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
     $target_filename = "/var/etc/openvpn-csc/".$vpnid."/".$settings['common_name'];
-    file_put_contents($target_filename, $conf);
-    chown($target_filename, 'nobody');
-    chgrp($target_filename, 'nobody');
-
-    return $target_filename;
+    if (!empty($conf)) {
+        file_put_contents($target_filename, $conf);
+        chown($target_filename, 'nobody');
+        chgrp($target_filename, 'nobody');
+        return $target_filename;
+    } elseif (is_file($target_filename)) {
+        unlink($target_filename);
+        return null;
+    }
 }
 
 /**
