@@ -257,7 +257,7 @@ function legacy_interfaces_details($intf = null)
             unset($mask);
             for ($i = 0; $i < count($line_parts) - 1; ++$i) {
                 if ($line_parts[$i] == 'netmask') {
-                    $mask = substr_count(base_convert(hexdec($line_parts[($i + 1)]), 10, 2), '1');
+                    $mask = substr_count(base_convert(hexdec($line_parts[$i + 1]), 10, 2), '1');
                 }
             }
             if (isset($mask)) {
