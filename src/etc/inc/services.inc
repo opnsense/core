@@ -1591,24 +1591,27 @@ function get_dyndns_ip($int, $ipver = 4)
         return 'down';
     }
 
-    if (is_private_ip($ip_address) || is_linklocal($ip_address)) {
+    if ($ipver != 6 && is_private_ip($ip_address)) {
         /* Chinese alternative is http://ip.3322.net/ */
-        $hosttocheck = $ipver == 6 ? 'http://checkipv6.dyndns.org' : 'http://checkip.dyndns.org';
+        $hosttocheck = 'http://checkip.dyndns.org';
         $ip_ch = curl_init($hosttocheck);
         curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ip_ch, CURLOPT_INTERFACE, $ip_address);
         curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ip_ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ip_ch, CURLOPT_IPRESOLVE, $ipver == 6 ? CURL_IPRESOLVE_V6 : CURL_IPRESOLVE_V4);
+        curl_setopt($ip_ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
         $ip_result = curl_exec($ip_ch);
         if ($ip_result !== false) {
             preg_match('=<body>Current IP Address: (.*)</body>=siU', $ip_result, $matches);
             $ip_address = trim($matches[1]);
         } else {
-            log_error("Aborted IPv{$ipver} detection: " . curl_error($ip_ch));
+            log_error('Aborted IPv4 detection: ' . curl_error($ip_ch));
             $ip_address = '';
         }
         curl_close($ip_ch);
+    } elseif (ipver == 6 && is_linklocal($ip_address)) {
+        log_error('Aborted IPv6 detection: cannot bind to link-local address');
+        $ip_address = '';
     }
 
     if (($ipver == 6 && !is_ipaddrv6($ip_address)) || ($ipver != 6 && !is_ipaddrv4($ip_address))) {
