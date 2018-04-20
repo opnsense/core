@@ -1576,6 +1576,7 @@ function get_dyndns_ip($int, $ipver = 4)
 
     $ip_address = $ipver == 6 ? get_interface_ipv6($int) : get_interface_ip($int);
     if (empty($ip_address)) {
+        log_error("Aborted IPv{$ipver} detection: no address for {$int}");
         return 'down';
     }
 
@@ -1588,6 +1589,7 @@ function get_dyndns_ip($int, $ipver = 4)
      */
     if (!empty($gateways_status[$config['interfaces'][$int]['gateway']]['status']) &&
 	stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')) {
+        log_error("Aborted IPv{$ipver} detection: gateway down for {$int}");
         return 'down';
     }
 
