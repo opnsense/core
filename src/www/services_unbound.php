@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("You must specify a valid port number.");
         }
         if (!empty($pconfig['local_zone_type']) && !array_key_exists($pconfig['local_zone_type'], unbound_local_zone_types())) {
-            $input_errors[] = sprintf(gettext('Local zone type "%" is not known.'), $pconfig['local_zone_type']);
+            $input_errors[] = sprintf(gettext('Local zone type "%s" is not known.'), $pconfig['local_zone_type']);
         }
 
         if (count($input_errors) == 0) {
