@@ -1089,26 +1089,6 @@ function is_private_ip($iptocheck)
     return false;
 }
 
-
-function resolve_retry($hostname, $retries = 5)
-{
-    if (is_ipaddr($hostname)) {
-        return $hostname;
-    }
-
-    for ($i = 0; $i < $retries; $i++) {
-        // FIXME: gethostbyname does not work for AAAA hostnames, boo, hiss
-        $ip = gethostbyname($hostname);
-        if ($ip && $ip != $hostname) {
-            /* success */
-            return $ip;
-        }
-        sleep(1);
-    }
-
-    return false;
-}
-
 function format_bytes($bytes)
 {
     if ($bytes >= (1024 * 1024 * 1024)) {
