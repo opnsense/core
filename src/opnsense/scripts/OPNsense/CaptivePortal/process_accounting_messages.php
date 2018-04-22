@@ -41,9 +41,12 @@ $result = $db->query('
     select      c.zoneid
     ,           c.sessionid
     ,           c.username
+    ,           c.ip_address
     ,           c.authenticated_via
     ,           c.deleted
     ,           c.created
+    ,           si.bytes_in
+    ,           si.bytes_out
     ,           accs.state
     from        cp_clients c
     inner join  session_restrictions sr on sr.zoneid = c.zoneid and sr.sessionid = c.sessionid
@@ -80,14 +83,14 @@ if ($result !== false) {
                 $stmt->execute();
                 if (method_exists($authenticator, 'startAccounting')) {
                     $time_spend = time() - $row['created'];
-                    $authenticator->stopAccounting($row['username'], $row['sessionid'], $time_spend);
+                    $authenticator->stopAccounting($row['username'], $row['sessionid'], $time_spend, $row['bytes_in'], $row['bytes_out'], $row['ip_address']);
                 }
             } elseif ($row['state'] != 'STOPPED') {
                 // send interim updates (if applicable)
                 if (method_exists($authenticator, 'updateAccounting')) {
                     // send interim update event
                     $time_spend = time() - $row['created'];
-                    $authenticator->updateAccounting($row['username'], $row['sessionid'], $time_spend);
+                    $authenticator->updateAccounting($row['username'], $row['sessionid'], $time_spend, $row['bytes_in'], $row['bytes_out'], $row['ip_address']);
                 }
             }
         }
