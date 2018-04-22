@@ -201,7 +201,7 @@ class Radius extends Base implements IAuthConnector
      * @param $sessionid    session id
      * @param $session_time total time spend on this session
      */
-    public function stopAccounting($username, $sessionid, $session_time)
+    public function stopAccounting($username, $sessionid, $session_time, $bytes_in, $bytes_out, $ip_address)
     {
         // only send messages if target port specified
         if ($this->acctPort != null) {
@@ -240,6 +240,12 @@ class Radius extends Base implements IAuthConnector
                 $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, RADIUS_ACCT_SESSION_TIME, $session_time)) {
                 $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_ACCT_INPUT_OCTETS, $bytes_in)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_ACCT_OUTPUT_OCTETS, $bytes_out)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_addr($radius, RADIUS_FRAMED_IP_ADDRESS, $ip_address)) {
+                $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, RADIUS_ACCT_TERMINATE_CAUSE, RADIUS_TERM_USER_REQUEST)) {
                 $error = radius_strerror($radius);
             }
@@ -269,7 +275,7 @@ class Radius extends Base implements IAuthConnector
      * @param $sessionid    session id
      * @param $session_time total time spend on this session
      */
-    public function updateAccounting($username, $sessionid, $session_time)
+    public function updateAccounting($username, $sessionid, $session_time, $bytes_in, $bytes_out, $ip_address)
     {
         // only send messages if target port specified
         if ($this->acctPort != null) {
@@ -310,6 +316,12 @@ class Radius extends Base implements IAuthConnector
             } elseif (!radius_put_int($radius, RADIUS_ACCT_AUTHENTIC, RADIUS_AUTH_LOCAL)) {
                 $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, RADIUS_ACCT_SESSION_TIME, $session_time)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_ACCT_INPUT_OCTETS, $bytes_in)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_ACCT_OUTPUT_OCTETS, $bytes_out)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_addr($radius, RADIUS_FRAMED_IP_ADDRESS, $ip_address)) {
                 $error = radius_strerror($radius);
             }
 
