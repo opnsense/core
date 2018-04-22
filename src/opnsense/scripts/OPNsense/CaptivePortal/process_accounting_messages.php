@@ -81,7 +81,7 @@ if ($result !== false) {
                 $stmt->bindParam(':zoneid', $row['zoneid']);
                 $stmt->bindParam(':sessionid', $row['sessionid']);
                 $stmt->execute();
-                if (method_exists($authenticator, 'startAccounting')) {
+                if (method_exists($authenticator, 'stopAccounting')) {
                     $time_spend = time() - $row['created'];
                     $authenticator->stopAccounting($row['username'], $row['sessionid'], $time_spend, $row['bytes_in'], $row['bytes_out'], $row['ip_address']);
                 }
