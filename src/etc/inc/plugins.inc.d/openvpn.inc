@@ -594,9 +594,14 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     switch ($settings['mode']) {
         case 'server_user':
         case 'server_tls_user':
-            $conf .= "client-connect /usr/local/etc/inc/plugins.inc.d/openvpn/attributes.sh\n";
-            $conf .= "client-disconnect /usr/local/etc/inc/plugins.inc.d/openvpn/attributes.sh\n";
+            $conf .= "client-disconnect \"/usr/local/etc/inc/plugins.inc.d/openvpn/attributes.sh {$mode_id} \"\n";
             break;
+        case 'server_tls':
+        case 'p2p_tls':
+            // For non user auth types setup client specific overrides, user authenticated ones are commissioned
+            // using the auth script in option auth-user-pass-verify
+            $conf .= "client-connect \"/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_setup_cso.php {$mode_id}\"\n";
+            $conf .= "client-disconnect \"/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_cleanup_cso.php {$mode_id} \"\n";
         default:
             break;
     }
