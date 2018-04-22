@@ -13,7 +13,6 @@
 /usr/local/etc/inc/certs.inc
 /usr/local/etc/inc/config.inc
 /usr/local/etc/inc/console.inc
-/usr/local/etc/inc/crypt.inc
 /usr/local/etc/inc/filter.inc
 /usr/local/etc/inc/filter.lib.inc
 /usr/local/etc/inc/gwlb.inc
