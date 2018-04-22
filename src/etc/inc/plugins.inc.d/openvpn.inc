@@ -1119,39 +1119,6 @@ function openvpn_fetch_csc_list()
     return $result;
 }
 
-/**
- * resync all client specific overrides
- */
-function openvpn_configure_csc()
-{
-    global $config;
-    $generated_cscs = array();
-
-    openvpn_create_dirs();
-
-    // generate configs
-    $all_servers = openvpn_get_remote_access_servers();
-    foreach (openvpn_fetch_csc_list() as $vpnid => $cscs) {
-        foreach ($cscs as $common_name => $settings) {
-            $server = $all_servers[$vpnid];
-            if (!isset($generated_cscs[$vpnid])) {
-                $generated_cscs[$vpnid] = array();
-            }
-            $generated_cscs[$vpnid][] = openvpn_csc_conf_write($settings, $server);
-        }
-    }
-
-    // cleanup old / unassigned configs
-    foreach (openvpn_get_remote_access_servers() as $server) {
-        $vpnid = filter_var($server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
-        foreach (glob("/var/etc/openvpn-csc/".$vpnid."/*") as $filename) {
-            if (empty($generated_cscs[$vpnid]) || !in_array($filename, $generated_cscs[$vpnid])) {
-                @unlink($filename);
-            }
-        }
-    }
-}
-
 function openvpn_prepare_all($verbose = false)
 {
     global $config;
@@ -1263,8 +1230,6 @@ function openvpn_configure_do($verbose = false, $interface = '')
             }
         }
     }
-
-    openvpn_configure_csc();
 
     if ($verbose) {
         echo "done.\n";
@@ -1638,11 +1603,6 @@ function openvpn_configure_gwgroup($gwgroupname = '')
             }
         }
     }
-
-    /*
-     * Note: no need to resysnc Client Specific (csc) here as
-     * changes to the OpenVPN real interface do not effect these.
-     */
 }
 
 function openvpn_refresh_crls()

@@ -80,7 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if ($act == "del") {
         if (isset($id)) {
-            @unlink("/var/etc/openvpn-csc/{$a_csc[$id]['common_name']}");
             unset($a_csc[$id]);
             write_config();
         }
@@ -90,7 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['rule']) && is_array($pconfig['rule'])) {
             foreach ($pconfig['rule'] as $rulei) {
                 if (isset($a_csc[$rulei])) {
-                    @unlink("/var/etc/openvpn-csc/{$a_csc[$rulei]['common_name']}");
                     unset($a_csc[$rulei]);
                 }
             }
@@ -116,7 +114,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_csc[$id]['disable'] = true;
             }
             write_config();
-            openvpn_configure_csc();
         }
         header(url_safe('Location: /vpn_openvpn_csc.php'));
         exit;
@@ -213,11 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_csc[] = $csc;
             }
 
-            if (!empty($old_csc_cn)) {
-                @unlink('/var/etc/openvpn-csc/' . basename($old_csc_cn));
-            }
             write_config();
-            openvpn_configure_csc();
 
             header(url_safe('Location: /vpn_openvpn_csc.php'));
             exit;
