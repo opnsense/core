@@ -559,6 +559,19 @@ function ipsec_get_number_of_phase2($ikeid)
     return $nbph2;
 }
 
+function ipsec_resolve($hostname)
+{
+    if (!is_ipaddr($hostname)) {
+        /* XXX IPv4-only */
+        $ip = gethostbyname($hostname);
+        if ($ip && $ip != $hostname) {
+            $hostname = $ip;
+        }
+    }
+
+    return $hostname;
+}
+
 function ipsec_find_id(&$ph1ent, $side = 'local')
 {
     $id_data = null;
@@ -579,17 +592,10 @@ function ipsec_find_id(&$ph1ent, $side = 'local')
             $thisid_data = ipsec_get_phase1_src($ph1ent);
             break;
         case "dyn_dns":
-            $thisid_data = resolve_retry($id_data);
+            $thisid_data = ipsec_resolve($id_data);
             break;
         case "peeraddress":
-            if (!is_ipaddr($ph1ent['remote-gateway'])) {
-                $thisid_data = resolve_retry($ph1ent['remote-gateway']);
-            } else {
-                $thisid_data = $ph1ent['remote-gateway'];
-            }
-            break;
-        case "address":
-            $thisid_data = $id_data;
+            $thisid_data = ipsec_resolve($ph1ent['remote-gateway']);
             break;
         default:
             $thisid_data = !empty($id_data) ? "{$id_data}" : null;
