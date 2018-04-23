@@ -3281,9 +3281,9 @@ function interface_dhcp_configure($interface = 'wan')
     global $config;
 
     $wancfg = $config['interfaces'][$interface];
-    $wanif = $wancfg['if'];
     if (empty($wancfg)) {
-        $wancfg = array();
+        log_error("Interface {$interface} does not have a DHCP configuration.");
+        return;
     }
 
     /* generate dhclient_wan.conf */
@@ -3361,17 +3361,13 @@ EOD;
     fclose($fd);
 
     /* bring wan interface up before starting dhclient */
-    if ($wanif) {
-        interfaces_bring_up($wanif);
-    } else {
-        log_error("Could not bring up {$wanif} interface in interface_dhcp_configure()");
-    }
+    interfaces_bring_up($wanif);
 
     /* Make sure dhclient is not running */
     kill_dhclient_process($wanif);
 
     /* fire up dhclient */
-    mwexec("/sbin/dhclient -c /var/etc/dhclient_{$interface}.conf {$wanif} > /tmp/{$wanif}_output 2> /tmp/{$wanif}_error_output");
+    mwexecf('/sbin/dhclient -c %s %s', array("/var/etc/dhclient_{$interface}.conf", $wanif));
 }
 
 function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
