@@ -1,25 +1,25 @@
 <form>
     <field>
         <id>queue.enabled</id>
-        <label>enabled</label>
+        <label>Enabled</label>
         <type>checkbox</type>
-        <help>enable this queue and it's related rules</help>
+        <help>Enable this queue and it's related rules</help>
     </field>
     <field>
         <id>queue.pipe</id>
-        <label>pipe</label>
+        <label>Pipe</label>
         <type>dropdown</type>
-        <help>connected pipe for this queue</help>
+        <help>Connected pipe for this queue</help>
     </field>
     <field>
         <id>queue.weight</id>
-        <label>weight</label>
+        <label>Weight</label>
         <type>text</type>
         <help>Weight of this queue (1..100), used to prioritize within a pipe. (1 is low, 100 is high)</help>
     </field>
     <field>
         <id>queue.mask</id>
-        <label>mask</label>
+        <label>Mask</label>
         <type>dropdown</type>
         <help><![CDATA[Dynamic queue creation by source or destination address.
         <li>Choose destination to evenly share every IP in destination field of rules the specified bandwith. A pipe with 1Mbit e.g. would let 4 clients lend 250Kbit each. Normally this is used for download queues.</li>
@@ -42,14 +42,14 @@
     </field>
     <field>
         <id>queue.codel_target</id>
-        <label>(FQ-)CoDel target</label>
+        <label>(FQ-)CoDel Target</label>
         <type>text</type>
         <advanced>true</advanced>
         <help>Minimum acceptable persistent queue delay (in ms), leave empty for default</help>
     </field>
     <field>
         <id>queue.codel_interval</id>
-        <label>(FQ-)CoDel interval</label>
+        <label>(FQ-)CoDel Interval</label>
         <type>text</type>
         <advanced>true</advanced>
         <help>Interval before dropping packets (in ms), leave empty for default</help>
@@ -63,7 +63,7 @@
     </field>
     <field>
         <id>queue.description</id>
-        <label>description</label>
+        <label>Description</label>
         <type>text</type>
         <help>Description to identify this pipe.</help>
     </field>
