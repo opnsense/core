@@ -419,7 +419,10 @@ class Radius extends Base implements IAuthConnector
                                     $this->lastAuthProperties['Framed-IP-Netmask'] =  radius_cvt_addr($resa['data']);
                                     break;
                                 case RADIUS_FRAMED_ROUTE:
-                                    $this->lastAuthProperties['Framed-Route'] =  radius_cvt_addr($resa['data']);
+                                    if (empty($this->lastAuthProperties['Framed-Route'])) {
+                                        $this->lastAuthProperties['Framed-Route'] = array();
+                                    }
+                                    $this->lastAuthProperties['Framed-Route'][] =  $resa['data'];
                                     break;
                                 default:
                                     break;
