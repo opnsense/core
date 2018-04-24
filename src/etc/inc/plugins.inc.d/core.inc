@@ -140,7 +140,7 @@ function core_services()
     );
 
     $services[] = array(
-        'description' => gettext('Syslog'),
+        'description' => gettext('Local Syslog'),
         'php' => array(
             "start" => array('system_syslogd_start'),
             "restart" => array('system_syslogd_start')
