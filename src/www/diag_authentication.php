@@ -69,6 +69,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $savemsg .= "<br/><br/>" . gettext("Attributes received from server") . ": <br />";
             }
             foreach ($authenticator->getLastAuthProperties() as $attr_name => $attr_value) {
+                if (is_array($attr_value)) {
+                    $attr_value = implode(",", $attr_value);
+                }
                 $savemsg .= "{$attr_name} => {$attr_value}<br/>";
             }
         } else {
