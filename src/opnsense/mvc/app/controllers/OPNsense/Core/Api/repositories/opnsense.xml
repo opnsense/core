@@ -17,6 +17,10 @@
             <description>Deciso (NL, Commercial)</description>
         </mirror>
         <mirror>
+            <url>http://mirror.dataroute.de/opnsense</url>
+            <description>Dataroute (Dusseldorf, DE)</description>
+        </mirror>
+        <mirror>
             <url>https://mirror.dns-root.de/opnsense</url>
             <description>dns-root.de (Cloudflare CDN)</description>
         </mirror>
