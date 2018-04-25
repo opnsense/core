@@ -578,6 +578,9 @@ function ipsec_find_id(&$ph1ent, $side = 'local')
         case "myaddress":
             $thisid_data = ipsec_get_phase1_src($ph1ent);
             break;
+        case "peeraddress":
+            $thisid_data = $ph1ent['remote-gateway'];
+            break;
         default:
             $thisid_data = !empty($id_data) ? "{$id_data}" : null;
             break;
