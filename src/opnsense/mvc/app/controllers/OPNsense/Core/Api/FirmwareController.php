@@ -76,24 +76,11 @@ class FirmwareController extends ApiControllerBase
         $backend->configdRun('firmware changelog fetch');
 
         if (!empty($type_have) && $type_have !== $type_want) {
-            $type_ver = trim($backend->configdRun('firmware type version ' . escapeshellarg($type_want)));
-            return array(
-                'status_msg' => gettext('The release type requires an update.'),
-                'all_packages' => array($type_want => array(
-                    'new' => empty($type_ver) ? gettext('N/A') : $type_ver,
-                    'reason' => gettext('new'),
-                    'old' => gettext('N/A'),
-                    'name' => $type_want,
-                )),
-                'status_upgrade_action' => 'rel',
-                'status' => 'ok',
-                # XXX faking firmware check call for now
-                'upgrade_major_message' => '',
-                'upgrade_major_version' => '',
-            );
+            /* XXX $args does not work? */
+            $response = json_decode(trim($backend->configdRun("firmware check $type_want")), true);
+        } else {
+            $response = json_decode(trim($backend->configdRun('firmware check')), true);
         }
-
-        $response = json_decode(trim($backend->configdRun('firmware check')), true);
 
         if ($response != null) {
             $packages_size = !empty($response['download_size']) ? $response['download_size'] : 0;
@@ -129,7 +116,73 @@ class FirmwareController extends ApiControllerBase
 
             $download_size = $this->formatBytes($packages_size + $sets_size);
 
-            if (array_key_exists('connection', $response) && $response['connection'] == 'error') {
+            $sorted = array();
+
+            foreach (array('new_packages', 'reinstall_packages', 'upgrade_packages',
+                'downgrade_packages', 'remove_packages') as $pkg_type) {
+                if (isset($response[$pkg_type])) {
+                    foreach ($response[$pkg_type] as $value) {
+                        switch ($pkg_type) {
+                            case 'downgrade_packages':
+                                $sorted[$value['name']] = array(
+                                    'reason' => gettext('downgrade'),
+                                    'old' => $value['current_version'],
+                                    'new' => $value['new_version'],
+                                    'name' => $value['name'],
+                                );
+                                break;
+                            case 'new_packages':
+                                $sorted[$value['name']] = array(
+                                    'new' => $value['version'],
+                                    'reason' => gettext('new'),
+                                    'name' => $value['name'],
+                                    'old' => gettext('N/A'),
+                                );
+                                break;
+                            case 'reinstall_packages':
+                                $sorted[$value['name']] = array(
+                                    'reason' => gettext('reinstall'),
+                                    'new' => $value['version'],
+                                    'old' => $value['version'],
+                                    'name' => $value['name'],
+                                );
+                                break;
+                            case 'remove_packages':
+                                $sorted[$value['name']] = array(
+                                    'reason' => gettext('obsolete'),
+                                    'new' => gettext('N/A'),
+                                    'old' => $value['version'],
+                                    'name' => $value['name'],
+                                );
+                                break;
+                            case 'upgrade_packages':
+                                $sorted[$value['name']] = array(
+                                    'reason' => gettext('upgrade'),
+                                    'old' => empty($value['current_version']) ?
+                                        gettext('N/A') : $value['current_version'],
+                                    'new' => $value['new_version'],
+                                    'name' => $value['name'],
+                                );
+                                break;
+                            default:
+                                /* undefined */
+                                break;
+                        }
+                    }
+                }
+            }
+
+            uksort($sorted, function ($a, $b) {
+                return strnatcasecmp($a, $b);
+            });
+
+            $response['all_packages'] = $sorted;
+
+            if (!empty($type_have) && $type_have !== $type_want) {
+                $response['status_msg'] = gettext('The release type requires an update.');
+                $response['status_upgrade_action'] = 'rel';
+                $response['status'] = 'ok';
+            } elseif (array_key_exists('connection', $response) && $response['connection'] == 'error') {
                 $response['status_msg'] = gettext('Connection error.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] == 'error') {
@@ -168,72 +221,13 @@ class FirmwareController extends ApiControllerBase
                     );
                 }
             }
-
-            $sorted = array();
-
-            /*
-             * new_packages: array with { name: <package_name>, version: <package_version> }
-             * reinstall_packages: array with { name: <package_name>, version: <package_version> }
-             * upgrade_packages: array with { name: <package_name>,
-             *     current_version: <current_version>, new_version: <new_version> }
-             * downgrade_packages: array with { name: <package_name>,
-             *     current_version: <current_version>, new_version: <new_version> }
-             */
-            foreach (array('new_packages', 'reinstall_packages', 'upgrade_packages',
-                'downgrade_packages') as $pkg_type) {
-                if (isset($response[$pkg_type])) {
-                    foreach ($response[$pkg_type] as $value) {
-                        switch ($pkg_type) {
-                            case 'downgrade_packages':
-                                $sorted[$value['name']] = array(
-                                    'reason' => gettext('downgrade'),
-                                    'old' => $value['current_version'],
-                                    'new' => $value['new_version'],
-                                    'name' => $value['name'],
-                                );
-                                break;
-                            case 'new_packages':
-                                $sorted[$value['name']] = array(
-                                    'new' => $value['version'],
-                                    'reason' => gettext('new'),
-                                    'name' => $value['name'],
-                                    'old' => gettext('N/A'),
-                                );
-                                break;
-                            case 'reinstall_packages':
-                                $sorted[$value['name']] = array(
-                                    'reason' => gettext('reinstall'),
-                                    'new' => $value['version'],
-                                    'old' => $value['version'],
-                                    'name' => $value['name'],
-                                );
-                                break;
-                            case 'upgrade_packages':
-                                $sorted[$value['name']] = array(
-                                    'reason' => gettext('upgrade'),
-                                    'old' => empty($value['current_version']) ?
-                                        gettext('N/A') : $value['current_version'],
-                                    'new' => $value['new_version'],
-                                    'name' => $value['name'],
-                                );
-                                break;
-                            default:
-                                /* undefined */
-                                break;
-                        }
-                    }
-                }
-            }
-
-            uksort($sorted, function ($a, $b) {
-                return strnatcasecmp($a, $b);
-            });
-
-            $response['all_packages'] = $sorted;
         } else {
             $response = array(
                 'status_msg' => gettext('Firmware status check was aborted internally. Please try again.'),
-                'status' => 'unknown'
+                'status' => 'unknown',
+                # XXX faking firmware check call for now
+                'upgrade_major_message' => '',
+                'upgrade_major_version' => '',
             );
         }
 
