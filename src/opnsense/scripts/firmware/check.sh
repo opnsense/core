@@ -120,12 +120,37 @@ if [ "$pkg_running" == "" ]; then
                 base_to_reboot="${RQUERY%%_*}"
               fi
 
-              # First check if there are new packages that need to be installed
-              for i in $(grep -q INSTALLED: $tmp_pkg_output_file && cat $tmp_pkg_output_file); do
-                if [ "$itemcount" -gt "$linecount" ]; then
+              MODE=
+
+              for i in $(cat $tmp_pkg_output_file | cut -d '(' -f1); do
+                case ${MODE} in
+                DOWNGRADED:)
+                  if [  `echo $linecount + 4 | bc` -eq "$itemcount" ]; then
+                    if [ "`echo $i | grep ':'`" == "" ]; then
+                      itemcount=0 # This is not a valid item so reset item count
+                      MODE=
+                    else
+                      i=`echo $i | tr -d :`
+                      if [ "$packages_downgraded" == "" ]; then
+                        packages_downgraded=$packages_downgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a seperator
+                      else
+                        packages_downgraded=$packages_downgraded", {\"name\":\"$i\","
+                      fi
+                    fi
+                  fi
+                  if [  `echo $linecount + 3 | bc` -eq "$itemcount" ]; then
+                    packages_downgraded=$packages_downgraded"\"current_version\":\"$i\","
+                  fi
+                  if [  `echo $linecount + 1 | bc` -eq "$itemcount" ]; then
+                    packages_downgraded=$packages_downgraded"\"new_version\":\"$i\"}"
+                    itemcount=`echo $itemcount + 4 | bc` # Get ready for next item
+                  fi
+                  ;;
+                INSTALLED:)
                   if [  `echo $linecount + 2 | bc` -eq "$itemcount" ]; then
                     if [ "`echo $i | grep ':'`" == "" ]; then
                       itemcount=0 # This is not a valid item so reset item count
+                      MODE=
                     else
                       i=`echo $i | tr -d :`
                       if [ "$packages_new" != "" ]; then
@@ -138,19 +163,12 @@ if [ "$pkg_running" == "" ]; then
                     packages_new=$packages_new"\"version\":\"$i\"}"
                     itemcount=`echo $itemcount + 2 | bc` # Get ready for next item
                   fi
-                fi
-                linecount=`echo $linecount + 1 | bc`
-                if [ "$i" == "INSTALLED:" ]; then
-                  itemcount=`echo $linecount + 2 | bc`
-                fi
-              done
-
-              # Check if there are packages that need to be reinstalled
-              for i in $(grep -q REINSTALLED: $tmp_pkg_output_file && cat $tmp_pkg_output_file); do
-                if [ "$itemcount" -gt "$linecount" ]; then
+                  ;;
+                REINSTALLED:)
                   if [  `echo $linecount + 1 | bc` -eq "$itemcount" ]; then
                     if [ "`echo $i | grep '-'`" == "" ]; then
                       itemcount=0 # This is not a valid item so reset item count
+                      MODE=
                     else
                       name=${i%-*}
                       version=${i##*-}
@@ -161,19 +179,28 @@ if [ "$pkg_running" == "" ]; then
                       packages_reinstall=$packages_reinstall"{\"name\":\"$name\",\"version\":\"$version\"}"
                     fi
                   fi
-                fi
-                linecount=`echo $linecount + 1 | bc`
-                if [ "$i" == "REINSTALLED:" ]; then
-                  itemcount=`echo $linecount + 1 | bc`
-                fi
-              done
-
-              # Now check if there are upgrades to install
-              for i in $(grep -q UPGRADED: $tmp_pkg_output_file && cat $tmp_pkg_output_file); do
-                if [ "$itemcount" -gt "$linecount" ]; then
+                  ;;
+                REMOVED:)
+                  if [  `echo $linecount + 1 | bc` -eq "$itemcount" ]; then
+                    if [ "`echo $i | grep '-'`" == "" ]; then
+                      itemcount=0 # This is not a valid item so reset item count
+                      MODE=
+                    else
+                      name=${i%-*}
+                      version=${i##*-}
+                      itemcount=`echo $itemcount + 1 | bc` # Get ready for next item
+                      if [ -n "$packages_remove" ]; then
+                        packages_remove=$packages_remove"," # separator for next item
+                      fi
+                      packages_remove=$packages_remove"{\"name\":\"$name\",\"version\":\"$version\"}"
+                    fi
+                  fi
+                  ;;
+                UPGRADED:)
                   if [  `echo $linecount + 4 | bc` -eq "$itemcount" ]; then
                     if [ "`echo $i | grep ':'`" == "" ]; then
                       itemcount=0 # This is not a valid item so reset item count
+                      MODE=
                     else
                       i=`echo $i | tr -d :`
                       if [ "$packages_upgraded" == "" ]; then
@@ -194,63 +221,25 @@ if [ "$pkg_running" == "" ]; then
                     packages_upgraded=$packages_upgraded"\"new_version\":\"$i\"}"
                     itemcount=`echo $itemcount + 4 | bc` # Get ready for next item
                   fi
-                fi
-                linecount=`echo $linecount + 1 | bc`
-                if [ "$i" == "UPGRADED:" ]; then
-                  itemcount=`echo $linecount + 4 | bc`
-                fi
-              done
+                  ;;
+                esac
 
-              # Now check if there are downgrades to install
-              for i in $(grep -q DOWNGRADED: $tmp_pkg_output_file && cat $tmp_pkg_output_file); do
-                if [ "$itemcount" -gt "$linecount" ]; then
-                  if [  `echo $linecount + 4 | bc` -eq "$itemcount" ]; then
-                    if [ "`echo $i | grep ':'`" == "" ]; then
-                      itemcount=0 # This is not a valid item so reset item count
-                    else
-                      i=`echo $i | tr -d :`
-                      if [ "$packages_downgraded" == "" ]; then
-                        packages_downgraded=$packages_downgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a seperator
-                      else
-                        packages_downgraded=$packages_downgraded", {\"name\":\"$i\","
-                      fi
-                    fi
-                  fi
-                  if [  `echo $linecount + 3 | bc` -eq "$itemcount" ]; then
-                    packages_downgraded=$packages_downgraded"\"current_version\":\"$i\","
-                  fi
-                  if [  `echo $linecount + 1 | bc` -eq "$itemcount" ]; then
-                    packages_downgraded=$packages_downgraded"\"new_version\":\"$i\"}"
-                    itemcount=`echo $itemcount + 4 | bc` # Get ready for next item
-                  fi
-                fi
                 linecount=`echo $linecount + 1 | bc`
-                if [ "$i" == "DOWNGRADED:" ]; then
-                  itemcount=`echo $linecount + 4 | bc`
-                fi
-              done
 
-              # Now check if there are package removals
-              for i in $(grep -q REMOVED: $tmp_pkg_output_file && cat $tmp_pkg_output_file); do
-                if [ "$itemcount" -gt "$linecount" ]; then
-                  if [  `echo $linecount + 1 | bc` -eq "$itemcount" ]; then
-                    if [ "`echo $i | grep '-'`" == "" ]; then
-                      itemcount=0 # This is not a valid item so reset item count
-                    else
-                      name=${i%-*}
-                      version=${i##*-}
-                      itemcount=`echo $itemcount + 1 | bc` # Get ready for next item
-                      if [ -n "$packages_remove" ]; then
-                        packages_remove=$packages_remove"," # separator for next item
-                      fi
-                      packages_remove=$packages_remove"{\"name\":\"$name\",\"version\":\"$version\"}"
-                    fi
-                  fi
-                fi
-                linecount=`echo $linecount + 1 | bc`
-                if [ "$i" == "REMOVED:" ]; then
+                case $i in
+                INSTALLED:)
+                  itemcount=`echo $linecount + 2 | bc`
+                  MODE=$i
+                  ;;
+                REINSTALLED:|REMOVED:)
                   itemcount=`echo $linecount + 1 | bc`
-                fi
+                  MODE=$i
+                  ;;
+                DOWNGRADED:|UPGRADED:)
+                  itemcount=`echo $linecount + 4 | bc`
+                  MODE=$i
+                  ;;
+                esac
               done
             fi
 
