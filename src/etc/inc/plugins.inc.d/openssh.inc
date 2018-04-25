@@ -200,6 +200,9 @@ function openssh_configure_do($verbose = false, $interface = '')
                 $listeners[] = $vip['subnet'];
             }
         }
+
+        /* VIPs may have been read twice */
+        $listeners = array_unique($listeners);
     }
 
     foreach ($listeners as $listener) {
