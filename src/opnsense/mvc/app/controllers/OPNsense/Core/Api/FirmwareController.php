@@ -87,6 +87,9 @@ class FirmwareController extends ApiControllerBase
                 )),
                 'status_upgrade_action' => 'rel',
                 'status' => 'ok',
+                # XXX faking firmware check call for now
+                'upgrade_major_message' => '',
+                'upgrade_major_version' => '',
             );
         }
 
