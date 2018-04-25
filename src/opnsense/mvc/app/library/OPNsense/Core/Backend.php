@@ -1,8 +1,7 @@
 <?php
 
-/**
+/*
  *    Copyright (C) 2015 Deciso B.V.
- *
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -25,8 +24,8 @@
  *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *    POSSIBILITY OF SUCH DAMAGE.
- *
  */
+
 namespace OPNsense\Core;
 
 use Phalcon\Logger\Adapter\Syslog;
@@ -142,9 +141,13 @@ class Backend
      */
     public function configdpRun($event, $params = array(), $detach = false, $timeout = 120)
     {
+        if (!is_array($params)) {
+           /* just in case there's only one parameter */
+           $params = array($params);
+        }
+
         foreach ($params as $param) {
-            // quote parameters
-            $event .= ' "' . str_replace('"', '\\"', $param) . '"';
+            $event .= ' ' . escapeshellarg($param);
         }
 
         return $this->configdRun($event, $detach, $timeout);
