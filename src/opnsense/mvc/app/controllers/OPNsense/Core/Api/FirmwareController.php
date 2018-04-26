@@ -74,13 +74,13 @@ class FirmwareController extends ApiControllerBase
         $backend = new Backend();
         $type_have = trim($backend->configdRun('firmware type name'));
         $backend->configdRun('firmware changelog fetch');
+        $args = array();
 
         if (!empty($type_have) && $type_have !== $type_want) {
-            /* XXX $args does not work? */
-            $response = json_decode(trim($backend->configdRun("firmware check $type_want")), true);
-        } else {
-            $response = json_decode(trim($backend->configdRun('firmware check')), true);
+            $args[] = $type_want;
         }
+
+        $response = json_decode(trim($backend->configdpRun('firmware check', $args)), true);
 
         if ($response != null) {
             $packages_size = !empty($response['download_size']) ? $response['download_size'] : 0;
@@ -178,7 +178,7 @@ class FirmwareController extends ApiControllerBase
 
             $response['all_packages'] = $sorted;
 
-            if (!empty($type_have) && $type_have !== $type_want) {
+            if (count($args)) {
                 $response['status_msg'] = gettext('The release type requires an update.');
                 $response['status_upgrade_action'] = 'rel';
                 $response['status'] = 'ok';
