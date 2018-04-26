@@ -115,7 +115,7 @@ function services_radvd_configure($blacklist = array())
     foreach ($config['dhcpdv6'] as $dhcpv6if => $dhcpv6ifconf) {
         if (isset($config['interfaces'][$dhcpv6if]['track6-interface'])) {
             continue;
-        } else if (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
+        } elseif (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
             continue;
         } elseif (isset($blacklist[$dhcpv6if])) {
             /* Do not put in the config an interface which is down */
