@@ -202,8 +202,16 @@
       <div class="container-fluid">
         <div class="navbar-header">
           <a class="navbar-brand" href="/">
-            <img class="brand-logo" src="/ui/themes/{{theme_name}}/build/images/default-logo.png" height="30" alt="logo"/>
-            <img class="brand-icon" src="/ui/themes/{{theme_name}}/build/images/icon-logo.png" height="30" alt="icon"/>
+            {% if file_exists(["/usr/local/opnsense/www/themes/",theme_name,"/build/images/default-logo.svg"]|join("")) %}
+                <img class="brand-logo" src="/ui/themes/{{theme_name}}/build/images/default-logo.svg" height="30" alt="logo"/>
+            {% else %}
+                <img class="brand-logo" src="/ui/themes/{{theme_name}}/build/images/default-logo.png" height="30" alt="logo"/>
+            {% endif %}
+            {% if file_exists(["/usr/local/opnsense/www/themes/",theme_name,"/build/images/icon-logo.svg"]|join("")) %}
+                <img class="brand-icon" src="/ui/themes/{{theme_name}}/build/images/icon-logo.svg" height="30" alt="icon"/>
+            {% else %}
+                <img class="brand-icon" src="/ui/themes/{{theme_name}}/build/images/icon-logo.png" height="30" alt="icon"/>
+            {% endif %}
           </a>
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
             <span class="sr-only">{{ lang._('Toggle navigation') }}</span>
