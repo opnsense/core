@@ -52,6 +52,7 @@ $di->set('view', function () use ($config) {
             ));
             // register additional volt template functions
             $volt->getCompiler()->addFunction('theme_file_or_default', 'view_fetch_themed_filename');
+            $volt->getCompiler()->addFunction('file_exists', 'file_exists');
 
             return $volt;
         },
