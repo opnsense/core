@@ -475,7 +475,7 @@ function display_login_form($Login_Error)
     <main class="login-modal-container">
       <header class="login-modal-head" style="height:55px;">
         <div class="navbar-brand">
-          <img src="/ui/themes/<?= $themename ?>/build/images/default-logo.png" height="30" alt="logo"/>
+          <img src="/ui/themes/<?=$themename;?>/build/images/default-logo.<?=file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/default-logo.svg") ? "svg" : "png";?>" height="30" alt="logo" />
         </div>
       </header>
 
