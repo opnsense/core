@@ -52,8 +52,8 @@ if($need_alert_display == true) {
     <div class="container-fluid">
       <div class="navbar-header">
         <a class="navbar-brand" href="/index.php">
-        <img class="brand-logo" src="/ui/themes/<?= $themename ?>/build/images/default-logo.png" height="30" alt="logo" />
-        <img class="brand-icon" src="/ui/themes/<?= $themename ?>/build/images/icon-logo.png" height="30" alt="icon" />
+        <img class="brand-logo" src="/ui/themes/<?= $themename ?>/build/images/default-logo.<?=file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/default-logo.svg") ? "svg" : "png";?>" height="30" alt="logo" />
+        <img class="brand-icon" src="/ui/themes/<?= $themename ?>/build/images/icon-logo.<?=file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/icon-logo.svg") ? "svg" : "png";?>" height="30" alt="icon" />
         </a>
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
           <span class="sr-only">Toggle navigation</span>
