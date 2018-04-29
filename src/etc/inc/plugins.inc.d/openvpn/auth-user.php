@@ -61,6 +61,9 @@ function parse_auth_properties($props)
         $cidrmask = 32-log((ip2long($props['Framed-IP-Netmask']) ^ ip2long('255.255.255.255'))+1,2);
         $result['tunnel_network'] = $props['Framed-IP-Address'] . "/" . $cidrmask;
     }
+    if (!empty($props['Framed-Route']) && is_array($props['Framed-Route'])) {
+        $result['local_network'] = implode(",", $props['Framed-Route']);
+    }
     return $result;
 }
 
