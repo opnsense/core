@@ -182,8 +182,20 @@ class FirmwareController extends ApiControllerBase
                 $response['status_msg'] = gettext('The release type requires an update.');
                 $response['status_upgrade_action'] = 'rel';
                 $response['status'] = 'ok';
+            } elseif (array_key_exists('connection', $response) && $response['connection'] == 'unresolved') {
+                $response['status_msg'] = gettext('No address record found for the selected mirror.');
+                $response['status'] = 'error';
+            } elseif (array_key_exists('connection', $response) && $response['connection'] == 'unauthenticated') {
+                $response['status_msg'] = gettext('Could not authenticate the selected mirror.');
+                $response['status'] = 'error';
+            } elseif (array_key_exists('connection', $response) && $response['connection'] == 'misconfigured') {
+                $response['status_msg'] = gettext('The current package configuration is invalid.');
+                $response['status'] = 'error';
+            } elseif (array_key_exists('connection', $response) && $response['connection'] == 'timeout') {
+                $response['status_msg'] = gettext('Timeout while connecting to the selected mirror.');
+                $response['status'] = 'error';
             } elseif (array_key_exists('connection', $response) && $response['connection'] == 'error') {
-                $response['status_msg'] = gettext('Connection error.');
+                $response['status_msg'] = gettext('An error occurred while connecting to the selected mirror.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] == 'error') {
                 $response['status_msg'] = gettext('Could not find the repository on the selected mirror.');
@@ -220,14 +232,14 @@ class FirmwareController extends ApiControllerBase
                         gettext('This update requires a reboot.')
                     );
                 }
+            } else {
+                $response['status_msg'] = gettext('Unknown firmware status encountered.');
+                $response['status'] = 'unknown';
             }
         } else {
             $response = array(
                 'status_msg' => gettext('Firmware status check was aborted internally. Please try again.'),
                 'status' => 'unknown',
-                # XXX faking firmware check call for now
-                'upgrade_major_message' => '',
-                'upgrade_major_version' => '',
             );
         }
 

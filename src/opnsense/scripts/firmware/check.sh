@@ -53,8 +53,8 @@ packages_new=""
 download_size=""
 itemcount=0
 linecount=0
-timer=0
-timeout=60
+timeout_update=30
+timeout_upgrade=60
 
 tmp_pkg_output_file="/tmp/packages.output"
 tmp_pkg_update_file="/tmp/pkg_updates.output"
@@ -63,9 +63,9 @@ tmp_pkg_update_file="/tmp/pkg_updates.output"
 pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
 if [ "$pkg_running" == "" ]; then
       # start pkg update
-      pkg update -f > $tmp_pkg_update_file &
-      pkg_running="started" # Set running state to arbitrary value
-      timer=$timeout # Reset our timer
+      pkg update -f > $tmp_pkg_update_file 2>&1 &
+      timer=$timeout_update
+      pkg_running="started"
 
       # Timeout loop for pkg update -f
       while [ "$pkg_running" != "" ] && [ $timer -ne 0 ]; do
@@ -74,9 +74,34 @@ if [ "$pkg_running" == "" ]; then
         timer=`echo $timer - 1 | bc`
       done
 
-      ## check if timeout is not reached
-      if [ $timer -gt 0 ] ; then
-        # Connection is ok
+      if [ $timer -eq 0 ]; then
+        # We have an connection issue and could not
+        # reach the pkg repository in timely fashion
+        # Kill all running pkg instances
+        pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
+        if [ "$pkg_running" != "" ]; then
+          killall pkg
+        fi
+        connection="timeout"
+      else
+        # parse early errors
+        if grep -q 'No address record' $tmp_pkg_update_file; then
+          # DNS resolution failed
+          connection="unresolved"
+          timer=0
+        elif grep -q 'Cannot parse configuration' $tmp_pkg_update_file; then
+          # configuration error
+          connection="misconfigured"
+          timer=0
+        elif grep -q 'Authentication error' $tmp_pkg_update_file; then
+          # TLS or authentication error
+          connection="unauthenticated"
+          timer=0
+        fi
+      fi
+
+      if [ $timer -gt 0 ]; then
+        # connection is still ok
         connection="ok"
         # now check what happens when we would go ahead
         if [ -z "${1}" ]; then
@@ -86,20 +111,18 @@ if [ "$pkg_running" == "" ]; then
             pkg fetch -y "${1}" > $tmp_pkg_output_file &
             pkg install -n "${1}" > $tmp_pkg_output_file &
 	fi
-        # Reset timer before getting upgrade info
-        timer=$timeout # Reset our timer
-        pkg_running="started" # Set running state to arbitrary value
+        timer=$timeout_upgrade
+        pkg_running="started"
 
         # Timeout loop for pkg upgrade -n
         while [ "$pkg_running" != "" ] && [ $timer -ne 0 ]; do
           sleep 1 # wait for 1 second
-          #pkg_running=`ps | grep 'pkg update -f' | grep -v 'grep' | tail -n 1 | awk -F '[ ]' '{print $1}'`
           pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
           timer=`echo $timer - 1 | bc`
         done
 
         ## check if timeout is not reached
-        if [ $timer -gt 0 ] ; then
+        if [ $timer -gt 0 ]; then
           # Check for additional repository errors
           repo_ok=`cat $tmp_pkg_output_file | grep 'Unable to update repository'`
           if [ "$repo_ok" == "" ]; then
@@ -306,13 +329,6 @@ if [ "$pkg_running" == "" ]; then
           if [ "$pkg_running" != "" ]; then
             killall pkg
           fi
-        fi
-      else
-        # We have an connection issue and could not reach the pkg repository in timely fashion
-        # Kill all running pkg instances
-        pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
-        if [ "$pkg_running" != "" ]; then
-          killall pkg
         fi
       fi
 

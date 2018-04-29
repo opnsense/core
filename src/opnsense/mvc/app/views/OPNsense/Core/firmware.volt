@@ -47,6 +47,8 @@
         updateStatusPrepare(false);
         $('#major-upgrade').hide();
         $('#upgrade_maj').prop('disabled', true);
+        $.upgrade_major_message = '';
+        $.upgrade_major_version = '';
 
         // request status
         ajaxGet('/api/core/firmware/status',{},function(data,status){
@@ -102,10 +104,13 @@
                 packagesInfo(true);
             }
 
-            $.upgrade_major_message = data['upgrade_major_message'];
-            $.upgrade_major_version = data['upgrade_major_version'];
-
-            if ($.upgrade_major_version != "") {
+            if ('upgrade_major_message' in data) {
+                $.upgrade_major_message = data['upgrade_major_message'];
+            }
+            if ('upgrade_major_version' in data) {
+                $.upgrade_major_version = data['upgrade_major_version'];
+            }
+            if ($.upgrade_major_version != '') {
                 $('#upgrade-version').text($.upgrade_major_version);
                 $('#major-upgrade').show();
             }
