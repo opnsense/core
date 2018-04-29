@@ -26,7 +26,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 # This script generates a json structured file with the following content:
-# connection: error|ok
+# connection: error|timeout|unauthenticated|misconfigured|unresolved|ok
 # repository: error|ok
 # last_ckeck: <date_time_stamp>
 # updates: <num_of_updates>
