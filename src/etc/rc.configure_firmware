@@ -27,13 +27,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* there seems to be a race with unpacking files */
-shell_exec('/bin/sync');
-
 /* abort in case of no valid config for image install */
 if (!file_exists('/conf/config.xml')) {
     exit(0);
 }
+
+/* there seems to be a race with unpacking files */
+shell_exec('/bin/sync');
 
 require_once 'config.inc';
 require_once 'auth.inc';
