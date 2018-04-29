@@ -720,7 +720,7 @@ $(document).ready(function() {
                   <input name="disableintegratedauth" type="checkbox" value="yes" <?= empty($pconfig['disableintegratedauth']) ? '' : 'checked="checked"' ?>  />
                   <?=gettext("Disable integrated authentication"); ?>
                   <div class="hidden" data-for="help_for_disableintegratedauth">
-                      <?=gettext("Disable OPNsense integrated authentication module for console access, falling back to normal unix authentication.");?>
+                      <?=gettext('Login, SSH, and other system services may only use standard UNIX user/password authentication.');?>
                   </div>
                 </td>
               </tr>
