@@ -27,6 +27,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* abort in case of no valid config for image install */
+if (!file_exists('/conf/config.xml')) {
+    exit(0);
+}
+
 require_once 'config.inc';
 require_once 'system.inc';
 require_once 'interfaces.inc';
