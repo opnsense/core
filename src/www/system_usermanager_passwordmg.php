@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2018 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2014-2015 Deciso B.V.
  * Copyright (C) 2011 Ermal Luçi
  * All rights reserved.
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
 
     if (isset($_GET['savemsg'])) {
-        $savemsg = htmlspecialchars(gettext($_GET['savemsg']));
+        $savemsg = htmlspecialchars(sprintf(gettext($_GET['savemsg']), $username));
     } elseif (!empty($_SESSION['user_shouldChangePassword'])) {
         $savemsg = gettext("Your password has expired, please provide a new one");
     }
@@ -94,7 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         write_config();
 
-        header(url_safe('Location: /system_usermanager_passwordmg.php?savemsg=%s', sprintf(gettext('Saved settings for user "%s"'), $username)));
+        $unused_but_needed_for_translation = gettext('Saved settings for user "%s"');
+        header(url_safe('Location: /system_usermanager_passwordmg.php?savemsg=%s', array('Saved settings for user "%s"')));
         exit;
     }
 }
