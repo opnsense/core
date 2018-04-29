@@ -342,6 +342,10 @@ dhparam:
 .endfor
 
 test: want-phpunit6-php${CORE_PHP}
+	@if [ "$$(${PKG} query %n-%v ${CORE_NAME})" != "${CORE_NAME}-${CORE_VERSION}" ]; then \
+		echo "Installed version does not match, expected ${CORE_NAME}-${CORE_VERSION}"; \
+		exit 1; \
+	fi
 	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
 	    phpunit --configuration PHPunit.xml
 
