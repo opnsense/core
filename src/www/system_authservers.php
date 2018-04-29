@@ -189,7 +189,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           $input_errors[] = gettext("RADIUS Timeout value must be numeric and positive.");
       }
       if (empty($pconfig['name'])) {
-          $input_errors[] = gettext("A server name must be provided");
+          $input_errors[] = gettext('A server name must be provided.');
+      } elseif (strpos($pconfig['name'], ',') !== false) {
+          $input_errors[] = gettext('Invalid server name given.');
       }
 
       if (count($input_errors) == 0) {

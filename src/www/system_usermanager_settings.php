@@ -33,8 +33,7 @@ require_once("guiconfig.inc");
 $save_and_test = false;
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    $pconfig['authmode_fallback'] = !empty($config['system']['webgui']['authmode_fallback']) ? $config['system']['webgui']['authmode_fallback'] : "Local Database";
-    foreach (array('session_timeout', 'authmode', 'password_policy_duration',
+    foreach (array('session_timeout', 'password_policy_duration',
                    'enable_password_policy_constraints',
                    'password_policy_complexity', 'password_policy_length') as $fieldname) {
         if (!empty($config['system']['webgui'][$fieldname])) {
@@ -43,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$fieldname] = null;
         }
     }
-
+    $pconfig['authmode'] = !empty($config['system']['webgui']['authmode']) ? explode(',', $config['system']['webgui']['authmode']) : array();
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $input_errors = array();
@@ -54,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (count($input_errors) == 0) {
         $authsrv = auth_get_authserver($pconfig['authmode']);
         if (!empty($pconfig['savetest'])) {
+            # XXX this needs repairing...
             if ($authsrv['type'] == "ldap") {
                 $save_and_test = true;
             } else {
@@ -61,8 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        foreach (array('session_timeout', 'authmode', 'authmode_fallback', 'password_policy_duration',
-                       'enable_password_policy_constraints',
+        foreach (array('session_timeout', 'password_policy_duration', 'enable_password_policy_constraints',
                        'password_policy_complexity', 'password_policy_length') as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
                 $config['system']['webgui'][$fieldname] = $pconfig[$fieldname];
@@ -71,6 +70,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
+        if (!empty($pconfig['authmode'])) {
+            $config['system']['webgui']['authmode'] = implode(',', $pconfig['authmode']);
+        } elseif (isset($config['system']['webgui']['authmode'])) {
+            unset($config['system']['webgui']['authmode']);
+        }
 
         write_config();
     }
@@ -78,9 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 legacy_html_escape_form_data($pconfig);
 include("head.inc");
-?>
 
+?>
 <body>
+
 <style>
     .password_policy_constraints {
         display:none;
@@ -136,33 +141,16 @@ endif;?>
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Authentication Server"); ?></td>
                   <td>
-                      <select name="authmode" class="selectpicker" data-style="btn-default" >
+                      <select name="authmode[]" multiple="multiple" class="selectpicker" data-style="btn-default">
 <?php
                       foreach (auth_get_authserver_list() as $auth_key => $auth_server) :?>
-                        <option value="<?=$auth_key; ?>" <?=$auth_key == $pconfig['authmode'] ? "selected=\"selected\"" : "";?>>
+                        <option value="<?= $auth_key ?>" <?= in_array($auth_key, $pconfig['authmode']) ? 'selected="selected"' : '' ?>>
                           <?=htmlspecialchars($auth_server['name']);?>
                         </option>
 <?php
                       endforeach; ?>
                       </select>
                     </td>
-                  </tr>
-                  <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Authentication Server (fallback)"); ?></td>
-                    <td>
-                        <select name="authmode_fallback" class="selectpicker" data-style="btn-default" >
-<?php
-                        foreach (auth_get_authserver_list() as $auth_key => $auth_server) :?>
-                          <option value="<?=$auth_key; ?>" <?=$auth_key == $pconfig['authmode_fallback'] ? "selected=\"selected\"" : "";?>>
-                            <?=htmlspecialchars($auth_server['name']);?>
-                          </option>
- <?php
-                        endforeach; ?>
-                          <option value="__NO_FALLBACK__" <?= $pconfig['authmode_fallback'] == "__NO_FALLBACK__" ? "selected=\"selected\"" : "";?> >
-                            <?=gettext("--No Fallback--");?>
-                          </option>
-                        </select>
-                      </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_enable_password_policy_constraints" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Policy'); ?></td>

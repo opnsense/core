@@ -202,37 +202,17 @@ function session_auth(&$Login_Error)
 
     /* Validate incoming login request */
     if (isset($_POST['login']) && !empty($_POST['usernamefld']) && !empty($_POST['passwordfld'])) {
-        $authcfg = auth_get_authserver("Local Database");
-        $authcfg_fallback = auth_get_authserver("Local Database");
-
-        if (isset($config['system']['webgui']['authmode'])) {
-            $authcfg = auth_get_authserver($config['system']['webgui']['authmode']);
-        }
-
-        if (!empty($config['system']['webgui']['authmode_fallback'])) {
-            if ($config['system']['webgui']['authmode_fallback'] == "__NO_FALLBACK__") {
-                // no fallback
-                $authcfg_fallback = false;
-            } else {
-                $authcfg_fallback = auth_get_authserver($config['system']['webgui']['authmode_fallback']);
-            }
-        }
-
-        if ($authcfg == $authcfg_fallback) {
-            // it doesn't make sense to fallback to the same authenticator
-            $authcfg_fallback = false;
-        }
-
         // authenticate using config settings, or local if failed
-        $authenticator = get_authenticator($authcfg);
+        $authservers = !empty($config['system']['webgui']['authmode']) ?
+            explode(',', $config['system']['webgui']['authmode']) : array('Local Database');
         $is_authenticated = false;
-        if ($authenticator != null && $authenticator->authenticate($_POST['usernamefld'], $_POST['passwordfld'])) {
-            $is_authenticated = true;
-        }
-        if (!$is_authenticated && $authcfg_fallback !== false) {
-            $authenticator = get_authenticator($authcfg_fallback);
+
+        foreach ($authservers as $authserver) {
+            /* XXX careful, dereferenced below */
+            $authenticator = get_authenticator(auth_get_authserver($authserver));
             if ($authenticator != null && $authenticator->authenticate($_POST['usernamefld'], $_POST['passwordfld'])) {
                 $is_authenticated = true;
+                break;
             }
         }
 
