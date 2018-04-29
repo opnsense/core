@@ -978,9 +978,9 @@
 /usr/local/opnsense/www/themes/opnsense/build/fonts/bootstrap/glyphicons-halflings-regular.ttf
 /usr/local/opnsense/www/themes/opnsense/build/fonts/bootstrap/glyphicons-halflings-regular.woff
 /usr/local/opnsense/www/themes/opnsense/build/images/caret.png
-/usr/local/opnsense/www/themes/opnsense/build/images/default-logo.png
+/usr/local/opnsense/www/themes/opnsense/build/images/default-logo.svg
 /usr/local/opnsense/www/themes/opnsense/build/images/favicon.png
-/usr/local/opnsense/www/themes/opnsense/build/images/icon-logo.png
+/usr/local/opnsense/www/themes/opnsense/build/images/icon-logo.svg
 /usr/local/sbin/3gstats.php
 /usr/local/sbin/beep.sh
 /usr/local/sbin/configctl
