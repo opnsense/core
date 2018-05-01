@@ -632,6 +632,7 @@
         <name>System: Authentication Servers</name>
         <patterns>
             <pattern>system_authservers.php*</pattern>
+            <pattern>system_usermanager_settings_ldapacpicker.php*</pattern>
         </patterns>
     </page-system-authservers>
     <page-system-camanager>
@@ -733,12 +734,6 @@
             <pattern>system_usermanager_addprivs.php?user*</pattern>
         </patterns>
     </page-system-usermanager-addprivs>
-    <page-system-usermanager-settings>
-        <name>System: User Manager: settings</name>
-        <patterns>
-            <pattern>system_usermanager_settings.php*</pattern>
-        </patterns>
-    </page-system-usermanager-settings>
     <page-system-usermanager-settings-testldap>
         <name>System: User Manager: Settings: Test LDAP</name>
         <patterns>

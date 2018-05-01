@@ -5,6 +5,7 @@
  * Copyright (C) 2014-2015 Deciso B.V.
  * Copyright (C) 2005-2010 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * Copyright (C) 2007 Bill Marquette <bill.marquette@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
  *
@@ -36,10 +37,20 @@ require_once("system.inc");
 require_once("services.inc");
 
 $a_group = &config_read_array('system', 'group');
+$a_authmode = auth_get_authserver_list();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
+    foreach (array('session_timeout', 'password_policy_duration', 'enable_password_policy_constraints',
+        'password_policy_complexity', 'password_policy_length') as $fieldname) {
+        if (!empty($config['system']['webgui'][$fieldname])) {
+            $pconfig[$fieldname] = $config['system']['webgui'][$fieldname];
+        } else {
+            $pconfig[$fieldname] = null;
+        }
+    }
     $pconfig['webguiinterfaces'] = !empty($config['system']['webgui']['interfaces']) ? explode(',', $config['system']['webgui']['interfaces']) : array();
+    $pconfig['authmode'] = !empty($config['system']['webgui']['authmode']) ? explode(',', $config['system']['webgui']['authmode']) : array();
     $pconfig['webguiproto'] = $config['system']['webgui']['protocol'];
     $pconfig['webguiport'] = $config['system']['webgui']['port'];
     $pconfig['ssl-certref'] = $config['system']['webgui']['ssl-certref'];
@@ -88,6 +99,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (!empty($pconfig['sshport']) && !is_port($pconfig['sshport'])) {
         $input_errors[] = gettext('You must specify a valid SSH port number.');
+    }
+
+    if (!empty($pconfig['session_timeout']) && (!is_numeric($pconfig['session_timeout']) || $pconfig['session_timeout'] <= 0)) {
+        $input_errors[] = gettext('Session timeout must be an integer value.');
+    }
+
+    if (!empty($pconfig['authmode'])) {
+        foreach ($pconfig['authmode'] as $auth_mode) {
+            if (!isset($a_authmode[$auth_mode])) {
+                $input_errors[] = sprintf(gettext('Authentication server "%s" is invalid.'), $auth_mode);
+            }
+        }
     }
 
     if (count($input_errors) == 0) {
@@ -185,6 +208,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['althostnames'] = $pconfig['althostnames'];
         } elseif (isset($config['system']['webgui']['althostnames'])) {
             unset($config['system']['webgui']['althostnames']);
+        }
+
+        foreach (array('session_timeout', 'password_policy_duration', 'enable_password_policy_constraints',
+           'password_policy_complexity', 'password_policy_length') as $fieldname) {
+            if (!empty($pconfig[$fieldname])) {
+                $config['system']['webgui'][$fieldname] = $pconfig[$fieldname];
+            } elseif (isset($config['system']['webgui'][$fieldname])) {
+                unset($config['system']['webgui'][$fieldname]);
+            }
+        }
+
+        if (!empty($pconfig['authmode'])) {
+            $config['system']['webgui']['authmode'] = implode(',', $pconfig['authmode']);
+        } elseif (isset($config['system']['webgui']['authmode'])) {
+            unset($config['system']['webgui']['authmode']);
         }
 
         /* always store setting to prevent installer auto-start */
@@ -365,6 +403,25 @@ $(document).ready(function() {
     unset($savemsg);
     endif;?>
   });
+</script>
+
+<style>
+    .password_policy_constraints {
+        display:none;
+    }
+</style>
+
+<script>
+    $(document).ready(function() {
+        $("#enable_password_policy_constraints").change(function(){
+            if ($("#enable_password_policy_constraints").prop('checked')) {
+                $(".password_policy_constraints").show();
+            } else {
+                $(".password_policy_constraints").hide();
+            }
+        });
+        $("#enable_password_policy_constraints").change();
+    });
 </script>
 
 <section class="page-content-main">
@@ -652,7 +709,7 @@ $(document).ready(function() {
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td style="width:22%"><strong><?= gettext('Console Options') ?></strong></td>
+                <td style="width:22%"><strong><?= gettext('Console') ?></strong></td>
                 <td style="width:78%"></td>
               </tr>
               <tr>
@@ -732,6 +789,93 @@ $(document).ready(function() {
                     <option value="1" <?= $pconfig['sudo_allow_wheel'] == 1 ? 'selected="selected"' : '' ?>><?= gettext('Ask password') ?></option>
                     <option value="2" <?= $pconfig['sudo_allow_wheel'] == 2 ? 'selected="selected"' : '' ?>><?= gettext('No password') ?></option>
                   </select>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"><strong><?= gettext('Authentication') ?></strong></td>
+                <td style="width:78%"></td>
+              </tr>
+              <tr>
+                <td><a id="help_for_authmode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Server') ?></td>
+                <td>
+                  <select name="authmode[]" multiple="multiple" class="selectpicker" data-style="btn-default">
+<?php
+                  foreach ($a_authmode as $auth_key => $auth_server): ?>
+                    <option value="<?= html_safe($auth_key) ?>" <?= in_array($auth_key, $pconfig['authmode']) ? 'selected="selected"' : '' ?>>
+                      <?= html_safe($auth_server['name']) ?>
+                    </option>
+<?php
+                  endforeach ?>
+                  </select>
+                  <div class="hidden" data-for="help_for_authmode">
+                    <?= gettext('Select one or more authentication servers to validate user credentials against. ' .
+                        'Multiple servers can make sense with remote authentication methods to provide a fallback ' .
+                        'during connectivity issues. When nothing is specified the default of "Local Database" is used.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_session_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Timeout') ?></td>
+                <td>
+                  <input class="form-control" name="session_timeout" id="session_timeout" type="text" placeholder="240" value="<?=$pconfig['session_timeout'];?>" />
+                  <div class="hidden" data-for="help_for_session_timeout">
+                    <?= gettext('Time in minutes to expire idle management sessions. The default is 4 hours (240 minutes).') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_enable_password_policy_constraints" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Policy'); ?></td>
+                <td>
+                  <input id="enable_password_policy_constraints" name="enable_password_policy_constraints" type="checkbox"  <?= empty($pconfig['enable_password_policy_constraints']) ? '' : 'checked="checked"';?> />
+                  <?= gettext('Enable password policy constraints') ?>
+                  <div class="hidden" data-for="help_for_enable_password_policy_constraints">
+                    <?= gettext('Use hardened security policies for local accounts. Methods other than local these will usually be configured by the respective provider (e.g. LDAP, RADIUS, ...).');?>
+                  </div>
+                </td>
+              </tr>
+              <tr class="password_policy_constraints">
+              <td><a id="help_for_password_policy_duration" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Duration'); ?></td>
+                  <td>
+                      <select id="password_policy_duration" name="password_policy_duration" class="selectpicker" data-style="btn-default">
+                          <option <?=empty($pconfig['password_policy_duration']) ? "selected=\"selected\"" : "";?> value="0"><?=gettext("Disable");?></option>
+                          <option <?=$pconfig['password_policy_duration'] == '30' ? "selected=\"selected\"" : "";?> value="30"><?=sprintf(gettext("%d days"), "30");?></option>
+                          <option <?=$pconfig['password_policy_duration'] == '90' ? "selected=\"selected\"" : "";?> value="90"><?=sprintf(gettext("%d days"), "90");?></option>
+                          <option <?=$pconfig['password_policy_duration'] == '180' ? "selected=\"selected\"" : "";?> value="180"><?=sprintf(gettext("%d days"), "180");?></option>
+                          <option <?=$pconfig['password_policy_duration'] == '360' ? "selected=\"selected\"" : "";?> value="360"><?=sprintf(gettext("%d days"), "360");?></option>
+                      </select>
+                      <div class="hidden" data-for="help_for_password_policy_duration">
+                        <?= gettext("Password duration settings, the interval in days in which passwords stay valid. ".
+                                    "When reached, the user will be forced to change his or her password before continuing.");?>
+                      </div>
+                  </td>
+              </tr>
+              <tr class="password_policy_constraints">
+                  <td><a id="help_for_password_policy_length" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Length'); ?></td>
+                  <td>
+                      <select id="password_policy_length" name="password_policy_length" class="selectpicker" data-style="btn-default">
+                          <option <?=empty($pconfig['password_policy_length'])  || $pconfig['password_policy_length'] == '8' ? "selected=\"selected\"" : "";?> value="8">8</option>
+                          <option <?=$pconfig['password_policy_length'] == '10' ? "selected=\"selected\"" : "";?> value="10">10</option>
+                          <option <?=$pconfig['password_policy_length'] == '12' ? "selected=\"selected\"" : "";?> value="12">12</option>
+                          <option <?=$pconfig['password_policy_length'] == '14' ? "selected=\"selected\"" : "";?> value="14">14</option>
+                          <option <?=$pconfig['password_policy_length'] == '16' ? "selected=\"selected\"" : "";?> value="16">16</option>
+                      </select>
+                      <div class="hidden" data-for="help_for_password_policy_length">
+                        <?= gettext("Sets the minimum length for a password");?>
+                      </div>
+                  </td>
+              </tr>
+              <tr class="password_policy_constraints">
+                <td><a id="help_for_password_policy_complexity" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Complexity'); ?></td>
+                <td>
+                  <input id="password_policy_complexity" name="password_policy_complexity" type="checkbox"  <?= empty($pconfig['password_policy_complexity']) ? '' : 'checked="checked"';?> />
+                  <?= gettext('Enable complexity requirements') ?>
+                  <div class="hidden" data-for="help_for_password_policy_complexity">
+                    <?= gettext("Require passwords to meet complexity rules");?>
+                  </div>
                 </td>
               </tr>
             </table>

@@ -25,11 +25,10 @@
                 <All url="/system_groupmanager.php*" visibility="hidden"/>
                 <Privileges url="/system_groupmanager_addprivs.php*" visibility="hidden"/>
             </Groups>
-            <Settings order="30" url="/system_usermanager_settings.php"/>
-            <Servers order="40" url="/system_authservers.php">
+            <Servers order="30" url="/system_authservers.php">
                 <Edit url="/system_authservers.php*" visibility="hidden"/>
             </Servers>
-            <Tester order="50" url="/diag_authentication.php"/>
+            <Tester order="40" url="/diag_authentication.php"/>
         </Access>
         <Configuration cssClass="fa fa-history fa-fw">
             <Backups url="/diag_backup.php"/>
