@@ -32,6 +32,7 @@
 
 require_once("interfaces.lib.inc");
 require_once("gwlb.inc");
+require_once("dslite.inc");
 
 /*
  * converts a string like "a,b,c,d"
@@ -2941,6 +2942,11 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
 
         $dhcp6cconf .= "  request domain-name-servers;\n";
         $dhcp6cconf .= "  request domain-name;\n";
+
+        if ($wancfg['ipaddr'] == "dslite") {
+            $dhcp6cconf .= "  request raw-option 64 00;\n";
+        }
+
         $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\"; # we'd like some nameservers please\n";
 
         $dhcp6cconf .= "};\n";
@@ -4322,7 +4328,11 @@ function get_interfaces_info()
             $ifinfo['subnet'] = $ifinfo['ipv4'][0]['subnetbits'];
         }
         if ($config['interfaces'][$ifdescr]['ipaddr'] == "dslite") {
-            $ifinfo['ipaddr'] = "DS-Lite via AFTR";
+            $gifif = dslite_find_tunnel_interface($ifdescr);
+            $aftr = dslite_find_aftr_address($ifdescr);
+            $ifinfo['ipaddr'] = 'dslite';
+            $ifinfo['dslite_aftr'] = $aftr;
+            $ifinfo['dslite_gif'] = $gifif;
         }
 
         $ifinfotmp = $all_intf_stats[$ifinfo['if']];

@@ -30,6 +30,20 @@ require_once("interfaces.inc");
 require_once("util.inc");
 require_once("system.inc");
 
+function dslite_find_tunnel_interface($parent)
+{
+    $dslite_tunnel_file = sprintf("/tmp/dslite_%s.state", $parent);
+    $gifif = @file_get_contents($dslite_tunnel_file);
+    return ($gifif);
+}
+
+function dslite_find_aftr_address($parent)
+{
+    $dslite_aftr_file = sprintf("/tmp/dslite_%s_aftr.state", $parent);
+    $aftr_addr = @file_get_contents($dslite_aftr_file);
+    return ($aftr_addr);
+}
+
 function setup_dslite_tunnel($verbose, $parent, $aftr)
 {
     global $config;
@@ -59,6 +73,9 @@ function setup_dslite_tunnel($verbose, $parent, $aftr)
 
     $dslite_tunnel_file = sprintf("/tmp/dslite_%s.state", $parent);
     @file_put_contents($dslite_tunnel_file, $gifif);
+
+    $dslite_aftr_file = sprintf("/tmp/dslite_%s_aftr.state", $parent);
+    @file_put_contents($dslite_aftr_file, $aftr);
 }
 
 function destroy_dslite_tunnel($verbose, $parent)
@@ -70,9 +87,7 @@ function destroy_dslite_tunnel($verbose, $parent)
         return;
     }
 
-    $dslite_tunnel_file = sprintf("/tmp/dslite_%s.state", $parent);
-    $gifif = @file_get_contents($dslite_tunnel_file);
-
+    $gifif = dslite_find_tunnel_interface($parent);
     if (!empty($gifif)) {
         if ($verbose) {
             log_error(sprintf("Destroying DS-Lite tunnel %s on interface %s", $gifif, $parent));

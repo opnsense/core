@@ -281,12 +281,28 @@ include("head.inc");
                   endif;
                 if ($ifinfo['status'] != "down"):
                   if ($ifinfo['dhcplink'] != "down" && $ifinfo['pppoelink'] != "down" && $ifinfo['pptplink'] != "down"):
-                    if ($ifinfo['ipaddr']):?>
+                    if ($ifinfo['ipaddr']):
+                        if ($ifinfo['ipaddr'] == "dslite"):?>
+                    <tr>
+                      <td><?=gettext("IPv4 connectivity") ?></td>
+                      <td><?=gettext("Dual-Stack Lite (DS-Lite)") ?></td>
+                    </tr>
+                    <tr>
+                      <td><?=gettext("AFTR dddress") ?></td>
+                      <td><?=htmlspecialchars($ifinfo['dslite_aftr']) ?></td>
+                    </tr>
+                    <tr>
+                      <td><?=gettext("DS-Lite tunnel interface") ?></td>
+                      <td><?=htmlspecialchars($ifinfo['dslite_gif']) ?></td>
+                    </tr>
+<?php
+                        else:?>
                     <tr>
                       <td><?= gettext("IPv4 address") ?></td>
                       <td><?= $ifinfo['ipaddr'] ?></td>
                     </tr>
 <?php
+                        endif;
                     endif;
                     if (!empty($ifinfo['subnet'])):?>
                     <tr>

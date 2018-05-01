@@ -179,7 +179,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           <?=empty($ifinfo['media']) ? htmlspecialchars($ifinfo['cell_mode']) : htmlspecialchars($ifinfo['media']);?>
         </td>
         <td style="width:45%; word-break: break-word;">
-          <?=htmlspecialchars($ifinfo['ipaddr']);?>
+          <? if ($ifinfo['ipaddr'] == "dslite") {
+            $aftr = $ifinfo['dslite_aftr'];
+            $gifif = $ifinfo['dslite_gif'];
+            echo htmlspecialchars(sprintf("DS-Lite via AFTR '%s' on tunnel interface %s", $aftr, $gifif));
+          } else {
+            echo htmlspecialchars($ifinfo['ipaddr']);
+          }?>
           <?=!empty($ifinfo['ipaddr']) ? "<br/>" : "";?>
           <?=htmlspecialchars(isset($config['interfaces'][$ifdescr]['dhcp6prefixonly']) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?>
         </td>
