@@ -360,6 +360,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $pconfig = array();
     $std_copy_fieldnames = array(
+<<<<<<< HEAD
         'adv_dhcp6_authentication_statement_algorithm',
         'adv_dhcp6_authentication_statement_authname',
         'adv_dhcp6_authentication_statement_protocol',
@@ -431,6 +432,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'rfc3118_username',
         'rfc3118_password',
         'rfc3118_or_fr_lbid',
+        'dslite_aftr_addr',
+        'dslite_tunnel_mtu'
     );
     foreach ($std_copy_fieldnames as $fieldname) {
         $pconfig[$fieldname] = isset($a_interfaces[$if][$fieldname]) ? $a_interfaces[$if][$fieldname] : null;
@@ -729,6 +732,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
                 do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
                 break;
+            case "dslite":
+                // Just for information, no fields are actually required here
+                break;
         }
         switch (strtolower($pconfig['type6'])) {
             case "staticv6":
@@ -932,6 +938,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (!empty($pconfig['mss']) && $pconfig['mss'] < 576) {
             $input_errors[] = gettext("The MSS must be greater than 576 bytes.");
+        }
+        if (!empty($pconfig['dslite_aftr_addr'])) {
+            if (!is_ipaddrv6($pconfig['dslite_aftr_addr'])) {
+                if (is_ipaddrv4($pconfig['dslite_aftr_addr'])) {
+                    $input_errors[] = gettext("A valid IPv6 address or a DNS name. An IPv4 address cannot be specified.");
+                }
+            }
+        }
+        if (!empty($pconfig['dslite_tunnel_mtu'])) {
+            if ($pconfig['dslite_tunnel_mtu'] < 576 || $pconfig['dslite_tunnel_mtu'] > 9000) {
+                $input_errors[] = gettext("The DS-Lite tunnel MTU must be greater than 576 bytes and less than 9000.");
+            }
+
+            if (!empty($pconfig['mtu']) && $pconfig['mtu'] < $pconfig['dslite_tunnel_mtu']) {
+                $input_errors[] = gettext("The DS-Lite tunnel MTU cannot be bigger than the MTU of the parent interface.");
+            }
         }
         /*
           Wireless interface
@@ -1138,6 +1160,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (!empty($pconfig['pptp_idletimeout'])) {
                         $new_ppp_config['idletimeout'] = $pconfig['pptp_idletimeout'];
                     }
+                    break;
+                case "dslite":
+                    $new_config['dslite_aftr_addr'] = $pconfig['dslite_aftr_addr'];
+                    $new_config['dslite_tunnel_mtu'] = $pconfig['dslite_tunnel_mtu'];
                     break;
             }
 
@@ -1443,7 +1469,7 @@ include("head.inc");
 
       //
       $("#type").change(function(){
-          $('#staticv4, #dhcp, #pppoe, #pptp, #ppp').hide()
+          $('#staticv4, #dhcp, #pppoe, #pptp, #ppp, #dslite').hide()
           $("#rfc3118").hide();
           if ($("#type").val() == "dhcp" || $("#type6").val() == "dhcp6") {
              $("#rfc3118").show();
@@ -1863,7 +1889,7 @@ include("head.inc");
                           <td>
                           <select name="type" <?= substr($pconfig['if'], 0, 3) == 'gre' ? 'disabled="disabled"' : ''; ?> class="selectpicker" data-style="btn-default" id="type">
 <?php
-                            $types4 = array("none" => gettext("None"), "staticv4" => gettext("Static IPv4"), "dhcp" => gettext("DHCP"), "ppp" => gettext("PPP"), "pppoe" => gettext("PPPoE"), "pptp" => gettext("PPTP"), "l2tp" => gettext("L2TP"));
+                            $types4 = array("none" => gettext("None"), "staticv4" => gettext("Static IPv4"), "dhcp" => gettext("DHCP"), "ppp" => gettext("PPP"), "pppoe" => gettext("PPPoE"), "pptp" => gettext("PPTP"), "l2tp" => gettext("L2TP"), "dslite" => gettext("DS-Lite"));
                             foreach ($types4 as $key => $opt):?>
                             <option value="<?=$key;?>" <?=$key == $pconfig['type'] ? "selected=\"selected\"" : "";?> ><?=$opt;?></option>
 <?php
@@ -2259,6 +2285,44 @@ include("head.inc");
                             <input name="adv_dhcp_config_file_override_path"   type="text" id="adv_dhcp_config_file_override_path"  value="<?=$pconfig['adv_dhcp_config_file_override_path'];?>" />
                             <div class="hidden" data-for="help_for_dhcp_config_file_override_path">
                               <?= gettext('The value in this field is the full absolute path to a DHCP client configuration file.') ?>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <!-- Section : DS-Lite -->
+                <div class="tab-content content-box col-xs-12 __mb" id="dslite" style="display:none">
+                  <div class="table-responsive">
+                    <table class="table table-striped opnsense_standard_table_form">
+                      <thead>
+                        <tr>
+                          <th colspan="2"><?=gettext("DS-Lite configuration"); ?></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style="width:22%"><a id="help_for_dslite_config_aftr_addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("AFTR Address"); ?></td>
+                          <td style="width:78%">
+                            <input name="dslite_aftr_addr" type="text" id="dslite_aftr_addr" value="<?=$pconfig['dslite_aftr_addr']; ?>" />
+                            <div class="hidden" data-for="help_for_dslite_config_aftr_addr">
+                              <?=gettext("The value in this field is the provider's AFTR (CNAT service) address. ".
+                                  "Both a valid IPv6 address as well as a DNS name can be set. If configured using a ".
+                                  "DNS name, the name will be resolved just before creating the DS-Lite tunnel. If the".
+                                  "field is left blank, the address is tried to be discovered automatically by use ".
+                                  "of DHCPv6."); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="width:22%"><a id="help_for_dslite_config_tunnel_mtu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Tunnel MTU"); ?></td>
+                          <td style="width:78%">
+                            <input name="dslite_tunnel_mtu" type="text" id="dslite_tunnel_mtu" value="<?=$pconfig['dslite_tunnel_mtu']; ?>" />
+                            <div class="hidden" data-for="help_for_dslite_config_tunnel_mtu">
+                              <?=gettext("The value in this field defines the MTU value used for packets inside the ".
+                                  "4in6 DS-Lite tunnel. By default the MTU is automatically calculated using the ".
+                                  "outer MTU subtracted by the IPv6 header size (40 bytes)."); ?>
                             </div>
                           </td>
                         </tr>
