@@ -733,7 +733,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
                 break;
             case "dslite":
-                // Just for information, no fields are actually required here
+                if (empty($pconfig['type6'])) {
+                    $input_errors[] = gettext("DS-Lite requires IPv6 configuration to be present.");
+                } else {
+                    switch (strtolower($pconfig['type6'])) {
+                        case "staticv6":
+                            // No further checks as the IPv6 address is checked in the next step
+                            break;
+                        case "dhcp6":
+                            if (!empty($pconfig['dhcp6prefixonly'])) {
+                                $input_errors[] = gettext("DS-Lite requires a public IPv6 on the WAN interface to create a 4in6 tunnel, therefore 'Request only an IPv6 prefix' does not work");
+                            }
+                            break;
+                        default:
+                            // Just fail, no other option allowed for the time being
+                            $input_errors[] = gettext("DS-Lite requires either of static IPv6 or DHCPv6 to be configured.");
+                            break;
+                    }
+                }
                 break;
         }
         switch (strtolower($pconfig['type6'])) {
