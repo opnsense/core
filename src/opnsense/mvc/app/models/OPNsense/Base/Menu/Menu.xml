@@ -7,7 +7,7 @@
         </Dashboard>
         <License order="1" url="/license.php" cssClass="fa fa-balance-scale fa-fw"/>
         <Password order="2" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key fa-fw">
-            <workAround url="/system_usermanager_passwordmg.php*" visibility="hidden"/>
+            <Edit url="/system_usermanager_passwordmg.php*" visibility="hidden"/>
         </Password>
         <Logout order="3" url="/index.php?logout" cssClass="fa fa-sign-out fa-fw"/>
     </Lobby>
@@ -64,26 +64,26 @@
             <Log order="100" VisibleName="Log File" url="/diag_logs_routing.php"/>
         </Routes>
         <Settings cssClass="fa fa-cogs fa-fw">
-            <General order="100" url="/system_general.php">
-                <workAround url="/system_general.php*" visibility="hidden"/>
+            <Administration url="/system_advanced_admin.php"/>
+            <General url="/system_general.php">
+                <Edit url="/system_general.php*" visibility="hidden"/>
             </General>
-            <Administration order="200" url="/system_advanced_admin.php"/>
-            <Logging order="300" url="/diag_logs_settings.php"/>
-            <Notifications order="400" url="/system_advanced_notifications.php"/>
-            <Miscellaneous order="500" url="/system_advanced_misc.php"/>
-            <Tunables VisibleName="Tunables" order="600" url="/system_advanced_sysctl.php">
+            <Logging url="/diag_logs_settings.php"/>
+            <Miscellaneous url="/system_advanced_misc.php"/>
+            <Notifications url="/system_advanced_notifications.php"/>
+            <Tunables url="/system_advanced_sysctl.php">
                 <Edit url="/system_advanced_sysctl.php*" visibility="hidden"/>
             </Tunables>
         </Settings>
         <Trust cssClass="fa fa-certificate fa-fw">
-            <Certificates url="/system_certmanager.php">
-                <workAround url="/system_certmanager.php*" visibility="hidden"/>
-            </Certificates>
             <Authorities url="/system_camanager.php">
-                <workAround url="/system_camanager.php*" visibility="hidden"/>
+                <Edit url="/system_camanager.php*" visibility="hidden"/>
             </Authorities>
+            <Certificates url="/system_certmanager.php">
+                <Edit url="/system_certmanager.php*" visibility="hidden"/>
+            </Certificates>
             <Revocation url="/system_crlmanager.php">
-                <workAround url="/system_crlmanager.php*" visibility="hidden"/>
+                <Edit url="/system_crlmanager.php*" visibility="hidden"/>
             </Revocation>
         </Trust>
         <Wizard url="/wizard.php?xml=system" cssClass="fa fa-magic fa-fw">

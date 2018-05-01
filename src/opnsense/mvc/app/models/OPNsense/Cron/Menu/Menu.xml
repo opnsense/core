@@ -1,7 +1,7 @@
 <menu>
     <System>
         <Settings>
-            <Cron order="1000" url="/ui/cron/">
+            <Cron url="/ui/cron/">
                 <item url="/ui/cron/*" visibility="hidden"/>
             </Cron>
         </Settings>
