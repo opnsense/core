@@ -34,6 +34,9 @@ import gzip
 import zipfile
 import tempfile
 import requests
+import json
+import hashlib
+import os
 
 
 class Downloader(object):
@@ -110,16 +113,14 @@ class Downloader(object):
         else:
             return src.read()
 
-    def download(self, proto, url, url_filename, filename, input_filter, auth = None, headers=None):
-        """ download ruleset file
-            :param proto: protocol (http,https)
+    def fetch(self, url, auth=None, headers=None):
+        """ Fetch file from remote location and save to temp, return filehandle pointed to start of temp file.
+            Results are cached, which prevents downloading the same archive twice for example.
             :param url: download url
-            :param filename: target filename
-            :param input_filter: filter to use on received data before save
             :param auth: authentication
             :param headers: headers to send
         """
-        if proto in ('http', 'https'):
+        if str(url).split(':')[0].lower() in ('http', 'https'):
             frm_url = url.replace('//', '/').replace(':/', '://')
             # stream to temp file
             if frm_url not in self._download_cache:
@@ -141,30 +142,81 @@ class Downloader(object):
                             break
                         else:
                              src.write(data)
-                    src.seek(0)
                     self._download_cache[frm_url] = src
 
-            # process rules from tempfile (prevent duplicate download for files within an archive)
-            if frm_url in self._download_cache:
-                try:
-                    target_filename = '%s/%s' % (self._target_dir, filename)
-                    save_data = self._unpack(self._download_cache[frm_url], url, url_filename)
-                    save_data = self.filter(save_data, input_filter)
-                    open(target_filename, 'w', buffering=10240).write(save_data)
-                except IOError:
-                    syslog.syslog(syslog.LOG_ERR, 'cannot write to %s' % target_filename)
-                    return None
-                syslog.syslog(syslog.LOG_INFO, 'download completed for %s' % frm_url)
-            else:
-                syslog.syslog(syslog.LOG_ERR, 'download failed for %s' % frm_url)
+        if frm_url in self._download_cache:
+            self._download_cache[frm_url].seek(0)
+            return self._download_cache[frm_url]
+        else:
+            return None
+
+    def fetch_version_hash(self, check_url, input_filter, auth=None, headers=None):
+        """ Calculate a hash value using the download settings and a predefined version url (check_url).
+            :param check_url: download url, version identifier
+            :param input_filter: filter to use on received data before save
+            :param auth: authentication
+            :param headers: headers to send
+            :return: None or hash
+        """
+        if check_url is not None:
+            # when no check url provided, assume different
+            if self.is_supported(check_url):
+                version_handle = self.fetch(url=check_url, auth=auth, headers=headers)
+                if version_handle:
+                    hash_value = [json.dumps(input_filter), json.dumps(auth),
+                                  json.dumps(headers), version_handle.read()]
+                    return hashlib.md5('\n'.join(hash_value)).hexdigest()
+        return None
+
+    def installed_file_hash(self, filename):
+        """ Fetch file version hash from header
+            :param filename: target filename
+            :return: None or hash
+        """
+        target_filename = '%s/%s' % (self._target_dir, filename)
+        if os.path.isfile(target_filename):
+            with open(target_filename, 'r') as f_in:
+                line = f_in.readline()
+                if line.find("#@opnsense_download_hash:") == 0:
+                    return line.split(':')[1].strip()
+        return None
+
+    def download(self, url, url_filename, filename, input_filter, auth=None, headers=None, version=None):
+        """ download ruleset file
+            :param url: download url
+            :param url_filename: if provided the filename within the (packet) resource
+            :param filename: target filename
+            :param input_filter: filter to use on received data before save
+            :param auth: authentication
+            :param headers: headers to send
+            :param version: version hash
+        """
+        frm_url = url.replace('//', '/').replace(':/', '://')
+        file_stream = self.fetch(url=url, auth=auth, headers=headers)
+        if file_stream is not None:
+            try:
+                target_filename = '%s/%s' % (self._target_dir, filename)
+                if version:
+                    save_data = "#@opnsense_download_hash:%s\n" % version
+                else:
+                    save_data = ""
+                save_data += self._unpack(file_stream, url, url_filename)
+                save_data = self.filter(save_data, input_filter)
+                open(target_filename, 'w', buffering=10240).write(save_data)
+            except IOError:
+                syslog.syslog(syslog.LOG_ERR, 'cannot write to %s' % target_filename)
+                return None
+            syslog.syslog(syslog.LOG_INFO, 'download completed for %s' % frm_url)
+        else:
+            syslog.syslog(syslog.LOG_ERR, 'download failed for %s' % frm_url)
 
     @staticmethod
-    def is_supported(proto):
+    def is_supported(url):
         """ check if protocol is supported
-        :param proto:
-        :return:
+        :param url: uri to request resource from
+        :return: bool
         """
-        if proto in ['http', 'https']:
+        if str(url).split(':')[0].lower() in ['http', 'https']:
             return True
         else:
             return False

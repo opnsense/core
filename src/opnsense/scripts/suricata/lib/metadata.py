@@ -108,7 +108,10 @@ class Metadata(object):
                         else:
                             metadata_record['url'] = ('%s/%s' % (metadata_record['source']['url'],
                                                                  metadata_record['filename']))
-
+                        if rule_xml.find('version') is not None and 'url' in rule_xml.find('version').attrib:
+                            metadata_record['version_url'] = rule_xml.find('version').attrib['url']
+                        else:
+                            metadata_record['version_url'] = None
                         if 'prefix' in src_location.attrib:
                             description_prefix = "%s/" % src_location.attrib['prefix']
                         else:
