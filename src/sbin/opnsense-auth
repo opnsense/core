@@ -74,9 +74,8 @@ if (!empty($auth_data['user']) && isset($auth_data['password'])) {
         $exit_status = 0;
     } else {
         if (getUserEntry($auth_data['user']) === false) {
-           $exit_status = 2;
+            $exit_status = 2;
         }
-
         syslog(LOG_WARNING, "user '".$auth_data['user']."' could not authenticate.\n");
     }
 }

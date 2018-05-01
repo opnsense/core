@@ -41,16 +41,9 @@ $a_authmode = auth_get_authserver_list();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    foreach (array('session_timeout', 'password_policy_duration', 'enable_password_policy_constraints',
-        'password_policy_complexity', 'password_policy_length') as $fieldname) {
-        if (!empty($config['system']['webgui'][$fieldname])) {
-            $pconfig[$fieldname] = $config['system']['webgui'][$fieldname];
-        } else {
-            $pconfig[$fieldname] = null;
-        }
-    }
     $pconfig['webguiinterfaces'] = !empty($config['system']['webgui']['interfaces']) ? explode(',', $config['system']['webgui']['interfaces']) : array();
     $pconfig['authmode'] = !empty($config['system']['webgui']['authmode']) ? explode(',', $config['system']['webgui']['authmode']) : array();
+    $pconfig['session_timeout'] = !empty($config['system']['webgui']['session_timeout']) ? $config['system']['webgui']['session_timeout'] : null;
     $pconfig['webguiproto'] = $config['system']['webgui']['protocol'];
     $pconfig['webguiport'] = $config['system']['webgui']['port'];
     $pconfig['ssl-certref'] = $config['system']['webgui']['ssl-certref'];
@@ -133,6 +126,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['webgui']['interfaces'] = $newinterfaces;
         $config['system']['webgui']['compression'] = $pconfig['compression'];
 
+        if (!empty($pconfig['session_timeout'])) {
+            $config['system']['webgui']['session_timeout'] = $pconfig['session_timeout'];
+        } elseif (isset($config['system']['webgui']['session_timeout'])) {
+            unset($config['system']['webgui']['session_timeout']);
+        }
+
         if ($pconfig['disablehttpredirect'] == "yes") {
             $config['system']['webgui']['disablehttpredirect'] = true;
         } elseif (isset($config['system']['webgui']['disablehttpredirect'])) {
@@ -208,15 +207,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['althostnames'] = $pconfig['althostnames'];
         } elseif (isset($config['system']['webgui']['althostnames'])) {
             unset($config['system']['webgui']['althostnames']);
-        }
-
-        foreach (array('session_timeout', 'password_policy_duration', 'enable_password_policy_constraints',
-           'password_policy_complexity', 'password_policy_length') as $fieldname) {
-            if (!empty($pconfig[$fieldname])) {
-                $config['system']['webgui'][$fieldname] = $pconfig[$fieldname];
-            } elseif (isset($config['system']['webgui'][$fieldname])) {
-                unset($config['system']['webgui'][$fieldname]);
-            }
         }
 
         if (!empty($pconfig['authmode'])) {
@@ -405,25 +395,6 @@ $(document).ready(function() {
   });
 </script>
 
-<style>
-    .password_policy_constraints {
-        display:none;
-    }
-</style>
-
-<script>
-    $(document).ready(function() {
-        $("#enable_password_policy_constraints").change(function(){
-            if ($("#enable_password_policy_constraints").prop('checked')) {
-                $(".password_policy_constraints").show();
-            } else {
-                $(".password_policy_constraints").hide();
-            }
-        });
-        $("#enable_password_policy_constraints").change();
-    });
-</script>
-
 <section class="page-content-main">
   <div class="container-fluid">
     <div class="row">
@@ -519,7 +490,7 @@ $(document).ready(function() {
               </tr>
               <tr class="ssl_opts">
                 <td><a id="help_for_disablehttpredirect" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('HTTP Redirect'); ?></td>
-                <td style="width:78%">
+                <td>
                   <input name="disablehttpredirect" type="checkbox" value="yes" <?= empty($pconfig['disablehttpredirect']) ? '' : 'checked="checked"';?> />
                   <?= gettext('Disable web GUI redirect rule') ?>
                   <div class="hidden" data-for="help_for_disablehttpredirect">
@@ -574,7 +545,7 @@ $(document).ready(function() {
               </tr>
               <tr>
                 <td><a id="help_for_compression" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("HTTP Compression")?></td>
-                <td style="width:78%">
+                <td>
                   <select name="compression" class="selectpicker">
                       <option value="" <?=empty($pconfig['compression'])? 'selected="selected"' : '';?>>
                         <?=gettext("Off");?>
@@ -691,7 +662,7 @@ $(document).ready(function() {
               </tr>
               <tr>
                 <td><a id="help_for_sshport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSH port"); ?></td>
-                <td style="width:78%">
+                <td>
                   <input name="sshport" type="text" value="<?=$pconfig['sshport'];?>" placeholder="22" />
                   <div class="hidden" data-for="help_for_sshport">
                     <?=gettext("Leave this blank for the default of 22."); ?>
@@ -723,14 +694,14 @@ $(document).ready(function() {
               </tr>
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i></a> <?= gettext('Console driver') ?></td>
-                <td style="width:78%">
+                <td>
                   <input name="usevirtualterminal" type="checkbox" value="yes" <?= empty($pconfig['usevirtualterminal']) ? '' : 'checked="checked"' ?>  />
                   <?= gettext('Use the virtual terminal driver (vt)') ?>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_primaryconsole" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Primary Console")?></td>
-                <td style="width:78%">
+                <td>
                   <select name="primaryconsole" id="primaryconsole" class="selectpicker">
 <?php               foreach (system_console_types() as $console_key => $console_type): ?>
                     <option value="<?= html_safe($console_key) ?>" <?= $pconfig['primaryconsole'] == $console_key ? 'selected="selected"' : '' ?>><?= $console_type['name'] ?></option>
@@ -744,7 +715,7 @@ $(document).ready(function() {
               </tr>
               <tr>
                 <td><a id="help_for_secondaryconsole" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Secondary Console")?></td>
-                <td style="width:78%">
+                <td>
                   <select name="secondaryconsole" id="secondaryconsole" class="selectpicker">
                     <option value="" <?= empty($pconfig['secondaryconsole']) ? 'selected="selected"' : '' ?>><?= gettext('None') ?></option>
 <?php               foreach (system_console_types() as $console_key => $console_type): ?>
@@ -775,7 +746,7 @@ $(document).ready(function() {
               </tr>
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i></a> <?= gettext("Console menu") ?></td>
-                <td style="width:78%">
+                <td>
                   <input name="disableconsolemenu" type="checkbox" value="yes" <?= empty($pconfig['disableconsolemenu']) ? '' : 'checked="checked"' ?>  />
                   <?=gettext("Password protect the console menu"); ?>
                 </td>
@@ -809,7 +780,7 @@ $(document).ready(function() {
               </tr>
               <tr>
                 <td><a id="help_for_sudo_allow_wheel" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Sudo') ?></td>
-                <td style="width:78%">
+                <td>
                   <select name="sudo_allow_wheel" id="sudo_allow_wheel" class="selectpicker">
                     <option value="" <?= empty($pconfig['sudo_allow_wheel']) ? 'selected="selected"' : '' ?>><?= gettext('Disallow') ?></option>
                     <option value="1" <?= $pconfig['sudo_allow_wheel'] == 1 ? 'selected="selected"' : '' ?>><?= gettext('Ask password') ?></option>
@@ -827,57 +798,6 @@ $(document).ready(function() {
                   <?=gettext("Disable integrated authentication"); ?>
                   <div class="hidden" data-for="help_for_disableintegratedauth">
                     <?= gettext('When set, console login, SSH, and other system services can only use standard UNIX account authentication.') ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_enable_password_policy_constraints" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Policy'); ?></td>
-                <td>
-                  <input id="enable_password_policy_constraints" name="enable_password_policy_constraints" type="checkbox"  <?= empty($pconfig['enable_password_policy_constraints']) ? '' : 'checked="checked"';?> />
-                  <?= gettext('Enable password policy constraints') ?>
-                  <div class="hidden" data-for="help_for_enable_password_policy_constraints">
-                    <?= gettext('Use hardened security policies for local accounts. Methods other than local these will usually be configured by the respective provider (e.g. LDAP, RADIUS, ...).');?>
-                  </div>
-                </td>
-              </tr>
-              <tr class="password_policy_constraints">
-              <td><a id="help_for_password_policy_duration" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Duration'); ?></td>
-                  <td>
-                      <select id="password_policy_duration" name="password_policy_duration" class="selectpicker" data-style="btn-default">
-                          <option <?=empty($pconfig['password_policy_duration']) ? "selected=\"selected\"" : "";?> value="0"><?=gettext("Disable");?></option>
-                          <option <?=$pconfig['password_policy_duration'] == '30' ? "selected=\"selected\"" : "";?> value="30"><?=sprintf(gettext("%d days"), "30");?></option>
-                          <option <?=$pconfig['password_policy_duration'] == '90' ? "selected=\"selected\"" : "";?> value="90"><?=sprintf(gettext("%d days"), "90");?></option>
-                          <option <?=$pconfig['password_policy_duration'] == '180' ? "selected=\"selected\"" : "";?> value="180"><?=sprintf(gettext("%d days"), "180");?></option>
-                          <option <?=$pconfig['password_policy_duration'] == '360' ? "selected=\"selected\"" : "";?> value="360"><?=sprintf(gettext("%d days"), "360");?></option>
-                      </select>
-                      <div class="hidden" data-for="help_for_password_policy_duration">
-                        <?= gettext("Password duration settings, the interval in days in which passwords stay valid. ".
-                                    "When reached, the user will be forced to change his or her password before continuing.");?>
-                      </div>
-                  </td>
-              </tr>
-              <tr class="password_policy_constraints">
-                  <td><a id="help_for_password_policy_length" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Length'); ?></td>
-                  <td>
-                      <select id="password_policy_length" name="password_policy_length" class="selectpicker" data-style="btn-default">
-                          <option <?=empty($pconfig['password_policy_length'])  || $pconfig['password_policy_length'] == '8' ? "selected=\"selected\"" : "";?> value="8">8</option>
-                          <option <?=$pconfig['password_policy_length'] == '10' ? "selected=\"selected\"" : "";?> value="10">10</option>
-                          <option <?=$pconfig['password_policy_length'] == '12' ? "selected=\"selected\"" : "";?> value="12">12</option>
-                          <option <?=$pconfig['password_policy_length'] == '14' ? "selected=\"selected\"" : "";?> value="14">14</option>
-                          <option <?=$pconfig['password_policy_length'] == '16' ? "selected=\"selected\"" : "";?> value="16">16</option>
-                      </select>
-                      <div class="hidden" data-for="help_for_password_policy_length">
-                        <?= gettext("Sets the minimum length for a password");?>
-                      </div>
-                  </td>
-              </tr>
-              <tr class="password_policy_constraints">
-                <td><a id="help_for_password_policy_complexity" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Complexity'); ?></td>
-                <td>
-                  <input id="password_policy_complexity" name="password_policy_complexity" type="checkbox"  <?= empty($pconfig['password_policy_complexity']) ? '' : 'checked="checked"';?> />
-                  <?= gettext('Enable complexity requirements') ?>
-                  <div class="hidden" data-for="help_for_password_policy_complexity">
-                    <?= gettext("Require passwords to meet complexity rules");?>
                   </div>
                 </td>
               </tr>
