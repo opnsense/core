@@ -1143,9 +1143,7 @@
 /usr/local/www/system_usermanager_addprivs.php
 /usr/local/www/system_usermanager_import_ldap.php
 /usr/local/www/system_usermanager_passwordmg.php
-/usr/local/www/system_usermanager_settings.php
 /usr/local/www/system_usermanager_settings_ldapacpicker.php
-/usr/local/www/system_usermanager_settings_test.php
 /usr/local/www/vpn_ipsec.php
 /usr/local/www/vpn_ipsec_keys.php
 /usr/local/www/vpn_ipsec_keys_edit.php

@@ -734,12 +734,6 @@
             <pattern>system_usermanager_addprivs.php?user*</pattern>
         </patterns>
     </page-system-usermanager-addprivs>
-    <page-system-usermanager-settings-testldap>
-        <name>System: User Manager: Settings: Test LDAP</name>
-        <patterns>
-            <pattern>system_usermanager_settings_test.php*</pattern>
-        </patterns>
-    </page-system-usermanager-settings-testldap>
     <page-system-usermanager-passwordmg>
         <name>System: User Password Manager</name>
         <patterns>
