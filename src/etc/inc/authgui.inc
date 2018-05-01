@@ -206,9 +206,9 @@ function session_auth(&$Login_Error)
         $authservers = !empty($config['system']['webgui']['authmode']) ?
             explode(',', $config['system']['webgui']['authmode']) : array('Local Database');
         $is_authenticated = false;
+        $authenticator = null;
 
         foreach ($authservers as $authserver) {
-            /* XXX careful, dereferenced below */
             $authenticator = get_authenticator(auth_get_authserver($authserver));
             if ($authenticator != null && $authenticator->authenticate($_POST['usernamefld'], $_POST['passwordfld'])) {
                 $is_authenticated = true;
@@ -222,7 +222,7 @@ function session_auth(&$Login_Error)
             $_SESSION['Username'] = $_POST['usernamefld'];
             $_SESSION['last_access'] = time();
             $_SESSION['protocol'] = $config['system']['webgui']['protocol'];
-            if ($authenticator->shouldChangePassword($_SESSION['Username'])) {
+            if ($authenticator != null && $authenticator->shouldChangePassword($_SESSION['Username'])) {
                 $_SESSION['user_shouldChangePassword'] = true;
             }
             if (!isset($config['system']['webgui']['quietlogin'])) {
