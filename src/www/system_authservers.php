@@ -343,6 +343,14 @@ $( document ).ready(function() {
         $('.selectpicker').selectpicker('refresh');
     });
 
+    $("#enable_password_policy_constraints").change(function () {
+        if ($("#enable_password_policy_constraints").prop('checked')) {
+            $(".password_policy_constraints").show();
+        } else {
+            $(".password_policy_constraints").hide();
+        }
+    });
+
     $("#ldap_urltype").change(function(){
         $("#ldap_port").val($(this).find(':selected').data('port'));
     });
@@ -402,6 +410,7 @@ $( document ).ready(function() {
     if ($("#ldap_attr_user").val() == "") {
         $("#ldap_tmpltype").change();
     }
+    $("#enable_password_policy_constraints").change();
     $("#type").change();
 
     $("#act_select").click(function() {
@@ -538,7 +547,7 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
-                <tr class="auth_local auth_options hidden">
+                <tr class="auth_local auth_options password_policy_constraints hidden">
                   <td><a id="help_for_password_policy_duration" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Duration'); ?></td>
                   <td>
                     <select id="password_policy_duration" name="password_policy_duration" class="selectpicker" data-style="btn-default">
@@ -554,7 +563,7 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
-                <tr class="auth_local auth_options hidden">
+                <tr class="auth_local auth_options password_policy_constraints hidden">
                   <td><a id="help_for_password_policy_length" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Length'); ?></td>
                   <td>
                     <select id="password_policy_length" name="password_policy_length" class="selectpicker" data-style="btn-default">
@@ -569,7 +578,7 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
-                <tr class="auth_local auth_options hidden">
+                <tr class="auth_local auth_options password_policy_constraints hidden">
                   <td><a id="help_for_password_policy_complexity" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Complexity'); ?></td>
                   <td>
                     <input id="password_policy_complexity" name="password_policy_complexity" type="checkbox" <?= empty($pconfig['password_policy_complexity']) ? '' : 'checked="checked"';?> />
