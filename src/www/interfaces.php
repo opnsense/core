@@ -2466,7 +2466,7 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr class="dhcpv6_basic">
-                          <td><a id="help_for_dhcp6prefixonly" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Request only a IPv6 prefix"); ?></td>
+                          <td><a id="help_for_dhcp6prefixonly" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Request only an IPv6 prefix"); ?></td>
                           <td>
                             <input name="dhcp6prefixonly" type="checkbox" id="dhcp6prefixonly" value="yes" <?=!empty($pconfig['dhcp6prefixonly']) ? "checked=\"checked\"" : "";?> />
                             <div class="hidden" data-for="help_for_dhcp6prefixonly">
