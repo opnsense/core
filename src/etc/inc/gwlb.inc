@@ -1094,7 +1094,11 @@ function get_interface_gateway($interface, &$dynamic = false)
         }
     }
 
-    if (!is_ipaddrv4($gw) && !is_ipaddrv4($gwcfg['ipaddr'])) {
+    // For DS-Lite we need to return the inner remote endpoint (192.0.0.1)
+    if ($gwcfg['ipaddr'] == "dslite") {
+        $gw = "192.0.0.1";
+        $dynamic = "default";
+    } elseif (!is_ipaddrv4($gw) && !is_ipaddrv4($gwcfg['ipaddr'])) {
         $realif = get_real_interface($interface);
         if (file_exists("/tmp/{$realif}_router")) {
             $gw = trim(file_get_contents("/tmp/{$realif}_router"), " \n");

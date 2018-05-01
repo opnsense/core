@@ -4321,6 +4321,9 @@ function get_interfaces_info()
             $ifinfo['ipaddr'] = $ifinfo['ipv4'][0]['ipaddr'];
             $ifinfo['subnet'] = $ifinfo['ipv4'][0]['subnetbits'];
         }
+        if ($config['interfaces'][$ifdescr]['ipaddr'] == "dslite") {
+            $ifinfo['ipaddr'] = "DS-Lite via AFTR";
+        }
 
         $ifinfotmp = $all_intf_stats[$ifinfo['if']];
         $ifinfo['inerrs'] = $ifinfotmp['input errors'];
