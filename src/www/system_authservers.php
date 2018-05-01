@@ -37,9 +37,8 @@ $authCNFOptions = $authFactory->listConfigOptions();
 config_read_array('system', 'authserver');
 config_read_array('ca');
 
-$a_servers = auth_get_authserver_list();
 $a_server = array();
-foreach ($a_servers as $servers) {
+foreach (auth_get_authserver_list() as $servers) {
     $a_server[] = $servers;
 }
 
@@ -411,7 +410,7 @@ $( document ).ready(function() {
             });
         } else {
             $.post('system_usermanager_settings_ldapacpicker.php', request_data, function(data) {
-                var tbl  = $("<table/>");
+                var tbl = $("<table/>");
                 var tbl_body = $("<tbody/>");
                 for (var i=0; i < data.length ; ++i) {
                     var tr = $("<tr/>");
@@ -431,7 +430,6 @@ $( document ).ready(function() {
                   buttons: [{
                             label: "<?= gettext("Close");?>",
                             action: function(dialogRef) {
-
                                 var values = $(".ldap_item_select:checked").map(function(){
                                     return $(this).val();
                                 }).get().join(';');
@@ -465,7 +463,7 @@ $( document ).ready(function() {
                   <td style="width:22%"></td>
                   <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
-                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                    <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
                   </td>
                 </tr>
                 <tr>
@@ -586,10 +584,10 @@ endif; ?>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Search scope");?></td>
                   <td>
                     <select name="ldap_scope" id="ldap_scope" class="selectpicker" data-style="btn-default">
-                      <option value="one" <?=$pconfig['ldap_scope'] == 'one' ?  "selected=\"selected\"" : "";?>>
+                      <option value="one" <?=$pconfig['ldap_scope'] == 'one' ? "selected=\"selected\"" : "";?>>
                         <?=gettext('One Level');?>
                       </option>
-                      <option value="subtree" <?=$pconfig['ldap_scope'] == 'subtree' ?  "selected=\"selected\"" : "";?>>
+                      <option value="subtree" <?=$pconfig['ldap_scope'] == 'subtree' ? "selected=\"selected\"" : "";?>>
                         <?=gettext('Entire Subtree');?>
                       </option>
                     </select>
@@ -776,22 +774,20 @@ else :
               </thead>
               <tbody>
 <?php
-$i = 0;
-              foreach ($a_server as $server) :
-?>
+              $i = 0;
+              foreach ($a_server as $server): ?>
                 <tr>
-                  <td><?=$server['name']?></td>
-                  <td><?= !empty($authCNFOptions[$server['type']]) ? $authCNFOptions[$server['type']]['description'] : '' ?></td>
-                  <td><?=$server['host'];?></td>
+                  <td><?= $server['name'] ?></td>
+                  <td><?= !empty($authCNFOptions[$server['type']]) ? $authCNFOptions[$server['type']]['description'] : $server['name'] ?></td>
+                  <td><?= !empty($server['host']) ? $server['host'] : $config['system']['hostname'] ?></td>
                   <td>
                     <?php if ($i < (count($a_server) - 1)) :
 ?>
-                    <a href="system_authservers.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-pencil"></span>
+                    <a href="system_authservers.php?act=edit&amp;id=<?=$i;?>" title="<?= html_safe(gettext('Edit')) ?>" data-toggle="tooltip" class="btn btn-default btn-xs">
+                      <i class="fa fa-pencil text-muted"></i>
                     </a>
-                    &nbsp;
-                    <a id="del_<?=$i;?>" title="<?=gettext("delete this server"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                      <span class="fa fa-trash text-muted"></span>
+                    <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs">
+                      <i class="fa fa-trash text-muted"></i>
                     </a>
                   </td>
 <?php
@@ -800,11 +796,6 @@ endif; ?>
 <?php
                 $i++;
               endforeach;?>
-                <tr>
-                  <td colspan="4">
-                    <?=gettext("Additional authentication servers can be added here.");?>
-                  </td>
-                </tr>
               </tbody>
             </table>
           </form>

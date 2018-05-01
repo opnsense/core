@@ -541,6 +541,15 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
+                <td><a id="help_for_session_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Session Timeout') ?></td>
+                <td>
+                  <input class="form-control" name="session_timeout" id="session_timeout" type="text" placeholder="240" value="<?=$pconfig['session_timeout'];?>" />
+                  <div class="hidden" data-for="help_for_session_timeout">
+                    <?= gettext('Time in minutes to expire idle management sessions. The default is 4 hours (240 minutes).') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
                 <td><a id="help_for_nodnsrebindcheck" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Rebind Check"); ?></td>
                 <td>
                   <input name="nodnsrebindcheck" type="checkbox" value="yes" <?= empty($pconfig['nodnsrebindcheck']) ? '' : 'checked="checked"';?>/>
@@ -771,26 +780,6 @@ $(document).ready(function() {
                   <?=gettext("Password protect the console menu"); ?>
                 </td>
               </tr>
-              <tr>
-                <td><a id="help_for_disableintegratedauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Integrated authentication") ?></td>
-                <td style="width:78%">
-                  <input name="disableintegratedauth" type="checkbox" value="yes" <?= empty($pconfig['disableintegratedauth']) ? '' : 'checked="checked"' ?>  />
-                  <?=gettext("Disable integrated authentication"); ?>
-                  <div class="hidden" data-for="help_for_disableintegratedauth">
-                      <?=gettext('Login, SSH, and other system services may only use standard UNIX user/password authentication.');?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Sudo usage") ?></td>
-                <td style="width:78%">
-                  <select name="sudo_allow_wheel" id="sudo_allow_wheel" class="selectpicker">
-                    <option value="" <?= empty($pconfig['sudo_allow_wheel']) ? 'selected="selected"' : '' ?>><?= gettext('Disallow') ?></option>
-                    <option value="1" <?= $pconfig['sudo_allow_wheel'] == 1 ? 'selected="selected"' : '' ?>><?= gettext('Ask password') ?></option>
-                    <option value="2" <?= $pconfig['sudo_allow_wheel'] == 2 ? 'selected="selected"' : '' ?>><?= gettext('No password') ?></option>
-                  </select>
-                </td>
-              </tr>
             </table>
           </div>
           <div class="content-box tab-content table-responsive __mb">
@@ -805,7 +794,7 @@ $(document).ready(function() {
                   <select name="authmode[]" multiple="multiple" class="selectpicker" data-style="btn-default">
 <?php
                   foreach ($a_authmode as $auth_key => $auth_server): ?>
-                    <option value="<?= html_safe($auth_key) ?>" <?= in_array($auth_key, $pconfig['authmode']) ? 'selected="selected"' : '' ?>>
+                    <option value="<?= html_safe($auth_key) ?>" <?= !empty($pconfig['authmode']) && in_array($auth_key, $pconfig['authmode']) ? 'selected="selected"' : '' ?>>
                       <?= html_safe($auth_server['name']) ?>
                     </option>
 <?php
@@ -819,11 +808,25 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_session_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Timeout') ?></td>
+                <td><a id="help_for_sudo_allow_wheel" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Sudo') ?></td>
+                <td style="width:78%">
+                  <select name="sudo_allow_wheel" id="sudo_allow_wheel" class="selectpicker">
+                    <option value="" <?= empty($pconfig['sudo_allow_wheel']) ? 'selected="selected"' : '' ?>><?= gettext('Disallow') ?></option>
+                    <option value="1" <?= $pconfig['sudo_allow_wheel'] == 1 ? 'selected="selected"' : '' ?>><?= gettext('Ask password') ?></option>
+                    <option value="2" <?= $pconfig['sudo_allow_wheel'] == 2 ? 'selected="selected"' : '' ?>><?= gettext('No password') ?></option>
+                  </select>
+                  <div class="hidden" data-for="help_for_sudo_allow_wheel">
+                    <?= gettext('Permit sudo usage for administrators with shell access.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_disableintegratedauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('System') ?></td>
                 <td>
-                  <input class="form-control" name="session_timeout" id="session_timeout" type="text" placeholder="240" value="<?=$pconfig['session_timeout'];?>" />
-                  <div class="hidden" data-for="help_for_session_timeout">
-                    <?= gettext('Time in minutes to expire idle management sessions. The default is 4 hours (240 minutes).') ?>
+                  <input name="disableintegratedauth" type="checkbox" value="yes" <?= empty($pconfig['disableintegratedauth']) ? '' : 'checked="checked"' ?>  />
+                  <?=gettext("Disable integrated authentication"); ?>
+                  <div class="hidden" data-for="help_for_disableintegratedauth">
+                    <?= gettext('When set, console login, SSH, and other system services can only use standard UNIX account authentication.') ?>
                   </div>
                 </td>
               </tr>
