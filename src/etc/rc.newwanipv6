@@ -66,6 +66,10 @@ if (!isset($config['interfaces'][$interface]['enable'])) {
 
 /* Check that we actually have a valid AFTR address either by auto-discovery from DHCPv6 or configured manually */
 if ($config['interfaces'][$interface]['ipaddr'] == "dslite") {
+    // convert the raw argument, which is hex, to a string
+    if (!empty($aftr)) {
+        $aftr = pack("*H", $aftr);
+    }
     if (!empty(trim($config['interfaces'][$interface]['dslite_aftr_addr']))) {
         $aftr = trim($config['interfaces'][$interface]['dslite_aftr_addr']);
     }
