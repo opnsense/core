@@ -887,12 +887,12 @@ starter {
 }
 
 charon {
-
     # number of worker threads in charon
     threads = 16
     ikesa_table_size = 32
     ikesa_table_segments = 4
-    init_limit_half_open = 1000;
+    init_limit_half_open = 1000
+    ignore_acquire_ts = yes
 {$cnf_add_to_charon_section}
 
 EOD;
