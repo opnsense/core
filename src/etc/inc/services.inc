@@ -405,7 +405,7 @@ function services_dhcpdv4_configure($verbose = false)
 
     /* Only consider DNS servers with IPv4 addresses for the IPv4 DHCP server. */
     $dns_arrv4 = array();
-    if (!empty($config['system']['dnsserver'])) {
+    if (!empty($config['system']['dnsserver'][0])) {
         foreach($config['system']['dnsserver'] as $dnsserver) {
             if (is_ipaddrv4($dnsserver)) {
                 $dns_arrv4[] = $dnsserver;
@@ -1042,9 +1042,18 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
         return;
     }
 
-    $syscfg = config_read_array('system');
     $dhcpdv6cfg = config_read_array('dhcpdv6');
     $Iflist = get_configured_interface_list();
+
+    /* Only consider DNS servers with IPv6 addresses for the IPv6 DHCP server. */
+    $dns_arrv6 = array();
+    if (!empty($config['system']['dnsserver'][0])) {
+        foreach($config['system']['dnsserver'] as $dnsserver) {
+            if (is_ipaddrv6($dnsserver)) {
+                $dns_arrv6[] = $dnsserver;
+            }
+        }
+    }
 
     if ($verbose) {
         echo 'Starting DHCPv6 service...';
@@ -1094,7 +1103,6 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
 
                 $dhcpdv6cfg[$ifname]['prefixrange']['from'] = Net_IPv6::compress($range['start']);
                 $dhcpdv6cfg[$ifname]['prefixrange']['to'] = Net_IPv6::compress($range['end']);
-                $dhcpdv6cfg[$ifname]['dns6ip'] = get_interface_ipv6($ifname);
             }
         }
     }
@@ -1118,7 +1126,7 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
     }
 
     $dhcpdv6conf = <<<EOD
-option domain-name "{$syscfg['domain']}";
+option domain-name "{$config['system']['domain']}";
 option ldap-server code 95 = text;
 option domain-search-list code 119 = text;
 {$custoptionsv6}
@@ -1173,16 +1181,8 @@ EOD;
             $dnscfgv6 .= "  option dhcp6.name-servers " . join(",", $dhcpv6ifconf['dnsserver']) . ";";
         } elseif ((isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) && (is_ipaddrv6($ifcfgipv6))) {
             $dnscfgv6 .= "  option dhcp6.name-servers {$ifcfgipv6};";
-        } elseif (isset($syscfg['dnsserver']) && ($syscfg['dnsserver'][0])) {
-            $dns_arrv6 = array();
-            foreach($syscfg['dnsserver'] as $dnsserver) {
-                if (is_ipaddrv6($dnsserver)) {
-                    $dns_arrv6[] = $dnsserver;
-                }
-            }
-            if (!empty($dns_arrv6)) {
-                $dnscfgv6 .= "  option dhcp6.name-servers " . join(",", $dns_arrv6) . ";";
-            }
+        } elseif (!empty($dns_arrv6)) {
+            $dnscfgv6 .= "  option dhcp6.name-servers " . join(",", $dns_arrv6) . ";";
         }
 
         if (is_ipaddrv6($ifcfgipv6)) {
@@ -1204,9 +1204,7 @@ EOD;
         if (!empty($dhcpv6ifconf['prefixrange']['from']) && is_ipaddrv6($dhcpv6ifconf['prefixrange']['from']) && is_ipaddrv6($dhcpv6ifconf['prefixrange']['to'])) {
             $dhcpdv6conf .= "  prefix6 {$dhcpv6ifconf['prefixrange']['from']} {$dhcpv6ifconf['prefixrange']['to']}/{$dhcpv6ifconf['prefixrange']['prefixlength']};\n";
         }
-        if (isset($dhcpv6ifconf['dns6ip']) && is_ipaddrv6($dhcpv6ifconf['dns6ip'])) {
-            $dhcpdv6conf .= "  option dhcp6.name-servers {$dhcpv6ifconf['dns6ip']};\n";
-        }
+
         // default-lease-time
         if (!empty($dhcpv6ifconf['defaultleasetime'])) {
             $dhcpdv6conf .= "  default-lease-time {$dhcpv6ifconf['defaultleasetime']};\n";
