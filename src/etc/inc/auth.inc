@@ -49,7 +49,7 @@ if (function_exists("display_error_form") && !isset($config['system']['webgui'][
     /* DNS ReBinding attack prevention */
     $found_host = false;
 
-    /* Either a IPv6 address with or without a alternate port */
+    /* either an IPv6 address with or without an alternate port */
     if (strstr($_SERVER['HTTP_HOST'], "]")) {
         $http_host_port = explode("]", $_SERVER['HTTP_HOST']);
         /* v6 address has more parts, drop the last part */

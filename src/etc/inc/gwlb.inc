@@ -534,7 +534,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             $gateway['dynamic'] = true;
             $found_defaultv4 = 1;
         }
-        /* Loopback dummy for dynamic interfaces without a IP */
+        /* loopback dummy for dynamic interfaces without an IP */
         if (!is_ipaddrv4($gateway['gateway']) && $gateway['dynamic'] == true) {
             $gateway['gateway'] = "dynamic";
         }
@@ -621,7 +621,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             $found_defaultv6 = 1;
         }
 
-        /* Loopback dummy for dynamic interfaces without a IP */
+        /* loopback dummy for dynamic interfaces without an IP */
         if (!is_ipaddrv6($gateway['gateway']) && $gateway['dynamic'] == true) {
             $gateway['gateway'] = "dynamic";
         }
@@ -983,8 +983,10 @@ function get_interface_gateway_v6($interface, &$dynamic = false)
     return ($gw);
 }
 
-/* Check a IP address against a gateway IP or name
- * to verify it's address family */
+/*
+ * Check an IP address against a gateway IP
+ * or name to verify it's address family
+ */
 function validate_address_family($ipaddr, $gwname)
 {
     $v4ip = false;
