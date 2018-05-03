@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2018 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -66,6 +66,16 @@ function webgui_configure_do($verbose = false, $interface = '')
             }
         }
 
+        foreach (array('ipaddr', 'ipaddrv6') as $type) {
+            if (empty($config['interfaces'][$interface][$type])) {
+                continue;
+            }
+            $addr = $config['interfaces'][$interface][$type];
+            if (is_ipaddr($addr) && !is_linklocal($addr)) {
+                $listeners[] = $addr;
+            }
+        }
+
         $viparr = &config_read_array('virtualip', 'vip');
         foreach ($viparr as $vip) {
             if ($vip['interface'] == $interface && is_ipaddr($vip['subnet'])) {
@@ -73,7 +83,7 @@ function webgui_configure_do($verbose = false, $interface = '')
             }
         }
 
-        /* VIPs may have been read twice */
+        /* addresses may have been read twice */
         $listeners = array_unique($listeners);
     }
 
