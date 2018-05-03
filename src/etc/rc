@@ -94,15 +94,11 @@ attempts=0
 while [ ${attempts} -lt 3 ]; do
 	fsck -C -y /
 	fsck -C -y /
-	if kldstat -qm zfs; then
-		zfs set readonly=off zroot
-		zfs mount -va
-		zfs share -a
-		if [ ! -r /etc/zfs/exports ]; then
-			touch /etc/zfs/exports
-		fi
-	fi
 	if mount -a 2> /dev/null; then
+		if kldstat -qm zfs; then
+			mount -uw /
+			zfs mount -va
+		fi
 		# bail if all is well
 		break
 	fi
