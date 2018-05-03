@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2016-2018 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -51,8 +51,15 @@ LOADERCHUNKS=$(find -s ${LOADERDIR} -type f)
 for LOADERCHUNK in ${LOADERCHUNKS}; do
 	# extract loader chunk origin
 	LOADERCHUNK=${LOADERCHUNK##"${LOADERDIR}/"}
+	LOADERNAME=${LOADERCHUNK#??-}
 
-	echo "rc.loader: assembling ${LOADERCHUNK#??-}"
+	if [ "${LOADERNAME}" = "zfs" ]; then
+		if ! kldstat -qm zfs; then
+			continue
+		fi
+	fi
+
+	echo "rc.loader: assembling ${LOADERNAME}"
 
 	cat ${LOADERDIR}/${LOADERCHUNK} >> ${LOADERCONF}
 	echo >> ${LOADERCONF}
