@@ -368,7 +368,7 @@ function ip_range_to_subnet_array($startip, $endip)
     return $rangesubnets;
 }
 
-/* returns true if $ipaddr is a valid dotted IPv4 address or a IPv6 */
+/* returns true if $ipaddr is a valid dotted IPv4 address or an IPv6 */
 function is_ipaddr($ipaddr)
 {
     if (is_ipaddrv4($ipaddr)) {

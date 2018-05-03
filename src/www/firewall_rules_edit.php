@@ -228,24 +228,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $family = 'inet6';
                 }
                 if(($pconfig['ipprotocol'] == "inet6") && ($pconfig['ipprotocol'] != $family)) {
-                    $input_errors[] = gettext("You can not assign a IPv4 gateway group on IPv6 Address Family rule");
+                    $input_errors[] = gettext('You can not assign an IPv4 gateway group on an IPv6 rule.');
                 }
                 if(($pconfig['ipprotocol'] == "inet") && ($pconfig['ipprotocol'] != $family)) {
-                    $input_errors[] = gettext("You can not assign a IPv6 gateway group on IPv4 Address Family rule");
+                    $input_errors[] = gettext('You can not assign an IPv6 gateway group on an IPv4 rule.');
                 }
             }
         }
     }
     if (!empty($pconfig['gateway']) && is_ipaddr(lookup_gateway_ip_by_name($pconfig['gateway']))) {
         if ($pconfig['ipprotocol'] == "inet6" && !is_ipaddrv6(lookup_gateway_ip_by_name($pconfig['gateway']))) {
-            $input_errors[] = gettext("You can not assign the IPv4 Gateway to a IPv6 Filter rule");
+            $input_errors[] = gettext('You can not assign the IPv4 Gateway to an IPv6 filter rule.');
         }
         if ($pconfig['ipprotocol'] == "inet" && !is_ipaddrv4(lookup_gateway_ip_by_name($pconfig['gateway']))) {
-            $input_errors[] = gettext("You can not assign the IPv6 Gateway to a IPv4 Filter rule");
+            $input_errors[] = gettext('You can not assign the IPv6 Gateway to an IPv4 filter rule.');
         }
     }
     if ($pconfig['protocol'] == "icmp" && !empty($pconfig['icmptype']) && $pconfig['ipprotocol'] == "inet46") {
-        $input_errors[] =  gettext("You can not assign a ICMP type to a rule that applies to IPv4 and IPv6");
+        $input_errors[] =  gettext('You can not assign an ICMP type to a rule that applies to IPv4 and IPv6.');
     }
     if ($pconfig['statetype'] == "synproxy state" || $pconfig['statetype'] == "modulate state") {
         if ($pconfig['protocol'] != "tcp") {
@@ -307,7 +307,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if ((is_ipaddr($pconfig['src']) || is_ipaddr($pconfig['dst'])) && ($pconfig['ipprotocol'] == "inet46")) {
-        $input_errors[] = gettext("You can not use a IPv4 or IPv6 address in combined IPv4 + IPv6 rules.");
+        $input_errors[] = gettext('You can not use an IPv4 or IPv6 address in combined IPv4 + IPv6 rules.');
     }
     if (!empty($pconfig['os'])) {
         if ($pconfig['protocol'] != "tcp") {

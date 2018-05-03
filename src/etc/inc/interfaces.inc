@@ -3952,7 +3952,6 @@ function get_real_interface($interface = 'wan', $family = 'all')
     return $wanif;
 }
 
-/* Guess the physical interface by providing a IP address */
 function guess_interface_from_ip($ipaddress)
 {
     if (!is_ipaddr($ipaddress)) {
