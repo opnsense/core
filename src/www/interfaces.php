@@ -2551,7 +2551,7 @@ include("head.inc");
                           <td>
                             <input name="dhcp6usev4iface" type="checkbox" id="dhcp6usev4iface" value="yes" <?=!empty($pconfig['dhcp6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
                             <div class="hidden" data-for="help_for_dhcp6usev4iface">
-                              <?= gettext('Request an IPv6 prefix/information through the IPv4 PPP connectivity link.') ?>
+                              <?= gettext('Request the IPv6 prefix/information through the IPv4 PPP connectivity link.') ?>
                             </div>
                           </td>
                         </tr>
