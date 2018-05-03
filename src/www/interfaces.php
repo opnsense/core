@@ -2362,7 +2362,7 @@ include("head.inc");
                           <td>
                             <input name="staticv6usev4iface" type="checkbox" id="staticv6usev4iface" value="yes" <?=!empty($pconfig['staticv6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
                             <div class="hidden" data-for="help_for_staticv6usev4iface">
-                                <?=gettext("Use the IPv4 connectivity link.");?>
+                              <?= gettext('Set the IPv6 address on the IPv4 PPP connectivity link.') ?>
                             </div>
                           </td>
                         </tr>
@@ -2470,7 +2470,7 @@ include("head.inc");
                           <td>
                             <input name="dhcp6prefixonly" type="checkbox" id="dhcp6prefixonly" value="yes" <?=!empty($pconfig['dhcp6prefixonly']) ? "checked=\"checked\"" : "";?> />
                             <div class="hidden" data-for="help_for_dhcp6prefixonly">
-                              <?=gettext("Only request a IPv6 prefix, do not request a IPv6 address"); ?>
+                              <?= gettext('Only request an IPv6 prefix; do not request an IPv6 address.') ?>
                             </div>
                           </td>
                         </tr>
@@ -2551,7 +2551,7 @@ include("head.inc");
                           <td>
                             <input name="dhcp6usev4iface" type="checkbox" id="dhcp6usev4iface" value="yes" <?=!empty($pconfig['dhcp6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
                             <div class="hidden" data-for="help_for_dhcp6usev4iface">
-                              <?=gettext("Request a IPv6 prefix/information through the IPv4 connectivity link"); ?>
+                              <?= gettext('Request an IPv6 prefix/information through the IPv4 PPP connectivity link.') ?>
                             </div>
                           </td>
                         </tr>
