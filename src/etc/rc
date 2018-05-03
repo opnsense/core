@@ -90,6 +90,10 @@ while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 	fi
 done < /etc/fstab
 
+if kldstat -qm zfs; then
+	zfs set readonly=off zroot
+fi
+
 attempts=0
 while [ ${attempts} -lt 3 ]; do
 	fsck -C -y /

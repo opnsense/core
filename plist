@@ -121,6 +121,7 @@
 /usr/local/etc/rc.loader.d/20-misc
 /usr/local/etc/rc.loader.d/20-modules
 /usr/local/etc/rc.loader.d/20-netgraph
+/usr/local/etc/rc.loader.d/20-zfs
 /usr/local/etc/rc.monitor
 /usr/local/etc/rc.newwanip
 /usr/local/etc/rc.newwanipv6
