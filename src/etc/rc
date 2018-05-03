@@ -90,14 +90,18 @@ while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 	fi
 done < /etc/fstab
 
-if kldstat -qm zfs; then
-	zfs set readonly=off zroot
-fi
-
 attempts=0
 while [ ${attempts} -lt 3 ]; do
 	fsck -C -y /
 	fsck -C -y /
+	if kldstat -qm zfs; then
+		zfs set readonly=off zroot
+		zfs mount -va
+		zfs share -a
+		if [ ! -r /etc/zfs/exports ]; then
+			touch /etc/zfs/exports
+		fi
+	fi
 	if mount -a 2> /dev/null; then
 		# bail if all is well
 		break
