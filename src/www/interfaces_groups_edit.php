@@ -153,7 +153,7 @@ legacy_html_escape_form_data($pconfig);
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a id="help_for_ifname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Group Name");?></td>
+                    <td><a id="help_for_ifname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Name') ?></td>
                     <td>
                       <input type="text" name="ifname" value="<?=$pconfig['ifname'];?>" />
                       <div class="hidden" data-for="help_for_ifname">
@@ -166,13 +166,12 @@ legacy_html_escape_form_data($pconfig);
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
                       <div class="hidden" data-for="help_for_descr">
-                        <?=gettext("You may enter a description here " .
-                        "for your reference (not parsed)."); ?>
+                        <?= gettext('You may enter a description here for your reference.') ?>
                       </div>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_members" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Member (s)");?></td>
+                    <td><a id="help_for_members" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Members') ?></td>
                     <td>
                         <select name="members[]" multiple="multiple" class="selectpicker" data-size="5" data-live-search="true">
 <?php
@@ -181,15 +180,14 @@ legacy_html_escape_form_data($pconfig);
                               continue;
                           }
                           ?>
-                            <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['members']) ? "selected=\"selected\"" : "";?>>
-                                <?=strtoupper($ifdetail['descr']);?>
-                            </option>
+                          <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['members']) ? "selected=\"selected\"" : "";?>>
+                            <?= htmlspecialchars($ifdetail['descr']) ?>
+                          </option>
 <?php
                         endforeach;?>
                         </select>
                       <div class="hidden" data-for="help_for_members">
-                      <strong><?= gettext('NOTE:') ?></strong>
-                      <?= gettext('Rules for WAN type interfaces in groups do not contain the reply-to mechanism upon which Multi-WAN typically relies.') ?>
+                        <?= gettext('Rules for WAN type interfaces in groups do not contain the reply-to mechanism upon which Multi-WAN typically relies.') ?>
                       </div>
                     </td>
                   </tr>

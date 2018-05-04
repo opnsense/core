@@ -771,7 +771,7 @@ include("head.inc");
                                   (!is_array($pconfig['interface']) && in_array($iface, explode(',', $pconfig['interface']))) ||
                                   (is_array($pconfig['interface']) && in_array($iface, $pconfig['interface']))
                                 ) ? 'selected="selected"' : ''; ?>>
-                          <?=htmlspecialchars(strtoupper($ifdetail['descr']));?>
+                          <?= htmlspecialchars($ifdetail['descr']) ?>
                         </option>
 <?php
                     endforeach; ?>
