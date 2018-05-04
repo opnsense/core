@@ -183,11 +183,8 @@ class InterfaceField extends BaseField
                     }
                 }
                 if ($isMatched) {
-                    if ($value->descr == '') {
-                        self::$internalOptionList[$this->internalCacheKey][$key] = $key;
-                    } else {
-                        self::$internalOptionList[$this->internalCacheKey][$key] = (string)$value->descr;
-                    }
+                    self::$internalOptionList[$this->internalCacheKey][$key] =
+                        !empty($value->descr) ? (string)$value->descr : strtoupper($key);
                 }
             }
         }

@@ -751,13 +751,12 @@ function get_configured_interface_list_by_realif ($only_opt = false, $withdisabl
     return $iflist;
 }
 
-/* return the configured interfaces list with their description. */
 function get_configured_interface_with_descr($only_opt = false, $withdisabled = false)
 {
     global $config;
 
     $iflist = array();
-    /* if list */
+
     if (isset($config['interfaces'])) {
         foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if => $ifdetail) {
             if ($only_opt && ($if == "wan" || $if == "lan")) {
@@ -765,10 +764,11 @@ function get_configured_interface_with_descr($only_opt = false, $withdisabled = 
             }
 
             if (isset($ifdetail['enable']) || $withdisabled == true) {
-                $iflist[$if] = strtoupper($ifdetail['descr']);
+                $iflist[$if] = $ifdetail['descr'];
             }
         }
     }
+
     return $iflist;
 }
 

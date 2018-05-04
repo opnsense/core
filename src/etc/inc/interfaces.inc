@@ -2368,7 +2368,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
         return;
     }
 
-    $wandescr = !empty($wancfg['descr']) ? strtoupper($wancfg['descr']) : strtoupper($interface);
+    $wandescr = !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface);
 
     if ($verbose) {
         echo sprintf('Configuring %s interface...', $wandescr);
@@ -3603,20 +3603,20 @@ function convert_friendly_interface_to_friendly_descr($interface)
             $ifdesc = "PPPoE";
             break;
         case "openvpn":
+            /*XXX practically unneeded as we are rendering virtual interfaces to the config */
             $ifdesc = "OpenVPN";
             break;
         case "enc0":
         case "ipsec":
         case "IPsec":
+            /* XXX practically unneeded as we are rendering virtual interfaces to the config */
+            /* XXX it should also be noted that "enc0" is the only proper way for this lookup */
             $ifdesc = "IPsec";
             break;
         default:
             if (isset($config['interfaces'][$interface])) {
-                if (empty($config['interfaces'][$interface]['descr'])) {
-                    $ifdesc = strtoupper($interface);
-                } else {
-                    $ifdesc = strtoupper($config['interfaces'][$interface]['descr']);
-                }
+                $ifdesc = !empty($config['interfaces'][$interface]['descr']) ?
+                    $config['interfaces'][$interface]['descr'] : strtoupper($interface);
                 break;
             } elseif (stristr($interface, "_vip")) {
                 if (isset($config['virtualip']['vip'])) {
