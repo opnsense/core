@@ -36,67 +36,6 @@ require_once("auth.inc");
 $acl = new OPNsense\Core\ACL();
 $priv_list = $acl->getPrivList();
 
-function cmp_page_matches($page, &$matches, $fullwc = true)
-{
-    if (!is_array($matches)) {
-        return false;
-    }
-
-    /* skip any leading fwdslash */
-    $test = strpos($page, "/");
-    if ($test !== false && $test == 0) {
-        $page = substr($page, 1);
-    }
-
-    /* look for a match */
-    foreach ($matches as $match) {
-        /* possibly ignore full wildcard match */
-        if (!$fullwc && !strcmp($match ,"*")) {
-            continue;
-        }
-
-        /* compare exact or wildcard match */
-        $match =  str_replace(array(".", "*","?"), array("\.", ".*","\?"), $match);
-        $result = preg_match("@^/{$match}$@", "/{$page}");
-
-        if ($result) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-function isAllowedPage($page)
-{
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start();
-    }
-    if (!isset($_SESSION['Username'])) {
-        session_write_close();
-        return false;
-    }
-
-    /* root access check */
-    $user = getUserEntry($_SESSION['Username']);
-    session_write_close();
-    if (isset($user)) {
-        if (isset($user['uid'])) {
-            if ($user['uid'] == 0) {
-                return true;
-            }
-        }
-    }
-    if ($page == "/") {
-        $page = "/index.php";
-    }
-
-    /* user privelege access check */
-    $allowedpages = getAllowedPages($_SESSION['Username']);
-    return cmp_page_matches($page, $allowedpages);
-}
-
-
 function getPrivPages(&$entry, &$allowed_pages)
 {
     global $priv_list;
@@ -130,6 +69,10 @@ function getAllowedPages($username) {
 
     $allowed_pages = array();
     $allowed_groups = array();
+
+    if (!empty($_SESSION['user_shouldChangePassword'])) {
+        return array("system_usermanager_passwordmg.php");
+    }
 
     // search for a local user by name
     $local_user = getUserEntry($username);
@@ -316,7 +259,8 @@ set_language();
 /*
  * redirect to first allowed page if requesting a wrong url
  */
-if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
+$page =  $_SERVER['REQUEST_URI']  == "/" ? "/index.php" : $_SERVER['REQUEST_URI'];
+if ($_SESSION['Username'] != 'root' && !$acl->isPageAccessible($_SESSION['Username'],$page)) {
     if (session_status() == PHP_SESSION_NONE) {
         session_start();
     }
