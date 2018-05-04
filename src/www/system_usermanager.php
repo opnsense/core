@@ -309,7 +309,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        if (count($input_errors)==0) {
+        if (!count($input_errors)) {
             $userent = array();
 
             if (isset($id)) {
