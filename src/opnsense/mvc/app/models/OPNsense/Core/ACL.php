@@ -102,17 +102,20 @@ class ACL
         if ($config->system->count() > 0) {
             foreach ($config->system->children() as $key => $node) {
                 if ($key == 'user') {
-                    $this->userDatabase[$node->name->__toString()] = array();
-                    $this->userDatabase[$node->name->__toString()]['uid'] = $node->uid->__toString();
-                    $this->userDatabase[$node->name->__toString()]['groups'] = array();
-                    $this->userDatabase[$node->name->__toString()]['priv'] = array();
+                    $this->userDatabase[(string)$node->name] = array();
+                    $this->userDatabase[(string)$node->name]['uid'] = (string)$node->uid;
+                    $this->userDatabase[(string)$node->name]['groups'] = array();
+                    $this->userDatabase[(string)$node->name]['priv'] = array();
+                    if (!empty($node->landing_page)) {
+                        $this->userDatabase[(string)$node->name]['landing_page'] = (string)$node->landing_page;
+                    }
                     foreach ($node->priv as $priv) {
-                        if (array_key_exists($priv->__toString(), $pageMap)) {
-                            $this->userDatabase[$node->name->__toString()]['priv'][] = $pageMap[$priv->__toString()];
+                        if (array_key_exists((string)$priv, $pageMap)) {
+                            $this->userDatabase[(string)$node->name]['priv'][] = $pageMap[(string)$priv];
                         }
                     }
                 } elseif ($key == 'group') {
-                    $groupmap[$node->name->__toString()] = $node;
+                    $groupmap[(string)$node->name] = $node;
                 }
             }
         }
@@ -121,15 +124,15 @@ class ACL
         foreach ($groupmap as $groupkey => $groupNode) {
             $allGroupPrivs[$groupkey] = array();
             foreach ($groupNode->children() as $itemKey => $node) {
-                if ($node->getName() == "member" && $node->__toString() != "") {
+                if ($node->getName() == "member" && (string)$node != "") {
                     foreach ($this->userDatabase as $username => $userinfo) {
-                        if ($this->userDatabase[$username]["uid"] == $node->__toString()) {
+                        if ($this->userDatabase[$username]["uid"] == (string)$node) {
                             $this->userDatabase[$username]["groups"][] = $groupkey;
                         }
                     }
                 } elseif ($node->getName() == "priv") {
-                    if (array_key_exists($node->__toString(), $pageMap)) {
-                        $this->allGroupPrivs[$groupkey][] = $pageMap[$node->__toString()];
+                    if (array_key_exists((string)$node, $pageMap)) {
+                        $this->allGroupPrivs[$groupkey][] = $pageMap[(string)$node];
                     }
                 }
             }
@@ -210,6 +213,32 @@ class ACL
     }
 
     /**
+     * iterator to collect all assigned access patterns for this user
+     * @param string $username user name
+     */
+    private function urlMasks($username)
+    {
+        if (array_key_exists($username, $this->userDatabase)) {
+            // fetch masks from user privs
+            foreach ($this->userDatabase[$username]["priv"] as $privset) {
+                foreach ($privset as $urlmask) {
+                    yield $urlmask;
+                }
+            }
+            // fetch masks from assigned groups
+            foreach ($this->userDatabase[$username]["groups"] as $itemkey => $group) {
+                if (array_key_exists($group, $this->allGroupPrivs)) {
+                    foreach ($this->allGroupPrivs[$group] as $privset) {
+                        foreach ($privset as $urlmask) {
+                            yield $urlmask;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * check if an endpoint url is accessible by the specified user.
      * @param string $username user name
      * @param string $url full url, for example /firewall_rules.php
@@ -224,31 +253,38 @@ class ACL
             // when a password change is enforced, lock all other endpoints
             return $this->urlMatch($url, 'system_usermanager_passwordmg.php*');
         }
-
-        if (array_key_exists($username, $this->userDatabase)) {
-            // search user privs
-            foreach ($this->userDatabase[$username]["priv"] as $privset) {
-                foreach ($privset as $urlmask) {
-                    if ($this->urlMatch($url, $urlmask)) {
-                        return true;
-                    }
-                }
-            }
-            // search group privs
-            foreach ($this->userDatabase[$username]["groups"] as $itemkey => $group) {
-                if (array_key_exists($group, $this->allGroupPrivs)) {
-                    foreach ($this->allGroupPrivs[$group] as $privset) {
-                        foreach ($privset as $urlmask) {
-                            if ($this->urlMatch($url, $urlmask)) {
-                                return true;
-                            }
-                        }
-                    }
-                }
+        foreach ($this->urlMasks($username) as $urlmask) {
+            if ($this->urlMatch($url, $urlmask)) {
+                return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * get user preferred landing page
+     * @param string $username user name
+     */
+    public function getLandingPage($username)
+    {
+        if (!empty($_SESSION['user_shouldChangePassword'])) {
+            // ACL lock, may only access password page
+            return "system_usermanager_passwordmg.php";
+        } elseif (!empty($this->userDatabase[$username]['landing_page'])) {
+            return $this->userDatabase[$username]['landing_page'];
+        } elseif (!empty($this->userDatabase[$username])) {
+            // default behaviour, find first accessible location from configured privileges
+            foreach ($this->urlMasks($username) as $pattern) {
+                if ($pattern == "*") {
+                    return "index.php";
+                } elseif (!empty($pattern)) {
+                    return str_replace('*', '', $pattern);
+                }
+                break;
+            }
+            return null;
+        }
     }
 
     /**
