@@ -85,7 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['user'][$userindex[$username]]['pwd_changed_at'] = microtime(true);
         }
         if (!empty($_SESSION['user_shouldChangePassword'])) {
+            session_start();
             unset($_SESSION['user_shouldChangePassword']);
+            session_write_close();
         }
         if ($pconfig['passwordfld1'] !== '' || $pconfig['passwordfld2'] !== '') {
             local_user_set_password($config['system']['user'][$userindex[$username]], $pconfig['passwordfld1']);
