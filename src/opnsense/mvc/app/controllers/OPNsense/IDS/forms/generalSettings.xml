@@ -27,7 +27,6 @@
         <id>ids.general.interfaces</id>
         <label>Interfaces</label>
         <type>select_multiple</type>
-        <style>tokenize</style>
         <help><![CDATA[Select interface(s) to use. When enabling IPS, only use physical interfaces here (no vlans etc).]]></help>
         <hint>Type or select interface.</hint>
     </field>

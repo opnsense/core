@@ -15,7 +15,6 @@
         <id>zone.interfaces</id>
         <label>Interfaces</label>
         <type>select_multiple</type>
-        <style>tokenize</style>
         <help><![CDATA[Select interface(s) to enable for captive portal.]]></help>
         <hint>Type or select interface.</hint>
     </field>
