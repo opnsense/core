@@ -188,7 +188,7 @@ trait TOTP
         if (!empty($config['graceperiod'])) {
             $this->graceperiod = $config['graceperiod'];
         }
-        if (array_key_exists('passwordFirst', $config) && !empty($config['passwordFirst'])) {
+        if (!empty($config['passwordFirst'])) {
             $this->passwordFirst = true;
         }
     }
