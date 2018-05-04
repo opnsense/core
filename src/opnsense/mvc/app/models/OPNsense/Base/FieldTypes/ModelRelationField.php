@@ -156,6 +156,13 @@ class ModelRelationField extends BaseField
             // set internal key for this node based on sources and filter criteria
             $this->internalCacheKey = md5(serialize($mdlStructure));
         }
+    }
+
+    /**
+     * load model options when initialized
+     */
+    protected function actionPostLoadingEvent()
+    {
         $this->loadModelOptions();
     }
 
