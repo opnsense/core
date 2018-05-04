@@ -36,65 +36,6 @@ require_once("auth.inc");
 $acl = new OPNsense\Core\ACL();
 $priv_list = $acl->getPrivList();
 
-function getPrivPages(&$entry, &$allowed_pages)
-{
-    global $priv_list;
-
-    if (!isset($entry['priv']) || !is_array($entry['priv'])) {
-        return;
-    }
-
-    foreach ($entry['priv'] as $pname) {
-        if (strncmp($pname, "page-", 5)) {
-            continue;
-        }
-        $priv = &$priv_list[$pname];
-        if (!is_array($priv)) {
-            continue;
-        }
-        $matches = &$priv['match'];
-        if (!is_array($matches)) {
-            continue;
-        }
-        foreach ($matches as $match) {
-            $allowed_pages[] = $match;
-        }
-    }
-}
-
-
-
-function getAllowedPages($username) {
-    global $config;
-
-    $allowed_pages = array();
-    $allowed_groups = array();
-
-    if (!empty($_SESSION['user_shouldChangePassword'])) {
-        return array("system_usermanager_passwordmg.php");
-    }
-
-    // search for a local user by name
-    $local_user = getUserEntry($username);
-    getPrivPages($local_user, $allowed_pages);
-
-    // obtain local groups if we have a local user
-    $allowed_groups = local_user_get_groups($local_user);
-
-    // build a list of allowed pages
-    if (is_array($config['system']['group']) && is_array($allowed_groups)) {
-        foreach ($config['system']['group'] as $group) {
-            // a bit odd, we have seem some cases in the wild where $group doesn't contain a name attribute.
-            // this shouldn't happen, but to avoid warnings we will check over here.
-            if (isset($group['name']) && in_array($group['name'], $allowed_groups)) {
-                getPrivPages($group, $allowed_pages);
-            }
-        }
-    }
-
-    return $allowed_pages;
-}
-
 function set_language()
 {
     global $config, $userindex;
@@ -176,7 +117,14 @@ function session_auth(&$Login_Error)
             } elseif (!empty($_SESSION['user_shouldChangePassword'])) {
                 header("Location: system_usermanager_passwordmg.php");
             } else {
-                header(url_safe("Location: {$_SERVER['REQUEST_URI']}"));
+                if ($_SERVER['REQUEST_URI'] == "/") {
+                    // default landing page
+                    $acl = new OPNsense\Core\ACL();
+                    $url = $acl->getLandingPage($_SESSION['Username']);
+                    header(url_safe("Location: /{$url}"));
+                } else {
+                    header(url_safe("Location: {$_SERVER['REQUEST_URI']}"));
+                }
             }
             exit;
         } else {
@@ -231,12 +179,7 @@ function session_auth(&$Login_Error)
         /* and destroy it */
         session_destroy();
 
-        $scriptName = explode("/", $_SERVER["SCRIPT_FILENAME"]);
-        $scriptElms = count($scriptName);
-        $scriptName = $scriptName[$scriptElms-1];
-
-        /* redirect to page the user is on, it'll prompt them to login again */
-        header(url_safe("Location: {$scriptName}"));
+        header(url_safe("Location: /"));
         exit;
     }
 
@@ -264,9 +207,8 @@ if ($_SESSION['Username'] != 'root' && !$acl->isPageAccessible($_SESSION['Userna
     if (session_status() == PHP_SESSION_NONE) {
         session_start();
     }
-    $allowedpages = getAllowedPages($_SESSION['Username']);
-    if (count($allowedpages) > 0) {
-        $page = str_replace('*', '', $allowedpages[0]);
+    $page = $acl->getLandingPage($_SESSION['Username']);
+    if (!empty($page)) {
         $username = empty($_SESSION["Username"]) ? "(system)" : $_SESSION['Username'];
         if (!empty($_SERVER['REMOTE_ADDR'])) {
             $username .= '@' . $_SERVER['REMOTE_ADDR'];

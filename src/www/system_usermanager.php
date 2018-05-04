@@ -119,7 +119,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } elseif ($act == 'new' || $act == 'edit') {
         // edit user, load or init data
-        $fieldnames = array('user_dn', 'descr', 'expires', 'scope', 'uid', 'priv', 'ipsecpsk', 'lifetime', 'otp_seed', 'email', 'shell', 'comment');
+        $fieldnames = array('user_dn', 'descr', 'expires', 'scope', 'uid', 'priv', 'ipsecpsk',
+                            'lifetime', 'otp_seed', 'email', 'shell', 'comment', 'landing_page');
         if (isset($id)) {
             if (isset($a_user[$id]['authorizedkeys'])) {
                 $pconfig['authorizedkeys'] = base64_decode($a_user[$id]['authorizedkeys']);
@@ -361,6 +362,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $userent['comment'] = $pconfig['comment'];
             } elseif (isset($userent['comment'])) {
                 unset($userent['comment']);
+            }
+            if (!empty($pconfig['landing_page'])) {
+                $userent['landing_page'] = $pconfig['landing_page'];
+            } elseif (isset($userent['landing_page'])) {
+                unset($userent['landing_page']);
             }
 
             if (!empty($pconfig['shell'])) {
@@ -640,6 +646,15 @@ $( document ).ready(function() {
                       <textarea name="comment" id="comment" class="form-control" cols="65" rows="3"><?= $pconfig['comment'] ?></textarea>
                       <div class="hidden" data-for="help_for_comment">
                         <?= gettext('User comment, for your own information only') ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_landing_page" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Preferred landing page");?></td>
+                    <td>
+                      <input name="landing_page" type="text" value="<?=$pconfig['landing_page'];?>">
+                      <div class="hidden" data-for="help_for_landing_page">
+                        <?= gettext('Preferred landing page after login or authentication failure') ?>
                       </div>
                     </td>
                   </tr>
