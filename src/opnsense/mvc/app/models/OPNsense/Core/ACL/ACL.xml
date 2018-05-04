@@ -647,6 +647,7 @@
         <name>System: Authentication Servers</name>
         <patterns>
             <pattern>system_authservers.php*</pattern>
+            <pattern>system_usermanager_settings_ldapacpicker.php*</pattern>
         </patterns>
     </page-system-authservers>
     <page-system-camanager>
