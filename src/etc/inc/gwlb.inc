@@ -985,7 +985,7 @@ function get_interface_gateway_v6($interface, &$dynamic = false)
 
 /*
  * Check an IP address against a gateway IP
- * or name to verify it's address family
+ * or name to verify its address family
  */
 function validate_address_family($ipaddr, $gwname)
 {
