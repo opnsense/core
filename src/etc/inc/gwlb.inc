@@ -1,6 +1,7 @@
 <?php
 
 /*
+    Copyright (C) 2016-2018 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>
     Copyright (C) 2008 Seth Mos <seth.mos@dds.nl>
     Copyright (C) 2010 Ermal Luçi
@@ -533,7 +534,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             $gateway['dynamic'] = true;
             $found_defaultv4 = 1;
         }
-        /* Loopback dummy for dynamic interfaces without a IP */
+        /* loopback dummy for dynamic interfaces without an IP */
         if (!is_ipaddrv4($gateway['gateway']) && $gateway['dynamic'] == true) {
             $gateway['gateway'] = "dynamic";
         }
@@ -620,7 +621,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             $found_defaultv6 = 1;
         }
 
-        /* Loopback dummy for dynamic interfaces without a IP */
+        /* loopback dummy for dynamic interfaces without an IP */
         if (!is_ipaddrv6($gateway['gateway']) && $gateway['dynamic'] == true) {
             $gateway['gateway'] = "dynamic";
         }
@@ -776,25 +777,7 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
             continue;
         }
 
-        $defaultif = get_real_interface($gateways_arr[$dfltgwname]['friendlyiface']);
-        $gwipmatch = $dfltgwip;
-        if (is_linklocal($dfltgwip)) {
-            /* correct match in IPv6 case */
-            $gwipmatch .= "%{$defaultif}";
-        }
-
-        $tmpcmd = "/sbin/route -n get -{$ipprotocol} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
-        $defaultgw = trim(exec($tmpcmd), " \n");
-        if ($defaultgw != $gwipmatch) {
-            foreach (glob('/tmp/*_defaultgw' . ($ipprotocol == 'inet' ? '' : 'v6')) as $to_delete) {
-                log_error("GATEWAYS: removing {$to_delete}");
-                @unlink($to_delete);
-            }
-            log_error("Switching default gateway to $dfltgwname ($dfltgwip on $defaultif)");
-            @file_put_contents("/tmp/{$defaultif}_defaultgw" . ($ipprotocol == 'inet' ? '' : 'v6'), $dfltgwip);
-            /* XXX fargw and IPv6 should be cleaned up to make it easier to read */
-            system_default_route($dfltgwip, !isset($gateways_arr[$dfltgwname]['fargw']) && $ipprotocol == 'inet' ? null : $defaultif);
-        }
+        system_default_route($dfltgwip, $ipprotocol, $gateways_arr[$dfltgwname]['friendlyiface'], isset($gateways_arr[$dfltgwname]['fargw']));
     }
 }
 
@@ -1000,8 +983,10 @@ function get_interface_gateway_v6($interface, &$dynamic = false)
     return ($gw);
 }
 
-/* Check a IP address against a gateway IP or name
- * to verify it's address family */
+/*
+ * Check an IP address against a gateway IP
+ * or name to verify it's address family
+ */
 function validate_address_family($ipaddr, $gwname)
 {
     $v4ip = false;
