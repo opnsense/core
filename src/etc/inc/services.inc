@@ -238,13 +238,13 @@ function services_radvd_configure($blacklist = array())
         /* add DNS servers */
         $dnslist_tmp = array();
         if (isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['dnsserver'][0])) {
-            array_merge($dnslist_tmp, $dhcpv6ifconf['dnsserver']);
+            $dnslist_tmp = $dhcpv6ifconf['dnsserver'];
         } elseif (!isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['radnsserver'][0])) {
-            array_merge($dnslist_tmp, $dhcpv6ifconf['radnsserver']);
+            $dnslist_tmp = $dhcpv6ifconf['radnsserver'];
         } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
             $dnslist_tmp[] = get_interface_ipv6($realif);
         } elseif (!empty($config['system']['dnsserver'][0])) {
-            array_merge($dnslist_tmp, $config['system']['dnsserver']);
+            $dnslist_tmp = $config['system']['dnsserver'];
         }
         $dnslist = array();
         foreach($dnslist_tmp as $server) {
