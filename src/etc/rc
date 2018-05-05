@@ -113,7 +113,7 @@ if kldstat -qm zfs; then
 	mount -uw /
 	zfs mount -va
 	# maybe there is a mountpoint in fstab
-	# that requires ZFS to be full set up
+	# that requires ZFS to be fully set up
 	mount -a
 fi
 
