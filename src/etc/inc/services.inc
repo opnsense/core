@@ -256,8 +256,9 @@ function services_radvd_configure($blacklist = array())
         if (count($dnslist) > 0) {
             $radvdconf .= "\tRDNSS ".implode(" ", $dnslist)." { };\n";
         }
-        if (!empty($dhcpv6ifconf['domain'])) {
-            $radvdconf .= "\tDNSSL {$dhcpv6ifconf['domain']} { };\n";
+        if (!empty($dhcpv6ifconf['radomainsearchlist'])) {
+            $dnssl = implode(' ', explode(';', $dhcpv6ifconf['radomainsearchlist']));
+            $radvdconf .= "\tDNSSL {$dnssl} { };\n";
         } elseif (!empty($config['system']['domain'])) {
             $radvdconf .= "\tDNSSL {$config['system']['domain']} { };\n";
         }
