@@ -46,11 +46,17 @@ echo "Mounting filesystems..."
 mount -fr / 2> /dev/null
 
 GROWFS_MARKER=/.probe.for.growfs.nano
+ROOT_IS_UFS=
 
 while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 	# only tune our own file systems
 	if [ "${FS_TYPE}" != "ufs" ]; then
 		continue;
+	fi
+
+	# marker for running fsck in a bit
+	if [ "${FS_MNT}" = "/" ]; then
+		ROOT_IS_UFS=yes
 	fi
 
 	if echo "${FS_MORE}" | grep -iq nosoft; then
@@ -92,18 +98,24 @@ done < /etc/fstab
 
 attempts=0
 while [ ${attempts} -lt 3 ]; do
-	fsck -C -y /
-	fsck -C -y /
+	if [ -n "${ROOT_IS_UFS}" ]; then
+		fsck -C -y /
+		fsck -C -y /
+	fi
 	if mount -a; then
-		if kldstat -qm zfs; then
-			mount -uw /
-			zfs mount -va
-		fi
 		# bail if all is well
 		break
 	fi
 	attempts=$((attempts+1))
 done
+
+if kldstat -qm zfs; then
+	mount -uw /
+	zfs mount -va
+	# maybe there is a mountpoint in fstab
+	# that requires ZFS to be full set up
+	mount -a
+fi
 
 # clear growfs marker now that we are read/write
 rm -f ${GROWFS_MARKER}
