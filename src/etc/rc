@@ -43,7 +43,7 @@ export HOME PATH
 echo "Mounting filesystems..."
 
 # tunefs may refuse otherwise
-mount -fr /
+mount -fr / 2> /dev/null
 
 GROWFS_MARKER=/.probe.for.growfs.nano
 
@@ -94,7 +94,7 @@ attempts=0
 while [ ${attempts} -lt 3 ]; do
 	fsck -C -y /
 	fsck -C -y /
-	if mount -a 2> /dev/null; then
+	if mount -a; then
 		if kldstat -qm zfs; then
 			mount -uw /
 			zfs mount -va
