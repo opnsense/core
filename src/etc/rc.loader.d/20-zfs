@@ -1,3 +1,4 @@
+# ZFS standard environment requirements
 kern.geom.label.disk_ident.enable="0"
 kern.geom.label.gptid.enable="0"
 vfs.zfs.min_auto_ashift=12
