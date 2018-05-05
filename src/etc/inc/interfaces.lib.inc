@@ -281,6 +281,12 @@ function legacy_interfaces_details($intf = null)
                     return $a['link-local'] - $b['link-local'];
                 });
             }
+        } elseif (strpos($line, "\ttunnel ") !== false) {
+            // extract tunnel proto, source and destination
+            $result[$current_interface]["tunnel"] = array();
+            $result[$current_interface]["tunnel"]["proto"] = $line_parts[1];
+            $result[$current_interface]["tunnel"]["src_addr"] = $line_parts[2];
+            $result[$current_interface]["tunnel"]["dest_addr"] = $line_parts[4];
         } elseif (preg_match("/media: (.*)/", $line, $matches)) {
             // media, when link is between parenthesis grep only the link part
             $result[$current_interface]['media'] = $matches[1];
