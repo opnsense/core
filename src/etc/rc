@@ -98,7 +98,7 @@ done < /etc/fstab
 
 attempts=0
 while [ ${attempts} -lt 3 ]; do
-	if [ -n "${ROOT_IS_UFS}" ]; then
+	if [ -n "${ROOT_IS_UFS}" ]; then
 		fsck -C -y /
 		fsck -C -y /
 	fi
