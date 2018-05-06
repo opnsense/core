@@ -86,7 +86,6 @@ $cacheip_file = "/var/db/{$interface}_cacheip";
 $ip_file = "/var/db/{$interface}_ip";
 
 /* write the current interface IP to file */
-/* used in src/sbin/dhclient-script.ext */
 if (is_ipaddr($ip)) {
     @file_put_contents($ip_file, $ip);
 }
