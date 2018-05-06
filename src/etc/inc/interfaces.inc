@@ -1302,8 +1302,8 @@ EOD;
         $mpdconf .= "  set iface enable tcpmssfix\n";
     }
 
-    $mpdconf .= "  set iface up-script /usr/local/sbin/ppp-linkup\n";
-    $mpdconf .= "  set iface down-script /usr/local/sbin/ppp-linkdown\n";
+    $mpdconf .= "  set iface up-script /usr/local/opnsense/scripts/interfaces/ppp-linkup.sh\n";
+    $mpdconf .= "  set iface down-script /usr/local/opnsense/scripts/interfaces/ppp-linkdown.sh\n";
     if ($ppp['type'] == "ppp") {
         if (is_ipaddr($ppp['localip'])) {
             $localip = $ppp['localip'];
@@ -1442,21 +1442,16 @@ EOD;
         $mpdconf .= "\topen\n";
     }
 
-
-    /* Generate mpd.conf. If mpd_[interface].conf exists in the conf path, then link to it instead of generating a fresh conf file. */
-    if (file_exists("/conf/mpd_{$interface}.conf")) {
-        @symlink("/conf/mpd_{$interface}.conf", "/var/etc/mpd_{$interface}.conf");
-    } else {
-        $fd = fopen("/var/etc/mpd_{$interface}.conf", "w");
-        if (!$fd) {
-            log_error("Error: cannot open mpd_{$interface}.conf in interface_ppps_configure().");
-            return 0;
-        }
-        // Write out mpd_ppp.conf
-        fwrite($fd, $mpdconf);
-        fclose($fd);
-        unset($mpdconf);
+    $fd = fopen("/var/etc/mpd_{$interface}.conf", "w");
+    if (!$fd) {
+        log_error("Error: cannot open mpd_{$interface}.conf in interface_ppps_configure().");
+        return 0;
     }
+
+    // Write out mpd_ppp.conf
+    fwrite($fd, $mpdconf);
+    fclose($fd);
+    unset($mpdconf);
 
     // Create the uptime log if requested and if it doesn't exist already, or delete it if it is no longer requested.
     if (isset($ppp['uptime'])) {
@@ -4303,7 +4298,7 @@ function get_interfaces_info()
         }
 
         if (file_exists("/var/run/{$link_type}_{$ifdescr}.pid")) {
-            $sec = trim(`/usr/local/sbin/ppp-uptime.sh {$ifinfo['if']}`);
+            $sec = trim(`/usr/local/opnsense/scripts/interfaces/ppp-uptime.sh {$ifinfo['if']}`);
             $ifinfo['ppp_uptime'] = convert_seconds_to_hms($sec);
         }
 

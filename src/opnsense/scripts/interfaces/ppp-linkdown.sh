@@ -12,9 +12,9 @@ DEFAULTGW=$(route -n get -${AF} default | grep gateway: | awk '{print $2}')
 ngctl shutdown ${IF}:
 
 if [ "${AF}" = "inet" ]; then
-	if [ -f /tmp/${IF}up ] && [ -f /conf/${IF}.log ]; then
+	if [ -f /tmp/${IF}up -a -f /conf/${IF}.log ]; then
 		seconds=$((`date -j +%s` - `/usr/bin/stat -f %m /tmp/${IF}up`))
-		/usr/local/sbin/ppp-log-uptime.sh $seconds ${IF} &
+		/usr/local/opnsense/scripts/interfaces/ppp-log-uptime.sh $seconds ${IF} &
 	fi
 
 	if [ -s "/tmp/${IF}_defaultgw" ]; then
@@ -28,7 +28,7 @@ if [ "${AF}" = "inet" ]; then
 	if [ -f "/var/etc/nameserver_${IF}" ]; then
 		# Remove old entries
 		for nameserver in $(cat /var/etc/nameserver_${IF}); do
-			route delete ${nameserver} >/dev/null 2>&1
+			route delete ${nameserver}
 		done
 		rm -f /var/etc/nameserver_${IF}
 	fi
@@ -47,7 +47,7 @@ elif [ "${AF}" = "inet6" ]; then
 	if [ -f "/var/etc/nameserver_v6${IF}" ]; then
 		# Remove old entries
 		for nameserver in $(cat /var/etc/nameserver_v6${IF}); do
-			route delete ${nameserver} >/dev/null 2>&1
+			route delete ${nameserver}
 		done
 		rm -f /var/etc/nameserver_v6${IF}
 	fi
@@ -57,3 +57,5 @@ elif [ "${AF}" = "inet6" ]; then
 fi
 
 /usr/local/opnsense/service/configd_ctl.py dns reload
+
+exit 0

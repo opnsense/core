@@ -681,6 +681,10 @@
 /usr/local/opnsense/scripts/interfaces/list_macdb.py
 /usr/local/opnsense/scripts/interfaces/list_ndp.py
 /usr/local/opnsense/scripts/interfaces/mpd.script
+/usr/local/opnsense/scripts/interfaces/ppp-linkdown.sh
+/usr/local/opnsense/scripts/interfaces/ppp-linkup.sh
+/usr/local/opnsense/scripts/interfaces/ppp-log-uptime.sh
+/usr/local/opnsense/scripts/interfaces/ppp-uptime.sh
 /usr/local/opnsense/scripts/ipsec/connect.py
 /usr/local/opnsense/scripts/ipsec/disconnect.py
 /usr/local/opnsense/scripts/ipsec/list_leases.py
@@ -1564,10 +1568,6 @@
 /usr/local/sbin/opnsense-version
 /usr/local/sbin/ping_hosts.sh
 /usr/local/sbin/pluginctl
-/usr/local/sbin/ppp-linkdown
-/usr/local/sbin/ppp-linkup
-/usr/local/sbin/ppp-log-uptime.sh
-/usr/local/sbin/ppp-uptime.sh
 /usr/local/share/man/man8/opnsense-importer.8.gz
 /usr/local/share/man/man8/opnsense-installer.8.gz
 /usr/local/share/man/man8/opnsense-shell.8.gz
