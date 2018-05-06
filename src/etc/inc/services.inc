@@ -438,7 +438,6 @@ function services_dhcpdv4_configure($verbose = false)
     $dhcpdconf = <<<EOD
 option domain-name "{$config['system']['domain']}";
 option ldap-server code 95 = text;
-option domain-search-list code 119 = text;
 option arch code 93 = unsigned integer 16; # RFC4578
 {$custoptions}
 default-lease-time 7200;
@@ -1124,7 +1123,6 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
     $dhcpdv6conf = <<<EOD
 option domain-name "{$syscfg['domain']}";
 option ldap-server code 95 = text;
-option domain-search-list code 119 = text;
 {$custoptionsv6}
 default-lease-time 7200;
 max-lease-time 86400;
