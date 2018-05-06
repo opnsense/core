@@ -27,6 +27,7 @@
     aggregate flow data (format in parse.py) into sqlite structured container per type/resolution.
     Implementations are collected in lib\aggregates\
 """
+import syslog
 import os
 import datetime
 import sqlite3
@@ -278,6 +279,7 @@ class BaseFlowAggregator(object):
                 self.commit()
                 if do_vacuum:
                     # vacuum database if requested
+                    syslog.syslog(syslog.LOG_NOTICE, 'vacuum %s' % (self.target_filename % self.resolution))
                     self._update_cur.execute('vacuum')
 
     def _parse_timestamp(self, timestamp):
