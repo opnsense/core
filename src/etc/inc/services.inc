@@ -190,6 +190,9 @@ function services_radvd_configure($blacklist = array())
             }
         }
 
+        /* VIPs may duplicate readings from system */
+        $stanzas = array_unique($stanzas);
+
         foreach ($stanzas as $stanza) {
             $radvdconf .= "\tprefix {$stanza} {\n";
             $radvdconf .= "\t\tDeprecatePrefix ". (!empty($dhcpv6ifconf['rainterface']) ? "off" : "on").";\n";
