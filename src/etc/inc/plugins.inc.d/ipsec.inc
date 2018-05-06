@@ -987,7 +987,7 @@ EOD;
                             if (in_array($auth_server['name'], explode(',', $ph1ent['authservers']))) {
                                 $radius_servers .= "\t\t\t\tserver" . $radius_server_num . " {\n";
                                 $radius_servers .= "\t\t\t\t\taddress = " . $auth_server['host'] . "\n";
-                                $radius_servers .= "\t\t\t\t\tsecret = " . $auth_server['radius_secret'] . "\n";
+                                $radius_servers .= "\t\t\t\t\tsecret = \"" . $auth_server['radius_secret'] . "\"\n";
                                 $radius_servers .= "\t\t\t\t\tauth_port = " . $auth_server['radius_auth_port'] . "\n";
 
                                 if (!empty($auth_server['radius_acct_port'])) {
