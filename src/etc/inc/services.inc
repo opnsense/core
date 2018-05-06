@@ -1127,7 +1127,6 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
 
     $dhcpdv6conf = <<<EOD
 option domain-name "{$config['system']['domain']}";
-option ldap-server code 95 = text;
 {$custoptionsv6}
 default-lease-time 7200;
 max-lease-time 86400;
@@ -1233,11 +1232,6 @@ EOD;
             foreach($dhcpv6ifconf['numberoptions']['item'] as $itemv6idx => $itemv6) {
                 $dhcpdv6conf .= "  option custom-{$dhcpv6if}-{$itemv6idx} \"{$itemv6['value']}\";\n";
             }
-        }
-
-        // ldap-server
-        if (!empty($dhcpv6ifconf['ldap'])) {
-            $dhcpdv6conf .= "  option ldap-server \"{$dhcpv6ifconf['ldap']}\";\n";
         }
 
         // net boot information

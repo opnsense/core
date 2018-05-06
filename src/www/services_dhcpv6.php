@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['prefixrange_length'] = $config['dhcpdv6'][$if]['prefixrange']['prefixlength'];
     }
     $config_copy_fieldsnames = array('defaultleasetime', 'maxleasetime', 'domain', 'domainsearchlist', 'ddnsdomain',
-        'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ldap', 'bootfile_url', 'netmask',
+        'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'bootfile_url', 'netmask',
         'numberoptions', 'dhcpv6leaseinlocaltime', 'staticmap');
     foreach ($config_copy_fieldsnames as $fieldname) {
         if (isset($config['dhcpdv6'][$if][$fieldname])) {
@@ -234,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             // simple 1-on-1 copy
             $config_copy_fieldsnames = array('defaultleasetime', 'maxleasetime', 'netmask', 'domain', 'domainsearchlist',
-              'ddnsdomain', 'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ldap', 'bootfile_url',
+              'ddnsdomain', 'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'bootfile_url',
               'dhcpv6leaseinlocaltime');
             foreach ($config_copy_fieldsnames as $fieldname) {
                 if (!empty($pconfig[$fieldname])) {
@@ -389,11 +389,6 @@ include("head.inc");
   function show_ntp_config() {
     $("#showntpbox").hide();
     $("#showntp").show();
-  }
-
-  function show_ldap_config() {
-    $("#showldapbox").hide();
-    $("#showldap").show();
   }
 
   function show_netboot_config() {
@@ -602,18 +597,6 @@ include("head.inc");
                         <div id="showntp" style="display:none">
                           <input name="ntp1" type="text" id="ntp1" value="<?=$pconfig['ntp1'];?>" /><br />
                           <input name="ntp2" type="text" id="ntp2" value="<?=$pconfig['ntp2'];?>" />
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("LDAP URI");?></td>
-                      <td>
-                        <div id="showldapbox">
-                          <input type="button" onclick="show_ldap_config()" value="<?=gettext("Advanced");?>" class="btn btn-xs btn-default"/> - <?=gettext("Show LDAP configuration");?>
-                        </div>
-                        <div id="showldap" style="display:none">
-                          <input name="ldap" type="text" value="<?=$pconfig['ldap'];?>" />
-                          <?=gettext("Leave blank to disable. Enter a full URI for the LDAP server in the form ldap://ldap.example.com/dc=example,dc=com");?>
                         </div>
                       </td>
                     </tr>
