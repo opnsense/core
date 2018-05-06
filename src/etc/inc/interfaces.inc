@@ -1172,9 +1172,7 @@ function interface_ppps_configure($interface)
     }
 
     // mpd5 modem chat script expected in the same directory as the mpd_xxx.conf files
-    if (!file_exists('/var/etc/mpd.script')) {
-        symlink('/usr/local/sbin/mpd.script', '/var/etc/mpd.script');
-    }
+    @copy('/usr/local/opnsense/scripts/interfaces/mpd.script', '/var/etc/mpd.script');
 
     if (isset($config['ppps']['ppp'])) {
         foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
@@ -1444,31 +1442,22 @@ EOD;
         $mpdconf .= "\topen\n";
     }
 
-
-    /* Generate mpd.conf. If mpd_[interface].conf exists in the conf path, then link to it instead of generating a fresh conf file. */
-    if (file_exists("/conf/mpd_{$interface}.conf")) {
-        @symlink("/conf/mpd_{$interface}.conf", "/var/etc/mpd_{$interface}.conf");
-    } else {
-        $fd = fopen("/var/etc/mpd_{$interface}.conf", "w");
-        if (!$fd) {
-            log_error("Error: cannot open mpd_{$interface}.conf in interface_ppps_configure().");
-            return 0;
-        }
-        // Write out mpd_ppp.conf
-        fwrite($fd, $mpdconf);
-        fclose($fd);
-        unset($mpdconf);
+    $fd = fopen("/var/etc/mpd_{$interface}.conf", "w");
+    if (!$fd) {
+        log_error("Error: cannot open mpd_{$interface}.conf in interface_ppps_configure().");
+        return 0;
     }
+
+    // Write out mpd_ppp.conf
+    fwrite($fd, $mpdconf);
+    fclose($fd);
+    unset($mpdconf);
 
     // Create the uptime log if requested and if it doesn't exist already, or delete it if it is no longer requested.
     if (isset($ppp['uptime'])) {
-        if (!file_exists("/conf/{$ifcfg['if']}.log")) {
-            file_put_contents("/conf/{$ifcfg['if']}.log", '');
-        }
+        @touch("/conf/{$ifcfg['if']}.log");
     } else {
-        if (file_exists("/conf/{$ifcfg['if']}.log")) {
-            @unlink("/conf/{$ifcfg['if']}.log");
-        }
+        @unlink("/conf/{$ifcfg['if']}.log");
     }
 
     /* clean up old lock files */
