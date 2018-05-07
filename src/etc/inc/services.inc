@@ -288,7 +288,7 @@ function services_radvd_configure($blacklist = array())
         }
 
         $radvdifs[$realif] = 1;
-        $autotype = '';
+        $autotype = 'unknown';
 
         if (isset($config['interfaces'][$trackif]['ipaddrv6'])) {
             $autotype = $config['interfaces'][$trackif]['ipaddrv6'];
