@@ -32,6 +32,7 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("system.inc");
+require_once("gwlb.inc");
 require_once("rrd.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -232,6 +233,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if ($old_pinger != isset($config['system']['prefer_dpinger'])) {
             mwexec('rm /var/db/rrd/*quality.rrd');
+            setup_gateways_monitor();
             rrd_configure();
         }
     }
