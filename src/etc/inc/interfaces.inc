@@ -2625,13 +2625,16 @@ function interface_track6_configure($interface = 'lan', $wancfg, $linkupevent = 
     }
 
     switch($trackcfg['ipaddrv6']) {
-        case "6to4":
+        case '6to4':
             interface_track6_6to4_configure($interface, $wancfg);
             break;
-        case "6rd":
+        case '6rd':
             interface_track6_6rd_configure($interface, $wancfg);
             break;
-        case "dhcp6":
+        case 'slaac':
+            interface_track6_slaac_configure($interface, $wancfg);
+            break;
+        case 'dhcp6':
             if ($linkupevent == true) {
                 /*
                  * NOTE: Usually come here from rc.linkup calling so just call directly intead of generating event
@@ -2650,6 +2653,26 @@ function interface_track6_configure($interface = 'lan', $wancfg, $linkupevent = 
     }
 
     return 0;
+}
+
+function interface_track6_slaac_configure($interface = 'lan', $lancfg)
+{
+    global $config;
+
+    /* If the interface is not configured via another, exit */
+    if (empty($lancfg['track6-interface'])) {
+        return;
+    }
+
+    $wancfg = $config['interfaces'][$lancfg['track6-interface']];
+    if (empty($wancfg)) {
+        log_error("Interface {$interface} tracking non-existent interface {$lancfg['track6-interface']}");
+        return;
+    }
+
+    $realif = get_real_interface($interface);
+    log_error("Accept router advertisements on interface {$realif}");
+    mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realif);
 }
 
 function interface_track6_6rd_configure($interface = 'lan', $lancfg)
@@ -2959,9 +2982,9 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     $wanif = get_real_interface($interface, "inet6");
 
     /* accept router advertisements for this interface */
-    set_single_sysctl("net.inet6.ip6.accept_rtadv", "1");
-    log_error("Accept router advertisements on interface {$wanif} ");
-    mwexec("/sbin/ifconfig {$wanif} inet6 accept_rtadv -ifdisabled");
+    set_single_sysctl('net.inet6.ip6.accept_rtadv', '1');
+    log_error("Accept router advertisements on interface {$wanif}");
+    mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $wanif);
 
     /* Enable RFC6204w support for IPv6 Customer Edge (CE) router */
     set_single_sysctl("net.inet6.ip6.rfc6204w3", "1");
