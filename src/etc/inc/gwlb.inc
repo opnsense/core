@@ -63,6 +63,11 @@ function setup_gateways_monitor($verbose = false)
 
     if (isset($config['system']['prefer_dpinger'])) {
         setup_dpinger_gateways_monitor($verbose);
+
+        if ($verbose) {
+            echo "done.\n";
+        }
+
         return;
     }
 
@@ -1198,10 +1203,6 @@ function setup_dpinger_gateways_monitor($verbose = false)
         rrd_create_gateway_quality("/var/db/rrd/{$gateway['name']}-quality.rrd");
     }
 
-    stop_dpinger();
-
-    /* Start new processes */
-
     foreach ($gateways_arr_all as $name => $gateway) {
         if (isset($gateway['monitor_disable'])) {
             continue;
@@ -1209,8 +1210,6 @@ function setup_dpinger_gateways_monitor($verbose = false)
 
         if (start_dpinger($gateway) != 0) {
             log_error(sprintf(gettext("Error starting gateway monitor for %s"), $gateway['name']));
-        } else {
-            log_error('calling start dpinger');
         }
     }
 }
@@ -1469,5 +1468,5 @@ function start_dpinger($gateway)
 
     stop_dpinger($gateway['name']);
 
-    return mwexecf("/usr/local/sbin/dpinger {$params} %s", array($gateway['monitor']));
+    return mwexecf("/usr/local/bin/dpinger {$params} %s", array($gateway['monitor']));
 }
