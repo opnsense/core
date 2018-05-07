@@ -232,7 +232,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         filter_configure();
 
         if ($old_pinger != isset($config['system']['prefer_dpinger'])) {
-            mwexec('rm /var/db/rrd/*quality.rrd');
+            mwexec('rm /var/db/rrd/*-quality.rrd');
             setup_gateways_monitor();
             rrd_configure();
         }

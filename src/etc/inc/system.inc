@@ -706,7 +706,7 @@ function system_syslogd_start($verbose = false)
         $syslogconfs['filter'] = array('facility' => array('filterlog'), 'remote' => 'filter');
         $syslogconfs['lighttpd'] = array('facility' => array('lighttpd'));
         $syslogconfs['configd'] = array('facility' => array('configd.py'));
-        $syslogconfs['gateways'] = array('facility' => array('apinger'), 'remote' => 'apinger');
+        $syslogconfs['gateways'] = array('facility' => array('apinger', 'dpinger'), 'remote' => 'apinger');
         $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');
         $syslogconfs['ppps'] = array('facility' => array('ppp'));
         $syslogconfs['resolver'] = array('facility' => array('unbound'), 'remote' => 'dns');
