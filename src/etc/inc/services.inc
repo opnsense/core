@@ -286,10 +286,17 @@ function services_radvd_configure($blacklist = array())
         if (isset($radvdifs[$realif])) {
             continue;
         }
-        $radvdifs[$realif] = 1;
 
+        $radvdifs[$realif] = 1;
+        $autotype = '';
+
+        if (isset($config['interfaces'][$trackif]['ipaddrv6'])) {
+            $autotype = $config['interfaces'][$trackif]['ipaddrv6'];
+        }
+
+        $subnetv6 = $autotype != 'slaac' ? '::' : '2000::';
+        $mtu = legacy_interface_stats($realif)['mtu'];
         $dnslist = array();
-        $subnetv6 = '::';
         $ifcfgsnv6 = '64';
 
         $ifcfgipv6 = get_interface_ipv6($if);
@@ -309,19 +316,18 @@ function services_radvd_configure($blacklist = array())
             }
         }
 
-        if (isset($config['interfaces'][$trackif]['ipaddrv6'])) {
-            $autotype = $config['interfaces'][$trackif]['ipaddrv6'];
-            $radvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
-        }
-
+        $radvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
         $radvdconf .= "interface {$realif} {\n";
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= "\tMinRtrAdvInterval 3;\n";
         $radvdconf .= "\tMaxRtrAdvInterval 10;\n";
-        $mtu = legacy_interface_stats($realif)['mtu'];
         $radvdconf .= "\tAdvLinkMTU ". (is_numeric($mtu) ? $mtu : 1280) .";\n";
         $radvdconf .= "\tAdvOtherConfigFlag on;\n";
         $radvdconf .= "\tprefix {$subnetv6}/{$ifcfgsnv6} {\n";
+        if ($autotype == 'slaac') {
+            $realtrackif = get_real_interface($trackif, 'inet6');
+            $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
+        }
         $radvdconf .= "\t\tAdvOnLink on;\n";
         $radvdconf .= "\t\tAdvAutonomous on;\n";
         $radvdconf .= "\t\tAdvRouterAddr on;\n";
