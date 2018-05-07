@@ -45,7 +45,7 @@ function return_apinger_defaults()
     );
 }
 
-function setup_gateways_monitor($verbose = false)
+function setup_gateways_monitor($verbose = false, $name = null)
 {
     global $config;
 
@@ -56,13 +56,13 @@ function setup_gateways_monitor($verbose = false)
 
     killbypid('/var/run/apinger.pid', 'TERM', true);
     @unlink('/var/run/apinger.status');
-    stop_dpinger();
+    stop_dpinger($name);
 
     @mkdir('/var/db/rrd', 0775);
     @chown('/var/db/rrd', 'nobody');
 
     if (isset($config['system']['prefer_dpinger'])) {
-        setup_dpinger_gateways_monitor($verbose);
+        setup_dpinger_gateways_monitor($verbose, $name);
 
         if ($verbose) {
             echo "done.\n";
@@ -1091,12 +1091,16 @@ function validate_address_family($ipaddr, $gwname)
     return false;
 }
 
-function setup_dpinger_gateways_monitor($verbose = false)
+function setup_dpinger_gateways_monitor($verbose = false, $gwname = null)
 {
     $monitor_ips = array();
     $gateways_arr_all = return_gateways_array(true);
 
     foreach ($gateways_arr_all as $name => $gateway) {
+        if (!empty($gwname) && $gwname != $name) {
+	    continue;
+        }
+
         if (empty($gateway['monitor']) || !is_ipaddr($gateway['monitor'])) {
             if (is_ipaddr($gateway['gateway'])) {
                 $gateway['monitor'] = $gateway['gateway'];
@@ -1208,6 +1212,10 @@ function setup_dpinger_gateways_monitor($verbose = false)
             continue;
         }
 
+        if (!empty($gwname) && $gwname != $name) {
+	    continue;
+        }
+
         if (start_dpinger($gateway) != 0) {
             log_error(sprintf(gettext("Error starting gateway monitor for %s"), $gateway['name']));
         }
@@ -1233,23 +1241,16 @@ function running_dpinger_processes()
 {
     $result = array();
 
+    /* XXX this is untrue, pid file may be stale? */
     $pidfiles = glob('/var/run/dpinger_*.pid');
     if ($pidfiles === FALSE) {
         return $result;
     }
 
     foreach ($pidfiles as $pidfile) {
-        if (preg_match('/^dpinger_(.+)~([^~]+)~([^~]+)\.pid$/',
-            basename($pidfile), $matches)) {
-            $socket_file = preg_replace('/\.pid$/', '.sock',
-                $pidfile);
-            $result[$matches[1]] = array(
-                'srcip'    => $matches[2],
-                'targetip' => $matches[3],
-                'pidfile'  => $pidfile,
-                'socket'   => $socket_file
-            );
-            unset($gwinfo);
+        if (preg_match('/^dpinger_(.+)\.pid$/', basename($pidfile), $matches)) {
+            $socket_file = preg_replace('/\.pid$/', '.sock', $pidfile);
+            $result[$matches[1]] = array('socket' => $socket_file, 'pidfile' => $pidfile);
         }
     }
 
@@ -1312,12 +1313,11 @@ function get_dpinger_status($gwname, $detailed = false)
             usleep(10000);
 
         }
-
-
     }
 
-    $r['srcip'] = $proc['srcip'];
-    $r['targetip'] = $proc['targetip'];
+    /* XXX tried to read info via file name, this is not good by any standard */
+    $r['targetip'] = 'NOT_NEEDED';
+    $r['srcip'] = 'BUT_WHY';
 
     $gateways_arr = return_gateways_array();
     unset($gw);
@@ -1349,7 +1349,6 @@ function get_dpinger_status($gwname, $detailed = false)
             }
         }
 
-
         if ($r['latency_avg'] > $settings['latencyhigh']) {
             if ($detailed) {
                 $r['status'] = "highdelay";
@@ -1373,20 +1372,18 @@ function get_dpinger_status($gwname, $detailed = false)
     return $r;
 }
 
-function stop_dpinger($gwname = '')
+function stop_dpinger($gwname = null)
 {
     $running_processes = running_dpinger_processes();
 
     foreach ($running_processes as $running_gwname => $process) {
-        if ($gwname != '' && $running_gwname != $gwname) {
+        if (!empty($gwname) && $running_gwname != $gwname) {
             continue;
         }
 
-        if (isvalidpid($process['pidfile'])) {
-            killbypid($process['pidfile']);
-        } else {
-            @unlink($process['pidfile']);
-        }
+        killbypid($process['pidfile'], 'TERM', true);
+        @unlink($process['pidfile']);
+        @unlink($process['socket']);
     }
 }
 
@@ -1400,16 +1397,7 @@ function start_dpinger($gateway)
         $gwifip = find_interface_ip($gateway['interface']);
     }
 
-    $prefix = "/var/run/dpinger_{$gateway['name']}~{$gwifip}~{$gateway['monitor']}";
-
-    # dpinger socket path should not be longer then uaddr.sun_path
-    if (strlen($prefix) > 95) {
-        $prefix = "/var/run/dpinger_{$gateway['name']}~" . substr(md5($gwifip),0,8) . "~" . $gateway['monitor'];
-    }
-
-    /* We need to replace the ':' in the pid & sock filenames, else monit gets upset */
-    $pidfile = str_replace(':','-',$prefix) . ".pid";
-    $socket = str_replace(':','-',$prefix) . ".sock";
+    $prefix = "/var/run/dpinger_{$gateway['name']}";
 
     $gateway_name = $gateway['name'];
     $alarm_cmd = "/usr/local/etc/rc.monitor";
@@ -1418,8 +1406,8 @@ function start_dpinger($gateway)
     $params .= "-r 0 ";            /* Disable unused reporting thread */
     $params .= "-i {$gateway['name']} ";    /* Identifier */
     $params .= "-B  {$gwifip} ";    /* Bind src address */
-    $params .= "-p {$pidfile} ";        /* PID filename */
-    $params .= "-u {$socket} ";        /* Status Socket */
+    $params .= "-p {$prefix}.pid ";        /* PID filename */
+    $params .= "-u {$prefix}.sock ";        /* Status Socket */
     if (!$gateway['action_disable']) {
         $params .= "-C \"{$alarm_cmd}\" ";    /* Command to run on alarm */
     }
@@ -1466,7 +1454,9 @@ function start_dpinger($gateway)
         : $dpinger_defaults['losshigh']
         ) . " ";
 
+    /* XXX we pass the key elsewhere, not the name (maybe same but dangerous) */
     stop_dpinger($gateway['name']);
 
-    return mwexecf("/usr/local/bin/dpinger {$params} %s", array($gateway['monitor']));
+    /* daemonises forground mode because background mode does not work? */
+    return mwexecf_bg("/usr/local/bin/dpinger -f {$params} %s", array($gateway['monitor']));
 }

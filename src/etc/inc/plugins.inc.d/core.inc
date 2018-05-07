@@ -94,28 +94,22 @@ function core_services()
 
     if (is_dpinger_enabled()) {
         $gateways_arr_all = return_gateways_array(true);
-        $pidfiles = glob('/var/run/dpinger_*.pid');
 
         foreach($gateways_arr_all as $name => $gateway) {
             if (isset($gateway['monitor_disable'])) {
                 continue;
             }
 
-            $pattern = "/^dpinger_({$name})~([^~]+)~([^~]+)\.pid$/";
-            foreach ($pidfiles as $pidfile) {
-                if (preg_match($pattern,basename($pidfile), $matches)) {
-                    $dpinger_pid = $pidfile;
-                }
-            }
-
             $pconfig = array();
-            $pconfig['name'] = "dpinger {$gateway['name']}";
-            $pconfig['description'] = gettext("Gateway Monitoring Daemon");
+            $pconfig['description'] = sprintf(gettext('Gateway Monitor (%s)'), $gateway['name']);
             $pconfig['php']['restart'] = array('setup_gateways_monitor');
             $pconfig['php']['start'] = array('setup_gateways_monitor');
-            $pconfig['pidfile'] = $dpinger_pid;
+            $pconfig['pidfile'] = "/var/run/dpinger_{$name}.pid";
+            $pconfig['php']['args'] = array('verbose', 'id');
+            $pconfig['name'] = 'dpinger';
+            $pconfig['verbose'] = false;
+            $pconfig['id'] = $name;
             $services[] = $pconfig;
-            unset($dpinger_pid);
         }
     }
 
