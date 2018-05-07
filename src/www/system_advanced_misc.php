@@ -99,9 +99,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($config['system']['powerd_normal_mode'])) {
         $pconfig['powerd_normal_mode'] = $config['system']['powerd_normal_mode'];
     }
-    $pconfig['prefer_dpinger'] = isset($config['system']['prefer_dpinger']);
-    $old_pinger = $pconfig['prefer_dpinger'];
-
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //
     $input_errors = array();
@@ -192,12 +189,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['captiveportalbackup']);
         }
 
-        if (!empty($pconfig['prefer_dpinger'])) {
-            $config['system']['prefer_dpinger'] = true;
-        } elseif (isset($config['system']['prefer_dpinger'])) {
-            unset($config['system']['prefer_dpinger']);
-        }
-
         write_config();
         $savemsg = get_std_save_message();
 
@@ -205,11 +196,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         system_cron_configure();
         system_powerd_configure();
         system_kernel_configure();
-
-        if ($old_pinger != $config['system']['prefer_dpinger']) {
-            mwexec('rm /var/db/rrd/*quality.rrd');
-            rrd_configure();
-        }
     }
 }
 
@@ -521,26 +507,6 @@ include("head.inc");
                   </div>
                 </td>
               </tr>
-            </table>
-          </div>
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
-                <td style="width:22%"><strong><?= gettext('Gateway Monitor') ?></strong></td>
-                <td style="witdh:78%"></td>
-              </tr>
-              <tr>
-              <td><a id="help_for_prefer_dpinger" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer Dpinger over Apinger"); ?></td>
-              <td>
-                <input name="prefer_dpinger" type="checkbox" id="prefer_dpinger" value="yes" <?= !empty($pconfig['prefer_dpinger']) ? "checked=\"checked\"" : "";?> />
-                <?=gettext("Prefer to use dpinger instead of apinger"); ?>
-                <div class="hidden" data-for="help_for_prefer_dpinger">
-                  <?=gettext("By default, the system will use apinger for gateway monitoring. ".
-                                      "Switching from one to the other will result in the loss of " .
-                                      "any existing quality RRD data."); ?>
-                </div>
-              </td>
-            </tr>
             </table>
           </div>
           <div class="content-box tab-content table-responsive">
