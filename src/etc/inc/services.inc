@@ -106,7 +106,7 @@ function services_radvd_configure($blacklist = array())
 
     config_read_array('dhcpdv6');
 
-    $radvdconf = "# Automatically Generated, do not edit\n";
+    $radvdconf = "# Automatically generated, do not edit\n";
 
     /* Process all links which need the router advertise daemon */
     $radvdifs = array();
