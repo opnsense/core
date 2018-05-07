@@ -1098,7 +1098,7 @@ function setup_dpinger_gateways_monitor($verbose = false, $gwname = null)
 
     foreach ($gateways_arr_all as $name => $gateway) {
         if (!empty($gwname) && $gwname != $name) {
-	    continue;
+            continue;
         }
 
         if (empty($gateway['monitor']) || !is_ipaddr($gateway['monitor'])) {
@@ -1213,7 +1213,7 @@ function setup_dpinger_gateways_monitor($verbose = false, $gwname = null)
         }
 
         if (!empty($gwname) && $gwname != $name) {
-	    continue;
+            continue;
         }
 
         if (start_dpinger($gateway) != 0) {
