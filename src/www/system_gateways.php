@@ -297,6 +297,7 @@ $( document ).ready(function() {
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Gateway"); ?></th>
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Monitor IP"); ?></th>
                     <th class="text-nowrap hidden-xs"><?=gettext("RTT"); ?></th>
+                    <th class="text-nowrap hidden-xs"><?=gettext("STDEV"); ?></th>
                     <th class="text-nowrap hidden-xs"><?=gettext("Loss"); ?></th>
                     <th><?=gettext("Status"); ?></th>
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Description"); ?></th>
@@ -348,6 +349,9 @@ $( document ).ready(function() {
                       </td>
                       <td class="text-nowrap hidden-xs">
                         <?=	!empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['delay'] : gettext("Pending") ;?>
+                      </td>
+                      <td class="text-nowrap hidden-xs">
+                         <?=!empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['stddev'] : gettext("Pending") ;?>
                       </td>
                       <td class="text-nowrap hidden-xs">
                         <?=	!empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['loss'] : gettext("Pending"); ?>
