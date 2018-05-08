@@ -561,25 +561,13 @@ function rrd_configure($verbose = false)
                 stddev=\$(echo "scale=7; \$stddev / 1000 / 1000" | /usr/bin/bc)
             fi
 
-            if [ ! -f {$rrddbpath}\$gw-quality.rrd ]; then
-                {$rrdtool} create {$rrddbpath}\$gw-quality.rrd --step 60 \\
-                DS:loss:GAUGE:120:0:100 \\
-                DS:delay:GAUGE:120:0:100000 \\
-                DS:stddev:GAUGE:120:0:100000 \\
-                RRA:AVERAGE:0.5:1:1200 \\
-                RRA:AVERAGE:0.5:5:720 \\
-                RRA:AVERAGE:0.5:60:1860 \\
-                RRA:AVERAGE:0.5:1440:2284
-
-                {$rrdtool} update {$rrddbpath}\$gw-quality.rrd -t loss:delay:stddev N:U:U:U
-            fi
             {$rrdtool} update {$rrddbpath}\$gw-quality.rrd -t loss:delay:stddev N:\$loss:\$delay:\$stddev
-
      done
+
 EOD;
        }
 
-        $rrdupdatesh .= "\nsleep 60\n";
+        $rrdupdatesh .= "sleep 60\n";
         $rrdupdatesh .= "done\n";
 
         /* write the rrd update script */
@@ -610,31 +598,35 @@ EOD;
     }
 }
 
-function rrd_create_gateway_quality($rrd_file)
+function rrd_create_gateway_quality($rrd_file, $prefer_dpinger = false)
 {
+    $unknown = file_exists('/var/run/booting');
+    $rrdtool = '/usr/local/bin/rrdtool';
+
     $rrdinterval = 60;
     $valid = $rrdinterval * 2;
-    $rrdtool = "/usr/local/bin/rrdtool";
 
     /* GATEWAY QUALITY, set up the rrd file */
     if (!file_exists("$rrd_file")) {
         $rrdcreate = "$rrdtool create $rrd_file --step $rrdinterval ";
         $rrdcreate .= "DS:loss:GAUGE:$valid:0:100 ";
         $rrdcreate .= "DS:delay:GAUGE:$valid:0:100000 ";
+        if ($prefer_dpinger) {
+            $rrdcreate .= "DS:stddev:GAUGE:$valid:0:100000 ";
+        }
         $rrdcreate .= "RRA:AVERAGE:0.5:1:1200 ";
         $rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
         $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
         $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
 
         rrd_create($rrdcreate);
-        unset($rrdcreate);
+        $unknown = true;
     }
 
     /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-    if (file_exists("/var/run/booting")) {
-        mwexec("$rrdtool update $rrd_file N:U:U");
+    if ($unknown) {
+        mwexec("$rrdtool update $rrd_file N:U:U" . ($prefer_dpinger ? ':U' : ''));
     }
-    unset($rrdtool, $rrdinterval, $valid, $rrd_file);
 }
 
 function rrd_stop()
