@@ -327,6 +327,7 @@ function services_radvd_configure($blacklist = array())
         if ($autotype == 'slaac') {
             $realtrackif = get_real_interface($trackif, 'inet6');
             $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
+            $radvdconf .= "\t\tDeprecatePrefix on;\n";
         }
         $radvdconf .= "\t\tAdvOnLink on;\n";
         $radvdconf .= "\t\tAdvAutonomous on;\n";
