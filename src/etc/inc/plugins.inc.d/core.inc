@@ -45,7 +45,7 @@ function core_services()
     if (isset($config['dhcrelay']['enable'])) {
         $pconfig = array();
         $pconfig['name'] = "dhcrelay";
-        $pconfig['description'] = gettext("DHCP Relay");
+        $pconfig['description'] = gettext("DHCPv4 Relay");
         $pconfig['php']['restart'] = array('services_dhcrelay_configure');
         $pconfig['php']['start'] = array('services_dhcrelay_configure');
         $pconfig['pidfile'] = '/var/run/dhcrelay.pid';
@@ -65,7 +65,7 @@ function core_services()
     if (is_dhcpv4_server_enabled()) {
         $pconfig = array();
         $pconfig['name'] = 'dhcpd';
-        $pconfig['description'] = gettext("DHCP Server");
+        $pconfig['description'] = gettext("DHCPv4 Server");
         $pconfig['php']['restart'] = array('services_dhcpdv4_configure');
         $pconfig['php']['start'] = array('services_dhcpdv4_configure');
         $pconfig['pidfile'] = '/var/dhcpd/var/run/dhcpd.pid';
