@@ -296,13 +296,11 @@ $( document ).ready(function() {
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Interface"); ?></th>
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Gateway"); ?></th>
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Monitor IP"); ?></th>
-                    <th class="text-nowrap hidden-xs"><?=gettext("RTT"); ?></th>
-<?php
-                    if (isset($config['system']['prefer_dpinger'])) :?>                      
-                        <th class="text-nowrap hidden-xs"><?=gettext("STDEV"); ?></th>
-<?php
-                    endif;?>      
-                    <th class="text-nowrap hidden-xs"><?=gettext("Loss"); ?></th>
+                    <th class="text-nowrap hidden-xs"><?= gettext('RTT') ?></th>
+<?php if (isset($config['system']['prefer_dpinger'])) :?>
+                    <th class="text-nowrap hidden-xs"><?= gettext('RTTd') ?></th>
+<?php endif ?>
+                    <th class="text-nowrap hidden-xs"><?= gettext('Loss') ?></th>
                     <th><?=gettext("Status"); ?></th>
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Description"); ?></th>
                     <th class="text-nowrap"></th>
@@ -352,17 +350,15 @@ $( document ).ready(function() {
                         <?=$gateway['monitor'];?>
                       </td>
                       <td class="text-nowrap hidden-xs">
-                        <?=	!empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['delay'] : gettext("Pending") ;?>
+                        <?= !empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['delay'] : gettext("Pending") ?>
                       </td>
-<?php
-                    if (isset($config['system']['prefer_dpinger'])) :?>                              
+<?php if (isset($config['system']['prefer_dpinger'])): ?>
                       <td class="text-nowrap hidden-xs">
-                         <?=!empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['stddev'] : gettext("Pending") ;?>
+                        <?= !empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['stddev'] : gettext("Pending") ?>
                       </td>
-<?php
-                    endif;?>                      
+<?php endif ?>
                       <td class="text-nowrap hidden-xs">
-                        <?=	!empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['loss'] : gettext("Pending"); ?>
+                        <?= !empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['loss'] : gettext("Pending") ?>
                       </td>
                       <td>
   <?php
@@ -429,6 +425,9 @@ $( document ).ready(function() {
                       <td class="hidden-xs hidden-sm hidden-md"></td>
                       <td class="text-nowrap hidden-xs"></td>
                       <td class="text-nowrap hidden-xs"></td>
+<?php if (isset($config['system']['prefer_dpinger'])) :?>
+                      <td class="text-nowrap hidden-xs"></td>
+<?php endif ?>
                       <td></td>
                       <td class="hidden-xs hidden-sm hidden-md"></td>
                       <td class="text-nowrap">

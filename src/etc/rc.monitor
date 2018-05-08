@@ -45,5 +45,5 @@ ALARM_RTTSD="${5}"
 ALARM_LOSS="${6}"
 
 if [ ${#} -gt 1 ]; then
-    echo ">>> Gateway alarm: ${GATEWAY} (Addr:${ALARM_ADDR} Alarm:${ALARM_FLAG} RTT:${ALARM_RTT}ms STDEV:${ALARM_RTTSD}ms Loss:${ALARM_LOSS}%)" | /usr/bin/logger -p daemon.info -i -t rc.monitor
+    echo ">>> Gateway alarm: ${GATEWAY} (Addr:${ALARM_ADDR} Alarm:${ALARM_FLAG} RTT:${ALARM_RTT}ms RTTd:${ALARM_RTTSD}ms Loss:${ALARM_LOSS}%)" | /usr/bin/logger -p daemon.info -i -t rc.monitor
 fi
