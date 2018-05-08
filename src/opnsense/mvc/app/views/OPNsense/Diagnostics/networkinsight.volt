@@ -303,7 +303,8 @@ POSSIBILITY OF SUCH DAMAGE.
                         $("#interface_select_detail").val($("#interface_select").val());
                         $('#interface_select_detail').selectpicker('refresh');
                         $("#service_port_detail").val(data[e.index].dst_port);
-                        $("#address_detail").val("");
+                        $("#src_address_detail").val("");
+                        $("#dst_address_detail").val("");
                         $("#details_tab").click();
                         grid_details();
                     }
@@ -364,7 +365,8 @@ POSSIBILITY OF SUCH DAMAGE.
                             $("#interface_select_detail").val($("#interface_select").val());
                             $('#interface_select_detail').selectpicker('refresh');
                             $("#service_port_detail").val("");
-                            $("#address_detail").val(chart_data_in[e.index].src_addr);
+                            $("#dst_address_detail").val("");
+                            $("#src_address_detail").val(chart_data_in[e.index].src_addr);
                             $("#details_tab").click();
                             grid_details();
                         }
@@ -459,9 +461,13 @@ POSSIBILITY OF SUCH DAMAGE.
             filters['filter_field'].push('service_port');
             filters['filter_value'].push($("#service_port_detail").val());
         }
-        if ($("#address_detail").val() != "") {
+        if ($("#src_address_detail").val() != "") {
             filters['filter_field'].push('src_addr');
-            filters['filter_value'].push($("#address_detail").val());
+            filters['filter_value'].push($("#src_address_detail").val());
+        }
+        if ($("#dst_address_detail").val() != "") {
+            filters['filter_field'].push('dst_addr');
+            filters['filter_value'].push($("#dst_address_detail").val());
         }
 
         var time_url = $("#date_detail_from").val() + '/' +  $("#date_detail_to").val();
@@ -579,12 +585,7 @@ POSSIBILITY OF SUCH DAMAGE.
           }
       });
       // detail page, search on <enter>
-      $("#service_port_detail").keypress(function (e) {
-          if (e.which == 13) {
-              grid_details();
-          }
-      });
-      $("#address_detail").keypress(function (e) {
+      $("#service_port_detail, #src_address_detail, #dst_address_detail").keypress(function (e) {
           if (e.which == 13) {
               grid_details();
           }
@@ -763,6 +764,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <th>{{ lang._('Date to') }}</th>
             <th>{{ lang._('Interface') }}</th>
             <th>{{ lang._('(dst) Port') }}</th>
+            <th>{{ lang._('(dst) Address') }}</th>
             <th>{{ lang._('(src) Address') }}</th>
           </tr>
         </thead>
@@ -777,8 +779,9 @@ POSSIBILITY OF SUCH DAMAGE.
             <td>
               <select class="selectpicker" id="interface_select_detail" data-width="150px"></select>
             </td>
-            <td><input type="text" id="service_port_detail"></td>
-            <td><input type="text" id="address_detail"></td>
+            <td><input type="text" id="service_port_detail" style="width:80px;"></td>
+            <td><input type="text" id="dst_address_detail"></td>
+            <td><input type="text" id="src_address_detail"></td>
             <td><span id="refresh_details" class="btn btn-default"><i class="fa fa-refresh"></i></span></td>
           </tr>
         </tbody>
