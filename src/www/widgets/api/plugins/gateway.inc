@@ -39,6 +39,7 @@ function gateway_api()
             $gatewayItem['status'] = strtolower($gateways_status[$gname]['status']);
             $gatewayItem['loss'] = $gateways_status[$gname]['loss'];
             $gatewayItem['delay'] = $gateways_status[$gname]['delay'];
+            $gatewayItem['stddev'] = $gateways_status[$gname]['stddev'];
             switch ($gatewayItem['status']) {
                 case "none":
                     $gatewayItem['status_translated'] = gettext("Online");
@@ -48,6 +49,9 @@ function gateway_api()
                     break;
                 case "delay":
                     $gatewayItem['status_translated'] = gettext("Latency");
+                    break;
+                case "stdev":
+                    $gatewayItem['status_translated'] = gettext("StDev");
                     break;
                 case "loss":
                     $gatewayItem['status_translated'] = gettext("Packetloss");
@@ -61,6 +65,7 @@ function gateway_api()
             $gatewayItem['status'] = "~";
             $gatewayItem['status_translated'] =  gettext("Unknown");
             $gatewayItem['loss'] = "~";
+            $gatewayItem['stddev'] = "~";
             $gatewayItem['delay'] = "unknown";
         }
         $result[] = $gatewayItem;
