@@ -40,6 +40,11 @@
               tr_content.push('<tr id="'+tr_id+'">');
               tr_content.push('<td><small><strong>'+gateway['name']+'</strong><br/>'+gateway['address']+'</small></td>');
               tr_content.push('<td class="text-nowrap">'+gateway['delay']+'</td>');
+<?php
+            if (isset($config['system']['prefer_dpinger'])) :?>                  
+                tr_content.push('<td class="text-nowrap">'+gateway['stddev']+'</td>');    
+<?php
+            endif;?>                
               tr_content.push('<td class="text-nowrap">'+gateway['loss']+'</td>');
               tr_content.push('<td><span>'+gateway['status_translated']+'</span></td>');
               tr_content.push('</tr>');
@@ -47,8 +52,17 @@
           } else {
               // update existing gateway
               $("#"+tr_id+" > td:eq(1)").html(gateway['delay']);
-              $("#"+tr_id+" > td:eq(2)").html(gateway['loss']);
-              $("#"+tr_id+" > td:eq(3)").html('<span>'+gateway['status_translated']+'</span>');
+<?php
+            if (isset($config['system']['prefer_dpinger'])) :?>     
+                $("#"+tr_id+" > td:eq(2)").html(gateway['stddev']);
+                $("#"+tr_id+" > td:eq(3)").html(gateway['loss']);
+                $("#"+tr_id+" > td:eq(4)").html('<span>'+gateway['status_translated']+'</span>');
+<?php       else:?>
+            $("#"+tr_id+" > td:eq(2)").html(gateway['loss']);
+            $("#"+tr_id+" > td:eq(3)").html('<span>'+gateway['status_translated']+'</span>');         
+<?php
+            endif;?>                 
+             
           }
           // set color on status text
           switch (gateway['status']) {
@@ -64,10 +78,20 @@
               status_color = 'success';
               break;
           }
-          $("#"+tr_id+" > td:eq(3) > span").removeClass("label-danger label-warning label-success label");
+<?php
+          if (isset($config['system']['prefer_dpinger'])) :?>             
+          $("#"+tr_id+" > td:eq(4) > span").removeClass("label-danger label-warning label-success label");
+          if (status_color != '') {
+            $("#"+tr_id+" > td:eq(4) > span").addClass("label label-" + status_color);
+          }
+<?php       else:?>
+           $("#"+tr_id+" > td:eq(3) > span").removeClass("label-danger label-warning label-success label");
           if (status_color != '') {
             $("#"+tr_id+" > td:eq(3) > span").addClass("label label-" + status_color);
           }
+<?php
+            endif;?>                 
+                       
       });
   }
 </script>
@@ -78,6 +102,11 @@
         <tr>
             <th><?=gettext('Name')?></th>
             <th><?=gettext('RTT')?></th>
+<?php
+            if (isset($config['system']['prefer_dpinger'])) :?>                         
+            <th><?=gettext('STDEV')?></th>
+<?php
+            endif;?>            
             <th><?=gettext('Loss')?></th>
             <th><?=gettext('Status')?></th>
         </tr>
