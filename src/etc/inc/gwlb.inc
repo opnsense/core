@@ -33,15 +33,15 @@
 function return_apinger_defaults()
 {
     return array(
-      "latencylow" => "200",
-      "latencyhigh" => "500",
-      "losslow" => "10",
-      "losshigh" => "20",
-      "interval" => "1",
-      "down" => "10",
-      "avg_delay_samples" => "10",
-      "avg_loss_samples" => "50",
-      "avg_loss_delay_samples" => "20"
+        'avg_delay_samples' => '10',
+        'avg_loss_delay_samples' => '20',
+        'avg_loss_samples' => '50',
+        'down' => '10',
+        'interval' => '1',
+        'latencyhigh' => '500',
+        'latencylow' => '200',
+        'losshigh' => '20',
+        'losslow' => '10',
     );
 }
 
