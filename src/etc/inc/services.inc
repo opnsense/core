@@ -1591,7 +1591,7 @@ function get_dyndns_ip($int, $ipver = 4)
      * to timeout.
      */
     if (!empty($gateways_status[$config['interfaces'][$int]['gateway']]['status']) &&
-	stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')) {
+        stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')) {
         log_error("Aborted IPv{$ipver} detection: gateway down for {$int}");
         return 'down';
     }
