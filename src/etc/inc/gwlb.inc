@@ -410,6 +410,7 @@ EOD;
                 continue;
             }
 
+            stop_dpinger($gateway['name']);
             start_dpinger($gateway);
         }
     } else {
@@ -1235,71 +1236,76 @@ function start_dpinger($gateway)
 {
     $dpinger_defaults = return_dpinger_defaults();
 
-    if ($gateway['ipprotocol'] == "inet6") {
+    if ($gateway['ipprotocol'] == 'inet6') {
         $gwifip = find_interface_ipv6($gateway['interface']);
     } else {
         $gwifip = find_interface_ip($gateway['interface']);
     }
 
-    $prefix = "/var/run/dpinger_{$gateway['name']}";
+    /* log warnings via syslog */
+    $params  = '-S ';
 
-    $gateway_name = $gateway['name'];
-    $alarm_cmd = "/usr/local/etc/rc.monitor";
+    /* disable unused reporting thread */
+    $params .= '-r 0 ';
 
-    $params  = "-S ";            /* Log warnings via syslog */
-    $params .= "-r 0 ";            /* Disable unused reporting thread */
-    $params .= "-i {$gateway['name']} ";    /* Identifier */
-    $params .= "-B  {$gwifip} ";    /* Bind src address */
-    $params .= "-p {$prefix}.pid ";        /* PID filename */
-    $params .= "-u {$prefix}.sock ";        /* Status Socket */
-    if (!$gateway['action_disable']) {
-        $params .= "-C \"{$alarm_cmd}\" ";    /* Command to run on alarm */
+    /* identifier */
+    $params .= exec_safe('-i %s ', $gateway['name']);
+
+    /* bind src address */
+    $params .= exec_safe('-B %s ', $gwifip);
+
+    /* PID filename */
+    $params .= exec_safe('-p %s ', "/var/run/dpinger_{$gateway['name']}.pid");
+
+    /* status socket */
+    $params .= exec_safe('-u %s ', "/var/run/dpinger_{$gateway['name']}.sock");
+
+    if (empty($gateway['action_disable'])) {
+        /* command to run on alarm */
+        $params .= '-C /usr/local/etc/rc.monitor ';
     }
 
-    $params .= "-d " .
-        (isset($gateway['data_payload']) && is_numeric($gateway['data_payload'])
-        ? $gateway['data_payload']
-        : $dpinger_defaults['data_payload']
-        ) . " ";
+    $params .= exec_safe(
+        '-d %s ',
+        isset($gateway['data_payload']) && is_numeric($gateway['data_payload']) ?
+            $gateway['data_payload'] : $dpinger_defaults['data_payload']
+    );
 
-    $params .= "-s " .
-        (isset($gateway['interval']) && is_numeric($gateway['interval'])
-        ? $gateway['interval']
-        : $dpinger_defaults['interval']
-        ) . "s ";
+    $params .= exec_safe(
+        '-s %ss ',
+        isset($gateway['interval']) && is_numeric($gateway['interval']) ?
+            $gateway['interval'] : $dpinger_defaults['interval']
+    );
 
-    $params .= "-l " .
-        (isset($gateway['loss_interval']) && is_numeric($gateway['loss_interval'])
-        ?  $gateway['loss_interval']
-        : $dpinger_defaults['loss_interval']
-        ) . "s ";
+    $params .= exec_safe(
+        '-l %ss ',
+        isset($gateway['loss_interval']) && is_numeric($gateway['loss_interval']) ?
+            $gateway['loss_interval'] : $dpinger_defaults['loss_interval']
+    );
 
-    $params .= "-t " .
-        (isset($gateway['time_period']) && is_numeric($gateway['time_period'])
-        ?  $gateway['time_period']
-        : $dpinger_defaults['time_period']
-        ) . "s ";
+    $params .= exec_safe(
+        '-t %ss ',
+        isset($gateway['time_period']) && is_numeric($gateway['time_period']) ?
+            $gateway['time_period'] : $dpinger_defaults['time_period']
+    );
 
-    $params .= "-A " .
-        (isset($gateway['alert_interval']) && is_numeric($gateway['alert_interval'])
-        ?  $gateway['alert_interval']
-        : $dpinger_defaults['alert_interval']
-        ) . "s ";
+    $params .= exec_safe(
+        '-A %ss ',
+        isset($gateway['alert_interval']) && is_numeric($gateway['alert_interval']) ?
+            $gateway['alert_interval'] : $dpinger_defaults['alert_interval']
+    );
 
-    $params .= "-D " .
-        (isset($gateway['latencyhigh']) && is_numeric($gateway['latencyhigh'])
-        ?  $gateway['latencyhigh']
-        : $dpinger_defaults['latencyhigh']
-        ) . " ";
+    $params .= exec_safe(
+        '-D %s ',
+        isset($gateway['latencyhigh']) && is_numeric($gateway['latencyhigh']) ?
+            $gateway['latencyhigh'] : $dpinger_defaults['latencyhigh']
+    );
 
-    $params .= "-L " .
-        (isset($gateway['losshigh']) && is_numeric($gateway['losshigh'])
-        ?  $gateway['losshigh']
-        : $dpinger_defaults['losshigh']
-        ) . " ";
-
-    /* XXX we pass the key elsewhere, not the name (maybe same but dangerous) */
-    stop_dpinger($gateway['name']);
+    $params .= exec_safe(
+        '-L %s ',
+        isset($gateway['losshigh']) && is_numeric($gateway['losshigh']) ?
+            $gateway['losshigh'] : $dpinger_defaults['losshigh']
+    );
 
     /* daemonises forground mode because background mode does not work? */
     mwexecf_bg("/usr/local/bin/dpinger -f {$params} %s", array($gateway['monitor']));
