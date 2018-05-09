@@ -301,7 +301,7 @@ function services_radvd_configure($blacklist = array())
 
         $ifcfgipv6 = get_interface_ipv6($if);
 
-        if (is_ipaddrv6($ifcfgipv6)) {
+        if ($autotype != 'slaac' && is_ipaddrv6($ifcfgipv6)) {
             $ifcfgsnv6 = get_interface_subnetv6($if);
             $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
         }
