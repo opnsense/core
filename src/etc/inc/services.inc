@@ -294,14 +294,16 @@ function services_radvd_configure($blacklist = array())
             $autotype = $config['interfaces'][$trackif]['ipaddrv6'];
         }
 
-        $subnetv6 = $autotype != 'slaac' ? '::' : '2000::';
         $mtu = legacy_interface_stats($realif)['mtu'];
         $dnslist = array();
+        $subnetv6 = '::';
         $ifcfgsnv6 = '64';
 
         $ifcfgipv6 = get_interface_ipv6($if);
 
-        if ($autotype != 'slaac' && is_ipaddrv6($ifcfgipv6)) {
+        if ($autotype == 'slaac') {
+            $subnetv6 = '2000::';
+        } elseif (is_ipaddrv6($ifcfgipv6)) {
             $ifcfgsnv6 = get_interface_subnetv6($if);
             $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
         }
