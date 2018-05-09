@@ -407,7 +407,7 @@ EOD;
          */
         rrd_create_gateway_quality(
             "/var/db/rrd/{$gateway['name']}-quality.rrd",
-            !isset($config['system']['prefer_dpinger'])
+            isset($config['system']['prefer_dpinger'])
         );
 
         if (!isset($config['system']['prefer_dpinger'])) {
