@@ -60,7 +60,7 @@ function return_dpinger_defaults()
     );
 }
 
-function setup_gateways_monitor($verbose = false, $name = null)
+function setup_gateways_monitor($verbose = false, $gwname = null)
 {
     global $config;
 
@@ -71,7 +71,7 @@ function setup_gateways_monitor($verbose = false, $name = null)
 
     killbypid('/var/run/apinger.pid', 'TERM', true);
     @unlink('/var/run/apinger.status');
-    stop_dpinger($name);
+    stop_dpinger($gwname);
 
     @mkdir('/var/db/rrd', 0775);
     @chown('/var/db/rrd', 'nobody');
