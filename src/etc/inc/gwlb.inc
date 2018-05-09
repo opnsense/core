@@ -45,6 +45,21 @@ function return_apinger_defaults()
     );
 }
 
+function return_dpinger_defaults()
+{
+    return array(
+        'alert_interval' => '1',
+        'data_payload' => '0',
+        'interval' => '1',
+        'latencyhigh' => '500',
+        'latencylow' => '200',
+        'loss_interval' => '2',
+        'losshigh' => '20',
+        'losslow' => '10',
+        'time_period' => '60',
+    );
+}
+
 function setup_gateways_monitor($verbose = false, $name = null)
 {
     global $config;
@@ -406,35 +421,33 @@ function return_gateways_status($byname = false)
 
     $status = array();
 
-    if (!isset($config['system']['prefer_dpinger'])) {
-        if (isvalidpid('/var/run/apinger.pid')) {
-            /* always get the latest status from apinger */
-            killbypid('/var/run/apinger.pid', 'USR1');
+    if (isvalidpid('/var/run/apinger.pid')) {
+        /* always get the latest status from apinger */
+        killbypid('/var/run/apinger.pid', 'USR1');
 
-            /* we may read the wrong file here as it's async: */
-            if (file_exists('/var/run/apinger.status')) {
-                $apingerstatus = file('/var/run/apinger.status');
+        /* we may read the wrong file here as it's async: */
+        if (file_exists('/var/run/apinger.status')) {
+            $apingerstatus = file('/var/run/apinger.status');
 
-                foreach ($apingerstatus as $line) {
-                    $info = explode('|', $line);
-                    if ($byname == false) {
-                        $target = $info[0];
-                    } else {
-                        $target = $info[2];
-                    }
-
-                    $status[$target] = array();
-                    $status[$target]['monitorip'] = $info[0];
-                    $status[$target]['srcip'] = $info[1];
-                    $status[$target]['name'] = $info[2];
-                    $status[$target]['delay'] = sprintf('%0.1f ms', empty($info[6]) ? 0.0 : round($info[6], 1));
-                    $status[$target]['stddev'] = gettext('N/A');
-                    $status[$target]['loss'] = sprintf('%0.1f %%', empty($info[7]) ? 0.0 : round($info[7], 1));
-                    $status[$target]['status'] = trim($info[8]);
+            foreach ($apingerstatus as $line) {
+                $info = explode('|', $line);
+                if ($byname == false) {
+                    $target = $info[0];
+                } else {
+                    $target = $info[2];
                 }
+
+                $status[$target] = array();
+                $status[$target]['monitorip'] = $info[0];
+                $status[$target]['srcip'] = $info[1];
+                $status[$target]['name'] = $info[2];
+                $status[$target]['delay'] = sprintf('%0.1f ms', empty($info[6]) ? 0.0 : round($info[6], 1));
+                $status[$target]['stddev'] = gettext('N/A');
+                $status[$target]['loss'] = sprintf('%0.1f %%', empty($info[7]) ? 0.0 : round($info[7], 1));
+                $status[$target]['status'] = trim($info[8]);
             }
         }
-    } else {
+    } elseif (!isset($config['system']['prefer_dpinger'])) {
         $dpinger_gws = running_dpinger_processes();
         $status = array();
 
@@ -1218,21 +1231,6 @@ function setup_dpinger_gateways_monitor($verbose = false, $gwname = null)
 
         start_dpinger($gateway);
     }
-}
-
-function return_dpinger_defaults()
-{
-    return array(
-        'alert_interval' => '1',
-        'data_payload' => '0',
-        'interval' => '1',
-        'latencyhigh' => '500',
-        'latencylow' => '200',
-        'loss_interval' => '2',
-        'losshigh' => '20',
-        'losslow' => '10',
-        'time_period' => '60',
-    );
 }
 
 function running_dpinger_processes()
