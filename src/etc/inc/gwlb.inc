@@ -447,7 +447,7 @@ function return_gateways_status($byname = false)
                 $status[$target]['status'] = trim($info[8]);
             }
         }
-    } elseif (!isset($config['system']['prefer_dpinger'])) {
+    } elseif (isset($config['system']['prefer_dpinger'])) {
         $dpinger_gws = running_dpinger_processes();
         $status = array();
 
