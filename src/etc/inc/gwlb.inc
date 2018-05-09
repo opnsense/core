@@ -1121,13 +1121,16 @@ function running_dpinger_processes()
 {
     $result = array();
 
-    /* XXX this is untrue, pid file may be stale? */
     $pidfiles = glob('/var/run/dpinger_*.pid');
     if ($pidfiles === false) {
         return $result;
     }
 
     foreach ($pidfiles as $pidfile) {
+        if (!isvalidpid($pidfile)) {
+            /* spare caller from trying to read a stale socket later on */
+            continue;
+        }
         if (preg_match('/^dpinger_(.+)\.pid$/', basename($pidfile), $matches)) {
             $socket_file = preg_replace('/\.pid$/', '.sock', $pidfile);
             $result[$matches[1]] = array('socket' => $socket_file, 'pidfile' => $pidfile);
