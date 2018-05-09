@@ -146,7 +146,7 @@ target default {
 EOD;
 
     $monitor_ips = array();
-    foreach($gateways_arr_all as $name => $gateway) {
+    foreach ($gateways_arr_all as $name => $gateway) {
         if (empty($gateway['monitor']) || !is_ipaddr($gateway['monitor'])) {
             if (is_ipaddr($gateway['gateway'])) {
                 $gateway['monitor'] = $gateway['gateway'];
@@ -424,7 +424,7 @@ function return_gateways_status($byname = false)
     /* tack on any gateways that have monitoring disabled
      * or are down, which could cause gateway groups to fail */
     $gateways_arr = return_gateways_array();
-    foreach($gateways_arr as $gwitem) {
+    foreach ($gateways_arr as $gwitem) {
         if (!isset($gwitem['monitor_disable'])) {
             continue;
         }
@@ -928,7 +928,7 @@ function get_interface_gateway($interface, &$dynamic = false)
     if (isset($config['interfaces'][$interface])) {
         $gwcfg = $config['interfaces'][$interface];
         if (!empty($gwcfg['gateway']) && isset($config['gateways']['gateway_item'])) {
-            foreach($config['gateways']['gateway_item'] as $gateway) {
+            foreach ($config['gateways']['gateway_item'] as $gateway) {
                 if (($gateway['name'] == $gwcfg['gateway']) && (is_ipaddrv4($gateway['gateway']))) {
                     $gw = $gateway['gateway'];
                     break;
@@ -960,7 +960,7 @@ function get_interface_gateway_v6($interface, &$dynamic = false)
     $gw = NULL;
     $gwcfg = $config['interfaces'][$interface];
     if (!empty($gwcfg['gatewayv6']) && isset($config['gateways']['gateway_item'])) {
-        foreach($config['gateways']['gateway_item'] as $gateway) {
+        foreach ($config['gateways']['gateway_item'] as $gateway) {
             if (($gateway['name'] == $gwcfg['gatewayv6']) && (is_ipaddrv6($gateway['gateway']))) {
                 $gw = $gateway['gateway'];
                 break;
