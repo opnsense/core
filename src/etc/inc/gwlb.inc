@@ -71,13 +71,23 @@ function setup_gateways_monitor($verbose = false, $gwname = null)
 
     killbypid('/var/run/apinger.pid', 'TERM', true);
     @unlink('/var/run/apinger.status');
-    stop_dpinger($gwname);
+
+    $running_processes = running_dpinger_processes();
+    foreach ($running_processes as $running_gwname => $process) {
+        if (!empty($gwname) && $running_gwname != $gwname) {
+            continue;
+        }
+        killbypid($process['pidfile'], 'TERM', true);
+        @unlink($process['pidfile']);
+        @unlink($process['socket']);
+    }
 
     @mkdir('/var/db/rrd', 0775);
     @chown('/var/db/rrd', 'nobody');
 
     $gateways_arr_all = return_gateways_array(true);
     $monitor_ips = array();
+    $listen_ips = array();
 
     $apinger_default = return_apinger_defaults();
     $apingerconfig = <<<EOD
@@ -271,6 +281,8 @@ EOD;
         }
 
         $monitor_ips[] = $gateway['monitor'];
+        $listen_ips[$name] = $gwifip;
+
         $apingercfg = "target \"{$gateway['monitor']}\" {\n";
         $apingercfg .= "  description \"{$name}\"\n";
         $apingercfg .= "  srcip \"{$gwifip}\"\n";
@@ -400,18 +412,90 @@ EOD;
     }
 
     if (isset($config['system']['prefer_dpinger'])) {
+        $dpinger_defaults = return_dpinger_defaults();
+
         /* XXX normally this should iterate over monitor_ips */
         foreach ($gateways_arr_all as $name => $gateway) {
-            if (isset($gateway['monitor_disable'])) {
-                continue;
-            }
-
             if (!empty($gwname) && $gwname != $name) {
                 continue;
             }
 
-            stop_dpinger($gateway['name']);
-            start_dpinger($gateway);
+            if (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
+                continue;
+            }
+
+            if (empty($listen_ips[$name])) {
+                log_error("Failed to aquire listen IP for gateway $name");
+                continue;
+            }
+
+            /* log warnings via syslog */
+            $params  = '-S ';
+
+            /* disable unused reporting thread */
+            $params .= '-r 0 ';
+
+            /* identifier */
+            $params .= exec_safe('-i %s ', $name);
+
+            /* bind src address */
+            $params .= exec_safe('-B %s ', $listen_ips[$name]);
+
+            /* PID filename */
+            $params .= exec_safe('-p %s ', "/var/run/dpinger_{$name}.pid");
+
+            /* status socket */
+            $params .= exec_safe('-u %s ', "/var/run/dpinger_{$name}.sock");
+
+            if (empty($gateway['action_disable'])) {
+                /* command to run on alarm */
+                $params .= '-C /usr/local/etc/rc.monitor ';
+            }
+
+            $params .= exec_safe(
+                '-d %s ',
+                isset($gateway['data_payload']) && is_numeric($gateway['data_payload']) ?
+                    $gateway['data_payload'] : $dpinger_defaults['data_payload']
+            );
+
+            $params .= exec_safe(
+                '-s %ss ',
+                isset($gateway['interval']) && is_numeric($gateway['interval']) ?
+                    $gateway['interval'] : $dpinger_defaults['interval']
+            );
+
+            $params .= exec_safe(
+                '-l %ss ',
+                isset($gateway['loss_interval']) && is_numeric($gateway['loss_interval']) ?
+                    $gateway['loss_interval'] : $dpinger_defaults['loss_interval']
+            );
+
+            $params .= exec_safe(
+                '-t %ss ',
+                isset($gateway['time_period']) && is_numeric($gateway['time_period']) ?
+                    $gateway['time_period'] : $dpinger_defaults['time_period']
+            );
+
+            $params .= exec_safe(
+                '-A %ss ',
+                isset($gateway['alert_interval']) && is_numeric($gateway['alert_interval']) ?
+                    $gateway['alert_interval'] : $dpinger_defaults['alert_interval']
+            );
+
+            $params .= exec_safe(
+                '-D %s ',
+                isset($gateway['latencyhigh']) && is_numeric($gateway['latencyhigh']) ?
+                    $gateway['latencyhigh'] : $dpinger_defaults['latencyhigh']
+            );
+
+            $params .= exec_safe(
+                '-L %s ',
+                isset($gateway['losshigh']) && is_numeric($gateway['losshigh']) ?
+                    $gateway['losshigh'] : $dpinger_defaults['losshigh']
+            );
+
+            /* daemonises forground mode because background mode does not work? */
+            mwexecf_bg("/usr/local/bin/dpinger -f {$params} %s", array($gateway['monitor']));
         }
     } else {
        $gateways_arr = return_gateways_array();
@@ -1215,98 +1299,4 @@ function get_dpinger_status($gwname, $detailed = false)
     }
 
     return $r;
-}
-
-function stop_dpinger($gwname = null)
-{
-    $running_processes = running_dpinger_processes();
-
-    foreach ($running_processes as $running_gwname => $process) {
-        if (!empty($gwname) && $running_gwname != $gwname) {
-            continue;
-        }
-
-        killbypid($process['pidfile'], 'TERM', true);
-        @unlink($process['pidfile']);
-        @unlink($process['socket']);
-    }
-}
-
-function start_dpinger($gateway)
-{
-    $dpinger_defaults = return_dpinger_defaults();
-
-    if ($gateway['ipprotocol'] == 'inet6') {
-        $gwifip = find_interface_ipv6($gateway['interface']);
-    } else {
-        $gwifip = find_interface_ip($gateway['interface']);
-    }
-
-    /* log warnings via syslog */
-    $params  = '-S ';
-
-    /* disable unused reporting thread */
-    $params .= '-r 0 ';
-
-    /* identifier */
-    $params .= exec_safe('-i %s ', $gateway['name']);
-
-    /* bind src address */
-    $params .= exec_safe('-B %s ', $gwifip);
-
-    /* PID filename */
-    $params .= exec_safe('-p %s ', "/var/run/dpinger_{$gateway['name']}.pid");
-
-    /* status socket */
-    $params .= exec_safe('-u %s ', "/var/run/dpinger_{$gateway['name']}.sock");
-
-    if (empty($gateway['action_disable'])) {
-        /* command to run on alarm */
-        $params .= '-C /usr/local/etc/rc.monitor ';
-    }
-
-    $params .= exec_safe(
-        '-d %s ',
-        isset($gateway['data_payload']) && is_numeric($gateway['data_payload']) ?
-            $gateway['data_payload'] : $dpinger_defaults['data_payload']
-    );
-
-    $params .= exec_safe(
-        '-s %ss ',
-        isset($gateway['interval']) && is_numeric($gateway['interval']) ?
-            $gateway['interval'] : $dpinger_defaults['interval']
-    );
-
-    $params .= exec_safe(
-        '-l %ss ',
-        isset($gateway['loss_interval']) && is_numeric($gateway['loss_interval']) ?
-            $gateway['loss_interval'] : $dpinger_defaults['loss_interval']
-    );
-
-    $params .= exec_safe(
-        '-t %ss ',
-        isset($gateway['time_period']) && is_numeric($gateway['time_period']) ?
-            $gateway['time_period'] : $dpinger_defaults['time_period']
-    );
-
-    $params .= exec_safe(
-        '-A %ss ',
-        isset($gateway['alert_interval']) && is_numeric($gateway['alert_interval']) ?
-            $gateway['alert_interval'] : $dpinger_defaults['alert_interval']
-    );
-
-    $params .= exec_safe(
-        '-D %s ',
-        isset($gateway['latencyhigh']) && is_numeric($gateway['latencyhigh']) ?
-            $gateway['latencyhigh'] : $dpinger_defaults['latencyhigh']
-    );
-
-    $params .= exec_safe(
-        '-L %s ',
-        isset($gateway['losshigh']) && is_numeric($gateway['losshigh']) ?
-            $gateway['losshigh'] : $dpinger_defaults['losshigh']
-    );
-
-    /* daemonises forground mode because background mode does not work? */
-    mwexecf_bg("/usr/local/bin/dpinger -f {$params} %s", array($gateway['monitor']));
 }
