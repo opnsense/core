@@ -50,6 +50,7 @@ function return_dpinger_defaults()
     return array(
         'alert_interval' => '1',
         'data_payload' => '0',
+        'down' => '10', /* unused, only for validation */
         'interval' => '1',
         'latencyhigh' => '500',
         'latencylow' => '200',
