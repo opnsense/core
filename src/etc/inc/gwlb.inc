@@ -76,17 +76,8 @@ function setup_gateways_monitor($verbose = false, $name = null)
     @mkdir('/var/db/rrd', 0775);
     @chown('/var/db/rrd', 'nobody');
 
-    if (isset($config['system']['prefer_dpinger'])) {
-        setup_dpinger_gateways_monitor($verbose, $name);
-
-        if ($verbose) {
-            echo "done.\n";
-        }
-
-        return;
-    }
-
     $gateways_arr_all = return_gateways_array(true);
+    $monitor_ips = array();
 
     $apinger_default = return_apinger_defaults();
     $apingerconfig = <<<EOD
@@ -172,8 +163,11 @@ target default {
 
 EOD;
 
-    $monitor_ips = array();
     foreach ($gateways_arr_all as $name => $gateway) {
+        if (isset($config['system']['prefer_dpinger']) && !empty($gwname) && $gwname != $name) {
+            continue;
+        }
+
         if (empty($gateway['monitor']) || !is_ipaddr($gateway['monitor'])) {
             if (is_ipaddr($gateway['gateway'])) {
                 $gateway['monitor'] = $gateway['gateway'];
@@ -395,18 +389,37 @@ EOD;
         $apingerconfig .= $alarmscfg;
         $apingerconfig .= $apingercfg;
 
-        # Create gateway quality RRD with settings more suitable for OPNsense graph set,
-        # since apinger uses default step (300; 5 minutes) and other settings that don't
-        # match the OPNsense gateway quality graph set.
-        rrd_create_gateway_quality("/var/db/rrd/{$gateway['name']}-quality.rrd", false);
+        /*
+         * Create custom RRD graph with suitable settings that
+         * may differ from the daemon's standards.
+         */
+        rrd_create_gateway_quality(
+            "/var/db/rrd/{$gateway['name']}-quality.rrd",
+            !isset($config['system']['prefer_dpinger'])
+        );
     }
 
-    $gateways_arr = return_gateways_array();
-    if (!is_array($gateways_arr)) {
-        log_error("No gateways to monitor. Apinger will not be run.");
+    if (isset($config['system']['prefer_dpinger'])) {
+        /* XXX normally this should iterate over monitor_ips */
+        foreach ($gateways_arr_all as $name => $gateway) {
+            if (isset($gateway['monitor_disable'])) {
+                continue;
+            }
+
+            if (!empty($gwname) && $gwname != $name) {
+                continue;
+            }
+
+            start_dpinger($gateway);
+        }
     } else {
-        file_put_contents('/var/etc/apinger.conf', $apingerconfig);
-        mwexec_bg('/usr/local/sbin/apinger -c /var/etc/apinger.conf');
+       $gateways_arr = return_gateways_array();
+        if (!is_array($gateways_arr)) {
+            log_error("No gateways to monitor. Apinger will not be run.");
+        } else {
+            file_put_contents('/var/etc/apinger.conf', $apingerconfig);
+            mwexec_bg('/usr/local/sbin/apinger -c /var/etc/apinger.conf');
+        }
     }
 
     if ($verbose) {
@@ -1102,135 +1115,6 @@ function validate_address_family($ipaddr, $gwname)
     }
 
     return false;
-}
-
-function setup_dpinger_gateways_monitor($verbose = false, $gwname = null)
-{
-    $monitor_ips = array();
-    $gateways_arr_all = return_gateways_array(true);
-
-    foreach ($gateways_arr_all as $name => $gateway) {
-        if (!empty($gwname) && $gwname != $name) {
-            continue;
-        }
-
-        if (empty($gateway['monitor']) || !is_ipaddr($gateway['monitor'])) {
-            if (is_ipaddr($gateway['gateway'])) {
-                $gateway['monitor'] = $gateway['gateway'];
-            } else {
-                /* No chance to get an ip to monitor skip target. */
-                continue;
-            }
-        }
-
-        /* if the monitor address is already used before, skip */
-        if (in_array($gateway['monitor'], $monitor_ips)) {
-            continue;
-        }
-
-        /*
-         * Interface IP is needed since apinger will bind a socket to it.
-         * However the config GUI should already have checked this and when
-         * PPoE is used the IP address is set to "dynamic". So using is_ipaddrv4
-         * or is_ipaddrv6 to identify packet type would be wrong, especially as
-         * further checks (that can cope with the "dynamic" case) are present inside
-         * the if block. So using $gateway['ipprotocol'] is the better option.
-         */
-        if ($gateway['ipprotocol'] == "inet") { // This is an IPv4 gateway...
-            $gwifip = find_interface_ip($gateway['interface']);
-            if (!is_ipaddrv4($gwifip)) {
-                continue; //Skip this target
-            }
-
-            /* flush the monitor unconditionally */
-            if (is_ipaddrv4($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-                log_error("Removing static route for monitor {$gateway['monitor']} via {$gateway['gateway']}");
-                system_host_route($gateway['monitor'], $gateway['gateway'], true, false);
-            }
-
-            /* Do not monitor if such was requested */
-            if (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
-                continue;
-            }
-
-            /*
-             * If the gateway is the same as the monitor we do not add a
-             * route as this will break the routing table.
-             * Add static routes for each gateway with their monitor IP
-             * not strictly necessary but is a added level of protection.
-             */
-            if (is_ipaddrv4($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-                log_error("Adding static route for monitor {$gateway['monitor']} via {$gateway['gateway']}");
-                system_host_route($gateway['monitor'], $gateway['gateway'], false, true);
-            }
-        } elseif ($gateway['ipprotocol'] == "inet6") { // This is an IPv6 gateway...
-            if (is_linklocal($gateway['monitor'])) {
-                /* link local monitor needs a link local address for the "src" part */
-                $gwifip = find_interface_ipv6_ll($gateway['interface']);
-            } else {
-                /* monitor is a routable address, so use a routable address for the "src" part */
-                $gwifip = find_interface_ipv6($gateway['interface']);
-            }
-
-            if (!is_ipaddrv6($gwifip)) {
-                /* skip this target */
-                continue;
-            }
-
-            /*
-             * If gateway is a local link and 'monitor' is global routable
-             * then the ICMP6 response would not find its way back home.
-             */
-            if (is_linklocal($gateway['monitor']) && strpos($gateway['monitor'], '%') === false) {
-                $gateway['monitor'] .= "%{$gateway['interface']}";
-            }
-            if (is_linklocal($gateway['gateway']) && strpos($gateway['gateway'], '%') === false) {
-                $gateway['gateway'] .= "%{$gateway['interface']}";
-            }
-            if (is_linklocal($gwifip) && strpos($gwifip, '%') === false) {
-                $gwifip .= "%{$gateway['interface']}";
-            }
-
-            /* flush the monitor unconditionally */
-            if (is_ipaddrv6($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-                log_error("Removing static route for monitor {$gateway['monitor']} via {$gateway['gateway']}");
-                system_host_route($gateway['monitor'], $gateway['gateway'], true, false);
-            }
-
-            /* Do not monitor if such was requested */
-            if (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
-                continue;
-            }
-
-            /*
-             * If the gateway is the same as the monitor we do not add a
-             * route as this will break the routing table.
-             * Add static routes for each gateway with their monitor IP
-             * not strictly necessary but is a added level of protection.
-             */
-            if (is_ipaddrv6($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-                log_error("Adding static route for monitor {$gateway['monitor']} via {$gateway['gateway']}");
-                system_host_route($gateway['monitor'], $gateway['gateway'], false, true);
-            }
-        } else {
-            continue;
-        }
-
-        $monitor_ips[] = $gateway['monitor'];
-        rrd_create_gateway_quality("/var/db/rrd/{$gateway['name']}-quality.rrd", true);
-    }
-
-    foreach ($gateways_arr_all as $name => $gateway) {
-        if (isset($gateway['monitor_disable'])) {
-            continue;
-        }
-
-        if (!empty($gwname) && $gwname != $name) {
-            continue;
-        }
-
-        start_dpinger($gateway);
-    }
 }
 
 function running_dpinger_processes()
