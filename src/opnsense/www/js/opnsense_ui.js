@@ -275,7 +275,7 @@ function addMultiSelectClearUI() {
  */
 function initFormHelpUI() {
     // handle help messages show/hide
-    $("a[class='showhelp']").click(function (event) {
+    $("a.showhelp").click(function (event) {
         $("*[data-for='" + $(this).attr('id') + "']").toggleClass("hidden show");
         event.preventDefault();
     });
