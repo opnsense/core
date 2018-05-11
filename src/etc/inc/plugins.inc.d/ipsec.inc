@@ -893,6 +893,11 @@ charon {
     ikesa_table_segments = 4
     init_limit_half_open = 1000
     ignore_acquire_ts = yes
+    syslog {
+        daemon {
+            ike_name = yes
+        }
+    }
 {$cnf_add_to_charon_section}
 
 EOD;
