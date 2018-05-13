@@ -1,0 +1,31 @@
+<model>
+    <mount>//OPNSense/Firewall/Alias</mount>
+    <version>0.0.1</version>
+    <description>
+        OPNsense central management
+    </description>
+    <items>
+        <aliases>
+            <alias type="ArrayField">
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+                <name type=".\AliasNameField">
+                    <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>An alias with this name already exists.</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
+                </name>
+                <description type="TextField">
+                    <Required>Y</Required>
+                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+                </description>
+            </alias>
+        </aliases>
+    </items>
+</model>
