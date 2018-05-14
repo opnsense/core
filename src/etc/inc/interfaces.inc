@@ -1182,17 +1182,9 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                 return;
             }
             break;
-        case "dhcp":
-            kill_dhclient_process($realif);
-            @unlink("/var/etc/dhclient_{$interface}.conf");
-            if (does_interface_exist("$realif")) {
-                mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " delete", true);
-                if ($destroy) {
-                    legacy_interface_flags($realif, 'down');
-                }
-                mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
-            }
-            break;
+        case 'dhcp':
+            killbypid("/var/run/dhclient.{$realif}.pid", 'TERM', true);
+            /* FALLTHROUGH */
         default:
             if (does_interface_exist("$realif")) {
                 mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " delete", true);
@@ -2442,26 +2434,6 @@ function kill_wpasupplicant($interface)
     return "/bin/pkill -f \"wpa_supplicant .*{$interface}\\.conf\"\n";
 }
 
-function find_dhclient_process($interface)
-{
-    if ($interface) {
-        $pid = `/bin/pgrep -axf "dhclient: {$interface}"`;
-    } else {
-        $pid = 0;
-    }
-
-    return intval($pid);
-}
-
-function kill_dhclient_process($interface)
-{
-    if (empty($interface) || !does_interface_exist($interface)) {
-        return;
-    }
-
-    killbypid(find_dhclient_process($interface), 'TERM', true);
-}
-
 function interface_virtual_create($interface)
 {
     global $config;
@@ -3407,11 +3379,18 @@ function interface_dhcp_configure($interface = 'wan')
 
     $wancfg = $config['interfaces'][$interface];
     if (empty($wancfg)) {
-        log_error("Interface {$interface} does not have a DHCP configuration.");
+        log_error("Interface '{$interface}' does not have a DHCP configuration.");
         return;
     }
 
-    /* generate dhclient_wan.conf */
+    $wanif = get_real_interface($interface);
+    if (empty($wanif)) {
+        log_error("Invalid interface '{$interface}' in interface_dhcp_configure()");
+        return;
+    }
+
+    killbypid("/var/run/dhclient.{$wanif}.pid", 'TERM', true);
+
     $fd = fopen("/var/etc/dhclient_{$interface}.conf", "w");
     if (!$fd) {
         log_error("Error: cannot open dhclient_{$interface}.conf in interface_dhcp_configure() for writing.");
@@ -3423,12 +3402,6 @@ function interface_dhcp_configure($interface = 'wan')
         $dhclientconf_hostname .= "\tsend host-name \"{$wancfg['dhcphostname']}\";\n";
     } else {
         $dhclientconf_hostname = "";
-    }
-
-    $wanif = get_real_interface($interface);
-    if (empty($wanif)) {
-        log_error("Invalid interface '{$interface}' in interface_dhcp_configure()");
-        return;
     }
 
     $dhclientconf = "";
@@ -3485,14 +3458,13 @@ EOD;
     fwrite($fd, $dhclientconf);
     fclose($fd);
 
-    /* bring wan interface up before starting dhclient */
     interfaces_bring_up($wanif);
 
-    /* Make sure dhclient is not running */
-    kill_dhclient_process($wanif);
-
-    /* fire up dhclient */
-    mwexecf('/sbin/dhclient -c %s %s', array("/var/etc/dhclient_{$interface}.conf", $wanif));
+    mwexecf('/sbin/dhclient -c %s -p %s %s', array(
+        "/var/etc/dhclient_{$interface}.conf",
+        "/var/run/dhclient.{$wanif}.pid",
+        $wanif
+    ));
 }
 
 function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
@@ -4557,15 +4529,8 @@ function get_interfaces_info()
         $ifconfiginfo = "";
         $link_type = $config['interfaces'][$ifdescr]['ipaddr'];
         switch ($link_type) {
-            /* DHCP? -> see if dhclient is up */
-            case "dhcp":
-                /* see if dhclient is up */
-                if (find_dhclient_process($ifinfo['if']) != 0) {
-                    $ifinfo['dhcplink'] = "up";
-                } else {
-                    $ifinfo['dhcplink'] = "down";
-                }
-
+            case 'dhcp':
+                $ifinfo['dhcplink'] = isvalidpid("/var/run/dhclient.{$ifinfo['if']}.pid") ? 'up' : 'down';
                 break;
             /* PPPoE/PPTP/L2TP interface? -> get status from virtual interface */
             case "pppoe":
