@@ -1259,11 +1259,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // save interface details
             $a_interfaces[$if] = $new_config;
 
-            if (!empty($old_config['ipaddr']) && $old_config['ipaddr'] == 'dhcp' && $new_config['ipaddr'] != 'dhcp') {
-                // change from dhcp to something else, kill dhclient
-                kill_dhclient_process($old_config['if']);
-            }
-
             // save to config
             write_config();
 
