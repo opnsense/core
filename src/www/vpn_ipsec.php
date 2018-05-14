@@ -187,7 +187,7 @@ $service_hook = 'ipsec';
 
 include("head.inc");
 $dhgroups = array(
-  0  => 'off',
+  0  => gettext('off'),
   1  => '1 (768&nbsp;bits)',
   2  => '2 (1024&nbsp;bits)',
   5  => '5 (1536&nbsp;bits)',

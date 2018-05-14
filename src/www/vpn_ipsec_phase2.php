@@ -674,7 +674,7 @@ endif; ?>
                     <select name="pfsgroup">
 <?php
                     $p2_dhgroups = array(
-                      0  => 'off',
+                      0  => gettext('off'),
                       1  => '1 (768 bit)',
                       2  => '2 (1024 bit)',
                       5  => '5 (1536 bit)',
