@@ -31,6 +31,7 @@ namespace OPNsense\Firewall\FieldTypes;
 use OPNsense\Base\FieldTypes\BaseField;
 use Phalcon\Validation\Validator\Regex;
 use Phalcon\Validation\Validator\ExclusionIn;
+use Phalcon\Validation\Validator\Callback;
 
 /**
  * Class AliasField
@@ -59,18 +60,32 @@ class AliasNameField extends BaseField
             'all', 'pass', 'block', 'out', 'queue', 'max', 'min', 'pptp', 'pppoe', 'L2TP', 'OpenVPN', 'IPsec'
         );
         if ($this->internalValue != null) {
+            // add validations to deny reserved keywords, service/protocol names and invalid characters
             $validators[] = new ExclusionIn(array(
                 'message' => sprintf(gettext('The name cannot be the internally reserved keyword "%s".'),
                     (string)$this),
                 'domain' => $reservedwords)
             );
-
-//            $validators[] = new Regex(array(
-//                'message' => sprintf(gettext(
-//                    'The name must be less than 32 characters long and may only consist of the following characters: %s'
-//                ), 'a-z, A-Z, 0-9, _'),
-//                'pattern'=>'/(^_*$|^\d*$|[^a-z0-9_]){1,32}/')
-//            );
+            $validators[] = new Regex(array(
+                'message' => sprintf(gettext(
+                    'The name must be less than 32 characters long and may only consist of the following characters: %s'
+                ), 'a-z, A-Z, 0-9, _'),
+                'pattern'=>'/[_0-9a-zA-z]{1,32}/')
+            );
+            $validators[] = new Callback(
+                [
+                    "message" => gettext('Reserved protocol or service names may not be used'),
+                    "callback" => function($data) {
+                        foreach ($data as $key => $value){
+                            if (getservbyname($value, 'tcp') ||
+                                    getservbyname($value, 'udp') || getprotobyname($value)) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                ]
+            );
 
         }
         return $validators;
