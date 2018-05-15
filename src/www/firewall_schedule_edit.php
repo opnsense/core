@@ -320,7 +320,7 @@ function daytoggle(id) {
 
     if (daycell != null){
       if (rgb2hex(daycell.style.backgroundColor) == "#FF0000"){  // red
-        daycell.style.backgroundColor = "#FFFFFF";  // white
+        daycell.style.backgroundColor = "inherit";
         str = id + ",";
         daysSelected = daysSelected.replace(str, "");
       }
