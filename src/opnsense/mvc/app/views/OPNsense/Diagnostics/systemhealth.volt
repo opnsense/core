@@ -72,7 +72,6 @@
     });
 
     // create our chart
-    d3.selectAll('.nvtooltip').remove(); // force removal of tooltips
     nv.addGraph(function () {
         chart = nv.models.lineWithFocusChart()
                 .margin( {left:70})
