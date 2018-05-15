@@ -537,11 +537,7 @@ function return_gateways_status($byname = false)
 
         $gateways_arr = return_gateways_array();
         foreach ($dpinger_gws as $gwname => $gwdata) {
-            // If action is disabled for this gateway, then we want a detailed status.
-            // That reports "highdelay" or "highloss" rather than just "down".
-            // Because reporting the gateway down would be misleading (gateway action is disabled)
-            $detailed = $gateways_arr[$gwname]['action_disable'];
-            $dpinger_status = get_dpinger_status($gwname, $detailed);
+            $dpinger_status = get_dpinger_status($gwname, $gateways_arr[$gwname]['action_disable']);
             if ($dpinger_status === false) {
                 continue;
             }
@@ -1275,9 +1271,9 @@ function get_dpinger_status($gwname, $detailed = false)
     }
 
     if ($r['latency_avg'] > $settings['latencyhigh']) {
-        $r['status'] = $detailed ? 'highdelay' : 'down';
+        $r['status'] = $detailed ? 'delay' : 'down';
     } elseif ($r['loss'] > $settings['losshigh']) {
-        $r['status'] = $detailed ? 'highloss' : 'down';
+        $r['status'] = $detailed ? 'loss' : 'down';
     } elseif ($r['latency_avg'] > $settings['latencylow']) {
         $r['status'] = 'delay';
     } elseif ($r['loss'] > $settings['losslow']) {

@@ -44,14 +44,12 @@ function gateway_api()
                 case "none":
                     $gatewayItem['status_translated'] = gettext("Online");
                     break;
+                case "force_down":
                 case "down":
                     $gatewayItem['status_translated'] = gettext("Offline");
                     break;
                 case "delay":
                     $gatewayItem['status_translated'] = gettext("Latency");
-                    break;
-                case "stdev": /* XXX this does not exist? */
-                    $gatewayItem['status_translated'] = gettext("Deviation");
                     break;
                 case "loss":
                     $gatewayItem['status_translated'] = gettext("Packetloss");
