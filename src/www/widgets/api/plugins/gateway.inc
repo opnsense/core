@@ -50,7 +50,7 @@ function gateway_api()
                 case "delay":
                     $gatewayItem['status_translated'] = gettext("Latency");
                     break;
-                case "stdev": /* XXX this does not exist? */
+                case "stddev": 
                     $gatewayItem['status_translated'] = gettext("Deviation");
                     break;
                 case "loss":
