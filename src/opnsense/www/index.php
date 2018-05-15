@@ -23,6 +23,16 @@ function view_fetch_themed_filename($url, $theme)
     return $url; // not found, return source
 }
 
+/**
+ * check if file exists, wrapper around file_exists() so services.php can define other implementation for local testing
+ * @param string $filename to check
+ * @return boolean
+ */
+function view_file_exists($filename)
+{
+    return file_exists($filename);
+}
+
 try {
     /**
      * Read the configuration
