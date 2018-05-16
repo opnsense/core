@@ -5904,3 +5904,13 @@ div[data-for*="help_for"] {
 #log-settings select#filterlogentriesinterfaces {
   min-width: 100%;
   max-width: 100%; }
+
+/* fields in firewall schedule */
+[data-state="lightcoral"] {
+  background-color: lightcoral; }
+
+[data-state="white"] {
+  background-color: white; }
+
+[data-state="red"] {
+  background-color: red; }
