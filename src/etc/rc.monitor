@@ -37,3 +37,5 @@ fi
     "openvpn reload ${GATEWAY}" \
     "dyndns reload ${GATEWAY}" \
     "rfc2136 reload ${GATEWAY}"
+
+exit 0
