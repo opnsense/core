@@ -470,7 +470,7 @@ $( document ).ready(function() {
 
 
 ?>
-                  <tr class="rule" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
+                  <tr class="rule  <?=isset($filterent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
                     <td>
                       <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
                     </td>
