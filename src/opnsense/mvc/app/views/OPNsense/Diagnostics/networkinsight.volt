@@ -295,9 +295,11 @@ POSSIBILITY OF SUCH DAMAGE.
                     .transition().duration(350)
                     .call(chart);
                 pageCharts["chart_top_ports"] = chart;
+                pageCharts["chart_top_ports"].data = data;
 
                 // copy selection to detail page and query results
                 chart.pie.dispatch.on('elementClick', function(e){
+                    var data = pageCharts["chart_top_ports"].data;
                     if (data[e.index].dst_port != "") {
                         $("#interface_select_detail").val($("#interface_select").val());
                         $('#interface_select_detail').selectpicker('refresh');
@@ -357,15 +359,17 @@ POSSIBILITY OF SUCH DAMAGE.
                         .transition().duration(350)
                         .call(chart);
                     pageCharts["chart_top_sources"] = chart;
+                    pageCharts["chart_top_sources"].data = chart_data_in;
 
                     // copy selection to detail tab and query results
                     chart.pie.dispatch.on('elementClick', function(e){
+                        var data = pageCharts["chart_top_sources"].data;
                         if (data[e.index].src_addr != "") {
                             $("#interface_select_detail").val($("#interface_select").val());
                             $('#interface_select_detail').selectpicker('refresh');
                             $("#service_port_detail").val("");
                             $("#dst_address_detail").val("");
-                            $("#src_address_detail").val(chart_data_in[e.index].src_addr);
+                            $("#src_address_detail").val(data[e.index].src_addr);
                             $("#details_tab").click();
                             grid_details();
                         }
