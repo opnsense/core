@@ -270,7 +270,7 @@ POSSIBILITY OF SUCH DAMAGE.
    <li><a data-toggle="tab" href="#services">{{ lang._('Service Settings') }}</a></li>
    <li><a data-toggle="tab" href="#tests">{{ lang._('Service Tests Settings') }}</a></li>
 </ul>
-<div class="tab-content content-box tab-content">
+<div class="tab-content content-box">
    <div id="general" class="tab-pane fade in active">
       {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_GeneralSettings','apply_btn_id':'btn_ApplyGeneralSettings'])}}
    </div>

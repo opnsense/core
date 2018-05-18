@@ -657,7 +657,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <li><a data-toggle="tab" id="details_tab" href="#details">{{ lang._('Details') }}</a></li>
     <li><a data-toggle="tab" id="export_tab" href="#export">{{ lang._('Export') }}</a></li>
 </ul>
-<div class="tab-content content-box tab-content" style="padding: 10px;">
+<div class="tab-content content-box" style="padding: 10px;">
     <div id="info" class="tab-pane fade in">
       <br/>
       <div class="alert alert-warning" role="alert">
