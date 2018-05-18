@@ -182,7 +182,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <li class="active"><a data-toggle="tab" href="#zones">{{ lang._('Zones') }}</a></li>
     <li><a data-toggle="tab" href="#template">{{ lang._('Templates') }}</a></li>
 </ul>
-<div class="tab-content content-box tab-content">
+<div class="tab-content content-box">
     <div id="zones" class="tab-pane fade in active">
         <!-- tab page "zones" -->
         <table id="grid-zones" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogZone">
