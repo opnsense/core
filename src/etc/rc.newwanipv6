@@ -143,8 +143,8 @@ if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
     @unlink($cacheip_file);
 
     system_routing_configure(false, $interface);
-    setup_gateways_monitor();
-    filter_configure_sync();
+    setup_gateways_monitor(false);
+    filter_configure_sync(false);
 
     if (is_ipaddr($ip)) {
         @file_put_contents($cacheip_file, $ip);
@@ -152,5 +152,5 @@ if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
 
     plugins_configure('vpn', false, array($interface));
     plugins_configure('newwanip', false, array($interface));
-    rrd_configure();
+    rrd_configure(false);
 }
