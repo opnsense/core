@@ -144,7 +144,7 @@ class Gdrive extends Base implements IBackupProvider
         if (count($input_errors) == 0) {
             $config = Config::getInstance()->object();
             if (!isset($config->system->remotebackup)) {
-                $config->system->remotebackup = array();
+                $config->system->addChild('remotebackup');
             }
             foreach ($this->getConfigurationFields() as $field) {
                 $fieldname = $field['name'];
