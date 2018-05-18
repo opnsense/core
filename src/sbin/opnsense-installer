@@ -32,7 +32,8 @@ fi
 sysctl kern.geom.debugflags=16 >/dev/null
 sysctl net.link.ether.inet.log_arp_wrong_iface=0 >/dev/null
 
-ifconfig lo0 127.0.0.1/24
+ifconfig lo0 127.0.0.1
+ifconfig lo0 ::1
 ifconfig lo0 up
 
 if [ -z "${TERM}" ]; then
