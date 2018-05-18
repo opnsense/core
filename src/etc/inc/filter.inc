@@ -168,7 +168,7 @@ function filter_delete_states_for_down_gateways()
     }
 }
 
-function filter_configure_sync($verbose = false)
+function filter_configure_sync($verbose = false, $flush_states = false)
 {
     global $config;
 
@@ -308,7 +308,6 @@ function filter_configure_sync($verbose = false)
         }
     }
 
-
     filter_pflog_start();
 
     if ($verbose) {
@@ -441,7 +440,6 @@ function filter_configure_sync($verbose = false)
         mwexecf('/sbin/pfctl -k label -k %s', $label);
     }
 
-
     /*
      * check for a error while loading the rules file.  if an error has occurred
      * then output the contents of the error to the caller
@@ -494,7 +492,7 @@ function filter_configure_sync($verbose = false)
      * not there, the kill is still fine).
      */
     if (!is_bogonsv6_used()) {
-        exec('/sbin/pfctl -t bogonsv6 -T kill 2>/dev/null');
+        mwexec('/sbin/pfctl -t bogonsv6 -T kill');
     }
 
     if ($verbose) {
@@ -511,6 +509,15 @@ function filter_configure_sync($verbose = false)
         flush();
     }
 
+    if ($flush_states) {
+        mwexec('/sbin/pfctl -Fs');
+    }
+
+    if ($verbose) {
+        echo '.';
+        flush();
+    }
+
     configd_run('template reload OPNsense/Filter');
     configd_run('filter refresh_aliases', true);
 
@@ -519,7 +526,6 @@ function filter_configure_sync($verbose = false)
     }
 
     unlock($filterlck);
-    return 0;
 }
 
 function filter_generate_scrubing(&$FilterIflist)
