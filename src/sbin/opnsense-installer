@@ -32,6 +32,17 @@ fi
 sysctl kern.geom.debugflags=16 >/dev/null
 sysctl net.link.ether.inet.log_arp_wrong_iface=0 >/dev/null
 
+ifconfig lo0 127.0.0.1/24
+ifconfig lo0 up
+
+if [ -z "${TERM}" ]; then
+	if [ -e /dev/ttyv0 ]; then
+		export TERM=xterm
+	else
+		export TERM=vt100
+	fi
+fi
+
 rm -f /tmp/install_complete
 
 daemon -f lua50c51 /usr/local/share/dfuibe_lua/main.lua \
