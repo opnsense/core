@@ -54,7 +54,6 @@ bootstrap_and_exit()
 	exit 0
 }
 
-
 trap bootstrap_and_exit 2
 
 DO_BOOT=
@@ -143,7 +142,13 @@ while [ -z "${PART}" ]; do
 
 	if [ -z "${DEV}" ]; then
 		bootstrap_and_exit
-        fi
+	fi
+
+	if [ "${DEV}" = "!" ]; then
+		# secret escape! (not so secret now, is it?)
+		/bin/sh
+		exit 0
+	fi
 
 	if ! probe_for_part ${DEV}; then
 		echo "No known partition layout was found for '${DEV}'."
