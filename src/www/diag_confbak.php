@@ -204,7 +204,7 @@ $( document ).ready(function() {
             <div class="content-box tab-content table-responsive __mb">
               <table class="table table-striped">
                 <tr>
-                  <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Backup Count"); ?></th>
+                  <th colspan="2"><?= gettext('Backup Count') ?></th>
                 </tr>
                 <tr>
                   <td><input name="backupcount" type="text" class="formfld unknown" size="5" value="<?=htmlspecialchars($pconfig['backupcount']);?>"/></td>
@@ -228,7 +228,7 @@ $( document ).ready(function() {
           <div class="content-box tab-content table-responsive __mb" style="overflow: scroll;">
             <table class="table table-striped">
               <tr>
-                <th colspan="2" style="vertical-align:top" class="listtopic">
+                <th colspan="2">
                   <?= sprintf(
                         gettext('Configuration diff from %s to %s'),
                         date(gettext('n/j/y H:i:s'), $oldtime),
@@ -263,11 +263,11 @@ $( document ).ready(function() {
           <?php if (count($confvers)): ?>
           <form method="get">
           <section>
-            <div class="content-box">
-              <header class="content-box-head container-fluid">
-                <h3><?=gettext('History');?></h3>
-              </header>
-              <table class="table table-responsive">
+            <div class="content-box tab-content table-responsive">
+              <table class="table table-striped">
+                <tr>
+                  <th colspan="2"><?= gettext('History') ?></th>
+                </tr>
                 <tr>
                   <td>
                     <button type="submit" name="diff" class="btn btn-primary pull-left" value="Diff">
@@ -280,7 +280,7 @@ $( document ).ready(function() {
                 </tr>
               </table>
               <table class="table table-striped">
-                <thead>
+                <tbody>
                   <tr>
                     <th colspan="2"><?=gettext("Diff");?></th>
                     <th><?=gettext("Date");?></th>
@@ -288,8 +288,6 @@ $( document ).ready(function() {
                     <th><?=gettext("Configuration Change");?></th>
                     <th>&nbsp;</th>
                   </tr>
-                </thead>
-                <tbody>
                   <tr>
                     <td></td>
                     <td>

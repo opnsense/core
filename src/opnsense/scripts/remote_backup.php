@@ -1,8 +1,12 @@
 #!/usr/local/bin/php
 <?php
+require_once('script/load_phalcon.php');
 
-require_once("util.inc");
-require_once("config.inc");
+use OPNsense\Backup\BackupFactory;
 
-/* Backup to Google Drive (if configured) */
-backup_to_google_drive();
+$backupFact = new BackupFactory();
+foreach ($backupFact->listProviders() as $classname => $provider) {
+    if ($provider['handle']->isEnabled()) {
+        $provider['handle']->backup();
+    }
+}
