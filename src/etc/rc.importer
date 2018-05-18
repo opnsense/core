@@ -144,7 +144,7 @@ while [ -z "${PART}" ]; do
 		bootstrap_and_exit
 	elif [ "${DEV}" = "!" ]; then
 		# secret escape! (not so secret now, is it?)
-		/bin/sh
+		csh
 	elif ! probe_for_part ${DEV}; then
 		echo "No known partition layout was found for '${DEV}'."
 	fi
