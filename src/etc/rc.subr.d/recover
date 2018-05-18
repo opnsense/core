@@ -117,7 +117,7 @@ $known_shells = array(
     '/usr/local/bin/scponly',
     '/usr/local/bin/zsh',
     '/usr/local/etc/rc.initial',
-    '/usr/local/etc/rc.installer',
+    '/usr/local/sbin/opnsense-installer',
 );
 
 foreach ($known_shells as $shell) {

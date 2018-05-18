@@ -108,7 +108,6 @@
 /usr/local/etc/rc.initial.restore
 /usr/local/etc/rc.initial.setlanip
 /usr/local/etc/rc.initial.setports
-/usr/local/etc/rc.installer
 /usr/local/etc/rc.interfaces_wan_configure
 /usr/local/etc/rc.ipfw
 /usr/local/etc/rc.ipfw.flush_all

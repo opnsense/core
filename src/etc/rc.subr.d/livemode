@@ -52,7 +52,7 @@ if (is_install_media()) {
     }
 
     if ($root) {
-        $root['shell'] = '/usr/local/etc/rc.installer';
+        $root['shell'] = '/usr/local/sbin/opnsense-installer';
         $root['name'] = 'installer';
         local_user_set($root, true);
 
