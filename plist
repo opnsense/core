@@ -96,7 +96,6 @@
 /usr/local/etc/rc.firmware.subr
 /usr/local/etc/rc.freebsd
 /usr/local/etc/rc.halt
-/usr/local/etc/rc.importer
 /usr/local/etc/rc.initial
 /usr/local/etc/rc.initial.banner
 /usr/local/etc/rc.initial.defaults
