@@ -37,7 +37,7 @@ ifconfig lo0 ::1
 ifconfig lo0 up
 
 if [ -z "${TERM}" ]; then
-	if [ -e /dev/ttyv0 ]; then
+	if [ -n "$(tty | grep ttyv)" ]; then
 		export TERM=xterm
 	else
 		export TERM=vt100
