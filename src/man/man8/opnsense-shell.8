@@ -25,35 +25,31 @@
 .\" SUCH DAMAGE.
 .\"
 .Dd May 19, 2018
-.Dt OPNSENSE-INSTALLER 8
+.Dt OPNSENSE-SHELL 8
 .Os
 .Sh NAME
-.Nm opnsense-installer
-.Nd OPNsense installer utility
+.Nm opnsense-shell
+.Nd OPNsense console menu
 .Sh SYNOPSIS
 .Nm
 .Sh DESCRIPTION
 The
 .Nm
-utility will launch the graphical installation process.
-The installation is driven by a frontend connected to the backend
-process via local socket.
-.Pp
-The purpose of the installer is to install the system on a target
-disk using several options like UFS, ZFS, RAID, GPT, MBR, etc.
-It may also carry out tasks such as configuration import or password
-recovery.
+utility offers the administrator easy access to core functionality
+of the system.
+Said functionality only works for the root user, but when arguments
+are given the program will pass them to a real shell directly to allow
+compatibility with the
+.Xr rc 8
+system.
 .Sh SEE ALSO
-.Xr opnsense-importer 8
+.Xr opnsense-installer 8 ,
+.Xr rc 8
 .Sh HISTORY
 The
 .Nm
-utility first appeared in pfSense under the name
-.Nm lua_installer
-and operates the historical
-.Nm bsdinstaller ,
-which first appeared in
-.Dx .
-Both projects no longer use these programs.
+utility first appeared in M0n0wall under the name
+.Nm rc.initial
+and is therefore also being used by pfSense.
 .Sh AUTHORS
-.An Scott Ullrich Aq Mt sullrich@gmail.com
+.An Manuel Kasper Aq Mt mk@neon1.net
