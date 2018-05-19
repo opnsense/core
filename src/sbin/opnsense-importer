@@ -144,7 +144,7 @@ else
 		fi
 	fi
 
-	DEVS=$(camcontrol devlist)
+	DEVS=$(camcontrol devlist; gmirror status -s; graid status -s)
 fi
 
 while [ -z "${PART}" ]; do
