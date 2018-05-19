@@ -1,7 +1,7 @@
 echo "Updating /etc/shells"
 cp /etc/shells /etc/shells.bak
-(grep -v /usr/local/etc/rc.initial /etc/shells.bak; \
-    echo /usr/local/etc/rc.initial) > /etc/shells
+(grep -v /usr/local/sbin/opnsense-shell /etc/shells.bak; \
+    echo /usr/local/sbin/opnsense-shell) > /etc/shells
 rm -f /etc/shells.bak
 cp /etc/shells /etc/shells.bak
 (grep -v /usr/local/sbin/opnsense-installer /etc/shells.bak; \
@@ -9,7 +9,7 @@ cp /etc/shells /etc/shells.bak
 rm -f /etc/shells.bak
 
 echo "Registering root shell"
-pw usermod -n root -s /usr/local/etc/rc.initial
+pw usermod -n root -s /usr/local/sbin/opnsense-shell
 
 echo "Hooking into /etc/rc"
 cp /etc/rc /etc/rc.bak

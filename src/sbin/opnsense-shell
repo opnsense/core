@@ -63,25 +63,25 @@ case ${OPCODE} in
         exit
         ;;
 1)
-        /usr/local/etc/rc.initial.setports
+        /usr/local/opnsense/scripts/shell/setports.php
         ;;
 2)
-        /usr/local/etc/rc.initial.setlanip
+        /usr/local/opnsense/scripts/shell/setaddr.php
         ;;
 3)
-        /usr/local/etc/rc.initial.password
+        /usr/local/opnsense/scripts/shell/password.php
         ;;
 4)
-        /usr/local/etc/rc.initial.defaults
+        /usr/local/opnsense/scripts/shell/defaults.php
         ;;
 5)
-        /usr/local/etc/rc.initial.halt
+        /usr/local/opnsense/scripts/shell/halt.php
         ;;
 6)
-        /usr/local/etc/rc.initial.reboot
+        /usr/local/opnsense/scripts/shell/reboot.php
         ;;
 7)
-        /usr/local/etc/rc.initial.ping
+        /usr/local/opnsense/scripts/shell/ping.php
         ;;
 8)
         /bin/csh
@@ -96,15 +96,15 @@ case ${OPCODE} in
 	/usr/local/etc/rc.reload_all
 	;;
 12)
-	/usr/local/etc/rc.initial.firmware
+	/usr/local/opnsense/scripts/shell/firmware.sh
 	;;
 13)
-	/usr/local/etc/rc.initial.restore
+	/usr/local/opnsense/scripts/shell/restore.sh
 	;;
 *)
 	;;
 esac
 
-/usr/local/etc/rc.initial.banner
+/usr/local/opnsense/scripts/shell/banner.php
 
 done

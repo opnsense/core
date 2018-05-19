@@ -5,7 +5,7 @@ pw usermod -n root -s /bin/csh
 
 echo "Updating /etc/shells"
 cp /etc/shells /etc/shells.bak
-(grep -v /usr/local/etc/rc.initial /etc/shells.bak) > /etc/shells
+(grep -v /usr/local/sbin/opnsense-shell /etc/shells.bak) > /etc/shells
 rm -f /etc/shells.bak
 cp /etc/shells /etc/shells.bak
 (grep -v /usr/local/sbin/opnsense-installer /etc/shells.bak) > /etc/shells
