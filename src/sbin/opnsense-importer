@@ -33,8 +33,13 @@ if [ "$(id -u)" != "0" ]; then
 	exit 1
 fi
 
+DO_BOOT=
+DO_DISK=
+
 bootstrap_and_exit()
 {
+	RET=${1}
+
 	# ensure config directory structure
 	mkdir -p /conf/backup
 	mkdir -p /conf/sshd
@@ -52,25 +57,31 @@ bootstrap_and_exit()
 		rm -rf ${MNT}
 	fi
 
-	exit 0
+	# error code given or assumed ok (trap)
+        if [ -z "${RET}" ]; then
+		RET=0
+	fi
+
+	exit "${RET}"
 }
 
 trap bootstrap_and_exit 2
-
-DO_BOOT=
 
 while getopts b OPT; do
 	case ${OPT} in
 	b)
 		DO_BOOT="-b"
-		shift
 		;;
 	*)
-		echo "Unknown argument during import." >&2
-		bootstrap_and_exit
+		echo "Usage: man opnsense-importer" >&2
+		exit 1
 		;;
 	esac
 done
+
+shift $((${OPTIND} - 1))
+
+DO_DISK=${1}
 
 timeout_prompt()
 {
@@ -117,20 +128,22 @@ PART=
 
 if [ -n "${1}" ]; then
 	if ! probe_for_part ${1}; then
-		bootstrap_and_exit
+		echo "No previous configuration was found on this device."
+		bootstrap_and_exit 1
 	fi
 else
 	if [ -n "${DO_BOOT}" ]; then
 		touch ${INSTALL} 2> /dev/null
 		if [ -f ${INSTALL} -a -f /conf/config.xml ]; then
-			bootstrap_and_exit
+			bootstrap_and_exit 0
 		fi
 
 		if ! timeout_prompt \
 		    'Press any key to start the configuration importer:' ${WAIT}; then
-			bootstrap_and_exit
+			bootstrap_and_exit 0
 		fi
 	fi
+
 	DEVS=$(camcontrol devlist)
 fi
 
@@ -142,7 +155,7 @@ while [ -z "${PART}" ]; do
 	echo
 
 	if [ -z "${DEV}" ]; then
-		bootstrap_and_exit
+		bootstrap_and_exit 0
 	elif [ "${DEV}" = "!" ]; then
 		# secret escape! (not so secret now, is it?)
 		csh
@@ -162,8 +175,7 @@ echo "done."
 
 if ! mount ${PART} ${MNT} 2> /dev/null; then
 	echo "The device could not be mounted."
-	bootstrap_and_exit
-	# XXX redo
+	bootstrap_and_exit 1
 fi
 
 if [ -f "${MNT}/conf/config.xml" ]; then
@@ -186,12 +198,11 @@ if [ -f "${MNT}/conf/config.xml" ]; then
 	done
 else
 	echo "No previous configuration was found on this device."
-	bootstrap_and_exit
-	# XXX redo
+	bootstrap_and_exit 1
 fi
 
 if [ -z "${DO_BOOT}" ]; then
 	echo "Please reboot."
 fi
 
-bootstrap_and_exit
+bootstrap_and_exit 0
