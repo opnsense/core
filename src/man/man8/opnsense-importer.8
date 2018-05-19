@@ -40,6 +40,12 @@ utility can import a previous configuration from multiple types of
 disk formats.
 If successful, the old configuration will be replaced.
 .Pp
+The disk selection allows the user to escape to a shell by issuing
+.Sq \&!
+instead.
+This shell can be used to e.g. start an early install process using
+.Xr opnsense-installer 8 .
+.Pp
 The options are as follows:
 .Bl -tag -width ".Fl b" -offset indent
 .It Fl b
