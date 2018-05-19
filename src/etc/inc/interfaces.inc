@@ -29,6 +29,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+const INTERFACE_BOOTING = 1;
+const INTERFACE_RELOAD_SINGLE = 2;
+const INTERFACE_RELOAD_ALL = 3;
+
 require_once("interfaces.lib.inc");
 require_once("gwlb.inc");
 
@@ -905,7 +909,7 @@ function interfaces_configure($verbose = false)
     $track6_list = array();
 
     /* This is needed to speedup interfaces on bootup. */
-    $reload = !file_exists('/var/run/booting');
+    $reload = file_exists('/var/run/booting') ? INTERFACE_BOOTING : INTERFACE_RELOAD_ALL;
 
     foreach ($iflist as $if => $ifname) {
         $realif = $config['interfaces'][$if]['if'];
@@ -950,7 +954,7 @@ function interfaces_configure($verbose = false)
 
     interfaces_group_setup();
 
-    if ($reload) {
+    if ($reload == INTERFACE_RELOAD_ALL) {
         system_routing_configure($verbose);
         ipsec_configure_do($verbose);
         plugins_configure('dns', $verbose);
@@ -2330,7 +2334,7 @@ function interface_virtual_create($interface)
 }
 
 
-function interface_configure($interface = 'wan', $reloadall = false, $linkupevent = false, $verbose = false)
+function interface_configure($interface = 'wan', $reload = INTERFACE_BOOTING, $linkupevent = false, $verbose = false)
 {
     global $config;
 
@@ -2544,11 +2548,17 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
             system_hosts_generate();
         }
 
-        if ($reloadall == true) {
+        if (in_array($reload, [INTERFACE_RELOAD_SINGLE, INTERFACE_RELOAD_ALL])) {
             system_routing_configure(false, $interface);
+        }
+
+        if ($reload == INTERFACE_RELOAD_SINGLE) {
             ipsec_configure_do();
             plugins_configure('dns');
             services_dhcpd_configure();
+        }
+
+        if (in_array($reload, [INTERFACE_RELOAD_SINGLE, INTERFACE_RELOAD_ALL])) {
             configd_run("dyndns reload {$interface}");
             configd_run("rfc2136 reload {$interface}");
         }
