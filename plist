@@ -1001,6 +1001,7 @@
 /usr/local/sbin/ppp-linkup
 /usr/local/sbin/ppp-log-uptime.sh
 /usr/local/sbin/ppp-uptime.sh
+/usr/local/share/man/man8/opnsense-importer.8.gz
 /usr/local/wizard/openvpn.xml
 /usr/local/wizard/system.xml
 /usr/local/www/carp_status.php

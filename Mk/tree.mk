@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2015-2018 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -78,6 +78,11 @@ install-${TARGET}:
 				    "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE%%.shadow}.sample"; \
 			fi; \
 		fi; \
+		if [ "${TREE}" = "man" ]; then \
+			gzip -vcn "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}" > \
+			    "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}.gz"; \
+			rm "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}"; \
+		fi; \
 	done
 .endfor
 
@@ -95,6 +100,9 @@ plist-${TARGET}:
 		if [ -n "${NO_SAMPLE}" ]; then \
 			FILE="$${FILE%%.sample}"; \
 			FILE="$${FILE%%.shadow}"; \
+		fi; \
+		if [ "${TREE}" == "man" ]; then \
+			FILE="$${FILE}.gz"; \
 		fi; \
 		echo "$${PREFIX}${ROOT_${TARGET}}/${TREE}/$${FILE}"; \
 	done
