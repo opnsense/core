@@ -15,6 +15,21 @@ trap : 3
 # way to override it because the target user most likely does
 # not have a shell set.
 #
+# Let us at least parse our command line arguments as the command
+# does not start with a `-' in either case unless somebody wants
+# to inject something because it knows about the rest of the system.
+while getopts '' OPT; do
+	case ${OPT} in
+	# XXX reserved for future use
+	*)
+		echo "Usage: man opnsense-shell" >&2
+		exit 1
+		;;
+	esac
+done
+
+shift $((${OPTIND} - 1))
+
 # Worse still, su(1) *is* root, but changes to the selected user ID
 # so it creates its own downfall by selecting the root shell to do it.
 # On OpenBSD, su(1) does have the `-s' parameter to override the shell.
