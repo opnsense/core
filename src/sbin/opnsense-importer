@@ -26,6 +26,7 @@
 
 INSTALL="/.probe.for.install.media"
 MNT="/tmp/hdrescue"
+WAIT="........."
 
 if [ "$(id -u)" != "0" ]; then
 	echo "Must be root."
@@ -126,7 +127,7 @@ else
 		fi
 
 		if ! timeout_prompt \
-		    'Press any key to start the configuration importer:' .......; then
+		    'Press any key to start the configuration importer:' ${WAIT}; then
 			bootstrap_and_exit
 		fi
 	fi
