@@ -34,7 +34,6 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 DO_BOOT=
-DO_DISK=
 
 bootstrap_and_exit()
 {
@@ -80,8 +79,6 @@ while getopts b OPT; do
 done
 
 shift $((${OPTIND} - 1))
-
-DO_DISK=${1}
 
 timeout_prompt()
 {
