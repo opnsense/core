@@ -113,7 +113,7 @@ if (!empty($grouptmp)) {
     array_walk($grouptmp, 'interface_group_add_member');
 }
 
-link_interface_to_track6($interface, "update");
+link_interface_to_track6($interface, true);
 system_resolvconf_generate();
 system_hosts_generate();
 
