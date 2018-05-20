@@ -4729,7 +4729,7 @@ function get_carp_interface_status($carpinterface)
 {
     $carp_query = '';
 
-    /* XXX: Need to fidn a better way for this! */
+    /* XXX: Need to find a better way for this! */
     list ($interface, $vhid) = explode("_vip", $carpinterface);
     $interface = get_real_interface($interface);
     exec("/sbin/ifconfig $interface | /usr/bin/grep -v grep | /usr/bin/grep carp: | /usr/bin/grep 'vhid {$vhid}'", $carp_query);
