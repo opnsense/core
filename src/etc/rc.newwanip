@@ -61,7 +61,6 @@ if (empty($argument)) {
     }
 }
 
-/* If the interface is configured and not enabled, bail. We do not need to change settings for disabled interfaces. #3313 */
 if (!isset($config['interfaces'][$interface]['enable'])) {
     log_error("Interface '{$interface}' is disabled or empty, nothing to do.");
     return;
@@ -72,8 +71,9 @@ $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 log_error("On (IP address: {$ip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
 
 /*
- * NOTE: Take care of openvpn and similar if you generate the event to reconfigure an interface.
- *    i.e. OpenVPN might be in tap mode and not have an ip.
+ * Take care of OpenVPN and similar if you generate the event
+ * to reconfigure an interface.  OpenVPN might be in tap(4)
+ * mode and not have an IP address.
  */
 if ((empty($ip) || !is_ipaddr($ip)) && substr($interface_real, 0, 4) != 'ovpn') {
     log_error("Failed to detect IP for {$interface_descr}[{$interface}]");
@@ -85,7 +85,6 @@ $configip = $config['interfaces'][$interface]['ipaddr'];
 $cacheip_file = "/var/db/{$interface}_cacheip";
 $ip_file = "/var/db/{$interface}_ip";
 
-/* write the current interface IP to file */
 if (is_ipaddr($ip)) {
     @file_put_contents($ip_file, $ip);
 }
@@ -115,7 +114,6 @@ if (!empty($bridgetmp)) {
 system_resolvconf_generate();
 system_hosts_generate();
 
-/* check tunneled IPv6 interface tracking */
 if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
     switch($config['interfaces'][$interface]['ipaddrv6']) {
         case "6to4":
@@ -133,7 +131,6 @@ if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
     }
 }
 
-/* Check Gif tunnels */
 if (isset($config['gifs']['gif']) && is_array($config['gifs']['gif'])){
     foreach ($config['gifs']['gif'] as $gif) {
         if ($gif['if'] == $interface) {
@@ -153,17 +150,12 @@ if (isset($config['gifs']['gif']) && is_array($config['gifs']['gif'])){
 
 $cacheip = @file_get_contents($cacheip_file);
 
-/*
- * We need to force sync VPNs on such even when the IP is the same for dynamic interfaces.
- * Even with the same IP the VPN software is unhappy with the IP disappearing, and we
- * could be failing back in which case we need to switch IPs back anyhow.
- */
 if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
     @unlink($cacheip_file);
 
     system_routing_configure(false, $interface);
     setup_gateways_monitor(false);
-    filter_configure_sync(false, false /* XXX */);
+    filter_configure_sync(false, isset($config['system']['ip_change_kill_states']));
 
     if (is_ipaddr($ip)) {
         @file_put_contents($cacheip_file, $ip);

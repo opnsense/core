@@ -64,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enablenatreflectionhelper'] = isset($config['system']['enablenatreflectionhelper']) ? $config['system']['enablenatreflectionhelper'] : null;
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
     $pconfig['prefer_dpinger'] = isset($config['system']['prefer_dpinger']);
+    $pconfig['ip_change_kill_states'] = isset($config['system']['ip_change_kill_states']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $input_errors = array();
@@ -222,6 +223,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['prefer_dpinger'] = true;
         } elseif (isset($config['system']['prefer_dpinger'])) {
             unset($config['system']['prefer_dpinger']);
+        }
+
+        if (!empty($pconfig['ip_change_kill_states'])) {
+            $config['system']['ip_change_kill_states'] = true;
+        } elseif (isset($config['system']['ip_change_kill_states'])) {
+            unset($config['system']['ip_change_kill_states']);
         }
 
         write_config();
@@ -690,6 +697,16 @@ include("head.inc");
                   <?=gettext("Verify HTTPS certificates when downloading alias URLs");?>
                   <div class="hidden" data-for="help_for_checkaliasesurlcert">
                     <?=gettext("Make sure the certificate is valid for all HTTPS addresses on aliases. If it's not valid or is revoked, do not download it.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_ip_change_kill_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Dynamic state reset') ?></td>
+                <td>
+                  <input name="ip_change_kill_states" type="checkbox" value="yes" <?=!empty($pconfig['ip_change_kill_states']) ? 'checked="checked"' : '' ?> />
+                  <?= gettext('Reset all states when a dynamic IP address changes.') ?>
+                  <div class="hidden" data-for="help_for_ip_change_kill_states">
+                    <?=gettext("This option flushes the entire state table on IPv4 address changes in dynamic setups to e.g. allow VoIP servers to re-register.");?>
                   </div>
                 </td>
               </tr>
