@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015-2017 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2018 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -30,14 +30,14 @@ import StringIO
 import struct
 
 
-def reverse_log_reader(filename, block_size=8192, start_pos=None):
+def reverse_log_reader(filename, block_size=81920, start_pos=None):
     """ read log file in reverse order
     :param filename: filename or stream to parse
     :param block_size: max block size to examine per loop
     :param start_pos: start at position in file (None is end of file)
     :return: generator
     """
-    if type(filename) in (str, unicode):
+    if hasattr(filename, 'read') is False:
         input_stream = open(filename, 'rU')
     else:
         input_stream = filename
@@ -49,7 +49,7 @@ def reverse_log_reader(filename, block_size=8192, start_pos=None):
         file_byte_start = start_pos
 
     data = ''
-    while True:
+    while file_byte_start > 0:
         if file_byte_start - block_size < 0:
             block_size = file_byte_start
             file_byte_start = 0
@@ -59,22 +59,21 @@ def reverse_log_reader(filename, block_size=8192, start_pos=None):
         input_stream.seek(file_byte_start)
 
         data = input_stream.read(block_size) + data
-        eol = data.rfind('\n')
+        # split stream using begin of line (bol) and end of line (eol)
+        bol = data.rfind('\n')
+        eol = len(data)
 
-        while eol > -1:
-            line_end = file_byte_start + len(data)
-            line = data[eol:]
-            data = data[:eol]
-            eol = data.rfind('\n')
-            # field line and position in file
+        while bol > -1:
+            line_end = file_byte_start + eol
+            line = data[bol:eol]
+            eol = bol
+            bol = data.rfind('\n', 0, eol)
             yield {'line': line.strip(), 'pos': line_end}
-        if file_byte_start == 0 and eol == -1:
-            # flush last line
+
+        data = data[:eol] if bol == -1 else ''
+
+        if file_byte_start == 0 and bol == -1:
             yield {'line': data.strip(), 'pos': len(data)}
-
-        if file_byte_start == 0:
-            break
-
 
 def fetch_clog(input_log):
     """ fetch clog file (circular log)
