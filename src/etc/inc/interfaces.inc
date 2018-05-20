@@ -2605,7 +2605,7 @@ function interface_track6_configure($interface = 'lan', $wancfg, $linkupevent = 
             break;
         case 'slaac':
             interface_track6_slaac_configure($interface, $wancfg);
-            break;
+            /* FALLTHROUGH */
         case 'dhcp6':
             if ($linkupevent == true) {
                 /*
