@@ -2828,7 +2828,7 @@ function interface_6rd_configure($interface = "wan", $wancfg)
 
     /* configure dependent interfaces */
     if (!file_exists("/var/run/booting")) {
-        link_interface_to_track6($interface, "update");
+        link_interface_to_track6($interface, true);
     }
 
     return 0;
@@ -2926,7 +2926,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
     }
 
     if (!file_exists("/var/run/booting")) {
-        link_interface_to_track6($interface, "update");
+        link_interface_to_track6($interface, true);
     }
 
     return 0;
@@ -3859,30 +3859,29 @@ function guess_interface_from_ip($ipaddress)
     return $ret;
 }
 
-function link_interface_to_track6($int, $action = '')
+function link_interface_to_track6($int, $update = false)
 {
-    global $config;
+    $list = array();
 
     if (empty($int)) {
-        return;
-    }
-
-    if (isset($config['interfaces'])) {
-        $list = array();
-        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifcfg) {
-            if (!isset($ifcfg['enable'])) {
-                continue;
-            }
-            if (!empty($ifcfg['ipaddrv6']) && $ifcfg['track6-interface'] == $int) {
-                if ($action == "update") {
-                    interface_track6_configure($ifname, $ifcfg);
-                } elseif ($action == "") {
-                    $list[$ifname] = $ifcfg;
-                }
-            }
-        }
         return $list;
     }
+
+    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifname => $ifcfg) {
+        if (!isset($ifcfg['enable'])) {
+            continue;
+        }
+
+        if (!empty($ifcfg['ipaddrv6']) && $ifcfg['track6-interface'] == $int) {
+            if ($update) {
+                interface_track6_configure($ifname, $ifcfg);
+            }
+
+            $list[$ifname] = $ifcfg;
+        }
+    }
+
+    return $list;
 }
 
 function link_interface_to_vips($int, $action = '')
