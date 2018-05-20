@@ -1874,7 +1874,7 @@ function interface_wireless_clone($realif, $wlcfg)
     } else {
         $wlcfg_mode = $wlcfg['mode'];
     }
-    switch($wlcfg_mode) {
+    switch ($wlcfg_mode) {
         case "hostap":
             $mode = "wlanmode hostap";
             break;
@@ -2148,7 +2148,7 @@ function interface_wireless_configure($if, &$wl, &$wlcfg)
     /* set up wep if enabled */
     $wepset = "";
     if (isset($wlcfg['wep']['enable']) && is_array($wlcfg['wep']['key'])) {
-        switch($wlcfg['wpa']['auth_algs']) {
+        switch ($wlcfg['wpa']['auth_algs']) {
             case "1":
                 $wepset .= "authmode open wepmode on ";
                 break;
@@ -2749,7 +2749,7 @@ function interface_track6_configure($interface = 'lan', $wancfg, $linkupevent = 
         return;
     }
 
-    switch($trackcfg['ipaddrv6']) {
+    switch ($trackcfg['ipaddrv6']) {
         case "6to4":
             interface_track6_6to4_configure($interface, $wancfg);
             break;
@@ -4867,16 +4867,16 @@ function get_carp_interface_status($carpinterface)
 {
     $carp_query = '';
 
-    /* XXX: Need to fidn a better way for this! */
+    /* XXX: Need to find a better way for this! */
     list ($interface, $vhid) = explode("_vip", $carpinterface);
     $interface = get_real_interface($interface);
     exec("/sbin/ifconfig $interface | /usr/bin/grep -v grep | /usr/bin/grep carp: | /usr/bin/grep 'vhid {$vhid}'", $carp_query);
-    foreach($carp_query as $int) {
+    foreach ($carp_query as $int) {
         if (stristr($int, "MASTER")) {
             return gettext("MASTER");
         } elseif (stristr($int, "BACKUP")) {
             return gettext("BACKUP");
-        } elseif(stristr($int, "INIT")) {
+        } elseif (stristr($int, "INIT")) {
             return gettext("INIT");
         }
     }
