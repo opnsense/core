@@ -2563,20 +2563,20 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
     return 0;
 }
 
-function interface_track6_configure($interface = 'lan', $wancfg, $linkupevent = false)
+function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = false)
 {
     global $config;
 
-    if (!is_array($wancfg)) {
+    if (!is_array($lancfg)) {
         return;
     }
 
-    if (!isset($wancfg['enable'])) {
+    if (!isset($lancfg['enable'])) {
         return;
     }
 
     /* If the interface is not configured via another, exit */
-    if (empty($wancfg['track6-interface'])) {
+    if (empty($lancfg['track6-interface'])) {
         return;
     }
 
@@ -2590,21 +2590,21 @@ function interface_track6_configure($interface = 'lan', $wancfg, $linkupevent = 
     /* XXX: Probably should remove? */
     mwexec("/sbin/ifconfig {$realif} inet6 fe80::1:1%{$realif}");
 
-    $trackcfg = $config['interfaces'][$wancfg['track6-interface']];
+    $trackcfg = $config['interfaces'][$lancfg['track6-interface']];
     if (!isset($trackcfg['enable'])) {
-        log_error("Interface {$interface} tracking non-existent interface {$wancfg['track6-interface']}");
+        log_error("Interface {$interface} tracking non-existent interface {$lancfg['track6-interface']}");
         return;
     }
 
     switch ($trackcfg['ipaddrv6']) {
         case '6to4':
-            interface_track6_6to4_configure($interface, $wancfg);
+            interface_track6_6to4_configure($interface, $lancfg);
             break;
         case '6rd':
-            interface_track6_6rd_configure($interface, $wancfg);
+            interface_track6_6rd_configure($interface, $lancfg);
             break;
         case 'slaac':
-            interface_track6_slaac_configure($interface, $wancfg);
+            interface_track6_slaac_configure($interface, $lancfg);
             /* FALLTHROUGH */
         case 'dhcp6':
             if ($linkupevent == true) {
@@ -2614,7 +2614,7 @@ function interface_track6_configure($interface = 'lan', $wancfg, $linkupevent = 
                  *
                  * XXX: Probably DHCPv6 client should handle this autmagically itself?
                  */
-                $parentrealif = get_real_interface($wancfg['track6-interface']);
+                $parentrealif = get_real_interface($lancfg['track6-interface']);
                 killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
             }
             break;
@@ -2629,19 +2629,6 @@ function interface_track6_configure($interface = 'lan', $wancfg, $linkupevent = 
 
 function interface_track6_slaac_configure($interface = 'lan', $lancfg)
 {
-    global $config;
-
-    /* If the interface is not configured via another, exit */
-    if (empty($lancfg['track6-interface'])) {
-        return;
-    }
-
-    $wancfg = $config['interfaces'][$lancfg['track6-interface']];
-    if (empty($wancfg)) {
-        log_error("Interface {$interface} tracking non-existent interface {$lancfg['track6-interface']}");
-        return;
-    }
-
     $realif = get_real_interface($interface);
     log_error("Accept router advertisements on interface {$realif}");
     mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realif);
@@ -2650,11 +2637,6 @@ function interface_track6_slaac_configure($interface = 'lan', $lancfg)
 function interface_track6_6rd_configure($interface = 'lan', $lancfg)
 {
     global $config;
-
-    /* If the interface is not configured via another, exit */
-    if (empty($lancfg['track6-interface'])) {
-        return;
-    }
 
     $wancfg = $config['interfaces'][$lancfg['track6-interface']];
     if (empty($wancfg)) {
@@ -2706,19 +2688,6 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
 
 function interface_track6_6to4_configure($interface = 'lan', $lancfg)
 {
-    global $config;
-
-    /* If the interface is not configured via another, exit */
-    if (empty($lancfg['track6-interface'])) {
-        return;
-    }
-
-    $wancfg = $config['interfaces'][$lancfg['track6-interface']];
-    if (empty($wancfg)) {
-        log_error("Interface {$interface} tracking non-existent interface {$lancfg['track6-interface']}");
-        return;
-    }
-
     $ip4address = get_interface_ip($lancfg['track6-interface']);
     if (!is_ipaddrv4($ip4address) || is_private_ip($ip4address)) {
         log_error("The interface IPv4 '{$ip4address}' address on interface '{$lancfg['track6-interface']}' is not public, not configuring 6RD tunnel");
@@ -2759,8 +2728,6 @@ function interface_track6_6to4_configure($interface = 'lan', $lancfg)
 
 function interface_6rd_configure($interface = "wan", $wancfg)
 {
-    global $config;
-
     /* because this is a tunnel interface we can only function
      *  with a public IPv4 address on the interface */
     if (!is_array($wancfg)) {
@@ -2836,14 +2803,14 @@ function interface_6rd_configure($interface = "wan", $wancfg)
 
 function interface_6to4_configure($interface = 'wan', $wancfg)
 {
-    global $config;
-
-    /* because this is a tunnel interface we can only function
-     *  with a public IPv4 address on the interface */
-
     if (!is_array($wancfg)) {
         return;
     }
+
+    /*
+     * Because this is a tunnel interface we can only function
+     * with a public IPv4 address on the interface
+     */
 
     $wanif = get_real_interface($interface);
     $ip4address = find_interface_ip($wanif);
