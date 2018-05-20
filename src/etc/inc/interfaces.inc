@@ -2722,13 +2722,13 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
     }
 
     switch ($trackcfg['ipaddrv6']) {
-        case "6to4":
+        case '6to4':
             interface_track6_6to4_configure($interface, $lancfg);
             break;
-        case "6rd":
+        case '6rd':
             interface_track6_6rd_configure($interface, $lancfg);
             break;
-        case "dhcp6":
+        case 'dhcp6':
             if ($linkupevent == true) {
                 /*
                  * NOTE: Usually come here from rc.linkup calling so just call directly intead of generating event
