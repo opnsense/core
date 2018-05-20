@@ -2688,20 +2688,20 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
     return 0;
 }
 
-function interface_track6_configure($interface = 'lan', $wancfg, $linkupevent = false)
+function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = false)
 {
     global $config;
 
-    if (!is_array($wancfg)) {
+    if (!is_array($lancfg)) {
         return;
     }
 
-    if (!isset($wancfg['enable'])) {
+    if (!isset($lancfg['enable'])) {
         return;
     }
 
     /* If the interface is not configured via another, exit */
-    if (empty($wancfg['track6-interface'])) {
+    if (empty($lancfg['track6-interface'])) {
         return;
     }
 
@@ -2715,18 +2715,18 @@ function interface_track6_configure($interface = 'lan', $wancfg, $linkupevent = 
     /* XXX: Probably should remove? */
     mwexec("/sbin/ifconfig {$realif} inet6 fe80::1:1%{$realif}");
 
-    $trackcfg = $config['interfaces'][$wancfg['track6-interface']];
+    $trackcfg = $config['interfaces'][$lancfg['track6-interface']];
     if (!isset($trackcfg['enable'])) {
-        log_error("Interface {$interface} tracking non-existent interface {$wancfg['track6-interface']}");
+        log_error("Interface {$interface} tracking non-existent interface {$lancfg['track6-interface']}");
         return;
     }
 
     switch ($trackcfg['ipaddrv6']) {
         case "6to4":
-            interface_track6_6to4_configure($interface, $wancfg);
+            interface_track6_6to4_configure($interface, $lancfg);
             break;
         case "6rd":
-            interface_track6_6rd_configure($interface, $wancfg);
+            interface_track6_6rd_configure($interface, $lancfg);
             break;
         case "dhcp6":
             if ($linkupevent == true) {
@@ -2736,7 +2736,7 @@ function interface_track6_configure($interface = 'lan', $wancfg, $linkupevent = 
                  *
                  * XXX: Probably DHCPv6 client should handle this autmagically itself?
                  */
-                $parentrealif = get_real_interface($wancfg['track6-interface']);
+                $parentrealif = get_real_interface($lancfg['track6-interface']);
                 killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
             }
             break;
