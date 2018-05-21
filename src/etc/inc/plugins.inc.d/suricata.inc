@@ -54,6 +54,7 @@ function suricata_syslog()
 
     $logfacilities['suricata'] = array(
         'facility' => array('suricata'),
+        'remote' => 'ids',
     );
 
     return $logfacilities;

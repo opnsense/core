@@ -732,46 +732,35 @@ function system_syslogd_start($verbose = false)
         $facilitylist = implode(',', array_unique($separatelogfacilities));
         $syslogconf .= "!-{$facilitylist}\n";
         if (!isset($syslogcfg['disablelocallogging'])) {
+            /* XXX non-system local redirects look unused */
             $syslogconf .= <<<EOD
-local3.*              {$log_directive}/var/log/vpn.log
-local7.*              {$log_directive}/var/log/dhcpd.log
-*.notice;kern.debug;lpr.info;mail.crit;daemon.none;    {$log_directive}/var/log/system.log
-news.err;local0.none;local3.none;local4.none;      {$log_directive}/var/log/system.log
-local7.none              {$log_directive}/var/log/system.log
-security.*              {$log_directive}/var/log/system.log
-auth.info;authpriv.info;daemon.info        {$log_directive}/var/log/system.log
-auth.info;authpriv.info;user.*        |exec /usr/local/sbin/sshlockout_pf 15
-*.emerg                *
+local3.*							{$log_directive}/var/log/vpn.log
+local4.*							{$log_directive}/var/log/portalauth.log
+local7.*							{$log_directive}/var/log/dhcpd.log
+*.notice;kern.debug;lpr.info;mail.crit;daemon.none		{$log_directive}/var/log/system.log
+news.err;local0.none;local3.none;local4.none			{$log_directive}/var/log/system.log
+local7.none							{$log_directive}/var/log/system.log
+security.*							{$log_directive}/var/log/system.log
+auth.info;authpriv.info;daemon.info				{$log_directive}/var/log/system.log
+auth.info;authpriv.info;user.*					|exec /usr/local/sbin/sshlockout_pf 15
+*.emerg								*
 
 EOD;
         }
         if (!empty($syslogcfg['enable'])) {
-            if (isset($syslogcfg['vpn'])) {
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local3.*");
-            }
-            if (isset($syslogcfg['dns'])) {
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local5.*");
-            }
-            if (isset($syslogcfg['mail'])) {
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "mail.*");
-            }
-            if (isset($syslogcfg['portalauth'])) {
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local4.*");
-            }
-            if (isset($syslogcfg['dhcp'])) {
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local7.*");
-            }
+            /* XXX most remote facilities are already sent to remote using the 'remote' keyword */
             if (isset($syslogcfg['system'])) {
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.notice;kern.debug;lpr.info;mail.crit;");
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "news.err;local0.none;local3.none;local7.none");
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "security.*");
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "auth.info;authpriv.info;daemon.info");
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.emerg");
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, '*.notice;kern.debug;lpr.info;mail.crit;daemon.none');
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'news.err;local0.none;local3.none;local4.none');
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'local7.none');
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'security.*');
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'auth.info;authpriv.info;daemon.info');
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, '*.emerg');
             }
             if (isset($syslogcfg['logall'])) {
                 // Make everything mean everything, including facilities excluded above.
                 $syslogconf .= "!*\n";
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, '*.*');
             }
         }
 

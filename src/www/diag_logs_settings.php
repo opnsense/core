@@ -103,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['portalauth'] = isset($config['syslog']['portalauth']);
     $pconfig['mail'] = isset($config['syslog']['mail']);
     $pconfig['vpn'] = isset($config['syslog']['vpn']);
+    $pconfig['ids'] = isset($config['syslog']['ids']);
     $pconfig['dns'] = isset($config['syslog']['dns']);
     $pconfig['apinger'] = isset($config['syslog']['apinger']);
     $pconfig['relayd'] = isset($config['syslog']['relayd']);
@@ -164,6 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['syslog']['portalauth'] = !empty($pconfig['portalauth']);
             $config['syslog']['mail'] = !empty($pconfig['mail']);
             $config['syslog']['vpn'] = !empty($pconfig['vpn']);
+            $config['syslog']['ids'] = !empty($pconfig['ids']);
             $config['syslog']['dns'] = !empty($pconfig['dns']);
             $config['syslog']['apinger'] = !empty($pconfig['apinger']);
             $config['syslog']['relayd'] = !empty($pconfig['relayd']);
@@ -226,6 +228,7 @@ function enable_change(enable_over) {
     document.iform.portalauth.disabled = 0;
     document.iform.mail.disabled = 0;
     document.iform.vpn.disabled = 0;
+    document.iform.ids.disabled = 0;
     document.iform.dns.disabled = 0;
     document.iform.apinger.disabled = 0;
     document.iform.relayd.disabled = 0;
@@ -241,7 +244,7 @@ function enable_change(enable_over) {
     document.iform.dhcp.disabled = 1;
     document.iform.portalauth.disabled = 1;
     document.iform.mail.disabled = 1;
-    document.iform.vpn.disabled = 1;
+    document.iform.ids.disabled = 1;
     document.iform.dns.disabled = 1;
     document.iform.apinger.disabled = 1;
     document.iform.relayd.disabled = 1;
@@ -262,6 +265,8 @@ function check_everything() {
     document.iform.mail.checked = false;
     document.iform.vpn.disabled = 1;
     document.iform.vpn.checked = false;
+    document.iform.ids.disabled = 1;
+    document.iform.ids.checked = false;
     document.iform.dns.disabled = 1;
     document.iform.dns.checked = false;
     document.iform.apinger.disabled = 1;
@@ -278,6 +283,7 @@ function check_everything() {
     document.iform.portalauth.disabled = 0;
     document.iform.mail.disabled = 0;
     document.iform.vpn.disabled = 0;
+    document.iform.ids.disabled = 0;
     document.iform.dns.disabled = 0;
     document.iform.apinger.disabled = 0;
     document.iform.relayd.disabled = 0;
@@ -518,6 +524,8 @@ $(document).ready(function() {
                       <?=gettext("Portal Auth events");?><br />
                       <input name="vpn" id="vpn" type="checkbox" value="yes" <?=!empty($pconfig['vpn']) ? "checked=\"checked\"" : ""; ?> />
                       <?=gettext("VPN (PPTP, IPsec, OpenVPN) events");?><br />
+                      <input name="ids" id="ids" type="checkbox" value="yes" <?=!empty($pconfig['ids']) ? "checked=\"checked\"" : ""; ?> />
+                      <?=gettext("Intrusion Detection (Suricata) events");?><br />
                       <input name="apinger" id="apinger" type="checkbox" value="yes" <?=!empty($pconfig['apinger']) ? "checked=\"checked\"" : ""; ?> />
                       <?=gettext("Gateway Monitor events");?><br />
                       <input name="relayd" id="relayd" type="checkbox" value="yes" <?=!empty($pconfig['relayd']) ? "checked=\"checked\"" : ""; ?> />
