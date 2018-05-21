@@ -348,8 +348,6 @@ function interfaces_bridge_configure($checkmember = 0, $realif = '')
 
 function interface_bridge_configure(&$bridge, $checkmember = 0)
 {
-    global $config;
-
     if (!is_array($bridge)) {
         return;
     }
@@ -583,8 +581,6 @@ function interfaces_lagg_configure($realif = '', $verbose = false)
 
 function interface_lagg_configure(&$lagg)
 {
-    global $config;
-
     if (!is_array($lagg)) {
         return -1;
     }
@@ -593,6 +589,7 @@ function interface_lagg_configure(&$lagg)
     if (!count($members)) {
         return -1;
     }
+
     $interface_stats = legacy_interfaces_details();
 
     if (!empty($lagg['laggif'])) {
@@ -611,7 +608,6 @@ function interface_lagg_configure(&$lagg)
     } else {
         $laggif = legacy_interface_create('lagg');
     }
-
 
     // determine mtu value to use, either the provided one for the lagg or smallest of it's children
     $mtu = null;
@@ -696,8 +692,6 @@ function interfaces_gre_configure($checkparent = 0, $verbose = false, $realif = 
 /* NOTE: $grekey is not used but useful for passing this function to array_walk. */
 function interface_gre_configure(&$gre, $grekey = "")
 {
-    global $config;
-
     if (!is_array($gre)) {
         return -1;
     }
@@ -1730,10 +1724,9 @@ function interface_carp_configure(&$vip)
 
 function interface_wireless_clone($realif, $wlcfg)
 {
-    global $config;
-
-    /*   Check to see if interface has been cloned as of yet.
-     *   If it has not been cloned then go ahead and clone it.
+    /*
+     * Check to see if interface has been cloned as of yet.
+     * If it has not been cloned then go ahead and clone it.
      */
     $needs_clone = false;
     if (isset($wlcfg['wireless']) && is_array($wlcfg['wireless'])) {
@@ -2311,8 +2304,6 @@ function kill_wpasupplicant($interface)
 
 function interface_virtual_create($interface)
 {
-    global $config;
-
     if (strstr($interface, '_vlan')) {
         interfaces_vlan_configure($vlan);
     } elseif (substr($interface, 0, 3) == 'gre') {
@@ -2328,7 +2319,6 @@ function interface_virtual_create($interface)
         interfaces_bridge_configure(0, $interface);
     }
 }
-
 
 function interface_configure($interface = 'wan', $reloadall = false, $linkupevent = false, $verbose = false)
 {
@@ -3472,8 +3462,6 @@ function interfaces_group_setup()
 
 function interface_group_setup(&$groupname)
 {
-    global $config;
-
     if (!is_array($groupname)) {
         return;
     }
@@ -4153,8 +4141,6 @@ function get_interface_subnet($interface = "wan")
 
 function get_interface_subnetv6($interface = "wan")
 {
-    global $config;
-
     $realif = get_real_interface($interface, "inet6");
     if (!$realif) {
         if (strstr($interface, "_vip")) {
@@ -4678,7 +4664,6 @@ function get_ppp_uptime($port)
 */
 function is_ipaddr_configured($ipaddr, $ignore_if = '')
 {
-    global $config;
     $if = get_real_interface($ignore_if);
     $interface_list_ips = get_configured_ip_addresses();
 
