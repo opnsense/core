@@ -44,6 +44,7 @@ if (set_networking_interfaces_ports()) {
     killbypid('/var/dhcpd/var/run/dhcpdv6.pid', 'TERM', true);
 
     interfaces_configure(true);
+    plugins_configure('local', true);
     rrd_configure(true);
 }
 
