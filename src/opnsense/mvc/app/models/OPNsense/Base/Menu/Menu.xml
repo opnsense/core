@@ -7,7 +7,7 @@
         </Dashboard>
         <License order="1" url="/license.php" cssClass="fa fa-balance-scale fa-fw"/>
         <Password order="2" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key fa-fw">
-            <workAround url="/system_usermanager_passwordmg.php*" visibility="hidden"/>
+            <Edit url="/system_usermanager_passwordmg.php*" visibility="hidden"/>
         </Password>
         <Logout order="3" url="/index.php?logout" cssClass="fa fa-sign-out fa-fw"/>
     </Lobby>
@@ -18,13 +18,13 @@
     <System order="20" cssClass="fa fa-server">
         <Trust order="120" cssClass="fa fa-certificate fa-fw">
             <Certificates url="/system_certmanager.php">
-                <workAround url="/system_certmanager.php*" visibility="hidden"/>
+                <Edit url="/system_certmanager.php*" visibility="hidden"/>
             </Certificates>
             <Authorities url="/system_camanager.php">
-                <workAround url="/system_camanager.php*" visibility="hidden"/>
+                <Edit url="/system_camanager.php*" visibility="hidden"/>
             </Authorities>
             <Revocation url="/system_crlmanager.php">
-                <workAround url="/system_crlmanager.php*" visibility="hidden"/>
+                <Edit url="/system_crlmanager.php*" visibility="hidden"/>
             </Revocation>
         </Trust>
         <Configuration order="80" cssClass="fa fa-history fa-fw">
@@ -62,7 +62,7 @@
         </Gateways>
         <Settings order="20" cssClass="fa fa-cogs fa-fw">
             <General order="100" url="/system_general.php">
-                <workAround url="/system_general.php*" visibility="hidden"/>
+                <Edit url="/system_general.php*" visibility="hidden"/>
             </General>
             <Administration order="200" url="/system_advanced_admin.php"/>
             <Logging order="300" url="/diag_logs_settings.php"/>
