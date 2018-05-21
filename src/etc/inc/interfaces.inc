@@ -1023,9 +1023,6 @@ function interfaces_configure($verbose = false)
     $bridge_list = array();
     $track6_list = array();
 
-    /* This is needed to speedup interfaces on bootup. */
-    $reload = !file_exists('/var/run/booting');
-
     foreach ($iflist as $if => $ifname) {
         $realif = $config['interfaces'][$if]['if'];
         if (strstr($realif, "bridge")) {
@@ -1035,7 +1032,7 @@ function interfaces_configure($verbose = false)
         } elseif (!empty($config['interfaces'][$if]['ipaddrv6']) && $config['interfaces'][$if]['ipaddrv6'] == 'track6') {
             $track6_list[$if] = $ifname;
         } else {
-            interface_configure($if, $reload, false, $verbose);
+            interface_configure($verbose, $if);
         }
     }
 
@@ -1050,7 +1047,7 @@ function interfaces_configure($verbose = false)
     interfaces_bridge_configure(1);
 
     foreach ($track6_list as $if => $ifname) {
-        interface_configure($if, $reload, false, $verbose);
+        interface_configure($verbose, $if);
     }
 
     interfaces_vips_configure('', $verbose);
@@ -1058,23 +1055,16 @@ function interfaces_configure($verbose = false)
     interfaces_gif_configure(2, $verbose);
 
     foreach ($delayed_list as $if => $ifname) {
-        interface_configure($if, $reload, false, $verbose);
+        interface_configure($verbose, $if);
     }
 
     interfaces_bridge_configure(2);
 
     foreach ($bridge_list as $if => $ifname) {
-        interface_configure($if, $reload, false, $verbose);
+        interface_configure($verbose, $if);
     }
 
     interfaces_group_setup();
-
-    if ($reload) {
-        system_routing_configure($verbose);
-        ipsec_configure_do($verbose);
-        plugins_configure('dns', $verbose);
-        services_dhcpd_configure('all', array(), $verbose);
-    }
 }
 
 function interface_vip_bring_down($vip)
@@ -2443,7 +2433,7 @@ function interface_virtual_create($interface)
     }
 }
 
-function interface_configure($interface = 'wan', $reload = false, $linkupevent = false, $verbose = false)
+function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkupevent = false)
 {
     global $config;
 
@@ -2658,16 +2648,12 @@ function interface_configure($interface = 'wan', $reload = false, $linkupevent =
     }
 
     if (!file_exists("/var/run/booting")) {
-        if ($interface == 'lan') {
-            /* make new hosts file */
-            system_hosts_generate();
-        }
-
-        if ($reload == true) {
-            system_routing_configure(false, $interface);
-            ipsec_configure_do();
-            plugins_configure('dns');
-            services_dhcpd_configure();
+        if ($reload) {
+            system_routing_configure($verbose, $interface);
+            ipsec_configure_do($verbose, $interface);
+            plugins_configure('dns', $verbose);
+            services_dhcpd_configure('all', array(), $verbose);
+            /* XXX move these up the call stack */
             configd_run("dyndns reload {$interface}");
             configd_run("rfc2136 reload {$interface}");
         }
@@ -2729,12 +2715,6 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
             }
             break;
     }
-
-    if (!file_exists("/var/run/booting") && $linkupevent == false) {
-        services_dhcpd_configure("inet6");
-    }
-
-    return 0;
 }
 
 function interface_track6_6rd_configure($interface = 'lan', $lancfg)

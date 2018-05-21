@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
             $confif = convert_real_interface_to_friendly_interface_name($lagg['laggif']);
             if ($confif <> "") {
-                interface_configure($confif);
+                interface_configure(false, $confif);
             }
             header(url_safe('Location: /interfaces_lagg.php'));
             exit;

@@ -558,7 +558,7 @@ echo "done.\n";
 system_hosts_generate(true);
 system_resolvconf_generate(true);
 interface_bring_down($interface);
-interface_configure($interface, true, false, true);
+interface_configure(true, $interface, true);
 setup_gateways_monitor(true);
 filter_configure_sync(true);
 

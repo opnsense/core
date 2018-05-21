@@ -130,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
 
             if ($confif <> "") {
-                interface_configure($confif);
+                interface_configure(false, $confif);
             }
             header(url_safe('Location: /interfaces_vlan.php'));
             exit;

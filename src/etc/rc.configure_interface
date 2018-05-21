@@ -37,4 +37,4 @@ require_once("services.inc");
 
 $argument = isset($argv[1]) ? trim($argv[1]) : 'wan';
 
-interface_configure($argument, true, false, true);
+interface_configure(true, $argument, true);

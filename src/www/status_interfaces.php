@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($_POST['status']) && $_POST['status'] == 'up') {
             interface_bring_down($interface);
         } else {
-            interface_configure($interface, true);
+            interface_configure(false, $interface, true);
         }
         header(url_safe('Location: /status_interfaces.php'));
         exit;
