@@ -2317,7 +2317,7 @@ function interface_virtual_create($interface)
     }
 }
 
-function interface_configure($interface = 'wan', $reloadall = false, $linkupevent = false, $verbose = false)
+function interface_configure($interface = 'wan', $reload = false, $linkupevent = false, $verbose = false)
 {
     global $config;
 
@@ -2458,7 +2458,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
                 interface_6to4_configure($interface, $wancfg);
                 break;
             case 'track6':
-                interface_track6_configure($interface, $wancfg, $reloadall || $linkupevent);
+                interface_track6_configure($interface, $wancfg, $reload || $linkupevent);
                 break;
             default:
                 /* XXX: Kludge for now related to #3280 */
@@ -2526,18 +2526,11 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
             array_walk($grouptmp, 'interface_group_add_member');
         }
 
-        if ($interface == 'lan') {
-            /* make new hosts file */
-            system_hosts_generate();
-        }
-
-        if ($reloadall == true) {
-            system_routing_configure(false, $interface);
-            ipsec_configure_do();
-            plugins_configure('dns');
-            services_dhcpd_configure();
-            configd_run("dyndns reload {$interface}");
-            configd_run("rfc2136 reload {$interface}");
+        if ($reload) {
+            system_routing_configure($verbose, $interface);
+            ipsec_configure_do($verbose, $interface);
+            plugins_configure('dns', $verbose);
+            services_dhcpd_configure('all', array(), $verbose);
         }
     }
 
@@ -2546,8 +2539,6 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
     if ($verbose) {
         echo "done.\n";
     }
-
-    return 0;
 }
 
 function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = false)
