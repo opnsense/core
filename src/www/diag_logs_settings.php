@@ -244,6 +244,7 @@ function enable_change(enable_over) {
     document.iform.dhcp.disabled = 1;
     document.iform.portalauth.disabled = 1;
     document.iform.mail.disabled = 1;
+    document.iform.vpn.disabled = 1;
     document.iform.ids.disabled = 1;
     document.iform.dns.disabled = 1;
     document.iform.apinger.disabled = 1;
