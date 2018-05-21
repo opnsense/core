@@ -884,7 +884,7 @@ function interface_gif_configure(&$gif, $gifkey = "")
     return $gifif;
 }
 
-function interfaces_configure($verbose = false)
+function interfaces_configure($verbose = false, $reload = true)
 {
     global $config;
 
@@ -897,9 +897,6 @@ function interfaces_configure($verbose = false)
     $delayed_list = array();
     $bridge_list = array();
     $track6_list = array();
-
-    /* This is needed to speedup interfaces on bootup. */
-    $reload = !file_exists('/var/run/booting');
 
     foreach ($iflist as $if => $ifname) {
         $realif = $config['interfaces'][$if]['if'];

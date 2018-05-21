@@ -96,7 +96,7 @@ system_hosts_generate(true);
 system_syslogd_start(true);
 
 openvpn_prepare_all(true);
-interfaces_configure(true);
+interfaces_configure(true, false);
 
 system_resolvconf_generate(true);
 filter_configure_sync(true);
