@@ -3826,25 +3826,25 @@ function guess_interface_from_ip($ipaddress)
     return $ret;
 }
 
-function link_interface_to_track6($int, $update = false)
+function link_interface_to_track6($wanif, $update = false)
 {
     $list = array();
 
-    if (empty($int)) {
+    if (empty($wanif)) {
         return $list;
     }
 
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifname => $ifcfg) {
-        if (!isset($ifcfg['enable'])) {
+    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $lanif => $lancfg) {
+        if (!isset($lancfg['enable']) || empty($lancfg['ipaddrv6'])) {
             continue;
         }
 
-        if (!empty($ifcfg['ipaddrv6']) && $ifcfg['track6-interface'] == $int) {
+        if ($lancfg['ipaddrv6'] == 'track6' && $lancfg['track6-interface'] == $wanif) {
             if ($update) {
-                interface_track6_configure($ifname, $ifcfg);
+                interface_track6_configure($lanif, $lancfg);
             }
 
-            $list[$ifname] = $ifcfg;
+            $list[$lanif] = $lancfg;
         }
     }
 
