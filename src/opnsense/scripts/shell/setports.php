@@ -44,8 +44,11 @@ if (set_networking_interfaces_ports()) {
     killbypid('/var/dhcpd/var/run/dhcpdv6.pid', 'TERM', true);
 
     interfaces_configure(true);
+    system_routing_configure(true);
     filter_configure_sync(true);
+    services_dhcpd_configure('all', array(), $verbose);
     plugins_configure('local', true);
+    plugins_configure('vpn', true);
     rrd_configure(true);
 }
 
