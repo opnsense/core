@@ -2449,7 +2449,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
                 interface_6to4_configure($interface, $wancfg);
                 break;
             case 'track6':
-                interface_track6_configure($interface, $wancfg);
+                interface_track6_configure($interface, $wancfg, $reload || $linkupevent);
                 break;
             default:
                 /* XXX: Kludge for now related to #3280 */
@@ -2534,7 +2534,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     interfaces_staticarp_configure($interface);
 }
 
-function interface_track6_configure($interface = 'lan', $lancfg)
+function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = false)
 {
     global $config;
 
@@ -2578,8 +2578,16 @@ function interface_track6_configure($interface = 'lan', $lancfg)
             interface_track6_slaac_configure($interface, $lancfg);
             /* FALLTHROUGH */
         case 'dhcp6':
-            $parentrealif = get_real_interface($lancfg['track6-interface']);
-            killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
+            if ($linkupevent == true) {
+                /*
+                 * NOTE: Usually come here from rc.linkup calling so just call directly intead of generating event
+                 *  Instead of disrupting all other v4 configuration just restart DHCPv6 client for now
+                 *
+                 * XXX: Probably DHCPv6 client should handle this autmagically itself?
+                 */
+                $parentrealif = get_real_interface($lancfg['track6-interface']);
+                killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
+            }
             break;
     }
 }
