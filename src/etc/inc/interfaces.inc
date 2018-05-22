@@ -884,7 +884,7 @@ function interface_gif_configure(&$gif, $gifkey = "")
     return $gifif;
 }
 
-function interfaces_configure($verbose = false, $reload = true)
+function interfaces_configure($verbose = false)
 {
     global $config;
 
@@ -907,7 +907,7 @@ function interfaces_configure($verbose = false, $reload = true)
         } elseif (!empty($config['interfaces'][$if]['ipaddrv6']) && $config['interfaces'][$if]['ipaddrv6'] == 'track6') {
             $track6_list[$if] = $ifname;
         } else {
-            interface_configure($if, $reload, false, $verbose);
+            interface_configure($if, false, false, $verbose);
         }
     }
 
@@ -922,7 +922,7 @@ function interfaces_configure($verbose = false, $reload = true)
     interfaces_bridge_configure(1);
 
     foreach ($track6_list as $if => $ifname) {
-        interface_configure($if, $reload, false, $verbose);
+        interface_configure($if, false, false, $verbose);
     }
 
     interfaces_vips_configure('', $verbose);
@@ -930,13 +930,13 @@ function interfaces_configure($verbose = false, $reload = true)
     interfaces_gif_configure(2, $verbose);
 
     foreach ($delayed_list as $if => $ifname) {
-        interface_configure($if, $reload, false, $verbose);
+        interface_configure($if, false, false, $verbose);
     }
 
     interfaces_bridge_configure(2);
 
     foreach ($bridge_list as $if => $ifname) {
-        interface_configure($if, $reload, false, $verbose);
+        interface_configure($if, false, false, $verbose);
     }
 
     interfaces_group_setup();
@@ -2449,7 +2449,7 @@ function interface_configure($interface = 'wan', $reload = false, $linkupevent =
                 interface_6to4_configure($interface, $wancfg);
                 break;
             case 'track6':
-                interface_track6_configure($interface, $wancfg, $reload || $linkupevent);
+                interface_track6_configure($interface, $wancfg);
                 break;
             default:
                 /* XXX: Kludge for now related to #3280 */
@@ -2534,7 +2534,7 @@ function interface_configure($interface = 'wan', $reload = false, $linkupevent =
     interfaces_staticarp_configure($interface);
 }
 
-function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = false)
+function interface_track6_configure($interface = 'lan', $lancfg)
 {
     global $config;
 
@@ -2578,24 +2578,10 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
             interface_track6_slaac_configure($interface, $lancfg);
             /* FALLTHROUGH */
         case 'dhcp6':
-            if ($linkupevent == true) {
-                /*
-                 * NOTE: Usually come here from rc.linkup calling so just call directly intead of generating event
-                 *  Instead of disrupting all other v4 configuration just restart DHCPv6 client for now
-                 *
-                 * XXX: Probably DHCPv6 client should handle this autmagically itself?
-                 */
-                $parentrealif = get_real_interface($lancfg['track6-interface']);
-                killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
-            }
+            $parentrealif = get_real_interface($lancfg['track6-interface']);
+            killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
             break;
     }
-
-    if (!file_exists("/var/run/booting") && $linkupevent == false) {
-        services_dhcpd_configure("inet6");
-    }
-
-    return 0;
 }
 
 function interface_track6_slaac_configure($interface = 'lan', $lancfg)
