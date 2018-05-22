@@ -140,7 +140,7 @@ if (isset($config['gifs']['gif']) && is_array($config['gifs']['gif'])){
                   $gif['gifif'] = interface_gif_configure($gif);
                   $confif = convert_real_interface_to_friendly_interface_name($gif['gifif']);
                   if (!empty($confif)) {
-                      interface_configure($confif);
+                      interface_configure(false, $confif);
                   }
                   system_routing_configure(false, $ifname);
                 }
