@@ -115,7 +115,6 @@
 /usr/local/etc/rc.openvpn
 /usr/local/etc/rc.reboot
 /usr/local/etc/rc.reload_all
-/usr/local/etc/rc.reload_interfaces
 /usr/local/etc/rc.resolv_conf_generate
 /usr/local/etc/rc.restart_webgui
 /usr/local/etc/rc.routing_configure
