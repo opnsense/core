@@ -907,7 +907,7 @@ function interfaces_configure($verbose = false, $reload = true)
         } elseif (!empty($config['interfaces'][$if]['ipaddrv6']) && $config['interfaces'][$if]['ipaddrv6'] == 'track6') {
             $track6_list[$if] = $ifname;
         } else {
-            interface_configure($if, $reload, false, true);
+            interface_configure($if, $reload, false, $verbose);
         }
     }
 
@@ -922,7 +922,7 @@ function interfaces_configure($verbose = false, $reload = true)
     interfaces_bridge_configure(1);
 
     foreach ($track6_list as $if => $ifname) {
-        interface_configure($if, $reload, false, true);
+        interface_configure($if, $reload, false, $verbose);
     }
 
     interfaces_vips_configure('', $verbose);
@@ -930,13 +930,13 @@ function interfaces_configure($verbose = false, $reload = true)
     interfaces_gif_configure(2, $verbose);
 
     foreach ($delayed_list as $if => $ifname) {
-        interface_configure($if, $reload, false, true);
+        interface_configure($if, $reload, false, $verbose);
     }
 
     interfaces_bridge_configure(2);
 
     foreach ($bridge_list as $if => $ifname) {
-        interface_configure($if, $reload, false, true);
+        interface_configure($if, $reload, false, $verbose);
     }
 
     interfaces_group_setup();
