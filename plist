@@ -84,6 +84,7 @@
 /usr/local/etc/rc.carpbackup
 /usr/local/etc/rc.carpmaster
 /usr/local/etc/rc.configure_firmware
+/usr/local/etc/rc.configure_interface
 /usr/local/etc/rc.configure_plugins
 /usr/local/etc/rc.d/captiveportal
 /usr/local/etc/rc.d/configd
@@ -96,7 +97,6 @@
 /usr/local/etc/rc.firmware.subr
 /usr/local/etc/rc.freebsd
 /usr/local/etc/rc.halt
-/usr/local/etc/rc.interfaces_wan_configure
 /usr/local/etc/rc.ipfw
 /usr/local/etc/rc.ipfw.flush_all
 /usr/local/etc/rc.ipfw.postload

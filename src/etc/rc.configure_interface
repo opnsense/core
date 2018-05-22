@@ -35,11 +35,6 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-if (!empty($argv[1])) {
-	$argument = str_replace("\n", "", $argv[1]);
-	if (!empty($config['interfaces'][$argument])) {
-		interface_configure($argument);
-	}
-} else {
-	interface_configure("wan");
-}
+$argument = isset($argv[1]) ? trim($argv[1]) : 'wan';
+
+interface_configure($argument, true, false, true);
