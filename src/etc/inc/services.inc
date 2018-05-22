@@ -418,7 +418,7 @@ function services_dhcpdv4_configure($verbose = false)
     }
 
     if ($verbose) {
-        echo 'Starting DHCP service...';
+        echo 'Starting DHCPv4 service...';
         flush();
     }
 
@@ -1348,7 +1348,7 @@ function services_dhcrelay_configure($verbose = false)
     }
 
     if ($verbose) {
-        echo 'Starting DHCP Relay...';
+        echo 'Starting DHCPv4 Relay...';
         flush();
     }
 
