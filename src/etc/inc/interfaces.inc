@@ -1277,8 +1277,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         kill_hostapd($realif);
         mwexec(kill_wpasupplicant($realif));
     }
-
-    return;
 }
 
 function interfaces_ptpid_used($ptpid)
@@ -2663,7 +2661,13 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
         if (!empty($grouptmp)) {
             array_walk($grouptmp, 'interface_group_add_member');
         }
+    }
 
+    if ($verbose) {
+        echo "done.\n";
+    }
+
+    if (!file_exists("/var/run/booting")) {
         if ($interface == 'lan') {
             /* make new hosts file */
             system_hosts_generate();
@@ -2680,12 +2684,6 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
     }
 
     interfaces_staticarp_configure($interface);
-
-    if ($verbose) {
-        echo "done.\n";
-    }
-
-    return 0;
 }
 
 function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = false)
