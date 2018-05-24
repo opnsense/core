@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2009 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2009 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("system.inc");
@@ -36,7 +36,9 @@ require_once("interfaces.inc");
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['if']) && !empty($_POST['submit'])) {
         $interface = $_POST['if'];
-        if (!empty($_POST['status']) && $_POST['status'] == 'up') {
+        if ($_POST['submit'] == 'remote') {
+            configd_run(exec_safe('interface reconfigure %s', array($interface)));
+        } elseif (!empty($_POST['status']) && $_POST['status'] == 'up') {
             interface_bring_down($interface);
         } else {
             interface_configure(false, $interface, true);
@@ -114,7 +116,8 @@ include("head.inc");
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['dhcplink'] ?>" />
                           <?= $ifinfo['dhcplink'] ?>&nbsp;&nbsp;
-                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['dhcplink'] == "up" ? gettext("Release") : gettext("Renew"); ?>" />
+                          <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
+                          <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['dhcplink'] == "up" ? gettext("Release") : gettext("Renew") ?></button>
                         </form>
                       </td>
                     </tr>
@@ -128,7 +131,8 @@ include("head.inc");
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['dhcp6link'] ?>" />
                           <?= $ifinfo['dhcp6link'] ?>&nbsp;&nbsp;
-                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['dhcp6link'] == "up" ? gettext("Release") : gettext("Renew") ?>" />
+                          <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
+                          <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['dhcp6link'] == "up" ? gettext("Release") : gettext("Renew") ?></button>
                         </form>
                       </td>
                     </tr>
@@ -142,7 +146,8 @@ include("head.inc");
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['pppoelink'] ?>" />
                           <?= $ifinfo['pppoelink'] ?>&nbsp;&nbsp;
-                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['pppoelink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?>" />
+                          <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
+                          <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['pppoelink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?></button>
                         </form>
                       </td>
                     </tr>
@@ -156,7 +161,8 @@ include("head.inc");
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['pptplink'] ?>" />
                           <?= $ifinfo['pptplink'] ?>&nbsp;&nbsp;
-                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['pptplink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?>" />
+                          <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
+                          <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['pptplink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?></button>
                         </form>
                       </td>
                     </tr>
@@ -170,7 +176,8 @@ include("head.inc");
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['l2tplink'] ?>" />
                           <?=$ifinfo['l2tplink'];?>&nbsp;&nbsp;
-                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['l2tplink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?>" />
+                          <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
+                          <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['l2tplink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?></button>
                         </form>
                       </td>
                     </tr>
@@ -184,13 +191,12 @@ include("head.inc");
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['ppplink'] ?>" />
                           <?= $ifinfo['pppinfo'] ?>
+                          <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
                           <?php if ($ifinfo['ppplink'] == "up"): ?>
-                            <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= gettext("Disconnect") ?>" />
-                          <?php else: ?>
-                            <?php if (!$ifinfo['nodevice']): ?>
-                              <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= gettext("Connect") ?>" />
-                            <?php endif; ?>
-                          <?php endif; ?>
+                            <button type="submit" name="submit" class="btn btn-xs" value="local"><?= gettext("Disconnect") ?></button>
+                          <?php elseif (!$ifinfo['nodevice']): ?>
+                            <button type="submit" name="submit" class="btn btn-xs" value="local"><?= gettext("Connect") ?></button>
+                          <?php endif ?>
                         </form>
                       </td>
                     </tr>
