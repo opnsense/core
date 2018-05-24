@@ -4053,7 +4053,7 @@ function get_interface_ipv6($interface = 'wan')
             case 'l2tp':
             case 'pptp':
             case 'ppp':
-                if ($config['interfaces'][$interface]['ipaddrv6'] == 'dhcp6') {
+                if (in_array($config['interfaces'][$interface]['ipaddrv6'], array('dhcp6', 'slaac', 'staticv6'))) {
                     $realif = get_real_interface($interface, 'inet6');
                 }
                 break;
