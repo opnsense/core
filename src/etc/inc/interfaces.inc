@@ -2528,6 +2528,9 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             ipsec_configure_do($verbose, $interface);
             plugins_configure('dns', $verbose);
             services_dhcpd_configure('all', array(), $verbose);
+            /* XXX move these up the call stack */
+            configd_run("dyndns reload {$interface}");
+            configd_run("rfc2136 reload {$interface}");
         }
     }
 
