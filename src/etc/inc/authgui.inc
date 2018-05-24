@@ -106,7 +106,7 @@ function session_auth(&$Login_Error)
             $_SESSION['Username'] = $_POST['usernamefld'];
             $_SESSION['last_access'] = time();
             $_SESSION['protocol'] = $config['system']['webgui']['protocol'];
-            if ($authenticator != null && $authenticator->shouldChangePassword($_SESSION['Username'])) {
+            if ($authenticator != null && $authenticator->shouldChangePassword($_SESSION['Username'], $_POST['passwordfld'])) {
                 $_SESSION['user_shouldChangePassword'] = true;
             }
             if (!isset($config['system']['webgui']['quietlogin'])) {

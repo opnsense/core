@@ -109,7 +109,7 @@ class Local extends Base implements IAuthConnector
      * check if the user should change his or hers password, calculated by the time difference of the last pwd change
      * @param string $username username to check
      */
-    public function shouldChangePassword($username)
+    public function shouldChangePassword($username, $password = null)
     {
         $configObj = Config::getInstance()->object();
         if (!empty($configObj->system->webgui->enable_password_policy_constraints)) {
@@ -123,6 +123,12 @@ class Local extends Base implements IAuthConnector
                         return true;
                     }
                 }
+            }
+        }
+        if ($password != null) {
+            /* not optimal, modify "old_password" to avoid equal check */
+            if (count($this->checkPolicy($username, '~' . $password, $password))) {
+                return true;
             }
         }
         return false;

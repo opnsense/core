@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['savemsg'])) {
         $savemsg = htmlspecialchars(sprintf(gettext($_GET['savemsg']), $username));
     } elseif (!empty($_SESSION['user_shouldChangePassword'])) {
-        $savemsg = gettext("Your password has expired, please provide a new one");
+        $savemsg = gettext('Your password does not match the selected security policies. Please provide a new one.');
     }
 
     if ($userFound) {

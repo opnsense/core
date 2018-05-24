@@ -82,7 +82,7 @@ abstract class Base
      * @param string $username username to check
      * @return boolean
      */
-    public function shouldChangePassword($username)
+    public function shouldChangePassword($username, $password = null)
     {
         return false;
     }
