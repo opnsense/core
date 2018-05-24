@@ -60,7 +60,7 @@
             <Status order="200" url="/status_habackup.php"/>
         </HighAvailability>
         <Routes cssClass="fa fa-map-signs fa-fw">
-            <Configuration order="10" url="/ui/routes/" />
+            <Configuration order="10" url="/ui/routes" />
             <Log order="100" VisibleName="Log File" url="/diag_logs_routing.php"/>
         </Routes>
         <Settings cssClass="fa fa-cogs fa-fw">
