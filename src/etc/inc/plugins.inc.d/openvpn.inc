@@ -1011,9 +1011,10 @@ function openvpn_delete($mode, &$settings)
  * generate config (text) data for a single client specific override
  * @param array $settings csc item
  * @param array $server openvpn server item
+ * @param string $target_filename write to filename, or use configured/generated path when emtpy
  * @return string|boolean filename or false when unable to (missing common name or vpnid)
  */
-function openvpn_csc_conf_write($settings, $server)
+function openvpn_csc_conf_write($settings, $server, $target_filename=null)
 {
     if (empty($settings['common_name']) || empty($server['vpnid'])) {
         return false;
@@ -1075,7 +1076,10 @@ function openvpn_csc_conf_write($settings, $server)
     openvpn_add_custom($settings, $conf);
 
     $vpnid = filter_var($server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
-    $target_filename = "/var/etc/openvpn-csc/".$vpnid."/".$settings['common_name'];
+    if (empty($target_filename)) {
+        $target_filename = "/var/etc/openvpn-csc/".$vpnid."/".$settings['common_name'];
+    }
+
     if (!empty($conf)) {
         file_put_contents($target_filename, $conf);
         chown($target_filename, 'nobody');

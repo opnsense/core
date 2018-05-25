@@ -44,7 +44,8 @@ if (isset($config['openvpn']['openvpn-server'])) {
             } else {
                 $cso = array("common_name" => $common_name);
             }
-            $cso_filename = openvpn_csc_conf_write($cso, $server);
+            // $argv[2] contains the temporary file used for the profile specified by client-connect
+            $cso_filename = openvpn_csc_conf_write($cso, $server, $argv[2]);
             if (!empty($cso_filename)) {
                 syslog(LOG_NOTICE, "client config created @ {$cso_filename}");
             }
