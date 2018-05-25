@@ -174,8 +174,10 @@ trait TOTP
     }
 
     /**
-     * check if the user should change his or hers password
+     * check if the user should change his or her password
      * @param string $username username to check
+     * @param string $password password to check
+     * @return boolean
      */
     public function shouldChangePassword($username, $password = null)
     {

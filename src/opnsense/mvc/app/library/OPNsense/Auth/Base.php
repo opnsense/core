@@ -78,8 +78,9 @@ abstract class Base
     }
 
     /**
-     * check if the user should change his or hers password, needs implementation if it applies.
+     * check if the user should change his or her password, needs implementation if it applies.
      * @param string $username username to check
+     * @param string $password password to check
      * @return boolean
      */
     public function shouldChangePassword($username, $password = null)
