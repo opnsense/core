@@ -174,6 +174,16 @@ trait TOTP
     }
 
     /**
+     * check if the user should change his or hers password
+     * @param string $username username to check
+     */
+    public function shouldChangePassword($username, $password = null)
+    {
+        /* XXX deconstruct password and pass it */
+        return parent::shouldChangePassword($username);
+    }
+
+    /**
      * set TOTP specific connector properties
      * @param array $config connection properties
      */
