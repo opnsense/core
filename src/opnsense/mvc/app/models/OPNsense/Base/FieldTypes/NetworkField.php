@@ -62,6 +62,11 @@ class NetworkField extends BaseField
     protected $internalWildcardEnabled = true;
 
     /**
+     * @var string Network family (ipv4, ipv6)
+     */
+    protected $internalAddressFamily = null;
+
+    /**
      * @var bool when set, results are returned as list (with all options enabled)
      */
     private $internalAsList = false;
@@ -86,6 +91,15 @@ class NetworkField extends BaseField
         } else {
             $this->internalNetMaskRequired = false;
         }
+    }
+
+    /**
+     * setter for address family
+     * @param $value address family [ipv4, ipv6, empty for all]
+     */
+    public function setAddressFamily($value)
+    {
+        $this->internalAddressFamily = trim(strtolower($value));
     }
 
     /**
@@ -155,7 +169,8 @@ class NetworkField extends BaseField
                 $validators[] = new NetworkValidator(array(
                     'message' => $this->internalValidationMessage,
                     'split' => $this->internalFieldSeparator,
-                    'netMaskRequired' => $this->internalNetMaskRequired
+                    'netMaskRequired' => $this->internalNetMaskRequired,
+                    'version' => $this->internalAddressFamily
                     ));
             }
         }
