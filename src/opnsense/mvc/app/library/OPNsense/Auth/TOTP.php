@@ -181,8 +181,14 @@ trait TOTP
      */
     public function shouldChangePassword($username, $password = null)
     {
-        /* XXX deconstruct password and pass it */
-        return parent::shouldChangePassword($username);
+        if ($password != null && strlen($password) > $this->otpLength) {
+            /* deconstruct password according to settings */
+            $pwLength = strlen($password) - $this->otpLength;
+            $pwStart = $this->passwordFirst ? 0 : $this->otpLength;
+            $password = substr($password, $pwStart, $pwLength);
+        }
+
+        return parent::shouldChangePassword($username, $password);
     }
 
     /**
