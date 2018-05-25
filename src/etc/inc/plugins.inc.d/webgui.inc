@@ -375,63 +375,41 @@ EOD;
 
         $lighty_config .= "\n## ssl configuration\n";
         $lighty_config .= "ssl.engine = \"enable\"\n";
+        $lighty_config .= "ssl.disable-client-renegotiation = \"enable\"\n";
         $lighty_config .= "ssl.dh-file = \"/usr/local/etc/dh-parameters.4096\"\n";
         $lighty_config .= "ssl.ec-curve = \"secp384r1\"\n";
         $lighty_config .= "ssl.pemfile = \"/var/etc/{$cert_location}\"\n";
         if (!empty($ca)) {
             $lighty_config .= "ssl.ca-file = \"/var/etc/{$ca_location}\"\n";
         }
+        $lighty_config .= "setenv.add-environment = (\n";
+        $lighty_config .= "     \"HTTPS\" => \"on\"\n";
+        $lighty_config .= ")\n";
 
         // Harden SSL a bit for PCI conformance testing
         $lighty_config .= "ssl.use-sslv2 = \"disable\"\n";
         $lighty_config .= "ssl.use-sslv3 = \"disable\"\n";
+        $lighty_config .= "ssl.honor-cipher-order = \"enable\"\n";
         if (empty($config['system']['webgui']['ssl-ciphers'])) {
             $ciphers = array(
-                'ECDHE-RSA-AES128-GCM-SHA256',
-                'ECDHE-ECDSA-AES128-GCM-SHA256',
-                'ECDHE-RSA-AES256-GCM-SHA384',
                 'ECDHE-ECDSA-AES256-GCM-SHA384',
-                'DHE-RSA-AES128-GCM-SHA256',
-                'DHE-DSS-AES128-GCM-SHA256',
-                'kEDH+AESGCM',
-                'ECDHE-RSA-AES128-SHA256',
-                'ECDHE-ECDSA-AES128-SHA256',
-                'ECDHE-RSA-AES128-SHA',
-                'ECDHE-ECDSA-AES128-SHA',
-                'ECDHE-RSA-AES256-SHA384',
+                'ECDHE-RSA-AES256-GCM-SHA384',
+                'ECDHE-ECDSA-CHACHA20-POLY1305',
+                'ECDHE-RSA-CHACHA20-POLY1305',
+                'ECDHE-ECDSA-AES128-GCM-SHA256',
+                'ECDHE-RSA-AES128-GCM-SHA256',
                 'ECDHE-ECDSA-AES256-SHA384',
-                'ECDHE-RSA-AES256-SHA',
-                'ECDHE-ECDSA-AES256-SHA',
-                'DHE-RSA-AES128-SHA256',
-                'DHE-RSA-AES128-SHA',
-                'DHE-DSS-AES128-SHA256',
-                'DHE-RSA-AES256-SHA256',
-                'DHE-DSS-AES256-SHA',
-                'DHE-RSA-AES256-SHA',
-                'AES128-GCM-SHA256',
-                'AES256-GCM-SHA384',
-                'AES128-SHA256',
-                'AES256-SHA256',
-                'AES128-SHA',
-                'AES256-SHA',
-                'AES',
-                'CAMELLIA',
-                '!aNULL',
-                '!eNULL',
-                '!EXPORT',
-                '!DES',
-                '!RC4',
-                '!MD5',
-                '!PSK',
-                '!aECDH',
-                '!EDH-DSS-DES-CBC3-SHA',
-                '!EDH-RSA-DES-CBC3-SHA',
-                '!KRB5-DES-CBC3-SHA',
+                'ECDHE-RSA-AES256-SHA384',
+                'ECDHE-ECDSA-AES128-SHA256',
+                'ECDHE-RSA-AES128-SHA256'
             );
             $lighty_config .= 'ssl.cipher-list = "' . join(':', $ciphers) . '"' . PHP_EOL;
         } else {
             $lighty_config .= 'ssl.cipher-list = "'.$config['system']['webgui']['ssl-ciphers'].'"' . PHP_EOL;
         }
+        $lighty_config .= "setenv.add-response-header  = (\n";
+        $lighty_config .= "    \"Strict-Transport-Security\" => \"max-age=15768000;\"\n";
+        $lighty_config .= ")\n";
 
         $lighty_config .= "\n";
     }
