@@ -4046,26 +4046,21 @@ function get_interface_ipv6($interface = 'wan')
         }
     }
 
-    /*
-     * NOTE: On the case when only the prefix is requested,
-     * the communication on WAN will be done over link-local.
-     */
-    if (isset($config['interfaces'][$interface])) {
-        switch ($config['interfaces'][$interface]['ipaddr']) {
-            case 'pppoe':
-            case 'l2tp':
-            case 'pptp':
-            case 'ppp':
-                if (in_array($config['interfaces'][$interface]['ipaddrv6'], array('dhcp6', 'slaac', 'staticv6'))) {
-                    $realif = get_real_interface($interface, 'inet6');
-                }
-                break;
-        }
-        if (isset($config['interfaces'][$interface]['dhcp6prefixonly'])) {
-            $curip = find_interface_ipv6_ll($realif);
-            if ($curip && is_ipaddrv6($curip) && ($curip != "::")) {
-                return $curip;
-            }
+    if (isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
+        $realif = get_real_interface($interface, 'inet6');
+    }
+
+    if (isset($config['interfaces'][$interface]['dhcp6prefixonly'])) {
+        $curip = find_interface_ipv6_ll($realif);
+        if ($curip && is_ipaddrv6($curip) && ($curip != "::")) {
+            return $curip;
+        } else {
+            /*
+             * XXX This may have been an intended opt-out case earlier,
+             * but it looks wrong to assume prefix-only and then fall
+             * through to see if a different address is there.
+             */
+            return null;
         }
     }
 
