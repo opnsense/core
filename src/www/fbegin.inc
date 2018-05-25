@@ -158,7 +158,7 @@ if($need_alert_display == true) {
 <?php
                               endif;?>
 <?php
-                        endif;?>                      
+                        endif;?>
 <?php
                         endforeach; ?>
                     </div>
