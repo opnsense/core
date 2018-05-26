@@ -9,27 +9,20 @@
 trap : 2
 trap : 3
 
+CMD_PASSWORD="/usr/local/opnsense/scripts/shell/password.php"
+CMD_SHELL="/bin/csh"
+
 # rc.d may call this while being root using `su -m user -c ...'
 # and it has arguments to pass through to the shell.  It creates
-# a problem for us as su(1) assumes the root shell and has no
+# a problem for us as su(1) assumes a full root shell and has no
 # way to override it because the target user most likely does
-# not have a shell set.
-#
-# Let us at least parse our command line arguments as the command
-# does not start with a `-' in either case unless somebody wants
-# to inject something because it knows about the rest of the system.
+# not have a shell set.  Let us therefore parse the command line
+# arguments to find `-c' to be able to pass this on to a shell that
+# will handle it properly.
 while getopts c: OPT; do
 	case ${OPT} in
-        c)
-		# Worse still, su(1) *is* root, but changes to the
-		# selected user ID so it creates its own downfall
-		# by selecting the root shell to do it.  On OpenBSD,
-		# su(1) does have the `-s' parameter to override the
-		# shell.  FreeBSD has the '-s' parameter as well,
-		# but it is completely unrelated and the desired
-		# functionality does not actually exist.  :(
-		/bin/csh -${OPT} "${OPTARG}"
-		exit ${?}
+	c)
+		exec ${CMD_SHELL} -${OPT} "${OPTARG}"
 		;;
 	*)
 		echo "Usage: man opnsense-shell" >&2
@@ -46,6 +39,13 @@ if [ "$(id -u)" != "0" ]; then
 	echo "Must be root."
 	exit 1
 fi
+
+case "${1}" in
+password)
+	shift
+	exec ${CMD_PASSWORD} "${@}"
+	;;
+esac
 
 # endless loop
 while : ; do
@@ -75,35 +75,35 @@ set +e
 # see what the user has chosen
 case ${OPCODE} in
 0|exit|logout|quit)
-        exit
-        ;;
+	exit
+	;;
 1)
-        /usr/local/opnsense/scripts/shell/setports.php
-        ;;
+	/usr/local/opnsense/scripts/shell/setports.php
+	;;
 2)
-        /usr/local/opnsense/scripts/shell/setaddr.php
-        ;;
+	/usr/local/opnsense/scripts/shell/setaddr.php
+	;;
 3)
-        /usr/local/opnsense/scripts/shell/password.php
-        ;;
+	${CMD_PASSWORD}
+	;;
 4)
-        /usr/local/opnsense/scripts/shell/defaults.php
-        ;;
+	/usr/local/opnsense/scripts/shell/defaults.php
+	;;
 5)
-        /usr/local/opnsense/scripts/shell/halt.php
-        ;;
+	/usr/local/opnsense/scripts/shell/halt.php
+	;;
 6)
-        /usr/local/opnsense/scripts/shell/reboot.php
-        ;;
+	/usr/local/opnsense/scripts/shell/reboot.php
+	;;
 7)
-        /usr/local/opnsense/scripts/shell/ping.php
-        ;;
+	/usr/local/opnsense/scripts/shell/ping.php
+	;;
 8)
-        /bin/csh
-        ;;
+	${CMD_SHELL}
+	;;
 9)
-        /usr/local/sbin/pftop
-        ;;
+	/usr/local/sbin/pftop
+	;;
 10)
 	/usr/sbin/tcpdump -s 256 -v -S -l -n -e -ttt -i pflog0
 	;;
