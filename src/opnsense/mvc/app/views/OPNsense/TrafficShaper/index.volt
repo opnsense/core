@@ -65,6 +65,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     set:'/api/trafficshaper/settings/setRule/',
                     add:'/api/trafficshaper/settings/addRule/',
                     del:'/api/trafficshaper/settings/delRule/',
+                    toggle:'/api/trafficshaper/settings/toggleRule/',
                     options: {
                         converters: {
                             notprefixable: {
@@ -225,7 +226,8 @@ POSSIBILITY OF SUCH DAMAGE.
         <table id="grid-rules" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRule">
             <thead>
             <tr>
-                <th data-column-id="sequence" data-type="number">{{ lang._('#') }}</th>
+                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                <th data-column-id="sequence"  data-width="6em" data-type="number">{{ lang._('#') }}</th>
                 <th data-column-id="origin" data-type="string"  data-visible="false">{{ lang._('Origin') }}</th>
                 <th data-column-id="interface" data-type="string">{{ lang._('Interface') }}</th>
                 <th data-column-id="proto" data-type="string">{{ lang._('Protocol') }}</th>
