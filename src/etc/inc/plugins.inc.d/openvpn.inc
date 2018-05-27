@@ -197,13 +197,15 @@ function openvpn_port_used($prot, $interface, $port, $curvpnid = 0)
 {
     global $config;
 
+    $af = null;
+
     if (strlen($prot) > 3) {
-        /* ignore "4" or "6" if given */
         $prot = substr($prot, 0, 3);
+        $af = substr($prot, 3, 1);
     }
 
     if (isset($config['openvpn']['openvpn-server'])) {
-        foreach ($config['openvpn']['openvpn-server'] as & $settings) {
+        foreach ($config['openvpn']['openvpn-server'] as $settings) {
             if (isset($settings['disable'])) {
                 continue;
             }
@@ -212,15 +214,28 @@ function openvpn_port_used($prot, $interface, $port, $curvpnid = 0)
                 continue;
             }
 
-            if ($port == $settings['local_port'] && strpos($settings['protocol'], $prot) === 0 &&
-              ($interface == $settings['interface'] || $interface == "any" || $settings['interface'] == "any")) {
-                return $settings['vpnid'];
+            if ($port != $settings['local_port']) {
+                continue;
             }
+
+            if (strpos($settings['protocol'], $prot) === false) {
+                continue;
+            }
+
+            if (!empty($af) && strlen($settings['protocol']) > 3 && strpos($settings['protocol'], $af) === false) {
+                continue;
+            }
+
+            if ($interface != $settings['interface'] && $interface != 'any' && $settings['interface'] != 'any') {
+                continue;
+            }
+
+            return $settings['vpnid'];
         }
     }
 
     if (isset($config['openvpn']['openvpn-client'])) {
-        foreach ($config['openvpn']['openvpn-client'] as & $settings) {
+        foreach ($config['openvpn']['openvpn-client'] as $settings) {
             if (isset($settings['disable'])) {
                 continue;
             }
@@ -229,10 +244,23 @@ function openvpn_port_used($prot, $interface, $port, $curvpnid = 0)
                 continue;
             }
 
-            if ($port == $settings['local_port'] && strpos($settings['protocol'], $prot) === 0 &&
-              ($interface == $settings['interface'] || $interface == "any" || $settings['interface'] == "any")) {
-                return $settings['vpnid'];
+            if ($port != $settings['local_port']) {
+                continue;
             }
+
+            if (strpos($settings['protocol'], $prot) === false) {
+                continue;
+            }
+
+            if (!empty($af) && strlen($settings['protocol']) > 3 && strpos($settings['protocol'], $af) === false) {
+                continue;
+            }
+
+            if ($interface != $settings['interface'] && $interface != 'any' && $settings['interface'] != 'any') {
+                continue;
+            }
+
+            return $settings['vpnid'];
         }
     }
 
