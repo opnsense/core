@@ -1,5 +1,11 @@
 <form>
     <field>
+        <id>rule.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+        <help>enable this rule</help>
+    </field>
+    <field>
         <id>rule.sequence</id>
         <label>sequence</label>
         <type>text</type>

@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/TrafficShaper</mount>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <description>
         OPNsense traffic shaper
     </description>
@@ -193,6 +193,10 @@
         </queues>
         <rules>
             <rule type="ArrayField">
+              <enabled type="BooleanField">
+                  <default>1</default>
+                  <Required>Y</Required>
+              </enabled>
                 <sequence type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>1000000</MaximumValue>
