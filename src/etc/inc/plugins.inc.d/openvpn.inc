@@ -200,8 +200,8 @@ function openvpn_port_used($prot, $interface, $port, $curvpnid = 0)
     $af = null;
 
     if (strlen($prot) > 3) {
-        $prot = substr($prot, 0, 3);
         $af = substr($prot, 3, 1);
+        $prot = substr($prot, 0, 3);
     }
 
     if (isset($config['openvpn']['openvpn-server'])) {
