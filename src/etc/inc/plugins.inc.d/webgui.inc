@@ -407,9 +407,11 @@ EOD;
         } else {
             $lighty_config .= 'ssl.cipher-list = "'.$config['system']['webgui']['ssl-ciphers'].'"' . PHP_EOL;
         }
-        $lighty_config .= "setenv.add-response-header  = (\n";
-        $lighty_config .= "    \"Strict-Transport-Security\" => \"max-age=15768000;\"\n";
-        $lighty_config .= ")\n";
+        if (!empty($config['system']['webgui']['ssl-hsts'])) {
+            $lighty_config .= "setenv.add-response-header  = (\n";
+            $lighty_config .= "    \"Strict-Transport-Security\" => \"max-age=15768000;\"\n";
+            $lighty_config .= ")\n";
+        }
 
         $lighty_config .= "\n";
     }

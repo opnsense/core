@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ssl-certref'] = $config['system']['webgui']['ssl-certref'];
     $pconfig['compression'] = isset($config['system']['webgui']['compression']) ? $config['system']['webgui']['compression'] : null;
     $pconfig['ssl-ciphers'] = !empty($config['system']['webgui']['ssl-ciphers']) ? explode(':', $config['system']['webgui']['ssl-ciphers']) : array();
+    $pconfig['ssl-hsts'] = isset($config['system']['webgui']['ssl-hsts']);
     $pconfig['disablehttpredirect'] = isset($config['system']['webgui']['disablehttpredirect']);
     $pconfig['httpaccesslog'] = isset($config['system']['webgui']['httpaccesslog']);
     $pconfig['disableconsolemenu'] = isset($config['system']['disableconsolemenu']);
@@ -117,6 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['ssl-ciphers'] != $newciphers ||
             $config['system']['webgui']['interfaces'] != $newinterfaces ||
             (empty($pconfig['httpaccesslog'])) != empty($config['system']['webgui']['httpaccesslog']) ||
+            (empty($pconfig['ssl-hsts'])) != empty($config['system']['webgui']['ssl-hsts']) ||
             ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect']);
 
         $config['system']['webgui']['protocol'] = $pconfig['webguiproto'];
@@ -125,6 +127,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['webgui']['ssl-ciphers'] = $newciphers;
         $config['system']['webgui']['interfaces'] = $newinterfaces;
         $config['system']['webgui']['compression'] = $pconfig['compression'];
+
+        if (!empty($pconfig['ssl-hsts'])) {
+            $config['system']['webgui']['ssl-hsts'] = true;
+        } elseif (isset($config['system']['webgui']['ssl-hsts'])) {
+            unset($config['system']['webgui']['ssl-hsts']);
+        }
 
         if (!empty($pconfig['session_timeout'])) {
             $config['system']['webgui']['session_timeout'] = $pconfig['session_timeout'];
@@ -475,6 +483,16 @@ $(document).ready(function() {
                     <div class="hidden" data-for="help_for_sslciphers">
                       <?=gettext("Limit SSL cipher selection in case the system defaults are undesired. Note that restrictive use may lead to an inaccessible web GUI.");?>
                     </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_quietlogin" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("HSTS") ?></td>
+                <td>
+                  <input name="ssl-hsts" type="checkbox" value="yes" <?= empty($pconfig['ssl-hsts']) ? '' : 'checked="checked"' ?>/>
+                  <?= gettext('Enable HTTP Strict Transport Security') ?>
+                  <div class="hidden" data-for="help_for_quietlogin">
+                    <?=gettext("HTTP Strict Transport Security (HSTS) is a web security policy mechanism that helps to protect websites against protocol downgrade attacks and cookie hijacking.");?>
+                  </div>
                 </td>
               </tr>
               <tr>
