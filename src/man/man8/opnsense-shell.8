@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd May 19, 2018
+.Dd May 27, 2018
 .Dt OPNSENSE-SHELL 8
 .Os
 .Sh NAME
@@ -32,17 +32,32 @@
 .Nd OPNsense console menu
 .Sh SYNOPSIS
 .Nm
+.Op Fl c Ar script
+.Op Ar command
 .Sh DESCRIPTION
 The
 .Nm
 utility offers the administrator easy access to core functionality
 of the system.
-Said functionality only works for the root user, but when arguments
-are given the program will pass them to a real shell directly to allow
-compatibility with the
+Said functionality only works for the root user, who is able to either
+run an interactive menu or directly pass a
+.Ar command .
+.Pp
+The options are as follows:
+.Bl -tag -width ".Fl c" -offset indent
+.It Fl c
+Execute a shell
+.Ar script
+in
+.Xr csh 1 .
+This feature can be invoked by all users to allow compatibility with the
 .Xr rc 8
 system.
+.El
+.Sh EXIT STATUS
+.Ex -std
 .Sh SEE ALSO
+.Xr csh 1 ,
 .Xr opnsense-installer 8 ,
 .Xr rc 8
 .Sh HISTORY
