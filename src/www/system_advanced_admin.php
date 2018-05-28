@@ -486,11 +486,11 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_quietlogin" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("HSTS") ?></td>
+                <td><a id="help_for_sslhsts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('HTTP Strict Transport Security') ?></td>
                 <td>
                   <input name="ssl-hsts" type="checkbox" value="yes" <?= empty($pconfig['ssl-hsts']) ? '' : 'checked="checked"' ?>/>
                   <?= gettext('Enable HTTP Strict Transport Security') ?>
-                  <div class="hidden" data-for="help_for_quietlogin">
+                  <div class="hidden" data-for="help_for_sslhsts">
                     <?=gettext("HTTP Strict Transport Security (HSTS) is a web security policy mechanism that helps to protect websites against protocol downgrade attacks and cookie hijacking.");?>
                   </div>
                 </td>
