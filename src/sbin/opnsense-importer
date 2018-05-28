@@ -193,7 +193,7 @@ if [ -n "${PART}" ]; then
 		echo "The device could not be mounted."
 		bootstrap_and_exit 1
 	fi
-else
+elif [ -n "${POOL}" ]; then
 	echo "Starting import for ZFS pool '${POOL}'."
 	echo
 
