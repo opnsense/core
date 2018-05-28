@@ -53,11 +53,10 @@ bootstrap_and_exit()
 	# clean up after a finished import
 	if [ -d ${MNT} ]; then
 		if [ -n "${PART}" ]; then
-			umount ${MNT}
+			umount ${MNT} && rm -rf ${MNT}
 		elif [ -n "${POOL}" ]; then
-			zfs export ${POOL}
+			zpool export ${POOL} && rm -rf ${MNT}
 		fi
-		rm -rf ${MNT}
 	fi
 
 	if [ -z "${ZFS}" ]; then
@@ -206,8 +205,8 @@ elif [ -n "${POOL}" ]; then
 	echo "Starting import for ZFS pool '${POOL}'."
 	echo
 
-	zpool import -f -R /tmp/hdrescue ${POOL};
-	if ! zfs mount ${POOL}/ROOT/default; then
+	if ! zpool import -f -R /tmp/hdrescue ${POOL} &&  \
+	    zfs mount ${POOL}/ROOT/default; then
 		echo "The device could not be mounted."
 	fi
 fi
