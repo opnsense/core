@@ -205,8 +205,8 @@ elif [ -n "${POOL}" ]; then
 	echo "Starting import for ZFS pool '${POOL}'."
 	echo
 
-	if ! zpool import -f -R /tmp/hdrescue ${POOL} &&  \
-	    zfs mount ${POOL}/ROOT/default; then
+	zpool import -f -R ${MNT} ${POOL}
+	if ! zfs mount ${POOL}/ROOT/default; then
 		echo "The device could not be mounted."
 	fi
 fi
