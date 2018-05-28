@@ -52,8 +52,16 @@ bootstrap_and_exit()
 
 	# clean up after a finished import
 	if [ -d ${MNT} ]; then
-		umount ${MNT} 2> /dev/null
+		if [ -n "${PART}" ]; then
+			umount ${MNT}
+		elif [ -n "${POOL}" ]; then
+			zfs export ${POOL}
+		fi
 		rm -rf ${MNT}
+	fi
+
+	if [ -z "${ZFS}" ]; then
+		kldunload zfs
 	fi
 
 	# error code given or assumed ok (trap)
@@ -115,6 +123,16 @@ probe_for_part()
 		# GPT layout found
 		export PART="/dev/${DEV}p3"
 		return 0
+	elif [ "${DEV}" = "zroot" ]; then
+		if kldstat -qm zfs; then
+			export ZFS="yes"
+		else
+			kldload zfs
+		fi
+		if zpool import | awk '{ print $1 " " $2 }' | grep -q "${DEV} ONLINE"; then
+			export POOL="${DEV}"
+			return 0
+		fi
 	fi
 
 	return 1
@@ -144,7 +162,7 @@ else
 	DEVS=$(camcontrol devlist; gmirror status -s; graid status -s)
 fi
 
-while [ -z "${PART}" ]; do
+while [ -z "${PART}" -a -z "${POOL}" ]; do
 	echo
 	echo "${DEVS}"
 	echo
@@ -161,18 +179,28 @@ while [ -z "${PART}" ]; do
 	fi
 done
 
-echo "Starting import for partition '${PART}'."
-echo
-
 mkdir -p ${MNT}
 
-echo -n "Running fsck..."
-fsck -t ufs -y ${PART} > /dev/null
-echo "done."
+if [ -n "${PART}" ]; then
+	echo "Starting import for partition '${PART}'."
+	echo
 
-if ! mount ${PART} ${MNT} 2> /dev/null; then
-	echo "The device could not be mounted."
-	bootstrap_and_exit 1
+	echo -n "Running fsck..."
+	fsck -t ufs -y ${PART} > /dev/null
+	echo "done."
+
+	if ! mount ${PART} ${MNT}; then
+		echo "The device could not be mounted."
+		bootstrap_and_exit 1
+	fi
+else
+	echo "Starting import for ZFS pool '${POOL}'."
+	echo
+
+	if ! zpool import -f -R /tmp/hdrescue ${POOL} && \
+	    zfs mount ${POOL}/ROOT/default; then
+		echo "The device could not be mounted."
+	fi
 fi
 
 if [ -f "${MNT}/conf/config.xml" ]; then
