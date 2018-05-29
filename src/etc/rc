@@ -47,6 +47,7 @@ mount -fr / 2> /dev/null
 
 GROWFS_MARKER=/.probe.for.growfs.nano
 ROOT_IS_UFS=
+ZFS_DEV=
 
 while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 	# only tune our own file systems
@@ -96,6 +97,28 @@ while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 	fi
 done < /etc/fstab
 
+if [ -z "${ROOT_IS_UFS}" ]; then
+    ###Check root on ZFS
+    ORIGINAL_IFS="${IFS}"
+    IFS=$'\n'
+    ZFSCHK=$(mount -t zfs)
+
+    for rmnt in $ZFSCHK; do
+        ZFS_DEV=$(echo ${rmnt} | awk '{ print $1 }')
+        ZFS_MNT=$(echo ${rmnt} | awk '{ print $3 }')
+        if [ "${ZFS_MNT}" = "/" ]; then
+            break;
+        fi
+        ZFS_DEV=
+    done
+    IFS="${ORIGINAL_IFS}"
+fi
+
+if [ -z "${ROOT_IS_UFS}" ] && [ -n "${ZFS_DEV}" ]; then
+    ###Remount ZFS root read-write
+    mount -t zfs -o rw,remount ${ZFS_DEV} /
+fi
+
 attempts=0
 while [ ${attempts} -lt 3 ]; do
 	if [ -n "${ROOT_IS_UFS}" ]; then
@@ -108,14 +131,6 @@ while [ ${attempts} -lt 3 ]; do
 	fi
 	attempts=$((attempts+1))
 done
-
-if kldstat -qm zfs; then
-	mount -uw /
-	zfs mount -va
-	# maybe there is a mountpoint in fstab
-	# that requires ZFS to be fully set up
-	mount -a
-fi
 
 # clear growfs marker now that we are read/write
 rm -f ${GROWFS_MARKER}
