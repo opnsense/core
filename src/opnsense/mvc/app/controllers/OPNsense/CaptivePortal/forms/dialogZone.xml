@@ -22,7 +22,6 @@
         <id>zone.authservers</id>
         <label>Authenticate using</label>
         <type>select_multiple</type>
-        <style>tokenize</style>
         <help><![CDATA[Select authentication methods to use, leave empty for no authentication needed.]]></help>
     </field>
     <field>
