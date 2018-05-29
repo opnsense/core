@@ -631,6 +631,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
         }
 
         $ctype = '';
+
         switch($ifcfg['ipaddr']) {
             case "dhcp":
             case "pppoe":
@@ -658,15 +659,13 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             continue;
         }
 
-        $ctype = "_". strtoupper($ctype);
-
         $gateway = array();
         $gateway['dynamic'] = false;
         $gateway['ipprotocol'] = "inet";
         $gateway['gateway'] = get_interface_gateway($ifname, $gateway['dynamic']);
         $gateway['interface'] = get_real_interface($ifname);
         $gateway['friendlyiface'] = $ifname;
-        $gateway['name'] = "{$friendly}{$ctype}";
+        $gateway['name'] = strtoupper("{$friendly}_{$ctype}");
         $gateway['attribute'] = "system";
 
         if ($gateway['dynamic'] === "default" && $found_defaultv4 == 0) {
@@ -674,6 +673,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             $gateway['dynamic'] = true;
             $found_defaultv4 = 1;
         }
+
         /* loopback dummy for dynamic interfaces without an IP */
         if (!is_ipaddrv4($gateway['gateway']) && $gateway['dynamic'] == true) {
             $gateway['gateway'] = "dynamic";
@@ -683,7 +683,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             $gateway['monitor'] = $gateway['gateway'];
         }
 
-        $gateway['descr'] = "Interface {$friendly}{$ctype} Gateway";
+        $gateway['descr'] = "Interface {$friendly} {$ctype} Gateway";
         $gateway['monitor_disable'] = true;
         $gateways_arr[$gateway['name']] = $gateway;
     }
@@ -710,6 +710,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
         }
 
         $ctype = '';
+
         switch($ifcfg['ipaddrv6']) {
             case "slaac":
             case "dhcp6":
@@ -738,8 +739,6 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             continue;
         }
 
-        $ctype = "_". strtoupper($ctype);
-
         $gateway = array();
         $gateway['dynamic'] = false;
         $gateway['ipprotocol'] = "inet6";
@@ -752,7 +751,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
                 break;
         }
         $gateway['friendlyiface'] = $ifname;
-        $gateway['name'] = "{$friendly}{$ctype}";
+        $gateway['name'] = strtoupper("{$friendly}_{$ctype}");
         $gateway['attribute'] = "system";
 
         if (($gateway['dynamic'] === "default")  && ($found_defaultv6 == 0)) {
@@ -770,7 +769,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             $gateway['monitor'] = $gateway['gateway'];
         }
 
-        $gateway['descr'] = "Interface {$friendly}{$ctype} Gateway";
+        $gateway['descr'] = "Interface {$friendly} {$ctype} Gateway";
         $gateway['monitor_disable'] = true;
         $gateways_arr[$gateway['name']] = $gateway;
     }
