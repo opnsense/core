@@ -67,11 +67,20 @@ function getFormData(parent) {
                 node = node[keypart];
             } else {
                 if (sourceNode.is("select")) {
+                    var separator = ",";
+                    if (sourceNode.data('separator') != undefined) {
+                        // select defined it's own separator
+                        separator = sourceNode.data('separator');
+                        if (separator.match(/#[0-9]{1,3}/g)) {
+                            // use char() code
+                            separator = String.fromCharCode(parseInt(separator.substr(1)));
+                        }
+                    }
                     // selectbox, collect selected items
                     var tmp_str = "";
                     sourceNode.children().each(function(index){
                         if ($(this).prop("selected")){
-                            if (tmp_str != "") tmp_str = tmp_str + ",";
+                            if (tmp_str != "") tmp_str = tmp_str + separator;
                             tmp_str = tmp_str + $(this).val();
                         }
                     });
