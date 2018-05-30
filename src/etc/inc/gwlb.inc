@@ -632,7 +632,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 
         $ctype = '';
 
-        switch($ifcfg['ipaddr']) {
+        switch ($ifcfg['ipaddr']) {
             case "dhcp":
             case "pppoe":
             case "pptp":
@@ -711,7 +711,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 
         $ctype = '';
 
-        switch($ifcfg['ipaddrv6']) {
+        switch ($ifcfg['ipaddrv6']) {
             case "slaac":
             case "dhcp6":
             case "6to4":
@@ -744,7 +744,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
         $gateway['ipprotocol'] = "inet6";
         $gateway['gateway'] = get_interface_gateway_v6($ifname, $gateway['dynamic']);
         $gateway['interface'] = get_real_interface($ifname, "inet6");
-        switch($ifcfg['ipaddrv6']) {
+        switch ($ifcfg['ipaddrv6']) {
             case "6rd":
             case "6to4":
                 $gateway['dynamic'] = "default";
@@ -1163,7 +1163,7 @@ function validate_address_family($ipaddr, $gwname)
 
     $gw_array = return_gateways_array();
     if (is_array($gw_array[$gwname])) {
-        switch($gw_array[$gwname]['ipprotocol']) {
+        switch ($gw_array[$gwname]['ipprotocol']) {
             case "inet":
                 $v4gw = true;
                 break;
