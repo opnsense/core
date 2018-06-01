@@ -338,7 +338,7 @@ license: want-p5-File-Slurp
 dhparam:
 .for BITS in 1024 2048 4096
 	${OPENSSL} dhparam -out \
-	    ${.CURDIR}/src/etc/dh-parameters.${BITS} ${BITS}
+	    ${.CURDIR}/src/etc/dh-parameters.${BITS}.sample ${BITS}
 .endfor
 
 test: want-phpunit6-php${CORE_PHP}

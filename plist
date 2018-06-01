@@ -2,9 +2,6 @@
 /boot/logo-hourglass.4th
 /usr/local/etc/devd/carp.conf
 /usr/local/etc/devd/ifnet.conf
-/usr/local/etc/dh-parameters.1024
-/usr/local/etc/dh-parameters.2048
-/usr/local/etc/dh-parameters.4096
 /usr/local/etc/inc/IPv6.inc
 /usr/local/etc/inc/PEAR.inc
 /usr/local/etc/inc/XMLRPC_Client.inc
@@ -1203,6 +1200,9 @@
 @sample /usr/local/etc/bogons.sample
 @sample /usr/local/etc/bogonsv6.sample
 @sample /usr/local/etc/config.xml.sample
+@sample /usr/local/etc/dh-parameters.1024.sample
+@sample /usr/local/etc/dh-parameters.2048.sample
+@sample /usr/local/etc/dh-parameters.4096.sample
 @sample /usr/local/opnsense/service/templates/OPNsense/IDS/custom.yaml.sample
 @shadow /usr/local/etc/pkg/repos/FreeBSD.conf.sample
 @shadow /usr/local/etc/pkg/repos/origin.conf.sample

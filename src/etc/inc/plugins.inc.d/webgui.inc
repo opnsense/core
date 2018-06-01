@@ -376,7 +376,7 @@ EOD;
         $lighty_config .= "\n## ssl configuration\n";
         $lighty_config .= "ssl.engine = \"enable\"\n";
         $lighty_config .= "ssl.disable-client-renegotiation = \"enable\"\n";
-        $lighty_config .= "ssl.dh-file = \"/usr/local/etc/dh-parameters.4096\"\n";
+        $lighty_config .= "ssl.dh-file = \"" . get_dh_parameters(4096) . "\"\n";
         $lighty_config .= "ssl.ec-curve = \"secp384r1\"\n";
         $lighty_config .= "ssl.pemfile = \"/var/etc/{$cert_location}\"\n";
         if (!empty($ca)) {
