@@ -32,12 +32,15 @@ use OPNsense\Base\FieldTypes\BaseField;
 use Phalcon\Validation\Validator\Regex;
 use Phalcon\Validation\Validator\ExclusionIn;
 use Phalcon\Validation\Validator\Callback;
+use Phalcon\Validation\Message;
+use OPNsense\Firewall\Util;
+
 
 /**
- * Class AliasNameField
+ * Class AliasContentField
  * @package OPNsense\Base\FieldTypes
  */
-class AliasNameField extends BaseField
+class AliasContentField extends BaseField
 {
     /**
      * @var bool marks if this is a data node or a container
@@ -50,43 +53,69 @@ class AliasNameField extends BaseField
     protected $internalValidationMessage = "alias name required";
 
     /**
+     * item separator
+     * @var string
+     */
+    private $separatorchar = "\n";
+
+    /**
+     * retrieve data as options
+     * @return array
+     */
+    public function getNodeData()
+    {
+        $result = array ();
+        $selectlist = explode($this->separatorchar, (string)$this);
+        foreach ($selectlist as $optKey) {
+            $result[$optKey] = array("value"=>$optKey, "selected" => 1);
+        }
+        return $result;
+    }
+
+    /**
+     * Validate port alias options
+     * @param array $data to validate
+     * @return bool|Callback
+     */
+    private function validatePort($data)
+    {
+        $message = array();
+        foreach ($data as $key => $value){
+            foreach (explode($this->separatorchar, $value) as $key => $value){
+                if (!Util::isAlias($value) && !Util::isPort($value, true)){
+                    $message[] = $value;
+                }
+            }
+        }
+        if (!empty($message)) {
+            // When validation fails use a callback to return the message so we can add the failed items
+            return new Callback([
+                "message" =>sprintf(gettext('Entry "%s" is not a valid port number.'), implode("|", $message)),
+                "callback" => function() {return false;}]
+            );
+        }
+        return true;
+    }
+
+    /**
      * retrieve field validators for this field type
-     * @return array returns list of validators
+     * @return array
      */
     public function getValidators()
     {
         $validators = parent::getValidators();
-        $reservedwords = array(
-            'all', 'pass', 'block', 'out', 'queue', 'max', 'min', 'pptp', 'pppoe', 'L2TP', 'OpenVPN', 'IPsec'
-        );
         if ($this->internalValue != null) {
-            // add validations to deny reserved keywords, service/protocol names and invalid characters
-            $validators[] = new ExclusionIn(array(
-                'message' => sprintf(gettext('The name cannot be the internally reserved keyword "%s".'),
-                    (string)$this),
-                'domain' => $reservedwords)
-            );
-            $validators[] = new Regex(array(
-                'message' => sprintf(gettext(
-                    'The name must be less than 32 characters long and may only consist of the following characters: %s'
-                ), 'a-z, A-Z, 0-9, _'),
-                'pattern'=>'/[_0-9a-zA-z]{1,32}/')
-            );
-            $validators[] = new Callback(
-                [
-                    "message" => gettext('Reserved protocol or service names may not be used'),
-                    "callback" => function($data) {
-                        foreach ($data as $key => $value){
-                            if (getservbyname($value, 'tcp') ||
-                                    getservbyname($value, 'udp') || getprotobyname($value)) {
-                                return false;
-                            }
-                        }
-                        return true;
-                    }
-                ]
-            );
+            $alias_type = (string)$this->getParentNode()->type;
 
+            switch ($alias_type) {
+                case "port":
+                    $validators[] = new Callback(["callback" => function ($data) {
+                        return $this->validatePort($data);}
+                    ]);
+                    break;
+                default:
+                    break;
+            }
         }
         return $validators;
     }
