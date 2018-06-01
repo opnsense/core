@@ -124,7 +124,7 @@ class Util
      * @param boolean $allow_range ranges allowed
      * @return boolean
      */
-    public function isPort($number, $allow_range = true)
+    public static function isPort($number, $allow_range = true)
     {
         $tmp = explode(':', $number);
         foreach ($tmp as $port) {
