@@ -62,6 +62,22 @@ function pf_cron()
         }
     }
 
+    /* bogons fetch always set in default config.xml */
+    switch ($config['system']['bogons']['interval']) {
+        case 'daily':
+            $jobs[]['autocron'] = array('/usr/local/etc/rc.update_bogons cron', '1', '3', '*', '*', '*');
+            break;
+        case 'weekly':
+            $jobs[]['autocron'] = array('/usr/local/etc/rc.update_bogons cron', '1', '3', '*', '*', '0');
+            break;
+        case 'monthly':
+        default:
+            $jobs[]['autocron'] = array('/usr/local/etc/rc.update_bogons cron', '1', '3', '1', '*', '*');
+            break;
+    }
+
+    $jobs[]['autocron'] = array('/usr/local/bin/flock -n -E 0 -o /tmp/filter_update_tables.lock /usr/local/opnsense/scripts/filter/update_tables.py', '*');
+
     return $jobs;
 }
 

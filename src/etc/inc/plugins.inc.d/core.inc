@@ -172,3 +172,37 @@ function core_services()
 
     return $services;
 }
+
+function core_cron()
+{
+    global $config;
+
+    $jobs = array();
+
+    $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 webConfiguratorlockout', '1');
+    $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '2');
+    $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 virusprot', '3');
+    $jobs[]['autocron'] = array('/usr/local/etc/rc.expireaccounts', '5');
+
+    $jobs[]['autocron'] = array('/usr/local/sbin/ping_hosts.sh', '*/4');
+
+    if (!empty($config['system']['rrdbackup'])) {
+       $jobs[]['autocron'] = array('/usr/local/etc/rc.backup_rrd', '0', '*/' . $config['system']['rrdbackup']);
+    }
+
+    if (!empty($config['system']['dhcpbackup'])) {
+        $jobs[]['autocron'] = array('/usr/local/etc/rc.backup_dhcpleases', '0', '*/' . $config['system']['dhcpbackup']);
+    }
+
+    if (!empty($config['system']['netflowbackup'])) {
+        $jobs[]['autocron'] = array('/usr/local/etc/rc.backup_netflow', '0', '*/' . $config['system']['netflowbackup']);
+    }
+
+    if (!empty($config['system']['captiveportalbackup'])) {
+        $jobs[]['autocron'] = array('/usr/local/etc/rc.backup_captiveportal', '0', '*/' . $config['system']['captiveportalbackup']);
+    }
+
+    $jobs[]['autocron'] = array('/usr/local/opnsense/scripts/remote_backup.php', 0, 1);
+
+    return $jobs;
+}
