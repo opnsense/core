@@ -236,7 +236,7 @@ function step7_submitphpaction()
         $input_errors[] = gettext('Please do not use special characters in Certificate field names.');
         $stepid--;
     } elseif (in_array($_POST['descr'], $canames) || in_array($_POST['descr'], $cacns)) {
-        $input_errors[] = gettext('Please enter a different name for the Certicicate Authority. ' .
+        $input_errors[] = gettext('Please enter a different name for the Certificate Authority. ' .
             'A Certificate Authority with that name already exists.');
         $stepid--;
     } elseif (strlen($_POST['country']) != 2) {
@@ -340,7 +340,7 @@ function step9_submitphpaction()
         $input_errors[] = gettext('Please do not use special characters in Certificate field names.');
         $stepid--;
     } elseif (in_array($_POST['descr'], $certnames) || in_array($_POST['descr'], $certcns)) {
-        $input_errors[] = gettext('Please enter a different name for the Certicicate. ' .
+        $input_errors[] = gettext('Please enter a different name for the Certificate. ' .
             'A Certificate with that name/common name already exists.');
         $stepid--;
     } elseif (strlen($_POST['country']) != 2) {
