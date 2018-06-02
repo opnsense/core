@@ -445,38 +445,43 @@ function local_user_set(&$user, $force_password = false)
         return;
     }
 
+    @mkdir('/home', 0755);
+
     $user_pass = $user['password'];
     $user_name = $user['name'];
     $user_uid = $user['uid'];
     $lock_account = 'lock';
 
+    /* unlock valid shell users */
+    if (!isset($user['disabled']) && !(!empty($user['expires']) &&
+        strtotime('-1 day') > strtotime(date('m/d/Y', strtotime($user['expires']))))) {
+        $lock_account = 'unlock';
+    }
+
     if ($user_uid == 0) {
         $user_shell = isset($user['shell']) ? $user['shell'] : '/usr/local/sbin/opnsense-shell';
         $user_group = 'wheel';
         $user_home = '/root';
+
+        if ($lock_account == 'lock') {
+            $lock_account = 'unlock';
+            $user_pass = '*';
+        }
     } else {
         $user_shell = isset($user['shell']) ? $user['shell'] : '/sbin/nologin';
         $user_home = "/home/{$user_name}";
         $user_group = 'nobody';
     }
 
-    @mkdir('/home', 0755);
-
     /* admins access gives wheely rights */
     if (userHasPrivilege($user, 'page-all')) {
         $user_group = 'wheel';
-    }
-
-    /* unlock valid shell users */
-    if (!is_account_disabled($user_name) && !is_account_expired($user_name)) {
-        $lock_account = 'unlock';
     }
 
     /* passwords only when integrated auth is disabled or forced */
     if (!$force_password && empty($config['system']['disableintegratedauth'])) {
         $user_pass = '*';
     }
-
 
     /* read from pw db */
     $fd = popen("/usr/sbin/pw usershow -n {$user_name} 2>&1", "r");
@@ -704,29 +709,6 @@ function ldap_setup_caenv($authcfg)
     /* XXX: Probably even the hashed link should be created for this? */
     putenv("LDAPTLS_CACERTDIR=/var/run/certs");
     putenv("LDAPTLS_CACERT=/var/run/certs/{$caref['refid']}.ca");
-}
-
-
-function is_account_expired($username)
-{
-    $user = getUserEntry($username);
-    if (isset($user['expires']) && !empty($user['expires'])) {
-        if (strtotime("-1 day") > strtotime(date("m/d/Y",strtotime($user['expires'])))) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-function is_account_disabled($username)
-{
-    $user = getUserEntry($username);
-    if (isset($user['disabled'])) {
-        return true;
-    }
-
-    return false;
 }
 
 function auth_get_authserver($name)
