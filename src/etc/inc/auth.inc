@@ -464,6 +464,14 @@ function local_user_set(&$user, $force_password = false)
         $user_home = '/root';
 
         if ($lock_account == 'lock') {
+            /*
+             * The root account should not be locked, as this will have
+             * side-effects such as cron not working correctly.  Set
+             * password to unreachable "*" instead.  Our auth framework
+             * already checks for disabled elsewhere so we only need to
+             * prevent root login in the console when integrated
+             * authentication is off.
+             */
             $lock_account = 'unlock';
             $user_pass = '*';
         }
