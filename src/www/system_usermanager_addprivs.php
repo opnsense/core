@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $retval = write_config();
             $savemsg = get_std_save_message();
 
-            header(url_safe('Location: /system_usermanager.php?act=edit&userid=%s&savemsg=%s', array($userid, $savemsg)));
+            header(url_safe('Location: /system_usermanager.php?act=edit&userid=%d&savemsg=%s', array($userid, $savemsg)));
             exit;
         } elseif ($_POST['input_type'] == 'group' && isset($config['system']['group'][$pconfig['id']]['name'])) {
             $groupid = $_POST['id'];
