@@ -492,7 +492,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (count($input_errors) == 0) {
                 write_config();
                 if (isset($userid)) {
-                    header(url_safe('Location: /system_usermanager.php?act=edit&userid=%s', array($userid)));
+                    header(url_safe('Location: /system_usermanager.php?act=edit&userid=%d', array($userid)));
                 } else {
                     header(url_safe('Location: /system_certmanager.php'));
                 }
