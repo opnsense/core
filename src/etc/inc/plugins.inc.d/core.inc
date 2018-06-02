@@ -202,6 +202,17 @@ function core_cron()
         $jobs[]['autocron'] = array('/usr/local/etc/rc.backup_captiveportal', '0', '*/' . $config['system']['captiveportalbackup']);
     }
 
+    if (!empty($config['system']['dhparaminterval'])) {
+        switch ($config['system']['dhparaminterval']) {
+            case 'weekly':
+                $jobs[]['autocron'] = array('configctl system ssl dhparam', '30', '3', '*', '*', '0');
+                break;
+            case 'monthly':
+                $jobs[]['autocron'] = array('configctl system ssl dhparam', '30', '3', '1', '*', '*');
+                break;
+        }
+    }
+
     $jobs[]['autocron'] = array('/usr/local/opnsense/scripts/remote_backup.php', 0, 1);
 
     return $jobs;

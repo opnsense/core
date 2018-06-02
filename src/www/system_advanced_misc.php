@@ -83,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['use_mfs_var'] = isset($config['system']['use_mfs_tmpvar']) || isset($config['system']['use_mfs_var']);
     $pconfig['use_mfs_tmp'] = isset($config['system']['use_mfs_tmpvar']) || isset($config['system']['use_mfs_tmp']);
     $pconfig['use_swap_file'] = isset($config['system']['use_swap_file']);
+    $pconfig['dhparaminterval'] = !empty($config['system']['dhparaminterval']) ? $config['system']['dhparaminterval'] : null;
     $pconfig['rrdbackup'] = !empty($config['system']['rrdbackup']) ? $config['system']['rrdbackup'] : null;
     $pconfig['dhcpbackup'] = !empty($config['system']['dhcpbackup']) ? $config['system']['dhcpbackup'] : null;
     $pconfig['netflowbackup'] = !empty($config['system']['netflowbackup']) ? $config['system']['netflowbackup'] : null;
@@ -147,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['use_mfs_var']);
         }
 
-        /* the config used to have this, but we've split it up in 17.1 */
+        /* XXX config used to have this, but we've split it up in 17.1 */
         if (isset($config['system']['use_mfs_tmpvar'])) {
             unset($config['system']['use_mfs_tmpvar']);
         }
@@ -189,13 +190,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['captiveportalbackup']);
         }
 
+        if (!empty($pconfig['dhparaminterval'])) {
+            $config['system']['dhparaminterval'] = $pconfig['dhparaminterval'];
+        } elseif (isset($config['system']['dhparaminterval'])) {
+            unset($config['system']['dhparaminterval']);
+        }
+
         write_config();
-        $savemsg = get_std_save_message();
 
         system_resolvconf_generate();
         system_cron_configure();
         system_powerd_configure();
         system_kernel_configure();
+
+        $savemsg = get_std_save_message();
     }
 }
 
@@ -225,14 +233,28 @@ include("head.inc");
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td style="width:22%"><strong><?= gettext('Cryptographic Hardware Acceleration') ?></strong></td>
+                <td style="width:22%"><strong><?= gettext('Cryptography settings') ?></strong></td>
                 <td style="width:78%; text-align:right">
                   <small><?=gettext("full help"); ?> </small>
                   <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_crypto_hardware" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware");?></td>
+                <td><a id="help_for_dhparaminterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('DH parameter schedule') ?></td>
+                <td>
+                  <select name="dhparaminterval" class="selectpicker" data-style="btn-default" id="dhparaminterval">
+                    <option value="" <?= $pconfig['dhparaminterval'] == '' ? "selected='selected'" : '' ?>><?=gettext('System defaults') ?></option>
+                    <option value="weekly" <?= $pconfig['dhparaminterval'] == 'weekly' ? "selected='selected'" : '' ?>><?=gettext('Weekly renewal') ?></option>
+                    <option value="monthly" <?= $pconfig['dhparaminterval'] == 'monthly' ? "selected='selected'" : '' ?>><?=gettext('Monthly renewal') ?></option>
+                  </select>
+                  <div class="hidden" data-for="help_for_dhparaminterval">
+                    <?=gettext('Diffie-Hellman parameters are statically provided and updated at least twice per year in software updates. ' .
+                               'You can choose to regenerate unqiue parameters locally instead according to a predefined schedule.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_crypto_hardware" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Hardware acceleration') ?></td>
                 <td>
                   <select name="crypto_hardware" id="crypto_hardware" class="selectpicker" data-style="btn-default">
                     <option value=""><?=gettext("None"); ?></option>
@@ -416,7 +438,7 @@ include("head.inc");
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('On AC Power Mode') ?></td>
                 <td>
-                  <select name="powerd_ac_mode" class="selectpicker" data-style="btn-default" data-width="auto">
+                  <select name="powerd_ac_mode" class="selectpicker" data-style="btn-default">
                     <option value="hadp" <?=$pconfig['powerd_ac_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
                       <?=gettext("Hiadaptive");?>
                     </option>
@@ -434,7 +456,7 @@ include("head.inc");
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('On Battery Power Mode') ?></td>
                 <td>
-                  <select name="powerd_battery_mode" class="selectpicker" data-style="btn-default" data-width="auto">
+                  <select name="powerd_battery_mode" class="selectpicker" data-style="btn-default">
                     <option value="hadp"<?=$pconfig['powerd_battery_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
                       <?=gettext("Hiadaptive");?>
                     </option>
@@ -453,7 +475,7 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_powerd_normal_mode" href="#" class="showhelp"><i class="fa fa-info-circle text-circle"></i></a> <?=gettext('On Normal Power Mode'); ?></td>
                 <td>
-                  <select name="powerd_normal_mode" class="selectpicker" data-style="btn-default" data-width="auto">
+                  <select name="powerd_normal_mode" class="selectpicker" data-style="btn-default">
                     <option value="hadp"<?=$pconfig['powerd_normal_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
                       <?=gettext("Hiadaptive");?>
                     </option>
