@@ -691,7 +691,7 @@ $( document ).ready(function() {
                 <tr class="advanced hidden">
                   <td><a id="help_for_weight" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Weight");?></td>
                   <td>
-                    <select name="weight" class="selectpicker" data-width="auto">
+                    <select name="weight" class="selectpicker">
 <?php
                     for ($i = 1; $i < 6; $i++):?>
                       <option value="<?=$i;?>" <?=$pconfig['weight'] == $i ? "selected='selected'" : "";?> >
