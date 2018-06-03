@@ -277,11 +277,11 @@ $( document ).ready(function() {
                         <td class="text-center">
                           <br />
                           <a id="add_users" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Add Users"); ?>">
-                              <span class="glyphicon glyphicon-arrow-right"></span>
+                              <span class="fa fa-arrow-right fa-fw"></span>
                           </a>
                           <br /><br />
                           <a id="add_groups" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Remove Users"); ?>">
-                              <span class="glyphicon glyphicon-arrow-left"></span>
+                              <span class="fa fa-arrow-left fa-fw"></span>
                           </a>
                         </td>
                         <td>
@@ -331,7 +331,7 @@ $( document ).ready(function() {
                     <tr>
                       <td colspan="2">
                         <a href="system_usermanager_addprivs.php?groupid=<?=htmlspecialchars($id)?>" class="btn btn-default btn-xs">
-                          <span class="fa fa-pencil"></span>
+                          <span class="fa fa-pencil fa-fw"></span>
                         </a>
                       </td>
                     </tr>
@@ -365,9 +365,9 @@ $( document ).ready(function() {
               <thead>
                 <tr>
                   <th><?=gettext("Group name");?></th>
-                  <th class="hidden-xs"><?=gettext("Description");?></th>
                   <th><?=gettext("Member Count");?></th>
-                  <th></th>
+                  <th><?=gettext("Description");?></th>
+                  <th class="text-nowrap"></th>
                 </tr>
               </thead>
               <tbody>
@@ -376,16 +376,15 @@ $( document ).ready(function() {
               foreach ($a_group as $group) :?>
                 <tr>
                   <td>
-                    <span class="glyphicon glyphicon-user <?= !empty($group['priv']) && in_array('page-all', $group['priv']) ? 'text-danger' : 'text-info' ?>"></span>
+                    <span class="fa fa-user <?= !empty($group['priv']) && in_array('page-all', $group['priv']) ? 'text-danger' : 'text-info' ?>"></span>
                     <?=$group['name']; ?>
                   </td>
-                  <td class="hidden-xs"><?=$group['description'];?></td>
-                  <td><?= count($group['member']) ?>
-                  </td>
-                  <td>
+                  <td><?= count($group['member']) ?></td>
+                  <td ><?=$group['description'];?></td>
+                  <td class="text-nowrap">
                     <a href="system_groupmanager.php?act=edit&groupid=<?=$i?>"
                        class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("edit group");?>">
-                        <span class="glyphicon glyphicon-pencil"></span>
+                        <span class="fa fa-pencil fa-fw"></span>
                     </a>
 
 <?php
@@ -393,7 +392,7 @@ $( document ).ready(function() {
                     <button type="button" class="btn btn-default btn-xs act-del-group"
                         data-groupname="<?=$group['name'];?>"
                         data-groupid="<?=$i?>" title="<?=gettext("delete group");?>" data-toggle="tooltip">
-                      <span class="fa fa-trash text-muted"></span>
+                      <span class="fa fa-trash fa-fw"></span>
                     </button>
 <?php
                     endif;?>
@@ -402,27 +401,28 @@ $( document ).ready(function() {
 <?php
               $i++;
               endforeach;?>
-              </tbody>
-              <tfoot>
                 <tr>
-                  <td class="list" colspan="2"></td>
-                  <td class="hidden-xs"> </td>
-                  <td class="list">
+                  <td colspan="3">
+                    <table>
+                      <tr>
+                        <td></td>
+                        <td style="width:20px"></td>
+                        <td style="width:20px"><span class="fa fa-user text-danger"></span></td>
+                        <td style="width:200px"><?= gettext('Superuser group') ?></td>
+                        <td style="width:20px"><span class="fa fa-user text-info"></span></td>
+                        <td style="width:200px"><?= gettext('Normal group') ?></td>
+                        <td></td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td class="text-nowrap">
                     <a href="system_groupmanager.php?act=new" class="btn btn-default btn-xs"
                        title="<?=gettext("add group");?>" data-toggle="tooltip">
-                      <span class="glyphicon glyphicon-plus"></span>
+                      <span class="fa fa-plus fa-fw"></span>
                     </a>
                   </td>
                 </tr>
-                <tr  class="hidden-xs">
-                  <td colspan="4">
-                      <?=gettext('Additional groups can be added here. ' .
-                      'Group permissions can be assigned which are inherited by users who are members of the group. ' .
-                      'An icon that appears grey indicates that it is a system defined object. ' .
-                      'Some system object properties can be modified but they cannot be deleted.');?>
-                  </td>
-                </tr>
-              </tfoot>
+              </tbody>
             </table>
           </form>
 <?php

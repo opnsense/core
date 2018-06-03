@@ -100,7 +100,7 @@ include("head.inc");
                 <tr>
                   <td style="width:22%"><?=gettext("Authentication Server"); ?></td>
                   <td style="width:78%">
-                    <select name="authmode" id="authmode" class="form-control" >
+                    <select class="selectpicker" name="authmode" id="authmode" class="form-control" >
 <?php
                     foreach (auth_get_authserver_list() as $auth_server_id => $auth_server):?>
                       <option value="<?=$auth_server_id;?>" <?=$auth_server['name'] == $pconfig['authmode'] ? "selected=\"selected\"" : "";?>>
