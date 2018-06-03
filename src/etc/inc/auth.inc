@@ -450,31 +450,35 @@ function local_user_set(&$user, $force_password = false)
     $user_pass = $user['password'];
     $user_name = $user['name'];
     $user_uid = $user['uid'];
+
     $lock_account = 'lock';
 
-    /* unlock valid shell users */
-    if (!isset($user['disabled']) && !(!empty($user['expires']) &&
-        strtotime('-1 day') > strtotime(date('m/d/Y', strtotime($user['expires']))))) {
+    $is_expired = !empty($user['expires']) &&
+        strtotime('-1 day') > strtotime(date('m/d/Y', strtotime($user['expires'])));
+
+    $is_disabled = isset($user['disabled']);
+
+    $is_unlocked = !$is_disabled && !$is_expired;
+
+    if ($is_unlocked) {
         $lock_account = 'unlock';
+    } elseif ($user_uid == 0) {
+        /*
+         * The root account should not be locked, as this will have
+         * side-effects such as cron not working correctly.  Set
+         * password to unreachable "*" instead.  Our auth framework
+         * already checks for disabled elsewhere so we only need to
+         * prevent root login in the console when integrated
+         * authentication is off.
+         */
+        $lock_account = 'unlock';
+        $user_pass = '*';
     }
 
     if ($user_uid == 0) {
         $user_shell = isset($user['shell']) ? $user['shell'] : '/usr/local/sbin/opnsense-shell';
         $user_group = 'wheel';
         $user_home = '/root';
-
-        if ($lock_account == 'lock') {
-            /*
-             * The root account should not be locked, as this will have
-             * side-effects such as cron not working correctly.  Set
-             * password to unreachable "*" instead.  Our auth framework
-             * already checks for disabled elsewhere so we only need to
-             * prevent root login in the console when integrated
-             * authentication is off.
-             */
-            $lock_account = 'unlock';
-            $user_pass = '*';
-        }
     } else {
         $user_shell = isset($user['shell']) ? $user['shell'] : '/sbin/nologin';
         $user_home = "/home/{$user_name}";
@@ -519,7 +523,7 @@ function local_user_set(&$user, $force_password = false)
     @chgrp($user_home, $user_group);
 
     /* write out ssh authorized key file */
-    if (isset($user['authorizedkeys'])) {
+    if ($is_unlocked && isset($user['authorizedkeys'])) {
         @mkdir("{$user_home}/.ssh", 0700);
         @chown("{$user_home}/.ssh", $user_name);
         $keys = base64_decode($user['authorizedkeys']);
