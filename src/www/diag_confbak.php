@@ -286,17 +286,17 @@ $( document ).ready(function() {
                     <th><?=gettext("Date");?></th>
                     <th><?=gettext("Size");?></th>
                     <th><?=gettext("Configuration Change");?></th>
-                    <th>&nbsp;</th>
+                    <th class="text-nowrap"></th>
                   </tr>
                   <tr>
                     <td></td>
                     <td>
                       <input type="radio" name="newtime" value="current" <?= !isset($newcheck) || $newcheck == 'current' ? 'checked="checked"' : '' ?>/>
                     </td>
-                    <td> <?=date(gettext("n/j/y H:i:s"), $config['revision']['time']) ?></td>
-                    <td> <?=format_bytes(filesize("/conf/config.xml")) ?></td>
-                    <td> <?="{$config['revision']['username']}: {$config['revision']['description']}" ?></td>
-                    <td><b><?=gettext("Current");?></b></td>
+                    <td><?=date(gettext("n/j/y H:i:s"), $config['revision']['time']) ?></td>
+                    <td><?=format_bytes(filesize("/conf/config.xml")) ?></td>
+                    <td><?="{$config['revision']['username']}: {$config['revision']['description']}" ?></td>
+                    <td class="text-nowrap"><strong><?=gettext("Current");?></strong></td>
                   </tr>
 <?php
                 $last = count($confvers);
@@ -314,15 +314,15 @@ $( document ).ready(function() {
                     <td><?= date(gettext("n/j/y H:i:s"), $version['time']) ?></td>
                     <td><?= format_bytes($version['filesize']) ?></td>
                     <td><?= "{$version['username']}: {$version['description']}" ?></td>
-                    <td>
+                    <td class="text-nowrap">
                       <a data-id="<?=$version['time'];?>" href="#" class="act_revert btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Revert to this configuration");?>">
-                         <span class="glyphicon glyphicon-log-in"></span>
+                         <i class="fa fa-sign-in fa-fw"></i>
                        </a>
-                       <a data-id="<?=$version['time'];?>" href="#" class="act_delete btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Remove this backup");?>" >
-                         <span class="fa fa-trash text-muted"></span>
+                       <a data-id="<?=$version['time'];?>" href="#" class="act_delete btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Remove this backup");?>">
+                         <i class="fa fa-trash fa-fw"></i>
                        </a>
-                       <a href="diag_confbak.php?getcfg=<?=$version['time'];?>" class="btn btn-default btn-xs" title="<?=gettext("Download this backup");?>">
-                       <span class="glyphicon glyphicon-download"></span>
+                       <a href="diag_confbak.php?getcfg=<?=$version['time'];?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Download this backup");?>">
+                         <i class="fa fa-download fa-fw"></i>
                      </a>
                     </td>
                   </tr>
