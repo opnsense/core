@@ -320,13 +320,11 @@ legacy_html_escape_form_data($a_server);
 include("head.inc");
 
 $main_buttons = array();
-if (!isset($_GET['act']) || $_GET['act'] != 'new') {
-    $main_buttons[] = array('label'=>gettext('Add server'), 'href'=>'system_authservers.php?act=new');
+if (!isset($_GET['act'])) {
+    $main_buttons[] = array('label' => gettext('Add'), 'href' => 'system_authservers.php?act=new');
 }
 
 ?>
-
-
 <body>
 
 <script>
@@ -856,7 +854,7 @@ else :
                   <th><?=gettext("Server Name");?></th>
                   <th style="width:25%"><?=gettext("Type");?></th>
                   <th style="width:35%"><?=gettext("Host Name");?></th>
-                  <th style="width:10%" class="list"></th>
+                  <th style="width:10%" class="text-nowrap"></th>
                 </tr>
               </thead>
               <tbody>
@@ -867,14 +865,14 @@ else :
                   <td><?= $server['name'] ?></td>
                   <td><?= !empty($authCNFOptions[$server['type']]) ? $authCNFOptions[$server['type']]['description'] : $server['name'] ?></td>
                   <td><?= !empty($server['host']) ? $server['host'] : $config['system']['hostname'] ?></td>
-                  <td>
+                  <td class="text-nowrap">
                     <a href="system_authservers.php?act=edit&amp;id=<?=$i;?>" title="<?= html_safe(gettext('Edit')) ?>" data-toggle="tooltip" class="btn btn-default btn-xs">
-                      <i class="fa fa-pencil text-muted"></i>
+                      <i class="fa fa-pencil fa-fw"></i>
                     </a>
                     <?php if ($i < (count($a_server) - 1)):
 ?>
                     <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs">
-                      <i class="fa fa-trash text-muted"></i>
+                      <i class="fa fa-trash fa-fw"></i>
                     </a>
                   </td>
 <?php

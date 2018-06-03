@@ -406,6 +406,11 @@ legacy_html_escape_form_data($a_user);
 
 include("head.inc");
 
+$main_buttons = array();
+if (!isset($_GET['act'])) {
+    $main_buttons[] = array('label' => gettext('Add'), 'href' => 'system_usermanager.php?act=new');
+}
+
 ?>
 <script src="/ui/js/jquery.qrcode.js"></script>
 <script src="/ui/js/qrcode.js"></script>
@@ -1041,10 +1046,6 @@ $( document ).ready(function() {
                         </table>
                       </td>
                       <td class="text-nowrap">
-                        <a href="system_usermanager.php?act=new" class="btn btn-default btn-xs"
-                           title="<?=gettext("add user");?>" data-toggle="tooltip">
-                          <span class="fa fa-plus fa-fw"></span>
-                        </a>
 <?php
                         $authcfg_type = auth_get_authserver($config['system']['webgui']['authmode'])['type'];
                         if ($authcfg_type == 'ldap') :?>

@@ -182,12 +182,12 @@ if($need_alert_display == true) {
                 }
               } ?>
               <?php if (!empty($main_buttons)): foreach ($main_buttons as $button): ?>
-                <a href="<?=$button['href'];?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span><?=$button['label'];?></a>
+                <a href="<?=$button['href'];?>" class="btn btn-primary"><i class="fa fa-plus-circle fa-fw"></i> <?= $button['label'] ?></a>
               <?php endforeach; endif; ?>
 
               <?php if (isset($widgetCollection)): ?>
                 <a href="#" id="updatepref" style="display:none" onclick="return updatePref();" class="btn btn-primary"><?=gettext("Save Settings");?></a>
-                <button id="add_widget_btn" type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_widgets"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span><?= gettext('Add widget') ?></button>
+                <button id="add_widget_btn" type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_widgets"><i class="fa fa-plus-circle fa-fw"></i> <?= gettext('Add widget') ?></button>
                 <select class="selectpicker" data-width="120px" id="column_count">
                     <option value="1" <?=$pconfig['column_count'] == "1" ? 'selected="selected"' : "";?>><?=gettext("1 column");?></option>
                     <option value="2" <?=$pconfig['column_count'] == "2" ? 'selected="selected"' : "";?>><?=gettext("2 columns");?></option>

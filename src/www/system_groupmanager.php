@@ -158,8 +158,13 @@ legacy_html_escape_form_data($pconfig);
 legacy_html_escape_form_data($a_group);
 
 include("head.inc");
-?>
 
+$main_buttons = array();
+if (!isset($_GET['act'])) {
+    $main_buttons[] = array('label' => gettext('Add'), 'href' => 'system_groupmanager.php?act=new');
+}
+
+?>
 <body>
 <?php include("fbegin.inc"); ?>
 <script>
@@ -402,7 +407,7 @@ $( document ).ready(function() {
               $i++;
               endforeach;?>
                 <tr>
-                  <td colspan="3">
+                  <td colspan="4">
                     <table>
                       <tr>
                         <td></td>
@@ -414,12 +419,6 @@ $( document ).ready(function() {
                         <td></td>
                       </tr>
                     </table>
-                  </td>
-                  <td class="text-nowrap">
-                    <a href="system_groupmanager.php?act=new" class="btn btn-default btn-xs"
-                       title="<?=gettext("add group");?>" data-toggle="tooltip">
-                      <span class="fa fa-plus fa-fw"></span>
-                    </a>
                   </td>
                 </tr>
               </tbody>
