@@ -140,4 +140,18 @@ class Util
         }
         return false;
     }
+
+    /**
+     * Check if provided string is a valid domain name
+     * @param string $domain
+     * @return false|int
+     */
+    public static function isDomain($domain)
+    {
+        $pattern = '/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i';
+        if (preg_match($pattern, $domain)) {
+            return true;
+        }
+        return false;
+    }
 }
