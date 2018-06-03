@@ -994,7 +994,7 @@ $( document ).ready(function() {
 <?php
                         if (isset($userent['disabled'])) {
                             $usrimg = 'glyphicon glyphicon-user text-muted';
-                        } elseif ($userent['scope'] != 'user') {
+                        } elseif (userHasPrivilege($userent, 'page-all')) {
                             $usrimg = 'glyphicon glyphicon-user text-danger';
                         } else {
                             $usrimg = 'glyphicon glyphicon-user text-info';

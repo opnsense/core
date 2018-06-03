@@ -376,13 +376,11 @@ $( document ).ready(function() {
               foreach ($a_group as $group) :?>
                 <tr>
                   <td>
-                    <span class="glyphicon glyphicon-user <?=$group['scope'] == "system" ? "text-mute" : "text-info";?>"></span>
-                    &nbsp;
+                    <span class="glyphicon glyphicon-user <?= !empty($group['priv']) && in_array('page-all', $group['priv']) ? 'text-danger' : 'text-info' ?>"></span>
                     <?=$group['name']; ?>
                   </td>
                   <td class="hidden-xs"><?=$group['description'];?></td>
-                  <td>
-                    <?=$group["name"] == "all" ?  count($config['system']['user']) :count($group['member']) ;?>
+                  <td><?= count($group['member']) ?>
                   </td>
                   <td>
                     <a href="system_groupmanager.php?act=edit&groupid=<?=$i?>"
