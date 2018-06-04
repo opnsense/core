@@ -63,9 +63,13 @@ $service_hook = 'ipsec';
 
 include("head.inc");
 
-?>
+$main_buttons = array(
+    array('href' => 'vpn_ipsec_keys_edit.php', 'label' => gettext('Add')),
+);
 
+?>
 <body>
+
 <script>
 $( document ).ready(function() {
   // link delete buttons
@@ -116,9 +120,7 @@ if (is_subsystem_dirty('ipsec')) {
                   <td><?=gettext("Identifier"); ?></td>
                   <td><?=gettext("Pre-Shared Key"); ?></td>
                   <td><?=gettext("Type"); ?></td>
-                  <td>
-                    <a href="vpn_ipsec_keys_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
-                  </td>
+                  <td class="text-nowrap"></td>
                 </tr>
 <?php           $i = 0;
                 $userkeys = array();
@@ -132,8 +134,8 @@ if (is_subsystem_dirty('ipsec')) {
                   <td><?=htmlspecialchars($secretent['ident']) ;?></td>
                   <td><?=htmlspecialchars($secretent['pre-shared-key']);?></td>
                   <td>PSK</td>
-                  <td>
-                    <a href="system_usermanager.php?userid=<?=$secretent['id'];?>&act=edit" title="<?=gettext("edit"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                  <td class="text-nowrap">
+                    <a href="system_usermanager.php?userid=<?=$secretent['id'];?>&act=edit" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
                   </td>
                 </tr>
 <?php
@@ -145,19 +147,17 @@ if (is_subsystem_dirty('ipsec')) {
                   <td><?=htmlspecialchars($secretent['ident']);?></td>
                   <td><?=htmlspecialchars($secretent['pre-shared-key']);?></td>
                   <td><?=!empty($secretent['type']) ? htmlspecialchars($secretent['type']) : "PSK"?> </td>
-                  <td><a href="vpn_ipsec_keys_edit.php?id=<?=$i;?>" title="<?=gettext("edit key"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                      <a id="del_<?=$i;?>" title="<?=gettext("delete key"); ?>" class="act_delete btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
+                  <td class="text-nowrap">
+                    <a href="vpn_ipsec_keys_edit.php?id=<?=$i;?>" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
+                    <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" class="act_delete btn btn-default btn-xs"><i class="fa fa-trash fa-fw"></i></a>
                   </td>
                 </tr>
 <?php
                 $i++;
                 endforeach; ?>
                 <tr>
-                  <td colspan="3">
+                  <td colspan="4">
                     <?=gettext("PSK for any user can be set by using an identifier of any/ANY") ?>
-                  </td>
-                  <td>
-                    <a href="vpn_ipsec_keys_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
                   </td>
                 </tr>
               </table>
