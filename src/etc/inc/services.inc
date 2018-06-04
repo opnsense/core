@@ -113,7 +113,7 @@ function services_radvd_configure($blacklist = array())
 
     /* handle manually configured DHCP6 server settings first */
     foreach ($config['dhcpdv6'] as $dhcpv6if => $dhcpv6ifconf) {
-        if (isset($config['interfaces'][$dhcpv6if]['track6-interface'])) {
+        if (isset($config['interfaces'][$dhcpv6if]['track6-interface']) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
             continue;
         } elseif (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
             continue;
@@ -134,7 +134,7 @@ function services_radvd_configure($blacklist = array())
         }
 
         $ifcfgipv6 = get_interface_ipv6($dhcpv6if);
-        if (!is_ipaddrv6($ifcfgipv6)) {
+        if (!is_ipaddrv6($ifcfgipv6) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
             continue;
         }
 
@@ -1088,15 +1088,21 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
             $trackifname = $config['interfaces'][$ifname]['track6-interface'];
             $trackcfg = $config['interfaces'][$trackifname];
             $pdlen = calculate_ipv6_delegation_length($trackifname);
-            $ifcfgipv6arr =explode(":", $ifcfgipv6);
             $dhcpdv6cfg[$ifname] = array();
             $dhcpdv6cfg[$ifname]['enable'] = true;
-            /* range */
-            $ifcfgipv6arr[7] = "1000";
-            $dhcpdv6cfg[$ifname]['range'] = array();
-            $dhcpdv6cfg[$ifname]['range']['from'] = Net_IPv6::compress(implode(":", $ifcfgipv6arr));
-            $ifcfgipv6arr[7] = "2000";
-            $dhcpdv6cfg[$ifname]['range']['to'] = Net_IPv6::compress(implode(":", $ifcfgipv6arr));
+            if (!isset($config['interfaces'][$ifname]['dhcpd6track6allowoverride']) || !isset($config['dhcpdv6'][$ifname]['enable'])) {
+                /* fixed range */
+                $ifcfgipv6arr = $ifcfgipv6arr = explode(':', $ifcfgipv6);
+                $ifcfgipv6arr[7] = '1000';
+                $dhcpdv6cfg[$ifname]['range'] = array();
+                $dhcpdv6cfg[$ifname]['range']['from'] = Net_IPv6::compress(implode(':', $ifcfgipv6arr));
+                $ifcfgipv6arr[7] = '2000';
+                $dhcpdv6cfg[$ifname]['range']['to'] = Net_IPv6::compress(implode(':', $ifcfgipv6arr));
+            } else {
+               /* get config entry and marry it to the live prefix */
+               $dhcpdv6cfg[$ifname]['range']['to'] = make_ipv6_64_address($ifcfgipv6, $config['dhcpdv6'][$ifname]['range']['to']);
+               $dhcpdv6cfg[$ifname]['range']['from'] = make_ipv6_64_address($ifcfgipv6, $config['dhcpdv6'][$ifname]['range']['from']);
+            }
             /* prefix length > 0? We can add dhcp6 prefix delegation server */
             if ($pdlen > 2) {
                 $pdlenmax = $pdlen;
@@ -1198,7 +1204,7 @@ EOD;
         if (is_ipaddrv6($ifcfgipv6)) {
             $dhcpdv6conf .= "\nsubnet6 {$subnetv6}/{$ifcfgsnv6}";
         } elseif (!empty($dhcpv6ifconf['range']['from'])) {
-            $subnet6 = gen_subnetv6($dhcpv6ifconf['range']['from'], "64");
+            $subnet6 = gen_subnetv6($dhcpv6ifconf['range']['from'], '64', !isset($dhcpdv6cfg[$ifname]['dhcpd6track6allowoverride']));
             $dhcpdv6conf .= "\nsubnet6 {$subnet6}/64";
         }
         $dhcpdv6conf .= " {\n";

@@ -4681,3 +4681,28 @@ function get_carp_interface_status($carpinterface)
     }
     return;
 }
+
+function make_ipv6_64_address($prefix, $suffix)
+{
+    $prefix_array = array();
+    $prefix_array = explode(':', $prefix);
+    $prefix_array[4] = '0';
+    $prefix_array[5] = '0';
+    $prefix_array[6] = '0';
+    $prefix_array[7] = '0';
+
+    $suffix_array = array();
+    $suffix_array = explode(':', $suffix);
+    $suffix_size = sizeof($suffix_array);
+
+    $loop = 7;
+    for ($count = $suffix_size - 1; $count > 0; $count--) {
+        if (!empty($suffix_array[$count])) {
+            $prefix_array[$loop] = $suffix_array[$count];
+            --$loop;
+        }
+    }
+    $address = implode(':', $prefix_array);
+
+    return $address;
+}
