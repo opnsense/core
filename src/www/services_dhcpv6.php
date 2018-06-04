@@ -190,13 +190,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             /* make sure the range lies within the current subnet */
             $ifcfgip = get_interface_ipv6($if);
             $ifcfgsn = get_interface_subnetv6($if);
+            
             $subnet_start = gen_subnetv6($ifcfgip, $ifcfgsn);
             $subnet_end = gen_subnetv6_max($ifcfgip, $ifcfgsn);
+            
+            if(isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {                
+                $wifcfgip = get_interface_ipv6($if);
+                $wifcfgsn = get_interface_subnetv6($if);
+                $range_from = make_ipv6_64_address(get_interface_ipv6($if),$pconfig['range_from']);
+                $range_to = make_ipv6_64_address( get_interface_ipv6($if),$pconfig['range_to']);
+               
+                           
+            } else {    
+                $range_from = $pconfig['range_from'];
+                $range_to = $pconfig['range_to'];
+            }
 
             if (!empty($pconfig['range_from']) && !empty($pconfig['range_to'])) {
+                
+                // Need to add the subnet prefix to the subnet start and end if the system is using dhcp6d on a tracked interface
                 if (is_ipaddrv6($ifcfgip) && !empty($pconfig['range_from']) && !empty($pconfig['range_to'])) {
-                    if ((!is_inrange_v6($pconfig['range_from'], $subnet_start, $subnet_end)) ||
-                        (!is_inrange_v6($pconfig['range_to'], $subnet_start, $subnet_end))) {
+                    if ((!is_inrange_v6($range_from, $subnet_start, $subnet_end)) ||
+                        (!is_inrange_v6($range_to, $subnet_start, $subnet_end))) {
                         $input_errors[] = gettext("The specified range lies outside of the current subnet.");
                     }
                 }
@@ -321,6 +336,28 @@ legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
 
+if ($config['interfaces'][$if]['ipaddrv6'] == 'track6') {
+	$trackifname = $config['interfaces'][$if]['track6-interface'];
+	$trackcfg = $config['interfaces'][$trackifname];
+    if(!isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
+	$wifcfgsn = "64";
+	$wifcfgip = '::';
+    } else {
+        $wifcfgip = get_interface_ipv6($if);
+        $wifcfgsn = get_interface_subnetv6($if);
+        $prefix_array = array();
+        $prefix_array = explode(":", $wifcfgip);
+        $prefix_array[4] = '0';        
+        $prefix_array[5] = '0';
+        $prefix_array[6] = '0';
+        $prefix_array[7] = '0';
+        $wifprefix = Net_IPv6::compress(implode(":",$prefix_array));
+    }
+
+} else {
+	$wifcfgip = get_interface_ipv6($if);
+	$wifcfgsn = get_interface_subnetv6($if);
+}
 ?>
 
 <body>
@@ -431,24 +468,48 @@ include("head.inc");
                     </tr>
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Subnet");?></td>
+<?php                if(isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])): ?>
+                        <td>
+                           <?=gettext("Prefix Delegation");?>
+                        </td>
+                      <?php else: ?>  
                       <td>
-                        <?=gen_subnetv6($config['interfaces'][$if]['ipaddrv6'], $config['interfaces'][$if]['subnetv6']);?>
+                        <?=gen_subnetv6($wifcfgip, $wifcfgsn);?>
                       </td>
+<?php
+                       endif; ?>
+                       
                     </tr>
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Subnet mask");?></td>
                       <td>
-                        <?=htmlspecialchars($config['interfaces'][$if]['subnetv6']);?> <?=gettext("bits");?>
+                        <?=htmlspecialchars($wifcfgsn);?> <?=gettext("bits");?>
                       </td>
                     </tr>
+<?php
+                    if(isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])): ?>           
+                     <tr>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Current LAN IPv6 prefix");?></td>
+                      <td>
+                        <?=htmlspecialchars( $wifprefix);?>
+                      </td>
+                    </tr>          
+<?php
+                    endif; ?>      
+                    
                       <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Available range");?></td>
                       <td>
 <?php
-                        $range_from = gen_subnetv6($config['interfaces'][$if]['ipaddrv6'], $config['interfaces'][$if]['subnetv6']);
+                        //$range_from = gen_subnetv6($config['interfaces'][$if]['ipaddrv6'], $config['interfaces'][$if]['subnetv6']);
+                        $range_from = gen_subnetv6($wifcfgip, $wifcfgsn);
                         $range_from++;
-                        $range_to = gen_subnetv6_max($config['interfaces'][$if]['ipaddrv6'], $config['interfaces'][$if]['subnetv6']);?>
+                        $range_to = gen_subnetv6_max($wifcfgip, $wifcfgsn);?>
                         <?=$range_from;?> - <?=$range_to;?>
+<?php                   if(isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])): ?>
+                            <?=gettext("Prefix Delegation subnet will be prefixed to the available range.");?>
+<?php
+                       endif; ?>                   
                       </td>
                     </tr>
                     <tr>
