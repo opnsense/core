@@ -419,8 +419,8 @@ include("head.inc");
                         <td>
 <?php
                           if (empty($iface['lock'])): ?>
-                          <button title="<?= html_safe(gettext('Delete interface')) ?>" data-toggle="tooltip" data-id="<?=$ifname;?>" class="btn btn-default act_delete" type="submit">
-                            <span class="fa fa-trash"></span>
+                          <button title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip" data-id="<?=$ifname;?>" class="btn btn-default act_delete" type="submit">
+                            <i class="fa fa-trash fa-fw"></i>
                           </button>
 <?php
                           endif ?>
@@ -441,8 +441,8 @@ include("head.inc");
                           </select>
                         </td>
                         <td>
-                          <button name="add_x" type="submit" value="<?=$portname;?>" class="btn btn-primary" title="<?=gettext("add selected interface");?>" data-toggle="tooltip">
-                            <span class="glyphicon glyphicon-plus"></span>
+                          <button name="add_x" type="submit" value="<?=$portname;?>" class="btn btn-primary" title="<?= html_safe(gettext('Add')) ?>" data-toggle="tooltip">
+                            <i class="fa fa-plus fa-fw"></i>
                           </button>
                         </td>
                       </tr>
@@ -451,7 +451,7 @@ include("head.inc");
                       <tr>
                         <td colspan="2"></td>
                         <td>
-                          <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                          <button name="Submit" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button>
                         </td>
                       </tr>
                     </tbody>

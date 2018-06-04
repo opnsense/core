@@ -114,7 +114,7 @@ $main_buttons = array(
                       <th><?=gettext("Interface");?></th>
                       <th><?=gettext("Interface(s)/Port(s)");?></th>
                       <th><?=gettext("Description");?></th>
-                      <th></th>
+                      <th class="text-nowrap"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -134,10 +134,12 @@ $main_buttons = array(
                       <?=htmlspecialchars(implode(",", $portlist));?>
                     </td>
                     <td><?=$ppp['descr'];?></td>
-                    <td>
-                      <a href="interfaces_ppps_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-edit" title="<?=gettext("edit group");?>"></span></a>
-                      <button title="<?=gettext("delete interface");?>" data-toggle="tooltip" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
-                        <span class="fa fa-trash text-muted"></span>
+                    <td class="text-nowrap">
+                      <a href="interfaces_ppps_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">
+                        <i class="fa fa-pencil fa-fw"></i>
+                      </a>
+                      <button title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
+                        <i class="fa fa-trash fa-fw"></i>
                       </button>
                     </td>
                   </tr>

@@ -124,7 +124,7 @@ $main_buttons = array(
                         <th><?=gettext("Members");?></th>
                         <th><?=gettext("Protocol");?></th>
                         <th><?=gettext("Description");?></th>
-                        <th>&nbsp;</th>
+                        <th class="text-nowrap"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -136,12 +136,12 @@ $main_buttons = array(
                         <td><?=$lagg['members'];?></td>
                         <td><?=strtoupper($lagg['proto']);?></td>
                         <td><?=$lagg['descr'];?></td>
-                        <td>
-                          <a href="interfaces_lagg_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" title="<?=gettext("edit interface");?>">
-                            <span class="glyphicon glyphicon-edit"></span>
+                        <td class="text-nowrap">
+                          <a href="interfaces_lagg_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">
+                            <i class="fa fa-pencil fa-fw"></i>
                           </a>
-                         <button title="<?=gettext("delete interface");?>" data-toggle="tooltip" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
-                           <span class="fa fa-trash text-muted"></span>
+                         <button title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
+                           <i class="fa fa-trash fa-fw"></i>
                          </button>
                         </td>
                       </tr>
