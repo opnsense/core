@@ -99,7 +99,7 @@ legacy_html_escape_form_data($a_tunable);
 
 if ($act != 'edit') {
     $main_buttons = array(
-        array('href' => 'system_advanced_sysctl.php?act=edit', 'label' => gettext('Add a new tunable')),
+        array('href' => 'system_advanced_sysctl.php?act=edit', 'label' => gettext('Add')),
     );
 }
 
@@ -162,7 +162,7 @@ $( document ).ready(function() {
               <th><?=gettext("Tunable Name"); ?></th>
               <th><?=gettext("Description"); ?></th>
               <th><?=gettext("Value"); ?></th>
-              <th></th>
+              <th class="text-nowrap"></th>
             </tr>
 <?php
               $i = 0;
@@ -174,12 +174,12 @@ $( document ).ready(function() {
                   <?=$tunable['value']; ?>
                   <?=$tunable['value'] == "default" ? "(" . get_default_sysctl_value($tunable['tunable']) . ")" : "";?>
                 </td>
-                <td style="white-space: nowrap;">
-                  <a href="system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs">
-                      <span data-toggle="tooltip" title="<?=gettext("Edit Tunable"); ?>" class="glyphicon glyphicon-pencil"></span>
+                <td class="text-nowrap">
+                  <a href="system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Edit Tunable"); ?>">
+                    <i class="fa fa-pencil fa-fw"></i>
                   </a>
                   <a id="del_<?=$i;?>" data-id="<?=$i;?>" title="<?=gettext("Delete Tunable"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                    <span class="fa fa-trash text-muted"></span>
+                    <span class="fa fa-trash fa-fw"></span>
                   </a>
                 </td>
               </tr>

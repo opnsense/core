@@ -511,7 +511,7 @@ include("head.inc");
 
 if (empty($act)) {
     $main_buttons = array(
-        array('label'=>gettext("add or import certificate"), 'href'=>'system_certmanager.php?act=new'),
+        array('label' => gettext('Add'), 'href' => 'system_certmanager.php?act=new'),
     );
 }
 
@@ -935,7 +935,7 @@ $( document ).ready(function() {
                           <input name="altname_value[]" type="text" size="20" value="" />
                         </td>
                         <td>
-                          <div style="cursor:pointer;" class="act-removerow-altnm btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
+                          <div style="cursor:pointer;" class="act-removerow-altnm btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
                         </td>
                       </tr>
 <?php
@@ -955,7 +955,7 @@ $( document ).ready(function() {
                             <input name="altname_value[]" type="text" size="20" value="<?=$item;?>" />
                           </td>
                           <td>
-                            <div style="cursor:pointer;" class="act-removerow-altnm btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
+                            <div style="cursor:pointer;" class="act-removerow-altnm btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
                           </td>
                         </tr>
 
@@ -967,7 +967,7 @@ $( document ).ready(function() {
                       <tr>
                         <td colspan="2"></td>
                         <td>
-                          <div id="addNewAltNm" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><span class="glyphicon glyphicon-plus"></span></div>
+                          <div id="addNewAltNm" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><i class="fa fa-plus fa-fw"></i></div>
                         </td>
                       </tr>
                     </tfoot>
@@ -1240,7 +1240,7 @@ $( document ).ready(function() {
                 }?>
               <tr>
                 <td>
-                  <span class="glyphicon glyphicon-certificate __iconspacer"></span>
+                  <i class="fa fa-certificate"></i>
                   <?=$name;?>
 <?php
                   if (is_array($purpose)) :?>
@@ -1265,7 +1265,7 @@ $( document ).ready(function() {
                       </tr>
                   </table>
                 </td>
-                <td>
+                <td class="text-nowrap">
 <?php
                 if (is_cert_revoked($cert)) :?>
                   <b><?=gettext('Revoked') ?></b><br />
@@ -1293,31 +1293,31 @@ $( document ).ready(function() {
                 endif; ?>
 
                   <a href="#" class="btn btn-default btn-xs act_info" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("show certificate info");?>">
-                    <span class="glyphicon glyphicon-info-sign"></span>
+                    <i class="fa fa-info-circle fa-fw"></i>
                   </a>
 
                   <a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export user cert");?>">
-                      <span class="glyphicon glyphicon-download"></span>
+                      <i class="fa fa-download fa-fw"></i>
                   </a>
 
                   <a href="system_certmanager.php?act=key&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export user key");?>">
-                    <span class="glyphicon glyphicon-download"></span>
+                    <i class="fa fa-download fa-fw"></i>
                   </a>
 
                   <a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export ca+user cert+user key in .p12 format");?>">
-                      <span class="glyphicon glyphicon-download"></span>
+                      <i class="fa fa-download fa-fw"></i>
                   </a>
 <?php
                   if (!cert_in_use($cert['refid'])) :?>
 
                   <a id="del_<?=$i;?>" data-id="<?=$i;?>" title="<?=gettext("delete cert"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                    <span class="fa fa-trash text-muted"></span>
+                    <i class="fa fa-trash fa-fw"></i>
                   </a>
 <?php
                   endif;
                   if (isset($cert['csr'])) :?>
                   <a href="system_certmanager.php?act=csr&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("update csr");?>">
-                    <span class="glyphicon glyphicon-edit"></span>
+                    <i class="fa fa-pencil fa-fw"></i>
                   </a>
 <?php
                   endif; ?>

@@ -201,7 +201,7 @@ $service_hook = 'apinger';
 include("head.inc");
 
 $main_buttons = array(
-    array('label'=> gettext('Add gateway'), 'href'=>'system_gateways_edit.php'),
+    array('label'=> gettext('Add'), 'href'=>'system_gateways_edit.php'),
 );
 
 ?>
@@ -398,19 +398,19 @@ $( document ).ready(function() {
                       <td class="text-nowrap">
                         <a href="system_gateways_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"
                           data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">
-                          <span class="glyphicon glyphicon-pencil"></span>
+                          <i class="fa fa-pencil fa-fw"></i>
                         </a>
 <?php
                         if (is_numeric($gateway['attribute'])) :?>
                           <button data-id="<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"
                                   class="act_delete btn btn-default btn-xs">
-                            <span class="fa fa-trash text-muted"></span>
+                            <i class="fa fa-trash fa-fw"></i>
                           </button>
 <?php
                         endif;?>
                           <a href="system_gateways_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs"
                              data-toggle="tooltip" title="<?= html_safe(gettext('Clone')) ?>">
-                            <span class="fa fa-clone text-muted"></span>
+                            <i class="fa fa-clone fa-fw"></i>
                           </a>
                         </td>
                       </tr>
@@ -436,7 +436,7 @@ $( document ).ready(function() {
                                       ?>
                           <button type="submit" id="btn_delete" name="del_x" class="btn btn-default btn-xs" data-toggle="tooltip"
                                   title="<?= html_safe(gettext('Delete selected items')) ?>">
-                              <span class="fa fa-trash text-muted"></span>
+                              <i class="fa fa-trash fa-fw"></i>
                           </button>
 <?php
                       endif;?>

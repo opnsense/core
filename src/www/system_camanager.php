@@ -404,7 +404,7 @@ legacy_html_escape_form_data($pconfig);
 include("head.inc");
 
 $main_buttons = array(
-    array('label' => gettext('Add or import CA'), 'href' => 'system_camanager.php?act=new'),
+    array('label' => gettext('Add'), 'href' => 'system_camanager.php?act=new'),
 );
 
 ?>
@@ -759,22 +759,22 @@ $main_buttons = array(
                     </tr>
                   </table>
                 </td>
-                <td>
+                <td class="text-nowrap">
                   <a href="system_camanager.php?act=edit&amp;id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit CA");?>" alt="<?=gettext("edit CA");?>" class="btn btn-default btn-xs">
-                    <span class="glyphicon glyphicon-pencil"></span>
+                    <i class="fa fa-pencil fa-fw"></i>
                   </a>
                   <a href="system_camanager.php?act=exp&amp;id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("export CA cert");?>" alt="<?=gettext("export CA cert");?>" class="btn btn-default btn-xs">
-                    <span class="glyphicon glyphicon-download"></span>
+                    <i class="fa fa-download fa-fw"></i>
                   </a>
 <?php
                   if ($ca['prv']) :?>
                   <a href="system_camanager.php?act=expkey&amp;id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("export CA private key");?>" class="btn btn-default btn-xs">
-                    <span class="glyphicon glyphicon-download"></span>
+                    <i class="fa fa-download fa-fw"></i>
                   </a>
 <?php
                   endif; ?>
                   <a id="del_<?=$i;?>" data-id="<?=$i;?>" title="<?=gettext("delete ca"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                    <span class="fa fa-trash text-muted"></span>
+                    <i class="fa fa-trash fa-fw"></i>
                   </a>
                 </td>
               </tr>
