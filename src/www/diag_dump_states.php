@@ -118,7 +118,6 @@ include("head.inc");
         </section>
         <section class="col-xs-12">
           <div class="content-box">
-            <div class="content-box-main">
               <div class="table-responsive">
                 <table id="state_table" class="table table-condensed table-hover table-striped">
                   <thead>
@@ -159,7 +158,7 @@ include("head.inc");
                       <td><?= $info ?></td>
                       <td><?= $state['state'];?></td>
                       <td>
-                        <a href="#" data-rowid="r<?=$rowid?>" data-srcip="<?=$state['src_addr']?>" data-dstip="<?=$state['dst_addr'];?>" class="act_del btn btn-default" title="<?= gettext('Remove all state entries from') ?> <?= $state['src_addr'] ?> <?= gettext('to') ?> <?= $state['dst_addr'] ?>"><span class="glyphicon glyphicon-remove"></span></a>
+                        <a href="#" data-rowid="r<?=$rowid?>" data-srcip="<?=$state['src_addr']?>" data-dstip="<?=$state['dst_addr'];?>" class="act_del btn btn-default btn-xs" title="<?= gettext('Remove all state entries from') ?> <?= $state['src_addr'] ?> <?= gettext('to') ?> <?= $state['dst_addr'] ?>"><i class="fa fa-remove fa-fw"></i></a>
                       </td>
                     </tr>
 <?php
@@ -183,7 +182,6 @@ include("head.inc");
                   </tfoot>
                 </table>
               </div>
-            </div>
           </div>
         </section>
       </div>

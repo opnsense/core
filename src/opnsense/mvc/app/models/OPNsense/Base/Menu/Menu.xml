@@ -134,7 +134,9 @@
             </VLAN>
         </Types>
         <Diagnostics order="960" cssClass="fa fa-medkit fa-fw">
-            <DNSLookup VisibleName="DNS Lookup" url="/diag_dns.php"/>
+            <DNSLookup VisibleName="DNS Lookup" url="/diag_dns.php">
+                <Edit url="/diag_dns.php*" visibility="hidden"/>
+            </DNSLookup>
             <PacketCapture VisibleName="Packet Capture" url="/diag_packet_capture.php"/>
             <Ping url="/diag_ping.php"/>
             <TestPort VisibleName="Port Probe" url="/diag_testport.php"/>

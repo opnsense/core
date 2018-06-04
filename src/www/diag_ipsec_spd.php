@@ -64,18 +64,18 @@ legacy_html_escape_form_data($spd);
                   <td><?=$sp['srcid'];?></td>
                   <td><?=$sp['dstid'];?></td>
                   <td>
-                    <span class="glyphicon glyphicon-arrow-<?= $sp['dir'] == "in" ? "right" : "left";?>" aria-hidden="true"></span>
+                    <i class="fa fa-arrow-<?= $sp['dir'] == 'in' ? 'right' : 'left' ?> fa-fw" aria-hidden="true"></i>
                   </td>
                   <td><?=strtoupper($sp['proto']);?></td>
-                  <td><?=$sp['src'];?> -> <?=$sp['dst'];?></td>
+                  <td><?=$sp['src'];?> -&gt; <?=$sp['dst'];?></td>
                 </tr>
                 <?php endforeach; ?>
                 <tr>
                   <td colspan="2"></td>
                   <td colspan="3">
-                    <span class="glyphicon glyphicon-arrow-right" aria-hidden="true" alt="in"></span>
+                    <span class="fa fa-arrow-right fa-fw" aria-hidden="true" alt="in"></span>
                     <?= gettext("incoming (as seen by firewall)"); ?> <br/>
-                    <span class="glyphicon glyphicon-arrow-left" aria-hidden="true" alt="out"></span>
+                    <span class="fa fa-arrow-left fa-fw" aria-hidden="true" alt="out"></span>
                     <?= gettext("outgoing (as seen by firewall)"); ?>
                   </td>
                 </tr>

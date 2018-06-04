@@ -424,7 +424,7 @@ include("head.inc"); ?>
                 <tr>
                   <td>
                     <?php if (is_ipaddr($data[$field][$row]["label"])): ?>
-                      <a href="diag_dns.php?host=<?=$data[$field][$row]["label"]?>" title="<?=gettext("Reverse Resolve with DNS");?>"><span class="glyphicon glyphicon-search"></span></a>
+                      <a href="diag_dns.php?host=<?=$data[$field][$row]["label"]?>" title="<?=gettext("Reverse Resolve with DNS");?>"><i class="fa fa-search"></i></a>
                     <?php endif ?>
                     <?=$data[$field][$row]["label"]?></td>
                   <td><?=$data[$field][$row]["value"]?></td>
