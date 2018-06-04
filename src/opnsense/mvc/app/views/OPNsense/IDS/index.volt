@@ -32,7 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
     .ids-alert-info > tbody > tr > td {
         padding-top: 2px !important;
-        padding-bottom: : 2px !important;
+        padding-bottom: 2px !important;
     }
     .ids-alert-info > tbody > tr > td:first-child {
         width: 150px;
