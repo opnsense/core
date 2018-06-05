@@ -116,11 +116,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 $service_hook = 'unbound';
+
 legacy_html_escape_form_data($pconfig);
+
 include("head.inc");
 
-?>
+$main_buttons = array();
+if (!isset($_GET['act'])) {
+    $main_buttons[] = array('label' => gettext('Add'), 'href' => 'services_unbound_acls.php?act=new');
+}
 
+?>
 <body>
 <script>
   $( document ).ready(function() {
@@ -192,7 +198,7 @@ include("head.inc");
         if (is_subsystem_dirty("unbound")) print_info_box_apply(gettext("The configuration for the DNS Resolver, has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
         ?>
         <section class="col-xs-12">
-          <div class="tab-content content-box col-xs-12">
+          <div class="tab-content content-box col-xs-12 __mb">
             <form method="post" name="iform" id="iform">
 <?php
               if($act=="new" || $act=="edit"): ?>
@@ -264,7 +270,7 @@ include("head.inc");
                       foreach($acl_networks as $item_idx => $item):?>
                         <tr>
                           <td>
-                            <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
+                            <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
                           </td>
                           <td>
                             <input name="acl_networks_acl_network[]" type="text" id="acl_network_<?=$item_idx;?>" value="<?=$item['acl_network'];?>" />
@@ -290,7 +296,7 @@ include("head.inc");
                       <tfoot>
                         <tr>
                           <td colspan="4">
-                            <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><span class="glyphicon glyphicon-plus"></span></div>
+                            <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><i class="fa fa-plus fa-fw"></i></div>
                           </td>
                         </tr>
                       </tfoot>
@@ -322,13 +328,12 @@ include("head.inc");
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th colspan="4"><?=gettext("From General settings");?></th>
+                    <th colspan="3"><?=gettext("From General settings");?></th>
                   </tr>
                   <tr>
                     <th><?=gettext("Access List Name"); ?></th>
                     <th><?=gettext("Action"); ?></th>
                     <th><?=gettext("Network"); ?></th>
-                    <th><a href="services_unbound.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a></th>
                   </tr>
                 </thead>
                 <body>
@@ -363,7 +368,6 @@ include("head.inc");
                     <td><?=gettext("Internal");?></td>
                     <td><?=gettext("allow");?></td>
                     <td><?=$network;?></td>
-                    <td></td>
                   </tr>
 <?php
                   endforeach;?>
@@ -379,9 +383,10 @@ include("head.inc");
                     <th><?=gettext("Access List Name"); ?></th>
                     <th><?=gettext("Action"); ?></th>
                     <th><?=gettext("Description"); ?></th>
-                    <th></th>
+                    <th class="text-nowrap"></th>
                   </tr>
                 </thead>
+                <tbody>
 <?php
                   $i = 0;
                   foreach($a_acls as $acl):?>
@@ -395,29 +400,15 @@ include("head.inc");
                     <td>
                       <?=htmlspecialchars($acl['description']);?>
                     </td>
-                    <td>
-                      <a href="services_unbound_acls.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                      <a href="#" data-id="<?=$i;?>" class="act_delete_acl btn btn-xs btn-default"><i class="fa fa-trash text-muted"></i></a>
+                    <td class="text-nowrap">
+                      <a href="services_unbound_acls.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
+                      <a href="#" data-id="<?=$i;?>" class="act_delete_acl btn btn-xs btn-default"><i class="fa fa-trash fa-fw"></i></a>
                     </td>
                   </tr>
 <?php
                   $i++;
                   endforeach;?>
-                <tfoot>
-                  <tr>
-                    <td colspan="3"></td>
-                    <td>
-                      <a href="services_unbound_acls.php?act=new" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="4">
-                      <p>
-                        <?=gettext("Access Lists to control access to the DNS Resolver can be defined here.");?>
-                      </p>
-                    </td>
-                  </tr>
-                </tfoot>
+                </tbody>
               </table>
 <?php
             endif; ?>
