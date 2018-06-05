@@ -70,7 +70,7 @@ $clients = openvpn_get_active_clients();
             <td><?=$conn['common_name'];?><br/><?=$conn['connect_time'];?></td>
             <td><?=$conn['remote_host'];?><br/><?=$conn['virtual_addr'];?></td>
             <td>
-               <span class="glyphicon glyphicon-remove act_kill_client" data-client-port="<?=$server['mgmt'];?>"
+               <span class="fa fa-times fa-fw act_kill_client" data-client-port="<?=$server['mgmt'];?>"
                  data-client-ip="<?=$conn['remote_host'];?>"
                  style='cursor:pointer;'
                  title='Kill client connection from <?=$conn['remote_host']; ?>'>
@@ -104,7 +104,7 @@ $clients = openvpn_get_active_clients();
           <td><?=$sk_server['name'];?><br/><?=$sk_server['connect_time'];?></td>
           <td><?=$sk_server['remote_host'];?><br/><?=$sk_server['virtual_addr'];?></td>
           <td>
-            <span class='glyphicon glyphicon-transfer <?=$sk_server['status'] == "up" ? "text-success" : "text-danger";?>'></span>
+            <span class='fa fa-exchange fa-fw <?=$sk_server['status'] == "up" ? "text-success" : "text-danger";?>'></span>
           </td>
         </tr>
 <?php
@@ -135,7 +135,7 @@ endif; ?>
           <td><?=$client['name'];?><br/><?=$client['connect_time'];?></td>
           <td><?=$client['remote_host'];?><br/><?=$client['virtual_addr'];?></td>
           <td>
-            <span class='glyphicon glyphicon-transfer <?=$client['status'] == "up" ? "text-success" : "text-danger" ;?>'></span>
+            <span class='fa fa-exchange fa-fw <?=$client['status'] == "up" ? "text-success" : "text-danger" ;?>'></span>
           </td>
         </tr>
 <?php

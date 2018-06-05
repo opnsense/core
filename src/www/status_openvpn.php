@@ -165,7 +165,7 @@ $( document ).ready(function() {
                         data-client-ip="<?=$conn['remote_host'];?>"
                         title="<?=gettext("Kill client connection from"). " ".  $conn['remote_host'] ; ?>"
                         class="act_kill_client btn btn-default">
-                        <span class="glyphicon glyphicon-remove"></span>
+                        <i class="fa fa-times fa-fw"></i>
                     </button>
                   </td>
                 </tr>
