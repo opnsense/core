@@ -363,7 +363,7 @@ legacy_html_escape_form_data($pconfig);
 include("head.inc");
 
 $main_buttons = array(
-    array('href'=>'vpn_openvpn_client.php?act=new', 'label'=>gettext("add client")),
+    array('href' => 'vpn_openvpn_client.php?act=new', 'label' => gettext('Add')),
 );
 
 ?>
@@ -684,13 +684,13 @@ $( document ).ready(function() {
 <?php
                   if (!empty($item)): ?>
                       <label class="act-removerow btn btn-default btn-xs">
-                        <span class="fa fa-minus"></span>
+                        <span class="fa fa-minus fa-fw"></span>
                         <span class="sr-only"><?= gettext('Remove') ?></span>
                       </label>
 <?php
                   else: ?>
                       <label class="act-addrow btn btn-default btn-xs">
-                        <span class="fa fa-plus"></span>
+                        <span class="fa fa-plus fa-fw"></span>
                         <span class="sr-only"><?= gettext('Add') ?></span>
                       </label>
 <?php
@@ -1178,7 +1178,7 @@ $( document ).ready(function() {
                 <td><?=gettext("Protocol"); ?></td>
                 <td><?=gettext("Server"); ?></td>
                 <td><?=gettext("Description"); ?></td>
-                <td></td>
+                <td class="text-nowrap"></td>
               </tr>
             </thead>
             <tbody>
@@ -1196,24 +1196,24 @@ $( document ).ready(function() {
                   <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
                   &nbsp;
                   <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($client['disable'])) ? gettext("Disable") : gettext("Enable");?>">
-                    <span class="fa fa-play <?=(empty($client['disable'])) ? "text-success" : "text-muted";?>"></span>
+                    <span class="fa fa-play fa-fw <?=(empty($client['disable'])) ? "text-success" : "text-muted";?>"></span>
                   </a>
                 </td>
                 <td><?= htmlspecialchars($client['protocol']) ?></td>
                 <td><?= htmlspecialchars(implode(', ', $server)) ?></td>
                 <td><?= htmlspecialchars($client['description']) ?></td>
-                <td>
+                <td class="text-nowrap">
                     <a data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("move selected before this item");?>" class="act_move btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-arrow-left"></span>
+                      <span class="fa fa-arrow-left fa-fw"></span>
                     </a>
                     <a href="vpn_openvpn_client.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-pencil"></span>
+                      <span class="fa fa-pencil fa-fw"></span>
                     </a>
                     <a data-id="<?=$i;?>" title="<?=gettext("delete client"); ?>" class="act_delete btn btn-default btn-xs">
-                      <span class="fa fa-trash text-muted"></span>
+                      <span class="fa fa-trash fa-fw"></span>
                     </a>
                     <a href="vpn_openvpn_client.php?act=new&amp;dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone client");?>">
-                      <span class="fa fa-clone text-muted"></span>
+                      <span class="fa fa-clone fa-fw"></span>
                     </a>
                 </td>
               </tr>
@@ -1222,12 +1222,12 @@ $( document ).ready(function() {
               endforeach;?>
               <tr>
                 <td colspan="4"></td>
-                <td>
+                <td class="text-nowrap">
                   <a data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("move selected items to end");?>" class="act_move btn btn-default btn-xs">
-                    <span class="glyphicon glyphicon-arrow-down"></span>
+                    <span class="fa fa-arrow-down fa-fw"></span>
                   </a>
                   <a data-id="x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                    <span class="fa fa-trash text-muted"></span>
+                    <span class="fa fa-trash fa-fw"></span>
                   </a>
                 </td>
               </tr>

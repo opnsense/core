@@ -420,7 +420,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 include("head.inc");
 
 $main_buttons = array(
-    array('href'=>'vpn_openvpn_server.php?act=new', 'label'=>gettext("add server")),
+    array('href' => 'vpn_openvpn_server.php?act=new', 'label' => gettext('Add')),
 );
 
 legacy_html_escape_form_data($pconfig);
@@ -1609,7 +1609,7 @@ endif; ?>
                   <td><?=gettext("Protocol / Port"); ?></td>
                   <td><?=gettext("Tunnel Network"); ?></td>
                   <td><?=gettext("Description"); ?></td>
-                  <td></td>
+                  <td class="text-nowrap"></td>
                 </tr>
                 </thead>
 
@@ -1634,9 +1634,9 @@ endif; ?>
                     <td>
                         <?=htmlspecialchars($server['description']);?>
                     </td>
-                    <td>
-                        <a href="vpn_openvpn_server.php?act=edit&amp;id=<?=$i;?>" title="<?=gettext("edit server"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                        <a id="del_<?=$i;?>" title="<?=gettext("delete server"); ?>" class="act_delete btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
+                    <td class="text-nowrap">
+                        <a href="vpn_openvpn_server.php?act=edit&amp;id=<?=$i;?>" title="<?=gettext("edit server"); ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
+                        <a id="del_<?=$i;?>" title="<?=gettext("delete server"); ?>" class="act_delete btn btn-default btn-xs"><i class="fa fa-trash fa-fw"></i></a>
                     </td>
                   </tr>
 <?php
@@ -1645,7 +1645,7 @@ endif; ?>
                   <tr>
                     <td colspan="5">
                       <a href="wizard.php?xml=openvpn" class="btn btn-default">
-                        <i class="fa fa-magic"></i> <?= gettext('Use a wizard to setup a new server') ?>
+                        <i class="fa fa-magic fa-fw"></i> <?= gettext('Use a wizard to setup a new server') ?>
                        </a>
                     </td>
                   </tr>

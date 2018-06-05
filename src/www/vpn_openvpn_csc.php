@@ -349,7 +349,7 @@ $( document ).ready(function() {
 <?
 if ($act!="new" && $act!="edit") {
     $main_buttons = array(
-        array('href'=>'vpn_openvpn_csc.php?act=new', 'label'=>gettext("add csc")),
+        array('href' => 'vpn_openvpn_csc.php?act=new', 'label' => gettext('Add')),
     );
 }
 ?>
@@ -689,17 +689,16 @@ if ($act!="new" && $act!="edit") {
                       <td><?=gettext("Common Name"); ?></td>
                       <td><?=gettext("Tunnel Network");?></td>
                       <td><?=gettext("Description"); ?></td>
-                      <td></td>
+                      <td class="text-nowrap"></td>
                     </tr>
 <?php
                     $i = 0;
                     foreach ($a_csc as $csc):?>
                     <tr>
                       <td>
-                        <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
-                        &nbsp;
+                        <input type="checkbox" name="rule[]" value="<?=$i;?>"/>
                         <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($csc['disable'])) ? gettext("Disable") : gettext("Enable");?>">
-                          <span class="fa fa-play <?=(empty($csc['disable'])) ? "text-success" : "text-muted";?>"></span>
+                          <span class="fa fa-play fa-fw <?=(empty($csc['disable'])) ? "text-success" : "text-muted";?>"></span>
                         </a>
                       </td>
                       <td>
@@ -711,14 +710,14 @@ if ($act!="new" && $act!="edit") {
                       <td>
                           <?=htmlspecialchars($csc['description']);?>
                       </td>
-                      <td>
+                      <td class="text-nowrap">
                         <a data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("move selected before this item");?>" class="act_move btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-arrow-left"></span>
+                          <span class="fa fa-arrow-left fa-fw"></span>
                         </a>
-                        <a href="vpn_openvpn_csc.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                        <a data-id="<?=$i;?>" title="<?=gettext("delete csc"); ?>" class="act_delete btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
+                        <a href="vpn_openvpn_csc.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="fa fa-pencil fa-fw"></span></a>
+                        <a data-id="<?=$i;?>" title="<?=gettext("delete csc"); ?>" class="act_delete btn btn-default btn-xs"><span class="fa fa-trash fa-fw"></span></a>
                         <a href="vpn_openvpn_csc.php?act=new&dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone rule");?>">
-                          <span class="fa fa-clone text-muted"></span>
+                          <span class="fa fa-clone fa-fw"></span>
                         </a>
                       </td>
                     </tr>
@@ -729,12 +728,12 @@ if ($act!="new" && $act!="edit") {
                       <td colspan="4">
                         <?=gettext("Additional OpenVPN client specific overrides can be added here.");?>
                       </td>
-                      <td>
+                      <td class="text-nowrap">
                         <a data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("move selected items to end");?>" class="act_move btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-arrow-down"></span>
+                          <span class="fa fa-arrow-down fa-fw"></span>
                         </a>
                         <a data-id="x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                          <span class="fa fa-trash text-muted"></span>
+                          <span class="fa fa-trash fa-fw"></span>
                         </a>
                       </td>
                     </tr>
