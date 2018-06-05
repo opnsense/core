@@ -203,7 +203,7 @@ $(document).ready(function() {
                             <button class="act_flush btn btn-default btn-xs"
                                     title="<?=gettext("flush report");?>" data-toggle="tooltip"
                                     data-id="<?=$rrd_file['filename'];?>">
-                              <span class="fa fa-trash text-muted"></span>
+                              <i class="fa fa-trash fa-fw"></i>
                             </button>
                             <?=$rrd_name;?>
                           </td>
