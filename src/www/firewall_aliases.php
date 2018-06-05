@@ -178,8 +178,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 legacy_html_escape_form_data($a_aliases);
+
 $main_buttons = array(
-    array('href' => 'firewall_aliases_edit.php', 'label' => gettext('Add a new alias')),
+    array('href' => 'firewall_aliases_edit.php', 'label' => gettext('Add')),
 );
 
 include("head.inc");
@@ -270,8 +271,8 @@ $( document ).ready(function() {
                         <?= $alias_values ?>
                       </td>
                       <td>
-                        <a href="firewall_aliases_edit.php?id=<?=$i;?>" title="<?=gettext("Edit alias"); ?>" class="btn btn-default btn-xs"><span class="fa fa-pencil"></span></a>
-                        <a id="del_<?=$i;?>" title="<?=gettext("delete alias"); ?>" class="act_delete btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
+                        <a href="firewall_aliases_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
+                        <a id="del_<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Delete')) ?>" class="act_delete btn btn-default btn-xs"><i class="fa fa-trash fa-fw"></i></a>
                       </td>
                     </tr>
 <?php
