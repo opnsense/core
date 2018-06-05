@@ -423,6 +423,9 @@ EOD;
         /* identifier */
         $params .= exec_safe('-i %s ', $name);
 
+        /* bind src address */
+        $params .= exec_safe('-B %s ', $gwifip);
+
         /* PID filename */
         $params .= exec_safe('-p %s ', "/var/run/dpinger_{$name}.pid");
 
@@ -476,11 +479,10 @@ EOD;
                 $gateway['losshigh'] : $dpinger_default['losshigh']
         );
 
+        $params .= exec_safe('%s ', $gateway['monitor']);
+
         /* daemonises forground mode because background mode does not work? */
-        mwexecf_bg(
-            "/usr/local/bin/dpinger -f {$params} -B %s %s",
-            array($gwifip, $gateway['monitor'])
-        );
+        mwexec_bg("/usr/local/bin/dpinger -f {$params}");
     }
 
     if (!isset($config['system']['prefer_dpinger'])) {
