@@ -423,8 +423,14 @@ EOD;
         /* identifier */
         $params .= exec_safe('-i %s ', $name);
 
-        /* bind src address */
+        /* bind src address and watch out for a % char in the string! */
+
+        if(strpos($gwifip,'%')) {
+        $params .= exec_safe('-B \045%s ', $gwifip);
+        } else {
         $params .= exec_safe('-B %s ', $gwifip);
+        }
+        
 
         /* PID filename */
         $params .= exec_safe('-p %s ', "/var/run/dpinger_{$name}.pid");
