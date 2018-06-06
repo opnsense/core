@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-        if (preg_match("/[^a-zA-Z0-9\.\-_ ]/", $pconfig['name'])) {
+        if (preg_match("/[^a-zA-Z0-9\.\-_]/", $pconfig['name'])) {
             $input_errors[] = gettext("The group name contains invalid characters.");
         }
 
