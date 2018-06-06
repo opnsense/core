@@ -39,10 +39,12 @@ function gateway_api()
             $gatewayItem['status'] = strtolower($gateways_status[$gname]['status']);
             $gatewayItem['loss'] = $gateways_status[$gname]['loss'];
             $gatewayItem['delay'] = $gateways_status[$gname]['delay'];
+            $gatewayItem['stddev'] = $gateways_status[$gname]['stddev'];
             switch ($gatewayItem['status']) {
                 case "none":
                     $gatewayItem['status_translated'] = gettext("Online");
                     break;
+                case "force_down":
                 case "down":
                     $gatewayItem['status_translated'] = gettext("Offline");
                     break;
@@ -61,6 +63,7 @@ function gateway_api()
             $gatewayItem['status'] = "~";
             $gatewayItem['status_translated'] =  gettext("Unknown");
             $gatewayItem['loss'] = "~";
+            $gatewayItem['stddev'] = "~";
             $gatewayItem['delay'] = "unknown";
         }
         $result[] = $gatewayItem;
