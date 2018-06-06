@@ -362,9 +362,11 @@ legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
 
-$main_buttons = array(
-    array('href' => 'vpn_openvpn_client.php?act=new', 'label' => gettext('Add')),
-);
+$main_buttons = array();
+
+if (empty($act)) {
+    $main_buttons[] = array('href' => 'vpn_openvpn_client.php?act=new', 'label' => gettext('Add'));
+}
 
 ?>
 
