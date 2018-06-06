@@ -71,6 +71,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			dhcp6c \
 			dhcpleases \
 			dnsmasq \
+			dpinger \
 			expiretable \
 			filterlog \
 			ifinfo \

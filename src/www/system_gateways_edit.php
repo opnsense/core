@@ -39,6 +39,9 @@ foreach ($a_gateways as $gw) {
 $a_gateways = $a_gateways_arr;
 $apinger_default = return_apinger_defaults();
 
+if (isset($config['system']['prefer_dpinger'])) {
+    $apinger_default = return_dpinger_defaults();
+}
 
 // form processing
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -153,19 +156,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     /* only allow correct IPv4 and IPv6 gateway addresses */
     if (!empty($pconfig['gateway']) && is_ipaddr($pconfig['gateway']) && $pconfig['gateway'] != "dynamic") {
         if (is_ipaddrv6($pconfig['gateway']) && ($pconfig['ipprotocol'] == "inet")) {
-            $input_errors[] = gettext("The IPv6 gateway address '{$pconfig['gateway']}' can not be used as a IPv4 gateway'.");
+            $input_errors[] = sprintf(gettext('The IPv6 gateway address "%s" cannot be used as an IPv4 gateway.'), $pconfig['gateway']);
         }
         if (is_ipaddrv4($pconfig['gateway']) && ($pconfig['ipprotocol'] == "inet6")) {
-            $input_errors[] = gettext("The IPv4 gateway address '{$pconfig['gateway']}' can not be used as a IPv6 gateway'.");
+            $input_errors[] = sprintf(gettext('The IPv4 gateway address "%s" can not be used as an IPv6 gateway.'), $pconfig['gateway']);
         }
     }
     /* only allow correct IPv4 and IPv6 monitor addresses */
     if ( !empty($_POST['monitor']) && is_ipaddr($pconfig['monitor']) && $pconfig['monitor'] != "dynamic") {
         if (is_ipaddrv6($pconfig['monitor']) && ($pconfig['ipprotocol'] == "inet")) {
-            $input_errors[] = gettext("The IPv6 monitor address '{$pconfig['monitor']}' can not be used on a IPv4 gateway'.");
+            $input_errors[] = sprintf(gettext('The IPv6 monitor address "%s" can not be used on an IPv4 gateway.'), $pconfig['monitor']);
         }
         if (is_ipaddrv4($pconfig['monitor']) && ($pconfig['ipprotocol'] == "inet6")) {
-            $input_errors[] = gettext("The IPv4 monitor address '{$pconfig['monitor']}' can not be used on a IPv6 gateway'.");
+            $input_errors[] = sprintf(gettext('The IPv4 monitor address "%s" can not be used on an IPv6 gateway.'), $pconfig['monitor']);
         }
     }
 
@@ -688,7 +691,7 @@ $( document ).ready(function() {
                 <tr class="advanced hidden">
                   <td><a id="help_for_weight" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Weight");?></td>
                   <td>
-                    <select name="weight" class="selectpicker" data-width="auto">
+                    <select name="weight" class="selectpicker">
 <?php
                     for ($i = 1; $i < 6; $i++):?>
                       <option value="<?=$i;?>" <?=$pconfig['weight'] == $i ? "selected='selected'" : "";?> >
@@ -764,6 +767,7 @@ $( document ).ready(function() {
                     </div>
                   </td>
                 </tr>
+<?php           if (!isset($config['system']['prefer_dpinger'])):?>
                 <tr class="advanced hidden">
                   <td><a id="help_for_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Down");?></td>
                   <td>
@@ -817,6 +821,8 @@ $( document ).ready(function() {
                     </small>
                   </td>
                 </tr>
+<?php
+                endif;?>
                 <tr>
                   <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                   <td>
