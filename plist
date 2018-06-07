@@ -78,8 +78,7 @@
 /usr/local/etc/rc.backup_netflow
 /usr/local/etc/rc.backup_rrd
 /usr/local/etc/rc.bootup
-/usr/local/etc/rc.carpbackup
-/usr/local/etc/rc.carpmaster
+/usr/local/etc/rc.carp
 /usr/local/etc/rc.configure_firmware
 /usr/local/etc/rc.configure_interface
 /usr/local/etc/rc.configure_plugins
