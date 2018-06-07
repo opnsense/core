@@ -58,11 +58,11 @@ log_error($notificationmsg);
 
 switch ($type) {
     case 'MASTER':
-        /* XXX inpect usefulness of this trickery */
+        /* XXX inspect usefulness of this trickery */
         openvpn_carp_start($carp_iface);
         break;
     case 'BACKUP':
-        /* XXX inpect usefulness of this trickery */
+        /* XXX inspect usefulness of this trickery */
         openvpn_carp_stop($carp_iface);
         break;
 }
