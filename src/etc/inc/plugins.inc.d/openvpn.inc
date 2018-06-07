@@ -527,20 +527,15 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
 
     openvpn_create_dirs();
 
-    /*
-     * NOTE: Deleting tap devices causes spontaneous reboots. Instead,
-     * we use a vpnid number which is allocated for a particular client
-     * or server configuration. ( see openvpn_vpnid_next() )
-     */
     $vpnid = $settings['vpnid'];
     $mode_id = $mode.$vpnid;
 
-    if (isset($settings['dev_mode'])) {
-        $tunname = "{$settings['dev_mode']}{$vpnid}";
-    } else {  /* defaults to tun */
-        $tunname = "tun{$vpnid}";
+    if (!isset($settings['dev_mode'])) {
+        /* defaults to tun */
         $settings['dev_mode'] = "tun";
     }
+
+    $devnode = "{$settings['dev_mode']}{$vpnid}";
 
     if ($mode == "server") {
         $devname = "ovpns{$vpnid}";
@@ -548,16 +543,13 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         $devname = "ovpnc{$vpnid}";
     }
 
-    /* is our device already configured */
     if (!does_interface_exist($devname)) {
-        /* create the tap device if required */
-        if (!file_exists("/dev/{$tunname}")) {
-            exec("/sbin/ifconfig " . escapeshellarg($tunname) . " create");
+        if (!file_exists("/dev/{$devnode}")) {
+            mwexecf('/sbin/ifconfig %s create', array($devnode));
         }
-        /* rename the device */
-        mwexec("/sbin/ifconfig " . escapeshellarg($tunname) . " name " . escapeshellarg($devname));
-        /* add the device to the openvpn group */
-        mwexec("/sbin/ifconfig " . escapeshellarg($devname) . " group openvpn");
+
+        mwexecf('/sbin/ifconfig %s name %s', array($devnode, $devname));
+        mwexecf('/sbin/ifconfig %s group openvpn', array($devname));
     }
 
     if ($device_only || isset($settings['disable'])) {
@@ -603,7 +595,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
             break;
     }
 
-    $conf .= "dev-node /dev/{$tunname}\n";
+    $conf .= "dev-node /dev/{$devnode}\n";
     $conf .= "writepid /var/run/openvpn_{$mode_id}.pid\n";
     $conf .= "#user nobody\n";
     $conf .= "#group nobody\n";
@@ -1015,13 +1007,10 @@ function openvpn_delete($mode, &$settings)
         $devname = "ovpnc{$vpnid}";
     }
 
-    /* kill the process if running */
     killbypid("/var/run/openvpn_{$mode_id}.pid", 'TERM', true);
 
-    /* remove the device */
-    mwexec("/sbin/ifconfig " . escapeshellarg($devname) . " destroy");
+    mwexecf('/sbin/ifconfig %s destroy', array($devname));
 
-    /* remove the configuration files */
     @array_map('unlink', glob("/var/etc/openvpn/{$mode_id}.*"));
 }
 
