@@ -340,7 +340,7 @@
                 <label>Unrestricted IP addresses</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type IP addresses you want to allow access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Enter the IP addresses you want to allow all traffic, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
                 <hint>Type IP addresses (ex. 192.168.1.100)</hint>
                 <allownew>true</allownew>
             </field>
