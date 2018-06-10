@@ -200,7 +200,7 @@ rm /var/run/booting
 echo -n "Root file system: "
 mount | grep ' on / ' | awk '{ print $1 }'
 
-/usr/local/opnsense/scripts/shell/banner.php
+/usr/local/sbin/opnsense-shell banner
 /usr/local/etc/rc.subr.d/livemode
 
 exit 0

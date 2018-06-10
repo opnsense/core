@@ -9,6 +9,7 @@
 trap : 2
 trap : 3
 
+CMD_BANNER="/usr/local/opnsense/scripts/shell/banner.php"
 CMD_DEFAULTS="/usr/local/opnsense/scripts/shell/defaults.php"
 CMD_FIRMWARE="/usr/local/opnsense/scripts/shell/firmware.sh"
 CMD_HALT="/usr/local/opnsense/scripts/shell/halt.php"
@@ -54,6 +55,10 @@ fi
 # The invoke using "opnsense-shell cmd" will launch the
 # utility without presenting and looping the menu.
 case "${1}" in
+banner)
+	shift
+	exec ${CMD_BANNER} "${@}"
+	;;
 defaults)
 	shift
 	exec ${CMD_DEFAULTS} "${@}"
@@ -173,6 +178,6 @@ case ${OPCODE} in
 	;;
 esac
 
-/usr/local/opnsense/scripts/shell/banner.php
+${CMD_BANNER}
 
 done
