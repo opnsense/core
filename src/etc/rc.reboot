@@ -1,5 +1,5 @@
 #!/bin/sh
 
-. /usr/local/etc/rc.shutdown
+/usr/local/etc/rc.syshook stop
 
-/sbin/shutdown -or now
+exec /sbin/shutdown -or now

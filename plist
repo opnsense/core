@@ -129,6 +129,7 @@
 /usr/local/etc/rc.syshook.d/90-carp.start
 /usr/local/etc/rc.syshook.d/90-cron.start
 /usr/local/etc/rc.syshook.d/95-beep.start
+/usr/local/etc/rc.syshook.d/99-config.stop
 /usr/local/etc/rc.syshook.d/backup/20-captiveportal
 /usr/local/etc/rc.syshook.d/backup/20-dhcpleases
 /usr/local/etc/rc.syshook.d/backup/20-duid
