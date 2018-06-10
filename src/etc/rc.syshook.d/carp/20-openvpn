@@ -37,12 +37,12 @@ $type = !empty($argv[2]) ? $argv[2] : '';
 
 if ($type != 'MASTER' && $type != 'BACKUP') {
     log_error("Carp '$type' event unknown from source '{$subsystem}'");
-    return;
+    exit(1);
 }
 
 if (!strstr($subsystem, '@')) {
     log_error("Carp '$type' event triggered from wrong source '{$subsystem}'");
-    return;
+    exit(1);
 }
 
 list($vhid, $iface) = explode("@", $subsystem);

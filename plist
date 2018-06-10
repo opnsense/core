@@ -73,7 +73,6 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20171219
 /usr/local/etc/rc
 /usr/local/etc/rc.bootup
-/usr/local/etc/rc.carp
 /usr/local/etc/rc.configure_firmware
 /usr/local/etc/rc.configure_interface
 /usr/local/etc/rc.configure_plugins
@@ -135,6 +134,7 @@
 /usr/local/etc/rc.syshook.d/backup/20-duid
 /usr/local/etc/rc.syshook.d/backup/20-netflow
 /usr/local/etc/rc.syshook.d/backup/20-rrd
+/usr/local/etc/rc.syshook.d/carp/20-openvpn
 /usr/local/etc/rc.update_bogons
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/opnsense/contrib/IXR/IXR_Library.php
