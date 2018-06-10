@@ -1,6 +1,4 @@
 #!/bin/sh
 
 # Restore backups from previous shutdown
-for BACKUP in captiveportal dhcpleases duid netflow rrd; do
-	/usr/local/etc/rc.backup_${BACKUP} restore
-done
+/usr/local/etc/rc.syshook backup restore

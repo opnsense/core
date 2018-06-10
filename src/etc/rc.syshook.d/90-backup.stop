@@ -1,6 +1,4 @@
 #!/bin/sh
 
 # Backup volatile internals
-for BACKUP in captiveportal dhcpleases duid netflow rrd; do
-	/usr/local/etc/rc.backup_${BACKUP}
-done
+/usr/local/etc/rc.syshook backup

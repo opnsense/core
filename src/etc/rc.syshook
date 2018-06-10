@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2015-2018 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -33,32 +33,49 @@
 # It could be useful for the user to order scripts
 # or set a higher/lower priority in case some
 # use case requires a slightly different setup.
+#
+# Arguments beyond the syshook level are passed on to
+# the to be executed scripts.
+#
+# The syshook level can be given as a suffix or is implied
+# via the subdirectory used.  For backwards compat the
+# subdirectory given is used, otherwise the old format
+# is used.
 
 SYSDIR="/usr/local/etc/rc.syshook.d"
 SYSLEVEL="${1}"
 
+shift
+
 if [ -z "${SYSLEVEL}" ]; then
 	# we don't know of a default
-	exit 1;
+	exit 1
 fi
 
 if [ ! -d ${SYSDIR} ]; then
 	# no dir no fun
-	exit 0;
+	exit 0
 fi
 
-# collect all matching scripts
-SYSHOOKS=$(find -s ${SYSDIR} -type f -name "*.${SYSLEVEL}")
 
-for SYSHOOK in ${SYSHOOKS}; do
+if [ -d ${SYSDIR}/${SYSLEVEL} ]; then
+	# in the subdir all files match
+	SYSHOOKS="$(find -s ${SYSDIR}/${SYSLEVEL} -type f})"
+fi
+
+# XXX pre-18.7 compat: collect all matching root scripts
+SYSHOOKS="${SYSHOOKS} $(find -s ${SYSDIR} -type f -depth 1 -name "*.${SYSLEVEL}")"
+
+for _SYSHOOK in ${SYSHOOKS}; do
 	# extract syshook origin
-	SYSHOOK=${SYSHOOK##"${SYSDIR}/"}
+	SYSHOOK=${_SYSHOOK##"${SYSDIR}/"}
+	SYSHOOK=${SYSHOOK##"${SYSLEVEL}/"}
 	SYSHOOK=${SYSHOOK%%".${SYSLEVEL}"}
 	SYSNAME=${SYSHOOK#??-}
 
 	echo ">>> Invoking ${SYSLEVEL} script '${SYSNAME}'"
 
-	if ! ${SYSDIR}/${SYSHOOK}.${SYSLEVEL}; then
+	if ! ${_SYSHOOK} "${@}"; then
 		echo ">>> Error in ${SYSLEVEL} script '${SYSNAME}'"
 	fi
 done

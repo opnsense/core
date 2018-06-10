@@ -72,11 +72,6 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/opnsense-update.deciso.com.20170721
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20171219
 /usr/local/etc/rc
-/usr/local/etc/rc.backup_captiveportal
-/usr/local/etc/rc.backup_dhcpleases
-/usr/local/etc/rc.backup_duid
-/usr/local/etc/rc.backup_netflow
-/usr/local/etc/rc.backup_rrd
 /usr/local/etc/rc.bootup
 /usr/local/etc/rc.carp
 /usr/local/etc/rc.configure_firmware
@@ -135,6 +130,11 @@
 /usr/local/etc/rc.syshook.d/90-carp.start
 /usr/local/etc/rc.syshook.d/90-cron.start
 /usr/local/etc/rc.syshook.d/95-beep.start
+/usr/local/etc/rc.syshook.d/backup/20-captiveportal
+/usr/local/etc/rc.syshook.d/backup/20-dhcpleases
+/usr/local/etc/rc.syshook.d/backup/20-duid
+/usr/local/etc/rc.syshook.d/backup/20-netflow
+/usr/local/etc/rc.syshook.d/backup/20-rrd
 /usr/local/etc/rc.update_bogons
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/opnsense/contrib/IXR/IXR_Library.php
