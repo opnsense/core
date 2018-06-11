@@ -1,7 +1,7 @@
 <menu>
     <Services>
       <WebProxy VisibleName="Web Proxy" cssClass="fa fa-bolt fa-fw">
-          <Administration url="/ui/proxy/">
+          <Administration url="/ui/proxy">
             <GeneralSettings VisibleName="General" url="/ui/proxy/#subtab_proxy-general-settings"/>
             <LocalCache VisibleName="Cache" url="/ui/proxy/#subtab_proxy-general-cache-local"/>
             <TrafficManagement VisibleName="TrafficManagement" url="/ui/proxy/#subtab_proxy-general-traffic"/>

@@ -1,7 +1,7 @@
 <menu>
     <Firewall>
         <TrafficShaper order="40" VisibleName="Traffic Shaper" cssClass="fa fa-filter fa-fw">
-            <Settings order="10" url="/ui/trafficshaper/">
+            <Settings order="10" url="/ui/trafficshaper">
                 <Pipes VisibleName="Pipes" url="/ui/trafficshaper/#pipes"/>
                 <Queues VisibleName="Queues" url="/ui/trafficshaper/#queues"/>
                 <Rules VisibleName="Rules" url="/ui/trafficshaper/#rules"/>
