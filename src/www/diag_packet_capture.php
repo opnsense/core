@@ -382,7 +382,7 @@ include("fbegin.inc");
                       <input type="text"  name="host" value="<?=$pconfig['host'];?>" />
                       <div class="hidden" data-for="help_for_host">
                         <?=gettext("This value is either the Source or Destination IP address or subnet in CIDR notation. The packet capture will look for this address in either field.");?>
-                        <?=gettext("Matching can be negated by preceding the value with \"not\". Multiple IP addresses or CIDR subnets may be specified as boolean expresion.");?>
+                        <?=gettext("Matching can be negated by preceding the value with \"not\". Multiple IP addresses or CIDR subnets may be specified as boolean expression.");?>
                         <?=gettext("If you leave this field blank, all packets on the specified interface will be captured.");?>
                         <br/><br/><?=gettext("Example:");?> not 10.0.0.0/24 not and not 11.0.0.1
                       </div>
