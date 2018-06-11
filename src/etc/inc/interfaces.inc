@@ -472,8 +472,6 @@ function interfaces_bridge_configure($checkmember = 0, $realif = '')
 
 function interface_bridge_configure(&$bridge, $checkmember = 0)
 {
-    global $config;
-
     if (!is_array($bridge)) {
         return;
     }
@@ -707,8 +705,6 @@ function interfaces_lagg_configure($realif = '', $verbose = false)
 
 function interface_lagg_configure(&$lagg)
 {
-    global $config;
-
     if (!is_array($lagg)) {
         return -1;
     }
@@ -717,6 +713,7 @@ function interface_lagg_configure(&$lagg)
     if (!count($members)) {
         return -1;
     }
+
     $interface_stats = legacy_interfaces_details();
 
     if (!empty($lagg['laggif'])) {
@@ -735,7 +732,6 @@ function interface_lagg_configure(&$lagg)
     } else {
         $laggif = legacy_interface_create('lagg');
     }
-
 
     // determine mtu value to use, either the provided one for the lagg or smallest of it's children
     $mtu = null;
@@ -820,8 +816,6 @@ function interfaces_gre_configure($checkparent = 0, $verbose = false, $realif = 
 /* NOTE: $grekey is not used but useful for passing this function to array_walk. */
 function interface_gre_configure(&$gre, $grekey = "")
 {
-    global $config;
-
     if (!is_array($gre)) {
         return -1;
     }
@@ -1853,10 +1847,9 @@ function interface_carp_configure(&$vip)
 
 function interface_wireless_clone($realif, $wlcfg)
 {
-    global $config;
-
-    /*   Check to see if interface has been cloned as of yet.
-     *   If it has not been cloned then go ahead and clone it.
+    /*
+     * Check to see if interface has been cloned as of yet.
+     * If it has not been cloned then go ahead and clone it.
      */
     $needs_clone = false;
     if (isset($wlcfg['wireless']) && is_array($wlcfg['wireless'])) {
@@ -2434,8 +2427,6 @@ function kill_wpasupplicant($interface)
 
 function interface_virtual_create($interface)
 {
-    global $config;
-
     if (strstr($interface, '_vlan')) {
         interfaces_vlan_configure($vlan);
     } elseif (substr($interface, 0, 3) == 'gre') {
@@ -2859,8 +2850,6 @@ function interface_track6_6to4_configure($interface = 'lan', $lancfg)
 
 function interface_6rd_configure($interface = "wan", $wancfg)
 {
-    global $config;
-
     /* because this is a tunnel interface we can only function
      *  with a public IPv4 address on the interface */
     if (!is_array($wancfg)) {
@@ -2936,14 +2925,14 @@ function interface_6rd_configure($interface = "wan", $wancfg)
 
 function interface_6to4_configure($interface = 'wan', $wancfg)
 {
-    global $config;
-
-    /* because this is a tunnel interface we can only function
-     *  with a public IPv4 address on the interface */
-
     if (!is_array($wancfg)) {
         return;
     }
+
+    /*
+     * Because this is a tunnel interface we can only function
+     * with a public IPv4 address on the interface
+     */
 
     $wanif = get_real_interface($interface);
     $ip4address = find_interface_ip($wanif);
@@ -3054,9 +3043,9 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     $wanif = get_real_interface($interface, "inet6");
 
     /* accept router advertisements for this interface */
-    set_single_sysctl("net.inet6.ip6.accept_rtadv", "1");
-    log_error("Accept router advertisements on interface {$wanif} ");
-    mwexec("/sbin/ifconfig {$wanif} inet6 accept_rtadv -ifdisabled");
+    set_single_sysctl('net.inet6.ip6.accept_rtadv', '1');
+    log_error("Accept router advertisements on interface {$wanif}");
+    mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $wanif);
 
     /* Enable RFC6204w support for IPv6 Customer Edge (CE) router */
     set_single_sysctl("net.inet6.ip6.rfc6204w3", "1");
@@ -3605,8 +3594,6 @@ function interfaces_group_setup()
 
 function interface_group_setup(&$groupname)
 {
-    global $config;
-
     if (!is_array($groupname)) {
         return;
     }
@@ -4286,8 +4273,6 @@ function get_interface_subnet($interface = "wan")
 
 function get_interface_subnetv6($interface = "wan")
 {
-    global $config;
-
     $realif = get_real_interface($interface, "inet6");
     if (!$realif) {
         if (strstr($interface, "_vip")) {
@@ -4464,7 +4449,7 @@ function get_failover_interface($interface, $family = "all")
 {
     global $config;
 
-    /* shortcut to get_real_interface if we find it in the config */
+    /* shortcut for known interfaces */
     if (isset($config['interfaces'][$interface])) {
         return get_real_interface($interface, $family);
     }
@@ -4479,8 +4464,8 @@ function get_failover_interface($interface, $family = "all")
             return $a_groups[$interface][0]['int'];
         }
     }
-    /* fall through to get_real_interface */
-    /* XXX: Really needed? */
+
+    /* fall through to get real interface the hard way */
     return get_real_interface($interface, $family);
 }
 
@@ -4811,7 +4796,6 @@ function get_ppp_uptime($port)
 */
 function is_ipaddr_configured($ipaddr, $ignore_if = '')
 {
-    global $config;
     $if = get_real_interface($ignore_if);
     $interface_list_ips = get_configured_ip_addresses();
 
