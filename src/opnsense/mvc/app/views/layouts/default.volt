@@ -169,6 +169,10 @@
         <script src="/ui/js/jquery.tokenize.js"></script>
         <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/jquery.tokenize.css', theme_name)}}" />
 
+        <!-- JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/) -->
+        <script src="/ui/js/tokenize2.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/tokenize2.css', theme_name)}}" rel="stylesheet" />
+
         <!-- Bootgrind (grid system from http://www.jquery-bootgrid.com/ )  -->
         <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/jquery.bootgrid.css', theme_name)}}" />
         <script src="/ui/js/jquery.bootgrid.js"></script>
