@@ -2,15 +2,15 @@
     <Services>
       <WebProxy VisibleName="Web Proxy" cssClass="fa fa-bolt fa-fw">
           <Administration url="/ui/proxy">
-            <GeneralSettings VisibleName="General" url="/ui/proxy/#subtab_proxy-general-settings"/>
-            <LocalCache VisibleName="Cache" url="/ui/proxy/#subtab_proxy-general-cache-local"/>
-            <TrafficManagement VisibleName="TrafficManagement" url="/ui/proxy/#subtab_proxy-general-traffic"/>
-            <Forward VisibleName="Forward" url="/ui/proxy/#subtab_proxy-forward-general"/>
-            <FTP VisibleName="FTP" url="/ui/proxy/#subtab_proxy-forward-ftp"/>
-            <ACL VisibleName="ACL" url="/ui/proxy/#subtab_proxy-forward-acl"/>
-            <Authentication VisibleName="Auth" url="/ui/proxy/#subtab_proxy-general-authentication"/>
-            <RemoteACL VisibleName="RemoteACL" url="/ui/proxy/#remote_acls"/>
-            <ICAP VisibleName="ICAP" url="/ui/proxy/#subtab_proxy-icap"/>
+            <GeneralSettings VisibleName="General" url="/ui/proxy#subtab_proxy-general-settings"/>
+            <LocalCache VisibleName="Cache" url="/ui/proxy#subtab_proxy-general-cache-local"/>
+            <TrafficManagement VisibleName="TrafficManagement" url="/ui/proxy#subtab_proxy-general-traffic"/>
+            <Forward VisibleName="Forward" url="/ui/proxy#subtab_proxy-forward-general"/>
+            <FTP VisibleName="FTP" url="/ui/proxy#subtab_proxy-forward-ftp"/>
+            <ACL VisibleName="ACL" url="/ui/proxy#subtab_proxy-forward-acl"/>
+            <Authentication VisibleName="Auth" url="/ui/proxy#subtab_proxy-general-authentication"/>
+            <RemoteACL VisibleName="RemoteACL" url="/ui/proxy#remote_acls"/>
+            <ICAP VisibleName="ICAP" url="/ui/proxy#subtab_proxy-icap"/>
           </Administration>
           <Log VisibleName="Log File" url="/diag_logs_proxy.php?type=cache">
               <More url="/diag_logs_proxy.php*" visibility="hidden"/>
