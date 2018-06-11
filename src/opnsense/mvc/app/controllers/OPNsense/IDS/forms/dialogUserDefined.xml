@@ -15,7 +15,6 @@
         <id>rule.geoip</id>
         <label>GeoIP/Country</label>
         <type>select_multiple</type>
-        <style>tokenize</style>
         <help>Countries to alert or block using GeoIP.</help>
     </field>
     <field>

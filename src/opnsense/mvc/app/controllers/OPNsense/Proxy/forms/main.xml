@@ -212,7 +212,6 @@
                 <id>proxy.forward.interfaces</id>
                 <label>Proxy interfaces</label>
                 <type>select_multiple</type>
-                <style>tokenize</style>
                 <help><![CDATA[Select interface(s) the proxy will bind to.]]></help>
                 <hint>Type or select interface.</hint>
             </field>
@@ -310,7 +309,6 @@
                 <id>proxy.forward.ftpInterfaces</id>
                 <label>FTP proxy interfaces</label>
                 <type>select_multiple</type>
-                <style>tokenize</style>
                 <help><![CDATA[Select interface(s) the ftp proxy will bind to.]]></help>
                 <hint>Type or select interface (Leave blank to disable ftp proxy).</hint>
             </field>
@@ -573,7 +571,6 @@
                 <id>proxy.forward.authentication.method</id>
                 <label>Authentication method</label>
                 <type>select_multiple</type>
-                <style>tokenize</style>
                 <help><![CDATA[Select Authentication method]]></help>
             </field>
             <field>
