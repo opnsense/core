@@ -39,8 +39,7 @@
 #
 # The syshook level can be given as a suffix or is implied
 # via the subdirectory used.  For backwards compat the
-# subdirectory given is used, otherwise the old format
-# is used.
+# suffix is moved to the new subdirectory during a request.
 
 SYSDIR="/usr/local/etc/rc.syshook.d"
 SYSLEVEL="${1}"
@@ -52,25 +51,30 @@ if [ -z "${SYSLEVEL}" ]; then
 	exit 1
 fi
 
-if [ ! -d ${SYSDIR} ]; then
+if [ -d ${SYSDIR} ]; then
+	# XXX pre-18.7 compat: move all old-style root scripts to new location
+	for _SYSHOOK in $(find -s ${SYSDIR} -type f -depth 1 -name "*.${SYSLEVEL}"); do
+		SYSHOOK=${_SYSHOOK##"${SYSDIR}/"}
+		SYSHOOK=${SYSHOOK%%".${SYSLEVEL}"}
+		SYSNAME=${SYSHOOK#??-}
+
+		echo ">>> Migrating ${SYSLEVEL} script '${SYSNAME}'"
+
+		mkdir -p ${SYSDIR}/${SYSLEVEL}
+		mv ${_SYSHOOK} ${SYSDIR}/${SYSLEVEL}/${SYSHOOK}
+	done
+fi
+
+if [ ! -d ${SYSDIR}/${SYSLEVEL} ]; then
 	# no dir no fun
 	exit 0
 fi
 
-
-if [ -d ${SYSDIR}/${SYSLEVEL} ]; then
-	# in the subdir all files match
-	SYSHOOKS="$(find -s ${SYSDIR}/${SYSLEVEL} -type f})"
-fi
-
-# XXX pre-18.7 compat: collect all matching root scripts
-SYSHOOKS="${SYSHOOKS} $(find -s ${SYSDIR} -type f -depth 1 -name "*.${SYSLEVEL}")"
+SYSHOOKS="$(find -s ${SYSDIR}/${SYSLEVEL} -type f})"
 
 for _SYSHOOK in ${SYSHOOKS}; do
-	# extract syshook origin
 	SYSHOOK=${_SYSHOOK##"${SYSDIR}/"}
 	SYSHOOK=${SYSHOOK##"${SYSLEVEL}/"}
-	SYSHOOK=${SYSHOOK%%".${SYSLEVEL}"}
 	SYSNAME=${SYSHOOK#??-}
 
 	echo ">>> Invoking ${SYSLEVEL} script '${SYSNAME}'"
