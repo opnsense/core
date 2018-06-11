@@ -156,6 +156,7 @@ function setFormData(parent,data) {
                         // regular input type
                         targetNode.val(htmlDecode(node[keypart]));
                     }
+                    targetNode.change();
                 }
             }
         });
