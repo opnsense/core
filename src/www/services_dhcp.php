@@ -967,7 +967,7 @@ include("head.inc");
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPAD");?> </td>
                       <td>
                         <input name="wpad" id="wpad" type="checkbox" value="yes" <?=!empty($pconfig['wpad']) ? "checked=\"checked\"" : ""; ?> />
-                        <strong><?= gettext("Enable Web Proxy Auto Discovery) ?></strong>
+                        <strong><?= gettext("Enable Web Proxy Auto Discovery") ?></strong>
                       </td>
                     </tr>
 <?php
