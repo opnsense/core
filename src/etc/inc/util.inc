@@ -78,14 +78,19 @@ function is_process_running($process)
 
 function get_dh_parameters($bits)
 {
-     /*
-     * XXX Use the sample file for now.  Later we want to
-     * try to see if the non-sample file is newer, in these
-     * cases we can use it.  If not, fall back to the sample
-     * file which should give a flexible and fixable apporach
-     * that does not leave users open to stale files.
-     */
-    return "/usr/local/etc/dh-parameters.$bits.sample";
+    global $config;
+
+    $file = "/usr/local/etc/dh-parameters.{$bits}";
+
+    if (empty($config['system']['dhparaminterval']) || !file_exists($file)) {
+        /*
+         * Use the sample file if the normal file is MIA
+         * or when the renew interval is not set:
+         */
+        $file .= '.sample';
+    }
+
+    return $file;
 }
 
 function is_subsystem_dirty($subsystem = '')

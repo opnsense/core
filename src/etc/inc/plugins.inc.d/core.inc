@@ -210,6 +210,9 @@ function core_cron()
             case 'monthly':
                 $jobs[]['autocron'] = array('configctl system ssl dhparam', '30', '3', '1', '*', '*');
                 break;
+            default:
+                /* cron job operated by user manually */
+                break;
         }
     }
 

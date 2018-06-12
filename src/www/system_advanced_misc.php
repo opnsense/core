@@ -246,10 +246,12 @@ include("head.inc");
                     <option value="" <?= $pconfig['dhparaminterval'] == '' ? "selected='selected'" : '' ?>><?=gettext('System defaults') ?></option>
                     <option value="weekly" <?= $pconfig['dhparaminterval'] == 'weekly' ? "selected='selected'" : '' ?>><?=gettext('Weekly renewal') ?></option>
                     <option value="monthly" <?= $pconfig['dhparaminterval'] == 'monthly' ? "selected='selected'" : '' ?>><?=gettext('Monthly renewal') ?></option>
+                    <option value="custom" <?= $pconfig['dhparaminterval'] == 'custom' ? "selected='selected'" : '' ?>><?=gettext('Custom renewal') ?></option>
                   </select>
                   <div class="hidden" data-for="help_for_dhparaminterval">
                     <?=gettext('Diffie-Hellman parameters are statically provided and updated at least twice per year in software updates. ' .
-                               'You can choose to regenerate unqiue parameters locally instead according to a predefined schedule.') ?>
+                               'You can choose to regenerate unqiue parameters locally instead according to a predefined or custom schedule. ' .
+                               'In case of custom renewal make sure to set up the respective cron job or rotate the files in some other way.') ?>
                   </div>
                 </td>
               </tr>
