@@ -381,9 +381,13 @@ $( document ).ready(function() {
                       </td>
 
                       <td>
-                        <?=$natent['target'];?>
+                        <span title="<?=htmlspecialchars(get_alias_description($natent['target']));?>" data-toggle="tooltip">
+                          <?=$natent['target'];?>
+                        </span>
+
 <?php                   if (is_alias($natent['target'])): ?>
-                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=$natent['target'];?>"><i class="fa fa-list"></i> </a>
+                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=$natent['target'];?>"
+                                 title="<?=gettext("edit alias");?>" data-toggle="tooltip"><i class="fa fa-list"></i> </a>
 <?php                   endif; ?>
                       </td>
 

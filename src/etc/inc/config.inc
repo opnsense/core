@@ -36,7 +36,6 @@ openlog($g['product_id'], LOG_ODELAY, LOG_USER);
 register_shutdown_function('closelog');
 
 require_once("xmlparse.inc");
-require_once("crypt.inc");
 require_once("notices.inc");
 require_once("legacy_bindings.inc");
 require_once("certs.inc");

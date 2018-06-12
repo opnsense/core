@@ -70,7 +70,7 @@ class InterfaceController extends ApiControllerBase
     public function getArpAction()
     {
         $backend = new Backend();
-        $response = $backend->configdpRun("interface list arp json");
+        $response = $backend->configdRun('interface list arp json');
         $arptable = json_decode($response, true);
 
         $intfmap = $this->getInterfaceNames();
@@ -96,7 +96,7 @@ class InterfaceController extends ApiControllerBase
     {
         if ($this->request->isPost()) {
             $backend = new Backend();
-            $response = $backend->configdpRun("interface flush arp");
+            $response = $backend->configdRun('interface flush arp');
             return $response;
         } else {
             return array("message" => "error");
@@ -110,7 +110,7 @@ class InterfaceController extends ApiControllerBase
     public function getNdpAction()
     {
         $backend = new Backend();
-        $response = $backend->configdpRun("interface list ndp json");
+        $response = $backend->configdRun('interface list ndp json');
         $ndptable = json_decode($response, true);
 
         $intfmap = $this->getInterfaceNames();
@@ -136,9 +136,9 @@ class InterfaceController extends ApiControllerBase
     {
         $backend = new Backend();
         if (empty($this->request->get('resolve'))) {
-            $response = $backend->configdpRun("interface routes list -n json");
+            $response = $backend->configdRun('interface routes list -n json');
         } else {
-            $response = $backend->configdpRun("interface routes list json");
+            $response = $backend->configdRun('interface routes list json');
         }
 
         $routingtable = json_decode($response, true);

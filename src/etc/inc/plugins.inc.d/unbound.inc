@@ -41,6 +41,7 @@ function unbound_configure()
     return array(
         'dns' => array('unbound_configure_do'),
         'hosts' => array('unbound_hosts_generate:0'),
+        'local' => array('unbound_configure_do'),
         'newwanip' => array('unbound_configure_do:2'),
     );
 }

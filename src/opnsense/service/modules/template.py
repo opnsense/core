@@ -43,6 +43,7 @@ import addons.template_helpers
 
 __author__ = 'Ad Schellevis'
 
+
 class Template(object):
     def __init__(self, target_root_directory="/"):
         """ constructor
@@ -58,6 +59,10 @@ class Template(object):
         self._template_dir = os.path.dirname(os.path.abspath(__file__)) + '/../templates/'
         self._j2_env = jinja2.Environment(loader=jinja2.FileSystemLoader(self._template_dir), trim_blocks=True,
                                           extensions=["jinja2.ext.do", "jinja2.ext.loopcontrols"])
+
+        # register additional filters
+        self._j2_env.filters['decode_idna'] = lambda x:x.decode('idna')
+        self._j2_env.filters['encode_idna'] = lambda x:x.encode('idna')
 
     def list_module(self, module_name):
         """ list single module content
@@ -95,7 +100,7 @@ class Template(object):
 
         :return: list (dict) of registered modules
         """
-        result =list()
+        result = list()
         for root, dirs, files in os.walk(self._template_dir):
             if root.count('/') > self._template_dir.count('/'):
                 module_name = root.replace(self._template_dir, '')
@@ -191,7 +196,7 @@ class Template(object):
         for fpart in filename.strip().split('/')[:-1]:
             fparts.append(fpart)
             if len(fpart) > 1:
-                tmppart = '/'.join(fparts);
+                tmppart = '/'.join(fparts)
                 if os.path.isfile(tmppart):
                     os.remove(tmppart)
                 if not os.path.exists(tmppart):
@@ -319,7 +324,6 @@ class Template(object):
                                                                                          traceback.format_exc()))
                 else:
                     raise render_exception
-
 
         return result
 

@@ -291,9 +291,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                   /* check for wireless interfaces, set or clear ['wireless'] */
                   if (match_wireless_interface($ifport)) {
-                      if (empty($config['interfaces'][$ifname]['wireless'])) {
-                          $config['interfaces'][$ifname]['wireless'] = array();
-                      }
+                      config_read_array('interfaces', $ifname, 'wireless');
                   } elseif (isset($config['interfaces'][$ifname]['wireless'])) {
                       unset($config['interfaces'][$ifname]['wireless']);
                   }
@@ -309,7 +307,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                           interface_sync_wireless_clones($config['interfaces'][$ifname], false);
                       }
                       /* Reload all for the interface. */
-                      interface_configure($ifname, true);
+                      interface_configure(false, $ifname, true);
                       // count changes
                       $changes++;
                   }
@@ -421,8 +419,8 @@ include("head.inc");
                         <td>
 <?php
                           if (empty($iface['lock'])): ?>
-                          <button title="<?= html_safe(gettext('Delete interface')) ?>" data-toggle="tooltip" data-id="<?=$ifname;?>" class="btn btn-default act_delete" type="submit">
-                            <span class="fa fa-trash"></span>
+                          <button title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip" data-id="<?=$ifname;?>" class="btn btn-default act_delete" type="submit">
+                            <i class="fa fa-trash fa-fw"></i>
                           </button>
 <?php
                           endif ?>
@@ -443,8 +441,8 @@ include("head.inc");
                           </select>
                         </td>
                         <td>
-                          <button name="add_x" type="submit" value="<?=$portname;?>" class="btn btn-primary" title="<?=gettext("add selected interface");?>" data-toggle="tooltip">
-                            <span class="glyphicon glyphicon-plus"></span>
+                          <button name="add_x" type="submit" value="<?=$portname;?>" class="btn btn-primary" title="<?= html_safe(gettext('Add')) ?>" data-toggle="tooltip">
+                            <i class="fa fa-plus fa-fw"></i>
                           </button>
                         </td>
                       </tr>
@@ -453,7 +451,7 @@ include("head.inc");
                       <tr>
                         <td colspan="2"></td>
                         <td>
-                          <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                          <button name="Submit" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button>
                         </td>
                       </tr>
                     </tbody>

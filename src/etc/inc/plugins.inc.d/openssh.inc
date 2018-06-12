@@ -194,12 +194,25 @@ function openssh_configure_do($verbose = false, $interface = '')
             }
         }
 
+        foreach (array('ipaddr', 'ipaddrv6') as $type) {
+            if (empty($config['interfaces'][$interface][$type])) {
+                continue;
+            }
+            $addr = $config['interfaces'][$interface][$type];
+            if (is_ipaddr($addr)) {
+                $listeners[] = $addr;
+            }
+        }
+
         $viparr = &config_read_array('virtualip', 'vip');
         foreach ($viparr as $vip) {
             if ($vip['interface'] == $interface && is_ipaddr($vip['subnet'])) {
                 $listeners[] = $vip['subnet'];
             }
         }
+
+        /* addresses may have been read twice */
+        $listeners = array_unique($listeners);
     }
 
     foreach ($listeners as $listener) {

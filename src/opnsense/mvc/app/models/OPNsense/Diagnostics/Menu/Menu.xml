@@ -1,21 +1,21 @@
 <menu>
     <Reporting>
-        <Health url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat fa-fw"/>
-        <Insight url="/ui/diagnostics/networkinsight/" cssClass="fa fa-binoculars fa-fw" />
-        <NetFlow url="/ui/diagnostics/netflow/" cssClass="fa fa-rss fa-fw"/>
+        <Health url="/ui/diagnostics/systemhealth" cssClass="fa fa-heartbeat fa-fw"/>
+        <Insight url="/ui/diagnostics/networkinsight" cssClass="fa fa-binoculars fa-fw" />
+        <NetFlow url="/ui/diagnostics/netflow" cssClass="fa fa-rss fa-fw"/>
     </Reporting>
     <System>
         <Diagnostics>
-            <Activity url="/ui/diagnostics/activity/" cssClass="fa fa-medkit fa-fw"/>
+            <Activity url="/ui/diagnostics/activity" cssClass="fa fa-medkit fa-fw"/>
         </Diagnostics>
         <Routes>
-            <Status order="20" url="/ui/diagnostics/interface/routes/"/>
+            <Status order="20" url="/ui/diagnostics/interface/routes"/>
         </Routes>
     </System>
     <Interfaces>
         <Diagnostics>
-            <ARPTable VisibleName="ARP Table" url="/ui/diagnostics/interface/arp/"/>
-            <NDPTable VisibleName="NDP Table" url="/ui/diagnostics/interface/ndp/"/>
+            <ARPTable VisibleName="ARP Table" url="/ui/diagnostics/interface/arp"/>
+            <NDPTable VisibleName="NDP Table" url="/ui/diagnostics/interface/ndp"/>
         </Diagnostics>
     </Interfaces>
 </menu>

@@ -49,18 +49,18 @@ require_once("interfaces.inc");
               switch (interface_data['status']) {
                   case 'up':
                     $("#"+tr_id).find('.text-danger').removeClass('text-danger').addClass('text-success');
-                    $("#"+tr_id).find('.glyphicon-arrow-down').removeClass('glyphicon-arrow-down').addClass('glyphicon-arrow-up');
-                    $("#"+tr_id).find('.glyphicon-arrow-remove').removeClass('glyphicon-arrow-remove').addClass('glyphicon-arrow-up');
+                    $("#"+tr_id).find('.fa-arrow-down').removeClass('fa-arrow-down').addClass('fa-arrow-up');
+                    $("#"+tr_id).find('.fa-times').removeClass('fa-times').addClass('fa-arrow-up');
                     break;
                   case 'down':
                     $("#"+tr_id).find('.text-success').removeClass('text-success').addClass('text-danger');
-                    $("#"+tr_id).find('.glyphicon-arrow-up').removeClass('glyphicon-arrow-up').addClass('glyphicon-arrow-down');
-                    $("#"+tr_id).find('.glyphicon-arrow-remove').removeClass('glyphicon-arrow-remove').addClass('glyphicon-arrow-down');
+                    $("#"+tr_id).find('.fa-arrow-up').removeClass('fa-arrow-up').addClass('fa-arrow-down');
+                    $("#"+tr_id).find('.fa-times').removeClass('fa-times').addClass('fa-arrow-down');
                     break;
                   default:
                     $("#"+tr_id).find('.text-success').removeClass('text-success').addClass('text-danger');
-                    $("#"+tr_id).find('.glyphicon-arrow-down').removeClass('glyphicon-arrow-down').addClass('glyphicon-arrow-remove');
-                    $("#"+tr_id).find('.glyphicon-arrow-up').removeClass('glyphicon-arrow-up').addClass('glyphicon-arrow-remove');
+                    $("#"+tr_id).find('.fa-arrow-down').removeClass('fa-arrow-down').addClass('fa-times');
+                    $("#"+tr_id).find('.fa-arrow-up').removeClass('fa-arrow-up').addClass('fa-times');
               }
           }
       });
@@ -77,24 +77,24 @@ require_once("interfaces.inc");
         <td>
 <?php
           if (isset($ifinfo['ppplink'])):?>
-            <span title="3g" class="glyphicon glyphicon-phone text-success"></span>
+            <span title="3g" class="fa fa-mobile text-success"></span>
 <?php
           elseif ($iswireless):
             if ($ifinfo['status'] == 'associated' || $ifinfo['status'] == 'up'):?>
-            <span title="wlan" class="glyphicon glyphicon-signal text-success"></span>
+            <span title="wlan" class="fa fa-signal text-success"></span>
 <?php
             else:?>
-            <span title="wlan_d" class="glyphicon glyphicon-signal text-danger"></span>
+            <span title="wlan_d" class="fa fa-signal text-danger"></span>
 <?php
             endif;?>
 <?php
           else:?>
 <?php
             if ($ifinfo['status'] == "up"):?>
-              <span title="cablenic" class="glyphicon glyphicon-transfer text-success"></span>
+              <span title="cablenic" class="fa fa-exchange text-success"></span>
 <?php
             else:?>
-              <span title="cablenic" class="glyphicon glyphicon-transfer text-danger"></span>
+              <span title="cablenic" class="fa fa-exchange text-danger"></span>
 <?php
             endif;?>
 <?php
@@ -111,13 +111,13 @@ require_once("interfaces.inc");
         <td>
 <?php
         if ($ifinfo['status'] == "up" || $ifinfo['status'] == "associated"):?>
-          <span class="glyphicon glyphicon-arrow-up text-success"></span>
+          <span class="fa fa-arrow-up text-success"></span>
 <?php
         elseif ($ifinfo['status'] == "no carrier"):?>
-          <span class="glyphicon glyphicon-arrow-down text-danger"></span>
+          <span class="fa fa-arrow-down text-danger"></span>
 <?php
         elseif ($ifinfo['status'] == "down"):?>
-          <span class="glyphicon glyphicon-arrow-remove text-danger"></span>
+          <span class="fa fa-times text-danger"></span>
 <?php
         else:?>
           <?=htmlspecialchars($ifinfo['status']);?>

@@ -43,7 +43,7 @@ config_read_array('virtualip', 'vip');
         $status = get_carp_interface_status("{$carp['interface']}_vip{$carp['vhid']}");?>
     <tr>
       <td>
-          <span class="glyphicon glyphicon-transfer text-success"></span>&nbsp;
+          <i class="fa fa-exchange fa-fw text-success"></i>
           <strong>
             <a href="/system_hasync.php">
               <span><?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($carp['interface']) . "@{$carp['vhid']}");?></span>
@@ -54,13 +54,13 @@ config_read_array('virtualip', 'vip');
 <?php
       if (get_single_sysctl('net.inet.carp.allow') <= 0 ) {
           $status = gettext("DISABLED");
-          echo "<span class=\"glyphicon glyphicon-remove text-danger\" title=\"$status\" alt=\"$status\" ></span>";
+          echo "<span class=\"fa fa-remove fa-fw text-danger\" title=\"$status\" alt=\"$status\" ></span>";
       } elseif ($status == gettext("MASTER")) {
-          echo "<span class=\"fa fa-play text-success\" title=\"$status\" alt=\"$status\" ></span>";
+          echo "<span class=\"fa fa-play fa-fw text-success\" title=\"$status\" alt=\"$status\" ></span>";
       } elseif ($status == gettext("BACKUP")) {
-          echo "<span class=\"fa fa-play text-muted\" title=\"$status\" alt=\"$status\" ></span>";
+          echo "<span class=\"fa fa-play fa-fw text-muted\" title=\"$status\" alt=\"$status\" ></span>";
       } elseif ($status == gettext("INIT")) {
-          echo "<span class=\"glyphicon glyphicon-info-sign\" title=\"$status\" alt=\"$status\" ></span>";
+          echo "<span class=\"fa fa-info-circle fa-fw\" title=\"$status\" alt=\"$status\" ></span>";
       }
       if (!empty($carp['subnet'])):?>
         &nbsp;

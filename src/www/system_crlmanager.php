@@ -495,7 +495,7 @@ include("head.inc");
                   <td><?=date("D M j G:i:s T Y", $cert["revoke_time"]); ?></td>
                   <td>
                     <a id="del_cert_<?=$thiscrl['refid'];?>" data-id="<?=$thiscrl['refid'];?>" data-certref="<?=$cert['refid'];?>" title="<?=gettext("Delete this certificate from the CRL");?>" data-toggle="tooltip"  class="act_delete_cert btn btn-default btn-xs">
-                      <span class="fa fa-trash text-muted"></span>
+                      <i class="fa fa-trash fa-fw"></i>
                     </a>
                   </td>
                 </tr>
@@ -581,7 +581,7 @@ include("head.inc");
                   <td><?=gettext("Internal");?></td>
                   <td><?=gettext("Certificates");?></td>
                   <td><?=gettext("In Use");?></td>
-                  <td></td>
+                  <td class="text-nowrap"></td>
                 </tr>
               </thead>
               <tbody>
@@ -595,16 +595,16 @@ include("head.inc");
                 foreach ($a_ca as $ca) :?>
                 <tr>
                   <td colspan="4"> <?=htmlspecialchars($ca['descr']);?></td>
-                  <td>
+                  <td class="text-nowrap">
 <?php
                   if (!empty($ca['prv'])) :?>
                     <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>" data-toggle="tooltip" title="<?= html_safe(sprintf(gettext('Add or Import CRL for %s'), $ca['descr'])) ?>" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-plus"></span>
+                      <i class="fa fa-plus fa-fw"></i>
                     </a>
 <?php
                   else :?>
                     <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>&amp;importonly=yes" data-toggle="tooltip" title="<?= html_safe(sprintf(gettext('Import CRL for %s'), $ca['descr'])) ?>" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-plus"></span>
+                      <i class="fa fa-plus fa-fw"></i>
                     </a>
 <?php
                   endif;?>
@@ -621,26 +621,26 @@ include("head.inc");
                   <td><?=$internal ? gettext("YES") : gettext("NO"); ?></td>
                   <td><?=$internal ? (isset($tmpcrl['cert']) ? count($tmpcrl['cert']) : 0) : gettext("Unknown (imported)"); ?></td>
                   <td><?=$inuse ? gettext("YES") : gettext("NO"); ?></td>
-                  <td>
+                  <td class="text-nowrap">
                     <a href="system_crlmanager.php?act=exp&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-export" data-toggle="tooltip" title="<?=gettext("Export CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+                        <i class="fa fa-download fa-fw" data-toggle="tooltip" title="<?=gettext("Export CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></i>
                     </a>
 <?php
                   if ($internal) :?>
                     <a href="system_crlmanager.php?act=edit&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-edit" data-toggle="tooltip" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+                      <i class="fa fa-pencil fa-fw" data-toggle="tooltip" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></i>
                     </a>
 <?php
                   else :?>
                     <a href="system_crlmanager.php?act=editimported&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-edit" data-toggle="tooltip" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+                      <i class="fa fa-pencil fa-fw" data-toggle="tooltip" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></i>
                     </a>
 <?php
                   endif; ?>
 <?php
                   if (!$inuse) :?>
                     <a id="del_<?=$tmpcrl['refid'];?>" data-descr="<?=htmlspecialchars($tmpcrl['descr']);?>" data-id="<?=$tmpcrl['refid'];?>" title="<?=gettext("Delete CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                      <span class="fa fa-trash text-muted"></span>
+                      <i class="fa fa-trash fa-fw"></i>
                     </a>
 <?php
                   endif; ?>

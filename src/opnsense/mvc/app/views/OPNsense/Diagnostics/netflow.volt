@@ -83,7 +83,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <li class="active"><a data-toggle="tab" id="capture_tab" href="#capture">{{ lang._('Capture') }}</a></li>
     <li><a data-toggle="tab" id="cache_tab" href="#cache">{{ lang._('Cache') }}</a></li>
 </ul>
-<div class="tab-content content-box tab-content">
+<div class="tab-content content-box">
     <div id="capture" class="tab-pane fade in active">
         <!-- tab page capture -->
         {{ partial("layout_partials/base_form",['fields':captureForm,'id':'frm_CaptureSettings', 'apply_btn_id':'btn_save_capture'])}}

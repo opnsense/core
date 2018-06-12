@@ -290,7 +290,7 @@ include("head.inc");
             <tr>
               <td><a id="help_for_language" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Language");?></td>
               <td>
-                <select name="language" class="selectpicker" data-size="10" data-style="btn-default" data-width="auto">
+                <select name="language" class="selectpicker" data-style="btn-default">
 <?php
                   foreach (get_locale_list() as $lcode => $ldesc):?>
                   <option value="<?=$lcode;?>" <?= $lcode == $pconfig['language'] ? 'selected="selected"' : '' ?>>
@@ -307,7 +307,7 @@ include("head.inc");
             <tr>
               <td><a id="help_for_theme" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Theme"); ?></td>
               <td>
-                <select name="theme" class="selectpicker" data-size="10" data-width="auto">
+                <select name="theme" class="selectpicker">
 <?php
                 foreach (glob('/usr/local/opnsense/www/themes/*', GLOB_ONLYDIR) as $file):
                   $file = basename($file);?>

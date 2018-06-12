@@ -233,8 +233,8 @@ include("head.inc");
                                 <td><?=$service['description'];?></td>
                                 <td>
                                     <div data-busy-id="action_<?=$sequence;?>">
-                                        <span class="btn btn-xs btn-<?=!empty($service['status']) ?"success" : "danger";?>">
-                                            <span class="glyphicon glyphicon-<?=!empty($service['status']) ?"play" : "stop";?>"></span>
+                                        <span class="btn btn-xs btn-<?=!empty($service['status']) ? 'success' : 'danger' ?>">
+                                          <i class="fa fa-<?=!empty($service['status']) ? 'play' : 'stop' ?> fa-fw"></i>
                                         </span>
 <?php
                                         if (!empty($service['status'])):?>
@@ -244,7 +244,7 @@ include("head.inc");
                                             data-service_name="<?=$service['name'];?>"
                                             data-toggle="tooltip"
                                             title="<?=sprintf(gettext('Restart %sService'), $service['name']);?>"
-                                            class="btn btn-xs btn-default xmlrpc_srv_status_act glyphicon glyphicon-refresh">
+                                            class="btn btn-xs btn-default xmlrpc_srv_status_act fa fa-refresh fa-fw">
                                         </span>
 <?php
                                           if (empty($service['nocheck'])):?>
@@ -304,7 +304,7 @@ include("head.inc");
                                             data-service_name="all"
                                             data-toggle="tooltip"
                                             title="<?=gettext('Restart all services');?>"
-                                            class="btn btn-xs btn-default xmlrpc_srv_status_act glyphicon glyphicon-refresh">
+                                            class="btn btn-xs btn-default xmlrpc_srv_status_act fa fa-refresh fa-fw">
                                         </span>
                                     </div>
                                 </td>

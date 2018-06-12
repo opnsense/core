@@ -27,11 +27,12 @@
 
     --------------------------------------------------------------------------------------
 
-    update suricata rules
+    update/download suricata rules
 """
 
 import os
 import sys
+import syslog
 import fcntl
 from ConfigParser import ConfigParser
 from lib import metadata
@@ -73,7 +74,7 @@ if __name__ == '__main__':
     for rule in md.list_rules(rule_properties):
         if 'url' in rule['source']:
             download_proto = str(rule['source']['url']).split(':')[0].lower()
-            if dl.is_supported(download_proto):
+            if dl.is_supported(url=rule['source']['url']):
                 if rule['filename'] not in enabled_rulefiles:
                     try:
                         # remove configurable but unselected file
@@ -86,6 +87,13 @@ if __name__ == '__main__':
                         auth = (rule['source']['username'], rule['source']['password'])
                     else:
                         auth = None
-                    dl.download(proto=download_proto, url=rule['url'], url_filename=rule['url_filename'],
-                                filename=rule['filename'], input_filter=input_filter, auth=auth,
-                                headers=rule['http_headers'])
+                    # when metadata supports versioning, check if either version or settings changed before download
+                    remote_hash = dl.fetch_version_hash(check_url=rule['version_url'], input_filter=input_filter,
+                                                        auth=auth, headers=rule['http_headers'])
+                    local_hash = dl.installed_file_hash(rule['filename'])
+                    if remote_hash is None or remote_hash != local_hash:
+                        dl.download(url=rule['url'], url_filename=rule['url_filename'],
+                                    filename=rule['filename'], input_filter=input_filter, auth=auth,
+                                    headers=rule['http_headers'], version=remote_hash)
+                    else:
+                        syslog.syslog(syslog.LOG_INFO, 'download skipped %s, same version' % rule['filename'])

@@ -257,7 +257,7 @@ function legacy_interfaces_details($intf = null)
             unset($mask);
             for ($i = 0; $i < count($line_parts) - 1; ++$i) {
                 if ($line_parts[$i] == 'netmask') {
-                    $mask = substr_count(base_convert(hexdec($line_parts[($i + 1)]), 10, 2), '1');
+                    $mask = substr_count(base_convert(hexdec($line_parts[$i + 1]), 10, 2), '1');
                 }
             }
             if (isset($mask)) {
@@ -281,6 +281,12 @@ function legacy_interfaces_details($intf = null)
                     return $a['link-local'] - $b['link-local'];
                 });
             }
+        } elseif (strpos($line, "\ttunnel ") !== false) {
+            // extract tunnel proto, source and destination
+            $result[$current_interface]["tunnel"] = array();
+            $result[$current_interface]["tunnel"]["proto"] = $line_parts[1];
+            $result[$current_interface]["tunnel"]["src_addr"] = $line_parts[2];
+            $result[$current_interface]["tunnel"]["dest_addr"] = $line_parts[4];
         } elseif (preg_match("/media: (.*)/", $line, $matches)) {
             // media, when link is between parenthesis grep only the link part
             $result[$current_interface]['media'] = $matches[1];

@@ -150,28 +150,19 @@ if (isset($config['ipsec']['phase2'])) {
       </tr>
     </thead>
     <tbody>
-<?php foreach ($ipsec_tunnels as $ipsec_key => $ipsec) :
-?>
+<?php foreach ($ipsec_tunnels as $ipsec_key => $ipsec): ?>
       <tr>
-          <td>
-            <?=$ipsec['local-addrs'];?> <br/>
-            (<?=$ipsec['remote-addrs'];?>)
-          </td>
-          <td><?=$ipsec['local-ts'];?></td>
-          <td><?=$ipsec['remote-ts'];?></td>
-          <td>
-          <?php if($ipsec['active']):
-?>
-              <span class='glyphicon glyphicon-transfer text-success' alt='Tunnel status'></span>
-          <?php else:
-?>
-            <span class='glyphicon glyphicon-transfer text-danger' alt='Tunnel status'></span>
-          <?php endif;
-?>
-          </td>
+        <td>
+          <?=$ipsec['local-addrs'];?> <br/>
+          (<?=$ipsec['remote-addrs'];?>)
+        </td>
+        <td><?=$ipsec['local-ts'];?></td>
+        <td><?=$ipsec['remote-ts'];?></td>
+        <td>
+          <i class="fa fa-exchange fa-fw text-<?= $ipsec['active'] ? 'success' : 'danger' ?>"></i>
+        </td>
       </tr>
-<?php endforeach;
-?>
+<?php endforeach ?>
     </tbody>
   </table>
 </div>
@@ -192,7 +183,7 @@ if (isset($config['ipsec']['phase2'])) {
         <td><?=htmlspecialchars($lease['user']);?></td>
         <td><?=htmlspecialchars($lease['address']);?></td>
         <td>
-          <span class='glyphicon glyphicon-transfer text-<?=$lease['status'] == 'online' ?  "success" : "danger";?>'></span>
+          <i class="fa fa-exchange fa-fw text-<?= $lease['status'] == 'online' ?  "success" : 'danger' ?>"></i>
         </td>
       </tr>
 

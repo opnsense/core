@@ -287,6 +287,7 @@ function get_std_save_message($raw = false)
         return 'The changes have been applied successfully.';
     }
 
+    /* we need this wrapped in gettext at least once */
     return gettext('The changes have been applied successfully.');
 }
 

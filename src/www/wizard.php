@@ -745,7 +745,7 @@ function showchange() {
 				}
 				if(!$field['dontcombinecells'])
 					echo "<td class=\"vtable\">";
-				echo "<select class='form-control' name='{$name}' style='max-width:5em;'>\n";
+				echo "<select class='form-control' id='{$name}' name='{$name}' style='max-width:5em;'>\n";
 				$CHECKED = ' selected="selected"';
 				for ($x = 1; $x <= 32; $x++) {
 					if ($x == 31) {
@@ -781,7 +781,7 @@ function showchange() {
 				}
 				if(!$field['dontcombinecells'])
 					echo "<td class=\"vtable\">";
-				echo "<select class='form-control' name='{$name}'>\n";
+				echo "<select class='form-control' id='{$name}' name='{$name}'>\n";
 				foreach ($languagelist as $langkey => $langval) {
 					$SELECTED = "";
 					if ($value == $langkey) $SELECTED = " selected=\"selected\"";
@@ -810,7 +810,7 @@ function showchange() {
 				}
 				if(!$field['dontcombinecells'])
 					echo "<td class=\"vtable\">";
-				echo "<select class='form-control' name='{$name}'>\n";
+				echo "<select class='form-control' id='{$name}' name='{$name}'>\n";
 				foreach ($timezonelist as $tz) {
 					if(strstr($tz, "GMT"))
 						continue;

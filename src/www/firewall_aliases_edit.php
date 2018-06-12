@@ -650,7 +650,7 @@ include("head.inc");
                       foreach (!empty($pconfig['host_url']) ? $pconfig['host_url'] : array("") as $aliasid => $aliasurl):?>
                         <tr>
                           <td>
-                            <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
+                            <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
                           </td>
                           <td>
                             <input type="text" class="host_url fld_detail" name="host_url[]" value="<?=$aliasurl;?>"/>
@@ -679,7 +679,7 @@ include("head.inc");
                       <tfoot>
                         <tr>
                           <td colspan="4">
-                            <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><span class="glyphicon glyphicon-plus"></span></div>
+                            <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><i class="fa fa-plus fa-fw"></i></div>
                           </td>
                         </tr>
                       </tfoot>

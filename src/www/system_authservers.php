@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2010 Ermal Luçi
-    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2010 Ermal Luçi
+ * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("auth.inc");
@@ -37,9 +37,8 @@ $authCNFOptions = $authFactory->listConfigOptions();
 config_read_array('system', 'authserver');
 config_read_array('ca');
 
-$a_servers = auth_get_authserver_list();
 $a_server = array();
-foreach ($a_servers as $servers) {
+foreach (auth_get_authserver_list() as $servers) {
     $a_server[] = $servers;
 }
 
@@ -105,6 +104,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             if (empty($pconfig['radius_auth_port'])) {
                 $pconfig['radius_auth_port'] = 1812;
+            }
+        } elseif ($pconfig['type'] == 'local') {
+            foreach (array('password_policy_duration', 'enable_password_policy_constraints',
+                'password_policy_complexity', 'password_policy_length') as $fieldname) {
+                if (!empty($config['system']['webgui'][$fieldname])) {
+                    $pconfig[$fieldname] = $config['system']['webgui'][$fieldname];
+                } else {
+                    $pconfig[$fieldname] = null;
+                }
             }
         } elseif (!empty($authCNFOptions[$pconfig['type']])) {
             foreach ($authCNFOptions[$pconfig['type']]['additionalFields'] as $fieldname => $field) {
@@ -189,7 +197,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           $input_errors[] = gettext("RADIUS Timeout value must be numeric and positive.");
       }
       if (empty($pconfig['name'])) {
-          $input_errors[] = gettext("A server name must be provided");
+          $input_errors[] = gettext('A server name must be provided.');
+      } elseif (strpos($pconfig['name'], ',') !== false) {
+          $input_errors[] = gettext('Invalid server name given.');
       }
 
       if (count($input_errors) == 0) {
@@ -248,16 +258,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                   $server['radius_auth_port'] = $pconfig['radius_auth_port'];
                   unset($server['radius_acct_port']);
               }
+          } elseif ($server['type'] == 'local') {
+              foreach (array('session_timeout', 'password_policy_duration', 'enable_password_policy_constraints',
+                  'password_policy_complexity', 'password_policy_length') as $fieldname) {
+                  if (!empty($pconfig[$fieldname])) {
+                      $config['system']['webgui'][$fieldname] = $pconfig[$fieldname];
+                  } elseif (isset($config['system']['webgui'][$fieldname])) {
+                      unset($config['system']['webgui'][$fieldname]);
+                  }
+              }
           } elseif (!empty($authCNFOptions[$server['type']])) {
               foreach ($authCNFOptions[$server['type']]['additionalFields'] as $fieldname => $field) {
                   $server[$fieldname] = $pconfig[$fieldname];
               }
           }
 
-          if (isset($id) && isset($config['system']['authserver'][$id])) {
-              $config['system']['authserver'][$id] = $server;
-          } else {
-              $config['system']['authserver'][] = $server;
+          if ($server['type'] != 'local') {
+              if (isset($id) && isset($config['system']['authserver'][$id])) {
+                  $config['system']['authserver'][$id] = $server;
+              } else {
+                  $config['system']['authserver'][] = $server;
+              }
           }
 
           write_config();
@@ -281,41 +302,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 // list of all possible fields for auth item (used for form init)
-$all_authfields = array('type','name','ldap_caref','ldap_host','ldap_port','ldap_urltype','ldap_protver','ldap_scope',
-        'ldap_basedn','ldap_authcn','ldap_extended_query','ldap_binddn','ldap_bindpw','ldap_attr_user','radius_host',
-        'radius_auth_port','radius_acct_port','radius_secret','radius_timeout','radius_srvcs'
-    );
-
+$all_authfields = array(
+    'type','name','ldap_caref','ldap_host','ldap_port','ldap_urltype','ldap_protver','ldap_scope',
+    'ldap_basedn','ldap_authcn','ldap_extended_query','ldap_binddn','ldap_bindpw','ldap_attr_user','radius_host',
+    'radius_auth_port','radius_acct_port','radius_secret','radius_timeout','radius_srvcs'
+);
 
 foreach ($all_authfields as $fieldname) {
     if (!isset($pconfig[$fieldname])) {
         $pconfig[$fieldname] = null;
     }
 }
+
 legacy_html_escape_form_data($pconfig);
 legacy_html_escape_form_data($a_server);
 
 include("head.inc");
 
 $main_buttons = array();
-if (!isset($_GET['act']) || $_GET['act'] != 'new')
-{
-    $main_buttons[] = array('label'=>gettext('Add server'), 'href'=>'system_authservers.php?act=new');
+if (!isset($_GET['act'])) {
+    $main_buttons[] = array('label' => gettext('Add'), 'href' => 'system_authservers.php?act=new');
 }
 
 ?>
-
-
 <body>
 
 <script>
 $( document ).ready(function() {
-    $("#type").change(function(){
-        $(".auth_options").addClass('hidden');
-        $(".auth_options :input").prop( "disabled", true );
-        $(".auth_"+$(this).val()).removeClass('hidden');
-        $(".auth_"+$(this).val()+"  :input").prop( "disabled", false );
+    $("#type").change(function () {
+        var type = $(this).val();
+        if (type == 'Local Database') {
+            type = 'local';
+        }
+        $('.auth_options').addClass('hidden');
+        $('.auth_options :input').prop('disabled', true);
+        $('.auth_' + type).removeClass('hidden');
+        $('.auth_' + type + ' :input').prop('disabled', false);
         $('.selectpicker').selectpicker('refresh');
+    });
+
+    $("#enable_password_policy_constraints").change(function () {
+        if ($("#enable_password_policy_constraints").prop('checked')) {
+            $(".password_policy_constraints").show();
+        } else {
+            $(".password_policy_constraints").hide();
+        }
     });
 
     $("#ldap_urltype").change(function(){
@@ -377,6 +408,7 @@ $( document ).ready(function() {
     if ($("#ldap_attr_user").val() == "") {
         $("#ldap_tmpltype").change();
     }
+    $("#enable_password_policy_constraints").change();
     $("#type").change();
 
     $("#act_select").click(function() {
@@ -409,7 +441,7 @@ $( document ).ready(function() {
             });
         } else {
             $.post('system_usermanager_settings_ldapacpicker.php', request_data, function(data) {
-                var tbl  = $("<table/>");
+                var tbl = $("<table/>");
                 var tbl_body = $("<tbody/>");
                 for (var i=0; i < data.length ; ++i) {
                     var tr = $("<tr/>");
@@ -429,7 +461,6 @@ $( document ).ready(function() {
                   buttons: [{
                             label: "<?= gettext("Close");?>",
                             action: function(dialogRef) {
-
                                 var values = $(".ldap_item_select:checked").map(function(){
                                     return $(this).val();
                                 }).get().join(';');
@@ -463,7 +494,7 @@ $( document ).ready(function() {
                   <td style="width:22%"></td>
                   <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
-                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                    <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
                   </td>
                 </tr>
                 <tr>
@@ -489,7 +520,7 @@ endif; ?>
 <?php
                     foreach ($authCNFOptions as $typename => $authType) :?>
                       <option value="<?=$typename;?>" <?=$pconfig['type'] == $typename ? "selected=\"selected\"" : "";?> >
-                        <?=$authType['description'];?>
+                        <?= !empty($authType['description']) ? $authType['description'] : $pconfig['name'] ?>
                       </option>
 <?php
                     endforeach; ?>
@@ -497,10 +528,64 @@ endif; ?>
 <?php
 else :
 ?>
-                    <strong><?=$authCNFOptions[$pconfig['type']]['description'];?></strong>
+                    <strong><?= !empty($authCNFOptions[$pconfig['type']]['description']) ? $authCNFOptions[$pconfig['type']]['description'] : $pconfig['name'] ?></strong>
                     <input name='type' type='hidden' id='type' value="<?=$pconfig['type'];?>"/>
 <?php
 endif; ?>
+                  </td>
+                </tr>
+                <!-- Local Database -->
+                <tr class="auth_local auth_options hidden">
+                  <td><a id="help_for_enable_password_policy_constraints" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Policy'); ?></td>
+                  <td>
+                    <input id="enable_password_policy_constraints" name="enable_password_policy_constraints" type="checkbox" <?= empty($pconfig['enable_password_policy_constraints']) ? '' : 'checked="checked"';?> />
+                    <?= gettext('Enable password policy constraints') ?>
+                    <div class="hidden" data-for="help_for_enable_password_policy_constraints">
+                      <?= gettext('Use hardened security policies for local accounts. Methods other than local these will usually be configured by the respective provider (e.g. LDAP, RADIUS, ...).');?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_local auth_options password_policy_constraints hidden">
+                  <td><a id="help_for_password_policy_duration" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Duration'); ?></td>
+                  <td>
+                    <select id="password_policy_duration" name="password_policy_duration" class="selectpicker" data-style="btn-default">
+                      <option <?=empty($pconfig['password_policy_duration']) ? "selected=\"selected\"" : "";?> value="0"><?=gettext("Disable");?></option>
+                      <option <?=$pconfig['password_policy_duration'] == '30' ? "selected=\"selected\"" : "";?> value="30"><?=sprintf(gettext("%d days"), "30");?></option>
+                      <option <?=$pconfig['password_policy_duration'] == '90' ? "selected=\"selected\"" : "";?> value="90"><?=sprintf(gettext("%d days"), "90");?></option>
+                      <option <?=$pconfig['password_policy_duration'] == '180' ? "selected=\"selected\"" : "";?> value="180"><?=sprintf(gettext("%d days"), "180");?></option>
+                      <option <?=$pconfig['password_policy_duration'] == '360' ? "selected=\"selected\"" : "";?> value="360"><?=sprintf(gettext("%d days"), "360");?></option>
+                    </select>
+                    <div class="hidden" data-for="help_for_password_policy_duration">
+                      <?= gettext("Password duration settings, the interval in days in which passwords stay valid. ".
+                                  "When reached, the user will be forced to change his or her password before continuing.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_local auth_options password_policy_constraints hidden">
+                  <td><a id="help_for_password_policy_length" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Length'); ?></td>
+                  <td>
+                    <select id="password_policy_length" name="password_policy_length" class="selectpicker" data-style="btn-default">
+                      <option <?=$pconfig['password_policy_length'] == '4' ? "selected=\"selected\"" : "";?> value="4">4</option>
+                      <option <?=$pconfig['password_policy_length'] == '6' ? "selected=\"selected\"" : "";?> value="6">6</option>
+                      <option <?=empty($pconfig['password_policy_length']) || $pconfig['password_policy_length'] == '8' ? "selected=\"selected\"" : "";?> value="8">8</option>
+                      <option <?=$pconfig['password_policy_length'] == '10' ? "selected=\"selected\"" : "";?> value="10">10</option>
+                      <option <?=$pconfig['password_policy_length'] == '12' ? "selected=\"selected\"" : "";?> value="12">12</option>
+                      <option <?=$pconfig['password_policy_length'] == '14' ? "selected=\"selected\"" : "";?> value="14">14</option>
+                      <option <?=$pconfig['password_policy_length'] == '16' ? "selected=\"selected\"" : "";?> value="16">16</option>
+                    </select>
+                    <div class="hidden" data-for="help_for_password_policy_length">
+                      <?= gettext("Sets the minimum length for a password");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_local auth_options password_policy_constraints hidden">
+                  <td><a id="help_for_password_policy_complexity" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Complexity'); ?></td>
+                  <td>
+                    <input id="password_policy_complexity" name="password_policy_complexity" type="checkbox" <?= empty($pconfig['password_policy_complexity']) ? '' : 'checked="checked"';?> />
+                    <?= gettext('Enable complexity requirements') ?>
+                    <div class="hidden" data-for="help_for_password_policy_complexity">
+                      <?= gettext("Require passwords to meet complexity rules");?>
+                    </div>
                   </td>
                 </tr>
                 <!-- LDAP -->
@@ -584,10 +669,10 @@ endif; ?>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Search scope");?></td>
                   <td>
                     <select name="ldap_scope" id="ldap_scope" class="selectpicker" data-style="btn-default">
-                      <option value="one" <?=$pconfig['ldap_scope'] == 'one' ?  "selected=\"selected\"" : "";?>>
+                      <option value="one" <?=$pconfig['ldap_scope'] == 'one' ? "selected=\"selected\"" : "";?>>
                         <?=gettext('One Level');?>
                       </option>
-                      <option value="subtree" <?=$pconfig['ldap_scope'] == 'subtree' ?  "selected=\"selected\"" : "";?>>
+                      <option value="subtree" <?=$pconfig['ldap_scope'] == 'subtree' ? "selected=\"selected\"" : "";?>>
                         <?=gettext('Entire Subtree');?>
                       </option>
                     </select>
@@ -769,27 +854,25 @@ else :
                   <th><?=gettext("Server Name");?></th>
                   <th style="width:25%"><?=gettext("Type");?></th>
                   <th style="width:35%"><?=gettext("Host Name");?></th>
-                  <th style="width:10%" class="list"></th>
+                  <th style="width:10%" class="text-nowrap"></th>
                 </tr>
               </thead>
               <tbody>
 <?php
-$i = 0;
-              foreach ($a_server as $server) :
-?>
+              $i = 0;
+              foreach ($a_server as $server): ?>
                 <tr>
-                  <td><?=$server['name']?></td>
-                  <td><?= !empty($authCNFOptions[$server['type']]) ? $authCNFOptions[$server['type']]['description'] : '' ?></td>
-                  <td><?=$server['host'];?></td>
-                  <td>
-                    <?php if ($i < (count($a_server) - 1)) :
-?>
-                    <a href="system_authservers.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-pencil"></span>
+                  <td><?= $server['name'] ?></td>
+                  <td><?= !empty($authCNFOptions[$server['type']]) ? $authCNFOptions[$server['type']]['description'] : $server['name'] ?></td>
+                  <td><?= !empty($server['host']) ? $server['host'] : $config['system']['hostname'] ?></td>
+                  <td class="text-nowrap">
+                    <a href="system_authservers.php?act=edit&amp;id=<?=$i;?>" title="<?= html_safe(gettext('Edit')) ?>" data-toggle="tooltip" class="btn btn-default btn-xs">
+                      <i class="fa fa-pencil fa-fw"></i>
                     </a>
-                    &nbsp;
-                    <a id="del_<?=$i;?>" title="<?=gettext("delete this server"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                      <span class="fa fa-trash text-muted"></span>
+                    <?php if ($i < (count($a_server) - 1)):
+?>
+                    <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs">
+                      <i class="fa fa-trash fa-fw"></i>
                     </a>
                   </td>
 <?php
@@ -798,11 +881,6 @@ endif; ?>
 <?php
                 $i++;
               endforeach;?>
-                <tr>
-                  <td colspan="4">
-                    <?=gettext("Additional authentication servers can be added here.");?>
-                  </td>
-                </tr>
               </tbody>
             </table>
           </form>

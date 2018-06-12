@@ -42,7 +42,7 @@ $argument = isset($argv[1]) ? trim($argv[1]) : '';
 
 if (file_exists('/var/run/booting')) {
     log_error("IP renewal deferred during boot on '{$argument}'");
-    file_put_contents('/tmp/newwanip_' . uniqid(), $argument);
+    file_put_contents('/tmp/newwanip_' . $argument, $argument);
     return;
 }
 
@@ -61,7 +61,6 @@ if (empty($argument)) {
     }
 }
 
-/* If the interface is configured and not enabled, bail. We do not need to change settings for disabled interfaces. #3313 */
 if (!isset($config['interfaces'][$interface]['enable'])) {
     log_error("Interface '{$interface}' is disabled or empty, nothing to do.");
     return;
@@ -72,8 +71,9 @@ $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 log_error("On (IP address: {$ip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
 
 /*
- * NOTE: Take care of openvpn and similar if you generate the event to reconfigure an interface.
- *    i.e. OpenVPN might be in tap mode and not have an ip.
+ * Take care of OpenVPN and similar if you generate the event
+ * to reconfigure an interface.  OpenVPN might be in tap(4)
+ * mode and not have an IP address.
  */
 if ((empty($ip) || !is_ipaddr($ip)) && substr($interface_real, 0, 4) != 'ovpn') {
     log_error("Failed to detect IP for {$interface_descr}[{$interface}]");
@@ -85,8 +85,6 @@ $configip = $config['interfaces'][$interface]['ipaddr'];
 $cacheip_file = "/var/db/{$interface}_cacheip";
 $ip_file = "/var/db/{$interface}_ip";
 
-/* write the current interface IP to file */
-/* used in src/sbin/dhclient-script.ext */
 if (is_ipaddr($ip)) {
     @file_put_contents($ip_file, $ip);
 }
@@ -116,25 +114,25 @@ if (!empty($bridgetmp)) {
 system_resolvconf_generate();
 system_hosts_generate();
 
-/* check tunneled IPv6 interface tracking */
 if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
     switch($config['interfaces'][$interface]['ipaddrv6']) {
-        case "6to4":
+        case '6to4':
             interface_6to4_configure($interface, $config['interfaces'][$interface]);
             break;
-        case "6rd":
+        case '6rd':
             interface_6rd_configure($interface, $config['interfaces'][$interface]);
             break;
-        case "dhcp6":
+        case 'dhcp6':
+        case 'slaac':
             if (isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
                 interface_dhcpv6_prepare($interface, $config['interfaces'][$interface]);
                 interface_dhcpv6_configure($interface, $config['interfaces'][$interface]);
+                services_radvd_configure();
             }
             break;
     }
 }
 
-/* Check Gif tunnels */
 if (isset($config['gifs']['gif']) && is_array($config['gifs']['gif'])){
     foreach ($config['gifs']['gif'] as $gif) {
         if ($gif['if'] == $interface) {
@@ -143,7 +141,7 @@ if (isset($config['gifs']['gif']) && is_array($config['gifs']['gif'])){
                   $gif['gifif'] = interface_gif_configure($gif);
                   $confif = convert_real_interface_to_friendly_interface_name($gif['gifif']);
                   if (!empty($confif)) {
-                      interface_configure($confif);
+                      interface_configure(false, $confif);
                   }
                   system_routing_configure(false, $ifname);
                 }
@@ -154,17 +152,12 @@ if (isset($config['gifs']['gif']) && is_array($config['gifs']['gif'])){
 
 $cacheip = @file_get_contents($cacheip_file);
 
-/*
- * We need to force sync VPNs on such even when the IP is the same for dynamic interfaces.
- * Even with the same IP the VPN software is unhappy with the IP disappearing, and we
- * could be failing back in which case we need to switch IPs back anyhow.
- */
 if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
     @unlink($cacheip_file);
 
     system_routing_configure(false, $interface);
-    setup_gateways_monitor();
-    filter_configure_sync();
+    setup_gateways_monitor(false);
+    filter_configure_sync(false, isset($config['system']['ip_change_kill_states']));
 
     if (is_ipaddr($ip)) {
         @file_put_contents($cacheip_file, $ip);
@@ -172,5 +165,5 @@ if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
 
     plugins_configure('vpn', false, array($interface));
     plugins_configure('newwanip', false, array($interface));
-    rrd_configure();
+    rrd_configure(false);
 }

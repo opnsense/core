@@ -247,7 +247,8 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         return $this->searchBase(
             "rules.rule",
-            array("interface", "proto", "source_not","source", "destination_not", "destination", "description", "origin", "sequence", "target"),
+            array("enabled", "interface", "proto", "source_not","source", "destination_not",
+                  "destination", "description", "origin", "sequence", "target"),
             "sequence"
         );
     }
@@ -303,5 +304,18 @@ class SettingsController extends ApiMutableModelControllerBase
     public function delRuleAction($uuid)
     {
         return  $this->delBase("rules.rule", $uuid);
+    }
+
+    /**
+     * Toggle rule defined by uuid (enable/disable)
+     * @param $uuid user defined rule internal id
+     * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
+     * @return array save result
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
+    public function toggleRuleAction($uuid, $enabled = null)
+    {
+        return $this->toggleBase("rules.rule", $uuid, $enabled);
     }
 }

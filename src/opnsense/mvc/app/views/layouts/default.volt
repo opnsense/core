@@ -169,6 +169,10 @@
         <script src="/ui/js/jquery.tokenize.js"></script>
         <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/jquery.tokenize.css', theme_name)}}" />
 
+        <!-- JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/) -->
+        <script src="/ui/js/tokenize2.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/tokenize2.css', theme_name)}}" rel="stylesheet" />
+
         <!-- Bootgrind (grid system from http://www.jquery-bootgrid.com/ )  -->
         <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/jquery.bootgrid.css', theme_name)}}" />
         <script src="/ui/js/jquery.bootgrid.js"></script>
@@ -202,8 +206,16 @@
       <div class="container-fluid">
         <div class="navbar-header">
           <a class="navbar-brand" href="/">
-            <img class="brand-logo" src="/ui/themes/{{theme_name}}/build/images/default-logo.png" height="30" alt="logo"/>
-            <img class="brand-icon" src="/ui/themes/{{theme_name}}/build/images/icon-logo.png" height="30" alt="icon"/>
+            {% if file_exists(["/usr/local/opnsense/www/themes/",theme_name,"/build/images/default-logo.svg"]|join("")) %}
+                <img class="brand-logo" src="/ui/themes/{{theme_name}}/build/images/default-logo.svg" height="30" alt="logo"/>
+            {% else %}
+                <img class="brand-logo" src="/ui/themes/{{theme_name}}/build/images/default-logo.png" height="30" alt="logo"/>
+            {% endif %}
+            {% if file_exists(["/usr/local/opnsense/www/themes/",theme_name,"/build/images/icon-logo.svg"]|join("")) %}
+                <img class="brand-icon" src="/ui/themes/{{theme_name}}/build/images/icon-logo.svg" height="30" alt="icon"/>
+            {% else %}
+                <img class="brand-icon" src="/ui/themes/{{theme_name}}/build/images/icon-logo.png" height="30" alt="icon"/>
+            {% endif %}
           </a>
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
             <span class="sr-only">{{ lang._('Toggle navigation') }}</span>

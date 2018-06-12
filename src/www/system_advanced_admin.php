@@ -5,6 +5,7 @@
  * Copyright (C) 2014-2015 Deciso B.V.
  * Copyright (C) 2005-2010 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * Copyright (C) 2007 Bill Marquette <bill.marquette@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
  *
@@ -36,15 +37,19 @@ require_once("system.inc");
 require_once("services.inc");
 
 $a_group = &config_read_array('system', 'group');
+$a_authmode = auth_get_authserver_list();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['webguiinterfaces'] = !empty($config['system']['webgui']['interfaces']) ? explode(',', $config['system']['webgui']['interfaces']) : array();
+    $pconfig['authmode'] = !empty($config['system']['webgui']['authmode']) ? explode(',', $config['system']['webgui']['authmode']) : array();
+    $pconfig['session_timeout'] = !empty($config['system']['webgui']['session_timeout']) ? $config['system']['webgui']['session_timeout'] : null;
     $pconfig['webguiproto'] = $config['system']['webgui']['protocol'];
     $pconfig['webguiport'] = $config['system']['webgui']['port'];
     $pconfig['ssl-certref'] = $config['system']['webgui']['ssl-certref'];
     $pconfig['compression'] = isset($config['system']['webgui']['compression']) ? $config['system']['webgui']['compression'] : null;
     $pconfig['ssl-ciphers'] = !empty($config['system']['webgui']['ssl-ciphers']) ? explode(':', $config['system']['webgui']['ssl-ciphers']) : array();
+    $pconfig['ssl-hsts'] = isset($config['system']['webgui']['ssl-hsts']);
     $pconfig['disablehttpredirect'] = isset($config['system']['webgui']['disablehttpredirect']);
     $pconfig['httpaccesslog'] = isset($config['system']['webgui']['httpaccesslog']);
     $pconfig['disableconsolemenu'] = isset($config['system']['disableconsolemenu']);
@@ -69,11 +74,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
     $pconfig = $_POST;
 
-    /* input validation */
-    if (!empty($pconfig['webguiport'])) {
-        if (!is_port($pconfig['webguiport'])) {
-            $input_errors[] = gettext('You must specify a valid web GUI port number');
-        }
+    if (!empty($pconfig['webguiport']) && !is_port($pconfig['webguiport'])) {
+        $input_errors[] = gettext('You must specify a valid web GUI port number.');
+    }
+
+    if (empty($pconfig['webguiproto']) || !in_array($pconfig['webguiproto'], array('http', 'https'))) {
+        $input_errors[] = gettext('You must specify a valid web GUI protocol.');
     }
 
     if (!empty($pconfig['althostnames'])) {
@@ -85,9 +91,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if (!empty($pconfig['sshport'])) {
-        if (!is_port($pconfig['sshport'])) {
-            $input_errors[] = gettext("You must specify a valid port number");
+    if (!empty($pconfig['sshport']) && !is_port($pconfig['sshport'])) {
+        $input_errors[] = gettext('You must specify a valid SSH port number.');
+    }
+
+    if (!empty($pconfig['session_timeout']) && (!is_numeric($pconfig['session_timeout']) || $pconfig['session_timeout'] <= 0)) {
+        $input_errors[] = gettext('Session timeout must be an integer value.');
+    }
+
+    if (!empty($pconfig['authmode'])) {
+        foreach ($pconfig['authmode'] as $auth_mode) {
+            if (!isset($a_authmode[$auth_mode])) {
+                $input_errors[] = sprintf(gettext('Authentication server "%s" is invalid.'), $auth_mode);
+            }
         }
     }
 
@@ -102,6 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['ssl-ciphers'] != $newciphers ||
             $config['system']['webgui']['interfaces'] != $newinterfaces ||
             (empty($pconfig['httpaccesslog'])) != empty($config['system']['webgui']['httpaccesslog']) ||
+            (empty($pconfig['ssl-hsts'])) != empty($config['system']['webgui']['ssl-hsts']) ||
             ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect']);
 
         $config['system']['webgui']['protocol'] = $pconfig['webguiproto'];
@@ -110,6 +127,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['webgui']['ssl-ciphers'] = $newciphers;
         $config['system']['webgui']['interfaces'] = $newinterfaces;
         $config['system']['webgui']['compression'] = $pconfig['compression'];
+
+        if (!empty($pconfig['ssl-hsts'])) {
+            $config['system']['webgui']['ssl-hsts'] = true;
+        } elseif (isset($config['system']['webgui']['ssl-hsts'])) {
+            unset($config['system']['webgui']['ssl-hsts']);
+        }
+
+        if (!empty($pconfig['session_timeout'])) {
+            $config['system']['webgui']['session_timeout'] = $pconfig['session_timeout'];
+        } elseif (isset($config['system']['webgui']['session_timeout'])) {
+            unset($config['system']['webgui']['session_timeout']);
+        }
 
         if ($pconfig['disablehttpredirect'] == "yes") {
             $config['system']['webgui']['disablehttpredirect'] = true;
@@ -186,6 +215,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['althostnames'] = $pconfig['althostnames'];
         } elseif (isset($config['system']['webgui']['althostnames'])) {
             unset($config['system']['webgui']['althostnames']);
+        }
+
+        if (!empty($pconfig['authmode'])) {
+            $config['system']['webgui']['authmode'] = implode(',', $pconfig['authmode']);
+        } elseif (isset($config['system']['webgui']['authmode'])) {
+            unset($config['system']['webgui']['authmode']);
         }
 
         /* always store setting to prevent installer auto-start */
@@ -451,6 +486,16 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
+                <td><a id="help_for_sslhsts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('HTTP Strict Transport Security') ?></td>
+                <td>
+                  <input name="ssl-hsts" type="checkbox" value="yes" <?= empty($pconfig['ssl-hsts']) ? '' : 'checked="checked"' ?>/>
+                  <?= gettext('Enable HTTP Strict Transport Security') ?>
+                  <div class="hidden" data-for="help_for_sslhsts">
+                    <?=gettext("HTTP Strict Transport Security (HSTS) is a web security policy mechanism that helps to protect websites against protocol downgrade attacks and cookie hijacking.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
                 <td><a id="help_for_webguiport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TCP port"); ?></td>
                 <td>
                   <input name="webguiport" id="webguiport" type="text" value="<?=$pconfig['webguiport'];?>" placeholder="<?= $pconfig['webguiproto'] == 'https' ? '443' : '80' ?>" />
@@ -463,7 +508,7 @@ $(document).ready(function() {
               </tr>
               <tr class="ssl_opts">
                 <td><a id="help_for_disablehttpredirect" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('HTTP Redirect'); ?></td>
-                <td style="width:78%">
+                <td>
                   <input name="disablehttpredirect" type="checkbox" value="yes" <?= empty($pconfig['disablehttpredirect']) ? '' : 'checked="checked"';?> />
                   <?= gettext('Disable web GUI redirect rule') ?>
                   <div class="hidden" data-for="help_for_disablehttpredirect">
@@ -481,6 +526,15 @@ $(document).ready(function() {
                   <?= gettext('Disable logging of web GUI successful logins') ?>
                   <div class="hidden" data-for="help_for_quietlogin">
                     <?=gettext("When this is checked, successful logins to the web GUI will not be logged.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_session_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Session Timeout') ?></td>
+                <td>
+                  <input class="form-control" name="session_timeout" id="session_timeout" type="text" placeholder="240" value="<?=$pconfig['session_timeout'];?>" />
+                  <div class="hidden" data-for="help_for_session_timeout">
+                    <?= gettext('Time in minutes to expire idle management sessions. The default is 4 hours (240 minutes).') ?>
                   </div>
                 </td>
               </tr>
@@ -509,7 +563,7 @@ $(document).ready(function() {
               </tr>
               <tr>
                 <td><a id="help_for_compression" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("HTTP Compression")?></td>
-                <td style="width:78%">
+                <td>
                   <select name="compression" class="selectpicker">
                       <option value="" <?=empty($pconfig['compression'])? 'selected="selected"' : '';?>>
                         <?=gettext("Off");?>
@@ -626,7 +680,7 @@ $(document).ready(function() {
               </tr>
               <tr>
                 <td><a id="help_for_sshport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSH port"); ?></td>
-                <td style="width:78%">
+                <td>
                   <input name="sshport" type="text" value="<?=$pconfig['sshport'];?>" placeholder="22" />
                   <div class="hidden" data-for="help_for_sshport">
                     <?=gettext("Leave this blank for the default of 22."); ?>
@@ -653,19 +707,19 @@ $(document).ready(function() {
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td style="width:22%"><strong><?= gettext('Console Options') ?></strong></td>
+                <td style="width:22%"><strong><?= gettext('Console') ?></strong></td>
                 <td style="width:78%"></td>
               </tr>
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i></a> <?= gettext('Console driver') ?></td>
-                <td style="width:78%">
+                <td>
                   <input name="usevirtualterminal" type="checkbox" value="yes" <?= empty($pconfig['usevirtualterminal']) ? '' : 'checked="checked"' ?>  />
                   <?= gettext('Use the virtual terminal driver (vt)') ?>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_primaryconsole" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Primary Console")?></td>
-                <td style="width:78%">
+                <td>
                   <select name="primaryconsole" id="primaryconsole" class="selectpicker">
 <?php               foreach (system_console_types() as $console_key => $console_type): ?>
                     <option value="<?= html_safe($console_key) ?>" <?= $pconfig['primaryconsole'] == $console_key ? 'selected="selected"' : '' ?>><?= $console_type['name'] ?></option>
@@ -679,7 +733,7 @@ $(document).ready(function() {
               </tr>
               <tr>
                 <td><a id="help_for_secondaryconsole" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Secondary Console")?></td>
-                <td style="width:78%">
+                <td>
                   <select name="secondaryconsole" id="secondaryconsole" class="selectpicker">
                     <option value="" <?= empty($pconfig['secondaryconsole']) ? 'selected="selected"' : '' ?>><?= gettext('None') ?></option>
 <?php               foreach (system_console_types() as $console_key => $console_type): ?>
@@ -710,29 +764,59 @@ $(document).ready(function() {
               </tr>
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i></a> <?= gettext("Console menu") ?></td>
-                <td style="width:78%">
+                <td>
                   <input name="disableconsolemenu" type="checkbox" value="yes" <?= empty($pconfig['disableconsolemenu']) ? '' : 'checked="checked"' ?>  />
                   <?=gettext("Password protect the console menu"); ?>
                 </td>
               </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td><a id="help_for_disableintegratedauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Integrated authentication") ?></td>
-                <td style="width:78%">
-                  <input name="disableintegratedauth" type="checkbox" value="yes" <?= empty($pconfig['disableintegratedauth']) ? '' : 'checked="checked"' ?>  />
-                  <?=gettext("Disable integrated authentication"); ?>
-                  <div class="hidden" data-for="help_for_disableintegratedauth">
-                      <?=gettext("Disable OPNsense integrated authentication module for console access, falling back to normal unix authentication.");?>
+                <td style="width:22%"><strong><?= gettext('Authentication') ?></strong></td>
+                <td style="width:78%"></td>
+              </tr>
+              <tr>
+                <td><a id="help_for_authmode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Server') ?></td>
+                <td>
+                  <select name="authmode[]" multiple="multiple" class="selectpicker" data-style="btn-default">
+<?php
+                  foreach ($a_authmode as $auth_key => $auth_server): ?>
+                    <option value="<?= html_safe($auth_key) ?>" <?= !empty($pconfig['authmode']) && in_array($auth_key, $pconfig['authmode']) ? 'selected="selected"' : '' ?>>
+                      <?= html_safe($auth_server['name']) ?>
+                    </option>
+<?php
+                  endforeach ?>
+                  </select>
+                  <div class="hidden" data-for="help_for_authmode">
+                    <?= gettext('Select one or more authentication servers to validate user credentials against. ' .
+                        'Multiple servers can make sense with remote authentication methods to provide a fallback ' .
+                        'during connectivity issues. When nothing is specified the default of "Local Database" is used.') ?>
                   </div>
                 </td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Sudo usage") ?></td>
-                <td style="width:78%">
+                <td><a id="help_for_sudo_allow_wheel" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Sudo') ?></td>
+                <td>
                   <select name="sudo_allow_wheel" id="sudo_allow_wheel" class="selectpicker">
                     <option value="" <?= empty($pconfig['sudo_allow_wheel']) ? 'selected="selected"' : '' ?>><?= gettext('Disallow') ?></option>
                     <option value="1" <?= $pconfig['sudo_allow_wheel'] == 1 ? 'selected="selected"' : '' ?>><?= gettext('Ask password') ?></option>
                     <option value="2" <?= $pconfig['sudo_allow_wheel'] == 2 ? 'selected="selected"' : '' ?>><?= gettext('No password') ?></option>
                   </select>
+                  <div class="hidden" data-for="help_for_sudo_allow_wheel">
+                    <?= gettext('Permit sudo usage for administrators with shell access.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_disableintegratedauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('System') ?></td>
+                <td>
+                  <input name="disableintegratedauth" type="checkbox" value="yes" <?= empty($pconfig['disableintegratedauth']) ? '' : 'checked="checked"' ?>  />
+                  <?=gettext("Disable integrated authentication"); ?>
+                  <div class="hidden" data-for="help_for_disableintegratedauth">
+                    <?= gettext('When set, console login, SSH, and other system services can only use standard UNIX account authentication.') ?>
+                  </div>
                 </td>
               </tr>
             </table>

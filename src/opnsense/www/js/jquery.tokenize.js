@@ -154,7 +154,12 @@
 
             this.searchInput.on('blur', function(){
                 if($this.searchInput.val()){
-                    $this.tokenAdd($this.searchInput.val(), '');
+                    hover_selection = $('li.Hover', this.dropdown);
+                    if (hover_selection.length > 0) {
+                        $this.tokenAdd(hover_selection.attr('data-value'), hover_selection.attr('data-text'));
+                    } else {
+                        $this.tokenAdd($this.searchInput.val(), '');
+                    }
                 }
                 $this.resetPendingTokens();
                 $this.tokensContainer.removeClass('Focused');

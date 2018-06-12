@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/TrafficShaper</mount>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <description>
         OPNsense traffic shaper
     </description>
@@ -48,6 +48,12 @@
                         <dst-ip>destination</dst-ip>
                     </OptionValues>
                 </mask>
+                <buckets type="IntegerField">
+                    <Required>N</Required>
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <ValidationMessage>bucket size should be between 1...65535</ValidationMessage>
+                </buckets>
                 <scheduler type="OptionField">
                   <Required>N</Required>
                   <default></default>
@@ -149,6 +155,12 @@
                         <dst-ip>destination</dst-ip>
                     </OptionValues>
                 </mask>
+                <buckets type="IntegerField">
+                    <Required>N</Required>
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <ValidationMessage>bucket size should be between 1...65535</ValidationMessage>
+                </buckets>
                 <codel_enable type="BooleanField">
                   <default>0</default>
                   <Required>Y</Required>
@@ -181,6 +193,10 @@
         </queues>
         <rules>
             <rule type="ArrayField">
+              <enabled type="BooleanField">
+                  <default>1</default>
+                  <Required>Y</Required>
+              </enabled>
                 <sequence type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>1000000</MaximumValue>

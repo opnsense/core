@@ -51,13 +51,13 @@
       <id>monit.service.start</id>
       <label>Start</label>
       <type>text</type>
-      <help><![CDATA[The start skript of the service.]]></help>
+      <help><![CDATA[The start script of the service.]]></help>
    </field>
    <field>
       <id>monit.service.stop</id>
       <label>Stop</label>
       <type>text</type>
-      <help><![CDATA[The stop skript of the service.]]></help>
+      <help><![CDATA[The stop script of the service.]]></help>
    </field>
    <field>
       <id>monit.service.tests</id>

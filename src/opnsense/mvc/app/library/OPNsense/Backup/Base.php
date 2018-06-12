@@ -105,7 +105,7 @@ abstract class Base
         foreach ($properties as $key => $value) {
             $node = $mdl->getNodeByReference($key);
             $node_class = get_class($node);
-            if ( $node_class == "OPNsense\Base\FieldTypes\BooleanField") {
+            if ($node_class == "OPNsense\Base\FieldTypes\BooleanField") {
                 $node->setValue(empty($value) ? "0" : "1");
             } else {
                 $node->setValue($value);

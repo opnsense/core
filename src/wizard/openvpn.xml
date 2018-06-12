@@ -68,7 +68,7 @@
 if (isset($config['wizardtemp'])) {
 	unset($config['wizardtemp']);
 }
-        </stepsubmitbeforesave>
+	</stepsubmitbeforesave>
 	<stepsubmitphpaction>step1_submitphpaction();</stepsubmitphpaction>
 </step>
 <step>
@@ -569,8 +569,8 @@ if (isset($config['wizardtemp'])) {
 		<field>
 			<name>interface</name>
 			<type>interfaces_selection</type>
-                        <subtype>openvpn</subtype>
-                        <value>any</value>
+			<subtype>openvpn</subtype>
+			<value>any</value>
 			<description>The interface where OpenVPN will listen for incoming connections.</description>
 			<displayname>Interface</displayname>
 			<bindstofield>wizardtemp->step10->interface</bindstofield>

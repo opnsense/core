@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2018 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2014-2015 Deciso B.V.
  * Copyright (C) 2011 Ermal Luçi
  * All rights reserved.
@@ -46,9 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
 
     if (isset($_GET['savemsg'])) {
-        $savemsg = htmlspecialchars(gettext($_GET['savemsg']));
+        $savemsg = htmlspecialchars(sprintf(gettext($_GET['savemsg']), $username));
     } elseif (!empty($_SESSION['user_shouldChangePassword'])) {
-        $savemsg = gettext("Your password has expired, please provide a new one");
+        $savemsg = gettext('Your password does not match the selected security policies. Please provide a new one.');
     }
 
     if ($userFound) {
@@ -85,7 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['user'][$userindex[$username]]['pwd_changed_at'] = microtime(true);
         }
         if (!empty($_SESSION['user_shouldChangePassword'])) {
+            session_start();
             unset($_SESSION['user_shouldChangePassword']);
+            session_write_close();
         }
         if ($pconfig['passwordfld1'] !== '' || $pconfig['passwordfld2'] !== '') {
             local_user_set_password($config['system']['user'][$userindex[$username]], $pconfig['passwordfld1']);
@@ -94,7 +96,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         write_config();
 
-        header(url_safe('Location: /system_usermanager_passwordmg.php?savemsg=%s', sprintf(gettext('Saved settings for user "%s"'), $username)));
+        $unused_but_needed_for_translation = gettext('Saved settings for user "%s"');
+        header(url_safe('Location: /system_usermanager_passwordmg.php?savemsg=%s', array('Saved settings for user "%s"')));
         exit;
     }
 }
@@ -150,7 +153,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_language" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Language");?></td>
                     <td>
-                      <select name="language" class="selectpicker" data-size="10" data-style="btn-default" data-width="auto">
+                      <select name="language" class="selectpicker" data-style="btn-default">
 <?php
                         foreach (get_locale_list() as $lcode => $ldesc):?>
                         <option value="<?=$lcode;?>" <?=$lcode == $pconfig['language'] ? "selected=\"selected\"" : "";?>>

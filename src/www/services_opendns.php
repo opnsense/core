@@ -198,8 +198,8 @@ include 'head.inc';
                       }
 
                       echo sprintf(
-                        '<span class="glyphicon glyphicon-%s"></span> %s<br />',
-                        strpos($result, 'good') === 0 ? 'ok text-success' : 'remove text-danger',
+                        '<i class="fa fa-%s"></i> %s<br />',
+                        strpos($result, 'good') === 0 ? 'check text-success' : 'times text-danger',
                         $result
                       );
                     }?>

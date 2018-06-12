@@ -437,7 +437,7 @@ endif;?>
                     <th><?=gettext("End"); ?></th>
                     <th><?=gettext("Online"); ?></th>
                     <th><?=gettext("Lease Type"); ?></th>
-                    <th></th>
+                    <th class="text-nowrap"></th>
                 </tr>
               </thead>
               <tbody>
@@ -479,18 +479,18 @@ endif;?>
                   <td><?=$data['type'] != "static" ? adjust_gmt($data['end']) : "";?></td>
                   <td><?=$data['online'];?></td>
                   <td><?=$data['act'];?></td>
-                  <td>
+                  <td class="text-nowrap">
 <?php
                       if ($data['type'] == "dynamic"):?>
                         <a class="btn btn-default btn-xs" href="services_dhcpv6_edit.php?if=<?=$data['if'];?>&amp;duid=<?=$data['duid'];?>&amp;hostname=<?=$data['hostname'];?>">
-                          <span class="glyphicon glyphicon-plus" alt="add" ></span>
+                          <i class="fa fa-plus fa-fw" alt="add"></i>
                         </a>
 <?php
                       endif;?>
 <?php
                     if (($data['type'] == "dynamic") && ($data['online'] != "online")):?>
-                    <a class="act_delete btn btn-default btn-xs" href="#" data-deleteip="<?=$data['ip'];?>">
-                      <span class="fa fa-trash text-muted" title="<?=gettext("delete this DHCP lease");?>" data-toggle="tooltip" alt="delete" ></span>
+                    <a class="act_delete btn btn-default btn-xs" href="#" data-deleteip="<?=$data['ip'];?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip">
+                      <i class="fa fa-trash fa-fw"></i>
                     </a>
 <?php
                     endif;?>

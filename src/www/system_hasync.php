@@ -157,7 +157,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_pfsyncinterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize Interface') ?></td>
                   <td>
-                    <select name="pfsyncinterface" class="selectpicker" data-style="btn-default" data-live-search="true" data-width="auto">
+                    <select name="pfsyncinterface" class="selectpicker" data-style="btn-default" data-live-search="true">
 <?php
                     $ifaces = get_configured_interface_with_descr();
                     $ifaces["lo0"] = gettext("loopback");
@@ -174,7 +174,7 @@ include("head.inc");
                       <div class="well">
                         <lu>
                         <li><?=gettext('We recommend setting this to a interface other than LAN! A dedicated interface works the best.') ?></li>
-                        <li><?=gettext('You must define a IP on each machine participating in this failover group.') ?></li>
+                        <li><?=gettext('You must define an IP on each machine participating in this failover group.') ?></li>
                         <li><?=gettext('You must have an IP assigned to the interface on any participating sync nodes.') ?></li>
                         </lu>
                       </div>

@@ -81,7 +81,7 @@ $service_hook = 'apinger';
 include("head.inc");
 
 $main_buttons = array(
-    array('label'=> gettext('Add group'), 'href'=>'system_gateway_groups_edit.php'),
+    array('label'=> gettext('Add'), 'href'=>'system_gateway_groups_edit.php'),
 );
 
 ?>
@@ -205,15 +205,15 @@ $( document ).ready(function() {
                       <td class="text-nowrap">
                         <a href="system_gateway_groups_edit.php?id=<?= $i ?>" class="btn btn-default btn-xs"
                             title="<?= html_safe(gettext('Edit')) ?>" data-toggle="tooltip">
-                          <span class="glyphicon glyphicon-pencil"></span>
+                          <i class="fa fa-pencil fa-fw"></i>
                         </a>
                         <button type="button" class="btn btn-default btn-xs act-del-group"
                             data-id="<?= $i ?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip">
-                          <span class="fa fa-trash text-muted"></span>
+                          <i class="fa fa-trash fa-fw"></i>
                         </button>
                         <a href="system_gateway_groups_edit.php?dup=<?= $i ?>" class="btn btn-default btn-xs"
                             title="<?= html_safe(gettext('Clone')) ?>" data-toggle="tooltip">
-                          <span class="fa fa-clone text-muted"></span>
+                          <i class="fa fa-clone fa-fw"></i>
                         </a>
                       </td>
                     </tr>

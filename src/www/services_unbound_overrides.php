@@ -153,8 +153,8 @@ include_once("head.inc");
                         <th><?=gettext("Type");?></th>
                         <th><?=gettext("Value");?></th>
                         <th><?=gettext("Description");?></th>
-                        <th>
-                          <a href="services_unbound_host_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+                        <th class="text-nowrap">
+                          <a href="services_unbound_host_edit.php" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
                         </th>
                       </tr>
                     </thead>
@@ -183,9 +183,9 @@ include_once("head.inc");
                           }?>
                         </td>
                         <td><?=$hostent['descr'];?></td>
-                        <td>
-                          <a href="services_unbound_host_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                          <a href="#" data-id="<?=$i;?>" class="act_delete_host btn btn-xs btn-default"><i class="fa fa-trash text-muted"></i></a>
+                        <td class="text-nowrap">
+                          <a href="services_unbound_host_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
+                          <a href="#" data-id="<?=$i;?>" class="act_delete_host btn btn-xs btn-default"><i class="fa fa-trash fa-fw"></i></a>
                         </td>
                       </tr>
 <?php
@@ -221,8 +221,8 @@ include_once("head.inc");
                         <th><?=gettext("Domain");?></th>
                         <th><?=gettext("IP");?></th>
                         <th><?=gettext("Description");?></th>
-                        <th>
-                          <a href="services_unbound_domainoverride_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+                        <th class="text-nowrap">
+                          <a href="services_unbound_domainoverride_edit.php" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
                         </th>
                       </tr>
                     </thead>
@@ -234,9 +234,9 @@ include_once("head.inc");
                         <td><?=strtolower(htmlspecialchars($doment['domain']));?></td>
                         <td><?=htmlspecialchars($doment['ip']);?></td>
                         <td><?=htmlspecialchars($doment['descr']);?></td>
-                        <td>
-                          <a href="services_unbound_domainoverride_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                          <a href="#" data-id="<?=$i;?>" class="act_delete_override btn btn-xs btn-default"><i class="fa fa-trash text-muted"></i></a>
+                        <td class="text-nowrap">
+                          <a href="services_unbound_domainoverride_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
+                          <a href="#" data-id="<?=$i;?>" class="act_delete_override btn btn-xs btn-default"><i class="fa fa-trash fa-fw"></i></a>
                         </td>
                       </tr>
 <?php

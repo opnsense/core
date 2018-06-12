@@ -146,11 +146,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //find_alias_reference(array('nat', 'onetoone'), array('source', 'address'), $alias_name, $is_alias_referenced, $referenced_by);
             find_alias_reference(array('nat', 'onetoone'), array('destination', 'address'), $alias_name, $is_alias_referenced, $referenced_by);
             // NAT Outbound Rules
-            find_alias_reference(array('nat', 'advancedoutbound', 'rule'), array('source', 'network'), $alias_name, $is_alias_referenced, $referenced_by);
-            find_alias_reference(array('nat', 'advancedoutbound', 'rule'), array('sourceport'), $alias_name, $is_alias_referenced, $referenced_by);
-            find_alias_reference(array('nat', 'advancedoutbound', 'rule'), array('destination', 'address'), $alias_name, $is_alias_referenced, $referenced_by);
-            find_alias_reference(array('nat', 'advancedoutbound', 'rule'), array('dstport'), $alias_name, $is_alias_referenced, $referenced_by);
-            find_alias_reference(array('nat', 'advancedoutbound', 'rule'), array('target'), $alias_name, $is_alias_referenced, $referenced_by);
+            find_alias_reference(array('nat', 'outbound', 'rule'), array('source', 'network'), $alias_name, $is_alias_referenced, $referenced_by);
+            find_alias_reference(array('nat', 'outbound', 'rule'), array('sourceport'), $alias_name, $is_alias_referenced, $referenced_by);
+            find_alias_reference(array('nat', 'outbound', 'rule'), array('destination', 'address'), $alias_name, $is_alias_referenced, $referenced_by);
+            find_alias_reference(array('nat', 'outbound', 'rule'), array('dstport'), $alias_name, $is_alias_referenced, $referenced_by);
+            find_alias_reference(array('nat', 'outbound', 'rule'), array('target'), $alias_name, $is_alias_referenced, $referenced_by);
+
             // Alias in an alias, only for selected types
             $alias_recursive_used = alias_used_recursive($alias_name);
             if  ($alias_recursive_used != null) {
@@ -177,8 +178,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 legacy_html_escape_form_data($a_aliases);
+
 $main_buttons = array(
-    array('href' => 'firewall_aliases_edit.php', 'label' => gettext('Add a new alias')),
+    array('href' => 'firewall_aliases_edit.php', 'label' => gettext('Add')),
 );
 
 include("head.inc");
@@ -269,8 +271,8 @@ $( document ).ready(function() {
                         <?= $alias_values ?>
                       </td>
                       <td>
-                        <a href="firewall_aliases_edit.php?id=<?=$i;?>" title="<?=gettext("Edit alias"); ?>" class="btn btn-default btn-xs"><span class="fa fa-pencil"></span></a>
-                        <a id="del_<?=$i;?>" title="<?=gettext("delete alias"); ?>" class="act_delete btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
+                        <a href="firewall_aliases_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
+                        <a id="del_<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Delete')) ?>" class="act_delete btn btn-default btn-xs"><i class="fa fa-trash fa-fw"></i></a>
                       </td>
                     </tr>
 <?php

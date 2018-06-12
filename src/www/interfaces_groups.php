@@ -53,13 +53,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-include("head.inc");
 legacy_html_escape_form_data($a_ifgroups);
-$main_buttons = array(
-  array('href' => 'interfaces_groups_edit.php', 'label' => gettext('Add a new group')),
-);
-?>
 
+include("head.inc");
+
+$main_buttons = array(
+    array('href' => 'interfaces_groups_edit.php', 'label' => gettext('Add')),
+);
+
+?>
 <body>
   <script>
   $( document ).ready(function() {
@@ -104,7 +106,7 @@ $main_buttons = array(
                     <th><?=gettext("Name");?></th>
                     <th><?=gettext("Members");?></th>
                     <th><?=gettext("Description");?></th>
-                    <th>&nbsp;</th>
+                    <th class="text-nowrap"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -125,12 +127,12 @@ $main_buttons = array(
                     endforeach;?>
                     </td>
                     <td><?=$ifgroupentry['descr'];?></td>
-                    <td>
-                      <a href="interfaces_groups_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" title="<?=gettext("Edit this group");?>">
-                        <span class="glyphicon glyphicon-edit"></span>
+                    <td class="text-nowrap">
+                      <a href="interfaces_groups_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">
+                        <i class="fa fa-pencil fa-fw"></i>
                       </a>
-                      <button title="<?=gettext("Remove this group");?>" data-toggle="tooltip" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
-                        <span class="fa fa-trash text-muted"></span>
+                      <button title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
+                        <i class="fa fa-trash fa-fw"></i>
                       </button>
                     </td>
                   </tr>

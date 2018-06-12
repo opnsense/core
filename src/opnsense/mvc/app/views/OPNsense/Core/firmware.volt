@@ -1,6 +1,6 @@
 {#
  # Copyright (c) 2015-2018 Franco Fichtner <franco@opnsense.org>
- # Copyright (c) 2015-2016 Deciso B.V.
+ # Copyright (c) 2015-2018 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -45,6 +45,10 @@
     function updateStatus() {
         // update UI
         updateStatusPrepare(false);
+        $('#major-upgrade').hide();
+        $('#upgrade_maj').prop('disabled', true);
+        $.upgrade_major_message = '';
+        $.upgrade_major_version = '';
 
         // request status
         ajaxGet('/api/core/firmware/status',{},function(data,status){
@@ -98,6 +102,17 @@
 
                 // update list so plugins sync as well (all)
                 packagesInfo(true);
+            }
+
+            if ('upgrade_major_message' in data) {
+                $.upgrade_major_message = data['upgrade_major_message'];
+            }
+            if ('upgrade_major_version' in data) {
+                $.upgrade_major_version = data['upgrade_major_version'];
+            }
+            if ($.upgrade_major_version != '') {
+                $('#upgrade-version').text($.upgrade_major_version);
+                $('#major-upgrade').show();
             }
         });
     }
@@ -302,7 +317,6 @@
                 $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
                 $("#audit_progress").removeClass("fa fa-spinner fa-pulse");
                 $("#audit_progress").addClass("caret");
-                $("#upgrade_maj").attr("style","display:none");
                 $("#upgrade").attr("style","display:none");
                 $("#audit_all").attr("style","");
                 if ($.upgrade_action == 'pkg') {
@@ -355,7 +369,7 @@
             var local_count = 0;
             var plugin_count = 0;
             var changelog_count = 0;
-            var changelog_max = 12;
+            var changelog_max = 15;
             if ($.changelog_keep_full != undefined) {
                 changelog_max = 9999;
             }
@@ -538,33 +552,32 @@
             upgrade_ui();
         });
         $('#checkupdate_maj').click(function () {
-            $("#checkupdate_progress_maj").addClass("fa fa-spinner fa-pulse");
-            // empty call refreshes changelogs in the background
-            ajaxCall('/api/core/firmware/changelog/update', {}, function () {
-                $("#checkupdate_progress_maj").removeClass("fa fa-spinner fa-pulse");
+            if ($.upgrade_major_message == "") {
+                $('#upgrade_maj').prop('disabled', false);
+                changelog($.upgrade_major_version);
+            } else {
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_WARNING,
                     title: "{{ lang._('Upgrade instructions') }}",
-                    message: $('#firmware-message').html(),
+                    /* we trust this data, it was signed by us and secured by csrf */
+                    message: htmlDecode($.upgrade_major_message),
                     buttons: [{
-<?php if (file_exists('/usr/local/opnsense/firmware-upgrade')): ?>
-                        label: "{{ lang._('Unlock upgrade') }}",
+                        label: "{{ lang._('Unlock') }}",
                         cssClass: 'btn-warning',
                         action: function (dialogRef) {
                             dialogRef.close();
-                            $("#upgrade_maj").attr("style","");
-                            changelog($('#firmware-upgrade').text());
+                            $('#upgrade_maj').prop('disabled', false);
+                            changelog($.upgrade_major_version);
                         }
                     },{
-<?php endif ?>
-                        label: "{{ lang._('Close') }}",
+                        label: "{{ lang._('Cancel') }}",
                         action: function (dialogRef) {
                             dialogRef.close();
                         }
                     }]
                 });
                 packagesInfo(true);
-            });
+            }
         });
 
         // populate package information
@@ -599,13 +612,15 @@
                             .prop('selected', selected)
                     );
                 });
-                $("#firmware_mirror").prepend($("<option/>")
+                if (firmwareoptions['allow_custom']) {
+                    $("#firmware_mirror").prepend($("<option/>")
                         .attr("value", firmwareconfig['mirror'])
                         .text("(other)")
                         .data("other", 1)
                         .data("has_subscription", false)
                         .prop('selected', other_selected)
-                );
+                    );
+                }
 
                 if ($("#firmware_mirror option:selected").data("has_subscription") == true) {
                     $("#firmware_mirror_subscription").val(firmwareconfig['mirror'].substr($("#firmware_mirror").val().length+1));
@@ -628,12 +643,14 @@
                             .prop('selected', selected)
                     );
                 });
-                $("#firmware_flavour").prepend($("<option/>")
-                        .attr("value",firmwareconfig['flavour'])
+                if (firmwareoptions['allow_custom']) {
+                    $("#firmware_flavour").prepend($("<option/>")
+                        .attr("value", firmwareconfig['flavour'])
                         .text("(other)")
                         .data("other", 1)
                         .prop('selected', other_selected)
-                );
+                    );
+                }
                 $("#firmware_flavour").selectpicker('refresh');
                 $("#firmware_flavour").change();
 
@@ -706,16 +723,7 @@
 
 <div class="container-fluid">
     <div class="row">
-<?php if (file_exists('/usr/local/opnsense/firmware-message')): ?>
-        <div id="firmware-upgrade" style="display:none;"><?= @file_get_contents('/usr/local/opnsense/firmware-upgrade') ?></div>
-        <div id="firmware-message" style="display:none;"><?= str_replace(PHP_EOL, ' ', @file_get_contents('/usr/local/opnsense/firmware-message')) ?></div>
-        <div class="alert alert-warning" role="alert" style="min-height: 65px;">
-            <button class='btn btn-primary pull-right' id="upgrade_maj" style="display:none;">{{ lang._('Upgrade now') }} <i id="upgrade_progress_maj"></i> </button>
-            <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;">{{ lang._('Check for upgrade') }} <i id="checkupdate_progress_maj"></i></button>
-            <div style="margin-top: 8px;">{{ lang._('This software release has reached its designated end of life.') }}</div>
-        </div>
-<?php endif ?>
-        <div class="alert alert-info" role="alert" style="min-height: 65px;">
+        <div id="minor-upgrade" class="alert alert-info" role="alert" style="min-height:65px;">
             <button class='btn btn-primary pull-right' id="upgrade" style="display:none">{{ lang._('Update now') }} <i id="upgrade_progress"></i></button>
             <div class="btn-group pull-right">
                 <button type="button" id="audit_all" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -729,6 +737,15 @@
             <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;">{{ lang._('Check for updates') }} <i id="checkupdate_progress"></i></button>
             <div style="margin-top: 8px;" id="updatestatus">{{ lang._('Click to check for updates.')}}</div>
         </div>
+        <div id="major-upgrade" class="alert alert-warning" role="alert" style="min-height:65px;display:none;">
+            <button class='btn btn-primary pull-right' id="upgrade_maj" disabled="disabled">{{ lang._('Upgrade now') }} <i id="upgrade_progress_maj"></i> </button>
+            <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;">{{ lang._('Unlock this upgrade') }}</button>
+            <div style="margin-top: 8px;">
+                {{ lang._('This software release has reached its designated end of life.') }}
+                {{ lang._('The next major release is:') }}
+                <span id="upgrade-version"></span>
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-12" id="content">
@@ -738,7 +755,7 @@
                 <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
                 <li id="settingstab"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
             </ul>
-            <div class="tab-content content-box tab-content">
+            <div class="tab-content content-box">
                 <div id="updates" class="tab-pane fade in active">
                     <textarea name="output" id="update_status" class="form-control" rows="25" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace; display: none;"></textarea>
                     <table class="table table-striped table-condensed table-responsive" id="updatelist">

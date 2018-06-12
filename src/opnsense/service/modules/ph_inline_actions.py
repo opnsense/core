@@ -35,6 +35,7 @@ import config
 
 __author__ = 'Ad Schellevis'
 
+
 def execute(action, parameters):
     """ wrapper for inline functions
 

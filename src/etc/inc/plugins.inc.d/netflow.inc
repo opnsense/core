@@ -49,13 +49,13 @@ function netflow_services()
     }
 
     $services[] = array(
-	'description' => gettext('NetFlow Distributor'),
-	'configd' => array(
-	    'restart' => array('netflow restart'),
-	    'start' => array('netflow start'),
-	    'stop' => array('netflow stop'),
-	),
-	'name' => 'samplicate',
+        'description' => gettext('NetFlow Distributor'),
+        'configd' => array(
+            'restart' => array('netflow restart'),
+            'start' => array('netflow start'),
+            'stop' => array('netflow stop'),
+        ),
+        'name' => 'samplicate',
     );
 
     if (netflow_local_enabled()) {

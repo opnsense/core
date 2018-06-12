@@ -97,7 +97,6 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			php${CORE_PHP}-filter \
 			php${CORE_PHP}-gettext \
 			php${CORE_PHP}-hash \
-			php${CORE_PHP}-intl \
 			php${CORE_PHP}-json \
 			php${CORE_PHP}-ldap \
 			php${CORE_PHP}-mcrypt \
@@ -331,7 +330,7 @@ style-fix: want-php${CORE_PHP}-pear-PHP_CodeSniffer
 .endfor
 
 style-python: want-py${CORE_PYTHON}-pycodestyle
-	@pycodestyle ${.CURDIR}/src || true
+	@pycodestyle --ignore=E501 ${.CURDIR}/src || true
 
 license: want-p5-File-Slurp
 	@${.CURDIR}/Scripts/license > ${.CURDIR}/LICENSE
@@ -339,10 +338,14 @@ license: want-p5-File-Slurp
 dhparam:
 .for BITS in 1024 2048 4096
 	${OPENSSL} dhparam -out \
-	    ${.CURDIR}/src/etc/dh-parameters.${BITS} ${BITS}
+	    ${.CURDIR}/src/etc/dh-parameters.${BITS}.sample ${BITS}
 .endfor
 
 test: want-phpunit6-php${CORE_PHP}
+	@if [ "$$(${PKG} query %n-%v ${CORE_NAME})" != "${CORE_NAME}-${CORE_VERSION}" ]; then \
+		echo "Installed version does not match, expected ${CORE_NAME}-${CORE_VERSION}"; \
+		exit 1; \
+	fi
 	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
 	    phpunit --configuration PHPunit.xml
 
