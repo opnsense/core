@@ -53,7 +53,7 @@
                 <List url="/system_gateway_groups.php*" visibility="hidden"/>
                 <Edit url="/system_gateway_groups_edit.php*" visibility="hidden"/>
             </Group>
-            <Log VisibleName="Log File" order="30" url="/diag_logs_gateways.php"/>
+            <LogFile VisibleName="Log File" order="30" url="/diag_logs_gateways.php"/>
         </Gateways>
         <HighAvailability VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">
             <Settings order="100" url="/system_hasync.php"/>
@@ -61,7 +61,7 @@
         </HighAvailability>
         <Routes cssClass="fa fa-map-signs fa-fw">
             <Configuration order="10" url="/ui/routes" />
-            <Log order="100" VisibleName="Log File" url="/diag_logs_routing.php"/>
+            <LogFile order="100" VisibleName="Log File" url="/diag_logs_routing.php"/>
         </Routes>
         <Settings cssClass="fa fa-cogs fa-fw">
             <Administration url="/system_advanced_admin.php"/>
@@ -108,7 +108,7 @@
             <Devices url="/interfaces_wireless.php">
                 <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
             </Devices>
-            <Log VisibleName="Log File" url="/diag_logs_wireless.php"/>
+            <LogFile VisibleName="Log File" url="/diag_logs_wireless.php"/>
         </Wireless>
         <PPP order="940" VisibleName="Point-to-Point" cssClass="fa fa-tty fa-fw">
             <Devices url="/interfaces_ppps.php">
@@ -241,7 +241,7 @@
             <Leases order="60" VisibleName="Lease Status" url="/diag_ipsec_leases.php"/>
             <SAD order="70" VisibleName="Security Association Database" url="/diag_ipsec_sad.php"/>
             <SPD order="80" VisibleName="Security Policy Database" url="/diag_ipsec_spd.php"/>
-            <Log order="90" VisibleName="Log File" url="/diag_logs_ipsec.php"/>
+            <LogFile order="90" VisibleName="Log File" url="/diag_logs_ipsec.php"/>
         </IPsec>
         <OpenVPN cssClass="fa fa-lock fa-fw" order="20">
             <Servers order="10" url="/vpn_openvpn_server.php">
@@ -258,7 +258,7 @@
                 <Edit url="/vpn_openvpn_export.php?*" visibility="hidden"/>
             </ClientExport>
             <Status order="60" VisibleName="Connection Status" url="/status_openvpn.php"/>
-            <Log order="70" VisibleName="Log File" url="/diag_logs_openvpn.php"/>
+            <LogFile order="70" VisibleName="Log File" url="/diag_logs_openvpn.php"/>
         </OpenVPN>
     </VPN>
     <Power order="70" cssClass="fa fa-plug">
