@@ -6,13 +6,13 @@ BACKUPFILE="/conf/rrd.tgz"
 if [ "${1}" = "restore" ]; then
 	if [ -f "${BACKUPFILE}" ]; then
 		tar -C / -xzpf "${BACKUPFILE}"
-		for XML in "$(find "${BACKUPDIR}" -name "*.xml"); do
+		for XML in $(find "${BACKUPDIR}" -name "*.xml"); do
 			/usr/local/bin/rrdtool restore -f "${XML}" "${XML%.xml}.rrd"
 		done
 	fi
 else
 	if [ -d "${BACKUPDIR}" ]; then
-		for RRD in "$(find "${BACKUPDIR}" -name "*.rrd"); do
+		for RRD in $(find "${BACKUPDIR}" -name "*.rrd"); do
 			/usr/local/bin/rrdtool dump "${RRD}" > "${RRD%.rrd}.xml"
 		done
 		tar -C / -czf "${BACKUPFILE}" ."${BACKUPDIR}"
