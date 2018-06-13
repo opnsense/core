@@ -58,13 +58,14 @@ if (is_install_media()) {
 
         echo "\n";
 
+        $greeting  = "Welcome!  Both `root' and `installer' users are available for system\n";
+        $greeting .= "setup or invoking the installer, respectively.  The predefined root\n";
+        $greeting .= "password works for both accounts.";
+
         if (!isset($config['system']['ssh']['noauto']) && is_process_running('sshd')) {
-            echo "Welcome!  Both `root' and `installer' users are available for system\n";
-            echo "setup or invoking the installer, respectively.  The predefined root\n";
-            echo "password works for both accounts.  Remote login via SSH is possible.\n";
-        } else {
-            echo "Welcome!  Both `root' and `installer' users are available for system\n";
-            echo "setup.  The predefined root password works for both accounts.\n";
+            $greeting .= "  Remote login via SSH is possible.";
         }
+
+        echo $greeting . "\n";
     }
 }
