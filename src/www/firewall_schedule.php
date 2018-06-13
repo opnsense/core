@@ -73,7 +73,7 @@ include("head.inc");
 legacy_html_escape_form_data($a_schedules);
 
 $main_buttons = array(
-    array('label'=>gettext('Add a new schedule'), 'href'=>'firewall_schedule_edit.php'),
+    array('label'=>gettext('Add'), 'href'=>'firewall_schedule_edit.php'),
 );
 
 ?>
@@ -228,14 +228,14 @@ $main_buttons = array(
                     <?=$schedule['descr'];?>
                   </td>
                   <td>
-                    <a href="firewall_schedule_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit schedule");?>" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-pencil"></span>
+                    <a href="firewall_schedule_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
+                      <span class="fa fa-pencil fa-fw"></span>
                     </a>
-                    <a id="del_<?=$i;?>" title="<?=gettext("delete schedule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                      <span class="fa fa-trash text-muted"></span>
+                    <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                      <span class="fa fa-trash fa-fw"></span>
                     </a>
-                    <a href="firewall_schedule_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone schedule");?>">
-                      <span class="fa fa-clone text-muted"></span>
+                    <a href="firewall_schedule_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Clone')) ?>">
+                      <span class="fa fa-clone fa-fw"></span>
                     </a>
                   </td>
                 </tr>

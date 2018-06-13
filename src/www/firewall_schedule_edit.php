@@ -655,11 +655,11 @@ function insertElements(tempFriendlyTime, starttimehour, starttimemin, stoptimeh
     tr.appendChild(td);
 
     td = document.createElement("td");
-    td.innerHTML = `<a onclick='editRow("${tempTime}",this); return false;' href='#' class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>`;
+    td.innerHTML = `<a onclick='editRow("${tempTime}",this); return false;' href='#' class="btn btn-default btn-xs"><span class="fa fa-pencil fa-fw"></span></a>`;
     tr.appendChild(td);
 
     td = document.createElement("td");
-    td.innerHTML = `<a onclick='removeRow(this); return false;' href='#' class="btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>`;
+    td.innerHTML = `<a onclick='removeRow(this); return false;' href='#' class="btn btn-default btn-xs"><span class="fa fa-trash fa-fw"></span></a>`;
     tr.appendChild(td);
 
     td = document.createElement("td");
@@ -1137,10 +1137,10 @@ $( function() { $('#iform td').css({ 'background-color' : '' }); })
                                   <input type='text' readonly='readonly' name='timedescr<?=$counter; ?>' id='timedescr<?=$counter; ?>' style=' word-wrap:break-word; width:100%; border:0px solid;' value='<?=$timedescr; ?>' />
                                 </td>
                                 <td>
-                                  <a onclick='editRow("<?=$tempTime; ?>",this); return false;' href='#' class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
+                                  <a onclick='editRow("<?=$tempTime; ?>",this); return false;' href='#' class="btn btn-default"><span class="fa fa-pencil fa-fw"></span></a>
                                 </td>
                                 <td>
-                                  <a onclick='removeRow(this); return false;' href='#' class="btn btn-default"><span class="fa fa-trash text-muted"></span></a>
+                                  <a onclick='removeRow(this); return false;' href='#' class="btn btn-default"><span class="fa fa-trash fa-fw"></span></a>
                                 </td>
                                 <td>
                                   <input type='hidden' id='schedule<?=$counter; ?>' name='schedule<?=$counter; ?>' value='<?=$tempID; ?>' />

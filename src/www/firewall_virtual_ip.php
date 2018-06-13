@@ -294,17 +294,17 @@ $main_buttons = array(
                       <?=htmlspecialchars($vipent['descr']);?>
                     </td>
                     <td>
-                      <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected virtual IPs before this entry");?>" class="act_move btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-arrow-left"></span>
+                      <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("move selected virtual IPs before this entry")) ?>" class="act_move btn btn-default btn-xs">
+                        <span class="fa fa-arrow-left fa-fw"></span>
                       </a>
-                      <a href="firewall_virtual_ip_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit virtual IP");?>" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-pencil"></span>
+                      <a href="firewall_virtual_ip_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
+                        <span class="fa fa-pencil fa-fw"></span>
                       </a>
-                      <a id="del_<?=$i;?>" title="<?=gettext("delete virtual IP"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                        <span class="fa fa-trash text-muted"></span>
+                      <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                        <span class="fa fa-trash fa-fw"></span>
                       </a>
-                      <a href="firewall_virtual_ip_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone virtual IP");?>">
-                        <span class="fa fa-clone text-muted"></span>
+                      <a href="firewall_virtual_ip_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Clone')) ?>">
+                        <span class="fa fa-clone fa-fw"></span>
                       </a>
                     </td>
                   </tr>
@@ -317,14 +317,11 @@ $main_buttons = array(
                   <tr>
                     <td colspan="5"></td>
                     <td>
-                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected virtual IPs to end");?>" class="act_move btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-arrow-left"></span>
+                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("move selected virtual IPs to end")) ?>" class="act_move btn btn-default btn-xs">
+                        <span class="fa fa-arrow-left fa-fw"></span>
                       </a>
-                      <a href="firewall_virtual_ip_edit.php" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("add new virtual IP");?>">
-                        <span class="glyphicon glyphicon-plus"></span>
-                      </a>
-                      <a id="del_x" title="<?=gettext("delete selected virtual IPs"); ?>" data-toggle="tooltip"  class="btn btn-default btn-xs">
-                        <span class="fa fa-trash text-muted"></span>
+                      <a id="del_x" title="<?= html_safe(gettext('delete selected virtual IPs')) ?>" data-toggle="tooltip"  class="btn btn-default btn-xs">
+                        <span class="fa fa-trash fa-fw"></span>
                       </a>
                     </td>
                   </tr>

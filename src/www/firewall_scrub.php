@@ -112,8 +112,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     }
 }
+
 legacy_html_escape_form_data($a_scrub);
+
 include("head.inc");
+
+$main_buttons = array(
+    array('href'=>'firewall_scrub_edit.php', 'label'=>gettext('Add')),
+);
+
 ?>
 <body>
 <script>
@@ -305,7 +312,7 @@ $( document ).ready(function() {
                     <td>
                         <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
                         <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($scrubEntry['disabled'])) ? gettext("Disable") : gettext("Enable");?>">
-                          <span class="fa fa-play <?=(empty($scrubEntry['disabled'])) ? "text-success" : "text-muted";?>"></span>
+                          <span class="fa fa-play fa-fw <?=(empty($scrubEntry['disabled'])) ? "text-success" : "text-muted";?>"></span>
                         </a>
                     </td>
                     <td><?=strtoupper($scrubEntry['interface']);?></td>
@@ -317,7 +324,7 @@ $( document ).ready(function() {
                         </span>
                         <a href="/firewall_aliases_edit.php?name=<?=$scrubEntry['src'];?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
-                          <i class="fa fa-list"></i>
+                          <i class="fa fa-list fa-fw"></i>
                         </a>
 <?php
                         elseif (!empty($special_nets[$scrubEntry['src']])):?>
@@ -337,7 +344,7 @@ $( document ).ready(function() {
                         </span>
                         <a href="/firewall_aliases_edit.php?name=<?=$scrubEntry['dst'];?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
-                          <i class="fa fa-list"></i>
+                          <i class="fa fa-list fa-fw"></i>
                         </a>
 <?php
                         elseif (!empty($special_nets[$scrubEntry['dst']])):?>
@@ -353,17 +360,17 @@ $( document ).ready(function() {
                         <?=$scrubEntry['descr'];?>
                     </td>
                     <td>
-                        <a href="firewall_scrub_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-pencil"></span>
+                        <a href="firewall_scrub_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
+                          <span class="fa fa-pencil fa-fw"></span>
                         </a>
-                        <a data-id="<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-arrow-left"></span>
+                        <a data-id="<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs">
+                          <span class="fa fa-arrow-left fa-fw"></span>
                         </a>
-                        <a data-id="<?=$i;?>" title="<?=gettext("delete rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                          <span class="fa fa-trash text-muted"></span>
+                        <a data-id="<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                          <span class="fa fa-trash fa-fw"></span>
                         </a>
-                        <a href="firewall_scrub_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone rule");?>">
-                          <span class="fa fa-clone text-muted"></span>
+                        <a href="firewall_scrub_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Clone')) ?>">
+                          <span class="fa fa-clone fa-fw"></span>
                         </a>
                     </td>
                   </tr>
@@ -374,22 +381,17 @@ $( document ).ready(function() {
                 <tfoot>
                     <tr>
                       <td colspan="2" class="hidden-xs hidden-sm"></td>
-                      <td colspan="3"></td>
+                      <td colspan="3">
+                        <a><i class="fa fa-list fa-fw"></i></a> <?=gettext("Alias (click to view/edit)");?>
+                      </td>
                       <td>
-                        <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules to end");?>" class="act_move btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-arrow-left"></span>
+                        <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("move selected rules to end")) ?>" class="act_move btn btn-default btn-xs">
+                          <span class="fa fa-arrow-left fa-fw"></span>
                         </a>
-                        <a data-id="x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                          <span class="fa fa-trash text-muted"></span>
-                        </a>
-                        <a href="firewall_scrub_edit.php" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("add new rule");?>">
-                          <span class="glyphicon glyphicon-plus"></span>
+                        <a data-id="x" title="<?= html_safe(gettext("delete selected rules")) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                          <span class="fa fa-trash fa-fw"></span>
                         </a>
                       </td>
-                    </tr>
-                    <tr class="hidden-xs hidden-sm">
-                        <td><a><i class="fa fa-list"></i></a></td>
-                        <td colspan="5"><?=gettext("Alias (click to view/edit)");?></td>
                     </tr>
                 </tfoot>
               </table>
