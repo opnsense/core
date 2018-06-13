@@ -36,6 +36,7 @@ $fp = fopen('php://stdin', 'r');
 echo 'The system will reboot. Do you want to proceed? [y/N]: ';
 
 if (strcasecmp(chop(fgets($fp)), 'y') == 0) {
+    echo PHP_EOL;
     system_reboot(true);
 }
 
