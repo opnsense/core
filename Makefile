@@ -118,7 +118,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			py${CORE_PYTHON}-ujson \
 			radvd \
 			rate \
-			rrdtool12 \
+			rrdtool \
 			samplicator \
 			squid \
 			sshlockout_pf \
