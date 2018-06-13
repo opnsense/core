@@ -78,9 +78,8 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			flock \
 			flowd \
 			hostapd \
-			isc-dhcp43-client \
-			isc-dhcp43-relay \
-			isc-dhcp43-server \
+			isc-dhcp44-relay \
+			isc-dhcp44-server \
 			lighttpd \
 			mpd5 \
 			ntp \
