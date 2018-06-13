@@ -3,16 +3,22 @@
 BACKUPFILE="/conf/netflow.tgz"
 BACKUPDIR="/var/netflow"
 
+# find out if the service is running and stop/start it only if needed
+RCSCRIPT="/usr/local/etc/rc.d/flowd_aggregate"
+if ! ${RCSCRIPT} status; then
+	RCSCRIPT="true"
+fi
+
 if [ "${1}" = "restore" ]; then
 	if [ -f "${BACKUPFILE}" ]; then
+		${RCSCRIPT} stop
 		tar -C / -xzpf "${BACKUPFILE}"
+		${RCSCRIPT} start
 	fi
 else
 	if [ -d "${BACKUPDIR}" ]; then
-		/usr/local/etc/rc.d/flowd_aggregate stop
+		${RCSCRIPT} stop
 		tar -C / -czf "${BACKUPFILE}" ."${BACKUPDIR}"
-		if [ "${1}" != "stop" ]; then
-			/usr/local/etc/rc.d/flowd_aggregate start
-		fi
+		${RCSCRIPT} start
 	fi
 fi
