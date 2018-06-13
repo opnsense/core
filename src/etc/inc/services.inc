@@ -796,7 +796,8 @@ EOD;
             $protocol = !empty($config['system']['webgui']['protocol']) ? $config['system']['webgui']['protocol'] : 'https';
             // take hostname from system settings - it can be used to be resolved to anything based on client IP
             $host = implode('.', array('wpad', $config['system']['domain']));
-            $port = !empty($config['system']['webgui']['port']) ? $config['system']['webgui']['port'] : 443;
+            $default_port = (isset($config['system']['webgui']['protocol']) && $config['system']['webgui']['protocol'] == 'https') ? 443 : 80;
+            $port = !empty($config['system']['webgui']['port']) ? $config['system']['webgui']['port'] : $default_port;
             $webui_url = "$protocol://$host:$port/wpad.dat";
 
             $dhcpdconf .= "  option pac-webui \"$webui_url\";\n";
