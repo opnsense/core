@@ -938,7 +938,7 @@ function system_halt($sync = false)
     if (!$sync) {
         mwexec_bg($cmd);
     } else {
-        mwexec($cmd);
+        passthru($cmd);
     }
 }
 
@@ -949,7 +949,7 @@ function system_reboot($sync = false)
     if (!$sync) {
         mwexec_bg($cmd);
     } else {
-        mwexec($cmd);
+        passthru($cmd);
     }
 }
 
