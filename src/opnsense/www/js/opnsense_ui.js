@@ -199,34 +199,56 @@ function updateServiceControlUI(serviceName)
  * reformat all tokenizers on this document
  */
 function formatTokenizersUI() {
-    $('select[class="tokenize"]').each(function () {
-        if ($(this).prop("size")==0) {
-            maxDropdownHeight=String(36*5)+"px"; // default number of items
+    $('select.tokenize').each(function () {
+        var sender = $(this);
+        if (!sender.hasClass('tokenize2_init_done')) {
+            // only init tokenize2 when not bound yet
+            var hint = $(this).data("hint");
+            var width = $(this).data("width");
+            if (sender.data("size") != undefined) {
+                var number_of_items = $(this).data("size");
+            } else {
+                var number_of_items = 10;
+            }
+            var allownew = $(this).data("allownew");
+            sender.tokenize2({
+                'tokensAllowCustom': allownew,
+                'placeholder': hint,
+                'dropdownMaxItems': number_of_items
+            });
+            sender.parent().find('ul.tokens-container').parent().css("width", width);
+
+            // dropdown on focus (previous displayDropdownOnFocus)
+            sender.on('tokenize:select', function(container){
+                $(this).tokenize2().trigger('tokenize:search', [$(this).tokenize2().input.val()]);
+            });
+            // bind add / remove events
+            sender.on('tokenize:tokens:add', function(e, value){
+                sender.trigger("tokenize:tokens:change");
+            });
+            sender.on('tokenize:tokens:remove', function(e, value){
+                sender.trigger("tokenize:tokens:change");
+            });
+
+            sender.addClass('tokenize2_init_done');
         } else {
-            number_of_items = $(this).prop("size");
-            maxDropdownHeight=String(36*number_of_items)+"px";
-        }
-        hint=$(this).data("hint");
-        width=$(this).data("width");
-        allownew=$(this).data("allownew");
-        nbDropdownElements=$(this).data("nbdropdownelements");
-        maxTokenContainerHeight=$(this).data("maxheight");
+            // unbind change event while loading initial content
+            sender.unbind('tokenize:tokens:change');
 
-        $tokenizer = $(this).tokenize({
-            displayDropdownOnFocus: true,
-            newElements: allownew,
-            nbDropdownElements: nbDropdownElements,
-            placeholder:hint
+            // re-init tokenizer items
+            var items = $(this).val();
+            sender.tokenize2().trigger('tokenize:clear');
+            $.each(items, function(key, item){
+                sender.tokenize2().trigger('tokenize:tokens:add', item);
+            });
+            sender.tokenize2().trigger('tokenize:select');
+        }
+
+        // propagate token changes to parent change()
+        sender.on('tokenize:tokens:change', function(e, value){
+            sender.change();
         });
-        $tokenizer.resizeSearchInput();
-        $tokenizer.remap(true);
-        $tokenizer.updatePlaceholder();
 
-        $(this).parent().find('ul[class="TokensContainer"]').parent().css("width",width);
-        $(this).parent().find('ul[class="Dropdown"]').css("max-height", maxDropdownHeight);
-        if ( maxDropdownHeight != undefined ) {
-            $(this).parent().find('ul[class="TokensContainer"]').css("max-height", maxTokenContainerHeight);
-        }
     });
 }
 
