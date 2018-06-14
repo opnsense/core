@@ -196,25 +196,23 @@ POSSIBILITY OF SUCH DAMAGE.
                 }
 
                 var keyset = [];
-                $.each(rows, function(key,uuid){
+                $.each(rows, function (key, uuid) {
                     keyset.push(uuid);
-                    if ( combine == undefined || keyset.length > combine) {
-                        (function (localKeyset) {
-                            promise = promise.then(function () {
-                                return ajaxCall(url + localKeyset.join(',') + '/' + url_suffix, sendData = {}, null);
-                            })
-                        }) (keyset);
+                    if (combine == undefined || keyset.length > combine) {
+                        const localKeyset = keyset;
+                        promise = promise.then(function () {
+                            return ajaxCall(url + localKeyset.join(',') + '/' + url_suffix, sendData = {}, null);
+                        });
                         keyset = [];
                     }
                 });
 
                 // flush remaining items
                 if (keyset.length > 0) {
-                    (function (localKeyset) {
-                        promise = promise.then(function () {
-                            return ajaxCall(url + localKeyset.join(',') + '/' + url_suffix, sendData = {}, null);
-                        })
-                    })(keyset);
+                    const localKeyset = keyset;
+                    promise = promise.then(function () {
+                        return ajaxCall(url + localKeyset.join(',') + '/' + url_suffix, sendData = {}, null);
+                    })
                 }
 
                 // refresh when all toggles are executed
