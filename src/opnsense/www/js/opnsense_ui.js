@@ -230,6 +230,13 @@ function formatTokenizersUI() {
                 sender.trigger("tokenize:tokens:change");
             });
 
+            // hook keydown -> tab to blur event
+            sender.on('tokenize:deselect', function(){
+                var e = $.Event("keydown");
+                e.keyCode = 9;
+                sender.tokenize2().trigger('tokenize:keydown', [e]);
+            });
+
             sender.addClass('tokenize2_init_done');
         } else {
             // unbind change event while loading initial content
