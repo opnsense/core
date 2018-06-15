@@ -420,7 +420,7 @@ function cert_get_purpose($str_crt, $decode = true)
         && isset($crt_details['extensions']['keyUsage'])
         && strpos($crt_details['extensions']['keyUsage'], "Digital Signature") !== false
         && strpos($crt_details['extensions']['keyUsage'], "Key Encipherment") !== false
-    )
+    ) {
         $purpose['server'] = 'Yes';
     } else {
         $purpose['server'] = 'No';
