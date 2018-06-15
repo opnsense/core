@@ -189,7 +189,7 @@ basicConstraints=CA:FALSE
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 
 # This will be displayed in Netscape's comment listbox.
-nsComment			= "OpenSSL Generated Certificate"
+# nsComment			= "OpenSSL Generated Certificate"
 
 # PKIX recommendations harmless if included in all certificates.
 subjectKeyIdentifier=hash
@@ -299,7 +299,7 @@ basicConstraints=CA:FALSE
 # keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 
 # This will be displayed in Netscape's comment listbox.
-nsComment			= "OpenSSL Generated Certificate"
+# nsComment			= "OpenSSL Generated Certificate"
 
 # PKIX recommendations harmless if included in all certificates.
 subjectKeyIdentifier=hash
@@ -360,7 +360,7 @@ ess_cert_id_chain	= no	# Must the ESS cert id chain be included?
 # Make a cert with nsCertType=server
 basicConstraints=CA:FALSE
 nsCertType			= server
-nsComment			= "OpenSSL Generated Server Certificate"
+#nsComment			= "OpenSSL Generated Server Certificate"
 subjectKeyIdentifier=hash
 authorityKeyIdentifier=keyid,issuer:always
 extendedKeyUsage=serverAuth,1.3.6.1.5.5.8.2.2
