@@ -30,6 +30,7 @@
 import time
 import os
 import sys
+import fcntl
 import signal
 import glob
 import copy
@@ -190,6 +191,17 @@ if len(sys.argv) > 1 and 'console' in sys.argv[1:]:
         print s.getvalue()
     else:
         Main()
+elif len(sys.argv) > 1 and 'repair' in sys.argv[1:]:
+    # force a database repair, when
+    try:
+        lck = open('/var/run/flowd_aggregate.pid', 'a+')
+        fcntl.flock(lck, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        check_and_repair(filename_mask='/var/netflow/*.sqlite', force_repair=True)
+        lck.close()
+        os.remove('/var/run/flowd_aggregate.pid')
+    except IOError:
+        # already running, exit status 99
+        sys.exit(99)
 else:
     # Daemonize flowd aggregator
     daemon = Daemonize(app="flowd_aggregate", pid='/var/run/flowd_aggregate.pid', action=Main)

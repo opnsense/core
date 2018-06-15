@@ -51,6 +51,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (!empty($pconfig['action']) && $pconfig['action'] == "flush_netflow") {
         $savemsg = gettext('All local netflow data has been cleared.');
         configd_run("netflow flush");
+    } elseif (!empty($pconfig['action']) && $pconfig['action'] == "repair_netflow") {
+        $savemsg = gettext('Database repair in progress, daemon will start when done.');
+        configd_run("netflow aggregate stop");
+        configd_run("netflow aggregate repair", true);
     } else {
         $rrdcfg['enable'] = !empty($pconfig['rrdenable']);
         $savemsg = get_std_save_message();
@@ -116,6 +120,26 @@ $(document).ready(function() {
                 }]
         });
     });
+    $("#repair_netflow").click(function(event){
+        event.preventDefault();
+        BootstrapDialog.show({
+            type:BootstrapDialog.TYPE_DANGER,
+            title: "<?= gettext("Netflow/Insight");?>",
+            message: "<?=gettext('Do you really want to force a repair of the netflow data? This might take a while.');?>",
+            buttons: [{
+                    label: "<?= gettext("No");?>",
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                    }}, {
+                      label: "<?= gettext("Yes");?>",
+                      action: function(dialogRef) {
+                        $("#action").val("repair_netflow");
+                        $("#iform").submit()
+                    }
+                }]
+        });
+    });
+
     $(".act_flush").click(function(event){
         var filename = $(this).data('id');
         event.preventDefault();
@@ -173,6 +197,7 @@ $(document).ready(function() {
                       <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
                       <input type="button" name="ResetRRD" id="ResetRRD" class="btn btn-default" value="<?=gettext("Reset RRD Data");?>" />
                       <input type="button" id="flush_netflow" class="btn btn-default" value="<?=gettext("Reset Netflow Data");?>" />
+                      <input type="button" id="repair_netflow" class="btn btn-default" value="<?=gettext("Repair (forced)");?>" />
                     </td>
                   </tr>
                   <tr>
