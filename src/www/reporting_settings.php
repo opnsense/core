@@ -194,10 +194,10 @@ $(document).ready(function() {
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                      <input type="button" name="ResetRRD" id="ResetRRD" class="btn btn-default" value="<?=gettext("Reset RRD Data");?>" />
-                      <input type="button" id="flush_netflow" class="btn btn-default" value="<?=gettext("Reset Netflow Data");?>" />
-                      <input type="button" id="repair_netflow" class="btn btn-default" value="<?=gettext("Repair (forced)");?>" />
+                      <button name="Submit" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button>
+                      <input type="button" name="ResetRRD" id="ResetRRD" class="btn btn-default" value="<?= html_safe(gettext("Reset RRD Data")) ?>" />
+                      <input type="button" id="flush_netflow" class="btn btn-default" value="<?= html_safe(gettext("Reset Netflow Data")) ?>" />
+                      <input type="button" id="repair_netflow" class="btn btn-default" value="<?= html_safe(gettext("Repair Netflow Data")) ?>" />
                     </td>
                   </tr>
                   <tr>
