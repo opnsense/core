@@ -922,7 +922,7 @@ endif; ?>
                       <td>
                         <select name="dh_length" class="selectpicker">
 <?php
-                        foreach (array(1024, 2048, 4096) as $length) :
+                        foreach (array(1024, 2048, 3072, 4096) as $length) :
                             $selected = "";
                             if ($length == $pconfig['dh_length']) {
                                 $selected = " selected=\"selected\"";
