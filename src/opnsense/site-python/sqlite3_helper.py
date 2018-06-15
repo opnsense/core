@@ -32,7 +32,7 @@ import sqlite3
 import syslog
 import os
 
-def check_and_repair(filename_mask):
+def check_and_repair(filename_mask, force_repair=False):
     """ check and repair sqlite databases
     :param filename_mask: filenames (glob pattern)
     :return: None
@@ -54,10 +54,12 @@ def check_and_repair(filename_mask):
         # force a repair when corrupted, using a dump / import
         if cur is not None:
             try:
+                if force_repair:
+                    raise sqlite3.DatabaseError("Requested forced repair")
                 cur.execute('pragma integrity_check')
                 cur.execute('analyze')
             except sqlite3.DatabaseError, e:
-                if e.message.find('malformed') > -1:
+                if e.message.find('malformed') > -1 or force_repair:
                     syslog.syslog(syslog.LOG_ERR, "sqlite3 repair %s" % filename)
                     filename_tmp = '%s.fix'%filename
                     filename_sql = '%s.sql'%filename
