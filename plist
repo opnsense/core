@@ -1344,7 +1344,6 @@
 /usr/local/opnsense/www/css/flags/flag-icon.scss
 /usr/local/opnsense/www/css/font-awesome.min.css
 /usr/local/opnsense/www/css/jquery.bootgrid.css
-/usr/local/opnsense/www/css/jquery.tokenize.css
 /usr/local/opnsense/www/css/nv.d3.css
 /usr/local/opnsense/www/css/tokenize2.css
 /usr/local/opnsense/www/fonts/FontAwesome.otf
@@ -1378,7 +1377,6 @@
 /usr/local/opnsense/www/js/jquery.bootgrid.js
 /usr/local/opnsense/www/js/jquery.qrcode.js
 /usr/local/opnsense/www/js/jquery.qrcode.js.LICENSE
-/usr/local/opnsense/www/js/jquery.tokenize.js
 /usr/local/opnsense/www/js/moment-with-locales.min.js
 /usr/local/opnsense/www/js/nv.d3.min.js
 /usr/local/opnsense/www/js/nv.d3.min.js.LICENSE.md
