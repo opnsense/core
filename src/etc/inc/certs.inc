@@ -414,7 +414,13 @@ function cert_get_purpose($str_crt, $decode = true)
     $crt_details = openssl_x509_parse($str_crt);
     $purpose = array();
     $purpose['ca'] = (stristr($crt_details['extensions']['basicConstraints'], 'CA:TRUE') === false) ? 'No': 'Yes';
-    if (isset($crt_details['extensions']['extendedKeyUsage']) && strstr($crt_details['extensions']['extendedKeyUsage'], "TLS Web Server Authentication") !== false) {
+    if (
+        isset($crt_details['extensions']['extendedKeyUsage'])
+        && strstr($crt_details['extensions']['extendedKeyUsage'], "TLS Web Server Authentication") !== false
+        && isset($crt_details['extensions']['keyUsage'])
+        && strpos($crt_details['extensions']['keyUsage'], "Digital Signature") !== false
+        && strpos($crt_details['extensions']['keyUsage'], "Key Encipherment") !== false
+    )
         $purpose['server'] = 'Yes';
     } else {
         $purpose['server'] = 'No';
