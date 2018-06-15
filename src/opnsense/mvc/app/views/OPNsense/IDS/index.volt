@@ -212,7 +212,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     const localKeyset = keyset;
                     promise = promise.then(function () {
                         return ajaxCall(url + localKeyset.join(',') + '/' + url_suffix, sendData = {}, null);
-                    })
+                    });
                 }
 
                 // refresh when all toggles are executed
