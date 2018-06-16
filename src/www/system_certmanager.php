@@ -410,21 +410,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
 
                 if ($pconfig['certmethod'] == "internal") {
-                    $dn = array(
-                        'countryName' => $pconfig['dn_country'],
-			'commonName' => $pconfig['dn_commonname']);
+                    $dn = array('countryName' => $pconfig['dn_country'],
+                                'commonName' => $pconfig['dn_commonname']);
 
-		    if (!empty($pconfig['dn_state'])) {
-		        $dn['stateOrProvinceName'] = $pconfig['dn_state'];
-		    }
-		    
-		    if (!empty($pconfig['dn_city'])) {
-			$dn['localityName'] = $pconfig['dn_city'];
-		    }
-		    
-		    if (!empty($pconfig['dn_organization'])) {
-			$dn['organizationName'] = $pconfig['dn_organization'];
-		    }
+                    if (!empty($pconfig['dn_state'])) {
+                        $dn['stateOrProvinceName'] = $pconfig['dn_state'];
+                    }
+
+                    if (!empty($pconfig['dn_city'])) {
+                        $dn['localityName'] = $pconfig['dn_city'];
+                    }
+
+                    if (!empty($pconfig['dn_organization'])) {
+                        $dn['organizationName'] = $pconfig['dn_organization'];
+                    }
 
                     if (!empty($pconfig['dn_email'])) {
                         $dn['emailAddress'] = $pconfig['dn_email'];
@@ -455,12 +454,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
 
                 if ($pconfig['certmethod'] == "external") {
-                    $dn = array(
-                        'countryName' => $pconfig['csr_dn_country'],
-                        'commonName' => $pconfig['csr_dn_commonname']);
+                    $dn = array('countryName' => $pconfig['csr_dn_country'],
+                                'commonName' => $pconfig['csr_dn_commonname']);
+                    
                     if (!empty($pconfig['csr_dn_organizationalunit'])) {
                         $dn['organizationalUnitName'] = $pconfig['csr_dn_organizationalunit'];
-		    }
+                    }
 
                     if (!empty($pconfig['dn_state'])) {
                         $dn['stateOrProvinceName'] = $pconfig['dn_state'];
