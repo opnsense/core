@@ -294,32 +294,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("This certificate does not appear to be valid.");
             }
         } elseif ($pconfig['certmethod'] == "internal") {
-            $reqdfields = explode(" ", "descr caref keylen lifetime dn_country dn_state dn_city ".
-                "dn_organization dn_email dn_commonname"
-            );
+            $reqdfields = explode(" ", "descr caref keylen lifetime dn_country dn_commonname");
             $reqdfieldsn = array(
                     gettext("Descriptive name"),
                     gettext("Certificate authority"),
                     gettext("Key length"),
                     gettext("Lifetime"),
                     gettext("Distinguished name Country Code"),
-                    gettext("Distinguished name State or Province"),
-                    gettext("Distinguished name City"),
-                    gettext("Distinguished name Organization"),
-                    gettext("Distinguished name Email Address"),
                     gettext("Distinguished name Common Name"));
         } elseif ($pconfig['certmethod'] == "external") {
-            $reqdfields = explode(" ", "descr csr_keylen csr_dn_country csr_dn_state csr_dn_city ".
-                "csr_dn_organization csr_dn_email csr_dn_commonname"
-            );
+            $reqdfields = explode(" ", "descr csr_keylen csr_dn_country csr_dn_commonname");
             $reqdfieldsn = array(
                     gettext("Descriptive name"),
                     gettext("Key length"),
                     gettext("Distinguished name Country Code"),
-                    gettext("Distinguished name State or Province"),
-                    gettext("Distinguished name City"),
-                    gettext("Distinguished name Organization"),
-                    gettext("Distinguished name Email Address"),
                     gettext("Distinguished name Common Name"));
         } elseif ($pconfig['certmethod'] == "existing") {
             $reqdfields = array("certref");
@@ -456,14 +444,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($pconfig['certmethod'] == "external") {
                     $dn = array(
                         'countryName' => $pconfig['csr_dn_country'],
-                        'stateOrProvinceName' => $pconfig['csr_dn_state'],
-                        'localityName' => $pconfig['csr_dn_city'],
-                        'organizationName' => $pconfig['csr_dn_organization'],
-                        'emailAddress' => $pconfig['csr_dn_email'],
                         'commonName' => $pconfig['csr_dn_commonname']);
                     if (!empty($pconfig['csr_dn_organizationalunit'])) {
                         $dn['organizationalUnitName'] = $pconfig['csr_dn_organizationalunit'];
+		    }
+
+                    if (!empty($pconfig['dn_state'])) {
+                        $dn['stateOrProvinceName'] = $pconfig['dn_state'];
                     }
+
+                    if (!empty($pconfig['dn_city'])) {
+                        $dn['localityName'] = $pconfig['dn_city'];
+                    }
+
+                    if (!empty($pconfig['dn_organization'])) {
+                        $dn['organizationName'] = $pconfig['dn_organization'];
+                    }
+
+                    if (!empty($pconfig['dn_email'])) {
+                        $dn['emailAddress'] = $pconfig['dn_email'];
+                    }
+
                     if (count($altnames)) {
                         $altnames_tmp = array();
                         foreach ($altnames as $altname) {

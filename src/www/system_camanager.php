@@ -263,35 +263,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif ($pconfig['camethod'] == "internal") {
             $reqdfields = explode(
                 " ",
-                "descr keylen lifetime dn_country dn_state dn_city ".
-                "dn_organization dn_email dn_commonname"
-            );
+                "descr keylen lifetime dn_country dn_commonname");
             $reqdfieldsn = array(
                     gettext("Descriptive name"),
                     gettext("Key length"),
                     gettext("Lifetime"),
                     gettext("Distinguished name Country Code"),
-                    gettext("Distinguished name State or Province"),
-                    gettext("Distinguished name City"),
-                    gettext("Distinguished name Organization"),
-                    gettext("Distinguished name Email Address"),
                     gettext("Distinguished name Common Name"));
         } elseif ($pconfig['camethod'] == "intermediate") {
             $reqdfields = explode(
                 " ",
-                "descr caref keylen lifetime dn_country dn_state dn_city ".
-                "dn_organization dn_email dn_commonname"
-            );
+                "descr caref keylen lifetime dn_country dn_commonname");
             $reqdfieldsn = array(
                     gettext("Descriptive name"),
                     gettext("Signing Certificate Authority"),
                     gettext("Key length"),
                     gettext("Lifetime"),
                     gettext("Distinguished name Country Code"),
-                    gettext("Distinguished name State or Province"),
-                    gettext("Distinguished name City"),
-                    gettext("Distinguished name Organization"),
-                    gettext("Distinguished name Email Address"),
                     gettext("Distinguished name Common Name"));
         }
 
@@ -357,11 +345,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 } elseif ($pconfig['camethod'] == "internal") {
                     $dn = array(
                         'countryName' => $pconfig['dn_country'],
-                        'stateOrProvinceName' => $pconfig['dn_state'],
-                        'localityName' => $pconfig['dn_city'],
-                        'organizationName' => $pconfig['dn_organization'],
-                        'emailAddress' => $pconfig['dn_email'],
-                        'commonName' => $pconfig['dn_commonname']);
+			'commonName' => $pconfig['dn_commonname']);
+
+		    if (!empty($pconfig['dn_state'])) {
+                        $dn['stateOrProvinceName'] = $pconfig['dn_state'];
+                    }
+
+                    if (!empty($pconfig['dn_city'])) {
+                        $dn['localityName'] = $pconfig['dn_city'];
+                    }
+
+                    if (!empty($pconfig['dn_organization'])) {
+                        $dn['organizationName'] = $pconfig['dn_organization'];
+                    }
+
+                    if (!empty($pconfig['dn_email'])) {
+                        $dn['emailAddress'] = $pconfig['dn_email'];
+                    }
+
                     if (!ca_create($ca, $pconfig['keylen'], $pconfig['lifetime'], $dn, $pconfig['digest_alg'])) {
                         $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
@@ -371,11 +372,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 } elseif ($pconfig['camethod'] == "intermediate") {
                     $dn = array(
                         'countryName' => $pconfig['dn_country'],
-                        'stateOrProvinceName' => $pconfig['dn_state'],
-                        'localityName' => $pconfig['dn_city'],
-                        'organizationName' => $pconfig['dn_organization'],
-                        'emailAddress' => $pconfig['dn_email'],
                         'commonName' => $pconfig['dn_commonname']);
+		    
+		    if (!empty($pconfig['dn_state'])) {
+                        $dn['stateOrProvinceName'] = $pconfig['dn_state'];
+                    }
+
+                    if (!empty($pconfig['dn_city'])) {
+                        $dn['localityName'] = $pconfig['dn_city'];
+                    }
+
+                    if (!empty($pconfig['dn_organization'])) {
+                        $dn['organizationName'] = $pconfig['dn_organization'];
+                    }
+
+                    if (!empty($pconfig['dn_email'])) {
+                        $dn['emailAddress'] = $pconfig['dn_email'];
+                    }
+
                     if (!ca_inter_create($ca, $pconfig['keylen'], $pconfig['lifetime'], $dn, $pconfig['caref'], $pconfig['digest_alg'])) {
                         $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
