@@ -343,11 +343,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($pconfig['camethod'] == "existing") {
                     ca_import($ca, $pconfig['cert'], $pconfig['key'], $pconfig['serial']);
                 } elseif ($pconfig['camethod'] == "internal") {
-                    $dn = array(
-                        'countryName' => $pconfig['dn_country'],
-			'commonName' => $pconfig['dn_commonname']);
+                    $dn = array('countryName' => $pconfig['dn_country'],
+			                    'commonName' => $pconfig['dn_commonname']);
 
-		    if (!empty($pconfig['dn_state'])) {
+                    if (!empty($pconfig['dn_state'])) {
                         $dn['stateOrProvinceName'] = $pconfig['dn_state'];
                     }
 
@@ -370,11 +369,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         }
                     }
                 } elseif ($pconfig['camethod'] == "intermediate") {
-                    $dn = array(
-                        'countryName' => $pconfig['dn_country'],
-                        'commonName' => $pconfig['dn_commonname']);
+                    $dn = array('countryName' => $pconfig['dn_country'],
+                                'commonName' => $pconfig['dn_commonname']);
 		    
-		    if (!empty($pconfig['dn_state'])) {
+                    if (!empty($pconfig['dn_state'])) {
                         $dn['stateOrProvinceName'] = $pconfig['dn_state'];
                     }
 
