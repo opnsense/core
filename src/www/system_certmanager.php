@@ -412,11 +412,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($pconfig['certmethod'] == "internal") {
                     $dn = array(
                         'countryName' => $pconfig['dn_country'],
-                        'stateOrProvinceName' => $pconfig['dn_state'],
-                        'localityName' => $pconfig['dn_city'],
-                        'organizationName' => $pconfig['dn_organization'],
-                        'emailAddress' => $pconfig['dn_email'],
-                        'commonName' => $pconfig['dn_commonname']);
+			'commonName' => $pconfig['dn_commonname']);
+
+		    if (!empty($pconfig['dn_state'])) {
+		        $dn['stateOrProvinceName'] = $pconfig['dn_state'];
+		    }
+		    
+		    if (!empty($pconfig['dn_city'])) {
+			$dn['localityName'] = $pconfig['dn_city'];
+		    }
+		    
+		    if (!empty($pconfig['dn_organization'])) {
+			$dn['organizationName'] = $pconfig['dn_organization'];
+		    }
+
+                    if (!empty($pconfig['dn_email'])) {
+                        $dn['emailAddress'] = $pconfig['dn_email'];
+                    }
+
                     if (count($altnames)) {
                         $altnames_tmp = array();
                         foreach ($altnames as $altname) {
