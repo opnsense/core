@@ -875,10 +875,10 @@ function system_firmware_configure($verbose = false)
     /* rewrite the config via the defaults */
     $origin_conf = '/usr/local/etc/pkg/repos/OPNsense.conf';
     /* XXX pre-18.7 fallback */
-    if (!file_exists($origin_conf)) {
+    if (!file_exists("{$origin_conf}.sample")) {
         $origin_conf = '/usr/local/etc/pkg/repos/origin.conf';
     }
-    copy("${origin_conf}.sample", $origin_conf);
+    copy("{$origin_conf}.sample", $origin_conf);
 
     if (!empty($config['system']['firmware']['mirror'])) {
         mwexecf(
