@@ -29,11 +29,18 @@ TMPFILE="/tmp/dh-parameters.${$}"
 FLOCK="/usr/local/bin/flock"
 OPENSSL="/usr/local/bin/openssl"
 
+# XXX we could extrapolate from the files available in the system
+WANTBITS="1024 2048 4096"
+
+if [ -n "${1}" ]; then
+	WANTBITS=${1}
+fi
+
 touch ${LOCKFILE}
 
 (
 	if ${FLOCK} -n 9; then
-		for BITS in 1024 2048 4096; do
+		for BITS in ${WANTBITS}; do
 			${OPENSSL} dhparam -out ${TMPFILE} ${BITS}
 			mv ${TMPFILE} /usr/local/etc/dh-parameters.${BITS}
 		done
