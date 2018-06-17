@@ -43,6 +43,11 @@ touch ${LOCKFILE}
 		for BITS in ${WANTBITS}; do
 			${OPENSSL} dhparam -out ${TMPFILE} ${BITS}
 			mv ${TMPFILE} /usr/local/etc/dh-parameters.${BITS}
+			# XXX provide a sample file for non-default bit sizes
+                        if [ ! -f /usr/local/etc/dh-parameters.${BITS}.sample ]; then
+				cp /usr/local/etc/dh-parameters.${BITS} \
+				    /usr/local/etc/dh-parameters.${BITS}.sample
+			fi
 		done
 	fi
 ) 9< ${LOCKFILE}
