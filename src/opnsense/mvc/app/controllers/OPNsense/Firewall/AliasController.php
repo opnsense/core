@@ -29,6 +29,7 @@
 
 
 namespace OPNsense\Firewall;
+
 use \OPNsense\Base\IndexController;
 
 /**

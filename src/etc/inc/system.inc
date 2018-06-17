@@ -1304,7 +1304,7 @@ function system_login_configure($verbose = false)
         /* virtual terminals */
         foreach (array('ttyv0', 'ttyv1', 'ttyv2', 'ttyv3', 'ttyv4', 'ttyv5', 'ttyv6', 'ttyv7') as $virtualport) {
             if (strpos($tty, $virtualport) === 0) {
-                fwrite($fd, "${virtualport}\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t${on_off_secure_v}\n");
+                fwrite($fd, "{$virtualport}\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t${on_off_secure_v}\n");
                 continue 2;
             }
         }

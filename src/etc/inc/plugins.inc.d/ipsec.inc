@@ -1133,7 +1133,7 @@ EOD;
                 foreach ($ipsec_loglevels as $lkey => $ldescr) {
                     if (isset($config['ipsec']["ipsec_{$lkey}"]) && is_numeric($config['ipsec']["ipsec_{$lkey}"]) &&
                       intval($config['ipsec']["ipsec_{$lkey}"]) >= -1 && intval($config['ipsec']["ipsec_{$lkey}"]) <= 4) {
-                          $cfg_loglevels[] = "${lkey} " . $config['ipsec']["ipsec_{$lkey}"];
+                          $cfg_loglevels[] = $lkey . " " . $config['ipsec']["ipsec_{$lkey}"];
                     }
                 }
             }

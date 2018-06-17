@@ -298,8 +298,10 @@ function console_configure_ip_address($version)
 
     if ($interface != 'wan' && $version === 6 && !empty($config['interfaces']['wan']['ipaddrv6']) &&
         $config['interfaces']['wan']['ipaddrv6'] == 'dhcp6' && console_prompt_for_yn(sprintf(
-            'Configure %s address %s interface via WAN tracking?', $label_IPvX, $upperifname), 'y'
-    )) {
+            'Configure %s address %s interface via WAN tracking?',
+            $label_IPvX,
+            $upperifname
+        ), 'y')) {
         $intip = 'track6';
         $intbits = '64';
         $isintdhcp = true;

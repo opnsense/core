@@ -62,21 +62,21 @@ class AliasNameField extends BaseField
         if ($this->internalValue != null) {
             // add validations to deny reserved keywords, service/protocol names and invalid characters
             $validators[] = new ExclusionIn(array(
-                'message' => sprintf(gettext('The name cannot be the internally reserved keyword "%s".'),
-                    (string)$this),
-                'domain' => $reservedwords)
-            );
+                'message' => sprintf(
+                    gettext('The name cannot be the internally reserved keyword "%s".'),
+                    (string)$this
+                ),
+                'domain' => $reservedwords));
             $validators[] = new Regex(array(
                 'message' => sprintf(gettext(
                     'The name must be less than 32 characters long and may only consist of the following characters: %s'
                 ), 'a-z, A-Z, 0-9, _'),
-                'pattern'=>'/[_0-9a-zA-z]{1,32}/')
-            );
+                'pattern'=>'/[_0-9a-zA-z]{1,32}/'));
             $validators[] = new Callback(
                 [
                     "message" => gettext('Reserved protocol or service names may not be used'),
-                    "callback" => function($data) {
-                        foreach ($data as $key => $value){
+                    "callback" => function ($data) {
+                        foreach ($data as $key => $value) {
                             if (getservbyname($value, 'tcp') ||
                                     getservbyname($value, 'udp') || getprotobyname($value)) {
                                 return false;
@@ -86,7 +86,6 @@ class AliasNameField extends BaseField
                     }
                 ]
             );
-
         }
         return $validators;
     }

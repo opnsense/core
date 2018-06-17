@@ -171,10 +171,10 @@ abstract class BaseModel
                     // application specific field type contains path separator
                     if (strpos($xmlNodeType, ".\\") === 0) {
                         // use current namespace (.\Class)
-                        $namespace = explode("\\" , get_class($this));
+                        $namespace = explode("\\", get_class($this));
                         array_pop($namespace);
                         $namespace = implode("\\", $namespace);
-                        $classname = str_replace(".\\",$namespace."\\FieldTypes\\", (string)$xmlNodeType);
+                        $classname = str_replace(".\\", $namespace."\\FieldTypes\\", (string)$xmlNodeType);
                     } else {
                         $classname = (string)$xmlNodeType;
                     }

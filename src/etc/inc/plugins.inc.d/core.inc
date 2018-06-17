@@ -95,7 +95,7 @@ function core_services()
     if (is_dpinger_enabled()) {
         $gateways_arr_all = return_gateways_array(true);
 
-        foreach($gateways_arr_all as $name => $gateway) {
+        foreach ($gateways_arr_all as $name => $gateway) {
             if (isset($gateway['monitor_disable'])) {
                 continue;
             }
@@ -187,19 +187,35 @@ function core_cron()
     $jobs[]['autocron'] = array('/usr/local/sbin/ping_hosts.sh', '*/4');
 
     if (!empty($config['system']['rrdbackup'])) {
-       $jobs[]['autocron'] = array('/usr/local/etc/rc.syshook.d/backup/20-rrd', '0', '*/' . $config['system']['rrdbackup']);
+        $jobs[]['autocron'] = array(
+            '/usr/local/etc/rc.syshook.d/backup/20-rrd',
+            '0',
+            '*/' . $config['system']['rrdbackup']
+        );
     }
 
     if (!empty($config['system']['dhcpbackup'])) {
-        $jobs[]['autocron'] = array('/usr/local/etc/rc.syshook.d/backup/20-dhcpleases', '0', '*/' . $config['system']['dhcpbackup']);
+        $jobs[]['autocron'] = array(
+            '/usr/local/etc/rc.syshook.d/backup/20-dhcpleases',
+            '0',
+            '*/' . $config['system']['dhcpbackup']
+        );
     }
 
     if (!empty($config['system']['netflowbackup'])) {
-        $jobs[]['autocron'] = array('/usr/local/etc/rc.syshook.d/backup/20-netflow', '0', '*/' . $config['system']['netflowbackup']);
+        $jobs[]['autocron'] = array(
+            '/usr/local/etc/rc.syshook.d/backup/20-netflow',
+            '0',
+            '*/' . $config['system']['netflowbackup']
+        );
     }
 
     if (!empty($config['system']['captiveportalbackup'])) {
-        $jobs[]['autocron'] = array('/usr/local/etc/rc.syshook.d/backup/20-captiveportal', '0', '*/' . $config['system']['captiveportalbackup']);
+        $jobs[]['autocron'] = array(
+            '/usr/local/etc/rc.syshook.d/backup/20-captiveportal',
+            '0',
+            '*/' . $config['system']['captiveportalbackup']
+        );
     }
 
     if (!empty($config['system']['dhparaminterval'])) {

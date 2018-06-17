@@ -31,7 +31,6 @@ namespace OPNsense\Firewall\Api;
 
 use \OPNsense\Base\ApiMutableModelControllerBase;
 
-
 /**
  * @package OPNsense\Firewall
  */

@@ -35,7 +35,6 @@ use Phalcon\Validation\Validator\Callback;
 use Phalcon\Validation\Message;
 use OPNsense\Firewall\Util;
 
-
 /**
  * Class AliasContentField
  * @package OPNsense\Base\FieldTypes
@@ -80,8 +79,8 @@ class AliasContentField extends BaseField
      */
     private function getItems($data)
     {
-        foreach ($data as $key => $value){
-            foreach (explode($this->separatorchar, $value) as $value){
+        foreach ($data as $key => $value) {
+            foreach (explode($this->separatorchar, $value) as $value) {
                 yield $value;
             }
         }
@@ -111,8 +110,8 @@ class AliasContentField extends BaseField
     private function validatePort($data)
     {
         $message = array();
-        foreach ($this->getItems($data) as $port){
-            if (!Util::isAlias($port) && !Util::isPort($port, true)){
+        foreach ($this->getItems($data) as $port) {
+            if (!Util::isAlias($port) && !Util::isPort($port, true)) {
                 $message[] = $port;
             }
         }
@@ -120,8 +119,9 @@ class AliasContentField extends BaseField
             // When validation fails use a callback to return the message so we can add the failed items
             return new Callback([
                 "message" =>sprintf(gettext('Entry "%s" is not a valid port number.'), implode("|", $message)),
-                "callback" => function() {return false;}]
-            );
+                "callback" => function () {
+                    return false;
+                }]);
         }
         return true;
     }
@@ -134,8 +134,8 @@ class AliasContentField extends BaseField
     private function validateHost($data)
     {
         $message = array();
-        foreach ($this->getItems($data) as $host){
-            if (!Util::isAlias($host) && !Util::isIpAddress($host) && !Util::isDomain($host)){
+        foreach ($this->getItems($data) as $host) {
+            if (!Util::isAlias($host) && !Util::isIpAddress($host) && !Util::isDomain($host)) {
                 $message[] = $host;
             }
         }
@@ -143,10 +143,12 @@ class AliasContentField extends BaseField
             // When validation fails use a callback to return the message so we can add the failed items
             return new Callback([
                     "message" =>sprintf(
-                        gettext('Entry "%s" is not a valid hostname or IP address.'), implode("|", $message)
+                        gettext('Entry "%s" is not a valid hostname or IP address.'),
+                        implode("|", $message)
                     ),
-                    "callback" => function() {return false;}]
-            );
+                    "callback" => function () {
+                        return false;
+                    }]);
         }
 
         return true;
@@ -160,8 +162,8 @@ class AliasContentField extends BaseField
     private function validateNetwork($data)
     {
         $message = array();
-        foreach ($this->getItems($data) as $network){
-            if (!Util::isAlias($network) && !Util::isIpAddress($network) && !Util::isSubnet($network)){
+        foreach ($this->getItems($data) as $network) {
+            if (!Util::isAlias($network) && !Util::isIpAddress($network) && !Util::isSubnet($network)) {
                 $message[] = $network;
             }
         }
@@ -169,10 +171,12 @@ class AliasContentField extends BaseField
             // When validation fails use a callback to return the message so we can add the failed items
             return new Callback([
                     "message" =>sprintf(
-                        gettext('Entry "%s" is not a valid network or IP address.'), implode("|", $message)
+                        gettext('Entry "%s" is not a valid network or IP address.'),
+                        implode("|", $message)
                     ),
-                    "callback" => function() {return false;}]
-            );
+                    "callback" => function () {
+                        return false;
+                    }]);
         }
         return true;
     }
@@ -186,8 +190,8 @@ class AliasContentField extends BaseField
     {
         $country_codes = $this->getCountryCodes();
         $message = array();
-        foreach ($this->getItems($data) as $country){
-            if (!in_array($country, $country_codes)){
+        foreach ($this->getItems($data) as $country) {
+            if (!in_array($country, $country_codes)) {
                 $message[] = $country;
             }
         }
@@ -195,10 +199,12 @@ class AliasContentField extends BaseField
             // When validation fails use a callback to return the message so we can add the failed items
             return new Callback([
                     "message" =>sprintf(
-                        gettext('Entry "%s" is not a valid country code.'), implode("|", $message)
+                        gettext('Entry "%s" is not a valid country code.'),
+                        implode("|", $message)
                     ),
-                    "callback" => function() {return false;}]
-            );
+                    "callback" => function () {
+                        return false;
+                    }]);
         }
         return true;
     }
@@ -216,22 +222,26 @@ class AliasContentField extends BaseField
             switch ($alias_type) {
                 case "port":
                     $validators[] = new Callback(["callback" => function ($data) {
-                        return $this->validatePort($data);}
+                        return $this->validatePort($data);
+                    }
                     ]);
                     break;
                 case "host":
                     $validators[] = new Callback(["callback" => function ($data) {
-                        return $this->validateHost($data);}
+                        return $this->validateHost($data);
+                    }
                     ]);
                     break;
                 case "geoip":
                     $validators[] = new Callback(["callback" => function ($data) {
-                        return $this->validateCountry($data);}
+                        return $this->validateCountry($data);
+                    }
                     ]);
                     break;
                 case "network":
                     $validators[] = new Callback(["callback" => function ($data) {
-                        return $this->validateNetwork($data);}
+                        return $this->validateNetwork($data);
+                    }
                     ]);
                     break;
                 default:

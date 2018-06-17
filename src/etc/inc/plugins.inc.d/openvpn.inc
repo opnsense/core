@@ -621,6 +621,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
             // For non user auth types setup client specific overrides, user authenticated ones are commissioned
             // using the auth script in option auth-user-pass-verify
             $conf .= "client-connect \"/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_setup_cso.php {$mode_id}\"\n";
+            break;
         default:
             break;
     }
@@ -1021,7 +1022,7 @@ function openvpn_delete($mode, &$settings)
  * @param string $target_filename write to filename, or use configured/generated path when emtpy
  * @return string|boolean filename or false when unable to (missing common name or vpnid)
  */
-function openvpn_csc_conf_write($settings, $server, $target_filename=null)
+function openvpn_csc_conf_write($settings, $server, $target_filename = null)
 {
     if (empty($settings['common_name']) || empty($server['vpnid'])) {
         return false;
