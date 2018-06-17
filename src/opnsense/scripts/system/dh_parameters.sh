@@ -24,18 +24,28 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-LOCKFILE="/tmp/dh-parameters.lock"
-TMPFILE="/tmp/dh-parameters.${$}"
 FLOCK="/usr/local/bin/flock"
+LOCKFILE="/tmp/dh-parameters.lock"
 OPENSSL="/usr/local/bin/openssl"
+TMPFILE="/tmp/dh-parameters.${$}"
+WANTBITS="1024 2048 4096"
+
+if [ -n "${1}" ]; then
+	WANTBITS=${1}
+fi
 
 touch ${LOCKFILE}
 
 (
 	if ${FLOCK} -n 9; then
-		for BITS in 1024 2048 4096; do
+		for BITS in ${WANTBITS}; do
 			${OPENSSL} dhparam -out ${TMPFILE} ${BITS}
 			mv ${TMPFILE} /usr/local/etc/dh-parameters.${BITS}
+			# provide a sample file for non-default bit sizes
+                        if [ ! -f /usr/local/etc/dh-parameters.${BITS}.sample ]; then
+				cp /usr/local/etc/dh-parameters.${BITS} \
+				    /usr/local/etc/dh-parameters.${BITS}.sample
+			fi
 		done
 	fi
 ) 9< ${LOCKFILE}
