@@ -33,7 +33,7 @@ touch ${LOCKFILE}
 
 (
 	if ${FLOCK} -n 9; then
-		for BITS in 1024 2048 3072 4096; do
+		for BITS in 1024 2048 4096; do
 			${OPENSSL} dhparam -out ${TMPFILE} ${BITS}
 			mv ${TMPFILE} /usr/local/etc/dh-parameters.${BITS}
 		done
