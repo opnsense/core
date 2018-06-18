@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['savemsg'])) {
         $savemsg = htmlspecialchars(sprintf(gettext($_GET['savemsg']), $username));
     } elseif (!empty($_SESSION['user_shouldChangePassword'])) {
-        $savemsg = gettext("Your password has expired, please provide a new one");
+        $savemsg = gettext('Your password does not match the selected security policies. Please provide a new one.');
     }
 
     if ($userFound) {
@@ -153,7 +153,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_language" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Language");?></td>
                     <td>
-                      <select name="language" class="selectpicker" data-size="10" data-style="btn-default" data-width="auto">
+                      <select name="language" class="selectpicker" data-style="btn-default">
 <?php
                         foreach (get_locale_list() as $lcode => $ldesc):?>
                         <option value="<?=$lcode;?>" <?=$lcode == $pconfig['language'] ? "selected=\"selected\"" : "";?>>
