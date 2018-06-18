@@ -245,7 +245,7 @@ server.network-backend  = "writev"
 
 ## modules to load
 server.modules              =   (
-  "mod_access", "mod_expire", "mod_compress", "mod_redirect",
+  "mod_access", "mod_expire", "mod_compress", "mod_redirect", "mod_setenv",
   "mod_cgi", "mod_fastcgi","mod_alias", "mod_rewrite", "mod_openssl" {$lighty_modules}
 )
 
