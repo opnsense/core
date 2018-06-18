@@ -1,4 +1,4 @@
 #!/bin/sh
 
 # shutdown syshook / plugin scripts
-/usr/local/etc/rc.syshook stop
+exec /usr/local/etc/rc.syshook stop
