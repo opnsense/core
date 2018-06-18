@@ -142,8 +142,8 @@ class Backend
     public function configdpRun($event, $params = array(), $detach = false, $timeout = 120)
     {
         if (!is_array($params)) {
-           /* just in case there's only one parameter */
-           $params = array($params);
+            /* just in case there's only one parameter */
+            $params = array($params);
         }
 
         foreach ($params as $param) {

@@ -95,7 +95,7 @@ function core_services()
     if (is_dpinger_enabled()) {
         $gateways_arr_all = return_gateways_array(true);
 
-        foreach($gateways_arr_all as $name => $gateway) {
+        foreach ($gateways_arr_all as $name => $gateway) {
             if (isset($gateway['monitor_disable'])) {
                 continue;
             }
