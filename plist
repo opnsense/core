@@ -144,6 +144,7 @@
 /usr/local/etc/rc.syshook.d/90-carp.start
 /usr/local/etc/rc.syshook.d/90-cron.start
 /usr/local/etc/rc.syshook.d/95-beep.start
+/usr/local/etc/rc.syshook.d/99-config.stop
 /usr/local/etc/rc.update_bogons
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/opnsense/contrib/IXR/IXR_Library.php
