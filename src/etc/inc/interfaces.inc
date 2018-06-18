@@ -2443,8 +2443,7 @@ function interface_virtual_create($interface)
     }
 }
 
-
-function interface_configure($interface = 'wan', $reloadall = false, $linkupevent = false, $verbose = false)
+function interface_configure($interface = 'wan', $reload = false, $linkupevent = false, $verbose = false)
 {
     global $config;
 
@@ -2585,7 +2584,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
                 interface_6to4_configure($interface, $wancfg);
                 break;
             case 'track6':
-                interface_track6_configure($interface, $wancfg, $reloadall || $linkupevent);
+                interface_track6_configure($interface, $wancfg, $reload || $linkupevent);
                 break;
             default:
                 /* XXX: Kludge for now related to #3280 */
@@ -2664,7 +2663,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
             system_hosts_generate();
         }
 
-        if ($reloadall == true) {
+        if ($reload == true) {
             system_routing_configure(false, $interface);
             ipsec_configure_do();
             plugins_configure('dns');
