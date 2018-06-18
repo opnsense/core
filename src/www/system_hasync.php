@@ -157,7 +157,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_pfsyncinterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize Interface') ?></td>
                   <td>
-                    <select name="pfsyncinterface" class="selectpicker" data-style="btn-default" data-live-search="true" data-width="auto">
+                    <select name="pfsyncinterface" class="selectpicker" data-style="btn-default" data-live-search="true">
 <?php
                     $ifaces = get_configured_interface_with_descr();
                     $ifaces["lo0"] = gettext("loopback");
