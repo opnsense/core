@@ -129,7 +129,7 @@ function ca_inter_create(&$ca, $keylen, $lifetime, $dn, $caref, $digest_alg = 's
 }
 
 
-$ca_keylens = array( "512", "1024", "2048", "4096", "8192");
+$ca_keylens = array( "512", "1024", "2048", "3072", "4096", "8192");
 $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
 $a_ca = &config_read_array('ca');
 $a_cert = &config_read_array('cert');

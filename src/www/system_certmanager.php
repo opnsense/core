@@ -86,7 +86,7 @@ $cert_methods = array(
     "internal" => gettext("Create an internal Certificate"),
     "external" => gettext("Create a Certificate Signing Request"),
 );
-$cert_keylens = array( "512", "1024", "2048", "4096", "8192");
+$cert_keylens = array( "512", "1024", "2048", "3072", "4096", "8192");
 $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
 
 

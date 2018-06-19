@@ -371,6 +371,10 @@ if (isset($config['wizardtemp'])) {
 					<value>2048</value>
 				</option>
 				<option>
+					<name>3072 bit</name>
+					<value>3072</value>
+				</option>
+				<option>
 					<name>4096 bit</name>
 					<value>4096</value>
 				</option>
@@ -494,6 +498,10 @@ if (isset($config['wizardtemp'])) {
 				<option>
 					<name>2048 bit</name>
 					<value>2048</value>
+				</option>
+				<option>
+					<name>3072 bit</name>
+					<value>3072</value>
 				</option>
 				<option>
 					<name>4096 bit</name>
