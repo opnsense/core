@@ -928,7 +928,7 @@ endif; ?>
                                 $selected = ' selected="selected"';
                             }
                         ?>
-                          <option value="<? html_safe($length) ?>" <?=$selected?>><?= gettext('%s bit', $length) ?></option>
+                          <option value="<? html_safe($length) ?>" <?=$selected?>><?= sprintf(gettext('%s bit'), $length) ?></option>
 <?php
                         endforeach; ?>
                         </select>
@@ -1640,9 +1640,9 @@ endif; ?>
                         <?=htmlspecialchars($server['description']);?>
                     </td>
                     <td class="text-nowrap">
-                        <a href="vpn_openvpn_server.php?act=edit&amp;id=<?=$i;?>" title="<?=gettext("edit server"); ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
-                        <a id="del_<?=$i;?>" title="<?=gettext("delete server"); ?>" class="act_delete btn btn-default btn-xs"><i class="fa fa-trash fa-fw"></i></a>
-                        <a href="vpn_openvpn_server.php?act=new&amp;dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone server");?>">
+                        <a href="vpn_openvpn_server.php?act=edit&amp;id=<?=$i;?>"  title="<?= html_safe(gettext('Edit')) ?>" data-toggle="tooltip" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
+                        <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs"><i class="fa fa-trash fa-fw"></i></a>
+                        <a href="vpn_openvpn_server.php?act=new&amp;dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Clone')) ?>">
                           <span class="fa fa-clone fa-fw"></span>
                         </a>
                     </td>

@@ -80,12 +80,12 @@ function list_dh_parameters()
 {
     global $config;
 
-    $available = array('1024', '2048', '4096');
+    $available = array(1024, 2048, 4096);
 
     if (!empty($config['system']['dhparamusage'])) {
         switch ($config['system']['dhparamusage']) {
             case 'rfc7919':
-                $available = array('2048', '3072', '4096');
+                $available = array(2048, 3072, 4096);
                 break;
             default:
                 /* XXX whatever we have on the disk */

@@ -674,7 +674,7 @@ function showchange() {
 					if($value == $length)
 						$selected = " selected=\"selected\"";
 					echo "\t<option value=\"" . html_safe($length) . "\"" . $selected . ">";
-					echo gettext('%s bit', $length);
+					echo sprintf(gettext('%s bit'), $length);
 					echo "</option>\n";
 				}
 				echo "</select>\n";

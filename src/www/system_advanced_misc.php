@@ -239,7 +239,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_dhparamusage" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('DH parameter schedule') ?></td>
+                <td><a id="help_for_dhparamusage" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Diffie-Hellman parameters') ?></td>
                 <td>
                   <select name="dhparamusage" class="selectpicker" data-style="btn-default" id="dhparamusage">
                     <option value="" <?= $pconfig['dhparamusage'] == '' ? "selected='selected'" : '' ?>><?=gettext('System defaults') ?></option>
