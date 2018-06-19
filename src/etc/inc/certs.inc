@@ -418,7 +418,8 @@ function cert_get_purpose($str_crt, $decode = true)
         strstr($crt_details['extensions']['extendedKeyUsage'], "TLS Web Server Authentication") !== false &&
         isset($crt_details['extensions']['keyUsage']) &&
         strpos($crt_details['extensions']['keyUsage'], "Digital Signature") !== false &&
-        strpos($crt_details['extensions']['keyUsage'], "Key Encipherment") !== false) {
+        ( strpos($crt_details['extensions']['keyUsage'], "Key Encipherment") !== false ||
+          strpos($crt_details['extensions']['keyUsage'], "Key Agreement") !== false ) ) {
         $purpose['server'] = 'Yes';
     } else {
         $purpose['server'] = 'No';
