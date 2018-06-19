@@ -655,6 +655,36 @@ function showchange() {
 				}
 
 				break;
+			case 'dhparam_selection':
+				if ($field['displayname']) {
+					echo "<td style=\"width:22%; text-align:right\">\n";
+					echo gettext($field['displayname']);
+					echo ":</td>\n";
+				} else if(!$field['dontdisplayname']) {
+					echo "<td style=\"width:22%; text-align:right\">\n";
+					echo gettext($field['name']);
+					echo ":</td>\n";
+				}
+				if($field['size']) $size = " size='" . $field['size'] . "' ";
+				if(!$field['dontcombinecells'])
+					echo "<td class=\"vtable\">\n";
+				echo "<select class='form-control' " . $size . "id='" . $name . "' name='" . $name . "'>\n";
+				foreach (list_dh_parameters() as $length) {
+					$selected = "";
+					if($value == $length)
+						$selected = " selected=\"selected\"";
+					echo "\t<option value=\"" . html_safe($length) . "\"" . $selected . ">";
+					echo gettext('%s bit', $length);
+					echo "</option>\n";
+				}
+				echo "</select>\n";
+				echo "<!-- {$value} -->\n";
+
+				if($field['description'] <> "") {
+					echo "<br /> " . gettext($field['description']);
+				}
+
+				break;
 			case "select":
 				if ($field['displayname']) {
 					echo "<td style=\"width:22%; text-align:right\">\n";

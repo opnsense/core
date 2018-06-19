@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     } elseif ($act == "new") {
         $pconfig['tlsauth_enable'] = "yes";
-        $pconfig['dh_length'] = 1024;
+        $pconfig['dh_length'] = 2048;
         $pconfig['dev_mode'] = "tun";
         $pconfig['interface'] = 'any';
         $pconfig['protocol'] = 'UDP';
@@ -922,13 +922,13 @@ endif; ?>
                       <td>
                         <select name="dh_length" class="selectpicker">
 <?php
-                        foreach (array(1024, 2048, 4096) as $length) :
+                        foreach (list_dh_parameters() as $length):
                             $selected = "";
                             if ($length == $pconfig['dh_length']) {
-                                $selected = " selected=\"selected\"";
+                                $selected = ' selected="selected"';
                             }
                         ?>
-                          <option<?=$selected?>><?=$length;?></option>
+                          <option value="<? html_safe($length) ?>" <?=$selected?>><?= gettext('%s bit', $length) ?></option>
 <?php
                         endforeach; ?>
                         </select>

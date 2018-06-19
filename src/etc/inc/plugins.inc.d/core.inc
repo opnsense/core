@@ -218,8 +218,8 @@ function core_cron()
         );
     }
 
-    if (!empty($config['system']['dhparaminterval'])) {
-        switch ($config['system']['dhparaminterval']) {
+    if (!empty($config['system']['dhparamusage'])) {
+        switch ($config['system']['dhparamusage']) {
             case 'weekly':
                 $jobs[]['autocron'] = array('configctl system ssl dhparam', '30', '3', '*', '*', '0');
                 break;
@@ -227,7 +227,7 @@ function core_cron()
                 $jobs[]['autocron'] = array('configctl system ssl dhparam', '30', '3', '1', '*', '*');
                 break;
             default:
-                /* cron job operated by user manually */
+                /* cron job operated by user manually or RFC 7919 */
                 break;
         }
     }

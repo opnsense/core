@@ -664,22 +664,9 @@ if (isset($config['wizardtemp'])) {
 		<field>
 			<displayname>DH Parameters Length</displayname>
 			<name>dhparameters</name>
-			<type>select</type>
+			<type>dhparam_selection</type>
+                        <value>2048</value>
 			<bindstofield>wizardtemp->step10->dhkey</bindstofield>
-			<options>
-				<option>
-					<name>1024 bit</name>
-					<value>1024</value>
-				</option>
-				<option>
-					<name>2048 bit</name>
-					<value>2048</value>
-				</option>
-				<option>
-					<name>4096 bit</name>
-					<value>4096</value>
-				</option>
-			</options>
 			<description>Length of Diffie-Hellman (DH) key exchange parameters, used for establishing a secure communications channel. As with other such settings, the larger values are more secure, but may be slower in operation.</description>
 		</field>
 		<field>

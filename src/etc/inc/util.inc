@@ -76,13 +76,42 @@ function is_process_running($process)
     return (intval($retval) == 0);
 }
 
+function list_dh_parameters()
+{
+    global $config;
+
+    $available = array('1024', '2048', '4096');
+
+    if (!empty($config['system']['dhparamusage'])) {
+        switch ($config['system']['dhparamusage']) {
+            case 'rfc7919':
+                $available = array('2048', '3072', '4096');
+                break;
+            default:
+                /* XXX whatever we have on the disk */
+                break;
+        }
+    }
+
+    return $available;
+}
+
 function get_dh_parameters($bits)
 {
     global $config;
 
     $file = "/usr/local/etc/dh-parameters.{$bits}";
 
-    if (empty($config['system']['dhparaminterval']) || !file_exists($file)) {
+    if (!empty($config['system']['dhparamusage'])) {
+        switch ($config['system']['dhparamusage']) {
+            case 'rfc7919':
+                return "{$file}.rfc7919";
+            default:
+                break;
+        }
+    }
+
+    if (empty($config['system']['dhparamusage']) || !file_exists($file)) {
         /*
          * Use the sample file if the normal file is MIA
          * or when the renew interval is not set:
