@@ -665,7 +665,7 @@ if (isset($config['wizardtemp'])) {
 			<displayname>DH Parameters Length</displayname>
 			<name>dhparameters</name>
 			<type>dhparam_selection</type>
-                        <value>2048</value>
+			<value>2048</value>
 			<bindstofield>wizardtemp->step10->dhkey</bindstofield>
 			<description>Length of Diffie-Hellman (DH) key exchange parameters, used for establishing a secure communications channel. As with other such settings, the larger values are more secure, but may be slower in operation.</description>
 		</field>
