@@ -657,6 +657,7 @@ if (isset($config['wizardtemp'])) {
 			<displayname>DH Parameters Length</displayname>
 			<name>dhparameters</name>
 			<type>select</type>
+			<value>2048</value>
 			<bindstofield>wizardtemp->step10->dhkey</bindstofield>
 			<options>
 				<option>

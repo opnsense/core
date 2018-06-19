@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     } elseif ($act == "new") {
         $pconfig['tlsauth_enable'] = "yes";
-        $pconfig['dh_length'] = 1024;
+        $pconfig['dh_length'] = 2048;
         $pconfig['dev_mode'] = "tun";
         $pconfig['interface'] = 'any';
         $pconfig['protocol'] = 'UDP';
