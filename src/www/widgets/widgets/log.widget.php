@@ -180,7 +180,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
         <tbody>
           <tr>
             <td>
-              <label for="filterlogentries"><?= gettext('Quantity:') ?><br /><small>(<?= gettext('log entires') ?>)</small></label>
+              <label for="filterlogentries"><?= gettext('Quantity:') ?><br /><small>(<?= gettext('log entries') ?>)</small></label>
             </td>
             <td>
               <select name="filterlogentries" class="formfld unknown" id="filterlogentries">
