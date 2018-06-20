@@ -5,7 +5,7 @@ BACKUPDIR="/var/netflow"
 
 # find out if the service is running and stop/start it only if needed
 RCSCRIPT="/usr/local/etc/rc.d/flowd_aggregate"
-if ! ${RCSCRIPT} status; then
+if ! ${RCSCRIPT} status > /dev/null; then
 	RCSCRIPT="true"
 fi
 
