@@ -3,7 +3,7 @@
         <id>queue.enabled</id>
         <label>enabled</label>
         <type>checkbox</type>
-        <help>enable this queue and it's related rules</help>
+        <help>Enable this queue and its related rules</help>
     </field>
     <field>
         <id>queue.pipe</id>
