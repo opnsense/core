@@ -1728,4 +1728,4 @@
 @sample /usr/local/etc/dh-parameters.4096.sample
 @sample /usr/local/opnsense/service/templates/OPNsense/IDS/custom.yaml.sample
 @shadow /usr/local/etc/pkg/repos/FreeBSD.conf.sample
-@shadow /usr/local/etc/pkg/repos/origin.conf.sample
+@shadow /usr/local/etc/pkg/repos/OPNsense.conf.sample
