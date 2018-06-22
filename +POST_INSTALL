@@ -16,7 +16,7 @@ cp /etc/rc /etc/rc.bak
 cat > /etc/rc <<EOF
 #!/bin/sh
 # OPNsense rc(8) hook was automatically installed:
-if [ -f /usr/local/etc/rc ]; then /usr/local/etc/rc; exit 0; fi
+if [ -f /usr/local/etc/rc ]; then exec /usr/local/etc/rc; fi
 EOF
 cat /etc/rc.bak >> /etc/rc
 rm -f /etc/rc.bak
@@ -26,7 +26,7 @@ cp /etc/rc.shutdown /etc/rc.shutdown.bak
 cat > /etc/rc.shutdown <<EOF
 #!/bin/sh
 # OPNsense rc(8) hook was automatically installed:
-if [ -f /usr/local/etc/rc.shutdown ]; then /usr/local/etc/rc.shutdown; exit 0; fi
+if [ -f /usr/local/etc/rc.shutdown ]; then exec /usr/local/etc/rc.shutdown; fi
 EOF
 cat /etc/rc.shutdown.bak >> /etc/rc.shutdown
 rm -f /etc/rc.shutdown.bak
