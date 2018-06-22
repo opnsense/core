@@ -3796,7 +3796,7 @@ function link_interface_to_track6($wanif, $update = false)
 {
     $list = array();
 
-    if (empty($wanif)) {
+    if (empty($wanif) || empty($wanif['ipaddrv6'])) {
         return $list;
     }
 
@@ -3812,6 +3812,10 @@ function link_interface_to_track6($wanif, $update = false)
 
             $list[$lanif] = $lancfg;
         }
+    }
+
+    if ($wanif['ipaddrv6'] == 'slaac' && $update && count($list)) {
+        services_radvd_configure();
     }
 
     return $list;
