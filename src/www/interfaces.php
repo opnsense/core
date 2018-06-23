@@ -1414,7 +1414,11 @@ include("head.inc");
                 }
             },
             success: function(response) {
-                $('#gateway').append($("<option selected=selected></option>").attr("value",name).text(escape(name) + " - " + gatewayip));
+                var selected = "selected=selected";
+                if (!$("#multiwangw").prop('checked')) {
+                    selected = "";
+                }
+                $('#gateway').append($("<option " + selected + "></option>").attr("value",name).text(escape(name) + " - " + gatewayip));
                 $('#gateway').selectpicker('refresh');
             }
           });
