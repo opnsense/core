@@ -237,6 +237,12 @@ if (!isset($_GET['act'])) {
                       <option value="allow snoop" <?= $pconfig['aclaction'] == "allow snoop" ? "selected=\"selected\"" : ""; ?>>
                       <?=gettext("Allow Snoop");?>
                       </option>
+                      <option value="deny nonlocal" <?= $pconfig['aclaction'] == "deny nonlocal" ? "selected=\"selected\"" : ""; ?>>
+                      <?=gettext("Deny Nonlocal");?>
+                      </option>
+                      <option value="refuse nonlocal" <?= $pconfig['aclaction'] == "refuse nonlocal" ? "selected=\"selected\"" : ""; ?>>
+                      <?=gettext("Refuse Nonlocal");?>
+                      </option>
                     </select>
                     <div class="hidden" data-for="help_for_aclaction">
                         <?=gettext("Choose what to do with DNS requests that match the criteria specified below.");?> <br />
@@ -244,6 +250,8 @@ if (!isset($_GET['act'])) {
                         <?=gettext("Refuse: This action also stops queries from hosts within the netblock defined below, but sends a DNS rcode REFUSED error message back to the client.")?> <br />
                         <?=gettext("Allow: This action allows queries from hosts within the netblock defined below.")?> <br />
                         <?=gettext("Allow Snoop: This action allows recursive and nonrecursive access from hosts within the netblock defined below. Used for cache snooping and ideally should only be configured for your administrative host.")?> <br />
+                        <?=gettext("Deny Nonlocal: Allow only authoritative local-data queries from hosts within the netblock defined below. Messages that are disallowed are dropped.")?> <br />
+                        <?=gettext("Refuse Nonlocal: Allow only authoritative local-data queries from hosts within the netblock defined below. Sends a DNS rcode REFUSED error message back to the client for messages that are disallowed.")?> <br />
                     </div>
                   </td>
                 </tr>
