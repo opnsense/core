@@ -1849,14 +1849,14 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
-                          <td><a id="help_for_gateway" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Upstream Gateway"); ?></td>
+                          <td><a id="help_for_gateway" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('IPv4 Upstream Gateway') ?></td>
                           <td>
                             <select name="gateway" class="selectpicker" data-style="btn-default" data-size="10" id="gateway">
-                              <option value="none"><?=gettext("None"); ?></option>
+                              <option value="none"><?= gettext('Automatic') ?></option>
 <?php
                               if (!empty($config['gateways']['gateway_item'])):
                                 foreach ($config['gateways']['gateway_item'] as $gateway):
-                                  if ($gateway['interface'] == $if  && is_ipaddrv4($gateway['gateway'])):
+                                  if ($gateway['interface'] == $if && is_ipaddrv4($gateway['gateway'])):
 ?>
                                   <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gateway'] ? "selected=\"selected\"" : ""; ?>>
                                     <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
@@ -1906,8 +1906,8 @@ include("head.inc");
                             </div>
                             <div class="hidden" data-for="help_for_gateway">
                               <?= gettext('If this interface is a muti-WAN interface, select an existing gateway from the list ' .
-                                          'or add a new one using the link above. For single WAN interfaces a gateway must be ' .
-                                          'created but left unsassigned here. For a LAN the upstream gateway should be "none".') ?>
+                                          'or add a new one using the button above. For single WAN interfaces a gateway must be ' .
+                                          'created but left to use "automatic". For a LAN a gateway is not necessary to be set up.') ?>
                             </div>
                           </td>
                         </tr>
