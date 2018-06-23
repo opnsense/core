@@ -207,9 +207,6 @@ EOF;
     // Configure Domain Overrides
     unbound_add_domain_overrides();
 
-    // Configure Unbound statistics
-    $statistics = unbound_statistics();
-
     // Configure Unbound access-lists
     unbound_acls_config();
 
@@ -325,8 +322,6 @@ rrset-cache-size: {$rrsetcachesize}m
 {$anchor_file}
 prefetch: {$prefetch}
 prefetch-key: {$prefetch_key}
-# Statistics
-{$statistics}
 # Interface IP(s) to bind to
 {$bindints}
 {$outgoingints}
@@ -664,36 +659,6 @@ function unbound_add_host_entries()
     }
 
     file_put_contents('/var/unbound/host_entries.conf', $unbound_entries);
-}
-
-// Generation of Unbound statistics
-function unbound_statistics()
-{
-    global $config;
-
-    if ($config['stats'] == "on") {
-        $stats_interval = $config['unbound']['stats_interval'];
-        $cumulative_stats = $config['cumulative_stats'];
-        if ($config['extended_stats'] == "on") {
-            $extended_stats = "yes";
-        } else {
-            $extended_stats = "no";
-        }
-    } else {
-        $stats_interval = "0";
-        $cumulative_stats = "no";
-        $extended_stats = "no";
-    }
-    /* XXX To do - add RRD graphs */
-    $stats = <<<EOF
-# Unbound Statistics
-statistics-interval: {$stats_interval}
-extended-statistics: yes
-statistics-cumulative: yes
-
-EOF;
-
-    return $stats;
 }
 
 function unbound_acls_config()
