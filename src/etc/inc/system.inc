@@ -1159,19 +1159,19 @@ function system_cron_configure($verbose = false, $defer = false)
     $autocron[] = generate_cron_job('/usr/local/sbin/ping_hosts.sh', '*/4');
 
     if (!empty($config['system']['rrdbackup'])) {
-       $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_rrd', '0', '*/' . $config['system']['rrdbackup']);
+       $autocron[] = generate_cron_job('/usr/local/etc/rc.syshook.d/backup/20-rrd', '0', '*/' . $config['system']['rrdbackup']);
     }
 
     if (!empty($config['system']['dhcpbackup'])) {
-        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_dhcpleases', '0', '*/' . $config['system']['dhcpbackup']);
+        $autocron[] = generate_cron_job('/usr/local/etc/rc.syshook.d/backup/20-dhcpleases', '0', '*/' . $config['system']['dhcpbackup']);
     }
 
     if (!empty($config['system']['netflowbackup'])) {
-        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_netflow', '0', '*/' . $config['system']['netflowbackup']);
+        $autocron[] = generate_cron_job('/usr/local/etc/rc.syshook.d/backup/20-netflow', '0', '*/' . $config['system']['netflowbackup']);
     }
 
     if (!empty($config['system']['captiveportalbackup'])) {
-        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_captiveportal', '0', '*/' . $config['system']['captiveportalbackup']);
+        $autocron[] = generate_cron_job('/usr/local/etc/rc.syshook.d/backup/20-captiveportal', '0', '*/' . $config['system']['captiveportalbackup']);
     }
 
     $autocron[] = generate_cron_job('/usr/local/opnsense/scripts/remote_backup.php', 0, 1);
