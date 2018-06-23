@@ -238,10 +238,10 @@ if (!isset($_GET['act'])) {
                       <?=gettext("Allow Snoop");?>
                       </option>
                       <option value="deny nonlocal" <?= $pconfig['aclaction'] == "deny nonlocal" ? "selected=\"selected\"" : ""; ?>>
-                      <?=gettext("Deny Nonlocal");?>
+                      <?=gettext("Deny Non-local");?>
                       </option>
                       <option value="refuse nonlocal" <?= $pconfig['aclaction'] == "refuse nonlocal" ? "selected=\"selected\"" : ""; ?>>
-                      <?=gettext("Refuse Nonlocal");?>
+                      <?=gettext("Refuse Non-local");?>
                       </option>
                     </select>
                     <div class="hidden" data-for="help_for_aclaction">
@@ -250,8 +250,8 @@ if (!isset($_GET['act'])) {
                         <?=gettext("Refuse: This action also stops queries from hosts within the netblock defined below, but sends a DNS rcode REFUSED error message back to the client.")?> <br />
                         <?=gettext("Allow: This action allows queries from hosts within the netblock defined below.")?> <br />
                         <?=gettext("Allow Snoop: This action allows recursive and nonrecursive access from hosts within the netblock defined below. Used for cache snooping and ideally should only be configured for your administrative host.")?> <br />
-                        <?=gettext("Deny Nonlocal: Allow only authoritative local-data queries from hosts within the netblock defined below. Messages that are disallowed are dropped.")?> <br />
-                        <?=gettext("Refuse Nonlocal: Allow only authoritative local-data queries from hosts within the netblock defined below. Sends a DNS rcode REFUSED error message back to the client for messages that are disallowed.")?> <br />
+                        <?=gettext("Deny Non-local: Allow only authoritative local-data queries from hosts within the netblock defined below. Messages that are disallowed are dropped.")?> <br />
+                        <?=gettext("Refuse Non-local: Allow only authoritative local-data queries from hosts within the netblock defined below. Sends a DNS rcode REFUSED error message back to the client for messages that are disallowed.")?>
                     </div>
                   </td>
                 </tr>
