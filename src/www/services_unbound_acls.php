@@ -1,31 +1,31 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2011 Warren Baker <warren@decoy.co.za>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2011 Warren Baker <warren@decoy.co.za>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("system.inc");
@@ -33,7 +33,6 @@ require_once("services.inc");
 require_once("interfaces.inc");
 
 $a_acls = &config_read_array('unbound', 'acls');
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && !empty($a_acls[$_GET['id']])) {
@@ -73,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
             mark_subsystem_dirty('unbound');
         }
+        header(url_safe('Location: /services_unbound_acls.php'));
         exit;
     } else {
         // transform networks into row items
@@ -201,7 +201,7 @@ if (!isset($_GET['act'])) {
           <div class="tab-content content-box col-xs-12 __mb">
             <form method="post" name="iform" id="iform">
 <?php
-              if($act=="new" || $act=="edit"): ?>
+              if ($act=="new" || $act=="edit"): ?>
               <input name="id" type="hidden" value="<?=$id;?>" />
               <input name="act" type="hidden" value="<?=$act;?>" />
               <table class="table table-striped opnsense_standard_table_form">
@@ -267,7 +267,7 @@ if (!isset($_GET['act'])) {
                       } else {
                           $acl_networks = $pconfig['row'];
                       }
-                      foreach($acl_networks as $item_idx => $item):?>
+                      foreach ($acl_networks as $item_idx => $item):?>
                         <tr>
                           <td>
                             <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
@@ -345,7 +345,7 @@ if (!isset($_GET['act'])) {
                       $active_interfaces = get_configured_interface_with_descr();
                   }
                   $automatic_allowed = array();
-                  foreach($active_interfaces as $ubif => $ifdesc) {
+                  foreach ($active_interfaces as $ubif => $ifdesc) {
                       $ifip = get_interface_ip($ubif);
                       if (!empty($ifip)) {
                           $subnet_bits = get_interface_subnet($ubif);
@@ -389,7 +389,7 @@ if (!isset($_GET['act'])) {
                 <tbody>
 <?php
                   $i = 0;
-                  foreach($a_acls as $acl):?>
+                  foreach ($a_acls as $acl):?>
                   <tr>
                     <td>
                       <?=htmlspecialchars($acl['aclname']);?>
