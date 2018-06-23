@@ -107,6 +107,12 @@ class ControllerRoot extends Controller
      */
     public function doAuth()
     {
+        $cnf = Config::getInstance()->object();
+        if (!empty($cnf->system->webgui->session_timeout)) {
+            $session_timeout = $cnf->system->webgui->session_timeout * 60;
+        } else {
+            $session_timeout = 14400;
+        }
         $redirect_uri = "/?url=".$_SERVER['REQUEST_URI'];
         if ($this->session->has("Username") == false) {
             // user unknown
@@ -115,10 +121,9 @@ class ControllerRoot extends Controller
             $this->setLang();
             return false;
         } elseif ($this->session->has("last_access")
-            && $this->session->get("last_access") < (time() - 14400)) {
-            // session expired (todo, use config timeout)
+            && $this->session->get("last_access") < (time() - $session_timeout)) {
+            // session expired / cleanup session data
             $this->getLogger()->error("session expired");
-            // cleanup session data
             $this->session->remove("Username");
             $this->session->remove("last_access");
             $this->response->redirect($redirect_uri, true);
