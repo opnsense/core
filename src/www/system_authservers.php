@@ -259,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                   unset($server['radius_acct_port']);
               }
           } elseif ($server['type'] == 'local') {
-              foreach (array('session_timeout', 'password_policy_duration', 'enable_password_policy_constraints',
+              foreach (array('password_policy_duration', 'enable_password_policy_constraints',
                   'password_policy_complexity', 'password_policy_length') as $fieldname) {
                   if (!empty($pconfig[$fieldname])) {
                       $config['system']['webgui'][$fieldname] = $pconfig[$fieldname];
