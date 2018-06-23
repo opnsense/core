@@ -661,37 +661,37 @@ function unbound_add_host_entries()
     file_put_contents('/var/unbound/host_entries.conf', $unbound_entries);
 }
 
-function unbound_acls_config()
+function unbound_acls_subnets()
 {
     global $config;
 
-    $aclcfg = "access-control: 127.0.0.1/32 allow\n";
-    $aclcfg .= "access-control: ::1 allow\n";
-    // Add our networks for active interfaces including localhost
     if (!empty($config['unbound']['active_interface'])) {
         $active_interfaces = array_flip(explode(",", $config['unbound']['active_interface']));
     } else {
         $active_interfaces = get_configured_interface_with_descr();
     }
 
-    $bindints = "";
+    /* add our networks for active interfaces including localhost */
+    $subnets = array('127.0.0.1/8', '::1/64');
+
     foreach ($active_interfaces as $ubif => $ifdesc) {
-        $ifip = get_interface_ip($ubif);
-        if (!empty($ifip)) {
-            $subnet_bits = get_interface_subnet($ubif);
-            $subnet_ip = gen_subnet($ifip, $subnet_bits);
-            if (!empty($subnet_bits) && !empty($subnet_ip)) {
-                $aclcfg .= "access-control: {$subnet_ip}/{$subnet_bits} allow\n";
-            }
+        foreach (legacy_getall_interface_addresses(get_real_interface($ubif)) as $subnet) {
+            $subnets[] = $subnet;
         }
-        $ifip = get_interface_ipv6($ubif);
-        if (!empty($ifip)) {
-            $subnet_bits = get_interface_subnetv6($ubif);
-            $subnet_ip = gen_subnetv6($ifip, $subnet_bits);
-            if (!empty($subnet_bits) && !empty($subnet_ip)) {
-                $aclcfg .= "access-control: {$subnet_ip}/{$subnet_bits} allow\n";
-            }
-        }
+    }
+
+    return $subnets;
+}
+
+function unbound_acls_config()
+{
+    global $config;
+
+    $subnets = unbound_acls_subnets();
+    $aclcfg = '';
+
+    foreach ($subnets as $subnet) {
+        $aclcfg .= "access-control: {$subnet} allow\n";
     }
 
     // Configure the custom ACLs
@@ -711,7 +711,6 @@ function unbound_acls_config()
         }
     }
 
-    // Write out Access list
     file_put_contents('/var/unbound/access_lists.conf', $aclcfg);
 }
 

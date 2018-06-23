@@ -31,6 +31,7 @@ require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/unbound.inc");
 
 $a_acls = &config_read_array('unbound', 'acls');
 
@@ -336,49 +337,19 @@ if (!isset($_GET['act'])) {
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th colspan="3"><?=gettext("From General settings");?></th>
-                  </tr>
-                  <tr>
                     <th><?=gettext("Access List Name"); ?></th>
                     <th><?=gettext("Action"); ?></th>
                     <th><?=gettext("Network"); ?></th>
                   </tr>
                 </thead>
                 <body>
-<?php
-                  // collect networks where automatic rules will be created for
-                  if (!empty($config['unbound']['active_interface'])) {
-                      $active_interfaces = array_flip(explode(",", $config['unbound']['active_interface']));
-                  } else {
-                      $active_interfaces = get_configured_interface_with_descr();
-                  }
-                  $automatic_allowed = array();
-                  foreach ($active_interfaces as $ubif => $ifdesc) {
-                      $ifip = get_interface_ip($ubif);
-                      if (!empty($ifip)) {
-                          $subnet_bits = get_interface_subnet($ubif);
-                          $subnet_ip = gen_subnet($ifip, $subnet_bits);
-                          if (!empty($subnet_bits) && !empty($subnet_ip)) {
-                              $automatic_allowed[] = "{$subnet_ip}/{$subnet_bits}";
-                          }
-                      }
-                      $ifip = get_interface_ipv6($ubif);
-                      if (!empty($ifip)) {
-                          $subnet_bits = get_interface_subnetv6($ubif);
-                          $subnet_ip = gen_subnetv6($ifip, $subnet_bits);
-                          if (!empty($subnet_bits) && !empty($subnet_ip)) {
-                              $automatic_allowed[] = "{$subnet_ip}/{$subnet_bits}";
-                          }
-                      }
-                  }
-                  foreach ($automatic_allowed as $network):?>
+<?php foreach (unbound_acls_subnets() as $subnet): ?>
                   <tr>
-                    <td><?=gettext("Internal");?></td>
-                    <td><?=gettext("allow");?></td>
-                    <td><?=$network;?></td>
+                    <td><?= gettext('Internal') ?></td>
+                    <td><?= gettext('Allow') ?></td>
+                    <td><?= $subnet ?></td>
                   </tr>
-<?php
-                  endforeach;?>
+<?php endforeach ?>
                 </tbody>
               </table>
             </div>
