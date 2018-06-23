@@ -1871,27 +1871,29 @@ include("head.inc");
                                     <td colspan="2"><b><?=gettext("Add new gateway"); ?></b></td>
                                   </tr>
                                   <tr>
-                                    <td><?=gettext("Default gateway:"); ?></td>
-                                    <td><input type="checkbox" id="defaultgw" name="defaultgw" <?=strtolower($if) == "wan" ? "checked=\"checked\"" : "";?> /></td>
+                                    <td><?= gettext('Default gateway') ?></td>
+                                    <td><input type="checkbox" id="defaultgw" name="defaultgw" <?= strtolower($if) == 'wan' ? 'checked="checked"' : '' ?> /></td>
+                                  </tr>
+                                    <td><?= gettext('Multi-WAN gateway') ?></td>
+                                    <td><input type="checkbox" id="multiwangw" name="multiwangw" /></td>
+                                  <tr>
+                                    <td><?= gettext('Gateway Name') ?></td>
+                                    <td><input type="text" id="name" name="name" value="<?= html_safe($pconfig['descr'] . 'GW') ?>" /></td>
                                   </tr>
                                   <tr>
-                                    <td><?=gettext("Gateway Name:"); ?></td>
-                                    <td><input type="text" id="name" name="name" value="<?=$pconfig['descr'] . "GW"?>" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?=gettext("Gateway IPv4:"); ?></td>
+                                    <td><?= gettext('Gateway IPv4') ?></td>
                                     <td><input type="text" id="gatewayip" name="gatewayip" /></td>
                                   </tr>
                                   <tr>
-                                    <td><?=gettext("Description:"); ?></td>
+                                    <td><?= gettext('Description') ?></td>
                                     <td><input type="text" id="gatewaydescr" name="gatewaydescr" /></td>
                                   </tr>
                                   <tr>
                                     <td></td>
                                     <td>
                                       <div id='savebuttondiv'>
-                                        <input class="btn btn-primary" id="gwsave" type="button" value="<?=gettext("Save Gateway"); ?>" />
-                                        <input class="btn btn-default" id="gwcancel" type="button" value="<?=gettext("Cancel"); ?>" />
+                                        <input class="btn btn-primary" id="gwsave" type="button" value="<?= gettext('Save') ?>" />
+                                        <input class="btn btn-default" id="gwcancel" type="button" value="<?=gettext('Cancel') ?>" />
                                       </div>
                                     </td>
                                   </tr>
@@ -1899,9 +1901,9 @@ include("head.inc");
                               </table>
                             </div>
                             <div class="hidden" data-for="help_for_gateway">
-                              <?=gettext("If this interface is an Internet connection, select an existing Gateway from the list or add a new one using the link above."); ?><br />
-                              <?=gettext("On local LANs the upstream gateway should be \"none\"."); ?>
-                              <p><?= sprintf(gettext("You can manage Gateways %shere%s."),'<a target="_blank" href="system_gateways.php">','</a>') ?></p>
+                              <?= gettext('If this interface is a muti-WAN interface, select an existing gateway from the list ' .
+                                          'or add a new one using the link above. For single WAN interfaces a gateway must be ' .
+                                          'created but left unsassigned here. For a LAN the upstream gateway should be "none".') ?>
                             </div>
                           </td>
                         </tr>
