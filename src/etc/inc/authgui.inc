@@ -140,7 +140,7 @@ function session_auth(&$Login_Error)
     }
 
     /* If session timeout isn't set, we don't mark sessions stale */
-    if (!isset($config['system']['webgui']['session_timeout'])) {
+    if (empty($config['system']['webgui']['session_timeout'])) {
         /* Default to 4 hour timeout if one is not set */
         if ($_SESSION['last_access'] < (time() - 14400)) {
             $_GET['logout'] = true;
@@ -148,8 +148,6 @@ function session_auth(&$Login_Error)
         } else {
             $_SESSION['last_access'] = time();
         }
-    } else if (intval($config['system']['webgui']['session_timeout']) == 0) {
-          $_SESSION['last_access'] = time();
     } else {
         /* Check for stale session */
         if ($_SESSION['last_access'] < (time() - ($config['system']['webgui']['session_timeout'] * 60))) {
