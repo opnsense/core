@@ -94,7 +94,7 @@ legacy_html_escape_form_data($a_npt);
 include("head.inc");
 
 $main_buttons = array(
-  array('label'=>gettext('Add rule'), 'href'=>'firewall_nat_npt_edit.php'),
+    array('label' => gettext('Add'), 'href' => 'firewall_nat_npt_edit.php?after=-1'),
 );
 
 ?>
@@ -234,50 +234,36 @@ $main_buttons = array(
                           <?=$natent['descr'];?>
                       </td>
                       <td>
-                        <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-arrow-left"></span>
+                        <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('move selected rules before this rule')) ?>" class="act_move btn btn-default btn-xs">
+                          <span class="fa fa-arrow-left fa-fw"></span>
                         </a>
-                        <a href="firewall_nat_npt_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-pencil"></span>
+                        <a href="firewall_nat_npt_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
+                          <span class="fa fa-pencil fa-fw"></span>
                         </a>
-                        <a id="del_<?=$i;?>" title="<?=gettext("delete rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                          <span class="fa fa-trash text-muted"></span>
+                        <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                          <span class="fa fa-trash fa-fw"></span>
                         </a>
-                        <a href="firewall_nat_npt_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone rule");?>">
-                          <span class="fa fa-clone text-muted"></span>
+                        <a href="firewall_nat_npt_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Clone')) ?>">
+                          <span class="fa fa-clone fa-fw"></span>
                         </a>
                       </td>
                     </tr>
                     <?php $i++; endforeach; ?>
+<?php if ($i != 0): ?>
                     <tr>
                         <td colspan="7"> </td>
                         <td>
-<?php               if ($i == 0): ?>
-                        <span class="btn btn-default btn-xs text-muted">
-                          <span class="glyphicon glyphicon-arrow-left"></span>
-                        </span>
-<?php               else: ?>
-                        <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules to end");?>" class="act_move btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-arrow-left"></span>
+                        <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('move selected rules to end')) ?>" class="act_move btn btn-default btn-xs">
+                          <span class="fa fa-arrow-left fa-fw"></span>
                         </a>
-<?php                   endif; ?>
-<?php                   if (count($a_npt) == 0): ?>
-                      <span class="btn btn-default btn-xs text-muted"  data-toggle="tooltip" title="<?=gettext("delete selected rules");?>"><span class="fa fa-trash text-muted" ></span></span>
-<?php                   else: ?>
-                        <a id="del_x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                          <span class="fa fa-trash text-muted"></span>
+                        <a id="del_x" title="<?= html_safe(gettext('Delete selected')) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                          <span class="fa fa-trash fa-fw"></span>
                         </a>
-<?php                   endif; ?>
-                        <a href="firewall_nat_npt_edit.php?after=-1" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("add new rule");?>">
-                          <span class="glyphicon glyphicon-plus"></span>
-                        </a>
-                        </td>
+                      </td>
                     </tr>
+<?php endif ?>
                   </tbody>
                   <tfoot>
-                    <tr>
-                      <td colspan="8">&nbsp;</td>
-                    </tr>
                     <tr>
                       <td><span class="fa fa-play text-success"></span></td>
                       <td colspan="7"><?=gettext("Enabled rule"); ?></td>

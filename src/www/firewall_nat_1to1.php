@@ -279,34 +279,21 @@ $main_buttons = array(
                   $i++;
                 endforeach;
 ?>
+<?php if ($i != 0): ?>
                   <tr>
                     <td colspan="7"></td>
                     <td>
-<?php if ($i == 0): ?>
-                      <span title="<?= html_safe(gettext('move selected rules to end')) ?>" data-toggle="tooltip" class="btn btn-default btn-xs">
-                        <i class="fa fa-arrow-left fa-fw"></i>
-                      </span>
-<?php else: ?>
                       <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('move selected rules to end')) ?>" class="act_move btn btn-default btn-xs">
                         <i class="fa fa-arrow-left fa-fw"></i>
                       </a>
-<?php endif ?>
-<?php if ($i == 0): ?>
-                      <span title="<?= html_safe(gettext('Delete selected')) ?>" data-toggle="tooltip" class="btn btn-default btn-xs">
-                        <i class="fa fa-trash fa-fw"></i>
-                      </span>
-<?php else: ?>
                       <a id="del_x" title="<?= html_safe(gettext('Delete selected')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs">
                         <i class="fa fa-trash fa-fw"></i>
                       </a>
-<?php endif ?>
                     </td>
                   </tr>
+<?php endif ?>
                 </tbody>
                 <tfoot>
-                  <tr>
-                    <td colspan="9">&nbsp;</td>
-                  </tr>
                   <tr>
                     <td style="width:16px"><span class="fa fa-play text-success"></span></td>
                     <td colspan="8"><?=gettext("Enabled rule"); ?></td>
