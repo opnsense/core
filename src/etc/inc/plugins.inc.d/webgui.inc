@@ -143,9 +143,6 @@ function webgui_configure_do($verbose = false, $interface = '')
         return;
     }
 
-    /* only stop the frontend when the generation was successful */
-    killbypid('/var/run/lighty-webConfigurator.pid', 'TERM', true);
-
     /* flush Phalcon volt templates */
     foreach (glob('/usr/local/opnsense/mvc/app/cache/*.php') as $filename) {
         unlink($filename);
@@ -153,6 +150,20 @@ function webgui_configure_do($verbose = false, $interface = '')
 
     /* regenerate the php.ini files in case the setup has changed */
     configd_run('template reload OPNsense/WebGui');
+
+    if (trim(configd_run('firmware plugin nginx')) == '1' || trim(configd_run('firmware plugin nginx-devel')) == '1')
+    {
+        // in case the nginx plugin is installed, it will handle the request instead of the default server.
+        configd_run('template reload OPNsense/Nginx');
+        configd_run('nginx restart');
+        if ($verbose) {
+            echo "done.\n";
+        }
+        return;
+    }
+
+    /* only stop the frontend when the generation was successful */
+    killbypid('/var/run/lighty-webConfigurator.pid', 'TERM', true);
 
     /*
      * Force reloading all php-cgi children to
