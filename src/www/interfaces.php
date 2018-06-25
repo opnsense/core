@@ -1888,7 +1888,7 @@ include("head.inc");
                                   </tr>
                                   <tr>
                                     <td><?= gettext('Gateway Name') ?></td>
-                                    <td><input type="text" id="name" name="name" value="<?= html_safe($pconfig['descr'] . 'GW') ?>" /></td>
+                                    <td><input type="text" id="name" name="name" value="<?= html_safe((empty($pconfig['descr']) ? strtoupper($if) : $pconfig['descr']) . '_GWv4') ?>" /></td>
                                   </tr>
                                   <tr>
                                     <td><?= gettext('Gateway IPv4') ?></td>
@@ -1902,8 +1902,8 @@ include("head.inc");
                                     <td></td>
                                     <td>
                                       <div id='savebuttondiv'>
-                                        <input class="btn btn-primary" id="gwsave" type="button" value="<?= gettext('Save') ?>" />
-                                        <input class="btn btn-default" id="gwcancel" type="button" value="<?=gettext('Cancel') ?>" />
+                                        <input class="btn btn-primary" id="gwsave" type="button" value="<?= html_safe(gettext('Save')) ?>" />
+                                        <input class="btn btn-default" id="gwcancel" type="button" value="<?= html_safe(gettext('Cancel')) ?>" />
                                       </div>
                                     </td>
                                   </tr>
@@ -2390,23 +2390,16 @@ include("head.inc");
                               endif;?>
                             </select>
                             <button type="button" class="btn btn-sm" id="btn_show_add_gatewayv6" title="<?= html_safe(gettext('Add')) ?>" data-toggle="tooltip"><i class="fa fa-plus fa-fw"></i></button>
-                            <div class="hidden" data-for="help_for_gatewayv6">
-                              <?= gettext('If this interface is a muti-WAN interface, select an existing gateway from the list ' .
-                                          'or add a new one using the button above. For single WAN interfaces a gateway must be ' .
-                                          'created but set to auto-detect. For a LAN a gateway is not necessary to be set up.') ?>
-                            </div>
                             <div class="hidden" id="addgatewayv6">
                               <br/>
                               <table class="table table-striped table-condensed">
-                                <thead>
-                                  <tr>
-                                    <th colspan="2"><?=gettext("Add new gateway"); ?></th>
-                                  </tr>
-                                </thead>
                                 <tbody>
                                   <tr>
-                                    <td><?=gettext("Default gateway"); ?></td>
-                                    <td><input type="checkbox" id="defaultgwv6" name="defaultgwv6" <?=strtolower($id) == "wan" ?  "checked=\"checked\"" : "";?> /></td>
+                                    <td colspan="2"><b><?=gettext("Add new gateway"); ?></b></td>
+                                  </tr>
+                                  <tr>
+                                    <td><?= gettext("Default gateway"); ?></td>
+                                    <td><input type="checkbox" id="defaultgwv6" name="defaultgwv6" <?= strtolower($if) == 'wan' ?  'checked="checked"' : '' ?> /></td>
                                   </tr>
                                   <tr>
                                     <td><?= gettext('Multi-WAN gateway') ?></td>
@@ -2414,7 +2407,7 @@ include("head.inc");
                                   </tr>
                                   <tr>
                                     <td><?=gettext("Gateway Name"); ?></td>
-                                    <td><input id="namev6" type="text" name="namev6" value="<?=$pconfig['descr'] . "GWv6"?>" /></td>
+                                    <td><input id="namev6" type="text" name="namev6" value="<?= html_safe((empty($pconfig['descr']) ? strtoupper($if) : $pconfig['descr']) . '_GWv6') ?>" /></td>
                                   </tr>
                                   <tr>
                                     <td><?=gettext("Gateway IPv6"); ?></td>
@@ -2427,12 +2420,17 @@ include("head.inc");
                                   <tr>
                                     <td></td>
                                     <td>
-                                      <input class="btn btn-primary" id="gwsavev6" type="button" value="<?=gettext("Save Gateway"); ?>" />
-                                      <input class="btn btn-default" id="gwcancelv6" type="button" value="<?=gettext("Cancel"); ?>" />
+                                      <input class="btn btn-primary" id="gwsavev6" type="button" value="<?= html_safe(gettext('Save')) ?>" />
+                                      <input class="btn btn-default" id="gwcancelv6" type="button" value="<?= html_safe(gettext('Cancel')) ?>" />
                                     </td>
                                   </tr>
                                 </tbody>
                               </table>
+                            </div>
+                            <div class="hidden" data-for="help_for_gatewayv6">
+                              <?= gettext('If this interface is a muti-WAN interface, select an existing gateway from the list ' .
+                                          'or add a new one using the button above. For single WAN interfaces a gateway must be ' .
+                                          'created but set to auto-detect. For a LAN a gateway is not necessary to be set up.') ?>
                             </div>
                           </td>
                         </tr>
