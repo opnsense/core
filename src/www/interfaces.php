@@ -1398,6 +1398,7 @@ include("head.inc");
           var name = $('#name').val();
           var descr = $('#gatewaydescr').val();
           var gatewayip = $('#gatewayip').val();
+          var ajaxhelper = "&ajaxip=" + escape($('#ipaddrv6').val()) + "&ajaxnet=" + escape($('#subnetv6').val());
           var defaultgw = "";
           if ($("#defaultgw").prop('checked')) {
               defaultgw = "&defaultgw=on";
@@ -1408,7 +1409,7 @@ include("head.inc");
           }
           jQuery.ajax( "system_gateways_edit.php", {
             type: 'post',
-            data: 'isAjax=true&ipprotocol=inet' + defaultgw + fargw + '&interface=' + escape(iface) + '&name=' + escape(name) + '&descr=' + escape(descr) + '&gateway=' + escape(gatewayip),
+            data: 'isAjax=true&ipprotocol=inet' + defaultgw + fargw + ajaxhelper + '&interface=' + escape(iface) + '&name=' + escape(name) + '&descr=' + escape(descr) + '&gateway=' + escape(gatewayip),
             error: function(request, textStatus, errorThrown){
                 if (textStatus === "error" && request.getResponseHeader("Content-Type").indexOf("text/plain") === 0) {
                     alert(request.responseText);
@@ -1439,13 +1440,14 @@ include("head.inc");
           var name = $('#namev6').val();
           var descr = $('#gatewaydescrv6').val();
           var gatewayip = $('#gatewayipv6').val();
+          var ajaxhelper = "&ajaxip=" + escape($('#ipaddrv6').val()) + "&ajaxnet=" + escape($('#subnetv6').val());
           var defaultgw = "";
           if ($("#defaultgwv6").prop('checked')) {
               defaultgw = "&defaultgw=on";
           }
           jQuery.ajax( "system_gateways_edit.php", {
             type: 'post',
-            data: 'isAjax=true&ipprotocol=inet6' + defaultgw + '&interface=' + escape(iface) + '&name=' + escape(name) + '&descr=' + escape(descr) + '&gateway=' + escape(gatewayip),
+            data: 'isAjax=true&ipprotocol=inet6' + defaultgw + ajaxhelper + '&interface=' + escape(iface) + '&name=' + escape(name) + '&descr=' + escape(descr) + '&gateway=' + escape(gatewayip),
             error: function(request, textStatus, errorThrown){
                 if (textStatus === "error" && request.getResponseHeader("Content-Type").indexOf("text/plain") === 0) {
                     alert(request.responseText);
@@ -1843,7 +1845,7 @@ include("head.inc");
                                   <input name="ipaddr" type="text" id="ipaddr" value="<?=$pconfig['ipaddr'];?>" />
                                 </td>
                                 <td>
-                                  <select name="subnet" class="selectpicker" data-style="btn-default" data-width="auto" data-size="10" data-id="subnet">
+                                  <select id="subnet" name="subnet" class="selectpicker" data-style="btn-default" data-width="auto" data-size="10" data-id="subnet">
 
 <?php
                                     for ($i = 32; $i > 0; $i--):?>
@@ -2367,7 +2369,7 @@ include("head.inc");
                                   <input name="ipaddrv6" type="text" id="ipaddrv6" size="28" value="<?=htmlspecialchars($pconfig['ipaddrv6']);?>" />
                                 </td>
                                 <td>
-                                  <select name="subnetv6" class="selectpicker" data-style="btn-default" data-width="auto" data-size="10" data-id="subnetv6">
+                                  <select id="subnetv6" name="subnetv6" class="selectpicker" data-style="btn-default" data-width="auto" data-size="10" data-id="subnetv6">
 <?php
                                     for ($i = 128; $i > 0; $i--): ?>
                                       <option value="<?=$i;?>" <?=$i == $pconfig['subnetv6'] ? "selected=\"selected\"" : "";?>><?=$i;?></option>

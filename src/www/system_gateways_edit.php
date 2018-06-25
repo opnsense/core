@@ -76,8 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($pconfig['gateway']) && is_ipaddr($pconfig['gateway'])) {
         if (is_ipaddrv4($pconfig['gateway'])) {
-            $parent_ip = get_interface_ip($pconfig['interface']);
-            $parent_sn = get_interface_subnet($pconfig['interface']);
+            $parent_ip = empty($pconfig['ajaxip']) ? get_interface_ip($pconfig['interface']) : $pconfig['ajaxip'];
+            $parent_sn = empty($pconfig['ajaxnet']) ? get_interface_subnet($pconfig['interface']) : $pconfig['ajaxip'];
             if (empty($parent_ip) || empty($parent_sn)) {
                 $input_errors[] = gettext("Cannot add IPv4 Gateway Address because no IPv4 address could be found on the interface.");
             } else {
