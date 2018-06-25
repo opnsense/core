@@ -1398,7 +1398,7 @@ include("head.inc");
           var name = $('#name').val();
           var descr = $('#gatewaydescr').val();
           var gatewayip = $('#gatewayip').val();
-          var ajaxhelper = "&ajaxip=" + escape($('#ipaddrv6').val()) + "&ajaxnet=" + escape($('#subnetv6').val());
+          var ajaxhelper = "&ajaxip=" + escape($('#ipaddr').val()) + "&ajaxnet=" + escape($('#subnet').val());
           var defaultgw = "";
           if ($("#defaultgw").prop('checked')) {
               defaultgw = "&defaultgw=on";
