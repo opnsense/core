@@ -55,7 +55,7 @@ function pf_cron()
 
     if (isset($config['filter']['rule'])) {
         foreach ($config['filter']['rule'] as $rule) {
-            if (!empty($rule['sched'])) {
+            if (empty($rule['disabled']) && !empty($rule['sched'])) {
                 $jobs[]['autocron'] = array('/usr/local/etc/rc.filter_configure', '1,16,31,46');
                 break;
             }
