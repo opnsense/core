@@ -107,8 +107,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (is_ipaddrv6($pconfig['gateway'])) {
             /* do not do a subnet match on a link local address, it's valid */
             if (!is_linklocal($pconfig['gateway'])) {
-                $parent_ip = get_interface_ipv6($pconfig['interface']);
-                $parent_sn = get_interface_subnetv6($pconfig['interface']);
+                $parent_ip = empty($pconfig['ajaxip']) ? get_interface_ipv6($pconfig['interface']) : $pconfig['ajaxip'];
+                $parent_sn = empty($pconfig['ajaxnet']) ? get_interface_subnetv6($pconfig['interface']) : $pconfig['ajaxnet'];
                 if (empty($parent_ip) || empty($parent_sn)) {
                     $input_errors[] = gettext("Cannot add IPv6 Gateway Address because no IPv6 address could be found on the interface.");
                 } else {
