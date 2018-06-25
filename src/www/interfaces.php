@@ -1451,7 +1451,11 @@ include("head.inc");
                 }
             },
             success: function(response) {
-                $('#gatewayv6').append($("<option selected=selected></option>").attr("value",name).text(escape(name) + " - " + gatewayip));
+                var selected = "selected=selected";
+                if (!$("#multiwangwv6").prop('checked')) {
+                    selected = "";
+                }
+                $('#gatewayv6').append($("<option " + selected + "></option>").attr("value",name).text(escape(name) + " - " + gatewayip));
                 $('#gatewayv6').selectpicker('refresh');
             }
           });
@@ -1878,8 +1882,10 @@ include("head.inc");
                                     <td><?= gettext('Default gateway') ?></td>
                                     <td><input type="checkbox" id="defaultgw" name="defaultgw" <?= strtolower($if) == 'wan' ? 'checked="checked"' : '' ?> /></td>
                                   </tr>
+                                  <tr>
                                     <td><?= gettext('Multi-WAN gateway') ?></td>
                                     <td><input type="checkbox" id="multiwangw" name="multiwangw" /></td>
+                                  </tr>
                                   <tr>
                                     <td><?= gettext('Gateway Name') ?></td>
                                     <td><input type="text" id="name" name="name" value="<?= html_safe($pconfig['descr'] . 'GW') ?>" /></td>
@@ -2378,11 +2384,11 @@ include("head.inc");
                           <td><a id="help_for_gatewayv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Upstream Gateway"); ?></td>
                           <td>
                             <select name="gatewayv6" class="selectpicker" data-size="10" data-style="btn-default" id="gatewayv6">
-                              <option value="none" selected="selected"><?=gettext("None"); ?></option>
+                              <option value="none"><?= gettext('Automatic') ?></option>
 <?php
                               if (!empty($config['gateways']['gateway_item'])):
                                 foreach ($config['gateways']['gateway_item'] as $gateway):
-                                  if ($gateway['interface'] == $if  && is_ipaddrv6($gateway['gateway'])):
+                                  if ($gateway['interface'] == $if && is_ipaddrv6($gateway['gateway'])):
 ?>
                                   <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gatewayv6'] ? "selected=\"selected\"" : ""; ?>>
                                     <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
@@ -2408,19 +2414,23 @@ include("head.inc");
                                 </thead>
                                 <tbody>
                                   <tr>
-                                    <td><?=gettext("Default v6 gateway:"); ?></td>
+                                    <td><?=gettext("Default gateway"); ?></td>
                                     <td><input type="checkbox" id="defaultgwv6" name="defaultgwv6" <?=strtolower($id) == "wan" ?  "checked=\"checked\"" : "";?> /></td>
                                   </tr>
                                   <tr>
-                                    <td><?=gettext("Gateway Name IPv6:"); ?></td>
+                                    <td><?= gettext('Multi-WAN gateway') ?></td>
+                                    <td><input type="checkbox" id="multiwangwv6" name="multiwangwv6" /></td>
+                                  </tr>
+                                  <tr>
+                                    <td><?=gettext("Gateway Name"); ?></td>
                                     <td><input id="namev6" type="text" name="namev6" value="<?=$pconfig['descr'] . "GWv6"?>" /></td>
                                   </tr>
                                   <tr>
-                                    <td><?=gettext("Gateway IPv6:"); ?></td>
+                                    <td><?=gettext("Gateway IPv6"); ?></td>
                                     <td><input id="gatewayipv6" type="text" name="gatewayipv6" /></td>
                                   </tr>
                                   <tr>
-                                    <td><?=gettext("Description:"); ?></td>
+                                    <td><?=gettext("Description"); ?></td>
                                     <td><input id="gatewaydescrv6" type="text" name="gatewaydescrv6" /></td>
                                   </tr>
                                   <tr>
