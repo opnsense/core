@@ -124,6 +124,10 @@ if (isset($_GET['category'])) {
 
 include("head.inc");
 
+$main_buttons = array(
+    array('label' => gettext('Add'), 'href' => 'firewall_rules_edit.php?if=' . $selected_if),
+);
+
 ?>
 <body>
 <script>
@@ -329,7 +333,7 @@ $( document ).ready(function() {
 ?>
                   <tr>
                     <td>&nbsp;</td>
-                    <td><span class="glyphicon glyphicon-remove text-danger"></span></td>
+                    <td><span class="fa fa-times text-danger"></span></td>
                     <td>IPv6 *</td>
                     <td>*</td>
                     <td class="hidden-xs hidden-sm">*</td>
@@ -339,7 +343,7 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">&nbsp;</td>
                     <td><?=gettext("Block all IPv6 traffic");?></td>
                     <td>
-                      <a href="system_advanced_firewall.php" data-toggle="tooltip" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                      <a href="system_advanced_firewall.php" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
                     </td>
                   </tr>
 <?php
@@ -347,7 +351,7 @@ $( document ).ready(function() {
 <?php
                 if (!isset($config['system']['webgui']['noantilockout']) && ($selected_if == 'lan'
                         || ((count($config['interfaces']) == 1) && ($selected_if == 'wan')))):
-                        $alports = implode('<br />', filter_core_antilockout_ports());
+                        $alports = implode(', ', filter_core_antilockout_ports());
 ?>
                   <tr>
                     <td>&nbsp;</td>
@@ -361,7 +365,7 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">&nbsp;</td>
                     <td><?=gettext("Anti-Lockout Rule");?></td>
                     <td>
-                      <a href="system_advanced_firewall.php" data-toggle="tooltip" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                      <a href="system_advanced_firewall.php" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
                     </td>
                   </tr>
 <?php
@@ -371,12 +375,10 @@ $( document ).ready(function() {
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <span class="glyphicon glyphicon-remove text-danger"></span>
-<?php
-                      if (!isset($config['syslog']['nologprivatenets'])):?>
-                      <span class="glyphicon glyphicon-info-sign text-info"></span>
-<?php
-                      endif; ?>
+                      <i class="fa fa-times text-danger"></i>
+<?php if (!isset($config['syslog']['nologprivatenets'])): ?>
+                      <i class="fa fa-info-circle text-info"></i>
+<?php endif ?>
                     </td>
                     <td>*</td>
                     <td><?=gettext("RFC 1918 networks");?></td>
@@ -387,7 +389,7 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">&nbsp;</td>
                     <td class="hidden-xs hidden-sm"><?=gettext("Block private networks");?></td>
                     <td class="nowrap">
-                      <a href="interfaces.php?if=<?=$selected_if?>#rfc1918" data-toggle="tooltip" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                      <a href="interfaces.php?if=<?=$selected_if?>#rfc1918" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
                     </td>
                   </tr>
 <?php
@@ -396,12 +398,10 @@ $( document ).ready(function() {
                   <tr id="frrfc1918">
                     <td>&nbsp;</td>
                     <td>
-                      <span class="glyphicon glyphicon-remove text-danger"></span>
-<?php
-                      if (!isset($config['syslog']['nologbogons'])):?>
-                      <span class="glyphicon glyphicon-info-sign text-info"></span>
-<?php
-                      endif; ?>
+                      <i class="fa fa-times text-danger"></i>
+<?php if (!isset($config['syslog']['nologbogons'])): ?>
+                      <i class="fa fa-info-circle text-info"></i>
+<?php endif ?>
                     </td>
                     <td>*</td>
                     <td><?=gettext("Reserved/not assigned by IANA");?></td>
@@ -412,7 +412,7 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">&nbsp;</td>
                     <td><?=gettext("Block bogon networks");?></td>
                     <td>
-                      <a href="interfaces.php?if=<?=$selected_if?>#rfc1918" data-toggle="tooltip" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                      <a href="interfaces.php?if=<?=$selected_if?>#rfc1918" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
                     </td>
                   </tr>
 <?php
@@ -434,17 +434,13 @@ $( document ).ready(function() {
 
                   // select icon
                   if ($filterent['type'] == "block" && empty($filterent['disabled'])) {
-                      $iconfn = "glyphicon glyphicon-remove text-danger";
+                      $iconfn = "fa fa-times text-danger";
                   } elseif ($filterent['type'] == "block" && !empty($filterent['disabled'])) {
-                      $iconfn = "glyphicon glyphicon-remove text-muted";
+                      $iconfn = "fa fa-times text-muted";
                   }  elseif ($filterent['type'] == "reject" && empty($filterent['disabled'])) {
-                      $iconfn = "glyphicon glyphicon-remove-sign text-danger";
+                      $iconfn = "fa fa-times-circle text-danger";
                   }  elseif ($filterent['type'] == "reject" && !empty($filterent['disabled'])) {
-                      $iconfn = "glyphicon glyphicon-remove-sign text-muted";
-                  } else if ($filterent['type'] == "match" && empty($filterent['disabled'])) {
-                      $iconfn = "glyphicon glyphicon-ok text-info";
-                  } else if ($filterent['type'] == "match" && !empty($filterent['disabled'])) {
-                      $iconfn = "glyphicon glyphicon-ok text-muted";
+                      $iconfn = "f afa-times-circle text-muted";
                   } elseif (empty($filterent['disabled'])) {
                       $iconfn = "fa fa-play text-success";
                   } else {
@@ -491,7 +487,7 @@ $( document ).ready(function() {
                         <i class="fa fa-flash text-muted" data-toggle="tooltip" title="<?= gettext('last match') ?>"></i>
 <?php                 endif; ?>
 <?php                 if (isset($filterent['log'])):?>
-                      <span class="glyphicon glyphicon-info-sign <?=!empty($filterent['disabled']) ? 'text-muted' : 'text-info' ?>"></span>
+                      <i class="fa fa-info-circle <?=!empty($filterent['disabled']) ? 'text-muted' : 'text-info' ?>"></i>
 <?php                 endif; ?>
                     </td>
 
@@ -614,8 +610,8 @@ $( document ).ready(function() {
                           <?=htmlspecialchars($filterent['sched']);?>&nbsp;
                         </span>
                         <a href="/firewall_schedule_edit.php?name=<?=htmlspecialchars($filterent['sched']);?>"
-                            title="<?=gettext("edit schedule");?>" data-toggle="tooltip">
-                          <i class="glyphicon glyphicon-calendar"></i>
+                            title="<?= html_safe(gettext('Edit')) ?>" data-toggle="tooltip">
+                          <i class="fa fa-calendar"></i>
                         </a>
 <?php
                        endif;?>
@@ -627,26 +623,26 @@ $( document ).ready(function() {
                       </div>
                     </td>
                     <td>
-                      <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-arrow-left"></span>
+                      <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs">
+                        <i class="fa fa-arrow-left fa-fw"></i>
                       </a>
 <?php
                       // not very nice.... associated NAT rules don't have a type...
                       // if for some reason (broken config) a rule is in there which doesn't have a related nat rule
                       // make sure we are able to delete it.
                       if (isset($filterent['type'])):?>
-                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("Edit rule");?>" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-pencil"></span>
+                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
+                        <i class="fa fa-pencil fa-fw"></i>
                       </a>
 <?php
                       endif;?>
-                      <a id="del_<?=$i;?>" title="<?=gettext("Delete rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                        <span class="fa fa-trash text-muted"></span>
+                      <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                        <i class="fa fa-trash fa-fw"></i>
                       </a>
 <?php
                       if (isset($filterent['type'])):?>
-                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Clone rule");?>">
-                        <span class="fa fa-clone text-muted"></span>
+                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Clone')) ?>">
+                        <i class="fa fa-clone fa-fw"></i>
                       </a>
 <?php
                       endif;?>
@@ -676,22 +672,16 @@ $( document ).ready(function() {
                     <td colspan="5"></td>
                     <td colspan="5" class="hidden-xs hidden-sm"></td>
                     <td>
-                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("Move selected rules to end");?>" class="act_move btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-arrow-left"></span>
+                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('Move selected rules to end')) ?>" class="act_move btn btn-default btn-xs">
+                        <i class="fa fa-arrow-left fa-fw"></i>
                       </a>
-                      <a id="del_x" title="<?=gettext("Delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                        <span class="fa fa-trash text-muted"></span>
-                      </a>
-                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Add new rule");?>">
-                        <span class="glyphicon glyphicon-plus"></span>
+                      <a id="del_x" title="<?= html_safe(gettext('Delete selected')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs">
+                        <i class="fa fa-trash fa-fw"></i>
                       </a>
                     </td>
                   </tr>
                 </tbody>
                 <tfoot>
-                  <tr>
-                    <td colspan="11">&nbsp;</td>
-                  </tr>
                   <tr class="hidden-xs hidden-sm">
                     <td colspan="11">
                       <table style="width:100%; border:0; cellspacing:0; cellpadding:0">
@@ -699,13 +689,13 @@ $( document ).ready(function() {
                           <td style="width:16px"><span class="fa fa-play text-success"></span></td>
                           <td style="width:100px"><?=gettext("pass");?></td>
                           <td style="width:14px"></td>
-                          <td style="width:16px"><span class="glyphicon glyphicon-remove text-danger"></span></td>
+                          <td style="width:16px"><span class="fa fa-times text-danger"></span></td>
                           <td style="width:100px"><?=gettext("block");?></td>
                           <td style="width:14px"></td>
-                          <td style="width:16px"><span class="glyphicon glyphicon-remove-sign text-danger"></span></td>
+                          <td style="width:16px"><span class="fa fa-times-circle text-danger"></span></td>
                           <td style="width:100px"><?=gettext("reject");?></td>
                           <td style="width:14px"></td>
-                          <td style="width:16px"><span class="glyphicon glyphicon-info-sign text-info"></span></td>
+                          <td style="width:16px"><span class="fa fa-info-circle text-info"></span></td>
                           <td style="width:100px"><?=gettext("log");?></td>
                           <td style="width:16px"><span class="fa fa-long-arrow-right text-info"></span></td>
                           <td style="width:100px"><?=gettext("in");?></td>
@@ -718,13 +708,13 @@ $( document ).ready(function() {
                           <td><span class="fa fa-play text-muted"></span></td>
                           <td class="nowrap"><?=gettext("pass (disabled)");?></td>
                           <td>&nbsp;</td>
-                          <td><span class="glyphicon glyphicon-remove text-muted"></span></td>
+                          <td><span class="fa fa-times text-muted"></span></td>
                           <td class="nowrap"><?=gettext("block (disabled)");?></td>
                           <td>&nbsp;</td>
-                          <td><span class="glyphicon glyphicon-remove-sign text-muted"></span></td>
+                          <td><span class="fa fa-times-circle text-muted"></span></td>
                           <td class="nowrap"><?=gettext("reject (disabled)");?></td>
                           <td>&nbsp;</td>
-                          <td style="width:16px"><span class="glyphicon glyphicon-info-sign text-muted"></span></td>
+                          <td style="width:16px"><span class="fa fa-info-circle text-muted"></span></td>
                           <td class="nowrap"><?=gettext("log (disabled)");?></td>
                           <td style="width:16px"><span class="fa fa-long-arrow-left"></span></td>
                           <td style="width:100px"><?=gettext("out");?></td>
@@ -741,7 +731,7 @@ $( document ).ready(function() {
                     <td colspan="10"><?=gettext("Alias (click to view/edit)");?></td>
                   </tr>
                   <tr class="hidden-xs hidden-sm">
-                    <td><a><span class="glyphicon glyphicon-calendar"> </span></a></td>
+                    <td><a><i><span class="fa fa-calendar"></i></a></td>
                     <td colspan="10"><?=gettext("Schedule (click to view/edit)");?></td>
                   </tr>
                   <tr class="hidden-xs hidden-sm">
