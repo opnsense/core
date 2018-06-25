@@ -464,7 +464,7 @@ function local_user_set(&$user, $force_password = false)
         $lock_account = 'unlock';
     } elseif ($user_uid == 0) {
         /*
-         * The root account should not be locked, as this will have
+         * The root account should not be locked as this will have
          * side-effects such as cron not working correctly.  Set
          * password to unreachable "*" instead.  Our auth framework
          * already checks for disabled elsewhere so we only need to
