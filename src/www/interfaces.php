@@ -2372,15 +2372,6 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
-                          <td><a id="help_for_staticv6usev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use IPv4 connectivity"); ?></td>
-                          <td>
-                            <input name="staticv6usev4iface" type="checkbox" id="staticv6usev4iface" value="yes" <?=!empty($pconfig['staticv6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
-                            <div class="hidden" data-for="help_for_staticv6usev4iface">
-                              <?= gettext('Set the IPv6 address on the IPv4 PPP connectivity link.') ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
                           <td><a id="help_for_gatewayv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Upstream Gateway"); ?></td>
                           <td>
                             <select name="gatewayv6" class="selectpicker" data-size="10" data-style="btn-default" id="gatewayv6">
@@ -2409,7 +2400,7 @@ include("head.inc");
                               <table class="table table-striped table-condensed">
                                 <thead>
                                   <tr>
-                                    <th colspan="2"><?=gettext("Add new v6 gateway:"); ?></th>
+                                    <th colspan="2"><?=gettext("Add new gateway"); ?></th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -2442,6 +2433,15 @@ include("head.inc");
                                   </tr>
                                 </tbody>
                               </table>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_staticv6usev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use IPv4 connectivity"); ?></td>
+                          <td>
+                            <input name="staticv6usev4iface" type="checkbox" id="staticv6usev4iface" value="yes" <?=!empty($pconfig['staticv6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
+                            <div class="hidden" data-for="help_for_staticv6usev4iface">
+                              <?= gettext('Set the IPv6 address on the IPv4 PPP connectivity link.') ?>
                             </div>
                           </td>
                         </tr>
