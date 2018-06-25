@@ -1856,7 +1856,7 @@ include("head.inc");
                           <td><a id="help_for_gateway" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('IPv4 Upstream Gateway') ?></td>
                           <td>
                             <select name="gateway" class="selectpicker" data-style="btn-default" data-size="10" id="gateway">
-                              <option value="none"><?= gettext('Automatic') ?></option>
+                              <option value="none"><?= gettext('Auto-detect') ?></option>
 <?php
                               if (!empty($config['gateways']['gateway_item'])):
                                 foreach ($config['gateways']['gateway_item'] as $gateway):
@@ -1913,7 +1913,7 @@ include("head.inc");
                             <div class="hidden" data-for="help_for_gateway">
                               <?= gettext('If this interface is a muti-WAN interface, select an existing gateway from the list ' .
                                           'or add a new one using the button above. For single WAN interfaces a gateway must be ' .
-                                          'created but left to use "automatic". For a LAN a gateway is not necessary to be set up.') ?>
+                                          'created but set to auto-detect. For a LAN a gateway is not necessary to be set up.') ?>
                             </div>
                           </td>
                         </tr>
@@ -2384,7 +2384,7 @@ include("head.inc");
                           <td><a id="help_for_gatewayv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Upstream Gateway"); ?></td>
                           <td>
                             <select name="gatewayv6" class="selectpicker" data-size="10" data-style="btn-default" id="gatewayv6">
-                              <option value="none"><?= gettext('Automatic') ?></option>
+                              <option value="none"><?= gettext('Auto-detect') ?></option>
 <?php
                               if (!empty($config['gateways']['gateway_item'])):
                                 foreach ($config['gateways']['gateway_item'] as $gateway):
@@ -2400,9 +2400,9 @@ include("head.inc");
                             </select>
                             <button type="button" class="btn btn-sm" id="btn_show_add_gatewayv6" title="<?= html_safe(gettext('Add')) ?>" data-toggle="tooltip"><i class="fa fa-plus fa-fw"></i></button>
                             <div class="hidden" data-for="help_for_gatewayv6">
-                              <?=gettext("If this interface is an Internet connection, select an existing Gateway from the list or add a new one using the link above."); ?><br />
-                              <?=gettext('On local LANs the upstream gateway should be "none".'); ?>
-                              <p><?= sprintf(gettext("You can manage Gateways %shere%s."),'<a target="_blank" href="system_gateways.php">','</a>') ?></p>
+                              <?= gettext('If this interface is a muti-WAN interface, select an existing gateway from the list ' .
+                                          'or add a new one using the button above. For single WAN interfaces a gateway must be ' .
+                                          'created but set to auto-detect. For a LAN a gateway is not necessary to be set up.') ?>
                             </div>
                             <div class="hidden" id="addgatewayv6">
                               <br/>
