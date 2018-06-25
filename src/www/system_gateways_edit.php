@@ -70,12 +70,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     /* skip system gateways which have been automatically added */
     if (!empty($pconfig['gateway']) && !is_ipaddr($pconfig['gateway']) &&
-        $pconfig['attribute'] !== "system" && $pconfig['gateway'] != "dynamic"
-        ) {
+        $pconfig['attribute'] !== "system" && $pconfig['gateway'] != "dynamic") {
         $input_errors[] = gettext("A valid gateway IP address must be specified.");
     }
 
-    if (!empty($pconfig['gateway']) && (is_ipaddr($pconfig['gateway'])) && !isset($_REQUEST['isAjax'])) {
+    if (!empty($pconfig['gateway']) && is_ipaddr($pconfig['gateway'])) {
         if (is_ipaddrv4($pconfig['gateway'])) {
             $parent_ip = get_interface_ip($pconfig['interface']);
             $parent_sn = get_interface_subnet($pconfig['interface']);
@@ -83,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $input_errors[] = gettext("Cannot add IPv4 Gateway Address because no IPv4 address could be found on the interface.");
             } else {
                 $subnets = array(gen_subnet($parent_ip, $parent_sn) . "/" . $parent_sn);
-                $vips = link_interface_to_vips($_POST['interface']);
+                $vips = link_interface_to_vips($pconfig['interface']);
                 if (is_array($vips)) {
                     foreach ($vips as $vip) {
                         if (!is_ipaddrv4($vip['subnet'])) {
@@ -163,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     /* only allow correct IPv4 and IPv6 monitor addresses */
-    if ( !empty($_POST['monitor']) && is_ipaddr($pconfig['monitor']) && $pconfig['monitor'] != "dynamic") {
+    if (!empty($pconfig['monitor']) && is_ipaddr($pconfig['monitor']) && $pconfig['monitor'] != "dynamic") {
         if (is_ipaddrv6($pconfig['monitor']) && ($pconfig['ipprotocol'] == "inet")) {
             $input_errors[] = sprintf(gettext('The IPv6 monitor address "%s" can not be used on an IPv4 gateway.'), $pconfig['monitor']);
         }
@@ -214,13 +213,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($pconfig['latencyhigh'])) {
         if (!is_numeric($pconfig['latencyhigh'])) {
             $input_errors[] = gettext("The high latency threshold needs to be a numeric value.");
-        } elseif ($_POST['latencyhigh'] < 1) {
+        } elseif ($pconfig['latencyhigh'] < 1) {
             $input_errors[] = gettext("The high latency threshold needs to be positive.");
         }
     }
 
     if (!empty($pconfig['losslow'])) {
-        if (!is_numeric($_POST['losslow'])) {
+        if (!is_numeric($pconfig['losslow'])) {
             $input_errors[] = gettext("The low Packet Loss threshold needs to be a numeric value.");
         } elseif ($pconfig['losslow'] < 1) {
             $input_errors[] = gettext("The low Packet Loss threshold needs to be positive.");
@@ -250,7 +249,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $input_errors[] = sprintf(gettext('The low latency threshold needs to be less than the default high latency threshold (%d)'), $apinger_default['latencyhigh']);
         }
     } elseif (!empty($pconfig['latencyhigh'])) {
-        if (is_numeric($_POST['latencyhigh']) && $_POST['latencyhigh'] < $apinger_default['latencylow']) {
+        if (is_numeric($pconfig['latencyhigh']) && $pconfig['latencyhigh'] < $apinger_default['latencylow']) {
             $input_errors[] = sprintf(gettext('The high latency threshold needs to be higher than the default low latency threshold (%d)'), $apinger_default['latencylow']);
         }
     }
@@ -308,7 +307,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (!empty($pconfig['avg_loss_samples'])) {
-        if (!is_numeric($_POST['avg_loss_samples'])) {
+        if (!is_numeric($pconfig['avg_loss_samples'])) {
             $input_errors[] = gettext("The average packet loss probes qty needs to be a numeric value.");
         } elseif ($pconfig['avg_loss_samples'] < 1) {
             $input_errors[] = gettext("The average packet loss probes qty needs to be positive.");
@@ -404,13 +403,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        if (isset($_POST['disabled'])) {
+        if (isset($pconfig['disabled'])) {
             $gateway['disabled'] = true;
         } elseif (isset($gateway['disabled'])) {
             unset($gateway['disabled']);
         }
 
-        if (isset($_POST['fargw'])) {
+        if (isset($pconfig['fargw'])) {
             $gateway['fargw'] = true;
         } elseif (isset($gateway['fargw'])) {
             unset($gateway['fargw']);
@@ -427,7 +426,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         write_config();
 
-        if (!empty($_REQUEST['isAjax'])) {
+        if (!empty($pconfig['isAjax'])) {
             echo $pconfig['name'];
             exit;
         } elseif (!empty($reloadif)) {
@@ -437,7 +436,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header(url_safe('Location: /system_gateways.php'));
         exit;
     } else {
-        if (!empty($_REQUEST['isAjax'])) {
+        if (!empty($pconfig['isAjax'])) {
             header("HTTP/1.0 500 Internal Server Error");
             header("Content-type: text/plain");
             echo implode("\n\n", $input_errors);
@@ -445,7 +444,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (!empty($pconfig['interface'])) {
-            $pconfig['friendlyiface'] = $_POST['interface'];
+            $pconfig['friendlyiface'] = $pconfig['interface'];
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {

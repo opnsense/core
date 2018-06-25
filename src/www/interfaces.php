@@ -1394,7 +1394,6 @@ include("head.inc");
       // new gateway action
       //
       $("#gwsave").click(function(){
-          $("#addgateway").toggleClass("hidden visible");
           var iface = $('#if').val();
           var name = $('#name').val();
           var descr = $('#gatewaydescr').val();
@@ -1403,9 +1402,13 @@ include("head.inc");
           if ($("#defaultgw").prop('checked')) {
               defaultgw = "&defaultgw=on";
           }
+          var fargw = "";
+          if ($("#fargw").prop('checked')) {
+              fargw = "&fargw=on";
+          }
           jQuery.ajax( "system_gateways_edit.php", {
             type: 'post',
-            data: 'isAjax=true&ipprotocol=inet' + defaultgw + '&interface=' + escape(iface) + '&name=' + escape(name) + '&descr=' + escape(descr) + '&gateway=' + escape(gatewayip),
+            data: 'isAjax=true&ipprotocol=inet' + defaultgw + fargw + '&interface=' + escape(iface) + '&name=' + escape(name) + '&descr=' + escape(descr) + '&gateway=' + escape(gatewayip),
             error: function(request, textStatus, errorThrown){
                 if (textStatus === "error" && request.getResponseHeader("Content-Type").indexOf("text/plain") === 0) {
                     alert(request.responseText);
@@ -1414,6 +1417,7 @@ include("head.inc");
                 }
             },
             success: function(response) {
+                $("#addgateway").toggleClass("hidden visible");
                 var selected = "selected=selected";
                 if (!$("#multiwangw").prop('checked')) {
                     selected = "";
@@ -1431,7 +1435,6 @@ include("head.inc");
       // new gateway v6 action
       //
       $("#gwsavev6").click(function(){
-          $("#addgatewayv6").toggleClass("hidden visible");
           var iface = $('#if').val();
           var name = $('#namev6').val();
           var descr = $('#gatewaydescrv6').val();
@@ -1451,6 +1454,7 @@ include("head.inc");
                 }
             },
             success: function(response) {
+                $("#addgatewayv6").toggleClass("hidden visible");
                 var selected = "selected=selected";
                 if (!$("#multiwangwv6").prop('checked')) {
                     selected = "";
@@ -1881,6 +1885,10 @@ include("head.inc");
                                   <tr>
                                     <td><?= gettext('Default gateway') ?></td>
                                     <td><input type="checkbox" id="defaultgw" name="defaultgw" <?= strtolower($if) == 'wan' ? 'checked="checked"' : '' ?> /></td>
+                                  </tr>
+                                  <tr>
+                                    <td><?= gettext('Far gateway') ?></td>
+                                    <td><input type="checkbox" id="fargw" name="fargw" /></td>
                                   </tr>
                                   <tr>
                                     <td><?= gettext('Multi-WAN gateway') ?></td>
@@ -2398,7 +2406,7 @@ include("head.inc");
                                     <td colspan="2"><b><?=gettext("Add new gateway"); ?></b></td>
                                   </tr>
                                   <tr>
-                                    <td><?= gettext("Default gateway"); ?></td>
+                                    <td><?= gettext('Default gateway') ?></td>
                                     <td><input type="checkbox" id="defaultgwv6" name="defaultgwv6" <?= strtolower($if) == 'wan' ?  'checked="checked"' : '' ?> /></td>
                                   </tr>
                                   <tr>
@@ -2406,7 +2414,7 @@ include("head.inc");
                                     <td><input type="checkbox" id="multiwangwv6" name="multiwangwv6" /></td>
                                   </tr>
                                   <tr>
-                                    <td><?=gettext("Gateway Name"); ?></td>
+                                    <td><?= gettext('Gateway Name') ?></td>
                                     <td><input id="namev6" type="text" name="namev6" value="<?= html_safe((empty($pconfig['descr']) ? strtoupper($if) : $pconfig['descr']) . '_GWv6') ?>" /></td>
                                   </tr>
                                   <tr>
