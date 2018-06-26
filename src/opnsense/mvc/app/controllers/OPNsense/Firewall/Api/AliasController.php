@@ -113,4 +113,39 @@ class AliasController extends ApiMutableModelControllerBase
     {
         return $this->toggleBase("aliases.aliases", $uuid);
     }
+
+    /**
+     * list countries and regions
+     * @return array indexed by country code
+     */
+    public function listCountriesAction()
+    {
+        $result = array();
+
+        foreach (explode("\n", file_get_contents('/usr/local/opnsense/contrib/tzdata/iso3166.tab')) as $line) {
+            $line = trim($line);
+            if (strlen($line) > 3 && substr($line, 0, 1) != '#') {
+                $result[substr($line, 0, 2)] = array(
+                    "name" => trim(substr($line, 2, 9999)),
+                    "region" => null
+                );
+            }
+        }
+        foreach (explode("\n", file_get_contents('/usr/local/opnsense/contrib/tzdata/zone.tab')) as $line) {
+            if (strlen($line) > 0 && substr($line, 0, 1) == '#' ) {
+                continue;
+            }
+            $line = explode("\t", $line);
+            if (empty($line[0]) || strlen($line[0]) != 2) {
+                continue;
+            }
+            if (empty($line[2]) || strpos($line[2], '/') === false) {
+                continue;
+            }
+            if (!empty($result[$line[0]])) {
+                $result[$line[0]]['region'] = explode('/', $line[2])[0];
+            }
+        }
+        return $result;
+    }
 }
