@@ -12,6 +12,19 @@
         <help>The name of the alias may only consist of the characters "a-z, A-Z, 0-9 and _". Aliases can be nested using this name.</help>
     </field>
     <field>
+        <id>alias.type</id>
+        <label>Type</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>alias.content</id>
+        <label>Content</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <separator>#10</separator>
+    </field>
+    <field>
         <id>alias.description</id>
         <label>Description</label>
         <help>You may enter a description here for your reference (not parsed).</help>

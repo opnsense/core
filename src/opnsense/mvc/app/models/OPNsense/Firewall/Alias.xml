@@ -2,7 +2,7 @@
     <mount>//OPNSense/Firewall/Alias</mount>
     <version>0.0.1</version>
     <description>
-        OPNsense central management
+        Firewall aliases
     </description>
     <items>
         <aliases>
@@ -20,6 +20,23 @@
                         </check001>
                     </Constraints>
                 </name>
+                <type type="OptionField">
+                    <Required>Y</Required>
+                    <default>alert</default>
+                    <OptionValues>
+                        <host>Host(s)</host>
+                        <network>Network(s)</network>
+                        <port>Port(s)</port>
+                        <url>URL (IPs)</url>
+                        <url_ports>URL (Ports)</url_ports>
+                        <urltable>URL Table (IPs)</urltable>
+                        <urltable_ports>URL Table (Ports)</urltable_ports>
+                        <geoip>GeoIP</geoip>
+                        <external>External (advanced)</external>
+                    </OptionValues>
+                </type>
+                <content type=".\AliasContentField">
+                </content>
                 <description type="TextField">
                     <Required>Y</Required>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
