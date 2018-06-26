@@ -64,7 +64,7 @@ bootstrap_and_exit()
 	fi
 
 	# error code given or assumed ok (trap)
-        if [ -z "${RET}" ]; then
+	if [ -z "${RET}" ]; then
 		RET=0
 	fi
 
@@ -125,11 +125,11 @@ probe_for_part()
 	DEV=${1}
 
 	if [ -e "/dev/${DEV}s1a" ]; then
-		# MBR layout found
+		# MBR UFS
 		export PART="/dev/${DEV}s1a"
 		return 0
 	elif [ -e "/dev/${DEV}p3" ]; then
-		# GPT layout found
+		# GPT UFS
 		export PART="/dev/${DEV}p3"
 		return 0
 	elif [ "${DEV}" = "zroot" ]; then
@@ -137,6 +137,16 @@ probe_for_part()
 			export POOL="${DEV}"
 			return 0
 		fi
+	elif [ -e "/dev/${DEV}s1" ]; then
+		# MBR MSDOS
+		export PART="/dev/${DEV}s1"
+		export MSDOS="yes"
+		return 0
+	elif [ -e "/dev/${DEV}p1" ]; then
+		# GPT MSDOS
+		export PART="/dev/${DEV}p1"
+		export MSDOS="yes"
+		return 0
 	fi
 
 	return 1
@@ -193,11 +203,17 @@ if [ -n "${PART}" ]; then
 	echo "Starting import for partition '${PART}'."
 	echo
 
-	echo -n "Running fsck..."
-	fsck -t ufs -y ${PART} > /dev/null
-	echo "done."
+	TYPE="ufs"
 
-	if ! mount ${PART} ${MNT}; then
+	if [ -z "${MSDOS}" ]; then
+		echo -n "Running fsck..."
+		fsck -t ${TYPE} -y ${PART} > /dev/null
+		echo "done."
+	else
+		TYPE="msdosfs"
+	fi
+
+	if ! mount -t ${TYPE} ${PART} ${MNT}; then
 		echo "The device could not be mounted."
 		bootstrap_and_exit 1
 	fi
