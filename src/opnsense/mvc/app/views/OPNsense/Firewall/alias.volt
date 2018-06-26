@@ -7,6 +7,10 @@
             max-width:1200px;
         }
     }
+
+    .alias_table {
+        background-color: transparent !important;
+    }
 </style>
 <script>
     $( document ).ready(function() {
@@ -33,7 +37,7 @@
             regions.sort();
             regions.map(function(item){
                 var $tr = $("<tr/>");
-                $tr.append("<td/>").text(item);
+                $tr.append($("<td/>").text(item));
                 $tr.append(
                     $("<td/>").append($("<select class='selectpicker geoip_select' multiple='multiple' data-id='"+'geoip_region_'+item+"'/>"))
                 );
@@ -42,7 +46,6 @@
 
             $.each(data, function(country, item) {
                 if (item.region != null) {
-                    console.log($('.geoip_select[data-id="geoip_region_'+item.region+'"'));
                     $('.geoip_select[data-id="geoip_region_'+item.region+'"').append(
                         $("<option/>")
                             .val(country)
@@ -51,6 +54,7 @@
                     );
                 }
             });
+
             $(".geoip_select").selectpicker();
             $(".geoip_select").change(function(){
                 // unlink on change event
@@ -236,7 +240,7 @@
                                                     data-separator="#10">
                                             </select>
                                         </div>
-                                        <table class="table table-condensed alias_type" id="alias_type_geoip" style="display: none">
+                                        <table class="table table-condensed alias_table" id="alias_type_geoip" style="display: none;">
                                             <thead>
                                             <tr>
                                                 <th>region</th>
