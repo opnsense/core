@@ -406,7 +406,7 @@ include("head.inc");
                           <strong><u><span onclick="location.href='/interfaces.php?if=<?=$ifname;?>'" style="cursor: pointer;"><?=$iface['descr'];?></span></u></strong>
                         </td>
                         <td>
-                          <select name="<?=$ifname;?>" id="<?=$ifname;?>">
+                          <select name="<?=$ifname;?>" id="<?=$ifname;?>" class="selectpicker">
 <?php
                           foreach ($interfaces as $portname => $portinfo):?>
                             <option  value="<?=$portname;?>"  <?= $portname == $iface['if'] ? " selected=\"selected\"" : "";?>>
@@ -432,7 +432,7 @@ include("head.inc");
                       <tr>
                         <td><?= gettext('New interface:') ?></td>
                         <td>
-                          <select name="if_add" id="if_add">
+                          <select name="if_add" id="if_add" class="selectpicker">
 <?php
                           foreach ($unused_interfaces as $portname => $portinfo): ?>
                             <option  value="<?=$portname;?>"> <?=$portinfo['descr'];?></option>

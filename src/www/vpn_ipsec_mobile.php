@@ -373,7 +373,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("User Authentication"); ?></td>
                     <td>
                       <?=gettext("Source"); ?>:
-                      <select name="user_source[]" class="form-control" id="user_source" multiple="multiple" size="3">
+                      <select name="user_source[]" class="selectpicker" id="user_source" multiple="multiple" size="3">
 <?php
                         $authmodes = explode(",", $pconfig['user_source']);
                         $auth_servers = auth_get_authserver_list();
@@ -386,7 +386,7 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                   <tr>
                     <td><a id="help_for_local_group" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Enforce local group') ?></td>
                     <td>
-                      <select name="local_group" class="form-control" id="local_group">
+                      <select name="local_group" class="selectpicker" id="local_group">
                         <option value="" <?= empty($pconfig['local_group']) ? 'selected="selected"' : '' ?>>(<?= gettext('none') ?>)</option>
 <?php
                       foreach (config_read_array('system', 'group') as $group):
@@ -412,7 +412,7 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                       <?=gettext("Network"); ?>:&nbsp;
                       <input name="pool_address" type="text" class="form-control unknown" id="pool_address" size="20" value="<?=$pconfig['pool_address'];?>" />
                       /
-                      <select name="pool_netbits" class="form-control" id="pool_netbits">
+                      <select name="pool_netbits" class="selectpicker" id="pool_netbits">
                               <?php for ($i = 32; $i >= 0; $i--) :
     ?>
                               <option value="<?=$i;
@@ -503,7 +503,7 @@ endfor; ?>
                     <td>
                         <input name="pfs_group_enable" type="checkbox" id="pfs_group_enable" value="yes" <?= !empty($pconfig['pfs_group']) ? "checked=\"checked\"" : "";?>  onclick="pfs_group_change()" />
 
-                        <select name="pfs_group" class="form-control" id="pfs_group">
+                        <select name="pfs_group" class="selectpicker" id="pfs_group">
 <?php
                         $p2_dhgroups = array(
                           0  => gettext('off'),

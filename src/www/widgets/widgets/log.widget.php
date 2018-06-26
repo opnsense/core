@@ -183,7 +183,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
               <label for="filterlogentries"><?= gettext('Quantity:') ?><br /><small>(<?= gettext('log entries') ?>)</small></label>
             </td>
             <td>
-              <select name="filterlogentries" class="formfld unknown" id="filterlogentries">
+              <select name="filterlogentries" class="selectpicker" id="filterlogentries">
 <?php
               for ($i = 1; $i <= 20; $i++):?>
                 <option value="<?=$i?>" <?= $nentries == $i ? "selected=\"selected\"" : ""?>><?=$i;?></option>
@@ -195,7 +195,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
               <label for="filterlogentriesupdateinterval"><?= gettext('Update interval:') ?><br /><small>(<?= gettext('seconds') ?>)</small></label>
             </td>
             <td>
-              <select name="filterlogentriesupdateinterval" class="formfld unknown" id="filterlogentriesupdateinterval">
+              <select name="filterlogentriesupdateinterval" class="selectpicker" id="filterlogentriesupdateinterval">
 <?php
               for ($i = 1; $i <= 60; $i++):?>
                 <option value="<?=$i?>" <?= $updateinterval == $i ? "selected=\"selected\"" : ""?>><?=$i;?></option>
@@ -209,7 +209,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
               <label for="filterlogentriesinterfaces"><?= gettext('Interfaces:'); ?></label>
             </td>
             <td colspan="3" style="width: 100%">
-              <select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces">
+              <select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces" class="selectpicker">
                 <option value="All"><?= gettext('ALL') ?></option>
 <?php
                   foreach (get_configured_interface_with_descr() as $iface => $ifacename) :?>

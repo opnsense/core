@@ -212,7 +212,7 @@ include("head.inc");
                   <tr>
                     <td style="width:22%"><a id="help_for_ramode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Router Advertisements");?></td>
                     <td style="width:78%">
-                      <select name="ramode">
+                      <select name="ramode" class="selectpicker">
                         <option value="disabled" <?=$pconfig['ramode'] == "disabled" ? "selected=\"selected\"" : ""; ?> >
                           <?=gettext("Disabled");?>
                         </option>
@@ -243,7 +243,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_rapriority" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Router Priority");?></td>
                     <td>
-                      <select name="rapriority" id="rapriority">
+                      <select name="rapriority" id="rapriority" class="selectpicker">
                         <option value="low" <?= $pconfig['rapriority'] == "low" ? "selected=\"selected\"" : ""; ?> >
                           <?=gettext("Low");?>
                         </option>
@@ -272,7 +272,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_rainterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RA Interface");?></td>
                     <td>
-                      <select name="rainterface" id="rainterface">
+                      <select name="rainterface" id="rainterface" class="selectpicker">
                         <option value="" <?=empty($pconfig['rainterface'])  ? "selected=\"selected\"" : ""; ?> > <?=strtoupper($if); ?></option>
 <?php
                       foreach($carplistif as $ifname => $vip): ?>
@@ -337,7 +337,7 @@ include("head.inc");
                               <input name="route_address[]" type="text" value="<?=$sn_address;?>" />
                             </td>
                             <td>
-                              <select name="route_bits[]">
+                              <select name="route_bits[]" class="selectpicker">
 <?php
                               for ($i = 128; $i >= 0; $i -= 1): ?>
                                 <option value="<?= $i ?>" <?= $sn_bits === $i ? 'selected="selected"' : '' ?>><?= $i ?></option>

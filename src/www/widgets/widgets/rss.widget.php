@@ -91,7 +91,7 @@ if (!empty($config['widgets']['rsswidgettextlength']) && is_numeric($config['wid
           <?= gettext('Display number of items:') ?>
         </td>
         <td>
-          <select name='rssmaxitems' id='rssmaxitems'>
+          <select name='rssmaxitems' id='rssmaxitems' class="selectpicker">
             <option value='<?= $max_items ?>'><?= $max_items ?></option>
 <?php
               for ($x=100; $x<5100; $x=$x+100) {
@@ -105,7 +105,7 @@ if (!empty($config['widgets']['rsswidgettextlength']) && is_numeric($config['wid
           <?= gettext('Widget height:') ?>
         </td>
         <td>
-          <select name='rsswidgetheight' id='rsswidgetheight'>
+          <select name='rsswidgetheight' id='rsswidgetheight' class="selectpicker">
             <option value='<?= $rsswidgetheight ?>'><?= $rsswidgetheight ?>px</option>
 <?php
             for ($x=100; $x<5100; $x=$x+100) {
@@ -119,7 +119,7 @@ if (!empty($config['widgets']['rsswidgettextlength']) && is_numeric($config['wid
           <?= gettext('Show how many characters from story:') ?>
         </td>
         <td>
-          <select name='rsswidgettextlength' id='rsswidgettextlength'>
+          <select name='rsswidgettextlength' id='rsswidgettextlength' class="selectpicker">
             <option value='<?= $rsswidgettextlength ?>'><?= $rsswidgettextlength ?></option>
 <?php
             for ($x=10; $x<5100; $x=$x+10) {

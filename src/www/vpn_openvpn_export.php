@@ -1280,7 +1280,7 @@ if (isset($savemsg)) {
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Remote Access Server");?></td>
                 <td>
-                  <select name="server" id="server">
+                  <select name="server" id="server" class="selectpicker">
 <?php
                     foreach ($ras_server as $server) :?>
                     <option value="<?=$server['index'];?>" data-mode="<?=$server['mode'];?>"><?=htmlspecialchars($server['name']);?></option>
@@ -1292,7 +1292,7 @@ if (isset($savemsg)) {
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Host Name Resolution");?></td>
                 <td>
-                      <select name="useaddr" id="useaddr">
+                      <select name="useaddr" id="useaddr" class="selectpicker">
                         <option value="serveraddr" ><?=gettext("Interface IP Address");?></option>
                         <option value="servermagic" ><?=gettext("Automatic Multi-WAN IPs (port forward targets)");?></option>
                         <option value="servermagichost" ><?=gettext("Automatic Multi-WAN dynamic DNS Hostnames (port forward targets)");?></option>
@@ -1328,7 +1328,7 @@ if (isset($savemsg)) {
               <tr class="mode_server">
                 <td><a id="help_for_verify_server_cn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Verify Server CN");?></td>
                 <td>
-                      <select name="verifyservercn" id="verifyservercn">
+                      <select name="verifyservercn" id="verifyservercn" class="selectpicker">
                         <option value="auto"><?=gettext("Automatic - Use verify-x509-name (OpenVPN 2.3+) where possible");?></option>
                         <option value="tls-remote"><?=gettext("Use tls-remote (deprecated, use only on clients prior to OpenVPN 2.3)");?></option>
                         <option value="tls-remote-quote"><?=gettext("Use tls-remote and quote the server CN");?></option>
@@ -1379,7 +1379,7 @@ if (isset($savemsg)) {
                       </div>
                       <div id="useproxy_opts" style="display:none" >
                         <label for="useproxytype"><?=gettext("Type");?></label>
-                        <select name="useproxytype" id="useproxytype">
+                        <select name="useproxytype" id="useproxytype"class="selectpicker">
                           <option value="http"><?=gettext("HTTP");?></option>
                           <option value="socks"><?=gettext("SOCKS");?></option>
                         </select>
@@ -1389,7 +1389,7 @@ if (isset($savemsg)) {
                         <input name="proxyport" id="proxyport" type="text" class="formfld unknown" size="5" value="" />
                         <div>
                           <label for="useproxypass"><?=gettext("Choose proxy authentication if any.");?></label>
-                          <select name="useproxypass" id="useproxypass">
+                          <select name="useproxypass" id="useproxypass" class="selectpicker">
                             <option value="none"><?=gettext("none");?></option>
                             <option value="basic"><?=gettext("basic");?></option>
                             <option value="ntlm"><?=gettext("ntlm");?></option>
