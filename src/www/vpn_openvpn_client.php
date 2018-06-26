@@ -589,7 +589,7 @@ $( document ).ready(function() {
             <tr>
               <td><a id="help_for_protocol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol");?></td>
               <td>
-                <select name='protocol' class="form-control">
+                <select name='protocol' class="selectpicker">
 <?php
                 foreach (openvpn_get_protocols() as $prot):
                     $selected = "";
@@ -626,7 +626,7 @@ $( document ).ready(function() {
           <tr>
             <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Interface"); ?></td>
             <td>
-              <select name="interface" class="form-control">
+              <select name="interface" class="selectpicker">
 <?php
               $interfaces = get_configured_interface_with_descr();
               $carplist = get_configured_carp_interface_list();
@@ -831,7 +831,7 @@ $( document ).ready(function() {
             <td>
 <?php
               if (isset($config['ca'])) :?>
-              <select name='caref' class="form-control">
+              <select name='caref' class="selectpicker">
 <?php
               foreach ($config['ca'] as $ca) :
                   $selected = "";
@@ -853,7 +853,7 @@ $( document ).ready(function() {
           <tr class="tls_option">
             <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Client Certificate"); ?></td>
             <td>
-              <select name='certref' class="form-control">
+              <select name='certref' class="selectpicker">
 <?php
               foreach (isset($config['cert']) ? $config['cert'] : array() as $cert) :
                   $selected = "";
@@ -908,7 +908,7 @@ $( document ).ready(function() {
           <tr>
             <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Encryption algorithm"); ?></td>
             <td>
-              <select name="crypto" class="form-control">
+              <select name="crypto" class="selectpicker">
 <?php
               $cipherlist = openvpn_get_cipherlist();
               foreach ($cipherlist as $name => $desc) :
@@ -925,7 +925,7 @@ $( document ).ready(function() {
           <tr>
             <td><a id="help_for_digest" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Auth Digest Algorithm"); ?></td>
             <td>
-              <select name="digest" class="form-control">
+              <select name="digest" class="selectpicker">
 <?php
               $digestlist = openvpn_get_digestlist();
               foreach ($digestlist as $name => $desc) :
@@ -945,7 +945,7 @@ $( document ).ready(function() {
           <tr id="engine">
             <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hardware Crypto"); ?></td>
             <td>
-              <select name="engine" class="form-control">
+              <select name="engine" class="selectpicker">
 <?php
               $engines = openvpn_get_engines();
               foreach ($engines as $name => $desc) :
@@ -1045,7 +1045,7 @@ $( document ).ready(function() {
           <tr>
             <td><a id="help_for_compression" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Compression"); ?></td>
             <td>
-              <select name="compression" class="form-control">
+              <select name="compression" class="selectpicker">
                 <?php
                                 foreach (openvpn_compression_modes() as $cmode => $cmodedesc):
                                     $selected = "";
@@ -1121,7 +1121,7 @@ $( document ).ready(function() {
           <tr id="comboboxVerbosityLevel">
               <td><a id="help_for_verbosity_level" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Verbosity level");?></td>
               <td>
-              <select name="verbosity_level" class="form-control">
+              <select name="verbosity_level" class="selectpicker">
               <?php
                             foreach (openvpn_verbosity_level() as $verb_value => $verb_desc):
                                 $selected = '';

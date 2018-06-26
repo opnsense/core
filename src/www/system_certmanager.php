@@ -716,7 +716,7 @@ $( document ).ready(function() {
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Method");?></td>
                 <td>
-                  <select name="certmethod" id="certmethod">
+                  <select name="certmethod" id="certmethod" class="selectpicker">
 <?php
                   foreach ($cert_methods as $method => $desc) :?>
                     <option value="<?=$method;?>" <?=$pconfig['certmethod'] == $method ? "selected=\"selected\"":"";?>>
@@ -773,7 +773,7 @@ $( document ).ready(function() {
               <tr>
                 <td style="width:22%"><?=gettext("Certificate authority");?></td>
                 <td style="width:78%">
-                  <select name='caref' id='caref'>
+                  <select name='caref' id='caref' class="selectpicker">
 <?php
                   foreach ($a_ca as $ca) :
                       if (!$ca['prv']) {
@@ -791,7 +791,7 @@ $( document ).ready(function() {
               <tr>
                 <td><a id="help_for_digest_cert_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type");?> </td>
                 <td>
-                    <select name="cert_type">
+                    <select name="cert_type" class="selectpicker">
                         <option value="usr_cert" <?=$pconfig['cert_type'] == 'usr_cert' ? "selected=\"selected\"" : "";?>> <?=gettext("Client Certificate");?> </option>
                         <option value="server_cert" <?=$pconfig['cert_type'] == 'server_cert' ? "selected=\"selected\"" : "";?>> <?=gettext("Server Certificate");?> </option>
                         <option value="v3_ca" <?=$pconfig['cert_type'] == 'v3_ca' ? "selected=\"selected\"" : "";?>> <?=gettext("Certificate Authority");?> </option>
@@ -804,7 +804,7 @@ $( document ).ready(function() {
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
                 <td>
-                  <select name='keylen'>
+                  <select name='keylen' class="selectpicker">
 <?php
                   foreach ($cert_keylens as $len) :?>
                     <option value="<?=$len;?>" <?=$pconfig['keylen'] == $len ? "selected=\"selected\"" : "";?>><?=$len;?></option>
@@ -816,7 +816,7 @@ $( document ).ready(function() {
               <tr>
                 <td><a id="help_for_digest_alg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Digest Algorithm");?></td>
                 <td>
-                  <select name='digest_alg' id='digest_alg'>
+                  <select name='digest_alg' id='digest_alg' class="selectpicker">
 <?php
                   foreach ($openssl_digest_algs as $digest_alg) :?>
                     <option value="<?=$digest_alg;?>" <?=$pconfig['digest_alg'] == $digest_alg ? "selected=\"selected\"" : "";?>>
@@ -924,7 +924,7 @@ $( document ).ready(function() {
                       if (!isset($pconfig['altname_value']) || count($pconfig['altname_value']) ==0) :?>
                       <tr>
                         <td>
-                          <select name="altname_type[]" id="altname_type">
+                          <select name="altname_type[]" id="altname_type" class="selectpicker">
                             <option value="DNS"><?=gettext("DNS");?></option>
                             <option value="IP"><?=gettext("IP");?></option>
                             <option value="email"><?=gettext("email");?></option>
@@ -944,7 +944,7 @@ $( document ).ready(function() {
                           $altname_type = isset($pconfig['altname_type'][$itemid]) ? $pconfig['altname_type'][$itemid] : null; ?>
                         <tr>
                           <td>
-                            <select name="altname_type[]" id="altname_type">
+                            <select name="altname_type[]" id="altname_type" class="selectpicker">
                               <option value="DNS" <?=$altname_type == "DNS" ? "selected=\"selected\"" : "";?>><?=gettext("DNS");?></option>
                               <option value="IP" <?=$altname_type == "IP" ? "selected=\"selected\"" : "";?>><?=gettext("IP");?></option>
                               <option value="email" <?=$altname_type == "email" ? "selected=\"selected\"" : "";?>><?=gettext("email");?></option>

@@ -608,7 +608,7 @@ if ($act!="new" && $act!="edit") {
 
                       <div id="netbios_data">
                         <?=gettext("Node Type"); ?>:&nbsp;
-                        <select name='netbios_ntype'>
+                        <select name='netbios_ntype' class="selectpicker">
 <?php
                         foreach ($netbios_nodetypes as $type => $name) :
                             $selected = "";

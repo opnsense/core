@@ -488,7 +488,7 @@ include("head.inc");
                             <tr>
                               <td>
                                 <strong><?=gettext("Prefix Delegation Size"); ?>:</strong>
-                                <select name="prefixrange_length" id="prefixrange_length">
+                                <select name="prefixrange_length" id="prefixrange_length" class="selectpicker">
                                   <option value="48" <?=$pconfig['prefixrange_length'] == 48 ? "selected=\"selected\"" : ""; ?>>48</option>
                                   <option value="52" <?=$pconfig['prefixrange_length'] == 52 ? "selected=\"selected\"" : ""; ?>>52</option>
                                   <option value="56" <?=$pconfig['prefixrange_length'] == 56 ? "selected=\"selected\"" : ""; ?>>56</option>
@@ -648,7 +648,7 @@ include("head.inc");
                                   <input name="numberoptions_number[]" type="text" value="<?=$item['number'];?>" />
                                 </td>
                                 <td>
-                                  <select name="numberoptions_type[]">
+                                  <select name="numberoptions_type[]" class="selectpicker">
                                     <option value="text" <?=$item['type'] == "text" ? "selected=\"selected\"" : "";?>>
                                       <?=gettext('Text');?>
                                     </option>

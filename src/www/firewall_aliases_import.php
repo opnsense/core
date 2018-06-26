@@ -179,7 +179,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type"); ?></td>
                   <td>
-                    <select name="type" class="form-control">
+                    <select name="type" class="selectpicker">
                       <option value="host" <?=$pconfig['type'] == "host" ? "selected=\"selected\"" : ""; ?>><?=gettext("Host(s)"); ?></option>
                       <option value="network" <?=$pconfig['type'] == "network" ? "selected=\"selected\"" : ""; ?>><?=gettext("Network(s)"); ?></option>
                     </select>

@@ -312,7 +312,7 @@ include("head.inc");
                 <tbody>
                   <tr>
                     <td>
-                      <select id="if" name="if">
+                      <select id="if" name="if" class="selectpicker">
 <?php
                       foreach ($ifdescrs as $ifn => $ifd):?>
                         <option value="<?=$ifn;?>" <?=$ifn == $pconfig['if'] ?  " selected=\"selected\"" : "";?>>
@@ -323,7 +323,7 @@ include("head.inc");
                       </select>
                     </td>
                     <td>
-                      <select id="sort" name="sort">
+                      <select id="sort" name="sort" class="selectpicker">
                         <option value="in">
                           <?= gettext('Bw In') ?>
                         </option>
@@ -345,7 +345,7 @@ include("head.inc");
                       </select>
                     </td>
                     <td>
-                      <select id="filter" name="filter">
+                      <select id="filter" name="filter" class="selectpicker">
                         <option value="local" <?=$pconfig['filter'] == "local" ? " selected=\"selected\"" : "";?>>
                           <?= gettext('Local') ?>
                         </option>
@@ -355,7 +355,7 @@ include("head.inc");
                       </select>
                     </td>
                     <td>
-                      <select id="hostipformat" name="hostipformat">
+                      <select id="hostipformat" name="hostipformat" class="selectpicker">
                         <option value=""><?= gettext('IP Address') ?></option>
                         <option value="hostname" <?=$pconfig['hostipformat'] == "hostname" ? " selected" : "";?>>
                           <?= gettext('Host Name') ?>
@@ -366,7 +366,7 @@ include("head.inc");
                       </select>
                     </td>
                     <td>
-                      <select id="hostmax" name="hostmax">
+                      <select id="hostmax" name="hostmax" class="selectpicker">
                         <option value="5">
                           <?= gettext('5') ?>
                         </option>

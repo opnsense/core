@@ -1,4 +1,5 @@
 <?php
+<?php
 
 /*
     Copyright (C) 2014-2016 Deciso B.V.
@@ -999,7 +1000,7 @@ include("head.inc");
                                   <input name="numberoptions_number[]" type="text" value="<?=$item['number'];?>" />
                                 </td>
                                 <td>
-                                  <select name="numberoptions_type[]">
+                                  <select name="numberoptions_type[]" class="selectpicker">
                                     <option value="text" <?=$item['type'] == "text" ? "selected=\"selected\"" : "";?>>
                                       <?=gettext('Text');?>
                                     </option>

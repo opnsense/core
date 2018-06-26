@@ -202,7 +202,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_pcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN priority");?></td>
                     <td>
-                      <select name="pcp">
+                      <select name="pcp" class="selectpicker">
 <? foreach (interfaces_vlan_priorities() as $pcp => $priority): ?>
                         <option value="<?=$pcp;?>"<?=($pconfig['pcp'] == $pcp ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
 <? endforeach ?>
