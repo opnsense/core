@@ -213,7 +213,7 @@ if [ -n "${PART}" ]; then
 		TYPE="msdosfs"
 	fi
 
-	if ! mount -t ${TYPE} ${PART} ${MNT}; then
+	if ! mount -t ${TYPE} ${PART} ${MNT}; then
 		echo "The device could not be mounted."
 		bootstrap_and_exit 1
 	fi
