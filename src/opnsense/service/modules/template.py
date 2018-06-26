@@ -61,8 +61,8 @@ class Template(object):
                                           extensions=["jinja2.ext.do", "jinja2.ext.loopcontrols"])
 
         # register additional filters
-        self._j2_env.filters['decode_idna'] = lambda x:x.decode('idna')
-        self._j2_env.filters['encode_idna'] = lambda x:x.encode('idna')
+        self._j2_env.filters['decode_idna'] = lambda x:x.decode('idna') if x != "." else "."
+        self._j2_env.filters['encode_idna'] = lambda x:x.encode('idna') if x != "." else "."
 
     def list_module(self, module_name):
         """ list single module content
