@@ -8,5 +8,6 @@
         <file description="media-streaming">opnsense.media_streaming.rules</file>
         <file description="messaging">opnsense.messaging.rules</file>
         <file description="social-networking">opnsense.social_media.rules</file>
+        <file description="uncategorized">opnsense.uncategorized.rules</file>
     </files>
 </ruleset>
