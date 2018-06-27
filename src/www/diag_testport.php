@@ -139,7 +139,7 @@ include("head.inc"); ?>
                     <tr>
                       <td><a id="help_for_ipprotocol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Protocol"); ?></td>
                       <td>
-                        <select name="ipprotocol" class="form-control">
+                        <select name="ipprotocol" class="selectpicker">
                           <option value="ipv4" <?= $pconfig['ipprotocol'] == "ipv4" ? "selected=\"selected\"" : ""; ?>>
                             <?=gettext("IPv4");?>
                           </option>

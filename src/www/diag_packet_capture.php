@@ -311,7 +311,7 @@ include("fbegin.inc");
                   <tr>
                     <td><a id="help_for_if" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface");?></td>
                     <td>
-                      <select name="interface" class="form-control">
+                      <select name="interface" class="selectpicker">
 <?php
                       foreach ($interfaces as $iface => $ifacename): ?>
                         <option value="<?=$iface;?>" <?=$pconfig['interface'] == $iface ? "selected=\"selected\"" : ""; ?>>
@@ -338,7 +338,7 @@ include("fbegin.inc");
                   <tr>
                     <td><a id="help_for_fam" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Address Family");?></td>
                     <td>
-                      <select name="fam" class="form-control">
+                      <select name="fam" class="selectpicker">
                         <option value=""><?=gettext('Any') ?></option>
                         <option value="ip" <?=!empty($pconfig['fam'] == "ip") ? "selected=\"selected\"" : ""; ?>>
                           <?= gettext('IPv4 Only') ?>
@@ -355,7 +355,7 @@ include("fbegin.inc");
                   <tr>
                     <td><a id="help_for_proto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol");?></td>
                     <td>
-                      <select name="proto" class="form-control">
+                      <select name="proto" class="selectpicker">
                         <option value=""><?=gettext('Any') ?></option>
                         <option value="icmp" <?=$pconfig['proto'] == "icmp" ? "selected=\"selected\"" : ""; ?>><?= gettext('ICMP') ?></option>
                         <option value="!icmp" <?=$pconfig['proto'] == "!icmp" ? "selected=\"selected\"" : ""; ?>><?= gettext('Exclude ICMP') ?></option>
