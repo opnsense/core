@@ -184,9 +184,9 @@ function gen_subnet($ipaddr, $bits)
 }
 
 /* return the subnet address given a host address and a subnet bit count */
-function gen_subnetv6($ipaddr, $bits)
+function gen_subnetv6($ipaddr, $bits, $validate = true)
 {
-    if (!is_ipaddrv6($ipaddr) || !is_numeric($bits)) {
+    if ($validate && (!is_ipaddrv6($ipaddr) || !is_numeric($bits))) {
         return "";
     }
 
