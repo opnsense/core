@@ -1698,6 +1698,7 @@
 /usr/local/www/widgets/include/interface_statistics.inc
 /usr/local/www/widgets/include/ipsec.inc
 /usr/local/www/widgets/include/log.inc
+/usr/local/www/widgets/include/monit.inc
 /usr/local/www/widgets/include/ntp_status.inc
 /usr/local/www/widgets/include/openvpn.inc
 /usr/local/www/widgets/include/services_status.inc
@@ -1711,6 +1712,7 @@
 /usr/local/www/widgets/widgets/interface_statistics.widget.php
 /usr/local/www/widgets/widgets/ipsec.widget.php
 /usr/local/www/widgets/widgets/log.widget.php
+/usr/local/www/widgets/widgets/monit.widget.php
 /usr/local/www/widgets/widgets/ntp_status.widget.php
 /usr/local/www/widgets/widgets/openvpn.widget.php
 /usr/local/www/widgets/widgets/picture.widget.php
