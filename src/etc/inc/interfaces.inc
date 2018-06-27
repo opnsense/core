@@ -3796,7 +3796,13 @@ function link_interface_to_track6($wanif, $update = false)
 {
     $list = array();
 
-    if (empty($wanif) || empty($wanif['ipaddrv6'])) {
+    if (empty($wanif)) {
+        return $list;
+    }
+
+    $wancfg = config_read_array('interfaces', $wanif);
+
+    if (!isset($wancfg['enable']) || empty($wancfg['ipaddrv6'])) {
         return $list;
     }
 
@@ -3806,16 +3812,18 @@ function link_interface_to_track6($wanif, $update = false)
         }
 
         if ($lancfg['ipaddrv6'] == 'track6' && $lancfg['track6-interface'] == $wanif) {
-            if ($update) {
-                interface_track6_configure($lanif, $lancfg);
-            }
-
             $list[$lanif] = $lancfg;
         }
     }
 
-    if ($wanif['ipaddrv6'] == 'slaac' && $update && count($list)) {
-        services_radvd_configure();
+    if ($update) {
+        foreach ($list as $lanif => $lancfg) {
+            interface_track6_configure($lanif, $lancfg);
+        }
+
+        if ($wancfg['ipaddrv6'] == 'slaac') {
+            services_radvd_configure();
+        }
     }
 
     return $list;
