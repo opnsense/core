@@ -928,7 +928,7 @@ endif; ?>
                                 $selected = ' selected="selected"';
                             }
                         ?>
-                          <option value="<? html_safe($length) ?>" <?=$selected?>><?= sprintf(gettext('%s bit'), $length) ?></option>
+                          <option value="<?= html_safe($length) ?>" <?=$selected?>><?= sprintf(gettext('%s bit'), $length) ?></option>
 <?php
                         endforeach; ?>
                         </select>
