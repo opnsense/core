@@ -464,7 +464,7 @@ $( document ).ready(function() {
                 <tr>
                   <td>
                     <?=gettext("Restore area:"); ?>
-                    <select name="restorearea" id="restorearea">
+                    <select name="restorearea" id="restorearea" class="selectpicker">
                       <option value=""><?=gettext("ALL");?></option>
 <?php
                     foreach($areas as $area => $areaname):?>
