@@ -26,7 +26,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 # This script generates a json structured file with the following content:
-# connection: error|timeout|unauthenticated|misconfigured|unresolved|ok
+# connection: error|timeout|unauthenticated|misconfigured|unresolved|busy|ok
 # repository: error|ok
 # last_ckeck: <date_time_stamp>
 # updates: <num_of_updates>
@@ -338,9 +338,12 @@ if [ "$pkg_running" == "" ]; then
       product_name=$(cat /usr/local/opnsense/version/opnsense.name)
       os_version=$(uname -sr)
       last_check=$(date)
+else
+  connection=busy
+fi
 
-      # write our json structure
-      cat << EOF
+# write our json structure
+cat << EOF
 {
 	"connection":"$connection",
 	"downgrade_packages":[$packages_downgraded],
@@ -360,5 +363,3 @@ if [ "$pkg_running" == "" ]; then
 	"upgrade_packages":[$packages_upgraded]
 }
 EOF
-
-fi

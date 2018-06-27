@@ -182,6 +182,9 @@ class FirmwareController extends ApiControllerBase
                 $response['status_msg'] = gettext('The release type requires an update.');
                 $response['status_upgrade_action'] = 'rel';
                 $response['status'] = 'ok';
+            } elseif (array_key_exists('connection', $response) && $response['connection'] == 'busy') {
+                $response['status_msg'] = gettext('The package manager is not responding.');
+                $response['status'] = 'error';
             } elseif (array_key_exists('connection', $response) && $response['connection'] == 'unresolved') {
                 $response['status_msg'] = gettext('No address record found for the selected mirror.');
                 $response['status'] = 'error';
