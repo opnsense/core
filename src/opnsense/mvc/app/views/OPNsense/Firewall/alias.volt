@@ -11,6 +11,14 @@
     .alias_table {
         background-color: transparent !important;
     }
+
+    .geo_area_check {
+        cursor: pointer;
+    }
+
+    .geo_area_uncheck {
+        cursor: pointer;
+    }
 </style>
 <script>
     $( document ).ready(function() {
@@ -38,9 +46,11 @@
             regions.map(function(item){
                 var $tr = $("<tr/>");
                 $tr.append($("<td/>").text(item));
-                $tr.append(
-                    $("<td/>").append($("<select class='selectpicker geoip_select' multiple='multiple' data-id='"+'geoip_region_'+item+"'/>"))
-                );
+                var geo_select = $("<td/>");
+                geo_select.append($("<select class='selectpicker geoip_select' multiple='multiple' data-id='"+'geoip_region_'+item+"'/>"));
+                geo_select.append($("<i class=\"fa fa-fw geo_area_check fa-check-square-o\" aria-hidden=\"true\" data-id='"+'geoip_region_'+item+"'></i>"));
+                geo_select.append($("<i class=\"fa fa-fw geo_area_uncheck fa-square-o\" aria-hidden=\"true\" data-id='"+'geoip_region_'+item+"'></i>"));
+                $tr.append(geo_select);
                 $("#alias_type_geoip > tbody").append($tr);
             });
 
@@ -71,6 +81,20 @@
                 $("#alias\\.content").on('tokenize:tokens:change', function(e, value){
                     $("#alias\\.content").change();
                 });
+            });
+            $(".geo_area_check").click(function(){
+                var area_id = $(this).data('id');
+                var area_select = $(".geoip_select[data-id='"+area_id+"']");
+                area_select.find('option').prop("selected", true);
+                area_select.selectpicker('refresh');
+                area_select.change();
+            });
+            $(".geo_area_uncheck").click(function(){
+                var area_id = $(this).data('id');
+                var area_select = $(".geoip_select[data-id='"+area_id+"']");
+                area_select.find('option').prop("selected", false);
+                area_select.selectpicker('refresh');
+                area_select.change();
             });
         });
 
@@ -240,7 +264,7 @@
                                                     data-separator="#10">
                                             </select>
                                         </div>
-                                        <table class="table table-condensed alias_table" id="alias_type_geoip" style="display: none;">
+                                        <table class="table table-condensed alias_table alias_type" id="alias_type_geoip" style="display: none;">
                                             <thead>
                                             <tr>
                                                 <th>region</th>
