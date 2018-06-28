@@ -166,14 +166,14 @@ class ControllerBase extends ControllerRoot
         }
         $this->view->setVars(['csrf_tokenKey' => $csrf_tokenKey, 'csrf_token' => $csrf_token]);
 
-        // link menu system to view, append /ui in uri because of rewrite
+        // link menu system to view
         $menu = new Menu\MenuSystem();
 
         // add interfaces to "Interfaces" menu tab... kind of a hack, may need some improvement.
         $cnf = Config::getInstance();
 
         $this->view->setVar('lang', $this->translator);
-        $this->view->menuSystem = $menu->getItems("/ui".$this->router->getRewriteUri());
+        $this->view->menuSystem = $menu->getItems($this->router->getRewriteUri());
         /* XXX generating breadcrumbs requires getItems() call */
         $this->view->menuBreadcrumbs = $menu->getBreadcrumbs();
 

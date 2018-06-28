@@ -128,23 +128,23 @@ class Routing
         // where module is mapped to the corresponding namespace
         foreach ($registered_modules as $module_name => $module_configs) {
             $namespace = array_shift($module_configs)['namespace'];
-            $this->router->add("/" . $module_name, array(
+            $this->router->add("/{$this->type}/" . $module_name, array(
                 "namespace" => $namespace,
             ));
 
-            $this->router->add("/" . $module_name . "/:controller", array(
+            $this->router->add("/{$this->type}/" . $module_name . "/:controller", array(
                 "namespace" => $namespace,
                 "controller" => 1
             ));
 
-            $this->router->add("/" . $module_name . "/:controller/:action", array(
+            $this->router->add("/{$this->type}/" . $module_name . "/:controller/:action", array(
                 "namespace" => $namespace,
                 "controller" => 1,
                 "action" => 2
             ));
 
 
-            $this->router->add("/".$module_name."/:controller/:action/:params", array(
+            $this->router->add("/{$this->type}/".$module_name."/:controller/:action/:params", array(
                 "namespace" => $namespace,
                 "controller" => 1,
                 "action" => 2,
@@ -158,12 +158,12 @@ class Routing
                     foreach (glob($module_config['path']."/*.php") as $filename) {
                         // extract controller name and bind static in routing table
                         $controller = strtolower(str_replace('Controller.php', '', basename($filename)));
-                        $this->router->add("/{$module_name}/{$controller}/:action", array(
+                        $this->router->add("/{$this->type}/{$module_name}/{$controller}/:action", array(
                             "namespace" => $module_config['namespace'],
                             "controller" => $controller,
                             "action" => 1
                         ));
-                        $this->router->add("/{$module_name}/{$controller}/:action/:params", array(
+                        $this->router->add("/{$this->type}/{$module_name}/{$controller}/:action/:params", array(
                             "namespace" => $module_config['namespace'],
                             "controller" => $controller,
                             "action" => 1,
@@ -172,6 +172,9 @@ class Routing
                     }
                 }
             }
+            $this->router->setUriSource(
+                Router::URI_SOURCE_SERVER_REQUEST_URI
+            );
             $this->router->removeExtraSlashes(true);
         }
     }

@@ -185,8 +185,8 @@ function webgui_generate_config($port, $cert, $key, $ca, $listeners)
 # Phalcon ui and api routing
 alias.url += ( "/ui/" => "/usr/local/opnsense/www/" )
 alias.url += ( "/api/"  => "/usr/local/opnsense/www/" )
-url.rewrite-if-not-file = ( "^/ui/([^\?]+)(\?(.*))?" => "/ui/index.php?_url=/$1&$3" ,
-                            "^/api/([^\?]+)(\?(.*))?" => "/api/api.php?_url=/$1&$3"
+url.rewrite-if-not-file = ( "^/ui/([^\?]+)(\?(.*))?" => "/ui/index.php?$3" ,
+                            "^/api/([^\?]+)(\?(.*))?" => "/api/api.php?$3"
 )
 
 EOD;
