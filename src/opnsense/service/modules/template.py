@@ -46,9 +46,11 @@ __author__ = 'Ad Schellevis'
 
 def idna_dot_encode(x):
     if x.startswith('.'):
+        dots = ""
         while x.startswith('.'):
             x = x[1:]
-        return '.' + x.encode('idna')
+            dots += '.'
+        return dots + x.encode('idna')
     else:
         return x.encode('idna')
 
