@@ -279,7 +279,8 @@ function addMultiSelectClearUI() {
                     if(result) {
                         if ($('select[id="' + id + '"]').hasClass("tokenize")) {
                             // trigger close on all Tokens
-                            $('select[id="' + id + '"]').parent().find('ul[class="TokensContainer"]').find('li[class="Token"]').find('a').trigger("click");
+                            $('select[id="' + id + '"]').tokenize2().trigger('tokenize:clear');
+                            $('select[id="' + id + '"]').change();
                         } else {
                             // remove options from selection
                             $('select[id="' + id + '"]').find('option').prop('selected',false);
