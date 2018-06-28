@@ -37,7 +37,7 @@ require_once("widgets/include/monit.inc");
 
 $( document ).ready(function() {
 
-   const serviceTypes = [
+   const monitServiceTypes = [
       "<?= gettext('Filesystem') ?>",
       "<?= gettext('Directory') ?>",
       "<?= gettext('File') ?>",
@@ -48,35 +48,42 @@ $( document ).ready(function() {
       "<?= gettext('Custom') ?>",
       "<?= gettext('Network') ?>"
    ];
-   const statusTypes = [
+
+   const monitStatusTypes = [
       "<?= gettext('OK') ?>",
       "<?= gettext('Failed') ?>",
       "<?= gettext('Changed') ?>",
       "<?= gettext('Not changed') ?>"
    ];
 
-   $("#grid-monit").bootgrid({
-      navigation: 2,
-      rowCount: 7
-   });
+   // avoid running code twice due to <script> location within <body>
+   if (typeof monitPollInit === 'undefined') {
+      monitPollInit = false;
+   } else {
+      monitPollInit = true;
+   }
 
-   function statusPoll() {
-      var pollInterval = 10;
+   function monitStatusPoll() {
+      var pollInterval = 10000;
       ajaxCall(url="/api/monit/status/get/xml", sendData={}, callback=function(data, status) {
-         
          $("#grid-monit").bootgrid("clear");
          if (data['result'] === 'ok') {
-            // poll is in minutes
-            pollInterval = data['status']['server']['poll'] * 60000;
+            pollInterval = data['status']['server']['poll'] * 1000;
             $.each(data['status']['service'], function(index, service) {
-               $("#grid-monit").bootgrid("append", [{name: service['name'], type: serviceTypes[service['@attributes']['type']], status: statusTypes[service['status']]}]);
+               $("#grid-monit").bootgrid("append", [{name: service['name'], type: monitServiceTypes[service['@attributes']['type']], status: monitStatusTypes[service['status']]}]);
             });
          }
-         setTimeout(statusPoll, pollInterval);
+         setTimeout(monitStatusPoll, pollInterval);
       });
    };
-   statusPoll();
 
+   if (monitPollInit === false) {
+      $("#grid-monit").bootgrid({
+         navigation: 2,
+         rowCount: 7
+      });
+      monitStatusPoll();
+   }
 });
 
 </script>
