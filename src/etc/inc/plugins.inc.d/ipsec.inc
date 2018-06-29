@@ -68,6 +68,7 @@ $p1_authentication_methods = array(
     'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
     'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
     'eap-mschapv2' => array( 'name' => 'EAP-MSCHAPV2', 'mobile' => true),
+    'rsa_eap-mschapv2' => array( 'name' => 'Mutual RSA + EAP-MSCHAPV2', 'mobile' => true),
     'eap-radius' => array( 'name' => 'EAP-RADIUS', 'mobile' => true),
     'rsasig' => array( 'name' => 'Mutual RSA', 'mobile' => false ),
     'pre_shared_key' => array( 'name' => 'Mutual PSK', 'mobile' => false ),
@@ -1228,6 +1229,10 @@ EOD;
                         break;
                     case 'eap-mschapv2':
                         $authentication = "leftauth = pubkey\n\trightauth = eap-mschapv2";
+                        $authentication .= "\n\teap_identity = %any";
+                        break;
+                    case 'rsa_eap-mschapv2':
+                        $authentication = "leftauth = pubkey\n\trightauth = pubkey\n\trightauth2 = eap-mschapv2";
                         $authentication .= "\n\teap_identity = %any";
                         break;
                     case 'eap-radius':
