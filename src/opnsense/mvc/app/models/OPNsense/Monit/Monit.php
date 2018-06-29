@@ -31,7 +31,6 @@
 namespace OPNsense\Monit;
 
 use OPNsense\Base\BaseModel;
-use Phalcon\Logger\Adapter\Syslog;
 
 /**
  * Class Monit
