@@ -464,7 +464,7 @@ function filter_configure_sync($verbose = false, $flush_states = false)
             $line_number = $line_error[1];
             $line_split = file('/tmp/rules.debug');
             if (is_array($line_split)) {
-                $config_line_error = sprintf(' - ' . gettext('The line in question reads [%d]: %s'), $line_number, $line_split[$line_number-1]);
+                $config_line_error = sprintf(' - ' . gettext('The line in question reads [%s]: %s'), $line_number, $line_split[$line_number-1]);
             }
         }
 
