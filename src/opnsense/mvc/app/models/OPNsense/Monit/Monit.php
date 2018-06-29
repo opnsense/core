@@ -31,6 +31,7 @@
 namespace OPNsense\Monit;
 
 use OPNsense\Base\BaseModel;
+use Phalcon\Logger\Adapter\Syslog;
 
 /**
  * Class Monit
@@ -38,4 +39,57 @@ use OPNsense\Base\BaseModel;
  */
 class Monit extends BaseModel
 {
+    /**
+     * @var resource|null holds the file handle for the lock file
+     */
+    private $internalLockHandle = null;
+
+    /**
+     * lock the model to avoid issues with concurrent access
+     * @throws \Exception
+     */
+    public function __construct()
+    {
+        $this->internalLockHandle = fopen("/tmp/monit.lock", "w+");
+        if ($this->internalLockHandle == null || flock($this->internalLockHandle, LOCK_EX) == false) {
+            throw new \Exception("Cannot lock monit model");
+        }
+        parent::__construct();
+    }
+
+    /**
+     * release lock after usage
+     */
+    public function __destruct()
+    {
+        flock($this->internalLockHandle, LOCK_UN);
+        fclose($this->internalLockHandle);
+    }
+
+    /**
+     * get configuration state
+     * @return bool
+     */
+    public function configChanged()
+    {
+        return file_exists("/tmp/monit.dirty");
+    }
+
+    /**
+     * mark configuration as changed
+     * @return bool
+     */
+    public function configDirty()
+    {
+        return @touch("/tmp/monit.dirty");
+    }
+
+    /**
+     * mark configuration as consistent with the running config
+     * @return bool
+     */
+    public function configClean()
+    {
+        return @unlink("/tmp/monit.dirty");
+    }
 }
