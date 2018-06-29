@@ -122,7 +122,7 @@
                 var geo_item = $(this);
                 geo_item.val([]);
                 for (var i=0; i < items.length; ++i) {
-                    geo_item.find('option[value="'+items[i]+'"]').prop("selected", true);
+                    geo_item.find('option[value="' + $.escapeSelector(items[i]) + '"]').prop("selected", true);
                 }
 
             });
