@@ -45,7 +45,7 @@ class SettingsController extends ApiControllerBase
     /**
      * @var null|object the monit model object
      */
-    private $mdlMonit = null;
+    public $mdlMonit = null;
 
     /**
      * @var array list with valid model node types
@@ -226,8 +226,9 @@ class SettingsController extends ApiControllerBase
                     }
                     $this->mdlMonit->serializeToConfig();
                     Config::getInstance()->save();
-                    $svcMonit = new ServiceController();
-                    $result= $svcMonit->reconfigureAction();
+                    if ($this->mdlMonit->configDirty()) {
+                        $result['status'] = 'ok';
+                    }
                 } else {
                     $result['result'] = "not found";
                 }
