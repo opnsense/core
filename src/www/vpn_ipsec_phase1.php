@@ -178,6 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     switch ($method) {
         case "eap-tls":
         case "eap-mschapv2":
+        case "rsa_eap-mschapv2":
         case "eap-radius":
           if ($pconfig['iketype'] != 'ikev2') {
               $input_errors[] = sprintf(gettext("%s can only be used with IKEv2 type VPNs."), strtoupper($method));
@@ -472,6 +473,7 @@ include("head.inc");
             switch ($("#authentication_method").val()) {
                 case 'eap-tls':
                 case 'eap-mschapv2':
+                case 'rsa_eap-mschapv2':
                     $(".auth_eap_tls").show();
                     $(".auth_eap_tls :input").prop( "disabled", false );
                     break;
@@ -490,6 +492,7 @@ include("head.inc");
                 case 'hybrid_rsa_server':
                 case 'xauth_rsa_server':
                 case 'rsasig':
+                case 'rsa_eap-mschapv2':
                     $(".auth_eap_tls_caref").show();
                     $(".auth_eap_tls_caref :input").prop( "disabled", false );
                     $(".auth_eap_tls").show();
