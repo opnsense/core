@@ -66,8 +66,8 @@
                     data-allownew="{{allownew|default("false")}}"
                     data-live-search="true"
                     {% if separator|default(false) %}data-separator="{{separator}}"{% endif %}
-            ></select>
-            <br/><a href="#" class="text-danger" id="clear-options_{{ id }}"><i class="fa fa-times-circle"></i> <small>{{ lang._('Clear All') }}</small></a>
+            ></select>{% if style|default('selectpicker') != "tokenize" %}<br />{% endif %}
+            <a href="#" class="text-danger" id="clear-options_{{ id }}"><i class="fa fa-times-circle"></i> <small>{{ lang._('Clear All') }}</small></a>
         {% elseif type == "dropdown" %}
             <select {% if size|default(false) %}size="{{size}}"{% endif %} id="{{ id }}" class="{{style|default('selectpicker')}}" data-width="{{width|default("334px")}}"></select>
         {% elseif type == "password" %}

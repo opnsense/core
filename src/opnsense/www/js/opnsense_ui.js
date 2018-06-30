@@ -216,7 +216,7 @@ function formatTokenizersUI() {
                 'placeholder': hint,
                 'dropdownMaxItems': number_of_items
             });
-            sender.parent().find('ul.tokens-container').parent().css("width", width);
+            sender.parent().find('ul.tokens-container').css("width", width);
 
             // dropdown on focus (previous displayDropdownOnFocus)
             sender.on('tokenize:select', function(container){
