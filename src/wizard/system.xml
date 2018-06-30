@@ -564,15 +564,15 @@ if (!empty(trim($_POST['lanipaddress']))) {
 </step>
 <step>
 	<id>6</id>
-	<title>Set Admin Web GUI Password</title>
+	<title>Set Root Password</title>
 	<fields>
 		<field>
-			<name>Admin Password</name>
+			<name>Root Password</name>
 			<type>password</type>
 			<description>(leave empty to keep current one)</description>
 		</field>
 		<field>
-			<name>Admin Password AGAIN</name>
+			<name>Root Password Confirmation</name>
 			<type>password</type>
 		</field>
 		<field>
