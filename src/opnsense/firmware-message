@@ -5,7 +5,7 @@ seamless and can be performed right here from the GUI by unlocking it below.</p>
 which will retain your settings (selecting "Import Configuration"), then
 reformat the disk and apply a clean system (selecting "Guided Installation").</p>
 <p>You can also upgrade via console / SSH by using option 12 from the menu by
-typing "18.7" when prompted.</p>
+typing "18.7.r1" when prompted.</p>
 <p>Please backup your configuration, preview the new version via live image or
 in a virtual machine. Create snapshots. If all else fails, report back
 <a href="https://forum.opnsense.org/" target="_blank">in the forums</a> for
