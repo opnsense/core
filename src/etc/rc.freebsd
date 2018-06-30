@@ -41,6 +41,7 @@ rc_enabled()
 {
 	rc_filename=${1}
 	name=${2}
+	unset rcvar
 
 	# check if service has a name
 	if [ -z "${name}" ]; then
