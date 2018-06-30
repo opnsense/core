@@ -4328,7 +4328,7 @@ function get_interfaces_info()
         $ifinfo['if'] = get_real_interface($ifdescr);
         $ifinfo['status'] = (is_array($ifup) && in_array($ifinfo['if'], $ifup)) ? 'up' : 'down';
         if (!empty($all_intf_details[$ifinfo['if']])) {
-            if (isset($all_intf_details[$ifinfo['if']]['status']) && 
+            if (isset($all_intf_details[$ifinfo['if']]['status']) &&
                     in_array($all_intf_details[$ifinfo['if']]['status'], array('active', 'running'))) {
                 $all_intf_details[$ifinfo['if']]['status'] = $ifinfo['status'];
             }
