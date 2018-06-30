@@ -1389,6 +1389,7 @@
 /usr/local/opnsense/www/js/opnsense_ui.js
 /usr/local/opnsense/www/js/qrcode.js
 /usr/local/opnsense/www/js/theme.js
+/usr/local/opnsense/www/js/tokenize2.js
 /usr/local/opnsense/www/js/tokenize2.min.js
 /usr/local/opnsense/www/themes/opnsense/LICENSE
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot
