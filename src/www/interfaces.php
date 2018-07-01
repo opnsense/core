@@ -2853,7 +2853,7 @@ include("head.inc");
                             <input name="dhcpd6track6allowoverride" type="checkbox" value="yes" <?= $pconfig['dhcpd6track6allowoverride'] ? 'checked="checked"' : '' ?>/>
                             <?= gettext('Allow manual adjustment of DHCPv6 and Router Advertisements') ?>
                             <div class="hidden" data-for="help_for_dhcpd6_opt">
-                              <?= gettext('If this option is set, you will be able to manually set the DHCPv4 and Router Advertisments service for this interface. Use with care.') ?>
+                              <?= gettext('If this option is set, you will be able to manually set the DHCPv6 and Router Advertisments service for this interface. Use with care.') ?>
                             </div>
                           </td>
                         </tr>
