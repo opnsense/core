@@ -3810,12 +3810,12 @@ function link_interface_to_track6($wanif, $update = false)
     }
 
     if ($update) {
-        foreach ($list as $lanif => $lancfg) {
-            interface_track6_configure($lanif, $lancfg);
-        }
-
         if ($wancfg['ipaddrv6'] == 'slaac') {
             services_radvd_configure();
+        }
+
+        foreach ($list as $lanif => $lancfg) {
+            interface_track6_configure($lanif, $lancfg);
         }
     }
 
