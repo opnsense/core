@@ -485,7 +485,7 @@ if ($config['interfaces'][$if]['ipaddrv6'] == 'track6') {
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Range");?></td>
+                      <td><a id="help_for_range" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Range");?></td>
                       <td>
                         <table class="table table-condensed">
                           <thead>
@@ -501,6 +501,9 @@ if ($config['interfaces'][$if]['ipaddrv6'] == 'track6') {
                             </tr>
                           </tbody>
                         </table>
+                        <div class="hidden" data-for="help_for_range">
+                            <?= gettext("When using a static WAN address, the range should be entered using the full IPv6 address. " .
+                            "When using a dynamic WAN address, only enter the suffix part (i.e. ::1:2:3:4)."); ?>
                       </td>
                     </tr>
                     <tr>
