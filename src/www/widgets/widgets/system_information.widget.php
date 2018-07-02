@@ -45,9 +45,6 @@ require_once("system.inc");
    */
   function system_information_widget_cpu_update(sender, data)
   {
-      // tooltip current percentage
-      $("#system_information_widget_chart_cpu_usage").tooltip({ title: ''});
-      $("#system_information_widget_chart_cpu_usage").attr("title", data['cpu']['used'] + ' %').tooltip('fixTitle');
       // push new measurement, keep a maximum of 100 measures in
       system_information_widget_cpu_data.push(parseInt(data['cpu']['used']));
       if (system_information_widget_cpu_data.length > 100) {
