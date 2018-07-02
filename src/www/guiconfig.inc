@@ -522,7 +522,7 @@ function get_menu_messages()
                 $noticemsg = ($value['notice'] != "" ? $value['notice'] : $value['id']);
                 $noticemsg = preg_replace("/(\"|\'|\n|<.?\w+>)/i","",$noticemsg);
                 $alert_action ="onclick=\"notice_action('acknowledge','{$key}'); jQuery(this).parent().parent().remove();\"";
-                $notice_msgs .= "<li><a href=\"#\"  {$alert_action}>{$date} [ ".htmlspecialchars($noticemsg)."]</a></li>";
+                $notice_msgs .= "<li><a href=\"#\"  {$alert_action}>{$date} [ ".htmlspecialchars($noticemsg)." ]</a></li>";
             }
 
             $notice_msgs .="</ul>";

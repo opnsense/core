@@ -429,6 +429,9 @@ function filter_configure_sync($verbose = false, $flush_states = false)
     if (!@file_put_contents('/tmp/rules.debug', $rules, LOCK_EX)) {
         log_error("WARNING: Could not write new rules!");
         unlock($filterlck);
+        if ($verbose) {
+            echo "failed.\n";
+        }
         return;
     }
 
@@ -445,40 +448,33 @@ function filter_configure_sync($verbose = false, $flush_states = false)
      * then output the contents of the error to the caller
      */
     if ($rules_loading) {
-        /* XXX ALTQ not loaded message compat */
-        $altq_strip = 2;
-        if (count($rules_error) >= $altq_strip) {
-            foreach (range(1, $altq_strip) as $altq_unused) {
-                if (strpos($rules_error[0], 'ALTQ') !== false) {
-                    array_shift($rules_error);
-                }
-            }
-        }
-
-        $saved_line_error = $rules_error[0];
-        $config_line_error = '';
+        $config_line = '';
 
         /* only report issues with line numbers */
-        $line_error = explode(":", $rules_error[0]);
-        if (isset($line_error[1]) && (string)((int)$line_error[1]) == $line_error[1] && $line_error > 0) {
+        $line_error = explode(':', $rules_error[0]);
+        if (isset($line_error[1]) && (string)((int)$line_error[1]) == $line_error[1] && $line_error[1] > 0) {
             $line_number = $line_error[1];
             $line_split = file('/tmp/rules.debug');
             if (is_array($line_split)) {
-                $config_line_error = sprintf(' - ' . gettext('The line in question reads [%s]: %s'), $line_number, $line_split[$line_number-1]);
+                $config_line = sprintf(' - ' . gettext('The line in question reads [%s]: %s'), $line_number, $line_split[$line_number-1]);
             }
         }
 
         /* Brutal ugly hack but required -- PF is stuck, unwedge */
         if (strstr("$rules_error[0]", "busy")) {
             exec('/sbin/pfctl -d; /sbin/pfctl -e; /sbin/pfctl -f /tmp/rules.debug');
-            $error_msg = gettext("PF was wedged/busy and has been reset.");
-            file_notice("pf_busy", $error_msg, "pf_busy", "");
+            file_notice('pf_busy', gettext('PF was wedged/busy and has been reset.'), 'pf_busy', '');
         } else {
             exec('/sbin/pfctl -o basic -f /tmp/rules.debug.old 2>&1');
         }
 
-        file_notice('filter_load', sprintf(gettext('There were error(s) loading the rules: %s%s'), $saved_line_error, $config_line_error), 'Filter Reload', '');
+        file_notice('filter_load', sprintf(gettext('There were error(s) loading the rules: %s%s'), $rules_error[0], $config_line), 'Filter Reload', '');
         unlock($filterlck);
+
+        if ($verbose) {
+            echo "failed.\n";
+        }
+
         return;
     }
 
