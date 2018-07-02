@@ -5,6 +5,10 @@
             <description>(default)</description>
         </mirror>
         <mirror>
+            <url>https://mirrors.dotsrc.org/opnsense</url>
+            <description>Aalborg University (Aalborg, DK)</description>
+        </mirror>
+        <mirror>
             <url>https://opnsense.aivian.org</url>
             <description>Aivian (Shaoxing, CN)</description>
         </mirror>
