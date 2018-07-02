@@ -118,18 +118,14 @@ function dnsmasq_configure_do($verbose = false)
     }
 
     if (isset($config['dnsmasq']['interface'])) {
-        $addresses = array();
+        $addresses = array('127.0.0.1', '::1');
 
         foreach (explode(',', $config['dnsmasq']['interface']) as $interface) {
-            if (is_ipaddrv4($interface)) {
-                $addresses[] = $interface;
-            } elseif (is_ipaddrv6($interface)) {
-                 /* no support for link-local address with scope specified */
-                 $addresses[] = explode("%", $interface)[0];
-            } else {
-                foreach (legacy_getall_interface_addresses(get_real_interface($$interface)) as $tmpaddr) {
-                    $tmpaddr = explode('/', $tmpaddr)[0];
-                    $tmpaddr = explode('%', $tmpaddr)[0];
+            foreach (legacy_getall_interface_addresses(get_real_interface($interface)) as $tmpaddr) {
+                $tmpaddr = explode('/', $tmpaddr)[0];
+                /* no support for link-local address with scope specified */
+                $tmpaddr = explode('%', $tmpaddr)[0];
+                if (!empty($tmpaddr)) {
                     $addresses[] = $tmpaddr;
                 }
             }

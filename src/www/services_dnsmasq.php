@@ -349,17 +349,12 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_interfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interfaces"); ?></td>
                   <td>
-                    <select id="interface" name="interface[]" multiple="multiple" class="selectpicker">
-                      <option value="" <?=empty($pconfig['interface'][0]) ? 'selected="selected"' : ""; ?>>
-                        <?=gettext("All");?>
+                    <select id="interface" name="interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All')) ?>">
+<?php foreach (get_configured_interface_with_descr() as  $iface => $ifacename): ?>
+                      <option value="<?= html_safe($iface) ?>" <?=in_array($iface, $pconfig['interface']) ? 'selected="selected"' : "" ?>>
+                        <?= html_safe($ifacename) ?>
                       </option>
-<?php
-                      foreach (get_possible_listen_ips(true) as $laddr):?>
-                      <option value="<?=$laddr['value'];?>" <?=in_array($laddr['value'], $pconfig['interface']) ? 'selected="selected"' : "";?>>
-                        <?=htmlspecialchars($laddr['name']);?>
-                      </option>
-<?php
-                      endforeach; ?>
+<?php endforeach ?>
                     </select>
                     <div class="hidden" data-for="help_for_interfaces">
                       <?=gettext("Interface IPs used by the DNS Forwarder for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.");?>
