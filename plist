@@ -557,6 +557,7 @@
 /usr/local/opnsense/mvc/script/load_phalcon.php
 /usr/local/opnsense/mvc/script/run_migrations.php
 /usr/local/opnsense/mvc/tests/PHPunit.xml
+/usr/local/opnsense/mvc/tests/app/compound/OPNsense/Monit/MonitTest.php
 /usr/local/opnsense/mvc/tests/app/config/config.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModel/Migrations/M0_0_1.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModel/Migrations/M1_0_0.php
