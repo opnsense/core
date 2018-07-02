@@ -28,48 +28,75 @@ POSSIBILITY OF SUCH DAMAGE.
 <script>
 
    $( document ).ready(function() {
+      /**
+       * get the isSubsystemDirty value and print a notice
+       */
+      function isSubsystemDirty() {
+         ajaxGet(url="/api/monit/settings/dirty", sendData={}, callback=function(data,status) {
+            if (status == "success") {
+               if (data.monit.dirty === true) {
+                  $("#configChangedMsg").removeClass("hidden");
+               } else {
+                  $("#configChangedMsg").addClass("hidden");
+               }
+            }
+         });
+      }
+
+      /**
+       * chain std_bootgrid_reload from opnsense_bootgrid_plugin.js
+       * to get the isSubsystemDirty state on "UIBootgrid" changes
+       */
+      var opn_std_bootgrid_reload = std_bootgrid_reload;
+      std_bootgrid_reload = function(gridId) {
+         opn_std_bootgrid_reload(gridId);
+         isSubsystemDirty();
+      };
+
+      /**
+       * apply changes and reload monit
+       */
+      $('#btnApplyConfig').unbind('click').click(function(){
+         $('#btnApplyConfigProgress').addClass("fa fa-spinner fa-pulse");
+         ajaxCall(url="/api/monit/service/reconfigure", sendData={}, callback=function(data,status) {
+            $("#responseMsg").addClass("hidden");
+            isSubsystemDirty();
+            updateServiceControlUI('monit');
+            if (data.result) {
+               $("#responseMsg").html(data['result']);
+               $("#responseMsg").removeClass("hidden");
+            }
+            $('#btnApplyConfigProgress').removeClass("fa fa-spinner fa-pulse");
+            $('#btnApplyConfig').blur();
+         });
+      });
 
       /**
       * add button 'Import System Notification'
       * can't do it via base_dialog
       */
-	   $('<button class="btn btn-primary" id="btn_ImportSystemNotification" type="button" style="margin-left: 3px;">' +
-	         '<b> {{ lang._('Import System Notification')}} </b>' +
-	         '<i id="frm_ImportSystemNotification_progress"></i>' +
-	      '</button>').insertAfter('#btn_ApplyGeneralSettings');
+      $('<button class="btn btn-primary" id="btn_ImportSystemNotification" type="button" style="margin-left: 3px;">' +
+            '<b> {{ lang._('Import System Notification')}} </b>' +
+            '<i id="frm_ImportSystemNotification_progress"></i>' +
+         '</button>').insertAfter('#btn_ApplyGeneralSettings');
 
-	   /**
-      * UI functions
-      */
-
-      $('#btn_configtest').unbind('click').click(function(){
-         $('#btn_configtest_progress').addClass("fa fa-spinner fa-pulse");
-         ajaxCall(url="/api/monit/service/configtest", sendData={}, callback=function(data,status) {
-            $('#btn_configtest_progress').removeClass("fa fa-spinner fa-pulse");
-            $('#btn_configtest').blur();
-            $("#responseMsg").removeClass("hidden");
-            $("#responseMsg").html(data['result']);
-         });
-      });
-
-      $('#btn_reload').unbind('click').click(function(){
-         $('#btn_reload_progress').addClass("fa fa-spinner fa-pulse");
-         ajaxCall(url="/api/monit/service/reconfigure", sendData={}, callback=function(data,status) {
-            $('#btn_reload_progress').removeClass("fa fa-spinner fa-pulse");
-            $('#btn_reload').blur();
-            updateServiceControlUI('monit');
-         });
-      });
-
-      $('#btn_ImportSystemNotification').unbind('click').click(function(){
-          $('#frm_ImportSystemNotification_progress').addClass("fa fa-spinner fa-pulse");
+      $('#btnImportSystemNotification').unbind('click').click(function(){
+          $('#btnImportSystemNotificationProgress').addClass("fa fa-spinner fa-pulse");
           ajaxCall(url="/api/monit/settings/notification", sendData={}, callback=function(data,status) {
-             $('#frm_ImportSystemNotification_progress').removeClass("fa fa-spinner fa-pulse");
-             $('#btn_ImportSystemNotification').blur();
+             $("#responseMsg").addClass("hidden");
+             isSubsystemDirty();
+             updateServiceControlUI('monit');
+             if (data.result) {
+               $("#responseMsg").html(data['result']);
+               $("#responseMsg").removeClass("hidden");
+            }
+             $('#btnImportSystemNotificationProgress').removeClass("fa fa-spinner fa-pulse");
+             $('#btnImportSystemNotification').blur();
              ajaxCall(url="/api/monit/service/status", sendData={}, callback=function(data,status) {
                 mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/get/general/"}).done(function(){
                     formatTokenizersUI();
                     $('.selectpicker').selectpicker('refresh');
+                    isSubsystemDirty();
                     updateServiceControlUI('monit');
                  });
              });
@@ -82,6 +109,7 @@ POSSIBILITY OF SUCH DAMAGE.
       mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/get/general/"}).done(function(){
          formatTokenizersUI();
          $('.selectpicker').selectpicker('refresh');
+         isSubsystemDirty();
          updateServiceControlUI('monit');
       });
 
@@ -108,14 +136,15 @@ POSSIBILITY OF SUCH DAMAGE.
          ShowHideGeneralFields();
       });
 
-      $('#btn_ApplyGeneralSettings').unbind('click').click(function(){
-	   $("#frm_GeneralSettings_progress").addClass("fa fa-spinner fa-pulse");
+      $('#btnSaveGeneral').unbind('click').click(function(){
+	   $("#btnSaveGeneralProgress").addClass("fa fa-spinner fa-pulse");
          var frm_id = 'frm_GeneralSettings';
          saveFormToEndpoint(url = "/api/monit/settings/set/general/",formid=frm_id,callback_ok=function(){
+            isSubsystemDirty();
             updateServiceControlUI('monit');
          });
-         $("#"+frm_id+"_progress").removeClass("fa fa-spinner fa-pulse");
-         $("#btn_ApplyGeneralSettings").blur();
+         $("#btnSaveGeneralProgress").removeClass("fa fa-spinner fa-pulse");
+         $("#btnSaveGeneral").blur();
       });
 
       /**
@@ -260,9 +289,11 @@ POSSIBILITY OF SUCH DAMAGE.
    });
 </script>
 
-<div class="alert alert-info hidden" role="alert" id="responseMsg">
-
+<div class="alert alert-info hidden" role="alert" id="configChangedMsg">
+   <button class="btn btn-primary pull-right" id="btnApplyConfig" type="button"><b>{{ lang._('Apply changes') }}</b> <i id="btnApplyConfigProgress"></i></button>
+   {{ lang._('The Monit configuration has been changed') }} <br /> {{ lang._('You must apply the changes in order for them to take effect.')}}
 </div>
+<div class="alert alert-info hidden" role="alert" id="responseMsg"></div>
 
 <ul class="nav nav-tabs" role="tablist" id="maintabs">
    <li class="active"><a data-toggle="tab" href="#general">{{ lang._('General Settings') }}</a></li>
@@ -272,7 +303,21 @@ POSSIBILITY OF SUCH DAMAGE.
 </ul>
 <div class="tab-content content-box">
    <div id="general" class="tab-pane fade in active">
-      {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_GeneralSettings','apply_btn_id':'btn_ApplyGeneralSettings'])}}
+      {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_GeneralSettings'])}}
+      <div class="table-responsive">
+         <table class="table table-striped table-condensed table-responsive">
+            <tr>
+               <td>
+                  <button class="btn btn-primary" id="btnSaveGeneral" type="button">
+                     <b>{{ lang._('Save changes') }}</b><i id="btnSaveGeneralProgress"></i>
+                  </button>
+                  <button class="btn btn-primary" id="btnImportSystemNotification" type="button" style="margin-left: 3px;">
+                     <b>{{ lang._('Import System Notification')}}</b><i id="btnImportSystemNotificationProgress"></i>
+                  </button>
+               </td>
+            </tr>
+         </table>
+      </div>
    </div>
    <div id="alerts" class="tab-pane fade in">
       <table id="grid-alerts" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditAlert">
@@ -347,13 +392,6 @@ POSSIBILITY OF SUCH DAMAGE.
          </tfoot>
       </table>
    </div>
-   <div class="col-md-12">
-         <hr/>
-         <button class="btn btn-primary" id="btn_configtest" type="button"><b>{{ lang._('Test Configuration') }}</b><i id="btn_configtest_progress" class=""></i></button>
-         <button class="btn btn-primary" id="btn_reload" type="button"><b>{{ lang._('Reload Configuration') }}</b><i id="btn_reload_progress" class=""></i></button>
-         <br/>
-         <br/>
-      </div>
 </div>
 {# include dialogs #}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditAlert,'id':'DialogEditAlert','label':'Edit Alert&nbsp;&nbsp;<small>NOTE: For a detailed description see monit(1) section "ALERT MESSAGES".</small>'])}}

@@ -43,9 +43,33 @@ class SettingsController extends ApiControllerBase
 {
 
     /**
-     * list with valid model node types
+     * @var null|object the monit model object
+     */
+    public $mdlMonit = null;
+
+    /**
+     * @var array list with valid model node types
      */
     private $nodeTypes = array('general', 'alert', 'service', 'test');
+
+    /**
+     * initialize object properties
+     */
+    public function onConstruct()
+    {
+        $this->mdlMonit = new Monit();
+    }
+
+    /**
+     * check if changes to the monit settings were made
+     * @return result array
+     */
+    public function dirtyAction()
+    {
+        $result = array('status' => 'ok');
+        $result['monit']['dirty'] = $this->mdlMonit->configChanged();
+        return $result;
+    }
 
     /**
      * query monit settings
@@ -58,14 +82,13 @@ class SettingsController extends ApiControllerBase
         $result = array("result" => "failed");
         if ($this->request->isGet() && $nodeType != null) {
             $this->validateNodeType($nodeType);
-            $mdlMonit = new Monit();
             if ($nodeType == 'general') {
-                $node = $mdlMonit->getNodeByReference($nodeType);
+                $node = $this->mdlMonit->getNodeByReference($nodeType);
             } else {
                 if ($uuid != null) {
-                    $node = $mdlMonit->getNodeByReference($nodeType . '.' . $uuid);
+                    $node = $this->mdlMonit->getNodeByReference($nodeType . '.' . $uuid);
                 } else {
-                    $node = $mdlMonit->$nodeType->Add();
+                    $node = $this->mdlMonit->$nodeType->Add();
                 }
             }
             if ($node != null) {
@@ -87,14 +110,13 @@ class SettingsController extends ApiControllerBase
         $result = array("result" => "failed", "validations" => array());
         if ($this->request->isPost() && $this->request->hasPost("monit") && $nodeType != null) {
             $this->validateNodeType($nodeType);
-            $mdlMonit = new Monit();
             if ($nodeType == 'general') {
-                $node = $mdlMonit->getNodeByReference($nodeType);
+                $node = $this->mdlMonit->getNodeByReference($nodeType);
             } else {
                 if ($uuid != null) {
-                    $node = $mdlMonit->getNodeByReference($nodeType . '.' . $uuid);
+                    $node = $this->mdlMonit->getNodeByReference($nodeType . '.' . $uuid);
                 } else {
-                    $node = $mdlMonit->$nodeType->Add();
+                    $node = $this->mdlMonit->$nodeType->Add();
                 }
             }
             if ($node != null) {
@@ -130,7 +152,7 @@ class SettingsController extends ApiControllerBase
                 }
 
                 $node->setNodes($monitInfo[$nodeType]);
-                $valMsgs = $mdlMonit->performValidation();
+                $valMsgs = $this->mdlMonit->performValidation();
                 foreach ($valMsgs as $field => $msg) {
                     $fieldnm = str_replace($node->__reference, "monit." . $nodeType, $msg->getField());
                     $result["validations"][$fieldnm] = $msg->getMessage();
@@ -138,11 +160,10 @@ class SettingsController extends ApiControllerBase
                 if (empty($result["validations"])) {
                     unset($result["validations"]);
                     $result['result'] = 'ok';
-                    $mdlMonit->serializeToConfig();
+                    $this->mdlMonit->serializeToConfig();
                     Config::getInstance()->save();
-                    if ($nodeType == 'general' && $monitInfo['general']['enabled'] == '0') {
-                        $svcMonit = new ServiceController();
-                        $result = $svcMonit->stopAction();
+                    if ($this->mdlMonit->configDirty()) {
+                        $result['status'] = 'ok';
                     }
                 }
             }
@@ -162,21 +183,22 @@ class SettingsController extends ApiControllerBase
         if ($nodeType != null) {
             $this->validateNodeType($nodeType);
             if ($uuid != null) {
-                $mdlMonit = new Monit();
-                $node = $mdlMonit->getNodeByReference($nodeType . '.' . $uuid);
+                $node = $this->mdlMonit->getNodeByReference($nodeType . '.' . $uuid);
                 if ($node != null) {
-                    if ($mdlMonit->$nodeType->del($uuid) == true) {
+                    if ($this->mdlMonit->$nodeType->del($uuid) == true) {
                         // delete relations
                         if ($nodeType == 'test') {
-                            $nodeName = $mdlMonit->getNodeByReference($nodeType . '.' . $uuid . '.name');
+                            $nodeName = $this->mdlMonit->getNodeByReference($nodeType . '.' . $uuid . '.name');
                             if ($nodeName != null) {
                                 $nodeName = $nodeName->__toString();
-                                $this->deleteRelations('service', 'tests', $uuid, 'test', $nodeName, $mdlMonit);
+                                $this->deleteRelations('service', 'tests', $uuid, 'test', $nodeName, $this->mdlMonit);
                             }
                         }
-                        $mdlMonit->serializeToConfig();
+                        $this->mdlMonit->serializeToConfig();
                         Config::getInstance()->save();
-                        $result["result"] = "ok";
+                        if ($this->mdlMonit->configDirty()) {
+                            $result['status'] = 'ok';
+                        }
                     }
                 }
             }
@@ -194,19 +216,19 @@ class SettingsController extends ApiControllerBase
     {
         $result = array("result" => "failed");
         if ($this->request->isPost() && $nodeType != null) {
-            $mdlMonit = new Monit();
             if ($uuid != null) {
-                $node = $mdlMonit->getNodeByReference($nodeType . '.' . $uuid);
+                $node = $this->mdlMonit->getNodeByReference($nodeType . '.' . $uuid);
                 if ($node != null) {
                     if ($node->enabled->__toString() == "1") {
                         $node->enabled = "0";
                     } else {
                         $node->enabled = "1";
                     }
-                    $mdlMonit->serializeToConfig();
+                    $this->mdlMonit->serializeToConfig();
                     Config::getInstance()->save();
-                    $svcMonit = new ServiceController();
-                    $result= $svcMonit->reloadAction();
+                    if ($this->mdlMonit->configDirty()) {
+                        $result['status'] = 'ok';
+                    }
                 } else {
                     $result['result'] = "not found";
                 }
@@ -227,8 +249,7 @@ class SettingsController extends ApiControllerBase
         $this->sessionClose();
         if ($this->request->isPost() && $nodeType != null) {
             $this->validateNodeType($nodeType);
-            $mdlMonit = new Monit();
-            $grid = new UIModelGrid($mdlMonit->$nodeType);
+            $grid = new UIModelGrid($this->mdlMonit->$nodeType);
             $fields = array();
             switch ($nodeType) {
                 case 'alert':
@@ -257,8 +278,7 @@ class SettingsController extends ApiControllerBase
 
             $cfg = Config::getInstance();
             $cfgObj = $cfg->object();
-            $mdlMonit = new Monit();
-            $node = $mdlMonit->getNodeByReference('general');
+            $node = $this->mdlMonit->getNodeByReference('general');
             $generalSettings = array();
 
             // inherit SMTP settings from System->Settings->Notifications
@@ -279,16 +299,18 @@ class SettingsController extends ApiControllerBase
 
             // apply them
             $node->setNodes($generalSettings);
-            $valMsgs = $mdlMonit->performValidation();
+            $valMsgs = $this->mdlMonit->performValidation();
             foreach ($valMsgs as $field => $msg) {
                 $fieldnm = str_replace($node->__reference, "monit.general.", $msg->getField());
                 $result["validations"][$fieldnm] = $msg->getMessage();
             }
             if (empty($result["validations"])) {
                 unset($result["validations"]);
-                $result['result'] = 'ok';
-                $mdlMonit->serializeToConfig();
+                $this->mdlMonit->serializeToConfig();
                 Config::getInstance()->save();
+                if ($this->mdlMonit->configDirty()) {
+                    $result['status'] = 'ok';
+                }
             }
         }
         return $result;
@@ -311,12 +333,16 @@ class SettingsController extends ApiControllerBase
      * @param $nodeType
      * @param $uuid
      * @param $relNodeType
-     * @param &$mdlMonit
      * @throws \Exception
      */
-    private function deleteRelations($nodeType = null, $nodeField = null, $relUuid = null, $relNodeType = null, $relNodeName = null, &$mdlMonit = null)
-    {
-        $nodes = $mdlMonit->$nodeType->getNodes();
+    private function deleteRelations(
+        $nodeType = null,
+        $nodeField = null,
+        $relUuid = null,
+        $relNodeType = null,
+        $relNodeName = null
+    ) {
+        $nodes = $this->mdlMonit->$nodeType->getNodes();
         // get nodes with relations
         foreach ($nodes as $nodeUuid => $node) {
             // get relation uuids
@@ -324,14 +350,14 @@ class SettingsController extends ApiControllerBase
                 // remove uuid from field
                 if ($fieldUuid == $relUuid) {
                     $refField = $nodeType . '.' . $nodeUuid . '.' . $nodeField;
-                    $relNode = $mdlMonit->getNodeByReference($refField);
+                    $relNode = $this->mdlMonit->getNodeByReference($refField);
                     $nodeRels = str_replace($relUuid, '', $relNode->__toString());
                     $nodeRels = str_replace(',,', ',', $nodeRels);
                     $nodeRels = rtrim($nodeRels, ',');
                     $nodeRels = ltrim($nodeRels, ',');
-                    $mdlMonit->setNodeByReference($refField, $nodeRels);
+                    $this->mdlMonit->setNodeByReference($refField, $nodeRels);
                     if ($relNode->isEmptyAndRequired()) {
-                        $nodeName = $mdlMonit->getNodeByReference($nodeType . '.' . $nodeUuid . '.name')->__toString();
+                        $nodeName = $this->mdlMonit->getNodeByReference($nodeType . '.' . $nodeUuid . '.name')->__toString();
                         throw new \Exception("Cannot delete $relNodeType '$relNodeName' from $nodeType '$nodeName'");
                     }
                 }

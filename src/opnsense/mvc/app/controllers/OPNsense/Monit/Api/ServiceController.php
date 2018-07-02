@@ -46,16 +46,24 @@ class ServiceController extends ApiMutableServiceControllerBase
     static protected $internalServiceName = 'monit';
 
     /**
+     * initialize object properties
+     */
+    public function onConstruct()
+    {
+        // initialize the model via parent to avoid selflock by circular references
+        $this->getModel();
+    }
+
+    /**
      * test monit configuration
      * @return array
      */
     public function configtestAction()
     {
         if ($this->request->isPost()) {
+            $result['status'] = 'ok';
             $this->sessionClose();
-
             $backend = new Backend();
-
             $result['function'] = "configtest";
             $result['template'] = trim($backend->configdRun('template reload OPNsense/Monit'));
             if ($result['template'] != 'OK') {
@@ -69,8 +77,45 @@ class ServiceController extends ApiMutableServiceControllerBase
         }
     }
 
+    /**
+     * reconfigure monit
+     * @return array
+     */
+    public function reconfigureAction()
+    {
+        if ($this->request->isPost()) {
+            $this->sessionClose();
+            $result['function'] = "reconfigure";
+            $result['status'] = 'failed';
+            $backend = new Backend();
+            $status = $this->statusAction();
+            if ($this->getModel()->general->enabled->__toString() == 1) {
+                $result = $this->configtestAction();
+                if ($result['template'] == 'OK' && preg_match('/^Control file syntax OK$/', $result['result']) == 1) {
+                    if ($status['status'] != 'running') {
+                        $result['result'] = trim($backend->configdRun('monit start'));
+                    } else {
+                        $result['result'] = trim($backend->configdRun('monit reload'));
+                    }
+                } else {
+                    return $result;
+                }
+            } else {
+                if ($status['status'] == 'running') {
+                    $result['result'] = trim($backend->configdRun('monit stop'));
+                }
+            }
+            if ($this->getModel()->configClean()) {
+                $result['status'] = 'ok';
+            }
+            return $result;
+        } else {
+            return array('status' => 'failed');
+        }
+    }
+
      /**
-      * avoid restarting Relayd on reconfigure
+      * avoid restarting Monit on reconfigure
       */
     protected function reconfigureForceRestart()
     {
