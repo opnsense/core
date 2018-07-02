@@ -47,11 +47,14 @@ class Monit extends BaseModel
      * lock the model to avoid issues with concurrent access
      * @throws \Exception
      */
-    public function __construct()
+    public function __construct($lock = true)
     {
-        $this->internalLockHandle = fopen("/tmp/monit.lock", "w+");
-        if ($this->internalLockHandle == null || flock($this->internalLockHandle, LOCK_EX) == false) {
-            throw new \Exception("Cannot lock monit model");
+        if ($lock == true) {
+            $this->requestLock();
+            $this->internalLockHandle = fopen("/tmp/monit.lock", "w+");
+            if (is_resource($this->internalLockHandle) == false || flock($this->internalLockHandle, LOCK_EX) == false) {
+                throw new \Exception("Cannot lock monit model");
+            }
         }
         parent::__construct();
     }
@@ -61,8 +64,28 @@ class Monit extends BaseModel
      */
     public function __destruct()
     {
-        flock($this->internalLockHandle, LOCK_UN);
-        fclose($this->internalLockHandle);
+        $this->releaseLock();
+    }
+
+    /**
+     * lock the model
+     */
+    public function requestLock()
+    {
+        $this->internalLockHandle = fopen("/tmp/monit.lock", "w+");
+        if (is_resource($this->internalLockHandle) == false || flock($this->internalLockHandle, LOCK_EX) == false) {
+            throw new \Exception("Cannot lock monit model");
+        }
+    }
+    /**
+     * release lock
+     */
+    public function releaseLock()
+    {
+        if (is_resource($this->internalLockHandle)) {
+            flock($this->internalLockHandle, LOCK_UN);
+            fclose($this->internalLockHandle);
+        }
     }
 
     /**
