@@ -458,9 +458,9 @@ function filter_configure_sync($verbose = false, $flush_states = false)
         $saved_line_error = $rules_error[0];
         $config_line_error = '';
 
+        /* only report issues with line numbers */
         $line_error = explode(":", $rules_error[0]);
-        if (isset($line_error[1])) {
-            // only report issues with line numbers
+        if (isset($line_error[1]) && (string)((int)$line_error[1]) == $line_error[1] && $line_error > 0) {
             $line_number = $line_error[1];
             $line_split = file('/tmp/rules.debug');
             if (is_array($line_split)) {
