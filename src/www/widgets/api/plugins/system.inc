@@ -161,9 +161,10 @@ function system_api()
 
     $result['versions'] = system_api_versions();
     $result['cpu'] = system_api_cpu_stats();
-    preg_match("/sec = (\d+)/", get_single_sysctl("kern.boottime"), $matches);
-    $result['uptime'] = time() - $matches[1];
     $result['date_frmt'] = date("D M j G:i:s T Y");
+    $result['date_time'] = time();
+    preg_match("/sec = (\d+)/", get_single_sysctl("kern.boottime"), $matches);
+    $result['uptime'] = $result['date_time'] - $matches[1];
     $result['config'] = system_api_config();
     $result['kernel'] = system_api_kernel();
     $result['disk'] = system_api_disk();

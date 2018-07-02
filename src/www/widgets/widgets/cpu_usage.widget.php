@@ -46,17 +46,15 @@ require_once("system.inc");
   function cpu_widget_cpu_update(sender, data)
   {
       // push new measurement, keep a maximum of 100 measures in
-      cpu_widget_cpu_data.push(parseInt(data['cpu']['used']));
+      cpu_widget_cpu_data.push([data['date_time'] * 1000, parseInt(data['cpu']['used'])]);
       if (cpu_widget_cpu_data.length > 100) {
           cpu_widget_cpu_data.shift();
       } else if (cpu_widget_cpu_data.length == 1) {
-          cpu_widget_cpu_data.push(parseInt(data['cpu']['used']));
+          cpu_widget_cpu_data.push([data['date_time'] * 1000, parseInt(data['cpu']['used'])]);
       }
       chart_data = [];
-      count = 0;
       cpu_widget_cpu_data.map(function(item){
-          chart_data.push([count, item]);
-          count++;
+          chart_data.push(item);
       });
       cpu_widget_cpu_chart_data.datum([{'key':'cpu', 'values':chart_data}]).transition().duration(500).call(cpu_widget_cpu_chart);
   }
@@ -84,6 +82,9 @@ require_once("system.inc");
               .clipEdge(true)
               .margin({top:5,right:5,bottom:5,left:25});
           cpu_widget_cpu_chart.yAxis.tickFormat(d3.format('.0'));
+          cpu_widget_cpu_chart.xAxis.tickFormat(function(d) {
+              return d3.time.format('%b %e %H:%M:%S')(new Date(d));
+          });
           cpu_widget_cpu_chart.forceY([0, 100]);
           cpu_widget_cpu_chart_data = d3.select("#cpu_widget_chart_cpu_usage svg").datum([{'key':'cpu', 'values':[[0, 0]]}]);
           cpu_widget_cpu_chart_data.transition().duration(500).call(cpu_widget_cpu_chart);
