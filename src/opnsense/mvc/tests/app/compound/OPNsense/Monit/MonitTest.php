@@ -286,6 +286,10 @@ class MonitTest extends \PHPUnit\Framework\TestCase
         $svcMonit = new \OPNsense\Monit\Api\ServiceController;
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
+        // configtest
+        $response = $svcMonit->configtestAction();
+        $this->assertEquals($response['result'], 'Control file syntax OK');
+
         // status
         $response = $svcMonit->statusAction();
         $this->assertRegExp('/running|stopped/', $response['status']);
