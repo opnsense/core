@@ -50,8 +50,8 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 CORE_REPOSITORY?=	${FLAVOUR}
 .endif
 
-CORE_NAME?=		opnsense-devel
-CORE_TYPE?=		development
+CORE_NAME?=		opnsense
+CORE_TYPE?=		release
 CORE_MESSAGE?=		Insert Name Here
 
 CORE_MAINTAINER?=	franco@opnsense.org
@@ -125,7 +125,6 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			strongswan \
 			sudo \
 			suricata${CORE_SURICATA} \
-			syslog-ng \
 			syslogd \
 			unbound \
 			wpa_supplicant \
