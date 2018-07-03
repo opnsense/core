@@ -340,11 +340,17 @@ class MonitTest extends \PHPUnit\Framework\TestCase
             $this->cleanupNodes($nodeType);
         }
 
-        $general = self::$setMonit->mdlMonit->getNodeByReference('general');
-        $general->setNodes(array('enabled' => '0', 'startdelay' => 120, 'interval' => 120));
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST = array('monit' => ['general' => [
+                'interval' => '120',
+                'startdelay' => '120',
+                'enabled' => '0'
+            ]
+        ]);
+        $response = self::$setMonit->setAction('general');
+        $this->assertEquals($response['status'], 'ok');
 
-        self::$setMonit->mdlMonit->serializeToConfig();
-        Config::getInstance()->save();
-        $this->assertTrue(true);
+        $response = $svcMonit->reconfigureAction();
+        $this->assertEquals($response['status'], 'ok');
     }
 }
