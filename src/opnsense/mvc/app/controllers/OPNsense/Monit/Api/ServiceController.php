@@ -89,8 +89,8 @@ class ServiceController extends ApiMutableServiceControllerBase
             $result['status'] = 'failed';
             $backend = new Backend();
             $status = $this->statusAction();
+            $result = $this->configtestAction();
             if ($this->getModel()->general->enabled->__toString() == 1) {
-                $result = $this->configtestAction();
                 if ($result['template'] == 'OK' && preg_match('/^Control file syntax OK$/', $result['result']) == 1) {
                     if ($status['status'] != 'running') {
                         $result['result'] = trim($backend->configdRun('monit start'));
