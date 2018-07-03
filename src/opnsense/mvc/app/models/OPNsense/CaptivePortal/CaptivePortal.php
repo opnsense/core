@@ -66,7 +66,7 @@ class CaptivePortal extends BaseModel
     }
 
     /**
-     * find ttemplate by name or return a new object
+     * find template by name or return a new object
      * @param $name template name
      * @return mixed
      */
