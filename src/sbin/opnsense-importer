@@ -162,6 +162,8 @@ if [ -n "${1}" ]; then
 		echo "No previous configuration was found on this device."
 		bootstrap_and_exit 1
 	fi
+
+	SKIP="please"
 else
 	if [ -n "${DO_BOOT}" ]; then
 		touch ${INSTALL} 2> /dev/null
@@ -180,22 +182,26 @@ else
 	DEVS=$(camcontrol devlist; gmirror status -s; graid status -s)
 fi
 
-while [ -z "${PART}" -a -z "${POOL}" ]; do
-	echo
-	echo "${DEVS}"
-	echo
-	read -p "Select device to import from (e.g. ada0) or leave blank to exit: " DEV
-	echo
+while [ -z "${PART}" -a -z "${POOL}" -a -z "${SKIP}" ]; do
+	if [ -z "${SKIP}" ]; then
+		echo
+		echo "${DEVS}"
+		echo
+		read -p "Select device to import from (e.g. ada0) or leave blank to exit: " DEV
+		echo
 
-	if [ -z "${DEV}" ]; then
-		bootstrap_and_exit 0
-	elif [ "${DEV}" = "!" ]; then
-		# secret escape! (not so secret now, is it?)
-		csh
-		continue
-	elif ! probe_for_part ${DEV}; then
-		echo "No known partition layout was found for '${DEV}'."
-		continue
+		if [ -z "${DEV}" ]; then
+			bootstrap_and_exit 0
+		elif [ "${DEV}" = "!" ]; then
+			# secret escape! (not so secret now, is it?)
+			csh
+			continue
+		elif ! probe_for_part ${DEV}; then
+			echo "No known partition layout was found for '${DEV}'."
+			continue
+		fi
+	else
+		SKIP=
 	fi
 
 	mkdir -p ${MNT}
