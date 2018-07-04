@@ -360,11 +360,11 @@ ${_TARGET}_ARG=		${${_TARGET}_ARGS:[0]}
 .endfor
 
 mfc:
+	@git checkout stable/${CORE_ABI}
 .for MFC in ${mfc_ARGS}
-	@git checkout stable/${CORE_ABI} && \
-	    git cherry-pick -x ${MFC} && \
-	    git checkout master
+	@git cherry-pick -x ${MFC}
 .endfor
+	@git checkout master
 
 test: want-phpunit6-php${CORE_PHP}
 	@if [ "$$(${PKG} query %n-%v ${CORE_NAME})" != "${CORE_NAME}-${CORE_VERSION}" ]; then \
