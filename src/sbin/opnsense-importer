@@ -122,7 +122,7 @@ zfs_load()
 
 probe_for_part()
 {
-	DEV=${1}
+	local DEV=${1}
 
 	if [ -e "/dev/${DEV}s1a" ]; then
 		# MBR UFS
@@ -152,18 +152,17 @@ probe_for_part()
 	return 1
 }
 
+DEV=${1}
 DEVS=
 PART=
 
-if [ -n "${1}" ]; then
+if [ -n "${DEV}" ]; then
 	zfs_load
 
-	if ! probe_for_part ${1}; then
-		echo "No previous configuration was found on this device."
+	if ! probe_for_part ${DEV}; then
+		echo "No known partition layout was found for '${DEV}'."
 		bootstrap_and_exit 1
 	fi
-
-	SKIP="please"
 else
 	if [ -n "${DO_BOOT}" ]; then
 		touch ${INSTALL} 2> /dev/null
@@ -182,8 +181,8 @@ else
 	DEVS=$(camcontrol devlist; gmirror status -s; graid status -s)
 fi
 
-while [ -z "${PART}" -a -z "${POOL}" -a -z "${SKIP}" ]; do
-	if [ -z "${SKIP}" ]; then
+while : ; do
+	if [ -z "${DEV}" ]; then
 		echo
 		echo "${DEVS}"
 		echo
@@ -200,8 +199,8 @@ while [ -z "${PART}" -a -z "${POOL}" -a -z "${SKIP}" ]; do
 			echo "No known partition layout was found for '${DEV}'."
 			continue
 		fi
-	else
-		SKIP=
+
+		DEV=
 	fi
 
 	mkdir -p ${MNT}
@@ -224,6 +223,8 @@ while [ -z "${PART}" -a -z "${POOL}" -a -z "${SKIP}" ]; do
 			echo "The device could not be mounted."
 			PART=
 		fi
+
+		break
 	elif [ -n "${POOL}" ]; then
 		echo "Starting import for ZFS pool '${POOL}'."
 		echo
@@ -233,8 +234,15 @@ while [ -z "${PART}" -a -z "${POOL}" -a -z "${SKIP}" ]; do
 			echo "The device could not be mounted."
 			POOL=
 		fi
+
+		break
 	else
 		echo "Something went wrong during partition selection."
+		bootstrap_and_exit 1
+	fi
+
+	if [ -n "${DEV}" ]; then
+		echo "Import from partition '${DEV}' failed."
 		bootstrap_and_exit 1
 	fi
 done
