@@ -122,7 +122,7 @@ zfs_load()
 
 probe_for_part()
 {
-	DEV=${1}
+	local DEV=${1}
 
 	if [ -e "/dev/${DEV}s1a" ]; then
 		# MBR UFS
@@ -152,14 +152,15 @@ probe_for_part()
 	return 1
 }
 
+DEV=${1}
 DEVS=
 PART=
 
-if [ -n "${1}" ]; then
+if [ -n "${DEV}" ]; then
 	zfs_load
 
-	if ! probe_for_part ${1}; then
-		echo "No previous configuration was found on this device."
+	if ! probe_for_part ${DEV}; then
+		echo "No known partition layout was found for '${DEV}'."
 		bootstrap_and_exit 1
 	fi
 else
@@ -180,22 +181,28 @@ else
 	DEVS=$(camcontrol devlist; gmirror status -s; graid status -s)
 fi
 
-while [ -z "${PART}" -a -z "${POOL}" ]; do
-	echo
-	echo "${DEVS}"
-	echo
-	read -p "Select device to import from (e.g. ada0) or leave blank to exit: " DEV
-	echo
-
+while : ; do
 	if [ -z "${DEV}" ]; then
-		bootstrap_and_exit 0
-	elif [ "${DEV}" = "!" ]; then
-		# secret escape! (not so secret now, is it?)
-		csh
-		continue
-	elif ! probe_for_part ${DEV}; then
-		echo "No known partition layout was found for '${DEV}'."
-		continue
+		echo
+		echo "${DEVS}"
+		echo
+		read -p "Select device to import from (e.g. ada0) or leave blank to exit: " DEV
+		echo
+
+		if [ -z "${DEV}" ]; then
+			bootstrap_and_exit 0
+		elif [ "${DEV}" = "!" ]; then
+			# secret escape! (not so secret now, is it?)
+			csh
+			DEV=
+			continue
+		elif ! probe_for_part ${DEV}; then
+			echo "No known partition layout was found for '${DEV}'."
+			DEV=
+			continue
+		fi
+
+		DEV=
 	fi
 
 	mkdir -p ${MNT}
@@ -218,6 +225,8 @@ while [ -z "${PART}" -a -z "${POOL}" ]; do
 			echo "The device could not be mounted."
 			PART=
 		fi
+
+		break
 	elif [ -n "${POOL}" ]; then
 		echo "Starting import for ZFS pool '${POOL}'."
 		echo
@@ -227,8 +236,15 @@ while [ -z "${PART}" -a -z "${POOL}" ]; do
 			echo "The device could not be mounted."
 			POOL=
 		fi
+
+		break
 	else
 		echo "Something went wrong during partition selection."
+		bootstrap_and_exit 1
+	fi
+
+	if [ -n "${DEV}" ]; then
+		echo "Import from partition '${DEV}' failed."
 		bootstrap_and_exit 1
 	fi
 done
