@@ -340,6 +340,32 @@ dhparam:
 	    ${.CURDIR}/src/etc/dh-parameters.${BITS}.sample ${BITS}
 .endfor
 
+diff:
+	@git diff --stat -p stable/${CORE_ABI}
+
+ARGS=	mfc
+
+# handle argument expansion for required targets
+.for TARGET in ${.TARGETS}
+_TARGET=		${TARGET:C/\-.*//}
+.if ${_TARGET} != ${TARGET}
+.for ARGUMENT in ${ARGS}
+.if ${_TARGET} == ${ARGUMENT}
+${_TARGET}_ARGS+=	${TARGET:C/^[^\-]*(\-|\$)//:S/,/ /g}
+${TARGET}: ${_TARGET}
+.endif
+.endfor
+${_TARGET}_ARG=		${${_TARGET}_ARGS:[0]}
+.endif
+.endfor
+
+mfc:
+.for MFC in ${mfc_ARGS}
+	@git checkout stable/${CORE_ABI} && \
+	    git cherry-pick -x ${MFC} && \
+	    git checkout master
+.endfor
+
 test: want-phpunit6-php${CORE_PHP}
 	@if [ "$$(${PKG} query %n-%v ${CORE_NAME})" != "${CORE_NAME}-${CORE_VERSION}" ]; then \
 		echo "Installed version does not match, expected ${CORE_NAME}-${CORE_VERSION}"; \
