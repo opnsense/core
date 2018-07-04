@@ -194,9 +194,11 @@ while : ; do
 		elif [ "${DEV}" = "!" ]; then
 			# secret escape! (not so secret now, is it?)
 			csh
+			DEV=
 			continue
 		elif ! probe_for_part ${DEV}; then
 			echo "No known partition layout was found for '${DEV}'."
+			DEV=
 			continue
 		fi
 
