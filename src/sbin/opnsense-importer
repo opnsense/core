@@ -192,40 +192,46 @@ while [ -z "${PART}" -a -z "${POOL}" ]; do
 	elif [ "${DEV}" = "!" ]; then
 		# secret escape! (not so secret now, is it?)
 		csh
+		continue
 	elif ! probe_for_part ${DEV}; then
 		echo "No known partition layout was found for '${DEV}'."
+		continue
 	fi
-done
 
-mkdir -p ${MNT}
+	mkdir -p ${MNT}
 
-if [ -n "${PART}" ]; then
-	echo "Starting import for partition '${PART}'."
-	echo
+	if [ -n "${PART}" ]; then
+		echo "Starting import for partition '${PART}'."
+		echo
 
-	TYPE="ufs"
+		TYPE="ufs"
 
-	if [ -z "${MSDOS}" ]; then
-		echo -n "Running fsck..."
-		fsck -t ${TYPE} -y ${PART} > /dev/null
-		echo "done."
+		if [ -z "${MSDOS}" ]; then
+			echo -n "Running fsck..."
+			fsck -t ${TYPE} -y ${PART} > /dev/null
+			echo "done."
+		else
+			TYPE="msdosfs"
+		fi
+
+		if ! mount -t ${TYPE} ${PART} ${MNT}; then
+			echo "The device could not be mounted."
+			PART=
+		fi
+	elif [ -n "${POOL}" ]; then
+		echo "Starting import for ZFS pool '${POOL}'."
+		echo
+
+		zpool import -f -R ${MNT} ${POOL}
+		if ! zfs mount ${POOL}/ROOT/default; then
+			echo "The device could not be mounted."
+			POOL=
+		fi
 	else
-		TYPE="msdosfs"
-	fi
-
-	if ! mount -t ${TYPE} ${PART} ${MNT}; then
-		echo "The device could not be mounted."
+		echo "Something went wrong during partition selection."
 		bootstrap_and_exit 1
 	fi
-elif [ -n "${POOL}" ]; then
-	echo "Starting import for ZFS pool '${POOL}'."
-	echo
-
-	zpool import -f -R ${MNT} ${POOL}
-	if ! zfs mount ${POOL}/ROOT/default; then
-		echo "The device could not be mounted."
-	fi
-fi
+done
 
 if [ -f "${MNT}/conf/config.xml" ]; then
 	rm -rf /conf/*
