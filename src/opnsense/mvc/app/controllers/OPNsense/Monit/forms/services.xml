@@ -63,7 +63,6 @@
       <id>monit.service.tests</id>
       <label>Tests</label>
       <type>select_multiple</type>
-      <style>tokenize</style>
       <help><![CDATA[This is a list with service tests.]]></help>
    </field>
    <field>

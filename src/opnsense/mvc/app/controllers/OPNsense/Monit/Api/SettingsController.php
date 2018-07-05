@@ -310,6 +310,7 @@ class SettingsController extends ApiControllerBase
                 Config::getInstance()->save();
                 if ($this->mdlMonit->configDirty()) {
                     $result['status'] = 'ok';
+                    $result['result'] = 'OK';
                 }
             }
         }
