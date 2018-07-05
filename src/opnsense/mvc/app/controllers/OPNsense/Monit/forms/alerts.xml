@@ -9,7 +9,6 @@
       <id>monit.alert.recipient</id>
       <label>Recipient</label>
       <type>text</type>
-      <style>tokenize</style>
       <help><![CDATA[The email address to send alerts to.]]></help>
    </field>
    <field>
@@ -23,14 +22,12 @@
       <label>Events</label>
       <type>select_multiple</type>
       <nbDropdownElements>28</nbDropdownElements>
-      <style>tokenize</style>
       <help><![CDATA[List with events. Leave it empty for all events.]]></help>
    </field>
    <field>
       <id>monit.alert.format</id>
       <label>Mail format</label>
       <type>text</type>
-      <style>tokenize</style>
       <help><![CDATA[The email format for alerts.<br><i>Subject: $SERVICE on $HOST failed</i>]]></help>
    </field>
    <field>
