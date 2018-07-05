@@ -189,7 +189,7 @@ class ModelRelationField extends BaseField
         if (isset(self::$internalOptionList[$this->internalCacheKey]) &&
             is_array(self::$internalOptionList[$this->internalCacheKey])) {
             // if relation is not required, add empty option
-            if (!$this->internalIsRequired) {
+            if (!$this->internalIsRequired && !$this->internalMultiSelect) {
                 $result[""] = array("value"=>"none", "selected" => 0);
             }
 
