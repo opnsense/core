@@ -385,6 +385,9 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/forms/dialogEditBlacklist.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/forms/dialogEditPACMatch.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/forms/dialogEditPACProxy.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/forms/dialogEditPACRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/forms/main.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/Api/RoutesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/IndexController.php
@@ -802,6 +805,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Proxy/squid.acl.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/squid.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/squid.user.local_auth.conf
+/usr/local/opnsense/service/templates/OPNsense/Proxy/wpad.dat
 /usr/local/opnsense/service/templates/OPNsense/Sample/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Sample/example_config.txt
 /usr/local/opnsense/service/templates/OPNsense/Sample/example_parent.txt
