@@ -120,7 +120,7 @@ include("head.inc");
 
 ?>
 
-<script type="text/javascript">
+<script>
 //<![CDATA[
   $(document).ready(function() {
     if ($('#smtpssl').is(':checked')) {
@@ -150,9 +150,9 @@ include("head.inc");
       }
 ?>
       </form>
-        <section class="col-xs-12">
-          <div class="content-box tab-content table-responsive">
-            <form method="post" name="iform">
+      <section class="col-xs-12">
+        <form method="post" name="iform">
+          <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
                 <td style="width:22%"><strong><?=gettext("Growl");?></strong></td>
@@ -165,163 +165,163 @@ include("head.inc");
                 <td><a id="help_for_disable_growl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable Growl Notifications"); ?></td>
                 <td>
                   <input type='checkbox' name='disable_growl' value="yes" <?=!empty($pconfig['disable_growl']) ? "checked=\"checked\"" : "";?>/>
-                  <output class="hidden" for="help_for_disable_growl">
+                  <div class="hidden" data-for="help_for_disable_growl">
                     <?=gettext("Check this option to disable growl notifications but preserve the settings below."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Registration Name"); ?></td>
                 <td>
                   <input name="name" type="text" value="<?=$pconfig['name']; ?>"/>
-                  <output class="hidden" for="help_for_name">
+                  <div class="hidden" data-for="help_for_name">
                     <?=gettext("Enter the name to register with the Growl server (default: PHP-Growl)."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_notification_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Notification Name"); ?></td>
                 <td>
-                  <input name='notification_name' type='text' value='<?=$pconfig['notification_name']; ?>' /><br />
-                  <output class="hidden" for="help_for_notification_name">
+                  <input name='notification_name' type='text' value='<?=$pconfig['notification_name']; ?>' />
+                  <div class="hidden" data-for="help_for_notification_name">
                     <?=sprintf(gettext("Enter a name for the Growl notifications (default: %s growl alert)."), $g['product_name']); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_ipaddress" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Address"); ?></td>
                 <td>
-                  <input name="ipaddress" type="text" value="<?=$pconfig['ipaddress']; ?>" /><br />
-                  <output class="hidden" for="help_for_ipaddress">
+                  <input name="ipaddress" type="text" value="<?=$pconfig['ipaddress']; ?>" />
+                  <div class="hidden" data-for="help_for_ipaddress">
                     <?=gettext("This is the IP address that you would like to send growl notifications to."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_password" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Password"); ?></td>
                 <td>
-                  <input name="password" type="password" value="<?=$pconfig['password']; ?>"/><br />
-                  <output class="hidden" for="help_for_password">
+                  <input name="password" type="password" value="<?=$pconfig['password']; ?>"/>
+                  <div class="hidden" data-for="help_for_password">
                     <?=gettext("Enter the password of the remote growl notification device."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <th colspan="2"><?=gettext("SMTP Email"); ?></th>
+                <td style="width:22%"><strong><?=gettext("SMTP Email"); ?></strong></td>
+                <td style="width:78%"></td>
               </tr>
               <tr>
                 <td><a id="help_for_disable_smtp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable SMTP Notifications"); ?></td>
                 <td>
                   <input type="checkbox" name="disable_smtp" value="yes" <?=!empty($pconfig['disable_smtp']) ? "checked=\"checked\"" : "";?>/>
-                  <output class="hidden" for="help_for_disable_smtp">
+                  <div class="hidden" data-for="help_for_disable_smtp">
                     <?=gettext("Check this option to disable SMTP notifications but preserve the settings below. Some other mechanisms, such as packages, may need these settings in place to function."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_smtpipaddress" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email server"); ?></td>
                 <td>
                   <input name="smtpipaddress" type="text" value="<?=$pconfig['smtpipaddress']; ?>" />
-                  <output class="hidden" for="help_for_smtpipaddress">
+                  <div class="hidden" data-for="help_for_smtpipaddress">
                     <?=gettext("This is the FQDN or IP address of the SMTP Email server to which notifications will be sent."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_smtpport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SMTP Port of Email server"); ?></td>
                 <td>
                   <input name="smtpport" type="text" value="<?=$pconfig['smtpport']; ?>" />
-                  <output class="hidden" for="help_for_smtpport">
+                  <div class="hidden" data-for="help_for_smtpport">
                     <?=gettext("This is the port of the SMTP Email server, typically 25, 587 (submission) or 465 (smtps)"); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Secure SMTP Connection"); ?></td>
                 <td>
                   <input type="checkbox" id="smtpssl" name="smtpssl" <?=!empty($pconfig['smtpssl']) ? "checked=\"checked\"" : "";?> />
-                  <strong><?=gettext('Enable SMTP over SSL/TLS');?></strong><br />
+                  <?=gettext('Enable SMTP over SSL/TLS');?><br/>
                   <input type="checkbox" id="smtptls" name="smtptls" <?=!empty($pconfig['smtptls']) ? "checked=\"checked\"" : "";?> />
-                  <strong><?=gettext('Enable STARTTLS');?></strong><br />
+                  <?=gettext('Enable STARTTLS');?><br/>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_smtpfromaddress" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sender address"); ?></td>
                 <td>
                   <input name="smtpfromaddress" type="text" value="<?=$pconfig['smtpfromaddress']; ?>" />
-                  <output class="hidden" for="help_for_smtpfromaddress">
+                  <div class="hidden" data-for="help_for_smtpfromaddress">
                     <?=gettext("This is the email address that will appear as the email notification sender."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_smtpnotifyemailaddress" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Recipient address"); ?></td>
                 <td>
                   <input name="smtpnotifyemailaddress" type="text" value="<?=$pconfig['smtpnotifyemailaddress'];?>" />
-                  <output class="hidden" for="help_for_smtpnotifyemailaddress">
+                  <div class="hidden" data-for="help_for_smtpnotifyemailaddress">
                     <?=gettext("Enter the email address that you would like email notifications sent to."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_smtpusername" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email auth username"); ?></td>
                 <td>
                   <input name="smtpusername" type="text" value="<?=$pconfig['smtpusername']; ?>" />
-                  <output class="hidden" for="help_for_smtpusername">
-                    <small><?=gettext("(optional)");?></small><br/>
+                  <div class="hidden" data-for="help_for_smtpusername">
                     <?=gettext("Enter the email address username for SMTP authentication."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_smtppassword" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email auth password"); ?></td>
                 <td>
-                  <input name='smtppassword' type='password' value='<?=$pconfig['smtppassword']; ?>' /><br />
-                  <output class="hidden" for="help_for_smtppassword">
-                    <small><?=gettext("(optional)");?></small><br/>
+                  <input name='smtppassword' type='password' value='<?=$pconfig['smtppassword']; ?>' />
+                  <div class="hidden" data-for="help_for_smtppassword">
                     <?=gettext("Enter the email address password for SMTP authentication."); ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td colspan="2">&nbsp;</td>
-              </tr>
-              <!-- System Sounds -->
-              <tr>
-                <th colspan="2"><?=gettext("System Sounds"); ?></th>
+                <td style="width:22%"><strong><?= gettext('System Sounds') ?></strong></td>
+                <td style="width:78%"></td>
               </tr>
               <tr>
                 <td><a id="help_for_disablebeep" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Startup/Shutdown Sound"); ?></td>
                 <td>
                   <input name="disablebeep" type="checkbox" id="disablebeep" value="yes" <?=!empty($pconfig['disablebeep']) ? "checked=\"checked\"" : "";?>/>
-                  <strong><?=gettext("Disable the startup/shutdown beep"); ?></strong>
-                  <br />
-                  <output class="hidden" for="help_for_disablebeep">
-                    <span class="vexpl"><?=gettext("When this is checked, startup and shutdown sounds will no longer play."); ?></span>
-                  </output>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="2">&nbsp;</td>
-              </tr>
-              <tr>
-                <td></td>
-                <td>
-                  <input type="submit" id="Submit" name="Submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                </td>
-              </tr>
-              <tr>
-                <td></td>
-                <td>
-                  <input type="submit" id="test_growl" name="test_growl" value="<?=gettext("Test Growl"); ?>" class="btn btn-primary" />
-                  <input type="submit" id="test_smtp" name="test_smtp" value="<?=gettext("Test SMTP"); ?>" class="btn btn-primary" />
-                  <br />
-                  <small><?= gettext("NOTE: A test notification will be sent even if the service is marked as disabled.") ?></small>
+                  <?=gettext("Disable the startup/shutdown beep"); ?>
+                  <div class="hidden" data-for="help_for_disablebeep">
+                    <?=gettext("When this is checked, startup and shutdown sounds will no longer play."); ?>
+                  </div>
                 </td>
               </tr>
             </table>
-          </form>
-        </div>
+          </div>
+          <div class="content-box tab-content table-responsive">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"></td>
+                <td style="width:78%">
+                  <input type="submit" id="Submit" name="Submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                  <input type="submit" id="test_growl" name="test_growl" value="<?=gettext("Test Growl"); ?>" class="btn btn-default" />
+                  <input type="submit" id="test_smtp" name="test_smtp" value="<?=gettext("Test SMTP"); ?>" class="btn btn-default" /><br/>
+                  <div data-for="help_for_notifytest">
+                    <?= gettext('A test notification will be sent even if the service is marked as disabled.') ?>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </form>
       </section>
     </div>
   </div>

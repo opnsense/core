@@ -56,7 +56,7 @@ function getFormData(parent) {
             // we need an id.
             return;
         }
-        var node = data ; // target node
+        var node = data; // target node
         var sourceNode = $(this); // document node to fetch data from
         var keyparts = sourceNode.prop('id').split('.');
         $.each(keyparts,function(indx,keypart){
@@ -67,11 +67,20 @@ function getFormData(parent) {
                 node = node[keypart];
             } else {
                 if (sourceNode.is("select")) {
+                    var separator = ",";
+                    if (sourceNode.data('separator') != undefined) {
+                        // select defined it's own separator
+                        separator = sourceNode.data('separator');
+                        if (separator.match(/#[0-9]{1,3}/g)) {
+                            // use char() code
+                            separator = String.fromCharCode(parseInt(separator.substr(1)));
+                        }
+                    }
                     // selectbox, collect selected items
                     var tmp_str = "";
                     sourceNode.children().each(function(index){
                         if ($(this).prop("selected")){
-                            if (tmp_str != "") tmp_str = tmp_str + ",";
+                            if (tmp_str != "") tmp_str = tmp_str + separator;
                             tmp_str = tmp_str + $(this).val();
                         }
                     });
@@ -79,9 +88,9 @@ function getFormData(parent) {
                 } else if (sourceNode.prop("type") == "checkbox") {
                     // checkbox input type
                     if (sourceNode.prop("checked")) {
-                        node[keypart] = "1" ;
+                        node[keypart] = "1";
                     } else {
-                        node[keypart] = "0" ;
+                        node[keypart] = "0";
                     }
                 } else {
                     // regular input type
@@ -108,16 +117,16 @@ function getFormData(parent) {
  */
 function setFormData(parent,data) {
     $( "#"+parent+"  input,#"+parent+" select,#"+parent+" span,#"+parent+" textarea" ).each(function( index ) {
-        if ($(this).prop('id') == undefined) {
+        if ($(this).prop('id') == undefined || $(this).prop('id') == "") {
             // we need an id.
             return;
         }
-        var node = data ;
+        var node = data;
         var targetNode = $(this); // document node to fetch data to
         var keyparts = $(this).prop('id').split('.');
         $.each(keyparts,function(indx,keypart){
             if (keypart in node) {
-                if (indx < keyparts.length - 1 ) {
+                if (indx < keyparts.length - 1) {
                     node = node[keypart];
                 } else {
                     // data node found, handle per type
@@ -134,9 +143,9 @@ function setFormData(parent,data) {
                     } else if (targetNode.prop("type") == "checkbox") {
                         // checkbox type
                         if (node[keypart] != 0) {
-                            targetNode.prop("checked",true) ;
+                            targetNode.prop("checked",true);
                         } else {
-                            targetNode.prop("checked",false) ;
+                            targetNode.prop("checked",false);
                         }
                     } else if (targetNode.is("span")) {
                         if (node[keypart] != null) {
@@ -147,6 +156,7 @@ function setFormData(parent,data) {
                         // regular input type
                         targetNode.val(htmlDecode(node[keypart]));
                     }
+                    targetNode.change();
                 }
             }
         });
@@ -162,11 +172,11 @@ function setFormData(parent,data) {
 function handleFormValidation(parent,validationErrors) {
     $( "#"+parent).find("*").each(function( index ) {
         if (validationErrors != undefined && $(this).prop('id') in validationErrors) {
-            $("*[for='" + $(this).prop('id') + "']").addClass("has-error");
-            $("span[for='" + $(this).prop('id') + "']").text(validationErrors[$(this).prop('id')]);
+            $("*[id*='" + $(this).prop('id') + "']").addClass("has-error");
+            $("span[id='help_block_" + $(this).prop('id') + "']").text(validationErrors[$(this).prop('id')]);
         } else {
-            $("*[for='" + $(this).prop('id') + "']").removeClass("has-error");
-            $("span[for='" + $(this).prop('id') + "']").text("");
+            $("*[id*='" + $(this).prop('id') + "']").removeClass("has-error");
+            $("span[id='help_block_" + $(this).prop('id') + "']").text("");
         }
     });
 }

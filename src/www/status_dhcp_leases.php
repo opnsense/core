@@ -67,8 +67,6 @@ function remove_duplicate($array, $field)
 $interfaces = legacy_config_get_interfaces(array('virtual' => false));
 $leasesfile = services_dhcpd_leasesfile();
 
-$wol_installed = trim(configd_run('firmware plugin wol'));
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $awk = "/usr/bin/awk";
     /* this pattern sticks comments into a single array item */
@@ -365,7 +363,7 @@ include("head.inc");?>
                     <td class="act_sort" data-field="end"><?=gettext("End"); ?></td>
                     <td class="act_sort" data-field="online"><?=gettext("Status"); ?></td>
                     <td class="act_sort" data-field="act"><?=gettext("Lease type"); ?></td>
-                    <td>&nbsp;</td>
+                    <td class="text-nowrap"></td>
                 </tr>
               </thead>
               <tbody>
@@ -417,17 +415,7 @@ include("head.inc");?>
                   <td><?=$data['int'];?></td>
                   <td><?=$data['ip'];?></td>
                   <td>
-<?php
-                      if ($wol_installed): ?>
-                      <a href="services_wol.php?if=<?=$data['if'];?>&amp;mac=<?=$data['mac'];?>" title="<?=gettext("send Wake on LAN packet to this MAC address");?>">
-                        <?=$data['mac'];?>
-                      </a>
-<?php
-                      else: ?>
-                        <?=$data['mac'];?>
-<?php
-                      endif; ?>
-                      <br />
+                      <?=$data['mac'];?><br />
                       <small><i><?=!empty($mac_man[$mac_hi]) ? $mac_man[$mac_hi] : "";?></i></small>
                   </td>
                   <td><?=$data['hostname'];?></td>
@@ -436,26 +424,19 @@ include("head.inc");?>
                   <td><?=!empty($data['end']) ? adjust_gmt($data['end']) : "";?></td>
                   <td><?=$data['online'];?></td>
                   <td><?=$data['act'];?></td>
-                  <td>
+                  <td class="text-nowrap">
 <?php
                     if ($data['type'] == "dynamic"):?>
                       <a class="btn btn-default btn-xs" href="services_dhcp_edit.php?if=<?=$data['if'];?>&amp;mac=<?=$data['mac'];?>&amp;hostname=<?=$data['hostname'];?>">
-                        <span class="glyphicon glyphicon-plus" data-toggle="tooltip" title="<?=gettext("add a static mapping for this MAC address");?>" alt="add" ></span>
+                        <i class="fa fa-plus fa-fw" data-toggle="tooltip" title="<?=gettext("add a static mapping for this MAC address");?>"></i>
                       </a>
-<?php
-                    endif;?>
-<?php
-                    if ($wol_installed): ?>
-                    <a class="btn btn-default btn-xs" href="services_wol_edit.php?if=<?=$data['if'];?>&amp;mac=<?=$data['mac'];?>&amp;descr=<?=$data['hostname'];?>">
-                      <span class="glyphicon glyphicon-flash" data-toggle="tooltip"  title="<?=gettext("add a Wake on LAN mapping for this MAC address");?>" alt="add"></span>
-                    </a>
 <?php
                     endif;?>
 <?php
                     if (($data['type'] == "dynamic") && ($data['online'] != "online")):?>
 
                       <a class="act_delete btn btn-default btn-xs" href="#" data-deleteip="<?=$data['ip'];?>">
-                        <span class="fa fa-trash text-muted" title="<?=gettext("delete this DHCP lease");?>" data-toggle="tooltip" alt="delete" ></span>
+                        <i class="fa fa-trash fa-fw" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"></i>
                       </a>
 <?php
                     endif;?>

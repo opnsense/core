@@ -101,21 +101,24 @@ class Routing
         // we should consider some kind of caching here
         //
         $registered_modules = array();
-        foreach (glob($this->rootDir."*", GLOB_ONLYDIR) as $namespace_base) {
-            foreach (glob($namespace_base."/*", GLOB_ONLYDIR) as $module_base) {
-                if (is_dir($module_base.$this->suffix)) {
-                    $basename = strtolower(basename($module_base));
-                    $api_base = $module_base . $this->suffix;
-                    $namespace_name = str_replace('/', '\\', str_replace($this->rootDir, '', $api_base));
-                    if (empty($registered_modules[$basename])) {
-                        $registered_modules[$basename] = array();
+        $rootDirs = is_object($this->rootDir) || is_array($this->rootDir) ? $this->rootDir : array($this->rootDir);
+        foreach ($rootDirs as $rootDir) {
+            foreach (glob($rootDir."*", GLOB_ONLYDIR) as $namespace_base) {
+                foreach (glob($namespace_base."/*", GLOB_ONLYDIR) as $module_base) {
+                    if (is_dir($module_base.$this->suffix)) {
+                        $basename = strtolower(basename($module_base));
+                        $api_base = $module_base . $this->suffix;
+                        $namespace_name = str_replace('/', '\\', str_replace($rootDir, '', $api_base));
+                        if (empty($registered_modules[$basename])) {
+                            $registered_modules[$basename] = array();
+                        }
+                        // always place OPNsense components on top
+                        $sortOrder = stristr($module_base, '/OPNsense/') ? "0" : count($registered_modules[$basename]) + 1;
+                        $registered_modules[$basename][$sortOrder] = array();
+                        $registered_modules[$basename][$sortOrder]['namespace'] = $namespace_name;
+                        $registered_modules[$basename][$sortOrder]['path'] = $api_base;
+                        ksort($registered_modules[$basename]);
                     }
-                    // always place OPNsense components on top
-                    $sortOrder = stristr($module_base, '/OPNsense/') ? "0" : count($registered_modules[$basename]) + 1;
-                    $registered_modules[$basename][$sortOrder] = array();
-                    $registered_modules[$basename][$sortOrder]['namespace'] = $namespace_name;
-                    $registered_modules[$basename][$sortOrder]['path'] = $api_base;
-                    ksort($registered_modules[$basename]);
                 }
             }
         }
@@ -125,40 +128,42 @@ class Routing
         // where module is mapped to the corresponding namespace
         foreach ($registered_modules as $module_name => $module_configs) {
             $namespace = array_shift($module_configs)['namespace'];
-            $this->router->add("/".$module_name."/", array(
-                "namespace" => $namespace
+            $this->router->add("/{$this->type}/" . $module_name, array(
+                "namespace" => $namespace,
             ));
 
-            $this->router->add("/".$module_name."/:controller/", array(
+            $this->router->add("/{$this->type}/" . $module_name . "/:controller", array(
                 "namespace" => $namespace,
                 "controller" => 1
             ));
 
-            $this->router->add("/".$module_name."/:controller/:action/", array(
+            $this->router->add("/{$this->type}/" . $module_name . "/:controller/:action", array(
                 "namespace" => $namespace,
                 "controller" => 1,
                 "action" => 2
             ));
 
 
-            $this->router->add("/".$module_name."/:controller/:action/:params", array(
+            $this->router->add("/{$this->type}/".$module_name."/:controller/:action/:params", array(
                 "namespace" => $namespace,
                 "controller" => 1,
                 "action" => 2,
                 "params" => 3
             ));
 
+            // In case we have overlapping modules, map additional controllers on top.
+            // This can normally only happens with 3rd party plugins hooking into standard functionality
             if (count($module_configs) > 0) {
                 foreach ($module_configs as $module_config) {
                     foreach (glob($module_config['path']."/*.php") as $filename) {
                         // extract controller name and bind static in routing table
                         $controller = strtolower(str_replace('Controller.php', '', basename($filename)));
-                        $this->router->add("/{$module_name}/{$controller}/:action/", array(
+                        $this->router->add("/{$this->type}/{$module_name}/{$controller}/:action", array(
                             "namespace" => $module_config['namespace'],
                             "controller" => $controller,
                             "action" => 1
                         ));
-                        $this->router->add("/{$module_name}/{$controller}/:action/:params", array(
+                        $this->router->add("/{$this->type}/{$module_name}/{$controller}/:action/:params", array(
                             "namespace" => $module_config['namespace'],
                             "controller" => $controller,
                             "action" => 1,
@@ -167,6 +172,10 @@ class Routing
                     }
                 }
             }
+            $this->router->setUriSource(
+                Router::URI_SOURCE_SERVER_REQUEST_URI
+            );
+            $this->router->removeExtraSlashes(true);
         }
     }
 

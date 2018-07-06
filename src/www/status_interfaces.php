@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2009 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2009 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("system.inc");
@@ -36,10 +36,12 @@ require_once("interfaces.inc");
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['if']) && !empty($_POST['submit'])) {
         $interface = $_POST['if'];
-        if (!empty($_POST['status']) && $_POST['status'] == 'up') {
+        if ($_POST['submit'] == 'remote') {
+            configd_run(exec_safe('interface reconfigure %s', array($interface)));
+        } elseif (!empty($_POST['status']) && $_POST['status'] == 'up') {
             interface_bring_down($interface);
         } else {
-            interface_configure($interface);
+            interface_configure(false, $interface, true);
         }
         header(url_safe('Location: /status_interfaces.php'));
         exit;
@@ -48,7 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 include("head.inc");
 ?>
-<script type="text/javascript">
+<body>
+
+<script>
   $( document ).ready(function() {
     $("#collapse_all").click(function(){
         $(".interface_details").collapse('toggle');
@@ -56,7 +60,6 @@ include("head.inc");
   });
 </script>
 
-<body>
 <?php include("fbegin.inc"); ?>
     <section class="page-content-main">
       <div class="container-fluid">
@@ -79,23 +82,25 @@ include("head.inc");
                   <table class="table">
                     <thead>
                       <tr>
-                        <th colspan="2">
-                          <i class="fa fa-chevron-down" style="cursor: pointer;" data-toggle="collapse" data-target="#<?= htmlspecialchars($ifname) ?>"></i>
-                          <?= htmlspecialchars($ifname) ?> <?= gettext("interface") ?> (<?= htmlspecialchars($ifdescr) ?>, <?= htmlspecialchars($ifinfo['if']) ?>)
-  <?php
-                          if (!isset($first_row)):
-                            $first_row=false; ?>
-                          <div class="pull-right">
-                            <i class="fa fa-expand" id="collapse_all" style="cursor: pointer;"  data-toggle="tooltip" title="<?= gettext("collapse/expand all") ?>"></i> &nbsp;
-                          </div>
-  <?php
-                          endif;?>
+                        <th style="cursor: pointer; width: 100%" data-toggle="collapse" data-target="#status_interfaces_<?=$ifname?>">
+                          <i class="fa fa-chevron-down" style="margin-right: .4em; float: left"></i>
+                          <?= $ifname ?> <?= gettext("interface") ?> (<?= $ifdescr ?>, <?= htmlspecialchars($ifinfo['if']) ?>)
                         </th>
+<?php
+                        if (!isset($first_row)):
+                          $first_row=false; ?>
+                        <th id="collapse_all" style="cursor: pointer; padding-left: .5em; padding-right: .5em" data-toggle="tooltip" title="<?= gettext("collapse/expand all") ?>">
+                          <div class="pull-right">
+                            <i class="fa fa-expand"></i>
+                          </div>
+                        </th>
+<?php
+                        endif;?>
                       </tr>
                     </thead>
                   </table>
                 </div>
-                <div class="interface_details collapse table-responsive"  id="<?= htmlspecialchars($ifname) ?>">
+                <div class="interface_details collapse table-responsive"  id="status_interfaces_<?=$ifname?>">
                   <table class="table table-striped">
                   <tbody>
                     <tr>
@@ -111,7 +116,8 @@ include("head.inc");
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['dhcplink'] ?>" />
                           <?= $ifinfo['dhcplink'] ?>&nbsp;&nbsp;
-                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['dhcplink'] == "up" ? gettext("Release") : gettext("Renew"); ?>" />
+                          <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
+                          <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['dhcplink'] == "up" ? gettext("Release") : gettext("Renew") ?></button>
                         </form>
                       </td>
                     </tr>
@@ -125,7 +131,8 @@ include("head.inc");
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['dhcp6link'] ?>" />
                           <?= $ifinfo['dhcp6link'] ?>&nbsp;&nbsp;
-                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['dhcp6link'] == "up" ? gettext("Release") : gettext("Renew") ?>" />
+                          <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
+                          <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['dhcp6link'] == "up" ? gettext("Release") : gettext("Renew") ?></button>
                         </form>
                       </td>
                     </tr>
@@ -139,7 +146,8 @@ include("head.inc");
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['pppoelink'] ?>" />
                           <?= $ifinfo['pppoelink'] ?>&nbsp;&nbsp;
-                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['pppoelink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?>" />
+                          <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
+                          <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['pppoelink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?></button>
                         </form>
                       </td>
                     </tr>
@@ -153,7 +161,8 @@ include("head.inc");
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['pptplink'] ?>" />
                           <?= $ifinfo['pptplink'] ?>&nbsp;&nbsp;
-                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['pptplink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?>" />
+                          <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
+                          <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['pptplink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?></button>
                         </form>
                       </td>
                     </tr>
@@ -167,7 +176,8 @@ include("head.inc");
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['l2tplink'] ?>" />
                           <?=$ifinfo['l2tplink'];?>&nbsp;&nbsp;
-                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['l2tplink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?>" />
+                          <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
+                          <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['l2tplink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?></button>
                         </form>
                       </td>
                     </tr>
@@ -181,13 +191,12 @@ include("head.inc");
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
                           <input type="hidden" name="status" value="<?= $ifinfo['ppplink'] ?>" />
                           <?= $ifinfo['pppinfo'] ?>
+                          <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
                           <?php if ($ifinfo['ppplink'] == "up"): ?>
-                            <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= gettext("Disconnect") ?>" />
-                          <?php else: ?>
-                            <?php if (!$ifinfo['nodevice']): ?>
-                              <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= gettext("Connect") ?>" />
-                            <?php endif; ?>
-                          <?php endif; ?>
+                            <button type="submit" name="submit" class="btn btn-xs" value="local"><?= gettext("Disconnect") ?></button>
+                          <?php elseif (!$ifinfo['nodevice']): ?>
+                            <button type="submit" name="submit" class="btn btn-xs" value="local"><?= gettext("Connect") ?></button>
+                          <?php endif ?>
                         </form>
                       </td>
                     </tr>
@@ -323,7 +332,7 @@ include("head.inc");
                     endif;
                     if ($ifdescr == 'wan' && file_exists('/etc/resolv.conf')): ?>
                     <tr>
-                      <td><?= gettext("ISP DNS servers") ?></td>
+                      <td><?= gettext("DNS servers") ?></td>
                       <td>
 <?php
                         foreach(get_dns_servers() as $dns):
@@ -396,19 +405,19 @@ include("head.inc");
                     endif; ?>
                     <tr>
                       <td><?= gettext("In/out packets") ?></td>
-                      <td> <?= $ifpfcounters['inpkts'] ?> / <?= $ifpfcounters['outpkts'] ?>
+                      <td class="text-nowrap"> <?= $ifpfcounters['inpkts'] ?> / <?= $ifpfcounters['outpkts'] ?><wbr>
                           (<?= format_bytes($ifpfcounters['inbytes']);?> / <?=format_bytes($ifpfcounters['outbytes']);?> )
                       </td>
                     </tr>
                     <tr>
                       <td><?= gettext("In/out packets (pass)") ?></td>
-                      <td> <?= $ifpfcounters['inpktspass'] ?> / <?= $ifpfcounters['outpktspass'] ?>
+                      <td class="text-nowrap"> <?= $ifpfcounters['inpktspass'] ?> / <?= $ifpfcounters['outpktspass'] ?><wbr>
                           (<?= format_bytes($ifpfcounters['inbytespass']) ?> / <?= format_bytes($ifpfcounters['outbytespass']) ?> )
                       </td>
                     </tr>
                     <tr>
                       <td><?= gettext("In/out packets (block)") ?></td>
-                      <td> <?= $ifpfcounters['inpktsblock'] ?> / <?= $ifpfcounters['outpktsblock'] ?>
+                      <td class="text-nowrap"> <?= $ifpfcounters['inpktsblock'] ?> / <?= $ifpfcounters['outpktsblock'] ?><wbr>
                           (<?= format_bytes($ifpfcounters['inbytesblock']) ?> / <?= format_bytes($ifpfcounters['outbytesblock']) ?> )
                       </td>
                     </tr>

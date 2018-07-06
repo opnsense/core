@@ -37,6 +37,11 @@ use OPNsense\Core\Config;
 class ControllerBase extends ControllerRoot
 {
     /**
+     * @var array Content-Security-Policy extensions, when set they will be merged with the defaults
+     */
+    protected $content_security_policy = array();
+
+    /**
      * convert xml form definition to simple data structure to use in our Volt templates
      *
      * @param $xmlNode
@@ -161,25 +166,28 @@ class ControllerBase extends ControllerRoot
         }
         $this->view->setVars(['csrf_tokenKey' => $csrf_tokenKey, 'csrf_token' => $csrf_token]);
 
-        // link menu system to view, append /ui in uri because of rewrite
+        // link menu system to view
         $menu = new Menu\MenuSystem();
 
         // add interfaces to "Interfaces" menu tab... kind of a hack, may need some improvement.
         $cnf = Config::getInstance();
 
         $this->view->setVar('lang', $this->translator);
-        $this->view->menuSystem = $menu->getItems("/ui".$this->router->getRewriteUri());
+        $this->view->menuSystem = $menu->getItems($this->router->getRewriteUri());
         /* XXX generating breadcrumbs requires getItems() call */
         $this->view->menuBreadcrumbs = $menu->getBreadcrumbs();
 
         // set theme in ui_theme template var, let template handle its defaults (if there is no theme).
         if ($cnf->object()->theme->count() > 0 && !empty($cnf->object()->theme) &&
-            is_dir('/usr/local/opnsense/www/themes/'.(string)$cnf->object()->theme)
+            (
+                is_dir('/usr/local/opnsense/www/themes/'.(string)$cnf->object()->theme) ||
+                !is_dir('/usr/local/opnsense/www/themes')
+            )
         ) {
             $this->view->ui_theme = $cnf->object()->theme;
         }
 
-        $product_vars = json_decode(file_get_contents('/usr/local/opnsense/firmware-product'), true);
+        $product_vars = json_decode(file_get_contents(__DIR__.'/../../../../../firmware-product'), true);
         foreach ($product_vars as $product_key => $product_var) {
             $this->view->$product_key = $product_var;
         }
@@ -204,5 +212,27 @@ class ControllerBase extends ControllerRoot
 
         // append ACL object to view
         $this->view->acl = new \OPNsense\Core\ACL();
+
+        // set security policies
+        $policies = array(
+            "default-src" => "'self'",
+            "img-src" => "'self'",
+            "script-src" => "'self' 'unsafe-inline' 'unsafe-eval'",
+            "style-src" => "'self' 'unsafe-inline' 'unsafe-eval'");
+        foreach ($this->content_security_policy as $policy_name => $policy_content) {
+            if (empty($policies[$policy_name])) {
+                $policies[$policy_name] = "";
+            }
+            $policies[$policy_name] .=  " {$policy_content}";
+        }
+        $csp = "";
+        foreach ($policies as $policy_name => $policy) {
+            $csp .= $policy_name . " " . $policy . " ;";
+        }
+        $this->response->setHeader('Content-Security-Policy', $csp);
+        $this->response->setHeader('X-Frame-Options', "SAMEORIGIN");
+        $this->response->setHeader('X-Content-Type-Options', "nosniff");
+        $this->response->setHeader('X-XSS-Protection', "1; mode=block");
+        $this->response->setHeader('Referrer-Policy', "same-origin");
     }
 }

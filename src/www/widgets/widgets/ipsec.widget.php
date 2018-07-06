@@ -75,28 +75,28 @@ if (isset($config['ipsec']['phase1'])) {
 
 if (isset($config['ipsec']['phase2'])) {
 ?>
-<script type="text/javascript">
+<script>
     $(document).ready(function() {
-        $(".ipsec-tab").click(function(){
+        $(".ipsec-tab").unbind('click').click(function(){
             $(".ipsec-tab").css('background-color', '#777777');
             $(".ipsec-tab").css('color', 'white');
             $(this).css('background-color', '#EEEEEE');
             $(this).css('color', 'black');
             $(".ipsec-tab-content").hide();
-            $("#"+$(this).attr('for')).show();
+            $("#"+$(this).attr('data-for')).show();
         });
     });
 </script>
 <div id="tabs">
-    <output for="ipsec-Overview" class="ipsec-tab table-cell" style="background-color:#EEEEEE; color:black; cursor: pointer; display:table-cell">
+    <div data-for="ipsec-Overview" class="ipsec-tab table-cell" style="background-color:#EEEEEE; color:black; cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Overview");?>&nbsp;&nbsp;</strong>
-    </output>
-    <output for="ipsec-tunnel" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
+    </div>
+    <div data-for="ipsec-tunnel" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Tunnels");?>&nbsp;&nbsp;</strong>
-    </output>
-    <output for="ipsec-mobile" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
+    </div>
+    <div data-for="ipsec-mobile" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Mobile");?>&nbsp;&nbsp;</strong>
-    </output>
+    </div>
 </div>
 
 <div id="ipsec-Overview" class="ipsec-tab-content" style="display:block;background-color:#EEEEEE;">
@@ -150,28 +150,19 @@ if (isset($config['ipsec']['phase2'])) {
       </tr>
     </thead>
     <tbody>
-<?php foreach ($ipsec_tunnels as $ipsec_key => $ipsec) :
-?>
+<?php foreach ($ipsec_tunnels as $ipsec_key => $ipsec): ?>
       <tr>
-          <td>
-            <?=$ipsec['local-addrs'];?> <br/>
-            (<?=$ipsec['remote-addrs'];?>)
-          </td>
-          <td><?=$ipsec['local-ts'];?></td>
-          <td><?=$ipsec['remote-ts'];?></td>
-          <td>
-          <?php if($ipsec['active']):
-?>
-              <span class='glyphicon glyphicon-transfer text-success' alt='Tunnel status'></span>
-          <?php else:
-?>
-            <span class='glyphicon glyphicon-transfer text-danger' alt='Tunnel status'></span>
-          <?php endif;
-?>
-          </td>
+        <td>
+          <?=$ipsec['local-addrs'];?> <br/>
+          (<?=$ipsec['remote-addrs'];?>)
+        </td>
+        <td><?=$ipsec['local-ts'];?></td>
+        <td><?=$ipsec['remote-ts'];?></td>
+        <td>
+          <i class="fa fa-exchange fa-fw text-<?= $ipsec['active'] ? 'success' : 'danger' ?>"></i>
+        </td>
       </tr>
-<?php endforeach;
-?>
+<?php endforeach ?>
     </tbody>
   </table>
 </div>
@@ -192,7 +183,7 @@ if (isset($config['ipsec']['phase2'])) {
         <td><?=htmlspecialchars($lease['user']);?></td>
         <td><?=htmlspecialchars($lease['address']);?></td>
         <td>
-          <span class='glyphicon glyphicon-transfer text-<?=$lease['status'] == 'online' ?  "success" : "danger";?>'></span>
+          <i class="fa fa-exchange fa-fw text-<?= $lease['status'] == 'online' ?  "success" : 'danger' ?>"></i>
         </td>
       </tr>
 
@@ -210,15 +201,8 @@ else {
    <table class="table table-striped" style="width:100%; border:0; cellpadding:0; cellspacing:0;">
     <tr>
       <td>
-          <span class="vexpl">
-            <span class="red">
-              <strong>
-                <?= gettext('Note: There are no configured IPsec Tunnels') ?><br />
-              </strong>
-            </span>
-            <?= sprintf(gettext('You can configure your IPsec %shere%s.'), '<a href="vpn_ipsec.php">', '</a>'); ?>
-          </span>
-    </td>
+        <?= gettext('Note: There are no configured IPsec Tunnels') ?>
+      </td>
     </tr>
   </table>
 </div>

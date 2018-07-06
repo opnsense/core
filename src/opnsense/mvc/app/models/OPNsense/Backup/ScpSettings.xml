@@ -1,0 +1,47 @@
+<model>
+    <mount>//system/backup/scp</mount>
+    <description>Backup the config using SCP.</description>
+    <version>0.1.0</version>
+    <items>
+        <enabled type="BooleanField">
+            <default>0</default>
+            <Required>Y</Required>
+        </enabled>
+        <hostname type="TextField">
+            <mask>/\S*/</mask>
+            <ValidationMessage>Please provide a hostname.</ValidationMessage>
+            <Constraints>
+                <check001>
+                    <type>DependConstraint</type>
+                    <addFields>
+                        <field1>enabled</field1>
+                    </addFields>
+                </check001>
+            </Constraints>
+        </hostname>
+        <port type="IntegerField">
+            <default>22</default>
+            <Required>Y</Required>
+            <MinimumValue>1</MinimumValue>
+            <MaximumValue>65535</MaximumValue>
+            <ValidationMessage>Please provide a valid port number between 1 and 65535. Port 22 is the default.</ValidationMessage>
+        </port>
+        <username type="TextField">
+            <mask>/\S*/</mask>
+            <ValidationMessage>Please provide a username.</ValidationMessage>
+            <Constraints>
+                <check001>
+                    <type>DependConstraint</type>
+                    <addFields>
+                        <field1>enabled</field1>
+                    </addFields>
+                </check001>
+            </Constraints>
+        </username>
+        <remotedirectory type="TextField">
+            <default>OPNsense-Backup</default>
+            <Required>Y</Required>
+            <ValidationMessage>Please provide a remote directory.</ValidationMessage>
+        </remotedirectory>
+    </items>
+</model>

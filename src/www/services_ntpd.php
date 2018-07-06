@@ -137,7 +137,7 @@ include("head.inc");
 ?>
 <body>
 
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     $("#showstatisticsbox").click(function(event){
         $("#showstatisticsbox").parent().hide();
@@ -244,12 +244,12 @@ include("head.inc");
 <?php
                       endforeach;?>
                       </select>
-                      <output class="hidden" for="help_for_interfaces">
+                      <div class="hidden" data-for="help_for_interfaces">
                         <?=gettext("Interfaces without an IP address will not be shown."); ?>
                         <br />
                         <br /><?=gettext("Selecting no interfaces will listen on all interfaces with a wildcard."); ?>
                         <br /><?=gettext("Selecting all interfaces will explicitly listen on only the interfaces/IPs specified."); ?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -272,7 +272,7 @@ include("head.inc");
                         foreach($pconfig['timeservers_host'] as $item_idx => $timeserver):?>
                           <tr>
                             <td>
-                              <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
+                              <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
                             </td>
                             <td>
                               <input name="timeservers_host[]" type="text" value="<?=$timeserver;?>" />
@@ -290,37 +290,37 @@ include("head.inc");
                         <tfoot>
                           <tr>
                             <td colspan="4">
-                              <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><span class="glyphicon glyphicon-plus"></span></div>
+                              <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><i class="fa fa-plus fa-fw"></i></div>
                             </td>
                           </tr>
                         </tfoot>
                       </table>
-                      <output class="hidden" for="help_for_timeservers">
+                      <div class="hidden" data-for="help_for_timeservers">
                         <?=gettext('For best results three to five servers should be configured here.'); ?>
                         <br />
                         <?= gettext('The "prefer" option indicates that NTP should favor the use of this server more than all others.') ?>
                         <br />
                         <?= gettext('The "do not use" option indicates that NTP should not use this server for time, but stats for this server will be collected and displayed.') ?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_orphan" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Orphan mode') ?></td>
                     <td>
                       <input name="orphan" type="text" value="<?=$pconfig['orphan']?>" />
-                      <output class="hidden" for="help_for_orphan">
+                      <div class="hidden" data-for="help_for_orphan">
                         <?=gettext("(0-15)");?><br />
                         <?=gettext("Orphan mode allows the system clock to be used when no other clocks are available. The number here specifies the stratum reported during orphan mode and should normally be set to a number high enough to insure that any other servers available to clients are preferred over this server. (default: 12)."); ?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_statsgraph" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('NTP graphs') ?></td>
                     <td>
                       <input name="statsgraph" type="checkbox" id="statsgraph" <?=!empty($pconfig['statsgraph']) ? " checked=\"checked\"" : ""; ?> />
-                      <output class="hidden" for="help_for_statsgraph">
+                      <div class="hidden" data-for="help_for_statsgraph">
                         <?=gettext("Enable rrd graphs of NTP statistics (default: disabled)."); ?>
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -331,9 +331,9 @@ include("head.inc");
                       <br />
                       <input name="logsys" type="checkbox" <?=!empty($pconfig['logsys']) ? " checked=\"checked\"" : ""; ?> />
                       <?=gettext("Enable logging of system messages (default: disabled)."); ?>
-                      <output class="hidden" for="help_for_syslog">
+                      <div class="hidden" data-for="help_for_syslog">
                         <?=gettext("These options enable additional messages from NTP to be written to the System Log");?> (<a href="diag_logs_ntpd.php"><?=gettext("Status > System Logs > NTP"); ?></a>).
-                      </output>
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -416,7 +416,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td style="width:22%; vertical-align:top">&nbsp;</td>
+                    <td style="width:22%">&nbsp;</td>
                     <td style="width:78%">
                     <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
                     </td>

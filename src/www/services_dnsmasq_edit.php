@@ -143,7 +143,7 @@ include("head.inc");
 
 <body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     /**
      *  Aliases
@@ -190,39 +190,39 @@ include("head.inc");
                   <td><a id="help_for_host" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Host");?></td>
                   <td>
                     <input name="host" type="text" id="host" value="<?=$pconfig['host'];?>" />
-                    <output class="hidden" for="help_for_host">
+                    <div class="hidden" data-for="help_for_host">
                       <?=gettext("Name of the host, without"." domain part"); ?><br />
                       <?=gettext("e.g."); ?> <em><?=gettext("myhost"); ?></em>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain");?></td>
                   <td>
                     <input name="domain" type="text" id="domain" value="<?=$pconfig['domain'];?>" />
-                    <output class="hidden" for="help_for_domain">
+                    <div class="hidden" data-for="help_for_domain">
                       <?=gettext("Domain of the host"); ?><br />
                       <?=gettext("e.g."); ?> <em><?=gettext("example.com"); ?></em>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_ip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP address");?></td>
                   <td>
                     <input name="ip" type="text" id="ip" value="<?=$pconfig['ip'];?>" />
-                    <output class="hidden" for="help_for_ip">
+                    <div class="hidden" data-for="help_for_ip">
                       <?=gettext("IP address of the host"); ?><br />
                       <?=gettext("e.g."); ?> <em>192.168.100.100</em> <?=gettext("or"); ?> <em>fd00:abcd::1</em><
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
                   <td>
                     <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
-                    <output class="hidden" for="help_for_descr">
+                    <div class="hidden" data-for="help_for_descr">
                       <?=gettext("You may enter a description here"." for your reference (not parsed).");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -248,7 +248,7 @@ include("head.inc");
                       foreach($aliases as $item):?>
                         <tr>
                           <td>
-                            <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
+                            <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
                           </td>
                           <td>
                             <input name="aliases_host[]" type="text" value="<?=$item['host'];?>" />
@@ -266,14 +266,14 @@ include("head.inc");
                       <tfoot>
                         <tr>
                           <td colspan="4">
-                            <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><span class="glyphicon glyphicon-plus"></span></div>
+                            <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><i class="fa fa-plus fa-fw"></i></div>
                           </td>
                         </tr>
                       </tfoot>
                     </table>
-                    <output class="hidden" for="help_for_alias">
+                    <div class="hidden" data-for="help_for_alias">
                       <?=gettext("Enter additional names for this host."); ?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>

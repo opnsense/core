@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2015-2017 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -32,7 +32,6 @@ namespace OPNsense\Base\FieldTypes;
 use OPNsense\Base\Validators\NetworkValidator;
 
 /**
- * Class PortField field type for ports, includes validation for services in /etc/services or valid number ranges.
  * @package OPNsense\Base\FieldTypes
  */
 class NetworkField extends BaseField
@@ -63,6 +62,11 @@ class NetworkField extends BaseField
     protected $internalWildcardEnabled = true;
 
     /**
+     * @var string Network family (ipv4, ipv6)
+     */
+    protected $internalAddressFamily = null;
+
+    /**
      * @var bool when set, results are returned as list (with all options enabled)
      */
     private $internalAsList = false;
@@ -87,6 +91,15 @@ class NetworkField extends BaseField
         } else {
             $this->internalNetMaskRequired = false;
         }
+    }
+
+    /**
+     * setter for address family
+     * @param $value address family [ipv4, ipv6, empty for all]
+     */
+    public function setAddressFamily($value)
+    {
+        $this->internalAddressFamily = trim(strtolower($value));
     }
 
     /**
@@ -156,7 +169,8 @@ class NetworkField extends BaseField
                 $validators[] = new NetworkValidator(array(
                     'message' => $this->internalValidationMessage,
                     'split' => $this->internalFieldSeparator,
-                    'netMaskRequired' => $this->internalNetMaskRequired
+                    'netMaskRequired' => $this->internalNetMaskRequired,
+                    'version' => $this->internalAddressFamily
                     ));
             }
         }

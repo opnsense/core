@@ -124,7 +124,7 @@ class Util
      * @param boolean $allow_range ranges allowed
      * @return boolean
      */
-    public function isPort($number, $allow_range = true)
+    public static function isPort($number, $allow_range = true)
     {
         $tmp = explode(':', $number);
         foreach ($tmp as $port) {
@@ -136,6 +136,20 @@ class Util
             }
         }
         if (($allow_range && count($tmp) <=2) || count($tmp) == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if provided string is a valid domain name
+     * @param string $domain
+     * @return false|int
+     */
+    public static function isDomain($domain)
+    {
+        $pattern = '/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i';
+        if (preg_match($pattern, $domain)) {
             return true;
         }
         return false;

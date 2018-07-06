@@ -82,6 +82,10 @@ class Metadata(object):
                 if rule_xml.find('files') is None:
                     syslog.syslog(syslog.LOG_ERR, 'suricata metadata missing files  @ %s' % filename)
                 else:
+                    http_headers = dict()
+                    if rule_xml.find('headers') is not None:
+                        for header in rule_xml.find('headers'):
+                            http_headers[header.tag] = header.text.strip()
                     for rule_filename in rule_xml.find('files'):
                         if 'documentation_url' in rule_filename.attrib:
                             documentation_url = rule_filename.attrib['documentation_url']
@@ -93,6 +97,7 @@ class Metadata(object):
                         metadata_record['documentation_url'] = documentation_url
                         metadata_record['source'] = src_location.attrib
                         metadata_record['filename'] = rule_filename.text.strip()
+                        metadata_record['http_headers'] = http_headers
                         # for an archive, define file to extract
                         metadata_record['url_filename'] = None
                         if 'url' in rule_filename.attrib and rule_filename.attrib['url'].startswith('inline::'):
@@ -103,7 +108,10 @@ class Metadata(object):
                         else:
                             metadata_record['url'] = ('%s/%s' % (metadata_record['source']['url'],
                                                                  metadata_record['filename']))
-
+                        if rule_xml.find('version') is not None and 'url' in rule_xml.find('version').attrib:
+                            metadata_record['version_url'] = rule_xml.find('version').attrib['url']
+                        else:
+                            metadata_record['version_url'] = None
                         if 'prefix' in src_location.attrib:
                             description_prefix = "%s/" % src_location.attrib['prefix']
                         else:

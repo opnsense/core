@@ -72,10 +72,18 @@ class SNatRule extends Rule
             } elseif (empty($rule['target'])) {
                 $interf = $rule['interface'];
                 if (!empty($this->interfaceMapping[$interf])) {
-                    if (($this->isIpV4($rule) && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
-                        (!$this->isIpV4($rule) && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv6']))
+                    $interf_settings = $this->interfaceMapping[$interf];
+                    if ((($this->isIpV4($rule) && !empty($interf_settings['ifconfig']['ipv4'])) ||
+                        (!$this->isIpV4($rule) && !empty($interf_settings['ifconfig']['ipv6'])))
+                        && (!empty($rule['poolopts']) || $rule['poolopts'] != 'round-robin')
                     ) {
-                        $rule['target'] = $this->interfaceMapping[$interf]['if'];
+                        // When pool options are set, we may not specify our interface as a list
+                        // (which doesn't require the same network validations as single items do).
+                        $rule['target'] = "{$interf_settings['if']}:0";
+                    } elseif (!empty($interf_settings['if'])) {
+                        // Define target as list, to prevent "no IP address found for *Interface*" when pf can't
+                        // find an address on the interface for the same protocol family.
+                        $rule['target'] = "({$interf_settings['if']}:0)";
                     }
                 }
                 if (empty($rule['target'])) {
@@ -84,6 +92,8 @@ class SNatRule extends Rule
                 }
             } elseif ($rule['target'] == "other-subnet") {
                 $rule['target'] = $rule['targetip'] . '/' . $rule['targetip_subnet'];
+            } elseif (!empty($rule['target']) && Util::isAlias($rule['target'])) {
+                $rule['target'] = "$".$rule['target'];
             }
             foreach (array("sourceport", "dstport", "natport") as $fieldname) {
                 if (!empty($rule[$fieldname]) && Util::isAlias($rule[$fieldname])) {

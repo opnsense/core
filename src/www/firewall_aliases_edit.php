@@ -89,9 +89,9 @@ function geoip_countries()
     foreach (explode("\n", file_get_contents('/usr/local/opnsense/contrib/tzdata/iso3166.tab')) as $line) {
         $line = trim($line);
         if (strlen($line) > 3 && substr($line, 0, 1) != '#') {
-          $code = substr($line, 0, 2);
-          $name = trim(substr($line, 2, 9999));
-          $result[$code] = $name;
+            $code = substr($line, 0, 2);
+            $name = trim(substr($line, 2, 9999));
+            $result[$code] = $name;
         }
     }
     uasort($result, function($a, $b) {return strcasecmp($a, $b);});
@@ -112,7 +112,9 @@ function geoip_regions()
         if (empty($line[2]) || strpos($line[2], '/') === false) {
             continue;
         }
-        $result[$line[0]] = explode('/', $line[2])[0];
+        if (empty($result[$line[0]])) {
+            $result[$line[0]] = explode('/', $line[2])[0];
+        }
     }
     return $result;
 }
@@ -377,7 +379,7 @@ include("head.inc");
 <?php
   include("fbegin.inc");
 ?>
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     /**
      * remove host/port row or clear values on last entry
@@ -408,7 +410,7 @@ include("head.inc");
                 if (used) {
                     return false;
                 } else {
-                    return ~item.toLowerCase().indexOf(this.query)
+                    return ~item.toLowerCase().indexOf(this.query.toLowerCase())
                 }
             }
         });
@@ -550,18 +552,18 @@ include("head.inc");
                       <input name="id" type="hidden" value="<?=$id;?>" />
                     <?php endif; ?>
                     <input name="name" type="text" id="name" class="form-control unknown" size="40" maxlength="31" value="<?=$pconfig['name'];?>" />
-                    <output class="hidden" for="help_for_name">
+                    <div class="hidden" data-for="help_for_name">
                       <?=gettext('The name of the alias may only consist of the characters "a-z, A-Z, 0-9 and _". Aliases can be nested using this name.'); ?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                   <td>
                     <input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
-                    <output class="hidden" for="help_for_description">
+                    <div class="hidden" data-for="help_for_description">
                       <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -585,7 +587,7 @@ include("head.inc");
                         <option value="IPv6" <?= in_array("IPv6", $pconfig['proto']) ? "selected=\"selected\"" : ""; ?>><?=gettext("IPv6");?></option>
                       </select>
                     </div>
-                    <output class="hidden" for="help_for_type">
+                    <div class="hidden" data-for="help_for_type">
                       <span class="text-info">
                         <?=gettext("Hosts")?><br/>
                       </span>
@@ -628,7 +630,7 @@ include("head.inc");
                         <?=gettext("Managed externally, the contents of this alias type could be managed by other scripts or services. ".
                                   "OPNsense only makes sure the alias exists and leaves the contents alone");?>
                       </small>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -648,7 +650,7 @@ include("head.inc");
                       foreach (!empty($pconfig['host_url']) ? $pconfig['host_url'] : array("") as $aliasid => $aliasurl):?>
                         <tr>
                           <td>
-                            <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
+                            <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
                           </td>
                           <td>
                             <input type="text" class="host_url fld_detail" name="host_url[]" value="<?=$aliasurl;?>"/>
@@ -677,7 +679,7 @@ include("head.inc");
                       <tfoot>
                         <tr>
                           <td colspan="4">
-                            <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><span class="glyphicon glyphicon-plus"></span></div>
+                            <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><i class="fa fa-plus fa-fw"></i></div>
                           </td>
                         </tr>
                       </tfoot>

@@ -109,8 +109,6 @@ function firmware_version_xmlrpc()
         'firmware' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense')),
         'kernel' => array('version' => file_get_contents('/usr/local/opnsense/version/kernel')),
         'base' => array('version' => file_get_contents('/usr/local/opnsense/version/base')),
-        # XXX hardcoded pre-17.7.2 compat, can remove this in 18.1
-        'config_version' => '11.2',
     );
 }
 
@@ -129,9 +127,9 @@ function filter_configure_xmlrpc()
     require_once("services.inc");
     require_once("rrd.inc");
 
-    filter_configure();
     system_routing_configure();
     setup_gateways_monitor();
+    filter_configure();
     system_hosts_generate();
     local_sync_accounts();
     plugins_configure('dns');

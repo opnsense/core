@@ -49,7 +49,7 @@ if (function_exists("display_error_form") && !isset($config['system']['webgui'][
     /* DNS ReBinding attack prevention */
     $found_host = false;
 
-    /* Either a IPv6 address with or without a alternate port */
+    /* either an IPv6 address with or without an alternate port */
     if (strstr($_SERVER['HTTP_HOST'], "]")) {
         $http_host_port = explode("]", $_SERVER['HTTP_HOST']);
         /* v6 address has more parts, drop the last part */
@@ -356,6 +356,29 @@ function userHasPrivilege($userent, $privid = false)
     return true;
 }
 
+function auth_get_shells($uid = 0)
+{
+    $shells = array('' => '/sbin/nologin');
+
+    if ($uid == 0) {
+        $shells = array('' => '/usr/local/sbin/opnsense-shell');
+    }
+
+    $etc_shells = @file_get_contents('/etc/shells');
+    if (!empty($etc_shells)) {
+        $etc_shells = explode("\n", $etc_shells);
+        foreach ($etc_shells as $shell) {
+            $shell = trim($shell);
+            if (!empty($shell) && strpos($shell, '#') !== 0 &&
+                strpos($shell, '/usr/local/etc/rc') !== 0) {
+                $shells[$shell] = $shell;
+            }
+        }
+    }
+
+    return $shells;
+}
+
 function local_sync_accounts()
 {
     global $config;
@@ -422,41 +445,54 @@ function local_user_set(&$user, $force_password = false)
         return;
     }
 
-    $user_uid = $user['uid'];
-    $user_name = $user['name'];
+    @mkdir('/home', 0755);
+
     $user_pass = $user['password'];
-    $user_home = "/home/{$user_name}";
-    $user_shell = '/sbin/nologin';
-    $user_group = 'nobody';
+    $user_name = $user['name'];
+    $user_uid = $user['uid'];
+
     $lock_account = 'lock';
 
-    @mkdir('/home', 0755);
+    $is_expired = !empty($user['expires']) &&
+        strtotime('-1 day') > strtotime(date('m/d/Y', strtotime($user['expires'])));
+
+    $is_disabled = isset($user['disabled']);
+
+    $is_unlocked = !$is_disabled && !$is_expired;
+
+    if ($is_unlocked) {
+        $lock_account = 'unlock';
+    } elseif ($user_uid == 0) {
+        /*
+         * The root account should not be locked as this will have
+         * side-effects such as cron not working correctly.  Set
+         * password to unreachable "*" instead.  Our auth framework
+         * already checks for disabled elsewhere so we only need to
+         * prevent root login in the console when integrated
+         * authentication is off.
+         */
+        $lock_account = 'unlock';
+        $user_pass = '*';
+    }
+
+    if ($user_uid == 0) {
+        $user_shell = isset($user['shell']) ? $user['shell'] : '/usr/local/sbin/opnsense-shell';
+        $user_group = 'wheel';
+        $user_home = '/root';
+    } else {
+        $user_shell = isset($user['shell']) ? $user['shell'] : '/sbin/nologin';
+        $user_home = "/home/{$user_name}";
+        $user_group = 'nobody';
+    }
 
     /* admins access gives wheely rights */
     if (userHasPrivilege($user, 'page-all')) {
         $user_group = 'wheel';
     }
 
-    /* configure shell type */
-    if (userHasPrivilege($user, 'user-shell-access')) {
-        $user_shell = '/bin/csh';
-    }
-
-    /* unlock valid shell users */
-    if (!is_account_disabled($user_name) && !is_account_expired($user_name)) {
-        $lock_account = 'unlock';
-    }
-
     /* passwords only when integrated auth is disabled or forced */
     if (!$force_password && empty($config['system']['disableintegratedauth'])) {
         $user_pass = '*';
-    }
-
-    /* root user special handling */
-    if ($user_uid == 0) {
-        $user_shell = isset($user['shell']) ? $user['shell'] : '/usr/local/etc/rc.initial';
-        $user_group = 'wheel';
-        $user_home = '/root';
     }
 
     /* read from pw db */
@@ -487,7 +523,7 @@ function local_user_set(&$user, $force_password = false)
     @chgrp($user_home, $user_group);
 
     /* write out ssh authorized key file */
-    if (isset($user['authorizedkeys'])) {
+    if ($is_unlocked && isset($user['authorizedkeys'])) {
         @mkdir("{$user_home}/.ssh", 0700);
         @chown("{$user_home}/.ssh", $user_name);
         $keys = base64_decode($user['authorizedkeys']);
@@ -687,29 +723,6 @@ function ldap_setup_caenv($authcfg)
     putenv("LDAPTLS_CACERT=/var/run/certs/{$caref['refid']}.ca");
 }
 
-
-function is_account_expired($username)
-{
-    $user = getUserEntry($username);
-    if (isset($user['expires']) && !empty($user['expires'])) {
-        if (strtotime("-1 day") > strtotime(date("m/d/Y",strtotime($user['expires'])))) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-function is_account_disabled($username)
-{
-    $user = getUserEntry($username);
-    if (isset($user['disabled'])) {
-        return true;
-    }
-
-    return false;
-}
-
 function auth_get_authserver($name)
 {
     global $config;
@@ -769,7 +782,12 @@ function auth_get_authserver_list()
     return $list;
 }
 
-function authenticate_user($username, $password, $authcfg = NULL)
+/**
+ * return authenticator object
+ * @param array|null $authcfg configuration
+ * @return Auth\Base type object
+ */
+function get_authenticator($authcfg = NULL)
 {
     if (empty($authcfg)) {
         $authName = 'Local Database';
@@ -785,8 +803,12 @@ function authenticate_user($username, $password, $authcfg = NULL)
     }
 
     $authFactory = new OPNsense\Auth\AuthenticationFactory;
-    $authenticator = $authFactory->get($authName);
+    return $authFactory->get($authName);
+}
 
+function authenticate_user($username, $password, $authcfg = NULL)
+{
+    $authenticator = get_authenticator($authcfg);
     if ($authenticator != null) {
         return $authenticator->authenticate($username, $password) ;
     } else {

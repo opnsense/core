@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2016-2017 Franco Fichtner <franco@opnsense.org>
-    Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2016-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 function system_powerd_configure($verbose = false)
 {
@@ -73,49 +73,41 @@ function system_powerd_configure($verbose = false)
 function get_default_sysctl_value($id)
 {
     $sysctls = array(
-        "debug.pfftpproxy" => "0",
-        "hw.syscons.kbd_reboot" => "0",
-        "kern.ipc.maxsockbuf" => "4262144",
-        "kern.randompid" => "347",
-        "kern.random.sys.harvest.interrupt" => 0,
-        "kern.random.sys.harvest.point_to_point" => 0,
-        "kern.random.sys.harvest.ethernet" => 0,
-        "kern.filedelay" => "5",
-        "kern.dirdelay" => "4",
-        "kern.metadelay" => "3",
-        "net.bpf.zerocopy_enable" => 1,
-        "net.inet.ip.portrange.first" => "1024",
-        "net.inet.tcp.blackhole" => "2",
-        "net.inet.udp.blackhole" => "1",
-        "net.inet.ip.random_id" => "1",
-        "net.inet.tcp.drop_synfin" => "1",
-        "net.inet.ip.redirect" => "1",
-        "net.inet6.ip6.redirect" => "1",
-        "net.inet6.ip6.use_tempaddr" => "0",
-        "net.inet6.ip6.prefer_tempaddr" => "0",
-        "net.inet.tcp.syncookies" => "1",
-        "net.inet.tcp.recvspace" => "65228",
-        "net.inet.tcp.sendspace" => "65228",
-        'net.inet.ip.sourceroute' => '0',
-        'net.inet.ip.accept_sourceroute' => '0',
+        'debug.pfftpproxy' => '0',
+        'hw.syscons.kbd_reboot' => '0',
+        'hw.ibrs_disable' => '0',
+        'kern.ipc.maxsockbuf' => '4262144',
+        'kern.randompid' => '347',
         'net.inet.icmp.drop_redirect' => '0',
+        'net.inet.icmp.icmplim' => '0',
         'net.inet.icmp.log_redirect' => '0',
-        "net.inet.tcp.delayed_ack" => "0",
-        "net.inet.udp.maxdgram" => "57344",
-        "net.inet.ip.intr_queue_maxlen" => "1000",
-        "net.inet.tcp.log_debug" => "0",
-        "net.inet.tcp.tso" => "1",
-        "net.inet.icmp.icmplim" => "0",
-        "net.inet.ip.process_options" => 0,
-        "net.inet.udp.checksum" => 1,
-        "net.link.bridge.pfil_bridge" => "0",
-        "net.link.bridge.pfil_local_phys" => "0",
-        "net.link.bridge.pfil_member" => "1",
-        "net.link.bridge.pfil_onlyip" => "0",
-        "net.link.tap.user_open" => "1",
-        "net.route.netisr_maxqlen" => 1024,
-        "net.inet.icmp.reply_from_interface" => 1,
-        "vfs.read_max" => "32",
+        'net.inet.ip.accept_sourceroute' => '0',
+        'net.inet.ip.intr_queue_maxlen' => '1000',
+        'net.inet.ip.portrange.first' => '1024',
+        'net.inet.ip.random_id' => '1',
+        'net.inet.ip.redirect' => '1',
+        'net.inet.ip.sourceroute' => '0',
+        'net.inet.tcp.blackhole' => '2',
+        'net.inet.tcp.delayed_ack' => '0',
+        'net.inet.tcp.drop_synfin' => '1',
+        'net.inet.tcp.log_debug' => '0',
+        'net.inet.tcp.recvspace' => '65228',
+        'net.inet.tcp.sendspace' => '65228',
+        'net.inet.tcp.syncookies' => '1',
+        'net.inet.tcp.tso' => '1',
+        'net.inet.udp.blackhole' => '1',
+        'net.inet.udp.checksum' => 1,
+        'net.inet.udp.maxdgram' => '57344',
+        'net.inet6.ip6.prefer_tempaddr' => '0',
+        'net.inet6.ip6.redirect' => '1',
+        'net.inet6.ip6.use_tempaddr' => '0',
+        'net.link.bridge.pfil_bridge' => '0',
+        'net.link.bridge.pfil_local_phys' => '0',
+        'net.link.bridge.pfil_member' => '1',
+        'net.link.bridge.pfil_onlyip' => '0',
+        'net.link.tap.user_open' => '1',
+        'vfs.read_max' => '32',
+        'vm.pmap.pti' => '1',
     );
 
     if (isset($sysctls[$id])) {
@@ -125,7 +117,7 @@ function get_default_sysctl_value($id)
     return null;
 }
 
-function activate_sysctls()
+function system_sysctl_get()
 {
     global $config;
 
@@ -147,7 +139,7 @@ function activate_sysctls()
         }
     }
 
-    set_sysctl($sysctls);
+    return $sysctls;
 }
 
 function system_resolvconf_generate($verbose = false)
@@ -387,11 +379,7 @@ function system_hostname_configure($verbose = false)
 
     $hostname = "{$syscfg['hostname']}.{$syscfg['domain']}";
 
-    /* set hostname */
     mwexecf('/bin/hostname %s', $hostname);
-
-    /* Setup host GUID ID.  This is used by ZFS. */
-    mwexec("/etc/rc.d/hostid start");
 
     if ($verbose) {
         echo "{$hostname}\n";
@@ -417,30 +405,64 @@ function system_host_route($host, $gateway, $delete = true, $add = true)
     }
 }
 
-function system_default_route($gateway, $interface = null)
+function system_default_route($gateway, $family, $interface, $far = false)
 {
-    if (is_ipaddrv4($gateway)) {
-        $family = 'inet';
-    } elseif (is_ipaddrv6($gateway)) {
-        $family = 'inet6';
-        if (is_linklocal($gateway)) {
-            $gateway .= "%{$interface}";
-        }
-        /* IPv6 does not support far gateway notion */
-        $interface = null;
-    } else {
+    $realif = get_real_interface($interface);
+
+    switch ($family) {
+        case 'inet':
+            break;
+        case 'inet6':
+            if (is_linklocal($gateway)) {
+                $gateway .= "%{$realif}";
+            }
+            break;
+        default:
+            log_error("ROUTING: unknown address family '{$family}'");
+            return;
+    }
+
+    $tmpcmd = "/sbin/route -n get -{$family} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
+    $current = trim(exec($tmpcmd), " \n");
+    if ($current == $gateway) {
+        log_error("ROUTING: keeping current default gateway '{$gateway}'");
         return;
     }
 
+    if ($family == 'inet') {
+        foreach (glob('/tmp/*_defaultgw', GLOB_BRACE) as $to_delete) {
+            log_error("ROUTING: removing {$to_delete}");
+            @unlink($to_delete);
+        }
+
+        log_error("ROUTING: creating /tmp/{$realif}_defaultgw using '{$gateway}'");
+        @file_put_contents("/tmp/{$realif}_defaultgw", $gateway);
+
+        if (!$far) {
+            $realif = null;
+        }
+    } else {
+        foreach (glob('/tmp/*_defaultgwv6', GLOB_BRACE) as $to_delete) {
+            log_error("ROUTING: removing {$to_delete}");
+            @unlink($to_delete);
+        }
+
+        log_error("ROUTING: creating /tmp/{$realif}_defaultgwv6 using '{$gateway}'");
+        @file_put_contents("/tmp/{$realif}_defaultgwv6", $gateway);
+
+        /* IPv6 does not support far gateway notion */
+        $realif = null;
+    }
+
     mwexecf('/sbin/route delete -%s default', array($family), true);
-    if (!empty($interface)) {
-        mwexecf('/sbin/route delete -%s %s -interface %s', array($family, $gateway, $interface), true);
-        mwexecf('/sbin/route add -%s %s -interface %s', array($family, $gateway, $interface));
+    if (!empty($realif)) {
+        mwexecf('/sbin/route delete -%s %s -interface %s', array($family, $gateway, $realif), true);
+        mwexecf('/sbin/route add -%s %s -interface %s', array($family, $gateway, $realif));
     }
     mwexecf('/sbin/route add -%s default %s', array($family, $gateway));
 }
 
-function system_routing_configure($interface = '', $verbose = false)
+function system_routing_configure($verbose = false, $interface = '')
 {
     global $config;
 
@@ -449,100 +471,102 @@ function system_routing_configure($interface = '', $verbose = false)
         flush();
     }
 
-    $gatewayip = "";
-    $interfacegw = "";
+    $interfacegw = '';
     $foundgw = false;
-    $gatewayipv6 = "";
-    $interfacegwv6 = "";
-    $foundgwv6 = false;
+    $gatewayip = '';
     $fargw = false;
 
-    /* XXX eventually this file-based workaround must be removed */
-    foreach (glob('/tmp/*_defaultgw{,v6}', GLOB_BRACE) as $to_delete) {
-        @unlink($to_delete);
+    $interfacegwv6 = '';
+    $foundgwv6 = false;
+    $gatewayipv6 = '';
+
+    if (!empty($interface)) {
+        log_error("ROUTING: entering configure using '${interface}'");
+    } else {
+        log_error("ROUTING: entering configure using defaults");
     }
 
-    /* tack on all the hard defined gateways as well */
     if (isset($config['gateways']['gateway_item'])) {
         foreach ($config['gateways']['gateway_item'] as $gateway) {
             if (isset($gateway['defaultgw'])) {
-                if ($gateway['ipprotocol'] != "inet6" && (is_ipaddrv4($gateway['gateway']) || $gateway['gateway'] == "dynamic")) {
-                    if (strstr($gateway['gateway'], ":")) {
-                        continue;
-                    }
-                    if ($gateway['gateway'] == "dynamic") {
+                if ($foundgw == false && $gateway['ipprotocol'] != 'inet6') {
+                    if ($gateway['gateway'] == 'dynamic') {
                         $gateway['gateway'] = get_interface_gateway($gateway['interface']);
                     }
+
+                    $interfacegw = $gateway['interface'];
                     $fargw = isset($gateway['fargw']);
                     $gatewayip = $gateway['gateway'];
-                    $interfacegw = $gateway['interface'];
-                    if (!empty($gateway['interface'])) {
-                        $defaultif = get_real_interface($gateway['interface']);
-                        if ($defaultif) {
-                            @file_put_contents("/tmp/{$defaultif}_defaultgw", $gateway['gateway']);
-                        }
-                    }
                     $foundgw = true;
-                } elseif ($gateway['ipprotocol'] == "inet6" && (is_ipaddrv6($gateway['gateway']) || $gateway['gateway'] == "dynamic")) {
-                    if ($gateway['gateway'] == "dynamic") {
+
+                    log_error("ROUTING: IPv4 default gateway set to {$interfacegw}");
+                } elseif ($foundgwv6 == false && $gateway['ipprotocol'] == 'inet6') {
+                    if ($gateway['gateway'] == 'dynamic') {
                         $gateway['gateway'] = get_interface_gateway_v6($gateway['interface']);
                     }
-                    $gatewayipv6 = $gateway['gateway'];
+
                     $interfacegwv6 = $gateway['interface'];
-                    if (!empty($gateway['interface'])) {
-                        $defaultifv6 = get_real_interface($gateway['interface']);
-                        if ($defaultifv6) {
-                            @file_put_contents("/tmp/{$defaultifv6}_defaultgwv6", $gateway['gateway']);
-                        }
-                    }
+                    $gatewayipv6 = $gateway['gateway'];
                     $foundgwv6 = true;
+
+                    log_error("ROUTING: IPv6 default gateway set to {$interfacegwv6}");
                 }
-            }
-            if ($foundgw === true && $foundgwv6 === true) {
-                break;
             }
         }
     }
 
+    /*
+     * From the looks of the code below we cannot cope with
+     * multi-WAN without setting explicit gateways.  This is
+     * probably where the default gateway switching comes into
+     * play because this facility is allowed to use dynamically
+     * created gateways while the former code does not.
+     *
+     * In fact the following code is a mini gateway switcher
+     * facility which can only switch one hardcoded gateway and
+     * may obscure a problem with the setup for a long time... :(
+     *
+     * XXX Find a way to infer an upstream-capable interface or
+     * maybe make gateway switching the hardcoded behaviour, or
+     * at least the new default.
+     */
+
     if (!$foundgw) {
-        $defaultif = get_real_interface("wan");
-        $interfacegw = "wan";
-        $gatewayip = get_interface_gateway("wan");
-        @touch("/tmp/{$defaultif}_defaultgw");
+        $interfacegw = 'wan';
+        log_error("ROUTING: no IPv4 default gateway set, assuming {$interfacegw}");
+        $gatewayip = get_interface_gateway($interfacegw);
     }
+
     if (!$foundgwv6) {
-        $defaultifv6 = get_real_interface("wan");
-        $interfacegwv6 = "wan";
-        $gatewayipv6 = get_interface_gateway_v6("wan");
-        @touch("/tmp/{$defaultif}_defaultgwv6");
+        $interfacegwv6 = 'wan';
+        log_error("ROUTING: no IPv6 default gateway set, assuming {$interfacegwv6}");
+        $gatewayipv6 = get_interface_gateway_v6($interfacegwv6);
     }
 
-    if (!empty($interface) && $interface != $interfacegw)
-        ;
-    elseif (is_ipaddrv4($gatewayip)) {
+    if ((empty($interface) || $interface == $interfacegw) && is_ipaddrv4($gatewayip)) {
         log_error("ROUTING: setting IPv4 default route to {$gatewayip}");
-        system_default_route($gatewayip, $fargw ? $defaultif : null);
+        system_default_route($gatewayip, 'inet', $interfacegw, $fargw);
+    } else {
+        log_error("ROUTING: skipping IPv4 default route");
     }
 
-    if (!empty($interface) && $interface != $interfacegwv6)
-      ;
-    elseif (is_ipaddrv6($gatewayipv6)) {
+    if ((empty($interface) || $interface == $interfacegwv6) && is_ipaddrv6($gatewayipv6)) {
         log_error("ROUTING: setting IPv6 default route to {$gatewayipv6}");
-        system_default_route($gatewayipv6, $defaultifv6);
+        system_default_route($gatewayipv6, 'inet6', $interfacegwv6);
+    } else {
+        log_error("ROUTING: skipping IPv6 default route");
     }
 
     system_staticroutes_configure($interface);
 
     set_sysctl(array(
-      'net.inet.ip.forwarding' => '1',
-      'net.inet6.ip6.forwarding' => '1'
+        'net.inet.ip.forwarding' => '1',
+        'net.inet6.ip6.forwarding' => '1',
     ));
 
     if ($verbose) {
         echo "done.\n";
     }
-
-    return 0;
 }
 
 
@@ -659,8 +683,6 @@ function system_syslogd_start($verbose = false)
 
     configd_run('template reload OPNsense/Syslog');
 
-    mwexec('/etc/rc.d/hostid start');
-
     $syslogcfg = $config['syslog'];
 
     $log_directive = '%';
@@ -682,7 +704,9 @@ function system_syslogd_start($verbose = false)
          */
         $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay', 'dhclient', 'dhcp6c'), 'local' => '/var/dhcpd/var/run/log', 'remote' => 'dhcp');
         $syslogconfs['filter'] = array('facility' => array('filterlog'), 'remote' => 'filter');
-        $syslogconfs['gateways'] = array('facility' => array('apinger'), 'remote' => 'apinger');
+        $syslogconfs['lighttpd'] = array('facility' => array('lighttpd'));
+        $syslogconfs['configd'] = array('facility' => array('configd.py'));
+        $syslogconfs['gateways'] = array('facility' => array('apinger', 'dpinger'), 'remote' => 'apinger');
         $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');
         $syslogconfs['ppps'] = array('facility' => array('ppp'));
         $syslogconfs['resolver'] = array('facility' => array('unbound'), 'remote' => 'dns');
@@ -708,47 +732,35 @@ function system_syslogd_start($verbose = false)
         $facilitylist = implode(',', array_unique($separatelogfacilities));
         $syslogconf .= "!-{$facilitylist}\n";
         if (!isset($syslogcfg['disablelocallogging'])) {
+            /* XXX non-system local redirects look unused */
             $syslogconf .= <<<EOD
-local3.*              {$log_directive}/var/log/vpn.log
-local7.*              {$log_directive}/var/log/dhcpd.log
-*.notice;kern.debug;lpr.info;mail.crit;daemon.none;    {$log_directive}/var/log/system.log
-news.err;local0.none;local3.none;local4.none;      {$log_directive}/var/log/system.log
-local7.none              {$log_directive}/var/log/system.log
-security.*              {$log_directive}/var/log/system.log
-auth.info;authpriv.info;daemon.info        {$log_directive}/var/log/system.log
-auth.info;authpriv.info;user.*        |exec /usr/local/sbin/sshlockout_pf 15
-*.emerg                *
+local3.*							{$log_directive}/var/log/vpn.log
+local4.*							{$log_directive}/var/log/portalauth.log
+local7.*							{$log_directive}/var/log/dhcpd.log
+*.notice;kern.debug;lpr.info;mail.crit;daemon.none		{$log_directive}/var/log/system.log
+news.err;local0.none;local3.none;local4.none			{$log_directive}/var/log/system.log
+local7.none							{$log_directive}/var/log/system.log
+security.*							{$log_directive}/var/log/system.log
+auth.info;authpriv.info;daemon.info				{$log_directive}/var/log/system.log
+auth.info;authpriv.info;user.*					|exec /usr/local/sbin/sshlockout_pf 15
+*.emerg								*
 
 EOD;
         }
         if (!empty($syslogcfg['enable'])) {
-            if (isset($syslogcfg['vpn'])) {
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local3.*");
-            }
-            if (isset($syslogcfg['dns'])) {
-                /* XXX needs testing */
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local5.*");
-            }
-            if (isset($syslogcfg['mail'])) {
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "mail.*");
-            }
-            if (isset($syslogcfg['portalauth'])) {
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local4.*");
-            }
-            if (isset($syslogcfg['dhcp'])) {
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local7.*");
-            }
+            /* XXX most remote facilities are already sent to remote using the 'remote' keyword */
             if (isset($syslogcfg['system'])) {
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.notice;kern.debug;lpr.info;mail.crit;");
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "news.err;local0.none;local3.none;local7.none");
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "security.*");
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "auth.info;authpriv.info;daemon.info");
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.emerg");
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, '*.notice;kern.debug;lpr.info;mail.crit;daemon.none');
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'news.err;local0.none;local3.none;local4.none');
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'local7.none');
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'security.*');
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'auth.info;authpriv.info;daemon.info');
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, '*.emerg');
             }
             if (isset($syslogcfg['logall'])) {
                 // Make everything mean everything, including facilities excluded above.
                 $syslogconf .= "!*\n";
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
+                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, '*.*');
             }
         }
 
@@ -776,7 +788,7 @@ EOD;
         // setup log files for all facilities including default
         $default_logfile_size = !empty($syslogcfg['logfilesize']) ? $syslogcfg['logfilesize'] : '511488';
         $syslog_files = array_keys($syslogconfs);
-        $syslog_files = array_merge($syslog_files, array('system', 'vpn', 'lighttpd'));
+        $syslog_files = array_merge($syslog_files, array('system', 'vpn'));
         foreach ($syslog_files as $syslog_fn) {
             $filename = "/var/log/".basename($syslog_fn).".log";
             if (!file_exists($filename)) {
@@ -861,8 +873,12 @@ function system_firmware_configure($verbose = false)
     }
 
     /* rewrite the config via the defaults */
-    $origin_conf = '/usr/local/etc/pkg/repos/origin.conf';
-    copy("${origin_conf}.sample", $origin_conf);
+    $origin_conf = '/usr/local/etc/pkg/repos/OPNsense.conf';
+    /* XXX pre-18.7 fallback */
+    if (!file_exists("{$origin_conf}.sample")) {
+        $origin_conf = '/usr/local/etc/pkg/repos/origin.conf';
+    }
+    copy("{$origin_conf}.sample", $origin_conf);
 
     if (!empty($config['system']['firmware']['mirror'])) {
         mwexecf(
@@ -926,7 +942,7 @@ function system_halt($sync = false)
     if (!$sync) {
         mwexec_bg($cmd);
     } else {
-        mwexec($cmd);
+        passthru($cmd);
     }
 }
 
@@ -937,7 +953,7 @@ function system_reboot($sync = false)
     if (!$sync) {
         mwexec_bg($cmd);
     } else {
-        mwexec($cmd);
+        passthru($cmd);
     }
 }
 
@@ -948,7 +964,7 @@ function system_sysctl_configure($verbose = false)
         flush();
     }
 
-    activate_sysctls();
+    set_sysctl(system_sysctl_get());
     system_arp_wrong_if();
 
     if ($verbose) {
@@ -1088,8 +1104,6 @@ function system_devd_configure($verbose = false)
 
 function system_cron_configure($verbose = false, $defer = false)
 {
-    global $config;
-
     function generate_cron_job($command, $minute = '0', $hour = '*', $monthday = '*', $month = '*', $weekday = '*')
     {
         $cron_item = array();
@@ -1114,7 +1128,7 @@ function system_cron_configure($verbose = false, $defer = false)
     foreach (plugins_cron() as $cron_plugin) {
         /*
          * We are stuffing jobs inside 'autocron' to be able to
-         * depreceate this at a later time.  Ideally all of the
+         * deprecate this at a later time.  Ideally all of the
          * services should use a single cron-model, which this is
          * not.  At least this plugin function helps us to divide
          * and conquer the code bits...  :)
@@ -1122,50 +1136,6 @@ function system_cron_configure($verbose = false, $defer = false)
         if (!empty($cron_plugin['autocron'])) {
             $autocron[] = call_user_func_array('generate_cron_job', $cron_plugin['autocron']);
         }
-    }
-
-    /* hourly */
-    $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 webConfiguratorlockout', '1');
-    $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '2');
-    $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 virusprot', '3');
-    $autocron[] = generate_cron_job('/usr/local/etc/rc.expireaccounts', '5');
-    $autocron[] = generate_cron_job('/usr/local/opnsense/scripts/filter/update_tables.py', '10');
-
-    /* every now and then */
-    $autocron[] = generate_cron_job('/usr/local/sbin/ping_hosts.sh', '*/4');
-
-    if (!empty($config['system']['rrdbackup'])) {
-       $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_rrd', '0', '*/' . $config['system']['rrdbackup']);
-    }
-
-    if (!empty($config['system']['dhcpbackup'])) {
-        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_dhcpleases', '0', '*/' . $config['system']['dhcpbackup']);
-    }
-
-    if (!empty($config['system']['netflowbackup'])) {
-        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_netflow', '0', '*/' . $config['system']['netflowbackup']);
-    }
-
-    if (!empty($config['system']['captiveportalbackup'])) {
-        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_captiveportal', '0', '*/' . $config['system']['captiveportalbackup']);
-    }
-
-    if (!empty($config['system']['remotebackup']['GDriveEnabled'])) {
-        $autocron[] = generate_cron_job('/usr/local/opnsense/scripts/remote_backup.php', 0, 1);
-    }
-
-    /* bogons fetch always set in default config.xml */
-    switch ($config['system']['bogons']['interval']) {
-        case 'daily':
-            $autocron[] = generate_cron_job('/usr/local/etc/rc.update_bogons cron', '1', '3', '*', '*', '*');
-            break;
-        case 'weekly':
-            $autocron[] = generate_cron_job('/usr/local/etc/rc.update_bogons cron', '1', '3', '*', '*', '0');
-            break;
-        case 'monthly':
-        default:
-            $autocron[] = generate_cron_job('/usr/local/etc/rc.update_bogons cron', '1', '3', '1', '*', '*');
-            break;
     }
 
     $crontab_contents = "# DO NOT EDIT THIS FILE -- OPNsense auto-generated file\n";
@@ -1299,8 +1269,13 @@ function system_login_configure($verbose = false)
     /* copy settings already there */
     $new_loader_conf = @file_get_contents('/boot/loader.conf');
 
-    /* append our console options */
-    $new_loader_conf .= "# dynamically generated settings follow\n";
+    $new_loader_conf .= "# dynamically generated tunables settings follow\n";
+    foreach (system_sysctl_get() as $param => $value) {
+        $new_loader_conf .= "{$param}=\"{$value}\"\n";
+    }
+    $new_loader_conf .= "\n";
+
+    $new_loader_conf .= "# dynamically generated console settings follow\n";
     foreach ($new_boot_config as $param => $value) {
         if (!empty($value)) {
             $new_loader_conf .= "{$param}={$value}\n";
@@ -1329,7 +1304,7 @@ function system_login_configure($verbose = false)
         /* virtual terminals */
         foreach (array('ttyv0', 'ttyv1', 'ttyv2', 'ttyv3', 'ttyv4', 'ttyv5', 'ttyv6', 'ttyv7') as $virtualport) {
             if (strpos($tty, $virtualport) === 0) {
-                fwrite($fd, "${virtualport}\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t${on_off_secure_v}\n");
+                fwrite($fd, "{$virtualport}\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t${on_off_secure_v}\n");
                 continue 2;
             }
         }
@@ -1356,19 +1331,15 @@ function system_login_configure($verbose = false)
     exec('/bin/kill -HUP 1');
 }
 
-/****f* config/reset_factory_defaults
- * NAME
- *   reset_factory_defaults - Reset the system to its default configuration.
- ******/
 function reset_factory_defaults($sync = true)
 {
-    mwexec('/bin/rm -r /conf/*');
+    mwexec('/bin/rm -fr /conf/* /var/log/* /root/.history');
     disable_security_checks();
 
     mwexec('/usr/local/sbin/beep.sh stop');
 
-    /* as we go through a special case directly reboot */
-    $shutdown_cmd = '/sbin/shutdown -or now';
+    /* as we go through a special case directly shut down */
+    $shutdown_cmd = '/sbin/shutdown -op now';
     if ($sync) {
         mwexec($shutdown_cmd);
     } else {

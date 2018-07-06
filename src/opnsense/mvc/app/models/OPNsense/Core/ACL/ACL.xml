@@ -2,9 +2,6 @@
     <user-config-readonly>
         <name>System: Deny config write</name>
     </user-config-readonly>
-    <user-shell-access>
-        <name>System: Shell account access</name>
-    </user-shell-access>
     <user-proxy-auth>
         <name>Proxy: Login</name>
     </user-proxy-auth>
@@ -113,6 +110,8 @@
         <name>Diagnostics: Logs: System</name>
         <patterns>
             <pattern>diag_logs.php*</pattern>
+            <pattern>httpd_logs.php*</pattern>
+            <pattern>configd_logs.php*</pattern>
         </patterns>
     </page-diagnostics-logs-system>
     <page-diagnostics-packetcapture>
@@ -395,18 +394,6 @@
             <pattern>interfaces_ppps_edit.php*</pattern>
         </patterns>
     </page-interfaces-ppps-edit>
-    <page-interfaces-qinq>
-        <name>Interfaces: QinQ</name>
-        <patterns>
-            <pattern>interfaces_qinq.php*</pattern>
-        </patterns>
-    </page-interfaces-qinq>
-    <page-interfaces-qinq-edit>
-        <name>Interfaces: QinQ: Edit</name>
-        <patterns>
-            <pattern>interfaces_qinq_edit.php*</pattern>
-        </patterns>
-    </page-interfaces-qinq-edit>
     <page-interfaces-vlan>
         <name>Interfaces: VLAN</name>
         <patterns>
@@ -515,18 +502,6 @@
             <pattern>status_dhcpv6_leases.php*</pattern>
         </patterns>
     </page-status-dhcpv6leases>
-    <page-status-gatewaygroups>
-        <name>Status: Gateway Groups</name>
-        <patterns>
-            <pattern>status_gateway_groups.php*</pattern>
-        </patterns>
-    </page-status-gatewaygroups>
-    <page-status-gateways>
-        <name>Status: Gateways</name>
-        <patterns>
-            <pattern>status_gateways.php*</pattern>
-        </patterns>
-    </page-status-gateways>
     <page-status-interfaces>
         <name>Status: Interfaces</name>
         <patterns>
@@ -657,6 +632,7 @@
         <name>System: Authentication Servers</name>
         <patterns>
             <pattern>system_authservers.php*</pattern>
+            <pattern>system_usermanager_settings_ldapacpicker.php*</pattern>
         </patterns>
     </page-system-authservers>
     <page-system-camanager>
@@ -758,18 +734,6 @@
             <pattern>system_usermanager_addprivs.php?user*</pattern>
         </patterns>
     </page-system-usermanager-addprivs>
-    <page-system-usermanager-settings>
-        <name>System: User Manager: settings</name>
-        <patterns>
-            <pattern>system_usermanager_settings.php*</pattern>
-        </patterns>
-    </page-system-usermanager-settings>
-    <page-system-usermanager-settings-testldap>
-        <name>System: User Manager: Settings: Test LDAP</name>
-        <patterns>
-            <pattern>system_usermanager_settings_test.php*</pattern>
-        </patterns>
-    </page-system-usermanager-settings-testldap>
     <page-system-usermanager-passwordmg>
         <name>System: User Password Manager</name>
         <patterns>

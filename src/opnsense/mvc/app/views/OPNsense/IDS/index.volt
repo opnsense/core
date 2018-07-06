@@ -32,20 +32,20 @@ POSSIBILITY OF SUCH DAMAGE.
 
     .ids-alert-info > tbody > tr > td {
         padding-top: 2px !important;
-        padding-bottom: : 2px !important;
+        padding-bottom: 2px !important;
     }
     .ids-alert-info > tbody > tr > td:first-child {
         width: 150px;
     }
     @media (min-width: 768px) {
-        .modal-dialog {
+        .suricata-alert > .modal-dialog {
             width: 90%;
             max-width:1200px;
         }
     }
 </style>
 
-<script type="text/javascript">
+<script>
 
     $( document ).ready(function() {
         var interface_descriptions = {};
@@ -56,9 +56,7 @@ POSSIBILITY OF SUCH DAMAGE.
          * update service status
          */
         function updateStatus() {
-            ajaxCall(url="/api/ids/service/status", sendData={}, callback=function(data,status) {
-                updateServiceStatusUI(data['status']);
-            });
+            updateServiceControlUI('ids');
         }
 
         /**
@@ -226,9 +224,8 @@ POSSIBILITY OF SUCH DAMAGE.
          * load content on tab changes
          */
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            if (e.target.id == 'settings_tab'){
-                loadGeneralSettings();
-            } else if (e.target.id == 'download_settings_tab') {
+            loadGeneralSettings();
+            if (e.target.id == 'download_settings_tab') {
                 /**
                  * grid for installable rule files
                  */
@@ -473,7 +470,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                         }
 
                                         tbl.append(tbl_tbody);
-                                        stdDialogInform("{{ lang._('Alert info') }}", tbl, "{{ lang._('Close') }}", undefined, "info");
+                                        stdDialogInform("{{ lang._('Alert info') }}", tbl, "{{ lang._('Close') }}", undefined, "info", 'suricata-alert');
                                   });
                                 }
                             });
@@ -676,7 +673,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <li><a data-toggle="tab" href="#alerts" id="alert_tab">{{ lang._('Alerts') }}</a></li>
     <li><a href="" id="scheduled_updates" style="display:none">{{ lang._('Schedule') }}</a></li>
 </ul>
-<div class="tab-content content-box tab-content">
+<div class="tab-content content-box">
     <div id="settings" class="tab-pane fade in">
         {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_GeneralSettings'])}}
         <div class="col-md-12">
@@ -838,7 +835,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <div class="row">
                 <div class="col-sm-12 actionBar">
                     <select id="alert-logfile" class="selectpicker" data-width="200px"></select>
-                    <span id="actDeleteLog" class="btn btn-lg fa fa-trash" style="cursor: pointer;"></span>
+                    <span id="actDeleteLog" class="btn btn-lg fa fa-trash" style="cursor: pointer;" title="{{ lang._('Delete Alert Log') }}"></span>
                     <select id="alert-logfile-max" class="selectpicker" data-width="80px">
                         <option value="7">7</option>
                         <option value="50">50</option>

@@ -1,5 +1,11 @@
 <form>
     <field>
+        <id>rule.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+        <help>enable this rule</help>
+    </field>
+    <field>
         <id>rule.sequence</id>
         <label>sequence</label>
         <type>text</type>
@@ -38,7 +44,7 @@
         <id>rule.src_port</id>
         <label>src-port</label>
         <type>text</type>
-        <help>source port number or well known name (imap,imaps, http,https,...)</help>
+        <help>Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
     </field>
     <field>
         <id>rule.destination</id>
@@ -56,7 +62,7 @@
         <id>rule.dst_port</id>
         <label>dst-port</label>
         <type>text</type>
-        <help>destination port number or well known name (imap,imaps, http,https,...)</help>
+        <help>Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
     </field>
     <field>
         <id>rule.direction</id>

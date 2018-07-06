@@ -30,6 +30,7 @@
 import time
 import os
 import sys
+import fcntl
 import signal
 import glob
 import copy
@@ -131,10 +132,12 @@ class Main(object):
         :return: None
         """
         # check database consistency / repair
+        syslog.syslog(syslog.LOG_NOTICE, 'startup, check database.')
         check_and_repair('/var/netflow/*.sqlite')
 
         vacuum_interval = (60*60*8) # 8 hour vacuum cycle
         vacuum_countdown = None
+        syslog.syslog(syslog.LOG_NOTICE, 'start watching flowd')
         while self.running:
             # should we perform a vacuum
             if not vacuum_countdown or vacuum_countdown < time.time():
@@ -146,6 +149,8 @@ class Main(object):
             # run aggregate
             try:
                 aggregate_flowd(do_vacuum)
+                if do_vacuum:
+                    syslog.syslog(syslog.LOG_NOTICE, 'vacuum done')
             except:
                 syslog.syslog(syslog.LOG_ERR, 'flowd aggregate died with message %s' % (traceback.format_exc()))
                 return
@@ -186,6 +191,17 @@ if len(sys.argv) > 1 and 'console' in sys.argv[1:]:
         print s.getvalue()
     else:
         Main()
+elif len(sys.argv) > 1 and 'repair' in sys.argv[1:]:
+    # force a database repair, when
+    try:
+        lck = open('/var/run/flowd_aggregate.pid', 'a+')
+        fcntl.flock(lck, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        check_and_repair(filename_mask='/var/netflow/*.sqlite', force_repair=True)
+        lck.close()
+        os.remove('/var/run/flowd_aggregate.pid')
+    except IOError:
+        # already running, exit status 99
+        sys.exit(99)
 else:
     # Daemonize flowd aggregator
     daemon = Daemonize(app="flowd_aggregate", pid='/var/run/flowd_aggregate.pid', action=Main)

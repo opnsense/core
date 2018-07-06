@@ -129,7 +129,7 @@ function ca_inter_create(&$ca, $keylen, $lifetime, $dn, $caref, $digest_alg = 's
 }
 
 
-$ca_keylens = array( "512", "1024", "2048", "4096", "8192");
+$ca_keylens = array( "512", "1024", "2048", "3072", "4096", "8192");
 $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
 $a_ca = &config_read_array('ca');
 $a_cert = &config_read_array('cert');
@@ -307,7 +307,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig["dn_commonname"])) {
                         $input_errors[] = gettext("The field 'Distinguished name Common Name' contains invalid characters.");
                     }
-                } elseif (($reqdfields[$i] != "descr") && preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\.\"\']/", $pconfig["$reqdfields[$i]"])) {
+                } elseif (($reqdfields[$i] != "descr") && preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig["$reqdfields[$i]"])) {
                     $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $reqdfieldsn[$i]);
                 }
             }
@@ -404,13 +404,13 @@ legacy_html_escape_form_data($pconfig);
 include("head.inc");
 
 $main_buttons = array(
-    array('label' => gettext('Add or import CA'), 'href' => 'system_camanager.php?act=new'),
+    array('label' => gettext('Add'), 'href' => 'system_camanager.php?act=new'),
 );
 
 ?>
 
 <body>
-  <script type="text/javascript">
+  <script>
   $( document ).ready(function() {
     // delete entry
     $(".act_delete").click(function(event){
@@ -518,9 +518,9 @@ $main_buttons = array(
                 <td style="width:22%"><a id="help_for_cert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Certificate data");?></td>
                 <td style="width:78%">
                   <textarea name="cert" cols="65" rows="7" id="cert"><?=isset($pconfig['cert']) ? $pconfig['cert'] : "";?></textarea>
-                  <output class="hidden" for="help_for_cert">
+                  <div class="hidden" data-for="help_for_cert">
                     <?=gettext("Paste a certificate in X.509 PEM format here.");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -530,18 +530,18 @@ $main_buttons = array(
                 </td>
                 <td style="width:78%">
                   <textarea name="key" id="key" cols="65" rows="7"><?= isset($pconfig['key']) ? $pconfig['key'] : "";?></textarea>
-                  <output class="hidden" for="help_for_key">
+                  <div class="hidden" data-for="help_for_key">
                     <?=gettext("Paste the private key for the above certificate here. This is optional in most cases, but required if you need to generate a Certificate Revocation List (CRL).");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_serial" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial for next certificate");?></td>
                 <td>
                   <input name="serial" type="text" id="serial" size="20" value="<?=$pconfig['serial'];?>"/>
-                  <output class="hidden" for="help_for_serial">
+                  <div class="hidden" data-for="help_for_serial">
                     <?=gettext("Enter a decimal number to be used as the serial number for the next certificate to be created using this CA.");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               </tbody>
@@ -591,9 +591,9 @@ $main_buttons = array(
 <?php
                     endforeach; ?>
                     </select>
-                    <output class="hidden" for="help_for_digest_alg">
+                    <div class="hidden" data-for="help_for_digest_alg">
                       <?= gettext("NOTE: It is recommended to use an algorithm stronger than SHA1 when possible.") ?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -623,55 +623,55 @@ $main_buttons = array(
                   <td><a id="help_for_digest_dn_state" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State or Province");?> : &nbsp;</td>
                   <td>
                     <input name="dn_state" type="text" size="40" value="<?=$pconfig['dn_state'];?>"/>
-                    <output class="hidden" for="help_for_digest_dn_state">
+                    <div class="hidden" data-for="help_for_digest_dn_state">
                       <em><?=gettext("ex:");?></em>
                       &nbsp;
                       <?=gettext("Sachsen");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_digest_dn_city" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("City");?> : &nbsp;</td>
                   <td>
                     <input name="dn_city" type="text" size="40" value="<?=$pconfig['dn_city'];?>"/>
-                    <output class="hidden" for="help_for_digest_dn_city">
+                    <div class="hidden" data-for="help_for_digest_dn_city">
                       <em><?=gettext("ex:");?></em>
                       &nbsp;
                       <?=gettext("Leipzig");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_digest_dn_organization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organization");?> : &nbsp;</td>
                   <td>
                     <input name="dn_organization" type="text" size="40" value="<?=$pconfig['dn_organization'];?>"/>
-                    <output class="hidden" for="help_for_digest_dn_organization">
+                    <div class="hidden" data-for="help_for_digest_dn_organization">
                       <em><?=gettext("ex:");?></em>
                       &nbsp;
                       <?=gettext("My Company Inc");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_digest_dn_email" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email Address");?> : &nbsp;</td>
                   <td>
                     <input name="dn_email" type="text" size="25" value="<?=$pconfig['dn_email'];?>"/>
-                    <output class="hidden" for="help_for_digest_dn_email">
+                    <div class="hidden" data-for="help_for_digest_dn_email">
                       <em><?=gettext("ex:");?></em>
                       &nbsp;
                       <?=gettext("admin@mycompany.com");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_digest_dn_commonname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Common Name");?> : &nbsp;</td>
                   <td>
                     <input name="dn_commonname" type="text" size="25" value="<?=$pconfig['dn_commonname'];?>"/>
-                    <output class="hidden" for="help_for_digest_dn_commonname">
+                    <div class="hidden" data-for="help_for_digest_dn_commonname">
                       <em><?=gettext("ex:");?></em>
                       &nbsp;
                       <?=gettext("internal-ca");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -759,22 +759,22 @@ $main_buttons = array(
                     </tr>
                   </table>
                 </td>
-                <td>
+                <td class="text-nowrap">
                   <a href="system_camanager.php?act=edit&amp;id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit CA");?>" alt="<?=gettext("edit CA");?>" class="btn btn-default btn-xs">
-                    <span class="glyphicon glyphicon-pencil"></span>
+                    <i class="fa fa-pencil fa-fw"></i>
                   </a>
                   <a href="system_camanager.php?act=exp&amp;id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("export CA cert");?>" alt="<?=gettext("export CA cert");?>" class="btn btn-default btn-xs">
-                    <span class="glyphicon glyphicon-download"></span>
+                    <i class="fa fa-download fa-fw"></i>
                   </a>
 <?php
                   if ($ca['prv']) :?>
                   <a href="system_camanager.php?act=expkey&amp;id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("export CA private key");?>" class="btn btn-default btn-xs">
-                    <span class="glyphicon glyphicon-download"></span>
+                    <i class="fa fa-download fa-fw"></i>
                   </a>
 <?php
                   endif; ?>
                   <a id="del_<?=$i;?>" data-id="<?=$i;?>" title="<?=gettext("delete ca"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                    <span class="fa fa-trash text-muted"></span>
+                    <i class="fa fa-trash fa-fw"></i>
                   </a>
                 </td>
               </tr>

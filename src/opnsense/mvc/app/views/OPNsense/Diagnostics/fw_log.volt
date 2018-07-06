@@ -26,7 +26,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #}
 
-<script type="text/javascript">
+<script>
     $( document ).ready(function() {
         var field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban'}
         var interface_descriptions = {};
@@ -70,7 +70,11 @@ POSSIBILITY OF SUCH DAMAGE.
                                     case 'address':
                                         log_td.text(record[column_name]);
                                         if (record[column_name+'port'] != undefined) {
-                                            log_td.text(log_td.text()+':'+record[column_name+'port']);
+                                            if (record['version'] == 6) {
+                                                log_td.text('['+log_td.text()+']:'+record[column_name+'port']);
+                                            } else {
+                                                log_td.text(log_td.text()+':'+record[column_name+'port']);
+                                            }
                                         }
                                         break;
                                     case 'info':

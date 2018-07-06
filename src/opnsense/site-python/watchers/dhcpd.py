@@ -23,9 +23,11 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 """
+
 import os
 import calendar
 import datetime
+
 
 class DHCPDLease(object):
     def __init__(self, watch_file='/var/dhcpd/var/db/dhcpd.leases'):
@@ -61,11 +63,11 @@ class DHCPDLease(object):
         lease = dict()
         lease['address'] = lines[0].split()[1]
         for line in lines:
-            parts =  line.split()
+            parts = line.split()
             field_name = parts[0]
             field_value = None
             if field_name in ('starts', 'ends', 'tstp', 'tsfp', 'atsfp', 'cltt') and len(parts) >= 3:
-                dt = '%s %s'%(parts[2], parts[3])
+                dt = '%s %s' % (parts[2], parts[3])
                 try:
                     field_value = calendar.timegm(datetime.datetime.strptime(dt, "%Y/%m/%d %H:%M:%S;").timetuple())
                 except ValueError:

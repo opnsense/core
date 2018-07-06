@@ -659,7 +659,7 @@
         var that = this,
             selectBoxSelector = getCssSelector(this.options.css.selectBox);
 
-        if (this.selection)
+        if (this.selection && !this.options.rowSelect)
         {
             tbody.off("click" + namespace, selectBoxSelector)
                 .on("click" + namespace, selectBoxSelector, function(e)

@@ -3,6 +3,7 @@
 
 /*
     Copyright (C) 2011 Jim Pingle <jimp@pfsense.org>
+    Copyright (C) 2018 Deciso B.V.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -35,35 +36,17 @@
  *  intermediates.
  */
 
-require_once("config.inc");
-require_once("interfaces.inc");
-
 openlog("openvpn", LOG_ODELAY, LOG_AUTH);
 
 /* read data from command line */
 $cert_depth = intval($argv[1]);
 $cert_subject = $argv[2];
 
-/* Reserved for future use in case we decide to verify CNs and such as well
-$subj = explode("/", $cert_subject);
-foreach ($subj at $s) {
-  list($n, $v) = explode("=", $s);
-  if ($n == "CN")
-    $common_name = $v;
-}
-*/
-
-/* Replaced by sed with proper variables used below ( $server_cn and $allowed_depth ). */
-//<template>
-
 if (isset($allowed_depth) && ($cert_depth > $allowed_depth)) {
     syslog(LOG_WARNING, "Certificate depth {$cert_depth} exceeded max allowed depth of {$allowed_depth}.\n");
     closelog();
     exit(1);
 }
-
-// Debug
-//syslog(LOG_WARNING, "Found certificate {$argv[2]} with depth {$cert_depth}\n");
 
 closelog();
 exit(0);

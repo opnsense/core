@@ -42,26 +42,17 @@ if (count($argv) > 1 && is_numeric($argv[1])) {
     sleep($argv[1]);
 }
 
-log_error("rc.reload_all: Reloading all configuration settings.");
-
 system_firmware_configure(true);
 system_login_configure(true);
+system_cron_configure(true);
 system_timezone_configure(true);
 system_hostname_configure(true);
 system_hosts_generate(true);
 system_resolvconf_generate(true);
-services_dhcpd_configure('all', array(), true);
 interfaces_configure(true);
-system_cron_configure(true);
-
-log_error("rc.reload_all: Reloading all plugin settings.");
-
-plugins_configure('local', true);
-
-log_error("rc.reload_all: Reloading RRD graphing");
-
-rrd_configure(true);
-
-log_error("rc.reload_all: Reloading filter configuration.");
-
+system_routing_configure(true);
 filter_configure_sync(true);
+services_dhcpd_configure('all', array(), true);
+plugins_configure('local', true);
+plugins_configure('vpn', true);
+rrd_configure(true);

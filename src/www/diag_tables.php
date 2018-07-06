@@ -86,7 +86,7 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
     // on change pfTable selection
      $("#tablename").change(function(){
@@ -185,8 +185,8 @@ $( document ).ready(function() {
                 <tr>
                   <td><?=$entry;?></td>
                   <td>
-                    <a data-address="<?=$entry;?>" title="<?=gettext("delete this entry"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                      <span class="fa fa-trash text-muted"></span>
+                    <a data-address="<?=$entry;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs">
+                      <i class="fa fa-trash fa-fw"></i>
                     </a>
                   </td>
                 </tr>

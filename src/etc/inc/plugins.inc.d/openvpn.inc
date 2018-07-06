@@ -116,27 +116,38 @@ function openvpn_xmlrpc_sync()
     return $result;
 }
 
-$openvpn_verbosity_level = array(
-    0 => gettext('0 (none)'),
-    1 => gettext('1 (default)'),
-    2 => gettext('2'),
-    3 => gettext('3 (recommended)'),
-    4 => gettext('4'),
-    5 => gettext('5'),
-    6 => gettext('6'),
-    7 => gettext('7'),
-    8 => gettext('8'),
-    9 => gettext('9'),
-    10 => gettext('10'),
-    11 => gettext('11'),
-);
+function openvpn_verbosity_level()
+{
+    return array(
+       0 => gettext('0 (none)'),
+       1 => gettext('1 (default)'),
+       2 => gettext('2'),
+       3 => gettext('3 (recommended)'),
+       4 => gettext('4'),
+       5 => gettext('5'),
+       6 => gettext('6'),
+       7 => gettext('7'),
+       8 => gettext('8'),
+       9 => gettext('9'),
+       10 => gettext('10'),
+       11 => gettext('11'),
+    );
+}
 
-$openvpn_compression_modes = array(
-    '' => gettext('No Preference'),
-    'no' => gettext('Disabled - No Compression'),
-    'adaptive' => gettext('Enabled with Adaptive Compression'),
-    'yes' => gettext('Enabled without Adaptive Compression'),
-);
+function openvpn_compression_modes()
+{
+    return array(
+        '' => gettext('No Preference'),
+        'no' => gettext('Disabled - No Compression'),
+        'adaptive' => gettext('Enabled with Adaptive Compression'),
+        'yes' => gettext('Enabled without Adaptive Compression'),
+    );
+}
+
+function openvpn_get_protocols()
+{
+    return array('UDP', 'UDP4', 'UDP6', 'TCP', 'TCP4', 'TCP6');
+}
 
 function openvpn_create_key()
 {
@@ -186,8 +197,15 @@ function openvpn_port_used($prot, $interface, $port, $curvpnid = 0)
 {
     global $config;
 
+    $af = null;
+
+    if (strlen($prot) > 3) {
+        $af = substr($prot, 3, 1);
+        $prot = substr($prot, 0, 3);
+    }
+
     if (isset($config['openvpn']['openvpn-server'])) {
-        foreach ($config['openvpn']['openvpn-server'] as & $settings) {
+        foreach ($config['openvpn']['openvpn-server'] as $settings) {
             if (isset($settings['disable'])) {
                 continue;
             }
@@ -196,15 +214,28 @@ function openvpn_port_used($prot, $interface, $port, $curvpnid = 0)
                 continue;
             }
 
-            if ($port == $settings['local_port'] && $prot == $settings['protocol'] &&
-              ($interface == $settings['interface'] || $interface == "any" || $settings['interface'] == "any")) {
-                return $settings['vpnid'];
+            if ($port != $settings['local_port']) {
+                continue;
             }
+
+            if (strpos($settings['protocol'], $prot) === false) {
+                continue;
+            }
+
+            if (!empty($af) && strlen($settings['protocol']) > 3 && strpos($settings['protocol'], $af) === false) {
+                continue;
+            }
+
+            if ($interface != $settings['interface'] && $interface != 'any' && $settings['interface'] != 'any') {
+                continue;
+            }
+
+            return $settings['vpnid'];
         }
     }
 
     if (isset($config['openvpn']['openvpn-client'])) {
-        foreach ($config['openvpn']['openvpn-client'] as & $settings) {
+        foreach ($config['openvpn']['openvpn-client'] as $settings) {
             if (isset($settings['disable'])) {
                 continue;
             }
@@ -213,21 +244,37 @@ function openvpn_port_used($prot, $interface, $port, $curvpnid = 0)
                 continue;
             }
 
-            if ($port == $settings['local_port'] && $prot == $settings['protocol'] &&
-              ($interface == $settings['interface'] || $interface == "any" || $settings['interface'] == "any")) {
-                return $settings['vpnid'];
+            if ($port != $settings['local_port']) {
+                continue;
             }
+
+            if (strpos($settings['protocol'], $prot) === false) {
+                continue;
+            }
+
+            if (!empty($af) && strlen($settings['protocol']) > 3 && strpos($settings['protocol'], $af) === false) {
+                continue;
+            }
+
+            if ($interface != $settings['interface'] && $interface != 'any' && $settings['interface'] != 'any') {
+                continue;
+            }
+
+            return $settings['vpnid'];
         }
     }
+
     return 0;
 }
 
 function openvpn_port_next($prot, $interface = "wan")
 {
     $port = 1194;
+
     while (openvpn_port_used($prot, $interface, $port)) {
         $port++;
     }
+
     while (openvpn_port_used($prot, "any", $port)) {
         $port++;
     }
@@ -327,6 +374,9 @@ function openvpn_validate_port($value, $name)
 
 function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = 'ipv4', $allow_hosts = false)
 {
+    $error_multi = gettext("The field '%s' must contain only valid %s CIDR range(s) separated by commas.");
+    $error_single = gettext("The field '%s' must contain a single valid %s CIDR range.");
+
     $value = trim($value);
     $error = false;
     if (empty($value)) {
@@ -335,7 +385,7 @@ function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = 'ipv
     $networks = explode(',', $value);
 
     if (!$multiple && (count($networks) > 1)) {
-        return sprintf(gettext("The field '%s' must contain a single valid %s CIDR range."), $name, $ipproto);
+        return sprintf($error_single, $name, $ipproto);
     }
 
     foreach ($networks as $network) {
@@ -350,11 +400,14 @@ function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = 'ipv
     }
 
     if ($error) {
-        return sprintf(gettext("The field '%s' must contain only valid %s CIDR range(s) " .
-            "separated by commas."), $name, $ipproto);
-    } else {
-        return false;
+        if (!$multiple) {
+            return sprintf($error_single, $name, $ipproto);
+        }
+
+        return sprintf($error_multi, $name, $ipproto);
     }
+
+    return false;
 }
 
 function openvpn_validate_cidr_ipv4($value, $allow_hosts = false)
@@ -474,20 +527,15 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
 
     openvpn_create_dirs();
 
-    /*
-     * NOTE: Deleting tap devices causes spontaneous reboots. Instead,
-     * we use a vpnid number which is allocated for a particular client
-     * or server configuration. ( see openvpn_vpnid_next() )
-     */
     $vpnid = $settings['vpnid'];
     $mode_id = $mode.$vpnid;
 
-    if (isset($settings['dev_mode'])) {
-        $tunname = "{$settings['dev_mode']}{$vpnid}";
-    } else {  /* defaults to tun */
-        $tunname = "tun{$vpnid}";
+    if (!isset($settings['dev_mode'])) {
+        /* defaults to tun */
         $settings['dev_mode'] = "tun";
     }
+
+    $devnode = "{$settings['dev_mode']}{$vpnid}";
 
     if ($mode == "server") {
         $devname = "ovpns{$vpnid}";
@@ -495,16 +543,13 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         $devname = "ovpnc{$vpnid}";
     }
 
-    /* is our device already configured */
     if (!does_interface_exist($devname)) {
-        /* create the tap device if required */
-        if (!file_exists("/dev/{$tunname}")) {
-            exec("/sbin/ifconfig " . escapeshellarg($tunname) . " create");
+        if (!file_exists("/dev/{$devnode}")) {
+            mwexecf('/sbin/ifconfig %s create', array($devnode));
         }
-        /* rename the device */
-        mwexec("/sbin/ifconfig " . escapeshellarg($tunname) . " name " . escapeshellarg($devname));
-        /* add the device to the openvpn group */
-        mwexec("/sbin/ifconfig " . escapeshellarg($devname) . " group openvpn");
+
+        mwexecf('/sbin/ifconfig %s name %s', array($devnode, $devname));
+        mwexecf('/sbin/ifconfig %s group openvpn', array($devname));
     }
 
     if ($device_only || isset($settings['disable'])) {
@@ -550,7 +595,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
             break;
     }
 
-    $conf .= "dev-node /dev/{$tunname}\n";
+    $conf .= "dev-node /dev/{$devnode}\n";
     $conf .= "writepid /var/run/openvpn_{$mode_id}.pid\n";
     $conf .= "#user nobody\n";
     $conf .= "#group nobody\n";
@@ -569,8 +614,13 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     switch ($settings['mode']) {
         case 'server_user':
         case 'server_tls_user':
-            $conf .= "client-connect /usr/local/etc/inc/plugins.inc.d/openvpn/attributes.sh\n";
-            $conf .= "client-disconnect /usr/local/etc/inc/plugins.inc.d/openvpn/attributes.sh\n";
+            $conf .= "client-disconnect \"/usr/local/etc/inc/plugins.inc.d/openvpn/attributes.sh {$mode_id} \"\n";
+            break;
+        case 'server_tls':
+        case 'p2p_tls':
+            // For non user auth types setup client specific overrides, user authenticated ones are commissioned
+            // using the auth script in option auth-user-pass-verify
+            $conf .= "client-connect \"/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_setup_cso.php {$mode_id}\"\n";
             break;
         default:
             break;
@@ -836,7 +886,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                 openvpn_add_keyfile($cert['prv'], $conf, $mode_id, "key");
             }
             if ($mode == 'server') {
-                $conf .= "dh /usr/local/etc/dh-parameters.{$settings['dh_length']}\n";
+                $conf .= "dh " . get_dh_parameters($settings['dh_length']) . "\n";
             }
             if (!empty($settings['crlref'])) {
                 $crl = lookup_crl($settings['crlref']);
@@ -952,28 +1002,16 @@ function openvpn_delete($mode, &$settings)
     $vpnid = $settings['vpnid'];
     $mode_id = $mode.$vpnid;
 
-    if (isset($settings['dev_mode'])) {
-        $tunname = "{$settings['dev_mode']}{$vpnid}";
-    } else {  /* defaults to tun */
-        $tunname = "tun{$vpnid}";
-    }
-
     if ($mode == "server") {
         $devname = "ovpns{$vpnid}";
     } else {
         $devname = "ovpnc{$vpnid}";
     }
 
-    /* kill the process if running */
-    killbypid("/var/run/openvpn_{$mode_id}.pid");
+    killbypid("/var/run/openvpn_{$mode_id}.pid", 'TERM', true);
 
-    /* remove the device from the openvpn group */
-    mwexec("/sbin/ifconfig " . escapeshellarg($devname) . " -group openvpn");
+    mwexecf('/sbin/ifconfig %s destroy', array($devname));
 
-    /* restore the original adapter name */
-    mwexec("/sbin/ifconfig " . escapeshellarg($devname) . " name " . escapeshellarg($tunname));
-
-    /* remove the configuration files */
     @array_map('unlink', glob("/var/etc/openvpn/{$mode_id}.*"));
 }
 
@@ -981,10 +1019,14 @@ function openvpn_delete($mode, &$settings)
  * generate config (text) data for a single client specific override
  * @param array $settings csc item
  * @param array $server openvpn server item
- * @return string
+ * @param string $target_filename write to filename, or use configured/generated path when emtpy
+ * @return string|boolean filename or false when unable to (missing common name or vpnid)
  */
-function openvpn_csc_conf($settings, $server)
+function openvpn_csc_conf_write($settings, $server, $target_filename = null)
 {
+    if (empty($settings['common_name']) || empty($server['vpnid'])) {
+        return false;
+    }
     $conf = '';
     if (!empty($settings['block'])) {
         $conf .= "disable\n";
@@ -1040,55 +1082,53 @@ function openvpn_csc_conf($settings, $server)
     }
 
     openvpn_add_custom($settings, $conf);
-    return $conf;
+
+    $vpnid = filter_var($server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
+    if (empty($target_filename)) {
+        $target_filename = "/var/etc/openvpn-csc/".$vpnid."/".$settings['common_name'];
+    }
+
+    if (!empty($conf)) {
+        file_put_contents($target_filename, $conf);
+        chown($target_filename, 'nobody');
+        chgrp($target_filename, 'nobody');
+        return $target_filename;
+    } elseif (is_file($target_filename)) {
+        unlink($target_filename);
+        return null;
+    }
 }
 
 /**
- * resync all client specific overrides
+ * Construct a single array containing all client specific overrides per server and common name
+ * @return array [vpnid][common_name] = settings
  */
-function openvpn_configure_csc()
+function openvpn_fetch_csc_list()
 {
     global $config;
-    $generated_cscs = array();
-
-    openvpn_create_dirs();
-
-    // generate configs
+    $result = array();
     if (!empty($config['openvpn']['openvpn-csc']) && is_array($config['openvpn']['openvpn-csc'])) {
+        $all_servers = array_keys(openvpn_get_remote_access_servers());
         foreach ($config['openvpn']['openvpn-csc'] as $settings) {
             if (!isset($settings['disable'])) {
                 if (!empty($settings['ovpn_servers'])) {
                     $ovpn_servers = explode(',', $settings['ovpn_servers']);
                 } else {
-                    $ovpn_servers = array();
+                    $ovpn_servers = $all_servers;
                 }
-                foreach (openvpn_get_remote_access_servers() as $server) {
-                    if (count($ovpn_servers) == 0|| in_array($server['vpnid'], $ovpn_servers)) {
-                        $vpnid = filter_var($server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
-                        if (!isset($generated_cscs[$server['vpnid']])) {
-                            $generated_cscs[$vpnid] = array();
+                foreach ($ovpn_servers as $vpnid) {
+                    if (in_array($vpnid, $all_servers)) {
+                        $vpnid = filter_var($vpnid, FILTER_SANITIZE_NUMBER_INT);
+                        if (!isset($result[$vpnid])) {
+                            $result[$vpnid] = array();
                         }
-                        $conf = openvpn_csc_conf($settings, $server);
-                        $target_filename = "/var/etc/openvpn-csc/".$vpnid."/".$settings['common_name'];
-                        file_put_contents($target_filename, $conf);
-                        chown($target_filename, 'nobody');
-                        chgrp($target_filename, 'nobody');
-                        $generated_cscs[$vpnid][] = $target_filename;
+                        $result[$vpnid][$settings['common_name']] = $settings;
                     }
                 }
             }
         }
     }
-
-    // cleanup old / unassigned configs
-    foreach (openvpn_get_remote_access_servers() as $server) {
-        $vpnid = filter_var($server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
-        foreach (glob("/var/etc/openvpn-csc/".$vpnid."/*") as $filename) {
-            if (empty($generated_cscs[$vpnid]) || !in_array($filename, $generated_cscs[$vpnid])) {
-                @unlink($filename);
-            }
-        }
-    }
+    return $result;
 }
 
 function openvpn_prepare_all($verbose = false)
@@ -1203,8 +1243,6 @@ function openvpn_configure_do($verbose = false, $interface = '')
         }
     }
 
-    openvpn_configure_csc();
-
     if ($verbose) {
         echo "done.\n";
     }
@@ -1257,7 +1295,7 @@ function openvpn_get_server_status($server, $socket)
         stream_set_timeout($fp, 1);
 
         /* send our status request */
-        fputs($fp, "status 2\n");
+        fputs($fp, "status 3\n");
 
         /* recv all response lines */
         while (!feof($fp)) {
@@ -1277,7 +1315,7 @@ function openvpn_get_server_status($server, $socket)
             }
             /* parse client list line */
             if (strstr($line, "CLIENT_LIST")) {
-                $list = explode(",", $line);
+                $list = explode("\t", $line);
                 $conn = array();
                 $conn['common_name'] = $list[1];
                 $conn['remote_host'] = $list[2];
@@ -1289,7 +1327,7 @@ function openvpn_get_server_status($server, $socket)
             }
             /* parse routing table lines */
             if (strstr($line, "ROUTING_TABLE")) {
-                $list = explode(",", $line);
+                $list = explode("\t", $line);
                 $conn = array();
                 $conn['virtual_addr'] = $list[1];
                 $conn['common_name'] = $list[2];
@@ -1353,7 +1391,7 @@ function openvpn_get_client_status($client, $socket)
     if ($fp) {
         stream_set_timeout($fp, 1);
         /* send our status request */
-        fputs($fp, "state 1\n");
+        fputs($fp, "state all\n");
 
         /* recv all response lines */
         while (!feof($fp)) {
@@ -1366,31 +1404,24 @@ function openvpn_get_client_status($client, $socket)
             }
 
             /* Get the client state */
+            $list = explode(",", $line);
+            if (count($list) > 1) {
+                $client['connect_time'] = date('Y-m-d H:i:s', $list[0]);
+            }
             if (strstr($line, "CONNECTED")) {
                 $client['status']="up";
-                $list = explode(",", $line);
-
-                $client['connect_time'] = date('Y-m-d H:i:s', $list[0]);
                 $client['virtual_addr'] = $list[3];
                 $client['remote_host'] = $list[4];
-            }
-            if (strstr($line, "CONNECTING")) {
+            } elseif (strstr($line, "CONNECTING")) {
                 $client['status']="connecting";
-            }
-            if (strstr($line, "ASSIGN_IP")) {
-                $client['status']="waiting";
-                $list = explode(",", $line);
-                $client['connect_time'] = date('Y-m-d H:i:s', $list[0]);
+            } elseif (strstr($line, "ASSIGN_IP")) {
+                $client['status'] = "waiting";
                 $client['virtual_addr'] = $list[3];
-            }
-            if (strstr($line, "RECONNECTING")) {
-                $client['status']="reconnecting";
-                $list = explode(",", $line);
-                $client['connect_time'] = date('Y-m-d H:i:s', $list[0]);
+            } elseif (strstr($line, "RECONNECTING")) {
+                $client['status'] = "reconnecting";
                 $client['status'] .= "; " . $list[2];
-            }
-            /* parse end of output line */
-            if (strstr($line, "END") || strstr($line, "ERROR")) {
+            } elseif (strstr($line, "END") || strstr($line, "ERROR")) {
+                /* parse end of output line */
                 break;
             }
         }
@@ -1408,18 +1439,13 @@ function openvpn_get_client_status($client, $socket)
                     break;
                 }
 
+                $list = explode(",", $line);
                 if (strstr($line, "TCP/UDP read bytes")) {
-                    $list = explode(",", $line);
                     $client['bytes_recv'] = $list[1];
-                }
-
-                if (strstr($line, "TCP/UDP write bytes")) {
-                    $list = explode(",", $line);
+                } elseif (strstr($line, "TCP/UDP write bytes")) {
                     $client['bytes_sent'] = $list[1];
-                }
-
-                /* parse end of output line */
-                if (strstr($line, "END")) {
+                } elseif (strstr($line, "END")) {
+                    /* parse end of output line */
                     break;
                 }
             }
@@ -1589,11 +1615,6 @@ function openvpn_configure_gwgroup($gwgroupname = '')
             }
         }
     }
-
-    /*
-     * Note: no need to resysnc Client Specific (csc) here as
-     * changes to the OpenVPN real interface do not effect these.
-     */
 }
 
 function openvpn_refresh_crls()

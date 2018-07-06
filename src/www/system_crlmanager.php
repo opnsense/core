@@ -244,7 +244,7 @@ include("head.inc");
 ?>
 
 <body>
-  <script type="text/javascript">
+  <script>
 
   $( document ).ready(function() {
     // delete cert revocation list
@@ -335,7 +335,7 @@ include("head.inc");
               <tr>
                 <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Method");?></td>
                 <td style="width:78%">
-                  <select name="crlmethod" id='crlmethod' class="formselect">
+                  <select name="crlmethod" id="crlmethod">
                     <option value="internal" <?=$pconfig['crlmethod'] == "internal" ? "selected=\"selected\"" : "";?>><?=gettext("Create an internal Certificate Revocation List");?></option>
                     <option value="existing" <?=$pconfig['crlmethod'] == "existing" ? "selected=\"selected\"" : "";?>><?=gettext("Import an existing Certificate Revocation List");?></option>
                   </select>
@@ -376,9 +376,9 @@ include("head.inc");
                   <td style="width:22%"><a id="help_for_crltext" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("CRL data");?></td>
                   <td style="width:78%">
                     <textarea name="crltext" id="crltext" cols="65" rows="7" class="formfld_crl"><?=$pconfig['crltext'];?></textarea>
-                    <output class="hidden" for="help_for_crltext">
+                    <div class="hidden" data-for="help_for_crltext">
                       <?=gettext("Paste a Certificate Revocation List in X.509 CRL format here.");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -395,18 +395,18 @@ include("head.inc");
                   <td style="width:22%"><a id="help_for_lifetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Lifetime");?> (<?=gettext("days");?>)</td>
                   <td style="width:78%">
                     <input name="lifetime" type="text" id="lifetime" size="5" value="<?=$pconfig['lifetime'];?>"/>
-                    <output class="hidden" for="help_for_lifetime">
+                    <div class="hidden" data-for="help_for_lifetime">
                       <?=gettext("Default: 9999");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_serial" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial");?></td>
                   <td>
                     <input name="serial" type="text" id="serial" size="5" value="<?=$pconfig['serial'];?>"/>
-                    <output class="hidden" for="help_for_serial">
+                    <div class="hidden" data-for="help_for_serial">
                       <?=gettext("Default: 0");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -443,9 +443,9 @@ include("head.inc");
                 <td><a id="help_for_crltext" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("CRL data");?></td>
                 <td>
                   <textarea name="crltext" id="crltext" cols="65" rows="7" class="formfld_crl"><?=$thiscrl['text'];?></textarea>
-                  <output class="hidden" for="help_for_crltext">
+                  <div class="hidden" data-for="help_for_crltext">
                     <?=gettext("Paste a Certificate Revocation List in X.509 CRL format here.");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -495,7 +495,7 @@ include("head.inc");
                   <td><?=date("D M j G:i:s T Y", $cert["revoke_time"]); ?></td>
                   <td>
                     <a id="del_cert_<?=$thiscrl['refid'];?>" data-id="<?=$thiscrl['refid'];?>" data-certref="<?=$cert['refid'];?>" title="<?=gettext("Delete this certificate from the CRL");?>" data-toggle="tooltip"  class="act_delete_cert btn btn-default btn-xs">
-                      <span class="fa fa-trash text-muted"></span>
+                      <i class="fa fa-trash fa-fw"></i>
                     </a>
                   </td>
                 </tr>
@@ -581,7 +581,7 @@ include("head.inc");
                   <td><?=gettext("Internal");?></td>
                   <td><?=gettext("Certificates");?></td>
                   <td><?=gettext("In Use");?></td>
-                  <td></td>
+                  <td class="text-nowrap"></td>
                 </tr>
               </thead>
               <tbody>
@@ -595,16 +595,16 @@ include("head.inc");
                 foreach ($a_ca as $ca) :?>
                 <tr>
                   <td colspan="4"> <?=htmlspecialchars($ca['descr']);?></td>
-                  <td>
+                  <td class="text-nowrap">
 <?php
                   if (!empty($ca['prv'])) :?>
                     <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>" data-toggle="tooltip" title="<?= html_safe(sprintf(gettext('Add or Import CRL for %s'), $ca['descr'])) ?>" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-plus"></span>
+                      <i class="fa fa-plus fa-fw"></i>
                     </a>
 <?php
                   else :?>
                     <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>&amp;importonly=yes" data-toggle="tooltip" title="<?= html_safe(sprintf(gettext('Import CRL for %s'), $ca['descr'])) ?>" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-plus"></span>
+                      <i class="fa fa-plus fa-fw"></i>
                     </a>
 <?php
                   endif;?>
@@ -621,26 +621,26 @@ include("head.inc");
                   <td><?=$internal ? gettext("YES") : gettext("NO"); ?></td>
                   <td><?=$internal ? (isset($tmpcrl['cert']) ? count($tmpcrl['cert']) : 0) : gettext("Unknown (imported)"); ?></td>
                   <td><?=$inuse ? gettext("YES") : gettext("NO"); ?></td>
-                  <td>
+                  <td class="text-nowrap">
                     <a href="system_crlmanager.php?act=exp&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-export" data-toggle="tooltip" title="<?=gettext("Export CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+                        <i class="fa fa-download fa-fw" data-toggle="tooltip" title="<?=gettext("Export CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></i>
                     </a>
 <?php
                   if ($internal) :?>
                     <a href="system_crlmanager.php?act=edit&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-edit" data-toggle="tooltip" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+                      <i class="fa fa-pencil fa-fw" data-toggle="tooltip" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></i>
                     </a>
 <?php
                   else :?>
                     <a href="system_crlmanager.php?act=editimported&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-edit" data-toggle="tooltip" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+                      <i class="fa fa-pencil fa-fw" data-toggle="tooltip" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></i>
                     </a>
 <?php
                   endif; ?>
 <?php
                   if (!$inuse) :?>
                     <a id="del_<?=$tmpcrl['refid'];?>" data-descr="<?=htmlspecialchars($tmpcrl['descr']);?>" data-id="<?=$tmpcrl['refid'];?>" title="<?=gettext("Delete CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                      <span class="fa fa-trash text-muted"></span>
+                      <i class="fa fa-trash fa-fw"></i>
                     </a>
 <?php
                   endif; ?>

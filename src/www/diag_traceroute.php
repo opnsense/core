@@ -117,7 +117,7 @@ include("head.inc");
                     <tr>
                       <td><?=gettext("IP Protocol"); ?></td>
                       <td>
-                        <select name="ipproto" class="form-control">
+                        <select name="ipproto" class="selectpicker">
                           <option value="ipv4" <?=($pconfig['ipproto'] == "ipv4") ? "selected=\"selected\"" : "";?>><?= gettext('IPv4') ?></option>
                           <option value="ipv6" <?=($pconfig['ipproto'] == "ipv6") ? "selected=\"selected\"" : "";?>><?= gettext('IPv6') ?></option>
                         </select>
@@ -141,7 +141,7 @@ include("head.inc");
                     <tr>
                       <td><?=gettext("Maximum number of hops");?></td>
                       <td>
-                        <select name="ttl" class="form-control" id="ttl">
+                        <select name="ttl" class="selectpicker" id="ttl">
 <?php
                         for ($i = 1; $i <= MAX_TTL; $i++): ?>
                           <option value="<?=$i;?>" <?= $i == $pconfig['ttl'] ? "selected=\"selected\"" : "" ;?>>

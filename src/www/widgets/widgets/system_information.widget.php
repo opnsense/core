@@ -34,8 +34,8 @@ require_once("guiconfig.inc");
 require_once("system.inc");
 
 ?>
-<script src="/ui/js/moment-with-locales.min.js" type="text/javascript"></script>
-<script type="text/javascript">
+<script src="/ui/js/moment-with-locales.min.js"></script>
+<script>
   var system_information_widget_cpu_data = []; // reference to measures
   var system_information_widget_cpu_chart = null; // reference to chart object
   var system_information_widget_cpu_chart_data = null; // reference to chart data object
@@ -45,9 +45,6 @@ require_once("system.inc");
    */
   function system_information_widget_cpu_update(sender, data)
   {
-      // tooltip current percentage
-      $("#system_information_widget_chart_cpu_usage").tooltip({ title: ''});
-      $("#system_information_widget_chart_cpu_usage").attr("title", data['cpu']['used'] + ' %').tooltip('fixTitle');
       // push new measurement, keep a maximum of 100 measures in
       system_information_widget_cpu_data.push(parseInt(data['cpu']['used']));
       if (system_information_widget_cpu_data.length > 100) {
@@ -135,7 +132,7 @@ require_once("system.inc");
   /**
    * page setup
    */
-  $( document ).ready(function() {
+  $(window).load(function() {
       // draw cpu graph
       nv.addGraph(function() {
           system_information_widget_cpu_chart = nv.models.lineChart()

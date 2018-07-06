@@ -101,11 +101,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $mode = $config['nat']['outbound']['mode'];
 
+$interface_names= array();
+// add this hosts ips
+foreach ($config['interfaces'] as $intf => $intfdata) {
+    if (isset($intfdata['ipaddr']) && $intfdata['ipaddr'] != 'dhcp') {
+        $interface_names[$intfdata['ipaddr']] = sprintf(gettext('%s address'), !empty($intfdata['descr']) ? $intfdata['descr'] : $intf );
+    }
+}
+
+if ($mode != 'disabled' && $mode != 'automatic') {
+    $main_buttons = array(
+        array('label' => gettext('Add'), 'href' => 'firewall_nat_out_edit.php'),
+    );
+}
+
 include("head.inc");
 
 ?>
 <body>
-  <script type="text/javascript">
+  <script>
   $( document ).ready(function() {
     // link delete buttons
     $(".act_delete").click(function(){
@@ -199,7 +213,7 @@ include("head.inc");
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th colspan="4"><?=gettext("Mode:"); ?></th>
+                    <th colspan="4"><?=gettext("Mode"); ?></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -266,10 +280,11 @@ include("head.inc");
         </section>
 <?php if ($mode == 'advanced' || $mode == 'hybrid'): ?>
         <section class="col-xs-12">
-          <div class="table-responsive content-box ">
+          <div class="__mb"></div>
+          <div class="table-responsive content-box">
             <table class="table table-striped">
               <thead>
-                <tr><th colspan="12"><?=gettext("Manual rules:"); ?></th></tr>
+                <tr><th colspan="12"><?=gettext("Manual rules"); ?></th></tr>
                 <tr>
                     <th><input type="checkbox" id="selectAll"></th>
                     <th>&nbsp;</th>
@@ -298,12 +313,12 @@ include("head.inc");
 <?php
                     if ($mode == "disabled" || $mode == "automatic"):
 ?>
-                      <span data-toggle="tooltip" title="<?=gettext("All manual rules are being ignored");?>" class="glyphicon glyphicon-play <?=$mode == "disabled" || $mode == "automatic" || isset($natent['disabled']) ? "text-muted" : "text-success";?>"></span>
+                      <span data-toggle="tooltip" title="<?=gettext("All manual rules are being ignored");?>" class="fa fa-play <?=$mode == "disabled" || $mode == "automatic" || isset($natent['disabled']) ? "text-muted" : "text-success";?>"></span>
 <?php
                     else:
 ?>
-                      <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(!isset($natent['disabled'])) ? gettext("disable rule") : gettext("enable rule");?>" class="btn btn-default btn-xs <?=isset($natent['disabled']) ? "text-muted" : "text-success";?>">
-                        <span class="glyphicon glyphicon-play <?=isset($natent['disabled']) ? "text-muted" : "text-success";?>  "></span>
+                      <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(!isset($natent['disabled'])) ? gettext("Disable") : gettext("Enable");?>" class="btn btn-default btn-xs <?=isset($natent['disabled']) ? "text-muted" : "text-success";?>">
+                        <span class="fa fa-play <?=isset($natent['disabled']) ? "text-muted" : "text-success";?>  "></span>
                       </a>
 <?php
                     endif;
@@ -383,14 +398,15 @@ include("head.inc");
                     <td class="hidden-xs hidden-sm">
 <?php
 
-                      if (isset($natent['nonat']))
-                        $nat_address = '<I>NO NAT</I>';
-                      elseif (!$natent['target'])
-                        $nat_address = htmlspecialchars(convert_friendly_interface_to_friendly_descr($natent['interface'])) . " address";
-                      elseif ($natent['target'] == "other-subnet")
-                        $nat_address = $natent['targetip'] . '/' . $natent['targetip_subnet'];
-                      else
-                        $nat_address = htmlspecialchars($natent['target']);
+                      if (isset($natent['nonat'])) {
+                          $nat_address = '<I>NO NAT</I>';
+                      } elseif (empty($natent['target'])) {
+                          $nat_address = gettext("Interface address");
+                      } elseif ($natent['target'] == "other-subnet") {
+                          $nat_address = $natent['targetip'] . '/' . $natent['targetip_subnet'];
+                      } else {
+                          $nat_address = htmlspecialchars($natent['target']);
+                      }
 ?>
 <?php                 if (isset($natent['target']) && is_alias($natent['target'])): ?>
                         <span title="<?=htmlspecialchars(get_alias_description($natent['target']));?>" data-toggle="tooltip">
@@ -400,6 +416,8 @@ include("head.inc");
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>
+<?php                 elseif (!empty($interface_names[$nat_address])): ?>
+                        <?=$interface_names[$nat_address];?>
 <?php                 else: ?>
                         <?=$nat_address;?>
 <?php                 endif; ?>
@@ -414,17 +432,17 @@ include("head.inc");
                       <?=htmlspecialchars($natent['descr']);?>&nbsp;
                     </td>
                     <td>
-                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-arrow-left"></span>
+                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('move selected rules before this rule')) ?>" class="act_move btn btn-default btn-xs">
+                        <i class="fa fa-arrow-left fa-fw"></i>
                       </a>
-                      <a href="firewall_nat_out_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-pencil"></span>
+                      <a href="firewall_nat_out_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
+                        <i class="fa fa-pencil fa-fw"></i>
                       </a>
-                      <a id="del_<?=$i;?>" title="<?=gettext("delete rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                        <span class="fa fa-trash text-muted"></span>
+                      <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs">
+                        <i class="fa fa-trash fa-fw"></i>
                       </a>
-                      <a href="firewall_nat_out_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone rule");?>">
-                        <span class="fa fa-clone text-muted"></span>
+                      <a href="firewall_nat_out_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Clone')) ?>">
+                        <i class="fa fa-clone fa-fw"></i>
                       </a>
                     </td>
                   </tr>
@@ -432,51 +450,28 @@ include("head.inc");
                   $i++;
                 endforeach;
 ?>
-        <tr>
-          <td colspan="6" class="hidden-xs hidden-sm"></td>
-          <td colspan="5"></td>
-          <td>
-
-<?php
-                if ($i == 0):
-?>
-                  <span class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></span>
-<?php
-                else:
-?>
-                  <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules to end");?>" class="act_move btn btn-default btn-xs">
-                    <span class="glyphicon glyphicon-arrow-left"></span>
-                  </a>
-<?php
-                endif;
-?>
-<?php
-                if ($i == 0):
-?>
-                  <span title="<?=gettext("delete selected rules");?>"  class="btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></span>
-<?php
-                else:
-?>
-                  <a id="del_x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                    <span class="fa fa-trash text-muted"></span>
-                  </a>
-<?php
-                endif;
-?>
-                  <a href="firewall_nat_out_edit.php" title="<?=gettext("add new rule");?>" alt="add"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+<?php if ($i != 0): ?>
+                <tr>
+                  <td colspan="6" class="hidden-xs hidden-sm"></td>
+                  <td colspan="5"></td>
+                  <td>
+                    <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=html_safe(gettext('move selected rules to end'))?>" class="act_move btn btn-default btn-xs">
+                      <i class="fa fa-arrow-left fa-fw"></i>
+                    </a>
+                    <a id="del_x" title="<?= html_safe(gettext('Delete selected')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs">
+                      <i class="fa fa-trash fa-fw"></i>
+                    </a>
+<?php endif ?>
                   </td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr>
-                  <td colspan="12">&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style="width:16px"><span class="glyphicon glyphicon-play text-success"></span></td>
+                  <td style="width:16px"><span class="fa fa-play text-success"></span></td>
                   <td colspan="11"><?=gettext("Enabled rule"); ?></td>
                 </tr>
                 <tr>
-                  <td><span class="glyphicon glyphicon-play text-muted"></span></td>
+                  <td><span class="fa fa-play text-muted"></span></td>
                   <td colspan="11"><?=gettext("Disabled rule"); ?></td>
                 </tr>
               </tfoot>
@@ -500,11 +495,12 @@ include("head.inc");
         $intfv4 = array_merge($intfv4, filter_core_get_default_nat_outbound_networks());
 ?>
         <section class="col-xs-12">
-          <div class="table-responsive content-box ">
+          <div class="__mb"></div>
+          <div class="table-responsive content-box">
             <table class="table table-striped">
               <thead>
                   <tr>
-                    <th colspan="11"><?=gettext("Automatic rules:"); ?></th>
+                    <th colspan="11"><?=gettext("Automatic rules"); ?></th>
                   </tr>
                   <tr>
                     <th>&nbsp;</th>
@@ -527,7 +523,7 @@ include("head.inc");
                 <tr>
                   <td>&nbsp;</td>
                   <td>
-                    <span class="glyphicon glyphicon-play text-success" data-toggle="tooltip" title="<?=gettext("automatic outbound nat");?>"></span>
+                    <span class="fa fa-play text-success" data-toggle="tooltip" title="<?=gettext("automatic outbound nat");?>"></span>
                   </td>
                   <td><?= htmlspecialchars($natintf['descr']); ?></td>
                   <td><?= implode(', ', $intfv4);?></td>
@@ -542,7 +538,7 @@ include("head.inc");
                 <tr>
                   <td>&nbsp;</td>
                   <td>
-                    <span class="glyphicon glyphicon-play text-success" data-toggle="tooltip" title="<?=gettext("automatic outbound nat");?>"></span>
+                    <span class="fa fa-play text-success" data-toggle="tooltip" title="<?=gettext("automatic outbound nat");?>"></span>
                   </td>
                   <td><?= htmlspecialchars($natintf['descr']); ?></td>
                   <td><?= implode(', ', $intfv4);?></td>

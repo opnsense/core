@@ -47,12 +47,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
-        if (authenticate_user($_POST['username'], $_POST['password'], $authcfg)) {
+        $authName = $authcfg['name'];
+        if ($authcfg['type'] == 'local') {
+            // avoid gettext type issues on Local Database, authenticator should always be named "Local Database"
+            $authName = 'Local Database';
+        } elseif ($authcfg['type'] == 'ldap') {
+            // temporary fix, ldap handler doesn't do this init yet.
+            ldap_setup_caenv($authcfg);
+        }
+
+        $authFactory = new OPNsense\Auth\AuthenticationFactory;
+        $authenticator = $authFactory->get($authName);
+        if ($authenticator->authenticate($_POST['username'], $_POST['password'])) {
             $savemsg = gettext("User") . ": " . $_POST['username'] . " " . gettext("authenticated successfully.");
             $groups = getUserGroups($_POST['username']);
             $savemsg .= "<br />" . gettext("This user is a member of these groups") . ": <br />";
             foreach ($groups as $group) {
                 $savemsg .= "{$group} ";
+            }
+            if (!empty($authenticator->getLastAuthProperties())) {
+                $savemsg .= "<br/><br/>" . gettext("Attributes received from server") . ": <br />";
+            }
+            foreach ($authenticator->getLastAuthProperties() as $attr_name => $attr_value) {
+                if (is_array($attr_value)) {
+                    $attr_value = implode(",", $attr_value);
+                }
+                $savemsg .= "{$attr_name} => {$attr_value}<br/>";
             }
         } else {
             $input_errors[] = gettext("Authentication failed.");
@@ -80,7 +100,7 @@ include("head.inc");
                 <tr>
                   <td style="width:22%"><?=gettext("Authentication Server"); ?></td>
                   <td style="width:78%">
-                    <select name="authmode" id="authmode" class="form-control" >
+                    <select class="selectpicker" name="authmode" id="authmode" >
 <?php
                     foreach (auth_get_authserver_list() as $auth_server_id => $auth_server):?>
                       <option value="<?=$auth_server_id;?>" <?=$auth_server['name'] == $pconfig['authmode'] ? "selected=\"selected\"" : "";?>>

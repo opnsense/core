@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2018 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -66,12 +66,25 @@ function webgui_configure_do($verbose = false, $interface = '')
             }
         }
 
+        foreach (array('ipaddr', 'ipaddrv6') as $type) {
+            if (empty($config['interfaces'][$interface][$type])) {
+                continue;
+            }
+            $addr = $config['interfaces'][$interface][$type];
+            if (is_ipaddr($addr) && !is_linklocal($addr)) {
+                $listeners[] = $addr;
+            }
+        }
+
         $viparr = &config_read_array('virtualip', 'vip');
         foreach ($viparr as $vip) {
             if ($vip['interface'] == $interface && is_ipaddr($vip['subnet'])) {
                 $listeners[] = $vip['subnet'];
             }
         }
+
+        /* addresses may have been read twice */
+        $listeners = array_unique($listeners);
     }
 
     chdir('/usr/local/www');
@@ -172,8 +185,8 @@ function webgui_generate_config($port, $cert, $key, $ca, $listeners)
 # Phalcon ui and api routing
 alias.url += ( "/ui/" => "/usr/local/opnsense/www/" )
 alias.url += ( "/api/"  => "/usr/local/opnsense/www/" )
-url.rewrite-if-not-file = ( "^/ui/([^\?]+)(\?(.*))?" => "/ui/index.php?_url=/$1&$3" ,
-                            "^/api/([^\?]+)(\?(.*))?" => "/api/api.php?_url=/$1&$3"
+url.rewrite-if-not-file = ( "^/ui/([^\?]+)(\?(.*))?" => "/ui/index.php?$3" ,
+                            "^/api/([^\?]+)(\?(.*))?" => "/api/api.php?$3"
 )
 
 EOD;
@@ -185,9 +198,14 @@ EOD;
 
     if (!isset($config['syslog']['nologlighttpd'])) {
         $lighty_use_syslog = <<<EOD
-## where to send error-messages to
+## where to send error/access-messages to
+server.syslog-facility = "daemon"
 server.errorlog-use-syslog="enable"
+
 EOD;
+    }
+    if (!empty($config['system']['webgui']['httpaccesslog'])) {
+        $lighty_use_syslog .= 'accesslog.use-syslog="enable"' . "\n";
     }
 
     $fast_cgi_path = "/tmp/php-fastcgi.socket";
@@ -211,6 +229,9 @@ fastcgi.server = ( ".php" =>
 
 EOD;
 
+    $lighty_modules = !empty($config['system']['webgui']['httpaccesslog']) ? ', "mod_accesslog"' : "";
+
+
     $lighty_config = <<<EOD
 #
 # lighttpd configuration file
@@ -224,8 +245,8 @@ server.network-backend  = "writev"
 
 ## modules to load
 server.modules              =   (
-  "mod_access", "mod_expire", "mod_compress", "mod_redirect",
-  "mod_cgi", "mod_fastcgi","mod_alias", "mod_rewrite", "mod_openssl"
+  "mod_access", "mod_expire", "mod_compress", "mod_redirect", "mod_setenv",
+  "mod_cgi", "mod_fastcgi","mod_alias", "mod_rewrite", "mod_openssl" {$lighty_modules}
 )
 
 server.max-keep-alive-requests = 15
@@ -354,62 +375,42 @@ EOD;
 
         $lighty_config .= "\n## ssl configuration\n";
         $lighty_config .= "ssl.engine = \"enable\"\n";
-        $lighty_config .= "ssl.dh-file = \"/usr/local/etc/dh-parameters.4096\"\n";
+        $lighty_config .= "ssl.disable-client-renegotiation = \"enable\"\n";
+        $lighty_config .= "ssl.dh-file = \"" . get_dh_parameters(4096) . "\"\n";
         $lighty_config .= "ssl.ec-curve = \"secp384r1\"\n";
         $lighty_config .= "ssl.pemfile = \"/var/etc/{$cert_location}\"\n";
         if (!empty($ca)) {
             $lighty_config .= "ssl.ca-file = \"/var/etc/{$ca_location}\"\n";
         }
+        $lighty_config .= "setenv.add-environment = (\n";
+        $lighty_config .= "     \"HTTPS\" => \"on\"\n";
+        $lighty_config .= ")\n";
 
         // Harden SSL a bit for PCI conformance testing
         $lighty_config .= "ssl.use-sslv2 = \"disable\"\n";
         $lighty_config .= "ssl.use-sslv3 = \"disable\"\n";
+        $lighty_config .= "ssl.honor-cipher-order = \"enable\"\n";
         if (empty($config['system']['webgui']['ssl-ciphers'])) {
             $ciphers = array(
-                'ECDHE-RSA-AES128-GCM-SHA256',
-                'ECDHE-ECDSA-AES128-GCM-SHA256',
-                'ECDHE-RSA-AES256-GCM-SHA384',
                 'ECDHE-ECDSA-AES256-GCM-SHA384',
-                'DHE-RSA-AES128-GCM-SHA256',
-                'DHE-DSS-AES128-GCM-SHA256',
-                'kEDH+AESGCM',
-                'ECDHE-RSA-AES128-SHA256',
-                'ECDHE-ECDSA-AES128-SHA256',
-                'ECDHE-RSA-AES128-SHA',
-                'ECDHE-ECDSA-AES128-SHA',
-                'ECDHE-RSA-AES256-SHA384',
+                'ECDHE-RSA-AES256-GCM-SHA384',
+                'ECDHE-ECDSA-CHACHA20-POLY1305',
+                'ECDHE-RSA-CHACHA20-POLY1305',
+                'ECDHE-ECDSA-AES128-GCM-SHA256',
+                'ECDHE-RSA-AES128-GCM-SHA256',
                 'ECDHE-ECDSA-AES256-SHA384',
-                'ECDHE-RSA-AES256-SHA',
-                'ECDHE-ECDSA-AES256-SHA',
-                'DHE-RSA-AES128-SHA256',
-                'DHE-RSA-AES128-SHA',
-                'DHE-DSS-AES128-SHA256',
-                'DHE-RSA-AES256-SHA256',
-                'DHE-DSS-AES256-SHA',
-                'DHE-RSA-AES256-SHA',
-                'AES128-GCM-SHA256',
-                'AES256-GCM-SHA384',
-                'AES128-SHA256',
-                'AES256-SHA256',
-                'AES128-SHA',
-                'AES256-SHA',
-                'AES',
-                'CAMELLIA',
-                '!aNULL',
-                '!eNULL',
-                '!EXPORT',
-                '!DES',
-                '!RC4',
-                '!MD5',
-                '!PSK',
-                '!aECDH',
-                '!EDH-DSS-DES-CBC3-SHA',
-                '!EDH-RSA-DES-CBC3-SHA',
-                '!KRB5-DES-CBC3-SHA',
+                'ECDHE-RSA-AES256-SHA384',
+                'ECDHE-ECDSA-AES128-SHA256',
+                'ECDHE-RSA-AES128-SHA256'
             );
             $lighty_config .= 'ssl.cipher-list = "' . join(':', $ciphers) . '"' . PHP_EOL;
         } else {
             $lighty_config .= 'ssl.cipher-list = "'.$config['system']['webgui']['ssl-ciphers'].'"' . PHP_EOL;
+        }
+        if (!empty($config['system']['webgui']['ssl-hsts'])) {
+            $lighty_config .= "setenv.add-response-header  = (\n";
+            $lighty_config .= "    \"Strict-Transport-Security\" => \"max-age=15768000;\"\n";
+            $lighty_config .= ")\n";
         }
 
         $lighty_config .= "\n";
@@ -430,7 +431,7 @@ EOD;
 
 ## error-handler for status 404
 #server.error-handler-404   = "/error-handler.html"
-#server.error-handler-404   = "/error-handler.php"
+server.error-handler-404   = "/ui/404"
 
 ## to help the rc.scripts
 server.pid-file            = "/var/run/lighty-webConfigurator.pid"

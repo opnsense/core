@@ -99,7 +99,11 @@ if ($authcfg['type'] == 'ldap') {
               foreach ($result as $ldap_user ) {
                   foreach ($_POST['user_dn'] as $userDN) {
                       if ($userDN == $ldap_user['dn'] && !in_array($ldap_user['dn'], $confDNs)) {
-                          add_local_user($ldap_user['name'] , $ldap_user['dn'], $ldap_user['fullname']);
+                          // strip domain if it exists and cleanse ldap username to make sure it is a valid one for
+                          // our system.
+                          $username = explode('@', $ldap_user['name'])[0];
+                          $username = substr(preg_replace("/[^a-zA-Z0-9\.\-_]/", "", $username),0 ,32);
+                          add_local_user($username , $ldap_user['dn'], $ldap_user['fullname']);
                           $update_count++;
                       }
                   }
@@ -129,7 +133,7 @@ include('head.inc');
  <body>
 <?php if ($exit_form) :
 ?>
-  <script type="text/javascript">
+  <script>
     // exit form and reload parent after save
     window.opener.location.href = window.opener.location.href;
   window.close();
@@ -165,8 +169,8 @@ else :
 <?php
 endif; ?>
 <!-- bootstrap script -->
-<script type="text/javascript" src="/ui/js/bootstrap.min.js"></script>
+<script src="/ui/js/bootstrap.min.js"></script>
 <!-- Fancy select with search options -->
-<script type="text/javascript" src="/ui/js/bootstrap-select.min.js"></script>
+<script src="/ui/js/bootstrap-select.min.js"></script>
  </body>
 </html>

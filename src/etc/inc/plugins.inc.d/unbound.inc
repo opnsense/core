@@ -1,34 +1,34 @@
 <?php
 
 /*
-    Copyright (C) 2018 Fabian Franz
-    Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
-    Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
-    Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
-    Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2018 Fabian Franz
+ * Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
+ * Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
+ * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 function unbound_enabled()
 {
@@ -42,6 +42,7 @@ function unbound_configure()
     return array(
         'dns' => array('unbound_configure_do'),
         'hosts' => array('unbound_hosts_generate:0'),
+        'local' => array('unbound_configure_do'),
         'newwanip' => array('unbound_configure_do:2'),
     );
 }
@@ -104,14 +105,6 @@ function unbound_optimization()
         $optimization['rrset_cache_slabs'] = "rrset-cache-slabs: 4";
         $optimization['infra_cache_slabs'] = "infra-cache-slabs: 4";
         $optimization['key_cache_slabs'] = "key-cache-slabs: 4";
-    }
-
-    // More outgoing connections per thread otherwise assign a default of 4096 for a single thread
-    if ($numprocs > 0) {
-        $or = (1024/$numprocs) - 50;
-        $optimization['outgoing_range'] = "outgoing-range: {$or}";
-    } else {
-        $optimization['outgoing_range'] = "outgoing-range: {4096}";
     }
 
     return $optimization;
@@ -215,9 +208,6 @@ EOF;
     // Configure Domain Overrides
     unbound_add_domain_overrides();
 
-    // Configure Unbound statistics
-    $statistics = unbound_statistics();
-
     // Configure Unbound access-lists
     unbound_acls_config();
 
@@ -236,6 +226,7 @@ EOF;
     $outgoing_num_tcp = !empty($config['unbound']['outgoing_num_tcp']) ? $config['unbound']['outgoing_num_tcp'] : "10";
     $incoming_num_tcp = !empty($config['unbound']['incoming_num_tcp']) ? $config['unbound']['incoming_num_tcp'] : "10";
     $num_queries_per_thread = !empty($config['unbound']['num_queries_per_thread']) ? $config['unbound']['num_queries_per_thread'] : "4096";
+    $outgoing_range = $num_queries_per_thread * 2;
     $jostle_timeout = !empty($config['unbound']['jostle_timeout']) ? $config['unbound']['jostle_timeout'] : "200";
     $cache_max_ttl = !empty($config['unbound']['cache_max_ttl']) ? $config['unbound']['cache_max_ttl'] : "86400";
     $cache_min_ttl = !empty($config['unbound']['cache_min_ttl']) ? $config['unbound']['cache_min_ttl'] : "0";
@@ -316,6 +307,7 @@ serve-expired: {$serveexpired}
 outgoing-num-tcp: {$outgoing_num_tcp}
 incoming-num-tcp: {$incoming_num_tcp}
 num-queries-per-thread: {$num_queries_per_thread}
+outgoing-range: {$outgoing_range}
 infra-host-ttl: {$infra_host_ttl}
 infra-cache-numhosts: {$infra_cache_numhosts}
 unwanted-reply-threshold: {$unwanted_reply_threshold}
@@ -327,13 +319,10 @@ rrset-cache-size: {$rrsetcachesize}m
 {$optimization['rrset_cache_slabs']}
 {$optimization['infra_cache_slabs']}
 {$optimization['key_cache_slabs']}
-{$optimization['outgoing_range']}
 {$optimization['so_rcvbuf']}
 {$anchor_file}
 prefetch: {$prefetch}
 prefetch-key: {$prefetch_key}
-# Statistics
-{$statistics}
 # Interface IP(s) to bind to
 {$bindints}
 {$outgoingints}
@@ -517,14 +506,18 @@ function unbound_add_host_entries()
 {
     global $config;
 
-    $unbound_entries = "local-zone: \"{$config['system']['domain']}\" transparent\n";
+    $local_zone_type = 'transparent';
 
-    // IPv4 entries
+    if (!empty($config['unbound']['local_zone_type'])) {
+        $local_zone_type = $config['unbound']['local_zone_type'];
+    }
+
+    $unbound_entries = "local-zone: \"{$config['system']['domain']}\" {$local_zone_type}\n";
+
     $unbound_entries .= "local-data-ptr: \"127.0.0.1 localhost\"\n";
     $unbound_entries .= "local-data: \"localhost A 127.0.0.1\"\n";
     $unbound_entries .= "local-data: \"localhost.{$config['system']['domain']} A 127.0.0.1\"\n";
 
-    // IPv6 entries
     $unbound_entries .= "local-data-ptr: \"::1 localhost\"\n";
     $unbound_entries .= "local-data: \"localhost AAAA ::1\"\n";
     $unbound_entries .= "local-data: \"localhost.{$config['system']['domain']} AAAA ::1\"\n";
@@ -616,8 +609,14 @@ function unbound_add_host_entries()
             switch ($host['rr']) {
                 case 'A':
                 case 'AAAA':
-                    $unbound_entries .= "local-data-ptr: \"{$host['ip']} {$host['host']}{$host['domain']}\"\n";
-                    $unbound_entries .= "local-data: \"{$host['host']}{$host['domain']} IN {$host['rr']} {$host['ip']}\"\n";
+                    /* Handle wildcard entries which have "*" as a hostname. Since we added a . above, we match on "*.". */
+                    if (trim($host['host']) == '*.') {
+                        $unbound_entries .= "local-zone: \"{$host['domain']}\" redirect\n";
+                        $unbound_entries .= "local-data: \"{$host['domain']} IN {$host['rr']} {$host['ip']}\"\n";
+                    } else {
+                        $unbound_entries .= "local-data-ptr: \"{$host['ip']} {$host['host']}{$host['domain']}\"\n";
+                        $unbound_entries .= "local-data: \"{$host['host']}{$host['domain']} IN {$host['rr']} {$host['ip']}\"\n";
+                    }
                     break;
                 case 'MX':
                     $unbound_entries .= "local-data: \"{$host['host']}{$host['domain']} IN MX {$host['mxprio']} {$host['mx']}\"\n";
@@ -685,67 +684,37 @@ function unbound_add_host_entries()
     file_put_contents('/var/unbound/host_entries.conf', $unbound_entries);
 }
 
-// Generation of Unbound statistics
-function unbound_statistics()
+function unbound_acls_subnets()
 {
     global $config;
 
-    if ($config['stats'] == "on") {
-        $stats_interval = $config['unbound']['stats_interval'];
-        $cumulative_stats = $config['cumulative_stats'];
-        if ($config['extended_stats'] == "on") {
-            $extended_stats = "yes";
-        } else {
-            $extended_stats = "no";
-        }
-    } else {
-        $stats_interval = "0";
-        $cumulative_stats = "no";
-        $extended_stats = "no";
-    }
-    /* XXX To do - add RRD graphs */
-    $stats = <<<EOF
-# Unbound Statistics
-statistics-interval: {$stats_interval}
-extended-statistics: yes
-statistics-cumulative: yes
-
-EOF;
-
-    return $stats;
-}
-
-function unbound_acls_config()
-{
-    global $config;
-
-    $aclcfg = "access-control: 127.0.0.1/32 allow\n";
-    $aclcfg .= "access-control: ::1 allow\n";
-    // Add our networks for active interfaces including localhost
     if (!empty($config['unbound']['active_interface'])) {
         $active_interfaces = array_flip(explode(",", $config['unbound']['active_interface']));
     } else {
         $active_interfaces = get_configured_interface_with_descr();
     }
 
-    $bindints = "";
+    /* add our networks for active interfaces including localhost */
+    $subnets = array('127.0.0.1/8', '::1/64');
+
     foreach ($active_interfaces as $ubif => $ifdesc) {
-        $ifip = get_interface_ip($ubif);
-        if (!empty($ifip)) {
-            $subnet_bits = get_interface_subnet($ubif);
-            $subnet_ip = gen_subnet($ifip, $subnet_bits);
-            if (!empty($subnet_bits) && !empty($subnet_ip)) {
-                $aclcfg .= "access-control: {$subnet_ip}/{$subnet_bits} allow\n";
-            }
+        foreach (legacy_getall_interface_addresses(get_real_interface($ubif)) as $subnet) {
+            $subnets[] = $subnet;
         }
-        $ifip = get_interface_ipv6($ubif);
-        if (!empty($ifip)) {
-            $subnet_bits = get_interface_subnetv6($ubif);
-            $subnet_ip = gen_subnetv6($ifip, $subnet_bits);
-            if (!empty($subnet_bits) && !empty($subnet_ip)) {
-                $aclcfg .= "access-control: {$subnet_ip}/{$subnet_bits} allow\n";
-            }
-        }
+    }
+
+    return $subnets;
+}
+
+function unbound_acls_config()
+{
+    global $config;
+
+    $subnets = unbound_acls_subnets();
+    $aclcfg = '';
+
+    foreach ($subnets as $subnet) {
+        $aclcfg .= "access-control: {$subnet} allow\n";
     }
 
     // Configure the custom ACLs
@@ -755,13 +724,16 @@ function unbound_acls_config()
             foreach ($unbound_acl['row'] as $network) {
                 if ($unbound_acl['aclaction'] == "allow snoop") {
                     $unbound_acl['aclaction'] = "allow_snoop";
+                } elseif ($unbound_acl['aclaction'] == "deny nonlocal") {
+                        $unbound_acl['aclaction'] = "deny_non_local";
+                } elseif ($unbound_acl['aclaction'] == "refuse nonlocal") {
+                        $unbound_acl['aclaction'] = "refuse_non_local";
                 }
                 $aclcfg .= "access-control: {$network['acl_network']}/{$network['mask']} {$unbound_acl['aclaction']}\n";
             }
         }
     }
 
-    // Write out Access list
     file_put_contents('/var/unbound/access_lists.conf', $aclcfg);
 }
 
@@ -776,4 +748,22 @@ function unbound_hosts_generate()
     unbound_add_host_entries();
 
     killbypid('/var/run/unbound.pid', 'HUP');
+}
+
+function unbound_local_zone_types()
+{
+    return array(
+        '' => 'transparent',
+        'always_nxdomain' => 'always_nxdomain',
+        'always_refuse' => 'always_refuse',
+        'always_transparent' => 'always_transparent',
+        'deny' => 'deny',
+        'inform' => 'inform',
+        'inform_deny' => 'inform_deny',
+        'nodefault' => 'nodefault',
+        'redirect' => 'redirect',
+        'refuse' => 'refuse',
+        'static' => 'static',
+        'typetransparent' => 'typetransparent',
+    );
 }

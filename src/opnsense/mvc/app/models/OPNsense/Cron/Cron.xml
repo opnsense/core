@@ -1,12 +1,13 @@
 <model>
     <mount>//OPNsense/cron</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>Cron settings</description>
     <items>
         <jobs>
             <job type="ArrayField">
                 <origin type="TextField">
                     <Required>Y</Required>
+                    <default>cron</default>
                     <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
                     <ValidationMessage>Origin should be regular text of max 30 characters.</ValidationMessage>
                 </origin>

@@ -49,6 +49,7 @@ rc_enabled()
 	fi
 
 	# check if service has a variable
+	rcvar=
 	eval "$(grep "^rcvar[[:blank:]]*=" ${rc_filename})"
 	if [ -z "${rcvar}" ]; then
 		# FreeBSD does this, leave here for debugging

@@ -1,6 +1,7 @@
 <?php
 
 /*
+    Copyright (C) 2018 Fabian Franz
     Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -217,22 +218,13 @@ legacy_html_escape_form_data($pconfig);
 include("head.inc");
 
 ?>
-<script type="text/javascript">
+<body>
+<script>
 //<![CDATA[
 var daysSelected = "";
 var month_array = <?= json_encode($monthArray) ?>;
 var day_array = <?= json_encode($dayArray) ?>;
 var schCounter = 0;
-
-function rgb2hex(rgb) {
-  var parts = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-  if (parts == null)
-    return;
-  function hex(x) {
-    return ("0" + parseInt(x).toString(16)).slice(-2);
-  }
-  return ("#" + hex(parts[1]) + hex(parts[2]) + hex(parts[3])).toUpperCase();
-}
 
 function repeatExistingDays(){
   var tempstr, tempstrdaypos, week, daypos, dayposdone = "";
@@ -249,9 +241,9 @@ function repeatExistingDays(){
 
     daydone = dayposdone.search(daypos);
     tempstr = 'w' + week + 'p' + daypos;
-    daycell = eval('document.getElementById(tempstr)');
+    daycell = document.getElementById(tempstr);
     if (daydone == "-1"){
-      if (rgb2hex(daycell.style.backgroundColor) == "#F08080")  // lightcoral
+      if (daycell.dataset['state'] == "lightcoral")
         daytogglerepeating(week,daypos,true);
       else
         daytogglerepeating(week,daypos,false);
@@ -265,7 +257,7 @@ function daytogglerepeating(week,daypos,bExists){
   for (j=1; j<=53; j++)
   {
     tempstr = 'w' + j + 'p' + daypos;
-    daycell = eval('document.getElementById(tempstr)');
+    daycell = document.getElementById(tempstr);
     dayoriginalpos =  daysSelected.indexOf(tempstr);
 
     //if bExists set to true, means cell is already select it
@@ -274,11 +266,11 @@ function daytogglerepeating(week,daypos,bExists){
     if (daycell != null)
     {
       if (bExists){
-        daycell.style.backgroundColor = "#FFFFFF";  // white
+        daycell.dataset['state'] = "white";
       }
       else
       {
-        daycell.style.backgroundColor = "#F08080";  // lightcoral
+        daycell.dataset['state'] = "lightcoral";
       }
 
       if (dayoriginalpos != "-1")
@@ -319,12 +311,12 @@ function daytoggle(id) {
     var daycell = document.getElementById(idmod);
 
     if (daycell != null){
-      if (rgb2hex(daycell.style.backgroundColor) == "#FF0000"){  // red
-        daycell.style.backgroundColor = "#FFFFFF";  // white
+      if (daycell.dataset['state'] == "red"){  // red
+        daycell.dataset['state'] = "white";
         str = id + ",";
         daysSelected = daysSelected.replace(str, "");
       }
-      else if (rgb2hex(daycell.style.backgroundColor) == "#F08080")  // lightcoral
+      else if (daycell.dataset['state'] == "lightcoral")
       {
         daytogglerepeating(week,daypos,true);
       }
@@ -332,11 +324,11 @@ function daytoggle(id) {
       {
         if (!runrepeat)
         {
-          daycell.style.backgroundColor = "#FF0000";  // red
+          daycell.dataset['state'] = "red";  // red
         }
         else
         {
-          daycell.style.backgroundColor = "#F08080";  // lightcoral
+          daycell.dataset['state'] = "lightcoral";
           daytogglerepeating(week,daypos,false);
         }
         daysSelected += id + ",";
@@ -359,7 +351,7 @@ function update_month(){
 
   for (i=0; i<=11; i++){
     option = document.iform.monthsel.options[i].text;
-    document.popupMonthLayer = eval('document.getElementById (option)');
+    document.popupMonthLayer = document.getElementById(option);
 
     if(selected == option) {
       document.popupMonthLayer.style.display="block";
@@ -417,23 +409,36 @@ function processEntries(){
 }
 
 function addTimeRange(){
-  var tempdayarray = daysSelected.split(",");
-  var tempstr, tempFriendlyDay, starttimehour, starttimemin, stoptimehour, nrtempFriendlyTime, rtempFriendlyTime, nrtempID, rtempID = "";
-  var stoptimemin, timeRange, tempstrdaypos, week, daypos, day, month, dashpos, nrtempTime, rtempTime, monthstr, daystr = "";
-  rtempFriendlyTime = "";
-  nrtempFriendlyTime = "";
-  nrtempID = "";
-  rtempID = "";
-  nrtempTime = "";
-  rtempTime = "";
+  var tempdayarray = daysSelected.split(","),
+    tempstr,
+    tempFriendlyDay,
+    starttimehour,
+    starttimemin,
+    stoptimehour,
+    nrtempFriendlyTime = '',
+    rtempFriendlyTime = '',
+    nrtempID = '',
+    rtempID = "",
+    stoptimemin,
+    timeRange,
+    tempstrdaypos,
+    week,
+    daypos,
+    day,
+    month,
+    dashpos,
+    nrtempTime = '',
+    rtempTime = '',
+    monthstr = '',
+    daystr = "",
+    rtempFriendlyDay = "",
+    findCurrentCounter,
+    nonrepeatingfound,
+    tempdescr;
   tempdayarray.sort();
-  rtempFriendlyDay = "";
-  monthstr = "";
-  daystr = "";
 
   //check for existing entries
-  var findCurrentCounter;
-  for (u=0; u<99; u++){
+  for (var u=0; u<99; u++){
     findCurrentCounter = document.getElementById("schedule" + u);
     if (!findCurrentCounter)
     {
@@ -450,13 +455,12 @@ function addTimeRange(){
       if (tempstr != "")
       {
         tempstrdaypos = tempstr.search("p");
-        week = tempstr.substring(1,tempstrdaypos);
-        week = parseInt(week);
+        week = parseInt(tempstr.substring(1, tempstrdaypos));
         dashpos = tempstr.search("-");
 
         if (dashpos != "-1")
         {
-          var nonrepeatingfound = true;
+          nonrepeatingfound = true;
           daypos = tempstr.substring(tempstrdaypos+1, dashpos);
           daypos = parseInt(daypos);
           monthpos = tempstr.search("m");
@@ -487,22 +491,18 @@ function addTimeRange(){
     var tempFriendlyMonthArray = monthstr.split(",");
     var tempFriendlyDayArray = daystr.split(",");
     var currentDay, firstDay, nextDay, currentMonth, nextMonth, firstDay, firstMonth = "";
-    for (k=0; k<tempFriendlyMonthArray.length; k++){
+    for (var k=0; k<tempFriendlyMonthArray.length; k++){
       tempstr = tempFriendlyMonthArray[k];
       if (tempstr != ""){
         if (!firstDayFound)
         {
-          firstDay = tempFriendlyDayArray[k];
-          firstDay = parseInt(firstDay);
-          firstMonth = tempFriendlyMonthArray[k];
-          firstMonth = parseInt(firstMonth);
+          firstDay = parseInt(tempFriendlyDayArray[k]);
+          firstMonth = parseInt(tempFriendlyMonthArray[k]);
           firstDayFound = true;
         }
-        currentDay = tempFriendlyDayArray[k];
-        currentDay = parseInt(currentDay);
+        currentDay = parseInt(tempFriendlyDayArray[k]);
         //get next day
-        nextDay = tempFriendlyDayArray[k+1];
-        nextDay = parseInt(nextDay);
+        nextDay = parseInt(tempFriendlyDayArray[k+1]);
         //get next month
 
         currentDay++;
@@ -510,10 +510,12 @@ function addTimeRange(){
           if (firstprint)
             nrtempFriendlyTime += ", ";
           currentDay--;
-          if (currentDay != firstDay)
+          if (currentDay != firstDay) {
             nrtempFriendlyTime += month_array[firstMonth-1] + " " + firstDay + "-" + currentDay;
-          else
+          }
+          else {
             nrtempFriendlyTime += month_array[firstMonth-1] + " " + currentDay;
+          }
           firstDayFound = false;
           firstprint = true;
         }
@@ -532,24 +534,24 @@ function addTimeRange(){
       if (tempstr != ""){
         if (!firstDayFound)
         {
-          firstDay = tempFriendlyDayArray[k];
-          firstDay = parseInt(firstDay);
+          firstDay = parseInt(tempFriendlyDayArray[k]);
           firstDayFound = true;
         }
-        currentDay = tempFriendlyDayArray[k];
-        currentDay = parseInt(currentDay);
+        currentDay = parseInt(tempFriendlyDayArray[k]);
         //get next day
-        nextDay = tempFriendlyDayArray[k+1];
-        nextDay = parseInt(nextDay);
+        nextDay = parseInt(tempFriendlyDayArray[k+1]);
         currentDay++;
         if (currentDay != nextDay){
-          if (firstprint)
+          if (firstprint) {
             rtempFriendlyTime += ", ";
+          }
           currentDay--;
-          if (currentDay != firstDay)
+          if (currentDay != firstDay) {
             rtempFriendlyTime += day_array[firstDay-1] + " - " + day_array[currentDay-1];
-          else
+          }
+          else {
             rtempFriendlyTime += day_array[firstDay-1];
+          }
           firstDayFound = false;
           firstprint = true;
         }
@@ -581,13 +583,14 @@ function addTimeRange(){
     stoptimehour = document.getElementById("stoptimehour").value;
     stoptimemin = document.getElementById("stoptimemin").value;
 
-    timeRange = "||" + starttimehour + ":";
-    timeRange += starttimemin + "-";
-    timeRange += stoptimehour + ":";
-    timeRange += stoptimemin;
+    timeRange = "||"
+    + starttimehour + ":"
+    + starttimemin + "-"
+    + stoptimehour + ":"
+    + stoptimemin;
 
     //get description for time range
-    var tempdescr = document.getElementById("timerangedescr").value
+    tempdescr = document.getElementById("timerangedescr").value
 
     if (nonrepeatingfound){
       nrtempTime += nrtempID;
@@ -595,7 +598,14 @@ function addTimeRange(){
       nrtempTime += timeRange;
       //add description
       nrtempTime += "||" + tempdescr;
-      insertElements(nrtempFriendlyTime, starttimehour, starttimemin, stoptimehour, stoptimemin, tempdescr, nrtempTime, nrtempID);
+      insertElements(nrtempFriendlyTime,
+                     starttimehour,
+                     starttimemin,
+                     stoptimehour,
+                     stoptimemin,
+                     tempdescr,
+                     nrtempTime,
+                     nrtempID);
     }
 
     if (repeatingfound){
@@ -604,7 +614,14 @@ function addTimeRange(){
       rtempTime += timeRange;
       //add description
       rtempTime += "||" + tempdescr;
-      insertElements(rtempFriendlyTime, starttimehour, starttimemin, stoptimehour, stoptimemin, tempdescr, rtempTime, rtempID);
+      insertElements(rtempFriendlyTime,
+                     starttimehour,
+                     starttimemin,
+                     stoptimehour,
+                     stoptimemin,
+                     tempdescr,
+                     rtempTime,
+                     rtempID);
     }
 
   }
@@ -619,34 +636,34 @@ function insertElements(tempFriendlyTime, starttimehour, starttimemin, stoptimeh
 
     //add it to the schedule list
     d = document;
-    tbody = d.getElementById("scheduletable").getElementsByTagName("tbody").item(0);
-    tr = d.createElement("tr");
-    td = d.createElement("td");
-    td.innerHTML= "<span class='vexpl'>" + tempFriendlyTime + "<\/span>";
+    tbody = document.getElementById("scheduletable").getElementsByTagName("tbody").item(0);
+    var tr = document.createElement("tr");
+    var td = document.createElement("td");
+    td.innerHTML= `<span>${tempFriendlyTime}</span>`;
     tr.appendChild(td);
 
-    td = d.createElement("td");
-    td.innerHTML="<input type='text' readonly='readonly' name='starttime" + schCounter + "' id='starttime" + schCounter + "' style=' word-wrap:break-word; width:100%; border:0px solid;' value='" + starttimehour + ":" + starttimemin + "' />";
+    td = document.createElement("td");
+    td.innerHTML=`<input type='text' readonly='readonly' name='starttime${schCounter}' id='starttime${schCounter}' style=' word-wrap:break-word; width:100%; border:0px solid;' value='${starttimehour}:${starttimemin}' />`;
     tr.appendChild(td);
 
-    td = d.createElement("td");
-    td.innerHTML="<input type='text' readonly='readonly' name='stoptime" + schCounter + "' id='stoptime" + schCounter + "' style=' word-wrap:break-word; width:100%; border:0px solid;' value='" + stoptimehour + ":" + stoptimemin + "' />";
+    td = document.createElement("td");
+    td.innerHTML=`<input type='text' readonly='readonly' name='stoptime${schCounter}' id='stoptime${schCounter}' style=' word-wrap:break-word; width:100%; border:0px solid;' value='${stoptimehour}:${stoptimemin}' />`;
     tr.appendChild(td);
 
-    td = d.createElement("td");
-    td.innerHTML="<input type='text' readonly='readonly' name='timedescr" + schCounter + "' id='timedescr" + schCounter + "' style=' word-wrap:break-word; width:100%; border:0px solid;' value='" + tempdescr + "' />";
+    td = document.createElement("td");
+    td.innerHTML=`<input type='text' readonly='readonly' name='timedescr${schCounter}' id='timedescr${schCounter}' style=' word-wrap:break-word; width:100%; border:0px solid;' value='${tempdescr}' />`;
     tr.appendChild(td);
 
-    td = d.createElement("td");
-    td.innerHTML = "<a onclick='editRow(\"" + tempTime + "\",this); return false;' href='#' class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-pencil\"></span></\a>";
+    td = document.createElement("td");
+    td.innerHTML = `<a onclick='editRow("${tempTime}",this); return false;' href='#' class="btn btn-default btn-xs"><span class="fa fa-pencil fa-fw"></span></a>`;
     tr.appendChild(td);
 
-    td = d.createElement("td");
-    td.innerHTML = "<a onclick='removeRow(this); return false;' href='#' class=\"btn btn-default btn-xs\"><span class=\"fa fa-trash text-muted\"></span></\a>";
+    td = document.createElement("td");
+    td.innerHTML = `<a onclick='removeRow(this); return false;' href='#' class="btn btn-default btn-xs"><span class="fa fa-trash fa-fw"></span></a>`;
     tr.appendChild(td);
 
-    td = d.createElement("td");
-    td.innerHTML="<input type='hidden' id='schedule" + schCounter + "' name='schedule" + schCounter + "' value='" + tempID + "' />";
+    td = document.createElement("td");
+    td.innerHTML=`<input type='hidden' id='schedule${schCounter}' name='schedule${schCounter}' value='${tempID}' />`;
     tr.appendChild(td);
     tbody.appendChild(tr);
 
@@ -669,9 +686,9 @@ function clearCalendar(){
     //loop through all 7 days
     for (k=1; k<8; k++){
       tempstr = 'w' + j + 'p' + k;
-      daycell = eval('document.getElementById(tempstr)');
+      daycell = document.getElementById(tempstr);
       if (daycell != null){
-        daycell.style.backgroundColor = "#FFFFFF";  // white
+        daycell.dataset['state'] = "white";
       }
     }
   }
@@ -689,9 +706,7 @@ function clearDescr(){
 }
 
 function editRow(incTime, el) {
-  var check = checkForRanges();
-
-  if (check){
+  if (checkForRanges()){
 
     //reset calendar and time
     clearCalendar();
@@ -745,34 +760,31 @@ function editRow(incTime, el) {
 }
 
 function removeRownoprompt(el) {
-    var cel;
-    while (el && el.nodeName.toLowerCase() != "tr")
+    while (el && el.nodeName.toLowerCase() != "tr") {
       el = el.parentNode;
-
-    if (el && el.parentNode) {
-  cel = el.getElementsByTagName("td").item(0);
-  el.parentNode.removeChild(el);
+    }
+    if (el) {
+      el.remove();
     }
 }
 
 
 function removeRow(el) {
-  var check = confirm ("Do you really want to delete this time range?");
-  if (check){
-      var cel;
-      while (el && el.nodeName.toLowerCase() != "tr")
-        el = el.parentNode;
-
-      if (el && el.parentNode) {
-    cel = el.getElementsByTagName("td").item(0);
-    el.parentNode.removeChild(el);
-      }
+  if (confirm("Do you really want to delete this time range?")){
+    while (el && el.nodeName.toLowerCase() != "tr") {
+      el = el.parentNode;
+    }
+    if (el) {
+      el.remove();
+    }
   }
 }
+
+// XXX Workaround: hook_stacked_form_tables breaks CSS query otherwise
+$( function() { $('#iform td').css({ 'background-color' : '' }); })
+
 //]]>
 </script>
-
-<body>
 <?php include("fbegin.inc");  echo $jscriptstr; ?>
   <section class="page-content-main">
     <div class="container-fluid">
@@ -811,9 +823,9 @@ function removeRow(el) {
                         <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
                         <td>
                           <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" /><br />
-                          <output class="hidden" for="help_for_name">
+                          <div class="hidden" data-for="help_for_name">
                             <?=gettext("You may enter a description here for your reference (not parsed).");?>
-                          </output>
+                          </div>
                         </td>
                       </tr>
                       <tr>
@@ -876,20 +888,20 @@ function removeRow(el) {
                                         echo "<tr>";
                                       }
                                       if ($firstdayofmonth == $positioncounter){?>
-                                        <td style="text-align:center; cursor: pointer;" class="listr" id="w<?=$weekcounter;?>p<?=$positioncounter;?>" onclick="daytoggle('w<?=$weekcounter;?>p<?=$positioncounter;?>-m<?=$monthcounter;?>d<?=$daycounter;?>');">
+                                        <td style="text-align:center; cursor: pointer;" id="w<?=$weekcounter;?>p<?=$positioncounter;?>" onclick="daytoggle('w<?=$weekcounter;?>p<?=$positioncounter;?>-m<?=$monthcounter;?>d<?=$daycounter;?>');">
                                         <?php
                                           echo $daycounter;
                                           $daycounter++;
                                           $firstdayprinted = TRUE;
                                           echo "</td>";
                                       } elseif ($firstdayprinted == TRUE && $daycounter <= $numberofdays){?>
-                                      <td style="text-align:center; cursor: pointer;" class="listr" id="w<?=$weekcounter;?>p<?=$positioncounter;?>" onclick="daytoggle('w<?=$weekcounter;?>p<?=$positioncounter;?>-m<?=$monthcounter;?>d<?=$daycounter;?>');">
+                                      <td style="text-align:center; cursor: pointer;" id="w<?=$weekcounter;?>p<?=$positioncounter;?>" onclick="daytoggle('w<?=$weekcounter;?>p<?=$positioncounter;?>-m<?=$monthcounter;?>d<?=$daycounter;?>');">
                                         <?php
                                           echo $daycounter;
                                           $daycounter++;
                                           echo "</td>";
                                       } else {
-                                        echo "<td style=\"text-align:center\" class=\"listr\"></td>";
+                                        echo "<td style=\"text-align:center\"></td>";
                                       }
 
                                       if ($positioncounter == 7 || $daycounter > $numberofdays) {
@@ -911,10 +923,10 @@ function removeRow(el) {
                               }
                             } //end for loop
 ?>
-                          <output class="hidden" for="help_for_month">
+                          <div class="hidden" data-for="help_for_month">
                             <br />
                             <?=gettext("Click individual date to select that date only. Click the appropriate weekday Header to select all occurrences of that weekday.");?>
-                          </output>
+                          </div>
                         </td>
                       </tr>
                       <tr>
@@ -964,19 +976,19 @@ function removeRow(el) {
                               </td>
                             </tr>
                           </table>
-                          <output class="hidden" for="help_for_time">
+                          <div class="hidden" data-for="help_for_time">
                             <br />
                           <?=gettext("Select the time range for the day(s) selected on the Month(s) above. A full day is 0:00-23:59.")?>
-                          </output>
+                          </div>
                         </td>
                       </tr>
                       <tr>
                         <td><a id="help_for_timerange_desc" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time Range Description")?></td>
                         <td>
                           <input name="timerangedescr" type="text" id="timerangedescr"/>
-                          <output class="hidden" for="help_for_timerange_desc">
+                          <div class="hidden" data-for="help_for_timerange_desc">
                             <?=gettext("You may enter a description here for your reference (not parsed).")?>
-                          </output>
+                          </div>
                         </td>
                       </tr>
                       <tr>
@@ -987,7 +999,7 @@ function removeRow(el) {
                         </td>
                       </tr>
                       <tr>
-                        <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Schedule repeat");?></td>
+                        <th colspan="2"><?= gettext('Schedule repeat') ?></th>
                       </tr>
                       <tr>
                         <td><?=gettext("Configured Ranges");?></td>
@@ -1125,10 +1137,10 @@ function removeRow(el) {
                                   <input type='text' readonly='readonly' name='timedescr<?=$counter; ?>' id='timedescr<?=$counter; ?>' style=' word-wrap:break-word; width:100%; border:0px solid;' value='<?=$timedescr; ?>' />
                                 </td>
                                 <td>
-                                  <a onclick='editRow("<?=$tempTime; ?>",this); return false;' href='#' class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
+                                  <a onclick='editRow("<?=$tempTime; ?>",this); return false;' href='#' class="btn btn-default"><span class="fa fa-pencil fa-fw"></span></a>
                                 </td>
                                 <td>
-                                  <a onclick='removeRow(this); return false;' href='#' class="btn btn-default"><span class="fa fa-trash text-muted"></span></a>
+                                  <a onclick='removeRow(this); return false;' href='#' class="btn btn-default"><span class="fa fa-trash fa-fw"></span></a>
                                 </td>
                                 <td>
                                   <input type='hidden' id='schedule<?=$counter; ?>' name='schedule<?=$counter; ?>' value='<?=$tempID; ?>' />

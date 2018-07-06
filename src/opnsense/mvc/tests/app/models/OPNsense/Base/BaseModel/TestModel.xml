@@ -69,5 +69,22 @@
                 </Constraints>
             </value4>
         </AllOrNone>
+        <DependConstraint>
+            <value1 type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </value1>
+            <value2 type="TextField">
+                <Constraints>
+                    <check001>
+                        <type>DependConstraint</type>
+                        <ValidationMessage>when value1 is enabled value2 is required</ValidationMessage>
+                        <addFields>
+                            <field1>value1</field1>
+                        </addFields>
+                    </check001>
+                </Constraints>
+            </value2>
+        </DependConstraint>
     </items>
 </model>

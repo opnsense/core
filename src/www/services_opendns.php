@@ -68,51 +68,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         curl_close($ch);
         $test_results = explode("\r\n", $output);
     } elseif (count($input_errors) == 0) {
-        $refresh = $pconfig['enable'] != $config['opendns']['enable'];
         $config['opendns']['enable'] = !empty($pconfig['enable']);
         $config['opendns']['username'] = $pconfig['username'];
         $config['opendns']['password'] = $pconfig['password'];
         $config['opendns']['host'] = $pconfig['host'];
-        if ($refresh) {
-            if ($config['opendns']['enable']) {
-                $config['system']['dnsserver'] = array();
-                $v4_server = array('208.67.222.222', '208.67.220.220');
-                $v6_server = array('2620:0:ccc::2', '2620:0:ccd::2');
-                if (isset($config['system']['prefer_ipv4'])) {
-                    $config['system']['dnsserver'][] = $v4_server[0];
-                    $config['system']['dnsserver'][] = $v4_server[1];
-                    if (isset($config['system']['ipv6allow'])) {
-                        $config['system']['dnsserver'][] = $v6_server[0];
-                        $config['system']['dnsserver'][] = $v6_server[1];
-                    }
-                } else {
-                    if (isset($config['system']['ipv6allow'])) {
-                        $config['system']['dnsserver'][] = $v6_server[0];
-                        $config['system']['dnsserver'][] = $v6_server[1];
-                    }
-                    $config['system']['dnsserver'][] = $v4_server[0];
-                    $config['system']['dnsserver'][] = $v4_server[1];
+        if ($config['opendns']['enable']) {
+            $config['system']['dnsserver'] = array();
+            $v4_server = array('208.67.222.222', '208.67.220.220');
+            $v6_server = array('2620:0:ccc::2', '2620:0:ccd::2');
+            if (isset($config['system']['prefer_ipv4'])) {
+                $config['system']['dnsserver'][] = $v4_server[0];
+                $config['system']['dnsserver'][] = $v4_server[1];
+                if (isset($config['system']['ipv6allow'])) {
+                    $config['system']['dnsserver'][] = $v6_server[0];
+                    $config['system']['dnsserver'][] = $v6_server[1];
                 }
-                $config['system']['dnsallowoverride'] = false;
             } else {
-                $config['system']['dnsserver'] = array();
-                $config['system']['dnsserver'][] = '';
-                $config['system']['dnsallowoverride'] = true;
+                if (isset($config['system']['ipv6allow'])) {
+                    $config['system']['dnsserver'][] = $v6_server[0];
+                    $config['system']['dnsserver'][] = $v6_server[1];
+                }
+                $config['system']['dnsserver'][] = $v4_server[0];
+                $config['system']['dnsserver'][] = $v4_server[1];
             }
+            $config['system']['dnsallowoverride'] = false;
+        } else {
+            $config['system']['dnsserver'] = array();
+            $config['system']['dnsserver'][] = '';
+            $config['system']['dnsallowoverride'] = true;
         }
         write_config('OpenDNS filter configuration change');
-        if ($refresh) {
-            system_resolvconf_generate();
-            services_dhcpd_configure();
-            $savemsg = get_std_save_message();
-        }
+        system_resolvconf_generate();
+        services_dhcpd_configure();
+        $savemsg = get_std_save_message();
     }
 }
 
 legacy_html_escape_form_data($pconfig);
-include 'head.inc';
-?>
 
+include 'head.inc';
+
+?>
 <body>
 
 <?php include 'fbegin.inc'; ?>
@@ -146,27 +142,27 @@ include 'head.inc';
                   <td>
                     <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : "";?> />
                     <strong><?=gettext('Filter DNS requests using OpenDNS'); ?></strong>
-                    <output class="hidden" for="help_for_enable">
+                    <div class="hidden" data-for="help_for_enable">
                       <?= sprintf(gettext(
                         'Enabling the OpenDNS service will overwrite DNS servers configured ' .
                         'via the General Setup page as well as ignore any DNS servers learned ' .
                         'by DHCP/PPP on WAN and use the DNS servers from %s instead.'),
                         '<a href="http://www.opendns.com" target="_blank">OpenDNS.com</a>'
                       ) ?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_username" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Username'); ?></td>
                   <td>
                     <input name="username" type="text" id="username" size="20" value="<?=$pconfig['username'];?>" />
-                    <output class="hidden" for="help_for_username">
+                    <div class="hidden" data-for="help_for_username">
                       <?=gettext(
                         'Signon Username to log into your OpenDNS dashboard. ' .
                         'It is used to automatically update the IP address of ' .
                         'the registered network.'
                       ); ?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -179,7 +175,7 @@ include 'head.inc';
                   <td><a id="help_for_host" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Network'); ?></td>
                   <td>
                     <input name="host" type="text" id="host" size="30" value="<?=$pconfig['host'];?>" />
-                    <output class="hidden" for="help_for_host">
+                    <div class="hidden" data-for="help_for_host">
                       <?= sprintf(gettext(
                         'Enter the network name configured on the %sNetworks ' .
                         'Dashboard of OpenDNS%s under \'Manage your networks\'. ' .
@@ -187,7 +183,7 @@ include 'head.inc';
                         'WAN interface changes its IP address.'),
                         '<a href="https://www.opendns.com/dashboard/networks/" target="_blank">', '</a>'
                       ) ?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
 <?php
@@ -202,8 +198,8 @@ include 'head.inc';
                       }
 
                       echo sprintf(
-                        '<span class="glyphicon glyphicon-%s"></span> %s<br />',
-                        strpos($result, 'good') === 0 ? 'ok text-success' : 'remove text-danger',
+                        '<i class="fa fa-%s"></i> %s<br />',
+                        strpos($result, 'good') === 0 ? 'check text-success' : 'times text-danger',
                         $result
                       );
                     }?>

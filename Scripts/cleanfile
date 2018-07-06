@@ -8,7 +8,7 @@ use bytes;
 use File::Basename;
 
 # Default options
-$max_width = 119;
+$max_width = 0;
 
 # Clean up space-tab sequences, either by removing spaces or
 # replacing them with tabs.

@@ -65,8 +65,7 @@ include("head.inc");
               <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
                 <br/>
                 <input name="statetable" type="checkbox" id="statetable" value="yes" checked="checked" />
-                <strong><?= gettext("Firewall state table"); ?></strong><br />
-                <br />
+                <?= gettext("Firewall state table"); ?><br/><br/>
                 <?=gettext("Resetting the state tables will remove all entries from " .
                 "the corresponding tables. This means that all open connections " .
                 "will be broken and will have to be re-established. This " .
@@ -85,13 +84,11 @@ include("head.inc");
 <?php
               if (isset($config['system']['lb_use_sticky'])): ?>
                 <input name="sourcetracking" type="checkbox" id="sourcetracking" value="yes" checked="checked" />
-                <strong><?= gettext("Firewall Source Tracking"); ?></strong><br />
-                <span class="vexpl"><br />
+                <?= gettext("Firewall Source Tracking"); ?><br/><br/>
                 <?=gettext("Resetting the source tracking table will remove all source/destination associations. " .
                 "This means that the \"sticky\" source/destination association " .
-                "will be cleared for all clients."); ?><br />
-                <br />
-                </span><span class="vexpl"><?=gettext("This does not clear active connection states, only source tracking."); ?><br />
+                "will be cleared for all clients."); ?><br/><br/>
+                <?=gettext("This does not clear active connection states, only source tracking."); ?>
 <?php
               endif; ?>
                 <br/><br/>

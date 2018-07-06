@@ -86,7 +86,7 @@ $cert_methods = array(
     "internal" => gettext("Create an internal Certificate"),
     "external" => gettext("Create a Certificate Signing Request"),
 );
-$cert_keylens = array( "512", "1024", "2048", "4096", "8192");
+$cert_keylens = array( "512", "1024", "2048", "3072", "4096", "8192");
 $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
 
 
@@ -379,7 +379,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig[$reqdfields[$i]])) {
                         $input_errors[] = gettext("The field 'Distinguished name Common Name' contains invalid characters.");
                     }
-                } elseif (($reqdfields[$i] != "descr") && preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\.\"\']/", $pconfig[$reqdfields[$i]])) {
+                } elseif (($reqdfields[$i] != "descr") && preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig[$reqdfields[$i]])) {
                     $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $reqdfieldsn[$i]);
                 }
             }
@@ -492,7 +492,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (count($input_errors) == 0) {
                 write_config();
                 if (isset($userid)) {
-                    header(url_safe('Location: /system_usermanager.php?act=edit&userid=%s', array($userid)));
+                    header(url_safe('Location: /system_usermanager.php?act=edit&userid=%d', array($userid)));
                 } else {
                     header(url_safe('Location: /system_certmanager.php'));
                 }
@@ -511,7 +511,7 @@ include("head.inc");
 
 if (empty($act)) {
     $main_buttons = array(
-        array('label'=>gettext("add or import certificate"), 'href'=>'system_certmanager.php?act=new'),
+        array('label' => gettext('Add'), 'href' => 'system_certmanager.php?act=new'),
     );
 }
 
@@ -533,7 +533,7 @@ if (empty($act)) {
       overflow-y: auto;
     }
   </style>
-  <script type="text/javascript">
+  <script>
   $( document ).ready(function() {
     // delete entry
     $(".act_delete").click(function(event){
@@ -631,7 +631,7 @@ if (empty($act)) {
   </script>
 
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
 //<![CDATA[
   function internalca_change() {
@@ -746,18 +746,18 @@ $( document ).ready(function() {
                   <td style="width:22%"><a id="help_for_cert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Certificate data");?></td>
                   <td style="width:78%">
                     <textarea name="cert" id="cert" cols="65" rows="7"><?=$pconfig['cert'];?></textarea>
-                    <output class="hidden" for="help_for_cert">
+                    <div class="hidden" data-for="help_for_cert">
                       <?=gettext("Paste a certificate in X.509 PEM format here.");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_key" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Private key data");?></td>
                   <td>
                     <textarea name="key" id="key" cols="65" rows="7" class="formfld_cert"><?=$pconfig['key'];?></textarea>
-                    <output class="hidden" for="help_for_key">
+                    <div class="hidden" data-for="help_for_key">
                       <?=gettext("Paste a private key in X.509 PEM format here.");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -796,9 +796,9 @@ $( document ).ready(function() {
                         <option value="server_cert" <?=$pconfig['cert_type'] == 'server_cert' ? "selected=\"selected\"" : "";?>> <?=gettext("Server Certificate");?> </option>
                         <option value="v3_ca" <?=$pconfig['cert_type'] == 'v3_ca' ? "selected=\"selected\"" : "";?>> <?=gettext("Certificate Authority");?> </option>
                     </select>
-                    <output class="hidden" for="help_for_digest_cert_type">
+                    <div class="hidden" data-for="help_for_digest_cert_type">
                       <?=gettext("Choose the type of certificate to generate here, the type defines it's constraints");?>
-                    </output>
+                    </div>
                 </td>
               </tr>
               <tr>
@@ -825,9 +825,9 @@ $( document ).ready(function() {
 <?php
                   endforeach; ?>
                   </select>
-                  <output class="hidden" for="help_for_digest_alg">
+                  <div class="hidden" data-for="help_for_digest_alg">
                     <?= gettext("NOTE: It is recommended to use an algorithm stronger than SHA1 when possible.") ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -857,55 +857,55 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_dn_state" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State or Province");?> : &nbsp;</td>
                 <td>
                   <input name="dn_state" id="dn_state" type="text" size="40" value="<?=$pconfig['dn_state'];?>"/>
-                  <output class="hidden" for="help_for_digest_dn_state">
+                  <div class="hidden" data-for="help_for_digest_dn_state">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("Sachsen");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_dn_city" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("City");?> : &nbsp;</td>
                 <td>
                   <input name="dn_city" id="dn_city" type="text" size="40" value="<?=$pconfig['dn_city'];?>"/>
-                  <output class="hidden" for="help_for_digest_dn_city">
+                  <div class="hidden" data-for="help_for_digest_dn_city">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("Leipzig");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_dn_organization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organization");?> : &nbsp;</td>
                 <td>
                   <input name="dn_organization" id="dn_organization" type="text" size="40" value="<?=$pconfig['dn_organization'];?>"/>
-                  <output class="hidden" for="help_for_digest_dn_organization">
+                  <div class="hidden" data-for="help_for_digest_dn_organization">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("My Company Inc");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_dn_email" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email Address");?> : &nbsp;</td>
                 <td>
                   <input name="dn_email" id="dn_email" type="text" size="25" value="<?=$pconfig['dn_email'];?>"/>
-                  <output class="hidden" for="help_for_digest_dn_email">
+                  <div class="hidden" data-for="help_for_digest_dn_email">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("admin@mycompany.com");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_dn_commonname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Common Name");?> : &nbsp;</td>
                 <td>
                   <input name="dn_commonname" id="dn_commonname" type="text" size="25" value="<?=$pconfig['dn_commonname'];?>"/>
-                  <output class="hidden" for="help_for_digest_dn_commonname">
+                  <div class="hidden" data-for="help_for_digest_dn_commonname">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("internal-ca");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -935,7 +935,7 @@ $( document ).ready(function() {
                           <input name="altname_value[]" type="text" size="20" value="" />
                         </td>
                         <td>
-                          <div style="cursor:pointer;" class="act-removerow-altnm btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
+                          <div style="cursor:pointer;" class="act-removerow-altnm btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
                         </td>
                       </tr>
 <?php
@@ -955,7 +955,7 @@ $( document ).ready(function() {
                             <input name="altname_value[]" type="text" size="20" value="<?=$item;?>" />
                           </td>
                           <td>
-                            <div style="cursor:pointer;" class="act-removerow-altnm btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
+                            <div style="cursor:pointer;" class="act-removerow-altnm btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
                           </td>
                         </tr>
 
@@ -967,7 +967,7 @@ $( document ).ready(function() {
                       <tr>
                         <td colspan="2"></td>
                         <td>
-                          <div id="addNewAltNm" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><span class="glyphicon glyphicon-plus"></span></div>
+                          <div id="addNewAltNm" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><i class="fa fa-plus fa-fw"></i></div>
                         </td>
                       </tr>
                     </tfoot>
@@ -1009,9 +1009,9 @@ $( document ).ready(function() {
 <?php
                   endforeach; ?>
                   </select>
-                  <output class="hidden" for="help_for_csr_digest_alg">
+                  <div class="hidden" data-for="help_for_csr_digest_alg">
                     <?= gettext("NOTE: It is recommended to use an algorithm stronger than SHA1 when possible.") ?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -1035,66 +1035,66 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_csr_dn_state" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State or Province");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_state" type="text" size="40" value="<?=$pconfig['csr_dn_state'];?>"/>
-                  <output class="hidden" for="help_for_digest_csr_dn_state">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_state">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("Sachsen");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_csr_dn_city" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("City");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_city" type="text" size="40" value="<?=$pconfig['csr_dn_city'];?>"/>
-                  <output class="hidden" for="help_for_digest_csr_dn_city">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_city">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("Leipzig");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_csr_dn_organization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organization");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_organization" type="text" size="40" value="<?=$pconfig['csr_dn_organization'];?>"/>
-                  <output class="hidden" for="help_for_digest_csr_dn_organization">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_organization">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("My Company Inc");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_csr_dn_organizationalunit" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organizational Unit");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_organizationalunit" type="text" size="40" value="<?=$pconfig['csr_dn_organizationalunit'];?>"/>
-                  <output class="hidden" for="help_for_digest_csr_dn_organizationalunit">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_organizationalunit">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("IT department");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_csr_dn_email" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email Address");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_email" type="text" size="25" value="<?=$pconfig['csr_dn_email'];?>"/>
-                  <output class="hidden" for="help_for_digest_csr_dn_email">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_email">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("admin@mycompany.com");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_digest_csr_dn_commonname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Common Name");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_commonname" type="text" size="25" value="<?=$pconfig['csr_dn_commonname'];?>"/>
-                  <output class="hidden" for="help_for_digest_csr_dn_commonname">
+                  <div class="hidden" data-for="help_for_digest_csr_dn_commonname">
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("internal-ca");?>
-                  </output>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -1240,7 +1240,7 @@ $( document ).ready(function() {
                 }?>
               <tr>
                 <td>
-                  <span class="glyphicon glyphicon-certificate __iconspacer"></span>
+                  <i class="fa fa-certificate"></i>
                   <?=$name;?>
 <?php
                   if (is_array($purpose)) :?>
@@ -1265,7 +1265,7 @@ $( document ).ready(function() {
                       </tr>
                   </table>
                 </td>
-                <td>
+                <td class="text-nowrap">
 <?php
                 if (is_cert_revoked($cert)) :?>
                   <b><?=gettext('Revoked') ?></b><br />
@@ -1293,31 +1293,31 @@ $( document ).ready(function() {
                 endif; ?>
 
                   <a href="#" class="btn btn-default btn-xs act_info" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("show certificate info");?>">
-                    <span class="glyphicon glyphicon-info-sign"></span>
+                    <i class="fa fa-info-circle fa-fw"></i>
                   </a>
 
                   <a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export user cert");?>">
-                      <span class="glyphicon glyphicon-download"></span>
+                      <i class="fa fa-download fa-fw"></i>
                   </a>
 
                   <a href="system_certmanager.php?act=key&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export user key");?>">
-                    <span class="glyphicon glyphicon-download"></span>
+                    <i class="fa fa-download fa-fw"></i>
                   </a>
 
                   <a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export ca+user cert+user key in .p12 format");?>">
-                      <span class="glyphicon glyphicon-download"></span>
+                      <i class="fa fa-download fa-fw"></i>
                   </a>
 <?php
                   if (!cert_in_use($cert['refid'])) :?>
 
                   <a id="del_<?=$i;?>" data-id="<?=$i;?>" title="<?=gettext("delete cert"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                    <span class="fa fa-trash text-muted"></span>
+                    <i class="fa fa-trash fa-fw"></i>
                   </a>
 <?php
                   endif;
                   if (isset($cert['csr'])) :?>
                   <a href="system_certmanager.php?act=csr&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("update csr");?>">
-                    <span class="glyphicon glyphicon-edit"></span>
+                    <i class="fa fa-pencil fa-fw"></i>
                   </a>
 <?php
                   endif; ?>

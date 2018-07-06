@@ -55,7 +55,5 @@ pre-deinstall: <<EOD
   esac
   if cmp -s "${target_file}" "${sample_file}"; then
     rm -f "${target_file}"
-  else
-    echo "You may need to manually remove ${target_file} if it is no longer needed."
   fi
 EOD

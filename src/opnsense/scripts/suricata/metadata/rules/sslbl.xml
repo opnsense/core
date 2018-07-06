@@ -18,5 +18,9 @@
               description="Feodo Tracker"
               documentation_url="https://feodotracker.abuse.ch/blocklist/"
         >abuse.ch.feodotracker.rules</file>
+        <file url="https://urlhaus.abuse.ch/downloads/ids/"
+              description="URLhaus"
+              documentation_url="https://urlhaus.abuse.ch/"
+        >abuse.ch.urlhaus.rules</file>
     </files>
 </ruleset>

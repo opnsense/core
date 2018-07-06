@@ -174,6 +174,24 @@ trait TOTP
     }
 
     /**
+     * check if the user should change his or her password
+     * @param string $username username to check
+     * @param string $password password to check
+     * @return boolean
+     */
+    public function shouldChangePassword($username, $password = null)
+    {
+        if ($password != null && strlen($password) > $this->otpLength) {
+            /* deconstruct password according to settings */
+            $pwLength = strlen($password) - $this->otpLength;
+            $pwStart = $this->passwordFirst ? 0 : $this->otpLength;
+            $password = substr($password, $pwStart, $pwLength);
+        }
+
+        return parent::shouldChangePassword($username, $password);
+    }
+
+    /**
      * set TOTP specific connector properties
      * @param array $config connection properties
      */
@@ -188,7 +206,7 @@ trait TOTP
         if (!empty($config['graceperiod'])) {
             $this->graceperiod = $config['graceperiod'];
         }
-        if (array_key_exists('passwordFirst', $config) && !empty($config['passwordFirst'])) {
+        if (!empty($config['passwordFirst'])) {
             $this->passwordFirst = true;
         }
     }

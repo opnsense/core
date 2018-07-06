@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Backup volatile internals
+/usr/local/etc/rc.syshook backup

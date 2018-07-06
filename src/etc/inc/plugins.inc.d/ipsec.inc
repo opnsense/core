@@ -68,6 +68,7 @@ $p1_authentication_methods = array(
     'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
     'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
     'eap-mschapv2' => array( 'name' => 'EAP-MSCHAPV2', 'mobile' => true),
+    'rsa_eap-mschapv2' => array( 'name' => 'Mutual RSA + EAP-MSCHAPV2', 'mobile' => true),
     'eap-radius' => array( 'name' => 'EAP-RADIUS', 'mobile' => true),
     'rsasig' => array( 'name' => 'Mutual RSA', 'mobile' => false ),
     'pre_shared_key' => array( 'name' => 'Mutual PSK', 'mobile' => false ),
@@ -97,18 +98,6 @@ $p2_halgos = array(
 $p2_protos = array(
     'esp' => 'ESP',
     'ah' => 'AH'
-);
-
-$p2_pfskeygroups = array(
-    0 => 'off',
-    1  => '1 (768 bit)',
-    2  => '2 (1024 bit)',
-    5  => '5 (1536 bit)',
-    14 => '14 (2048 bit)',
-    15 => '15 (3072 bit)',
-    16 => '16 (4096 bit)',
-    17 => '17 (6144 bit)',
-    18 => '18 (8192 bit)'
 );
 
 function ipsec_configure()
@@ -571,6 +560,19 @@ function ipsec_get_number_of_phase2($ikeid)
     return $nbph2;
 }
 
+function ipsec_resolve($hostname)
+{
+    if (!is_ipaddr($hostname)) {
+        /* XXX IPv4-only */
+        $ip = gethostbyname($hostname);
+        if ($ip && $ip != $hostname) {
+            $hostname = $ip;
+        }
+    }
+
+    return $hostname;
+}
+
 function ipsec_find_id(&$ph1ent, $side = 'local')
 {
     $id_data = null;
@@ -591,17 +593,10 @@ function ipsec_find_id(&$ph1ent, $side = 'local')
             $thisid_data = ipsec_get_phase1_src($ph1ent);
             break;
         case "dyn_dns":
-            $thisid_data = resolve_retry($id_data);
+            $thisid_data = ipsec_resolve($id_data);
             break;
         case "peeraddress":
-            if (!is_ipaddr($ph1ent['remote-gateway'])) {
-                $thisid_data = resolve_retry($ph1ent['remote-gateway']);
-            } else {
-                $thisid_data = $ph1ent['remote-gateway'];
-            }
-            break;
-        case "address":
-            $thisid_data = $id_data;
+            $thisid_data = ipsec_resolve($ph1ent['remote-gateway']);
             break;
         default:
             $thisid_data = !empty($id_data) ? "{$id_data}" : null;
@@ -880,6 +875,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
 
         $cnf_add_to_charon_section = "";
         $cnf_add_to_charon_section .= $aggressive_psk ? "\ti_dont_care_about_security_and_use_aggressive_mode_psk=yes\n":"";
+        $cnf_add_to_charon_section .= !empty($config['ipsec']['auto_routes_disable']) ? "\tinstall_routes = no\n" : "";
         if (isset($a_client['enable']) && isset($a_client['net_list'])) {
             $cnf_add_to_charon_section .= "\tcisco_unity = yes\n";
         }
@@ -892,12 +888,17 @@ starter {
 }
 
 charon {
-
     # number of worker threads in charon
     threads = 16
     ikesa_table_size = 32
     ikesa_table_segments = 4
-    init_limit_half_open = 1000;
+    init_limit_half_open = 1000
+    ignore_acquire_ts = yes
+    syslog {
+        daemon {
+            ike_name = yes
+        }
+    }
 {$cnf_add_to_charon_section}
 
 EOD;
@@ -992,7 +993,7 @@ EOD;
                             if (in_array($auth_server['name'], explode(',', $ph1ent['authservers']))) {
                                 $radius_servers .= "\t\t\t\tserver" . $radius_server_num . " {\n";
                                 $radius_servers .= "\t\t\t\t\taddress = " . $auth_server['host'] . "\n";
-                                $radius_servers .= "\t\t\t\t\tsecret = " . $auth_server['radius_secret'] . "\n";
+                                $radius_servers .= "\t\t\t\t\tsecret = \"" . $auth_server['radius_secret'] . "\"\n";
                                 $radius_servers .= "\t\t\t\t\tauth_port = " . $auth_server['radius_auth_port'] . "\n";
 
                                 if (!empty($auth_server['radius_acct_port'])) {
@@ -1133,7 +1134,7 @@ EOD;
                 foreach ($ipsec_loglevels as $lkey => $ldescr) {
                     if (isset($config['ipsec']["ipsec_{$lkey}"]) && is_numeric($config['ipsec']["ipsec_{$lkey}"]) &&
                       intval($config['ipsec']["ipsec_{$lkey}"]) >= -1 && intval($config['ipsec']["ipsec_{$lkey}"]) <= 4) {
-                          $cfg_loglevels[] = "${lkey} " . $config['ipsec']["ipsec_{$lkey}"];
+                          $cfg_loglevels[] = $lkey . " " . $config['ipsec']["ipsec_{$lkey}"];
                     }
                 }
             }
@@ -1228,6 +1229,10 @@ EOD;
                         break;
                     case 'eap-mschapv2':
                         $authentication = "leftauth = pubkey\n\trightauth = eap-mschapv2";
+                        $authentication .= "\n\teap_identity = %any";
+                        break;
+                    case 'rsa_eap-mschapv2':
+                        $authentication = "leftauth = pubkey\n\trightauth = pubkey\n\trightauth2 = eap-mschapv2";
                         $authentication .= "\n\teap_identity = %any";
                         break;
                     case 'eap-radius':
@@ -1329,8 +1334,6 @@ EOD;
                             if (!isset($ph2ent['mobile'])) {
                                 $tmpsubnet = ipsec_idinfo_to_cidr($ph2ent['remoteid'], false, $ph2ent['mode']);
                                 $rightsubnet_spec[] = $tmpsubnet;
-                            } elseif (!empty($a_client['pool_address'])) {
-                                $rightsubnet_spec[] = "{$a_client['pool_address']}/{$a_client['pool_netbits']}";
                             }
                         } else {
                             $tunneltype = "type = transport";
@@ -1502,7 +1505,9 @@ EOD;
                             // name from the first configured tunnel ($idx == 0):
                             $conn_suffix = $idx ? sprintf('-%03d', $idx) : '';
                             $tmpconf[] = "conn con{$ph1ent['ikeid']}{$conn_suffix}";
-                            $tmpconf[] = "\trightsubnet = {$rightsubnet_spec[$idx]}";
+                            if (!empty($rightsubnet_spec[$idx])) {
+                                $tmpconf[] = "\trightsubnet = {$rightsubnet_spec[$idx]}";
+                            }
                             $tmpconf[] = "\tleftsubnet = {$leftsubnet_spec[$idx]}";
                             if (!empty($ealgoESPsp2arr[$idx])) {
                                 $tmpconf[] = "\tesp = " . join(',', $ealgoESPsp2arr[$idx]) . '!';

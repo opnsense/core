@@ -41,6 +41,7 @@ use OPNsense\Core\Routing;
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
  */
 $di = new FactoryDefault();
+$di->set('config', $config);
 
 $di->set('view', function () use ($config) {
     // return a empty view
@@ -79,15 +80,11 @@ $di->setShared('session', function () {
 });
 
 
-$di->set('config', $config);
-
-
 /**
  * Setup router
  */
-$di->set('router', function () {
-
-    $routing = new Routing(__DIR__."/../controllers/", "api");
+$di->set('router', function () use ($config) {
+    $routing = new Routing($config->application->controllersDir, "api");
     $routing->getRouter()->handle();
     return $routing->getRouter();
 });

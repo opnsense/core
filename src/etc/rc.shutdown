@@ -1,13 +1,4 @@
 #!/bin/sh
 
 # shutdown syshook / plugin scripts
-/usr/local/etc/rc.syshook stop
-
-# wait for config lock to release
-php -a >/dev/null  << EOF
-\$fp = fopen('/conf/config.xml', "a+");
-if (flock(\$fp, LOCK_EX)) {
-	flock(\$fp, LOCK_UN);
-	fclose(\$fp);
-}
-EOF
+exec /usr/local/etc/rc.syshook stop

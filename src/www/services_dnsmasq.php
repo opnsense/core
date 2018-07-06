@@ -154,7 +154,7 @@ include("head.inc");
 
 <body>
 
-<script type="text/javascript">
+<script>
 //<![CDATA[
 $( document ).ready(function() {
   $("#show_advanced_dns").click(function(event){
@@ -230,10 +230,10 @@ $( document ).ready(function() {
             <div class="table-responsive">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <td style="vertical-align:top"><strong><?=gettext("General DNS Forwarder Options");?></strong></td>
-                  <td style="text-align:right">
-                      <small><?=gettext("full help");?> </small>
-                      <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
+                  <td style="width:22%"><strong><?=gettext("General DNS Forwarder Options");?></strong></td>
+                  <td style="width:78%;text-align:right">
+                    <small><?=gettext("full help");?> </small>
+                    <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
                   </td>
                 </tr>
                 <tr>
@@ -248,23 +248,23 @@ $( document ).ready(function() {
                   <td>
                     <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? "checked=\"checked\"" : "";?> />
                     <strong><?=gettext("Register DHCP leases in DNS forwarder");?></strong>
-                    <output class="hidden" for="help_for_regdhcp">
+                    <div class="hidden" data-for="help_for_regdhcp">
                       <?= gettext("If this option is set, then machines that specify " .
                         "their hostname when requesting a DHCP lease will be registered " .
                         "in the DNS forwarder, so that their name can be resolved.") ?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_regdhcpdomain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Domain Override");?></td>
                   <td>
                     <input name="regdhcpdomain" type="text" id="regdhcpdomain" value="<?= $pconfig['regdhcpdomain'] ?>"/>
-                    <output class="hidden" for="help_for_regdhcpdomain">
+                    <div class="hidden" data-for="help_for_regdhcpdomain">
                       <?= gettext("The domain name to use for DHCP hostname registration. " .
                         "If empty, the default system domain is used. Note that all DHCP " .
                         "leases will be assigned to the same domain. If this is undesired, " .
                         "static DHCP lease registration is able to provide coherent mappings.") ?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -272,12 +272,12 @@ $( document ).ready(function() {
                   <td>
                     <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? "checked=\"checked\"" : "";?> />
                     <strong><?=gettext("Register DHCP static mappings in DNS forwarder");?></strong>
-                    <output class="hidden" for="help_for_regdhcpstatic">
+                    <div class="hidden" data-for="help_for_regdhcpstatic">
                       <?= sprintf(gettext("If this option is set, then DHCP static mappings will ".
                           "be registered in the DNS forwarder, so that their name can be ".
                           "resolved. You should also set the domain in %s".
                           "System: General setup%s to the proper value."),'<a href="system_general.php">','</a>');?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -285,11 +285,11 @@ $( document ).ready(function() {
                   <td>
                     <input name="dhcpfirst" type="checkbox" id="dhcpfirst" value="yes" <?=!empty($pconfig['dhcpfirst']) ? "checked=\"checked\"" : "";?> />
                     <strong><?=gettext("Resolve DHCP mappings first");?></strong>
-                    <output class="hidden" for="help_for_dhcpfirst">
+                    <div class="hidden" data-for="help_for_dhcpfirst">
                       <?= sprintf(gettext("If this option is set, then DHCP mappings will ".
                           "be resolved before the manual list of names below. This only ".
                           "affects the name given for a reverse lookup (PTR)."));?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -300,30 +300,30 @@ $( document ).ready(function() {
                         <td>
                           <input name="strict_order" type="checkbox" id="strict_order" value="yes" <?=!empty($pconfig['strict_order']) ? "checked=\"checked\"" : "";?> />
                           <strong><?=gettext("Query DNS servers sequentially");?></strong>
-                          <output class="hidden" for="help_for_strict_order">
+                          <div class="hidden" data-for="help_for_strict_order">
                             <?= gettext("If this option is set, the DNS Forwarder (dnsmasq) will ".
                               "query the DNS servers sequentially in the order specified (System: " .
                               "General Setup: DNS Servers), rather than all at once in parallel.") ?>
-                          </output>
+                          </div>
                         </td>
                       </tr>
                       <tr>
                         <td>
                           <input name="domain_needed" type="checkbox" id="domain_needed" value="yes" <?=!empty($pconfig['domain_needed']) ? "checked=\"checked\"" : "";?> />
                           <strong><?=gettext("Require domain");?></strong>
-                          <output class="hidden" for="help_for_strict_order">
+                          <div class="hidden" data-for="help_for_strict_order">
                             <?= gettext('If this option is set, the DNS Forwarder (dnsmasq) will '.
                               'not forward A or AAAA queries for plain names, without dots or ' .
                               'domain parts, to upstream name servers. If the name is not known ' .
                               'from /etc/hosts or DHCP then a "not found" answer is returned.') ?>
-                          </output>
+                          </div>
                         </td>
                       </tr>
                       <tr>
                         <td>
                           <input name="no_private_reverse" type="checkbox" id="no_private_reverse" value="yes" <?=!empty($pconfig['no_private_reverse']) ? "checked=\"checked\"" : "";?> />
                           <strong><?=gettext("Do not forward private reverse lookups");?></strong>
-                          <output class="hidden" for="help_for_strict_order">
+                          <div class="hidden" data-for="help_for_strict_order">
                             <?= gettext('If this option is set, the DNS Forwarder (dnsmasq) will '.
                               'not forward reverse DNS lookups (PTR) for private addresses ' .
                               '(RFC 1918) to upstream name servers. Any entries in the Domain ' .
@@ -331,7 +331,7 @@ $( document ).ready(function() {
                               'to a specific server are still forwarded. If the IP to name is ' .
                               'not known from /etc/hosts, DHCP or a specific domain override ' .
                               'then a "not found" answer is immediately returned.') ?>
-                          </output>
+                          </div>
                         </td>
                       </tr>
                     </table>
@@ -341,37 +341,32 @@ $( document ).ready(function() {
                   <td><a id="help_for_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Listen Port");?></td>
                   <td>
                     <input name="port" type="text" id="port" size="6" <?=!empty($pconfig['port']) ? "value=\"{$pconfig['port']}\"" : "";?> />
-                    <output class="hidden" for="help_for_port">
+                    <div class="hidden" data-for="help_for_port">
                       <?=gettext("The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53.");?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_interfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interfaces"); ?></td>
                   <td>
-                    <select id="interface" name="interface[]" multiple="multiple" class="selectpicker">
-                      <option value="" <?=empty($pconfig['interface'][0]) ? 'selected="selected"' : ""; ?>>
-                        <?=gettext("All");?>
+                    <select id="interface" name="interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All')) ?>">
+<?php foreach (get_configured_interface_with_descr() as  $iface => $ifacename): ?>
+                      <option value="<?= html_safe($iface) ?>" <?=in_array($iface, $pconfig['interface']) ? 'selected="selected"' : "" ?>>
+                        <?= html_safe($ifacename) ?>
                       </option>
-<?php
-                      foreach (get_possible_listen_ips(true) as $laddr):?>
-                      <option value="<?=$laddr['value'];?>" <?=in_array($laddr['value'], $pconfig['interface']) ? 'selected="selected"' : "";?>>
-                        <?=htmlspecialchars($laddr['name']);?>
-                      </option>
-<?php
-                      endforeach; ?>
+<?php endforeach ?>
                     </select>
-                    <output class="hidden" for="help_for_interfaces">
+                    <div class="hidden" data-for="help_for_interfaces">
                       <?=gettext("Interface IPs used by the DNS Forwarder for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.");?>
-                    </output>
+                    </div>
                     <br/>
                     <input name="strictbind" type="checkbox" id="strictbind" value="yes" <?= !empty($pconfig['strictbind']) ? "checked=\"checked\"" : "";?> />
                     <strong><?=gettext("Strict Interface Binding");?></strong>
-                    <output class="hidden" for="help_for_interfaces">
+                    <div class="hidden" data-for="help_for_interfaces">
                       <?= gettext("If this option is set, the DNS forwarder will only bind to the interfaces containing the IP addresses selected above, rather than binding to all interfaces and discarding queries to other addresses."); ?>
                       <br /><br />
                       <?= gettext("NOTE: This option does NOT work with IPv6. If set, dnsmasq will not bind to IPv6 addresses."); ?>
-                    </output>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -426,8 +421,8 @@ $( document ).ready(function() {
                   <th><?=gettext("Domain");?></th>
                   <th><?=gettext("IP");?></th>
                   <th><?=gettext("Description");?></th>
-                  <th>
-                    <a href="services_dnsmasq_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+                  <th class="text-nowrap">
+                    <a href="services_dnsmasq_edit.php" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
                   </th>
                 </tr>
               </thead>
@@ -440,9 +435,9 @@ $( document ).ready(function() {
                   <td><?=htmlspecialchars(strtolower($hostent['domain']));?></td>
                   <td><?=htmlspecialchars($hostent['ip']);?></td>
                   <td><?=htmlspecialchars($hostent['descr']);?></td>
-                  <td>
-                    <a href="services_dnsmasq_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                    <a href="#" data-id="<?=$i;?>" class="act_delete_host btn btn-xs btn-default"><i class="fa fa-trash text-muted"></i></a>
+                  <td class="text-nowrap">
+                    <a href="services_dnsmasq_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
+                    <a href="#" data-id="<?=$i;?>" class="act_delete_host btn btn-xs btn-default"><i class="fa fa-trash fa-fw"></i></a>
                   </td>
                 </tr>
 <?php
@@ -453,8 +448,8 @@ $( document ).ready(function() {
                   <td><?=htmlspecialchars(strtolower($alias['domain']));?></td>
                   <td><?=gettext("Alias for");?> <?=$hostent['host'] ? htmlspecialchars($hostent['host'] . '.' . $hostent['domain']) : htmlspecialchars($hostent['domain']);?></td>
                   <td><?=htmlspecialchars($alias['description']);?></td>
-                  <td>
-                    <a href="services_dnsmasq_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                  <td class="text-nowrap">
+                    <a href="services_dnsmasq_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
                   </td>
                 </tr>
 <?php
@@ -489,9 +484,9 @@ $( document ).ready(function() {
                   <th><?=gettext("Domain");?></th>
                   <th><?=gettext("IP");?></th>
                   <th><?=gettext("Description");?></th>
-                  <th>
+                  <th class="text-nowrap">
                     <a href="services_dnsmasq_domainoverride_edit.php" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-plus"></span>
+                      <i class="fa fa-plus fa-fw"></i>
                     </a>
                   </th>
                 </tr>
@@ -504,11 +499,11 @@ $( document ).ready(function() {
                   <td><?=htmlspecialchars(strtolower($doment['domain']));?></td>
                   <td><?=htmlspecialchars($doment['ip']);?></td>
                   <td><?=htmlspecialchars($doment['descr']);?></td>
-                  <td>
+                  <td class="text-nowrap">
                     <a href="services_dnsmasq_domainoverride_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-pencil"></span>
+                      <i class="fa fa-pencil fa-fw"></i>
                     </a>
-                    <a href="#" data-id="<?=$i;?>" class="act_delete_override btn btn-xs btn-default"><i class="fa fa-trash text-muted"></i></a>
+                    <a href="#" data-id="<?=$i;?>" class="act_delete_override btn btn-xs btn-default"><i class="fa fa-trash fa-fw"></i></a>
                   </td>
                 </tr>
 <?php

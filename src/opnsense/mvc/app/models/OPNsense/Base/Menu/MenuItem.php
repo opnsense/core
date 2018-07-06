@@ -61,7 +61,7 @@ class MenuItem
     private $sortOrder = 0;
 
     /**
-     * layout information, glyphicon
+     * layout information, icon
      * @var string
      */
     private $CssClass = "";

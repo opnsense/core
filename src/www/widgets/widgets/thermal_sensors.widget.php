@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 ?>
-<script type="text/javascript">
+<script>
   function thermal_sensors_widget_update(sender, data)
   {
     data.map(function(sensor) {
@@ -171,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 </table>
 
 <!-- needed to display the widget settings menu -->
-<script type="text/javascript">
+<script>
 //<![CDATA[
   $("#thermal_sensors-configure").removeClass("disabled");
 //]]>

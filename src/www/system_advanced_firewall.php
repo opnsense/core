@@ -32,12 +32,8 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("system.inc");
-
-function default_table_entries_size()
-{
-    $current = `pfctl -sm | grep table-entries | awk '{print $4};'`;
-    return $current;
-}
+require_once("gwlb.inc");
+require_once("rrd.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -66,8 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['natreflection'] = empty($config['system']['disablenatreflection']);
     $pconfig['enablebinatreflection'] = !empty($config['system']['enablebinatreflection']);
     $pconfig['enablenatreflectionhelper'] = isset($config['system']['enablenatreflectionhelper']) ? $config['system']['enablenatreflectionhelper'] : null;
-    $pconfig['snat_use_sticky'] = !empty($config['system']['snat_use_sticky']);
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
+    $pconfig['prefer_dpinger'] = isset($config['system']['prefer_dpinger']);
+    $pconfig['ip_change_kill_states'] = isset($config['system']['ip_change_kill_states']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $input_errors = array();
@@ -167,8 +164,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['enablebinatreflection']);
         }
 
-        $config['system']['snat_use_sticky'] = !empty($pconfig['snat_use_sticky']);
-
         if (!empty($pconfig['disablereplyto'])) {
             $config['system']['disablereplyto'] = $pconfig['disablereplyto'];
         } elseif (isset($config['system']['disablereplyto'])) {
@@ -222,12 +217,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['gw_switch_default']);
         }
 
+        $old_pinger = isset($config['system']['prefer_dpinger']);
+
+        if (!empty($pconfig['prefer_dpinger'])) {
+            $config['system']['prefer_dpinger'] = true;
+        } elseif (isset($config['system']['prefer_dpinger'])) {
+            unset($config['system']['prefer_dpinger']);
+        }
+
+        if (!empty($pconfig['ip_change_kill_states'])) {
+            $config['system']['ip_change_kill_states'] = true;
+        } elseif (isset($config['system']['ip_change_kill_states'])) {
+            unset($config['system']['ip_change_kill_states']);
+        }
+
         write_config();
 
         $savemsg = get_std_save_message();
 
         system_cron_configure();
         filter_configure();
+
+        if ($old_pinger != isset($config['system']['prefer_dpinger'])) {
+            mwexec('rm /var/db/rrd/*-quality.rrd');
+            setup_gateways_monitor();
+            rrd_configure();
+        }
     }
 }
 
@@ -251,421 +266,461 @@ include("head.inc");
         }
 ?>
       <section class="col-xs-12">
-          <div class="content-box tab-content  table-responsive">
-            <form method="post" name="iform" id="iform">
-              <table class="table table-striped opnsense_standard_table_form">
-                <tr>
-                  <td style="width:22%"><strong><?=gettext("IPv6 Options");?></strong></td>
-                  <td style="width:78%; text-align:right">
-                    <small><?=gettext("full help"); ?> </small>
-                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_ipv6allow" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Allow IPv6"); ?></td>
-                  <td>
-                    <input name="ipv6allow" type="checkbox" value="yes" <?= !empty($pconfig['ipv6allow']) ? "checked=\"checked\"" :"";?> onclick="enable_change(false)" />
-                    <strong><?=gettext("Allow IPv6"); ?></strong>
-                    <output class="hidden" for="help_for_ipv6allow">
-                      <?=gettext("All IPv6 traffic will be blocked by the firewall unless this box is checked."); ?><br />
-                      <?=gettext("NOTE: This does not disable any IPv6 features on the firewall, it only blocks traffic."); ?><br />
-                    </output>
-                  </td>
-                </tr>
+        <form method="post" name="iform" id="iform">
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"><strong><?= gettext('IPv6 Options') ?></strong></td>
+                <td style="width:78%; text-align:right">
+                  <small><?=gettext("full help"); ?> </small>
+                  <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_ipv6allow" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Allow IPv6"); ?></td>
+                <td>
+                  <input name="ipv6allow" type="checkbox" value="yes" <?= !empty($pconfig['ipv6allow']) ? "checked=\"checked\"" :"";?> onclick="enable_change(false)" />
+                  <?=gettext("Allow IPv6"); ?>
+                  <div class="hidden" data-for="help_for_ipv6allow">
+                    <?=gettext("All IPv6 traffic will be blocked by the firewall unless this box is checked."); ?><br />
+                    <?=gettext("NOTE: This does not disable any IPv6 features on the firewall, it only blocks traffic."); ?><br />
+                  </div>
+                </td>
+              </tr>
 <?php           if (count($config['interfaces']) > 1): ?>
-                <tr>
-                  <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Network Address Translation");?></th>
-                </tr>
-                <tr>
-                  <td><a id="help_for_natreflection" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection for port forwards");?></td>
-                  <td>
-                    <input name="natreflection" type="checkbox" id="natreflection" value="yes" <?= !empty($pconfig['natreflection']) ? 'checked="checked"' : '' ?>/>
-                    <output class="hidden" for="help_for_natreflection">
-                      <?=gettext("When enabled, this automatically creates additional NAT redirect rules for access to port forwards on your external IP addresses from within your internal networks.");?>
-                      <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_enablebinatreflection" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection for 1:1");?></td>
-                  <td>
-                    <input name="enablebinatreflection" type="checkbox" id="enablebinatreflection" value="yes" <?=!empty($pconfig['enablebinatreflection']) ? "checked=\"checked\"" : "";?>/>
-                    <output class="hidden" for="help_for_enablebinatreflection">
-                      <?=gettext("Enables the automatic creation of additional NAT redirect rules for access to 1:1 mappings of your external IP addresses from within your internal networks.");?>
-                      <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_enablenatreflectionhelper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatic outbound NAT for Reflection");?></td>
-                  <td>
-                    <input name="enablenatreflectionhelper" type="checkbox" id="enablenatreflectionhelper" value="yes" <?=!empty($pconfig['enablenatreflectionhelper']) ? "checked=\"checked\"" : "";?> />
-                    <output class="hidden" for="help_for_enablenatreflectionhelper">
-                      <?=gettext("Automatically create outbound NAT rules which assist inbound NAT rules that direct traffic back out to the same subnet it originated from.");?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_snat_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky oubound NAT");?></td>
-                  <td>
-                    <input name="snat_use_sticky" type="checkbox" id="snat_use_sticky" <?=!empty($pconfig['snat_use_sticky']) ? "checked=\"checked\"" : "";?> />
-                    <output class="hidden" for="help_for_snat_use_sticky">
-                      <?=gettext("When using automatic outbound NAT rules this makes the handled connections stick to a specific address when there are multiple addresses configured on the same interface.");?>
-                    </output>
-                  </td>
-                </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"><strong><?= gettext('Network Address Translation') ?></strong></td>
+                <td style="width:78%"></td>
+              </tr>
+              <tr>
+                <td><a id="help_for_natreflection" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection for port forwards");?></td>
+                <td>
+                  <input name="natreflection" type="checkbox" id="natreflection" value="yes" <?= !empty($pconfig['natreflection']) ? 'checked="checked"' : '' ?>/>
+                  <div class="hidden" data-for="help_for_natreflection">
+                    <?=gettext("When enabled, this automatically creates additional NAT redirect rules for access to port forwards on your external IP addresses from within your internal networks.");?>
+                    <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_enablebinatreflection" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection for 1:1");?></td>
+                <td>
+                  <input name="enablebinatreflection" type="checkbox" id="enablebinatreflection" value="yes" <?=!empty($pconfig['enablebinatreflection']) ? "checked=\"checked\"" : "";?>/>
+                  <div class="hidden" data-for="help_for_enablebinatreflection">
+                    <?=gettext("Enables the automatic creation of additional NAT redirect rules for access to 1:1 mappings of your external IP addresses from within your internal networks.");?>
+                    <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_enablenatreflectionhelper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatic outbound NAT for Reflection");?></td>
+                <td>
+                  <input name="enablenatreflectionhelper" type="checkbox" id="enablenatreflectionhelper" value="yes" <?=!empty($pconfig['enablenatreflectionhelper']) ? "checked=\"checked\"" : "";?> />
+                  <div class="hidden" data-for="help_for_enablenatreflectionhelper">
+                    <?=gettext("Automatically create outbound NAT rules which assist inbound NAT rules that direct traffic back out to the same subnet it originated from.");?>
+                  </div>
+                </td>
+              </tr>
 <?php           endif; ?>
-                <tr>
-                  <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Bogon Networks");?></th>
-                </tr>
-                <tr>
-                  <td><a id="help_for_bogonsinterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Update Frequency");?></td>
-                  <td>
-                    <select name="bogonsinterval" class="formselect selectpicker" data-style="btn-default">
-                    <option value="monthly" <?=empty($pconfig['bogonsinterval']) || $pconfig['bogonsinterval'] == 'monthly' ? "selected=\"selected\"" : "";?>>
-                      <?=gettext("Monthly"); ?>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"><strong><?= gettext('Bogon Networks') ?></strong></td>
+                <td style="width:78%"></td>
+              </tr>
+              <tr>
+                <td><a id="help_for_bogonsinterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Update Frequency");?></td>
+                <td>
+                  <select name="bogonsinterval" class="selectpicker" data-style="btn-default">
+                  <option value="monthly" <?=empty($pconfig['bogonsinterval']) || $pconfig['bogonsinterval'] == 'monthly' ? "selected=\"selected\"" : "";?>>
+                    <?=gettext("Monthly"); ?>
+                  </option>
+                  <option value="weekly" <?=$pconfig['bogonsinterval'] == 'weekly' ? "selected=\"selected\"" :"";?>>
+                    <?=gettext("Weekly"); ?>
+                  </option>
+                  <option value="daily" <?=$pconfig['bogonsinterval'] == 'daily' ? "selected=\"selected\"" : "";?>>
+                    <?=gettext("Daily"); ?>
+                  </option>
+                  </select>
+                  <div class="hidden" data-for="help_for_bogonsinterval">
+                    <?=gettext("The frequency of updating the lists of IP addresses that are reserved (but not RFC 1918) or not yet assigned by IANA.");?>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"><strong><?= gettext('Gateway Monitoring') ?></strong></td>
+                <td style="width:78%"></td>
+              </tr>
+              <tr>
+                <td><a id="help_for_kill_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Kill states");?> </td>
+                <td>
+                  <input name="kill_states" type="checkbox" id="kill_states" value="yes" <?= !empty($pconfig['kill_states']) ? "checked=\"checked\"" : "";?> />
+                  <?=gettext("Disable State Killing on Gateway Failure"); ?>
+                  <div class="hidden" data-for="help_for_kill_states">
+                    <?=gettext("The monitoring process will flush states for a gateway that goes down if this box is not checked. Check this box to disable this behavior."); ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_skip_rules_gw_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Skip rules");?> </td>
+                <td>
+                  <input name="skip_rules_gw_down" type="checkbox" id="skip_rules_gw_down" value="yes" <?=!empty($pconfig['skip_rules_gw_down']) ? "checked=\"checked\"" : "";?> />
+                  <?=gettext("Skip rules when gateway is down"); ?>
+                  <div class="hidden" data-for="help_for_skip_rules_gw_down">
+                    <?=gettext("By default, when a rule has a specific gateway set, and this gateway is down, ".
+                                        "rule is created and traffic is sent to default gateway.This option overrides that behavior ".
+                                        "and the rule is not created when gateway is down"); ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_gw_switch_default" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Gateway switching') ?></td>
+                <td>
+                  <input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?= !empty($pconfig['gw_switch_default']) ? 'checked="checked"' : '' ?> />
+                  <?=gettext("Allow default gateway switching"); ?>
+                  <div class="hidden" data-for="help_for_gw_switch_default">
+                    <?= gettext('If the link where the default gateway resides fails switch the default gateway to another available one.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_prefer_dpinger" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Monitoring daemon') ?></td>
+                <td>
+                  <input name="prefer_dpinger" type="checkbox" id="prefer_dpinger" value="yes" <?= !empty($pconfig['prefer_dpinger']) ? 'checked="checked"' : '' ?> />
+                  <?= gettext('Prefer Dpinger over Apinger') ?>
+                  <div class="hidden" data-for="help_for_prefer_dpinger">
+                    <?=gettext("By default, the system will use Apinger for gateway monitoring. ".
+                                        "Switching from one to the other will result in the loss of " .
+                                        "any existing quality RRD data."); ?>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"><strong><?= gettext('Multi-WAN') ?></strong></td>
+                <td style="width:78%"></td>
+              </tr>
+              <tr>
+                <td><a id="help_for_lb_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky connections");?> </td>
+                <td>
+                  <input name="lb_use_sticky" type="checkbox" id="lb_use_sticky" value="yes" <?= !empty($pconfig['lb_use_sticky']) ? 'checked="checked"' : '';?>/>
+                  <?=gettext("Use sticky connections"); ?>
+                  <div class="hidden" data-for="help_for_lb_use_sticky">
+                    <?=gettext("Successive connections will be redirected to the servers " .
+                                        "in a round-robin manner with connections from the same " .
+                                        "source being sent to the same gateway. This 'sticky " .
+                                        "connection' will exist as long as there are states that " .
+                                        "refer to this connection. Once the states expire, so will " .
+                                        "the sticky connection. Further connections from that host " .
+                                        "will be redirected to the next gateway in the round-robin."); ?>
+                  </div><br/>
+                  <input placeholder="<?=gettext("Source tracking timeout");?>" title="<?=gettext("Source tracking timeout");?>" name="srctrack" id="srctrack" type="text" value="<?= !empty($pconfig['srctrack']) ? $pconfig['srctrack'] : "";?>"/>
+                  <div class="hidden" data-for="help_for_lb_use_sticky">
+                    <?=gettext("Set the source tracking timeout for sticky connections in seconds. " .
+                                        "By default this is 0, so source tracking is removed as soon as the state expires. " .
+                                        "Setting this timeout higher will cause the source/destination relationship to persist for longer periods of time."); ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_pf_share_forward" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Shared forwarding');?> </td>
+                <td>
+                  <input name="pf_share_forward" type="checkbox" id="pf_share_forward" value="yes" <?= !empty($pconfig['pf_share_forward']) ? 'checked="checked"' : '' ?>/>
+                  <?=gettext('Use shared forwarding between packet filter, traffic shaper and captive portal'); ?>
+                  <div class="hidden" data-for="help_for_pf_share_forward">
+                    <?= gettext('Using policy routing in the packet filter rules causes packets to skip ' .
+                                'processing for the traffic shaper and captive portal tasks. ' .
+                                'Using this option enables the sharing of such forwarding decisions ' .
+                                'between all components to accomodate complex setups.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_pf_disable_force_gw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable force gateway');?> </td>
+                <td>
+                  <input name="pf_disable_force_gw" type="checkbox" id="pf_disable_force_gw" value="yes" <?= !empty($pconfig['pf_disable_force_gw']) ? 'checked="checked"' : '' ?>/>
+                  <?=gettext('Disable automatic rules which force local services to use the assigned interface gateway.'); ?>
+                  <div class="hidden" data-for="help_pf_disable_force_gw">
+                    <?= gettext('Outgoing packets from this firewall on an interface which has a gateway ' .
+                                'will normally use the specified gateway for that interface. ' .
+                                'When this option is set, the default routing rules apply (automatic rules will be disabled).') ?>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"><strong><?= gettext('Schedules') ?></strong></td>
+                <td style="width:78%"></td>
+              </tr>
+              <tr>
+                <td><a id="help_for_schedule_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Schedule States"); ?></td>
+                <td>
+                  <input name="schedule_states" type="checkbox" value="yes" <?=!empty($pconfig['schedule_states']) ? "checked=\"checked\"" :"";?> />
+                  <div class="hidden" data-for="help_for_schedule_states">
+                    <?=gettext("By default schedules clear the states of existing connections when the expiration time has come. ".
+                                        "This option overrides that behavior by not clearing states for existing connections."); ?>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"><strong><?= gettext('Miscellaneous') ?></strong></td>
+                <td style="width:78%"></td>
+              </tr>
+              <tr>
+                <td><a id="help_for_optimization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Optimization");?></td>
+                <td>
+                  <select onchange="update_description(this.selectedIndex);" name="optimization" id="optimization" class="selectpicker" data-style="btn-default">
+                    <option value="normal"<?=$pconfig['optimization']=="normal" ? " selected=\"selected\"" : ""; ?>>
+                      <?=gettext("normal");?>
                     </option>
-                    <option value="weekly" <?=$pconfig['bogonsinterval'] == 'weekly' ? "selected=\"selected\"" :"";?>>
-                      <?=gettext("Weekly"); ?>
+                    <option value="high-latency"<?=$pconfig['optimization']=="high-latency" ? " selected=\"selected\"" : ""; ?>>
+                      <?=gettext("high-latency");?>
                     </option>
-                    <option value="daily" <?=$pconfig['bogonsinterval'] == 'daily' ? "selected=\"selected\"" : "";?>>
-                      <?=gettext("Daily"); ?>
+                    <option value="aggressive"<?=$pconfig['optimization']=="aggressive" ? " selected=\"selected\"" : ""; ?>>
+                      <?=gettext("aggressive");?>
                     </option>
-                    </select>
-                    <output class="hidden" for="help_for_bogonsinterval">
-                      <?=gettext("The frequency of updating the lists of IP addresses that are reserved (but not RFC 1918) or not yet assigned by IANA.");?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Gateway Monitoring"); ?></th>
-                </tr>
-                <tr>
-                  <td><a id="help_for_kill_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Kill states");?> </td>
-                  <td>
-                    <input name="kill_states" type="checkbox" id="kill_states" value="yes" <?= !empty($pconfig['kill_states']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Disable State Killing on Gateway Failure"); ?></strong>
-                    <output class="hidden" for="help_for_kill_states">
-                      <?=gettext("The monitoring process will flush states for a gateway that goes down if this box is not checked. Check this box to disable this behavior."); ?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_skip_rules_gw_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Skip rules");?> </td>
-                  <td>
-                    <input name="skip_rules_gw_down" type="checkbox" id="skip_rules_gw_down" value="yes" <?=!empty($pconfig['skip_rules_gw_down']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Skip rules when gateway is down"); ?></strong>
-                    <output class="hidden" for="help_for_skip_rules_gw_down">
-                      <?=gettext("By default, when a rule has a specific gateway set, and this gateway is down, ".
-                                          "rule is created and traffic is sent to default gateway.This option overrides that behavior ".
-                                          "and the rule is not created when gateway is down"); ?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_gw_switch_default" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Gateway switching') ?></td>
-                  <td>
-                    <input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?= !empty($pconfig['gw_switch_default']) ? 'checked="checked"' : '' ?> />
-                    <strong><?=gettext("Allow default gateway switching"); ?></strong><br />
-                    <output class="hidden" for="help_for_gw_switch_default">
-                      <?= gettext('If the link where the default gateway resides fails switch the default gateway to another available one. This feature has been deprecated.') ?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <th colspan="2" style="vertical-align:top" class="listtopic"><?= gettext('Multi-WAN') ?></th>
-                </tr>
-                <tr>
-                  <td><a id="help_for_lb_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky connections");?> </td>
-                  <td>
-                    <input name="lb_use_sticky" type="checkbox" id="lb_use_sticky" value="yes" <?= !empty($pconfig['lb_use_sticky']) ? 'checked="checked"' : '';?>/>
-                    <strong><?=gettext("Use sticky connections"); ?></strong><br />
-                    <output class="hidden" for="help_for_lb_use_sticky">
-                      <?=gettext("Successive connections will be redirected to the servers " .
-                                          "in a round-robin manner with connections from the same " .
-                                          "source being sent to the same gateway. This 'sticky " .
-                                          "connection' will exist as long as there are states that " .
-                                          "refer to this connection. Once the states expire, so will " .
-                                          "the sticky connection. Further connections from that host " .
-                                          "will be redirected to the next gateway in the round-robin."); ?>
-                    </output><br/>
-                    <input placeholder="<?=gettext("Source tracking timeout");?>" title="<?=gettext("Source tracking timeout");?>" name="srctrack" id="srctrack" type="text" value="<?= !empty($pconfig['srctrack']) ? $pconfig['srctrack'] : "";?>"/>
-                    <output class="hidden" for="help_for_lb_use_sticky">
-                      <?=gettext("Set the source tracking timeout for sticky connections in seconds. " .
-                                          "By default this is 0, so source tracking is removed as soon as the state expires. " .
-                                          "Setting this timeout higher will cause the source/destination relationship to persist for longer periods of time."); ?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_pf_share_forward" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Shared forwarding');?> </td>
-                  <td>
-                    <input name="pf_share_forward" type="checkbox" id="pf_share_forward" value="yes" <?= !empty($pconfig['pf_share_forward']) ? 'checked="checked"' : '' ?>/>
-                    <strong><?=gettext('Use shared forwarding between packet filter, traffic shaper and captive portal'); ?></strong><br />
-                    <output class="hidden" for="help_for_pf_share_forward">
-                      <?= gettext('Using policy routing in the packet filter rules causes packets to skip ' .
-                                  'processing for the traffic shaper and captive portal tasks. ' .
-                                  'Using this option enables the sharing of such forwarding decisions ' .
-                                  'between all components to accomodate complex setups. Use with care.') ?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_pf_disable_force_gw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable force gateway');?> </td>
-                  <td>
-                    <input name="pf_disable_force_gw" type="checkbox" id="pf_disable_force_gw" value="yes" <?= !empty($pconfig['pf_disable_force_gw']) ? 'checked="checked"' : '' ?>/>
-                    <strong><?=gettext('Disable automatic rules which force local services to use the assigned interface gateway.'); ?></strong><br />
-                    <output class="hidden" for="help_pf_disable_force_gw">
-                      <?= gettext('Outgoing packets from this firewall on an interface which has a gateway ' .
-                                  'will normally use the specified gateway for that interface. ' .
-                                  'When this option is set, the default routing rules apply (automatic rules will be disabled).') ?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Schedules"); ?></th>
-                </tr>
-                <tr>
-                  <td><a id="help_for_schedule_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Schedule States"); ?></td>
-                  <td>
-                    <input name="schedule_states" type="checkbox" value="yes" <?=!empty($pconfig['schedule_states']) ? "checked=\"checked\"" :"";?> />
-                    <output class="hidden" for="help_for_schedule_states">
-                      <?=gettext("By default schedules clear the states of existing connections when the expiration time has come. ".
-                                          "This option overrides that behavior by not clearing states for existing connections."); ?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <th colspan="2" style="vertical-align:top" class="listtopic"><?=gettext("Miscellaneous");?></th>
-                </tr>
-                <tr>
-                  <td><a id="help_for_optimization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Optimization");?></td>
-                  <td>
-                    <select onchange="update_description(this.selectedIndex);" name="optimization" id="optimization" class="selectpicker" data-style="btn-default">
-                      <option value="normal"<?=$pconfig['optimization']=="normal" ? " selected=\"selected\"" : ""; ?>>
-                        <?=gettext("normal");?>
-                      </option>
-                      <option value="high-latency"<?=$pconfig['optimization']=="high-latency" ? " selected=\"selected\"" : ""; ?>>
-                        <?=gettext("high-latency");?>
-                      </option>
-                      <option value="aggressive"<?=$pconfig['optimization']=="aggressive" ? " selected=\"selected\"" : ""; ?>>
-                        <?=gettext("aggressive");?>
-                      </option>
-                      <option value="conservative"<?=$pconfig['optimization']=="conservative" ? " selected=\"selected\"" : ""; ?>>
-                        <?=gettext("conservative");?>
-                      </option>
-                    </select>
-                    <output class="hidden" for="help_for_optimization">
-                      <?=gettext("Select the type of state table optimization to use");?>
-                      <table class="table table-condensed">
-                        <tr>
-                          <td><strong><?=gettext("normal");?></strong></td>
-                          <td><?=gettext("As the name says, it is the normal optimization algorithm");?></td>
-                        </tr>
-                        <tr>
-                          <td><strong><?=gettext("high-latency");?></strong></td>
-                          <td><?=gettext("Used for high latency links, such as satellite links. Expires idle connections later than default");?></td>
-                        </tr>
-                        <tr>
-                          <td><strong><?=gettext("aggressive");?></strong></td>
-                          <td><?=gettext("Expires idle connections quicker. More efficient use of CPU and memory but can drop legitimate idle connections");?></td>
-                        </tr>
-                        <tr>
-                          <td><strong><?=gettext("conservative");?></strong></td>
-                          <td><?=gettext("Tries to avoid dropping any legitimate idle connections at the expense of increased memory usage and CPU utilization.");?></td>
-                        </tr>
-                      </table>
-                      <hr/>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_rulesetoptimization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Rules Optimization");?></td>
-                  <td>
-                    <select onchange="update_description(this.selectedIndex);" name="rulesetoptimization" id="rulesetoptimization" class="selectpicker" data-style="btn-default">
-                      <option value="none"<?=$pconfig['rulesetoptimization']=="none" ? " selected=\"selected\"" : ""; ?>>
-                        <?=gettext("none");?>
-                      </option>
-                      <option value="basic"<?=$pconfig['rulesetoptimization']=="basic" ? " selected=\"selected\"" : ""; ?>>
-                        <?=gettext("basic");?>
-                      </option>
-                      <option value="profile"<?=$pconfig['rulesetoptimization']=="profile" ? " selected=\"selected\"" : ""; ?>>
-                        <?=gettext("profile");?>
-                      </option>
-                    </select>
-                    <output class="hidden" for="help_for_rulesetoptimization">
-                      <?=gettext("Select the type of rules optimization to use");?>
-                      <table class="table table-condensed">
-                        <tr>
-                          <td><strong><?=gettext("none");?></strong></td>
-                          <td><?=gettext("Disable the ruleset optimizer.");?></td>
-                        </tr>
-                        <tr>
-                          <td><strong><?=gettext("basic");?></strong></td>
-                          <td><?=gettext("(default) Basic ruleset optimization does four things to improve the performance of ruleset evaluations: remove duplicate rules; remove rules that are a subset of another rule; combine multiple rules into a table when advantageous; re-order the rules to improve evaluation performance");?></td>
-                        </tr>
-                        <tr>
-                          <td><strong><?=gettext("profile");?></strong></td>
-                          <td><?=gettext("Uses the currently loaded ruleset as a feedback profile to tailor the ordering of quick rules to actual network traffic.");?></td>
-                        </tr>
-                      </table>
-                      <hr/>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_disablefilter" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable Firewall");?></td>
-                  <td>
-                    <input name="disablefilter" type="checkbox" value="yes" <?= !empty($pconfig['disablefilter']) ? "checked=\"checked\"" : "";?>/>
-                    <strong><?=gettext("Disable all packet filtering.");?></strong>
-                    <output class="hidden" for="help_for_disablefilter">
-                      <?= gettext('Warning: This will convert into a routing-only platform!') ?><br />
-                      <?= gettext('Warning: This will also turn off NAT!') ?><br />
-                      <?=sprintf(
-                        gettext('If you only want to disable NAT, and not firewall rules, visit the %sOutbound NAT%s page.'),
-                        '<a href="/firewall_nat_out.php">', '</a>'
-                      )?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_adaptive" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Adaptive Timeouts");?></td>
-                  <td>
+                    <option value="conservative"<?=$pconfig['optimization']=="conservative" ? " selected=\"selected\"" : ""; ?>>
+                      <?=gettext("conservative");?>
+                    </option>
+                  </select>
+                  <div class="hidden" data-for="help_for_optimization">
+                    <?=gettext("Select the type of state table optimization to use");?><br/><br/>
                     <table class="table table-condensed">
-                      <thead>
-                        <tr>
-                          <td><?=gettext("start");?></td>
-                          <td><?=gettext("end");?></td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>
-                            <input name="adaptivestart" type="text" value="<?=$pconfig['adaptivestart']; ?>" />
-                          </td>
-                          <td>
-                            <input name="adaptiveend" type="text" value="<?=$pconfig['adaptiveend']; ?>" />
-                          </td>
-                        </tr>
-                      </tbody>
+                      <tr>
+                        <td><?=gettext("normal");?></td>
+                        <td><?=gettext("As the name says, it is the normal optimization algorithm");?></td>
+                      </tr>
+                      <tr>
+                        <td><?=gettext("high-latency");?></td>
+                        <td><?=gettext("Used for high latency links, such as satellite links. Expires idle connections later than default");?></td>
+                      </tr>
+                      <tr>
+                        <td><?=gettext("aggressive");?></td>
+                        <td><?=gettext("Expires idle connections quicker. More efficient use of CPU and memory but can drop legitimate idle connections");?></td>
+                      </tr>
+                      <tr>
+                        <td><?=gettext("conservative");?></td>
+                        <td><?=gettext("Tries to avoid dropping any legitimate idle connections at the expense of increased memory usage and CPU utilization.");?></td>
+                      </tr>
                     </table>
-                    <output class="hidden" for="help_for_adaptive">
-                      <strong><?=gettext("Timeouts for states can be scaled adaptively as the number of state table entries grows.");?></strong>
-                      <br />
-                      <strong><?=gettext("start");?></strong></br>
-                      <?=gettext("When the number of state entries exceeds this value, adaptive scaling begins. All timeout values are scaled linearly with factor (adaptive.end - number of states) / (adaptive.end - adaptive.start).");?><br/>
-                      <strong><?=gettext("end");?></strong></br>
-                      <?=gettext("When reaching this number of state entries, all timeout values become zero, effectively purging all state entries immediately. This value is used to define the scale factor, it should not actually be reached (set a lower state limit, see below).");?>
-                      <br/>
-                      <strong><?=gettext("Note: Leave this blank for the default(0).");?></strong>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_maximumstates" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Maximum States");?></td>
-                  <td>
-                    <input name="maximumstates" type="text" id="maximumstates" value="<?=$pconfig['maximumstates'];?>" />
-                    <output class="hidden" for="help_for_maximumstates">
-                      <strong><?=gettext("Maximum number of connections to hold in the firewall state table.");?></strong>
-                      <br />
-                      <?=gettext("Note: Leave this blank for the default. On your system the default size is:");?> <?= default_state_size() ?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_maximumfrags" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Maximum Fragments");?></td>
-                  <td>
-                    <input name="maximumfrags" type="text" id="maximumfrags" value="<?=$pconfig['maximumfrags'];?>" />
-                    <output class="hidden" for="help_for_maximumfrags">
-                      <strong><?=gettext("Sets the maximum number of entries in the memory pool used for fragment reassembly.");?></strong>
-                      <br />
-                      <?=gettext("Note: Leave this blank for the default.");?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_maximumtableentries" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Maximum Table Entries");?></td>
-                  <td>
-                    <input name="maximumtableentries" type="text" id="maximumtableentries" value="<?= html_safe($pconfig['maximumtableentries']) ?>"/>
-                    <output class="hidden" for="help_for_maximumtableentries">
-                      <strong><?=gettext("Maximum number of table entries for systems such as aliases, sshlockout, snort, etc, combined.");?></strong>
-                      <br />
-                      <?=gettext("Note: Leave this blank for the default.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_rulesetoptimization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Rules Optimization");?></td>
+                <td>
+                  <select onchange="update_description(this.selectedIndex);" name="rulesetoptimization" id="rulesetoptimization" class="selectpicker" data-style="btn-default">
+                    <option value="none"<?=$pconfig['rulesetoptimization']=="none" ? " selected=\"selected\"" : ""; ?>>
+                      <?=gettext("none");?>
+                    </option>
+                    <option value="basic"<?=$pconfig['rulesetoptimization']=="basic" ? " selected=\"selected\"" : ""; ?>>
+                      <?=gettext("basic");?>
+                    </option>
+                    <option value="profile"<?=$pconfig['rulesetoptimization']=="profile" ? " selected=\"selected\"" : ""; ?>>
+                      <?=gettext("profile");?>
+                    </option>
+                  </select>
+                  <div class="hidden" data-for="help_for_rulesetoptimization">
+                    <?=gettext("Select the type of rules optimization to use");?><br/><br>
+                    <table class="table table-condensed">
+                      <tr>
+                        <td><?=gettext("none");?></td>
+                        <td><?=gettext("Disable the ruleset optimizer.");?></td>
+                      </tr>
+                      <tr>
+                        <td><?=gettext("basic");?></td>
+                        <td><?=gettext("(default) Basic ruleset optimization does four things to improve the performance of ruleset evaluations: remove duplicate rules; remove rules that are a subset of another rule; combine multiple rules into a table when advantageous; re-order the rules to improve evaluation performance");?></td>
+                      </tr>
+                      <tr>
+                        <td><?=gettext("profile");?></td>
+                        <td><?=gettext("Uses the currently loaded ruleset as a feedback profile to tailor the ordering of quick rules to actual network traffic.");?></td>
+                      </tr>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_disablefilter" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable Firewall");?></td>
+                <td>
+                  <input name="disablefilter" type="checkbox" value="yes" <?= !empty($pconfig['disablefilter']) ? "checked=\"checked\"" : "";?>/>
+                  <?=gettext("Disable all packet filtering.");?>
+                  <div class="hidden" data-for="help_for_disablefilter">
+                    <?= gettext('Warning: This will convert into a routing-only platform!') ?><br />
+                    <?= gettext('Warning: This will also turn off NAT!') ?><br />
+                    <?=sprintf(
+                      gettext('If you only want to disable NAT, and not firewall rules, visit the %sOutbound NAT%s page.'),
+                      '<a href="/firewall_nat_out.php">', '</a>'
+                    )?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_adaptive" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Adaptive Timeouts");?></td>
+                <td>
+                  <table class="table table-condensed">
+                    <thead>
+                      <tr>
+                        <td><?=gettext("start");?></td>
+                        <td><?=gettext("end");?></td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <input name="adaptivestart" type="text" value="<?=$pconfig['adaptivestart']; ?>" />
+                        </td>
+                        <td>
+                          <input name="adaptiveend" type="text" value="<?=$pconfig['adaptiveend']; ?>" />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="hidden" data-for="help_for_adaptive">
+                    <?=gettext("Timeouts for states can be scaled adaptively as the number of state table entries grows.");?><br/><br/>
+                    <?=gettext("start");?><br/><br/>
+                    <?=gettext("When the number of state entries exceeds this value, adaptive scaling begins. All timeout values are scaled linearly with factor (adaptive.end - number of states) / (adaptive.end - adaptive.start).");?><br/><br/>
+                    <?=gettext("end");?><br/><br/>
+                    <?=gettext("When reaching this number of state entries, all timeout values become zero, effectively purging all state entries immediately. This value is used to define the scale factor, it should not actually be reached (set a lower state limit, see below).");?><br/><br/>
+                    <?=gettext("Note: Leave this blank for the default(0).");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_maximumstates" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Maximum States");?></td>
+                <td>
+                  <input name="maximumstates" type="text" id="maximumstates" value="<?=$pconfig['maximumstates'];?>" />
+                  <div class="hidden" data-for="help_for_maximumstates">
+                    <?=gettext("Maximum number of connections to hold in the firewall state table.");?><br/>
+                    <?=gettext("Note: Leave this blank for the default. On your system the default size is:");?> <?= default_state_size() ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_maximumfrags" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Maximum Fragments");?></td>
+                <td>
+                  <input name="maximumfrags" type="text" id="maximumfrags" value="<?=$pconfig['maximumfrags'];?>" />
+                  <div class="hidden" data-for="help_for_maximumfrags">
+                    <?=gettext("Sets the maximum number of entries in the memory pool used for fragment reassembly.");?><br/>
+                    <?=gettext("Note: Leave this blank for the default.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_maximumtableentries" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Maximum Table Entries");?></td>
+                <td>
+                  <input name="maximumtableentries" type="text" id="maximumtableentries" value="<?= html_safe($pconfig['maximumtableentries']) ?>"/>
+                  <div class="hidden" data-for="help_for_maximumtableentries">
+                    <?= gettext('Maximum number of table entries for systems such as aliases, sshlockout, bogons, etc, combined.') ?><br/>
+                    <?=gettext("Note: Leave this blank for the default.");?>
 <?php
-                      if (empty($pconfig['maximumtableentries'])) :?>
+                     if (empty($pconfig['maximumtableentries'])) :?>
                         <?= gettext("On your system the default size is:");?> <?= default_table_entries_size(); ?>
 <?php
                       endif;?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_bypassstaticroutes" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Static route filtering");?></td>
-                  <td>
-                    <input name="bypassstaticroutes" type="checkbox" value="yes" <?=!empty($pconfig['bypassstaticroutes']) ? "checked=\"checked\"" : "";?>/>
-                    <strong><?=gettext("Bypass firewall rules for traffic on the same interface");?></strong>
-                    <output class="hidden" for="help_for_bypassstaticroutes">
-                      <?=gettext("This option only applies if you have defined one or more static routes. If it is enabled, traffic that enters and " .
-                                          "leaves through the same interface will not be checked by the firewall. This may be desirable in some situations where " .
-                                          "multiple subnets are connected to the same interface.");?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_disablereplyto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable reply-to') ?></td>
-                  <td>
-                    <input name="disablereplyto" type="checkbox" value="yes" <?=!empty($pconfig['disablereplyto']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Disable reply-to on WAN rules");?></strong>
-                    <output class="hidden" for="help_for_disablereplyto">
-                      <?=gettext("With Multi-WAN you generally want to ensure traffic leaves the same interface it arrives on, hence reply-to is added automatically by default. " .
-                                          "When using bridging, you must disable this behavior if the WAN gateway IP is different from the gateway IP of the hosts behind the bridged interface.");?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_noantilockout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable anti-lockout"); ?></td>
-                  <td>
-                    <input name="noantilockout" type="checkbox" value="yes" <?= empty($pconfig['noantilockout']) ? '' : 'checked="checked"' ?>/>
-                    <strong><?= gettext('Disable administration anti-lockout rule') ?></strong>
-                    <output class="hidden" for="help_for_noantilockout">
-                      <?= sprintf(gettext("When this is unchecked, access to the web GUI or SSH " .
-                                  "on the %s interface is always permitted, regardless of the user-defined firewall " .
-                                  "rule set. Check this box to disable the automatically added rule, so access " .
-                                  "is controlled only by the user-defined firewall rules. Ensure you have a firewall rule " .
-                                  "in place that allows you in, or you will lock yourself out."),
-                                  count($config['interfaces']) == 1 && !empty($config['interfaces']['wan']['if']) ?
-                                  gettext('WAN') : gettext('LAN')) ?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_aliasesresolveinterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Aliases Resolve Interval");?></td>
-                  <td>
-                    <input name="aliasesresolveinterval" type="text" value="<?=$pconfig['aliasesresolveinterval']; ?>" />
-                    <output class="hidden" for="help_for_aliasesresolveinterval">
-                      <strong><?=gettext("Interval, in seconds, that will be used to resolve hostnames configured on aliases.");?></strong>
-                      <br />
-                      <?=gettext("Note: Leave this blank for the default (300s).");?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_checkaliasesurlcert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Check certificate of aliases URLs");?></td>
-                  <td>
-                    <input name="checkaliasesurlcert" type="checkbox" value="yes" <?=!empty($pconfig['checkaliasesurlcert']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Verify HTTPS certificates when downloading alias URLs");?></strong>
-                    <output class="hidden" for="help_for_checkaliasesurlcert">
-                      <?=gettext("Make sure the certificate is valid for all HTTPS addresses on aliases. If it's not valid or is revoked, do not download it.");?>
-                    </output>
-                  </td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" /></td>
-                </tr>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_bypassstaticroutes" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Static route filtering");?></td>
+                <td>
+                  <input name="bypassstaticroutes" type="checkbox" value="yes" <?=!empty($pconfig['bypassstaticroutes']) ? "checked=\"checked\"" : "";?>/>
+                  <?=gettext("Bypass firewall rules for traffic on the same interface");?>
+                  <div class="hidden" data-for="help_for_bypassstaticroutes">
+                    <?=gettext("This option only applies if you have defined one or more static routes. If it is enabled, traffic that enters and " .
+                                        "leaves through the same interface will not be checked by the firewall. This may be desirable in some situations where " .
+                                        "multiple subnets are connected to the same interface.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_disablereplyto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable reply-to') ?></td>
+                <td>
+                  <input name="disablereplyto" type="checkbox" value="yes" <?=!empty($pconfig['disablereplyto']) ? "checked=\"checked\"" : "";?> />
+                  <?=gettext("Disable reply-to on WAN rules");?>
+                  <div class="hidden" data-for="help_for_disablereplyto">
+                    <?=gettext("With Multi-WAN you generally want to ensure traffic leaves the same interface it arrives on, hence reply-to is added automatically by default. " .
+                                        "When using bridging, you must disable this behavior if the WAN gateway IP is different from the gateway IP of the hosts behind the bridged interface.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_noantilockout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable anti-lockout"); ?></td>
+                <td>
+                  <input name="noantilockout" type="checkbox" value="yes" <?= empty($pconfig['noantilockout']) ? '' : 'checked="checked"' ?>/>
+                  <?= gettext('Disable administration anti-lockout rule') ?>
+                  <div class="hidden" data-for="help_for_noantilockout">
+                    <?= sprintf(gettext("When this is unchecked, access to the web GUI or SSH " .
+                                "on the %s interface is always permitted, regardless of the user-defined firewall " .
+                                "rule set. Check this box to disable the automatically added rule, so access " .
+                                "is controlled only by the user-defined firewall rules. Ensure you have a firewall rule " .
+                                "in place that allows you in, or you will lock yourself out."),
+                                count($config['interfaces']) == 1 && !empty($config['interfaces']['wan']['if']) ?
+                                gettext('WAN') : gettext('LAN')) ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_aliasesresolveinterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Aliases Resolve Interval");?></td>
+                <td>
+                  <input name="aliasesresolveinterval" type="text" value="<?=$pconfig['aliasesresolveinterval']; ?>" />
+                  <div class="hidden" data-for="help_for_aliasesresolveinterval">
+                    <?=gettext("Interval, in seconds, that will be used to resolve hostnames configured on aliases.");?>
+                    <br />
+                    <?=gettext("Note: Leave this blank for the default (300s).");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_checkaliasesurlcert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Check certificate of aliases URLs");?></td>
+                <td>
+                  <input name="checkaliasesurlcert" type="checkbox" value="yes" <?=!empty($pconfig['checkaliasesurlcert']) ? "checked=\"checked\"" : "";?> />
+                  <?=gettext("Verify HTTPS certificates when downloading alias URLs");?>
+                  <div class="hidden" data-for="help_for_checkaliasesurlcert">
+                    <?=gettext("Make sure the certificate is valid for all HTTPS addresses on aliases. If it's not valid or is revoked, do not download it.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_ip_change_kill_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Dynamic state reset') ?></td>
+                <td>
+                  <input name="ip_change_kill_states" type="checkbox" value="yes" <?=!empty($pconfig['ip_change_kill_states']) ? 'checked="checked"' : '' ?> />
+                  <?= gettext('Reset all states when a dynamic IP address changes.') ?>
+                  <div class="hidden" data-for="help_for_ip_change_kill_states">
+                    <?=gettext("This option flushes the entire state table on IPv4 address changes in dynamic setups to e.g. allow VoIP servers to re-register.");?>
+                  </div>
+                </td>
+              </tr>
             </table>
-          </form>
-        </div>
+          </div>
+          <div class="content-box tab-content table-responsive">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"></td>
+                <td style="width:78%"><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" /></td>
+              </tr>
+            </table>
+          </div>
+        </form>
       </section>
     </div>
   </div>

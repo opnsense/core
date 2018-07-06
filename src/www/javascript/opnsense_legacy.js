@@ -124,7 +124,7 @@ function hook_stacked_form_tables(match)
                   root_node.find('tr:visible').each(function () {
                       $(this).css("background-color", "inherit");
                       $(this).children().css("background-color", "inherit");
-                      if ( index % 2 != 0) {
+                      if (index % 2 == 0) {
                           $(this).css("background-color", root_node.data('stripe-color'));
                       }
                       if (index == 0) {

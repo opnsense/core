@@ -98,7 +98,7 @@ $config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'dhcp
   'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown', 'ddnsdomain',
   'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsupdate', 'mac_allow', 'mac_deny', 'tftp', 'ldap',
   'netboot', 'nextserver', 'filename', 'filename32', 'filename64', 'rootpath', 'netmask', 'numberoptions',
-  'interface_mtu');
+  'interface_mtu', 'wpad');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // handle identifiers and action
@@ -140,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     // handle booleans
     $pconfig['enable'] =  isset($dhcpdconf['enable']);
+    $pconfig['wpad'] =  isset($dhcpdconf['wpad']);
     $pconfig['staticarp'] = isset($dhcpdconf['staticarp']);
     $pconfig['denyunknown'] = isset($dhcpdconf['denyunknown']);
     $pconfig['ddnsupdate'] = isset($dhcpdconf['ddnsupdate']);
@@ -301,7 +302,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("Cannot enable static ARP when you have static map entries without IP addresses. Ensure all static maps have IP addresses and try again.");
         }
         if (!empty($pconfig['interface_mtu']) && (
-          (string)((int)$pconfig['interface_mtu']) != $pconfig['interface_mtu'] || $pconfig['interface_mtu'] < 68)
+          (string)((int)$pconfig['interface_mtu']) != $pconfig['interface_mtu'] || $pconfig['interface_mtu'] < 68 || $pconfig['interface_mtu'] > 65535)
         ) {
             $input_errors[] = gettext("A valid MTU value must be specified.");
         }
@@ -495,7 +496,7 @@ include("head.inc");
 
 <body>
 
-<script type="text/javascript">
+<script>
 //<![CDATA[
     function show_shownumbervalue() {
         $("#shownumbervaluebox").html('');
@@ -534,7 +535,7 @@ include("head.inc");
 //]]>
 </script>
 
-<script type="text/javascript">
+<script>
   $( document ).ready(function() {
     /**
      * Additional BOOTP/DHCP Options extenable table
@@ -629,7 +630,7 @@ include("head.inc");
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">
                     <tr>
-                      <td style="width:22%; vertical-align:top"></td>
+                      <td style="width:22%"></td>
                       <td style="width:78%; text-align:right">
                         <small><?=gettext("full help"); ?> </small>
                         <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
@@ -661,9 +662,9 @@ include("head.inc");
                       <td><a id="help_for_denyunknown" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Deny unknown clients");?></td>
                       <td>
                         <input name="denyunknown" type="checkbox" value="yes" <?=!empty($pconfig['denyunknown']) ? "checked=\"checked\"" : ""; ?> />
-                        <output class="hidden" for="help_for_denyunknown">
+                        <div class="hidden" data-for="help_for_denyunknown">
                           <?=gettext("If this is checked, only the clients defined below will get DHCP leases from this server.");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -727,7 +728,9 @@ include("head.inc");
                                 <th><?=gettext("Pool Start");?></th>
                                 <th><?=gettext("Pool End");?></th>
                                 <th><?=gettext("Description");?></th>
-                                <th><a href="services_dhcp.php?if=<?=htmlspecialchars($if);?>&amp;act=newpool" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a></th>
+                                <th class="text-nowrap">
+                                  <a href="services_dhcp.php?if=<?=htmlspecialchars($if);?>&amp;act=newpool" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
+                                </th>
                               </tr>
                             </thead>
                             <tbody>
@@ -738,9 +741,9 @@ include("head.inc");
                               <td><?=htmlspecialchars($poolent['range']['from']);?></td>
                               <td><?=htmlspecialchars($poolent['range']['to']);?></td>
                               <td><?=htmlspecialchars($poolent['descr']);?></td>
-                              <td>
-                                <a href="services_dhcp.php?if=<?=$if;?>&amp;pool=<?=$i;?>" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
-                                <a href="#" data-if="<?=$if;?>" data-id="<?=$i;?>" class="act_delete_pool btn btn-xs btn-default"><i class="fa fa-trash text-muted"></i></a>
+                              <td class="text-nowrap">
+                                <a href="services_dhcp.php?if=<?=$if;?>&amp;pool=<?=$i;?>" class="btn btn-xs btn-default"><i class="fa fa-pencil fa-fw"></i></a>
+                                <a href="#" data-if="<?=$if;?>" data-id="<?=$i;?>" class="act_delete_pool btn btn-xs btn-default"><i class="fa fa-trash fa-fw"></i></a>
                               </td>
                             </tr>
 <?php
@@ -748,9 +751,9 @@ include("head.inc");
                             endforeach;?>
                             </tbody>
                         </table>
-                        <output class="hidden" for="help_for_additionalpools">
+                        <div class="hidden" data-for="help_for_additionalpools">
                             <?=gettext("If you need additional pools of addresses inside of this subnet outside the above Range, they may be specified here."); ?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
 <?php
@@ -767,65 +770,65 @@ include("head.inc");
                       <td>
                         <input name="dns1" type="text" value="<?=$pconfig['dns1'];?>" /><br />
                         <input name="dns2" type="text" value="<?=$pconfig['dns2'];?>" />
-                        <output class="hidden" for="help_for_dns">
+                        <div class="hidden" data-for="help_for_dns">
                           <?=gettext("NOTE: leave blank to use the system default DNS servers - this interface's IP if DNS forwarder is enabled, otherwise the servers configured on the General page.");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_gateway" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway");?></td>
                       <td>
                         <input name="gateway" type="text" class="form-control host" value="<?=$pconfig['gateway'];?>" />
-                        <output class="hidden" for="help_for_gateway">
+                        <div class="hidden" data-for="help_for_gateway">
                           <?=gettext('The default is to use the IP on this interface of the firewall as the gateway. Specify an alternate gateway here if this is not the correct gateway for your network. Type "none" for no gateway assignment.');?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain name");?></td>
                       <td>
                         <input name="domain" type="text" value="<?=$pconfig['domain'];?>" />
-                        <output class="hidden" for="help_for_domain">
+                        <div class="hidden" data-for="help_for_domain">
                           <?=gettext("The default is to use the domain name of this system as the default domain name provided by DHCP. You may specify an alternate domain name here.");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_domainsearchlist" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain search list");?></td>
                       <td>
                         <input name="domainsearchlist" type="text" id="domainsearchlist" value="<?=$pconfig['domainsearchlist'];?>" />
-                        <output class="hidden" for="help_for_domainsearchlist">
+                        <div class="hidden" data-for="help_for_domainsearchlist">
                           <?=gettext("The DHCP server can optionally provide a domain search list. Use the semicolon character as separator.");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_defaultleasetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Default lease time (seconds)")?></td>
                       <td>
                         <input name="defaultleasetime" type="text" id="defaultleasetime" value="<?=$pconfig['defaultleasetime'];?>" />
-                        <output class="hidden" for="help_for_defaultleasetime">
+                        <div class="hidden" data-for="help_for_defaultleasetime">
                           <?=gettext("This is used for clients that do not ask for a specific expiration time."); ?><br />
                           <?=gettext("The default is 7200 seconds.");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_maxleasetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Maximum lease time");?> (<?=gettext("seconds");?>)</td>
                       <td>
                         <input name="maxleasetime" type="text" id="maxleasetime" value="<?=$pconfig['maxleasetime'];?>" />
-                        <output class="hidden" for="help_for_maxleasetime">
+                        <div class="hidden" data-for="help_for_maxleasetime">
                           <?=gettext("This is the maximum lease time for clients that ask for a specific expiration time."); ?><br />
                           <?=gettext("The default is 86400 seconds.");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_interface_mtu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface MTU");?></td>
                       <td>
                         <input name="interface_mtu"  type="text" value="<?=$pconfig['interface_mtu']?>" />
-                        <output class="hidden" for="help_for_interface_mtu">
+                        <div class="hidden" data-for="help_for_interface_mtu">
                           <?=gettext('This option specifies the MTU to use on this interface. The minimum legal value for the MTU is 68.');?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
 <?php
@@ -834,9 +837,9 @@ include("head.inc");
                       <td><a id="help_for_failover_peerip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Failover peer IP:");?></td>
                       <td>
                         <input name="failover_peerip" type="text" class="form-control host" id="failover_peerip" value="<?=$pconfig['failover_peerip'];?>" />
-                        <output class="hidden" for="help_for_failover_peerip">
+                        <div class="hidden" data-for="help_for_failover_peerip">
                           <?=gettext("Leave blank to disable. Enter the interface IP address of the other machine. Machines must be using CARP. Interface's advskew determines whether the DHCPd process is Primary or Secondary. Ensure one machine's advskew<20 (and the other is >20).");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -844,9 +847,9 @@ include("head.inc");
                       <td>
                         <input type="checkbox" value="yes" name="staticarp" <?=!empty($pconfig['staticarp']) ? " checked=\"checked\"" : ""; ?> />&nbsp;
                         <strong><?=gettext("Enable Static ARP entries");?></strong>
-                        <output class="hidden" for="help_for_failover_staticarp">
+                        <div class="hidden" data-for="help_for_failover_staticarp">
                           <?=gettext("Warning: This option persists even if DHCP server is disabled. Only the machines listed below will be able to communicate with the firewall on this NIC.");?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -855,11 +858,11 @@ include("head.inc");
                         <input name="dhcpleaseinlocaltime" type="checkbox" id="dhcpleaseinlocaltime" value="yes" <?= !empty($pconfig['dhcpleaseinlocaltime']) ? "checked=\"checked\"" : ""; ?> />
                         <strong><?=gettext("Change DHCP display lease time from UTC to local time."); ?></strong>
 
-                        <output class="hidden" for="help_for_failover_dhcpleaseinlocaltime">
+                        <div class="hidden" data-for="help_for_failover_dhcpleaseinlocaltime">
                           <?=gettext("Warning: By default DHCP leases are displayed in UTC time. By checking this " .
                           "box DHCP lease time will be displayed in local time and set to time zone selected. This " .
                           "will be used for all DHCP interfaces lease time."); ?>
-                        </output>
+                        </div>
                       </td>
                     </tr>
 <?php
@@ -962,6 +965,13 @@ include("head.inc");
                         </div>
                       </td>
                     </tr>
+                    <tr>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPAD");?> </td>
+                      <td>
+                        <input name="wpad" id="wpad" type="checkbox" value="yes" <?=!empty($pconfig['wpad']) ? "checked=\"checked\"" : ""; ?> />
+                        <strong><?= gettext("Enable Web Proxy Auto Discovery") ?></strong>
+                      </td>
+                    </tr>
 <?php
                     if (!isset($pool) && !($act == "newpool")): ?>
                     <tr>
@@ -991,7 +1001,7 @@ include("head.inc");
                             foreach($numberoptions as $item):?>
                               <tr>
                                 <td>
-                                  <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
+                                  <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
                                 </td>
                                 <td>
                                   <input name="numberoptions_number[]" type="text" value="<?=$item['number'];?>" />
@@ -1038,14 +1048,14 @@ include("head.inc");
                             <tfoot>
                               <tr>
                                 <td colspan="4">
-                                  <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><span class="glyphicon glyphicon-plus"></span></div>
+                                  <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><i class="fa fa-plus fa-fw"></i></div>
                                 </td>
                               </tr>
                             </tfoot>
                           </table>
-                          <output class="hidden" for="help_for_numberoptions">
+                          <div class="hidden" data-for="help_for_numberoptions">
                           <?= sprintf(gettext("Enter the DHCP option number and the value for each item you would like to include in the DHCP lease information. For a list of available options please visit this %sURL%s."), '<a href="http://www.iana.org/assignments/bootp-dhcp-parameters/" target="_blank">', '</a>') ?>
-                          </output>
+                          </div>
                         </div>
                       </td>
                     </tr>
@@ -1089,8 +1099,7 @@ include("head.inc");
               <div class="table-responsive">
                 <table class="table table-striped">
                   <tr>
-                    <td colspan="5" style="vertical-align:top"><?=gettext("DHCP Static Mappings for this interface.");?></td>
-                    <td>&nbsp;</td>
+                    <td colspan="6"><strong><?=gettext("DHCP Static Mappings for this interface.");?></strong></td>
                   </tr>
                   <tr>
                     <td><?=gettext("Static ARP");?></td>
@@ -1098,8 +1107,8 @@ include("head.inc");
                     <td><?=gettext("IP address");?></td>
                     <td><?=gettext("Hostname");?></td>
                     <td><?=gettext("Description");?></td>
-                    <td>
-                      <a href="services_dhcp_edit.php?if=<?=htmlspecialchars($if);?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+                    <td class="text-nowrap">
+                      <a href="services_dhcp_edit.php?if=<?=htmlspecialchars($if);?>" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
                     </td>
                   </tr>
 <?php
@@ -1112,7 +1121,7 @@ include("head.inc");
                       <td>
 <?php
                           if (isset($mapent['arp_table_static_entry'])): ?>
-                            <span class="glyphicon glyphicon-info-sign"></span>
+                            <i class="fa fa-info-circle fa-fw"></i>
 <?php
                           endif; ?>
                       </td>
@@ -1128,9 +1137,9 @@ include("head.inc");
                       <td>
                         <?=htmlspecialchars($mapent['descr']);?>
                       </td>
-                      <td>
-                        <a href="services_dhcp_edit.php?if=<?=htmlspecialchars($if);?>&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                        <a href="#" data-if="<?=$if;?>" data-id="<?=$i;?>" class="act_delete_static btn btn-xs btn-default"><i class="fa fa-trash text-muted"></i></a>
+                      <td class="text-nowrap">
+                        <a href="services_dhcp_edit.php?if=<?=htmlspecialchars($if);?>&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
+                        <a href="#" data-if="<?=$if;?>" data-id="<?=$i;?>" class="act_delete_static btn btn-xs btn-default"><i class="fa fa-trash fa-fw"></i></a>
                       </td>
                     </tr>
 <?php

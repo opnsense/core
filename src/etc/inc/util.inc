@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
-    Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("IPv6.inc");
 
@@ -74,6 +74,52 @@ function is_process_running($process)
     exec('/bin/pgrep -anx ' . escapeshellarg($process), $output, $retval);
 
     return (intval($retval) == 0);
+}
+
+function list_dh_parameters()
+{
+    global $config;
+
+    $available = array(1024, 2048, 4096);
+
+    if (!empty($config['system']['dhparamusage'])) {
+        switch ($config['system']['dhparamusage']) {
+            case 'rfc7919':
+                $available = array(2048, 3072, 4096);
+                break;
+            default:
+                /* XXX whatever we have on the disk */
+                break;
+        }
+    }
+
+    return $available;
+}
+
+function get_dh_parameters($bits)
+{
+    global $config;
+
+    $file = "/usr/local/etc/dh-parameters.{$bits}";
+
+    if (!empty($config['system']['dhparamusage'])) {
+        switch ($config['system']['dhparamusage']) {
+            case 'rfc7919':
+                return "{$file}.rfc7919";
+            default:
+                break;
+        }
+    }
+
+    if (empty($config['system']['dhparamusage']) || !file_exists($file)) {
+        /*
+         * Use the sample file if the normal file is MIA
+         * or when the renew interval is not set:
+         */
+        $file .= '.sample';
+    }
+
+    return $file;
 }
 
 function is_subsystem_dirty($subsystem = '')
@@ -138,9 +184,9 @@ function gen_subnet($ipaddr, $bits)
 }
 
 /* return the subnet address given a host address and a subnet bit count */
-function gen_subnetv6($ipaddr, $bits)
+function gen_subnetv6($ipaddr, $bits, $validate = true)
 {
-    if (!is_ipaddrv6($ipaddr) || !is_numeric($bits)) {
+    if ($validate && (!is_ipaddrv6($ipaddr) || !is_numeric($bits))) {
         return "";
     }
 
@@ -368,7 +414,7 @@ function ip_range_to_subnet_array($startip, $endip)
     return $rangesubnets;
 }
 
-/* returns true if $ipaddr is a valid dotted IPv4 address or a IPv6 */
+/* returns true if $ipaddr is a valid dotted IPv4 address or an IPv6 */
 function is_ipaddr($ipaddr)
 {
     if (is_ipaddrv4($ipaddr)) {
@@ -751,13 +797,12 @@ function get_configured_interface_list_by_realif ($only_opt = false, $withdisabl
     return $iflist;
 }
 
-/* return the configured interfaces list with their description. */
 function get_configured_interface_with_descr($only_opt = false, $withdisabled = false)
 {
     global $config;
 
     $iflist = array();
-    /* if list */
+
     if (isset($config['interfaces'])) {
         foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if => $ifdetail) {
             if ($only_opt && ($if == "wan" || $if == "lan")) {
@@ -765,10 +810,11 @@ function get_configured_interface_with_descr($only_opt = false, $withdisabled = 
             }
 
             if (isset($ifdetail['enable']) || $withdisabled == true) {
-                $iflist[$if] = strtoupper($ifdetail['descr']);
+                $iflist[$if] = $ifdetail['descr'];
             }
         }
     }
+
     return $iflist;
 }
 
@@ -1086,26 +1132,6 @@ function is_private_ip($iptocheck)
             return true;
         }
     }
-    return false;
-}
-
-
-function resolve_retry($hostname, $retries = 5)
-{
-    if (is_ipaddr($hostname)) {
-        return $hostname;
-    }
-
-    for ($i = 0; $i < $retries; $i++) {
-        // FIXME: gethostbyname does not work for AAAA hostnames, boo, hiss
-        $ip = gethostbyname($hostname);
-        if ($ip && $ip != $hostname) {
-            /* success */
-            return $ip;
-        }
-        sleep(1);
-    }
-
     return false;
 }
 
