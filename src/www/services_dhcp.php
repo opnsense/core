@@ -98,7 +98,7 @@ $config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'dhcp
   'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown', 'ddnsdomain',
   'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsupdate', 'mac_allow', 'mac_deny', 'tftp', 'ldap',
   'netboot', 'nextserver', 'filename', 'filename32', 'filename64', 'rootpath', 'netmask', 'numberoptions',
-  'interface_mtu');
+  'interface_mtu', 'wpad');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // handle identifiers and action
@@ -140,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     // handle booleans
     $pconfig['enable'] =  isset($dhcpdconf['enable']);
+    $pconfig['wpad'] =  isset($dhcpdconf['wpad']);
     $pconfig['staticarp'] = isset($dhcpdconf['staticarp']);
     $pconfig['denyunknown'] = isset($dhcpdconf['denyunknown']);
     $pconfig['ddnsupdate'] = isset($dhcpdconf['ddnsupdate']);
@@ -962,6 +963,13 @@ include("head.inc");
                           <input name="rootpath" type="text" id="rootpath" size="90" value="<?=$pconfig['rootpath'];?>" /><br />
                           <?=gettext("Note: string-format: iscsi:(servername):(protocol):(port):(LUN):targetname");?>
                         </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPAD");?> </td>
+                      <td>
+                        <input name="wpad" id="wpad" type="checkbox" value="yes" <?=!empty($pconfig['wpad']) ? "checked=\"checked\"" : ""; ?> />
+                        <strong><?= gettext("Enable Web Proxy Auto Discovery") ?></strong>
                       </td>
                     </tr>
 <?php
