@@ -32,6 +32,7 @@
 require_once("config.inc");
 require_once("interfaces.inc");
 require_once("util.inc");
+require_once("plugins.inc.d/openssh.inc");
 
 $version = strtok(file_get_contents('/usr/local/opnsense/version/opnsense'), '-');
 $flavour = strtok(OPENSSL_VERSION_TEXT, ' ');
@@ -134,7 +135,7 @@ if ($config['system']['webgui']['protocol'] == 'https') {
     passthru('openssl x509 -in /var/etc/cert.pem -noout -fingerprint -sha256 | sed "s/Fingerprint=//" | sed -E "s/(^.{55})/\1,               /" | tr "," "\n"');
 }
 
-if (isset($config['system']['ssh']['enabled'])) {
+if (openssh_enabled()) {
     foreach (glob('/conf/sshd/ssh_host_*_key.pub') as $ssh_host_pub_key_file_path) {
         printf(' SSH:   ');
         passthru("ssh-keygen -l -f " . escapeshellarg($ssh_host_pub_key_file_path) . " | awk '{ print $2 \" \" $4 }' | sed 's/SHA256:/SHA256 /'");
