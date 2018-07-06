@@ -115,6 +115,8 @@ while : ; do
 # Failure to exit at that moment would lead to an infinite loop.
 set -e
 
+${CMD_BANNER}
+
 echo
 echo "  0) Logout                              7) Ping host"
 echo "  1) Assign interfaces                   8) Shell"
@@ -177,7 +179,5 @@ case ${OPCODE} in
 *)
 	;;
 esac
-
-${CMD_BANNER}
 
 done
