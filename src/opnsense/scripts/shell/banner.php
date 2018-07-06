@@ -32,6 +32,7 @@
 require_once("config.inc");
 require_once("interfaces.inc");
 require_once("util.inc");
+require_once("plugins.inc.d/openssh.inc");
 
 $version = strtok(file_get_contents('/usr/local/opnsense/version/opnsense'), '-');
 $flavour = strtok(OPENSSL_VERSION_TEXT, ' ');
@@ -40,12 +41,12 @@ $machine = trim(shell_exec('uname -p'));
 $domain = $config['system']['domain'];
 $product = $g['product_name'];
 
-print "\n*** {$hostname}.{$domain}: {$product} {$version} ({$machine}/${flavour}) ***\n";
+echo "\n*** {$hostname}.{$domain}: {$product} {$version} ({$machine}/${flavour}) ***\n";
 
 $iflist = get_configured_interface_with_descr(false, true);
 
 if (empty($iflist)) {
-    printf("\n\tNo network interfaces are assigned.\n");
+    echo "\n\tNo network interfaces are assigned.\n";
     return;
 }
 
@@ -123,4 +124,20 @@ foreach ($iflist as $ifname => $friendly) {
     }
 }
 
-printf("\n");
+echo PHP_EOL;
+
+if (openssh_enabled() || $config['system']['webgui']['protocol'] == 'https') {
+    echo PHP_EOL;
+}
+
+if ($config['system']['webgui']['protocol'] == 'https') {
+    echo ' HTTPS: ';
+    passthru('openssl x509 -in /var/etc/cert.pem -noout -fingerprint -sha256 | sed "s/Fingerprint=//" | sed -E "s/(^.{55})/\1,               /" | tr "," "\n"');
+}
+
+if (openssh_enabled()) {
+    foreach (glob('/conf/sshd/ssh_host_*_key.pub') as $ssh_host_pub_key_file_path) {
+        echo ' SSH:   ';
+        passthru("ssh-keygen -l -f " . escapeshellarg($ssh_host_pub_key_file_path) . " | awk '{ print $2 \" \" $4 }' | sed 's/SHA256:/SHA256 /'");
+    }
+}
