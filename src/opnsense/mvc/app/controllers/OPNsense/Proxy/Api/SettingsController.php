@@ -2,6 +2,7 @@
 
 /**
  *    Copyright (C) 2015 Jos Schellevis <jos@opnsense.org>
+ *    Copyright (C) 2017 Fabian Franz
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -239,5 +240,182 @@ class SettingsController extends ApiMutableModelControllerBase
         }
 
         return $result;
+    }
+
+    /*                                             PAC RULE                                         */
+
+    /**
+     *
+     * search PAC Rule
+     * @return array
+     */
+    public function searchPACRuleAction()
+    {
+        $this->sessionClose();
+        return $this->searchBase('pac.rule', array("enabled", "description", "proxies", "matches"), "description");
+    }
+    /**
+     * retrieve PAC Rule or return defaults
+     * @param $uuid item unique id
+     * @return array
+     */
+    public function getPACRuleAction($uuid = null)
+    {
+        $this->sessionClose();
+        return array("pac" => $this->getBase('rule', 'pac.rule', $uuid));
+    }
+    /**
+     * add new PAC Rule and set with attributes from post
+     * @return array
+     */
+    public function addPACRuleAction()
+    {
+        $this->pac_set_helper();
+        return $this->addBase('rule', 'pac.rule');
+    }
+    /**
+     * update PAC Rule
+     * @param string $uuid
+     * @return array result status
+     * @throws \Phalcon\Validation\Exception
+     */
+    public function setPACRuleAction($uuid)
+    {
+        $this->pac_set_helper();
+        return $this->setBase('rule', 'pac.rule',$uuid);
+    }
+    /**
+     * toggle PAC Rule by uuid (enable/disable)
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function togglePACRuleAction($uuid)
+    {
+        return $this->toggleBase('pac.rule', $uuid);
+    }
+    /**
+     * delete PAC Rule by uuid
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function delPACRuleAction($uuid)
+    {
+        return $this->delBase('pac.rule', $uuid);
+    }
+
+    /**
+     *
+     * search PAC Proxy
+     * @return array
+     */
+    public function searchPACProxyAction()
+    {
+        $this->sessionClose();
+        return $this->searchBase('pac.proxy', array("enabled","proxy_type", "name", "url", "description"), "description");
+    }
+    /**
+     * retrieve PAC Proxy or return defaults
+     * @param $uuid item unique id
+     * @return array
+     */
+    public function getPACProxyAction($uuid = null)
+    {
+        $this->sessionClose();
+        return array("pac" => $this->getBase('proxy', 'pac.proxy', $uuid));
+    }
+    /**
+     * add new PAC Proxy and set with attributes from post
+     * @return array
+     */
+    public function addPACProxyAction()
+    {
+        $this->pac_set_helper();
+        return $this->addBase('proxy', 'pac.proxy');
+    }
+    /**
+     * update PAC Proxy
+     * @param string $uuid
+     * @return array result status
+     * @throws \Phalcon\Validation\Exception
+     */
+    public function setPACProxyAction($uuid)
+    {
+        $this->pac_set_helper();
+        return $this->setBase('proxy', 'pac.proxy', $uuid);
+    }
+    /**
+     * delete PAC Proxy by uuid
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function delPACProxyAction($uuid)
+    {
+        return $this->delBase('pac.proxy', $uuid);
+    }
+
+    /**
+     *
+     * search PAC Match
+     * @return array
+     */
+    public function searchPACMatchAction()
+    {
+        $this->sessionClose();
+        return $this->searchBase('pac.match', array("enabled", "name", "description", "negate", "match_type"), "name");
+    }
+    /**
+     * retrieve PAC Match or return defaults
+     * @param $uuid item unique id
+     * @return array
+     */
+    public function getPACMatchAction($uuid = null)
+    {
+        $this->sessionClose();
+        return array("pac" => $this->getBase('match', 'pac.match', $uuid));
+    }
+    /**
+     * add new PAC Proxy and set with attributes from post
+     * @return array
+     */
+    public function addPACMatchAction()
+    {
+        $this->pac_set_helper();
+        return $this->addBase('match', 'pac.match');
+    }
+    /**
+     * update PAC Rule
+     * @param string $uuid
+     * @return array result status
+     * @throws \Phalcon\Validation\Exception
+     */
+    public function setPACMatchAction($uuid)
+    {
+        $this->pac_set_helper();
+        return $this->setBase('match', 'pac.match', $uuid);
+    }
+
+    /**
+     * delete PAC Match by uuid
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function delPACMatchAction($uuid)
+    {
+        return $this->delBase('pac.match', $uuid);
+    }
+
+    /**
+     * flatten post data structure
+     */
+    private function pac_set_helper()
+    {
+        if ($this->request->isPost() && $this->request->hasPost("pac")) {
+            $pac_data = $this->request->getPost('pac');
+            if (is_array($pac_data)) {
+                foreach ($pac_data as $key => $value) {
+                    $_POST[$key] = $value;
+                }
+            }
+        }
     }
 }

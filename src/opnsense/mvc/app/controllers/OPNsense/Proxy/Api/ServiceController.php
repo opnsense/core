@@ -57,6 +57,22 @@ class ServiceController extends ApiMutableServiceControllerBase
     }
 
     /**
+     * reload template only (for example PAC does not need to change squid configuration)
+     * @return array
+     */
+    public function refreshTemplateAction() {
+        if ($this->request->isPost()) {
+            // close session for long running action
+            $this->sessionClose();
+            $backend = new Backend();
+            return array('status' => $backend->configdRun('template reload OPNsense/Proxy'));
+        } else {
+            return array('error' => 'This API endpoint must be called via POST',
+                         'status' => 'error');
+        }
+    }
+
+    /**
      * fetch acls (download + install)
      * @return array
      */

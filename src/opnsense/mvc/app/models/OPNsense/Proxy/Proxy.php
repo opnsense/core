@@ -1,6 +1,7 @@
 <?php
 /**
  *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2017 Fabian Franz
  *
  *    All rights reserved.
  *
@@ -36,4 +37,54 @@ use OPNsense\Base\BaseModel;
  */
 class Proxy extends BaseModel
 {
+    public function performValidation($validateFullModel = false) {
+
+        // perform standard validations
+        $result = parent::performValidation($validateFullModel);
+        // add validation for PAC match
+        foreach ($this->getFlatNodes() as $key => $node) {
+            if ($validateFullModel || $node->isFieldChanged()) {
+                // if match_type has changed we need to make some fields required
+                if ($node->getInternalXMLTagName() == "match_type") {
+                    $match = $node->getParentNode();
+                    $match_type = (string)$match->match_type;
+                    switch ($match_type) {
+                        case 'url_matches':
+                            if (strlen((string)$match->url) == 0) {
+                                $result->appendMessage(new \Phalcon\Validation\Message(
+                                    gettext('URL must be set.'),
+                                    'pac.match.url'
+                                ));
+                            }
+                            break;
+                        case 'hostname_matches':
+                        case 'dns_domain_is':
+                        case 'is_resolvable':
+                            if (strlen((string)$match->hostname) == 0) {
+                                $result->appendMessage(new \Phalcon\Validation\Message(
+                                    gettext('Hostname must be set.'),
+                                    'pac.match.hostname'
+                                ));
+                            }
+                            break;
+                        case 'destination_in_net':
+                        case 'my_ip_in_net':
+                            if (strlen((string)$match->network) == 0) {
+                                $result->appendMessage(new \Phalcon\Validation\Message(
+                                    gettext('Network must be set.'),
+                                    'pac.match.network'
+                                ));
+                            }
+                        case 'plain_hostname':
+                        case 'dns_domain_levels':
+                        case 'weekday_range':
+                        case 'date_range':
+                        case 'time_range':
+                            break; // no special validation
+                    }
+                }
+            }
+        }
+        return $result;
+    }
 }

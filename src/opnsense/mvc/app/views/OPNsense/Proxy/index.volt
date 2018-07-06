@@ -51,6 +51,54 @@
                     'toggle':'/api/proxy/settings/toggleRemoteBlacklist/'
                 }
         );
+        $("#grid-pac-match").UIBootgrid(
+                {   'search':'/api/proxy/settings/searchPACMatch',
+                    'get':'/api/proxy/settings/getPACMatch/',
+                    'set':'/api/proxy/settings/setPACMatch/',
+                    'add':'/api/proxy/settings/addPACMatch/',
+                    'del':'/api/proxy/settings/delPACMatch/',
+                    'options': {
+                        converters: {
+                            notprefixable: {
+                                to: function (value) {
+                                    if (value.not) {
+                                        return '<i class="fa fa-exclamation"></i> ' + value.val;
+                                    } else {
+                                        return value.val;
+                                    }
+                                }
+                            }
+                        },
+                        responseHandler: function (response) {
+                            // concatenate fields for not.
+                            if ('rows' in response) {
+                                for (var i = 0; i < response.rowCount; i++) {
+                                    response.rows[i]['display_match_type'] = {'not':response.rows[i].negate == '1',
+                                                                      'val':response.rows[i].match_type}
+                                }
+                            }
+                            return response;
+                        }
+                    }
+                }
+        );
+        $("#grid-pac-rule").UIBootgrid(
+                {   'search':'/api/proxy/settings/searchPACRule',
+                    'get':'/api/proxy/settings/getPACRule/',
+                    'set':'/api/proxy/settings/setPACRule/',
+                    'add':'/api/proxy/settings/addPACRule/',
+                    'del':'/api/proxy/settings/delPACRule/',
+                    'toggle':'/api/proxy/settings/togglePACRule/'
+                }
+        );
+        $("#grid-pac-proxy").UIBootgrid(
+                {   'search':'/api/proxy/settings/searchPACProxy',
+                    'get':'/api/proxy/settings/getPACProxy/',
+                    'set':'/api/proxy/settings/setPACProxy/',
+                    'add':'/api/proxy/settings/addPACProxy/',
+                    'del':'/api/proxy/settings/delPACProxy/'
+                }
+        );
 
         // when  closing DialogEditBlacklist, point the user to the download buttons
         $("#DialogEditBlacklist").on("show.bs.modal", function () {
@@ -64,6 +112,87 @@
                     });
                 });
             }, 500);
+        });
+        function update_pac_match_view(event) {
+            function show_line(the_id) {
+                $('tr[for=' + the_id + ']').show();
+            }
+            value = $("#pac\\.match\\.match_type").val();
+            if (!value) {
+                // retry later
+                setTimeout(update_pac_match_view, 100);
+                return;
+            }
+            // hide tr of the element if not needed
+            ["pac\\.match\\.network",
+             "pac\\.match\\.hostname",
+             "pac\\.match\\.url",
+             "pac\\.match\\.domain_level_from",
+             "pac\\.match\\.domain_level_to",
+             "pac\\.match\\.time_from",
+             "pac\\.match\\.time_to",
+             "pac\\.match\\.date_from",
+             "pac\\.match\\.date_to",
+             "pac\\.match\\.weekday_from",
+             "pac\\.match\\.weekday_to"].forEach (function (the_id) {
+                $('tr[for=' + the_id + ']').hide();
+            });
+            switch (value) {
+                case 'hostname_matches':
+                    show_line("pac\\.match\\.hostname");
+                    break;
+                case "url_matches":
+                    show_line("pac\\.match\\.url");
+                    break;
+                case "dns_domain_is":
+                    show_line("pac\\.match\\.hostname");
+                    break;
+                case "destination_in_net":
+                case "my_ip_in_net":
+                    show_line("pac\\.match\\.network");
+                    break;
+                case "plain_hostname":
+                    break; // has no option
+                case "is_resolvable":
+                    show_line("pac\\.match\\.hostname");
+                    break;
+                case "dns_domain_is":
+                    show_line("pac\\.match\\.hostname");
+                    break;
+                case "dns_domain_levels":
+                    show_line("pac\\.match\\.domain_level_from");
+                    show_line("pac\\.match\\.domain_level_to");
+                    break;
+                case "dns_domain_is":
+                    show_line("pac\\.match\\.hostname");
+                    break;
+                case "dns_domain_is":
+                    show_line("pac\\.match\\.hostname");
+                    break;
+                case "weekday_range":
+                    show_line("pac\\.match\\.weekday_from");
+                    show_line("pac\\.match\\.weekday_to");
+                    break;
+                case "date_range":
+                    show_line("pac\\.match\\.date_from");
+                    show_line("pac\\.match\\.date_to");
+                    break;
+                case "time_range":
+                    show_line("pac\\.match\\.time_from");
+                    show_line("pac\\.match\\.time_to");
+                    break;
+            }
+
+        }
+        // when a modal is created, update the
+        $("#DialogEditPACMatch").on("opnsense_bootgrid_mapped", update_pac_match_view);
+        $("#pac\\.match\\.match_type").change(update_pac_match_view);
+
+        $('.reload-pac-btn').click(function () {
+            $('.reload-pac-btn .fa-refresh').addClass('fa-spin');
+            ajaxCall(url="/api/proxy/service/refreshTemplate", sendData={}, callback=function(data,status) {
+                $('.reload-pac-btn .fa-refresh').removeClass('fa-spin');
+            });
         });
 
         /**
@@ -179,7 +308,6 @@
         $('.nav-tabs a').on('shown.bs.tab', function (e) {
             history.pushState(null, null, e.target.hash);
         });
-
     });
 
 
@@ -187,12 +315,98 @@
 
 <ul class="nav nav-tabs" role="tablist" id="maintabs">
     {{ partial("layout_partials/base_tabs_header",['formData':mainForm]) }}
-
+    {# add custom content #}
+    <li role="presentation" class="dropdown">
+        <a data-toggle="dropdown" href="#" class="dropdown-toggle pull-right visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" role="button">
+            <b><span class="caret"></span></b>
+        </a>
+        <a data-toggle="tab" onclick="$('#subtab_item_pac_rules').click();" class="visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" style="border-right:0px;"><b>{{ lang._('PAC')}}</b></a>
+        <ul class="dropdown-menu" role="menu">
+            <li>
+                <a data-toggle="tab" id="subtab_item_pac_rules" href="#subtab_pac_rules">{{ lang._('Rules') }}</a>
+            </li>
+            <li>
+                <a data-toggle="tab" id="subtab_item_pac_rules" href="#subtab_pac_proxies">{{ lang._('Proxies') }}</a>
+            </li>
+            <li>
+                <a data-toggle="tab" id="subtab_item_pac_rules" href="#subtab_pac_matches">{{ lang._('Matches') }}</a>
+            </li>
+        </ul>
+    </li>
     <li><a data-toggle="tab" href="#remote_acls"><b>{{ lang._('Remote Access Control Lists') }}</b></a></li>
 </ul>
 
 <div class="content-box tab-content">
     {{ partial("layout_partials/base_tabs_content",['formData':mainForm]) }}
+    <div id="subtab_pac_matches" class="tab-pane fade">
+        <table id="grid-pac-match" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditPACMatch">
+            <thead>
+                <tr>
+                    <th data-column-id="name" data-type="string" data-sortable="false" data-visible="true">{{ lang._('Name') }}</th>
+                    <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
+                    <th data-column-id="display_match_type" data-type="notprefixable" data-sortable="false"  data-visible="true">{{ lang._('Match Type') }}</th>
+                    <th data-column-id="commands" data-width="10em" data-formatter="commands" data-sortable="false">{{ lang._('Action') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"></td>
+                    <td>
+                        <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                        <button type="button" class="btn btn-xs btn-primary reload-pac-btn"><span class="fa fa-refresh"></span></button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div id="subtab_pac_rules" class="tab-pane fade">
+        <table id="grid-pac-rule" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditPACRule">
+            <thead>
+                <tr>
+                    <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="6em">{{ lang._('Enabled') }}</th>
+                    <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
+                    <th data-column-id="commands" data-width="10em" data-formatter="commands" data-sortable="false">{{ lang._('Actions') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2"></td>
+                    <td>
+                        <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                        <button type="button" class="btn btn-xs btn-primary reload-pac-btn"><span class="fa fa-refresh"></span></button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div id="subtab_pac_proxies" class="tab-pane fade">
+        <table id="grid-pac-proxy" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditPACProxy">
+            <thead>
+                <tr>
+                    <th data-column-id="name" data-type="string" data-sortable="false" data-visible="true">{{ lang._('Name') }}</th>
+                    <th data-column-id="proxy_type" data-type="string" data-sortable="false" data-visible="true">{{ lang._('Type') }}</th>
+                    <th data-column-id="url" data-type="string" data-sortable="false" data-visible="true">{{ lang._('URL') }}</th>
+                    <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
+                    <th data-column-id="commands" data-width="10em" data-formatter="commands" data-sortable="false">{{ lang._('Actions') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"></td>
+                    <td>
+                        <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                        <button type="button" class="btn btn-xs btn-primary reload-pac-btn"><span class="fa fa-refresh"></span></button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 
     <div id="remote_acls" class="tab-pane fade">
         <table class="table table-striped table-condensed table-responsive">
@@ -226,7 +440,7 @@
             <tr>
                 <td colspan="2">
                     <div id="remoteACLchangeMessage" class="alert alert-info" style="display: none" role="alert">
-                        {{ lang._('Note: after changing categories, please remember to download the ACL again to apply your new settings') }}
+                        {{ lang._('After changing categories, please remember to download the ACL again to apply your new settings') }}
                     </div>
                     <table id="grid-remote-blacklists" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditBlacklist">
                         <thead>
@@ -245,7 +459,6 @@
                             <td></td>
                             <td>
                                 <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
-                                <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
                             </td>
                         </tr>
                         </tfoot>
@@ -265,3 +478,6 @@
 </div>
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditBlacklist,'id':'DialogEditBlacklist','label':lang._('Edit blacklist')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditPACProxy,'id':'DialogEditPACProxy','label':lang._('Edit Proxy')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditPACMatch,'id':'DialogEditPACMatch','label':lang._('Edit Match')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditPACRule,'id':'DialogEditPACRule','label':lang._('Edit Rule')])}}
