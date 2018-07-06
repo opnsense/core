@@ -123,4 +123,26 @@ foreach ($iflist as $ifname => $friendly) {
     }
 }
 
+if (isset($config['system']['ssh']['enabled']) or $config['system']['webgui']['protocol'] == "https") {
+    printf("\n\n");
+}
+
+if (isset($config['system']['ssh']['enabled'])) {
+    foreach (glob("/conf/sshd/ssh_host_*_key.pub") as $ssh_host_pub_key_file_path) {
+        printf(" SSH: ");
+        /* `| cut -d ' ' -f 1-2,4-` is used to filter out the comment (hostname) from the host key.
+         * With the hostname included, one fingerprint would normally not fit on the console screen.
+         */
+        passthru("ssh-keygen -l -f " . escapeshellarg($ssh_host_pub_key_file_path) . " | cut -d ' ' -f 1-2,4-");
+    }
+}
+
+if ($config['system']['webgui']['protocol'] == "https") {
+    printf(" HTTPS X.509 cert: ");
+    /* This output will need two lines in console output.
+     * Not much we can do about this.
+     */
+    passthru("openssl x509 -in /var/etc/cert.pem -noout -fingerprint -sha256");
+}
+
 printf("\n");
