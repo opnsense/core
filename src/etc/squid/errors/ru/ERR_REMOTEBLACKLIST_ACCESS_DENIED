@@ -1,0 +1,38 @@
+
+<html><head>
+<meta type="copyright" content="Copyright (C) 1996-2018 The Squid Software Foundation and contributors">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>ОШИБКА: Запрошенный URL не может быть получен</title>
+<style type="text/css"><!--
+ %l
+
+body
+:lang(fa) { direction: rtl; font-size: 100%; font-family: Tahoma, Roya, sans-serif; float: right; }
+:lang(he) { direction: rtl; }
+ --></style>
+</head><body id="%c">
+<div id="titles">
+<h1>ОШИБКА</h1>
+<h2>Запрошенный URL не может быть получен</h2>
+</div>
+<hr>
+
+<div id="content">
+<p>При получении URL <a href="%U">%U</a> произошла следующая ошибка</p>
+
+<blockquote id="error">
+<p><b>Доступ запрещён, т.к. сайт находится в удалённом чёрном списке.</b></p>
+</blockquote>
+
+<p>Система контроля доступа не позволяет выполнить ваш запрос сейчас. Обратитесь к вашему администратору.</p>
+
+<p>Администратор Вашего кэша: <a href="mailto:%w%W">%w</a>.</p>
+<br>
+</div>
+
+<hr>
+<div id="footer">
+<p>Создано %T на %h (%s)</p>
+<!-- %c -->
+</div>
+</body></html>
