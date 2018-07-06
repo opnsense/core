@@ -27,15 +27,25 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-echo "\nFingerprints of this host follow. Please compare them when connecting to this host to prevent MITM attacks.\n";
+require_once("config.inc");
 
-echo "\nFingerprints of SSH host keys:\n";
-
-foreach (glob("/conf/sshd/ssh_host_*_key.pub") as $ssh_host_pub_key_file_path) {
-    passthru("ssh-keygen -l -f " . escapeshellarg($ssh_host_pub_key_file_path));
+if (isset($config['system']['ssh']['enabled']) or $config['system']['webgui']['protocol'] == "https") {
+    echo "\nFingerprints of this host follow. Please compare them when connecting to this host to prevent MITM attacks.\n";
+} else {
+    echo "\nNo fingerprints to show because neither HTTPS nor SSH are enabled.\n";
 }
 
-echo "\nFingerprints of HTTPS X.509 certificate:\n";
+if (isset($config['system']['ssh']['enabled'])) {
+    echo "\nFingerprints of SSH host keys:\n";
 
-passthru("openssl x509 -in /var/etc/cert.pem -noout -fingerprint -sha256");
-passthru("openssl x509 -in /var/etc/cert.pem -noout -fingerprint -sha1");
+    foreach (glob("/conf/sshd/ssh_host_*_key.pub") as $ssh_host_pub_key_file_path) {
+        passthru("ssh-keygen -l -f " . escapeshellarg($ssh_host_pub_key_file_path));
+    }
+}
+
+if ($config['system']['webgui']['protocol'] == "https") {
+    echo "\nFingerprints of HTTPS X.509 certificate:\n";
+
+    passthru("openssl x509 -in /var/etc/cert.pem -noout -fingerprint -sha256");
+    passthru("openssl x509 -in /var/etc/cert.pem -noout -fingerprint -sha1");
+}
