@@ -132,7 +132,7 @@ class AliasController extends ApiMutableModelControllerBase
             }
         }
         foreach (explode("\n", file_get_contents('/usr/local/opnsense/contrib/tzdata/zone.tab')) as $line) {
-            if (strlen($line) > 0 && substr($line, 0, 1) == '#' ) {
+            if (strlen($line) > 0 && substr($line, 0, 1) == '#') {
                 continue;
             }
             $line = explode("\t", $line);

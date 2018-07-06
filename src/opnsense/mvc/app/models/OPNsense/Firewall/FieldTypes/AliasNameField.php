@@ -77,7 +77,7 @@ class AliasNameField extends BaseField
                     "message" => gettext('Reserved protocol or service names may not be used'),
                     "callback" => function ($data) {
                         foreach ($data as $key => $value) {
-                            if (substr( $key, strlen( $key ) - strlen( ".name" ) ) == ".name") {
+                            if (substr($key, strlen($key) - strlen(".name")) == ".name") {
                                 if (getservbyname($value, 'tcp') ||
                                     getservbyname($value, 'udp') || getprotobyname($value)) {
                                     return false;

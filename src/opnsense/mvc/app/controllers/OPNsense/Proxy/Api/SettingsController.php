@@ -282,7 +282,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function setPACRuleAction($uuid)
     {
         $this->pac_set_helper();
-        return $this->setBase('rule', 'pac.rule',$uuid);
+        return $this->setBase('rule', 'pac.rule', $uuid);
     }
     /**
      * toggle PAC Rule by uuid (enable/disable)

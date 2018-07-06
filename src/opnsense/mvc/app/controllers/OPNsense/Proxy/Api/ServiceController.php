@@ -60,7 +60,8 @@ class ServiceController extends ApiMutableServiceControllerBase
      * reload template only (for example PAC does not need to change squid configuration)
      * @return array
      */
-    public function refreshTemplateAction() {
+    public function refreshTemplateAction()
+    {
         if ($this->request->isPost()) {
             // close session for long running action
             $this->sessionClose();

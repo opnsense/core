@@ -37,7 +37,8 @@ use OPNsense\Base\BaseModel;
  */
 class Proxy extends BaseModel
 {
-    public function performValidation($validateFullModel = false) {
+    public function performValidation($validateFullModel = false)
+    {
 
         // perform standard validations
         $result = parent::performValidation($validateFullModel);
