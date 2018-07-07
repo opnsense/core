@@ -17,6 +17,7 @@ CMD_PASSWORD="/usr/local/opnsense/scripts/shell/password.php"
 CMD_PFLOG="/usr/sbin/tcpdump -s 256 -v -S -l -n -e -ttt -i pflog0"
 CMD_PFTOP="/usr/local/sbin/pftop"
 CMD_PING="/usr/local/opnsense/scripts/shell/ping.php"
+CMD_FINGERPRINTS="/usr/local/opnsense/scripts/shell/fingerprints.php"
 CMD_REBOOT="/usr/local/opnsense/scripts/shell/reboot.php"
 CMD_RELOAD="/usr/local/etc/rc.reload_all"
 CMD_RESTORE="/usr/local/opnsense/scripts/shell/restore.sh"
@@ -118,13 +119,14 @@ set -e
 ${CMD_BANNER}
 
 echo
-echo "  0) Logout                              7) Ping host"
-echo "  1) Assign interfaces                   8) Shell"
-echo "  2) Set interface IP address            9) pfTop"
-echo "  3) Reset the root password            10) Firewall log"
-echo "  4) Reset to factory defaults          11) Reload all services"
-echo "  5) Power off system                   12) Update from console"
-echo "  6) Reboot system                      13) Restore a backup"
+echo "  0) Logout                              8) Shell""
+echo "  1) Assign interfaces                   9) pfTop"
+echo "  2) Set interface IP address           10) Firewall log"
+echo "  3) Reset the root password            11) Reload all services"
+echo "  4) Reset to factory defaults          12) Update from console"
+echo "  5) Power off system                   13) Restore a backup"
+echo "  6) Reboot system                      14) Show host fingerprints"
+echo "  7) Ping host"
 echo
 read -p "Enter an option: " OPCODE
 echo
@@ -175,6 +177,9 @@ case ${OPCODE} in
 	;;
 13)
 	${CMD_RESTORE}
+	;;
+14)
+	${CMD_FINGERPRINTS}
 	;;
 *)
 	;;
