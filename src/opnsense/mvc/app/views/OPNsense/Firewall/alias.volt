@@ -301,7 +301,7 @@
                                             </tbody>
                                         </table>
 
-                                        <br/><a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
+                                        <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
                                         <small>{{lang._('Clear All')}}</small></a>
                                     </td>
                                     <td>
