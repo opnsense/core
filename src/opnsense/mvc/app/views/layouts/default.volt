@@ -191,6 +191,7 @@
 
         <!-- OPNsense standard toolkit -->
         <script src="/ui/js/opnsense.js"></script>
+        <script src="/ui/js/opnsense_theme.js"></script>
         <script src="/ui/js/opnsense_ui.js"></script>
         <script src="/ui/js/opnsense_bootgrid_plugin.js"></script>
         <script src="{{theme_file_or_default('/js/theme.js', theme_name)}}"></script>
@@ -219,6 +220,7 @@
             <span class="icon-bar"></span>
           </button>
         </div>
+        <button class="toggle-sidebar" style="display:none;"><i class="fa fa-chevron-left fa-chevron-right"></i></button>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
             <li id="menu_messages"><a href="#">{{session_username}}@{{system_hostname}}.{{system_domain}}</a></li>
