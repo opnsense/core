@@ -132,6 +132,8 @@
                 case 'geoip':
                     $("#alias_type_geoip").show();
                     break;
+                case 'external':
+                    break;
                 default:
                     $("#alias_type_default").show();
                     break;
