@@ -125,7 +125,7 @@ $pconfig = array();
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && is_numericint($_GET['id']) && isset($a_aliases[$_GET['id']])) {
         $id = $_GET['id'];
-        foreach (array("name", "detail", "address", "type", "descr", "updatefreq", "aliasurl", "url", "proto") as $fieldname) {
+        foreach (array("name", "address", "type", "descr", "updatefreq", "aliasurl", "url", "proto") as $fieldname) {
             if (isset($a_aliases[$id][$fieldname])) {
                 $pconfig[$fieldname] = $a_aliases[$id][$fieldname];
             } else {
@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         // initialize form fields, when not found present empty form
-        foreach (array("name", "detail", "address", "type", "descr", "updatefreq", "aliasurl", "url", "proto") as $fieldname) {
+        foreach (array("name", "address", "type", "descr", "updatefreq", "aliasurl", "url", "proto") as $fieldname) {
             if (isset($id) && isset($a_aliases[$id][$fieldname])) {
                 $pconfig[$fieldname] = $a_aliases[$id][$fieldname];
             } else {
@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     } else {
         // init empty
-        $init_fields = array("name", "detail", "address", "type", "descr", "updatefreq", "url", "proto");
+        $init_fields = array("name", "address", "type", "descr", "updatefreq", "url", "proto");
         foreach ($init_fields as $fieldname) {
             $pconfig[$fieldname] = null;
         }
@@ -170,21 +170,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         $pconfig['host_url'] = array();
     }
-    $pconfig['detail'] = !empty($pconfig['detail']) ? explode("||", $pconfig['detail']) : array();
     $pconfig['proto'] = !empty($pconfig['proto']) ? explode(',', $pconfig['proto']) : array("IPv4");
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (isset($_POST['id']) && is_numericint($_POST['id']) && isset($a_aliases[$_POST['id']])) {
         $id = $_POST['id'];
-    }
-
-    foreach ($pconfig['detail'] as &$detailDescr) {
-        if (empty($detailDescr)) {
-            $detailDescr = sprintf(gettext("Entry added %s"), date('r'));
-        } else {
-            // trim and strip pipes
-            $detailDescr = trim(str_replace('|',' ' , $detailDescr));
-        }
     }
 
     if (isset($pconfig['submit'])) {
@@ -312,8 +302,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } else {
                 $confItem['address'] = implode(' ', $pconfig['host_url']);
             }
-            //
-            $confItem['detail'] = implode('||', $pconfig['detail']);
 
             // proto is only for geoip selection
             if ($pconfig['type'] == 'geoip') {
@@ -352,6 +340,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             // save to config
             if (isset($id)) {
+                // temporary keep data in detail field, will be removed post 18.7
+                $confItem['detail'] = !empty($a_aliases[$id]['detail']) ? $a_aliases[$id]['detail'] : null;
                 $a_aliases[$id] = $confItem;
             } else {
                 $a_aliases[] = $confItem;
@@ -641,7 +631,6 @@ include("head.inc");
                         <tr>
                           <th></th>
                           <th id="detailsHeading1"><?=gettext("Network"); ?></th>
-                          <th id="detailsHeading3"><?=gettext("Description"); ?></th>
                           <th colspan="2" id="updatefreqHeader" ><?=gettext("Alias Expiration. (days + hours)");?></th>
                         </tr>
                       </thead>
@@ -654,9 +643,6 @@ include("head.inc");
                           </td>
                           <td>
                             <input type="text" class="host_url fld_detail" name="host_url[]" value="<?=$aliasurl;?>"/>
-                          </td>
-                          <td>
-                            <input type="text" class="form-control" name="detail[]" value="<?= isset($pconfig['detail'][$aliasid])?$pconfig['detail'][$aliasid]:"";?>">
                           </td>
                           <td>
 <?php
