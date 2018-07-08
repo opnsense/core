@@ -126,7 +126,7 @@ foreach ($iflist as $ifname => $friendly) {
 
 echo PHP_EOL;
 
-if (isset($config['system']['ssh']['enabled']) || $config['system']['webgui']['protocol'] == 'https') {
+if (openssh_enabled() || $config['system']['webgui']['protocol'] == 'https') {
     echo PHP_EOL;
 }
 
