@@ -131,9 +131,13 @@
             switch ($(this).val()) {
                 case 'geoip':
                     $("#alias_type_geoip").show();
+                    $("#alias\\.proto").selectpicker('show');
+                    break;
+                case 'external':
                     break;
                 default:
                     $("#alias_type_default").show();
+                    $("#alias\\.proto").selectpicker('hide');
                     break;
             }
         });
@@ -265,7 +269,8 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <select  id="alias.type" class="selectpicker" data-width="334px"></select>
+                                        <select  id="alias.type" class="selectpicker" data-width="200px"></select>
+                                        <select id="alias.proto" multiple="multiple" title="" class="selectpicker" data-width="110px" ></select>
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.type"></span>
