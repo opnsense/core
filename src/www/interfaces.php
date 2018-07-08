@@ -2781,7 +2781,7 @@ include("head.inc");
                           <td>
                             <select name="prefix-6rd-v4plen" class="selectpicker" data-size="10" data-style="btn-default" id="prefix-6rd-v4plen">
 <?php
-                              for ($i = 0; $i < 32; $i++):?>
+                              for ($i = 0; $i <= 32; $i++):?>
                                 <option value="<?=$i;?>" <?= $i == $pconfig['prefix-6rd-v4plen'] ? "selected=\"selected\"" : "";?>>
                                   <?=$i;?> <?=gettext("bits");?>
                                 </option>
