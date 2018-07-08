@@ -32,7 +32,6 @@
     <field>
         <id>blacklist.filter</id>
         <label>categories (if available)</label>
-        <type>text</type>
         <type>select_multiple</type>
         <nbDropdownElements>300</nbDropdownElements>
         <help><![CDATA[select categories to use, leave empty for all. Categories are visible after initial download.]]></help>
