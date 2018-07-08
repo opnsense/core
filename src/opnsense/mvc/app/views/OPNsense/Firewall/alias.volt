@@ -19,6 +19,11 @@
     .geo_area_uncheck {
         cursor: pointer;
     }
+
+    .geo_label {
+        margin-bottom: 0px;
+        font-style: italic;
+    }
 </style>
 <script>
     $( document ).ready(function() {
@@ -31,6 +36,23 @@
                 toggle:'/api/firewall/alias/toggleItem/'
             }
         );
+
+        /**
+         * update geoip labels
+         **/
+        function geoip_update_labels() {
+            $("select.geoip_select").each(function(){
+                var option_count = $(this).find('option').length;
+                var selected_count = $(this).find('option:selected').length;
+                if (selected_count > 0) {
+                    var label = "{{ lang._('%s out of %s selected')}}";
+                    label = label.replace('%s', selected_count).replace('%s', option_count);
+                    $("label[data-id='"+$(this).data('id')+"_label'").text(label);
+                } else {
+                    $("label[data-id='"+$(this).data('id')+"_label'").text("");
+                }
+            });
+        }
 
         /**
          * fetch regions and countries for geoip selection
@@ -50,6 +72,7 @@
                 geo_select.append($("<select class='selectpicker geoip_select' multiple='multiple' data-id='"+'geoip_region_'+item+"'/>"));
                 geo_select.append($("<i class=\"fa fa-fw geo_area_check fa-check-square-o\" aria-hidden=\"true\" data-id='"+'geoip_region_'+item+"'></i>"));
                 geo_select.append($("<i class=\"fa fa-fw geo_area_uncheck fa-square-o\" aria-hidden=\"true\" data-id='"+'geoip_region_'+item+"'></i>"));
+                geo_select.append($("<label class='geo_label' data-id='geoip_region_"+item+"_label'/>"));
                 $tr.append(geo_select);
                 $("#alias_type_geoip > tbody").append($tr);
             });
@@ -77,10 +100,12 @@
                     });
                 });
                 $("#alias\\.content").tokenize2().trigger('tokenize:select');
+                $("#alias\\.content").tokenize2().trigger('tokenize:dropdown:hide');
                 // link on change event back
                 $("#alias\\.content").on('tokenize:tokens:change', function(e, value){
                     $("#alias\\.content").change();
                 });
+                geoip_update_labels();
             });
             $(".geo_area_check").click(function(){
                 var area_id = $(this).data('id');
@@ -127,6 +152,7 @@
 
             });
             $(".geoip_select").selectpicker('refresh');
+            geoip_update_labels();
         })
 
 
