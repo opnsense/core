@@ -85,17 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     $imported_ips = array();
-    $imported_descs = array();
     foreach (explode("\n", $pconfig['aliasimport']) as $impline) {
         $implinea = explode(" ",trim($impline),2);
         $impip = trim($implinea[0]);
-        if (!empty($implinea[1])) {
-            // trim and truncate description to max 200 characters
-            $impdesc = substr(trim($implinea[1]),0, 200);
-        } else {
-            // no description given, use alias description
-            $impdesc = trim(str_replace('|',' ' , $pconfig['descr']));
-        }
         if (empty($impip)) {
             // skip empty lines
             continue;
@@ -112,7 +104,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 } else {
                     foreach (ip_range_to_subnet_array($ipaddr1, $ipaddr2) as $network) {
                         $imported_ips[] = $network;
-                        $imported_descs[] = $impdesc;
                     }
                 }
             } else {
@@ -121,7 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $input_errors[] = sprintf(gettext("%s is not an IP address. Please correct the error to continue"), $impip);
                 } else {
                     $imported_ips[] = $impip;
-                    $imported_descs[] = $impdesc;
                 }
             }
         } else {
@@ -130,7 +120,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = sprintf(gettext("%s is not an IP address or hostname. Please correct the error to continue"), $impip);
             } else {
                 $imported_ips[] = $impip;
-                $imported_descs[] = $impdesc;
             }
         }
     }
@@ -138,7 +127,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // create output structure and serialize to config
         $alias = array();
         $alias['address'] = implode(" ", $imported_ips);
-        $alias['detail'] = implode("||", $imported_descs);
         $alias['name'] = $pconfig['name'];
         $alias['type'] = $pconfig['type'];
         $alias['descr'] = $pconfig['descr'];
