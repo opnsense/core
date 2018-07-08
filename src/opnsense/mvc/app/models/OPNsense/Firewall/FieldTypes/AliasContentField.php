@@ -80,7 +80,7 @@ class AliasContentField extends BaseField
     private function getItems($data)
     {
         foreach ($data as $key => $value) {
-            if (substr( $key, strlen( $key ) - strlen( ".content" ) ) == ".content") {
+            if (substr($key, strlen($key) - strlen(".content")) == ".content") {
                 foreach (explode($this->separatorchar, $value) as $value) {
                     yield $value;
                 }
