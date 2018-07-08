@@ -327,6 +327,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ControllerBase.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ControllerRoot.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/IndexController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Base/UserException.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/Api/AccessController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/Api/SessionController.php
@@ -464,6 +465,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuItem.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuSystem.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/ModelException.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/CallbackValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/CsvListValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/HostValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/IntegerValidator.php
@@ -493,6 +495,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Alias.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasContentField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasNameField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/IDS.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/IDS.xml

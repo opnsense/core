@@ -63,6 +63,15 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function setItemAction($uuid)
     {
+        $node = $this->getModel()->getNodeByReference('aliases.alias.'. $uuid);
+        $old_name = $node != null ? (string)$node->name : null;
+        if ($old_name !== null && $this->request->isPost() && $this->request->hasPost("alias")) {
+            $new_name = $this->request->getPost("alias")['name'];
+            if ($new_name != $old_name) {
+                // replace aliases, setBase() will synchronise the changes to disk
+                $this->getModel()->refactor($old_name, $new_name);
+            }
+        }
         return $this->setBase("alias", "aliases.alias", $uuid);
     }
 
@@ -71,7 +80,7 @@ class AliasController extends ApiMutableModelControllerBase
      * @return array save result + validation output
      * @throws \OPNsense\Base\ModelException when not bound to model
      * @throws \Phalcon\Validation\Exception when field validations fail
-     * @throws \ReflectionException
+     * @throws \ReflectionException when not bound to model
      */
     public function addItemAction()
     {
@@ -95,9 +104,22 @@ class AliasController extends ApiMutableModelControllerBase
      * @return array save status
      * @throws \Phalcon\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
+     * @throws \OPNsense\Base\UserException when unable to delete
      */
     public function delItemAction($uuid)
     {
+        $node = $this->getModel()->getNodeByReference('aliases.alias.'. $uuid);
+        if ($node != null) {
+            $uses = $this->getModel()->whereUsed((string)$node->name);
+            if (!empty($uses)) {
+                $message = "";
+                foreach ($uses as $key => $value) {
+                    $message .= sprintf("\n[%s] %s", $key, $value);
+                }
+                $message = sprintf(gettext("Cannot delete alias. Currently in use by %s"), $message);
+                throw new \OPNsense\Base\UserException($message, gettext("Alias in use"));
+            }
+        }
         return $this->delBase("aliases.alias", $uuid);
     }
 

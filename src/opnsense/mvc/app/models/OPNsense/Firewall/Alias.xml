@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNSense/Firewall/Alias</mount>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <description>
         Firewall aliases
     </description>
@@ -35,10 +35,17 @@
                         <external>External (advanced)</external>
                     </OptionValues>
                 </type>
+                <proto type="OptionField">
+                    <Multiple>Y</Multiple>
+                    <OptionValues>
+                        <IPv4>IPv4</IPv4>
+                        <IPv6>IPv6</IPv6>
+                    </OptionValues>
+                </proto>
                 <content type=".\AliasContentField">
                 </content>
                 <description type="TextField">
-                    <Required>Y</Required>
+                    <Required>N</Required>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>

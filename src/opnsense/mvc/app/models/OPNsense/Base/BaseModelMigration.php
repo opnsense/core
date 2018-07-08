@@ -60,4 +60,13 @@ class BaseModelMigration
     {
         $this->checkDefaults($model);
     }
+
+    /**
+     * post migration action, run after config sync
+     * @param $model
+     */
+    public function post($model)
+    {
+        return;
+    }
 }
