@@ -42,7 +42,7 @@ foreach ($a_users as &$user) {
     echo "User {$user['name']} expires {$user['expires']}\n";
 
     if (strtotime('-1 day') > strtotime($user['expires'])) {
-        echo "Disabling user {$user['name']} at index #{$index}\n";
+        echo "Disabling user '{$user['name']}'\n";
         $user['disabled'] = true;
         $removed++;
     }
