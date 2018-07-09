@@ -67,6 +67,7 @@ $p1_authentication_methods = array(
     'xauth_rsa_server' => array( 'name' => 'Mutual RSA + Xauth', 'mobile' => true ),
     'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
     'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
+    'psk_eap-tls' => array( 'name' => 'RSA (local) + EAP-TLS (remote)', 'mobile' => true),
     'eap-mschapv2' => array( 'name' => 'EAP-MSCHAPV2', 'mobile' => true),
     'rsa_eap-mschapv2' => array( 'name' => 'Mutual RSA + EAP-MSCHAPV2', 'mobile' => true),
     'eap-radius' => array( 'name' => 'EAP-RADIUS', 'mobile' => true),
@@ -906,9 +907,20 @@ EOD;
         $strongswan .= "\tplugins {\n";
 
         if (isset($a_client['enable'])) {
+            $net_list = array();
+            if (isset($a_client['net_list'])) {
+                foreach ($a_phase2 as $ph2ent) {
+                    if (!isset($ph2ent['disabled']) && isset($ph2ent['mobile'])) {
+                        $net_list[] =  ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
+                    }
+                }
+            }
+
             $strongswan .= "\t\tattr {\n";
-            if ($a_client['pool_address'] && $a_client['pool_netbits']) {
-                $strongswan .= "\t\t\tsubnet = {$a_client['pool_address']}/{$a_client['pool_netbits']}\n";
+            if (!empty($net_list)) {
+                $net_list_str = implode(",", $net_list);
+                $strongswan .= "\t\t\tsubnet = {$net_list_str}\n";
+                $strongswan .= "\t\t\tsplit-include = {$net_list_str}\n";
             }
             $cfgservers = array();
             foreach (array('dns_server1', 'dns_server2', 'dns_server3', 'dns_server4') as $dns_server) {
@@ -931,28 +943,6 @@ EOD;
                 $strongswan .= "\t\t\tnbns = " . implode(",", $cfgservers) . "\n";
             }
             unset($cfgservers);
-
-            if (isset($a_client['net_list'])) {
-                $net_list = '';
-                foreach ($a_phase2 as $ph2ent) {
-                    if (isset($ph2ent['disabled'])) {
-                        continue;
-                    }
-                    if (!isset($ph2ent['mobile'])) {
-                        continue;
-                    }
-                    $localid = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
-                    if (!empty($net_list)) {
-                        $net_list .= ",";
-                    }
-                    $net_list .= $localid;
-                }
-
-                if (!empty($net_list)) {
-                    $strongswan .= "\t\t\tsplit-include = {$net_list}\n";
-                    unset($net_list);
-                }
-            }
 
             if (!empty($a_client['dns_domain'])) {
                 $strongswan .= "\t\t\t# Search domain and default domain\n";
@@ -1227,6 +1217,10 @@ EOD;
                     case 'eap-tls':
                         $authentication = "leftauth=eap-tls\n\trightauth=eap-tls";
                         break;
+                    case 'psk_eap-tls':
+                        $authentication = "leftauth=pubkey\n\trightauth=eap-tls";
+                        $authentication .= "\n\teap_identity=%identity";
+                        break;
                     case 'eap-mschapv2':
                         $authentication = "leftauth = pubkey\n\trightauth = eap-mschapv2";
                         $authentication .= "\n\teap_identity = %any";
@@ -1269,11 +1263,11 @@ EOD;
                 if (!empty($ph1ent['caref'])) {
                     $ca = lookup_ca($ph1ent['caref']);
                     if (!empty($ca)) {
-                         $rightca = "";
+                        $rightca = "";
                         foreach (cert_get_subject_array($ca['crt']) as $ca_field) {
                             $rightca .= "{$ca_field['a']}={$ca_field['v']}/";
                         }
-                         $authentication .= "\n\trightca = \"/$rightca\"";
+                        $authentication .= "\n\trightca = \"/$rightca\"";
                     }
                 }
                 $left_spec = $ep;
