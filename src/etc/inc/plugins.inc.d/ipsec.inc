@@ -906,9 +906,20 @@ EOD;
         $strongswan .= "\tplugins {\n";
 
         if (isset($a_client['enable'])) {
+            $net_list = array();
+            if (isset($a_client['net_list'])) {
+                foreach ($a_phase2 as $ph2ent) {
+                    if (!isset($ph2ent['disabled']) && isset($ph2ent['mobile'])) {
+                        $net_list[] =  ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
+                    }
+                }
+            }
+
             $strongswan .= "\t\tattr {\n";
-            if ($a_client['pool_address'] && $a_client['pool_netbits']) {
-                $strongswan .= "\t\t\tsubnet = {$a_client['pool_address']}/{$a_client['pool_netbits']}\n";
+            if (!empty($net_list)) {
+                $net_list_str = implode(",", $net_list);
+                $strongswan .= "\t\t\tsubnet = {$net_list_str}\n";
+                $strongswan .= "\t\t\tsplit-include = {$net_list_str}\n";
             }
             $cfgservers = array();
             foreach (array('dns_server1', 'dns_server2', 'dns_server3', 'dns_server4') as $dns_server) {
@@ -931,28 +942,6 @@ EOD;
                 $strongswan .= "\t\t\tnbns = " . implode(",", $cfgservers) . "\n";
             }
             unset($cfgservers);
-
-            if (isset($a_client['net_list'])) {
-                $net_list = '';
-                foreach ($a_phase2 as $ph2ent) {
-                    if (isset($ph2ent['disabled'])) {
-                        continue;
-                    }
-                    if (!isset($ph2ent['mobile'])) {
-                        continue;
-                    }
-                    $localid = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
-                    if (!empty($net_list)) {
-                        $net_list .= ",";
-                    }
-                    $net_list .= $localid;
-                }
-
-                if (!empty($net_list)) {
-                    $strongswan .= "\t\t\tsplit-include = {$net_list}\n";
-                    unset($net_list);
-                }
-            }
 
             if (!empty($a_client['dns_domain'])) {
                 $strongswan .= "\t\t\t# Search domain and default domain\n";
