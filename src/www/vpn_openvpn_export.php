@@ -701,11 +701,18 @@ function openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipco
         $conf .= openvpn_gen_routes($settings['local_networkv6'], 'ipv6');
     }
     if (!empty($settings['tunnel_network'])) {
-        list($ip, $mask) = explode('/', $settings['tunnel_network']);
-        $mask = gen_subnet_mask($mask);
+        list($ip, $prefix_length) = explode('/', $settings['tunnel_network']);
+        $mask = gen_subnet_mask($prefix_length);
         $baselong = ip2long32($ip) & ip2long($mask);
-        $ip1 = long2ip32($baselong + 1);
-        $ip2 = long2ip32($baselong + 2);
+
+        if ($prefix_length == "31") {
+            // As per RFC3021, in a /31 network, first address is the first host address
+            $ip1 = long2ip32($baselong);
+            $ip2 = long2ip32($baselong + 1);
+        } else {
+            $ip1 = long2ip32($baselong + 1);
+            $ip2 = long2ip32($baselong + 2);
+        }
         $conf .= "ifconfig $ip2 $ip1\n";
     }
     $conf .= "keepalive 10 60\n";
