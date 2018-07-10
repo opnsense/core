@@ -1485,9 +1485,21 @@ function openvpn_create_dirs()
 
 function openvpn_get_interface_ip($ip, $mask)
 {
-    $baselong = ip2long32($ip) & ip2long($mask);
-    $ip1 = long2ip32($baselong + 1);
-    $ip2 = long2ip32($baselong + 2);
+    $masklong = ip2long($mask);
+    $baselong = ip2long32($ip) & $masklong;
+
+    // Special case for /31 networks which lack network and broadcast addresses.
+    // As per RFC3021, both addresses should be treated as host addresses.
+    if ($masklong == 0xfffffffe)
+    {
+        $ip1 = long2ip32($baselong);
+        $ip2 = long2ip32($baselong + 1);
+    }
+    else
+    {
+        $ip1 = long2ip32($baselong + 1);
+        $ip2 = long2ip32($baselong + 2);
+    }
     return array($ip1, $ip2);
 }
 
