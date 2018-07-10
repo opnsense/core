@@ -76,8 +76,16 @@ class M1_0_0 extends BaseModelMigration
                     $node->proto = (string)$alias->proto;
                 }
             }
-            // cleanup old config
-            //unset($cfgObj->aliases);
         }
+    }
+
+    /**
+     * cleanup old config after config save, we need the old data to avoid race conditions in validations
+     * @param $model
+     */
+    public function post($model)
+    {
+        $cfgObj = Config::getInstance()->object();
+        unset($cfgObj->aliases);
     }
 }
