@@ -29,6 +29,7 @@
 namespace OPNsense\Firewall;
 
 use \OPNsense\Core\Config;
+use \OPNsense\Firewall\Alias;
 
 /**
  * Class Util, common static firewall support functions
@@ -72,13 +73,25 @@ class Util
      * check if name exists in alias config section
      * @param string $name name
      * @return boolean
+     * @throws \OPNsense\Base\ModelException
      */
     public static function isAlias($name)
     {
-        if (!empty($name) && !empty(Config::getInstance()->object()->aliases)) {
-            foreach (Config::getInstance()->object()->aliases->children() as $node) {
-                if ($node->name == $name) {
+        if (!empty($name) ){
+            $aliasMdl = new Alias();
+            // MVC defined aliases
+            foreach ($aliasMdl->aliases->alias->__items as $alias) {
+                if ((string)$alias->name == $name) {
                     return true;
+                }
+            }
+            // legacy style aliases
+            $cnf = Config::getInstance()->object();
+            if (!empty($cnf->aliases)) {
+                foreach ($cnf->aliases->children() as $node) {
+                    if ($node->name == $name) {
+                        return true;
+                    }
                 }
             }
         }
