@@ -1263,11 +1263,11 @@ EOD;
                 if (!empty($ph1ent['caref'])) {
                     $ca = lookup_ca($ph1ent['caref']);
                     if (!empty($ca)) {
-                         $rightca = "";
+                        $rightca = "";
                         foreach (cert_get_subject_array($ca['crt']) as $ca_field) {
                             $rightca .= "{$ca_field['a']}={$ca_field['v']}/";
                         }
-                         $authentication .= "\n\trightca = \"/$rightca\"";
+                        $authentication .= "\n\trightca = \"/$rightca\"";
                     }
                 }
                 $left_spec = $ep;
