@@ -31,6 +31,7 @@ namespace OPNsense\Base\Validators;
 
 use \Phalcon\Validation\Validator;
 use \Phalcon\Validation\ValidatorInterface;
+use \Phalcon\Validation;
 use \Phalcon\Validation\Message;
 
 /**
@@ -43,11 +44,11 @@ class CallbackValidator extends Validator implements ValidatorInterface
     /**
     * Executes callback validator, which should return validation messages on failure
     *
-    * @param \Phalcon\Validation $validator
+    * @param Validation $validator
     * @param string $attribute
     * @return boolean
     */
-    public function validate(\Phalcon\Validation $validator, $attribute)
+    public function validate(Validation $validator, $attribute)
     {
         $callback = $this->getOption('callback');
         if ($callback) {
