@@ -67,6 +67,7 @@ $p1_authentication_methods = array(
     'xauth_rsa_server' => array( 'name' => 'Mutual RSA + Xauth', 'mobile' => true ),
     'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
     'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
+    'psk_eap-tls' => array( 'name' => 'PSK(remote) + EAP-TLS(local)', 'mobile' => true),
     'eap-mschapv2' => array( 'name' => 'EAP-MSCHAPV2', 'mobile' => true),
     'rsa_eap-mschapv2' => array( 'name' => 'Mutual RSA + EAP-MSCHAPV2', 'mobile' => true),
     'eap-radius' => array( 'name' => 'EAP-RADIUS', 'mobile' => true),
@@ -1215,6 +1216,10 @@ EOD;
                 switch ($ph1ent['authentication_method']) {
                     case 'eap-tls':
                         $authentication = "leftauth=eap-tls\n\trightauth=eap-tls";
+                        break;
+                    case 'psk_eap-tls':
+                        $authentication = "leftauth=pubkey\n\trightauth=eap-tls";
+                        $authentication .= "\n\teap_identity=%identity";
                         break;
                     case 'eap-mschapv2':
                         $authentication = "leftauth = pubkey\n\trightauth = eap-mschapv2";

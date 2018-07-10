@@ -177,6 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // For RSA methods, require the CA/Cert.
     switch ($method) {
         case "eap-tls":
+        case "psk_eap-tls":
         case "eap-mschapv2":
         case "rsa_eap-mschapv2":
         case "eap-radius":
@@ -472,6 +473,7 @@ include("head.inc");
             $(".auth_opt :input").prop( "disabled", true );
             switch ($("#authentication_method").val()) {
                 case 'eap-tls':
+                case 'psk_eap-tls':
                 case 'eap-mschapv2':
                 case 'rsa_eap-mschapv2':
                     $(".auth_eap_tls").show();
