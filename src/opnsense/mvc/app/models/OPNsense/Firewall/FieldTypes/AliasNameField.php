@@ -29,9 +29,10 @@
 namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Base\FieldTypes\BaseField;
+use OPNsense\Base\Validators\CallbackValidator;
 use Phalcon\Validation\Validator\Regex;
 use Phalcon\Validation\Validator\ExclusionIn;
-use Phalcon\Validation\Validator\Callback;
+
 
 /**
  * Class AliasNameField
@@ -72,19 +73,14 @@ class AliasNameField extends BaseField
                     'The name must be less than 32 characters long and may only consist of the following characters: %s'
                 ), 'a-z, A-Z, 0-9, _'),
                 'pattern'=>'/[_0-9a-zA-z]{1,32}/'));
-            $validators[] = new Callback(
+            $validators[] = new CallbackValidator(
                 [
-                    "message" => gettext('Reserved protocol or service names may not be used'),
-                    "callback" => function ($data) {
-                        foreach ($data as $key => $value) {
-                            if (substr($key, strlen($key) - strlen(".name")) == ".name") {
-                                if (getservbyname($value, 'tcp') ||
-                                    getservbyname($value, 'udp') || getprotobyname($value)) {
-                                    return false;
-                                }
-                            }
+                    "callback" => function ($value) {
+                        if (getservbyname($value, 'tcp') ||
+                            getservbyname($value, 'udp') || getprotobyname($value)) {
+                            return array(gettext('Reserved protocol or service names may not be used'));
                         }
-                        return true;
+                        return array();
                     }
                 ]
             );

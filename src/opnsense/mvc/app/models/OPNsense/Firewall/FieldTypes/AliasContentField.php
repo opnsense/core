@@ -29,9 +29,9 @@
 namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Base\FieldTypes\BaseField;
+use OPNsense\Base\Validators\CallbackValidator;
 use Phalcon\Validation\Validator\Regex;
 use Phalcon\Validation\Validator\ExclusionIn;
-use Phalcon\Validation\Validator\Callback;
 use Phalcon\Validation\Message;
 use OPNsense\Firewall\Util;
 
@@ -50,6 +50,11 @@ class AliasContentField extends BaseField
      * @var string default validation message string
      */
     protected $internalValidationMessage = "alias name required";
+
+    /**
+     * @var array list of known countries
+     */
+    private static $internalCountryCodes = array();
 
     /**
      * item separator
@@ -79,12 +84,8 @@ class AliasContentField extends BaseField
      */
     private function getItems($data)
     {
-        foreach ($data as $key => $value) {
-            if (substr($key, strlen($key) - strlen(".content")) == ".content") {
-                foreach (explode($this->separatorchar, $value) as $value) {
-                    yield $value;
-                }
-            }
+        foreach (explode($this->separatorchar, $data) as $value) {
+            yield $value;
         }
     }
 
@@ -94,14 +95,15 @@ class AliasContentField extends BaseField
      */
     private function getCountryCodes()
     {
-        $result = array();
-        foreach (explode("\n", file_get_contents('/usr/local/opnsense/contrib/tzdata/iso3166.tab')) as $line) {
-            $line = trim($line);
-            if (strlen($line) > 3 && substr($line, 0, 1) != '#') {
-                $result[] = substr($line, 0, 2);
+        if (empty(self::$internalCountryCodes)) {
+            foreach (explode("\n", file_get_contents('/usr/local/opnsense/contrib/tzdata/iso3166.tab')) as $line) {
+                $line = trim($line);
+                if (strlen($line) > 3 && substr($line, 0, 1) != '#') {
+                    self::$internalCountryCodes[] = substr($line, 0, 2);
+                }
             }
         }
-        return $result;
+        return self::$internalCountryCodes;
     }
 
     /**
@@ -111,21 +113,15 @@ class AliasContentField extends BaseField
      */
     private function validatePort($data)
     {
-        $message = array();
+        $messages = array();
         foreach ($this->getItems($data) as $port) {
             if (!Util::isAlias($port) && !Util::isPort($port, true)) {
-                $message[] = $port;
+                $messages[] = sprintf(
+                    gettext('Entry "%s" is not a valid port number.'), $port
+                );
             }
         }
-        if (!empty($message)) {
-            // When validation fails use a callback to return the message so we can add the failed items
-            return new Callback([
-                "message" =>sprintf(gettext('Entry "%s" is not a valid port number.'), implode("|", $message)),
-                "callback" => function () {
-                    return false;
-                }]);
-        }
-        return true;
+        return $messages;
     }
 
     /**
@@ -135,25 +131,15 @@ class AliasContentField extends BaseField
      */
     private function validateHost($data)
     {
-        $message = array();
+        $messages = array();
         foreach ($this->getItems($data) as $host) {
             if (!Util::isAlias($host) && !Util::isIpAddress($host) && !Util::isDomain($host)) {
-                $message[] = $host;
+                $messages[] = sprintf(
+                    gettext('Entry "%s" is not a valid hostname or IP address.'), $host
+                );
             }
         }
-        if (!empty($message)) {
-            // When validation fails use a callback to return the message so we can add the failed items
-            return new Callback([
-                    "message" =>sprintf(
-                        gettext('Entry "%s" is not a valid hostname or IP address.'),
-                        implode("|", $message)
-                    ),
-                    "callback" => function () {
-                        return false;
-                    }]);
-        }
-
-        return true;
+        return $messages;
     }
 
     /**
@@ -163,24 +149,25 @@ class AliasContentField extends BaseField
      */
     private function validateNetwork($data)
     {
-        $message = array();
+        $messages = array();
         foreach ($this->getItems($data) as $network) {
-            if (!Util::isAlias($network) && !Util::isIpAddress($network) && !Util::isSubnet($network)) {
-                $message[] = $network;
+            $ipaddr_count = 0;
+            $domain_alias_count = 0;
+            foreach (explode('-', $network) as $tmpaddr) {
+                if (Util::isIpAddress($tmpaddr)) {
+                    $ipaddr_count++;
+                } elseif (trim($tmpaddr) != "") {
+                    $domain_alias_count++;
+                }
+            }
+            if (!Util::isAlias($network) && !Util::isIpAddress($network) && !Util::isSubnet($network) &&
+                    !($ipaddr_count == 2 && $domain_alias_count == 0)) {
+                $messages[] = sprintf(
+                    gettext('Entry "%s" is not a valid hostname or IP address.'), $network
+                );
             }
         }
-        if (!empty($message)) {
-            // When validation fails use a callback to return the message so we can add the failed items
-            return new Callback([
-                    "message" =>sprintf(
-                        gettext('Entry "%s" is not a valid network or IP address.'),
-                        implode("|", $message)
-                    ),
-                    "callback" => function () {
-                        return false;
-                    }]);
-        }
-        return true;
+        return $messages;
     }
 
     /**
@@ -191,24 +178,13 @@ class AliasContentField extends BaseField
     private function validateCountry($data)
     {
         $country_codes = $this->getCountryCodes();
-        $message = array();
+        $messages = array();
         foreach ($this->getItems($data) as $country) {
             if (!in_array($country, $country_codes)) {
-                $message[] = $country;
+                $messages[] = sprintf(gettext('Entry "%s" is not a valid country code.'), $country);
             }
         }
-        if (!empty($message)) {
-            // When validation fails use a callback to return the message so we can add the failed items
-            return new Callback([
-                    "message" =>sprintf(
-                        gettext('Entry "%s" is not a valid country code.'),
-                        implode("|", $message)
-                    ),
-                    "callback" => function () {
-                        return false;
-                    }]);
-        }
-        return true;
+        return $messages;
     }
 
     /**
@@ -219,29 +195,27 @@ class AliasContentField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            $alias_type = (string)$this->getParentNode()->type;
-
-            switch ($alias_type) {
+            switch ((string)$this->getParentNode()->type) {
                 case "port":
-                    $validators[] = new Callback(["callback" => function ($data) {
+                    $validators[] = new CallbackValidator(["callback" => function ($data) {
                         return $this->validatePort($data);
                     }
                     ]);
                     break;
                 case "host":
-                    $validators[] = new Callback(["callback" => function ($data) {
+                    $validators[] = new CallbackValidator(["callback" => function ($data) {
                         return $this->validateHost($data);
                     }
                     ]);
                     break;
                 case "geoip":
-                    $validators[] = new Callback(["callback" => function ($data) {
+                    $validators[] = new CallbackValidator(["callback" => function ($data) {
                         return $this->validateCountry($data);
                     }
                     ]);
                     break;
                 case "network":
-                    $validators[] = new Callback(["callback" => function ($data) {
+                    $validators[] = new CallbackValidator(["callback" => function ($data) {
                         return $this->validateNetwork($data);
                     }
                     ]);
