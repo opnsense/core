@@ -310,7 +310,6 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     public function delBase($path, $uuid)
     {
-
         $result = array("result" => "failed");
 
         if ($this->request->isPost()) {
