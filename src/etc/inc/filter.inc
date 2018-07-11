@@ -315,9 +315,7 @@ function filter_configure_sync($verbose = false, $flush_states = false)
     }
 
     if (isset($config['system']['gw_switch_default'])) {
-        $gateways_status = return_gateways_status(true);
-        $gateways_arr = return_gateways_array();
-        fixup_default_gateway($gateways_status, $gateways_arr);
+        fixup_default_gateway();
     }
 
     $aliases = filter_generate_aliases();
