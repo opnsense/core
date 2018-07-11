@@ -218,7 +218,7 @@ function core_cron()
         );
     }
 
-    $jobs[]['autocron'] = array('/usr/local/opnsense/scripts/remote_backup.php', 0, 1);
+    $jobs[]['autocron'] = array('configctl system remote backup', 0, 1);
 
     return $jobs;
 }
