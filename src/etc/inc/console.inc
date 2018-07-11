@@ -373,6 +373,9 @@ EOD;
         if (isset($config['dhcpd']['lan'])) {
             unset($config['dhcpd']['lan']);
         }
+        if (isset($config['dhcpdv6']['lan'])) {
+            unset($config['dhcpdv6']['lan']);
+        }
         if (isset($config['interfaces']['wan']['blockpriv'])) {
             unset($config['interfaces']['wan']['blockpriv']);
         }
