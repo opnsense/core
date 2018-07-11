@@ -864,8 +864,17 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
     return $gateways_arr;
 }
 
-function fixup_default_gateway($gateways_status, $gateways_arr)
+function fixup_default_gateway()
 {
+    global $config;
+
+    if (!isset($config['system']['gw_switch_default'])) {
+        return;
+    }
+
+    $gateways_status = return_gateways_status(true);
+    $gateways_arr = return_gateways_array();
+
     foreach (array("inet", "inet6") as $ipprotocol) {
         $dfltgwname = null;
         $dfltgwip = null;
@@ -880,7 +889,7 @@ function fixup_default_gateway($gateways_status, $gateways_arr)
                 /* wrong address family */
                 continue;
             }
-            if (!isset($gwsttng['monitoring_disabled']) && $gateways_status[$gwname]['status'] === 'down') {
+            if (strpos($gateways_status[$gwname]['status'], 'down') !== false) {
                 /* cannot use down gateway */
                 continue;
             }
