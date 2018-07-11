@@ -279,7 +279,7 @@ if [ "$pkg_running" == "" ]; then
             if [ -n "$base_to_reboot" ]; then
               base_to_delete="$(opnsense-update -bv)"
               base_to_delete="${base_to_delete%-*}"
-              base_is_size="$(opnsense-update -bfS)"
+              base_is_size="$(opnsense-update -bfSr $base_to_reboot)"
               upgrade_needs_reboot="1"
               if [ "$base_to_reboot" != "$base_to_delete" -a -n "$base_is_size" ]; then
                 if [ "$packages_upgraded" == "" ]; then
@@ -307,7 +307,7 @@ if [ "$pkg_running" == "" ]; then
             if [ -n "$kernel_to_reboot" ]; then
               kernel_to_delete="$(opnsense-update -kv)"
               kernel_to_delete="${kernel_to_delete%-*}"
-              kernel_is_size="$(opnsense-update -fkS)"
+              kernel_is_size="$(opnsense-update -fkSr $kernel_to_reboot)"
               upgrade_needs_reboot="1"
               if [ "$kernel_to_reboot" != "$kernel_to_delete" -a -n "$kernel_is_size" ]; then
                 if [ "$packages_upgraded" == "" ]; then
