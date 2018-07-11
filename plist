@@ -472,6 +472,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuItem.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuSystem.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/ModelException.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/CallbackValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/CsvListValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/HostValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/IntegerValidator.php
