@@ -409,31 +409,31 @@ function step10_submitphpaction()
         $config['wizardtemp']['step10']['localport'] = $_POST['localport'] = openvpn_port_next($_POST['protocol']);
     }
 
-    if ($result = openvpn_validate_port($_POST['localport'], 'Local port')) {
+    if ($result = openvpn_validate_port($_POST['localport'], gettext('Local port'))) {
         $input_errors[] = $result;
     }
 
-    if ($result = openvpn_validate_cidr($_POST['tunnelnet'], 'IPv4 Tunnel Network', false, 'ipv4')) {
+    if ($result = openvpn_validate_cidr($_POST['tunnelnet'], gettext('IPv4 Tunnel Network'), false, 'ipv4')) {
         $input_errors[] = $result;
     }
 
-    if ($result = openvpn_validate_cidr($_POST['tunnelnetv6'], 'IPv6 Tunnel Network', false, 'ipv6')) {
+    if ($result = openvpn_validate_cidr($_POST['tunnelnetv6'], gettext('IPv6 Tunnel Network'), false, 'ipv6')) {
         $input_errors[] = $result;
     }
 
-    if ($result = openvpn_validate_cidr($_POST['localnet'], 'IPv4 Local Network', true, 'ipv4')) {
+    if ($result = openvpn_validate_cidr($_POST['localnet'], gettext('IPv4 Local Network'), true, 'ipv4')) {
         $input_errors[] = $result;
     }
 
-    if ($result = openvpn_validate_cidr($_POST['localnetv6'], 'IPv6 Local Network', true, 'ipv6')) {
+    if ($result = openvpn_validate_cidr($_POST['localnetv6'], gettext('IPv6 Local Network'), true, 'ipv6')) {
         $input_errors[] = $result;
     }
 
-    if ($result = openvpn_validate_cidr($_POST['remotenet'], 'IPv4 Remote Network', true, 'ipv4')) {
+    if ($result = openvpn_validate_cidr($_POST['remotenet'], gettext('IPv4 Remote Network'), true, 'ipv4')) {
         $input_errors[] = $result;
     }
 
-    if ($result = openvpn_validate_cidr($_POST['remotenetv6'], 'IPv6 Remote Network', true, 'ipv6')) {
+    if ($result = openvpn_validate_cidr($_POST['remotenetv6'], gettext('IPv6 Remote Network'), true, 'ipv6')) {
         $input_errors[] = $result;
     }
 
