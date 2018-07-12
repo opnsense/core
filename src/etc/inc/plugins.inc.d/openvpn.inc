@@ -615,21 +615,6 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     $conf .= "up /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup\n";
     $conf .= "down /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkdown\n";
 
-    switch ($settings['mode']) {
-        case 'server_user':
-        case 'server_tls_user':
-            $conf .= "client-disconnect \"/usr/local/etc/inc/plugins.inc.d/openvpn/attributes.sh {$mode_id} \"\n";
-            break;
-        case 'server_tls':
-        case 'p2p_tls':
-            // For non user auth types setup client specific overrides, user authenticated ones are commissioned
-            // using the auth script in option auth-user-pass-verify
-            $conf .= "client-connect \"/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_setup_cso.php {$mode_id}\"\n";
-            break;
-        default:
-            break;
-    }
-
     if (!empty($iface_ip)) {
         $conf .= "local {$iface_ip}\n";
     }
@@ -643,6 +628,23 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         list($ip, $cidr) = explode('/', $settings['tunnel_network']);
         list($ipv6, $prefix) = explode('/', $settings['tunnel_networkv6']);
         $mask = gen_subnet_mask($cidr);
+
+        // client connect and disconnect handling
+        switch ($settings['mode']) {
+            case 'server_user':
+            case 'server_tls_user':
+                $conf .= "client-disconnect \"/usr/local/etc/inc/plugins.inc.d/openvpn/attributes.sh {$mode_id}\"\n";
+                break;
+            case 'server_tls':
+            case 'p2p_tls':
+                // For non user auth types setup client specific overrides,
+                // user authenticated ones are commissioned using the auth
+                // script in option auth-user-pass-verify.
+                $conf .= "client-connect \"/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_setup_cso.php {$mode_id}\"\n";
+                break;
+            default:
+                break;
+        }
 
         // configure tls modes
         switch ($settings['mode']) {
