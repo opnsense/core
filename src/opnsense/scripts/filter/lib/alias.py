@@ -117,7 +117,7 @@ class Alias(object):
             try:
                 for rdata in self._dnsResolver.query(address, record_type):
                     yield str(rdata)
-            except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.exception.Timeout):
+            except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.exception.Timeout, dns.resolver.NoNameservers):
                 pass
 
     def _fetch_url(self, url):
