@@ -171,7 +171,7 @@
                     <table id="grid-aliases" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlias">
                         <thead>
                         <tr>
-                            <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
+                            <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                             <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                             <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
                             <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
@@ -225,7 +225,7 @@
                                         </a>
                                     </td>
                                 </tr>
-                                <tr id="row_alias.enabled" >
+                                <tr id="row_alias.enabled">
                                     <td>
                                         <div class="control-label" id="control_label_alias.enabled">
                                             <a id="help_for_alias.enabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
@@ -242,7 +242,7 @@
                                         <span class="help-block" id="help_block_alias.enabled"></span>
                                     </td>
                                 </tr>
-                                <tr id="row_alias.name" >
+                                <tr id="row_alias.name">
                                     <td>
                                         <div class="control-label" id="control_label_alias.name">
                                             <a id="help_for_alias.name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
@@ -250,7 +250,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" size="50" id="alias.name"  >
+                                        <input type="text" class="form-control" size="50" id="alias.name">
                                         <div class="hidden" data-for="help_for_alias.name">
                                             <small>
                                                 {{lang._('The name of the alias may only consist of the characters "a-z, A-Z, 0-9 and _". Aliases can be nested using this name.')}}
@@ -261,7 +261,7 @@
                                         <span class="help-block" id="help_block_alias.name"></span>
                                     </td>
                                 </tr>
-                                <tr id="row_alias.type" >
+                                <tr id="row_alias.type">
                                     <td>
                                         <div class="control-label" id="control_label_alias.type">
                                             <i class="fa fa-info-circle text-muted"></i>
@@ -269,14 +269,14 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <select  id="alias.type" class="selectpicker" data-width="200px"></select>
-                                        <select id="alias.proto" multiple="multiple" title="" class="selectpicker" data-width="110px" ></select>
+                                        <select id="alias.type" class="selectpicker" data-width="200px"></select>
+                                        <select id="alias.proto" multiple="multiple" title="" class="selectpicker" data-width="110px"></select>
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.type"></span>
                                     </td>
                                 </tr>
-                                <tr id="row_alias.content" >
+                                <tr id="row_alias.content">
                                     <td>
                                         <div class="control-label" id="control_label_alias.content">
                                             <i class="fa fa-info-circle text-muted"></i>
@@ -313,7 +313,7 @@
                                         <span class="help-block" id="help_block_alias.content"></span>
                                     </td>
                                 </tr>
-                                <tr id="row_alias.description" >
+                                <tr id="row_alias.description">
                                     <td>
                                         <div class="control-label" id="control_label_alias.description">
                                             <a id="help_for_alias.description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
@@ -321,7 +321,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" size="50" id="alias.description"  >
+                                        <input type="text" class="form-control" size="50" id="alias.description">
                                         <div class="hidden" data-for="help_for_alias.description">
                                             <small>{{lang._('You may enter a description here for your reference (not parsed).')}}</small>
                                         </div>
