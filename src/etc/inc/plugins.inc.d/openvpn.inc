@@ -414,14 +414,18 @@ function openvpn_validate_cidr_ipv4($value, $allow_hosts = false)
 {
     $value = trim($value);
     if (!empty($value)) {
-        list($ip, $mask) = explode('/', $value);
-        if (!is_ipaddrv4($ip) or !is_numeric($mask) or ($mask > 32) or ($mask < 0)) {
+        list($ip, $prefix) = explode('/', $value);
+        if (!is_ipaddrv4($ip) || !is_numeric($prefix) || $prefix > 32 || $prefix < 0) {
             return false;
         }
-        /* IPv4 case is very strict, cannot be a host address */
-        $mask = (0xffffffff << (32 - $mask)) & 0xffffffff;
-        if (!$allow_hosts && (ip2long($ip) & $mask) != ip2long($ip)) {
-            return false;
+        if (!$allow_hosts) {
+            if ($prefix == 32) {
+                return false;
+            }
+            $mask = (0xffffffff << (32 - $prefix)) & 0xffffffff;
+            if (ip2long($ip) & $mask != ip2long($ip)) {
+                return false;
+            }
         }
     }
     return true;
@@ -435,7 +439,7 @@ function openvpn_validate_cidr_ipv6($value)
         if (empty($prefix)) {
             $prefix = '128';
         }
-        if (!is_ipaddrv6($ipv6) or !is_numeric($prefix) or ($prefix > 128) or ($prefix < 0)) {
+        if (!is_ipaddrv6($ipv6) || !is_numeric($prefix) || $prefix > 128 || $prefix < 0) {
             return false;
         }
     }
