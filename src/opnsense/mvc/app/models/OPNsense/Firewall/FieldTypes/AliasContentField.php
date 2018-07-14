@@ -117,7 +117,8 @@ class AliasContentField extends BaseField
         foreach ($this->getItems($data) as $port) {
             if (!Util::isAlias($port) && !Util::isPort($port, true)) {
                 $messages[] = sprintf(
-                    gettext('Entry "%s" is not a valid port number.'), $port
+                    gettext('Entry "%s" is not a valid port number.'),
+                    $port
                 );
             }
         }
@@ -135,7 +136,8 @@ class AliasContentField extends BaseField
         foreach ($this->getItems($data) as $host) {
             if (!Util::isAlias($host) && !Util::isIpAddress($host) && !Util::isDomain($host)) {
                 $messages[] = sprintf(
-                    gettext('Entry "%s" is not a valid hostname or IP address.'), $host
+                    gettext('Entry "%s" is not a valid hostname or IP address.'),
+                    $host
                 );
             }
         }
@@ -163,7 +165,8 @@ class AliasContentField extends BaseField
             if (!Util::isAlias($network) && !Util::isIpAddress($network) && !Util::isSubnet($network) &&
                     !($ipaddr_count == 2 && $domain_alias_count == 0)) {
                 $messages[] = sprintf(
-                    gettext('Entry "%s" is not a valid hostname or IP address.'), $network
+                    gettext('Entry "%s" is not a valid hostname or IP address.'),
+                    $network
                 );
             }
         }

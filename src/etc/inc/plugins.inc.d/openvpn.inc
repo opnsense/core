@@ -1490,13 +1490,10 @@ function openvpn_get_interface_ip($ip, $mask)
 
     // Special case for /31 networks which lack network and broadcast addresses.
     // As per RFC3021, both addresses should be treated as host addresses.
-    if ($masklong == 0xfffffffe)
-    {
+    if ($masklong == 0xfffffffe) {
         $ip1 = long2ip32($baselong);
         $ip2 = long2ip32($baselong + 1);
-    }
-    else
-    {
+    } else {
         $ip1 = long2ip32($baselong + 1);
         $ip2 = long2ip32($baselong + 2);
     }

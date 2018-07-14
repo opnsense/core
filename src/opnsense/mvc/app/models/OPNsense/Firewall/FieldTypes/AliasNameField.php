@@ -33,7 +33,6 @@ use OPNsense\Base\Validators\CallbackValidator;
 use Phalcon\Validation\Validator\Regex;
 use Phalcon\Validation\Validator\ExclusionIn;
 
-
 /**
  * Class AliasNameField
  * @package OPNsense\Base\FieldTypes

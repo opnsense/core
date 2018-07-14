@@ -77,7 +77,7 @@ class Util
      */
     public static function isAlias($name)
     {
-        if (!empty($name) ){
+        if (!empty($name)) {
             $aliasMdl = new Alias();
             // MVC defined aliases
             foreach ($aliasMdl->aliases->alias->__items as $alias) {

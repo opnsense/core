@@ -295,9 +295,9 @@ abstract class Rule
     {
         if (empty($value)) {
             return '';
-        } else if (empty($this->interfaceMapping[$value]['if'])) {
+        } elseif (empty($this->interfaceMapping[$value]['if'])) {
             return "{$prefix}##{$value}##{$suffix} ";
-        } else if (!empty($this->interfaceMapping[$value]['ipaddrv6'])  &&
+        } elseif (!empty($this->interfaceMapping[$value]['ipaddrv6'])  &&
             ($this->interfaceMapping[$value]['ipaddrv6'] == '6rd' ||
             $this->interfaceMapping[$value]['ipaddrv6'] == '6to4')) {
             return "{$prefix}". "{$value}_stf" ."{$suffix} ";

@@ -62,14 +62,14 @@ class M1_0_0 extends BaseModelMigration
                 if ($alias->url) {
                     // url content only contains a single item
                     $node->content = (string)$alias->url;
-                } elseif ($alias->aliasurl){
+                } elseif ($alias->aliasurl) {
                     // aliasurl in legacy config could consist of multiple <aliasurl> entries
                     $content = array();
                     foreach ($alias->aliasurl as $url) {
                         $content[] = (string)$url;
                     }
                     $node->content = implode("\n", $content);
-                } elseif ($alias->address){
+                } elseif ($alias->address) {
                     // address entries
                     $node->content = str_replace(" ", "\n", (string)$alias->address);
                 }

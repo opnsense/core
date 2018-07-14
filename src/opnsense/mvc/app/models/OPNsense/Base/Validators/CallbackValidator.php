@@ -64,7 +64,8 @@ class CallbackValidator extends Validator implements ValidatorInterface
         } else {
             // dropout with validation error when we miss a callback
             $validator->appendMessage(
-                new Message(gettext("Configuration error, missing callback in CallbackValidator"),
+                new Message(
+                    gettext("Configuration error, missing callback in CallbackValidator"),
                     $attribute,
                     'CallbackValidator'
                 )

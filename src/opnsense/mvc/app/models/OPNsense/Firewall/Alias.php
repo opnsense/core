@@ -84,7 +84,7 @@ class Alias extends BaseModel
                 $cfgsection = $cfgsection->$cfgName;
             }
             if ($cfgsection != null) {
-                $nodeidx = 0 ;
+                $nodeidx = 0;
                 foreach ($cfgsection as $inode) {
                     $node = $inode;
                     foreach ($aliasref[1] as $cfgName) {
