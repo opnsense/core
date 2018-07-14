@@ -115,17 +115,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         /* ipalias and carp should not use network or broadcast address */
         if ($pconfig['mode'] == "ipalias" || $pconfig['mode'] == "carp") {
-            if (is_ipaddrv4($pconfig['subnet']) && $pconfig['subnet_bits'] != "32") {
+            if (is_ipaddrv4($pconfig['subnet']) && $pconfig['subnet_bits'] != '32' && $pconfig['subnet_bits'] != '31') {
                 $network_addr = gen_subnet($pconfig['subnet'], $pconfig['subnet_bits']);
                 $broadcast_addr = gen_subnet_max($pconfig['subnet'], $pconfig['subnet_bits']);
-            } else if (is_ipaddrv6($pconfig['subnet']) && $_POST['subnet_bits'] != "128" ) {
-                $network_addr = gen_subnetv6($pconfig['subnet'], $pconfig['subnet_bits']);
-                $broadcast_addr = gen_subnetv6_max($pconfig['subnet'], $pconfig['subnet_bits']);
-            }
-            if (isset($network_addr) && $pconfig['subnet'] == $network_addr) {
-                $input_errors[] = gettext("You cannot use the network address for this VIP");
-            } else if (isset($broadcast_addr) && $pconfig['subnet'] == $broadcast_addr) {
-                $input_errors[] = gettext("You cannot use the broadcast address for this VIP");
+                if (isset($network_addr) && $pconfig['subnet'] == $network_addr) {
+                    $input_errors[] = gettext("You cannot use the network address for this VIP");
+                } else if (isset($broadcast_addr) && $pconfig['subnet'] == $broadcast_addr) {
+                    $input_errors[] = gettext("You cannot use the broadcast address for this VIP");
+                }
             }
         }
 
