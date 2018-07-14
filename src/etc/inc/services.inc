@@ -805,8 +805,6 @@ EOD;
             $dhcpdconf .= "  option tftp-server-name \"{$dhcpifconf['tftp']}\";\n";
         }
 
-
-
         // add pac url if it applies
         if (isset($dhcpifconf['wpad']) && !empty($config['system']['hostname']) && !empty($config['system']['domain'])) {
             $protocol = !empty($config['system']['webgui']['protocol']) ? $config['system']['webgui']['protocol'] : 'https';
