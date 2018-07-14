@@ -98,6 +98,18 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function delItemAction($uuid)
     {
+        $node = $this->getModel()->getNodeByReference('aliases.alias.'. $uuid);
+        if ($node != null) {
+            $uses = $this->getModel()->whereUsed((string)$node->name);
+            if (!empty($uses)) {
+                $message = "";
+                foreach ($uses as $key => $value) {
+                    $message .= sprintf("\n[%s] %s", $key, $value);
+                }
+                $message = sprintf(gettext("Cannot delete alias. Currently in use by %s"), $message);
+                throw new \OPNsense\Base\UserException($message, gettext("Alias in use"));
+            }
+        }
         return $this->delBase("aliases.alias", $uuid);
     }
 
