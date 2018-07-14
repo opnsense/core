@@ -41,6 +41,9 @@
                 </check001>
             </Constraints>
         </password>
+        <password_encryption type="TextField">
+            <Required>N</Required>
+        </password_encryption>
         <backupdir type="TextField">
             <Required>Y</Required>
             <mask>/[a-z0-9\-]+/i</mask>
