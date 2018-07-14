@@ -329,6 +329,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ControllerBase.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ControllerRoot.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/IndexController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Base/UserException.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/Api/AccessController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/Api/SessionController.php
