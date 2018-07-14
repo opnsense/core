@@ -290,16 +290,16 @@ include("fbegin.inc");?>
           if ($("#column_count_input").val() != $("#column_count").val()) {
               showSave();
           }
-         $("#column_count_input").val($("#column_count").val());
-         $(".dashboard_grid_column").each(function(){
-           var widget_col = $(this);
-           $.each(widget_col.attr("class").split(' '), function(index, classname) {
-              if (classname.indexOf('col-md') > -1) {
-                  widget_col.removeClass(classname);
-              }
-           });
-           widget_col.addClass('col-md-'+(12 / $("#column_count_input").val()));
-         });
+          $("#column_count_input").val($("#column_count").val());
+          $(".dashboard_grid_column").each(function(){
+              var widget_col = $(this);
+              $.each(widget_col.attr("class").split(' '), function(index, classname) {
+                  if (classname.indexOf('col-md') > -1) {
+                      widget_col.removeClass(classname);
+                  }
+              });
+              widget_col.addClass('col-md-'+(12 / $("#column_count_input").val()));
+          });
       });
       $("#column_count").change();
       // trigger initial ajax data poller
@@ -335,7 +335,7 @@ include("fbegin.inc");?>
         </div>
       </div>
       <div id="dashboard_container" class="row" style="display:none">
-        <div class="col-xs-12 col-md-4 dashboard_grid_column hidden" id="dashboard_colx">
+        <div class="col-xs-12 col-md-2 dashboard_grid_column hidden" id="dashboard_colx">
 
 <?php
       foreach ($widgetCollection as $widgetItem):
@@ -413,13 +413,15 @@ include("fbegin.inc");?>
 <?php
           endforeach;?>
           </div>
-          <div class="col-md-4 dashboard_grid_column" id="dashboard_col1"></div>
-          <div class="col-md-4 dashboard_grid_column" id="dashboard_col2"></div>
-          <div class="col-md-4 dashboard_grid_column" id="dashboard_col3"></div>
-          <div class="col-md-4 dashboard_grid_column" id="dashboard_col4"></div>
+          <div class="col-md-2 dashboard_grid_column" id="dashboard_col1"></div>
+          <div class="col-md-2 dashboard_grid_column" id="dashboard_col2"></div>
+          <div class="col-md-2 dashboard_grid_column" id="dashboard_col3"></div>
+          <div class="col-md-2 dashboard_grid_column" id="dashboard_col4"></div>
+          <div class="col-md-2 dashboard_grid_column" id="dashboard_col5"></div>
+          <div class="col-md-2 dashboard_grid_column" id="dashboard_col6"></div>
       </div>
     </div>
 </section>
-<?php
-  endif;
-include("foot.inc");?>
+<?php endif;
+
+include("foot.inc");
