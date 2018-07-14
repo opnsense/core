@@ -302,7 +302,7 @@ abstract class Rule
             $this->interfaceMapping[$value]['ipaddrv6'] == '6to4')) {
             return "{$prefix}". "{$value}_stf" ."{$suffix} ";
         } else {
-            /* XXX 'dhcp6usev4iface' is no handled correctly as well: uses PPPoE interface! */
+            /* XXX 'dhcp6usev4iface' is not handled correctly as well: uses PPPoE interface! */
             return "{$prefix}". $this->interfaceMapping[$value]['if']."{$suffix} ";
         }
     }
