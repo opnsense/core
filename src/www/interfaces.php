@@ -679,6 +679,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
                 break;
             case "6rd":
+                if (empty($pconfig['gateway-6rd']) || !is_ipaddrv4($pconfig['gateway-6rd'])) {
+                    $input_errors[] = gettext('6RD border relay gateway must be a valid IPv4 address.');
+                }
+                if (empty($pconfig['prefix-6rd']) || !is_subnetv6($pconfig['prefix-6rd'])) {
+                    $input_errors[] = gettext('6RD prefix must be a valid IPv6 subnet.');
+                }
+                if (!is_numeric($pconfig['prefix-6rd-v4plen'])) {
+                    $input_errors[] = gettext('6RD IPv4 prefix length must be a number.');
+                }
                 foreach ($ifdescrs as $ifent => $ifdescr) {
                     if ($if != $ifent && ($config[interfaces][$ifent]['ipaddrv6'] == $pconfig['type6'])) {
                         if ($config[interfaces][$ifent]['prefix-6rd'] == $pconfig['prefix-6rd']) {
