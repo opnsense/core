@@ -286,6 +286,28 @@ abstract class Rule
     }
 
     /**
+     * parse IPv6 interface (name to interface with special considerations)
+     * @param string|array $value field value
+     * @param string $prefix prefix interface tag
+     * @return string
+     */
+    protected function parseInterface6($value, $prefix = "on ", $suffix = "")
+    {
+        if (empty($value)) {
+            return '';
+        } else if (empty($this->interfaceMapping[$value]['if'])) {
+            return "{$prefix}##{$value}##{$suffix} ";
+        } else if (!empty($this->interfaceMapping[$value]['ipaddrv6'])  &&
+            ($this->interfaceMapping[$value]['ipaddrv6'] == '6rd' ||
+            $this->interfaceMapping[$value]['ipaddrv6'] == '6to4')) {
+            return "{$prefix}". "{$value}_stf" ."{$suffix} ";
+        } else {
+            /* XXX 'dhcp6usev4iface' is no handled correctly as well: uses PPPoE interface! */
+            return "{$prefix}". $this->interfaceMapping[$value]['if']."{$suffix} ";
+        }
+    }
+
+    /**
      * Validate if the provided rule looks like an ipv4 address.
      * This method isn't bulletproof (if only aliases are used and we don't know the protocol, this might fail to
      * tell the truth)
