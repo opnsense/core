@@ -288,6 +288,7 @@ chroot: /var/unbound
 username: unbound
 directory: /var/unbound
 pidfile: /var/run/unbound.pid
+root-hints: /root.hints
 use-syslog: yes
 port: {$port}
 verbosity: {$verbosity}
@@ -354,9 +355,8 @@ include: /var/unbound/remotecontrol.conf
 
 EOD;
 
+    copy('/usr/local/etc/inc/plugins.inc.d/unbound/root.min.hints', '/var/unbound/root.hints');
     file_put_contents('/var/unbound/unbound.conf', $unboundconf);
-
-    return 0;
 }
 
 function unbound_remote_control_setup()
