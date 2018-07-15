@@ -80,7 +80,7 @@ class AliasController extends ApiMutableModelControllerBase
      * @return array save result + validation output
      * @throws \OPNsense\Base\ModelException when not bound to model
      * @throws \Phalcon\Validation\Exception when field validations fail
-     * @throws \ReflectionException
+     * @throws \ReflectionException when not bound to model
      */
     public function addItemAction()
     {
@@ -104,6 +104,7 @@ class AliasController extends ApiMutableModelControllerBase
      * @return array save status
      * @throws \Phalcon\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
+     * @throws \OPNsense\Base\UserException when unable to delete
      */
     public function delItemAction($uuid)
     {
