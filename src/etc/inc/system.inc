@@ -1309,8 +1309,9 @@ function system_login_configure($verbose = false)
             }
         }
         /* serial terminals */
-        foreach (array('ttyu0', 'ttyu1', 'ttyu2', 'ttyu3') as $serialport) {
-            if (strpos($tty, $serialport) === 0) {
+        foreach (array('tty%s0', 'tty%s1', 'tty%s2', 'tty%s3') as $serialport) {
+            $serialport = sprintf($serialport, isset($config['system']['serialusb']) ? 'U' : 'u');
+            if (stripos($tty, $serialport) === 0) {
                 fwrite($fd, "{$serialport}\t\"/usr/libexec/getty {$serial_type}\"\tvt100\t{$on_off_secure_u}\n");
                 continue 2;
             }

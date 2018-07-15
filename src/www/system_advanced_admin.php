@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['nohttpreferercheck'] = isset($config['system']['webgui']['nohttpreferercheck']);
     $pconfig['althostnames'] = $config['system']['webgui']['althostnames'];
     $pconfig['serialspeed'] = $config['system']['serialspeed'];
+    $pconfig['serialusb'] = isset($config['system']['serialusb']);
     $pconfig['primaryconsole'] = $config['system']['primaryconsole'];
     $pconfig['secondaryconsole'] = $config['system']['secondaryconsole'];
     $pconfig['enablesshd'] = $config['system']['ssh']['enabled'];
@@ -186,6 +187,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['serialspeed'] = $pconfig['serialspeed'];
         } elseif (isset($config['system']['serialspeed'])) {
             unset($config['system']['serialspeed']);
+        }
+
+        if (!empty($pconfig['serialusb'])) {
+            $config['system']['serialusb'] = true;
+        } elseif (isset($config['system']['serialusb'])) {
+            unset($config['system']['serialusb']);
         }
 
         if (!empty($pconfig['primaryconsole'])) {
@@ -760,6 +767,13 @@ $(document).ready(function() {
                   <div class="hidden" data-for="help_for_serialspeed">
                     <?=gettext("Allows selection of different speeds for the serial console port."); ?>
                   </div>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="fa fa-info-circle text-muted"></i></a> <?= gettext('USB-based serial') ?></td>
+                <td>
+                  <input name="serialusb" type="checkbox" value="yes" <?= empty($pconfig['serialusb']) ? '' : 'checked="checked"' ?>  />
+                  <?= gettext('Use USB-based serial ports') ?>
                 </td>
               </tr>
               <tr>
