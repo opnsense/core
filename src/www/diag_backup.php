@@ -77,8 +77,13 @@ function decrypt_data(&$data, $pass)
 
 function tagfile_reformat($in, &$out, $tag = 'config.xml')
 {
+    global $g;
+
+    $version = strtok(file_get_contents('/usr/local/opnsense/version/opnsense'), '-');
+
     $out = "---- BEGIN {$tag} ----\n";
     /* XXX older version assume these defaults */
+    $out .= "Version: {$g['product_name']} {$version}\n";
     $out .= "Cipher: AES-256-CBC\n";
     $out .= "Hash: MD5\n\n";
 
