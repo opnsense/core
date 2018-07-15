@@ -1,33 +1,34 @@
 <?php
 
 /*
-    Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014 Deciso B.V.
+ * Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
@@ -35,7 +36,6 @@ require_once("filter.inc");
 require_once("services.inc");
 require_once("rrd.inc");
 require_once("system.inc");
-
 
 function _crypt_data($val, $pass, $opt)
 {
@@ -45,7 +45,7 @@ function _crypt_data($val, $pass, $opt)
     file_put_contents("{$file}.dec", $val);
 
     exec(sprintf(
-      '/usr/local/bin/openssl enc %s -aes-256-cbc -in %s.dec -out %s.enc -k %s',
+      '/usr/local/bin/openssl enc %s -aes-256-cbc -md md5 -in %s.dec -out %s.enc -k %s',
       escapeshellarg($opt),
       escapeshellarg($file),
       escapeshellarg($file),
@@ -75,9 +75,12 @@ function decrypt_data(&$data, $pass)
     return _crypt_data(base64_decode($data), $pass, '-d');
 }
 
-function tagfile_reformat($in, &$out, $tag)
+function tagfile_reformat($in, &$out, $tag = 'config.xml')
 {
     $out = "---- BEGIN {$tag} ----\n";
+    /* XXX older version assume these defaults */
+    $out .= "Cipher: AES-256-CBC\n";
+    $out .= "Hash: MD5\n\n";
 
     $size = 80;
     $oset = 0;
@@ -93,7 +96,7 @@ function tagfile_reformat($in, &$out, $tag)
     return true;
 }
 
-function tagfile_deformat($in, &$out, $tag)
+function tagfile_deformat($in, &$out, $tag = 'config.xml')
 {
     $btag_val = "---- BEGIN {$tag} ----";
     $etag_val = "---- END {$tag} ----";
@@ -114,6 +117,17 @@ function tagfile_deformat($in, &$out, $tag)
     $body_len -= $etag_len + 1;
 
     $out = substr($in, $body_pos, $body_len);
+
+    $out = explode("\n", $out);
+
+    foreach ($out as $key => $val) {
+        /* XXX remove helper lines for now */
+        if (strpos($val, ':') !== false) {
+            unset($out[$key]);
+        }
+    }
+
+    $out = implode("\n", $out);
 
     return true;
 }
@@ -245,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             if (!empty($_POST['encrypt'])) {
                 $data = encrypt_data($data, $_POST['encrypt_password']);
-                tagfile_reformat($data, $data, "config.xml");
+                tagfile_reformat($data, $data);
             }
 
             $size = strlen($data);
@@ -282,7 +296,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (!empty($_POST['decrypt'])) {
-            if (!tagfile_deformat($data, $data, "config.xml")) {
+            if (!tagfile_deformat($data, $data)) {
                 $input_errors[] = gettext("The uploaded file does not appear to contain an encrypted OPNsense configuration.");
             }
             $data = decrypt_data($data, $_POST['decrypt_password']);

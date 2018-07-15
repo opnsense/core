@@ -48,7 +48,7 @@ abstract class Base
 
         file_put_contents("{$file}.dec", $data);
         exec(sprintf(
-            '/usr/local/bin/openssl enc -e -aes-256-cbc -in %s -out %s -pass pass:%s',
+            '/usr/local/bin/openssl enc -e -aes-256-cbc -md md5 -in %s -out %s -pass pass:%s',
             escapeshellarg("{$file}.dec"),
             escapeshellarg("{$file}.enc"),
             escapeshellarg($pass)
@@ -60,7 +60,7 @@ abstract class Base
             @unlink("{$file}.enc");
             return base64_encode($result);
         } else {
-            syslog(LOG_ERR, 'Failed to encrypt/decrypt data!');
+            syslog(LOG_ERR, 'Failed to encrypt data!');
             return null;
         }
     }
@@ -78,7 +78,7 @@ abstract class Base
 
         file_put_contents("{$file}.dec", base64_decode($data));
         exec(sprintf(
-            '/usr/local/bin/openssl enc -d -aes-256-cbc -in %s -out %s -pass pass:%s',
+            '/usr/local/bin/openssl enc -d -aes-256-cbc -md md5 -in %s -out %s -pass pass:%s',
             escapeshellarg("{$file}.dec"),
             escapeshellarg("{$file}.enc"),
             escapeshellarg($pass)
@@ -90,7 +90,7 @@ abstract class Base
             @unlink("{$file}.enc");
             return $result;
         } else {
-            syslog(LOG_ERR, 'Failed to encrypt/decrypt data!');
+            syslog(LOG_ERR, 'Failed to decrypt data!');
             return null;
         }
     }
