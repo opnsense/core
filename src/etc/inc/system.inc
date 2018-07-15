@@ -672,7 +672,7 @@ function system_syslogd_extra_local($logsocket)
     return exec_safe('-l %s ', $logsocket);
 }
 
-function system_syslogd_start($verbose = false)
+function system_syslogd_start($verbose = false, $restart = false)
 {
     global $config;
 
@@ -798,9 +798,10 @@ EOD;
         }
     }
 
-    if (isvalidpid('/var/run/syslog.pid')) {
+    if (!$restart && isvalidpid('/var/run/syslog.pid')) {
         killbypid('/var/run/syslog.pid', 'HUP');
     } else {
+        killbypid('/var/run/syslog.pid', 'TERM', true);
         mwexecf_bg("/usr/local/sbin/syslogd -s -c -c -P %s {$syslogd_extra}", '/var/run/syslog.pid');
     }
 
