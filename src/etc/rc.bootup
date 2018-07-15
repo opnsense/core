@@ -126,7 +126,7 @@ system_powerd_configure(true);
  * initialized, otherwise it can occasionally fail to
  * route syslog messages properly on both IPv4 and IPv6.
  */
-system_syslogd_start(true);
+system_syslogd_start(true, true);
 
 system_console_unmute();
 
