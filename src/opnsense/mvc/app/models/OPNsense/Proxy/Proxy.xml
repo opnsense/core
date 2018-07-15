@@ -385,12 +385,12 @@
                     <Required>Y</Required>
                 </enable>
                 <RequestURL type="TextField">
-                    <Required>Y</Required>
                     <default>icap://[::1]:1344/avscan</default>
+                    <Required>N</Required>
                 </RequestURL>
                 <ResponseURL type="TextField">
                     <default>icap://[::1]:1344/avscan</default>
-                    <Required>Y</Required>
+                    <Required>N</Required>
                 </ResponseURL>
                 <SendClientIP type="BooleanField">
                     <Required>Y</Required>
