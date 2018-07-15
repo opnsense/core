@@ -76,11 +76,9 @@ if __name__ == '__main__':
             download_proto = str(rule['source']['url']).split(':')[0].lower()
             if dl.is_supported(url=rule['source']['url']):
                 if rule['filename'] not in enabled_rulefiles:
-                    try:
-                        # remove configurable but unselected file
-                        os.remove(('%s/%s' % (rule_source_directory, rule['filename'])).replace('//', '/'))
-                    except OSError:
-                        pass
+                    full_path = ('%s/%s' % (rule_source_directory, rule['filename'])).replace('//', '/')
+                    if os.path.isfile(full_path):
+                        os.remove(full_path)
                 else:
                     input_filter = enabled_rulefiles[rule['filename']]['filter']
                     if ('username' in rule['source'] and 'password' in rule['source']):
@@ -97,3 +95,10 @@ if __name__ == '__main__':
                                     headers=rule['http_headers'], version=remote_hash)
                     else:
                         syslog.syslog(syslog.LOG_INFO, 'download skipped %s, same version' % rule['filename'])
+
+    # cleanup: match all installed rulesets against the configured ones and remove uninstalled rules
+    md_filenames = map(lambda x:x['filename'], md.list_rules(rule_properties))
+    for filename in enabled_rulefiles:
+        full_path = ('%s/%s' % (rule_source_directory, filename)).replace('//', '/')
+        if filename not in md_filenames and os.path.isfile(full_path):
+            os.remove(full_path)
