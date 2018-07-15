@@ -280,7 +280,6 @@ if [ "$pkg_running" == "" ]; then
               base_to_delete="$(opnsense-update -bv)"
               base_to_delete="${base_to_delete%-*}"
               base_is_size="$(opnsense-update -bfSr $base_to_reboot)"
-              upgrade_needs_reboot="1"
               if [ "$base_to_reboot" != "$base_to_delete" -a -n "$base_is_size" ]; then
                 if [ "$packages_upgraded" == "" ]; then
                   packages_upgraded=$packages_upgraded"{\"name\":\"base\"," # If it is the first item then we do not want a seperator
@@ -291,6 +290,7 @@ if [ "$pkg_running" == "" ]; then
                 packages_upgraded=$packages_upgraded"\"current_version\":\"$base_to_delete\","
                 packages_upgraded=$packages_upgraded"\"new_version\":\"$base_to_reboot\"}"
                 updates=$(expr $updates + 1)
+                upgrade_needs_reboot="1"
               fi
             fi
 
@@ -308,7 +308,6 @@ if [ "$pkg_running" == "" ]; then
               kernel_to_delete="$(opnsense-update -kv)"
               kernel_to_delete="${kernel_to_delete%-*}"
               kernel_is_size="$(opnsense-update -fkSr $kernel_to_reboot)"
-              upgrade_needs_reboot="1"
               if [ "$kernel_to_reboot" != "$kernel_to_delete" -a -n "$kernel_is_size" ]; then
                 if [ "$packages_upgraded" == "" ]; then
                   packages_upgraded=$packages_upgraded"{\"name\":\"kernel\"," # If it is the first item then we do not want a seperator
@@ -319,6 +318,7 @@ if [ "$pkg_running" == "" ]; then
                 packages_upgraded=$packages_upgraded"\"current_version\":\"$kernel_to_delete\","
                 packages_upgraded=$packages_upgraded"\"new_version\":\"$kernel_to_reboot\"}"
                 updates=$(expr $updates + 1)
+                upgrade_needs_reboot="1"
               fi
             fi
           fi
