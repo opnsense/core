@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2818 Fabian Franz
+    Copyright (C) 2018 Fabian Franz
     Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
     All rights reserved.
