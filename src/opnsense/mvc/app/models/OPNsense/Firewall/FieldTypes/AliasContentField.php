@@ -90,6 +90,15 @@ class AliasContentField extends BaseField
     }
 
     /**
+     * return seperator character used
+     * @return string
+     */
+    public function getSeperatorChar()
+    {
+        return $this->separatorchar;
+    }
+
+    /**
      * fetch valid country codes
      * @return array valid country codes
      */
@@ -110,6 +119,7 @@ class AliasContentField extends BaseField
      * Validate port alias options
      * @param array $data to validate
      * @return bool|Callback
+     * @throws \OPNsense\Base\ModelException
      */
     private function validatePort($data)
     {
@@ -129,6 +139,7 @@ class AliasContentField extends BaseField
      * Validate host options
      * @param array $data to validate
      * @return bool|Callback
+     * @throws \OPNsense\Base\ModelException
      */
     private function validateHost($data)
     {
@@ -148,6 +159,7 @@ class AliasContentField extends BaseField
      * Validate network options
      * @param array $data to validate
      * @return bool|Callback
+     * @throws \OPNsense\Base\ModelException
      */
     private function validateNetwork($data)
     {

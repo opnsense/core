@@ -69,14 +69,12 @@ class Alias extends BaseModel
     }
 
     /**
-     * Return all places an alias seems to be used
+     * search configuration items where the requested alias is used
      * @param $name alias name
-     * @return array hashmap with references where this alias is used
+     * @return \Generator [reference, confignode, matched item]
      */
-    public function whereUsed($name)
+    private function searchConfig($name)
     {
-        $result = array();
-        // search legacy locations
         $cfgObj = Config::getInstance()->object();
         foreach ($this->getAliasSource() as $aliasref) {
             $cfgsection = $cfgObj;
@@ -92,11 +90,25 @@ class Alias extends BaseModel
                     }
                     if ((string)$node == $name) {
                         $ref = implode('.', $aliasref[0]) . "." . $nodeidx . "/" . implode('.', $aliasref[1]);
-                        $result[$ref] = (string)$inode->descr;
+                        yield array($ref, &$inode, &$node);
                     }
                     $nodeidx++;
                 }
             }
+        }
+    }
+
+    /**
+     * Return all places an alias seems to be used
+     * @param $name alias name
+     * @return array hashmap with references where this alias is used
+     */
+    public function whereUsed($name)
+    {
+        $result = array();
+        // search legacy locations
+        foreach ($this->searchConfig($name) as $item) {
+            $result[$item[0]] = (string)$item[1]->descr;
         }
         // find all used in this model
         foreach ($this->aliases->alias->__items as $alias) {
@@ -112,5 +124,30 @@ class Alias extends BaseModel
             }
         }
         return $result;
+    }
+
+    /**
+     * replace alias usage
+     * @param $oldname
+     * @param $newname
+     */
+    public function refactor($oldname, $newname)
+    {
+        // replace in legacy config
+        foreach ($this->searchConfig($oldname) as $item) {
+            $item[2][0] = $newname;
+        }
+        // find all used in this model (alias nesting)
+        foreach ($this->aliases->alias->__items as $alias) {
+            if (!in_array($alias->type, array('geoip', 'urltable', 'urltable_ports'))) {
+                $sepchar = $alias->content->getSeperatorChar();
+                $aliases = explode($sepchar, (string)$alias->content);
+                if (in_array($oldname, $aliases)) {
+                    $aliases = array_unique($aliases);
+                    $aliases[array_search($oldname, $aliases)] = $newname;
+                    $alias->content->setValue(implode($sepchar, $aliases));
+                }
+            }
+        }
     }
 }
