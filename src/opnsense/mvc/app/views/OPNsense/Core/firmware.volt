@@ -319,6 +319,8 @@
                 $("#audit_progress").addClass("caret");
                 $("#upgrade").attr("style","display:none");
                 $("#audit_all").attr("style","");
+                $('#major-upgrade').hide();
+                $('#upgrade_maj').prop('disabled', true);
                 if ($.upgrade_action == 'pkg') {
                     // update UI and delay update to avoid races
                     updateStatusPrepare(true);
