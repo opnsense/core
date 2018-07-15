@@ -33,6 +33,11 @@ DUMMY_UPDATE=$(${PKG} update 2>&1)
 LQUERY=$(${PKG} query %v opnsense-update 2> /dev/null)
 RQUERY=$(${PKG} rquery %v opnsense-update 2> /dev/null)
 
+# We do not check for downloads here to make sure the actual version
+# we want is acutally there.  The whole point of this script is a
+# hint to the console to reboot.  Worst case we are wrong and the
+# reboot doesn't happen.  The GUI offers precise info about it.
+
 if [ -n "${LQUERY}" -a -n "${RQUERY}" -a "${LQUERY%%_*}" != "${RQUERY%%_*}" ]; then
 	WANT_REBOOT=0
 elif opnsense-update -c; then
