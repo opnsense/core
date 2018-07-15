@@ -141,9 +141,7 @@ class Nextcloud extends Base implements IBackupProvider
             // backup source data to local strings (plain/encrypted)
             $confdata = file_get_contents('/conf/config.xml');
             if (!empty($crypto_password)) {
-                $confdata = chunk_split(
-                    $this->encrypt($confdata, $crypto_password)
-                );
+                $confdata = $this->encrypt($confdata, $crypto_password)
             }
             try {
                 $directories = $this->listFiles($url, $username, $password, '/');

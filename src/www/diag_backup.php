@@ -37,86 +37,7 @@ require_once("services.inc");
 require_once("rrd.inc");
 require_once("system.inc");
 
-function _crypt_data($val, $pass, $opt)
-{
-    $result = '';
-
-    $file = tempnam('/tmp', 'php-encrypt');
-    file_put_contents("{$file}.dec", $val);
-
-    exec(sprintf(
-      '/usr/local/bin/openssl enc %s -aes-256-cbc -in %s.dec -out %s.enc -k %s',
-      escapeshellarg($opt),
-      escapeshellarg($file),
-      escapeshellarg($file),
-      escapeshellarg($pass)
-    ));
-
-    if (file_exists("{$file}.enc")) {
-        $result = file_get_contents("{$file}.enc");
-    } else {
-        log_error('Failed to encrypt/decrypt data!');
-    }
-
-    @unlink($file);
-    @unlink("{$file}.dec");
-    @unlink("{$file}.enc");
-
-    return $result;
-}
-
-function encrypt_data(&$data, $pass)
-{
-    return base64_encode(_crypt_data($data, $pass, '-e'));
-}
-
-function decrypt_data(&$data, $pass)
-{
-    return _crypt_data(base64_decode($data), $pass, '-d');
-}
-
-function tagfile_reformat($in, &$out, $tag)
-{
-    $out = "---- BEGIN {$tag} ----\n";
-
-    $size = 80;
-    $oset = 0;
-    while ($size >= 64) {
-        $line = substr($in, $oset, 64);
-        $out .= $line . "\n";
-        $size = strlen($line);
-        $oset += $size;
-    }
-
-    $out .= "---- END {$tag} ----\n";
-
-    return true;
-}
-
-function tagfile_deformat($in, &$out, $tag)
-{
-    $btag_val = "---- BEGIN {$tag} ----";
-    $etag_val = "---- END {$tag} ----";
-
-    $btag_len = strlen($btag_val);
-    $etag_len = strlen($etag_val);
-
-    $btag_pos = stripos($in, $btag_val);
-    $etag_pos = stripos($in, $etag_val);
-
-    if (($btag_pos === false) || ($etag_pos === false)) {
-        return false;
-    }
-
-    $body_pos = $btag_pos + $btag_len;
-    $body_len = strlen($in);
-    $body_len -= $btag_len;
-    $body_len -= $etag_len + 1;
-
-    $out = substr($in, $body_pos, $body_len);
-
-    return true;
-}
+use OPNsense\Backup\Local;
 
 /**
  * restore config section
@@ -244,8 +165,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             if (!empty($_POST['encrypt'])) {
-                $data = encrypt_data($data, $_POST['encrypt_password']);
-                tagfile_reformat($data, $data, "config.xml");
+                $crypter = new Local();
+                /* XXX this *could* fail, not handled */
+                $data = $crypter->encrypt($data, $_POST['encrypt_password']);
             }
 
             $size = strlen($data);
@@ -265,10 +187,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif ($mode == "restore") {
         // unpack data and perform validation
         $data = null;
-        if (!empty($_POST['decrypt']) && (empty($_POST['decrypt_password']) || empty($_POST['decrypt_passconf']))) {
-            $input_errors[] = gettext("You must supply and confirm the password for decryption.");
-        } elseif (!empty($_POST['decrypt']) && $_POST['decrypt_password'] != $_POST['decrypt_passconf']) {
-            $input_errors[] = gettext("The supplied 'Password' and 'Confirm' field values must match.");
+        if (!empty($_POST['decrypt']) && empty($_POST['decrypt_password'])) {
+            $input_errors[] = gettext('You must supply the password for decryption.');
         }
         /* read the file contents */
         if (is_uploaded_file($_FILES['conffile']['tmp_name'])) {
@@ -282,10 +202,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (!empty($_POST['decrypt'])) {
-            if (!tagfile_deformat($data, $data, "config.xml")) {
-                $input_errors[] = gettext("The uploaded file does not appear to contain an encrypted OPNsense configuration.");
+            $crypter = new Local();
+            $data = $crypter->decrypt($data, $_POST['decrypt_password']);
+            if (empty($data)) {
+                $input_errors[] = gettext('The uploaded file could not be decrypted.');
             }
-            $data = decrypt_data($data, $_POST['decrypt_password']);
         }
 
         if(!empty($_POST['restorearea']) && !stristr($data, "<" . $_POST['restorearea'] . ">")) {
@@ -433,12 +354,12 @@ $( document ).ready(function() {
                     <div class="hidden table-responsive __mt" id="encrypt_opts">
                       <table class="table table-condensed">
                         <tr>
-                          <td><?=gettext("Password:"); ?></td>
-                          <td><input name="encrypt_password" type="password" value="" /></td>
+                          <td><?= gettext('Password') ?></td>
+                          <td><input name="encrypt_password" type="password"/></td>
                         </tr>
                         <tr>
-                          <td><?=gettext("confirm:"); ?></td>
-                          <td><input name="encrypt_passconf" type="password" value="" /> </td>
+                          <td><?= gettext('Confirmation') ?></td>
+                          <td><input name="encrypt_passconf" type="password"/> </td>
                         </tr>
                       </table>
                     </div>
@@ -480,12 +401,8 @@ $( document ).ready(function() {
                     <div class="hidden table-responsive __mt" id="decrypt_opts">
                       <table class="table table-condensed">
                         <tr>
-                          <td><?=gettext("Password:"); ?></td>
-                          <td><input name="decrypt_password" type="password" value="" /></td>
-                        </tr>
-                        <tr>
-                          <td><?=gettext("confirm:"); ?></td>
-                          <td><input name="decrypt_passconf" type="password" value="" /> </td>
+                          <td><?= gettext('Password') ?></td>
+                          <td><input name="decrypt_password" type="password"/></td>
                         </tr>
                       </table>
                     </div>
