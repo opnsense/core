@@ -75,6 +75,13 @@ class Nextcloud extends Base implements IBackupProvider
                 "value" => null
             ),
             array(
+                "name" => "password_encryption",
+                "type" => "password",
+                "label" => gettext("Encryption Password (Optional)"),
+                "help" => gettext("A password to encrypt your configuration"),
+                "value" => null
+            ),
+            array(
                 "name" => "backupdir",
                 "type" => "text",
                 "label" => gettext("Directory Name"),
@@ -128,13 +135,16 @@ class Nextcloud extends Base implements IBackupProvider
             $username = (string)$nextcloud->user;
             $password = (string)$nextcloud->password;
             $backupdir = (string)$nextcloud->backupdir;
+            $crypto_password = (string)$nextcloud->password_encryption;
             $hostname = $config->system->hostname . '.' .$config->system->domain;
             $configname = 'config-' . $hostname . '-' .  date("Y-m-d_H:i:s") . '.xml';
             // backup source data to local strings (plain/encrypted)
             $confdata = file_get_contents('/conf/config.xml');
-            $confdata_enc = chunk_split(
-                $this->encrypt($confdata, (string)$nextcloud->password)
-            );
+            if (!empty($crypto_password)) {
+                $confdata = chunk_split(
+                    $this->encrypt($confdata, $crypto_password)
+                );
+            }
             try {
                 $directories = $this->listFiles($url, $username, $password, '/');
                 if (!in_array("/$backupdir/", $directories)) {
@@ -146,7 +156,7 @@ class Nextcloud extends Base implements IBackupProvider
                     $password,
                     $backupdir,
                     $configname,
-                    $confdata_enc
+                    $confdata
                 );
                 // do not list directories
                 return array_filter(
