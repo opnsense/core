@@ -1,14 +1,14 @@
 <form>
     <field>
         <id>netflow.capture.interfaces</id>
-        <label>Interfaces</label>
+        <label>LAN interfaces</label>
         <type>select_multiple</type>
-        <help><![CDATA[Select interface(s) to enable NetFlow on.]]></help>
+        <help><![CDATA[Select internal interfaces to enable NetFlow on.]]></help>
         <hint>Type or select interface.</hint>
     </field>
     <field>
         <id>netflow.capture.egress_only</id>
-        <label>Egress only</label>
+        <label>WAN interfaces</label>
         <type>select_multiple</type>
         <help><![CDATA[Select interfaces used for WAN traffic to avoid counting NAT traffic twice.]]></help>
         <hint>Type or select interface.</hint>
