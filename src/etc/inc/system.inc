@@ -569,11 +569,8 @@ function system_routing_configure($verbose = false, $interface = '')
     }
 }
 
-
 function system_staticroutes_configure($interface = '')
 {
-    global $config, $aliastable;
-
     $static_routes = get_staticroutes(false, true);
     if (count($static_routes)) {
         $gateways_arr = return_gateways_array(false, true);
