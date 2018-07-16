@@ -78,6 +78,18 @@ class Plugin
         $this->interfaceMapping = array();
         $this->interfaceMapping['loopback'] = array('if' => 'lo0', 'descr' => 'loopback');
         $this->interfaceMapping = array_merge($this->interfaceMapping, $mapping);
+        // generate virtual IPv6 interfaces
+        foreach ($this->interfaceMapping as $key => &$intf) {
+            if (!empty($intf['ipaddrv6'])  && ($intf['ipaddrv6'] == '6rd' || $intf['ipaddrv6'] == '6to4')) {
+                // create new interface
+                $this->interfaceMapping[$key . '_stf'] = array();
+                $this->interfaceMapping[$key . '_stf']['if'] = $key . '_stf'; // TODO: rename to technical name
+                $this->interfaceMapping[$key . '_stf']['ifconfig']['ipv6'] = $intf['ifconfig']['ipv6'];
+                $this->interfaceMapping[$key . '_stf']['gatewayv6'] = $intf['gatewayv6'];
+                // link original interface
+                $intf['IPv6_override'] = $key . '_stf';
+            }
+        }
     }
 
     /**

@@ -168,7 +168,11 @@ abstract class Rule
 
             foreach ($ipprotos as $ipproto) {
                 $rule = $this->rule;
-                $rule['interface'] = $interface;
+                if ($rule['ipprotocol'] == 'inet6' && !empty($this->interfaceMapping[$interface]['IPv6_override'])) {
+                    $rule['interface'] = $this->interfaceMapping[$interface]['IPv6_override'];
+                } else {
+                    $rule['interface'] = $interface;
+                }
                 $rule['ipprotocol'] = $ipproto;
                 $this->convertAddress($rule);
                 // disable rule when interface not found
@@ -281,28 +285,6 @@ abstract class Rule
         } elseif (empty($this->interfaceMapping[$value]['if'])) {
             return "{$prefix}##{$value}##{$suffix} ";
         } else {
-            return "{$prefix}". $this->interfaceMapping[$value]['if']."{$suffix} ";
-        }
-    }
-
-    /**
-     * parse IPv6 interface (name to interface with special considerations)
-     * @param string|array $value field value
-     * @param string $prefix prefix interface tag
-     * @return string
-     */
-    protected function parseInterface6($value, $prefix = "on ", $suffix = "")
-    {
-        if (empty($value)) {
-            return '';
-        } elseif (empty($this->interfaceMapping[$value]['if'])) {
-            return "{$prefix}##{$value}##{$suffix} ";
-        } elseif (!empty($this->interfaceMapping[$value]['ipaddrv6'])  &&
-            ($this->interfaceMapping[$value]['ipaddrv6'] == '6rd' ||
-            $this->interfaceMapping[$value]['ipaddrv6'] == '6to4')) {
-            return "{$prefix}". "{$value}_stf" ."{$suffix} ";
-        } else {
-            /* XXX 'dhcp6usev4iface' is not handled correctly as well: uses PPPoE interface! */
             return "{$prefix}". $this->interfaceMapping[$value]['if']."{$suffix} ";
         }
     }
