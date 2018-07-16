@@ -866,12 +866,6 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 
 function fixup_default_gateway()
 {
-    global $config;
-
-    if (!isset($config['system']['gw_switch_default'])) {
-        return;
-    }
-
     $gateways_status = return_gateways_status(true);
     $gateways_arr = return_gateways_array();
 
