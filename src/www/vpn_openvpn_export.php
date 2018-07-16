@@ -35,6 +35,22 @@ require_once("services.inc");
 require_once("filter.inc");
 require_once("interfaces.inc");
 
+
+/* expand a host or network alias, if necessary */
+function alias_expand($name)
+{
+    global $aliastable;
+
+    if (array_key_exists($name, $aliastable)) {
+        return "\${$name}";
+    } elseif (is_ipaddr($name) || is_subnet($name) || is_port($name) || is_portrange($name)) {
+        return "{$name}";
+    } else {
+        return null;
+    }
+}
+
+
 function filter_generate_port(& $rule, $target = "source", $isnat = false) {
     $src = "";
 

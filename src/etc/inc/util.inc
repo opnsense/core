@@ -1049,20 +1049,6 @@ function is_alias($name)
     return array_key_exists($name, $aliastable);
 }
 
-/* expand a host or network alias, if necessary */
-function alias_expand($name)
-{
-    global $aliastable;
-
-    if (array_key_exists($name, $aliastable)) {
-        return "\${$name}";
-    } elseif (is_ipaddr($name) || is_subnet($name) || is_port($name) || is_portrange($name)) {
-        return "{$name}";
-    } else {
-        return null;
-    }
-}
-
 function subnet_size($subnet)
 {
     if (is_subnetv4($subnet)) {
