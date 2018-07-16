@@ -38,7 +38,7 @@ class NptRule extends Rule
         'binat_1' => array(
             'disabled' => 'parseIsComment',
             'binat' => 'parseStaticText,binat ',
-            'interface' => 'parseInterface6',
+            'interface' => 'parseInterface',
             'from' => 'parsePlain,from , to any',
             'to' => 'parsePlain, -> ',
             'descr' => 'parseComment'
@@ -46,7 +46,7 @@ class NptRule extends Rule
         'binat_2' => array(
             'disabled' => 'parseIsComment',
             'binat' => 'parseStaticText,binat ',
-            'interface' => 'parseInterface6',
+            'interface' => 'parseInterface',
             'to' => 'parsePlain,from , to any',
             'from' => 'parsePlain, -> ',
             'descr' => 'parseComment'
@@ -77,7 +77,7 @@ class NptRule extends Rule
      */
     private function parseNptRules()
     {
-        foreach ($this->reader() as $rule) {
+        foreach ($this->reader('npt') as $rule) {
             $rule['rule_type'] = "binat_1";
             yield $rule;
             $rule['rule_type'] = "binat_2";

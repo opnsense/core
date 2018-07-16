@@ -152,9 +152,10 @@ abstract class Rule
 
     /**
      * rule reader, applies standard rule patterns
+     * @param string type of rule to be read
      * @return iterator rules to generate
      */
-    protected function reader()
+    protected function reader($type = null)
     {
         $interfaces = empty($this->rule['interface']) ? array(null) : explode(',', $this->rule['interface']);
         foreach ($interfaces as $interface) {
@@ -162,13 +163,19 @@ abstract class Rule
                 $ipprotos = array('inet', 'inet6');
             } elseif (isset($this->rule['ipprotocol'])) {
                 $ipprotos = array($this->rule['ipprotocol']);
+            } elseif (!empty($type) && $type = 'npt') {
+                $ipprotos = array('inet6');
             } else {
                 $ipprotos = array(null);
             }
 
             foreach ($ipprotos as $ipproto) {
                 $rule = $this->rule;
-                $rule['interface'] = $interface;
+                if ($ipproto == 'inet6' && !empty($this->interfaceMapping[$interface]['IPv6_override'])) {
+                    $rule['interface'] = $this->interfaceMapping[$interface]['IPv6_override'];
+                } else {
+                    $rule['interface'] = $interface;
+                }
                 $rule['ipprotocol'] = $ipproto;
                 $this->convertAddress($rule);
                 // disable rule when interface not found
@@ -281,28 +288,6 @@ abstract class Rule
         } elseif (empty($this->interfaceMapping[$value]['if'])) {
             return "{$prefix}##{$value}##{$suffix} ";
         } else {
-            return "{$prefix}". $this->interfaceMapping[$value]['if']."{$suffix} ";
-        }
-    }
-
-    /**
-     * parse IPv6 interface (name to interface with special considerations)
-     * @param string|array $value field value
-     * @param string $prefix prefix interface tag
-     * @return string
-     */
-    protected function parseInterface6($value, $prefix = "on ", $suffix = "")
-    {
-        if (empty($value)) {
-            return '';
-        } elseif (empty($this->interfaceMapping[$value]['if'])) {
-            return "{$prefix}##{$value}##{$suffix} ";
-        } elseif (!empty($this->interfaceMapping[$value]['ipaddrv6'])  &&
-            ($this->interfaceMapping[$value]['ipaddrv6'] == '6rd' ||
-            $this->interfaceMapping[$value]['ipaddrv6'] == '6to4')) {
-            return "{$prefix}". "{$value}_stf" ."{$suffix} ";
-        } else {
-            /* XXX 'dhcp6usev4iface' is not handled correctly as well: uses PPPoE interface! */
             return "{$prefix}". $this->interfaceMapping[$value]['if']."{$suffix} ";
         }
     }
