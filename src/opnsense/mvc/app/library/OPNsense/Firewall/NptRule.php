@@ -77,7 +77,7 @@ class NptRule extends Rule
      */
     private function parseNptRules()
     {
-        foreach ($this->reader() as $rule) {
+        foreach ($this->reader('npt') as $rule) {
             $rule['rule_type'] = "binat_1";
             yield $rule;
             $rule['rule_type'] = "binat_2";

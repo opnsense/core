@@ -152,9 +152,10 @@ abstract class Rule
 
     /**
      * rule reader, applies standard rule patterns
+     * @param string type of rule to be read
      * @return iterator rules to generate
      */
-    protected function reader()
+    protected function reader($type = null)
     {
         $interfaces = empty($this->rule['interface']) ? array(null) : explode(',', $this->rule['interface']);
         foreach ($interfaces as $interface) {
@@ -162,13 +163,15 @@ abstract class Rule
                 $ipprotos = array('inet', 'inet6');
             } elseif (isset($this->rule['ipprotocol'])) {
                 $ipprotos = array($this->rule['ipprotocol']);
+            } elseif (!empty($type) && $type = 'npt') {
+                $ipprotos = array('inet6');
             } else {
                 $ipprotos = array(null);
             }
 
             foreach ($ipprotos as $ipproto) {
                 $rule = $this->rule;
-                if ($rule['ipprotocol'] == 'inet6' && !empty($this->interfaceMapping[$interface]['IPv6_override'])) {
+                if ($ipproto == 'inet6' && !empty($this->interfaceMapping[$interface]['IPv6_override'])) {
                     $rule['interface'] = $this->interfaceMapping[$interface]['IPv6_override'];
                 } else {
                     $rule['interface'] = $interface;
