@@ -113,9 +113,14 @@ class DNatRule extends Rule
             $reflinterf = $this->reflectionInterfaces($interface);
             if (!$rule['disabled'] && $rule['natreflection'] == "enable") {
                 foreach ($reflinterf as $interf) {
-                    $rule['rule_type'] = "nat_rdr";
-                    $rule['interface'] = $interf;
-                    yield $rule;
+                    $is_ipv4 = $this->isIpV4($rule);
+                    if (($is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
+                        (!$is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv6']))
+                    ) {
+                        $rule['rule_type'] = "nat_rdr";
+                        $rule['interface'] = $interf;
+                        yield $rule;
+                    }
                 }
             }
 
