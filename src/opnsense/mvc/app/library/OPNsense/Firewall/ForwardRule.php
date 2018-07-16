@@ -139,21 +139,22 @@ class ForwardRule extends Rule
             // When reflection is enabled our ruleset should cover all
             $interflist = array($tmp['interface']);
             if (!$tmp['disabled'] && !$tmp['nordr'] && in_array($tmp['natreflection'], array("purenat", "enable"))) {
-                $interflist = array_merge($interflist, $this->reflectionInterfaces($tmp['interface']));
+                $is_ipv4 = $this->isIpV4($tmp);
+                $reflinterf = $this->reflectionInterfaces($tmp['interface']);
+                foreach ($reflinterf as $interf) {
+                    if (($is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
+                        (!$is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv6']))
+                    ) {
+                        $interflist[] = $interf;
+                    }
+                }
             }
             foreach ($interflist as $interf) {
                 $rule = $tmp;
                 // automatically generate nat rule when enablenatreflectionhelper is set
                 if (!$rule['disabled'] && empty($rule['nordr']) && !empty($rule['enablenatreflectionhelper'])) {
-                    // Only add nat rules when the selected interface has an address configured
-                    if (!empty($this->interfaceMapping[$interf])) {
-                        if (($this->isIpV4($rule) && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
-                            (!$this->isIpV4($rule) && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv6']))
-                        ) {
-                            $rule['rule_types'][] = "rdr_nat";
-                            $rule['staticnatport'] = !empty($rule['staticnatport']);
-                        }
-                    }
+                    $rule['rule_types'][] = "rdr_nat";
+                    $rule['staticnatport'] = !empty($rule['staticnatport']);
                 }
                 $rule['interface'] = $interf;
                 yield $rule;
