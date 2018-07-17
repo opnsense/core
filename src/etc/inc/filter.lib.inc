@@ -489,7 +489,7 @@ function filter_core_rules_system($fw, $defaults)
         $defaults['pass']
     );
     // ipsec
-    if (!empty($fw->getInterfaceMapping()['enc0'])) {
+    if (!empty(iterator_to_array($fw->getInterfaceMapping())['enc0'])) {
         $fw->registerFilterRule(5,
           array('direction' => 'out', 'statetype' => 'keep', 'quick' => false, 'interface' => 'enc0',
                 'label' =>'IPsec internal host to host'),

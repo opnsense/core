@@ -87,6 +87,7 @@ class Plugin
                 $this->interfaceMapping[$key . '_stf']['ifconfig']['ipv6'] = $intf['ifconfig']['ipv6'];
                 $this->interfaceMapping[$key . '_stf']['gatewayv6'] = $intf['gatewayv6'];
                 $this->interfaceMapping[$key . '_stf']['descr'] = $intf['descr'];
+                $this->interfaceMapping[$key . '_stf']['is_IPv6_override'] = true;
                 // link original interface
                 $intf['IPv6_override'] = $key . '_stf';
             }
@@ -180,6 +181,12 @@ class Plugin
      */
     public function getInterfaceMapping()
     {
+        foreach ($this->interfaceMapping as $intfkey => $intf) {
+            // suppress virtual ipv6 interfaces
+            if (empty($intf['is_IPv6_override'])) {
+                yield $intfkey => $intf;
+            }
+        }
         return $this->interfaceMapping;
     }
 

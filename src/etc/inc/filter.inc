@@ -180,8 +180,7 @@ function filter_configure_sync($verbose = false, $flush_states = false)
     // initialize fw plugin object
     $fw = filter_core_get_initialized_plugin_system();
     filter_core_bootstrap($fw);
-    $cnfint = $fw->getInterfaceMapping();
-
+    $cnfint = iterator_to_array($fw->getInterfaceMapping());
     plugins_firewall($fw);
 
     if (isset($config['filter']['rule'])) {

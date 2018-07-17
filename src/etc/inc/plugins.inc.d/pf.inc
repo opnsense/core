@@ -125,7 +125,7 @@ function pf_firewall($fw)
     if (isset($config['filter']['bypassstaticroutes']) && isset($config['staticroutes']['route']) &&
         count($config['staticroutes']['route'])) {
         $ifdetails = legacy_interfaces_details();
-        $intf = $fw->getInterfaceMapping();
+        $intf = iterator_to_array($fw->getInterfaceMapping());
         $GatewaysList = return_gateways_array(false, true) + return_gateway_groups_array();
 
         foreach (get_staticroutes() as $route) {
