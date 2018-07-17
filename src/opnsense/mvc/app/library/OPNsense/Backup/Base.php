@@ -1,30 +1,29 @@
 <?php
-/**
- *    Copyright (C) 2018 Deciso B.V.
+
+/*
+ * Copyright (C) 2018 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Backup;
@@ -41,7 +40,7 @@ abstract class Base
      * @param string $pass passphrase to use
      * @return string base64 encoded crypted data
      */
-    public function encrypt($data, $pass)
+    public function encrypt($data, $pass, $tag = 'config.xml')
     {
         $file = tempnam(sys_get_temp_dir(), 'php-encrypt');
         @unlink($file);
@@ -56,9 +55,15 @@ abstract class Base
         @unlink("{$file}.dec");
 
         if (file_exists("{$file}.enc")) {
-            $result = file_get_contents("{$file}.enc");
+            $version = strtok(file_get_contents('/usr/local/opnsense/version/opnsense'), '-');
+            $result = "---- BEGIN {$tag} ----\n";
+            $result .= "Version: OPNsense {$version}\n"; /* XXX hardcoded product name */
+            $result .= "Cipher: AES-256-CBC\n";
+            $result .= "Hash: MD5\n\n";
+            $result .= chunk_split(base64_encode(file_get_contents("{$file}.enc")));
+            $result .= "\n---- END {$tag} ----\n";
             @unlink("{$file}.enc");
-            return base64_encode($result);
+            return $result;
         } else {
             syslog(LOG_ERR, 'Failed to encrypt data!');
             return null;
@@ -71,10 +76,25 @@ abstract class Base
      * @param string $pass passphrase to use
      * @return string data
      */
-    public function decrypt($data, $pass)
+    public function decrypt($data, $pass, $tag = 'config.xml')
     {
         $file = tempnam(sys_get_temp_dir(), 'php-encrypt');
         @unlink($file);
+
+        $data = explode("\n", $out);
+
+        foreach ($data as $key => $val) {
+            /* XXX remove helper lines for now */
+            if (strpos($val, ':') !== false) {
+                unset($out[$key]);
+            } else if (strpos($val, "---- BEGIN {$tag} ----")) {
+                unset($out[$key]);
+            } else if (strpos($val, "---- END {$tag} ----")) {
+                unset($out[$key]);
+            }
+        }
+
+        $data = implode("\n", $data);
 
         file_put_contents("{$file}.dec", base64_decode($data));
         exec(sprintf(
