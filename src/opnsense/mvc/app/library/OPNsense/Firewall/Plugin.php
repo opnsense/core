@@ -187,7 +187,6 @@ class Plugin
                 yield $intfkey => $intf;
             }
         }
-        return $this->interfaceMapping;
     }
 
     /**
