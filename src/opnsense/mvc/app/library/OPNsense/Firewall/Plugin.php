@@ -85,7 +85,10 @@ class Plugin
                 $this->interfaceMapping[$key . '_stf'] = array();
                 $this->interfaceMapping[$key . '_stf']['if'] = $key . '_stf'; // TODO: rename to technical name
                 $this->interfaceMapping[$key . '_stf']['ifconfig']['ipv6'] = $intf['ifconfig']['ipv6'];
+                $this->interfaceMapping[$key . '_stf']['blockbogons'] = isset($intf['blockbogons']);
+                $this->interfaceMapping[$key . '_stf']['blockpriv'] = isset($intf['blockpriv']);
                 $this->interfaceMapping[$key . '_stf']['gatewayv6'] = $intf['gatewayv6'];
+                $this->interfaceMapping[$key . '_stf']['descr'] = $intf['descr'];
                 // link original interface
                 $intf['IPv6_override'] = $key . '_stf';
             }
