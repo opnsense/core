@@ -116,6 +116,9 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <!-- opnsense non legacy helper functions -->
     <script src="/ui/js/opnsense.js"></script>
 
+    <!-- opnsense non legacy theme support functions -->
+    <script src="/ui/js/opnsense_theme.js"></script>
+
     <!-- Bootstrap type ahead -->
     <script src="/ui/js/bootstrap3-typeahead.min.js"></script>
 

@@ -62,6 +62,7 @@ if($need_alert_display == true) {
           <span class="icon-bar"></span>
         </button>
       </div>
+	  <button class="toggle-sidebar glyphicon glyphicon-chevron-left" style="display:none"></button>
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav navbar-right">
           <li id="menu_messages"><?= get_menu_messages() ?></li>
