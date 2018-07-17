@@ -292,5 +292,6 @@
     <script src="/ui/js/bootstrap-select.min.js"></script>
     <!-- bootstrap dialog -->
     <script src="/ui/js/bootstrap-dialog.min.js"></script>
+
   </body>
 </html>
