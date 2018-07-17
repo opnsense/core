@@ -307,26 +307,32 @@ function filter_core_rules_system($fw, $defaults)
     // block bogons and private nets
     $bogontmpl = array('type' => 'block', 'log' => !isset($config['syslog']['nologbogons']), 'disablereplyto' => 1);
     $privtmpl = array('type' => 'block', 'log' => !isset($config['syslog']['nologprivatenets']),
-      'from' => '10.0.0.0/8,127.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,fc00::/7',
+      'from' => '10.0.0.0/8,127.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16',
       'disablereplyto' => 1);
     foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
         $fw->registerFilterRule(5,
-          array('from' => "<bogons>", 'direction' => 'in', 'interface' => $intf,
+          array('from' => "<bogons>", 'direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet',
             'label' => "block bogon IPv4 networks from ".$intfinfo['descr'],
             'disabled' => !isset($intfinfo['blockbogons'])),
           $bogontmpl
         );
         $fw->registerFilterRule(5,
-          array('from' => "<bogonsv6>", 'direction' => 'in', 'interface' => $intf,
+          array('from' => "<bogonsv6>", 'direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet6',
             'disabled' => !isset($config['system']['ipv6allow']) || !isset($intfinfo['blockbogons']),
             'label' => "block bogon IPv6 networks from ".$intfinfo['descr']),
           $bogontmpl
         );
         $fw->registerFilterRule(5,
-          array('direction' => 'in', 'interface' => $intf,
+          array('direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet',
             'label' => "Block private networks from ".$intfinfo['descr'],
             'disabled' => !isset($intfinfo['blockpriv'])),
           $privtmpl
+        );
+        $fw->registerFilterRule(5,
+          array('direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet6',
+            'label' => "Block private networks from ".$intfinfo['descr'],
+            'disablereplyto' => 1, 'from' => 'fc00::/7',
+            'disabled' => !isset($intfinfo['blockpriv']))
         );
     }
 
