@@ -330,9 +330,9 @@ function filter_core_rules_system($fw, $defaults)
         );
         $fw->registerFilterRule(5,
           array('direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet6',
-            'label' => "Block private networks from ".$intfinfo['descr'],
-            'disablereplyto' => 1, 'from' => 'fc00::/7',
-            'disabled' => !isset($intfinfo['blockpriv']))
+            'label' => "Block private networks from ".$intfinfo['descr'], 'from' => 'fc00::/7',
+            'disabled' => !isset($intfinfo['blockpriv'])),
+          $privtmpl
         );
     }
 
