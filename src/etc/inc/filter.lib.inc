@@ -312,14 +312,14 @@ function filter_core_rules_system($fw, $defaults)
     foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
         $fw->registerFilterRule(5,
           array('from' => "<bogons>", 'direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet',
-            'label' => "block bogon IPv4 networks from ".$intfinfo['descr'],
+            'label' => "Block bogon IPv4 networks from ".$intfinfo['descr'],
             'disabled' => !isset($intfinfo['blockbogons'])),
           $bogontmpl
         );
         $fw->registerFilterRule(5,
           array('from' => "<bogonsv6>", 'direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet6',
             'disabled' => !isset($config['system']['ipv6allow']) || !isset($intfinfo['blockbogons']),
-            'label' => "block bogon IPv6 networks from ".$intfinfo['descr']),
+            'label' => "Block bogon IPv6 networks from ".$intfinfo['descr']),
           $bogontmpl
         );
         $fw->registerFilterRule(5,
