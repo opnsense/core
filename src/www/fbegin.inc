@@ -62,6 +62,7 @@ if($need_alert_display == true) {
           <span class="icon-bar"></span>
         </button>
       </div>
+	  <button class="toggle-sidebar glyphicon glyphicon-chevron-left"></button>
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav navbar-right">
           <li id="menu_messages"><?= get_menu_messages() ?></li>
@@ -200,4 +201,65 @@ if($need_alert_display == true) {
           </li>
         </ul>
       </div>
+	<!-- navigation toggle -->
+	<script>
+		$(document).ready(function () {
+			$(".toggle-sidebar").click(function () {
+				$("#navigation").toggleClass("col-sidebar-left");
+				$("main").toggleClass("col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12");
+				$(".toggle-sidebar").toggleClass("glyphicon-chevron-right glyphicon-chevron-left");
+					if ($("#navigation").hasClass("col-sidebar-left")) {
+						$(".brand-logo").css("display", "none");
+						$(".brand-icon").css("display", "inline-block");}
+					else												{
+						$(".brand-icon").css("display", "none");
+						$(".brand-logo").css("display", "inline-block");
+						$("#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs").css("width", "");
+																		}
+													});
+										});
+	</script>
+	<!-- sidebar mouseevents -->
+	<script>
+		$(document).ready(function () {
+			$("#navigation").hover(function () {
+				if ($("#navigation").hasClass("col-sidebar-left")) {
+					$("#navigation > div > nav > #mainmenu > div > div").on({
+						mouseout: function() {$("#navigation.col-sidebar-left").css("width", "70px"); },
+						mouseover: function() {$("#navigation.col-sidebar-left").css("width", "380px"); }});
+					$("#navigation > div > nav > #mainmenu > div > a").on({
+						mouseout: function() {$("#navigation.col-sidebar-left").css("width", "70px"); },
+						mouseover: function() {$("#navigation.col-sidebar-left").css("width", "380px"); }});
+																	}
+												});
+									});
+	</script>
+	<!-- on resize - toggle sidebar / main navigation -->
+	<script>
+		$(window).on('resize', function(){
+			var win = $(this);
+			if (((win.height() <= 669) && $("#navigation").hasClass("col-sidebar-left"))) {
+					$("main").toggleClass("col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12");
+					$("#navigation").toggleClass("col-sidebar-left");
+					$(".toggle-sidebar").toggleClass("glyphicon-chevron-right glyphicon-chevron-left");
+					$(".brand-icon").css("display", "none");
+					$(".brand-logo").css("display", "inline-block");
+					$("#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs").css("width", ""); }
+			else if ((win.width() <= 768) && $("#navigation").hasClass("col-sidebar-left")){
+					$("main").toggleClass("col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12");
+					$("#navigation").toggleClass("col-sidebar-left");
+					$(".toggle-sidebar").toggleClass("glyphicon-chevron-right glyphicon-chevron-left");
+					$(".brand-logo").css("display", "none");
+					$(".brand-icon").css("display", "inline-block");
+					$("#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs").css("width", ""); }
+			else if (((win.width() <= 768) && $("#navigation").not("col-sidebar-left")) || ((win.width() >= 768) && $("#navigation").hasClass("col-sidebar-left"))) {
+					$(".brand-logo").css("display", "none");
+					$(".brand-icon").css("display", "inline-block"); }
+			else if ((win.width() >= 768) && $("#navigation").not("col-sidebar-left")){
+					$("#navigation").addClass("in");
+					$(".brand-icon").css("display", "none");
+					$(".brand-logo").css("display", "inline-block"); }
+		});
+	</script>
+	<!-- navigation toggle-->
     </header>
