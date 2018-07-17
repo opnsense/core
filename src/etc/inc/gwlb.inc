@@ -432,10 +432,8 @@ EOD;
         /* status socket */
         $params .= exec_safe('-u %s ', "/var/run/dpinger_{$name}.sock");
 
-        if (empty($gateway['action_disable'])) {
-            /* command to run on alarm */
-            $params .= '-C /usr/local/etc/rc.monitor ';
-        }
+        /* command to run on alarm */
+        $params .= '-C /usr/local/etc/rc.monitor ';
 
         $params .= exec_safe(
             '-d %s ',
@@ -539,7 +537,7 @@ function return_gateways_status($byname = false)
 
         $gateways_arr = return_gateways_array();
         foreach ($dpinger_gws as $gwname => $gwdata) {
-            $dpinger_status = get_dpinger_status($gwname, $gateways_arr[$gwname]['action_disable']);
+            $dpinger_status = get_dpinger_status($gwname);
             if ($dpinger_status === false) {
                 continue;
             }
@@ -1211,7 +1209,7 @@ function running_dpinger_processes()
     return $result;
 }
 
-function get_dpinger_status($gwname, $detailed = false)
+function get_dpinger_status($gwname)
 {
     $running_processes = running_dpinger_processes();
 
@@ -1275,9 +1273,9 @@ function get_dpinger_status($gwname, $detailed = false)
     }
 
     if ($r['latency_avg'] > $settings['latencyhigh']) {
-        $r['status'] = $detailed ? 'delay' : 'down';
+        $r['status'] = 'down';
     } elseif ($r['loss'] > $settings['losshigh']) {
-        $r['status'] = $detailed ? 'loss' : 'down';
+        $r['status'] = 'down';
     } elseif ($r['latency_avg'] > $settings['latencylow']) {
         $r['status'] = 'delay';
     } elseif ($r['loss'] > $settings['losslow']) {
