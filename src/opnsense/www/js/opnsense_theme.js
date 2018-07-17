@@ -47,7 +47,7 @@ $(document).ready(function () {
         $(".toggle-sidebar").click(function () {
             $("#navigation").toggleClass("col-sidebar-left");
             $("main").toggleClass("col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12");
-            $(".toggle-sidebar").toggleClass("glyphicon-chevron-right glyphicon-chevron-left");
+            $(".toggle-sidebar > i").toggleClass("fa-chevron-right fa-chevron-left");
             if ($("#navigation").hasClass("col-sidebar-left")) {
                 $(".brand-logo").css("display", "none");
                 $(".brand-icon").css("display", "inline-block");
@@ -56,6 +56,7 @@ $(document).ready(function () {
                 $(".brand-logo").css("display", "inline-block");
                 $("#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs").css("width", "");
             }
+            $(this).blur();
         });
         /** sidebar mouseevents **/
         $("#navigation").hover(function () {
@@ -77,14 +78,14 @@ $(document).ready(function () {
             if (((win.height() <= 669) && $("#navigation").hasClass("col-sidebar-left"))) {
                 $("main").toggleClass("col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12");
                 $("#navigation").toggleClass("col-sidebar-left");
-                $(".toggle-sidebar").toggleClass("glyphicon-chevron-right glyphicon-chevron-left");
+                $(".toggle-sidebar > i").toggleClass("fa-chevron-right fa-chevron-left");
                 $(".brand-icon").css("display", "none");
                 $(".brand-logo").css("display", "inline-block");
                 $("#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs").css("width", "");
             } else if ((win.width() <= 768) && $("#navigation").hasClass("col-sidebar-left")) {
                 $("main").toggleClass("col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12");
                 $("#navigation").toggleClass("col-sidebar-left");
-                $(".toggle-sidebar").toggleClass("glyphicon-chevron-right glyphicon-chevron-left");
+                $(".toggle-sidebar > i").toggleClass("fa-chevron-right fa-chevron-left");
                 $(".brand-logo").css("display", "none");
                 $(".brand-icon").css("display", "inline-block");
                 $("#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs").css("width", "");
