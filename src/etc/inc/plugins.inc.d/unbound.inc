@@ -568,6 +568,7 @@ function unbound_add_host_entries()
             }
         }
     }
+
     if (isset($config['unbound']['enable_wpad'])) {
         $webui_protocol = !empty($config['system']['webgui']['protocol']) ? $config['system']['webgui']['protocol'] : 'https';
         $webui_port = !empty($config['system']['webgui']['port']) ? $config['system']['webgui']['port'] : 443;

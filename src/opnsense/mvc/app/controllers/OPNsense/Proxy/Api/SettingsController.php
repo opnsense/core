@@ -82,7 +82,6 @@ class SettingsController extends ApiMutableModelControllerBase
         return array();
     }
 
-
     /**
      * update remote blacklist item
      * @param string $uuid
@@ -242,8 +241,6 @@ class SettingsController extends ApiMutableModelControllerBase
         return $result;
     }
 
-    /*                                             PAC RULE                                         */
-
     /**
      *
      * search PAC Rule
@@ -254,6 +251,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $this->sessionClose();
         return $this->searchBase('pac.rule', array("enabled", "description", "proxies", "matches"), "description");
     }
+
     /**
      * retrieve PAC Rule or return defaults
      * @param $uuid item unique id
@@ -264,6 +262,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $this->sessionClose();
         return array("pac" => $this->getBase('rule', 'pac.rule', $uuid));
     }
+
     /**
      * add new PAC Rule and set with attributes from post
      * @return array
@@ -273,6 +272,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $this->pac_set_helper();
         return $this->addBase('rule', 'pac.rule');
     }
+
     /**
      * update PAC Rule
      * @param string $uuid
@@ -284,6 +284,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $this->pac_set_helper();
         return $this->setBase('rule', 'pac.rule', $uuid);
     }
+
     /**
      * toggle PAC Rule by uuid (enable/disable)
      * @param $uuid item unique id
@@ -293,6 +294,7 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         return $this->toggleBase('pac.rule', $uuid);
     }
+
     /**
      * delete PAC Rule by uuid
      * @param $uuid item unique id
@@ -313,6 +315,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $this->sessionClose();
         return $this->searchBase('pac.proxy', array("enabled","proxy_type", "name", "url", "description"), "description");
     }
+
     /**
      * retrieve PAC Proxy or return defaults
      * @param $uuid item unique id
@@ -323,6 +326,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $this->sessionClose();
         return array("pac" => $this->getBase('proxy', 'pac.proxy', $uuid));
     }
+
     /**
      * add new PAC Proxy and set with attributes from post
      * @return array
@@ -332,6 +336,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $this->pac_set_helper();
         return $this->addBase('proxy', 'pac.proxy');
     }
+
     /**
      * update PAC Proxy
      * @param string $uuid
@@ -343,6 +348,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $this->pac_set_helper();
         return $this->setBase('proxy', 'pac.proxy', $uuid);
     }
+
     /**
      * delete PAC Proxy by uuid
      * @param $uuid item unique id
@@ -354,7 +360,6 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     *
      * search PAC Match
      * @return array
      */
@@ -363,6 +368,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $this->sessionClose();
         return $this->searchBase('pac.match', array("enabled", "name", "description", "negate", "match_type"), "name");
     }
+
     /**
      * retrieve PAC Match or return defaults
      * @param $uuid item unique id
@@ -373,6 +379,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $this->sessionClose();
         return array("pac" => $this->getBase('match', 'pac.match', $uuid));
     }
+
     /**
      * add new PAC Proxy and set with attributes from post
      * @return array
@@ -382,6 +389,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $this->pac_set_helper();
         return $this->addBase('match', 'pac.match');
     }
+
     /**
      * update PAC Rule
      * @param string $uuid
