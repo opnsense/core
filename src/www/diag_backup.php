@@ -75,66 +75,39 @@ function decrypt_data(&$data, $pass)
     return _crypt_data(base64_decode($data), $pass, '-d');
 }
 
-function tagfile_reformat($in, &$out, $tag = 'config.xml')
+function tagfile_reformat($in, $tag = 'config.xml')
 {
-    global $g;
-
     $version = strtok(file_get_contents('/usr/local/opnsense/version/opnsense'), '-');
 
     $out = "---- BEGIN {$tag} ----\n";
     /* XXX older version assume these defaults */
-    $out .= "Version: {$g['product_name']} {$version}\n";
+    $out .= "Version: OPNsense {$version}\n"; /* XXX hardcoded product name */
     $out .= "Cipher: AES-256-CBC\n";
     $out .= "Hash: MD5\n\n";
-
-    $size = 80;
-    $oset = 0;
-    while ($size >= 64) {
-        $line = substr($in, $oset, 64);
-        $out .= $line . "\n";
-        $size = strlen($line);
-        $oset += $size;
-    }
-
+    $out .= chunk_split($in);
     $out .= "---- END {$tag} ----\n";
 
-    return true;
+    return $out;
 }
 
-function tagfile_deformat($in, &$out, $tag = 'config.xml')
+function tagfile_deformat($in, $tag = 'config.xml')
 {
-    $btag_val = "---- BEGIN {$tag} ----";
-    $etag_val = "---- END {$tag} ----";
-
-    $btag_len = strlen($btag_val);
-    $etag_len = strlen($etag_val);
-
-    $btag_pos = stripos($in, $btag_val);
-    $etag_pos = stripos($in, $etag_val);
-
-    if (($btag_pos === false) || ($etag_pos === false)) {
-        return false;
-    }
-
-    $body_pos = $btag_pos + $btag_len;
-    $body_len = strlen($in);
-    $body_len -= $btag_len;
-    $body_len -= $etag_len + 1;
-
-    $out = substr($in, $body_pos, $body_len);
-
-    $out = explode("\n", $out);
+    $out = explode("\n", $in);
 
     foreach ($out as $key => $val) {
         /* XXX remove helper lines for now */
         if (strpos($val, ':') !== false) {
+            unset($out[$key]);
+        } else if (strpos($val, "---- BEGIN {$tag} ----") !== false) {
+            unset($out[$key]);
+        } else if (strpos($val, "---- END {$tag} ----") !== false) {
             unset($out[$key]);
         }
     }
 
     $out = implode("\n", $out);
 
-    return true;
+    return $out;
 }
 
 /**
@@ -263,8 +236,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             if (!empty($_POST['encrypt'])) {
+                /* XXX this *could* fail, not handled */
                 $data = encrypt_data($data, $_POST['encrypt_password']);
-                tagfile_reformat($data, $data);
+                $data = tagfile_reformat($data);
             }
 
             $size = strlen($data);
@@ -301,10 +275,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (!empty($_POST['decrypt'])) {
-            if (!tagfile_deformat($data, $data)) {
-                $input_errors[] = gettext("The uploaded file does not appear to contain an encrypted OPNsense configuration.");
+            $data = decrypt_data(tagfile_deformat($data), $_POST['decrypt_password']);
+            if (empty($data)) {
+                $input_errors[] = gettext('The uploaded file could not be decrypted.');
             }
-            $data = decrypt_data($data, $_POST['decrypt_password']);
         }
 
         if(!empty($_POST['restorearea']) && !stristr($data, "<" . $_POST['restorearea'] . ">")) {

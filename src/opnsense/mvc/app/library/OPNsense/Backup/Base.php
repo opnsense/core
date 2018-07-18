@@ -81,16 +81,16 @@ abstract class Base
         $file = tempnam(sys_get_temp_dir(), 'php-encrypt');
         @unlink($file);
 
-        $data = explode("\n", $out);
+        $data = explode("\n", $data);
 
         foreach ($data as $key => $val) {
             /* XXX remove helper lines for now */
             if (strpos($val, ':') !== false) {
-                unset($out[$key]);
-            } else if (strpos($val, "---- BEGIN {$tag} ----")) {
-                unset($out[$key]);
-            } else if (strpos($val, "---- END {$tag} ----")) {
-                unset($out[$key]);
+                unset($data[$key]);
+            } else if (strpos($val, "---- BEGIN {$tag} ----") !== false) {
+                unset($data[$key]);
+            } else if (strpos($val, "---- END {$tag} ----") !== false) {
+                unset($data[$key]);
             }
         }
 
