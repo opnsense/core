@@ -88,9 +88,9 @@ abstract class Base
             /* XXX remove helper lines for now */
             if (strpos($val, ':') !== false) {
                 unset($data[$key]);
-            } else if (strpos($val, "---- BEGIN {$tag} ----") !== false) {
+            } elseif (strpos($val, "---- BEGIN {$tag} ----") !== false) {
                 unset($data[$key]);
-            } else if (strpos($val, "---- END {$tag} ----") !== false) {
+            } elseif (strpos($val, "---- END {$tag} ----") !== false) {
                 unset($data[$key]);
             }
         }
