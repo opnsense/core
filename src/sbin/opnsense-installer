@@ -83,11 +83,13 @@ echo
 echo "The installation finished successfully."
 echo
 echo "After reboot, open a web browser and navigate to"
-echo "https://192.168.1.1 (or the LAN IP address)."
+echo "https://192.168.1.1 (or the LAN IP address). The console"
+echo "can also be used to set a different LAN IP."
 echo
-echo "You might need to acknowledge the HTTPS certificate if "
-echo "your browser reports it as untrusted.  This is normal"
-echo "as a self-signed certificate is used by default."
+echo "Your browser may report the HTTPS certificate as untrusted"
+echo "and ask you to accept it. This is normal, as the default"
+echo "certificate will be self-signed and cannot be validated by"
+echo "an external root authority."
 echo
 echo -n "Rebooting in 5 seconds.  CTRL-C to abort"
 for n in 5 4 3 2 1; do
