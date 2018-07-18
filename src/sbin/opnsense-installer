@@ -83,11 +83,11 @@ echo
 echo "The installation finished successfully."
 echo
 echo "After reboot, open a web browser and navigate to"
-echo "https://192.168.1.1 (or the LAN IP address). The console"
+echo "https://192.168.1.1 (or the LAN IP address).  The console"
 echo "can also be used to set a different LAN IP."
 echo
 echo "Your browser may report the HTTPS certificate as untrusted"
-echo "and ask you to accept it. This is normal, as the default"
+echo "and ask you to accept it.  This is normal, as the default"
 echo "certificate will be self-signed and cannot be validated by"
 echo "an external root authority."
 echo
