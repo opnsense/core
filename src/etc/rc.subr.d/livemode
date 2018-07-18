@@ -58,7 +58,7 @@ if (is_install_media()) {
 
         echo "\n";
 
-        $greeting  = "Welcome!  OPNsense is running in \"live\" mode from install media.\n" .
+        $greeting  = "Welcome!  OPNsense is running in live mode from install media.\n" .
                      "Please login as 'root' to continue in live mode, or as 'installer' to install OPNsense.\n" .
                      "Use the default or previously-imported root password for both accounts.";
 
