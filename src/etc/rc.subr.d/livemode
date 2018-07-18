@@ -58,11 +58,9 @@ if (is_install_media()) {
 
         echo "\n";
 
-        $greeting  = "Welcome!  You may now start OPNsense. There are two options:\n" .
-                     "Log in as 'root' to run OPNsense \"live\" from its current media " .
-                     "(without modifying the system), or for quick access to the shell.\n" .
-                     "Log in as 'installer' to start the OPNsense installer.\n" .
-                     "Use the default root password for both accounts.";
+        $greeting  = "Welcome!  OPNsense is running in \"live\" mode from install media.\n" .
+                     "Please login as 'root' to continue in live mode, or as 'installer' to install OPNsense.\n" .
+                     "Use the default or previously-imported root password for both accounts.";
 
         if (!isset($config['system']['ssh']['noauto']) && is_process_running('sshd')) {
             $greeting .= "  Remote login via SSH is also enabled.";
