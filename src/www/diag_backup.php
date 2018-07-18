@@ -84,7 +84,7 @@ function tagfile_reformat($in, $tag = 'config.xml')
     $out .= "Version: OPNsense {$version}\n"; /* XXX hardcoded product name */
     $out .= "Cipher: AES-256-CBC\n";
     $out .= "Hash: MD5\n\n";
-    $out .= chunk_split($in);
+    $out .= chunk_split($in, 76, "\n");
     $out .= "---- END {$tag} ----\n";
 
     return $out;
@@ -218,7 +218,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($_POST['encrypt']) && (empty($_POST['encrypt_password']) || empty($_POST['encrypt_passconf']))) {
             $input_errors[] = gettext("You must supply and confirm the password for encryption.");
         } elseif (!empty($_POST['encrypt']) && $_POST['encrypt_password'] != $_POST['encrypt_passconf']) {
-            $input_errors[] = gettext("The supplied 'Password' and 'Confirm' field values must match.");
+            $input_errors[] = gettext('The passwords do not match.');
         }
         if (count($input_errors) == 0) {
             $host = "{$config['system']['hostname']}.{$config['system']['domain']}";
@@ -258,10 +258,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif ($mode == "restore") {
         // unpack data and perform validation
         $data = null;
-        if (!empty($_POST['decrypt']) && (empty($_POST['decrypt_password']) || empty($_POST['decrypt_passconf']))) {
-            $input_errors[] = gettext("You must supply and confirm the password for decryption.");
-        } elseif (!empty($_POST['decrypt']) && $_POST['decrypt_password'] != $_POST['decrypt_passconf']) {
-            $input_errors[] = gettext("The supplied 'Password' and 'Confirm' field values must match.");
+        if (!empty($_POST['decrypt']) && empty($_POST['decrypt_password'])) {
+            $input_errors[] = gettext('You must supply the password for decryption.');
         }
         /* read the file contents */
         if (is_uploaded_file($_FILES['conffile']['tmp_name'])) {
@@ -426,12 +424,12 @@ $( document ).ready(function() {
                     <div class="hidden table-responsive __mt" id="encrypt_opts">
                       <table class="table table-condensed">
                         <tr>
-                          <td><?=gettext("Password:"); ?></td>
-                          <td><input name="encrypt_password" type="password" value="" /></td>
+                          <td><?= gettext('Password') ?></td>
+                          <td><input name="encrypt_password" type="password"/></td>
                         </tr>
                         <tr>
-                          <td><?=gettext("confirm:"); ?></td>
-                          <td><input name="encrypt_passconf" type="password" value="" /> </td>
+                          <td><?= gettext('Confirmation') ?></td>
+                          <td><input name="encrypt_passconf" type="password"/> </td>
                         </tr>
                       </table>
                     </div>
@@ -473,12 +471,8 @@ $( document ).ready(function() {
                     <div class="hidden table-responsive __mt" id="decrypt_opts">
                       <table class="table table-condensed">
                         <tr>
-                          <td><?=gettext("Password:"); ?></td>
-                          <td><input name="decrypt_password" type="password" value="" /></td>
-                        </tr>
-                        <tr>
-                          <td><?=gettext("confirm:"); ?></td>
-                          <td><input name="decrypt_passconf" type="password" value="" /> </td>
+                          <td><?= gettext('Password') ?></td>
+                          <td><input name="decrypt_password" type="password"/></td>
                         </tr>
                       </table>
                     </div>

@@ -2,6 +2,7 @@
 
 /*
  * Copyright (C) 2018 Deciso B.V.
+ * Copyright (C) 2018 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,8 +61,8 @@ abstract class Base
             $result .= "Version: OPNsense {$version}\n"; /* XXX hardcoded product name */
             $result .= "Cipher: AES-256-CBC\n";
             $result .= "Hash: MD5\n\n";
-            $result .= chunk_split(base64_encode(file_get_contents("{$file}.enc")));
-            $result .= "\n---- END {$tag} ----\n";
+            $result .= chunk_split(base64_encode(file_get_contents("{$file}.enc")), 76, "\n");
+            $result .= "---- END {$tag} ----\n";
             @unlink("{$file}.enc");
             return $result;
         } else {

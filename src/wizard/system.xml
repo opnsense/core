@@ -587,7 +587,7 @@ if (!empty($_POST['adminpassword']) || !empty($_POST['adminpasswordagain'])) {
 		local_user_set_password($admin_user, $_POST['adminpassword']);
 		local_user_set($admin_user);
 	} else {
-		$input_errors[] = gettext('Passwords do not match.');
+		$input_errors[] = gettext('The passwords do not match.');
 	}
 }
 if (count($input_errors)) {
