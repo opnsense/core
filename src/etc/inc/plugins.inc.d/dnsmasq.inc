@@ -118,9 +118,11 @@ function dnsmasq_configure_do($verbose = false)
     }
 
     if (isset($config['dnsmasq']['interface'])) {
-        $addresses = array('127.0.0.1', '::1');
+        $interfaces = explode(',', $config['dnsmasq']['interface']);
+        $interfaces[] = 'lo0';
+        $addresses = array();
 
-        foreach (explode(',', $config['dnsmasq']['interface']) as $interface) {
+        foreach ($interfaces as $interface) {
             foreach (legacy_getall_interface_addresses(get_real_interface($interface)) as $tmpaddr) {
                 $tmpaddr = explode('/', $tmpaddr)[0];
                 /* no support for link-local address with scope specified */

@@ -157,9 +157,10 @@ function system_resolvconf_generate($verbose = false)
         $resolvconf = "domain {$syscfg['domain']}\n";
     }
 
-    if (((isset($config['dnsmasq']['enable']) && (empty($config['dnsmasq']['interface']) || in_array("lo0", explode(",", $config['dnsmasq']['interface']))))
-      || (isset($config['unbound']['enable'])) && (empty($config['unbound']['active_interface']) || in_array("lo0", explode(",", $config['unbound']['active_interface']))))
-      && !isset($config['system']['dnslocalhost'])) {
+    /* XXX Unbound should always bind to loopback like Dnsmasq */
+    if (!isset($config['system']['dnslocalhost']) && (isset($config['dnsmasq']['enable']) ||
+      (isset($config['unbound']['enable']) && (empty($config['unbound']['active_interface']) ||
+      in_array('lo0', explode(',', $config['unbound']['active_interface'])))))) {
         $resolvconf .= "nameserver 127.0.0.1\n";
     }
 
