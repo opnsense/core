@@ -234,7 +234,7 @@ abstract class Rule
                         $rule[$target] = "(self)";
                     } elseif (preg_match("/^(wan|lan|opt[0-9]+)ip$/", $network_name, $matches)) {
                         if (!empty($interfaces[$matches[1]]['if'])) {
-                            $rule[$target] = "({$interfaces["{$matches[1]}"]['if']}:0)";
+                            $rule[$target] = "({$interfaces["{$matches[1]}"]['if']})";
                         }
                     } elseif (!empty($interfaces[$network_name]['if'])) {
                         $rule[$target] = "({$interfaces[$network_name]['if']}:network)";
