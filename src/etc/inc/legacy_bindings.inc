@@ -73,7 +73,18 @@ function legacy_list_aliases($type)
 {
     global $config;
     $result = array();
-    if (isset($config['aliases']['alias'])) {
+
+    $aliasMdl = new \OPNsense\Firewall\Alias();
+    // MVC defined aliases
+    foreach ($aliasMdl->aliases->alias->__items as $alias) {
+        if ($type == "port" && preg_match("/port/i", (string)$alias->type)) {
+            $result[] = array("name" => (string)$alias->name);
+        } elseif ($type != "port" && !preg_match("/port/i", (string)$alias->type)) {
+            $result[] = array("name" => (string)$alias->name);
+        }
+    }
+    // legacy defined, keep during transition.
+    if (isset($config['aliases']['alias']) && empty($result)) {
         foreach ($config['aliases']['alias'] as $alias) {
             if (!empty($alias['address']) || !empty($alias['url']) || !empty($alias['aliasurl']) || $alias['type'] == 'external') {
                 if ($type == "port") {
