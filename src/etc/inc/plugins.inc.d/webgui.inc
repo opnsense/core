@@ -44,6 +44,7 @@ function webgui_configure_do($verbose = false, $interface = '')
     $interfaces = array();
     if (!empty($config['system']['webgui']['interfaces'])) {
         $interfaces = explode(',', $config['system']['webgui']['interfaces']);
+        $interfaces[] = 'lo0';
     }
 
     if (!empty($interface) && !in_array($interface, $interfaces)) {
@@ -58,33 +59,15 @@ function webgui_configure_do($verbose = false, $interface = '')
     $listeners = count($interfaces) ? array() : array('0.0.0.0', '::');
 
     foreach ($interfaces as $interface) {
-        $realif = get_real_interface($interface);
-        $addrs = legacy_get_interface_addresses($realif);
-        foreach (array('ipaddr', 'ipaddr6'/*, 'ipaddr6_ll'*/) as $type) {
-            if (!empty($addrs[$type])) {
-                $listeners[] = $addrs[$type];
+        foreach (legacy_getall_interface_addresses(get_real_interface($interface)) as $tmpaddr) {
+            $tmpaddr = explode('/', $tmpaddr)[0];
+            /* no support for link-local address with scope specified */
+            $tmpaddr = explode('%', $tmpaddr)[0];
+            /* link-local does not seem to be supported */
+            if (!empty($tmpaddr) && !is_linklocal($tmpaddr)) {
+                $listeners[] = $tmpaddr;
             }
         }
-
-        foreach (array('ipaddr', 'ipaddrv6') as $type) {
-            if (empty($config['interfaces'][$interface][$type])) {
-                continue;
-            }
-            $addr = $config['interfaces'][$interface][$type];
-            if (is_ipaddr($addr) && !is_linklocal($addr)) {
-                $listeners[] = $addr;
-            }
-        }
-
-        $viparr = &config_read_array('virtualip', 'vip');
-        foreach ($viparr as $vip) {
-            if ($vip['interface'] == $interface && is_ipaddr($vip['subnet'])) {
-                $listeners[] = $vip['subnet'];
-            }
-        }
-
-        /* addresses may have been read twice */
-        $listeners = array_unique($listeners);
     }
 
     chdir('/usr/local/www');
