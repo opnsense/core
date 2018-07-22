@@ -149,6 +149,14 @@ function get_alias_description($name)
 {
     global $config;
 
+    $aliasMdl = new \OPNsense\Firewall\Alias();
+    // MVC defined aliases
+    foreach ($aliasMdl->aliases->alias->__items as $alias) {
+        if ((string)$alias->name == $name) {
+            return (string)$alias->description;
+        }
+    }
+    // legacy defined, keep during transition.
     if (isset($config['aliases']['alias'])) {
         foreach ($config['aliases']['alias'] as $alias) {
             if ($alias['name'] == $name) {
