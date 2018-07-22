@@ -266,13 +266,17 @@ function legacy_interfaces_details($intf = null)
         } elseif (strpos($line, "\tinet6 ") !== false) {
             // IPv6 information
             $addr = strtok($line_parts[1], '%');
+            $tunnel = false;
             unset($mask);
             for ($i = 0; $i < count($line_parts) - 1; ++$i) {
-              if ($line_parts[$i] == 'prefixlen') {
-                  $mask = intval($line_parts[$i + 1]);
-              }
+                if ($line_parts[$i] == 'prefixlen') {
+                    $mask = intval($line_parts[$i + 1]);
+                }
+                if ($line_parts[$i] == '-->') {
+                    $tunnel = true;
+                }
             }
-            if (isset($mask)) {
+            if (isset($mask) && !$tunnel) {
                 $is_link_local = strpos($addr, 'fe80:') === 0;
                 $result[$current_interface]["ipv6"][] = array('ipaddr' => $addr, 'subnetbits' => $mask,
                                                               'link-local' => $is_link_local);
