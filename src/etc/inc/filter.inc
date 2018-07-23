@@ -623,8 +623,10 @@ function filter_generate_aliases()
             switch ($aliased['type']) {
                 case "urltable_ports":
                 case "url_ports":
-                    $tmp_ports = filter_core_get_url_port_alias($aliased['name']);
-                    $aliases .= "{$aliased['name']} = \"{ {$tmp_ports} }\"\n";
+                    # a bit of a hack, but prevents the ruleset from not being able to load if these types are in
+                    # the configuration.
+                    $aliases .= "{$aliased['name']} = \"{  0 <> 65535 }\"\n";
+                    file_notice('filter_load', sprintf(gettext('URL port aliases types not supported [%s]'), $aliased['name']), 'Filter Reload', '');
                     break;
                 case "port":
                     $tmp_ports = implode(" ", filter_core_get_port_alias($aliased['name']));
