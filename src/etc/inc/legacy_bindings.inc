@@ -74,29 +74,11 @@ function legacy_list_aliases($type)
     global $config;
     $result = array();
 
-    $aliasMdl = new \OPNsense\Firewall\Alias();
-    // MVC defined aliases
-    foreach ($aliasMdl->aliases->alias->__items as $alias) {
-        if ($type == "port" && preg_match("/port/i", (string)$alias->type)) {
-            $result[] = array("name" => (string)$alias->name);
-        } elseif ($type != "port" && !preg_match("/port/i", (string)$alias->type)) {
-            $result[] = array("name" => (string)$alias->name);
-        }
-    }
-    // legacy defined, keep during transition.
-    if (isset($config['aliases']['alias']) && empty($result)) {
-        foreach ($config['aliases']['alias'] as $alias) {
-            if (!empty($alias['address']) || !empty($alias['url']) || !empty($alias['aliasurl']) || $alias['type'] == 'external') {
-                if ($type == "port") {
-                    if (preg_match("/port/i", $alias['type'])) {
-                        $result[] = $alias;
-                    }
-                } else {
-                    if (!preg_match("/port/i", $alias['type'])){
-                        $result[] = $alias;
-                    }
-                }
-            }
+    foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
+        if ($type == "port" && preg_match("/port/i", $alias['type'])) {
+            $result[] = array("name" => $alias['name']);
+        } elseif ($type != "port" && !preg_match("/port/i", $alias['type'])) {
+            $result[] = array("name" => $alias['name']);
         }
     }
     return $result;
@@ -162,19 +144,14 @@ function get_alias_description($name)
 
     $aliasMdl = new \OPNsense\Firewall\Alias();
     // MVC defined aliases
-    foreach ($aliasMdl->aliases->alias->__items as $alias) {
-        if ((string)$alias->name == $name) {
-            return (string)$alias->description;
-        }
-    }
-    // legacy defined, keep during transition.
-    if (isset($config['aliases']['alias'])) {
-        foreach ($config['aliases']['alias'] as $alias) {
-            if ($alias['name'] == $name) {
-                return (isset($alias['descr'])) ? $alias['descr'] : "";
+    foreach ((new \OPNsense\Firewall\Alias())->aliasIterator()  as $alias) {
+        if ($alias['name'] == $name) {
+            if (isset($alias['descr'])) {
+                return $alias['descr'];
+            } elseif ($alias['description']) {
+                return $alias['description'];
             }
         }
     }
-
     return null;
 }

@@ -51,23 +51,12 @@ require_once('plugins.inc');
 function alias_make_table($config)
 {
     global $aliastable;
-
     $aliastable = array();
-    $aliasMdl = new \OPNsense\Firewall\Alias();
-    // MVC defined aliases
-    foreach ($aliasMdl->aliases->alias->__items as $alias) {
-        if (strncmp((string)$alias->type, 'url', 3) !== 0) {
-            $aliastable[(string)$alias->name] = implode(" ", explode("\n", $alias->content));
+    foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
+        if (strncmp($alias['type'], 'url', 3) !== 0) {
+            $aliastable[$alias['name']] = implode(" ", explode("\n", $alias['content']));
         } else {
-            $aliastable[(string)$alias->name] = "";
-        }
-    }
-    // legacy defined, keep during transition.
-    if (empty($aliastable) && isset($config['aliases']['alias'])) {
-        foreach ($config['aliases']['alias'] as $alias) {
-            if ($alias['name']) {
-                $aliastable[$alias['name']] = isset($alias['address']) ? $alias['address'] : null;
-            }
+            $aliastable[$alias['name']] = "";
         }
     }
 }

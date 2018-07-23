@@ -580,14 +580,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $old_ppps = $a_ppps;
 
-        // perform validations
-        if (isset($config['aliases']['alias'])) {
-          foreach($config['aliases']['alias'] as $alias) {
-            if ($alias['name'] == $pconfig['descr']) {
-              $input_errors[] = sprintf(gettext("Sorry, an alias with the name %s already exists."),$pconfig['descr']);
-            }
-          }
-        }
         /* description unique? */
         foreach ($ifdescrs as $ifent => $ifdescr) {
             if ($if != $ifent && $ifdescr == $pconfig['descr']) {

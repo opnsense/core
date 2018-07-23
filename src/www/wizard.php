@@ -941,14 +941,12 @@ function showchange() {
 	$aliases = "";
 	$addrisfirst = 0;
 	$aliasesaddr = "";
-	if (isset($config['aliases']['alias'])) {
-		foreach ($config['aliases']['alias'] as $alias_name) {
-				if ($isfirst == 1) {
-					$aliases .= ",";
-				}
-				$aliases .= "'" . $alias_name['name'] . "'";
-				$isfirst = 1;
-		}
+	foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias_name) {
+			if ($isfirst == 1) {
+				$aliases .= ",";
+			}
+			$aliases .= "'" . $alias_name['name'] . "'";
+			$isfirst = 1;
 	}
 ?>
 
