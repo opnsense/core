@@ -52,7 +52,7 @@ CORE_REPOSITORY?=	${FLAVOUR}
 
 CORE_NAME?=		opnsense
 CORE_TYPE?=		release
-CORE_MESSAGE?=		Insert Name Here
+CORE_MESSAGE?=		Don't worry, be happy
 
 CORE_MAINTAINER?=	franco@opnsense.org
 CORE_PACKAGESITE?=	http://pkg.opnsense.org

@@ -50,7 +50,7 @@
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" logo+
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@  " logo+
 	s"  #[m                              " logo+
-	s"   18.7  ``Insert Name Here''  #[m" logo+
+	s"      18.7 ``Happy Hippo''     #[m" logo+
 
 	2drop
 ;
