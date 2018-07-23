@@ -263,6 +263,10 @@ abstract class Rule
                         $rule[$target."_port"] = $port;
                     } elseif (Util::isAlias($port)) {
                         $rule[$target."_port"] = '$'.$port;
+                        if (!Util::isAlias($port, true)) {
+                            // unable to map port
+                            $rule['disabled'] = true;
+                        }
                     }
                 }
                 if (!isset($rule[$target])) {

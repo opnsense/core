@@ -98,6 +98,10 @@ class SNatRule extends Rule
             foreach (array("sourceport", "dstport", "natport") as $fieldname) {
                 if (!empty($rule[$fieldname]) && Util::isAlias($rule[$fieldname])) {
                     $rule[$fieldname] = "$".$rule[$fieldname];
+                    if (!Util::isAlias($rule[$fieldname], true)) {
+                        // unable to map port
+                        $rule['disabled'] = true;
+                    }
                 }
             }
             if (!empty($rule['staticnatport']) || !empty($rule['nonat'])) {
