@@ -38,9 +38,7 @@ function find_alias_type($type)
         'network' => gettext('Network(s)'),
         'port' => gettext('Port(s)'),
         'url' => gettext('URL (IPs)'),
-        'url_ports' => gettext('URL (Ports)'),
         'urltable' => gettext('URL Table (IPs)'),
-        'urltable_ports' => gettext('URL Table (Ports)'),
     );
 
     if (isset($types[$type])) {

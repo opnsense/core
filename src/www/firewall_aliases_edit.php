@@ -428,13 +428,6 @@ include("head.inc");
         $("#addNew").addClass('hidden');
         $('#detailTable > tbody > tr:gt(0)').remove();
         $('.act-removerow').addClass('hidden');
-      } else if ($("#typeSelect").val() == 'urltable_ports') {
-        $("#updatefreq").addClass('hidden');
-        $("#updatefreq_hours").addClass('hidden');
-        $("#updatefreqHeader").addClass('hidden');
-        $("#addNew").addClass('hidden');
-        $('#detailTable > tbody > tr:gt(0)').remove();
-        $('.act-removerow').addClass('hidden');
       } else {
         $("#updatefreq").addClass('hidden');
         $("#updatefreq_hours").addClass('hidden');
@@ -452,13 +445,7 @@ include("head.inc");
           case 'urltable':
               $("#detailsHeading1").html("<?=gettext("URL");?>");
               break;
-          case 'urltable_ports':
-              $("#detailsHeading1").html("<?=gettext("URL");?>");
-              break;
           case 'url':
-              $("#detailsHeading1").html("<?=gettext("URL");?>");
-              break;
-          case 'url_ports':
               $("#detailsHeading1").html("<?=gettext("URL");?>");
               break;
           case 'host':
@@ -564,9 +551,7 @@ include("head.inc");
                       <option value="network" <?=$pconfig['type'] == "network" ? "selected=\"selected\"" : ""; ?>><?=gettext("Network(s)"); ?></option>
                       <option value="port" <?=$pconfig['type'] == "port" ? "selected=\"selected\"" : ""; ?>><?=gettext("Port(s)"); ?></option>
                       <option value="url" <?=$pconfig['type'] == "url" ? "selected=\"selected\"" : ""; ?>><?=gettext("URL (IPs)");?></option>
-                      <option value="url_ports" <?=$pconfig['type'] == "url_ports" ? "selected=\"selected\"" : ""; ?>><?=gettext("URL (Ports)");?></option>
                       <option value="urltable" <?=$pconfig['type'] == "urltable" ? "selected=\"selected\"" : ""; ?>><?=gettext("URL Table (IPs)"); ?></option>
-                      <option value="urltable_ports" <?=$pconfig['type'] == "urltable_ports" ? "selected=\"selected\"" : ""; ?>><?=gettext("URL Table (Ports)"); ?></option>
                       <option value="geoip" <?=$pconfig['type'] == "geoip" ? "selected=\"selected\"" : ""; ?>><?=gettext("GeoIP"); ?></option>
                       <option value="external" <?=$pconfig['type'] == "external" ? "selected=\"selected\"" : ""; ?>><?=gettext("External (advanced)"); ?></option>
                     </select>

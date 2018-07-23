@@ -112,7 +112,7 @@ class Alias extends BaseModel
         }
         // find all used in this model
         foreach ($this->aliases->alias->__items as $alias) {
-            if (!in_array($alias->type, array('geoip', 'urltable', 'urltable_ports'))) {
+            if (!in_array($alias->type, array('geoip', 'urltable'))) {
                 $nodeData = $alias->content->getNodeData();
                 if (isset($nodeData[$name])) {
                     if (!empty($alias->description)) {
@@ -139,7 +139,7 @@ class Alias extends BaseModel
         }
         // find all used in this model (alias nesting)
         foreach ($this->aliases->alias->__items as $alias) {
-            if (!in_array($alias->type, array('geoip', 'urltable', 'urltable_ports'))) {
+            if (!in_array($alias->type, array('geoip', 'urltable'))) {
                 $sepchar = $alias->content->getSeperatorChar();
                 $aliases = explode($sepchar, (string)$alias->content);
                 if (in_array($oldname, $aliases)) {

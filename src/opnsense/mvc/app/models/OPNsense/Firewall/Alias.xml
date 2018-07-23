@@ -28,9 +28,7 @@
                         <network>Network(s)</network>
                         <port>Port(s)</port>
                         <url>URL (IPs)</url>
-                        <url_ports>URL (Ports)</url_ports>
                         <urltable>URL Table (IPs)</urltable>
-                        <urltable_ports>URL Table (Ports)</urltable_ports>
                         <geoip>GeoIP</geoip>
                         <external>External (advanced)</external>
                     </OptionValues>
