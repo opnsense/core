@@ -121,21 +121,19 @@ function filter_core_get_port_alias($aliasname, $aliases=array())
 
     $response = array();
     $aliases[] = $aliasname;
-    if (isset($config['aliases']['alias'])) {
-        foreach ($config['aliases']['alias'] as $aliased) {
-            if ($aliasname == $aliased['name'] && $aliased['type'] == 'port') {
-                foreach (explode(" ", $aliased['address']) as $address) {
-                    if (is_alias($address)) {
-                        if (!in_array($address, $aliases)) {
-                            foreach (filter_core_get_port_alias($address, $aliases) as $port) {
-                                if (!in_array($port, $response)) {
-                                    $response[] = $port;
-                                }
+    foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $aliased) {
+        if ($aliasname == $aliased['name'] && $aliased['type'] == 'port') {
+            foreach (explode("\n", $aliased['content']) as $address) {
+                if (is_alias($address)) {
+                    if (!in_array($address, $aliases)) {
+                        foreach (filter_core_get_port_alias($address, $aliases) as $port) {
+                            if (!in_array($port, $response)) {
+                                $response[] = $port;
                             }
                         }
-                    } elseif ((is_port($address) || is_portrange($address)) && !in_array($address, $response)) {
-                        $response[] = $address ;
                     }
+                } elseif ((is_port($address) || is_portrange($address)) && !in_array($address, $response)) {
+                    $response[] = $address ;
                 }
             }
         }

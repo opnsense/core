@@ -519,11 +519,9 @@ function is_ipaddroralias($ipaddr)
     global $config;
 
     if (is_alias($ipaddr)) {
-        if (isset($config['aliases']['alias'])) {
-            foreach ($config['aliases']['alias'] as $alias) {
-                if ($alias['name'] == $ipaddr && !preg_match("/port/i", $alias['type'])) {
-                    return true;
-                }
+        foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
+            if ($alias['name'] == $ipaddr && !preg_match("/port/i", $alias['type'])) {
+                return true;
             }
         }
         return false;
@@ -643,11 +641,9 @@ function is_portoralias($port)
     global $config;
 
     if (is_alias($port)) {
-        if (isset($config['aliases']['alias'])) {
-            foreach ($config['aliases']['alias'] as $alias) {
-                if ($alias['name'] == $port && preg_match("/port/i", $alias['type'])) {
-                    return true;
-                }
+        foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
+            if ($alias['name'] == $port && preg_match("/port/i", $alias['type'])) {
+                return true;
             }
         }
         return false;

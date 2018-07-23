@@ -150,4 +150,32 @@ class Alias extends BaseModel
             }
         }
     }
+
+    /**
+     * return aliases as array
+     * @return Generator with aliases
+     */
+    public function aliasIterator()
+    {
+        $use_legacy = true;
+        foreach ($this->aliases->alias->__items as $alias) {
+            $record = array();
+            foreach (array_keys($alias->__items) as $key) {
+                $record[$key] = (string)$alias->$key;
+            }
+            yield $record;
+            $use_legacy = false;
+        }
+        // MVC not used (yet) return legacy type aliases
+        if ($use_legacy) {
+            $cfgObj = Config::getInstance()->object();
+            if (!empty($cfgObj->aliases->alias)) {
+                foreach ($cfgObj->aliases->children() as $alias) {
+                    $alias = (array)$alias;
+                    $alias['content'] = !empty($alias['address']) ? str_replace(" ", "\n", $alias['address']) : null;
+                    yield $alias;
+                }
+            }
+        }
+    }
 }

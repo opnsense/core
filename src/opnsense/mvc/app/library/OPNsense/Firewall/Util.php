@@ -38,6 +38,11 @@ use \OPNsense\Firewall\Alias;
 class Util
 {
     /**
+     * @var null|Alias reference to alias object
+     */
+    private static $aliasObject = null;
+
+    /**
      * is provided address an ip address.
      * @param string $network address
      * @return boolean
@@ -72,26 +77,26 @@ class Util
     /**
      * check if name exists in alias config section
      * @param string $name name
+     * @param boolean $valid check if the alias can safely be used
      * @return boolean
      * @throws \OPNsense\Base\ModelException
      */
-    public static function isAlias($name)
+    public static function isAlias($name, $valid=false)
     {
+        if (self::$aliasObject == null) {
+            // Cache the alias object to avoid object creation overhead.
+            self::$aliasObject = new Alias();
+        }
         if (!empty($name)) {
-            $aliasMdl = new Alias();
-            // MVC defined aliases
-            foreach ($aliasMdl->aliases->alias->__items as $alias) {
-                if ((string)$alias->name == $name) {
-                    return true;
-                }
-            }
-            // legacy style aliases
-            $cnf = Config::getInstance()->object();
-            if (!empty($cnf->aliases)) {
-                foreach ($cnf->aliases->children() as $node) {
-                    if ($node->name == $name) {
-                        return true;
+            foreach (self::$aliasObject->aliasIterator() as $alias) {
+                if ($alias['name'] == $name) {
+                    if ($valid) {
+                        // check validity for port type aliases
+                        if (preg_match("/port/i", $alias['type']) && trim($alias['content']) == "") {
+                            return false;
+                        }
                     }
+                    return true;
                 }
             }
         }

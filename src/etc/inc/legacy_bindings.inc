@@ -71,23 +71,16 @@ function legacy_html_escape_form_data(&$settings)
  */
 function legacy_list_aliases($type)
 {
-    global $config;
     $result = array();
-    if (isset($config['aliases']['alias'])) {
-        foreach ($config['aliases']['alias'] as $alias) {
-            if (!empty($alias['address']) || !empty($alias['url']) || !empty($alias['aliasurl']) || $alias['type'] == 'external') {
-                if ($type == "port") {
-                    if (preg_match("/port/i", $alias['type'])) {
-                        $result[] = $alias;
-                    }
-                } else {
-                    if (!preg_match("/port/i", $alias['type'])){
-                        $result[] = $alias;
-                    }
-                }
-            }
+
+    foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
+        if ($type == "port" && preg_match("/port/i", $alias['type'])) {
+            $result[] = array("name" => $alias['name']);
+        } elseif ($type != "port" && !preg_match("/port/i", $alias['type'])) {
+            $result[] = array("name" => $alias['name']);
         }
     }
+
     return $result;
 }
 
@@ -147,12 +140,14 @@ function legacy_move_config_list_items($source, $id, $items) {
  */
 function get_alias_description($name)
 {
-    global $config;
-
-    if (isset($config['aliases']['alias'])) {
-        foreach ($config['aliases']['alias'] as $alias) {
-            if ($alias['name'] == $name) {
-                return (isset($alias['descr'])) ? $alias['descr'] : "";
+    $aliasMdl = new \OPNsense\Firewall\Alias();
+    // MVC defined aliases
+    foreach ((new \OPNsense\Firewall\Alias())->aliasIterator()  as $alias) {
+        if ($alias['name'] == $name) {
+            if (isset($alias['descr'])) {
+                return $alias['descr'];
+            } elseif ($alias['description']) {
+                return $alias['description'];
             }
         }
     }
