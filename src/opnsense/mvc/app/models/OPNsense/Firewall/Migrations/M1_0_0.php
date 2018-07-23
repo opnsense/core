@@ -59,7 +59,10 @@ class M1_0_0 extends BaseModelMigration
                 $node->description = (string)$alias->descr;
                 $node->name = (string)$alias->name;
                 $node->type = (string)$alias->type;
-                if ($alias->url) {
+                if (in_array((string)$alias->type, array('urltable_ports', 'url_ports'))) {
+                    // unsupported, replace with empty port alias
+                    $node->type = "port";
+                } elseif ($alias->url) {
                     // url content only contains a single item
                     $node->content = (string)$alias->url;
                 } elseif ($alias->aliasurl) {
