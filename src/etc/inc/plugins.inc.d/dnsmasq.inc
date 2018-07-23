@@ -128,6 +128,9 @@ function dnsmasq_configure_do($verbose = false)
                 /* no support for link-local address with scope specified */
                 $tmpaddr = explode('%', $tmpaddr)[0];
                 if (!empty($tmpaddr)) {
+                    if ($interface == 'lo0' && is_ipaddrv4($tmpaddr) && $tmpaddr != '127.0.0.1') {
+                        continue;
+                    }
                     $addresses[] = $tmpaddr;
                 }
             }
