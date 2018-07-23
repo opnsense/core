@@ -625,7 +625,7 @@ function filter_generate_aliases()
                 case "url_ports":
                     # a bit of a hack, but prevents the ruleset from not being able to load if these types are in
                     # the configuration.
-                    $aliases .= "{$aliased['name']} = \"{  0 <> 65535 }\"\n";
+                    $aliases .= "{$aliased['name']} = \"{ 0 <> 65535 }\"\n";
                     file_notice('filter_load', sprintf(gettext('URL port aliases types not supported [%s]'), $aliased['name']), 'Filter Reload', '');
                     break;
                 case "port":
