@@ -271,18 +271,6 @@
                   ]]></help>
             </field>
             <field>
-                <id>proxy.forward.sslnobumpsites</id>
-                <label>SSL no bump sites</label>
-                <type>select_multiple</type>
-                <style>tokenize</style>
-                <allownew>true</allownew>
-                <help><![CDATA[
-                  Create a list of sites which may not be inspected, for example bank sites.<br/>
-                  Prefix the domain with a . to accept all subdomains (e.g. .google.com).<br/>
-                  You can also paste a comma-separated list into this field (e.g. bank1.com,.bank2.com).
-                  ]]></help>
-            </field>
-            <field>
                 <id>proxy.forward.ssl_crtd_storage_max_size</id>
                 <label>SSL cache size</label>
                 <type>text</type>
@@ -327,103 +315,6 @@
         </subtab>
         <subtab id="proxy-forward-acl" description="Access Control List">
             <field>
-                <id>proxy.forward.acl.allowedSubnets</id>
-                <label>Allowed Subnets</label>
-                <type>select_multiple</type>
-                <style>tokenize</style>
-                <help><![CDATA[Type subnets you want to allow access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
-                <hint>Type subnet addresses (ex. 192.168.2.0/24)</hint>
-                <allownew>true</allownew>
-            </field>
-            <field>
-                <id>proxy.forward.acl.unrestricted</id>
-                <label>Unrestricted IP addresses</label>
-                <type>select_multiple</type>
-                <style>tokenize</style>
-                <help><![CDATA[Type IP addresses you want to allow access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
-                <hint>Type IP addresses (ex. 192.168.1.100)</hint>
-                <allownew>true</allownew>
-            </field>
-            <field>
-                <id>proxy.forward.acl.bannedHosts</id>
-                <label>Banned host IP addresses</label>
-                <type>select_multiple</type>
-                <style>tokenize</style>
-                <help><![CDATA[Type IP addresses you want to deny access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
-                <hint>Type IP addresses (ex. 192.168.1.100)</hint>
-                <allownew>true</allownew>
-            </field>
-            <field>
-                <id>proxy.forward.acl.whiteList</id>
-                <label>Whitelist</label>
-                <type>select_multiple</type>
-                <style>tokenize</style>
-                <help><![CDATA[Whitelist destination domains.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">mydomain.com</b> -> matches on <b>*.mydomain.com</b><br/>
-            <b class="text-primary">^https?:\/\/([a-zA-Z]+)\.mydomain\.</b> -> matches on <b>http(s)://textONLY.mydomain.*</b><br/>
-            <b class="text-primary">\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
-            <b class="text-primary">\[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
-                <hint>Regular expressions are allowed.</hint>
-                <allownew>true</allownew>
-            </field>
-            <field>
-                <id>proxy.forward.acl.blackList</id>
-                <label>Blacklist</label>
-                <type>select_multiple</type>
-                <style>tokenize</style>
-                <help><![CDATA[Blacklist destination domains.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">mydomain.com</b> -> matches on <b>*.mydomain.com</b><br/>
-            <b class="text-primary">^https?:\/\/([a-zA-Z]+)\.mydomain\.</b> -> matches on <b>http(s)://textONLY.mydomain.*</b><br/>
-            <b class="text-primary">\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
-            <b class="text-primary">\[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
-                <hint>Regular expressions are allowed.</hint>
-                <allownew>true</allownew>
-            </field>
-            <field>
-                <id>proxy.forward.acl.browser</id>
-                <label>Block browser/user-agents</label>
-                <type>select_multiple</type>
-                <style>tokenize</style>
-                <help><![CDATA[Block user-agents.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">^(.)+Macintosh(.)+Firefox/37\.0</b> -> matches on <b>Macintosh version of Firefox revision 37.0</b><br/>
-            <b class="text-primary">^Mozilla</b> -> matches on <b>all Mozilla based browsers</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
-                <hint>Regular expressions are allowed.</hint>
-                <allownew>true</allownew>
-                <advanced>true</advanced>
-            </field>
-            <field>
-                <id>proxy.forward.acl.mimeType</id>
-                <label>Block specific MIME type reply</label>
-                <type>select_multiple</type>
-                <style>tokenize</style>
-                <help><![CDATA[Block specific MIME type reply.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">video/flv</b> -> matches on <b>Flash Video</b><br/>
-            <b class="text-primary">application/x-javascript</b> -> matches on <b>javascripts</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
-                <hint>Regular expressions are allowed.</hint>
-                <allownew>true</allownew>
-                <advanced>true</advanced>
-            </field>
-            <field>
                 <id>proxy.forward.acl.safePorts</id>
                 <label>Allowed destination TCP port</label>
                 <type>select_multiple</type>
@@ -432,7 +323,6 @@
         <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
                 <hint>Type port number or range.</hint>
                 <allownew>true</allownew>
-                <advanced>true</advanced>
             </field>
             <field>
                 <id>proxy.forward.acl.sslPorts</id>
@@ -443,7 +333,6 @@
         <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
                 <hint>Type port number or range.</hint>
                 <allownew>true</allownew>
-                <advanced>true</advanced>
             </field>
         </subtab>
         <subtab id="proxy-icap" description="ICAP Settings">
@@ -546,24 +435,6 @@
                 <hint>Enter the size of the preview.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
-            </field>
-            <field>
-                <id>proxy.forward.icap.exclude</id>
-                <label>Exclusion List</label>
-                <type>select_multiple</type>
-                <style>tokenize</style>
-                <help><![CDATA[Exclusion list destination domains.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">mydomain.com</b> -> matches on <b>*.mydomain.com</b><br/>
-            <b class="text-primary">^https?:\/\/([a-zA-Z]+)\.mydomain\.</b> -> matches on <b>http(s)://textONLY.mydomain.*</b><br/>
-            <b class="text-primary">\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
-            <b class="text-primary">\[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
-                <hint>Regular expressions are allowed.</hint>
-                <allownew>true</allownew>
             </field>
         </subtab>
         <subtab id="proxy-general-authentication" description="Authentication Settings">
