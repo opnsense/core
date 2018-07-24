@@ -527,7 +527,7 @@ $( document ).ready(function() {
 
                     <td>
 <?php                 if (isset($filterent['source']['address']) && is_alias($filterent['source']['address'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($filterent['source']['address']));?>" data-toggle="tooltip">
+                        <span title="<?=htmlspecialchars(get_alias_description($filterent['source']['address']));?>" data-toggle="tooltip"  data-html="true">
                           <?=htmlspecialchars(pprint_address($filterent['source']));?>&nbsp;
                         </span>
                         <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['source']['address']);?>"
@@ -541,7 +541,7 @@ $( document ).ready(function() {
 
                     <td class="hidden-xs hidden-sm">
 <?php                 if (isset($filterent['source']['port']) && is_alias($filterent['source']['port'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($filterent['source']['port']));?>" data-toggle="tooltip">
+                        <span title="<?=htmlspecialchars(get_alias_description($filterent['source']['port']));?>" data-toggle="tooltip"  data-html="true">
                           <?=htmlspecialchars(pprint_port($filterent['source']['port'])); ?>&nbsp;
                         </span>
                         <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['source']['port']);?>"
@@ -555,7 +555,7 @@ $( document ).ready(function() {
 
                     <td class="hidden-xs hidden-sm">
 <?php                 if (isset($filterent['destination']['address']) && is_alias($filterent['destination']['address'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($filterent['destination']['address']));?>" data-toggle="tooltip">
+                        <span title="<?=htmlspecialchars(get_alias_description($filterent['destination']['address']));?>" data-toggle="tooltip"  data-html="true">
                           <?=htmlspecialchars(pprint_address($filterent['destination'])); ?>
                         </span>
                         <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['destination']['address']);?>"
@@ -569,7 +569,7 @@ $( document ).ready(function() {
 
                     <td class="hidden-xs hidden-sm">
 <?php                 if (isset($filterent['destination']['port']) && is_alias($filterent['destination']['port'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($filterent['destination']['port']));?>" data-toggle="tooltip">
+                        <span title="<?=htmlspecialchars(get_alias_description($filterent['destination']['port']));?>" data-toggle="tooltip"  data-html="true">
                           <?=htmlspecialchars(pprint_port($filterent['destination']['port'])); ?>&nbsp;
                         </span>
                         <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['destination']['port']);?>"

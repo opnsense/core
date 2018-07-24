@@ -311,7 +311,7 @@ $( document ).ready(function() {
                   <tr>
                     <td>
                         <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
-                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($scrubEntry['disabled'])) ? gettext("Disable") : gettext("Enable");?>">
+                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" data-html="true" title="<?=(empty($scrubEntry['disabled'])) ? gettext("Disable") : gettext("Enable");?>">
                           <span class="fa fa-play fa-fw <?=(empty($scrubEntry['disabled'])) ? "text-success" : "text-muted";?>"></span>
                         </a>
                     </td>
@@ -319,7 +319,7 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">
 <?php
                         if (is_alias($scrubEntry['src'])):?>
-                        <span title="<?=htmlspecialchars(get_alias_description($scrubEntry['src']));?>" data-toggle="tooltip">
+                        <span title="<?=htmlspecialchars(get_alias_description($scrubEntry['src']));?>" data-toggle="tooltip" data-html="true">
                           <?=$scrubEntry['src'];?>&nbsp;
                         </span>
                         <a href="/firewall_aliases_edit.php?name=<?=$scrubEntry['src'];?>"
@@ -339,7 +339,7 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">
 <?php
                         if (is_alias($scrubEntry['dst'])):?>
-                        <span title="<?=htmlspecialchars(get_alias_description($scrubEntry['dst']));?>" data-toggle="tooltip">
+                        <span title="<?=htmlspecialchars(get_alias_description($scrubEntry['dst']));?>" data-toggle="tooltip" data-html="true">
                           <?=$scrubEntry['dst'];?>&nbsp;
                         </span>
                         <a href="/firewall_aliases_edit.php?name=<?=$scrubEntry['dst'];?>"

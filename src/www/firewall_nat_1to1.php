@@ -233,7 +233,7 @@ $main_buttons = array(
                     </td>
                     <td>
 <?php                 if (isset($natent['source']['address']) && is_alias($natent['source']['address'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($natent['source']['address']));?>" data-toggle="tooltip">
+                        <span title="<?=htmlspecialchars(get_alias_description($natent['source']['address']));?>" data-toggle="tooltip" data-html="true">
                           <?=htmlspecialchars(pprint_address($natent['source']));?>&nbsp;
                         </span>
                         <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['address']);?>"
@@ -246,7 +246,7 @@ $main_buttons = array(
                     </td>
                     <td>
 <?php                 if (isset($natent['destination']['address']) && is_alias($natent['destination']['address'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['address']));?>" data-toggle="tooltip">
+                        <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['address']));?>" data-toggle="tooltip" data-html="true">
                           <?=htmlspecialchars(pprint_address($natent['destination']));?>&nbsp;
                         </span>
                         <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['address']);?>"

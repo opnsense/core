@@ -146,10 +146,14 @@ function get_alias_description($name)
     // MVC defined aliases
     foreach ((new \OPNsense\Firewall\Alias())->aliasIterator()  as $alias) {
         if ($alias['name'] == $name) {
-            if (isset($alias['descr'])) {
+            if (!empty($alias['descr'])) {
                 return $alias['descr'];
-            } elseif ($alias['description']) {
+            } elseif (!empty($alias['description'])) {
                 return $alias['description'];
+            } elseif (!empty($alias['content'])) {
+                $tmp = array_slice(explode("\n", $alias['content']), 0, 10);
+                asort($tmp);
+                return implode("<br/>", $tmp);
             }
         }
     }
