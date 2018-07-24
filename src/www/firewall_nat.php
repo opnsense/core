@@ -326,7 +326,7 @@ $( document ).ready(function() {
 
                       <td class="hidden-xs hidden-sm">
 <?php                   if (isset($natent['source']['address']) && is_alias($natent['source']['address'])): ?>
-                          <span title="<?=htmlspecialchars(get_alias_description($natent['source']['address']));?>" data-toggle="tooltip">
+                          <span title="<?=htmlspecialchars(get_alias_description($natent['source']['address']));?>" data-toggle="tooltip" data-html="true">
                             <?=htmlspecialchars(pprint_address($natent['source'])); ?>
                           </span>
                           <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['address']);?>"
@@ -340,7 +340,7 @@ $( document ).ready(function() {
 
                       <td class="hidden-xs hidden-sm">
 <?php                   if (isset($natent['source']['port']) && is_alias($natent['source']['port'])): ?>
-                          <span title="<?=htmlspecialchars(get_alias_description($natent['source']['port']));?>" data-toggle="tooltip">
+                          <span title="<?=htmlspecialchars(get_alias_description($natent['source']['port']));?>" data-toggle="tooltip" data-html="true">
                             <?=htmlspecialchars(pprint_port($natent['source']['port'])); ?>&nbsp;
                           </span>
                           <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['port']);?>"
@@ -354,7 +354,7 @@ $( document ).ready(function() {
 
                       <td class="hidden-xs hidden-sm">
 <?php                   if (isset($natent['destination']['address']) && is_alias($natent['destination']['address'])): ?>
-                          <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['address']));?>" data-toggle="tooltip">
+                          <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['address']));?>" data-toggle="tooltip" data-html="true">
                             <?=htmlspecialchars(pprint_address($natent['destination'])); ?>
                           </span>
                           <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['address']);?>"
@@ -368,7 +368,7 @@ $( document ).ready(function() {
 
                       <td class="hidden-xs hidden-sm">
 <?php                   if (isset($natent['destination']['port']) && is_alias($natent['destination']['port'])): ?>
-                          <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['port']));?>" data-toggle="tooltip">
+                          <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['port']));?>" data-toggle="tooltip" data-html="true">
                             <?=htmlspecialchars(pprint_port($natent['destination']['port'])); ?>&nbsp;
                           </span>
                           <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['port']);?>"
@@ -381,7 +381,7 @@ $( document ).ready(function() {
                       </td>
 
                       <td>
-                        <span title="<?=htmlspecialchars(get_alias_description($natent['target']));?>" data-toggle="tooltip">
+                        <span title="<?=htmlspecialchars(get_alias_description($natent['target']));?>" data-toggle="tooltip" data-html="true">
                           <?=$natent['target'];?>
                         </span>
 
@@ -401,7 +401,7 @@ $( document ).ready(function() {
                         }
 ?>
 <?php                   if (isset($natent['local-port']) && is_alias($natent['local-port'])): ?>
-                          <span title="<?=htmlspecialchars(get_alias_description($localport));?>" data-toggle="tooltip">
+                          <span title="<?=htmlspecialchars(get_alias_description($localport));?>" data-toggle="tooltip" data-html="true">
                             <?=htmlspecialchars(pprint_port($localport));?>&nbsp;
                           </span>
                           <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($localport);?>"

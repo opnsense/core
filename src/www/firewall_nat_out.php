@@ -330,7 +330,7 @@ include("head.inc");
                     <td class="hidden-xs hidden-sm">
                       <?= isset($natent['source']['not']) ? '!' : '' ?>
 <?php                 if (isset($natent['source']['network']) && is_alias($natent['source']['network'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($natent['source']['network']));?>" data-toggle="tooltip">
+                        <span title="<?=htmlspecialchars(get_alias_description($natent['source']['network']));?>" data-toggle="tooltip"  data-html="true">
                           <?=htmlspecialchars($natent['source']['network']);?>&nbsp;
                         </span>
                         <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['network']);?>"
@@ -348,7 +348,7 @@ include("head.inc");
                       *
 <?php
                       elseif (isset($natent['sourceport']) && is_alias($natent['sourceport'])):?>
-                      <span title="<?=htmlspecialchars(get_alias_description($natent['sourceport']));?>" data-toggle="tooltip">
+                      <span title="<?=htmlspecialchars(get_alias_description($natent['sourceport']));?>" data-toggle="tooltip"  data-html="true">
                         <?=htmlspecialchars(pprint_port($natent['sourceport'])); ?>&nbsp;
                       </span>
                       <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['sourceport']);?>"
@@ -364,7 +364,7 @@ include("head.inc");
                     <td class="hidden-xs hidden-sm">
                       <?= isset($natent['destination']['not']) ? '!' : '' ?>
 <?php                 if (isset($natent['destination']['address']) && is_alias($natent['destination']['address'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['address']));?>" data-toggle="tooltip">
+                        <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['address']));?>" data-toggle="tooltip"  data-html="true">
                           <?=htmlspecialchars($natent['destination']['address']);?>&nbsp;
                         </span>
                         <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['address']);?>"
@@ -382,7 +382,7 @@ include("head.inc");
                       *
 <?php
                       elseif (isset($natent['dstport']) && is_alias($natent['dstport'])):?>
-                      <span title="<?=htmlspecialchars(get_alias_description($natent['dstport']));?>" data-toggle="tooltip">
+                      <span title="<?=htmlspecialchars(get_alias_description($natent['dstport']));?>" data-toggle="tooltip"  data-html="true">
                         <?=htmlspecialchars(pprint_port($natent['dstport'])); ?>&nbsp;
                       </span>
                       <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['dstport']);?>"
@@ -409,7 +409,7 @@ include("head.inc");
                       }
 ?>
 <?php                 if (isset($natent['target']) && is_alias($natent['target'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($natent['target']));?>" data-toggle="tooltip">
+                        <span title="<?=htmlspecialchars(get_alias_description($natent['target']));?>" data-toggle="tooltip" data-html="true">
                           <?=$nat_address;?>&nbsp;
                         </span>
                         <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['target']);?>"
