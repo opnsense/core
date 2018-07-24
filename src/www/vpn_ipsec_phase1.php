@@ -240,21 +240,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if (!empty($config['ipsec']['phase2'])) {
-        foreach ($config['ipsec']['phase2'] as $phase2) {
-            if ($phase2['ikeid'] == $pconfig['ikeid']) {
-                if (($pconfig['protocol'] == "inet") && ($phase2['mode'] == "tunnel6")) {
-                    $input_errors[] = gettext("There is a Phase 2 using IPv6, you cannot use IPv4.");
-                    break;
-                }
-                if (($pconfig['protocol'] == "inet6") && ($phase2['mode'] == "tunnel")) {
-                    $input_errors[] = gettext("There is a Phase 2 using IPv4, you cannot use IPv6.");
-                    break;
-                }
-            }
-        }
-    }
-
     if ($pconfig['interface'] == 'any' && $pconfig['myid_type'] == "myaddress") {
         $input_errors[] = gettext("Please select an identifier (My Identifier) other then 'any' when selecting 'Any' interface");
     } elseif ($pconfig['myid_type'] == "address" && $pconfig['myid_data'] == "") {
