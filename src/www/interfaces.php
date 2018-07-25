@@ -1124,6 +1124,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $new_config['adv_dhcp6_config_advanced'] = $pconfig['adv_dhcp6_config_advanced'];
                     $new_config['adv_dhcp6_config_file_override'] = $pconfig['adv_dhcp6_config_file_override'];
                     $new_config['adv_dhcp6_config_file_override_path'] = $pconfig['adv_dhcp6_config_file_override_path'];
+                    /* Force new DUID */
+                    if (isset($pconfig['dhcp6forcenewduid'])) {
+                        $realif = get_real_interface($if, "inet6");
+                        unlink("/var/db/dhcp6c_duid");
+                        unlink("/var/conf/dhcp6c_duid");
+                        $config['system']['ipv6duid'] = "";
+                    }
                     break;
                 case "6rd":
                     $new_config['ipaddrv6'] = "6rd";
@@ -2597,6 +2604,15 @@ include("head.inc");
                             </select>
                             <div class="hidden" data-for="help_for_dhcp6vlanprio">
                               <?= gettext('Certain ISPs may require that DHCPv6 requests are sent with a specific VLAN priority.') ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_dhcp6forcenewduid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Generate new DUID"); ?></td>
+                          <td>
+                            <input name="dhcp6forcenewduid" type="checkbox" id="dhcp6forcenewduid" value="yes" <?=!empty($pconfig['dhcp6forcenewduid']) ? "checked=\"checked\"" : ""; ?> />
+                            <div class="hidden" data-for="help_for_dhcp6forcenewduid">
+                              <?= gettext('Setting this will force a new DUID to be generated. This will clear any stored DUID and will most likrly result in a new IA and NA. Use with care.') ?>
                             </div>
                           </td>
                         </tr>
