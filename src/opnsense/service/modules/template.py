@@ -62,7 +62,13 @@ class Template(object):
 
         # register additional filters
         self._j2_env.filters['decode_idna'] = lambda x:x.decode('idna')
-        self._j2_env.filters['encode_idna'] = lambda x:x.encode('idna') if not x.startswith('.') else x
+        self._j2_env.filters['encode_idna'] = self._encode_idna
+
+    @staticmethod
+    def _encode_idna(x):
+        """ encode string to idna, preserve leading dots
+        """
+        return ''.join(map(lambda x:'.', range(len(x) - len(x.lstrip('.'))))) + x.lstrip('.').encode('idna')
 
     def list_module(self, module_name):
         """ list single module content
