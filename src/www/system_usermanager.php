@@ -1047,16 +1047,25 @@ $( document ).ready(function() {
                       </td>
                       <td class="text-nowrap">
 <?php
-                        $authcfg_type = auth_get_authserver($config['system']['webgui']['authmode'])['type'];
-                        if ($authcfg_type == 'ldap') :?>
+                        $can_import = false;
+                        if (!empty($config['system']['webgui']['authmode'])) {
+                            $servers = explode(',', $config['system']['webgui']['authmode']);
+                            foreach ($servers as $server) {
+                                $authcfg_type = auth_get_authserver($server)['type'];
+                                if ($authcfg_type == 'ldap') {
+                                    $can_import = true;
+                                }
+                            }
+                        }
+?>
+<?php if ($can_import): ?>
                           <button type="submit" name="import"
                                   id="import_ldap_users"
                                   class="btn btn-default btn-xs"
                                   title="<?=gettext("import users")?>">
                               <i class="fa fa-cloud-download fa-fw"></i>
                           </button>
-<?php
-                      endif;?>
+<?php endif ?>
                       </td>
                     </tr>
                   </tbody>
