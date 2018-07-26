@@ -65,11 +65,7 @@ def exec_config_cmd(exec_command):
             line = sock.recv(65536)
             if line:
                 data.append(line)
-
-            # end of stream marker found, exit
-            if line.find("%c%c%c"%(chr(0), chr(0), chr(0))) > -1 or (
-                len(line) < 3 and len(data) > 1 and (''.join(data[-2:])).find("%c%c%c"%(chr(0), chr(0), chr(0))) > -1
-            ):
+            else:
                 break
 
         return ''.join(data)[:-3]
