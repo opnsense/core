@@ -63,8 +63,14 @@ $ldap_users= array();
 $ldap_is_connected = false;
 $exit_form = false;
 
-// find gui auth server
-$authcfg = auth_get_authserver($config['system']['webgui']['authmode']);
+// XXX find first LDAP GUI auth server, better select later on
+$servers = explode(',', $config['system']['webgui']['authmode']);
+foreach ($servers as $server) {
+    $authcfg = auth_get_authserver($server);
+    if ($authcfg['type'] == 'ldap') {
+        break;
+    }
+}
 
 if ($authcfg['type'] == 'ldap') {
     // setup peer ca
