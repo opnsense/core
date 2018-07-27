@@ -71,7 +71,6 @@ function legacy_html_escape_form_data(&$settings)
  */
 function legacy_list_aliases($type)
 {
-    global $config;
     $result = array();
 
     foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
@@ -81,6 +80,7 @@ function legacy_list_aliases($type)
             $result[] = array("name" => $alias['name']);
         }
     }
+
     return $result;
 }
 
@@ -140,8 +140,6 @@ function legacy_move_config_list_items($source, $id, $items) {
  */
 function get_alias_description($name)
 {
-    global $config;
-
     $aliasMdl = new \OPNsense\Firewall\Alias();
     // MVC defined aliases
     foreach ((new \OPNsense\Firewall\Alias())->aliasIterator()  as $alias) {
