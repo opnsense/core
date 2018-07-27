@@ -44,7 +44,7 @@ abstract class Base
     public function encrypt($data, $pass, $tag = 'config.xml')
     {
         $file = tempnam(sys_get_temp_dir(), 'php-encrypt');
-        @unlink($file);
+        @unlink("{$file}.enc");
 
         file_put_contents("{$file}.dec", $data);
         exec(sprintf(
@@ -80,7 +80,7 @@ abstract class Base
     public function decrypt($data, $pass, $tag = 'config.xml')
     {
         $file = tempnam(sys_get_temp_dir(), 'php-encrypt');
-        @unlink($file);
+        @unlink("{$file}.dec");
 
         $data = explode("\n", $data);
 
@@ -97,18 +97,22 @@ abstract class Base
 
         $data = implode("\n", $data);
 
-        file_put_contents("{$file}.dec", base64_decode($data));
-        exec(sprintf(
-            '/usr/local/bin/openssl enc -d -aes-256-cbc -md md5 -in %s -out %s -pass pass:%s',
-            escapeshellarg("{$file}.dec"),
-            escapeshellarg("{$file}.enc"),
-            escapeshellarg($pass)
-        ));
-        @unlink("{$file}.dec");
+        file_put_contents("{$file}.enc", base64_decode($data));
+        exec(
+            sprintf(
+                '/usr/local/bin/openssl enc -d -aes-256-cbc -md md5 -in %s -out %s -pass pass:%s',
+                escapeshellarg("{$file}.enc"),
+                escapeshellarg("{$file}.dec"),
+                escapeshellarg($pass)
+            ),
+            $output,
+            $retval
+        );
+        @unlink("{$file}.enc");
 
-        if (file_exists("{$file}.enc")) {
-            $result = file_get_contents("{$file}.enc");
-            @unlink("{$file}.enc");
+        if (file_exists("{$file}.dec") && !$retval) {
+            $result = file_get_contents("{$file}.dec");
+            @unlink("{$file}.dec");
             return $result;
         } else {
             syslog(LOG_ERR, 'Failed to decrypt data!');

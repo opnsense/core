@@ -37,78 +37,7 @@ require_once("services.inc");
 require_once("rrd.inc");
 require_once("system.inc");
 
-function _crypt_data($val, $pass, $opt)
-{
-    $result = '';
-
-    $file = tempnam('/tmp', 'php-encrypt');
-    file_put_contents("{$file}.dec", $val);
-
-    exec(sprintf(
-      '/usr/local/bin/openssl enc %s -aes-256-cbc -md md5 -in %s.dec -out %s.enc -k %s',
-      escapeshellarg($opt),
-      escapeshellarg($file),
-      escapeshellarg($file),
-      escapeshellarg($pass)
-    ));
-
-    if (file_exists("{$file}.enc")) {
-        $result = file_get_contents("{$file}.enc");
-    } else {
-        log_error('Failed to encrypt/decrypt data!');
-    }
-
-    @unlink($file);
-    @unlink("{$file}.dec");
-    @unlink("{$file}.enc");
-
-    return $result;
-}
-
-function encrypt_data(&$data, $pass)
-{
-    return base64_encode(_crypt_data($data, $pass, '-e'));
-}
-
-function decrypt_data(&$data, $pass)
-{
-    return _crypt_data(base64_decode($data), $pass, '-d');
-}
-
-function tagfile_reformat($in, $tag = 'config.xml')
-{
-    $version = strtok(file_get_contents('/usr/local/opnsense/version/opnsense'), '-');
-
-    $out = "---- BEGIN {$tag} ----\n";
-    /* XXX older version assume these defaults */
-    $out .= "Version: OPNsense {$version}\n"; /* XXX hardcoded product name */
-    $out .= "Cipher: AES-256-CBC\n";
-    $out .= "Hash: MD5\n\n";
-    $out .= chunk_split($in, 76, "\n");
-    $out .= "---- END {$tag} ----\n";
-
-    return $out;
-}
-
-function tagfile_deformat($in, $tag = 'config.xml')
-{
-    $out = explode("\n", $in);
-
-    foreach ($out as $key => $val) {
-        /* XXX remove helper lines for now */
-        if (strpos($val, ':') !== false) {
-            unset($out[$key]);
-        } else if (strpos($val, "---- BEGIN {$tag} ----") !== false) {
-            unset($out[$key]);
-        } else if (strpos($val, "---- END {$tag} ----") !== false) {
-            unset($out[$key]);
-        }
-    }
-
-    $out = implode("\n", $out);
-
-    return $out;
-}
+use OPNsense\Backup\Local;
 
 /**
  * restore config section
@@ -236,9 +165,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             if (!empty($_POST['encrypt'])) {
+                $crypter = new Local();
                 /* XXX this *could* fail, not handled */
-                $data = encrypt_data($data, $_POST['encrypt_password']);
-                $data = tagfile_reformat($data);
+                $data = $crypter->encrypt($data, $_POST['encrypt_password']);
             }
 
             $size = strlen($data);
@@ -273,7 +202,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (!empty($_POST['decrypt'])) {
-            $data = decrypt_data(tagfile_deformat($data), $_POST['decrypt_password']);
+            $crypter = new Local();
+            $data = $crypter->decrypt($data, $_POST['decrypt_password']);
             if (empty($data)) {
                 $input_errors[] = gettext('The uploaded file could not be decrypted.');
             }

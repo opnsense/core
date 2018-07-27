@@ -416,6 +416,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/Base.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/GDrive.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/IBackupProvider.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Backup/Local.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/Nextcloud.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/Scp.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Base/Filters/QueryFilter.php
