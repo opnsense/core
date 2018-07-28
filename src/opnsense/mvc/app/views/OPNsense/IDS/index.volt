@@ -186,7 +186,8 @@ POSSIBILITY OF SUCH DAMAGE.
          *                 try to avoid too much items per call (results in too long url's)
          */
         function actionToggleSelected(gridId, url, state, combine) {
-            var rows =$("#"+gridId).bootgrid('getSelectedRows');
+            var defer_toggle = $.Deferred();
+            var rows = $("#"+gridId).bootgrid('getSelectedRows');
             if (rows != undefined){
                 var deferreds = [];
                 if (state != undefined) {
@@ -194,26 +195,31 @@ POSSIBILITY OF SUCH DAMAGE.
                 } else {
                     var url_suffix = "";
                 }
-
+                var base = $.when({});
                 var keyset = [];
-                $.each(rows, function(key,uuid){
+                $.each(rows, function(key, uuid){
                     keyset.push(uuid);
-                    if ( combine == undefined || keyset.length > combine) {
-                        deferreds.push(ajaxCall(url + keyset.join(',') +'/'+url_suffix, sendData={},null));
+                    if ( combine === undefined || keyset.length > combine || rows[rows.length - 1] === uuid) {
+                        var call_url = url + keyset.join(',') +'/'+url_suffix;
+                        base = base.then(function() {
+                            var defer = $.Deferred();
+                            ajaxCall(call_url, sendData={}, function(){
+                                defer.resolve();
+                            });
+                            return defer.promise();
+                        });
                         keyset = [];
                     }
                 });
-
-                // flush remaining items
-                if (keyset.length > 0) {
-                    deferreds.push(ajaxCall(url + keyset.join(',') +'/'+url_suffix, sendData={},null));
-                }
-
-                // refresh when all toggles are executed
-                $.when.apply(null, deferreds).done(function(){
+                // last action in the list, reload grid and release this promise
+                base.then(function(){
                     $("#"+gridId).bootgrid("reload");
+                    defer_toggle.resolve();
                 });
+            } else {
+                defer_toggle.resolve();
             }
+            return defer_toggle.promise();
         }
 
         /*************************************************************************************************************
@@ -572,19 +578,30 @@ POSSIBILITY OF SUCH DAMAGE.
         /**
          * disable selected rules
          */
-        $("#disableSelectedRules").click(function(){
+        $("#disableSelectedRules").click(function(event){
+            event.preventDefault();
             var gridId = 'grid-installedrules';
             var url = '/api/ids/settings/toggleRule/';
-            actionToggleSelected(gridId, url, 0, 100);
+            $("#disableSelectedRules > span").removeClass("fa-square-o");
+            $("#disableSelectedRules > span").addClass("fa-spinner fa-pulse");
+            actionToggleSelected(gridId, url, 0, 100).done(function(){
+                $("#disableSelectedRules > span").removeClass("fa-spinner fa-pulse");
+                $("#disableSelectedRules > span").addClass("fa-square-o");
+            });
         });
 
         /**
          * enable selected rules
          */
-        $("#enableSelectedRules").click(function(){
+        $("#enableSelectedRules").unbind('click').click(function(){
             var gridId = 'grid-installedrules';
             var url = '/api/ids/settings/toggleRule/';
-            actionToggleSelected(gridId, url, 1, 100);
+            $("#enableSelectedRules > span").removeClass("fa-check-square-o");
+            $("#enableSelectedRules > span").addClass("fa-spinner fa-pulse");
+            actionToggleSelected(gridId, url, 1, 100).done(function(){
+                $("#enableSelectedRules > span").removeClass("fa-spinner fa-pulse");
+                $("#enableSelectedRules > span").addClass("fa-check-square-o");
+            });
         });
 
         /**
@@ -699,8 +716,8 @@ POSSIBILITY OF SUCH DAMAGE.
                       <td>
                         <div class="row">
                           <div class="col-xs-9">
-                            <button data-toggle="tooltip" id="enableSelectedRuleSets" type="button" class="btn btn-xs btn-default btn-primary">{{ lang._('Enable selected') }}</span></button>
-                            <button data-toggle="tooltip" id="disableSelectedRuleSets" type="button" class="btn btn-xs btn-default btn-primary">{{ lang._('Disable selected') }}</span></button>
+                            <button data-toggle="tooltip" id="enableSelectedRuleSets" type="button" class="btn btn-xs btn-default btn-primary">{{ lang._('Enable selected') }}</button>
+                            <button data-toggle="tooltip" id="disableSelectedRuleSets" type="button" class="btn btn-xs btn-default btn-primary">{{ lang._('Disable selected') }}</button>
                           </div>
                           <div class="col-xs-3" style="padding-top:0px;">
                             <input type="text" placeholder="{{ lang._('Search') }}" id="grid-rule-files-search" value=""/>
@@ -784,8 +801,8 @@ POSSIBILITY OF SUCH DAMAGE.
             <tfoot>
             <tr>
                 <td>
-                    <button title="{{ lang._('Disable selected') }}" id="disableSelectedRules" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o command-toggle"></span></button>
-                    <button title="{{ lang._('Enable selected') }}" id="enableSelectedRules" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o command-toggle"></span></button>
+                    <button title="{{ lang._('Disable selected') }}" id="disableSelectedRules" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o"></span></button>
+                    <button title="{{ lang._('Enable selected') }}" id="enableSelectedRules" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o"></span></button>
                 </td>
                 <td></td>
             </tr>
