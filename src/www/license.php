@@ -55,7 +55,7 @@ include("head.inc");
         <p>OPNsense is based on <a href="http://www.freebsd.org" target="_blank">FreeBSD</a> Copyright &copy; The FreeBSD Project. All rights reserved.</p>
         <p>OPNsense is a fork of <a href="http://www.pfsense.org" target="_blank">pfSense&reg;</a> <small>(Copyright &copy; 2004-2014 Electric Sheep Fencing, LLC. All rights reserved.)</small> a fork from <a href="http://m0n0.ch/wall" target="_blank">m0n0wall&reg;</a> <small>(Copyright &copy; 2002-2013 Manuel Kasper)</small>.</p>
         <p>OPNsense includes various freely available software packages and ports.
-        The incorporated third party tools are listed <a href="/ui/core/firmware/#packages">here</a>.</p>
+        The incorporated third party tools are listed <a href="/ui/core/firmware#packages">here</a>.</p>
         <p>The authors of OPNsense would like to thank all contributors for their efforts.</p>
       </section>
     </div>
