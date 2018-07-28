@@ -90,7 +90,7 @@ function saveFormToEndpoint(url,formid,callback_ok, disable_dialog) {
                 }
             } else if ( callback_ok != undefined ) {
                 // execute callback function
-                callback_ok();
+                callback_ok(data);
             }
         }
     });
