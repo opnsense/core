@@ -370,10 +370,9 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   </tr>
                     <tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("User Authentication"); ?></td>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Backend for authentication");?> </td>
                     <td>
-                      <?=gettext("Source"); ?>:
-                      <select name="user_source[]" class="form-control" id="user_source" multiple="multiple" size="3">
+                      <select name="user_source[]" class="selectpicker" id="user_source" multiple="multiple" size="3">
 <?php
                         $authmodes = explode(",", $pconfig['user_source']);
                         $auth_servers = auth_get_authserver_list();
@@ -386,7 +385,7 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                   <tr>
                     <td><a id="help_for_local_group" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Enforce local group') ?></td>
                     <td>
-                      <select name="local_group" class="form-control" id="local_group">
+                      <select name="local_group" class="selectpicker" id="local_group">
                         <option value="" <?= empty($pconfig['local_group']) ? 'selected="selected"' : '' ?>>(<?= gettext('none') ?>)</option>
 <?php
                       foreach (config_read_array('system', 'group') as $group):
@@ -410,9 +409,9 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                         <input name="pool_enable" type="checkbox" id="pool_enable" value="yes" <?= !empty($pconfig['pool_address'])&&!empty($pconfig['pool_netbits']) ? "checked=\"checked\"" : "";?> onclick="pool_change()" />
                         <?=gettext("Provide a virtual IP address to clients"); ?><br />
                       <?=gettext("Network"); ?>:&nbsp;
-                      <input name="pool_address" type="text" class="form-control unknown" id="pool_address" size="20" value="<?=$pconfig['pool_address'];?>" />
-                      /
-                      <select name="pool_netbits" class="form-control" id="pool_netbits">
+                      <div class="input-group">
+                        <input name="pool_address" type="text" class="form-control" id="pool_address" size="20" value="<?=$pconfig['pool_address'];?>" style="width:150px;" />
+                        <select name="pool_netbits" class="selectpicker form-control" id="pool_netbits" data-width="70px">
                               <?php for ($i = 32; $i >= 0; $i--) :
     ?>
                               <option value="<?=$i;
@@ -421,7 +420,8 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                               </option>
                               <?php
 endfor; ?>
-                      </select>
+                        </select>
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -457,7 +457,7 @@ endfor; ?>
                     <td><a id="help_for_dns_split_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Split DNS"); ?></td>
                     <td>
                         <input name="dns_split_enable" type="checkbox" id="dns_split_enable" value="yes" <?= !empty($pconfig['dns_split']) ? "checked=\"checked\"" : "";?> onclick="dns_split_change()" />
-                        <input name="dns_split" type="text" class="form-control unknown" id="dns_split" size="30" value="<?=$pconfig['dns_split'];?>" />
+                        <input name="dns_split" type="text" class="form-control" id="dns_split" size="30" value="<?=$pconfig['dns_split'];?>" />
                         <div class="hidden" data-for="help_for_dns_split_enable">
                             <?=gettext("Provide a list of split DNS domain names to clients. Enter a comma separated list."); ?><br />
                             <?=gettext("NOTE: If left blank, and a default domain is set, it will be used for this value."); ?>
@@ -470,13 +470,13 @@ endfor; ?>
                         <input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes"  <?= !empty($pconfig['dns_server1']) || !empty($pconfig['dns_server2']) || !empty($pconfig['dns_server3']) || !empty($pconfig['dns_server4']) ? "checked=\"checked\"" : "";?> onclick="dns_server_change()" />
                         <div id="dns_server_enable_inputs">
                             <?=gettext("Server"); ?> #1:
-                          <input name="dns_server1" type="text" class="form-control unknown" id="dns_server1" size="20" value="<?=$pconfig['dns_server1'];?>" />
+                          <input name="dns_server1" type="text" class="form-control" id="dns_server1" size="20" value="<?=$pconfig['dns_server1'];?>" />
                             <?=gettext("Server"); ?> #2:
-                          <input name="dns_server2" type="text" class="form-control unknown" id="dns_server2" size="20" value="<?=$pconfig['dns_server2'];?>" />
+                          <input name="dns_server2" type="text" class="form-control" id="dns_server2" size="20" value="<?=$pconfig['dns_server2'];?>" />
                             <?=gettext("Server"); ?> #3:
-                          <input name="dns_server3" type="text" class="form-control unknown" id="dns_server3" size="20" value="<?=$pconfig['dns_server3'];?>" />
+                          <input name="dns_server3" type="text" class="form-control" id="dns_server3" size="20" value="<?=$pconfig['dns_server3'];?>" />
                             <?=gettext("Server"); ?> #4:
-                          <input name="dns_server4" type="text" class="form-control unknown" id="dns_server4" size="20" value="<?=$pconfig['dns_server4'];?>" />
+                          <input name="dns_server4" type="text" class="form-control" id="dns_server4" size="20" value="<?=$pconfig['dns_server4'];?>" />
                         </div>
                         <div class="hidden" data-for="help_for_dns_server_enable">
                             <?=gettext("Provide a DNS server list to clients"); ?>
@@ -489,9 +489,9 @@ endfor; ?>
                         <input name="wins_server_enable" type="checkbox" id="wins_server_enable" value="yes" <?= !empty($pconfig['wins_server1']) || !empty($pconfig['wins_server2']) ? "checked=\"checked\"" : "";?> onclick="wins_server_change()" />
                         <div id="wins_server_enable_inputs">
                             <?=gettext("Server"); ?> #1:
-                          <input name="wins_server1" type="text" class="form-control unknown" id="wins_server1" size="20" value="<?=$pconfig['wins_server1'];?>" />
+                          <input name="wins_server1" type="text" class="form-control" id="wins_server1" size="20" value="<?=$pconfig['wins_server1'];?>" />
                             <?=gettext("Server"); ?> #2:
-                          <input name="wins_server2" type="text" class="form-control unknown" id="wins_server2" size="20" value="<?=$pconfig['wins_server2'];?>" />
+                          <input name="wins_server2" type="text" class="form-control" id="wins_server2" size="20" value="<?=$pconfig['wins_server2'];?>" />
                         </div>
                         <div class="hidden" data-for="help_for_wins_server_enable">
                             <?=gettext("Provide a WINS server list to clients"); ?>
@@ -503,7 +503,7 @@ endfor; ?>
                     <td>
                         <input name="pfs_group_enable" type="checkbox" id="pfs_group_enable" value="yes" <?= !empty($pconfig['pfs_group']) ? "checked=\"checked\"" : "";?>  onclick="pfs_group_change()" />
 
-                        <select name="pfs_group" class="form-control" id="pfs_group">
+                        <select name="pfs_group" class="selectpicker" id="pfs_group">
 <?php
                         $p2_dhgroups = array(
                           0  => gettext('off'),
