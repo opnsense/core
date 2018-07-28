@@ -207,8 +207,8 @@ if (isset($input_errors) && count($input_errors) > 0) {
                         </div>
 <?php                   foreach ($ipsec_loglevels as $lkey => $ldescr) :
 ?>
-                        <?=$ldescr?>
-                        <select name="ipsec_<?=$lkey?>" id="ipsec_<?=$lkey?>">
+                        <?=$ldescr?><br>
+                        <select name="ipsec_<?=$lkey?>" id="ipsec_<?=$lkey?>" class="selectpicker">
 <?php                   foreach (array("Silent", "Basic", "Audit", "Control", "Raw", "Highest") as $lidx => $lvalue) :
                           $lidx -= 1;
 ?>
@@ -217,7 +217,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                           </option>
 <?php
 endforeach; ?>
-                        </select>
+                        </select><br>
 <?php
 endforeach; ?>
                         <div class="hidden" data-for="help_for_ipsec_debug">
