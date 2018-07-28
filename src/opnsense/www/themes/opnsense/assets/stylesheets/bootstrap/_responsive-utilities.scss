@@ -127,6 +127,12 @@
   @include responsive-invisibility('.hidden-sm');
 }
 
+@media (max-width: 768px), (max-height: 669px) {
+  .toggle-sidebar {
+    display: none !important;
+  }
+}
+
 @media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
   @include responsive-invisibility('.hidden-md');
 }
