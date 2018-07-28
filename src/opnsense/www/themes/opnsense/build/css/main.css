@@ -6812,6 +6812,11 @@ td.visible-lg {
     display: none !important;
   }
 }
+@media (max-width: 768px), (max-height: 669px) {
+  .toggle-sidebar {
+    display: none !important;
+  }
+}
 @media (min-width: 992px) and (max-width: 1199px) {
   .hidden-md {
     display: none !important;
@@ -7092,6 +7097,215 @@ body {
   border-top: 0;
 }
 
+/* COLLAPSE SIDEBAR */
+main.page-content.col-lg-12 {
+  padding-left: 90px;
+}
+
+#navigation.col-sidebar-left {
+  width: 70px;
+  background-color: transparent !important;
+  overflow: hidden;
+}
+#navigation.col-sidebar-left > div.row {
+  height: 100% !important;
+}
+#navigation.col-sidebar-left > div.row > nav.page-side-nav {
+  width: 70px;
+  background-color: darkgrey !important;
+  height: 100% !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item {
+  font-size: 11px;
+  text-align: center;
+  width: 70px;
+  height: 70px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #lightergrey;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa, #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.glyphicon {
+  visibility: visible;
+  font-size: 28px;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.__iconspacer {
+  padding-left: 7px;
+  padding-right: 7px;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsing > a.list-group-item {
+  padding-left: 10px !important;
+  font-size: 11px !important;
+  display: block !important;
+  position: absolute !important;
+  left: 70px !important;
+  margin-top: -70px !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapsing > a.list-group-item {
+  padding-left: 10px !important;
+  font-size: 11px !important;
+  display: block !important;
+  position: absolute !important;
+  left: 148px !important;
+  margin-top: -28px !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item.active-menu-title {
+  color: #FFF !important;
+  background-color: orange !important;
+}
+
+a.list-group-item.active-menu-title.collapsed {
+  color: #FFF !important;
+  background-color: lightergrey !important;
+}
+
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item[aria-expanded=true] {
+  color: #ec6d12 !important;
+  background-color: lightergrey !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > a.list-group-item[aria-expanded=true] {
+  color: #ec6d12 !important;
+  background-color: lightergrey !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item {
+  padding-left: 10px !important;
+  font-size: 11px !important;
+  background-color: lightergrey !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item.menu-level-3-item.active {
+  color: #ec6d12 !important;
+  background-color: lightergrey !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > a.list-group-item {
+  padding-left: 10px !important;
+  font-size: 11px !important;
+  background-color: lightergrey !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > div.collapse > a.list-group-item {
+  padding-left: 10px !important;
+  font-size: 11px !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsed > a.list-group-item {
+  padding-left: 10px !important;
+  font-size: 11px !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > a.list-group-item:hover {
+  color: #ec6d12 !important;
+  background-color: lightergrey !important;
+}
+
+a.list-group-item:focus {
+  color: #ec6d12 !important;
+  background-color: black !important;
+}
+
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item:hover, a.list-group-item:focus {
+  text-decoration: none !important;
+  color: #ec6d12 !important;
+  background-color: lightergrey !important;
+}
+
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > a.list-group-item.active-menu-title, #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > a.list-group-item.collapsed:focus, #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > a.list-group-item:focus {
+  color: #ec6d12 !important;
+  background-color: black !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.active-menu.collapse.in > a.list-group-item.active {
+  color: #ec6d12 !important;
+  background-color: black !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in {
+  width: 150px;
+  font-size: 11px;
+  display: block;
+  z-index: 10;
+  position: absolute;
+  left: 70px;
+  margin-top: -70px;
+  height: auto;
+  border: 1px solid #515151;
+  -webkit-transition: width 0.1s;
+  -o-transition: width 0.1s;
+  transition: width 0.1s;
+  -webkit-box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
+  box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsing {
+  width: 0px;
+  font-size: 11px;
+  position: absolute;
+  display: block;
+  z-index: 10;
+  left: 70px;
+  margin-top: -70px;
+  height: auto;
+  -webkit-box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
+  box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in {
+  width: 150px;
+  font-size: 11px;
+  display: block;
+  z-index: 10;
+  position: absolute;
+  left: 148px;
+  margin-top: -28px;
+  height: auto;
+  border: 1px solid #515151;
+  -webkit-transition: width 0.1s;
+  -o-transition: width 0.1s;
+  transition: width 0.1s;
+  -webkit-box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
+  box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapsing {
+  width: 0px;
+  font-size: 11px;
+  position: absolute;
+  display: block;
+  z-index: 10;
+  left: 148px;
+  margin-top: -28px;
+  height: auto;
+  -webkit-box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.75);
+}
+
+/* Sub Level One */
+/* Sub Level Two */
+button.toggle-sidebar {
+  color: #FFF;
+  background-color: transparent;
+  font-size: 14px;
+  border: none;
+  margin-top: 18px;
+  float: left;
+}
+button.toggle-sidebar.glyphicon.glyphicon-chevron-left, button.toggle-sidebar.glyphicon.glyphicon-chevron-right {
+  position: absolute;
+  -webkit-transition: all 0.1s ease;
+  -moz-transition: all 0.1s ease;
+  -o-transition: all 0.1s ease;
+  -ms-transition: all 0.1s ease;
+  transition: all 0.1s ease;
+}
+button.toggle-sidebar.glyphicon.glyphicon-chevron-left:active, button.toggle-sidebar.glyphicon.glyphicon-chevron-right:active {
+  position: absolute;
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+button.toggle-sidebar.glyphicon.glyphicon-chevron-left:focus, button.toggle-sidebar.glyphicon.glyphicon-chevron-right:focus {
+  outline: none;
+}
+
+/* COLLAPSE SIDEBAR END*/
 #navigation.collapse.in {
   display: block !important;
 }
@@ -7427,13 +7641,15 @@ div[data-for*=help_for] {
 }
 
 /* fields in firewall schedule */
-[data-state="lightcoral"] {
+[data-state=lightcoral] {
   background-color: lightcoral;
 }
-[data-state="white"] {
+
+[data-state=white] {
   background-color: white;
 }
-[data-state="red"] {
+
+[data-state=red] {
   background-color: red;
 }
 
