@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ipv6allow'] = isset($config['system']['ipv6allow']);
     $pconfig['disablefilter'] = !empty($config['system']['disablefilter']);
     $pconfig['optimization'] = isset($config['system']['optimization']) ? $config['system']['optimization'] : "normal";
+    $pconfig['state-policy'] = isset($config['system']['state-policy']) ;
     $pconfig['rulesetoptimization'] = isset($config['system']['rulesetoptimization']) ? $config['system']['rulesetoptimization'] : "basic";
     $pconfig['maximumstates'] = isset($config['system']['maximumstates']) ? $config['system']['maximumstates'] : null;
     $pconfig['maximumfrags'] = isset($config['system']['maximumfrags']) ? $config['system']['maximumfrags'] : null;
@@ -174,6 +175,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['enablenatreflectionhelper'] = "yes";
         } elseif (isset($config['system']['enablenatreflectionhelper']))  {
             unset($config['system']['enablenatreflectionhelper']);
+        }
+
+        if (!empty($pconfig['state-policy'])) {
+            $config['system']['state-policy'] = true;
+        } elseif (!empty($config['system']['state-policy'])) {
+            unset($config['system']['state-policy']);
         }
 
         $config['system']['optimization'] = $pconfig['optimization'];
@@ -556,6 +563,16 @@ include("head.inc");
                         <td><?=gettext("Uses the currently loaded ruleset as a feedback profile to tailor the ordering of quick rules to actual network traffic.");?></td>
                       </tr>
                     </table>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_state-policy" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Bind states to interface");?></td>
+                <td>
+                  <input name="state-policy" type="checkbox" <?= !empty($pconfig['state-policy']) ? "checked=\"checked\"" : "";?>/>
+                  <div class="hidden" data-for="help_for_state-policy">
+                    <?= gettext('Set behaviour for keeping states, by default states are floating, but when this option is set they should match the interface.') ?><br />
+                    <?= gettext('The default option (unchecked) matches states regardless of the interface, which is in most setups the best choice.') ?><br />
                   </div>
                 </td>
               </tr>
