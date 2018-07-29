@@ -7110,6 +7110,7 @@ main.page-content.col-lg-12 {
   width: 70px;
   background-color: transparent !important;
   overflow: hidden;
+  border: none !important;
 }
 #navigation.col-sidebar-left > div.row {
   height: 100% !important;
