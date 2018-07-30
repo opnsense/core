@@ -2581,15 +2581,12 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
             interface_track6_slaac_configure($interface, $lancfg);
             /* FALLTHROUGH */
         case 'dhcp6':
-            if ($linkupevent == true) {
-                /*
-                 * NOTE: Usually come here from rc.linkup calling so just call directly intead of generating event
-                 *  Instead of disrupting all other v4 configuration just restart DHCPv6 client for now
-                 *
-                 * XXX: Probably DHCPv6 client should handle this autmagically itself?
-                 */
+            if ($linkupevent) {
                 $parentrealif = get_real_interface($lancfg['track6-interface']);
                 killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
+            } else {
+                /* XXX move high-level callback up the call stack */
+                services_dhcpd_configure('inet6');
             }
             break;
     }
