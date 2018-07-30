@@ -427,7 +427,7 @@
     <page-wizard-system>
         <name>System Setup Wizard</name>
         <patterns>
-            <pattern>wizard.php?xml=system*</pattern>
+            <pattern>wizard.php?xml=system</pattern>
         </patterns>
     </page-wizard-system>
     <page-services-dhcprelay>
@@ -798,7 +798,7 @@
         <name>VPN: OpenVPN: Server</name>
         <patterns>
             <pattern>vpn_openvpn_server.php*</pattern>
-            <pattern>wizard.php?xml=openvpn*</pattern>
+            <pattern>wizard.php?xml=openvpn&amp;*</pattern>
         </patterns>
     </page-openvpn-server>
     <page-xmlrpclibrary>
