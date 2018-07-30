@@ -2590,6 +2590,8 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
                  */
                 $parentrealif = get_real_interface($lancfg['track6-interface']);
                 killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
+            }  else {
+                services_dhcpd_configure('inet6', array(),true);
             }
             break;
     }
