@@ -220,6 +220,11 @@
                 <Type>ca</Type>
                 <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
             </sslcertificate>
+            <sslnobumpsites type="CSVListField">
+              <Required>N</Required>
+              <mask>/^([a-zA-Z0-9\.:\[\]\s\-]*?,)*([a-zA-Z0-9\.:\[\]\s\-]*)$/</mask>
+              <ValidationMessage>Please enter ip addresses or domain names here</ValidationMessage>
+            </sslnobumpsites>
             <ssl_crtd_storage_max_size type="IntegerField">
               <Required>Y</Required>
               <default>4</default>
@@ -277,6 +282,30 @@
                 <Required>Y</Required>
             </transparentMode>
             <acl>
+                <allowedSubnets type="CSVListField">
+                    <Required>N</Required>
+                    <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
+                </allowedSubnets>
+                <unrestricted type="CSVListField">
+                    <Required>N</Required>
+                    <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
+                </unrestricted>
+                <bannedHosts type="CSVListField">
+                    <Required>N</Required>
+                    <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
+                </bannedHosts>
+                <whiteList type="CSVListField">
+                    <Required>N</Required>
+                </whiteList>
+                <blackList type="CSVListField">
+                    <Required>N</Required>
+                </blackList>
+                <browser type="CSVListField">
+                    <Required>N</Required>
+                </browser>
+                <mimeType type="CSVListField">
+                    <Required>N</Required>
+                </mimeType>
                 <safePorts type="CSVListField">
                     <default>80:http,21:ftp,443:https,70:gopher,210:wais,1025-65535:unregistered ports,280:http-mgmt,488:gss-http,591:filemaker,777:multiling http</default>
                     <mask>/^([ \-0-9a-zA-Z:,])*/u</mask>
@@ -392,6 +421,9 @@
                     <default>60</default>
                     <Required>Y</Required>
                 </OptionsTTL>
+                <exclude type="CSVListField">
+                    <Required>N</Required>
+                </exclude>
             </icap>
             <authentication>
                 <method type="AuthenticationServerField">
