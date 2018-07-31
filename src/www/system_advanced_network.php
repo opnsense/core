@@ -33,6 +33,7 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("filter.inc");
 require_once("system.inc");
+require_once("util.inc");
 
 /*
  * Format a string to look (more) like the expected DUID format:
@@ -46,6 +47,46 @@ require_once("system.inc");
  *
  * "0e:00:00:01:00:01:nn:nn:nn:nn:nn:nn:nn:nn:nn:nn"
  */
+function setDUIDTime() 
+{
+		$DUIDTime = ((time() / 1000 | 0) - 946684800);
+}
+ 
+function reset_dhcp6c($duid_type)
+{
+    $wanif = get_real_interface('wan', "inet6");
+    
+    killbyname("dhcp6c",SIGUSR1);
+    
+    if(file_exists("/var/db/dhcp6c_duid")) {
+        unlink("/var/db/dhcp6c_duid");
+    }
+    if(file_exists("/var/conf/dhcp6c_duid")) {
+        unlink("/var/conf/dhcp6c_duid");
+    }
+    unset($config['system']['ipv6duid']);
+    
+    switch($duid_type)
+    {
+        case "0": // Auto        
+        break;
+        
+        case "1": //LLT
+        break;
+        
+        case "2": //EN
+        break;        
+        
+        case "3": //EL
+        break;        
+        
+        case "4": //UUID
+        break;        
+        
+    }
+    sleep(2);
+    mwexecf('/var/etc/rtsold_%s_script.sh',$wanif);
+}
 function format_duid($duid)
 {
     $values = explode(':', strtolower(str_replace('-', ':', $duid)));
@@ -117,73 +158,161 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['disablesegmentationoffloading'] = isset($config['system']['disablesegmentationoffloading']);
     $pconfig['disablelargereceiveoffloading'] = isset($config['system']['disablelargereceiveoffloading']);
     $pconfig['ipv6duid'] = $config['system']['ipv6duid'];
+
     if (!isset($config['system']['disablevlanhwfilter'])) {
       $pconfig['disablevlanhwfilter'] = '0';
     } else {
       $pconfig['disablevlanhwfilter'] = $config['system']['disablevlanhwfilter'];
     }
     $pconfig['sharednet'] = isset($config['system']['sharednet']);
+    $pconfig['ipv6_duid_type'] = $config['system']['ipv6_duid_type'];
+    $pconfig['ipv6_duid_en_value'] = $config['system']['ipv6_duid_en_value'];    
+    $pconfig['ipv6_duid_ll_value'] = $config['system']['ipv6_duid_ll_value'];   
+    $pconfig['ipv6_duid_uu_value'] = $config['system']['ipv6_duid_uu_value'];
+    
+    
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
+    if (isset($_POST['submit'])) {
+          log_error("In submit");
+        if (!empty($pconfig['ipv6duid']) && !is_duid($pconfig['ipv6duid'])) {
+            $input_errors[] = gettext('A valid DUID must be specified.');
+        }
 
-    if (!empty($pconfig['ipv6duid']) && !is_duid($pconfig['ipv6duid'])) {
-        $input_errors[] = gettext('A valid DUID must be specified.');
+        if (!count($input_errors)) {
+            if (!empty($pconfig['sharednet'])) {
+                $config['system']['sharednet'] = true;
+            } elseif (isset($config['system']['sharednet'])) {
+                unset($config['system']['sharednet']);
+            }
+
+            if (!empty($pconfig['disablechecksumoffloading'])) {
+                $config['system']['disablechecksumoffloading'] = true;
+            } elseif (isset($config['system']['disablechecksumoffloading'])) {
+                unset($config['system']['disablechecksumoffloading']);
+            }
+
+            if (!empty($pconfig['disablesegmentationoffloading'])) {
+                $config['system']['disablesegmentationoffloading'] = true;
+            } elseif (isset($config['system']['disablesegmentationoffloading'])) {
+                unset($config['system']['disablesegmentationoffloading']);
+            }
+
+            if (!empty($pconfig['disablelargereceiveoffloading'])) {
+                $config['system']['disablelargereceiveoffloading'] = true;
+            } elseif (isset($config['system']['disablelargereceiveoffloading'])) {
+                unset($config['system']['disablelargereceiveoffloading']);
+            }
+
+            if (!empty($pconfig['disablevlanhwfilter'])) {
+                $config['system']['disablevlanhwfilter'] = $pconfig['disablevlanhwfilter'];
+            } elseif (isset($config['system']['disablevlanhwfilter'])) {
+                unset($config['system']['disablevlanhwfilter']);
+            }
+            
+            if($config['system']['ipv6_duid_type'] <> $pconfig['ipv6_duid_type'])
+            {
+                //DUID type change
+                $config['system']['ipv6_duid_type'] = $pconfig['ipv6_duid_type'];                
+            }
+            
+            if($pconfig['ipv6_duid_type'] == 1)
+            {
+                if(empty($pconfig['ipv6_duid_llt_value'])) {
+                    $pconfig['ipv6_duid_llt_value'] = '1';
+                }
+                $config['system']['ipv6_duid_llt_value'] = $pconfig['ipv6_duid_llt_value'];
+            }
+            if($pconfig['ipv6_duid_type'] == 2)
+            {
+                if(empty($pconfig['ipv6_duid_en_value'])) {
+                    $pconfig['ipv6_duid_en_value'] = '1';
+                }
+                $config['system']['ipv6_duid_en_value'] = $pconfig['ipv6_duid_en_value'];
+            }
+            if($pconfig['ipv6_duid_type'] == 3)
+            {
+                if(empty($pconfig['ipv6_duid_ll_value'])) {
+                    $pconfig['ipv6_duid_ll_value'] = '1';
+                }
+                $config['system']['ipv6_duid_ll_value'] = $pconfig['ipv6_duid_ll_value'];
+            }
+            if($pconfig['ipv6_duid_type'] == 4)
+            {
+                if(empty($pconfig['ipv6_duid_uu_value'])) {
+                    $pconfig['ipv6_duid_uu_value'] = '1';
+                }
+                $config['system']['ipv6_duid_uu_value'] = $pconfig['ipv6_duid_uu_value'];
+            }
+
+            if (!empty($pconfig['ipv6duid'])) {
+                $config['system']['ipv6duid'] = format_duid($pconfig['ipv6duid']);
+            } elseif (isset($config['system']['ipv6duid'])) {
+                unset($config['system']['ipv6duid']);
+                /* clear the file as this means auto-generate */
+                @unlink('/var/db/dhcp6c_duid');
+            }
+             
+           
+            $savemsg = get_std_save_message();
+
+            write_config();
+            system_arp_wrong_if();
+        }
+    } else if(isset($_POST['NewDUID']) || isset($_POST['restart_dhcp6c'])) {
+        
+       reset_dhcp6c($config['system']['ipv6_duid_type']);
     }
-
-    if (!count($input_errors)) {
-        if (!empty($pconfig['sharednet'])) {
-            $config['system']['sharednet'] = true;
-        } elseif (isset($config['system']['sharednet'])) {
-            unset($config['system']['sharednet']);
-        }
-
-        if (!empty($pconfig['disablechecksumoffloading'])) {
-            $config['system']['disablechecksumoffloading'] = true;
-        } elseif (isset($config['system']['disablechecksumoffloading'])) {
-            unset($config['system']['disablechecksumoffloading']);
-        }
-
-        if (!empty($pconfig['disablesegmentationoffloading'])) {
-            $config['system']['disablesegmentationoffloading'] = true;
-        } elseif (isset($config['system']['disablesegmentationoffloading'])) {
-            unset($config['system']['disablesegmentationoffloading']);
-        }
-
-        if (!empty($pconfig['disablelargereceiveoffloading'])) {
-            $config['system']['disablelargereceiveoffloading'] = true;
-        } elseif (isset($config['system']['disablelargereceiveoffloading'])) {
-            unset($config['system']['disablelargereceiveoffloading']);
-        }
-
-        if (!empty($pconfig['disablevlanhwfilter'])) {
-            $config['system']['disablevlanhwfilter'] = $pconfig['disablevlanhwfilter'];
-        } elseif (isset($config['system']['disablevlanhwfilter'])) {
-            unset($config['system']['disablevlanhwfilter']);
-        }
-
-        if (!empty($pconfig['ipv6duid'])) {
-            $config['system']['ipv6duid'] = format_duid($pconfig['ipv6duid']);
-        } elseif (isset($config['system']['ipv6duid'])) {
-            unset($config['system']['ipv6duid']);
-            /* clear the file as this means auto-generate */
-            @unlink('/var/db/dhcp6c_duid');
-        }
-
-        $savemsg = get_std_save_message();
-
-        write_config();
-        system_arp_wrong_if();
-    }
+    
 }
 
 legacy_html_escape_form_data($pconfig);
+setDUIDTime();
 
 include("head.inc");
 
 ?>
 
 <body>
+<script>
+ $( document ).ready(function() {
+      $("#ipv6_duid_type").change(function(){
+          $(".ipv6_duid_auto").addClass("hidden");
+          $(".ipv6_duid_llt").addClass("hidden");
+          $(".ipv6_duid_en").addClass("hidden");
+          $(".ipv6_duid_ll").addClass("hidden");
+          $(".ipv6_duid_uu").addClass("hidden");
+          $(".ipv6_Gen_new_DUID").addClass("hidden");
+          $(".ipv6_restart_dhcp6c").addClass("hidden");
+          switch($('#ipv6_duid_type option:selected').val()) {
+            case "0":
+              $(".ipv6_duid_auto").removeClass("hidden");
+              $(".ipv6_Gen_new_DUID").removeClass("hidden");
+              break;
+            case "1":
+              $(".ipv6_duid_llt").removeClass("hidden");
+              $(".ipv6_restart_dhcp6c").removeClass("hidden");
+              break;
+            case "2":
+              $(".ipv6_duid_en").removeClass("hidden");
+              $(".ipv6_restart_dhcp6c").removeClass("hidden");
+              break;
+             case "3":
+              $(".ipv6_duid_ll").removeClass("hidden");
+              $(".ipv6_restart_dhcp6c").removeClass("hidden");
+              break;
+            case "4":
+              $(".ipv6_duid_uu").removeClass("hidden");             
+              $(".ipv6_restart_dhcp6c").removeClass("hidden");
+              break;
+          }
+      });
+      $("#ipv6_duid_type").change(); // trigger initial
+
+ });
+</script>
+
   <?php include("fbegin.inc"); ?>
 
 <!-- row -->
@@ -278,9 +407,86 @@ include("head.inc");
                 </div>
               </td>
             </tr>
+             <tr class="ipv6_duid">
+              <td><a id="help_for_ipv6_duid_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP6 DUID Type"); ?></td>
+              <td>
+                <select name="ipv6_duid_type" class="selectpicker" data-style="btn-default" id="ipv6_duid_type">
+
+<?php
+                foreach(array(
+                  0 => 'AUTO',
+                  1 => 'DUID_LLT',
+                  2 => 'DUID_EN',
+                  3 => 'DUID_LL',
+                  4 => 'DUID_UUID',                              
+                ) as $duidtype => $dtype): ?>
+                  <option value="<?=$duidtype;?>" <?=$duidtype == $pconfig['ipv6_duid_type'] ? "selected=\"selected\"" : "";?>>
+                      <?=$dtype;?>
+                  </option>
+<?php
+                endforeach;?>
+                </select>
+                <div class="hidden" data-for="help_for_ipv6_duid_type">
+                  <?=gettext("Select the dhcp6 duid type to use.<br>
+                  AUTO: Generated automatically by dhcp6c.<br>
+                  DUID-LLT: Based on Link-layer Address Plus Time.<br>
+                  DUID-EN: Assigned by Vendor based on Enterprise Number.<br>
+                  DUID-LL: Based on Link-layer Address.<br>
+                  DUID-UUID: Based on Universally Unique IDentifier."); ?>
+                </div>
+              </td>                            
+            </tr>
+            <tr class="ipv6_duid_en">
+              <td><a id="help_for_ipv6_duid_en" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP6 DUID IANA Value (Decimal)"); ?></td>
+                <td>                  
+                  <input name="ipv6_duid_en_value" id="ipv6_duid_en_value" type="number" value="<?=$pconfig['ipv6_duid_en_value'];?>" />
+                  <div class="hidden" data-for="help_for_ipv6_duid_en">
+                    <?= gettext('This field is used to enter IANA-maintained Private Enterprise Number. ( Decimal )') ?><br />                    
+                </div>
+              </td>
+            </tr>
+            <tr class="ipv6_duid_ll">
+              <td><a id="help_for_ipv6_duid_ll" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP6 Link-layer DUID"); ?></td>
+                <td>                  
+                  <input name="ipv6_duid_ll_value" id="ipv6_duid_ll_value" type="text" value="<?=$pconfig['ipv6_duid_ll_value'];?>" />
+                  <div class="hidden" data-for="help_for_ipv6_duid_ll">
+                    <?= gettext('This field is used to enter a Link-layer DUID.') ?><br />                    
+                </div>
+              </td>
+             </tr>
+            <tr>
+            <tr class="ipv6_duid_uu">
+              <td><a id="help_for_ipv6_duid_uu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP6 Universally Unique (UUID) DUID"); ?></td>
+                <td>                  
+                  <input name="ipv6_duid_uu_value" id="ipv6_duid_uu_value" type="text" value="<?=$pconfig['ipv6_duid_uu_value'];?>" />
+                  <div class="hidden" data-for="help_for_ipv6_duid_uu">
+                    <?= gettext('This field is used to enter a UUID DUID') ?><br />                    
+                </div>
+              </td>
+            </tr>
+            <tr class="ipv6_Gen_new_DUID">
+              <td><a id="help_for_dhcp6forcenewduid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Generate new DUID"); ?></td>
+              <td>
+                <input name="NewDUID" type="submit" class="btn btn-primary" value="<?=gettext("New DUID");?>" />
+                <?=gettext("This action will have an immediate affect"); ?><br />
+                <div class="hidden" data-for="help_for_dhcp6forcenewduid">
+                  <?= gettext('Clicking this button will force a new DUID to be generated and dhcp6c will restart. This will clear any stored DUID and will most likrly result in a new IA and NA. Use with care.') ?>                  
+                </div>
+              </td>
+            </tr>
+            <tr class="ipv6_restart_dhcp6c">
+              <td><a id="help_for_dhcp6forcenewduid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Restart dhcp6c"); ?></td>
+              <td>
+                <input name="restart_dhcp6c" type="submit" class="btn btn-primary" value="<?=gettext("Restart dhcp6c");?>" />
+                <?=gettext("This action will have an immediate affect"); ?><br />
+                <div class="hidden" data-for="help_for_dhcp6forcenewduid">
+                  <?= gettext('Clicking this button will cause dhcp6c to reload the DUID and restart.') ?>                  
+                </div>
+              </td>
+            </tr>
             <tr>
               <td>&nbsp;</td>
-              <td><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" /></td>
+              <td><input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" /></td>
             </tr>
             <tr>
               <td colspan="2">
