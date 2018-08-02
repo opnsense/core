@@ -653,6 +653,15 @@ function ipsec_convert_to_modp($index)
         case '24':
             $convertion = "modp2048s256";
             break;
+        case '28':
+            $convertion = "ecp256bp";
+            break;
+        case '29':
+            $convertion = "ecp384bp";
+            break;
+        case '30':
+            $convertion = "ecp512bp";
+            break;
     }
 
     return $convertion;
