@@ -186,25 +186,29 @@ legacy_html_escape_form_data($a_phase2);
 $service_hook = 'ipsec';
 
 include("head.inc");
-$dhgroups = array(
-  0  => gettext('off'),
-  1  => '1 (768&nbsp;bits)',
-  2  => '2 (1024&nbsp;bits)',
-  5  => '5 (1536&nbsp;bits)',
-  14 => '14 (2048&nbsp;bits)',
-  15 => '15 (3072&nbsp;bits)',
-  16 => '16 (4096&nbsp;bits)',
-  17 => '17 (6144&nbsp;bits)',
-  18 => '18 (8192&nbsp;bits)',
-  19 => '19 (256&nbsp;bit&nbsp;elliptic&nbsp;curve)',
-  20 => '20 (384&nbsp;bit&nbsp;elliptic&nbsp;curve)',
-  21 => '21 (521&nbsp;bit&nbsp;elliptic&nbsp;curve)',
-  22 => '22 (1024(sub 160)&nbsp;bits)',
-  23 => '23 (2048(sub 224)&nbsp;bits)',
-  24 => '24 (2048(sub 256)&nbsp;bits)'
-);
-?>
 
+$dhgroups = array(
+    0 => gettext('off'),
+    1 => '1 (768 bits)',
+    2 => '2 (1024 bits)',
+    5 => '5 (1536 bits)',
+    14 => '14 (2048 bits)',
+    15 => '15 (3072 bits)',
+    16 => '16 (4096 bits)',
+    17 => '17 (6144 bits)',
+    18 => '18 (8192 bits)',
+    19 => '19 (NIST EC 256 bits)',
+    20 => '20 (NIST EC 384 bits)',
+    21 => '21 (NIST EC 521 bits)',
+    22 => '22 (1024(sub 160) bits)',
+    23 => '23 (2048(sub 224) bits)',
+    24 => '24 (2048(sub 256) bits)',
+    28 => '28 (Brainpool EC 256 bits)',
+    29 => '29 (Brainpool EC 384 bits)',
+    30 => '30 (Brainpool EC 512 bits)',
+);
+
+?>
 <body>
 <script>
 $( document ).ready(function() {
