@@ -6983,6 +6983,10 @@ body {
   margin-bottom: 0;
 }
 
+.page-content-main section[class^=col-] + section[class^=col-] {
+  padding-top: 20px;
+}
+
 .brand-logo {
   display: none;
 }
