@@ -236,6 +236,10 @@ body{
   }
 }
 
+.page-content-main [class^="col-"] + [class^="col-"]{
+  padding-top: ($grid-gutter-width/2);
+}
+
 .brand-logo{
     display: none;
 

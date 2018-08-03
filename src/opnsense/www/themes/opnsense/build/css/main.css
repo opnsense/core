@@ -6988,6 +6988,10 @@ body {
   margin-bottom: 0;
 }
 
+.page-content-main [class^=col-] + [class^=col-] {
+  padding-top: 20px;
+}
+
 .brand-logo {
   display: none;
 }
