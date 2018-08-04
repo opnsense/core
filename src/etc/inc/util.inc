@@ -1378,3 +1378,22 @@ function is_install_media()
 
     return true;
 }
+
+function write_ipv6_duid($duid_to_write)
+{
+    $values = explode(":", $duid_to_write);
+    $num_values = count($values);
+    $num_values = sprintf("%02x",$num_values);
+    array_unshift($values, $num_values, '00');
+    $duid_to_write = implode(':', $values);
+    log_error("write: {$duid_to_write}");
+    $temp = str_replace(':', '', $duid_to_write);
+    
+    $duid_binstring = pack('H*', $temp);
+  
+    $fd = fopen('/var/db/dhcp6c_duid', 'wb');
+    if ($fd) {
+        fwrite($fd, $duid_binstring);
+        fclose($fd);
+    }
+}
