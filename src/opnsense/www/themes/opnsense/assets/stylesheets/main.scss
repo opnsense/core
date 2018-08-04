@@ -357,7 +357,6 @@ body{
     border-top: 0;
   }
 }
-
 /* COLLAPSE SIDEBAR */
 
 main.page-content.col-lg-12 {
@@ -368,12 +367,12 @@ main.page-content.col-lg-12 {
   width: 70px;
   background-color: transparent !important;
   overflow: hidden;
+  border: none !important;
   > div {
     &.row {
       height: 100% !important;
       > nav.page-side-nav {
         width: 70px;
-        background-color: darkgrey !important;
         height: 100% !important;
       }
     }
@@ -381,6 +380,13 @@ main.page-content.col-lg-12 {
       a.list-group-item {
         font-size: 11px;
         text-align: center;
+        width: 70px;
+        height: 70px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #lightergrey;
         > span {
           &.fa, &.glyphicon {
             visibility: visible;
@@ -391,13 +397,6 @@ main.page-content.col-lg-12 {
             padding-right: 7px;
           }
         }
-        width: 70px;
-        height: 70px;
-        padding-left: 10px;
-        padding-right: 10px;
-        padding-top: 15px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #lightergrey;
       }
       div {
         &.collapsing > a.list-group-item {
@@ -408,163 +407,98 @@ main.page-content.col-lg-12 {
           left: 70px !important;
           margin-top: -70px !important;
         }
-        &.collapse.in > div.collapsing > a.list-group-item {
+        &.collapse {
+          &.in > {
+            div.collapsing > a.list-group-item {
+              padding-left: 10px !important;
+              font-size: 11px !important;
+              display: block !important;
+              position: absolute !important;
+              left: 148px !important;
+              margin-top: -28px !important;
+            }
+            a.list-group-item {
+              background-color: #ffffffe6 !important;
+            }
+            div.collapse.in > a.list-group-item {
+              background-color: #ffffffe6 !important;
+              padding-left: 10px !important;
+              font-size: 11px !important;
+            }
+          }
+          > {
+            a.list-group-item, div.collapse > a.list-group-item {
+              padding-left: 10px !important;
+              font-size: 11px !important;
+            }
+          }
+        }
+        &.collapsed > a.list-group-item {
           padding-left: 10px !important;
           font-size: 11px !important;
-          display: block !important;
-          position: absolute !important;
-          left: 148px !important;
-          margin-top: -28px !important;
         }
-      }
-      a.list-group-item.active-menu-title {
-        color: #FFF !important;
-        background-color: orange !important;
-      }
-    }
-  }
-}
-
-a.list-group-item.active-menu-title.collapsed {
-  color: #FFF !important;
-  background-color: lightergrey !important;
-}
-
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > {
-  a.list-group-item[aria-expanded="true"] {
-    color: #ec6d12 !important;
-    background-color: lightergrey !important;
-  }
-  div {
-    &.collapse {
-      &.in {
-        > a.list-group-item[aria-expanded="true"] {
-          color: #ec6d12 !important;
-          background-color: lightergrey !important;
+        &.collapse.in {
+          width: 150px;
+          font-size: 11px;
+          display: block;
+          z-index: 10;
+          position: absolute;
+          left: 70px;
+          margin-top: -70px;
+          height: auto;
+          border: 1px solid #eaeaea;
+          -webkit-transition: width 0.1s;
+          -o-transition: width 0.1s;
+          transition: width 0.1s;
         }
-        > div.collapse.in > a.list-group-item {
-          padding-left: 10px !important;
-          font-size: 11px !important;
-          background-color: lightergrey !important;
-          &.menu-level-3-item.active {
-            color: #ec6d12 !important;
-            background-color: lightergrey !important;
+        &.collapsing {
+          width: 0px;
+          font-size: 11px;
+          position: absolute;
+          display: block;
+          z-index: 10;
+          left: 70px;
+          margin-top: -70px;
+          height: auto;
+        }
+        &.collapse.in > div {
+          &.collapse.in {
+            width: 150px;
+            font-size: 11px;
+            display: block;
+            z-index: 10;
+            position: absolute;
+            left: 148px;
+            margin-top: -28px;
+            height: auto;
+            border: 1px solid #eaeaea;
+            -webkit-transition: width 0.1s;
+            -o-transition: width 0.1s;
+            transition: width 0.1s;
+          }
+          &.collapsing {
+            width: 0px;
+            font-size: 11px;
+            position: absolute;
+            display: block;
+            z-index: 10;
+            left: 148px;
+            margin-top: -28px;
+            height: auto;
           }
         }
       }
-      > a.list-group-item {
-        padding-left: 10px !important;
-        font-size: 11px !important;
-        background-color: lightergrey !important;
-      }
-      > div.collapse > a.list-group-item {
-        padding-left: 10px !important;
-        font-size: 11px !important;
-      }
-    }
-    &.collapsed > a.list-group-item {
-      padding-left: 10px !important;
-      font-size: 11px !important;
-    }
-    &.collapse.in > a.list-group-item:hover {
-      color: #ec6d12 !important;
-      background-color: lightergrey !important;
     }
   }
 }
-
-a.list-group-item:focus {
-  color: #ec6d12 !important;
-  background-color: black !important;
-}
-
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item:hover, a.list-group-item:focus {
-  text-decoration: none !important;
-  color: #ec6d12 !important;
-  background-color: lightergrey !important;
-  border: none !important;
-}
-
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div {
-  &.collapse.in > a.list-group-item {
-    &.active-menu-title, &.collapsed:focus, &:focus {
-      color: #ec6d12 !important;
-      background-color: black !important;
-    }
-  }
-  &.active-menu.collapse.in > a.list-group-item.active {
-    color: #ec6d12 !important;
-    background-color: black !important;
-  }
-  &.collapse.in {
-    width: 150px;
-    font-size: 11px;
-    display: block;
-    z-index: 10;
-    position: absolute;
-    left: 70px;
-    margin-top: -70px;
-    height: auto;
-    border: 1px solid #515151;
-    -webkit-transition: width 0.1s;
-    -o-transition: width 0.1s;
-    transition: width 0.1s;
-    -webkit-box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
-    -moz-box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
-    box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
-  }
-  &.collapsing {
-    width: 0px;
-    font-size: 11px;
-    position: absolute;
-    display: block;
-    z-index: 10;
-    left: 70px;
-    margin-top: -70px;
-    height: auto;
-    -webkit-box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
-    -moz-box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
-    box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
-  }
-  &.collapse.in > div {
-    &.collapse.in {
-      width: 150px;
-      font-size: 11px;
-      display: block;
-      z-index: 10;
-      position: absolute;
-      left: 148px;
-      margin-top: -28px;
-      height: auto;
-      border: 1px solid #515151;
-      -webkit-transition: width 0.1s;
-      -o-transition: width 0.1s;
-      transition: width 0.1s;
-      -webkit-box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
-      -moz-box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
-      box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.5);
-    }
-    &.collapsing {
-      width: 0px;
-      font-size: 11px;
-      position: absolute;
-      display: block;
-      z-index: 10;
-      left: 148px;
-      margin-top: -28px;
-      height: auto;
-      -webkit-box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.75);
-      -moz-box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.75);
-      box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.75);
-    }
-  }
-}
-
-/* Sub Level One */
-
-/* Sub Level Two */
 
 button.toggle-sidebar {
+  color: #FFF;
+  background-color: transparent;
+  font-size: 14px;
+  border: none;
+  margin-top: 18px;
+  float: left;
   &.glyphicon {
     &.glyphicon-chevron-left, &.glyphicon-chevron-right {
       position: absolute;
@@ -586,12 +520,6 @@ button.toggle-sidebar {
       outline: none;
     }
   }
-  color: #FFF;
-  background-color: transparent;
-  font-size: 14px;
-  border: none;
-  margin-top: 18px;
-  float: left;
 }
 
 /* COLLAPSE SIDEBAR END*/
