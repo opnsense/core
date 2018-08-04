@@ -36,5 +36,5 @@ use OPNsense\Core\Config;
  */
 class Local extends Base
 {
-	/* we only need this class to access encrypt() and decrypt() */
+    /* we only need this class to access encrypt() and decrypt() */
 }
