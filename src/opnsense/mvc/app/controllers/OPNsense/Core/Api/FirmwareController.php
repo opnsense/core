@@ -734,7 +734,16 @@ class FirmwareController extends ApiControllerBase
         if ($changelogs == null) {
             $changelogs = array();
         } else {
-            foreach ($changelogs as &$changelog) {
+            $version = trim(file_get_contents('/usr/local/opnsense/version/opnsense'));
+            $devel = preg_match('/^\d+\.\d+\.[a-z]/i', $version) ? true : false;
+
+            foreach ($changelogs as $index => &$changelog) {
+                /* skip development items */
+                if (!$devel && preg_match('/^\d+\.\d+\.[a-z]/i', $changelog['version'])) {
+                    unset($changelogs[$index]);
+                    continue;
+                }
+
                 /* rewrite dates as ISO */
                 $date = date_parse($changelog['date']);
                 $changelog['date'] = sprintf('%04d-%02d-%02d', $date['year'], $date['month'], $date['day']);
