@@ -236,7 +236,7 @@ body{
   }
 }
 
-.page-content-main [class^="col-"] + [class^="col-"]{
+.page-content-main section[class^="col-"] + section[class^="col-"]{
   padding-top: ($grid-gutter-width/2);
 }
 
