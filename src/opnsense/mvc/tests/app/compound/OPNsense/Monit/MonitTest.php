@@ -297,7 +297,7 @@ class MonitTest extends \PHPUnit\Framework\TestCase
         if ($response['status'] == 'running') {
             // stop possibly running service
             $response = $svcMonit->stopAction();
-            $this->assertEquals($response['response'], "OK\n\n");
+            $this->assertEquals($response['response'], 'OK');
         }
 
         // reconfigure and start
@@ -334,7 +334,7 @@ class MonitTest extends \PHPUnit\Framework\TestCase
     public function testCleanup($svcMonit)
     {
         $response = $svcMonit->stopAction();
-        $this->assertEquals($response['response'], "OK\n\n");
+        $this->assertEquals($response['response'], 'OK');
 
         foreach (array_reverse($this->nodeTypes) as $nodeType) {
             $this->cleanupNodes($nodeType);
