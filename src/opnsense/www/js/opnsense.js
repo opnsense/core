@@ -52,7 +52,7 @@ function getFormData(parent) {
 
     var data = {};
     $( "#"+parent+"  input,#"+parent+" select,#"+parent+" textarea" ).each(function( index ) {
-        if ($(this).prop('id') == undefined) {
+        if ($(this).prop('id') === undefined || $(this).prop('id') === "") {
             // we need an id.
             return;
         }
