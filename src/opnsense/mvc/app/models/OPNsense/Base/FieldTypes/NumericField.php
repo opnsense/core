@@ -67,8 +67,8 @@ class NumericField extends BaseField
     public function __construct($ref = null, $tagname = null)
     {
         parent:: __construct($ref, $tagname);
-        $this->minimum_value = PHP_FLOAT_MAX*-1;
-        $this->maximum_value = PHP_FLOAT_MAX;
+        $this->minimum_value = -1.0e200; // XXX replace with - PHP_FLOAT_MAX when available
+        $this->maximum_value = 1.0e200; // PHP_FLOAT_MAX
     }
 
     /**
