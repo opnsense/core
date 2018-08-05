@@ -132,7 +132,7 @@ if (openssh_enabled() || $config['system']['webgui']['protocol'] == 'https') {
 
 if ($config['system']['webgui']['protocol'] == 'https') {
     echo ' HTTPS: ';
-    passthru('openssl x509 -in /var/etc/cert.pem -noout -fingerprint -sha256 | sed "s/Fingerprint=//" | sed -E "s/(^.{55})/\1,               /" | tr "," "\n"');
+    passthru('openssl x509 -in /var/etc/cert.pem -noout -fingerprint -sha256 | sed "s/Fingerprint=//" | tr ":" " " | sed -E "s/(^.{54})./\1,               /" | tr "," "\n"');
 }
 
 if (openssh_enabled()) {
