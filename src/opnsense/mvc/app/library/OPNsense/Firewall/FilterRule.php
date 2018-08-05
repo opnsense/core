@@ -167,6 +167,7 @@ class FilterRule extends Rule
             if (!empty($rule['skip_rules_gw_down']) && !empty($rule['gateway']) &&
               empty($this->gatewayMapping[$rule['gateway']])) {
                 $rule['disabled'] = true;
+                $this->log("Gateway down");
             }
             if (!isset($rule['quick'])) {
                 // all rules are quick by default except floating

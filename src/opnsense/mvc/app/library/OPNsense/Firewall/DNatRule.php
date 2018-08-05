@@ -102,6 +102,7 @@ class DNatRule extends Rule
                     $rule['external'] = "\${$rule['external']}";
                 } elseif (!Util::isIpAddress($rule['external']) && !Util::isSubnet($rule['external'])) {
                     $rule['disabled'] = true;
+                    $this->log("Invalid address {$rule['external']}");
                 } elseif (strpos($rule['external'], '/') === false && strpos($rule['from'], '/') !== false) {
                     $rule['external'] .= "/".explode('/', $rule['from'])[1];
                 }
