@@ -79,6 +79,9 @@ class M1_0_0 extends BaseModelMigration
                 if ($alias->proto) {
                     $node->proto = (string)$alias->proto;
                 }
+                if ($alias->updatefreq) {
+                    $node->updatefreq = (string)$alias->updatefreq;
+                }
             }
         }
     }
