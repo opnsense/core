@@ -7231,7 +7231,7 @@ button.toggle-sidebar {
   margin-top: 18px;
   float: left;
 }
-button.toggle-sidebar.glyphicon.glyphicon-chevron-left, button.toggle-sidebar.glyphicon.glyphicon-chevron-right {
+button.toggle-sidebar.fa.fa-chevron-left, button.toggle-sidebar.fa.fa-chevron-right {
   position: absolute;
   -webkit-transition: all 0.1s ease;
   -moz-transition: all 0.1s ease;
@@ -7239,7 +7239,7 @@ button.toggle-sidebar.glyphicon.glyphicon-chevron-left, button.toggle-sidebar.gl
   -ms-transition: all 0.1s ease;
   transition: all 0.1s ease;
 }
-button.toggle-sidebar.glyphicon.glyphicon-chevron-left:active, button.toggle-sidebar.glyphicon.glyphicon-chevron-right:active {
+button.toggle-sidebar.fa.fa-chevron-left:active, button.toggle-sidebar.fa.fa-chevron-right:active {
   position: absolute;
   -webkit-transform: rotate(180deg);
   -moz-transform: rotate(180deg);
@@ -7247,7 +7247,7 @@ button.toggle-sidebar.glyphicon.glyphicon-chevron-left:active, button.toggle-sid
   -ms-transform: rotate(180deg);
   transform: rotate(180deg);
 }
-button.toggle-sidebar.glyphicon.glyphicon-chevron-left:focus, button.toggle-sidebar.glyphicon.glyphicon-chevron-right:focus {
+button.toggle-sidebar.fa.fa-chevron-left:focus, button.toggle-sidebar.fa.fa-chevron-right:focus {
   outline: none;
 }
 /* COLLAPSE SIDEBAR END*/

@@ -499,8 +499,8 @@ button.toggle-sidebar {
   border: none;
   margin-top: 18px;
   float: left;
-  &.glyphicon {
-    &.glyphicon-chevron-left, &.glyphicon-chevron-right {
+  &.fa {
+    &.fa-chevron-left, &.fa-chevron-right {
       position: absolute;
       -webkit-transition: all 0.1s ease;
       -moz-transition: all 0.1s ease;
@@ -508,7 +508,7 @@ button.toggle-sidebar {
       -ms-transition: all 0.1s ease;
       transition: all 0.1s ease;
     }
-    &.glyphicon-chevron-left:active, &.glyphicon-chevron-right:active {
+    &.fa-chevron-left:active, &.fa-chevron-right:active {
       position: absolute;
       -webkit-transform: rotate(180deg);
       -moz-transform: rotate(180deg);
@@ -516,7 +516,7 @@ button.toggle-sidebar {
       -ms-transform: rotate(180deg);
       transform: rotate(180deg);
     }
-    &.glyphicon-chevron-left:focus, &.glyphicon-chevron-right:focus {
+    &.fa-chevron-left:focus, &.fa-chevron-right:focus {
       outline: none;
     }
   }
