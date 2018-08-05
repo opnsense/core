@@ -461,6 +461,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/JsonKeyValueStoreField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/ModelRelationField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/NetworkField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/NumericField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/OptionField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/PortField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/TextField.php
