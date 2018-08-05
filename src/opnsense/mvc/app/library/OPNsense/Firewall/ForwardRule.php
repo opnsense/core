@@ -106,6 +106,7 @@ class ForwardRule extends Rule
                     $tmp['target'] = "\${$tmp['target']}";
                 } elseif (!Util::isIpAddress($tmp['target']) && !Util::isSubnet($tmp['target'])) {
                     $tmp['disabled'] = true;
+                    $this->log("Invalid target");
                 }
             }
             // parse our local port
@@ -133,6 +134,7 @@ class ForwardRule extends Rule
                     }
                 } else {
                     $tmp['disabled'] = true;
+                    $this->log("invalid local-port");
                 }
             }
 
