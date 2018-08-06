@@ -37,6 +37,7 @@ CORE_ARCH?=	${ARCH}
 CORE_OPENVPN?=	# empty
 CORE_PHP?=	71
 CORE_PYTHON?=	27
+CORE_RADVD?=	# empty
 CORE_SURICATA?=	-devel
 
 _FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
@@ -116,7 +117,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			py${CORE_PYTHON}-requests \
 			py${CORE_PYTHON}-sqlite3 \
 			py${CORE_PYTHON}-ujson \
-			radvd \
+			radvd${CORE_RADVD} \
 			rate \
 			rrdtool \
 			samplicator \
