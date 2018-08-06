@@ -581,10 +581,10 @@ if (!empty(trim($_POST['lanipaddress']))) {
 		</field>
 	</fields>
 	<stepsubmitphpaction><![CDATA[
-if (!empty($_POST['adminpassword']) || !empty($_POST['adminpasswordagain'])) {
-	if ($_POST['adminpassword'] == $_POST['adminpasswordagain']) {
+if (!empty($_POST['rootpassword']) || !empty($_POST['rootpasswordconfirmation'])) {
+	if ($_POST['rootpassword'] == $_POST['rootpasswordconfirmation']) {
 		$admin_user = &getUserEntryByUID(0);
-		local_user_set_password($admin_user, $_POST['adminpassword']);
+		local_user_set_password($admin_user, $_POST['rootpassword']);
 		local_user_set($admin_user);
 	} else {
 		$input_errors[] = gettext('The passwords do not match.');
