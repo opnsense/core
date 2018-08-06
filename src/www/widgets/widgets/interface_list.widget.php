@@ -1,34 +1,34 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2007 Scott Dale
-    Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>
-    Copyright (C) 2004-2005 Manuel Kasper <mk@neon1.net>
-    Copyright (C) 2004-2005 Jonathan Watt <jwatt@jwatt.org>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2007 Scott Dale
+ * Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>
+ * Copyright (C) 2004-2005 Manuel Kasper <mk@neon1.net>
+ * Copyright (C) 2004-2005 Jonathan Watt <jwatt@jwatt.org>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("widgets/include/interface_list.inc");
@@ -74,7 +74,7 @@ require_once("interfaces.inc");
       $ifinfo = $ifsinfo[$ifdescr];
       $iswireless = is_interface_wireless($ifdescr);?>
       <tr id="interface_widget_item_<?=$ifname;?>">
-        <td>
+        <td style="width:15%;">
 <?php
           if (isset($ifinfo['ppplink'])):?>
             <span title="3g" class="fa fa-mobile text-success"></span>
@@ -108,25 +108,25 @@ require_once("interfaces.inc");
             </u>
           </strong>
         </td>
-        <td>
+        <td style="width:5%;">
 <?php
         if ($ifinfo['status'] == "up" || $ifinfo['status'] == "associated"):?>
           <span class="fa fa-arrow-up text-success"></span>
 <?php
-        elseif ($ifinfo['status'] == "no carrier"):?>
+        elseif ($ifinfo['status'] == "down"):?>
           <span class="fa fa-arrow-down text-danger"></span>
 <?php
-        elseif ($ifinfo['status'] == "down"):?>
+        elseif ($ifinfo['status'] == "no carrier"):?>
           <span class="fa fa-times text-danger"></span>
 <?php
         else:?>
           <?=htmlspecialchars($ifinfo['status']);?>
 <?php
         endif;?>
-        <td>
+        <td style="width:35%;">
           <?=empty($ifinfo['media']) ? htmlspecialchars($ifinfo['cell_mode']) : htmlspecialchars($ifinfo['media']);?>
         </td>
-        <td>
+        <td style="width:45%;">
           <?=htmlspecialchars($ifinfo['ipaddr']);?>
           <?=!empty($ifinfo['ipaddr']) ? "<br/>" : "";?>
           <?=htmlspecialchars($ifinfo['ipaddrv6']);?>
