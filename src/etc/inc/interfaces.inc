@@ -3799,19 +3799,8 @@ function link_interface_to_track6($wanif, $update = false)
             services_radvd_configure();
         }
 
-        /* XXX Can you take me higher? To the place where IPv6 works. */
-        $manual_dhcpv6 = false;
-
         foreach ($list as $lanif => $lancfg) {
             interface_track6_configure($lanif, $lancfg);
-
-            if (isset($lancfg['dhcpd6track6allowoverride'])) {
-                $manual_dhcpv6 = true;
-            }
-        }
-
-        if ($manual_dhcpv6) {
-            services_dhcpd_configure('inet6');
         }
     }
 
