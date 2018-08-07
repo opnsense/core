@@ -37,7 +37,7 @@ CORE_ARCH?=	${ARCH}
 CORE_OPENVPN?=	# empty
 CORE_PHP?=	71
 CORE_PYTHON?=	27
-CORE_RADVD?=	# empty
+CORE_RADVD?=	1
 CORE_SURICATA?=	-devel
 
 _FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
