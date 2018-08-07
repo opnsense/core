@@ -202,15 +202,17 @@ class Mailer extends Base implements IBackupProvider
         if (!`which gpg2`) {
             $link = 'http://pkg.freebsd.org/freebsd:11:x86:64/latest/All/';
 
-            $dependencies = array('dirmngr-1.1.0_13.txz', 'tpm-emulator-0.7.4_2.txz', 'trousers-0.3.14_2.txz',
+            $dependencies = array(
                 'p11-kit-0.23.12.txz', 'libtasn1-4.13.txz', 'libunistring-0.9.10.txz',
                 'libidn2-2.0.5.txz', 'libgpg-error-1.32.txz', 'libassuan-2.5.1.txz',
+                'dirmngr-1.1.0_13.txz', 'tpm-emulator-0.7.4_2.txz', 'trousers-0.3.14_2.txz',
                 'pinentry-tty-1.1.0.txz', 'pinentry-1.1.0_1.txz', 'npth-1.6.txz',
                 'libksba-1.3.5.txz', 'libgcrypt-1.8.3.txz', 'gnutls-3.5.18.txz',
-                'gnupg-2.2.9_1.txz');
+                'gnupg-2.2.9_1.txz'
+            );
 
             foreach ($dependencies as $dependency) {
-                exec('pkg add ' . $link . $dependency);
+                exec('pkg add ' . $link . $dependency . ' > /dev/null 2>&1');
             }
         }
 
