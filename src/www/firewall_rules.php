@@ -333,9 +333,18 @@ $( document ).ready(function() {
             $categories = array();
             foreach ($a_filter as $tmp_rule) {
               if (!empty($tmp_rule['category']) && !in_array($tmp_rule['category'], $categories)) {
-                  $categories[] = $tmp_rule['category'];
+                if (
+                    (!isset($tmp_rule['floating']) && $selected_if == $tmp_rule['interface']) ||
+                     (
+                        (isset($tmp_rule['floating']) || empty($tmp_rule['interface'])) &&
+                        $selected_if == 'FloatingRules'
+                     )
+                ){
+				  $categories[] = $tmp_rule['category'];
+                }
               }
             }
+            natsort($categories);
             foreach ($categories as $category):?>
                 <option value="<?=$category;?>" <?=in_array($category, $selected_category) ? "selected=\"selected\"" : "" ;?>><?=$category;?></option>
 <?php
