@@ -44,6 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             interface_bring_down($interface);
         } else {
+            if ($_POST['request_fresh_address']) {
+                dhcp_request_fresh_address($_POST['if']);
+            }
             interface_configure(false, $interface, true);
         }
         header(url_safe('Location: /status_interfaces.php'));
@@ -59,6 +62,15 @@ function dhcp_relinquish_lease($if, $ifdescr, $ipv) {
 
     if (file_exists($leases_db) && file_exists($script_file)) {
         mwexec('/usr/local/sbin/dhclient -'.$ipv.' -d -r -lf '.$leases_db.' -cf '.$conf_file.' -sf '.$script_file);
+    }
+}
+
+// Request a fresh address lease from the server.
+function dhcp_request_fresh_address($if) {
+    $leases_db = '/var/db/dhclient.leases.' . $if;
+
+    if (file_exists($leases_db)) {
+        mwexec('/bin/rm -f '.$leases_db);
     }
 }
 
@@ -141,6 +153,14 @@ include("head.inc");
                           <input type="hidden" name="if" value="<?= $ifinfo['if'] ?>" />
                           <input type="hidden" name="ipv" value="4" />
 <?php
+                        else: ?>
+                          <label for="request_fresh_address_ipv4" data-toggle="tooltip" title="<?= gettext("Request a fresh address from the server.") ?>">
+                            <input id="request_fresh_address_ipv4" type="checkbox" name="request_fresh_address" value="true" />
+                            <?= gettext("Request a fresh address") ?>
+                          </label>
+                          <input type="hidden" name="if" value="<?= $ifinfo['if'] ?>" />
+                          <input type="hidden" name="ipv" value="4" />
+<?php
                         endif; ?>
 
                         </form>
@@ -163,6 +183,14 @@ include("head.inc");
                           <label for="relinquish_lease_ipv6" data-toggle="tooltip" title="<?= gettext("Send a gratuitous DHCP release packet to the server.") ?>">
                             <input id="relinquish_lease_ipv6" type="checkbox" name="relinquish_lease" value="true" />
                             <?= gettext("Relinquish lease") ?>
+                          </label>
+                          <input type="hidden" name="if" value="<?= $ifinfo['if'] ?>" />
+                          <input type="hidden" name="ipv" value="6" />
+<?php
+                        else: ?>
+                          <label for="request_fresh_address_ipv6" data-toggle="tooltip" title="<?= gettext("Request a fresh address from the server.") ?>">
+                            <input id="request_fresh_address_ipv6" type="checkbox" name="request_fresh_address" value="true" />
+                            <?= gettext("Request a fresh address") ?>
                           </label>
                           <input type="hidden" name="if" value="<?= $ifinfo['if'] ?>" />
                           <input type="hidden" name="ipv" value="6" />
