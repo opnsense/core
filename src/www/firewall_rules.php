@@ -478,6 +478,8 @@ $( document ).ready(function() {
                 endif; ?>
 <?php
                 $interface_has_rules = false;
+				$category='';
+				$interface='';
                 foreach ($a_filter as $i => $filterent):
                 if (
                     (!isset($filterent['floating']) && $selected_if == $filterent['interface']) ||
@@ -486,6 +488,26 @@ $( document ).ready(function() {
                         $selected_if == 'FloatingRules'
                      )
                 ):
+				  if( $selected_if != $interface )
+                  {
+                    $interface = $selected_if;
+                  }
+
+
+                  if ($filterent['category'] !== $category) {
+                    $category = $filterent['category']
+?>
+
+                  <tr class="category text-uppercase text-danger text-center font-weight-bold" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
+                    <td colspan=2></td>
+                    <td colspan=3><?=$category?></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+
+<?php
+}
+
                   // calculate a hash so we can track these records in the rulset, new style (mvc) code will
                   // automatically provide us with a uuid, this is a workaround to provide some help with tracking issues.
                   $filterent['md5'] = md5(json_encode($filterent));
