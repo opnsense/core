@@ -480,6 +480,7 @@ $( document ).ready(function() {
                 $interface_has_rules = false;
 				$category='';
 				$interface='';
+				$offset = 0;
                 foreach ($a_filter as $i => $filterent):
                 if (
                     (!isset($filterent['floating']) && $selected_if == $filterent['interface']) ||
@@ -490,8 +491,10 @@ $( document ).ready(function() {
                 ):
 				  if( $selected_if != $interface )
                   {
+					$offset = $i;
                     $interface = $selected_if;
                   }
+                  $idx = $i-$offset;
 
 
                   if ($filterent['category'] !== $category) {
@@ -549,7 +552,7 @@ $( document ).ready(function() {
 ?>
                   <tr class="rule  <?=isset($filterent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
                     <td>
-                      <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
+                      <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />&nbsp;<?=$idx+1?>
                     </td>
                     <td>
                       <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(empty($filterent['disabled'])) ? gettext("Disable") : gettext("Enable");?>"><span class="<?=$iconfn;?>"></span></a>
