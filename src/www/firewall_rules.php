@@ -367,8 +367,8 @@ $( document ).ready(function() {
                       <th class="hidden-xs hidden-sm"><?=gettext("Port");?></th>
                       <th class="hidden-xs hidden-sm"><?=gettext("Destination");?></th>
                       <th class="hidden-xs hidden-sm"><?=gettext("Port");?></th>
-                      <th class="hidden-xs hidden-sm"><?=gettext("Gateway");?></th>
-                      <th class="hidden-xs hidden-sm"><?=gettext("Schedule");?></th>
+                      <th class="hidden"><?=gettext("Gateway");?></th>
+                      <th class="hidden"><?=gettext("Schedule");?></th>
                       <th><?=gettext("Description");?>
                           <i class="fa fa-question-circle" data-toggle="collapse" data-target=".rule_md5_hash" ></i>
                       </th>
@@ -389,8 +389,8 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">*</td>
                     <td class="hidden-xs hidden-sm">*</td>
                     <td class="hidden-xs hidden-sm">*</td>
-                    <td class="hidden-xs hidden-sm">*</td>
-                    <td class="hidden-xs hidden-sm">&nbsp;</td>
+                    <td class="hidden">*</td>
+                    <td class="hidden">&nbsp;</td>
                     <td><?=gettext("Block all IPv6 traffic");?></td>
                     <td>
                       <a href="system_advanced_firewall.php" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
@@ -411,8 +411,8 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">*</td>
                     <td class="hidden-xs hidden-sm"><?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($selected_if));?> Address</td>
                     <td class="hidden-xs hidden-sm"><?=$alports;?></td>
-                    <td class="hidden-xs hidden-sm">*</td>
-                    <td class="hidden-xs hidden-sm">&nbsp;</td>
+                    <td class="hidden">*</td>
+                    <td class="hidden">&nbsp;</td>
                     <td><?=gettext("Anti-Lockout Rule");?></td>
                     <td>
                       <a href="system_advanced_firewall.php" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
@@ -435,8 +435,8 @@ $( document ).ready(function() {
                     <td>*</td>
                     <td class="hidden-xs hidden-sm">*</td>
                     <td class="hidden-xs hidden-sm">*</td>
-                    <td class="hidden-xs hidden-sm">*</td>
-                    <td class="hidden-xs hidden-sm">&nbsp;</td>
+                    <td class="hidden">*</td>
+                    <td class="hidden">&nbsp;</td>
                     <td class="hidden-xs hidden-sm"><?=gettext("Block private networks");?></td>
                     <td class="nowrap">
                       <a href="interfaces.php?if=<?=$selected_if?>#rfc1918" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
@@ -458,8 +458,8 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">*</td>
                     <td class="hidden-xs hidden-sm">*</td>
                     <td class="hidden-xs hidden-sm">*</td>
-                    <td class="hidden-xs hidden-sm">*</td>
-                    <td class="hidden-xs hidden-sm">&nbsp;</td>
+                    <td class="hidden">*</td>
+                    <td class="hidden">&nbsp;</td>
                     <td><?=gettext("Block bogon networks");?></td>
                     <td>
                       <a href="interfaces.php?if=<?=$selected_if?>#rfc1918" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
@@ -631,7 +631,7 @@ $( document ).ready(function() {
 <?php                 endif; ?>
                     </td>
 
-                    <td class="hidden-xs hidden-sm">
+                    <td class="hidden">
 <?php
                        if (isset($filterent['gateway'])):?>
                       <?=isset($config['interfaces'][$filterent['gateway']]['descr']) ? htmlspecialchars($config['interfaces'][$filterent['gateway']]['descr']) : htmlspecialchars(pprint_port($filterent['gateway'])); ?>
@@ -640,7 +640,7 @@ $( document ).ready(function() {
                       *
 <?php                 endif; ?>
                     </td>
-                    <td class="hidden-xs hidden-sm">
+                    <td class="hidden">
 <?php
                       if (!empty($filterent['sched'])):?>
 <?php
