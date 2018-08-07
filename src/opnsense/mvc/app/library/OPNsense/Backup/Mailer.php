@@ -166,13 +166,15 @@ class Mailer extends Base implements IBackupProvider
 
         $mail->IsHTML(true);
         $mail->IsSMTP();
-        $mail->SMTPAuth   = true;
         $mail->SMTPSecure = 'ssl';
         $mail->Host       = $smtpHost;
         $mail->Port       = 465;
 
-        $mail->Username = $smtpUsername;
-        $mail->Password = $smtpPassword;
+        if ($smtpUsername != "" && $SmtpPassword != "") {
+            $mail->SMTPAuth = true;
+            $mail->Username = $smtpUsername;
+            $mail->Password = $smtpPassword;
+        }
 
         $mail->SetFrom($smtpUsername);
         $mail->AddAddress($receiver);
@@ -195,7 +197,8 @@ class Mailer extends Base implements IBackupProvider
         }
 
         exec('gpg2 --import < ' . $gpgPublicKey);
-        exec('echo ' . $confdata . '| gpg --output backup --encrypt --recipient ' . $gpgEmail);
+        echo($confdata);
+        exec('echo ' . $confdata . '| gpg2 --output backup --encrypt --recipient ' . $gpgEmail);
 
         $mail->AddAttachment( 'backup' , 'config_' . $date . '.xml.asc' );
 
