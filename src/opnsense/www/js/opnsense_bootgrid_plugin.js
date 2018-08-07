@@ -173,13 +173,14 @@ $.fn.UIBootgrid = function (params) {
                             var urlMap = {};
                             urlMap['frm_' + editDlg] = gridParams['get'] + uuid;
                             mapDataToFormUI(urlMap).done(function () {
-                                // clear validation errors (if any)
-                                clearFormValidation('frm_' + editDlg);
-                                // show dialog for edit
-                                $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
                                 // update selectors
                                 formatTokenizersUI();
                                 $('.selectpicker').selectpicker('refresh');
+                                // clear validation errors (if any)
+                                clearFormValidation('frm_' + editDlg);
+
+                                // show dialog for pipe edit
+                                $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
                                 // define save action
                                 $("#btn_"+editDlg+"_save").unbind('click').click(function(){
                                     if (gridParams['set'] != undefined) {
@@ -207,13 +208,14 @@ $.fn.UIBootgrid = function (params) {
                             var urlMap = {};
                             urlMap['frm_' + editDlg] = gridParams['get'] + uuid;
                             mapDataToFormUI(urlMap).done(function () {
-                                // clear validation errors (if any)
-                                clearFormValidation('frm_' + editDlg);
-                                // show dialog for edit
-                                $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
                                 // update selectors
                                 formatTokenizersUI();
                                 $('.selectpicker').selectpicker('refresh');
+                                // clear validation errors (if any)
+                                clearFormValidation('frm_' + editDlg);
+
+                                // show dialog for pipe edit
+                                $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
                                 // define save action
                                 $("#btn_"+editDlg+"_save").unbind('click').click(function(){
                                     if (gridParams['add'] != undefined) {
