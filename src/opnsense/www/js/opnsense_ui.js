@@ -214,7 +214,8 @@ function formatTokenizersUI() {
             sender.tokenize2({
                 'tokensAllowCustom': allownew,
                 'placeholder': hint,
-                'dropdownMaxItems': number_of_items
+                'dropdownMaxItems': number_of_items,
+                'zIndexMargin': 1100
             });
             sender.parent().find('ul.tokens-container').css("width", width);
 
