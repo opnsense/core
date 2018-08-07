@@ -550,11 +550,11 @@ $( document ).ready(function() {
 
 
 ?>
-                    <td>
                   <tr class="rule  <?=isset($filterent['disabled'])?"text-muted font-italic":"";?>" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
+                    <td class="text-nowrap">
                       <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />&nbsp;<?=$idx+1?>
                     </td>
-                    <td>
+                    <td class="text-nowrap">
                       <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(empty($filterent['disabled'])) ? gettext("Disable") : gettext("Enable");?>"><span class="<?=$iconfn;?>"></span></a>
 <?php
                       if (!empty($filterent['direction']) && $filterent['direction'] == "in"):?>
@@ -575,7 +575,7 @@ $( document ).ready(function() {
 <?php                 endif; ?>
                     </td>
 
-                    <td>
+                    <td class="text-nowrap">
                         <?=$record_ipprotocol;?>
 <?php
                         $icmptypes = array(
@@ -706,7 +706,7 @@ $( document ).ready(function() {
                           <small><?=$filterent['md5'];?></small>
                       </div>
                     </td>
-                    <td>
+                    <td class="text-nowrap">
                       <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs">
                         <i class="fa fa-arrow-left fa-fw"></i>
                       </button>
