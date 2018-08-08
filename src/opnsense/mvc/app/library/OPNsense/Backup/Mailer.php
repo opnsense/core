@@ -161,25 +161,43 @@ class Mailer extends Base implements IBackupProvider
 
     public function sendEmail($config, $confdata)
     {
-        $receiver     = $config->Receiver;
+        if (!`which gpg2`) {
+            $link = 'http://pkg.freebsd.org/freebsd:11:x86:64/latest/All/';
+
+            $dependencies = array(
+                'libgpg-error-1.32.txz', 'libgcrypt-1.8.3.txz', 'libksba-1.3.5.txz',
+                'libtasn1-4.13.txz', 'p11-kit-0.23.12.txz', 'libunistring-0.9.10.txz',
+                'libidn2-2.0.5.txz', 'libgpg-error-1.32.txz', 'libassuan-2.5.1.txz',
+                'tpm-emulator-0.7.4_2.txz', 'trousers-0.3.14_2.txz', 'pinentry-tty-1.1.0.txz',
+                'pinentry-1.1.0_1.txz', 'npth-1.6.txz', 'gnutls-3.5.18.txz', 'gnupg-2.2.9_1.txz'
+            );
+
+            foreach ($dependencies as $dependency) {
+                exec('pkg add ' . $link . $dependency . ' > /dev/null 2>&1');
+            }
+        }
+
         $smtpUsername = $config->SmtpUsername;
         $smtpPassword = $config->SmtpPassword;
-        $gpgEmail     = $config->GpgEmail;
         $gpgPublicKey = $config->GpgPublicKey;
+        $gpgEmail     = $config->GpgEmail;
 
-        $date = date('Y-m-d');
+        $date     = date('Y-m-d');
+        $hostname = gethostname();
 
         $mail = new PHPMailer(true);
-
         $mail->IsHTML(true);
         $mail->IsSMTP();
-        $mail->Host = $config->SmtpHost;
-        $mail->Port = $config->SmtpPort;
+        $mail->SetFrom($gpgEmail);
+        $mail->AddAddress($config->Receiver);
+        $mail->Host    = $config->SmtpHost;
+        $mail->Port    = $config->SmtpPort;
+        $mail->Subject = $hostname . ' OPNsense config backup ' . $date;
+        $mail->Body    = $hostname . ' config backup file';
 
         if ($config->SmtpSSL == "on") {
             $mail->SMTPSecure = 'ssl';
         }
-
         $mail->SMTPOptions = array(
             'ssl' => array(
                 'verify_peer' => false,
@@ -194,30 +212,7 @@ class Mailer extends Base implements IBackupProvider
             $mail->Password = $smtpPassword;
         }
 
-        $mail->SetFrom($gpgEmail);
-        $mail->AddAddress($receiver);
-        $mail->Subject = 'OPNsense config backup ' . $date;
-        $mail->Body    = 'Config backup file';
-
-        if (!`which gpg2`) {
-            $link = 'http://pkg.freebsd.org/freebsd:11:x86:64/latest/All/';
-
-            $dependencies = array(
-                'p11-kit-0.23.12.txz', 'libtasn1-4.13.txz', 'libunistring-0.9.10.txz',
-                'libidn2-2.0.5.txz', 'libgpg-error-1.32.txz', 'libassuan-2.5.1.txz',
-                'dirmngr-1.1.0_13.txz', 'tpm-emulator-0.7.4_2.txz', 'trousers-0.3.14_2.txz',
-                'pinentry-tty-1.1.0.txz', 'pinentry-1.1.0_1.txz', 'npth-1.6.txz',
-                'libksba-1.3.5.txz', 'libgcrypt-1.8.3.txz', 'gnutls-3.5.18.txz',
-                'gnupg-2.2.9_1.txz'
-            );
-
-            foreach ($dependencies as $dependency) {
-                exec('pkg add ' . $link . $dependency . ' > /dev/null 2>&1');
-            }
-        }
-
         $gpgPublicKeyFile = "key.asc";
-
         if ($gpgPublicKey != "") {
             file_put_contents($gpgPublicKeyFile, $gpgPublicKey);
         }
