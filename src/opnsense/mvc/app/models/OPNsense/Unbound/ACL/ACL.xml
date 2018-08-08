@@ -25,7 +25,7 @@
         </patterns>
     </page-services-dnsresolver-editdomainoverride>
     <page-services-dnsresolver-edithost>
-        <name>Services: Unbound DNS: Edit Host</name>
+        <name>Services: Unbound DNS: Edit Host Override</name>
         <patterns>
             <pattern>services_unbound_overrides.php</pattern>
             <pattern>services_unbound_host_edit.php*</pattern>
