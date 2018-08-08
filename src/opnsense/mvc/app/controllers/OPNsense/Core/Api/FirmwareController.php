@@ -734,12 +734,8 @@ class FirmwareController extends ApiControllerBase
         if ($changelogs == null) {
             $changelogs = array();
         } else {
-            $response['product_version'] = trim(file_get_contents('/usr/local/opnsense/version/opnsense'));
-            $response['product_name'] = trim(file_get_contents('/usr/local/opnsense/version/opnsense.name'));
-
-            /* XXX not perfect: if we are on a real rc we need to see RC release notes */
-            $devel = explode('-', $response['product_name']);
-            $devel = count($devel) == 2 ? $devel[1] == 'devel' : false;
+            $version = trim(file_get_contents('/usr/local/opnsense/version/opnsense'));
+            $devel = preg_match('/^\d+\.\d+\.[a-z]/i', $version) ? true : false;
 
             foreach ($changelogs as $index => &$changelog) {
                 /* skip development items */
