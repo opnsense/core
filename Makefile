@@ -38,6 +38,7 @@ CORE_OPENVPN?=	# empty
 CORE_PHP?=	71
 CORE_PYTHON?=	27
 CORE_RADVD?=	1
+CORE_SQUID?=	3
 CORE_SURICATA?=	-devel
 
 _FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
@@ -121,7 +122,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			rate \
 			rrdtool \
 			samplicator \
-			squid \
+			squid${CORE_SQUID} \
 			sshlockout_pf \
 			strongswan \
 			sudo \
