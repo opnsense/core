@@ -11,12 +11,6 @@
             <pattern>services_unbound_acls.php*</pattern>
         </patterns>
     </page-services-dnsresolver-acls>
-    <page-services-dnsresolver-editacls>
-        <name>Services: Unbound DNS: Access Lists Edit</name>
-        <patterns>
-            <pattern>services_unbound_acls_edit.php*</pattern>
-        </patterns>
-    </page-services-dnsresolver-editacls>
     <page-services-dnsresolver-advanced>
         <name>Services: Unbound DNS: Advanced</name>
         <patterns>
@@ -26,12 +20,14 @@
     <page-services-dnsresolver-editdomainoverride>
         <name>Services: Unbound DNS: Edit Domain Override</name>
         <patterns>
+            <pattern>services_unbound_overrides.php</pattern>
             <pattern>services_unbound_domainoverride_edit.php*</pattern>
         </patterns>
     </page-services-dnsresolver-editdomainoverride>
     <page-services-dnsresolver-edithost>
         <name>Services: Unbound DNS: Edit Host</name>
         <patterns>
+            <pattern>services_unbound_overrides.php</pattern>
             <pattern>services_unbound_host_edit.php*</pattern>
         </patterns>
     </page-services-dnsresolver-edithost>
