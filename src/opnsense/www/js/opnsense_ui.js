@@ -249,6 +249,7 @@ function formatTokenizersUI() {
                 sender.tokenize2().trigger('tokenize:tokens:add', item);
             });
             sender.tokenize2().trigger('tokenize:select');
+            sender.tokenize2().trigger('tokenize:dropdown:hide');
         }
 
         // propagate token changes to parent change()
