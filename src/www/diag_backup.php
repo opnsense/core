@@ -452,6 +452,9 @@ $( document ).ready(function() {
 
                         <input name="<?=$fieldId;?>" type="password" value="<?=$field['value'];?>" />
 <?php
+                        elseif ($field['type'] == 'textarea'):?>
+                        <textarea name="<?=$fieldId;?>" type="text" rows="10"><?=$pconfig[$fieldId];?></textarea>
+<?php
                         endif;?>
                         <div class="hidden" data-for="help_for_<?=$fieldId;?>">
                             <?=!empty($field['help']) ? $field['help'] : "";?>
