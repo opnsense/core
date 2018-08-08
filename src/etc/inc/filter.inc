@@ -385,6 +385,9 @@ function filter_configure_sync($verbose = false, $flush_states = false)
     } else {
         $limitrules .= "set timeout { adaptive.start 0, adaptive.end 0 }\n";
     }
+    if (!empty($config['system']['state-policy'])) {
+        $limitrules .= "set state-policy if-bound\n";
+    }
 
     if (!empty($config['system']['maximumstates'])) {
         $limitrules .= "set limit states {$config['system']['maximumstates']}\n";

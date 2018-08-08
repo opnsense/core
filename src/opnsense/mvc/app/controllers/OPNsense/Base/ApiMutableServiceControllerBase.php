@@ -109,7 +109,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
         if ($this->request->isPost()) {
             $this->sessionClose();
             $backend = new Backend();
-            $response = $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' start');
+            $response = trim($backend->configdRun(escapeshellarg(static::$internalServiceName) . ' start'));
             return array('response' => $response);
         } else {
             return array('response' => array());
@@ -126,7 +126,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
         if ($this->request->isPost()) {
             $this->sessionClose();
             $backend = new Backend();
-            $response = $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' stop');
+            $response = trim($backend->configdRun(escapeshellarg(static::$internalServiceName) . ' stop'));
             return array('response' => $response);
         } else {
             return array('response' => array());
@@ -143,7 +143,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
         if ($this->request->isPost()) {
             $this->sessionClose();
             $backend = new Backend();
-            $response = $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' restart');
+            $response = trim($backend->configdRun(escapeshellarg(static::$internalServiceName) . ' restart'));
             return array('response' => $response);
         } else {
             return array('response' => array());

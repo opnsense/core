@@ -88,6 +88,7 @@ class SNatRule extends Rule
                 }
                 if (empty($rule['target'])) {
                     // no target found, disable rule
+                    $this->log("SNAT / target missing");
                     $rule['disabled'] = true;
                 }
             } elseif ($rule['target'] == "other-subnet") {
@@ -97,11 +98,12 @@ class SNatRule extends Rule
             }
             foreach (array("sourceport", "dstport", "natport") as $fieldname) {
                 if (!empty($rule[$fieldname]) && Util::isAlias($rule[$fieldname])) {
-                    $rule[$fieldname] = "$".$rule[$fieldname];
                     if (!Util::isAlias($rule[$fieldname], true)) {
                         // unable to map port
+                        $this->log("SNAT / unable to map port ". $rule[$fieldname]. ", empty?");
                         $rule['disabled'] = true;
                     }
+                    $rule[$fieldname] = "$".$rule[$fieldname];
                 }
             }
             if (!empty($rule['staticnatport']) || !empty($rule['nonat'])) {

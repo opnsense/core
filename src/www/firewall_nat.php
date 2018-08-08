@@ -111,6 +111,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         mark_subsystem_dirty('natconf');
         header(url_safe('Location: /firewall_nat.php'));
         exit;
+    } elseif (isset($pconfig['act']) && in_array($pconfig['act'], array('toggle_enable', 'toggle_disable')) && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
+        foreach ($pconfig['rule'] as $rulei) {
+            $a_nat[$rulei]['disabled'] = $pconfig['act'] == 'toggle_disable';
+        }
+        write_config();
+        mark_subsystem_dirty('filter');
+        header(url_safe('Location: /firewall_nat.php'));
+        exit;
     } elseif ( isset($pconfig['act']) && $pconfig['act'] == 'move') {
         // move records
         if (isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
@@ -152,7 +160,8 @@ $main_buttons = array(
 <script>
 $( document ).ready(function() {
   // link delete buttons
-  $(".act_delete").click(function(){
+  $(".act_delete").click(function(event){
+    event.preventDefault();
     var id = $(this).attr("id").split('_').pop(-1);
     if (id != 'x') {
       // delete single
@@ -193,6 +202,48 @@ $( document ).ready(function() {
               }]
       });
     }
+  });
+
+  // enable/disable selected
+  $(".act_toggle_enable").click(function(event){
+    event.preventDefault();
+    BootstrapDialog.show({
+      type:BootstrapDialog.TYPE_DANGER,
+      title: "<?= gettext("Rules");?>",
+      message: "<?=gettext("Enable selected rules?");?>",
+      buttons: [{
+                label: "<?= gettext("No");?>",
+                action: function(dialogRef) {
+                    dialogRef.close();
+                }}, {
+                label: "<?= gettext("Yes");?>",
+                action: function(dialogRef) {
+                  $("#id").val("");
+                  $("#action").val("toggle_enable");
+                  $("#iform").submit()
+              }
+            }]
+    });
+  });
+  $(".act_toggle_disable").click(function(event){
+    event.preventDefault();
+    BootstrapDialog.show({
+      type:BootstrapDialog.TYPE_DANGER,
+      title: "<?= gettext("Rules");?>",
+      message: "<?=gettext("Disable selected rules?");?>",
+      buttons: [{
+                label: "<?= gettext("No");?>",
+                action: function(dialogRef) {
+                    dialogRef.close();
+                }}, {
+                label: "<?= gettext("Yes");?>",
+                action: function(dialogRef) {
+                  $("#id").val("");
+                  $("#action").val("toggle_disable");
+                  $("#iform").submit()
+              }
+            }]
+    });
   });
 
   // link move buttons
@@ -438,12 +489,18 @@ $( document ).ready(function() {
                       <td colspan="8"></td>
                       <td class="hidden-xs hidden-sm" colspan="4"> </td>
                       <td>
-                        <a type="submit" id="move_<?=$nnats;?>" name="move_<?=$nnats;?>_x" data-toggle="tooltip" title="<?=html_safe(gettext("Move selected rules to end"))?>" class="act_move btn btn-default btn-xs">
+                        <button id="move_<?=$nnats;?>" name="move_<?=$nnats;?>_x" data-toggle="tooltip" title="<?=html_safe(gettext("Move selected rules to end"))?>" class="act_move btn btn-default btn-xs">
                           <i class="fa fa-arrow-left fa-fw"></i>
-                        </a>
-                        <a id="del_x" title="<?=html_safe(gettext("Delete selected"))?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                        </button>
+                        <button id="del_x" title="<?=html_safe(gettext("Delete selected"))?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                           <i class="fa fa-trash fa-fw"></i>
-                        </a>
+                        </button>
+                        <button title="<?= html_safe(gettext('Enable selected')) ?>" data-toggle="tooltip" class="act_toggle_enable btn btn-default btn-xs">
+                            <i class="fa fa-check-square-o fa-fw"></i>
+                        </button>
+                        <button title="<?= html_safe(gettext('Disable selected')) ?>" data-toggle="tooltip" class="act_toggle_disable btn btn-default btn-xs">
+                            <i class="fa fa-square-o fa-fw"></i>
+                        </button>
                     </td>
                   </tr>
 <?php endif ?>

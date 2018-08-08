@@ -2581,13 +2581,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
             interface_track6_slaac_configure($interface, $lancfg);
             /* FALLTHROUGH */
         case 'dhcp6':
-            if ($linkupevent == true) {
-                /*
-                 * NOTE: Usually come here from rc.linkup calling so just call directly intead of generating event
-                 *  Instead of disrupting all other v4 configuration just restart DHCPv6 client for now
-                 *
-                 * XXX: Probably DHCPv6 client should handle this autmagically itself?
-                 */
+            if ($linkupevent) {
                 $parentrealif = get_real_interface($lancfg['track6-interface']);
                 killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
             }
@@ -4010,7 +4004,7 @@ function ip_in_interface_alias_subnet($interface, $ipalias)
     return false;
 }
 
-function get_interface_ip($interface = "wan")
+function get_interface_ip($interface = 'wan')
 {
     $realif = get_failover_interface($interface);
     if (!$realif) {
@@ -4022,11 +4016,11 @@ function get_interface_ip($interface = "wan")
     }
 
     $curip = find_interface_ip($realif);
-    if ($curip && is_ipaddr($curip) && ($curip != "0.0.0.0")) {
+    if ($curip && is_ipaddr($curip) && $curip != '0.0.0.0') {
         return $curip;
-    } else {
-        return null;
     }
+
+    return null;
 }
 
 function get_interface_ipv6($interface = 'wan')
@@ -4046,46 +4040,13 @@ function get_interface_ipv6($interface = 'wan')
         $realif = get_real_interface($interface, 'inet6');
     }
 
-    if (isset($config['interfaces'][$interface]['dhcp6prefixonly'])) {
-        $curip = find_interface_ipv6_ll($realif);
-        if ($curip && is_ipaddrv6($curip) && ($curip != "::")) {
-            return $curip;
-        } else {
-            /*
-             * XXX This may have been an intended opt-out case earlier,
-             * but it looks wrong to assume prefix-only and then fall
-             * through to see if a different address is there.
-             */
-            return null;
-        }
-    }
-
-    $curip = find_interface_ipv6($realif);
-    if ($curip && is_ipaddrv6($curip) && ($curip != "::")) {
+    $curip = isset($config['interfaces'][$interface]['dhcp6prefixonly']) ?
+        find_interface_ipv6_ll($realif) : find_interface_ipv6($realif);
+    if ($curip && is_ipaddrv6($curip) && $curip != '::') {
         return $curip;
-    } else {
-        return null;
-    }
-}
-
-function get_interface_linklocal($interface = "wan")
-{
-    $realif = get_failover_interface($interface, "inet6");
-    if (!$realif) {
-        if (strstr($interface, "_vip")) {
-            list($interface, $vhid) = explode("_vip", $interface);
-            $realif = get_real_interface($interface);
-        } else {
-            return null;
-        }
     }
 
-    $curip = find_interface_ipv6_ll($realif);
-    if ($curip && is_ipaddrv6($curip) && ($curip != "::")) {
-        return $curip;
-    } else {
-        return null;
-    }
+    return null;
 }
 
 function get_interface_subnet($interface = "wan")

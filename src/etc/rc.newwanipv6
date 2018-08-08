@@ -113,7 +113,18 @@ if (!empty($grouptmp)) {
     array_walk($grouptmp, 'interface_group_add_member');
 }
 
-link_interface_to_track6($interface, true);
+$manual_dhcpv6 = false;
+
+foreach (link_interface_to_track6($interface, true) as $lanif => $lancfg) {
+    if (isset($lancfg['dhcpd6track6allowoverride'])) {
+        $manual_dhcpv6 = true;
+    }
+}
+
+if ($manual_dhcpv6) {
+    services_dhcpd_configure('inet6');
+}
+
 system_resolvconf_generate();
 system_hosts_generate();
 

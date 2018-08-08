@@ -6812,6 +6812,11 @@ td.visible-lg {
     display: none !important;
   }
 }
+@media (max-width: 768px), (max-height: 669px) {
+  .toggle-sidebar {
+    display: none !important;
+  }
+}
 @media (min-width: 992px) and (max-width: 1199px) {
   .hidden-md {
     display: none !important;
@@ -6983,6 +6988,10 @@ body {
   margin-bottom: 0;
 }
 
+.page-content-main section[class^=col-] + section[class^=col-] {
+  padding-top: 20px;
+}
+
 .brand-logo {
   display: none;
 }
@@ -7092,6 +7101,156 @@ body {
   border-top: 0;
 }
 
+/* COLLAPSE SIDEBAR */
+main.page-content.col-lg-12 {
+  padding-left: 90px;
+}
+#navigation.col-sidebar-left {
+  width: 70px;
+  background-color: transparent !important;
+  overflow: hidden;
+  border: none !important;
+}
+#navigation.col-sidebar-left > div.row {
+  height: 100% !important;
+}
+#navigation.col-sidebar-left > div.row > nav.page-side-nav {
+  width: 70px;
+  height: 100% !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item {
+  font-size: 11px;
+  text-align: center;
+  width: 70px;
+  height: 70px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #lightergrey;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa, #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.glyphicon {
+  visibility: visible;
+  font-size: 28px;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.__iconspacer {
+  padding-left: 7px;
+  padding-right: 7px;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsing > a.list-group-item {
+  padding-left: 10px !important;
+  font-size: 11px !important;
+  display: block !important;
+  position: absolute !important;
+  left: 70px !important;
+  margin-top: -70px !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapsing > a.list-group-item {
+  padding-left: 10px !important;
+  font-size: 11px !important;
+  display: block !important;
+  position: absolute !important;
+  left: 148px !important;
+  margin-top: -28px !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > a.list-group-item {background-color: #ffffffe6 !important;}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item {background-color: #ffffffe6 !important;}
+
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item {
+  padding-left: 10px !important;
+  font-size: 11px !important;
+
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > a.list-group-item {
+  padding-left: 10px !important;
+  font-size: 11px !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > div.collapse > a.list-group-item {
+  padding-left: 10px !important;
+  font-size: 11px !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsed > a.list-group-item {
+  padding-left: 10px !important;
+  font-size: 11px !important;
+}
+
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in {
+  width: 150px;
+  font-size: 11px;
+  display: block;
+  z-index: 10;
+  position: absolute;
+  left: 70px;
+  margin-top: -70px;
+  height: auto;
+  border: 1px solid #eaeaea;
+  -webkit-transition: width 0.1s;
+  -o-transition: width 0.1s;
+  transition: width 0.1s;
+  }
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsing {
+  width: 0px;
+  font-size: 11px;
+  position: absolute;
+  display: block;
+  z-index: 10;
+  left: 70px;
+  margin-top: -70px;
+  height: auto;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in {
+  width: 150px;
+  font-size: 11px;
+  display: block;
+  z-index: 10;
+  position: absolute;
+  left: 148px;
+  margin-top: -28px;
+  height: auto;
+  border: 1px solid #eaeaea;
+  -webkit-transition: width 0.1s;
+  -o-transition: width 0.1s;
+  transition: width 0.1s;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapsing {
+  width: 0px;
+  font-size: 11px;
+  position: absolute;
+  display: block;
+  z-index: 10;
+  left: 148px;
+  margin-top: -28px;
+  height: auto;
+}
+
+button.toggle-sidebar {
+  color: #FFF;
+  background-color: transparent;
+  font-size: 14px;
+  border: none;
+  margin-top: 18px;
+  float: left;
+}
+button.toggle-sidebar.fa.fa-chevron-left, button.toggle-sidebar.fa.fa-chevron-right {
+  position: absolute;
+  -webkit-transition: all 0.1s ease;
+  -moz-transition: all 0.1s ease;
+  -o-transition: all 0.1s ease;
+  -ms-transition: all 0.1s ease;
+  transition: all 0.1s ease;
+}
+button.toggle-sidebar.fa.fa-chevron-left:active, button.toggle-sidebar.fa.fa-chevron-right:active {
+  position: absolute;
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+button.toggle-sidebar.fa.fa-chevron-left:focus, button.toggle-sidebar.fa.fa-chevron-right:focus {
+  outline: none;
+}
+/* COLLAPSE SIDEBAR END*/
 #navigation.collapse.in {
   display: block !important;
 }
@@ -7427,17 +7586,23 @@ div[data-for*=help_for] {
 }
 
 /* fields in firewall schedule */
-[data-state="lightcoral"] {
+[data-state=lightcoral] {
   background-color: lightcoral;
 }
-[data-state="white"] {
+
+[data-state=white] {
   background-color: white;
 }
-[data-state="red"] {
+
+[data-state=red] {
   background-color: red;
 }
 
 .tokens-container {
   margin-top: 0px;
   margin-bottom: 0px;
+}
+
+.dashboard_grid_column table {
+  table-layout: fixed;
 }

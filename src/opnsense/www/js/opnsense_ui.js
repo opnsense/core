@@ -238,7 +238,7 @@ function formatTokenizersUI() {
             });
 
             sender.addClass('tokenize2_init_done');
-        } else {
+        } else if (sender.is(":visible")) {
             // unbind change event while loading initial content
             sender.unbind('tokenize:tokens:change');
 

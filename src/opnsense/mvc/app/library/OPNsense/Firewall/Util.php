@@ -81,7 +81,7 @@ class Util
      * @return boolean
      * @throws \OPNsense\Base\ModelException
      */
-    public static function isAlias($name, $valid=false)
+    public static function isAlias($name, $valid = false)
     {
         if (self::$aliasObject == null) {
             // Cache the alias object to avoid object creation overhead.

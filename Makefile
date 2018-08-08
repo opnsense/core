@@ -32,12 +32,14 @@ CORE_COMMIT!=	${.CURDIR}/Scripts/version.sh
 CORE_VERSION=	${CORE_COMMIT:C/-.*$//1}
 CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 
-CORE_ABI?=	18.1
+CORE_ABI?=	18.7
 CORE_ARCH?=	${ARCH}
 CORE_OPENVPN?=	# empty
 CORE_PHP?=	71
 CORE_PYTHON?=	27
-CORE_SURICATA?=	# empty
+CORE_RADVD?=	1
+CORE_SQUID?=	3
+CORE_SURICATA?=	-devel
 
 _FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
 FLAVOUR?=	${_FLAVOUR:[1]}
@@ -55,7 +57,7 @@ CORE_TYPE?=		development
 CORE_MESSAGE?=		Insert Name Here
 
 CORE_MAINTAINER?=	franco@opnsense.org
-CORE_PACKAGESITE?=	http://pkg.opnsense.org
+CORE_PACKAGESITE?=	https://pkg.opnsense.org
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
 CORE_COMMENT?=		OPNsense ${CORE_TYPE} package
 CORE_WWW?=		https://opnsense.org/
@@ -116,11 +118,11 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			py${CORE_PYTHON}-requests \
 			py${CORE_PYTHON}-sqlite3 \
 			py${CORE_PYTHON}-ujson \
-			radvd \
+			radvd${CORE_RADVD} \
 			rate \
 			rrdtool \
 			samplicator \
-			squid \
+			squid${CORE_SQUID} \
 			sshlockout_pf \
 			strongswan \
 			sudo \
