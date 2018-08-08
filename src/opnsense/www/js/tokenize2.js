@@ -703,16 +703,23 @@
         var el = this.container;
         var zindex = 0;
 
-        do {
-            var calc = parseInt(el.css('z-index'));
-            if(!isNaN(calc) && calc > zindex){
-                zindex = calc;
+        if(!isNaN(parseInt(el.css('z-index'))) && parseInt(el.css('z-index')) > 0){
+            zindex = parseInt(el.css('z-index'));
+        }
+
+        if(zindex < 1){
+            while(el.length) {
+                el = el.parent();
+                if(el.length > 0){
+                    if(!isNaN(parseInt(el.css('z-index'))) && parseInt(el.css('z-index')) > 0){
+                        return parseInt(el.css('z-index'));
+                    }
+                    if(el.is('html')){
+                        break;
+                    }
+                }
             }
-            if(el.is('html')){
-                break;
-            }
-            el = el.parent();
-        } while(el.length > 0);
+        }
 
         return zindex;
 
