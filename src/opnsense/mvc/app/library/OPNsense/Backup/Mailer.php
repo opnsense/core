@@ -137,11 +137,11 @@ class Mailer extends Base implements IBackupProvider
             if (isset($config->system->remotebackup) && isset($config->system->remotebackup->MailEnabled)
                     && !empty($config->system->remotebackup->MailEnabled)) {
                 $confdata = file_get_contents('/conf/config.xml');
-                $return = self::sendEmail($config->system->remotebackup, $confdata);
+                $result = self::sendEmail($config->system->remotebackup, $confdata);
             }
         }
 
-        return array($return);
+        return array($result);
     }
 
     /**
