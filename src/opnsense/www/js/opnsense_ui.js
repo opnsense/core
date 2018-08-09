@@ -242,12 +242,17 @@ function formatTokenizersUI() {
             // unbind change event while loading initial content
             sender.unbind('tokenize:tokens:change');
 
-            // re-init tokenizer items
-            var items = $(this).val();
-            sender.tokenize2().trigger('tokenize:clear');
-            $.each(items, function(key, item){
-                sender.tokenize2().trigger('tokenize:tokens:add', item);
+            // selected items
+            var items = [];
+            sender.find('option:selected').each(function () {
+                items.push([$(this).val(), $(this).text()]);
             });
+
+            // re-init tokenizer items
+            sender.tokenize2().trigger('tokenize:clear');
+            for (i=0 ; i < items.length ; ++i) {
+              sender.tokenize2().trigger('tokenize:tokens:add', items[i]);
+            }
             sender.tokenize2().trigger('tokenize:select');
             sender.tokenize2().trigger('tokenize:dropdown:hide');
         }
