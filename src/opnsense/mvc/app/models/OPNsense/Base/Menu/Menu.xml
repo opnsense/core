@@ -19,11 +19,11 @@
         <Access cssClass="fa fa-users fa-fw">
             <Users order="10" url="/system_usermanager.php">
                 <All url="/system_usermanager.php*" visibility="hidden"/>
-                <Privileges url="/system_usermanager_addprivs.php*" visibility="hidden"/>
+                <Privileges url="/system_usermanager_addprivs.php?user*" visibility="hidden"/>
             </Users>
             <Groups order="20" url="/system_groupmanager.php">
                 <All url="/system_groupmanager.php*" visibility="hidden"/>
-                <Privileges url="/system_groupmanager_addprivs.php*" visibility="hidden"/>
+                <Privileges url="/system_usermanager_addprivs.php?group*" visibility="hidden"/>
             </Groups>
             <Servers order="30" url="/system_authservers.php">
                 <Edit url="/system_authservers.php*" visibility="hidden"/>
