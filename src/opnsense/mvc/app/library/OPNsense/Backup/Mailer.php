@@ -197,8 +197,12 @@ class Mailer extends Base implements IBackupProvider
             file_put_contents($gpgPublicKeyFile, $gpgPublicKey);
         }
 
-        exec('gpg2 --import < ' . $gpgPublicKeyFile);
-        exec('echo "' . $confdata . '" | gpg2 --trust-model always --batch --yes --output backup --encrypt --recipient ' . $gpgEmail);
+
+        proc_open('gpg2 --import < ' . $gpgPublicKeyFile);
+
+        proc_open('echo "' . $confdata . '"
+            | gpg2 --trust-model always --batch --yes --output backup --encrypt --recipient ' .
+            escapeshellarg($gpgEmail));
 
         $attachmentName = 'config_' . gethostname() . '_' . $date . '.xml.asc';
         $mail->AddAttachment( 'backup' , $attachmentName);
