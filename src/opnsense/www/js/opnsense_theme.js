@@ -51,10 +51,16 @@ $(document).ready(function () {
             if ($("#navigation").hasClass("col-sidebar-left")) {
                 $(".brand-logo").css("display", "none");
                 $(".brand-icon").css("display", "inline-block");
+                if (window.sessionStorage) {
+                    sessionStorage.setItem('toggle_sidebar_preset', 1);
+                }
             } else {
                 $(".brand-icon").css("display", "none");
                 $(".brand-logo").css("display", "inline-block");
                 $("#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs").css("width", "");
+                if (window.sessionStorage) {
+                    sessionStorage.setItem('toggle_sidebar_preset', 0);
+                }
             }
             $(this).blur();
         });
@@ -99,7 +105,16 @@ $(document).ready(function () {
                 $(".brand-logo").css("display", "inline-block");
             }
         });
+
         // only show toggle button when style is loaded
         $(".toggle-sidebar").show();
+
+        if (window.sessionStorage && sessionStorage.getItem('toggle_sidebar_preset') == 1) {
+            $("#navigation").toggleClass("col-sidebar-left");
+            $("main").toggleClass("col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12");
+            $(".toggle-sidebar > i").toggleClass("fa-chevron-right fa-chevron-left");
+            $(".brand-logo").css("display", "none");
+            $(".brand-icon").css("display", "inline-block");
+        }
     }
 });
