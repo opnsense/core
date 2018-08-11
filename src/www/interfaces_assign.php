@@ -459,7 +459,6 @@ include("head.inc");
                       </tr>
                     </tbody>
                   </table>
-                </div>
               </div>
             </form>
           </div>
@@ -467,4 +466,5 @@ include("head.inc");
       </div>
     </div>
   </section>
-<?php include("foot.inc"); ?>
+
+<?php include("foot.inc");

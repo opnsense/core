@@ -262,15 +262,15 @@
             </div>
           </div>
         </section>
+        <!-- page footer -->
+        <footer class="page-foot">
+          <div class="container-fluid">
+            <a target="_blank" href="{{ product_website }}" class="redlnk">{{ product_name }}</a>
+            (c) {{ product_copyright_years }}
+            <a href="{{ product_copyright_url }}" class="tblnk">{{ product_copyright_owner }}</a>
+          </div>
+        </footer>
       </div>
-      <!-- page footer -->
-      <footer class="page-foot col-sm-push-3 col-lg-push-2">
-        <div class="container-fluid">
-          <a target="_blank" href="{{ product_website }}" class="redlnk">{{ product_name }}</a>
-          (c) {{ product_copyright_years }}
-          <a href="{{ product_copyright_url }}" class="tblnk">{{ product_copyright_owner }}</a>
-        </div>
-      </footer>
     </main>
 
     <!-- dialog "wait for (service) action" -->

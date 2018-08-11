@@ -3388,10 +3388,9 @@ include("head.inc");
                   </div>
                 </div>
               </form>
-            </div>
-          </div>
         </section>
       </div>
     </div>
   </section>
-  <?php include("foot.inc"); ?>
+
+<?php include("foot.inc");
