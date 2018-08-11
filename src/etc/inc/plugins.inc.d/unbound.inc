@@ -475,7 +475,6 @@ function unbound_add_domain_overrides($pvt = false)
         $result[$domain_key][] = $domain['ip'];
     }
 
-    // Domain overrides that have multiple entries need multiple stub-addr: added
     $domain_entries = "";
     foreach ($result as $domain => $ips) {
         if ($pvt == true) {
@@ -485,12 +484,11 @@ function unbound_add_domain_overrides($pvt = false)
                 $domain_entries .= "local-zone: \"$domain\" typetransparent\n";
             }
         } else {
-            $domain_entries .= "stub-zone:\n";
+            $domain_entries .= "forward-zone:\n";
             $domain_entries .= "\tname: \"$domain\"\n";
             foreach ($ips as $ip) {
-                $domain_entries .= "\tstub-addr: $ip\n";
+                $domain_entries .= "\tforward-addr: $ip\n";
             }
-            $domain_entries .= "\tstub-prime: no\n";
         }
     }
 
