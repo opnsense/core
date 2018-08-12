@@ -636,11 +636,18 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                 $conf .= "client-disconnect \"/usr/local/etc/inc/plugins.inc.d/openvpn/attributes.sh {$mode_id}\"\n";
                 break;
             case 'server_tls':
-            case 'p2p_tls':
                 // For non user auth types setup client specific overrides,
                 // user authenticated ones are commissioned using the auth
                 // script in option auth-user-pass-verify.
                 $conf .= "client-connect \"/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_setup_cso.php {$mode_id}\"\n";
+                break;
+            case 'p2p_tls':
+                // same as server_tls, but only valid if cidr < 30, without
+                // server directive client-connect is not valid.
+                // XXX: IPv6 is likely flawed, see "server" directive too.
+                if (!empty($ip) && !empty($mask) && ($cidr < 30)) {
+                    $conf .= "client-connect \"/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_setup_cso.php {$mode_id}\"\n";
+                }
                 break;
             default:
                 break;
