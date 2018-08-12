@@ -1000,6 +1000,9 @@ function openvpn_restart($mode, $settings)
         }
     }
 
+    /* XXX remove stale socket #2610 */
+    @unlink("/var/etc/openvpn/{$mode_id}.sock");
+
     /* start the new process */
     $fpath = "/var/etc/openvpn/{$mode_id}.conf";
     openvpn_clear_route($mode, $settings);
