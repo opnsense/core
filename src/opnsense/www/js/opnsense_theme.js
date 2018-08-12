@@ -1,33 +1,32 @@
-/**
- *    Copyright (C) 2018 Deciso B.V.
- *    Copyright (C) 2018 Team Rebellion
+/*
+ * Copyright (C) 2018 Deciso B.V.
+ * Copyright (C) 2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2018 Team Rebellion
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *    hook-in additional theme functionality
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
+
+/* hook-in additional theme functionality */
 
 $(document).ready(function () {
     // traverse loaded css files
@@ -42,29 +41,34 @@ $(document).ready(function () {
         }
     });
 
-    if (toggle_sidebar_loaded) {
-        /** navigation toggle **/
-        $(".toggle-sidebar").click(function () {
-            $("#navigation").toggleClass("col-sidebar-left");
-            $("main").toggleClass("col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12");
-            $(".toggle-sidebar > i").toggleClass("fa-chevron-right fa-chevron-left");
-            if ($("#navigation").hasClass("col-sidebar-left")) {
-                $(".brand-logo").css("display", "none");
-                $(".brand-icon").css("display", "inline-block");
-                if (window.sessionStorage) {
-                    sessionStorage.setItem('toggle_sidebar_preset', 1);
-                }
-            } else {
-                $(".brand-icon").css("display", "none");
-                $(".brand-logo").css("display", "inline-block");
-                $("#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs").css("width", "");
-                if (window.sessionStorage) {
-                    sessionStorage.setItem('toggle_sidebar_preset', 0);
-                }
+    function opnsense_sidebar_toggle(store) {
+        $("#navigation").toggleClass("col-sidebar-left");
+        $("main").toggleClass("col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12");
+        $(".toggle-sidebar > i").toggleClass("fa-chevron-right fa-chevron-left");
+        if ($("#navigation").hasClass("col-sidebar-left")) {
+            $(".brand-logo").css("display", "none");
+            $(".brand-icon").css("display", "inline-block");
+            if (store && window.sessionStorage) {
+                sessionStorage.setItem('toggle_sidebar_preset', 1);
             }
+        } else {
+            $(".brand-icon").css("display", "none");
+            $(".brand-logo").css("display", "inline-block");
+            $("#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs").css("width", "");
+            if (store && window.sessionStorage) {
+                sessionStorage.setItem('toggle_sidebar_preset', 0);
+            }
+        }
+    }
+
+    if (toggle_sidebar_loaded) {
+        /* navigation toggle */
+        $(".toggle-sidebar").click(function () {
+            opnsense_sidebar_toggle(true);
             $(this).blur();
         });
-        /** sidebar mouseevents **/
+
+        /* sidebar mouseevents */
         $("#navigation").hover(function () {
             if ($("#navigation").hasClass("col-sidebar-left")) {
                 $("#navigation > div > nav > #mainmenu > div > div").on({
@@ -78,43 +82,28 @@ $(document).ready(function () {
             }
         });
 
-        /** on resize - toggle sidebar / main navigation **/
+        /* on resize - toggle sidebar / main navigation */
         $(window).on('resize', function(){
             var win = $(this);
-            if (((win.height() <= 669) && $("#navigation").hasClass("col-sidebar-left"))) {
-                $("main").toggleClass("col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12");
-                $("#navigation").toggleClass("col-sidebar-left");
-                $(".toggle-sidebar > i").toggleClass("fa-chevron-right fa-chevron-left");
-                $(".brand-icon").css("display", "none");
-                $(".brand-logo").css("display", "inline-block");
-                $("#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs").css("width", "");
-            } else if ((win.width() <= 768) && $("#navigation").hasClass("col-sidebar-left")) {
-                $("main").toggleClass("col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12");
-                $("#navigation").toggleClass("col-sidebar-left");
-                $(".toggle-sidebar > i").toggleClass("fa-chevron-right fa-chevron-left");
-                $(".brand-logo").css("display", "none");
-                $(".brand-icon").css("display", "inline-block");
-                $("#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs").css("width", "");
-            } else if (((win.width() <= 768) && $("#navigation").not("col-sidebar-left"))
-                        || ((win.width() >= 768) && $("#navigation").hasClass("col-sidebar-left"))) {
-                $(".brand-logo").css("display", "none");
-                $(".brand-icon").css("display", "inline-block"); }
-            else if ((win.width() >= 768) && $("#navigation").not("col-sidebar-left")){
-                $("#navigation").addClass("in");
-                $(".brand-icon").css("display", "none");
-                $(".brand-logo").css("display", "inline-block");
+            if ((win.height() < 675 || win.width() < 760) && $("#navigation").not("col-sidebar-hidden")) {
+                $("#navigation").addClass("col-sidebar-hidden");
+                if ($("#navigation").hasClass("col-sidebar-left")) {
+                    opnsense_sidebar_toggle(false);
+                }
+            } else if ((win.height() >= 675 && win.width() >= 760) && $("#navigation").hasClass("col-sidebar-hidden")) {
+                $("#navigation").removeClass("col-sidebar-hidden");
+                if (window.sessionStorage && sessionStorage.getItem('toggle_sidebar_preset') == 1) {
+                    opnsense_sidebar_toggle(false);
+                }
             }
         });
 
-        // only show toggle button when style is loaded
+        /* only show toggle button when style is loaded */
         $(".toggle-sidebar").show();
 
+        /* auto-collapse if previously requested */
         if (window.sessionStorage && sessionStorage.getItem('toggle_sidebar_preset') == 1) {
-            $("#navigation").toggleClass("col-sidebar-left");
-            $("main").toggleClass("col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12");
-            $(".toggle-sidebar > i").toggleClass("fa-chevron-right fa-chevron-left");
-            $(".brand-logo").css("display", "none");
-            $(".brand-icon").css("display", "inline-block");
+            opnsense_sidebar_toggle(false);
         }
     }
 });
