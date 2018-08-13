@@ -6,83 +6,83 @@
         </mirror>
         <mirror>
             <url>https://mirrors.dotsrc.org/opnsense</url>
-            <description>Aalborg University (Aalborg, DK)</description>
+            <description>Aalborg University (HTTPS, Aalborg, DK)</description>
         </mirror>
         <mirror>
             <url>https://opnsense.aivian.org</url>
-            <description>Aivian (Shaoxing, CN)</description>
+            <description>Aivian (HTTPS, Shaoxing, CN)</description>
         </mirror>
         <mirror has_subscription="True">
             <url>https://opnsense-update.deciso.com</url>
-            <description>Deciso (NL, Commercial)</description>
+            <description>Deciso (HTTPS, NL, Commercial)</description>
         </mirror>
         <mirror>
             <url>http://mirror.dataroute.de/opnsense</url>
-            <description>Dataroute (Dusseldorf, DE)</description>
+            <description>Dataroute (HTTP, Dusseldorf, DE)</description>
         </mirror>
         <mirror>
             <url>https://mirror.dns-root.de/opnsense</url>
-            <description>dns-root.de (Cloudflare CDN)</description>
+            <description>dns-root.de (HTTPS, Cloudflare CDN)</description>
         </mirror>
         <mirror>
             <url>https://opnsense.c0urier.net</url>
-            <description>c0urier.net (Lund, SE)</description>
+            <description>c0urier.net (HTTPS, Lund, SE)</description>
         </mirror>
         <mirror>
             <url>https://ftp.yzu.edu.tw/opnsense</url>
-            <description>Dept. of CSE, Yuan Ze University (Taoyuan City, TW)</description>
+            <description>Dept. of CSE, Yuan Ze University (HTTPS, Taoyuan City, TW)</description>
         </mirror>
         <mirror>
             <url>https://fourdots.com/mirror/OPNSense</url>
-            <description>FourDots (Belgrade, RS)</description>
+            <description>FourDots (HTTPS, Belgrade, RS)</description>
         </mirror>
         <mirror>
             <url>https://opnsense-mirror.hiho.ch</url>
-            <description>HiHo (Zurich, CH)</description>
+            <description>HiHo (HTTPS, Zurich, CH)</description>
         </mirror>
         <mirror>
             <url>https://opnsense.ieji.de</url>
-            <description>ieji.de (Frankfurt, DE)</description>
+            <description>ieji.de (HTTPS, Frankfurt, DE)</description>
         </mirror>
         <mirror>
             <url>http://mirror.ams1.nl.leaseweb.net/opnsense</url>
-            <description>LeaseWeb (Amsterdam, NL)</description>
+            <description>LeaseWeb (HTTP, Amsterdam, NL)</description>
         </mirror>
         <mirror>
             <url>http://mirror.fra10.de.leaseweb.net/opnsense</url>
-            <description>LeaseWeb (Frankfurt, DE)</description>
+            <description>LeaseWeb (HTTP, Frankfurt, DE)</description>
         </mirror>
         <mirror>
             <url>http://mirror.sfo12.us.leaseweb.net/opnsense</url>
-            <description>LeaseWeb (San Francisco, US)</description>
+            <description>LeaseWeb (HTTP, San Francisco, US)</description>
         </mirror>
         <mirror>
             <url>http://mirror.wdc1.us.leaseweb.net/opnsense</url>
-            <description>LeaseWeb (Washington, D.C., US)</description>
+            <description>LeaseWeb (HTTP, Washington, D.C., US)</description>
         </mirror>
         <mirror>
             <url>http://mirrors.nycbug.org/pub/opnsense</url>
-            <description>NYC*BUG (New York, US)</description>
+            <description>NYC*BUG (HTTP, New York, US)</description>
         </mirror>
         <mirror>
-            <url>http://pkg.opnsense.org</url>
-            <description>OPNsense (Amsterdam, NL)</description>
+            <url>https://pkg.opnsense.org</url>
+            <description>OPNsense (HTTPS, Amsterdam, NL)</description>
         </mirror>
         <mirror>
             <url>http://mirror.ragenetwork.de/opnsense</url>
-            <description>RageNetwork (Munich, DE)</description>
+            <description>RageNetwork (HTTP, Munich, DE)</description>
         </mirror>
         <mirror>
             <url>http://mirror.upb.edu.co/opnsense</url>
-            <description>Universidad Pontificia Bolivariana (Medellin, CO)</description>
+            <description>Universidad Pontificia Bolivariana (HTTP, Medellin, CO)</description>
         </mirror>
         <mirror>
             <url>http://mirror.venturasystems.tech/opnsense</url>
-            <description>Ventura Systems (Medellin, CO)</description>
+            <description>Ventura Systems (HTTP, Medellin, CO)</description>
         </mirror>
         <mirror>
             <url>http://mirror.wjcomms.co.uk/opnsense</url>
-            <description>WJComms (London, GB)</description>
+            <description>WJComms (HTTP, London, GB)</description>
         </mirror>
     </mirrors>
     <flavours>

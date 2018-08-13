@@ -1047,9 +1047,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         default:
             if (does_interface_exist("$realif")) {
                 mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " delete", true);
-                if ($destroy) {
-                    legacy_interface_flags($realif, 'down');
-                }
                 mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
             }
             break;
@@ -1065,16 +1062,13 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                 if (is_ipaddrv6($ip6) && $ip6 != "::") {
                     mwexec("/sbin/ifconfig " . escapeshellarg($realifv6) . " inet6 {$ip6} delete", true);
                 }
-                if ($destroy) {
-                    legacy_interface_flags($realif, 'down');
-                }
                 mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
             }
             $track6 = link_interface_to_track6($interface);
             break;
         case "6rd":
         case "6to4":
-            $realif = "{$interface}_stf";
+            $realif = "{$realif}_stf";
             if (does_interface_exist("$realif")) {
                 $ip6 = get_interface_ipv6($interface);
                 if (is_ipaddrv6($ip6)) {
@@ -1094,9 +1088,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                 }
                 if (!empty($ifcfg['ipaddrv6']) && is_ipaddrv6($ifcfg['ipaddrv6'])) {
                     mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$ifcfg['ipaddrv6']} delete", true);
-                }
-                if ($destroy) {
-                    legacy_interface_flags($realif, 'down');
                 }
                 mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
             }
@@ -2581,13 +2572,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
             interface_track6_slaac_configure($interface, $lancfg);
             /* FALLTHROUGH */
         case 'dhcp6':
-            if ($linkupevent == true) {
-                /*
-                 * NOTE: Usually come here from rc.linkup calling so just call directly intead of generating event
-                 *  Instead of disrupting all other v4 configuration just restart DHCPv6 client for now
-                 *
-                 * XXX: Probably DHCPv6 client should handle this autmagically itself?
-                 */
+            if ($linkupevent) {
                 $parentrealif = get_real_interface($lancfg['track6-interface']);
                 killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
             }
@@ -2733,12 +2718,18 @@ function interface_6rd_configure($interface = 'wan', $wancfg)
 
     $rd6brgw = "{$rd6prefix}{$wancfg['gateway-6rd']}";
 
-    $stfiface = "{$interface}_stf";
+    $stfiface = "{$wanif}_stf";
     if (does_interface_exist($stfiface)) {
         legacy_interface_destroy($stfiface);
     }
     legacy_interface_create('stf', $stfiface);
     legacy_interface_flags($stfiface, 'link2');
+
+    $mtu = !empty($wancfg['mtu']) ? $wancfg['mtu'] - 20 : 1280;
+    if ($mtu > 1480) {
+        $mtu = 1480;
+    }
+    legacy_interface_mtu($stfiface, $mtu);
 
     mwexecf('/sbin/ifconfig %s inet6 %s/%s', array($stfiface, $rd6prefix, $rd6prefixlen + 32 - $wancfg['prefix-6rd-v4plen']));
     mwexecf('/sbin/ifconfig %s stfv4br %s', array($stfiface, $wancfg['gateway-6rd']));
@@ -2827,13 +2818,20 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
     $stflanarr[7] = 1;
     $stflan = Net_IPv6::compress(implode(":", $stflanarr));
 
-    $stfiface = "{$interface}_stf";
+    $stfiface = "{$wanif}_stf";
     if (does_interface_exist($stfiface)) {
         legacy_interface_destroy($stfiface);
     }
     legacy_interface_create('stf', $stfiface);
     legacy_interface_flags($stfiface, 'link2');
-    mwexec("/sbin/ifconfig {$stfiface} inet6 {$stflanpr} prefixlen 16");
+
+    $mtu = !empty($wancfg['mtu']) ? $wancfg['mtu'] - 20 : 1280;
+    if ($mtu > 1480) {
+        $mtu = 1480;
+    }
+    legacy_interface_mtu($stfiface, $mtu);
+
+    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 16', array($stfiface, $stflanpr));
 
     /* write out a default router file */
     file_put_contents("/tmp/{$wanif}_routerv6", "{$stfbrgw}");
@@ -3682,9 +3680,9 @@ function get_real_interface($interface = 'wan', $family = 'all')
                     $ipaddrv6 = "";
                 }
                 switch ($ipaddrv6) {
-                    case "6rd":
-                    case "6to4":
-                        $wanif = "{$interface}_stf";
+                    case '6rd':
+                    case '6to4':
+                        $wanif = "{$cfg['if']}_stf";
                         break;
                     case 'pppoe':
                     case 'ppp':
@@ -4010,7 +4008,7 @@ function ip_in_interface_alias_subnet($interface, $ipalias)
     return false;
 }
 
-function get_interface_ip($interface = "wan")
+function get_interface_ip($interface = 'wan')
 {
     $realif = get_failover_interface($interface);
     if (!$realif) {
@@ -4022,11 +4020,11 @@ function get_interface_ip($interface = "wan")
     }
 
     $curip = find_interface_ip($realif);
-    if ($curip && is_ipaddr($curip) && ($curip != "0.0.0.0")) {
+    if ($curip && is_ipaddr($curip) && $curip != '0.0.0.0') {
         return $curip;
-    } else {
-        return null;
     }
+
+    return null;
 }
 
 function get_interface_ipv6($interface = 'wan')
@@ -4046,46 +4044,13 @@ function get_interface_ipv6($interface = 'wan')
         $realif = get_real_interface($interface, 'inet6');
     }
 
-    if (isset($config['interfaces'][$interface]['dhcp6prefixonly'])) {
-        $curip = find_interface_ipv6_ll($realif);
-        if ($curip && is_ipaddrv6($curip) && ($curip != "::")) {
-            return $curip;
-        } else {
-            /*
-             * XXX This may have been an intended opt-out case earlier,
-             * but it looks wrong to assume prefix-only and then fall
-             * through to see if a different address is there.
-             */
-            return null;
-        }
-    }
-
-    $curip = find_interface_ipv6($realif);
-    if ($curip && is_ipaddrv6($curip) && ($curip != "::")) {
+    $curip = isset($config['interfaces'][$interface]['dhcp6prefixonly']) ?
+        find_interface_ipv6_ll($realif) : find_interface_ipv6($realif);
+    if ($curip && is_ipaddrv6($curip) && $curip != '::') {
         return $curip;
-    } else {
-        return null;
-    }
-}
-
-function get_interface_linklocal($interface = "wan")
-{
-    $realif = get_failover_interface($interface, "inet6");
-    if (!$realif) {
-        if (strstr($interface, "_vip")) {
-            list($interface, $vhid) = explode("_vip", $interface);
-            $realif = get_real_interface($interface);
-        } else {
-            return null;
-        }
     }
 
-    $curip = find_interface_ipv6_ll($realif);
-    if ($curip && is_ipaddrv6($curip) && ($curip != "::")) {
-        return $curip;
-    } else {
-        return null;
-    }
+    return null;
 }
 
 function get_interface_subnet($interface = "wan")

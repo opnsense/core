@@ -1,14 +1,13 @@
-#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (C) 2018 Deciso B.V.
+ * Copyright (C) 2018 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
- *  1. Redistributions of source code must retain the above copyright notice,
+ * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
@@ -27,15 +26,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-$vpnid = filter_var($argv[1], FILTER_SANITIZE_NUMBER_INT);
-$common_name = getenv("common_name");
-$target_filename = "/var/etc/openvpn-csc/".$vpnid."/".$common_name;
+namespace OPNsense\Backup;
 
-openlog("openvpn", LOG_ODELAY, LOG_AUTH);
-if (is_file($target_filename)) {
-    syslog(LOG_NOTICE, "client config removed @ {$target_filename}");
-    unlink($target_filename);
+use OPNsense\Core\Config;
+
+/**
+ * Class local backup
+ * @package OPNsense\Backup
+ */
+class Local extends Base
+{
+    /* we only need this class to access encrypt() and decrypt() */
 }
-
-closelog();
-exit(0);

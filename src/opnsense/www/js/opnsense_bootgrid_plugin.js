@@ -246,7 +246,7 @@ $.fn.UIBootgrid = function (params) {
                                 ajaxCall(url=gridParams['del'] + uuid,
                                     sendData={},callback=function(data,status){
                                         // reload grid after delete
-                                        $("#"+gridId).bootgrid("reload");
+                                        std_bootgrid_reload(gridId);
                                     });
                             });
                         } else {
@@ -292,7 +292,7 @@ $.fn.UIBootgrid = function (params) {
                             saveFormToEndpoint(url=gridParams['add'],
                                 formid='frm_' + editDlg, callback_ok=function(){
                                     $("#"+editDlg).modal('hide');
-                                    $("#"+gridId).bootgrid("reload");
+                                    std_bootgrid_reload(gridId);
                                 }, true);
                         });
                     }  else {

@@ -40,8 +40,10 @@
                         <IPv6>IPv6</IPv6>
                     </OptionValues>
                 </proto>
-                <content type=".\AliasContentField">
-                </content>
+                <updatefreq type="NumericField">
+                    <ValidationMessage>Days and hours should be numeric values or left empty</ValidationMessage>
+                </updatefreq>
+                <content type=".\AliasContentField"/>
                 <description type="TextField">
                     <Required>N</Required>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>

@@ -75,9 +75,9 @@ label           :   dialog label
                         <tbody>
                         {%  if base_dialog_advanced|default(false) or base_dialog_help|default(false) %}
                         <tr>
-                            <td>{% if base_dialog_advanced|default(false) %}<a href="#"><i class="fa fa-toggle-off text-danger" id="show_advanced_formDialog{{base_dialog_id}}"></i> </a><small>{{ lang._('advanced mode') }} </small>{% endif %}</td>
+                            <td>{% if base_dialog_advanced|default(false) %}<a href="#"><i class="fa fa-toggle-off text-danger" id="show_advanced_formDialog{{base_dialog_id}}"></i></a> <small>{{ lang._('advanced mode') }}</small>{% endif %}</td>
                             <td colspan="2" style="text-align:right;">
-                                {% if base_dialog_help|default(false) %}<small>{{ lang._('full help') }} </small><a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_formDialog{{base_dialog_id}}"></i></a>{% endif %}
+                                {% if base_dialog_help|default(false) %}<small>{{ lang._('full help') }}</small> <a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_formDialog{{base_dialog_id}}"></i></a>{% endif %}
                             </td>
                         </tr>
                         {% endif %}
@@ -106,8 +106,8 @@ label           :   dialog label
             <col class="col-md-{{ msgzone_width|default(5) }}"/>
         </colgroup>
         <thead>
-          <tr colspan="3">
-            <th><h2>{{field['label']}}</h2></th>
+          <tr>
+            <th colspan="3"><h2>{{field['label']}}</h2></th>
           </tr>
         </thead>
         <tbody>

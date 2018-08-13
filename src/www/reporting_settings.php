@@ -178,7 +178,7 @@ $(document).ready(function() {
           <input type="hidden" id="action" name="action" value="" />
           <input type="hidden" id="filename" name="filename" value="" />
           <section class="col-xs-12">
-            <div class="tab-content content-box col-xs-12 __mb">
+            <div class="tab-content content-box col-xs-12">
               <div class="table-responsive">
                 <table class="table table-striped opnsense_standard_table_form">
                   <tr>
@@ -211,7 +211,7 @@ $(document).ready(function() {
             </div>
           </section>
           <section class="col-xs-12">
-            <div class="tab-content content-box col-xs-12 __mb">
+            <div class="tab-content content-box col-xs-12">
               <div class="table-responsive">
                 <table class="table table-striped opnsense_standard_table_form">
                   <tr>

@@ -12,6 +12,10 @@
         background-color: transparent !important;
     }
 
+    .update_table {
+        background-color: transparent !important;
+    }
+
     .geo_area_check {
         cursor: pointer;
     }
@@ -128,6 +132,7 @@
          */
         $("#alias\\.type").change(function(){
             $(".alias_type").hide();
+            $("#row_alias\\.updatefreq").hide();
             switch ($(this).val()) {
                 case 'geoip':
                     $("#alias_type_geoip").show();
@@ -135,6 +140,8 @@
                     break;
                 case 'external':
                     break;
+                case 'urltable':
+                    $("#row_alias\\.updatefreq").show();
                 default:
                     $("#alias_type_default").show();
                     $("#alias\\.proto").selectpicker('hide');
@@ -157,7 +164,32 @@
             });
             $(".geoip_select").selectpicker('refresh');
             geoip_update_labels();
-        })
+        });
+
+        /**
+         * update expiration (updatefreq is splitted into days and hours on the form)
+         */
+        $("#alias\\.updatefreq").change(function(){
+            var freq = $(this).val();
+            var freq_hours = ((parseFloat(freq) - parseInt(freq)) * 24.0).toFixed(2);
+            var freq_days = parseInt(freq);
+            $("input[data-id=\"alias.updatefreq_hours\"]").val(freq_hours);
+            $("input[data-id=\"alias.updatefreq_days\"]").val(freq_days);
+        });
+        $(".updatefreq").keyup(function(){
+            var freq = 0.0;
+            if ($("input[data-id=\"alias.updatefreq_days\"]").val().trim() != "") {
+                freq = parseFloat($("input[data-id=\"alias.updatefreq_days\"]").val());
+            }
+            if ($("input[data-id=\"alias.updatefreq_hours\"]").val().trim() != "") {
+                freq += (parseFloat($("input[data-id=\"alias.updatefreq_hours\"]").val()) / 24.0);
+            }
+            if (freq != 0.0) {
+                $("#alias\\.updatefreq").val(freq);
+            } else {
+                $("#alias\\.updatefreq").val("");
+            }
+        });
 
 
     });
@@ -274,6 +306,34 @@
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.type"></span>
+                                    </td>
+                                </tr>
+                                <tr id="row_alias.updatefreq">
+                                    <td>
+                                        <div class="control-label" id="control_label_alias.updatefreq">
+                                            <i class="fa fa-info-circle text-muted"></i>
+                                            <b>{{lang._('Expiration')}}</b>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="alias.updatefreq" style="display: none">
+                                        <table class="table table-condensed update_table">
+                                            <thead>
+                                                <tr>
+                                                    <th>{{lang._('Days')}}</th>
+                                                    <th>{{lang._('Hours')}}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><input data-id="alias.updatefreq_days" type="text" class="updatefreq form-control"></td>
+                                                    <td><input data-id="alias.updatefreq_hours" type="text" class="updatefreq form-control"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <span class="help-block" id="help_block_alias.updatefreq"></span>
                                     </td>
                                 </tr>
                                 <tr id="row_alias.content">

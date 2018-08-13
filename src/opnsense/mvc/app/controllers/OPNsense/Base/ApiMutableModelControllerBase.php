@@ -154,14 +154,17 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             } else {
                 $fieldnm = $resultPrefix.".".$msg->getField();
             }
+            $msgText = $msg->getMessage();
             if (empty($result["validations"][$fieldnm])) {
-                $result["validations"][$fieldnm] = $msg->getMessage();
+                $result["validations"][$fieldnm] = $msgText;
             } elseif (!is_array($result["validations"][$fieldnm])) {
                 // multiple validations, switch to array type output
                 $result["validations"][$fieldnm] = array($result["validations"][$fieldnm]);
-                $result["validations"][$fieldnm][] = $msg->getMessage();
-            } else {
-                $result["validations"][$fieldnm][] = $msg->getMessage();
+                if (!in_array($msgText, $result["validations"][$fieldnm])) {
+                    $result["validations"][$fieldnm][] = $msgText;
+                }
+            } elseif (!in_array($msgText, $result["validations"][$fieldnm])) {
+                $result["validations"][$fieldnm][] = $msgText;
             }
         }
         return $result;

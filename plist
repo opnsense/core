@@ -46,7 +46,6 @@
 /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkdown
 /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup
 /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_auth_verify
-/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_cleanup_cso.php
 /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_setup_cso.php
 /usr/local/etc/inc/plugins.inc.d/openvpn/tls-verify.php
 /usr/local/etc/inc/plugins.inc.d/openvpn/wizard.inc
@@ -74,8 +73,8 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20160630
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20161210
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20170625
+/usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20171219
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/opnsense-update.deciso.com.20180627
-/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20171219
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20180614
 /usr/local/etc/rc
 /usr/local/etc/rc.bootup
@@ -316,9 +315,7 @@
 /usr/local/opnsense/contrib/simplepie/phpunit.xml.dist
 /usr/local/opnsense/contrib/tzdata/iso3166.tab
 /usr/local/opnsense/contrib/tzdata/zone.tab
-/usr/local/opnsense/firmware-message
 /usr/local/opnsense/firmware-product
-/usr/local/opnsense/firmware-upgrade
 /usr/local/opnsense/mvc/app/cache/README
 /usr/local/opnsense/mvc/app/config/config.php
 /usr/local/opnsense/mvc/app/config/loader.php
@@ -416,6 +413,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/Base.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/GDrive.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/IBackupProvider.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Backup/Local.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/Nextcloud.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/Scp.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Base/Filters/QueryFilter.php
@@ -463,6 +461,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/JsonKeyValueStoreField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/ModelRelationField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/NetworkField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/NumericField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/OptionField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/PortField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/TextField.php

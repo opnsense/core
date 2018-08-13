@@ -932,23 +932,26 @@ endforeach; ?>
                       <select name="dhgroup">
 <?php
                       $p1_dhgroups = array(
-                        0  => gettext('off'),
-                        1  => '1 (768 bit)',
-                        2  => '2 (1024 bit)',
-                        5  => '5 (1536 bit)',
-                        14 => '14 (2048 bit)',
-                        15 => '15 (3072 bit)',
-                        16 => '16 (4096 bit)',
-                        17 => '17 (6144 bit)',
-                        18 => '18 (8192 bit)',
-                        19 => '19 (256 bit elliptic curve)',
-                        20 => '20 (384 bit elliptic curve)',
-                        21 => '21 (521 bit elliptic curve)',
-                        22 => '22 (1024(sub 160) bit)',
-                        23 => '23 (2048(sub 224) bit)',
-                        24 => '24 (2048(sub 256) bit)'
+                           0 => gettext('off'),
+                           1 => '1 (768 bits)',
+                           2 => '2 (1024 bits)',
+                           5 => '5 (1536 bits)',
+                           14 => '14 (2048 bits)',
+                           15 => '15 (3072 bits)',
+                           16 => '16 (4096 bits)',
+                           17 => '17 (6144 bits)',
+                           18 => '18 (8192 bits)',
+                           19 => '19 (NIST EC 256 bits)',
+                           20 => '20 (NIST EC 384 bits)',
+                           21 => '21 (NIST EC 521 bits)',
+                           22 => '22 (1024(sub 160) bits)',
+                           23 => '23 (2048(sub 224) bits)',
+                           24 => '24 (2048(sub 256) bits)',
+                           28 => '28 (Brainpool EC 256 bits)',
+                           29 => '29 (Brainpool EC 384 bits)',
+                           30 => '30 (Brainpool EC 512 bits)',
                       );
-                      foreach ($p1_dhgroups as $keygroup => $keygroupname) :
+                      foreach ($p1_dhgroups as $keygroup => $keygroupname):
 ?>
                         <option value="<?=$keygroup;?>" <?= $keygroup == $pconfig['dhgroup'] ? "selected=\"selected\"" : "";?>>
                           <?=$keygroupname;?>

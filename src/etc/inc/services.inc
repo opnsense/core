@@ -1111,29 +1111,36 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
                 $dhcpdv6cfg[$ifname]['range']['from'] = Net_IPv6::compress(implode(':', $ifcfgipv6arr));
                 $ifcfgipv6arr[7] = '2000';
                 $dhcpdv6cfg[$ifname]['range']['to'] = Net_IPv6::compress(implode(':', $ifcfgipv6arr));
+
+                /* prefix length > 0? We can add dhcp6 prefix delegation server */
+                if ($pdlen > 2) {
+                    $pdlenmax = $pdlen;
+                    $pdlenhalf = $pdlenmax - 1;
+                    $pdlenmin = 64 - ceil($pdlenhalf / 4);
+                    $dhcpdv6cfg[$ifname]['prefixrange'] = array();
+                    $dhcpdv6cfg[$ifname]['prefixrange']['prefixlength'] = $pdlenmin;
+
+                    /* set the delegation start to half the current address block */
+                    $range = Net_IPv6::parseAddress($ifcfgipv6, (64 - $pdlenmax));
+                    $range['start'] = Net_IPv6::getNetmask($range['end'], (64 - $pdlenhalf));
+
+                    /* set the end range to a multiple of the prefix delegation size, required by dhcpd */
+                    $range = Net_IPv6::parseAddress($range['end'], (64 - $pdlenhalf));
+                    $range['end'] = Net_IPv6::getNetmask($range['end'], (64 - round($pdlen / 2)));
+
+                    $dhcpdv6cfg[$ifname]['prefixrange']['from'] = Net_IPv6::compress($range['start']);
+                    $dhcpdv6cfg[$ifname]['prefixrange']['to'] = Net_IPv6::compress($range['end']);
+                }
             } else {
-               /* get config entry and marry it to the live prefix */
-               $dhcpdv6cfg[$ifname]['range']['to'] = make_ipv6_64_address($ifcfgipv6, $config['dhcpdv6'][$ifname]['range']['to']);
-               $dhcpdv6cfg[$ifname]['range']['from'] = make_ipv6_64_address($ifcfgipv6, $config['dhcpdv6'][$ifname]['range']['from']);
-            }
-            /* prefix length > 0? We can add dhcp6 prefix delegation server */
-            if ($pdlen > 2) {
-                $pdlenmax = $pdlen;
-                $pdlenhalf = $pdlenmax -1;
-                $pdlenmin = (64 - ceil($pdlenhalf / 4));
+                /* get config entry and marry it to the live prefix */
+                $dhcpdv6cfg[$ifname]['range'] = array();
+                $dhcpdv6cfg[$ifname]['range']['from'] = make_ipv6_64_address($ifcfgipv6, $config['dhcpdv6'][$ifname]['range']['from']);
+                $dhcpdv6cfg[$ifname]['range']['to'] = make_ipv6_64_address($ifcfgipv6, $config['dhcpdv6'][$ifname]['range']['to']);
+
                 $dhcpdv6cfg[$ifname]['prefixrange'] = array();
-                $dhcpdv6cfg[$ifname]['prefixrange']['prefixlength'] = $pdlenmin;
-
-                /* set the delegation start to half the current address block */
-                $range = Net_IPv6::parseAddress($ifcfgipv6, (64 - $pdlenmax));
-                $range['start'] = Net_IPv6::getNetmask($range['end'], (64 - $pdlenhalf));
-
-                /* set the end range to a multiple of the prefix delegation size, required by dhcpd */
-                $range = Net_IPv6::parseAddress($range['end'], (64 - $pdlenhalf));
-                $range['end'] = Net_IPv6::getNetmask($range['end'], (64 - round($pdlen / 2)));
-
-                $dhcpdv6cfg[$ifname]['prefixrange']['from'] = Net_IPv6::compress($range['start']);
-                $dhcpdv6cfg[$ifname]['prefixrange']['to'] = Net_IPv6::compress($range['end']);
+                $dhcpdv6cfg[$ifname]['prefixrange']['prefixlength'] = $config['dhcpdv6'][$ifname]['prefixrange']['prefixlength'];
+                $dhcpdv6cfg[$ifname]['prefixrange']['from'] = $config['dhcpdv6'][$ifname]['prefixrange']['from'];
+                $dhcpdv6cfg[$ifname]['prefixrange']['to'] = $config['dhcpdv6'][$ifname]['prefixrange']['to'];
             }
         }
     }

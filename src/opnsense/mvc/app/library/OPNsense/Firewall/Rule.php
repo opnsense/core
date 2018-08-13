@@ -37,6 +37,7 @@ abstract class Rule
 {
     protected $rule = array();
     protected $interfaceMapping = array();
+    protected $ruleDebugInfo = array();
 
     /**
      * init Rule
@@ -47,6 +48,15 @@ abstract class Rule
     {
         $this->interfaceMapping = $interfaceMapping;
         $this->rule = $conf;
+    }
+
+    /**
+     * send text to debug log
+     * @param string debug log info
+     */
+    protected function log($line)
+    {
+        $this->ruleDebugInfo[] = $line;
     }
 
     /**
@@ -180,6 +190,7 @@ abstract class Rule
                 $this->convertAddress($rule);
                 // disable rule when interface not found
                 if (!empty($interface) && empty($this->interfaceMapping[$interface]['if'])) {
+                    $this->log("Interface {$interface} not found");
                     $rule['disabled'] = true;
                 }
                 yield $rule;
@@ -210,7 +221,12 @@ abstract class Rule
             $ruleTxt .= !empty($cmdout) && !empty($ruleTxt) ? " "  : "";
             $ruleTxt .= $cmdout;
         }
-        return $ruleTxt;
+        if (!empty($this->ruleDebugInfo)) {
+            $debugTxt = "#debug:". implode("|", $this->ruleDebugInfo) . "\n";
+        } else {
+            $debugTxt = "";
+        }
+        return $debugTxt . $ruleTxt;
     }
 
     /**
@@ -266,6 +282,7 @@ abstract class Rule
                         if (!Util::isAlias($port, true)) {
                             // unable to map port
                             $rule['disabled'] = true;
+                            $this->log("Unable to map port {$port}, empty?");
                         }
                     }
                 }
@@ -273,6 +290,7 @@ abstract class Rule
                     // couldn't convert address, disable rule
                     // dump all tag contents in target (from/to) for reference
                     $rule['disabled'] = true;
+                    $this->log("Unable to convert address, see {$target} for details");
                     $rule[$target] = json_encode($rule[$tag]);
                 }
             }

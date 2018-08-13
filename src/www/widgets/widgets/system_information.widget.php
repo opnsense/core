@@ -165,7 +165,7 @@ require_once("system.inc");
     <tr>
       <td><?= gettext('Updates') ?></td>
       <td>
-        <a href='/ui/core/firmware/#checkupdate'><?= gettext('Click to check for updates.') ?></a>
+        <a href='/ui/core/firmware#checkupdate'><?= gettext('Click to check for updates.') ?></a>
       </td>
     </tr>
     <tr>

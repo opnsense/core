@@ -159,12 +159,12 @@ $( document ).ready(function() {
             </tbody>
           </table>
         </form>
-      </div>
         <section class="col-xs-12">
             <div id="pftopactivitydiv"><?=gettext("Gathering pfTOP activity, please wait...");?></div>
         </section>
-     </section>
+      </div>
     </div>
   </div>
 </section>
-<?php include("foot.inc"); ?>
+
+<?php include("foot.inc");
