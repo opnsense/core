@@ -4,8 +4,8 @@ namespace OPNsense\Backup;
 
 require_once('phpmailer/PHPMailerAutoload.php');
 
-use OPNsense\MailSender;
 use OPNsense\Core\Config;
+use OPNsense\Backup\MailerSettings;
 
 /**
  * Class mail backup
@@ -76,11 +76,10 @@ class Mailer extends Base implements IBackupProvider
             "label" => gettext("GPG Public Key"),
             "value" => null
         );
-        $cnf = Config::getInstance();
-        if ($cnf->isValid()) {
-            $config = $cnf->object();
+        $mailer = new MailerSettings();
+        foreach ($fields as &$field) {
+            $field['value'] = (string)$mailer->getNodeByReference($field['name']);
         }
-
         return $fields;
     }
 
@@ -100,25 +99,14 @@ class Mailer extends Base implements IBackupProvider
      */
     public function setConfiguration($conf)
     {
-        $input_errors = array();
-
-        if (count($input_errors) == 0) {
-            $config = Config::getInstance()->object();
-            if (!isset($config->system->remotebackup)) {
-                $config->system->addChild('remotebackup');
-            }
-            foreach ($this->getConfigurationFields() as $field) {
-                $fieldname = $field['name'];
-                if (!empty($conf[$field['name']])) {
-                    $config->system->remotebackup->$fieldname = $conf[$field['name']];
-                } else {
-                    unset($config->system->remotebackup->$fieldname);
-                }
-            }
+        $mailer = new MailerSettings();
+        $this->setModelProperties($mailer, $conf);
+        $validation_messages = $this->validateModel($mailer);
+        if (empty($validation_messages)) {
+            $mailer->serializeToConfig();
             Config::getInstance()->save();
         }
-
-        return $input_errors;
+        return $validation_messages;
     }
 
     /**
@@ -127,13 +115,10 @@ class Mailer extends Base implements IBackupProvider
     public function backup()
     {
         $cnf = Config::getInstance();
-        if ($cnf->isValid()) {
-            $config = $cnf->object();
-            if (isset($config->system->remotebackup) && isset($config->system->remotebackup->MailEnabled)
-                    && !empty($config->system->remotebackup->MailEnabled)) {
-                $confdata = file_get_contents('/conf/config.xml');
-                $result = self::sendEmail($config->system->remotebackup, $confdata);
-            }
+        $mailer = new MailerSettings();
+        if ($cnf->isValid() && !empty((string)$mailer->MailEnabled)) {
+            $confdata = file_get_contents('/conf/config.xml');
+            $result = self::sendEmail($mailer, $confdata);
         }
 
         return array($result);
@@ -145,21 +130,16 @@ class Mailer extends Base implements IBackupProvider
      */
     public function isEnabled()
     {
-        $cnf = Config::getInstance();
-        if ($cnf->isValid()) {
-            $config =$cnf->object();
-            return isset($config->system->remotebackup) && isset($config->system->remotebackup->MailEnabled)
-                && !empty($config->system->remotebackup->MailEnabled);
-        }
-        return false;
+        $mailer = new MailerSettings();
+        return (string)$mailer->MailEnabled === "1";
     }
 
     public function sendEmail($config, $confdata)
     {
-        $smtpUsername = $config->SmtpUsername;
-        $smtpPassword = $config->SmtpPassword;
-        $gpgPublicKey = $config->GpgPublicKey;
-        $gpgEmail     = $config->GpgEmail;
+        $smtpUsername = (string)$config->SmtpUsername;
+        $smtpPassword = (string)$config->SmtpPassword;
+        $gpgPublicKey = (string)$config->GpgPublicKey;
+        $gpgEmail     = (string)$config->GpgEmail;
 
         $date     = date('Y-m-d');
         $hostname = gethostname();
@@ -169,22 +149,23 @@ class Mailer extends Base implements IBackupProvider
         $mail->IsHTML(true);
         $mail->IsSMTP();
         $mail->SetFrom($gpgEmail);
-        $mail->AddAddress($config->Receiver);
-        $mail->Host    = $config->SmtpHost;
-        $mail->Port    = $config->SmtpPort;
+        $mail->AddAddress((string)$config->Receiver);
+        $mail->Host    = (string)$config->SmtpHost;
+        $mail->Port    = (string)$config->SmtpPort;
         $mail->Subject = $hostname . ' OPNsense config backup ' . $date;
         $mail->Body    = $hostname . ' config backup file';
 
-        if ($config->SmtpSSL == "on") {
+        if ((string)$config->SmtpSSL === "1") {
             $mail->SMTPSecure = 'ssl';
+        } else {
+            $mail->SMTPOptions = array(
+                'ssl' => array(
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true,
+                ),
+            );
         }
-        $mail->SMTPOptions = array(
-            'ssl' => array(
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-                'allow_self_signed' => true,
-            ),
-        );
 
         if ($smtpUsername != "" && $smtpPassword != "") {
             $mail->SMTPAuth = true;
@@ -192,21 +173,56 @@ class Mailer extends Base implements IBackupProvider
             $mail->Password = $smtpPassword;
         }
 
-        $gpgPublicKeyFile = "key.asc";
-        if ($gpgPublicKey != "") {
-            file_put_contents($gpgPublicKeyFile, $gpgPublicKey);
-            proc_open('gpg --import < ' . $gpgPublicKeyFile);
-        }
+        self::import_key($gpgPublicKey);
 
-        proc_open('echo "' . $confdata . '"
-            | gpg --trust-model always --batch --yes --output backup --encrypt --recipient ' .
-            escapeshellarg($gpgEmail));
+        self::encrypt_data($confdata, $gpgEmail);
 
         $attachmentName = 'config_' . gethostname() . '_' . $date . '.xml.asc';
-        $mail->AddAttachment( 'backup' , $attachmentName);
+        $mail->AddAttachment('backup', $attachmentName);
 
         $mail->Send();
 
         return $attachmentName;
+    }
+
+    function import_key($gpgPublicKey) {
+        $gpgPublicKeyFile = "key.asc";
+
+        if ($gpgPublicKey != "") {
+            file_put_contents($gpgPublicKeyFile, $gpgPublicKey);
+
+            $descriptorspec = array(
+                0 => array("pipe", "r"),
+                1 => array("pipe", "w"),
+                2 => array("file", "/tmp/import_key_error.txt", "a")
+            );
+
+            $process = proc_open('gpg --import < ' . $gpgPublicKeyFile, $descriptorspec, $pipes);
+
+            if (is_resource($process)) {
+                fclose($pipes[0]);
+                proc_close($process);
+            }
+        }
+    }
+
+    function encrypt_data($confdata, $gpgEmail) {
+        $descriptorspec = array(
+            0 => array("pipe", "r"),
+            1 => array("pipe", "w"),
+            2 => array("file", "/tmp/encrypt_data_error.txt", "a")
+        );
+
+        $process = proc_open(
+            'gpg --trust-model always --batch --yes --output backup --encrypt --recipient ' . escapeshellarg($gpgEmail),
+            $descriptorspec,
+            $pipes
+        );
+
+        if (is_resource($process)) {
+            fwrite($pipes[0], $confdata);
+            fclose($pipes[0]);
+            proc_close($process);
+        }
     }
 }
