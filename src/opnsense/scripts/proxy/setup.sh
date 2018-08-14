@@ -37,8 +37,3 @@ fi
 
 # generate SSL bump certificate
 /usr/local/opnsense/scripts/proxy/generate_cert.php > /dev/null 2>&1
-
-# on bootup, wait some time before executing squid. For some reason ipfw might interfere with squid startup
-if [ -f /var/run/booting ]; then
-   sleep 2
-fi
