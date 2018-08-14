@@ -3113,17 +3113,6 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
             $id_assoc_statement_prefix .= ";\n";
         }
 
-        if (is_numeric($wancfg['adv_dhcp6_prefix_interface_statement_sla_id'])) {
-            $id_assoc_statement_prefix .= "  prefix-interface {$wanif} {\n";
-            $id_assoc_statement_prefix .= "    sla-id {$wancfg['adv_dhcp6_prefix_interface_statement_sla_id']};\n";
-            if (($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] >= 0) &&
-                ($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] <= 128)
-            ) {
-                $id_assoc_statement_prefix .= "    sla-len {$wancfg['adv_dhcp6_prefix_interface_statement_sla_len']};\n";
-            }
-            $id_assoc_statement_prefix .= "  };\n";
-        }
-
         $iflist = link_interface_to_track6($interface);
 
         foreach ($iflist as $friendly => $ifcfg) {
