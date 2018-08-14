@@ -237,7 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if ($pconfig['passwordfld1'] != $pconfig['passwordfld2']) {
             $input_errors[] = gettext('The passwords do not match.');
-        } elseif (empty($pconfig['gen_new_password'])) {
+        } elseif (empty($pconfig['gen_new_password']) && !empty($pconfig['passwordfld1'])) {
             // check against local password policy
             $authenticator = get_authenticator();
             $input_errors = array_merge(
