@@ -165,7 +165,7 @@
         </script>
 
         <!-- JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/) -->
-        <script src="/ui/js/tokenize2.min.js"></script>
+        <script src="/ui/js/tokenize2.js"></script>
         <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/tokenize2.css', theme_name)}}" rel="stylesheet" />
 
         <!-- Bootgrind (grid system from http://www.jquery-bootgrid.com/ )  -->
