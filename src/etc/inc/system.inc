@@ -1068,6 +1068,11 @@ function system_kernel_configure($verbose = false)
         $mods[] = $config['system']['thermal_hardware'];
     }
 
+    if (!empty($config['OPNsense']['TrafficShaper']['rules']['rule'])) {
+        $mods[] = "ipfw";
+        $mods[] = "dummynet";
+    }
+
     foreach ($mods as $mod) {
         mwexecf('/sbin/kldload %s', $mod, true);
     }
