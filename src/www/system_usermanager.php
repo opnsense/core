@@ -235,18 +235,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("The username is longer than 32 characters.");
         }
 
-        if ($pconfig['passwordfld1'] != $pconfig['passwordfld2']) {
-            $input_errors[] = gettext('The passwords do not match.');
-        } elseif (empty($pconfig['gen_new_password']) && !empty($pconfig['passwordfld1'])) {
-            // check against local password policy
-            $authenticator = get_authenticator();
-            $input_errors = array_merge(
-                $input_errors, $authenticator->checkPolicy($pconfig['usernamefld'], null, $pconfig['passwordfld1'])
-            );
-        }
-
-        if (!empty($pconfig['passwordfld1']) && !empty($pconfig['gen_new_password'])) {
-            $input_errors[] = gettext('Cannot set random password due to explicit input.');
+        if (!empty($pconfig['passwordfld1']) || !empty($pconfig['passwordfld2'])) {
+            if ($pconfig['passwordfld1'] != $pconfig['passwordfld2']) {
+                $input_errors[] = gettext('The passwords do not match.');
+            } elseif (empty($pconfig['gen_new_password'])) {
+                // check against local password policy
+                $authenticator = get_authenticator();
+                $input_errors = array_merge(
+                    $input_errors,
+                    $authenticator->checkPolicy($pconfig['usernamefld'], null, $pconfig['passwordfld1'])
+                );
+            } else {
+                $input_errors[] = gettext('Cannot set random password due to explicit input.');
+            }
         }
 
         if (!empty($pconfig['disabled']) && $_SESSION['Username'] === $a_user[$id]['name']) {
