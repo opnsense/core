@@ -139,4 +139,17 @@ class TrafficShaper extends BaseModel
 
         return $seq;
     }
+
+    /**
+     * retrieve last generated rule sequence number
+     */
+    public function isEnabled()
+    {
+        foreach ($this->pipes->pipe->__items as $item) {
+            if ((string)$item->enabled == "1") {
+                return true;
+            }
+        }
+        return false;
+    }
 }
