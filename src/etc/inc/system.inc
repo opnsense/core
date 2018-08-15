@@ -1068,7 +1068,7 @@ function system_kernel_configure($verbose = false)
         $mods[] = $config['system']['thermal_hardware'];
     }
 
-    if ((new \OPNsense\TrafficShaper\TrafficShaper())->isEnabled() || (new \OPNsense\CaptivePortal())->isEnabled()) {
+    if (!empty($config['OPNsense']['TrafficShaper']['rules']['rule'])) {
         $mods[] = "ipfw";
         $mods[] = "dummynet";
     }
