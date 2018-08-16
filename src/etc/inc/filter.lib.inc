@@ -492,8 +492,8 @@ function filter_core_rules_system($fw, $defaults)
                 }
                 foreach ($fw->getInterfaceGateways($ifcfg['if']) as $gwname) {
                     $gwproto = $fw->getGateway($gwname)['proto'];
-                    // only try to add gateway rules for traffic leaving this interface when the correct protocol is
-                    // assigned to the interface (e.g. no ipv4 gateway when :network doesn't resolve to an ipv4 network)
+                    // only try to add gateway rules for traffic leaving this interface
+                    // when the  correct protocol is assigned to the interface
                     if (($gwproto == 'inet' && $intf_has_v4) || ($gwproto == 'inet6' && $intf_has_v6)) {
                         $fw->registerFilterRule(100000,
                           array('from' => $ifcfg['if'], 'direction' => 'out', 'gateway' => $gwname,
