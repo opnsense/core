@@ -73,16 +73,16 @@ class SNatRule extends Rule
                 $interf = $rule['interface'];
                 if (!empty($this->interfaceMapping[$interf])) {
                     $interf_settings = $this->interfaceMapping[$interf];
-                    if ((($this->isIpV4($rule) && !empty($interf_settings['ifconfig']['ipv4'])) ||
+                    if (((($this->isIpV4($rule) && !empty($interf_settings['ifconfig']['ipv4'])) ||
                         (!$this->isIpV4($rule) && !empty($interf_settings['ifconfig']['ipv6'])))
-                        && (!empty($rule['poolopts']) || $rule['poolopts'] != 'round-robin')
+                        && (!empty($rule['poolopts']) || $rule['poolopts'] != 'round-robin')) ||
+                        !empty($interf_settings['if']) /* XXX needed? */
                     ) {
-                        // When pool options are set, we may not specify our interface as a list
-                        // (which doesn't require the same network validations as single items do).
-                        $rule['target'] = "{$interf_settings['if']}:0";
-                    } elseif (!empty($interf_settings['if'])) {
-                        // Define target as list, to prevent "no IP address found for *Interface*" when pf can't
-                        // find an address on the interface for the same protocol family.
+                        /*
+                         * ":0" does not work for IPv6, but NAT is not relevant there anyway.
+                         * The reason for this is that it selects the first address which is
+                         * the link local address so the real global address is not found.
+                         */
                         $rule['target'] = "({$interf_settings['if']}:0)";
                     }
                 }
