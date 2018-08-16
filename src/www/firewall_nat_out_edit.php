@@ -66,10 +66,8 @@ function formTranslateAddresses() {
     }
 
     // add Aliases
-    foreach (legacy_list_aliases("network") as $alias) {
-        if ($alias['type'] == "host") {
-            $retval[$alias['name']] = $alias['name'];
-        }
+    foreach (legacy_list_aliases('host') as $alias) {
+        $retval[$alias['name']] = $alias['name'];
     }
 
     return $retval;
