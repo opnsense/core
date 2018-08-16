@@ -91,7 +91,7 @@ class SNatRule extends Rule
                 $rule['target'] = $rule['targetip'] . '/' . $rule['targetip_subnet'];
             } elseif (!empty($rule['target']) && Util::isAlias($rule['target'])) {
                 $rule['target'] = "$".$rule['target'];
-                if (empty($rule['poolopts']) || substr($rule['poolopts'], 0, 11) != 'round-robin') {
+                if (!empty($rule['poolopts']) && substr($rule['poolopts'], 0, 11) != 'round-robin') {
                     // wrong pool type on alias, disable rule
                     $this->log('SNAT / pool type not round-robin');
                     $rule['disabled'] = true;

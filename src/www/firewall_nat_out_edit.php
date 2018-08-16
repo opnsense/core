@@ -134,6 +134,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['ipprotocol'] = 'inet';
         }
     }
+    if (empty($pconfig['targetip'])) {
+        $pconfig['targetip'] = $pconfig['target'];
+    }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -186,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("A valid target IP address must be specified.");
     }
     /* Verify Pool Options */
-    if (!empty($pconfig['targetip']) && is_alias($pconfig['targetip']) && substr($pconfig['poolopts'], 0, 11) != 'round-robin') {
+    if (!empty($pconfig['targetip']) && is_alias($pconfig['targetip']) && !empty($pconfig['poolopts']) && substr($pconfig['poolopts'], 0, 11) != 'round-robin') {
         $input_errors[] = gettext("Only Round Robin pool options may be chosen when selecting an alias.");
     }
 
@@ -642,9 +645,9 @@ include("head.inc");
                           <td>
                             <select name="targetip" id="targetip" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                                 <option value="" <?= empty($pconfig['targetip']) ? "selected=\"selected\"" : "";?> > <?=gettext("Interface address");?> </option>
-                                <option data-other=true value="<?=$pconfig['targetip'];?>" <?= !empty($pconfig['target']) && !array_key_exists($pconfig['targetip'], formTranslateAddresses() ) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
+                                <option data-other=true value="<?=$pconfig['targetip'];?>" <?= !empty($pconfig['targetip']) && !array_key_exists($pconfig['targetip'], formTranslateAddresses() ) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
 <?php                              foreach (formTranslateAddresses() as $optKey => $optValue): ?>
-                                    <option value="<?=$optKey;?>" <?= $pconfig['target'] == $optKey ? "selected=\"selected\"" : ""; ?>>
+                                    <option value="<?=$optKey;?>" <?= $pconfig['targetip'] == $optKey ? "selected=\"selected\"" : ""; ?>>
                                       <?=$optValue;?>
                                     </option>
 <?php                              endforeach; ?>
