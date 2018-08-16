@@ -141,8 +141,8 @@ function pf_firewall($fw)
                 }
 
                 $networks = array();
-                $networks[] = array('from' => $intf[$friendly]['if'].":network", 'to' => $route['network']);
-                $networks[] = array('to' => $intf[$friendly]['if'].":network", 'from' => $route['network']);
+                $networks[] = array('from' => "({$intf[$friendly]['if']}:network)", 'to' => $route['network']);
+                $networks[] = array('to' => "({$intf[$friendly]['if']}:network)", 'from' => $route['network']);
                 $proto = strpos($route['network'], ":") !== false ? "inet6" : "inet";
                 foreach ($networks as $network) {
                     $fw->registerFilterRule(
