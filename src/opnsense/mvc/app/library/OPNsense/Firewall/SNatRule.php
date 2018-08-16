@@ -73,11 +73,7 @@ class SNatRule extends Rule
                 $interf = $rule['interface'];
                 if (!empty($this->interfaceMapping[$interf])) {
                     $interf_settings = $this->interfaceMapping[$interf];
-                    if (((($this->isIpV4($rule) && !empty($interf_settings['ifconfig']['ipv4'])) ||
-                        (!$this->isIpV4($rule) && !empty($interf_settings['ifconfig']['ipv6'])))
-                        && (!empty($rule['poolopts']) || $rule['poolopts'] != 'round-robin')) ||
-                        !empty($interf_settings['if']) /* XXX needed? */
-                    ) {
+                    if (!empty($interf_settings['if'])) {
                         /*
                          * ":0" does not work for IPv6, but NAT is not relevant there anyway.
                          * The reason for this is that it selects the first address which is
@@ -95,6 +91,11 @@ class SNatRule extends Rule
                 $rule['target'] = $rule['targetip'] . '/' . $rule['targetip_subnet'];
             } elseif (!empty($rule['target']) && Util::isAlias($rule['target'])) {
                 $rule['target'] = "$".$rule['target'];
+                if (empty($rule['poolopts']) || substr($rule['poolopts'], 0, 11) != 'round-robin') {
+                    // wrong pool type on alias, disable rule
+                    $this->log('SNAT / pool type not round-robin');
+                    $rule['disabled'] = true;
+                }
             }
             foreach (array("sourceport", "dstport", "natport") as $fieldname) {
                 if (!empty($rule[$fieldname]) && Util::isAlias($rule[$fieldname])) {
