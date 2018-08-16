@@ -419,11 +419,8 @@ function openvpn_validate_cidr_ipv4($value, $allow_hosts = false)
             return false;
         }
         if (!$allow_hosts) {
-            if ($prefix == 32) {
-                return false;
-            }
             $mask = (0xffffffff << (32 - $prefix)) & 0xffffffff;
-            if (ip2long($ip) & $mask != ip2long($ip)) {
+            if ((ip2long($ip) & $mask) != ip2long($ip)) {
                 return false;
             }
         }
