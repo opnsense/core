@@ -1161,8 +1161,8 @@ EOD;
                 }
 
                 $keyexchange = "ikev1";
-                if (!empty($ph1ent['iketype']) && $ph1ent['iketype'] != "ikev1") {
-                    $keyexchange = "ikev2";
+                if (!empty($ph1ent['iketype'])) {
+                    $keyexchange = $ph1ent['iketype'];
                     $mobike = !empty($ph1ent['mobike']) ? "mobike = no" : "mobike = yes";
                 }
 
