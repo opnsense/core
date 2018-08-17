@@ -87,8 +87,8 @@ function filter_core_antilockout_ports()
      * 2. Both webgui and openssh are plugins, their code should
      *    reside in the respective plugins.inc.d file once anti-
      *    lockout is fully pluggable.
-     * 3. Openssh opens the port when install media is detected
-     *    and no ssh has ever been configured.  This is in line
+     * 3. OpenSSH opens the port when install media is detected
+     *    and no ssh has ever been configured. This is in line
      *    with how the plugin behaves, but probably looks odd.
      */
     if (!isset($config['system']['webgui']['noantilockout'])) {
@@ -393,7 +393,7 @@ function filter_core_rules_system($fw, $defaults)
                 break;
             default:
               if (isset($config['dhcpdv6'][$intf]['enable']) || isset($intfinfo['track6-interface'])
-                || (!empty($config['dhcrelay6']['interface'])  && in_array($intf, explode(',', $config['dhcrelay6']['interface'])))) {
+                || (!empty($config['dhcrelay6']['interface']) && in_array($intf, explode(',', $config['dhcrelay6']['interface'])))) {
                     $fw->registerFilterRule(5,
                       array('protocol' => 'udp','ipprotocol' => 'inet6', 'from' => 'fe80::/10', 'to' => 'fe80::/10,ff02::/16',
                             'to_port' => 546, 'interface' => $intf,
@@ -493,7 +493,7 @@ function filter_core_rules_system($fw, $defaults)
                 foreach ($fw->getInterfaceGateways($ifcfg['if']) as $gwname) {
                     $gwproto = $fw->getGateway($gwname)['proto'];
                     // only try to add gateway rules for traffic leaving this interface
-                    // when the  correct protocol is assigned to the interface
+                    // when the correct protocol is assigned to the interface
                     if (($gwproto == 'inet' && $intf_has_v4) || ($gwproto == 'inet6' && $intf_has_v6)) {
                         $fw->registerFilterRule(100000,
                           array('from' => $ifcfg['if'], 'direction' => 'out', 'gateway' => $gwname,
