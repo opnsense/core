@@ -1047,9 +1047,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         default:
             if (does_interface_exist("$realif")) {
                 mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " delete", true);
-                if ($destroy) {
-                    legacy_interface_flags($realif, 'down');
-                }
                 mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
             }
             break;
@@ -1064,9 +1061,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                 $ip6 = find_interface_ipv6($realifv6);
                 if (is_ipaddrv6($ip6) && $ip6 != "::") {
                     mwexec("/sbin/ifconfig " . escapeshellarg($realifv6) . " inet6 {$ip6} delete", true);
-                }
-                if ($destroy) {
-                    legacy_interface_flags($realif, 'down');
                 }
                 mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
             }
@@ -1094,9 +1088,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                 }
                 if (!empty($ifcfg['ipaddrv6']) && is_ipaddrv6($ifcfg['ipaddrv6'])) {
                     mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$ifcfg['ipaddrv6']} delete", true);
-                }
-                if ($destroy) {
-                    legacy_interface_flags($realif, 'down');
                 }
                 mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
             }
@@ -4058,26 +4049,6 @@ function get_interface_ipv6($interface = 'wan')
     }
 
     $curip = find_interface_ipv6($realif);
-    if ($curip && is_ipaddrv6($curip) && ($curip != "::")) {
-        return $curip;
-    } else {
-        return null;
-    }
-}
-
-function get_interface_linklocal($interface = "wan")
-{
-    $realif = get_failover_interface($interface, "inet6");
-    if (!$realif) {
-        if (strstr($interface, "_vip")) {
-            list($interface, $vhid) = explode("_vip", $interface);
-            $realif = get_real_interface($interface);
-        } else {
-            return null;
-        }
-    }
-
-    $curip = find_interface_ipv6_ll($realif);
     if ($curip && is_ipaddrv6($curip) && ($curip != "::")) {
         return $curip;
     } else {
