@@ -476,7 +476,6 @@ function unbound_add_domain_overrides($pvt = false)
         $result[$domain_key][] = $domain['ip'];
     }
 
-    // Domain overrides that have multiple entries need multiple stub-addr: added
     $domain_entries = "";
     foreach ($result as $domain => $ips) {
         if ($pvt == true) {
@@ -491,7 +490,6 @@ function unbound_add_domain_overrides($pvt = false)
             foreach ($ips as $ip) {
                 $domain_entries .= "\tforward-addr: $ip\n";
             }
-            //$domain_entries .= "\tstub-prime: no\n";
         }
     }
 
