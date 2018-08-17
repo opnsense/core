@@ -3997,7 +3997,7 @@ function ip_in_interface_alias_subnet($interface, $ipalias)
     return false;
 }
 
-function get_interface_ip($interface = "wan")
+function get_interface_ip($interface = 'wan')
 {
     $realif = get_failover_interface($interface);
     if (!$realif) {
@@ -4009,11 +4009,11 @@ function get_interface_ip($interface = "wan")
     }
 
     $curip = find_interface_ip($realif);
-    if ($curip && is_ipaddr($curip) && ($curip != "0.0.0.0")) {
+    if ($curip && is_ipaddr($curip) && $curip != '0.0.0.0') {
         return $curip;
-    } else {
-        return null;
     }
+
+    return null;
 }
 
 function get_interface_ipv6($interface = 'wan')
