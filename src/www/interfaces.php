@@ -359,6 +359,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['lock'] = isset($a_interfaces[$if]['lock']);
     $pconfig['blockpriv'] = isset($a_interfaces[$if]['blockpriv']);
     $pconfig['blockbogons'] = isset($a_interfaces[$if]['blockbogons']);
+    $pconfig['ignore_hotplug_events'] = isset($a_interfaces[$if]['ignore_hotplug_events']);
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
     $pconfig['dhcp6sendsolicit'] = isset($a_interfaces[$if]['dhcp6sendsolicit']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
@@ -950,6 +951,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             $new_config['blockpriv'] = !empty($pconfig['blockpriv']);
             $new_config['blockbogons'] = !empty($pconfig['blockbogons']);
+            $new_config['ignore_hotplug_events'] = !empty($pconfig['ignore_hotplug_events']);
             if (!empty($pconfig['mtu'])) {
                 $new_config['mtu'] = $pconfig['mtu'];
             }
@@ -1729,6 +1731,15 @@ include("head.inc");
                               "(but not RFC 1918) or not yet assigned by IANA."); ?>
                               <?=gettext("Bogons are prefixes that should never appear in the Internet routing table, " .
                               "and obviously should not appear as the source address in any packets you receive."); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_ignore_hotplug_events" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Ignore hotplug events"); ?></td>
+                          <td>
+                            <input name="ignore_hotplug_events" type="checkbox" id="ignore_hotplug_events" value="yes" <?=!empty($pconfig['ignore_hotplug_events']) ? "checked=\"checked\"" : ""; ?> />
+                            <div class="hidden" data-for="help_for_ignore_hotplug_events">
+                              <?=gettext("When set, this option ignores hotplug events. This should be used if faulty hardware generates unwanted hotplug events"); ?>
                             </div>
                           </td>
                         </tr>
