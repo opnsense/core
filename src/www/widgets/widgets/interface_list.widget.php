@@ -34,6 +34,24 @@ require_once("guiconfig.inc");
 require_once("widgets/include/interface_list.inc");
 require_once("interfaces.inc");
 
+$interfaces = get_configured_interface_with_descr();
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $pconfig = array();
+    $pconfig['interfaceslistfilter'] = !empty($config['widgets']['interfaceslistfilter']) ?
+        explode(',', $config['widgets']['interfaceslistfilter']) : array();
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $pconfig = $_POST;
+    if (!empty($pconfig['interfaceslistfilter'])) {
+        $config['widgets']['interfaceslistfilter'] = implode(',', $pconfig['interfaceslistfilter']);
+    } elseif (isset($config['widgets']['interfaceslistfilter'])) {
+        unset($config['widgets']['interfaceslistfilter']);
+    }
+    write_config("Saved Interface List Filter via Dashboard");
+    header(url_safe('Location: /index.php'));
+    exit;
+}
+
 ?>
 
 <script>
@@ -67,11 +85,31 @@ require_once("interfaces.inc");
       });
   }
 </script>
+
+<div id="interface_list-settings" class="widgetconfigdiv" style="display:none;">
+  <form action="/widgets/widgets/interface_list.widget.php" method="post" name="iformd">
+    <table class="table table-condensed">
+      <tr>
+        <td>
+          <select id="interfaceslistfilter" name="interfaceslistfilter[]" multiple="multiple" XXXclass="selectpicker" title="<?= html_safe(gettext('All')) ?>">
+<?php foreach ($interfaces as $iface => $ifacename): ?>
+            <option value="<?= html_safe($iface) ?>" <?= in_array($iface, $pconfig['interfaceslistfilter']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
+<?php endforeach;?>
+          </select>
+          <input id="submitd" name="submitd" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
+
 <table class="table table-striped table-condensed" data-plugin="interfaces" data-callback="interface_widget_update">
   <tbody>
 <?php
     $ifsinfo = get_interfaces_info();
-    foreach (get_configured_interface_with_descr() as $ifdescr => $ifname):
+    foreach ($interfaces as $ifdescr => $ifname):
+    if (!count($pconfig['interfaceslistfilter']) || in_array($ifdescr, $pconfig['interfaceslistfilter'])):?>
+<?php
       $ifinfo = $ifsinfo[$ifdescr];
       $iswireless = is_interface_wireless($ifdescr);?>
       <tr id="interface_widget_item_<?=$ifname;?>">
@@ -134,6 +172,14 @@ require_once("interfaces.inc");
         </td>
       </tr>
 <?php
+    endif;
     endforeach;?>
   </tbody>
 </table>
+
+<!-- needed to display the widget settings menu -->
+<script>
+//<![CDATA[
+  $("#interface_list-configure").removeClass("disabled");
+//]]>
+</script>
