@@ -29,7 +29,21 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
+require_once("guiconfig.inc");
+require_once("widgets/include/interface_list.inc");
+require_once("interfaces.inc");
+
+global $config;
+
+if (isset($_POST['interfacesstatisticsfilter'])) {
+    $config['widgets']['interfacesstatisticsfilter'] = htmlspecialchars($_POST['interfacesstatisticsfilter'], ENT_QUOTES | ENT_HTML401);
+    write_config("Saved Interfaces Filter via Dashboard");
+    header(url_safe('Location: /index.php'));
+    exit;
+}
+$Statisticsskipinterfaces = $config['widgets']['interfacesstatisticsfilter'];
 ?>
+
 
 <script>
   /**
@@ -37,27 +51,57 @@
    */
   function interface_statistics_widget_update(sender, data)
   {
+      
       var tbody = sender.find('tbody');
       var thead = sender.find('thead');
+
+      var skipstring="<?php echo $Statisticsskipinterfaces ?>";
+      
       data.map(function(interface_data) {
           var th_id = "interface_statistics_widget_intf_" + interface_data['name'];
-          if (thead.find("#"+th_id).length == 0) {
-              thead.find('tr:eq(0)').append('<th id="'+th_id+'">'+interface_data['name']+'</th>');
-              tbody.find('tr').append('<td></td>')
+          if (!skipstring.includes(interface_data['name']))
+          {
+              if (thead.find("#"+th_id).length == 0) {
+                  thead.find('tr:eq(0)').append('<th id="'+th_id+'">'+interface_data['name']+'</th>');
+                  tbody.find('tr').append('<td></td>')
+              }
+              // fill in stats, use column index to determine td location
+              var item_index  = $("#"+th_id).index();
+              
+              $("#interface_statistics_widget_pkg_in > td:eq("+item_index+")").html(interface_data['inpkts']);
+              $("#interface_statistics_widget_pkg_out > td:eq("+item_index+")").html(interface_data['outpkts']);
+              $("#interface_statistics_widget_bytes_in > td:eq("+item_index+")").html(interface_data['inbytes_frmt']);
+              $("#interface_statistics_widget_bytes_out > td:eq("+item_index+")").html(interface_data['outbytes_frmt']);
+              $("#interface_statistics_widget_errors_in > td:eq("+item_index+")").html(interface_data['inerrs']);
+              $("#interface_statistics_widget_errors_out > td:eq("+item_index+")").html(interface_data['outerrs']);
+              $("#interface_statistics_widget_collisions > td:eq("+item_index+")").html(interface_data['collisions']);
           }
-          // fill in stats, use column index to determine td location
-          var item_index  = $("#"+th_id).index();
-          $("#interface_statistics_widget_pkg_in > td:eq("+item_index+")").html(interface_data['inpkts']);
-          $("#interface_statistics_widget_pkg_out > td:eq("+item_index+")").html(interface_data['outpkts']);
-          $("#interface_statistics_widget_bytes_in > td:eq("+item_index+")").html(interface_data['inbytes_frmt']);
-          $("#interface_statistics_widget_bytes_out > td:eq("+item_index+")").html(interface_data['outbytes_frmt']);
-          $("#interface_statistics_widget_errors_in > td:eq("+item_index+")").html(interface_data['inerrs']);
-          $("#interface_statistics_widget_errors_out > td:eq("+item_index+")").html(interface_data['outerrs']);
-          $("#interface_statistics_widget_collisions > td:eq("+item_index+")").html(interface_data['collisions']);
       });
   }
 </script>
+<div id="interface_statistics-settings" class="widgetconfigdiv" style="display:none;">
+  <form action="/widgets/widgets/interface_statistics.widget.php" method="post" name="iformd">
+    <table class="table table-condensed">
+      <thead>
+        <tr>
+            <th><?= gettext('Comma separated statistics of interfaces to NOT display in the widget') ?></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="text" name="interfacesstatisticsfilter" id="interfacesstatisticsfilter" value="<?= $config['widgets']['interfacesstatisticsfilter'] ?>" /></td>
+        </tr>
+        <tr>
+          <td>
+            <input id="submitd" name="submitd" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
+</div>
 
+<div id="interface_statistics-widgets" class="content-box";">
 <table class="table table-striped table-condensed" data-plugin="interfaces" data-callback="interface_statistics_widget_update">
   <thead>
     <tr>
@@ -74,3 +118,9 @@
       <tr id="interface_statistics_widget_collisions"><td><strong><?=gettext('Collisions');?></strong></td></tr>
   </tbody>
 </table>
+</div>
+<script>
+//<![CDATA[
+  $("#interface_statistics-configure").removeClass("disabled");
+//]]>
+</script>
