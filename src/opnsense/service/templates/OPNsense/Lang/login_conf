@@ -1,0 +1,7 @@
+me:\
+        :charset=utf-8:\
+{% if helpers.exists('system.language') and system.language != "" %}
+        :lang={{system.language}}.UTF-8
+{% else %}
+        :lang=en_US.UTF-8
+{% endif %}

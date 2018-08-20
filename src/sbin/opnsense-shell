@@ -115,18 +115,28 @@ while : ; do
 # Failure to exit at that moment would lead to an infinite loop.
 set -e
 
+alias GETTEXT='gettext "OPNsense"'
+MENU_0_07=$(GETTEXT "  0) Logout                              7) Ping host")
+MENU_1_08=$(GETTEXT "  1) Assign interfaces                   8) Shell")
+MENU_2_09=$(GETTEXT "  2) Set interface IP address            9) pfTop")
+MENU_3_10=$(GETTEXT "  3) Reset the root password            10) Firewall log")
+MENU_4_11=$(GETTEXT "  4) Reset to factory defaults          11) Reload all services")
+MENU_5_12=$(GETTEXT "  5) Power off system                   12) Upgrade from console")
+MENU_6_13=$(GETTEXT "  6) Reboot system                      13) Restore a backup")
+ENTER_AN_OPTION=$(GETTEXT "Enter an option: ")
+
 ${CMD_BANNER}
 
 echo
-echo "  0) Logout                              7) Ping host"
-echo "  1) Assign interfaces                   8) Shell"
-echo "  2) Set interface IP address            9) pfTop"
-echo "  3) Reset the root password            10) Firewall log"
-echo "  4) Reset to factory defaults          11) Reload all services"
-echo "  5) Power off system                   12) Update from console"
-echo "  6) Reboot system                      13) Restore a backup"
+echo "$MENU_0_07"
+echo "$MENU_1_08"
+echo "$MENU_2_09"
+echo "$MENU_3_10"
+echo "$MENU_4_11"
+echo "$MENU_5_12"
+echo "$MENU_6_13"
 echo
-read -p "Enter an option: " OPCODE
+read -p "$ENTER_AN_OPTION" OPCODE
 echo
 
 # The scripts we'll call below may return non-zero, don't exit if they do

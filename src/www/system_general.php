@@ -124,6 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
+        $oldlanguage = !empty($config['system']["language"]) ? $config['system']["language"] : "en_US" ;
         $config['system']['domain'] = $pconfig['domain'];
         $config['system']['hostname'] = $pconfig['hostname'];
         $config['system']['language'] = $pconfig['language'];
@@ -211,6 +212,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         plugins_configure('dns');
         services_dhcpd_configure();
         filter_configure();
+        if ($oldlanguage != $pconfig['language']) {
+            configd_run('template reload OPNsense/Lang');
+        }
 
         header(url_safe('Location: /system_general.php?savemsg=%s', array(get_std_save_message(true))));
         exit;
