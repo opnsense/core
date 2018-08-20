@@ -502,10 +502,6 @@ include("head.inc");
                             if ($pconfig['ddnsdomainalgorithm'] == $algorithm) {
                               $selected = "selected=\"selected\"";
                             }
-                          } else {
-                            if ($algorithm == "hmac-md5") {
-                              $selected = "selected=\"selected\"";
-                            }
                           }?>
                           <option value="<?=$algorithm;?>" <?=$selected;?>><?=$algorithm;?></option>
 <?php
