@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $config_copy_fieldnames = array('mac', 'cid', 'hostname', 'filename', 'rootpath', 'descr', 'arp_table_static_entry',
       'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'winsserver', 'dnsserver', 'ddnsdomain',
-      'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsupdate', 'ntpserver', 'tftp', 'ipaddr',
+      'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsupdate', 'ntpserver', 'tftp', 'ipaddr',
       'winsserver', 'dnsserver');
     foreach ($config_copy_fieldnames as $fieldname) {
         if (isset($if) && isset($id) && isset($config['dhcpd'][$if]['staticmap'][$id][$fieldname])) {
@@ -232,7 +232,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $mapent = array();
         $config_copy_fieldnames = array('mac', 'cid', 'ipaddr', 'hostname', 'descr', 'filename', 'rootpath',
           'arp_table_static_entry', 'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist',
-          'ddnsdomain', 'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsupdate', 'tftp',
+          'ddnsdomain', 'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsupdate', 'tftp',
           'ldap', 'winsserver', 'dnsserver');
 
         foreach ($config_copy_fieldnames as $fieldname) {
@@ -493,20 +493,6 @@ include("head.inc");
                       <input name="ddnsdomainkeyname" type="text" id="ddnsdomainkeyname" size="20" value="<?=$pconfig['ddnsdomainkeyname'];?>" />
                       <?=gettext("Enter the dynamic DNS domain key secret which will be used to register client names in the DNS server.");?>
                       <input name="ddnsdomainkey" type="text" id="ddnsdomainkey" size="20" value="<?=$pconfig['ddnsdomainkey'];?>" />
-                      <?=gettext("Choose the dynamic DNS domain key algorithm.");?><br />
-                      <select name='ddnsdomainalgorithm' id="ddnsdomainalgorithm" class="selectpicker">
-<?php
-                        foreach (array("hmac-md5", "hmac-sha512") as $algorithm) :
-                          $selected = "";
-                          if (! empty($pconfig['ddnsdomainalgorithm'])) {
-                            if ($pconfig['ddnsdomainalgorithm'] == $algorithm) {
-                              $selected = "selected=\"selected\"";
-                            }
-                          }?>
-                          <option value="<?=$algorithm;?>" <?=$selected;?>><?=$algorithm;?></option>
-<?php
-                        endforeach; ?>
-                      </select>
                     </div>
                   </td>
                 </tr>
