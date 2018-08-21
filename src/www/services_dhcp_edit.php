@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $config_copy_fieldnames = array('mac', 'cid', 'hostname', 'filename', 'rootpath', 'descr', 'arp_table_static_entry',
       'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'winsserver', 'dnsserver', 'ddnsdomain',
-      'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsupdate', 'ntpserver', 'tftp', 'ipaddr',
+      'ddnsupdate', 'ntpserver', 'tftp', 'ipaddr',
       'winsserver', 'dnsserver');
     foreach ($config_copy_fieldnames as $fieldname) {
         if (isset($if) && isset($id) && isset($config['dhcpd'][$if]['staticmap'][$id][$fieldname])) {
@@ -201,13 +201,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['ddnsdomain']) && !is_domain($pconfig['ddnsdomain'])) {
         $input_errors[] = gettext("A valid domain name must be specified for the dynamic DNS registration.");
     }
-    if (!empty($pconfig['ddnsdomain']) && !is_ipaddrv4($pconfig['ddnsdomainprimary'])) {
-        $input_errors[] = gettext("A valid primary domain name server IP address must be specified for the dynamic domain name.");
-    }
-    if ((!empty($pconfig['ddnsdomainkey']) && empty($pconfig['ddnsdomainkeyname'])) ||
-      (!empty($pconfig['ddnsdomainkeyname']) && empty($pconfig['ddnsdomainkey']))) {
-        $input_errors[] = gettext("You must specify both a valid domain key and key name.");
-    }
     if (!empty($pconfig['domainsearchlist'])) {
         $domain_array=preg_split("/[ ;]+/", $pconfig['domainsearchlist']);
         foreach ($domain_array as $curdomain) {
@@ -232,7 +225,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $mapent = array();
         $config_copy_fieldnames = array('mac', 'cid', 'ipaddr', 'hostname', 'descr', 'filename', 'rootpath',
           'arp_table_static_entry', 'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist',
-          'ddnsdomain', 'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsupdate', 'tftp',
+          'ddnsdomain', 'ddnsupdate', 'tftp',
           'ldap', 'winsserver', 'dnsserver');
 
         foreach ($config_copy_fieldnames as $fieldname) {
@@ -487,12 +480,6 @@ include("head.inc");
                       <?=gettext("Note: Leave blank to disable dynamic DNS registration.");?><br />
                       <?=gettext("Enter the dynamic DNS domain which will be used to register client names in the DNS server.");?>
                       <input name="ddnsdomain" type="text" id="ddnsdomain" size="20" value="<?=$pconfig['ddnsdomain'];?>" />
-                      <?=gettext("Enter the primary domain name server IP address for the dynamic domain name.");?><br />
-                      <input name="ddnsdomainprimary" type="text" id="ddnsdomainprimary" size="20" value="<?=$pconfig['ddnsdomainprimary'];?>" />
-                      <?=gettext("Enter the dynamic DNS domain key name which will be used to register client names in the DNS server.");?>
-                      <input name="ddnsdomainkeyname" type="text" id="ddnsdomainkeyname" size="20" value="<?=$pconfig['ddnsdomainkeyname'];?>" />
-                      <?=gettext("Enter the dynamic DNS domain key secret which will be used to register client names in the DNS server.");?>
-                      <input name="ddnsdomainkey" type="text" id="ddnsdomainkey" size="20" value="<?=$pconfig['ddnsdomainkey'];?>" />
                     </div>
                   </td>
                 </tr>
