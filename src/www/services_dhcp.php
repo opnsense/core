@@ -96,7 +96,7 @@ function reconfigure_dhcpd()
 
 $config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'dhcpleaseinlocaltime','descr',
   'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown', 'ddnsdomain',
-  'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsupdate', 'mac_allow', 'mac_deny', 'tftp', 'ldap',
+  'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsupdate', 'mac_allow', 'mac_deny', 'tftp', 'ldap',
   'netboot', 'nextserver', 'filename', 'filename32', 'filename64', 'rootpath', 'netmask', 'numberoptions',
   'interface_mtu', 'wpad');
 
@@ -885,6 +885,20 @@ include("head.inc");
                         <input name="ddnsdomainkeyname" type="text" value="<?=$pconfig['ddnsdomainkeyname'];?>" />
                         <?=gettext("Enter the dynamic DNS domain key secret which will be used to register client names in the DNS server.");?>
                         <input name="ddnsdomainkey" type="text" value="<?=$pconfig['ddnsdomainkey'];?>" />
+                        <?=gettext("Choose the dynamic DNS domain key algorithm.");?><br />
+                        <select name='ddnsdomainalgorithm' id="ddnsdomainalgorithm" class="selectpicker">
+<?php
+                        foreach (array("hmac-md5", "hmac-sha512") as $algorithm) :
+                          $selected = "";
+                          if (! empty($pconfig['ddnsdomainalgorithm'])) {
+                            if ($pconfig['ddnsdomainalgorithm'] == $algorithm) {
+                              $selected = "selected=\"selected\"";
+                            }
+                          }?>
+                          <option value="<?=$algorithm;?>" <?=$selected;?>><?=$algorithm;?></option>
+<?php
+                        endforeach; ?>
+                        </select>
                       </div>
                     </td>
                     </tr>
