@@ -32,8 +32,8 @@ function gateway_api()
 {
     $result = array();
     $gateways_status = return_gateways_status(true);
-    foreach(return_gateways_array() as $gname => $gw) {
-        $gatewayItem = array("name" => $gname);
+    foreach (return_gateways_array() as $gname => $gw) {
+        $gatewayItem = array('name' => $gname);
         if (!empty($gateways_status[$gname])) {
             $gatewayItem['address'] = lookup_gateway_ip_by_name($gname);
             $gatewayItem['status'] = strtolower($gateways_status[$gname]['status']);
@@ -41,30 +41,30 @@ function gateway_api()
             $gatewayItem['delay'] = $gateways_status[$gname]['delay'];
             $gatewayItem['stddev'] = $gateways_status[$gname]['stddev'];
             switch ($gatewayItem['status']) {
-                case "none":
-                    $gatewayItem['status_translated'] = gettext("Online");
+                case 'none':
+                    $gatewayItem['status_translated'] = gettext('Online');
                     break;
-                case "force_down":
-                case "down":
-                    $gatewayItem['status_translated'] = gettext("Offline");
+                case 'force_down':
+                case 'down':
+                    $gatewayItem['status_translated'] = gettext('Offline');
                     break;
-                case "delay":
-                    $gatewayItem['status_translated'] = gettext("Latency");
+                case 'delay':
+                    $gatewayItem['status_translated'] = gettext('Latency');
                     break;
-                case "loss":
-                    $gatewayItem['status_translated'] = gettext("Packetloss");
+                case 'loss':
+                    $gatewayItem['status_translated'] = gettext('Packetloss');
                     break;
                 default:
-                    $gatewayItem['status_translated'] = gettext("Pending");
+                    $gatewayItem['status_translated'] = gettext('Pending');
                     break;
             }
         } else {
-            $gatewayItem['address'] = "";
-            $gatewayItem['status'] = "~";
-            $gatewayItem['status_translated'] =  gettext("Unknown");
-            $gatewayItem['loss'] = "~";
-            $gatewayItem['stddev'] = "~";
-            $gatewayItem['delay'] = "unknown";
+            $gatewayItem['address'] = '~';
+            $gatewayItem['status'] = '~';
+            $gatewayItem['status_translated'] =  gettext('Unknown');
+            $gatewayItem['loss'] = '~';
+            $gatewayItem['stddev'] = '~';
+            $gatewayItem['delay'] = '~';
         }
         $result[] = $gatewayItem;
     }
