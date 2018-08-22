@@ -111,6 +111,18 @@ class Helpers(object):
         else:
             return {}
 
+    def getUUIDs(self, tag):
+        """ retrieve a list of uuids from the item list returned by tag
+        :param tag: tag in dot notation (section.item)
+        :return: []
+        """
+        uuids = []
+        for item in self.toList(tag):
+            for uuid in self._template_in_data['__uuid__']:
+                if self._template_in_data['__uuid__'][uuid] == item:
+                    uuids.append(uuid)
+        return uuids
+
     @staticmethod
     def getIPNetwork(network):
         """ generate network object using netaddr
