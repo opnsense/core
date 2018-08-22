@@ -490,7 +490,7 @@ $( document ).ready(function() {
                   }  elseif ($filterent['type'] == "reject" && empty($filterent['disabled'])) {
                       $iconfn = "fa fa-times-circle text-danger";
                   }  elseif ($filterent['type'] == "reject" && !empty($filterent['disabled'])) {
-                      $iconfn = "f afa-times-circle text-muted";
+                      $iconfn = "fa fa-times-circle text-muted";
                   } elseif (empty($filterent['disabled'])) {
                       $iconfn = "fa fa-play text-success";
                   } else {

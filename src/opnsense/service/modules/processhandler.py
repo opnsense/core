@@ -188,6 +188,7 @@ class HandlerClient(threading.Thread):
                 if exec_in_background:
                     result = self.message_uuid
                     self.connection.sendall('%s\n%c%c%c' % (result, chr(0), chr(0), chr(0)))
+                    self.connection.shutdown(socket.SHUT_RDWR)
                     self.connection.close()
 
                 # execute requested action
@@ -227,6 +228,7 @@ class HandlerClient(threading.Thread):
             )
         finally:
             if not exec_in_background:
+                self.connection.shutdown(socket.SHUT_RDWR)
                 self.connection.close()
 
 

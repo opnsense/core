@@ -58,6 +58,59 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
+     * process plugins for config-bound cache (name only)
+     * @param string $name to process
+     * @param string $action taken
+     */
+    protected function processPlugin($name, $action)
+    {
+        if (strpos($name, 'os-') !== 0) {
+            /* not a plugin, don't care */
+            return;
+        }
+
+        $config = Config::getInstance()->object();
+
+        if (!isset($config->system->firmware)) {
+            $config->system->addChild('firmware');
+        }
+
+        $plugins = array();
+        if (!isset($config->system->firmware->plugins)) {
+            $config->system->firmware->addChild('plugins');
+        } else {
+            $plugins = explode(',', (string)$config->system->firmware->plugins);
+        }
+        $plugins = array_flip($plugins);
+
+        switch ($action) {
+            case 'install':
+            case 'reinstall':
+                $plugins[$name] = 'hello';
+                break;
+            case 'remove':
+                if (isset($plugins[$name])) {
+                    unset($plugins[$name]);
+                }
+                break;
+            default:
+                break;
+        }
+
+        $config->system->firmware->plugins = implode(',', array_keys($plugins));
+
+        if (empty($config->system->firmware->plugins)) {
+            unset($config->system->firmware->plugins);
+        }
+
+        if (!@count($config->system->firmware->children())) {
+            unset($config->system->firmware);
+        }
+
+        Config::getInstance()->save();
+    }
+
+    /**
      * retrieve available updates
      * @return array
      */
@@ -451,6 +504,7 @@ class FirmwareController extends ApiControllerBase
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
             // execute action
             $response['msg_uuid'] = trim($backend->configdpRun("firmware reinstall", array($pkg_name), true));
+            $this->processPlugin($pkg_name, 'reinstall');
         } else {
             $response['status'] = 'failure';
         }
@@ -480,6 +534,7 @@ class FirmwareController extends ApiControllerBase
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
             // execute action
             $response['msg_uuid'] = trim($backend->configdpRun("firmware install", array($pkg_name), true));
+            $this->processPlugin($pkg_name, 'install');
         } else {
             $response['status'] = 'failure';
         }
@@ -509,6 +564,7 @@ class FirmwareController extends ApiControllerBase
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
             // execute action
             $response['msg_uuid'] = trim($backend->configdpRun("firmware remove", array($pkg_name), true));
+            $this->processPlugin($pkg_name, 'remove');
         } else {
             $response['status'] = 'failure';
         }

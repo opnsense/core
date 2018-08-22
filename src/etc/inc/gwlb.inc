@@ -712,24 +712,40 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
         $ctype = '';
 
         switch ($ifcfg['ipaddrv6']) {
-            case "slaac":
-            case "dhcp6":
-            case "6to4":
-            case "6rd":
+            case 'slaac':
+            case 'dhcp6':
+            case '6to4':
+            case '6rd':
                 $ctype = $ifcfg['ipaddrv6'];
                 break;
             default:
-                if (substr($ifcfg['if'], 0, 4) ==  "ovpn") {
+                if (substr($ifcfg['if'], 0, 4) ==  'ovpn') {
                     // if current iface is an ovpn server endpoint then skip it
                     if (substr($ifcfg['if'], 4, 1) == 's') {
                         continue 2;
                     }
 
-                    $ctype = "VPNv6";
+                    $vpnid = substr($ifcfg['if'], 5);
+                    $vpnv6 = false;
+
+                    if (isset($config['openvpn']['openvpn-client'])) {
+                        foreach ($config['openvpn']['openvpn-client'] as $settings) {
+                            if ($settings['vpnid'] == $vpnid) {
+                                $vpnv6 = !isset($settings['no_tun_ipv6']);
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!$vpnv6) {
+                        continue 2;
+                    }
+
+                    $ctype = 'VPNv6';
                 } elseif (in_array(substr($ifcfg['if'], 0, 3), array('gif', 'gre'))) {
                     if (!empty($ifcfg['if']) && !empty($ifdetails[$ifcfg['if']]['ipv6'])
                             && $ifdetails[$ifcfg['if']]['ipv6'][0]['link-local'] != 1) {
-                        $ctype = "TUNNELv6";
+                        $ctype = 'TUNNELv6';
                     }
                 }
                 break;

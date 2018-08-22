@@ -181,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         case "eap-mschapv2":
         case "rsa_eap-mschapv2":
         case "eap-radius":
-          if ($pconfig['iketype'] != 'ikev2') {
+          if (!in_array($pconfig['iketype'], array('ikev2', 'ike'))) {
               $input_errors[] = sprintf(gettext("%s can only be used with IKEv2 type VPNs."), strtoupper($method));
           }
           if ($method == 'eap-radius' && empty($pconfig['authservers'])) {
@@ -311,7 +311,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if (!empty($pconfig['iketype']) && $pconfig['iketype'] != "ikev1" && $pconfig['iketype'] != "ikev2") {
+    if (!empty($pconfig['iketype']) && !in_array($pconfig['iketype'], array("ike", "ikev1", "ikev2"))) {
         $input_errors[] = gettext('Invalid argument for key exchange protocol version.');
     }
 
@@ -421,7 +421,7 @@ include("head.inc");
 <script>
     $( document ).ready(function() {
         $("#iketype").change(function(){
-            if ($(this).val() == 'ikev2') {
+            if (['ike', 'ikev2'].includes($(this).val())) {
                 $("#mode").prop( "disabled", true );
                 $("#mode_tr").hide();
             } else {
@@ -592,7 +592,7 @@ include("head.inc");
 
                       <select name="iketype" id="iketype">
 <?php
-                      $keyexchange = array("ikev1" => "V1", "ikev2" => "V2");
+                      $keyexchange = array("ike" => "auto", "ikev1" => "V1", "ikev2" => "V2");
                       foreach ($keyexchange as $kidx => $name) :
                         ?>
                         <option value="<?=$kidx;?>" <?= $kidx == $pconfig['iketype'] ? "selected=\"selected\"" : "";?> >

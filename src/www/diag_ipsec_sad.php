@@ -80,12 +80,10 @@ legacy_html_escape_form_data($sad);
                   <?php endif; ?>
                 </table>
               </div>
-            </div>
           </div>
         </section>
       </div>
     </div>
   </section>
 
-
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

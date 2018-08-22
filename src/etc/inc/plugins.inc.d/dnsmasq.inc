@@ -117,7 +117,7 @@ function dnsmasq_configure_do($verbose = false)
         $args .= " --port={$config['dnsmasq']['port']} ";
     }
 
-    if (isset($config['dnsmasq']['interface'])) {
+    if (!empty($config['dnsmasq']['interface'])) {
         $interfaces = explode(',', $config['dnsmasq']['interface']);
         $interfaces[] = 'lo0';
         $addresses = array();

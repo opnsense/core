@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id$
+#
 # $OpenBSD: dhclient-script,v 1.6 2004/05/06 18:22:41 claudio Exp $
 # $FreeBSD: src/sbin/dhclient/dhclient-script,v 1.4 2005/06/10 03:41:18 brooks Exp $
 #
@@ -17,24 +17,18 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
+#
 
-NETSTAT=/usr/bin/netstat
-GREP=/usr/bin/grep
-AWK=/usr/bin/awk
-HOSTNAME=/bin/hostname
-GREP=/usr/bin/grep
-ROUTE=/sbin/route
-SED=/usr/bin/sed
 ARP=/usr/sbin/arp
-IFCONFIG=/sbin/ifconfig
-PFCTL=/sbin/pfctl
+HOSTNAME=/bin/hostname
+IFCONFIG='/sbin/ifconfig -n'
 
 LOCALHOST=127.0.0.1
 
 if [ -x /usr/bin/logger ]; then
 	LOGGER="/usr/bin/logger -s -p user.notice -t dhclient"
 else
-	LOGGER="echo"
+	LOGGER=echo
 fi
 
 #
@@ -43,18 +37,20 @@ fi
 
 check_hostname() {
 	current_hostname=`$HOSTNAME`
-	if [ -z "$current_hostname" ] || \
-	   [ "$current_hostname" = "$old_host_name" -a \
-	     "$new_hostname" != "$old_host_name" ]; then
+	if [ -z "$current_hostname" ]; then
+		$LOGGER "New Hostname ($interface): $new_host_name"
+		$HOSTNAME $new_host_name
+	elif [ "$current_hostname" = "$old_host_name" -a \
+	       "$new_host_name" != "$old_host_name" ]; then
 		$LOGGER "New Hostname ($interface): $new_host_name"
 		$HOSTNAME $new_host_name
 	fi
 }
 
 arp_flush() {
-	$ARP -an -i $interface | \
-		$SED -n -e 's/^.*(\(.*\)) at .*$/arp -d \1/p' | \
-		/bin/sh >/dev/null 2>&1
+	arp -an -i $interface | \
+		sed -n -e 's/^.*(\(.*\)) at .*$/arp -d \1/p' | \
+		sh >/dev/null 2>&1
 }
 
 delete_old_states() {
@@ -66,8 +62,8 @@ delete_old_states() {
 		$LOGGER "Comparing IPs: Old: ${OLD_IP} New: ${new_ip_address}"
 		if [ -n "${OLD_IP}" ] && [ "${OLD_IP}" != "${new_ip_address}" ]; then
 			$LOGGER "Removing states from old IP '${OLD_IP}' (new IP '${new_ip_address}')"
-			${PFCTL} -i $interface -Fs
-			${PFCTL} -K ${OLD_IP}/32
+			pfctl -i $interface -Fs
+			pfctl -K ${OLD_IP}/32
 			_FLUSHED=1
 		fi
 	fi
@@ -82,33 +78,27 @@ delete_old_states() {
 		$LOGGER "Comparing Routers: Old: ${OLD_ROUTER} New: ${new_routers}"
 		if [ "${OLD_ROUTER}" != "${new_routers}" ]; then
 			$LOGGER "Removing states through old gateway '${OLD_ROUTER}' (new gateway '${new_routers}')"
-			${PFCTL} -i $interface -Fs
+			pfctl -i $interface -Fs
 		fi
 	fi
 }
 
 delete_old_address() {
-	/bin/rm -f /var/db/${interface}_ip
-	$IFCONFIG $interface inet -alias $old_ip_address $medium
+	rm -f /var/db/${interface}_ip
+	eval "$IFCONFIG $interface inet -alias $old_ip_address $medium"
 }
 
 add_new_address() {
-
-	$LOGGER "Starting add_new_address()"
-
-	$LOGGER "ifconfig $interface inet $new_ip_address netmask $new_subnet_mask broadcast $new_broadcast_address $medium"
-
-	$IFCONFIG $interface \
+	eval "$IFCONFIG $interface \
 		inet $new_ip_address \
 		netmask $new_subnet_mask \
 		broadcast $new_broadcast_address \
-		$medium
+		$medium"
 
 	$LOGGER "New IP Address ($interface): $new_ip_address"
 	$LOGGER "New Subnet Mask ($interface): $new_subnet_mask"
 	$LOGGER "New Broadcast Address ($interface): $new_broadcast_address"
 	$LOGGER "New Routers ($interface): $new_routers"
-
 
 	# This is necessary otherwise apinger will try to ping all 1s address
 	if [ -n "$new_routers" ] && [ "$new_routers" != "255.255.255.255" ]; then
@@ -120,7 +110,7 @@ add_new_address() {
 delete_old_alias() {
 	if [ -n "$alias_ip_address" ]; then
 		$IFCONFIG $interface inet -alias $alias_ip_address > /dev/null 2>&1
-		$ROUTE delete $alias_ip_address $LOCALHOST > /dev/null 2>&1
+		#route delete $alias_ip_address $LOCALHOST > /dev/null 2>&1
 	fi
 }
 
@@ -128,7 +118,7 @@ add_new_alias() {
 	if [ -n "$alias_ip_address" ]; then
 		$IFCONFIG $interface inet alias $alias_ip_address netmask \
 		    $alias_subnet_mask
-		$ROUTE add $alias_ip_address $LOCALHOST
+		#route add $alias_ip_address $LOCALHOST
 	fi
 }
 
@@ -158,8 +148,7 @@ fill_classless_routes() {
 }
 
 delete_old_routes() {
-	$LOGGER "Deleting old routes"
-
+	#route delete "$old_ip_address" $LOCALHOST >/dev/null 2>&1
 	if [ -n "$old_classless_routes" ]; then
 		fill_classless_routes "$old_classless_routes"
 		set $classless_routes
@@ -170,20 +159,20 @@ delete_old_routes() {
 		return 0;
 	fi
 
-	# Only allow the default route to be overridden if it's on our own interface
-	if [ -f "/tmp/${interface}_defaultgw" ]; then
-		for router in $old_routers; do
-			$ROUTE delete default $router >/dev/null 2>&1
-			/bin/rm -f /tmp/${interface}_router
-		done
+	# If we supported multiple default routes, we'd be removing each
+	# one here.  We don't so just delete the default route if it's
+	# through our interface.
+	if is_default_interface; then
+		route delete default >/dev/null 2>&1
+		rm -f /tmp/${interface}_router
 	fi
 
 	if [ -n "$old_static_routes" ]; then
 		set $old_static_routes
 		while [ $# -gt 1 ]; do
-			$ROUTE delete "$1" "$2"
+			route delete "$1" "$2"
 			shift; shift
-                        /bin/rm -f /tmp/${interface}_router
+			rm -f /tmp/${interface}_router
 		done
 	fi
 
@@ -191,7 +180,7 @@ delete_old_routes() {
 }
 
 add_new_routes() {
-	$LOGGER "Adding new routes to interface: $interface"
+	#route add $new_ip_address $LOCALHOST >/dev/null 2>&1
 
 	# RFC 3442: If the DHCP server returns both a Classless Static
 	# Routes option and a Router option, the DHCP client MUST ignore
@@ -201,6 +190,7 @@ add_new_routes() {
 	# MUST NOT install the routes specified in the Static Routes
 	# option (option code 33) if both a Static Routes option and the
 	# Classless Static Routes option are provided.
+
 	if [ -n "$new_classless_routes" ]; then
 		fill_classless_routes "$new_classless_routes"
 		$LOGGER "New Classless Static Routes ($interface): $classless_routes"
@@ -220,18 +210,18 @@ add_new_routes() {
 	EXISTSGW=`/bin/ls -l /tmp/*_defaultgw | /usr/bin/wc -l`
 	# Only allow the default route to be overridden if it's on our own interface
 	if [ -f "/tmp/${interface}_defaultgw" -o $EXISTSGW -eq 0 ]; then
-		$ROUTE delete default
+		route delete default
 		for router in $new_routers; do
 			if [ "$new_ip_address" = "$router" -o "$router" = "255.255.255.255" ]; then
-				$ROUTE add default -iface $interface
-				echo $ROUTE add default -iface $interface | $LOGGER
+				route add default -iface $interface
+				echo route add default -iface $interface | $LOGGER
 				# NOTE: Do not activate this for all ones address since pf(4) will try to forward packets to it.
 				if [ "$new_ip_address" = "$router" ]; then
 					echo $router > /tmp/${interface}_router
 				fi
 			else
-				$ROUTE add default $router
-				echo $ROUTE add default $router | $LOGGER
+				route add default $router
+				echo route add default $router | $LOGGER
 				echo $router > /tmp/${interface}_router
 			fi
 			ADDED_ROUTE=yes
@@ -245,7 +235,7 @@ add_new_routes() {
 		$LOGGER "New Static Routes ($interface): $new_static_routes"
 		set $new_static_routes
 		while [ $# -gt 1 ]; do
-			$ROUTE add $1 $2
+			route add $1 $2
 			if [ "$ADDED_ROUTE" = "no" ]; then
 				echo $2 > /tmp/${interface}_router
 			fi
@@ -259,19 +249,19 @@ add_new_resolv_conf() {
 	if [ -f "/var/etc/nameserver_$interface" ]; then
 		# Remove old entries
 		for nameserver in `cat /var/etc/nameserver_$interface`; do
-			$ROUTE delete $nameserver >/dev/null 2>&1
+			route delete $nameserver >/dev/null 2>&1
 		done
 	fi
 	if [ -n "$new_domain_name_servers" ]; then
-		/bin/rm -f /var/etc/nameserver_$interface
-		ALLOWOVERRIDE=`/usr/bin/grep dnsallowoverride /conf/config.xml | /usr/bin/wc -l`
+		rm -f /var/etc/nameserver_$interface
+		ALLOWOVERRIDE=$(grep -c dnsallowoverride /conf/config.xml)
 		for nameserver in $new_domain_name_servers; do
 			# Add a route to the nameserver out the correct interface
 			# so that mulitple wans work correctly with multiple dns
 			# also backup the nameserver for later route removal
 			if [ $ALLOWOVERRIDE -gt 0 ]; then
 				echo $nameserver >>/var/etc/nameserver_$interface
-				$ROUTE add $nameserver -iface $interface
+				route add $nameserver -iface $interface
 			fi
 		done
 		echo $new_domain_name >/var/etc/searchdomain_$interface
@@ -280,9 +270,39 @@ add_new_resolv_conf() {
 	return 0
 }
 
-# Notify rc.newwanip of changes to an interface
-notify_rc_newwanip() {
-	/usr/local/etc/rc.newwanip $interface
+# Must be used on exit.   Invokes the local dhcp client exit hooks, if any.
+exit_with_hooks() {
+	exit_status=$1
+	if [ -f /etc/dhclient-exit-hooks ]; then
+		. /etc/dhclient-exit-hooks
+	fi
+	# probably should do something with exit status of the local script
+	exit $exit_status
+}
+
+# Get the interface with the current ipv4 default route on it using only
+# commands that are available prior to /usr being mounted.
+is_default_interface()
+{
+	routeget="`route -n get -inet default`"
+	oldifs="$IFS"
+	IFS="
+"
+	defif=
+	for line in $routeget ; do
+		case $line in
+		*interface:*)
+			defif=${line##*: }
+			;;
+		esac
+	done
+	IFS=${oldifs}
+
+	if [ -z "$defif" -o "$defif" = "$interface" ]; then
+		return 0
+	else
+		return 1
+	fi
 }
 
 #
@@ -291,7 +311,6 @@ notify_rc_newwanip() {
 
 # Invoke the local dhcp client enter hooks, if they exist.
 if [ -f /etc/dhclient-enter-hooks ]; then
-	$LOGGER "dhclient-enter-hooks"
 	exit_status=0
 	. /etc/dhclient-enter-hooks
 	# allow the local script to abort processing of this state
@@ -301,26 +320,20 @@ if [ -f /etc/dhclient-enter-hooks ]; then
 	fi
 fi
 
-#if [ -x $ROUTE ]; then
-#	if_defaultroute=`$ROUTE -n get -inet default | $GREP interface | $AWK '{print $2}'`
-#else
-#	$LOGGER "if_defaultroute"
-#	if_defaultroute="x"
-#fi
+: ${resolvconf_enable="NO"}
 
-$LOGGER $reason
 case $reason in
 MEDIUM)
-	$IFCONFIG $interface $medium
-	$IFCONFIG $interface inet -alias 0.0.0.0 $medium >/dev/null 2>&1
-	/bin/sleep 1
+	eval "$IFCONFIG $interface $medium"
+	eval "$IFCONFIG $interface inet -alias 0.0.0.0 $medium" >/dev/null 2>&1
+	sleep 1
 	;;
 
 PREINIT)
 	delete_old_alias
-	$IFCONFIG $interface inet 0.0.0.0 netmask 0.0.0.0 broadcast 255.255.255.255 up
+	$IFCONFIG $interface inet alias 0.0.0.0 netmask 255.0.0.0 broadcast 255.255.255.255 up
 	delete_old_states
-	/bin/rm -f /tmp/${interface}_router
+	rm -f /tmp/${interface}_router
 	;;
 
 ARPCHECK|ARPSEND)
@@ -333,8 +346,7 @@ BOUND|RENEW|REBIND|REBOOT)
 		delete_old_states
 	fi
 	if [ -n "$old_ip_address" ]; then
-		if [ -n "$alias_ip_address" ] && \
-		   [ "$old_ip_address" != "$alias_ip_address" ]; then
+		if [ "$old_ip_address" != "$alias_ip_address" ]; then
 			delete_old_alias
 			changes="yes"
 		fi
@@ -352,14 +364,15 @@ BOUND|RENEW|REBIND|REBOOT)
 		add_new_routes
 		changes="yes"
 	fi
-	if [ -n "$alias_ip_address" ] && \
-       [ "$new_ip_address" != "$alias_ip_address" ]; then
+	if [ "$new_ip_address" != "$alias_ip_address" ]; then
 		add_new_alias
 		changes="yes"
 	fi
-	add_new_resolv_conf
+	if is_default_interface; then
+		add_new_resolv_conf
+	fi
 	if [ "$changes" = "yes" ] ; then
-		notify_rc_newwanip
+		/usr/local/etc/rc.newwanip $interface
 	fi
 	;;
 
@@ -370,37 +383,53 @@ EXPIRE|FAIL)
 		delete_old_address
 		delete_old_routes
 	fi
+	if [ -x $ARP ]; then
+		$ARP -d -a -i $interface
+	fi
+	# XXX Why add alias we just deleted above?
+	add_new_alias
+	if is_default_interface; then
+		case $resolvconf_enable in
+		# "no", "false", "off", or "0"
+		[Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|0)
+			if [ -f /etc/resolv.conf.save ]; then
+				cat /etc/resolv.conf.save > /etc/resolv.conf
+			fi
+			;;
+		*)
+			/sbin/resolvconf -d ${interface}
+			;;
+		esac
+	fi
 	;;
 
 TIMEOUT)
 	delete_old_alias
 	add_new_address
-	/bin/sleep 1
+	sleep 1
 	if [ -n "$new_routers" ]; then
 		$LOGGER "New Routers ($interface): $new_routers"
 		set "$new_routers"
-		if /sbin/ping -q -c 1 -t 1 "$1"; then
+		if ping -q -c 1 -t 1 "$1"; then
 			if [ "$new_ip_address" != "$alias_ip_address" ]; then
 				add_new_alias
 			fi
 			add_new_routes
+			if ! is_default_interface; then
+				/usr/local/etc/rc.newwanip $interface
+				exit_with_hooks 0
+			fi
 			if add_new_resolv_conf; then
-				notify_rc_newwanip
+				/usr/local/etc/rc.newwanip $interface
+				exit_with_hooks 0
 			fi
 		fi
 	fi
-	$IFCONFIG $interface inet -alias $new_ip_address $medium
+	eval "$IFCONFIG $interface inet -alias $new_ip_address $medium"
 	delete_old_states
 	delete_old_routes
+	exit_with_hooks 1
 	;;
 esac
 
-# Invoke the local dhcp client exit hooks, if they exist.
-if [ -f /etc/dhclient-exit-hooks ]; then
-	$LOGGER "dhclient-exit-hooks"
-	exit_status=0
-	. /etc/dhclient-exit-hooks
-	# allow the local script to abort processing of this state
-	# local script must set exit_status variable to nonzero.
-	exit $exit_status
-fi
+exit_with_hooks 0

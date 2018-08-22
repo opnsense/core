@@ -398,10 +398,14 @@ $( document ).ready(function() {
         $("#srcendport").prop('disabled', port_disabled);
         $("#dstbeginport").prop('disabled', port_disabled);
         $("#dstendport").prop('disabled', port_disabled);
+        $("#localbeginport").prop('disabled', port_disabled);
+        $("input[for='localbeginport']").prop('disabled', port_disabled);
         $("#srcbeginport").selectpicker('refresh');
         $("#srcendport").selectpicker('refresh');
         $("#dstbeginport").selectpicker('refresh');
         $("#dstendport").selectpicker('refresh');
+        $("#localbeginport").selectpicker('refresh');
+        $("input[for='localbeginport']").prop('disabled', port_disabled);
     });
 
     // on change event for "No RDR" checkbox

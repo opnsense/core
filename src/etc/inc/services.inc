@@ -950,6 +950,7 @@ EOD;
                 $newzone['dns-servers'] = array($dhcpifconf['ddnsdomainprimary']);
                 $newzone['ddnsdomainkeyname'] = $dhcpifconf['ddnsdomainkeyname'];
                 $newzone['ddnsdomainkey'] = $dhcpifconf['ddnsdomainkey'];
+                $newzone['ddnsdomainalgorithm'] = !empty($dhcpifconf['ddnsdomainalgorithm']) ? $dhcpifconf['ddnsdomainalgorithm'] : "hmac-md5";
                 $ddns_zones[] = $newzone;
             }
         }
@@ -1012,7 +1013,7 @@ function services_dhcpd_zones($ddns_zones)
                     if (!empty($zone['ddnsdomainkeyname']) && !empty($zone['ddnsdomainkey'])) {
                         if (!in_array($zone['ddnsdomainkeyname'], $added_keys)) {
                             $dhcpdconf .= "key {$zone['ddnsdomainkeyname']} {\n";
-                            $dhcpdconf .= "  algorithm hmac-md5;\n";
+                            $dhcpdconf .= "  algorithm {$zone['ddnsdomainalgorithm']};\n";
                             $dhcpdconf .= "  secret {$zone['ddnsdomainkey']};\n";
                             $dhcpdconf .= "}\n";
                             $added_keys[] = $zone['ddnsdomainkeyname'];

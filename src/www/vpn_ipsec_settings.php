@@ -116,9 +116,10 @@ include("head.inc");
 
 ?>
 
-<!-- JQuery Tokenize (http://zellerda.com/projects/tokenize) -->
-<script src="/ui/js/tokenize2.min.js"></script>
+<!-- JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/) -->
+<script src="/ui/js/tokenize2.js"></script>
 <link rel="stylesheet" type="text/css" href="<?=get_themed_filename("/css/tokenize2.css");?>">
+
 <script src="/ui/js/opnsense_ui.js"></script>
 
  <script>

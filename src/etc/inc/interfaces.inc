@@ -1047,9 +1047,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         default:
             if (does_interface_exist("$realif")) {
                 mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " delete", true);
-                if ($destroy) {
-                    legacy_interface_flags($realif, 'down');
-                }
                 mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
             }
             break;
@@ -1065,16 +1062,13 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                 if (is_ipaddrv6($ip6) && $ip6 != "::") {
                     mwexec("/sbin/ifconfig " . escapeshellarg($realifv6) . " inet6 {$ip6} delete", true);
                 }
-                if ($destroy) {
-                    legacy_interface_flags($realif, 'down');
-                }
                 mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
             }
             $track6 = link_interface_to_track6($interface);
             break;
         case "6rd":
         case "6to4":
-            $realif = "{$interface}_stf";
+            $realif = "{$realif}_stf";
             if (does_interface_exist("$realif")) {
                 $ip6 = get_interface_ipv6($interface);
                 if (is_ipaddrv6($ip6)) {
@@ -1094,9 +1088,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                 }
                 if (!empty($ifcfg['ipaddrv6']) && is_ipaddrv6($ifcfg['ipaddrv6'])) {
                     mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$ifcfg['ipaddrv6']} delete", true);
-                }
-                if ($destroy) {
-                    legacy_interface_flags($realif, 'down');
                 }
                 mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
             }
@@ -2727,12 +2718,18 @@ function interface_6rd_configure($interface = 'wan', $wancfg)
 
     $rd6brgw = "{$rd6prefix}{$wancfg['gateway-6rd']}";
 
-    $stfiface = "{$interface}_stf";
+    $stfiface = "{$wanif}_stf";
     if (does_interface_exist($stfiface)) {
         legacy_interface_destroy($stfiface);
     }
     legacy_interface_create('stf', $stfiface);
     legacy_interface_flags($stfiface, 'link2');
+
+    $mtu = !empty($wancfg['mtu']) ? $wancfg['mtu'] - 20 : 1280;
+    if ($mtu > 1480) {
+        $mtu = 1480;
+    }
+    legacy_interface_mtu($stfiface, $mtu);
 
     mwexecf('/sbin/ifconfig %s inet6 %s/%s', array($stfiface, $rd6prefix, $rd6prefixlen + 32 - $wancfg['prefix-6rd-v4plen']));
     mwexecf('/sbin/ifconfig %s stfv4br %s', array($stfiface, $wancfg['gateway-6rd']));
@@ -2821,13 +2818,20 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
     $stflanarr[7] = 1;
     $stflan = Net_IPv6::compress(implode(":", $stflanarr));
 
-    $stfiface = "{$interface}_stf";
+    $stfiface = "{$wanif}_stf";
     if (does_interface_exist($stfiface)) {
         legacy_interface_destroy($stfiface);
     }
     legacy_interface_create('stf', $stfiface);
     legacy_interface_flags($stfiface, 'link2');
-    mwexec("/sbin/ifconfig {$stfiface} inet6 {$stflanpr} prefixlen 16");
+
+    $mtu = !empty($wancfg['mtu']) ? $wancfg['mtu'] - 20 : 1280;
+    if ($mtu > 1480) {
+        $mtu = 1480;
+    }
+    legacy_interface_mtu($stfiface, $mtu);
+
+    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 16', array($stfiface, $stflanpr));
 
     /* write out a default router file */
     file_put_contents("/tmp/{$wanif}_routerv6", "{$stfbrgw}");
@@ -3107,17 +3111,6 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
                 $id_assoc_statement_prefix .= " {$wancfg['adv_dhcp6_id_assoc_statement_prefix_vltime']}";
             }
             $id_assoc_statement_prefix .= ";\n";
-        }
-
-        if (is_numeric($wancfg['adv_dhcp6_prefix_interface_statement_sla_id'])) {
-            $id_assoc_statement_prefix .= "  prefix-interface {$wanif} {\n";
-            $id_assoc_statement_prefix .= "    sla-id {$wancfg['adv_dhcp6_prefix_interface_statement_sla_id']};\n";
-            if (($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] >= 0) &&
-                ($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] <= 128)
-            ) {
-                $id_assoc_statement_prefix .= "    sla-len {$wancfg['adv_dhcp6_prefix_interface_statement_sla_len']};\n";
-            }
-            $id_assoc_statement_prefix .= "  };\n";
         }
 
         $iflist = link_interface_to_track6($interface);
@@ -3676,9 +3669,9 @@ function get_real_interface($interface = 'wan', $family = 'all')
                     $ipaddrv6 = "";
                 }
                 switch ($ipaddrv6) {
-                    case "6rd":
-                    case "6to4":
-                        $wanif = "{$interface}_stf";
+                    case '6rd':
+                    case '6to4':
+                        $wanif = "{$cfg['if']}_stf";
                         break;
                     case 'pppoe':
                     case 'ppp':
