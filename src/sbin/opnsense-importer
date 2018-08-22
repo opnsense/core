@@ -123,16 +123,19 @@ zfs_load()
 probe_for_part()
 {
 	local DEV=${1}
+	local zcnt=
 
+	zcnt=$(echo ${POOLS} | grep -wc ${DEV})
 	if [ -e "/dev/${DEV}s1a" ]; then
 		# MBR UFS
 		export PART="/dev/${DEV}s1a"
-		probe_zfs_pool
 		return 0
 	elif [ -e "/dev/${DEV}p3" ]; then
 		# GPT UFS
 		export PART="/dev/${DEV}p3"
-		probe_zfs_pool
+		return 0
+	elif [ ${zcnt} -ne "0" ]; then
+		export POOL=${DEV}
 		return 0
 	elif [ -e "/dev/${DEV}s1" ]; then
 		# MBR MSDOS
@@ -149,41 +152,33 @@ probe_for_part()
 	return 1
 }
 
-probe_zfs_pool()
+probe_zfs_pools()
 {
 	zpool import -aNf
 	local ZPCHK=$(zpool get -H cachefile)
 	local ORIGINAL_IFS="${IFS}"
+	IFS=$'\n'
 	local CPOOL=
 	local zt=
 
-	IFS=$'\n'
-	local PART_NAME=$(echo ${PART} | sed -e "s/.*\///")
 	for zplist in ${ZPCHK}; do
-		CPOOL=$(echo ${zplist} | awk '{ print $1  }')
-		zt=$(zpool status ${CPOOL} | grep -c ${PART_NAME})
-		if [ ${zt} -ne "0" ]; then
-			export POOL=${CPOOL}
-			zpool export ${CPOOL} >/dev/null 2>/dev/null
-		else
-			zt=$(mount | grep -w / | grep -c ${CPOOL})
-			if [ ${zt} -eq "0" ]; then
-			    zpool export ${CPOOL} >/dev/null 2>/dev/null
-			fi
-		fi
+	    CPOOL=$(echo ${zplist} | awk '{ print $1  }')
+	    zt=$(mount | grep -w / | grep -c ${CPOOL})
+	    if [ ${zt} -eq "0" ]; then
+		zpool export ${CPOOL} >/dev/null 2>/dev/null
+		echo "${CPOOL} (ZFS pool)"
+	    fi
 	done
 	IFS="${ORIGINAL_IFS}"
-	if [ -z "${POOL}" ]; then
-		return 1
-	fi
-
-	return 0
 }
 
 DEV=${1}
 DEVS=
 PART=
+POOLS=
 POOL=
+
+POOLS=$(probe_zfs_pools)
 
 if [ -n "${DEV}" ]; then
 	zfs_load
@@ -207,7 +202,7 @@ else
 
 	zfs_load
 
-	DEVS=$(camcontrol devlist; gmirror status -s; graid status -s)
+	DEVS=$(camcontrol devlist; gmirror status -s; graid status -s; echo "${POOLS}")
 fi
 
 while : ; do
@@ -236,17 +231,7 @@ while : ; do
 
 	mkdir -p ${MNT}
 
-	if [ -n "${POOL}" ]; then
-		echo "Starting import for ZFS pool '${POOL}'."
-		echo
-
-		zpool import -fNR ${MNT} ${POOL}
-		if ! mount -t zfs ${POOL}/ROOT/default ${MNT}; then
-			echo "The device could not be mounted."
-		fi
-
-		break
-	elif [ -n "${PART}" ]; then
+	if [ -n "${PART}" ]; then
 		echo "Starting import for partition '${PART}'."
 		echo
 
@@ -263,6 +248,17 @@ while : ; do
 		if ! mount -t ${TYPE} ${PART} ${MNT}; then
 			echo "The device could not be mounted."
 			PART=
+		fi
+
+		break
+	elif [ -n "${POOL}" ]; then
+		echo "Starting import for ZFS pool '${POOL}'."
+		echo
+
+		zpool import -fNR ${MNT} ${POOL}
+		if ! mount -t zfs ${POOL}/ROOT/default ${MNT}; then
+			echo "The device could not be mounted."
+			POOL=
 		fi
 
 		break
