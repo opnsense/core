@@ -118,9 +118,10 @@ class Helpers(object):
         """
         uuids = []
         for item in self.toList(tag):
-            for uuid in self._template_in_data['__uuid__']:
+            for uuid in self._template_in_data['__uuid__'].keys():
                 if self._template_in_data['__uuid__'][uuid] == item:
                     uuids.append(uuid)
+                    break
         return uuids
 
     @staticmethod
