@@ -71,9 +71,15 @@ class Config(object):
         if len(list(xml_node)) > 0:
             for item in list(xml_node):
                 item_content = self._traverse(item)
+                # for dictionary type items, add tag attributes
+                if type(item_content) == collections.OrderedDict:
+                    for attr_key in item.attrib:
+                        item_content["@%s" % attr_key] = item.attrib[attr_key]
+                # store uuid's
                 if 'uuid' in item.attrib:
                     self.__uuid_data[item.attrib['uuid']] = item_content
                     self.__uuid_tags[item.attrib['uuid']] = item.tag
+                # add (list) items to this result
                 if item.tag in this_item:
                     if type(this_item[item.tag]) != list:
                         tmp_item = copy.deepcopy(this_item[item.tag])
@@ -85,33 +91,12 @@ class Config(object):
                         this_item[item.tag].append(item_content)
                 elif item_content is not None:
                     # create a new named item
-                    this_item[item.tag] = self._traverse(item)
+                    this_item[item.tag] = item_content
         else:
             # last node, return text
             return xml_node.text
 
         return this_item
-
-    def indent(self, elem, level=0):
-        """ indent cElementTree (prettyprint fix)
-            used from : http://infix.se/2007/02/06/gentlemen-indent-your-xml
-            @param elem: cElementTree
-            @param level: Currentlevel
-        """
-        i = "\n" + level * "  "
-        if len(elem):
-            if not elem.text or not elem.text.strip():
-                elem.text = i + "  "
-            for e in elem:
-                self.indent(e, level + 1)
-                if not e.tail or not e.tail.strip():
-                    e.tail = i + "  "
-            # noinspection PyUnboundLocalVariable
-            if not e.tail or not e.tail.strip():
-                e.tail = i
-        else:
-            if level and (not elem.tail or not elem.tail.strip()):
-                elem.tail = i
 
     def get(self):
         """ get active config data, load from disc if file in memory is different
