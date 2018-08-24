@@ -51,9 +51,9 @@
                 if (selected_count > 0) {
                     var label = "{{ lang._('%s out of %s selected')}}";
                     label = label.replace('%s', selected_count).replace('%s', option_count);
-                    $("label[data-id='"+$(this).data('id')+"_label'").text(label);
+                    $("label[data-id='"+$(this).data('id')+"_label']").text(label);
                 } else {
-                    $("label[data-id='"+$(this).data('id')+"_label'").text("");
+                    $("label[data-id='"+$(this).data('id')+"_label']").text("");
                 }
             });
         }
@@ -83,7 +83,7 @@
 
             $.each(data, function(country, item) {
                 if (item.region != null) {
-                    $('.geoip_select[data-id="geoip_region_'+item.region+'"').append(
+                    $('.geoip_select[data-id="geoip_region_'+item.region+'"]').append(
                         $("<option/>")
                             .val(country)
                             .data('icon', 'flag-icon flag-icon-' + country.toLowerCase() + ' flag-icon-squared')
