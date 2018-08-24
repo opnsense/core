@@ -143,10 +143,9 @@
     </Interfaces>
     <Firewall order="40" cssClass="glyphicon glyphicon-fire">
         <Aliases order="10" cssClass="fa fa-list-alt fa-fw">
-            <View order="100" url="/firewall_aliases.php">
-                <Edit url="/firewall_aliases_edit.php*" visibility="hidden"/>
+            <View order="100" url="/ui/firewall/alias">
+                <item url="/ui/firewall/alias/*"/>
             </View>
-            <Import order="200" url="/firewall_aliases_import.php"/>
         </Aliases>
         <Rules order="20" cssClass="fa fa-check fa-fw" />
         <NAT order="30" cssClass="fa fa-exchange fa-fw">
