@@ -268,10 +268,8 @@ abstract class BaseField
         } elseif ($name == '__items') {
             // return all (no virtual/hidden) items
             $result = array();
-            foreach ($this->internalChildnodes as $key => $value) {
-                if ($value->internalIsVirtual == false) {
-                    $result[$key] = $value;
-                }
+            foreach ($this->iterateItems() as $key => $value) {
+                $result[$key] = $value;
             }
             return $result;
         } elseif ($name == '__reference') {
@@ -287,6 +285,18 @@ abstract class BaseField
         }
     }
 
+    /**
+     * iterate (non virtual) child nodes
+     * @return mixed
+     */
+    public function iterateItems()
+    {
+        foreach ($this->internalChildnodes as $key => $value) {
+            if ($value->internalIsVirtual == false) {
+                yield $key => $value;
+            }
+        }
+    }
 
     /**
      * reflect default setter to internal child nodes
