@@ -31,15 +31,29 @@
 </style>
 <script>
     $( document ).ready(function() {
-        $("#grid-aliases").UIBootgrid(
-            {   search:'/api/firewall/alias/searchItem',
+        $("#grid-aliases").UIBootgrid({
+                search:'/api/firewall/alias/searchItem',
                 get:'/api/firewall/alias/getItem/',
                 set:'/api/firewall/alias/setItem/',
                 add:'/api/firewall/alias/addItem/',
                 del:'/api/firewall/alias/delItem/',
                 toggle:'/api/firewall/alias/toggleItem/'
-            }
-        );
+        });
+
+        /**
+         * Open form with alias selected
+         */
+        if ("{{selected_alias}}" !== "") {
+            // UIBootgrid doesn't return a promise, wait for some time before opening the requested item
+            setTimeout(function(){
+                ajaxGet("/api/firewall/alias/getAliasUUID/{{selected_alias}}", {}, function(data, status){
+                    if (data.uuid !== undefined) {
+                        var edit_item = $(".command-edit:eq(0)").clone(true);
+                        edit_item.data('row-id', data.uuid).click();
+                    }
+                });
+            }, 100);
+        }
 
         /**
          * update geoip labels

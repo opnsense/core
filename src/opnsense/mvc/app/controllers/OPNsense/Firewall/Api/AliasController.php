@@ -100,6 +100,22 @@ class AliasController extends ApiMutableModelControllerBase
     }
 
     /**
+     * find the alias uuid by name
+     * @param $name alias name
+     * @return string uuid
+     */
+    public function getAliasUUIDAction($name)
+    {
+        $node = $this->getModel();
+        foreach ($node->aliases->alias->iterateItems() as $key => $alias) {
+            if ((string)$alias->name == $name) {
+                return array('uuid' => $key);
+            }
+        }
+        return array();
+    }
+
+    /**
      * Delete alias by uuid, save contents to tmp for removal on apply
      * @param string $uuid internal id
      * @return array save status
