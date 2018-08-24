@@ -279,7 +279,7 @@ $main_buttons = array(
                     <td>
                       <?=isset($natent['external']) ? $natent['external'] : "";?><?=isset($natent['source']) && strpos($natent['external'], '/') === false ? strstr(pprint_address($natent['source']), '/') : "";?>
 <?php                 if (isset($natent['external']['address']) && is_alias($natent['external']['address'])): ?>
-                      &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['external']['address']);?>"><i class="fa fa-list"></i> </a>
+                      &nbsp;<a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['external']['address']);?>"><i class="fa fa-list"></i> </a>
 <?php                 endif; ?>
                     </td>
                     <td>
@@ -287,7 +287,7 @@ $main_buttons = array(
                         <span title="<?=htmlspecialchars(get_alias_description($natent['source']['address']));?>" data-toggle="tooltip" data-html="true">
                           <?=htmlspecialchars(pprint_address($natent['source']));?>&nbsp;
                         </span>
-                        <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['address']);?>"
+                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['source']['address']);?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>
@@ -300,7 +300,7 @@ $main_buttons = array(
                         <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['address']));?>" data-toggle="tooltip" data-html="true">
                           <?=htmlspecialchars(pprint_address($natent['destination']));?>&nbsp;
                         </span>
-                        <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['address']);?>"
+                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['destination']['address']);?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>

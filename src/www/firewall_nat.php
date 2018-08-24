@@ -380,7 +380,7 @@ $( document ).ready(function() {
                           <span title="<?=htmlspecialchars(get_alias_description($natent['source']['address']));?>" data-toggle="tooltip" data-html="true">
                             <?=htmlspecialchars(pprint_address($natent['source'])); ?>
                           </span>
-                          <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['address']);?>"
+                          <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['source']['address']);?>"
                               title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                             <i class="fa fa-list"></i>
                           </a>
@@ -394,7 +394,7 @@ $( document ).ready(function() {
                           <span title="<?=htmlspecialchars(get_alias_description($natent['source']['port']));?>" data-toggle="tooltip" data-html="true">
                             <?=htmlspecialchars(pprint_port($natent['source']['port'])); ?>&nbsp;
                           </span>
-                          <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['port']);?>"
+                          <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['source']['port']);?>"
                               title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                             <i class="fa fa-list"></i>
                           </a>
@@ -408,7 +408,7 @@ $( document ).ready(function() {
                           <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['address']));?>" data-toggle="tooltip" data-html="true">
                             <?=htmlspecialchars(pprint_address($natent['destination'])); ?>
                           </span>
-                          <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['address']);?>"
+                          <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['destination']['address']);?>"
                               title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                             <i class="fa fa-list"></i>
                           </a>
@@ -422,7 +422,7 @@ $( document ).ready(function() {
                           <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['port']));?>" data-toggle="tooltip" data-html="true">
                             <?=htmlspecialchars(pprint_port($natent['destination']['port'])); ?>&nbsp;
                           </span>
-                          <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['port']);?>"
+                          <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['destination']['port']);?>"
                               title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                             <i class="fa fa-list"></i>
                           </a>
@@ -437,7 +437,7 @@ $( document ).ready(function() {
                         </span>
 
 <?php                   if (is_alias($natent['target'])): ?>
-                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=$natent['target'];?>"
+                        &nbsp;<a href="/ui/firewall/alias/index/<?=$natent['target'];?>"
                                  title="<?=gettext("edit alias");?>" data-toggle="tooltip"><i class="fa fa-list"></i> </a>
 <?php                   endif; ?>
                       </td>
@@ -455,7 +455,7 @@ $( document ).ready(function() {
                           <span title="<?=htmlspecialchars(get_alias_description($localport));?>" data-toggle="tooltip" data-html="true">
                             <?=htmlspecialchars(pprint_port($localport));?>&nbsp;
                           </span>
-                          <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($localport);?>"
+                          <a href="/ui/firewall/alias/index/<?=htmlspecialchars($localport);?>"
                               title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                             <i class="fa fa-list"></i>
                           </a>
