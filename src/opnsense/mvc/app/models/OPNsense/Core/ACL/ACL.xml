@@ -189,19 +189,17 @@
     <page-firewall-alias-edit>
         <name>Firewall: Alias: Edit</name>
         <patterns>
-            <pattern>firewall_aliases_edit.php*</pattern>
+            <pattern>ui/firewall/alias/*</pattern>
+            <pattern>api/firewall/alias/*</pattern>
         </patterns>
     </page-firewall-alias-edit>
-    <page-firewall-alias-import>
-        <name>Firewall: Alias: Import</name>
-        <patterns>
-            <pattern>firewall_aliases_import.php*</pattern>
-        </patterns>
-    </page-firewall-alias-import>
     <page-firewall-aliases>
         <name>Firewall: Aliases</name>
         <patterns>
-            <pattern>firewall_aliases.php*</pattern>
+            <pattern>ui/firewall/alias/*</pattern>
+            <pattern>api/firewall/alias/search*</pattern>
+            <pattern>api/firewall/alias/list*</pattern>
+            <pattern>api/firewall/alias/getItem*</pattern>
         </patterns>
     </page-firewall-aliases>
     <page-firewall-nat-1-1>
