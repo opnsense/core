@@ -1583,9 +1583,6 @@
 /usr/local/www/diag_testport.php
 /usr/local/www/diag_traceroute.php
 /usr/local/www/fbegin.inc
-/usr/local/www/firewall_aliases.php
-/usr/local/www/firewall_aliases_edit.php
-/usr/local/www/firewall_aliases_import.php
 /usr/local/www/firewall_nat.php
 /usr/local/www/firewall_nat_1to1.php
 /usr/local/www/firewall_nat_1to1_edit.php
