@@ -842,6 +842,8 @@ EOD;
             if (!empty($dhcpifconf['filename']) && !empty($dhcpifconf['filename32']) && !empty($dhcpifconf['filename64'])) {
                 $dhcpdconf .= "  if option arch = 00:06 {\n";
                 $dhcpdconf .= "    filename \"{$dhcpifconf['filename32']}\";\n";
+                $dhcpdconf .= "  } else if option arch = 00:07 {\n";
+                $dhcpdconf .= "    filename \"{$dhcpifconf['filename64']}\";\n";
                 $dhcpdconf .= "  } else if option arch = 00:09 {\n";
                 $dhcpdconf .= "    filename \"{$dhcpifconf['filename64']}\";\n";
                 $dhcpdconf .= "  } else {\n";
