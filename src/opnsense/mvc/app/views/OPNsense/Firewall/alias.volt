@@ -191,6 +191,24 @@
             }
         });
 
+        /**
+         * reconfigure
+         */
+        $("#reconfigureAct").click(function(){
+            $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
+            ajaxCall("/api/firewall/alias/reconfigure", {}, function(data,status) {
+                // when done, disable progress animation.
+                $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
+                if (status != "success" || data['status'] != 'ok') {
+                    BootstrapDialog.show({
+                        type: BootstrapDialog.TYPE_WARNING,
+                        title: "{{ lang._('Error reconfiguring aliases') }}",
+                        message: data['status'],
+                        draggable: true
+                    });
+                }
+            });
+        });
 
     });
 </script>
@@ -222,6 +240,11 @@
                         </tr>
                         </tfoot>
                     </table>
+                    <div class="col-md-12">
+                        <hr/>
+                        <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
+                        <br/><br/>
+                    </div>
                 </div>
             </section>
         </div>

@@ -30,6 +30,7 @@
 namespace OPNsense\Firewall\Api;
 
 use \OPNsense\Base\ApiMutableModelControllerBase;
+use \OPNsense\Core\Backend;
 
 /**
  * @package OPNsense\Firewall
@@ -169,5 +170,23 @@ class AliasController extends ApiMutableModelControllerBase
             }
         }
         return $result;
+    }
+
+    /**
+     * reconfigure aliases
+     */
+    public function reconfigureAction()
+    {
+        if ($this->request->isPost()) {
+            $backend = new Backend();
+            $backend->configdRun('template reload OPNsense/Filter');
+            $bckresult = strtolower(
+                trim($backend->configdRun("filter refresh_aliases"))
+            );
+            return array("status" => $bckresult);
+        } else {
+            return array("status" => "failed");
+        }
+
     }
 }
