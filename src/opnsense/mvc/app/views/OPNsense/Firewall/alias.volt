@@ -31,15 +31,29 @@
 </style>
 <script>
     $( document ).ready(function() {
-        $("#grid-aliases").UIBootgrid(
-            {   search:'/api/firewall/alias/searchItem',
+        $("#grid-aliases").UIBootgrid({
+                search:'/api/firewall/alias/searchItem',
                 get:'/api/firewall/alias/getItem/',
                 set:'/api/firewall/alias/setItem/',
                 add:'/api/firewall/alias/addItem/',
                 del:'/api/firewall/alias/delItem/',
                 toggle:'/api/firewall/alias/toggleItem/'
-            }
-        );
+        });
+
+        /**
+         * Open form with alias selected
+         */
+        if ("{{selected_alias}}" !== "") {
+            // UIBootgrid doesn't return a promise, wait for some time before opening the requested item
+            setTimeout(function(){
+                ajaxGet("/api/firewall/alias/getAliasUUID/{{selected_alias}}", {}, function(data, status){
+                    if (data.uuid !== undefined) {
+                        var edit_item = $(".command-edit:eq(0)").clone(true);
+                        edit_item.data('row-id', data.uuid).click();
+                    }
+                });
+            }, 100);
+        }
 
         /**
          * update geoip labels
@@ -51,9 +65,9 @@
                 if (selected_count > 0) {
                     var label = "{{ lang._('%s out of %s selected')}}";
                     label = label.replace('%s', selected_count).replace('%s', option_count);
-                    $("label[data-id='"+$(this).data('id')+"_label'").text(label);
+                    $("label[data-id='"+$(this).data('id')+"_label']").text(label);
                 } else {
-                    $("label[data-id='"+$(this).data('id')+"_label'").text("");
+                    $("label[data-id='"+$(this).data('id')+"_label']").text("");
                 }
             });
         }
@@ -83,7 +97,7 @@
 
             $.each(data, function(country, item) {
                 if (item.region != null) {
-                    $('.geoip_select[data-id="geoip_region_'+item.region+'"').append(
+                    $('.geoip_select[data-id="geoip_region_'+item.region+'"]').append(
                         $("<option/>")
                             .val(country)
                             .data('icon', 'flag-icon flag-icon-' + country.toLowerCase() + ' flag-icon-squared')
@@ -191,6 +205,24 @@
             }
         });
 
+        /**
+         * reconfigure
+         */
+        $("#reconfigureAct").click(function(){
+            $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
+            ajaxCall("/api/firewall/alias/reconfigure", {}, function(data,status) {
+                // when done, disable progress animation.
+                $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
+                if (status != "success" || data['status'] != 'ok') {
+                    BootstrapDialog.show({
+                        type: BootstrapDialog.TYPE_WARNING,
+                        title: "{{ lang._('Error reconfiguring aliases') }}",
+                        message: data['status'],
+                        draggable: true
+                    });
+                }
+            });
+        });
 
     });
 </script>
@@ -206,6 +238,7 @@
                             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                             <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                             <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
+                            <th data-column-id="type" data-type="string">{{ lang._('Type') }}</th>
                             <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                             <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                         </tr>
@@ -222,6 +255,11 @@
                         </tr>
                         </tfoot>
                     </table>
+                    <div class="col-md-12">
+                        <hr/>
+                        <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
+                        <br/><br/>
+                    </div>
                 </div>
             </section>
         </div>
