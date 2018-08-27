@@ -1525,6 +1525,8 @@ function interfaces_carp_setup($verbose = false)
 {
     global $config;
 
+    $intf_stats = legacy_interfaces_details();
+
     if ($verbose) {
         echo 'Configuring CARP settings...';
         flush();
@@ -1542,6 +1544,7 @@ function interfaces_carp_setup($verbose = false)
         }
 
         mwexec("/sbin/ifconfig pfsync0 syncdev {$carp_sync_int} {$syncpeer} up", false);
+        mwexec("/sbin/ifconfig pfsync0 mtu {$intf_stats[$carp_sync_int]['mtu']}", false);
     } else {
         mwexec("/sbin/ifconfig pfsync0 -syncdev -syncpeer down", false);
     }
