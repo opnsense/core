@@ -150,7 +150,7 @@ include("head.inc");
                   <td>
                     <input type="checkbox" name="disablepreempt" value="on" <?= !empty($pconfig['disablepreempt']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_disablepreempt">
-                      <?=gettext("When this device is configured as CARP master it will try to switch to master when powering up, this option will keep this one slave if there already is a master on the network");?>
+                      <?=gettext("When this device is configured as CARP master it will try to switch to master when powering up, this option will keep this one slave if there already is a master on the network. A reboot is required to take effect.");?>
                     </div>
                   </td>
                 </tr>
