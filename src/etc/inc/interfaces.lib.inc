@@ -310,6 +310,9 @@ function legacy_interfaces_details($intf = null)
                 $result[$current_interface]['laggport'] = array();
             }
             $result[$current_interface]['laggport'][] = explode(' ', trim($matches[1]))[0];
+        } elseif (strpos($line, "\tgroups: ") !== false) {
+            array_shift($line_parts);
+            $result[$current_interface]['groups'] = $line_parts;
         }
     }
 
