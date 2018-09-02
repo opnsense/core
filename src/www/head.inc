@@ -45,7 +45,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <title><?= $pagetitle ?></title>
 
     <!-- include (theme) style -->
-    <link href="/ui/themes/<?= $themename ?>/build/css/main.css" rel="stylesheet">
+    <link href="<?= cache_safe("/ui/themes/{$themename}/build/css/main.css") ?>" rel="stylesheet">
 
     <!-- TODO: move to theme style -->
     <style>
@@ -78,16 +78,16 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     </style>
 
     <!-- Favicon -->
-    <link href="/ui/themes/<?= $themename ?>/build/images/favicon.png" rel="shortcut icon">
+    <link href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>" rel="shortcut icon">
 
     <!-- Stylesheet for fancy select/dropdown -->
-    <link rel="stylesheet" type="text/css" href="<?=get_themed_filename("/css/bootstrap-select.css");?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/bootstrap-select.css")) ?>">
 
     <!-- bootstrap dialog -->
-    <link rel="stylesheet" type="text/css" href="<?=get_themed_filename("/css/bootstrap-dialog.css");?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/bootstrap-dialog.css")) ?>">
 
     <!-- Font awesome -->
-    <link rel="stylesheet" href="/ui/css/font-awesome.min.css">
+    <link rel="stylesheet" href="<?= cache_safe("/ui/css/font-awesome.min.css") ?>">
 
     <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 
@@ -102,25 +102,25 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <script src="/ui/js/jquery-migrate-3.0.1.min.js"></script>
 
     <!-- datepicker -->
-    <script src="/ui/js/bootstrap-datepicker.min.js"></script>
+    <script src="<?= cache_safe("/ui/js/bootstrap-datepicker.min.js") ?>"></script>
 
     <!-- d3 -->
-    <script src="/ui/js/d3.min.js"></script>
+    <script src="<?= cache_safe("/ui/js/d3.min.js") ?>"></script>
 
     <!-- nvd3 -->
-    <script src="/ui/js/nv.d3.min.js"></script>
+    <script src="<?= cache_safe("/ui/js/nv.d3.min.js") ?>"></script>
 
     <!-- append some helper functions to integrate into the legacy code -->
-    <script src="/javascript/opnsense_legacy.js"></script>
+    <script src="<?= cache_safe("/javascript/opnsense_legacy.js") ?>"></script>
 
     <!-- opnsense non legacy helper functions -->
-    <script src="/ui/js/opnsense.js"></script>
+    <script src="<?= cache_safe("/ui/js/opnsense.js") ?>"></script>
 
     <!-- opnsense non legacy theme support functions -->
-    <script src="/ui/js/opnsense_theme.js"></script>
+    <script src="<?= cache_safe("/ui/js/opnsense_theme.js") ?>"></script>
 
     <!-- Bootstrap type ahead -->
-    <script src="/ui/js/bootstrap3-typeahead.min.js"></script>
+    <script src="<?= cache_safe("/ui/js/bootstrap3-typeahead.min.js") ?>"></script>
 
     <script>
     //<![CDATA[
@@ -249,9 +249,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     });
     //]]>
     </script>
-<?php
-    if (file_exists("/usr/local/opnsense/www/themes/".$themename."/build/js/theme.js")):?>
-    <script src="/ui/themes/<?=$themename?>/build/js/theme.js"></script>
-<?php
-    endif;?>
+<?php if (file_exists("/usr/local/opnsense/www/themes/".$themename."/build/js/theme.js")): ?>
+    <script src="<?= cache_safe("/ui/themes/{$themename}/build/js/theme.js") ?>"></script>
+<?php endif ?>
 </head>
