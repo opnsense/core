@@ -61,6 +61,7 @@ require_once("interfaces.inc");
                     $("#"+tr_id).find('.text-success').removeClass('text-success').addClass('text-danger');
                     $("#"+tr_id).find('.fa-arrow-down').removeClass('fa-arrow-down').addClass('fa-times');
                     $("#"+tr_id).find('.fa-arrow-up').removeClass('fa-arrow-up').addClass('fa-times');
+                    break;
               }
           }
       });
