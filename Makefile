@@ -56,7 +56,7 @@ CORE_NAME?=		opnsense-devel
 CORE_TYPE?=		development
 CORE_MESSAGE?=		Insert Name Here
 
-CORE_MAINTAINER?=	franco@opnsense.org
+CORE_MAINTAINER?=	project@opnsense.org
 CORE_PACKAGESITE?=	https://pkg.opnsense.org
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
 CORE_COMMENT?=		OPNsense ${CORE_TYPE} package
@@ -214,7 +214,8 @@ scripts:
 install:
 	@${MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
 	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} \
-	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} \
+	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} CORE_WWW=${CORE_WWW} \
+	    CORE_MAINTAINER=${CORE_MAINTAINER} CORE_HASH=${CORE_HASH} \
 	    CORE_PACKAGESITE=${CORE_PACKAGESITE} \
 	    CORE_REPOSITORY=${CORE_REPOSITORY}
 
@@ -229,7 +230,9 @@ collect:
 bootstrap:
 	@${MAKE} -C ${.CURDIR}/src install-bootstrap DESTDIR=${DESTDIR} \
 	    NO_SAMPLE=please CORE_PACKAGESITE=${CORE_PACKAGESITE} \
-	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} \
+	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} CORE_WWW=${CORE_WWW} \
+	    CORE_MAINTAINER=${CORE_MAINTAINER} CORE_HASH=${CORE_HASH} \
+	    CORE_PACKAGESITE=${CORE_PACKAGESITE} \
 	    CORE_REPOSITORY=${CORE_REPOSITORY}
 
 plist:
