@@ -33,6 +33,22 @@ function view_file_exists($filename)
     return file_exists($filename);
 }
 
+/**
+ * return appended version string with a hash for proper caching for currently installed version
+ * @param string $url to make cache-safe
+ * @return string
+ */
+function view_cache_safe($url)
+{
+    $myview = \Phalcon\DI::getDefault()->get('view');
+
+    if (!empty($myview->product_hash)) {
+        return "{$url}?v={$myview->product_hash}";
+    }
+
+    return $url;
+}
+
 try {
     /**
      * Read the configuration

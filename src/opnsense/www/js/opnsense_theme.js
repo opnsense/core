@@ -32,7 +32,7 @@ $(document).ready(function () {
     // traverse loaded css files
     var toggle_sidebar_loaded = false;
     $.each(document.styleSheets, function(sheetIndex, sheet) {
-        if (sheet.href != undefined && sheet.href.endsWith('main.css')){
+        if (sheet.href != undefined && sheet.href.match(/main\.css(\?v=\w+$)?/gm)) {
           $.each(sheet.cssRules || sheet.rules, function(ruleIndex, rule) {
               if (rule.cssText.indexOf('toggle-sidebar') >= 0) {
                   toggle_sidebar_loaded = true;
