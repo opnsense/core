@@ -203,6 +203,5 @@ class AliasController extends ApiMutableModelControllerBase
         } else {
             return array("status" => "failed");
         }
-
     }
 }

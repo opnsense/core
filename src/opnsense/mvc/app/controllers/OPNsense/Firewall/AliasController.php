@@ -37,7 +37,7 @@ use \OPNsense\Base\IndexController;
  */
 class AliasController extends IndexController
 {
-    public function indexAction($selected=null)
+    public function indexAction($selected = null)
     {
         // include dialog form definitions
         $this->view->formDialogAlias = $this->getForm("dialogEditAlias");
