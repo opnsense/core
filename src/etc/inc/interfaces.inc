@@ -1087,8 +1087,10 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
             $pfctlflush[$realif] = 1;
         }
 
-        /* apparently deletes the first IP it finds */
-        mwexecf('/sbin/ifconfig %s delete', $realif);
+        $ip4 = find_interface_ip($realif, true);
+        if (is_ipaddrv4($ip4)) {
+            mwexecf('/sbin/ifconfig %s delete %s', array($realif, $ip4));
+        }
     }
 
     if (does_interface_exist($realifv6)) {
@@ -1098,7 +1100,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
             $pfctlflush[$realifv6] = 1;
         }
 
-        $ip6 = find_interface_ipv6($interface);
+        $ip6 = find_interface_ipv6($realifv6, true);
         if (is_ipaddrv6($ip6)) {
             mwexecf('/sbin/ifconfig %s inet6 %s delete', array($realifv6, $ip6));
         }
@@ -2622,7 +2624,7 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
     /* convert the 128 bits for the lan address back into a valid IPv6 address */
     $rd6lan = convert_128bit_to_ipv6($rd6lanbin) ."1";
 
-    $lanif = get_real_interface($interface);
+    $lanif = get_real_interface($interface, 'inet6');
     $oip = find_interface_ipv6($lanif);
     if (is_ipaddrv6($oip)) {
         mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");
@@ -2662,7 +2664,7 @@ function interface_track6_6to4_configure($interface = 'lan', $lancfg)
     /* convert the 128 bits for the lan address back into a valid IPv6 address */
     $sixto4lan = convert_128bit_to_ipv6($sixto4lanbin) ."1";
 
-    $lanif = get_real_interface($interface);
+    $lanif = get_real_interface($interface, 'inet6');
     $oip = find_interface_ipv6($lanif);
     if (is_ipaddrv6($oip)) {
         mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");
@@ -3884,42 +3886,51 @@ function link_interface_to_gif($interface)
 /*
  * find_interface_ip($interface): return the interface ip (first found)
  */
-function find_interface_ip($interface)
+function find_interface_ip($interface, $exists = false)
 {
     $interface = trim($interface);
-    if (does_interface_exist($interface)) {
-        $ifinfo = legacy_get_interface_addresses($interface);
-        if (isset($ifinfo['ipaddr'])) {
-            return $ifinfo['ipaddr'];
-        }
+
+    if (!$exists && !does_interface_exist($interface)) {
+        return null;
     }
+
+    $ifinfo = legacy_get_interface_addresses($interface);
+
+    if (isset($ifinfo['ipaddr'])) {
+        return $ifinfo['ipaddr'];
+    }
+
     return null;
 }
 
 /*
  * find_interface_ipv6($interface): return the interface ip (first found)
  */
-function find_interface_ipv6($interface)
+function find_interface_ipv6($interface, $exists = false)
 {
-    // a bit obscure, why should this be different then find_interface_ip?
-    $interface = get_real_interface(trim($interface));
-    if (does_interface_exist($interface)) {
-        $ifinfo = legacy_get_interface_addresses($interface);
-        if (isset($ifinfo['ipaddr6'])) {
-            return $ifinfo['ipaddr6'];
-        }
+    $interface = trim($interface);
+
+    if (!$exists && !does_interface_exist($interface)) {
+        return null;
     }
+
+    $ifinfo = legacy_get_interface_addresses($interface);
+
+    if (isset($ifinfo['ipaddr6'])) {
+        return $ifinfo['ipaddr6'];
+    }
+
     return null;
 }
 
 /*
  * find_interface_ipv6_ll($interface): return the interface ipv6 link local (first found)
  */
-function find_interface_ipv6_ll($interface)
+function find_interface_ipv6_ll($interface, $exists = false)
 {
     $interface = trim($interface);
 
-    if (!does_interface_exist($interface)) {
+    if (!$exists && !does_interface_exist($interface)) {
         return null;
     }
 
@@ -3991,7 +4002,7 @@ function get_interface_ip($interface = 'wan')
 {
     $realif = get_failover_interface($interface);
     if (!$realif) {
-        if (strstr($interface, "_vip")) {
+        if (strstr($interface, '_vip')) {
             return get_configured_carp_interface_list($interface);
         } else {
             return null;
@@ -3999,7 +4010,7 @@ function get_interface_ip($interface = 'wan')
     }
 
     $curip = find_interface_ip($realif);
-    if ($curip && is_ipaddr($curip) && $curip != '0.0.0.0') {
+    if (is_ipaddrv4($curip)) {
         return $curip;
     }
 
@@ -4012,8 +4023,8 @@ function get_interface_ipv6($interface = 'wan')
 
     $realif = get_failover_interface($interface, 'inet6');
     if (!$realif) {
-        if (strstr($interface, "_vip")) {
-            return get_configured_carp_interface_list($interface, "inet6");
+        if (strstr($interface, '_vip')) {
+            return get_configured_carp_interface_list($interface, 'inet6');
         } else {
             return null;
         }
@@ -4021,7 +4032,7 @@ function get_interface_ipv6($interface = 'wan')
 
     $curip = isset($config['interfaces'][$interface]['dhcp6prefixonly']) ?
         find_interface_ipv6_ll($realif) : find_interface_ipv6($realif);
-    if ($curip && is_ipaddrv6($curip) && $curip != '::') {
+    if (is_ipaddrv6($curip)) {
         return $curip;
     }
 
