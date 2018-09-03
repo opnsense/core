@@ -1068,11 +1068,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         case 'dhcp6':
             killbypid("/var/run/dhcp6c_{$realifv6}.pid", 'TERM', true);
             break;
-        case '6rd':
-        case '6to4':
-            /* oddity with 6rd/6to4 as we destroy on reconfigure anyway */
-            legacy_interface_destroy($realifv6);
-            break;
         default:
             break;
     }
