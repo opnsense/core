@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             /* Disallow a range that includes the virtualip */
             if (!empty($config['virtualip']['vip'])) {
                 foreach($config['virtualip']['vip'] as $vip) {
-                    if($vip['interface'] == $if) {
+                    if ($vip['interface'] == $if) {
                         if (!empty($vip['subnetv6']) && is_inrange_v6($vip['subnetv6'], $pconfig['range_from'], $pconfig['range_to'])) {
                             $input_errors[] = sprintf(gettext("The subnet range cannot overlap with virtual IPv6 address %s."),$vip['subnetv6']);
                         }
@@ -465,7 +465,7 @@ if ($config['interfaces'][$if]['ipaddrv6'] == 'track6') {
                       <td><?= htmlspecialchars($wifcfgsn) ?> <?= gettext('bits') ?></td>
 <?php endif ?>
                     </tr>
-<?php if(isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])): ?>
+<?php if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])): ?>
                      <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Current LAN IPv6 prefix");?></td>
                       <td><?= htmlspecialchars($wifprefix) ?></td>
@@ -610,7 +610,7 @@ if ($config['interfaces'][$if]['ipaddrv6'] == 'track6') {
                           <input type="button" onclick="show_ddns_config()" value="<?=gettext("Advanced");?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Dynamic DNS");?>
                         </div>
                         <div id="showddns" style="display:none">
-                          <input type="checkbox" value="yes" name="ddnsupdate" id="ddnsupdate" <?php if($pconfig['ddnsupdate']) echo " checked=\"checked\""; ?> />&nbsp;
+                          <input type="checkbox" value="yes" name="ddnsupdate" id="ddnsupdate" <?php if ($pconfig['ddnsupdate']) echo " checked=\"checked\""; ?> />&nbsp;
                           <b><?=gettext("Enable registration of DHCP client names in DNS.");?></b><br />
                           <?=gettext("Note: Leave blank to disable dynamic DNS registration.");?><br />
                           <?=gettext("Enter the dynamic DNS domain which will be used to register client names in the DNS server.");?>
@@ -766,7 +766,7 @@ if ($config['interfaces'][$if]['ipaddrv6'] == 'track6') {
                       </td>
                     </tr>
 <?php
-                    if(!empty($config['dhcpdv6'][$if]['staticmap'])):
+                    if (!empty($config['dhcpdv6'][$if]['staticmap'])):
                       $i = 0;
                       foreach ($config['dhcpdv6'][$if]['staticmap'] as $mapent): ?>
                     <tr>
