@@ -78,6 +78,8 @@ class Helpers(object):
         :return: []
         """
         result = self.getNodeByTag(tag)
+        if result is None:
+            return []
         if type(result) != list:
             # wrap result
             result = [result]
