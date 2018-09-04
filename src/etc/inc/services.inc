@@ -1094,6 +1094,15 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
         if (isset($blacklist[$ifname])) {
             continue;
         }
+        if(!empty($config['dhcpdv6'][$ifname]['dnsserver'][0])){
+            // user specified DNS servers
+            $dns_arrv6 = array(); //reset
+            foreach($config['dhcpdv6'][$ifname]['dnsserver'] as $dnsserver) {
+                if (is_ipaddrv6($dnsserver)) {
+                    $dns_arrv6[] = $dnsserver;
+                }
+            }            
+        }
         if (!empty($config['interfaces'][$ifname]['track6-interface'])) {
             $realif = get_real_interface($ifname, "inet6");
             $ifcfgipv6 = get_interface_ipv6($ifname);
@@ -1104,9 +1113,9 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
             $trackifname = $config['interfaces'][$ifname]['track6-interface'];
             $trackcfg = $config['interfaces'][$trackifname];
             $pdlen = calculate_ipv6_delegation_length($trackifname);
-            $dhcpdv6cfg[$ifname] = array();
-            $dhcpdv6cfg[$ifname]['enable'] = true;
             if (!isset($config['interfaces'][$ifname]['dhcpd6track6allowoverride']) || !isset($config['dhcpdv6'][$ifname]['enable'])) {
+                $dhcpdv6cfg[$ifname] = array(); // The array is zeroed here for automatic - we must NOT to this if overiding
+                $dhcpdv6cfg[$ifname]['enable'] = true;
                 /* fixed range */
                 $ifcfgipv6arr = $ifcfgipv6arr = explode(':', $ifcfgipv6);
                 $ifcfgipv6arr[7] = '1000';
