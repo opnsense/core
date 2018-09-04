@@ -1038,11 +1038,8 @@ function is_dhcpv6_server_enabled()
     global $config;
 
     foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifcfg) {
-        if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface'])) {
-            $pdlen = calculate_ipv6_delegation_length($ifcfg['track6-interface']);
-            if ($pdlen > 2) {
-                return true;
-            }
+        if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface']) && !isset($ifcfg['dhcpd6track6allowoverride'])) {
+            return true;
         }
     }
 
