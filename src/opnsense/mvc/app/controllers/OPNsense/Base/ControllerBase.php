@@ -187,11 +187,12 @@ class ControllerBase extends ControllerRoot
             $this->view->ui_theme = $cnf->object()->theme;
         }
 
-        if (is_file(__DIR__.'/../../../../../firmware-product')) {
-            $product_vars = json_decode(file_get_contents(__DIR__.'/../../../../../firmware-product'), true);
-            foreach ($product_vars as $product_key => $product_var) {
-                $this->view->$product_key = $product_var;
-            }
+        // parse firmware-product product properties, use template (.in) when not found
+        $firmware_product_fn =  __DIR__.'/../../../../../firmware-product';
+        $firmware_product_fn = !is_file($firmware_product_fn) ? $firmware_product_fn .".in" : $firmware_product_fn;
+        $product_vars = json_decode(file_get_contents($firmware_product_fn), true);
+        foreach ($product_vars as $product_key => $product_var) {
+            $this->view->$product_key = $product_var;
         }
 
         // info about the current user and box
