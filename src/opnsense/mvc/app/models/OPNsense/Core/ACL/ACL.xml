@@ -435,7 +435,7 @@
         </patterns>
     </page-services-dhcprelay>
     <page-services-dhcpserver-editstaticmapping>
-        <name>Services: DHCP Server : Edit static mapping</name>
+        <name>Services: DHCP Server: Edit static mapping</name>
         <patterns>
             <pattern>services_dhcp_edit.php*</pattern>
         </patterns>
@@ -453,7 +453,7 @@
         </patterns>
     </page-services-dhcpv6relay>
     <page-services-dhcpserverv6-editstaticmapping>
-        <name>Services: DHCPv6 Server : Edit static mapping</name>
+        <name>Services: DHCPv6 Server: Edit static mapping</name>
         <patterns>
             <pattern>services_dhcpv6_edit.php*</pattern>
         </patterns>
