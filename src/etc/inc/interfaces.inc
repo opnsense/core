@@ -971,7 +971,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     global $config;
 
     if (!isset($config['interfaces'][$interface]) || ($ifacecfg !== false && !is_array($ifacecfg))) {
-        // exit on invalid input
         return;
     }
 
@@ -1009,7 +1008,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         }
     }
 
-    // force VIPs to go down
     if (isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vip) {
             if ($vip['interface'] == $interface) {
@@ -1019,10 +1017,10 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     }
 
     switch ($ifcfg['ipaddr']) {
-        case "ppp":
-        case "pppoe":
-        case "pptp":
-        case "l2tp":
+        case 'ppp':
+        case 'pppoe':
+        case 'pptp':
+        case 'l2tp':
             if (!empty($ppps)) {
                 foreach ($ppps as $ppp) {
                     if ($ifcfg['if'] == $ppp['if']) {
@@ -2868,7 +2866,7 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
         }
     }
 
-    $wanif = get_real_interface($interface, "inet6");
+    $wanif = get_real_interface($interface, 'inet6');
 
     /* accept router advertisements for this interface */
     set_single_sysctl('net.inet6.ip6.accept_rtadv', '1');
@@ -2904,7 +2902,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
         return;
     }
 
-    $wanif = get_real_interface($interface, "inet6");
+    $wanif = get_real_interface($interface, 'inet6');
 
     $dhcp6cconf = "interface {$wanif} {\n";
 
@@ -3019,12 +3017,8 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     $rtsoldscript .= "\t$dhcp6ccommand\n";
     $rtsoldscript .= "fi\n";
 
-    if (!@file_put_contents("/var/etc/rtsold_{$wanif}_script.sh", $rtsoldscript)) {
-        log_error("Error: cannot open rtsold_{$wanif}_script.sh in interface_dhcpv6_configure() for writing.");
-        return;
-    }
-
-    chmod("/var/etc/rtsold_{$wanif}_script.sh", 0755);
+    @file_put_contents("/var/etc/rtsold_{$wanif}_script.sh", $rtsoldscript);
+    @chmod("/var/etc/rtsold_{$wanif}_script.sh", 0755);
 }
 
 function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
@@ -3669,8 +3663,8 @@ function get_real_interface($interface = 'wan', $family = 'all')
                     $ipaddrv6 = "";
                 }
                 switch ($ipaddrv6) {
-                    case "6rd":
-                    case "6to4":
+                    case '6rd':
+                    case '6to4':
                         $wanif = "{$interface}_stf";
                         break;
                     case 'pppoe':
@@ -4001,7 +3995,7 @@ function get_interface_ip($interface = 'wan')
 {
     $realif = get_failover_interface($interface);
     if (!$realif) {
-        if (strstr($interface, "_vip")) {
+        if (strstr($interface, '_vip')) {
             return get_configured_carp_interface_list($interface);
         } else {
             return null;
@@ -4020,10 +4014,10 @@ function get_interface_ipv6($interface = 'wan')
 {
     global $config;
 
-    $realif = get_failover_interface($interface, "inet6");
+    $realif = get_failover_interface($interface, 'inet6');
     if (!$realif) {
-        if (strstr($interface, "_vip")) {
-            return get_configured_carp_interface_list($interface, "inet6");
+        if (strstr($interface, '_vip')) {
+            return get_configured_carp_interface_list($interface, 'inet6');
         } else {
             return null;
         }
@@ -4249,7 +4243,7 @@ function interfaces_staticarp_configure($if)
     }
 }
 
-function get_failover_interface($interface, $family = "all")
+function get_failover_interface($interface, $family = 'all')
 {
     global $config;
 
