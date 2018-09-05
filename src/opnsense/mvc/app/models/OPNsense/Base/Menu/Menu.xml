@@ -86,9 +86,7 @@
                 <Edit url="/system_crlmanager.php*" visibility="hidden"/>
             </Revocation>
         </Trust>
-        <Wizard url="/wizard.php?xml=system" cssClass="fa fa-magic fa-fw">
-            <Step url="/wizard.php?xml=system*" visibility="hidden"/>
-        </Wizard>
+        <Wizard url="/wizard.php?xml=system" cssClass="fa fa-magic fa-fw"/>
         <LogFiles order="150" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
             <General order="100" VisibleName="General" url="/diag_logs.php"/>
             <Configd order="150" VisibleName="Configd" url="/configd_logs.php"/>
