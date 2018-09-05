@@ -61,6 +61,7 @@ require_once("interfaces.inc");
                     $("#"+tr_id).find('.text-success').removeClass('text-success').addClass('text-danger');
                     $("#"+tr_id).find('.fa-arrow-down').removeClass('fa-arrow-down').addClass('fa-times');
                     $("#"+tr_id).find('.fa-arrow-up').removeClass('fa-arrow-up').addClass('fa-times');
+                    break;
               }
           }
       });
@@ -74,7 +75,7 @@ require_once("interfaces.inc");
       $ifinfo = $ifsinfo[$ifdescr];
       $iswireless = is_interface_wireless($ifdescr);?>
       <tr id="interface_widget_item_<?=$ifname;?>">
-        <td>
+        <td style="width:15%;">
 <?php
           if (isset($ifinfo['ppplink'])):?>
             <span title="3g" class="fa fa-mobile text-success"></span>
@@ -108,25 +109,25 @@ require_once("interfaces.inc");
             </u>
           </strong>
         </td>
-        <td>
+        <td style="width:5%;">
 <?php
         if ($ifinfo['status'] == "up" || $ifinfo['status'] == "associated"):?>
           <span class="fa fa-arrow-up text-success"></span>
 <?php
-        elseif ($ifinfo['status'] == "no carrier"):?>
+        elseif ($ifinfo['status'] == "down"):?>
           <span class="fa fa-arrow-down text-danger"></span>
 <?php
-        elseif ($ifinfo['status'] == "down"):?>
+        elseif ($ifinfo['status'] == "no carrier"):?>
           <span class="fa fa-times text-danger"></span>
 <?php
         else:?>
           <?=htmlspecialchars($ifinfo['status']);?>
 <?php
         endif;?>
-        <td>
+        <td style="width:35%;">
           <?=empty($ifinfo['media']) ? htmlspecialchars($ifinfo['cell_mode']) : htmlspecialchars($ifinfo['media']);?>
         </td>
-        <td>
+        <td style="width:45%;">
           <?=htmlspecialchars($ifinfo['ipaddr']);?>
           <?=!empty($ifinfo['ipaddr']) ? "<br/>" : "";?>
           <?=htmlspecialchars($ifinfo['ipaddrv6']);?>

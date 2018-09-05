@@ -47,14 +47,18 @@ function interfaces_api()
         $interfaceItem['outerrs'] = isset($ifinfo['outerrs']) ? $ifinfo['outerrs'] : "0";
         $interfaceItem['collisions'] = isset($ifinfo['collisions']) ? $ifinfo['collisions'] : "0";
         $interfaceItem['name'] = $ifname;
-        if ($ifinfo['status'] == "up" || $ifinfo['status'] == "associated") {
-            $interfaceItem['status'] = "up";
-        } elseif ($ifinfo['status'] == "no carrier") {
-            $interfaceItem['status'] = "down";
-        } elseif ($ifinfo['status'] == "down") {
-            $interfaceItem['status'] = "block";
-        } else {
-            $interfaceItem['status'] = "";
+        switch ($ifinfo['status']) {
+            case 'down':
+            case 'no carrier':
+            case 'up':
+                $interfaceItem['status'] = $ifinfo['status'];
+                break;
+            case 'associated':
+                $interfaceItem['status'] = 'up';
+                break;
+            default:
+                $interfaceItem['status'] = '';
+                break;
         }
         $interfaceItem['ipaddr'] = empty($ifinfo['ipaddr']) ? "" : $ifinfo['ipaddr'];
         $interfaceItem['media'] = empty($ifinfo['media']) ? "" : $ifinfo['media'];
