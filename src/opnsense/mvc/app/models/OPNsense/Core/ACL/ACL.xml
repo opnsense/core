@@ -427,7 +427,7 @@
     <page-wizard-system>
         <name>System Setup Wizard</name>
         <patterns>
-            <pattern>wizard.php?xml=system*</pattern>
+            <pattern>wizard.php?xml=system</pattern>
         </patterns>
     </page-wizard-system>
     <page-services-dhcprelay>
