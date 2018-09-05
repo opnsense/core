@@ -34,6 +34,17 @@ require_once("guiconfig.inc");
 require_once("widgets/include/interface_list.inc");
 require_once("interfaces.inc");
 
+global $config;
+
+$interfaces = legacy_config_get_interfaces();
+
+if (isset($_POST['interfaceslistfilter'])) {
+    $config['widgets']['interfaceslistfilter'] = htmlspecialchars($_POST['interfaceslistfilter'], ENT_QUOTES | ENT_HTML401);
+    write_config("Saved Interfaces Filter via Dashboard");
+    header(url_safe('Location: /index.php'));
+    exit;
+}
+
 ?>
 
 <script>
@@ -67,11 +78,37 @@ require_once("interfaces.inc");
       });
   }
 </script>
+<div id="interface_list-settings" class="widgetconfigdiv" style="display:none;">
+  <form action="/widgets/widgets/interface_list.widget.php" method="post" name="iformd">
+    <table class="table table-condensed">
+      <thead>
+        <tr>
+            <th><?= gettext('Comma separated list of interfaces to NOT display in the widget') ?></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="text" name="interfaceslistfilter" id="interfaceslistfilter" value="<?= $config['widgets']['interfaceslistfilter'] ?>" /></td>
+        </tr>
+        <tr>
+          <td>
+            <input id="submitd" name="submitd" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
+</div>
+
+<div id="interface_list-widgets" class="content-box";">
 <table class="table table-striped table-condensed" data-plugin="interfaces" data-callback="interface_widget_update">
   <tbody>
 <?php
     $ifsinfo = get_interfaces_info();
+    $skipinterfaces = explode(",", $config['widgets']['interfaceslistfilter']);
     foreach (get_configured_interface_with_descr() as $ifdescr => $ifname):
+    if (!in_array($ifname, $skipinterfaces)):?>
+<?php    
       $ifinfo = $ifsinfo[$ifdescr];
       $iswireless = is_interface_wireless($ifdescr);?>
       <tr id="interface_widget_item_<?=$ifname;?>">
@@ -134,6 +171,14 @@ require_once("interfaces.inc");
         </td>
       </tr>
 <?php
+    endif;
     endforeach;?>
   </tbody>
 </table>
+</div>
+<!-- needed to display the widget settings menu -->
+<script>
+//<![CDATA[
+  $("#interface_list-configure").removeClass("disabled");
+//]]>
+</script>
