@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     <table class="table table-condensed">
       <tr>
         <td>
-          <select id="interfaceslistfilter" name="interfaceslistfilter[]" multiple="multiple" XXXclass="selectpicker" title="<?= html_safe(gettext('All')) ?>">
+          <select id="interfaceslistfilter" name="interfaceslistfilter[]" multiple="multiple" class="selectpicker_widget" title="<?= html_safe(gettext('All')) ?>">
 <?php foreach ($interfaces as $iface => $ifacename): ?>
             <option value="<?= html_safe($iface) ?>" <?= in_array($iface, $pconfig['interfaceslistfilter']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
 <?php endforeach;?>

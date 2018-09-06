@@ -91,7 +91,7 @@ $ifvalues = array(
     <table class="table table-condensed">
       <tr>
         <td>
-          <select id="interfacesstatisticsfilter" name="interfacesstatisticsfilter[]" multiple="multiple" XXXclass="selectpicker" title="<?= html_safe(gettext('All')) ?>">
+          <select id="interfacesstatisticsfilter" name="interfacesstatisticsfilter[]" multiple="multiple" class="selectpicker_widget" title="<?= html_safe(gettext('All')) ?>">
 <?php foreach ($interfaces as $iface => $ifacename): ?>
             <option value="<?= html_safe($iface) ?>" <?= in_array($iface, $pconfig['interfacesstatisticsfilter']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
 <?php endforeach;?>

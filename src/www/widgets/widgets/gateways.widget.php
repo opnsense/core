@@ -105,7 +105,7 @@ $gateways = return_gateways_array();
     <table class="table table-condensed">
       <tr>
         <td>
-          <select id="gatewaysfilter" name="gatewaysfilter[]" multiple="multiple" XXXclass="selectpicker" title="<?= html_safe(gettext('All')) ?>">
+          <select id="gatewaysfilter" name="gatewaysfilter[]" multiple="multiple" class="selectpicker_widget" title="<?= html_safe(gettext('All')) ?>">
 <?php foreach ($gateways as $gwname => $unused): ?>
             <option value="<?= html_safe($gwname) ?>" <?= in_array($gwname, $pconfig['gatewaysfilter']) ? 'selected="selected"' : '' ?>><?= html_safe($gwname) ?></option>
 <?php endforeach;?>

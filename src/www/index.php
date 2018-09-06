@@ -315,6 +315,7 @@ include("fbegin.inc");?>
               }
           });
       });
+      $('.selectpicker_widget').selectpicker('refresh');
   });
 </script>
 
