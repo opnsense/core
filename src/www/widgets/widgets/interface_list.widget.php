@@ -126,7 +126,7 @@ require_once("interfaces.inc");
         <td style="width:35%;">
           <?=empty($ifinfo['media']) ? htmlspecialchars($ifinfo['cell_mode']) : htmlspecialchars($ifinfo['media']);?>
         </td>
-        <td style="width:45%;">
+        <td style="width:45%; word-break: break-word;">
           <?=htmlspecialchars($ifinfo['ipaddr']);?>
           <?=!empty($ifinfo['ipaddr']) ? "<br/>" : "";?>
           <?=htmlspecialchars($ifinfo['ipaddrv6']);?>
