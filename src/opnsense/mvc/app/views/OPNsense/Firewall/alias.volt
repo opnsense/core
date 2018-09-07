@@ -237,9 +237,10 @@
                         <tr>
                             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                             <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                            <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
-                            <th data-column-id="type" data-type="string">{{ lang._('Type') }}</th>
+                            <th data-column-id="name" data-width="20em" data-type="string">{{ lang._('Name') }}</th>
+                            <th data-column-id="type" data-width="12em" data-type="string">{{ lang._('Type') }}</th>
                             <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
+                            <th data-column-id="content" data-type="string">{{ lang._('Content') }}</th>
                             <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                         </tr>
                         </thead>
