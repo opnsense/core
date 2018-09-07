@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       $ifinfo = $ifsinfo[$ifdescr];
       $iswireless = is_interface_wireless($ifdescr);?>
       <tr id="interface_widget_item_<?=$ifname;?>">
-        <td style="width:15%;">
+        <td style="width:15%; word-break: break-word;">
 <?php
           if (isset($ifinfo['ppplink'])):?>
             <span title="3g" class="fa fa-mobile text-success"></span>
@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             </u>
           </strong>
         </td>
-        <td style="width:5%;">
+        <td style="width:5%; word-break: break-word;">
 <?php
         if ($ifinfo['status'] == "up" || $ifinfo['status'] == "associated"):?>
           <span class="fa fa-arrow-up text-success"></span>
@@ -162,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           <?=htmlspecialchars($ifinfo['status']);?>
 <?php
         endif;?>
-        <td style="width:35%;">
+        <td style="width:35%; word-break: break-word;">
           <?=empty($ifinfo['media']) ? htmlspecialchars($ifinfo['cell_mode']) : htmlspecialchars($ifinfo['media']);?>
         </td>
         <td style="width:45%; word-break: break-word;">
