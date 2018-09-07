@@ -165,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         <td style="width:35%;">
           <?=empty($ifinfo['media']) ? htmlspecialchars($ifinfo['cell_mode']) : htmlspecialchars($ifinfo['media']);?>
         </td>
-        <td style="width:45%;">
+        <td style="width:45%; word-break: break-word;">
           <?=htmlspecialchars($ifinfo['ipaddr']);?>
           <?=!empty($ifinfo['ipaddr']) ? "<br/>" : "";?>
           <?=htmlspecialchars(isset($config['interfaces'][$ifdescr]['dhcp6prefixonly']) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?>
