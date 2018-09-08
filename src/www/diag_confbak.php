@@ -1,44 +1,43 @@
 <?php
 
 /*
-    Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2005 Colin Smith <ethethlay@gmail.com>
-    Copyright (C) 2010 Jim Pingle <jimp@pfsense.org>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014 Deciso B.V.
+ * Copyright (C) 2005 Colin Smith <ethethlay@gmail.com>
+ * Copyright (C) 2010 Jim Pingle <jimp@pfsense.org>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $cnf = OPNsense\Core\Config::getInstance();
-    $confvers = $cnf->getBackups(true);
     if (isset($config['system']['backupcount'])) {
         $pconfig['backupcount'] = $config['system']['backupcount'];
     } else {
         # XXX fallback value for older configs
         $pconfig['backupcount'] = 60;
     }
+
     if (!empty($_GET['getcfg'])) {
         foreach ($confvers as $filename => $revision) {
             if ($revision['time'] == $_GET['getcfg']) {
@@ -53,11 +52,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 exit;
             }
         }
-    } elseif (!empty($_GET['diff']) && isset($_GET['oldtime']) && isset($_GET['newtime'])
+    }
+
+    $cnf = OPNsense\Core\Config::getInstance();
+    $confvers = $cnf->getBackups(true);
+    $oldfile = '';
+    $newfile = '';
+    $diff = '';
+
+    if (!empty($_GET['diff']) && isset($_GET['oldtime']) && isset($_GET['newtime'])
           && is_numeric($_GET['oldtime']) && (is_numeric($_GET['newtime']) || ($_GET['newtime'] == 'current'))) {
-        $oldfile = '';
-        $newfile = '';
-        // search filenames to compare
         foreach ($confvers as $filename => $revision) {
             if ($revision['time'] == $_GET['oldtime']) {
                 $oldfile = $filename;
@@ -66,8 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $newfile = $filename;
             }
         }
-
-        $diff = '';
 
         $oldtime = $_GET['oldtime'];
         $oldcheck = $oldtime;
@@ -79,10 +81,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $newtime = $_GET['newtime'];
             $newcheck = $newtime;
         }
+    } elseif (count($confvers)) {
+        $files = array_keys($confvers);
+        $newfile = '/conf/config.xml';
+        $newtime = $config['revision']['time'];
+        $oldfile = $files[0];
+        $oldtime = $confvers[$oldfile]['time'];
+    }
 
-        if (file_exists($oldfile) && file_exists($newfile)) {
-            exec("/usr/bin/diff -u " . escapeshellarg($oldfile) . " " . escapeshellarg($newfile), $diff);
-        }
+    if (file_exists($oldfile) && file_exists($newfile)) {
+        exec("/usr/bin/diff -u " . escapeshellarg($oldfile) . " " . escapeshellarg($newfile), $diff);
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
