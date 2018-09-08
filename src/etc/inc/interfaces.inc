@@ -2740,7 +2740,7 @@ function interface_6rd_configure($interface = 'wan', $wancfg)
     mwexecf('/sbin/ifconfig %s stfv4br %s', array($stfiface, $wancfg['gateway-6rd']));
     mwexecf('/sbin/ifconfig %s stfv4net %s/%s', array($stfiface, $ip4address, $wancfg['prefix-6rd-v4plen']));
 
-    $stfiface = "{$wanif}_stf"; /* XXX temporary */
+    $stfiface = "{$interface}_stf"; /* XXX temporary */
     file_put_contents("/tmp/{$stfiface}_routerv6", "{$rd6brgw}\n");
     file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$rd6brgw}\n");
 
@@ -2839,7 +2839,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
 
     mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 16', array($stfiface, $stflanpr));
 
-    $stfiface = "{$wanif}_stf"; /* XXX temporary */
+    $stfiface = "{$interface}_stf"; /* XXX temporary */
     file_put_contents("/tmp/{$stfiface}_routerv6", "{$stfbrgw}");
     file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$stfbrgw}");
 
