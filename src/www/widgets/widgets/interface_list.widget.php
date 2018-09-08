@@ -40,12 +40,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['interfaceslistfilter'] = !empty($config['widgets']['interfaceslistfilter']) ?
         explode(',', $config['widgets']['interfaceslistfilter']) : array();
+    $pconfig['interfaceslistinvert'] = !empty($config['widgets']['interfaceslistinvert']) ? '1' : '';
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (!empty($pconfig['interfaceslistfilter'])) {
         $config['widgets']['interfaceslistfilter'] = implode(',', $pconfig['interfaceslistfilter']);
     } elseif (isset($config['widgets']['interfaceslistfilter'])) {
         unset($config['widgets']['interfaceslistfilter']);
+    }
+    if (!empty($pconfig['interfaceslistinvert'])) {
+        $config['widgets']['interfaceslistinvert'] = 1;
+    } elseif (isset($config['widgets']['interfaceslistinvert'])) {
+        unset($config['widgets']['interfaceslistinvert']);
     }
     write_config("Saved Interface List Filter via Dashboard");
     header(url_safe('Location: /index.php'));
@@ -91,12 +97,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     <table class="table table-condensed">
       <tr>
         <td>
-          <select id="interfaceslistfilter" name="interfaceslistfilter[]" multiple="multiple" class="selectpicker_widget" title="<?= html_safe(gettext('All')) ?>">
+          <select id="interfaceslistinvert" name="interfaceslistinvert" class="selectpicker_widget">
+            <option value="" <?= empty($pconfig['interfaceslistinvert']) ? 'selected="selected"' : '' ?>><?= gettext('Hide') ?></option>
+            <option value="yes" <?= !empty($pconfig['interfaceslistinvert']) ? 'selected="selected"' : '' ?>><?= gettext('Show') ?></option>
+          </select>
+          <select id="interfaceslistfilter" name="interfaceslistfilter[]" multiple="multiple" class="selectpicker_widget">
 <?php foreach ($interfaces as $iface => $ifacename): ?>
             <option value="<?= html_safe($iface) ?>" <?= in_array($iface, $pconfig['interfaceslistfilter']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
 <?php endforeach;?>
           </select>
-          <input id="submitd" name="submitd" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+          <button id="submitd" name="submitd" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button>
         </td>
       </tr>
     </table>
@@ -108,8 +118,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 <?php
     $ifsinfo = get_interfaces_info();
     foreach ($interfaces as $ifdescr => $ifname):
-    if (!count($pconfig['interfaceslistfilter']) || in_array($ifdescr, $pconfig['interfaceslistfilter'])):?>
-<?php
+      $listed = in_array($ifdescr, $pconfig['interfaceslistfilter']);
+      $listed = !empty($pconfig['interfaceslistinvert']) ? $listed : !$listed;
+      if (!$listed) {
+        continue;
+      }
       $ifinfo = $ifsinfo[$ifdescr];
       $iswireless = is_interface_wireless($ifdescr);?>
       <tr id="interface_widget_item_<?=$ifname;?>">
@@ -171,9 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           <?=htmlspecialchars(isset($config['interfaces'][$ifdescr]['dhcp6prefixonly']) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?>
         </td>
       </tr>
-<?php
-    endif;
-    endforeach;?>
+<?php endforeach ?>
   </tbody>
 </table>
 
