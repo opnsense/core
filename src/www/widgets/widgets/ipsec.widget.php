@@ -86,7 +86,7 @@ if (isset($config['ipsec']['phase2'])) {
     });
 </script>
 <div id="tabs">
-    <div data-for="ipsec-Overview" class="ipsec-tab table-cell activetab" style="cursor: pointer; display:table-cell">
+    <div data-for="ipsec-overview" class="ipsec-tab table-cell activetab" style="cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Overview");?>&nbsp;&nbsp;</strong>
     </div>
     <div data-for="ipsec-tunnel" class="ipsec-tab table-cell" style="cursor: pointer; display:table-cell">
@@ -97,7 +97,7 @@ if (isset($config['ipsec']['phase2'])) {
     </div>
 </div>
 
-<div id="ipsec-Overview" class="ipsec-tab-content" style="display:block;">
+<div id="ipsec-overview" class="ipsec-tab-content" style="display:block;">
   <table class="table table-striped">
     <thead>
       <tr>
