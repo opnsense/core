@@ -140,13 +140,25 @@ function services_radvd_configure($blacklist = array())
 
         $radvdifs[$realif] = 1;
 
+        $mtu = legacy_interface_stats($realif)['mtu'];
+
+        if (isset($config['interfaces'][$dhcpv6if]['track6-interface'])) {
+            $realtrackif = get_real_interface($config['interfaces'][$dhcpv6if]['track6-interface'], 'inet6');
+
+            $trackmtu = legacy_interface_stats($realtrackif)['mtu'];
+            if (!empty($trackmtu)) {
+                if ($trackmtu < $mtu) {
+                    $mtu = $trackmtu;
+                }
+            }
+        }
+
         $radvdconf .= "# Generated for DHCPv6 Server $dhcpv6if\n";
         $radvdconf .= "interface {$realif} {\n";
         $radvdconf .= sprintf("\tAdvSendAdvert %s;\n", !empty($dhcpv6ifconf['ranosend']) ? 'off' : 'on');
         $radvdconf .= sprintf("\tMinRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramininterval']) ? $dhcpv6ifconf['ramininterval'] : '200');
         $radvdconf .= sprintf("\tMaxRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramaxinterval']) ? $dhcpv6ifconf['ramaxinterval'] : '600');
-        $mtu = legacy_interface_stats($realif)['mtu'];
-        $radvdconf .= "\tAdvLinkMTU ". (is_numeric($mtu) ? $mtu : 1280) .";\n";
+        $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
 
         switch($dhcpv6ifconf['rapriority']) {
             case "low":
@@ -294,7 +306,16 @@ function services_radvd_configure($blacklist = array())
             $autotype = $config['interfaces'][$trackif]['ipaddrv6'];
         }
 
+        $realtrackif = get_real_interface($trackif, 'inet6');
+
         $mtu = legacy_interface_stats($realif)['mtu'];
+        $trackmtu = legacy_interface_stats($realtrackif)['mtu'];
+        if (!empty($trackmtu)) {
+            if ($trackmtu < $mtu) {
+                $mtu = $trackmtu;
+            }
+        }
+
         $dnslist = array();
         $subnetv6 = '::';
         $ifcfgsnv6 = '64';
@@ -323,11 +344,10 @@ function services_radvd_configure($blacklist = array())
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= "\tMinRtrAdvInterval 3;\n";
         $radvdconf .= "\tMaxRtrAdvInterval 10;\n";
-        $radvdconf .= "\tAdvLinkMTU ". (is_numeric($mtu) ? $mtu : 1280) .";\n";
+        $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
         $radvdconf .= "\tAdvOtherConfigFlag on;\n";
         $radvdconf .= "\tprefix {$subnetv6}/{$ifcfgsnv6} {\n";
         if ($autotype == 'slaac') {
-            $realtrackif = get_real_interface($trackif, 'inet6');
             $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
             $radvdconf .= "\t\tDeprecatePrefix on;\n";
         }
