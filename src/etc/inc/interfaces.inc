@@ -4051,9 +4051,9 @@ function get_interface_ipv6($interface = 'wan')
     $curip = find_interface_ipv6($realif);
     if ($curip && is_ipaddrv6($curip) && ($curip != "::")) {
         return $curip;
-    } else {
-        return null;
     }
+
+    return null;
 }
 
 function get_interface_subnet($interface = "wan")
