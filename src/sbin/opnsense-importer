@@ -114,9 +114,8 @@ timeout_prompt()
 zfs_load()
 {
 	# we need to load ZFS to list pools
-	if kldstat -qm zfs; then
-		export ZFS="yes"
-	else
+	if ! kldstat -qm zfs; then
+		export UNLOAD_ZFS="yes"
 		kldload zfs
 	fi
 
@@ -130,7 +129,7 @@ zfs_load()
 
 zfs_unload()
 {
-	if [ -z "${ZFS}" ]; then
+	if [ -n "${UNLOAD_ZFS}" ]; then
 		kldunload zfs
 	fi
 }
