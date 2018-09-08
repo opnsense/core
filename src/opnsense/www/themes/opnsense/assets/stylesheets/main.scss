@@ -385,7 +385,7 @@ main.page-content.col-lg-12 {
         padding-right: 10px;
         padding-top: 15px;
         padding-bottom: 15px;
-        border-bottom: 2px solid #lightergrey;
+        border-bottom: 2px solid lightergrey;
         > span {
           &.fa, &.glyphicon {
             visibility: visible;
@@ -883,4 +883,21 @@ div[data-for*="help_for"] {
 
 .dashboard_grid_column table {
   table-layout: fixed;
+}
+
+$ipsec_bright_color: #EEEEEE;
+$ipsec_dark_color: #777777;
+
+#ipsec {
+  #ipsec-mobile, #ipsec-tunnel, #ipsec-Overview {
+    background-color: $ipsec_bright_color;
+  }
+  .ipsec-tab {
+    background-color: $ipsec_dark_color;
+    color: white;
+  }
+  .ipsec-tab.activetab {
+    background-color: $ipsec_bright_color;
+    color: black;
+  }
 }

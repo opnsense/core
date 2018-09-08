@@ -77,29 +77,27 @@ if (isset($config['ipsec']['phase2'])) {
 ?>
 <script>
     $(document).ready(function() {
-        $(".ipsec-tab").unbind('click').click(function(){
-            $(".ipsec-tab").css('background-color', '#777777');
-            $(".ipsec-tab").css('color', 'white');
-            $(this).css('background-color', '#EEEEEE');
-            $(this).css('color', 'black');
+        $(".ipsec-tab").unbind('click').click(function() {
+            $('.ipsec-tab').removeClass('activetab');
+            $(this).addClass('activetab');
             $(".ipsec-tab-content").hide();
             $("#"+$(this).attr('data-for')).show();
         });
     });
 </script>
 <div id="tabs">
-    <div data-for="ipsec-Overview" class="ipsec-tab table-cell" style="background-color:#EEEEEE; color:black; cursor: pointer; display:table-cell">
+    <div data-for="ipsec-Overview" class="ipsec-tab table-cell activetab" style="cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Overview");?>&nbsp;&nbsp;</strong>
     </div>
-    <div data-for="ipsec-tunnel" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
+    <div data-for="ipsec-tunnel" class="ipsec-tab table-cell" style="cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Tunnels");?>&nbsp;&nbsp;</strong>
     </div>
-    <div data-for="ipsec-mobile" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
+    <div data-for="ipsec-mobile" class="ipsec-tab table-cell" style="cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Mobile");?>&nbsp;&nbsp;</strong>
     </div>
 </div>
 
-<div id="ipsec-Overview" class="ipsec-tab-content" style="display:block;background-color:#EEEEEE;">
+<div id="ipsec-Overview" class="ipsec-tab-content" style="display:block;">
   <table class="table table-striped">
     <thead>
       <tr>
@@ -139,7 +137,7 @@ if (isset($config['ipsec']['phase2'])) {
   </table>
 </div>
 
-<div id="ipsec-tunnel" class="ipsec-tab-content" style="display:none;background-color:#EEEEEE;">
+<div id="ipsec-tunnel" class="ipsec-tab-content" style="display:none;">
   <table class="table table-striped">
     <thead>
       <tr>
@@ -166,7 +164,7 @@ if (isset($config['ipsec']['phase2'])) {
     </tbody>
   </table>
 </div>
-<div id="ipsec-mobile" class="ipsec-tab-content" style="display:none;background-color:#EEEEEE;">
+<div id="ipsec-mobile" class="ipsec-tab-content" style="display:none;">
   <table class="table table-striped">
     <thead>
       <tr>
