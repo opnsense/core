@@ -1110,6 +1110,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         mwexecf('/sbin/pfctl -i %s -Fs', $dev);
     }
 
+    /* clear stale state files associated with this interface */
     @unlink("/var/db/{$interface}_ip");
     @unlink("/var/db/{$interface}_ipv6");
     @unlink("/var/db/{$interface}_cacheip");
@@ -1122,6 +1123,8 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     @unlink("/tmp/{$realifv6}upv6");
     @unlink("/tmp/{$realif}_router");
     @unlink("/tmp/{$realifv6}_routerv6");
+    @unlink("/tmp/{$realif}_defaultgw");
+    @unlink("/tmp/{$realifv6}_defaultgwv6");
 }
 
 function interfaces_ptpid_used($ptpid)
@@ -2726,8 +2729,8 @@ function interface_6rd_configure($interface = 'wan', $wancfg)
     mwexecf('/sbin/ifconfig %s stfv4br %s', array($stfiface, $wancfg['gateway-6rd']));
     mwexecf('/sbin/ifconfig %s stfv4net %s/%s', array($stfiface, $ip4address, $wancfg['prefix-6rd-v4plen']));
 
-    file_put_contents("/tmp/{$wanif}_routerv6", "{$rd6brgw}\n");
-    file_put_contents("/tmp/{$wanif}_defaultgwv6", "{$rd6brgw}\n");
+    file_put_contents("/tmp/{$stfiface}_routerv6", "{$rd6brgw}\n");
+    file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$rd6brgw}\n");
 
     $ip4gateway = get_interface_gateway($interface);
     if (is_ipaddrv4($ip4gateway)) {
@@ -2824,9 +2827,8 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
 
     mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 16', array($stfiface, $stflanpr));
 
-    /* write out a default router file */
-    file_put_contents("/tmp/{$wanif}_routerv6", "{$stfbrgw}");
-    file_put_contents("/tmp/{$wanif}_defaultgwv6", "{$stfbrgw}");
+    file_put_contents("/tmp/{$stfiface}_routerv6", "{$stfbrgw}");
+    file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$stfbrgw}");
 
     $ip4gateway = get_interface_gateway($interface);
     if (is_ipaddrv4($ip4gateway)) {
