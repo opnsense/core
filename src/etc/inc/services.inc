@@ -1121,6 +1121,19 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
             $trackifname = $config['interfaces'][$ifname]['track6-interface'];
             $trackcfg = $config['interfaces'][$trackifname];
             $pdlen = calculate_ipv6_delegation_length($trackifname);
+
+            // The real length obtained by dhcp6c
+            $assigned_pd = array();
+            $assigned_pd = get_ipv6_PD(get_real_interface($trackifname, "inet6"));
+            
+            $assigned_pd_prefix = $assigned_pd[0];
+            $assigned_pd_length = $assigned_pd[1];
+            
+            $assigned_pd_array = array();
+            $assigned_pd_array = explode(":",$assigned_pd_prefix);
+
+            $ifcfgipv6arr = $ifcfgipv6arr = explode(':', $ifcfgipv6);
+            
             if (!isset($config['interfaces'][$ifname]['dhcpd6track6allowoverride'])) {
                 $dhcpdv6cfg[$ifname] = array();
                 $dhcpdv6cfg[$ifname]['enable'] = true;
@@ -1158,6 +1171,79 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
                     'from' => make_ipv6_64_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['from']),
                     'to' => make_ipv6_64_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['to']),
                 );
+                $pd_prefix_from_array = array();
+                $pd_prefix_to_array = array();
+                
+                $pd_prefix_from_array = explode(":",$config['dhcpdv6'][$ifname]['prefixrange']['from']);
+                $pd_prefix_to_array = explode(":",$config['dhcpdv6'][$ifname]['prefixrange']['to']);
+                
+                $pd_prefix_from_array[2] = sprintf("%02s",$pd_prefix_from_array[2]);
+                $pd_prefix_to_array[2] = sprintf("%02s",$pd_prefix_to_array[2]);
+
+                $pd_prefix_from_array_out = array();
+                $pd_prefix_to_array_out = array();
+                
+                for($x=0;$x<4;$x++) // make the prefx long format
+                {
+                    $assigned_pd_array[$x] = sprintf("%04s",$assigned_pd_array[$x]);
+                }
+                
+                $pd_prefix_from_array_out = $assigned_pd_array;
+                $pd_prefix_to_array_out = $assigned_pd_array;
+                
+                $pdval = intval($config['dhcpdv6'][$ifname]['prefixrange']['prefixlength']);
+                
+                switch($pdval) {
+                
+                // For PD sizes of /60 through /64, the user must do the math!
+                case 60:
+                case 62:
+                case 63:
+                case 64: // 3&4th bytes on 4th array
+                    $pd_prefix_from_array_out[3] =  sprintf("%04s",$assigned_pd_array[3]); // make it 4 bytes   
+                    $pd_prefix_from_array_out[3] = substr($pd_prefix_from_array_out[3],0,2).$pd_prefix_from_array[2];
+                    $pd_prefix_to_array_out[3] =  sprintf("%04s",$assigned_pd_array[3]); // make it 4 bytes   
+                    $pd_prefix_to_array_out[3] = substr($pd_prefix_to_array_out[3],0,2).$pd_prefix_to_array[2];
+                break;
+                
+                case 56: // 1st&2nd bytes on 4th array
+                    $pd_prefix_from_array[2] = str_pad($pd_prefix_from_array[2],4,"0");
+                    $pd_prefix_from_array_out[3] =  sprintf("%s",$pd_prefix_from_array[2]); // make it 4 bytes                       
+                    $pd_prefix_to_array[2] = str_pad($pd_prefix_to_array[2],4,"0");
+                    $pd_prefix_to_array_out[3] =  sprintf("%s",$pd_prefix_to_array[2]); // make it 4 bytes                                     
+                break;
+                case 52: // 1st byte on 4th array only, 0 to f, we only want one byte, but lookout for the user entering more
+                    $len = strlen($pd_prefix_from_array[2]);                    
+                    $pd_prefix_from_array[2] = substr($pd_prefix_from_array[2],$len-1,1);
+                    $pd_prefix_from_array_out[3] =  sprintf("%s000",substr($pd_prefix_from_array[2],0,1)); // first byte from entered value                      
+                    $len = strlen($pd_prefix_to_array[2]);                    
+                    $pd_prefix_to_array[2] = substr($pd_prefix_to_array[2],$len-1,1);
+                    $pd_prefix_to_array_out[3] =   sprintf("%s000",substr($pd_prefix_to_array[2],0,1));                                    
+                break;
+                case 48: // 4th byte on 2nd array,                    
+                    $pd_prefix_from_array[2] = substr($pd_prefix_from_array[2],0,1);
+                    $pd_prefix_from_array_out[1] =  substr(sprintf("%03s",$assigned_pd_array[1]),0,3).$pd_prefix_from_array[2]; // get 1st 3 byte + nibble
+                    
+                    $pd_prefix_to_array[2] = substr($pd_prefix_to_array[2],0,1);
+                    $pd_prefix_to_array_out[1] =  substr(sprintf("%03s",$assigned_pd_array[1]),0,3).$pd_prefix_to_array[2]; // get 1st 3 byte + nibble   
+                    $numcount = count(pd_prefix_to_array_out[2]);
+                    // clear junk ( this is for testing as I only get a /48 to start with
+                    for($x=4;$x>1;$x--) {
+                        unset($pd_prefix_from_array_out[$x]);
+                        unset($pd_prefix_to_array_out[$x]);
+                    }
+                    array_push($pd_prefix_from_array_out,"");
+                    array_push($pd_prefix_to_array_out,"");
+                        
+                break;                    
+                }
+                
+                $ipv6_from_pd_from = implode(":",$pd_prefix_from_array_out);
+                $ipv6_from_pd_to = implode(":",$pd_prefix_to_array_out);
+                $dhcpdv6cfg[$ifname]['prefixrange'] = array();
+                $dhcpdv6cfg[$ifname]['prefixrange']['prefixlength'] = $config['dhcpdv6'][$ifname]['prefixrange']['prefixlength'];
+                $dhcpdv6cfg[$ifname]['prefixrange']['from'] = $ipv6_from_pd_from;
+                $dhcpdv6cfg[$ifname]['prefixrange']['to'] = $ipv6_from_pd_to;
             }
         }
     }
@@ -1970,4 +2056,25 @@ function service_control_restart($name, $extras)
     }
 
     return sprintf(gettext("%s has been restarted."), htmlspecialchars($name));
+}
+function get_ipv6_PD($realif)
+{
+    if(file_exists("/tmp/{$realif}_dhcp6cpd")) {
+        $pd = trim(file_get_contents("/tmp/{$realif}_dhcp6cpd"));
+        $pd_array = array();
+        $pd_array = explode("/",$pd);
+        if(strlen($pd_array[1]) > 0) {
+            return($pd_array);
+        } else {
+            return null;
+        }        
+    }    
+}
+
+function get_ipv6_PD_string($realif)
+{
+    $pd_array = array();
+    $pd_array = get_ipv6_PD($realif);
+    
+    return($pd_array[0]."/".$pd_array[1]);
 }
