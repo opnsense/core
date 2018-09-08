@@ -118,7 +118,7 @@ function services_radvd_configure($blacklist = array())
         } elseif (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
             continue;
         } elseif (isset($blacklist[$dhcpv6if])) {
-            /* Do not put in the config an interface which is down */
+            $radvdconf .= "# Skipping blacklisted interface {$dhcpv6if}\n";
             continue;
         } elseif (!isset($dhcpv6ifconf['ramode']) || $dhcpv6ifconf['ramode'] == 'disabled') {
             continue;
@@ -289,7 +289,7 @@ function services_radvd_configure($blacklist = array())
         } elseif (!isset($config['interfaces'][$if]['enable'])) {
             continue;
         } elseif (isset($blacklist[$if])) {
-            /* Do not put in the config an interface which is down */
+            $radvdconf .= "# Skipping blacklisted interface {$if}\n";
             continue;
         }
         $trackif = $config['interfaces'][$if]['track6-interface'];
