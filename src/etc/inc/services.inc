@@ -118,7 +118,7 @@ function services_radvd_configure($blacklist = array())
         } elseif (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
             continue;
         } elseif (isset($blacklist[$dhcpv6if])) {
-            /* Do not put in the config an interface which is down */
+            $radvdconf .= "# Skipping blacklisted interface {$dhcpv6if}\n";
             continue;
         } elseif (!isset($dhcpv6ifconf['ramode']) || $dhcpv6ifconf['ramode'] == 'disabled') {
             continue;
@@ -140,13 +140,25 @@ function services_radvd_configure($blacklist = array())
 
         $radvdifs[$realif] = 1;
 
+        $mtu = legacy_interface_stats($realif)['mtu'];
+
+        if (isset($config['interfaces'][$dhcpv6if]['track6-interface'])) {
+            $realtrackif = get_real_interface($config['interfaces'][$dhcpv6if]['track6-interface'], 'inet6');
+
+            $trackmtu = legacy_interface_stats($realtrackif)['mtu'];
+            if (!empty($trackmtu)) {
+                if ($trackmtu < $mtu) {
+                    $mtu = $trackmtu;
+                }
+            }
+        }
+
         $radvdconf .= "# Generated for DHCPv6 Server $dhcpv6if\n";
         $radvdconf .= "interface {$realif} {\n";
         $radvdconf .= sprintf("\tAdvSendAdvert %s;\n", !empty($dhcpv6ifconf['ranosend']) ? 'off' : 'on');
         $radvdconf .= sprintf("\tMinRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramininterval']) ? $dhcpv6ifconf['ramininterval'] : '200');
         $radvdconf .= sprintf("\tMaxRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramaxinterval']) ? $dhcpv6ifconf['ramaxinterval'] : '600');
-        $mtu = legacy_interface_stats($realif)['mtu'];
-        $radvdconf .= "\tAdvLinkMTU ". (is_numeric($mtu) ? $mtu : 1280) .";\n";
+        $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
 
         switch($dhcpv6ifconf['rapriority']) {
             case "low":
@@ -277,11 +289,13 @@ function services_radvd_configure($blacklist = array())
         } elseif (!isset($config['interfaces'][$if]['enable'])) {
             continue;
         } elseif (isset($blacklist[$if])) {
-            /* Do not put in the config an interface which is down */
+            $radvdconf .= "# Skipping blacklisted interface {$if}\n";
             continue;
         }
+
         $trackif = $config['interfaces'][$if]['track6-interface'];
-        $realif = get_real_interface($if, "inet6");
+        $realif = get_real_interface($if, 'inet6');
+
         /* prevent duplicate entries, manual overrides */
         if (isset($radvdifs[$realif])) {
             continue;
@@ -294,7 +308,16 @@ function services_radvd_configure($blacklist = array())
             $autotype = $config['interfaces'][$trackif]['ipaddrv6'];
         }
 
+        $realtrackif = get_real_interface($trackif, 'inet6');
+
         $mtu = legacy_interface_stats($realif)['mtu'];
+        $trackmtu = legacy_interface_stats($realtrackif)['mtu'];
+        if (!empty($trackmtu)) {
+            if ($trackmtu < $mtu) {
+                $mtu = $trackmtu;
+            }
+        }
+
         $dnslist = array();
         $subnetv6 = '::';
         $ifcfgsnv6 = '64';
@@ -302,6 +325,7 @@ function services_radvd_configure($blacklist = array())
         $ifcfgipv6 = get_interface_ipv6($if);
 
         if ($autotype == 'slaac') {
+            /* XXX this may be incorrect and needs an override or revisit */
             $subnetv6 = '2000::';
         } elseif (is_ipaddrv6($ifcfgipv6)) {
             $ifcfgsnv6 = get_interface_subnetv6($if);
@@ -323,11 +347,11 @@ function services_radvd_configure($blacklist = array())
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= "\tMinRtrAdvInterval 3;\n";
         $radvdconf .= "\tMaxRtrAdvInterval 10;\n";
-        $radvdconf .= "\tAdvLinkMTU ". (is_numeric($mtu) ? $mtu : 1280) .";\n";
+        $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
         $radvdconf .= "\tAdvOtherConfigFlag on;\n";
         $radvdconf .= "\tprefix {$subnetv6}/{$ifcfgsnv6} {\n";
         if ($autotype == 'slaac') {
-            $realtrackif = get_real_interface($trackif, 'inet6');
+            /* XXX also of interest in the future, see hardcoded prefix above */
             $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
             $radvdconf .= "\t\tDeprecatePrefix on;\n";
         }
@@ -1092,16 +1116,24 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
             continue;
         }
         if (!empty($config['interfaces'][$ifname]['track6-interface'])) {
-            $realif = get_real_interface($ifname, "inet6");
+            $realif = get_real_interface($ifname, 'inet6');
             $ifcfgipv6 = get_interface_ipv6($ifname);
             if (!is_ipaddrv6($ifcfgipv6)) {
                 continue;
             }
+
             $ifcfgipv6 = Net_IPv6::getNetmask($ifcfgipv6, 64);
+            
             $trackifname = $config['interfaces'][$ifname]['track6-interface'];
-            $trackcfg = $config['interfaces'][$trackifname];
-            $pdlen = calculate_ipv6_delegation_length($trackifname);
+             $trackcfg = $config['interfaces'][$trackifname];
+             $pdlen = calculate_ipv6_delegation_length($trackifname);
+
+              $ifcfgipv6arr = explode(':', $ifcfgipv6);
+              $assigned_pd_array =  explode(':', $ifcfgipv6);
+              $assigned_pd_length = $pdlen;
+            
             if (!isset($config['interfaces'][$ifname]['dhcpd6track6allowoverride'])) {
+                /* mock a real server */
                 $dhcpdv6cfg[$ifname] = array();
                 $dhcpdv6cfg[$ifname]['enable'] = true;
 
@@ -1113,7 +1145,8 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
                 $ifcfgipv6arr[7] = '2000';
                 $dhcpdv6cfg[$ifname]['range']['to'] = Net_IPv6::compress(implode(':', $ifcfgipv6arr));
 
-                /* prefix length > 0? We can add dhcp6 prefix delegation server */
+                /* with enough room we can add dhcp6 prefix delegation */
+                $pdlen = calculate_ipv6_delegation_length($config['interfaces'][$ifname]['track6-interface']);
                 if ($pdlen > 2) {
                     $pdlenmax = $pdlen;
                     $pdlenhalf = $pdlenmax - 1;
@@ -1138,6 +1171,72 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
                     'from' => make_ipv6_64_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['from']),
                     'to' => make_ipv6_64_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['to']),
                 );
+
+                $pd_prefix_from_array = array();
+                $pd_prefix_to_array = array();
+
+                $pd_prefix_from_array = explode(":",$config['dhcpdv6'][$ifname]['prefixrange']['from']);
+                $pd_prefix_to_array = explode(":",$config['dhcpdv6'][$ifname]['prefixrange']['to']);
+                
+                $pd_prefix_from_array[2] = sprintf("%02s",$pd_prefix_from_array[2]);
+                $pd_prefix_to_array[2] = sprintf("%02s",$pd_prefix_to_array[2]);
+
+                $pd_prefix_from_array_out = array();
+                $pd_prefix_to_array_out = array();
+
+                for($x=0;$x<4;$x++) // make the prefx long format otherwise dhcpd complains
+                {
+                    $assigned_pd_array[$x] = sprintf("%04s",$assigned_pd_array[$x]);
+                }
+
+                $pd_prefix_from_array_out = $assigned_pd_array;
+                $pd_prefix_to_array_out = $assigned_pd_array;
+                
+                $pdval = intval($config['dhcpdv6'][$ifname]['prefixrange']['prefixlength']);
+                
+                switch($pdval) {
+                
+                    // For PD sizes of /60 through /64, the user must do the math!
+                    case 60:
+                    case 62:
+                    case 63:
+                    case 64: // 3&4th bytes on 4th array
+                        $pd_prefix_from_array_out[3] =  sprintf("%04s",$assigned_pd_array[3]); // make it 4 bytes   
+                        $pd_prefix_from_array_out[3] = substr($pd_prefix_from_array_out[3],0,2).$pd_prefix_from_array[2];
+                        $pd_prefix_to_array_out[3] =  sprintf("%04s",$assigned_pd_array[3]); // make it 4 bytes   
+                        $pd_prefix_to_array_out[3] = substr($pd_prefix_to_array_out[3],0,2).$pd_prefix_to_array[2];
+                    break;
+                    
+                    case 56: // 1st&2nd bytes on 4th array
+                        $pd_prefix_from_array[2] = str_pad($pd_prefix_from_array[2],4,"0");
+                        $pd_prefix_from_array_out[3] =  sprintf("%s",$pd_prefix_from_array[2]); // make it 4 bytes                       
+                        $pd_prefix_to_array[2] = str_pad($pd_prefix_to_array[2],4,"0");
+                        $pd_prefix_to_array_out[3] =  sprintf("%s",$pd_prefix_to_array[2]); // make it 4 bytes                                     
+                    break;
+                    case 52: // 1st byte on 4th array only, 0 to f, we only want one byte, but lookout for the user entering more
+                        $len = strlen($pd_prefix_from_array[2]);                    
+                        $pd_prefix_from_array[2] = substr($pd_prefix_from_array[2],$len-1,1);
+                        $pd_prefix_from_array_out[3] =  sprintf("%s000",substr($pd_prefix_from_array[2],0,1)); // first byte from entered value                      
+                        $len = strlen($pd_prefix_to_array[2]);                    
+                        $pd_prefix_to_array[2] = substr($pd_prefix_to_array[2],$len-1,1);
+                        $pd_prefix_to_array_out[3] =   sprintf("%s000",substr($pd_prefix_to_array[2],0,1));                                    
+                    break;
+                    case 48: // 4th byte on 2nd array,                    
+                        $pd_prefix_from_array[2] = substr($pd_prefix_from_array[2],0,1);
+                        $pd_prefix_from_array_out[1] =  substr(sprintf("%03s",$assigned_pd_array[1]),0,3).$pd_prefix_from_array[2]; // get 1st 3 byte + nibble
+                        
+                        $pd_prefix_to_array[2] = substr($pd_prefix_to_array[2],0,1);
+                        $pd_prefix_to_array_out[1] =  substr(sprintf("%03s",$assigned_pd_array[1]),0,3).$pd_prefix_to_array[2]; // get 1st 3 byte + nibble   
+                    break;                    
+                }
+                
+                $ipv6_from_pd_from = implode(":",$pd_prefix_from_array_out);
+                $ipv6_from_pd_to = implode(":",$pd_prefix_to_array_out);
+                log_error("pd out = {$ipv6_from_pd_from}");
+                $dhcpdv6cfg[$ifname]['prefixrange'] = array();
+                $dhcpdv6cfg[$ifname]['prefixrange']['prefixlength'] = $config['dhcpdv6'][$ifname]['prefixrange']['prefixlength'];
+                $dhcpdv6cfg[$ifname]['prefixrange']['from'] =  Net_IPv6::compress($ipv6_from_pd_from);
+                $dhcpdv6cfg[$ifname]['prefixrange']['to'] =  Net_IPv6::compress($ipv6_from_pd_to);
             }
         }
     }

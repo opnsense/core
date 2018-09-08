@@ -2970,11 +2970,13 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
 
     $dhcp6cscript = "#!/bin/sh\n";
     $dhcp6cscript .= "if [ -n '" . (!empty($wancfg['adv_dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
-    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
+    $dhcp6cscript .= "\t/usr/bin/logger -t dhcpd \"dhcp6c \$REASON on {$wanif}\"\n";
+    $dhcp6cscript .= "\t/usr/bin/logger -t dhcpd \"dhcp6c PD_INFO \$PD_INFO on {$wanif}\"\n";
     $dhcp6cscript .= "fi\n";
     $dhcp6cscript .= "case \$REASON in\n";
     $dhcp6cscript .= "REQUEST|" . (!empty($wancfg['dhcp6norelease']) ? 'EXIT' : 'RELEASE') . ")\n";
-    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
+    $dhcp6cscript .= "\t/usr/bin/logger -t dhcpd \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
+    $dhcp6cscript .= "\techo \${PD_INFO} > /tmp/{$wanif}_dhcp6cpd\n";
     $dhcp6cscript .= "\t/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
     $dhcp6cscript .= "\t;;\n";
     $dhcp6cscript .= "*)\n";
