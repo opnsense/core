@@ -2680,11 +2680,18 @@ function interface_6rd_configure($interface = 'wan', $wancfg)
     }
 
     $wanif = get_real_interface($interface);
-    $ip4address = find_interface_ip($wanif);
+
+    if (!empty($wancfg['prefix-6rd-v4addr'])) {
+        $ip4address = $wancfg['prefix-6rd-v4addr'];
+    } else {
+        $ip4address = find_interface_ip($wanif);
+    }
+
     if (!is_ipaddrv4($ip4address)) {
         log_error("The interface IPv4 address '{$ip4address}' on interface '{$wanif}' is invalid, not configuring 6RD tunnel");
         return false;
     }
+
     $hexwanv4 = return_hex_ipv4($ip4address);
 
     if (!is_numeric($wancfg['prefix-6rd-v4plen']) || $wancfg['prefix-6rd-v4plen'] < 0 || $wancfg['prefix-6rd-v4plen'] > 32) {
