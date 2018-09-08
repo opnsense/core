@@ -323,6 +323,7 @@ function services_radvd_configure($blacklist = array())
         $ifcfgipv6 = get_interface_ipv6($if);
 
         if ($autotype == 'slaac') {
+            /* XXX this may be incorrect and needs an override or revisit */
             $subnetv6 = '2000::';
         } elseif (is_ipaddrv6($ifcfgipv6)) {
             $ifcfgsnv6 = get_interface_subnetv6($if);
@@ -347,7 +348,8 @@ function services_radvd_configure($blacklist = array())
         $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
         $radvdconf .= "\tAdvOtherConfigFlag on;\n";
         $radvdconf .= "\tprefix {$subnetv6}/{$ifcfgsnv6} {\n";
-        if ($autotype == 'slaac') {
+        /* if delegation is off or unavailable use the tracked interface prefix */
+        if (calculate_ipv6_delegation_length($trackif) < 0) {
             $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
             $radvdconf .= "\t\tDeprecatePrefix on;\n";
         }
@@ -1112,16 +1114,16 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
             continue;
         }
         if (!empty($config['interfaces'][$ifname]['track6-interface'])) {
-            $realif = get_real_interface($ifname, "inet6");
+            $realif = get_real_interface($ifname, 'inet6');
             $ifcfgipv6 = get_interface_ipv6($ifname);
             if (!is_ipaddrv6($ifcfgipv6)) {
                 continue;
             }
+
             $ifcfgipv6 = Net_IPv6::getNetmask($ifcfgipv6, 64);
-            $trackifname = $config['interfaces'][$ifname]['track6-interface'];
-            $trackcfg = $config['interfaces'][$trackifname];
-            $pdlen = calculate_ipv6_delegation_length($trackifname);
+
             if (!isset($config['interfaces'][$ifname]['dhcpd6track6allowoverride'])) {
+                /* mock a real server */
                 $dhcpdv6cfg[$ifname] = array();
                 $dhcpdv6cfg[$ifname]['enable'] = true;
 
@@ -1133,7 +1135,8 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
                 $ifcfgipv6arr[7] = '2000';
                 $dhcpdv6cfg[$ifname]['range']['to'] = Net_IPv6::compress(implode(':', $ifcfgipv6arr));
 
-                /* prefix length > 0? We can add dhcp6 prefix delegation server */
+                /* with enough room we can add dhcp6 prefix delegation */
+                $pdlen = calculate_ipv6_delegation_length($config['interfaces'][$ifname]['track6-interface']);
                 if ($pdlen > 2) {
                     $pdlenmax = $pdlen;
                     $pdlenhalf = $pdlenmax - 1;
