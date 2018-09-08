@@ -69,7 +69,7 @@ bootstrap_and_exit()
 	exit "${RET}"
 }
 
-while getopts b OPT; do
+while getopts bz OPT; do
 	case ${OPT} in
 	b)
 		DO_BOOT="-b"
