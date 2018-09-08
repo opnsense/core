@@ -1129,7 +1129,7 @@ function get_interface_gateway_v6($interface, &$dynamic = false)
     }
 
     if (!is_ipaddrv6($gw) && (!isset($gwcfg['ipaddrv6']) || !is_ipaddrv6($gwcfg['ipaddrv6']))) {
-          $realif = get_real_interface($interface, 'inet6');
+          $realif = get_real_interface($interface);
           if (file_exists("/tmp/{$realif}_routerv6")) {
               $gw = trim(file_get_contents("/tmp/{$realif}_routerv6"), " \n");
               $dynamic = true;
