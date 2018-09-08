@@ -86,6 +86,8 @@ done
 
 shift $((${OPTIND} - 1))
 
+DO_DEV=${1}
+
 timeout_prompt()
 {
 	OUTPUT=$(echo ${2} | sed 's/./& /g')
@@ -118,7 +120,12 @@ zfs_load()
 		kldload zfs
 	fi
 
-        export POOLS=$(probe_zfs_pools)
+	export POOLS=$(zfs_probe)
+	if [ -n "${POOLS}" ]; then
+		# insert missing newline due to $()
+		export POOLS="${POOLS}
+"
+	fi
 }
 
 zfs_unload()
@@ -128,7 +135,19 @@ zfs_unload()
 	fi
 }
 
-probe_for_part()
+zfs_probe()
+{
+	zpool import -aNf
+
+	zpool get -H cachefile | while read ZPOOL ZMORE; do
+		if [ "$(mount | grep -w / | grep -c ${ZPOOL})" = "0" ]; then
+			zpool export ${ZPOOL} >/dev/null 2>/dev/null
+			echo "zfs/${ZPOOL}"
+		fi
+	done
+}
+
+import_start()
 {
 	local DEV=${1}
 
@@ -159,19 +178,8 @@ probe_for_part()
 	return 1
 }
 
-probe_zfs_pools()
-{
-	zpool import -aNf
 
-	zpool get -H cachefile | while read ZPOOL ZMORE; do
-		if [ "$(mount | grep -w / | grep -c ${ZPOOL})" = "0" ]; then
-			zpool export ${ZPOOL} >/dev/null 2>/dev/null
-			echo "zfs/${ZPOOL}"
-		fi
-	done
-}
-
-DEV=${1}
+DEV=
 DEVS=
 PART=
 POOL=
@@ -186,33 +194,31 @@ fi
 
 trap bootstrap_and_exit 2
 
-if [ -n "${DEV}" ]; then
-	zfs_load
-
-	if ! probe_for_part ${DEV}; then
-		echo "No known partition layout was found for '${DEV}'."
-		bootstrap_and_exit 1
-	fi
-else
-	if [ -n "${DO_BOOT}" ]; then
-		touch ${INSTALL} 2> /dev/null
-		if [ -f ${INSTALL} -a -f /conf/config.xml ]; then
-			bootstrap_and_exit 0
-		fi
-
-		if ! timeout_prompt \
-		    'Press any key to start the configuration importer:' ${WAIT}; then
-			bootstrap_and_exit 0
-		fi
+if [ -n "${DO_BOOT}" ]; then
+	touch ${INSTALL} 2> /dev/null
+	if [ -f ${INSTALL} -a -f /conf/config.xml ]; then
+		bootstrap_and_exit 0
 	fi
 
-	zfs_load
-
-	DEVS=$(camcontrol devlist; gmirror status -s; graid status -s; echo -n "${POOLS}")
+	if ! timeout_prompt \
+	    'Press any key to start the configuration importer:' ${WAIT}; then
+		bootstrap_and_exit 0
+	fi
 fi
 
+zfs_load
+
+if [ -n "${DO_DEV}" ]; then
+	if ! import_start ${DO_DEV}; then
+		echo "No known partition layout was found for '${DO_DEV}'."
+		bootstrap_and_exit 1
+	fi
+fi
+
+DEVS=$(camcontrol devlist; gmirror status -s; graid status -s; echo -n "${POOLS}")
+
 while : ; do
-	if [ -z "${DEV}" ]; then
+	if [ -z "${DO_DEV}" ]; then
 		echo
 		echo "${DEVS}"
 		echo
@@ -224,15 +230,11 @@ while : ; do
 		elif [ "${DEV}" = "!" ]; then
 			# secret escape! (not so secret now, is it?)
 			csh
-			DEV=
 			continue
-		elif ! probe_for_part ${DEV}; then
+		elif ! import_start ${DEV}; then
 			echo "No known partition layout was found for '${DEV}'."
-			DEV=
 			continue
 		fi
-
-		DEV=
 	fi
 
 	mkdir -p ${MNT}
@@ -255,8 +257,6 @@ while : ; do
 			echo "The device could not be mounted."
 			PART=
 		fi
-
-		break
 	elif [ -n "${POOL}" ]; then
 		echo "Starting import for ZFS pool '${POOL}'."
 		echo
@@ -266,41 +266,47 @@ while : ; do
 			echo "The pool could not be mounted."
 			POOL=
 		fi
+	fi
 
+	if [ -z "${PART}" -a -z "${POOL}" ]; then
+		if [ -n "${DO_DEV}" ]; then
+			bootstrap_and_exit 1
+		fi
+
+		continue
+	fi
+
+	if [ -f "${MNT}/conf/config.xml" ]; then
+		rm -rf /conf/*
+
+		for FILE in captiveportal.sqlite config.xml dhcpleases.tgz dhcp6c_duid netflow.tgz rrd.tgz; do
+			if [ -f "${MNT}/conf/${FILE}" ]; then
+				echo -n "Restoring ${FILE}..."
+				cp "${MNT}/conf/${FILE}" /conf
+				echo "done."
+			fi
+		done
+
+		for DIR in backup sshd; do
+			if [ -d "${MNT}/conf/${DIR}" ]; then
+				echo -n "Restoring ${DIR}..."
+				cp -r "${MNT}/conf/${DIR}" /conf
+				echo "done."
+			else
+				mkdir -p "/conf/${DIR}"
+			fi
+		done
+
+		# hooray, we're done!
 		break
 	else
-		echo "Something went wrong during partition selection."
-		bootstrap_and_exit 1
-	fi
+		echo "No previous configuration was found."
 
-	if [ -n "${DEV}" ]; then
-		echo "Import from partition '${DEV}' failed."
-		bootstrap_and_exit 1
+		if [ -n "${DO_DEV}" ]; then
+			bootstrap_and_exit 1
+		fi
 	fi
 done
-
-if [ -f "${MNT}/conf/config.xml" ]; then
-	rm -rf /conf/*
-	for FILE in captiveportal.sqlite config.xml dhcpleases.tgz dhcp6c_duid netflow.tgz rrd.tgz; do
-		if [ -f "${MNT}/conf/${FILE}" ]; then
-			echo -n "Restoring ${FILE}..."
-			cp "${MNT}/conf/${FILE}" /conf
-			echo "done."
-		fi
-	done
-	for DIR in backup sshd; do
-		if [ -d "${MNT}/conf/${DIR}" ]; then
-			echo -n "Restoring ${DIR}..."
-			cp -r "${MNT}/conf/${DIR}" /conf
-			echo "done."
-		else
-			mkdir -p "/conf/${DIR}"
-		fi
-	done
-else
-	echo "No previous configuration was found on this device."
-	bootstrap_and_exit 1
-fi
 
 if [ -z "${DO_BOOT}" ]; then
 	echo "Please reboot."
