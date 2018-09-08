@@ -2512,7 +2512,7 @@ include("head.inc");
                             <select name="dhcp6-ia-pd-len" class="selectpicker" data-style="btn-default" id="dhcp6-ia-pd-len">
 <?php
                             foreach(array(
-                              'none' => 'None',
+                              'none' => gettext('None'),
                               16 => '48',
                               15 => '49',
                               14 => '50',
@@ -2531,7 +2531,7 @@ include("head.inc");
                               1 => '63',
                               0 => '64',
                             ) as $bits => $length): ?>
-                              <option value="<?=$bits;?>" <?=$bits == $pconfig['dhcp6-ia-pd-len'] ? "selected=\"selected\"" : "";?>>
+                              <option value="<?=$bits;?>" <?= "{$bits}" === "{$pconfig['dhcp6-ia-pd-len']}" ? 'selected="selected"' : '' ?>>
                                   <?=$length;?>
                               </option>
 <?php
