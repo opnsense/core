@@ -59,9 +59,7 @@ bootstrap_and_exit()
 		fi
 	fi
 
-	if [ -z "${ZFS}" ]; then
-		kldunload zfs
-	fi
+	zfs_unload
 
 	# error code given or assumed ok (trap)
 	if [ -z "${RET}" ]; then
@@ -71,12 +69,13 @@ bootstrap_and_exit()
 	exit "${RET}"
 }
 
-trap bootstrap_and_exit 2
-
 while getopts b OPT; do
 	case ${OPT} in
 	b)
 		DO_BOOT="-b"
+		;;
+	z)
+		DO_ZFS="-z"
 		;;
 	*)
 		echo "Usage: man opnsense-importer" >&2
@@ -122,6 +121,13 @@ zfs_load()
         export POOLS=$(probe_zfs_pools)
 }
 
+zfs_unload()
+{
+	if [ -z "${ZFS}" ]; then
+		kldunload zfs
+	fi
+}
+
 probe_for_part()
 {
 	local DEV=${1}
@@ -156,21 +162,13 @@ probe_for_part()
 probe_zfs_pools()
 {
 	zpool import -aNf
-	local ZPCHK=$(zpool get -H cachefile)
-	local ORIGINAL_IFS="${IFS}"
-	IFS=$'\n'
-	local CPOOL=
-	local zt=
 
-	for zplist in ${ZPCHK}; do
-	    CPOOL=$(echo ${zplist} | awk '{ print $1  }')
-	    zt=$(mount | grep -w / | grep -c ${CPOOL})
-	    if [ ${zt} -eq "0" ]; then
-		zpool export ${CPOOL} >/dev/null 2>/dev/null
-		echo "zfs/${CPOOL}"
-	    fi
+	zpool get -H cachefile | while read ZPOOL ZMORE; do
+		if [ "$(mount | grep -w / | grep -c ${ZPOOL})" = "0" ]; then
+			zpool export ${ZPOOL} >/dev/null 2>/dev/null
+			echo "zfs/${ZPOOL}"
+		fi
 	done
-	IFS="${ORIGINAL_IFS}"
 }
 
 DEV=${1}
@@ -178,6 +176,15 @@ DEVS=
 PART=
 POOL=
 POOLS=
+
+if [ -n "${DO_ZFS}" ]; then
+	zfs_load
+	zfs_unload
+	echo -n "${POOLS}"
+	exit 0
+fi
+
+trap bootstrap_and_exit 2
 
 if [ -n "${DEV}" ]; then
 	zfs_load
