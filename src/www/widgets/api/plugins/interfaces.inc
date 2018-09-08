@@ -46,6 +46,7 @@ function interfaces_api()
         $interfaceItem['inerrs'] = isset($ifinfo['inerrs']) ? $ifinfo['inerrs'] : "0";
         $interfaceItem['outerrs'] = isset($ifinfo['outerrs']) ? $ifinfo['outerrs'] : "0";
         $interfaceItem['collisions'] = isset($ifinfo['collisions']) ? $ifinfo['collisions'] : "0";
+        $interfaceItem['descr'] = $ifdescr;
         $interfaceItem['name'] = $ifname;
         switch ($ifinfo['status']) {
             case 'down':
