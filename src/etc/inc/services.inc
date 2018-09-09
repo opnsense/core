@@ -348,8 +348,8 @@ function services_radvd_configure($blacklist = array())
         $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
         $radvdconf .= "\tAdvOtherConfigFlag on;\n";
         $radvdconf .= "\tprefix {$subnetv6}/{$ifcfgsnv6} {\n";
-        /* if delegation is off or unavailable use the tracked interface prefix */
-        if (calculate_ipv6_delegation_length($trackif) < 0) {
+        if ($autotype == 'slaac') {
+            /* XXX also of interest in the future, see hardcoded prefix above */
             $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
             $radvdconf .= "\t\tDeprecatePrefix on;\n";
         }
