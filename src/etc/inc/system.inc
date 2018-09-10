@@ -405,7 +405,7 @@ function system_host_route($host, $gateway, $delete = true, $add = true)
 
 function system_default_route($gateway, $family, $interface, $far = false)
 {
-    $realif = get_real_interface($interface);
+    $realif = get_real_interface($interface, $family == 'inet' ? 'all' : 'inet6');
 
     switch ($family) {
         case 'inet':
