@@ -2366,7 +2366,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* Disable Accepting router advertisements unless specifically requested */
-    mwexec('/sbin/ifconfig %s inet6 -accept_rtadv', array($realif));
+    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv', array($realif));
 
     /* wireless configuration? */
     if (isset($wancfg['wireless']) && is_array($wancfg['wireless']) && !$linkupevent) {
