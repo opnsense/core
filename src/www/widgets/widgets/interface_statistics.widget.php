@@ -40,12 +40,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['interfacesstatisticsfilter'] = !empty($config['widgets']['interfacesstatisticsfilter']) ?
         explode(',', $config['widgets']['interfacesstatisticsfilter']) : array();
+    $pconfig['interfacesstatisticsinvert'] = !empty($config['widgets']['interfacesstatisticsinvert']) ? '1' : '';
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (!empty($pconfig['interfacesstatisticsfilter'])) {
         $config['widgets']['interfacesstatisticsfilter'] = implode(',', $pconfig['interfacesstatisticsfilter']);
     } elseif (isset($config['widgets']['interfacesstatisticsfilter'])) {
         unset($config['widgets']['interfacesstatisticsfilter']);
+    }
+    if (!empty($pconfig['interfacesstatisticsinvert'])) {
+        $config['widgets']['interfacesstatisticsinvert'] = 1;
+    } elseif (isset($config['widgets']['interfacesstatisticsinvert'])) {
+        unset($config['widgets']['interfacesstatisticsinvert']);
     }
     write_config("Saved Interface Statistics Filter via Dashboard");
     header(url_safe('Location: /index.php'));
@@ -91,12 +97,16 @@ $ifvalues = array(
     <table class="table table-condensed">
       <tr>
         <td>
-          <select id="interfacesstatisticsfilter" name="interfacesstatisticsfilter[]" multiple="multiple" class="selectpicker_widget" title="<?= html_safe(gettext('All')) ?>">
+          <select id="interfacesstatisticsinvert" name="interfacesstatisticsinvert" class="selectpicker_widget">
+            <option value="" <?= empty($pconfig['interfacesstatisticsinvert']) ? 'selected="selected"' : '' ?>><?= gettext('Hide') ?></option>
+            <option value="yes" <?= !empty($pconfig['interfacesstatisticsinvert']) ? 'selected="selected"' : '' ?>><?= gettext('Show') ?></option>
+          </select>
+          <select id="interfacesstatisticsfilter" name="interfacesstatisticsfilter[]" multiple="multiple" class="selectpicker_widget">
 <?php foreach ($interfaces as $iface => $ifacename): ?>
             <option value="<?= html_safe($iface) ?>" <?= in_array($iface, $pconfig['interfacesstatisticsfilter']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
 <?php endforeach;?>
           </select>
-          <input id="submitd" name="submitd" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+          <button id="submitd" name="submitd" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button>
         </td>
       </tr>
     </table>
@@ -108,18 +118,26 @@ $ifvalues = array(
     <th>&nbsp;</th>
 <?php
     foreach ($interfaces as $ifdescr => $ifname):
-    if (!count($pconfig['interfacesstatisticsfilter']) || in_array($ifdescr, $pconfig['interfacesstatisticsfilter'])):?>
+      $listed = in_array($ifdescr, $pconfig['interfacesstatisticsfilter']);
+      $listed = !empty($pconfig['interfacesstatisticsinvert']) ? $listed : !$listed;
+      if (!$listed) {
+        continue;
+      } ?>
     <th id="interface_statistics_widget_intf_<?= html_safe($ifdescr) ?>"><?= $ifname ?></th>
-<?php endif; endforeach ?>
+<?php endforeach ?>
   </tr>
 <?php
     foreach ($ifvalues as $ifkey => $iflabel): ?>
   <tr id="interface_statistics_widget_val_<?= html_safe($ifkey) ?>">
     <td><strong><?= $iflabel ?></strong></td>
 <?php foreach ($interfaces as $ifdescr => $ifname):
-    if (!count($pconfig['interfacesstatisticsfilter']) || in_array($ifdescr, $pconfig['interfacesstatisticsfilter'])):?>
+      $listed = in_array($ifdescr, $pconfig['interfacesstatisticsfilter']);
+      $listed = !empty($pconfig['interfacesstatisticsinvert']) ? $listed : !$listed;
+      if (!$listed) {
+        continue;
+      } ?>
     <td>&#126;</td>
-<?php endif; endforeach ?>
+<?php endforeach ?>
   </tr>
 <?php endforeach ?>
 </table>
