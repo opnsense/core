@@ -38,6 +38,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['backupcount'] = 60;
     }
 
+    $cnf = OPNsense\Core\Config::getInstance();
+    $confvers = $cnf->getBackups(true);
+
     if (!empty($_GET['getcfg'])) {
         foreach ($confvers as $filename => $revision) {
             if ($revision['time'] == $_GET['getcfg']) {
@@ -54,8 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    $cnf = OPNsense\Core\Config::getInstance();
-    $confvers = $cnf->getBackups(true);
     $oldfile = '';
     $newfile = '';
     $diff = '';
