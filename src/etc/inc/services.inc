@@ -292,8 +292,10 @@ function services_radvd_configure($blacklist = array())
             $radvdconf .= "# Skipping blacklisted interface {$if}\n";
             continue;
         }
+
         $trackif = $config['interfaces'][$if]['track6-interface'];
-        $realif = get_real_interface($if, "inet6");
+        $realif = get_real_interface($if, 'inet6');
+
         /* prevent duplicate entries, manual overrides */
         if (isset($radvdifs[$realif])) {
             continue;

@@ -331,26 +331,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $pconfig = array();
     $std_copy_fieldnames = array(
-      'if', 'descr', 'dhcphostname', 'alias-address', 'alias-subnet', 'dhcprejectfrom', 'ipaddr', 'subnet', 'gateway',
-      'ipaddrv6', 'media', 'mediaopt',
-      'adv_dhcp_pt_timeout', 'adv_dhcp_pt_retry', 'adv_dhcp_pt_select_timeout', 'adv_dhcp_pt_reboot',
-      'adv_dhcp_pt_backoff_cutoff', 'adv_dhcp_pt_initial_interval', 'adv_dhcp_pt_values',
-      'adv_dhcp_send_options', 'adv_dhcp_request_options', 'adv_dhcp_required_options', 'adv_dhcp_option_modifiers',
-      'adv_dhcp_config_advanced', 'adv_dhcp_config_file_override', 'adv_dhcp_config_file_override_path',
-      'adv_dhcp6_interface_statement_send_options', 'adv_dhcp6_interface_statement_request_options',
-      'adv_dhcp6_interface_statement_information_only_enable', 'adv_dhcp6_interface_statement_script',
-      'adv_dhcp6_id_assoc_statement_address_enable', 'adv_dhcp6_id_assoc_statement_address', 'adv_dhcp6_id_assoc_statement_address_id',
-      'adv_dhcp6_id_assoc_statement_address_pltime', 'adv_dhcp6_id_assoc_statement_address_vltime',
-      'adv_dhcp6_id_assoc_statement_prefix_enable', 'adv_dhcp6_id_assoc_statement_prefix', 'adv_dhcp6_id_assoc_statement_prefix_id',
-      'adv_dhcp6_id_assoc_statement_prefix_pltime', 'adv_dhcp6_id_assoc_statement_prefix_vltime',
-      'adv_dhcp6_prefix_interface_statement_sla_len',
-      'adv_dhcp6_authentication_statement_authname', 'adv_dhcp6_authentication_statement_protocol', 'adv_dhcp6_authentication_statement_algorithm',
-      'adv_dhcp6_authentication_statement_rdm', 'adv_dhcp6_key_info_statement_keyname', 'adv_dhcp6_key_info_statement_realm',
-      'adv_dhcp6_key_info_statement_keyid', 'adv_dhcp6_key_info_statement_secret', 'adv_dhcp6_key_info_statement_expire',
-      'adv_dhcp6_config_advanced', 'adv_dhcp6_config_file_override', 'adv_dhcp6_config_file_override_path',
-      'spoofmac', 'mtu', 'mss', 'dhcp6vlanprio',
-      'dhcp6-ia-pd-len', 'track6-interface', 'track6-prefix-id', 'prefix-6rd', 'prefix-6rd-v4plen', 'gateway-6rd', 'prefix-6rd-v4addr',
-      'ipaddrv6', 'subnetv6', 'gatewayv6'
+        'adv_dhcp6_authentication_statement_algorithm',
+        'adv_dhcp6_authentication_statement_authname',
+        'adv_dhcp6_authentication_statement_protocol',
+        'adv_dhcp6_authentication_statement_rdm',
+        'adv_dhcp6_config_advanced',
+        'adv_dhcp6_config_file_override',
+        'adv_dhcp6_config_file_override_path',
+        'adv_dhcp6_id_assoc_statement_address',
+        'adv_dhcp6_id_assoc_statement_address_enable',
+        'adv_dhcp6_id_assoc_statement_address_id',
+        'adv_dhcp6_id_assoc_statement_address_pltime',
+        'adv_dhcp6_id_assoc_statement_address_vltime',
+        'adv_dhcp6_id_assoc_statement_prefix',
+        'adv_dhcp6_id_assoc_statement_prefix_enable',
+        'adv_dhcp6_id_assoc_statement_prefix_id',
+        'adv_dhcp6_id_assoc_statement_prefix_pltime',
+        'adv_dhcp6_id_assoc_statement_prefix_vltime',
+        'adv_dhcp6_interface_statement_information_only_enable',
+        'adv_dhcp6_interface_statement_request_options',
+        'adv_dhcp6_interface_statement_script',
+        'adv_dhcp6_interface_statement_send_options',
+        'adv_dhcp6_key_info_statement_expire',
+        'adv_dhcp6_key_info_statement_keyid',
+        'adv_dhcp6_key_info_statement_keyname',
+        'adv_dhcp6_key_info_statement_realm',
+        'adv_dhcp6_key_info_statement_secret',
+        'adv_dhcp6_prefix_interface_statement_sla_len',
+        'adv_dhcp_config_advanced',
+        'adv_dhcp_config_file_override',
+        'adv_dhcp_config_file_override_path',
+        'adv_dhcp_option_modifiers',
+        'adv_dhcp_pt_backoff_cutoff',
+        'adv_dhcp_pt_initial_interval',
+        'adv_dhcp_pt_reboot',
+        'adv_dhcp_pt_retry',
+        'adv_dhcp_pt_select_timeout',
+        'adv_dhcp_pt_timeout',
+        'adv_dhcp_pt_values',
+        'adv_dhcp_request_options',
+        'adv_dhcp_required_options',
+        'adv_dhcp_send_options',
+        'alias-address',
+        'alias-subnet',
+        'descr',
+        'dhcp6-ia-pd-len',
+        'dhcp6vlanprio',
+        'dhcphostname',
+        'dhcprejectfrom',
+        'gateway',
+        'gateway-6rd',
+        'gatewayv6',
+        'if',
+        'ipaddr',
+        'ipaddrv6',
+        'ipaddrv6',
+        'media',
+        'mediaopt',
+        'mss',
+        'mtu',
+        'prefix-6rd',
+        'prefix-6rd-v4addr',
+        'prefix-6rd-v4plen',
+        'spoofmac',
+        'subnet',
+        'subnetv6',
+        'track6-address',
+        'track6-interface',
+        'track6-prefix-id',
     );
     foreach ($std_copy_fieldnames as $fieldname) {
         $pconfig[$fieldname] = isset($a_interfaces[$if][$fieldname]) ? $a_interfaces[$if][$fieldname] : null;
@@ -705,15 +753,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $input_errors[] = gettext("You must enter a valid hexadecimal number for the IPv6 prefix ID.");
                 } elseif (!empty($pconfig['track6-interface'])) {
                     $ipv6_delegation_length = calculate_ipv6_delegation_length($pconfig['track6-interface']);
-                    $ipv6_num_prefix_ids = pow(2, $ipv6_delegation_length);
-                    $track6_prefix_id = intval($pconfig['track6-prefix-id--hex'], 16);
-                    if ($track6_prefix_id < 0 || $track6_prefix_id >= $ipv6_num_prefix_ids) {
-                        $input_errors[] = gettext("You specified an IPv6 prefix ID that is out of range.");
+                    if ($ipv6_delegation_length >= 0) {
+                        $ipv6_num_prefix_ids = pow(2, $ipv6_delegation_length);
+                        $track6_prefix_id = intval($pconfig['track6-prefix-id--hex'], 16);
+                        if ($track6_prefix_id < 0 || $track6_prefix_id >= $ipv6_num_prefix_ids) {
+                            $input_errors[] = gettext("You specified an IPv6 prefix ID that is out of range.");
+                        }
                     }
+                    /* XXX should also check for duplicate delegation in peer trackers */
+                }
+                $track_type = 'none';
+                if (isset($config[interfaces][$pconfig['track6-interface']]['ipaddrv6'])) {
+                    $track_type = $config[interfaces][$pconfig['track6-interface']]['ipaddrv6'];
+                }
+                switch ($track_type) {
+                    case 'dhcpv6':
+                        if (!empty($pconfig['track6-address']) && !is_ipaddrv6($pconfig['track6-address'])) {
+                            $input_errors[] = gettext('You specified an IPv6 address that is not an IPv6 address.');
+                        }
+                        /* XXX should also check for duplicate address in peer trackers */
+                        break;
+                    default:
+                        if (!empty($pconfig['track6-address'])) {
+                            $input_errors[] = gettext('Your WAN mode does not support setting an explicit IPv6 address.');
+                        }
+                        break;
                 }
                 break;
         }
-
 
         /* normalize MAC addresses - lowercase and convert Windows-ized hyphenated MACs to colon delimited */
         $staticroutes = get_staticroutes(true);
@@ -1061,24 +1128,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             // switch ipv6 config by type
             switch($pconfig['type6']) {
-                case "staticv6":
+                case 'staticv6':
                     if (!empty($pconfig['staticv6usev4iface'])) {
                         $new_config['dhcp6usev4iface'] = true;
                     }
                     $new_config['ipaddrv6'] = $pconfig['ipaddrv6'];
                     $new_config['subnetv6'] = $pconfig['subnetv6'];
-                    if ($pconfig['gatewayv6'] != "none") {
+                    if ($pconfig['gatewayv6'] != 'none') {
                         $new_config['gatewayv6'] = $pconfig['gatewayv6'];
                     }
                     break;
-                case "slaac":
+                case 'slaac':
                     if (!empty($pconfig['slaacusev4iface'])) {
                         $new_config['dhcp6usev4iface'] = true;
                     }
-                    $new_config['ipaddrv6'] = "slaac";
+                    $new_config['ipaddrv6'] = 'slaac';
                     break;
-                case "dhcp6":
-                    $new_config['ipaddrv6'] = "dhcp6";
+                case 'dhcp6':
+                    $new_config['ipaddrv6'] = 'dhcp6';
                     $new_config['dhcp6-ia-pd-len'] = $pconfig['dhcp6-ia-pd-len'];
                     if (!empty($pconfig['dhcp6-ia-pd-send-hint'])) {
                         $new_config['dhcp6-ia-pd-send-hint'] = true;
@@ -1134,12 +1201,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $new_config['prefix-6rd-v4plen'] = $pconfig['prefix-6rd-v4plen'];
                     $new_config['gateway-6rd'] = $pconfig['gateway-6rd'];
                     break;
-                case "6to4":
-                    $new_config['ipaddrv6'] = "6to4";
+                case '6to4':
+                    $new_config['ipaddrv6'] = '6to4';
                     break;
-                case "track6":
-                    $new_config['ipaddrv6'] = "track6";
+                case 'track6':
+                    $new_config['ipaddrv6'] = 'track6';
                     $new_config['track6-interface'] = $pconfig['track6-interface'];
+                    $new_config['track6-address'] = $pconfig['track6-address'];
                     $new_config['track6-prefix-id'] = 0;
                     if (ctype_xdigit($pconfig['track6-prefix-id--hex'])) {
                         $new_config['track6-prefix-id'] = intval($pconfig['track6-prefix-id--hex'], 16);
@@ -2853,6 +2921,15 @@ include("head.inc");
                             <input name="track6-prefix-id--hex" type="text" id="track6-prefix-id--hex" value="<?= $track6_prefix_id_hex ?>" />
                             <div class="hidden" data-for="help_for_track6-prefix-id">
                               <?= gettext('The value in this field is the delegated IPv6 prefix ID. This determines the configurable /64 network ID based on the dynamic IPv6 connection.') ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_track6-address" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('IPv6 Address Suffix') ?></td>
+                          <td>
+                            <input name="track6-address" type="text" id="track6-address" value="<?= html_safe($pconfig['track6-address']) ?>" placeholder="<?= html_safe(gettext('EUI-64')) ?>"/>
+                            <div class="hidden" data-for="help_for_track6-address">
+                              <?= gettext('The value in this field may be set to use an explicit IPv6 address suffix instead of the auto-generated EUI-64.') ?>
                             </div>
                           </td>
                         </tr>
