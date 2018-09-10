@@ -991,7 +991,7 @@ function get_possible_listen_ips($include_ipv6_link_local = false, $include_loop
         $tmp["value"] = $iface;
         $listenips[] = $tmp;
         if ($include_ipv6_link_local) {
-            $llip = find_interface_ipv6_ll(get_real_interface($iface));
+            $llip = find_interface_ipv6_ll(get_real_interface($iface, 'inet6'));
             if (!empty($llip)) {
                 $tmp["name"]  = "{$ifacename} IPv6 Link-Local";
                 $tmp["value"] = $llip;
