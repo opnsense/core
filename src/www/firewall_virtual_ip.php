@@ -267,8 +267,8 @@ $main_buttons = array(
                 </thead>
                 <tbody>
 <?php
-                  $interfaces = get_configured_interface_with_descr(true);
-                  $interfaces['lo0'] = "Localhost";
+                  $interfaces = legacy_config_get_interfaces(array('virtual' => false));
+                  $interfaces['lo0'] = array('descr' => 'Localhost');
                   $i = 0;
                   foreach ($a_vip as $vipent):
                     if(!empty($vipent['subnet']) || !empty($vipent['range']) || !empty($vipent['subnet_bits']) || (isset($vipent['range']['from']) && !empty($vipent['range']['from']))): ?>
@@ -282,7 +282,7 @@ $main_buttons = array(
                       <?=$vipent['mode'] == "carp" ?  " (vhid {$vipent['vhid']} , freq. {$vipent['advbase']} / {$vipent['advskew']} )" : "";?>
                     </td>
                     <td>
-                      <?=htmlspecialchars($interfaces[$vipent['interface']]);?>
+                      <?= htmlspecialchars($interfaces[$vipent['interface']]['descr']) ?>
                     </td>
                     <td>
                       <?=$vipent['mode'] == "proxyarp" ? "Proxy ARP" : "";?>
