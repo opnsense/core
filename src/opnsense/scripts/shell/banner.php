@@ -43,7 +43,7 @@ $product = $g['product_name'];
 
 echo "\n*** {$hostname}.{$domain}: {$product} {$version} ({$machine}/${flavour}) ***\n";
 
-$iflist = get_configured_interface_with_descr(false, true);
+$iflist = get_configured_interface_with_descr(true);
 
 if (empty($iflist)) {
     echo "\n\tNo network interfaces are assigned.\n";

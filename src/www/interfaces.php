@@ -309,16 +309,10 @@ function get_wireless_channel_info($interface) {
     return($wireless_channels);
 }
 
+$ifdescrs = get_configured_interface_with_descr(true);
 
-
-
-// Get configured interface list
-$ifdescrs = get_configured_interface_with_descr(false, true);
-
-// reference to interface section
 $a_interfaces = &config_read_array('interfaces');
 $a_ppps = &config_read_array('ppps', 'ppp');
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['if']) && !empty($a_interfaces[$_GET['if']])) {
@@ -2889,7 +2883,7 @@ include("head.inc");
                           <td style="width:78%">
                             <select name='track6-interface' class='selectpicker' data-style='btn-default' >
 <?php
-                            foreach (get_configured_interface_with_descr(false, true) as $iface => $ifacename):
+                            foreach (get_configured_interface_with_descr(true) as $iface => $ifacename):
                               switch($config['interfaces'][$iface]['ipaddrv6']) {
                                 case '6rd':
                                 case '6to4':

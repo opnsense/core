@@ -267,7 +267,7 @@ $main_buttons = array(
                 </thead>
                 <tbody>
 <?php
-                  $interfaces = get_configured_interface_with_descr(false, true);
+                  $interfaces = get_configured_interface_with_descr(true);
                   $interfaces['lo0'] = "Localhost";
                   $i = 0;
                   foreach ($a_vip as $vipent):
