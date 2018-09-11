@@ -346,8 +346,7 @@ function system_hosts_generate($verbose = false)
             $hosts .= "{$cfgip}\t{$syscfg['hostname']}.{$syscfg['domain']} {$syscfg['hostname']}\n";
         }
     } else {
-        $sysiflist = get_configured_interface_list();
-        foreach ($sysiflist as $sysif) {
+        foreach (get_configured_interface_with_descr() as $sysif => $unused) {
             if (!interface_has_gateway($sysif)) {
                 $cfgip = get_interface_ip($sysif);
                 if (is_ipaddr($cfgip)) {
