@@ -516,8 +516,6 @@ function is_hostnamewithport($hostport)
 /* returns true if $ipaddr is a valid dotted IPv4 address or an alias thereof */
 function is_ipaddroralias($ipaddr)
 {
-    global $config;
-
     if (is_alias($ipaddr)) {
         foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
             if ($alias['name'] == $ipaddr && !preg_match("/port/i", $alias['type'])) {
@@ -638,8 +636,6 @@ function is_portrange($portrange)
 /* returns true if $port is a valid port number or an alias thereof */
 function is_portoralias($port)
 {
-    global $config;
-
     if (is_alias($port)) {
         foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
             if ($alias['name'] == $port && preg_match("/port/i", $alias['type'])) {
@@ -821,7 +817,6 @@ function get_configured_interface_with_descr($only_opt = false, $withdisabled = 
  */
 function get_configured_ip_addresses()
 {
-    global $config;
     $ip_array = array();
 
     foreach (legacy_interfaces_details() as $ifname => $if) {
@@ -850,8 +845,6 @@ function get_configured_ip_addresses()
  */
 function get_interface_list($only_active = false, $include_dmesg = false)
 {
-    global $config;
-
     $dmesg_arr = array();
     $iflist = array();
 
