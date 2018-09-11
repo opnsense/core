@@ -333,11 +333,11 @@ $( document ).ready(function() {
                     <td>
                       <select name="interface" class="selectpicker" data-width="auto">
 <?php
-                      $interfaces = get_configured_interface_with_descr(true);
-                      $interfaces['lo0'] = "Localhost";
-                      foreach ($interfaces as $iface => $ifacename): ?>
+                      $interfaces = legacy_config_get_interfaces(array('virtual' => false));
+                      $interfaces['lo0'] = array('descr' => 'Localhost');
+                      foreach ($interfaces as $iface => $ifcfg): ?>
                         <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" :""; ?>>
-                          <?=htmlspecialchars($ifacename);?>
+                          <?= htmlspecialchars($ifcfg['descr']) ?>
                         </option>
 <?php
                       endforeach; ?>
