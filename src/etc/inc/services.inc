@@ -104,7 +104,9 @@ function services_radvd_configure($blacklist = array())
 
     killbypid('/var/run/radvd.pid', 'TERM', true);
 
-    config_read_array('dhcpdv6');
+    if (!is_radvd_enabled()) {
+        return;
+    }
 
     $radvdconf = "# Automatically generated, do not edit\n";
 
@@ -112,7 +114,7 @@ function services_radvd_configure($blacklist = array())
     $radvdifs = array();
 
     /* handle manually configured DHCP6 server settings first */
-    foreach ($config['dhcpdv6'] as $dhcpv6if => $dhcpv6ifconf) {
+    foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
         if (isset($config['interfaces'][$dhcpv6if]['track6-interface']) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
             continue;
         } elseif (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
@@ -281,6 +283,7 @@ function services_radvd_configure($blacklist = array())
     }
 
     /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
+    /* XXX trade for legacy_config_get_interfaces(array('virtual' => false)) */
     foreach (get_configured_interface_list() as $if => $ifdescr) {
         if (!isset($config['interfaces'][$if]['track6-interface'])) {
             continue;
@@ -414,11 +417,7 @@ function is_dhcpv4_server_enabled()
 {
     global $config;
 
-    if (empty($config['dhcpd']) || !is_array($config['dhcpd'])) {
-        return false;
-    }
-
-    foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
+    foreach (config_read_array('dhcpd') as $dhcpif => $dhcpifconf) {
         if (isset($dhcpifconf['enable']) && !empty($config['interfaces'][$dhcpif])) {
             return true;
         }
@@ -1067,11 +1066,7 @@ function is_dhcpv6_server_enabled()
         }
     }
 
-    if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
-        return false;
-    }
-
-    foreach ($config['dhcpdv6'] as $dhcpv6if => $dhcpv6ifconf) {
+    foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
         if (isset($dhcpv6ifconf['enable']) && !empty($config['interfaces'][$dhcpv6if])) {
             return true;
         }
@@ -1210,6 +1205,10 @@ EOD;
         if (!isset($dhcpv6ifconf['enable']) || !isset($Iflist[$dhcpv6if])) {
             continue;
         }
+        if (isset($blacklist[$dhcpv6if])) {
+            continue;
+        }
+
         $ifcfgipv6 = get_interface_ipv6($dhcpv6if);
         $ifcfgsnv6 = get_interface_subnetv6($dhcpv6if);
         $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
@@ -1727,8 +1726,6 @@ function is_dpinger_enabled()
 
 function services_get()
 {
-    global $config;
-
     $services = array();
 
     foreach (plugins_services() as $service) {
@@ -1840,31 +1837,18 @@ function is_radvd_enabled()
 {
     global $config;
 
-    $dhcpdv6cfg = config_read_array('dhcpdv6');
-    $Iflist = get_configured_interface_list();
-
     /* handle manually configured DHCP6 server settings first */
-    foreach ($dhcpdv6cfg as $dhcpv6if => $dhcpv6ifconf) {
-        if (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
-            continue;
-        } elseif ($dhcpv6ifconf['ramode'] == "disabled") {
-            continue;
+    foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
+        if (isset($config['interfaces'][$dhcpv6if]['enable']) && isset($dhcpv6ifconf['ramode']) && $dhcpv6ifconf['ramode'] != 'disabled') {
+            return true;
         }
-
-        return true;
     }
 
     /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
-    foreach ($Iflist as $if => $ifdescr) {
-        if (!isset($config['interfaces'][$if]['track6-interface'])) {
-            continue;
-        } elseif (empty($config['interfaces'][$config['interfaces'][$if]['track6-interface']])) {
-            continue;
-        } elseif (!isset($config['interfaces'][$if]['enable'])) {
-            continue;
+    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifcfg) {
+        if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface']) && !isset($ifcfg['dhcpd6track6allowoverride'])) {
+            return true;
         }
-
-        return true;
     }
 
     return false;
