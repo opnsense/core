@@ -832,13 +832,13 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 /* add an ipsec pinghosts entry */
                 if ($ph2ent['pinghost']) {
                     if (!isset($iflist) || !is_array($iflist)) {
-                        $iflist = get_configured_interface_list();
+                        $iflist = get_configured_interface_with_descr();
                     }
                     $viplist = get_configured_vips_list();
                     $srcip = null;
                     $local_subnet = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
                     if (is_ipaddrv6($ph2ent['pinghost'])) {
-                        foreach ($iflist as $ifent => $ifname) {
+                        foreach ($iflist as $ifent => $unused) {
                             $interface_ip = get_interface_ipv6($ifent);
                             if (!is_ipaddrv6($interface_ip)) {
                                 continue;
@@ -849,7 +849,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                             }
                         }
                     } else {
-                        foreach ($iflist as $ifent => $ifname) {
+                        foreach ($iflist as $ifent => $unused) {
                             $interface_ip = get_interface_ip($ifent);
                             if (!is_ipaddrv4($interface_ip)) {
                                 continue;
