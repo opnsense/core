@@ -4638,25 +4638,21 @@ function get_carp_interface_status($carpinterface)
 
 function make_ipv6_64_address($prefix, $suffix)
 {
-    $prefix_array = array();
-    $prefix_array = explode(':', $prefix);
-    $prefix_array[4] = '0';
-    $prefix_array[5] = '0';
-    $prefix_array[6] = '0';
-    $prefix_array[7] = '0';
+    $prefix_array = explode(':', Net_IPv6::uncompress($prefix));
+    $suffix_array = explode(':', Net_IPv6::uncompress($suffix));
 
-    $suffix_array = array();
-    $suffix_array = explode(':', $suffix);
-    $suffix_size = sizeof($suffix_array);
-
-    $loop = 7;
-    for ($count = $suffix_size - 1; $count > 0; $count--) {
-        if (!empty($suffix_array[$count])) {
-            $prefix_array[$loop] = $suffix_array[$count];
-            --$loop;
-        }
+    /* unconditionally merge right side of /64 */
+    foreach (array(4, 5, 6, 7) as $index) {
+        $prefix_array[$index] = $suffix_array[$index];
     }
-    $address = implode(':', $prefix_array);
 
-    return $address;
+    /* XXX correctly merging the left side of /64 requires user-specified prefix length */
+    foreach (array(0, 1, 2, 3) as $index) {
+        if ((int)$suffix_array[$index] === 0) {
+            continue;
+        }
+        $prefix_array[$index] = $suffix_array[$index];
+    }
+
+    return implode(':', $prefix_array);
 }
