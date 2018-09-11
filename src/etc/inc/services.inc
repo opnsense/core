@@ -284,7 +284,7 @@ function services_radvd_configure($blacklist = array())
 
     /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
     /* XXX trade for legacy_config_get_interfaces(array('virtual' => false)) */
-    foreach (get_configured_interface_list() as $if => $ifdescr) {
+    foreach (get_configured_interface_with_descr() as $if => $unused) {
         if (!isset($config['interfaces'][$if]['track6-interface'])) {
             continue;
         } elseif (empty($config['interfaces'][$config['interfaces'][$if]['track6-interface']])) {
@@ -560,12 +560,13 @@ EOPP;
         }
     }
 
-    $Iflist = get_configured_interface_list();
+    $iflist = get_configured_interface_with_descr();
+
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         $ifcfg = $config['interfaces'][$dhcpif];
         $newzone = array();
 
-        if (!isset($dhcpifconf['enable']) || !isset($Iflist[$dhcpif])) {
+        if (!isset($dhcpifconf['enable']) || !isset($iflist[$dhcpif])) {
             continue;
         }
         $ifcfgip = get_interface_ip($dhcpif);
@@ -1086,8 +1087,8 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
         return;
     }
 
+    $iflist = get_configured_interface_with_descr();
     $dhcpdv6cfg = config_read_array('dhcpdv6');
-    $Iflist = get_configured_interface_list();
 
     /* Only consider DNS servers with IPv6 addresses for the IPv6 DHCP server. */
     $dns_arrv6 = array();
@@ -1105,7 +1106,7 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
     }
 
     /* we add a fake entry for interfaces that are set to track6 another WAN */
-    foreach ($Iflist as $ifname) {
+    foreach ($iflist as $ifname => $unused) {
         /* Do not put in the config an interface which is down */
         if (isset($blacklist[$ifname])) {
             continue;
@@ -1260,7 +1261,7 @@ EOD;
     foreach ($dhcpdv6cfg as $dhcpv6if => $dhcpv6ifconf) {
         $newzone = array();
 
-        if (!isset($dhcpv6ifconf['enable']) || !isset($Iflist[$dhcpv6if])) {
+        if (!isset($dhcpv6ifconf['enable']) || !isset($iflist[$dhcpv6if])) {
             continue;
         }
         if (isset($blacklist[$dhcpv6if])) {
@@ -1465,7 +1466,7 @@ function services_dhcrelay_configure($verbose = false)
         flush();
     }
 
-    $iflist = get_configured_interface_list();
+    $iflist = get_configured_interface_with_descr();
     $dhcifaces = explode(",", $dhcrelaycfg['interface']);
     foreach ($dhcifaces as $dhcrelayif) {
         if (!isset($iflist[$dhcrelayif]) || link_interface_to_bridge($dhcrelayif)) {
@@ -1484,7 +1485,7 @@ function services_dhcrelay_configure($verbose = false)
     $srvips = explode(",", $dhcrelaycfg['server']);
     foreach ($srvips as $srcidx => $srvip) {
         unset($destif);
-        foreach ($iflist as $ifname) {
+        foreach ($iflist as $ifname => $unused) {
             $subnet = get_interface_ip($ifname);
             if (!is_ipaddr($subnet)) {
                 continue;
@@ -1584,7 +1585,7 @@ function services_dhcrelay6_configure($verbose = false)
         flush();
     }
 
-    $iflist = get_configured_interface_list();
+    $iflist = get_configured_interface_with_descr();
     $dhcifaces = explode(",", $dhcrelaycfg['interface']);
     foreach ($dhcifaces as $dhcrelayif) {
         if (!isset($iflist[$dhcrelayif]) || link_interface_to_bridge($dhcrelayif))  {
@@ -1605,7 +1606,7 @@ function services_dhcrelay6_configure($verbose = false)
     $srvifaces = array();
     foreach ($srvips as $srcidx => $srvip) {
         unset($destif);
-        foreach ($iflist as $ifname) {
+        foreach ($iflist as $ifname => $unused) {
             $subnet = get_interface_ipv6($ifname);
             if (!is_ipaddrv6($subnet)) {
                 continue;

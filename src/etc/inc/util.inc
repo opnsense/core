@@ -749,17 +749,6 @@ function get_configured_vips_list()
     return $alias_list;
 }
 
-function get_configured_interface_list()
-{
-    $iflist = array();
-
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $if => $ifdetail) {
-        $iflist[$if] = $if;
-    }
-
-    return $iflist;
-}
-
 function get_configured_interface_with_descr($only_opt = false, $withdisabled = false)
 {
     $iflist = array();
