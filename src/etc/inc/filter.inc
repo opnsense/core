@@ -607,8 +607,6 @@ function filter_generate_scrubing(&$FilterIflist)
 
 function filter_generate_aliases()
 {
-    global $config;
-
     $aliases .= "\n# Lockout tables\n";
     $aliases .= "table <sshlockout> persist\n";
     $aliases .= "table <webConfiguratorlockout> persist\n";
