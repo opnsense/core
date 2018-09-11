@@ -44,10 +44,7 @@ function find_ip_interface($ip, $bits = null) {
 
 	$isv6ip = is_ipaddrv6($ip);
 
-	/* if list */
-	$ifdescrs = get_configured_interface_list();
-
-	foreach ($ifdescrs as $ifdescr => $ifname) {
+	foreach (get_configured_interface_with_descr() as $ifname => $unused) {
 		$ifip = ($isv6ip) ? get_interface_ipv6($ifname) : get_interface_ip($ifname);
 		if (is_null($ifip))
 			continue;

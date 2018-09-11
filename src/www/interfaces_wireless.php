@@ -29,19 +29,20 @@
 
 require_once("guiconfig.inc");
 
-function clone_inuse($cloneif) {
+function clone_inuse($cloneif)
+{
     global $config;
-    $iflist = get_configured_interface_list(false, true);
-    foreach ($iflist as $if) {
+
+    foreach (get_configured_interface_with_descr(false, true) as $if => $unused) {
         if ($config['interfaces'][$if]['if'] == $cloneif) {
             return true;
         }
     }
+
     return false;
 }
 
 $a_clones = &config_read_array('wireless', 'clone');
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['action']) && $_POST['action'] == "del" && !empty($a_clones[$_POST['id']])) {
