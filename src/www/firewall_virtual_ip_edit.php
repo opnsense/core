@@ -333,7 +333,7 @@ $( document ).ready(function() {
                     <td>
                       <select name="interface" class="selectpicker" data-width="auto">
 <?php
-                      $interfaces = get_configured_interface_with_descr(false, true);
+                      $interfaces = get_configured_interface_with_descr(true);
                       $interfaces['lo0'] = "Localhost";
                       foreach ($interfaces as $iface => $ifacename): ?>
                         <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" :""; ?>>
