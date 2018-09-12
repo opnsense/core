@@ -329,7 +329,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (empty($pconfig['hash-algorithm'])) {
-        $input_errors[] = gettext('Hash algorithm selection cannot be empty.');
+        $input_errors[] = gettext("At least one hashing algorithm needs to be selected.");
         $pconfig['hash-algorithm'] = array();
     }
 
@@ -926,8 +926,8 @@ endforeach; ?>
                       );
                       foreach ($p1_halgos as $algo => $algoname) :
 ?>
-                        <option value="<?=$algo;?>" <?= in_array($algo, $pconfig['hash-algorithm']) ? 'selected="selected"' : '' ?>>
-                          <?=$algoname;?>
+                        <option value="<?= html_safe($algo) ?>" <?= in_array($algo, $pconfig['hash-algorithm']) ? 'selected="selected"' : '' ?>>
+                          <?= html_safe($algoname) ?>
                         </option>
 <?php                endforeach;
 ?>
