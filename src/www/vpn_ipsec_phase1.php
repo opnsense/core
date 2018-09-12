@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['interface'] = "wan";
     $pconfig['iketype'] = "ikev2";
     $phase1_fields = "mode,protocol,myid_type,myid_data,peerid_type,peerid_data
-    ,encryption-algorithm,dhgroup,lifetime,authentication_method,descr,nat_traversal
+    ,encryption-algorithm,lifetime,authentication_method,descr,nat_traversal
     ,interface,iketype,dpd_delay,dpd_maxfail,remote-gateway,pre-shared-key,certref
     ,caref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers,mobike";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
@@ -100,16 +100,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $pconfig['disabled'] = isset($config['ipsec']['phase1'][$p1index]['disabled']);
 
-        if (!empty($config['ipsec']['phase1'][$p1index]['authservers'])) {
-          $pconfig['authservers'] = explode(',', $config['ipsec']['phase1'][$p1index]['authservers']);
-        } else {
-          $pconfig['authservers'] = array();
+        foreach (array('authservers', 'dhgroup', 'hash-algorithm') as $fieldname) {
+            if (!empty($config['ipsec']['phase1'][$p1index][$fieldname])) {
+                $pconfig[$fieldname] = explode(',', $config['ipsec']['phase1'][$p1index][$fieldname]);
+            } else {
+                $pconfig[$fieldname] = array();
+            }
         }
-        if (!empty($config['ipsec']['phase1'][$p1index]['hash-algorithm'])) {
-          $pconfig['hash-algorithm'] = explode(',', $config['ipsec']['phase1'][$p1index]['hash-algorithm']);
-        } else {
-          $pconfig['hash-algorithm'] = array();
-        }
+
         $pconfig['remotebits'] = null;
         $pconfig['remotenet'] = null ;
         if (isset($a_phase1[$p1index]['remote-subnet']) && strpos($config['ipsec']['phase1'][$p1index]['remote-subnet'],'/') !== false) {
@@ -133,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['authentication_method'] = "pre_shared_key";
         $pconfig['encryption-algorithm'] = array("name" => "aes", "keylen" => "128");
         $pconfig['hash-algorithm'] = array('sha256');
-        $pconfig['dhgroup'] = "14";
+        $pconfig['dhgroup'] = array('14');
         $pconfig['lifetime'] = "28800";
         $pconfig['nat_traversal'] = "on";
         $pconfig['authservers'] = array();
@@ -333,6 +331,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['hash-algorithm'] = array();
     }
 
+    if (empty($pconfig['dhgroup'])) {
+        $pconfig['dhgroup'] = array();
+    }
+
     foreach ($p1_ealgos as $algo => $algodata) {
         if (!empty($pconfig['iketype']) && !empty($pconfig['encryption-algorithm']['name']) && !empty($algodata['iketype'])
           && $pconfig['iketype'] != $algodata['iketype'] && $pconfig['encryption-algorithm']['name'] == $algo) {
@@ -342,7 +344,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (count($input_errors) == 0) {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
-        ,peerid_type,peerid_data,encryption-algorithm,dhgroup
+        ,peerid_type,peerid_data,encryption-algorithm,
         ,lifetime,pre-shared-key,certref,caref,authentication_method,descr
         ,nat_traversal,auto,mobike";
 
@@ -352,11 +354,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $ph1ent[$fieldname] = $pconfig[$fieldname];
             }
         }
-        if (!empty($pconfig['authservers'])) {
-            $ph1ent['authservers'] = implode(',', $pconfig['authservers']);
-        }
 
-        $ph1ent['hash-algorithm'] = implode(',', $pconfig['hash-algorithm']);
+        foreach (array('authservers', 'dhgroup', 'hash-algorithm') as $fieldname) {
+            if (!empty($pconfig[$fieldname])) {
+                $ph1ent[$fieldname] = implode(',', $pconfig[$fieldname]);
+            }
+        }
 
         $ph1ent['disabled'] = !empty($pconfig['disabled']) ? true : false;
         $ph1ent['private-key'] =isset($pconfig['privatekey']) ? base64_encode($pconfig['privatekey']) : null;
@@ -940,10 +943,9 @@ endforeach; ?>
                   <tr>
                     <td><a id="help_for_dhgroup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DH key group"); ?></td>
                     <td>
-                      <select name="dhgroup">
+                      <select name="dhgroup[]" class="selectpicker" multiple="multiple">
 <?php
                       $p1_dhgroups = array(
-                           0 => gettext('off'),
                            1 => '1 (768 bits)',
                            2 => '2 (1024 bits)',
                            5 => '5 (1536 bits)',
@@ -964,8 +966,8 @@ endforeach; ?>
                       );
                       foreach ($p1_dhgroups as $keygroup => $keygroupname):
 ?>
-                        <option value="<?=$keygroup;?>" <?= $keygroup == $pconfig['dhgroup'] ? "selected=\"selected\"" : "";?>>
-                          <?=$keygroupname;?>
+                        <option value="<?= html_safe($keygroup) ?>" <?= in_array($keygroup, $pconfig['dhgroup']) ? 'selected="selected"' : '' ?>>
+                          <?= html_safe($keygroupname) ?>
                         </option>
 <?php                endforeach;
 ?>

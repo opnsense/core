@@ -1191,11 +1191,16 @@ EOD;
                              $entry .= "{$ph1ent['encryption-algorithm']['keylen']}";
                         }
                         $entry .= "-{$halgo}";
-                        $modp = ipsec_convert_to_modp($ph1ent['dhgroup']);
-                        if (!empty($modp)) {
-                            $entry .= "-{$modp}";
+                        if (!empty($ph1ent['dhgroup'])) {
+                            foreach (explode(',', $ph1ent['dhgroup']) as $dhgrp) {
+                                $entryd = $entry;
+                                $modp = ipsec_convert_to_modp($dhgrp);
+                                if (!empty($modp)) {
+                                    $entryd .= "-{$modp}";
+                                }
+                                $list[] = $entryd;
+                            }
                         }
-                        $list[] = $entry;
                     }
                     $ealgosp1 = 'ike = ' . implode(',', $list) . '!';
                 }
