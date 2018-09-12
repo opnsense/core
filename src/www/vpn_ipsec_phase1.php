@@ -126,9 +126,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['myid_type'] = "myaddress";
         $pconfig['peerid_type'] = "peeraddress";
         $pconfig['authentication_method'] = "pre_shared_key";
-        $pconfig['encryption-algorithm'] = array("name" => "3des") ;
-        $pconfig['hash-algorithm'] = "sha1";
-        $pconfig['dhgroup'] = "24";
+        $pconfig['encryption-algorithm'] = array("name" => "aes", "keylen" => "128");
+        $pconfig['hash-algorithm'] = "sha256";
+        $pconfig['dhgroup'] = "14";
         $pconfig['lifetime'] = "28800";
         $pconfig['nat_traversal'] = "on";
         $pconfig['iketype'] = "ikev1";
