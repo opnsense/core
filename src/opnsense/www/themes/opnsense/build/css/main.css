@@ -7117,6 +7117,7 @@ main.page-content.col-lg-12 {
 #navigation.col-sidebar-left > div.row > nav.page-side-nav {
   width: 70px;
   height: 100% !important;
+  border-right: 1px solid #D9D9D9;
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item {
 	text-align:center;
@@ -7127,6 +7128,7 @@ main.page-content.col-lg-12 {
 	padding-top:12px;
 	font-size:12px;
 	border-bottom: 2px solid #lightergrey;
+	border-right: 1px solid #D9D9D9;
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa, #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.glyphicon {
   visibility: visible;
