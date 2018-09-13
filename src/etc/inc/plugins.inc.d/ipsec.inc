@@ -1202,7 +1202,7 @@ EOD;
                             }
                         }
                     }
-                    $ealgosp1 = 'ike = ' . implode(',', $list) . '!';
+                    $ealgosp1 = 'ike = ' . implode(',', array_reverse($list)) . '!';
                 }
 
                 if (!empty($ph1ent['dpd_delay']) && !empty($ph1ent['dpd_maxfail'])) {
