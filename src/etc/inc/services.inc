@@ -1692,8 +1692,6 @@ function is_dpinger_enabled()
 
 function services_get()
 {
-    global $config;
-
     $services = array();
 
     foreach (plugins_services() as $service) {
