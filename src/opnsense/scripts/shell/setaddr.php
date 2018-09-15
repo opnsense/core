@@ -163,7 +163,7 @@ if ($intnum > $count) {
 }
 
 $index = 1;
-foreach ($ifdescrs as $ifname => $ifdesc) {
+foreach ($ifdescrs as $ifname => $unused) {
     if ($intnum == $index) {
         $interface = $ifname;
         break;
