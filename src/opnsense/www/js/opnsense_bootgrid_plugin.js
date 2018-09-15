@@ -1,5 +1,6 @@
 /**
  *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2018 Fabian Franz
  *
  *    All rights reserved.
  *
@@ -67,6 +68,13 @@ function stdBootgridUI(obj, sourceUrl, options) {
                     return "<span class=\"fa fa-times\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
                 }
             },
+        },
+        converters: {
+            timestamp: {
+                to: function(data) {
+                  return (new Date((+data) * 1000)).toLocaleString(navigator.language, { timeZone: 'UTC' });
+                }
+            }
         }
     };
 
