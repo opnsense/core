@@ -185,8 +185,8 @@ class ACL
     {
         /* "." and "?" have no effect on match, but "*" is a wildcard */
         $match = str_replace(array('.', '*','?'), array('\.', '.*','\?'), $urlmask);
-        /* if pattern ends with '/.*' optionally match for flat URL mask */
-        $match = preg_replace('@/\.\*$@', '(/.*)?', $match);
+        /* if pattern ends with special markers also match flat URL mask */
+        $match = preg_replace('@([/&?])\.\*$@', '($1.*)?', $match);
         /* remove client side pattern from given URL */
         $url = preg_replace('@#.*$@', '', $url);
 
@@ -291,8 +291,8 @@ class ACL
                 if ($pattern == "*") {
                     return "index.php";
                 } elseif (!empty($pattern)) {
-                    /* remove wildcard and optional trailing slashes */
-                    return preg_replace('@/?\*$@', '', $pattern);
+                    /* remove wildcard and optional trailing slashes or query symbols */
+                    return preg_replace('@[/&?]?\*$@', '', $pattern);
                 }
                 break;
             }
