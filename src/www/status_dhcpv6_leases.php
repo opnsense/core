@@ -480,20 +480,18 @@ endif;?>
                   <td><?=$data['online'];?></td>
                   <td><?=$data['act'];?></td>
                   <td class="text-nowrap">
-<?php
-                      if ($data['type'] == "dynamic"):?>
+<?php if (!empty($data['if'])): ?>
+<?php if ($data['type'] == 'dynamic'): ?>
                         <a class="btn btn-default btn-xs" href="services_dhcpv6_edit.php?if=<?=$data['if'];?>&amp;duid=<?=$data['duid'];?>&amp;hostname=<?=$data['hostname'];?>">
                           <i class="fa fa-plus fa-fw" alt="add"></i>
                         </a>
-<?php
-                      endif;?>
-<?php
-                    if (($data['type'] == "dynamic") && ($data['online'] != "online")):?>
+<?php if ($data['online'] != 'online'): ?>
                     <a class="act_delete btn btn-default btn-xs" href="#" data-deleteip="<?=$data['ip'];?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip">
                       <i class="fa fa-trash fa-fw"></i>
                     </a>
-<?php
-                    endif;?>
+<?php endif ?>
+<?php endif ?>
+<?php endif ?>
                   </td>
                 </tr>
 <?php

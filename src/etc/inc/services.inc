@@ -104,7 +104,9 @@ function services_radvd_configure($blacklist = array())
 
     killbypid('/var/run/radvd.pid', 'TERM', true);
 
-    config_read_array('dhcpdv6');
+    if (!is_radvd_enabled()) {
+        return;
+    }
 
     $radvdconf = "# Automatically generated, do not edit\n";
 
@@ -112,7 +114,7 @@ function services_radvd_configure($blacklist = array())
     $radvdifs = array();
 
     /* handle manually configured DHCP6 server settings first */
-    foreach ($config['dhcpdv6'] as $dhcpv6if => $dhcpv6ifconf) {
+    foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
         if (isset($config['interfaces'][$dhcpv6if]['track6-interface']) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
             continue;
         } elseif (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
@@ -281,7 +283,8 @@ function services_radvd_configure($blacklist = array())
     }
 
     /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
-    foreach (get_configured_interface_list() as $if => $ifdescr) {
+    /* XXX trade for legacy_config_get_interfaces(array('virtual' => false)) */
+    foreach (get_configured_interface_with_descr() as $if => $unused) {
         if (!isset($config['interfaces'][$if]['track6-interface'])) {
             continue;
         } elseif (empty($config['interfaces'][$config['interfaces'][$if]['track6-interface']])) {
@@ -414,11 +417,7 @@ function is_dhcpv4_server_enabled()
 {
     global $config;
 
-    if (empty($config['dhcpd']) || !is_array($config['dhcpd'])) {
-        return false;
-    }
-
-    foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
+    foreach (config_read_array('dhcpd') as $dhcpif => $dhcpifconf) {
         if (isset($dhcpifconf['enable']) && !empty($config['interfaces'][$dhcpif])) {
             return true;
         }
@@ -561,12 +560,13 @@ EOPP;
         }
     }
 
-    $Iflist = get_configured_interface_list();
+    $iflist = get_configured_interface_with_descr();
+
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         $ifcfg = $config['interfaces'][$dhcpif];
         $newzone = array();
 
-        if (!isset($dhcpifconf['enable']) || !isset($Iflist[$dhcpif])) {
+        if (!isset($dhcpifconf['enable']) || !isset($iflist[$dhcpif])) {
             continue;
         }
         $ifcfgip = get_interface_ip($dhcpif);
@@ -1067,11 +1067,7 @@ function is_dhcpv6_server_enabled()
         }
     }
 
-    if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
-        return false;
-    }
-
-    foreach ($config['dhcpdv6'] as $dhcpv6if => $dhcpv6ifconf) {
+    foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
         if (isset($dhcpv6ifconf['enable']) && !empty($config['interfaces'][$dhcpv6if])) {
             return true;
         }
@@ -1091,8 +1087,8 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
         return;
     }
 
+    $iflist = get_configured_interface_with_descr();
     $dhcpdv6cfg = config_read_array('dhcpdv6');
-    $Iflist = get_configured_interface_list();
 
     /* Only consider DNS servers with IPv6 addresses for the IPv6 DHCP server. */
     $dns_arrv6 = array();
@@ -1110,7 +1106,7 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
     }
 
     /* we add a fake entry for interfaces that are set to track6 another WAN */
-    foreach ($Iflist as $ifname) {
+    foreach ($iflist as $ifname => $unused) {
         /* Do not put in the config an interface which is down */
         if (isset($blacklist[$ifname])) {
             continue;
@@ -1123,6 +1119,7 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
             }
 
             $ifcfgipv6 = Net_IPv6::getNetmask($ifcfgipv6, 64);
+            $ifcfgipv6arr = explode(':', $ifcfgipv6);
 
             if (!isset($config['interfaces'][$ifname]['dhcpd6track6allowoverride'])) {
                 /* mock a real server */
@@ -1130,7 +1127,6 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
                 $dhcpdv6cfg[$ifname]['enable'] = true;
 
                 /* fixed range */
-                $ifcfgipv6arr = $ifcfgipv6arr = explode(':', $ifcfgipv6);
                 $ifcfgipv6arr[7] = '1000';
                 $dhcpdv6cfg[$ifname]['range'] = array();
                 $dhcpdv6cfg[$ifname]['range']['from'] = Net_IPv6::compress(implode(':', $ifcfgipv6arr));
@@ -1163,6 +1159,64 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
                     'from' => make_ipv6_64_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['from']),
                     'to' => make_ipv6_64_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['to']),
                 );
+
+                $pd_prefix_from_array = explode(':', $dhcpdv6cfg[$ifname]['prefixrange']['from']);
+                $pd_prefix_to_array = explode(':', $dhcpdv6cfg[$ifname]['prefixrange']['to']);
+
+                $pd_prefix_from_array[2] = sprintf("%02s", $pd_prefix_from_array[2]);
+                $pd_prefix_to_array[2] = sprintf("%02s", $pd_prefix_to_array[2]);
+
+                $pd_prefix_from_array_out = array();
+                $pd_prefix_to_array_out = array();
+
+                for ($x = 0; $x < 4; $x++) {
+                    /* make the prefx long format otherwise dhcpd complains */
+                    $ifcfgipv6arr[$x] = sprintf("%04s", $ifcfgipv6arr[$x]);
+                }
+
+                $pd_prefix_from_array_out = $ifcfgipv6arr;
+                $pd_prefix_to_array_out = $ifcfgipv6arr;
+
+                $pdval = intval($dhcpdv6cfg[$ifname]['prefixrange']['prefixlength']);
+
+                switch ($pdval) {
+                    // For PD sizes of /60 through /64, the user must do the math!
+                    case 60:
+                    case 62:
+                    case 63:
+                    case 64: // 3&4th bytes on 4th array
+                        $pd_prefix_from_array_out[3] =  sprintf("%04s", $ifcfgipv6arr[3]); // make it 4 bytes
+                        $pd_prefix_from_array_out[3] = substr($pd_prefix_from_array_out[3], 0, 2) . $pd_prefix_from_array[2];
+                        $pd_prefix_to_array_out[3] =  sprintf("%04s", $ifcfgipv6arr[3]); // make it 4 bytes
+                        $pd_prefix_to_array_out[3] = substr($pd_prefix_to_array_out[3], 0, 2) . $pd_prefix_to_array[2];
+                        break;
+                    case 56: // 1st&2nd bytes on 4th array
+                        $pd_prefix_from_array[2] = str_pad($pd_prefix_from_array[2], 4, "0");
+                        $pd_prefix_from_array_out[3] =  sprintf("%s", $pd_prefix_from_array[2]); // make it 4 bytes
+                        $pd_prefix_to_array[2] = str_pad($pd_prefix_to_array[2], 4, "0");
+                        $pd_prefix_to_array_out[3] =  sprintf("%s", $pd_prefix_to_array[2]); // make it 4 bytes
+                        break;
+                    case 52: // 1st byte on 4th array only, 0 to f, we only want one byte, but lookout for the user entering more
+                        $len = strlen($pd_prefix_from_array[2]);
+                        $pd_prefix_from_array[2] = substr($pd_prefix_from_array[2], $len - 1, 1);
+                        $pd_prefix_from_array_out[3] =  sprintf("%s000", substr($pd_prefix_from_array[2], 0, 1)); // first byte from entered value
+                        $len = strlen($pd_prefix_to_array[2]);
+                        $pd_prefix_to_array[2] = substr($pd_prefix_to_array[2], $len-1, 1);
+                        $pd_prefix_to_array_out[3] =   sprintf("%s000", substr($pd_prefix_to_array[2], 0, 1));
+                        break;
+                    case 48: // 4th byte on 2nd array
+                        $pd_prefix_from_array[2] = substr($pd_prefix_from_array[2], 0, 1);
+                        $pd_prefix_from_array_out[1] =  substr(sprintf("%03s", $ifcfgipv6arr[1]), 0, 3) . $pd_prefix_from_array[2]; // get 1st 3 byte + nibble
+                        $pd_prefix_to_array[2] = substr($pd_prefix_to_array[2], 0, 1);
+                        $pd_prefix_to_array_out[1] =  substr(sprintf("%03s", $ifcfgipv6arr[1]), 0, 3) . $pd_prefix_to_array[2]; // get 1st 3 byte + nibble
+                        break;
+                }
+
+                $ipv6_from_pd_from = implode(':', $pd_prefix_from_array_out);
+                $ipv6_from_pd_to = implode(':', $pd_prefix_to_array_out);
+
+                $dhcpdv6cfg[$ifname]['prefixrange']['from'] =  Net_IPv6::compress($ipv6_from_pd_from);
+                $dhcpdv6cfg[$ifname]['prefixrange']['to'] =  Net_IPv6::compress($ipv6_from_pd_to);
             }
         }
     }
@@ -1207,9 +1261,13 @@ EOD;
     foreach ($dhcpdv6cfg as $dhcpv6if => $dhcpv6ifconf) {
         $newzone = array();
 
-        if (!isset($dhcpv6ifconf['enable']) || !isset($Iflist[$dhcpv6if])) {
+        if (!isset($dhcpv6ifconf['enable']) || !isset($iflist[$dhcpv6if])) {
             continue;
         }
+        if (isset($blacklist[$dhcpv6if])) {
+            continue;
+        }
+
         $ifcfgipv6 = get_interface_ipv6($dhcpv6if);
         $ifcfgsnv6 = get_interface_subnetv6($dhcpv6if);
         $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
@@ -1408,7 +1466,7 @@ function services_dhcrelay_configure($verbose = false)
         flush();
     }
 
-    $iflist = get_configured_interface_list();
+    $iflist = get_configured_interface_with_descr();
     $dhcifaces = explode(",", $dhcrelaycfg['interface']);
     foreach ($dhcifaces as $dhcrelayif) {
         if (!isset($iflist[$dhcrelayif]) || link_interface_to_bridge($dhcrelayif)) {
@@ -1427,7 +1485,7 @@ function services_dhcrelay_configure($verbose = false)
     $srvips = explode(",", $dhcrelaycfg['server']);
     foreach ($srvips as $srcidx => $srvip) {
         unset($destif);
-        foreach ($iflist as $ifname) {
+        foreach ($iflist as $ifname => $unused) {
             $subnet = get_interface_ip($ifname);
             if (!is_ipaddr($subnet)) {
                 continue;
@@ -1527,7 +1585,7 @@ function services_dhcrelay6_configure($verbose = false)
         flush();
     }
 
-    $iflist = get_configured_interface_list();
+    $iflist = get_configured_interface_with_descr();
     $dhcifaces = explode(",", $dhcrelaycfg['interface']);
     foreach ($dhcifaces as $dhcrelayif) {
         if (!isset($iflist[$dhcrelayif]) || link_interface_to_bridge($dhcrelayif))  {
@@ -1548,7 +1606,7 @@ function services_dhcrelay6_configure($verbose = false)
     $srvifaces = array();
     foreach ($srvips as $srcidx => $srvip) {
         unset($destif);
-        foreach ($iflist as $ifname) {
+        foreach ($iflist as $ifname => $unused) {
             $subnet = get_interface_ipv6($ifname);
             if (!is_ipaddrv6($subnet)) {
                 continue;
@@ -1727,8 +1785,6 @@ function is_dpinger_enabled()
 
 function services_get()
 {
-    global $config;
-
     $services = array();
 
     foreach (plugins_services() as $service) {
@@ -1840,31 +1896,18 @@ function is_radvd_enabled()
 {
     global $config;
 
-    $dhcpdv6cfg = config_read_array('dhcpdv6');
-    $Iflist = get_configured_interface_list();
-
     /* handle manually configured DHCP6 server settings first */
-    foreach ($dhcpdv6cfg as $dhcpv6if => $dhcpv6ifconf) {
-        if (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
-            continue;
-        } elseif ($dhcpv6ifconf['ramode'] == "disabled") {
-            continue;
+    foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
+        if (isset($config['interfaces'][$dhcpv6if]['enable']) && isset($dhcpv6ifconf['ramode']) && $dhcpv6ifconf['ramode'] != 'disabled') {
+            return true;
         }
-
-        return true;
     }
 
     /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
-    foreach ($Iflist as $if => $ifdescr) {
-        if (!isset($config['interfaces'][$if]['track6-interface'])) {
-            continue;
-        } elseif (empty($config['interfaces'][$config['interfaces'][$if]['track6-interface']])) {
-            continue;
-        } elseif (!isset($config['interfaces'][$if]['enable'])) {
-            continue;
+    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifcfg) {
+        if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface']) && !isset($ifcfg['dhcpd6track6allowoverride'])) {
+            return true;
         }
-
-        return true;
     }
 
     return false;

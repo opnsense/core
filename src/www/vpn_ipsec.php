@@ -419,8 +419,10 @@ $( document ).ready(function() {
                             }
                         }?> +
 
-                        <?=strtoupper($ph1ent['hash-algorithm']);?> +
-                          <?=gettext("DH Group"); ?>&nbsp;<?=$dhgroups[$ph1ent['dhgroup']];?>
+                        <?=strtoupper($ph1ent['hash-algorithm']);?>
+<?php if (!empty($ph1ent['dhgroup'])): ?>
+                          + <?=gettext("DH Group"); ?>&nbsp;<?= $ph1ent['dhgroup'] ?>
+<?php endif ?>
                       </td>
                       <td class="hidden-xs">
                           <?= html_safe($p1_authentication_methods[$ph1ent['authentication_method']]['name']) ?>
