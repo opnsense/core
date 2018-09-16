@@ -31,10 +31,6 @@ EOF
 cat /etc/rc.shutdown.bak >> /etc/rc.shutdown
 rm -f /etc/rc.shutdown.bak
 
-echo "Writing package metadata"
-mkdir -p /usr/local/opnsense/version
-echo "%%CORE_COMMIT%%" > /usr/local/opnsense/version/opnsense
-
 /usr/local/etc/rc.d/configd start
 
 /usr/local/etc/rc.configure_firmware

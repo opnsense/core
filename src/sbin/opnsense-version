@@ -24,7 +24,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 PATTERN="s:[^\"]*\"\([^\"]*\)\"[^\"]*\"\([^\"]*\)\".*:\1=\2:"
-VERSION="/usr/local/opnsense/firmware-product"
+VERSION="/usr/local/opnsense/version/opnsense"
 
 if [ ! -f ${VERSION} ]; then
 	echo "Missing ${VERSION}" >&2
