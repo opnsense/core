@@ -4645,3 +4645,50 @@ function make_ipv6_64_address($prefix, $suffix)
 
     return implode(':', $prefix_array);
 }
+
+function interfaces_addresses($interface)
+{
+    global $config;
+
+    $realifs = array();
+    $result = array();
+
+    if ($interface == 'lo0') {
+        $realifs[] = 'lo0';
+    } elseif (!isset($config['interfaces'][$interface])) {
+        return $result;
+    }
+
+    foreach (array('all', 'inet6') as $af) {
+        $realif = get_real_interface($interface, $af);
+        if (!empty($realif) && !in_array($realif, $realifs)) {
+            $realifs[] = $realif;
+        }
+    }
+
+    if (!count($realifs)) {
+        return $result;
+    }
+
+    $intf_details = legacy_interfaces_details();
+
+    foreach ($realifs as $realif) {
+        foreach (array('ipv4', 'ipv6') as $proto) {
+            if (empty($intf_details[$realif][$proto])) {
+                continue;
+            }
+            foreach ($intf_details[$realif][$proto] as $address) {
+                if (!empty($address['tunnel']) || empty($address['ipaddr'])) {
+                    continue;
+                }
+                $scope = '';
+                if (!empty($address['link-local'])) {
+                    $scope = "%{$realif}";
+                }
+                $result[] = "{$address['ipaddr']}{$scope}";
+            }
+        }
+    }
+
+    return $result;
+}

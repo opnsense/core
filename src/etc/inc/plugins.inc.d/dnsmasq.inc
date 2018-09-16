@@ -123,16 +123,13 @@ function dnsmasq_configure_do($verbose = false)
         $addresses = array();
 
         foreach ($interfaces as $interface) {
-            foreach (legacy_getall_interface_addresses(get_real_interface($interface)) as $tmpaddr) {
-                $tmpaddr = explode('/', $tmpaddr)[0];
+            foreach (interfaces_addresses($interface) as $tmpaddr) {
                 /* no support for link-local address with scope specified */
                 $tmpaddr = explode('%', $tmpaddr)[0];
-                if (!empty($tmpaddr)) {
-                    if ($interface == 'lo0' && is_ipaddrv4($tmpaddr) && $tmpaddr != '127.0.0.1') {
-                        continue;
-                    }
-                    $addresses[] = $tmpaddr;
+                if ($interface == 'lo0' && is_ipaddrv4($tmpaddr) && $tmpaddr != '127.0.0.1') {
+                    continue;
                 }
+                $addresses[] = $tmpaddr;
             }
         }
 

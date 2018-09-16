@@ -167,18 +167,11 @@ EOF;
         $addresses = array();
 
         foreach ($active_interfaces as $ubif) {
-            $realif = get_real_interface($ubif);
-            foreach (legacy_getall_interface_addresses($realif) as $tmpaddr) {
-                $tmpaddr = explode('/', $tmpaddr)[0];
-                if (!empty($tmpaddr)) {
-                    if ($interface == 'lo0' && is_ipaddrv4($tmpaddr) && $tmpaddr != '127.0.0.1') {
-                        continue;
-                    }
-                    if (is_linklocal($tmpaddr)) {
-                        $tmpaddr .= "%{$realif}";
-                    }
-                    $addresses[] = $tmpaddr;
+            foreach (interfaces_addresses($ubif) as $tmpaddr) {
+                if ($ubif == 'lo0' && is_ipaddrv4($tmpaddr) && $tmpaddr != '127.0.0.1') {
+                    continue;
                 }
+                $addresses[] = $tmpaddr;
             }
         }
 
@@ -335,6 +328,7 @@ rrset-cache-size: {$rrsetcachesize}m
 {$anchor_file}
 prefetch: {$prefetch}
 prefetch-key: {$prefetch_key}
+
 # Interface IP(s) to bind to
 {$bindints}
 {$outgoingints}
