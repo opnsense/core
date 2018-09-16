@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Scott Dale
  * Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>
  * Copyright (C) 2004-2005 Manuel Kasper <mk@neon1.net>
- * Copyright (C) 2004-2005 Jonathan Watt <jwatt@jwatt.org>.
+ * Copyright (C) 2004-2005 Jonathan Watt <jwatt@jwatt.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
