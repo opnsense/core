@@ -2,6 +2,7 @@
  * Copyright (C) 2018 Deciso B.V.
  * Copyright (C) 2018 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2018 Team Rebellion
+ * Copyright (C) 2018 Fabian Franz
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,6 +32,12 @@
 $(document).ready(function () {
     // traverse loaded css files
     var toggle_sidebar_loaded = false;
+    var nomouse = "mouseenter mouseleave";
+    var layer1_a = $('#mainmenu > div > a');
+    var layer1_div = $('#mainmenu > div > div');
+    var layer2_a = $('#mainmenu > div > div > a');
+    var layer2_div = $('#mainmenu > div > div > div');
+
     $.each(document.styleSheets, function(sheetIndex, sheet) {
         if (sheet.href != undefined && sheet.href.match(/main\.css(\?v=\w+$)?/gm)) {
           $.each(sheet.cssRules || sheet.rules, function(ruleIndex, rule) {
@@ -41,6 +48,26 @@ $(document).ready(function () {
         }
     });
 
+    /* disable mouseevents on toggle and resize */
+    function mouse_events_off() {
+        layer1_a.off(nomouse);
+        layer2_a.off(nomouse);
+        layer1_div.off(nomouse);
+        layer2_div.off(nomouse);
+    }
+
+    /* trigger mouseevents on startup */
+    function trigger_sidebar() {
+        layer1_a.first().trigger("mouseenter");
+        layer1_a.first().trigger("mouseleave");
+        layer1_div.removeClass("in");
+    }
+
+    /* transition duration - time */
+    function transition_duration(time) {
+        $.fn.collapse.Constructor.TRANSITION_DURATION = time;
+    }
+
     function opnsense_sidebar_toggle(store) {
         $("#navigation").toggleClass("col-sidebar-left");
         $("main").toggleClass("col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12");
@@ -48,8 +75,10 @@ $(document).ready(function () {
         if ($("#navigation").hasClass("col-sidebar-left")) {
             $(".brand-logo").css("display", "none");
             $(".brand-icon").css("display", "inline-block");
+            trigger_sidebar();
             if (store && window.sessionStorage) {
                 sessionStorage.setItem('toggle_sidebar_preset', 1);
+                transition_duration(0);
             }
         } else {
             $(".brand-icon").css("display", "none");
@@ -57,6 +86,8 @@ $(document).ready(function () {
             $("#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs").css("width", "");
             if (store && window.sessionStorage) {
                 sessionStorage.setItem('toggle_sidebar_preset', 0);
+                mouse_events_off();
+                transition_duration(350);
             }
         }
     }
@@ -68,17 +99,43 @@ $(document).ready(function () {
             $(this).blur();
         });
 
-        /* sidebar mouseevents */
-        $("#navigation").hover(function () {
+        /* sidebar mouseenter */
+        $("#navigation").mouseenter(function () {
             if ($("#navigation").hasClass("col-sidebar-left")) {
-                $("#navigation > div > nav > #mainmenu > div > div").on({
-                    mouseout: function() {$("#navigation.col-sidebar-left").css("width", "70px"); },
-                    mouseover: function() {$("#navigation.col-sidebar-left").css("width", "380px"); }
-                });
-                $("#navigation > div > nav > #mainmenu > div > a").on({
-                    mouseout: function() {$("#navigation.col-sidebar-left").css("width", "70px"); },
-                    mouseover: function() {$("#navigation.col-sidebar-left").css("width", "380px"); }
-                });
+                transition_duration(0);
+                var events = {
+                    mouseenter: function() {
+                        $("#navigation.col-sidebar-left").css("width", "380px");
+                        $(this).trigger("click");
+                    },
+                    mouseleave: function() {
+                        $("#navigation.col-sidebar-left").css("width", "70px");
+                    },
+                    mousedown: function() {
+                        $(this).trigger("click");
+                    }
+                }
+                layer1_a.on(events);
+                layer2_a.on(events);
+                var events2 = {
+                    mouseenter: function() {
+                        $("#navigation.col-sidebar-left").css("width", "380px");
+                        $(this).trigger("click");
+                    },
+                    mouseleave: function() {
+                        $("#navigation.col-sidebar-left").css("width", "70px");
+                    }
+                }
+                layer1_div.on(events2);
+                layer2_div.on(events2);
+            }
+        });
+
+        /* sidebar mouseleave */
+        $("#mainmenu").mouseleave(function () {
+            if ($("#navigation").hasClass("col-sidebar-left")) {
+                layer1_a.attr("aria-expanded","false");
+                layer1_a.next("div").removeClass("in");
             }
         });
 
@@ -87,11 +144,15 @@ $(document).ready(function () {
             var win = $(this);
             if ((win.height() < 675 || win.width() < 760) && $("#navigation").not("col-sidebar-hidden")) {
                 $("#navigation").addClass("col-sidebar-hidden");
+                mouse_events_off();
                 if ($("#navigation").hasClass("col-sidebar-left")) {
                     opnsense_sidebar_toggle(false);
+                    mouse_events_off();
+                    transition_duration(350);
                 }
             } else if ((win.height() >= 675 && win.width() >= 760) && $("#navigation").hasClass("col-sidebar-hidden")) {
                 $("#navigation").removeClass("col-sidebar-hidden");
+                transition_duration(0);
                 if (window.sessionStorage && sessionStorage.getItem('toggle_sidebar_preset') == 1) {
                     opnsense_sidebar_toggle(false);
                 }
