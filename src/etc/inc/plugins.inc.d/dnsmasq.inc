@@ -124,12 +124,13 @@ function dnsmasq_configure_do($verbose = false)
 
         foreach ($interfaces as $interface) {
             foreach (interfaces_addresses($interface) as $tmpaddr) {
-                /* no support for link-local address with scope specified */
-                $tmpaddr = explode('%', $tmpaddr)[0];
                 if ($interface == 'lo0' && is_ipaddrv4($tmpaddr) && $tmpaddr != '127.0.0.1') {
                     continue;
                 }
-                $addresses[] = $tmpaddr;
+                /* link-local does not seem to be supported */
+                if (strstr($tmpaddr, '%') === false && !is_linklocal($tmpaddr)) {
+                    $addresses[] = $tmpaddr;
+                }
             }
         }
 
