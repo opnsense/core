@@ -159,27 +159,31 @@ private-address: fe80::/10       # Link-local address (LLA)
 EOF;
     }
 
-    // Determine interfaces to run on
-    $bindints = "";
+    $bindints = '';
+
     if (!empty($config['unbound']['active_interface'])) {
-        $active_interfaces = explode(",", $config['unbound']['active_interface']);
-        $loopback = false;
+        $active_interfaces = explode(',', $config['unbound']['active_interface']);
+        $active_interfaces[] = 'lo0';
+        $addresses = array();
+
         foreach ($active_interfaces as $ubif) {
-            $intip = get_interface_ip($ubif);
-            if (!empty($intip)) {
-                $bindints .= "interface: $intip\n";
-                if ($intip == '127.0.0.1') {
-                    $loopback = true;
+            $realif = get_real_interface($ubif);
+            foreach (legacy_getall_interface_addresses($realif) as $tmpaddr) {
+                $tmpaddr = explode('/', $tmpaddr)[0];
+                if (!empty($tmpaddr)) {
+                    if ($interface == 'lo0' && is_ipaddrv4($tmpaddr) && $tmpaddr != '127.0.0.1') {
+                        continue;
+                    }
+                    if (is_linklocal($tmpaddr)) {
+                        $tmpaddr .= "%{$realif}";
+                    }
+                    $addresses[] = $tmpaddr;
                 }
             }
-            $intip = get_interface_ipv6($ubif);
-            if (!empty($intip)) {
-                $bindints .= "interface: $intip\n";
-            }
         }
-        if (!$loopback) {
-            /* always bind to this loopback IP for system */
-            $bindints .= "interface: 127.0.0.1\n";
+
+        foreach ($addresses as $address) {
+            $bindints .= "interface: $address\n";
         }
     } else {
         $bindints .= "interface: 0.0.0.0\n";
@@ -187,8 +191,7 @@ EOF;
         $bindints .= "interface-automatic: yes\n";
     }
 
-    // Determine interfaces to run on
-    $outgoingints = "";
+    $outgoingints = '';
     if (!empty($config['unbound']['outgoing_interface'])) {
         $outgoingints = "# Outgoing interfaces to be used\n";
         $outgoing_interfaces = explode(",", $config['unbound']['outgoing_interface']);

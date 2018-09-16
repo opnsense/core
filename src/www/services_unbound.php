@@ -132,12 +132,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-
 $service_hook = 'unbound';
-legacy_html_escape_form_data($pconfig);
-include_once("head.inc");
-?>
 
+$interfaces = get_configured_interface_with_descr();
+
+legacy_html_escape_form_data($pconfig);
+
+include_once("head.inc");
+
+?>
 <body>
 <script>
     $( document ).ready(function() {
@@ -194,11 +197,9 @@ include_once("head.inc");
                         <td><a id="help_for_active_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Network Interfaces"); ?></td>
                         <td>
                           <select name="active_interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
-<?php
-                            foreach (get_possible_listen_ips() as $laddr):?>
-                            <option value="<?=$laddr['value'];?>" <?=!empty($pconfig['active_interface'][0]) && in_array($laddr['value'], $pconfig['active_interface']) ? 'selected="selected"' : "";?>><?=htmlspecialchars($laddr['name']);?></option>
-<?php
-                            endforeach; ?>
+<?php foreach ($interfaces as $ifname => $ifdescr): ?>
+                            <option value="<?= html_safe($ifname) ?>" <?=!empty($pconfig['active_interface'][0]) && in_array($ifname, $pconfig['active_interface']) ? 'selected="selected"' : '' ?>><?= html_safe($ifdescr) ?></option>
+<?php endforeach ?>
                           </select>
                           <div class="hidden" data-for="help_for_active_interface">
                             <?=gettext("Interface IPs used by the DNS Resolver for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.");?>
@@ -325,13 +326,11 @@ include_once("head.inc");
                         <td><a id="help_for_outgoing_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Outgoing Network Interfaces"); ?></td>
                         <td>
                           <select id="outgoing_interface" name="outgoing_interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
-<?php
-                            foreach (get_possible_listen_ips(true) as $laddr):?>
-                            <option value="<?=$laddr['value'];?>" <?=!empty($pconfig['outgoing_interface'][0]) && in_array($laddr['value'], $pconfig['outgoing_interface']) ? 'selected="selected"' : "";?>>
-                              <?=htmlspecialchars($laddr['name']);?>
+<?php foreach ($interfaces as $ifname => $ifdescr): ?>
+                            <option value="<?= html_safe($ifname) ?>" <?=!empty($pconfig['outgoing_interface'][0]) && in_array($ifname, $pconfig['outgoing_interface']) ? 'selected="selected"' : "" ?>>
+                              <?= html_safe($ifdescr) ?>
                             </option>
-<?php
-                            endforeach; ?>
+<?php endforeach ?>
 
                           </select>
                           <div class="hidden" data-for="help_for_outgoing_interface">
