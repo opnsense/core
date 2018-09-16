@@ -61,16 +61,6 @@ function html_safe($text)
     return htmlspecialchars($text, ENT_QUOTES | ENT_HTML401);
 }
 
-function cache_safe($url)
-{
-    $info = stat('/usr/local/opnsense/www/index.php');
-    if (!empty($info['mtime'])) {
-        return "{$url}?v=" . substr(md5($info['mtime']), 0, 16);
-    }
-
-    return $url;
-}
-
 /**
  * search for a themed filename or return distribution standard
  * @param string $url relative url
