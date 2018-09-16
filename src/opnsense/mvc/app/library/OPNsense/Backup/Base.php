@@ -56,9 +56,9 @@ abstract class Base
         @unlink("{$file}.dec");
 
         if (file_exists("{$file}.enc")) {
-            $version = strtok(file_get_contents('/usr/local/opnsense/version/opnsense'), '-');
+            $version = trim(shell_exec('opnsense-version -V'));
             $result = "---- BEGIN {$tag} ----\n";
-            $result .= "Version: OPNsense {$version}\n"; /* XXX hardcoded product name */
+            $result .= "Version: {$version}\n";
             $result .= "Cipher: AES-256-CBC\n";
             $result .= "Hash: MD5\n\n";
             $result .= chunk_split(base64_encode(file_get_contents("{$file}.enc")), 76, "\n");

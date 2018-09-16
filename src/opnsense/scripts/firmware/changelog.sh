@@ -39,7 +39,7 @@ changelog_remove()
 
 changelog_fetch()
 {
-	CORE_ABI=$(cat /usr/local/opnsense/version/opnsense.abi)
+	CORE_ABI=$(opnsense-version -a)
 	SYS_ABI=$(opnsense-verify -a)
 
 	URL="https://pkg.opnsense.org/${SYS_ABI}/${CORE_ABI}/sets/changelog.txz"
