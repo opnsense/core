@@ -63,10 +63,9 @@ function html_safe($text)
 
 function cache_safe($url)
 {
-    global $g;
-
-    if (!empty($g['product_hash'])) {
-        return "{$url}?v={$g['product_hash']}";
+    $info = stat('/usr/local/opnsense/www/index.php');
+    if (!empty($info['mtime'])) {
+        return "{$url}?v=" . substr(md5($info['mtime']), 0, 16);
     }
 
     return $url;
