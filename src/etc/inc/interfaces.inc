@@ -280,9 +280,7 @@ function interfaces_create_wireless_clones($verbose = false)
         flush();
     }
 
-    $iflist = get_configured_interface_list();
-
-    foreach ($iflist as $if) {
+    foreach (get_configured_interface_with_descr() as $if => $unused) {
         $realif = $config['interfaces'][$if]['if'];
         if (is_interface_wireless($realif)) {
             interface_wireless_clone(interface_get_wireless_clone($realif), $config['interfaces'][$if]);
@@ -396,7 +394,7 @@ function interface_bridge_configure(&$bridge, $checkmember = 0)
         $bridge['bridgeif'] = $bridgeif;
     }
 
-    $checklist = get_configured_interface_list();
+    $checklist = get_configured_interface_with_descr();
 
     /* Add interfaces to bridge */
     foreach ($members as $member) {
@@ -862,8 +860,7 @@ function interface_gif_configure(&$gif, $gifkey = "")
 
     interfaces_bring_up($gifif);
 
-    $iflist = get_configured_interface_list();
-    foreach ($iflist as $ifname) {
+    foreach (get_configured_interface_with_descr() as $ifname => $unused) {
         if ($config['interfaces'][$ifname]['if'] == $gifif) {
             if (get_interface_gateway($ifname) || get_interface_gateway_v6($ifname)) {
                 system_routing_configure(false, $ifname);
@@ -894,12 +891,11 @@ function interfaces_configure($verbose = false)
     interfaces_lagg_configure('', $verbose);
     interfaces_vlan_configure('', $verbose);
 
-    $iflist = get_configured_interface_with_descr();
     $delayed_list = array();
     $bridge_list = array();
     $track6_list = array();
 
-    foreach ($iflist as $if => $ifname) {
+    foreach (get_configured_interface_with_descr() as $if => $ifname) {
         $realif = $config['interfaces'][$if]['if'];
         if (strstr($realif, "bridge")) {
             $bridge_list[$if] = $ifname;
@@ -1789,9 +1785,7 @@ function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false)
 
     $baseif = interface_get_wireless_base($ifcfg['if']);
 
-    // Sync shared settings for assigned clones
-    $iflist = get_configured_interface_list(false, true);
-    foreach ($iflist as $if) {
+    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $if => $unused) {
         if ($baseif == interface_get_wireless_base($config['interfaces'][$if]['if']) && $ifcfg['if'] != $config['interfaces'][$if]['if']) {
             if (isset($config['interfaces'][$if]['wireless']['standard']) || $sync_changes) {
                 foreach ($shared_settings as $setting) {
@@ -2366,7 +2360,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* Disable Accepting router advertisements unless specifically requested */
-    mwexec('/sbin/ifconfig %s inet6 -accept_rtadv', array($realif));
+    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv', array($realif));
 
     /* wireless configuration? */
     if (isset($wancfg['wireless']) && is_array($wancfg['wireless']) && !$linkupevent) {
@@ -2939,8 +2933,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
                 $preflen = 64 - $wancfg['dhcp6-ia-pd-len'];
                 $dhcp6cconf .= "  prefix ::/{$preflen} infinity;\n";
             }
-            $iflist = link_interface_to_track6($interface);
-            foreach ($iflist as $friendly => $ifcfg) {
+            foreach (link_interface_to_track6($interface) as $friendly => $ifcfg) {
                 if (is_numeric($ifcfg['track6-prefix-id'])) {
                     $realif = get_real_interface($friendly);
                     $dhcp6cconf .= "  prefix-interface {$realif} {\n";
@@ -3107,9 +3100,7 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
             $id_assoc_statement_prefix .= ";\n";
         }
 
-        $iflist = link_interface_to_track6($interface);
-
-        foreach ($iflist as $friendly => $ifcfg) {
+        foreach (link_interface_to_track6($interface) as $friendly => $ifcfg) {
             if (is_numeric($ifcfg['track6-prefix-id'])) {
                 $realif = get_real_interface($friendly);
                 $id_assoc_statement_prefix .= "  prefix-interface {$realif} {\n";
@@ -3522,11 +3513,9 @@ function convert_friendly_interface_to_friendly_descr($interface)
                     }
                 }
             } else {
-                /* if list */
-                $ifdescrs = get_configured_interface_with_descr(false, true);
-                foreach ($ifdescrs as $if => $ifname) {
-                    if ($if == $interface || $ifname == $interface) {
-                        return $ifname;
+                foreach (legacy_config_get_interfaces(array('virtual' => false)) as $if => $ifcfg) {
+                    if ($if == $interface || $ifcfg['descr'] == $interface) {
+                        return $ifcfg['ifdescr'];
                     }
                 }
             }
@@ -4638,25 +4627,21 @@ function get_carp_interface_status($carpinterface)
 
 function make_ipv6_64_address($prefix, $suffix)
 {
-    $prefix_array = array();
-    $prefix_array = explode(':', $prefix);
-    $prefix_array[4] = '0';
-    $prefix_array[5] = '0';
-    $prefix_array[6] = '0';
-    $prefix_array[7] = '0';
+    $prefix_array = explode(':', Net_IPv6::uncompress($prefix));
+    $suffix_array = explode(':', Net_IPv6::uncompress($suffix));
 
-    $suffix_array = array();
-    $suffix_array = explode(':', $suffix);
-    $suffix_size = sizeof($suffix_array);
-
-    $loop = 7;
-    for ($count = $suffix_size - 1; $count > 0; $count--) {
-        if (!empty($suffix_array[$count])) {
-            $prefix_array[$loop] = $suffix_array[$count];
-            --$loop;
-        }
+    /* unconditionally merge right side of /64 */
+    foreach (array(4, 5, 6, 7) as $index) {
+        $prefix_array[$index] = $suffix_array[$index];
     }
-    $address = implode(':', $prefix_array);
 
-    return $address;
+    /* XXX correctly merging the left side of /64 requires user-specified prefix length */
+    foreach (array(0, 1, 2, 3) as $index) {
+        if ((int)$suffix_array[$index] === 0) {
+            continue;
+        }
+        $prefix_array[$index] = $suffix_array[$index];
+    }
+
+    return implode(':', $prefix_array);
 }

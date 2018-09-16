@@ -268,9 +268,9 @@ $( document ).ready(function() {
                 </tr>
                 <tr>
                   <td><?=gettext("Name"); ?></td>
-                  <td><?=gettext("Connected Since"); ?></td>
-                  <td><?=gettext("Virtual Addr"); ?></td>
                   <td><?=gettext("Remote Host"); ?></td>
+                  <td><?=gettext("Virtual Addr"); ?></td>
+                  <td><?=gettext("Connected Since"); ?></td>
                   <td><?=gettext("Bytes Sent"); ?></td>
                   <td><?=gettext("Bytes Rcvd"); ?></td>
                   <td><?=gettext("Status"); ?></td>
@@ -280,9 +280,9 @@ $( document ).ready(function() {
                 foreach ($clients as $client): ?>
                 <tr id="<?= html_safe("r:{$client['port']}:{$client['vpnid']}") ?>">
                   <td><?=$client['name'];?></td>
-                  <td><?=$client['connect_time'];?></td>
-                  <td><?=$client['virtual_addr'];?></td>
                   <td><?=$client['remote_host'];?></td>
+                  <td><?=$client['virtual_addr'];?></td>
+                  <td><?=$client['connect_time'];?></td>
                   <td><?=format_bytes($client['bytes_sent']);?></td>
                   <td><?=format_bytes($client['bytes_recv']);?></td>
                   <td><?=$client['status'];?></td>
