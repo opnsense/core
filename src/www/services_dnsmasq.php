@@ -349,7 +349,7 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_interfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interfaces"); ?></td>
                   <td>
-                    <select id="interface" name="interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All')) ?>">
+                    <select id="interface" name="interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
 <?php foreach (get_configured_interface_with_descr() as  $iface => $ifacename): ?>
                       <option value="<?= html_safe($iface) ?>" <?=in_array($iface, $pconfig['interface']) ? 'selected="selected"' : "" ?>>
                         <?= html_safe($ifacename) ?>
