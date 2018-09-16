@@ -543,6 +543,7 @@ function cert_in_use($certref) {
 
 function crl_update(& $crl)
 {
+    global $config;
     $ca =& lookup_ca($crl['caref']);
     if (!$ca) {
         return false;
@@ -567,6 +568,7 @@ function crl_update(& $crl)
 
 function cert_revoke($cert, & $crl, $reason=OCSP_REVOKED_STATUS_UNSPECIFIED)
 {
+    global $config;
     if (is_cert_revoked($cert, $crl['refid'])) {
         return true;
     }

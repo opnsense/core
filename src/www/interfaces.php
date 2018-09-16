@@ -309,10 +309,16 @@ function get_wireless_channel_info($interface) {
     return($wireless_channels);
 }
 
-$ifdescrs = legacy_config_get_interfaces(array('virtual' => false));
 
+
+
+// Get configured interface list
+$ifdescrs = get_configured_interface_with_descr(false, true);
+
+// reference to interface section
 $a_interfaces = &config_read_array('interfaces');
 $a_ppps = &config_read_array('ppps', 'ppp');
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['if']) && !empty($a_interfaces[$_GET['if']])) {
@@ -623,8 +629,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $old_ppps = $a_ppps;
 
         /* description unique? */
-        foreach ($ifdescrs as $ifent => $ifcfg) {
-            if ($if != $ifent && $ifcfg['descr'] == $pconfig['descr']) {
+        foreach ($ifdescrs as $ifent => $ifdescr) {
+            if ($if != $ifent && $ifdescr == $pconfig['descr']) {
                 $input_errors[] = gettext("An interface with the specified description already exists.");
                 break;
             }
@@ -725,7 +731,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (!is_numeric($pconfig['prefix-6rd-v4plen'])) {
                     $input_errors[] = gettext('6RD IPv4 prefix length must be a number.');
                 }
-                foreach ($ifdescrs as $ifent => $unused) {
+                foreach ($ifdescrs as $ifent => $ifdescr) {
                     if ($if != $ifent && ($config[interfaces][$ifent]['ipaddrv6'] == $pconfig['type6'])) {
                         if ($config[interfaces][$ifent]['prefix-6rd'] == $pconfig['prefix-6rd']) {
                             $input_errors[] = gettext("You can only have one interface configured in 6rd with same prefix.");
@@ -735,7 +741,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
                 break;
             case "6to4":
-                foreach ($ifdescrs as $ifent => $unused) {
+                foreach ($ifdescrs as $ifent => $ifdescr) {
                     if ($if != $ifent && ($config[interfaces][$ifent]['ipaddrv6'] == $pconfig['type6'])) {
                         $input_errors[] = sprintf(gettext("You can only have one interface configured as 6to4."), $pconfig['type6']);
                         break;
@@ -2883,7 +2889,7 @@ include("head.inc");
                           <td style="width:78%">
                             <select name='track6-interface' class='selectpicker' data-style='btn-default' >
 <?php
-                            foreach ($ifdescrs as $iface => $ifcfg):
+                            foreach (get_configured_interface_with_descr(false, true) as $iface => $ifacename):
                               switch($config['interfaces'][$iface]['ipaddrv6']) {
                                 case '6rd':
                                 case '6to4':
@@ -2894,7 +2900,7 @@ include("head.inc");
                                     continue 2;
                               }?>
                                 <option value="<?=$iface;?>" <?=$iface == $pconfig['track6-interface'] ? " selected=\"selected\"" : "";?>>
-                                  <?= htmlspecialchars($ifcfg['descr']) ?>
+                                    <?= htmlspecialchars($ifacename);?>
                                 </option>
 <?php
                             endforeach;?>

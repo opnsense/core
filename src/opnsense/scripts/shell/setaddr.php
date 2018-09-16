@@ -135,7 +135,7 @@ function get_interface_config_description($iface)
 $fp = fopen('php://stdin', 'r');
 
 /* build an interface collection */
-$ifdescrs = legacy_config_get_interfaces(array('virtual' => false));
+$ifdescrs = get_configured_interface_with_descr(false, true);
 $count = count($ifdescrs);
 
 /* grab interface that we will operate on, unless there is only one
@@ -143,9 +143,9 @@ $count = count($ifdescrs);
 if ($count > 1) {
     echo "Available interfaces:\n\n";
     $x=1;
-    foreach ($ifdescrs as $iface => $ifcfg) {
+    foreach ($ifdescrs as $iface => $ifdescr) {
         $config_descr = get_interface_config_description($iface);
-        echo "{$x} - {$ifcfg['descr']} ({$config_descr})\n";
+        echo "{$x} - {$ifdescr} ({$config_descr})\n";
         $x++;
     }
     echo "\nEnter the number of the interface to configure: ";
@@ -163,7 +163,7 @@ if ($intnum > $count) {
 }
 
 $index = 1;
-foreach ($ifdescrs as $ifname => $unused) {
+foreach ($ifdescrs as $ifname => $ifdesc) {
     if ($intnum == $index) {
         $interface = $ifname;
         break;

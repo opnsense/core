@@ -29,16 +29,15 @@
 
 require_once("guiconfig.inc");
 
-function lagg_inuse($lagg_intf)
-{
-    global $config;
 
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $if => $unused) {
+function lagg_inuse($lagg_intf) {
+    global $config;
+    $iflist = get_configured_interface_list(false, true);
+    foreach ($iflist as $if) {
         if ($config['interfaces'][$if]['if'] == $lagg_intf) {
             return true;
         }
     }
-
     if (isset($config['vlans']['vlan'])) {
         foreach ($config['vlans']['vlan'] as $vlan) {
             if($vlan['if'] == $lagg_intf) {
@@ -46,11 +45,10 @@ function lagg_inuse($lagg_intf)
             }
         }
     }
-
     return false;
 }
 
-$a_laggs = &config_read_array('laggs', 'lagg');
+$a_laggs = &config_read_array('laggs', 'lagg') ;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($a_laggs[$_POST['id']])) {

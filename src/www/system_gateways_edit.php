@@ -583,9 +583,9 @@ $( document ).ready(function() {
                   <td>
                     <select name='interface' class="selectpicker" data-style="btn-default" data-live-search="true">
 <?php
-                    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $iface => $ifcfg):?>
+                    foreach (get_configured_interface_with_descr(false, true) as $iface => $ifacename):?>
                       <option value="<?=$iface;?>" <?=$iface == $pconfig['friendlyiface'] ? "selected='selected'" : "";?>>
-                        <?= $ifcfg['descr'] ?>
+                        <?=$ifacename;?>
                       </option>
 <?php
                       endforeach;?>
