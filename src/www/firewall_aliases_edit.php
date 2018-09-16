@@ -5,7 +5,7 @@
     Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2009 Ermal Luçi
     Copyright (C) 2010 Jim Pingle <jimp@pfsense.org>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
