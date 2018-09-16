@@ -195,7 +195,7 @@ include_once("head.inc");
                         <td>
                           <select name="active_interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
 <?php
-                            foreach (get_possible_listen_ips(false) as $laddr):?>
+                            foreach (get_possible_listen_ips() as $laddr):?>
                             <option value="<?=$laddr['value'];?>" <?=!empty($pconfig['active_interface'][0]) && in_array($laddr['value'], $pconfig['active_interface']) ? 'selected="selected"' : "";?>><?=htmlspecialchars($laddr['name']);?></option>
 <?php
                             endforeach; ?>
