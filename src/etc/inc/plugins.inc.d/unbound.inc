@@ -163,15 +163,23 @@ EOF;
     $bindints = "";
     if (!empty($config['unbound']['active_interface'])) {
         $active_interfaces = explode(",", $config['unbound']['active_interface']);
+        $loopback = false;
         foreach ($active_interfaces as $ubif) {
             $intip = get_interface_ip($ubif);
             if (!empty($intip)) {
                 $bindints .= "interface: $intip\n";
+                if ($intip == '127.0.0.1') {
+                    $loopback = true;
+                }
             }
             $intip = get_interface_ipv6($ubif);
             if (!empty($intip)) {
                 $bindints .= "interface: $intip\n";
             }
+        }
+        if (!$loopback) {
+            /* always bind to this loopback IP for system */
+            $bindints .= "interface: 127.0.0.1\n";
         }
     } else {
         $bindints .= "interface: 0.0.0.0\n";
@@ -696,7 +704,7 @@ function unbound_acls_subnets()
     /* add our networks for active interfaces including localhost */
     $subnets = array('127.0.0.1/8', '::1/64');
 
-    foreach ($active_interfaces as $ubif => $ifdesc) {
+    foreach ($active_interfaces as $ubif => $unused) {
         foreach (legacy_getall_interface_addresses(get_real_interface($ubif)) as $subnet) {
             $subnets[] = $subnet;
         }
