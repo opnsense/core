@@ -1,5 +1,5 @@
 
-<link href="/ui/css/flags/flag-icon.css" rel="stylesheet">
+<link href="{{ cache_safe('/ui/css/flags/flag-icon.css') }}" rel="stylesheet">
 <style>
     @media (min-width: 768px) {
         .modal-dialog {
