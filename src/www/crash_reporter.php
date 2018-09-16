@@ -64,13 +64,11 @@ include('head.inc');
 
 $plugins = implode(' ',  explode("\n", shell_exec('pkg info -g "os-*"')));
 
-$last = json_decode(@file_get_contents('/usr/local/opnsense/firmware-product.last'), true);
 $crash_report_header = sprintf(
-    "%s\n%s %s%s (%s/%s)\n%sTime %s\n",
+    "%s\n%s %s (%s/%s)\n%sTime %s\n",
     php_uname('v'),
     $g['product_name'],
     "{$g['product_version']}-{$g['product_hash']}",
-    !empty($last['product_version']) ? sprintf(' [%s]', "{$last['product_version']}-{$last['product_hash']}") : '',
     $g['product_arch'],
     $g['product_flavour'],
     empty($plugins) ? '' : "Plugins $plugins\n",
