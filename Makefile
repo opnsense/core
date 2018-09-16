@@ -52,15 +52,19 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 CORE_REPOSITORY?=	${FLAVOUR}
 .endif
 
-CORE_NAME?=		opnsense-devel
-CORE_TYPE?=		development
-CORE_MESSAGE?=		Insert Name Here
-
+CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} package
 CORE_MAINTAINER?=	project@opnsense.org
-CORE_PACKAGESITE?=	https://pkg.opnsense.org
+CORE_MESSAGE?=		Insert Name Here
+CORE_NAME?=		opnsense-devel
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
-CORE_COMMENT?=		OPNsense ${CORE_TYPE} package
+CORE_PACKAGESITE?=	https://pkg.opnsense.org
+CORE_PRODUCT?=		OPNsense
+CORE_TYPE?=		development
 CORE_WWW?=		https://opnsense.org/
+
+CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
+CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
+CORE_COPYRIGHT_YEARS?=	2014-2018
 
 CORE_DEPENDS_amd64?=	beep bsdinstaller
 CORE_DEPENDS_i386?=	${CORE_DEPENDS_amd64}
@@ -213,11 +217,7 @@ scripts:
 
 install:
 	@${MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
-	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} \
-	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} CORE_WWW=${CORE_WWW} \
-	    CORE_MAINTAINER=${CORE_MAINTAINER} CORE_HASH=${CORE_HASH} \
-	    CORE_PACKAGESITE=${CORE_PACKAGESITE} \
-	    CORE_REPOSITORY=${CORE_REPOSITORY}
+	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} ${MAKE_REPLACE}
 
 collect:
 	@(cd ${.CURDIR}/src; find * -type f) | while read FILE; do \
@@ -229,11 +229,7 @@ collect:
 
 bootstrap:
 	@${MAKE} -C ${.CURDIR}/src install-bootstrap DESTDIR=${DESTDIR} \
-	    NO_SAMPLE=please CORE_PACKAGESITE=${CORE_PACKAGESITE} \
-	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} CORE_WWW=${CORE_WWW} \
-	    CORE_MAINTAINER=${CORE_MAINTAINER} CORE_HASH=${CORE_HASH} \
-	    CORE_PACKAGESITE=${CORE_PACKAGESITE} \
-	    CORE_REPOSITORY=${CORE_REPOSITORY}
+	    NO_SAMPLE=please ${MAKE_REPLACE}
 
 plist:
 	@(${MAKE} -C ${.CURDIR}/contrib plist && \

@@ -1,10 +1,10 @@
 {
-    "product_copyright_owner": "Deciso B.V.",
-    "product_copyright_url": "https://www.deciso.com/",
-    "product_copyright_years": "2014-2018",
+    "product_copyright_owner": "%%CORE_COPYRIGHT_HOLDER%%",
+    "product_copyright_url": "%%CORE_COPYRIGHT_WWW%%",
+    "product_copyright_years": "%%CORE_COPYRIGHT_YEARS%%",
     "product_email": "%%CORE_MAINTAINER%%",
     "product_hash": "%%CORE_HASH%%",
-    "product_id": "opnsense",
-    "product_name": "OPNsense",
+    "product_id": "%%CORE_NAME%%",
+    "product_name": "%%CORE_PRODUCT%%",
     "product_website": "%%CORE_WWW%%"
 }

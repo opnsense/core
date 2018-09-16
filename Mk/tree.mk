@@ -55,14 +55,7 @@ install-${TARGET}:
 	cp -vr ${TREE} ${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}
 	@(cd ${TREE}; find * -type f ${_IGNORES}) | while read FILE; do \
 		if [ "$${FILE%%.in}" != "$${FILE}" ]; then \
-			sed -i '' \
-			    -e "s=%%CORE_ABI%%=${CORE_ABI}=g" \
-			    -e "s=%%CORE_HASH%%=${CORE_HASH}=g" \
-			    -e "s=%%CORE_MAINTAINER%%=${CORE_MAINTAINER}=g" \
-			    -e "s=%%CORE_NAME%%=${CORE_NAME}=g" \
-			    -e "s=%%CORE_PACKAGESITE%%=${CORE_PACKAGESITE}=g" \
-			    -e "s=%%CORE_REPOSITORY%%=${CORE_REPOSITORY}=g" \
-			    -e "s=%%CORE_WWW%%=${CORE_WWW}=g" \
+			sed -i '' ${SED_REPLACE} \
 			    "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}"; \
 			mv -v "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}" \
 			    "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE%%.in}"; \

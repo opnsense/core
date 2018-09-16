@@ -1,4 +1,4 @@
-# Copyright (c) 2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2016-2018 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -31,3 +31,23 @@ OPENSSL?=	${LOCALBASE}/bin/openssl
 PKG!=		which pkg || echo true
 GIT!=		which git || echo true
 ARCH!=		uname -p
+
+REPLACEMENTS=	CORE_ABI \
+		CORE_COPYRIGHT_HOLDER \
+		CORE_COPYRIGHT_WWW \
+		CORE_COPYRIGHT_YEARS \
+		CORE_HASH \
+		CORE_MAINTAINER \
+		CORE_NAME \
+		CORE_PACKAGESITE \
+		CORE_PRODUCT \
+		CORE_REPOSITORY \
+		CORE_WWW
+
+MAKE_REPLACE=	# empty
+SED_REPLACE=	# empty
+
+.for REPLACEMENT in ${REPLACEMENTS}
+MAKE_REPLACE+=	${REPLACEMENT}="${${REPLACEMENT}}"
+SED_REPLACE+=	-e "s=%%${REPLACEMENT}%%=${${REPLACEMENT}}=g"
+.endfor
