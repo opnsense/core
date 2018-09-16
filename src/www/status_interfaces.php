@@ -70,12 +70,12 @@ include("head.inc");
             $pfctl_counters = json_decode(configd_run("filter list counters json"), true);
             $vmstat_interupts = json_decode(configd_run("system list interrupts json"), true);
             $ifsinfo = get_interfaces_info();
-            foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifdescr => $ifcfg):
+            foreach (get_configured_interface_with_descr(false, true) as $ifdescr => $ifname):
               $ifinfo = $ifsinfo[$ifdescr];
               $ifpfcounters = $pfctl_counters[$ifinfo['if']];
               legacy_html_escape_form_data($ifinfo);
               $ifdescr = htmlspecialchars($ifdescr);
-              $ifname = htmlspecialchars($ifcfg['descr']);
+              $ifname = htmlspecialchars($ifname);
 ?>
               <div class="tab-content content-box col-xs-12 __mb">
                 <div class="table-responsive">

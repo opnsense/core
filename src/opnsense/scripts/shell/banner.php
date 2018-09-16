@@ -43,14 +43,14 @@ $product = $g['product_name'];
 
 echo "\n*** {$hostname}.{$domain}: {$product} {$version} ({$machine}/${flavour}) ***\n";
 
-$iflist = legacy_config_get_interfaces(array('virtual' => false));
+$iflist = get_configured_interface_with_descr(false, true);
 
-if (!count($iflist)) {
+if (empty($iflist)) {
     echo "\n\tNo network interfaces are assigned.\n";
     return;
 }
 
-foreach ($iflist as $ifname => $ifcfg) {
+foreach ($iflist as $ifname => $friendly) {
     /* point to this interface's config */
     $ifconf = $config['interfaces'][$ifname];
     /* look for 'special cases' */
@@ -96,7 +96,7 @@ foreach ($iflist as $ifname => $ifcfg) {
     $ipaddr6 = get_interface_ipv6($ifname);
     $subnet6 = get_interface_subnetv6($ifname);
     $realif = get_real_interface($ifname);
-    $tobanner = "{$ifcfg['descr']} ({$realif})";
+    $tobanner = "{$friendly} ({$realif})";
 
     printf("\n %-15s -> ", $tobanner);
 

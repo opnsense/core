@@ -346,7 +346,8 @@ function system_hosts_generate($verbose = false)
             $hosts .= "{$cfgip}\t{$syscfg['hostname']}.{$syscfg['domain']} {$syscfg['hostname']}\n";
         }
     } else {
-        foreach (get_configured_interface_with_descr() as $sysif => $unused) {
+        $sysiflist = get_configured_interface_list();
+        foreach ($sysiflist as $sysif) {
             if (!interface_has_gateway($sysif)) {
                 $cfgip = get_interface_ip($sysif);
                 if (is_ipaddr($cfgip)) {
@@ -464,6 +465,8 @@ function system_default_route($gateway, $family, $interface, $far = false)
 
 function system_routing_configure($verbose = false, $interface = '')
 {
+    global $config;
+
     if ($verbose) {
         echo 'Setting up routes...';
         flush();
@@ -484,29 +487,31 @@ function system_routing_configure($verbose = false, $interface = '')
         log_error("ROUTING: entering configure using defaults");
     }
 
-    foreach (config_read_array('gateways', 'gateway_item') as $gateway) {
-        if (isset($gateway['defaultgw'])) {
-            if ($foundgw == false && $gateway['ipprotocol'] != 'inet6') {
-                if ($gateway['gateway'] == 'dynamic') {
-                    $gateway['gateway'] = get_interface_gateway($gateway['interface']);
+    if (isset($config['gateways']['gateway_item'])) {
+        foreach ($config['gateways']['gateway_item'] as $gateway) {
+            if (isset($gateway['defaultgw'])) {
+                if ($foundgw == false && $gateway['ipprotocol'] != 'inet6') {
+                    if ($gateway['gateway'] == 'dynamic') {
+                        $gateway['gateway'] = get_interface_gateway($gateway['interface']);
+                    }
+
+                    $interfacegw = $gateway['interface'];
+                    $fargw = isset($gateway['fargw']);
+                    $gatewayip = $gateway['gateway'];
+                    $foundgw = true;
+
+                    log_error("ROUTING: IPv4 default gateway set to {$interfacegw}");
+                } elseif ($foundgwv6 == false && $gateway['ipprotocol'] == 'inet6') {
+                    if ($gateway['gateway'] == 'dynamic') {
+                        $gateway['gateway'] = get_interface_gateway_v6($gateway['interface']);
+                    }
+
+                    $interfacegwv6 = $gateway['interface'];
+                    $gatewayipv6 = $gateway['gateway'];
+                    $foundgwv6 = true;
+
+                    log_error("ROUTING: IPv6 default gateway set to {$interfacegwv6}");
                 }
-
-                $interfacegw = $gateway['interface'];
-                $fargw = isset($gateway['fargw']);
-                $gatewayip = $gateway['gateway'];
-                $foundgw = true;
-
-                log_error("ROUTING: IPv4 default gateway set to {$interfacegw}");
-            } elseif ($foundgwv6 == false && $gateway['ipprotocol'] == 'inet6') {
-                if ($gateway['gateway'] == 'dynamic') {
-                    $gateway['gateway'] = get_interface_gateway_v6($gateway['interface']);
-                }
-
-                $interfacegwv6 = $gateway['interface'];
-                $gatewayipv6 = $gateway['gateway'];
-                $foundgwv6 = true;
-
-                log_error("ROUTING: IPv6 default gateway set to {$interfacegwv6}");
             }
         }
     }

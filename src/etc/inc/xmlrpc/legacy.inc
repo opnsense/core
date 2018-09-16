@@ -43,8 +43,9 @@ function xmlrpc_publishable_legacy()
  * does_vip_exist($vip): return true or false if a vip is
  * configured.
  */
-function does_vip_exist($vip)
-{
+function does_vip_exist($vip) {
+    global $config;
+
     if(!$vip) {
         return false;
     }
@@ -117,6 +118,8 @@ function firmware_version_xmlrpc()
  */
 function filter_configure_xmlrpc()
 {
+    global $config;
+
     require_once("filter.inc");
     require_once("system.inc");
     require_once("util.inc");

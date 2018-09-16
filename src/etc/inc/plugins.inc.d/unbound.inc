@@ -523,7 +523,7 @@ function unbound_add_host_entries()
     if (!empty($config['unbound']['active_interface'])) {
         $interfaces = explode(",", $config['unbound']['active_interface']);
     } else {
-        $interfaces = array_keys(get_configured_interface_with_descr());
+        $interfaces = get_configured_interface_list();
     }
 
     foreach ($interfaces as $interface) {
