@@ -34,12 +34,12 @@ require_once("interfaces.inc");
 require_once("util.inc");
 require_once("plugins.inc.d/openssh.inc");
 
-$version = strtok(file_get_contents('/usr/local/opnsense/version/opnsense'), '-');
 $flavour = strtok(OPENSSL_VERSION_TEXT, ' ');
 $hostname = $config['system']['hostname'];
-$machine = trim(shell_exec('uname -p'));
 $domain = $config['system']['domain'];
+$version = $g['product_version'];
 $product = $g['product_name'];
+$machine = $g['product_arch'];
 
 echo "\n*** {$hostname}.{$domain}: {$product} {$version} ({$machine}/${flavour}) ***\n";
 

@@ -1,5 +1,7 @@
 /usr/local/etc/rc.d/configd stop
 
+cp /usr/local/opnsense/firmware-product /usr/local/opnsense/firmware-product.last
+
 echo "Resetting root shell"
 pw usermod -n root -s /bin/csh
 

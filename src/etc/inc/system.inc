@@ -856,7 +856,7 @@ function get_memory() {
 
 function system_firmware_configure($verbose = false)
 {
-    global $config;
+    global $config, $g;
 
     if ($verbose) {
         echo 'Writing firmware setting...';
@@ -880,8 +880,7 @@ function system_firmware_configure($verbose = false)
             str_replace('/', '\/', sprintf(
                 "%s{$config['system']['firmware']['flavour']}",
                 /* if there is no directory slash we always treat it with default ABI prefix */
-                strpos($config['system']['firmware']['flavour'], '/') === false ?
-                    trim(file_get_contents('/usr/local/opnsense/version/opnsense.abi')) . '/' : ''
+                strpos($config['system']['firmware']['flavour'], '/') === false ? "${g['product_abi']}/" : ''
             ))
         );
     }
