@@ -32,13 +32,12 @@
 .Nd OPNsense version utility
 .Sh SYNOPSIS
 .Nm
-.Op Fl aNnVv
+.Op Fl AaefHNnvw
 .Sh DESCRIPTION
 The
 .Nm
 utility emits release package metadata, e.g. build parameters
-and product-relevant information including copyrights for full
-branding capabilities.
+and product-relevant information for full branding capabilities.
 .Pp
 Callers use this metadata to configure the system, return user
 information or to construct links for firmware upgrades using
@@ -51,14 +50,24 @@ parameter, but not intended to handle operating system information.
 Multiple options can be specified to build a custom version string.
 The options are as follows:
 .Bl -tag -width ".Fl a" -offset indent
+.It Fl A
+Return the system architecture string.
 .It Fl a
 Return the firmware ABI string.
+.It Fl e
+Return the product contact e-mail address.
+.It Fl f
+Return the cryptography flavour.
+.It Fl H
+Return the release package commit hash.
 .It Fl N
 Return the product name.
 .It Fl n
 Return the release package name.
 .It Fl v
 Return the release package version.
+.It Fl w
+Return the product version website.
 .El
 .Sh FILES
 .Bl -tag -width Ds
