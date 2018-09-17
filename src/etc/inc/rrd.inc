@@ -51,6 +51,17 @@ function rrd_configure($verbose = false)
     $rrddbpath = "/var/db/rrd/";
     $rrdgraphpath = "/usr/local/www/rrd";
 
+    gettext("system");
+    gettext("traffic");
+    gettext("packets");
+    gettext("states");
+    gettext("wireless");
+    gettext("processor");
+    gettext("memory");
+    gettext("cellular");
+    gettext("vpnusers");
+    gettext("cputemp");
+
     $traffic = "-traffic.rrd";
     $packets = "-packets.rrd";
     $states = "-states.rrd";
