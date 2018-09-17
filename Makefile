@@ -209,10 +209,7 @@ scripts:
 .for PKG_SCRIPT in ${PKG_SCRIPTS}
 	@if [ -e ${.CURDIR}/${PKG_SCRIPT} ]; then \
 		cp -v -- ${.CURDIR}/${PKG_SCRIPT} ${DESTDIR}/; \
-		sed -i '' -e "s/%%CORE_COMMIT%%/${CORE_COMMIT}/g" \
-		    -e "s/%%CORE_NAME%%/${CORE_NAME}/g" \
-		    -e "s/%%CORE_ABI%%/${CORE_ABI}/g" \
-		    ${DESTDIR}/${PKG_SCRIPT}; \
+		sed -i '' ${SED_REPLACE} ${DESTDIR}/${PKG_SCRIPT}; \
 	fi
 .endfor
 
