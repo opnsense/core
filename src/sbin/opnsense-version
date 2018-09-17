@@ -23,37 +23,41 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-PATTERN="s:[^\"]*\"\([^\"]*\)\"[^\"]*\"\([^\"]*\)\".*:\1=\2:"
 VERSION="/usr/local/opnsense/version/opnsense"
+OUTPUT=
 
 if [ ! -f ${VERSION} ]; then
 	echo "Missing ${VERSION}" >&2
 	exit 1
 fi
+
 eval "$(grep -v '[{}]' ${VERSION} | sed 's/[^"]*"\([^"]*\)"[^"]*"\([^"]*\)".*/\1="\2"/')"
 
 while getopts aNnVv OPT; do
 	case ${OPT} in
 	a)
-		echo ${product_abi}
-		exit 0
+		if [ -n "${OUTPUT}" ]; then
+			OUTPUT="${OUTPUT} "
+		fi
+		OUTPUT="${OUTPUT}\${product_abi}"
 		;;
 	N)
-		echo ${product_name}
-		exit 0
+		if [ -n "${OUTPUT}" ]; then
+			OUTPUT="${OUTPUT} "
+		fi
+		OUTPUT="${OUTPUT}\${product_name}"
 		;;
 	n)
-		echo ${product_id}
-		exit 0
-		;;
-	V)
-		# XXX replace with -Nv
-		echo "${product_name} ${product_version}"
-		exit 0
+		if [ -n "${OUTPUT}" ]; then
+			OUTPUT="${OUTPUT} "
+		fi
+		OUTPUT="${OUTPUT}\${product_id}"
 		;;
 	v)
-		echo ${product_version}
-		exit 0
+		if [ -n "${OUTPUT}" ]; then
+			OUTPUT="${OUTPUT} "
+		fi
+		OUTPUT="${OUTPUT}\${product_version}"
 		;;
 	*)
 		echo "Usage: man opnsense-version" >&2
@@ -64,4 +68,8 @@ done
 
 shift $((${OPTIND} - 1))
 
-echo "${product_name} ${product_version} (${product_arch}/${product_flavour})"
+if [ -z "${OUTPUT}" ]; then
+	OUTPUT="\${product_name} \${product_version} \(\${product_arch}/\${product_flavour}\)"
+fi
+
+eval echo ${OUTPUT}

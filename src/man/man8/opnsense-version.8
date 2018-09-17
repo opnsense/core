@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd Sep 16, 2018
+.Dd Sep 17, 2018
 .Dt OPNSENSE-VERSION 8
 .Os
 .Sh NAME
@@ -48,6 +48,7 @@ It is similar to
 .Sq Fl a
 parameter, but not intended to handle operating system information.
 .Pp
+Multiple options can be specified to build a custom version string.
 The options are as follows:
 .Bl -tag -width ".Fl a" -offset indent
 .It Fl a
@@ -56,8 +57,6 @@ Return the firmware ABI string.
 Return the product name.
 .It Fl n
 Return the release package name.
-.It Fl V
-Return the product name followed by its version.
 .It Fl v
 Return the release package version.
 .El

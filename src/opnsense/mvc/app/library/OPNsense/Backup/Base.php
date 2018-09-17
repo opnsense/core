@@ -56,7 +56,7 @@ abstract class Base
         @unlink("{$file}.dec");
 
         if (file_exists("{$file}.enc")) {
-            $version = trim(shell_exec('opnsense-version -V'));
+            $version = trim(shell_exec('opnsense-version -Nv'));
             $result = "---- BEGIN {$tag} ----\n";
             $result .= "Version: {$version}\n";
             $result .= "Cipher: AES-256-CBC\n";
