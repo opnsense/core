@@ -148,8 +148,6 @@
          </events>
          <format type="TextField">
             <Required>N</Required>
-            <mask>/^.{1,255}$/u</mask>
-            <ValidationMessage>Message format should be a string between 1 and 255 characters.</ValidationMessage>
          </format>
          <reminder type="IntegerField">
             <default>10</default>
