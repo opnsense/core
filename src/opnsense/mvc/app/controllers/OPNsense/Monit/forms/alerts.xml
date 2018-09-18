@@ -27,7 +27,7 @@
    <field>
       <id>monit.alert.format</id>
       <label>Mail format</label>
-      <type>text</type>
+      <type>textbox</type>
       <help><![CDATA[The email format for alerts.<br><i>Subject: $SERVICE on $HOST failed</i>]]></help>
    </field>
    <field>
