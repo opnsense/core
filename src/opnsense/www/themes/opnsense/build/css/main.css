@@ -7125,14 +7125,14 @@ main.page-content.col-lg-12 {
 	height: 70px;
 	padding-left: 0px;
 	padding-right: 0px;
-	padding-top:12px;
+	padding-top:13px;
 	font-size:12px;
 	border-bottom: 2px solid #lightergrey;
 	border-right: 1px solid #D9D9D9;
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa, #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.glyphicon {
   visibility: visible;
-  font-size: 28px;
+  font-size: 30px;
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.__iconspacer {
   width:50px;
