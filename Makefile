@@ -34,7 +34,6 @@ CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 
 CORE_ABI?=	18.7
 CORE_ARCH?=	${ARCH}
-CORE_FLAVOUR=	${FLAVOUR}
 CORE_OPENVPN?=	# empty
 CORE_PHP?=	71
 CORE_PYTHON?=	27
@@ -53,19 +52,15 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 CORE_REPOSITORY?=	${FLAVOUR}
 .endif
 
-CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} package
-CORE_MAINTAINER?=	project@opnsense.org
-CORE_MESSAGE?=		Insert Name Here
 CORE_NAME?=		opnsense-devel
-CORE_ORIGIN?=		opnsense/${CORE_NAME}
-CORE_PACKAGESITE?=	https://pkg.opnsense.org
-CORE_PRODUCT?=		OPNsense
 CORE_TYPE?=		development
-CORE_WWW?=		https://opnsense.org/
+CORE_MESSAGE?=		Insert Name Here
 
-CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
-CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
-CORE_COPYRIGHT_YEARS?=	2014-2018
+CORE_MAINTAINER?=	franco@opnsense.org
+CORE_PACKAGESITE?=	https://pkg.opnsense.org
+CORE_ORIGIN?=		opnsense/${CORE_NAME}
+CORE_COMMENT?=		OPNsense ${CORE_TYPE} package
+CORE_WWW?=		https://opnsense.org/
 
 CORE_DEPENDS_amd64?=	beep bsdinstaller
 CORE_DEPENDS_i386?=	${CORE_DEPENDS_amd64}
@@ -153,7 +148,7 @@ want-${WANT}:
 mount:
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
 	    echo -n "Enabling core.git live mount..."; \
-	    sed ${SED_REPLACE} ${.CURDIR}/src/opnsense/version/opnsense.in > \
+	    echo "${CORE_COMMIT}" > \
 	        ${.CURDIR}/src/opnsense/version/opnsense; \
 	    mount_unionfs ${.CURDIR}/src ${LOCALBASE}; \
 	    touch ${WRKDIR}/.mount_done; \
@@ -209,13 +204,19 @@ scripts:
 .for PKG_SCRIPT in ${PKG_SCRIPTS}
 	@if [ -e ${.CURDIR}/${PKG_SCRIPT} ]; then \
 		cp -v -- ${.CURDIR}/${PKG_SCRIPT} ${DESTDIR}/; \
-		sed -i '' ${SED_REPLACE} ${DESTDIR}/${PKG_SCRIPT}; \
+		sed -i '' -e "s/%%CORE_COMMIT%%/${CORE_COMMIT}/g" \
+		    -e "s/%%CORE_NAME%%/${CORE_NAME}/g" \
+		    -e "s/%%CORE_ABI%%/${CORE_ABI}/g" \
+		    ${DESTDIR}/${PKG_SCRIPT}; \
 	fi
 .endfor
 
 install:
 	@${MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
-	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} ${MAKE_REPLACE}
+	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} \
+	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} \
+	    CORE_PACKAGESITE=${CORE_PACKAGESITE} \
+	    CORE_REPOSITORY=${CORE_REPOSITORY}
 
 collect:
 	@(cd ${.CURDIR}/src; find * -type f) | while read FILE; do \
@@ -227,7 +228,9 @@ collect:
 
 bootstrap:
 	@${MAKE} -C ${.CURDIR}/src install-bootstrap DESTDIR=${DESTDIR} \
-	    NO_SAMPLE=please ${MAKE_REPLACE}
+	    NO_SAMPLE=please CORE_PACKAGESITE=${CORE_PACKAGESITE} \
+	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} \
+	    CORE_REPOSITORY=${CORE_REPOSITORY}
 
 plist:
 	@(${MAKE} -C ${.CURDIR}/contrib plist && \

@@ -337,7 +337,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         break;
                     }
                 }
-                $pconfig['hash-algorithm-option'] = array();
             }
         }
     }
@@ -658,13 +657,13 @@ endif; ?>
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hash algorithms"); ?></td>
                   <td style="width:78%" class="vtable">
-                    <select name="hash-algorithm-option[]" class="selectpicker" multiple="multiple">
-<?php foreach ($p2_halgos as $algo => $algoname): ?>
-                      <option value="<?= html_safe($algo) ?>" <?= in_array($algo, $pconfig['hash-algorithm-option']) ? 'selected="selected"' : '' ?>>
-                        <?= html_safe($algoname) ?>
-                      </option>
-<?php endforeach ?>
-                    </select>
+<?php
+                  foreach ($p2_halgos as $algo => $algoname) :?>
+                    <input type="checkbox" name="hash-algorithm-option[]" value="<?=$algo;?>" <?= isset($pconfig['hash-algorithm-option']) && in_array($algo, $pconfig['hash-algorithm-option']) ?  'checked="checked"' : '';?>/>
+                    <?=$algoname;?>
+                    </br>
+<?php
+                  endforeach; ?>
                   </td>
                 </tr>
                 <tr>

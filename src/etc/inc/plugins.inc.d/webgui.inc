@@ -59,9 +59,12 @@ function webgui_configure_do($verbose = false, $interface = '')
     $listeners = count($interfaces) ? array() : array('0.0.0.0', '::');
 
     foreach ($interfaces as $interface) {
-        foreach (interfaces_addresses($interface) as $tmpaddr) {
+        foreach (legacy_getall_interface_addresses(get_real_interface($interface)) as $tmpaddr) {
+            $tmpaddr = explode('/', $tmpaddr)[0];
+            /* no support for link-local address with scope specified */
+            $tmpaddr = explode('%', $tmpaddr)[0];
             /* link-local does not seem to be supported */
-            if (strstr($tmpaddr, '%') === false && !is_linklocal($tmpaddr)) {
+            if (!empty($tmpaddr) && !is_linklocal($tmpaddr)) {
                 $listeners[] = $tmpaddr;
             }
         }

@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
+    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
     Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
     All rights reserved.
 
@@ -367,8 +367,7 @@ $( document ).ready(function() {
                       </td>
                       <td class="hidden-xs">
                           <?=empty($ph1ent['protocol']) || $ph1ent['protocol'] == "inet" ? "IPv4" : "IPv6"; ?>
-                          <?php $ph1ent_type=array("ikev1" => "IKE", "ikev2" => "IKEv2", "ike" => "auto"); ?>
-                          <?=!empty($ph1ent['iketype']) &&  isset($ph1ent_type[$ph1ent['iketype']]) ? $ph1ent_type[$ph1ent['iketype']] :"" ;?>
+                          <?=empty($ph1ent['iketype']) || $ph1ent['iketype'] == "ikev1" ? "IKE" : "IKEv2"; ?>
                       </td>
                       <td>
 <?php
@@ -419,10 +418,8 @@ $( document ).ready(function() {
                             }
                         }?> +
 
-                        <?=strtoupper($ph1ent['hash-algorithm']);?>
-<?php if (!empty($ph1ent['dhgroup'])): ?>
-                          + <?=gettext("DH Group"); ?>&nbsp;<?= $ph1ent['dhgroup'] ?>
-<?php endif ?>
+                        <?=strtoupper($ph1ent['hash-algorithm']);?> +
+                          <?=gettext("DH Group"); ?>&nbsp;<?=$dhgroups[$ph1ent['dhgroup']];?>
                       </td>
                       <td class="hidden-xs">
                           <?= html_safe($p1_authentication_methods[$ph1ent['authentication_method']]['name']) ?>

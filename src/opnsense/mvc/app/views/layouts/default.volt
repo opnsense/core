@@ -17,7 +17,7 @@
     {% set theme_name = ui_theme|default('opnsense') %}
 
     <!-- include (theme) style -->
-    <link href="{{ cache_safe('/ui/themes/%s/build/css/main.css' | format(theme_name)) }}" rel="stylesheet">
+    <link href="/ui/themes/{{theme_name}}/build/css/main.css" rel="stylesheet">
 
     <!-- TODO: move to theme style -->
     <style>
@@ -31,16 +31,16 @@
     </style>
 
     <!-- Favicon -->
-    <link href="{{ cache_safe('/ui/themes/%s/build/images/favicon.png' | format(theme_name)) }}" rel="shortcut icon">
+    <link href="/ui/themes/{{theme_name}}/build/images/favicon.png" rel="shortcut icon">
 
     <!-- Stylesheet for fancy select/dropdown -->
-    <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/bootstrap-select.css', theme_name)) }}">
+    <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/bootstrap-select.css', theme_name)}}">
 
     <!-- bootstrap dialog -->
-    <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/bootstrap-dialog.css', theme_name)) }}">
+    <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/bootstrap-dialog.css', theme_name)}}">
 
     <!-- Font awesome -->
-    <link rel="stylesheet" href="{{ cache_safe('/ui/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="/ui/css/font-awesome.min.css">
 
     <!-- JQuery -->
     <script src="/ui/js/jquery-3.2.1.min.js"></script>
@@ -165,12 +165,12 @@
         </script>
 
         <!-- JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/) -->
-        <script src="{{ cache_safe('/ui/js/tokenize2.js') }}"></script>
-        <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/tokenize2.css', theme_name)) }}" rel="stylesheet" />
+        <script src="/ui/js/tokenize2.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/tokenize2.css', theme_name)}}" rel="stylesheet" />
 
         <!-- Bootgrind (grid system from http://www.jquery-bootgrid.com/ )  -->
-        <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/jquery.bootgrid.css', theme_name)) }}" />
-        <script src="{{ cache_safe('/ui/js/jquery.bootgrid.js') }}"></script>
+        <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/jquery.bootgrid.css', theme_name)}}" />
+        <script src="/ui/js/jquery.bootgrid.js"></script>
         <script>
         /* patch translations into bootgrid library */
         Object.assign(
@@ -187,14 +187,14 @@
         </script>
 
         <!-- Bootstrap type ahead -->
-        <script src="{{ cache_safe('/ui/js/bootstrap3-typeahead.min.js') }}"></script>
+        <script src="/ui/js/bootstrap3-typeahead.min.js"></script>
 
         <!-- OPNsense standard toolkit -->
-        <script src="{{ cache_safe('/ui/js/opnsense.js') }}"></script>
-        <script src="{{ cache_safe('/ui/js/opnsense_theme.js') }}"></script>
-        <script src="{{ cache_safe('/ui/js/opnsense_ui.js') }}"></script>
-        <script src="{{ cache_safe('/ui/js/opnsense_bootgrid_plugin.js') }}"></script>
-        <script src="{{ cache_safe(theme_file_or_default('/js/theme.js', theme_name)) }}"></script>
+        <script src="/ui/js/opnsense.js"></script>
+        <script src="/ui/js/opnsense_theme.js"></script>
+        <script src="/ui/js/opnsense_ui.js"></script>
+        <script src="/ui/js/opnsense_bootgrid_plugin.js"></script>
+        <script src="{{theme_file_or_default('/js/theme.js', theme_name)}}"></script>
   </head>
   <body>
   <header class="page-head">
@@ -203,14 +203,14 @@
         <div class="navbar-header">
           <a class="navbar-brand" href="/">
             {% if file_exists(["/usr/local/opnsense/www/themes/",theme_name,"/build/images/default-logo.svg"]|join("")) %}
-                <img class="brand-logo" src="{{ cache_safe('/ui/themes/%s/build/images/default-logo.svg' | format(theme_name)) }}" height="30" alt="logo"/>
+                <img class="brand-logo" src="/ui/themes/{{theme_name}}/build/images/default-logo.svg" height="30" alt="logo"/>
             {% else %}
-                <img class="brand-logo" src="{{ cache_safe('/ui/themes/%s/build/images/default-logo.png' | format(theme_name)) }}" height="30" alt="logo"/>
+                <img class="brand-logo" src="/ui/themes/{{theme_name}}/build/images/default-logo.png" height="30" alt="logo"/>
             {% endif %}
             {% if file_exists(["/usr/local/opnsense/www/themes/",theme_name,"/build/images/icon-logo.svg"]|join("")) %}
-                <img class="brand-icon" src="{{ cache_safe('/ui/themes/%s/build/images/icon-logo.svg' | format(theme_name)) }}" height="30" alt="icon"/>
+                <img class="brand-icon" src="/ui/themes/{{theme_name}}/build/images/icon-logo.svg" height="30" alt="icon"/>
             {% else %}
-                <img class="brand-icon" src="{{ cache_safe('/ui/themes/%s/build/images/icon-logo.png' | format(theme_name)) }}" height="30" alt="icon"/>
+                <img class="brand-icon" src="/ui/themes/{{theme_name}}/build/images/icon-logo.png" height="30" alt="icon"/>
             {% endif %}
           </a>
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
@@ -262,14 +262,15 @@
             </div>
           </div>
         </section>
-        <!-- page footer -->
-        <footer class="page-foot">
-          <div class="container-fluid">
-            <a target="_blank" href="{{ product_website }}">{{ product_name }}</a> (c) {{ product_copyright_years }}
-            <a target="_blank" href="{{ product_copyright_url }}">{{ product_copyright_owner }}</a>
-          </div>
-        </footer>
       </div>
+      <!-- page footer -->
+      <footer class="page-foot col-sm-push-3 col-lg-push-2">
+        <div class="container-fluid">
+          <a target="_blank" href="{{ product_website }}" class="redlnk">{{ product_name }}</a>
+          (c) {{ product_copyright_years }}
+          <a href="{{ product_copyright_url }}" class="tblnk">{{ product_copyright_owner }}</a>
+        </div>
+      </footer>
     </main>
 
     <!-- dialog "wait for (service) action" -->
@@ -287,10 +288,10 @@
     </div>
 
     <!-- bootstrap script -->
-    <script src="{{ cache_safe('/ui/js/bootstrap.min.js') }}"></script>
-    <script src="{{ cache_safe('/ui/js/bootstrap-select.min.js') }}"></script>
+    <script src="/ui/js/bootstrap.min.js"></script>
+    <script src="/ui/js/bootstrap-select.min.js"></script>
     <!-- bootstrap dialog -->
-    <script src="{{ cache_safe('/ui/js/bootstrap-dialog.min.js') }}"></script>
+    <script src="/ui/js/bootstrap-dialog.min.js"></script>
 
   </body>
 </html>

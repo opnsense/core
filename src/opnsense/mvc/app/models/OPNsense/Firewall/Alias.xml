@@ -1,5 +1,5 @@
 <model>
-    <mount>//OPNsense/Firewall/Alias</mount>
+    <mount>//OPNSense/Firewall/Alias</mount>
     <version>1.0.0</version>
     <description>
         Firewall aliases
