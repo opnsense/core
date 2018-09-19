@@ -124,17 +124,17 @@ if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
             break;
         case 'dhcp6':
         case 'slaac':
-            if (isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
-                interface_dhcpv6_prepare($interface, $config['interfaces'][$interface]);
-                interface_dhcpv6_configure($interface, $config['interfaces'][$interface]);
+            if (!isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
+                break;
             }
+            interface_dhcpv6_prepare($interface, $config['interfaces'][$interface]);
+            interface_dhcpv6_configure($interface, $config['interfaces'][$interface]);
             break;
        default:
-                if (!in_array($tunnelif, array("gif", "gre", "ovp"))) {
-                    if (is_ipaddrv6($config['interfaces'][$interface]['ipaddrv6']) && $config['interfaces'][$interface]['subnetv6'] <> "") {
-                        mwexec("/sbin/ifconfig " . escapeshellarg($interface_real) . " inet6 {$config['interfaces'][$interface]['ipaddrv6']} prefixlen " . escapeshellarg($config['interfaces'][$interface]['subnetv6']));
-                    }
-                }
+            if (!isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
+                break;
+            }
+            interface_static6_configure($interface, $config['interfaces'][$interface]);
             break;
     }
 }
