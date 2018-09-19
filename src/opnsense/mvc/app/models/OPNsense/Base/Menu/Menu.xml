@@ -182,9 +182,7 @@
         <Diagnostics order="500" cssClass="fa fa-medkit fa-fw">
             <pfInfo order="30" url="/diag_pf_info.php" VisibleName="pfInfo"/>
             <pfTop order="40" url="/diag_system_pftop.php" VisibleName="pfTop"/>
-            <pfTables order="50" url="/diag_tables.php">
-                <Details url="/diag_tables.php*" visibility="hidden"/>
-            </pfTables>
+            <pfTables order="50" url="/ui/firewall/alias_util/"/>
             <Sockets order="60" url="/diag_sockets.php">
                 <SocketsDetails url="/diag_sockets.php?*" visibility="hidden"/>
             </Sockets>
