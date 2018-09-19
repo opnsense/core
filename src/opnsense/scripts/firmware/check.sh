@@ -334,8 +334,8 @@ if [ "$pkg_running" == "" ]; then
 
       upgrade_major_message=$(cat /usr/local/opnsense/firmware-message 2> /dev/null | sed 's/"/\\&/g' | tr '\n' ' ')
       upgrade_major_version=$(cat /usr/local/opnsense/firmware-upgrade 2> /dev/null)
-      product_version=$(cat /usr/local/opnsense/version/opnsense)
-      product_name=$(cat /usr/local/opnsense/version/opnsense.name)
+      product_version=$(opnsense-version -v)
+      product_name=$(opnsense-version -n)
       os_version=$(uname -sr)
       last_check=$(date)
 else

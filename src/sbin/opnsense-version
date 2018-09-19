@@ -1,7 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015 Deciso B.V.
-# All rights reserved.
+# Copyright (c) 2018 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -24,19 +23,56 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# script to glue standard ipfw rc scripting to OPNsense ruleset
-# see auto generated file /etc/rc.conf.d/ipfw for details
+VERSION="/usr/local/opnsense/version/opnsense"
+OUTPUT=
 
-# sysctl settings
-sysctl net.inet.ip.dummynet.io_fast=1 > /dev/null
-sysctl net.inet.ip.dummynet.hash_size=256 > /dev/null
-
-# reload ipfw rules
-ipfw -q /usr/local/etc/ipfw.rules
-
-if [ ! -f /tmp/ipfw.firstload ]; then
-	# we need to make sure ipfw is loaded as last
-	touch /tmp/ipfw.firstload
-	pfctl -d
-	pfctl -e
+if [ ! -f ${VERSION} ]; then
+	echo "Missing ${VERSION}" >&2
+	exit 1
 fi
+
+eval "$(grep -v '[{}]' ${VERSION} | sed 's/[^"]*"\([^"]*\)"[^"]*"\([^"]*\)".*/\1="\2"/')"
+
+while getopts AaefHNnvw OPT; do
+	case ${OPT} in
+	A)
+		OUTPUT="${OUTPUT} \${product_arch}"
+		;;
+	a)
+		OUTPUT="${OUTPUT} \${product_abi}"
+		;;
+	e)
+		OUTPUT="${OUTPUT} \${product_email}"
+		;;
+	f)
+		OUTPUT="${OUTPUT} \${product_flavour}"
+		;;
+	H)
+		OUTPUT="${OUTPUT} \${product_hash}"
+		;;
+	N)
+		OUTPUT="${OUTPUT} \${product_name}"
+		;;
+	n)
+		OUTPUT="${OUTPUT} \${product_id}"
+		;;
+	v)
+		OUTPUT="${OUTPUT} \${product_version}"
+		;;
+	w)
+		OUTPUT="${OUTPUT} \${product_website}"
+		;;
+	*)
+		echo "Usage: man opnsense-version" >&2
+		exit 1
+		;;
+	esac
+done
+
+shift $((${OPTIND} - 1))
+
+if [ -z "${OUTPUT}" ]; then
+	OUTPUT="\${product_name} \${product_version} \(\${product_arch}/\${product_flavour}\)"
+fi
+
+eval echo ${OUTPUT}

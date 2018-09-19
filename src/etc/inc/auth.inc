@@ -5,8 +5,8 @@
     Copyright (C) 2010 Ermal Luçi
     Copyright (C) 2007-2008 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2005-2006 Bill Marquette <bill.marquette@gmail.com>
-    Copyright (C) 2006 Paul Taylor <paultaylor@winn-dixie.com>.
-    Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>.
+    Copyright (C) 2006 Paul Taylor <paultaylor@winn-dixie.com>
+    Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

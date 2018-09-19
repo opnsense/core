@@ -75,9 +75,9 @@ function legacy_list_aliases($type)
 
     foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
         if ($type == "port" && preg_match("/port/i", $alias['type'])) {
-            $result[] = array("name" => $alias['name']);
+            $result[] = array('name' => $alias['name'], 'type' => $alias['type']);
         } elseif ($type != "port" && !preg_match("/port/i", $alias['type'])) {
-            $result[] = array("name" => $alias['name']);
+            $result[] = array('name' => $alias['name'], 'type' => $alias['type']);
         }
     }
 

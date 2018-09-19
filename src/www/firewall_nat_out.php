@@ -3,7 +3,7 @@
 /*
     Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -384,7 +384,7 @@ include("head.inc");
                         <span title="<?=htmlspecialchars(get_alias_description($natent['source']['network']));?>" data-toggle="tooltip"  data-html="true">
                           <?=htmlspecialchars($natent['source']['network']);?>&nbsp;
                         </span>
-                        <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['network']);?>"
+                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['source']['network']);?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>
@@ -402,7 +402,7 @@ include("head.inc");
                       <span title="<?=htmlspecialchars(get_alias_description($natent['sourceport']));?>" data-toggle="tooltip"  data-html="true">
                         <?=htmlspecialchars(pprint_port($natent['sourceport'])); ?>&nbsp;
                       </span>
-                      <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['sourceport']);?>"
+                      <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['sourceport']);?>"
                           title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                         <i class="fa fa-list"></i>
                       </a>
@@ -418,7 +418,7 @@ include("head.inc");
                         <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['address']));?>" data-toggle="tooltip"  data-html="true">
                           <?=htmlspecialchars($natent['destination']['address']);?>&nbsp;
                         </span>
-                        <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['address']);?>"
+                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['destination']['address']);?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>
@@ -436,7 +436,7 @@ include("head.inc");
                       <span title="<?=htmlspecialchars(get_alias_description($natent['dstport']));?>" data-toggle="tooltip"  data-html="true">
                         <?=htmlspecialchars(pprint_port($natent['dstport'])); ?>&nbsp;
                       </span>
-                      <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['dstport']);?>"
+                      <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['dstport']);?>"
                           title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                         <i class="fa fa-list"></i>
                       </a>
@@ -463,7 +463,7 @@ include("head.inc");
                         <span title="<?=htmlspecialchars(get_alias_description($natent['target']));?>" data-toggle="tooltip" data-html="true">
                           <?=$nat_address;?>&nbsp;
                         </span>
-                        <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['target']);?>"
+                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['target']);?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>

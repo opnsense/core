@@ -40,7 +40,6 @@ class M1_0_0 extends BaseModelMigration
      */
     public function run($model)
     {
-        throw new \Exception('Prevent migration, work in progress');
         $cfgObj = Config::getInstance()->object();
         if (!empty($cfgObj->aliases) && !empty($cfgObj->aliases->alias)) {
             foreach ($cfgObj->aliases->alias as $alias) {

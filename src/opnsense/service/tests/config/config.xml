@@ -40,7 +40,6 @@
       <adv_dhcp6_id_assoc_statement_prefix_id/>
       <adv_dhcp6_id_assoc_statement_prefix_pltime/>
       <adv_dhcp6_id_assoc_statement_prefix_vltime/>
-      <adv_dhcp6_prefix_interface_statement_sla_id/>
       <adv_dhcp6_prefix_interface_statement_sla_len/>
       <adv_dhcp6_authentication_statement_authname/>
       <adv_dhcp6_authentication_statement_protocol/>

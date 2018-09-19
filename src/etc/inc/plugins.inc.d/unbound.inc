@@ -159,19 +159,24 @@ private-address: fe80::/10       # Link-local address (LLA)
 EOF;
     }
 
-    // Determine interfaces to run on
-    $bindints = "";
+    $bindints = '';
+
     if (!empty($config['unbound']['active_interface'])) {
-        $active_interfaces = explode(",", $config['unbound']['active_interface']);
+        $active_interfaces = explode(',', $config['unbound']['active_interface']);
+        $active_interfaces[] = 'lo0';
+        $addresses = array();
+
         foreach ($active_interfaces as $ubif) {
-            $intip = get_interface_ip($ubif);
-            if (!empty($intip)) {
-                $bindints .= "interface: $intip\n";
+            foreach (interfaces_addresses($ubif) as $tmpaddr) {
+                if ($ubif == 'lo0' && is_ipaddrv4($tmpaddr) && $tmpaddr != '127.0.0.1') {
+                    continue;
+                }
+                $addresses[] = $tmpaddr;
             }
-            $intip = get_interface_ipv6($ubif);
-            if (!empty($intip)) {
-                $bindints .= "interface: $intip\n";
-            }
+        }
+
+        foreach ($addresses as $address) {
+            $bindints .= "interface: $address\n";
         }
     } else {
         $bindints .= "interface: 0.0.0.0\n";
@@ -179,8 +184,7 @@ EOF;
         $bindints .= "interface-automatic: yes\n";
     }
 
-    // Determine interfaces to run on
-    $outgoingints = "";
+    $outgoingints = '';
     if (!empty($config['unbound']['outgoing_interface'])) {
         $outgoingints = "# Outgoing interfaces to be used\n";
         $outgoing_interfaces = explode(",", $config['unbound']['outgoing_interface']);
@@ -324,6 +328,7 @@ rrset-cache-size: {$rrsetcachesize}m
 {$anchor_file}
 prefetch: {$prefetch}
 prefetch-key: {$prefetch_key}
+
 # Interface IP(s) to bind to
 {$bindints}
 {$outgoingints}
@@ -462,13 +467,15 @@ function unbound_configure_do($verbose = false, $interface = '')
 
 function unbound_add_domain_overrides($pvt = false)
 {
-    global $config;
+    $domains = config_read_array('unbound', 'domainoverrides');
 
-    $domains = $config['unbound']['domainoverrides'];
+    usort($domains, function ($a, $b) {
+        return strcasecmp($a['domain'], $b['domain']);
+    });
 
-    $sorted_domains = msort($domains, "domain");
     $result = array();
-    foreach ($sorted_domains as $domain) {
+
+    foreach ($domains as $domain) {
         $domain_key = current($domain);
         if (!isset($result[$domain_key])) {
             $result[$domain_key] = array();
@@ -476,7 +483,6 @@ function unbound_add_domain_overrides($pvt = false)
         $result[$domain_key][] = $domain['ip'];
     }
 
-    // Domain overrides that have multiple entries need multiple stub-addr: added
     $domain_entries = "";
     foreach ($result as $domain => $ips) {
         if ($pvt == true) {
@@ -486,12 +492,11 @@ function unbound_add_domain_overrides($pvt = false)
                 $domain_entries .= "local-zone: \"$domain\" typetransparent\n";
             }
         } else {
-            $domain_entries .= "stub-zone:\n";
+            $domain_entries .= "forward-zone:\n";
             $domain_entries .= "\tname: \"$domain\"\n";
             foreach ($ips as $ip) {
-                $domain_entries .= "\tstub-addr: $ip\n";
+                $domain_entries .= "\tforward-addr: $ip\n";
             }
-            $domain_entries .= "\tstub-prime: no\n";
         }
     }
 
@@ -525,18 +530,18 @@ function unbound_add_host_entries()
     if (!empty($config['unbound']['active_interface'])) {
         $interfaces = explode(",", $config['unbound']['active_interface']);
     } else {
-        $interfaces = get_configured_interface_list();
+        $interfaces = array_keys(get_configured_interface_with_descr());
     }
 
     foreach ($interfaces as $interface) {
         if ($interface == 'lo0') {
             continue;
         }
-        $if = get_real_interface($interface);
-        if (!does_interface_exist($if)) {
-            continue;
-        }
-        $laddr = find_interface_ip($if);
+
+        $realifv4 = get_real_interface($interface);
+        $realifv6 = get_real_interface($interface, 'inet6');
+
+        $laddr = find_interface_ip($realifv4);
         if (is_ipaddrv4($laddr)) {
             $domain = $config['system']['domain'];
             if (isset($config['dhcpd'][$interface]['enable']) && !empty($config['dhcpd'][$interface]['domain'])) {
@@ -546,7 +551,7 @@ function unbound_add_host_entries()
             $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} A {$laddr}\"\n";
             $unbound_entries .= "local-data: \"{$config['system']['hostname']} A {$laddr}\"\n";
         }
-        $laddr6 = find_interface_ipv6($if);
+        $laddr6 = find_interface_ipv6($realifv6);
         if (is_ipaddrv6($laddr6)) {
             $domain = $config['system']['domain'];
             if (isset($config['dhcpdv6'][$interface]['enable']) && !empty($config['dhcpdv6'][$interface]['domain'])) {
@@ -557,7 +562,7 @@ function unbound_add_host_entries()
             $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$laddr6}\"\n";
         }
         if (empty($config['unbound']['noreglladdr6'])) {
-            $lladdr6 = find_interface_ipv6_ll($if);
+            $lladdr6 = find_interface_ipv6_ll($realifv6);
             if (is_ipaddrv6($lladdr6)) {
                 $domain = $config['system']['domain'];
                 if (isset($config['dhcpdv6'][$interface]['enable']) && !empty($config['dhcpdv6'][$interface]['domain'])) {
@@ -698,7 +703,7 @@ function unbound_acls_subnets()
     /* add our networks for active interfaces including localhost */
     $subnets = array('127.0.0.1/8', '::1/64');
 
-    foreach ($active_interfaces as $ubif => $ifdesc) {
+    foreach ($active_interfaces as $ubif => $unused) {
         foreach (legacy_getall_interface_addresses(get_real_interface($ubif)) as $subnet) {
             $subnets[] = $subnet;
         }

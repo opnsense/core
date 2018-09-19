@@ -11,3 +11,4 @@
 /src/etc/ssh/**
 /src/lib/**
 /src/opnsense/changelog
+/src/www/wpad.dat

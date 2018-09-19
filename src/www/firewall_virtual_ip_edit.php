@@ -2,8 +2,8 @@
 
 /*
     Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>.
-    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
+    Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>
+    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
     Copyright (C) 2004-2005 Scott Ullrich <sullrich@gmail.com>
     All rights reserved.
 
@@ -333,11 +333,11 @@ $( document ).ready(function() {
                     <td>
                       <select name="interface" class="selectpicker" data-width="auto">
 <?php
-                      $interfaces = get_configured_interface_with_descr(false, true);
-                      $interfaces['lo0'] = "Localhost";
-                      foreach ($interfaces as $iface => $ifacename): ?>
+                      $interfaces = legacy_config_get_interfaces(array('virtual' => false));
+                      $interfaces['lo0'] = array('descr' => 'Localhost');
+                      foreach ($interfaces as $iface => $ifcfg): ?>
                         <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" :""; ?>>
-                          <?=htmlspecialchars($ifacename);?>
+                          <?= htmlspecialchars($ifcfg['descr']) ?>
                         </option>
 <?php
                       endforeach; ?>
