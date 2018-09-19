@@ -1,6 +1,7 @@
 <?php
 /**
  *    Copyright (C) 2015-2016 Deciso B.V.
+ *    Copyright (C) 2018 Michael Muenz <m.muenz@gmail.com>
  *
  *    All rights reserved.
  *
@@ -78,5 +79,27 @@ class ServiceController extends ApiControllerBase
         } else {
             return array("status" => "failed");
         }
+    }
+
+    /**
+     * show scheduler statistics
+     * @return array
+     */
+    public function showschedAction()
+    {
+        $backend = new Backend();
+        $response = $backend->configdRun("ipfw showsched");
+        return array("response" => $response);
+    }
+
+    /**
+     * show queue statistics
+     * @return array
+     */
+    public function showqueueAction()
+    {
+        $backend = new Backend();
+        $response = $backend->configdRun("ipfw showqueue");
+        return array("response" => $response);
     }
 }
