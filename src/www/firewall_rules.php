@@ -652,6 +652,7 @@ $( document ).ready(function() {
                                 if ($schedule['name'] == $filterent['sched'])
                                 {
                                     $schedule_descr = (isset($schedule['descr'])) ? $schedule['descr'] : "";
+                                    break;
                                 }
                             }
                         }
@@ -664,7 +665,11 @@ $( document ).ready(function() {
                           <i class="fa fa-calendar"></i>
                         </a>
 <?php
-                       endif;?>
+                        if (filter_get_time_based_rule_status($schedule)):?>
+                        <span data-toggle="tooltip" title="<?=gettext("Schedule is currently active");?>" class="fa fa-clock-o"></span>
+<?php                   endif;?>
+<?php
+                      endif;?>
                     </td>
                     <td>
                       <?=htmlspecialchars($filterent['descr']);?>
