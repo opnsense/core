@@ -2301,6 +2301,28 @@ function interface_virtual_create($interface)
     }
 }
 
+function interface_static_configure($interface, $wancfg)
+{
+    if (empty($wancfg['ipaddr']) || !is_ipaddrv4($wancfg['ipaddr']) || $wancfg['subnet'] == '') {
+        return;
+    }
+
+    $realif = get_real_interface($interface);
+
+    mwexecf('/sbin/ifconfig %s inet %s/%s', array($realif, $wancfg['ipaddr'], $wancfg['subnet']));
+}
+
+function interface_static6_configure($interface, $wancfg)
+{
+    if (empty($wancfg['ipaddrv6']) || !is_ipaddrv6($wancfg['ipaddrv6']) || $wancfg['subnetv6'] == '') {
+        return;
+    }
+
+    $realif = get_real_interface($interface, 'inet6');
+
+    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen %s', array($realif, $wancfg['ipaddrv6'], $wancfg['subnetv6']));
+}
+
 function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkupevent = false)
 {
     global $config;
