@@ -129,6 +129,13 @@ if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
                 interface_dhcpv6_configure($interface, $config['interfaces'][$interface]);
             }
             break;
+       default:
+                if (!in_array($tunnelif, array("gif", "gre", "ovp"))) {
+                    if (is_ipaddrv6($config['interfaces'][$interface]['ipaddrv6']) && $config['interfaces'][$interface]['subnetv6'] <> "") {
+                        mwexec("/sbin/ifconfig " . escapeshellarg($interface_real) . " inet6 {$config['interfaces'][$interface]['ipaddrv6']} prefixlen " . escapeshellarg($config['interfaces'][$interface]['subnetv6']));
+                    }
+                }
+            break;
     }
 }
 
