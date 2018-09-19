@@ -2297,6 +2297,28 @@ function interface_virtual_create($interface)
     }
 }
 
+function interface_static_configure($interface, $wancfg)
+{
+    if (empty($wancfg['ipaddr']) || !is_ipaddrv4($wancfg['ipaddr']) || $wancfg['subnet'] == '') {
+        return;
+    }
+
+    $realif = get_real_interface($interface);
+
+    mwexecf('/sbin/ifconfig %s inet %s/%s', array($realif, $wancfg['ipaddr'], $wancfg['subnet']));
+}
+
+function interface_static6_configure($interface, $wancfg)
+{
+    if (empty($wancfg['ipaddrv6']) || !is_ipaddrv6($wancfg['ipaddrv6']) || $wancfg['subnetv6'] == '') {
+        return;
+    }
+
+    $realif = get_real_interface($interface, 'inet6');
+
+    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen %s', array($realif, $wancfg['ipaddrv6'], $wancfg['subnetv6']));
+}
+
 function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkupevent = false)
 {
     global $config;
@@ -2403,7 +2425,9 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     // apply interface hardware settings (tso, lro, ..)
     configure_interface_hardware($realhwif);
 
-    $tunnelif = substr($realif, 0, 3);
+    /* XXX kludge for now related to #3280 */
+    $tunnelif = in_array(substr($realif, 0, 3), array('gif', 'gre', 'ovp'));
+
     switch ($wancfg['ipaddr']) {
         case 'dhcp':
             interface_dhcp_configure($interface);
@@ -2415,12 +2439,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             interface_ppps_configure($interface);
             break;
         default:
-            /* XXX: Kludge for now related to #3280 */
-            if (!in_array($tunnelif, array("gif", "gre", "ovp"))) {
-                if (is_ipaddrv4($wancfg['ipaddr']) && $wancfg['subnet'] <> "") {
-                    legacy_interface_setaddress($realif, "{$wancfg['ipaddr']}/{$wancfg['subnet']}");
-                }
+            if ($tunnelif) {
+                break;
             }
+            interface_static_configure($interface, $wancfg);
             break;
     }
 
@@ -2428,6 +2450,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         switch ($wancfg['ipaddrv6']) {
             case 'slaac':
             case 'dhcp6':
+                /* XXX why not tell the function... */
+                if (isset($wancfg['dhcp6usev4iface'])) {
+                    break;
+                }
                 interface_dhcpv6_prepare($interface, $wancfg);
                 interface_dhcpv6_configure($interface, $wancfg);
                 break;
@@ -2441,12 +2467,14 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
                 interface_track6_configure($interface, $wancfg, $reload || $linkupevent);
                 break;
             default:
-                /* XXX: Kludge for now related to #3280 */
-                if (!in_array($tunnelif, array("gif", "gre", "ovp"))) {
-                    if (is_ipaddrv6($wancfg['ipaddrv6']) && $wancfg['subnetv6'] <> "") {
-                        mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$wancfg['ipaddrv6']} prefixlen " . escapeshellarg($wancfg['subnetv6']));
-                    }
+                if ($tunnelif) {
+                    break;
                 }
+                /* XXX why not tell the function... */
+                if (isset($wancfg['dhcp6usev4iface'])) {
+                    break;
+                }
+                interface_static6_configure($interface, $wancfg);
                 break;
         }
     }
