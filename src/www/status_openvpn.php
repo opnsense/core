@@ -272,7 +272,7 @@ $( document ).ready(function() {
                   <td><?=gettext("Virtual Addr"); ?></td>
                   <td><?=gettext("Connected Since"); ?></td>
                   <td><?=gettext("Bytes Sent"); ?></td>
-                  <td><?=gettext("Bytes Rcvd"); ?></td>
+                  <td><?=gettext("Bytes Received"); ?></td>
                   <td><?=gettext("Status"); ?></td>
                   <td></td>
                 </tr>
