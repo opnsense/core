@@ -1,8 +1,8 @@
 
-      <footer class="page-foot">
+      <footer class="page-foot col-sm-push-3 col-lg-push-2">
         <div class="container-fluid">
-          <a target="_blank" href="<?=$g['product_website']?>"><?=$g['product_name']?></a> (c) <?=$g['product_copyright_years']?>
-          <a target="_blank" href="<?=$g['product_copyright_url']?>"><?=$g['product_copyright_owner']?></a>
+          <a target="_blank" href="<?=$g['product_website']?>" class="redlnk"><?=$g['product_name']?></a> (c)
+            <?=$g['product_copyright_years']?> <a href="<?=$g['product_copyright_url']?>" class="tblnk"><?=$g['product_copyright_owner']?></a>
         </div>
       </footer>
 
@@ -69,11 +69,11 @@
       </div>
     </div>
     <!-- bootstrap script -->
-    <script src="/<?= cache_safe('ui/js/bootstrap.min.js') ?>"></script>
+    <script src="/ui/js/bootstrap.min.js"></script>
     <!-- Fancy select with search options -->
-    <script src="<?= cache_safe('/ui/js/bootstrap-select.min.js') ?>"></script>
+    <script src="/ui/js/bootstrap-select.min.js"></script>
     <!-- bootstrap dialog -->
-    <script src="<?= cache_safe('/ui/js/bootstrap-dialog.min.js') ?>"></script>
+    <script src="/ui/js/bootstrap-dialog.min.js"></script>
     <!-- service control hook -->
     <script>
       $( document ).ready(function() {

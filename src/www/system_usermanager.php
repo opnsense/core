@@ -1,33 +1,33 @@
 <?php
 
 /*
- * Copyright (C) 2014-2016 Deciso B.V.
- * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
- * Copyright (C) 2005 Paul Taylor <paultaylor@winn-dixie.com>
- * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
+    Copyright (C) 2014-2016 Deciso B.V.
+    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+    Copyright (C) 2005 Paul Taylor <paultaylor@winn-dixie.com>
+    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+*/
 
 require_once 'guiconfig.inc';
 require_once 'system.inc';
@@ -235,19 +235,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("The username is longer than 32 characters.");
         }
 
-        if (!empty($pconfig['passwordfld1']) || !empty($pconfig['passwordfld2'])) {
-            if ($pconfig['passwordfld1'] != $pconfig['passwordfld2']) {
-                $input_errors[] = gettext('The passwords do not match.');
-            } elseif (empty($pconfig['gen_new_password'])) {
-                // check against local password policy
-                $authenticator = get_authenticator();
-                $input_errors = array_merge(
-                    $input_errors,
-                    $authenticator->checkPolicy($pconfig['usernamefld'], null, $pconfig['passwordfld1'])
-                );
-            } else {
-                $input_errors[] = gettext('Cannot set random password due to explicit input.');
-            }
+        if ($pconfig['passwordfld1'] != $pconfig['passwordfld2']) {
+            $input_errors[] = gettext('The passwords do not match.');
+        } elseif (empty($pconfig['gen_new_password'])) {
+            // check against local password policy
+            $authenticator = get_authenticator();
+            $input_errors = array_merge(
+                $input_errors, $authenticator->checkPolicy($pconfig['usernamefld'], null, $pconfig['passwordfld1'])
+            );
+        }
+
+        if (!empty($pconfig['passwordfld1']) && !empty($pconfig['gen_new_password'])) {
+            $input_errors[] = gettext('Cannot set random password due to explicit input.');
         }
 
         if (!empty($pconfig['disabled']) && $_SESSION['Username'] === $a_user[$id]['name']) {
@@ -413,8 +412,8 @@ if (!isset($_GET['act'])) {
 }
 
 ?>
-<script src="<?= cache_safe('/ui/js/jquery.qrcode.js') ?>"></script>
-<script src="<?= cache_safe('/ui/js/qrcode.js') ?>"></script>
+<script src="/ui/js/jquery.qrcode.js"></script>
+<script src="/ui/js/qrcode.js"></script>
 
 <body>
 

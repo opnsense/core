@@ -30,7 +30,6 @@
 namespace OPNsense\Firewall\Api;
 
 use \OPNsense\Base\ApiMutableModelControllerBase;
-use \OPNsense\Core\Backend;
 
 /**
  * @package OPNsense\Firewall
@@ -50,7 +49,7 @@ class AliasController extends ApiMutableModelControllerBase
     {
         return $this->searchBase(
             "aliases.alias",
-            array('enabled', 'name', 'description', 'type', 'content'),
+            array('enabled', 'name', 'description'),
             "description"
         );
     }
@@ -97,22 +96,6 @@ class AliasController extends ApiMutableModelControllerBase
     public function getItemAction($uuid = null)
     {
         return $this->getBase("alias", "aliases.alias", $uuid);
-    }
-
-    /**
-     * find the alias uuid by name
-     * @param $name alias name
-     * @return string uuid
-     */
-    public function getAliasUUIDAction($name)
-    {
-        $node = $this->getModel();
-        foreach ($node->aliases->alias->iterateItems() as $key => $alias) {
-            if ((string)$alias->name == $name) {
-                return array('uuid' => $key);
-            }
-        }
-        return array();
     }
 
     /**
@@ -186,22 +169,5 @@ class AliasController extends ApiMutableModelControllerBase
             }
         }
         return $result;
-    }
-
-    /**
-     * reconfigure aliases
-     */
-    public function reconfigureAction()
-    {
-        if ($this->request->isPost()) {
-            $backend = new Backend();
-            $backend->configdRun('template reload OPNsense/Filter');
-            $bckresult = strtolower(
-                trim($backend->configdRun("filter refresh_aliases"))
-            );
-            return array("status" => $bckresult);
-        } else {
-            return array("status" => "failed");
-        }
     }
 }

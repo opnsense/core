@@ -1,34 +1,34 @@
 <?php
 
 /*
- * Copyright (C) 2018 Martin Wasley <martin@team-rebellion.net>
- * Copyright (C) 2016-2018 Franco Fichtner <franco@opnsense.org>
- * Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>
- * Copyright (C) 2008 Seth Mos <seth.mos@dds.nl>
- * Copyright (C) 2010 Ermal Luçi
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
+    Copyright (C) 2018 Martin Wasley <martin@team-rebellion.net>
+    Copyright (C) 2016-2018 Franco Fichtner <franco@opnsense.org>
+    Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>
+    Copyright (C) 2008 Seth Mos <seth.mos@dds.nl>
+    Copyright (C) 2010 Ermal Luçi
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    1. Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+*/
 
 function return_apinger_defaults()
 {
@@ -661,7 +661,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 
         $gateway = array();
         $gateway['dynamic'] = false;
-        $gateway['ipprotocol'] = 'inet';
+        $gateway['ipprotocol'] = "inet";
         $gateway['gateway'] = get_interface_gateway($ifname, $gateway['dynamic']);
         $gateway['interface'] = get_real_interface($ifname);
         $gateway['friendlyiface'] = $ifname;
@@ -757,9 +757,9 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 
         $gateway = array();
         $gateway['dynamic'] = false;
-        $gateway['ipprotocol'] = 'inet6';
+        $gateway['ipprotocol'] = "inet6";
         $gateway['gateway'] = get_interface_gateway_v6($ifname, $gateway['dynamic']);
-        $gateway['interface'] = get_real_interface($ifname, 'inet6');
+        $gateway['interface'] = get_real_interface($ifname, "inet6");
         switch ($ifcfg['ipaddrv6']) {
             case "6rd":
             case "6to4":
@@ -818,16 +818,16 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
                     $gateway['gateway'] = get_interface_gateway($gateway['interface']);
                     /* no IP address found, set to dynamic */
                     if (!is_ipaddrv4($gateway['gateway'])) {
-                        $gateway['gateway'] = 'dynamic';
+                        $gateway['gateway'] = "dynamic";
                     }
                     $gateway['dynamic'] = true;
-                } elseif ($gateway['ipprotocol'] == 'inet6') {
+                } elseif ($gateway['ipprotocol'] == "inet6") {
                     /* if the gateway is dynamic and we can find the IPv6, Great! */
                     /* we know which interfaces is dynamic, this should be made a function, and for v6 too */
                     $gateway['gateway'] = get_interface_gateway_v6($gateway['interface']);
                     /* no IPv6 address found, set to dynamic */
                     if (!is_ipaddrv6($gateway['gateway'])) {
-                        $gateway['gateway'] = 'dynamic';
+                        $gateway['gateway'] = "dynamic";
                     }
                     $gateway['dynamic'] = true;
                 }
@@ -840,10 +840,13 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             }
 
             $gateway['friendlyiface'] = $gateway['interface'];
-            $gateway['interface'] = get_real_interface(
-                $gateway['interface'],
-                $gateway['ipprotocol'] != 'inet6' ? 'all' : 'inet6'
-            );
+
+            /* special treatment for tunnel interfaces */
+            if ($gateway['ipprotocol'] == "inet6") {
+                $gateway['interface'] = get_real_interface($gateway['interface'], 'inet6');
+            } else {
+                $gateway['interface'] = get_real_interface($gateway['interface'], 'all');
+            }
 
             /* entry has a default flag, use it */
             if (isset($gateway['defaultgw'])) {
@@ -1078,68 +1081,64 @@ function get_interface_gateway($interface, &$dynamic = false)
 {
     global $config;
 
-    $gw = null;
+    $gw = NULL;
 
-    if (!isset($config['interfaces'][$interface])) {
-        return $gw;
-    }
+    if (isset($config['interfaces'][$interface])) {
+        $gwcfg = $config['interfaces'][$interface];
+        if (!empty($gwcfg['gateway']) && isset($config['gateways']['gateway_item'])) {
+            foreach ($config['gateways']['gateway_item'] as $gateway) {
+                if (($gateway['name'] == $gwcfg['gateway']) && (is_ipaddrv4($gateway['gateway']))) {
+                    $gw = $gateway['gateway'];
+                    break;
+                }
+            }
+        }
 
-    $gwcfg = $config['interfaces'][$interface];
-    if (!empty($gwcfg['gateway']) && isset($config['gateways']['gateway_item'])) {
-        foreach ($config['gateways']['gateway_item'] as $gateway) {
-            if (($gateway['name'] == $gwcfg['gateway']) && (is_ipaddrv4($gateway['gateway']))) {
-                $gw = $gateway['gateway'];
-                break;
+        // for dynamic interfaces we handle them through the $interface_router file.
+        if (!is_ipaddrv4($gw) && !is_ipaddrv4($gwcfg['ipaddr'])) {
+            $realif = get_real_interface($interface);
+            if (file_exists("/tmp/{$realif}_router")) {
+                $gw = trim(file_get_contents("/tmp/{$realif}_router"), " \n");
+                $dynamic = true;
+            }
+            if (file_exists("/tmp/{$realif}_defaultgw")) {
+                $dynamic = "default";
             }
         }
     }
 
-    if (!is_ipaddrv4($gw) && !is_ipaddrv4($gwcfg['ipaddr'])) {
-        $realif = get_real_interface($interface);
-        if (file_exists("/tmp/{$realif}_router")) {
-            $gw = trim(file_get_contents("/tmp/{$realif}_router"), " \n");
-            $dynamic = true;
-        }
-        if (file_exists("/tmp/{$realif}_defaultgw")) {
-            $dynamic = 'default';
-        }
-    }
-
-    return $gw;
+    /* return gateway */
+    return ($gw);
 }
 
 function get_interface_gateway_v6($interface, &$dynamic = false)
 {
     global $config;
 
-    $gw = null;
-
-    if (!isset($config['interfaces'][$interface])) {
-        return $gw;
-    }
-
+    $gw = NULL;
     $gwcfg = $config['interfaces'][$interface];
     if (!empty($gwcfg['gatewayv6']) && isset($config['gateways']['gateway_item'])) {
         foreach ($config['gateways']['gateway_item'] as $gateway) {
-            if ($gateway['name'] == $gwcfg['gatewayv6'] && is_ipaddrv6($gateway['gateway'])) {
+            if (($gateway['name'] == $gwcfg['gatewayv6']) && (is_ipaddrv6($gateway['gateway']))) {
                 $gw = $gateway['gateway'];
                 break;
             }
         }
     }
 
-    if (!is_ipaddrv6($gw) && (!isset($gwcfg['ipaddrv6']) || !is_ipaddrv6($gwcfg['ipaddrv6']))) {
-          $realif = get_real_interface($interface, 'inet6');
+    // for dynamic interfaces we handle them through the $interface_router file.
+    if (!is_ipaddrv6($gw) && ( !isset($gwcfg['ipaddrv6']) || !is_ipaddrv6($gwcfg['ipaddrv6']))) {
+          $realif = get_real_interface($interface);
           if (file_exists("/tmp/{$realif}_routerv6")) {
               $gw = trim(file_get_contents("/tmp/{$realif}_routerv6"), " \n");
               $dynamic = true;
           }
           if (file_exists("/tmp/{$realif}_defaultgwv6")) {
-              $dynamic = 'default';
+              $dynamic = "default";
           }
     }
-
-    return $gw;
+    /* return gateway */
+    return ($gw);
 }
 
 /*

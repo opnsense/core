@@ -87,7 +87,7 @@ class Config(object):
         return None
 
 
-class OPNsenseConfig(object):
+class OPNSenseConfig(object):
     """ Read configuration data from config.xml
     """
     def __init__(self):
