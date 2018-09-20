@@ -435,7 +435,7 @@
                     '<td>' + bold_on + row['flatsize'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['comment'] + bold_off + '</td>' +
                     '<td><button class="btn btn-default btn-xs act_details" data-package="' + row['name'] + '" ' +
-                        ' data-toggle="tooltip" title="More about ' + row['name'] + '">' +
+                        ' data-toggle="tooltip" title="{{ lang._('More about ') }}' + row['name'] + '">' +
                         '<i class="fa fa-info-circle fa-fw"></i></button>' +
                         (row['installed'] == "1" ?
                         '<button class="btn btn-default btn-xs act_remove" data-package="' + row['name'] + '" '+
