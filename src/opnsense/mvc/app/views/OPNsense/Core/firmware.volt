@@ -732,8 +732,8 @@
                     {{ lang._('Audit now') }} <i id="audit_progress" class="caret"></i>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a id="audit" href="#">Security</a></li>
-                    <li><a id="health" href="#">Health</a></li>
+                    <li><a id="audit" href="#">{{ lang._('Security') }}</a></li>
+                    <li><a id="health" href="#">{{ lang._('Health') }}</a></li>
                 </ul>
             </div>
             <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;">{{ lang._('Check for updates') }} <i id="checkupdate_progress"></i></button>
