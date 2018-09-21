@@ -339,10 +339,7 @@ dhparam:
 	    ${.CURDIR}/src/etc/dh-parameters.${BITS}.sample ${BITS}
 .endfor
 
-diff:
-	@git diff --stat -p stable/${CORE_ABI}
-
-ARGS=	mfc
+ARGS=	diff mfc
 
 # handle argument expansion for required targets
 .for TARGET in ${.TARGETS}
@@ -357,6 +354,9 @@ ${TARGET}: ${_TARGET}
 ${_TARGET}_ARG=		${${_TARGET}_ARGS:[0]}
 .endif
 .endfor
+
+diff:
+	@git diff --stat -p stable/${CORE_ABI} ${.CURDIR}/${diff_ARGS:[1]}
 
 mfc:
 	@git checkout stable/${CORE_ABI}
