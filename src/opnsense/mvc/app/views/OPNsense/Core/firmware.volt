@@ -439,11 +439,11 @@
                         '<i class="fa fa-info-circle fa-fw"></i></button>' +
                         (row['installed'] == "1" ?
                         '<button class="btn btn-default btn-xs act_remove" data-package="' + row['name'] + '" '+
-                        '  data-toggle="tooltip" title="Remove ' + row['name'] + '">' +
+                        '  data-toggle="tooltip" title="{{ lang._('Remove') }} ' + row['name'] + '">' +
                         '<i class="fa fa-trash fa-fw">' +
                         '</i></button>' :
                         '<button class="btn btn-default btn-xs act_install" data-package="' + row['name'] + '" ' +
-                        ' data-toggle="tooltip" title="Install ' + row['name'] + '">' +
+                        ' data-toggle="tooltip" title="{{ lang._('Install') }} ' + row['name'] + '">' +
                         '<i class="fa fa-plus fa-fw">' +
                         '</i></button>'
                     ) + '</td>' + '</tr>'
