@@ -391,7 +391,7 @@
                     '<td>' + row['comment'] + '</td>' +
                     '<td>' +
                     '<button class="btn btn-default btn-xs act_license" data-package="' + row['name'] + '" ' +
-                    '  data-toggle="tooltip" title="{{ lang._('View') }}">' +
+                    '  data-toggle="tooltip" title="{{ lang._('License') }}">' +
                     '<i class="fa fa-balance-scale fa-fw"></i></button> ' +
                     '<button class="btn btn-default btn-xs act_reinstall" data-package="' + row['name'] + '" ' +
                     '  data-toggle="tooltip" title="{{ lang._('Reinstall') }}">' +
@@ -480,7 +480,7 @@
                         '<tr' + (changelog_count > changelog_max ? ' class="changelog-hidden" style="display: none;" ' : '' ) +
                         '><td>' + bold_on + row['version'] + status_text + bold_off + '</td><td>' + bold_on + row['date'] + bold_off + '</td>' +
                         '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
-                        'data-toggle="tooltip" title="{{ lang._('View') }}">' +
+                        'data-toggle="tooltip" title="{{ lang._('License') }}">' +
                         '<i class="fa fa-book fa-fw"></i></button></td></tr>'
                     );
                 });
