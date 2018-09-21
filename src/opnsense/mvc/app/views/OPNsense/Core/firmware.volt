@@ -391,16 +391,16 @@
                     '<td>' + row['comment'] + '</td>' +
                     '<td>' +
                     '<button class="btn btn-default btn-xs act_license" data-package="' + row['name'] + '" ' +
-                    '  data-toggle="tooltip" title="View ' + row['name'] + ' license">' +
+                    '  data-toggle="tooltip" title="{{ lang._('License') }}">' +
                     '<i class="fa fa-balance-scale fa-fw"></i></button> ' +
                     '<button class="btn btn-default btn-xs act_reinstall" data-package="' + row['name'] + '" ' +
-                    '  data-toggle="tooltip" title="Reinstall ' + row['name'] + '">' +
+                    '  data-toggle="tooltip" title="{{ lang._('Reinstall') }}">' +
                     '<i class="fa fa-recycle fa-fw"></i></button> ' + (row['locked'] === '1' ?
-                        '<button data-toggle="tooltip" title="Unlock ' + row['name'] + '" class="btn btn-default btn-xs act_unlock" data-package="' + row['name'] + '">' +
+                        '<button data-toggle="tooltip" title="{{ lang._('Unlock') }}" class="btn btn-default btn-xs act_unlock" data-package="' + row['name'] + '">' +
                         '<i class="fa fa-lock fa-fw">' +
                         '</i></button>' :
                         '<button class="btn btn-default btn-xs act_lock" data-package="' + row['name'] + '" ' +
-                        '  data-toggle="tooltip" title="Lock ' + row['name'] + '" >' +
+                        '  data-toggle="tooltip" title="{{ lang._('Lock') }}" >' +
                         '<i class="fa fa-unlock fa-fw"></i></button>'
                     ) + '</td>' +
                     '</tr>'
@@ -435,15 +435,15 @@
                     '<td>' + bold_on + row['flatsize'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['comment'] + bold_off + '</td>' +
                     '<td><button class="btn btn-default btn-xs act_details" data-package="' + row['name'] + '" ' +
-                        ' data-toggle="tooltip" title="More about ' + row['name'] + '">' +
+                        ' data-toggle="tooltip" title="{{ lang._('Info') }}">' +
                         '<i class="fa fa-info-circle fa-fw"></i></button>' +
                         (row['installed'] == "1" ?
                         '<button class="btn btn-default btn-xs act_remove" data-package="' + row['name'] + '" '+
-                        '  data-toggle="tooltip" title="Remove ' + row['name'] + '">' +
+                        '  data-toggle="tooltip" title="{{ lang._('Remove') }}">' +
                         '<i class="fa fa-trash fa-fw">' +
                         '</i></button>' :
                         '<button class="btn btn-default btn-xs act_install" data-package="' + row['name'] + '" ' +
-                        ' data-toggle="tooltip" title="Install ' + row['name'] + '">' +
+                        ' data-toggle="tooltip" title="{{ lang._('Install') }}">' +
                         '<i class="fa fa-plus fa-fw">' +
                         '</i></button>'
                     ) + '</td>' + '</tr>'
@@ -480,7 +480,7 @@
                         '<tr' + (changelog_count > changelog_max ? ' class="changelog-hidden" style="display: none;" ' : '' ) +
                         '><td>' + bold_on + row['version'] + status_text + bold_off + '</td><td>' + bold_on + row['date'] + bold_off + '</td>' +
                         '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
-                        'data-toggle="tooltip" title="View ' + row['version'] + '">' +
+                        'data-toggle="tooltip" title="{{ lang._('View') }}">' +
                         '<i class="fa fa-book fa-fw"></i></button></td></tr>'
                     );
                 });
