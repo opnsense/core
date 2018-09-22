@@ -449,5 +449,214 @@
                 </children>
             </authentication>
         </forward>
+        <pac>
+          <proxy type="ArrayField">
+              <name type="TextField">
+                  <Required>Y</Required>
+                  <ValidationMessage>The proxy name must be set.</ValidationMessage>
+                  <Constraints>
+                      <check001>
+                          <ValidationMessage>Proxy name should be unique</ValidationMessage>
+                          <type>UniqueConstraint</type>
+                      </check001>
+                  </Constraints>
+              </name>
+              <proxy_type type="OptionField">
+                  <Required>Y</Required>
+                  <OptionValues>
+                      <PROXY>Proxy</PROXY>
+                      <DIRECT>Direct Connection (no Proxy)</DIRECT>
+                      <HTTP>HTTP Proxy</HTTP>
+                      <HTTPS>HTTPS Proxy</HTTPS>
+                      <SOCKS>SOCKS</SOCKS>
+                      <SOCKS4>SOCKS Version 4</SOCKS4>
+                      <SOCKS5>SOCKS Version 5</SOCKS5>
+                  </OptionValues>
+              </proxy_type>
+              <url type="TextField">
+                  <Required>N</Required>
+                  <ValidationMessage>This does not look like a valid proxy or direct connection.</ValidationMessage>
+              </url>
+              <description type="TextField">
+                  <Required>N</Required>
+                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+              </description>
+          </proxy>
+          <match type="ArrayField">
+              <name type="TextField">
+                  <Required>Y</Required>
+                  <ValidationMessage>The match name must be set.</ValidationMessage>
+                  <Constraints>
+                      <check001>
+                          <ValidationMessage>Match name should be unique</ValidationMessage>
+                          <type>UniqueConstraint</type>
+                      </check001>
+                  </Constraints>
+              </name>
+              <description type="TextField">
+                  <Required>N</Required>
+                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+              </description>
+              <negate type="BooleanField">
+                  <default>0</default>
+                  <Required>Y</Required>
+              </negate>
+              <match_type type="OptionField">
+                  <Required>Y</Required>
+                  <OptionValues>
+                      <url_matches>URL Matches</url_matches>
+                      <hostname_matches>Hostname Matches</hostname_matches>
+                      <dns_domain_is>DNS Domain Is</dns_domain_is>
+                      <destination_in_net>IP Is In Network</destination_in_net>
+                      <my_ip_in_net>My IP Is In Network</my_ip_in_net>
+                      <plain_hostname>Plain Hostname (No Dots Inside)</plain_hostname>
+                      <is_resolvable>Is Resolvable</is_resolvable>
+                      <dns_domain_levels>DNS Domain Levels (Count Of Dots)</dns_domain_levels>
+                      <weekday_range>Weekday Range</weekday_range>
+                      <date_range>Date Range</date_range>
+                      <time_range>Time Range</time_range>
+                  </OptionValues>
+              </match_type>
+              <hostname type="TextField">
+                  <Required>N</Required>
+              </hostname>
+              <url type="TextField">
+                  <Mask>/^[^"]*$/</Mask>
+                  <Required>N</Required>
+              </url>
+              <network type="NetworkField">
+                <Required>N</Required>
+              </network>
+              <domain_level_from type="IntegerField">
+                  <default>0</default>
+                  <MinimumValue>0</MinimumValue>
+                  <ValidationMessage>Minimum domain level must be bigger than 0.</ValidationMessage>
+                  <Required>N</Required>
+              </domain_level_from>
+              <domain_level_to type="IntegerField">
+                  <default>0</default>
+                  <MinimumValue>0</MinimumValue>
+                  <ValidationMessage>A hostname cannot have a negative count of levels.</ValidationMessage>
+                  <Required>N</Required>
+              </domain_level_to>
+              <time_from type="IntegerField">
+                  <default>0</default>
+                  <MinimumValue>0</MinimumValue>
+                  <ValidationMessage>The first hour of the day is 0.</ValidationMessage>
+                  <Required>N</Required>
+              </time_from>
+              <time_to type="IntegerField">
+                  <default>0</default>
+                  <MinimumValue>0</MinimumValue>
+                  <MaximumValue>23</MaximumValue>
+                  <ValidationMessage>The last hour of the day is 23!</ValidationMessage>
+                  <Required>N</Required>
+              </time_to>
+              <date_from type="OptionField">
+                  <Required>Y</Required>
+                  <OptionValues>
+                      <JAN>January</JAN>
+                      <FEB>February</FEB>
+                      <MAR>March</MAR>
+                      <APR>April</APR>
+                      <MAY>May</MAY>
+                      <JUN>June</JUN>
+                      <JUL>July</JUL>
+                      <AUG>August</AUG>
+                      <SEP>September</SEP>
+                      <OCT>October</OCT>
+                      <NOV>November</NOV>
+                      <DEC>December</DEC>
+                  </OptionValues>
+              </date_from>
+              <date_to type="OptionField">
+                  <Required>Y</Required>
+                  <OptionValues>
+                      <JAN>January</JAN>
+                      <FEB>February</FEB>
+                      <MAR>March</MAR>
+                      <APR>April</APR>
+                      <MAY>May</MAY>
+                      <JUN>June</JUN>
+                      <JUL>July</JUL>
+                      <AUG>August</AUG>
+                      <SEP>September</SEP>
+                      <OCT>October</OCT>
+                      <NOV>November</NOV>
+                      <DEC>December</DEC>
+                  </OptionValues>
+              </date_to>
+              <weekday_from type="OptionField">
+                  <Required>Y</Required>
+                  <OptionValues>
+                      <MON>Monday</MON>
+                      <TUE>Tuesday</TUE>
+                      <WED>Wednesday</WED>
+                      <THU>Thursday</THU>
+                      <FRI>Friday</FRI>
+                      <SAT>Saturday</SAT>
+                      <SUN>Sunday</SUN>
+                  </OptionValues>
+              </weekday_from>
+              <weekday_to type="OptionField">
+                  <Required>Y</Required>
+                  <OptionValues>
+                      <MON>Monday</MON>
+                      <TUE>Tuesday</TUE>
+                      <WED>Wednesday</WED>
+                      <THU>Thursday</THU>
+                      <FRI>Friday</FRI>
+                      <SAT>Saturday</SAT>
+                      <SUN>Sunday</SUN>
+                  </OptionValues>
+              </weekday_to>
+          </match>
+          <rule type="ArrayField">
+              <enabled type="BooleanField">
+                  <default>1</default>
+                  <Required>Y</Required>
+              </enabled>
+              <description type="TextField">
+                  <Required>N</Required>
+                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+              </description>
+              <matches type="ModelRelationField">
+                  <Model>
+                      <queues>
+                          <source>OPNsense.Proxy.Proxy</source>
+                          <items>pac.match</items>
+                          <display>name</display>
+                      </queues>
+                  </Model>
+                  <Required>Y</Required>
+                  <multiple>Y</multiple>
+              </matches>
+              <join_type type="OptionField">
+                  <Required>Y</Required>
+                  <OptionValues>
+                      <and>And</and>
+                      <or>Or</or>
+                  </OptionValues>
+              </join_type>
+              <match_type type="OptionField">
+                  <Required>Y</Required>
+                  <OptionValues>
+                      <if>If</if>
+                      <unless>Unless</unless>
+                  </OptionValues>
+              </match_type>
+              <proxies type="ModelRelationField">
+                  <Model>
+                      <queues>
+                          <source>OPNsense.Proxy.Proxy</source>
+                          <items>pac.proxy</items>
+                          <display>name</display>
+                      </queues>
+                  </Model>
+                  <Required>Y</Required>
+                  <multiple>Y</multiple>
+              </proxies>
+          </rule>
+        </pac>
     </items>
 </model>

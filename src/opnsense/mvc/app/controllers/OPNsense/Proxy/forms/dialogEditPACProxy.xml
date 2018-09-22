@@ -1,0 +1,26 @@
+<form>
+    <field>
+        <id>pac.proxy.name</id>
+        <label>Name</label>
+        <type>text</type>
+        <help>Enter a name for this match.</help>
+    </field>
+    <field>
+        <id>pac.proxy.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>Enter a description for this proxy for your reference.</help>
+    </field>
+    <field>
+        <id>pac.proxy.proxy_type</id>
+        <label>Proxy Type</label>
+        <type>dropdown</type>
+        <help>Choose a proxy type. Usually you should use Direct for a direct connection or Proxy for a Proxy.</help>
+    </field>
+    <field>
+        <id>pac.proxy.url</id>
+        <label>URL</label>
+        <type>text</type>
+        <help>Enter a proxy URL in the form proxy.example.com:3128.</help>
+    </field>
+</form>

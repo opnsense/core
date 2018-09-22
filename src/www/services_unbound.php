@@ -1,31 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2018 Fabian Franz
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("services.inc");
@@ -38,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     // boolean values
     $pconfig['enable'] = isset($a_unboundcfg['enable']);
+    $pconfig['enable_wpad'] = isset($a_unboundcfg['enable_wpad']);
     $pconfig['dnssec'] = isset($a_unboundcfg['dnssec']);
     $pconfig['forwarding'] = isset($a_unboundcfg['forwarding']);
     $pconfig['reglladdr6'] = empty($a_unboundcfg['noreglladdr6']);
@@ -108,6 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             // boolean values
             $a_unboundcfg['enable'] = !empty($pconfig['enable']);
+            $a_unboundcfg['enable_wpad'] = !empty($pconfig['enable_wpad']);
             $a_unboundcfg['dnssec'] = !empty($pconfig['dnssec']);
             $a_unboundcfg['forwarding'] = !empty($pconfig['forwarding']);
             $a_unboundcfg['noreglladdr6'] = empty($pconfig['reglladdr6']);
@@ -289,6 +292,16 @@ include_once("head.inc");
                           <input name="txtsupport" type="checkbox" value="yes" <?=!empty($pconfig['txtsupport']) ? "checked=\"checked\"" : "";?> />
                           <div class="hidden" data-for="help_for_txtsupport">
                             <?=gettext("If this option is set, then any descriptions associated with Host entries and DHCP Static mappings will create a corresponding TXT record.");?><br />
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_enable_wpad" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WPAD Records");?></td>
+                        <td>
+                          <input name="enable_wpad" type="checkbox" value="yes" <?=!empty($pconfig['enable_wpad']) ? "checked=\"checked\"" : "";?> />
+                          <div class="hidden" for="help_for_enable_wpad">
+                            <?=gettext("If this option is set, CNAME records for the WPAD host of all configured domains will be automatically added as well as overrides for TXT records for domains. " .
+                                       "This allows automatic proxy configuration in your network but you should not enable it if you are not using WPAD or if you want to configure it by yourself.");?><br />
                           </div>
                         </td>
                       </tr>

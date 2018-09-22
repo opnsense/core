@@ -2,15 +2,18 @@
     <Services>
       <WebProxy VisibleName="Web Proxy" cssClass="fa fa-bolt fa-fw">
           <Administration url="/ui/proxy">
-            <GeneralSettings VisibleName="General" url="/ui/proxy#subtab_proxy-general-settings"/>
-            <LocalCache VisibleName="Cache" url="/ui/proxy#subtab_proxy-general-cache-local"/>
-            <TrafficManagement VisibleName="TrafficManagement" url="/ui/proxy#subtab_proxy-general-traffic"/>
-            <Forward VisibleName="Forward" url="/ui/proxy#subtab_proxy-forward-general"/>
-            <FTP VisibleName="FTP" url="/ui/proxy#subtab_proxy-forward-ftp"/>
             <ACL VisibleName="ACL" url="/ui/proxy#subtab_proxy-forward-acl"/>
             <Authentication VisibleName="Auth" url="/ui/proxy#subtab_proxy-general-authentication"/>
-            <RemoteACL VisibleName="RemoteACL" url="/ui/proxy#remote_acls"/>
+            <FTP VisibleName="FTP" url="/ui/proxy#subtab_proxy-forward-ftp"/>
+            <Forward VisibleName="Forward" url="/ui/proxy#subtab_proxy-forward-general"/>
+            <GeneralSettings VisibleName="General" url="/ui/proxy#subtab_proxy-general-settings"/>
             <ICAP VisibleName="ICAP" url="/ui/proxy#subtab_proxy-icap"/>
+            <LocalCache VisibleName="Cache" url="/ui/proxy#subtab_proxy-general-cache-local"/>
+            <PACMatches VisibleName="PAC Matches" url="/ui/proxy#subtab_pac_matches"/>
+            <PACProxies VisibleName="PAC Proxies" url="/ui/proxy#subtab_pac_proxies"/>
+            <PACRules VisibleName="PAC Rules" url="/ui/proxy#subtab_pac_rules"/>
+            <RemoteACL VisibleName="Remote ACL" url="/ui/proxy#remote_acls"/>
+            <TrafficManagement VisibleName="Traffic Mgmt" url="/ui/proxy#subtab_proxy-general-traffic"/>
           </Administration>
           <Log VisibleName="Log File" url="/diag_logs_proxy.php?type=cache">
               <More url="/diag_logs_proxy.php*" visibility="hidden"/>
