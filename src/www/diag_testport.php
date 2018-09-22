@@ -187,7 +187,7 @@ include("head.inc"); ?>
                     </tr>
                     <tr>
                       <td>&nbsp;</td>
-                      <td><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Test"); ?>" /></td>
+                      <td><button name="Submit" type="submit" class="btn btn-primary" value="yes"><?= html_safe(gettext('Test')) ?></button></td>
                     </tr>
                 </table>
               </div>
