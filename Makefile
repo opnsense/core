@@ -153,6 +153,8 @@ want-${WANT}:
 mount:
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
 	    echo -n "Enabling core.git live mount..."; \
+	    sed ${SED_REPLACE} ${.CURDIR}/src/opnsense/version/opnsense.in > \
+	        ${.CURDIR}/src/opnsense/version/opnsense; \
 	    sed ${SED_REPLACE} ${.CURDIR}/src/opnsense/firmware-product.in > \
 	        ${.CURDIR}/src/opnsense/firmware-product; \
 	    mount_unionfs ${.CURDIR}/src ${LOCALBASE}; \
@@ -165,7 +167,6 @@ umount:
 	@if [ -f ${WRKDIR}/.mount_done ]; then \
 	    echo -n "Disabling core.git live mount..."; \
 	    umount -f "<above>:${.CURDIR}/src"; \
-	    rm ${.CURDIR}/src/opnsense/firmware-product; \
 	    rm ${WRKDIR}/.mount_done; \
 	    echo "done"; \
 	    service configd restart; \
