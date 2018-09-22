@@ -31,10 +31,6 @@ EOF
 cat /etc/rc.shutdown.bak >> /etc/rc.shutdown
 rm -f /etc/rc.shutdown.bak
 
-# XXX 18.7 compat for now (remove scripts SED_REPLACE from Makefile, too)
-echo "%%CORE_NAME%%" > /usr/local/opnsense/version/opnsense.name
-echo "%%CORE_ABI%%" > /usr/local/opnsense/version/opnsense.abi
-
 /usr/local/etc/rc.d/configd start
 
 /usr/local/etc/rc.configure_firmware
