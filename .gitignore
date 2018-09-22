@@ -12,3 +12,7 @@
 /src/lib/**
 /src/opnsense/changelog
 /src/www/wpad.dat
+/src/opnsense/version/*
+!/src/opnsense/version/opnsense.abi.in
+!/src/opnsense/version/opnsense.in
+!/src/opnsense/version/opnsense.name.in
