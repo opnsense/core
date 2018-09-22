@@ -85,6 +85,7 @@ install-${TARGET}:
 plist-${TARGET}:
 .for TREE in ${TREES_${TARGET}}
 	@(cd ${TREE}; find * -type f ${_IGNORES} -o -type l) | while read FILE; do \
+		if [ -f "${TREE}/$${FILE}.in" ]; then continue; fi; \
 		FILE="$${FILE%%.in}"; PREFIX=""; \
 		if [ -z "${NO_SAMPLE}" -a "$${FILE%%.sample}" != "$${FILE}" ]; then \
 			PREFIX="@sample "; \
