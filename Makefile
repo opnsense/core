@@ -165,7 +165,6 @@ umount:
 	@if [ -f ${WRKDIR}/.mount_done ]; then \
 	    echo -n "Disabling core.git live mount..."; \
 	    umount -f "<above>:${.CURDIR}/src"; \
-	    rm ${.CURDIR}/src/opnsense/version/opnsense; \
 	    rm ${WRKDIR}/.mount_done; \
 	    echo "done"; \
 	    service configd restart; \
