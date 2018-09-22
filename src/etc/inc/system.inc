@@ -622,8 +622,6 @@ function system_staticroutes_configure($interface = '')
             }
         }
     }
-
-    return 0;
 }
 
 function system_syslogd_fixup_server($server)
