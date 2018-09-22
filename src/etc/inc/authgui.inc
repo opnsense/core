@@ -244,8 +244,8 @@ function display_error_form($http_code, $desc)
 
     <title><?=$http_code?></title>
 
-    <link href="/ui/themes/<?= $themename ?>/build/css/main.css" rel="stylesheet">
-    <link href="/ui/themes/<?= $themename ?>/build/images/favicon.png" rel="shortcut icon">
+    <link href="<?= cache_safe("/ui/themes/{$themename}/build/css/main.css") ?>" rel="stylesheet">
+    <link href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>" rel="shortcut icon">
 
     <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
   </head>
@@ -312,17 +312,15 @@ function display_login_form($Login_Error)
 
     <title><?=gettext("Login"); ?></title>
 
-    <link href="/ui/themes/<?= $themename ?>/build/css/main.css" rel="stylesheet">
-    <link href="/ui/themes/<?= $themename ?>/build/images/favicon.png" rel="shortcut icon">
+    <link href="<?= cache_safe("/ui/themes/{$themename}/build/css/main.css") ?>" rel="stylesheet">
+    <link href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>" rel="shortcut icon">
 
     <script src="/ui/js/jquery-3.2.1.min.js"></script>
     <script src="/ui/js/jquery-migrate-3.0.1.min.js"></script>
 
-<?php
-    if (file_exists("/usr/local/opnsense/www/themes/".$themename."/build/js/theme.js")):?>
-    <script src="/ui/themes/<?=$themename?>/build/js/theme.js"></script>
-<?php
-    endif;?>
+<?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/js/theme.js")): ?>
+    <script src="<?= cache_safe("/ui/themes/{$themename}/build/js/theme.js") ?>"></script>
+<?php endif ?>
 
     <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 

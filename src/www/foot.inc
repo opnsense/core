@@ -69,11 +69,11 @@
       </div>
     </div>
     <!-- bootstrap script -->
-    <script src="/ui/js/bootstrap.min.js"></script>
+    <script src="/<?= cache_safe('ui/js/bootstrap.min.js') ?>"></script>
     <!-- Fancy select with search options -->
-    <script src="/ui/js/bootstrap-select.min.js"></script>
+    <script src="<?= cache_safe('/ui/js/bootstrap-select.min.js') ?>"></script>
     <!-- bootstrap dialog -->
-    <script src="/ui/js/bootstrap-dialog.min.js"></script>
+    <script src="<?= cache_safe('/ui/js/bootstrap-dialog.min.js') ?>"></script>
     <!-- service control hook -->
     <script>
       $( document ).ready(function() {
