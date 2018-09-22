@@ -58,13 +58,13 @@ function webgui_configure_do($verbose = false, $interface = '')
 
     $listeners = count($interfaces) ? array() : array('0.0.0.0', '::');
 
-    foreach ($interfaces as $interface) {
-        foreach (interfaces_addresses($interface) as $tmpaddr) {
+    foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
+        if ($info['scope']) {
             /* link-local does not seem to be supported */
-            if (strstr($tmpaddr, '%') === false && !is_linklocal($tmpaddr)) {
-                $listeners[] = $tmpaddr;
-            }
+            continue;
         }
+
+        $listeners[] = $tmpaddr;
     }
 
     chdir('/usr/local/www');

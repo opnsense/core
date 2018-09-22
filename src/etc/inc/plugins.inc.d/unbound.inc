@@ -166,13 +166,13 @@ EOF;
         $active_interfaces[] = 'lo0';
         $addresses = array();
 
-        foreach ($active_interfaces as $ubif) {
-            foreach (interfaces_addresses($ubif) as $tmpaddr) {
-                if ($ubif == 'lo0' && is_ipaddrv4($tmpaddr) && $tmpaddr != '127.0.0.1') {
-                    continue;
-                }
-                $addresses[] = $tmpaddr;
+        foreach (interfaces_addresses($active_interfaces) as $tmpaddr => $info) {
+            if ($info['name'] == 'lo0' && $info['family'] == 'inet' && $tmpaddr != '127.0.0.1') {
+                /* allow other DNS services to bind to loopback aliases */
+                continue;
             }
+
+            $addresses[] = $tmpaddr;
         }
 
         foreach ($addresses as $address) {

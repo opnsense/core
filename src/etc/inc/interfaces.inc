@@ -4674,23 +4674,29 @@ function make_ipv6_64_address($prefix, $suffix)
     return implode(':', $prefix_array);
 }
 
-function interfaces_addresses($interface)
+function interfaces_addresses($interfaces)
 {
     global $config;
 
     $realifs = array();
     $result = array();
 
-    if ($interface == 'lo0') {
-        $realifs[] = 'lo0';
-    } elseif (!isset($config['interfaces'][$interface])) {
-        return $result;
+    if (!is_array($interfaces)) {
+        $interfaces = array($interfaces);
     }
 
-    foreach (array('all', 'inet6') as $af) {
-        $realif = get_real_interface($interface, $af);
-        if (!empty($realif) && !in_array($realif, $realifs)) {
-            $realifs[] = $realif;
+    foreach ($interfaces as $interface) {
+        if ($interface == 'lo0') {
+            $realifs[] = 'lo0';
+        }
+
+        if (isset($config['interfaces'][$interface])) {
+            foreach (array('all', 'inet6') as $family) {
+                $realif = get_real_interface($interface, $family);
+                if (!empty($realif) && !in_array($realif, $realifs)) {
+                    $realifs[] = $realif;
+                }
+            }
         }
     }
 
@@ -4713,7 +4719,11 @@ function interfaces_addresses($interface)
                 if (!empty($address['link-local'])) {
                     $scope = "%{$realif}";
                 }
-                $result[] = "{$address['ipaddr']}{$scope}";
+                $result["{$address['ipaddr']}{$scope}"] = array(
+                    'family' => $proto == 'ipv4' ? 'inet' : 'inet6',
+                    'scope' => !empty($scope),
+                    'name' => $realif,
+                );
             }
         }
     }
