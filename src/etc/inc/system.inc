@@ -757,17 +757,9 @@ EOD;
         file_put_contents('/var/etc/syslog.conf', $syslogconf);
 
         if (!empty($syslogcfg['sourceip'])) {
-            if ($syslogcfg['ipproto'] == "ipv6") {
-                $ifaddr = is_ipaddr($syslogcfg['sourceip']) ? $syslogcfg['sourceip'] : get_interface_ipv6($syslogcfg['sourceip']);
-                if (!is_ipaddr($ifaddr)) {
-                    $ifaddr = get_interface_ip($syslogcfg['sourceip']);
-                }
-            } else {
-                $ifaddr = is_ipaddr($syslogcfg['sourceip']) ? $syslogcfg['sourceip'] : get_interface_ip($syslogcfg['sourceip']);
-                if (!is_ipaddr($ifaddr)) {
-                    $ifaddr = get_interface_ipv6($syslogcfg['sourceip']);
-                }
-            }
+            $ifaddr = $syslogcfg['ipproto'] == 'ipv6' ?
+                get_interface_ipv6($syslogcfg['sourceip']) :
+                get_interface_ip($syslogcfg['sourceip']);
             if (is_ipaddr($ifaddr)) {
                 $syslogd_extra .= exec_safe('-b %s ', $ifaddr);
             }
