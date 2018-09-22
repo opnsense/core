@@ -390,7 +390,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'spoofmac',
         'subnet',
         'subnetv6',
-        'track6-address',
         'track6-interface',
         'track6-prefix-id',
     );
@@ -755,23 +754,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         }
                     }
                     /* XXX should also check for duplicate delegation in peer trackers */
-                }
-                $track_type = 'none';
-                if (isset($config[interfaces][$pconfig['track6-interface']]['ipaddrv6'])) {
-                    $track_type = $config[interfaces][$pconfig['track6-interface']]['ipaddrv6'];
-                }
-                switch ($track_type) {
-                    case 'dhcpv6':
-                        if (!empty($pconfig['track6-address']) && !is_ipaddrv6($pconfig['track6-address'])) {
-                            $input_errors[] = gettext('You specified an IPv6 address that is not an IPv6 address.');
-                        }
-                        /* XXX should also check for duplicate address in peer trackers */
-                        break;
-                    default:
-                        if (!empty($pconfig['track6-address'])) {
-                            $input_errors[] = gettext('Your WAN mode does not support setting an explicit IPv6 address.');
-                        }
-                        break;
                 }
                 break;
         }
@@ -1201,7 +1183,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 case 'track6':
                     $new_config['ipaddrv6'] = 'track6';
                     $new_config['track6-interface'] = $pconfig['track6-interface'];
-                    $new_config['track6-address'] = $pconfig['track6-address'];
                     $new_config['track6-prefix-id'] = 0;
                     if (ctype_xdigit($pconfig['track6-prefix-id--hex'])) {
                         $new_config['track6-prefix-id'] = intval($pconfig['track6-prefix-id--hex'], 16);
@@ -2915,15 +2896,6 @@ include("head.inc");
                             <input name="track6-prefix-id--hex" type="text" id="track6-prefix-id--hex" value="<?= $track6_prefix_id_hex ?>" />
                             <div class="hidden" data-for="help_for_track6-prefix-id">
                               <?= gettext('The value in this field is the delegated IPv6 prefix ID. This determines the configurable /64 network ID based on the dynamic IPv6 connection.') ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a id="help_for_track6-address" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('IPv6 Address Suffix') ?></td>
-                          <td>
-                            <input name="track6-address" type="text" id="track6-address" value="<?= html_safe($pconfig['track6-address']) ?>" placeholder="<?= html_safe(gettext('EUI-64')) ?>"/>
-                            <div class="hidden" data-for="help_for_track6-address">
-                              <?= gettext('The value in this field may be set to use an explicit IPv6 address suffix instead of the auto-generated EUI-64.') ?>
                             </div>
                           </td>
                         </tr>
