@@ -115,12 +115,23 @@ if (count($argv) > 6) {
         if ($authenticator) {
             if ($authenticator->authenticate($username, $password)) {
                 $vpnid = filter_var($a_server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
+                $cso_login_matching = $a_server['cso_login_matching'];
                 // fetch or  create client specif override
                 $all_cso = openvpn_fetch_csc_list();
-                if (!empty($all_cso[$vpnid][$common_name])) {
-                    $cso = $all_cso[$vpnid][$common_name];
+                if (empty($cso_login_matching)){
+                    syslog(LOG_NOTICE, "CSO Login - CN" );
+                    if (!empty($all_cso[$vpnid][$common_name])) {
+                        $cso = $all_cso[$vpnid][$common_name];
+                    } else {
+                        $cso = array("common_name" => $common_name);
+                    }
                 } else {
-                    $cso = array("common_name" => $common_name);
+                    syslog(LOG_NOTICE, "CSO Login - USER" );
+                    if (!empty($all_cso[$vpnid][$username])) {
+                         $cso = $all_cso[$vpnid][$username];
+                    } else {
+                         $cso = array("common_name" => $username);
+                    } 
                 }
                 $cso = array_merge($cso, parse_auth_properties($authenticator->getLastAuthProperties()));
                 $cso_filename = openvpn_csc_conf_write($cso, $a_server);
