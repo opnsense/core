@@ -210,9 +210,8 @@ PKG_SCRIPTS=	+PRE_INSTALL +POST_INSTALL \
 
 scripts:
 .for PKG_SCRIPT in ${PKG_SCRIPTS}
-	@if [ -e ${.CURDIR}/${PKG_SCRIPT} ]; then \
+	@if [ -f ${.CURDIR}/${PKG_SCRIPT} ]; then \
 		cp -v -- ${.CURDIR}/${PKG_SCRIPT} ${DESTDIR}/; \
-		sed -i '' ${SED_REPLACE} ${DESTDIR}/${PKG_SCRIPT}; \
 	fi
 .endfor
 
