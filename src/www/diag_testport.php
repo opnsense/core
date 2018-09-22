@@ -187,13 +187,11 @@ include("head.inc"); ?>
                       <td>
                           <select name="sourceip" class="selectpicker" data-size="5" data-live-search="true">
                             <option value=""><?= gettext('Any') ?></option>
-<?php
-                          foreach (get_possible_listen_ips(true) as $sip):?>
+<?php foreach (get_possible_listen_ips() as $sip): ?>
                             <option value="<?=$sip['value'];?>" <?=!link_interface_to_bridge($sip['value']) && ($sip['value'] == $sourceip) ? "selected=\"selected\"" : "";?>>
                               <?=htmlspecialchars($sip['name']);?>
                             </option>
-<?php
-                          endforeach;?>
+<?php endforeach ?>
                           </select>
                         </td>
                     </tr>
