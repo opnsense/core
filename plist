@@ -1522,6 +1522,7 @@
 /usr/local/sbin/opnsense-importer
 /usr/local/sbin/opnsense-installer
 /usr/local/sbin/opnsense-shell
+/usr/local/sbin/opnsense-version
 /usr/local/sbin/ping_hosts.sh
 /usr/local/sbin/pluginctl
 /usr/local/sbin/ppp-linkdown
@@ -1531,6 +1532,7 @@
 /usr/local/share/man/man8/opnsense-importer.8.gz
 /usr/local/share/man/man8/opnsense-installer.8.gz
 /usr/local/share/man/man8/opnsense-shell.8.gz
+/usr/local/share/man/man8/opnsense-version.8.gz
 /usr/local/wizard/openvpn.xml
 /usr/local/wizard/system.xml
 /usr/local/www/carp_status.php
