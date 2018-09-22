@@ -7132,7 +7132,7 @@ main.page-content.col-lg-12 {
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa, #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.glyphicon {
   visibility: visible;
-  font-size: 30px;
+  font-size: 28px;
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.__iconspacer {
   width:50px;
