@@ -104,10 +104,12 @@ function merge_config_attributes(&$cnf_source, &$cnf_dest)
  */
 function firmware_version_xmlrpc()
 {
+    global $g;
+
     return array(
-        'firmware' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense')),
         'kernel' => array('version' => file_get_contents('/usr/local/opnsense/version/kernel')),
         'base' => array('version' => file_get_contents('/usr/local/opnsense/version/base')),
+        'firmware' => array('version' => "{$g['product_version']}-{$g['product_arch']}"),
     );
 }
 
