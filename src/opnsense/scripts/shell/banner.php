@@ -34,9 +34,9 @@ require_once("interfaces.inc");
 require_once("util.inc");
 require_once("plugins.inc.d/openssh.inc");
 
-$flavour = strtok(OPENSSL_VERSION_TEXT, ' ');
 $hostname = $config['system']['hostname'];
 $domain = $config['system']['domain'];
+$flavour = $g['product_flavour'];
 $version = $g['product_version'];
 $product = $g['product_name'];
 $machine = $g['product_arch'];
