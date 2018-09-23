@@ -91,7 +91,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $config['system']['dnsserver'][] = $v4_server[0];
                 $config['system']['dnsserver'][] = $v4_server[1];
             }
-            $config['system']['dnsallowoverride'] = false;
+            if (isset($config['system']['dnsallowoverride'])) {
+                unset($config['system']['dnsallowoverride']);
+            }
         } else {
             $config['system']['dnsserver'] = array();
             $config['system']['dnsserver'][] = '';
