@@ -27,12 +27,12 @@
 
 set -e
 
-UNBOUNDCTL="/usr/sbin/unbound-control -c /var/unbound/remotecontrol.conf"
+UNBOUNDCTL="/usr/local/sbin/unbound-control -c /var/unbound/unbound.conf"
 CACHE="/var/unbound/cache.dump"
 COMMAND=${1}
 
 if [ "${COMMAND}" = "dump" ]; then
-	${UNBOUNDCTL} dump_cache > ${CACHE}
+	${UNBOUNDCTL} dump_cache > ${CACHE}
 elif [ "${COMMAND}" = "load" -a -f "${CACHE}" ]; then
 	cat ${CACHE} | ${UNBOUNDCTL} load_cache
 elif [ "${COMMAND}" = "flush" ]; then
