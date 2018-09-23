@@ -348,21 +348,6 @@ include: /var/unbound/domainoverrides.conf
 
 {$forward_conf}
 
-###
-# Remote Control Config
-###
-include: /var/unbound/remotecontrol.conf
-
-EOD;
-
-    copy('/usr/local/etc/inc/plugins.inc.d/unbound/root.min.hints', '/var/unbound/root.hints');
-    file_put_contents('/var/unbound/unbound.conf', $unboundconf);
-}
-
-function unbound_remote_control_setup()
-{
-    if (!file_exists('/var/unbound/remotecontrol.conf') || !file_exists('/var/unbound/unbound_control.key')) {
-        $remotcfg = <<<EOF
 remote-control:
     control-enable: yes
     control-interface: 127.0.0.1
@@ -372,15 +357,10 @@ remote-control:
     control-key-file: /var/unbound/unbound_control.key
     control-cert-file: /var/unbound/unbound_control.pem
 
-EOF;
+EOD;
 
-        file_put_contents('/var/unbound/remotecontrol.conf', $remotcfg);
-
-        mwexecf(
-            'chroot -u unbound -g unbound / %s -d %s',
-            array('/usr/local/sbin/unbound-control-setup', '/var/unbound')
-        );
-    }
+    copy('/usr/local/etc/inc/plugins.inc.d/unbound/root.min.hints', '/var/unbound/root.hints');
+    file_put_contents('/var/unbound/unbound.conf', $unboundconf);
 }
 
 function unbound_interface($interface)
@@ -427,7 +407,7 @@ function unbound_configure_do($verbose = false, $interface = '')
     killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
     killbypid('/var/run/unbound.pid', 'TERM', true);
 
-    if (!isset($config['unbound']['enable'])) {
+    if (!unbound_enabled()) {
         return;
     }
 
@@ -442,7 +422,13 @@ function unbound_configure_do($verbose = false, $interface = '')
         true
     );
 
-    unbound_remote_control_setup();
+    if (!file_exists('/var/unbound/unbound_control.key')) {
+        mwexecf(
+            'chroot -u unbound -g unbound / %s -d %s',
+            array('/usr/local/sbin/unbound-control-setup', '/var/unbound')
+        );
+    }
+
     unbound_generate_config();
 
     $domain = $config['system']['domain'];
@@ -738,9 +724,7 @@ function unbound_acls_config()
 
 function unbound_hosts_generate()
 {
-    global $config;
-
-    if (!isset($config['unbound']['enable'])) {
+    if (!unbound_enabled()) {
         return;
     }
 
