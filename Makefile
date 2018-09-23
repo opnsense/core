@@ -53,14 +53,15 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 CORE_REPOSITORY?=	${FLAVOUR}
 .endif
 
-CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} package
-CORE_MAINTAINER?=	project@opnsense.org
 CORE_MESSAGE?=		Insert Name Here
 CORE_NAME?=		opnsense-devel
+CORE_TYPE?=		development
+
+CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} package
+CORE_MAINTAINER?=	project@opnsense.org
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
 CORE_PACKAGESITE?=	https://pkg.opnsense.org
 CORE_PRODUCT?=		OPNsense
-CORE_TYPE?=		development
 CORE_WWW?=		https://opnsense.org/
 
 CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
