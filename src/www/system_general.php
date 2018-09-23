@@ -136,7 +136,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['prefer_ipv4']);
         }
 
-        $config['system']['dnsallowoverride'] = !empty($pconfig['dnsallowoverride']);
+        if (!empty($pconfig['dnsallowoverride'])) {
+            $config['system']['dnsallowoverride'] = true;
+        } elseif (isset($config['system']['dnsallowoverride'])) {
+            unset($config['system']['dnsallowoverride']);
+        }
 
         if($pconfig['dnslocalhost'] == "yes") {
           $config['system']['dnslocalhost'] = true;
