@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2018 Deciso B.V.
  * Copyright (C) 2018 Franco Fichtner <franco@opnsense.org>
- * Copyright (C) 2018 Team Rebellion
+ * Copyright (C) 2018 René Muhr <rene@team-rebellion.net>
  * Copyright (C) 2018 Fabian Franz
  * All rights reserved.
  *
