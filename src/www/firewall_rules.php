@@ -580,7 +580,7 @@ $( document ).ready(function() {
                         <span title="<?=htmlspecialchars(get_alias_description($filterent['source']['address']));?>" data-toggle="tooltip"  data-html="true">
                           <?=htmlspecialchars(pprint_address($filterent['source']));?>&nbsp;
                         </span>
-                        <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['source']['address']);?>"
+                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($filterent['source']['address']);?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>
@@ -594,7 +594,7 @@ $( document ).ready(function() {
                         <span title="<?=htmlspecialchars(get_alias_description($filterent['source']['port']));?>" data-toggle="tooltip"  data-html="true">
                           <?=htmlspecialchars(pprint_port($filterent['source']['port'])); ?>&nbsp;
                         </span>
-                        <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['source']['port']);?>"
+                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($filterent['source']['port']);?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>
@@ -608,7 +608,7 @@ $( document ).ready(function() {
                         <span title="<?=htmlspecialchars(get_alias_description($filterent['destination']['address']));?>" data-toggle="tooltip"  data-html="true">
                           <?=htmlspecialchars(pprint_address($filterent['destination'])); ?>
                         </span>
-                        <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['destination']['address']);?>"
+                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($filterent['destination']['address']);?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>
@@ -622,7 +622,7 @@ $( document ).ready(function() {
                         <span title="<?=htmlspecialchars(get_alias_description($filterent['destination']['port']));?>" data-toggle="tooltip"  data-html="true">
                           <?=htmlspecialchars(pprint_port($filterent['destination']['port'])); ?>&nbsp;
                         </span>
-                        <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['destination']['port']);?>"
+                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($filterent['destination']['port']);?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>

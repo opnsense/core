@@ -322,7 +322,7 @@ $( document ).ready(function() {
                         <span title="<?=htmlspecialchars(get_alias_description($scrubEntry['src']));?>" data-toggle="tooltip" data-html="true">
                           <?=$scrubEntry['src'];?>&nbsp;
                         </span>
-                        <a href="/firewall_aliases_edit.php?name=<?=$scrubEntry['src'];?>"
+                        <a href="/ui/firewall/alias/index/<?=$scrubEntry['src'];?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list fa-fw"></i>
                         </a>
@@ -342,7 +342,7 @@ $( document ).ready(function() {
                         <span title="<?=htmlspecialchars(get_alias_description($scrubEntry['dst']));?>" data-toggle="tooltip" data-html="true">
                           <?=$scrubEntry['dst'];?>&nbsp;
                         </span>
-                        <a href="/firewall_aliases_edit.php?name=<?=$scrubEntry['dst'];?>"
+                        <a href="/ui/firewall/alias/index/<?=$scrubEntry['dst'];?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list fa-fw"></i>
                         </a>
