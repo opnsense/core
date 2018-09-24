@@ -40,6 +40,12 @@ function handle_argument_group($iface, $argument2)
     global $config;
 
     if (isset($config['interfaces'][$iface])) {
+        if (isset($config['interfaces'][$iface]['ignore_hotplug_events'])) {
+            $friendly = convert_friendly_interface_to_friendly_descr($iface);
+            log_error("Hotplug event {$argument2} detected for {$friendly}({$iface}) but ignoring as ignore_hotplug_events is set");
+            return;
+        }
+
         // set defaults
         $ipaddr = '0.0.0.0';
         $ip6addr = '::';
