@@ -356,6 +356,7 @@ body{
     border-top: 0;
   }
 }
+
 /* COLLAPSE SIDEBAR */
 
 main.page-content.col-lg-12 {
@@ -373,34 +374,36 @@ main.page-content.col-lg-12 {
       > nav.page-side-nav {
         width: 70px;
         height: 100% !important;
+        border-right: 1px solid #D9D9D9;
       }
     }
     > nav > #mainmenu > div > {
       a.list-group-item {
-        font-size: 11px;
+        font-size: 12px;
         text-align: center;
         width: 70px;
         height: 70px;
-        padding-left: 10px;
-        padding-right: 10px;
-        padding-top: 15px;
-        padding-bottom: 15px;
+        padding-left: 0px;
+        padding-right: 0px;
+        padding-top: 12px;
         border-bottom: 2px solid #lightergrey;
+        border-right: 1px solid #D9D9D9;
         > span {
           &.fa, &.glyphicon {
             visibility: visible;
             font-size: 28px;
           }
           &.__iconspacer {
-            padding-left: 7px;
-            padding-right: 7px;
+            width: 50px;
+            height: 30px;
+            padding: 0px;
           }
         }
       }
       div {
         &.collapsing > a.list-group-item {
           padding-left: 10px !important;
-          font-size: 11px !important;
+          font-size: 12px !important;
           display: block !important;
           position: absolute !important;
           left: 70px !important;
@@ -410,35 +413,35 @@ main.page-content.col-lg-12 {
           &.in > {
             div.collapsing > a.list-group-item {
               padding-left: 10px !important;
-              font-size: 11px !important;
+              font-size: 12px !important;
               display: block !important;
               position: absolute !important;
               left: 148px !important;
               margin-top: -28px !important;
             }
             a.list-group-item {
-              background-color: #ffffffe6 !important;
+              background-color: #fff !important;
             }
             div.collapse.in > a.list-group-item {
-              background-color: #ffffffe6 !important;
+              background-color: #fff !important;
               padding-left: 10px !important;
-              font-size: 11px !important;
+              font-size: 12px !important;
             }
           }
           > {
             a.list-group-item, div.collapse > a.list-group-item {
               padding-left: 10px !important;
-              font-size: 11px !important;
+              font-size: 12px !important;
             }
           }
         }
         &.collapsed > a.list-group-item {
           padding-left: 10px !important;
-          font-size: 11px !important;
+          font-size: 12px !important;
         }
         &.collapse.in {
           width: 150px;
-          font-size: 11px;
+          font-size: 12px;
           display: block;
           z-index: 10;
           position: absolute;
@@ -449,10 +452,13 @@ main.page-content.col-lg-12 {
           -webkit-transition: width 0.1s;
           -o-transition: width 0.1s;
           transition: width 0.1s;
+          -webkit-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
+          -moz-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
+          box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
         }
         &.collapsing {
           width: 0px;
-          font-size: 11px;
+          font-size: 12px;
           position: absolute;
           display: block;
           z-index: 10;
@@ -463,7 +469,7 @@ main.page-content.col-lg-12 {
         &.collapse.in > div {
           &.collapse.in {
             width: 150px;
-            font-size: 11px;
+            font-size: 12px;
             display: block;
             z-index: 10;
             position: absolute;
@@ -477,7 +483,7 @@ main.page-content.col-lg-12 {
           }
           &.collapsing {
             width: 0px;
-            font-size: 11px;
+            font-size: 12px;
             position: absolute;
             display: block;
             z-index: 10;
