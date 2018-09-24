@@ -7120,7 +7120,7 @@ main.page-content.col-lg-12 {
   border-right: 1px solid #D9D9D9;
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item {
-  font-size: 12px;
+  font-size: 14px;
   text-align: center;
   width: 70px;
   height: 70px;
@@ -7132,7 +7132,7 @@ main.page-content.col-lg-12 {
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa, #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.glyphicon {
   visibility: visible;
-  font-size: 28px;
+  font-size: 20px;
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.__iconspacer {
   width:50px;
@@ -7141,7 +7141,7 @@ main.page-content.col-lg-12 {
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsing > a.list-group-item {
   padding-left: 10px !important;
-  font-size: 12px !important;
+  font-size: 14px !important;
   display: block !important;
   position: absolute !important;
   left: 70px !important;
@@ -7149,7 +7149,7 @@ main.page-content.col-lg-12 {
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapsing > a.list-group-item {
   padding-left: 10px !important;
-  font-size: 12px !important;
+  font-size: 14px !important;
   display: block !important;
   position: absolute !important;
   left: 148px !important;
@@ -7160,25 +7160,25 @@ main.page-content.col-lg-12 {
 
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item {
   padding-left: 10px !important;
-  font-size: 12px !important;
+  font-size: 14px !important;
 
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > a.list-group-item {
   padding-left: 10px !important;
-  font-size: 12px !important;
+  font-size: 14px !important;
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > div.collapse > a.list-group-item {
   padding-left: 10px !important;
-  font-size: 12px !important;
+  font-size: 14px !important;
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsed > a.list-group-item {
   padding-left: 10px !important;
-  font-size: 12px !important;
+  font-size: 14px !important;
 }
 
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in {
   width: 150px;
-  font-size: 12px;
+  font-size: 14px;
   display: block;
   z-index: 10;
   position: absolute;
@@ -7196,7 +7196,7 @@ main.page-content.col-lg-12 {
 
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsing {
   width: 0px;
-  font-size: 12px;
+  font-size: 14px;
   position: absolute;
   display: block;
   z-index: 10;
@@ -7206,7 +7206,7 @@ main.page-content.col-lg-12 {
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in {
   width: 150px;
-  font-size: 12px;
+  font-size: 14px;
   display: block;
   z-index: 10;
   position: absolute;
@@ -7220,7 +7220,7 @@ main.page-content.col-lg-12 {
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapsing {
   width: 0px;
-  font-size: 12px;
+  font-size: 14px;
   position: absolute;
   display: block;
   z-index: 10;
