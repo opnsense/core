@@ -756,7 +756,7 @@ include("head.inc");
                     <td>
 <?php
                     if (!empty($pconfig['floating'])): ?>
-                      <select name="interface[]" title="Select interfaces..." multiple="multiple" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
+                      <select name="interface[]" title="<?=gettext("Select interfaces...") ?>" multiple="multiple" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
 <?php
                     else: ?>
                       <select name="interface" class="selectpicker" data-live-search="true" data-size="5" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
