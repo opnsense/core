@@ -301,7 +301,7 @@ include_once("head.inc");
                         <td><a id="help_for_enable_wpad" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WPAD Records");?></td>
                         <td>
                           <input name="enable_wpad" type="checkbox" value="yes" <?=!empty($pconfig['enable_wpad']) ? "checked=\"checked\"" : "";?> />
-                          <div class="hidden" for="help_for_enable_wpad">
+                          <div class="hidden" data-for="help_for_enable_wpad">
                             <?=gettext("If this option is set, CNAME records for the WPAD host of all configured domains will be automatically added as well as overrides for TXT records for domains. " .
                                        "This allows automatic proxy configuration in your network but you should not enable it if you are not using WPAD or if you want to configure it by yourself.");?><br />
                           </div>
