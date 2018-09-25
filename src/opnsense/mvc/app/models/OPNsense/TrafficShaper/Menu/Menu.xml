@@ -1,12 +1,12 @@
 <menu>
     <Firewall>
-        <TrafficShaper order="40" VisibleName="Traffic Shaper" cssClass="fa fa-filter fa-fw">
+        <Shaper order="40" cssClass="fa fa-filter fa-fw">
             <Settings order="10" url="/ui/trafficshaper">
-                <Pipes VisibleName="Pipes" url="/ui/trafficshaper#pipes"/>
-                <Queues VisibleName="Queues" url="/ui/trafficshaper#queues"/>
-                <Rules VisibleName="Rules" url="/ui/trafficshaper#rules"/>
+                <Pipes url="/ui/trafficshaper#pipes"/>
+                <Queues url="/ui/trafficshaper#queues"/>
+                <Rules url="/ui/trafficshaper#rules"/>
             </Settings>
             <Status order="20" url="/diag_limiter_info.php"/>
-        </TrafficShaper>
+        </Shaper>
     </Firewall>
 </menu>

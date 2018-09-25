@@ -2,8 +2,8 @@
 
 /*
     Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>.
-    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
+    Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>
+    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
     Copyright (C) 2004-2005 Scott Ullrich <sullrich@gmail.com>
     All rights reserved.
 
@@ -267,8 +267,8 @@ $main_buttons = array(
                 </thead>
                 <tbody>
 <?php
-                  $interfaces = get_configured_interface_with_descr(false, true);
-                  $interfaces['lo0'] = "Localhost";
+                  $interfaces = legacy_config_get_interfaces(array('virtual' => false));
+                  $interfaces['lo0'] = array('descr' => 'Localhost');
                   $i = 0;
                   foreach ($a_vip as $vipent):
                     if(!empty($vipent['subnet']) || !empty($vipent['range']) || !empty($vipent['subnet_bits']) || (isset($vipent['range']['from']) && !empty($vipent['range']['from']))): ?>
@@ -282,7 +282,7 @@ $main_buttons = array(
                       <?=$vipent['mode'] == "carp" ?  " (vhid {$vipent['vhid']} , freq. {$vipent['advbase']} / {$vipent['advskew']} )" : "";?>
                     </td>
                     <td>
-                      <?=htmlspecialchars($interfaces[$vipent['interface']]);?>
+                      <?= htmlspecialchars($interfaces[$vipent['interface']]['descr']) ?>
                     </td>
                     <td>
                       <?=$vipent['mode'] == "proxyarp" ? "Proxy ARP" : "";?>

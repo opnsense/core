@@ -117,8 +117,6 @@ function filter_core_antilockout_ports()
  */
 function filter_core_get_port_alias($aliasname, $aliases=array())
 {
-    global $config;
-
     $response = array();
     $aliases[] = $aliasname;
     foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $aliased) {

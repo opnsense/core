@@ -3,7 +3,7 @@
 /*
     Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -425,22 +425,19 @@ include("head.inc");?>
                   <td><?=$data['online'];?></td>
                   <td><?=$data['act'];?></td>
                   <td class="text-nowrap">
-<?php
-                    if ($data['type'] == "dynamic"):?>
+<?php if (!empty($data['if'])): ?>
+<?php if ($data['type'] == 'dynamic'): ?>
                       <a class="btn btn-default btn-xs" href="services_dhcp_edit.php?if=<?=$data['if'];?>&amp;mac=<?=$data['mac'];?>&amp;hostname=<?=$data['hostname'];?>">
                         <i class="fa fa-plus fa-fw" data-toggle="tooltip" title="<?=gettext("add a static mapping for this MAC address");?>"></i>
                       </a>
-<?php
-                    endif;?>
-<?php
-                    if (($data['type'] == "dynamic") && ($data['online'] != "online")):?>
+<?php if ($data['online'] != 'online'):?>
 
                       <a class="act_delete btn btn-default btn-xs" href="#" data-deleteip="<?=$data['ip'];?>">
                         <i class="fa fa-trash fa-fw" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"></i>
                       </a>
-<?php
-                    endif;?>
-
+<?php endif ?>
+<?php endif ?>
+<?php endif ?>
                   </td>
               </tr>
 <?php

@@ -36,7 +36,7 @@ import json
 
 def unbound_control_reader(action):
     with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/usr/sbin/unbound-control', '-c',   '/var/unbound/remotecontrol.conf', action],
+        subprocess.call(['/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf', action],
                         stdout=output_stream, stderr=open(os.devnull, 'wb'))
         output_stream.seek(0)
         for line in output_stream:

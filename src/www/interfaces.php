@@ -1,35 +1,35 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2010 Erik Fonnesbeck
-    Copyright (C) 2008-2010 Ermal Luçi
-    Copyright (C) 2004-2008 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2006 Daniel S. Haischt
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2010 Erik Fonnesbeck
+ * Copyright (C) 2008-2010 Ermal Luçi
+ * Copyright (C) 2004-2008 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2006 Daniel S. Haischt
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
@@ -309,16 +309,10 @@ function get_wireless_channel_info($interface) {
     return($wireless_channels);
 }
 
+$ifdescrs = legacy_config_get_interfaces(array('virtual' => false));
 
-
-
-// Get configured interface list
-$ifdescrs = get_configured_interface_with_descr(false, true);
-
-// reference to interface section
 $a_interfaces = &config_read_array('interfaces');
 $a_ppps = &config_read_array('ppps', 'ppp');
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['if']) && !empty($a_interfaces[$_GET['if']])) {
@@ -331,26 +325,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $pconfig = array();
     $std_copy_fieldnames = array(
-      "if", "descr", "dhcphostname", "alias-address", "alias-subnet", "dhcprejectfrom", "ipaddr", "subnet", "gateway",
-      "ipaddrv6", "media", "mediaopt",
-      "adv_dhcp_pt_timeout", "adv_dhcp_pt_retry", "adv_dhcp_pt_select_timeout", "adv_dhcp_pt_reboot",
-      "adv_dhcp_pt_backoff_cutoff", "adv_dhcp_pt_initial_interval", "adv_dhcp_pt_values",
-      "adv_dhcp_send_options", "adv_dhcp_request_options", "adv_dhcp_required_options", "adv_dhcp_option_modifiers",
-      "adv_dhcp_config_advanced", "adv_dhcp_config_file_override", "adv_dhcp_config_file_override_path",
-      "adv_dhcp6_interface_statement_send_options", "adv_dhcp6_interface_statement_request_options",
-      "adv_dhcp6_interface_statement_information_only_enable", "adv_dhcp6_interface_statement_script",
-      "adv_dhcp6_id_assoc_statement_address_enable", "adv_dhcp6_id_assoc_statement_address", "adv_dhcp6_id_assoc_statement_address_id",
-      "adv_dhcp6_id_assoc_statement_address_pltime", "adv_dhcp6_id_assoc_statement_address_vltime",
-      "adv_dhcp6_id_assoc_statement_prefix_enable", "adv_dhcp6_id_assoc_statement_prefix", "adv_dhcp6_id_assoc_statement_prefix_id",
-      "adv_dhcp6_id_assoc_statement_prefix_pltime", "adv_dhcp6_id_assoc_statement_prefix_vltime",
-      "adv_dhcp6_prefix_interface_statement_sla_len",
-      "adv_dhcp6_authentication_statement_authname", "adv_dhcp6_authentication_statement_protocol", "adv_dhcp6_authentication_statement_algorithm",
-      "adv_dhcp6_authentication_statement_rdm", "adv_dhcp6_key_info_statement_keyname", "adv_dhcp6_key_info_statement_realm",
-      "adv_dhcp6_key_info_statement_keyid", "adv_dhcp6_key_info_statement_secret", "adv_dhcp6_key_info_statement_expire",
-      "adv_dhcp6_config_advanced", "adv_dhcp6_config_file_override", "adv_dhcp6_config_file_override_path",
-      "spoofmac", "mtu", "mss", 'dhcp6vlanprio',
-      "dhcp6-ia-pd-len", "track6-interface", "track6-prefix-id", "prefix-6rd", "prefix-6rd-v4plen", "gateway-6rd",
-      "ipaddrv6", "subnetv6", "gatewayv6"
+        'adv_dhcp6_authentication_statement_algorithm',
+        'adv_dhcp6_authentication_statement_authname',
+        'adv_dhcp6_authentication_statement_protocol',
+        'adv_dhcp6_authentication_statement_rdm',
+        'adv_dhcp6_config_advanced',
+        'adv_dhcp6_config_file_override',
+        'adv_dhcp6_config_file_override_path',
+        'adv_dhcp6_id_assoc_statement_address',
+        'adv_dhcp6_id_assoc_statement_address_enable',
+        'adv_dhcp6_id_assoc_statement_address_id',
+        'adv_dhcp6_id_assoc_statement_address_pltime',
+        'adv_dhcp6_id_assoc_statement_address_vltime',
+        'adv_dhcp6_id_assoc_statement_prefix',
+        'adv_dhcp6_id_assoc_statement_prefix_enable',
+        'adv_dhcp6_id_assoc_statement_prefix_id',
+        'adv_dhcp6_id_assoc_statement_prefix_pltime',
+        'adv_dhcp6_id_assoc_statement_prefix_vltime',
+        'adv_dhcp6_interface_statement_information_only_enable',
+        'adv_dhcp6_interface_statement_request_options',
+        'adv_dhcp6_interface_statement_script',
+        'adv_dhcp6_interface_statement_send_options',
+        'adv_dhcp6_key_info_statement_expire',
+        'adv_dhcp6_key_info_statement_keyid',
+        'adv_dhcp6_key_info_statement_keyname',
+        'adv_dhcp6_key_info_statement_realm',
+        'adv_dhcp6_key_info_statement_secret',
+        'adv_dhcp6_prefix_interface_statement_sla_len',
+        'adv_dhcp_config_advanced',
+        'adv_dhcp_config_file_override',
+        'adv_dhcp_config_file_override_path',
+        'adv_dhcp_option_modifiers',
+        'adv_dhcp_pt_backoff_cutoff',
+        'adv_dhcp_pt_initial_interval',
+        'adv_dhcp_pt_reboot',
+        'adv_dhcp_pt_retry',
+        'adv_dhcp_pt_select_timeout',
+        'adv_dhcp_pt_timeout',
+        'adv_dhcp_pt_values',
+        'adv_dhcp_request_options',
+        'adv_dhcp_required_options',
+        'adv_dhcp_send_options',
+        'alias-address',
+        'alias-subnet',
+        'descr',
+        'dhcp6-ia-pd-len',
+        'dhcp6vlanprio',
+        'dhcphostname',
+        'dhcprejectfrom',
+        'gateway',
+        'gateway-6rd',
+        'gatewayv6',
+        'if',
+        'ipaddr',
+        'ipaddrv6',
+        'ipaddrv6',
+        'media',
+        'mediaopt',
+        'mss',
+        'mtu',
+        'prefix-6rd',
+        'prefix-6rd-v4addr',
+        'prefix-6rd-v4plen',
+        'spoofmac',
+        'subnet',
+        'subnetv6',
+        'track6-interface',
+        'track6-prefix-id',
     );
     foreach ($std_copy_fieldnames as $fieldname) {
         $pconfig[$fieldname] = isset($a_interfaces[$if][$fieldname]) ? $a_interfaces[$if][$fieldname] : null;
@@ -581,8 +622,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $old_ppps = $a_ppps;
 
         /* description unique? */
-        foreach ($ifdescrs as $ifent => $ifdescr) {
-            if ($if != $ifent && $ifdescr == $pconfig['descr']) {
+        foreach ($ifdescrs as $ifent => $ifcfg) {
+            if ($if != $ifent && $ifcfg['descr'] == $pconfig['descr']) {
                 $input_errors[] = gettext("An interface with the specified description already exists.");
                 break;
             }
@@ -670,17 +711,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 }
                 break;
-            case "6rd":
+            case '6rd':
                 if (empty($pconfig['gateway-6rd']) || !is_ipaddrv4($pconfig['gateway-6rd'])) {
                     $input_errors[] = gettext('6RD border relay gateway must be a valid IPv4 address.');
                 }
                 if (empty($pconfig['prefix-6rd']) || !is_subnetv6($pconfig['prefix-6rd'])) {
                     $input_errors[] = gettext('6RD prefix must be a valid IPv6 subnet.');
                 }
+                if (!empty($pconfig['prefix-6rd-v4addr']) && !is_ipaddrv4($pconfig['prefix-6rd-v4addr'])) {
+                    $input_errors[] = gettext('6RD IPv4 prefix address must be a valid IPv4 address.');
+                }
                 if (!is_numeric($pconfig['prefix-6rd-v4plen'])) {
                     $input_errors[] = gettext('6RD IPv4 prefix length must be a number.');
                 }
-                foreach ($ifdescrs as $ifent => $ifdescr) {
+                foreach ($ifdescrs as $ifent => $unused) {
                     if ($if != $ifent && ($config[interfaces][$ifent]['ipaddrv6'] == $pconfig['type6'])) {
                         if ($config[interfaces][$ifent]['prefix-6rd'] == $pconfig['prefix-6rd']) {
                             $input_errors[] = gettext("You can only have one interface configured in 6rd with same prefix.");
@@ -690,7 +734,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
                 break;
             case "6to4":
-                foreach ($ifdescrs as $ifent => $ifdescr) {
+                foreach ($ifdescrs as $ifent => $unused) {
                     if ($if != $ifent && ($config[interfaces][$ifent]['ipaddrv6'] == $pconfig['type6'])) {
                         $input_errors[] = sprintf(gettext("You can only have one interface configured as 6to4."), $pconfig['type6']);
                         break;
@@ -702,15 +746,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $input_errors[] = gettext("You must enter a valid hexadecimal number for the IPv6 prefix ID.");
                 } elseif (!empty($pconfig['track6-interface'])) {
                     $ipv6_delegation_length = calculate_ipv6_delegation_length($pconfig['track6-interface']);
-                    $ipv6_num_prefix_ids = pow(2, $ipv6_delegation_length);
-                    $track6_prefix_id = intval($pconfig['track6-prefix-id--hex'], 16);
-                    if ($track6_prefix_id < 0 || $track6_prefix_id >= $ipv6_num_prefix_ids) {
-                        $input_errors[] = gettext("You specified an IPv6 prefix ID that is out of range.");
+                    if ($ipv6_delegation_length >= 0) {
+                        $ipv6_num_prefix_ids = pow(2, $ipv6_delegation_length);
+                        $track6_prefix_id = intval($pconfig['track6-prefix-id--hex'], 16);
+                        if ($track6_prefix_id < 0 || $track6_prefix_id >= $ipv6_num_prefix_ids) {
+                            $input_errors[] = gettext("You specified an IPv6 prefix ID that is out of range.");
+                        }
                     }
+                    /* XXX should also check for duplicate delegation in peer trackers */
                 }
                 break;
         }
-
 
         /* normalize MAC addresses - lowercase and convert Windows-ized hyphenated MACs to colon delimited */
         $staticroutes = get_staticroutes(true);
@@ -1058,24 +1104,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             // switch ipv6 config by type
             switch($pconfig['type6']) {
-                case "staticv6":
+                case 'staticv6':
                     if (!empty($pconfig['staticv6usev4iface'])) {
                         $new_config['dhcp6usev4iface'] = true;
                     }
                     $new_config['ipaddrv6'] = $pconfig['ipaddrv6'];
                     $new_config['subnetv6'] = $pconfig['subnetv6'];
-                    if ($pconfig['gatewayv6'] != "none") {
+                    if ($pconfig['gatewayv6'] != 'none') {
                         $new_config['gatewayv6'] = $pconfig['gatewayv6'];
                     }
                     break;
-                case "slaac":
+                case 'slaac':
                     if (!empty($pconfig['slaacusev4iface'])) {
                         $new_config['dhcp6usev4iface'] = true;
                     }
-                    $new_config['ipaddrv6'] = "slaac";
+                    $new_config['ipaddrv6'] = 'slaac';
                     break;
-                case "dhcp6":
-                    $new_config['ipaddrv6'] = "dhcp6";
+                case 'dhcp6':
+                    $new_config['ipaddrv6'] = 'dhcp6';
                     $new_config['dhcp6-ia-pd-len'] = $pconfig['dhcp6-ia-pd-len'];
                     if (!empty($pconfig['dhcp6-ia-pd-send-hint'])) {
                         $new_config['dhcp6-ia-pd-send-hint'] = true;
@@ -1124,17 +1170,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $new_config['adv_dhcp6_config_file_override'] = $pconfig['adv_dhcp6_config_file_override'];
                     $new_config['adv_dhcp6_config_file_override_path'] = $pconfig['adv_dhcp6_config_file_override_path'];
                     break;
-                case "6rd":
-                    $new_config['ipaddrv6'] = "6rd";
+                case '6rd':
+                    $new_config['ipaddrv6'] = '6rd';
                     $new_config['prefix-6rd'] = $pconfig['prefix-6rd'];
+                    $new_config['prefix-6rd-v4addr'] = $pconfig['prefix-6rd-v4addr'];
                     $new_config['prefix-6rd-v4plen'] = $pconfig['prefix-6rd-v4plen'];
                     $new_config['gateway-6rd'] = $pconfig['gateway-6rd'];
                     break;
-                case "6to4":
-                    $new_config['ipaddrv6'] = "6to4";
+                case '6to4':
+                    $new_config['ipaddrv6'] = '6to4';
                     break;
-                case "track6":
-                    $new_config['ipaddrv6'] = "track6";
+                case 'track6':
+                    $new_config['ipaddrv6'] = 'track6';
                     $new_config['track6-interface'] = $pconfig['track6-interface'];
                     $new_config['track6-prefix-id'] = 0;
                     if (ctype_xdigit($pconfig['track6-prefix-id--hex'])) {
@@ -2508,26 +2555,26 @@ include("head.inc");
                             <select name="dhcp6-ia-pd-len" class="selectpicker" data-style="btn-default" id="dhcp6-ia-pd-len">
 <?php
                             foreach(array(
-                              'none' => 'None',
-                              16 => '48',
-                              15 => '49',
-                              14 => '50',
-                              13 => '51',
-                              12 => '52',
-                              11 => '53',
-                              10 => '54',
-                              9 => '55',
-                              8 => '56',
-                              7 => '57',
-                              6 => '58',
-                              5 => '59',
-                              4 => '60',
-                              3 => '61',
-                              2 => '62',
-                              1 => '63',
                               0 => '64',
+                              1 => '63',
+                              2 => '62',
+                              3 => '61',
+                              4 => '60',
+                              5 => '59',
+                              6 => '58',
+                              7 => '57',
+                              8 => '56',
+                              9 => '55',
+                              10 => '54',
+                              11 => '53',
+                              12 => '52',
+                              13 => '51',
+                              14 => '50',
+                              15 => '49',
+                              16 => '48',
+                              'none' => gettext('None'),
                             ) as $bits => $length): ?>
-                              <option value="<?=$bits;?>" <?=$bits == $pconfig['dhcp6-ia-pd-len'] ? "selected=\"selected\"" : "";?>>
+                              <option value="<?=$bits;?>" <?= "{$bits}" === "{$pconfig['dhcp6-ia-pd-len']}" ? 'selected="selected"' : '' ?>>
                                   <?=$length;?>
                               </option>
 <?php
@@ -2791,6 +2838,15 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
+                        <tr>
+                          <td><a id="help_for_prefix-6rd-v4addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('6RD IPv4 Prefix address') ?></td>
+                          <td>
+                            <input name="prefix-6rd-v4addr" type="text" id="prefix-6rd-v6addr" value="<?= html_safe($pconfig['prefix-6rd-v4addr']) ?>" placeholder="<?= html_safe(gettext('Auto-detect')) ?>"/>
+                            <div class="hidden" data-for="help_for_prefix-6rd-v4addr">
+                              <?= gettext('The value in this field is the 6RD IPv4 prefix address. Optionally overrides the automatic detection.') ?>
+                            </div>
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -2808,7 +2864,7 @@ include("head.inc");
                           <td style="width:78%">
                             <select name='track6-interface' class='selectpicker' data-style='btn-default' >
 <?php
-                            foreach (get_configured_interface_with_descr(false, true) as $iface => $ifacename):
+                            foreach ($ifdescrs as $iface => $ifcfg):
                               switch($config['interfaces'][$iface]['ipaddrv6']) {
                                 case '6rd':
                                 case '6to4':
@@ -2819,7 +2875,7 @@ include("head.inc");
                                     continue 2;
                               }?>
                                 <option value="<?=$iface;?>" <?=$iface == $pconfig['track6-interface'] ? " selected=\"selected\"" : "";?>>
-                                    <?= htmlspecialchars($ifacename);?>
+                                  <?= htmlspecialchars($ifcfg['descr']) ?>
                                 </option>
 <?php
                             endforeach;?>

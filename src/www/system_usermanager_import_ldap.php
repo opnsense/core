@@ -175,8 +175,8 @@ else :
 <?php
 endif; ?>
 <!-- bootstrap script -->
-<script src="/ui/js/bootstrap.min.js"></script>
+<script src="<?= cache_safe('/ui/js/bootstrap.min.js') ?>"></script>
 <!-- Fancy select with search options -->
-<script src="/ui/js/bootstrap-select.min.js"></script>
+<script src="<?= cache_safe('/ui/js/bootstrap-select.min.js') ?>"></script>
  </body>
 </html>

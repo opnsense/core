@@ -122,18 +122,18 @@ function dnsmasq_configure_do($verbose = false)
         $interfaces[] = 'lo0';
         $addresses = array();
 
-        foreach ($interfaces as $interface) {
-            foreach (legacy_getall_interface_addresses(get_real_interface($interface)) as $tmpaddr) {
-                $tmpaddr = explode('/', $tmpaddr)[0];
-                /* no support for link-local address with scope specified */
-                $tmpaddr = explode('%', $tmpaddr)[0];
-                if (!empty($tmpaddr)) {
-                    if ($interface == 'lo0' && is_ipaddrv4($tmpaddr) && $tmpaddr != '127.0.0.1') {
-                        continue;
-                    }
-                    $addresses[] = $tmpaddr;
-                }
+        foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
+            if ($info['name'] == 'lo0' && $info['family'] == 'inet' && $tmpaddr != '127.0.0.1') {
+                /* allow other DNS services to bind to loopback aliases */
+                continue;
             }
+
+            if ($info['scope']) {
+                /* link-local does not seem to be supported */
+                continue;
+            }
+
+            $addresses[] = $tmpaddr;
         }
 
         foreach ($addresses as $address) {

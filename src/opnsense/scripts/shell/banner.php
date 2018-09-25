@@ -34,23 +34,23 @@ require_once("interfaces.inc");
 require_once("util.inc");
 require_once("plugins.inc.d/openssh.inc");
 
-$version = strtok(file_get_contents('/usr/local/opnsense/version/opnsense'), '-');
-$flavour = strtok(OPENSSL_VERSION_TEXT, ' ');
 $hostname = $config['system']['hostname'];
-$machine = trim(shell_exec('uname -p'));
 $domain = $config['system']['domain'];
+$flavour = $g['product_flavour'];
+$version = $g['product_version'];
 $product = $g['product_name'];
+$machine = $g['product_arch'];
 
 echo "\n*** {$hostname}.{$domain}: {$product} {$version} ({$machine}/${flavour}) ***\n";
 
-$iflist = get_configured_interface_with_descr(false, true);
+$iflist = legacy_config_get_interfaces(array('virtual' => false));
 
-if (empty($iflist)) {
+if (!count($iflist)) {
     echo "\n\tNo network interfaces are assigned.\n";
     return;
 }
 
-foreach ($iflist as $ifname => $friendly) {
+foreach ($iflist as $ifname => $ifcfg) {
     /* point to this interface's config */
     $ifconf = $config['interfaces'][$ifname];
     /* look for 'special cases' */
@@ -96,7 +96,7 @@ foreach ($iflist as $ifname => $friendly) {
     $ipaddr6 = get_interface_ipv6($ifname);
     $subnet6 = get_interface_subnetv6($ifname);
     $realif = get_real_interface($ifname);
-    $tobanner = "{$friendly} ({$realif})";
+    $tobanner = "{$ifcfg['descr']} ({$realif})";
 
     printf("\n %-15s -> ", $tobanner);
 

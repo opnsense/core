@@ -713,8 +713,8 @@ class FirmwareController extends ApiControllerBase
         $response = array();
 
         /* allows us to select UI features based on product state */
-        $response['product_version'] = trim(file_get_contents('/usr/local/opnsense/version/opnsense'));
-        $response['product_name'] = trim(file_get_contents('/usr/local/opnsense/version/opnsense.name'));
+        $response['product_version'] = trim(shell_exec('opnsense-version -v'));
+        $response['product_name'] = trim(shell_exec('opnsense-version -n'));
 
         $devel = explode('-', $response['product_name']);
         $devel = count($devel) == 2 ? $devel[1] == 'devel' : false;
@@ -790,7 +790,7 @@ class FirmwareController extends ApiControllerBase
         if ($changelogs == null) {
             $changelogs = array();
         } else {
-            $version = trim(file_get_contents('/usr/local/opnsense/version/opnsense'));
+            $version = trim(shell_exec('opnsense-version -v'));
             $devel = preg_match('/^\d+\.\d+\.[a-z]/i', $version) ? true : false;
 
             foreach ($changelogs as $index => &$changelog) {

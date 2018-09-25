@@ -34,6 +34,7 @@ CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 
 CORE_ABI?=	18.7
 CORE_ARCH?=	${ARCH}
+CORE_FLAVOUR=	${FLAVOUR}
 CORE_OPENVPN?=	# empty
 CORE_PHP?=	71
 CORE_PYTHON?=	27
@@ -52,20 +53,26 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 CORE_REPOSITORY?=	${FLAVOUR}
 .endif
 
+CORE_MESSAGE?=		Insert Name Here
 CORE_NAME?=		opnsense-devel
 CORE_TYPE?=		development
-CORE_MESSAGE?=		Insert Name Here
 
+CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} package
 CORE_MAINTAINER?=	project@opnsense.org
-CORE_PACKAGESITE?=	https://pkg.opnsense.org
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
-CORE_COMMENT?=		OPNsense ${CORE_TYPE} package
+CORE_PACKAGESITE?=	https://pkg.opnsense.org
+CORE_PRODUCT?=		OPNsense
 CORE_WWW?=		https://opnsense.org/
+
+CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
+CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
+CORE_COPYRIGHT_YEARS?=	2014-2018
 
 CORE_DEPENDS_amd64?=	beep bsdinstaller
 CORE_DEPENDS_i386?=	${CORE_DEPENDS_amd64}
 
 CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
+			${CORE_FLAVOUR:tl} \
 			apinger \
 			ca_root_nss \
 			choparp \
@@ -148,8 +155,12 @@ want-${WANT}:
 mount:
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
 	    echo -n "Enabling core.git live mount..."; \
-	    echo "${CORE_COMMIT}" > \
+	    sed ${SED_REPLACE} ${.CURDIR}/src/opnsense/version/opnsense.in > \
 	        ${.CURDIR}/src/opnsense/version/opnsense; \
+	    sed ${SED_REPLACE} ${.CURDIR}/src/opnsense/version/opnsense.abi.in > \
+	        ${.CURDIR}/src/opnsense/version/opnsense.abi; \
+	    sed ${SED_REPLACE} ${.CURDIR}/src/opnsense/version/opnsense.name.in > \
+	        ${.CURDIR}/src/opnsense/version/opnsense.name; \
 	    mount_unionfs ${.CURDIR}/src ${LOCALBASE}; \
 	    touch ${WRKDIR}/.mount_done; \
 	    echo "done"; \
@@ -160,7 +171,6 @@ umount:
 	@if [ -f ${WRKDIR}/.mount_done ]; then \
 	    echo -n "Disabling core.git live mount..."; \
 	    umount -f "<above>:${.CURDIR}/src"; \
-	    rm ${.CURDIR}/src/opnsense/version/opnsense; \
 	    rm ${WRKDIR}/.mount_done; \
 	    echo "done"; \
 	    service configd restart; \
@@ -202,22 +212,14 @@ PKG_SCRIPTS=	+PRE_INSTALL +POST_INSTALL \
 
 scripts:
 .for PKG_SCRIPT in ${PKG_SCRIPTS}
-	@if [ -e ${.CURDIR}/${PKG_SCRIPT} ]; then \
+	@if [ -f ${.CURDIR}/${PKG_SCRIPT} ]; then \
 		cp -v -- ${.CURDIR}/${PKG_SCRIPT} ${DESTDIR}/; \
-		sed -i '' -e "s/%%CORE_COMMIT%%/${CORE_COMMIT}/g" \
-		    -e "s/%%CORE_NAME%%/${CORE_NAME}/g" \
-		    -e "s/%%CORE_ABI%%/${CORE_ABI}/g" \
-		    ${DESTDIR}/${PKG_SCRIPT}; \
 	fi
 .endfor
 
 install:
 	@${MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
-	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} \
-	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} CORE_WWW=${CORE_WWW} \
-	    CORE_MAINTAINER=${CORE_MAINTAINER} CORE_HASH=${CORE_HASH} \
-	    CORE_PACKAGESITE=${CORE_PACKAGESITE} \
-	    CORE_REPOSITORY=${CORE_REPOSITORY}
+	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} ${MAKE_REPLACE}
 
 collect:
 	@(cd ${.CURDIR}/src; find * -type f) | while read FILE; do \
@@ -229,11 +231,7 @@ collect:
 
 bootstrap:
 	@${MAKE} -C ${.CURDIR}/src install-bootstrap DESTDIR=${DESTDIR} \
-	    NO_SAMPLE=please CORE_PACKAGESITE=${CORE_PACKAGESITE} \
-	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} CORE_WWW=${CORE_WWW} \
-	    CORE_MAINTAINER=${CORE_MAINTAINER} CORE_HASH=${CORE_HASH} \
-	    CORE_PACKAGESITE=${CORE_PACKAGESITE} \
-	    CORE_REPOSITORY=${CORE_REPOSITORY}
+	    NO_SAMPLE=please ${MAKE_REPLACE}
 
 plist:
 	@(${MAKE} -C ${.CURDIR}/contrib plist && \
@@ -345,10 +343,7 @@ dhparam:
 	    ${.CURDIR}/src/etc/dh-parameters.${BITS}.sample ${BITS}
 .endfor
 
-diff:
-	@git diff --stat -p stable/${CORE_ABI}
-
-ARGS=	mfc
+ARGS=	diff mfc
 
 # handle argument expansion for required targets
 .for TARGET in ${.TARGETS}
@@ -363,6 +358,9 @@ ${TARGET}: ${_TARGET}
 ${_TARGET}_ARG=		${${_TARGET}_ARGS:[0]}
 .endif
 .endfor
+
+diff:
+	@git diff --stat -p stable/${CORE_ABI} ${.CURDIR}/${diff_ARGS:[1]}
 
 mfc:
 	@git checkout stable/${CORE_ABI}

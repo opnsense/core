@@ -32,6 +32,12 @@
                     <default>1</default>
                     <Required>Y</Required>
                 </enabled>
+                <source type="NetworkField">
+                    <Required>N</Required>
+                </source>
+                <destination type="NetworkField">
+                    <Required>N</Required>
+                </destination>
                 <fingerprint type="TextField">
                     <Required>N</Required>
                     <mask>/^([0-9a-fA-F:]){59,59}$/u</mask>
@@ -62,6 +68,7 @@
                     <OptionValues>
                         <alert>Alert</alert>
                         <drop>Drop</drop>
+                        <pass>Pass</pass>
                     </OptionValues>
                 </action>
             </rule>

@@ -6,6 +6,18 @@
         <help>Enable this fingerprint rule.</help>
     </field>
     <field>
+        <id>rule.source</id>
+        <label>Source IP</label>
+        <type>text</type>
+        <help>Set the source IP or network to match. Leave this field empty for using "any".</help>
+    </field>
+    <field>
+        <id>rule.destination</id>
+        <label>Destination IP</label>
+        <type>text</type>
+        <help>Set the destination IP or network to match. Leave this field empty for using "any".</help>
+    </field>
+    <field>
         <id>rule.fingerprint</id>
         <label>SSL/Fingerprint</label>
         <type>text</type>

@@ -6,4 +6,4 @@ ROOT_man=	/usr/local/share
 EXTRAS=		bootstrap
 TREES_bootstrap=etc/pkg
 
-.include "../Mk/tree.mk"
+.include "../Mk/core.mk"

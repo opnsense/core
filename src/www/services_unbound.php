@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2018 Fabian Franz
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2018 Fabian Franz
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("services.inc");
@@ -75,12 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['regdhcpdomain']) && !is_domain($pconfig['regdhcpdomain'])) {
             $input_errors[] = gettext("The domain may only contain the characters a-z, 0-9, '-' and '.'.");
         }
-        if (empty($pconfig['active_interface'])) {
-            $input_errors[] = gettext("A single network interface needs to be selected for the DNS Resolver to bind to.");
-        }
-        if (empty($pconfig['outgoing_interface'])) {
-            $input_errors[] = gettext("A single outgoing network interface needs to be selected for the DNS Resolver to use for outgoing DNS requests.");
-        }
         if (!empty($pconfig['port']) && !is_port($pconfig['port'])) {
             $input_errors[] = gettext("You must specify a valid port number.");
         }
@@ -119,8 +113,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_unboundcfg['txtsupport'] = !empty($pconfig['txtsupport']);
 
             // array types
-            $a_unboundcfg['active_interface'] = !empty( $pconfig['active_interface']) ? implode(",", $pconfig['active_interface']) : array();
-            $a_unboundcfg['outgoing_interface'] = !empty( $pconfig['outgoing_interface']) ? implode(",", $pconfig['outgoing_interface']) : array();
+            if (!empty($pconfig['active_interface'])) {
+                $a_unboundcfg['active_interface'] = implode(',', $pconfig['active_interface']);
+            } elseif (isset($a_unboundcfg['active_interface'])) {
+                unset($a_unboundcfg['active_interface']);
+            }
+            if (!empty($pconfig['outgoing_interface'])) {
+                $a_unboundcfg['outgoing_interface'] = implode(',', $pconfig['outgoing_interface']);
+            } elseif (isset($a_unboundcfg['outgoing_interface'])) {
+                unset($a_unboundcfg['outgoing_interface']);
+            }
 
             write_config("DNS Resolver configured.");
             mark_subsystem_dirty('unbound');
@@ -130,12 +132,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-
 $service_hook = 'unbound';
-legacy_html_escape_form_data($pconfig);
-include_once("head.inc");
-?>
 
+$interfaces = get_configured_interface_with_descr();
+
+legacy_html_escape_form_data($pconfig);
+
+include_once("head.inc");
+
+?>
 <body>
 <script>
     $( document ).ready(function() {
@@ -145,7 +150,7 @@ include_once("head.inc");
             $(window).trigger('resize');
         })
         // show advanced when option set
-        if ($("#outgoing_interface").val() != "" || $("#custom_options").val() != "") {
+        if ($("#outgoing_interface").val() != "" || $("#custom_options").val() != "" || $("#enable_wpad").prop('checked')) {
             $("#show_advanced_dns").click();
         }
     });
@@ -191,13 +196,10 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_active_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Network Interfaces"); ?></td>
                         <td>
-                          <select name="active_interface[]" multiple="multiple" size="3" class="selectpicker" data-live-search="true">
-                            <option value="" <?=empty($pconfig['active_interface'][0]) ? 'selected="selected"' : ""; ?>><?=gettext("All");?></option>
-<?php
-                            foreach (get_possible_listen_ips(false) as $laddr):?>
-                            <option value="<?=$laddr['value'];?>" <?=!empty($pconfig['active_interface'][0]) && in_array($laddr['value'], $pconfig['active_interface']) ? 'selected="selected"' : "";?>><?=htmlspecialchars($laddr['name']);?></option>
-<?php
-                            endforeach; ?>
+                          <select name="active_interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
+<?php foreach ($interfaces as $ifname => $ifdescr): ?>
+                            <option value="<?= html_safe($ifname) ?>" <?=!empty($pconfig['active_interface'][0]) && in_array($ifname, $pconfig['active_interface']) ? 'selected="selected"' : '' ?>><?= html_safe($ifdescr) ?></option>
+<?php endforeach ?>
                           </select>
                           <div class="hidden" data-for="help_for_active_interface">
                             <?=gettext("Interface IPs used by the DNS Resolver for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.");?>
@@ -296,16 +298,6 @@ include_once("head.inc");
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_enable_wpad" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WPAD Records");?></td>
-                        <td>
-                          <input name="enable_wpad" type="checkbox" value="yes" <?=!empty($pconfig['enable_wpad']) ? "checked=\"checked\"" : "";?> />
-                          <div class="hidden" for="help_for_enable_wpad">
-                            <?=gettext("If this option is set, CNAME records for the WPAD host of all configured domains will be automatically added as well as overrides for TXT records for domains. " .
-                                       "This allows automatic proxy configuration in your network but you should not enable it if you are not using WPAD or if you want to configure it by yourself.");?><br />
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
                         <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
                         <td>
                           <input id="show_advanced_dns" type="button" class="btn btn-xs btn-default"  value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
@@ -323,19 +315,26 @@ include_once("head.inc");
                       <tr class="showadv" style="display:none">
                         <td><a id="help_for_outgoing_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Outgoing Network Interfaces"); ?></td>
                         <td>
-                          <select id="outgoing_interface" name="outgoing_interface[]" multiple="multiple" size="3" class="selectpicker" data-live-search="true">
-                            <option value="" <?=empty($pconfig['outgoing_interface'][0]) ? 'selected="selected"' : ""; ?>><?=gettext("All");?></option>
-<?php
-                            foreach (get_possible_listen_ips(true) as $laddr):?>
-                            <option value="<?=$laddr['value'];?>" <?=!empty($pconfig['outgoing_interface'][0]) && in_array($laddr['value'], $pconfig['outgoing_interface']) ? 'selected="selected"' : "";?>>
-                              <?=htmlspecialchars($laddr['name']);?>
+                          <select id="outgoing_interface" name="outgoing_interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
+<?php foreach ($interfaces as $ifname => $ifdescr): ?>
+                            <option value="<?= html_safe($ifname) ?>" <?=!empty($pconfig['outgoing_interface'][0]) && in_array($ifname, $pconfig['outgoing_interface']) ? 'selected="selected"' : "" ?>>
+                              <?= html_safe($ifdescr) ?>
                             </option>
-<?php
-                            endforeach; ?>
+<?php endforeach ?>
 
                           </select>
                           <div class="hidden" data-for="help_for_outgoing_interface">
                             <?=gettext("Utilize different network interface(s) that the DNS Resolver will use to send queries to authoritative servers and receive their replies. By default all interfaces are used. Note that setting explicit outgoing interfaces only works when they are statically configured.");?>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr class="showadv" style="display:none">
+                        <td><a id="help_for_enable_wpad" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WPAD Records");?></td>
+                        <td>
+                          <input id="enable_wpad" name="enable_wpad" type="checkbox" value="yes" <?=!empty($pconfig['enable_wpad']) ? "checked=\"checked\"" : "";?> />
+                          <div class="hidden" data-for="help_for_enable_wpad">
+                            <?=gettext("If this option is set, CNAME records for the WPAD host of all configured domains will be automatically added as well as overrides for TXT records for domains. " .
+                                       "This allows automatic proxy configuration in your network but you should not enable it if you are not using WPAD or if you want to configure it by yourself.");?><br />
                           </div>
                         </td>
                       </tr>

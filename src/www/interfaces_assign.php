@@ -159,10 +159,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $config['interfaces'][$newifname]['wireless'] = array();
             interface_sync_wireless_clones($config['interfaces'][$newifname], false);
         }
-        /* lock known-to-be unreliable interfaces by default */
-        if (in_array(substr($_POST['if_add'], 0, 2), array('ue', 'zt'))) {
-            $config['interfaces'][$newifname]['lock'] = true;
-        }
 
         write_config();
         header(url_safe('Location: /interfaces_assign.php'));

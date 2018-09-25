@@ -85,9 +85,7 @@ sub process_file
         my $copy = $line;
         next if $line !~ s/copyright\s+\(c\)\s+//i;
         $line =~ s/^[."\*\\#\s]+//g;
-        $line =~ s/[\.\s]+$//g;
-        $line =~ s/Inc$/Inc./;
-        $line =~ s/B\.V$/B.V./;
+        $line =~ s/\s+$//g;
         chomp $copy;
         $copy =~ s/^[\*\\#\s]+//g;
         my ( $start, $end ) = ( 0, 9999 );
