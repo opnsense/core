@@ -150,7 +150,7 @@ include_once("head.inc");
             $(window).trigger('resize');
         })
         // show advanced when option set
-        if ($("#outgoing_interface").val() != "" || $("#custom_options").val() != "") {
+        if ($("#outgoing_interface").val() != "" || $("#custom_options").val() != "" || $("#enable_wpad").prop('checked')) {
             $("#show_advanced_dns").click();
         }
     });
@@ -298,16 +298,6 @@ include_once("head.inc");
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_enable_wpad" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WPAD Records");?></td>
-                        <td>
-                          <input name="enable_wpad" type="checkbox" value="yes" <?=!empty($pconfig['enable_wpad']) ? "checked=\"checked\"" : "";?> />
-                          <div class="hidden" data-for="help_for_enable_wpad">
-                            <?=gettext("If this option is set, CNAME records for the WPAD host of all configured domains will be automatically added as well as overrides for TXT records for domains. " .
-                                       "This allows automatic proxy configuration in your network but you should not enable it if you are not using WPAD or if you want to configure it by yourself.");?><br />
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
                         <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
                         <td>
                           <input id="show_advanced_dns" type="button" class="btn btn-xs btn-default"  value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
@@ -335,6 +325,16 @@ include_once("head.inc");
                           </select>
                           <div class="hidden" data-for="help_for_outgoing_interface">
                             <?=gettext("Utilize different network interface(s) that the DNS Resolver will use to send queries to authoritative servers and receive their replies. By default all interfaces are used. Note that setting explicit outgoing interfaces only works when they are statically configured.");?>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr class="showadv" style="display:none">
+                        <td><a id="help_for_enable_wpad" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WPAD Records");?></td>
+                        <td>
+                          <input id="enable_wpad" name="enable_wpad" type="checkbox" value="yes" <?=!empty($pconfig['enable_wpad']) ? "checked=\"checked\"" : "";?> />
+                          <div class="hidden" data-for="help_for_enable_wpad">
+                            <?=gettext("If this option is set, CNAME records for the WPAD host of all configured domains will be automatically added as well as overrides for TXT records for domains. " .
+                                       "This allows automatic proxy configuration in your network but you should not enable it if you are not using WPAD or if you want to configure it by yourself.");?><br />
                           </div>
                         </td>
                       </tr>
