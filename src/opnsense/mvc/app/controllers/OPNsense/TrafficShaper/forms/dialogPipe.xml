@@ -96,27 +96,6 @@
         <help>The number of flow queues that are created and managed, leave empty for defaults</help>
     </field>
     <field>
-        <id>pipe.fqpie_quantum</id>
-        <label>FQ-PIE quantum</label>
-        <type>text</type>
-        <advanced>true</advanced>
-        <help>The default quantum (credit) of the FQ-PIE in unit of byte. The value must be in the range 1..9000.</help>
-    </field>
-    <field>
-        <id>pipe.fqpie_limit</id>
-        <label>FQ-PIE limit</label>
-        <type>text</type>
-        <advanced>true</advanced>
-        <help>The default hard size limit (in unit of packet) of all queues managed by an instance of the FQ-PIE scheduler. The value must be in the range 1..20480.</help>
-    </field>
-    <field>
-        <id>pipe.fqpie_flows</id>
-        <label>FQ-PIE flows</label>
-        <type>text</type>
-        <advanced>true</advanced>
-        <help>Defines the default total number of flow queues (sub-queues) that FQ-PIE creates and manages. The value must be in the range 1..65536.</help>
-    </field>
-    <field>
         <id>pipe.pie_enable</id>
         <label>Enable PIE</label>
         <type>checkbox</type>
