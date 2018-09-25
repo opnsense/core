@@ -30,7 +30,7 @@
 require_once("guiconfig.inc");
 
 if (isset($_POST['getactivity'])) {
-    $text = `/sbin/ipfw sched show`;
+    $text = `/sbin/ipfw pipe show`;
     if ($text == "") {
         $text = gettext('We could not find any limiters on this system.');
     }
@@ -39,6 +39,11 @@ if (isset($_POST['getactivity'])) {
     $text = `/sbin/ipfw queue show`;
     if ($text != "") {
         echo "\n\nQueues:\n";
+        echo $text;
+    }
+    $text = `/sbin/ipfw sched show`;
+    if ($text != "") {
+        echo "\n\nSchedulers:\n";
         echo $text;
     }
     exit;
