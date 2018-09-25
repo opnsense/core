@@ -143,7 +143,7 @@
     </Interfaces>
     <Firewall order="40" cssClass="glyphicon glyphicon-fire">
         <Aliases order="10" url="/ui/firewall/alias" cssClass="fa fa-list-alt fa-fw">
-            <Edit url="/ui/firewall/alias/*" visible="hidden"/>
+            <Edit url="/ui/firewall/alias/*" visibility="hidden"/>
         </Aliases>
         <Rules order="20" cssClass="fa fa-check fa-fw" />
         <NAT order="30" cssClass="fa fa-exchange fa-fw">
