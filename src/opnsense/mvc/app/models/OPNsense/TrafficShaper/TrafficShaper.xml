@@ -103,21 +103,6 @@
                   <MinimumValue>1</MinimumValue>
                   <MaximumValue>65535</MaximumValue>
                 </fqcodel_flows>
-                <fqpie_quantum type="IntegerField">
-                  <Required>N</Required>
-                  <MinimumValue>1</MinimumValue>
-                  <MaximumValue>65535</MaximumValue>
-                </fqpie_quantum>
-                <fqpie_limit type="IntegerField">
-                  <Required>N</Required>
-                  <MinimumValue>1</MinimumValue>
-                  <MaximumValue>65535</MaximumValue>
-                </fqpie_limit>
-                <fqpie_flows type="IntegerField">
-                  <Required>N</Required>
-                  <MinimumValue>1</MinimumValue>
-                  <MaximumValue>65535</MaximumValue>
-                </fqpie_flows>
                 <origin type="TextField">
                     <Required>N</Required>
                     <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
