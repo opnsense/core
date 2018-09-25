@@ -63,6 +63,7 @@
                       <rr>Deficit Round Robin</rr>
                       <qfq>QFQ</qfq>
                       <fq_codel>FlowQueue-CoDel</fq_codel>
+                      <fq_pie>FlowQueue-PIE</fq_pie>
                   </OptionValues>
                 </scheduler>
                 <codel_enable type="BooleanField">
@@ -83,6 +84,10 @@
                   <default>0</default>
                   <Required>Y</Required>
                 </codel_ecn_enable>
+                <pie_enable type="BooleanField">
+                  <default>0</default>
+                  <Required>Y</Required>
+                </pie_enable>
                 <fqcodel_quantum type="IntegerField">
                   <Required>N</Required>
                   <MinimumValue>1</MinimumValue>
@@ -98,6 +103,21 @@
                   <MinimumValue>1</MinimumValue>
                   <MaximumValue>65535</MaximumValue>
                 </fqcodel_flows>
+                <fqpie_quantum type="IntegerField">
+                  <Required>N</Required>
+                  <MinimumValue>1</MinimumValue>
+                  <MaximumValue>65535</MaximumValue>
+                </fqpie_quantum>
+                <fqpie_limit type="IntegerField">
+                  <Required>N</Required>
+                  <MinimumValue>1</MinimumValue>
+                  <MaximumValue>65535</MaximumValue>
+                </fqpie_limit>
+                <fqpie_flows type="IntegerField">
+                  <Required>N</Required>
+                  <MinimumValue>1</MinimumValue>
+                  <MaximumValue>65535</MaximumValue>
+                </fqpie_flows>
                 <origin type="TextField">
                     <Required>N</Required>
                     <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
@@ -179,6 +199,10 @@
                   <default>0</default>
                   <Required>Y</Required>
                 </codel_ecn_enable>
+                <pie_enable type="BooleanField">
+                  <default>0</default>
+                  <Required>Y</Required>
+                </pie_enable>
                 <description type="TextField">
                     <Required>Y</Required>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
