@@ -96,6 +96,12 @@
         <help>The number of flow queues that are created and managed, leave empty for defaults</help>
     </field>
     <field>
+        <id>pipe.pie_enable</id>
+        <label>Enable PIE</label>
+        <type>checkbox</type>
+        <help>Enable PIE active queue management</help>
+    </field>
+    <field>
         <id>pipe.delay</id>
         <label>Delay</label>
         <type>text</type>
