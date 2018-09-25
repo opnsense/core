@@ -61,6 +61,12 @@
         <advanced>true</advanced>
         <help>Explicit Congestion Notification</help>
     </field>
+        <field>
+        <id>queue.pie_enable</id>
+        <label>Enable PIE</label>
+        <type>checkbox</type>
+        <help>Enable PIE active queue management</help>
+    </field>
     <field>
         <id>queue.description</id>
         <label>description</label>
