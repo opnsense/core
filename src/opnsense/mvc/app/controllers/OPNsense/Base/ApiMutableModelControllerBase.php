@@ -295,7 +295,10 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 // save config if validated correctly
                 $mdl->serializeToConfig();
                 Config::getInstance()->save();
-                $result = array("result" => "saved");
+                $result = array(
+                    "result" => "saved",
+                    "uuid" => str_replace($path . ".", "", $node->__reference)
+                );
             } else {
                 $result["result"] = "failed";
             }
