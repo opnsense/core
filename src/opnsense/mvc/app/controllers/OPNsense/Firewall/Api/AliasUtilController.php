@@ -31,12 +31,46 @@ namespace OPNsense\Firewall\Api;
 
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
+use \OPNsense\Firewall\Alias;
+use \OPNsense\Core\Config;
+
 
 /**
  * @package OPNsense\Firewall
  */
 class AliasUtilController extends ApiControllerBase
 {
+    /**
+     * @var null|BaseModel model object to work on
+     */
+    private $modelHandle = null;
+
+    /**
+     * Get (or create) model object
+     * @return null|BaseModel
+     */
+    private function getModel()
+    {
+        if ($this->modelHandle == null) {
+            $this->modelHandle = new Alias();
+        }
+        return $this->modelHandle;
+    }
+
+    /**
+     * fetch alias by name
+     * @param string $name name to list
+     */
+    private function getAlias($name)
+    {
+        foreach ($this->getModel()->aliases->alias->iterateItems() as $key => $alias) {
+            if ((string)$alias->name == $name) {
+                return $alias;
+            }
+        }
+        return null;
+    }
+
     /**
      * list active alias tables
      * @return array alias names
@@ -105,9 +139,36 @@ class AliasUtilController extends ApiControllerBase
     public function deleteAction($alias)
     {
         if ($this->request->isPost() && $this->request->hasPost("address")) {
+            $address = $this->request->getPost("address");
+            $cnfAlias = $this->getAlias($alias);
+            if ($cnfAlias !== null && in_array($cnfAlias->type , array('host', 'network'))) {
+                // update local administration, remove address when found for static types
+                // XXX: addresses from "pfctl -t xxx -T show" don't always match our input, we probably need a
+                //      better address matching at some point in time.
+                $items = explode("\n", $cnfAlias->content);
+                if (strpos($address, "/") === false) {
+                    $address_mask = $address . "/" . (strpos($address, ":") ? '128' : '32');
+                } else {
+                    $address_mask = $address;
+                }
+                $is_found = false;
+                foreach (array($address_mask, $address) as $item) {
+                    $index = array_search($item, $items);
+                    if ($index !== false) {
+                        unset($items[$index]);
+                        $is_found = true;
+                    }
+                }
+                if ($is_found) {
+                    $cnfAlias->content = implode("\n", $items);
+                    $this->getModel()->serializeToConfig();
+                    Config::getInstance()->save();
+                }
+            }
+
             $this->sessionClose();
             $backend = new Backend();
-            $backend->configdpRun("filter delete table", array($alias, $this->request->getPost("address")));
+            $backend->configdpRun("filter delete table", array($alias, $address));
             return array("status" => "done");
         } else {
             return array("status" => "failed");
