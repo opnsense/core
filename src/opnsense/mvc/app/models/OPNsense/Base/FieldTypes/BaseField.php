@@ -380,6 +380,20 @@ abstract class BaseField
     }
 
     /**
+     * get attribute by name
+     * @param string $key attribute key
+     * @return null|string value
+     */
+    public function getAttribute($key)
+    {
+        if (isset($this->internalAttributes[$key])) {
+            return $this->internalAttributes[$key];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * get this nodes children
      * @return array child items
      */
