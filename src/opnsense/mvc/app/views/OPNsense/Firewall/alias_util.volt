@@ -69,6 +69,14 @@
           });
         });
 
+        $("#btn_quick_add").click(function(){
+            ajaxCall("/api/firewall/alias_util/add/"+$('#tablename').val(),{'address':$("#quick_add").val()},function(){
+                $("#quick_add").val("");
+                $('#tablename').change();
+            });
+
+        });
+
         // update bogons
         $("#update_bogons").click(function(event){
             event.preventDefault()
@@ -90,17 +98,33 @@
     <div class="container-fluid">
         <div class="row">
             <section class="col-xs-12">
-                    <select id="tablename" class="selectpicker" data-width="auto" data-live-search="true">
-                    </select>
-                    <button class="btn btn-default" id="refresh">
-                        <i class="fa fa-refresh" aria-hidden="true"></i>
-                    </button>
-                    <button class="btn btn-default" id="flushtable">
-                        {{ lang._('Flush') }}
-                    </button>
-                    <button class="btn btn-default pull-right" id="update_bogons"><i id="update_bogons_progress" class=""></i>
-                      {{ lang._('Update bogons') }}
-                    </button>
+                <div class="row">
+                  <div class="col-xs-4">
+                      <select id="tablename" class="selectpicker" data-width="auto" data-live-search="true">
+                      </select>
+                      <button class="btn btn-default" id="refresh">
+                          <i class="fa fa-refresh" aria-hidden="true"></i>
+                      </button>
+                      <button class="btn btn-default" id="flushtable">
+                          {{ lang._('Flush') }}
+                      </button>
+                  </div>
+                  <div class="col-xs-4">
+                    <div class="input-group">
+                      <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="btn_quick_add">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                      </span>
+                      <input type="text" class="form-control" id="quick_add" placeholder="{{ lang._('Quick add address') }}">
+                    </div>
+                  </div>
+                  <div class="col-xs-4">
+                      <button class="btn btn-default pull-right" id="update_bogons"><i id="update_bogons_progress" class=""></i>
+                        {{ lang._('Update bogons') }}
+                      </button>
+                  </div>
+                </div>
             </section>
             <section class="col-xs-12">
                 <div class="content-box">
