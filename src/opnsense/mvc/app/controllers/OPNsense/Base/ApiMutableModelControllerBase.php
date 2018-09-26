@@ -297,7 +297,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 Config::getInstance()->save();
                 $result = array(
                     "result" => "saved",
-                    "uuid" => str_replace($path . ".", "", $node->__reference)
+                    "uuid" => $node->getAttribute('uuid')
                 );
             } else {
                 $result["result"] = "failed";
