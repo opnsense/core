@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008-2009 Ermal Luçi
  * Copyright (C) 2005 Espen Johansen
@@ -4699,4 +4700,61 @@ function make_ipv6_64_address($prefix, $suffix)
     $address = implode(':', $prefix_array);
 
     return $address;
+}
+
+function interfaces_addresses($interfaces)
+{
+    global $config;
+
+    $realifs = array();
+    $result = array();
+
+    if (!is_array($interfaces)) {
+        $interfaces = array($interfaces);
+    }
+
+    foreach ($interfaces as $interface) {
+        if ($interface == 'lo0') {
+            $realifs[] = 'lo0';
+        }
+
+        if (isset($config['interfaces'][$interface])) {
+            foreach (array('all', 'inet6') as $family) {
+                $realif = get_real_interface($interface, $family);
+                if (!empty($realif) && !in_array($realif, $realifs)) {
+                    $realifs[] = $realif;
+                }
+            }
+        }
+    }
+
+    if (!count($realifs)) {
+        return $result;
+    }
+
+    $intf_details = legacy_interfaces_details();
+
+    foreach ($realifs as $realif) {
+        foreach (array('ipv4', 'ipv6') as $proto) {
+            if (empty($intf_details[$realif][$proto])) {
+                continue;
+            }
+            foreach ($intf_details[$realif][$proto] as $address) {
+                if (!empty($address['tunnel']) || empty($address['ipaddr'])) {
+                    continue;
+                }
+                $scope = '';
+                if (!empty($address['link-local'])) {
+                    $scope = "%{$realif}";
+                }
+                $result["{$address['ipaddr']}{$scope}"] = array(
+                    'family' => $proto == 'ipv4' ? 'inet' : 'inet6',
+                    'scope' => !empty($scope),
+                    'name' => $realif,
+                );
+            }
+        }
+    }
+
+    return $result;
 }
