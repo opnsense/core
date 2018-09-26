@@ -65,14 +65,16 @@ include('head.inc');
 $plugins = implode(' ',  explode("\n", shell_exec('pkg info -g "os-*"')));
 
 $crash_report_header = sprintf(
-    "%s\n%s %s (%s/%s)\n%sTime %s\n",
+    "%s %s\n%s %s %s\n%sTime %s\n%s\nPHP %s\n",
     php_uname('v'),
-    $g['product_name'],
-    "{$g['product_version']}-{$g['product_hash']}",
     $g['product_arch'],
-    $g['product_flavour'],
+    $g['product_name'],
+    $g['product_version'],
+    $g['product_hash'],
     empty($plugins) ? '' : "Plugins $plugins\n",
-    date('r')
+    date('r'),
+    OPENSSL_VERSION_TEXT,
+    PHP_VERSION
 );
 
 if (isset($_SERVER['HTTP_USER_AGENT'])) {

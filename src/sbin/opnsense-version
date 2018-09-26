@@ -24,6 +24,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 VERSION="/usr/local/opnsense/version/opnsense"
+OPENSSL="/usr/local/bin/openssl"
 OUTPUT=
 
 if [ ! -f ${VERSION} ]; then
@@ -73,6 +74,11 @@ shift $((${OPTIND} - 1))
 
 if [ -z "${OUTPUT}" ]; then
 	OUTPUT="\${product_name} \${product_version} \(\${product_arch}/\${product_flavour}\)"
+fi
+
+if [ -z "${OUTPUT%%*product_flavour*}" -a -f ${OPENSSL} ]; then
+	RESULT=$(${OPENSSL} version)
+	product_flavour=${RESULT%% *}
 fi
 
 eval echo ${OUTPUT}
