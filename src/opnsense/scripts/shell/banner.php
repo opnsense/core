@@ -34,14 +34,9 @@ require_once("interfaces.inc");
 require_once("util.inc");
 require_once("plugins.inc.d/openssh.inc");
 
-$hostname = $config['system']['hostname'];
-$domain = $config['system']['domain'];
-$flavour = $g['product_flavour'];
-$version = $g['product_version'];
-$product = $g['product_name'];
-$machine = $g['product_arch'];
+$version = trim(shell_exec('opnsense-version'));
 
-echo "\n*** {$hostname}.{$domain}: {$product} {$version} ({$machine}/${flavour}) ***\n";
+echo "\n*** {$config['system']['hostname']}.{$config['system']['domain']}: {$version} ***\n";
 
 $iflist = legacy_config_get_interfaces(array('virtual' => false));
 
