@@ -578,6 +578,7 @@ abstract class BaseModel
      * The BaseModelMigration class should be named with the corresponding version
      * prefixed with an M and . replaced by _ for example : M1_0_1 equals version 1.0.1
      *
+     * @return bool status (true-->success, false-->failed)
      */
     public function runMigrations()
     {
@@ -638,8 +639,11 @@ abstract class BaseModel
                     }
                 } catch (\Exception $e) {
                     $logger->error("Model ".$class_info->getName() ." can't be saved, skip ( " .$e . " )");
+                    return false;
                 }
             }
+
+            return true;
         }
     }
 
