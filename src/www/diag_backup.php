@@ -71,7 +71,6 @@ function restore_config_section($section_name, $new_contents)
 
 $areas = array(
     'OPNsense' => gettext('OPNsense Additions'),	/* XXX need specifics */
-    'aliases' => gettext('Aliases'),
     'bridges' => gettext('Bridge Devices'),
     'ca' => gettext('SSL Certificate Authorities'),
     'cert' => gettext('SSL Certificates'),
