@@ -7130,7 +7130,8 @@ main.page-content.col-lg-12 {
   border-bottom: 2px solid #lightergrey;
   border-right: 1px solid #D9D9D9;
 }
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa, #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.glyphicon {
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa,
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.glyphicon {
   visibility: visible;
   font-size: 20px;
 }
@@ -7158,19 +7159,9 @@ main.page-content.col-lg-12 {
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > a.list-group-item {background-color: #fff !important;}
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item {background-color: #fff !important;}
 
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item {
-  padding-left: 10px !important;
-  font-size: 14px !important;
-
-}
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > a.list-group-item {
-  padding-left: 10px !important;
-  font-size: 14px !important;
-}
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > div.collapse > a.list-group-item {
-  padding-left: 10px !important;
-  font-size: 14px !important;
-}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > div.collapse > a.list-group-item ,
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > a.list-group-item,
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item,
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsed > a.list-group-item {
   padding-left: 10px !important;
   font-size: 14px !important;
@@ -7191,16 +7182,6 @@ main.page-content.col-lg-12 {
   box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
 }
 
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsing {
-  width: 0px;
-  font-size: 14px;
-  position: absolute;
-  display: block;
-  z-index: 10;
-  left: 70px;
-  margin-top: -70px;
-  height: auto;
-}
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in {
   width: 150px;
   font-size: 14px;
@@ -7215,15 +7196,9 @@ main.page-content.col-lg-12 {
   -o-transition: width 0.1s;
   transition: width 0.1s;
 }
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsing,
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapsing {
-  width: 0px;
-  font-size: 14px;
-  position: absolute;
-  display: block;
-  z-index: 10;
-  left: 148px;
-  margin-top: -28px;
-  height: auto;
+  display:none;
 }
 
 button.toggle-sidebar {
