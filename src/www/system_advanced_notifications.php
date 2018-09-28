@@ -30,12 +30,6 @@ require_once("guiconfig.inc");
 require_once("system.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // Growl
-    $pconfig['disable_growl'] = isset($config['notifications']['growl']['disable']);
-    $pconfig['password'] = !empty($config['notifications']['growl']['password']) ? $config['notifications']['growl']['password'] : null ;
-    $pconfig['ipaddress'] = !empty($config['notifications']['growl']['ipaddress']) ? $config['notifications']['growl']['ipaddress'] : null;
-    $pconfig['notification_name'] = !empty($config['notifications']['growl']['notification_name']) ? $config['notifications']['growl']['notification_name'] : "{$g['product_name']} growl alert";
-    $pconfig['name'] = !empty($config['notifications']['growl']['name']) ? $config['notifications']['growl']['name'] : 'PHP-Growl';
     // SMTP
     $pconfig['disable_smtp'] = isset($config['notifications']['smtp']['disable']);
     $pconfig['smtpipaddress'] = !empty($config['notifications']['smtp']['ipaddress']) ? $config['notifications']['smtp']['ipaddress'] : null;
@@ -52,18 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $_POST;
 
     if (!empty($pconfig['Submit']) && $pconfig['Submit'] == gettext("Save")) {
-        // Growl
-        $config['notifications']['growl']['ipaddress'] = $pconfig['ipaddress'];
-        $config['notifications']['growl']['password'] = $pconfig['password'];
-        $config['notifications']['growl']['name'] = $pconfig['name'];
-        $config['notifications']['growl']['notification_name'] = $pconfig['notification_name'];
-
-        if (!empty($pconfig['disable_growl'])) {
-            $config['notifications']['growl']['disable'] = true;
-        } elseif (isset($config['notifications']['growl']['disable'])) {
-            unset($config['notifications']['growl']['disable']);
-        }
-
         // SMTP
         $config['notifications']['smtp']['ipaddress'] = $pconfig['smtpipaddress'];
         $config['notifications']['smtp']['port'] = $pconfig['smtpport'];
@@ -98,15 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
         header(url_safe('Location: /system_advanced_notifications.php'));
         return;
-
-    } elseif (isset($pconfig['test_growl']) && $pconfig['test_growl'] == gettext("Test Growl")) {
-        // Send test message via growl
-        if (!empty($config['notifications']['growl']['ipaddress']) &&
-            !empty($config['notifications']['growl']['password'])) {
-            @unlink('/var/db/growlnotices_lastmsg.txt');
-            register_via_growl();
-            notify_via_growl(sprintf(gettext("This is a test message from %s. It is safe to ignore this message."), $g['product_name']), true);
-        }
     } elseif (!empty($pconfig['test_smtp']) && $pconfig['test_smtp'] == gettext("Test SMTP")) {
         // Send test message via smtp
         @unlink('/var/db/notices_lastmsg.txt');
@@ -155,64 +128,11 @@ include("head.inc");
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td style="width:22%"><strong><?=gettext("Growl");?></strong></td>
+                <td style="width:22%"><strong><?=gettext("SMTP Email"); ?></strong></td>
                 <td style="width:78%; text-align:right">
                   <small><?=gettext("full help"); ?> </small>
                   <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                 </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_disable_growl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable Growl Notifications"); ?></td>
-                <td>
-                  <input type='checkbox' name='disable_growl' value="yes" <?=!empty($pconfig['disable_growl']) ? "checked=\"checked\"" : "";?>/>
-                  <div class="hidden" data-for="help_for_disable_growl">
-                    <?=gettext("Check this option to disable growl notifications but preserve the settings below."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Registration Name"); ?></td>
-                <td>
-                  <input name="name" type="text" value="<?=$pconfig['name']; ?>"/>
-                  <div class="hidden" data-for="help_for_name">
-                    <?=gettext("Enter the name to register with the Growl server (default: PHP-Growl)."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_notification_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Notification Name"); ?></td>
-                <td>
-                  <input name='notification_name' type='text' value='<?=$pconfig['notification_name']; ?>' />
-                  <div class="hidden" data-for="help_for_notification_name">
-                    <?=sprintf(gettext("Enter a name for the Growl notifications (default: %s growl alert)."), $g['product_name']); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_ipaddress" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Address"); ?></td>
-                <td>
-                  <input name="ipaddress" type="text" value="<?=$pconfig['ipaddress']; ?>" />
-                  <div class="hidden" data-for="help_for_ipaddress">
-                    <?=gettext("This is the IP address that you would like to send growl notifications to."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_password" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Password"); ?></td>
-                <td>
-                  <input name="password" type="password" value="<?=$pconfig['password']; ?>"/>
-                  <div class="hidden" data-for="help_for_password">
-                    <?=gettext("Enter the password of the remote growl notification device."); ?>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </div>
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
-                <td style="width:22%"><strong><?=gettext("SMTP Email"); ?></strong></td>
-                <td style="width:78%"></td>
               </tr>
               <tr>
                 <td><a id="help_for_disable_smtp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable SMTP Notifications"); ?></td>
@@ -312,7 +232,6 @@ include("head.inc");
                 <td style="width:22%"></td>
                 <td style="width:78%">
                   <input type="submit" id="Submit" name="Submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                  <input type="submit" id="test_growl" name="test_growl" value="<?=gettext("Test Growl"); ?>" class="btn btn-default" />
                   <input type="submit" id="test_smtp" name="test_smtp" value="<?=gettext("Test SMTP"); ?>" class="btn btn-default" /><br/>
                   <div data-for="help_for_notifytest">
                     <?= gettext('A test notification will be sent even if the service is marked as disabled.') ?>

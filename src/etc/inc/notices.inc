@@ -28,7 +28,6 @@
  *
  */
 
-require_once("notices.growl.inc");
 require_once("notices.sasl.inc");
 require_once("notices.smtp.inc");
 
@@ -38,7 +37,7 @@ require_once("notices.smtp.inc");
  * INPUTS
  *	 $id, $notice, $category, $url, $priority
  * RESULT
- *   Files a notice and kicks off the various alerts, smtp, growl, system log, LED's, etc.
+ *   Files a notice and kicks off the various alerts, smtp, system log, etc.
  ******/
 function file_notice($id, $notice, $category = "General", $url = "", $priority = 1) {
 	/*
@@ -66,7 +65,6 @@ function file_notice($id, $notice, $category = "General", $url = "", $priority =
 	fwrite($queueout, serialize($queue));
 	fclose($queueout);
 	log_error("New alert found: $notice");
-	notify_via_growl($notice);
 	notify_via_smtp($notice);
 	return $queuekey;
 }
@@ -285,70 +283,4 @@ function send_smtp_message($message, $subject = "(no subject)") {
 		log_error($msg);
 		return ($msg);
 	}
-}
-
-/****f* notices/notify_via_growl
- * NAME
- *   notify_via_growl
- * INPUTS
- *	 notification string to send
- * RESULT
- *   returns true if message was sent
- ******/
-function notify_via_growl($message, $force=false) {
-	global $config,$g;
-
-	if (isset($config['notifications']['growl']['disable']) && !$force)
-		return;
-
-	/* Do NOT send the same message twice */
-	if(file_exists("/var/db/growlnotices_lastmsg.txt")) {
-		$lastmsg = trim(file_get_contents("/var/db/growlnotices_lastmsg.txt"));
-		if($lastmsg == $message)
-			return;
-	}
-
-	$hostname = $config['system']['hostname'] . "." . $config['system']['domain'];
-	if (isset($config['notifications']['growl']['ipaddress'])) {
-		$growl_ip = $config['notifications']['growl']['ipaddress'];
-		$growl_password = $config['notifications']['growl']['password'];
-		$growl_name = $config['notifications']['growl']['name'];
-		$growl_notification = $config['notifications']['growl']['notification_name'];
-
-		$growl = new Growl($growl_ip, $growl_password, $growl_name);
-		$growl->notify("{$growl_notification}", sprintf(gettext('%s (%s) - Notification'), $g['product_name'], $hostname), "{$message}");
-	}
-
-	/* Store last message sent to avoid spamming */
-	$fd = fopen("/var/db/growlnotices_lastmsg.txt", "w");
-	fwrite($fd, $message);
-	fclose($fd);
-}
-
-/****f* notices/register_via_growl
- * NAME
- *   register_via_growl
- * INPUTS
- *	 none
- * RESULT
- *   none
- ******/
-function register_via_growl() {
-	global $config;
-	$growl_ip = $config['notifications']['growl']['ipaddress'];
-	$growl_password = $config['notifications']['growl']['password'];
-	$growl_name = $config['notifications']['growl']['name'];
-	$growl_notification = $config['notifications']['growl']['notification_name'];
-
-	if($growl_ip) {
-	  $growl = new Growl($growl_ip, $growl_password, $growl_name);
-		$growl->addNotification($growl_notification);
-		$growl->register();
-	}
-}
-
-/* Notify via remote methods only - not via GUI. */
-function notify_all_remote($msg) {
-	notify_via_smtp($msg);
-	notify_via_growl($msg);
 }

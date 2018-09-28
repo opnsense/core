@@ -975,7 +975,7 @@ function return_gateway_groups_array()
                     }
                     if (!empty($msg)) {
                         log_error($msg);
-                        notify_all_remote($msg);
+                        notify_via_smtp($msg);
                     } else {
                         $tiers_online++;
                         $gwup = true;
@@ -994,7 +994,7 @@ function return_gateway_groups_array()
                 /* Oh dear, we have no members!*/
                 $msg = sprintf(gettext('Gateways status could not be determined, considering all as up/active. (Group: %s)'), $group['name']);
                 log_error($msg);
-                notify_via_growl($msg);
+                notify_via_smtp($msg);
             }
 
             /* sort the tiers array by the tier key */

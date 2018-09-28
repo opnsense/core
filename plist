@@ -22,7 +22,6 @@
 /usr/local/etc/inc/notices.basic_sasl_client.inc
 /usr/local/etc/inc/notices.cram_md5_sasl_client.inc
 /usr/local/etc/inc/notices.digest_sasl_client.inc
-/usr/local/etc/inc/notices.growl.inc
 /usr/local/etc/inc/notices.inc
 /usr/local/etc/inc/notices.login_sasl_client.inc
 /usr/local/etc/inc/notices.ntlm_sasl_client.inc

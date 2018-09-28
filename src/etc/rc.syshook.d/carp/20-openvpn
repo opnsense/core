@@ -53,7 +53,6 @@ $friendly_descr = convert_friendly_interface_to_friendly_descr($carp_iface);
 $notificationmsg = sprintf('Carp cluster member "%s (%s)" has resumed the state "%s" for vhid %s', $friendly_descr, $subsystem, $type, $vhid);
 
 notify_via_smtp($notificationmsg);
-notify_via_growl($notificationmsg);
 log_error($notificationmsg);
 
 switch ($type) {
