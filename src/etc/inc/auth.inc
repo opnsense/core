@@ -557,11 +557,6 @@ function local_user_set_password(&$user, $password = null)
 
     $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => $cost ]);
     if ($hash !== false) {
-        /*
-         * $2y$ returned is supported in FreeBSD 11.0 and up,
-         * but we started with FreeBSD 10.3 so need to fix:
-         */
-        $hash[2] = 'b';
         $user['password'] = $hash;
     }
 }
