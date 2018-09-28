@@ -652,6 +652,7 @@ $( document ).ready(function() {
                                 if ($schedule['name'] == $filterent['sched'])
                                 {
                                     $schedule_descr = (isset($schedule['descr'])) ? $schedule['descr'] : "";
+                                    break;
                                 }
                             }
                         }
@@ -661,7 +662,14 @@ $( document ).ready(function() {
                         </span>
                         <a href="/firewall_schedule_edit.php?name=<?=htmlspecialchars($filterent['sched']);?>"
                             title="<?= html_safe(gettext('Edit')) ?>" data-toggle="tooltip">
-                          <i class="fa fa-calendar"></i>
+<?php
+                        if (filter_get_time_based_rule_status($schedule)):?>
+                          <i class="fa fa-calendar text-success"></i>
+<?php
+                        else:?>
+                          <i class="fa fa-calendar text-muted"></i>
+<?php
+                        endif;?>
                         </a>
 <?php
                        endif;?>
