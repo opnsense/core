@@ -449,9 +449,6 @@ main.page-content.col-lg-12 {
           margin-top: -70px;
           height: auto;
           border: 1px solid #eaeaea;
-          -webkit-transition: width 0.1s;
-          -o-transition: width 0.1s;
-          transition: width 0.1s;
           -webkit-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
           -moz-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
           box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
@@ -477,9 +474,6 @@ main.page-content.col-lg-12 {
             margin-top: -28px;
             height: auto;
             border: 1px solid #eaeaea;
-            -webkit-transition: width 0.1s;
-            -o-transition: width 0.1s;
-            transition: width 0.1s;
           }
           &.collapsing {
             width: 0px;
@@ -507,19 +501,9 @@ button.toggle-sidebar {
   &.fa {
     &.fa-chevron-left, &.fa-chevron-right {
       position: absolute;
-      -webkit-transition: all 0.1s ease;
-      -moz-transition: all 0.1s ease;
-      -o-transition: all 0.1s ease;
-      -ms-transition: all 0.1s ease;
-      transition: all 0.1s ease;
     }
     &.fa-chevron-left:active, &.fa-chevron-right:active {
       position: absolute;
-      -webkit-transform: rotate(180deg);
-      -moz-transform: rotate(180deg);
-      -o-transform: rotate(180deg);
-      -ms-transform: rotate(180deg);
-      transform: rotate(180deg);
     }
     &.fa-chevron-left:focus, &.fa-chevron-right:focus {
       outline: none;
