@@ -117,6 +117,9 @@ $(document).ready(function () {
                     },
                     mousedown: function() {
                         $(this).trigger("click");
+                    },
+                    mouseup: function() {
+                        $(this).blur();
                     }
                 }
                 layer1_a.on(events);
