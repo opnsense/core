@@ -105,13 +105,12 @@ $(document).ready(function () {
                 transition_duration(0);
                 var events = {
                     mouseenter: function() {
-						if ($(this).next("div").hasClass("in")) {
-							$("#navigation.col-sidebar-left").css("width", "415px");
-						}
-						else {
-							$("#navigation.col-sidebar-left").css("width", "415px");
-							$(this).trigger("click");
-						}
+                        if ($(this).next("div").hasClass("in")) {
+                            $("#navigation.col-sidebar-left").css("width", "415px");
+                        } else {
+                            $("#navigation.col-sidebar-left").css("width", "415px");
+                            $(this).trigger("click");
+                        }
                     },
                     mouseleave: function() {
                         $("#navigation.col-sidebar-left").css("width", "70px");
