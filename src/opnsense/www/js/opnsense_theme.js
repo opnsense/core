@@ -106,10 +106,10 @@ $(document).ready(function () {
                 var events = {
                     mouseenter: function() {
 						if ($(this).next("div").hasClass("in")) {
-							$("#navigation.col-sidebar-left").css("width", "380px");
+							$("#navigation.col-sidebar-left").css("width", "415px");
 						}
 						else {
-							$("#navigation.col-sidebar-left").css("width", "380px");
+							$("#navigation.col-sidebar-left").css("width", "415px");
 							$(this).trigger("click");
 						}
                     },
@@ -124,7 +124,7 @@ $(document).ready(function () {
                 layer2_a.on(events);
                 var events2 = {
                     mouseenter: function() {
-                        $("#navigation.col-sidebar-left").css("width", "380px");
+                        $("#navigation.col-sidebar-left").css("width", "415px");
                         $(this).trigger("click");
                     },
                     mouseleave: function() {
