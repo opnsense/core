@@ -795,8 +795,8 @@ $( document ).ready(function() {
                     <td colspan="10"><?=gettext("Alias (click to view/edit)");?></td>
                   </tr>
                   <tr class="hidden-xs hidden-sm">
-                    <td><a><i><span class="fa fa-calendar"></i></a></td>
-                    <td colspan="10"><?=gettext("Schedule (click to view/edit)");?></td>
+                    <td><a><i><span class="fa fa-calendar text-success"></i> / <i><span class="fa fa-calendar text-muted"></i></a></td>
+                    <td colspan="10"><?=gettext("Active/Inactive Schedule (click to view/edit)");?></td>
                   </tr>
                   <tr class="hidden-xs hidden-sm">
                     <td colspan="11">
