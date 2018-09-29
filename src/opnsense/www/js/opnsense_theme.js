@@ -105,21 +105,28 @@ $(document).ready(function () {
                 transition_duration(0);
                 var events = {
                     mouseenter: function() {
-                        $("#navigation.col-sidebar-left").css("width", "380px");
-                        $(this).trigger("click");
+                        if ($(this).next("div").hasClass("in")) {
+                            $("#navigation.col-sidebar-left").css("width", "415px");
+                        } else {
+                            $("#navigation.col-sidebar-left").css("width", "415px");
+                            $(this).trigger("click");
+                        }
                     },
                     mouseleave: function() {
                         $("#navigation.col-sidebar-left").css("width", "70px");
                     },
                     mousedown: function() {
                         $(this).trigger("click");
+                    },
+                    mouseup: function() {
+                        $(this).blur();
                     }
                 }
                 layer1_a.on(events);
                 layer2_a.on(events);
                 var events2 = {
                     mouseenter: function() {
-                        $("#navigation.col-sidebar-left").css("width", "380px");
+                        $("#navigation.col-sidebar-left").css("width", "415px");
                         $(this).trigger("click");
                     },
                     mouseleave: function() {
