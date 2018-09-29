@@ -34,7 +34,6 @@ use \OPNsense\Core\Backend;
 use \OPNsense\Firewall\Alias;
 use \OPNsense\Core\Config;
 
-
 /**
  * @package OPNsense\Firewall
  */
@@ -141,7 +140,7 @@ class AliasUtilController extends ApiControllerBase
         if ($this->request->isPost() && $this->request->hasPost("address")) {
             $address = $this->request->getPost("address");
             $cnfAlias = $this->getAlias($alias);
-            if ($cnfAlias !== null && in_array($cnfAlias->type , array('host', 'network'))) {
+            if ($cnfAlias !== null && in_array($cnfAlias->type, array('host', 'network'))) {
                 // update local administration, remove address when found for static types
                 // XXX: addresses from "pfctl -t xxx -T show" don't always match our input, we probably need a
                 //      better address matching at some point in time.
