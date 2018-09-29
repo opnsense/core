@@ -407,7 +407,6 @@ main.page-content.col-lg-12 {
           display: block !important;
           position: absolute !important;
           left: 70px !important;
-          margin-top: -70px !important;
         }
         &.collapse {
           &.in {
@@ -417,8 +416,7 @@ main.page-content.col-lg-12 {
                 font-size: 14px !important;
                 display: block !important;
                 position: absolute !important;
-                left: 148px !important;
-                margin-top: -28px !important;
+                left: 166px !important;
               }
               a.list-group-item, div.collapse.in > a.list-group-item {
                 background-color: #fff !important;
@@ -441,7 +439,7 @@ main.page-content.col-lg-12 {
           font-size: 14px !important;
         }
         &.collapse.in {
-          width: 150px;
+          width: 168px;
           font-size: 14px;
           display: block;
           z-index: 10;
@@ -454,13 +452,13 @@ main.page-content.col-lg-12 {
           -moz-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
           box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
           > div.collapse.in {
-            width: 150px;
+            width: 168px;
             font-size: 14px;
             display: block;
             z-index: 10;
             position: absolute;
-            left: 148px;
-            margin-top: -28px;
+            left: 166px;
+            margin-top: -32px;
             height: auto;
             border: 1px solid #eaeaea;
             -webkit-transition: width 0.1s;
