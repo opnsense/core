@@ -763,6 +763,8 @@ $( document ).ready(function() {
                           <td style="width:100px"><?=gettext("log");?></td>
                           <td style="width:16px"><span class="fa fa-long-arrow-right text-info"></span></td>
                           <td style="width:100px"><?=gettext("in");?></td>
+                          <td style="width:16px"><span class="fa fa-calendar text-success"></span></td>
+                          <td style="width:100px"><?=gettext("schedule (active)");?></td>
 <?php                     if ($selected_if == 'FloatingRules'): ?>
                           <td style="width:16px"><span class="fa fa-flash text-warning"></span></td>
                           <td style="width:100px"><?=gettext("first match");?></td>
@@ -782,6 +784,8 @@ $( document ).ready(function() {
                           <td class="nowrap"><?=gettext("log (disabled)");?></td>
                           <td style="width:16px"><span class="fa fa-long-arrow-left"></span></td>
                           <td style="width:100px"><?=gettext("out");?></td>
+                          <td style="width:16px"><span class="fa fa-calendar text-muted"></span></td>
+                          <td style="width:100px"><?=gettext("schedule (inactive)");?></td>
 <?php                     if ($selected_if == 'FloatingRules'): ?>
                           <td style="width:16px"><span class="fa fa-flash text-muted"></span></td>
                           <td style="width:100px"><?=gettext("last match");?></td>
