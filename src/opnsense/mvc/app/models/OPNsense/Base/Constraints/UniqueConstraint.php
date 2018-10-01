@@ -66,7 +66,7 @@ class UniqueConstraint extends BaseConstraint
                     $nodeKey .= $fieldSeparator . $parentNode->$field;
                 }
                 // when an ArrayField is found in range, traverse nodes and compare keys
-                foreach ($containerNode->__items as $item) {
+                foreach ($containerNode->iterateItems() as $item) {
                     if ($item !== $parentNode) {
                         $itemKey = '';
                         foreach ($keyFields as $field) {

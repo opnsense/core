@@ -52,7 +52,7 @@ class IDS extends BaseModel
     private function updateSIDlist()
     {
         if (count($this->sid_list) == 0) {
-            foreach ($this->rules->rule->__items as $NodeKey => $NodeValue) {
+            foreach ($this->rules->rule->iterateItems() as $NodeKey => $NodeValue) {
                 $this->sid_list[$NodeValue->sid->__toString()] = $NodeValue;
             }
             // list of known actions and defaults
@@ -113,7 +113,7 @@ class IDS extends BaseModel
     public function removeRule($sid)
     {
         // search and drop rule
-        foreach ($this->rules->rule->__items as $NodeKey => $NodeValue) {
+        foreach ($this->rules->rule->iterateItems() as $NodeKey => $NodeValue) {
             if ((string)$NodeValue->sid == $sid) {
                 $this->rules->rule->Del($NodeKey);
                 unset($this->sid_list[$sid]);
@@ -190,7 +190,7 @@ class IDS extends BaseModel
      */
     public function getFileNode($filename)
     {
-        foreach ($this->files->file->__items as $NodeKey => $NodeValue) {
+        foreach ($this->files->file->iterateItems() as $NodeKey => $NodeValue) {
             if ($filename == $NodeValue->filename) {
                 return $NodeValue;
             }

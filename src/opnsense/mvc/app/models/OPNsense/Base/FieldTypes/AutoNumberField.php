@@ -85,7 +85,7 @@ class AutoNumberField extends BaseField
         // collect all used sequence numbers
         $allIds = array();
         if (isset($this->internalParentNode->internalParentNode)) {
-            foreach ($this->internalParentNode->internalParentNode->__items as $node) {
+            foreach ($this->internalParentNode->internalParentNode->iterateItems() as $node) {
                 $allIds[] = (string)$node->{$this->internalXMLTagName};
             }
         }

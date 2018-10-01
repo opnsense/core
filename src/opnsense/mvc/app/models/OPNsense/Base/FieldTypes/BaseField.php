@@ -522,7 +522,7 @@ abstract class BaseField
             return array($this);
         }
 
-        foreach ($this->__items as $node) {
+        foreach ($this->iterateItems() as $node) {
             foreach ($node->getFlatNodes() as $childNode) {
                 $result[$childNode->internalReference] = $childNode;
             }
@@ -539,7 +539,7 @@ abstract class BaseField
     public function getNodes()
     {
         $result = array ();
-        foreach ($this->__items as $key => $node) {
+        foreach ($this->iterateItems() as $key => $node) {
             if ($node->isContainer()) {
                 $result[$key] = $node->getNodes();
             } else {
@@ -568,7 +568,7 @@ abstract class BaseField
     public function setNodes($data)
     {
         // update structure with new content
-        foreach ($this->__items as $key => $node) {
+        foreach ($this->iterateItems() as $key => $node) {
             if ($data != null && isset($data[$key])) {
                 if ($node->isContainer()) {
                     if (is_array($data[$key])) {
@@ -618,7 +618,7 @@ abstract class BaseField
             }
         }
 
-        foreach ($this->__items as $key => $FieldNode) {
+        foreach ($this->iterateItems() as $key => $FieldNode) {
             $FieldNode->addToXMLNode($subnode);
         }
     }

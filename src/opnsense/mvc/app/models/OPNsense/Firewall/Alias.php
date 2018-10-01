@@ -111,7 +111,7 @@ class Alias extends BaseModel
             $result[$item[0]] = (string)$item[1]->descr;
         }
         // find all used in this model
-        foreach ($this->aliases->alias->__items as $alias) {
+        foreach ($this->aliases->alias->iterateItems() as $alias) {
             if (!in_array($alias->type, array('geoip', 'urltable'))) {
                 $nodeData = $alias->content->getNodeData();
                 if (isset($nodeData[$name])) {
@@ -138,7 +138,7 @@ class Alias extends BaseModel
             $item[2][0] = $newname;
         }
         // find all used in this model (alias nesting)
-        foreach ($this->aliases->alias->__items as $alias) {
+        foreach ($this->aliases->alias->iterateItems() as $alias) {
             if (!in_array($alias->type, array('geoip', 'urltable'))) {
                 $sepchar = $alias->content->getSeperatorChar();
                 $aliases = explode($sepchar, (string)$alias->content);
@@ -158,10 +158,10 @@ class Alias extends BaseModel
     public function aliasIterator()
     {
         $use_legacy = true;
-        foreach ($this->aliases->alias->__items as $alias) {
+        foreach ($this->aliases->alias->iterateItems() as $alias) {
             $record = array();
-            foreach (array_keys($alias->__items) as $key) {
-                $record[$key] = (string)$alias->$key;
+            foreach ($alias->iterateItems() as $key => $value) {
+                $record[$key] = (string)$value;
             }
             yield $record;
             $use_legacy = false;
