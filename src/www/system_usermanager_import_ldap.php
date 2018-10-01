@@ -137,6 +137,15 @@ include('head.inc');
 ?>
 
  <body>
+ <script>
+    // [de]select all
+    $( document ).ready(function() {
+        $("#select_all").click(function(event){
+            $(".user_option").prop('checked', $(this).is(':checked'));
+        });
+    });
+
+ </script>
 <?php if ($exit_form) :
 ?>
   <script>
@@ -153,15 +162,14 @@ else :
 ?>
 <form method="post">
   <table class="table table-striped">
+    <thead>
+        <th colspan="2"><?=gettext("Please select users to import:");?></th>
+        <th><input type='checkbox' id='select_all'></th>
+    </thead>
     <tbody>
-      <tr>
-      <th colspan="3">
-        <?=gettext("Please select users to import:");?>
-      </th>
-      </tr>
       <?php foreach ($ldap_users as $username => $userDN) :
 ?>
-        <tr><td><?=$username?></td><td><?=$userDN?></td><td> <input type='checkbox' value="<?=$userDN?>" id='user_dn' name='user_dn[]'>  </td></tr>
+        <tr><td><?=$username?></td><td><?=$userDN?></td><td> <input type='checkbox' value="<?=$userDN?>" id='user_dn' class='user_option' name='user_dn[]'>  </td></tr>
       <?php endforeach;
 ?>
       <tr>
