@@ -28,15 +28,15 @@
 # see auto generated file /etc/rc.conf.d/ipfw for details
 
 # sysctl settings
-/sbin/sysctl net.inet.ip.dummynet.io_fast=1
-/sbin/sysctl net.inet.ip.dummynet.hash_size=256
+sysctl net.inet.ip.dummynet.io_fast=1 > /dev/null
+sysctl net.inet.ip.dummynet.hash_size=256 > /dev/null
 
 # reload ipfw rules
-/sbin/ipfw -f /usr/local/etc/ipfw.rules
+ipfw -q /usr/local/etc/ipfw.rules
 
 if [ ! -f /tmp/ipfw.firstload ]; then
-    # we need to make sure ipfw is loaded as last,
-    /sbin/pfctl -d
-    /sbin/pfctl -e
-    touch /tmp/ipfw.firstload
+	# we need to make sure ipfw is loaded as last
+	touch /tmp/ipfw.firstload
+	pfctl -d
+	pfctl -e
 fi
