@@ -41,21 +41,6 @@ use OPNsense\Core\ACL;
 class MenuController extends ApiControllerBase
 {
     /**
-     * @var null|string username
-     */
-    private $username = null;
-
-    /**
-     * before routing event
-     * @param Dispatcher $dispatcher
-     * @return null|bool
-     */
-    public function beforeExecuteRoute($dispatcher)
-    {
-        // disable standard authorisation, output results are filtered for logged-in user
-    }
-
-    /**
      * traverse menu items and mark user visibility (isVisible true/false)
      * @param array $menuItems menuitems from menu->getItems()
      * @param ACL $acl acl object reference
@@ -73,7 +58,7 @@ class MenuController extends ApiControllerBase
                     }
                 }
             } else {
-                if (!$acl->isPageAccessible($this->username, $menuItem->Url)) {
+                if (!$acl->isPageAccessible($this->getUserName(), $menuItem->Url)) {
                     $menuItem->isVisible = false;
                 } else {
                     $menuItem->isVisible = true;
@@ -112,17 +97,13 @@ class MenuController extends ApiControllerBase
      * request user context sensitive menu (items)
      * @param string $selected_uri selected uri
      * @return array menu items
+     * @throws Menu\MenuInitException when unable to construct menu
      */
     private function getMenu($selected_uri)
     {
         // construct menu and acl and merge collected info
         $menu = new Menu\MenuSystem();
         $acl= new ACL();
-
-        // get username into context
-        if ($this->session->has("Username")) {
-            $this->username = $this->session->get("Username");
-        }
 
         // fetch menu items and apply acl
         $menu_items = $menu->getItems($selected_uri);
@@ -185,6 +166,7 @@ class MenuController extends ApiControllerBase
     /**
      * return menu items for this user
      * @return array
+     * @throws Menu\MenuInitException when unable to construct menu
      */
     public function treeAction()
     {
@@ -196,6 +178,7 @@ class MenuController extends ApiControllerBase
     /**
      * search menu items
      * @return array
+     * @throws Menu\MenuInitException when unable to construct menu
      */
     public function searchAction()
     {

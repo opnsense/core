@@ -156,6 +156,9 @@ class ControllerBase extends ControllerRoot
             }
         }
 
+        // link username on successful login
+        $this->logged_in_user = $this->session->get("Username");
+
         // include csrf for volt view rendering.
         $csrf_token = $this->session->get('$PHALCON/CSRF$');
         $csrf_tokenKey = $this->session->get('$PHALCON/CSRF/KEY$');

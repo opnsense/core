@@ -157,6 +157,9 @@ class ApiControllerBase extends ControllerRoot
                                     return false;
                                 }
 
+                                // link username on successful login
+                                $this->logged_in_user = $authResult['username'];
+
                                 return true;
                             }
                         }
@@ -196,6 +199,9 @@ class ApiControllerBase extends ControllerRoot
             }
             // when request is using a json body (based on content type), parse it first
             $this->parseJsonBodyData();
+
+            // link username on successful login
+            $this->logged_in_user = $this->session->get("Username");
         }
     }
 
