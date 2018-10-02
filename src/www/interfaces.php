@@ -37,7 +37,7 @@ require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
-
+require_once("rfc3118_lib.inc");
 /***************************************************************************************************************
  * imported from xmlparse_attr.inc
  ***************************************************************************************************************/
@@ -392,6 +392,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'subnetv6',
         'track6-interface',
         'track6-prefix-id',
+        'rfc3118_isp',
+        'rfc3118_username',
+        'rfc3118_password',
+        'rfc3118_or_fr_lbid',
     );
     foreach ($std_copy_fieldnames as $fieldname) {
         $pconfig[$fieldname] = isset($a_interfaces[$if][$fieldname]) ? $a_interfaces[$if][$fieldname] : null;
@@ -1305,6 +1309,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 unset($a_ppps[$pppid]);
             }
 
+            if($pconfig['type'] == 'dhcp' || $pconfig['type6'] == 'dhcp6') {
+                if($pconfig['rfc3118_isp'] <> 'none') {
+                    $new_config['rfc3118_isp'] = $pconfig['rfc3118_isp'];
+                    $new_config['rfc3118_password'] = $pconfig['rfc3118_password'];
+                    $new_config['rfc3118_username'] = $pconfig['rfc3118_username'];
+                    if($pconfig['rfc3118_isp'] == 'Orange_FR') {
+                        $new_config['rfc3118_or_fr_lbid'] = $pconfig['rfc3118_or_fr_lbid'];
+                        $send_options = array();
+                        $send_options = create_OR_FR_Credentials($pconfig['rfc3118_username'], $pconfig['rfc3118_password'], $pconfig['rfc3118_or_fr_lbid']);
+                        log_error("send options dhcp4 = {$send_options[1]}");
+                        $new_config[adv_dhcp_send_options] = $pconfig[adv_dhcp_send_options] = $send_options['dhcp4_send_options'];
+                        $new_config[adv_dhcp_request_options] = $pconfig[adv_dhcp_request_options] = $send_options['dhcp4_request_options'];
+                        $new_config[adv_dhcp6_interface_statement_send_options] = $pconfig[adv_dhcp6_interface_statement_send_options] = $send_options['dhcp6_send_options'];  
+                    }
+                }
+            }
             // save interface details
             $a_interfaces[$if] = $new_config;
 
@@ -1388,6 +1408,10 @@ include("head.inc");
       //
       $("#type").change(function(){
           $('#staticv4, #dhcp, #pppoe, #pptp, #ppp').hide()
+          $("#rfc3118").hide();
+          if($("#type").val() == "dhcp" || $("#type6").val() == "dhcp6") {
+             $("#rfc3118").show();              
+          }
           if ($(this).val() == "l2tp") {
               $("#pptp").show();
           } else {
@@ -1428,6 +1452,10 @@ include("head.inc");
       $("#type6").change(function(){
           $('#staticv6, #slaac, #dhcp6, #6rd, #track6').hide();
           $("#" +$(this).val()).show();
+          $("#rfc3118").hide();
+          if($("#type").val() == "dhcp" || $("#type6").val() == "dhcp6") {
+             $("#rfc3118").show();
+      }
       });
       $("#type6").change();
 
@@ -1683,6 +1711,21 @@ include("head.inc");
         }
       });
       $("#mtu").change();
+      
+      $("#rfc3118_isp").change(function(){
+           $(".RFC3118_OR_FR").addClass("hidden");
+           var selected_opt = $(this).val();
+           switch (selected_opt) {
+            case "Orange_FR":
+             $(".RFC3118_OR_FR").removeClass("hidden");
+              break;
+          }
+          if($("#rfc3118_isp").val() == "Orange_FR") {
+             $(".RFC3118_OR_FR").removeClass("hidden");
+            }
+      });
+      $("#rfc3118_isp").change();
+         
   });
 </script>
 
@@ -1980,6 +2023,50 @@ include("head.inc");
                     </table>
                   </div>
                 </div>
+                <div class="tab-content content-box col-xs-12 __mb" id="rfc3118" style="display:none">
+                <div class="table-responsive">
+                  <table class="table table-striped opnsense_standard_table_form">
+                    <thead>
+                      <tr>
+                        <td style="width:22%"><strong><?=gettext("RFC3118 ISP Authentication algorithm"); ?></strong></td>                       
+                      </tr>
+                    </thead>
+                       <body>
+                          <tr>
+                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("RFC3118 ISP Name"); ?></td>
+                          <td>
+                            <select name="rfc3118_isp" class="selectpicker" data-style="btn-default" id="rfc3118_isp">
+<?php
+                            $rfc3118isp = array("none" => gettext("None"), "Orange_FR" => gettext("Orange France"));
+                            foreach ($rfc3118isp as $key => $opt):?>
+                              <option value="<?=$key;?>" <?=$key == $pconfig['rfc3118_isp'] ? "selected=\"selected\"" : "";?> ><?=$opt;?></option>
+<?php
+                            endforeach;?>
+                            </select>
+                          </td>
+                        </tr>
+                         <tr>
+                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Username"); ?></td>
+                          <td>
+                            <input name="rfc3118_username" type="text" id="rfc3118_username" value="<?=$pconfig['rfc3118_username'];?>" />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password"); ?></td>
+                          <td>
+                            <input name="rfc3118_password" type="password" id="rfc3118_password" value="<?=$pconfig['rfc3118_password'];?>" />
+                          </td>
+                        </tr>
+                        <tr class="RFC3118_OR_FR">                        
+                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Livebox ID"); ?></td>
+                          <td>
+                            <input name="rfc3118_or_fr_lbid" type="rfc3118_or_fr_lbid" id="rfc3118_or_fr_lbid" value="<?=$pconfig['rfc3118_or_fr_lbid'];?>" />
+                          </td>
+                        </tr>
+                      </body>
+                  </table>
+                </div>
+              </div>                     
                 <!-- Section : dhcp v4 -->
                 <div class="tab-content content-box col-xs-12 __mb" id="dhcp" style="display:none">
                   <div class="table-responsive">
