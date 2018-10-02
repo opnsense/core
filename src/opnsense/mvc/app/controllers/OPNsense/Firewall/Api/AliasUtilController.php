@@ -162,12 +162,53 @@ class AliasUtilController extends ApiControllerBase
                     $cnfAlias->content = implode("\n", $items);
                     $this->getModel()->serializeToConfig();
                     Config::getInstance()->save();
+                    // flush to disk,
+                    (new Backend())->configdRun('template reload OPNsense/Filter');
                 }
             }
 
             $this->sessionClose();
             $backend = new Backend();
             $backend->configdpRun("filter delete table", array($alias, $address));
+            return array("status" => "done");
+        } else {
+            return array("status" => "failed");
+        }
+    }
+
+    /**
+     * add item to alias table
+     * @param string $alias name
+     * @return array status
+     */
+    public function addAction($alias)
+    {
+        if ($this->request->isPost() && $this->request->hasPost("address")) {
+            $address = $this->request->getPost("address");
+            if (preg_match("/[^0-9a-f\:\.\/_]/", $address)) {
+                return array("status" => "not_an_address");
+            }
+            $cnfAlias = $this->getAlias($alias);
+            if ($cnfAlias !== null && in_array($cnfAlias->type, array('host', 'network'))) {
+                // update local administration, add address when not found for static types
+                $items = explode("\n", $cnfAlias->content);
+                if (strpos($address, "/") === false) {
+                    // add mask
+                    $address .= "/" . (strpos($address, ":") ? '128' : '32');
+                }
+                if (!array_search($address, $items)) {
+                    $items[] = $address;
+                    $cnfAlias->content = implode("\n", $items);
+                    $this->getModel()->serializeToConfig();
+                    Config::getInstance()->save();
+                    // flush to disk,
+                    (new Backend())->configdRun('template reload OPNsense/Filter');
+                }
+            }
+
+            $this->sessionClose();
+            $backend = new Backend();
+            $backend->configdpRun("filter add table", array($alias, $address));
             return array("status" => "done");
         } else {
             return array("status" => "failed");
