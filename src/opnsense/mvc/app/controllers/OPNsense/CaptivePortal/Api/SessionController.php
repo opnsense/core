@@ -70,7 +70,7 @@ class SessionController extends ApiControllerBase
     {
         $response = array();
         $mdlCP = new CaptivePortal();
-        foreach ($mdlCP->zones->zone->__items as $zone) {
+        foreach ($mdlCP->zones->zone->iterateItems() as $zone) {
             $response[(string)$zone->zoneid] = (string)$zone->description;
         }
         asort($response);

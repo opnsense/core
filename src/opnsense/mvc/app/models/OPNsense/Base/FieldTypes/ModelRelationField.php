@@ -107,7 +107,7 @@ class ModelRelationField extends BaseField
 
                 $searchItems = $modelObj->getNodeByReference($modelData['items']);
                 if (!empty($searchItems)) {
-                    foreach ($modelObj->getNodeByReference($modelData['items'])->__items as $node) {
+                    foreach ($modelObj->getNodeByReference($modelData['items'])->iterateItems() as $node) {
                         if (!isset($node->getAttributes()['uuid']) || $node->$displayKey == null) {
                             continue;
                         }

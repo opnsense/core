@@ -45,7 +45,7 @@ class M1_0_0 extends BaseModelMigration
             foreach ($cfgObj->aliases->alias as $alias) {
                 // find node by name or create a new one, aliases should be unique by name
                 $node = null;
-                foreach ($model->aliases->alias->__items as $new_alias) {
+                foreach ($model->aliases->alias->iterateItems() as $new_alias) {
                     if ((string)$new_alias->name == (string)$alias->name) {
                         $node = $new_alias;
                         break;
