@@ -481,14 +481,7 @@ button.toggle-sidebar {
   border: none;
   margin-top: 18px;
   float: left;
-  &.fa {
-    &.fa-chevron-left, &.fa-chevron-right, &.fa-chevron-left:active, &.fa-chevron-right:active {
-      position: absolute;
-    }
-    &.fa-chevron-left:focus, &.fa-chevron-right:focus {
-      outline: none;
-    }
-  }
+  outline:none;
 }
 
 /* COLLAPSE SIDEBAR END*/
