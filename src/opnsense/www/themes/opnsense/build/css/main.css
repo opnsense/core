@@ -7206,14 +7206,6 @@ button.toggle-sidebar {
   border: none;
   margin-top: 18px;
   float: left;
-}
-button.toggle-sidebar.fa.fa-chevron-left, button.toggle-sidebar.fa.fa-chevron-right {
-  position: absolute;
-}
-button.toggle-sidebar.fa.fa-chevron-left:active, button.toggle-sidebar.fa.fa-chevron-right:active {
-  position: absolute;
-}
-button.toggle-sidebar.fa.fa-chevron-left:focus, button.toggle-sidebar.fa.fa-chevron-right:focus {
   outline: none;
 }
 /* COLLAPSE SIDEBAR END*/
