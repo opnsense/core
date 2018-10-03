@@ -60,7 +60,7 @@ function create_OR_FR_Credentials($userID, $password, $livebox_ID)
     // need to add some salt and pepper here.
 
     return array(
-        'dhcp4_send_options' => 'dhcp-class-identifier "sagem", user-class "+FSVDSL_livebox.Internet.softathome.Livebox'.$livebox_ID.', '
+        'dhcp4_send_options' => 'dhcp-class-identifier "sagem", user-class "+FSVDSL_livebox.Internet.softathome.Livebox'.$livebox_ID.'", '
                                 .'option-90 00:00:00:00:00:00:00:00:00:00:00:'.$useridhex.'; ',
         'dhcp4_request_options' => 'subnet-mask, broadcast-address, dhcp-lease-time, dhcp-renewal-time, dhcp-rebinding-time, domain-search, routers, domain-name-servers, '
                                     .'option-90, option-120, option-125',
@@ -2095,7 +2095,7 @@ include("head.inc");
                         <tr class="RFC3118_OR_FR">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Livebox ID"); ?></td>
                           <td>
-                            <input name="rfc3118_or_fr_lbid" type="rfc3118_or_fr_lbid" id="rfc3118_or_fr_lbid" value="<?=$pconfig['rfc3118_or_fr_lbid'];?>" />
+                            <input name="rfc3118_or_fr_lbid" type="text" id="rfc3118_or_fr_lbid" value="<?=$pconfig['rfc3118_or_fr_lbid'];?>" />
                           </td>
                         </tr>
                       </body>
