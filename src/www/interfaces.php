@@ -42,6 +42,7 @@ function create_OR_FR_Credentials($userID, $password, $livebox_ID)
 {
     $useridhex = "";
     $passwordhex = "";
+
     $i = 0;
     do {
         $useridhex .= sprintf("%02x:", ord($userID{$i}));
@@ -61,14 +62,14 @@ function create_OR_FR_Credentials($userID, $password, $livebox_ID)
 
     return array(
         'dhcp4_send_options' => 'dhcp-class-identifier "sagem", user-class "+FSVDSL_livebox.Internet.softathome.Livebox'.$livebox_ID.'", '
-                                .'option-90 00:00:00:00:00:00:00:00:00:00:00:'.$useridhex.'; ',
+                                .'option-90 00:00:00:00:00:00:00:00:00:00:00:'.$useridhex,
         'dhcp4_request_options' => 'subnet-mask, broadcast-address, dhcp-lease-time, dhcp-renewal-time, dhcp-rebinding-time, domain-search, routers, domain-name-servers, '
                                     .'option-90, option-120, option-125',
         'dhcp6_send_options' => 'ia-pd 0, '
                                  .'raw-option 6 00:0b:00:11:00:17:00:18, '
                                  .'raw-option 15 00:2b:46:53:56:44:53:4c:5f:6c:69:76:65:62:6f:78:2e:49:6e:74:65:72:6e:65:74:2e:73:6f:66:74:61:74:68:6f:6d:65:2e:6c:69:76:65:62:6f:78:'.bin2hex($livebox_ID).', '
                                  .'raw-option 16 00:00:04:0e:00:05:73:61:67:65:6d, '
-                                 .'raw-option 11 00:00:00:00:00:00:00:00:00:00:00:'.$useridhex,''
+                                 .'raw-option 11 00:00:00:00:00:00:00:00:00:00:00:'.$useridhex,
      );
 }
 
