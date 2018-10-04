@@ -293,9 +293,6 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         BaseModelTest::$model->AllOrNone->value2 = "X";
         BaseModelTest::$model->AllOrNone->value3 = "";
         BaseModelTest::$model->serializeToConfig();
-        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value1, '');
-        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value2, 'X');
-        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value3, '');
     }
 
     /**
@@ -310,6 +307,49 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value1, "X1");
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value2, "X2");
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value3, "X3");
+    }
+
+
+    /**
+     * @depends testRunMigrations
+     */
+    public function testSingleSelectInitial()
+    {
+        BaseModelTest::$model->SingleSelect->value1 = "";
+        BaseModelTest::$model->SingleSelect->value2 = "";
+        BaseModelTest::$model->SingleSelect->value3 = "";
+        BaseModelTest::$model->serializeToConfig();
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value1, '');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value2, '');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value3, '');
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage Only one option could be selected
+     * @depends testSingleSelectInitial
+     */
+    public function testSingleSelectNok()
+    {
+        BaseModelTest::$model->SingleSelect->value1 = "x";
+        BaseModelTest::$model->SingleSelect->value2 = "x";
+        BaseModelTest::$model->SingleSelect->value3 = "";
+        BaseModelTest::$model->serializeToConfig();
+    }
+
+
+    /**
+     * @depends testSingleSelectNok
+     */
+    public function testSingleSelectOk()
+    {
+        BaseModelTest::$model->SingleSelect->value1 = "";
+        BaseModelTest::$model->SingleSelect->value2 = "x";
+        BaseModelTest::$model->SingleSelect->value3 = "";
+        BaseModelTest::$model->serializeToConfig();
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value1, '');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value2, 'x');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value3, '');
     }
 
     /**
