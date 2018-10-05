@@ -183,6 +183,15 @@
                 <codel_enable type="BooleanField">
                   <default>0</default>
                   <Required>Y</Required>
+                    <Constraints>
+                      <check001>
+                          <ValidationMessage>Only one option could be selected</ValidationMessage>
+                          <type>SingleSelectConstraint</type>
+                          <addFields>
+                              <pie_enable>pie_enable</pie_enable>
+                          </addFields>
+                      </check001>
+                  </Constraints>
                 </codel_enable>
                 <codel_target type="IntegerField">
                   <Required>N</Required>
@@ -201,6 +210,11 @@
                 <pie_enable type="BooleanField">
                   <default>0</default>
                   <Required>Y</Required>
+                  <Constraints>
+                      <check001>
+                          <reference>codel_enable.check001</reference>
+                      </check001>
+                  </Constraints>
                 </pie_enable>
                 <description type="TextField">
                     <Required>Y</Required>
