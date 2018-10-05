@@ -104,7 +104,7 @@ $(document).ready(function () {
             if ($("#navigation").hasClass("col-sidebar-left")) {
                 transition_duration(0);
                 var events = {
-                    mouseenter: function() {
+					mouseenter: function() {
 						$("#navigation.col-sidebar-left").css("width", "415px");
 						if ($(this).next("div").hasClass("in")) { 
 						} else if ($(this).next().is("a")) {
