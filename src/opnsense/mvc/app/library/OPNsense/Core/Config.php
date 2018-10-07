@@ -79,7 +79,7 @@ class Config extends Singleton
         $last_key = count($all_keys);
         // probably a safe bet, first key equals 0, last equals the number of keys minus 1.
         if ($all_keys[0] == "0" && $all_keys[$last_key-1] == ($last_key-1)) {
-           return true;
+            return true;
         }
 
         return false;

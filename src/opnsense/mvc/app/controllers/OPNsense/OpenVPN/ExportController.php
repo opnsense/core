@@ -29,6 +29,7 @@
  */
 
 namespace OPNsense\OpenVPN;
+
 use \OPNsense\Base\IndexController as BaseIndexController;
 
 /**
