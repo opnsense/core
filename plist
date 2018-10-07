@@ -1575,6 +1575,7 @@
 /usr/local/www/diag_logs_ipsec.php
 /usr/local/www/diag_logs_ntpd.php
 /usr/local/www/diag_logs_openvpn.php
+/usr/local/www/diag_logs_pkg.php
 /usr/local/www/diag_logs_ppp.php
 /usr/local/www/diag_logs_proxy.php
 /usr/local/www/diag_logs_resolver.php

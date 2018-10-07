@@ -685,11 +685,12 @@ function system_syslogd_start($verbose = false, $restart = false)
      * get rid of this behaviour by wrapping this local array using
      * the key as a "name" entry in the array...
      */
+    $syslogconfs['configd'] = array('facility' => array('configd.py'));
     $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay', 'dhclient', 'dhcp6c'), 'local' => '/var/dhcpd/var/run/log', 'remote' => 'dhcp');
     $syslogconfs['filter'] = array('facility' => array('filterlog'), 'remote' => 'filter');
-    $syslogconfs['lighttpd'] = array('facility' => array('lighttpd'));
-    $syslogconfs['configd'] = array('facility' => array('configd.py'));
     $syslogconfs['gateways'] = array('facility' => array('apinger', 'dpinger'), 'remote' => 'apinger');
+    $syslogconfs['lighttpd'] = array('facility' => array('lighttpd'));
+    $syslogconfs['pkg'] = array('facility' => array('pkg', 'pkg-static'));
     $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');
     $syslogconfs['ppps'] = array('facility' => array('ppp'));
     $syslogconfs['resolver'] = array('facility' => array('unbound'), 'remote' => 'dns');

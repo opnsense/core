@@ -88,9 +88,10 @@
         </Trust>
         <Wizard url="/wizard.php?xml=system" cssClass="fa fa-magic fa-fw"/>
         <LogFiles order="150" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
-            <General order="100" VisibleName="General" url="/diag_logs.php"/>
-            <Configd order="150" VisibleName="Configd" url="/configd_logs.php"/>
-            <WebGUI order="200" VisibleName="Web GUI" url="/httpd_logs.php"/>
+            <Configd url="/configd_logs.php"/>
+            <Firmware url="/diag_logs_pkg.php"/>
+            <General url="/diag_logs.php"/>
+            <WebGUI VisibleName="Web GUI" url="/httpd_logs.php"/>
         </LogFiles>
         <Diagnostics order="160" cssClass="fa fa-medkit fa-fw">
             <Services url="/status_services.php">
