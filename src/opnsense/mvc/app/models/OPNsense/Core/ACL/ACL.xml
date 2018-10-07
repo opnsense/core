@@ -109,9 +109,10 @@
     <page-diagnostics-logs-system>
         <name>Diagnostics: Logs: System</name>
         <patterns>
-            <pattern>diag_logs.php*</pattern>
-            <pattern>httpd_logs.php*</pattern>
             <pattern>configd_logs.php*</pattern>
+            <pattern>diag_logs.php*</pattern>
+            <pattern>diag_logs_pkg.php*</pattern>
+            <pattern>httpd_logs.php*</pattern>
         </patterns>
     </page-diagnostics-logs-system>
     <page-diagnostics-packetcapture>
