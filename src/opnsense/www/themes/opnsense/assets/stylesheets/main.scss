@@ -441,12 +441,10 @@ main.page-content.col-lg-12 {
         &.collapse.in {
           width: 168px;
           font-size: 14px;
-          display: block;
           z-index: 10;
           position: absolute;
           left: 70px;
           margin-top: -70px;
-          height: auto;
           border: 1px solid #eaeaea;
           -webkit-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
           -moz-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
@@ -454,12 +452,10 @@ main.page-content.col-lg-12 {
           > div.collapse.in {
             width: 168px;
             font-size: 14px;
-            display: block;
             z-index: 10;
             position: absolute;
             left: 166px;
             margin-top: -32px;
-            height: auto;
             border: 1px solid #eaeaea;
             -webkit-transition: width 0.1s;
             -o-transition: width 0.1s;
