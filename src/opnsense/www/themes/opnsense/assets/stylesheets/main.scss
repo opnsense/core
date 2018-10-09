@@ -457,9 +457,9 @@ main.page-content.col-lg-12 {
             left: 166px;
             margin-top: -32px;
             border: 1px solid #eaeaea;
-            -webkit-transition: width 0.1s;
-            -o-transition: width 0.1s;
-            transition: width 0.1s;
+            -webkit-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
+            -moz-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
+            box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
           }
         }
         &.collapsing, &.collapse.in > div.collapsing {
