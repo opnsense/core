@@ -64,6 +64,9 @@ foreach ($iflist as $ifname => $ifcfg) {
             case "l2tp":
                 $class = "/L2TP";
                 break;
+            case "dslite":
+                $class = "/DS-Lite";
+                break;
         }
     }
     $class6 = null;
