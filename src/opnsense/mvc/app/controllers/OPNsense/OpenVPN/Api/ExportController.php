@@ -38,12 +38,42 @@ use \OPNsense\Core\Config;
 class ExportController extends ApiControllerBase
 {
     /**
+     * find configured servers
+     * @param bool $active only active servers
+     * @return \Generator
+     */
+    private function servers($active=true)
+    {
+        if (isset(Config::getInstance()->object()->openvpn)) {
+            foreach (Config::getInstance()->object()->openvpn->children() as $key => $value) {
+                if ($key == 'openvpn-server') {
+                    if (empty($value->disable) || !$active) {
+                        yield $value;
+                    }
+                }
+            }
+        }
+
+    }
+
+    /**
      * list providers
      * @return array list of configured openvpn providers (servers)
      */
     public function providersAction()
     {
-        return array();
+        $result = array();
+        foreach ($this->servers() as $server) {
+            $vpnid = (string)$server->vpnid;
+            $result[$vpnid] = array();
+            // visible name
+            $result[$vpnid]["name"] = empty($server->description) ? "server" : (string)$server->description;
+            $result[$vpnid]["name"] .= " " . $server->protocol . ":" . $server->local_port;
+            // relevant properties
+            $result[$vpnid]["mode"] = (string)$server->mode;
+            $result[$vpnid]["vpnid"] = $vpnid;
+        }
+        return $result;
     }
 
     /**
