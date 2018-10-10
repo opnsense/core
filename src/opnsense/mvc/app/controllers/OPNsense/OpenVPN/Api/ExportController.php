@@ -53,7 +53,21 @@ class ExportController extends ApiControllerBase
                 }
             }
         }
+    }
 
+    /**
+     * find server by vpnid
+     * @param string $vpnid reference
+     * @return mixed|null
+     */
+    private function findServer($vpnid)
+    {
+        foreach ($this->servers() as $server) {
+            if ((string)$server->vpnid == $vpnid) {
+                return $server;
+            }
+        }
+        return null;
     }
 
     /**
@@ -78,12 +92,38 @@ class ExportController extends ApiControllerBase
 
     /**
      * list configured accounts
-     * @param string $server handle
+     * @param string $vpnid server handle
      * @return array list of configured accounts
      */
-    public function accountsAction($server)
+    public function accountsAction($vpnid)
     {
-        return array();
+        $result = array();
+
+        $server = $this->findServer($vpnid);
+        if ($server !== null) {
+            // collect certificates for this server's ca
+            if (isset(Config::getInstance()->object()->cert)) {
+                foreach (Config::getInstance()->object()->cert as $cert) {
+                    if (isset($cert->refid) && isset($cert->caref) && (string)$server->caref == $cert->caref) {
+                        $result[(string)$cert->refid] = array(
+                            "description" => (string)$cert->descr,
+                            "users" => array()
+                        );
+                    }
+                }
+            }
+            // collect linked users
+            foreach (Config::getInstance()->object()->system->user as $user) {
+                if (isset($user->cert)) {
+                    foreach ($user->cert as $cert) {
+                        if (!empty($result[(string)$cert])) {
+                            $result[(string)$cert]['users'][] = (string)$user->name;
+                        }
+                    }
+                }
+            }
+        }
+        return $result;
     }
 
     /**
