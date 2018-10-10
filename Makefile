@@ -155,10 +155,6 @@ mount:
 	    echo -n "Enabling core.git live mount..."; \
 	    sed ${SED_REPLACE} ${.CURDIR}/src/opnsense/version/opnsense.in > \
 	        ${.CURDIR}/src/opnsense/version/opnsense; \
-	    sed ${SED_REPLACE} ${.CURDIR}/src/opnsense/version/opnsense.abi.in > \
-	        ${.CURDIR}/src/opnsense/version/opnsense.abi; \
-	    sed ${SED_REPLACE} ${.CURDIR}/src/opnsense/version/opnsense.name.in > \
-	        ${.CURDIR}/src/opnsense/version/opnsense.name; \
 	    sed ${SED_REPLACE} ${.CURDIR}/src/opnsense/firmware-product.in > \
 	        ${.CURDIR}/src/opnsense/firmware-product; \
 	    mount_unionfs ${.CURDIR}/src ${LOCALBASE}; \
