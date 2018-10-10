@@ -96,10 +96,27 @@ POSSIBILITY OF SUCH DAMAGE.
                             $("#grid-log > tbody > tr:first").before(log_tr);
                         }
                     }
-                    // limit output
-                    $("#grid-log > tbody > tr:gt("+(parseInt($("#limit").val())-1)+")").remove();
                     // apply filter after load
                     $("#filter").keyup();
+
+                    // limit output, try to keep max X records on screen.
+                    var tr_count = 0;
+                    var visible_count = 0;
+                    var max_rows = parseInt($("#limit").val());
+                    $("#grid-log > tbody > tr").each(function(){
+                        if ($(this).is(':visible')) {
+                            ++visible_count;
+                            if (visible_count > max_rows) {
+                               // more then [max_rows] visible, safe to remove the rest
+                               $(this).remove();
+                            }
+                        } else if (tr_count > max_rows) {
+                            // invisible rows starting at [max_rows] rownumber
+                            $(this).remove();
+                        }
+                        ++tr_count;
+                    });
+
                     // bind info buttons
                     $(".act_info").unbind('click').click(function(){
                         var sender_tr = $(this).parent().parent();
