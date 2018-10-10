@@ -843,8 +843,6 @@
 /usr/local/opnsense/site-python/watchers/__init__.py
 /usr/local/opnsense/site-python/watchers/dhcpd.py
 /usr/local/opnsense/version/opnsense
-/usr/local/opnsense/version/opnsense.abi
-/usr/local/opnsense/version/opnsense.name
 /usr/local/opnsense/www/api.php
 /usr/local/opnsense/www/css/bootstrap-datepicker3.min.css
 /usr/local/opnsense/www/css/flags/1x1/ad.svg
