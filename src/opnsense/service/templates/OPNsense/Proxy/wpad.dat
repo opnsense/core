@@ -6,8 +6,6 @@ function FindProxyForURL(url, host) {
 {% if helpers.exists('OPNsense.proxy.pac.rule') %}
 {# define only if needed because of performance issues #}
 {% set data = [] %}
-{% set dstip = '' %}
-{% set is_resolvable = '' %}
 {% for match in helpers.toList('OPNsense.proxy.pac.match') %}
 {%   if 'var dl =  dnsDomainLevels(host);' not in data and match.match_type == 'dns_domain_levels' %}
 {%     do data.append('var dl =  dnsDomainLevels(host);') %}
