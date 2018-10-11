@@ -485,6 +485,7 @@ authoritative;
 EOD;
 
     $dhcpdifs = array();
+    $omapi_added = false;
     $add_routers = false;
     $gateways_arr = return_gateways_array();
     /* only add a routers line if the system has any IPv4 gateway at all */
@@ -979,6 +980,17 @@ EOD;
                 $newzone['ddnsdomainalgorithm'] = !empty($dhcpifconf['ddnsdomainalgorithm']) ? $dhcpifconf['ddnsdomainalgorithm'] : "hmac-md5";
                 $ddns_zones[] = $newzone;
             }
+        }
+
+        if ($dhcpifconf['omapi'] && ! $omapi_added) {
+            $dhcpdconf .= "\nomapi-port {$dhcpifconf['omapiport']};\n";
+            if (isset($dhcpifconf['omapialgorithm']) && isset($dhcpifconf['omapikey'])) {
+                $dhcpdconf .= "key omapi_key {\n";
+                $dhcpdconf .= "  algorithm {$dhcpifconf['omapialgorithm']};\n";
+                $dhcpdconf .= "  secret \"{$dhcpifconf['omapikey']}\";\n";
+                $dhcpdconf .= "};\nomapi-key omapi_key;\n\n";
+            }
+            $omapi_added = true; // make sure we only add this OMAPI block once
         }
     }
 

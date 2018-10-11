@@ -98,7 +98,7 @@ $config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'dhcp
   'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown', 'ddnsdomain',
   'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsupdate', 'mac_allow', 'mac_deny', 'tftp', 'ldap',
   'netboot', 'nextserver', 'filename', 'filename32', 'filename64', 'rootpath', 'netmask', 'numberoptions',
-  'interface_mtu', 'wpad');
+  'interface_mtu', 'wpad', 'omapi', 'omapiport', 'omapialgorithm', 'omapikey');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // handle identifiers and action
@@ -278,6 +278,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (gen_subnet_max($config['interfaces'][$if]['ipaddr'], $config['interfaces'][$if]['subnet']) == $pconfig['range_to']) {
             $input_errors[] = gettext("You cannot use the broadcast address in the ending subnet range.");
+        }
+
+        if ($pconfig['omapi'] && (empty($pconfig['omapiport']) || !is_numeric($pconfig['omapiport']) || $pconfig['omapiport'] < 1 || $pconfig['omapiport'] > 65535)) {
+            $input_errors[] = gettext("A valid port number must be specified for the OMAPI port.");
         }
 
         // Disallow a range that includes the virtualip
@@ -536,6 +540,11 @@ include("head.inc");
     function show_netboot_config() {
         $("#shownetbootbox").html('');
         $("#shownetboot").show();
+    }
+
+    function show_omapi_config() {
+        $("#showomapibox").html('');
+        $("#showomapi").show();
     }
 //]]>
 </script>
@@ -993,6 +1002,25 @@ include("head.inc");
                         <div id="showwpad" style="display:none">
                           <input name="wpad" id="wpad" type="checkbox" value="yes" <?=!empty($pconfig['wpad']) ? "checked=\"checked\"" : ""; ?> />
                           <strong><?= gettext("Enable Web Proxy Auto Discovery") ?></strong>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable OMAPI");?></td>
+                      <td>
+                        <div id="showomapibox">
+                          <input type="button" onclick="show_omapi_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show OMAPI configuration");?>
+                        </div>
+                        <div id="showomapi" style="display:none">
+                          <input type="checkbox" value="yes" name="omapi" id="omapi" <?=!empty($pconfig['omapi']) ? " checked=\"checked\"" : ""; ?> />
+                          <strong><?=gettext("Enables OMAPI");?></strong>
+                          <br/><br/>
+                          <?=gettext('OMAPI port');?>
+                          <input name="omapiport" type="text" id="omapiport" value="<?=$pconfig['omapiport'];?>" /><br />
+                          <?=gettext('Key algorithm');?>
+                          <input name="omapialgorithm" type="text" id="omapialgorithm" value="<?=$pconfig['omapialgorithm'];?>" /><br />
+                          <?=gettext('OMAPI key');?>
+                          <input name="omapikey" type="text" id="omapikey" value="<?=$pconfig['omapikey'];?>" /><br />
                         </div>
                       </td>
                     </tr>
