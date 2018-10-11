@@ -613,8 +613,11 @@ authoritative;
 EOD;
 
     $dhcpdifs = array();
-    /*    loop through and determine if we need to setup
-     *    failover peer "bleh" entries
+    $omapi_added = false;
+
+    /*
+     * loop through and determine if we need
+     * to setup failover peer "bleh" entries
      */
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         if (!isset($dhcpifconf['enable'])) {
@@ -626,10 +629,6 @@ EOD;
 
         if (!empty($dhcpifconf['failover_peerip'])) {
             $intip = get_interface_ip($dhcpif, $ifconfig_details);
-            /*
-             *    yep, failover peer is defined.
-             *    does it match up to a defined vip?
-             */
             $failover_primary = false;
             if (!empty($config['virtualip']['vip'])) {
                 foreach ($config['virtualip']['vip'] as $vipent) {
@@ -1138,6 +1137,19 @@ EOD;
                 $newzone['ddnsdomainkey'] = $dhcpifconf['ddnsdomainkey'];
                 $newzone['ddnsdomainalgorithm'] = !empty($dhcpifconf['ddnsdomainalgorithm']) ? $dhcpifconf['ddnsdomainalgorithm'] : "hmac-md5";
                 $ddns_zones[] = $newzone;
+            }
+        }
+
+        if ($dhcpifconf['omapi'] && !$omapi_added) {
+            $dhcpdconf .= "\nomapi-port {$dhcpifconf['omapiport']};\n";
+            if (isset($dhcpifconf['omapialgorithm']) && isset($dhcpifconf['omapikey'])) {
+                $dhcpdconf .= "key omapi_key {\n";
+                $dhcpdconf .= "  algorithm {$dhcpifconf['omapialgorithm']};\n";
+                $dhcpdconf .= "  secret \"{$dhcpifconf['omapikey']}\";\n";
+                $dhcpdconf .= "};\nomapi-key omapi_key;\n\n";
+
+                /* make sure we only add this OMAPI block once */
+                $omapi_added = true;
             }
         }
     }
