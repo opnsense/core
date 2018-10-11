@@ -71,7 +71,7 @@
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Only one option could be selected</ValidationMessage>
+                            <ValidationMessage>CoDel and PIE can not be combined.</ValidationMessage>
                             <type>SingleSelectConstraint</type>
                             <addFields>
                                 <pie_enable>pie_enable</pie_enable>
