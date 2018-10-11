@@ -106,14 +106,15 @@ $(document).ready(function () {
                 var events = {
                     mouseenter: function() {
                         $("#navigation.col-sidebar-left").css("width", "415px");
-			    if ($(this).next("div").hasClass("in")) { 
-			    } else if ($(this).next().is("a")) {
-				    $(this).nextAll("a").prevAll("a").addClass("collapsed").attr("aria-expanded","false");
-				    $(this).nextAll("div").prevAll("div").removeClass("in").attr("aria-expanded","false");
-			    } else {
-				    $(this).trigger("click");
-			    }
-		    },
+                        if ($(this).next("div").hasClass("in")) {
+                            /* no action needed */
+                        } else if ($(this).next().is("a")) {
+                            $(this).nextAll("a").prevAll("a").addClass("collapsed").attr("aria-expanded","false");
+                            $(this).nextAll("div").prevAll("div").removeClass("in").attr("aria-expanded","false");
+                        } else {
+                            $(this).trigger("click");
+                        }
+                    },
                     mouseleave: function() {
                         $("#navigation.col-sidebar-left").css("width", "70px");
                     },
