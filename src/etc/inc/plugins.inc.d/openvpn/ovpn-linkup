@@ -3,12 +3,12 @@
 # let the configuration system know that the ip has changed.
 # /usr/local/opnsense/service/configd_ctl.py interface newip $interface
 
-if [ "${dev_type}" = "tun" ]; then
-	if [ "" != "$route_vpn_gateway" ]; then
-		/bin/echo $route_vpn_gateway > /tmp/$1_router
-	else
-		/bin/echo $5 > /tmp/$1_router
-	fi
+if [ -n "${route_vpn_gateway}" ]; then
+	/bin/echo ${route_vpn_gateway} > /tmp/$1_router
+elif [ -n "${ifconfig_remote}" ]; then
+	/bin/echo ${ifconfig_remote} > /tmp/$1_router
+elif [ "${dev_type}" = "tun" ]; then
+	/bin/echo ${5} > /tmp/${1}_router
 fi
 
 /usr/bin/touch /tmp/$1up
