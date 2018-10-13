@@ -89,9 +89,9 @@ POSSIBILITY OF SUCH DAMAGE.
                             });
 
                             if (record['action'] == 'pass') {
-                                log_tr.css('background', 'rgba(5, 142, 73, 0.3)');
+                                log_tr.addClass('fw_pass');
                             } else if (record['action'] == 'block') {
-                                log_tr.css('background', 'rgba(235, 9, 9, 0.3)');
+                                log_tr.addClass('fw_block');
                             }
                             $("#grid-log > tbody > tr:first").before(log_tr);
                         }
@@ -237,6 +237,12 @@ POSSIBILITY OF SUCH DAMAGE.
     }
     .act_info {
         cursor: pointer;
+    }
+    .fw_pass {
+        background: rgba(5, 142, 73, 0.3);
+    }
+    .fw_block {
+        background: rgba(235, 9, 9, 0.3);
     }
 </style>
 
