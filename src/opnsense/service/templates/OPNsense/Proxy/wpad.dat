@@ -19,9 +19,7 @@ function FindProxyForURL(url, host) {
 {%     do data.update({ 'is_resolvable': 'var is_resolvable = isResolvable(host);'}) %}
 {%   endif %}
 {% endfor %}
-{{ data['dl'] }}
-{{ data['dstip'] }}
-{{ data['is_resolvable'] }}
+{{ data.values()|join("\n") }}
 
 {% if helpers.exists('OPNsense.proxy.pac.rule') %}
 {%   for rule in helpers.toList('OPNsense.proxy.pac.rule') %}
