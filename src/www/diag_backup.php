@@ -384,14 +384,16 @@ $( document ).ready(function() {
                 <tr>
                   <td>
                     <?=gettext("Restore area:"); ?>
-                    <select name="restorearea" id="restorearea" class="selectpicker">
-                      <option value=""><?=gettext("ALL");?></option>
+                    <div>
+                      <select name="restorearea" id="restorearea" class="selectpicker">
+                        <option value=""><?=gettext("ALL");?></option>
 <?php
-                    foreach($areas as $area => $areaname):?>
-                      <option value="<?=$area;?>"><?=$areaname;?></option>
+                      foreach($areas as $area => $areaname):?>
+                        <option value="<?=$area;?>"><?=$areaname;?></option>
 <?php
-                    endforeach;?>
-                    </select><br/>
+                      endforeach;?>
+                      </select>
+                    </div>
                     <input name="conffile" type="file" id="conffile" /><br/>
                     <input name="rebootafterrestore" type="checkbox" id="rebootafterrestore" checked="checked" />
                     <?=gettext("Reboot after a successful restore."); ?><br/>
