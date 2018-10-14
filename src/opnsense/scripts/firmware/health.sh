@@ -33,15 +33,19 @@ PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 : > ${PKG_PROGRESS_FILE}
 
 echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${PKG_PROGRESS_FILE}
-for FILE in ${BASE_MTREE} ${KERNEL_MTREE}; do
-	if [ -f ${FILE} ]; then
-		# XXX print header message
-		# XXX exclude /etc on base
-		${MTREE} < ${FILE} >> ${PKG_PROGRESS_FILE} 2>&1
-	else
-		# XXX complain if file is missing
-	fi
-done
+if [ -f ${BASE_MTREE} ]; then
+	echo "Detect installed base files with invalid checksums" >> ${PKG_PROGRESS_FILE}
+	# XXX exclude /etc on base
+	${MTREE} < ${BASE_MTREE} >> ${PKG_PROGRESS_FILE} 2>&1
+else
+	# XXX complain if file is missing post-18.7
+fi
+if [ -f ${KERNEL_MTREE} ]; then
+	echo "Detect installed kernel files with invalid checksums" >> ${PKG_PROGRESS_FILE}
+	${MTREE} < ${KERNEL_MTREE} >> ${PKG_PROGRESS_FILE} 2>&1
+else
+	# XXX complain if file is missing post-18.7
+fi
 echo "Check for and install missing package dependencies" >> ${PKG_PROGRESS_FILE}
 pkg check -da >> ${PKG_PROGRESS_FILE} 2>&1
 echo "Detect installed package files with invalid checksums" >> ${PKG_PROGRESS_FILE}
