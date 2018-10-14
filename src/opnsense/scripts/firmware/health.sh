@@ -32,20 +32,24 @@ PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
+set_check()
+{
+	SET=${1}
+	FILE=${2}
+
+	if [ ! -f ${BASE_MTREE} ]; then
+		# XXX complain if file is missing post-18.7
+		return
+	fi
+
+	echo "Detect installed ${SET} files with invalid checksums" >> ${PKG_PROGRESS_FILE}
+
+	${MTREE} < ${FILE} >> ${PKG_PROGRESS_FILE} 2>&1
+}
+
 echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${PKG_PROGRESS_FILE}
-if [ -f ${BASE_MTREE} ]; then
-	echo "Detect installed base files with invalid checksums" >> ${PKG_PROGRESS_FILE}
-	# XXX exclude /etc on base
-	${MTREE} < ${BASE_MTREE} >> ${PKG_PROGRESS_FILE} 2>&1
-else
-	# XXX complain if file is missing post-18.7
-fi
-if [ -f ${KERNEL_MTREE} ]; then
-	echo "Detect installed kernel files with invalid checksums" >> ${PKG_PROGRESS_FILE}
-	${MTREE} < ${KERNEL_MTREE} >> ${PKG_PROGRESS_FILE} 2>&1
-else
-	# XXX complain if file is missing post-18.7
-fi
+set_check base ${BASE_MTREE}
+set_check kernel ${KERNEL_MTREE}
 echo "Check for and install missing package dependencies" >> ${PKG_PROGRESS_FILE}
 pkg check -da >> ${PKG_PROGRESS_FILE} 2>&1
 echo "Detect installed package files with invalid checksums" >> ${PKG_PROGRESS_FILE}
