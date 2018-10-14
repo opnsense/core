@@ -5,23 +5,21 @@
 function FindProxyForURL(url, host) {
 {% if helpers.exists('OPNsense.proxy.pac.rule') %}
 {# define only if needed as because of performance issues #}
-{% set dl = '' %}
+{% set data = {'dl' : '', 'dstip' : '', 'is_resolvable' : '' } %}
 {% set dstip = '' %}
 {% set is_resolvable = '' %}
-{% for match in helpers.toList('OPNsense.Proxy.pac.match') %}
+{% for match in helpers.toList('OPNsense.proxy.pac.match') %}
 {%   if match.match_type == 'dns_domain_levels' %}
-{%     set dl = 'var dl =  dnsDomainLevels(host);' %}
+{%     do data.update({ 'dl': 'var dl =  dnsDomainLevels(host);'}) %}
 {%   endif %}
-{%   if match.match_type == 'dns_domain_levels' %}
-{%     set dstip = 'var dstip = dnsResolve(host);' %}
+{%   if match.match_type == 'dns_domain_levels' or match.match_type == 'destination_in_net' %}
+{%     do data.update({ 'dstip': 'var dstip = dnsResolve(host);'}) %}
 {%   endif %}
 {%   if match.match_type == 'is_resolvable' %}
-{%     set is_resolvable = 'var is_resolvable = isResolvable(host);' %}
+{%     do data.update({ 'is_resolvable': 'var is_resolvable = isResolvable(host);'}) %}
 {%   endif %}
 {% endfor %}
-{{ dl }}
-{{ dstip }}
-{{ is_resolvable }}
+{{ data.values()|join("\n") }}
 
 {% if helpers.exists('OPNsense.proxy.pac.rule') %}
 {%   for rule in helpers.toList('OPNsense.proxy.pac.rule') %}
