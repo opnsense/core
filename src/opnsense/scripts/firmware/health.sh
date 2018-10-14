@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2017-2018 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,12 +24,21 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+BASE_MTREE=/usr/local/opnsense/version/base.mtree
+KERNEL_MTREE=/usr/local/opnsense/version/kernel.mtree
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
 echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${PKG_PROGRESS_FILE}
+for MTREE in ${BASE_MTREE} ${KERNEL_MTREE}; do
+	# XXX complain if file is missing
+	# XXX exclude /etc on base
+	if [ -f ${MTREE} ]; then
+		mtree -e -p / < ${MTREE} >> ${PKG_PROGRESS_FILE} 2>&1
+	fi
+done
 echo "Check for and install missing package dependencies" >> ${PKG_PROGRESS_FILE}
 pkg check -da >> ${PKG_PROGRESS_FILE} 2>&1
 echo "Detect installed package files with invalid checksums" >> ${PKG_PROGRESS_FILE}

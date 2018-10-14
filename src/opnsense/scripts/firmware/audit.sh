@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2016-2018 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,20 +24,11 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-BASE_MTREE=/usr/local/opnsense/version/base.mtree
-KERNEL_MTREE=/usr/local/opnsense/version/kernel.mtree
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
 echo "***GOT REQUEST TO AUDIT SECURITY***" >> ${PKG_PROGRESS_FILE}
-for MTREE in ${BASE_MTREE} ${KERNEL_MTREE}; do
-	# XXX complain if file is missing
-	# XXX exclude /etc on base
-	if [ -f ${MTREE} ]; then
-		mtree -e < ${MTREE} >> ${PKG_PROGRESS_FILE} 2>&1
-	fi
-done
 pkg audit -F >> ${PKG_PROGRESS_FILE} 2>&1
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}
