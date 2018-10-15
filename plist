@@ -382,6 +382,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/forms/tests.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/Api/ExportController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/ExportController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/forms/export_options.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/IndexController.php
@@ -435,6 +436,11 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Rule.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/SNatRule.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Util.php
+/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ArchiveOpenVPN.php
+/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/BaseExporter.php
+/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ExportFactory.php
+/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/IExportProvider.php
+/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/PlainOpenVPN.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Backup/NextcloudSettings.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Backup/NextcloudSettings.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Backup/ScpSettings.php
@@ -519,6 +525,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Monit.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/Export.php
+/usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/Export.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Migrations/M1_0_0.php
