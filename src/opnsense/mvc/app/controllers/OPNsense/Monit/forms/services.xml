@@ -36,6 +36,13 @@
       <help><![CDATA[According to the service type path can be a file or a directory.]]></help>
    </field>
    <field>
+      <id>monit.service.timeout</id>
+      <label>Program Timeout</label>
+      <type>text</type>
+      <advanced>true</advanced>
+      <help><![CDATA[The timeout for custom program checks.]]></help>
+   </field>
+   <field>
       <id>monit.service.address</id>
       <label>Address</label>
       <type>text</type>

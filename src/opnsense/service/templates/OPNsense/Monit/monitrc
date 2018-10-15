@@ -117,9 +117,13 @@ check {{ service.type }} {{ service.name }} {{ address }} {{ interface }}
 {%     elif service.type == 'system' %}
 check {{ service.type }} {{ service.name }}
 {%     else %}
-{%      set path = "with path " ~ service.path %}
+{%      set path = "with path \"" ~ service.path ~ "\"" %}
 {%      if service.type == 'custom' %}
-check program {{ service.name }} {{ path }}
+{%       set timeout = '' %}
+{%       if service.timeout|default('0') != 0 %}
+{%         set timeout = "timeout " ~ service.timeout ~ " seconds" %}
+{%       endif %}
+check program {{ service.name }} {{ path }} {{ timeout }}
 {%      else %}
 check {{ service.type }} {{ service.name }} {{ path }}
 {%      endif %}

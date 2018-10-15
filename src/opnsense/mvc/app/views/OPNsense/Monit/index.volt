@@ -196,6 +196,7 @@ POSSIBILITY OF SUCH DAMAGE.
          $('tr[id="row_monit.service.pidfile"]').addClass('hidden');
          $('tr[id="row_monit.service.match"]').addClass('hidden');
          $('tr[id="row_monit.service.path"]').addClass('hidden');
+         $('tr[id="row_monit.service.timeout"]').addClass('hidden');
          $('tr[id="row_monit.service.address"]').addClass('hidden');
          $('tr[id="row_monit.service.interface"]').addClass('hidden');
          $('tr[id="row_monit.service.start"]').removeClass('hidden');
@@ -238,6 +239,7 @@ POSSIBILITY OF SUCH DAMAGE.
                break;
             default:
                $('tr[id="row_monit.service.path"]').removeClass('hidden');
+               $('tr[id="row_monit.service.timeout"]').removeClass('hidden');
          }
       };
       $('#DialogEditService').on('shown.bs.modal', function() {ShowHideFields();});
@@ -245,6 +247,7 @@ POSSIBILITY OF SUCH DAMAGE.
       $('#monit\\.service\\.pidfile').on('input', function() {ShowHideFields();});
       $('#monit\\.service\\.match').on('input', function() {ShowHideFields();});
       $('#monit\\.service\\.path').on('input', function() {ShowHideFields();});
+      $('#monit\\.service\\.timeout').on('input', function() {ShowHideFields();});
       $('#monit\\.service\\.address').on('input', function() {ShowHideFields();});
       $('#monit\\.service\\.interface').on('changed.bs.select', function(e) {ShowHideFields();});
 
