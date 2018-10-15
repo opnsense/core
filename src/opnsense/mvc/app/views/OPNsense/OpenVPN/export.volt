@@ -29,10 +29,56 @@ POSSIBILITY OF SUCH DAMAGE.
 <script>
 
     $( document ).ready(function() {
+        /**
+         * Provider selection
+         */
+        $("#openvpn_export\\.servers").change(function () {
+            var selected_opt = $(this).find('option:selected');
+            $("#openvpn_export\\.hostname").val(selected_opt.data('hostname'));
+        });
+        ajaxGet('/api/openvpn/export/providers/', {}, function(data, status){
+            if (status == 'success') {
+                $.each(data, function (idx, record) {
+                    $("#openvpn_export\\.servers").append(
+                        $("<option/>").val(record.vpnid)
+                            .text(record.name)
+                            .data('hostname', record.hostname)
+                    );
+                });
+                $("#openvpn_export\\.servers").selectpicker('refresh');
+                $("#openvpn_export\\.servers").change();
+            }
+        });
 
+        /**
+         * Template / type selection
+         */
+        $("#openvpn_export\\.template").change(function () {
+            $(".export_option").closest('tr').hide();
+            var selected_options = $(this).find('option:selected').data('options');
+            for (var i=0; i < selected_options.length; ++i) {
+                $("#row_openvpn_export\\."+selected_options[i]).show();
+            }
+
+        });
+        ajaxGet('/api/openvpn/export/templates/',  {}, function(data, status){
+            if (status == 'success') {
+                $.each(data, function (idx, record) {
+                    $("#openvpn_export\\.template").append(
+                        $("<option/>").val(idx)
+                            .text(record.name)
+                            .data('options', record.supportedOptions)
+                    );
+                });
+                $("#openvpn_export\\.template").selectpicker('refresh');
+                $("#openvpn_export\\.template").change();
+            }
+        });
     });
 
 </script>
 
 <div class="content-box">
+    {{ partial("layout_partials/base_form",['fields':exportForm,'id':'frm_ExportSettings'])}}
+
 </div>

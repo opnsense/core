@@ -30,21 +30,28 @@
 
 namespace OPNsense\OpenVPN;
 
-use \OPNsense\Base\IndexController as BaseIndexController;
+use OPNsense\Base\BaseModel;
 
 /**
- * Class ExportController
+ * Class Export
  * @package OPNsense\OpenVPN
  */
-class ExportController extends BaseIndexController
+class Export extends BaseModel
 {
     /**
-     * default ids index page
-     * @throws \Exception
+     * get or create server to store defaults
+     * @param $vpnid openvpn unique reference (number)
+     * @return mixed server object
      */
-    public function indexAction()
+    public function getServer($vpnid)
     {
-        $this->view->pick('OPNsense/OpenVPN/export');
-        $this->view->exportForm = $this->getForm("export_options");
+        foreach ($this->servers->server->iterateItems() as $uuid => $server) {
+            if  ((string)$server->vpnid == (string)$vpnid) {
+                return $server;
+            }
+        }
+        $server = $this->servers->server->add();
+        $server->vpnid = (string)$vpnid;
+        return $server;
     }
 }

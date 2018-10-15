@@ -30,6 +30,10 @@ namespace OPNsense\OpenVPN\Api;
 
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Config;
+use \OPNsense\Core\Backend;
+use \OPNsense\OpenVPN\Export;
+use \OPNsense\OpenVPN\ExportFactory;
+
 
 /**
  * Class ExportController handles client export functions
@@ -37,6 +41,51 @@ use \OPNsense\Core\Config;
  */
 class ExportController extends ApiControllerBase
 {
+    /**
+     * @var null|Export model object to work on
+     */
+    private $modelHandle = null;
+
+    /**
+     * @var array list of configured interfaces (addresses)
+     */
+    private $physicalInterfaces = array();
+
+    /**
+     * Get (or create) model object
+     * @return Export
+     * @throws \OPNsense\Base\ModelException when unable to create model
+     */
+    private function getModel()
+    {
+        if ($this->modelHandle == null) {
+            $this->modelHandle = new Export();
+        }
+        return $this->modelHandle;
+    }
+
+    /**
+     * collect (and store) configured interfaces by name [lan, wan, optX]
+     * @return mixed
+     * @throws \Exception when unable to contact configd
+     */
+    private function getInterfaces()
+    {
+        if (empty($this->physicalInterfaces)) {
+            $ifconfig = json_decode((new Backend())->configdRun('interface list ifconfig'), true);
+            $config = Config::getInstance()->object();
+            if ($config->interfaces->count() > 0) {
+                foreach ($config->interfaces->children() as $key => $node) {
+                    $this->physicalInterfaces[(string)$key] = array();
+                    if (!empty($ifconfig[(string)($node->if)])){
+                        $this->physicalInterfaces[(string)$key] = $ifconfig[(string)($node->if)];
+                    }
+                }
+            }
+        }
+        return $this->physicalInterfaces;
+    }
+
     /**
      * find configured servers
      * @param bool $active only active servers
@@ -56,6 +105,32 @@ class ExportController extends ApiControllerBase
     }
 
     /**
+     * Determine configured hostname for selected server
+     * @param $vpnid server handle
+     * @return string hostname
+     * @throws \OPNsense\Base\ModelException when unable to create model
+     */
+    private function configuredHostname($vpnid)
+    {
+        $result = "";
+        $allInterfaces = $this->getInterfaces();
+        $serverModel = $this->getModel()->getServer($vpnid);
+        $server = $this->findServer($vpnid);
+        if (!empty((string)$serverModel->hostname)) {
+            $result = (string)$serverModel->hostname;
+        } elseif (!empty($allInterfaces[(string)$server->interface])) {
+            if (strstr((string)$server->protocol, "6") !== false) {
+                if (!empty($allInterfaces[(string)$server->interface]['ipv6'])) {
+                    $result = $allInterfaces[(string)$server->interface]['ipv6'][0]['ipaddr'];
+                }
+            } elseif (!empty($allInterfaces[(string)$server->interface]['ipv4'])) {
+                $result = $allInterfaces[(string)$server->interface]['ipv4'][0]['ipaddr'];
+            }
+        }
+        return $result;
+    }
+
+    /**
      * find server by vpnid
      * @param string $vpnid reference
      * @return mixed|null
@@ -70,12 +145,15 @@ class ExportController extends ApiControllerBase
         return null;
     }
 
+
     /**
      * list providers
      * @return array list of configured openvpn providers (servers)
+     * @throws \Exception when unable to contact configd
      */
     public function providersAction()
     {
+
         $result = array();
         foreach ($this->servers() as $server) {
             $vpnid = (string)$server->vpnid;
@@ -86,6 +164,7 @@ class ExportController extends ApiControllerBase
             // relevant properties
             $result[$vpnid]["mode"] = (string)$server->mode;
             $result[$vpnid]["vpnid"] = $vpnid;
+            $result[$vpnid]["hostname"] = $this->configuredHostname($vpnid);
         }
         return $result;
     }
@@ -132,6 +211,15 @@ class ExportController extends ApiControllerBase
      */
     public function templatesAction()
     {
-        return array();
+        $result = array();
+        $factory = new ExportFactory();
+        foreach ($factory->listProviders() as $key => $provider) {
+            $result[$key] = array(
+                "name" => $provider['handle']->getName(),
+                "supportedOptions" => $provider['handle']->supportedOptions()
+            );
+        }
+
+        return $result;
     }
 }

@@ -1,0 +1,16 @@
+<model>
+    <mount>//OPNsense/OpenVPNExport</mount>
+    <version>0.0.1</version>
+    <description>OpenVPN export presets</description>
+    <items>
+        <servers>
+            <server type="ArrayField">
+                <vpnid type="IntegerField">
+                    <Required>Y</Required>
+                </vpnid>
+                <hostname type="HostnameField">
+                </hostname>
+            </server>
+        </servers>
+    </items>
+</model>

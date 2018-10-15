@@ -1,5 +1,4 @@
 <?php
-
 /**
  *    Copyright (C) 2018 Deciso B.V.
  *
@@ -30,21 +29,19 @@
 
 namespace OPNsense\OpenVPN;
 
-use \OPNsense\Base\IndexController as BaseIndexController;
-
 /**
- * Class ExportController
- * @package OPNsense\OpenVPN
+ * Interface for OpenVPN export connectors
+ * @package OPNsense\Backup
  */
-class ExportController extends BaseIndexController
+interface IExportProvider
 {
     /**
-     * default ids index page
-     * @throws \Exception
+     * @return string user friendly exporter name
      */
-    public function indexAction()
-    {
-        $this->view->pick('OPNsense/OpenVPN/export');
-        $this->view->exportForm = $this->getForm("export_options");
-    }
+    public function getName();
+
+    /**
+     * @return array list of supported options, so the user interface can hide the non supported ones
+     */
+    public function supportedOptions();
 }

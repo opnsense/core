@@ -1,0 +1,40 @@
+<form>
+    <field>
+        <id>openvpn_export.servers</id>
+        <label>Remote Access Server</label>
+        <type>dropdown</type>
+        <help><![CDATA[Select an OpenVPN server to export profiles for.]]></help>
+    </field>
+    <field>
+        <id>openvpn_export.template</id>
+        <label>Export type</label>
+        <type>dropdown</type>
+        <help><![CDATA[File format to export.]]></help>
+    </field>
+    <field>
+        <id>openvpn_export.hostname</id>
+        <label>Hostname</label>
+        <type>text</type>
+        <help>
+            Address(es) or hostname(s) to which this client should connect to, use comma's to provide more then one
+        </help>
+    </field>
+    <field>
+        <id>openvpn_export.testxx1</id>
+        <label>TestXX1</label>
+        <style>export_option</style>
+        <type>text</type>
+    </field>
+    <field>
+        <id>openvpn_export.testxx2</id>
+        <label>TestXX2</label>
+        <style>export_option</style>
+        <type>text</type>
+    </field>
+    <field>
+        <id>openvpn_export.testxx3</id>
+        <label>TestXX3</label>
+        <style>export_option</style>
+        <type>text</type>
+    </field>
+</form>
