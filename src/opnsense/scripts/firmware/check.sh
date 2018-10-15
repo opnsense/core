@@ -75,7 +75,7 @@ if [ "$pkg_running" == "" ]; then
       done
 
       if [ $timer -eq 0 ]; then
-        # We have an connection issue and could not
+        # We have a connection issue and could not
         # reach the pkg repository in timely fashion
         # Kill all running pkg instances
         pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
@@ -267,7 +267,7 @@ if [ "$pkg_running" == "" ]; then
             fi
 
             # the main update from package will provide this during upgrade
-            if [ -n "$pkg_upgraded" ]; then
+            if [ -n "$pkg_upgraded" -o -n "${1}" ]; then
               base_to_reboot=
             elif [ -z "$base_to_reboot" ]; then
               if opnsense-update -cbf; then
@@ -295,7 +295,7 @@ if [ "$pkg_running" == "" ]; then
             fi
 
             # the main update from package will provide this during upgrade
-            if [ -n "$pkg_upgraded" ]; then
+            if [ -n "$pkg_upgraded" -o -n "${1}" ]; then
               kernel_to_reboot=
             elif [ -z "$kernel_to_reboot" ]; then
               if opnsense-update -cfk; then
@@ -323,7 +323,7 @@ if [ "$pkg_running" == "" ]; then
             fi
           fi
         else
-          # We have an connection issue and could not reach the pkg repository in timely fashion
+          # We have a connection issue and could not reach the pkg repository in timely fashion
           # Kill all running pkg instances
           pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
           if [ "$pkg_running" != "" ]; then
