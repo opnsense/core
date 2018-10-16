@@ -20,6 +20,13 @@
         </help>
     </field>
     <field>
+        <id>openvpn_export.local_port</id>
+        <label>Port</label>
+        <type>text</type>
+        <help>Port on which OpenVPN listens</help>
+    </field>
+
+    <field>
         <id>openvpn_export.testxx1</id>
         <label>TestXX1</label>
         <style>export_option</style>

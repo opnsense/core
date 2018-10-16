@@ -30,12 +30,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
     $( document ).ready(function() {
         /**
-         * Provider selection
+         * load providers and templates
          */
-        $("#openvpn_export\\.servers").change(function () {
-            var selected_opt = $(this).find('option:selected');
-            $("#openvpn_export\\.hostname").val(selected_opt.data('hostname'));
-        });
         ajaxGet('/api/openvpn/export/providers/', {}, function(data, status){
             if (status == 'success') {
                 $.each(data, function (idx, record) {
@@ -43,11 +39,30 @@ POSSIBILITY OF SUCH DAMAGE.
                         $("<option/>").val(record.vpnid)
                             .text(record.name)
                             .data('hostname', record.hostname)
+                            .data('local_port', record.local_port)
+                            .data('template', record.template)
                     );
                 });
                 $("#openvpn_export\\.servers").selectpicker('refresh');
                 $("#openvpn_export\\.servers").change();
             }
+            ajaxGet('/api/openvpn/export/templates/',  {}, function(data, status){
+                if (status == 'success') {
+                    var selected_provider = $("#openvpn_export\\.servers").find('option:selected');
+                    $.each(data, function (idx, record) {
+                        var this_opt = $("<option/>").val(idx)
+                            .text(record.name)
+                            .data('options', record.supportedOptions);
+
+                        if (selected_provider.data('template') == idx) {
+                            this_opt.attr('selected', 'selected');
+                        }
+                        $("#openvpn_export\\.template").append(this_opt);
+                    });
+                    $("#openvpn_export\\.template").selectpicker('refresh');
+                    $("#openvpn_export\\.template").change();
+                }
+            });
         });
 
         /**
@@ -61,24 +76,67 @@ POSSIBILITY OF SUCH DAMAGE.
             }
 
         });
-        ajaxGet('/api/openvpn/export/templates/',  {}, function(data, status){
-            if (status == 'success') {
-                $.each(data, function (idx, record) {
-                    $("#openvpn_export\\.template").append(
-                        $("<option/>").val(idx)
-                            .text(record.name)
-                            .data('options', record.supportedOptions)
-                    );
-                });
-                $("#openvpn_export\\.template").selectpicker('refresh');
-                $("#openvpn_export\\.template").change();
-            }
+
+        /**
+         * server change, drives account select and download logic
+         */
+        $("#openvpn_export\\.servers").change(function () {
+            var selected_opt = $(this).find('option:selected');
+            $("#openvpn_export\\.hostname").val(selected_opt.data('hostname'));
+            $("#openvpn_export\\.local_port").val(selected_opt.data('local_port'));
+            ajaxGet('/api/openvpn/export/accounts/' +  $(this).val(), {}, function(data, status){
+                $("#accounts_table > tbody").empty();
+                if (status == 'success') {
+                    $.each(data, function (idx, record) {
+                        $("#accounts_table > tbody").append(
+                            $("<tr/>").append(
+                                $("<td/>").text(record.description)
+                            ).append(
+                                $("<td/>").text(record.users.join(','))
+                            ).append(
+                                $("<td/>").append(
+                                    $('<button class="btn btn-xs act_download"><i class="fa fa-cloud-download"></i></button>')
+                                        .data('certref', idx)
+                                )
+                            )
+                        );
+                    });
+                    // attach download buttons
+                    $(".act_download").click(function(){
+                        var caref = $(this).data('certref');
+                        var vpnid = $("#openvpn_export\\.servers").find('option:selected').val();
+                        saveFormToEndpoint("/api/openvpn/export/download/"+vpnid+"/"+caref+"/",'frm_ExportSettings', function(data){
+                            // TODO: error handling + download to client when successful
+                            console.log(data);
+                        });
+                    });
+                }
+            });
+
+            //
         });
     });
+
 
 </script>
 
 <div class="content-box">
     {{ partial("layout_partials/base_form",['fields':exportForm,'id':'frm_ExportSettings'])}}
-
+    <br/>
+    <div class="table-responsive">
+        <table class="table table-striped table-condensed table-responsive table-hover" id="accounts_table">
+            <thead>
+                <tr>
+                    <th colspan="3">{{ lang._('Accounts / certificates')}}</th>
+                </tr>
+                <tr>
+                    <th>{{ lang._('Certificate')}}</th>
+                    <th>{{ lang._('Linked user(s)')}}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 </div>

@@ -8,8 +8,13 @@
                 <vpnid type="IntegerField">
                     <Required>Y</Required>
                 </vpnid>
-                <hostname type="HostnameField">
-                </hostname>
+                <hostname type="HostnameField"/>
+                <template type="TextField"/>
+                <local_port type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <ValidationMessage>Port needs to be an integer value between 1 and 65535</ValidationMessage>
+                </local_port>
             </server>
         </servers>
     </items>

@@ -91,7 +91,7 @@ class ExportController extends ApiControllerBase
      * @param bool $active only active servers
      * @return \Generator
      */
-    private function servers($active=true)
+    private function openvpnServers($active=true)
     {
         if (isset(Config::getInstance()->object()->openvpn)) {
             foreach (Config::getInstance()->object()->openvpn->children() as $key => $value) {
@@ -105,26 +105,54 @@ class ExportController extends ApiControllerBase
     }
 
     /**
-     * Determine configured hostname for selected server
+     * find CA record
+     * @param string $caref
+     * @return mixed
+     */
+    private function getCA($caref)
+    {
+        if (isset(Config::getInstance()->object()->ca)) {
+            foreach (Config::getInstance()->object()->ca as $cert) {
+                if (isset($cert->refid) && (string)$caref == $cert->refid) {
+                    return $cert;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Determine configured settings for selected server
      * @param $vpnid server handle
-     * @return string hostname
+     * @return array
      * @throws \OPNsense\Base\ModelException when unable to create model
      */
-    private function configuredHostname($vpnid)
+    private function configuredSetttings($vpnid)
     {
-        $result = "";
-        $allInterfaces = $this->getInterfaces();
+        $result = array("hostname" => "", "local_port" => "");
         $serverModel = $this->getModel()->getServer($vpnid);
         $server = $this->findServer($vpnid);
+        // hostname
         if (!empty((string)$serverModel->hostname)) {
-            $result = (string)$serverModel->hostname;
-        } elseif (!empty($allInterfaces[(string)$server->interface])) {
-            if (strstr((string)$server->protocol, "6") !== false) {
-                if (!empty($allInterfaces[(string)$server->interface]['ipv6'])) {
-                    $result = $allInterfaces[(string)$server->interface]['ipv6'][0]['ipaddr'];
+            $result["hostname"] = (string)$serverModel->hostname;
+        } else {
+            $allInterfaces = $this->getInterfaces();
+            if (!empty($allInterfaces[(string)$server->interface])) {
+                if (strstr((string)$server->protocol, "6") !== false) {
+                    if (!empty($allInterfaces[(string)$server->interface]['ipv6'])) {
+                        $result["hostname"] = $allInterfaces[(string)$server->interface]['ipv6'][0]['ipaddr'];
+                    }
+                } elseif (!empty($allInterfaces[(string)$server->interface]['ipv4'])) {
+                    $result["hostname"] = $allInterfaces[(string)$server->interface]['ipv4'][0]['ipaddr'];
                 }
-            } elseif (!empty($allInterfaces[(string)$server->interface]['ipv4'])) {
-                $result = $allInterfaces[(string)$server->interface]['ipv4'][0]['ipaddr'];
+            }
+        }
+        // simple 1-1 field mappings (overwrites)
+        foreach (array('local_port', 'template') as $field) {
+            if (!empty((string)$serverModel->$field)) {
+                $result[$field] = (string)$serverModel->$field;
+            } else {
+                $result[$field] = (string)$server->$field;
             }
         }
         return $result;
@@ -137,7 +165,7 @@ class ExportController extends ApiControllerBase
      */
     private function findServer($vpnid)
     {
-        foreach ($this->servers() as $server) {
+        foreach ($this->openvpnServers() as $server) {
             if ((string)$server->vpnid == $vpnid) {
                 return $server;
             }
@@ -155,7 +183,7 @@ class ExportController extends ApiControllerBase
     {
 
         $result = array();
-        foreach ($this->servers() as $server) {
+        foreach ($this->openvpnServers() as $server) {
             $vpnid = (string)$server->vpnid;
             $result[$vpnid] = array();
             // visible name
@@ -164,7 +192,7 @@ class ExportController extends ApiControllerBase
             // relevant properties
             $result[$vpnid]["mode"] = (string)$server->mode;
             $result[$vpnid]["vpnid"] = $vpnid;
-            $result[$vpnid]["hostname"] = $this->configuredHostname($vpnid);
+            $result[$vpnid] = array_merge($result[$vpnid], $this->configuredSetttings($vpnid));
         }
         return $result;
     }
@@ -221,5 +249,132 @@ class ExportController extends ApiControllerBase
         }
 
         return $result;
+    }
+
+    /**
+     * validate user/model input for configurable options
+     * @param $vpnid server handle
+     * @return array status and validation output
+     * @throws \OPNsense\Base\ModelException
+     */
+    public function validatePresetsAction($vpnid)
+    {
+        $result = array("result"=>"");
+        if ($this->request->isPost()) {
+            $result['result'] = 'ok';
+            $result['changed'] = false;
+            $serverModel = $this->getModel()->getServer($vpnid);
+            foreach ($this->request->getPost('openvpn_export') as $key => $value) {
+                if ($serverModel->$key !== null) {
+                    $serverModel->$key = (string)$value;
+                    $result['changed'] = $result['changed'] ? $result['changed'] : $serverModel->$key->isFieldChanged();
+                }
+            }
+            foreach ($this->getModel()->performValidation() as $field => $msg) {
+                if (!array_key_exists("validations", $result)) {
+                    $result["validations"] = array();
+                    $result["result"] = "failed";
+                }
+                $fieldnm = str_replace($serverModel->__reference, 'openvpn_export', $msg->getField());
+                $result["validations"][$fieldnm] = $msg->getMessage();
+            }
+        }
+        return $result;
+    }
+
+
+    /**
+     * store presets when valid and changed
+     * @param $vpnid server handle
+     * @return array status and validation output
+     * @throws \OPNsense\Base\ModelException
+     */
+    public function storePresetsAction($vpnid)
+    {
+        $result = array("result" => "failed");
+        if ($this->request->isPost()) {
+            $result = $this->validatePresetsAction($vpnid);
+            if ($result['result'] == 'ok' && $result['changed']) {
+                $this->getModel()->serializeToConfig();
+                Config::getInstance()->save();
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * download configuration
+     * @param string $vpnid server handle
+     * @param string $certref certificate to export if applicable
+     * @param null $config
+     * @return array
+     * @throws \OPNsense\Base\ModelException
+     */
+    public function downloadAction($vpnid, $certref=null)
+    {
+        $response = array("status" => "failed");
+        if ($this->request->isPost()) {
+            $server = $this->findServer($vpnid);
+            if ($server !== null) {
+                // fetch server config data
+                $config = array();
+                foreach (array('disable', 'local_port', 'protocol', 'crypto', 'digest', 'tunnel_networkv6', 'reneg-sec',
+                             'local_network', 'local_networkv6', 'tunnel_network', 'compression', 'passtos', 'shared_key',
+                             'mode', 'dev_mode', 'tls', 'client_mgmt_port') as $field) {
+                    if (!empty($server->$field)) {
+                        $config[$field] = (string)$server->$field;
+                    } else {
+                        $config[$field] = null;
+                    }
+                }
+                // fetch associated certificate data, add to config
+                $config['server_ca_chain'] = array();
+                $config['server_cn'] = null;
+                if (!empty($server->certref)) {
+                    if (isset(Config::getInstance()->object()->cert)) {
+                        foreach (Config::getInstance()->object()->cert as $cert) {
+                            if (isset($cert->refid) && (string)$server->certref == $cert->refid) {
+                                // extract ca_chain
+                                $item = $cert;
+                                while (($item = $this->getCA($item->caref)) != null) {
+                                    $config['server_ca_chain'][] = base64_decode((string)$item->crt);
+                                }
+                                // certificate CN
+                                $str_crt = base64_decode((string)$cert->crt);
+                                $inf_crt = openssl_x509_parse($str_crt);
+                                $config['server_cn'] = $inf_crt['subject']['CN'];
+                                // Is server type cert
+                                $config['server_cert_is_srv'] = (
+                                    isset($inf_crt['extensions']['extendedKeyUsage']) &&
+                                    strstr($inf_crt['extensions']['extendedKeyUsage'], 'TLS Web Server Authentication') !== false &&
+                                    isset($inf_crt['extensions']['keyUsage']) &&
+                                    strpos($inf_crt['extensions']['keyUsage'], 'Digital Signature') !== false &&
+                                    (strpos($inf_crt['extensions']['keyUsage'], 'Key Encipherment') !== false ||
+                                        strpos($inf_crt['extensions']['keyUsage'], 'Key Agreement') !== false)
+                                );
+
+                            }
+                        }
+                    }
+                }
+                // overlay (saved) user settings
+                if ($this->request->hasPost('openvpn_export')) {
+                    $response = $this->storePresetsAction($vpnid);
+                }
+                foreach ($this->getModel()->getServer($vpnid)->iterateItems() as $key => $value) {
+                    if ($value !== "") {
+                        $config[$key] = (string)$value;
+                    }
+                }
+                // request config generation
+                $factory = new ExportFactory();
+                $provider = $factory->getProvider($config['template']);
+                if ($provider !== null) {
+                    $provider->setConfig($config);
+                    // TODO: execute provider and fetch content
+                }
+            }
+        }
+        return $response;
     }
 }

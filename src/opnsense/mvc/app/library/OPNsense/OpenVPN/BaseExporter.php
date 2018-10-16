@@ -35,4 +35,13 @@ namespace OPNsense\OpenVPN;
 abstract class BaseExporter
 {
 
+    var $config = array();
+
+    /**
+     * @param array $conf configuration to use
+     */
+    public function setConfig($conf)
+    {
+        $this->config = $conf;
+    }
 }
