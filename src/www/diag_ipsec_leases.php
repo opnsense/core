@@ -32,7 +32,7 @@ require_once("plugins.inc.d/ipsec.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-$service_hook = 'ipsec';
+$service_hook = 'strongswan';
 
 include("head.inc");
 $ipsec_leases = json_decode(configd_run("ipsec list leases"), true);
