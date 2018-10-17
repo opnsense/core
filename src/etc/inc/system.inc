@@ -702,7 +702,7 @@ function system_syslogd_start($verbose = false, $restart = false)
         $syslogconfs['gateways'] = array('facility' => array('apinger', 'dpinger'), 'remote' => 'apinger');
         $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');
         $syslogconfs['ppps'] = array('facility' => array('ppp'));
-        $syslogconfs['resolver'] = array('facility' => array('unbound'), 'remote' => 'dns');
+        $syslogconfs['resolver'] = array('facility' => array('unbound'), 'local' => '/var/unbound/var/run/log', 'remote' => 'dns');
         $syslogconfs['routing'] = array('facility' => array('radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'));
         $syslogconfs['wireless'] = array('facility' => array('hostapd'), 'remote' => 'hostapd');
 
