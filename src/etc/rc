@@ -42,6 +42,8 @@ export HOME PATH
 
 echo "Mounting filesystems..."
 
+/usr/local/etc/rc.syshook boot
+
 # tunefs may refuse otherwise
 mount -fr / 2> /dev/null
 
