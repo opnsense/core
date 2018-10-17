@@ -75,14 +75,13 @@ class Config extends Singleton
      */
     private function isArraySequential(&$arrayData)
     {
-        $all_keys = array_keys($arrayData);
-        $last_key = count($all_keys);
-        // probably a safe bet, first key equals 0, last equals the number of keys minus 1.
-        if ($all_keys[0] == "0" && $all_keys[$last_key-1] == ($last_key-1)) {
-            return true;
+        foreach ($arrayData as $key => &$value) {
+            if (!ctype_digit(strval($key))) {
+                return false;
+            }
         }
 
-        return false;
+        return true;
     }
 
     /**
