@@ -100,6 +100,17 @@ class LDAP extends Base implements IAuthConnector
      * @var bool if true, startTLS will be initialized
      */
     private $useStartTLS = false;
+
+    /**
+     * when set, $lastAuthProperties will contain the authenticated user properties
+     */
+    private $ldapReadProperties = false;
+
+    /**
+     * @var array internal list of authentication properties (returned by radius auth)
+     */
+    private $lastAuthProperties = array();
+
     /**
      * close ldap handle if open
      */
@@ -204,7 +215,8 @@ class LDAP extends Base implements IAuthConnector
             "ldap_extended_query" => "ldapExtendedQuery",
             "ldap_authcn" => "ldapAuthcontainers",
             "ldap_scope" => "ldapScope",
-            "local_users" => "userDNmap"
+            "local_users" => "userDNmap",
+            "ldap_read_properties" => "ldapReadProperties"
         );
 
         // map properties 1-on-1
@@ -356,7 +368,7 @@ class LDAP extends Base implements IAuthConnector
      */
     public function getLastAuthProperties()
     {
-        return array();
+        return $this->lastAuthProperties;
     }
 
     /**
@@ -367,26 +379,48 @@ class LDAP extends Base implements IAuthConnector
      */
     public function authenticate($username, $password)
     {
-        // todo: implement SSL parts (legacy : ldap_setup_caenv)
+        $ldap_is_connected = false;
+        $user_dn = null;
         // authenticate user
         if (empty($password)) {
             // prevent anonymous bind
             return false;
         } elseif (array_key_exists($username, $this->userDNmap)) {
             // we can map $username to distinguished name, just feed to connect
+            $user_dn = $this->userDNmap[$username];
             $ldap_is_connected = $this->connect($this->ldapBindURL, $this->userDNmap[$username], $password);
-            return $ldap_is_connected;
         } else {
             // we don't know this users distinguished name, try to find it
-            $ldap_is_connected = $this->connect($this->ldapBindURL, $this->ldapBindDN, $this->ldapBindPassword);
-            if ($ldap_is_connected) {
+            if ($this->connect($this->ldapBindURL, $this->ldapBindDN, $this->ldapBindPassword)) {
                 $result = $this->searchUsers($username, $this->ldapAttributeUser, $this->ldapExtendedQuery);
                 if ($result !== false && count($result) > 0) {
+                    $user_dn = $result[0]['dn'];
                     $ldap_is_connected = $this->connect($this->ldapBindURL, $result[0]['dn'], $password);
-                    return $ldap_is_connected;
                 }
             }
-            return false;
         }
+
+        if ($ldap_is_connected) {
+            $this->lastAuthProperties['dn'] = $user_dn;
+            if ($this->ldapReadProperties) {
+                $sr = @ldap_read($this->ldapHandle, $userdn, '(objectclass=*)');
+                $info = @ldap_get_entries($this->ldapHandle, $sr);
+                if ($info['count'] != 0) {
+                    // $this->lastAuthProperties['info'] = $info[0];
+                    foreach ($info[0] as $ldap_key => $ldap_value) {
+                        if (!is_numeric($ldap_key) && $ldap_key !== 'count') {
+                            if (isset($ldap_value['count'])) {
+                                unset($ldap_value['count']);
+                                $this->lastAuthProperties[$ldap_key] = implode("\n", $ldap_value);
+                            } elseif ($ldap_value !== "") {
+                                $this->lastAuthProperties[$ldap_key] = $ldap_value;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $ldap_is_connected;
     }
 }
