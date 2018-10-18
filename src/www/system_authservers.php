@@ -88,6 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (!empty($a_server[$id]['ldap_bindpw'])) {
                 $pconfig['ldap_bindpw'] = $a_server[$id]['ldap_bindpw'];
             }
+            $pconfig['ldap_read_properties'] = !empty($a_server[$id]['ldap_read_properties']);
         } elseif ($pconfig['type'] == "radius") {
             $pconfig['radius_host'] = $a_server[$id]['host'];
             $pconfig['radius_auth_port'] = $a_server[$id]['radius_auth_port'];
@@ -236,6 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                       unset($server['ldap_bindpw']);
                   }
               }
+              $server['ldap_read_properties'] = !empty($pconfig['ldap_read_properties']);
           } elseif ($server['type'] == "radius") {
               $server['host'] = $pconfig['radius_host'];
 
@@ -304,7 +306,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 // list of all possible fields for auth item (used for form init)
 $all_authfields = array(
     'type','name','ldap_caref','ldap_host','ldap_port','ldap_urltype','ldap_protver','ldap_scope',
-    'ldap_basedn','ldap_authcn','ldap_extended_query','ldap_binddn','ldap_bindpw','ldap_attr_user','radius_host',
+    'ldap_basedn','ldap_authcn','ldap_extended_query','ldap_binddn','ldap_bindpw','ldap_attr_user',
+    'ldap_read_properties', 'radius_host',
     'radius_auth_port','radius_acct_port','radius_secret','radius_timeout','radius_srvcs'
 );
 
@@ -727,6 +730,16 @@ endif; ?>
                     <input name="ldap_attr_user" type="text" id="ldap_attr_user" size="20" value="<?=$pconfig['ldap_attr_user'];?>"/>
                     <div class="hidden" data-for="help_for_ldap_attr_user">
                       <?= gettext('Typically "cn" (OpenLDAP, Novell eDirectory), "sAMAccountName" (Microsoft AD)') ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_ldap auth_options hidden">
+                  <td><a id="help_for_ldap_read_properties" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Read properties'); ?></td>
+                  <td>
+                    <input id="ldap_read_properties" name="ldap_read_properties" type="checkbox" <?= empty($pconfig['ldap_read_properties']) ? '' : 'checked="checked"';?> />
+                    <div class="hidden" data-for="help_for_ldap_read_properties">
+                      <?= gettext("Normally the authentication only tries to bind to the remote server, ".
+                                  "when this option is enabled also the objects properties are fetched, can be practical for debugging purposes.");?>
                     </div>
                   </td>
                 </tr>
