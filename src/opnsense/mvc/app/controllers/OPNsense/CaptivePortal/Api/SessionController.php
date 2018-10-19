@@ -108,12 +108,12 @@ class SessionController extends ApiControllerBase
     public function connectAction($zoneid = 0)
     {
         $response = array();
-        
+
         if ($this->request->isPost()) {
             // Get details from POST request
             $userName = $this->request->getPost("user", "striptags", null);
             $clientIp = $this->request->getPost("ip", "striptags", null);
-            
+
             // Find details of the zone
             $mdlCP = new CaptivePortal();
             $cpZone = $mdlCP->getByZoneID($zoneid);
@@ -127,7 +127,7 @@ class SessionController extends ApiControllerBase
                         break;
                     }
                 }
-                
+
                 // If the client isn't already active
                 if (is_array($response) && count($response) == 0) {
                     // allow client to this captiveportal zone
@@ -142,7 +142,7 @@ class SessionController extends ApiControllerBase
                             'json'
                         )
                     );
-                    
+
                     // Only return session if configd returned a valid json response
                     if ($CPsession != null) {
                         $response = $CPsession;
@@ -150,7 +150,7 @@ class SessionController extends ApiControllerBase
                 }
             }
         }
-        
+
         return $response;
     }
 }

@@ -27,7 +27,6 @@
 
 namespace OPNsense\OpenVPN;
 
-
 class PlainOpenVPN extends BaseExporter implements IExportProvider
 {
     public function getName()

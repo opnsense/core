@@ -27,7 +27,6 @@
 
 namespace OPNsense\OpenVPN;
 
-
 class ArchiveOpenVPN extends PlainOpenVPN
 {
     public function getName()

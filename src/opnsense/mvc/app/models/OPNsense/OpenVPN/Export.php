@@ -46,7 +46,7 @@ class Export extends BaseModel
     public function getServer($vpnid)
     {
         foreach ($this->servers->server->iterateItems() as $uuid => $server) {
-            if  ((string)$server->vpnid == (string)$vpnid) {
+            if ((string)$server->vpnid == (string)$vpnid) {
                 return $server;
             }
         }

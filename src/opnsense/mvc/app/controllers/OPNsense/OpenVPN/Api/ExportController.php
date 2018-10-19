@@ -34,7 +34,6 @@ use \OPNsense\Core\Backend;
 use \OPNsense\OpenVPN\Export;
 use \OPNsense\OpenVPN\ExportFactory;
 
-
 /**
  * Class ExportController handles client export functions
  * @package OPNsense\OpenVPN
@@ -77,7 +76,7 @@ class ExportController extends ApiControllerBase
             if ($config->interfaces->count() > 0) {
                 foreach ($config->interfaces->children() as $key => $node) {
                     $this->physicalInterfaces[(string)$key] = array();
-                    if (!empty($ifconfig[(string)($node->if)])){
+                    if (!empty($ifconfig[(string)($node->if)])) {
                         $this->physicalInterfaces[(string)$key] = $ifconfig[(string)($node->if)];
                     }
                 }
@@ -91,7 +90,7 @@ class ExportController extends ApiControllerBase
      * @param bool $active only active servers
      * @return \Generator
      */
-    private function openvpnServers($active=true)
+    private function openvpnServers($active = true)
     {
         if (isset(Config::getInstance()->object()->openvpn)) {
             foreach (Config::getInstance()->object()->openvpn->children() as $key => $value) {
@@ -310,7 +309,7 @@ class ExportController extends ApiControllerBase
      * @return array
      * @throws \OPNsense\Base\ModelException
      */
-    public function downloadAction($vpnid, $certref=null)
+    public function downloadAction($vpnid, $certref = null)
     {
         $response = array("status" => "failed");
         if ($this->request->isPost()) {
@@ -352,7 +351,6 @@ class ExportController extends ApiControllerBase
                                     (strpos($inf_crt['extensions']['keyUsage'], 'Key Encipherment') !== false ||
                                         strpos($inf_crt['extensions']['keyUsage'], 'Key Agreement') !== false)
                                 );
-
                             }
                         }
                     }
