@@ -11,7 +11,6 @@
 /src/etc/ssh/**
 /src/lib/**
 /src/opnsense/changelog
-/src/opnsense/firmware-product
 /src/www/wpad.dat
 /src/opnsense/version/*
 !/src/opnsense/version/opnsense.in

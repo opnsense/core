@@ -30,7 +30,7 @@
  */
 
 /* XXX make this a getter function for traceability */
-$g = json_decode(file_get_contents('/usr/local/opnsense/firmware-product'), true);
+$g = json_decode(file_get_contents('/usr/local/opnsense/version/opnsense'), true);
 
 openlog($g['product_id'], LOG_ODELAY, LOG_USER);
 register_shutdown_function('closelog');
