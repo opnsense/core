@@ -114,8 +114,7 @@ if (!empty($grouptmp)) {
 }
 
 $trackers = link_interface_to_track6($interface, true);
-if (count($trackers) || (isset($config['interfaces'][$interface]['ipaddrv6']) &&
-    $config['interfaces'][$interface]['ipaddrv6'] == 'track6')) {
+if (count($trackers) || $configip == 'track6') {
     /*
      * Reload either tracker or tracked interface configs so that
      * IPv6 addresses are correctly updated in the services:
