@@ -59,7 +59,7 @@ class ForwardRule extends Rule
             'interface' => 'parseInterface',
             'ipprotocol' => 'parsePlain',
             'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
-            'interface.from' => 'parseInterface, from ,:network',
+            'interface.from' => 'parseInterface, from (,:network)',
             'target.to' => 'parsePlainCurly,to ',
             'localport' => 'parsePlainCurly,port ',
             'interface.to' => 'parseInterface, -> ',
