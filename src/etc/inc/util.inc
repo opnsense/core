@@ -522,6 +522,7 @@ function is_ipaddroralias($ipaddr)
                 return true;
             }
         }
+
         return false;
     }
 
@@ -676,28 +677,23 @@ function is_inrange($test, $start, $end) {
 /* XXX: return the configured carp interface list */
 function get_configured_carp_interface_list($carpinterface = '', $family = 'inet')
 {
-    global $config;
-
     $iflist = array();
 
-    if (isset($config['virtualip']['vip'])) {
-        $viparr = &config_read_array('virtualip', 'vip');
-        foreach ($viparr as $vip) {
-            switch ($vip['mode']) {
-                case "carp":
-                    if (!empty($carpinterface)) {
-                        if ($carpinterface == "{$vip['interface']}_vip{$vip['vhid']}") {
-                            if ($family == "inet" && is_ipaddrv4($vip['subnet'])) {
-                                return $vip['subnet'];
-                            } elseif ($family == "inet6" && is_ipaddrv6($vip['subnet'])) {
-                                return $vip['subnet'];
-                            }
+    foreach (config_read_array('virtualip', 'vip') as $vip) {
+        switch ($vip['mode']) {
+            case 'carp':
+                if (!empty($carpinterface)) {
+                    if ($carpinterface == "{$vip['interface']}_vip{$vip['vhid']}") {
+                        if ($family == 'inet' && is_ipaddrv4($vip['subnet'])) {
+                            return $vip['subnet'];
+                        } elseif ($family == 'inet6' && is_ipaddrv6($vip['subnet'])) {
+                            return $vip['subnet'];
                         }
-                    } else {
-                        $iflist["{$vip['interface']}_vip{$vip['vhid']}"] = $vip['subnet'];
                     }
-                    break;
-            }
+                } else {
+                    $iflist["{$vip['interface']}_vip{$vip['vhid']}"] = $vip['subnet'];
+                }
+                break;
         }
     }
 
@@ -807,6 +803,7 @@ function get_configured_ip_addresses()
             }
         }
     }
+
     return $ip_array;
 }
 
@@ -1264,17 +1261,13 @@ function is_URL($url)
 
 function get_staticroutes($returnsubnetsonly = false, $returnhostnames = false)
 {
-    global $config, $aliastable;
-
-    /* Bail if there are no routes, but return an array always so callers don't have to check. */
-    if (!isset($config['staticroutes']['route'])) {
-        return array();
-    }
+    global $aliastable;
 
     $allstaticroutes = array();
     $allsubnets = array();
+
     /* Loop through routes and expand aliases as we find them. */
-    foreach ($config['staticroutes']['route'] as $route) {
+    foreach (config_read_array('staticroutes', 'route') as $route) {
         if (is_alias($route['network'])) {
             if (!isset($aliastable[$route['network']])) {
                 continue;
@@ -1300,11 +1293,12 @@ function get_staticroutes($returnsubnetsonly = false, $returnhostnames = false)
             $allsubnets[] = $route['network'];
         }
     }
+
     if ($returnsubnetsonly) {
         return $allsubnets;
-    } else {
-        return $allstaticroutes;
     }
+
+    return $allstaticroutes;
 }
 
 function prefer_ipv4_or_ipv6()
