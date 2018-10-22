@@ -987,6 +987,7 @@ function system_kernel_configure($verbose = false)
         log_error(sprintf('Loading %s cryptographic accelerator module.', $config['system']['crypto_hardware']));
         $mods[] = $config['system']['crypto_hardware'];
     }
+
     if (!empty($config['system']['cryptodev_enable'])) {
         log_error('Loading cryptodev kernel module.');
         $mods[] = 'cryptodev';
@@ -995,11 +996,6 @@ function system_kernel_configure($verbose = false)
     if (!empty($config['system']['thermal_hardware'])) {
         log_error(sprintf('Loading %s thermal monitor module.', $config['system']['thermal_hardware']));
         $mods[] = $config['system']['thermal_hardware'];
-    }
-
-    if ((new \OPNsense\TrafficShaper\TrafficShaper())->isEnabled() || (new \OPNsense\CaptivePortal\CaptivePortal())->isEnabled()) {
-        $mods[] = "ipfw";
-        $mods[] = "dummynet";
     }
 
     foreach ($mods as $mod) {
