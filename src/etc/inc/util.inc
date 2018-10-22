@@ -703,22 +703,18 @@ function get_configured_carp_interface_list($carpinterface = '', $family = 'inet
 /* return the configured IP aliases list */
 function get_configured_ip_aliases_list($returnfullentry = false)
 {
-    global $config;
-
     $alias_list = array();
 
-    if (isset($config['virtualip']['vip'])) {
-        $viparr = &config_read_array('virtualip', 'vip');
-        foreach ($viparr as $vip) {
-            if ($vip['mode']=="ipalias") {
-                if ($returnfullentry) {
-                    $alias_list[$vip['subnet']] = $vip;
-                } else {
-                    $alias_list[$vip['subnet']] = $vip['interface'];
-                }
+    foreach (config_read_array('virtualip', 'vip') as $vip) {
+        if ($vip['mode'] == 'ipalias') {
+            if ($returnfullentry) {
+                $alias_list[$vip['subnet']] = $vip;
+            } else {
+                $alias_list[$vip['subnet']] = $vip['interface'];
             }
         }
     }
+
     return $alias_list;
 }
 
@@ -764,19 +760,15 @@ function get_configured_interface_list($only_opt = false, $withdisabled = false)
 
 function get_configured_interface_with_descr($only_opt = false, $withdisabled = false)
 {
-    global $config;
-
     $iflist = array();
 
-    if (isset($config['interfaces'])) {
-        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if => $ifdetail) {
-            if ($only_opt && ($if == "wan" || $if == "lan")) {
-                continue;
-            }
+    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $if => $ifdetail) {
+        if ($only_opt && ($if == 'wan' || $if == 'lan')) {
+            continue;
+        }
 
-            if (isset($ifdetail['enable']) || $withdisabled == true) {
-                $iflist[$if] = $ifdetail['descr'];
-            }
+        if (isset($ifdetail['enable']) || $withdisabled == true) {
+            $iflist[$if] = $ifdetail['descr'];
         }
     }
 
