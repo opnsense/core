@@ -295,37 +295,37 @@ function make_config_revision_entry($desc = '')
  */
 function legacy_config_get_interfaces($filters = array())
 {
-    global $config;
     $interfaces = array();
-    if (isset($config['interfaces'])) {
-        foreach ($config['interfaces'] as $ifname => $iface) {
-            // undo stupid listags() turning our item into a new array, preventing certain names to be used as interface.
-            // see src/etc/inc/xmlparse.inc
-            if (isset($iface[0])) {
-                $iface = $iface[0];
+
+    foreach (config_read_array('interfaces') as $ifname => $iface) {
+        // undo stupid listags() turning our item into a new array, preventing certain names to be used as interface.
+        // see src/etc/inc/xmlparse.inc
+        if (isset($iface[0])) {
+            $iface = $iface[0];
+        }
+        // apply filters
+        $iface_match = true;
+        foreach ($filters as $filter_key => $filter_value) {
+            if ($filter_key == 'enable' && isset($iface[$filter_key])) {
+                $field_value = true;
+            } else {
+                $field_value = isset($iface[$filter_key]) ? $iface[$filter_key] : false;
             }
-            // apply filters
-            $iface_match = true;
-            foreach ($filters as $filter_key => $filter_value) {
-                if ($filter_key == 'enable' && isset($iface[$filter_key])) {
-                    $field_value = true;
-                } else {
-                    $field_value = isset($iface[$filter_key]) ? $iface[$filter_key] : false;
-                }
-                if ($field_value != $filter_value) {
-                    $iface_match = false;
-                    break;
-                }
-            }
-            if ($iface_match) {
-                $iface['descr'] = !empty($iface['descr']) ? $iface['descr'] : strtoupper($ifname);
-                $interfaces[$ifname] = $iface;
+            if ($field_value != $filter_value) {
+                $iface_match = false;
+                break;
             }
         }
+        if ($iface_match) {
+            $iface['descr'] = !empty($iface['descr']) ? $iface['descr'] : strtoupper($ifname);
+            $interfaces[$ifname] = $iface;
+        }
     }
-    uasort($interfaces, function($a, $b) {
+
+    uasort($interfaces, function ($a, $b) {
         return strnatcmp($a['descr'], $b['descr']);
     });
+
     return $interfaces;
 }
 
