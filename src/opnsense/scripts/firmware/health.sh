@@ -32,6 +32,29 @@ PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
+MTREE_PATTERNS="
+./etc/group
+./etc/hosts
+./etc/master.passwd
+./etc/motd
+./etc/newsyslog.conf
+./etc/passwd
+./etc/pwd.db
+./etc/rc
+./etc/rc.shutdown
+./etc/shells
+./etc/spwd.db
+./etc/ttys
+./var/*
+"
+
+GREP_PATTERNS=
+
+for PATTERN in ${MTREE_PATTERNS}; do
+	GREP_PATTERNS="$(echo "${GREP_PATTERNS}${PATTERN} missing")
+"
+done
+
 set_check()
 {
 	SET=${1}
@@ -42,16 +65,19 @@ set_check()
 		return
 	fi
 
-	echo "Detect installed ${SET} files with invalid checksums" >> ${PKG_PROGRESS_FILE}
+	echo ">>> Check for missing or altered ${SET} files" >> ${PKG_PROGRESS_FILE}
 
-	${MTREE} < ${FILE} >> ${PKG_PROGRESS_FILE} 2>&1
+	echo "${MTREE_PATTERNS}" > /tmp/mtree.${1}
+	${MTREE} -X /tmp/mtree.${1} < ${FILE} | grep -Fvx "${GREP_PATTERNS}" \
+	    | grep -v '^\./var/.* missing$' >> ${PKG_PROGRESS_FILE} 2>&1
+	rm /tmp/mtree.${1}
 }
 
 echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${PKG_PROGRESS_FILE}
 set_check base ${BASE_MTREE}
 set_check kernel ${KERNEL_MTREE}
-echo "Check for and install missing package dependencies" >> ${PKG_PROGRESS_FILE}
+echo ">>> Check for and install missing package dependencies" >> ${PKG_PROGRESS_FILE}
 pkg check -da >> ${PKG_PROGRESS_FILE} 2>&1
-echo "Detect installed package files with invalid checksums" >> ${PKG_PROGRESS_FILE}
+echo ">>> Check for missing or altered package files" >> ${PKG_PROGRESS_FILE}
 pkg check -sa >> ${PKG_PROGRESS_FILE} 2>&1
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}
