@@ -57,11 +57,9 @@ log_error($notificationmsg);
 
 switch ($type) {
     case 'MASTER':
-        /* XXX inspect usefulness of this trickery */
         openvpn_carp_start($carp_iface);
         break;
     case 'BACKUP':
-        /* XXX inspect usefulness of this trickery */
         openvpn_carp_stop($carp_iface);
         break;
 }
