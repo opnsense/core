@@ -47,6 +47,7 @@ pkg_running=""
 packes_output=""
 last_check="unknown"
 packages_upgraded=""
+pkg_selected=${1}
 pkg_upgraded=""
 packages_downgraded=""
 packages_new=""
@@ -104,12 +105,12 @@ if [ "$pkg_running" == "" ]; then
         # connection is still ok
         connection="ok"
         # now check what happens when we would go ahead
-        if [ -z "${1}" ]; then
+        if [ -z "${pkg_selected}" ]; then
             pkg upgrade -n > $tmp_pkg_output_file &
         else
             # fetch before install lets us know more
-            pkg fetch -y "${1}" > $tmp_pkg_output_file &
-            pkg install -n "${1}" > $tmp_pkg_output_file &
+            pkg fetch -y "${pkg_selected}" > $tmp_pkg_output_file &
+            pkg install -n "${pkg_selected}" > $tmp_pkg_output_file &
 	fi
         timer=$timeout_upgrade
         pkg_running="started"
@@ -267,7 +268,7 @@ if [ "$pkg_running" == "" ]; then
             fi
 
             # the main update from package will provide this during upgrade
-            if [ -n "$pkg_upgraded" -o -n "${1}" ]; then
+            if [ -n "${pkg_upgraded}" -o -n "${pkg_selected}" ]; then
               base_to_reboot=
             elif [ -z "$base_to_reboot" ]; then
               if opnsense-update -cbf; then
@@ -295,7 +296,7 @@ if [ "$pkg_running" == "" ]; then
             fi
 
             # the main update from package will provide this during upgrade
-            if [ -n "$pkg_upgraded" -o -n "${1}" ]; then
+            if [ -n "${pkg_upgraded}" -o -n "${pkg_selected}" ]; then
               kernel_to_reboot=
             elif [ -z "$kernel_to_reboot" ]; then
               if opnsense-update -cfk; then
