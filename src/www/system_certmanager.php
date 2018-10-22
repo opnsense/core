@@ -340,7 +340,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             foreach ($altnames as $altname) {
                 switch ($altname['type']) {
                     case "DNS":
-                        if (!is_hostname($altname['value'])) {
+                        // allow wildcard hostnames
+                        $hostname = preg_replace('/^\*\./', '', $altname['value']);
+                        if (!is_hostname($hostname)) {
                             $input_errors[] = gettext("DNS subjectAltName values must be valid hostnames or FQDNs");
                         }
                         break;
