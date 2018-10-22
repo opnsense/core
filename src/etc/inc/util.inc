@@ -704,18 +704,13 @@ function get_configured_carp_interface_list($carpinterface = '', $family = 'inet
     return $iflist;
 }
 
-/* return the configured IP aliases list */
-function get_configured_ip_aliases_list($returnfullentry = false)
+function get_configured_ip_aliases_list()
 {
     $alias_list = array();
 
     foreach (config_read_array('virtualip', 'vip') as $vip) {
         if ($vip['mode'] == 'ipalias') {
-            if ($returnfullentry) {
-                $alias_list[$vip['subnet']] = $vip;
-            } else {
-                $alias_list[$vip['subnet']] = $vip['interface'];
-            }
+            $alias_list[$vip['subnet']] = $vip['interface'];
         }
     }
 
