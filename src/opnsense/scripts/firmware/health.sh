@@ -28,6 +28,7 @@ BASE_MTREE=/usr/local/opnsense/version/base.mtree
 KERNEL_MTREE=/usr/local/opnsense/version/kernel.mtree
 MTREE="mtree -e -p /"
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
+TMPFILE=/tmp/pkg_check.exclude
 
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
@@ -67,10 +68,10 @@ set_check()
 
 	echo ">>> Check for missing or altered ${SET} files" >> ${PKG_PROGRESS_FILE}
 
-	echo "${MTREE_PATTERNS}" > /tmp/mtree.${1}
-	${MTREE} -X /tmp/mtree.${1} < ${FILE} | grep -Fvx "${GREP_PATTERNS}" \
+	echo "${MTREE_PATTERNS}" > ${TMPFILE}
+	${MTREE} -X ${TMPFILE} < ${FILE} | grep -Fvx "${GREP_PATTERNS}" \
 	    | grep -v '^\./var/.* missing$' >> ${PKG_PROGRESS_FILE} 2>&1
-	rm /tmp/mtree.${1}
+	rm ${TMPFILE}
 }
 
 echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${PKG_PROGRESS_FILE}
