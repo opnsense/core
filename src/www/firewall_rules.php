@@ -681,7 +681,7 @@ $( document ).ready(function() {
                       </div>
                     </td>
                     <td>
-                      <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs">
+                      <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs">
                         <i class="fa fa-arrow-left fa-fw"></i>
                       </button>
 <?php

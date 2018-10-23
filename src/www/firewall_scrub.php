@@ -363,7 +363,7 @@ $( document ).ready(function() {
                         <a href="firewall_scrub_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
                           <span class="fa fa-pencil fa-fw"></span>
                         </a>
-                        <a data-id="<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs">
+                        <a data-id="<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs">
                           <span class="fa fa-arrow-left fa-fw"></span>
                         </a>
                         <a data-id="<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
@@ -385,7 +385,7 @@ $( document ).ready(function() {
                         <a><i class="fa fa-list fa-fw"></i></a> <?=gettext("Alias (click to view/edit)");?>
                       </td>
                       <td>
-                        <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("move selected rules to end")) ?>" class="act_move btn btn-default btn-xs">
+                        <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected rules to end")) ?>" class="act_move btn btn-default btn-xs">
                           <span class="fa fa-arrow-left fa-fw"></span>
                         </a>
                         <a data-id="x" title="<?= html_safe(gettext("delete selected rules")) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
