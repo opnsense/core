@@ -1046,7 +1046,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                         break;
                     }
                 }
-                /* XXX but what about IPv6? */
                 return;
             }
             break;
@@ -3672,13 +3671,8 @@ function get_real_interface($interface = 'wan', $family = 'all')
 
             $cfg = &config_read_array('interfaces', $interface);
 
-            if ($family == "inet6") {
-                if (isset($cfg['ipaddrv6'])) {
-                    $ipaddrv6 = $cfg['ipaddrv6'];
-                } else {
-                    $ipaddrv6 = "";
-                }
-                switch ($ipaddrv6) {
+            if ($family == 'inet6') {
+                switch (isset($cfg['ipaddrv6']) ? $cfg['ipaddrv6'] : '') {
                     case '6rd':
                     case '6to4':
                         $wanif = "{$cfg['if']}_stf";
@@ -4148,31 +4142,25 @@ function interface_has_gateway($friendly)
     return false;
 }
 
-/* return true if interface has a gateway */
 function interface_has_gatewayv6($friendly)
 {
     global $config;
 
     if (!empty($config['interfaces'][$friendly])) {
         $ifname = &config_read_array('interfaces', $friendly);
-        if (isset($ifname['ipaddrv6'])) {
-            $ipaddrv6 = $ifname['ipaddrv6'];
-        } else {
-            $ipaddrv6 = "";
-        }
-        switch ($ipaddrv6) {
-            case "slaac":
-            case "dhcp6":
-            case "6to4":
-            case "6rd":
+        switch (isset($ifname['ipaddrv6']) ? $ifname['ipaddrv6'] : '') {
+            case 'slaac':
+            case 'dhcp6':
+            case '6to4':
+            case '6rd':
                 return true;
                 break;
             default:
-                if (substr($ifname['if'], 0, 4) ==  "ovpn") {
+                if (substr($ifname['if'], 0, 4) ==  'ovpn') {
                     return true;
                 }
                 $tunnelif = substr($ifname['if'], 0, 3);
-                if ($tunnelif == "gif" || $tunnelif == "gre") {
+                if ($tunnelif == 'gif' || $tunnelif == 'gre') {
                     return true;
                 }
                 if (!empty($ifname['gatewayv6'])) {
