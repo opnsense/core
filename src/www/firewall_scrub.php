@@ -360,11 +360,11 @@ $( document ).ready(function() {
                         <?=$scrubEntry['descr'];?>
                     </td>
                     <td>
-                        <a href="firewall_scrub_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
-                          <span class="fa fa-pencil fa-fw"></span>
-                        </a>
                         <a data-id="<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs">
                           <span class="fa fa-arrow-left fa-fw"></span>
+                        </a>
+                        <a href="firewall_scrub_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
+                          <span class="fa fa-pencil fa-fw"></span>
                         </a>
                         <a data-id="<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                           <span class="fa fa-trash fa-fw"></span>
