@@ -83,7 +83,7 @@ class StatusController extends ApiControllerBase
                 if ($format == 'xml') {
                     $result['status'] = simplexml_load_string($response);
                 } elseif ($format === 'text') {
-                    $result['status'] = '<pre style="color:WhiteSmoke;background-color:DimGrey">' . $this->bashColorToCSS($response) . '</pre>';
+                    $result['status'] = '<div class="alert"><pre>' . $this->bashColorToCSS($response) . '</pre></div>';
                 }
             }
         } else {
@@ -95,7 +95,7 @@ If you have started Monit recently, wait for StartDelay seconds and refresh this
             if ($format == 'xml') {
                 $result['status'] = $msg;
             } elseif ($format === 'text') {
-                $result['status'] = '<pre style="color:WhiteSmoke;background-color:DimGrey">' . $msg . '</pre>';
+                $result['status'] = '<div class="alert"><pre>' . $msg . '</pre></div>';
             }
         }
         return $result;
@@ -109,35 +109,35 @@ If you have started Monit recently, wait for StartDelay seconds and refresh this
     private function bashColorToCSS($string)
     {
         $colors = [
-            '/\x1b\[0;30m(.*?)\x1b\[0m/s' => '<span style="font-weight:bold">$1</span>',
+            '/\x1b\[0;30m(.*?)\x1b\[0m/s' => '<strong>$1</strong>',
 
-            '/\x1b\[0;30m(.*?)\x1b\[0m/s' => '<span style="color:Black;">$1</span>',
-            '/\x1b\[0;31m(.*?)\x1b\[0m/s' => '<span style="color:Red;">$1</span>',
-            '/\x1b\[0;32m(.*?)\x1b\[0m/s' => '<span style="color:Green;">$1</span>',
-            '/\x1b\[0;33m(.*?)\x1b\[0m/s' => '<span style="color:Yellow;">$1</span>',
-            '/\x1b\[0;34m(.*?)\x1b\[0m/s' => '<span style="color:Blue;">$1</span>',
-            '/\x1b\[0;35m(.*?)\x1b\[0m/s' => '<span style="color:Magents;">$1</span>',
-            '/\x1b\[0;36m(.*?)\x1b\[0m/s' => '<span style="color:Cyan;">$1</span>',
-            '/\x1b\[0;37m(.*?)\x1b\[0m/s' => '<span style="color:WhiteSmoke;">$1</span>',
+            '/\x1b\[0;30m(.*?)\x1b\[0m/s' => '<span class="text-info">$1</span>',
+            '/\x1b\[0;31m(.*?)\x1b\[0m/s' => '<span class="text-danger">$1</span>',
+            '/\x1b\[0;32m(.*?)\x1b\[0m/s' => '<span class="text-success">$1</span>',
+            '/\x1b\[0;33m(.*?)\x1b\[0m/s' => '<span class="text-warning">$1</span>',
+            '/\x1b\[0;34m(.*?)\x1b\[0m/s' => '<span class="text-info">$1</span>',
+            '/\x1b\[0;35m(.*?)\x1b\[0m/s' => '<span class="text-danger">$1</span>',
+            '/\x1b\[0;36m(.*?)\x1b\[0m/s' => '<span class="text-primary">$1</span>',
+            '/\x1b\[0;37m(.*?)\x1b\[0m/s' => '<span class="text-info">$1</span>',
             '/\x1b\[0;39m(.*?)\x1b\[0m/s' => '<span>$1</span>',
 
-            '/\x1b\[1;30m(.*?)\x1b\[0m/s' => '<span style="font-weight:bold; color:Black;">$1</span>',
-            '/\x1b\[1;31m(.*?)\x1b\[0m/s' => '<span style="font-weight:bold; color:Red;">$1</span>',
-            '/\x1b\[1;32m(.*?)\x1b\[0m/s' => '<span style="font-weight:bold; color:Green;">$1</span>',
-            '/\x1b\[1;33m(.*?)\x1b\[0m/s' => '<span style="font-weight:bold; color:Yellow;">$1</span>',
-            '/\x1b\[1;34m(.*?)\x1b\[0m/s' => '<span style="font-weight:bold; color:Blue;">$1</span>',
-            '/\x1b\[1;35m(.*?)\x1b\[0m/s' => '<span style="font-weight:bold; color:Magenta;">$1</span>',
-            '/\x1b\[1;36m(.*?)\x1b\[0m/s' => '<span style="font-weight:bold; color:Cyan;">$1</span>',
-            '/\x1b\[1;37m(.*?)\x1b\[0m/s' => '<span style="font-weight:bold; color:White:">$1</span>',
+            '/\x1b\[1;30m(.*?)\x1b\[0m/s' => '<strong class="text-info">$1</strong>',
+            '/\x1b\[1;31m(.*?)\x1b\[0m/s' => '<strong class="text-danger">$1</strong>',
+            '/\x1b\[1;32m(.*?)\x1b\[0m/s' => '<strong class="text-success">$1</strong>',
+            '/\x1b\[1;33m(.*?)\x1b\[0m/s' => '<strong class="text-warning">$1</strong>',
+            '/\x1b\[1;34m(.*?)\x1b\[0m/s' => '<strong class="text-info">$1</strong>',
+            '/\x1b\[1;35m(.*?)\x1b\[0m/s' => '<strong class="text-danger">$1</strong>',
+            '/\x1b\[1;36m(.*?)\x1b\[0m/s' => '<strong class="text-primary">$1</strong>',
+            '/\x1b\[1;37m(.*?)\x1b\[0m/s' => '<strong class="text-info">$1</strong>',
 
-            '/\x1b\[0;90m(.*?)\x1b\[0m/s' => '<span style="color:DargGrey">$1</span>',
-            '/\x1b\[0;91m(.*?)\x1b\[0m/s' => '<span style="color:LightCoral">$1</span>',
-            '/\x1b\[0;92m(.*?)\x1b\[0m/s' => '<span style="color:LightGreen;">$1</span>',
-            '/\x1b\[0;93m(.*?)\x1b\[0m/s' => '<span style="color:LightYellow;">$1</span>',
-            '/\x1b\[0;94m(.*?)\x1b\[0m/s' => '<span style="color:LightSkyBlue;">$1</span>',
-            '/\x1b\[0;95m(.*?)\x1b\[0m/s' => '<span style="color:LightPink;">$1</span>',
-            '/\x1b\[0;96m(.*?)\x1b\[0m/s' => '<span style="color:LightCyan;">$1</span>',
-            '/\x1b\[0;97m(.*?)\x1b\[0m/s' => '<span style="color:White;">$1</span>'
+            '/\x1b\[0;90m(.*?)\x1b\[0m/s' => '<span class="text-info">$1</span>',
+            '/\x1b\[0;91m(.*?)\x1b\[0m/s' => '<span class="text-danger">$1</span>',
+            '/\x1b\[0;92m(.*?)\x1b\[0m/s' => '<span class="text-success">$1</span>',
+            '/\x1b\[0;93m(.*?)\x1b\[0m/s' => '<span class="text-warning">$1</span>',
+            '/\x1b\[0;94m(.*?)\x1b\[0m/s' => '<span class="text-info">$1</span>',
+            '/\x1b\[0;95m(.*?)\x1b\[0m/s' => '<span class="text-danger">$1</span>',
+            '/\x1b\[0;96m(.*?)\x1b\[0m/s' => '<span class="text-primary">$1</span>',
+            '/\x1b\[0;97m(.*?)\x1b\[0m/s' => '<span class="text-info">$1</span>'
         ];
         return preg_replace(array_keys($colors), $colors, $string);
     }
