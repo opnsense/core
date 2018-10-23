@@ -716,18 +716,16 @@ function get_configured_ip_aliases_list()
 /* return all configured aliases list (IP, carp, proxyarp and other) */
 function get_configured_vips_list()
 {
-    global $config;
-    $alias_list=array();
-    if (isset($config['virtualip']['vip'])) {
-        $viparr = &config_read_array('virtualip', 'vip');
-        foreach ($viparr as $vip) {
-            if ($vip['mode'] == "carp") {
-                $alias_list[] = array("ipaddr" => $vip['subnet'], "if" => "{$vip['interface']}_vip{$vip['vhid']}");
-            } else {
-                $alias_list[] = array("ipaddr" => $vip['subnet'], "if" => $vip['interface']);
-            }
+    $alias_list = array();
+
+    foreach (config_read_array('virtualip', 'vip') as $vip) {
+        if ($vip['mode'] == 'carp') {
+            $alias_list[] = array('ipaddr' => $vip['subnet'], 'if' => "{$vip['interface']}_vip{$vip['vhid']}");
+        } else {
+            $alias_list[] = array('ipaddr' => $vip['subnet'], 'if' => $vip['interface']);
         }
     }
+
     return $alias_list;
 }
 
