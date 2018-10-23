@@ -709,6 +709,7 @@ $( document ).ready(function() {
 <?php
                   endif;
                   endforeach;
+                  $i++;
                   if (!$interface_has_rules):
 ?>
                   <tr>
