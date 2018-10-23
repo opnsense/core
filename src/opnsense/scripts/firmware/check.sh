@@ -268,7 +268,7 @@ if [ "$pkg_running" == "" ]; then
             fi
 
             # the main update from package will provide this during upgrade
-            if [ -n "${pkg_upgraded}" -o -n "${pkg_selected}" ]; then
+            if [ -n "${pkg_upgraded}${pkg_selected}" ]; then
               base_to_reboot=
             elif [ -z "$base_to_reboot" ]; then
               if opnsense-update -cbf; then
@@ -296,7 +296,7 @@ if [ "$pkg_running" == "" ]; then
             fi
 
             # the main update from package will provide this during upgrade
-            if [ -n "${pkg_upgraded}" -o -n "${pkg_selected}" ]; then
+            if [ -n "${pkg_upgraded}${pkg_selected}" ]; then
               kernel_to_reboot=
             elif [ -z "$kernel_to_reboot" ]; then
               if opnsense-update -cfk; then
