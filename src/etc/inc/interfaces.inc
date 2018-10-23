@@ -983,13 +983,15 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         $realif = $ifacecfg['ifcfg']['realif'];
         $realifv6 = $ifacecfg['ifcfg']['realifv6'];
     }
-    $ipaddrv6 = empty($ifcfg['ipaddrv6']) ? null : $ifcfg['ipaddrv6'];
+
+    $ifcfg['ipaddrv6'] = empty($ifcfg['ipaddrv6']) ? null : $ifcfg['ipaddrv6'];
+
     if (!in_array($interface, array('openvpn', 'ppp', 'ipsec', 'enc0'))) {
         /**
          * NOTE: The $realifv6 is needed when WANv4 is type PPP and v6 is DHCP and the option v6 from v4 is used.
          * XXX: we kept this in place due to dropping the $realv6iface parameter from get_real_interface(),
         */
-        if (!in_array($ipaddrv6, array('6rd', '6to4', 'pppoe', 'ppp', 'l2tp', 'pptp'))) {
+        if (!in_array($ifcfg['ipaddrv6'], array('6rd', '6to4', 'pppoe', 'ppp', 'l2tp', 'pptp'))) {
             $ipaddr = empty($ifcfg['ipaddr']) ? null : $ifcfg['ipaddr'];
             if (in_array($ipaddr, array('pppoe', 'ppp', 'l2tp', 'pptp'))) {
                 foreach ($ppps as $ppp) {
@@ -1062,7 +1064,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     }
 
     $track6 = array();
-    switch ($ipaddrv6) {
+    switch ($ifcfg['ipaddrv6']) {
         case 'slaac':
         case 'dhcp6':
             killbypid("/var/run/dhcp6c_{$realifv6}.pid", 'TERM', true);
@@ -1095,7 +1097,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                 if (is_ipaddrv6($ip6)) {
                     mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$ip6} delete", true);
                 }
-                if (!empty($ifcfg['ipaddrv6']) && is_ipaddrv6($ifcfg['ipaddrv6'])) {
+                if (is_ipaddrv6($ifcfg['ipaddrv6'])) {
                     mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$ifcfg['ipaddrv6']} delete", true);
                 }
                 mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
