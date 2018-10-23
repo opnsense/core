@@ -1067,20 +1067,20 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
 
     $track6 = array();
     switch ($ipaddrv6) {
-        case "slaac":
-        case "dhcp6":
-            killbypid("/var/run/dhcp6c_{$realif}.pid", 'TERM', true);
+        case 'slaac':
+        case 'dhcp6':
+            killbypid("/var/run/dhcp6c_{$realifv6}.pid", 'TERM', true);
             if (does_interface_exist($realifv6)) {
                 $ip6 = find_interface_ipv6($realifv6);
                 if (is_ipaddrv6($ip6) && $ip6 != "::") {
                     mwexec("/sbin/ifconfig " . escapeshellarg($realifv6) . " inet6 {$ip6} delete", true);
                 }
-                mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
+                mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realifv6) . " -a");
             }
             $track6 = link_interface_to_track6($interface);
             break;
-        case "6rd":
-        case "6to4":
+        case '6rd':
+        case '6to4':
             $realif = "{$interface}_stf";
             if (does_interface_exist("$realif")) {
                 $ip6 = get_interface_ipv6($interface);
@@ -2608,7 +2608,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
             /* FALLTHROUGH */
         case 'dhcp6':
             if ($linkupevent) {
-                $parentrealif = get_real_interface($lancfg['track6-interface']);
+                $parentrealif = get_real_interface($lancfg['track6-interface'], 'inet6');
                 killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
             }
             break;
@@ -2663,7 +2663,7 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
     /* convert the 128 bits for the lan address back into a valid IPv6 address */
     $rd6lan = convert_128bit_to_ipv6($rd6lanbin) . (1 + get_interface_number_track6($lancfg['track6-interface'], $interface));
 
-    $lanif = get_real_interface($interface);
+    $lanif = get_real_interface($interface, 'inet6');
     $oip = find_interface_ipv6($lanif);
     if (is_ipaddrv6($oip)) {
         mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");
@@ -2703,7 +2703,7 @@ function interface_track6_6to4_configure($interface = 'lan', $lancfg)
     /* convert the 128 bits for the lan address back into a valid IPv6 address */
     $sixto4lan = convert_128bit_to_ipv6($sixto4lanbin) . (1 + get_interface_number_track6($lancfg['track6-interface'], $interface));
 
-    $lanif = get_real_interface($interface);
+    $lanif = get_real_interface($interface, 'inet6');
     $oip = find_interface_ipv6($lanif);
     if (is_ipaddrv6($oip)) {
         mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");
