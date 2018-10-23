@@ -432,7 +432,7 @@ $( document ).ready(function() {
                       </td>
                       <td class="text-nowrap">
                         <button data-id="<?=$i; ?>" data-act="movep1" type="submit" class="act_move btn btn-default btn-xs"
-                          title="<?=gettext("move selected entries before this");?>" data-toggle="tooltip">
+                          title="<?=gettext("Move selected entries before this");?>" data-toggle="tooltip">
                           <i class="fa fa-arrow-left fa-fw"></i>
                         </button>
                         <a href="vpn_ipsec_phase1.php?p1index=<?=$i; ?>" class="btn btn-default btn-xs"
@@ -558,7 +558,7 @@ $( document ).ready(function() {
                                 endif; ?>
                                 <td class="text-nowrap">
                                   <button data-id="<?=$j; ?>" data-act="movep2" type="submit" class="act_move btn btn-default btn-xs"
-                                    title="<?=gettext("move selected entries before this");?>" data-toggle="tooltip">
+                                    title="<?=gettext("Move selected entries before this");?>" data-toggle="tooltip">
                                     <i class="fa fa-arrow-left fa-fw"></i>
                                   </button>
                                   <a href="vpn_ipsec_phase2.php?p2index=<?=$ph2ent['uniqid']; ?>"
@@ -587,7 +587,7 @@ $( document ).ready(function() {
                                 if ($j > 0) :?>
 
                                   <button data-id="<?=$j+1; ?>" data-act="movep2" type="submit" class="act_move btn btn-default btn-xs"
-                                    title="<?=gettext("move selected phase 2 entries to end");?>" data-toggle="tooltip">
+                                    title="<?=gettext("Move selected phase 2 entries to end");?>" data-toggle="tooltip">
                                     <i class="fa fa-arrow-down fa-fw"></i>
                                   </button>
                                   <button data-id="x" type="submit" title="<?=gettext("delete selected phase 2 entries");?>" data-toggle="tooltip"
@@ -618,7 +618,7 @@ $( document ).ready(function() {
                           type="submit"
                           data-id="<?=$i;?>"
                           data-act="movep1"
-                          title="<?=gettext("move selected phase 1 entries to end");?>"
+                          title="<?=gettext("Move selected phase 1 entries to end");?>"
                           data-toggle="tooltip"
                           class="act_move btn btn-default btn-xs">
                           <i class="fa fa-arrow-down fa-fw"></i>
