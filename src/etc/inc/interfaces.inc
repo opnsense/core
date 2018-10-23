@@ -1088,6 +1088,12 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     }
 
     if (does_interface_exist($realifv6)) {
+        /*
+         * XXX So we flush ARP on IPv6 here!  But why?
+         *
+         * Either we want to flush NDP or both ARP
+         * and NDP, but then the same goes for IPv4.
+         */
         $arpflush[$realifv6] = 1;
 
         if (!empty(trim(@file_get_contents("/tmp/{$realifv6}_routerv6")))) {
