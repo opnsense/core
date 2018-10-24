@@ -1602,12 +1602,9 @@ function interface_proxyarp_configure($interface = '')
     }
 }
 
-
 function interfaces_vips_configure($interface = '', $verbose = false)
 {
     global $config;
-
-    $paa = array();
 
     if (isset($config['virtualip']['vip'])) {
         $carp_setuped = false;
