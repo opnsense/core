@@ -2577,6 +2577,8 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
         return;
     }
 
+    $lladdr = !empty($lancfg['track6-lladdr']) ? $lancfg['track6-lladdr'] : 'fe80::1:1';
+
     $realif = get_real_interface($interface, 'inet6');
 
     /* always configure a fixed link-local on the track6 interfaces */
@@ -2584,7 +2586,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
     if (!empty($linklocal)) {
         mwexecf('/sbin/ifconfig %s inet6 %s delete', array($realif, $linklocal));
     }
-    mwexecf('/sbin/ifconfig %s inet6 %s', array($realif, "fe80::1:1%{$realif}"));
+    mwexecf('/sbin/ifconfig %s inet6 %s', array($realif, "{$lladdr}%{$realif}"));
 
     switch ($trackcfg['ipaddrv6']) {
         case '6to4':

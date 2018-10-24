@@ -426,6 +426,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'subnet',
         'subnetv6',
         'track6-interface',
+        'track6-lladdr',
         'track6-prefix-id',
         'rfc3118_isp',
         'rfc3118_username',
@@ -445,7 +446,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcp6usev4iface'] = isset($a_interfaces[$if]['dhcp6usev4iface']);
     $pconfig['dhcp6norelease'] = isset($a_interfaces[$if]['dhcp6norelease']);
     $pconfig['adv_dhcp6_debug'] = isset($a_interfaces[$if]['adv_dhcp6_debug']);
-    $pconfig['track6-prefix-id--hex'] = sprintf("%x", empty($pconfig['track6-prefix-id']) ? 0 :$pconfig['track6-prefix-id']);
+    $pconfig['track6-prefix-id--hex'] = sprintf("%x", empty($pconfig['track6-prefix-id']) ? 0 : $pconfig['track6-prefix-id']);
     $pconfig['dhcpd6track6allowoverride'] = isset($a_interfaces[$if]['dhcpd6track6allowoverride']);
 
     /*
@@ -793,6 +794,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         }
                     }
                     /* XXX should also check for duplicate delegation in peer trackers */
+                }
+                if (!empty($pconfig['track6-lladdr']) && (!is_ipaddrv6($pconfig['track6-lladdr']) || !is_linklocal($pconfig['track6-lladdr']))) {
+                    $input_errors[] = gettext('A valid link-local tracking router address must be specified.');
                 }
                 break;
         }
@@ -1222,6 +1226,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 case 'track6':
                     $new_config['ipaddrv6'] = 'track6';
                     $new_config['track6-interface'] = $pconfig['track6-interface'];
+                    $new_config['track6-lladdr'] = $pconfig['track6-lladdr'];
                     $new_config['track6-prefix-id'] = 0;
                     if (ctype_xdigit($pconfig['track6-prefix-id--hex'])) {
                         $new_config['track6-prefix-id'] = intval($pconfig['track6-prefix-id--hex'], 16);
@@ -3019,6 +3024,15 @@ include("head.inc");
                             <input name="track6-prefix-id--hex" type="text" id="track6-prefix-id--hex" value="<?= $track6_prefix_id_hex ?>" />
                             <div class="hidden" data-for="help_for_track6-prefix-id">
                               <?= gettext('The value in this field is the delegated IPv6 prefix ID. This determines the configurable /64 network ID based on the dynamic IPv6 connection.') ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_track6-lladdr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Link-local router address') ?></td>
+                          <td>
+                            <input name="track6-lladdr" type="text" id="track6-lladdr" value="<?= html_safe($pconfig['track6-lladdr']) ?>" placeholder="fe80::1:1"/>
+                            <div class="hidden" data-for="help_for_track6-lladdr">
+                              <?= gettext('The value in this field is the link-local router address. Optionally overrides the recommended use of fe80::1:1.') ?>
                             </div>
                           </td>
                         </tr>
