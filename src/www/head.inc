@@ -187,6 +187,11 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
         }
       });
 
+      $(".list-group-item.active").each(function(){
+          var navbar_center = ($( window ).height() - $(".collapse.navbar-collapse").height())/2;
+          $('html,aside').scrollTop(($(this).offset().top - navbar_center));
+      });
+
       // hook in live menu search
       $.ajax("/api/core/menu/search/", {
           type: 'get',
