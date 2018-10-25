@@ -388,6 +388,8 @@ include("head.inc");
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>
+<?php                 elseif (is_specialnet($natent['source']['network'])):?>
+                        <?=htmlspecialchars(get_specialnets()[$natent['source']['network']]); ?>
 <?php                 else: ?>
                         <?=$natent['source']['network'] == "(self)" ? gettext("This Firewall") : htmlspecialchars($natent['source']['network']); ?>&nbsp;
 <?php                 endif; ?>
@@ -422,6 +424,8 @@ include("head.inc");
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>
+<?php                 elseif (is_specialnet($natent['destination']['address'])):?>
+                        <?=htmlspecialchars(get_specialnets()[$natent['destination']['address']]); ?>
 <?php                 else: ?>
                         <?=isset($natent['destination']['any']) ? "*" : htmlspecialchars($natent['destination']['address']);?>
 <?php                 endif; ?>
