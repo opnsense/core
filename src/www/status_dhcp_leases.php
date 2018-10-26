@@ -402,7 +402,7 @@ include("head.inc");?>
                           if (empty($dhcpifconf['range'])) {
                               continue;
                           }
-                          if (($lip >= ip2ulong($dhcpifconf['range']['from'])) && ($lip <= ip2ulong($dhcpifconf['range']['to']))) {
+                          if (!empty($dhcpifconf["enable"]) && $lip >= ip2ulong($dhcpifconf['range']['from']) && $lip <= ip2ulong($dhcpifconf['range']['to'])) {
                               $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);
                               $data['if'] = $dhcpif;
                               break;

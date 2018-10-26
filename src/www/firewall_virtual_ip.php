@@ -294,7 +294,7 @@ $main_buttons = array(
                       <?=htmlspecialchars($vipent['descr']);?>
                     </td>
                     <td>
-                      <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("move selected virtual IPs before this entry")) ?>" class="act_move btn btn-default btn-xs">
+                      <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected virtual IPs before this entry")) ?>" class="act_move btn btn-default btn-xs">
                         <span class="fa fa-arrow-left fa-fw"></span>
                       </a>
                       <a href="firewall_virtual_ip_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
@@ -317,7 +317,7 @@ $main_buttons = array(
                   <tr>
                     <td colspan="5"></td>
                     <td>
-                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("move selected virtual IPs to end")) ?>" class="act_move btn btn-default btn-xs">
+                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected virtual IPs to end")) ?>" class="act_move btn btn-default btn-xs">
                         <span class="fa fa-arrow-left fa-fw"></span>
                       </a>
                       <a id="del_x" title="<?= html_safe(gettext('delete selected virtual IPs')) ?>" data-toggle="tooltip"  class="btn btn-default btn-xs">

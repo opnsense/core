@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Copyright (c) 2015-2017 Ad Schellevis <ad@opnsense.org>
-# Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2015-2018 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -25,6 +25,8 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
+
+RCORDER="rcorder -s nostart -s firstboot"
 
 # check which services to enable
 if [ -f /etc/rc.conf ]; then
@@ -66,7 +68,20 @@ rc_enabled()
 	return 0
 }
 
-rc_filenames="$(ls /etc/rc.d/[a-z]* /usr/local/etc/rc.d/[a-z]* 2> /dev/null || true)"
+rc_filenames="$(${RCORDER} /etc/rc.d/[a-z]* /usr/local/etc/rc.d/[a-z]* 2> /dev/null)"
+rc_filenames_defer="
+/etc/rc.d/ipfw
+"
+
+for rc_filename in ${rc_filenames_defer}; do
+	# exclude deferred scripts from first pass, appended last instead
+	rc_filenames=$(echo "${rc_filenames}" | grep -v "^${rc_filename}$")
+done
+
+if [ -z "${1}" ]; then
+	echo "Error: no action argument given"
+	exit 1
+fi
 
 # run our bootstrap command on startup
 if [ "${1}" == "start" ]; then
@@ -84,7 +99,7 @@ if [ "${1}" == "start" ]; then
 fi
 
 # pass all commands to script now
-for rc_filename in ${rc_filenames}; do
+for rc_filename in ${rc_filenames} ${rc_filenames_defer}; do
 	eval "$(grep "^name[[:blank:]]*=" ${rc_filename})"
 
 	if ! rc_enabled ${rc_filename} ${name}; then

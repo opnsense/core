@@ -388,6 +388,8 @@ include("head.inc");
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>
+<?php                 elseif (is_specialnet($natent['source']['network'])):?>
+                        <?=htmlspecialchars(get_specialnets()[$natent['source']['network']]); ?>
 <?php                 else: ?>
                         <?=$natent['source']['network'] == "(self)" ? gettext("This Firewall") : htmlspecialchars($natent['source']['network']); ?>&nbsp;
 <?php                 endif; ?>
@@ -483,7 +485,7 @@ include("head.inc");
                       <?=htmlspecialchars($natent['descr']);?>&nbsp;
                     </td>
                     <td>
-                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('move selected rules before this rule')) ?>" class="act_move btn btn-default btn-xs">
+                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('Move selected rules before this rule')) ?>" class="act_move btn btn-default btn-xs">
                         <i class="fa fa-arrow-left fa-fw"></i>
                       </a>
                       <a href="firewall_nat_out_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
@@ -506,7 +508,7 @@ include("head.inc");
                   <td colspan="6" class="hidden-xs hidden-sm"></td>
                   <td colspan="5"></td>
                   <td>
-                    <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=html_safe(gettext('move selected rules to end'))?>" class="act_move btn btn-default btn-xs">
+                    <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=html_safe(gettext('Move selected rules to end'))?>" class="act_move btn btn-default btn-xs">
                       <i class="fa fa-arrow-left fa-fw"></i>
                     </button>
                     <button id="del_x" title="<?= html_safe(gettext('Delete selected')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs">

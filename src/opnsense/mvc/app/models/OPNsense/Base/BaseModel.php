@@ -367,6 +367,15 @@ abstract class BaseModel
     }
 
     /**
+     * iterate (non virtual) child nodes
+     * @return mixed
+     */
+    public function iterateItems()
+    {
+        return $this->internalData->iterateItems();
+    }
+
+    /**
      * validate full model using all fields and data in a single (1 deep) array
      * @param bool $validateFullModel validate full model or only changed fields
      * @return \Phalcon\Validation\Message\Group

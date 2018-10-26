@@ -113,8 +113,16 @@ if (!empty($grouptmp)) {
     array_walk($grouptmp, 'interface_group_add_member');
 }
 
-if (count(link_interface_to_track6($interface, true))) {
-    services_dhcpd_configure('inet6');
+$trackers = link_interface_to_track6($interface, true);
+if (count($trackers) || $configip == 'track6') {
+    /*
+     * Reload either tracker or tracked interface configs so that
+     * IPv6 addresses are correctly updated in the services:
+     *
+     * 1. WAN side will want to reconfigure, but blacklist trackers
+     * 2. LAN side will want to reconfigure, no blacklist
+     */
+    services_dhcpd_configure('inet6', $trackers);
 }
 
 system_resolvconf_generate();

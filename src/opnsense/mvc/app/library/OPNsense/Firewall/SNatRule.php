@@ -78,6 +78,8 @@ class SNatRule extends Rule
                          * ":0" does not work for IPv6, but NAT is not relevant there anyway.
                          * The reason for this is that it selects the first address which is
                          * the link local address so the real global address is not found.
+                         *
+                         * Also see: https://reviews.freebsd.org/D17633
                          */
                         $rule['target'] = "({$interf_settings['if']}:0)";
                     }

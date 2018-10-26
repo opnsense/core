@@ -58,7 +58,7 @@ function generate_ipv6_from_mac($mac)
 
     $i = 0;
     $ipv6 = "fe80::";
-    foreach($elements as $byte) {
+    foreach ($elements as $byte) {
         if ($i == 0) {
             $hexadecimal =  substr($byte, 1, 2);
             $bitmap = base_convert($hexadecimal, 16, 2);
@@ -90,7 +90,7 @@ function get_pppoes_child_interfaces($ifpattern)
     }
 
     exec("ifconfig", $out, $ret);
-    foreach($out as $line) {
+    foreach ($out as $line) {
         if (preg_match("/^({$ifpattern}[0-9]+):/i", $line, $match)) {
             $if_arr[] = $match[1];
         }
@@ -259,12 +259,17 @@ function services_radvd_configure($blacklist = array())
         } elseif (!isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['radnsserver'][0])) {
             $dnslist_tmp = $dhcpv6ifconf['radnsserver'];
         } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
-            $dnslist_tmp[] = get_interface_ipv6($realif);
+            $server = get_interface_ipv6($realif);
+            if (is_ipaddrv6($server)) {
+                $dnslist_tmp[] = $server;
+            } else {
+                log_error("Warning! services_radvd_configure(manual) found no suitable IPv6 address on {$realif}");
+            }
         } elseif (!empty($config['system']['dnsserver'][0])) {
             $dnslist_tmp = $config['system']['dnsserver'];
         }
         $dnslist = array();
-        foreach($dnslist_tmp as $server) {
+        foreach ($dnslist_tmp as $server) {
             if (is_ipaddrv6($server)) {
                 $dnslist[] = $server;
             }
@@ -335,10 +340,14 @@ function services_radvd_configure($blacklist = array())
             $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
         }
 
-        if ((isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) && is_ipaddrv6($ifcfgipv6)) {
-            $dnslist[] = $ifcfgipv6;
+        if (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
+            if (is_ipaddrv6($ifcfgipv6)) {
+                $dnslist[] = $ifcfgipv6;
+            } else {
+                log_error("Warning! services_radvd_configure(auto) found no suitable IPv6 address on {$realif}");
+            }
         } elseif (!empty($config['system']['dnsserver'])) {
-            foreach($config['system']['dnsserver'] as $server) {
+            foreach ($config['system']['dnsserver'] as $server) {
                 if (is_ipaddrv6($server)) {
                     $dnslist[] = $server;
                 }
@@ -442,7 +451,7 @@ function services_dhcpdv4_configure($verbose = false)
     /* Only consider DNS servers with IPv4 addresses for the IPv4 DHCP server. */
     $dns_arrv4 = array();
     if (!empty($config['system']['dnsserver'][0])) {
-        foreach($config['system']['dnsserver'] as $dnsserver) {
+        foreach ($config['system']['dnsserver'] as $dnsserver) {
             if (is_ipaddrv4($dnsserver)) {
                 $dns_arrv4[] = $dnsserver;
             }
@@ -457,7 +466,7 @@ function services_dhcpdv4_configure($verbose = false)
     $custoptions = "";
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         if (isset($dhcpifconf['numberoptions']['item'])) {
-            foreach($dhcpifconf['numberoptions']['item'] as $itemidx => $item) {
+            foreach ($dhcpifconf['numberoptions']['item'] as $itemidx => $item) {
                 if (!empty($item['type'])) {
                     $itemtype = $item['type'];
                 } else {
@@ -489,7 +498,7 @@ EOD;
     $gateways_arr = return_gateways_array();
     /* only add a routers line if the system has any IPv4 gateway at all */
     /* a static route has a gateway, manually overriding this field always works */
-    foreach($gateways_arr as $gwitem) {
+    foreach ($gateways_arr as $gwitem) {
         if ($gwitem['ipprotocol'] == "inet") {
             $add_routers = true;
             break;
@@ -632,7 +641,7 @@ EOPP;
         /* Create classes - These all contain comma separated lists. Join them into one
            big comma separated string then split them all up. */
         $all_mac_strings = array();
-        foreach($all_pools as $poolconf) {
+        foreach ($all_pools as $poolconf) {
             if (!empty($poolconf['mac_allow'])) {
                 $all_mac_strings[] = $poolconf['mac_allow'];
             }
@@ -653,7 +662,7 @@ EOPP;
         $dhcpdconf .= "\nsubnet {$subnet} netmask {$subnetmask} {\n";
 
         // Setup pool options
-        foreach($all_pools as $poolconf) {
+        foreach ($all_pools as $poolconf) {
             $dhcpdconf .= "  pool {\n";
             /* is failover dns setup? */
             if (!empty($poolconf['dnsserver'][0])) {
@@ -844,7 +853,7 @@ EOD;
         // Handle option, number rowhelper values
         if (isset($dhcpifconf['numberoptions']['item'])) {
             $dhcpdconf .= "\n";
-            foreach($dhcpifconf['numberoptions']['item'] as $itemidx => $item) {
+            foreach ($dhcpifconf['numberoptions']['item'] as $itemidx => $item) {
                 if (empty($item['type']) || $item['type'] == "text") {
                     $dhcpdconf .= "  option custom-{$dhcpif}-{$itemidx} \"{$item['value']}\";\n";
                 } else {
@@ -1093,7 +1102,7 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
     /* Only consider DNS servers with IPv6 addresses for the IPv6 DHCP server. */
     $dns_arrv6 = array();
     if (!empty($config['system']['dnsserver'][0])) {
-        foreach($config['system']['dnsserver'] as $dnsserver) {
+        foreach ($config['system']['dnsserver'] as $dnsserver) {
             if (is_ipaddrv6($dnsserver)) {
                 $dns_arrv6[] = $dnsserver;
             }
@@ -1224,7 +1233,7 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
     $custoptionsv6 = "";
     foreach ($dhcpdv6cfg as $dhcpv6if => $dhcpv6ifconf) {
         if (isset($dhcpv6ifconf['numberoptions']['item'])) {
-            foreach($dhcpv6ifconf['numberoptions']['item'] as $itemv6idx => $itemv6) {
+            foreach ($dhcpv6ifconf['numberoptions']['item'] as $itemv6idx => $itemv6) {
                 if (!empty($itemv6['type'])) {
                     $itemtype = $itemv6['type'];
                 } else {
@@ -1294,8 +1303,12 @@ EOD;
 
         if (isset($dhcpv6ifconf['dnsserver'][0])) {
             $dnscfgv6 .= "  option dhcp6.name-servers " . join(",", $dhcpv6ifconf['dnsserver']) . ";";
-        } elseif ((isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) && (is_ipaddrv6($ifcfgipv6))) {
-            $dnscfgv6 .= "  option dhcp6.name-servers {$ifcfgipv6};";
+        } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
+            if (is_ipaddrv6($ifcfgipv6)) {
+                $dnscfgv6 .= "  option dhcp6.name-servers {$ifcfgipv6};";
+            } else {
+                log_error("Warning! services_dhcpdv6_configure() found no suitable IPv6 address on {$realif}");
+            }
         } elseif (!empty($dns_arrv6)) {
             $dnscfgv6 .= "  option dhcp6.name-servers " . join(",", $dns_arrv6) . ";";
         }
@@ -1333,7 +1346,7 @@ EOD;
         // ntp-servers
         if (isset($dhcpv6ifconf['ntpserver'][0])) {
             $ntpservers = array();
-            foreach($dhcpv6ifconf['ntpserver'] as $ntpserver) {
+            foreach ($dhcpv6ifconf['ntpserver'] as $ntpserver) {
                 if (is_ipaddrv6($ntpserver)) {
                     $ntpservers[] = $ntpserver;
                 }
@@ -1346,7 +1359,7 @@ EOD;
         // Handle option, number rowhelper values
         if (isset($dhcpv6ifconf['numberoptions']['item'])) {
             $dhcpdv6conf .= "\n";
-            foreach($dhcpv6ifconf['numberoptions']['item'] as $itemv6idx => $itemv6) {
+            foreach ($dhcpv6ifconf['numberoptions']['item'] as $itemv6idx => $itemv6) {
                 $dhcpdv6conf .= "  option custom-{$dhcpv6if}-{$itemv6idx} \"{$itemv6['value']}\";\n";
             }
         }
@@ -1514,7 +1527,7 @@ function services_dhcrelay_configure($verbose = false)
             array_shift($route_str);
             array_shift($route_str);
             $route_arr = array();
-            foreach($route_str as $routeline) {
+            foreach ($route_str as $routeline) {
                 $items = preg_split("/[ ]+/i", $routeline);
                 if (is_subnetv4($items[0])) {
                     $subnet = $items[0];
@@ -1637,7 +1650,7 @@ function services_dhcrelay6_configure($verbose = false)
             array_shift($route_str);
             array_shift($route_str);
             $route_arr = array();
-            foreach($route_str as $routeline) {
+            foreach ($route_str as $routeline) {
                 $items = preg_split("/[ ]+/i", $routeline);
                 if (ip_in_subnet($srvip, $items[0])) {
                     $destif = trim($items[6]);
@@ -1744,7 +1757,7 @@ function is_apinger_enabled()
     $gwcount = 0;
 
     if (isset($config['gateways']['gateway_item'])) {
-        foreach($config['gateways']['gateway_item'] as $gwkey => $gateway) {
+        foreach ($config['gateways']['gateway_item'] as $gwkey => $gateway) {
             if (!isset($gateway['monitor_disable']) || $gateway['monitor_disable'] == '0') {
                 $gwcount += 1;
             }
@@ -1769,7 +1782,7 @@ function is_dpinger_enabled()
     $gwcount = 0;
 
     if (isset($config['gateways']['gateway_item'])) {
-        foreach($config['gateways']['gateway_item'] as $gwkey => $gateway) {
+        foreach ($config['gateways']['gateway_item'] as $gwkey => $gateway) {
             if (!isset($gateway['monitor_disable']) || $gateway['monitor_disable'] == '0') {
                 $gwcount += 1;
             }

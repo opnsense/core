@@ -105,14 +105,13 @@ $(document).ready(function () {
                 transition_duration(0);
                 var events = {
                     mouseenter: function() {
+                        $("#navigation.col-sidebar-left").css("width", "415px");
                         if ($(this).next("div").hasClass("in")) {
-                            $("#navigation.col-sidebar-left").css("width", "415px");
+                            /* no action needed */
                         } else if ($(this).next().is("a")) {
-                            $("#navigation.col-sidebar-left").css("width", "415px");
                             $(this).nextAll("a").prevAll("a").addClass("collapsed").attr("aria-expanded","false");
                             $(this).nextAll("div").prevAll("div").removeClass("in").attr("aria-expanded","false");
                         } else {
-                            $("#navigation.col-sidebar-left").css("width", "415px");
                             $(this).trigger("click");
                         }
                     },

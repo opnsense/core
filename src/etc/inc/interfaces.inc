@@ -1009,7 +1009,11 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
 
     if (isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vip) {
-            if ($vip['interface'] == $interface) {
+            if ($vip['interface'] == $interface && $vip['mode'] != 'carp') {
+                /**
+                 * only disable non carp aliases, net.inet.carp.ifdown_demotion_factor should do it's work
+                 * when a carp interface goes down
+                 */
                 interface_vip_bring_down($vip);
             }
         }
@@ -1042,7 +1046,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                         break;
                     }
                 }
-                /* XXX but what about IPv6? */
                 return;
             }
             break;
@@ -1085,6 +1088,12 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     }
 
     if (does_interface_exist($realifv6)) {
+        /*
+         * XXX So we flush ARP on IPv6 here!  But why?
+         *
+         * Either we want to flush NDP or both ARP
+         * and NDP, but then the same goes for IPv4.
+         */
         $arpflush[$realifv6] = 1;
 
         if (!empty(trim(@file_get_contents("/tmp/{$realifv6}_routerv6")))) {
@@ -1593,12 +1602,9 @@ function interface_proxyarp_configure($interface = '')
     }
 }
 
-
 function interfaces_vips_configure($interface = '', $verbose = false)
 {
     global $config;
-
-    $paa = array();
 
     if (isset($config['virtualip']['vip'])) {
         $carp_setuped = false;
@@ -2568,6 +2574,8 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
         return;
     }
 
+    $lladdr = !empty($lancfg['track6-lladdr']) ? $lancfg['track6-lladdr'] : 'fe80::1:1';
+
     $realif = get_real_interface($interface, 'inet6');
 
     /* always configure a fixed link-local on the track6 interfaces */
@@ -2575,7 +2583,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
     if (!empty($linklocal)) {
         mwexecf('/sbin/ifconfig %s inet6 %s delete', array($realif, $linklocal));
     }
-    mwexecf('/sbin/ifconfig %s inet6 %s', array($realif, "fe80::1:1%{$realif}"));
+    mwexecf('/sbin/ifconfig %s inet6 %s', array($realif, "{$lladdr}%{$realif}"));
 
     switch ($trackcfg['ipaddrv6']) {
         case '6to4':
@@ -3668,13 +3676,8 @@ function get_real_interface($interface = 'wan', $family = 'all')
 
             $cfg = &config_read_array('interfaces', $interface);
 
-            if ($family == "inet6") {
-                if (isset($cfg['ipaddrv6'])) {
-                    $ipaddrv6 = $cfg['ipaddrv6'];
-                } else {
-                    $ipaddrv6 = "";
-                }
-                switch ($ipaddrv6) {
+            if ($family == 'inet6') {
+                switch (isset($cfg['ipaddrv6']) ? $cfg['ipaddrv6'] : '') {
                     case '6rd':
                     case '6to4':
                         $wanif = "{$cfg['if']}_stf";
@@ -4144,31 +4147,25 @@ function interface_has_gateway($friendly)
     return false;
 }
 
-/* return true if interface has a gateway */
 function interface_has_gatewayv6($friendly)
 {
     global $config;
 
     if (!empty($config['interfaces'][$friendly])) {
         $ifname = &config_read_array('interfaces', $friendly);
-        if (isset($ifname['ipaddrv6'])) {
-            $ipaddrv6 = $ifname['ipaddrv6'];
-        } else {
-            $ipaddrv6 = "";
-        }
-        switch ($ipaddrv6) {
-            case "slaac":
-            case "dhcp6":
-            case "6to4":
-            case "6rd":
+        switch (isset($ifname['ipaddrv6']) ? $ifname['ipaddrv6'] : '') {
+            case 'slaac':
+            case 'dhcp6':
+            case '6to4':
+            case '6rd':
                 return true;
                 break;
             default:
-                if (substr($ifname['if'], 0, 4) ==  "ovpn") {
+                if (substr($ifname['if'], 0, 4) ==  'ovpn') {
                     return true;
                 }
                 $tunnelif = substr($ifname['if'], 0, 3);
-                if ($tunnelif == "gif" || $tunnelif == "gre") {
+                if ($tunnelif == 'gif' || $tunnelif == 'gre') {
                     return true;
                 }
                 if (!empty($ifname['gatewayv6'])) {

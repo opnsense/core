@@ -35,11 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
       return textArea.value;
    }
    ajaxCall(url="/api/monit/status/get/html", sendData={}, callback=function(data,status) {
-            $("#status").html(decodeEntities(data['status']));
+            $("#messageregion").html(decodeEntities(data['status']));
          });
     });
 </script>
-
-<div id="status" class="content-box tab-content">
-Loading...
-</div>

@@ -1,8 +1,7 @@
+#!/usr/local/bin/php
 <?php
-
 /**
  *    Copyright (C) 2018 Deciso B.V.
- *
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -25,26 +24,8 @@
  *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *    POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
-namespace OPNsense\OpenVPN;
+require_once("interfaces.inc");
 
-use \OPNsense\Base\IndexController as BaseIndexController;
-
-/**
- * Class ExportController
- * @package OPNsense\OpenVPN
- */
-class ExportController extends BaseIndexController
-{
-    /**
-     * default ids index page
-     * @throws \Exception
-     */
-    public function indexAction()
-    {
-        $this->view->pick('OPNsense/OpenVPN/export');
-        $this->view->exportForm = $this->getForm("export_options");
-    }
-}
+echo json_encode(legacy_interfaces_details());

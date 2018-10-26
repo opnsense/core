@@ -1,8 +1,6 @@
-#!/usr/local/bin/php
 <?php
-
 /*
- * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2018 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,39 +25,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("config.inc");
-require_once("services.inc");
-require_once("interfaces.inc");
-require_once("util.inc");
+namespace OPNsense\OpenVPN;
 
-$subsystem = !empty($argv[1]) ? $argv[1] : '';
-$type = !empty($argv[2]) ? $argv[2] : '';
+class PlainOpenVPN extends BaseExporter implements IExportProvider
+{
+    public function getName()
+    {
+        return gettext("File Only");
+    }
 
-if ($type != 'MASTER' && $type != 'BACKUP') {
-    log_error("Carp '$type' event unknown from source '{$subsystem}'");
-    exit(1);
-}
-
-if (!strstr($subsystem, '@')) {
-    log_error("Carp '$type' event triggered from wrong source '{$subsystem}'");
-    exit(1);
-}
-
-list($vhid, $iface) = explode("@", $subsystem);
-
-$friendly = convert_real_interface_to_friendly_interface_name($iface);
-$carp_iface = "{$friendly}_vip{$vhid}";
-$friendly_descr = convert_friendly_interface_to_friendly_descr($carp_iface);
-$notificationmsg = sprintf('Carp cluster member "%s (%s)" has resumed the state "%s" for vhid %s', $friendly_descr, $subsystem, $type, $vhid);
-
-notify_via_smtp($notificationmsg);
-log_error($notificationmsg);
-
-switch ($type) {
-    case 'MASTER':
-        openvpn_carp_start($carp_iface);
-        break;
-    case 'BACKUP':
-        openvpn_carp_stop($carp_iface);
-        break;
+    public function supportedOptions()
+    {
+        return array("testxx1", "testxx3");
+    }
 }

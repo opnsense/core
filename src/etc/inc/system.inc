@@ -693,7 +693,7 @@ function system_syslogd_start($verbose = false, $restart = false)
     $syslogconfs['pkg'] = array('facility' => array('pkg', 'pkg-static'));
     $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');
     $syslogconfs['ppps'] = array('facility' => array('ppp'));
-    $syslogconfs['resolver'] = array('facility' => array('unbound'), 'remote' => 'dns');
+    $syslogconfs['resolver'] = array('facility' => array('unbound'), 'local' => '/var/unbound/var/run/log', 'remote' => 'dns');
     $syslogconfs['routing'] = array('facility' => array('radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'));
     $syslogconfs['wireless'] = array('facility' => array('hostapd'), 'remote' => 'hostapd');
 
@@ -987,6 +987,7 @@ function system_kernel_configure($verbose = false)
         log_error(sprintf('Loading %s cryptographic accelerator module.', $config['system']['crypto_hardware']));
         $mods[] = $config['system']['crypto_hardware'];
     }
+
     if (!empty($config['system']['cryptodev_enable'])) {
         log_error('Loading cryptodev kernel module.');
         $mods[] = 'cryptodev';
@@ -995,11 +996,6 @@ function system_kernel_configure($verbose = false)
     if (!empty($config['system']['thermal_hardware'])) {
         log_error(sprintf('Loading %s thermal monitor module.', $config['system']['thermal_hardware']));
         $mods[] = $config['system']['thermal_hardware'];
-    }
-
-    if ((new \OPNsense\TrafficShaper\TrafficShaper())->isEnabled() || (new \OPNsense\CaptivePortal\CaptivePortal())->isEnabled()) {
-        $mods[] = "ipfw";
-        $mods[] = "dummynet";
     }
 
     foreach ($mods as $mod) {

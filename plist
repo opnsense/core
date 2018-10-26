@@ -382,6 +382,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/forms/tests.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/Api/ExportController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/ExportController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/forms/export_options.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/IndexController.php
@@ -435,6 +436,11 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Rule.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/SNatRule.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Util.php
+/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ArchiveOpenVPN.php
+/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/BaseExporter.php
+/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ExportFactory.php
+/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/IExportProvider.php
+/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/PlainOpenVPN.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Backup/NextcloudSettings.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Backup/NextcloudSettings.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Backup/ScpSettings.php
@@ -519,6 +525,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Monit.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/Export.php
+/usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/Export.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Migrations/M1_0_0.php
@@ -633,7 +641,6 @@
 /usr/local/opnsense/scripts/filter/pfinfo.py
 /usr/local/opnsense/scripts/filter/read_log.py
 /usr/local/opnsense/scripts/filter/update_tables.py
-/usr/local/opnsense/scripts/firmware/audit.sh
 /usr/local/opnsense/scripts/firmware/changelog.sh
 /usr/local/opnsense/scripts/firmware/check.sh
 /usr/local/opnsense/scripts/firmware/health.sh
@@ -646,12 +653,14 @@
 /usr/local/opnsense/scripts/firmware/reinstall.sh
 /usr/local/opnsense/scripts/firmware/remove.sh
 /usr/local/opnsense/scripts/firmware/running.sh
+/usr/local/opnsense/scripts/firmware/security.sh
 /usr/local/opnsense/scripts/firmware/sets.sh
 /usr/local/opnsense/scripts/firmware/type.sh
 /usr/local/opnsense/scripts/firmware/unlock.sh
 /usr/local/opnsense/scripts/firmware/upgrade.sh
 /usr/local/opnsense/scripts/interfaces/dhclient-script
 /usr/local/opnsense/scripts/interfaces/list_arp.py
+/usr/local/opnsense/scripts/interfaces/list_interfaces.php
 /usr/local/opnsense/scripts/interfaces/list_macdb.py
 /usr/local/opnsense/scripts/interfaces/list_ndp.py
 /usr/local/opnsense/scripts/ipsec/connect.py
