@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($pconfig['source'] == "any" && !empty($pconfig['source_not'])) {
         $input_errors[] = gettext("Negating source address of \"any\" is invalid.");
     }
-    if (!(in_array($pconfig['destination'], array("any","(self)")) || is_ipaddroralias($pconfig['destination']))) {
+    if (!is_specialnet($pconfig['destination']) && is_ipaddroralias($pconfig['destination'])) {
         $input_errors[] = gettext("A valid destination must be specified.");
     }
     if (!empty($pconfig['destination_subnet']) && !is_numericint($pconfig['destination_subnet'])) {
@@ -276,7 +276,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // destination address
         if ($pconfig['destination'] == "any") {
             $natent['destination']['any'] = true;
-        } elseif (is_alias($pconfig['destination'])){
+        } elseif (is_alias($pconfig['destination']) || is_specialnet($pconfig['destination'])){
             $natent['destination']['address'] = trim($pconfig['destination']) ;
         } else {
             if (is_ipaddrv6($pconfig['destination'])) {
@@ -579,12 +579,17 @@ include("head.inc");
                           <td>
                             <select name="destination" id="destination" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                               <option data-other=true value="<?=$pconfig['destination'];?>" <?=!is_alias($pconfig['destination']) && $pconfig['destination'] != 'any' ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
-                              <option value="any" <?=$pconfig['destination'] == "any" ? "selected=\"selected\"" : ""; ?>><?=gettext("any");?></option>
                               <optgroup label="<?=gettext("Aliases");?>">
-<?php                        foreach (legacy_list_aliases("network") as $alias):
+<?php                             foreach (legacy_list_aliases("network") as $alias):
 ?>
-                                <option value="<?=$alias['name'];?>" <?=$alias['name'] == $pconfig['destination'] ? "selected=\"selected\"" : "";?>><?=htmlspecialchars($alias['name']);?></option>
-<?php                          endforeach; ?>
+                                      <option value="<?=$alias['name'];?>" <?=$alias['name'] == $pconfig['destination'] ? "selected=\"selected\"" : "";?>><?=htmlspecialchars($alias['name']);?></option>
+<?php                              endforeach; ?>
+                              </optgroup>
+                              <optgroup label="<?=gettext("Networks");?>">
+<?php                             foreach (get_specialnets(true) as $ifent => $ifdesc):
+?>
+                                      <option value="<?=$ifent;?>" <?= $pconfig['destination'] == $ifent ? "selected=\"selected\"" : ""; ?>><?=$ifdesc;?></option>
+<?php                              endforeach; ?>
                               </optgroup>
                           </select>
                         </td>
