@@ -1,7 +1,3 @@
 autoboot_delay="3"
 hw.usb.no_pf="1"
-# vt font switching
 hw.vga.textmode="0"
-# see https://forum.opnsense.org/index.php?topic=6366.0
-hint.ahci.0.msi="0"
-hint.ahci.1.msi="0"
