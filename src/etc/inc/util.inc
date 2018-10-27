@@ -729,16 +729,12 @@ function get_configured_vips_list()
     return $alias_list;
 }
 
-function get_configured_interface_with_descr($only_opt = false, $withdisabled = false)
+function get_configured_interface_with_descr()
 {
     $iflist = array();
 
     foreach (legacy_config_get_interfaces(array('virtual' => false)) as $if => $ifdetail) {
-        if ($only_opt && ($if == 'wan' || $if == 'lan')) {
-            continue;
-        }
-
-        if (isset($ifdetail['enable']) || $withdisabled == true) {
+        if (isset($ifdetail['enable'])) {
             $iflist[$if] = $ifdetail['descr'];
         }
     }
