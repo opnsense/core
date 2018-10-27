@@ -256,7 +256,7 @@ class SettingsController extends ApiControllerBase
                     $fields = array("enabled", "recipient", "noton", "events", "description");
                     break;
                 case 'service':
-                    $fields = array("enabled", "name", "type", "description");
+                    $fields = array("enabled", "name", "type");
                     break;
                 case 'test':
                     $fields = array("name", "condition", "action");
