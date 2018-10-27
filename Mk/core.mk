@@ -50,10 +50,10 @@ ROOT_${TARGET}:=${ROOT_${TARGET}:S/^\/$//}
 
 install-${TARGET}:
 .for TREE in ${TREES_${TARGET}}
-	@REALTARGET=/$$(dirname ${TREE}); \
+	@REALTARGET="/${TREE}"; \
 	if [ -z "${ROOT_${TARGET}}" ]; then REALTARGET=; fi; \
 	mkdir -p ${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}; \
-	tar -C ${TREE} -cvf - . | tar -C ${DESTDIR}${ROOT_${TARGET}}$${REALTARGET} -xf -; \
+	tar -C ${TREE} -cf - . | tar -C ${DESTDIR}${ROOT_${TARGET}}$${REALTARGET} -xf -; \
 	(cd ${TREE}; find * -type f ${_IGNORES}) | while read FILE; do \
 		if [ "$${FILE%%.in}" != "$${FILE}" ]; then \
 			sed -i '' ${SED_REPLACE} \
