@@ -27,9 +27,15 @@
  */
 
 require_once("widgets/include/monit.inc");
-
+function monitGetJQueryBootGridFile($path) {
+    $theme = get_current_theme();
+    $bootgridCssPath = file_exists("/usr/local/opnsense/www/themes/${theme}/build/${path}") ?
+    "/ui/themes/${theme}/build/${path}" : // theme file
+    "/ui/${path}"; // default
+    return $bootgridCssPath;
+}
 ?>
-<link rel="stylesheet" type="text/css" href="<?= cache_safe('/ui/css/jquery.bootgrid.css') ?>">
+<link rel="stylesheet" type="text/css" href="<?= cache_safe(monitGetJQueryBootGridFile("css/jquery.bootgrid.css")) ?>">
 <script src="<?= cache_safe('/ui/js/jquery.bootgrid.js') ?>"></script>
 
 <script>
