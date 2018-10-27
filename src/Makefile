@@ -1,7 +1,7 @@
-TREES=		boot etc man opnsense sbin wizard www
+TREES=		etc man opnsense root sbin wizard www
 ROOT=		/usr/local
-ROOT_boot=	/
 ROOT_man=	/usr/local/share
+ROOT_root=	/
 
 EXTRAS=		bootstrap
 TREES_bootstrap=etc/pkg
