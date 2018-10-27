@@ -29,7 +29,7 @@
 require_once("widgets/include/monit.inc");
 
 ?>
-<link rel="stylesheet" type="text/css" href="<?= cache_safe('/ui/css/jquery.bootgrid.css') ?>">
+<link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename('/css/jquery.bootgrid.css')) ?>">
 <script src="<?= cache_safe('/ui/js/jquery.bootgrid.js') ?>"></script>
 
 <script>
