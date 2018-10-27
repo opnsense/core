@@ -58,17 +58,17 @@ install-${TARGET}:
 		if [ "$${FILE%%.in}" != "$${FILE}" ]; then \
 			sed -i '' ${SED_REPLACE} \
 			    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}"; \
-			mv -v "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
+			mv "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
 			    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.in}"; \
 		fi; \
 		FILE="$${FILE%%.in}"; \
 		if [ -n "${NO_SAMPLE}" -a "$${FILE%%.sample}" != "$${FILE}" ]; then \
-			mv -v "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
+			mv "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
 			    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.sample}"; \
 		fi; \
 		if [ "$${FILE%%.shadow}" != "$${FILE}" ]; then \
 			if [ -n "${NO_SAMPLE}" ]; then \
-				mv -v "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
+				mv "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
 				    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.shadow}"; \
 			else \
 				mv "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
