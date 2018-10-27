@@ -340,8 +340,7 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
     $prefix_array[6] = '0';
     $prefix_array[7] = '0';
     $wifprefix = Net_IPv6::compress(implode(':', $prefix_array));
-    /* XXX why -1? */
-    $pdlen = calculate_ipv6_delegation_length($config['interfaces'][$if]['track6-interface'])-1;
+    $pdlen = calculate_ipv6_delegation_length($config['interfaces'][$if]['track6-interface']) - 1;
 }
 
 ?>
