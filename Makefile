@@ -208,7 +208,7 @@ PKG_SCRIPTS=	+PRE_INSTALL +POST_INSTALL \
 scripts:
 .for PKG_SCRIPT in ${PKG_SCRIPTS}
 	@if [ -f ${.CURDIR}/${PKG_SCRIPT} ]; then \
-		cp -v -- ${.CURDIR}/${PKG_SCRIPT} ${DESTDIR}/; \
+		cp -- ${.CURDIR}/${PKG_SCRIPT} ${DESTDIR}/; \
 	fi
 .endfor
 

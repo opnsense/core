@@ -76,7 +76,7 @@ install-${TARGET}:
 			fi; \
 		fi; \
 		if [ "${TREE}" = "man" ]; then \
-			gzip -vcn "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" > \
+			gzip -cn "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" > \
 			    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}.gz"; \
 			rm "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}"; \
 		fi; \
