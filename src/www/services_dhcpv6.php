@@ -453,6 +453,7 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Subnet");?></td>
                       <td><?= gen_subnetv6($wifcfgip, $wifcfgsn) ?></td>
+                    </tr>
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Subnet mask");?></td>
                       <td><?= htmlspecialchars($wifcfgsn) ?> <?= gettext('bits') ?></td>
@@ -464,7 +465,7 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                     </tr>
 <?php if ($pdlen >= 0): ?>
                      <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Prefix delegation max available size");?></td>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Available prefix delegation size");?></td>
                       <td><?= 64 - $pdlen ?></td>
                     </tr>
 <?php endif ?>
