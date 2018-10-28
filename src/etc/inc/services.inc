@@ -1386,6 +1386,10 @@ host s_{$dhcpv6if}_{$i} {
 
 EOD;
                 if (!empty($sm['ipaddrv6'])) {
+                    if (isset($config['interfaces'][$dhcpv6if]['track6-interface'])
+                        && isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
+                        $sm['ipaddrv6'] = make_ipv6_64_address($ifcfgipv6, $sm['ipaddrv6']);
+                    }
                     $dhcpdv6conf .= "  fixed-address6 {$sm['ipaddrv6']};\n";
                 }
 

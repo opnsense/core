@@ -180,6 +180,9 @@ include("head.inc");
                         <?=gettext("If an IPv6 address is entered, the address must be outside of the pool.");?>
                         <br />
                         <?=gettext("If no IPv6 address is given, one will be dynamically allocated from the pool.");?>
+                        <br />
+                        <?= gettext("When using a static WAN address, this should be entered using the full IPv6 address. " .
+                        "When using a dynamic WAN address, only enter the suffix part (i.e. ::1:2:3:4)."); ?>
                       </div>
                     </td>
                   </tr>
