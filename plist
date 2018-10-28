@@ -1,6 +1,5 @@
 /boot/brand-opnsense.4th
 /boot/logo-hourglass.4th
-/etc/rc.opnsense
 /usr/local/etc/devd/carp.conf
 /usr/local/etc/devd/ifnet.conf
 /usr/local/etc/dh-parameters.2048.rfc7919
@@ -76,6 +75,7 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20171219
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/opnsense-update.deciso.com.20180627
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20180614
+/usr/local/etc/rc
 /usr/local/etc/rc.bootup
 /usr/local/etc/rc.configure_firmware
 /usr/local/etc/rc.configure_interface
