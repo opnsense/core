@@ -400,6 +400,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['lock'] = isset($a_interfaces[$if]['lock']);
     $pconfig['blockpriv'] = isset($a_interfaces[$if]['blockpriv']);
     $pconfig['blockbogons'] = isset($a_interfaces[$if]['blockbogons']);
+    $pconfig['blocklin'] = isset($a_interfaces[$if]['blocklin']);
     $pconfig['gateway_interface'] = isset($a_interfaces[$if]['gateway_interface']);
     $pconfig['promisc'] = isset($a_interfaces[$if]['promisc']);
     $pconfig['dhcpoverridemtu'] = empty($a_interfaces[$if]['dhcphonourmtu']) ? true : null;
@@ -994,6 +995,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             $new_config['blockpriv'] = !empty($pconfig['blockpriv']);
             $new_config['blockbogons'] = !empty($pconfig['blockbogons']);
+            $new_config['blocklin'] = !empty($pconfig['blocklin']);
             $new_config['gateway_interface'] = !empty($pconfig['gateway_interface']);
             $new_config['promisc'] = !empty($pconfig['promisc']);
             if (!empty($pconfig['mtu'])) {
@@ -1798,6 +1800,20 @@ include("head.inc");
                               "(but not RFC 1918) or not yet assigned by IANA."); ?>
                               <?=gettext("Bogons are prefixes that should never appear in the Internet routing table, " .
                               "and obviously should not appear as the source address in any packets you receive."); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_blocklin" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Block local identification networks"); ?></td>
+                          <td>
+                            <label for="blocklin">
+                              <input name="blocklin" type="checkbox" id="blocklin" value="yes" <?=!empty($pconfig['blocklin']) ? "checked=\"checked\"" : ""; ?> />
+                              <?=gettext("Block local identification networks"); ?>
+                            </label>
+                            <div class="hidden" data-for="help_for_blocklin">
+                              <?=gettext("When set, this option blocks traffic from IP addresses that are reserved " .
+                                "for local identification networks per RFC 6890 (0/8).  This option should " .
+                                "generally be turned on, unless this network interface serves DHCP clients.");?>
                             </div>
                           </td>
                         </tr>

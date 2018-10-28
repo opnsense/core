@@ -732,6 +732,31 @@ $( document ).ready(function() {
                     endif;
                 endforeach;?>
 <?php
+
+                    if (isset($config['interfaces'][$selected_if]['blocklin'])): ?>
+                    <tr id="frrfc6890">
+                      <td>&nbsp;</td>
+                      <td>
+                        <i class="fa fa-times text-danger"></i>
+<?php if (!isset($config['syslog']['nologlinets'])): ?>
+                        <i class="fa fa-info-circle text-info"></i>
+<?php endif ?>
+                      </td>
+                      <td>*</td>
+                      <td><?=gettext("RFC 6890 networks");?></td>
+                      <td class="hidden-xs hidden-sm">*</td>
+                      <td class="hidden-xs hidden-sm">*</td>
+                      <td class="hidden-xs hidden-sm">*</td>
+                      <td class="hidden-xs hidden-sm">*</td>
+                      <td class="hidden-xs hidden-sm">&nbsp;</td>
+                      <td><?=gettext("Block local identification networks");?></td>
+                      <td>
+                        <a href="interfaces.php?if=<?=$selected_if?>#rfc6890" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
+                      </td>
+                    </tr>
+<?php
+                    endif;
+
                 foreach ($a_filter as $i => $filterent):
                 if (
                     (!isset($filterent['floating']) && $selected_if == $filterent['interface']) ||

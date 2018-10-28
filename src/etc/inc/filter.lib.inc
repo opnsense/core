@@ -304,11 +304,13 @@ function filter_core_rules_system($fw, $defaults)
     // block all in alias <virusprot>
     $fw->registerFilterRule(1, array('from' => '<virusprot>', 'descr' => 'virusprot overload table'), $defaults['block']);
 
-    // block bogons and private nets
+    // block bogons, private nets and local identification nets
     $bogontmpl = array('type' => 'block', 'log' => !isset($config['syslog']['nologbogons']), 'disablereplyto' => 1);
     $privtmpl = array('type' => 'block', 'log' => !isset($config['syslog']['nologprivatenets']),
       'from' => '10.0.0.0/8,127.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16',
       'disablereplyto' => 1);
+    $lintmpl = array('type' => 'block', 'log' => !isset($config['syslog']['nologlinnets']),
+      'from' => '0.0.0.0/8', 'disablereplyto' => 1);
     foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
         $fw->registerFilterRule(
             5,
@@ -341,6 +343,14 @@ function filter_core_rules_system($fw, $defaults)
             'descr' => "Block private networks from " . $intfinfo['descr'], 'from' => 'fc00::/7',
             'disabled' => !isset($intfinfo['blockpriv'])),
             $privtmpl
+        );
+        $fw->registerFilterRule(
+            5,
+            array('from' => "<RFC_6890_Networks>", 'direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet',
+            '#ref' => "interfaces.php?if=" . $intf . "#blocklin",
+            'descr' => "Block local identification networks from ".$intfinfo['descr'],
+            'disabled' => !isset($intfinfo['blocklin'])),
+          $lintmpl
         );
     }
 

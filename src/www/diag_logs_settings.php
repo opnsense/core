@@ -64,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['logdefaultpass'] = empty($config['syslog']['nologdefaultpass']);
     $pconfig['logbogons'] = empty($config['syslog']['nologbogons']);
     $pconfig['logprivatenets'] = empty($config['syslog']['nologprivatenets']);
+    $pconfig['loglinets'] = empty($config['syslog']['nologlinets']);
     $pconfig['logoutboundnat'] = !empty($config['syslog']['logoutboundnat']);
     $pconfig['loglighttpd'] = empty($config['syslog']['nologlighttpd']);
     $pconfig['disablelocallogging'] = isset($config['syslog']['disablelocallogging']);
@@ -98,12 +99,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $oldnologdefaultpass = isset($config['syslog']['nologdefaultpass']);
             $oldnologbogons = isset($config['syslog']['nologbogons']);
             $oldnologprivatenets = isset($config['syslog']['nologprivatenets']);
+            $oldnologlinets = isset($config['syslog']['nologlinets']);
             $oldnologlighttpd = isset($config['syslog']['nologlighttpd']);
             $oldlogoutboundnat = isset($config['syslog']['logoutboundnat']);
             $config['syslog']['nologdefaultblock'] = empty($pconfig['logdefaultblock']);
             $config['syslog']['nologdefaultpass'] = empty($pconfig['logdefaultpass']);
             $config['syslog']['nologbogons'] = empty($pconfig['logbogons']);
             $config['syslog']['nologprivatenets'] = empty($pconfig['logprivatenets']);
+            $config['syslog']['nologlinets'] = empty($pconfig['loglinets']);
             $config['syslog']['logoutboundnat'] = !empty($pconfig['logoutboundnat']);
             $config['syslog']['nologlighttpd'] = empty($pconfig['loglighttpd']);
 
@@ -115,7 +118,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               || ($oldnologdefaultpass !== isset($config['syslog']['nologdefaultpass']))
               || ($oldnologbogons !== isset($config['syslog']['nologbogons']))
               || ($oldlogoutboundnat !== isset($config['syslog']['logoutboundnat']))
-              || ($oldnologprivatenets !== isset($config['syslog']['nologprivatenets']))) {
+              || ($oldnologprivatenets !== isset($config['syslog']['nologprivatenets']))
+              || ($oldnologlinets !== isset($config['syslog']['nologlinets']))) {
               filter_configure();
             }
 
@@ -236,6 +240,15 @@ $(document).ready(function() {
                     <td>
                       <input name="logprivatenets" type="checkbox" id="logprivatenets" value="yes" <?php if ($pconfig['logprivatenets']) echo "checked=\"checked\""; ?> />
                       <?=gettext("Log packets blocked by 'Block Private Networks' rules");?>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>
+                      <label for="loglinets">
+                        <input name="loglinets" type="checkbox" id="loglinets" value="yes" <?php if ($pconfig['loglinets']) echo "checked=\"checked\""; ?> />
+                        <?=gettext("Log packets blocked by 'Block Local Identification Networks' rules");?>
+                      </label>
                     </td>
                   </tr>
                   <tr>
