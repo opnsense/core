@@ -37,7 +37,8 @@ CORE_ARCH?=	${ARCH}
 CORE_FLAVOUR=	${FLAVOUR}
 CORE_OPENVPN?=	# empty
 CORE_PHP?=	71
-CORE_PYTHON?=	27
+CORE_PYTHON2?=	27
+CORE_PYTHON3?=	36
 CORE_RADVD?=	1
 CORE_SQUID?=	3
 CORE_SURICATA?=	-devel
@@ -117,13 +118,13 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			php${CORE_PHP}-sqlite3 \
 			php${CORE_PHP}-xml \
 			php${CORE_PHP}-zlib \
-			py${CORE_PYTHON}-Jinja2 \
-			py${CORE_PYTHON}-dnspython \
-			py${CORE_PYTHON}-ipaddress \
-			py${CORE_PYTHON}-netaddr \
-			py${CORE_PYTHON}-requests \
-			py${CORE_PYTHON}-sqlite3 \
-			py${CORE_PYTHON}-ujson \
+			py${CORE_PYTHON2}-Jinja2 \
+			py${CORE_PYTHON2}-dnspython \
+			py${CORE_PYTHON2}-ipaddress \
+			py${CORE_PYTHON2}-netaddr \
+			py${CORE_PYTHON2}-requests \
+			py${CORE_PYTHON2}-sqlite3 \
+			py${CORE_PYTHON2}-ujson \
 			radvd${CORE_RADVD} \
 			rate \
 			rrdtool \
@@ -144,7 +145,7 @@ WRKSRC?=${WRKDIR}/src
 PKGDIR?=${WRKDIR}/pkg
 
 WANTS=		p5-File-Slurp php${CORE_PHP}-pear-PHP_CodeSniffer \
-		phpunit6-php${CORE_PHP} py${CORE_PYTHON}-pycodestyle
+		phpunit6-php${CORE_PHP} py${CORE_PYTHON2}-pycodestyle
 
 .for WANT in ${WANTS}
 want-${WANT}:
@@ -326,7 +327,7 @@ style-fix: want-php${CORE_PHP}-pear-PHP_CodeSniffer
 	phpcbf --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} || true
 .endfor
 
-style-python: want-py${CORE_PYTHON}-pycodestyle
+style-python: want-py${CORE_PYTHON2}-pycodestyle
 	@pycodestyle --ignore=E501 ${.CURDIR}/src || true
 
 license: want-p5-File-Slurp
