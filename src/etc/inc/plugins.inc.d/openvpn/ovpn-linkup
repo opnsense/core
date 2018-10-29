@@ -4,24 +4,26 @@
 # /usr/local/opnsense/service/configd_ctl.py interface newip $interface
 
 if [ -n "${route_vpn_gateway}" ]; then
-    /bin/echo ${route_vpn_gateway} > /tmp/$1_router
+	/bin/echo ${route_vpn_gateway} > /tmp/$1_router
 elif [ -n "${ifconfig_remote}" ]; then
-    /bin/echo ${ifconfig_remote} > /tmp/$1_router
+	/bin/echo ${ifconfig_remote} > /tmp/$1_router
 elif [ -n "${ifconfig_local}" ]; then
-    /bin/echo ${ifconfig_local} > /tmp/$1_router
+	/bin/echo ${ifconfig_local} > /tmp/$1_router
 elif [ "${dev_type}" = "tun" ]; then
-    /bin/echo ${5} > /tmp/${1}_router
+	/bin/echo ${5} > /tmp/${1}_router
 fi
 
 if [ -n "${route_ipv6_gateway_1}" ]; then
-    /bin/echo ${route_ipv6_gateway_1} > /tmp/${1}_routerv6
+	/bin/echo ${route_ipv6_gateway_1} > /tmp/${1}_routerv6
 elif [ -n "${ifconfig_ipv6_remote}" ]; then
-    /bin/echo ${ifconfig_ipv6_remote} > /tmp/${1}_routerv6
+	/bin/echo ${ifconfig_ipv6_remote} > /tmp/${1}_routerv6
 elif [ -n "${ifconfig_ipv6_local}" ]; then
-    /bin/echo ${ifconfig_ipv6_local} > /tmp/${1}_routerv6
+	/bin/echo ${ifconfig_ipv6_local} > /tmp/${1}_routerv6
 fi
 
 /usr/bin/touch /tmp/$1up
-# reload filter
+/usr/bin/touch /tmp/$1upv6
+
 /usr/local/opnsense/service/configd_ctl.py interface newip $1
+
 exit 0
