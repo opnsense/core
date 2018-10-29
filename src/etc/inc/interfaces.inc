@@ -1128,8 +1128,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     @unlink("/tmp/{$realifv6}upv6");
     @unlink("/tmp/{$realif}_router");
     @unlink("/tmp/{$realifv6}_routerv6");
-    @unlink("/tmp/{$realif}_defaultgw");
-    @unlink("/tmp/{$realifv6}_defaultgwv6");
 }
 
 function interfaces_ptpid_used($ptpid)
