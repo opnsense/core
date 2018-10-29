@@ -1,3 +1,2 @@
 autoboot_delay="3"
 hw.usb.no_pf="1"
-hw.vga.textmode="0"
