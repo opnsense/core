@@ -1119,13 +1119,13 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     @unlink("/var/db/{$interface}_cacheip");
     @unlink("/var/db/{$interface}_cacheipv6");
     @unlink("/var/etc/nameserver_{$realif}");
-    @unlink("/var/etc/nameserver_v6{$realif}");
+    @unlink("/var/etc/nameserver_v6{$realifv6}");
     @unlink("/var/etc/searchdomain_{$realif}");
-    @unlink("/var/etc/searchdomain_v6{$realif}");
+    @unlink("/var/etc/searchdomain_v6{$realifv6}");
     @unlink("/tmp/{$realif}up");
-    @unlink("/tmp/{$realif}upv6");
+    @unlink("/tmp/{$realifv6}upv6");
     @unlink("/tmp/{$realif}_router");
-    @unlink("/tmp/{$realif}_routerv6");
+    @unlink("/tmp/{$realifv6}_routerv6");
 }
 
 function interfaces_ptpid_used($ptpid)
