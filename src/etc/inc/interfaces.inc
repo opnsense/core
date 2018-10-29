@@ -1041,10 +1041,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                             configd_run("interface reconfigure {$interface}");
                             break;
                         }
-                        if (isvalidpid("/var/run/{$ppp['type']}_{$interface}.pid")) {
-                            killbypid("/var/run/{$ppp['type']}_{$interface}.pid");
-                            sleep(2);
-                        }
+                        killbypid("/var/run/{$ppp['type']}_{$interface}.pid", 'TERM', true);
                         @unlink("/var/etc/mpd_{$interface}.conf");
                         break;
                     }
