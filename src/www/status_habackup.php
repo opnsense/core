@@ -149,7 +149,7 @@ include("head.inc");
                         todo.push({'handle': $(this), 'params': params});
                     }
                 });
-            } else {
+            } else if ($(this).data('service_action') != undefined) {
                 // reload single service
                 params = {};
                 params['action'] = $(this).data('service_action');
@@ -158,12 +158,18 @@ include("head.inc");
                 todo.push({'handle': $(this), 'params': params});
             }
             // reload all templates first
-            $("#action_templates").show();
+            $("#action_exec_sync").hide();
+            $("#action_exec_sync_spinner").show();
             $.post(window.location, {action: 'exec_sync'}, function(data) {
+                $("#action_exec_sync_done").show();
+                $("#action_exec_sync_spinner").hide();
+                $("#action_templates").show();
                 $.post(window.location, {action: 'reload_templates'}, function(data) {
                     $("#action_templates").hide();
                     $("#action_templates_done").show();
-                    perform_actions_reload(todo);
+                    if (todo.length > 0) {
+                        perform_actions_reload(todo);
+                    }
                 });
             });
         });
@@ -224,6 +230,43 @@ include("head.inc");
                             </tr>
                         </thead>
                         <tbody>
+                          <tr>
+                              <td>
+                                  <?=gettext("Synchronize");?>
+                              </td>
+                              <td>
+                                  <?=gettext("Synchronize config to backup");?>
+                              </td>
+                              <td>
+                                <span id="action_exec_sync" class="btn btn-xs btn-default xmlrpc_srv_status_act">
+                                    <i  data-toggle="tooltip"
+                                        title="<?=gettext('Synchronize config to backup');?>"
+                                        class="fa fa-cloud-upload fa-fw">
+                                    </i>
+                                </span>
+                                <div id="action_exec_sync_spinner" style="display:none;">
+                                    <i class="fa fa-spinner fa-pulse" aria-hidden="true"></i>
+                                </div>
+                                <div id="action_exec_sync_done" style="display:none;">
+                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                </div>
+                              </td>
+                              <td></td>
+                          </tr>
+                          <tr>
+                              <td><?=gettext("Templates");?></td>
+                              <td><?=gettext("Generate configuration templates");?></td>
+                              <td>
+                                  <div id="action_templates" style="display:none;">
+                                      <i class="fa fa-spinner fa-pulse" aria-hidden="true"></i>
+                                  </div>
+                                  <div id="action_templates_done" style="display:none;">
+                                      <i class="fa fa-check" aria-hidden="true"></i>
+                                  </div>
+                              </td>
+                              <td></td>
+                          </tr>
+
 <?php
                         $xmlrpc_services = get_xmlrpc_services();
                         $xmlrpc_services = empty($xmlrpc_services) ? array() : $xmlrpc_services;
@@ -281,19 +324,6 @@ include("head.inc");
                             </tr>
 <?php
                         endforeach;?>
-                            <tr>
-                                <td><?=gettext("templates");?></td>
-                                <td></td>
-                                <td>
-                                    <div id="action_templates" style="display:none;">
-                                        <i class="fa fa-spinner fa-pulse" aria-hidden="true"></i>
-                                    </div>
-                                    <div id="action_templates_done" style="display:none;">
-                                        <i class="fa fa-check" aria-hidden="true"></i>
-                                    </div>
-                                </td>
-                                <td></td>
-                            </tr>
                             <tr>
                                 <td><?=gettext("all (*)");?></td>
                                 <td></td>
