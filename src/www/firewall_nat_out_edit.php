@@ -49,7 +49,7 @@ function formTranslateAddresses() {
     if (isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $sn) {
             if (!isset($sn['noexpand'])) {
-                if ($sn['mode'] == "proxyarp" && $sn['type'] == "network") {
+                if (in_array($sn['mode'], array("proxyarp", "other")) && $sn['type'] == "network") {
                     $start = ip2long32(gen_subnet($sn['subnet'], $sn['subnet_bits']));
                     $end = ip2long32(gen_subnet_max($sn['subnet'], $sn['subnet_bits']));
                     $len = $end - $start;
