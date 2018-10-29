@@ -1063,7 +1063,12 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
             break;
     }
 
-    $track6 = array();
+    $track6 = link_interface_to_track6($interface);
+    if (count($track6)) {
+        /* bring down radvd and dhcp6 on these interfaces */
+        services_dhcpd_configure('inet6', $track6);
+    }
+
     switch ($ifcfg['ipaddrv6']) {
         case 'slaac':
         case 'dhcp6':
@@ -1075,7 +1080,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                 }
                 mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realifv6) . " -a");
             }
-            $track6 = link_interface_to_track6($interface);
             break;
         case '6rd':
         case '6to4':
@@ -1089,7 +1093,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                     legacy_interface_flags($realif, 'down');
                 }
             }
-            $track6 = link_interface_to_track6($interface);
             break;
         default:
             if (does_interface_exist("$realif")) {
@@ -1102,13 +1105,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                 }
                 mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
             }
-            $track6 = link_interface_to_track6($interface);
             break;
-    }
-
-    if (!empty($track6)) {
-        /* Bring down radvd and dhcp6 on these interfaces */
-        services_dhcpd_configure('inet6', $track6);
     }
 
     if (file_exists("/tmp/{$realif}_router")) {
