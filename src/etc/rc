@@ -199,6 +199,7 @@ rm /var/run/booting
 
 echo -n "Root file system: "
 mount | grep ' on / ' | awk '{ print $1 }'
+date
 
 /usr/local/sbin/opnsense-shell banner
 /usr/local/etc/rc.subr.d/livemode
