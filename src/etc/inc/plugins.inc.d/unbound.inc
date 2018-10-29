@@ -767,7 +767,8 @@ function unbound_local_zone_types()
         'inform' => 'inform',
         'inform_deny' => 'inform_deny',
         'nodefault' => 'nodefault',
-        'redirect' => 'redirect',
+        # requires more plumbing:
+        #'redirect' => 'redirect',
         'refuse' => 'refuse',
         'static' => 'static',
         'typetransparent' => 'typetransparent',
