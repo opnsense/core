@@ -70,6 +70,8 @@ class Alias(object):
                 tmp = subelem.text.strip()
                 if len(tmp.split('.')) <= 2 and tmp.replace('.', '').isdigit():
                     self._ttl = int(float(tmp))
+            elif subelem.tag in ('aliasurl', 'address', 'url') and subelem.text is None:
+                self._items = set()
             elif subelem.tag == 'aliasurl':
                 self._items = set(sorted(subelem.text.split()))
             elif subelem.tag == 'address' and len(self._items) == 0:
