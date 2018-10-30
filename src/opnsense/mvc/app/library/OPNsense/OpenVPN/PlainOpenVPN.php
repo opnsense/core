@@ -38,4 +38,53 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
     {
         return array("testxx1", "testxx3");
     }
+
+    /**
+     * @return string filename
+     */
+    public function getFilename()
+    {
+        $result = array();
+        if (!empty($this->config['description'])) {
+            $result[] = $this->config['description'];
+        } else {
+            $result[] = "openvpn";
+        }
+        if (!empty($this->config['client_cn'])) {
+            $result[] = $this->config['client_cn'];
+        }
+        return implode("_", $result) . ".ovpn";
+    }
+
+    /**
+     * @return string file type
+     */
+    public function getFileType()
+    {
+        return "text/plain";
+    }
+
+    /**
+     * @return array
+     */
+    protected function openvpnConfParts()
+    {
+        $conf = array();
+        if (isset($this->config['dev_mode'])) {
+           $conf[] = "dev {$this->config['dev_mode']}";
+        }
+        $conf[] = "persist-tun";
+        $conf[] = "persist-key";
+
+        return $conf;
+    }
+
+    /**
+     * @return string content
+     */
+    public function getContent()
+    {
+
+        return implode("\n", $this->openvpnConfParts());
+    }
 }

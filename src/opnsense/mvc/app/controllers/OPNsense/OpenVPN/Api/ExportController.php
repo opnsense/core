@@ -29,6 +29,7 @@
 namespace OPNsense\OpenVPN\Api;
 
 use \OPNsense\Base\ApiControllerBase;
+use \OPNsense\Base\UserException;
 use \OPNsense\Core\Config;
 use \OPNsense\Core\Backend;
 use \OPNsense\OpenVPN\Export;
@@ -317,9 +318,10 @@ class ExportController extends ApiControllerBase
             if ($server !== null) {
                 // fetch server config data
                 $config = array();
-                foreach (array('disable', 'local_port', 'protocol', 'crypto', 'digest', 'tunnel_networkv6', 'reneg-sec',
-                             'local_network', 'local_networkv6', 'tunnel_network', 'compression', 'passtos', 'shared_key',
-                             'mode', 'dev_mode', 'tls', 'client_mgmt_port') as $field) {
+                foreach (array('disable', 'description', 'local_port', 'protocol', 'crypto', 'digest',
+                             'tunnel_networkv6', 'reneg-sec', 'local_network', 'local_networkv6',
+                             'tunnel_network', 'compression', 'passtos', 'shared_key', 'mode',
+                             'dev_mode', 'tls', 'client_mgmt_port') as $field) {
                     if (!empty($server->$field)) {
                         $config[$field] = (string)$server->$field;
                     } else {
@@ -329,6 +331,7 @@ class ExportController extends ApiControllerBase
                 // fetch associated certificate data, add to config
                 $config['server_ca_chain'] = array();
                 $config['server_cn'] = null;
+                $config['server_cert_is_srv'] = null;
                 if (!empty($server->certref)) {
                     if (isset(Config::getInstance()->object()->cert)) {
                         foreach (Config::getInstance()->object()->cert as $cert) {
@@ -355,6 +358,24 @@ class ExportController extends ApiControllerBase
                         }
                     }
                 }
+                if ($certref !== null) {
+                    if (isset(Config::getInstance()->object()->cert)) {
+                        foreach (Config::getInstance()->object()->cert as $cert) {
+                            if (isset($cert->refid) && (string)$certref == $cert->refid) {
+                                // certificate CN
+                                $str_crt = base64_decode((string)$cert->crt);
+                                $inf_crt = openssl_x509_parse($str_crt);
+                                $config['client_cn'] = $inf_crt['subject']['CN'];
+                                $config['client_crt'] = (string)$cert->crt;
+                                $config['client_prv'] = (string)$cert->prv;
+                            }
+                        }
+                    }
+                    if (empty($config['client_cn'])) {
+                        throw new UserException("Client certificate not found", gettext("OpenVPN export"));
+                    }
+                }
+
                 // overlay (saved) user settings
                 if ($this->request->hasPost('openvpn_export')) {
                     $response = $this->storePresetsAction($vpnid);
@@ -364,12 +385,16 @@ class ExportController extends ApiControllerBase
                         $config[$key] = (string)$value;
                     }
                 }
-                // request config generation
-                $factory = new ExportFactory();
-                $provider = $factory->getProvider($config['template']);
-                if ($provider !== null) {
-                    $provider->setConfig($config);
-                    // TODO: execute provider and fetch content
+                if ($response['result'] == 'ok') {
+                    // request config generation
+                    $factory = new ExportFactory();
+                    $provider = $factory->getProvider($config['template']);
+                    if ($provider !== null) {
+                        $provider->setConfig($config);
+                        $response['filename'] = $provider->getFilename();
+                        $response['filetype'] = $provider->getFileType();
+                        $response['content'] = base64_encode($provider->getContent());
+                    }
                 }
             }
         }

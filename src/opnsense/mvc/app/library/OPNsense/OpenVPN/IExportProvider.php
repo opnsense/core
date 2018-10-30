@@ -44,4 +44,19 @@ interface IExportProvider
      * @return array list of supported options, so the user interface can hide the non supported ones
      */
     public function supportedOptions();
+
+    /**
+     * @return string filename
+     */
+    public function getFilename();
+
+    /**
+     * @return string file type
+     */
+    public function getFileType();
+
+    /**
+     * @return string|binary content data
+     */
+    public function getContent();
 }

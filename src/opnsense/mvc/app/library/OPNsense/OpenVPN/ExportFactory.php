@@ -73,7 +73,7 @@ class ExportFactory
     {
         $providers = $this->listProviders();
         if (!empty($providers[$className])) {
-            return $providers[$className];
+            return $providers[$className]['handle'];
         } else {
             return null;
         }

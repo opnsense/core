@@ -106,8 +106,17 @@ POSSIBILITY OF SUCH DAMAGE.
                         var caref = $(this).data('certref');
                         var vpnid = $("#openvpn_export\\.servers").find('option:selected').val();
                         saveFormToEndpoint("/api/openvpn/export/download/"+vpnid+"/"+caref+"/",'frm_ExportSettings', function(data){
-                            // TODO: error handling + download to client when successful
-                            console.log(data);
+                            if (data.filename !== undefined) {
+                                var link = $('<a></a>')
+                                    .attr('href','data:'+data.filetype+';charset=utf8,' + encodeURIComponent(atob(data.content)))
+                                    .attr('download', data.filename)
+                                    .appendTo('body');
+
+                                link.ready(function() {
+                                    link.get(0).click();
+                                    link.empty();
+                                });
+                            }
                         });
                     });
                 }
