@@ -58,29 +58,29 @@ function add_local_user($username, $userdn, $userfullname)
     local_user_set($new_user);
 }
 
-// attributes used in page
-$ldap_users= array();
 $ldap_is_connected = false;
+$ldap_users = array();
+$ldap_server = null;
 $exit_form = false;
 
 // XXX find first LDAP GUI auth server, better select later on
 $servers = explode(',', $config['system']['webgui']['authmode']);
 foreach ($servers as $server) {
     $authcfg = auth_get_authserver($server);
-    if ($authcfg['type'] == 'ldap') {
+    if ($authcfg['type'] == 'ldap' || $authcfg['type'] == 'ldap-totp') {
+        $ldap_server = $authcfg;
         break;
     }
 }
 
-if ($authcfg['type'] == 'ldap') {
+if ($ldap_server !== null) {
     // setup peer ca
-    ldap_setup_caenv($authcfg);
+    ldap_setup_caenv($ldap_server);
+
     // connect to ldap server
-    $ldap_auth = new OPNsense\Auth\LDAP($authcfg['ldap_basedn'], $authcfg['ldap_protver']);
-    $ldap_is_connected = $ldap_auth->connect($authcfg['ldap_full_url']
-                        , $authcfg['ldap_binddn']
-                        , $authcfg['ldap_bindpw']
-                      );
+    $ldap_auth = new OPNsense\Auth\LDAP($ldap_server['ldap_basedn'], $ldap_server['ldap_protver']);
+    $ldap_is_connected = $ldap_auth->connect($ldap_server['ldap_full_url'], $ldap_server['ldap_binddn'], $ldap_server['ldap_bindpw']);
+
     if ($ldap_is_connected) {
         // collect list of current ldap users from config
         $confDNs = array();
@@ -91,10 +91,7 @@ if ($authcfg['type'] == 'ldap') {
         }
 
         // search ldap
-        $result = $ldap_auth->searchUsers("*"
-                  , $authcfg['ldap_attr_user']
-                  , $authcfg['ldap_extended_query']
-                );
+        $result = $ldap_auth->searchUsers('*', $ldap_server['ldap_attr_user'], $ldap_server['ldap_extended_query']);
 
         // actual form action, either save new accounts or list missing
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -134,8 +131,8 @@ if ($authcfg['type'] == 'ldap') {
 }
 
 include('head.inc');
-?>
 
+?>
  <body>
  <script>
     // [de]select all

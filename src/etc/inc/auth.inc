@@ -727,7 +727,7 @@ function auth_get_authserver($name)
     if (isset($config['system']['authserver']) && is_array($config['system']['authserver'])) {
         foreach ($config['system']['authserver'] as $authcfg) {
             if ($authcfg['name'] == $name) {
-                if ($authcfg['type'] == 'ldap') {
+                if ($authcfg['type'] == 'ldap' || $authcfg['type'] == 'ldap-totp') {
                     // let's try to avoid regenerating the ldap url in every function.
                     if (strstr($authcfg['ldap_urltype'], "Standard")) {
                         $authcfg['ldap_full_url'] = "ldap://";
@@ -785,7 +785,7 @@ function get_authenticator($authcfg = NULL)
         if ($authcfg['type'] == 'local') {
             // avoid gettext type issues on Local Database, authenticator should always be named "Local Database"
             $authName = 'Local Database';
-        } elseif ($authcfg['type'] == 'ldap') {
+        } elseif ($authcfg['type'] == 'ldap' || $authcfg['type'] == 'ldap-totp') {
             // temporary fix, ldap handler doesn't do this init yet.
             ldap_setup_caenv($authcfg);
         }
