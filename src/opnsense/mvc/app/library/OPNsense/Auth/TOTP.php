@@ -59,11 +59,6 @@ trait TOTP
     private $passwordFirst = false;
 
     /**
-     * @var string method accepting username and returning a simplexml user object
-     */
-    private $getUserMethod = 'getUser';
-
-    /**
      * use graceperiod and timeWindow to calculate which moments in time we should check
      * @return array timestamps
      */
@@ -149,8 +144,7 @@ trait TOTP
      */
     public function authenticate($username, $password)
     {
-        $getUserMethod = $this->getUserMethod;
-        $userObject = $this->$getUserMethod($username);
+        $userObject = $this->getUser($username);
         if ($userObject != null && !empty($userObject->otp_seed)) {
             if (strlen($password) > $this->otpLength) {
                 // split otp token code and userpassword
@@ -166,7 +160,7 @@ trait TOTP
                 $otp_seed = \Base32\Base32::decode($userObject->otp_seed);
                 if ($this->authTOTP($otp_seed, $code)) {
                     // token valid, do parents auth
-                    return parent::authenticate($userObject, $userPassword);
+                    return parent::authenticate($username, $userPassword);
                 }
             }
         }

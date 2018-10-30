@@ -123,7 +123,7 @@ class AuthenticationFactory
             if (!empty($connectors[$servers[$authserver]['type']])) {
                 $authObject = $connectors[$servers[$authserver]['type']]['classHandle']->newInstance();
             }
-            if ($servers[$authserver]['type'] == 'ldap') {
+            if (in_array($servers[$authserver]['type'], array('ldap', 'ldap-totp'))) {
                 $localUserMap = $this->fetchUserDNs();
             }
 
