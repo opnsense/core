@@ -407,6 +407,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Base.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/IAuthConnector.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/LDAP.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Auth/LDAPTOTP.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Local.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/LocalTOTP.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Radius.php
