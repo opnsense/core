@@ -397,7 +397,7 @@ function services_dhcpdv6_leasesfile()
     return '/var/dhcpd/var/db/dhcpd6.leases';
 }
 
-function services_dhcpd_configure($family = 'all', $blacklist = array(), $verbose = false)
+function services_dhcpd_configure($verbose = false, $family = 'all', $blacklist = array())
 {
     $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
 

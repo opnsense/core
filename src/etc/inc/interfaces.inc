@@ -1059,7 +1059,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     $track6 = link_interface_to_track6($interface);
     if (count($track6)) {
         /* bring down radvd and dhcp6 on these interfaces */
-        services_dhcpd_configure('inet6', $track6);
+        services_dhcpd_configure(false, 'inet6', $track6);
     }
 
     switch ($ifcfg['ipaddrv6']) {
@@ -2548,7 +2548,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             system_routing_configure($verbose, $interface);
             ipsec_configure_do($verbose, $interface);
             plugins_configure('dns', $verbose);
-            services_dhcpd_configure('all', array(), $verbose);
+            services_dhcpd_configure($verbose);
             /* XXX move these up the call stack */
             configd_run("dyndns reload {$interface}");
             configd_run("rfc2136 reload {$interface}");

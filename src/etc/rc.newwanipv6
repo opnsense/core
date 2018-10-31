@@ -122,7 +122,7 @@ if (count($trackers) || $configip == 'track6') {
      * 1. WAN side will want to reconfigure, but blacklist trackers
      * 2. LAN side will want to reconfigure, no blacklist
      */
-    services_dhcpd_configure('inet6', $trackers);
+    services_dhcpd_configure(false, 'inet6', $trackers);
 }
 
 system_resolvconf_generate();
