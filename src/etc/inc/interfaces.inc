@@ -3917,42 +3917,54 @@ function link_interface_to_gif($interface)
 /*
  * find_interface_ip($interface): return the interface ip (first found)
  */
-function find_interface_ip($interface)
+function find_interface_ip($interface, $exists = false)
 {
-    $interface = trim($interface);
-    if (does_interface_exist($interface)) {
-        $ifinfo = legacy_get_interface_addresses($interface);
-        if (isset($ifinfo['ipaddr'])) {
-            return $ifinfo['ipaddr'];
-        }
+    $interface = trim($interface);	/* XXX no */
+
+    if (!$exists && !does_interface_exist($interface)) {
+        return null;
     }
+
+    $ifinfo = legacy_get_interface_addresses($interface);
+
+    if (isset($ifinfo['ipaddr'])) {
+        return $ifinfo['ipaddr'];
+    }
+
     return null;
 }
 
 /*
  * find_interface_ipv6($interface): return the interface ip (first found)
  */
-function find_interface_ipv6($interface)
+function find_interface_ipv6($interface, $exists = false)
 {
+    $interface = trim($interface);	/* XXX no */
+
     // a bit obscure, why should this be different then find_interface_ip?
-    $interface = get_real_interface(trim($interface));
-    if (does_interface_exist($interface)) {
-        $ifinfo = legacy_get_interface_addresses($interface);
-        if (isset($ifinfo['ipaddr6'])) {
-            return $ifinfo['ipaddr6'];
-        }
+    $interface = get_real_interface($interface);
+
+    if (!$exists && !does_interface_exist($interface)) {
+        return null;
     }
+
+    $ifinfo = legacy_get_interface_addresses($interface);
+
+    if (isset($ifinfo['ipaddr6'])) {
+        return $ifinfo['ipaddr6'];
+    }
+
     return null;
 }
 
 /*
  * find_interface_ipv6_ll($interface): return the interface ipv6 link local (first found)
  */
-function find_interface_ipv6_ll($interface)
+function find_interface_ipv6_ll($interface, $exists = false)
 {
-    $interface = trim($interface);
+    $interface = trim($interface);	/* XXX no */
 
-    if (!does_interface_exist($interface)) {
+    if (!$exists && !does_interface_exist($interface)) {
         return null;
     }
 
