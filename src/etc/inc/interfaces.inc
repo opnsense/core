@@ -2572,26 +2572,6 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
         return;
     }
 
-    $lladdr = !empty($lancfg['track6-lladdr']) ? $lancfg['track6-lladdr'] : 'fe80::1:1';
-
-    $realif = get_real_interface($interface, 'inet6');
-
-    /*
-     * Always configure a fixed link-local on the track6 interfaces.
-     *
-     * The history of this change is under dispute.  It was originally
-     * added to be able to access the web GUI under easily remembered
-     * IPv6 address, but it has issues with CARP and other "two boxes
-     * in one network".  Now we added the override for fe80::1:1, and
-     * in the end it should work either way and all of this could be
-     * removed.  Still considering complete removal for 19.1.
-     */
-    $linklocal = find_interface_ipv6_ll($realif);
-    if (!empty($linklocal)) {
-        mwexecf('/sbin/ifconfig %s inet6 %s delete', array($realif, $linklocal));
-    }
-    mwexecf('/sbin/ifconfig %s inet6 %s', array($realif, "{$lladdr}%{$realif}"));
-
     switch ($trackcfg['ipaddrv6']) {
         case '6to4':
             interface_track6_6to4_configure($interface, $lancfg);
