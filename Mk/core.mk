@@ -51,7 +51,7 @@ ROOT_${TARGET}:=${ROOT_${TARGET}:S/^\/$//}
 install-${TARGET}:
 .for TREE in ${TREES_${TARGET}}
 	@REALTARGET="/${TREE}"; \
-	if [ -z "${ROOT_${TARGET}}" ]; then REALTARGET=; fi; \
+	if [ -z "${ROOT_${TARGET}}" ]; then REALTARGET=/; fi; \
 	mkdir -p ${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}; \
 	tar -C ${TREE} -cf - . | tar -C ${DESTDIR}${ROOT_${TARGET}}$${REALTARGET} -xf -; \
 	(cd ${TREE}; find * -type f ${_IGNORES}) | while read FILE; do \
