@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (C) 2018 Deciso B.V.
  * All rights reserved.
@@ -71,7 +72,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
     {
         $conf = array();
         if (isset($this->config['dev_mode'])) {
-           $conf[] = "dev {$this->config['dev_mode']}";
+            $conf[] = "dev {$this->config['dev_mode']}";
         }
         $conf[] = "persist-tun";
         $conf[] = "persist-key";
