@@ -1269,16 +1269,21 @@ EOD;
     $dhcpv6num = 0;
 
     foreach ($dhcpdv6cfg as $dhcpv6if => $dhcpv6ifconf) {
-        $newzone = array();
-
         if (!isset($dhcpv6ifconf['enable']) || !isset($iflist[$dhcpv6if])) {
             continue;
         }
+
         if (isset($blacklist[$dhcpv6if])) {
             continue;
         }
 
         $ifcfgipv6 = get_interface_ipv6($dhcpv6if);
+
+        if (!is_ipaddrv6($ifcfgipv6)) {
+            log_error("Warning! services_dhcpdv6_configure() found no suitable IPv6 address on {$dhcpv6if}");
+            continue;
+        }
+
         $ifcfgsnv6 = get_interface_subnetv6($dhcpv6if);
         $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
 
@@ -1290,6 +1295,8 @@ EOD;
         if (!empty($dhcpv6ifconf['domainsearchlist'])) {
             $dnscfgv6 .= "  option domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $dhcpv6ifconf['domainsearchlist'])) . "\";\n";
         }
+
+        $newzone = array();
 
         if (isset($dhcpv6ifconf['ddnsupdate'])) {
             if (!empty($dhcpv6ifconf['ddnsdomain'])) {
@@ -1305,22 +1312,12 @@ EOD;
         if (isset($dhcpv6ifconf['dnsserver'][0])) {
             $dnscfgv6 .= "  option dhcp6.name-servers " . join(",", $dhcpv6ifconf['dnsserver']) . ";";
         } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
-            if (is_ipaddrv6($ifcfgipv6)) {
-                $dnscfgv6 .= "  option dhcp6.name-servers {$ifcfgipv6};";
-            } else {
-                log_error("Warning! services_dhcpdv6_configure() found no suitable IPv6 address on {$realif}");
-            }
+            $dnscfgv6 .= "  option dhcp6.name-servers {$ifcfgipv6};";
         } elseif (!empty($dns_arrv6)) {
             $dnscfgv6 .= "  option dhcp6.name-servers " . join(",", $dns_arrv6) . ";";
         }
 
-        if (is_ipaddrv6($ifcfgipv6)) {
-            $dhcpdv6conf .= "\nsubnet6 {$subnetv6}/{$ifcfgsnv6}";
-        } elseif (!empty($dhcpv6ifconf['range']['from'])) {
-            $subnet6 = gen_subnetv6($dhcpv6ifconf['range']['from'], '64', !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride']));
-            $dhcpdv6conf .= "\nsubnet6 {$subnet6}/64";
-        }
-        $dhcpdv6conf .= " {\n";
+        $dhcpdv6conf .= "\nsubnet6 {$subnetv6}/{$ifcfgsnv6} {\n";
 
         if (!empty($dhcpv6ifconf['range']['from'])) {
             $dhcpdv6conf .= <<<EOD
@@ -1386,14 +1383,12 @@ host s_{$dhcpv6if}_{$i} {
 
 EOD;
                 if (!empty($sm['ipaddrv6'])) {
-                    if (isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride']) && is_ipaddrv6($ifcfgipv6)) {
-                        $sm['ipaddrv6'] = make_ipv6_64_address($ifcfgipv6, $sm['ipaddrv6']);
-                    } else {
-                        unset($sm['ipaddrv6']);
-                    }
                 }
 
                 if (!empty($sm['ipaddrv6'])) {
+                    if (isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
+                        $sm['ipaddrv6'] = make_ipv6_64_address($ifcfgipv6, $sm['ipaddrv6']);
+                    }
                     $dhcpdv6conf .= "  fixed-address6 {$sm['ipaddrv6']};\n";
                 }
 
