@@ -3908,7 +3908,7 @@ function link_interface_to_gif($interface)
  */
 function find_interface_ip($interface, $exists = false)
 {
-    $interface = trim($interface);
+    $interface = trim($interface);	/* XXX no */
 
     if (!$exists && !does_interface_exist($interface)) {
         return null;
@@ -3928,7 +3928,7 @@ function find_interface_ip($interface, $exists = false)
  */
 function find_interface_ipv6($interface, $exists = false)
 {
-    $interface = trim($interface);
+    $interface = trim($interface);	/* XXX no */
 
     if (!$exists && !does_interface_exist($interface)) {
         return null;
@@ -3948,7 +3948,7 @@ function find_interface_ipv6($interface, $exists = false)
  */
 function find_interface_ipv6_ll($interface, $exists = false)
 {
-    $interface = trim($interface);
+    $interface = trim($interface);	/* XXX no */
 
     if (!$exists && !does_interface_exist($interface)) {
         return null;
