@@ -151,15 +151,15 @@ function ntpd_configure_pps($serialport)
 
 function ntpd_configure_start($verbose = false)
 {
-    ntpd_configure_do(true, $verbose);
+    ntpd_configure_do($verbose, true);
 }
 
 function ntpd_configure_defer($verbose = false)
 {
-    ntpd_configure_do(false, $verbose);
+    ntpd_configure_do($verbose, false);
 }
 
-function ntpd_configure_do($start_ntpd = true, $verbose = false)
+function ntpd_configure_do($verbose = false, $start_ntpd = true)
 {
     global $config;
 

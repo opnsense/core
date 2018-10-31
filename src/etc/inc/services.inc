@@ -98,7 +98,7 @@ function get_pppoes_child_interfaces($ifpattern)
     return $if_arr;
 }
 
-function services_radvd_configure($blacklist = array())
+function services_radvd_configure($verbose = false, $blacklist = array())
 {
     global $config;
 
@@ -106,6 +106,11 @@ function services_radvd_configure($blacklist = array())
 
     if (!is_radvd_enabled()) {
         return;
+    }
+
+    if ($verbose) {
+        echo 'Starting router advertisement service...';
+        flush();
     }
 
     $radvdconf = "# Automatically generated, do not edit\n";
@@ -155,7 +160,7 @@ function services_radvd_configure($blacklist = array())
             }
         }
 
-        $radvdconf .= "# Generated for DHCPv6 Server $dhcpv6if\n";
+        $radvdconf .= "# Generated for DHCPv6 server $dhcpv6if\n";
         $radvdconf .= "interface {$realif} {\n";
         $radvdconf .= sprintf("\tAdvSendAdvert %s;\n", !empty($dhcpv6ifconf['ranosend']) ? 'off' : 'on');
         $radvdconf .= sprintf("\tMinRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramininterval']) ? $dhcpv6ifconf['ramininterval'] : '200');
@@ -385,6 +390,10 @@ function services_radvd_configure($blacklist = array())
     if (count($radvdifs)) {
         mwexec('/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog');
     }
+
+    if ($verbose) {
+        echo "done.\n";
+    }
 }
 
 function services_dhcpd_leasesfile()
@@ -416,8 +425,8 @@ function services_dhcpd_configure($verbose = false, $family = 'all', $blacklist 
     }
 
     if ($family == 'all' || $family == 'inet6') {
-        services_dhcpdv6_configure($blacklist, $verbose);
-        services_radvd_configure($blacklist);
+        services_dhcpdv6_configure($verbose, $blacklist);
+        services_radvd_configure($verbose, $blacklist);
     }
 }
 
@@ -1086,7 +1095,7 @@ function is_dhcpv6_server_enabled()
     return false;
 }
 
-function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
+function services_dhcpdv6_configure($verbose = false, $blacklist = array())
 {
     global $config;
 
@@ -1476,7 +1485,7 @@ function services_dhcrelay_configure($verbose = false)
     }
 
     if ($verbose) {
-        echo 'Starting DHCPv4 Relay...';
+        echo 'Starting DHCPv4 relay...';
         flush();
     }
 
@@ -1595,7 +1604,7 @@ function services_dhcrelay6_configure($verbose = false)
     }
 
     if ($verbose) {
-        echo 'Starting DHCPv6 Relay...';
+        echo 'Starting DHCPv6 relay...';
         flush();
     }
 
