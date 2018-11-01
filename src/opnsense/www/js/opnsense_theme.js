@@ -44,8 +44,8 @@ $(document).ready(function () {
 			if ($(this).next("div").hasClass("in")) {
 				/* no action needed */
 			} else if ($(this).next().is("a")) {
-				$(this).nextAll("a").prevAll("a").slice(0,8).addClass("collapsed").attr("aria-expanded","false")
-				.nextAll("div").prevAll("div").slice(0,8).removeClass("in").attr("aria-expanded","false");
+				$(this).nextAll("a").prevAll("a").addClass("collapsed").attr("aria-expanded","false")
+				.nextAll("div").prevAll("div").removeClass("in").attr("aria-expanded","false");
 			} else {
 				var divtop = $(this).offset().top;
 				var divheight = $(this).next("div").height();
