@@ -32,11 +32,54 @@
 $(document).ready(function () {
     // traverse loaded css files
     var toggle_sidebar_loaded = false;
+    var winheight = $(window).height();
     var nomouse = "mouseenter mouseleave";
     var layer1_a = $('#mainmenu > div > a');
     var layer1_div = $('#mainmenu > div > div');
     var layer2_a = $('#mainmenu > div > div > a');
     var layer2_div = $('#mainmenu > div > div > div');
+    var events = {
+        mouseenter: function() {
+            $("#navigation.col-sidebar-left").css("width", "415px");
+            if ($(this).next("div").hasClass("in")) {
+                /* no action needed */
+            } else if ($(this).next().is("a")) {
+                $(this).nextAll("a").prevAll("a").addClass("collapsed").attr("aria-expanded","false")
+                .nextAll("div").prevAll("div").removeClass("in").attr("aria-expanded","false");
+            } else {
+                var divtop = $(this).offset().top - $(window).scrollTop();
+                var divheight = $(this).next("div").height();
+                var currentheight = (divtop + divheight);
+                if ((currentheight) <= (winheight)) {
+                    $(this).trigger("click");
+                    } else {
+                        if ($(this).is(layer1_a)) {
+                            $(this).trigger("click").next("div").css("margin-top",-((divheight)+3));
+                        } else {
+                            $(this).trigger("click").next("div").css("margin-top",-((divheight)));
+                        }
+                    }
+            }
+        },
+        mouseleave: function() {
+            $("#navigation.col-sidebar-left").css("width", "70px");
+        },
+        mousedown: function() {
+            $(this).trigger("click");
+        },
+        mouseup: function() {
+            $(this).blur();
+        }
+    }
+    var events2 = {
+        mouseenter: function() {
+            $("#navigation.col-sidebar-left").css("width", "415px");
+            $(this).trigger("click");
+        },
+        mouseleave: function() {
+            $("#navigation.col-sidebar-left").css("width", "70px");
+        }
+    }
 
     $.each(document.styleSheets, function(sheetIndex, sheet) {
         if (sheet.href != undefined && sheet.href.match(/main\.css(\?v=\w+$)?/gm)) {
@@ -58,9 +101,9 @@ $(document).ready(function () {
 
     /* trigger mouseevents on startup */
     function trigger_sidebar() {
-        layer1_a.first().trigger("mouseenter");
-        layer1_a.first().trigger("mouseleave");
+        layer1_a.first().trigger("mouseenter").trigger("mouseleave");
         layer1_div.removeClass("in");
+        layer2_div.removeClass("in");
     }
 
     /* transition duration - time */
@@ -103,39 +146,8 @@ $(document).ready(function () {
         $("#navigation").mouseenter(function () {
             if ($("#navigation").hasClass("col-sidebar-left")) {
                 transition_duration(0);
-                var events = {
-                    mouseenter: function() {
-                        $("#navigation.col-sidebar-left").css("width", "415px");
-                        if ($(this).next("div").hasClass("in")) {
-                            /* no action needed */
-                        } else if ($(this).next().is("a")) {
-                            $(this).nextAll("a").prevAll("a").addClass("collapsed").attr("aria-expanded","false");
-                            $(this).nextAll("div").prevAll("div").removeClass("in").attr("aria-expanded","false");
-                        } else {
-                            $(this).trigger("click");
-                        }
-                    },
-                    mouseleave: function() {
-                        $("#navigation.col-sidebar-left").css("width", "70px");
-                    },
-                    mousedown: function() {
-                        $(this).trigger("click");
-                    },
-                    mouseup: function() {
-                        $(this).blur();
-                    }
-                }
                 layer1_a.on(events);
                 layer2_a.on(events);
-                var events2 = {
-                    mouseenter: function() {
-                        $("#navigation.col-sidebar-left").css("width", "415px");
-                        $(this).trigger("click");
-                    },
-                    mouseleave: function() {
-                        $("#navigation.col-sidebar-left").css("width", "70px");
-                    }
-                }
                 layer1_div.on(events2);
                 layer2_div.on(events2);
             }
@@ -144,14 +156,17 @@ $(document).ready(function () {
         /* sidebar mouseleave */
         $("#mainmenu").mouseleave(function () {
             if ($("#navigation").hasClass("col-sidebar-left")) {
-                layer1_a.attr("aria-expanded","false");
-                layer1_a.next("div").removeClass("in");
+                layer1_a.attr("aria-expanded","false").next("div").removeClass("in");
+                layer2_a.attr("aria-expanded","false").next("div").removeClass("in");
+                layer1_div.removeAttr("style");
+                layer2_div.removeAttr("style");
             }
         });
 
         /* on resize - toggle sidebar / main navigation */
         $(window).on('resize', function(){
             var win = $(this);
+            winheight = win.height();
             if ((win.height() < 675 || win.width() < 760) && $("#navigation").not("col-sidebar-hidden")) {
                 $("#navigation").addClass("col-sidebar-hidden");
                 mouse_events_off();
