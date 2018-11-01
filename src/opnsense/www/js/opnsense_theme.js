@@ -26,19 +26,62 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-/* hook-in additional theme functionality */
+ 
+// hook-in additional theme functionality
 
 $(document).ready(function () {
-    // traverse loaded css files
-    var toggle_sidebar_loaded = false;
-    var nomouse = "mouseenter mouseleave";
-    var layer1_a = $('#mainmenu > div > a');
-    var layer1_div = $('#mainmenu > div > div');
-    var layer2_a = $('#mainmenu > div > div > a');
-    var layer2_div = $('#mainmenu > div > div > div');
-
-    $.each(document.styleSheets, function(sheetIndex, sheet) {
+	// traverse loaded css files
+	var toggle_sidebar_loaded = false;
+	var winheight = $(window).height();
+	var nomouse = "mouseenter mouseleave";
+	var layer1_a = $('#mainmenu > div > a');
+	var layer1_div = $('#mainmenu > div > div');
+	var layer2_a = $('#mainmenu > div > div > a');
+	var layer2_div = $('#mainmenu > div > div > div');
+	var events = {
+		mouseenter: function() {
+			$("#navigation.col-sidebar-left").css("width", "415px");
+			if ($(this).next("div").hasClass("in")) {
+				/* no action needed */
+			} else if ($(this).next().is("a")) {
+				$(this).nextAll("a").prevAll("a").slice(0,8).addClass("collapsed").attr("aria-expanded","false")
+				.nextAll("div").prevAll("div").slice(0,8).removeClass("in").attr("aria-expanded","false");
+			} else {
+				var divtop = $(this).offset().top;
+				var divheight = $(this).next("div").height();
+				var currentheight = (divtop + divheight);
+				if ((currentheight) <= (winheight)) {
+					$(this).trigger("click");
+					} else {
+						if ($(this).is(layer1_a)) {
+							$(this).trigger("click").next("div").css("margin-top",-((divheight)+3));
+						} else {
+							$(this).trigger("click").next("div").css("margin-top",-((divheight)));
+						}
+					}
+			}
+		},
+		mouseleave: function() {
+			$("#navigation.col-sidebar-left").css("width", "70px");
+		},
+		mousedown: function() {
+			$(this).trigger("click");
+		},
+		mouseup: function() {
+			$(this).blur();
+		}
+	}
+	var events2 = {
+		mouseenter: function() {
+			$("#navigation.col-sidebar-left").css("width", "415px");
+			$(this).trigger("click");
+		},
+		mouseleave: function() {
+			$("#navigation.col-sidebar-left").css("width", "70px");
+		}
+	}
+	
+	$.each(document.styleSheets, function(sheetIndex, sheet) {
         if (sheet.href != undefined && sheet.href.match(/main\.css(\?v=\w+$)?/gm)) {
           $.each(sheet.cssRules || sheet.rules, function(ruleIndex, rule) {
               if (rule.cssText.indexOf('toggle-sidebar') >= 0) {
@@ -47,28 +90,28 @@ $(document).ready(function () {
           });
         }
     });
-
-    /* disable mouseevents on toggle and resize */
-    function mouse_events_off() {
-        layer1_a.off(nomouse);
-        layer2_a.off(nomouse);
-        layer1_div.off(nomouse);
-        layer2_div.off(nomouse);
-    }
-
-    /* trigger mouseevents on startup */
-    function trigger_sidebar() {
-        layer1_a.first().trigger("mouseenter");
-        layer1_a.first().trigger("mouseleave");
-        layer1_div.removeClass("in");
-    }
-
-    /* transition duration - time */
-    function transition_duration(time) {
-        $.fn.collapse.Constructor.TRANSITION_DURATION = time;
-    }
-
-    function opnsense_sidebar_toggle(store) {
+	
+	// disable mouseevents on toggle and resize
+	function mouse_events_off() {
+		layer1_a.off(nomouse);
+		layer2_a.off(nomouse);
+		layer1_div.off(nomouse);
+		layer2_div.off(nomouse);
+	}
+	
+	// trigger mouseevents on startup
+	function trigger_sidebar() {
+		layer1_a.first().trigger("mouseenter").trigger("mouseleave");
+		layer1_div.removeClass("in");
+		layer2_div.removeClass("in");
+	}
+	
+	// transition duration - time
+	function transition_duration(time) {
+		$.fn.collapse.Constructor.TRANSITION_DURATION = time;
+	}
+	
+	function opnsense_sidebar_toggle(store) {
         $("#navigation").toggleClass("col-sidebar-left");
         $("main").toggleClass("col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12");
         $(".toggle-sidebar > i").toggleClass("fa-chevron-right fa-chevron-left");
@@ -93,88 +136,61 @@ $(document).ready(function () {
     }
 
     if (toggle_sidebar_loaded) {
-        /* navigation toggle */
-        $(".toggle-sidebar").click(function () {
-            opnsense_sidebar_toggle(true);
-            $(this).blur();
-        });
+		// navigation toggle
+		$(".toggle-sidebar").click(function () {
+			opnsense_sidebar_toggle(true);
+			$(this).blur();
+		});
 
-        /* sidebar mouseenter */
-        $("#navigation").mouseenter(function () {
-            if ($("#navigation").hasClass("col-sidebar-left")) {
-                transition_duration(0);
-                var events = {
-                    mouseenter: function() {
-                        $("#navigation.col-sidebar-left").css("width", "415px");
-                        if ($(this).next("div").hasClass("in")) {
-                            /* no action needed */
-                        } else if ($(this).next().is("a")) {
-                            $(this).nextAll("a").prevAll("a").addClass("collapsed").attr("aria-expanded","false");
-                            $(this).nextAll("div").prevAll("div").removeClass("in").attr("aria-expanded","false");
-                        } else {
-                            $(this).trigger("click");
-                        }
-                    },
-                    mouseleave: function() {
-                        $("#navigation.col-sidebar-left").css("width", "70px");
-                    },
-                    mousedown: function() {
-                        $(this).trigger("click");
-                    },
-                    mouseup: function() {
-                        $(this).blur();
-                    }
-                }
-                layer1_a.on(events);
-                layer2_a.on(events);
-                var events2 = {
-                    mouseenter: function() {
-                        $("#navigation.col-sidebar-left").css("width", "415px");
-                        $(this).trigger("click");
-                    },
-                    mouseleave: function() {
-                        $("#navigation.col-sidebar-left").css("width", "70px");
-                    }
-                }
-                layer1_div.on(events2);
-                layer2_div.on(events2);
-            }
-        });
+        // sidebar mouseenter
+		$("#navigation").mouseenter(function () {
+			if ($("#navigation").hasClass("col-sidebar-left")) {
+				transition_duration(0);
+				layer1_a.on(events);
+				layer2_a.on(events);
+				layer1_div.on(events2);
+				layer2_div.on(events2);
+			}
+		});
+		
+		// sidebar mouseleave
+		$("#mainmenu").mouseleave(function () {
+			if ($("#navigation").hasClass("col-sidebar-left")) {
+				layer1_a.removeAttr('style').attr("aria-expanded","false").next("div").removeClass("in");
+				layer2_a.removeAttr('style').attr("aria-expanded","false").next("div").removeClass("in");
+				layer1_div.removeAttr('style');
+				layer2_div.removeAttr('style');
+				del_variable();
+			}
+		});
+		
+		// on resize - toggle sidebar / main navigation
+		$(window).on('resize', function(){
+			var win = $(this);
+			winheight = win.height();
+			if ((win.height() < 675 || win.width() < 760) && $("#navigation").not("col-sidebar-hidden")) {
+				$("#navigation").addClass("col-sidebar-hidden");
+				mouse_events_off();
+				if ($("#navigation").hasClass("col-sidebar-left")) {
+					opnsense_sidebar_toggle(false);
+					mouse_events_off();
+					transition_duration(350);
+				}
+			} else if ((win.height() >= 675 && win.width() >= 760) && $("#navigation").hasClass("col-sidebar-hidden")) {
+				$("#navigation").removeClass("col-sidebar-hidden");
+				transition_duration(0);
+				if (window.sessionStorage && sessionStorage.getItem('toggle_sidebar_preset') == 1) {
+					opnsense_sidebar_toggle(false);
+				}
+			}
+		});
 
-        /* sidebar mouseleave */
-        $("#mainmenu").mouseleave(function () {
-            if ($("#navigation").hasClass("col-sidebar-left")) {
-                layer1_a.attr("aria-expanded","false");
-                layer1_a.next("div").removeClass("in");
-            }
-        });
+        // only show toggle button when style is loaded
+		$(".toggle-sidebar").show();
 
-        /* on resize - toggle sidebar / main navigation */
-        $(window).on('resize', function(){
-            var win = $(this);
-            if ((win.height() < 675 || win.width() < 760) && $("#navigation").not("col-sidebar-hidden")) {
-                $("#navigation").addClass("col-sidebar-hidden");
-                mouse_events_off();
-                if ($("#navigation").hasClass("col-sidebar-left")) {
-                    opnsense_sidebar_toggle(false);
-                    mouse_events_off();
-                    transition_duration(350);
-                }
-            } else if ((win.height() >= 675 && win.width() >= 760) && $("#navigation").hasClass("col-sidebar-hidden")) {
-                $("#navigation").removeClass("col-sidebar-hidden");
-                transition_duration(0);
-                if (window.sessionStorage && sessionStorage.getItem('toggle_sidebar_preset') == 1) {
-                    opnsense_sidebar_toggle(false);
-                }
-            }
-        });
-
-        /* only show toggle button when style is loaded */
-        $(".toggle-sidebar").show();
-
-        /* auto-collapse if previously requested */
-        if (window.sessionStorage && sessionStorage.getItem('toggle_sidebar_preset') == 1) {
-            opnsense_sidebar_toggle(false);
-        }
-    }
+        // auto-collapse if previously requested
+		if (window.sessionStorage && sessionStorage.getItem('toggle_sidebar_preset') == 1) {
+			opnsense_sidebar_toggle(false);
+		}
+	}
 });
