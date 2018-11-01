@@ -160,7 +160,6 @@ $(document).ready(function () {
 				layer2_a.removeAttr('style').attr("aria-expanded","false").next("div").removeClass("in");
 				layer1_div.removeAttr('style');
 				layer2_div.removeAttr('style');
-				del_variable();
 			}
 		});
 		
