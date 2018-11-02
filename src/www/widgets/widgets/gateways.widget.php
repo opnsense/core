@@ -58,9 +58,10 @@ $gateways = return_gateways_array();
 <script>
   function gateways_widget_update(sender, data)
   {
+      var tbody = sender.find('tbody');
       data.map(function(gateway) {
           var tr_id = "gateways_widget_gw_" + gateway['name'];
-          if (find("#"+tr_id).length != 0) {
+          if (tbody.find("#"+tr_id).length != 0) {
               $("#"+tr_id+" > td:eq(0)").html('<small><strong>'+gateway['name']+'</strong><br/>'+gateway['address']+'</small>');
               $("#"+tr_id+" > td:eq(1)").html(gateway['delay']);
 <?php if (isset($config['system']['prefer_dpinger'])): ?>
