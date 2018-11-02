@@ -35,13 +35,9 @@ POSSIBILITY OF SUCH DAMAGE.
         ajaxGet('/api/openvpn/export/providers/', {}, function(data, status){
             if (status == 'success') {
                 $.each(data, function (idx, record) {
-                    $("#openvpn_export\\.servers").append(
-                        $("<option/>").val(record.vpnid)
-                            .text(record.name)
-                            .data('hostname', record.hostname)
-                            .data('local_port', record.local_port)
-                            .data('template', record.template)
-                    );
+                    var server_opt = $("<option/>").val(record.vpnid).text(record.name);
+                    server_opt.data('presets', record);
+                    $("#openvpn_export\\.servers").append(server_opt);
                 });
                 $("#openvpn_export\\.servers").selectpicker('refresh');
                 $("#openvpn_export\\.servers").change();
@@ -82,8 +78,25 @@ POSSIBILITY OF SUCH DAMAGE.
          */
         $("#openvpn_export\\.servers").change(function () {
             var selected_opt = $(this).find('option:selected');
-            $("#openvpn_export\\.hostname").val(selected_opt.data('hostname'));
-            $("#openvpn_export\\.local_port").val(selected_opt.data('local_port'));
+            var record = selected_opt.data('presets');
+            Object.keys(record).map(function(key) {
+                // server_opt.data(key, record[key]);
+                var target = $("#openvpn_export\\."+key);
+                if (target.is('select')) {
+                    target.val(record[key]);
+                } else if (target.is('input')) {
+                    if (target.prop("type") == "checkbox") {
+                        if (record[key] === "1") {
+                            target.prop("checked", true);
+                        } else {
+                            target.prop("checked", false);
+                        }
+                    } else {
+                        target.val(record[key]);
+                    }
+                }
+            });
+
             ajaxGet('/api/openvpn/export/accounts/' +  $(this).val(), {}, function(data, status){
                 $("#accounts_table > tbody").empty();
                 if (status == 'success') {

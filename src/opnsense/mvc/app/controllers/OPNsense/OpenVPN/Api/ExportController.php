@@ -129,7 +129,7 @@ class ExportController extends ApiControllerBase
      */
     private function configuredSetttings($vpnid)
     {
-        $result = array("hostname" => "", "local_port" => "");
+        $result = array();
         $serverModel = $this->getModel()->getServer($vpnid);
         $server = $this->findServer($vpnid);
         // hostname
@@ -148,9 +148,9 @@ class ExportController extends ApiControllerBase
             }
         }
         // simple 1-1 field mappings (overwrites)
-        foreach (array('local_port', 'template') as $field) {
-            if (!empty((string)$serverModel->$field)) {
-                $result[$field] = (string)$serverModel->$field;
+        foreach ($serverModel->iterateItems() as $field => $value) {
+            if (!empty((string)$value)) {
+                $result[$field] = (string)$value;
             } else {
                 $result[$field] = (string)$server->$field;
             }
@@ -309,6 +309,7 @@ class ExportController extends ApiControllerBase
      * @param null $config
      * @return array
      * @throws \OPNsense\Base\ModelException
+     * @throws UserException when invalid user input
      */
     public function downloadAction($vpnid, $certref = null)
     {

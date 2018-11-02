@@ -25,6 +25,12 @@
         <type>text</type>
         <help>Port on which OpenVPN listens</help>
     </field>
+    <field>
+        <id>openvpn_export.random_local_port</id>
+        <label>Use random local port</label>
+        <type>checkbox</type>
+        <help>Use a random local source port (lport) for traffic from the client. Without this set, two clients may not run concurrently.</help>
+    </field>
 
     <field>
         <id>openvpn_export.testxx1</id>

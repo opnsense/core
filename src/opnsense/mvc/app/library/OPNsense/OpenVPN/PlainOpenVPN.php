@@ -74,8 +74,31 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
         if (isset($this->config['dev_mode'])) {
             $conf[] = "dev {$this->config['dev_mode']}";
         }
+        if (!empty($this->config['tunnel_networkv6'])) {
+            $conf[] .= "tun-ipv6";
+        }
         $conf[] = "persist-tun";
         $conf[] = "persist-key";
+        if (strncasecmp($this->config['protocol'], "tcp",3)) {
+            $conf[] = "{$this->config['protocol']}-client";
+        } else {
+            $conf[] =  $this->config['protocol'];
+        }
+        $conf[] = "cipher {$this->config['crypto']}";
+        if (!empty($this->config['digest'])) {
+            $conf[] = "auth {$this->config['digest']}";
+        }
+        $conf[] = "client";
+        $conf[] = "resolv-retry infinite";
+        if (isset($this->config['reneg-sec']) && $this->config['reneg-sec'] != "") {
+            $conf[] = "reneg-sec {$this->config['reneg-sec']}";
+        }
+        foreach (explode(",", $this->config['hostname']) as $hostname) {
+            $conf[] = "remote {$hostname}";
+        }
+        if (!empty($this->config['random_local_port'])) {
+            $conf[] = "lport 0";
+        }
 
         return $conf;
     }
