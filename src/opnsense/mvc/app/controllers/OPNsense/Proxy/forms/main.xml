@@ -184,13 +184,13 @@
                 <id>proxy.general.traffic.maxDownloadSize</id>
                 <label>Maximum download size (kB)</label>
                 <type>text</type>
-                <help><![CDATA[Enter the maxium size for downloads in kilobytes (leave empty to disable).]]></help>
+                <help><![CDATA[Enter the maximum size for downloads in kilobytes (leave empty to disable).]]></help>
             </field>
             <field>
                 <id>proxy.general.traffic.maxUploadSize</id>
                 <label>Maximum upload size (kB)</label>
                 <type>text</type>
-                <help><![CDATA[Enter the maxium size for uploads in kilobytes (leave empty to disable).]]></help>
+                <help><![CDATA[Enter the maximum size for uploads in kilobytes (leave empty to disable).]]></help>
             </field>
             <field>
                 <id>proxy.general.traffic.OverallBandwidthTrotteling</id>
