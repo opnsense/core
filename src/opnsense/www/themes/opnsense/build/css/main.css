@@ -7165,6 +7165,11 @@ main.page-content.col-lg-12 {
   font-size: 14px !important;
 }
 
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > a.list-group-item,
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > div.collapse > a.list-group-item {
+  padding: 3px 8px !important;
+}
+
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in {
   width: 168px;
   font-size: 14px;
@@ -7184,7 +7189,7 @@ main.page-content.col-lg-12 {
   z-index: 10;
   position: absolute;
   left: 166px;
-  margin-top: -32px;
+  margin-top: -26px;
   border: 1px solid #eaeaea;
   -webkit-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
   -moz-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
