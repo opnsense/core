@@ -364,7 +364,7 @@ function auth_get_shells($uid = 0)
         foreach ($etc_shells as $shell) {
             $shell = trim($shell);
             if (!empty($shell) && strpos($shell, '#') !== 0 &&
-                strpos($shell, '/usr/local/etc/rc') !== 0) {
+                strpos($shell, '/usr/local/sbin/opnsense-') !== 0) {
                 $shells[$shell] = $shell;
             }
         }
