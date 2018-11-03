@@ -181,7 +181,7 @@ class AliasController extends ApiMutableModelControllerBase
             if (empty($line[2]) || strpos($line[2], '/') === false) {
                 continue;
             }
-            if (!empty($result[$line[0]])) {
+            if (!empty($result[$line[0]]) && empty($result[$line[0]]['region'])) {
                 $result[$line[0]]['region'] = explode('/', $line[2])[0];
             }
         }
