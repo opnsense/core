@@ -425,7 +425,7 @@ function services_dhcpd_configure($family = 'all', $blacklist = array(), $verbos
     }
 
     if ($family == 'all' || $family == 'inet6') {
-        services_dhcpdv6_configure($blacklist, $verbose);
+        services_dhcpdv6_configure($verbose, $blacklist);
         services_radvd_configure($verbose, $blacklist);
     }
 }
@@ -1093,7 +1093,7 @@ function is_dhcpv6_server_enabled()
     return false;
 }
 
-function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
+function services_dhcpdv6_configure($verbose = false, $blacklist = array())
 {
     global $config;
 
