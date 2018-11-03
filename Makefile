@@ -259,7 +259,7 @@ package-check:
 		exit 1; \
 	fi
 
-package: package-check clean-work
+package: plist-check package-check clean-work
 .for CORE_DEPEND in ${CORE_DEPENDS}
 	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yfA ${CORE_DEPEND}; fi
 .endfor
@@ -274,7 +274,7 @@ upgrade-check:
 		exit 1; \
 	fi
 
-upgrade: plist-check upgrade-check clean-package package
+upgrade: upgrade-check clean-package package
 	@${PKG} delete -fy ${CORE_NAME} || true
 	@${PKG} add ${PKGDIR}/*.txz
 	@${LOCALBASE}/etc/rc.restart_webgui
