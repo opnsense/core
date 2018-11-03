@@ -50,6 +50,7 @@ function clear_all_log_files()
         'mail',
         'ntpd',
         'openvpn',
+        'pkg',
         'poes',
         'portalauth',
         'ppps',

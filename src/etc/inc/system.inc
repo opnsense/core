@@ -690,6 +690,7 @@ function system_syslogd_start($verbose = false, $restart = false)
     $syslogconfs['filter'] = array('facility' => array('filterlog'), 'remote' => 'filter');
     $syslogconfs['gateways'] = array('facility' => array('apinger', 'dpinger'), 'remote' => 'apinger');
     $syslogconfs['lighttpd'] = array('facility' => array('lighttpd'));
+    $syslogconfs['pkg'] = array('facility' => array('pkg', 'pkg-static'));
     $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');
     $syslogconfs['ppps'] = array('facility' => array('ppp'));
     $syslogconfs['resolver'] = array('facility' => array('unbound'), 'local' => '/var/unbound/var/run/log', 'remote' => 'dns');
