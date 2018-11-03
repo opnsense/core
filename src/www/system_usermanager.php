@@ -1057,7 +1057,7 @@ $( document ).ready(function() {
                             $servers = explode(',', $config['system']['webgui']['authmode']);
                             foreach ($servers as $server) {
                                 $authcfg_type = auth_get_authserver($server)['type'];
-                                if ($authcfg_type == 'ldap') {
+                                if ($authcfg_type == 'ldap' || $authcfg_type == 'ldap-totp') {
                                     $can_import = true;
                                 }
                             }
