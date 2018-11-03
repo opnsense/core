@@ -66,10 +66,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
    */
   function interface_widget_update(sender, data)
   {
-      var tbody = sender.find('tbody');
       data.map(function(interface_data) {
           var tr_id = 'interface_widget_item_' + interface_data['name'];
-          if (tbody.find("#"+tr_id).length != 0) {
+          if ($("#"+tr_id).length) {
               switch (interface_data['status']) {
                   case 'up':
                     $("#"+tr_id).find('.text-danger').removeClass('text-danger').addClass('text-success');
@@ -104,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           <select id="interfaceslistfilter" name="interfaceslistfilter[]" multiple="multiple" class="selectpicker_widget">
 <?php foreach ($interfaces as $iface => $ifacename): ?>
             <option value="<?= html_safe($iface) ?>" <?= in_array($iface, $pconfig['interfaceslistfilter']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
-<?php endforeach;?>
+<?php endforeach ?>
           </select>
           <button id="submitd" name="submitd" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button>
         </td>
@@ -114,78 +113,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 </div>
 
 <table class="table table-striped table-condensed" data-plugin="interfaces" data-callback="interface_widget_update">
-  <tbody>
 <?php
-    $ifsinfo = get_interfaces_info();
-    foreach ($interfaces as $ifdescr => $ifname):
-      $listed = in_array($ifdescr, $pconfig['interfaceslistfilter']);
-      $listed = !empty($pconfig['interfaceslistinvert']) ? $listed : !$listed;
-      if (!$listed) {
-        continue;
-      }
-      $ifinfo = $ifsinfo[$ifdescr];
-      $iswireless = is_interface_wireless($ifdescr);?>
-      <tr id="interface_widget_item_<?=$ifname;?>">
-        <td style="width:15%; word-break: break-word;">
-<?php
-          if (isset($ifinfo['ppplink'])):?>
-            <span title="3g" class="fa fa-mobile text-success"></span>
-<?php
-          elseif ($iswireless):
-            if ($ifinfo['status'] == 'associated' || $ifinfo['status'] == 'up'):?>
-            <span title="wlan" class="fa fa-signal text-success"></span>
-<?php
-            else:?>
-            <span title="wlan_d" class="fa fa-signal text-danger"></span>
-<?php
-            endif;?>
-<?php
-          else:?>
-<?php
-            if ($ifinfo['status'] == "up"):?>
-              <span title="cablenic" class="fa fa-exchange text-success"></span>
-<?php
-            else:?>
-              <span title="cablenic" class="fa fa-exchange text-danger"></span>
-<?php
-            endif;?>
-<?php
-          endif;?>
-          &nbsp;
-          <strong>
-            <u>
-              <span onclick="location.href='/interfaces.php?if=<?=htmlspecialchars($ifdescr); ?>'" style="cursor:pointer">
-                <?=htmlspecialchars($ifname);?>
-              </span>
-            </u>
-          </strong>
-        </td>
-        <td style="width:5%; word-break: break-word;">
-<?php
-        if ($ifinfo['status'] == "up" || $ifinfo['status'] == "associated"):?>
-          <span class="fa fa-arrow-up text-success"></span>
-<?php
-        elseif ($ifinfo['status'] == "down"):?>
-          <span class="fa fa-arrow-down text-danger"></span>
-<?php
-        elseif ($ifinfo['status'] == "no carrier"):?>
-          <span class="fa fa-times text-danger"></span>
-<?php
-        else:?>
-          <?=htmlspecialchars($ifinfo['status']);?>
-<?php
-        endif;?>
-        <td style="width:35%; word-break: break-word;">
-          <?=empty($ifinfo['media']) ? htmlspecialchars($ifinfo['cell_mode']) : htmlspecialchars($ifinfo['media']);?>
-        </td>
-        <td style="width:45%; word-break: break-word;">
-          <?=htmlspecialchars($ifinfo['ipaddr']);?>
-          <?=!empty($ifinfo['ipaddr']) ? "<br/>" : "";?>
-          <?=htmlspecialchars(isset($config['interfaces'][$ifdescr]['dhcp6prefixonly']) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?>
-        </td>
-      </tr>
+  $ifsinfo = get_interfaces_info();
+  foreach ($interfaces as $ifdescr => $ifname):
+    $listed = in_array($ifdescr, $pconfig['interfaceslistfilter']);
+    $listed = !empty($pconfig['interfaceslistinvert']) ? $listed : !$listed;
+    if (!$listed) {
+      continue;
+    }
+    $ifinfo = $ifsinfo[$ifdescr];
+    $iswireless = is_interface_wireless($ifdescr); ?>
+  <tr id="interface_widget_item_<?= html_safe($ifname) ?>">
+    <td style="width:15%; word-break: break-word;">
+<?php if (isset($ifinfo['ppplink'])): ?>
+      <span title="3g" class="fa fa-mobile text-success"></span>
+<?php elseif ($iswireless): ?>
+<?php if ($ifinfo['status'] == 'associated' || $ifinfo['status'] == 'up'): ?>
+      <span title="wlan" class="fa fa-signal text-success"></span>
+<?php else: ?>
+      <span title="wlan_d" class="fa fa-signal text-danger"></span>
+<?php endif ?>
+<?php else: ?>
+<?php if ($ifinfo['status'] == 'up'): ?>
+      <span title="cablenic" class="fa fa-exchange text-success"></span>
+<?php else: ?>
+      <span title="cablenic" class="fa fa-exchange text-danger"></span>
+<?php endif ?>
+<?php endif ?>
+      &nbsp;
+      <strong>
+        <u>
+          <span onclick="location.href='/interfaces.php?if=<?=htmlspecialchars($ifdescr); ?>'" style="cursor:pointer">
+            <?= htmlspecialchars($ifname) ?>
+          </span>
+        </u>
+      </strong>
+    </td>
+    <td style="width:5%; word-break: break-word;">
+<?php if ($ifinfo['status'] == 'up' || $ifinfo['status'] == 'associated'): ?>
+      <span class="fa fa-arrow-up text-success"></span>
+<?php elseif ($ifinfo['status'] == "down"): ?>
+      <span class="fa fa-arrow-down text-danger"></span>
+<?php elseif ($ifinfo['status'] == "no carrier"): ?>
+      <span class="fa fa-times text-danger"></span>
+<?php else: ?>
+      <?= htmlspecialchars($ifinfo['status']) ?>
+<?php endif ?>
+    <td style="width:35%; word-break: break-word;">
+      <?= empty($ifinfo['media']) ? htmlspecialchars($ifinfo['cell_mode']) : htmlspecialchars($ifinfo['media']) ?>
+    </td>
+    <td style="width:45%; word-break: break-word;">
+      <?= htmlspecialchars($ifinfo['ipaddr']) ?>
+      <?= !empty($ifinfo['ipaddr']) ? '<br/>' : '' ?>
+      <?= htmlspecialchars(isset($config['interfaces'][$ifdescr]['dhcp6prefixonly']) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?>
+    </td>
+  </tr>
 <?php endforeach ?>
-  </tbody>
 </table>
 
 <!-- needed to display the widget settings menu -->

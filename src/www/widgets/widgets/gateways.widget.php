@@ -60,7 +60,7 @@ $gateways = return_gateways_array();
   {
       data.map(function(gateway) {
           var tr_id = "gateways_widget_gw_" + gateway['name'];
-          if (find("#"+tr_id).length != 0) {
+          if ($("#"+tr_id).length) {
               $("#"+tr_id+" > td:eq(0)").html('<small><strong>'+gateway['name']+'</strong><br/>'+gateway['address']+'</small>');
               $("#"+tr_id+" > td:eq(1)").html(gateway['delay']);
 <?php if (isset($config['system']['prefer_dpinger'])): ?>
