@@ -47,7 +47,6 @@ require_once("certs.inc");
  */
 require_once('plugins.inc');
 
-/* make a global alias table (for faster lookups) */
 function alias_make_table($config)
 {
     global $aliastable;
@@ -80,9 +79,8 @@ function parse_config()
     $cnf = OPNsense\Core\Config::getInstance();
 
     // return config data as array, use old "listags" construction to mark certain elements as array (even if they're not recurring)
-    $config=$cnf->toArray(listtags());
+    $config = $cnf->toArray(listtags());
 
-    /* make alias table (for faster lookups) */
     alias_make_table($config);
 
     return $config;
