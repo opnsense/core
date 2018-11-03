@@ -995,7 +995,11 @@ $( document ).ready(function() {
                   <tbody>
 <?php
                   $i = 0;
-                  foreach ($a_user as $userent) :?>
+                  $a_user_ro = $a_user;
+                  usort($a_user_ro, function($a, $b) {
+                    return strnatcasecmp($a['name'], $b['name']);
+                  });
+                  foreach ($a_user_ro as $userent): ?>
                     <tr>
                       <td>
 <?php
@@ -1012,14 +1016,14 @@ $( document ).ready(function() {
                       <td><?= implode(', ', local_user_get_groups($userent)) ?></td>
                       <td class="text-nowrap">
                         <a href="system_usermanager.php?act=edit&userid=<?=$i?>"
-                            class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("edit user");?>">
+                            class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">
                           <span class="fa fa-pencil fa-fw"></span>
                         </a>
 <?php
                         if ($userent['scope'] != "system") :?>
                         <button type="button" class="btn btn-default btn-xs act-del-user"
                             data-username="<?=$userent['name'];?>"
-                            data-userid="<?=$i?>" title="<?=gettext("delete user");?>" data-toggle="tooltip">
+                            data-userid="<?=$i?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip">
                           <span class="fa fa-trash fa-fw"></span>
                         </button>
 <?php
@@ -1062,8 +1066,9 @@ $( document ).ready(function() {
 <?php if ($can_import): ?>
                           <button type="submit" name="import"
                                   id="import_ldap_users"
-                                  class="btn btn-default btn-xs"
-                                  title="<?=gettext("import users")?>">
+                                  data-toggle="tooltip"
+                                  class="btn btn-primary btn-xs"
+                                  title="<?= html_safe(gettext('Import')) ?>">
                               <i class="fa fa-cloud-download fa-fw"></i>
                           </button>
 <?php endif ?>
