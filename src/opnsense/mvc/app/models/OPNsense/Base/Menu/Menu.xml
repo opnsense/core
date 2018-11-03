@@ -43,6 +43,7 @@
             <Packages order="30" url="/ui/core/firmware#packages"/>
             <Settings order="40" url="/ui/core/firmware#settings"/>
             <Reporter order="50" url="/crash_reporter.php"/>
+            <LogFile order="100" VisibleName="Log File" url="/diag_logs_pkg.php"/>
         </Firmware>
         <Gateways cssClass="fa fa-location-arrow fa-fw">
             <Single order="10" url="/system_gateways.php">
@@ -88,8 +89,7 @@
         </Trust>
         <Wizard url="/wizard.php?xml=system" cssClass="fa fa-magic fa-fw"/>
         <LogFiles order="150" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
-            <Configd url="/configd_logs.php"/>
-            <Firmware url="/diag_logs_pkg.php"/>
+            <Backend url="/configd_logs.php"/>
             <General url="/diag_logs.php"/>
             <WebGUI VisibleName="Web GUI" url="/httpd_logs.php"/>
         </LogFiles>
