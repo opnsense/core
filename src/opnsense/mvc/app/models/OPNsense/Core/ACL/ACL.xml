@@ -109,10 +109,9 @@
     <page-diagnostics-logs-system>
         <name>Diagnostics: Logs: System</name>
         <patterns>
-            <pattern>configd_logs.php*</pattern>
-            <pattern>diag_logs.php*</pattern>
-            <pattern>diag_logs_pkg.php*</pattern>
-            <pattern>httpd_logs.php*</pattern>
+            <pattern>configd_logs.php</pattern>
+            <pattern>diag_logs.php</pattern>
+            <pattern>httpd_logs.php</pattern>
         </patterns>
     </page-diagnostics-logs-system>
     <page-diagnostics-packetcapture>
@@ -658,6 +657,7 @@
         <patterns>
             <pattern>ui/core/firmware/*</pattern>
             <pattern>api/core/firmware/*</pattern>
+            <pattern>diag_logs_pkg.php</pattern>
         </patterns>
     </page-system-firmware-manualupdate>
     <page-system-gatewaygroups>
