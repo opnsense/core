@@ -2552,16 +2552,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
 {
     global $config;
 
-    if (!is_array($lancfg)) {
-        return;
-    }
-
-    if (!isset($lancfg['enable'])) {
-        return;
-    }
-
-    /* If the interface is not configured via another, exit */
-    if (empty($lancfg['track6-interface'])) {
+    if (!is_array($lancfg) || !isset($lancfg['enable']) || empty($lancfg['track6-interface'])) {
         return;
     }
 
