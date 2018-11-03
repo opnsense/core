@@ -184,14 +184,15 @@ function gen_subnet($ipaddr, $bits)
 }
 
 /* return the subnet address given a host address and a subnet bit count */
-function gen_subnetv6($ipaddr, $bits, $validate = true)
+function gen_subnetv6($ipaddr, $bits)
 {
-    if ($validate && (!is_ipaddrv6($ipaddr) || !is_numeric($bits))) {
-        return "";
+    if (!is_ipaddrv6($ipaddr) || !is_numeric($bits)) {
+        return '';
     }
 
     $address = Net_IPv6::getNetmask($ipaddr, $bits);
     $address = Net_IPv6::compress($address);
+
     return $address;
 }
 
