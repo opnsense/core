@@ -32,62 +32,59 @@
 $(document).ready(function () {
     // traverse loaded css files
     var toggle_sidebar_loaded = false;
+    var $window = $(window);
     var winheight = $(window).height();
     var nomouse = "mouseenter mouseleave";
     var layer1_a = $('#mainmenu > div > a');
     var layer1_div = $('#mainmenu > div > div');
     var layer2_a = $('#mainmenu > div > div > a');
     var layer2_div = $('#mainmenu > div > div > div');
+    var navigation = $("#navigation");
     var events = {
-        mouseenter: function() {
+        mouseenter: function () {
             $("#navigation.col-sidebar-left").css("width", "415px");
-            if ($(this).next("div").hasClass("in")) {
+            var that = $(this);
+            if (that.next("div").hasClass("in")) {
                 /* no action needed */
-            } else if ($(this).next().is("a")) {
-                $(this).nextAll("a").prevAll("a").addClass("collapsed").attr("aria-expanded","false")
-                .nextAll("div").prevAll("div").removeClass("in").attr("aria-expanded","false");
+            } else if (that.next().is("a")) {
+                activeremove(this);
             } else {
-                var divtop = $(this).offset().top - $(window).scrollTop();
-                var divheight = $(this).next("div").height();
+                var divtop = that.offset().top - $window.scrollTop();
+                var divheight = that.next("div").height();
                 var currentheight = (divtop + divheight);
-                if ((currentheight) <= (winheight)) {
-                    $(this).trigger("click");
-                    } else {
-                        if ($(this).is(layer1_a)) {
-                            $(this).trigger("click").next("div").css("margin-top",-((divheight)+3));
-                        } else {
-                            $(this).trigger("click").next("div").css("margin-top",-((divheight)));
-                        }
-                    }
+                that.trigger("click");
+                if (currentheight > winheight) {
+                    that.next("div").css("margin-top", -divheight - (that.is(layer1_a) ? 3 : 0));
+                }
             }
         },
-        mouseleave: function() {
+        mouseleave: function () {
             $("#navigation.col-sidebar-left").css("width", "70px");
         },
-        mousedown: function() {
+        mousedown: function () {
             $(this).trigger("click");
         },
-        mouseup: function() {
+        mouseup: function () {
             $(this).blur();
         }
-    }
+    };
     var events2 = {
-        mouseenter: function() {
+        mouseenter: function () {
             $("#navigation.col-sidebar-left").css("width", "415px");
             $(this).trigger("click");
         },
-        mouseleave: function() {
+        mouseleave: function () {
             $("#navigation.col-sidebar-left").css("width", "70px");
         }
-    }
+    };
 
-    $.each(document.styleSheets, function(sheetIndex, sheet) {
-        if (sheet.href != undefined && sheet.href.match(/main\.css(\?v=\w+$)?/gm)) {
-          $.each(sheet.cssRules || sheet.rules, function(ruleIndex, rule) {
-              if (rule.cssText.indexOf('toggle-sidebar') >= 0) {
-                  toggle_sidebar_loaded = true;
-              }
-          });
+    $.each(document.styleSheets, function (sheetIndex, sheet) {
+        if (sheet.href !== null && sheet.href.match(/main\.css(\?v=\w+$)?/gm)) {
+            $.each(sheet.cssRules || sheet.rules, function (ruleIndex, rule) {
+                if (rule.cssText.indexOf('toggle-sidebar') >= 0) {
+                    toggle_sidebar_loaded = true;
+                }
+            });
         }
     });
 
@@ -111,11 +108,23 @@ $(document).ready(function () {
         $.fn.collapse.Constructor.TRANSITION_DURATION = time;
     }
 
+    function activeremove(e) {
+        $(e).nextAll("a").addClass("collapsed").attr("aria-expanded", "false");
+        $(e).prevAll("a").addClass("collapsed").attr("aria-expanded", "false");
+        $(e).next("a").addClass("collapsed").attr("aria-expanded", "false");
+        $(e).prev("a").addClass("collapsed").attr("aria-expanded", "false");
+        $(e).nextAll("div").removeClass("in").attr("aria-expanded", "false");
+        $(e).prevAll("div").removeClass("in").attr("aria-expanded", "false");
+        $(e).next("div").removeClass("in").attr("aria-expanded", "false");
+        $(e).prev("div").removeClass("in").attr("aria-expanded", "false");
+        $(e).trigger("click");
+    }
+
     function opnsense_sidebar_toggle(store) {
-        $("#navigation").toggleClass("col-sidebar-left");
+        navigation.toggleClass("col-sidebar-left");
         $("main").toggleClass("col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12");
         $(".toggle-sidebar > i").toggleClass("fa-chevron-right fa-chevron-left");
-        if ($("#navigation").hasClass("col-sidebar-left")) {
+        if (navigation.hasClass("col-sidebar-left")) {
             $(".brand-logo").css("display", "none");
             $(".brand-icon").css("display", "inline-block");
             trigger_sidebar();
@@ -136,15 +145,16 @@ $(document).ready(function () {
     }
 
     if (toggle_sidebar_loaded) {
+        var toggle_btn = $(".toggle-sidebar");
         /* navigation toggle */
-        $(".toggle-sidebar").click(function () {
+        toggle_btn.click(function () {
             opnsense_sidebar_toggle(true);
             $(this).blur();
         });
 
         /* sidebar mouseenter */
-        $("#navigation").mouseenter(function () {
-            if ($("#navigation").hasClass("col-sidebar-left")) {
+        navigation.mouseenter(function () {
+            if (navigation.hasClass("col-sidebar-left")) {
                 transition_duration(0);
                 layer1_a.on(events);
                 layer2_a.on(events);
@@ -156,26 +166,26 @@ $(document).ready(function () {
         /* sidebar mouseleave */
         $("#mainmenu").mouseleave(function () {
             if ($("#navigation").hasClass("col-sidebar-left")) {
-                layer1_a.attr("aria-expanded","false").next("div").removeClass("in");
-                layer2_a.attr("aria-expanded","false").next("div").removeClass("in");
+                layer1_a.attr("aria-expanded", "false").next("div").removeClass("in");
+                layer2_a.attr("aria-expanded", "false").next("div").removeClass("in");
                 layer1_div.removeAttr("style");
                 layer2_div.removeAttr("style");
             }
         });
 
         /* on resize - toggle sidebar / main navigation */
-        $(window).on('resize', function(){
+        $(window).on('resize', function () {
             var win = $(this);
             winheight = win.height();
-            if ((win.height() < 675 || win.width() < 760) && $("#navigation").not("col-sidebar-hidden")) {
-                $("#navigation").addClass("col-sidebar-hidden");
+            if ((win.height() < 675 || win.width() < 760) && navigation.not("col-sidebar-hidden")) {
+                navigation.addClass("col-sidebar-hidden");
                 mouse_events_off();
-                if ($("#navigation").hasClass("col-sidebar-left")) {
+                if (navigation.hasClass("col-sidebar-left")) {
                     opnsense_sidebar_toggle(false);
                     mouse_events_off();
                     transition_duration(350);
                 }
-            } else if ((win.height() >= 675 && win.width() >= 760) && $("#navigation").hasClass("col-sidebar-hidden")) {
+            } else if ((win.height() >= 675 && win.width() >= 760) && navigation.hasClass("col-sidebar-hidden")) {
                 $("#navigation").removeClass("col-sidebar-hidden");
                 transition_duration(0);
                 if (window.sessionStorage && sessionStorage.getItem('toggle_sidebar_preset') == 1) {
@@ -185,7 +195,7 @@ $(document).ready(function () {
         });
 
         /* only show toggle button when style is loaded */
-        $(".toggle-sidebar").show();
+        toggle_btn.show();
 
         /* auto-collapse if previously requested */
         if (window.sessionStorage && sessionStorage.getItem('toggle_sidebar_preset') == 1) {
