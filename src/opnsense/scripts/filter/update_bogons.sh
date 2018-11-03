@@ -3,7 +3,7 @@
 DESTDIR="/usr/local/etc"
 WORKDIR="/tmp/bogons"
 FETCH="fetch -qT 30"
-RETRIES=5
+RETRIES=3
 
 COMMAND=${1}
 
@@ -12,16 +12,16 @@ SYS_ABI=$(opnsense-verify -a)
 
 URL="https://pkg.opnsense.org/${SYS_ABI}/${CORE_ABI}/sets/bogons.txz"
 
-echo "rc.update_bogons is starting up" | logger
+echo "bogons update starting" | logger
 
 while [ ${RETRIES} -gt 0 ]; do
     if [ "${COMMAND}" = "cron" ]; then
         VALUE=$(jot -r 1 1 900)
-        echo "rc.update_bogons is sleeping for ${VALUE} seconds" | logger
+        echo "bogons update is sleeping for ${VALUE} seconds" | logger
         sleep ${VALUE}
     fi
 
-    echo "rc.update_bogons is beginning the update cycle" | logger
+    echo "bogons update is beginning the update cycle" | logger
 
     rm -rf ${WORKDIR}
     mkdir -p ${WORKDIR}
@@ -30,11 +30,11 @@ while [ ${RETRIES} -gt 0 ]; do
     ${FETCH} -o ${WORKDIR}/bogons.txz "${URL}"
 
     if [ ! -f ${WORKDIR}/bogons.txz ]; then
-        echo "Could not download ${URL}" | logger
+        echo "bogons update cannot download ${URL}" | logger
     elif ! opnsense-verify -q ${WORKDIR}/bogons.txz; then
-        echo "Could not verify ${URL}" | logger
+        echo "bogons update cannot verify ${URL}" | logger
     elif ! tar -C ${WORKDIR} -xJf ${WORKDIR}/bogons.txz; then
-        echo "Could not extract ${URL}" | logger
+        echo "bogons update cannot extract ${URL}" | logger
     else
         break
     fi
@@ -47,7 +47,7 @@ while [ ${RETRIES} -gt 0 ]; do
 done
 
 if [ ${RETRIES} -eq 0 ]; then
-    echo "rc.update_bogons is aborting the update cycle" | logger
+    echo "update bogons is aborting the update cycle" | logger
     exit 1
 fi
 
@@ -89,4 +89,4 @@ else
     fi
 fi
 
-echo "rc.update_bogons is ending the update cycle" | logger
+echo "update bogons is ending the update cycle" | logger

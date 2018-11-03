@@ -140,7 +140,6 @@
 /usr/local/etc/rc.syshook.d/stop/80-freebsd
 /usr/local/etc/rc.syshook.d/stop/90-backup
 /usr/local/etc/rc.syshook.d/stop/99-config
-/usr/local/etc/rc.update_bogons
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/opnsense/contrib/IXR/IXR_Library.php
 /usr/local/opnsense/contrib/base32/Base32.php
@@ -641,6 +640,7 @@
 /usr/local/opnsense/scripts/filter/list_tables.py
 /usr/local/opnsense/scripts/filter/pfinfo.py
 /usr/local/opnsense/scripts/filter/read_log.py
+/usr/local/opnsense/scripts/filter/update_bogons.sh
 /usr/local/opnsense/scripts/filter/update_tables.py
 /usr/local/opnsense/scripts/firmware/changelog.sh
 /usr/local/opnsense/scripts/firmware/check.sh
