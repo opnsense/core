@@ -438,28 +438,35 @@ main.page-content.col-lg-12 {
           padding-left: 10px !important;
           font-size: 14px !important;
         }
-        &.collapse.in {
-          width: 168px;
-          font-size: 14px;
-          z-index: 10;
-          position: absolute;
-          left: 70px;
-          margin-top: -70px;
-          border: 1px solid #eaeaea;
-          -webkit-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
-          -moz-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
-          box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
-          > div.collapse.in {
+        &.collapse {
+          > {
+            a.list-group-item, div.collapse > a.list-group-item {
+              padding: 3px 8px !important;
+            }
+          }
+          &.in {
             width: 168px;
             font-size: 14px;
             z-index: 10;
             position: absolute;
-            left: 166px;
-            margin-top: -32px;
+            left: 70px;
+            margin-top: -70px;
             border: 1px solid #eaeaea;
             -webkit-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
             -moz-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
             box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
+            > div.collapse.in {
+              width: 168px;
+              font-size: 14px;
+              z-index: 10;
+              position: absolute;
+              left: 166px;
+              margin-top: -26px;
+              border: 1px solid #eaeaea;
+              -webkit-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
+              -moz-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
+              box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
+            }
           }
         }
         &.collapsing, &.collapse.in > div.collapsing {
@@ -477,7 +484,7 @@ button.toggle-sidebar {
   border: none;
   margin-top: 18px;
   float: left;
-  outline:none;
+  outline: none;
 }
 
 /* COLLAPSE SIDEBAR END*/
