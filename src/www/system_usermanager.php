@@ -481,6 +481,7 @@ $( document ).ready(function() {
 
     // import ldap users
     $("#import_ldap_users").click(function(){
+      event.preventDefault();
       url="system_usermanager_import_ldap.php";
       var oWin = window.open(url,"OPNsense","width=620,height=400,top=150,left=150,scrollbars=yes");
       if (oWin==null || typeof(oWin)=="undefined") {
@@ -1057,7 +1058,7 @@ $( document ).ready(function() {
                             $servers = explode(',', $config['system']['webgui']['authmode']);
                             foreach ($servers as $server) {
                                 $authcfg_type = auth_get_authserver($server)['type'];
-                                if ($authcfg_type == 'ldap' || $authcfg_type == 'ldap-totp') {
+                                if ($authcfg_type == 'ldap' || $authcfg_type == 'ldap-totp') {
                                     $can_import = true;
                                 }
                             }
