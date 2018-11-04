@@ -452,6 +452,7 @@ $( document ).ready(function() {
                         if ($field['type'] == 'checkbox'):?>
                         <label for="<?=$fieldId;?>">
                           <input name="<?=$fieldId;?>" type="checkbox" id="<?=$fieldId;?>" <?=!empty($pconfig[$fieldId]) ? "checked" : "";?> >
+                          <?=$field['label'];?>
                         </label>
 <?php
                         elseif ($field['type'] == 'text'):?>

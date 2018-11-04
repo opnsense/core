@@ -376,6 +376,7 @@ include("fbegin.inc");
                     <td style="width:78%">
                       <label for="disable">
                         <input name="disable" id="disable" type="checkbox" value="yes" <?= !empty($pconfig['disable']) ? "checked=\"checked\"" : "";?> />
+                        <?=gettext("Disable"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_disable">
                         <?=gettext("Set this option to disable this client-specific override without removing it from the list"); ?>
@@ -422,6 +423,7 @@ include("fbegin.inc");
                     <td>
                       <label for="block">
                         <input name="block" id="block" type="checkbox" value="yes" <?= !empty($pconfig['block']) ? "checked=\"checked\"" : "";?> />
+                        <?=gettext("Connection blocking"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_block">
                           <?=gettext("Block this client connection based on its common name"); ?>.<br/>
@@ -528,6 +530,7 @@ include("fbegin.inc");
                     <td>
                       <label for="gwredir">
                         <input name="gwredir" id="gwredir" type="checkbox" value="yes" <?= !empty($pconfig['gwredir']) ? "checked=\"checked\"" : "";?> />
+                        <?=gettext("Redirect client gateway"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_gwredir">
                         <?= gettext('Force all client generated traffic through the tunnel.') ?>
@@ -545,6 +548,7 @@ include("fbegin.inc");
                     <td>
                       <label for="push_reset">
                         <input name="push_reset" id="push_reset" type="checkbox" value="yes" <?= !empty($pconfig['push_reset']) ? "checked=\"checked\"" : "";?> />
+                        <?=gettext("Disable server definitions"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_push_reset">
                           <?=gettext("Prevent this client from receiving any server-defined client settings."); ?>
@@ -556,6 +560,7 @@ include("fbegin.inc");
                     <td>
                       <label for="dns_domain_enable">
                         <input name="dns_domain_enable" type="checkbox" id="dns_domain_enable" value="yes" <?= !empty($pconfig['dns_domain']) ? "checked=\"checked\"" : "";?> />
+                        <?=gettext("Enable DNS default domain"); ?>
                       </label>
                       <div id="dns_domain_data" style="display:none">
                         <input name="dns_domain" type="text" id="dns_domain" value="<?=$pconfig['dns_domain'];?>" />
@@ -570,6 +575,7 @@ include("fbegin.inc");
                     <td>
                       <label for="dns_server_enable">
                         <input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes" <?=!empty($pconfig['dns_server1']) || !empty($pconfig['dns_server2']) || !empty($pconfig['dns_server3']) || !empty($pconfig['dns_server4']) ? "checked=\"checked\"" : "" ;?> />
+                        <?=gettext("Enable DNS servers"); ?>
                       </label>
                       <div id="dns_server_data" style="display:none">
                         <?=gettext("Server #1:"); ?>&nbsp;
@@ -591,6 +597,7 @@ include("fbegin.inc");
                     <td>
                       <label for="ntp_server_enable">
                         <input name="ntp_server_enable" type="checkbox" id="ntp_server_enable" value="yes" <?=!empty($pconfig['ntp_server1']) || !empty($pconfig['ntp_server2']) ? "checked=\"checked\"" : "" ;?> />
+                        <?=gettext("Enable NTP servers"); ?>
                       </label>
                       <div id="ntp_server_data" style="display:none">
                         <?=gettext("Server #1:"); ?>&nbsp;
@@ -608,6 +615,7 @@ include("fbegin.inc");
                     <td>
                       <label for="netbios_enable">
                         <input name="netbios_enable" type="checkbox" id="netbios_enable" value="yes" <?=!empty($pconfig['netbios_enable']) ? "checked=\"checked\"" : "" ;?> />
+                        <?=gettext("Enable NetBIOS over TCP IP"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_netbios_enable">
                         <?=gettext("Enable NetBIOS over TCP/IP");?><br/>
@@ -650,6 +658,7 @@ include("fbegin.inc");
                     <td>
                       <label for="wins_server_enable">
                         <input name="wins_server_enable" type="checkbox" id="wins_server_enable" value="yes"  <?=!empty($pconfig['wins_server1']) || !empty($pconfig['wins_server2']) ? "checked=\"checked\"" : "" ;?> />
+                        <?=gettext("Enable WINS servers"); ?>
                       </label>
                       <div id="wins_server_data" style="display:none">
                         <?=gettext("Server #1:"); ?>

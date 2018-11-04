@@ -242,6 +242,7 @@ include("head.inc");
                     <td>
                       <label for="link2">
                         <input name="link2" type="checkbox" id="link2" <?=!empty($pconfig['link2']) ? "checked=\"checked\"" :"";?> />
+                        <?= gettext("Disable ingress filtering") ?>
                       </label>
                       <div class="hidden" data-for="help_for_link2">
                         <?=gettext("Ingress filtering on outer tunnel source can break tunnel operation in an asymmetrically routed networks, in which case this can be disabled by marking this option."); ?>
@@ -253,6 +254,7 @@ include("head.inc");
                     <td>
                       <label for="link1">
                         <input name="link1" type="checkbox" id="link1" <?=!empty($pconfig['link1']) ? "checked=\"checked\"" : "";?> />
+                        <?= gettext("ECN friendly behavior") ?>
                       </label>
                       <div class="hidden" data-for="help_for_link1">
                         <?=gettext("Note that the ECN friendly behavior violates RFC2893. This should be used in mutual agreement with the peer."); ?>

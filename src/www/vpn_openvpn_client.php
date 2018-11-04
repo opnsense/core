@@ -564,6 +564,7 @@ $( document ).ready(function() {
               <td>
                 <label for="disable">
                   <input name="disable" id="disable" type="checkbox" value="yes" <?= !empty($pconfig['disable']) ? "checked=\"checked\"" : "";?> />
+                  <?=gettext("Disable"); ?>
                 </label>
                 <div class="hidden" data-for="help_for_disable">
                   <small><?=gettext("Set this option to disable this client without removing it from the list"); ?>.</small>
@@ -1072,6 +1073,7 @@ $( document ).ready(function() {
             <td>
               <label for="passtos">
                 <input name="passtos" id="passtos" type="checkbox" value="yes" <?=!empty($pconfig['passtos']) ? "checked=\"checked\"" : "" ;?>  />
+                <?=gettext("Type of service"); ?>
               </label>
               <div class="hidden" data-for="help_for_passtos">
                 <?=gettext("Set the TOS IP header value of tunnel packets to match the encapsulated packet value"); ?>.
@@ -1083,6 +1085,7 @@ $( document ).ready(function() {
             <td>
               <label for="route_no_pull">
                 <input name="route_no_pull" id="route_no_pull" type="checkbox" value="yes" <?=!empty($pconfig['route_no_pull']) ? "checked=\"checked\"" : "" ;?> />
+                <?=gettext("Don't pull routes"); ?>
               </label>
               <div class="hidden" data-for="help_for_route_no_pull">
                 <?=gettext("This option effectively bars the server from adding routes to the client's routing table, however note that this option still allows the server to set the TCP/IP properties of the client's TUN/TAP interface"); ?>.
@@ -1094,6 +1097,7 @@ $( document ).ready(function() {
             <td>
               <label for="route_no_exec">
                 <input name="route_no_exec" id="route_no_exec" type="checkbox" value="yes" <?=!empty($pconfig['route_no_exec']) ? "checked=\"checked\"" : "" ;?> />
+                <?=gettext("Don't add or remove routes"); ?>
               </label>
               <div class="hidden" data-for="help_for_route_no_exec">
                 <?= gettext('Do not add or remove routes automatically. Instead pass routes to "--route-up" script using environmental variables.') ?>

@@ -169,6 +169,7 @@ $( document ).ready(function() {
                     <td>
                       <label for="disabled">
                         <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Disable this rule"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_disabled">
                         <strong><?=gettext("Disable this rule"); ?></strong><br />

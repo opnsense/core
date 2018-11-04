@@ -551,6 +551,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <td style="width:78%" class="vtable">
                     <label for="disabled">
                       <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : "" ;?> />
+                      <?=gettext("Disable"); ?>
                     </label>
                     <div class="hidden" data-for="help_for_disabled">
                         <?=gettext("Disable this phase2 entry"); ?><br/>

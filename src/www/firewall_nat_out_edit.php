@@ -441,6 +441,7 @@ include("head.inc");
                   <td style="width:78%" class="vtable">
                     <label for="nonat">
                       <input type="checkbox" name="nonat" id="nonat" <?=!empty($pconfig['nonat']) ? " checked=\"checked\"" : ""; ?> />
+                      <?=gettext("Disable NAT"); ?>
                     </label>
                     <div class="hidden" data-for="help_for_do_not_nat">
                       <?=gettext("Enabling this option will disable NAT for traffic matching this rule and stop processing Outbound NAT rules.");?><br />
@@ -506,6 +507,7 @@ include("head.inc");
                   <td>
                     <label for="source_not">
                       <input name="source_not" id="source_not" type="checkbox" value="yes" <?= !empty($pconfig['source_not']) ? 'checked="checked"' : '' ?> />
+                      <?=gettext("Invert the sense of the source match"); ?>
                     </label>
                     <div class="hidden" data-for="help_for_src_invert">
                       <?=gettext("Use this option to invert the sense of the match."); ?>
@@ -595,6 +597,7 @@ include("head.inc");
                   <td>
                     <label for="destination_not">
                       <input name="destination_not" id="destination_not" type="checkbox" value="yes" <?= !empty($pconfig['destination_not']) ? 'checked="checked"' : '' ?> />
+                      <?=gettext("Invert the sense of the destination match"); ?>
                     </label>
                     <div class="hidden" data-for="help_for_dst_invert">
                       <?=gettext("Use this option to invert the sense of the match."); ?>
@@ -743,6 +746,7 @@ include("head.inc");
                   <td>
                     <label for="staticnatport">
                       <input name="staticnatport" id="staticnatport" type="checkbox" <?=!empty($pconfig['staticnatport']) ? " checked=\"checked\"" : "";?> >
+                      <?=gettext("Static port"); ?>
                     </label>
                   </td>
                 </tr>
@@ -820,6 +824,7 @@ include("head.inc");
                   <td>
                     <label for="nosync">
                       <input type="checkbox" value="yes" name="nosync" id="nosync" <?=!empty($pconfig['nosync']) ? "checked=\"checked\"" :"";?> />
+                      <?=gettext("Disable XMLRPC sync"); ?>
                     </label>
                     <div class="hidden" data-for="help_for_nosync">
                       <?=gettext("Hint: This prevents the rule on Master from automatically syncing to other CARP members. This does NOT prevent the rule from being overwritten on Slave.");?>

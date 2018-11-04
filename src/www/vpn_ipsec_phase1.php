@@ -642,6 +642,7 @@ include("head.inc");
                     <td>
                       <label for="clone_phase2">
                         <input name="clone_phase2" type="checkbox" id="clone_phase2" value="yes" <?=!empty($pconfig['clone_phase2'])?"checked=\"checked\"":"";?> />
+                        <?=gettext("Clone phase 2"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_clone_phase2">
                         <?=gettext("Clone related phase 2 entries as well, remember to change the networks. All phase 2 entries will be added in disabled state"); ?>
@@ -1119,6 +1120,7 @@ endforeach; ?>
                     <td>
                       <label for="rekey_enable">
                         <input name="installpolicy" type="checkbox" id="rekey_enable" value="yes" <?= !empty($pconfig['installpolicy']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Install connection IPsec policies in the kernel"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_installpolicy">
                         <?=gettext("Decides whether IPsec policies are installed in the kernel by the charon daemon for a given connection. ".
@@ -1131,6 +1133,7 @@ endforeach; ?>
                     <td>
                       <label for="placeholder">
                         <input name="rekey_enable" type="checkbox" id="rekey_enable" value="yes" <?= !empty($pconfig['rekey_enable']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Disable rekey"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_rekey_enable">
                         <?=gettext("Whether a connection should be renegotiated when it is about to expire."); ?>
@@ -1142,6 +1145,7 @@ endforeach; ?>
                     <td>
                       <label for="reauth_enable">
                         <input name="reauth_enable" type="checkbox" id="reauth_enable" value="yes" <?= !empty($pconfig['reauth_enable']) ? "checked=\"checked\"" : "";?> />
+                        <?=gettext("Disable reauth"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_reauth_enable">
                         <?=gettext("Whether rekeying of an IKE_SA should also reauthenticate the peer. In IKEv1, reauthentication is always done."); ?>
@@ -1153,6 +1157,7 @@ endforeach; ?>
                     <td>
                       <label for="tunnel_isolation">
                         <input name="tunnel_isolation" type="checkbox" id="tunnel_isolation" value="yes" <?= !empty($pconfig['tunnel_isolation']) ? 'checked="checked"' : '' ?>/>
+                        <?=gettext("Tunnel isolation"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_tunnel_isolation">
                         <?= gettext('This option will create a tunnel for each phase 2 entry for IKEv2 interoperability with e.g. FortiGate devices.') ?>
@@ -1164,6 +1169,7 @@ endforeach; ?>
                     <td>
                       <label for="sha256_96">
                         <input name="sha256_96" type="checkbox" id="sha256_96" value="yes" <?= !empty($pconfig['sha256_96']) ? 'checked="checked"' : '' ?>/>
+                        <?=gettext("Enable compatibility for 96 bit truncation"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_sha256_96">
                         <?= gettext(
@@ -1199,6 +1205,7 @@ endforeach; ?>
                     <td>
                       <label for="mobike">
                         <input name="mobike" type="checkbox" id="mobike"  <?=!empty($pconfig['mobike']) ? "checked=\"checked\"":"";?> />
+                        <?=gettext("Disable MOBIKE"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_mobike">
                           <?=gettext("Disables the IKEv2 MOBIKE protocol defined by RFC 4555");?>
@@ -1243,6 +1250,7 @@ endforeach; ?>
                     <td>
                       <label for="dpd_enable">
                         <input name="dpd_enable" type="checkbox" id="dpd_enable" value="yes" <?=!empty($pconfig['dpd_delay']) && !empty($pconfig['dpd_maxfail'])?"checked=\"checked\"":"";?> />
+                        <?=gettext("Enable dead peer detection"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_dpd_enable">
                         <?=gettext("Enable DPD"); ?>

@@ -393,6 +393,7 @@ include("head.inc");
                   <td>
                     <label for="arp_table_static_entry">
                       <input name="arp_table_static_entry" id="arp_table_static_entry" type="checkbox" value="yes" <?=!empty($pconfig['arp_table_static_entry']) ? "checked=\"checked\"" : ""; ?> />
+                      <?=gettext("ARP table static entry"); ?>
                     </label>
                     <div class="hidden" data-for="help_for_arp_table_static_entry">
                       <?=gettext('Create a static ARP table entry for this MAC and IP address pair.');?>

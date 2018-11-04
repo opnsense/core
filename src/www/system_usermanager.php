@@ -596,6 +596,7 @@ $( document ).ready(function() {
                     <td>
                       <label for="disabled">
                         <input name="disabled" type="checkbox" id="disabled" <?= $pconfig['disabled'] ? "checked=\"checked\"" : "" ?> />
+                        <?=gettext("Disable");?>
                       </label>
                     </td>
                   </tr>

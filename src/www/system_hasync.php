@@ -139,6 +139,7 @@ include("head.inc");
                   <td>
                     <label for="disablepreempt">
                       <input type="checkbox" name="disablepreempt" value="on" <?= !empty($pconfig['disablepreempt']) ? "checked=\"checked\"" : "";?> />
+                      <?=gettext("As CARP master switch to master when powering up.");?>
                     </label>
                     <div class="hidden" data-for="help_for_disablepreempt">
                       <?=gettext("When this device is configured as CARP master it will try to switch to master when powering up, this option will keep this one slave if there already is a master on the network. A reboot is required to take effect.");?>
@@ -150,6 +151,7 @@ include("head.inc");
                   <td>
                     <label for="disablepreempt">
                       <input type="checkbox" name="disconnectppps" value="on" <?= !empty($pconfig['disconnectppps']) ? "checked=\"checked\"" : "";?> />
+                      <?=gettext("As CARP backup disconnect all PPP type interfaces.  Reconnect when becoming master.");?>
                     </label>
                     <div class="hidden" data-for="help_for_disconnectppps">
                       <?=gettext("When this device is configured as CARP backup it will disconnect all PPP type interfaces and try to reconnect them when becoming master again.");?>
@@ -161,6 +163,7 @@ include("head.inc");
                   <td>
                     <label for="pfsyncenabled">
                       <input type="checkbox" name="pfsyncenabled" id="pfsyncenabled" value="on" <?= !empty($pconfig['pfsyncenabled']) ? "checked=\"checked\"" : "";?> />
+                      <?=gettext("Syncronize states");?>
                     </label>
                     <div class="hidden" data-for="help_for_pfsyncenabled">
                       <?= sprintf(gettext('pfsync transfers state insertion, update, and deletion messages between firewalls.%s' .
@@ -172,6 +175,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
+                      <?=gettext("Disable preempt");?>
                   <td><a id="help_for_pfsyncinterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize Interface') ?></td>
                   <td>
                     <select name="pfsyncinterface" class="selectpicker" data-style="btn-default" data-live-search="true">
@@ -256,6 +260,16 @@ include("head.inc");
                     </div>
                   </td>
                 </tr>
+                      <?=gettext("Synchronize users and groups");?>
+                      <?=gettext("Synchronize authentication servers");?>
+                      <?=gettext("Synchronize certificates");?>
+                      <?=gettext("Synchronize firewall rules");?>
+                      <?=gettext("Synchronize firewall schedules");?>
+                      <?=gettext("Synchronize aliases");?>
+                      <?=gettext("Synchronize NAT rules");?>
+                      <?=gettext("Synchronize DHCPD server settings");?>
+                      <?=gettext("Synchronize static route configuration");?>
+                      <?=gettext("Synchronize CARP virtual IPs");?>
                 <!-- Hook xmlrpc sync plugins -->
 <?php
                 foreach ($syncplugins as $syncid => $synccnf):?>
@@ -264,6 +278,7 @@ include("head.inc");
                   <td>
                     <label for="synchronize<?=$syncid?>">
                       <input type="checkbox" name="synchronize<?=$syncid?>" id="synchronize<?=$syncid?>" value="on" <?=!empty($pconfig['synchronize'.$syncid]) ? "checked=\"checked\"" :"";?> />
+                      <?=gettext("");?>
                     </label>
                     <div class="hidden" data-for="help_for_synchronize<?=$syncid?>">
                       <?=$synccnf['help'];?>

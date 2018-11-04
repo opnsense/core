@@ -741,6 +741,7 @@ endif; ?>
                   <td>
                     <label for="ldap_read_properties">
                       <input id="ldap_read_properties" name="ldap_read_properties" type="checkbox" <?= empty($pconfig['ldap_read_properties']) ? '' : 'checked="checked"';?> />
+                      <?= gettext('Read properties') ?>
                     </label>
                     <div class="hidden" data-for="help_for_ldap_read_properties">
                       <?= gettext("Normally the authentication only tries to bind to the remote server, ".
@@ -753,6 +754,7 @@ endif; ?>
                   <td>
                     <label for="ldap_sync_memberof">
                       <input id="ldap_sync_memberof" name="ldap_sync_memberof" type="checkbox" <?= empty($pconfig['ldap_sync_memberof']) ? '' : 'checked="checked"';?> />
+                      <?= gettext('Synchronize groups') ?>
                     </label>
                     <div class="hidden" data-for="help_for_ldap_sync_memberof">
                       <?= gettext("Synchronize groups specified by memberOf attribute after login, this option requires to enable read properties. ".
@@ -784,6 +786,7 @@ endif; ?>
                   <td>
                     <label for="ldap_sync_create_local_users">
                       <input id="ldap_sync_create_local_users" name="ldap_sync_create_local_users" type="checkbox" <?= empty($pconfig['ldap_sync_create_local_users']) ? '' : 'checked="checked"';?> />
+                      <?=gettext("Allow authenticator to create new local users"); ?>
                     </label>
                     <div class="hidden" data-for="help_for_ldap_sync_create_local_users">
                       <?= gettext(
@@ -879,6 +882,7 @@ endif; ?>
                         elseif ($field['type'] == 'checkbox'):?>
                         <label for="<?=$fieldname;?>">
                           <input name="<?=$fieldname;?>" type="checkbox" id="<?=$fieldname;?>" value="1" <?=!empty($pconfig[$fieldname]) ? "checked=\"checked\"" : ""; ?>/>
+                          <?= gettext('') ?>
                         </label>
 <?php
                         endif;?>

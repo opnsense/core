@@ -80,7 +80,7 @@ class Gdrive extends Base implements IBackupProvider
         $fields[] = array(
             "name" => "GDrivePrefixHostname",
             "type" => "checkbox",
-            "label" => gettext("Prefix hostname to backupfile"),
+            "label" => gettext("Prefix hostname to backup file"),
             "help" => gettext("Normally the config xml will be written as config-stamp.xml, with this option set " .
             "the filename will use the systems host and domain name."),
             "value" => null

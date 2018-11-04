@@ -352,6 +352,7 @@ include("head.inc");
                     <td>
                       <label for="radefault">
                         <input id="radefault" name="radefault" type="checkbox" value="yes" <?= !empty($pconfig['radefault']) ? 'checked="checked"' : '' ?>/>
+                        <?=gettext("Advertise default gateway"); ?>
                       </label>
                     </td>
                   </tr>

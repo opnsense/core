@@ -377,6 +377,7 @@ include("fbegin.inc");
                     <td>
                       <label for="promiscuous">
                         <input name="promiscuous" type="checkbox" id="promiscuous" <?= !empty($pconfig['promiscuous']) ? " checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Use promiscuous mode");?>
                       </label>
                       <div class="hidden" data-for="help_for_promiscuous">
                         <?=gettext("If checked, the");?> <a target="_blank" href="https://www.freebsd.org/cgi/man.cgi?query=tcpdump&amp;apropos=0&amp;sektion=0&amp;manpath=FreeBSD+8.3-stable&amp;arch=default&amp;format=html"><?= gettext("packet capture")?></a> <?= gettext("will be performed using promiscuous mode.");?>
@@ -489,6 +490,7 @@ include("fbegin.inc");
                     <td>
                       <label for="dnsquery">
                         <input name="dnsquery" id="dnsquery" type="checkbox"/>
+                        <?=gettext("Perform reverse DNS lookups");?>
                       </label>
                       <div class="hidden" data-for="help_for_dnsquery">
                        <?=gettext("This check box will cause the packet capture to perform a reverse DNS lookup associated with all IP addresses.");?>

@@ -275,16 +275,19 @@ include("head.inc");
                             <td>
                               <label>
                                 <input name="timeservers_prefer[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_prefer']) && in_array($timeserver, $pconfig['timeservers_prefer']) ? 'checked="checked"' : '' ?>/>
+                                <?=gettext(""); ?>
                               </label>
                             </td>
                             <td>
                               <label>
                                 <input name="timeservers_iburst[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_iburst']) && in_array($timeserver, $pconfig['timeservers_iburst']) ? 'checked="checked"' : '' ?>/>
+                                <?=gettext(""); ?>
                               </label>
                             </td>
                             <td>
                               <label>
                                 <input name="timeservers_noselect[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_noselect']) && in_array($timeserver,  $pconfig['timeservers_noselect']) ? 'checked="checked"' : '' ?>/>
+                                <?=gettext(""); ?>
                               </label>
                             </td>
                           </tr>

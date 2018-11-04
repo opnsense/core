@@ -248,6 +248,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="scrub_interface_disable">
                           <input id="scrub_interface_disable" name="scrub_interface_disable" type="checkbox" value="yes" <?=!empty($pconfig['scrub_interface_disable']) ? "checked=\"checked\"" : "";?> />
+                          <?=gettext("Disable interface scrub"); ?>
                         </label>
                         <div class="hidden" data-for="help_for_scrub_interface_disable">
                           <?=gettext("Disable all default interface scrubing rules,".
@@ -261,6 +262,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="scrubnodf">
                           <input name="scrubnodf" id="scrubnodf" type="checkbox" value="yes" <?=!empty($pconfig['scrubnodf']) ? "checked=\"checked\"" : ""; ?>/>
+                          <?=gettext("Ignore do not fragment flag"); ?>
                         </label>
                         <div class="hidden" data-for="help_for_scrubnodf">
                           <?=gettext("This allows for communications with hosts that generate fragmented " .
@@ -275,6 +277,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="scrubrnid">
                           <input name="scrubrnid" id="scrubrnid" type="checkbox" value="yes" <?= !empty($pconfig['scrubrnid']) ? "checked=\"checked\"" : "";?> />
+                          <?=gettext("Force use of random IP id"); ?>
                         </label>
                         <div class="hidden" data-for="help_for_scrubrnid">
                           <?=gettext("Replaces the IP identification field of packets with random values to " .

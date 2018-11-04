@@ -261,6 +261,7 @@ include("head.inc");
                     <td>
                       <label for="disabled">
                         <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                        <?=gettext("Disable this rule"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_disabled">
                         <strong><?=gettext("Disable this rule"); ?></strong><br />
@@ -321,6 +322,7 @@ include("head.inc");
                       <td>
                         <label for="srcnot">
                           <input name="srcnot" type="checkbox" id="srcnot" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" : "";?> />
+                          <?=gettext("Invert the sense of the source match"); ?>
                         </label>
                         <div class="hidden" data-for="help_for_src_invert">
                           <?=gettext("Use this option to invert the sense of the match."); ?>
@@ -374,6 +376,7 @@ include("head.inc");
                     <td>
                       <label for="dstnot">
                         <input name="dstnot" type="checkbox" id="dstnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
+                        <?=gettext("Invert the sense of the destination match"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_dst_invert">
                         <?=gettext("Use this option to invert the sense of the match."); ?>

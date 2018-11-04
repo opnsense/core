@@ -656,6 +656,7 @@ $( document ).ready(function() {
                         <div>
                           <label for="disable">
                             <input name="disable" id="disable" type="checkbox" value="yes" <?= !empty($pconfig['disable']) ? "checked=\"checked\"" : "";?> />
+                            <?=gettext("Disable");?>
                           </label>
                         </div>
                         <div class="hidden" data-for="help_for_disable">
@@ -1078,6 +1079,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="strictusercn">
                           <input name="strictusercn" id="strictusercn" type="checkbox" value="yes" <?=!empty($pconfig['strictusercn']) ? "checked=\"checked\"" : "" ;?> />
+                          <?=gettext("Strict user and CN matching");?>
                         </label>
                         <div class="hidden" data-for="help_for_strictusercn">
                           <span>
@@ -1132,6 +1134,7 @@ $( document ).ready(function() {
                       <td>
                               <label for="serverbridge_dhcp">
                                 <input id="serverbridge_dhcp" name="serverbridge_dhcp" type="checkbox" value="yes" <?=!empty($pconfig['serverbridge_dhcp']) ? "checked=\"checked\"" : "" ;?>/>
+                                <?=gettext("Bridge DHCP");?>
                               </label>
                               <div class="hidden" data-for="help_for_serverbridge_dhcp">
                                 <span>
@@ -1200,6 +1203,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="gwredir">
                           <input name="gwredir" id="gwredir" type="checkbox" value="yes" <?=!empty($pconfig['gwredir']) ? "checked=\"checked\"" : "" ;?> />
+                          <?=gettext("Redirect client gateway");?>
                         </label>
                         <div class="hidden" data-for="help_for_gwredir">
                             <span>
@@ -1300,6 +1304,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="passtos">
                           <input name="passtos" id="passtos" type="checkbox" value="yes" <?=!empty($pconfig['passtos']) ? "checked=\"checked\"" : "" ;?> />
+                          <?=gettext("Propagate TOS to tunnel packets");?>
                         </label>
                         <div class="hidden" data-for="help_for_passtos">
                           <span>
@@ -1313,6 +1318,7 @@ $( document ).ready(function() {
                       <td>
                           <label for="client2client">
                             <input name="client2client" id="client2client" type="checkbox" value="yes"  <?=!empty($pconfig['client2client']) ? "checked=\"checked\"" : "" ;?> />
+                            <?=gettext("Allow communication between clients");?>
                           </label>
                           <div class="hidden" data-for="help_for_client2client">
                             <span>
@@ -1326,6 +1332,7 @@ $( document ).ready(function() {
                       <td>
                             <label for="duplicate_cn">
                               <input name="duplicate_cn" id="duplicate_cn" type="checkbox" value="yes" <?=!empty($pconfig['duplicate_cn']) ? "checked=\"checked\"" : "" ;?> />
+                              <?=gettext("Allow concurrent CN connections");?>
                             </label>
                             <div class="hidden" data-for="help_for_duplicate_cn">
                               <span>
@@ -1350,6 +1357,7 @@ $( document ).ready(function() {
                       <td style="width:78%">
                         <label for="dynamic_ip">
                           <input name="dynamic_ip" type="checkbox" id="dynamic_ip" value="yes" <?=!empty($pconfig['dynamic_ip']) ? "checked=\"checked\"" : "" ;?> />
+                          <?=gettext("Retain connection if IP address changes");?>
                         </label>
                         <div class="hidden" data-for="help_for_dynamic_ip">
                           <span>
@@ -1363,6 +1371,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="pool_enable">
                           <input name="pool_enable" type="checkbox" id="pool_enable" value="yes" <?=!empty($pconfig['pool_enable']) ? "checked=\"checked\"" : "" ;?> />
+                          <?=gettext("Provide a virtual adapter IP address to clients");?>
                         </label>
                         <div class="hidden" data-for="help_for_pool_enable">
                           <span>
@@ -1376,6 +1385,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="topology_subnet">
                           <input name="topology_subnet" type="checkbox" id="topology_subnet" value="yes"  <?=!empty($pconfig['topology_subnet']) ? "checked=\"checked\"" : "" ;?> />
+                          <?=gettext("Subnet topology");?>
                         </label>
                         <div class="hidden" data-for="help_for_topology_subnet">
                           <span>
@@ -1391,6 +1401,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="dns_domain_enable">
                           <input name="dns_domain_enable" type="checkbox" id="dns_domain_enable" value="yes" <?=!empty($pconfig['dns_domain']) ? "checked=\"checked\"" : "" ;?> />
+                          <?=gettext("Provide default domain name to clients");?>
                         </label>
                         <div id="dns_domain_data">
                               <input name="dns_domain" type="text" class="form-control unknown" id="dns_domain" size="30" value="<?=htmlspecialchars($pconfig['dns_domain']);?>" />
@@ -1407,6 +1418,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="dns_server_enable">
                           <input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes" <?=!empty($pconfig['dns_server1']) || !empty($pconfig['dns_server2']) || !empty($pconfig['dns_server3']) || !empty($pconfig['dns_server4']) ? "checked=\"checked\"" : "" ;?> />
+                          <?=gettext("Enable DNS servers");?>
                         </label>
                         <div id="dns_server_data">
                               <span>
@@ -1438,6 +1450,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="push_register_dns">
                           <input name="push_register_dns" type="checkbox" id="push_register_dns" value="yes" <?=!empty($pconfig['push_register_dns']) ? "checked=\"checked\"" : "" ;?> />
+                          <?=gettext("Force DNS cache update");?>
                         </label>
                         <div class="hidden" data-for="help_for_push_register_dns">
                           <span>
@@ -1451,6 +1464,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="push_block_outside_dns">
                           <input name="push_block_outside_dns" id="push_block_outside_dns" type="checkbox" value="yes" <?=!empty($pconfig['push_block_outside_dns']) ? "checked=\"checked\"" : "" ;?> />
+                          <?=gettext("Block outside DNS"); ?>
                         </label>
                         <div class="hidden" data-for="help_for_push_block_outside_dns">
                           <span>
@@ -1464,6 +1478,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="ntp_server_enable">
                           <input name="ntp_server_enable" type="checkbox" id="ntp_server_enable" value="yes" <?=!empty($pconfig['ntp_server1']) || !empty($pconfig['ntp_server2']) ? "checked=\"checked\"" : "" ;?>  />
+                          <?=gettext("Enabel NTP servers");?>
                         </label>
                         <div id="ntp_server_data">
                           <span>
@@ -1487,6 +1502,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="netbios_enable">
                           <input name="netbios_enable" type="checkbox" id="netbios_enable" value="yes" <?=!empty($pconfig['netbios_enable']) ? "checked=\"checked\"" : "" ;?>  />
+                          <?=gettext("Enable NetBIOS");?>
                         </label>
                         <div class="hidden" data-for="help_for_netbios_enable">
                           <span>
@@ -1535,6 +1551,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="wins_server_enable">
                           <input name="wins_server_enable" type="checkbox" id="wins_server_enable" value="yes" <?=!empty($pconfig['wins_server1']) || !empty($pconfig['wins_server2']) ? "checked=\"checked\"" : "" ;?> />
+                          <?=gettext("Enable WINS servers");?>
                         </label>
                         <div class="hidden" data-for="help_for_wins_server">
                           <span>
@@ -1558,6 +1575,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="client_mgmt_port_enable">
                           <input name="client_mgmt_port_enable" type="checkbox" id="client_mgmt_port_enable" value="yes" <?=!empty($pconfig['client_mgmt_port']) ? "checked=\"checked\"" : "" ;?> />
+                          <?=gettext("Client management port");?>
                         </label>
                         <div id="client_mgmt_port_data">
                               <input name="client_mgmt_port" type="text" class="form-control unknown" id="client_mgmt_port" size="30" value="<?=htmlspecialchars($pconfig['client_mgmt_port']);?>" />
@@ -1574,6 +1592,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="use-common-name">
                           <input name="use-common-name" type="checkbox" id="use-common-name" value="1" <?=!empty($pconfig['use-common-name']) ? "checked=\"checked\"" : "" ;?> />
+                          <?=gettext("Use client certificate common name");?>
                         </label>
                         <div class="hidden" data-for="help_for_use-common-name">
                           <span>
@@ -1646,6 +1665,7 @@ $( document ).ready(function() {
                       <td>
                         <label for="cso_login_matching">
                           <input name="cso_login_matching" type="checkbox" id="cso_login_matching" value="yes" <?=!empty($pconfig['cso_login_matching']) ? "checked=\"checked\"" : "" ;?> />
+                          <?=gettext("Force CSO login matching");?>
                         </label>
                         <div class="hidden" data-for="help_for_cso_login_matching">
                           <span>

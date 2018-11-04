@@ -622,6 +622,7 @@
                                     <td>
                                         <label for="alias.enabled">
                                           <input type="checkbox" id="alias.enabled">
+                                          {{lang._('Enable this alias')}}
                                         </label>
                                         <div class="hidden" data-for="help_for_alias.enabled">
                                             <small>{{lang._('Enable this alias')}}</small>
@@ -770,6 +771,7 @@
                                     <td>
                                         <label for="alias.counters">
                                           <input type="checkbox" id="alias.counters">
+                                          Maintain a set of table entry counters
                                         </label>
                                         <div class="hidden" data-for="help_for_alias.counters">
                                             <small>{{lang._('Maintain a set of counters for each table entry')}}</small>

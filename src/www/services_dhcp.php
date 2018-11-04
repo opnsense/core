@@ -645,6 +645,7 @@ include("head.inc");
                       <td>
                         <label for="denyunknown">
                           <input name="denyunknown" id="denyunknown" type="checkbox" value="yes" <?=!empty($pconfig['denyunknown']) ? "checked=\"checked\"" : ""; ?> />
+                          <?=gettext("Deny unknown clients"); ?>
                         </label>
                         <div class="hidden" data-for="help_for_denyunknown">
                           <?=gettext("If this is checked, only the clients defined below will get DHCP leases from this server.");?>
@@ -656,6 +657,7 @@ include("head.inc");
                       <td>
                         <label for="ignoreuids">
                           <input name="ignoreuids" id="ignoreuids" type="checkbox" value="yes" <?=!empty($pconfig['ignoreuids']) ? "checked=\"checked\"" : ""; ?> />
+                          <?=gettext('Avoid multiple leases per MAC');?>
                         </label
                         <div class="hidden" data-for="help_for_ignoreuids">
                           <?=gettext('By default, the same MAC can get multiple leases if the requests are sent using different UIDs. To avoid this behavior, check this box and client UIDs will be ignored.');?>

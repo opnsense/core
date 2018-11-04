@@ -370,6 +370,7 @@ include_once("head.inc");
                         <td>
                           <label for="enable_wpad">
                             <input name="enable_wpad" type="checkbox" id="enable_wpad" value="yes" <?=!empty($pconfig['enable_wpad']) ? 'checked="checked"' : '';?> />
+                            <?=gettext("WPAD records"); ?>
                           </label>
                           <div class="hidden" data-for="help_for_enable_wpad">
                             <?=gettext("If this option is set, CNAME records for the WPAD host of all configured domains will be automatically added as well as overrides for TXT records for domains. " .

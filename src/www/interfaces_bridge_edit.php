@@ -342,6 +342,7 @@ $(document).ready(function() {
                       <td style="width:78%">
                         <label for="enablestp">
                           <input type="checkbox" name="enablestp" id="enablestp" <?= !empty($pconfig['enablestp']) ? 'checked="checked"' : "";?> />
+                          <?= gettext("Enable spanning tree") ?>
                         </label>
                         <div class="hidden" data-for="help_for_enablestp">
                           <?=gettext("Enable spanning tree options for this bridge."); ?>

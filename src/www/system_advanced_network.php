@@ -365,6 +365,7 @@ include("head.inc");
                 <td>
                   <label for="dhcp6_norelease">
                     <input name="dhcp6_norelease" type="checkbox" id="dhcp6_norelease" value="yes" <?= !empty($pconfig['dhcp6_norelease']) ? 'checked="checked"' : '' ?> />
+                    <?= gettext('Do not send release message to server on client exit') ?>
                   </label>
                   <div class="hidden" data-for="help_for_dhcp6_norelease">
                     <?= gettext('Do not send a release message on client exit to prevent the release of an allocated address or prefix on the server.') ?>

@@ -180,6 +180,7 @@ include("head.inc"); ?>
                       <td>
                         <label for="showtext">
                           <input name="showtext" type="checkbox" id="showtext" <?= !empty($pconfig['showtext']) ? "checked=\"checked\"" : "";?> />
+                          <?=gettext("Show the text given by the server");?>
                         </label>
                         <div class="hidden" data-for="help_for_showtext">
                           <?=gettext("Shows the text given by the server when connecting to the port. Will take 10+ seconds to display if checked."); ?>

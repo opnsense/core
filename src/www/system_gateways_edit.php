@@ -483,6 +483,7 @@ $( document ).ready(function() {
                   <td>
                     <label for="disabled">
                       <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                      <?=gettext("Disable this gateway");?>
                     </label>
                     <div class="hidden" data-for="help_for_disabled">
                       <?=gettext("Set this option to disable this gateway without removing it from the list.");?>
@@ -545,6 +546,7 @@ $( document ).ready(function() {
                   <td>
                     <label for="defaultgw">
                       <input name="defaultgw" id="defaultgw" type="checkbox" value="yes" <?=!empty($pconfig['defaultgw']) ? "checked=\"checked\"" : "";?> />
+                      <?=gettext("Default gateway");?>
                     </label>
                     <div class="hidden" data-for="help_for_defaultgw">
                       <?= gettext('This will select the above gateway as a default gateway candidate.') ?>
@@ -556,6 +558,7 @@ $( document ).ready(function() {
                   <td>
                     <label for="fargw">
                       <input name="fargw" id="fargw" type="checkbox" value="yes" <?=!empty($pconfig['fargw']) ? 'checked="checked"' : '';?> />
+                      <?=gettext("Far gateway");?>
                     </label>
                     <div class="hidden" data-for="help_for_fargw">
                       <?=gettext("This will allow the gateway to exist outside of the interface subnet."); ?>
@@ -567,6 +570,7 @@ $( document ).ready(function() {
                   <td>
                     <label for="monitor_disable">
                       <input name="monitor_disable" id="monitor_disable" type="checkbox" value="yes" <?=!empty($pconfig['monitor_disable']) ? "checked=\"checked\"" : "";?>/>
+                      <?=gettext("Disable gateway monitoring");?>
                     </label>
                     <div class="hidden" data-for="help_for_monitor_disable">
                       <?= gettext('This will consider this gateway as always being "up".') ?>
@@ -589,6 +593,7 @@ $( document ).ready(function() {
                   <td>
                     <label for="force_down">
                       <input name="force_down" id="force_down" type="checkbox" value="yes" <?=!empty($pconfig['force_down']) ? "checked=\"checked\"" : "";?>/>
+                      <?=gettext("Mark gateway as down");?>
                     </label>
                     <div class="hidden" data-for="help_for_force_down">
                       <?= gettext('This will force this gateway to be considered "down".') ?>

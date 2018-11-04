@@ -550,6 +550,7 @@ $( document ).ready(function() {
                   <td>
                     <label for="nordr">
                       <input type="checkbox" name="nordr" id="nordr" <?= !empty($pconfig['nordr']) ? "checked=\"checked\"" : ""; ?> />
+                      <?=gettext("Disable traffic redirection"); ?>
                     </label>
                     <div class="hidden" data-for="help_for_nordr">
                       <?=gettext("Enabling this option will disable redirection for traffic matching this rule."); ?>
@@ -625,6 +626,7 @@ $( document ).ready(function() {
                     <td>
                       <label for="srcnot">
                         <input name="srcnot" type="checkbox" id="srcnot" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" : "";?> />
+                        <?=gettext("Invert the sense of the source match"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_src_invert">
                         <?=gettext("Use this option to invert the sense of the match."); ?>
@@ -741,6 +743,7 @@ $( document ).ready(function() {
                   <td>
                     <label for="dstnot">
                       <input name="dstnot" type="checkbox" id="dstnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
+                      <?=gettext("Invert the sense of the destination match"); ?>
                     </label>
                     <div class="hidden" data-for="help_for_dst_invert">
                       <?=gettext("Use this option to invert the sense of the match."); ?>
@@ -992,6 +995,7 @@ $( document ).ready(function() {
                   <td>
                     <label for="log">
                       <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? 'checked="checked"' : '' ?>/>
+                      <?=gettext("Log packets handled by this rule"); ?>
                     </label>
                     <div class="hidden" data-for="help_for_log">
                       <?=gettext("Log packets that are handled by this rule");?><br/>
@@ -1045,6 +1049,7 @@ $( document ).ready(function() {
                   <td>
                     <label for="nosync">
                       <input type="checkbox" value="yes" name="nosync" id="nosync" <?=!empty($pconfig['nosync']) ? "checked=\"checked\"" :"";?> />
+                      <?=gettext("Disable XMLRPC sync"); ?>
                     </label>
                     <div class="hidden" data-for="help_for_nosync">
                       <?=gettext("Hint: This prevents the rule on Master from automatically syncing to other CARP members. This does NOT prevent the rule from being overwritten on Slave.");?>

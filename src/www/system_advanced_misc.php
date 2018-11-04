@@ -395,6 +395,7 @@ include("head.inc");
                 <td>
                   <label for="powerd_enable">
                     <input name="powerd_enable" type="checkbox" id="powerd_enable" value="yes" <?=!empty($pconfig['powerd_enable']) ? "checked=\"checked\"" : "";?> />
+                    <?=gettext("Use PowerD"); ?>
                   </label>
                   <div class="hidden" data-for="help_for_powerd_enable">
                     <?=gettext("The powerd utility monitors the system state and sets various power control " .

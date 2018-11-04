@@ -127,6 +127,7 @@ include("head.inc");
                       <td>
                         <label for="enable">
                           <input name="enable" id="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : ""; ?> onclick="enable_change(false)" />
+                          <?=gettext("Enable DHCP relay"); ?>
                         </label>
                       </td>
                     </tr>

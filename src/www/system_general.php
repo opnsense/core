@@ -374,6 +374,7 @@ $( document ).ready(function() {
               <td>
                 <label for="store_intermediate_certs">
                   <input name="store_intermediate_certs" type="checkbox" id="store_intermediate_certs" <?= !empty($pconfig['store_intermediate_certs']) ? "checked=\"checked\"" : "";?> />
+                  <?=gettext("Use intermediate certificate authorities in trust store"); ?>
                 </label>
                 <div class="hidden" data-for="help_for_trust_store_intermediate_certs">
                   <?=gettext(

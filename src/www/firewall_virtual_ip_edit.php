@@ -413,6 +413,7 @@ $( document ).ready(function() {
                       <td>
                           <label for="bind">
                             <input id="bind" name="bind" type="checkbox" class="form-control" id="bind" <?= !empty($pconfig['bind']) ? 'checked="checked"' : '' ?> />
+                            <?=gettext("Bind to interface services"); ?>
                           </label>
                           <div class="hidden" data-for="help_for_bind">
                             <?= gettext('Assigning services to the virtual IP\'s interface will automatically include this address. Uncheck to prevent binding to this address instead.');?>
@@ -432,6 +433,7 @@ $( document ).ready(function() {
                       <td>
                           <label for="noexpand">
                             <input id="noexpand" name="noexpand" type="checkbox" class="form-control" id="noexpand" <?= !empty($pconfig['noexpand']) ? "checked=\"checked\"" : "" ; ?> />
+                            <?=gettext("Disable expansion"); ?>
                           </label>
                           <div class="hidden" data-for="help_for_noexpand">
                             <?=gettext("Disable expansion of this entry into IPs on NAT lists (e.g. 192.168.1.0/24 expands to 256 entries.");?>

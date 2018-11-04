@@ -1024,6 +1024,7 @@ include("head.inc");
                     <td>
                       <label for="srcnot">
                         <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  name="srcnot" id="srcnot" type="checkbox" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" : "";?> />
+                        <?=gettext("Invert the sense of the source match"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_src_invert">
                         <?=gettext("Use this option to invert the sense of the match."); ?>
@@ -1156,6 +1157,7 @@ include("head.inc");
                     <td>
                       <label for="dstnot">
                         <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="dstnot" id="dstnot" type="checkbox" id="srcnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
+                        <?=gettext("Invert the sense of the destination match"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_dst_invert">
                         <?=gettext("Use this option to invert the sense of the match."); ?>
@@ -1333,6 +1335,7 @@ include("head.inc");
                     <td>
                       <label for="nosync">
                         <input type="checkbox" value="yes" name="nosync" id="nosync" <?=!empty($pconfig['nosync']) ? "checked=\"checked\"" :"";?> />
+                        <?=gettext("Disable XMLRPC sync"); ?>
                       </label>
                       <div class="hidden" data-for="help_for_nosync">
                         <?=gettext("Hint: This prevents the rule on Master from automatically syncing to other CARP members. This does NOT prevent the rule from being overwritten on Slave.");?>
@@ -1403,6 +1406,7 @@ include("head.inc");
                       <td>
                         <label for="allowopts">
                           <input type="checkbox" value="yes" name="allowopts" id="allowopts" <?= !empty($pconfig['allowopts']) ? "checked=\"checked\"" : ""; ?> />
+                          <?=gettext("Allow packets with options"); ?>
                         </label>
                         <div class="hidden" data-for="help_for_allowopts">
                           <?=gettext("This allows packets with IP options to pass. Otherwise they are blocked by default. This is usually only seen with multicast traffic.");?>
@@ -1660,6 +1664,7 @@ endforeach;?>
                         <td>
                           <label for="nopfsync">
                             <input name="nopfsync" id="nopfsync" type="checkbox" value="yes" <?= !empty($pconfig['nopfsync']) ? "checked=\"checked\"" : "";?> />
+                            <?=gettext("Disable pf sync"); ?>
                           </label>
                           <div class="hidden" data-for="help_for_nopfsync">
                             <?=gettext("Hint: This prevents states created by this rule to be sync'ed over pfsync.");?>

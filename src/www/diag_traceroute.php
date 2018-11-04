@@ -155,6 +155,7 @@ include("head.inc");
                       <td>
                         <label for="resolve">
                           <input name="resolve" type="checkbox"<?=!empty($pconfig['resolve']) ? " checked=\"checked\"" : ""; ?> id="resolve" />
+                          <?=gettext("Perform reverse address lookups");?>
                         </label>
                       </td>
                     </tr>
@@ -163,6 +164,7 @@ include("head.inc");
                       <td>
                         <label for="useicmp">
                           <input name="useicmp" type="checkbox" <?=!empty($pconfig['useicmp']) ? " checked=\"checked\"" : ""; ?> id="useicmp" />
+                          <?=gettext("Use ICMP");?>
                         </label>
                       </td>
                     </tr>
