@@ -237,6 +237,7 @@ plist-fix:
 	@${MAKE} DESTDIR=${DESTDIR} plist > ${.CURDIR}/plist
 
 plist-check:
+	@mkdir -p ${WRKDIR}
 	@${MAKE} DESTDIR=${DESTDIR} plist > ${WRKDIR}/plist.new
 	@cat ${.CURDIR}/plist > ${WRKDIR}/plist.old
 	@if ! diff -uq ${WRKDIR}/plist.old ${WRKDIR}/plist.new > /dev/null ; then \
