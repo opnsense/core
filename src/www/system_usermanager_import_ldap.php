@@ -172,12 +172,21 @@ else :
     <thead>
       <tr>
         <th colspan="2"><?=gettext("Please select users to import:");?></th>
-        <th><input type="checkbox" id="select_all"></th>
+        <th><input type='checkbox' id='select_all'><label class="SROC" for="select_all"><?=gettext("Select All");?></label></th>
       </tr>
     </thead>
     <tbody>
 <?php foreach ($ldap_users as $username => $userDN): ?>
-        <tr><td><?=$username?></td><td><?=$userDN?></td><td> <input type="checkbox" value="<?=$userDN?>" id="user_dn" class="user_option" name="user_dn[]"></td></tr>
+      <tr>
+        <td><?=$username?></td>
+        <td><?=$userDN?></td>
+        <td>
+          <input type='checkbox' value="<?=$userDN?>" id='user_dn' class='user_option' name='user_dn[]'>
+          <label class="SROC" for="<?=$userDN;?>">
+            <?=$username;?>
+          </label>
+        </td>
+      </tr>
 <?php endforeach ?>
       <tr>
         <td style="text-align:left" colspan="3">

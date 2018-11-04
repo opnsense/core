@@ -250,7 +250,7 @@ include("head.inc");
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <td><input type="checkbox" id="selectAll"></td>
+                    <td><input type="checkbox" id="selectAll"><label class="SROC" for="selectAll"><?=gettext("Select All");?></label></td>
                     <td><?=gettext("Virtual IP address");?></td>
                     <td><?=gettext("Interface");?></td>
                     <td><?=gettext("Type");?></td>
@@ -277,7 +277,10 @@ include("head.inc");
                     if(!empty($vipent['subnet']) || !empty($vipent['range']) || !empty($vipent['subnet_bits']) || (isset($vipent['range']['from']) && !empty($vipent['range']['from']))): ?>
                   <tr ondblclick="document.location='firewall_virtual_ip_edit.php?id=<?=$i;?>';">
                     <td>
-                      <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
+                      <input class="rule_select" type="checkbox" name="rule[]" id="rule[]_<?=$i;?>" value="<?=$i;?>"  />
+                      <label class="SROC" for="rule[]_<?=$i;?>">
+                        <?=htmlspecialchars($vipent['descr']);?>
+                      </label>
                     </td>
                     <td>
                       <?=($vipent['type'] == "single" || $vipent['type'] == "network") && !empty($vipent['subnet_bits']) ? $vipent['subnet']."/".$vipent['subnet_bits'] : "";?>

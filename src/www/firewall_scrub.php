@@ -309,7 +309,7 @@ $( document ).ready(function() {
                       <th colspan="2"> </th>
                     </tr>
                     <tr>
-                      <th><input type="checkbox" id="selectAll"></th>
+                      <th><input type="checkbox" id="selectAll"><label class="SROC" for="selectAll"><?=gettext("Select All");?></label></th>
                       <th><?=gettext("Interfaces");?></th>
                       <th class="hidden-xs hidden-sm"><?=gettext("Source");?></th>
                       <th class="hidden-xs hidden-sm"><?=gettext("Destination");?></th>
@@ -335,7 +335,10 @@ $( document ).ready(function() {
                 foreach ($a_scrub as $i => $scrubEntry):?>
                   <tr>
                     <td>
-                        <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
+                        <input class="rule_select" type="checkbox" name="rule[]" id="rule[]_<?=$i;?>" value="<?=$i;?>"  />
+                        <label class="SROC" for="rule[]_<?=$i;?>">
+                          <?=$scrubEntry['descr'];?>
+                        </label>
                         <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" data-html="true" title="<?=(empty($scrubEntry['disabled'])) ? gettext("Disable") : gettext("Enable");?>">
                           <span class="fa fa-play fa-fw <?=(empty($scrubEntry['disabled'])) ? "text-success" : "text-muted";?>"></span>
                         </a>

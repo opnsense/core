@@ -870,3 +870,14 @@ label[for="gpssubsec"] + div {
   margin-top: 0px;
   margin-bottom: 0px;
 }
+
+/* Screen reader only content; conceal visibility
+   https://webaim.org/techniques/css/invisiblecontent/ */
+.SROC {
+  position:absolute;
+  left:-10000px;
+  top:auto;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+}

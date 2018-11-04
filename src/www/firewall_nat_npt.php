@@ -219,7 +219,7 @@ include("head.inc");
                   <thead>
                     <tr>
                       <th style="width:2%">&nbsp;</th>
-                      <th style="width:2%"><input type="checkbox" id="selectAll"></th>
+                      <th style="width:2%"><input type="checkbox" id="selectAll"><label class="SROC" for="selectAll"><?=gettext("Select All"); ?></label></th>
                       <th style="width:2%">&nbsp;</th>
                       <th><?=gettext("Interface"); ?></th>
                       <th><?=gettext("External Prefix"); ?></th>
@@ -247,7 +247,10 @@ include("head.inc");
                     <tr class="rule <?=isset($natent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($natent['category']) ? $natent['category'] : "";?>"  ondblclick="document.location='firewall_nat_npt_edit.php?id=<?=$i;?>';">
                       <td> </td>
                       <td>
-                          <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
+                        <input class="rule_select" type="checkbox" name="rule[]" id="rule[]_<?=$i;?>" value="<?=$i;?>"  />
+                        <label class="SROC" for="rule[]_<?=$i;?>">
+                          <?=$natent['descr'];?>
+                        </label>
                       </td>
                       <td>
                         <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(!isset($natent['disabled'])) ? gettext("Disable") : gettext("Enable");?>">

@@ -621,7 +621,7 @@ $( document ).ready(function() {
                 <table class="table table-condensed table-striped opnsense-rules">
                   <tbody>
                     <tr>
-                      <td><input type="checkbox" id="selectAll"></td>
+                      <td><input type="checkbox" id="selectAll"><label class="SROC" for="selectAll"><?=gettext("Select All");?></label></td>
                       <td>&nbsp;</td>
                       <td class="view-info"><strong><?= gettext('Protocol') ?></strong></td>
                       <td class="view-info"><strong><?= gettext('Source') ?></strong></td>
@@ -746,7 +746,10 @@ $( document ).ready(function() {
 ?>
                   <tr class="rule  <?=isset($filterent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
                     <td>
-                      <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
+                      <input class="rule_select" type="checkbox" name="rule[]" id="rule[]_<?=$i;?>" value="<?=$i;?>"  />
+                      <label class="SROC" for="rule[]_<?=$i;?>">
+                        <?=htmlspecialchars($filterent['descr']);?>
+                      </label>
                     </td>
                     <td>
                       <i class="act_toggle <?=firewall_rule_item_action($filterent);?>" style="cursor: pointer;" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(empty($filterent['disabled']) ? gettext('Disable rule') : gettext('Enable rule')) ?>"></i>

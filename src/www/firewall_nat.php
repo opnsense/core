@@ -326,7 +326,7 @@ $( document ).ready(function() {
                       <td colspan="2"> </td>
                     </tr>
                     <tr>
-                      <th style="width:2%"><input type="checkbox" id="selectAll"></th>
+                      <th style="width:2%"><input type="checkbox" id="selectAll"><label class="SROC" for="selectAll"><?=gettext("Select All");?></label></th>
                       <th style="width:2%">&nbsp;</th>
                       <th style="width:2%">&nbsp;</th>
                       <th><?=gettext("Interface");?></th>
@@ -384,7 +384,10 @@ $( document ).ready(function() {
 ?>
                     <tr class="rule <?=isset($natent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($natent['category']) ? $natent['category'] : "";?>" ondblclick="document.location='firewall_nat_edit.php?id=<?=$nnats;?>';">
                       <td>
-                        <input class="rule_select" type="checkbox" name="rule[]" value="<?=$nnats;?>"  />
+                        <input class="rule_select" type="checkbox" name="rule[]" id="rule[]_<?=$nnats;?>" value="<?=$nnats;?>"  />
+                        <label class="SROC" for="rule[]_<?=$nnats;?>">
+                          <?=$natent['descr'];?>
+                        </label>
                       </td>
                       <td>
 <?php                 if (isset($natent['nordr'])): ?>

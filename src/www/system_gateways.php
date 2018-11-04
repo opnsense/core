@@ -317,7 +317,10 @@ $( document ).ready(function() {
                       <td>
 <?php
                     if (is_numeric($gateway['attribute'])) :?>
-                      <input type="checkbox" name="rule[]" value="<?=$i;?>"/>
+                        <input type="checkbox" name="rule[]" id="rule[]_<?=$i;?>" value="<?=$i;?>"/>
+                        <label class="SROC" for="rule[]_<?=$i;?>">
+                          <?=$gateway['descr'];?>
+                        </label>
 <?php
                     else :?>
                       &nbsp;

@@ -1212,8 +1212,9 @@ $( document ).ready(function() {
               } ?>
               <tr>
                 <td>
-                  <label>
-                    <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
+                  <input type="checkbox" name="rule[]" id="rule[]_<?=$i;?>" value="<?=$i;?>"  />
+                  <label class="SROC" for="rule[]_<?=$i;?>">
+                    <?= htmlspecialchars($client['description']) ?>
                   </label>
                   <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($client['disable'])) ? gettext("Disable") : gettext("Enable");?>">
                     <span class="fa fa-play fa-fw <?=(empty($client['disable'])) ? "text-success" : "text-muted";?>"></span>

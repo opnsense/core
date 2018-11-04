@@ -273,7 +273,7 @@ include("head.inc");
               <table class="table table-striped table-condensed opnsense-rules">
                 <thead>
                   <tr>
-                    <th><input type="checkbox" id="selectAll"></th>
+                    <th><input type="checkbox" id="selectAll"><label class="SROC" for="selectAll"><?=gettext("Select All"); ?></label></th>
                     <th>&nbsp;</th>
                     <th><?=gettext("Interface"); ?></th>
                     <th><?=gettext("External IP"); ?></th>
@@ -308,7 +308,10 @@ include("head.inc");
 ?>
                   <tr class="rule <?=isset($natent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($natent['category']) ? $natent['category'] : "";?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
                     <td>
-                      <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>" />
+                      <input class="rule_select" type="checkbox" name="rule[]" id="rule[]_<?=$i;?>" value="<?=$i;?>" />
+                      <label class="SROC" for="rule[]_<?=$i;?>">
+                        <?=$natent['descr'];?>
+                      </label>
                     </td>
                     <td>
                       <a href="#" type="submit" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(!isset($natent['disabled'])) ? gettext("Disable") : gettext("Enable");?>" class="act_toggle">
