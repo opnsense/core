@@ -309,7 +309,10 @@ sweep:
 
 STYLEDIRS?=	src/etc/inc/plugins.inc.d src/opnsense
 
-style: want-php${CORE_PHP}-pear-PHP_CodeSniffer
+style-python: want-py${CORE_PYTHON2}-pycodestyle
+	@pycodestyle --ignore=E501 ${.CURDIR}/src || true
+
+style-php: want-php${CORE_PHP}-pear-PHP_CodeSniffer
 	@: > ${WRKDIR}/style.out
 .for STYLEDIR in ${STYLEDIRS}
 	@(phpcs --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} \
@@ -327,8 +330,7 @@ style-fix: want-php${CORE_PHP}-pear-PHP_CodeSniffer
 	phpcbf --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} || true
 .endfor
 
-style-python: want-py${CORE_PYTHON2}-pycodestyle
-	@pycodestyle --ignore=E501 ${.CURDIR}/src || true
+style: style-python style-php
 
 license: want-p5-File-Slurp
 	@${.CURDIR}/Scripts/license > ${.CURDIR}/LICENSE
