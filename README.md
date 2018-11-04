@@ -97,7 +97,8 @@ before issuing a pull request on GitHub.
 make style
 ----------
 
-Run the CodeSniffer PSR2 style checks on the MVC code base.
+Run the PSR2 and PEP8 style checks on MVC PHP code and Python,
+respectively.
 
 make sweep
 ----------
