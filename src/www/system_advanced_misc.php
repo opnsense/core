@@ -79,9 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['crypto_hardware'] = !empty($config['system']['crypto_hardware']) ? $config['system']['crypto_hardware'] : null;
     $pconfig['cryptodev_enable'] = isset($config['system']['cryptodev_enable']);
     $pconfig['thermal_hardware'] = !empty($config['system']['thermal_hardware']) ? $config['system']['thermal_hardware'] : null;
-    /* if the old use_mfs_tmpvar is found, set these flags, too */
-    $pconfig['use_mfs_var'] = isset($config['system']['use_mfs_tmpvar']) || isset($config['system']['use_mfs_var']);
-    $pconfig['use_mfs_tmp'] = isset($config['system']['use_mfs_tmpvar']) || isset($config['system']['use_mfs_tmp']);
+    $pconfig['use_mfs_var'] = isset($config['system']['use_mfs_var']);
+    $pconfig['use_mfs_tmp'] = isset($config['system']['use_mfs_tmp']);
     $pconfig['use_swap_file'] = isset($config['system']['use_swap_file']);
     $pconfig['dhparamusage'] = !empty($config['system']['dhparamusage']) ? $config['system']['dhparamusage'] : null;
     $pconfig['rrdbackup'] = !empty($config['system']['rrdbackup']) ? $config['system']['rrdbackup'] : null;
@@ -145,11 +144,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['use_mfs_var'] = true;
         } elseif (isset($config['system']['use_mfs_var'])) {
             unset($config['system']['use_mfs_var']);
-        }
-
-        /* XXX config used to have this, but we've split it up in 17.1 */
-        if (isset($config['system']['use_mfs_tmpvar'])) {
-            unset($config['system']['use_mfs_tmpvar']);
         }
 
         if (!empty($pconfig['use_mfs_tmp'])) {
