@@ -221,7 +221,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $natent['tagged'] = $pconfig['tagged'];
         $natent['poolopts'] = $pconfig['poolopts'];
 
-        if (!empty($pconfig['associated-rule-id'])) {
+        if (!empty($natent['nordr'])) {
+            $natent['associated-rule-id'] = '';
+        } elseif (!empty($pconfig['filter-rule-association']) && $pconfig['filter-rule-association'] == "pass") {
+            $natent['associated-rule-id'] = "pass";
+        } elseif (!empty($pconfig['associated-rule-id'])) {
             $natent['associated-rule-id'] = $pconfig['associated-rule-id'];
         } else {
             $natent['associated-rule-id'] = null;
@@ -232,9 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $natent['nordr'] = !empty($pconfig['nordr']) ? true:false;
         $natent['nosync'] = !empty($pconfig['nosync']) ? true:false;
 
-        if ($natent['nordr']) {
-            $natent['associated-rule-id'] = '';
-        } else {
+        if (empty($natent['nordr'])) {
             $natent['target'] = $pconfig['target'];
             $natent['local-port'] = $pconfig['local-port'];
         }
@@ -246,9 +248,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           $pconfig['dstmask'], !empty($pconfig['dstnot']),
           $pconfig['dstbeginport'], $pconfig['dstendport']);
 
-        if(!empty($pconfig['filter-rule-association']) && $pconfig['filter-rule-association'] == "pass") {
-            $natent['associated-rule-id'] = "pass";
-        }
 
         if ($pconfig['natreflection'] == "purenat" || $pconfig['natreflection'] == "disable") {
             $natent['natreflection'] = $pconfig['natreflection'];
@@ -266,23 +265,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             mark_subsystem_dirty('filter');
         }
 
-        $need_filter_rule = false;
         // Updating a rule with a filter rule associated
-        if (!empty($natent['associated-rule-id']))
-            $need_filter_rule = true;
-        // Create a rule or if we want to create a new one
-        if( $natent['associated-rule-id']=='new' ) {
-            $need_filter_rule = true;
-            unset($natent['associated-rule-id']);
-            $pconfig['filter-rule-association']='add-associated';
-        }
-        // If creating a new rule, where we want to add the filter rule, associated or not
-        else if (isset($pconfig['filter-rule-association']) && ($pconfig['filter-rule-association']=='add-associated' ||
-                       $pconfig['filter-rule-association']=='add-unassociated')
-        )
-            $need_filter_rule = true;
-
-        if ($need_filter_rule) {
+        if (!empty($natent['associated-rule-id']) || !empty($pconfig['filter-rule-association'])) {
             /* auto-generate a matching firewall rule */
             $filterent = array();
             // If a rule already exists, load it
@@ -338,8 +322,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $filterent['descr'] = substr("NAT " . $pconfig['descr'], 0, 62);
 
             // If this is a new rule, create an ID and add the rule
-            if( isset($pconfig['filter-rule-association']) && $pconfig['filter-rule-association']=='add-associated' ) {
-                $filterent['associated-rule-id'] = $natent['associated-rule-id'] = uniqid("nat_", true);
+            if( !empty($pconfig['filter-rule-association']) && $pconfig['filter-rule-association'] != 'pass' ) {
+                if ($pconfig['filter-rule-association'] == 'add-associated') {
+                    $filterent['associated-rule-id'] = $natent['associated-rule-id'] = uniqid("nat_", true);
+                }
                 $filterent['created'] = make_config_revision_entry();
                 $config['filter']['rule'][] = $filterent;
             }
