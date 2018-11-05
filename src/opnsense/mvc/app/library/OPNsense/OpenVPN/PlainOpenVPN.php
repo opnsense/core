@@ -79,7 +79,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
         }
         $conf[] = "persist-tun";
         $conf[] = "persist-key";
-        if (strncasecmp($this->config['protocol'], "tcp",3)) {
+        if (strncasecmp($this->config['protocol'], "tcp", 3)) {
             $conf[] = "{$this->config['protocol']}-client";
         } else {
             $conf[] =  $this->config['protocol'];
