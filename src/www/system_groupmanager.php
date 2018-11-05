@@ -377,13 +377,12 @@ $( document ).ready(function() {
               </thead>
               <tbody>
 <?php
-              $i = 0;
               /* create a copy for sorting */
               $a_group_ro = $a_group;
-              usort($a_group_ro, function($a, $b) {
+              uasort($a_group_ro, function($a, $b) {
                 return strnatcasecmp($a['name'], $b['name']);
               });
-              foreach ($a_group_ro as $group): ?>
+              foreach ($a_group_ro as $i => $group): ?>
                 <tr>
                   <td>
                     <span class="fa fa-user <?= !empty($group['priv']) && in_array('page-all', $group['priv']) ? 'text-danger' : 'text-info' ?>"></span>
@@ -396,21 +395,16 @@ $( document ).ready(function() {
                        class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">
                         <span class="fa fa-pencil fa-fw"></span>
                     </a>
-
-<?php
-                    if ($group['scope'] != "system") :?>
+<?php if ($group['scope'] != 'system'): ?>
                     <button type="button" class="btn btn-default btn-xs act-del-group"
                         data-groupname="<?=$group['name'];?>"
                         data-groupid="<?=$i?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip">
                       <span class="fa fa-trash fa-fw"></span>
                     </button>
-<?php
-                    endif;?>
+<?php endif ?>
                   </td>
                 </tr>
-<?php
-              $i++;
-              endforeach;?>
+<?php endforeach ?>
                 <tr>
                   <td colspan="4">
                     <table>

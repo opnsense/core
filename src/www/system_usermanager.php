@@ -995,12 +995,12 @@ $( document ).ready(function() {
                   </thead>
                   <tbody>
 <?php
-                  $i = 0;
+                  /* create a copy for sorting */
                   $a_user_ro = $a_user;
-                  usort($a_user_ro, function($a, $b) {
+                  uasort($a_user_ro, function($a, $b) {
                     return strnatcasecmp($a['name'], $b['name']);
                   });
-                  foreach ($a_user_ro as $userent): ?>
+                  foreach ($a_user_ro as $i => $userent): ?>
                     <tr>
                       <td>
 <?php
@@ -1020,21 +1020,16 @@ $( document ).ready(function() {
                             class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">
                           <span class="fa fa-pencil fa-fw"></span>
                         </a>
-<?php
-                        if ($userent['scope'] != "system") :?>
+<?php if ($userent['scope'] != 'system'): ?>
                         <button type="button" class="btn btn-default btn-xs act-del-user"
                             data-username="<?=$userent['name'];?>"
                             data-userid="<?=$i?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip">
                           <span class="fa fa-trash fa-fw"></span>
                         </button>
-<?php
-                        endif;?>
+<?php endif ?>
                       </td>
                     </tr>
-<?php
-                  $i++;
-                  endforeach;
-?>
+<?php endforeach ?>
                     <tr>
                       <td colspan="3">
                         <table>
