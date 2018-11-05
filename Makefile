@@ -208,7 +208,7 @@ PKG_SCRIPTS=	+PRE_INSTALL +POST_INSTALL \
 scripts:
 .for PKG_SCRIPT in ${PKG_SCRIPTS}
 	@if [ -f ${.CURDIR}/${PKG_SCRIPT} ]; then \
-		cp -v -- ${.CURDIR}/${PKG_SCRIPT} ${DESTDIR}/; \
+		cp -- ${.CURDIR}/${PKG_SCRIPT} ${DESTDIR}/; \
 	fi
 .endfor
 
@@ -263,8 +263,13 @@ package: plist-check package-check clean-work
 .for CORE_DEPEND in ${CORE_DEPENDS}
 	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yfA ${CORE_DEPEND}; fi
 .endfor
+	@echo -n ">>> Generating metadata for ${CORE_NAME}-${CORE_VERSION}..."
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} metadata
+	@echo " done"
+	@echo -n ">>> Installing files for ${CORE_NAME}-${CORE_VERSION}..."
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
+	@echo " done"
+	@echo ">>> Packaging files for ${CORE_NAME}-${CORE_VERSION}:"
 	@PORTSDIR=${.CURDIR} ${PKG} create -v -m ${WRKSRC} -r ${WRKSRC} \
 	    -p ${WRKSRC}/plist -o ${PKGDIR}
 
