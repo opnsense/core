@@ -132,7 +132,6 @@ class Downloader(object):
                 if headers is not None:
                     req_opts['headers'] = headers
                 req = requests.get(**req_opts)
-
                 if req.status_code == 200:
                     req.raw.decode_content = True
                     src = tempfile.NamedTemporaryFile('wb+', 10240)
@@ -143,6 +142,10 @@ class Downloader(object):
                         else:
                              src.write(data)
                     self._download_cache[frm_url] = src
+                else:
+                    syslog.syslog(syslog.LOG_ERR, 'download failed for %s (http_code: %d)' % (url, req.status_code))
+        else:
+            syslog.syslog(syslog.LOG_ERR, 'unsupported download type for %s' % (url))
 
         if frm_url in self._download_cache:
             self._download_cache[frm_url].seek(0)
@@ -207,8 +210,6 @@ class Downloader(object):
                 syslog.syslog(syslog.LOG_ERR, 'cannot write to %s' % target_filename)
                 return None
             syslog.syslog(syslog.LOG_INFO, 'download completed for %s' % frm_url)
-        else:
-            syslog.syslog(syslog.LOG_ERR, 'download failed for %s' % frm_url)
 
     @staticmethod
     def is_supported(url):
