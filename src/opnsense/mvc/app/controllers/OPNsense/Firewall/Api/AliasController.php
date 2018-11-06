@@ -196,6 +196,7 @@ class AliasController extends ApiMutableModelControllerBase
         if ($this->request->isPost()) {
             $backend = new Backend();
             $backend->configdRun('template reload OPNsense/Filter');
+            $backend->configdRun("filter reload");
             $bckresult = strtolower(
                 trim($backend->configdRun("filter refresh_aliases"))
             );
