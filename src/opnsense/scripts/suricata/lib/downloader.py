@@ -37,6 +37,7 @@ import requests
 import json
 import hashlib
 import os
+import re
 
 
 class Downloader(object):
@@ -71,21 +72,20 @@ class Downloader(object):
         return '\n'.join(output)
 
     @staticmethod
-    def _unpack(src, source_url, filename=None):
+    def _unpack(src, source_filename, filename=None):
         """ unpack data if archived
             :param src: handle to temp file
-            :param source_url: location where file was downloaded from
+            :param source_filename: original source filename
             :param filename: filename to extract
             :return: text
         """
         src.seek(0)
-        source_url = source_url.strip().lower().split('?')[0]
         unpack_type=None
-        if source_url.endswith('.tar.gz') or source_url.endswith('.tgz'):
+        if source_filename.endswith('.tar.gz') or source_filename.endswith('.tgz'):
             unpack_type = 'tar'
-        elif source_url.endswith('.gz'):
+        elif source_filename.endswith('.gz'):
             unpack_type = 'gz'
-        elif source_url.endswith('.zip'):
+        elif source_filename.endswith('.zip'):
             unpack_type = 'zip'
 
         if unpack_type is not None:
@@ -119,6 +119,7 @@ class Downloader(object):
             :param url: download url
             :param auth: authentication
             :param headers: headers to send
+            :return: dict {'handle': filehandle, 'filename': filename}
         """
         if str(url).split(':')[0].lower() in ('http', 'https'):
             frm_url = url.replace('//', '/').replace(':/', '://')
@@ -132,6 +133,12 @@ class Downloader(object):
                 if headers is not None:
                     req_opts['headers'] = headers
                 req = requests.get(**req_opts)
+                if 'content-disposition' not in req.headers \
+                        or req.headers['content-disposition'].find('filename=') == -1:
+                    filename = url.strip().lower().split('?')[0]
+                else:
+                    filename = re.findall('filename=(.+)', req.headers['content-disposition'])[0]
+
                 if req.status_code == 200:
                     req.raw.decode_content = True
                     src = tempfile.NamedTemporaryFile('wb+', 10240)
@@ -141,14 +148,14 @@ class Downloader(object):
                             break
                         else:
                              src.write(data)
-                    self._download_cache[frm_url] = src
+                    self._download_cache[frm_url] = {'handle': src, 'filename': filename}
                 else:
                     syslog.syslog(syslog.LOG_ERR, 'download failed for %s (http_code: %d)' % (url, req.status_code))
         else:
             syslog.syslog(syslog.LOG_ERR, 'unsupported download type for %s' % (url))
 
         if frm_url in self._download_cache:
-            self._download_cache[frm_url].seek(0)
+            self._download_cache[frm_url]['handle'].seek(0)
             return self._download_cache[frm_url]
         else:
             return None
@@ -164,10 +171,10 @@ class Downloader(object):
         if check_url is not None:
             # when no check url provided, assume different
             if self.is_supported(check_url):
-                version_handle = self.fetch(url=check_url, auth=auth, headers=headers)
-                if version_handle:
+                version_fetch = self.fetch(url=check_url, auth=auth, headers=headers)
+                if version_fetch:
                     hash_value = [json.dumps(input_filter), json.dumps(auth),
-                                  json.dumps(headers), version_handle.read()]
+                                  json.dumps(headers), version_fetch['handle'].read()]
                     return hashlib.md5('\n'.join(hash_value)).hexdigest()
         return None
 
@@ -195,15 +202,17 @@ class Downloader(object):
             :param version: version hash
         """
         frm_url = url.replace('//', '/').replace(':/', '://')
-        file_stream = self.fetch(url=url, auth=auth, headers=headers)
-        if file_stream is not None:
+        fetch_result = self.fetch(url=url, auth=auth, headers=headers)
+        if fetch_result is not None:
             try:
                 target_filename = '%s/%s' % (self._target_dir, filename)
                 if version:
                     save_data = "#@opnsense_download_hash:%s\n" % version
                 else:
                     save_data = ""
-                save_data += self._unpack(file_stream, url, url_filename)
+                save_data += self._unpack(src=fetch_result['handle'],
+                                          source_filename=fetch_result['filename'],
+                                          filename=url_filename)
                 save_data = self.filter(save_data, input_filter)
                 open(target_filename, 'w', buffering=10240).write(save_data)
             except IOError:
