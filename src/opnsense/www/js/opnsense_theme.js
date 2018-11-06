@@ -46,7 +46,7 @@ $(document).ready(function () {
             var that = $(this);
             if (that.next("div").hasClass("in")) {
                 /* no action needed */
-            } else if ((that.next().is("a")) || (that.is(".list-group-item:last-child"))) {
+            } else if ((that.next().is("a")) || (that.is("a:last-child"))) {
                 activeremove(this);
             } else {
                 var divtop = that.offset().top - $window.scrollTop();
