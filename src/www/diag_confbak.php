@@ -111,10 +111,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $cnf = OPNsense\Core\Config::getInstance();
     $confvers = $cnf->getBackups(true);
 
-    if (!empty($_POST['act']) && $_POST['act'] == "revert") {
+    $user = getUserEntry($_SESSION['Username']);
+    $readonly = userHasPrivilege($user, 'user-config-readonly');
+
+    if (!empty($_POST['act']) && $_POST['act'] == 'revert') {
         foreach ($confvers as $filename => $revision) {
             if (isset($revision['time']) && $revision['time'] == $_POST['time']) {
-                if (config_restore($filename) == 0) {
+                if (!$readonly && config_restore($filename) == 0) {
                     $savemsg = sprintf(gettext('Successfully reverted to timestamp %s with description "%s".'), date(gettext("n/j/y H:i:s"), $_POST['id']), $revision['description']);
                 } else {
                     $savemsg = gettext("Unable to revert to the selected configuration.");
@@ -125,13 +128,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (!empty($_POST['act']) && $_POST['act'] == "delete") {
         foreach ($confvers as $filename => $revision) {
             if (isset($revision['time']) && $revision['time'] == $_POST['time']) {
-                if (file_exists($filename)) {
+                if (!$readonly && file_exists($filename)) {
+                    $savemsg = sprintf(gettext('Deleted backup with timestamp %s and description "%s".'), date(gettext("n/j/y H:i:s"), $revision['time']), $revision['description']);
+                    unset($confvers[$filename]);
                     @unlink($filename);
-                    $savemsg = sprintf(gettext('Deleted backup with timestamp %s and description "%s".'), date(gettext("n/j/y H:i:s"), $revision['time']),$revision['description']);
                 } else {
                     $savemsg = gettext("Unable to delete the selected configuration.");
                 }
-                unset($confvers[$filename]);
                 break;
             }
         }
@@ -192,20 +195,18 @@ $( document ).ready(function() {
 //]]>
 </script>
 
-
 <body>
-  <?php
-    include("fbegin.inc");
-    if (isset($input_errors) && count($input_errors) > 0) {
-        print_input_errors($input_errors);
-    }
-    if ($savemsg) {
-      print_info_box($savemsg);
-    }
-  ?>
+
+<?php
+
+include("fbegin.inc");
+
+?>
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
+        <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+        <?php if ($savemsg) print_info_box($savemsg); ?>
         <section class="col-xs-12">
           <form method="post" id="iform">
             <input type="hidden" id="time" name="time" value="" />
