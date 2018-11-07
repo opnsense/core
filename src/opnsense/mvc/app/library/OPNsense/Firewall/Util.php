@@ -107,27 +107,30 @@ class Util
      * Fetch port alias contents, other alias types are handled using tables so there usually no need
      * to know the contents within any of the scripts.
      * @param string $name name
-     * @param $aliases aliases already parsed (prevent deadlock)
+     * @param array $aliases aliases already parsed (prevent deadlock)
      * @return array containing all ports or addresses
+     * @throws \OPNsense\Base\ModelException when unable to create alias model
      */
     public static function getPortAlias($name, $aliases = array())
     {
+        if (self::$aliasObject == null) {
+            // Cache the alias object to avoid object creation overhead.
+            self::$aliasObject = new Alias();
+        }
         $result = array();
-        if (!empty($name) && !empty(Config::getInstance()->object()->aliases)) {
-            foreach (Config::getInstance()->object()->aliases->children() as $node) {
-                if ($node->name == $name && $node->type == 'port') {
-                    foreach (explode(" ", $node->address) as $address) {
-                        if (Util::isAlias($address)) {
-                            if (!in_array($address, $aliases)) {
-                                foreach (Util::getPortAlias($address, $aliases) as $port) {
-                                    if (!in_array($port, $result)) {
-                                        $result[] = $port;
-                                    }
+        foreach (self::$aliasObject->aliasIterator() as $node) {
+            if (!empty($name) && (string)$node['name'] == $name && $node['type'] == 'port') {
+                foreach (explode("\n", $node['content']) as $address) {
+                    if (Util::isAlias($address)) {
+                        if (!in_array($address, $aliases)) {
+                            foreach (Util::getPortAlias($address, $aliases) as $port) {
+                                if (!in_array($port, $result)) {
+                                    $result[] = $port;
                                 }
                             }
-                        } elseif (!in_array($address, $result)) {
-                            $result[] = $address;
                         }
+                    } elseif (!in_array($address, $result)) {
+                        $result[] = $address;
                     }
                 }
             }
