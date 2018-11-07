@@ -65,20 +65,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $_POST['groupid'];
     }
     $pconfig = $_POST;
+    $input_errors = array();
     $act = (isset($pconfig['act']) ? $pconfig['act'] : '');
-    if (isset($id) && $act == "delgroup" && isset($pconfig['groupname']) && $pconfig['groupname'] == $a_group[$id]['name']) {
-        // remove group
+
+    $user = getUserEntry($_SESSION['Username']);
+    if (userHasPrivilege($user, 'user-config-readonly')) {
+        $input_errors[] = gettext('You do not have the permission to perform this action.');
+    } elseif (isset($id) && $act == "delgroup" && isset($pconfig['groupname']) && $pconfig['groupname'] == $a_group[$id]['name']) {
         local_group_del($a_group[$id]);
         $groupdeleted = $a_group[$id]['name'];
         unset($a_group[$id]);
         write_config();
-        // reload page
         header(url_safe('Location: /system_groupmanager.php'));
         exit;
-    }  elseif (isset($pconfig['save'])) {
-        $input_errors = array();
-
-        /* input validation */
+    } elseif (isset($pconfig['save'])) {
         $reqdfields = explode(" ", "name");
         $reqdfieldsn = array(gettext("Group Name"));
 
@@ -108,6 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
         }
+
         if (count($input_errors) == 0) {
             $group = array();
             if (isset($id) && $a_group[$id]) {
@@ -215,11 +216,7 @@ $( document ).ready(function() {
 <section class="page-content-main">
   <div class="container-fluid">
     <div class="row">
-<?php
-      if (isset($input_errors) && count($input_errors) > 0) {
-          print_input_errors($input_errors);
-      }
-?>
+      <?php if (isset($input_errors) && count($input_errors)) print_input_errors($input_errors); ?>
       <section class="col-xs-12">
         <div class="tab-content content-box col-xs-12 table-responsive">
 <?php

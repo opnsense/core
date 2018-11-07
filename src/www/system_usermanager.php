@@ -79,7 +79,6 @@ function get_user_privdesc(& $user)
 $a_user = &config_read_array('system', 'user');
 
 // reset errors and action
-$input_errors = array();
 $act = null;
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // process get type actions
@@ -170,8 +169,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $act = $_POST['act'];
     }
     $pconfig = $_POST;
+    $input_errors = array();
 
-    if ($act == "deluser" && isset($id)) {
+    $user = getUserEntry($_SESSION['Username']);
+    if (userHasPrivilege($user, 'user-config-readonly')) {
+        $input_errors[] = gettext('You do not have the permission to perform this action.');
+    } elseif ($act == "deluser" && isset($id)) {
         // drop user
         if ($_SESSION['Username'] === $a_user[$id]['name']) {
             $input_errors[] = gettext('You cannot delete yourself.');
@@ -220,8 +223,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header(url_safe('Location: /system_usermanager.php?savemsg=%s&act=edit&userid=%d', array($savemsg, $id)));
         exit;
     } elseif (isset($pconfig['save']) || isset($pconfig['save_close'])) {
-        // save user
-        /* input validation */
         $reqdfields = explode(' ', 'usernamefld');
         $reqdfieldsn = array(gettext('Username'));
 
@@ -559,18 +560,11 @@ $( document ).ready(function() {
 });
 </script>
 
-
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
-<?php
-      if (isset($input_errors) && count($input_errors) > 0) {
-          print_input_errors($input_errors);
-      }
-      if (isset($savemsg)) {
-          print_info_box($savemsg);
-      }
-?>
+        <?php if (isset($input_errors) && count($input_errors)) print_input_errors($input_errors); ?>
+        <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <section class="col-xs-12">
             <div class="tab-content content-box col-xs-12 table-responsive">
 <?php
