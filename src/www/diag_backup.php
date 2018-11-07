@@ -189,6 +189,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($_POST['decrypt']) && empty($_POST['decrypt_password'])) {
             $input_errors[] = gettext('You must supply the password for decryption.');
         }
+        $user = getUserEntry($_SESSION['Username']);
+        if (userHasPrivilege($user, 'user-config-readonly')) {
+            $input_errors[] = gettext('You do not have the permission to perform this action.');
+        }
         /* read the file contents */
         if (is_uploaded_file($_FILES['conffile']['tmp_name'])) {
             $data = file_get_contents($_FILES['conffile']['tmp_name']);
