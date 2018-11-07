@@ -24,18 +24,6 @@
         <help>The SSL fingerprint, for example "B5:E1:B3:70:5E:7C:FF:EB:92:C4:29:E5:5B:AC:2F:AE:70:17:E9:9E".</help>
     </field>
     <field>
-        <id>rule.geoip</id>
-        <label>GeoIP/Country</label>
-        <type>select_multiple</type>
-        <help>Countries to alert or block using GeoIP.</help>
-    </field>
-    <field>
-        <id>rule.geoip_direction</id>
-        <label>GeoIP/Direction</label>
-        <type>dropdown</type>
-        <help>Connections coming from (src) or going to (dst) listed countries, default selects both.</help>
-    </field>
-    <field>
         <id>rule.action</id>
         <label>Action</label>
         <type>dropdown</type>
