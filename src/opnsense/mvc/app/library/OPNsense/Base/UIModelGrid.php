@@ -108,7 +108,7 @@ class UIModelGrid
                             $row[$fieldname] = '';
                             foreach ($listItems as $fieldValue) {
                                 if ($fieldValue['selected'] == 1) {
-                                    if (!empty($row[$fieldname])) {
+                                    if ($row[$fieldname] != "") {
                                         $row[$fieldname] .= ',';
                                     }
                                     $row[$fieldname] .= $fieldValue['value'];
