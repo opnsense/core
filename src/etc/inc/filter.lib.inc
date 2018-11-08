@@ -76,24 +76,25 @@ function filter_core_get_initialized_plugin_system()
     return $fw;
 }
 
-function filter_core_antilockout_interface()
+function filter_core_get_antilockout()
 {
     global $config;
-    $lockoutif = null;
-    if (!isset($config['system']['webgui']['noantilockout'])) {
-        if (!empty($config['interfaces']['lan']['if'])) {
-            $lockoutif = 'lan';
-        } elseif (count(get_configured_interface_with_descr()) == 1 && !empty($config['interfaces']['wan']['if'])) {
-            $lockoutif = 'wan';
-        }
-    }
-    return $lockoutif;
-}
 
-function filter_core_antilockout_ports()
-{
-    global $config;
     $lockout_ports = array();
+    $lockout_if = null;
+
+    if (isset($config['system']['webgui']['noantilockout'])) {
+        return array();
+    }
+
+    if (!empty($config['interfaces']['lan']['if'])) {
+        $lockout_if = 'lan';
+    } elseif (count(get_configured_interface_with_descr()) == 1 && !empty($config['interfaces']['wan']['if'])) {
+        $lockout_if = 'wan';
+    } else {
+        return array();
+    }
+
     /*
      * XXX Some issues here:
      *
@@ -105,22 +106,27 @@ function filter_core_antilockout_ports()
      *    and no ssh has ever been configured. This is in line
      *    with how the plugin behaves, but probably looks odd.
      */
-    if (!isset($config['system']['webgui']['noantilockout'])) {
-        if (empty($config['system']['webgui']['port'])) {
-            $lockout_ports[] = $config['system']['webgui']['protocol'] == "https" ? "443" : "80";
-        } else {
-            $lockout_ports[] = $config['system']['webgui']['port'];
-        }
-        if ($config['system']['webgui']['protocol'] == "https" && !isset($config['system']['webgui']['disablehttpredirect'])) {
-            $lockout_ports[] = "80";
-        }
-        if (isset($config['system']['ssh']['enabled']) ||
-            (!isset($config['system']['ssh']['noauto']) && is_install_media() && is_process_running('sshd'))) {
-            $lockout_ports[] = empty($config['system']['ssh']['port']) ? "22" : $config['system']['ssh']['port'];
-        }
-        sort($lockout_ports);
+    if (empty($config['system']['webgui']['port'])) {
+        $lockout_ports[] = $config['system']['webgui']['protocol'] == 'https' ? '443' : '80';
+    } else {
+        $lockout_ports[] = $config['system']['webgui']['port'];
     }
-    return $lockout_ports;
+    if ($config['system']['webgui']['protocol'] == 'https' && !isset($config['system']['webgui']['disablehttpredirect'])) {
+        $lockout_ports[] = '80';
+    }
+    if (isset($config['system']['ssh']['enabled']) ||
+        (!isset($config['system']['ssh']['noauto']) && is_install_media() && is_process_running('sshd'))) {
+        $lockout_ports[] = empty($config['system']['ssh']['port']) ? '22' : $config['system']['ssh']['port'];
+    }
+
+    if (!count($lockout_ports)) {
+        return array();
+    }
+
+    sort($lockout_ports);
+
+    /* return a convenient one-entry array to iterate over for our callers */
+    return array($lockout_if => $lockout_ports);
 }
 
 /**
@@ -457,11 +463,9 @@ function filter_core_rules_system($fw, $defaults)
         );
     }
 
-    // anti-lockout
-    $lockoutintf = filter_core_antilockout_interface();
-    $lockoutprts = filter_core_antilockout_ports();
-    if (count($lockoutprts) && !empty($lockoutintf)) {
-        $fw->registerFilterRule(5,
+    foreach(filter_core_get_antilockout() as $lockoutif => $lockoutprts) {
+        $fw->registerFilterRule(
+            5,
             array(
                 'direction' => 'in',
                 'interface' => $lockoutif,
@@ -470,8 +474,8 @@ function filter_core_rules_system($fw, $defaults)
                 'to' => '(self)',
                 'to_port' => implode(' ', $lockoutprts),
                 'label' =>'anti-lockout rule'
-              ),
-              $defaults['pass']
+            ),
+            $defaults['pass']
         );
     }
 

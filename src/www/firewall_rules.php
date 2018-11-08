@@ -136,8 +136,7 @@ $main_buttons = array(
     array('label' => gettext('Add'), 'href' => 'firewall_rules_edit.php?if=' . $selected_if),
 );
 
-$lockout_intf = filter_core_antilockout_interface();
-$lockout_prts = filter_core_antilockout_ports();
+$lockout_spec = filter_core_get_antilockout();
 
 ?>
 <body>
@@ -401,14 +400,15 @@ $( document ).ready(function() {
                   </tr>
 <?php
                 endif; ?>
-<?php if (count($lockout_prts) && !empty($lockout_intf) && $selected_if == $lockout_intf): ?>
+<?php foreach ($lockout_spec as $lockout_intf => $lockout_prts): ?>
+<?php if ($selected_if == $lockout_intf): ?>
                   <tr>
                     <td>&nbsp;</td>
                     <td><span class="fa fa-play text-success"></span></td>
                     <td>*</td>
                     <td>*</td>
                     <td class="hidden-xs hidden-sm">*</td>
-                    <td class="hidden-xs hidden-sm"><?= html_safe(sprintf(gettext('%s address'), convert_friendly_interface_to_friendly_descr($selected_if))) ?></td>
+                    <td class="hidden-xs hidden-sm"><?= html_safe(sprintf(gettext('%s address'), convert_friendly_interface_to_friendly_descr($lockout_intf))) ?></td>
                     <td class="hidden-xs hidden-sm"><?= html_safe(implode(', ', $lockout_prts)) ?></td>
                     <td class="hidden-xs hidden-sm">*</td>
                     <td class="hidden-xs hidden-sm">&nbsp;</td>
@@ -418,6 +418,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
 <?php endif ?>
+<?php endforeach ?>
 <?php
                 if (isset($config['interfaces'][$selected_if]['blockpriv'])): ?>
                   <tr>

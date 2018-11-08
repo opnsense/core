@@ -150,8 +150,7 @@ include("head.inc");
 
 legacy_html_escape_form_data($a_nat);
 
-$lockout_intf = filter_core_antilockout_interface();
-$lockout_prts = filter_core_antilockout_ports();
+$lockout_spec = filter_core_get_antilockout();
 
 $main_buttons = array(
     array('label' => gettext('Add'), 'href' => 'firewall_nat_edit.php'),
@@ -317,7 +316,7 @@ $( document ).ready(function() {
                   </tr>
                 </thead>
                 <tbody>
-<?php if (count($lockout_prts) && !empty($lockout_intf)): ?>
+<?php foreach ($lockout_spec as $lockout_intf => $lockout_prts): ?>
                   <tr>
                     <td></td>
                     <td><i class="fa fa-exclamation fa-fw text-success"></i></td>
@@ -333,7 +332,7 @@ $( document ).ready(function() {
                     <td><?= gettext('Anti-Lockout Rule') ?></td>
                     <td></td>
                   </tr>
-<?php endif ?>
+<?php endforeach ?>
 <?php               $nnats = 0;
                     foreach ($a_nat as $natent):
 ?>

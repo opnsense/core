@@ -267,9 +267,7 @@ function filter_configure_sync($verbose = false, $flush_states = false)
     }
 
     // prevent redirection on ports with "lock out" protection
-    $lockoutintf = filter_core_antilockout_interface();
-    $lockoutprts = filter_core_antilockout_ports();
-    if (count($lockoutprts) && !empty($lockoutintf)) {
+    foreach(filter_core_get_antilockout() as $lockoutif => $lockoutprts) {
         foreach ($lockoutprts as $port) {
             $rule = array(
                 'interface' => $lockoutintf,
