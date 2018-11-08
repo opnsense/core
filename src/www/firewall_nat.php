@@ -1,33 +1,33 @@
 <?php
 
 /*
-    Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2009 Janne Enberg <janne.enberg@lietu.net>
-    Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014 Deciso B.V.
+ * Copyright (C) 2009 Janne Enberg <janne.enberg@lietu.net>
+ * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
@@ -149,6 +149,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 include("head.inc");
 
 legacy_html_escape_form_data($a_nat);
+
+$lockout_intf = filter_core_antilockout_interface();
+$lockout_prts = filter_core_antilockout_ports();
 
 $main_buttons = array(
     array('label' => gettext('Add'), 'href' => 'firewall_nat_edit.php'),
@@ -314,33 +317,23 @@ $( document ).ready(function() {
                   </tr>
                 </thead>
                 <tbody>
-<?php           if (isset($config['interfaces']['lan'])) {
-                    $lockout_intf_name = empty($config['interfaces']['lan']['descr']) ? "LAN" :$config['interfaces']['lan']['descr'];
-                } elseif (count($config['interfaces']) == 1 && isset($config['interfaces']['wan'])) {
-                    $lockout_intf_name = empty($config['interfaces']['wan']['descr']) ? "WAN" :$config['interfaces']['wan']['descr'];
-                } else {
-                    $lockout_intf_name = null;
-                }
-
-                // show anti-lockout when enabled
-                if ($lockout_intf_name !== null && !isset($config['system']['webgui']['noantilockout'])):
-?>
-                    <tr>
-                      <td></td>
-                      <td><i class="fa fa-exclamation fa-fw text-success"></i></td>
-                      <td></td>
-                      <td><?=$lockout_intf_name?></td>
-                      <td>TCP</td>
-                      <td class="hidden-xs hidden-sm">*</td>
-                      <td class="hidden-xs hidden-sm">*</td>
-                      <td class="hidden-xs hidden-sm"><?=$lockout_intf_name?> <?=gettext("address");?></td>
-                      <td class="hidden-xs hidden-sm"><?=implode(', ', filter_core_antilockout_ports());?></td>
-                      <td>*</td>
-                      <td>*</td>
-                      <td><?=gettext("Anti-Lockout Rule");?></td>
-                      <td></td>
-                    </tr>
-<?php               endif; ?>
+<?php if (count($lockout_prts) &&!empty($lockout_intf) && !isset($config['system']['webgui']['noantilockout'])): ?>
+                  <tr>
+                    <td></td>
+                    <td><i class="fa fa-exclamation fa-fw text-success"></i></td>
+                    <td></td>
+                    <td><?= html_safe(convert_friendly_interface_to_friendly_descr($lockout_intf)) ?></td>
+                    <td>TCP</td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm"><?= html_safe(sprintf(gettext('%s address'), convert_friendly_interface_to_friendly_descr($lockout_intf))) ?></td>
+                    <td class="hidden-xs hidden-sm"><?= html_safe(implode(', ', $lockout_prts)) ?></td>
+                    <td>*</td>
+                    <td>*</td>
+                    <td><?= gettext('Anti-Lockout Rule') ?></td>
+                    <td></td>
+                  </tr>
+<?php endif ?>
 <?php               $nnats = 0;
                     foreach ($a_nat as $natent):
 ?>

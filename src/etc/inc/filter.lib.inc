@@ -76,6 +76,18 @@ function filter_core_get_initialized_plugin_system()
     return $fw;
 }
 
+function filter_core_antilockout_interface()
+{
+    global $config;
+    $lockoutif = null;
+    if (!empty($config['interfaces']['lan']['if'])) {
+        $lockoutif = 'lan';
+    } elseif (count(get_configured_interface_with_descr()) == 1 && !empty($config['interfaces']['wan']['if'])) {
+        $lockoutif = 'wan';
+    }
+    return $lockoutif;
+}
+
 function filter_core_antilockout_ports()
 {
     global $config;
@@ -442,23 +454,23 @@ function filter_core_rules_system($fw, $defaults)
           $defaults['pass']
         );
     }
+
     // anti-lockout
+    $lockoutintf = filter_core_antilockout_interface();
     $lockoutprts = filter_core_antilockout_ports();
-    if (count($lockoutprts) > 0) {
-        $lockoutif = null;
-        if (!empty($config['interfaces']['lan']['if'])) {
-            $lockoutif = 'lan';
-        } elseif (count(get_configured_interface_with_descr()) == 1 && !empty($config['interfaces']['wan']['if'])) {
-            $lockoutif = 'wan';
-        }
-        if (!empty($lockoutif)) {
-            $fw->registerFilterRule(5,
-              array('direction' => 'in', 'interface' => $lockoutif, 'statetype' => 'keep',
-                    'protocol' => 'tcp', 'to' => '(self)', 'to_port' => implode(' ', $lockoutprts),
-                    'label' =>'anti-lockout rule'),
+    if (count($lockoutprts) && !empty($lockoutintf)) {
+        $fw->registerFilterRule(5,
+            array(
+                'direction' => 'in',
+                'interface' => $lockoutif,
+                'statetype' => 'keep',
+                'protocol' => 'tcp',
+                'to' => '(self)',
+                'to_port' => implode(' ', $lockoutprts),
+                'label' =>'anti-lockout rule'
+              ),
               $defaults['pass']
-            );
-        }
+        );
     }
 
     // TODO: move to pptpd plugin when filter.lib.inc is part of the standard release

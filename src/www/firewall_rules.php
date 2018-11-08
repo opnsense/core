@@ -136,6 +136,9 @@ $main_buttons = array(
     array('label' => gettext('Add'), 'href' => 'firewall_rules_edit.php?if=' . $selected_if),
 );
 
+$lockout_intf = filter_core_antilockout_interface();
+$lockout_prts = filter_core_antilockout_ports();
+
 ?>
 <body>
 <script>
@@ -398,19 +401,15 @@ $( document ).ready(function() {
                   </tr>
 <?php
                 endif; ?>
-<?php
-                if (!isset($config['system']['webgui']['noantilockout']) && ($selected_if == 'lan'
-                        || ((count($config['interfaces']) == 1) && ($selected_if == 'wan')))):
-                        $alports = implode(', ', filter_core_antilockout_ports());
-?>
+<?php if (count($lockout_prts) && !empty($lockout_intf) && !isset($config['system']['webgui']['noantilockout']) && $selected_if == $lockout_intf): ?>
                   <tr>
                     <td>&nbsp;</td>
                     <td><span class="fa fa-play text-success"></span></td>
                     <td>*</td>
                     <td>*</td>
                     <td class="hidden-xs hidden-sm">*</td>
-                    <td class="hidden-xs hidden-sm"><?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($selected_if));?> Address</td>
-                    <td class="hidden-xs hidden-sm"><?=$alports;?></td>
+                    <td class="hidden-xs hidden-sm"><?= html_safe(sprintf(gettext('%s address'), convert_friendly_interface_to_friendly_descr($selected_if))) ?></td>
+                    <td class="hidden-xs hidden-sm"><?= html_safe(implode(', ', $lockout_prts)) ?></td>
                     <td class="hidden-xs hidden-sm">*</td>
                     <td class="hidden-xs hidden-sm">&nbsp;</td>
                     <td><?=gettext("Anti-Lockout Rule");?></td>
@@ -418,8 +417,7 @@ $( document ).ready(function() {
                       <a href="system_advanced_firewall.php" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
                     </td>
                   </tr>
-<?php
-                endif; ?>
+<?php endif ?>
 <?php
                 if (isset($config['interfaces'][$selected_if]['blockpriv'])): ?>
                   <tr>
