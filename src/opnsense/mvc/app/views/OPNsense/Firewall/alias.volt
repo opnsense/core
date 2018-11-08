@@ -184,11 +184,16 @@
          * update expiration (updatefreq is splitted into days and hours on the form)
          */
         $("#alias\\.updatefreq").change(function(){
-            var freq = $(this).val();
-            var freq_hours = ((parseFloat(freq) - parseInt(freq)) * 24.0).toFixed(2);
-            var freq_days = parseInt(freq);
-            $("input[data-id=\"alias.updatefreq_hours\"]").val(freq_hours);
-            $("input[data-id=\"alias.updatefreq_days\"]").val(freq_days);
+            if ($(this).val() !== "") {
+                var freq = $(this).val();
+                var freq_hours = ((parseFloat(freq) - parseInt(freq)) * 24.0).toFixed(2);
+                var freq_days = parseInt(freq);
+                $("input[data-id=\"alias.updatefreq_hours\"]").val(freq_hours);
+                $("input[data-id=\"alias.updatefreq_days\"]").val(freq_days);
+            } else {
+                $("input[data-id=\"alias.updatefreq_hours\"]").val("");
+                $("input[data-id=\"alias.updatefreq_days\"]").val("");
+            }
         });
         $(".updatefreq").keyup(function(){
             var freq = 0.0;
