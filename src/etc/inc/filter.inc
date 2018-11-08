@@ -270,10 +270,10 @@ function filter_configure_sync($verbose = false, $flush_states = false)
     foreach(filter_core_get_antilockout() as $lockoutif => $lockoutprts) {
         foreach ($lockoutprts as $port) {
             $rule = array(
-                'interface' => $lockoutintf,
+                'interface' => $lockoutif,
                 "nordr" => true,
                 "protocol" => "tcp",
-                'destination' => array('network' => "{$lockoutintf}ip", 'port' => $port),
+                'destination' => array('network' => "{$lockoutif}ip", 'port' => $port),
                 "descr" => "Anti lockout, prevent redirects for protected ports to this interface ip"
             );
             $fw->registerForwardRule(300, $rule);
