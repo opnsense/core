@@ -117,9 +117,9 @@ function filter_core_antilockout_ports()
             $lockout_ports[] = empty($config['system']['ssh']['port']) ? "22" : $config['system']['ssh']['port'];
         }
     }
+    sort($lockout_ports);
     return $lockout_ports;
 }
-
 
 /**
  * recursively collect port alias(es) contents
