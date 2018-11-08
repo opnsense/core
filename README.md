@@ -2,7 +2,7 @@ OPNsense GUI and system management
 ==================================
 
 The OPNsense project invites developers to start contributing to
-the code base.  For your own purpose or even better to join us in
+the code base.  For your own purposes or – even better – to join us in
 creating the best open source firewall available.
 
 The build process has been designed to make it easy for anyone to
@@ -103,4 +103,4 @@ respectively.
 make sweep
 ----------
 
-Run Linux Kernel cleanfile witespace sanitiser on all files.
+Run Linux Kernel cleanfile whitespace sanitiser on all files.
