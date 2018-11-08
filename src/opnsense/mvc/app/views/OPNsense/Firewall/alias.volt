@@ -78,7 +78,7 @@
         ajaxGet("/api/firewall/alias/listCountries", {}, function(data){
             var regions = [];
             $.each(data, function(country, item) {
-                if (regions.indexOf(item.region) < 0 && item.region != null) {
+                if (!regions.includes(item.region) && item.region != null) {
                     regions.push(item.region);
                 }
             });

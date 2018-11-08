@@ -41,7 +41,7 @@ POSSIBILITY OF SUCH DAMAGE.
             let to_fetch = [];
              $(".address").each(function(){
                 let address = $(this).data('address');
-                if (!hostnameMap.hasOwnProperty(address) && to_fetch.indexOf(address) < 0) {
+                if (!hostnameMap.hasOwnProperty(address) && !to_fetch.includes(address)) {
                     to_fetch.push(address);
                 }
             });
