@@ -317,7 +317,7 @@ $( document ).ready(function() {
                   </tr>
                 </thead>
                 <tbody>
-<?php if (count($lockout_prts) &&!empty($lockout_intf) && !isset($config['system']['webgui']['noantilockout'])): ?>
+<?php if (count($lockout_prts) && !empty($lockout_intf)): ?>
                   <tr>
                     <td></td>
                     <td><i class="fa fa-exclamation fa-fw text-success"></i></td>

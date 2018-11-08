@@ -80,10 +80,12 @@ function filter_core_antilockout_interface()
 {
     global $config;
     $lockoutif = null;
-    if (!empty($config['interfaces']['lan']['if'])) {
-        $lockoutif = 'lan';
-    } elseif (count(get_configured_interface_with_descr()) == 1 && !empty($config['interfaces']['wan']['if'])) {
-        $lockoutif = 'wan';
+    if (!isset($config['system']['webgui']['noantilockout'])) {
+        if (!empty($config['interfaces']['lan']['if'])) {
+            $lockoutif = 'lan';
+        } elseif (count(get_configured_interface_with_descr()) == 1 && !empty($config['interfaces']['wan']['if'])) {
+            $lockoutif = 'wan';
+        }
     }
     return $lockoutif;
 }
@@ -116,8 +118,8 @@ function filter_core_antilockout_ports()
             (!isset($config['system']['ssh']['noauto']) && is_install_media() && is_process_running('sshd'))) {
             $lockout_ports[] = empty($config['system']['ssh']['port']) ? "22" : $config['system']['ssh']['port'];
         }
+        sort($lockout_ports);
     }
-    sort($lockout_ports);
     return $lockout_ports;
 }
 

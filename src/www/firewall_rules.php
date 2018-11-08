@@ -401,7 +401,7 @@ $( document ).ready(function() {
                   </tr>
 <?php
                 endif; ?>
-<?php if (count($lockout_prts) && !empty($lockout_intf) && !isset($config['system']['webgui']['noantilockout']) && $selected_if == $lockout_intf): ?>
+<?php if (count($lockout_prts) && !empty($lockout_intf) && $selected_if == $lockout_intf): ?>
                   <tr>
                     <td>&nbsp;</td>
                     <td><span class="fa fa-play text-success"></span></td>
