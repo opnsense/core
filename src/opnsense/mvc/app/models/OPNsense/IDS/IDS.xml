@@ -43,20 +43,6 @@
                     <mask>/^([0-9a-fA-F:]){59,59}$/u</mask>
                     <ValidationMessage>A SSL fingerprint should be a 59 character long hex value.</ValidationMessage>
                 </fingerprint>
-                <geoip type="CountryField">
-                    <Required>N</Required>
-                    <Multiple>Y</Multiple>
-                    <AddInverted>Y</AddInverted>
-                </geoip>
-                <geoip_direction type="OptionField">
-                    <Required>N</Required>
-                    <BlankDesc>Both</BlankDesc>
-                    <default></default>
-                    <OptionValues>
-                        <src>Source</src>
-                        <dst>Destination</dst>
-                    </OptionValues>
-                </geoip_direction>
                 <description type="TextField">
                     <Required>Y</Required>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
