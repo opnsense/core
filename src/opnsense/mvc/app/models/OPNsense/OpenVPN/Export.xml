@@ -22,6 +22,10 @@
                     <default>1</default>
                     <Required>Y</Required>
                 </random_local_port>
+                <validate_server_cn type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </validate_server_cn>
             </server>
         </servers>
     </items>

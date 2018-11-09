@@ -31,7 +31,12 @@
         <type>checkbox</type>
         <help>Use a random local source port (lport) for traffic from the client. Without this set, two clients may not run concurrently.</help>
     </field>
-
+    <field>
+        <id>openvpn_export.validate_server_cn</id>
+        <label>Validate server CN</label>
+        <type>checkbox</type>
+        <help>Verify the server certificate Common Name (CN) when the client connects</help>
+    </field>
     <field>
         <id>openvpn_export.testxx1</id>
         <label>TestXX1</label>

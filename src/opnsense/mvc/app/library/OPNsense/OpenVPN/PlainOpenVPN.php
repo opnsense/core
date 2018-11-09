@@ -100,6 +100,13 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             $conf[] = "lport 0";
         }
 
+        if ($this->config['mode'] !== 'server_user' && !empty($this->config['server_cn'])
+                && !empty($this->config['validate_server_cn'])) {
+            $conf[] = "verify-x509-name \"{$this->config['server_cn']}\" name";
+        } elseif (in_array($this->config['mode'], array('server_user', 'server_tls_user'))) {
+            $conf[] = "auth-user-pass";
+        }
+
         return $conf;
     }
 
