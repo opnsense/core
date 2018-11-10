@@ -114,7 +114,7 @@ if (!empty($grouptmp)) {
 }
 
 if (count(link_interface_to_track6($interface, true))) {
-    services_dhcpd_configure('inet6');
+    services_dhcpd_configure(false, 'inet6');
 }
 
 system_resolvconf_generate();

@@ -565,7 +565,7 @@ setup_gateways_monitor(true);
 filter_configure_sync(true);
 
 if ($restart_dhcpd) {
-    services_dhcpd_configure('all', array(), true);
+    services_dhcpd_configure(true);
 }
 
 if ($restart_webgui) {
