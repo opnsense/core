@@ -3982,24 +3982,6 @@ function find_interface_subnet($interface, $exists = false)
     return null;
 }
 
-function find_interface_subnet6($interface, $exists = false)
-{
-    $interface = trim($interface);	/* XXX no */
-
-    if (!$exists && !does_interface_exist($interface)) {
-        return null;
-    }
-
-    $ifinfo = legacy_get_interface_addresses($interface);
-
-    if (isset($ifinfo['subnetbits6'])) {
-        /* return first network found */
-        return $ifinfo['subnetbits6'];
-    }
-
-    return null;
-}
-
 function ip_in_interface_alias_subnet($interface, $ipalias)
 {
     global $config;
