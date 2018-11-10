@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 legacy_html_escape_form_data($a_gateway_groups);
 legacy_html_escape_form_data($a_gateways);
 
-$service_hook = 'apinger';
+$service_hook = 'dpinger';
 
 include("head.inc");
 

@@ -63,14 +63,9 @@ $gateways = return_gateways_array();
           if ($("#"+tr_id).length) {
               $("#"+tr_id+" > td:eq(0)").html('<small><strong>'+gateway['name']+'</strong><br/>'+gateway['address']+'</small>');
               $("#"+tr_id+" > td:eq(1)").html(gateway['delay']);
-<?php if (isset($config['system']['prefer_dpinger'])): ?>
               $("#"+tr_id+" > td:eq(2)").html(gateway['stddev']);
               $("#"+tr_id+" > td:eq(3)").html(gateway['loss']);
               $("#"+tr_id+" > td:eq(4)").html('<span>'+gateway['status_translated']+'</span>');
-<?php else: ?>
-              $("#"+tr_id+" > td:eq(2)").html(gateway['loss']);
-              $("#"+tr_id+" > td:eq(3)").html('<span>'+gateway['status_translated']+'</span>');
-<?php endif ?>
 
               // set color on status text
               switch (gateway['status']) {
@@ -90,17 +85,10 @@ $gateways = return_gateways_array();
                   break;
               }
 
-<?php if (isset($config['system']['prefer_dpinger'])): ?>
               $("#"+tr_id+" > td:eq(4) > span").removeClass("label-danger label-warning label-success label");
               if (status_color != '') {
                 $("#"+tr_id+" > td:eq(4) > span").addClass("label label-" + status_color);
               }
-<?php else: ?>
-              $("#"+tr_id+" > td:eq(3) > span").removeClass("label-danger label-warning label-success label");
-              if (status_color != '') {
-                $("#"+tr_id+" > td:eq(3) > span").addClass("label label-" + status_color);
-              }
-<?php endif ?>
           }
       });
   }
@@ -132,9 +120,7 @@ $gateways = return_gateways_array();
   <tr>
     <th><?=gettext('Name')?></th>
     <th><?=gettext('RTT')?></th>
-<?php if (isset($config['system']['prefer_dpinger'])): ?>
     <th><?=gettext('RTTd')?></th>
-<?php endif ?>
     <th><?=gettext('Loss')?></th>
     <th><?=gettext('Status')?></th>
   </tr>
@@ -147,9 +133,7 @@ $gateways = return_gateways_array();
    <tr id="gateways_widget_gw_<?= html_safe($gwname) ?>">
      <td><small><strong><?= $gwname ?></strong><br/>~</small></td>
      <td class="text-nowrap">~</td>
-<?php if (isset($config['system']['prefer_dpinger'])): ?>
      <td class="text-nowrap">~</td>
-<?php endif ?>
      <td class="text-nowrap">~</td>
      <td><span class="label label-default"><?= gettext('Unknown') ?></span></td>
   </tr>

@@ -688,7 +688,7 @@ function system_syslogd_start($verbose = false, $restart = false)
     $syslogconfs['configd'] = array('facility' => array('configd.py'));
     $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay', 'dhclient', 'dhcp6c'), 'local' => '/var/dhcpd/var/run/log', 'remote' => 'dhcp');
     $syslogconfs['filter'] = array('facility' => array('filterlog'), 'remote' => 'filter');
-    $syslogconfs['gateways'] = array('facility' => array('apinger', 'dpinger'), 'remote' => 'apinger');
+    $syslogconfs['gateways'] = array('facility' => array('dpinger'), 'remote' => 'apinger');
     $syslogconfs['lighttpd'] = array('facility' => array('lighttpd'));
     $syslogconfs['pkg'] = array('facility' => array('pkg', 'pkg-static'));
     $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');

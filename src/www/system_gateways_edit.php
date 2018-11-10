@@ -1,31 +1,31 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("services.inc");
@@ -37,11 +37,7 @@ foreach ($a_gateways as $gw) {
     $a_gateways_arr[] = $gw;
 }
 $a_gateways = $a_gateways_arr;
-$apinger_default = return_apinger_defaults();
-
-if (isset($config['system']['prefer_dpinger'])) {
-    $apinger_default = return_dpinger_defaults();
-}
+$dpinger_default = return_dpinger_defaults();
 
 // form processing
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -201,7 +197,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    /* input validation of apinger advanced parameters */
     if (!empty($pconfig['latencylow'])) {
         if (!is_numeric($pconfig['latencylow'])) {
             $input_errors[] = gettext("The low latency threshold needs to be a numeric value.");
@@ -245,12 +240,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $input_errors[] = gettext("The high latency threshold needs to be higher than the low latency threshold");
         }
     } elseif (!empty($pconfig['latencylow'])) {
-        if (is_numeric($pconfig['latencylow']) && $pconfig['latencylow'] > $apinger_default['latencyhigh']) {
-            $input_errors[] = sprintf(gettext('The low latency threshold needs to be less than the default high latency threshold (%d)'), $apinger_default['latencyhigh']);
+        if (is_numeric($pconfig['latencylow']) && $pconfig['latencylow'] > $dpinger_default['latencyhigh']) {
+            $input_errors[] = sprintf(gettext('The low latency threshold needs to be less than the default high latency threshold (%d)'), $dpinger_default['latencyhigh']);
         }
     } elseif (!empty($pconfig['latencyhigh'])) {
-        if (is_numeric($pconfig['latencyhigh']) && $pconfig['latencyhigh'] < $apinger_default['latencylow']) {
-            $input_errors[] = sprintf(gettext('The high latency threshold needs to be higher than the default low latency threshold (%d)'), $apinger_default['latencylow']);
+        if (is_numeric($pconfig['latencyhigh']) && $pconfig['latencyhigh'] < $dpinger_default['latencylow']) {
+            $input_errors[] = sprintf(gettext('The high latency threshold needs to be higher than the default low latency threshold (%d)'), $dpinger_default['latencylow']);
         }
     }
 
@@ -259,12 +254,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $input_errors[] = gettext("The high Packet Loss threshold needs to be higher than the low Packet Loss threshold");
         }
     } elseif (!empty($pconfig['losslow'])) {
-        if (is_numeric($pconfig['losslow']) && $pconfig['losslow'] > $apinger_default['losshigh']) {
-            $input_errors[] = sprintf(gettext('The low Packet Loss threshold needs to be less than the default high Packet Loss threshold (%d)'), $apinger_default['losshigh']);
+        if (is_numeric($pconfig['losslow']) && $pconfig['losslow'] > $dpinger_default['losshigh']) {
+            $input_errors[] = sprintf(gettext('The low Packet Loss threshold needs to be less than the default high Packet Loss threshold (%d)'), $dpinger_default['losshigh']);
         }
     } elseif (!empty($pconfig['losshigh'])) {
-        if (is_numeric($pconfig['losshigh']) && $pconfig['losshigh'] < $apinger_default['losslow']) {
-            $input_errors[] = sprintf(gettext('The high Packet Loss threshold needs to be higher than the default low Packet Loss threshold (%d)'), $apinger_default['losslow']);
+        if (is_numeric($pconfig['losshigh']) && $pconfig['losshigh'] < $dpinger_default['losslow']) {
+            $input_errors[] = sprintf(gettext('The high Packet Loss threshold needs to be higher than the default low Packet Loss threshold (%d)'), $dpinger_default['losslow']);
         }
     }
 
@@ -273,52 +268,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $input_errors[] = gettext("The probe interval needs to be a numeric value.");
         } elseif ($pconfig['interval'] < 1) {
             $input_errors[] = gettext("The probe interval needs to be positive.");
-        }
-    }
-
-    if (!empty($pconfig['down'])) {
-        if (! is_numeric($pconfig['down'])) {
-            $input_errors[] = gettext("The down time setting needs to be a numeric value.");
-        } elseif ($pconfig['down'] < 1) {
-            $input_errors[] = gettext("The down time setting needs to be positive.");
-        }
-    }
-
-    if (!empty($pconfig['interval']) && !empty($pconfig['down'])) {
-        if ((is_numeric($pconfig['interval'])) && (is_numeric($pconfig['down'])) && $pconfig['interval'] > $pconfig['down']) {
-            $input_errors[] = gettext("The probe interval needs to be less than the down time setting.");
-        }
-    } elseif (!empty($pconfig['interval'])) {
-        if (is_numeric($pconfig['interval']) && $pconfig['interval'] > $apinger_default['down']) {
-            $input_errors[] = sprintf(gettext('The probe interval needs to be less than the default down time setting (%d)'), $apinger_default['down']);
-        }
-    } elseif (!empty($pconfig['down'])) {
-        if (is_numeric($pconfig['down']) && $pconfig['down'] < $apinger_default['interval']) {
-            $input_errors[] = sprintf(gettext('The down time setting needs to be higher than the default probe interval (%d)'), $apinger_default['interval']);
-        }
-    }
-
-    if (!empty($pconfig['avg_delay_samples'])) {
-        if (!is_numeric($pconfig['avg_delay_samples'])) {
-            $input_errors[] = gettext("The average delay replies qty needs to be a numeric value.");
-        } elseif ($pconfig['avg_delay_samples'] < 1) {
-            $input_errors[] = gettext("The average delay replies qty needs to be positive.");
-        }
-    }
-
-    if (!empty($pconfig['avg_loss_samples'])) {
-        if (!is_numeric($pconfig['avg_loss_samples'])) {
-            $input_errors[] = gettext("The average packet loss probes qty needs to be a numeric value.");
-        } elseif ($pconfig['avg_loss_samples'] < 1) {
-            $input_errors[] = gettext("The average packet loss probes qty needs to be positive.");
-        }
-    }
-
-    if (!empty($pconfig['avg_loss_delay_samples'])) {
-        if (!is_numeric($pconfig['avg_loss_delay_samples'])) {
-            $input_errors[] = gettext("The lost probe delay needs to be a numeric value.");
-        } elseif ($pconfig['avg_loss_delay_samples'] < 1) {
-            $input_errors[] = gettext("The lost probe delay needs to be positive.");
         }
     }
 
@@ -348,19 +297,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $gateway['ipprotocol'] = $pconfig['ipprotocol'];
         $gateway['interval'] = $pconfig['interval'];
         $gateway['descr'] = $pconfig['descr'];
-        $gateway['avg_delay_samples'] = $pconfig['avg_delay_samples'];
-
-        if ($pconfig['avg_delay_samples_calculated'] == "yes" || $pconfig['avg_delay_samples_calculated'] == "on") {
-            $gateway['avg_delay_samples_calculated'] = true;
-        }
-        $gateway['avg_loss_samples'] = $pconfig['avg_loss_samples'];
-        if ($pconfig['avg_loss_samples_calculated'] == "yes" || $pconfig['avg_loss_samples_calculated'] == "on") {
-            $gateway['avg_loss_samples_calculated'] = true;
-        }
-        $gateway['avg_loss_delay_samples'] = $pconfig['avg_loss_delay_samples'];
-        if ($pconfig['avg_loss_delay_samples_calculated'] == "yes" || $pconfig['avg_loss_delay_samples_calculated'] == "on") {
-            $gateway['avg_loss_delay_samples_calculated'] = true;
-        }
 
         if ($pconfig['monitor_disable'] == "yes") {
             $gateway['monitor_disable'] = true;
@@ -397,7 +333,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $gateway['defaultgw'] = true;
         }
 
-        foreach (array('latencylow', 'latencyhigh', 'losslow', 'losshigh', 'down') as $fieldname) {
+        foreach (array('latencylow', 'latencyhigh', 'losslow', 'losshigh') as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
                 $gateway[$fieldname] = $pconfig[$fieldname];
             }
@@ -462,10 +398,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // load data from config
     $copy_fields = array(
-      'name', 'weight', 'interval', 'avg_delay_samples', 'avg_loss_samples', 'avg_loss_delay_samples',
-      'interface', 'friendlyiface', 'ipprotocol', 'gateway', 'latencylow', 'latencyhigh', 'losslow', 'losshigh',
-      'down', 'monitor', 'descr', 'avg_delay_samples_calculated', 'avg_loss_samples_calculated', 'fargw',
-      'avg_loss_delay_samples_calculated', 'monitor_disable', 'dynamic', 'defaultgw', 'force_down', 'disabled'
+        'defaultgw',
+        'descr',
+        'disabled',
+        'dynamic',
+        'fargw',
+        'force_down',
+        'friendlyiface',
+        'gateway',
+        'interface',
+        'interval',
+        'ipprotocol',
+        'latencyhigh',
+        'latencylow',
+        'losshigh',
+        'losslow',
+        'monitor',
+        'monitor_disable',
+        'name',
+        'weight',
     );
     foreach ($copy_fields as $fieldname) {
         if (isset($configId) && isset($a_gateways[$configId][$fieldname])) {
@@ -482,7 +433,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 legacy_html_escape_form_data($a_gateways);
 legacy_html_escape_form_data($pconfig);
 
-$service_hook = 'apinger';
+$service_hook = 'dpinger';
 
 include("head.inc");
 
@@ -492,41 +443,6 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 <script>
 //<![CDATA[
-function recalc_value(object, min, max) {
-    if (object.val() != "") {
-        object.val(Math.round(object.val()));     // Round to integer
-        if (object.val() < min)  object.val(min); // Min Value
-        if (object.val() > max)  object.val(max); // Max Value
-        if (isNaN(object.val())) object.val('');  // Empty Value
-    }
-}
-
-function calculated_change() {
-  // How many replies should be used to compute average delay
-  // for controlling "delay" alarms.
-  // Calculate a reasonable value based on gateway probe interval and RRD 1 minute average graph step size (60).
-  if ($('#avg_delay_samples_calculated').prop('checked') && ( $('#interval').val() > 0)) {
-      $('#avg_delay_samples').val(60 * (1/6) / Math.pow($('#interval').val(), 0.333));  // Calculate
-  }
-  recalc_value($('#avg_delay_samples'), 1, 100);
-
-  // How many probes should be used to compute average loss.
-  // Calculate a reasonable value based on gateway probe interval and RRD 1 minute average graph step size (60).
-  if ($('#avg_loss_samples_calculated').prop('checked') && ( $('#interval').val() > 0)) {
-      $('#avg_loss_samples').val(60 / $('#interval').val());  // Calculate
-  }
-  recalc_value($('#avg_loss_samples'), 1, 1000);
-
-  // The delay (in samples) after which loss is computed
-  // without this delays larger than interval would be treated as loss.
-  // Calculate a reasonable value based on gateway probe interval and RRD 1 minute average graph step size (60).
-  if ($('#avg_loss_delay_samples_calculated').prop('checked') && ( $('#interval').val() > 0)) {
-      $('#avg_loss_delay_samples').val(60 * (1/3) / $('#interval').val());  // Calculate
-  }
-  recalc_value($('#avg_loss_delay_samples'), 1, 200);
-}
-
-
 $( document ).ready(function() {
     // unhide advanced
     $("#btn_advanced").click(function(event){
@@ -536,11 +452,10 @@ $( document ).ready(function() {
 
     // (un)hide advanced on form load when any advanced setting is provided
 <?php
-  if ((!empty($pconfig['latencylow']) || !empty($pconfig['latencyhigh']) || !empty($pconfig['losslow']) || !empty($pconfig['losshigh']) || (isset($pconfig['weight']) && $pconfig['weight'] > 1) || (!empty($pconfig['interval']) && ($pconfig['interval'] > $apinger_default['interval'])) || (!empty($pconfig['down']) && !($pconfig['down'] == $apinger_default['down'])))): ?>
+  if ((!empty($pconfig['latencylow']) || !empty($pconfig['latencyhigh']) || !empty($pconfig['losslow']) || !empty($pconfig['losshigh']) || (isset($pconfig['weight']) && $pconfig['weight'] > 1) || (!empty($pconfig['interval']) && ($pconfig['interval'] > $dpinger_default['interval'])))): ?>
     $("#btn_advanced").click();
 <?php
   endif;?>
-
 });
 //]]>
 </script>
@@ -617,6 +532,15 @@ $( document ).ready(function() {
                     <input name="name" type="text" size="20" value="<?=$pconfig['name'];?>" />
                     <div class="hidden" data-for="help_for_name">
                       <?=gettext("Gateway name"); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                  <td>
+                    <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
+                    <div class="hidden" data-for="help_for_descr">
+                      <?=gettext("You may enter a description here for your reference (not parsed)"); ?>
                     </div>
                   </td>
                 </tr>
@@ -726,7 +650,7 @@ $( document ).ready(function() {
                         </tbody>
                     </table>
                     <div class="hidden" data-for="help_for_latency">
-                        <?= sprintf(gettext('Low and high thresholds for latency in milliseconds. Default is %d/%d.'), $apinger_default['latencylow'], $apinger_default['latencyhigh']) ?>
+                        <?= sprintf(gettext('Low and high thresholds for latency in milliseconds. Default is %d/%d.'), $dpinger_default['latencylow'], $dpinger_default['latencyhigh']) ?>
                     </div>
                   </td>
                 </tr>
@@ -752,7 +676,7 @@ $( document ).ready(function() {
                         </tbody>
                     </table>
                     <div class="hidden" data-for="help_for_loss">
-                      <?= sprintf(gettext('Low and high thresholds for packet loss in %%. Default is %d/%d.'), $apinger_default['losslow'], $apinger_default['losshigh']) ?>
+                      <?= sprintf(gettext('Low and high thresholds for packet loss in %%. Default is %d/%d.'), $dpinger_default['losslow'], $dpinger_default['losshigh']) ?>
                     </div>
                   </td>
                 </tr>
@@ -761,73 +685,8 @@ $( document ).ready(function() {
                   <td>
                     <input name="interval" id="interval" type="text" value="<?=$pconfig['interval'];?>" onclick="calculated_change()" />
                     <div class="hidden" data-for="help_for_interval">
-                      <?= sprintf(gettext('How often that an ICMP probe will be sent in seconds. Default is %d.'), $apinger_default['interval']) ?><br /><br />
+                      <?= sprintf(gettext('How often that an ICMP probe will be sent in seconds. Default is %d.'), $dpinger_default['interval']) ?><br /><br />
                       <?=gettext("NOTE: The quality graph is averaged over seconds, not intervals, so as the probe interval is increased the accuracy of the quality graph is decreased.");?>
-                    </div>
-                  </td>
-                </tr>
-<?php           if (!isset($config['system']['prefer_dpinger'])):?>
-                <tr class="advanced hidden">
-                  <td><a id="help_for_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Down");?></td>
-                  <td>
-                    <input name="down" type="text" value="<?=$pconfig['down'];?>" />
-                    <div class="hidden" data-for="help_for_down">
-                      <?= sprintf(gettext('The number of seconds of failed probes before the alarm will fire. Default is %d.'), $apinger_default['down']) ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="advanced hidden">
-                  <td><a id="help_for_avg_delay_samples" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Avg Delay Replies Qty");?></td>
-                  <td>
-                    <input name="avg_delay_samples" id="avg_delay_samples" type="text" value="<?=$pconfig['avg_delay_samples'];?>" onchange="calculated_change()"  />
-                    <input name="avg_delay_samples_calculated" type="checkbox" id="avg_delay_samples_calculated" value="yes" <?=!empty($pconfig['avg_delay_samples_calculated']) ? "checked=\"checked\"" : "";?> onclick="calculated_change()" />
-                    <?=gettext("Use calculated value."); ?>
-                    <div class="hidden" data-for="help_for_avg_delay_samples">
-                      <?= sprintf(gettext('How many replies should be used to compute average delay for controlling "delay" alarms? Default is %d.'), $apinger_default['avg_delay_samples']) ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="advanced hidden">
-                  <td><a id="help_for_avg_loss_samples" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Avg Packet Loss Probes Qty");?></td>
-                  <td>
-                    <input name="avg_loss_samples" type="text" id="avg_loss_samples" value="<?=$pconfig['avg_loss_samples'];?>" onchange="calculated_change()" />
-                    <input name="avg_loss_samples_calculated" type="checkbox" id="avg_loss_samples_calculated" value="yes" <?= !empty($pconfig['avg_loss_samples_calculated']) ? "checked=\"checked\"" : "";?> onclick="calculated_change()" />
-                    <?=gettext("Use calculated value."); ?>
-
-                    <div class="hidden" data-for="help_for_avg_loss_samples">
-                      <?= sprintf(gettext('How many probes should be used to compute average packet loss? Default is %d.'), $apinger_default['avg_loss_samples']) ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="advanced hidden">
-                  <td><a id="help_for_avg_loss_delay_samples" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Lost Probe Delay");?></td>
-                  <td>
-                    <input name="avg_loss_delay_samples" type="text" id="avg_loss_delay_samples" value="<?=$pconfig['avg_loss_delay_samples'];?>" onchange="calculated_change()"  />
-                    <input name="avg_loss_delay_samples_calculated" type="checkbox" id="avg_loss_delay_samples_calculated" value="yes" <?= !empty($pconfig['avg_loss_delay_samples_calculated']) ? "checked=\"checked\"" : "";?> onclick="calculated_change()" />
-                    <?=gettext("Use calculated value."); ?>
-
-                    <div class="hidden" data-for="help_for_avg_loss_delay_samples">
-                      <?= sprintf(gettext('The delay (in qty of probe samples) after which loss is computed. Without this, delays longer than the probe interval would be treated as packet loss. Default is %d.'), $apinger_default['avg_loss_delay_samples']) ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="advanced hidden">
-                  <td></td>
-                  <td>
-                    <small>
-                      <?= gettext("The probe interval must be less than the down time, otherwise the gateway will seem to go down then come up again at the next probe."); ?><br /><br />
-                      <?= gettext("The down time defines the length of time before the gateway is marked as down, but the accuracy is controlled by the probe interval. For example, if your down time is 40 seconds but on a 30 second probe interval, only one probe would have to fail before the gateway is marked down at the 40 second mark. By default, the gateway is considered down after 10 seconds, and the probe interval is 1 second, so 10 probes would have to fail before the gateway is marked down."); ?><br />
-                    </small>
-                  </td>
-                </tr>
-<?php
-                endif;?>
-                <tr>
-                  <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
-                  <td>
-                    <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                    <div class="hidden" data-for="help_for_descr">
-                      <?=gettext("You may enter a description here for your reference (not parsed)"); ?>
                     </div>
                   </td>
                 </tr>
