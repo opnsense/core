@@ -4044,7 +4044,7 @@ function get_interface_subnet($interface = 'wan')
     }
 
     if (does_interface_exist($realif)) {
-        $ifinfo = legacy_get_interface_addresses($interface);
+        $ifinfo = legacy_get_interface_addresses($realif);
         if (isset($ifinfo['subnetbits'])) {
             /* return first network found */
             return $ifinfo['subnetbits'];
