@@ -3964,24 +3964,6 @@ function find_interface_ipv6_ll($interface, $exists = false)
     return null;
 }
 
-function find_interface_subnet($interface, $exists = false)
-{
-    $interface = trim($interface);	/* XXX no */
-
-    if (!$exists && !does_interface_exist($interface)) {
-        return null;
-    }
-
-    $ifinfo = legacy_get_interface_addresses($interface);
-
-    if (isset($ifinfo['subnetbits'])) {
-        /* return first network found */
-        return $ifinfo['subnetbits'];
-    }
-
-    return null;
-}
-
 function ip_in_interface_alias_subnet($interface, $ipalias)
 {
     global $config;
@@ -4049,32 +4031,35 @@ function get_interface_ipv6($interface = 'wan')
     return null;
 }
 
-function get_interface_subnet($interface = "wan")
+function get_interface_subnet($interface = 'wan')
 {
     $realif = get_real_interface($interface);
     if (!$realif) {
-        if (strstr($interface, "_vip")) {
-            list($interface, $vhid) = explode("_vip", $interface);
+        if (strstr($interface, '_vip')) {
+            list($interface, $vhid) = explode('_vip', $interface);
             $realif = get_real_interface($interface);
         } else {
             return null;
         }
     }
 
-    $cursn = find_interface_subnet($realif);
-    if (!empty($cursn)) {
-        return $cursn;
+    if (does_interface_exist($realif)) {
+        $ifinfo = legacy_get_interface_addresses($interface);
+        if (isset($ifinfo['subnetbits'])) {
+            /* return first network found */
+            return $ifinfo['subnetbits'];
+        }
     }
 
     return null;
 }
 
-function get_interface_subnetv6($interface = "wan")
+function get_interface_subnetv6($interface = 'wan')
 {
-    $realif = get_real_interface($interface, "inet6");
+    $realif = get_real_interface($interface, 'inet6');
     if (!$realif) {
-        if (strstr($interface, "_vip")) {
-            list($interface, $vhid) = explode("_vip", $interface);
+        if (strstr($interface, '_vip')) {
+            list($interface, $vhid) = explode('_vip', $interface);
             $realif = get_real_interface($interface);
         } else {
             return null;
@@ -4084,6 +4069,7 @@ function get_interface_subnetv6($interface = "wan")
     if (does_interface_exist($realif)) {
         $ifinfo = legacy_get_interface_addresses($realif);
         if (isset($ifinfo['subnetbits6'])) {
+            /* return first network found */
             return $ifinfo['subnetbits6'];
         }
     }

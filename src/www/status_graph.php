@@ -85,9 +85,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // top data
         $result = array();
         $real_interface = get_real_interface($pconfig['if']);
-        if (does_interface_exist($real_interface)) {
-            $netmask = find_interface_subnet($real_interface);
-            $intsubnet = gen_subnet(find_interface_ip($real_interface), $netmask) . "/$netmask";
+        $address = get_interface_ip($pconfig['if']);
+        $netbits = get_interface_subnet($pconfig['if']);
+        $address = gen_subnet($address, $netbits);
+        $intsubnet = "{$address}/{$netbits}";
+        if (is_subnetv4($intsubnet)) {
             $cmd_args = $pconfig['filter'] == "local" ? " -c " . $intsubnet . " " : " -lc 0.0.0.0/0 ";
             $cmd_args .= $pconfig['sort'] == "out" ? " -T " : " -R ";
             $cmd_action = "/usr/local/bin/rate -v -i {$real_interface} -nlq 1 -Aba 20 {$cmd_args} | tr \"|\" \" \" | awk '{ printf \"%s:%s:%s:%s:%s\\n\", $1,  $2,  $4,  $6,  $8 }'";
