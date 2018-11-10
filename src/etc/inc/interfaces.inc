@@ -3905,9 +3905,6 @@ function link_interface_to_gif($interface)
     return $result;
 }
 
-/*
- * find_interface_ip($interface): return the interface ip (first found)
- */
 function find_interface_ip($interface, $exists = false)
 {
     $interface = trim($interface);	/* XXX no */
@@ -3919,15 +3916,13 @@ function find_interface_ip($interface, $exists = false)
     $ifinfo = legacy_get_interface_addresses($interface);
 
     if (isset($ifinfo['ipaddr'])) {
+        /* return first address found */
         return $ifinfo['ipaddr'];
     }
 
     return null;
 }
 
-/*
- * find_interface_ipv6($interface): return the interface ip (first found)
- */
 function find_interface_ipv6($interface, $exists = false)
 {
     $interface = trim($interface);	/* XXX no */
@@ -3939,15 +3934,13 @@ function find_interface_ipv6($interface, $exists = false)
     $ifinfo = legacy_get_interface_addresses($interface);
 
     if (isset($ifinfo['ipaddr6'])) {
+        /* return first address found */
         return $ifinfo['ipaddr6'];
     }
 
     return null;
 }
 
-/*
- * find_interface_ipv6_ll($interface): return the interface ipv6 link local (first found)
- */
 function find_interface_ipv6_ll($interface, $exists = false)
 {
     $interface = trim($interface);	/* XXX no */
@@ -3962,6 +3955,7 @@ function find_interface_ipv6_ll($interface, $exists = false)
         if (strstr($line, ':')) {
             $parts = explode('/', $line);
             if (is_linklocal($parts[0])) {
+                /* return first address found */
                 return $parts[0];
             }
         }
@@ -3970,27 +3964,39 @@ function find_interface_ipv6_ll($interface, $exists = false)
     return null;
 }
 
-function find_interface_subnet($interface)
+function find_interface_subnet($interface, $exists = false)
 {
-    $interface = trim($interface);
-    if (does_interface_exist($interface)) {
-        $ifinfo = legacy_get_interface_addresses($interface);
-        if (isset($ifinfo['subnetbits'])) {
-            return $ifinfo['subnetbits'];
-        }
+    $interface = trim($interface);	/* XXX no */
+
+    if (!$exists && !does_interface_exist($interface)) {
+        return null;
     }
+
+    $ifinfo = legacy_get_interface_addresses($interface);
+
+    if (isset($ifinfo['subnetbits'])) {
+        /* return first network found */
+        return $ifinfo['subnetbits'];
+    }
+
     return null;
 }
 
-function find_interface_subnet6($interface)
+function find_interface_subnet6($interface, $exists = false)
 {
-    $interface = trim($interface);
-    if (does_interface_exist($interface)) {
-        $ifinfo = legacy_get_interface_addresses($interface);
-        if (isset($ifinfo['subnetbits6'])) {
-            return $ifinfo['subnetbits6'];
-        }
+    $interface = trim($interface);	/* XXX no */
+
+    if (!$exists && !does_interface_exist($interface)) {
+        return null;
     }
+
+    $ifinfo = legacy_get_interface_addresses($interface);
+
+    if (isset($ifinfo['subnetbits6'])) {
+        /* return first network found */
+        return $ifinfo['subnetbits6'];
+    }
+
     return null;
 }
 
