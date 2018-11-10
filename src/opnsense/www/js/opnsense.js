@@ -140,9 +140,9 @@ function setFormData(parent,data) {
                         targetNode.empty(); // flush
                         $.each(node[keypart],function(indxItem, keyItem){
                             if (keyItem["selected"] != "0") {
-                                targetNode.append(`<option value="${indxItem}" selected>${keyItem["value"]}</option>`);
+                                targetNode.append("<option value='"+indxItem+"' selected>" + keyItem["value"] + " </option>");
                             } else {
-                                targetNode.append(`<option value="${indxItem}">${keyItem["value"]}</option>`);
+                                targetNode.append("<option value='"+indxItem+"'>" + keyItem["value"] + " </option>");
                             }
                         });
                     } else if (targetNode.prop("type") == "checkbox") {
