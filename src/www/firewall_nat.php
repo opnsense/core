@@ -330,7 +330,9 @@ $( document ).ready(function() {
                     <td>*</td>
                     <td>*</td>
                     <td><?= gettext('Anti-Lockout Rule') ?></td>
-                    <td></td>
+                    <td>
+                      <a href="system_advanced_firewall.php" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
+                    </td>
                   </tr>
 <?php endforeach ?>
 <?php               $nnats = 0;
