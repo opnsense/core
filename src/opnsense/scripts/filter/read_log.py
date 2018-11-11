@@ -78,7 +78,11 @@ def fetch_rules_descriptions():
             for line in output_stream.read().strip().split('\n'):
                 if line.startswith('@'):
                     line_id = line.split()[0][1:]
-                    result[line_id] = {'label': ''.join(line.split(' label ')[-1:]).strip()[1:-1]}
+                    if line.find(' label ') > -1:
+                        result[line_id] = {'label': ''.join(line.split(' label ')[-1:]).strip()[1:-1]}
+                    else:
+                        # XXX happens on rdr (ID is not unique) or when no label is found
+                        result[line_id] = {'label': 'XXX'}
     return result
 
 
