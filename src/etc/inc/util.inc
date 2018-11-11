@@ -1049,11 +1049,12 @@ function ip_in_subnet($addr,$subnet)
 
 function is_private_ip($iptocheck)
 {
-    foreach(array("10.0.0.0/8", "100.64.0.0/10", "172.16.0.0/12", "192.168.0.0/16") as $private) {
-        if (ip_in_subnet($iptocheck,$private)==true) {
+    foreach(array('10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16') as $private) {
+        if (ip_in_subnet($iptocheck, $private)) {
             return true;
         }
     }
+
     return false;
 }
 
