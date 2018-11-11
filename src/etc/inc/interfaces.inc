@@ -3985,18 +3985,6 @@ function find_interface_subnet($interface)
     return null;
 }
 
-function find_interface_subnet6($interface)
-{
-    $interface = trim($interface);
-    if (does_interface_exist($interface)) {
-        $ifinfo = legacy_get_interface_addresses($interface);
-        if (isset($ifinfo['subnetbits6'])) {
-            return $ifinfo['subnetbits6'];
-        }
-    }
-    return null;
-}
-
 function ip_in_interface_alias_subnet($interface, $ipalias)
 {
     global $config;
