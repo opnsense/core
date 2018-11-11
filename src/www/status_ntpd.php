@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2013 Dagorlad
-    Copyright (C) 2012 Jim Pingle <jimp@pfsense.org>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2013 Dagorlad
+ * Copyright (C) 2012 Jim Pingle <jimp@pfsense.org>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("services.inc");
@@ -93,42 +93,60 @@ if (!isset($config['ntpd']['noquery'])) {
         if (substr($line, 0, 9) == "timecode=") {
             $tmp = explode('"', $line);
             $tmp = $tmp[1];
+            $gps_vars = explode(',', $tmp);
             if (substr($tmp, 0, 6) == '$GPRMC') {
-                $gps_vars = explode(",", $tmp);
-                $gps_ok  = ($gps_vars[2] == "A");
-                $gps_lat_deg = substr($gps_vars[3], 0, 2);
-                $gps_lat_min = substr($gps_vars[3], 2) / 60.0;
-                $gps_lon_deg = substr($gps_vars[5], 0, 3);
-                $gps_lon_min = substr($gps_vars[5], 3) / 60.0;
-                $gps_lat = $gps_lat_deg + $gps_lat_min;
-                $gps_lat = $gps_lat * (($gps_vars[4] == "N") ? 1 : -1);
-                $gps_lon = $gps_lon_deg + $gps_lon_min;
-                $gps_lon = $gps_lon * (($gps_vars[6] == "E") ? 1 : -1);
+                if (is_numeric($gps_vars[3]) && is_numeric($gps_vars[5])) {
+                    list ($gps_lat_deg, $gps_lat_min) = explode('.', $gps_vars[3]);
+                    $gps_lat_min /= 60.0;
+                    $gps_lat = $gps_lat_deg + $gps_lat_min;
+                    $gps_lat_dir = $gps_vars[4];
+                    $gps_lat = $gps_lat * ($gps_lat_dir == 'N' ? 1 : -1);
+
+                    list ($gps_lon_deg, $gps_lon_min) = explode('.', $gps_vars[5]);
+                    $gps_lon_min /= 60.0;
+                    $gps_lon = $gps_lon_deg + $gps_lon_min;
+                    $gps_lon_dir = $gps_vars[6];
+                    $gps_lon = $gps_lon * ($gps_lon_dir == 'E' ? 1 : -1);
+                }
+
+                $gps_ok = $gps_vars[2] == 'A';
             } elseif (substr($tmp, 0, 6) == '$GPGGA') {
-                $gps_vars = explode(",", $tmp);
-                $gps_ok  = $gps_vars[6];
-                $gps_lat_deg = substr($gps_vars[2], 0, 2);
-                $gps_lat_min = substr($gps_vars[2], 2) / 60.0;
-                $gps_lon_deg = substr($gps_vars[4], 0, 3);
-                $gps_lon_min = substr($gps_vars[4], 3) / 60.0;
-                $gps_lat = $gps_lat_deg + $gps_lat_min;
-                $gps_lat = $gps_lat * (($gps_vars[3] == "N") ? 1 : -1);
-                $gps_lon = $gps_lon_deg + $gps_lon_min;
-                $gps_lon = $gps_lon * (($gps_vars[5] == "E") ? 1 : -1);
+                if (is_numeric($gps_vars[2]) && is_numeric($gps_vars[4])) {
+                    list ($gps_lat_deg, $gps_lat_min) = explode('.', $gps_vars[2]);
+                    $gps_lat_min /= 60.0;
+                    $gps_lat = $gps_lat_deg + $gps_lat_min;
+                    $gps_lat_dir = $gps_vars[3];
+                    $gps_lat = $gps_lat * ($gps_lat_dir == 'N' ? 1 : -1);
+
+                    list ($gps_lon_deg, $gps_lon_min) = explode('.', $gps_vars[4]);
+                    $gps_lon_min /= 60.0;
+                    $gps_lon = $gps_lon_deg + $gps_lon_min;
+                    $gps_lon_dir = $gps_vars[5];
+                    $gps_lon = $gps_lon * ($gps_lon_dir == 'E' ? 1 : -1);
+
+                }
+
+                $gps_ok = $gps_vars[6];
                 $gps_alt = $gps_vars[9];
                 $gps_alt_unit = $gps_vars[10];
                 $gps_sat = $gps_vars[7];
-            }elseif (substr($tmp, 0, 6) == '$GPGLL') {
-                $gps_vars = explode(",", $tmp);
-                $gps_ok  = ($gps_vars[6] == "A");
-                $gps_lat_deg = substr($gps_vars[1], 0, 2);
-                $gps_lat_min = substr($gps_vars[1], 2) / 60.0;
-                $gps_lon_deg = substr($gps_vars[3], 0, 3);
-                $gps_lon_min = substr($gps_vars[3], 3) / 60.0;
-                $gps_lat = $gps_lat_deg + $gps_lat_min;
-                $gps_lat = $gps_lat * (($gps_vars[2] == "N") ? 1 : -1);
-                $gps_lon = $gps_lon_deg + $gps_lon_min;
-                $gps_lon = $gps_lon * (($gps_vars[4] == "E") ? 1 : -1);
+            } elseif (substr($tmp, 0, 6) == '$GPGLL') {
+                if (is_numeric($gps_vars[1]) && is_numeric($gps_vars[3])) {
+                    list ($gps_lat_deg, $gps_lat_min) = explode('.', $gps_vars[1]);
+                    $gps_lat_min /= 60.0;
+                    $gps_lat = $gps_lat_deg + $gps_lat_min;
+                    $gps_lat_dir = $gps_vars[2];
+                    $gps_lat = $gps_lat * ($gps_lat_dir == 'N' ? 1 : -1);
+
+                    list ($gps_lon_deg, $gps_lon_min) = explode('.', $gps_vars[3]);
+                    $gps_lon_min /= 60.0;
+                    $gps_lon = $gps_lon_deg + $gps_lon_min;
+                    $gps_lon_dir = $gps_vars[4];
+                    $gps_lon = $gps_lon * ($gps_lon_dir == 'E' ? 1 : -1);
+
+                }
+
+                $gps_ok = $gps_vars[6] == 'A';
             }
         }
     }
@@ -217,7 +235,7 @@ include("head.inc");
               </tbody>
             </table>
 <?php
-            if (($gps_ok) && ($gps_lat) && ($gps_lon)):
+            if ($gps_ok):
             $gps_goo_lnk = 2; ?>
             <table class="table table-striped">
               <thead>
@@ -230,8 +248,16 @@ include("head.inc");
               </thead>
               <tbody>
                 <tr>
-                  <td><?= sprintf("%.5f", $gps_lat); ?> (<?= sprintf("%d", $gps_lat_deg); ?>&deg; <?= sprintf("%.5f", $gps_lat_min*60); ?><?= $gps_vars[4]; ?>)</td>
-                  <td><?= sprintf("%.5f", $gps_lon); ?> (<?= sprintf("%d", $gps_lon_deg); ?>&deg; <?= sprintf("%.5f", $gps_lon_min*60); ?><?= $gps_vars[6]; ?>)</td>
+<?php if (isset($gps_lat)): ?>
+                  <td><?= sprintf("%.5f", $gps_lat); ?> (<?= sprintf("%d", $gps_lat_deg); ?>&deg; <?= sprintf("%.5f", $gps_lat_min*60); ?><?= $gps_lat_dir ?>)</td>
+<? else: ?>
+                  <td><?= gettext('N/A') ?></td>
+<? endif ?>
+<?php if (isset($gps_lon)): ?>
+                  <td><?= sprintf("%.5f", $gps_lon); ?> (<?= sprintf("%d", $gps_lon_deg); ?>&deg; <?= sprintf("%.5f", $gps_lon_min*60); ?><?= $gps_lon_dir ?>)</td>
+<? else: ?>
+                  <td><?= gettext('N/A') ?></td>
+<? endif ?>
                   <?php if (isset($gps_alt)) { echo '<td>' . $gps_alt . ' ' . $gps_alt_unit . '</td>';}?>
                   <td>
 <?php
@@ -241,9 +267,11 @@ include("head.inc");
                   ?>
                   </td>
                 </tr>
+<?php if (isset($gps_lon) && isset($gps_lat)): ?>
                 <tr>
                   <td colspan="<?= html_safe($gps_goo_lnk) ?>"><a target="_gmaps" href="http://maps.google.com/?q=<?= html_safe($gps_lat) ?>,<?= html_safe($gps_lon) ?>">Google Maps Link</a></td>
                 </tr>
+<? endif ?>
               </tbody>
             </table>
 <?php
