@@ -28,7 +28,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <script>
     $( document ).ready(function() {
-        var field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban', 'in': 'fa-arrow-right', 'out': 'fa-arrow-left'}
+        var field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban', 'in': 'fa-arrow-right', 'out': 'fa-arrow-left', 'rdr': 'fa-exchange' }
         var interface_descriptions = {};
         function fetch_log(){
             var record_spec = [];
@@ -92,6 +92,8 @@ POSSIBILITY OF SUCH DAMAGE.
                                 log_tr.addClass('fw_pass');
                             } else if (record['action'] == 'block') {
                                 log_tr.addClass('fw_block');
+                            } else if (record['action'] == 'rdr') {
+                                log_tr.addClass('fw_nat');
                             }
                             $("#grid-log > tbody > tr:first").before(log_tr);
                         }
@@ -243,6 +245,9 @@ POSSIBILITY OF SUCH DAMAGE.
     }
     .fw_block {
         background: rgba(235, 9, 9, 0.3);
+    }
+    .fw_nat {
+        background: rgba(73, 173, 255, 0.3);
     }
 </style>
 

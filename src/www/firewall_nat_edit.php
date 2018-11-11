@@ -1,38 +1,36 @@
 <?php
 
 /*
-    Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2009 Janne Enberg <janne.enberg@lietu.net>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014 Deciso B.V.
+ * Copyright (C) 2009 Janne Enberg <janne.enberg@lietu.net>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
 
-
-// init config and get reference
 $a_nat = &config_read_array('nat', 'rule');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -40,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && is_numericint($_GET['id']) && isset($a_nat[$_GET['id']])) {
         $id = $_GET['id'];
         $configId = $id; // load form data from id
-    } else if (isset($_GET['dup']) && isset($a_nat[$_GET['dup']])){
+    } elseif (isset($_GET['dup']) && isset($a_nat[$_GET['dup']])){
         $after = $_GET['dup'];
         $configId = $_GET['dup']; // load form data from id
     }
@@ -59,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['local-port'] = 80;
     if (isset($configId)) {
         // copy 1-on-1
-        foreach (array('protocol','target','local-port','descr','interface','associated-rule-id','nosync',
+        foreach (array('protocol','target','local-port','descr','interface','associated-rule-id','nosync','log',
                       'natreflection','created','updated','ipprotocol','tag','tagged','poolopts') as $fieldname) {
             if (isset($a_nat[$configId][$fieldname])) {
                 $pconfig[$fieldname] = $a_nat[$configId][$fieldname];
@@ -138,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     /* Validate input data  */
-    if( $pconfig['protocol'] == "tcp"  || $pconfig['protocol'] == "udp" || $pconfig['protocol'] == "tcp/udp") {
+    if ($pconfig['protocol'] == 'tcp'  || $pconfig['protocol'] == 'udp' || $pconfig['protocol'] == 'tcp/udp') {
         $reqdfields = explode(" ", "interface protocol dstbeginport dstendport");
         $reqdfieldsn = array(gettext("Interface"),gettext("Protocol"),gettext("Destination port from"),gettext("Destination port to"));
     } else {
@@ -206,11 +204,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("The target port range must be an integer between 1 and 65535.");
     }
 
-    // save data if valid
     if (count($input_errors) == 0) {
         $natent = array();
 
-        // 1-on-1 copy
         if ($pconfig['protocol'] != 'any') {
             $natent['protocol'] = $pconfig['protocol'];
         }
@@ -231,15 +227,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $natent['associated-rule-id'] = null;
         }
 
-        // form processing logic
-        $natent['disabled'] = !empty($pconfig['disabled']) ? true:false;
-        $natent['nordr'] = !empty($pconfig['nordr']) ? true:false;
-        $natent['nosync'] = !empty($pconfig['nosync']) ? true:false;
+        $natent['disabled'] = !empty($pconfig['disabled']);
+        $natent['nordr'] = !empty($pconfig['nordr']);
+        $natent['nosync'] = !empty($pconfig['nosync']);
+        $natent['log'] = !empty($pconfig['log']);
 
         if (empty($natent['nordr'])) {
             $natent['target'] = $pconfig['target'];
             $natent['local-port'] = $pconfig['local-port'];
         }
+
         pconfig_to_address($natent['source'], $pconfig['src'],
           $pconfig['srcmask'], !empty($pconfig['srcnot']),
           $pconfig['srcbeginport'], $pconfig['srcendport']);
@@ -247,7 +244,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         pconfig_to_address($natent['destination'], $pconfig['dst'],
           $pconfig['dstmask'], !empty($pconfig['dstnot']),
           $pconfig['dstbeginport'], $pconfig['dstendport']);
-
 
         if ($pconfig['natreflection'] == "purenat" || $pconfig['natreflection'] == "disable") {
             $natent['natreflection'] = $pconfig['natreflection'];
@@ -257,7 +253,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($id) && !empty($a_nat[$id]['associated-rule-id']) && ( empty($natent['associated-rule-id']) || $natent['associated-rule-id'] != $a_nat[$id]['associated-rule-id'] ) ) {
             // Delete the previous rule
             foreach ($config['filter']['rule'] as $key => $item){
-                if(isset($item['associated-rule-id']) && $item['associated-rule-id']==$a_nat[$id]['associated-rule-id'] ){
+                if (isset($item['associated-rule-id']) && $item['associated-rule-id']==$a_nat[$id]['associated-rule-id'] ){
                     unset($config['filter']['rule'][$key]);
                     break;
                 }
@@ -302,6 +298,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             $filterent['destination']['address'] = $pconfig['target'];
 
+            if (!empty($pconfig['log'])) {
+                $filterent['log'] = true;
+            } elseif (isset($filterent['log'])) {
+                unset($filterent['log']);
+            }
+
             if (is_numericint($pconfig['local-port']) && is_numericint($pconfig['dstendport']) && is_numericint($pconfig['dstbeginport'])) {
                 $dstpfrom = $pconfig['local-port'];
                 $dstpto = $dstpfrom + max($pconfig['dstendport'], $pconfig['dstbeginport']) - min($pconfig['dstbeginport'],$pconfig['dstendport']) ;
@@ -322,13 +324,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $filterent['descr'] = substr("NAT " . $pconfig['descr'], 0, 62);
 
             // If this is a new rule, create an ID and add the rule
-            if( !empty($pconfig['filter-rule-association']) && $pconfig['filter-rule-association'] != 'pass' ) {
+            if (!empty($pconfig['filter-rule-association']) && $pconfig['filter-rule-association'] != 'pass') {
                 if ($pconfig['filter-rule-association'] == 'add-associated') {
                     $filterent['associated-rule-id'] = $natent['associated-rule-id'] = uniqid("nat_", true);
                 }
                 $filterent['created'] = make_config_revision_entry();
                 $config['filter']['rule'][] = $filterent;
             }
+
             mark_subsystem_dirty('filter');
         }
 
@@ -508,8 +511,8 @@ $( document ).ready(function() {
                   <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                   <td>
                     <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                    <?=gettext("Disable this rule"); ?>
                     <div class="hidden" data-for="help_for_disabled">
-                      <strong><?=gettext("Disable this rule"); ?></strong><br />
                       <?=gettext("Set this option to disable this rule without removing it from the list."); ?>
                     </div>
                   </td>
@@ -952,6 +955,16 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
+                  <td><a id="help_for_log" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Log') ?></td>
+                  <td>
+                    <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? 'checked="checked"' : '' ?>/>
+                    <div class="hidden" data-for="help_for_log">
+                      <?=gettext("Log packets that are handled by this rule");?><br/>
+                      <?=sprintf(gettext("Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a %sremote syslog server%s."),'<a href="diag_logs_settings.php">','</a>') ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
                   <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                   <td>
                     <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
@@ -1058,7 +1071,7 @@ $( document ).ready(function() {
                 <tr>
                   <td><?=gettext("Created");?></td>
                   <td>
-                    <?= date(gettext("n/j/y H:i:s"), $pconfig['created']['time']) ?> <?= gettext("by") ?> <strong><?=$pconfig['created']['username'];?></strong>
+                    <?= date(gettext('n/j/y H:i:s'), $pconfig['created']['time']) ?> (<?= $pconfig['created']['username'] ?>)
                   </td>
                 </tr>
 <?php          endif;
@@ -1067,7 +1080,7 @@ $( document ).ready(function() {
                 <tr>
                   <td><?=gettext("Updated");?></td>
                   <td>
-                    <?= date(gettext("n/j/y H:i:s"), $pconfig['updated']['time']) ?> <?= gettext("by") ?> <strong><?=$pconfig['updated']['username'];?></strong>
+                    <?= date(gettext('n/j/y H:i:s'), $pconfig['updated']['time']) ?> (<?= $pconfig['updated']['username'] ?>)
                   </td>
                 </tr>
 <?php          endif;
