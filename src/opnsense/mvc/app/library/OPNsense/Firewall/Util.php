@@ -75,6 +75,16 @@ class Util
     }
 
     /**
+     * use provided alias object instead of creating one. When modifying multiple aliases referencing each other
+     * we need to use the same object for validations.
+     * @param Alias $alias object to link
+     */
+    public static function attachAliasObject($alias)
+    {
+        self::$aliasObject = $alias;
+    }
+
+    /**
      * check if name exists in alias config section
      * @param string $name name
      * @param boolean $valid check if the alias can safely be used
