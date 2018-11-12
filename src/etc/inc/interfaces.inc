@@ -3949,16 +3949,11 @@ function find_interface_ipv6_ll($interface, $exists = false)
         return null;
     }
 
-    $ifinfo = legacy_getall_interface_addresses($interface);
+    $ifinfo = legacy_get_interface_addresses($interface);
 
-    foreach ($ifinfo as $line) {
-        if (strstr($line, ':')) {
-            $parts = explode('/', $line);
-            if (is_linklocal($parts[0])) {
-                /* return first address found */
-                return $parts[0];
-            }
-        }
+    if (isset($ifinfo['ipaddr6_ll'])) {
+        /* return first address found */
+        return $ifinfo['ipaddr6_ll'];
     }
 
     return null;
