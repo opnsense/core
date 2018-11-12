@@ -640,13 +640,9 @@ class smtp_class
         return 1;
     }
 
-    public function PrepareData(&$data, &$output, $preg = 1)
+    public function PrepareData(&$data, &$output)
     {
-        if ($preg
-            && function_exists("preg_replace"))
-            $output = preg_replace(array("/\n\n|\r\r/", "/(^|[^\r])\n/", "/\r([^\n]|\$)/D", "/(^|\n)\\./"), array("\r\n\r\n", "\\1\r\n", "\r\n\\1", "\\1.."), $data);
-        else
-            $output = ereg_replace("(^|\n)\\.", "\\1..", ereg_replace("\r([^\n]|\$)", "\r\n\\1", ereg_replace("(^|[^\r])\n", "\\1\r\n", ereg_replace("\n\n|\r\r", "\r\n\r\n", $data))));
+        $output = preg_replace(array("/\n\n|\r\r/", "/(^|[^\r])\n/", "/\r([^\n]|\$)/D", "/(^|\n)\\./"), array("\r\n\r\n", "\\1\r\n", "\r\n\\1", "\\1.."), $data);
     }
 
     public function SendData($data)
