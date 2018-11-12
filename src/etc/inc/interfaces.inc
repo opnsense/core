@@ -4089,7 +4089,7 @@ function get_interface_subnetv6($interface = 'wan')
     if (!$realif) {
         if (strstr($interface, '_vip')) {
             list($interface, $vhid) = explode('_vip', $interface);
-            $realif = get_real_interface($interface);
+            $realif = get_real_interface($interface, 'inet6');
         } else {
             return null;
         }
