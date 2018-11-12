@@ -2,45 +2,41 @@
 
 class smtp_class
 {
-	var $user="";
-	var $realm="";
-	var $password="";
-	var $workstation="";
-	var $authentication_mechanism="";
-	var $host_name="";
-	var $host_port=25;
-	var $ssl=0;
-	var $tls=0;
-	var $localhost="";
-	var $timeout=0;
-	var $data_timeout=0;
-	var $direct_delivery=0;
-	var $error="";
-	var $debug=0;
-	var $html_debug=0;
-	var $esmtp=1;
-	var $esmtp_host="";
-	var $esmtp_extensions=array();
-	var $maximum_piped_recipients=100;
-	var $exclude_address="";
-	var $getmxrr="GetMXRR";
-	var $pop3_auth_host="";
-	var $pop3_auth_port=110;
+	public $user="";
+	public $realm="";
+	public $password="";
+	public $workstation="";
+	public $authentication_mechanism="";
+	public $host_name="";
+	public $host_port=25;
+	public $ssl=0;
+	public $tls=0;
+	public $localhost="";
+	public $timeout=0;
+	public $data_timeout=0;
+	public $direct_delivery=0;
+	public $error="";
+	public $debug=0;
+	public $html_debug=0;
+	public $esmtp=1;
+	public $esmtp_host="";
+	public $esmtp_extensions=array();
+	public $maximum_piped_recipients=100;
+	public $exclude_address="";
+	public $getmxrr="GetMXRR";
+	public $pop3_auth_host="";
+	public $pop3_auth_port=110;
 
-	/* private variables - DO NOT ACCESS */
+	private $state="Disconnected";
+	private $connection=0;
+	private $pending_recipients=0;
+	private $next_token="";
+	private $direct_sender="";
+	private $connected_domain="";
+	private $result_code;
+	private $disconnected_error=0;
 
-	var $state="Disconnected";
-	var $connection=0;
-	var $pending_recipients=0;
-	var $next_token="";
-	var $direct_sender="";
-	var $connected_domain="";
-	var $result_code;
-	var $disconnected_error=0;
-
-	/* Private methods - DO NOT CALL */
-
-	Function Tokenize($string,$separator="")
+	private function Tokenize($string,$separator="")
 	{
 		if(!strcmp($separator,""))
 		{
@@ -64,7 +60,7 @@ class smtp_class
 		}
 	}
 
-	Function OutputDebug($message)
+	private function OutputDebug($message)
 	{
 		$message.="\n";
 		if($this->html_debug)
@@ -73,7 +69,7 @@ class smtp_class
 		flush();
 	}
 
-	Function SetDataAccessError($error)
+	private function SetDataAccessError($error)
 	{
 		$this->error=$error;
 		if(function_exists("socket_get_status"))
@@ -89,7 +85,7 @@ class smtp_class
 		}
 	}
 
-	Function GetLine()
+	private function GetLine()
 	{
 		for($line="";;)
 		{
@@ -117,7 +113,7 @@ class smtp_class
 		}
 	}
 
-	Function PutLine($line)
+	private function PutLine($line)
 	{
 		if($this->debug)
 			$this->OutputDebug("C $line");
@@ -129,7 +125,7 @@ class smtp_class
 		return(1);
 	}
 
-	Function PutData(&$data)
+	private function PutData(&$data)
 	{
 		if(strlen($data))
 		{
@@ -144,7 +140,7 @@ class smtp_class
 		return(1);
 	}
 
-	Function VerifyResultLines($code,&$responses)
+	private function VerifyResultLines($code,&$responses)
 	{
 		$responses=array();
 		Unset($this->result_code);
@@ -186,7 +182,7 @@ class smtp_class
 		return(-1);
 	}
 
-	Function FlushRecipients()
+	private function FlushRecipients()
 	{
 		if($this->pending_sender)
 		{
@@ -202,7 +198,7 @@ class smtp_class
 		return(1);
 	}
 
-	Function ConnectToHost($domain, $port, $resolve_message)
+	private function ConnectToHost($domain, $port, $resolve_message)
 	{
 		if($this->ssl || $this->tls)
 		{
@@ -243,7 +239,7 @@ class smtp_class
 		return(sprintf(gettext('could not connect to the host "%s": %s'), $domain, $error));
 	}
 
-	Function SASLAuthenticate($mechanisms, $credentials, &$authenticated, &$mechanism)
+	private function SASLAuthenticate($mechanisms, $credentials, &$authenticated, &$mechanism)
 	{
 		$authenticated=0;
 		if(!function_exists("class_exists")
@@ -343,9 +339,7 @@ class smtp_class
 		return(1);
 	}
 
-	/* Public methods */
-
-	Function Connect($domain="")
+	public function Connect($domain="")
 	{
 		if(strcmp($this->state,"Disconnected"))
 		{
@@ -544,7 +538,7 @@ class smtp_class
 		return($success);
 	}
 
-	Function hostname() {
+	public function hostname() {
 		if(!strcmp($localhost=$this->localhost,"")
 		&& !strcmp($localhost=getenv("SERVER_NAME"),"")
 		&& !strcmp($localhost=getenv("HOST"),"")
@@ -555,7 +549,7 @@ class smtp_class
 		return $localhost;
 	}
 
-	Function hello()
+	public function hello()
 	{
 		$success = 0;
 		$fallback = 1;
@@ -590,7 +584,7 @@ class smtp_class
 		return $success;
 	}
 
-	Function startTLS() {
+	public function startTLS() {
 		if ($this->PutLine("STARTTLS") && $this->VerifyResultLines("220",$responses)>0) {
 			$contextOptions = array(
 					'ssl' => array(
@@ -609,7 +603,7 @@ class smtp_class
 			return false;
 	}
 
-	Function MailFrom($sender)
+	public function MailFrom($sender)
 	{
 		if($this->direct_delivery)
 		{
@@ -647,7 +641,7 @@ class smtp_class
 		return(1);
 	}
 
-	Function SetRecipient($recipient)
+	public function SetRecipient($recipient)
 	{
 		if($this->direct_delivery)
 		{
@@ -713,7 +707,7 @@ class smtp_class
 		return(1);
 	}
 
-	Function StartData()
+	public function StartData()
 	{
 		if(strcmp($this->state,"RecipientSet"))
 		{
@@ -734,7 +728,7 @@ class smtp_class
 		return(1);
 	}
 
-	Function PrepareData(&$data,&$output,$preg=1)
+	public function PrepareData(&$data,&$output,$preg=1)
 	{
 		if($preg
 		&& function_exists("preg_replace"))
@@ -743,7 +737,7 @@ class smtp_class
 			$output=ereg_replace("(^|\n)\\.","\\1..",ereg_replace("\r([^\n]|\$)","\r\n\\1",ereg_replace("(^|[^\r])\n","\\1\r\n",ereg_replace("\n\n|\r\r","\r\n\r\n",$data))));
 	}
 
-	Function SendData($data)
+	public function SendData($data)
 	{
 		if(strcmp($this->state,"SendingData"))
 		{
@@ -754,7 +748,7 @@ class smtp_class
 		return($this->PutData($data));
 	}
 
-	Function EndSendingData()
+	public function EndSendingData()
 	{
 		if(strcmp($this->state,"SendingData"))
 		{
@@ -769,7 +763,7 @@ class smtp_class
 		return(1);
 	}
 
-	Function ResetConnection()
+	public function ResetConnection()
 	{
 		switch($this->state)
 		{
@@ -790,7 +784,7 @@ class smtp_class
 		return(1);
 	}
 
-	Function Disconnect($quit=1)
+	public function Disconnect($quit=1)
 	{
 		if(!strcmp($this->state,"Disconnected"))
 		{
@@ -815,7 +809,7 @@ class smtp_class
 		return(1);
 	}
 
-	Function SendMessage($sender,$recipients,$headers,$body)
+	public function SendMessage($sender,$recipients,$headers,$body)
 	{
 		if(($success=$this->Connect()))
 		{
