@@ -1625,17 +1625,20 @@ function services_dhcrelay6_configure($verbose = false)
     $srvifaces = array();
     foreach ($srvips as $srcidx => $srvip) {
         unset($destif);
+
+        /* XXX runs multiple times because of server address loop :( */
         foreach ($iflist as $ifname => $unused) {
-            $subnet = get_interface_ipv6($ifname);
-            if (!is_ipaddrv6($subnet)) {
+            $realif = get_real_interface($ifname, 'inet6');
+            $subnet = find_interface_networkv6($realif);
+            if (!is_subnetv6($subnet)) {
                 continue;
             }
-            $subnet .=  "/" . get_interface_subnetv6($ifname);
             if (ip_in_subnet($srvip, $subnet)) {
-                $destif = get_real_interface($ifname);
+                $destif = $realif;
                 break;
             }
         }
+
         if (!isset($destif)) {
             if (isset($config['staticroutes']['route'])) {
                 foreach ($config['staticroutes']['route'] as $rtent) {
