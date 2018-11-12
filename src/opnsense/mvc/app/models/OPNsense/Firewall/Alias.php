@@ -31,6 +31,7 @@ namespace OPNsense\Firewall;
 
 use OPNsense\Base\BaseModel;
 use OPNsense\Core\Config;
+use OPNsense\Firewall\Util;
 
 /**
  * Class Alias
@@ -133,6 +134,7 @@ class Alias extends BaseModel
      */
     public function refactor($oldname, $newname)
     {
+        Util::attachAliasObject($this);
         // replace in legacy config
         foreach ($this->searchConfig($oldname) as $item) {
             $item[2][0] = $newname;
