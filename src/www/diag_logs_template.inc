@@ -52,7 +52,7 @@ if (!empty($_POST['clear'])) {
     } else {
         system_clear_log($logfile);
     }
-    if (function_exists(clear_hook)) {
+    if (function_exists('clear_hook')) {
         clear_hook();
     }
 }
