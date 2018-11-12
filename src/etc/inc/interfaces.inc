@@ -4046,7 +4046,7 @@ function get_interface_subnet($interface = 'wan')
     if (does_interface_exist($realif)) {
         $ifinfo = legacy_get_interface_addresses($realif);
         if (isset($ifinfo['subnetbits'])) {
-            /* return first network found */
+            /* return first subnet size found */
             return $ifinfo['subnetbits'];
         }
     }
@@ -4069,7 +4069,7 @@ function get_interface_subnetv6($interface = 'wan')
     if (does_interface_exist($realif)) {
         $ifinfo = legacy_get_interface_addresses($realif);
         if (isset($ifinfo['subnetbits6'])) {
-            /* return first network found */
+            /* return first subnet size found */
             return $ifinfo['subnetbits6'];
         }
     }
