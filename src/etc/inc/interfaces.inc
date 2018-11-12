@@ -3978,12 +3978,7 @@ function get_interface_ip($interface = 'wan')
         }
     }
 
-    $curip = find_interface_ip($realif);
-    if (is_ipaddrv4($curip)) {
-        return $curip;
-    }
-
-    return null;
+    return find_interface_ip($realif);
 }
 
 function get_interface_ipv6($interface = 'wan')
@@ -3999,13 +3994,8 @@ function get_interface_ipv6($interface = 'wan')
         }
     }
 
-    $curip = isset($config['interfaces'][$interface]['dhcp6prefixonly']) ?
+    return isset($config['interfaces'][$interface]['dhcp6prefixonly']) ?
         find_interface_ipv6_ll($realif) : find_interface_ipv6($realif);
-    if (is_ipaddrv6($curip)) {
-        return $curip;
-    }
-
-    return null;
 }
 
 function get_interface_subnet($interface = 'wan')
