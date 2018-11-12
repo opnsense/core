@@ -3905,9 +3905,9 @@ function link_interface_to_gif($interface)
     return $result;
 }
 
-function find_interface_ip($interface)
+function find_interface_ip($realif)
 {
-    $ifinfo = legacy_get_interface_addresses($interface);
+    $ifinfo = legacy_get_interface_addresses($realif);
 
     if (isset($ifinfo['ipaddr'])) {
         /* return first address found */
@@ -3917,9 +3917,9 @@ function find_interface_ip($interface)
     return null;
 }
 
-function find_interface_ipv6($interface)
+function find_interface_ipv6($realif)
 {
-    $ifinfo = legacy_get_interface_addresses($interface);
+    $ifinfo = legacy_get_interface_addresses($realif);
 
     if (isset($ifinfo['ipaddr6'])) {
         /* return first address found */
@@ -3929,9 +3929,9 @@ function find_interface_ipv6($interface)
     return null;
 }
 
-function find_interface_ipv6_ll($interface)
+function find_interface_ipv6_ll($realif)
 {
-    $ifinfo = legacy_get_interface_addresses($interface);
+    $ifinfo = legacy_get_interface_addresses($realif);
 
     if (isset($ifinfo['ipaddr6_ll'])) {
         /* return first address found */
