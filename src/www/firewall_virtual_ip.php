@@ -1,33 +1,33 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>
-    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
-    Copyright (C) 2004-2005 Scott Ullrich <sullrich@gmail.com>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>
+ * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
+ * Copyright (C) 2004-2005 Scott Ullrich <sullrich@gmail.com>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
@@ -53,19 +53,16 @@ function deleteVIPEntry($id) {
     }
 
     if (is_ipaddrv6($a_vip[$id]['subnet'])) {
-        $is_ipv6 = true;
+        $if_subnet = find_interface_networkv6(get_real_interface($a_vip[$id]['interface'], 'inet6'));
         $subnet = gen_subnetv6($a_vip[$id]['subnet'], $a_vip[$id]['subnet_bits']);
-        $if_subnet_bits = get_interface_subnetv6($a_vip[$id]['interface']);
-        $if_subnet = gen_subnetv6(get_interface_ipv6($a_vip[$id]['interface']), $if_subnet_bits);
+        $is_ipv6 = true;
     } else {
-        $is_ipv6 = false;
+        $if_subnet = find_interface_network(get_real_interface($a_vip[$id]['interface']));
         $subnet = gen_subnet($a_vip[$id]['subnet'], $a_vip[$id]['subnet_bits']);
-        $if_subnet_bits = get_interface_subnet($a_vip[$id]['interface']);
-        $if_subnet = gen_subnet(get_interface_ip($a_vip[$id]['interface']), $if_subnet_bits);
+        $is_ipv6 = false;
     }
 
     $subnet .= "/" . $a_vip[$id]['subnet_bits'];
-    $if_subnet .= "/" . $if_subnet_bits;
 
     if (isset($config['gateways']['gateway_item'])) {
         foreach($config['gateways']['gateway_item'] as $gateway) {
