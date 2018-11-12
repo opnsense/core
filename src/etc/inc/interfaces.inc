@@ -4001,7 +4001,7 @@ function get_interface_ip($interface = 'wan')
         }
     }
 
-    $curip = find_interface_ip($realif);
+    $curip = find_interface_ip($realif, true);
     if (is_ipaddrv4($curip)) {
         return $curip;
     }
@@ -4023,7 +4023,7 @@ function get_interface_ipv6($interface = 'wan')
     }
 
     $curip = isset($config['interfaces'][$interface]['dhcp6prefixonly']) ?
-        find_interface_ipv6_ll($realif) : find_interface_ipv6($realif);
+        find_interface_ipv6_ll($realif, true) : find_interface_ipv6($realif, true);
     if (is_ipaddrv6($curip)) {
         return $curip;
     }
@@ -4043,12 +4043,10 @@ function get_interface_subnet($interface = 'wan')
         }
     }
 
-    if (does_interface_exist($realif)) {
-        $ifinfo = legacy_get_interface_addresses($realif);
-        if (isset($ifinfo['subnetbits'])) {
-            /* return first subnet size found */
-            return $ifinfo['subnetbits'];
-        }
+    $ifinfo = legacy_get_interface_addresses($realif);
+    if (isset($ifinfo['subnetbits'])) {
+        /* return first subnet size found */
+        return $ifinfo['subnetbits'];
     }
 
     return null;
@@ -4060,18 +4058,16 @@ function get_interface_subnetv6($interface = 'wan')
     if (!$realif) {
         if (strstr($interface, '_vip')) {
             list($interface, $vhid) = explode('_vip', $interface);
-            $realif = get_real_interface($interface);
+            $realif = get_real_interface($interface, 'inet6');
         } else {
             return null;
         }
     }
 
-    if (does_interface_exist($realif)) {
-        $ifinfo = legacy_get_interface_addresses($realif);
-        if (isset($ifinfo['subnetbits6'])) {
-            /* return first subnet size found */
-            return $ifinfo['subnetbits6'];
-        }
+    $ifinfo = legacy_get_interface_addresses($realif);
+    if (isset($ifinfo['subnetbits6'])) {
+        /* return first subnet size found */
+        return $ifinfo['subnetbits6'];
     }
 
     return null;

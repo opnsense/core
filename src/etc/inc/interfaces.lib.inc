@@ -216,7 +216,10 @@ function legacy_interfaces_details($intf = null)
     $cmd = '/sbin/ifconfig -m ' . $tmp_intf;
     exec($cmd . ' 2>&1', $ifconfig_data, $ret);
     if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute ' . implode(' ', $ifconfig_data));
+        /* only error if no explicit interface was choosen */
+        if (empty($intf)) {
+            log_error('The command `' . $cmd . '\' failed to execute ' . implode(' ', $ifconfig_data));
+        }
         return $result;
     }
 
@@ -326,7 +329,14 @@ function legacy_interfaces_details($intf = null)
  */
 function legacy_interface_details($intf)
 {
-    return legacy_interfaces_details($intf)[$intf];
+    $result = array();
+
+    $details = legacy_interfaces_details($intf);
+    if (isset($details[$intf])) {
+        $result = $details[$intf];
+    }
+
+    return $result;
 }
 
 /**
