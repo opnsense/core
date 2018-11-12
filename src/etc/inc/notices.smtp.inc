@@ -49,10 +49,10 @@ class smtp_class
         }
         if (IsSet($found)) {
             $this->next_token = substr($string, $found + 1);
-            return (substr($string, 0, $found));
+            return substr($string, 0, $found);
         } else {
             $this->next_token = "";
-            return ($string);
+            return $string;
         }
     }
 
@@ -84,12 +84,12 @@ class smtp_class
         for ($line = ""; ;) {
             if (feof($this->connection)) {
                 $this->error = gettext("reached the end of data while reading from the SMTP server connection");
-                return ("");
+                return "";
             }
             if (GetType($data = @fgets($this->connection, 100)) != "string"
                 || strlen($data) == 0) {
                 $this->SetDataAccessError(gettext("it was not possible to read line from the SMTP server"));
-                return ("");
+                return "";
             }
             $line .= $data;
             $length = strlen($line);
@@ -98,7 +98,7 @@ class smtp_class
                 $line = substr($line, 0, $length - 2);
                 if ($this->debug)
                     $this->OutputDebug("S $line");
-                return ($line);
+                return $line;
             }
         }
     }
@@ -109,9 +109,9 @@ class smtp_class
             $this->OutputDebug("C $line");
         if (!@fputs($this->connection, "$line\r\n")) {
             $this->SetDataAccessError(gettext("it was not possible to send a line to the SMTP server"));
-            return (0);
+            return 0;
         }
-        return (1);
+        return 1;
     }
 
     private function PutData(&$data)
@@ -121,10 +121,10 @@ class smtp_class
                 $this->OutputDebug("C $data");
             if (!@fputs($this->connection, $data)) {
                 $this->SetDataAccessError(gettext("it was not possible to send data to the SMTP server"));
-                return (0);
+                return 0;
             }
         }
-        return (1);
+        return 1;
     }
 
     private function VerifyResultLines($code, &$responses)
@@ -135,7 +135,7 @@ class smtp_class
             if (IsSet($this->result_code)) {
                 if (strcmp($this->Tokenize($line, " -"), $this->result_code)) {
                     $this->error = $line;
-                    return (0);
+                    return 0;
                 }
             } else {
                 $this->result_code = $this->Tokenize($line, " -");
@@ -143,34 +143,34 @@ class smtp_class
                     for ($codes = 0; $codes < count($code) && strcmp($this->result_code, $code[$codes]); $codes++) ;
                     if ($codes >= count($code)) {
                         $this->error = $line;
-                        return (0);
+                        return 0;
                     }
                 } else {
                     if (strcmp($this->result_code, $code)) {
                         $this->error = $line;
-                        return (0);
+                        return 0;
                     }
                 }
             }
             $responses[] = $this->Tokenize("");
             if (!strcmp($this->result_code, $this->Tokenize($line, " ")))
-                return (1);
+                return 1;
         }
-        return (-1);
+        return -1;
     }
 
     private function FlushRecipients()
     {
         if ($this->pending_sender) {
             if ($this->VerifyResultLines("250", $responses) <= 0)
-                return (0);
+                return 0;
             $this->pending_sender = false;
         }
         for (; $this->pending_recipients; $this->pending_recipients--) {
             if ($this->VerifyResultLines(array("250", "251"), $responses) <= 0)
-                return (0);
+                return 0;
         }
-        return (1);
+        return 1;
     }
 
     private function ConnectToHost($domain, $port, $resolve_message)
@@ -178,7 +178,7 @@ class smtp_class
         if ($this->ssl || $this->tls) {
             if (!function_exists("extension_loaded")
                 || !extension_loaded("openssl"))
-                return (gettext("establishing SSL connections requires the OpenSSL extension enabled"));
+                return gettext("establishing SSL connections requires the OpenSSL extension enabled");
         }
         if (preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $domain))
             $ip = $domain;
@@ -186,29 +186,29 @@ class smtp_class
             if ($this->debug)
                 $this->OutputDebug($resolve_message);
             if (!strcmp($ip = @gethostbyname($domain), $domain))
-                return (sprintf(gettext("could not resolve host \"%s\""), $domain));
+                return sprintf(gettext("could not resolve host \"%s\""), $domain);
         }
         if (strlen($this->exclude_address)
             && !strcmp(@gethostbyname($this->exclude_address), $ip))
-            return (sprintf(gettext("domain \"%s\" resolved to an address excluded to be valid"), $domain));
+            return sprintf(gettext("domain \"%s\" resolved to an address excluded to be valid"), $domain);
         if ($this->debug)
             $this->OutputDebug(sprintf(gettext('Connecting to host address "%s" port %s...'), $ip, $port));
         if (($this->connection = ($this->timeout ? @fsockopen(($this->ssl ? "ssl://" : "") . $ip, $port, $errno, $error, $this->timeout) : @fsockopen(($this->ssl ? "ssl://" : "") . $ip, $port))))
-            return ("");
+            return "";
         $error = ($this->timeout ? strval($error) : "??");
         switch ($error) {
             case "-3":
-                return (gettext("-3 socket could not be created"));
+                return gettext("-3 socket could not be created");
             case "-4":
-                return (sprintf(gettext("-4 dns lookup on hostname \"%s\" failed"), $domain));
+                return sprintf(gettext("-4 dns lookup on hostname \"%s\" failed"), $domain);
             case "-5":
-                return (gettext("-5 connection refused or timed out"));
+                return gettext("-5 connection refused or timed out");
             case "-6":
-                return (gettext("-6 fdopen() call failed"));
+                return gettext("-6 fdopen() call failed");
             case "-7":
-                return (gettext("-7 setvbuf() call failed"));
+                return gettext("-7 setvbuf() call failed");
         }
-        return (sprintf(gettext('could not connect to the host "%s": %s'), $domain, $error));
+        return sprintf(gettext('could not connect to the host "%s": %s'), $domain, $error);
     }
 
     private function SASLAuthenticate($mechanisms, $credentials, &$authenticated, &$mechanism)
@@ -217,7 +217,7 @@ class smtp_class
         if (!function_exists("class_exists")
             || !class_exists("sasl_client_class")) {
             $this->error = gettext("it is not possible to authenticate using the specified mechanism because the SASL library class is not loaded");
-            return (0);
+            return 0;
         }
         $sasl = new sasl_client_class;
         $sasl->SetCredential("user", $credentials["user"]);
@@ -237,20 +237,20 @@ class smtp_class
             case SASL_NOMECH:
                 if (strlen($this->authentication_mechanism)) {
                     $this->error = sprintf(gettext('Authentication mechanism %s may not be used: %s'), $this->authentication_mechanism, $sasl->error);
-                    return (0);
+                    return 0;
                 }
                 break;
             default:
                 $this->error = gettext("Could not start the SASL authentication client:") . " " . $sasl->error;
-                return (0);
+                return 0;
         }
         if (strlen($mechanism = $sasl->mechanism)) {
             if ($this->PutLine("AUTH " . $sasl->mechanism . (IsSet($message) ? " " . base64_encode($message) : "")) == 0) {
                 $this->error = gettext("Could not send the AUTH command");
-                return (0);
+                return 0;
             }
             if (!$this->VerifyResultLines(array("235", "334"), $responses))
-                return (0);
+                return 0;
             switch ($this->result_code) {
                 case "235":
                     $response = "";
@@ -261,7 +261,7 @@ class smtp_class
                     break;
                 default:
                     $this->error = gettext("Authentication error:") . " " . $responses[0];
-                    return (0);
+                    return 0;
             }
             for (; !$authenticated;) {
                 do {
@@ -271,10 +271,10 @@ class smtp_class
                     case SASL_CONTINUE:
                         if ($this->PutLine(base64_encode($message)) == 0) {
                             $this->error = gettext("Could not send the authentication step message");
-                            return (0);
+                            return 0;
                         }
                         if (!$this->VerifyResultLines(array("235", "334"), $responses))
-                            return (0);
+                            return 0;
                         switch ($this->result_code) {
                             case "235":
                                 $response = "";
@@ -285,23 +285,23 @@ class smtp_class
                                 break;
                             default:
                                 $this->error = gettext("Authentication error:") . " " . $responses[0];
-                                return (0);
+                                return 0;
                         }
                         break;
                     default:
                         $this->error = gettext("Could not process the SASL authentication step:") . " " . $sasl->error;
-                        return (0);
+                        return 0;
                 }
             }
         }
-        return (1);
+        return 1;
     }
 
     public function Connect($domain = "")
     {
         if (strcmp($this->state, "Disconnected")) {
             $this->error = gettext("connection is already established");
-            return (0);
+            return 0;
         }
         $this->disconnected_error = 0;
         $this->error = $error = "";
@@ -310,7 +310,7 @@ class smtp_class
         $hosts = array();
         if ($this->direct_delivery) {
             if (strlen($domain) == 0)
-                return (1);
+                return 1;
             $hosts = $weights = $mxhosts = array();
             $getmxrr = $this->getmxrr;
             if (function_exists($getmxrr)
@@ -331,36 +331,36 @@ class smtp_class
                 $user = $this->user;
                 if (strlen($user) == 0) {
                     $this->error = gettext("it was not specified the POP3 authentication user");
-                    return (0);
+                    return 0;
                 }
                 $password = $this->password;
                 if (strlen($password) == 0) {
                     $this->error = gettext("it was not specified the POP3 authentication password");
-                    return (0);
+                    return 0;
                 }
                 $domain = $this->pop3_auth_host;
                 $this->error = $this->ConnectToHost($domain, $this->pop3_auth_port, sprintf(gettext("Resolving POP3 authentication host \"%s\"..."), $domain));
                 if (strlen($this->error))
-                    return (0);
+                    return 0;
                 if (strlen($response = $this->GetLine()) == 0)
-                    return (0);
+                    return 0;
                 if (strcmp($this->Tokenize($response, " "), "+OK")) {
                     $this->error = gettext("POP3 authentication server greeting was not found");
-                    return (0);
+                    return 0;
                 }
                 if (!$this->PutLine("USER " . $this->user)
                     || strlen($response = $this->GetLine()) == 0)
-                    return (0);
+                    return 0;
                 if (strcmp($this->Tokenize($response, " "), "+OK")) {
                     $this->error = gettext("POP3 authentication user was not accepted:") . " " . $this->Tokenize("\r\n");
-                    return (0);
+                    return 0;
                 }
                 if (!$this->PutLine("PASS " . $password)
                     || strlen($response = $this->GetLine()) == 0)
-                    return (0);
+                    return 0;
                 if (strcmp($this->Tokenize($response, " "), "+OK")) {
                     $this->error = gettext("POP3 authentication password was not accepted:") . " " . $this->Tokenize("\r\n");
-                    return (0);
+                    return 0;
                 }
                 fclose($this->connection);
                 $this->connection = 0;
@@ -368,7 +368,7 @@ class smtp_class
         }
         if (count($hosts) == 0) {
             $this->error = gettext("could not determine the SMTP to connect");
-            return (0);
+            return 0;
         }
         for ($host = 0, $error = "not connected"; strlen($error) && $host < count($hosts); $host++) {
             $domain = $hosts[$host];
@@ -376,7 +376,7 @@ class smtp_class
         }
         if (strlen($error)) {
             $this->error = $error;
-            return (0);
+            return 0;
         }
         $timeout = ($this->data_timeout ? $this->data_timeout : $this->timeout);
         if ($timeout
@@ -463,7 +463,7 @@ class smtp_class
             fclose($this->connection);
             $this->connection = 0;
         }
-        return ($success);
+        return $success;
     }
 
     public function hostname()
@@ -539,60 +539,60 @@ class smtp_class
             switch ($this->state) {
                 case "Disconnected":
                     $this->direct_sender = $sender;
-                    return (1);
+                    return 1;
                 case "Connected":
                     $sender = $this->direct_sender;
                     break;
                 default:
                     $this->error = gettext("direct delivery connection is already established and sender is already set");
-                    return (0);
+                    return 0;
             }
         } else {
             if (strcmp($this->state, "Connected")) {
                 $this->error = gettext("connection is not in the initial state");
-                return (0);
+                return 0;
             }
         }
         $this->error = "";
         if (!$this->PutLine("MAIL FROM:<$sender>"))
-            return (0);
+            return 0;
         if (!IsSet($this->esmtp_extensions["PIPELINING"])
             && $this->VerifyResultLines("250", $responses) <= 0)
-            return (0);
+            return 0;
         $this->state = "SenderSet";
         if (IsSet($this->esmtp_extensions["PIPELINING"]))
             $this->pending_sender = true;
         $this->pending_recipients = 0;
-        return (1);
+        return 1;
     }
 
     public function SetRecipient($recipient)
     {
         if ($this->direct_delivery) {
             if (GetType($at = strrpos($recipient, "@")) != "integer")
-                return (gettext("it was not specified a valid direct recipient"));
+                return gettext("it was not specified a valid direct recipient");
             $domain = substr($recipient, $at + 1);
             switch ($this->state) {
                 case "Disconnected":
                     if (!$this->Connect($domain))
-                        return (0);
+                        return 0;
                     if (!$this->MailFrom("")) {
                         $error = $this->error;
                         $this->Disconnect();
                         $this->error = $error;
-                        return (0);
+                        return 0;
                     }
                     break;
                 case "SenderSet":
                 case "RecipientSet":
                     if (strcmp($this->connected_domain, $domain)) {
                         $this->error = gettext("it is not possible to deliver directly to recipients of different domains");
-                        return (0);
+                        return 0;
                     }
                     break;
                 default:
                     $this->error = gettext("connection is already established and the recipient is already set");
-                    return (0);
+                    return 0;
             }
         } else {
             switch ($this->state) {
@@ -601,43 +601,43 @@ class smtp_class
                     break;
                 default:
                     $this->error = gettext("connection is not in the recipient setting state");
-                    return (0);
+                    return 0;
             }
         }
         $this->error = "";
         if (!$this->PutLine("RCPT TO:<$recipient>"))
-            return (0);
+            return 0;
         if (IsSet($this->esmtp_extensions["PIPELINING"])) {
             $this->pending_recipients++;
             if ($this->pending_recipients >= $this->maximum_piped_recipients) {
                 if (!$this->FlushRecipients())
-                    return (0);
+                    return 0;
             }
         } else {
             if ($this->VerifyResultLines(array("250", "251"), $responses) <= 0)
-                return (0);
+                return 0;
         }
         $this->state = "RecipientSet";
-        return (1);
+        return 1;
     }
 
     public function StartData()
     {
         if (strcmp($this->state, "RecipientSet")) {
             $this->error = gettext("connection is not in the start sending data state");
-            return (0);
+            return 0;
         }
         $this->error = "";
         if (!$this->PutLine("DATA"))
-            return (0);
+            return 0;
         if ($this->pending_recipients) {
             if (!$this->FlushRecipients())
-                return (0);
+                return 0;
         }
         if ($this->VerifyResultLines("354", $responses) <= 0)
-            return (0);
+            return 0;
         $this->state = "SendingData";
-        return (1);
+        return 1;
     }
 
     public function PrepareData(&$data, &$output, $preg = 1)
@@ -653,51 +653,51 @@ class smtp_class
     {
         if (strcmp($this->state, "SendingData")) {
             $this->error = gettext("connection is not in the sending data state");
-            return (0);
+            return 0;
         }
         $this->error = "";
-        return ($this->PutData($data));
+        return $this->PutData($data);
     }
 
     public function EndSendingData()
     {
         if (strcmp($this->state, "SendingData")) {
             $this->error = gettext("connection is not in the sending data state");
-            return (0);
+            return 0;
         }
         $this->error = "";
         if (!$this->PutLine("\r\n.")
             || $this->VerifyResultLines("250", $responses) <= 0)
-            return (0);
+            return 0;
         $this->state = "Connected";
-        return (1);
+        return 1;
     }
 
     public function ResetConnection()
     {
         switch ($this->state) {
             case "Connected":
-                return (1);
+                return 1;
             case "SendingData":
                 $this->error = "can not reset the connection while sending data";
-                return (0);
+                return 0;
             case "Disconnected":
                 $this->error = "can not reset the connection before it is established";
-                return (0);
+                return 0;
         }
         $this->error = "";
         if (!$this->PutLine("RSET")
             || $this->VerifyResultLines("250", $responses) <= 0)
-            return (0);
+            return 0;
         $this->state = "Connected";
-        return (1);
+        return 1;
     }
 
     public function Disconnect($quit = 1)
     {
         if (!strcmp($this->state, "Disconnected")) {
             $this->error = gettext("it was not previously established a SMTP connection");
-            return (0);
+            return 0;
         }
         $this->error = "";
         if (!strcmp($this->state, "Connected")
@@ -705,7 +705,7 @@ class smtp_class
             && (!$this->PutLine("QUIT")
                 || ($this->VerifyResultLines("221", $responses) <= 0
                     && !$this->disconnected_error)))
-            return (0);
+            return 0;
         if ($this->disconnected_error)
             $this->disconnected_error = 0;
         else
@@ -714,7 +714,7 @@ class smtp_class
         $this->state = "Disconnected";
         if ($this->debug)
             $this->OutputDebug("Disconnected.");
-        return (1);
+        return 1;
     }
 
     public function SendMessage($sender, $recipients, $headers, $body)
@@ -744,7 +744,7 @@ class smtp_class
             else
                 $this->error = $error;
         }
-        return ($success);
+        return $success;
     }
 
 }
