@@ -549,7 +549,7 @@ class smtp_class
 		return $localhost;
 	}
 
-	public function hello()
+	public function hello($hostname)
 	{
 		$success = 0;
 		$fallback = 1;
@@ -578,7 +578,7 @@ class smtp_class
 		}
 
 		if ($fallback) {
-			if ($this->PutLine("HELO $localhost") && $this->VerifyResultLines("250",$responses)>0)
+			if ($this->PutLine("HELO $hostname") && $this->VerifyResultLines("250",$responses)>0)
 				$success=1;
 		}
 		return $success;
