@@ -46,10 +46,13 @@ if (!count($iflist)) {
 }
 
 foreach ($iflist as $ifname => $ifcfg) {
-    /* point to this interface's config */
     $ifconf = $config['interfaces'][$ifname];
-    /* look for 'special cases' */
-    $class = "";
+
+    if (!isset($ifconf['enable'])) {
+        continue;
+    }
+
+    $class = null;
     if (isset($ifconf['ipaddr'])) {
         switch ($ifconf['ipaddr']) {
             case "dhcp":
@@ -66,6 +69,7 @@ foreach ($iflist as $ifname => $ifcfg) {
                 break;
         }
     }
+
     $class6 = null;
     if (isset($ifconf['ipaddrv6'])) {
         switch ($ifconf['ipaddrv6']) {
@@ -86,36 +90,28 @@ foreach ($iflist as $ifname => $ifcfg) {
                 break;
         }
     }
-    $ipaddr = get_interface_ip($ifname);
-    $subnet = get_interface_subnet($ifname);
-    $ipaddr6 = get_interface_ipv6($ifname);
-    $subnet6 = get_interface_subnetv6($ifname);
+
     $realif = get_real_interface($ifname);
+    $realifv6 = get_real_interface($ifname, 'inet6');
+    $network = find_interface_network($realif, false);
+    $network6 = find_interface_networkv6($realifv6, false);
     $tobanner = "{$ifcfg['descr']} ({$realif})";
 
     printf("\n %-15s -> ", $tobanner);
 
     $v6first = false;
-    if (!empty($ipaddr) && !empty($subnet)) {
-        printf(
-            "v4%s: %s/%s",
-            $class,
-            $ipaddr,
-            $subnet
-        );
+
+    if (!empty($network)) {
+        printf("v4%s: %s", $class, $network);
     } else {
         $v6first = true;
     }
-    if (!empty($ipaddr6) && !empty($subnet6)) {
+
+    if (!empty($network6)) {
         if (!$v6first) {
             printf("\n%s", str_repeat(" ", 20));
         }
-        printf(
-            "v6%s: %s/%s",
-            $class6,
-            $ipaddr6,
-            $subnet6
-        );
+        printf("v6%s: %s", $class6, $network6);
     }
 }
 
