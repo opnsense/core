@@ -111,6 +111,7 @@ POSSIBILITY OF SUCH DAMAGE.
          $('.selectpicker').selectpicker('refresh');
          isSubsystemDirty();
          updateServiceControlUI('monit');
+         ShowHideGeneralFields();
       });
 
       // show/hide httpd/mmonit options
@@ -128,8 +129,18 @@ POSSIBILITY OF SUCH DAMAGE.
             $('tr[id="row_monit.general.mmonitTimeout"]').addClass('hidden');
             $('tr[id="row_monit.general.mmonitRegisterCredentials"]').addClass('hidden');
          }
+         if ($('#monit\\.general\\.ssl')[0].checked) {
+            $('tr[id="row_monit.general.sslversion"]').removeClass('hidden');
+            $('tr[id="row_monit.general.sslverify"]').removeClass('hidden');
+         } else {
+            $('tr[id="row_monit.general.sslversion"]').addClass('hidden');
+            $('tr[id="row_monit.general.sslverify"]').addClass('hidden');
+         }
       };
       $('#monit\\.general\\.httpdEnabled').unbind('click').click(function(){
+         ShowHideGeneralFields();
+      });
+      $('#monit\\.general\\.ssl').unbind('click').click(function(){
          ShowHideGeneralFields();
       });
       $('#show_advanced_frm_GeneralSettings').click(function(){
@@ -137,7 +148,7 @@ POSSIBILITY OF SUCH DAMAGE.
       });
 
       $('#btnSaveGeneral').unbind('click').click(function(){
-	   $("#btnSaveGeneralProgress").addClass("fa fa-spinner fa-pulse");
+         $("#btnSaveGeneralProgress").addClass("fa fa-spinner fa-pulse");
          var frm_id = 'frm_GeneralSettings';
          saveFormToEndpoint(url = "/api/monit/settings/set/general/",formid=frm_id,callback_ok=function(){
             isSubsystemDirty();
