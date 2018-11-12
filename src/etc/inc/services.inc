@@ -194,18 +194,16 @@ function services_radvd_configure($verbose = false, $blacklist = array())
         }
 
         $stanzas = array();
-        $ifcfgsnv6 = get_interface_subnetv6($dhcpv6if);
-        if (!empty($ifcfgsnv6)) {
-            $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
-            $stanzas[] = "{$subnetv6}/{$ifcfgsnv6}";
+
+        $networkv6 = find_interface_networkv6($realif);
+        if (is_subnetv6($networkv6)) {
+            $stanzas[] = $networkv6;
         }
 
-        $viparr = &config_read_array('virtualip', 'vip');
-        foreach ($viparr as $vip) {
+        foreach (config_read_array('virtualip', 'vip') as $vip) {
             if ($vip['interface'] == $dhcpv6if && is_ipaddrv6($vip['subnet'])) {
-                $ifcfgsnv6 = $vip['subnet_bits'];
-                $subnetv6 = gen_subnetv6($vip['subnet'], $ifcfgsnv6);
-                $stanzas[] = "{$subnetv6}/{$ifcfgsnv6}";
+                $subnetv6 = gen_subnetv6($vip['subnet'], $vip['subnet_bits']);
+                $stanzas[] = "{$subnetv6}/{$vip['subnet_bits']}";
             }
         }
 
@@ -331,17 +329,15 @@ function services_radvd_configure($verbose = false, $blacklist = array())
         }
 
         $dnslist = array();
-        $subnetv6 = '::';
-        $ifcfgsnv6 = '64';
 
-        $ifcfgipv6 = get_interface_ipv6($if);
+        $ifcfgipv6 = find_interface_ipv6($realif);
+        $networkv6 = find_interface_networkv6($realif);
 
         if ($autotype == 'slaac') {
             /* XXX this may be incorrect and needs an override or revisit */
-            $subnetv6 = '2000::';
-        } elseif (is_ipaddrv6($ifcfgipv6)) {
-            $ifcfgsnv6 = get_interface_subnetv6($if);
-            $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
+            $networkv6 = '2000::/64';
+        } elseif (!is_subnetv6($networkv6)) {
+            $networkv6 = '::/64';
         }
 
         if (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
@@ -365,7 +361,7 @@ function services_radvd_configure($verbose = false, $blacklist = array())
         $radvdconf .= "\tMaxRtrAdvInterval 10;\n";
         $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
         $radvdconf .= "\tAdvOtherConfigFlag on;\n";
-        $radvdconf .= "\tprefix {$subnetv6}/{$ifcfgsnv6} {\n";
+        $radvdconf .= "\tprefix {$networkv6} {\n";
         if ($autotype == 'slaac') {
             /* XXX also of interest in the future, see hardcoded prefix above */
             $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
@@ -1286,15 +1282,15 @@ EOD;
             continue;
         }
 
-        $ifcfgipv6 = get_interface_ipv6($dhcpv6if);
+        $realif = get_real_interface($dhcpv6if, 'inet6');
 
-        if (!is_ipaddrv6($ifcfgipv6)) {
+        $ifcfgipv6 = find_interface_ipv6($realif);
+        $networkv6 = find_interface_networkv6($realif);
+
+        if (!is_ipaddrv6($ifcfgipv6) || !is_subnetv6($networkv6)) {
             log_error("Warning! services_dhcpdv6_configure() found no suitable IPv6 address on {$dhcpv6if}");
             continue;
         }
-
-        $ifcfgsnv6 = get_interface_subnetv6($dhcpv6if);
-        $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
 
         $dnscfgv6 = "";
         if (!empty($dhcpv6ifconf['domain'])) {
@@ -1326,7 +1322,7 @@ EOD;
             $dnscfgv6 .= "  option dhcp6.name-servers " . join(",", $dns_arrv6) . ";";
         }
 
-        $dhcpdv6conf .= "\nsubnet6 {$subnetv6}/{$ifcfgsnv6} {\n";
+        $dhcpdv6conf .= "\nsubnet6 {$networkv6} {\n";
 
         if (!empty($dhcpv6ifconf['range']['from'])) {
             $dhcpdv6conf .= <<<EOD
