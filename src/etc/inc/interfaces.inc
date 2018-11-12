@@ -3909,36 +3909,69 @@ function find_interface_ip($realif)
 {
     $ifinfo = legacy_get_interface_addresses($realif);
 
-    if (isset($ifinfo['ipaddr'])) {
-        /* return first address found */
-        return $ifinfo['ipaddr'];
+    if (!isset($ifinfo['ipaddr'])) {
+        return null;
     }
 
-    return null;
+    return $ifinfo['ipaddr'];
+}
+
+function find_interface_network($realif, $subnet = true)
+{
+    $ifinfo = legacy_get_interface_addresses($realif);
+
+    if (!isset($ifinfo['ipaddr']) || !isset($ifinfo['subnetbits'])) {
+        return null;
+    }
+
+    $net = $ifinfo['subnetbits'];
+    $addr = $ifinfo['ipaddr'];
+
+    if ($subnet) {
+        $addr = gen_subnet($addr, $net);
+    }
+
+    return "{$addr}/${net}";
 }
 
 function find_interface_ipv6($realif)
 {
     $ifinfo = legacy_get_interface_addresses($realif);
 
-    if (isset($ifinfo['ipaddr6'])) {
-        /* return first address found */
-        return $ifinfo['ipaddr6'];
+    if (!isset($ifinfo['ipaddr6'])) {
+        return null;
     }
 
-    return null;
+    return $ifinfo['ipaddr6'];
+}
+
+function find_interface_networkv6($realif, $subnet = true)
+{
+    $ifinfo = legacy_get_interface_addresses($realif);
+
+    if (!isset($ifinfo['ipaddr6']) || !isset($ifinfo['subnetbits6'])) {
+        return null;
+    }
+
+    $net = $ifinfo['subnetbits6'];
+    $addr = $ifinfo['ipaddr6'];
+
+    if ($subnet) {
+        $addr = gen_subnetv6($addr, $net);
+    }
+
+    return "{$addr}/${net}";
 }
 
 function find_interface_ipv6_ll($realif)
 {
     $ifinfo = legacy_get_interface_addresses($realif);
 
-    if (isset($ifinfo['ipaddr6_ll'])) {
-        /* return first address found */
-        return $ifinfo['ipaddr6_ll'];
+    if (!isset($ifinfo['ipaddr6_ll'])) {
+        return null;
     }
 
-    return null;
+    return $ifinfo['ipaddr6_ll'];
 }
 
 function ip_in_interface_alias_subnet($interface, $ipalias)
