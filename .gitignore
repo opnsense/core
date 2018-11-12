@@ -14,3 +14,4 @@
 /src/www/wpad.dat
 /src/opnsense/version/*
 !/src/opnsense/version/opnsense.in
+.idea/
