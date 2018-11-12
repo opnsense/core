@@ -876,37 +876,36 @@ function ipsec_configure_do($verbose = false, $interface = '')
         }
         @file_put_contents('/var/db/ipsecpinghosts', $ipsecpinghosts);
 
-        $cnf_add_to_charon_section = "";
-        $cnf_add_to_charon_section .= $aggressive_psk ? "\ti_dont_care_about_security_and_use_aggressive_mode_psk=yes\n":"";
-        $cnf_add_to_charon_section .= !empty($config['ipsec']['auto_routes_disable']) ? "\tinstall_routes = no\n" : "";
+        $strongswanTree = [
+            '# Automatically generated, please do not modify' => '',
+            'starter' => [
+                'load_warning' => 'no'
+            ],
+            'charon' => [
+                'threads' => 16,
+                'ikesa_table_size' => 32,
+                'ikesa_table_segments' => 4,
+                'init_limit_half_open' => 1000,
+                'ignore_acquire_ts' => 'yes',
+                'syslog' => [
+                    'daemon' => [
+                        'ike_name' => 'yes'
+                    ]
+                ]
+            ]
+        ];
+
+        if ($aggressive_psk) {
+            $strongswanTree['charon']['i_dont_care_about_security_and_use_aggressive_mode_psk'] = 'yes';
+        }
+        if (!empty($config['ipsec']['auto_routes_disable'])) {
+            $strongswanTree['charon']['install_routes'] = 'no';
+        }
         if (isset($a_client['enable']) && isset($a_client['net_list'])) {
-            $cnf_add_to_charon_section .= "\tcisco_unity = yes\n";
+            $strongswanTree['charon']['cisco_unity'] = 'yes';
         }
 
-        $strongswan = <<<EOD
-
-#Automatically generated please do not modify
-starter {
-    load_warning = no
-}
-
-charon {
-    # number of worker threads in charon
-    threads = 16
-    ikesa_table_size = 32
-    ikesa_table_segments = 4
-    init_limit_half_open = 1000
-    ignore_acquire_ts = yes
-    syslog {
-        daemon {
-            ike_name = yes
-        }
-    }
-{$cnf_add_to_charon_section}
-
-EOD;
-
-        $strongswan .= "\tplugins {\n";
+        $strongswanTree['charon']['plugins'] = [];
 
         if (isset($a_client['enable'])) {
             $net_list = array();
@@ -918,11 +917,11 @@ EOD;
                 }
             }
 
-            $strongswan .= "\t\tattr {\n";
+            $strongswanTree['charon']['plugins']['attr'] = [];
             if (!empty($net_list)) {
                 $net_list_str = implode(",", $net_list);
-                $strongswan .= "\t\t\tsubnet = {$net_list_str}\n";
-                $strongswan .= "\t\t\tsplit-include = {$net_list_str}\n";
+                $strongswanTree['charon']['plugins']['attr']['subnet'] = $net_list_str;
+                $strongswanTree['charon']['plugins']['attr']['split-include'] = $net_list_str;
             }
             $cfgservers = array();
             foreach (array('dns_server1', 'dns_server2', 'dns_server3', 'dns_server4') as $dns_server) {
@@ -931,7 +930,7 @@ EOD;
                 }
             }
             if (!empty($cfgservers)) {
-                $strongswan .= "\t\t\tdns = " . implode(",", $cfgservers) . "\n";
+                $strongswanTree['charon']['plugins']['attr']['dns'] = implode(",", $cfgservers);
             }
             unset($cfgservers);
             $cfgservers = array();
@@ -942,56 +941,57 @@ EOD;
                 $cfgservers[] = $a_client['wins_server2'];
             }
             if (!empty($cfgservers)) {
-                $strongswan .= "\t\t\tnbns = " . implode(",", $cfgservers) . "\n";
+                $strongswanTree['charon']['plugins']['attr']['nbns'] = implode(",", $cfgservers);
             }
             unset($cfgservers);
 
             if (!empty($a_client['dns_domain'])) {
-                $strongswan .= "\t\t\t# Search domain and default domain\n";
-                $strongswan .= "\t\t\t28674 = {$a_client['dns_domain']}\n";
+                $strongswanTree['charon']['plugins']['attr']['# Search domain and default domain'] = '';
+                $strongswanTree['charon']['plugins']['attr']['28674'] = $a_client['dns_domain'];
+
                 if (empty($a_client['dns_split'])) {
-                    $strongswan .= "\t\t\t28675 = {$a_client['dns_domain']}";
+                    $strongswanTree['charon']['plugins']['attr']['28675'] = $a_client['dns_domain'];
                 }
-                $strongswan .= "\n";
             }
 
             if (!empty($a_client['dns_split'])) {
-                $strongswan .= "\t\t\t28675 = {$a_client['dns_split']}\n";
+                $strongswanTree['charon']['plugins']['attr']['28675'] = $a_client['dns_split'];
             }
 
             if (!empty($a_client['login_banner'])) {
-                $strongswan .= "\t\t\t28672 = {$a_client['login_banner']}\n";
+                $strongswanTree['charon']['plugins']['attr']['28672'] = $a_client['login_banner'];
             }
 
             if (isset($a_client['save_passwd'])) {
-                $strongswan .= "\t\t\t28673 = 1\n";
+                $strongswanTree['charon']['plugins']['attr']['28673'] = 1;
             }
 
             if (!empty($a_client['pfs_group'])) {
-                $strongswan .= "\t\t\t28679 = {$a_client['pfs_group']}\n";
+                $strongswanTree['charon']['plugins']['attr']['28679'] = $a_client['pfs_group'];
             }
-            $strongswan .= "\t\t}\n";
 
             $disable_xauth = false;
             foreach ($a_phase1 as $ph1ent) {
                 if (!isset($ph1ent['disabled']) && isset($ph1ent['mobile'])) {
                     if ($ph1ent['authentication_method'] == "eap-radius") {
                         $disable_xauth = true; // disable Xauth when radius is used.
-                        $strongswan .= "\t\teap-radius {\n";
-                        $radius_servers = "";
+                        $strongswanTree['charon']['plugins']['eap-radius'] = [];
+                        $strongswanTree['charon']['plugins']['eap-radius']['servers'] = [];
                         $radius_server_num = 1;
                         $radius_accounting_enabled = false;
                         foreach (auth_get_authserver_list() as $auth_server) {
                             if (in_array($auth_server['name'], explode(',', $ph1ent['authservers']))) {
-                                $radius_servers .= "\t\t\t\tserver" . $radius_server_num . " {\n";
-                                $radius_servers .= "\t\t\t\t\taddress = " . $auth_server['host'] . "\n";
-                                $radius_servers .= "\t\t\t\t\tsecret = \"" . $auth_server['radius_secret'] . "\"\n";
-                                $radius_servers .= "\t\t\t\t\tauth_port = " . $auth_server['radius_auth_port'] . "\n";
+                                $server = [
+                                    'address' => $auth_server['host'],
+                                    'secret' => '"' . $auth_server['radius_secret'] . '"',
+                                    'auth_port' => $auth_server['radius_auth_port'],
+                                ];
 
                                 if (!empty($auth_server['radius_acct_port'])) {
-                                    $radius_servers .= "\t\t\t\t\tacct_port = " . $auth_server['radius_acct_port'] . "\n";
+                                    $server['acct_port'] = $auth_server['radius_acct_port'];
                                 }
-                                $radius_servers .= "\t\t\t\t}\n";
+                                $strongswanTree['charon']['plugins']['eap-radius']['servers']['server' . $radius_server_num] = $server;
+
                                 if (!empty($auth_server['radius_acct_port'])) {
                                     $radius_accounting_enabled = true;
                                 }
@@ -999,25 +999,21 @@ EOD;
                             }
                         }
                         if ($radius_accounting_enabled) {
-                            $strongswan .= "\t\t\taccounting = yes\n";
+                            $strongswanTree['charon']['plugins']['eap-radius']['accounting'] = 'yes';
                         }
-                        $strongswan .= "\t\t\tservers {\n";
-                        $strongswan .= $radius_servers;
-                        $strongswan .= "\t\t\t}\n";
-                        $strongswan .= "\t\t}\n";
                         break; // there can only be one mobile phase1, exit loop
                     }
                 }
             }
             if (isset($a_client['enable']) && !$disable_xauth) {
-                $strongswan .= "\t\txauth-generic {\n";
-                $strongswan .= "\t\t\tscript = /usr/local/etc/inc/plugins.inc.d/ipsec/auth-user.php\n";
-                $strongswan .= "\t\t\tauthcfg = unused\n";
-                $strongswan .= "\t\t}\n";
+                $strongswanTree['charon']['plugins']['xauth-generic'] = [
+                    'script' => '/usr/local/etc/inc/plugins.inc.d/ipsec/auth-user.php',
+                    'authcfg' => 'unused'
+                ];
             }
         }
 
-        $strongswan .= "\t}\n}\n";
+        $strongswan = generate_strongswan_conf($strongswanTree);
         @file_put_contents("/usr/local/etc/strongswan.conf", $strongswan);
         unset($strongswan);
 
@@ -1585,4 +1581,23 @@ EOD;
     if ($verbose) {
         echo "done.\n";
     }
+}
+
+function generate_strongswan_conf(array $tree, $level = 0): string
+{
+    $output = "";
+    foreach ($tree as $key => $value) {
+        $output .= str_repeat('    ', $level) . $key;
+
+        if (strpos($key, '#') === 0) {
+            $output .= "\n";
+        } elseif (is_array($value)) {
+            $output .= " {\n";
+            $output .= generate_strongswan_conf($value, $level + 1);
+            $output .= str_repeat('    ', $level) . "}\n";
+        } else {
+            $output .= " = " . $value . "\n";
+        }
+    }
+    return $output;
 }
