@@ -4052,27 +4052,6 @@ function get_interface_subnet($interface = 'wan')
     return null;
 }
 
-function get_interface_subnetv6($interface = 'wan')
-{
-    $realif = get_real_interface($interface, 'inet6');
-    if (!$realif) {
-        if (strstr($interface, '_vip')) {
-            list($interface, $vhid) = explode('_vip', $interface);
-            $realif = get_real_interface($interface, 'inet6');
-        } else {
-            return null;
-        }
-    }
-
-    $ifinfo = legacy_get_interface_addresses($realif);
-
-    if (isset($ifinfo['subnetbits6'])) {
-        return $ifinfo['subnetbits6'];
-    }
-
-    return null;
-}
-
 /* return true if interface has a gateway */
 function interface_has_gateway($friendly)
 {
