@@ -71,8 +71,6 @@ function filter_generate_port(& $rule, $target = "source", $isnat = false) {
 
 function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $isnat = false)
 {
-    global $config;
-
     $src = '';
 
     if (isset($rule[$target]['any'])) {
@@ -228,7 +226,7 @@ function openvpn_client_export_validate_config($srvid, $usrid, $crtid)
 
 function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $nokeys = false, $proxy, $expformat = "baseconf", $outpass = "", $skiptls=false, $doslines=false, $openvpnmanager, $advancedoptions = "")
 {
-    global $config, $input_errors;
+    global $input_errors;
 
     $nl = ($doslines) ? "\r\n" : "\n";
     $conf = "";
@@ -539,8 +537,6 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
 
 function viscosity_openvpn_client_config_exporter($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $outpass, $proxy, $openvpnmanager, $advancedoptions, $compression_type)
 {
-    global $config;
-
     $validconfig = openvpn_client_export_validate_config($srvid, $usrid, $crtid);
     if (!$validconfig) {
         return false;
@@ -789,7 +785,8 @@ function openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipco
     }
 }
 
-function openvpn_client_export_build_remote_lines($settings, $useaddr, $interface, $expformat, $nl) {
+function openvpn_client_export_build_remote_lines($settings, $useaddr, $interface, $expformat, $nl)
+{
     global $config;
     $remotes = array();
     if (($useaddr == "serveraddr") || ($useaddr == "servermagic") || ($useaddr == "servermagichost")) {

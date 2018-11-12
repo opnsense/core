@@ -47,8 +47,6 @@ function return_dpinger_defaults()
 
 function setup_gateways_monitor($verbose = false, $gwname = null)
 {
-    global $config;
-
     if ($verbose) {
         echo 'Setting up gateway monitors...';
         flush();

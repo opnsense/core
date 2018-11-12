@@ -206,11 +206,11 @@ function next_unused_gateway_name($interface)
 
 function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet)
 {
-    global $config, $fp;
+    global $fp;
 
     $label_IPvX = $inet_type == 'inet6' ? 'IPv6' : 'IPv4';
 
-    $a_gateways =  &config_read_array('gateways', 'gateway_item');
+    $a_gateways = &config_read_array('gateways', 'gateway_item');
     $is_default = true;
     $new_name = '';
 
