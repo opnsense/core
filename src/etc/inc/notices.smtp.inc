@@ -363,7 +363,7 @@ class smtp_class
                     return 0;
                 }
                 fclose($this->connection);
-                $this->connection = 0;
+                $this->connection = null;
             }
         }
         if (count($hosts) == 0) {
@@ -461,7 +461,7 @@ class smtp_class
             $this->connected_domain = $domain;
         } else {
             fclose($this->connection);
-            $this->connection = 0;
+            $this->connection = null;
         }
         return $success;
     }
@@ -710,7 +710,7 @@ class smtp_class
             $this->disconnected_error = 0;
         else
             fclose($this->connection);
-        $this->connection = 0;
+        $this->connection = null;
         $this->state = "Disconnected";
         if ($this->debug)
             $this->OutputDebug("Disconnected.");
