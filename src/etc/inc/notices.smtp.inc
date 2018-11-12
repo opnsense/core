@@ -206,10 +206,6 @@ class smtp_class
 	{
 		if($this->ssl || $this->tls)
 		{
-			$version=explode(".",function_exists("phpversion") ? phpversion() : "3.0.7");
-			$php_version=intval($version[0])*1000000+intval($version[1])*1000+intval($version[2]);
-			if($php_version<4003000)
-				return(gettext("establishing SSL connections requires at least PHP version 4.3.0"));
 			if(!function_exists("extension_loaded")
 			|| !extension_loaded("openssl"))
 				return(gettext("establishing SSL connections requires the OpenSSL extension enabled"));
