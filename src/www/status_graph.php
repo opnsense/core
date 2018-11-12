@@ -85,10 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // top data
         $result = array();
         $real_interface = get_real_interface($pconfig['if']);
-        $address = get_interface_ip($pconfig['if']);
-        $netbits = get_interface_subnet($pconfig['if']);
-        $address = gen_subnet($address, $netbits);
-        $intsubnet = "{$address}/{$netbits}";
+        $intsubnet = find_interface_network($real_interface);
         if (is_subnetv4($intsubnet)) {
             $cmd_args = $pconfig['filter'] == "local" ? " -c " . $intsubnet . " " : " -lc 0.0.0.0/0 ";
             $cmd_args .= $pconfig['sort'] == "out" ? " -T " : " -R ";
