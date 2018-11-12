@@ -3905,9 +3905,6 @@ function link_interface_to_gif($interface)
     return $result;
 }
 
-/*
- * find_interface_ip($interface): return the interface ip (first found)
- */
 function find_interface_ip($interface, $exists = false)
 {
     $interface = trim($interface);	/* XXX no */
@@ -3919,15 +3916,13 @@ function find_interface_ip($interface, $exists = false)
     $ifinfo = legacy_get_interface_addresses($interface);
 
     if (isset($ifinfo['ipaddr'])) {
+        /* return first address found */
         return $ifinfo['ipaddr'];
     }
 
     return null;
 }
 
-/*
- * find_interface_ipv6($interface): return the interface ip (first found)
- */
 function find_interface_ipv6($interface, $exists = false)
 {
     $interface = trim($interface);	/* XXX no */
@@ -3942,15 +3937,13 @@ function find_interface_ipv6($interface, $exists = false)
     $ifinfo = legacy_get_interface_addresses($interface);
 
     if (isset($ifinfo['ipaddr6'])) {
+        /* return first address found */
         return $ifinfo['ipaddr6'];
     }
 
     return null;
 }
 
-/*
- * find_interface_ipv6_ll($interface): return the interface ipv6 link local (first found)
- */
 function find_interface_ipv6_ll($interface, $exists = false)
 {
     $interface = trim($interface);	/* XXX no */
@@ -3965,6 +3958,7 @@ function find_interface_ipv6_ll($interface, $exists = false)
         if (strstr($line, ':')) {
             $parts = explode('/', $line);
             if (is_linklocal($parts[0])) {
+                /* return first address found */
                 return $parts[0];
             }
         }
@@ -4069,12 +4063,12 @@ function get_interface_ipv6($interface = 'wan')
     return null;
 }
 
-function get_interface_subnet($interface = "wan")
+function get_interface_subnet($interface = 'wan')
 {
     $realif = get_real_interface($interface);
     if (!$realif) {
-        if (strstr($interface, "_vip")) {
-            list($interface, $vhid) = explode("_vip", $interface);
+        if (strstr($interface, '_vip')) {
+            list($interface, $vhid) = explode('_vip', $interface);
             $realif = get_real_interface($interface);
         } else {
             return null;
@@ -4089,12 +4083,12 @@ function get_interface_subnet($interface = "wan")
     return null;
 }
 
-function get_interface_subnetv6($interface = "wan")
+function get_interface_subnetv6($interface = 'wan')
 {
-    $realif = get_real_interface($interface, "inet6");
+    $realif = get_real_interface($interface, 'inet6');
     if (!$realif) {
-        if (strstr($interface, "_vip")) {
-            list($interface, $vhid) = explode("_vip", $interface);
+        if (strstr($interface, '_vip')) {
+            list($interface, $vhid) = explode('_vip', $interface);
             $realif = get_real_interface($interface);
         } else {
             return null;
@@ -4104,6 +4098,7 @@ function get_interface_subnetv6($interface = "wan")
     if (does_interface_exist($realif)) {
         $ifinfo = legacy_get_interface_addresses($realif);
         if (isset($ifinfo['subnetbits6'])) {
+            /* return first subnet size found */
             return $ifinfo['subnetbits6'];
         }
     }
