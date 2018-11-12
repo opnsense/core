@@ -28,13 +28,14 @@ class smtp_class
 	public $pop3_auth_port=110;
 
 	private $state="Disconnected";
-	private $connection=0;
+	private $connection=null;
 	private $pending_recipients=0;
 	private $next_token="";
 	private $direct_sender="";
 	private $connected_domain="";
 	private $result_code;
 	private $disconnected_error=0;
+	private $pending_sender = false;
 
 	private function Tokenize($string,$separator="")
 	{
@@ -188,7 +189,7 @@ class smtp_class
 		{
 			if($this->VerifyResultLines("250",$responses)<=0)
 				return(0);
-			$this->pending_sender=0;
+			$this->pending_sender=false;
 		}
 		for(;$this->pending_recipients;$this->pending_recipients--)
 		{
@@ -636,7 +637,7 @@ class smtp_class
 			return(0);
 		$this->state="SenderSet";
 		if(IsSet($this->esmtp_extensions["PIPELINING"]))
-			$this->pending_sender=1;
+			$this->pending_sender=true;
 		$this->pending_recipients=0;
 		return(1);
 	}
