@@ -364,17 +364,10 @@ function ipsec_idinfo_to_cidr(&$idinfo, $addrbits = false, $mode = '')
             if (empty($mode) && !empty($idinfo['mode'])) {
                 $mode = $idinfo['mode'];
             }
-
-            if ($mode == "tunnel6") {
-                $address = get_interface_ipv6($idinfo['type']);
-                $netbits = get_interface_subnetv6($idinfo['type']);
-                $address = gen_subnetv6($address, $netbits);
-                return "{$address}/{$netbits}";
+            if ($mode == 'tunnel6') {
+                return find_interface_networkv6(get_real_interface($idinfo['type']), 'inet6');
             } else {
-                $address = get_interface_ip($idinfo['type']);
-                $netbits = get_interface_subnet($idinfo['type']);
-                $address = gen_subnet($address, $netbits);
-                return "{$address}/{$netbits}";
+                return find_interface_network(get_real_interface($idinfo['type']));
             }
             break; /* NOTREACHED */
     }
