@@ -519,7 +519,7 @@ class smtp_class
                 return false;
             } else {
                 // Resend HELO since session has been reset
-                return $this->hello($this->hostname);
+                return $this->hello($this->hostname());
             }
         } else
             return false;
