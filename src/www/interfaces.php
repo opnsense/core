@@ -285,13 +285,11 @@ function get_wireless_modes($interface) {
         $stack_list = "/usr/bin/awk -F\"Channel \" '{ gsub(/\\*/, \" \"); print \$2 \"\\\n\" \$3 }'";
         $format_list = "/usr/bin/awk '{print \$5 \" \" \$6 \",\" \$1}'";
 
-        $interface_channels = "";
+        $interface_channels = [];
         exec("$chan_list | $stack_list | sort -u | $format_list 2>&1", $interface_channels);
-        $interface_channel_count = count($interface_channels);
 
-        $c = 0;
-        while ($c < $interface_channel_count) {
-            $channel_line = explode(",", $interface_channels["$c"]);
+        foreach ($interface_channels as $c => $interface_channel) {
+            $channel_line = explode(",", $interface_channel);
             $wireless_mode = trim($channel_line[0]);
             $wireless_channel = trim($channel_line[1]);
             if (trim($wireless_mode) != "") {
@@ -313,9 +311,8 @@ function get_wireless_modes($interface) {
                     }
                     $wireless_mode = "11na";
                 }
-                $wireless_modes["$wireless_mode"]["$c"] = $wireless_channel;
+                $wireless_modes[$wireless_mode][$c] = $wireless_channel;
             }
-            $c++;
         }
     }
     return($wireless_modes);
@@ -331,7 +328,7 @@ function get_wireless_channel_info($interface) {
         $stack_list = "/usr/bin/awk -F\"Channel \" '{ gsub(/\\*/, \" \"); print \$2 \"\\\n\" \$3 }'";
         $format_list = "/usr/bin/awk '{print \$1 \",\" \$3 \" \" \$4 \",\" \$5 \",\" \$7}'";
 
-        $interface_channels = "";
+        $interface_channels = [];
         exec("$chan_list | $stack_list | sort -u | $format_list 2>&1", $interface_channels);
 
         foreach ($interface_channels as $channel_line) {
