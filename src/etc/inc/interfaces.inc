@@ -4003,15 +4003,15 @@ function ip_in_interface_alias_subnet($interface, $ipalias)
 function get_interface_ip($interface = 'wan')
 {
     $realif = get_failover_interface($interface);
-    if (!$realif) {
-        if (strstr($interface, '_vip')) {
-            return get_configured_carp_interface_list($interface);
-        } else {
-            return null;
-        }
+    if ($realif) {
+        return find_interface_ip($realif);
     }
 
-    return find_interface_ip($realif);
+    if (strstr($interface, '_vip')) {
+        return get_configured_carp_interface_list($interface);
+    }
+
+    return null;
 }
 
 function get_interface_ipv6($interface = 'wan')
@@ -4019,16 +4019,16 @@ function get_interface_ipv6($interface = 'wan')
     global $config;
 
     $realif = get_failover_interface($interface, 'inet6');
-    if (!$realif) {
-        if (strstr($interface, '_vip')) {
-            return get_configured_carp_interface_list($interface, 'inet6');
-        } else {
-            return null;
-        }
+    if ($realif) {
+        return isset($config['interfaces'][$interface]['dhcp6prefixonly']) ?
+            find_interface_ipv6_ll($realif) : find_interface_ipv6($realif);
     }
 
-    return isset($config['interfaces'][$interface]['dhcp6prefixonly']) ?
-        find_interface_ipv6_ll($realif) : find_interface_ipv6($realif);
+    if (strstr($interface, '_vip')) {
+        return get_configured_carp_interface_list($interface, 'inet6');
+    }
+
+    return null;
 }
 
 function get_interface_subnet($interface = 'wan')
@@ -4044,8 +4044,8 @@ function get_interface_subnet($interface = 'wan')
     }
 
     $ifinfo = legacy_get_interface_addresses($realif);
+
     if (isset($ifinfo['subnetbits'])) {
-        /* return first subnet size found */
         return $ifinfo['subnetbits'];
     }
 
@@ -4065,8 +4065,8 @@ function get_interface_subnetv6($interface = 'wan')
     }
 
     $ifinfo = legacy_get_interface_addresses($realif);
+
     if (isset($ifinfo['subnetbits6'])) {
-        /* return first subnet size found */
         return $ifinfo['subnetbits6'];
     }
 
