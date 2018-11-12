@@ -23,7 +23,6 @@ class smtp_class
     public $esmtp_extensions = array();
     public $maximum_piped_recipients = 100;
     public $exclude_address = "";
-    public $getmxrr = "GetMXRR";
     public $pop3_auth_host = "";
     public $pop3_auth_port = 110;
 
@@ -68,14 +67,12 @@ class smtp_class
     private function SetDataAccessError($error)
     {
         $this->error = $error;
-        if (function_exists("socket_get_status")) {
-            $status = socket_get_status($this->connection);
-            if ($status["timed_out"])
-                $this->error .= gettext(": data access time out");
-            elseif ($status["eof"]) {
-                $this->error .= gettext(": the server disconnected");
-                $this->disconnected_error = 1;
-            }
+        $status = socket_get_status($this->connection);
+        if ($status["timed_out"])
+            $this->error .= gettext(": data access time out");
+        elseif ($status["eof"]) {
+            $this->error .= gettext(": the server disconnected");
+            $this->disconnected_error = 1;
         }
     }
 
@@ -176,8 +173,7 @@ class smtp_class
     private function ConnectToHost($domain, $port, $resolve_message)
     {
         if ($this->ssl || $this->tls) {
-            if (!function_exists("extension_loaded")
-                || !extension_loaded("openssl"))
+            if (!extension_loaded("openssl"))
                 return gettext("establishing SSL connections requires the OpenSSL extension enabled");
         }
         if (preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $domain))
@@ -214,8 +210,7 @@ class smtp_class
     private function SASLAuthenticate($mechanisms, $credentials, &$authenticated, &$mechanism)
     {
         $authenticated = 0;
-        if (!function_exists("class_exists")
-            || !class_exists("sasl_client_class")) {
+        if (!class_exists("sasl_client_class")) {
             $this->error = gettext("it is not possible to authenticate using the specified mechanism because the SASL library class is not loaded");
             return 0;
         }
@@ -312,9 +307,7 @@ class smtp_class
             if (strlen($domain) == 0)
                 return 1;
             $hosts = $weights = $mxhosts = array();
-            $getmxrr = $this->getmxrr;
-            if (function_exists($getmxrr)
-                && $getmxrr($domain, $hosts, $weights)) {
+            if (getmxrr($domain, $hosts, $weights)) {
                 for ($host = 0; $host < count($hosts); $host++)
                     $mxhosts[$weights[$host]] = $hosts[$host];
                 KSort($mxhosts);
@@ -379,8 +372,7 @@ class smtp_class
             return 0;
         }
         $timeout = ($this->data_timeout ? $this->data_timeout : $this->timeout);
-        if ($timeout
-            && function_exists("socket_set_timeout"))
+        if ($timeout)
             socket_set_timeout($this->connection, $timeout, 0);
         if ($this->debug)
             $this->OutputDebug(sprintf(gettext("Connected to SMTP server \"%s\"."), $domain));
