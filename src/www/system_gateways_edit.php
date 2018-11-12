@@ -72,8 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($pconfig['gateway']) && is_ipaddr($pconfig['gateway'])) {
         if (is_ipaddrv4($pconfig['gateway'])) {
-            $parent_ip = empty($pconfig['ajaxip']) ? get_interface_ip($pconfig['interface']) : $pconfig['ajaxip'];
-            $parent_sn = empty($pconfig['ajaxnet']) ? get_interface_subnet($pconfig['interface']) : $pconfig['ajaxnet'];
+            list ($parent_ip, $parent_sn) = explode('/', find_interface_network(get_real_interface($pconfig['interface']), true));
+            $parent_ip = empty($pconfig['ajaxip']) ? $parent_ip : $pconfig['ajaxip'];
+            $parent_sn = empty($pconfig['ajaxnet']) ? $parent_sn : $pconfig['ajaxnet'];
             if (empty($parent_ip) || empty($parent_sn)) {
                 $input_errors[] = gettext("Cannot add IPv4 Gateway Address because no IPv4 address could be found on the interface.");
             } else {
@@ -97,14 +98,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 if (!$found && !isset($pconfig['fargw'])) {
-                    $input_errors[] = sprintf(gettext("The gateway address %1\$s does not lie within one of the chosen interface's subnets."), $pconfig['gateway']);
+                    $input_errors[] = sprintf(gettext('The gateway address "%s" does not lie within one of the chosen interface\'s IPv4 subnets.'), $pconfig['gateway']);
                 }
             }
         } elseif (is_ipaddrv6($pconfig['gateway'])) {
             /* do not do a subnet match on a link local address, it's valid */
             if (!is_linklocal($pconfig['gateway'])) {
-                $parent_ip = empty($pconfig['ajaxip']) ? get_interface_ipv6($pconfig['interface']) : $pconfig['ajaxip'];
-                $parent_sn = empty($pconfig['ajaxnet']) ? get_interface_subnetv6($pconfig['interface']) : $pconfig['ajaxnet'];
+                list ($parent_ip, $parent_sn) = explode('/', find_interface_networkv6(get_real_interface($pconfig['interface'], 'inet6'), true));
+                $parent_ip = empty($pconfig['ajaxip']) ? $parent_ip : $pconfig['ajaxip'];
+                $parent_sn = empty($pconfig['ajaxnet']) ? $parent_sn : $pconfig['ajaxnet'];
                 if (empty($parent_ip) || empty($parent_sn)) {
                     $input_errors[] = gettext("Cannot add IPv6 Gateway Address because no IPv6 address could be found on the interface.");
                 } else {
@@ -120,6 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
 
                     $found = false;
+
                     foreach ($subnets as $subnet) {
                         if (ip_in_subnet($pconfig['gateway'], $subnet)) {
                             $found = true;
@@ -127,8 +130,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
 
-                    if (!$found && !isset($pconfig['fargw'])) {
-                        $input_errors[] = sprintf(gettext("The gateway address %1\$s does not lie within one of the chosen interface's subnets."), $pconfig['gateway']);
+                    if (!$found) {
+                        $input_errors[] = sprintf(gettext('The gateway address "%s" does not lie within one of the chosen interface\'s IPv6 subnets.'), $pconfig['gateway']);
                     }
                 }
             }
