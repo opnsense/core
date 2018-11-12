@@ -735,9 +735,4 @@ class smtp_class
         }
         return $success;
     }
-
 }
-
-;
-
-?>
