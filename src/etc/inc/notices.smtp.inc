@@ -298,6 +298,7 @@ class smtp_class
             $this->error = gettext("connection is already established");
             return 0;
         }
+        $success = false;
         $this->disconnected_error = 0;
         $this->error = $error = "";
         $this->esmtp_host = "";
