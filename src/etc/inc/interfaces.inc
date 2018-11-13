@@ -3923,6 +3923,24 @@ function find_interface_ip($interface, $exists = false)
     return null;
 }
 
+function find_interface_network($realif, $subnet = true)
+{
+    $ifinfo = legacy_get_interface_addresses($realif);
+
+    if (!isset($ifinfo['ipaddr']) || !isset($ifinfo['subnetbits'])) {
+        return null;
+    }
+
+    $net = $ifinfo['subnetbits'];
+    $addr = $ifinfo['ipaddr'];
+
+    if ($subnet) {
+        $addr = gen_subnet($addr, $net);
+    }
+
+    return "{$addr}/${net}";
+}
+
 function find_interface_ipv6($interface, $exists = false)
 {
     $interface = trim($interface);	/* XXX no */
@@ -3944,6 +3962,24 @@ function find_interface_ipv6($interface, $exists = false)
     return null;
 }
 
+function find_interface_networkv6($realif, $subnet = true)
+{
+    $ifinfo = legacy_get_interface_addresses($realif);
+
+    if (!isset($ifinfo['ipaddr6']) || !isset($ifinfo['subnetbits6'])) {
+        return null;
+    }
+
+    $net = $ifinfo['subnetbits6'];
+    $addr = $ifinfo['ipaddr6'];
+
+    if ($subnet) {
+        $addr = gen_subnetv6($addr, $net);
+    }
+
+    return "{$addr}/${net}";
+}
+
 function find_interface_ipv6_ll($realif)
 {
     if (!does_interface_exist($realif)) {
@@ -3957,18 +3993,6 @@ function find_interface_ipv6_ll($realif)
     }
 
     return $ifinfo['ipaddr6_ll'];
-}
-
-function find_interface_subnet($interface)
-{
-    $interface = trim($interface);
-    if (does_interface_exist($interface)) {
-        $ifinfo = legacy_get_interface_addresses($interface);
-        if (isset($ifinfo['subnetbits'])) {
-            return $ifinfo['subnetbits'];
-        }
-    }
-    return null;
 }
 
 function ip_in_interface_alias_subnet($interface, $ipalias)
@@ -4067,9 +4091,12 @@ function get_interface_subnet($interface = 'wan')
         }
     }
 
-    $cursn = find_interface_subnet($realif);
-    if (!empty($cursn)) {
-        return $cursn;
+    if (does_interface_exist($realif)) {
+        $ifinfo = legacy_get_interface_addresses($realif);
+        if (isset($ifinfo['subnetbits'])) {
+            /* return first subnet size found */
+            return $ifinfo['subnetbits'];
+        }
     }
 
     return null;
