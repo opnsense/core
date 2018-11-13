@@ -56,7 +56,9 @@ ENTRIES_TOT=`pfctl -vvsTables | awk '/Addresses/ {s+=$2}; END {print s}'`
 ENTRIES_V4=`pfctl -vvsTables | awk '/-\tbogons$/ {getline; print $2}'`
 LINES_V4=`wc -l ${WORKDIR}/fullbogons-ipv4.txt | awk '{ print $1 }'`
 if [ $ENTRIES_MAX -gt $((2*ENTRIES_TOT-${ENTRIES_V4:-0}+LINES_V4)) ]; then
-    # the following networks are removed as they are considered non-bogon:
+    # These bogons are removed as they are private.  I'm not going
+    # to question this now, adding a big WARNING instead.  Here be
+    # dragons...
     egrep -v "^100.64.0.0/10|^192.168.0.0/16|^172.16.0.0/12|^10.0.0.0/8" ${WORKDIR}/fullbogons-ipv4.txt > ${DESTDIR}/bogons
     RESULT=`/sbin/pfctl -t bogons -T replace -f ${DESTDIR}/bogons 2>&1`
     echo "$RESULT" | awk '{ print "Bogons V4 file downloaded: " $0 }' | logger

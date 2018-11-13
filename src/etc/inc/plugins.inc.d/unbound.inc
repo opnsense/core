@@ -137,6 +137,7 @@ function unbound_generate_config()
 #
 private-address: 0.0.0.0/8       # Broadcast address
 private-address: 10.0.0.0/8
+private-address: 100.64.0.0/10
 private-address: 127.0.0.0/8     # Loopback Localhost
 private-address: 169.254.0.0/16
 private-address: 172.16.0.0/12
