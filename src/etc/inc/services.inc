@@ -576,18 +576,17 @@ EOPP;
     $iflist = get_configured_interface_with_descr();
 
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
-        $ifcfg = $config['interfaces'][$dhcpif];
-        $newzone = array();
-
         if (!isset($dhcpifconf['enable']) || !isset($iflist[$dhcpif])) {
             continue;
         }
-        $ifcfgip = get_interface_ip($dhcpif);
-        $ifcfgsn = get_interface_subnet($dhcpif);
+
+        list ($ifcfgip, $ifcfgsn) = explode('/', find_interface_network(get_real_interface($dhcpif), false));
+
         $subnet = gen_subnet($ifcfgip, $ifcfgsn);
         $subnetmask = gen_subnet_mask($ifcfgsn);
 
-        if (!is_ipaddr($subnet)) {
+        if (!is_ipaddrv4($ifcfgip) || !is_subnetv4("{$subnet}/{$ifcfgsn}")) {
+            log_error("Warning! services_dhcpdv4_configure() found no suitable IPv4 address on {$dhcpif}");
             continue;
         }
 
@@ -606,6 +605,8 @@ EOPP;
         if (!empty($dhcpifconf['domainsearchlist'])) {
             $dnscfg .= "  option domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $dhcpifconf['domainsearchlist'])) . "\";\n";
         }
+
+        $newzone = array();
 
         if (isset($dhcpifconf['ddnsupdate'])) {
             $need_ddns_updates = true;
