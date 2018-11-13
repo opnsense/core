@@ -57,7 +57,23 @@ set eventqueue basedir {{ OPNsense.monit.general.eventqueuePath }} {{ slots }}
 {%      set username = "username " ~ OPNsense.monit.general.username %}
 {%      set password = "password " ~ '"' ~ OPNsense.monit.general.password ~ '"' %}
 {%    endif %}
-{%    set ssl = 'using ssl' if OPNsense.monit.general.ssl|default('0') == '1' %}
+{%    if OPNsense.monit.general.ssl|default('0') == '1' %}
+{%      set ssl = 'using ssl' %}
+{%      set ssloptions = '' %}
+{%      if helpers.exists('OPNsense.monit.general.sslversion') and OPNsense.monit.general.sslversion|default('') != '' %}
+{%        set ssloptions = "version: " ~ OPNsense.monit.general.sslversion %}
+{%      endif %}
+{%      if helpers.exists('OPNsense.monit.general.sslverify') %}
+{%        if OPNsense.monit.general.sslverify == '1' %}
+{%          set ssloptions = ssloptions ~ " verify: enable" %}
+{%        else %}
+{%          set ssloptions = ssloptions ~ " verify: disable" %}
+{%        endif %}
+{%      endif %}
+{%      if ssloptions != '' %}
+{%        set ssl = ssl ~ " with options { " ~ ssloptions ~ " }" %}
+{%      endif %}
+{%    endif %}
 set mailserver {{ OPNsense.monit.general.mailserver }} {{ port }} {{ username }} {{ password }} {{ ssl }}
 {%  endif %}
 
