@@ -1504,14 +1504,16 @@ function services_dhcrelay_configure($verbose = false)
     $srvips = explode(",", $dhcrelaycfg['server']);
     foreach ($srvips as $srcidx => $srvip) {
         unset($destif);
+
+        /* XXX runs multiple times because of server address loop :( */
         foreach ($iflist as $ifname => $unused) {
-            $subnet = get_interface_ip($ifname);
-            if (!is_ipaddr($subnet)) {
+            $realif = get_real_interface($ifname);
+            $subnet = find_interface_network($realif);
+            if (!is_subnetv4($subnet)) {
                 continue;
             }
-            $subnet .=  "/" . get_interface_subnet($ifname);
             if (ip_in_subnet($srvip, $subnet)) {
-                $destif = get_real_interface($ifname);
+                $destif = $realif;
                 break;
             }
         }
