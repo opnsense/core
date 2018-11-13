@@ -860,6 +860,7 @@
 /usr/local/opnsense/version/opnsense
 /usr/local/opnsense/www/api.php
 /usr/local/opnsense/www/css/bootstrap-datepicker3.min.css
+/usr/local/opnsense/www/css/bootstrap-select-1.13.3.css
 /usr/local/opnsense/www/css/flags/1x1/ad.svg
 /usr/local/opnsense/www/css/flags/1x1/ae.svg
 /usr/local/opnsense/www/css/flags/1x1/af.svg
@@ -1517,7 +1518,6 @@
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/bootstrap/mixins/_vendor-prefixes.scss
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/main.scss
 /usr/local/opnsense/www/themes/opnsense/build/css/bootstrap-dialog.css
-/usr/local/opnsense/www/themes/opnsense/build/css/bootstrap-select.css
 /usr/local/opnsense/www/themes/opnsense/build/css/main.css
 /usr/local/opnsense/www/themes/opnsense/build/fonts/LICENSE.SourceSansPro.txt
 /usr/local/opnsense/www/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot
