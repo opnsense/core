@@ -3944,27 +3944,19 @@ function find_interface_ipv6($interface, $exists = false)
     return null;
 }
 
-function find_interface_ipv6_ll($interface, $exists = false)
+function find_interface_ipv6_ll($realif)
 {
-    $interface = trim($interface);	/* XXX no */
-
-    if (!$exists && !does_interface_exist($interface)) {
+    if (!does_interface_exist($realif)) {
         return null;
     }
 
-    $ifinfo = legacy_getall_interface_addresses($interface);
+    $ifinfo = legacy_get_interface_addresses($realif);
 
-    foreach ($ifinfo as $line) {
-        if (strstr($line, ':')) {
-            $parts = explode('/', $line);
-            if (is_linklocal($parts[0])) {
-                /* return first address found */
-                return $parts[0];
-            }
-        }
+    if (!isset($ifinfo['ipaddr6_ll'])) {
+        return null;
     }
 
-    return null;
+    return $ifinfo['ipaddr6_ll'];
 }
 
 function find_interface_subnet($interface)
