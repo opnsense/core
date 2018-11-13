@@ -1,6 +1,6 @@
 <model>
    <mount>//OPNsense/monit</mount>
-   <version>1.0.4</version>
+   <version>1.0.5</version>
    <description>Monit settings</description>
    <items>
       <general>
@@ -47,6 +47,21 @@
             <default>0</default>
             <Required>Y</Required>
          </ssl>
+         <sslversion type="OptionField">
+            <default>auto</default>
+            <Required>Y</Required>
+            <OptionValues>
+               <auto>AUTO</auto>
+               <tlsv1>TLSV1</tlsv1>
+               <tlsv11>TLSV11</tlsv11>
+               <tlsv12>TLSV12</tlsv12>
+               <tlsv13>TLSV13</tlsv13>
+            </OptionValues>
+         </sslversion>
+         <sslverify type="BooleanField">
+            <Required>Y</Required>
+            <default>1</default>
+         </sslverify>
          <logfile type="TextField">
             <Required>N</Required>
             <default>syslog facility log_daemon</default>
