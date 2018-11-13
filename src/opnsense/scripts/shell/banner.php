@@ -38,7 +38,7 @@ $version = trim(shell_exec('opnsense-version'));
 
 echo "\n*** {$config['system']['hostname']}.{$config['system']['domain']}: {$version} ***\n";
 
-$iflist = legacy_config_get_interfaces(array('virtual' => false));
+$iflist = legacy_config_get_interfaces(array('enable' => true, 'virtual' => false));
 
 if (!count($iflist)) {
     echo "\n\tNo network interfaces are assigned.\n";
@@ -46,49 +46,41 @@ if (!count($iflist)) {
 }
 
 foreach ($iflist as $ifname => $ifcfg) {
-    $ifconf = $config['interfaces'][$ifname];
-
-    if (!isset($ifconf['enable'])) {
-        continue;
-    }
-
     $class = null;
-    if (isset($ifconf['ipaddr'])) {
-        switch ($ifconf['ipaddr']) {
-            case "dhcp":
-                $class = "/DHCP4";
-                break;
-            case "pppoe":
-                $class = "/PPPoE";
-                break;
-            case "pptp":
-                $class = "/PPTP";
-                break;
-            case "l2tp":
-                $class = "/L2TP";
-                break;
-        }
+
+    switch ($ifcfg['ipaddr']) {
+        case 'dhcp':
+            $class = '/DHCP4';
+            break;
+        case 'pppoe':
+            $class = '/PPPoE';
+            break;
+        case 'pptp':
+            $class = '/PPTP';
+            break;
+        case 'l2tp':
+            $class = '/L2TP';
+            break;
     }
 
     $class6 = null;
-    if (isset($ifconf['ipaddrv6'])) {
-        switch ($ifconf['ipaddrv6']) {
-            case "dhcp6":
-                $class6 = "/DHCP6";
-                break;
-            case "slaac":
-                $class6 = "/SLAAC";
-                break;
-            case "6rd":
-                $class6 = "/6RD";
-                break;
-            case "6to4":
-                $class6 = "/6to4";
-                break;
-            case "track6":
-                $class6 = "/t6";
-                break;
-        }
+
+    switch ($ifcfg['ipaddrv6']) {
+        case 'dhcp6':
+            $class6 = '/DHCP6';
+            break;
+        case 'slaac':
+            $class6 = '/SLAAC';
+            break;
+        case '6rd':
+            $class6 = '/6RD';
+            break;
+        case '6to4':
+            $class6 = '/6to4';
+            break;
+        case 'track6':
+            $class6 = '/t6';
+            break;
     }
 
     $realif = get_real_interface($ifname);

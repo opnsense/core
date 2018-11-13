@@ -298,6 +298,7 @@ function legacy_config_get_interfaces($filters = array())
         if (isset($iface[0])) {
             $iface = $iface[0];
         }
+
         // apply filters
         $iface_match = true;
         foreach ($filters as $filter_key => $filter_value) {
@@ -311,8 +312,11 @@ function legacy_config_get_interfaces($filters = array())
                 break;
             }
         }
+
         if ($iface_match) {
             $iface['descr'] = !empty($iface['descr']) ? $iface['descr'] : strtoupper($ifname);
+            $iface['ipaddrv6'] = !empty($iface['ipaddrv6']) ? $iface['ipaddrv6'] : null;
+            $iface['ipaddr'] = !empty($iface['ipaddr']) ? $iface['ipaddr'] : null;
             $interfaces[$ifname] = $iface;
         }
     }
