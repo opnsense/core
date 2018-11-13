@@ -3905,22 +3905,21 @@ function link_interface_to_gif($interface)
     return $result;
 }
 
-function find_interface_ip($interface, $exists = false)
+function find_interface_ip($realif)
 {
-    $interface = trim($interface);	/* XXX no */
+    $realif = trim($realif);	/* XXX no */
 
-    if (!$exists && !does_interface_exist($interface)) {
+    if (!does_interface_exist($realif)) {
         return null;
     }
 
-    $ifinfo = legacy_get_interface_addresses($interface);
+    $ifinfo = legacy_get_interface_addresses($realif);
 
-    if (isset($ifinfo['ipaddr'])) {
-        /* return first address found */
-        return $ifinfo['ipaddr'];
+    if (!isset($ifinfo['ipaddr'])) {
+        return null;
     }
 
-    return null;
+    return $ifinfo['ipaddr'];
 }
 
 function find_interface_network($realif, $subnet = true)
@@ -3941,25 +3940,24 @@ function find_interface_network($realif, $subnet = true)
     return "{$addr}/${net}";
 }
 
-function find_interface_ipv6($interface, $exists = false)
+function find_interface_ipv6($realif)
 {
-    $interface = trim($interface);	/* XXX no */
+    $realif = trim($realif);	/* XXX no */
 
     // a bit obscure, why should this be different then find_interface_ip?
-    $interface = get_real_interface($interface);
+    $realif = get_real_interface($realif);
 
-    if (!$exists && !does_interface_exist($interface)) {
+    if (!does_interface_exist($realif)) {
         return null;
     }
 
-    $ifinfo = legacy_get_interface_addresses($interface);
+    $ifinfo = legacy_get_interface_addresses($realif);
 
-    if (isset($ifinfo['ipaddr6'])) {
-        /* return first address found */
-        return $ifinfo['ipaddr6'];
+    if (!isset($ifinfo['ipaddr6'])) {
+        return null;
     }
 
-    return null;
+    return $ifinfo['ipaddr6'];
 }
 
 function find_interface_networkv6($realif, $subnet = true)
@@ -3982,6 +3980,8 @@ function find_interface_networkv6($realif, $subnet = true)
 
 function find_interface_ipv6_ll($realif)
 {
+    $realif = trim($realif);	/* XXX no */
+
     if (!does_interface_exist($realif)) {
         return null;
     }
