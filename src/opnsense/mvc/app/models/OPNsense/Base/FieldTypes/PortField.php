@@ -107,7 +107,7 @@ class PortField extends BaseField
             self::$internalOptionList = array("any") + self::$wellknownservices;
 
             for ($port=1; $port <= 65535; $port++) {
-                self::$internalOptionList[] = $port;
+                self::$internalOptionList[] = (string)$port;
             }
         }
     }
