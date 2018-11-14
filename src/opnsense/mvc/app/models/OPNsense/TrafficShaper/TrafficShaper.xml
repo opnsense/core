@@ -284,6 +284,7 @@
                 </source_not>
                 <src_port type="PortField">
                     <Required>Y</Required>
+                    <EnableWellKnown>Y</EnableWellKnown>
                     <default>any</default>
                 </src_port>
                 <destination type="NetworkField">
@@ -297,6 +298,7 @@
                 </destination_not>
                 <dst_port type="PortField">
                     <Required>Y</Required>
+                    <EnableWellKnown>Y</EnableWellKnown>
                     <default>any</default>
                 </dst_port>
                 <direction type="OptionField">

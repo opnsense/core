@@ -94,6 +94,11 @@ class PortField extends BaseField
     );
 
     /**
+     * @var bool enable well known ports
+     */
+    private $enableWellKown = false;
+
+    /**
      * @var array collected options
      */
     private static $internalOptionList = null;
@@ -104,11 +109,26 @@ class PortField extends BaseField
     protected function actionPostLoadingEvent()
     {
         if (!is_array(self::$internalOptionList)) {
-            self::$internalOptionList = array("any") + self::$wellknownservices;
+            if ($this->enableWellKown) {
+                self::$internalOptionList = array("any") + self::$wellknownservices;
+            }
 
             for ($port=1; $port <= 65535; $port++) {
                 self::$internalOptionList[] = (string)$port;
             }
+        }
+    }
+
+    /**
+     * setter for maximum value
+     * @param integer $value
+     */
+    public function setEnableWellKnown($value)
+    {
+        if (strtoupper(trim($value)) == "Y") {
+            $this->enableWellKown = true;
+        } else {
+            $this->enableWellKown = false;
         }
     }
 
