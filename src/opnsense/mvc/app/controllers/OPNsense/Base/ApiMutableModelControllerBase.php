@@ -374,7 +374,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * Generic toggle function, assumes our model item has an enabled boolean type field.
      * @param string $path relative model path
      * @param string $uuid node key
-     * @param string $enabled desired state enabled(1)/disabled(1), leave empty for toggle
+     * @param string $enabled desired state enabled(1)/disabled(0), leave empty for toggle
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
@@ -387,18 +387,36 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             if ($uuid != null) {
                 $node = $mdl->getNodeByReference($path . '.' . $uuid);
                 if ($node != null) {
-                    if ($enabled == "0" || $enabled == "1") {
-                        $node->enabled = (string)$enabled;
-                    } elseif ((string)$node->enabled == "1") {
-                        $result['result'] = "Disabled";
-                        $node->enabled = "0";
-                    } else {
-                        $result['result'] = "Enabled";
-                        $node->enabled = "1";
+                    $isChanged = false;
+                    if ($enabled != null) {
+                        if ((string)$enabled == "0") {
+                            $result['result'] = "Disabled";
+                            $isChanged = (string)$node->enabled != "0";
+                            $node->enabled = "0";
+                        } elseif ((string)$enabled == "1") {
+                            $result['result'] = "Enabled";
+                            $isChanged = (string)$node->enabled != "1";
+                            $node->enabled = "1";
+                        } else {
+                            // Invalid parameter passed for $enabled only "0" or "1" are allowed
+                            $isChanged = false;
+                            $result['result'] = "failed";
+                        }
+                    } else {     // toggle current value
+                        $isChanged = true;
+                        if ((string)$node->enabled == "1") {
+                            $result['result'] = "Disabled";
+                            $node->enabled = "0";
+                        } else {
+                            $result['result'] = "Enabled";
+                            $node->enabled = "1";
+                        }
                     }
                     // if item has toggled, serialize to config and save
-                    $mdl->serializeToConfig();
-                    Config::getInstance()->save();
+                    if ($isChanged) {
+                        $mdl->serializeToConfig();
+                        Config::getInstance()->save();
+                    }
                 }
             }
         }
