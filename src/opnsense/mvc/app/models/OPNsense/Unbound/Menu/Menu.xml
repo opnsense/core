@@ -11,6 +11,7 @@
                 <All url="/services_unbound_acls.php*" visibility="hidden"/>
             </ACL>
             <LogFile VisibleName="Log File" order="50" url="/diag_logs_resolver.php"/>
+            <Stats VisibleName="Statistics" order="60" url="/ui/unbound/stats"/>
         </Unbound>
     </Services>
 </menu>
