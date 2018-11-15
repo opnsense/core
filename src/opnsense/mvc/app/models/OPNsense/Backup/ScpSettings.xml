@@ -9,9 +9,10 @@
         </enabled>
         <hostname type="TextField">
             <mask>/\S*/</mask>
-            <ValidationMessage>Please provide a hostname.</ValidationMessage>
+            <ValidationMessage>The hostname contains whitespace characters.</ValidationMessage>
             <Constraints>
                 <check001>
+                    <ValidationMessage>Please provide a hostname.</ValidationMessage>
                     <type>DependConstraint</type>
                     <addFields>
                         <field1>enabled</field1>
@@ -28,9 +29,10 @@
         </port>
         <username type="TextField">
             <mask>/\S*/</mask>
-            <ValidationMessage>Please provide a username.</ValidationMessage>
+            <ValidationMessage>The username contains whitespace characters.</ValidationMessage>
             <Constraints>
                 <check001>
+                    <ValidationMessage>Please provide a username.</ValidationMessage>
                     <type>DependConstraint</type>
                     <addFields>
                         <field1>enabled</field1>
