@@ -9,9 +9,9 @@
         </enabled>
         <url type="TextField">
             <Required>N</Required>
-            <ValidationMessage>An URL for the Nextcloud server must be set.</ValidationMessage>
             <Constraints>
                 <check001>
+                    <ValidationMessage>An URL for the Nextcloud server must be set.</ValidationMessage>
                     <type>DependConstraint</type>
                     <addFields>
                         <field1>enabled</field1>
@@ -20,9 +20,9 @@
             </Constraints>
         </url>
         <user type="TextField">
-            <ValidationMessage>An user for the Nextcloud server must be set.</ValidationMessage>
             <Constraints>
                 <check001>
+                    <ValidationMessage>An user for the Nextcloud server must be set.</ValidationMessage>
                     <type>DependConstraint</type>
                     <addFields>
                         <field1>enabled</field1>
@@ -31,9 +31,9 @@
             </Constraints>
         </user>
         <password type="TextField">
-            <ValidationMessage>A password for a Nextcloud server must be set.</ValidationMessage>
             <Constraints>
                 <check001>
+                    <ValidationMessage>A password for a Nextcloud server must be set.</ValidationMessage>
                     <type>DependConstraint</type>
                     <addFields>
                         <field1>enabled</field1>
