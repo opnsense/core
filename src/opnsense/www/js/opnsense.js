@@ -92,14 +92,12 @@ function getFormData(parent) {
                     } else {
                         node[keypart] = "0";
                     }
+                } else if (sourceNode.hasClass("json-data")) {
+                    // deserialize the field content - used for JS maintained fields
+                    node[keypart] = sourceNode.data('data');
                 } else {
                     // regular input type
-                    if (sourceNode.hasClass("json-data")) {
-                        // deserialize the field content - used for JS maintained fields
-                        node[keypart] = JSON.parse(sourceNode.val());
-                    } else {
-                        node[keypart] = sourceNode.val();
-                    }
+                    node[keypart] = sourceNode.val();
                 }
             }
         });
@@ -153,14 +151,11 @@ function setFormData(parent,data) {
                             targetNode.text("");
                             targetNode.append(htmlDecode(node[keypart]));
                         }
+                    } else if (targetNode.hasClass('json-data')) {
+                        // if the input field is JSON data, serialize the data into the field
+                        targetNode.data('data', node[keypart]);
                     } else {
-                        // regular input type
-                        if (targetNode.hasClass('json-data')) {
-                            // if the input field is JSON data, serialize the data into the field
-                            targetNode.val(JSON.stringify(node[keypart]));
-                        } else {
-                            targetNode.val(htmlDecode(node[keypart]));
-                        }
+                        targetNode.val(htmlDecode(node[keypart]));
                     }
                     targetNode.change();
                 }

@@ -2,7 +2,6 @@
 
 /**
  *    Copyright (C) 2018 Fabian Franz
- *    Copyright (C) 2018 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -33,27 +32,20 @@ namespace OPNsense\Base\Constraints;
 
 /**
  * validate if a field is set depening on the setting of another field
- * Class NginxSetIfConstraint
+ * containing a specific value
+ * Class SetIfConstraint
  * @package OPNsense\Base\Constraints
  */
 class SetIfConstraint extends BaseConstraint
 {
     /**
-     * check if field is empty  (either boolean field as false or an empty field)
-     */
-    private function isEmpty($node)
-    {
-        $node_class = get_class($node);
-        if ($node_class == "OPNsense\Base\FieldTypes\BooleanField") {
-            return empty((string)$node);
-        } elseif (empty((string)$node) || (string)$node == "0") {
-            return true;
-        }
-        return false;
-    }
-    /**
-     * Executes validation, expects a list of fields in "addFields" which to check for content.
-     * Fields are concerned empty if boolean false or containing an empty string
+     * Executes validation, where the value must be set if another field is
+     * set to a specific value. Configuration example:
+     *
+     *   &lt;ValidationMessage&gt;This field must be set.&lt;/ValidationMessage&gt;
+     *   &lt;type&gt;SetIfConstraint&lt;/type&gt;
+     *   &lt;field&gt;name of another field which has the same parent node&lt;/field&gt;
+     *   &lt;check&gt;the value to check for as a string (for example the value of a OptionField)&lt;/check&gt;
      *
      * @param \Phalcon\Validation $validator
      * @param string $attribute
