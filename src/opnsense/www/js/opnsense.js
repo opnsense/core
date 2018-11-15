@@ -155,6 +155,7 @@ function setFormData(parent,data) {
                         // if the input field is JSON data, serialize the data into the field
                         targetNode.data('data', node[keypart]);
                     } else {
+                        // regular input type
                         targetNode.val(htmlDecode(node[keypart]));
                     }
                     targetNode.change();
