@@ -438,8 +438,12 @@ $( document ).ready(function() {
                     $fieldId = $providerId . "_" .$field['name'];?>
                     <tr>
                         <td style="width:22%">
-                            <a id="help_for_<?=$fieldId;?>" href="#" class="showhelp">
-                                <i class="fa fa-info-circle <?=empty($field['help']) ? "text-muted" : "";?>"></i></a> <?=$field['label'];?>
+<?php if (!empty($field['help'])): ?>
+                            <a id="help_for_<?=$fieldId;?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+<?php else: ?>
+                            <i class="fa fa-info-circle text-muted"></i>
+<?php endif ?>
+                           <?=$field['label'];?>
                         </td>
                         <td style="width:78%">
 <?php
