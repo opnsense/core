@@ -436,8 +436,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 legacy_html_escape_form_data($a_gateways);
 legacy_html_escape_form_data($pconfig);
 
-$service_hook = 'dpinger';
-
 include("head.inc");
 
 ?>
