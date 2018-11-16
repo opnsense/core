@@ -35,19 +35,6 @@ namespace OPNsense\Base\Constraints;
  */
 class DependConstraint extends BaseConstraint
 {
-    /**
-     * check if field is empty  (either boolean field as false or an empty field)
-     */
-    private function isEmpty($node)
-    {
-        $node_class = get_class($node);
-        if ($node_class == "OPNsense\Base\FieldTypes\BooleanField") {
-            return empty((string)$node);
-        } elseif (empty((string)$node) || (string)$node == "0") {
-            return true;
-        }
-        return false;
-    }
 
     /**
      * Executes validation, expects a list of fields in "addFields" which to check for content.

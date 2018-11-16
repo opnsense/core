@@ -54,6 +54,8 @@
     <td>
         {% if type == "text" %}
             <input type="text" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly ? 'readonly="readonly"' : '' }} >
+        {% elseif type == "hidden" %}
+            <input type="hidden" id="{{ id }}" class="{{style|default('')}}" >
         {% elseif type == "checkbox" %}
             <input type="checkbox"  class="{{style|default('')}}" id="{{ id }}">
         {% elseif type == "select_multiple" %}
