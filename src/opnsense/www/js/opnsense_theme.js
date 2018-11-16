@@ -70,7 +70,6 @@ $(document).ready(function () {
       that.blur();
     }
   },
-  
   events2 = {
     mouseenter: function () {
       $("#navigation.col-sidebar-left").css("width", "415px");
