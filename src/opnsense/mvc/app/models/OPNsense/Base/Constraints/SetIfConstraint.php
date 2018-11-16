@@ -1,6 +1,7 @@
 <?php
+
 /**
- *    Copyright (C) 2018 Deciso B.V.
+ *    Copyright (C) 2018 Fabian Franz
  *
  *    All rights reserved.
  *
@@ -26,19 +27,25 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\Constraints;
 
 /**
- * Class DependConstraint, add a constraint to this field stating dependency of another field
- * (if this field is empty then the refered field should be empty too)
+ * validate if a field is set depening on the setting of another field
+ * containing a specific value
+ * Class SetIfConstraint
  * @package OPNsense\Base\Constraints
  */
-class DependConstraint extends BaseConstraint
+class SetIfConstraint extends BaseConstraint
 {
-
     /**
-     * Executes validation, expects a list of fields in "addFields" which to check for content.
-     * Fields are concerned empty if boolean false or containing an empty string
+     * Executes validation, where the value must be set if another field is
+     * set to a specific value. Configuration example:
+     *
+     *   &lt;ValidationMessage&gt;This field must be set.&lt;/ValidationMessage&gt;
+     *   &lt;type&gt;SetIfConstraint&lt;/type&gt;
+     *   &lt;field&gt;name of another field which has the same parent node&lt;/field&gt;
+     *   &lt;check&gt;the value to check for as a string (for example the value of a OptionField)&lt;/check&gt;
      *
      * @param \Phalcon\Validation $validator
      * @param string $attribute
@@ -47,15 +54,12 @@ class DependConstraint extends BaseConstraint
     public function validate(\Phalcon\Validation $validator, $attribute)
     {
         $node = $this->getOption('node');
+        $field_name = $this->getOption('field');
+        $check = $this->getOption('check');
         if ($node) {
             $parentNode = $node->getParentNode();
-            if ($this->isEmpty($node)) {
-                foreach (array_unique($this->getOptionValueList('addFields')) as $fieldname) {
-                    if (!$this->isEmpty($parentNode->$fieldname)) {
-                        $this->appendMessage($validator, $attribute);
-                        break;
-                    }
-                }
+            if ($this->isEmpty($node) && (string)$parentNode->$field_name == $check) {
+                $this->appendMessage($validator, $attribute);
             }
         }
         return true;
