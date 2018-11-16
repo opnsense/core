@@ -316,6 +316,12 @@ function legacy_interfaces_details($intf = null)
         } elseif (strpos($line, "\tgroups: ") !== false) {
             array_shift($line_parts);
             $result[$current_interface]['groups'] = $line_parts;
+        } elseif (strpos($line, "\tcarp: ") !== false) {
+            $result[$current_interface]["carp"] = array();
+            $result[$current_interface]["carp"]['status'] = $line_parts[1];
+            $result[$current_interface]["carp"]['vhid'] = $line_parts[3];
+            $result[$current_interface]["carp"]['advbase'] = $line_parts[5];
+            $result[$current_interface]["carp"]['advskew'] = $line_parts[7];
         }
     }
 
