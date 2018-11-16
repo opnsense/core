@@ -47,19 +47,6 @@ require_once("certs.inc");
  */
 require_once('plugins.inc');
 
-function alias_make_table($config)
-{
-    global $aliastable;
-    $aliastable = array();
-    foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
-        if (strncmp($alias['type'], 'url', 3) !== 0) {
-            $aliastable[$alias['name']] = implode(" ", explode("\n", $alias['content']));
-        } else {
-            $aliastable[$alias['name']] = "";
-        }
-    }
-}
-
 /**
  * parse config into array and return
  */
@@ -76,12 +63,22 @@ function load_config_from_file($filename)
  ******/
 function parse_config()
 {
+    global $aliastable;
+
     $cnf = OPNsense\Core\Config::getInstance();
 
     // return config data as array, use old "listags" construction to mark certain elements as array (even if they're not recurring)
     $config = $cnf->toArray(listtags());
 
-    alias_make_table($config);
+    $aliastable = array();
+
+    foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
+        if (strncmp($alias['type'], 'url', 3) !== 0) {
+            $aliastable[$alias['name']] = implode(" ", explode("\n", $alias['content']));
+        } else {
+            $aliastable[$alias['name']] = "";
+        }
+    }
 
     return $config;
 }
