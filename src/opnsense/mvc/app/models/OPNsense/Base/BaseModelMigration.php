@@ -43,8 +43,8 @@ class BaseModelMigration
      */
     private function checkDefaults($node)
     {
-        foreach ($node->__items as $key => $subnode) {
-            if (count($subnode->__items) > 0) {
+        foreach ($node->iterateItems() as $key => $subnode) {
+            if (count(iterator_to_array($subnode->iterateItems())) > 0) {
                 $this->checkDefaults($subnode);
             } elseif ($subnode->isEmptyAndRequired()) {
                 $subnode->applyDefault();

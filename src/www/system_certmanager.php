@@ -340,7 +340,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             foreach ($altnames as $altname) {
                 switch ($altname['type']) {
                     case "DNS":
-                        if (!is_hostname($altname['value'])) {
+                        $dns_regex = '/^(?:(?:[a-z0-9_\*]|[a-z0-9_][a-z0-9_\-]*[a-z0-9_])\.)*(?:[a-z0-9_]|[a-z0-9_][a-z0-9_\-]*[a-z0-9_])$/i';
+                        if (!preg_match($dns_regex, $altname['value'])) {
                             $input_errors[] = gettext("DNS subjectAltName values must be valid hostnames or FQDNs");
                         }
                         break;

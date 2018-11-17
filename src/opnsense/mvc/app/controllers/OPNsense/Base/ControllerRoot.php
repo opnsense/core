@@ -45,6 +45,11 @@ class ControllerRoot extends Controller
     public $translator;
 
     /**
+     * @var null|string logged in username, populated during authentication
+     */
+    protected $logged_in_user = null;
+
+    /**
      * Wrap close session, for long running operations.
      */
     protected function sessionClose()
@@ -62,7 +67,7 @@ class ControllerRoot extends Controller
 
         foreach ($config->system->children() as $key => $node) {
             if ($key == 'language') {
-                $lang = $node->__toString();
+                $lang = (string)$node;
                 break;
             }
         }
@@ -70,8 +75,8 @@ class ControllerRoot extends Controller
         if ($this->session->has('Username')) {
             $username = $this->session->get('Username');
             foreach ($config->system->user as $user) {
-                if ($username == $user->name->__toString() && isset($user->language)) {
-                    $lang = $user->language->__toString();
+                if ($username == (string)$user->name && isset($user->language)) {
+                    $lang = (string)$user->language;
                     break;
                 }
             }
@@ -99,6 +104,15 @@ class ControllerRoot extends Controller
         ));
 
         return $logger;
+    }
+
+    /**
+     * return logged-in username
+     * @return string username
+     */
+    public function getUserName()
+    {
+        return $this->logged_in_user;
     }
 
     /**

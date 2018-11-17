@@ -367,6 +367,15 @@ abstract class BaseModel
     }
 
     /**
+     * iterate (non virtual) child nodes
+     * @return mixed
+     */
+    public function iterateItems()
+    {
+        return $this->internalData->iterateItems();
+    }
+
+    /**
      * validate full model using all fields and data in a single (1 deep) array
      * @param bool $validateFullModel validate full model or only changed fields
      * @return \Phalcon\Validation\Message\Group
@@ -578,6 +587,7 @@ abstract class BaseModel
      * The BaseModelMigration class should be named with the corresponding version
      * prefixed with an M and . replaced by _ for example : M1_0_1 equals version 1.0.1
      *
+     * @return bool status (true-->success, false-->failed)
      */
     public function runMigrations()
     {
@@ -638,8 +648,11 @@ abstract class BaseModel
                     }
                 } catch (\Exception $e) {
                     $logger->error("Model ".$class_info->getName() ." can't be saved, skip ( " .$e . " )");
+                    return false;
                 }
             }
+
+            return true;
         }
     }
 

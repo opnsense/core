@@ -34,9 +34,11 @@ CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 
 CORE_ABI?=	18.7
 CORE_ARCH?=	${ARCH}
+CORE_FLAVOUR=	${FLAVOUR}
 CORE_OPENVPN?=	# empty
 CORE_PHP?=	71
-CORE_PYTHON?=	27
+CORE_PYTHON2?=	27
+CORE_PYTHON3?=	36
 CORE_RADVD?=	1
 CORE_SQUID?=	3
 CORE_SURICATA?=	-devel
@@ -52,21 +54,25 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 CORE_REPOSITORY?=	${FLAVOUR}
 .endif
 
+CORE_MESSAGE?=		Insert Name Here
 CORE_NAME?=		opnsense-devel
 CORE_TYPE?=		development
-CORE_MESSAGE?=		Insert Name Here
 
+CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} package
 CORE_MAINTAINER?=	project@opnsense.org
-CORE_PACKAGESITE?=	https://pkg.opnsense.org
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
-CORE_COMMENT?=		OPNsense ${CORE_TYPE} package
+CORE_PACKAGESITE?=	https://pkg.opnsense.org
+CORE_PRODUCT?=		OPNsense
 CORE_WWW?=		https://opnsense.org/
+
+CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
+CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
+CORE_COPYRIGHT_YEARS?=	2014-2018
 
 CORE_DEPENDS_amd64?=	beep bsdinstaller
 CORE_DEPENDS_i386?=	${CORE_DEPENDS_amd64}
 
 CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
-			apinger \
 			ca_root_nss \
 			choparp \
 			cpustats \
@@ -111,13 +117,13 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			php${CORE_PHP}-sqlite3 \
 			php${CORE_PHP}-xml \
 			php${CORE_PHP}-zlib \
-			py${CORE_PYTHON}-Jinja2 \
-			py${CORE_PYTHON}-dnspython \
-			py${CORE_PYTHON}-ipaddress \
-			py${CORE_PYTHON}-netaddr \
-			py${CORE_PYTHON}-requests \
-			py${CORE_PYTHON}-sqlite3 \
-			py${CORE_PYTHON}-ujson \
+			py${CORE_PYTHON2}-Jinja2 \
+			py${CORE_PYTHON2}-dnspython \
+			py${CORE_PYTHON2}-ipaddress \
+			py${CORE_PYTHON2}-netaddr \
+			py${CORE_PYTHON2}-requests \
+			py${CORE_PYTHON2}-sqlite3 \
+			py${CORE_PYTHON2}-ujson \
 			radvd${CORE_RADVD} \
 			rate \
 			rrdtool \
@@ -138,7 +144,7 @@ WRKSRC?=${WRKDIR}/src
 PKGDIR?=${WRKDIR}/pkg
 
 WANTS=		p5-File-Slurp php${CORE_PHP}-pear-PHP_CodeSniffer \
-		phpunit6-php${CORE_PHP} py${CORE_PYTHON}-pycodestyle
+		phpunit6-php${CORE_PHP} py${CORE_PYTHON2}-pycodestyle
 
 .for WANT in ${WANTS}
 want-${WANT}:
@@ -148,7 +154,7 @@ want-${WANT}:
 mount:
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
 	    echo -n "Enabling core.git live mount..."; \
-	    echo "${CORE_COMMIT}" > \
+	    sed ${SED_REPLACE} ${.CURDIR}/src/opnsense/version/opnsense.in > \
 	        ${.CURDIR}/src/opnsense/version/opnsense; \
 	    mount_unionfs ${.CURDIR}/src ${LOCALBASE}; \
 	    touch ${WRKDIR}/.mount_done; \
@@ -160,7 +166,6 @@ umount:
 	@if [ -f ${WRKDIR}/.mount_done ]; then \
 	    echo -n "Disabling core.git live mount..."; \
 	    umount -f "<above>:${.CURDIR}/src"; \
-	    rm ${.CURDIR}/src/opnsense/version/opnsense; \
 	    rm ${WRKDIR}/.mount_done; \
 	    echo "done"; \
 	    service configd restart; \
@@ -202,22 +207,14 @@ PKG_SCRIPTS=	+PRE_INSTALL +POST_INSTALL \
 
 scripts:
 .for PKG_SCRIPT in ${PKG_SCRIPTS}
-	@if [ -e ${.CURDIR}/${PKG_SCRIPT} ]; then \
-		cp -v -- ${.CURDIR}/${PKG_SCRIPT} ${DESTDIR}/; \
-		sed -i '' -e "s/%%CORE_COMMIT%%/${CORE_COMMIT}/g" \
-		    -e "s/%%CORE_NAME%%/${CORE_NAME}/g" \
-		    -e "s/%%CORE_ABI%%/${CORE_ABI}/g" \
-		    ${DESTDIR}/${PKG_SCRIPT}; \
+	@if [ -f ${.CURDIR}/${PKG_SCRIPT} ]; then \
+		cp -- ${.CURDIR}/${PKG_SCRIPT} ${DESTDIR}/; \
 	fi
 .endfor
 
 install:
 	@${MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
-	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} \
-	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} CORE_WWW=${CORE_WWW} \
-	    CORE_MAINTAINER=${CORE_MAINTAINER} CORE_HASH=${CORE_HASH} \
-	    CORE_PACKAGESITE=${CORE_PACKAGESITE} \
-	    CORE_REPOSITORY=${CORE_REPOSITORY}
+	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} ${MAKE_REPLACE}
 
 collect:
 	@(cd ${.CURDIR}/src; find * -type f) | while read FILE; do \
@@ -229,11 +226,7 @@ collect:
 
 bootstrap:
 	@${MAKE} -C ${.CURDIR}/src install-bootstrap DESTDIR=${DESTDIR} \
-	    NO_SAMPLE=please CORE_PACKAGESITE=${CORE_PACKAGESITE} \
-	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} CORE_WWW=${CORE_WWW} \
-	    CORE_MAINTAINER=${CORE_MAINTAINER} CORE_HASH=${CORE_HASH} \
-	    CORE_PACKAGESITE=${CORE_PACKAGESITE} \
-	    CORE_REPOSITORY=${CORE_REPOSITORY}
+	    NO_SAMPLE=please ${MAKE_REPLACE}
 
 plist:
 	@(${MAKE} -C ${.CURDIR}/contrib plist && \
@@ -243,6 +236,7 @@ plist-fix:
 	@${MAKE} DESTDIR=${DESTDIR} plist > ${.CURDIR}/plist
 
 plist-check:
+	@mkdir -p ${WRKDIR}
 	@${MAKE} DESTDIR=${DESTDIR} plist > ${WRKDIR}/plist.new
 	@cat ${.CURDIR}/plist > ${WRKDIR}/plist.old
 	@if ! diff -uq ${WRKDIR}/plist.old ${WRKDIR}/plist.new > /dev/null ; then \
@@ -265,12 +259,17 @@ package-check:
 		exit 1; \
 	fi
 
-package: package-check clean-work
+package: plist-check package-check clean-work
 .for CORE_DEPEND in ${CORE_DEPENDS}
 	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yfA ${CORE_DEPEND}; fi
 .endfor
+	@echo -n ">>> Generating metadata for ${CORE_NAME}-${CORE_VERSION}..."
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} metadata
+	@echo " done"
+	@echo -n ">>> Installing files for ${CORE_NAME}-${CORE_VERSION}..."
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
+	@echo " done"
+	@echo ">>> Packaging files for ${CORE_NAME}-${CORE_VERSION}:"
 	@PORTSDIR=${.CURDIR} ${PKG} create -v -m ${WRKSRC} -r ${WRKSRC} \
 	    -p ${WRKSRC}/plist -o ${PKGDIR}
 
@@ -280,7 +279,7 @@ upgrade-check:
 		exit 1; \
 	fi
 
-upgrade: plist-check upgrade-check clean-package package
+upgrade: upgrade-check clean-package package
 	@${PKG} delete -fy ${CORE_NAME} || true
 	@${PKG} add ${PKGDIR}/*.txz
 	@${LOCALBASE}/etc/rc.restart_webgui
@@ -315,7 +314,10 @@ sweep:
 
 STYLEDIRS?=	src/etc/inc/plugins.inc.d src/opnsense
 
-style: want-php${CORE_PHP}-pear-PHP_CodeSniffer
+style-python: want-py${CORE_PYTHON2}-pycodestyle
+	@pycodestyle --ignore=E501 ${.CURDIR}/src || true
+
+style-php: want-php${CORE_PHP}-pear-PHP_CodeSniffer
 	@: > ${WRKDIR}/style.out
 .for STYLEDIR in ${STYLEDIRS}
 	@(phpcs --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} \
@@ -333,8 +335,7 @@ style-fix: want-php${CORE_PHP}-pear-PHP_CodeSniffer
 	phpcbf --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} || true
 .endfor
 
-style-python: want-py${CORE_PYTHON}-pycodestyle
-	@pycodestyle --ignore=E501 ${.CURDIR}/src || true
+style: style-python style-php
 
 license: want-p5-File-Slurp
 	@${.CURDIR}/Scripts/license > ${.CURDIR}/LICENSE
@@ -345,10 +346,7 @@ dhparam:
 	    ${.CURDIR}/src/etc/dh-parameters.${BITS}.sample ${BITS}
 .endfor
 
-diff:
-	@git diff --stat -p stable/${CORE_ABI}
-
-ARGS=	mfc
+ARGS=	diff mfc
 
 # handle argument expansion for required targets
 .for TARGET in ${.TARGETS}
@@ -363,6 +361,9 @@ ${TARGET}: ${_TARGET}
 ${_TARGET}_ARG=		${${_TARGET}_ARGS:[0]}
 .endif
 .endfor
+
+diff:
+	@git diff --stat -p stable/${CORE_ABI} ${.CURDIR}/${diff_ARGS:[1]}
 
 mfc:
 	@git checkout stable/${CORE_ABI}

@@ -1,42 +1,36 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2010 Ermal Luçi
-    Copyright (C) 2007-2008 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2005-2006 Bill Marquette <bill.marquette@gmail.com>
-    Copyright (C) 2006 Paul Taylor <paultaylor@winn-dixie.com>.
-    Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>.
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/*
- * NOTE : Portions of the mschapv2 support was based on the BSD licensed CHAP.php
- * file courtesy of Michael Retterklieber.
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2010 Ermal Luçi
+ * Copyright (C) 2007-2008 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2005-2006 Bill Marquette <bill.marquette@gmail.com>
+ * Copyright (C) 2006 Paul Taylor <paultaylor@winn-dixie.com>
+ * Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* include globals from notices.inc /utility/XML parser files */
 require_once("interfaces.inc");
 require_once("util.inc");
 
@@ -370,7 +364,7 @@ function auth_get_shells($uid = 0)
         foreach ($etc_shells as $shell) {
             $shell = trim($shell);
             if (!empty($shell) && strpos($shell, '#') !== 0 &&
-                strpos($shell, '/usr/local/etc/rc') !== 0) {
+                strpos($shell, '/usr/local/sbin/opnsense-') !== 0) {
                 $shells[$shell] = $shell;
             }
         }
@@ -563,11 +557,6 @@ function local_user_set_password(&$user, $password = null)
 
     $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => $cost ]);
     if ($hash !== false) {
-        /*
-         * $2y$ returned is supported in FreeBSD 11.0 and up,
-         * but we started with FreeBSD 10.3 so need to fix:
-         */
-        $hash[2] = 'b';
         $user['password'] = $hash;
     }
 }
@@ -738,7 +727,7 @@ function auth_get_authserver($name)
     if (isset($config['system']['authserver']) && is_array($config['system']['authserver'])) {
         foreach ($config['system']['authserver'] as $authcfg) {
             if ($authcfg['name'] == $name) {
-                if ($authcfg['type'] == 'ldap') {
+                if ($authcfg['type'] == 'ldap' || $authcfg['type'] == 'ldap-totp') {
                     // let's try to avoid regenerating the ldap url in every function.
                     if (strstr($authcfg['ldap_urltype'], "Standard")) {
                         $authcfg['ldap_full_url'] = "ldap://";
@@ -796,7 +785,7 @@ function get_authenticator($authcfg = NULL)
         if ($authcfg['type'] == 'local') {
             // avoid gettext type issues on Local Database, authenticator should always be named "Local Database"
             $authName = 'Local Database';
-        } elseif ($authcfg['type'] == 'ldap') {
+        } elseif ($authcfg['type'] == 'ldap' || $authcfg['type'] == 'ldap-totp') {
             // temporary fix, ldap handler doesn't do this init yet.
             ldap_setup_caenv($authcfg);
         }

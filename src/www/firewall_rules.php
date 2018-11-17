@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2005 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2005 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
@@ -135,6 +135,8 @@ include("head.inc");
 $main_buttons = array(
     array('label' => gettext('Add'), 'href' => 'firewall_rules_edit.php?if=' . $selected_if),
 );
+
+$lockout_spec = filter_core_get_antilockout();
 
 ?>
 <body>
@@ -398,19 +400,16 @@ $( document ).ready(function() {
                   </tr>
 <?php
                 endif; ?>
-<?php
-                if (!isset($config['system']['webgui']['noantilockout']) && ($selected_if == 'lan'
-                        || ((count($config['interfaces']) == 1) && ($selected_if == 'wan')))):
-                        $alports = implode(', ', filter_core_antilockout_ports());
-?>
+<?php foreach ($lockout_spec as $lockout_intf => $lockout_prts): ?>
+<?php if ($selected_if == $lockout_intf): ?>
                   <tr>
                     <td>&nbsp;</td>
                     <td><span class="fa fa-play text-success"></span></td>
                     <td>*</td>
                     <td>*</td>
                     <td class="hidden-xs hidden-sm">*</td>
-                    <td class="hidden-xs hidden-sm"><?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($selected_if));?> Address</td>
-                    <td class="hidden-xs hidden-sm"><?=$alports;?></td>
+                    <td class="hidden-xs hidden-sm"><?= html_safe(sprintf(gettext('%s address'), convert_friendly_interface_to_friendly_descr($lockout_intf))) ?></td>
+                    <td class="hidden-xs hidden-sm"><?= html_safe(implode(', ', $lockout_prts)) ?></td>
                     <td class="hidden-xs hidden-sm">*</td>
                     <td class="hidden-xs hidden-sm">&nbsp;</td>
                     <td><?=gettext("Anti-Lockout Rule");?></td>
@@ -418,8 +417,8 @@ $( document ).ready(function() {
                       <a href="system_advanced_firewall.php" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
                     </td>
                   </tr>
-<?php
-                endif; ?>
+<?php endif ?>
+<?php endforeach ?>
 <?php
                 if (isset($config['interfaces'][$selected_if]['blockpriv'])): ?>
                   <tr>
@@ -652,6 +651,7 @@ $( document ).ready(function() {
                                 if ($schedule['name'] == $filterent['sched'])
                                 {
                                     $schedule_descr = (isset($schedule['descr'])) ? $schedule['descr'] : "";
+                                    break;
                                 }
                             }
                         }
@@ -661,7 +661,14 @@ $( document ).ready(function() {
                         </span>
                         <a href="/firewall_schedule_edit.php?name=<?=htmlspecialchars($filterent['sched']);?>"
                             title="<?= html_safe(gettext('Edit')) ?>" data-toggle="tooltip">
-                          <i class="fa fa-calendar"></i>
+<?php
+                        if (filter_get_time_based_rule_status($schedule)):?>
+                          <i class="fa fa-calendar text-success"></i>
+<?php
+                        else:?>
+                          <i class="fa fa-calendar text-muted"></i>
+<?php
+                        endif;?>
                         </a>
 <?php
                        endif;?>
@@ -673,7 +680,7 @@ $( document ).ready(function() {
                       </div>
                     </td>
                     <td>
-                      <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs">
+                      <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs">
                         <i class="fa fa-arrow-left fa-fw"></i>
                       </button>
 <?php
@@ -701,6 +708,7 @@ $( document ).ready(function() {
 <?php
                   endif;
                   endforeach;
+                  $i++;
                   if (!$interface_has_rules):
 ?>
                   <tr>
@@ -787,8 +795,8 @@ $( document ).ready(function() {
                     <td colspan="10"><?=gettext("Alias (click to view/edit)");?></td>
                   </tr>
                   <tr class="hidden-xs hidden-sm">
-                    <td><a><i><span class="fa fa-calendar"></i></a></td>
-                    <td colspan="10"><?=gettext("Schedule (click to view/edit)");?></td>
+                    <td><i><span class="fa fa-calendar text-success"></i> / <i><span class="fa fa-calendar text-muted"></i></td>
+                    <td colspan="10"><?=gettext("Active/Inactive Schedule (click to view/edit)");?></td>
                   </tr>
                   <tr class="hidden-xs hidden-sm">
                     <td colspan="11">

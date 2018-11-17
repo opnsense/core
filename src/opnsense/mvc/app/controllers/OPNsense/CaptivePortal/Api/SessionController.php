@@ -70,7 +70,7 @@ class SessionController extends ApiControllerBase
     {
         $response = array();
         $mdlCP = new CaptivePortal();
-        foreach ($mdlCP->zones->zone->__items as $zone) {
+        foreach ($mdlCP->zones->zone->iterateItems() as $zone) {
             $response[(string)$zone->zoneid] = (string)$zone->description;
         }
         asort($response);
@@ -98,5 +98,59 @@ class SessionController extends ApiControllerBase
             }
         }
         return array();
+    }
+
+    /**
+     * connect a client
+     * @param string|int $zoneid zoneid
+     * @return array|mixed
+     */
+    public function connectAction($zoneid = 0)
+    {
+        $response = array();
+
+        if ($this->request->isPost()) {
+            // Get details from POST request
+            $userName = $this->request->getPost("user", "striptags", null);
+            $clientIp = $this->request->getPost("ip", "striptags", null);
+
+            // Find details of the zone
+            $mdlCP = new CaptivePortal();
+            $cpZone = $mdlCP->getByZoneID($zoneid);
+            if ($cpZone != null) {
+                // Search for this client in the list of currently active sessions
+                $allClients = $this->listAction($zoneid);
+                foreach ($allClients as $connectedClient) {
+                    if ($connectedClient['ipAddress'] == $clientIp) {
+                        // Client is already active in this zone
+                        $response = $connectedClient;
+                        break;
+                    }
+                }
+
+                // If the client isn't already active
+                if (is_array($response) && count($response) == 0) {
+                    // allow client to this captiveportal zone
+                    $backend = new Backend();
+                    $CPsession = $backend->configdpRun(
+                        "captiveportal allow",
+                        array(
+                            (string)$cpZone->zoneid,
+                            $userName,
+                            $clientIp,
+                            'API',
+                            'json'
+                        )
+                    );
+
+                    // Only return session if configd returned a valid json response
+                    if ($CPsession != null) {
+                        $response = $CPsession;
+                    }
+                }
+            }
+        }
+
+        return $response;
     }
 }

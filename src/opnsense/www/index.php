@@ -40,10 +40,9 @@ function view_file_exists($filename)
  */
 function view_cache_safe($url)
 {
-    $myview = \Phalcon\DI::getDefault()->get('view');
-
-    if (!empty($myview->product_hash)) {
-        return "{$url}?v={$myview->product_hash}";
+    $info = stat('/usr/local/opnsense/www/index.php');
+    if (!empty($info['mtime'])) {
+        return "{$url}?v=" . substr(md5($info['mtime']), 0, 16);
     }
 
     return $url;

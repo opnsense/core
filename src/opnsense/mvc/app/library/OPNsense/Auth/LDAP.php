@@ -1,30 +1,29 @@
 <?php
-/**
- *    Copyright (C) 2015 Deciso B.V.
+
+/*
+ * Copyright (C) 2015 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Auth;
@@ -100,6 +99,17 @@ class LDAP extends Base implements IAuthConnector
      * @var bool if true, startTLS will be initialized
      */
     private $useStartTLS = false;
+
+    /**
+     * when set, $lastAuthProperties will contain the authenticated user properties
+     */
+    private $ldapReadProperties = false;
+
+    /**
+     * @var array internal list of authentication properties (returned by radius auth)
+     */
+    private $lastAuthProperties = array();
+
     /**
      * close ldap handle if open
      */
@@ -204,7 +214,8 @@ class LDAP extends Base implements IAuthConnector
             "ldap_extended_query" => "ldapExtendedQuery",
             "ldap_authcn" => "ldapAuthcontainers",
             "ldap_scope" => "ldapScope",
-            "local_users" => "userDNmap"
+            "local_users" => "userDNmap",
+            "ldap_read_properties" => "ldapReadProperties"
         );
 
         // map properties 1-on-1
@@ -356,7 +367,7 @@ class LDAP extends Base implements IAuthConnector
      */
     public function getLastAuthProperties()
     {
-        return array();
+        return $this->lastAuthProperties;
     }
 
     /**
@@ -367,26 +378,48 @@ class LDAP extends Base implements IAuthConnector
      */
     public function authenticate($username, $password)
     {
-        // todo: implement SSL parts (legacy : ldap_setup_caenv)
+        $ldap_is_connected = false;
+        $user_dn = null;
         // authenticate user
         if (empty($password)) {
             // prevent anonymous bind
             return false;
         } elseif (array_key_exists($username, $this->userDNmap)) {
             // we can map $username to distinguished name, just feed to connect
+            $user_dn = $this->userDNmap[$username];
             $ldap_is_connected = $this->connect($this->ldapBindURL, $this->userDNmap[$username], $password);
-            return $ldap_is_connected;
         } else {
             // we don't know this users distinguished name, try to find it
-            $ldap_is_connected = $this->connect($this->ldapBindURL, $this->ldapBindDN, $this->ldapBindPassword);
-            if ($ldap_is_connected) {
+            if ($this->connect($this->ldapBindURL, $this->ldapBindDN, $this->ldapBindPassword)) {
                 $result = $this->searchUsers($username, $this->ldapAttributeUser, $this->ldapExtendedQuery);
                 if ($result !== false && count($result) > 0) {
+                    $user_dn = $result[0]['dn'];
                     $ldap_is_connected = $this->connect($this->ldapBindURL, $result[0]['dn'], $password);
-                    return $ldap_is_connected;
                 }
             }
-            return false;
         }
+
+        if ($ldap_is_connected) {
+            $this->lastAuthProperties['dn'] = $user_dn;
+            if ($this->ldapReadProperties) {
+                $sr = @ldap_read($this->ldapHandle, $userdn, '(objectclass=*)');
+                $info = @ldap_get_entries($this->ldapHandle, $sr);
+                if ($info['count'] != 0) {
+                    // $this->lastAuthProperties['info'] = $info[0];
+                    foreach ($info[0] as $ldap_key => $ldap_value) {
+                        if (!is_numeric($ldap_key) && $ldap_key !== 'count') {
+                            if (isset($ldap_value['count'])) {
+                                unset($ldap_value['count']);
+                                $this->lastAuthProperties[$ldap_key] = implode("\n", $ldap_value);
+                            } elseif ($ldap_value !== "") {
+                                $this->lastAuthProperties[$ldap_key] = $ldap_value;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $ldap_is_connected;
     }
 }

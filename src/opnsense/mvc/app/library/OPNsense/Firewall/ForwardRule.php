@@ -39,6 +39,7 @@ class ForwardRule extends Rule
             'disabled' => 'parseIsComment',
             'nordr' => 'parseBool,no rdr,rdr',
             'pass' => 'parseBool,pass ',
+            'log' => 'parseBool,log ',
             'interface' => 'parseInterface',
             'ipprotocol' => 'parsePlain',
             'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',

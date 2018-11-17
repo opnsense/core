@@ -1,34 +1,34 @@
 <?php
 
 /*
-    Copyright (C) 2016 Deciso B.V.
-    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
-    Copyright (C) 2008 Ermal Luçi
-    Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2016 Deciso B.V.
+ * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * Copyright (C) 2008 Ermal Luçi
+ * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 $ipsec_loglevels = array(
     "asn" => "Low-level encoding/decoding (ASN.1, X.509 etc.)",
@@ -364,17 +364,10 @@ function ipsec_idinfo_to_cidr(&$idinfo, $addrbits = false, $mode = '')
             if (empty($mode) && !empty($idinfo['mode'])) {
                 $mode = $idinfo['mode'];
             }
-
-            if ($mode == "tunnel6") {
-                $address = get_interface_ipv6($idinfo['type']);
-                $netbits = get_interface_subnetv6($idinfo['type']);
-                $address = gen_subnetv6($address, $netbits);
-                return "{$address}/{$netbits}";
+            if ($mode == 'tunnel6') {
+                return find_interface_networkv6(get_real_interface($idinfo['type']), 'inet6');
             } else {
-                $address = get_interface_ip($idinfo['type']);
-                $netbits = get_interface_subnet($idinfo['type']);
-                $address = gen_subnet($address, $netbits);
-                return "{$address}/{$netbits}";
+                return find_interface_network(get_real_interface($idinfo['type']));
             }
             break; /* NOTREACHED */
     }
@@ -832,13 +825,13 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 /* add an ipsec pinghosts entry */
                 if ($ph2ent['pinghost']) {
                     if (!isset($iflist) || !is_array($iflist)) {
-                        $iflist = get_configured_interface_list();
+                        $iflist = get_configured_interface_with_descr();
                     }
                     $viplist = get_configured_vips_list();
                     $srcip = null;
                     $local_subnet = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
                     if (is_ipaddrv6($ph2ent['pinghost'])) {
-                        foreach ($iflist as $ifent => $ifname) {
+                        foreach ($iflist as $ifent => $unused) {
                             $interface_ip = get_interface_ipv6($ifent);
                             if (!is_ipaddrv6($interface_ip)) {
                                 continue;
@@ -849,7 +842,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                             }
                         }
                     } else {
-                        foreach ($iflist as $ifent => $ifname) {
+                        foreach ($iflist as $ifent => $unused) {
                             $interface_ip = get_interface_ip($ifent);
                             if (!is_ipaddrv4($interface_ip)) {
                                 continue;
@@ -1184,17 +1177,25 @@ EOD;
                 $peerid_spec = ipsec_find_id($ph1ent, "peer");
 
                 if (!empty($ph1ent['encryption-algorithm']['name']) && !empty($ph1ent['hash-algorithm'])) {
-                    $ealg_id = $ph1ent['encryption-algorithm']['name'];
-                    if (isset($ph1ent['encryption-algorithm']['keylen'])) {
-                        $ealgosp1 = "ike = {$ealg_id}{$ph1ent['encryption-algorithm']['keylen']}-{$ph1ent['hash-algorithm']}";
-                    } else {
-                        $ealgosp1 = "ike = {$ealg_id}-{$ph1ent['hash-algorithm']}";
+                    $list = array();
+                    foreach (explode(',', $ph1ent['hash-algorithm']) as $halgo) {
+                        $entry = "{$ph1ent['encryption-algorithm']['name']}";
+                        if (isset($ph1ent['encryption-algorithm']['keylen'])) {
+                             $entry .= "{$ph1ent['encryption-algorithm']['keylen']}";
+                        }
+                        $entry .= "-{$halgo}";
+                        if (!empty($ph1ent['dhgroup'])) {
+                            foreach (explode(',', $ph1ent['dhgroup']) as $dhgrp) {
+                                $entryd = $entry;
+                                $modp = ipsec_convert_to_modp($dhgrp);
+                                if (!empty($modp)) {
+                                    $entryd .= "-{$modp}";
+                                }
+                                $list[] = $entryd;
+                            }
+                        }
                     }
-                    $modp = ipsec_convert_to_modp($ph1ent['dhgroup']);
-                    if (!empty($modp)) {
-                        $ealgosp1 .= "-{$modp}";
-                    }
-                    $ealgosp1 .= "!";
+                    $ealgosp1 = 'ike = ' . implode(',', array_reverse($list)) . '!';
                 }
 
                 if (!empty($ph1ent['dpd_delay']) && !empty($ph1ent['dpd_maxfail'])) {

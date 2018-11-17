@@ -1,0 +1,32 @@
+<model>
+    <mount>//OPNsense/OpenVPNExport</mount>
+    <version>0.0.1</version>
+    <description>OpenVPN export presets</description>
+    <items>
+        <servers>
+            <server type="ArrayField">
+                <vpnid type="IntegerField">
+                    <Required>Y</Required>
+                </vpnid>
+                <hostname type="HostnameField">
+                    <AsList>Y</AsList>
+                    <FieldSeparator>,</FieldSeparator>
+                </hostname>
+                <template type="TextField"/>
+                <local_port type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <ValidationMessage>Port needs to be an integer value between 1 and 65535</ValidationMessage>
+                </local_port>
+                <random_local_port type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </random_local_port>
+                <validate_server_cn type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </validate_server_cn>
+            </server>
+        </servers>
+    </items>
+</model>

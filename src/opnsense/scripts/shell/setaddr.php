@@ -135,7 +135,7 @@ function get_interface_config_description($iface)
 $fp = fopen('php://stdin', 'r');
 
 /* build an interface collection */
-$ifdescrs = get_configured_interface_with_descr(false, true);
+$ifdescrs = legacy_config_get_interfaces(array('virtual' => false));
 $count = count($ifdescrs);
 
 /* grab interface that we will operate on, unless there is only one
@@ -143,9 +143,9 @@ $count = count($ifdescrs);
 if ($count > 1) {
     echo "Available interfaces:\n\n";
     $x=1;
-    foreach ($ifdescrs as $iface => $ifdescr) {
+    foreach ($ifdescrs as $iface => $ifcfg) {
         $config_descr = get_interface_config_description($iface);
-        echo "{$x} - {$ifdescr} ({$config_descr})\n";
+        echo "{$x} - {$ifcfg['descr']} ({$config_descr})\n";
         $x++;
     }
     echo "\nEnter the number of the interface to configure: ";
@@ -163,7 +163,7 @@ if ($intnum > $count) {
 }
 
 $index = 1;
-foreach ($ifdescrs as $ifname => $ifdesc) {
+foreach ($ifdescrs as $ifname => $unused) {
     if ($intnum == $index) {
         $interface = $ifname;
         break;
@@ -206,11 +206,11 @@ function next_unused_gateway_name($interface)
 
 function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet)
 {
-    global $config, $fp;
+    global $fp;
 
     $label_IPvX = $inet_type == 'inet6' ? 'IPv6' : 'IPv4';
 
-    $a_gateways =  &config_read_array('gateways', 'gateway_item');
+    $a_gateways = &config_read_array('gateways', 'gateway_item');
     $is_default = true;
     $new_name = '';
 
@@ -565,7 +565,7 @@ setup_gateways_monitor(true);
 filter_configure_sync(true);
 
 if ($restart_dhcpd) {
-    services_dhcpd_configure('all', array(), true);
+    services_dhcpd_configure(true);
 }
 
 if ($restart_webgui) {

@@ -42,7 +42,7 @@ class Metadata(object):
         """ list all available rule xml files
         :return: generator method returning all known rule xml files
         """
-        for filename in sorted(glob.glob('%s*.xml' % self._rules_dir)):
+        for filename in sorted(glob.glob('%s*.xml' % self._rules_dir), reverse=True):
             try:
                 xml_data = open(filename).read()
                 for tag in replace_tags.keys():
@@ -74,6 +74,7 @@ class Metadata(object):
         """ list all available rules
         :return: generator method returning all known rulefiles
         """
+        target_filenames = list()
         for rule_xml in self._list_xml_sources(replace_tags):
             src_location = rule_xml.find('location')
             if src_location is None or 'url' not in src_location.attrib:
@@ -122,4 +123,6 @@ class Metadata(object):
                         else:
                             metadata_record['description'] = '%s%s' % (description_prefix,
                                                                        rule_filename.text)
-                        yield metadata_record
+                        if metadata_record['filename'] not in target_filenames:
+                            yield metadata_record
+                        target_filenames.append(metadata_record['filename'])

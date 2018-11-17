@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2003-2004 Justin Ellison <justin@techadvise.com>.
+    Copyright (C) 2003-2004 Justin Ellison <justin@techadvise.com>
     Copyright (C) 2010  Ermal Luçi
     Copyright (C) 2010  Seth Mos <seth.mos@dds.nl>
     All rights reserved.

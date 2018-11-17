@@ -143,14 +143,14 @@ class AliasController extends ApiMutableModelControllerBase
     /**
      * toggle status
      * @param string $uuid id to toggled
-     * @param string|null $disabled set disabled by default
+     * @param string|null $enabled set enabled by default
      * @return array status
      * @throws \Phalcon\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
-    public function toggleItemAction($uuid, $disabled = null)
+    public function toggleItemAction($uuid, $enabled = null)
     {
-        return $this->toggleBase("aliases.aliases", $uuid);
+        return $this->toggleBase("aliases.alias", $uuid, $enabled);
     }
 
     /**
@@ -181,7 +181,7 @@ class AliasController extends ApiMutableModelControllerBase
             if (empty($line[2]) || strpos($line[2], '/') === false) {
                 continue;
             }
-            if (!empty($result[$line[0]])) {
+            if (!empty($result[$line[0]]) && empty($result[$line[0]]['region'])) {
                 $result[$line[0]]['region'] = explode('/', $line[2])[0];
             }
         }
@@ -196,6 +196,7 @@ class AliasController extends ApiMutableModelControllerBase
         if ($this->request->isPost()) {
             $backend = new Backend();
             $backend->configdRun('template reload OPNsense/Filter');
+            $backend->configdRun("filter reload");
             $bckresult = strtolower(
                 trim($backend->configdRun("filter refresh_aliases"))
             );

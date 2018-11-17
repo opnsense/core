@@ -70,7 +70,7 @@ class TrafficShaper extends BaseModel
     public function addPipe($pipenr = null)
     {
         $allpipes = array();
-        foreach ($this->pipes->pipe->__items as $uuid => $pipe) {
+        foreach ($this->pipes->pipe->iterateItems() as $uuid => $pipe) {
             if ($pipenr != null && $pipenr == $pipe->number->__toString()) {
                 // pipe found, return
                 return $pipe;
@@ -102,7 +102,7 @@ class TrafficShaper extends BaseModel
     public function addQueue($queuenr = null)
     {
         $allqueues = array();
-        foreach ($this->queues->queue->__items as $uuid => $queue) {
+        foreach ($this->queues->queue->iterateItems() as $uuid => $queue) {
             if ($queuenr != null && $queuenr == $queue->number->__toString()) {
                 // queue found, return
                 return $queue;
@@ -131,7 +131,7 @@ class TrafficShaper extends BaseModel
     public function getMaxRuleSequence()
     {
         $seq = 0;
-        foreach ($this->rules->rule->__items as $rule) {
+        foreach ($this->rules->rule->iterateItems() as $rule) {
             if ((string)$rule->sequence > $seq) {
                 $seq = (string)$rule->sequence;
             }
@@ -145,7 +145,7 @@ class TrafficShaper extends BaseModel
      */
     public function isEnabled()
     {
-        foreach ($this->pipes->pipe->__items as $item) {
+        foreach ($this->pipes->pipe->iterateItems() as $item) {
             if ((string)$item->enabled == '1') {
                 return true;
             }

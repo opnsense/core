@@ -25,7 +25,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
 #}
-<script src="/ui/js/moment-with-locales.min.js"></script>
+<script src="{{ cache_safe('/ui/js/moment-with-locales.min.js') }}"></script>
 
 <script>
 

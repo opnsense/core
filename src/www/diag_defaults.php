@@ -31,6 +31,17 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 
+$input_errors = array();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!empty($_POST['Submit'])) {
+        $user = getUserEntry($_SESSION['Username']);
+        if (userHasPrivilege($user, 'user-config-readonly')) {
+            $input_errors[] = gettext('You do not have the permission to perform this action.');
+        }
+    }
+}
+
 include("head.inc");
 
 ?>
@@ -39,7 +50,7 @@ include("head.inc");
 
 include("fbegin.inc");
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['Submit'])): ?>
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['Submit']) && !count($input_errors)): ?>
 
 <script>
 $(document).ready(function() {
@@ -55,12 +66,12 @@ $(document).ready(function() {
 });
 </script>
 
-<?php
-      endif; ?>
+<?php endif ?>
 
 <section class="page-content-main">
   <div class="container-fluid">
     <div class="row">
+      <?php if (count($input_errors)) print_input_errors($input_errors); ?>
       <section class="col-xs-12">
         <form method="post">
           <p><strong> <?=gettext('If you click "Yes", the system will:')?></strong></p>
@@ -88,6 +99,8 @@ include("foot.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['Submit'])) {
-        reset_factory_defaults(false);
+        if (!count($input_errors)) {
+            reset_factory_defaults(false);
+        }
     }
 }

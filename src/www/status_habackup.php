@@ -1,30 +1,31 @@
 <?php
 
 /*
-    Copyright (C) 2016 Deciso B.V.
-    All rights reserved.
+ * Copyright (C) 2016 Deciso B.V.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
 require_once("guiconfig.inc");
 require_once("XMLRPC_Client.inc") ;
 
@@ -149,7 +150,7 @@ include("head.inc");
                         todo.push({'handle': $(this), 'params': params});
                     }
                 });
-            } else {
+            } else if ($(this).data('service_action') != undefined) {
                 // reload single service
                 params = {};
                 params['action'] = $(this).data('service_action');
@@ -158,12 +159,18 @@ include("head.inc");
                 todo.push({'handle': $(this), 'params': params});
             }
             // reload all templates first
-            $("#action_templates").show();
+            $("#action_exec_sync").hide();
+            $("#action_exec_sync_spinner").show();
             $.post(window.location, {action: 'exec_sync'}, function(data) {
+                $("#action_exec_sync_done").show();
+                $("#action_exec_sync_spinner").hide();
+                $("#action_templates").show();
                 $.post(window.location, {action: 'reload_templates'}, function(data) {
                     $("#action_templates").hide();
                     $("#action_templates_done").show();
-                    perform_actions_reload(todo);
+                    if (todo.length > 0) {
+                        perform_actions_reload(todo);
+                    }
                 });
             });
         });
@@ -224,6 +231,43 @@ include("head.inc");
                             </tr>
                         </thead>
                         <tbody>
+                          <tr>
+                              <td>
+                                  <?=gettext("Synchronize");?>
+                              </td>
+                              <td>
+                                  <?=gettext("Synchronize config to backup");?>
+                              </td>
+                              <td>
+                                <span id="action_exec_sync" class="btn btn-xs btn-default xmlrpc_srv_status_act">
+                                    <i  data-toggle="tooltip"
+                                        title="<?=gettext('Synchronize config to backup');?>"
+                                        class="fa fa-cloud-upload fa-fw">
+                                    </i>
+                                </span>
+                                <div id="action_exec_sync_spinner" style="display:none;">
+                                    <i class="fa fa-spinner fa-pulse" aria-hidden="true"></i>
+                                </div>
+                                <div id="action_exec_sync_done" style="display:none;">
+                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                </div>
+                              </td>
+                              <td></td>
+                          </tr>
+                          <tr>
+                              <td><?=gettext("Templates");?></td>
+                              <td><?=gettext("Generate configuration templates");?></td>
+                              <td>
+                                  <div id="action_templates" style="display:none;">
+                                      <i class="fa fa-spinner fa-pulse" aria-hidden="true"></i>
+                                  </div>
+                                  <div id="action_templates_done" style="display:none;">
+                                      <i class="fa fa-check" aria-hidden="true"></i>
+                                  </div>
+                              </td>
+                              <td></td>
+                          </tr>
+
 <?php
                         $xmlrpc_services = get_xmlrpc_services();
                         $xmlrpc_services = empty($xmlrpc_services) ? array() : $xmlrpc_services;
@@ -281,19 +325,6 @@ include("head.inc");
                             </tr>
 <?php
                         endforeach;?>
-                            <tr>
-                                <td><?=gettext("templates");?></td>
-                                <td></td>
-                                <td>
-                                    <div id="action_templates" style="display:none;">
-                                        <i class="fa fa-spinner fa-pulse" aria-hidden="true"></i>
-                                    </div>
-                                    <div id="action_templates_done" style="display:none;">
-                                        <i class="fa fa-check" aria-hidden="true"></i>
-                                    </div>
-                                </td>
-                                <td></td>
-                            </tr>
                             <tr>
                                 <td><?=gettext("all (*)");?></td>
                                 <td></td>

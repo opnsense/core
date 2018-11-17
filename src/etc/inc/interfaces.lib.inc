@@ -216,7 +216,10 @@ function legacy_interfaces_details($intf = null)
     $cmd = '/sbin/ifconfig -m ' . $tmp_intf;
     exec($cmd . ' 2>&1', $ifconfig_data, $ret);
     if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute ' . implode(' ', $ifconfig_data));
+        /* only error if no explicit interface was choosen */
+        if (empty($intf)) {
+            log_error('The command `' . $cmd . '\' failed to execute ' . implode(' ', $ifconfig_data));
+        }
         return $result;
     }
 
@@ -313,6 +316,12 @@ function legacy_interfaces_details($intf = null)
         } elseif (strpos($line, "\tgroups: ") !== false) {
             array_shift($line_parts);
             $result[$current_interface]['groups'] = $line_parts;
+        } elseif (strpos($line, "\tcarp: ") !== false) {
+            $result[$current_interface]["carp"] = array();
+            $result[$current_interface]["carp"]['status'] = $line_parts[1];
+            $result[$current_interface]["carp"]['vhid'] = $line_parts[3];
+            $result[$current_interface]["carp"]['advbase'] = $line_parts[5];
+            $result[$current_interface]["carp"]['advskew'] = $line_parts[7];
         }
     }
 
@@ -326,7 +335,14 @@ function legacy_interfaces_details($intf = null)
  */
 function legacy_interface_details($intf)
 {
-    return legacy_interfaces_details($intf)[$intf];
+    $result = array();
+
+    $details = legacy_interfaces_details($intf);
+    if (isset($details[$intf])) {
+        $result = $details[$intf];
+    }
+
+    return $result;
 }
 
 /**
@@ -406,7 +422,7 @@ function legacy_get_interface_addresses($ifs)
             if (empty($addrs['ipaddr6']) && empty($ipv6['link-local'])) {
                 $addrs['ipaddr6'] = $ipv6['ipaddr'];
                 $addrs['subnetbits6'] = $ipv6['subnetbits'];
-            } elseif (empty($addrs['lladdr6']) && !empty($ipv6['link-local'])) {
+            } elseif (empty($addrs['ipaddr6_ll']) && !empty($ipv6['link-local'])) {
                 $addrs['ipaddr6_ll'] = $ipv6['ipaddr'];
                 $addrs['subnetbits6_ll'] = $ipv6['subnetbits'];
             }

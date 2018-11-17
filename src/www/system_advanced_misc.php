@@ -1,33 +1,33 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2005-2007 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2005-2007 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
@@ -79,9 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['crypto_hardware'] = !empty($config['system']['crypto_hardware']) ? $config['system']['crypto_hardware'] : null;
     $pconfig['cryptodev_enable'] = isset($config['system']['cryptodev_enable']);
     $pconfig['thermal_hardware'] = !empty($config['system']['thermal_hardware']) ? $config['system']['thermal_hardware'] : null;
-    /* if the old use_mfs_tmpvar is found, set these flags, too */
-    $pconfig['use_mfs_var'] = isset($config['system']['use_mfs_tmpvar']) || isset($config['system']['use_mfs_var']);
-    $pconfig['use_mfs_tmp'] = isset($config['system']['use_mfs_tmpvar']) || isset($config['system']['use_mfs_tmp']);
+    $pconfig['use_mfs_var'] = isset($config['system']['use_mfs_var']);
+    $pconfig['use_mfs_tmp'] = isset($config['system']['use_mfs_tmp']);
     $pconfig['use_swap_file'] = isset($config['system']['use_swap_file']);
     $pconfig['dhparamusage'] = !empty($config['system']['dhparamusage']) ? $config['system']['dhparamusage'] : null;
     $pconfig['rrdbackup'] = !empty($config['system']['rrdbackup']) ? $config['system']['rrdbackup'] : null;
@@ -145,11 +144,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['use_mfs_var'] = true;
         } elseif (isset($config['system']['use_mfs_var'])) {
             unset($config['system']['use_mfs_var']);
-        }
-
-        /* XXX config used to have this, but we've split it up in 17.1 */
-        if (isset($config['system']['use_mfs_tmpvar'])) {
-            unset($config['system']['use_mfs_tmpvar']);
         }
 
         if (!empty($pconfig['use_mfs_tmp'])) {

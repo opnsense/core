@@ -159,19 +159,24 @@ private-address: fe80::/10       # Link-local address (LLA)
 EOF;
     }
 
-    // Determine interfaces to run on
-    $bindints = "";
+    $bindints = '';
+
     if (!empty($config['unbound']['active_interface'])) {
-        $active_interfaces = explode(",", $config['unbound']['active_interface']);
-        foreach ($active_interfaces as $ubif) {
-            $intip = get_interface_ip($ubif);
-            if (!empty($intip)) {
-                $bindints .= "interface: $intip\n";
+        $active_interfaces = explode(',', $config['unbound']['active_interface']);
+        $active_interfaces[] = 'lo0';
+        $addresses = array();
+
+        foreach (interfaces_addresses($active_interfaces) as $tmpaddr => $info) {
+            if ($info['name'] == 'lo0' && $info['family'] == 'inet' && $tmpaddr != '127.0.0.1') {
+                /* allow other DNS services to bind to loopback aliases */
+                continue;
             }
-            $intip = get_interface_ipv6($ubif);
-            if (!empty($intip)) {
-                $bindints .= "interface: $intip\n";
-            }
+
+            $addresses[] = $tmpaddr;
+        }
+
+        foreach ($addresses as $address) {
+            $bindints .= "interface: $address\n";
         }
     } else {
         $bindints .= "interface: 0.0.0.0\n";
@@ -179,8 +184,7 @@ EOF;
         $bindints .= "interface-automatic: yes\n";
     }
 
-    // Determine interfaces to run on
-    $outgoingints = "";
+    $outgoingints = '';
     if (!empty($config['unbound']['outgoing_interface'])) {
         $outgoingints = "# Outgoing interfaces to be used\n";
         $outgoing_interfaces = explode(",", $config['unbound']['outgoing_interface']);
@@ -324,6 +328,7 @@ rrset-cache-size: {$rrsetcachesize}m
 {$anchor_file}
 prefetch: {$prefetch}
 prefetch-key: {$prefetch_key}
+
 # Interface IP(s) to bind to
 {$bindints}
 {$outgoingints}
@@ -348,21 +353,6 @@ include: /var/unbound/domainoverrides.conf
 
 {$forward_conf}
 
-###
-# Remote Control Config
-###
-include: /var/unbound/remotecontrol.conf
-
-EOD;
-
-    copy('/usr/local/etc/inc/plugins.inc.d/unbound/root.min.hints', '/var/unbound/root.hints');
-    file_put_contents('/var/unbound/unbound.conf', $unboundconf);
-}
-
-function unbound_remote_control_setup()
-{
-    if (!file_exists('/var/unbound/remotecontrol.conf') || !file_exists('/var/unbound/unbound_control.key')) {
-        $remotcfg = <<<EOF
 remote-control:
     control-enable: yes
     control-interface: 127.0.0.1
@@ -372,15 +362,10 @@ remote-control:
     control-key-file: /var/unbound/unbound_control.key
     control-cert-file: /var/unbound/unbound_control.pem
 
-EOF;
+EOD;
 
-        file_put_contents('/var/unbound/remotecontrol.conf', $remotcfg);
-
-        mwexecf(
-            'chroot -u unbound -g unbound / %s -d %s',
-            array('/usr/local/sbin/unbound-control-setup', '/var/unbound')
-        );
-    }
+    copy('/usr/local/etc/inc/plugins.inc.d/unbound/root.min.hints', '/var/unbound/root.hints');
+    file_put_contents('/var/unbound/unbound.conf', $unboundconf);
 }
 
 function unbound_interface($interface)
@@ -424,12 +409,26 @@ function unbound_configure_do($verbose = false, $interface = '')
         return;
     }
 
+    //configd_run('unbound cache dump');
+
     killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
     killbypid('/var/run/unbound.pid', 'TERM', true);
 
-    if (!isset($config['unbound']['enable'])) {
+    if (!unbound_enabled()) {
         return;
     }
+
+    $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
+
+    foreach ($dirs as $dir) {
+        mwexecf('/bin/mkdir -p %s', "/var/unbound{$dir}");
+    }
+
+    if (mwexecf('/sbin/mount -uw %s', '/var/unbound/dev', true)) {
+        mwexecf('/sbin/mount -t devfs devfs %s', '/var/unbound/dev');
+    }
+
+    mwexecf('/usr/sbin/chown -R unbound:unbound %s', '/var/unbound');
 
     if ($verbose) {
         echo 'Starting Unbound DNS...';
@@ -442,7 +441,13 @@ function unbound_configure_do($verbose = false, $interface = '')
         true
     );
 
-    unbound_remote_control_setup();
+    if (!file_exists('/var/unbound/unbound_control.key')) {
+        mwexecf(
+            'chroot -u unbound -g unbound / %s -d %s',
+            array('/usr/local/sbin/unbound-control-setup', '/var/unbound')
+        );
+    }
+
     unbound_generate_config();
 
     $domain = $config['system']['domain'];
@@ -455,6 +460,8 @@ function unbound_configure_do($verbose = false, $interface = '')
     }
     mwexecf('/usr/local/sbin/unbound -c %s', '/var/unbound/unbound.conf');
 
+    //configd_run('unbound cache load');
+
     if ($verbose) {
         echo "done.\n";
     }
@@ -462,13 +469,15 @@ function unbound_configure_do($verbose = false, $interface = '')
 
 function unbound_add_domain_overrides($pvt = false)
 {
-    global $config;
+    $domains = config_read_array('unbound', 'domainoverrides');
 
-    $domains = $config['unbound']['domainoverrides'];
+    usort($domains, function ($a, $b) {
+        return strcasecmp($a['domain'], $b['domain']);
+    });
 
-    $sorted_domains = msort($domains, "domain");
     $result = array();
-    foreach ($sorted_domains as $domain) {
+
+    foreach ($domains as $domain) {
         $domain_key = current($domain);
         if (!isset($result[$domain_key])) {
             $result[$domain_key] = array();
@@ -523,7 +532,7 @@ function unbound_add_host_entries()
     if (!empty($config['unbound']['active_interface'])) {
         $interfaces = explode(",", $config['unbound']['active_interface']);
     } else {
-        $interfaces = get_configured_interface_list();
+        $interfaces = array_keys(get_configured_interface_with_descr());
     }
 
     foreach ($interfaces as $interface) {
@@ -696,7 +705,7 @@ function unbound_acls_subnets()
     /* add our networks for active interfaces including localhost */
     $subnets = array('127.0.0.1/8', '::1/64');
 
-    foreach ($active_interfaces as $ubif => $ifdesc) {
+    foreach ($active_interfaces as $ubif => $unused) {
         foreach (legacy_getall_interface_addresses(get_real_interface($ubif)) as $subnet) {
             $subnets[] = $subnet;
         }
@@ -738,9 +747,7 @@ function unbound_acls_config()
 
 function unbound_hosts_generate()
 {
-    global $config;
-
-    if (!isset($config['unbound']['enable'])) {
+    if (!unbound_enabled()) {
         return;
     }
 
@@ -760,7 +767,8 @@ function unbound_local_zone_types()
         'inform' => 'inform',
         'inform_deny' => 'inform_deny',
         'nodefault' => 'nodefault',
-        'redirect' => 'redirect',
+        # requires more plumbing:
+        #'redirect' => 'redirect',
         'refuse' => 'refuse',
         'static' => 'static',
         'typetransparent' => 'typetransparent',

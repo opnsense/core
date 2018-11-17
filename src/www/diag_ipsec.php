@@ -81,7 +81,7 @@ if ($ipsec_status == null) {
     $ipsec_status = array();
 }
 
-$service_hook = 'ipsec';
+$service_hook = 'strongswan';
 
 include("head.inc");
 

@@ -1,6 +1,6 @@
 <model>
    <mount>//OPNsense/monit</mount>
-   <version>1.0.3</version>
+   <version>1.0.6</version>
    <description>Monit settings</description>
    <items>
       <general>
@@ -47,6 +47,21 @@
             <default>0</default>
             <Required>Y</Required>
          </ssl>
+         <sslversion type="OptionField">
+            <default>auto</default>
+            <Required>Y</Required>
+            <OptionValues>
+               <auto>AUTO</auto>
+               <tlsv1>TLSV1</tlsv1>
+               <tlsv11>TLSV11</tlsv11>
+               <tlsv12>TLSV12</tlsv12>
+               <tlsv13>TLSV13</tlsv13>
+            </OptionValues>
+         </sslversion>
+         <sslverify type="BooleanField">
+            <Required>Y</Required>
+            <default>1</default>
+         </sslverify>
          <logfile type="TextField">
             <Required>N</Required>
             <default>syslog facility log_daemon</default>
@@ -148,8 +163,6 @@
          </events>
          <format type="TextField">
             <Required>N</Required>
-            <mask>/^.{1,255}$/u</mask>
-            <ValidationMessage>Message format should be a string between 1 and 255 characters.</ValidationMessage>
          </format>
          <reminder type="IntegerField">
             <default>10</default>
@@ -201,6 +214,13 @@
             <mask>/^(\/[^\/ ]*)+\/?.*$/</mask>
             <ValidationMessage>Should be a valid absolute file or folder path.</ValidationMessage>
          </path>
+         <timeout type="IntegerField">
+            <default>300</default>
+            <Required>N</Required>
+            <MinimumValue>1</MinimumValue>
+            <MaximumValue>86400</MaximumValue>
+            <ValidationMessage>Program Timeout needs to be an integer value between 1 and 86400</ValidationMessage>>
+         </timeout>
          <address type="TextField">
             <Required>N</Required>
             <mask>/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-4]|2[0-5][0-9]|[01]?[0-9][0-9]?)$/</mask>

@@ -47,6 +47,7 @@ pkg_running=""
 packes_output=""
 last_check="unknown"
 packages_upgraded=""
+pkg_selected=${1}
 pkg_upgraded=""
 packages_downgraded=""
 packages_new=""
@@ -75,7 +76,7 @@ if [ "$pkg_running" == "" ]; then
       done
 
       if [ $timer -eq 0 ]; then
-        # We have an connection issue and could not
+        # We have a connection issue and could not
         # reach the pkg repository in timely fashion
         # Kill all running pkg instances
         pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
@@ -104,12 +105,12 @@ if [ "$pkg_running" == "" ]; then
         # connection is still ok
         connection="ok"
         # now check what happens when we would go ahead
-        if [ -z "${1}" ]; then
+        if [ -z "${pkg_selected}" ]; then
             pkg upgrade -n > $tmp_pkg_output_file &
         else
             # fetch before install lets us know more
-            pkg fetch -y "${1}" > $tmp_pkg_output_file &
-            pkg install -n "${1}" > $tmp_pkg_output_file &
+            pkg fetch -y "${pkg_selected}" > $tmp_pkg_output_file &
+            pkg install -n "${pkg_selected}" > $tmp_pkg_output_file &
 	fi
         timer=$timeout_upgrade
         pkg_running="started"
@@ -267,7 +268,7 @@ if [ "$pkg_running" == "" ]; then
             fi
 
             # the main update from package will provide this during upgrade
-            if [ -n "$pkg_upgraded" ]; then
+            if [ -n "${pkg_upgraded}${pkg_selected}" ]; then
               base_to_reboot=
             elif [ -z "$base_to_reboot" ]; then
               if opnsense-update -cbf; then
@@ -295,7 +296,7 @@ if [ "$pkg_running" == "" ]; then
             fi
 
             # the main update from package will provide this during upgrade
-            if [ -n "$pkg_upgraded" ]; then
+            if [ -n "${pkg_upgraded}${pkg_selected}" ]; then
               kernel_to_reboot=
             elif [ -z "$kernel_to_reboot" ]; then
               if opnsense-update -cfk; then
@@ -323,7 +324,7 @@ if [ "$pkg_running" == "" ]; then
             fi
           fi
         else
-          # We have an connection issue and could not reach the pkg repository in timely fashion
+          # We have a connection issue and could not reach the pkg repository in timely fashion
           # Kill all running pkg instances
           pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
           if [ "$pkg_running" != "" ]; then
@@ -334,8 +335,8 @@ if [ "$pkg_running" == "" ]; then
 
       upgrade_major_message=$(cat /usr/local/opnsense/firmware-message 2> /dev/null | sed 's/"/\\&/g' | tr '\n' ' ')
       upgrade_major_version=$(cat /usr/local/opnsense/firmware-upgrade 2> /dev/null)
-      product_version=$(cat /usr/local/opnsense/version/opnsense)
-      product_name=$(cat /usr/local/opnsense/version/opnsense.name)
+      product_version=$(opnsense-version -v)
+      product_name=$(opnsense-version -n)
       os_version=$(uname -sr)
       last_check=$(date)
 else

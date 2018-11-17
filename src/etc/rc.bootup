@@ -107,7 +107,7 @@ system_cron_configure(true, true);
 system_routing_configure(true);
 
 plugins_configure('dns', true);
-services_dhcpd_configure('all', array(), true);
+services_dhcpd_configure(true);
 system_hosts_generate(true);
 services_dhcrelay_configure(true);
 services_dhcrelay6_configure(true);

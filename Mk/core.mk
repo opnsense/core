@@ -50,41 +50,35 @@ ROOT_${TARGET}:=${ROOT_${TARGET}:S/^\/$//}
 
 install-${TARGET}:
 .for TREE in ${TREES_${TARGET}}
-	@REALTARGET=/$$(dirname ${TREE}); \
+	@REALTARGET="/${TREE}"; \
+	if [ -z "${ROOT_${TARGET}}" ]; then REALTARGET=/; fi; \
 	mkdir -p ${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}; \
-	cp -vr ${TREE} ${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}
-	@(cd ${TREE}; find * -type f ${_IGNORES}) | while read FILE; do \
+	tar -C ${TREE} -cf - . | tar -C ${DESTDIR}${ROOT_${TARGET}}$${REALTARGET} -xf -; \
+	(cd ${TREE}; find * -type f ${_IGNORES}) | while read FILE; do \
 		if [ "$${FILE%%.in}" != "$${FILE}" ]; then \
-			sed -i '' \
-			    -e "s=%%CORE_ABI%%=${CORE_ABI}=g" \
-			    -e "s=%%CORE_HASH%%=${CORE_HASH}=g" \
-			    -e "s=%%CORE_MAINTAINER%%=${CORE_MAINTAINER}=g" \
-			    -e "s=%%CORE_NAME%%=${CORE_NAME}=g" \
-			    -e "s=%%CORE_PACKAGESITE%%=${CORE_PACKAGESITE}=g" \
-			    -e "s=%%CORE_REPOSITORY%%=${CORE_REPOSITORY}=g" \
-			    -e "s=%%CORE_WWW%%=${CORE_WWW}=g" \
-			    "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}"; \
-			mv -v "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}" \
-			    "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE%%.in}"; \
+			sed -i '' ${SED_REPLACE} \
+			    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}"; \
+			mv "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
+			    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.in}"; \
 		fi; \
 		FILE="$${FILE%%.in}"; \
 		if [ -n "${NO_SAMPLE}" -a "$${FILE%%.sample}" != "$${FILE}" ]; then \
-			mv -v "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}" \
-			    "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE%%.sample}"; \
+			mv "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
+			    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.sample}"; \
 		fi; \
 		if [ "$${FILE%%.shadow}" != "$${FILE}" ]; then \
 			if [ -n "${NO_SAMPLE}" ]; then \
-				mv -v "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}" \
-				    "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE%%.shadow}"; \
+				mv "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
+				    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.shadow}"; \
 			else \
-				mv "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}" \
-				    "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE%%.shadow}.sample"; \
+				mv "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
+				    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.shadow}.sample"; \
 			fi; \
 		fi; \
 		if [ "${TREE}" = "man" ]; then \
-			gzip -vcn "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}" > \
-			    "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}.gz"; \
-			rm "${DESTDIR}${ROOT_${TARGET}}/${TREE}/$${FILE}"; \
+			gzip -cn "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" > \
+			    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}.gz"; \
+			rm "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}"; \
 		fi; \
 	done
 .endfor
@@ -92,6 +86,7 @@ install-${TARGET}:
 plist-${TARGET}:
 .for TREE in ${TREES_${TARGET}}
 	@(cd ${TREE}; find * -type f ${_IGNORES} -o -type l) | while read FILE; do \
+		if [ -f "${TREE}/$${FILE}.in" ]; then continue; fi; \
 		FILE="$${FILE%%.in}"; PREFIX=""; \
 		if [ -z "${NO_SAMPLE}" -a "$${FILE%%.sample}" != "$${FILE}" ]; then \
 			PREFIX="@sample "; \
@@ -107,7 +102,9 @@ plist-${TARGET}:
 		if [ "${TREE}" == "man" ]; then \
 			FILE="$${FILE}.gz"; \
 		fi; \
-		echo "$${PREFIX}${ROOT_${TARGET}}/${TREE}/$${FILE}"; \
+		REALTARGET="/${TREE}"; \
+		if [ -z "${ROOT_${TARGET}}" ]; then REALTARGET=; fi; \
+		echo "$${PREFIX}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}"; \
 	done
 .endfor
 

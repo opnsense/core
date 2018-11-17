@@ -101,7 +101,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     public function testCanAssignArrayType()
     {
         // purge test items (if any)
-        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             BaseModelTest::$model->arraytypes->item->Del($nodeid);
         }
         // generate new items
@@ -119,7 +119,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
 
         // read items, logically the sequence should be the same as the generated items
         $i = 1;
-        foreach (BaseModelTest::$model->arraytypes->item->__items as $node) {
+        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $node) {
             $this->assertEquals($i, (string)$node->number);
             $i++;
         }
@@ -130,17 +130,17 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testCanDeleteSpecificItem()
     {
-        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             if ((string)$node->number == 5) {
                 BaseModelTest::$model->arraytypes->item->Del($nodeid);
             }
         }
         // item with number 5 should be deleted
-        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $this->assertNotEquals((string)$node->number, 5);
         }
         // 9 items left
-        $this->assertEquals(count(BaseModelTest::$model->arraytypes->item->__items), 9);
+        $this->assertEquals(count(iterator_to_array(BaseModelTest::$model->arraytypes->item->iterateItems())), 9);
     }
 
     /**
@@ -148,7 +148,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testArrayIsKeydByUUID()
     {
-        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $this->assertCount(5, explode('-', $nodeid));
         }
     }
@@ -171,7 +171,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     public function testValidationNOK()
     {
         // replace all numbers
-        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $node->number = "XXX";
         }
         BaseModelTest::$model->serializeToConfig();
@@ -214,7 +214,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     {
         $data = array();
         $i = 100;
-        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $data[$node->__reference] = $i;
             $i++;
         }
@@ -223,7 +223,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
             $node->setNodes(array('number' => $value));
         }
 
-        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $this->assertGreaterThan(99, (string)$node->number);
         }
     }
@@ -245,7 +245,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     public function testConstraintsNok()
     {
         $count = 2;
-        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $count--;
             if ($count >= 0) {
                 $node->number = 999;
@@ -260,7 +260,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     public function testConstraintsOk()
     {
         $count = 1;
-        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $count++;
             $node->number = $count;
         }
@@ -293,9 +293,6 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         BaseModelTest::$model->AllOrNone->value2 = "X";
         BaseModelTest::$model->AllOrNone->value3 = "";
         BaseModelTest::$model->serializeToConfig();
-        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value1, '');
-        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value2, 'X');
-        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value3, '');
     }
 
     /**
@@ -310,6 +307,49 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value1, "X1");
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value2, "X2");
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value3, "X3");
+    }
+
+
+    /**
+     * @depends testRunMigrations
+     */
+    public function testSingleSelectInitial()
+    {
+        BaseModelTest::$model->SingleSelect->value1 = "";
+        BaseModelTest::$model->SingleSelect->value2 = "";
+        BaseModelTest::$model->SingleSelect->value3 = "";
+        BaseModelTest::$model->serializeToConfig();
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value1, '');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value2, '');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value3, '');
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage Only one option could be selected
+     * @depends testSingleSelectInitial
+     */
+    public function testSingleSelectNok()
+    {
+        BaseModelTest::$model->SingleSelect->value1 = "x";
+        BaseModelTest::$model->SingleSelect->value2 = "x";
+        BaseModelTest::$model->SingleSelect->value3 = "";
+        BaseModelTest::$model->serializeToConfig();
+    }
+
+
+    /**
+     * @depends testSingleSelectNok
+     */
+    public function testSingleSelectOk()
+    {
+        BaseModelTest::$model->SingleSelect->value1 = "";
+        BaseModelTest::$model->SingleSelect->value2 = "x";
+        BaseModelTest::$model->SingleSelect->value3 = "";
+        BaseModelTest::$model->serializeToConfig();
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value1, '');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value2, 'x');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value3, '');
     }
 
     /**

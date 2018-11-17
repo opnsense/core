@@ -212,7 +212,7 @@
       <descr><![CDATA[System Administrator]]></descr>
       <scope>system</scope>
       <groupname>admins</groupname>
-      <password>$2b$10$YRVoF4SgskIsrXOvOQjGieB9XqHPRra9R7d80B3BZdbY/j21TwBfS</password>
+      <password>$2y$10$YRVoF4SgskIsrXOvOQjGieB9XqHPRra9R7d80B3BZdbY/j21TwBfS</password>
       <uid>0</uid>
     </user>
     <nextuid>2000</nextuid>

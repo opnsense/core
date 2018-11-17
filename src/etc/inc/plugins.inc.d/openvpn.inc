@@ -705,10 +705,15 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                     if ($settings['serverbridge_dhcp']) {
                         if (!empty($settings['serverbridge_interface']) &&
                             strcmp($settings['serverbridge_interface'], "none")) {
-                            $biface_ip=get_interface_ip($settings['serverbridge_interface']);
-                            $biface_sm=gen_subnet_mask(get_interface_subnet($settings['serverbridge_interface']));
+                            $realif = get_real_interface($settings['serverbridge_interface']);
+                            if (!$realif && strstr($settings['serverbridge_interface'], '_vip')) {
+                                list($vipif, $vhid) = explode('_vip', $settings['serverbridge_interface']);
+                                $realif = get_real_interface($vipif);
+                            }
+                            list ($biface_ip, $biface_sn) = explode('/', find_interface_network($realif, false));
                             if (is_ipaddrv4($biface_ip) && is_ipaddrv4($settings['serverbridge_dhcp_start']) &&
                                 is_ipaddrv4($settings['serverbridge_dhcp_end'])) {
+                                $biface_sm = gen_subnet_mask($biface_sn);
                                 $conf .= "server-bridge {$biface_ip} {$biface_sm} " .
                                     "{$settings['serverbridge_dhcp_start']} {$settings['serverbridge_dhcp_end']}\n";
                                 $conf .= "client-config-dir /var/etc/openvpn-csc/".$vpnid."\n";

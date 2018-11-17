@@ -58,7 +58,7 @@ class Alias(object):
         self._type = None
         self._proto = None
         self._items = list()
-        self._resolve_content = list()
+        self._resolve_content = set()
         for subelem in elem:
             if subelem.tag == 'type':
                 self._type = subelem.text
@@ -70,6 +70,8 @@ class Alias(object):
                 tmp = subelem.text.strip()
                 if len(tmp.split('.')) <= 2 and tmp.replace('.', '').isdigit():
                     self._ttl = int(float(tmp))
+            elif subelem.tag in ('aliasurl', 'address', 'url') and subelem.text is None:
+                self._items = set()
             elif subelem.tag == 'aliasurl':
                 self._items = set(sorted(subelem.text.split()))
             elif subelem.tag == 'address' and len(self._items) == 0:
@@ -147,8 +149,12 @@ class Alias(object):
                     if raw_address and not raw_address.startswith('//'):
                         for address in self._parse_address(raw_address):
                             yield address
+            else:
+                syslog.syslog(syslog.LOG_ERR, 'error fetching alias url %s [http_code:%s]' % (url, req.status_code))
+                raise IOError('error fetching alias url %s' % (url))
         except:
             syslog.syslog(syslog.LOG_ERR, 'error fetching alias url %s' % (url))
+            raise IOError('error fetching alias url %s' % (url))
 
     def _fetch_geo(self, geoitem):
         """ fetch geoip addresses, if not downloaded or outdated force an update
@@ -218,24 +224,34 @@ class Alias(object):
         """
         if not self._resolve_content:
             if self.expired() or self.changed() or force:
-                with open(self._filename_alias_content, 'w') as f_out:
-                    for item in self.items():
-                        address_parser = self.get_parser()
-                        if address_parser:
-                            for address in address_parser(item):
-                                if address not in self._resolve_content:
-                                    # flush new alias content (without dependencies) to disk, so progress can easliy
-                                    # be followed, large lists of domain names can take quite some resolve time.
-                                    f_out.write('%s\n' % address)
-                                    f_out.flush()
-                                    # preserve addresses
-                                    self._resolve_content.append(address)
-                    # flush md5 hash to disk
-                    open(self._filename_alias_hash, 'w').write(self.uniqueid())
+                if os.path.isfile(self._filename_alias_content):
+                    undo_content = open(self._filename_alias_content, 'r').read()
+                else:
+                    undo_content = ""
+                try:
+                    with open(self._filename_alias_content, 'w') as f_out:
+                        for item in self.items():
+                            address_parser = self.get_parser()
+                            if address_parser:
+                                for address in address_parser(item):
+                                    if address not in self._resolve_content:
+                                        # flush new alias content (without dependencies) to disk, so progress can easliy
+                                        # be followed, large lists of domain names can take quite some resolve time.
+                                        f_out.write('%s\n' % address)
+                                        f_out.flush()
+                                        # preserve addresses
+                                        self._resolve_content.add(address)
+                except IOError:
+                    # parse issue, keep data as-is, flush previous content to disk
+                    with open(self._filename_alias_content, 'w') as f_out:
+                        f_out.write(undo_content)
+                    self._resolve_content = set(undo_content.split("\n"))
+                # flush md5 hash to disk
+                open(self._filename_alias_hash, 'w').write(self.uniqueid())
             else:
-                self._resolve_content = open(self._filename_alias_content).read().split()
+                self._resolve_content = set(open(self._filename_alias_content).read().split())
         # return the addresses and networks of this alias
-        return self._resolve_content
+        return list(self._resolve_content)
 
     def get_parser(self):
         """ fetch address parser to use, None if alias type is not handled here

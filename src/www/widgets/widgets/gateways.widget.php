@@ -33,12 +33,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['gatewaysfilter'] = !empty($config['widgets']['gatewaysfilter']) ?
         explode(',', $config['widgets']['gatewaysfilter']) : array();
+    $pconfig['gatewaysinvert'] = !empty($config['widgets']['gatewaysinvert']) ? '1' : '';
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (!empty($pconfig['gatewaysfilter'])) {
         $config['widgets']['gatewaysfilter'] = implode(',', $pconfig['gatewaysfilter']);
     } elseif (isset($config['widgets']['gatewaysfilter'])) {
         unset($config['widgets']['gatewaysfilter']);
+    }
+    if (!empty($pconfig['gatewaysinvert'])) {
+        $config['widgets']['gatewaysinvert'] = 1;
+    } elseif (isset($config['widgets']['gatewaysinvert'])) {
+        unset($config['widgets']['gatewaysinvert']);
     }
     write_config("Saved Gateways Filter via Dashboard");
     header(url_safe('Location: /index.php'));
@@ -54,17 +60,12 @@ $gateways = return_gateways_array();
   {
       data.map(function(gateway) {
           var tr_id = "gateways_widget_gw_" + gateway['name'];
-          if (find("#"+tr_id).length != 0) {
+          if ($("#"+tr_id).length) {
               $("#"+tr_id+" > td:eq(0)").html('<small><strong>'+gateway['name']+'</strong><br/>'+gateway['address']+'</small>');
               $("#"+tr_id+" > td:eq(1)").html(gateway['delay']);
-<?php if (isset($config['system']['prefer_dpinger'])): ?>
               $("#"+tr_id+" > td:eq(2)").html(gateway['stddev']);
               $("#"+tr_id+" > td:eq(3)").html(gateway['loss']);
               $("#"+tr_id+" > td:eq(4)").html('<span>'+gateway['status_translated']+'</span>');
-<?php else: ?>
-              $("#"+tr_id+" > td:eq(2)").html(gateway['loss']);
-              $("#"+tr_id+" > td:eq(3)").html('<span>'+gateway['status_translated']+'</span>');
-<?php endif ?>
 
               // set color on status text
               switch (gateway['status']) {
@@ -84,17 +85,10 @@ $gateways = return_gateways_array();
                   break;
               }
 
-<?php if (isset($config['system']['prefer_dpinger'])): ?>
               $("#"+tr_id+" > td:eq(4) > span").removeClass("label-danger label-warning label-success label");
               if (status_color != '') {
                 $("#"+tr_id+" > td:eq(4) > span").addClass("label label-" + status_color);
               }
-<?php else: ?>
-              $("#"+tr_id+" > td:eq(3) > span").removeClass("label-danger label-warning label-success label");
-              if (status_color != '') {
-                $("#"+tr_id+" > td:eq(3) > span").addClass("label label-" + status_color);
-              }
-<?php endif ?>
           }
       });
   }
@@ -105,12 +99,16 @@ $gateways = return_gateways_array();
     <table class="table table-condensed">
       <tr>
         <td>
-          <select id="gatewaysfilter" name="gatewaysfilter[]" multiple="multiple" class="selectpicker_widget" title="<?= html_safe(gettext('All')) ?>">
+          <select id="gatewaysinvert" name="gatewaysinvert" class="selectpicker_widget">
+            <option value="" <?= empty($pconfig['gatewaysinvert']) ? 'selected="selected"' : '' ?>><?= gettext('Hide') ?></option>
+            <option value="yes" <?= !empty($pconfig['gatewaysinvert']) ? 'selected="selected"' : '' ?>><?= gettext('Show') ?></option>
+          </select>
+          <select id="gatewaysfilter" name="gatewaysfilter[]" multiple="multiple" class="selectpicker_widget">
 <?php foreach ($gateways as $gwname => $unused): ?>
             <option value="<?= html_safe($gwname) ?>" <?= in_array($gwname, $pconfig['gatewaysfilter']) ? 'selected="selected"' : '' ?>><?= html_safe($gwname) ?></option>
 <?php endforeach;?>
           </select>
-          <input id="submitd" name="submitd" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+          <button id="submitd" name="submitd" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button>
         </td>
       </tr>
     </table>
@@ -122,24 +120,23 @@ $gateways = return_gateways_array();
   <tr>
     <th><?=gettext('Name')?></th>
     <th><?=gettext('RTT')?></th>
-<?php if (isset($config['system']['prefer_dpinger'])): ?>
     <th><?=gettext('RTTd')?></th>
-<?php endif ?>
     <th><?=gettext('Loss')?></th>
     <th><?=gettext('Status')?></th>
   </tr>
-<?php foreach ($gateways as $gwname => $unused): ?>
-<? if (!count($pconfig['gatewaysfilter']) || in_array($gwname, $pconfig['gatewaysfilter'])): ?>
+<?php foreach ($gateways as $gwname => $unused):
+      $listed = in_array($gwname, $pconfig['gatewaysfilter']);
+      $listed = !empty($pconfig['gatewaysinvert']) ? $listed : !$listed;
+      if (!$listed) {
+        continue;
+      } ?>
    <tr id="gateways_widget_gw_<?= html_safe($gwname) ?>">
      <td><small><strong><?= $gwname ?></strong><br/>~</small></td>
      <td class="text-nowrap">~</td>
-<?php if (isset($config['system']['prefer_dpinger'])): ?>
      <td class="text-nowrap">~</td>
-<?php endif ?>
      <td class="text-nowrap">~</td>
      <td><span class="label label-default"><?= gettext('Unknown') ?></span></td>
   </tr>
-<?php endif ?>
 <?php endforeach ?>
 </table>
 

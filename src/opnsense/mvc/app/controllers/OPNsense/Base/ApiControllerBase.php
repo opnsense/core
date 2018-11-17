@@ -96,6 +96,15 @@ class ApiControllerBase extends ControllerRoot
     }
 
     /**
+     * is external client (other then session authenticated)
+     * @return bool
+     */
+    protected function isExternalClient()
+    {
+        return !empty($this->request->getHeader('Authorization'));
+    }
+
+    /**
      * before routing event.
      * Handles authentication and authentication of user requests
      * In case of API calls, also prevalidates if request can be executed to return a more readable response
@@ -106,7 +115,7 @@ class ApiControllerBase extends ControllerRoot
     public function beforeExecuteRoute($dispatcher)
     {
         // handle authentication / authorization
-        if (!empty($this->request->getHeader('Authorization'))) {
+        if ($this->isExternalClient()) {
             // Authorization header send, handle API request
             $authHeader = explode(' ', $this->request->getHeader('Authorization'));
             if (count($authHeader) > 1) {
@@ -157,6 +166,9 @@ class ApiControllerBase extends ControllerRoot
                                     return false;
                                 }
 
+                                // link username on successful login
+                                $this->logged_in_user = $authResult['username'];
+
                                 return true;
                             }
                         }
@@ -196,6 +208,9 @@ class ApiControllerBase extends ControllerRoot
             }
             // when request is using a json body (based on content type), parse it first
             $this->parseJsonBodyData();
+
+            // link username on successful login
+            $this->logged_in_user = $this->session->get("Username");
         }
     }
 
@@ -214,7 +229,11 @@ class ApiControllerBase extends ControllerRoot
             $data = $dispatcher->getReturnedValue();
             if (is_array($data)) {
                 $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setContent(htmlspecialchars(json_encode($data), ENT_NOQUOTES));
+                if ($this->isExternalClient()) {
+                    $this->response->setContent(json_encode($data));
+                } else {
+                    $this->response->setContent(htmlspecialchars(json_encode($data), ENT_NOQUOTES));
+                }
             }
         }
 

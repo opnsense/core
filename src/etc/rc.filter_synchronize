@@ -7,7 +7,7 @@
     Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>
     Copyright (C) 2006 Peter Allgeyer <allgeyer@web.de>
     Copyright (C) 2008 Ermal Luçi
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -266,7 +266,7 @@ if (isset($config['hasync']) && is_array($config['hasync'])) {
     $section_cnf = array();
     $section_cnf['synchronizerules'] = 'filter';
     $section_cnf['synchronizenat'] = 'nat';
-    $section_cnf['synchronizealiases'] = 'aliases';
+    $section_cnf['synchronizealiases'] = 'OPNsense.Firewall.Alias';
     $section_cnf['synchronizedhcpd'] = 'dhcpd';
     $section_cnf['synchronizestaticroutes'] = 'staticroutes,gateways';
     $section_cnf['synchronizevirtualip'] = 'virtualip';

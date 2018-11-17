@@ -34,6 +34,21 @@ use \Phalcon\Validation\Message;
 
 abstract class BaseConstraint extends Validator implements ValidatorInterface
 {
+
+    /**
+     * check if field is empty  (either boolean field as false or an empty field)
+     */
+    public function isEmpty($node)
+    {
+        $node_class = get_class($node);
+        if ($node_class == "OPNsense\Base\FieldTypes\BooleanField") {
+            return empty((string)$node);
+        } elseif (empty((string)$node) || (string)$node == "0") {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * @param \Phalcon\Validation $validator
      * @param $attribute

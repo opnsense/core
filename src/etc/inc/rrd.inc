@@ -1,30 +1,30 @@
 <?php
 
 /*
-    Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 function rrd_create($rrdcreatecmd)
 {
@@ -525,9 +525,8 @@ function rrd_configure($verbose = false)
         $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$cputemp N:\${CPUTEMP}\n";
         /* end CPU Temp gathering */
 
-        if (isset($config['system']['prefer_dpinger'])) {
-            /* Start gateway quality */
-            $rrdupdatesh .= <<<EOD
+        /* Start gateway quality */
+        $rrdupdatesh .= <<<EOD
 
            # Gateway quality graphs
             for sock in /var/run/dpinger_*.sock;do
@@ -565,7 +564,6 @@ function rrd_configure($verbose = false)
      done
 
 EOD;
-       }
 
         $rrdupdatesh .= "sleep 60\n";
         $rrdupdatesh .= "done\n";
@@ -598,7 +596,7 @@ EOD;
     }
 }
 
-function rrd_create_gateway_quality($rrd_file, $prefer_dpinger = false)
+function rrd_create_gateway_quality($rrd_file)
 {
     $unknown = file_exists('/var/run/booting');
     $rrdtool = '/usr/local/bin/rrdtool';
@@ -611,9 +609,7 @@ function rrd_create_gateway_quality($rrd_file, $prefer_dpinger = false)
         $rrdcreate = "$rrdtool create $rrd_file --step $rrdinterval ";
         $rrdcreate .= "DS:loss:GAUGE:$valid:0:100 ";
         $rrdcreate .= "DS:delay:GAUGE:$valid:0:100000 ";
-        if ($prefer_dpinger) {
-            $rrdcreate .= "DS:stddev:GAUGE:$valid:0:100000 ";
-        }
+        $rrdcreate .= "DS:stddev:GAUGE:$valid:0:100000 ";
         $rrdcreate .= "RRA:AVERAGE:0.5:1:1200 ";
         $rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
         $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
@@ -625,7 +621,7 @@ function rrd_create_gateway_quality($rrd_file, $prefer_dpinger = false)
 
     /* enter UNKNOWN values in the RRD so it knows we rebooted. */
     if ($unknown) {
-        mwexec("$rrdtool update $rrd_file N:U:U" . ($prefer_dpinger ? ':U' : ''));
+        mwexec("$rrdtool update $rrd_file N:U:U:U");
     }
 }
 

@@ -161,6 +161,12 @@
                 });
                 // enable bootstrap tooltips
                 $('[data-toggle="tooltip"]').tooltip();
+
+                // fix menu scroll position on page load
+                $(".list-group-item.active").each(function(){
+                    var navbar_center = ($( window ).height() - $(".collapse.navbar-collapse").height())/2;
+                    $('html,aside').scrollTop(($(this).offset().top - navbar_center));
+                });
             });
         </script>
 
@@ -220,7 +226,7 @@
             <span class="icon-bar"></span>
           </button>
         </div>
-        <button class="toggle-sidebar" style="display:none;"><i class="fa fa-chevron-left"></i></button>
+        <button class="toggle-sidebar" data-toggle="tooltip right" title="{{ lang._('Toggle sidebar') }}" style="display:none;"><i class="fa fa-chevron-left"></i></button>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
             <li id="menu_messages"><a href="#">{{session_username}}@{{system_hostname}}.{{system_domain}}</a></li>

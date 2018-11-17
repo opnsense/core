@@ -1,31 +1,31 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
@@ -210,10 +210,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ((!empty($pconfig['wins1']) && !is_ipaddrv4($pconfig['wins1'])) || (!empty($pconfig['wins2']) && !is_ipaddrv4($pconfig['wins2']))) {
             $input_errors[] = gettext("A valid IP address must be specified for the primary/secondary WINS servers.");
         }
-        $parent_ip = get_interface_ip($pconfig['if']);
-        if (is_ipaddrv4($parent_ip) && $pconfig['gateway'] && $pconfig['gateway'] != "none") {
-            $parent_sn = get_interface_subnet($pconfig['if']);
-            if(!ip_in_subnet($pconfig['gateway'], gen_subnet($parent_ip, $parent_sn) . "/" . $parent_sn) && !ip_in_interface_alias_subnet($pconfig['if'], $pconfig['gateway'])) {
+        $parent_net = find_interface_network(get_real_interface($pconfig['if']));
+        if (is_subnetv4($parent_net) && $pconfig['gateway'] && $pconfig['gateway'] != "none") {
+            if(!ip_in_subnet($pconfig['gateway'], $parent_net) && !ip_in_interface_alias_subnet($pconfig['if'], $pconfig['gateway'])) {
                 $input_errors[] = sprintf(gettext("The gateway address %s does not lie within the chosen interface's subnet."), $pconfig['gateway']);
             }
         }
@@ -526,6 +525,11 @@ include("head.inc");
     function show_ldap_config() {
         $("#showldapbox").html('');
         $("#showldap").show();
+    }
+
+    function show_wpad_config() {
+        $("#showwpadbox").html('');
+        $("#showwpad").show();
     }
 
     function show_netboot_config() {
@@ -982,8 +986,13 @@ include("head.inc");
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPAD");?> </td>
                       <td>
-                        <input name="wpad" id="wpad" type="checkbox" value="yes" <?=!empty($pconfig['wpad']) ? "checked=\"checked\"" : ""; ?> />
-                        <strong><?= gettext("Enable Web Proxy Auto Discovery") ?></strong>
+                        <div id="showwpadbox">
+                          <input type="button" onclick="show_wpad_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show WPAD");?>
+                        </div>
+                        <div id="showwpad" style="display:none">
+                          <input name="wpad" id="wpad" type="checkbox" value="yes" <?=!empty($pconfig['wpad']) ? "checked=\"checked\"" : ""; ?> />
+                          <strong><?= gettext("Enable Web Proxy Auto Discovery") ?></strong>
+                        </div>
                       </td>
                     </tr>
 <?php

@@ -45,7 +45,7 @@ class M1_0_0 extends BaseModelMigration
             foreach ($cfgObj->aliases->alias as $alias) {
                 // find node by name or create a new one, aliases should be unique by name
                 $node = null;
-                foreach ($model->aliases->alias->__items as $new_alias) {
+                foreach ($model->aliases->alias->iterateItems() as $new_alias) {
                     if ((string)$new_alias->name == (string)$alias->name) {
                         $node = $new_alias;
                         break;
@@ -55,7 +55,11 @@ class M1_0_0 extends BaseModelMigration
                     $node = $model->aliases->alias->Add();
                 }
                 // set alias properties
-                $node->description = (string)$alias->descr;
+                $node->description = substr(preg_replace(
+                    "/[^\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]/u",
+                    " ",
+                    (string)$alias->descr
+                ), 0, 255);
                 $node->name = (string)$alias->name;
                 $node->type = (string)$alias->type;
                 if (in_array((string)$alias->type, array('urltable_ports', 'url_ports'))) {

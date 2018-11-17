@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$service_hook = 'ipsec';
+$service_hook = 'strongswan';
 
 legacy_html_escape_form_data($pconfig);
 

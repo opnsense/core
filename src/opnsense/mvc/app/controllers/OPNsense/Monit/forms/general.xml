@@ -50,6 +50,20 @@
       <help><![CDATA[Enable encryption.]]></help>
    </field>
    <field>
+      <id>monit.general.sslversion</id>
+      <label>SSL Version</label>
+      <type>dropdown</type>
+      <help><![CDATA[Set the SSL version to use. In AUTO mode, only TLS is used.]]></help>
+      <advanced>true</advanced>
+   </field>
+   <field>
+      <id>monit.general.sslverify</id>
+      <label>Verify SSL certificates</label>
+      <type>checkbox</type>
+      <help><![CDATA[Enable or disable SSL server certificate verification.]]></help>
+      <advanced>true</advanced>
+   </field>
+   <field>
       <id>monit.general.logfile</id>
       <label>Log File</label>
       <type>text</type>

@@ -41,6 +41,11 @@ if (isset($_POST['getactivity'])) {
         echo "\n\nQueues:\n";
         echo $text;
     }
+    $text = `/sbin/ipfw sched show`;
+    if ($text != "") {
+        echo "\n\nSchedulers:\n";
+        echo $text;
+    }
     exit;
 }
 

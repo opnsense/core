@@ -76,7 +76,7 @@ class ArrayField extends BaseField
     public function add()
     {
         $new_record = array();
-        foreach ($this->internalTemplateNode->__items as $key => $node) {
+        foreach ($this->internalTemplateNode->iterateItems() as $key => $node) {
             if ($node->isContainer()) {
                 // validate child nodes, nesting not supported in this version.
                 throw new \Exception("Unsupported copy, Array doesn't support nesting.");

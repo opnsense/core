@@ -1,33 +1,33 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2005-2007 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2005-2007 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
@@ -64,7 +64,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enablebinatreflection'] = !empty($config['system']['enablebinatreflection']);
     $pconfig['enablenatreflectionhelper'] = isset($config['system']['enablenatreflectionhelper']) ? $config['system']['enablenatreflectionhelper'] : null;
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
-    $pconfig['prefer_dpinger'] = isset($config['system']['prefer_dpinger']);
     $pconfig['ip_change_kill_states'] = isset($config['system']['ip_change_kill_states']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
@@ -224,14 +223,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['gw_switch_default']);
         }
 
-        $old_pinger = isset($config['system']['prefer_dpinger']);
-
-        if (!empty($pconfig['prefer_dpinger'])) {
-            $config['system']['prefer_dpinger'] = true;
-        } elseif (isset($config['system']['prefer_dpinger'])) {
-            unset($config['system']['prefer_dpinger']);
-        }
-
         if (!empty($pconfig['ip_change_kill_states'])) {
             $config['system']['ip_change_kill_states'] = true;
         } elseif (isset($config['system']['ip_change_kill_states'])) {
@@ -244,12 +235,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         system_cron_configure();
         filter_configure();
-
-        if ($old_pinger != isset($config['system']['prefer_dpinger'])) {
-            mwexec('rm /var/db/rrd/*-quality.rrd');
-            setup_gateways_monitor();
-            rrd_configure();
-        }
     }
 }
 
@@ -397,18 +382,6 @@ include("head.inc");
                   <?=gettext("Allow default gateway switching"); ?>
                   <div class="hidden" data-for="help_for_gw_switch_default">
                     <?= gettext('If the link where the default gateway resides fails switch the default gateway to another available one.') ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_prefer_dpinger" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Monitoring daemon') ?></td>
-                <td>
-                  <input name="prefer_dpinger" type="checkbox" id="prefer_dpinger" value="yes" <?= !empty($pconfig['prefer_dpinger']) ? 'checked="checked"' : '' ?> />
-                  <?= gettext('Prefer Dpinger over Apinger') ?>
-                  <div class="hidden" data-for="help_for_prefer_dpinger">
-                    <?=gettext("By default, the system will use Apinger for gateway monitoring. ".
-                                        "Switching from one to the other will result in the loss of " .
-                                        "any existing quality RRD data."); ?>
                   </div>
                 </td>
               </tr>

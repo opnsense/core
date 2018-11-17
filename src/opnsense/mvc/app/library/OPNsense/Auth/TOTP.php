@@ -1,31 +1,29 @@
 <?php
 
-/**
- *    Copyright (C) 2016 Deciso B.V.
+/*
+ * Copyright (C) 2016 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Auth;
@@ -39,7 +37,7 @@ require_once 'base32/Base32.php';
 trait TOTP
 {
     /**
-     * @var int time window in seconds (google auth uses 30, some hardware tokens use 60)
+     * @var int time window in seconds (software uses 30, some hardware tokens use 60)
      */
     private $timeWindow = 30;
 
@@ -57,11 +55,6 @@ trait TOTP
      * @var bool token after password
      */
     private $passwordFirst = false;
-
-    /**
-     * @var string method accepting username and returning a simplexml user object
-     */
-    private $getUserMethod = 'getUser';
 
     /**
      * use graceperiod and timeWindow to calculate which moments in time we should check
@@ -149,8 +142,7 @@ trait TOTP
      */
     public function authenticate($username, $password)
     {
-        $getUserMethod = $this->getUserMethod;
-        $userObject = $this->$getUserMethod($username);
+        $userObject = $this->getUser($username);
         if ($userObject != null && !empty($userObject->otp_seed)) {
             if (strlen($password) > $this->otpLength) {
                 // split otp token code and userpassword
@@ -166,7 +158,7 @@ trait TOTP
                 $otp_seed = \Base32\Base32::decode($userObject->otp_seed);
                 if ($this->authTOTP($otp_seed, $code)) {
                     // token valid, do parents auth
-                    return parent::authenticate($userObject, $userPassword);
+                    return parent::authenticate($username, $userPassword);
                 }
             }
         }
@@ -238,7 +230,7 @@ trait TOTP
         $fields["timeWindow"]["type"] = "text";
         $fields["timeWindow"]["default"] = null;
         $fields["timeWindow"]["help"] = gettext("The time period in which the token will be valid,".
-            " default is 30 seconds (google authenticator)");
+            " default is 30 seconds.");
         $fields["timeWindow"]["validate"] = function ($value) {
             if (!empty($value) && filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value) {
                 return array(gettext("Please enter a valid time window in seconds"));

@@ -92,10 +92,10 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 
     <!-- nvd3 -->
-    <link rel="stylesheet" type="text/css" href="<?=get_themed_filename("/css/nv.d3.css");?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/nv.d3.css")) ?>">
 
     <!-- datepicker css -->
-    <link rel="stylesheet" type="text/css" href="<?=get_themed_filename("/css/bootstrap-datepicker3.min.css");?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/bootstrap-datepicker3.min.css")) ?>">
 
     <!-- JQuery -->
     <script src="/ui/js/jquery-3.2.1.min.js"></script>
@@ -187,6 +187,11 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
         }
       });
 
+      $(".list-group-item.active").each(function(){
+          var navbar_center = ($( window ).height() - $(".collapse.navbar-collapse").height())/2;
+          $('html,aside').scrollTop(($(this).offset().top - navbar_center));
+      });
+
       // hook in live menu search
       $.ajax("/api/core/menu/search/", {
           type: 'get',
@@ -249,7 +254,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     });
     //]]>
     </script>
-<?php if (file_exists("/usr/local/opnsense/www/themes/".$themename."/build/js/theme.js")): ?>
+<?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/js/theme.js")): ?>
     <script src="<?= cache_safe("/ui/themes/{$themename}/build/js/theme.js") ?>"></script>
 <?php endif ?>
 </head>

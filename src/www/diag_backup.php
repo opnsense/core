@@ -71,7 +71,6 @@ function restore_config_section($section_name, $new_contents)
 
 $areas = array(
     'OPNsense' => gettext('OPNsense Additions'),	/* XXX need specifics */
-    'aliases' => gettext('Aliases'),
     'bridges' => gettext('Bridge Devices'),
     'ca' => gettext('SSL Certificate Authorities'),
     'cert' => gettext('SSL Certificates'),
@@ -190,6 +189,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($_POST['decrypt']) && empty($_POST['decrypt_password'])) {
             $input_errors[] = gettext('You must supply the password for decryption.');
         }
+        $user = getUserEntry($_SESSION['Username']);
+        if (userHasPrivilege($user, 'user-config-readonly')) {
+            $input_errors[] = gettext('You do not have the permission to perform this action.');
+        }
         /* read the file contents */
         if (is_uploaded_file($_FILES['conffile']['tmp_name'])) {
             $data = file_get_contents($_FILES['conffile']['tmp_name']);
@@ -287,7 +290,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
 
                 if (count($filesInBackup) == 0) {
-                    $input_errors[] = gettext("communication failure");
+                    $input_errors[] = gettext('Saved settings, but remote backup failed.');
                 } else {
                     $input_messages = gettext("Backup successful, current file list:") . "<br>";
                     foreach ($filesInBackup as $filename) {
@@ -385,14 +388,16 @@ $( document ).ready(function() {
                 <tr>
                   <td>
                     <?=gettext("Restore area:"); ?>
-                    <select name="restorearea" id="restorearea" class="selectpicker">
-                      <option value=""><?=gettext("ALL");?></option>
+                    <div>
+                      <select name="restorearea" id="restorearea" class="selectpicker">
+                        <option value=""><?=gettext("ALL");?></option>
 <?php
-                    foreach($areas as $area => $areaname):?>
-                      <option value="<?=$area;?>"><?=$areaname;?></option>
+                      foreach($areas as $area => $areaname):?>
+                        <option value="<?=$area;?>"><?=$areaname;?></option>
 <?php
-                    endforeach;?>
-                    </select><br/>
+                      endforeach;?>
+                      </select>
+                    </div>
                     <input name="conffile" type="file" id="conffile" /><br/>
                     <input name="rebootafterrestore" type="checkbox" id="rebootafterrestore" checked="checked" />
                     <?=gettext("Reboot after a successful restore."); ?><br/>
@@ -433,8 +438,12 @@ $( document ).ready(function() {
                     $fieldId = $providerId . "_" .$field['name'];?>
                     <tr>
                         <td style="width:22%">
-                            <a id="help_for_<?=$fieldId;?>" href="#" class="showhelp">
-                                <i class="fa fa-info-circle <?=empty($field['help']) ? "text-muted" : "";?>"></i></a> <?=$field['label'];?>
+<?php if (!empty($field['help'])): ?>
+                            <a id="help_for_<?=$fieldId;?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+<?php else: ?>
+                            <i class="fa fa-info-circle text-muted"></i>
+<?php endif ?>
+                           <?=$field['label'];?>
                         </td>
                         <td style="width:78%">
 <?php
