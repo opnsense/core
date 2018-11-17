@@ -135,7 +135,6 @@ function session_auth(&$Login_Error)
 
     /* Show login page if they aren't logged in */
     if (empty($_SESSION['Username'])) {
-        session_write_close();
         return false;
     }
 
@@ -270,8 +269,6 @@ function display_login_form($Login_Error)
 
     $themename = htmlspecialchars(get_current_theme());
 
-    unset($input_errors);
-
     /*
      * Check against locally configured IP addresses, which will catch when
      * someone port-forwards WebGUI access from WAN to an internal IP on the
@@ -294,13 +291,11 @@ function display_login_form($Login_Error)
     }
     setcookie("cookie_test", time() + 3600 ,  time() + 3600, '/', null, $config['system']['webgui']['protocol'] == "https", true);
     $have_cookies = isset($_COOKIE["cookie_test"]);
-
 ?><!doctype html>
 <!--[if IE 8 ]><html lang="en" class="ie ie8 lte9 lte8 no-js"><![endif]-->
 <!--[if IE 9 ]><html lang="en" class="ie ie9 lte9 no-js"><![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
   <head>
-
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
