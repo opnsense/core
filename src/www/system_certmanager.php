@@ -127,6 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['cert_type'] = "usr_cert";
         $pconfig['cert'] = null;
         $pconfig['key'] = null;
+        $pconfig['password'] = null;
         $pconfig['dn_country'] = null;
         $pconfig['dn_state'] = null;
         $pconfig['dn_city'] = null;
@@ -187,8 +188,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $exp_data = "";
             $res_crt = openssl_x509_read(base64_decode($a_cert[$id]['crt']));
             $res_key = openssl_pkey_get_private(array(0 => base64_decode($a_cert[$id]['prv']) , 1 => ""));
+            $res_pw = null;
+            if (!empty($pconfig['password'])) {
+                $res_pw = $pconfig['password'];
+            }
 
-            openssl_pkcs12_export($res_crt, $exp_data, $res_key, null, $args);
+            openssl_pkcs12_export($res_crt, $exp_data, $res_key, $res_pw, $args);
             $exp_size = strlen($exp_data);
             restore_error_handler();
 
@@ -443,6 +448,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $pconfig['caref'],
                         $pconfig['keylen'],
                         $pconfig['lifetime'],
+                        $pconfig['password'],
                         $dn,
                         $pconfig['digest_alg'],
                         $pconfig['cert_type']
@@ -835,6 +841,12 @@ $( document ).ready(function() {
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Lifetime");?> (<?=gettext("days");?>)</td>
                 <td>
                   <input name="lifetime" type="text" id="lifetime" size="5" value="<?=$pconfig['lifetime'];?>"/>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password");?></td>
+                <td>
+                  <input name="password" type="text" id="password" size="5" value="<?=$pconfig['password'];?>"/>
                 </td>
               </tr>
               <tr>
