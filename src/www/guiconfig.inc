@@ -536,7 +536,7 @@ function get_menu_messages()
         }
     } else {
         $menu_messages .= sprintf(
-          '<a href="#">%s@%s.%s</a>',
+          '<span class="navbar-text">%s@%s.%s</span>',
           $_SESSION['Username'],
           $config['system']['hostname'],
           $config['system']['domain']
