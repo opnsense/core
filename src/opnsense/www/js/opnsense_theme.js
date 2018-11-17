@@ -184,7 +184,7 @@ $(document).ready(function () {
           transition_duration(350);
         }
       } else if ((win.height() >= 675 && win.width() >= 760) && navigation.hasClass('col-sidebar-hidden')) {
-        $('#navigation').removeClass('col-sidebar-hidden');
+        navigation.removeClass('col-sidebar-hidden');
         transition_duration(0);
         if (window.sessionStorage && sessionStorage.getItem('toggle_sidebar_preset') == 1) {
           opnsense_sidebar_toggle(false);
