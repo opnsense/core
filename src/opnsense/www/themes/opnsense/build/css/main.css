@@ -890,7 +890,7 @@ th {
 
 html {
   font-size: 10px;
-  -webkit-tap-highlight-color: transparent; }
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
 
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -5208,7 +5208,7 @@ button.close {
     border-radius: 10px;
     cursor: pointer;
     background-color: #000 \9;
-    background-color: transparent; }
+    background-color: rgba(0, 0, 0, 0); }
   .carousel-indicators .active {
     margin: 0;
     width: 12px;
@@ -5645,96 +5645,79 @@ main.page-content.col-lg-12 {
   width: 70px;
   background-color: transparent !important;
   overflow: hidden;
-  border: none !important;
-}
-#navigation.col-sidebar-left > div.row {
-  height: 100% !important;
-}
-#navigation.col-sidebar-left > div.row > nav.page-side-nav {
-  width: 70px;
-  height: 100% !important;
-  border-right: 1px solid #D9D9D9;
-}
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item {
-  font-size: 14px;
-  text-align: center;
-  width: 70px;
-  height: 70px;
-  padding-left: 0px;
-  padding-right: 0px;
-  padding-top: 12px;
-  border-bottom: 2px solid #lightergrey;
-  border-right: 1px solid #D9D9D9;
-}
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa,
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.glyphicon {
-  visibility: visible;
-  font-size: 20px;
-}
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.__iconspacer {
-  width:50px;
-  height:30px;
-  padding:0px;
-}
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsing > a.list-group-item {
-  padding-left: 10px !important;
-  font-size: 14px !important;
-  display: block !important;
-  position: absolute !important;
-  left: 70px !important;
-}
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapsing > a.list-group-item {
-  padding-left: 10px !important;
-  font-size: 14px !important;
-  display: block !important;
-  position: absolute !important;
-  left: 166px !important;
-}
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > a.list-group-item {background-color: #fff !important;}
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item {background-color: #fff !important;}
-
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > div.collapse > a.list-group-item ,
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > a.list-group-item,
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item,
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsed > a.list-group-item {
-  padding-left: 10px !important;
-  font-size: 14px !important;
-}
-
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > a.list-group-item,
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > div.collapse > a.list-group-item {
-  padding: 3px 8px !important;
-}
-
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in {
-  width: 168px;
-  font-size: 14px;
-  z-index: 10;
-  position: absolute;
-  left: 70px;
-  margin-top: -70px;
-  border: 1px solid #eaeaea;
-  -webkit-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
-  -moz-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
-  box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
-}
-
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in {
-  width: 168px;
-  font-size: 14px;
-  z-index: 10;
-  position: absolute;
-  left: 166px;
-  margin-top: -26px;
-  border: 1px solid #eaeaea;
-  -webkit-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
-  -moz-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
-  box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
-}
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsing,
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapsing {
-  display:none;
-}
+  border: none !important; }
+  #navigation.col-sidebar-left > div.row {
+    height: 100% !important; }
+    #navigation.col-sidebar-left > div.row > nav.page-side-nav {
+      width: 70px;
+      height: 100% !important;
+      border-right: 1px solid #D9D9D9; }
+  #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item {
+    font-size: 14px;
+    text-align: center;
+    width: 70px;
+    height: 70px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 12px;
+    border-bottom: 2px solid #lightergrey;
+    border-right: 1px solid #D9D9D9; }
+    #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa, #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.glyphicon {
+      visibility: visible;
+      font-size: 20px; }
+    #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.__iconspacer {
+      width: 50px;
+      height: 30px;
+      padding: 0px; }
+  #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsing > a.list-group-item {
+    padding-left: 10px !important;
+    font-size: 14px !important;
+    display: block !important;
+    position: absolute !important;
+    left: 70px !important; }
+  #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapsing > a.list-group-item {
+    padding-left: 10px !important;
+    font-size: 14px !important;
+    display: block !important;
+    position: absolute !important;
+    left: 166px !important; }
+  #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > a.list-group-item, #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item {
+    background-color: #fff !important; }
+  #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item {
+    padding-left: 10px !important;
+    font-size: 14px !important; }
+  #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > div.collapse > a.list-group-item, #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > a.list-group-item {
+    padding-left: 10px !important;
+    font-size: 14px !important; }
+  #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsed > a.list-group-item {
+    padding-left: 10px !important;
+    font-size: 14px !important; }
+  #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > a.list-group-item, #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > div.collapse > a.list-group-item {
+    padding: 3px 8px !important; }
+  #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in {
+    width: 168px;
+    font-size: 14px;
+    z-index: 10;
+    position: absolute;
+    left: 70px;
+    margin-top: -70px;
+    border: 1px solid #eaeaea;
+    -webkit-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
+    -moz-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
+    box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5); }
+    #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in {
+      width: 168px;
+      font-size: 14px;
+      z-index: 10;
+      position: absolute;
+      left: 166px;
+      margin-top: -26px;
+      border: 1px solid #eaeaea;
+      -webkit-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
+      -moz-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
+      box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5); }
+  #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsing, #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapsing {
+    display: none; }
 
 button.toggle-sidebar {
   color: #FFF;
@@ -5743,8 +5726,8 @@ button.toggle-sidebar {
   border: none;
   margin-top: 18px;
   float: left;
-  outline: none;
-}
+  outline: none; }
+
 /* COLLAPSE SIDEBAR END*/
 #navigation.collapse.in {
   display: block !important; }
