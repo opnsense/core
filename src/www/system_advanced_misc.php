@@ -334,13 +334,13 @@ include("head.inc");
                 <td><a id="help_for_rrdbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic RRD Backup");?></td>
                 <td>
                   <select name="rrdbackup" class="selectpicker" data-style="btn-default" id="rrdbackup">
-                    <option value='0' <?=!$pconfig['rrdbackup'] == 0 ? 'selected="selected"' : '' ?>><?= gettext('Power off') ?></option>
+                    <option value='0' <?= $pconfig['rrdbackup'] == 0 ? 'selected="selected"' : '' ?>><?= gettext('Power off') ?></option>
 <?php for ($x = 1; $x <= 24; $x++): ?>
                     <option value="<?= $x ?>" <?= $pconfig['rrdbackup'] == $x ? 'selected="selected"' : ''; ?>>
                       <?= $x == 1 ? gettext('1 hour') : sprintf(gettext('%s hours'), $x) ?>
                     </option>
 <?php endfor ?>
-                    <option value='-1' <?=!$pconfig['rrdbackup'] == -1 ? 'selected="selected"' : '' ?>><?=gettext('Disabled') ?></option>
+                    <option value='-1' <?= $pconfig['rrdbackup'] == -1 ? 'selected="selected"' : '' ?>><?=gettext('Disabled') ?></option>
                   </select>
                   <br />
                   <div class="hidden" data-for="help_for_rrdbackup">
