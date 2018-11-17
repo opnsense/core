@@ -192,7 +192,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (!empty($pconfig['password'])) {
                 $res_pw = $pconfig['password'];
             }
-
             openssl_pkcs12_export($res_crt, $exp_data, $res_key, $res_pw, $args);
             $exp_size = strlen($exp_data);
             restore_error_handler();
@@ -420,6 +419,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
 
                 $cert['descr'] = $pconfig['descr'];
+
+                $cert['password'] = $pconfig['password'];
 
                 $old_err_level = error_reporting(0); /* otherwise openssl_ functions throw warings directly to a page screwing menu tab */
 
