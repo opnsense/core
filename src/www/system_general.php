@@ -423,7 +423,7 @@ include("head.inc");
                 <input name="dnslocalhost" type="checkbox" value="yes" <?=$pconfig['dnslocalhost'] ? "checked=\"checked\"" : ""; ?> />
                 <?= gettext('Do not use the local DNS service as a nameserver for this system') ?>
                 <div class="hidden" data-for="help_for_dnsservers_opt">
-                  <?=gettext("By default localhost (127.0.0.1) will be used as the first nameserver when e.g. Dnsmasq or Unbund is enabled, so system can use the local DNS service to perform lookups. ".
+                  <?=gettext("By default localhost (127.0.0.1) will be used as the first nameserver when e.g. Dnsmasq or Unbound is enabled, so system can use the local DNS service to perform lookups. ".
                   "Checking this box omits localhost from the list of DNS servers."); ?>
                 </div>
               </td>
