@@ -193,6 +193,16 @@
       <tunable>hw.ibrs_disable</tunable>
       <value>default</value>
     </item>
+    <item>
+      <descr><![CDATA[Hide processes running as other groups]]></descr>
+      <tunable>security.bsd.see_other_gids</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Hide processes running as other users]]></descr>
+      <tunable>security.bsd.see_other_uids</tunable>
+      <value>default</value>
+    </item>
   </sysctl>
   <system>
     <optimization>normal</optimization>
