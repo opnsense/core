@@ -33,7 +33,7 @@ $(document).ready(function () {
   // traverse loaded css files
   var toggle_sidebar_loaded = false,
   $window = $(window),
-  winheight = $(window).height(),
+  winHeight = $(window).height(),
   that = $(this),
   mouse = 'mouseenter mouseleave',
   layer1_a = $('#mainmenu > div > a'),
@@ -48,20 +48,23 @@ $(document).ready(function () {
       var that = $(this);
       if (that.next('div').hasClass('in')) {
         /* no action needed */
-      } else if ((that.next().is('a')) || (that.is('a:last-child'))) {
-        activeremove(this);
-        } else {
-          var divtop = that.offset().top - $window.scrollTop();
-          var divheight = that.next('div').height();
-          var currentheight = (divtop + divheight);
-          that.trigger('click');
-          if (currentheight > winheight) {
-            that.next('div').css('margin-top', -divheight - (that.is(layer1_a) ? 3 : 0));
+        } else if ((that.next().is('a')) || (that.is('a:last-child'))) {
+          activeremove(this);
+          } else {
+            var offsetTop = that.offset().top;
+            var winscrTop = $window.scrollTop();
+            var divHeight = that.next('div').height();
+            var divTop = (offsetTop - winscrTop);
+            var currentHeight = (divTop + divHeight);
+            var thatTrigger = that.trigger('click');
+            if (currentHeight > winHeight) {
+              var result = that.next('div').css('margin-top', -divHeight - (that.is(layer1_a) ? 3 : 0));
+            }
           }
-        }
     },
     mouseleave: function () {
       $('#navigation.col-sidebar-left').css('width', '70px');
+      layer1_a.off(events).on(events);
     },
     mousedown: function () {
       that.trigger('click');
@@ -177,7 +180,7 @@ $(document).ready(function () {
     /* on resize - toggle sidebar / main navigation */
     $(window).on('resize', function () {
       var win = $(this);
-      winheight = win.height();
+      winHeight = win.height();
       if ((win.height() < 675 || win.width() < 760) && navigation.not('col-sidebar-hidden')) {
         navigation.addClass('col-sidebar-hidden');
         mouse_events_off();
