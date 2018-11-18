@@ -368,6 +368,14 @@
             $('#pluginlist > tbody').empty();
             var installed = {};
 
+            $('#versioninfo > tbody').empty();
+            $('#versioninfo > tbody').append(
+                '<tr>' +
+                '<td>' + data['product_version'] + '</td>' +
+                '<td>{{ lang._('Click to check for updates.') }}</td>' +
+                '</tr>'
+            );
+
             var local_count = 0;
             var plugin_count = 0;
             var changelog_count = 0;
@@ -750,6 +758,24 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-md-12">
+            <div class="tab-content content-box __mb">
+                <table id="versioninfo" class="table table-striped table-condensed table-responsive">
+                    <thead>
+                        <tr>
+                          <th>{{ lang._('Current version') }}</th>
+                          <th>{{ lang._('Next version') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                          <td>{{ lang._('Loading...') }}</td>
+                          <td>{{ lang._('Loading...') }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <div class="col-md-12" id="content">
             <ul class="nav nav-tabs" data-tabs="tabs">
                 <li id="updatetab" class="active"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
@@ -761,8 +787,7 @@
                 <div id="updates" class="tab-pane fade in active">
                     <textarea name="output" id="update_status" class="form-control" rows="25" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace; display: none;"></textarea>
                     <table class="table table-striped table-condensed table-responsive" id="updatelist">
-                        <thead>
-                        </thead>
+                        <thead></thead>
                         <tbody></tbody>
                     </table>
                 </div>
