@@ -41,8 +41,9 @@
             <Updates order="10" url="/ui/core/firmware#updates"/>
             <Plugins order="20" url="/ui/core/firmware#plugins"/>
             <Packages order="30" url="/ui/core/firmware#packages"/>
-            <Settings order="40" url="/ui/core/firmware#settings"/>
-            <Reporter order="50" url="/crash_reporter.php"/>
+            <Changelog order="40" url="/ui/core/firmware#changelog"/>
+            <Settings order="50" url="/ui/core/firmware#settings"/>
+            <Reporter order="60" url="/crash_reporter.php"/>
             <LogFile order="100" VisibleName="Log File" url="/diag_logs_pkg.php"/>
         </Firmware>
         <Gateways cssClass="fa fa-location-arrow fa-fw">

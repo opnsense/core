@@ -362,7 +362,7 @@
     /**
      * show package info
      */
-    function packagesInfo(changelog_display) {
+    function packagesInfo(UNUSED_XXX) {
         ajaxGet('/api/core/firmware/info', {}, function (data, status) {
             $('#packageslist > tbody').empty();
             $('#pluginlist > tbody').empty();
@@ -464,52 +464,50 @@
                 );
             }
 
-            if (changelog_display) {
-                $("#updatelist > tbody").empty();
-                $("#updatelist > thead").html("<tr><th>{{ lang._('Version') }}</th>" +
-                "<th>{{ lang._('Date') }}</th><th></th></tr>");
+            $("#changeloglist > tbody").empty();
+            $("#changeloglist > thead").html("<tr><th>{{ lang._('Version') }}</th>" +
+            "<th>{{ lang._('Date') }}</th><th></th></tr>");
 
-                installed_version = data['product_version'].replace(/[_-].*/, '');
+            installed_version = data['product_version'].replace(/[_-].*/, '');
 
-                $.each(data['changelog'], function(index, row) {
-                    changelog_count += 1;
+            $.each(data['changelog'], function(index, row) {
+                changelog_count += 1;
 
-                    status_text = '';
-                    bold_on = '';
-                    bold_off = '';
+                status_text = '';
+                bold_on = '';
+                bold_off = '';
 
-                    if (installed_version == row['version']) {
-                        status_text = ' ({{ lang._('installed') }})';
-                        bold_on = '<b>';
-                        bold_off = '</b>';
-                    }
+                if (installed_version == row['version']) {
+                    status_text = ' ({{ lang._('installed') }})';
+                    bold_on = '<b>';
+                    bold_off = '</b>';
+                }
 
-                    $('#updatelist > tbody').append(
-                        '<tr' + (changelog_count > changelog_max ? ' class="changelog-hidden" style="display: none;" ' : '' ) +
-                        '><td>' + bold_on + row['version'] + status_text + bold_off + '</td><td>' + bold_on + row['date'] + bold_off + '</td>' +
-                        '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
-                        'data-toggle="tooltip" title="{{ lang._('View') }}">' +
-                        '<i class="fa fa-book fa-fw"></i></button></td></tr>'
-                    );
+                $('#changeloglist > tbody').append(
+                    '<tr' + (changelog_count > changelog_max ? ' class="changelog-hidden" style="display: none;" ' : '' ) +
+                    '><td>' + bold_on + row['version'] + status_text + bold_off + '</td><td>' + bold_on + row['date'] + bold_off + '</td>' +
+                    '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
+                    'data-toggle="tooltip" title="{{ lang._('View') }}">' +
+                    '<i class="fa fa-book fa-fw"></i></button></td></tr>'
+                );
+            });
+
+            if (!data['changelog'].length) {
+                $('#changeloglist > tbody').append(
+                    '<tr><td colspan=3>{{ lang._('Check for updates to view changelog history.') }}</td></tr>'
+                );
+            }
+
+            if (changelog_count > changelog_max) {
+                $('#changeloglist > tbody').append(
+                    '<tr class= "changelog-full"><td colspan=3><a id="changelog-act" href="#">{{ lang._('Click to view full changelog history.') }}</a></td></tr>'
+                );
+                $("#changelog-act").click(function(event) {
+                    event.preventDefault();
+                    $(".changelog-hidden").attr('style', '');
+                    $(".changelog-full").attr('style', 'display: none;');
+                    $.changelog_keep_full = 1;
                 });
-
-                if (!data['changelog'].length) {
-                    $('#updatelist > tbody').append(
-                        '<tr><td colspan=3>{{ lang._('Check for updates to view changelog history.') }}</td></tr>'
-                    );
-                }
-
-                if (changelog_count > changelog_max) {
-                    $('#updatelist > tbody').append(
-                        '<tr class= "changelog-full"><td colspan=3><a id="changelog-act" href="#">{{ lang._('Click to view full changelog history.') }}</a></td></tr>'
-                    );
-                    $("#changelog-act").click(function(event) {
-                        event.preventDefault();
-                        $(".changelog-hidden").attr('style', '');
-                        $(".changelog-full").attr('style', 'display: none;');
-                        $.changelog_keep_full = 1;
-                    });
-                }
             }
 
             // link buttons to actions
@@ -758,38 +756,35 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
-            <div class="tab-content content-box __mb">
-                <table id="versioninfo" class="table table-striped table-condensed table-responsive">
-                    <thead>
-                        <tr>
-                          <th>{{ lang._('Current version') }}</th>
-                          <th>{{ lang._('Next version') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                          <td>{{ lang._('Loading...') }}</td>
-                          <td>{{ lang._('Loading...') }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
         <div class="col-md-12" id="content">
             <ul class="nav nav-tabs" data-tabs="tabs">
                 <li id="updatetab" class="active"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
                 <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
                 <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
+                <li id="changelogtab"><a data-toggle="tab" href="#changelog">{{ lang._('Changelog') }}</a></li>
                 <li id="settingstab"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
             </ul>
             <div class="tab-content content-box">
                 <div id="updates" class="tab-pane fade in active">
-                    <textarea name="output" id="update_status" class="form-control" rows="25" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace; display: none;"></textarea>
+                    <table class="table table-striped table-condensed table-responsive" id="versioninfo">
+                        <thead>
+                            <tr>
+                              <th>{{ lang._('Current version') }}</th>
+                              <th>{{ lang._('Next version') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                              <td>{{ lang._('Loading...') }}</td>
+                              <td>{{ lang._('Loading...') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <table class="table table-striped table-condensed table-responsive" id="updatelist">
                         <thead></thead>
                         <tbody></tbody>
                     </table>
+                    <textarea name="output" id="update_status" class="form-control" rows="25" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace; display: none;"></textarea>
                 </div>
                 <div id="plugins" class="tab-pane fade in">
                     <table class="table table-striped table-condensed table-responsive" id="pluginlist">
@@ -820,6 +815,12 @@
                         </thead>
                         <tbody>
                         </tbody>
+                    </table>
+                </div>
+                <div id="changelog" class="tab-pane fade in">
+                    <table class="table table-striped table-condensed table-responsive" id="changeloglist">
+                        <thead></thead>
+                        <tbody></tbody>
                     </table>
                 </div>
                 <div id="settings" class="tab-pane fade in">
