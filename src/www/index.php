@@ -286,7 +286,7 @@ include("fbegin.inc");?>
       });
 
       // select number of columns
-      $("#column_count").change(function(){
+      $("#column_count").on('change', function(){
           if ($("#column_count_input").val() != $("#column_count").val()) {
               showSave();
           }
@@ -301,12 +301,12 @@ include("fbegin.inc");?>
               widget_col.addClass('col-md-'+(12 / $("#column_count_input").val()));
           });
       });
-      $("#column_count").change();
+      $("#column_count").trigger('change');
       // trigger initial ajax data poller
       process_widget_data();
 
       // in "Add Widget" dialog, hide widgets already on screen
-      $("#add_widget_btn").click(function(){
+      $("#add_widget_btn").on('click', function(){
           $(".widgetdiv").each(function(widget){
               if ($(this).is(':visible')) {
                   $("#add_widget_" + $(this).attr('id')).hide();

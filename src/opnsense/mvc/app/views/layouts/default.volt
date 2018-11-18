@@ -87,7 +87,7 @@
                     }
                 });
                 // hide submenu items
-                $('#mainmenu .list-group-item').click(function(){
+                $('#mainmenu .list-group-item').on('click', function(){
                     if($(this).attr('href').substring(0,1) == '#') {
                         $('#mainmenu .list-group-item').each(function(){
                             if ($(this).attr('aria-expanded') == 'true'  && $(this).data('parent') != '#mainmenu') {
@@ -151,11 +151,11 @@
                 });
 
                 // change search input size on focus() to fit results
-                $("#menu_search_box").focus(function(){
+                $("#menu_search_box").on('focus', function(){
                     $("#menu_search_box").css('width', '450px');
                     $("#menu_messages").hide();
                 });
-                $("#menu_search_box").focusout(function(){
+                $("#menu_search_box").on('focusout', function(){
                     $("#menu_search_box").css('width', '250px');
                     $("#menu_messages").show();
                 });

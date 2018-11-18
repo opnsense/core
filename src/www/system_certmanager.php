@@ -559,6 +559,39 @@ if (empty($act)) {
       });
     });
 
+    $('.p12btn').on('click', function(event) {
+        event.preventDefault();
+        var link = $(this).attr('href');
+        BootstrapDialog.show({
+            type:BootstrapDialog.TYPE_INFO,
+            title: "<?= gettext("Certificates");?>",
+            message: "<?=sprintf(gettext('If you want to protect the file with a password, please enter it here (leave empty for no password): %s'), '<input type=\\"text\\" name=\\"p12pw\\" id=\\"p12pw\\" />')?>",
+            buttons: [
+                {
+                    label: "<?=gettext("Close");?>",
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                    }
+                }, {
+                    label: "<?=gettext("Download");?>",
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                        $.post(link, "password=" + encodeURI($('#p12pw').val()) ,function (result)
+                        {
+                            var tmp=document.createElement('a');
+                            tmp.href=window.URL.createObjectURL(new Blob([result]));
+                            tmp.download="certificate.p12";
+                            tmp.style.display = 'none';
+                            document.body.append(tmp);
+                            tmp.click();
+                            tmp.remove();
+                        });
+                    }
+                }
+            ]
+        });
+    });
+
     $(".act_info").click(function(event){
         event.preventDefault();
         var id = $(this).data('id');
@@ -1305,7 +1338,7 @@ $( document ).ready(function() {
                     <i class="fa fa-download fa-fw"></i>
                   </a>
 
-                  <a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export ca+user cert+user key in .p12 format");?>">
+                  <a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs p12btn" data-toggle="tooltip" title="<?=gettext("export ca+user cert+user key in .p12 format");?>">
                       <i class="fa fa-download fa-fw"></i>
                   </a>
 <?php

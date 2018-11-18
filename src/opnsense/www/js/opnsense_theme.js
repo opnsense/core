@@ -147,13 +147,13 @@ $(document).ready(function () {
     if (toggle_sidebar_loaded) {
         var toggle_btn = $(".toggle-sidebar");
         /* navigation toggle */
-        toggle_btn.click(function () {
+        toggle_btn.on('click', function () {
             opnsense_sidebar_toggle(true);
             $(this).blur();
         });
 
         /* sidebar mouseenter */
-        navigation.mouseenter(function () {
+        navigation.on('mouseenter', function () {
             if (navigation.hasClass("col-sidebar-left")) {
                 transition_duration(0);
                 layer1_a.on(events);
@@ -164,7 +164,7 @@ $(document).ready(function () {
         });
 
         /* sidebar mouseleave */
-        $("#mainmenu").mouseleave(function () {
+        $("#mainmenu").on('mouseleave', function () {
             if ($("#navigation").hasClass("col-sidebar-left")) {
                 layer1_a.attr("aria-expanded", "false").next("div").removeClass("in");
                 layer2_a.attr("aria-expanded", "false").next("div").removeClass("in");

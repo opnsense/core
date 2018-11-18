@@ -114,7 +114,7 @@
   /**
    * page setup
    */
-  $(window).load(function() {
+  $(window).on('load', function() {
       // draw traffic in graph
       nv.addGraph(function() {
           traffic_graph_widget_chart_in = nv.models.lineChart()

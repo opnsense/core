@@ -75,7 +75,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
 
 ?>
 <script>
-    $(window).load(function() {
+    $(window).on('load', function() {
         // needed to display the widget settings menu
         $("#log-configure").removeClass("disabled");
         // icons
@@ -85,7 +85,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
         ajaxGet(url='/api/diagnostics/interface/getInterfaceNames', {}, callback=function(data, status) {
             interface_descriptions = data;
         });
-        function fetch_log(){
+        function fetch_log() {
             var record_spec = [];
             // read heading, contains field specs
             $("#filter-log-entries > tbody > tr:first > td").each(function () {

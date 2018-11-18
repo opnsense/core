@@ -108,7 +108,7 @@ function std_bootgrid_reload(gridId) {
     $("#"+gridId).bootgrid("reload");
     // absolutely not perfect, bootgrid.reload doesn't seem to support when().done()
     setTimeout(function(){
-        $('#'+gridId+'-footer  a[data-page="'+currentpage+'"]').click();
+        $('#'+gridId+'-footer  a[data-page="'+currentpage+'"]').tigger('click');
     }, 400);
 }
 
@@ -182,7 +182,7 @@ $.fn.UIBootgrid = function (params) {
                                 // show dialog for pipe edit
                                 $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
                                 // define save action
-                                $("#btn_"+editDlg+"_save").unbind('click').click(function(){
+                                $("#btn_"+editDlg+"_save").off('click').on("click", function(){
                                     if (gridParams['set'] != undefined) {
                                         saveFormToEndpoint(url=gridParams['set']+uuid,
                                             formid='frm_' + editDlg, callback_ok=function(){
@@ -217,7 +217,7 @@ $.fn.UIBootgrid = function (params) {
                                 // show dialog for pipe edit
                                 $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
                                 // define save action
-                                $("#btn_"+editDlg+"_save").unbind('click').click(function(){
+                                $("#btn_"+editDlg+"_save").off('click').on("click", function(){
                                     if (gridParams['add'] != undefined) {
                                         saveFormToEndpoint(url=gridParams['add'],
                                             formid='frm_' + editDlg, callback_ok=function(){
@@ -272,7 +272,7 @@ $.fn.UIBootgrid = function (params) {
                 });
 
                 // link Add new to child button with data-action = add
-                $(this).find("*[data-action=add]").click(function(){
+                $(this).find("*[data-action=add]").on('click', function(){
                     if ( gridParams['get'] != undefined && gridParams['add'] != undefined) {
                         var urlMap = {};
                         urlMap['frm_' + editDlg] = gridParams['get'];
@@ -288,7 +288,7 @@ $.fn.UIBootgrid = function (params) {
                         // show dialog for edit
                         $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
                         //
-                        $("#btn_"+editDlg+"_save").unbind('click').click(function(){
+                        $("#btn_"+editDlg+"_save").off('click').on('click', function(){
                             saveFormToEndpoint(url=gridParams['add'],
                                 formid='frm_' + editDlg, callback_ok=function(){
                                     $("#"+editDlg).modal('hide');
@@ -301,7 +301,7 @@ $.fn.UIBootgrid = function (params) {
                 });
 
                 // link delete selected items action
-                $(this).find("*[data-action=deleteSelected]").click(function(){
+                $(this).find("*[data-action=deleteSelected]").on('click', function(){
                     if ( gridParams['del'] != undefined) {
                         // XXX must be replaced, cannot translate
                         stdDialogRemoveItem("Remove selected items?",function(){

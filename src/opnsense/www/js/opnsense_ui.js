@@ -182,7 +182,7 @@ function updateServiceControlUI(serviceName)
 
         var commands = ["start", "restart", "stop"];
         commands.forEach(function(command) {
-            $("#" + command + "Service").click(function(){
+            $("#" + command + "Service").on('click', function(){
                 $('#OPNsenseStdWaitDialog').modal('show');
                 ajaxCall(url="/api/" + serviceName + "/service/" + command, sendData={},callback=function(data,status) {
                     $('#OPNsenseStdWaitDialog').modal('hide');
@@ -314,7 +314,7 @@ function addMultiSelectClearUI() {
  */
 function initFormHelpUI() {
     // handle help messages show/hide
-    $("a.showhelp").click(function (event) {
+    $("a.showhelp").on('click', function (event) {
         $("*[data-for='" + $(this).attr('id') + "']").toggleClass("hidden show");
         event.preventDefault();
     });

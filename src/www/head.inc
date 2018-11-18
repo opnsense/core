@@ -144,13 +144,13 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
       });
 
       // link showhelp class behavior
-      $("a[class='showhelp']").click(function (event) {
+      $("a[class='showhelp']").on('click', function (event) {
         $("*[data-for='" + $(this).attr('id') + "']").toggleClass("hidden show");
         event.preventDefault();
       });
 
       // handle all help messages show/hide
-      $('[id*="show_all_help"]').click(function(event) {
+      $('[id*="show_all_help"]').on('click', function(event) {
         $('[id*="show_all_help"]').toggleClass("fa-toggle-on fa-toggle-off");
         $('[id*="show_all_help"]').toggleClass("text-success text-danger");
         if ($('[id*="show_all_help"]').hasClass("fa-toggle-on")) {
@@ -177,7 +177,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
       }
 
       // hide submenu items
-      $('#mainmenu .list-group-item').click(function(){
+      $('#mainmenu .list-group-item').on('click', function(){
         if($(this).attr('href').substring(0,1) == '#') {
             $('#mainmenu .list-group-item').each(function(){
                 if ($(this).attr('aria-expanded') == 'true' && $(this).data('parent') != '#mainmenu') {
@@ -199,7 +199,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
           dataType: "json",
           data: {},
           error : function (jqXHR, textStatus, errorThrown) {
-              console.log('menu.search : ' +errorThrown);
+              console.log('menu.search : ' + errorThrown);
           },
           success: function (data) {
               var menusearch_items = [];
@@ -241,11 +241,11 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
           }
       });
       // change search input size on focus() to fit results
-      $("#menu_search_box").focus(function(){
+      $("#menu_search_box").on('focus', function(){
           $("#menu_search_box").css('width', '450px');
           $("#menu_messages").hide();
       });
-      $("#menu_search_box").focusout(function(){
+      $("#menu_search_box").on('focusout', function(){
           $("#menu_search_box").css('width', '250px');
           $("#menu_messages").show();
       });
