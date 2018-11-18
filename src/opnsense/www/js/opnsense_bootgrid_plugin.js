@@ -108,7 +108,7 @@ function std_bootgrid_reload(gridId) {
     $("#"+gridId).bootgrid("reload");
     // absolutely not perfect, bootgrid.reload doesn't seem to support when().done()
     setTimeout(function(){
-        $('#'+gridId+'-footer  a[data-page="'+currentpage+'"]').tigger('click');
+        $('#'+gridId+'-footer  a[data-page="'+currentpage+'"]').trigger('click');
     }, 400);
 }
 
