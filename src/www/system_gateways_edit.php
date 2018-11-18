@@ -1,31 +1,31 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("services.inc");
@@ -124,6 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
 
                     $found = false;
+
                     foreach ($subnets as $subnet) {
                         if (ip_in_subnet($pconfig['gateway'], $subnet)) {
                             $found = true;
@@ -131,8 +132,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
 
-                    if (!$found && !isset($pconfig['fargw'])) {
-                        $input_errors[] = sprintf(gettext("The gateway address %1\$s does not lie within one of the chosen interface's subnets."), $pconfig['gateway']);
+                    if (!$found) {
+                        $input_errors[] = sprintf(gettext('The gateway address "%s" does not lie within one of the chosen interface\'s IPv6 subnets.'), $pconfig['gateway']);
                     }
                 }
             }
@@ -201,7 +202,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    /* input validation of apinger advanced parameters */
     if (!empty($pconfig['latencylow'])) {
         if (!is_numeric($pconfig['latencylow'])) {
             $input_errors[] = gettext("The low latency threshold needs to be a numeric value.");
@@ -482,8 +482,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 legacy_html_escape_form_data($a_gateways);
 legacy_html_escape_form_data($pconfig);
 
-$service_hook = 'apinger';
-
 include("head.inc");
 
 ?>
@@ -617,6 +615,15 @@ $( document ).ready(function() {
                     <input name="name" type="text" size="20" value="<?=$pconfig['name'];?>" />
                     <div class="hidden" data-for="help_for_name">
                       <?=gettext("Gateway name"); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                  <td>
+                    <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
+                    <div class="hidden" data-for="help_for_descr">
+                      <?=gettext("You may enter a description here for your reference (not parsed)"); ?>
                     </div>
                   </td>
                 </tr>
@@ -822,15 +829,6 @@ $( document ).ready(function() {
                 </tr>
 <?php
                 endif;?>
-                <tr>
-                  <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
-                  <td>
-                    <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                    <div class="hidden" data-for="help_for_descr">
-                      <?=gettext("You may enter a description here for your reference (not parsed)"); ?>
-                    </div>
-                  </td>
-                </tr>
                 <tr>
                   <td>&nbsp;</td>
                   <td>
