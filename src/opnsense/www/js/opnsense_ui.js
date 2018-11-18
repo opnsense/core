@@ -240,7 +240,7 @@ function formatTokenizersUI() {
             sender.addClass('tokenize2_init_done');
         } else {
             // unbind change event while loading initial content
-            sender.unbind('tokenize:tokens:change');
+            sender.off('tokenize:tokens:change');
 
             // selected items
             var items = [];
@@ -259,7 +259,7 @@ function formatTokenizersUI() {
 
         // propagate token changes to parent change()
         sender.on('tokenize:tokens:change', function(e, value){
-            sender.change();
+            sender.trigger('change');
         });
 
     });
@@ -270,7 +270,7 @@ function formatTokenizersUI() {
  */
 function addMultiSelectClearUI() {
     $('[id*="clear-options"]').each(function() {
-        $(this).click(function() {
+        $(this).on('click', function() {
             var id = $(this).attr("id").replace(/_*clear-options_*/, '');
             BootstrapDialog.confirm({
                 title: 'Deselect or remove all items ?',
@@ -286,7 +286,7 @@ function addMultiSelectClearUI() {
                         if ($('select[id="' + id + '"]').hasClass("tokenize")) {
                             // trigger close on all Tokens
                             $('select[id="' + id + '"]').tokenize2().trigger('tokenize:clear');
-                            $('select[id="' + id + '"]').change();
+                            $('select[id="' + id + '"]').trigger('change');
                         } else {
                             // remove options from selection
                             $('select[id="' + id + '"]').find('option').prop('selected',false);
@@ -320,7 +320,7 @@ function initFormHelpUI() {
     });
 
     // handle all help messages show/hide
-    $('[id*="show_all_help"]').click(function(event) {
+    $('[id*="show_all_help"]').on('click', function(event) {
         $('[id*="show_all_help"]').toggleClass("fa-toggle-on fa-toggle-off");
         $('[id*="show_all_help"]').toggleClass("text-success text-danger");
         if ($('[id*="show_all_help"]').hasClass("fa-toggle-on")) {
@@ -361,7 +361,7 @@ function initFormAdvancedUI() {
         });
     }
 
-    $('[id*="show_advanced"]').click(function() {
+    $('[id*="show_advanced"]').on('click', function() {
         $('[id*="show_advanced"]').toggleClass("fa-toggle-on fa-toggle-off");
         $('[id*="show_advanced"]').toggleClass("text-success text-danger");
         if ($('[id*="show_advanced"]').hasClass("fa-toggle-on")) {
