@@ -134,7 +134,7 @@
         $("#upgrade_progress" + maj_suffix).addClass("fa fa-spinner fa-pulse");
 
         ajaxCall('/api/core/firmware/upgrade',{upgrade:$.upgrade_action},function() {
-            $('#updatelist > tbody, thead').empty();
+            $('#updatelist > tbody, #updatelist > thead').empty();
             setTimeout(trackStatus, 500);
         });
     }
@@ -153,7 +153,7 @@
         $("#audit_progress").addClass("fa fa-spinner fa-pulse");
 
         ajaxCall('/api/core/firmware/' + $type, {}, function () {
-            $('#updatelist > tbody, thead').empty();
+            $('#updatelist > tbody, #updatelist > thead').empty();
             setTimeout(trackStatus, 500);
         });
     }
@@ -253,7 +253,7 @@
         $.upgrade_action = 'action';
 
         ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name,{},function() {
-            $('#updatelist > tbody, thead').empty();
+            $('#updatelist > tbody, #updatelist > thead').empty();
             setTimeout(trackStatus, 500);
         });
     }
