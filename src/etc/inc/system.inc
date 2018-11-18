@@ -106,6 +106,8 @@ function get_default_sysctl_value($id)
         'net.link.bridge.pfil_member' => '1',
         'net.link.bridge.pfil_onlyip' => '0',
         'net.link.tap.user_open' => '1',
+        'security.bsd.see_other_gids' => '0',
+        'security.bsd.see_other_uids' => '0',
         'vfs.read_max' => '32',
         'vm.pmap.pti' => '1',
     );
