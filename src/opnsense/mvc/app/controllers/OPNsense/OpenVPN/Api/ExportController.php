@@ -367,8 +367,9 @@ class ExportController extends ApiControllerBase
                                 $str_crt = base64_decode((string)$cert->crt);
                                 $inf_crt = openssl_x509_parse($str_crt);
                                 $config['client_cn'] = $inf_crt['subject']['CN'];
-                                $config['client_crt'] = (string)$cert->crt;
-                                $config['client_prv'] = (string)$cert->prv;
+                                $config['client_crt'] = base64_decode((string)$cert->crt);
+                                $config['client_prv'] = base64_decode((string)$cert->prv);
+                                break;
                             }
                         }
                     }
