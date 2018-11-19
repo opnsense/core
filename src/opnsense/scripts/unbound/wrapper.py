@@ -76,7 +76,7 @@ elif args.infra:
             output.append(record)
 elif args.stats:
     output = dict()
-    for line in unbound_control_reader('stats'):
+    for line in unbound_control_reader('stats_noreset'):
         full_key, value = line.split('=')
         keys = full_key.split('.')
         if keys[0] == 'histogram':
