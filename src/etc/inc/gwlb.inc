@@ -296,16 +296,16 @@ function return_gateways_status($byname = false)
         if (!isset($gwitem['monitor_disable'])) {
             continue;
         }
+        /* XXX this code only works for IPv4.... */
         if (!isset($gwitem['monitorip']) || !is_ipaddr($gwitem['monitorip'])) {
-            $realif = $gwitem['interface'];
-            $tgtip = get_interface_gateway($realif);
+            $tgtip = get_interface_gateway($gwitem['friendlyiface']);
             if (!is_ipaddr($tgtip)) {
                 $tgtip = "none";
             }
-            $srcip = find_interface_ip($realif);
+            $srcip = find_interface_ip($gwitem['interface']);
         } else {
             $tgtip = $gwitem['monitorip'];
-            $srcip = find_interface_ip($realif);
+            $srcip = find_interface_ip($gwitem['interface']);
         }
         if ($byname == true) {
             $target = $gwitem['name'];
@@ -804,28 +804,36 @@ function lookup_gateway_interface_by_name($name)
     return (false);
 }
 
-function get_interface_gateway($interface, &$dynamic = false)
+function get_interface_gateway($wanif, &$dynamic = false)
 {
     global $config;
 
     $gw = null;
 
-    if (!isset($config['interfaces'][$interface])) {
+    $wancfg = config_read_array('interfaces', $wanif);
+    if (empty($wancfg)) {
         return $gw;
     }
 
-    $gwcfg = $config['interfaces'][$interface];
-    if (!empty($gwcfg['gateway']) && isset($config['gateways']['gateway_item'])) {
-        foreach ($config['gateways']['gateway_item'] as $gateway) {
-            if (($gateway['name'] == $gwcfg['gateway']) && (is_ipaddrv4($gateway['gateway']))) {
+    foreach (config_read_array('gateways', 'gateway_item') as $gateway) {
+        if ($gateway['interface'] != $wanif || !is_ipaddrv4($gateway['gateway'])) {
+            continue;
+        }
+        if (!empty($wancfg['gateway'])) {
+            /* find gateway if it was set */
+            if ($gateway['name'] == $wancfg['gateway'] && is_ipaddrv4($gateway['gateway'])) {
                 $gw = $gateway['gateway'];
                 break;
             }
+        } elseif (is_ipaddrv4($wancfg['ipaddr']) && (empty($gw) || isset($gateway['defaultgw']))) {
+            /* use available gateway for static setup and prefer default gatway */
+            $gw = $gateway['gateway'];
         }
     }
 
-    if (!is_ipaddrv4($gw) && !is_ipaddrv4($gwcfg['ipaddr'])) {
-        $realif = get_real_interface($interface);
+    if (!is_ipaddrv4($gw) && !is_ipaddrv4($wancfg['ipaddr'])) {
+        /* fallback for dynamic interfaces without an explicit gateway */
+        $realif = get_real_interface($wanif);
         if (file_exists("/tmp/{$realif}_router")) {
             $gw = trim(file_get_contents("/tmp/{$realif}_router"), " \n");
             $dynamic = true;
