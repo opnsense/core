@@ -248,7 +248,7 @@ class BaseFlowAggregator(object):
             consume_start_time = max(flow['flow_start'], start_time)
             consume_end_time = min(start_time + self.resolution, flow['flow_end'])
             if flow['duration_ms'] != 0:
-                consume_perc = (consume_end_time - consume_start_time) / float(flow['duration_ms'] / 1000)
+                consume_perc = (consume_end_time - consume_start_time) / float(flow['duration_ms'] / 1000.0)
             else:
                 consume_perc = 1
             if self.is_db_open():

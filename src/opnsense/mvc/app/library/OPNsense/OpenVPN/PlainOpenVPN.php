@@ -37,7 +37,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
 
     public function supportedOptions()
     {
-        return array("testxx1", "testxx3");
+        return array("plain_config");
     }
 
     /**
@@ -107,6 +107,39 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             $conf[] = "auth-user-pass";
         }
 
+        if (!empty($this->config['plain_config'])) {
+            foreach (preg_split('/\r\n|\r|\n/', $this->config['plain_config']) as $line) {
+                if (!empty($line)) {
+                    $conf[] = $line;
+                }
+            }
+        }
+
+        return $conf;
+    }
+
+
+    /**
+     * @return array inline OpenVPN files
+     */
+    protected function openvpnInlineFiles()
+    {
+        $conf = array();
+        if ($this->config['mode'] !== "server_user") {
+            $conf[] = "<cert>";
+            $conf = array_merge($conf, explode("\n", trim($this->config['client_crt'])));
+            $conf[] = "</cert>";
+
+            $conf[] = "<key>";
+            $conf = array_merge($conf, explode("\n", trim($this->config['client_prv'])));
+            $conf[] = "</key>";
+        }
+        if (!empty($this->config['tls'])) {
+            $conf[] = "<tls-auth>";
+            $conf = array_merge($conf, explode("\n", trim(base64_decode($this->config['tls']))));
+            $conf[] = "</tls-auth>";
+        }
+
         return $conf;
     }
 
@@ -115,7 +148,6 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
      */
     public function getContent()
     {
-
-        return implode("\n", $this->openvpnConfParts());
+        return implode("\n", array_merge($this->openvpnConfParts(), $this->openvpnInlineFiles()));
     }
 }

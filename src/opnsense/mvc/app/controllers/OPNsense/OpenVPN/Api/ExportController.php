@@ -367,8 +367,9 @@ class ExportController extends ApiControllerBase
                                 $str_crt = base64_decode((string)$cert->crt);
                                 $inf_crt = openssl_x509_parse($str_crt);
                                 $config['client_cn'] = $inf_crt['subject']['CN'];
-                                $config['client_crt'] = (string)$cert->crt;
-                                $config['client_prv'] = (string)$cert->prv;
+                                $config['client_crt'] = base64_decode((string)$cert->crt);
+                                $config['client_prv'] = base64_decode((string)$cert->prv);
+                                break;
                             }
                         }
                     }
@@ -380,6 +381,11 @@ class ExportController extends ApiControllerBase
                 // overlay (saved) user settings
                 if ($this->request->hasPost('openvpn_export')) {
                     $response = $this->storePresetsAction($vpnid);
+                    // p12 password shouldn't be saved to the config, so we need to copy the content here as
+                    // not defined in either model or configuration data.
+                    if (!empty($this->request->getPost('openvpn_export')['p12_password'])) {
+                        $config['p12_password'] = $this->request->getPost('openvpn_export')['p12_password'];
+                    }
                 }
                 foreach ($this->getModel()->getServer($vpnid)->iterateItems() as $key => $value) {
                     if ($value !== "") {

@@ -26,6 +26,7 @@
                     <default>1</default>
                     <Required>Y</Required>
                 </validate_server_cn>
+                <plain_config type="TextField"/>
             </server>
         </servers>
     </items>

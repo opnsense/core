@@ -32,27 +32,23 @@
         <help>Use a random local source port (lport) for traffic from the client. Without this set, two clients may not run concurrently.</help>
     </field>
     <field>
+        <id>openvpn_export.p12_password</id>
+        <label>P12 Password/confirm</label>
+        <style>password_field</style>
+        <type>password</type>
+        <help>Use a password to protect the pkcs12 file contents</help>
+    </field>
+    <field>
         <id>openvpn_export.validate_server_cn</id>
         <label>Validate server CN</label>
         <type>checkbox</type>
         <help>Verify the server certificate Common Name (CN) when the client connects</help>
     </field>
     <field>
-        <id>openvpn_export.testxx1</id>
-        <label>TestXX1</label>
+        <id>openvpn_export.plain_config</id>
+        <label>Custom config</label>
         <style>export_option</style>
-        <type>text</type>
-    </field>
-    <field>
-        <id>openvpn_export.testxx2</id>
-        <label>TestXX2</label>
-        <style>export_option</style>
-        <type>text</type>
-    </field>
-    <field>
-        <id>openvpn_export.testxx3</id>
-        <label>TestXX3</label>
-        <style>export_option</style>
-        <type>text</type>
+        <type>textbox</type>
+        <help>Custom configuration, which will be returned in the output file without modifications</help>
     </field>
 </form>
