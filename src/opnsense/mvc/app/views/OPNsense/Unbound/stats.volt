@@ -31,26 +31,26 @@ POSSIBILITY OF SUCH DAMAGE.
     const descriptionMapThread = {
         'recursion': {
             'time': {
-                'avg': 'Recursion time (average)',
-                'median': 'Recursion time (median)'
+                'avg': "{{ lang._('Recursion time (average)') }}",
+                'median': "{{ lang._('Recursion time (median)') }}"
             }
         },
-        'tcpusage': 'TCP usage',
+        'tcpusage': "{{ lang._('TCP usage') }}",
         'num': {
-            'queries_ip_ratelimited': 'IP ratelimited queries',
-            'recursivereplies': 'Recursive replies',
-            'cachemiss': 'Cache misses',
-            'cachehits': 'Cache hits',
-            'zero_ttl': 'Zero TTL',
-            'prefetch': 'Prefetch',
-            'queries': 'Queries',
+            'queries_ip_ratelimited': "{{ lang._('IP ratelimited queries') }}",
+            'recursivereplies': "{{ lang._('Recursive replies') }}",
+            'cachemiss': "{{ lang._('Cache misses') }}",
+            'cachehits': "{{ lang._('Cache hits') }}",
+            'zero_ttl': "{{ lang._('Zero TTL') }}",
+            'prefetch': "{{ lang._('Prefetch') }}",
+            'queries': "{{ lang._('Queries') }}",
         }
     };
 
     const descriptionMapTime = {
-        "now": "Now",
-        "up": "Uptime",
-        "elapsed": "Elapsed"
+        'now': "{{ lang._('Now') }}",
+        'up': "{{ lang._('Uptime') }}",
+        'elapsed': "{{ lang._('Elapsed') }}"
     };
 
     function writeDescs(parent, data, descriptions) {
