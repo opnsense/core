@@ -130,7 +130,7 @@ POSSIBILITY OF SUCH DAMAGE.
     $(document).ready(function() {
 
         // Autorefresh every 10 seconds.
-        setTimeout(function() {
+        setInterval(function() {
             if ($("#auto_refresh").is(':checked')) {
                 updateStats();
             }
