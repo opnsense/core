@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("config.inc");
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $f = 0;
         $fcount = count($data);
         /* with less then 20 fields there is nothing useful */
-        if($fcount < 20) {
+        if ($fcount < 20) {
             $i++;
             continue;
         }
@@ -183,11 +183,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $f = $f+2;
                     break;
                 case "client-hostname":
-                    if($data[$f+1] <> "") {
-                        $leases[$l]['hostname'] = preg_replace('/"/','',$data[$f+1]);
+                    if ($data[$f + 1] != '') {
+                        $leases[$l]['hostname'] = preg_replace('/"/','',$data[$f + 1]);
                     } else {
                         $hostname = gethostbyaddr($leases[$l]['ip']);
-                        if ($hostname <> "") {
+                        if ($hostname != '') {
                             $leases[$l]['hostname'] = $hostname;
                         }
                     }
@@ -208,11 +208,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     unset($lease_content);
 
     /* remove duplicate items by mac address */
-    if(count($leases) > 0) {
+    if (count($leases) > 0) {
         $leases = remove_duplicate($leases,"ip");
     }
 
-    if(count($pools) > 0) {
+    if (count($pools) > 0) {
         $pools = remove_duplicate($pools,"name");
         asort($pools);
     }
@@ -224,8 +224,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $slease['ip'] = $static['ipaddr'];
                 $slease['type'] = "static";
                 $slease['mac'] = $static['mac'];
-                $slease['start'] = "";
-                $slease['end'] = "";
+                $slease['start'] = '';
+                $slease['end'] = '';
                 $slease['hostname'] = htmlentities($static['hostname']);
                 $slease['descr'] = htmlentities($static['descr']);
                 $slease['act'] = "static";
@@ -236,6 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     $order = ( $_GET['order'] ) ? $_GET['order'] : 'ip';
+
     usort($leases,
         function ($a, $b) use ($order) {
             $cmp = strnatcasecmp($a[$order], $b[$order]);
@@ -245,7 +246,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             return $cmp;
         }
     );
-
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['deleteip']) && is_ipaddr($_POST['deleteip'])) {
         // delete dhcp lease
@@ -255,7 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $fout = @fopen($leasesfile.".new", "w");
         if ($fin) {
             $ip_to_remove = $_POST['deleteip'];
-            $lease = "";
+            $lease = '';
             while (($line = fgets($fin, 4096)) !== false) {
                 $fields = explode(' ', $line);
                 if ($fields[0] == 'lease') {
@@ -269,7 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
                 if ($line == "}\n") {
                     // end of segment
-                    $lease = "";
+                    $lease = '';
                 }
             }
             fclose($fin);
@@ -283,12 +283,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     exit;
 }
 
-
-
 $service_hook = 'dhcpd';
 
-include("head.inc");?>
+include("head.inc");
 
+$leases_count = 0;
+
+foreach ($leases as $data) {
+   if (!($data['act'] == 'active' || $data['act'] == 'static' || $_GET['all'] == 1)) {
+       continue;
+   }
+   $leases_count++;
+}
+
+$gentitle_suffix = " ($leases_count)";
+
+?>
 <body>
   <script>
   $( document ).ready(function() {
@@ -313,7 +323,7 @@ include("head.inc");?>
 <?php
       /* only print pool status when we have one */
       legacy_html_escape_form_data($pools);
-      if(count($pools) > 0):?>
+      if (count($pools) > 0):?>
       <section class="col-xs-12">
         <div class="content-box">
           <div class="table-responsive">
@@ -383,7 +393,7 @@ include("head.inc");?>
                   $lip = ip2ulong($data['ip']);
                   if ($data['act'] == "static") {
                       foreach ($dhcpd as $dhcpif => $dhcpifconf) {
-                          if(isset($dhcpifconf['staticmap']) && is_array($dhcpifconf['staticmap'])) {
+                          if (isset($dhcpifconf['staticmap']) && is_array($dhcpifconf['staticmap'])) {
                               foreach ($dhcpifconf['staticmap'] as $staticent) {
                                   if ($data['ip'] == $staticent['ipaddr']) {
                                       $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);
@@ -393,7 +403,7 @@ include("head.inc");?>
                               }
                           }
                           /* exit as soon as we have an interface */
-                          if ($data['if'] != "") {
+                          if ($data['if'] != '') {
                               break;
                           }
                       }
@@ -416,12 +426,12 @@ include("head.inc");?>
                   <td><?=$data['ip'];?></td>
                   <td>
                       <?=$data['mac'];?><br />
-                      <small><i><?=!empty($mac_man[$mac_hi]) ? $mac_man[$mac_hi] : "";?></i></small>
+                      <small><i><?= !empty($mac_man[$mac_hi]) ? $mac_man[$mac_hi] : '' ?></i></small>
                   </td>
                   <td><?=$data['hostname'];?></td>
                   <td><?=$data['descr'];?></td>
-                  <td><?=!empty($data['start']) ? adjust_gmt($data['start']) : "";?></td>
-                  <td><?=!empty($data['end']) ? adjust_gmt($data['end']) : "";?></td>
+                  <td><?= !empty($data['start']) ? adjust_gmt($data['start']) : '' ?></td>
+                  <td><?= !empty($data['end']) ? adjust_gmt($data['end']) : '' ?></td>
                   <td><?=$data['online'];?></td>
                   <td><?=$data['act'];?></td>
                   <td class="text-nowrap">
@@ -462,7 +472,7 @@ include("head.inc");?>
         endif; ?>
         </form>
 <?php
-        if($leases == 0): ?>
+        if ($leases == 0): ?>
         <p><strong><?=gettext("No leases file found. Is the DHCP server active"); ?>?</strong></p>
 <?php
         endif; ?>
@@ -470,5 +480,6 @@ include("head.inc");?>
     </div>
   </div>
 </section>
+<?php
 
-<?php include("foot.inc"); ?>
+include("foot.inc");
