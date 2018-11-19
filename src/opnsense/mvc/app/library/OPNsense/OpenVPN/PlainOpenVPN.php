@@ -118,12 +118,36 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
         return $conf;
     }
 
+
+    /**
+     * @return array inline OpenVPN files
+     */
+    protected function openvpnInlineFiles()
+    {
+        $conf = array();
+        if ($this->config['mode'] !== "server_user") {
+            $conf[] = "<cert>";
+            $conf = array_merge($conf, explode("\n", trim($this->config['client_crt'])));
+            $conf[] = "</cert>";
+
+            $conf[] = "<key>";
+            $conf = array_merge($conf, explode("\n", trim($this->config['client_prv'])));
+            $conf[] = "</key>";
+        }
+        if (!empty($this->config['tls'])) {
+            $conf[] = "<tls-auth>";
+            $conf = array_merge($conf, explode("\n", trim(base64_decode($this->config['tls']))));
+            $conf[] = "</tls-auth>";
+        }
+
+        return $conf;
+    }
+
     /**
      * @return string content
      */
     public function getContent()
     {
-
-        return implode("\n", $this->openvpnConfParts());
+        return implode("\n", array_merge($this->openvpnConfParts(), $this->openvpnInlineFiles()));
     }
 }
