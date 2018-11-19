@@ -400,6 +400,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/forms/dialogQueue.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/forms/dialogRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/Api/DiagnosticsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/StatsController.php
 /usr/local/opnsense/mvc/app/library/Google/API/Drive.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/API.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/AuthenticationFactory.php
@@ -566,6 +567,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Proxy/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Routes/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Unbound/stats.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog_processing.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_form.volt
