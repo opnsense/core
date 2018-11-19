@@ -348,6 +348,7 @@ function pprint_port($port) {
 
 function gentitle($breadcrumbs, $navlevelsep = ': ')
 {
+    global $gentitle_suffix;
     $output = $breadcrumbs;
 
     if (isset($breadcrumbs[0]['name'])) {
@@ -357,7 +358,7 @@ function gentitle($breadcrumbs, $navlevelsep = ': ')
         }
     }
 
-    return join($navlevelsep, $output);
+    return join($navlevelsep, $output) . "$gentitle_suffix";
 }
 
 function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendport)
