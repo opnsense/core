@@ -815,23 +815,26 @@ function get_interface_gateway($wanif, &$dynamic = false)
         return $gw;
     }
 
+    $static = !empty($wancfg['ipaddr']) && is_ipaddrv4($wancfg['ipaddr']);
+
     foreach (config_read_array('gateways', 'gateway_item') as $gateway) {
         if ($gateway['interface'] != $wanif || !is_ipaddrv4($gateway['gateway'])) {
             continue;
         }
         if (!empty($wancfg['gateway'])) {
             /* find gateway if it was set */
-            if ($gateway['name'] == $wancfg['gateway'] && is_ipaddrv4($gateway['gateway'])) {
+            if ($gateway['name'] == $wancfg['gateway']) {
                 $gw = $gateway['gateway'];
                 break;
             }
-        } elseif (is_ipaddrv4($wancfg['ipaddr']) && (empty($gw) || isset($gateway['defaultgw']))) {
-            /* use available gateway for static setup and prefer default gatway */
+        } elseif ($static && (empty($gw) || isset($gateway['defaultgw']))) {
+            /* use any available gateway for static setup but prefer default gatway */
             $gw = $gateway['gateway'];
+            continue;
         }
     }
 
-    if (!is_ipaddrv4($gw) && !is_ipaddrv4($wancfg['ipaddr'])) {
+    if (!is_ipaddrv4($gw) && !$static) {
         /* fallback for dynamic interfaces without an explicit gateway */
         $realif = get_real_interface($wanif);
         if (file_exists("/tmp/{$realif}_router")) {
