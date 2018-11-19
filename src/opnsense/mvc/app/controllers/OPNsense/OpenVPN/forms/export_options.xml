@@ -32,6 +32,13 @@
         <help>Use a random local source port (lport) for traffic from the client. Without this set, two clients may not run concurrently.</help>
     </field>
     <field>
+        <id>openvpn_export.p12_password</id>
+        <label>P12 Password/confirm</label>
+        <style>password_field</style>
+        <type>password</type>
+        <help>Use a password to protect the pkcs12 file contents</help>
+    </field>
+    <field>
         <id>openvpn_export.validate_server_cn</id>
         <label>Validate server CN</label>
         <type>checkbox</type>

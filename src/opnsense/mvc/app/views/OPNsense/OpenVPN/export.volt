@@ -24,6 +24,13 @@
  # POSSIBILITY OF SUCH DAMAGE.
  #}
 
+<style>
+    .input-spacing {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+</style>
+
 <script>
 
     $( document ).ready(function() {
@@ -132,8 +139,22 @@
                     });
                 }
             });
-
             //
+        });
+
+        $("#row_openvpn_export\\.p12_password > td:eq(1)").append($("<hr class='input-spacing'/>"));
+        $("#row_openvpn_export\\.p12_password > td:eq(1)").append(
+            $("<input type='password' class='form-control password_field' size='50' id='openvpn_export.p12_password_confirm'/>")
+        );
+
+        $(".password_field").on("keyup", function(){
+            if ($("#openvpn_export\\.p12_password").val() != $("#openvpn_export\\.p12_password_confirm").val()) {
+                $(".password_field").addClass("has-warning");
+                $(".password_field").closest('tr').addClass('has-warning');
+            } else {
+                $(".password_field").removeClass("has-warning");
+                $(".password_field").closest('tr').removeClass('has-warning');
+            }
         });
     });
 
