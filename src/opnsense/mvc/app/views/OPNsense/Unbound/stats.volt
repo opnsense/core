@@ -129,10 +129,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
     $(document).ready(function() {
 
-
-        $('#refresh').on('click', function() {
-            updateStats();
-        });
+        // Autorefresh every 10 seconds.
+        setTimeout(function() {
+            if ($("#auto_refresh").is(':checked')) {
+                updateStats();
+            }
+        }, 10000);
 
         // initial fetch
         updateStats();
@@ -151,10 +153,10 @@ POSSIBILITY OF SUCH DAMAGE.
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="pull-right">
-                            <button id="refresh" type="button" class="btn btn-default">
-                                <span>{{ lang._('Refresh') }}</span>
-                                <span class="fa fa-refresh"></span>
-                            </button>
+                            <label>
+                                <input id="auto_refresh" type="checkbox" checked="checked">
+                                <span class="fa fa-refresh"></span> {{ lang._('Auto refresh') }}
+                            </label>
                         </div>
                     </div>
                 </div>
