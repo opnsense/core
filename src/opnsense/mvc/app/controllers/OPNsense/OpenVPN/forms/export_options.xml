@@ -45,21 +45,10 @@
         <help>Verify the server certificate Common Name (CN) when the client connects</help>
     </field>
     <field>
-        <id>openvpn_export.testxx1</id>
-        <label>TestXX1</label>
+        <id>openvpn_export.plain_config</id>
+        <label>Custom config</label>
         <style>export_option</style>
-        <type>text</type>
-    </field>
-    <field>
-        <id>openvpn_export.testxx2</id>
-        <label>TestXX2</label>
-        <style>export_option</style>
-        <type>text</type>
-    </field>
-    <field>
-        <id>openvpn_export.testxx3</id>
-        <label>TestXX3</label>
-        <style>export_option</style>
-        <type>text</type>
+        <type>textbox</type>
+        <help>Custom configuration, which will be returned in the output file without modifications</help>
     </field>
 </form>

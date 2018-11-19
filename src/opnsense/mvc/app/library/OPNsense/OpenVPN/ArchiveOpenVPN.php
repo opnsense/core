@@ -37,6 +37,6 @@ class ArchiveOpenVPN extends PlainOpenVPN
 
     public function supportedOptions()
     {
-        return array("testxx2");
+        return array("plain_config");
     }
 }

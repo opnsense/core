@@ -29,6 +29,11 @@
         margin-top: 5px;
         margin-bottom: 5px;
     }
+
+    textarea {
+        white-space: nowrap;
+        overflow: auto;
+    }
 </style>
 
 <script>

@@ -37,7 +37,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
 
     public function supportedOptions()
     {
-        return array("testxx1", "testxx3");
+        return array("plain_config");
     }
 
     /**
@@ -105,6 +105,14 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             $conf[] = "verify-x509-name \"{$this->config['server_cn']}\" name";
         } elseif (in_array($this->config['mode'], array('server_user', 'server_tls_user'))) {
             $conf[] = "auth-user-pass";
+        }
+
+        if (!empty($this->config['plain_config'])) {
+            foreach (preg_split('/\r\n|\r|\n/', $this->config['plain_config']) as $line) {
+                if (!empty($line)) {
+                    $conf[] = $line;
+                }
+            }
         }
 
         return $conf;
