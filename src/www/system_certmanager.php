@@ -619,8 +619,10 @@ if (empty($act)) {
                 $("#import").removeClass("hidden");
             } else if ($(this).val() == "internal") {
                 $("#internal").removeClass("hidden");
+                $("#altNameTr").detach().appendTo("#internal > tbody:first");
             } else if ($(this).val() == "external") {
                 $("#external").removeClass("hidden");
+                $("#altNameTr").detach().appendTo("#external > tbody:first");
             } else {
                 $("#existing").removeClass("hidden");
             }
@@ -909,7 +911,7 @@ $( document ).ready(function() {
                   </div>
                 </td>
               </tr>
-              <tr>
+              <tr id="altNameTr">
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Alternative Names");?></td>
                 <td>
                   <table class="table table-condensed" id="altNametable">
