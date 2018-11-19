@@ -58,27 +58,49 @@ for PATTERN in ${MTREE_PATTERNS}; do
 "
 done
 
+VERSION=$(opnsense-update -v)
+
 set_check()
 {
 	SET=${1}
 	FILE=${2}
+	VER=${3}
 
 	if [ ! -f ${BASE_MTREE} ]; then
 		# XXX complain if file is missing post-18.7
 		return
 	fi
 
+	echo ">>> Check installed ${SET} version" >> ${PKG_PROGRESS_FILE}
+	if [ -z "${VER}" -o -z "${VERSION}" ]; then
+		echo "Failed to determine version info."
+	elif [ "${VER}" != "${VERSION}" ]; then
+		echo "Version ${VER} is incorrect: expected ${VERSION}" >> ${PKG_PROGRESS_FILE}
+	else
+		echo "Version ${VER} is correct." >> ${PKG_PROGRESS_FILE}
+	fi
+
 	echo ">>> Check for missing or altered ${SET} files" >> ${PKG_PROGRESS_FILE}
 
 	echo "${MTREE_PATTERNS}" > ${TMPFILE}
-	${MTREE} -X ${TMPFILE} < ${FILE} | grep -Fvx "${GREP_PATTERNS}" \
-	    | grep -v '^\./var/.* missing$' >> ${PKG_PROGRESS_FILE} 2>&1
+
+	MTREE_OUT=$(${MTREE} -X ${TMPFILE} < ${FILE} 2>&1)
+	MTREE_RET=${?}
+
+	if [ ${MTREE_RET} -eq 0 ]; then
+		echo "No problems detected." >> ${PKG_PROGRESS_FILE} 2>&1
+	else
+		echo "Error ${MTREE_RET} ocurred." >> ${PKG_PROGRESS_FILE} 2>&1
+		echo -n "${MTREE_OUT}" | grep -Fvx "${GREP_PATTERNS}" | \
+		    grep -v '^\./var/.* missing$' >> ${PKG_PROGRESS_FILE} 2>&1
+	fi
+
 	rm ${TMPFILE}
 }
 
 echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${PKG_PROGRESS_FILE}
-set_check base ${BASE_MTREE}
-set_check kernel ${KERNEL_MTREE}
+set_check kernel ${KERNEL_MTREE} "$(opnsense-update -kv)"
+set_check base ${BASE_MTREE} "$(opnsense-update -bv)"
 echo ">>> Check for and install missing package dependencies" >> ${PKG_PROGRESS_FILE}
 pkg check -da >> ${PKG_PROGRESS_FILE} 2>&1
 echo ">>> Check for missing or altered package files" >> ${PKG_PROGRESS_FILE}
