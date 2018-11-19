@@ -1,0 +1,23 @@
+<form>
+    <field>
+        <id>checkip.test.service</id>
+        <label>Service</label>
+        <type>dropdown</type>
+        <help><![CDATA[The Check IP service to test.<br>Leave empty for the service to be automatically selected based on interface and IP version, or the enabled default service.]]></help>
+        <hint>Select check IP service.</hint>
+    </field>
+    <field>
+        <id>checkip.test.interface</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+        <help>The network interface to use for the test.</help>
+        <hint>Select network interface.</hint>
+    </field>
+    <field>
+        <id>checkip.test.ipv</id>
+        <label>IP Version</label>
+        <type>dropdown</type>
+        <help>The Internet Protocol version to use for the test.</help>
+        <hint>Select IP version.</hint>
+    </field>
+</form>

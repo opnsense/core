@@ -1,0 +1,70 @@
+<form>
+    <field>
+        <id>checkip.service.default</id>
+        <label>Default</label>
+        <input_label>Set this service as the default</input_label>
+        <type>checkbox</type>
+        <help>Sets this check IP service to be used as the default.</help>
+        <hint>Enable this service</hint>
+    </field>
+    <field>
+        <id>checkip.service.name</id>
+        <label>Name</label>
+        <type>text</type>
+        <help>The service name may only consist of the characters "a-z, A-Z, 0-9 and _".</help>
+        <hint>Enter a valid name</hint>
+    </field>
+    <field>
+        <id>checkip.service.url</id>
+        <label>URL</label>
+        <type>text</type>
+        <help>The service URL to use.</help>
+    </field>
+    <field>
+        <id>checkip.service.regex</id>
+        <label>Address capture regular expression</label>
+        <type>text</type>
+        <help>The regular expression to capture IP address.<![CDATA[<br />Examples:<br />&emsp;&lt;body&gt;Current IP Address: (.*)&lt;/body&gt;<br />&emsp;^(.*)$]]></help>
+    </field>
+    <field>
+        <id>checkip.service.interfaces</id>
+        <label>Interfaces</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help><![CDATA[The network interfaces to use this service on.]]></help>
+        <hint>Type or select interface.</hint>
+    </field>
+    <field>
+        <id>checkip.service.ipv</id>
+        <label>IP version</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help><![CDATA[The IP versions to use this service with.]]></help>
+        <hint>Type or select IP version.</hint>
+    </field>
+    <field>
+        <id>checkip.service.username</id>
+        <label>Username</label>
+        <type>text</type>
+        <help>The username to authenticate with the service.</help>
+    </field>
+    <field>
+        <id>checkip.service.password</id>
+        <label>Password</label>
+        <type>password</type>
+        <help>The password to authenticate with the service.</help>
+    </field>
+    <field>
+        <id>checkip.service.verifysslpeer</id>
+        <label>Verify SSL peer</label>
+        <input_label>Require SSL peer verification</input_label>
+        <type>checkbox</type>
+        <help>Verify that the certificate received from the server is valid and trusted by one of the installed certificate authorities (CA cert).</help>
+    </field>
+    <field>
+        <id>checkip.service.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>A description for administrative reference (not parsed).</help>
+    </field>
+</form>

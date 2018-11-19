@@ -1,0 +1,145 @@
+<model>
+   <mount>//OPNsense/DynDNS/CheckIP</mount>
+   <version>1.0.0</version>
+   <description>CheckIP settings - Test</description>
+   <items>
+      <factory_default_service>
+         <default type="BooleanField">
+            <default>1</default>
+            <Required>Y</Required>
+         </default>
+         <name type="TextField">
+            <default>DynDNS</default>
+            <Required>Y</Required>
+         </name>
+         <url type="TextField">
+            <default>http://checkip.dyndns.org/</default>
+            <Required>Y</Required>
+         </url>
+         <regex type="TextField">
+            <default><![CDATA[<body>Current IP Address: (.*)</body>]]></default>
+            <Required>Y</Required>
+         </regex>
+         <interfaces type="InterfaceField">
+            <Required>N</Required>
+            <default>wan</default>
+            <multiple>Y</multiple>
+            <filters>
+               <enable>/^(?!0).*$/</enable>
+            </filters>
+         </interfaces>
+         <ipv type="OptionField">
+            <Required>N</Required>
+            <default></default>
+            <multiple>Y</multiple>
+            <OptionValues>
+               <ipv4>4</ipv4>
+               <ipv6>6</ipv6>
+            </OptionValues>
+         </ipv>
+         <username type="TextField">
+            <default></default>
+            <Required>N</Required>
+         </username>
+         <password type="TextField">
+            <default></default>
+            <Required>N</Required>
+         </password>
+         <verifysslpeer type="BooleanField">
+            <default>0</default>
+            <Required>Y</Required>
+         </verifysslpeer>
+         <description type="TextField">
+            <default>Factory Default Service</default>
+            <Required>N</Required>
+         </description>
+      </factory_default_service>
+      <disable_factory_default_service type="BooleanField">
+         <default>0</default>
+         <Required>N</Required>
+      </disable_factory_default_service>
+      <service type="ArrayField">
+         <default type="BooleanField">
+            <default>0</default>
+            <Required>Y</Required>
+         </default>
+         <name type="TextField">
+            <default></default>
+            <Required>Y</Required>
+            <mask>/^([a-zA-Z0-9_]){0,255}$/u</mask>
+            <ValidationMessage>A valid service name is mandatory</ValidationMessage>
+         </name>
+         <url type="TextField">
+            <default></default>
+            <Required>Y</Required>
+            <ValidationMessage>A correctly formated URL is mandatory</ValidationMessage>
+         </url>
+         <regex type="TextField">
+            <default><![CDATA[<body>Current IP Address: (.*)</body>]]></default>
+            <Required>Y</Required>
+            <ValidationMessage>An address capture regular expression is mandatory</ValidationMessage>
+         </regex>
+         <interfaces type="InterfaceField">
+            <Required>N</Required>
+            <default>wan</default>
+            <multiple>Y</multiple>
+            <filters>
+               <enable>/^(?!0).*$/</enable>
+            </filters>
+         </interfaces>
+         <ipv type="OptionField">
+            <Required>N</Required>
+            <default></default>
+            <multiple>Y</multiple>
+            <OptionValues>
+               <ipv4>4</ipv4>
+               <ipv6>6</ipv6>
+            </OptionValues>
+         </ipv>
+         <username type="TextField">
+            <default></default>
+            <Required>N</Required>
+         </username>
+         <password type="TextField">
+            <default></default>
+            <Required>N</Required>
+         </password>
+         <verifysslpeer type="BooleanField">
+            <default>1</default>
+            <Required>Y</Required>
+         </verifysslpeer>
+         <description type="TextField">
+            <default></default>
+            <Required>N</Required>
+            <mask>/^.{1,255}$/u</mask>
+            <ValidationMessage>Description too long.  Upto 255 characters.</ValidationMessage>
+         </description>
+      </service>
+      <test>
+         <service type="OptionField">
+            <default>null</default>
+            <Required>Y</Required>
+            <OptionValues>
+               <null></null>
+            </OptionValues>
+         </service>
+         <interface type="InterfaceField">
+            <default>wan</default>
+            <Required>Y</Required>
+            <AddParentDevices>Y</AddParentDevices>
+            <filters>
+               <enable>/^(?!0).*$/</enable>
+               <type>/(?s)^((?!group).)*$/</type>
+            </filters>
+         </interface>
+         <ipv type="OptionField">
+            <default>ipv4</default>
+            <Required>Y</Required>
+            <OptionValues>
+               <ipv4>4</ipv4>
+               <ipv6>6</ipv6>
+            </OptionValues>
+         </ipv>
+      </test>
+   </items>
+</model>

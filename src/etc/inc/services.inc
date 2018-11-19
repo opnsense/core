@@ -49,6 +49,10 @@ require_once('plugins.inc.d/openssh.inc');
 require_once('plugins.inc.d/openvpn.inc');
 require_once('plugins.inc.d/unbound.inc');
 
+//use \OPNsense\DynDNS\Service;
+//use \OPNsense\DynDNS\Factory_Default_Service;
+use \OPNsense\DynDNS\CheckIP;
+
 function generate_ipv6_from_mac($mac)
 {
     $elements = explode(":", $mac);
@@ -1705,7 +1709,7 @@ function services_dhcrelay6_configure($verbose = false)
     }
 }
 
-function get_dyndns_ip($int, $ipver = 4)
+function get_dyndns_ip($int, $ipver = 4, $service = null)
 {
     global $config;
 
@@ -1729,17 +1733,54 @@ function get_dyndns_ip($int, $ipver = 4)
     }
 
     if ($ipver != 6 && is_private_ip($ip_address)) {
-        /* Chinese alternative is http://ip.3322.net/ */
-        $hosttocheck = 'http://checkip.dyndns.org';
+
+        // Get the check IP services.
+//        $mdlCheckIPService = new Service();
+        $mdlCheckIPService = new CheckIP();
+        $a_checkipservices = $mdlCheckIPService->service->getNodes();
+
+        // Append the factory default check IP service to the list.
+//        $mdlCheckIPFDS = new Factory_Default_Service();
+        $mdlCheckIPFDS = new CheckIP();
+        $a_checkipservices['FDS'] = $mdlCheckIPFDS->factory_default_service->getNodes();
+
+        // Is the factory default service disabled?
+        if ($mdlCheckIPService->disable_factory_default_service->__toString() == "1") {
+            $a_checkipservices['FDS']['default'] = 0;
+        }
+
+        /* Use the service specified by name. /*
+        /* Else use the first service found with a matching interface and IP version assignment. /*
+        /* Else use the enabled default service. */
+        foreach ($a_checkipservices as $i => $checkipservice) {
+            if ($checkipservice['name'] == $service || 
+               (!$service && 
+                $checkipservice['interfaces'][$int]['selected'] && 
+                $checkipservice['ipv']['ipv'.$ipver]['selected'])) {
+                    $found = true;
+            }
+            if ($found || $checkipservice['default']) {
+                $hosttocheck = $checkipservice['url'];
+                $regex = $checkipservice['regex'];
+                $username = $checkipservice['username'];
+                $password = $checkipservice['password'];
+                $verifysslpeer = $checkipservice['verifysslpeer'] ? true : false;
+                if ($found) { break; }
+            }
+        }
+
         $ip_ch = curl_init($hosttocheck);
         curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ip_ch, CURLOPT_SSL_VERIFYPEER, $verifysslpeer);
         curl_setopt($ip_ch, CURLOPT_INTERFACE, $ip_address);
         curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ip_ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ip_ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        curl_setopt($ip_ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+        curl_setopt($ip_ch, CURLOPT_USERPWD, "{$username}:{$password}");
         $ip_result = curl_exec($ip_ch);
         if ($ip_result !== false) {
-            preg_match('=<body>Current IP Address: (.*)</body>=siU', $ip_result, $matches);
+            preg_match('=' . $regex . '=siU', $ip_result, $matches);
             $ip_address = trim($matches[1]);
         } else {
             log_error('Aborted IPv4 detection: ' . curl_error($ip_ch));
