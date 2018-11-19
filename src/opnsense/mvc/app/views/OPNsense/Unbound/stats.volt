@@ -37,8 +37,8 @@ POSSIBILITY OF SUCH DAMAGE.
         },
         'tcpusage': 'TCP usage',
         'num': {
-            'queries_ip_ratelimited': 'Num IP ratelimited queries',
-            'recursivereplies': 'Num recursive replies',
+            'queries_ip_ratelimited': 'IP ratelimited queries',
+            'recursivereplies': 'Recursive replies',
             'cachemiss': 'Cache misses',
             'cachehits': 'Cache hits',
             'zero_ttl': 'Zero TTL',
