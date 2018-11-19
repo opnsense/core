@@ -34,7 +34,6 @@ $(document).ready(function () {
   var toggle_sidebar_loaded = false,
   $window = $(window),
   winHeight = $(window).height(),
-  that = $(this),
   mouse = 'mouseenter mouseleave',
   layer1_a = $('#mainmenu > div > a'),
   layer1_div = $('#mainmenu > div > div'),
@@ -67,16 +66,16 @@ $(document).ready(function () {
       layer1_a.off(events).on(events);
     },
     mousedown: function () {
-      that.trigger('click');
+      $(this).trigger('click');
     },
     mouseup: function () {
-      that.blur();
+      $(this).blur();
     }
   },
   events2 = {
     mouseenter: function () {
       $('#navigation.col-sidebar-left').css('width', '415px');
-      that.trigger('click');
+      $(this).trigger('click');
     },
     mouseleave: function () {
       $('#navigation.col-sidebar-left').css('width', '70px');
@@ -150,7 +149,7 @@ $(document).ready(function () {
     /* navigation toggle */
     toggle_btn.click(function () {
       opnsense_sidebar_toggle(true);
-      that.blur();
+      $(this).blur();
     });
     
     /* sidebar mouseenter */
