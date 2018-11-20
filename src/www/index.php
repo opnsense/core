@@ -167,7 +167,7 @@ include("fbegin.inc");?>
   }
 
   function configureWidget(selectedDiv) {
-      selectIntLink = '#' + selectedDiv + "-settings";
+      let selectIntLink = '#' + selectedDiv + "-settings";
       if ($(selectIntLink).css('display') == "none") {
           $(selectIntLink).show();
       } else {
@@ -209,7 +209,7 @@ include("fbegin.inc");?>
               // only capture visible widgets
               var index_str = "0000000" + index;
               index_str = index_str.substr(index_str.length-8);
-              col_index = $(this).parent().attr("id").split('_')[1];
+              let col_index = $(this).parent().attr("id").split('_')[1];
               widgetInfo.push($(this).attr('id')+'-container:'+index_str+'-'+col_index+':'+$('input[name='+$(this).attr('id')+'-config]').val());
               index++;
           }

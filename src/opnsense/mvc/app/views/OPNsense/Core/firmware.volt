@@ -31,7 +31,7 @@
      * prepare for checking update status
      */
     function updateStatusPrepare(rerun) {
-        if ($rerun = false) {
+        if (rerun === false) {
             $('#update_status').hide();
             $('#updatelist').show();
         }
@@ -126,7 +126,7 @@
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Updating, please wait...') }}");
         $("#audit_all").attr("style","display:none");
-        maj_suffix = '';
+        let maj_suffix = '';
         if ($.upgrade_action == 'maj') {
             maj_suffix = '_maj';
         }
@@ -215,7 +215,7 @@
     function action_may_reboot(pkg_act, pkg_name)
     {
         if (pkg_act == 'reinstall' && (pkg_name == 'kernel' || pkg_name == 'base')) {
-            reboot_msg = "{{ lang._('The firewall will reboot directly after this set reinstall.') }}";
+            const reboot_msg = "{{ lang._('The firewall will reboot directly after this set reinstall.') }}";
 
             // reboot required, inform the user.
             BootstrapDialog.show({
@@ -263,6 +263,7 @@
      */
     function upgrade_ui()
     {
+        let reboot_msg = "";
         if ( $.upgrade_needs_reboot == "1" ) {
             reboot_msg = "{{ lang._('The firewall will reboot directly after this firmware update.') }}";
             if ($.upgrade_action == 'maj') {
@@ -425,9 +426,9 @@
                 if (row['provided'] == "1") {
                     plugin_count += 1;
                 }
-                status_text = '';
-                bold_on = '';
-                bold_off = '';
+                let status_text = '';
+                let bold_on = '';
+                let bold_off = '';
                 if (row['installed'] == "1") {
                     status_text = ' ({{ lang._('installed') }})';
                     bold_on = '<b>';
@@ -468,14 +469,14 @@
             $("#changeloglist > thead").html("<tr><th>{{ lang._('Version') }}</th>" +
             "<th>{{ lang._('Date') }}</th><th></th></tr>");
 
-            installed_version = data['product_version'].replace(/[_-].*/, '');
+            const installed_version = data['product_version'].replace(/[_-].*/, '');
 
             $.each(data['changelog'], function(index, row) {
                 changelog_count += 1;
 
-                status_text = '';
-                bold_on = '';
-                bold_off = '';
+                let status_text = '';
+                let bold_on = '';
+                let bold_off = '';
 
                 if (installed_version == row['version']) {
                     status_text = ' ({{ lang._('installed') }})';

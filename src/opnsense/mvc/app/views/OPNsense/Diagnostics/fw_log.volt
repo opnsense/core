@@ -44,7 +44,8 @@ POSSIBILITY OF SUCH DAMAGE.
             // fetch new log lines and add on top of grid-log
             ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': $("#limit").val()}, function(data, status) {
                 if (data != undefined && data.length > 0) {
-                    while ((record=data.pop()) != null) {
+                    let record;
+                    while ((record = data.pop()) != null) {
                         if (record['__digest__'] != last_digest) {
                             var log_tr = $("<tr>");
                             log_tr.data('details', record);
@@ -128,7 +129,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         var sorted_keys = Object.keys(sender_details).sort();
                         var tbl = $('<table class="table table-condensed table-hover"/>');
                         var tbl_tbody = $("<tbody/>");
-                        for (i=0 ; i < sorted_keys.length; i++) {
+                        for (let i=0 ; i < sorted_keys.length; i++) {
                             if (hidden_columns.indexOf(sorted_keys[i]) === -1 ) {
                                 var row = $("<tr/>");
                                 var icon = null;

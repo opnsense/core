@@ -68,6 +68,7 @@ $gateways = return_gateways_array();
               $("#"+tr_id+" > td:eq(4)").html('<span>'+gateway['status_translated']+'</span>');
 
               // set color on status text
+              let status_color;
               switch (gateway['status']) {
                 case 'force_down':
                 case 'down':
@@ -81,7 +82,7 @@ $gateways = return_gateways_array();
                   status_color = 'success';
                   break;
                 default:
-                  status_color = 'default'
+                  status_color = 'default';
                   break;
               }
 

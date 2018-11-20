@@ -39,10 +39,9 @@ POSSIBILITY OF SUCH DAMAGE.
         // update routes
         $("#update").click(function() {
             $('#processing-dialog').modal('show');
+            let resolve = '';
             if ($("#resolve").prop("checked")) {
                 resolve = "yes";
-            } else {
-                resolve = "";
             }
             ajaxGet("/api/diagnostics/interface/getRoutes/", {resolve:resolve}, function (data, status) {
                         if (status == "success") {
@@ -50,7 +49,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             var html = [];
                             $.each(data, function (key, value) {
                                 var fields = ["proto", "destination", "gateway", "flags", "use", "mtu", "netif","intf_description", "expire"];
-                                tr_str = '<tr>';
+                                let tr_str = '<tr>';
                                 for (var i = 0; i < fields.length; i++) {
                                     if (value[fields[i]] != null) {
                                         tr_str += '<td>' + value[fields[i]] + '</td>';

@@ -52,8 +52,8 @@ require_once("system.inc");
       } else if (system_information_widget_cpu_data.length == 1) {
           system_information_widget_cpu_data.push(parseInt(data['cpu']['used']));
       }
-      chart_data = [];
-      count = 0;
+      let chart_data = [];
+      let count = 0;
       system_information_widget_cpu_data.map(function(item){
           chart_data.push([count, item]);
           count++;
@@ -114,7 +114,7 @@ require_once("system.inc");
       }
 
       // disk usage
-      counter = 0;
+      let counter = 0;
       $("#system_information_widget_disk .disk_devices").html("");
       data['disk']['devices'].map(function(device) {
           var html = $("#system_information_widget_disk .disk_template").html();

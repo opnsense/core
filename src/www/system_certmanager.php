@@ -643,8 +643,8 @@ $( document ).ready(function() {
 //<![CDATA[
   function internalca_change() {
 
-    index = document.iform.caref.selectedIndex;
-    caref = document.iform.caref[index].value;
+    let index = document.iform.caref.selectedIndex;
+    let caref = document.iform.caref[index].value;
 
     switch (caref) {
   <?php

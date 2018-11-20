@@ -79,10 +79,10 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
         // needed to display the widget settings menu
         $("#log-configure").removeClass("disabled");
         // icons
-        var field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban'}
+        const field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban'};
 
         var interface_descriptions = {};
-        ajaxGet(url='/api/diagnostics/interface/getInterfaceNames', {}, callback=function(data, status) {
+        ajaxGet('/api/diagnostics/interface/getInterfaceNames', {}, function(data, status) {
             interface_descriptions = data;
         });
         function fetch_log(){
@@ -95,7 +95,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                     'class': $(this).attr('class')
                 });
             });
-            ajaxGet(url='/api/diagnostics/firewall/log/', {'limit': 100}, callback=function(data, status) {
+            ajaxGet('/api/diagnostics/firewall/log/', {'limit': 100}, function(data, status) {
                 var filtact = [];
 
                 if ($("#actpass").is(':checked')) {
@@ -105,6 +105,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                     filtact.push('block');
                 }
 
+                let record;
                 while ((record=data.pop()) != null) {
                     var intf = record['interface'];
 

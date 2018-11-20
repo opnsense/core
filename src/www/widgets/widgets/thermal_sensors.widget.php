@@ -74,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           tr_content.push('</tr>');
           tbody.append(tr_content.join(''));
       }
+      let danger_temp, warning_temp;
       // probe warning / danger temp
       if (sensor['type'] == 'core') {
           danger_temp = parseInt($("#thermal_sensors_widget_core_critical_threshold").val());

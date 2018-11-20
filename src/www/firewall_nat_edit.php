@@ -374,6 +374,7 @@ $( document ).ready(function() {
 
     // on change event protocol change
     $("#proto").change(function(){
+        let port_disabled = true;
         if ($("#proto").val() == "tcp" ||  $("#proto").val() == "udp" || $("#proto").val() == "tcp/udp") {
             port_disabled = false;
         } else {

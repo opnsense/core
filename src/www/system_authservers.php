@@ -475,7 +475,7 @@ $( document ).ready(function() {
                             }
                         }]
                 });
-            }, dataType="json");
+            }, "json");
         }
     });
 });

@@ -55,7 +55,7 @@
 function saveFormToEndpoint(url,formid,callback_ok, disable_dialog) {
     disable_dialog = disable_dialog || false;
     var data = getFormData(formid);
-    ajaxCall(url=url,sendData=data,callback=function(data,status){
+    ajaxCall(url,data,function(data,status){
         if ( status == "success") {
             // update field validation
             handleFormValidation(formid,data['validations']);
@@ -113,7 +113,7 @@ function mapDataToFormUI(data_get_map) {
 
     var collected_data = {};
     $.each(data_get_map, function(data_index, data_url) {
-        ajaxGet(url=data_url,sendData={}, callback=function(data, status) {
+        ajaxGet(data_url,{}, function(data, status) {
             if (status == "success") {
                 $("form").each(function( index ) {
                     if ( $(this).attr('id') && $(this).attr('id').split('-')[0] == data_index) {
@@ -158,7 +158,7 @@ function updateServiceStatusUI(status)
  */
 function updateServiceControlUI(serviceName)
 {
-    ajaxCall(url="/api/" + serviceName + "/service/status", sendData={}, callback=function(data,status) {
+    ajaxCall("/api/" + serviceName + "/service/status", {}, function(data,status) {
         var status_html = '<span class="label label-opnsense label-opnsense-sm ';
         var status_icon = '';
         var buttons = '';
@@ -184,9 +184,9 @@ function updateServiceControlUI(serviceName)
         commands.forEach(function(command) {
             $("#" + command + "Service").click(function(){
                 $('#OPNsenseStdWaitDialog').modal('show');
-                ajaxCall(url="/api/" + serviceName + "/service/" + command, sendData={},callback=function(data,status) {
+                ajaxCall("/api/" + serviceName + "/service/" + command, {},function(data,status) {
                     $('#OPNsenseStdWaitDialog').modal('hide');
-                    ajaxCall(url="/api/" + serviceName + "/service/status", sendData={}, callback=function(data,status) {
+                    ajaxCall("/api/" + serviceName + "/service/status", {}, function(data,status) {
                         updateServiceControlUI(serviceName);
                     });
                 });
@@ -250,7 +250,7 @@ function formatTokenizersUI() {
 
             // re-init tokenizer items
             sender.tokenize2().trigger('tokenize:clear');
-            for (i=0 ; i < items.length ; ++i) {
+            for (let i=0 ; i < items.length ; ++i) {
               sender.tokenize2().trigger('tokenize:tokens:add', items[i]);
             }
             sender.tokenize2().trigger('tokenize:select');
