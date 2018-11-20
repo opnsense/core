@@ -9,6 +9,7 @@
                     <Required>Y</Required>
                 </vpnid>
                 <hostname type="HostnameField">
+                    <Required>Y</Required>
                     <AsList>Y</AsList>
                     <FieldSeparator>,</FieldSeparator>
                 </hostname>
