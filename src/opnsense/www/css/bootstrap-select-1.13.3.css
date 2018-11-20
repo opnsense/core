@@ -390,3 +390,14 @@ select.selectpicker {
   width: 100%;
   float: none;
 }
+
+/* OPNsense edit to fix https://github.com/opnsense/core/issues/2612 :
+ * Move checkmarks to left hand side of the dropdown.
+ */
+.bootstrap-select .dropdown-menu > li > a {
+  padding: 3px 20px 3px 30px;
+}
+.bootstrap-select.show-tick .dropdown-menu .selected span.check-mark {
+  left: 10px;
+}
+/* End OPNsense edit to fix #2612. */
