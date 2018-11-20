@@ -323,7 +323,7 @@ class ExportController extends ApiControllerBase
                              'tunnel_networkv6', 'reneg-sec', 'local_network', 'local_networkv6',
                              'tunnel_network', 'compression', 'passtos', 'shared_key', 'mode',
                              'dev_mode', 'tls', 'client_mgmt_port') as $field) {
-                    if (!empty($server->$field)) {
+                    if (isset($server->$field) && $server->$field !== "") {
                         $config[$field] = (string)$server->$field;
                     } else {
                         $config[$field] = null;
