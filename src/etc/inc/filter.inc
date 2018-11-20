@@ -141,25 +141,26 @@ function filter_configure()
 function filter_delete_states_for_down_gateways()
 {
     $GatewaysList = return_gateways_array(false, true) + return_gateway_groups_array();
-    $a_gateways = return_gateways_status(false);
+    $a_gateways = return_gateways_status();
     $any_gateway_down = false;
 
     if (is_array($GatewaysList)) {
         foreach ($GatewaysList as $gwname => $gateway) {
-          if (empty($gateway['monitor'])) {
-              continue;
-          } elseif (!is_ipaddr($gateway['monitor'])) {
-              continue;
-          } elseif (strstr($gateway['monitor'], "127.0.0.")) {
-              continue;
-          } elseif (empty($a_gateways[$gateway['monitor']])) {
-              continue;
-          }
-          $gwstatus = &$a_gateways[$gateway['monitor']];
-          if (strstr($gwstatus['status'], "down")) {
-              $any_gateway_down = true;
-              break;
-          }
+            /* XXX what does this do exactly? */
+            if (empty($gateway['monitor'])) {
+                continue;
+            } elseif (!is_ipaddr($gateway['monitor'])) {
+                continue;
+            } elseif (strstr($gateway['monitor'], '127.0.0.')) {
+                continue;
+            } elseif (empty($a_gateways[$gateway['name']])) {
+                continue;
+            }
+
+            if (stristr($a_gateways[$gateway['name']]['status'], 'down')) {
+                $any_gateway_down = true;
+                break;
+            }
         }
     }
 

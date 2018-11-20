@@ -259,83 +259,42 @@ function setup_gateways_monitor($verbose = false, $gwname = null)
     }
 }
 
-function return_gateways_status($byname = true)
+function return_gateways_status()
 {
     $status = array();
 
-    $dpinger_gws = running_dpinger_processes();
-    $status = array();
+    foreach (return_gateways_array() as $gwitem) {
+        if (!isset($gwitem['monitor_disable'])) {
+            continue;
+        }
 
-    $gateways_arr = return_gateways_array();
-    foreach ($dpinger_gws as $gwname => $gwdata) {
+        $status[$gwitem['name']] = array(
+            'name' => $gwitem['name'],
+            'delay' => '0.0 ms',
+            'stddev' => '0.0 ms',
+            'loss' => '100.0 %',
+            'status' => 'down',
+        );
+    }
+
+    foreach (running_dpinger_processes() as $gwname => $gwdata) {
         $dpinger_status = get_dpinger_status($gwname);
         if ($dpinger_status === false) {
             continue;
         }
 
-        if ($byname == false) {
-            $target = $dpinger_status['monitorip'];
-        } else {
-            $target = $gwname;
-        }
-
-        $status[$target] = array();
-        $status[$target]['monitorip'] = $dpinger_status['monitorip'];
-        $status[$target]['srcip'] = $dpinger_status['srcip'];
-        $status[$target]['name'] = $gwname;
-        $status[$target]['delay'] = sprintf('%0.1f ms', empty($dpinger_status['latency_avg']) ? 0.0 : round($dpinger_status['latency_avg'], 1));
-        $status[$target]['stddev'] = sprintf('%0.1f ms', empty($dpinger_status['latency_stddev']) ? 0.0 : round($dpinger_status['latency_stddev'], 1));
-        $status[$target]['loss'] = sprintf('%0.1f %%', empty($dpinger_status['loss']) ? 0.0 : round($dpinger_status['loss'], 1));
-        $status[$target]['status'] = $dpinger_status['status'];
+        $status[$gwname] = array(
+            'delay' => sprintf('%0.1f ms', empty($dpinger_status['latency_avg']) ? 0.0 : round($dpinger_status['latency_avg'], 1)),
+            'stddev' => sprintf('%0.1f ms', empty($dpinger_status['latency_stddev']) ? 0.0 : round($dpinger_status['latency_stddev'], 1)),
+            'loss' => sprintf('%0.1f %%', empty($dpinger_status['loss']) ? 0.0 : round($dpinger_status['loss'], 1)),
+            'status' => $dpinger_status['status'],
+            'name' => $gwname,
+        );
     }
 
-    /* tack on any gateways that have monitoring disabled
-     * or are down, which could cause gateway groups to fail */
-    $gateways_arr = return_gateways_array();
-    foreach ($gateways_arr as $gwitem) {
-        if (!isset($gwitem['monitor_disable'])) {
-            continue;
-        }
-        /* XXX this code only works for IPv4.... */
-        if (!isset($gwitem['monitorip']) || !is_ipaddr($gwitem['monitorip'])) {
-            $tgtip = get_interface_gateway($gwitem['friendlyiface']);
-            if (!is_ipaddr($tgtip)) {
-                $tgtip = "none";
-            }
-            $srcip = find_interface_ip($gwitem['interface']);
-        } else {
-            $tgtip = $gwitem['monitorip'];
-            $srcip = find_interface_ip($gwitem['interface']);
-        }
-        if ($byname == true) {
-            $target = $gwitem['name'];
-        } else {
-            $target = $tgtip;
-        }
-
-        /* failsafe for down interfaces */
-        if ($target == 'none') {
-            $target = $gwitem['name'];
-            $status[$target]['name'] = $gwitem['name'];
-            $status[$target]['delay'] = '0.0 ms';
-            $status[$target]['stddev'] = '0.0 ms';
-            $status[$target]['loss'] = '100.0 %';
-            $status[$target]['status'] = 'down';
-        } else {
-            $status[$target]['monitorip'] = $tgtip;
-            $status[$target]['srcip'] = $srcip;
-            $status[$target]['name'] = $gwitem['name'];
-            $status[$target]['delay'] = '0.0 ms';
-            $status[$target]['stddev'] = '0.0 ms';
-            $status[$target]['loss'] = '0.0 %';
-            $status[$target]['status'] = 'none';
-        }
-
-    }
-    return($status);
+    return $status;
 }
 
-/* Return all configured gateways on the system */
 function return_gateways_array($disabled = false, $localhost = false, $inactive = false)
 {
     global $config;
@@ -695,9 +654,9 @@ function return_gateway_groups_array()
                     $status = $gateways_status[$gwname];
                     if (stristr($status['status'], 'down')) {
                         $msg = sprintf(gettext('MONITOR: %s is down, removing from routing group %s'), $gwname, $group['name']);
-                    } elseif (stristr($status['status'], 'loss') && strstr($group['trigger'], 'loss')) {
+                    } elseif (stristr($status['status'], 'loss') && stristr($group['trigger'], 'loss')) {
                         $msg = sprintf(gettext('MONITOR: %s has packet loss, removing from routing group %s'), $gwname, $group['name']);
-                    } elseif (stristr($status['status'], 'delay') && strstr($group['trigger'] , 'latency')) {
+                    } elseif (stristr($status['status'], 'delay') && stristr($group['trigger'] , 'latency')) {
                         $msg = sprintf(gettext('MONITOR: %s has high latency, removing from routing group %s'), $gwname, $group['name']);
                     } else {
                         $msg = null;
@@ -1022,10 +981,6 @@ function get_dpinger_status($gwname)
     $r['latency_stddev'] = round($r['latency_stddev'] / 1000, 1);
     $r['latency_avg'] = round($r['latency_avg'] / 1000, 1);
     $r['status'] = 'none';
-
-    /* XXX tried to read info via file name, this is not good by any standard */
-    $r['monitorip'] = 'NOT_NEEDED';
-    $r['srcip'] = 'BUT_WHY';
 
     $gateways_arr = return_gateways_array();
     if (!isset($gateways_arr[$gwname])) {
