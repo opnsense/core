@@ -888,6 +888,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 'init_limit_half_open' => 1000,
                 'ignore_acquire_ts' => 'yes',
                 'syslog' => [
+                    'identifier' => 'charon',
                     'daemon' => [
                         'ike_name' => 'yes'
                     ]
@@ -903,6 +904,18 @@ function ipsec_configure_do($verbose = false, $interface = '')
         }
         if (isset($a_client['enable']) && isset($a_client['net_list'])) {
             $strongswanTree['charon']['cisco_unity'] = 'yes';
+        }
+
+        // Debugging configuration
+        if (isset($ipsec_loglevels)) {
+            // lkey is the log key, which is a three-letter abbreviation of the subsystem to log, e.g. `ike`.
+            // The value will be a number between -1 (silent) and 4 (highest verbosity).
+            foreach ($ipsec_loglevels as $lkey => $ldescr) {
+                if (isset($config['ipsec']["ipsec_{$lkey}"]) && is_numeric($config['ipsec']["ipsec_{$lkey}"]) &&
+                    intval($config['ipsec']["ipsec_{$lkey}"]) >= -1 && intval($config['ipsec']["ipsec_{$lkey}"]) <= 4) {
+                    $strongswanTree['charon']['syslog']['daemon'][$lkey] = $config['ipsec']["ipsec_{$lkey}"];
+                }
+            }
         }
 
         $strongswanTree['charon']['plugins'] = [];
