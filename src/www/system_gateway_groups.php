@@ -34,7 +34,7 @@ require_once("services.inc");
 require_once("rrd.inc");
 
 $a_gateway_groups = &config_read_array('gateways', 'gateway_group');
-$gateways_status = return_gateways_status(true);
+$gateways_status = return_gateways_status();
 $a_gateways = return_gateways_array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

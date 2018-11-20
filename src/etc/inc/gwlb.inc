@@ -498,8 +498,7 @@ EOD;
     }
 }
 
-/* return the status of the apinger targets as a array */
-function return_gateways_status($byname = false)
+function return_gateways_status($byname = true)
 {
     global $config;
 
@@ -877,7 +876,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 
 function fixup_default_gateway()
 {
-    $gateways_status = return_gateways_status(true);
+    $gateways_status = return_gateways_status();
     $gateways_arr = return_gateways_array();
 
     foreach (array("inet", "inet6") as $ipprotocol) {
@@ -944,8 +943,7 @@ function return_gateway_groups_array()
 {
     global $config;
 
-    /* fetch the current gateways status */
-    $gateways_status = return_gateways_status(true);
+    $gateways_status = return_gateways_status();
     $gateways_arr = return_gateways_array();
     $gateway_groups_array = array();
 

@@ -117,7 +117,7 @@ foreach ($a_gateways as $gname => $gw) {
 }
 $a_gateways = $a_gateways_arr;
 
-$gateways_status = return_gateways_status(true);
+$gateways_status = return_gateways_status();
 
 // form processing
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
