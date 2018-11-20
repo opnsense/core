@@ -261,9 +261,10 @@ function setup_gateways_monitor($verbose = false, $gwname = null)
 
 function return_gateways_status()
 {
+    $gateways_arr = return_gateways_array();
     $status = array();
 
-    foreach (return_gateways_array() as $gwitem) {
+    foreach ($gateways_arr as $gwitem) {
         if (!isset($gwitem['monitor_disable'])) {
             continue;
         }
@@ -277,17 +278,69 @@ function return_gateways_status()
         );
     }
 
-    foreach (running_dpinger_processes() as $gwname => $gwdata) {
-        $dpinger_status = get_dpinger_status($gwname);
-        if ($dpinger_status === false) {
+    foreach (running_dpinger_processes() as $gwname => $proc) {
+        if (!isset($gateways_arr[$gwname])) {
             continue;
         }
 
+        $fp = @stream_socket_client("unix://{$proc['socket']}", $errno, $errstr, 3);
+        if (!$fp) {
+            continue;
+        }
+
+        $status = '';
+        while (!feof($fp)) {
+            $status .= fgets($fp, 1024);
+        }
+
+        fclose($fp);
+
+        $r = array();
+
+        list($r['gwname'], $r['latency_avg'], $r['latency_stddev'], $r['loss']) =
+            explode(' ', preg_replace('/\n/', '', $status));
+
+        /* not yet ready, act like nothing was returned */
+        if ($r['latency_stddev'] == '0' && $r['loss'] == '0') {
+            continue;
+        }
+
+        $r['latency_stddev'] = round($r['latency_stddev'] / 1000, 1);
+        $r['latency_avg'] = round($r['latency_avg'] / 1000, 1);
+        $r['status'] = 'none';
+
+        $gw = $gateways_arr[$gwname];
+
+        if (isset($gw['force_down'])) {
+            $r['status'] = 'force_down';
+        } else {
+            $settings = return_dpinger_defaults();
+
+            $keys = array('latencylow', 'latencyhigh', 'losslow', 'losshigh');
+
+            /* Replace default values by user-defined */
+            foreach ($keys as $key) {
+                if (isset($gw[$key]) && is_numeric($gw[$key])) {
+                    $settings[$key] = $gw[$key];
+                }
+            }
+
+            if ($r['latency_avg'] > $settings['latencyhigh']) {
+                $r['status'] = 'down';
+            } elseif ($r['loss'] > $settings['losshigh']) {
+                $r['status'] = 'down';
+            } elseif ($r['latency_avg'] > $settings['latencylow']) {
+                $r['status'] = 'delay';
+            } elseif ($r['loss'] > $settings['losslow']) {
+                $r['status'] = 'loss';
+            }
+        }
+
         $status[$gwname] = array(
-            'delay' => sprintf('%0.1f ms', empty($dpinger_status['latency_avg']) ? 0.0 : round($dpinger_status['latency_avg'], 1)),
-            'stddev' => sprintf('%0.1f ms', empty($dpinger_status['latency_stddev']) ? 0.0 : round($dpinger_status['latency_stddev'], 1)),
-            'loss' => sprintf('%0.1f %%', empty($dpinger_status['loss']) ? 0.0 : round($dpinger_status['loss'], 1)),
-            'status' => $dpinger_status['status'],
+            'delay' => sprintf('%0.1f ms', empty($r['latency_avg']) ? 0.0 : round($r['latency_avg'], 1)),
+            'stddev' => sprintf('%0.1f ms', empty($r['latency_stddev']) ? 0.0 : round($r['latency_stddev'], 1)),
+            'loss' => sprintf('%0.1f %%', empty($r['loss']) ? 0.0 : round($r['loss'], 1)),
+            'status' => $r['status'],
             'name' => $gwname,
         );
     }
@@ -944,76 +997,4 @@ function running_dpinger_processes()
     }
 
     return $result;
-}
-
-function get_dpinger_status($gwname)
-{
-    $running_processes = running_dpinger_processes();
-
-    if (!isset($running_processes[$gwname])) {
-        return false;
-    }
-
-    $proc = $running_processes[$gwname];
-
-    $fp = @stream_socket_client("unix://{$proc['socket']}", $errno, $errstr, 3);
-    if (!$fp) {
-        return false;
-    }
-
-    $status = '';
-    while (!feof($fp)) {
-        $status .= fgets($fp, 1024);
-    }
-
-    fclose($fp);
-
-    $r = array();
-
-    list($r['gwname'], $r['latency_avg'], $r['latency_stddev'], $r['loss']) =
-        explode(' ', preg_replace('/\n/', '', $status));
-
-    /* not yet ready, act like nothing was returned */
-    if ($r['latency_stddev'] == '0' && $r['loss'] == '0') {
-        return false;
-    }
-
-    $r['latency_stddev'] = round($r['latency_stddev'] / 1000, 1);
-    $r['latency_avg'] = round($r['latency_avg'] / 1000, 1);
-    $r['status'] = 'none';
-
-    $gateways_arr = return_gateways_array();
-    if (!isset($gateways_arr[$gwname])) {
-        return $r;
-    }
-
-    $gw = $gateways_arr[$gwname];
-
-    if (isset($gw['force_down'])) {
-        $r['status'] = 'force_down';
-        return $r;
-    }
-
-    $settings = return_dpinger_defaults();
-
-    $keys = array('latencylow', 'latencyhigh', 'losslow', 'losshigh');
-
-    /* Replace default values by user-defined */
-    foreach ($keys as $key) {
-        if (isset($gw[$key]) && is_numeric($gw[$key])) {
-            $settings[$key] = $gw[$key];
-        }
-    }
-
-    if ($r['latency_avg'] > $settings['latencyhigh']) {
-        $r['status'] = 'down';
-    } elseif ($r['loss'] > $settings['losshigh']) {
-        $r['status'] = 'down';
-    } elseif ($r['latency_avg'] > $settings['latencylow']) {
-        $r['status'] = 'delay';
-    } elseif ($r['loss'] > $settings['losslow']) {
-        $r['status'] = 'loss';
-    }
-
-    return $r;
 }
