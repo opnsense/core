@@ -141,7 +141,7 @@ function filter_configure()
 function filter_delete_states_for_down_gateways()
 {
     $GatewaysList = return_gateways_array(false, true) + return_gateway_groups_array();
-    $a_gateways = return_gateways_status();
+    $a_gateways = return_gateways_status(false);
     $any_gateway_down = false;
 
     if (is_array($GatewaysList)) {

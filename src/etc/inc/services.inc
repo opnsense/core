@@ -1715,7 +1715,7 @@ function get_dyndns_ip($int, $ipver = 4)
         return 'down';
     }
 
-    $gateways_status = return_gateways_status(true);
+    $gateways_status = return_gateways_status();
 
     /*
      * If the gateway for this interface is down, then the external
