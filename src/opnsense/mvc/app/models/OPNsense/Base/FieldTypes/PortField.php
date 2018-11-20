@@ -149,9 +149,9 @@ class PortField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValidationMessage == null) {
-            $msg = "please specify a valid port number (1-65535)";
+            $msg = gettext('Please specify a valid port number (1-65535).');
             if ($this->enableWellKown) {
-                $msg .= " or name (" . implode(",", self::$wellknownservices) . ")";
+                $msg .= ' ' . sprintf(gettext('A service name is also possible (%s).'), implode(', ', self::$wellknownservices));
             }
         } else {
             $msg = $this->internalValidationMessage;
