@@ -131,7 +131,7 @@
                         saveFormToEndpoint("/api/openvpn/export/download/"+vpnid+"/"+caref+"/",'frm_ExportSettings', function(data){
                             if (data.filename !== undefined) {
                                 var link = $('<a></a>')
-                                    .attr('href','data:'+data.filetype+';charset=utf8,' + encodeURIComponent(atob(data.content)))
+                                    .attr('href','data:'+data.filetype+';base64,' + data.content)
                                     .attr('download', data.filename)
                                     .appendTo('body');
 
