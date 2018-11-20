@@ -66,7 +66,7 @@ class ArchiveOpenVPN extends PlainOpenVPN
     public function getContent()
     {
         $conf = $this->openvpnConfParts();
-        $base_filename = "profile";
+        $base_filename = $this->getBaseFilename();
         $tempdir = tempnam(sys_get_temp_dir(), '_ovpn') ;
         $content_dir = $tempdir . "/" . $base_filename;
         if (file_exists($tempdir)) {

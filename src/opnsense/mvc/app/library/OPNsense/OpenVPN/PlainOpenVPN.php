@@ -52,9 +52,9 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
     }
 
     /**
-     * @return string filename
+     * @return string base filename without extension
      */
-    public function getFilename()
+    protected function getBaseFilename()
     {
         $result = array();
         if (!empty($this->config['description'])) {
@@ -65,7 +65,15 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
         if (!empty($this->config['client_cn'])) {
             $result[] = $this->config['client_cn'];
         }
-        return implode("_", $result) . ".". $this->fileExtension;
+        return implode("_", $result);
+    }
+
+    /**
+     * @return string filename
+     */
+    public function getFilename()
+    {
+        return $this->getBaseFilename() . ".". $this->fileExtension;
     }
 
     /**
