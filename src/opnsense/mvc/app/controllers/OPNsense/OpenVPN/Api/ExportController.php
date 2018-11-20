@@ -151,7 +151,7 @@ class ExportController extends ApiControllerBase
         foreach ($serverModel->iterateItems() as $field => $value) {
             if (!empty((string)$value)) {
                 $result[$field] = (string)$value;
-            } else {
+            } elseif (!empty((string)$server->$field) || !isset($result[$field])) {
                 $result[$field] = (string)$server->$field;
             }
         }
