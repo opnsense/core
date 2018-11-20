@@ -30,13 +30,80 @@ namespace OPNsense\OpenVPN;
 
 class ArchiveOpenVPN extends PlainOpenVPN
 {
+    /**
+     * @var string file extension
+     */
+    protected $fileExtension = "zip";
+
+    /**
+     * @return string plugin name
+     */
     public function getName()
     {
         return gettext("Archive");
     }
 
+    /**
+     * @return array custom options
+     */
     public function supportedOptions()
     {
-        return array("plain_config");
+        return array("plain_config", "p12_password");
+    }
+
+    /**
+     * @return string file type
+     */
+    public function getFileType()
+    {
+        return "application/zip";
+    }
+
+    /**
+     * generate a zip archive for OpenVPN
+     * @return string content
+     */
+    public function getContent()
+    {
+        $conf = $this->openvpnConfParts();
+        $base_filename = "profile";
+        $tempdir = tempnam(sys_get_temp_dir(), '_ovpn') ;
+        $content_dir = $tempdir . "/" . $base_filename;
+        if (file_exists($tempdir)) {
+            unlink($tempdir);
+        }
+        mkdir($content_dir, 0700, true);
+
+        $p12 = $this->export_pkcs12(
+            $this->config['client_crt'],
+            $this->config['client_prv'],
+            !empty($this->config['p12_password']) ? $this->config['p12_password'] : null,
+            !empty($this->config['server_ca_chain']) ? $this->config['server_ca_chain'] : null
+        );
+
+        file_put_contents("{$content_dir}/{$base_filename}.p12", $p12);
+        $conf[] = "pkcs12 {$base_filename}.p12";
+        if (!empty($this->config['tls'])) {
+            $conf[] = "tls-auth {$base_filename}-tls.key 1";
+            file_put_contents("{$content_dir}/{$base_filename}-tls.key", trim(base64_decode($this->config['tls'])));
+        }
+        file_put_contents("{$content_dir}/{$base_filename}.ovpn", implode("\n", $conf));
+
+        $command = "cd " . escapeshellarg("{$tempdir}")
+            . " && /usr/local/bin/zip -r "
+            . escapeshellarg("{$content_dir}.zip")
+            . " " . escapeshellarg($base_filename);
+        exec($command);
+        $result = file_get_contents($content_dir.".zip");
+
+        // cleanup
+        unlink($content_dir.".zip");
+        foreach (glob($content_dir."/*") as $filename) {
+            unlink($filename);
+        }
+        rmdir($content_dir);
+        rmdir($tempdir);
+
+        return $result;
     }
 }
