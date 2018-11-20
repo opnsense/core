@@ -34,7 +34,7 @@
     <field>
         <id>openvpn_export.p12_password</id>
         <label>P12 Password/confirm</label>
-        <style>password_field</style>
+        <style>password_field export_option</style>
         <type>password</type>
         <help>Use a password to protect the pkcs12 file contents</help>
     </field>
