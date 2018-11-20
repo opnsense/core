@@ -818,9 +818,16 @@ function get_interface_gateway($wanif, &$dynamic = false)
     $static = !empty($wancfg['ipaddr']) && is_ipaddrv4($wancfg['ipaddr']);
 
     foreach (config_read_array('gateways', 'gateway_item') as $gateway) {
-        if ($gateway['interface'] != $wanif || !is_ipaddrv4($gateway['gateway'])) {
+        if (isset($gateway['disabled'])) {
             continue;
         }
+        if ($gateway['interface'] != $wanif) {
+            continue;
+        }
+        if (!is_ipaddrv4($gateway['gateway'])) {
+            continue;
+        }
+
         if (!empty($wancfg['gateway'])) {
             /* find gateway if it was set */
             if ($gateway['name'] == $wancfg['gateway']) {
