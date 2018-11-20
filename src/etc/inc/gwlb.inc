@@ -806,8 +806,6 @@ function lookup_gateway_interface_by_name($name)
 
 function get_interface_gateway($wanif, &$dynamic = false)
 {
-    global $config;
-
     $gw = null;
 
     $wancfg = config_read_array('interfaces', $wanif);
@@ -845,7 +843,7 @@ function get_interface_gateway($wanif, &$dynamic = false)
         /* fallback for dynamic interfaces without an explicit gateway */
         $realif = get_real_interface($wanif);
         if (file_exists("/tmp/{$realif}_router")) {
-            $gw = trim(file_get_contents("/tmp/{$realif}_router"), " \n");
+            $gw = trim(@file_get_contents("/tmp/{$realif}_router"));
             $dynamic = true;
         }
         if (file_exists("/tmp/{$realif}_defaultgw")) {
@@ -856,35 +854,51 @@ function get_interface_gateway($wanif, &$dynamic = false)
     return $gw;
 }
 
-function get_interface_gateway_v6($interface, &$dynamic = false)
+function get_interface_gateway_v6($wanif, &$dynamic = false)
 {
-    global $config;
-
     $gw = null;
 
-    if (!isset($config['interfaces'][$interface])) {
+    $wancfg = config_read_array('interfaces', $wanif);
+    if (empty($wancfg)) {
         return $gw;
     }
 
-    $gwcfg = $config['interfaces'][$interface];
-    if (!empty($gwcfg['gatewayv6']) && isset($config['gateways']['gateway_item'])) {
-        foreach ($config['gateways']['gateway_item'] as $gateway) {
-            if ($gateway['name'] == $gwcfg['gatewayv6'] && is_ipaddrv6($gateway['gateway'])) {
+    $static = !empty($wancfg['ipaddrv6']) && is_ipaddrv6($wancfg['ipaddrv6']);
+
+    foreach (config_read_array('gateways', 'gateway_item') as $gateway) {
+        if (isset($gateway['disabled'])) {
+            continue;
+        }
+        if ($gateway['interface'] != $wanif) {
+            continue;
+        }
+        if (!is_ipaddrv6($gateway['gateway'])) {
+            continue;
+        }
+
+        if (!empty($wancfg['gateway'])) {
+            /* find gateway if it was set */
+            if ($gateway['name'] == $wancfg['gatewayv6']) {
                 $gw = $gateway['gateway'];
                 break;
             }
+        } elseif ($static && (empty($gw) || isset($gateway['defaultgw']))) {
+            /* use any available gateway for static setup but prefer default gatway */
+            $gw = $gateway['gateway'];
+            continue;
         }
     }
 
-    if (!is_ipaddrv6($gw) && (!isset($gwcfg['ipaddrv6']) || !is_ipaddrv6($gwcfg['ipaddrv6']))) {
-          $realif = get_real_interface($interface, 'inet6');
-          if (file_exists("/tmp/{$realif}_routerv6")) {
-              $gw = trim(file_get_contents("/tmp/{$realif}_routerv6"), " \n");
-              $dynamic = true;
-          }
-          if (file_exists("/tmp/{$realif}_defaultgwv6")) {
-              $dynamic = 'default';
-          }
+    if (!is_ipaddrv6($gw) && !$static) {
+        /* fallback for dynamic interfaces without an explicit gateway */
+        $realif = get_real_interface($wanif, 'inet6');
+        if (file_exists("/tmp/{$realif}_routerv6")) {
+            $gw = trim(@file_get_contents("/tmp/{$realif}_routerv6"));
+            $dynamic = true;
+        }
+        if (file_exists("/tmp/{$realif}_defaultgwv6")) {
+            $dynamic = 'default';
+        }
     }
 
     return $gw;
