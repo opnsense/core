@@ -299,7 +299,7 @@ while : ; do
 		# hooray, we're done!
 		break
 	else
-		echo "No previous configuration was found."
+		echo "The file /conf/config.xml could not be found."
 
 		if [ -n "${DO_DEV}" ]; then
 			bootstrap_and_exit 1
