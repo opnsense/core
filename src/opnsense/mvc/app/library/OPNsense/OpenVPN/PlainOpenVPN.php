@@ -30,11 +30,22 @@ namespace OPNsense\OpenVPN;
 
 class PlainOpenVPN extends BaseExporter implements IExportProvider
 {
+    /**
+     * @var string file extension
+     */
+    protected $fileExtension = "ovpn";
+
+    /**
+     * @return string plugin name
+     */
     public function getName()
     {
         return gettext("File Only");
     }
 
+    /**
+     * @return array supported options
+     */
     public function supportedOptions()
     {
         return array("plain_config");
@@ -54,7 +65,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
         if (!empty($this->config['client_cn'])) {
             $result[] = $this->config['client_cn'];
         }
-        return implode("_", $result) . ".ovpn";
+        return implode("_", $result) . ".". $this->fileExtension;
     }
 
     /**
@@ -79,11 +90,10 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
         }
         $conf[] = "persist-tun";
         $conf[] = "persist-key";
-        if (strncasecmp($this->config['protocol'], "tcp", 3)) {
-            $conf[] = "{$this->config['protocol']}-client";
-        } else {
-            $conf[] =  $this->config['protocol'];
+        if (strncasecmp($this->config['protocol'], "tcp", 3) === 0) {
+            $conf[] = strtolower("{$this->config['protocol']}-client");
         }
+
         $conf[] = "cipher {$this->config['crypto']}";
         if (!empty($this->config['digest'])) {
             $conf[] = "auth {$this->config['digest']}";
@@ -94,7 +104,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             $conf[] = "reneg-sec {$this->config['reneg-sec']}";
         }
         foreach (explode(",", $this->config['hostname']) as $hostname) {
-            $conf[] = "remote {$hostname}";
+            $conf[] = "remote {$hostname} {$this->config['local_port']} {$this->config['protocol']}";
         }
         if (!empty($this->config['random_local_port'])) {
             $conf[] = "lport 0";
@@ -103,7 +113,11 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
         if ($this->config['mode'] !== 'server_user' && !empty($this->config['server_cn'])
                 && !empty($this->config['validate_server_cn'])) {
             $conf[] = "verify-x509-name \"{$this->config['server_cn']}\" name";
-        } elseif (in_array($this->config['mode'], array('server_user', 'server_tls_user'))) {
+            if (!empty($this->config['server_cert_is_srv'])) {
+                $conf[] = "remote-cert-tls server";
+            }
+        }
+        if (in_array($this->config['mode'], array('server_user', 'server_tls_user'))) {
             $conf[] = "auth-user-pass";
         }
 
@@ -125,6 +139,13 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
     protected function openvpnInlineFiles()
     {
         $conf = array();
+        if (!empty($this->config['server_ca_chain'])) {
+            $conf[] = "<ca>";
+            foreach ($this->config['server_ca_chain'] as $ca) {
+                $conf = array_merge($conf, explode("\n", trim($ca)));
+            }
+            $conf[] = "</ca>";
+        }
         if ($this->config['mode'] !== "server_user") {
             $conf[] = "<cert>";
             $conf = array_merge($conf, explode("\n", trim($this->config['client_crt'])));
@@ -138,6 +159,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             $conf[] = "<tls-auth>";
             $conf = array_merge($conf, explode("\n", trim(base64_decode($this->config['tls']))));
             $conf[] = "</tls-auth>";
+            $conf[] = "key-direction 1";
         }
 
         return $conf;
