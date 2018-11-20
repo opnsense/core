@@ -279,7 +279,7 @@ if (!isset($_GET['act'])) {
                       foreach ($acl_networks as $item_idx => $item):?>
                         <tr>
                           <td>
-                            <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
+                            <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs"><i class="fa fa-minus fa-fw"></i></div>
                           </td>
                           <td>
                             <input name="acl_networks_acl_network[]" type="text" id="acl_network_<?=$item_idx;?>" value="<?=$item['acl_network'];?>" />
@@ -305,7 +305,7 @@ if (!isset($_GET['act'])) {
                       <tfoot>
                         <tr>
                           <td colspan="4">
-                            <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><i class="fa fa-plus fa-fw"></i></div>
+                            <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></div>
                           </td>
                         </tr>
                       </tfoot>
@@ -342,7 +342,7 @@ if (!isset($_GET['act'])) {
                     <th><?=gettext("Network"); ?></th>
                   </tr>
                 </thead>
-                <body>
+                <tbody>
 <?php foreach (unbound_acls_subnets() as $subnet): ?>
                   <tr>
                     <td><?= gettext('Internal') ?></td>

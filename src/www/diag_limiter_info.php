@@ -68,7 +68,7 @@ include("head.inc");
       });
   }
   function activitycallback(transport) {
-    jQuery('#limiteractivitydiv').html('<font face="Courier" size="2"><pre style="text-align:left;">' + transport.responseText  + '<\/pre><\/font>');
+    jQuery('#limiteractivitydiv').html('<pre class="text-left">' + transport.responseText  + '</pre>');
     setTimeout('getlimiteractivity()', 2000);
   }
   setTimeout('getlimiteractivity()', 1000);

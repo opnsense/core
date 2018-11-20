@@ -73,9 +73,9 @@ legacy_html_escape_form_data($spd);
                 <tr>
                   <td colspan="2"></td>
                   <td colspan="3">
-                    <span class="fa fa-arrow-right fa-fw" aria-hidden="true" alt="in"></span>
+                    <span class="fa fa-arrow-right fa-fw" aria-hidden="true"></span>
                     <?= gettext("incoming (as seen by firewall)"); ?> <br/>
-                    <span class="fa fa-arrow-left fa-fw" aria-hidden="true" alt="out"></span>
+                    <span class="fa fa-arrow-left fa-fw" aria-hidden="true"></span>
                     <?= gettext("outgoing (as seen by firewall)"); ?>
                   </td>
                 </tr>
