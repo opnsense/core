@@ -180,7 +180,7 @@ function ipsec_interfaces()
     return $interfaces;
 }
 
-function ipsec_firewall($fw)
+function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
 {
     global $config;
 
@@ -426,6 +426,7 @@ function ipsec_dump_spd()
     $fd = @popen("/sbin/setkey -DP", "r");
     $spd = array();
     if ($fd) {
+        $i = 0;
         while (!feof($fd)) {
             $line = chop(fgets($fd));
             if (!$line) {
@@ -480,6 +481,8 @@ function ipsec_dump_sad()
     $fd = @popen("/sbin/setkey -D", "r");
     $sad = array();
     if ($fd) {
+        $cursa = null;
+        $i = 0;
         while (!feof($fd)) {
             $line = chop(fgets($fd));
             if (!$line || $line[0] == " ") {
@@ -570,6 +573,7 @@ function ipsec_resolve($hostname)
 function ipsec_find_id(&$ph1ent, $side = 'local')
 {
     $id_data = null;
+    $id_type = null;
     if ($side == "local") {
         $id_type = $ph1ent['myid_type'];
         $id_data = isset($ph1ent['myid_data']) ? $ph1ent['myid_data'] : null;
@@ -602,62 +606,62 @@ function ipsec_find_id(&$ph1ent, $side = 'local')
 /* include all configuration functions */
 function ipsec_convert_to_modp($index)
 {
-    $convertion = "";
+    $conversion = "";
     switch ($index) {
         case '1':
-            $convertion = "modp768";
+            $conversion = "modp768";
             break;
         case '2':
-            $convertion = "modp1024";
+            $conversion = "modp1024";
             break;
         case '5':
-            $convertion = "modp1536";
+            $conversion = "modp1536";
             break;
         case '14':
-            $convertion = "modp2048";
+            $conversion = "modp2048";
             break;
         case '15':
-            $convertion = "modp3072";
+            $conversion = "modp3072";
             break;
         case '16':
-            $convertion = "modp4096";
+            $conversion = "modp4096";
             break;
         case '17':
-            $convertion = "modp6144";
+            $conversion = "modp6144";
             break;
         case '18':
-            $convertion = "modp8192";
+            $conversion = "modp8192";
             break;
         case '19':
-            $convertion = "ecp256";
+            $conversion = "ecp256";
             break;
         case '20':
-            $convertion = "ecp384";
+            $conversion = "ecp384";
             break;
         case '21':
-            $convertion = "ecp521";
+            $conversion = "ecp521";
             break;
         case '22':
-            $convertion = "modp1024s160";
+            $conversion = "modp1024s160";
             break;
         case '23':
-            $convertion = "modp2048s224";
+            $conversion = "modp2048s224";
             break;
         case '24':
-            $convertion = "modp2048s256";
+            $conversion = "modp2048s256";
             break;
         case '28':
-            $convertion = "ecp256bp";
+            $conversion = "ecp256bp";
             break;
         case '29':
-            $convertion = "ecp384bp";
+            $conversion = "ecp384bp";
             break;
         case '30':
-            $convertion = "ecp512bp";
+            $conversion = "ecp512bp";
             break;
     }
 
-    return $convertion;
+    return $conversion;
 }
 
 /**
@@ -672,6 +676,7 @@ function ipsec_configure_spd()
     // cleanup, collect previous manual added spd entries (stash in spd_entries) for removal.
     exec('/sbin/setkey -PD', $lines);
     $line_count = 0;
+    $src = $dst = $direction = '';
     foreach ($lines as $line) {
         if ($line[0] != "\t") {
             $tmp = explode(' ', $line);
@@ -751,7 +756,6 @@ function ipsec_configure_do($verbose = false, $interface = '')
         set_single_sysctl("net.key.preferred_oldsa", "0");
     }
 
-    $syscfg = $config['system'];
     $ipseccfg = $config['ipsec'];
     $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : array();
     $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : array();
@@ -794,7 +798,6 @@ function ipsec_configure_do($verbose = false, $interface = '')
         }
 
         /* resolve all local, peer addresses and setup pings */
-        $rgmap = array();
         $ipsecpinghosts = "";
 
         /* step through each phase1 entry */
@@ -806,8 +809,6 @@ function ipsec_configure_do($verbose = false, $interface = '')
             if ($ph1ent['mode'] == "aggressive" && in_array($ph1ent['authentication_method'], array("pre_shared_key", "xauth_psk_server"))) {
                 $aggressive_psk = true;
             }
-            $ep = ipsec_get_phase1_src($ph1ent);
-
             if (isset($ph1ent['mobile'])) {
                 continue;
             }
@@ -1140,10 +1141,12 @@ function ipsec_configure_do($verbose = false, $interface = '')
             }
 
             foreach ($a_phase1 as $ph1ent) {
+                $tunneltype = "";
+                $mobike = "";
+
                 if (isset($ph1ent['disabled'])) {
                     continue;
                 }
-                $conn_params = "";
                 $aggressive = $ph1ent['mode'] == "aggressive" ? "yes" : "no";
 
                 $ep = ipsec_get_phase1_src($ph1ent);
@@ -1314,16 +1317,12 @@ function ipsec_configure_do($verbose = false, $interface = '')
 
                         if (($ph2ent['mode'] == 'tunnel') || ($ph2ent['mode'] == 'tunnel6')) {
                             $tunneltype = "type = tunnel";
-                            $localid_type = $ph2ent['localid']['type'];
                             $leftsubnet_data = ipsec_idinfo_to_cidr($ph2ent['localid'], false, $ph2ent['mode']);
                             /* Do not print localid in some cases, such as a pure-psk or psk/xauth single phase2 mobile tunnel */
-                            if (($localid_type == "none" || $localid_type == "mobile")
+                            if (($ph2ent['localid']['type'] == "none" || $ph2ent['localid']['type'] == "mobile")
                                 && isset($ph1ent['mobile']) && (ipsec_get_number_of_phase2($ph1ent['ikeid'])==1)) {
                                 $left_spec = '%any';
                             } else {
-                                if ($localid_type != "address") {
-                                    $localid_type = "subnet";
-                                }
                                 // Don't let an empty subnet into config, it can cause parse errors. Ticket #2201.
                                 if (!is_ipaddr($leftsubnet_data) && !is_subnet($leftsubnet_data) && ($leftsubnet_data != "0.0.0.0/0")) {
                                     log_error("Invalid IPsec Phase 2 \"{$ph2ent['descr']}\" - {$ph2ent['localid']['type']} has no subnet.");
