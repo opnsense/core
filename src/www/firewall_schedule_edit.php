@@ -346,8 +346,8 @@ function update_month(){
   var indexNum = document.iform.monthsel.selectedIndex;
   var selected = document.iform.monthsel.options[indexNum].text;
 
-  for (let i=0; i<=11; i++){
-    let option = document.iform.monthsel.options[i].text;
+  for (let month = 0; month < 12; month++){
+    let option = document.iform.monthsel.options[month].text;
     document.popupMonthLayer = document.getElementById(option);
 
     if(selected == option) {
@@ -677,12 +677,12 @@ function clearCalendar(){
   var tempstr, daycell = "";
   //clear days selected
   daysSelected = "";
-  //loop through all 52 weeks
-  for (let j=1; j<=53; j++)
+  //loop through all 53 weeks
+  for (let week=1; week<=53; week++)
   {
     //loop through all 7 days
-    for (let k=1; k<8; k++){
-      tempstr = 'w' + j + 'p' + k;
+    for (let day = 1; day <= 7; day++){
+      tempstr = 'w' + week + 'p' + day;
       daycell = document.getElementById(tempstr);
       if (daycell != null){
         daycell.dataset['state'] = "white";
