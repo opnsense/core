@@ -44,8 +44,7 @@ POSSIBILITY OF SUCH DAMAGE.
             } else {
                 resolve = "";
             }
-            ajaxGet(url = "/api/diagnostics/interface/getRoutes/",
-                    sendData = {resolve:resolve}, callback = function (data, status) {
+            ajaxGet("/api/diagnostics/interface/getRoutes/", {resolve:resolve}, function (data, status) {
                         if (status == "success") {
                             $("#grid-routes").bootgrid('destroy');
                             var html = [];

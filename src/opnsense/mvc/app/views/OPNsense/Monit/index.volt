@@ -32,7 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
        * get the isSubsystemDirty value and print a notice
        */
       function isSubsystemDirty() {
-         ajaxGet(url="/api/monit/settings/dirty", sendData={}, callback=function(data,status) {
+         ajaxGet("/api/monit/settings/dirty", {}, function(data,status) {
             if (status == "success") {
                if (data.monit.dirty === true) {
                   $("#configChangedMsg").removeClass("hidden");
@@ -58,7 +58,7 @@ POSSIBILITY OF SUCH DAMAGE.
        */
       $('#btnApplyConfig').unbind('click').click(function(){
          $('#btnApplyConfigProgress').addClass("fa fa-spinner fa-pulse");
-         ajaxCall(url="/api/monit/service/reconfigure", sendData={}, callback=function(data,status) {
+         ajaxCall("/api/monit/service/reconfigure", {}, function(data,status) {
             $("#responseMsg").addClass("hidden");
             isSubsystemDirty();
             updateServiceControlUI('monit');
@@ -82,7 +82,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
       $('#btnImportSystemNotification').unbind('click').click(function(){
           $('#btnImportSystemNotificationProgress').addClass("fa fa-spinner fa-pulse");
-          ajaxCall(url="/api/monit/settings/notification", sendData={}, callback=function(data,status) {
+          ajaxCall("/api/monit/settings/notification", {}, function(data,status) {
              $("#responseMsg").addClass("hidden");
              isSubsystemDirty();
              updateServiceControlUI('monit');
@@ -92,7 +92,7 @@ POSSIBILITY OF SUCH DAMAGE.
             }
              $('#btnImportSystemNotificationProgress').removeClass("fa fa-spinner fa-pulse");
              $('#btnImportSystemNotification').blur();
-             ajaxCall(url="/api/monit/service/status", sendData={}, callback=function(data,status) {
+             ajaxCall("/api/monit/service/status", {}, function(data,status) {
                 mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/get/general/"}).done(function(){
                     formatTokenizersUI();
                     $('.selectpicker').selectpicker('refresh');
@@ -150,7 +150,7 @@ POSSIBILITY OF SUCH DAMAGE.
       $('#btnSaveGeneral').unbind('click').click(function(){
          $("#btnSaveGeneralProgress").addClass("fa fa-spinner fa-pulse");
          var frm_id = 'frm_GeneralSettings';
-         saveFormToEndpoint(url = "/api/monit/settings/set/general/",formid=frm_id,callback_ok=function(){
+         saveFormToEndpoint("/api/monit/settings/set/general/", frm_id, function(){
             isSubsystemDirty();
             updateServiceControlUI('monit');
          });

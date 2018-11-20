@@ -42,7 +42,7 @@ POSSIBILITY OF SUCH DAMAGE.
             // read last digest (record hash) from top data row
             var last_digest = $("#grid-log > tbody > tr:first > td:first").text();
             // fetch new log lines and add on top of grid-log
-            ajaxGet(url='/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': $("#limit").val()}, callback=function(data, status) {
+            ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': $("#limit").val()}, function(data, status) {
                 if (data != undefined && data.length > 0) {
                     while ((record=data.pop()) != null) {
                         if (record['__digest__'] != last_digest) {
@@ -166,7 +166,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                $(this).unbind('click');
                                $(".act_info_fld_src, .act_info_fld_dst").each(function(){
                                   var target_field = $(this);
-                                  ajaxGet(url='/api/diagnostics/dns/reverse_lookup', {'address': target_field.text()}, callback=function(data, status) {
+                                  ajaxGet('/api/diagnostics/dns/reverse_lookup', {'address': target_field.text()}, function(data, status) {
                                       if (data[target_field.text()] != undefined) {
                                           var resolv_output = data[target_field.text()];
                                           if (target_field.text() != resolv_output) {
@@ -220,7 +220,7 @@ POSSIBILITY OF SUCH DAMAGE.
         }
 
         // fetch interface mappings on load
-        ajaxGet(url='/api/diagnostics/interface/getInterfaceNames', {}, callback=function(data, status) {
+        ajaxGet('/api/diagnostics/interface/getInterfaceNames', {}, function(data, status) {
             interface_descriptions = data;
         });
 

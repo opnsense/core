@@ -66,7 +66,7 @@ POSSIBILITY OF SUCH DAMAGE.
       function get_metadata()
       {
           var dfObj = new $.Deferred();
-          ajaxGet('/api/diagnostics/netflow/isEnabled',{}, function(is_enabled, status){
+          ajaxGet('/api/diagnostics/netflow/isEnabled', {}, function(is_enabled, status){
               if (is_enabled['local'] == 0) {
                   dfObj.reject();
                   return;
@@ -388,7 +388,7 @@ POSSIBILITY OF SUCH DAMAGE.
                   // use full width when names are resolved
                   $("#chart_top_sources,#chart_top_ports").parent().removeClass('col-sm-6');
                   $("#chart_top_sources,#chart_top_ports").parent().addClass('col-sm-12');
-                  ajaxGet(url='/api/diagnostics/dns/reverse_lookup', {'address': addresses}, callback=function(lookup_data, status) {
+                  ajaxGet('/api/diagnostics/dns/reverse_lookup', {'address': addresses}, function(lookup_data, status) {
                       data.map(function(item){
                           if (lookup_data[item.src_addr] != undefined) {
                               item.src_addr = lookup_data[item.src_addr];

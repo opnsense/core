@@ -54,13 +54,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
             // define save action
             $("#btn_"+editDlg+"_save").unbind('click').click(function(){
-                saveFormToEndpoint(url=setUrl+uuid,
-                        formid='frm_' + editDlg, callback_ok=function(){
-                            // do reconfigure of cron after save (because we're leaving back to the sender)
-                            ajaxCall(url="/api/cron/service/reconfigure", sendData={}, callback=function(data,status) {
-                                $("#"+editDlg).modal('hide');
-                            });
-                        }, true);
+                saveFormToEndpoint(setUrl+uuid, 'frm_' + editDlg, function(){
+                    // do reconfigure of cron after save (because we're leaving back to the sender)
+                    ajaxCall("/api/cron/service/reconfigure", {}, function(data,status) {
+                        $("#"+editDlg).modal('hide');
+                    });
+                }, true);
             });
 
         }
@@ -79,7 +78,7 @@ POSSIBILITY OF SUCH DAMAGE.
         );
 
         {% if (selected_uuid|default("") != "") %}
-            openDialog(uuid='{{selected_uuid}}');
+            openDialog('{{selected_uuid}}');
         {% endif %}
 
         /*************************************************************************************************************
@@ -92,7 +91,7 @@ POSSIBILITY OF SUCH DAMAGE.
          */
         $("#reconfigureAct").click(function(){
             $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall(url="/api/cron/service/reconfigure", sendData={}, callback=function(data,status) {
+            ajaxCall("/api/cron/service/reconfigure", {}, function(data,status) {
                 // when done, disable progress animation.
                 $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
 

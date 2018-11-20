@@ -51,7 +51,7 @@
         $.upgrade_major_version = '';
 
         // request status
-        ajaxGet('/api/core/firmware/status',{},function(data,status){
+        ajaxGet('/api/core/firmware/status', {}, function(data,status){
             $("#checkupdate_progress").removeClass("fa fa-spinner fa-pulse");
             $('#updatestatus').html(data['status_msg']);
 
@@ -133,7 +133,7 @@
         $("#upgrade" + maj_suffix).attr("style","");
         $("#upgrade_progress" + maj_suffix).addClass("fa fa-spinner fa-pulse");
 
-        ajaxCall('/api/core/firmware/upgrade',{upgrade:$.upgrade_action},function() {
+        ajaxCall('/api/core/firmware/upgrade', {upgrade:$.upgrade_action}, function() {
             $('#updatelist > tbody, #updatelist > thead').empty();
             setTimeout(trackStatus, 500);
         });
@@ -252,7 +252,7 @@
         $('#updatestatus').html("{{ lang._('Executing, please wait...') }}");
         $.upgrade_action = 'action';
 
-        ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name,{},function() {
+        ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name, {}, function() {
             $('#updatelist > tbody, #updatelist > thead').empty();
             setTimeout(trackStatus, 500);
         });
@@ -307,7 +307,7 @@
      * handle check/audit/upgrade status
      */
     function trackStatus() {
-        ajaxGet('/api/core/firmware/upgradestatus',{},function(data, status) {
+        ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
             if (data['log'] != undefined) {
                 $('#update_status').html(data['log']);
                 $('#update_status').scrollTop($('#update_status')[0].scrollHeight);
@@ -591,7 +591,7 @@
         // populate package information
         packagesInfo(true);
 
-        ajaxGet('/api/core/firmware/running',{},function(data, status) {
+        ajaxGet('/api/core/firmware/running', {}, function(data, status) {
             // if action is already running reattach now...
             if (data['status'] == 'busy') {
                 upgrade();
@@ -604,8 +604,8 @@
         });
 
         // handle firmware config options
-        ajaxGet('/api/core/firmware/getFirmwareOptions',{},function(firmwareoptions, status) {
-            ajaxGet('/api/core/firmware/getFirmwareConfig',{},function(firmwareconfig, status) {
+        ajaxGet('/api/core/firmware/getFirmwareOptions', {}, function(firmwareoptions, status) {
+            ajaxGet('/api/core/firmware/getFirmwareConfig', {}, function(firmwareconfig, status) {
                 var other_selected = true;
                 $.each(firmwareoptions.mirrors, function(key, value) {
                     var selected = false;
@@ -711,7 +711,7 @@
             } else {
                 confopt.subscription = null;
             }
-            ajaxCall(url='/api/core/firmware/setFirmwareConfig',sendData=confopt, callback=function(data,status) {
+            ajaxCall('/api/core/firmware/setFirmwareConfig', confopt, function(data,status) {
                 $("#change_mirror_progress").removeClass("fa fa-spinner fa-pulse");
             });
         });

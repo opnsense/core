@@ -176,7 +176,7 @@
     }
 
     function getRRDlist() {
-        ajaxGet(url = "/api/diagnostics/systemhealth/getRRDlist/", sendData = {}, callback = function (data, status) {
+        ajaxGet("/api/diagnostics/systemhealth/getRRDlist/", {}, function (data, status) {
             if (status == "success") {
                 var category;
                 var tabs="";
@@ -221,7 +221,7 @@
                 $('#maintabs').html(tabs);
                 $('#tab_1').toggleClass('active');
                 // map interface descriptions
-                ajaxGet(url = "/api/diagnostics/systemhealth/getInterfaces" , sendData = {}, callback = function (data, status) {
+                ajaxGet("/api/diagnostics/systemhealth/getInterfaces" , {}, function (data, status) {
                     $(".rrd-item").each(function(){
                         var rrd_item = $(this);
                         var rrd_item_name = $(this).attr('id').split('-')[0].toLowerCase();
@@ -303,7 +303,7 @@
         // info bar - show loading info bar while refreshing data
         $('#loading').show();
         // API call to request data
-        ajaxGet(url = "/api/diagnostics/systemhealth/getSystemHealth/" + rrd_name + "/" + String(from) + "/" + String(to) + "/" + String(maxitems) + "/" + String(inverse) + "/" + String(detail), sendData = {}, callback = function (data, status) {
+        ajaxGet("/api/diagnostics/systemhealth/getSystemHealth/" + rrd_name + "/" + String(from) + "/" + String(to) + "/" + String(maxitems) + "/" + String(inverse) + "/" + String(detail), {}, function (data, status) {
             if (status == "success") {
                 var stepsize = data["d3"]["stepSize"];
                 var scale = "{{ lang._('seconds') }}";

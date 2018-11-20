@@ -38,8 +38,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 multiSelect: false
             };
             $("#grid-ndp").bootgrid('destroy');
-            ajaxGet(url = "/api/diagnostics/interface/getNdp",
-                    sendData = {}, callback = function (data, status) {
+            ajaxGet("/api/diagnostics/interface/getNdp", {}, function (data, status) {
                         if (status == "success") {
                             var html = [];
                             $.each(data, function (key, value) {

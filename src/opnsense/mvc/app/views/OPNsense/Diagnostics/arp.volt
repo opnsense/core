@@ -38,8 +38,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 multiSelect: false
             };
             $("#grid-arp").bootgrid('destroy');
-            ajaxGet(url = "/api/diagnostics/interface/getArp",
-                    sendData = {}, callback = function (data, status) {
+            ajaxGet("/api/diagnostics/interface/getArp", {}, function (data, status) {
                         if (status == "success") {
                             var html = [];
                             $.each(data, function (key, value) {
@@ -74,8 +73,7 @@ POSSIBILITY OF SUCH DAMAGE.
                       }}, {
                       label: "<?= gettext("Flush ARP Table");?>",
                       action: function(dialogRef) {
-                        ajaxCall(url = "/api/diagnostics/interface/flushArp",
-                            sendData = {}, callback = function (data, status) {
+                        ajaxCall("/api/diagnostics/interface/flushArp", {}, function (data, status) {
                             $("#refresh").click();
                         });
                     }

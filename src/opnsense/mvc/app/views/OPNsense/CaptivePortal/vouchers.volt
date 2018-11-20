@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
          * update zone list
          */
         function updateVoucherProviders() {
-            ajaxGet(url="/api/captiveportal/voucher/listProviders/", sendData={}, callback=function(data, status) {
+            ajaxGet("/api/captiveportal/voucher/listProviders/", {}, function(data, status) {
                 if (status == "success") {
                     $('#voucher-providers').html("");
                     $.each(data, function(key, value) {
@@ -60,7 +60,7 @@ POSSIBILITY OF SUCH DAMAGE.
          */
         function updateVoucherGroupList() {
             var voucher_provider = $('#voucher-providers').find("option:selected").val();
-            ajaxGet(url="/api/captiveportal/voucher/listVoucherGroups/" + voucher_provider + "/", sendData={}, callback=function(data, status) {
+            ajaxGet("/api/captiveportal/voucher/listVoucherGroups/" + voucher_provider + "/", {}, function(data, status) {
                 if (status == "success") {
                     $('#voucher-groups').html("");
                     $.each(data, function(key, value) {
@@ -105,26 +105,26 @@ POSSIBILITY OF SUCH DAMAGE.
                 }
             };
             $("#grid-vouchers").bootgrid('destroy');
-            ajaxGet(url = "/api/captiveportal/voucher/listVouchers/" + voucher_provider + "/" + voucher_group + "/",
-                    sendData = {}, callback = function (data, status) {
-                        if (status == "success") {
-                            $("#grid-vouchers > tbody > tr").remove();
-                            $.each(data, function (key, value) {
-                                var fields = ["username", "starttime", "endtime", "expirytime", "state"];
-                                tr_str = '<tr>';
-                                for (var i = 0; i < fields.length; i++) {
-                                    if (value[fields[i]] != null) {
-                                        tr_str += '<td>' + value[fields[i]] + '</td>';
-                                    } else {
-                                        tr_str += '<td></td>';
-                                    }
+            ajaxGet("/api/captiveportal/voucher/listVouchers/" + voucher_provider + "/" + voucher_group + "/", {},
+                function (data, status) {
+                    if (status == "success") {
+                        $("#grid-vouchers > tbody > tr").remove();
+                        $.each(data, function (key, value) {
+                            var fields = ["username", "starttime", "endtime", "expirytime", "state"];
+                            tr_str = '<tr>';
+                            for (var i = 0; i < fields.length; i++) {
+                                if (value[fields[i]] != null) {
+                                    tr_str += '<td>' + value[fields[i]] + '</td>';
+                                } else {
+                                    tr_str += '<td></td>';
                                 }
-                                tr_str += '</tr>';
-                                $("#grid-vouchers > tbody").append(tr_str);
-                            });
-                        }
-                        $("#grid-vouchers").bootgrid(gridopt);
+                            }
+                            tr_str += '</tr>';
+                            $("#grid-vouchers > tbody").append(tr_str);
+                        });
                     }
+                    $("#grid-vouchers").bootgrid(gridopt);
+                }
             );
         }
 
@@ -144,11 +144,12 @@ POSSIBILITY OF SUCH DAMAGE.
                         label: '{{ lang._('Yes') }}',
                         cssClass: 'btn-primary',
                         action: function(dlg){
-                            ajaxCall(url="/api/captiveportal/voucher/dropVoucherGroup/" + voucher_provider + "/" + voucher_group + '/',
-                                    sendData={}, callback=function(data,status){
-                                        // reload grid after delete
-                                        updateVoucherGroupList();
-                                    });
+                            ajaxCall(
+                              "/api/captiveportal/voucher/dropVoucherGroup/" + voucher_provider + "/" + voucher_group + '/',
+                              {}, function(data,status){
+                                  // reload grid after delete
+                                  updateVoucherGroupList();
+                            });
                             dlg.close();
                         }
                     }, {
@@ -189,13 +190,12 @@ POSSIBILITY OF SUCH DAMAGE.
                 $('#generatevouchererror').show();
                 return;
             }
-            ajaxCall(url="/api/captiveportal/voucher/generateVouchers/" + voucher_provider + "/",
-                    sendData={
+            ajaxCall("/api/captiveportal/voucher/generateVouchers/" + voucher_provider + "/", {
                         'count':voucher_quantity,
                         'validity':voucher_validity,
                         'expirytime':voucher_expirytime,
                         'vouchergroup':voucher_groupname
-                    }, callback=function(data,status){
+                    }, function(data, status){
                         // convert json to csv data
                         var output_data = 'username,password,vouchergroup,expirytime,validity\n';
                         $.each(data, function( key, value ) {
@@ -250,8 +250,8 @@ POSSIBILITY OF SUCH DAMAGE.
                         label: '{{ lang._('Yes') }}',
                         cssClass: 'btn-primary',
                         action: function(dlg){
-                            ajaxCall(url="/api/captiveportal/voucher/dropExpiredVouchers/" + voucher_provider + "/" + voucher_group + '/',
-                                    sendData={}, callback=function(data,status){
+                            ajaxCall("/api/captiveportal/voucher/dropExpiredVouchers/" + voucher_provider + "/" + voucher_group + '/',
+                                    {}, function(data,status){
                                         // reload grid after delete
                                         updateVoucherGroupList();
                                     });
@@ -285,8 +285,10 @@ POSSIBILITY OF SUCH DAMAGE.
                         if (rows != undefined) {
                             var deferreds = [];
                             $.each(rows, function (key, username) {
-                                deferreds.push(ajaxCall(url="/api/captiveportal/voucher/expireVoucher/" + voucher_provider + "/",
-                                        sendData={username:username}, null));
+                                deferreds.push(
+                                  ajaxCall("/api/captiveportal/voucher/expireVoucher/" + voucher_provider + "/",
+                                      {username:username}, null
+                                  ));
                             });
                             $.when.apply(null, deferreds).done(function(){
                                 updateVoucherGroupList();

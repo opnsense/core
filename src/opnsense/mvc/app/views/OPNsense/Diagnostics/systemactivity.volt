@@ -40,8 +40,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 multiSelect: true
             };
             $("#grid-top").bootgrid('destroy');
-            ajaxGet(url = "/api/diagnostics/activity/getActivity",
-                    sendData = {}, callback = function (data, status) {
+            ajaxGet("/api/diagnostics/activity/getActivity", {}, function (data, status) {
                         if (status == "success") {
                             $("#grid-top > tbody").html('');
                             $.each(data['details'], function (key, value) {

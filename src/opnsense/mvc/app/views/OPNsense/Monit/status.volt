@@ -27,15 +27,15 @@ POSSIBILITY OF SUCH DAMAGE.
 #}
 <script>
 
-   $( document ).ready(function() {
+    $( document ).ready(function() {
 
-   function decodeEntities(encodedString) {
-      var textArea = document.createElement('textarea');
-      textArea.innerHTML = encodedString;
-      return textArea.value;
-   }
-   ajaxCall(url="/api/monit/status/get/html", sendData={}, callback=function(data,status) {
+        function decodeEntities(encodedString) {
+            var textArea = document.createElement('textarea');
+            textArea.innerHTML = encodedString;
+            return textArea.value;
+        }
+        ajaxCall("/api/monit/status/get/html", {}, function(data,status) {
             $("#messageregion").html(decodeEntities(data['status']));
-         });
+        });
     });
 </script>

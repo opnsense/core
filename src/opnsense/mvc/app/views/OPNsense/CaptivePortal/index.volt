@@ -82,11 +82,10 @@ POSSIBILITY OF SUCH DAMAGE.
                 stdDialogConfirm('{{ lang._('Confirm removal') }}',
                     '{{ lang._('Do you want to remove the selected item?') }}',
                     '{{ lang._('Yes') }}', '{{ lang._('Cancel') }}', function () {
-                    ajaxCall(url="/api/captiveportal/service/delTemplate/" + uuid,
-                            sendData={},callback=function(data,status){
-                                // reload grid after delete
-                                $("#grid-templates").bootgrid("reload");
-                            });
+                    ajaxCall("/api/captiveportal/service/delTemplate/" + uuid, {},function(data,status){
+                        // reload grid after delete
+                        $("#grid-templates").bootgrid("reload");
+                    });
                 });
             });
             grid_templates.find(".command-download").on("click", function(e) {
@@ -122,7 +121,7 @@ POSSIBILITY OF SUCH DAMAGE.
          */
         $("#reconfigureAct").click(function(){
             $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall(url="/api/captiveportal/service/reconfigure", sendData={}, callback=function(data,status) {
+            ajaxCall("/api/captiveportal/service/reconfigure", {}, function(data,status) {
                 // when done, disable progress animation.
                 $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
 
@@ -157,7 +156,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 requestData['uuid'] = $("#templateUUID").val();
             }
             // save file content to server
-            ajaxCall(url="/api/captiveportal/service/saveTemplate", sendData=requestData, callback=function(data,status) {
+            ajaxCall("/api/captiveportal/service/saveTemplate", requestData, function(data,status) {
                 if (data['error'] == undefined) {
                     // saved, flush form data and hide modal
                     $("#grid-templates").bootgrid("reload");
