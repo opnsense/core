@@ -341,7 +341,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * Model setter wrapper, sets the contents of an array item using this requests post variable and path settings
      * @param string $post_field root key to retrieve item content from
      * @param string $path relative model path
-     * @param $uuid node key
+     * @param string $uuid node key
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails

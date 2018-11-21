@@ -123,7 +123,7 @@ class ExportController extends ApiControllerBase
 
     /**
      * Determine configured settings for selected server
-     * @param $vpnid server handle
+     * @param string $vpnid server handle
      * @return array
      * @throws \OPNsense\Base\ModelException when unable to create model
      */

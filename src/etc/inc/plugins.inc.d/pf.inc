@@ -109,6 +109,7 @@ function pf_interfaces()
 
 /**
  * options we should probably remove from the system at some point, lets make them plugabble before removal
+ * @param $fw
  */
 function pf_firewall($fw)
 {

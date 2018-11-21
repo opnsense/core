@@ -39,7 +39,7 @@ class VoucherController extends ApiControllerBase
 {
     /**
      * list voucher providers (authenticators of type "voucher")
-     * @return list of auth providers
+     * @return array list of auth providers
      */
     public function listProvidersAction()
     {
@@ -56,7 +56,7 @@ class VoucherController extends ApiControllerBase
     /**
      * list voucher groups
      * @param string $provider name of authentication provider
-     * @return list of registered vouchers
+     * @return array list of registered vouchers
      */
     public function listVoucherGroupsAction($provider)
     {

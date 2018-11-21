@@ -122,7 +122,7 @@ class Drive
      * @param string $filename
      * @param string $content
      * @param string $mimetype
-     * @return handle
+     * @return \Google_Service_Drive_DriveFile handle
      */
     public function upload($directoryId, $filename, $content, $mimetype = 'text/plain')
     {

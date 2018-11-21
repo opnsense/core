@@ -37,6 +37,8 @@ abstract class BaseConstraint extends Validator implements ValidatorInterface
 
     /**
      * check if field is empty  (either boolean field as false or an empty field)
+     * @param $node
+     * @return bool
      */
     public function isEmpty($node)
     {

@@ -98,7 +98,8 @@ class IDS extends BaseModel
 
     /**
      * set new action for selected rule
-     * @param string $sid  unique id
+     * @param string $sid unique id
+     * @param $action
      */
     public function setAction($sid, $action)
     {
