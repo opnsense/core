@@ -288,9 +288,9 @@ function return_gateways_status()
             continue;
         }
 
-        $status = '';
+        $dinfo = '';
         while (!feof($fp)) {
-            $status .= fgets($fp, 1024);
+            $dinfo .= fgets($fp, 1024);
         }
 
         fclose($fp);
@@ -298,7 +298,7 @@ function return_gateways_status()
         $r = array();
 
         list($r['gwname'], $r['latency_avg'], $r['latency_stddev'], $r['loss']) =
-            explode(' ', preg_replace('/\n/', '', $status));
+            explode(' ', preg_replace('/\n/', '', $dinfo));
 
         /* not yet ready, act like nothing was returned */
         if ($r['latency_stddev'] == '0' && $r['loss'] == '0') {
