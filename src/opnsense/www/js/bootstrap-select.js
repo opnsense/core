@@ -46,7 +46,7 @@
   // shallow array comparison
   function isEqual (array1, array2) {
     return array1.length === array2.length && array1.every(function(element, index) {
-      return element === array2[index]; 
+      return element === array2[index];
     });
   };
 
@@ -276,7 +276,7 @@
     "'": '&#x27;',
     '`': '&#x60;'
   };
-  
+
   var unescapeMap = {
     '&amp;': '&',
     '&lt;': '<',
@@ -1164,7 +1164,7 @@
             if (prevHiddenIndex !== undefined) {
               // select the element **before** the first hidden element in the group
               var prevHidden = $selectOptions[prevHiddenIndex].previousElementSibling;
-              
+
               if (prevHidden && prevHidden.tagName === 'OPTGROUP' && !prevHidden.disabled) {
                 showDivider = true;
               }
@@ -1242,7 +1242,7 @@
               type: 'optgroup-label',
               optID: optID
             });
-            
+
             headerIndex = liIndex - 1;
           }
 
@@ -1287,7 +1287,7 @@
             if (prevHiddenIndex !== undefined) {
               // select the element **before** the first hidden element in the group
               var prevHidden = $selectOptions[prevHiddenIndex].previousElementSibling;
-              
+
               if (prevHidden && prevHidden.tagName === 'OPTGROUP' && !prevHidden.disabled) {
                 showDivider = true;
               }
@@ -1987,7 +1987,7 @@
     },
 
     tabIndex: function () {
-      if (this.$element.data('tabindex') !== this.$element.attr('tabindex') && 
+      if (this.$element.data('tabindex') !== this.$element.attr('tabindex') &&
         (this.$element.attr('tabindex') !== -98 && this.$element.attr('tabindex') !== '-98')) {
         this.$element.data('tabindex', this.$element.attr('tabindex'));
         this.$button.attr('tabindex', this.$element.data('tabindex'));
@@ -2047,7 +2047,7 @@
           requestAnimationFrame(checkPopperExists);
         } else {
           setFocus();
-        }        
+        }
       });
 
       this.$menuInner.on('click', 'li a', function (e, retainActive) {
@@ -2074,7 +2074,7 @@
               $optgroupOptions = $optgroup.find('option'),
               maxOptions = that.options.maxOptions,
               maxOptionsGrp = $optgroup.data('maxOptions') || false;
-              
+
           if (clickedIndex === that.activeIndex) retainActive = true;
 
           if (!retainActive) {
@@ -2250,7 +2250,7 @@
 
       this.$searchbox.on('input propertychange', function () {
         var searchValue = that.$searchbox.val();
-        
+
         that.selectpicker.search.map.newIndex = {};
         that.selectpicker.search.map.originalIndex = {};
         that.selectpicker.search.elements = [];
@@ -2282,7 +2282,7 @@
 
               cache[li.headerIndex] = true;
               cacheArr.push(li.headerIndex);
-              
+
               cache[li.lastIndex + 1] = true;
             }
 
@@ -2294,7 +2294,7 @@
                 prevIndex = cacheArr[i - 1],
                 li = that.selectpicker.main.data[index],
                 liPrev = that.selectpicker.main.data[prevIndex];
-                
+
             if ( li.type !== 'divider' || ( li.type === 'divider' && liPrev && liPrev.type !== 'divider' && cacheLen - 1 !== i ) ) {
               that.selectpicker.search.data.push(li);
               searchMatch.push(that.selectpicker.main.elements[index]);
@@ -2498,7 +2498,7 @@
           liActive.classList.add('active');
           if (liActive.firstChild) liActive.firstChild.classList.add('active');
         }
-        
+
         that.activeIndex = that.selectpicker.current.map.originalIndex[liActiveIndex];
 
         that.selectpicker.view.currentActive = liActive;
@@ -2572,7 +2572,7 @@
           } else {
             offset = activeLi.position - that.sizeInfo.menuInnerHeight;
             // if the option is already visible at the current scroll position, just keep it the same
-            updateScroll = activeLi.position > scrollTop + that.sizeInfo.menuInnerHeight;         
+            updateScroll = activeLi.position > scrollTop + that.sizeInfo.menuInnerHeight;
           }
 
           liActive = that.selectpicker.current.elements[searchMatch];
