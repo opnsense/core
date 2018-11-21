@@ -169,6 +169,7 @@ function dnsmasq_configure_do($verbose = false)
         }
     }
 
+    $dns_rebind = '';
     if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
         $dns_rebind = "--rebind-localhost-ok --stop-dns-rebind";
     }

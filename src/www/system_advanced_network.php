@@ -44,6 +44,7 @@ function get_mac_address()
 
 function generate_new_duid($duid_type)
 {
+    $new_duid = '';
     switch ($duid_type) {
         case '1': //LLT
             $mac = get_mac_address();
@@ -53,7 +54,7 @@ function generate_new_duid($duid_type)
             $timestamp_array = str_split($timestamp,2);
             $timestamp = implode(":",$timestamp_array);
             $type = "\x00\x01\x00\x01";
-            while ($count < strlen($type)) {
+            for ($count = 0; $count < strlen($type); ) {
                 $new_duid .= bin2hex( $type[$count]);
                 $count++;
                 if ($count < strlen($type)) {
@@ -69,7 +70,7 @@ function generate_new_duid($duid_type)
             $timestamp_array = str_split($timestamp,2);
             $timestamp = implode(":",$timestamp_array);
             $type = "\x00\x03\x00\x01";
-            while ($count < strlen($type)) {
+            for ($count = 0; $count < strlen($type); ) {
                 $new_duid .= bin2hex( $type[$count]);
                 $count++;
                 if ($count < strlen($type)) {
@@ -80,7 +81,7 @@ function generate_new_duid($duid_type)
             break;
         case '3': //UUID
             $type = "\x00\x00\x00\x04".openssl_random_pseudo_bytes(16);
-            while ($count < strlen($type)) {
+            for ($count = 0; $count < strlen($type); ) {
                 $new_duid .= bin2hex( $type[$count]);
                 $count++;
                 if ($count < strlen($type)) {

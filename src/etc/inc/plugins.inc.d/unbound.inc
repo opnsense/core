@@ -252,6 +252,7 @@ EOF;
     }
 
     // Set up forwarding if it configured
+    $forward_conf = '';
     if (isset($config['unbound']['forwarding'])) {
         $dnsservers = array();
         if (isset($config['system']['dnsallowoverride'])) {

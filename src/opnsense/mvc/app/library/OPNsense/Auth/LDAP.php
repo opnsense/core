@@ -402,7 +402,7 @@ class LDAP extends Base implements IAuthConnector
         if ($ldap_is_connected) {
             $this->lastAuthProperties['dn'] = $user_dn;
             if ($this->ldapReadProperties) {
-                $sr = @ldap_read($this->ldapHandle, $userdn, '(objectclass=*)');
+                $sr = @ldap_read($this->ldapHandle, $user_dn, '(objectclass=*)');
                 $info = @ldap_get_entries($this->ldapHandle, $sr);
                 if ($info['count'] != 0) {
                     // $this->lastAuthProperties['info'] = $info[0];

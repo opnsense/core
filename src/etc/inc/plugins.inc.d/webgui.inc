@@ -176,6 +176,7 @@ EOD;
 
     $lighty_port = $port;
 
+    $lighty_use_syslog = '';
     if (!isset($config['syslog']['nologlighttpd'])) {
         $lighty_use_syslog = <<<EOD
 ## where to send error/access-messages to

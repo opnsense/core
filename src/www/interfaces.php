@@ -761,8 +761,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $input_errors[] = gettext('6RD IPv4 prefix length must be a number.');
                 }
                 foreach ($ifdescrs as $ifent => $unused) {
-                    if ($if != $ifent && ($config[interfaces][$ifent]['ipaddrv6'] == $pconfig['type6'])) {
-                        if ($config[interfaces][$ifent]['prefix-6rd'] == $pconfig['prefix-6rd']) {
+                    if ($if != $ifent && ($config['interfaces'][$ifent]['ipaddrv6'] == $pconfig['type6'])) {
+                        if ($config['interfaces'][$ifent]['prefix-6rd'] == $pconfig['prefix-6rd']) {
                             $input_errors[] = gettext("You can only have one interface configured in 6rd with same prefix.");
                             break;
                         }
@@ -771,7 +771,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 break;
             case "6to4":
                 foreach ($ifdescrs as $ifent => $unused) {
-                    if ($if != $ifent && ($config[interfaces][$ifent]['ipaddrv6'] == $pconfig['type6'])) {
+                    if ($if != $ifent && ($config['interfaces'][$ifent]['ipaddrv6'] == $pconfig['type6'])) {
                         $input_errors[] = sprintf(gettext("You can only have one interface configured as 6to4."), $pconfig['type6']);
                         break;
                     }
@@ -1351,9 +1351,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $send_options = array();
                         $send_options = create_OR_FR_Credentials($pconfig['rfc3118_username'], $pconfig['rfc3118_password'], $pconfig['rfc3118_or_fr_lbid']);
                         log_error("send options dhcp4 = {$send_options[1]}");
-                        $new_config[adv_dhcp_send_options] = $pconfig[adv_dhcp_send_options] = $send_options['dhcp4_send_options'];
-                        $new_config[adv_dhcp_request_options] = $pconfig[adv_dhcp_request_options] = $send_options['dhcp4_request_options'];
-                        $new_config[adv_dhcp6_interface_statement_send_options] = $pconfig[adv_dhcp6_interface_statement_send_options] = $send_options['dhcp6_send_options'];
+                        $new_config['adv_dhcp_send_options'] = $pconfig['adv_dhcp_send_options'] = $send_options['dhcp4_send_options'];
+                        $new_config['adv_dhcp_request_options'] = $pconfig['adv_dhcp_request_options'] = $send_options['dhcp4_request_options'];
+                        $new_config['adv_dhcp6_interface_statement_send_options'] = $pconfig['adv_dhcp6_interface_statement_send_options'] = $send_options['dhcp6_send_options'];
                     }
                 }
             }

@@ -801,7 +801,7 @@ function authenticate_user($username, $password, $authcfg = NULL)
     if ($authenticator != null) {
         return $authenticator->authenticate($username, $password) ;
     } else {
-        log_error('Unable to retrieve authenticator for '. $authName);
+        log_error('Unable to retrieve authenticator for '. $username);
         return false;
     }
 }

@@ -226,7 +226,7 @@ include("fbegin.inc");
                   </td>
                   <td>
                     <?= gettext('Be aware of how much space is consumed by backups before adjusting this value.'); ?>
-                    <?php if (count($confvers)) {
+                    <?php if (isset($confvers) && count($confvers) > 0) {
                       print gettext('Current space used:') . ' ' . exec("/usr/bin/du -sh /conf/backup | /usr/bin/awk '{print $1;}'");
                     } ?>
                   </td>

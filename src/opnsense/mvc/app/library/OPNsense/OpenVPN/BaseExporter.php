@@ -59,6 +59,7 @@ abstract class BaseExporter
         $p12 = null;
         $crt = openssl_x509_read($crt);
         $prv = openssl_get_privatekey($prv);
+        $args = [];
         if ($cas !== null) {
             $args = [
                 'extracerts' => $cas
