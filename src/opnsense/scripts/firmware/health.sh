@@ -86,12 +86,19 @@ set_check()
 	MTREE_OUT=$(${MTREE} -X ${TMPFILE} < ${FILE} 2>&1)
 	MTREE_RET=${?}
 
+	MTREE_OUT=$(echo "${MTREE_OUT}" | grep -Fvx "${GREP_PATTERNS}")
+	MTREE_MIA=$(echo "${MTREE_OUT}" | grep -c ' missing$')
+
 	if [ ${MTREE_RET} -eq 0 ]; then
-		echo "No problems detected." >> ${PKG_PROGRESS_FILE} 2>&1
+		if [ "${MTREE_MIA}" = "0" ]; then
+			echo "No problems detected." >> ${PKG_PROGRESS_FILE} 2>&1
+		else
+			echo "Missing files: ${MTREE_MIA}" >> ${PKG_PROGRESS_FILE} 2>&1
+			echo "${MTREE_OUT}" >> ${PKG_PROGRESS_FILE} 2>&1
+		fi
 	else
 		echo "Error ${MTREE_RET} ocurred." >> ${PKG_PROGRESS_FILE} 2>&1
-		echo -n "${MTREE_OUT}" | grep -Fvx "${GREP_PATTERNS}" | \
-		    >> ${PKG_PROGRESS_FILE} 2>&1
+		echo "${MTREE_OUT}" >> ${PKG_PROGRESS_FILE} 2>&1
 	fi
 
 	rm ${TMPFILE}
