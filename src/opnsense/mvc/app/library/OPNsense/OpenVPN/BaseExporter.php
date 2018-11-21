@@ -34,7 +34,10 @@ namespace OPNsense\OpenVPN;
  */
 abstract class BaseExporter
 {
-    var $config = array(); /* XXX make visibility not var */
+    /**
+     * @var array export config
+     */
+    protected $config = array();
 
     /**
      * @param array $conf configuration to use
