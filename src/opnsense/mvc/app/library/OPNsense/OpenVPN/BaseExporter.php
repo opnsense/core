@@ -34,8 +34,7 @@ namespace OPNsense\OpenVPN;
  */
 abstract class BaseExporter
 {
-
-    var $config = array();
+    var $config = array(); /* XXX make visibility not var */
 
     /**
      * @param array $conf configuration to use
@@ -52,7 +51,7 @@ abstract class BaseExporter
      * @param array|null $cas list of CA-certificates
      * @return string pkcs12
      */
-    protected function export_pkcs12($crt, $prv, $pass="", $cas=null)
+    protected function export_pkcs12($crt, $prv, $pass = '', $cas = null)
     {
         $p12 = null;
         $crt = openssl_x509_read($crt);
