@@ -681,6 +681,7 @@ class FirmwareController extends ApiControllerBase
     /**
      * query package details
      * @return array
+     * @throws \Exception
      */
     public function detailsAction($package)
     {

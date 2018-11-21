@@ -163,12 +163,12 @@ class Config extends Singleton
 
     /**
      * update (reset) config with array structure (backwards compatibility mode)
-     * @param $source source array structure
+     * @param array $source source array structure
      * @param null $node simplexml node
      * @param null|string $parentTagName
      * @throws ConfigException when config could not be parsed
      */
-    public function fromArray($source, $node = null, $parentTagName = null)
+    public function fromArray(array $source, $node = null, $parentTagName = null)
     {
         $this->checkvalid();
 
@@ -235,7 +235,7 @@ class Config extends Singleton
 
     /**
      * Execute a xpath expression on config.xml (full DOM implementation)
-     * @param $query xpath expression
+     * @param string $query xpath expression
      * @return \DOMNodeList nodes
      * @throws ConfigException when config could not be parsed
      */
@@ -299,7 +299,7 @@ class Config extends Singleton
 
     /**
      * load xml config from file
-     * @param $filename config xml source
+     * @param string $filename config xml source
      * @return \SimpleXMLElement root node
      * @throws ConfigException when config could not be parsed
      */

@@ -31,6 +31,10 @@ require_once('script/load_phalcon.php');
 
 /**
  * wrap config run
+ * @param string $cmd
+ * @param bool $detach
+ * @return string
+ * @throws Exception
  */
 function configd_run($cmd, $detach = false)
 {
@@ -90,7 +94,7 @@ function legacy_list_aliases($type)
  *  @param array $source config section to apply move on
  *  @param int $id item number to move selected to (before)
  *  @param array $items item numbers to move
- *  @return new constructed list
+ *  @return array new constructed list
  */
 function legacy_move_config_list_items($source, $id, $items) {
     $new_config = array();

@@ -62,7 +62,7 @@ class SettingsController extends ApiControllerBase
 
     /**
      * check if changes to the monit settings were made
-     * @return result array
+     * @return array result
      */
     public function dirtyAction()
     {
@@ -75,7 +75,8 @@ class SettingsController extends ApiControllerBase
      * query monit settings
      * @param $nodeType
      * @param $uuid
-     * @return result array
+     * @return array result
+     * @throws \Exception
      */
     public function getAction($nodeType = null, $uuid = null)
     {
@@ -103,7 +104,8 @@ class SettingsController extends ApiControllerBase
      * set monit properties
      * @param $nodeType
      * @param $uuid
-     * @return status array
+     * @return array status
+     * @throws \Exception
      */
     public function setAction($nodeType = null, $uuid = null)
     {
@@ -175,7 +177,8 @@ class SettingsController extends ApiControllerBase
      * delete monit settings
      * @param $nodeType
      * @param $uuid
-     * @return status array
+     * @return array status
+     * @throws \Exception
      */
     public function delAction($nodeType = null, $uuid = null)
     {
@@ -210,7 +213,7 @@ class SettingsController extends ApiControllerBase
      * toggle monit items (enable/disable)
      * @param $nodeType
      * @param $uuid
-     * @return result array
+     * @return array result
      */
     public function toggleAction($nodeType = null, $uuid = null)
     {
@@ -242,7 +245,8 @@ class SettingsController extends ApiControllerBase
     /**
      * search monit settings
      * @param $nodeType
-     * @return result array
+     * @return array result
+     * @throws \Exception
      */
     public function searchAction($nodeType = null)
     {
@@ -268,7 +272,7 @@ class SettingsController extends ApiControllerBase
 
     /**
      * import system notification settings
-     * @return result array
+     * @return array result
      */
     public function notificationAction()
     {
@@ -331,9 +335,11 @@ class SettingsController extends ApiControllerBase
 
     /**
      * delete relations
-     * @param $nodeType
-     * @param $uuid
-     * @param $relNodeType
+     * @param string|null $nodeType
+     * @param string|null $nodeField
+     * @param string|null $relUuid
+     * @param string|null $relNodeType
+     * @param string|null $relNodeName
      * @throws \Exception
      */
     private function deleteRelations(

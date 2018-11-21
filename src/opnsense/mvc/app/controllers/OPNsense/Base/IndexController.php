@@ -45,6 +45,7 @@ class IndexController extends ControllerBase
     /**
      * log or send error message
      * @param string $message error message
+     * @param string|null $sender
      * @return bool
      */
     public function handleErrorAction($message = null, $sender = null)

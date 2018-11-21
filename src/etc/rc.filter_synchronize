@@ -123,7 +123,8 @@ function remove_nosync(&$cnf_structure)
 /**
  * find config section by reference (dot notation)
  * for example system.user.0 points to the first enty in <system><user> xml config section
- * @param array $cnf_structure pointer to config data
+ * @param array $cnf_structure_in pointer to config data
+ * @param array $cnf_structure_out pointer to config data
  * @param string $reference reference pointer (system.user for example)
  * @return null
  */

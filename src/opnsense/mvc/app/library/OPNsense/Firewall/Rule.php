@@ -81,8 +81,8 @@ abstract class Rule
 
     /**
      * parse static text
-     * @param string $value field value, ignored
      * @param string $value static text
+     * @param string $text
      * @return string
      */
     protected function parseStaticText($value, $text)
@@ -93,6 +93,8 @@ abstract class Rule
     /**
      * parse boolean, return text from $valueTrue / $valueFalse
      * @param string $value field value
+     * @param $valueTrue
+     * @param string $valueFalse
      * @return string
      */
     protected function parseBool($value, $valueTrue, $valueFalse = "")
