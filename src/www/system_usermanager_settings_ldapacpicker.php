@@ -29,7 +29,9 @@
 
 require_once("guiconfig.inc");
 require_once("auth.inc");
+
 $result = array();
+
 if (isset($_POST['basedn']) && isset($_POST['host'])) {
     if (isset($_POST['cert'])) {
         $authcfg = array();
@@ -54,10 +56,18 @@ if (isset($_POST['basedn']) && isset($_POST['host'])) {
                                             , !empty($_POST['binddn']) ? $_POST['binddn'] : null
     , !empty($_POST['bindpw']) ? $_POST['bindpw'] : null
     );
+
+    $ous = false;
+
     if ($ldap_is_connected) {
-        foreach ($ldap_auth->listOUs() as $ou) {
+        $ous = $ldap_auth->listOUs();
+    }
+
+    if ($ous !== false) {
+        foreach ($ous as $ou) {
             $result[] = array("value" => $ou, "selected" => in_array($ou, $ldap_authcn));
         }
     }
 }
+
 echo json_encode($result);
