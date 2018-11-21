@@ -48,7 +48,6 @@ MTREE_PATTERNS="
 ./etc/shells
 ./etc/spwd.db
 ./etc/ttys
-./var/*
 "
 
 GREP_PATTERNS=
@@ -92,7 +91,7 @@ set_check()
 	else
 		echo "Error ${MTREE_RET} ocurred." >> ${PKG_PROGRESS_FILE} 2>&1
 		echo -n "${MTREE_OUT}" | grep -Fvx "${GREP_PATTERNS}" | \
-		    grep -v '^\./var/.* missing$' >> ${PKG_PROGRESS_FILE} 2>&1
+		    >> ${PKG_PROGRESS_FILE} 2>&1
 	fi
 
 	rm ${TMPFILE}
