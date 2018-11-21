@@ -265,16 +265,12 @@ function return_gateways_status()
     $status = array();
 
     foreach ($gateways_arr as $gwitem) {
-        if (!isset($gwitem['monitor_disable'])) {
-            continue;
-        }
-
         $status[$gwitem['name']] = array(
+            'status' => isset($gwitem['monitor_disable']) ? 'none' : 'down',
             'name' => $gwitem['name'],
             'delay' => '0.0 ms',
             'stddev' => '0.0 ms',
-            'loss' => '100.0 %',
-            'status' => 'down',
+            'loss' => '0.0 %',
         );
     }
 
