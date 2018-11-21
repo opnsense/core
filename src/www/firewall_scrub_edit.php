@@ -422,7 +422,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_srcport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source port"); ?></td>
                     <td>
-                      <div style="display:hidden;">
+                      <div class="hidden">
                           <input type="button" class="btn btn-default" value="<?=gettext("Advanced"); ?>" id="show_srcport_adv" />
                       </div>
                       <div id="show_srcport" style="display:none;">

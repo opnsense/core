@@ -296,7 +296,7 @@ $( document ).ready(function() {
 
 </script>
 
-</script>
+
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">

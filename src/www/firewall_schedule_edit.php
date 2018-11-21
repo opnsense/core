@@ -865,7 +865,7 @@ $( function() { $('#iform td').css({ 'background-color' : '' }); })
                               $positioncounter = 1;//7 for Sun, 1 for Mon, 2 for Tues, etc
 ?>
                             <div id="<?=date("F_y",mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));?>" style=" position:relative; display:<?= $firstmonth ? "block" : "none";?>">
-                              <table style="border:1; cellspacing:1; cellpadding:1" id="calTable<?=$monthcounter . $yearcounter;?>" class="table table-condensed">
+                              <table id="calTable<?=$monthcounter . $yearcounter;?>" class="table table-condensed table-bordered">
                                 <thead>
                                   <tr><td colspan="7" style="text-align:center"><?= date("F_Y", mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));?></td></tr>
                                   <tr>
