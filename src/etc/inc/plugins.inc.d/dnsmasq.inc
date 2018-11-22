@@ -110,7 +110,12 @@ function dnsmasq_configure_do($verbose = false)
         flush();
     }
 
-    $args = ' -H /var/etc/dnsmasq-hosts ';
+    $args = '';
+    if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
+        $args .= "--rebind-localhost-ok --stop-dns-rebind";
+    }
+
+    $args .= ' -H /var/etc/dnsmasq-hosts ';
 
     /* Setup listen port, if non-default */
     if (isset($config['dnsmasq']['port']) && is_port($config['dnsmasq']['port'])) {
@@ -169,10 +174,6 @@ function dnsmasq_configure_do($verbose = false)
         }
     }
 
-    if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
-        $dns_rebind = "--rebind-localhost-ok --stop-dns-rebind";
-    }
-
     if (isset($config['dnsmasq']['strict_order'])) {
         $args .= " --strict-order ";
     }
@@ -194,7 +195,7 @@ function dnsmasq_configure_do($verbose = false)
 
     _dnsmasq_add_host_entries();
 
-    mwexec("/usr/local/sbin/dnsmasq --all-servers {$dns_rebind} {$args}");
+    mwexec("/usr/local/sbin/dnsmasq --all-servers {$args}");
 
     _dnsmasq_dhcpleases_start();
 

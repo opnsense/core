@@ -162,7 +162,6 @@ include("head.inc");
                       </td>
                     </tr>
 <?php
-                    $row++;
                   endforeach;
                   if ($states_info['total'] == 0): ?>
                     <tr>

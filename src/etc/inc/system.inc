@@ -155,6 +155,7 @@ function system_resolvconf_generate($verbose = false)
         flush();
     }
 
+    $resolvconf = '';
     if (!empty($syscfg['domain'])) {
         $resolvconf = "domain {$syscfg['domain']}\n";
     }

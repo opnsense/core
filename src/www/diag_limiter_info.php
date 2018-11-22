@@ -82,7 +82,7 @@ include("head.inc");
     <div class="row">
         <section class="col-xs-12">
 <?php
-        if($savemsg) {
+        if(!empty($savemsg)) {
           echo "<div id=\"savemsg\">";
           print_info_box($savemsg);
           echo "</div>";

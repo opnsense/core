@@ -1746,7 +1746,7 @@ function get_dyndns_ip($int, $ipver = 4)
             $ip_address = '';
         }
         curl_close($ip_ch);
-    } elseif (ipver == 6 && is_linklocal($ip_address)) {
+    } elseif ($ipver == 6 && is_linklocal($ip_address)) {
         log_error('Aborted IPv6 detection: cannot bind to link-local address');
         $ip_address = '';
     }
