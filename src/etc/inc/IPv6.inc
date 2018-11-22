@@ -657,7 +657,7 @@ class Net_IPv6
      */
     function isCompressible($ip)
     {
-        return (bool)($ip != Net_IPv6::compress($address));
+        return (bool)($ip != Net_IPv6::compress($ip));
     }
 
     // }}}

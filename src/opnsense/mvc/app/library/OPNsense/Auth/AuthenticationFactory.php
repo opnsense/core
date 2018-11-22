@@ -126,7 +126,7 @@ class AuthenticationFactory
                 $localUserMap = $this->fetchUserDNs();
             }
 
-            if ($authObject != null) {
+            if (isset($authObject)) {
                 $props = $servers[$authserver];
                 // when a local user exist and has a different (distinguished) name on the authenticator we already
                 // know of, we send the mapping to the authenticator as property "local_users".

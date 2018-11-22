@@ -172,6 +172,7 @@ $extraBreadcrumb = $pkg['step'][$stepid]['title'];
 function update_config_field($field, $updatetext, $unset, $arraynum, $field_type) {
 	global $config;
 	$field_split = explode("->",$field);
+    $field_conv = '';
 	foreach ($field_split as $f)
 		$field_conv .= "['" . $f . "']";
 	if($field_conv == "")
@@ -208,6 +209,7 @@ function update_config_field($field, $updatetext, $unset, $arraynum, $field_type
 function redirect_url()
 {
 	global $config, $title;
+    $urlport = '';
 
 	switch($config['system']['webgui']['protocol']) {
 		case "http":
@@ -226,8 +228,6 @@ function redirect_url()
 			$urlport = ":" . $port;
 		} elseif ($port != "80" and $port != "443") {
 			$urlport = ":" . $port;
-		} else {
-			$urlport = "";
 		}
 	}
 	$http_host = $_SERVER['SERVER_NAME'];

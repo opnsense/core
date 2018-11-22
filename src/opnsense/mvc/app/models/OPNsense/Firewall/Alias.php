@@ -101,7 +101,7 @@ class Alias extends BaseModel
 
     /**
      * Return all places an alias seems to be used
-     * @param $name alias name
+     * @param string $name alias name
      * @return array hashmap with references where this alias is used
      */
     public function whereUsed($name)

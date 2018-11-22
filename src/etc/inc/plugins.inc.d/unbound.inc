@@ -247,6 +247,7 @@ EOF;
     }
 
     // Set up forwarding if it configured
+    $forward_conf = '';
     if (isset($config['unbound']['forwarding'])) {
         $dnsservers = array();
         if (isset($config['system']['dnsallowoverride'])) {
@@ -270,8 +271,6 @@ EOD;
                 $forward_conf .= "\tforward-addr: $dnsserver\n";
             }
         }
-    } else {
-        $forward_conf = "";
     }
 
     $unboundconf = <<<EOD
