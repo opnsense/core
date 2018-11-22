@@ -276,8 +276,6 @@ EOD;
                 $forward_conf .= "\tforward-addr: $dnsserver\n";
             }
         }
-    } else {
-        $forward_conf = "";
     }
 
     $unboundconf = <<<EOD

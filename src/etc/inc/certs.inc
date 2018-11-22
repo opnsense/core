@@ -317,6 +317,7 @@ function cert_get_subject($str_crt, $decode = true)
     }
 
     ksort($components);
+    $subject = '';
     foreach ($components as $a => $v) {
         if (is_array($v)) {
             ksort($v);
@@ -330,7 +331,7 @@ function cert_get_subject($str_crt, $decode = true)
         }
     }
 
-    return $subject ?? '';
+    return $subject;
 }
 
 function cert_get_subject_array($crt)
@@ -365,6 +366,7 @@ function cert_get_issuer($str_crt, $decode = true)
         return "unknown";
     }
     ksort($components);
+    $issuer = '';
     foreach ($components as $a => $v) {
         if (is_array($v)) {
             ksort($v);
@@ -378,7 +380,7 @@ function cert_get_issuer($str_crt, $decode = true)
         }
     }
 
-    return $issuer ?? '';
+    return $issuer;
 }
 
 /* this function works on x509 (crt), rsa key (prv), and req(csr) */
