@@ -106,7 +106,7 @@ label           :   dialog label
             <col class="col-md-{{ msgzone_width|default(5) }}"/>
         </colgroup>
         <thead>
-          <tr>
+          <tr{% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
             <th colspan="3"><h2>{{field['label']}}</h2></th>
           </tr>
         </thead>
