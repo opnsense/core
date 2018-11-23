@@ -212,7 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $parent_net = find_interface_network(get_real_interface($pconfig['if']));
         if (is_subnetv4($parent_net) && $pconfig['gateway'] && $pconfig['gateway'] != "none") {
-            if(!ip_in_subnet($pconfig['gateway'], $parent_net) && !ip_in_interface_alias_subnet($pconfig['if'], $pconfig['gateway'])) {
+            if (!ip_in_subnet($pconfig['gateway'], $parent_net) && !ip_in_interface_alias_subnet($pconfig['if'], $pconfig['gateway'])) {
                 $input_errors[] = sprintf(gettext("The gateway address %s does not lie within the chosen interface's subnet."), $pconfig['gateway']);
             }
         }
@@ -306,7 +306,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("A valid MTU value must be specified.");
         }
 
-        if(is_array($pconfig['numberoptions']['item'])) {
+        if (is_array($pconfig['numberoptions']['item'])) {
             foreach ($pconfig['numberoptions']['item'] as $numberoption) {
               if ($numberoption['type'] == 'text' && strstr($numberoption['value'], '"')) {
                   $input_errors[] = gettext("Text type cannot include quotation marks.");
@@ -436,7 +436,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $exec_filter_configure = true;
                 }
                 $previous = !empty($config['dhcpd'][$if]['failover_peerip']) ? $config['dhcpd'][$if]['failover_peerip'] : "";
-                if($previous != $pconfig['failover_peerip']) {
+                if ($previous != $pconfig['failover_peerip']) {
                     mwexec("/bin/rm -rf /var/dhcpd/var/db/*");
                 }
             }
@@ -1139,7 +1139,7 @@ include("head.inc");
                     $i = 0;
                     foreach ($config['dhcpd'][$if]['staticmap'] as $mapent): ?>
 <?php
-                        if($mapent['mac'] != '' || $mapent['ipaddr'] != ''): ?>
+                        if ($mapent['mac'] != '' || $mapent['ipaddr'] != ''): ?>
                     <tr>
                       <td>
 <?php

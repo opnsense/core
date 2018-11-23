@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $f = 0;
         $fcount = count($data);
         /* with less then 20 fields there is nothing useful */
-        if($fcount < 20) {
+        if ($fcount < 20) {
             $i++;
             continue;
         }
@@ -183,11 +183,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $f = $f+2;
                     break;
                 case "client-hostname":
-                    if($data[$f+1] != "") {
-                        $leases[$l]['hostname'] = preg_replace('/"/','',$data[$f+1]);
+                    if ($data[$f + 1] != '') {
+                        $leases[$l]['hostname'] = preg_replace('/"/','',$data[$f + 1]);
                     } else {
                         $hostname = gethostbyaddr($leases[$l]['ip']);
-                        if ($hostname != "") {
+                        if ($hostname != '') {
                             $leases[$l]['hostname'] = $hostname;
                         }
                     }
@@ -208,11 +208,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     unset($lease_content);
 
     /* remove duplicate items by mac address */
-    if(count($leases) > 0) {
+    if (count($leases) > 0) {
         $leases = remove_duplicate($leases,"ip");
     }
 
-    if(count($pools) > 0) {
+    if (count($pools) > 0) {
         $pools = remove_duplicate($pools,"name");
         asort($pools);
     }
@@ -224,8 +224,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $slease['ip'] = $static['ipaddr'];
                 $slease['type'] = "static";
                 $slease['mac'] = $static['mac'];
-                $slease['start'] = "";
-                $slease['end'] = "";
+                $slease['start'] = '';
+                $slease['end'] = '';
                 $slease['hostname'] = htmlentities($static['hostname']);
                 $slease['descr'] = htmlentities($static['descr']);
                 $slease['act'] = "static";
@@ -255,7 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $fout = @fopen($leasesfile.".new", "w");
         if ($fin) {
             $ip_to_remove = $_POST['deleteip'];
-            $lease = "";
+            $lease = '';
             while (($line = fgets($fin, 4096)) !== false) {
                 $fields = explode(' ', $line);
                 if ($fields[0] == 'lease') {
@@ -269,7 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
                 if ($line == "}\n") {
                     // end of segment
-                    $lease = "";
+                    $lease = '';
                 }
             }
             fclose($fin);
@@ -323,7 +323,7 @@ $gentitle_suffix = " ($leases_count)";
 <?php
       /* only print pool status when we have one */
       legacy_html_escape_form_data($pools);
-      if(count($pools) > 0):?>
+      if (count($pools) > 0):?>
       <section class="col-xs-12">
         <div class="content-box">
           <div class="table-responsive">
@@ -393,7 +393,7 @@ $gentitle_suffix = " ($leases_count)";
                   $lip = ip2ulong($data['ip']);
                   if ($data['act'] == "static") {
                       foreach ($dhcpd as $dhcpif => $dhcpifconf) {
-                          if(isset($dhcpifconf['staticmap']) && is_array($dhcpifconf['staticmap'])) {
+                          if (isset($dhcpifconf['staticmap']) && is_array($dhcpifconf['staticmap'])) {
                               foreach ($dhcpifconf['staticmap'] as $staticent) {
                                   if ($data['ip'] == $staticent['ipaddr']) {
                                       $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);
@@ -403,7 +403,7 @@ $gentitle_suffix = " ($leases_count)";
                               }
                           }
                           /* exit as soon as we have an interface */
-                          if ($data['if'] != "") {
+                          if ($data['if'] != '') {
                               break;
                           }
                       }
@@ -426,12 +426,12 @@ $gentitle_suffix = " ($leases_count)";
                   <td><?=$data['ip'];?></td>
                   <td>
                       <?=$data['mac'];?><br />
-                      <small><i><?=!empty($mac_man[$mac_hi]) ? $mac_man[$mac_hi] : "";?></i></small>
+                      <small><i><?= !empty($mac_man[$mac_hi]) ? $mac_man[$mac_hi] : '' ?></i></small>
                   </td>
                   <td><?=$data['hostname'];?></td>
                   <td><?=$data['descr'];?></td>
-                  <td><?=!empty($data['start']) ? adjust_gmt($data['start']) : "";?></td>
-                  <td><?=!empty($data['end']) ? adjust_gmt($data['end']) : "";?></td>
+                  <td><?= !empty($data['start']) ? adjust_gmt($data['start']) : '' ?></td>
+                  <td><?= !empty($data['end']) ? adjust_gmt($data['end']) : '' ?></td>
                   <td><?=$data['online'];?></td>
                   <td><?=$data['act'];?></td>
                   <td class="text-nowrap">
@@ -472,7 +472,7 @@ $gentitle_suffix = " ($leases_count)";
         endif; ?>
         </form>
 <?php
-        if($leases == 0): ?>
+        if ($leases == 0): ?>
         <p><strong><?=gettext("No leases file found. Is the DHCP server active"); ?>?</strong></p>
 <?php
         endif; ?>

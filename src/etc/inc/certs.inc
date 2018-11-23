@@ -103,18 +103,18 @@ function &lookup_crl($refid)
 
 function ca_chain_array(&$cert)
 {
-    if($cert['caref']) {
+    if ($cert['caref']) {
         $chain = array();
         $crt = lookup_ca($cert['caref']);
         $chain[] = $crt;
         while ($crt) {
             $caref = isset($crt['caref']) ? $crt['caref'] : false;
-            if($caref) {
+            if ($caref) {
                 $crt = lookup_ca($caref);
             } else {
                 $crt = false;
             }
-            if($crt) {
+            if ($crt) {
                 $chain[] = $crt;
             }
         }
@@ -196,9 +196,9 @@ function cert_import(& $cert, $crt_str, $key_str)
     $issuer = cert_get_issuer($crt_str, false);
 
     // Find my issuer unless self-signed
-    if($issuer != $subject) {
+    if ($issuer != $subject) {
         $issuer_crt =& lookup_ca_by_subject($issuer);
-        if($issuer_crt) {
+        if ($issuer_crt) {
             $cert['caref'] = $issuer_crt['refid'];
         }
     }
@@ -246,20 +246,20 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
 
     // generate a new key pair
     $res_key = openssl_pkey_new($args);
-    if(!$res_key) {
+    if (!$res_key) {
         return false;
     }
 
     // generate a certificate signing request
     $res_csr = openssl_csr_new($dn, $res_key, $args);
-    if(!$res_csr) {
+    if (!$res_csr) {
         return false;
     }
 
     // self sign the certificate
     $res_crt = openssl_csr_sign($res_csr, $ca_res_crt, $ca_res_key, $lifetime,
            $args, $ca_serial);
-    if(!$res_crt) {
+    if (!$res_crt) {
         return false;
     }
 
