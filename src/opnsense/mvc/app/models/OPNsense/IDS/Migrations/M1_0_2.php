@@ -43,21 +43,23 @@ class M1_0_2 extends BaseModelMigration
     public function run($model)
     {
         $cfgObj = Config::getInstance()->object();
+        $affectedUuids = [];
 
         foreach ($cfgObj->OPNsense->IDS->userDefinedRules->rule as $rule) {
             if (!empty($rule->geoip) || !empty($rule->geoip_direction)) {
-                $uuid = (string)$rule['uuid'];
-                // Description can be up to 255 characters, truncate as necessary.
-                $description = substr($rule->description . ' - Old GeoIP rule, disabled by migration', 0, 255);
+                $affectedUuids[] = (string)$rule['uuid'];
+            }
+        }
 
-                // Update the rule in the model
-                /** @var BaseField $node */
-                foreach ($model->userDefinedRules->rule->iterateItems() as $node) {
-                    if ($node->getAttribute('uuid') == $uuid) {
-                        $node->description = $description;
-                        $node->enabled = '0';
-                    }
-                }
+        // Update the affected rule in the model
+        /** @var BaseField $node */
+        foreach ($model->userDefinedRules->rule->iterateItems() as $node) {
+            if (in_array($node->getAttribute('uuid'), $affectedUuids)) {
+                $node->enabled = '0';
+                // Description can be up to 255 characters, truncate as necessary.
+                $node->description = substr(
+                    $node->description . ' - Old GeoIP rule, disabled by migration', 0, 255
+                );
             }
         }
     }
