@@ -4357,7 +4357,7 @@ function get_interfaces_info()
         if ($bridge) {
             $bridge_text = `/sbin/ifconfig {$bridge}`;
             if (stristr($bridge_text, "blocking") <> false) {
-                $ifinfo['bridge'] = "<b><font color='red'>" . gettext("blocking") . "</font></b> - " . gettext("check for ethernet loops");
+                $ifinfo['bridge'] = "<b><span class='text-danger'>" . gettext("blocking") . "</span></b> - " . gettext("check for ethernet loops");
                 $ifinfo['bridgeint'] = $bridge;
             } elseif (stristr($bridge_text, "learning") <> false) {
                 $ifinfo['bridge'] = gettext("learning");

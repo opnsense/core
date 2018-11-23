@@ -477,7 +477,7 @@ include("head.inc");
                                         case "text":
                                             echo "<td colspan=\"2\" style=\"text-align:center\">\n";
                                             if ($field['description'] <> "") {
-                                                echo "<center><br /> " . gettext($field['description']) . "</center>";
+                                                echo "<div class='text-center'><br /> " . gettext($field['description']) . "</div>";
                                             }
                                             break;
                                         case "inputalias":
@@ -884,9 +884,6 @@ include("head.inc");
 
                                     if ($field['typehint'] <> "") {
                                         echo $field['typehint'];
-                                    }
-                                    if ($field['warning'] <> "") {
-                                        echo "<br /><b><font color=\"red\">" . $field['warning'] . "</font></b>";
                                     }
 
                                     if (!$field['combinefieldsbegin']) {

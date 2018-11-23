@@ -2066,7 +2066,7 @@ include("head.inc");
                     </thead>
                        <body>
                           <tr>
-                          <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('Service Provider') ?></td>
+                          <td style="width: 22%;"><i class="fa fa-info-circle text-muted"></i> <?=gettext('Service Provider') ?></td>
                           <td>
                             <select name="rfc3118_isp" class="selectpicker" data-style="btn-default" id="rfc3118_isp">
 <?php

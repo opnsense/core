@@ -938,7 +938,7 @@ $( document ).ready(function() {
                           <input name="altname_value[]" type="text" size="20" value="" />
                         </td>
                         <td>
-                          <div style="cursor:pointer;" class="act-removerow-altnm btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
+                          <div style="cursor:pointer;" class="act-removerow-altnm btn btn-default btn-xs"><i class="fa fa-minus fa-fw"></i></div>
                         </td>
                       </tr>
 <?php
@@ -958,7 +958,7 @@ $( document ).ready(function() {
                             <input name="altname_value[]" type="text" size="20" value="<?=$item;?>" />
                           </td>
                           <td>
-                            <div style="cursor:pointer;" class="act-removerow-altnm btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
+                            <div style="cursor:pointer;" class="act-removerow-altnm btn btn-default btn-xs"><i class="fa fa-minus fa-fw"></i></div>
                           </td>
                         </tr>
 
@@ -970,7 +970,7 @@ $( document ).ready(function() {
                       <tr>
                         <td colspan="2"></td>
                         <td>
-                          <div id="addNewAltNm" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><i class="fa fa-plus fa-fw"></i></div>
+                          <div id="addNewAltNm" style="cursor:pointer;" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></div>
                         </td>
                       </tr>
                     </tfoot>

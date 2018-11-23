@@ -54,13 +54,13 @@ config_read_array('virtualip', 'vip');
 <?php
       if (get_single_sysctl('net.inet.carp.allow') <= 0 ) {
           $status = gettext("DISABLED");
-          echo "<span class=\"fa fa-remove fa-fw text-danger\" title=\"$status\" alt=\"$status\" ></span>";
+          echo "<span class=\"fa fa-remove fa-fw text-danger\" title=\"$status\" ></span>";
       } elseif ($status == gettext("MASTER")) {
-          echo "<span class=\"fa fa-play fa-fw text-success\" title=\"$status\" alt=\"$status\" ></span>";
+          echo "<span class=\"fa fa-play fa-fw text-success\" title=\"$status\" ></span>";
       } elseif ($status == gettext("BACKUP")) {
-          echo "<span class=\"fa fa-play fa-fw text-muted\" title=\"$status\" alt=\"$status\" ></span>";
+          echo "<span class=\"fa fa-play fa-fw text-muted\" title=\"$status\" ></span>";
       } elseif ($status == gettext("INIT")) {
-          echo "<span class=\"fa fa-info-circle fa-fw\" title=\"$status\" alt=\"$status\" ></span>";
+          echo "<span class=\"fa fa-info-circle fa-fw\" title=\"$status\" ></span>";
       }
       if (!empty($carp['subnet'])):?>
         &nbsp;

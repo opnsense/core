@@ -1077,7 +1077,7 @@ endif; ?>
                     </tr>
                     <tr>
                       <td style="width:22%" id="ipv4_tunnel_network"><a id="help_for_tunnel_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Tunnel Network"); ?></td>
-                      <td witdh="78%">
+                      <td style="width:78%">
                         <input name="tunnel_network" type="text" class="form-control unknown" size="20" value="<?=$pconfig['tunnel_network'];?>" />
                         <div class="hidden" data-for="help_for_tunnel_network">
                             <?=gettext("This is the IPv4 virtual network used for private " .
