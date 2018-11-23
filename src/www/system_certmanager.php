@@ -32,11 +32,13 @@ require_once("system.inc");
 
 function csr_generate(&$cert, $keylen, $dn, $digest_alg = 'sha256')
 {
+    $configFilename = create_temp_openssl_config($dn);
+
     $args = array(
-        'config' => '/usr/local/etc/ssl/opnsense.cnf',
+        'config' => $configFilename,
         'private_key_type' => OPENSSL_KEYTYPE_RSA,
         'private_key_bits' => (int)$keylen,
-        'x509_extensions' => 'v3_req',
+        'req_extensions' => 'v3_req',
         'digest_alg' => $digest_alg,
         'encrypt_key' => false
     );
@@ -62,6 +64,8 @@ function csr_generate(&$cert, $keylen, $dn, $digest_alg = 'sha256')
     // return our request information
     $cert['csr'] = base64_encode($str_csr);
     $cert['prv'] = base64_encode($str_key);
+
+    unlink($configFilename);
 
     return true;
 }
