@@ -885,9 +885,6 @@ include("head.inc");
                                     if ($field['typehint'] <> "") {
                                         echo $field['typehint'];
                                     }
-                                    if ($field['warning'] <> "") {
-                                        echo "<br /><b><span class='text-warning'>" . $field['warning'] . "</font></b>";
-                                    }
 
                                     if (!$field['combinefieldsbegin']) {
                                         if (!$field['dontcombinecells'])
