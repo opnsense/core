@@ -211,8 +211,6 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
     if (!$ca) {
         return false;
     }
-    // define temp filename to use for openssl.cnf
-    $config_filename = tempnam(sys_get_temp_dir(), 'ssl');
 
     $ca_str_crt = base64_decode($ca['crt']);
     $ca_str_key = base64_decode($ca['prv']);
@@ -223,17 +221,8 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
     }
     $ca_serial = ++$ca['serial'];
 
-    $template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
     // handle parameters which can only be set via the configuration file
-    $template_dn = "";
-    foreach (array("subjectAltName") as $dnTag) {
-        if (isset($dn[$dnTag])) {
-            $template_dn .= $dnTag . "=" . $dn[$dnTag] . "\n";
-            unset($dn[$dnTag]);
-        }
-    }
-    $template = str_replace("###OPNsense:".$x509_extensions."###", $template_dn, $template);
-    file_put_contents($config_filename, $template);
+    $config_filename = create_temp_openssl_config($dn);
 
     $args = array(
         'config' => $config_filename,
@@ -676,4 +665,29 @@ function cert_get_cn($crt, $isref = false)
         }
     }
     return "";
+}
+
+/**
+ * Create a temporary config file, to help with calls that require properties that can only be set via the config file.
+ *
+ * @param $dn
+ * @return bool|string The name of the temporary config file.
+ */
+function create_temp_openssl_config(&$dn)
+{
+    // define temp filename to use for openssl.cnf
+    $configFilename = tempnam(sys_get_temp_dir(), 'ssl');
+
+    $template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
+
+    foreach (['subjectAltName'] as $dnTag) {
+        if (isset($dn[$dnTag])) {
+            $template_dn = $dnTag . ' = ' . $dn[$dnTag];
+            // Overwrite the placeholders for this property
+            $template = str_replace('###OPNsense:' . $dnTag . '###', $template_dn, $template);
+            unset($dn[$dnTag]);
+        }
+    }
+    file_put_contents($configFilename, $template);
+    return $configFilename;
 }

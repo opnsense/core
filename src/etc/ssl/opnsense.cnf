@@ -216,7 +216,7 @@ extendedKeyUsage=clientAuth
 # This is required for TSA certificates.
 # extendedKeyUsage = critical,timeStamping
 
-###OPNsense:usr_cert###
+###OPNsense:subjectAltName###
 
 [ v3_req ]
 
@@ -224,6 +224,8 @@ extendedKeyUsage=clientAuth
 
 basicConstraints = CA:FALSE
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+
+###OPNsense:subjectAltName###
 
 [ v3_ca ]
 
@@ -262,7 +264,7 @@ basicConstraints = CA:true
 # You can even override a supported extension:
 # basicConstraints= critical, DER:30:03:01:01:FF
 
-###OPNsense:v3_ca###
+###OPNsense:subjectAltName###
 
 [ crl_ext ]
 
@@ -366,4 +368,4 @@ authorityKeyIdentifier=keyid,issuer:always
 extendedKeyUsage=serverAuth,1.3.6.1.5.5.8.2.2
 keyUsage = digitalSignature, keyEncipherment
 
-###OPNsense:server_cert###
+###OPNsense:subjectAltName###
