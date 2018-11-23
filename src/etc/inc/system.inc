@@ -609,6 +609,8 @@ function system_staticroutes_configure($interface = '')
                     if ($fargw) {
                         mwexecf('/sbin/route delete %s %s -interface %s ', array($inet, $gatewayip, $interfacegw), true);
                         mwexecf('/sbin/route add %s %s -interface %s', array($inet, $gatewayip, $interfacegw), true);
+                    } elseif (is_linklocal($gatewayip) && strpos($gatewayip, '%') === false) {
+                        $gatewayip .= "%{$interfacegw}";
                     }
                     mwexec("/sbin/route add".$cmd . escapeshellarg($gatewayip), true);
                 } elseif (!empty($interfacegw)) {
