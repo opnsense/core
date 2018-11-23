@@ -657,7 +657,7 @@ include("head.inc");
 
                       $grouplist = return_gateway_groups_array();
                       foreach ($grouplist as $name => $group) {
-                          if ($group[0]['vip'] != "") {
+                          if ($group[0]['vip'] != '') {
                               $vipif = $group[0]['vip'];
                           } else {
                               $vipif = $group[0]['int'];

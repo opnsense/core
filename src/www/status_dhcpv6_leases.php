@@ -252,11 +252,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $f = $f+2;
                     break;
                 case "client-hostname":
-                    if ($data[$f+1] != "") {
+                    if ($data[$f+1] != '') {
                         $entry['hostname'] = preg_replace('/"/','',$data[$f+1]);
                     } else {
                         $hostname = gethostbyaddr($entry['ip']);
-                        if ($hostname != "") {
+                        if ($hostname != '') {
                             $entry['hostname'] = $hostname;
                         }
                     }

@@ -642,7 +642,7 @@ $( document ).ready(function() {
                   if ($group['ipprotocol'] != "inet") {
                       continue;
                   }
-                  if ($group[0]['vip'] != "") {
+                  if ($group[0]['vip'] != '') {
                       $vipif = $group[0]['vip'];
                   } else {
                       $vipif = $group[0]['int'];

@@ -330,7 +330,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       if (!empty($pconfig['statetimeout']))
           $input_errors[] = gettext("You can only specify the state timeout (advanced option) for TCP protocol.");
     }
-    if ($pconfig['type'] != "pass") {
+    if ($pconfig['type'] != 'pass') {
       if (!empty($pconfig['max']))
           $input_errors[] = gettext("You can only specify the maximum state entries (advanced option) for Pass type rules.");
       if (!empty($pconfig['max-src-nodes']))
