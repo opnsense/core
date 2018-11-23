@@ -336,7 +336,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $server = array();
 
             // delete(rename) old interface so a new TUN or TAP interface can be created.
-            if (isset($id) && $pconfig['dev_mode'] <> $a_server[$id]['dev_mode']) {
+            if (isset($id) && $pconfig['dev_mode'] != $a_server[$id]['dev_mode']) {
                 openvpn_delete('server', $a_server[$id]);
             }
             // 1 on 1 copy of config attributes
@@ -762,7 +762,7 @@ $( document ).ready(function() {
                             if ($group['ipprotocol'] != "inet") {
                                 continue;
                             }
-                            if ($group[0]['vip'] <> "") {
+                            if ($group[0]['vip'] != "") {
                                 $vipif = $group[0]['vip'];
                             } else {
                                 $vipif = $group[0]['int'];

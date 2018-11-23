@@ -436,7 +436,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $exec_filter_configure = true;
                 }
                 $previous = !empty($config['dhcpd'][$if]['failover_peerip']) ? $config['dhcpd'][$if]['failover_peerip'] : "";
-                if($previous <> $pconfig['failover_peerip']) {
+                if($previous != $pconfig['failover_peerip']) {
                     mwexec("/bin/rm -rf /var/dhcpd/var/db/*");
                 }
             }
@@ -1139,7 +1139,7 @@ include("head.inc");
                     $i = 0;
                     foreach ($config['dhcpd'][$if]['staticmap'] as $mapent): ?>
 <?php
-                        if($mapent['mac'] <> "" || $mapent['ipaddr'] <> ""): ?>
+                        if($mapent['mac'] != "" || $mapent['ipaddr'] != ""): ?>
                     <tr>
                       <td>
 <?php

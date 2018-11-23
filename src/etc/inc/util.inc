@@ -1138,7 +1138,7 @@ function set_sysctl($values)
     exec("/sbin/sysctl -i " . implode(" ", $value_list), $output, $success);
 
     /* Retry individually if failed (one or more read-only) */
-    if ($success <> 0 && count($value_list) > 1) {
+    if ($success != 0 && count($value_list) > 1) {
         foreach ($value_list as $value) {
             exec("/sbin/sysctl -i " . $value, $output);
         }

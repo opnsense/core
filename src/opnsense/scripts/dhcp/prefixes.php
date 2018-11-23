@@ -53,7 +53,7 @@ foreach (file($leases_file) as $line) {
 
 $routes = array();
 foreach ($duid_arr as $entry) {
-    if ($entry['ia-pd'] <> "") {
+    if ($entry['ia-pd'] != "") {
         $routes[$entry['ia-na']] = $entry['ia-pd'];
     }
     array_shift($duid_arr);

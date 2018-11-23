@@ -94,7 +94,7 @@ class TestTemplateMethods(unittest.TestCase):
         :return:
         """
         generated_filenames = self.tmpl.generate('OPNsense.Sample')
-        self.assertEquals(len(generated_filenames), 3, 'number of output files <> 3')
+        self.assertEquals(len(generated_filenames), 3, 'number of output files != 3')
 
     def test_all(self):
         """ Test if all expected templates are created, can only find test for static defined cases.
