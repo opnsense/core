@@ -165,7 +165,7 @@ $(document).ready(function () {
 
         /* sidebar mouseleave */
         mainmenu.mouseleave(function () {
-            if ($('#navigation').hasClass('col-sidebar-left')) {
+            if (navigation.hasClass('col-sidebar-left')) {
                 layer1_a.attr('aria-expanded', 'false').next('div').removeClass('in');
                 layer2_a.attr('aria-expanded', 'false').next('div').removeClass('in');
                 layer1_div.removeAttr('style');
