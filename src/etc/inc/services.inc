@@ -52,7 +52,7 @@ require_once('plugins.inc.d/unbound.inc');
 function generate_ipv6_from_mac($mac)
 {
     $elements = explode(":", $mac);
-    if (count($elements) <> 6) {
+    if (count($elements) != 6) {
         return false;
     }
 
@@ -943,7 +943,7 @@ EOD;
                 }
 
                 if (isset($sm['ddnsupdate'])) {
-                    if (($sm['ddnsdomain'] <> "") && ($sm['ddnsdomain'] != $dhcpifconf['ddnsdomain'])) {
+                    if (($sm['ddnsdomain'] != "") && ($sm['ddnsdomain'] != $dhcpifconf['ddnsdomain'])) {
                         $smdnscfg .= "    ddns-domainname \"{$sm['ddnsdomain']}\";\n";
                     }
                     $smdnscfg .= "    ddns-update-style interim;\n";

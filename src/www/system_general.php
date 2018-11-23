@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       $dnsgwname="dns{$dnscounter}gw";
       if (!empty($pconfig[$dnsname]) && !is_ipaddr($pconfig[$dnsname])) {
         $input_errors[] = gettext("A valid IP address must be specified for DNS server $dnscounter.");
-      } elseif(!empty($pconfig[$dnsgwname]) && $pconfig[$dnsgwname] <> "none") {
+      } elseif(!empty($pconfig[$dnsgwname]) && $pconfig[$dnsgwname] != "none") {
             // A real gateway has been selected.
             if (is_ipaddr($pconfig[$dnsname])) {
                 if ((is_ipaddrv4($pconfig[$dnsname])) && (validate_address_family($pconfig[$dnsname], $pconfig[$dnsgwname]) === false )) {

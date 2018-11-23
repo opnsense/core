@@ -233,7 +233,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         (empty($pconfig['iketype']) || $pconfig['iketype'] == "ikev1")) {
         $t = 0;
         foreach ($a_phase1 as $ph1tmp) {
-            if ($p1index <> $t) {
+            if ($p1index != $t) {
                 if (isset($ph1tmp['remote-gateway']) && $ph1tmp['remote-gateway'] == $pconfig['remote-gateway'] && !isset($ph1tmp['disabled'])) {
                     $input_errors[] = sprintf(gettext('The remote gateway "%s" is already used by phase1 "%s".'), $pconfig['remote-gateway'], $ph1tmp['descr']);
                 }
@@ -410,8 +410,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         /* if the remote gateway changed and the interface is not WAN then remove route */
-        if ($pconfig['interface'] <> "wan") {
-            if ($old_ph1ent['remote-gateway'] <> $pconfig['remote-gateway']) {
+        if ($pconfig['interface'] != "wan") {
+            if ($old_ph1ent['remote-gateway'] != $pconfig['remote-gateway']) {
                 /* XXX does this even apply? only use of system.inc at the top! */
                 system_host_route($old_ph1ent['remote-gateway'], $old_ph1ent['remote-gateway'], true, false);
             }
@@ -657,7 +657,7 @@ include("head.inc");
 
                       $grouplist = return_gateway_groups_array();
                       foreach ($grouplist as $name => $group) {
-                          if ($group[0]['vip'] <> "") {
+                          if ($group[0]['vip'] != "") {
                               $vipif = $group[0]['vip'];
                           } else {
                               $vipif = $group[0]['int'];

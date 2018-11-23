@@ -196,7 +196,7 @@ function cert_import(& $cert, $crt_str, $key_str)
     $issuer = cert_get_issuer($crt_str, false);
 
     // Find my issuer unless self-signed
-    if($issuer <> $subject) {
+    if($issuer != $subject) {
         $issuer_crt =& lookup_ca_by_subject($issuer);
         if($issuer_crt) {
             $cert['caref'] = $issuer_crt['refid'];

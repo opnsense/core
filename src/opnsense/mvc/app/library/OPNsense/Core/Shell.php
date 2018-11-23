@@ -100,7 +100,7 @@ class Shell
         if (!$this->simulate) {
             exec("$command 2>&1", $output, $retval);
 
-            if (($retval <> 0) && ($mute === false)) {
+            if (($retval != 0) && ($mute === false)) {
                 // TODO: log
                 unset($output);
             }

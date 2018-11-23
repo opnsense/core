@@ -31,7 +31,7 @@ function rrd_create($rrdcreatecmd)
     $rrdcreateoutput = array();
     $rrdcreatereturn = 0;
     $_gb = exec("$rrdcreatecmd 2>&1", $rrdcreateoutput, $rrdcreatereturn);
-    if ($rrdcreatereturn <> 0) {
+    if ($rrdcreatereturn != 0) {
         $rrdcreateoutput = implode(" ", $rrdcreateoutput);
         log_error(sprintf('RRD create failed exited with %s, the error is: %s', $rrdcreatereturn, $rrdcreateoutput));
     }
@@ -138,7 +138,7 @@ function rrd_configure($verbose = false)
         /* process all real and pseudo interfaces */
         foreach ($ifdescrs as $ifname => $ifdescr) {
             $temp = get_real_interface($ifname);
-            if ($temp <> "") {
+            if ($temp != "") {
                 $realif = $temp;
             }
 

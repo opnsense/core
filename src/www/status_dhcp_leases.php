@@ -183,11 +183,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $f = $f+2;
                     break;
                 case "client-hostname":
-                    if($data[$f+1] <> "") {
+                    if($data[$f+1] != "") {
                         $leases[$l]['hostname'] = preg_replace('/"/','',$data[$f+1]);
                     } else {
                         $hostname = gethostbyaddr($leases[$l]['ip']);
-                        if ($hostname <> "") {
+                        if ($hostname != "") {
                             $leases[$l]['hostname'] = $hostname;
                         }
                     }
