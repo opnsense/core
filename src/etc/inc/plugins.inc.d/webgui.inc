@@ -76,7 +76,7 @@ function webgui_configure_do($verbose = false, $interface = '')
     $ca = '';
 
     /* non-standard port? */
-    if (isset($config['system']['webgui']['port']) && $config['system']['webgui']['port'] != "") {
+    if (isset($config['system']['webgui']['port']) && $config['system']['webgui']['port'] != '') {
         $portarg = "{$config['system']['webgui']['port']}";
     }
 

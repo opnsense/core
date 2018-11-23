@@ -365,7 +365,7 @@ function filter_configure_sync($verbose = false, $flush_states = false)
         $limitrules .= "set ruleset-optimization basic\n";
     }
 
-    if ($config['system']['optimization'] != "") {
+    if ($config['system']['optimization'] != '') {
         $limitrules .= "set optimization {$config['system']['optimization']}\n";
         if ($config['system']['optimization'] == "conservative") {
             $limitrules .= "set timeout { udp.first 300, udp.single 150, udp.multiple 900 }\n";

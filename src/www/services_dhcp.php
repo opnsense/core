@@ -1139,7 +1139,7 @@ include("head.inc");
                     $i = 0;
                     foreach ($config['dhcpd'][$if]['staticmap'] as $mapent): ?>
 <?php
-                        if($mapent['mac'] != "" || $mapent['ipaddr'] != ""): ?>
+                        if($mapent['mac'] != '' || $mapent['ipaddr'] != ''): ?>
                     <tr>
                       <td>
 <?php

@@ -148,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    if (($pconfig['monitor'] != "") && !is_ipaddr($pconfig['monitor']) && $pconfig['monitor'] != "dynamic") {
+    if (($pconfig['monitor'] != '') && !is_ipaddr($pconfig['monitor']) && $pconfig['monitor'] != 'dynamic') {
         $input_errors[] = gettext("A valid monitor IP address must be specified.");
     }
     /* only allow correct IPv4 and IPv6 gateway addresses */

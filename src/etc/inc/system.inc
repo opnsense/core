@@ -190,7 +190,7 @@ function system_resolvconf_generate($verbose = false)
         $dnsgw = "dns{$dnscounter}gw";
         if (isset($syscfg[$dnsgw])) {
             $gwname = $syscfg[$dnsgw];
-            if (($gwname != "") && ($gwname != "none")) {
+            if (($gwname != '') && ($gwname != 'none')) {
                 $gatewayip = lookup_gateway_ip_by_name($gwname);
                 if (is_ipaddrv4($gatewayip)) {
                     /* dns server array starts at 0 */

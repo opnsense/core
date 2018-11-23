@@ -55,7 +55,7 @@ function ca_import(& $ca, $str, $key="", $serial=0) {
     if (is_array($config['ca'])) {
         foreach ($config['ca'] as & $oca) {
             $issuer = cert_get_issuer($oca['crt']);
-            if($ca['refid']!=$oca['refid'] && $issuer==$subject) {
+            if ($ca['refid'] != $oca['refid'] && $issuer == $subject) {
                 $oca['caref'] = $ca['refid'];
             }
         }

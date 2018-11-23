@@ -138,7 +138,7 @@ function rrd_configure($verbose = false)
         /* process all real and pseudo interfaces */
         foreach ($ifdescrs as $ifname => $ifdescr) {
             $temp = get_real_interface($ifname);
-            if ($temp != "") {
+            if ($temp != '') {
                 $realif = $temp;
             }
 

@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         foreach ($del_items as $p1entrydel) {
             /* remove static route if interface is not WAN */
-            if ($a_phase1[$p1entrydel]['interface'] != "wan") {
+            if ($a_phase1[$p1entrydel]['interface'] != 'wan') {
                 /* XXX does this even apply? only use of system.inc at the top! */
                 system_host_route($a_phase1[$p1entrydel]['remote-gateway'], $a_phase1[$p1entrydel]['remote-gateway'], true, false);
             }
@@ -387,7 +387,7 @@ $( document ).ready(function() {
 
                             $grouplist = return_gateway_groups_array();
                             foreach ($grouplist as $name => $group) {
-                                if ($group[0]['vip'] != "") {
+                                if ($group[0]['vip'] != '') {
                                     $vipif = $group[0]['vip'];
                                 } else {
                                     $vipif = $group[0]['int'];
