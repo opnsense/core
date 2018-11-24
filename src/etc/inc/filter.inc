@@ -301,7 +301,7 @@ function filter_configure_sync($verbose = false, $flush_states = false)
         }
     }
 
-    filter_pflog_start();
+    filter_pflog_start($verbose);
 
     if ($verbose) {
         echo 'Configuring firewall.';

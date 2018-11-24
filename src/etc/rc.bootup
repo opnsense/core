@@ -100,7 +100,6 @@ interfaces_configure(true);
 
 system_resolvconf_generate(true);
 filter_configure_sync(true);
-filter_pflog_start(true);
 setup_gateways_monitor(true);
 plugins_configure('earlybootup', true);
 system_cron_configure(true, true);
