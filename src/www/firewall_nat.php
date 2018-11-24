@@ -517,6 +517,10 @@ $( document ).ready(function() {
                       <td colspan="12"><?=gettext("Linked rule");?></td>
                     </tr>
                     <tr>
+                      <td><i class="fa fa-arrows-h fa-fw text-muted"></i></td>
+                      <td colspan="12"><?=gettext("Disabled Linked rule");?></td>
+                    </tr>
+                    <tr>
                       <td><i class="fa fa-list fa-fw text-primary"></i></td>
                       <td colspan="12"><?=gettext("Alias (click to view/edit)");?></td>
                     </tr>
