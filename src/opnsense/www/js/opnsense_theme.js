@@ -48,7 +48,7 @@ $(document).ready(function () {
             if (that.next('div').hasClass('in')) {
                 /* no action needed */
             } else if ((that.next().is('a')) || (that.is('a:last-child'))) {
-                activeremove(this);
+                close_submenu(this);
             } else {
                 var offsetTop = that.offset().top;
                 var winscrTop = $window.scrollTop();
@@ -100,20 +100,20 @@ $(document).ready(function () {
         layer2_div.off(mouse);
     }
 
-    /* trigger mouseevents on startup */
+    /* trigger mouseevents and remove opened submenus on startup */
     function trigger_sidebar() {
         layer1_a.first().trigger('mouseenter').trigger('mouseleave');
         layer1_div.removeClass('in');
         layer2_div.removeClass('in');
     }
 
-    /* transition duration - time */
+    /* menu delay - transition duration - time */
     function transition_duration(time) {
         $.fn.collapse.Constructor.TRANSITION_DURATION = time;
     }
 
-    /* remove open submenu */
-    function activeremove(r) {
+    /* close all non-focused submenus */
+    function close_submenu(r) {
         $(r).nextAll('a').addClass('collapsed').attr('aria-expanded', 'false');
         $(r).prevAll('a').addClass('collapsed').attr('aria-expanded', 'false');
         $(r).nextAll('div').removeClass('in').attr('aria-expanded', 'false');
@@ -152,7 +152,7 @@ $(document).ready(function () {
             $(this).blur();
         });
 
-        /* sidebar mouseenter */
+        /* main function - sidebar mouseenter */
         mainmenu.mouseenter(function () {
             if (navigation.hasClass('col-sidebar-left')) {
                 transition_duration(0);
@@ -163,9 +163,9 @@ $(document).ready(function () {
             }
         });
 
-        /* sidebar mouseleave */
+        /* main function - sidebar mouseleave */
         mainmenu.mouseleave(function () {
-            if ($('#navigation').hasClass('col-sidebar-left')) {
+            if (navigation.hasClass('col-sidebar-left')) {
                 layer1_a.attr('aria-expanded', 'false').next('div').removeClass('in');
                 layer2_a.attr('aria-expanded', 'false').next('div').removeClass('in');
                 layer1_div.removeAttr('style');
@@ -176,7 +176,7 @@ $(document).ready(function () {
             }
         });
 
-        /* on resize - toggle sidebar / main navigation */
+        /* on resize - toggle sidebar/main navigation */
         $(window).on('resize', function () {
             var win = $(this);
             winHeight = win.height();
