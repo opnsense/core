@@ -193,6 +193,7 @@ if __name__ == '__main__':
     Main.set_config(
         load_config(cmd_args.config)
     )
+    from sqlite3_helper import check_and_repair
 
     if cmd_args.console:
         # command line start
@@ -216,7 +217,6 @@ if __name__ == '__main__':
     elif cmd_args.repair:
         # force a database repair, when
         try:
-            from sqlite3_helper import check_and_repair
             lck = open(Main.config.pid_filename, 'a+')
             fcntl.flock(lck, fcntl.LOCK_EX | fcntl.LOCK_NB)
             check_and_repair(filename_mask='%s/*.sqlite' % Main.config.database_dir, force_repair=True)
