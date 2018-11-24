@@ -75,9 +75,8 @@ def aggregate_flowd(config, do_vacuum=False):
             # send to aggregator
             for stream_agg_object in stream_agg_objects:
                 # class add() may change the flow contents for processing, its better to isolate
-                # paremeters here.
-                flow_record_cpy = copy.copy(flow_record)
-                stream_agg_object.add(flow_record_cpy)
+                # parameters here.
+                stream_agg_object.add(copy.copy(flow_record))
             commit_record_count += 1
             prev_recv = flow_record['recv']
 
@@ -166,11 +165,14 @@ class Main(object):
             check_rotate(self.config.flowd_source, self.config.pid_filename)
 
             # wait for next pass, exit on sigterm
-            for i in range(30):
-                if self.running:
-                    time.sleep(0.5)
-                else:
-                    break
+            if Main.config.single_pass:
+                break
+            else:
+                for i in range(30):
+                    if self.running:
+                        time.sleep(0.5)
+                    else:
+                        break
 
     def signal_handler(self, sig, frame):
         """ end (run) loop on signal

@@ -50,6 +50,7 @@ class Config(object):
     pid_filename = '/var/run/flowd_aggregate.pid'
     flowd_source = '/var/log/flowd.log'
     database_dir = '/var/netflow'
+    single_pass = False
 
     def __init__(self, **kwargs):
         for key in kwargs:
