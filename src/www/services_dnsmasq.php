@@ -1,32 +1,31 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2003-2004 Bob Zoller <bob@kludgebox.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2003-2004 Bob Zoller <bob@kludgebox.com>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
@@ -49,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['domain_needed'] = isset($config['dnsmasq']['domain_needed']);
     $pconfig['no_private_reverse'] = isset($config['dnsmasq']['no_private_reverse']);
     $pconfig['strictbind'] = isset($config['dnsmasq']['strictbind']);
+    $pconfig['dnssec'] = isset($config['dnsmasq']['dnssec']);
     // simple text types
     $pconfig['port'] = !empty($config['dnsmasq']['port']) ? $config['dnsmasq']['port'] : "";
     $pconfig['custom_options'] = !empty($config['dnsmasq']['custom_options']) ? $config['dnsmasq']['custom_options'] : "";
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $unbound_port = empty($config['unbound']['port']) ? "53" : $config['unbound']['port'];
         $dnsmasq_port = empty($pconfig['port']) ? "53" : $pconfig['port'];
         if (!empty($pconfig['enable']) && isset($config['unbound']['enable']) && $dnsmasq_port == $unbound_port) {
-            $input_errors[] = gettext("The DNS Resolver is still active. Disable it before enabling the DNS Forwarder.");
+            $input_errors[] = gettext('Unbound is still active on the same port. Disable it before enabling Dnsmasq.');
         }
 
         if (!empty($pconfig['custom_options'])) {
@@ -93,6 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['dnsmasq']['domain_needed'] = !empty($pconfig['domain_needed']);
             $config['dnsmasq']['no_private_reverse'] = !empty($pconfig['no_private_reverse']);
             $config['dnsmasq']['strictbind'] = !empty($pconfig['strictbind']);
+            $config['dnsmasq']['dnssec'] = !empty($pconfig['dnssec']);
             if (!empty($pconfig['regdhcpdomain'])) {
                 $config['dnsmasq']['regdhcpdomain'] = $pconfig['regdhcpdomain'];
             } elseif (isset($config['dnsmasq']['regdhcpdomain'])) {
@@ -158,6 +159,7 @@ include("head.inc");
 //<![CDATA[
 $( document ).ready(function() {
   $("#show_advanced_dns").click(function(event){
+    event.preventDefault();
     $("#showadvbox").hide();
     $("#showadv").show();
   });
@@ -171,7 +173,7 @@ $( document ).ready(function() {
     // delete single
     BootstrapDialog.show({
       type:BootstrapDialog.TYPE_DANGER,
-      title: "<?= gettext("DNS Forwarder");?>",
+      title: "<?= gettext('Dnsmasq') ?>",
       message: "<?=gettext("Do you really want to delete this host?");?>",
       buttons: [{
                 label: "<?= gettext("No");?>",
@@ -194,7 +196,7 @@ $( document ).ready(function() {
     // delete single
     BootstrapDialog.show({
       type:BootstrapDialog.TYPE_DANGER,
-      title: "<?= gettext("DNS Forwarder");?>",
+      title: "<?= gettext('Dnsmasq') ?>",
       message: "<?=gettext("Do you really want to delete this domain override?");?>",
       buttons: [{
                 label: "<?= gettext("No");?>",
@@ -222,7 +224,7 @@ $( document ).ready(function() {
       <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
       <?php if (isset($savemsg)) print_info_box($savemsg); ?>
       <?php if (is_subsystem_dirty('hosts')): ?><br/>
-      <?php print_info_box_apply(gettext("The DNS forwarder configuration has been changed.") . "<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
+      <?php print_info_box_apply(gettext("The Dnsmasq configuration has been changed.") . "<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
       <?php endif; ?>
       <section class="col-xs-12">
         <div class="content-box">
@@ -230,7 +232,7 @@ $( document ).ready(function() {
             <div class="table-responsive">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <td style="width:22%"><strong><?=gettext("General DNS Forwarder Options");?></strong></td>
+                  <td style="width:22%"><strong><?=gettext("General options");?></strong></td>
                   <td style="width:78%;text-align:right">
                     <small><?=gettext("full help");?> </small>
                     <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
@@ -240,18 +242,25 @@ $( document ).ready(function() {
                   <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?></td>
                   <td style="width:78%">
                     <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
-                     <strong><?=gettext("Enable DNS Forwarder");?></strong>
+                    <?= gettext('Enable Dnsmasq') ?>
+                  </td>
+                </tr>
+                <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('DNSSEC') ?></td>
+                  <td>
+                    <input name="dnssec" type="checkbox" value="yes" <?=!empty($pconfig['dnssec']) ? 'checked="checked"' : '' ?> />
+                    <?= gettext('Enable DNSSEC Support') ?>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_regdhcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Registration");?></td>
                   <td>
                     <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Register DHCP leases in DNS forwarder");?></strong>
+                    <?= gettext('Register DHCP leases') ?>
                     <div class="hidden" data-for="help_for_regdhcp">
                       <?= gettext("If this option is set, then machines that specify " .
                         "their hostname when requesting a DHCP lease will be registered " .
-                        "in the DNS forwarder, so that their name can be resolved.") ?>
+                        "in Dnsmasq, so that their name can be resolved.") ?>
                     </div>
                   </td>
                 </tr>
@@ -271,10 +280,10 @@ $( document ).ready(function() {
                   <td><a id="help_for_regdhcpstatic" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Static DHCP");?></td>
                   <td>
                     <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Register DHCP static mappings in DNS forwarder");?></strong>
+                    <?= gettext('Register DHCP static mappings') ?>
                     <div class="hidden" data-for="help_for_regdhcpstatic">
                       <?= sprintf(gettext("If this option is set, then DHCP static mappings will ".
-                          "be registered in the DNS forwarder, so that their name can be ".
+                          "be registered in Dnsmasq, so that their name can be ".
                           "resolved. You should also set the domain in %s".
                           "System: General setup%s to the proper value."),'<a href="system_general.php">','</a>');?>
                     </div>
@@ -284,7 +293,7 @@ $( document ).ready(function() {
                   <td><a id="help_for_dhcpfirst" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer DHCP");?></td>
                   <td>
                     <input name="dhcpfirst" type="checkbox" id="dhcpfirst" value="yes" <?=!empty($pconfig['dhcpfirst']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Resolve DHCP mappings first");?></strong>
+                    <?= gettext('Resolve DHCP mappings first') ?>
                     <div class="hidden" data-for="help_for_dhcpfirst">
                       <?= sprintf(gettext("If this option is set, then DHCP mappings will ".
                           "be resolved before the manual list of names below. This only ".
@@ -295,52 +304,48 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_strict_order" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Query Forwarding");?></td>
                   <td>
-                    <table class="table table-striped table-condensed">
-                      <tr>
-                        <td>
-                          <input name="strict_order" type="checkbox" id="strict_order" value="yes" <?=!empty($pconfig['strict_order']) ? "checked=\"checked\"" : "";?> />
-                          <strong><?=gettext("Query DNS servers sequentially");?></strong>
-                          <div class="hidden" data-for="help_for_strict_order">
-                            <?= gettext("If this option is set, the DNS Forwarder (dnsmasq) will ".
-                              "query the DNS servers sequentially in the order specified (System: " .
-                              "General Setup: DNS Servers), rather than all at once in parallel.") ?>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <input name="domain_needed" type="checkbox" id="domain_needed" value="yes" <?=!empty($pconfig['domain_needed']) ? "checked=\"checked\"" : "";?> />
-                          <strong><?=gettext("Require domain");?></strong>
-                          <div class="hidden" data-for="help_for_strict_order">
-                            <?= gettext('If this option is set, the DNS Forwarder (dnsmasq) will '.
-                              'not forward A or AAAA queries for plain names, without dots or ' .
-                              'domain parts, to upstream name servers. If the name is not known ' .
-                              'from /etc/hosts or DHCP then a "not found" answer is returned.') ?>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <input name="no_private_reverse" type="checkbox" id="no_private_reverse" value="yes" <?=!empty($pconfig['no_private_reverse']) ? "checked=\"checked\"" : "";?> />
-                          <strong><?=gettext("Do not forward private reverse lookups");?></strong>
-                          <div class="hidden" data-for="help_for_strict_order">
-                            <?= gettext('If this option is set, the DNS Forwarder (dnsmasq) will '.
-                              'not forward reverse DNS lookups (PTR) for private addresses ' .
-                              '(RFC 1918) to upstream name servers. Any entries in the Domain ' .
-                              'Overrides section forwarding private "n.n.n.in-addr.arpa" names ' .
-                              'to a specific server are still forwarded. If the IP to name is ' .
-                              'not known from /etc/hosts, DHCP or a specific domain override ' .
-                              'then a "not found" answer is immediately returned.') ?>
-                          </div>
-                        </td>
-                      </tr>
-                    </table>
+                    <input name="strict_order" type="checkbox" id="strict_order" value="yes" <?=!empty($pconfig['strict_order']) ? "checked=\"checked\"" : "";?> />
+                    <?= gettext('Query DNS servers sequentially') ?>
+                    <div class="hidden" data-for="help_for_strict_order">
+                      <?= gettext("If this option is set, Dnsmasq will ".
+                        "query the DNS servers sequentially in the order specified (System: " .
+                        "General Setup: DNS Servers), rather than all at once in parallel.") ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>
+                    <input name="domain_needed" type="checkbox" id="domain_needed" value="yes" <?=!empty($pconfig['domain_needed']) ? "checked=\"checked\"" : "";?> />
+                    <?= gettext('Require domain') ?>
+                    <div class="hidden" data-for="help_for_strict_order">
+                      <?= gettext('If this option is set, Dnsmasq will '.
+                        'not forward A or AAAA queries for plain names, without dots or ' .
+                        'domain parts, to upstream name servers. If the name is not known ' .
+                        'from /etc/hosts or DHCP then a "not found" answer is returned.') ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>
+                    <input name="no_private_reverse" type="checkbox" id="no_private_reverse" value="yes" <?=!empty($pconfig['no_private_reverse']) ? "checked=\"checked\"" : "";?> />
+                    <?= gettext('Do not forward private reverse lookups') ?>
+                    <div class="hidden" data-for="help_for_strict_order">
+                      <?= gettext('If this option is set, Dnsmasq will '.
+                        'not forward reverse DNS lookups (PTR) for private addresses ' .
+                        '(RFC 1918) to upstream name servers. Any entries in the Domain ' .
+                        'Overrides section forwarding private "n.n.n.in-addr.arpa" names ' .
+                        'to a specific server are still forwarded. If the IP to name is ' .
+                        'not known from /etc/hosts, DHCP or a specific domain override ' .
+                        'then a "not found" answer is immediately returned.') ?>
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Listen Port");?></td>
                   <td>
-                    <input name="port" type="text" id="port" size="6" <?=!empty($pconfig['port']) ? "value=\"{$pconfig['port']}\"" : "";?> />
+                    <input name="port" type="text" id="port" size="6" placeholder="53" <?=!empty($pconfig['port']) ? "value=\"{$pconfig['port']}\"" : "";?> />
                     <div class="hidden" data-for="help_for_port">
                       <?=gettext("The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53.");?>
                     </div>
@@ -357,28 +362,31 @@ $( document ).ready(function() {
 <?php endforeach ?>
                     </select>
                     <div class="hidden" data-for="help_for_interfaces">
-                      <?=gettext("Interface IPs used by the DNS Forwarder for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.");?>
+                      <?=gettext("Interface IPs used by Dnsmasq for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.");?>
                     </div>
-                    <br/>
+                  </td>
+                </tr>
+                  <td><a id="help_for_strictbind" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Bind Mode') ?></td>
+                  <td>
                     <input name="strictbind" type="checkbox" id="strictbind" value="yes" <?= !empty($pconfig['strictbind']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Strict Interface Binding");?></strong>
-                    <div class="hidden" data-for="help_for_interfaces">
-                      <?= gettext("If this option is set, the DNS forwarder will only bind to the interfaces containing the IP addresses selected above, rather than binding to all interfaces and discarding queries to other addresses."); ?>
-                      <br /><br />
-                      <?= gettext("NOTE: This option does NOT work with IPv6. If set, dnsmasq will not bind to IPv6 addresses."); ?>
+                    <?= gettext('Strict Interface Binding') ?>
+                    <div class="hidden" data-for="help_for_strictbind">
+                      <?= gettext("If this option is set, Dnsmasq will only bind to the interfaces containing the IP addresses selected above, rather than binding to all interfaces and discarding queries to other addresses."); ?>
+                      <?= gettext("This option does not work with IPv6. If set, Dnsmasq will not bind to IPv6 addresses."); ?>
                     </div>
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
+                  <td><a id="help_for_advanced" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Advanced') ?></td>
                   <td>
-                    <div id="showadvbox" <?=!empty($pconfig['custom_options']) ? "style='display:none'" : ""; ?>>
-                      <input type="button" class="btn btn-default btn-xs" id="show_advanced_dns" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+                    <div id="showadvbox" <?= !empty($pconfig['custom_options']) ? "style='display:none'" : '' ?>>
+                      <button class="btn btn-default btn-xs" id="show_advanced_dns" value="yes"><?= gettext('Show advanced option') ?></button>
                     </div>
-                    <div id="showadv" <?=empty($pconfig['custom_options']) ? "style='display:none'" : ""; ?>>
-                      <strong><?=gettext("Advanced");?><br /></strong>
-                      <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
-                      <?=gettext("Enter any additional options you would like to add to the dnsmasq configuration here, separated by a space or newline"); ?>
+                    <div id="showadv" <?= empty($pconfig['custom_options']) ? "style='display:none'" : "" ?>>
+                      <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
+                    </div>
+                    <div class="hidden" data-for="help_for_advanced">
+                      <?=gettext("Enter any additional options you would like to add to the Dnsmasq configuration here, separated by a space or newline"); ?>
                     </div>
                   </td>
                 </tr>
@@ -390,10 +398,10 @@ $( document ).ready(function() {
                 </tr>
                 <tr>
                   <td colspan="2">
-                    <?= sprintf(gettext("If the DNS forwarder is enabled, the DHCP".
+                    <?= sprintf(gettext("If Dnsmasq is enabled, the DHCP".
                     " service (if enabled) will automatically serve the LAN IP".
                     " address as a DNS server to DHCP clients so they will use".
-                    " the forwarder. The DNS forwarder will use the DNS servers".
+                    " the forwarder. Dnsmasq will use the DNS servers".
                     " entered in %sSystem: General setup%s".
                     " or those obtained via DHCP or PPP on WAN if the \"Allow".
                     " DNS server list to be overridden by DHCP/PPP on WAN\"".

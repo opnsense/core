@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $unbound_port = empty($pconfig['port']) ? "53" : $pconfig['port'];
         $dnsmasq_port = empty($config['dnsmasq']['port']) ? "53" : $config['dnsmasq']['port'];
         if (isset($pconfig['enable']) && isset($config['dnsmasq']['enable']) && $unbound_port == $dnsmasq_port) {
-            $input_errors[] = gettext("The DNS Forwarder is still active. Disable it before enabling the DNS Resolver.");
+            $input_errors[] = gettext('Dnsmasq is still active on the same port. Disable it before enabling Unbound.');
         }
         if (!empty($pconfig['regdhcpdomain']) && !is_domain($pconfig['regdhcpdomain'])) {
             $input_errors[] = gettext("The domain may only contain the characters a-z, 0-9, '-' and '.'.");

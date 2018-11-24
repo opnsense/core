@@ -775,7 +775,7 @@ include("head.inc");
                         <input name="dns1" type="text" value="<?=$pconfig['dns1'];?>" /><br />
                         <input name="dns2" type="text" value="<?=$pconfig['dns2'];?>" />
                         <div class="hidden" data-for="help_for_dns">
-                          <?=gettext("NOTE: leave blank to use the system default DNS servers - this interface's IP if DNS forwarder is enabled, otherwise the servers configured on the General page.");?>
+                          <?= gettext('Leave blank to use the system default DNS servers: This interface IP address if a DNS service is enabled or the configured global DNS servers.') ?>
                         </div>
                       </td>
                     </tr>
@@ -1099,15 +1099,6 @@ include("head.inc");
                         endif; ?>
                         <input name="if" type="hidden" value="<?=$if;?>" />
                         <input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>"  />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td colspan="2">
-                        <?= sprintf(gettext('The DNS servers entered in %sSystem: ' .
-                          'General setup%s (or the %sDNS forwarder%s, if enabled), ' .
-                          'will be assigned to clients by the DHCP server.'),
-                          '<a href="system_general.php">', '</a>',
-                          '<a href="services_dnsmasq.php">','</a>'); ?>
                       </td>
                     </tr>
                   </table>

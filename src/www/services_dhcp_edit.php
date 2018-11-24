@@ -411,7 +411,7 @@ include("head.inc");
                     <input name="dns1" type="text" value="<?=$pconfig['dns1'];?>" /><br/>
                     <input name="dns2" type="text" value="<?=$pconfig['dns2'];?>" />
                     <div class="hidden" data-for="help_for_dns">
-                      <?=gettext("NOTE: leave blank to use the system default DNS servers - this interface's IP if DNS forwarder is enabled, otherwise the servers configured on the General page.");?>
+                      <?= gettext('Leave blank to use the system default DNS servers: This interface IP address if a DNS service is enabled or the configured global DNS servers.') ?>
                     </div>
                   </td>
                 </tr>
