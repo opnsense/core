@@ -35,7 +35,6 @@ import sys
 import ujson
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from lib.parse import parse_flow
-from lib.aggregate import BaseFlowAggregator
 import lib.aggregates
 import params
 
