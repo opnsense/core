@@ -100,7 +100,7 @@ $(document).ready(function () {
         layer2_div.off(mouse);
     }
 
-    /* trigger mouseevents and remove opened classes on startup */
+    /* trigger mouseevents and remove opened submenus on startup */
     function trigger_sidebar() {
         layer1_a.first().trigger('mouseenter').trigger('mouseleave');
         layer1_div.removeClass('in');
