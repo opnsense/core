@@ -243,6 +243,8 @@ EOF;
     $dnssecstripped = !empty($config['unbound']['dnssecstripped']) ? 'yes' : 'no';
     $serveexpired = !empty($config['unbound']['serveexpired']) ? 'yes' : 'no';
 
+    $do_ip6 = isset($config['system']['ipv6allow']) && !isset($config['system']['prefer_ipv4']) ? 'yes' : 'no';
+
     if (isset($config['unbound']['regdhcp'])) {
         // include dynamic leases
         @touch('/var/unbound/dhcpleases.conf');
@@ -299,7 +301,7 @@ hide-identity: {$hide_id}
 hide-version: {$hide_version}
 harden-referral-path: no
 do-ip4: yes
-do-ip6: yes
+do-ip6: {$do_ip6}
 do-udp: yes
 do-tcp: yes
 do-daemonize: yes
