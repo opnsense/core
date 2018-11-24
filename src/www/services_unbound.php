@@ -145,6 +145,7 @@ include_once("head.inc");
 <script>
     $( document ).ready(function() {
         $("#show_advanced_dns").click(function(){
+            event.preventDefault();
             $(this).parent().parent().hide();
             $(".showadv").show();
             $(window).trigger('resize');
@@ -300,7 +301,7 @@ include_once("head.inc");
                       <tr>
                         <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
                         <td>
-                          <input id="show_advanced_dns" type="button" class="btn btn-xs btn-default"  value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+                          <button id="show_advanced_dns" class="btn btn-xs btn-default" value="yes"><?= gettext('Show advanced option') ?></button>
                         </td>
                       </tr>
                       <tr class="showadv" style="display:none">
