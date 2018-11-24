@@ -56,6 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['kill_states'] = isset($config['system']['kill_states']);
     $pconfig['skip_rules_gw_down'] = isset($config['system']['skip_rules_gw_down']);
     $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
+    $pconfig['gw_switch_group4'] = isset($config['system']['gw_switch_group4']) ? $config['system']['gw_switch_group4'] : null;
+    $pconfig['gw_switch_group6'] = isset($config['system']['gw_switch_group6']) ? $config['system']['gw_switch_group6'] : null;
     $pconfig['lb_use_sticky'] = isset($config['system']['lb_use_sticky']);
     $pconfig['pf_share_forward'] = isset($config['system']['pf_share_forward']);
     $pconfig['pf_disable_force_gw'] = isset($config['system']['pf_disable_force_gw']);
@@ -223,6 +225,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['gw_switch_default']);
         }
 
+        if (!empty($pconfig['gw_switch_group4'])) {
+            $config['system']['gw_switch_group4'] = $pconfig['gw_switch_group4'];
+        } elseif (isset($config['system']['gw_switch_group4'])) {
+            unset($config['system']['gw_switch_group4']);
+        }
+
+        if (!empty($pconfig['gw_switch_group6'])) {
+            $config['system']['gw_switch_group6'] = $pconfig['gw_switch_group6'];
+        } elseif (isset($config['system']['gw_switch_group6'])) {
+            unset($config['system']['gw_switch_group6']);
+        }
+
         if (!empty($pconfig['ip_change_kill_states'])) {
             $config['system']['ip_change_kill_states'] = true;
         } elseif (isset($config['system']['ip_change_kill_states'])) {
@@ -382,7 +396,30 @@ include("head.inc");
                   <?=gettext("Allow default gateway switching"); ?>
                   <div class="hidden" data-for="help_for_gw_switch_default">
                     <?= gettext('If the link where the default gateway resides fails switch the default gateway to another available one.') ?>
+                    <?= gettext('When using default gatway switching use any available gateway or select a specific gateway group.') ?>
                   </div>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('IPv4 Gateway Group') ?></td>
+                <td>
+                  <select name="gw_switch_group4" class="selectpicker">
+                    <option value="" <?= empty($pconfig['gw_switch_group4']) ? 'selected="selected"' : '' ?>><?= gettext('Any available gatway') ?></option>
+<?php foreach (config_read_array('gateways', 'gateway_group') as $gwgroup): ?>
+                    <option value="<?= html_safe($gwgroup['name']) ?>" <?= $pconfig['gw_switch_group4'] == $gwgroup['name'] ? 'selected="selected"' : '' ?>><?= $gwgroup['name'] ?></option>
+<?php endforeach ?>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('IPv6 Gateway Group') ?></td>
+                <td>
+                  <select name="gw_switch_group6" class="selectpicker">
+                    <option value="" <?= empty($pconfig['gw_switch_group6']) ? 'selected="selected"' : '' ?>><?= gettext('Any available gatway') ?></option>
+<?php foreach (config_read_array('gateways', 'gateway_group') as $gwgroup): ?>
+                    <option value="<?= html_safe($gwgroup['name']) ?>" <?= $pconfig['gw_switch_group6'] == $gwgroup['name'] ? 'selected="selected"' : '' ?>><?= $gwgroup['name'] ?></option>
+<?php endforeach ?>
+                  </select>
                 </td>
               </tr>
             </table>
@@ -406,7 +443,12 @@ include("head.inc");
                                         "refer to this connection. Once the states expire, so will " .
                                         "the sticky connection. Further connections from that host " .
                                         "will be redirected to the next gateway in the round-robin."); ?>
-                  </div><br/>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
                   <input placeholder="<?=gettext("Source tracking timeout");?>" title="<?=gettext("Source tracking timeout");?>" name="srctrack" id="srctrack" type="text" value="<?= !empty($pconfig['srctrack']) ? $pconfig['srctrack'] : "";?>"/>
                   <div class="hidden" data-for="help_for_lb_use_sticky">
                     <?=gettext("Set the source tracking timeout for sticky connections in seconds. " .

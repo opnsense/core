@@ -309,6 +309,7 @@ function filter_configure_sync($verbose = false, $flush_states = false)
     }
 
     if (isset($config['system']['gw_switch_default'])) {
+        /* XXX gw_switch_group4 and gw_switch_group6 to pass down: */
         fixup_default_gateway();
     }
 
