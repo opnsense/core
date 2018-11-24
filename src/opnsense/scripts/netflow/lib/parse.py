@@ -48,8 +48,6 @@ PARSE_FLOW_FIELDS = [
     {'check': flowd.FIELD_GATEWAY_ADDR, 'target': 'gateway_addr'},
     {'check': flowd.FIELD_FLOW_TIMES, 'target': 'netflow_ver'}]
 
-# location of flowd logfiles to use
-FLOWD_LOG_FILES = '/var/log/flowd.log*'
 
 class Interfaces(object):
     """ mapper for local interface index to interface name (1 -> em0 for example)
@@ -57,34 +55,35 @@ class Interfaces(object):
     def __init__(self):
         """ construct local interface mapping
         """
-        self._ifIndex = dict()
+        self._if_index = dict()
         with tempfile.NamedTemporaryFile() as output_stream:
             subprocess.call(['/sbin/ifconfig', '-l'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
             output_stream.seek(0)
-            ifIndex=1
+            if_index = 1
             for line in output_stream.read().split('\n')[0].split():
-                self._ifIndex[str(ifIndex)] = line
-                ifIndex += 1
+                self._if_index["%s" % if_index] = line
+                if_index += 1
 
-    def if_device(self, ifIndex):
+    def if_device(self, if_index):
         """ convert index to device (if found)
         """
-        if str(ifIndex) in self._ifIndex:
+        if "%s" % if_index in self._if_index:
             # found, return interface name
-            return self._ifIndex[str(ifIndex)]
+            return self._if_index["%s" % if_index]
         else:
             # not found, return index
-            return str(ifIndex)
+            return "%s" % if_index
 
 
-def parse_flow(recv_stamp):
+def parse_flow(recv_stamp, flowd_source='/var/log/flowd.log'):
     """ parse flowd logs and yield records (dict type)
     :param recv_stamp: last receive timestamp (recv)
+    :param flowd_source: flowd logfile
     :return: iterator flow details
     """
     interfaces = Interfaces()
     parse_done = False
-    for filename in sorted(glob.glob(FLOWD_LOG_FILES)):
+    for filename in sorted(glob.glob('%s*' % flowd_source)):
         if parse_done:
             # log file contains older data (recv_stamp), break
             break

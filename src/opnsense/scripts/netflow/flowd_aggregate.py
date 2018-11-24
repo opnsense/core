@@ -1,6 +1,6 @@
 #!/usr/local/bin/python2.7
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2018 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -36,36 +36,36 @@ import glob
 import copy
 import syslog
 import traceback
-sys.path.insert(0, "/usr/local/opnsense/site-python")
-from sqlite3_helper import check_and_repair
+import argparse
+from lib import load_config
 from lib.parse import parse_flow
 from lib.aggregate import AggMetadata
 import lib.aggregates
-from daemonize import Daemonize
 
 
-MAX_FILE_SIZE_MB=10
-MAX_LOGS=10
+MAX_FILE_SIZE_MB = 10
+MAX_LOGS = 10
 
 
-def aggregate_flowd(do_vacuum=False):
+def aggregate_flowd(config, do_vacuum=False):
     """ aggregate collected flowd data
+    :param config: script configuration
     :param do_vacuum: vacuum database after cleanup
     :return: None
     """
     # init metadata (progress maintenance)
-    metadata = AggMetadata()
+    metadata = AggMetadata(config.database_dir)
 
     # register aggregate classes to stream data to
     stream_agg_objects = list()
     for agg_class in lib.aggregates.get_aggregators():
         for resolution in agg_class.resolutions():
-            stream_agg_objects.append(agg_class(resolution))
+            stream_agg_objects.append(agg_class(resolution, config.database_dir))
 
     # parse flow data and stream to registered consumers
     prev_recv = metadata.last_sync()
     commit_record_count = 0
-    for flow_record in parse_flow(prev_recv):
+    for flow_record in parse_flow(prev_recv, config.flowd_source):
         if flow_record is None or (prev_recv != flow_record['recv'] and commit_record_count > 100000):
             # commit data on receive timestamp change or last record
             for stream_agg_object in stream_agg_objects:
@@ -88,15 +88,17 @@ def aggregate_flowd(do_vacuum=False):
     del metadata
 
 
-def check_rotate():
+def check_rotate(filename, pid_filename):
     """ Checks if flowd log needs to be rotated, if so perform rotate.
         We keep [MAX_LOGS] number of logs containing approx. [MAX_FILE_SIZE_MB] data, the flowd data probably contains
         more detailed data then the stored aggregates.
+    :param filename: flowd logfile
+    :param pid_filename: filename of pid
     :return: None
     """
-    if os.path.getsize("/var/log/flowd.log")/1024/1024 > MAX_FILE_SIZE_MB:
+    if os.path.getsize(filename)/1024/1024 > MAX_FILE_SIZE_MB:
         # max filesize reached rotate
-        filenames = sorted(glob.glob('/var/log/flowd.log.*'), reverse=True)
+        filenames = sorted(glob.glob('%s.*' % filename), reverse=True)
         file_sequence = len(filenames)
         for filename in filenames:
             sequence = filename.split('.')[-1]
@@ -106,11 +108,11 @@ def check_rotate():
                 elif int(sequence) != 0:
                     os.rename(filename, filename.replace('.%s' % sequence, '.%06d' % (int(sequence)+1)))
             file_sequence -= 1
-        # rename /var/log/flowd.log
-        os.rename('/var/log/flowd.log', '/var/log/flowd.log.000001')
+        # rename flowd.log
+        os.rename(filename, '%s.000001' % filename)
         # signal flowd for new log file
-        if os.path.isfile('/var/run/flowd.pid'):
-            pid = open('/var/run/flowd.pid').read().strip()
+        if os.path.isfile(pid_filename):
+            pid = open(pid_filename).read().strip()
             if pid.isdigit():
                 try:
                     os.kill(int(pid), signal.SIGUSR1)
@@ -119,6 +121,12 @@ def check_rotate():
 
 
 class Main(object):
+    config = None
+
+    @classmethod
+    def set_config(cls, config):
+        cls.config = config
+
     def __init__(self):
         """ construct, hook signal handler and run aggregators
         :return: None
@@ -133,7 +141,7 @@ class Main(object):
         """
         # check database consistency / repair
         syslog.syslog(syslog.LOG_NOTICE, 'startup, check database.')
-        check_and_repair('/var/netflow/*.sqlite')
+        check_and_repair('%s/*.sqlite' % self.config.database_dir)
 
         vacuum_interval = (60*60*8) # 8 hour vacuum cycle
         vacuum_countdown = None
@@ -148,14 +156,15 @@ class Main(object):
 
             # run aggregate
             try:
-                aggregate_flowd(do_vacuum)
+                aggregate_flowd(self.config, do_vacuum)
                 if do_vacuum:
                     syslog.syslog(syslog.LOG_NOTICE, 'vacuum done')
             except:
                 syslog.syslog(syslog.LOG_ERR, 'flowd aggregate died with message %s' % (traceback.format_exc()))
                 return
             # rotate if needed
-            check_rotate()
+            check_rotate(self.config.flowd_source, self.config.pid_filename)
+
             # wait for next pass, exit on sigterm
             for i in range(30):
                 if self.running:
@@ -172,37 +181,52 @@ class Main(object):
         self.running = False
 
 
-if len(sys.argv) > 1 and 'console' in sys.argv[1:]:
-    # command line start
-    if 'profile' in sys.argv[1:]:
-        # start with profiling
-        import cProfile
-        import StringIO
-        import pstats
+if __name__ == '__main__':
+    # parse arguments and load config
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--config', help='configuration yaml', default=None)
+    parser.add_argument('--console', dest='console', help='run in console', action='store_true')
+    parser.add_argument('--profile', dest='profile', help='enable profiler', action='store_true')
+    parser.add_argument('--repair', dest='repair', help='init repair', action='store_true')
+    cmd_args = parser.parse_args()
 
-        pr = cProfile.Profile(builtins=False)
-        pr.enable()
-        Main()
-        pr.disable()
-        s = StringIO.StringIO()
-        sortby = 'cumulative'
-        ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-        ps.print_stats()
-        print s.getvalue()
+    Main.set_config(
+        load_config(cmd_args.config)
+    )
+
+    if cmd_args.console:
+        # command line start
+        if cmd_args.profile:
+            # start with profiling
+            import cProfile
+            import StringIO
+            import pstats
+
+            pr = cProfile.Profile(builtins=False)
+            pr.enable()
+            Main()
+            pr.disable()
+            s = StringIO.StringIO()
+            sortby = 'cumulative'
+            ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+            ps.print_stats()
+            print s.getvalue()
+        else:
+            Main()
+    elif cmd_args.repair:
+        # force a database repair, when
+        try:
+            from sqlite3_helper import check_and_repair
+            lck = open(Main.config.pid_filename, 'a+')
+            fcntl.flock(lck, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            check_and_repair(filename_mask='%s/*.sqlite' % Main.config.database_dir, force_repair=True)
+            lck.close()
+            os.remove(Main.config.pid_filename)
+        except IOError:
+            # already running, exit status 99
+            sys.exit(99)
     else:
-        Main()
-elif len(sys.argv) > 1 and 'repair' in sys.argv[1:]:
-    # force a database repair, when
-    try:
-        lck = open('/var/run/flowd_aggregate.pid', 'a+')
-        fcntl.flock(lck, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        check_and_repair(filename_mask='/var/netflow/*.sqlite', force_repair=True)
-        lck.close()
-        os.remove('/var/run/flowd_aggregate.pid')
-    except IOError:
-        # already running, exit status 99
-        sys.exit(99)
-else:
-    # Daemonize flowd aggregator
-    daemon = Daemonize(app="flowd_aggregate", pid='/var/run/flowd_aggregate.pid', action=Main)
-    daemon.start()
+        # Daemonize flowd aggregator
+        from daemonize import Daemonize
+        daemon = Daemonize(app="flowd_aggregate", pid=Main.config.pid_filename, action=Main)
+        daemon.start()

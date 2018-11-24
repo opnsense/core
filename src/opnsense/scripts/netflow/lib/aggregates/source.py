@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2018 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,13 @@
     --------------------------------------------------------------------------------------
     data aggregator type
 """
-from lib.aggregate import BaseFlowAggregator
+from . import BaseFlowAggregator
+
 
 class FlowSourceAddrTotals(BaseFlowAggregator):
     """ collect source totals
     """
-    target_filename = '/var/netflow/src_addr_%06d.sqlite'
+    target_filename = 'src_addr_%06d.sqlite'
     agg_fields = ['if', 'src_addr', 'direction']
 
     @classmethod
@@ -39,7 +40,7 @@ class FlowSourceAddrTotals(BaseFlowAggregator):
         """
         :return: list of sample resolutions
         """
-        return  [300, 3600, 86400]
+        return [300, 3600, 86400]
 
     @classmethod
     def history_per_resolution(cls):
@@ -48,17 +49,18 @@ class FlowSourceAddrTotals(BaseFlowAggregator):
         """
         # only save daily totals for a longer period of time, we probably only want to answer questions like
         # "top usage over the last 30 seconds, 5 minutes, etc.."
-        return  {300: 3600,
-                 3600: 86400,
-                 86400: cls.seconds_per_day(365)
-                 }
+        return {
+            300: 3600,
+            3600: 86400,
+            86400: cls.seconds_per_day(365)
+        }
 
-    def __init__(self, resolution):
+    def __init__(self, resolution, database_dir='/var/netflow'):
         """
         :param resolution: sample resultion (seconds)
         :return: None
         """
-        super(FlowSourceAddrTotals, self).__init__(resolution)
+        super(FlowSourceAddrTotals, self).__init__(resolution, database_dir)
 
     def add(self, flow):
         # most likely service (destination) port
@@ -70,10 +72,11 @@ class FlowSourceAddrTotals(BaseFlowAggregator):
         flow['direction'] = 'out'
         super(FlowSourceAddrTotals, self).add(flow)
 
+
 class FlowSourceAddrDetails(BaseFlowAggregator):
     """ collect source details on a daily resolution
     """
-    target_filename = '/var/netflow/src_addr_details_%06d.sqlite'
+    target_filename = 'src_addr_details_%06d.sqlite'
     agg_fields = ['if', 'direction', 'src_addr', 'dst_addr', 'service_port', 'protocol']
 
     @classmethod
@@ -81,21 +84,23 @@ class FlowSourceAddrDetails(BaseFlowAggregator):
         """
         :return: list of sample resolutions
         """
-        return  [86400]
+        return [86400]
 
     @classmethod
     def history_per_resolution(cls):
         """
         :return: dict sample resolution / expire time (seconds)
         """
-        return  {86400: cls.seconds_per_day(62)}
+        return {
+            86400: cls.seconds_per_day(62)
+        }
 
-    def __init__(self, resolution):
+    def __init__(self, resolution, database_dir='/var/netflow'):
         """
-        :param resolution: sample resultion (seconds)
+        :param resolution: sample resolution (seconds)
         :return: None
         """
-        super(FlowSourceAddrDetails, self).__init__(resolution)
+        super(FlowSourceAddrDetails, self).__init__(resolution, database_dir)
 
     def add(self, flow):
         # most likely service (destination) port

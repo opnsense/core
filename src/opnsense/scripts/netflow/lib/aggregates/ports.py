@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2018 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,13 @@
     --------------------------------------------------------------------------------------
     data aggregator type
 """
-from lib.aggregate import BaseFlowAggregator
+from . import BaseFlowAggregator
+
 
 class FlowDstPortTotals(BaseFlowAggregator):
     """ collect interface totals
     """
-    target_filename = '/var/netflow/dst_port_%06d.sqlite'
+    target_filename = 'dst_port_%06d.sqlite'
     agg_fields = ['if', 'protocol', 'dst_port']
 
     @classmethod
@@ -39,7 +40,7 @@ class FlowDstPortTotals(BaseFlowAggregator):
         """
         :return: list of sample resolutions
         """
-        return  [300, 3600, 86400]
+        return [300, 3600, 86400]
 
     @classmethod
     def history_per_resolution(cls):
@@ -48,17 +49,18 @@ class FlowDstPortTotals(BaseFlowAggregator):
         """
         # only save daily totals for a longer period of time, we probably only want to answer questions like
         # "top usage over the last 30 seconds, 5 minutes, etc.."
-        return  {300: 3600,
-                 3600: 86400,
-                 86400: cls.seconds_per_day(365)
-                 }
+        return {
+            300: 3600,
+            3600: 86400,
+            86400: cls.seconds_per_day(365)
+        }
 
-    def __init__(self, resolution):
+    def __init__(self, resolution, database_dir='/var/netflow'):
         """
         :param resolution: sample resultion (seconds)
         :return: None
         """
-        super(FlowDstPortTotals, self).__init__(resolution)
+        super(FlowDstPortTotals, self).__init__(resolution, database_dir)
 
     def add(self, flow):
         # most likely service (destination) port
