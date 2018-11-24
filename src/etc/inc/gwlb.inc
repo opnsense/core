@@ -839,7 +839,7 @@ function get_interface_gateway($wanif, &$dynamic = false)
                 break;
             }
         } elseif ($static && (empty($gw) || isset($gateway['defaultgw']))) {
-            /* use any available gateway for static setup but prefer default gatway */
+            /* use any available gateway for static setup but prefer default gateway */
             $gw = $gateway['gateway'];
             continue;
         }
@@ -889,7 +889,7 @@ function get_interface_gateway_v6($wanif, &$dynamic = false)
                 break;
             }
         } elseif ($static && (empty($gw) || isset($gateway['defaultgw']))) {
-            /* use any available gateway for static setup but prefer default gatway */
+            /* use any available gateway for static setup but prefer default gateway */
             $gw = $gateway['gateway'];
             continue;
         }

@@ -396,7 +396,7 @@ include("head.inc");
                   <?=gettext("Allow default gateway switching"); ?>
                   <div class="hidden" data-for="help_for_gw_switch_default">
                     <?= gettext('If the link where the default gateway resides fails switch the default gateway to another available one.') ?>
-                    <?= gettext('When using default gatway switching use any available gateway or select a specific gateway group.') ?>
+                    <?= gettext('When using default gateway switching use any available gateway or select a specific gateway group.') ?>
                   </div>
                 </td>
               </tr>
@@ -404,7 +404,7 @@ include("head.inc");
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('IPv4 Gateway Group') ?></td>
                 <td>
                   <select name="gw_switch_group4" class="selectpicker">
-                    <option value="" <?= empty($pconfig['gw_switch_group4']) ? 'selected="selected"' : '' ?>><?= gettext('Any available gatway') ?></option>
+                    <option value="" <?= empty($pconfig['gw_switch_group4']) ? 'selected="selected"' : '' ?>><?= gettext('Any available gateway') ?></option>
 <?php foreach (config_read_array('gateways', 'gateway_group') as $gwgroup): ?>
                     <option value="<?= html_safe($gwgroup['name']) ?>" <?= $pconfig['gw_switch_group4'] == $gwgroup['name'] ? 'selected="selected"' : '' ?>><?= $gwgroup['name'] ?></option>
 <?php endforeach ?>
@@ -415,7 +415,7 @@ include("head.inc");
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('IPv6 Gateway Group') ?></td>
                 <td>
                   <select name="gw_switch_group6" class="selectpicker">
-                    <option value="" <?= empty($pconfig['gw_switch_group6']) ? 'selected="selected"' : '' ?>><?= gettext('Any available gatway') ?></option>
+                    <option value="" <?= empty($pconfig['gw_switch_group6']) ? 'selected="selected"' : '' ?>><?= gettext('Any available gateway') ?></option>
 <?php foreach (config_read_array('gateways', 'gateway_group') as $gwgroup): ?>
                     <option value="<?= html_safe($gwgroup['name']) ?>" <?= $pconfig['gw_switch_group6'] == $gwgroup['name'] ? 'selected="selected"' : '' ?>><?= $gwgroup['name'] ?></option>
 <?php endforeach ?>
