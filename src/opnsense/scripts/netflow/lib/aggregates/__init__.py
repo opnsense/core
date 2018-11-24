@@ -32,6 +32,8 @@ import glob
 import syslog
 import datetime
 import sqlite3
+from lib.aggregate import convert_timestamp
+sqlite3.register_converter('timestamp', convert_timestamp)
 
 
 class BaseFlowAggregator(object):
