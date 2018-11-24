@@ -52,8 +52,7 @@ function setup_gateways_monitor($verbose = false, $gwname = null)
         flush();
     }
 
-    $running_processes = running_dpinger_processes();
-    foreach ($running_processes as $running_gwname => $process) {
+    foreach (running_dpinger_processes() as $running_gwname => $process) {
         if (!empty($gwname) && $running_gwname != $gwname) {
             continue;
         }
