@@ -791,11 +791,11 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr class="hidden-xs hidden-sm">
-                    <td><a><i class="fa fa-list"></i></a></td>
+                    <td><i class="fa fa-list fa-fw text-primary"></i></td>
                     <td colspan="10"><?=gettext("Alias (click to view/edit)");?></td>
                   </tr>
                   <tr class="hidden-xs hidden-sm">
-                    <td><i><span class="fa fa-calendar text-success"></i> / <i><span class="fa fa-calendar text-muted"></i></td>
+                    <td><i class="fa fa-calendar fa-fw text-success"></i><i class="fa fa-calendar fa-fw text-muted"></i></td>
                     <td colspan="10"><?=gettext("Active/Inactive Schedule (click to view/edit)");?></td>
                   </tr>
                   <tr class="hidden-xs hidden-sm">
