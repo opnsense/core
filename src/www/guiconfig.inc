@@ -268,7 +268,7 @@ function print_service_banner($service)
             ));
             break;
         case 'livecd':
-	    if (!is_install_media()) {
+            if (!is_install_media()) {
                 break;
             }
             print_alert_box(
