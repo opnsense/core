@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("services.inc");
@@ -86,7 +86,7 @@ include_once("head.inc");
       // delete single
       BootstrapDialog.show({
         type:BootstrapDialog.TYPE_DANGER,
-        title: "<?= gettext("DNS Resolver");?>",
+        title: "<?= gettext('Unbound') ?>",
         message: "<?=gettext("Do you really want to delete this host?");?>",
         buttons: [{
                   label: "<?= gettext("No");?>",
@@ -109,7 +109,7 @@ include_once("head.inc");
       // delete single
       BootstrapDialog.show({
         type:BootstrapDialog.TYPE_DANGER,
-        title: "<?= gettext("DNS Resolver");?>",
+        title: "<?= gettext('Unbound') ?>",
         message: "<?=gettext("Do you really want to delete this domain override?");?>",
         buttons: [{
                   label: "<?= gettext("No");?>",
@@ -132,10 +132,8 @@ include_once("head.inc");
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
-        <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-        <?php if (isset($savemsg)) print_info_box($savemsg); ?>
-        <?php if (is_subsystem_dirty('unbound')): ?><br/>
-        <?php print_info_box_apply(gettext("The configuration for the DNS Resolver, has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
+        <?php if (is_subsystem_dirty('unbound')): ?>
+        <?php print_info_box_apply(gettext('The Unbound configuration has been changed.') . ' ' . gettext('You must apply the changes in order for them to take effect.')) ?>
         <?php endif; ?>
         <form method="post" name="iform" id="iform">
           <section class="col-xs-12">

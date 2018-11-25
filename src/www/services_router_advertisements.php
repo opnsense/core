@@ -361,7 +361,7 @@ include("head.inc");
                       <input name="radns1" type="text" value="<?=$pconfig['radns1'];?>" /><br />
                       <input name="radns2" type="text" value="<?=$pconfig['radns2'];?>" />
                       <div class="hidden" data-for="help_for_radns">
-                        <?=gettext("NOTE: leave blank to use the system default DNS servers - this interface's IP if DNS forwarder is enabled, otherwise the servers configured on the General page.");?>
+                        <?= gettext('Leave blank to use the system default DNS servers: This interface IP address if a DNS service is enabled or the configured global DNS servers.') ?>
                       </div>
                       <br />
                       <input id="rasamednsasdhcp6" name="rasamednsasdhcp6" type="checkbox" value="yes" <?=!empty($pconfig['rasamednsasdhcp6']) ? "checked='checked'" : "";?> />
