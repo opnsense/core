@@ -95,6 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("You must enter a valid netmask for {$row['acl_network']}/{$row['mask']}.");
             }
         }
+
         // save form data
         if (count($input_errors) == 0) {
             $acl_entry = array();
@@ -108,8 +109,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } else {
                 $a_acls[] = $acl_entry;
             }
-            mark_subsystem_dirty("unbound");
+
             write_config();
+            mark_subsystem_dirty('unbound');
             header(url_safe('Location: /services_unbound_acls.php'));
             exit;
         }
@@ -169,7 +171,7 @@ if (!isset($_GET['act'])) {
       // delete single
       BootstrapDialog.show({
         type:BootstrapDialog.TYPE_DANGER,
-        title: "<?= gettext("DNS Resolver");?>",
+        title: "<?= gettext('Unbound') ?>",
         message: "<?=gettext("Do you really want to delete this access list?"); ?>",
         buttons: [{
                   label: "<?= gettext("No");?>",
@@ -193,11 +195,10 @@ if (!isset($_GET['act'])) {
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
-<?php
-        if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors);
-        if (isset($savemsg)) print_info_box($savemsg);
-        if (is_subsystem_dirty("unbound")) print_info_box_apply(gettext("The configuration for the DNS Resolver, has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
-        ?>
+        <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+        <?php if (is_subsystem_dirty('unbound')): ?>
+        <?php print_info_box_apply(gettext('The Unbound configuration has been changed.') . ' ' . gettext('You must apply the changes in order for them to take effect.')) ?>
+        <?php endif; ?>
         <section class="col-xs-12">
           <div class="tab-content content-box col-xs-12 __mb">
             <form method="post" name="iform" id="iform">
