@@ -303,7 +303,7 @@ include("head.inc");
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
                 <td style="width:22%"><strong><?= gettext('Thermal Sensors') ?></strong></td>
-                <td style="witdh:78%"></td>
+                <td style="width:78%"></td>
               </tr>
               <tr>
                 <td><a id="help_for_thermal_hardware" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware");?> </td>
@@ -334,7 +334,7 @@ include("head.inc");
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
                 <td style="width:22%"><strong><?= gettext('Periodic Backups') ?></strong></td>
-                <td style="witdh:78%"></td>
+                <td style="width:78%"></td>
               </tr>
               <tr>
                 <td><a id="help_for_rrdbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic RRD Backup");?></td>
@@ -411,7 +411,7 @@ include("head.inc");
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
                 <td style="width:22%"><strong><?= gettext('Power Savings') ?></strong></td>
-                <td style="witdh:78%"></td>
+                <td style="width:78%"></td>
               </tr>
               <tr>
                 <td><a id="help_for_powerd_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use PowerD"); ?></td>

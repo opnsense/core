@@ -44,9 +44,9 @@ function ca_import(& $ca, $str, $key="", $serial=0) {
     $issuer = cert_get_issuer($str, false);
 
     // Find my issuer unless self-signed
-    if($issuer <> $subject) {
+    if ($issuer != $subject) {
         $issuer_crt =& lookup_ca_by_subject($issuer);
-        if($issuer_crt) {
+        if ($issuer_crt) {
             $ca['caref'] = $issuer_crt['refid'];
         }
     }
@@ -55,7 +55,7 @@ function ca_import(& $ca, $str, $key="", $serial=0) {
     if (is_array($config['ca'])) {
         foreach ($config['ca'] as & $oca) {
             $issuer = cert_get_issuer($oca['crt']);
-            if($ca['refid']<>$oca['refid'] && $issuer==$subject) {
+            if ($ca['refid'] != $oca['refid'] && $issuer == $subject) {
                 $oca['caref'] = $ca['refid'];
             }
         }
@@ -63,7 +63,7 @@ function ca_import(& $ca, $str, $key="", $serial=0) {
     if (is_array($config['cert'])) {
         foreach ($config['cert'] as & $cert) {
             $issuer = cert_get_issuer($cert['crt']);
-            if($issuer==$subject) {
+            if ($issuer == $subject) {
                 $cert['caref'] = $ca['refid'];
             }
         }
@@ -760,10 +760,10 @@ $main_buttons = array(
                   </table>
                 </td>
                 <td class="text-nowrap">
-                  <a href="system_camanager.php?act=edit&amp;id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit CA");?>" alt="<?=gettext("edit CA");?>" class="btn btn-default btn-xs">
+                  <a href="system_camanager.php?act=edit&amp;id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit CA");?>" class="btn btn-default btn-xs">
                     <i class="fa fa-pencil fa-fw"></i>
                   </a>
-                  <a href="system_camanager.php?act=exp&amp;id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("export CA cert");?>" alt="<?=gettext("export CA cert");?>" class="btn btn-default btn-xs">
+                  <a href="system_camanager.php?act=exp&amp;id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("export CA cert");?>" class="btn btn-default btn-xs">
                     <i class="fa fa-download fa-fw"></i>
                   </a>
 <?php
