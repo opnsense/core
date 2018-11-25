@@ -32,6 +32,11 @@ require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
+function hostcmp($a, $b)
+{
+    return strcasecmp($a['host'], $b['host']);
+}
+
 $a_hosts = &config_read_array('dnsmasq', 'hosts');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -123,12 +128,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } else {
             $a_hosts[] = $hostent;
         }
-        usort($config['dnsmasq']['hosts'], function ($a, $b) {
-            return strcasecmp($a['host'], $b['host']);
-        });
-
-        write_config();
+        usort($config['dnsmasq']['hosts'], "hostcmp");
         mark_subsystem_dirty('hosts');
+        write_config();
         header(url_safe('Location: /services_dnsmasq.php'));
         exit;
     }
