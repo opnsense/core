@@ -499,33 +499,34 @@ $( document ).ready(function() {
                   </tr>
 <?php endif ?>
                 </tbody>
-                  <tfoot>
-                    <tr>
-                      <td style="width:16px"><i class="fa fa-play fa-fw text-success"></i></td>
-                      <td colspan="12"><?=gettext("Enabled rule"); ?></td>
-                    </tr>
-                    <tr>
-                      <td><i class="fa fa-play fa-fw text-muted"></i></td>
-                      <td colspan="12"><?=gettext("Disabled rule"); ?></td>
-                    </tr>
-                    <tr>
-                      <td><i class="fa fa-exclamation fa-fw text-success"></i></td>
-                      <td colspan="12"><?=gettext("No redirect"); ?></td>
-                    </tr>
-                    <tr>
-                      <td><i class="fa fa-arrows-h fa-fw text-success"></i></td>
-                      <td colspan="12"><?=gettext("Linked rule");?></td>
-                    </tr>
-                    <tr>
-                      <td><i class="fa fa-arrows-h fa-fw text-muted"></i></td>
-                      <td colspan="12"><?=gettext("Disabled Linked rule");?></td>
-                    </tr>
-                    <tr>
-                      <td><i class="fa fa-list fa-fw text-primary"></i></td>
-                      <td colspan="12"><?=gettext("Alias (click to view/edit)");?></td>
-                    </tr>
-                  </tfoot>
-                </table>
+                <tfoot>
+                  <tr class="hidden-xs hidden-sm">
+                    <td colspan="11">
+                      <table style="width:100%; border:0; cellspacing:0; cellpadding:0">
+                        <tr>
+                          <td style="width:16px"><i class="fa fa-play fa-fw text-success"></i></td>
+                          <td colspan="12"><?=gettext("Enabled rule"); ?></td>
+                          <td><i class="fa fa-exclamation fa-fw text-success"></i></td>
+                          <td colspan="12"><?=gettext("No redirect"); ?></td>
+                          <td><i class="fa fa-arrows-h fa-fw text-success"></i></td>
+                          <td colspan="12"><?=gettext("Linked rule");?></td>
+                        </tr>
+                        <tr>
+                          <td><i class="fa fa-play fa-fw text-muted"></i></td>
+                          <td colspan="12"><?=gettext("Disabled rule"); ?></td>
+                          <td><i class="fa fa-exclamation fa-fw text-muted"></i></td>
+                          <td colspan="12"><?=gettext("Disabled no redirect"); ?></td>
+                          <td><i class="fa fa-arrows-h fa-fw text-muted"></i></td>
+                          <td colspan="12"><?=gettext("Disabled linked rule");?></td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-list fa-fw text-primary"></i></td>
+                    <td colspan="12"><?=gettext("Alias (click to view/edit)");?></td>
+                  </tr>
+                </tfoot>
               </div>
             </form>
           </div>
