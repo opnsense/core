@@ -246,6 +246,40 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
+                  <td><a id="help_for_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Listen Port");?></td>
+                  <td>
+                    <input name="port" type="text" id="port" size="6" placeholder="53" <?=!empty($pconfig['port']) ? "value=\"{$pconfig['port']}\"" : "";?> />
+                    <div class="hidden" data-for="help_for_port">
+                      <?=gettext("The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_interfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Network Interfaces') ?></td>
+                  <td>
+                    <select id="interface" name="interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
+<?php foreach (get_configured_interface_with_descr() as  $iface => $ifacename): ?>
+                      <option value="<?= html_safe($iface) ?>" <?=in_array($iface, $pconfig['interface']) ? 'selected="selected"' : "" ?>>
+                        <?= html_safe($ifacename) ?>
+                      </option>
+<?php endforeach ?>
+                    </select>
+                    <div class="hidden" data-for="help_for_interfaces">
+                      <?=gettext("Interface IPs used by Dnsmasq for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.");?>
+                    </div>
+                  </td>
+                </tr>
+                  <td><a id="help_for_strictbind" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Bind Mode') ?></td>
+                  <td>
+                    <input name="strictbind" type="checkbox" id="strictbind" value="yes" <?= !empty($pconfig['strictbind']) ? "checked=\"checked\"" : "";?> />
+                    <?= gettext('Strict Interface Binding') ?>
+                    <div class="hidden" data-for="help_for_strictbind">
+                      <?= gettext("If this option is set, Dnsmasq will only bind to the interfaces containing the IP addresses selected above, rather than binding to all interfaces and discarding queries to other addresses."); ?>
+                      <?= gettext("This option does not work with IPv6. If set, Dnsmasq will not bind to IPv6 addresses."); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('DNSSEC') ?></td>
                   <td>
                     <input name="dnssec" type="checkbox" value="yes" <?=!empty($pconfig['dnssec']) ? 'checked="checked"' : '' ?> />
@@ -343,40 +377,6 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Listen Port");?></td>
-                  <td>
-                    <input name="port" type="text" id="port" size="6" placeholder="53" <?=!empty($pconfig['port']) ? "value=\"{$pconfig['port']}\"" : "";?> />
-                    <div class="hidden" data-for="help_for_port">
-                      <?=gettext("The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53.");?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_interfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interfaces"); ?></td>
-                  <td>
-                    <select id="interface" name="interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
-<?php foreach (get_configured_interface_with_descr() as  $iface => $ifacename): ?>
-                      <option value="<?= html_safe($iface) ?>" <?=in_array($iface, $pconfig['interface']) ? 'selected="selected"' : "" ?>>
-                        <?= html_safe($ifacename) ?>
-                      </option>
-<?php endforeach ?>
-                    </select>
-                    <div class="hidden" data-for="help_for_interfaces">
-                      <?=gettext("Interface IPs used by Dnsmasq for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.");?>
-                    </div>
-                  </td>
-                </tr>
-                  <td><a id="help_for_strictbind" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Bind Mode') ?></td>
-                  <td>
-                    <input name="strictbind" type="checkbox" id="strictbind" value="yes" <?= !empty($pconfig['strictbind']) ? "checked=\"checked\"" : "";?> />
-                    <?= gettext('Strict Interface Binding') ?>
-                    <div class="hidden" data-for="help_for_strictbind">
-                      <?= gettext("If this option is set, Dnsmasq will only bind to the interfaces containing the IP addresses selected above, rather than binding to all interfaces and discarding queries to other addresses."); ?>
-                      <?= gettext("This option does not work with IPv6. If set, Dnsmasq will not bind to IPv6 addresses."); ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
                   <td><a id="help_for_advanced" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Advanced') ?></td>
                   <td>
                     <div id="showadvbox" <?= !empty($pconfig['custom_options']) ? "style='display:none'" : '' ?>>
@@ -401,7 +401,7 @@ $( document ).ready(function() {
                     <?= sprintf(gettext("If Dnsmasq is enabled, the DHCP".
                     " service (if enabled) will automatically serve the LAN IP".
                     " address as a DNS server to DHCP clients so they will use".
-                    " the forwarder. Dnsmasq will use the DNS servers".
+                    " the Dnsmasq forwarder. Dnsmasq will use the DNS servers".
                     " entered in %sSystem: General setup%s".
                     " or those obtained via DHCP or PPP on WAN if the \"Allow".
                     " DNS server list to be overridden by DHCP/PPP on WAN\"".

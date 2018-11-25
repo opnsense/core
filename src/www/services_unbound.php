@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 unset($a_unboundcfg['outgoing_interface']);
             }
 
-            write_config("DNS Resolver configured.");
+            write_config('Unbound general configuration changed.');
             mark_subsystem_dirty('unbound');
             header(url_safe('Location: /services_unbound.php'));
             exit;
@@ -161,9 +161,8 @@ include_once("head.inc");
     <div class="container-fluid">
       <div class="row">
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-        <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <?php if (is_subsystem_dirty('unbound')): ?><br/>
-        <?php print_info_box_apply(gettext("The configuration for the DNS Resolver, has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
+        <?php print_info_box_apply(gettext('The Unbound configuration has been changed.') . ' ' . gettext('You must apply the changes in order for them to take effect.')) ?>
         <?php endif; ?>
         <form method="post" name="iform" id="iform">
           <section class="col-xs-12">
@@ -172,7 +171,7 @@ include_once("head.inc");
                   <table class="table table-striped opnsense_standard_table_form">
                     <tbody>
                       <tr>
-                        <td style="width:22%"><strong><?=gettext("General DNS Resolver Options");?></strong></td>
+                        <td style="width:22%"><strong><?= gettext('General options') ?></strong></td>
                         <td style="width:78%; text-align:right">
                           <small><?=gettext("full help"); ?> </small>
                           <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
@@ -182,13 +181,13 @@ include_once("head.inc");
                         <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?></td>
                         <td>
                           <input name="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
-                          <?= gettext('Enable DNS Resolver') ?>
+                          <?= gettext('Enable Unbound') ?>
                         </td>
                       </tr>
                       <tr>
                         <td><a id="help_for_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Listen Port");?></td>
                         <td>
-                            <input name="port" type="text" id="port" size="6" value="<?=$pconfig['port'];?>" />
+                            <input name="port" type="text" id="port" placeholder="53" size="6" value="<?=$pconfig['port'];?>" />
                             <div class="hidden" data-for="help_for_port">
                                 <?=gettext("The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53.");?>
                             </div>
@@ -203,22 +202,7 @@ include_once("head.inc");
 <?php endforeach ?>
                           </select>
                           <div class="hidden" data-for="help_for_active_interface">
-                            <?=gettext("Interface IPs used by the DNS Resolver for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.");?>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><a id="help_for_local_zone_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local Zone Type"); ?></td>
-                        <td>
-                          <select name="local_zone_type" size="3" class="selectpicker" >
-<?php
-                            foreach (unbound_local_zone_types() as $value => $name):?>
-                            <option value="<?= html_safe($value) ?>" <?= $value == $pconfig['local_zone_type'] ? 'selected="selected"' : '' ?>><?= html_safe($name) ?></option>
-<?php
-                            endforeach; ?>
-                          </select>
-                          <div class="hidden" data-for="help_for_local_zone_type">
-                            <?=sprintf(gettext('The local zone type used for the system domain. Type descriptions are available under "local-zone:" in the %sunbound.conf(5)%s manual page. The default is \'transparent\'.'), '<a target="_blank" href="https://www.unbound.net/documentation/unbound.conf.html">', '</a>');?>
+                            <?=gettext("Interface IP addresses used for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.");?>
                           </div>
                         </td>
                       </tr>
@@ -230,24 +214,14 @@ include_once("head.inc");
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_forwarding" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Query Forwarding");?></td>
-                        <td>
-                          <input name="forwarding" type="checkbox" value="yes" <?=!empty($pconfig['forwarding']) ? "checked=\"checked\"" : "";?> />
-                          <?= gettext('Enable Forwarding Mode') ?>
-                          <div class="hidden" data-for="help_for_forwarding">
-                            <?= gettext('The configured system nameservers will be used to forward queries to.') ?>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
                         <td><a id="help_for_regdhcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Registration");?></td>
                         <td>
                           <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? "checked=\"checked\"" : "";?> />
-                          <?= gettext('Register DHCP leases in the DNS Resolver') ?>
+                          <?= gettext('Register DHCP leases') ?>
                           <div class="hidden" data-for="help_for_regdhcp">
                             <?= gettext("If this option is set, then machines that specify " .
                             "their hostname when requesting a DHCP lease will be registered " .
-                            "in the DNS Resolver, so that their name can be resolved."); ?>
+                            "in Unbound, so that their name can be resolved."); ?>
                           </div>
                         </td>
                       </tr>
@@ -267,10 +241,10 @@ include_once("head.inc");
                         <td><a id="help_for_regdhcpstatic" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('DHCP Static Mappings');?></td>
                         <td>
                           <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? "checked=\"checked\"" : "";?> />
-                          <?= gettext('Register DHCP static mappings in the DNS Resolver') ?>
+                          <?= gettext('Register DHCP static mappings') ?>
                           <div class="hidden" data-for="help_for_regdhcpstatic">
                             <?= sprintf(gettext("If this option is set, then DHCP static mappings will ".
-                                "be registered in the DNS Resolver, so that their name can be ".
+                                "be registered in Unbound, so that their name can be ".
                                 "resolved. You should also set the domain in %s".
                                 "System: General setup%s to the proper value."),'<a href="system_general.php">','</a>');?>
                           </div>
@@ -280,11 +254,11 @@ include_once("head.inc");
                         <td><a id="help_for_reglladdr6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('IPv6 Link-local') ?></td>
                         <td>
                           <input name="reglladdr6" type="checkbox" id="reglladdr6" value="yes" <?= !empty($pconfig['reglladdr6']) ? 'checked="checked"' : '' ?>/>
-                          <?= gettext('Register IPv6 link-local addresses in the DNS Resolver') ?>
+                          <?= gettext('Register IPv6 link-local addresses') ?>
                           <div class="hidden" data-for="help_for_reglladdr6">
                             <?= gettext("If this option is unset, then IPv6 link-local " .
-                            "addresses will not be registered in the DNS Resolver, preventing " .
-                            "return of unreachable address from the DNS resolver when more " .
+                            "addresses will not be registered in Unbound, preventing " .
+                            "return of unreachable address when more " .
                             "than one listen interface is configured."); ?>
                           </div>
                         </td>
@@ -293,8 +267,32 @@ include_once("head.inc");
                         <td><a id="help_for_txtsupport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TXT Comment Support");?></td>
                         <td>
                           <input name="txtsupport" type="checkbox" value="yes" <?=!empty($pconfig['txtsupport']) ? "checked=\"checked\"" : "";?> />
+                          <?= gettext('Create corresponding TXT records') ?>
                           <div class="hidden" data-for="help_for_txtsupport">
                             <?=gettext("If this option is set, then any descriptions associated with Host entries and DHCP Static mappings will create a corresponding TXT record.");?><br />
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_forwarding" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Query Forwarding");?></td>
+                        <td>
+                          <input name="forwarding" type="checkbox" value="yes" <?=!empty($pconfig['forwarding']) ? "checked=\"checked\"" : "";?> />
+                          <?= gettext('Enable Forwarding Mode') ?>
+                          <div class="hidden" data-for="help_for_forwarding">
+                            <?= gettext('The configured system nameservers will be used to forward queries to.') ?>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_local_zone_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local Zone Type"); ?></td>
+                        <td>
+                          <select name="local_zone_type" size="3" class="selectpicker" >
+<?php foreach (unbound_local_zone_types() as $value => $name): ?>
+                            <option value="<?= html_safe($value) ?>" <?= $value == $pconfig['local_zone_type'] ? 'selected="selected"' : '' ?>><?= html_safe($name) ?></option>
+<?php endforeach ?>
+                          </select>
+                          <div class="hidden" data-for="help_for_local_zone_type">
+                            <?=sprintf(gettext('The local zone type used for the system domain. Type descriptions are available under "local-zone:" in the %sunbound.conf(5)%s manual page. The default is \'transparent\'.'), '<a target="_blank" href="https://www.unbound.net/documentation/unbound.conf.html">', '</a>');?>
                           </div>
                         </td>
                       </tr>
@@ -309,7 +307,7 @@ include_once("head.inc");
                         <td>
                           <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
                           <div class="hidden" data-for="help_for_custom_options">
-                            <?=gettext("Enter any additional options you would like to add to the DNS Resolver configuration here."); ?>
+                            <?=gettext("Enter any additional options you would like to add to the Unbound configuration here."); ?>
                           </div>
                         </td>
                       </tr>
@@ -325,7 +323,7 @@ include_once("head.inc");
 
                           </select>
                           <div class="hidden" data-for="help_for_outgoing_interface">
-                            <?=gettext("Utilize different network interface(s) that the DNS Resolver will use to send queries to authoritative servers and receive their replies. By default all interfaces are used. Note that setting explicit outgoing interfaces only works when they are statically configured.");?>
+                            <?=gettext("Utilize different network interfaces that Unbound will use to send queries to authoritative servers and receive their replies. By default all interfaces are used. Note that setting explicit outgoing interfaces only works when they are statically configured.");?>
                           </div>
                         </td>
                       </tr>
@@ -347,10 +345,10 @@ include_once("head.inc");
                       </tr>
                       <tr>
                         <td colspan="2">
-                          <?= sprintf(gettext("If the DNS Resolver is enabled, the DHCP".
+                          <?= sprintf(gettext("If Unbound is enabled, the DHCP".
                           " service (if enabled) will automatically serve the LAN IP".
                           " address as a DNS server to DHCP clients so they will use".
-                          " the DNS Resolver. If Forwarding, is enabled, the DNS Resolver".
+                          " Unbound resolver. If forwarding is enabled, Unbound".
                           " will use the DNS servers entered in %sSystem: General setup%s".
                           " or those obtained via DHCP or PPP on WAN if the \"Allow".
                           " DNS server list to be overridden by DHCP/PPP on WAN\"".
