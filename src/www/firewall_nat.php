@@ -527,6 +527,7 @@ $( document ).ready(function() {
                     <td colspan="12"><?=gettext("Alias (click to view/edit)");?></td>
                   </tr>
                 </tfoot>
+                </table>
               </div>
             </form>
           </div>
