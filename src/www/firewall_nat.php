@@ -501,7 +501,7 @@ $( document ).ready(function() {
                 </tbody>
                 <tfoot>
                   <tr class="hidden-xs hidden-sm">
-                    <td colspan="12">
+                    <td colspan="14">
                       <table style="width:100%; border:0; cellspacing:0; cellpadding:0">
                         <tr>
                           <td><i class="fa fa-play fa-fw text-success"></i></td>
@@ -524,7 +524,7 @@ $( document ).ready(function() {
                   </tr>
                   <tr>
                     <td><i class="fa fa-list fa-fw text-primary"></i></td>
-                    <td colspan="12"><?=gettext("Alias (click to view/edit)");?></td>
+                    <td colspan="14"><?=gettext("Alias (click to view/edit)");?></td>
                   </tr>
                 </tfoot>
                 </table>
