@@ -142,8 +142,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['dnsallowoverride']);
         }
 
-        if ($pconfig['dnslocalhost'] == "yes") {
-          $config['system']['dnslocalhost'] = true;
+        if ($pconfig['dnslocalhost'] == 'yes') {
+            $config['system']['dnslocalhost'] = true;
         } elseif (isset($config['system']['dnslocalhost'])) {
             unset($config['system']['dnslocalhost']);
         }
@@ -366,12 +366,12 @@ include("head.inc");
                       </td>
                       <td>
                         <select name='<?="dns{$dnscounter}gw";?>' class='selectpicker' data-size="10" data-width="200px">
-                          <option value="none" <?=$pconfig[$dnsgw] == "none" ? "selected=\"selected\"" :"";?>>
+                          <option value="none" <?= $pconfig[$dnsgw] == 'none' ? 'selected="selected"' : '' ?>>
                             <?=gettext("none");?>
                           </option>
 <?php
                           foreach(return_gateways_array() as $gwname => $gwitem):
-                            if ($pconfig[$dnsgw] != "none") {
+                            if ($pconfig[$dnsgw] != 'none') {
                               if (is_ipaddrv4(lookup_gateway_ip_by_name($pconfig[$dnsgw])) && is_ipaddrv6($gwitem['gateway'])) {
                                 continue;
                               }
