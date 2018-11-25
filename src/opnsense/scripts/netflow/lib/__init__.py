@@ -56,4 +56,3 @@ class Config(object):
         for key in kwargs:
             if hasattr(self, key):
                 setattr(self, key, kwargs[key])
-

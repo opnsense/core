@@ -58,7 +58,9 @@ class M1_0_2 extends BaseModelMigration
                 $node->enabled = '0';
                 // Description can be up to 255 characters, truncate as necessary.
                 $node->description = substr(
-                    $node->description . ' - Old GeoIP rule, disabled by migration', 0, 255
+                    $node->description . ' - Old GeoIP rule, disabled by migration',
+                    0,
+                    255
                 );
             }
         }
