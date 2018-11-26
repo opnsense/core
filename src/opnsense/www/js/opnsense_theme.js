@@ -41,6 +41,10 @@ $(document).ready(function () {
     layer2_div = $('#mainmenu > div > div > div'),
     navigation = $('#navigation'),
     mainmenu = $('#mainmenu'),
+    countA = $('#mainmenu > div > a').length,
+    footH = $('.page-foot').height(),
+    headerH = $('.navbar-header').height(),
+    navHeight = (countA * 70) + ((footH + headerH) - (20 + countA)),
     events = {
         mouseenter: function () {
             $('#navigation.col-sidebar-left').css('width', '415px');
@@ -180,7 +184,7 @@ $(document).ready(function () {
         $(window).on('resize', function () {
             var win = $(this);
             winHeight = win.height();
-            if ((win.height() < 675 || win.width() < 760) && navigation.not('col-sidebar-hidden')) {
+            if ((win.height() < navHeight || win.width() < 760) && navigation.not('col-sidebar-hidden')) {
                 navigation.addClass('col-sidebar-hidden');
                 mouse_events_off();
                 if (navigation.hasClass('col-sidebar-left')) {
@@ -188,7 +192,7 @@ $(document).ready(function () {
                     mouse_events_off();
                     transition_duration(350);
                 }
-            } else if ((win.height() >= 675 && win.width() >= 760) && navigation.hasClass('col-sidebar-hidden')) {
+            } else if ((win.height() >= navHeight && win.width() >= 760) && navigation.hasClass('col-sidebar-hidden')) {
                 navigation.removeClass('col-sidebar-hidden');
                 transition_duration(0);
                 if (window.sessionStorage && sessionStorage.getItem('toggle_sidebar_preset') == 1) {
