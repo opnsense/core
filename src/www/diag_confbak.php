@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $diff = '';
 
     if (!empty($_GET['diff']) && isset($_GET['oldtime']) && isset($_GET['newtime'])
-          && is_numeric($_GET['oldtime']) && (is_numeric($_GET['newtime']) || ($_GET['newtime'] == 'current'))) {
+        && is_numeric($_GET['oldtime']) && (is_numeric($_GET['newtime']) || ($_GET['newtime'] == 'current'))) {
         foreach ($confvers as $filename => $revision) {
             if ($revision['time'] == $_GET['oldtime']) {
                 $oldfile = $filename;
