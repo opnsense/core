@@ -213,4 +213,26 @@ class AliasUtilController extends ApiControllerBase
             return array("status" => "failed");
         }
     }
+
+    /**
+     * API handler to look up in which rules an IP is used (either explicitly or included in a range).
+     *
+     * @return array Array with indexes 'status' (whether the call succeeded) and 'matches' (which rules match this IP,
+     *               only present if the call was succesful.)
+     * @throws \Exception
+     */
+    public function where_usedAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost('ip')) {
+            $ip = $this->request->getPost('ip');
+            if (preg_match("/[^0-9a-f\:\.\/_]/", $ip)) {
+                return ['status' => 'Not an IP address!'];
+            }
+
+            $backend = new Backend();
+            return json_decode($backend->configdpRun('filter where_used', [$ip]), true);
+        } else {
+            return ['status' => 'IP parameter not specified!'];
+        }
+    }
 }
