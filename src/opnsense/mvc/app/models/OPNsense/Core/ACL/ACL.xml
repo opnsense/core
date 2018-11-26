@@ -779,7 +779,8 @@
     <page-openvpn-client-export>
         <name>VPN: OpenVPN: Client Export Utility</name>
         <patterns>
-            <pattern>vpn_openvpn_export.php*</pattern>
+            <pattern>ui/openvpn/export/*</pattern>
+            <pattern>api/openvpn/export/*</pattern>
         </patterns>
     </page-openvpn-client-export>
     <page-openvpn-client>

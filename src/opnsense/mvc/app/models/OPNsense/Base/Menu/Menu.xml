@@ -249,8 +249,8 @@
             <CSC order="30" VisibleName="Client Specific Overrides" url="/vpn_openvpn_csc.php">
                 <Edit url="/vpn_openvpn_csc.php?*" visibility="hidden"/>
             </CSC>
-            <ClientExport order="40" VisibleName="Client Export" url="/vpn_openvpn_export.php">
-                <Edit url="/vpn_openvpn_export.php?*" visibility="hidden"/>
+            <ClientExport order="40" VisibleName="Client Export" url="/ui/openvpn/export">
+                <Edit url="/ui/openvpn/export?*" visibility="hidden"/>
             </ClientExport>
             <Status order="60" VisibleName="Connection Status" url="/status_openvpn.php"/>
             <LogFile order="70" VisibleName="Log File" url="/diag_logs_openvpn.php"/>

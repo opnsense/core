@@ -1716,7 +1716,6 @@
 /usr/local/www/vpn_ipsec_settings.php
 /usr/local/www/vpn_openvpn_client.php
 /usr/local/www/vpn_openvpn_csc.php
-/usr/local/www/vpn_openvpn_export.php
 /usr/local/www/vpn_openvpn_server.php
 /usr/local/www/widgets/api/get.php
 /usr/local/www/widgets/api/plugins/gateway.inc
