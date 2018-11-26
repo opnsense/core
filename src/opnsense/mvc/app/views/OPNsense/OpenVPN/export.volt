@@ -50,7 +50,6 @@
                     $("#openvpn_export\\.servers").append(server_opt);
                 });
                 $("#openvpn_export\\.servers").selectpicker('refresh');
-                $("#openvpn_export\\.servers").change();
             }
             ajaxGet('/api/openvpn/export/templates/',  {}, function(data, status){
                 if (status == 'success') {
@@ -65,8 +64,7 @@
                         }
                         $("#openvpn_export\\.template").append(this_opt);
                     });
-                    $("#openvpn_export\\.template").selectpicker('refresh');
-                    $("#openvpn_export\\.template").change();
+                    $("#openvpn_export\\.servers").change();
                 }
             });
         });
@@ -80,7 +78,7 @@
             for (var i=0; i < selected_options.length; ++i) {
                 $("#row_openvpn_export\\."+selected_options[i]).show();
             }
-
+            $("#openvpn_export\\.template").selectpicker('refresh');
         });
 
         /**
@@ -93,7 +91,10 @@
                 // server_opt.data(key, record[key]);
                 var target = $("#openvpn_export\\."+key);
                 if (target.is('select')) {
-                    target.val(record[key]);
+                    if (record[key]) {
+                        target.val(record[key]);
+                        target.selectpicker('refresh');
+                    }
                 } else if (target.is('input')) {
                     if (target.prop("type") == "checkbox") {
                         if (record[key] === "1") {
