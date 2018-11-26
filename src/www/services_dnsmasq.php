@@ -33,9 +33,6 @@ require_once("filter.inc");
 require_once("services.inc");
 require_once("system.inc");
 
-config_read_array('dnsmasq', 'hosts');
-config_read_array('dnsmasq', 'domainoverrides');
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     // booleans
@@ -149,10 +146,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 legacy_html_escape_form_data($pconfig);
-$service_hook = 'dnsmasq';
-include("head.inc");
-?>
 
+$service_hook = 'dnsmasq';
+
+include("head.inc");
+
+?>
 <body>
 
 <script>
@@ -222,9 +221,8 @@ $( document ).ready(function() {
   <div class="container-fluid">
     <div class="row">
       <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-      <?php if (isset($savemsg)) print_info_box($savemsg); ?>
-      <?php if (is_subsystem_dirty('hosts')): ?><br/>
-      <?php print_info_box_apply(gettext("The Dnsmasq configuration has been changed.") . "<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
+      <?php if (is_subsystem_dirty('hosts')): ?>
+      <?php print_info_box_apply(gettext('The Dnsmasq configuration has been changed.') . ' ' . gettext('You must apply the changes in order for them to take effect.')) ?>
       <?php endif; ?>
       <section class="col-xs-12">
         <div class="content-box">
@@ -417,27 +415,23 @@ $( document ).ready(function() {
         </div>
       </section>
       <section class="col-xs-12">
-        <div class="content-box content-box-main">
+        <div class="content-box">
           <div class="table-responsive">
             <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th colspan="5"><?=gettext("Host Overrides");?></th>
-                </tr>
-                <tr>
-                  <th><?=gettext("Host");?></th>
-                  <th><?=gettext("Domain");?></th>
-                  <th><?=gettext("IP");?></th>
-                  <th><?=gettext("Description");?></th>
-                  <th class="text-nowrap">
-                    <a href="services_dnsmasq_edit.php" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
-                  </th>
-                </tr>
-              </thead>
               <tbody>
-<?php
-              $i = 0;
-              foreach ($config['dnsmasq']['hosts'] as $hostent): ?>
+                <tr>
+                  <td colspan="5"><strong><?= gettext('Host Overrides') ?></strong></td>
+                </tr>
+                <tr>
+                  <td><strong><?= gettext('Host') ?></strong></td>
+                  <td><strong><?= gettext('Domain') ?></strong></td>
+                  <td><strong><?= gettext('IP') ?></strong></td>
+                  <td><strong><?= gettext('Description') ?></strong></td>
+                  <td class="text-nowrap">
+                    <a href="services_dnsmasq_edit.php" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
+                  </td>
+                </tr>
+<?php foreach (config_read_array('dnsmasq', 'hosts') as $i => $hostent): ?>
                 <tr>
                   <td><?=htmlspecialchars(strtolower($hostent['host']));?></td>
                   <td><?=htmlspecialchars(strtolower($hostent['domain']));?></td>
@@ -464,45 +458,37 @@ $( document ).ready(function() {
                   endforeach;
                 endif; ?>
 
-<?php
-              ++$i;
-              endforeach;?>
-              </tbody>
-              <tfoot>
+<?php endforeach ?>
                 <tr>
                   <td colspan="5">
                     <?=gettext("Entries in this section override individual results from the forwarders.");?>
                     <?=gettext("Use these for changing DNS results or for adding custom DNS records.");?>
                   </td>
                 </tr>
-              </tfoot>
+              </tbody>
             </table>
           </div>
         </div>
       </section>
       <section class="col-xs-12">
-        <div class="content-box content-box-main">
+        <div class="content-box">
           <div class="table-responsive">
             <table class="table table-striped">
-              <thead>
+              <tbody>
                 <tr>
-                  <th colspan="4"><?=gettext("Domain Overrides");?></th>
+                  <td colspan="4"><strong><?= gettext('Domain Overrides') ?></strong></td>
                 </tr>
                 <tr>
-                  <th><?=gettext("Domain");?></th>
-                  <th><?=gettext("IP");?></th>
-                  <th><?=gettext("Description");?></th>
-                  <th class="text-nowrap">
+                  <td><strong><?= gettext('Domain') ?><strong></td>
+                  <td><strong><?= gettext('IP') ?></strong></td>
+                  <td><strong><?= gettext('Description') ?></strong></td>
+                  <td class="text-nowrap">
                     <a href="services_dnsmasq_domainoverride_edit.php" class="btn btn-default btn-xs">
                       <i class="fa fa-plus fa-fw"></i>
                     </a>
-                  </th>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-<?php
-              $i = 0;
-              foreach ($config['dnsmasq']['domainoverrides'] as $doment): ?>
+<?php foreach (config_read_array('dnsmasq', 'domainoverrides') as $i => $doment): ?>
                 <tr>
                   <td><?=htmlspecialchars(strtolower($doment['domain']));?></td>
                   <td><?=htmlspecialchars($doment['ip']);?></td>
@@ -514,17 +500,13 @@ $( document ).ready(function() {
                     <a href="#" data-id="<?=$i;?>" class="act_delete_override btn btn-xs btn-default"><i class="fa fa-trash fa-fw"></i></a>
                   </td>
                 </tr>
-<?php
-                $i++;
-              endforeach; ?>
-              </tbody>
-              <tfoot>
+<?php endforeach ?>
                 <tr>
                   <td colspan="4">
                     <?=gettext("Entries in this area override an entire domain, and subdomains, by specifying an authoritative DNS server to be queried for that domain.");?>
                   </td>
                 </tr>
-              </tfoot>
+              </tbody>
             </table>
           </div>
         </div>
