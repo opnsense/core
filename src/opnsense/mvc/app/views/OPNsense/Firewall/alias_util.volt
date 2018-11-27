@@ -112,7 +112,6 @@
                     $('#ip-search').on('click', function(event) {
                         let ip = $('#ip').val();
                         ajaxCall('/api/firewall/alias_util/where_used', {'ip': ip}, function(data, status) {
-                            $('#ip-results').html('');
                             if (status !== 'success' || data['status'] !== 'ok') {
                                 $('#ip-results').html(
                                     '<div class="alert alert-warning">' +
@@ -127,16 +126,11 @@
                                 $('#ip-results').html('<div id="ip-results-list" class="list-group"></div>');
                                 data.matches.forEach(function (alias) {
                                     let item = $('<a>')
-                                        .addClass('list-group-item')
-                                        .addClass('list-group-item-border')
+                                        .addClass('list-group-item list-group-item-border')
                                         .text(alias)
                                         .css('cursor', 'pointer')
-                                        .off()
                                         .on('click', function() {
-                                            let alias = $(this).text();
-                                            $('#tablename').val(alias);
-                                            // Refresh
-                                            $('#tablename').change();
+                                            $('#tablename').val($(this).text()).change();
                                             dialogRef.close();
                                         });
                                     $('#ip-results-list').append(item);
