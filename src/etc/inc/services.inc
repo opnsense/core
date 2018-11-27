@@ -1422,6 +1422,8 @@ EOD;
                 $newzone['dns-servers'] = array($dhcpv6ifconf['ddnsdomainprimary']);
                 $newzone['ddnsdomainkeyname'] = $dhcpv6ifconf['ddnsdomainkeyname'];
                 $newzone['ddnsdomainkey'] = $dhcpv6ifconf['ddnsdomainkey'];
+                /* XXX not implemented for IPv6 */
+                $newzone['ddnsdomainalgorithm'] = 'hmac-md5';
                 $ddns_zones[] = $newzone;
             }
         }
