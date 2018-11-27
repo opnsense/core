@@ -29,72 +29,45 @@
     fetch top usage from data provider
 """
 import time
-import datetime
-import os
-import sys
+import argparse
 import ujson
-sys.path.insert(0, "/usr/local/opnsense/site-python")
-from lib.parse import parse_flow
 import lib.aggregates
-import params
+from lib import load_config
 
 
-app_params = {'start_time': '',
-              'end_time': '',
-              'key_fields': '',
-              'value_field': '',
-              'filter': '',
-              'max_hits': '',
-              'provider': ''
-              }
-params.update_params(app_params)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--config', '--config', help='configuration yaml', default=None)
+    parser.add_argument('--provider', default='FlowInterfaceTotals')
+    parser.add_argument('--start_time', type=int, required=True)
+    parser.add_argument('--end_time', type=int, required=True)
+    parser.add_argument('--key_fields', required=True)
+    parser.add_argument('--value_field', required=True)
+    parser.add_argument('--filter', default='')
+    parser.add_argument('--max_hits', type=int, required=True)
+    cmd_args = parser.parse_args()
+    configuration = load_config(cmd_args.config)
 
-# handle input parameters
-valid_params = False
-if app_params['start_time'].isdigit():
-    start_time = int(app_params['start_time'])
-    if app_params['end_time'].isdigit():
-        end_time = int(app_params['end_time'])
-        if app_params['max_hits'].isdigit():
-            max_hits = int(app_params['max_hits'])
-            if app_params['key_fields']:
-                key_fields = app_params['key_fields'].split(',')
-                if app_params['value_field']:
-                    value_field = app_params['value_field']
-                    valid_params = True
-data_filter=app_params['filter']
-
-timeseries=dict()
-if valid_params:
-    # collect requested top
     result = dict()
     for agg_class in lib.aggregates.get_aggregators():
-        if app_params['provider'] == agg_class.__name__:
+        if cmd_args.provider == agg_class.__name__:
             # provider may specify multiple resolutions, we need to find the one most likely to serve the
             # beginning of our timeframe
             resolutions = sorted(agg_class.resolutions())
             history_per_resolution = agg_class.history_per_resolution()
             for resolution in resolutions:
-                if (resolution in history_per_resolution \
-                  and time.time() - history_per_resolution[resolution] <= start_time ) \
-                  or resolutions[-1] == resolution:
+                if (resolution in history_per_resolution and
+                    time.time() - history_per_resolution[resolution] <= cmd_args.start_time) or \
+                        resolutions[-1] == resolution:
                     selected_resolution = resolution
                     break
-            obj = agg_class(selected_resolution)
-            result = obj.get_top_data(start_time, end_time, key_fields, value_field, data_filter, max_hits)
+            obj = agg_class(selected_resolution, database_dir=configuration.database_dir)
+            result = obj.get_top_data(
+                start_time=cmd_args.start_time,
+                end_time=cmd_args.end_time,
+                fields=cmd_args.key_fields.split(','),
+                value_field=cmd_args.value_field,
+                data_filters=cmd_args.filter,
+                max_hits=cmd_args.max_hits
+            )
     print (ujson.dumps(result))
-else:
-    print ('missing parameters :')
-    tmp = list()
-    for key in app_params:
-        tmp.append('/%s %s' % (key, app_params[key]))
-    print ('  %s %s'%(sys.argv[0], ' '.join(tmp)))
-    print ('')
-    print ('  start_time : start time (seconds since epoch)')
-    print ('  end_time : end timestamp (seconds since epoch)')
-    print ('  key_fields : key field(s)')
-    print ('  value_field : field to sum')
-    print ('  filter : apply filter <field>=value')
-    print ('  provider : data provider classname')
-    print ('  max_hits : maximum number of hits (+1 for rest of data)')
-    print ('  sample : if provided, use these keys to generate sample data (e.g. em0,em1,em2)')
