@@ -187,6 +187,7 @@ $(document).ready(function () {
             if ((win.height() < navHeight || win.width() < 760) && navigation.not('col-sidebar-hidden')) {
                 navigation.addClass('col-sidebar-hidden');
                 mouse_events_off();
+                toggle_btn.hide();
                 if (navigation.hasClass('col-sidebar-left')) {
                     opnsense_sidebar_toggle(false);
                     mouse_events_off();
@@ -195,6 +196,7 @@ $(document).ready(function () {
             } else if ((win.height() >= navHeight && win.width() >= 760) && navigation.hasClass('col-sidebar-hidden')) {
                 navigation.removeClass('col-sidebar-hidden');
                 transition_duration(0);
+                toggle_btn.show();
                 if (window.sessionStorage && sessionStorage.getItem('toggle_sidebar_preset') == 1) {
                     opnsense_sidebar_toggle(false);
                 }
