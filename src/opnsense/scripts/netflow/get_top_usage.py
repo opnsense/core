@@ -55,6 +55,8 @@ if __name__ == '__main__':
             # beginning of our timeframe
             resolutions = sorted(agg_class.resolutions())
             history_per_resolution = agg_class.history_per_resolution()
+
+            selected_resolution = resolutions[-1]
             for resolution in resolutions:
                 if (resolution in history_per_resolution and
                     time.time() - history_per_resolution[resolution] <= cmd_args.start_time) or \
