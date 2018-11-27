@@ -151,7 +151,7 @@ class TheGreenBow extends BaseExporter implements IExportProvider
      */
     public function getContent()
     {
-        $template = file_get_contents(substr(__FILE__,0,-3).'tgb');
+        $template = file_get_contents(substr(__FILE__, 0, -3).'tgb');
         return $this->replacePlaceHolders($template);
     }
 }
