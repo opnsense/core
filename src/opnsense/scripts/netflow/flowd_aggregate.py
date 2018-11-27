@@ -186,7 +186,7 @@ class Main(object):
 if __name__ == '__main__':
     # parse arguments and load config
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config', help='configuration yaml', default=None)
+    parser.add_argument('--config', '--config', help='configuration yaml', default=None)
     parser.add_argument('--console', dest='console', help='run in console', action='store_true')
     parser.add_argument('--profile', dest='profile', help='enable profiler', action='store_true')
     parser.add_argument('--repair', dest='repair', help='init repair', action='store_true')
