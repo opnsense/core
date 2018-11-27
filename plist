@@ -651,6 +651,7 @@
 /usr/local/opnsense/scripts/filter/read_log.py
 /usr/local/opnsense/scripts/filter/update_bogons.sh
 /usr/local/opnsense/scripts/filter/update_tables.py
+/usr/local/opnsense/scripts/filter/where_used.py
 /usr/local/opnsense/scripts/firmware/changelog.sh
 /usr/local/opnsense/scripts/firmware/check.sh
 /usr/local/opnsense/scripts/firmware/health.sh
