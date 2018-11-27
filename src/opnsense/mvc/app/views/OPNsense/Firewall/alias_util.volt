@@ -1,4 +1,5 @@
 <script>
+    'use strict';
     $( document ).ready(function() {
         // list alias tables on load, link related events when loaded
         ajaxGet("/api/firewall/alias_util/aliases/", {}, function(data, status) {
@@ -48,9 +49,9 @@
 
         // flush table.. first ask user if it's ok to do so..
         $("#flushtable").click(function(event){
-          event.preventDefault()
+          event.preventDefault();
           BootstrapDialog.show({
-            type:BootstrapDialog.TYPE_DANGER,
+            type: BootstrapDialog.TYPE_DANGER,
             title: "{{ lang._('Tables') }}",
             message: "{{ lang._('Do you really want to flush this table?') }}",
             buttons: [{
@@ -79,10 +80,71 @@
 
         // update bogons
         $("#update_bogons").click(function(event){
-            event.preventDefault()
+            event.preventDefault();
             $("#update_bogons_progress").addClass("fa fa-spinner fa-pulse");
             ajaxCall("/api/firewall/alias_util/update_bogons", {}, function(){
                 $("#update_bogons_progress").removeClass("fa fa-spinner fa-pulse");
+            });
+        });
+
+        $('#where_used').on('click', function (event) {
+            BootstrapDialog.show({
+                type: BootstrapDialog.TYPE_DEFAULT,
+                title: '{{ lang._("Find references") }}',
+                message: '<p>{{ lang._("Enter an IP address to show in which aliases it's used.") }}</p>' +
+                         '<div class="input-group" style="display: block;">' +
+                             '<input id="ip" type="text" class="form-control"/>' +
+                             '<span class="input-group-btn">' +
+                                 '<button class="btn btn-default" id="ip-search"><span class="fa fa-search"></span></button>' +
+                             '</span>' +
+                         '</div>' +
+                         '<div id="ip-results" style="margin-top: 15px;"></div>',
+                buttons: [{
+                    label: '{{ lang._("Close") }}',
+                    cssClass: 'btn-primary',
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                    }
+                }],
+                onshown: function(dialogRef) {
+                    // Remove all pre-existing event listeners, just to be sure.
+                    $('#ip-search').off();
+                    $('#ip-search').on('click', function(event) {
+                        let ip = $('#ip').val();
+                        ajaxCall('/api/firewall/alias_util/where_used', {'ip': ip}, function(data, status) {
+                            $('#ip-results').html('');
+                            if (status !== 'success' || data['status'] !== 'ok') {
+                                $('#ip-results').html(
+                                    '<div class="alert alert-warning">' +
+                                    '{{ lang._("Error while fetching matching aliases:") }}' + ' ' + data['status'] +
+                                    '</div>');
+                            } else if (data.matches === null || data.matches.length === 0) {
+                                $('#ip-results').html(
+                                    '<div class="alert alert-info">' +
+                                    '{{ lang._("No matches for this IP.") }}' +
+                                    '</div>');
+                            } else {
+                                $('#ip-results').html('<div id="ip-results-list" class="list-group"></div>');
+                                data.matches.forEach(function (alias) {
+                                    let item = $('<a>')
+                                        .addClass('list-group-item')
+                                        .addClass('list-group-item-border')
+                                        .text(alias)
+                                        .css('cursor', 'pointer')
+                                        .off()
+                                        .on('click', function() {
+                                            let alias = $(this).text();
+                                            $('#tablename').val(alias);
+                                            // Refresh
+                                            $('#tablename').change();
+                                            dialogRef.close();
+                                        });
+                                    $('#ip-results-list').append(item);
+                                });
+                            }
+                        });
+                    });
+                }
             });
         });
 
@@ -93,6 +155,22 @@
 
     });
 </script>
+<style type="text/css">
+    /* On upstream Bootstrap, these properties are set in list-group-item.*/
+    .list-group-item-border {
+        border: 1px solid #ddd;
+    }
+
+    .list-group-item-border:first-child {
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+
+    .list-group-item-border:last-child {
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }
+</style>
 
 <section class="page-content-main">
     <div class="container-fluid">
@@ -122,6 +200,9 @@
                   <div class="col-xs-4">
                       <button class="btn btn-default pull-right" id="update_bogons"><i id="update_bogons_progress" class=""></i>
                         {{ lang._('Update bogons') }}
+                      </button>
+                      <button class="btn btn-default pull-right" id="where_used" title="{{ lang._('Look up which aliases match a certain IP address') }}">
+                          <span class="fa fa-search"></span> {{ lang._('Find references') }}
                       </button>
                   </div>
                 </div>
