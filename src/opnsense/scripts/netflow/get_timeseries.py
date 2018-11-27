@@ -1,7 +1,7 @@
 #!/usr/local/bin/python2.7
 
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2018 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -29,51 +29,36 @@
     fetch timeseries from data provider
 """
 import time
-import datetime
 import calendar
-import os
-import sys
 import ujson
 import random
-sys.path.insert(0, "/usr/local/opnsense/site-python")
-from lib.parse import parse_flow
+import argparse
+from lib import load_config
 import lib.aggregates
-import params
 
-# define
-app_params = {'resolution': '',
-              'start_time': '',
-              'end_time': '',
-              'key_fields': '',
-              'provider': '',
-              'sample': ''
-              }
-params.update_params(app_params)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--config', '--config', help='configuration yaml', default=None)
+    parser.add_argument('--provider', default='FlowInterfaceTotals')
+    parser.add_argument('--resolution', type=int, required=True)
+    parser.add_argument('--start_time', type=int, required=True)
+    parser.add_argument('--end_time', type=int, required=True)
+    parser.add_argument('--key_fields', required=True)
+    parser.add_argument('--sample', default='')
+    cmd_args = parser.parse_args()
+    configuration = load_config(cmd_args.config)
 
-# handle input parameters
-valid_params = False
-if app_params['start_time'].isdigit():
-    start_time = int(app_params['start_time'])
-    if app_params['end_time'].isdigit():
-        end_time = int(app_params['end_time'])
-        if app_params['resolution'].isdigit():
-            resolution = int(app_params['resolution'])
-            if app_params['key_fields']:
-                key_fields = app_params['key_fields'].split(',')
-                valid_params = True
-
-timeseries=dict()
-if valid_params:
-    if app_params['sample'] == '':
+    timeseries = dict()
+    if cmd_args.sample == '':
         # fetch all measurements from selected data provider
-        dimension_keys=list()
+        dimension_keys = list()
         for agg_class in lib.aggregates.get_aggregators():
-            if app_params['provider'] == agg_class.__name__:
-                obj = agg_class(resolution)
-                for record in obj.get_timeserie_data(start_time, end_time, key_fields):
+            if cmd_args.provider == agg_class.__name__:
+                obj = agg_class(cmd_args.resolution, database_dir=configuration.database_dir)
+                for record in obj.get_timeserie_data(cmd_args.start_time, cmd_args.end_time, cmd_args.key_fields):
                     record_key = []
-                    for key_field in key_fields:
-                        if key_field in record and record[key_field] != None:
+                    for key_field in cmd_args.key_fields:
+                        if key_field in record and record[key_field] is not None:
                             record_key.append(record[key_field])
                         else:
                             record_key.append('')
@@ -83,42 +68,40 @@ if valid_params:
                         timeseries[start_time_stamp] = dict()
                     timeseries[start_time_stamp][record_key] = {'octets': record['octets'],
                                                                 'packets': record['packets'],
-                                                                'resolution': resolution}
+                                                                'resolution': cmd_args.resolution}
                     if record_key not in dimension_keys:
                         dimension_keys.append(record_key)
 
         # add first measure point if it doesn't exist in the data (graph starting point)
-        if start_time not in timeseries:
-            timeseries[start_time] = dict()
+        if cmd_args.start_time not in timeseries:
+            timeseries[cmd_args.start_time] = dict()
             for dimension_key in dimension_keys:
-                timeseries[start_time][dimension_key] = {'octets': 0, 'packets': 0, 'resolution': resolution}
+                timeseries[cmd_args.start_time][dimension_key] = {
+                    'octets': 0,
+                    'packets': 0,
+                    'resolution': cmd_args.resolution
+                }
         # make sure all measure points exists for all given keys
         for timeserie in sorted(timeseries):
             for dimension_key in dimension_keys:
                 if dimension_key not in timeseries[timeserie]:
-                    timeseries[timeserie][dimension_key] = {'octets': 0, 'packets': 0, 'resolution': resolution}
+                    timeseries[timeserie][dimension_key] = {
+                        'octets': 0,
+                        'packets': 0,
+                        'resolution': cmd_args.resolution
+                    }
     else:
         # generate sample data for given keys
-        timeseries=dict()
+        timeseries = dict()
+        start_time = cmd_args.start_time
         while start_time < time.time():
             timeseries[start_time] = dict()
-            for key in app_params['sample'].split('~'):
-                timeseries[start_time][key] = {'octets': (random.random() * 10000000),
-                                               'packets': (random.random() * 10000000),
-                                               'resolution': resolution}
-            start_time += resolution
+            for key in cmd_args.sample.split('~'):
+                timeseries[start_time][key] = {
+                    'octets': (random.random() * 10000000),
+                    'packets': (random.random() * 10000000),
+                    'resolution': cmd_args.resolution
+                }
+            start_time += cmd_args.resolution
 
     print (ujson.dumps(timeseries))
-else:
-    print ('missing parameters :')
-    tmp = list()
-    for key in app_params:
-        tmp.append('/%s %s' % (key, app_params[key]))
-    print ('  %s %s'%(sys.argv[0], ' '.join(tmp)))
-    print ('')
-    print ('  resolution : sample rate in seconds')
-    print ('  start_time : start time (seconds since epoch)')
-    print ('  end_time : end timestamp (seconds since epoch)')
-    print ('  key_fields : key field(s)')
-    print ('  provider : data provider classname')
-    print ('  sample : if provided, use these keys to generate sample data (e.g. em0,em1,em2)')
