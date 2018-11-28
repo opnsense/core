@@ -221,7 +221,7 @@ class AliasUtilController extends ApiControllerBase
      *               only present if the call was succesful.)
      * @throws \Exception
      */
-    public function where_usedAction()
+    public function find_referencesAction()
     {
         if ($this->request->isPost() && $this->request->hasPost('ip')) {
             $ip = $this->request->getPost('ip');
@@ -230,7 +230,7 @@ class AliasUtilController extends ApiControllerBase
             }
 
             $backend = new Backend();
-            return json_decode($backend->configdpRun('filter where_used', [$ip]), true);
+            return json_decode($backend->configdpRun('filter find_table_references', [$ip]), true);
         } else {
             return ['status' => 'IP parameter not specified!'];
         }

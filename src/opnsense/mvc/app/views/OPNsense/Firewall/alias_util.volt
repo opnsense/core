@@ -87,7 +87,7 @@
             });
         });
 
-        $('#where_used').on('click', function (event) {
+        $('#find_references').on('click', function (event) {
             BootstrapDialog.show({
                 type: BootstrapDialog.TYPE_DEFAULT,
                 title: '{{ lang._("Find references") }}',
@@ -111,7 +111,7 @@
                     $('#ip-search').off();
                     $('#ip-search').on('click', function(event) {
                         let ip = $('#ip').val();
-                        ajaxCall('/api/firewall/alias_util/where_used', {'ip': ip}, function(data, status) {
+                        ajaxCall('/api/firewall/alias_util/find_references', {'ip': ip}, function(data, status) {
                             if (status !== 'success' || data['status'] !== 'ok') {
                                 $('#ip-results').html(
                                     '<div class="alert alert-warning">' +
@@ -195,7 +195,7 @@
                       <button class="btn btn-default pull-right" id="update_bogons"><i id="update_bogons_progress" class=""></i>
                         {{ lang._('Update bogons') }}
                       </button>
-                      <button class="btn btn-default pull-right" id="where_used" title="{{ lang._('Look up which aliases match a certain IP address') }}">
+                      <button class="btn btn-default pull-right" id="find_references" title="{{ lang._('Look up which aliases match a certain IP address') }}">
                           <span class="fa fa-search"></span> {{ lang._('Find references') }}
                       </button>
                   </div>
