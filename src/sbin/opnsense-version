@@ -30,13 +30,40 @@ OUTPUT=
 DO_PKG="-p core"
 DO_SIZE=
 
-while getopts p:s OPT; do
+while getopts AaefHNnp:svw OPT; do
 	case ${OPT} in
+	A)
+		OUTPUT="${OUTPUT} \${product_arch}"
+		;;
+	a)
+		OUTPUT="${OUTPUT} \${product_abi}"
+		;;
+	e)
+		OUTPUT="${OUTPUT} \${product_email}"
+		;;
+	f)
+		OUTPUT="${OUTPUT} \${product_flavour}"
+		;;
+	H)
+		OUTPUT="${OUTPUT} \${product_hash}"
+		;;
+	N)
+		OUTPUT="${OUTPUT} \${product_name}"
+		;;
+	n)
+		OUTPUT="${OUTPUT} \${product_id}"
+		;;
 	p)
 		DO_PKG="-p ${OPTARG}"
 		;;
 	s)
 		DO_SIZE="-s"
+		;;
+	v)
+		OUTPUT="${OUTPUT} \${product_version}"
+		;;
+	w)
+		OUTPUT="${OUTPUT} \${product_website}"
 		;;
 	*)
 		echo "Usage: man opnsense-version" >&2
@@ -70,44 +97,6 @@ if [ "${DO_PKG}" != "-p core" ]; then
 fi
 
 eval "$(grep -v '[{}]' ${VERSION} | sed 's/[^"]*"\([^"]*\)"[^"]*"\([^"]*\)".*/\1="\2"/')"
-
-while getopts AaefHNnvw OPT; do
-	case ${OPT} in
-	A)
-		OUTPUT="${OUTPUT} \${product_arch}"
-		;;
-	a)
-		OUTPUT="${OUTPUT} \${product_abi}"
-		;;
-	e)
-		OUTPUT="${OUTPUT} \${product_email}"
-		;;
-	f)
-		OUTPUT="${OUTPUT} \${product_flavour}"
-		;;
-	H)
-		OUTPUT="${OUTPUT} \${product_hash}"
-		;;
-	N)
-		OUTPUT="${OUTPUT} \${product_name}"
-		;;
-	n)
-		OUTPUT="${OUTPUT} \${product_id}"
-		;;
-	v)
-		OUTPUT="${OUTPUT} \${product_version}"
-		;;
-	w)
-		OUTPUT="${OUTPUT} \${product_website}"
-		;;
-	*)
-		echo "Usage: man opnsense-version" >&2
-		exit 1
-		;;
-	esac
-done
-
-shift $((${OPTIND} - 1))
 
 if [ -z "${OUTPUT}" ]; then
 	OUTPUT="\${product_name} \${product_version} \(\${product_arch}/\${product_flavour}\)"
