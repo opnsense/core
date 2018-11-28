@@ -64,7 +64,7 @@ if [ ! -f ${VERSION} ]; then
 	exit 1
 fi
 
-if [ "${DO_PKG}" != "-p opnsense" ]; then
+if [ "${DO_PKG}" != "-p opnsense" ]; then
 	cat ${VERSION}
 	exit 0
 fi
