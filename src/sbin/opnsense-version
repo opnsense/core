@@ -27,7 +27,7 @@ VERSIONDIR="/usr/local/opnsense/version"
 OPENSSL="/usr/local/bin/openssl"
 OUTPUT=
 
-DO_PKG="-p opnsense"
+DO_PKG="-p core"
 DO_SIZE=
 
 while getopts p:s OPT; do
@@ -64,7 +64,7 @@ if [ ! -f ${VERSION} ]; then
 	exit 1
 fi
 
-if [ "${DO_PKG}" != "-p opnsense" ]; then
+if [ "${DO_PKG}" != "-p core" ]; then
 	cat ${VERSION}
 	exit 0
 fi
