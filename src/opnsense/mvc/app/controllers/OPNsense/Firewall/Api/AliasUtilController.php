@@ -191,7 +191,7 @@ class AliasUtilController extends ApiControllerBase
             if ($cnfAlias !== null && in_array($cnfAlias->type, array('host', 'network'))) {
                 // update local administration, add address when not found for static types
                 $items = explode("\n", $cnfAlias->content);
-                if (strpos($address, "/") === false) {
+                if (strpos($address, "/") === false && $cnfAlias->type == 'network') {
                     // add mask
                     $address .= "/" . (strpos($address, ":") ? '128' : '32');
                 }
