@@ -58,17 +58,20 @@ for PATTERN in ${MTREE_PATTERNS}; do
 done
 
 VERSION=$(opnsense-update -v)
+# XXX only for migration
+VERSION=${VERSION%-*}
 
 set_check()
 {
 	SET=${1}
 	FILE=${2}
-	VER=${3}
 
 	if [ ! -f ${BASE_MTREE} ]; then
 		# XXX complain if file is missing post-18.7
 		return
 	fi
+
+	VER=$(opnsense-version -p ${SET})
 
 	echo ">>> Check installed ${SET} version" >> ${PKG_PROGRESS_FILE}
 	if [ -z "${VER}" -o -z "${VERSION}" ]; then
@@ -105,8 +108,8 @@ set_check()
 }
 
 echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${PKG_PROGRESS_FILE}
-set_check kernel ${KERNEL_MTREE} "$(opnsense-update -kv)"
-set_check base ${BASE_MTREE} "$(opnsense-update -bv)"
+set_check kernel ${KERNEL_MTREE}
+set_check base ${BASE_MTREE}
 echo ">>> Check for and install missing package dependencies" >> ${PKG_PROGRESS_FILE}
 pkg check -da >> ${PKG_PROGRESS_FILE} 2>&1
 echo ">>> Check for missing or altered package files" >> ${PKG_PROGRESS_FILE}

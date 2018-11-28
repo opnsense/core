@@ -273,13 +273,13 @@ if [ "$pkg_running" == "" ]; then
             elif [ -z "$base_to_reboot" ]; then
               if opnsense-update -cbf; then
                   base_to_reboot="$(opnsense-update -v)"
+                  # XXX arch return is obsolete
                   base_to_reboot="${base_to_reboot%-*}"
               fi
             fi
 
             if [ -n "$base_to_reboot" ]; then
-              base_to_delete="$(opnsense-update -bv)"
-              base_to_delete="${base_to_delete%-*}"
+              base_to_delete="$(opnsense-version -vp base)"
               base_is_size="$(opnsense-update -bfSr $base_to_reboot)"
               if [ "$base_to_reboot" != "$base_to_delete" -a -n "$base_is_size" ]; then
                 if [ "$packages_upgraded" == "" ]; then
@@ -301,13 +301,13 @@ if [ "$pkg_running" == "" ]; then
             elif [ -z "$kernel_to_reboot" ]; then
               if opnsense-update -cfk; then
                   kernel_to_reboot="$(opnsense-update -v)"
+                  # XXX arch return is obsolete
                   kernel_to_reboot="${kernel_to_reboot%-*}"
               fi
             fi
 
             if [ -n "$kernel_to_reboot" ]; then
-              kernel_to_delete="$(opnsense-update -kv)"
-              kernel_to_delete="${kernel_to_delete%-*}"
+              kernel_to_delete="$(opnsense-version -vp kernel)"
               kernel_is_size="$(opnsense-update -fkSr $kernel_to_reboot)"
               if [ "$kernel_to_reboot" != "$kernel_to_delete" -a -n "$kernel_is_size" ]; then
                 if [ "$packages_upgraded" == "" ]; then

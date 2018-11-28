@@ -742,6 +742,8 @@ class FirmwareController extends ApiControllerBase
                     }
                 }
 
+                /* XXX fixup kernel/base set size */
+
                 /* mark remote packages as "provided", local as "installed" */
                 $translated['provided'] = $type == 'remote' ? "1" : "0";
                 $translated['installed'] = $type == 'local' ? "1" : "0";
