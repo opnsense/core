@@ -33,11 +33,8 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-function leasecmp($a, $b) {
-  return strcmp($a[$_GET['order']], $b[$_GET['order']]);
-}
-
-function adjust_gmt($dt) {
+function adjust_gmt($dt)
+{
     global $config;
 
     $dhcpv6leaseinlocaltime == "no";
@@ -316,7 +313,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if ($_GET['order']) {
-        usort($leases, "leasecmp");
+        usort($leases, function ($a, $b) {
+            return strcmp($a[$_GET['order']], $b[$_GET['order']]);
+        });
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['deleteip']) && is_ipaddr($_POST['deleteip'])) {
