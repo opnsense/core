@@ -27,6 +27,7 @@ VERSIONDIR="/usr/local/opnsense/version"
 OPENSSL="/usr/local/bin/openssl"
 OUTPUT=
 
+DO_ARCH=
 DO_PKG="-p core"
 DO_SIZE=
 
@@ -34,6 +35,7 @@ while getopts AaefHNnp:svw OPT; do
 	case ${OPT} in
 	A)
 		OUTPUT="${OUTPUT} \${product_arch}"
+		DO_ARCH="-A"
 		;;
 	a)
 		OUTPUT="${OUTPUT} \${product_abi}"
@@ -74,15 +76,26 @@ done
 
 shift $((${OPTIND} - 1))
 
+if [ -n "${*}" ]; then
+	echo "Arguments are not supported" >&2
+	exit 1
+fi
+
 VERSION="${VERSIONDIR}/${DO_PKG#"-p "}"
 
-if [ -n "${DO_SIZE}" ]; then
-	if [ ! -f ${VERSION}.size ]; then
-		echo "Missing ${VERSION}.size" >&2
+if [ "${DO_PKG}" != "-p core" ]; then
+	if [ -n "${DO_SIZE}" ]; then
+		VERSION="${VERSION}.size"
+	elif [ -n "${DO_ARCH}" ]; then
+		VERSION="${VERSION}.arch"
+	fi
+
+	if [ ! -f ${VERSION} ]; then
+		echo "Missing ${VERSION}" >&2
 		exit 1
 	fi
 
-	cat ${VERSION}.size
+	cat ${VERSION}
 	exit 0
 fi
 
@@ -91,9 +104,10 @@ if [ ! -f ${VERSION} ]; then
 	exit 1
 fi
 
-if [ "${DO_PKG}" != "-p core" ]; then
-	cat ${VERSION}
-	exit 0
+if [ -n "${DO_SIZE}" ]; then
+	# unsupported
+	echo "Missing ${VERSION}.size" >&2
+	exit 1
 fi
 
 eval "$(grep -v '[{}]' ${VERSION} | sed 's/[^"]*"\([^"]*\)"[^"]*"\([^"]*\)".*/\1="\2"/')"
