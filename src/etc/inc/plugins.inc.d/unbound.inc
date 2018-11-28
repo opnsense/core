@@ -40,6 +40,7 @@ function unbound_enabled()
 function unbound_configure()
 {
     return array(
+        'bootup' => array('unbound_configure_do'),
         'dns' => array('unbound_configure_do'),
         'hosts' => array('unbound_hosts_generate:0'),
         'local' => array('unbound_configure_do'),
