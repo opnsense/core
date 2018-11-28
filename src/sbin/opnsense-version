@@ -95,7 +95,11 @@ if [ "${DO_PKG}" != "-p core" ]; then
 		exit 1
 	fi
 
-	cat ${VERSION}
+	OUTPUT=$(cat ${VERSION})
+	# XXX this is only required for base/kernel
+	# with old version number that has arch in it
+	echo ${OUTPUT%-*}
+
 	exit 0
 fi
 
