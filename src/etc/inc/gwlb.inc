@@ -749,7 +749,7 @@ function return_gateway_groups_array()
                         } elseif (!empty($gateway['interface'])) {
                             $gatewayip = get_interface_gateway($gateway['friendlyiface']);
                         } else {
-                            $gatewayip = "";
+                            $gatewayip = '';
                         }
 
                         if (!empty($gateway['interface'])) {

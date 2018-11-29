@@ -39,7 +39,7 @@ require_once("notices.smtp.inc");
  * RESULT
  *   Files a notice and kicks off the various alerts, smtp, system log, etc.
  ******/
-function file_notice($id, $notice, $category = "General", $url = "", $priority = 1) {
+function file_notice($id, $notice, $category = 'General', $url = '', $priority = 1) {
 	/*
 	 * $category - Category that this notice should be displayed under. This can be arbitrary,
 	 *	       but a page must be set to receive this messages for it to be displayed.
@@ -164,12 +164,13 @@ function print_notices($notices, $category = "all")
 	}
 	$categories = array_unique($categories);
 	sort($categories);
+	$toreturn = '';
 	foreach($categories as $category) {
 		$toreturn .= "<ul><li>{$category}<ul>";
 		foreach($notices as $notice) {
 			if(strtolower($notice['category']) == strtolower($category)) {
-				if($notice['id'] != "") {
-					if($notice['url'] != "") {
+				if($notice['id'] != '') {
+					if($notice['url'] != '') {
 						$toreturn .= "<li><a href={$notice['url']}>{$notice['id']}</a> - {$notice['notice']}</li>";
 					} else {
 						$toreturn .= "<li>{$notice['id']} - {$notice['notice']}</li>";

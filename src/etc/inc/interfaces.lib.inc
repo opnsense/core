@@ -182,12 +182,12 @@ function legacy_interface_stats($ifs = null)
         return $stats;
     }
 
-    $current_interface = "";
+    $current_interface = '';
     foreach ($out as $line) {
         if (strpos($line, 'Interface') === 0) {
             $current_interface = explode('(', explode(' ', $line)[1])[0];
             $stats[$current_interface] = array();
-        } elseif ($current_interface != "") {
+        } elseif ($current_interface != '') {
             $stat = explode(':', $line);
             $stats[$current_interface][trim($stat[0])] = trim($stat[1]);
         }
@@ -459,7 +459,7 @@ function legacy_serial_devices()
     }
     $serialports = array();
     foreach (glob("/dev/cua?[0-9]{,.[0-9]}", GLOB_BRACE) as $device) {
-        $serialports[$device] = array('descr' => "");
+        $serialports[$device] = array('descr' => '');
         $tty = explode('.', explode('cua', $device)[1])[0];
         foreach ($modems as $modem) {
             if (isset($modem['ttyname']) && $modem['ttyname'] == $tty) {

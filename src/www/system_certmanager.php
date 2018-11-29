@@ -188,9 +188,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             );
 
-            $exp_data = "";
+            $exp_data = '';
             $res_crt = openssl_x509_read(base64_decode($a_cert[$id]['crt']));
-            $res_key = openssl_pkey_get_private(array(0 => base64_decode($a_cert[$id]['prv']) , 1 => ""));
+            $res_key = openssl_pkey_get_private(array(0 => base64_decode($a_cert[$id]['prv']) , 1 => ''));
 
             openssl_pkcs12_export($res_crt, $exp_data, $res_key, null, $args);
             $exp_size = strlen($exp_data);
@@ -588,7 +588,7 @@ if (empty($act)) {
     function removeRowAltNm() {
         if ( $('#altNametable > tbody > tr').length == 1 ) {
             $('#altNametable > tbody > tr:last > td > input').each(function(){
-              $(this).val("");
+              $(this).val('');
             });
         } else {
             $(this).parent().parent().remove();
@@ -606,7 +606,7 @@ if (empty($act)) {
             // copy last row and reset values
             $('#altNametable > tbody').append('<tr>'+$('#altNametable > tbody > tr:last').html()+'</tr>');
             $('#altNametable > tbody > tr:last > td > input').each(function(){
-              $(this).val("");
+              $(this).val('');
             });
             $(".act-removerow-altnm").click(removeRowAltNm);
         });
@@ -726,7 +726,7 @@ $( document ).ready(function() {
                   <select name="certmethod" id="certmethod">
 <?php
                   foreach ($cert_methods as $method => $desc) :?>
-                    <option value="<?=$method;?>" <?=$pconfig['certmethod'] == $method ? "selected=\"selected\"":"";?>>
+                    <option value="<?=$method;?>" <?=$pconfig['certmethod'] == $method ? 'selected="selected"' : ''; ?>>
                       <?=$desc;?>
                     </option>
 <?php
@@ -786,7 +786,7 @@ $( document ).ready(function() {
                       if (!$ca['prv']) {
                           continue;
                       }?>
-                    <option value="<?=$ca['refid'];?>" <?=isset($pconfig['caref']) && isset($ca['refid']) && $pconfig['caref'] == $ca['refid'] ? "selected=\"selected\"" : "";?>><?=$ca['descr'];?></option>
+                    <option value="<?=$ca['refid'];?>" <?=isset($pconfig['caref']) && isset($ca['refid']) && $pconfig['caref'] == $ca['refid'] ? 'selected="selected"' : '';?>><?=$ca['descr'];?></option>
 <?php
                   endforeach; ?>
                   </select>
@@ -799,9 +799,9 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_cert_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type");?> </td>
                 <td>
                     <select name="cert_type">
-                        <option value="usr_cert" <?=$pconfig['cert_type'] == 'usr_cert' ? "selected=\"selected\"" : "";?>> <?=gettext("Client Certificate");?> </option>
-                        <option value="server_cert" <?=$pconfig['cert_type'] == 'server_cert' ? "selected=\"selected\"" : "";?>> <?=gettext("Server Certificate");?> </option>
-                        <option value="v3_ca" <?=$pconfig['cert_type'] == 'v3_ca' ? "selected=\"selected\"" : "";?>> <?=gettext("Certificate Authority");?> </option>
+                        <option value="usr_cert" <?=$pconfig['cert_type'] == 'usr_cert' ? 'selected="selected"' : '';?>> <?=gettext("Client Certificate");?> </option>
+                        <option value="server_cert" <?=$pconfig['cert_type'] == 'server_cert' ? 'selected="selected"' : '';?>> <?=gettext("Server Certificate");?> </option>
+                        <option value="v3_ca" <?=$pconfig['cert_type'] == 'v3_ca' ? 'selected="selected"' : '';?>> <?=gettext("Certificate Authority");?> </option>
                     </select>
                     <div class="hidden" data-for="help_for_digest_cert_type">
                       <?=gettext("Choose the type of certificate to generate here, the type defines it's constraints");?>
@@ -814,7 +814,7 @@ $( document ).ready(function() {
                   <select name='keylen'>
 <?php
                   foreach ($cert_keylens as $len) :?>
-                    <option value="<?=$len;?>" <?=$pconfig['keylen'] == $len ? "selected=\"selected\"" : "";?>><?=$len;?></option>
+                    <option value="<?=$len;?>" <?=$pconfig['keylen'] == $len ? 'selected="selected"' : '';?>><?=$len;?></option>
 <?php
                   endforeach; ?>
                   </select>
@@ -826,7 +826,7 @@ $( document ).ready(function() {
                   <select name='digest_alg' id='digest_alg'>
 <?php
                   foreach ($openssl_digest_algs as $digest_alg) :?>
-                    <option value="<?=$digest_alg;?>" <?=$pconfig['digest_alg'] == $digest_alg ? "selected=\"selected\"" : "";?>>
+                    <option value="<?=$digest_alg;?>" <?=$pconfig['digest_alg'] == $digest_alg ? 'selected="selected"' : '';?>>
                       <?=strtoupper($digest_alg);?>
                     </option>
 <?php
@@ -852,7 +852,7 @@ $( document ).ready(function() {
                   <select name="dn_country" id="dn_country" class="selectpicker">
 <?php
                   foreach (get_country_codes() as $cc => $cn):?>
-                    <option value="<?=$cc;?>" <?=$pconfig['dn_country'] == $cc ? "selected=\"selected\"" : "";?>>
+                    <option value="<?=$cc;?>" <?=$pconfig['dn_country'] == $cc ? 'selected="selected"' : '';?>>
                       <?=$cc;?> (<?=$cn;?>)
                     </option>
 <?php
@@ -952,10 +952,10 @@ $( document ).ready(function() {
                         <tr>
                           <td>
                             <select name="altname_type[]" id="altname_type">
-                              <option value="DNS" <?=$altname_type == "DNS" ? "selected=\"selected\"" : "";?>><?=gettext("DNS");?></option>
-                              <option value="IP" <?=$altname_type == "IP" ? "selected=\"selected\"" : "";?>><?=gettext("IP");?></option>
-                              <option value="email" <?=$altname_type == "email" ? "selected=\"selected\"" : "";?>><?=gettext("email");?></option>
-                              <option value="URI" <?=$altname_type == "URI" ? "selected=\"selected\"" : "";?>><?=gettext("URI");?></option>
+                              <option value="DNS" <?=$altname_type == 'DNS' ? 'selected="selected"' : '';?>><?=gettext('DNS');?></option>
+                              <option value="IP" <?=$altname_type == 'IP' ? 'selected="selected"' : '';?>><?=gettext('IP');?></option>
+                              <option value="email" <?=$altname_type == 'email' ? 'selected="selected"' : '';?>><?=gettext('email');?></option>
+                              <option value="URI" <?=$altname_type == 'URI' ? 'selected="selected"' : '';?>><?=gettext('URI');?></option>
                             </select>
                           </td>
                           <td>

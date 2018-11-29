@@ -200,7 +200,7 @@ include("head.inc");
 <?php
                        $rrs = array("A" => gettext("A or AAAA (IPv4 or IPv6 address)"), "MX" => gettext("MX (Mail server)"));
                        foreach ($rrs as $rr => $name) :?>
-                        <option value="<?=$rr;?>" <?=($rr == $pconfig['rr'] || ($rr == 'A' && $pconfig['rr'] == 'AAAA')) ? "selected=\"selected\"" : "";?> >
+                        <option value="<?=$rr;?>" <?=($rr == $pconfig['rr'] || ($rr == 'A' && $pconfig['rr'] == 'AAAA')) ? 'selected="selected"' : '';?> >
                           <?=$name;?>
                         </option>
 <?php
