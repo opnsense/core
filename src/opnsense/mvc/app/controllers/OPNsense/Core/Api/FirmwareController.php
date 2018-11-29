@@ -46,14 +46,18 @@ class FirmwareController extends ApiControllerBase
      */
     protected function formatBytes($bytes)
     {
+        if (preg_match('/[^0-9]/', $bytes)) {
+            /* already processed */
+            return $bytes;
+        }
         if ($bytes >= (1024 * 1024 * 1024)) {
-            return sprintf("%d GB", $bytes / (1024 * 1024 * 1024));
+            return sprintf('%.1F%s', $bytes / (1024 * 1024 * 1024), 'GiB');
         } elseif ($bytes >= 1024 * 1024) {
-            return sprintf("%d MB", $bytes / (1024 * 1024));
+            return sprintf('%.1F%s', $bytes / (1024 * 1024), 'MiB');
         } elseif ($bytes >= 1024) {
-            return sprintf("%d KB", $bytes / 1024);
+            return sprintf('%.1F%s', $bytes / 1024, 'KiB');
         } else {
-            return sprintf("%d bytes", $bytes);
+            return sprintf('%d%s', $bytes, 'B');
         }
     }
 
@@ -739,10 +743,10 @@ class FirmwareController extends ApiControllerBase
                     $translated[$key] = $expanded[$index++];
                     if (empty($translated[$key])) {
                         $translated[$key] = gettext('N/A');
+                    } elseif ($key == 'flatsize') {
+                        $translated[$key] = $this->formatBytes($translated[$key]);
                     }
                 }
-
-                /* XXX fixup kernel/base set size */
 
                 /* mark remote packages as "provided", local as "installed" */
                 $translated['provided'] = $type == 'remote' ? "1" : "0";
