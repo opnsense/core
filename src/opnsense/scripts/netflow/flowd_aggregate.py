@@ -87,7 +87,7 @@ def aggregate_flowd(config, do_vacuum=False):
     del metadata
 
 
-def check_rotate(filename, pid_filename):
+def check_rotate(filename):
     """ Checks if flowd log needs to be rotated, if so perform rotate.
         We keep [MAX_LOGS] number of logs containing approx. [MAX_FILE_SIZE_MB] data, the flowd data probably contains
         more detailed data then the stored aggregates.
@@ -95,23 +95,23 @@ def check_rotate(filename, pid_filename):
     :param pid_filename: filename of pid
     :return: None
     """
-    if os.path.getsize(filename)/1024/1024 > MAX_FILE_SIZE_MB:
+    if os.path.exists(filename) and os.path.getsize(filename)/1024/1024 > MAX_FILE_SIZE_MB:
         # max filesize reached rotate
         filenames = sorted(glob.glob('%s.*' % filename), reverse=True)
         file_sequence = len(filenames)
-        for filename in filenames:
-            sequence = filename.split('.')[-1]
+        for mfilename in filenames:
+            sequence = mfilename.split('.')[-1]
             if sequence.isdigit():
                 if file_sequence >= MAX_LOGS:
-                    os.remove(filename)
+                    os.remove(mfilename)
                 elif int(sequence) != 0:
-                    os.rename(filename, filename.replace('.%s' % sequence, '.%06d' % (int(sequence)+1)))
+                    os.rename(mfilename, mfilename.replace('.%s' % sequence, '.%06d' % (int(sequence)+1)))
             file_sequence -= 1
         # rename flowd.log
         os.rename(filename, '%s.000001' % filename)
         # signal flowd for new log file
-        if os.path.isfile(pid_filename):
-            pid = open(pid_filename).read().strip()
+        if os.path.isfile('/var/run/flowd.pid'):
+            pid = open('/var/run/flowd.pid').read().strip()
             if pid.isdigit():
                 try:
                     os.kill(int(pid), signal.SIGUSR1)
@@ -162,7 +162,7 @@ class Main(object):
                 syslog.syslog(syslog.LOG_ERR, 'flowd aggregate died with message %s' % (traceback.format_exc()))
                 return
             # rotate if needed
-            check_rotate(self.config.flowd_source, self.config.pid_filename)
+            check_rotate(self.config.flowd_source)
 
             # wait for next pass, exit on sigterm
             if Main.config.single_pass:
