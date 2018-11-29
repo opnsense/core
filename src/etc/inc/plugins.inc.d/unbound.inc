@@ -487,7 +487,7 @@ function unbound_add_domain_overrides($pvt = false)
         $result[$domain_key][] = $domain['ip'];
     }
 
-    $domain_entries = "";
+    $domain_entries = '';
     foreach ($result as $domain => $ips) {
         if ($pvt == true) {
             $domain_entries .= "private-domain: \"$domain\"\n";
@@ -607,7 +607,7 @@ function unbound_add_host_entries()
         $added_item = array();
 
         foreach ($config['unbound']['hosts'] as $host) {
-            if ($host['host'] != "") {
+            if ($host['host'] != '') {
                 $host['host'] = $host['host'].".";
             }
 

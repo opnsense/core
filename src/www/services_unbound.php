@@ -151,7 +151,7 @@ include_once("head.inc");
             $(window).trigger('resize');
         })
         // show advanced when option set
-        if ($("#outgoing_interface").val() != "" || $("#custom_options").val() != "" || $("#enable_wpad").prop('checked')) {
+        if ($("#outgoing_interface").val() != '' || $("#custom_options").val() != '' || $("#enable_wpad").prop('checked')) {
             $("#show_advanced_dns").click();
         }
     });
@@ -180,7 +180,7 @@ include_once("head.inc");
                       <tr>
                         <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?></td>
                         <td>
-                          <input name="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
+                          <input name="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : '';?> />
                           <?= gettext('Enable Unbound') ?>
                         </td>
                       </tr>
@@ -209,14 +209,14 @@ include_once("head.inc");
                       <tr>
                         <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("DNSSEC");?></td>
                         <td>
-                          <input name="dnssec" type="checkbox" value="yes" <?=!empty($pconfig['dnssec']) ? "checked=\"checked\"" : "";?> />
+                          <input name="dnssec" type="checkbox" value="yes" <?=!empty($pconfig['dnssec']) ? 'checked="checked"' : '';?> />
                           <?= gettext('Enable DNSSEC Support') ?>
                         </td>
                       </tr>
                       <tr>
                         <td><a id="help_for_regdhcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Registration");?></td>
                         <td>
-                          <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? "checked=\"checked\"" : "";?> />
+                          <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? 'checked="checked"' : '';?> />
                           <?= gettext('Register DHCP leases') ?>
                           <div class="hidden" data-for="help_for_regdhcp">
                             <?= gettext("If this option is set, then machines that specify " .
@@ -240,7 +240,7 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_regdhcpstatic" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('DHCP Static Mappings');?></td>
                         <td>
-                          <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? "checked=\"checked\"" : "";?> />
+                          <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? 'checked="checked"' : '';?> />
                           <?= gettext('Register DHCP static mappings') ?>
                           <div class="hidden" data-for="help_for_regdhcpstatic">
                             <?= sprintf(gettext("If this option is set, then DHCP static mappings will ".
@@ -266,7 +266,7 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_txtsupport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TXT Comment Support");?></td>
                         <td>
-                          <input name="txtsupport" type="checkbox" value="yes" <?=!empty($pconfig['txtsupport']) ? "checked=\"checked\"" : "";?> />
+                          <input name="txtsupport" type="checkbox" value="yes" <?=!empty($pconfig['txtsupport']) ? 'checked="checked"' : '';?> />
                           <?= gettext('Create corresponding TXT records') ?>
                           <div class="hidden" data-for="help_for_txtsupport">
                             <?=gettext("If this option is set, then any descriptions associated with Host entries and DHCP Static mappings will create a corresponding TXT record.");?><br />
@@ -276,7 +276,7 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_forwarding" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Query Forwarding");?></td>
                         <td>
-                          <input name="forwarding" type="checkbox" value="yes" <?=!empty($pconfig['forwarding']) ? "checked=\"checked\"" : "";?> />
+                          <input name="forwarding" type="checkbox" value="yes" <?=!empty($pconfig['forwarding']) ? 'checked="checked"' : '';?> />
                           <?= gettext('Enable Forwarding Mode') ?>
                           <div class="hidden" data-for="help_for_forwarding">
                             <?= gettext('The configured system nameservers will be used to forward queries to.') ?>
@@ -316,7 +316,7 @@ include_once("head.inc");
                         <td>
                           <select id="outgoing_interface" name="outgoing_interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
 <?php foreach ($interfaces as $ifname => $ifdescr): ?>
-                            <option value="<?= html_safe($ifname) ?>" <?=!empty($pconfig['outgoing_interface'][0]) && in_array($ifname, $pconfig['outgoing_interface']) ? 'selected="selected"' : "" ?>>
+                            <option value="<?= html_safe($ifname) ?>" <?=!empty($pconfig['outgoing_interface'][0]) && in_array($ifname, $pconfig['outgoing_interface']) ? 'selected="selected"' : '' ?>>
                               <?= html_safe($ifdescr) ?>
                             </option>
 <?php endforeach ?>
@@ -330,7 +330,7 @@ include_once("head.inc");
                       <tr class="showadv" style="display:none">
                         <td><a id="help_for_enable_wpad" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WPAD Records");?></td>
                         <td>
-                          <input id="enable_wpad" name="enable_wpad" type="checkbox" value="yes" <?=!empty($pconfig['enable_wpad']) ? "checked=\"checked\"" : "";?> />
+                          <input id="enable_wpad" name="enable_wpad" type="checkbox" value="yes" <?=!empty($pconfig['enable_wpad']) ? 'checked="checked"' : '';?> />
                           <div class="hidden" data-for="help_for_enable_wpad">
                             <?=gettext("If this option is set, CNAME records for the WPAD host of all configured domains will be automatically added as well as overrides for TXT records for domains. " .
                                        "This allows automatic proxy configuration in your network but you should not enable it if you are not using WPAD or if you want to configure it by yourself.");?><br />
@@ -345,14 +345,14 @@ include_once("head.inc");
                       </tr>
                       <tr>
                         <td colspan="2">
-                          <?= sprintf(gettext("If Unbound is enabled, the DHCP".
-                          " service (if enabled) will automatically serve the LAN IP".
-                          " address as a DNS server to DHCP clients so they will use".
-                          " Unbound resolver. If forwarding is enabled, Unbound".
-                          " will use the DNS servers entered in %sSystem: General setup%s".
-                          " or those obtained via DHCP or PPP on WAN if the \"Allow".
-                          " DNS server list to be overridden by DHCP/PPP on WAN\"".
-                          " is checked."),'<a href="system_general.php">','</a>');?>
+                          <?= sprintf(gettext('If Unbound is enabled, the DHCP'.
+                          ' service (if enabled) will automatically serve the LAN IP'.
+                          ' address as a DNS server to DHCP clients so they will use'.
+                          ' Unbound resolver. If forwarding is enabled, Unbound'.
+                          ' will use the DNS servers entered in %sSystem: General setup%s'.
+                          ' or those obtained via DHCP or PPP on WAN if the "Allow'.
+                          ' DNS server list to be overridden by DHCP/PPP on WAN"'.
+                          ' is checked.'),'<a href="system_general.php">','</a>');?>
                         </td>
                       </tr>
                     </tbody>
