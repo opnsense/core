@@ -37,7 +37,7 @@ function adjust_gmt($dt)
 {
     global $config;
 
-    $dhcpv6leaseinlocaltime == "no";
+    $dhcpv6leaseinlocaltime = 'no';
     if (is_array($config['dhcpdv6'])) {
         $dhcpdv6 = $config['dhcpdv6'];
         foreach ($dhcpdv6 as $dhcpv6leaseinlocaltime) {
