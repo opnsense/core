@@ -601,10 +601,7 @@ function unbound_add_host_entries()
         unset($tmp_known_domains); // remove temporary variable
     }
 
-    /* Static Host entries */
-
     if (isset($config['unbound']['hosts'])) {
-
         foreach ($config['unbound']['hosts'] as $host) {
             if ($host['host'] != '') {
                 $host['host'] = $host['host'].".";
@@ -637,8 +634,6 @@ function unbound_add_host_entries()
             }
         }
     }
-
-    /* Static DHCP entries */
 
     if (isset($config['unbound']['regdhcpstatic']) && is_array($config['dhcpd'])) {
         foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
