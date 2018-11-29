@@ -35,16 +35,16 @@ import sqlite3
 def convert_timestamp(val):
     """ convert timestamps from string (internal sqlite type) or seconds since epoch
     """
-    if val.find('-') > -1:
+    if val.find(b'-') > -1:
         # formatted date/time
-        if val.find(" ") > -1:
-            datepart, timepart = val.split(" ")
+        if val.find(b" ") > -1:
+            datepart, timepart = val.split(b" ")
         else:
             datepart = val
             timepart = "0:0:0,0"
-        year, month, day = list(map(int, datepart.split("-")))
-        timepart_full = timepart.split(".")
-        hours, minutes, seconds = list(map(int, timepart_full[0].split(":")))
+        year, month, day = list(map(int, datepart.split(b"-")))
+        timepart_full = timepart.split(b".")
+        hours, minutes, seconds = list(map(int, timepart_full[0].split(b":")))
         if len(timepart_full) == 2:
             microseconds = int('{:0<6.6}'.format(timepart_full[1].decode()))
         else:
