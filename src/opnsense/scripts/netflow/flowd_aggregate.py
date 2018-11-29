@@ -202,14 +202,14 @@ if __name__ == '__main__':
         if cmd_args.profile:
             # start with profiling
             import cProfile
-            import StringIO
+            import io
             import pstats
 
             pr = cProfile.Profile(builtins=False)
             pr.enable()
             Main()
             pr.disable()
-            s = StringIO.StringIO()
+            s = io.StringIO()
             sortby = 'cumulative'
             ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
             ps.print_stats()

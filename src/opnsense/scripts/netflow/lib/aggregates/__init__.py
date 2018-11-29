@@ -78,10 +78,10 @@ class BaseFlowAggregator(object):
         tmp = 'update timeserie set  last_seen = :flow_end, '
         tmp += 'octets = octets + :octets_consumed, packets = packets + :packets_consumed '
         tmp += 'where mtime = :mtime and %s '
-        self._update_stmt = tmp % (' and '.join(map(lambda x: '%s = :%s' % (x, x), self.agg_fields)))
+        self._update_stmt = tmp % (' and '.join(['%s = :%s' % (x, x) for x in self.agg_fields]))
         tmp = 'insert into timeserie (mtime, last_seen, octets, packets, %s) '
         tmp += 'values (:mtime, :flow_end, :octets_consumed, :packets_consumed, %s)'
-        self._insert_stmt = tmp % (','.join(self.agg_fields), ','.join(map(lambda x: ':%s' % x, self.agg_fields)))
+        self._insert_stmt = tmp % (','.join(self.agg_fields), ','.join([':%s' % x for x in self.agg_fields]))
         # open database
         self._open_db()
         self._fetch_known_targets()
@@ -257,7 +257,7 @@ class BaseFlowAggregator(object):
             cur.execute(sql_select, {'start_time': self._parse_timestamp(start_time),
                                      'end_time': self._parse_timestamp(end_time)})
             #
-            field_names = (map(lambda x: x[0], cur.description))
+            field_names = ([x[0] for x in cur.description])
             for record in cur.fetchall():
                 result_record = dict()
                 for field_indx in range(len(field_names)):
@@ -321,7 +321,7 @@ class BaseFlowAggregator(object):
                 cur.execute(sql_select, query_params)
 
                 # fetch all data, to a max of [max_hits] rows.
-                field_names = (map(lambda x: x[0], cur.description))
+                field_names = ([x[0] for x in cur.description])
                 for record in cur.fetchall():
                     result_record = dict()
                     for field_indx in range(len(field_names)):
@@ -360,7 +360,7 @@ class BaseFlowAggregator(object):
             cur.execute(sql_select, query_params)
 
             # fetch all data, to a max of [max_hits] rows.
-            field_names = (map(lambda x: x[0], cur.description))
+            field_names = ([x[0] for x in cur.description])
             while True:
                 record = cur.fetchone()
                 if record is None:

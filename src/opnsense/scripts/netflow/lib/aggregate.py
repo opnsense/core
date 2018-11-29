@@ -42,9 +42,9 @@ def convert_timestamp(val):
         else:
             datepart = val
             timepart = "0:0:0,0"
-        year, month, day = map(int, datepart.split("-"))
+        year, month, day = list(map(int, datepart.split("-")))
         timepart_full = timepart.split(".")
-        hours, minutes, seconds = map(int, timepart_full[0].split(":"))
+        hours, minutes, seconds = list(map(int, timepart_full[0].split(":")))
         if len(timepart_full) == 2:
             microseconds = int('{:0<6.6}'.format(timepart_full[1].decode()))
         else:
