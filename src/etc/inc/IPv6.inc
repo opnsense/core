@@ -476,7 +476,6 @@ class Net_IPv6
             if ("" == $ip1) {
                 $c1 = -1;
             } else {
-                $pos = 0;
                 if (0 < ($pos = substr_count($ip1, ':'))) {
                     $c1 = $pos;
                 } else {
@@ -486,7 +485,6 @@ class Net_IPv6
             if ("" == $ip2) {
                 $c2 = -1;
             } else {
-                $pos = 0;
                 if (0 < ($pos = substr_count($ip2, ':'))) {
                     $c2 = $pos;
                 } else {
@@ -814,7 +812,6 @@ class Net_IPv6
         $binNetmask = str_repeat('1', $bitmask).
                       str_repeat('0', 128 - $bitmask);
         $maxNetmask = str_repeat('1', 128);
-        $netmask    = Net_IPv6::_bin2Ip($binNetmask);
 
         $startAddress = Net_IPv6::_bin2Ip(Net_IPv6::_ip2Bin($ip)
                                           & $binNetmask);

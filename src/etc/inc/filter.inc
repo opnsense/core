@@ -323,8 +323,8 @@ function filter_configure_sync($verbose = false, $flush_states = false)
     }
 
     $natrules = "\n# NAT Redirects\n";
-    $natrules = "no nat proto carp all\n";
-    $natrules = "no rdr proto carp all\n";
+    $natrules .= "no nat proto carp all\n";
+    $natrules .= "no rdr proto carp all\n";
     $natrules .= $fw->outputNatRules();
 
     if ($verbose) {

@@ -561,7 +561,6 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     if (substr($settings['protocol'], 0, 3) == "TCP") {
         $proto = "{$proto}-{$mode}";
     }
-    $dev_mode = $settings['dev_mode'];
     $cipher = $settings['crypto'];
     // OpenVPN defaults to SHA1, so use it when unset to maintain compatibility.
     $digest = !empty($settings['digest']) ? $settings['digest'] : "SHA1";
@@ -1305,8 +1304,8 @@ function openvpn_get_active_servers($type = 'multipoint')
 
 function openvpn_get_server_status($server, $socket)
 {
-    $errval;
-    $errstr;
+    $errval = 0;
+    $errstr = '';
     $fp = @stream_socket_client($socket, $errval, $errstr, 1);
     if ($fp) {
         stream_set_timeout($fp, 1);
@@ -1402,8 +1401,8 @@ function openvpn_get_active_clients()
 
 function openvpn_get_client_status($client, $socket)
 {
-    $errval;
-    $errstr;
+    $errval = 0;
+    $errstr = '';
     $fp = @stream_socket_client($socket, $errval, $errstr, 1);
     if ($fp) {
         stream_set_timeout($fp, 1);
@@ -1469,7 +1468,6 @@ function openvpn_get_client_status($client, $socket)
         }
         fclose($fp);
     } else {
-        $DisplayNote=true;
         $client['remote_host'] = "Unable to contact daemon";
         $client['virtual_addr'] = "Service not running?";
         $client['bytes_recv'] = 0;

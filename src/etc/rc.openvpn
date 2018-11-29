@@ -49,7 +49,6 @@ function gateway_is_gwgroup_member($name)
         if (isset($group['item'])) {
             foreach($group['item'] as $item) {
                 $elements = explode("|", $item);
-                $gwname = $elements[0];
                 if ($name == $elements[0]) {
                     $members[] = $group['name'];
                 }

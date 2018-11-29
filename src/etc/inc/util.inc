@@ -372,7 +372,7 @@ function ip_range_to_subnet_array($startip, $endip)
 
     // Loop here to reduce subnet size and retest as needed. We need to make sure
     //   that the target subnet is wholly contained between $startip and $endip.
-    for ($cidr; $cidr <= 32; $cidr++) {
+    for (; $cidr <= 32; $cidr++) {
         // Find the network and broadcast addresses for the subnet being tested.
         $targetsub_min = gen_subnet($startip, $cidr);
         $targetsub_max = gen_subnet_max($startip, $cidr);

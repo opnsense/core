@@ -27,7 +27,6 @@
 
 function traffic_api()
 {
-    global $config;
     $result = array();
     $result['interfaces'] = legacy_interface_stats();
     $temp = gettimeofday();

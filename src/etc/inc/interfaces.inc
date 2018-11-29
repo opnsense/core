@@ -66,7 +66,6 @@ function convert_ipv6_to_128bit($ipv6)
         return false;
     }
 
-    $ip6arr = array();
     $ip6prefix = Net_IPv6::uncompress($ipv6);
     $ip6arr = explode(":", $ip6prefix);
     /* binary presentation of the prefix for all 128 bits. */
@@ -84,7 +83,6 @@ function convert_128bit_to_ipv6($ip6bin)
     }
 
     $ip6arr = array();
-    $ip6binarr = array();
     $ip6binarr = str_split($ip6bin, 16);
     foreach ($ip6binarr as $binpart) {
         $ip6arr[] = dechex(bindec($binpart));
@@ -1876,7 +1874,6 @@ function interface_wireless_configure($if, &$wl, &$wlcfg)
     /* set values for /path/program */
     $wpa_supplicant = '/usr/local/sbin/wpa_supplicant';
     $hostapd = '/usr/local/sbin/hostapd';
-    $killall = '/usr/bin/killall';
     $ifconfig = '/sbin/ifconfig';
     $sysctl = '/sbin/sysctl';
 
@@ -2813,7 +2810,6 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
 
     /* convert the 128 bits for the broker address back into a valid IPv6 address */
     $stfbrarr = array();
-    $stfbrbinarr = array();
     $stfbrbinarr = str_split($stfbrokerbin, 16);
     foreach ($stfbrbinarr as $bin) {
         $stfbrarr[] = dechex(bindec($bin));
@@ -2822,14 +2818,12 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
 
     /* convert the 128 bits for the broker address back into a valid IPv6 address */
     $stflanarr = array();
-    $stflanbinarr = array();
     $stflanbinarr = str_split($stflanbin, 16);
     foreach ($stflanbinarr as $bin) {
         $stflanarr[] = dechex(bindec($bin));
     }
     $stflanpr = Net_IPv6::compress(implode(":", $stflanarr));
     $stflanarr[7] = 1;
-    $stflan = Net_IPv6::compress(implode(":", $stflanarr));
 
     $stfiface = "{$wanif}_stf";
     if (does_interface_exist($stfiface)) {
@@ -4241,7 +4235,6 @@ function get_interfaces_info()
         $ifinfo['outerrs'] = $ifinfotmp['output errors'];
         $ifinfo['collisions'] = $ifinfotmp['collisions'];
 
-        $ifconfiginfo = "";
         $link_type = $config['interfaces'][$ifdescr]['ipaddr'];
         switch ($link_type) {
             case 'dhcp':
@@ -4352,7 +4345,6 @@ function get_interfaces_info()
             }
         }
 
-        $bridge = "";
         $bridge = link_interface_to_bridge($ifdescr);
         if ($bridge) {
             $bridge_text = `/sbin/ifconfig {$bridge}`;

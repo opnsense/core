@@ -80,7 +80,7 @@ function console_get_interface_from_ppp($realif)
 
 function prompt_for_enable_dhcp_server($version = 4)
 {
-    global $config, $fp, $interface;
+    global $config, $interface;
     if ($interface == "wan") {
         if ($config['interfaces']['lan']) {
             return false;

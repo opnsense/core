@@ -144,7 +144,6 @@ class NetworkinsightController extends ApiControllerBase
         $measure = $filter->sanitize($measure, "string");
         $max_hits = $filter->sanitize($max_hits, "int");
 
-        $result = array();
         if ($this->request->isGet()) {
             if ($this->request->get("filter_field") != null && $this->request->get("filter_value") != null) {
                 $filter_fields = explode(',', $this->request->get("filter_field"));

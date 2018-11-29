@@ -140,7 +140,6 @@ function legacy_move_config_list_items($source, $id, $items) {
  */
 function get_alias_description($name)
 {
-    $aliasMdl = new \OPNsense\Firewall\Alias();
     // MVC defined aliases
     foreach ((new \OPNsense\Firewall\Alias())->aliasIterator()  as $alias) {
         if ($alias['name'] == $name) {
