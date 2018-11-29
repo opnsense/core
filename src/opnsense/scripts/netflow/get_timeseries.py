@@ -55,9 +55,10 @@ if __name__ == '__main__':
         for agg_class in lib.aggregates.get_aggregators():
             if cmd_args.provider == agg_class.__name__:
                 obj = agg_class(cmd_args.resolution, database_dir=configuration.database_dir)
-                for record in obj.get_timeserie_data(cmd_args.start_time, cmd_args.end_time, cmd_args.key_fields):
+                for record in obj.get_timeserie_data(cmd_args.start_time, cmd_args.end_time,
+                                                     cmd_args.key_fields.split(',')):
                     record_key = []
-                    for key_field in cmd_args.key_fields:
+                    for key_field in cmd_args.key_fields.split(','):
                         if key_field in record and record[key_field] is not None:
                             record_key.append(record[key_field])
                         else:
