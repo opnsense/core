@@ -82,7 +82,7 @@ function unbound_xmlrpc_sync()
 
 function unbound_optimization()
 {
-    $optimization_settings = array();
+    $optimization = array();
 
     /*
      * Set the number of threads equal to the nearest power of 2 when counting the number of CPUs.
@@ -604,7 +604,6 @@ function unbound_add_host_entries()
     /* Static Host entries */
 
     if (isset($config['unbound']['hosts'])) {
-        $added_item = array();
 
         foreach ($config['unbound']['hosts'] as $host) {
             if ($host['host'] != '') {

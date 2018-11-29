@@ -178,7 +178,6 @@ function ntpd_configure_do($verbose = false, $start_ntpd = true)
 
     $driftfile = '/var/db/ntpd.drift';
     $statsdir = '/var/log/ntp';
-    $gps_device = '/dev/gps0';
 
     @mkdir($statsdir, 0755);
 

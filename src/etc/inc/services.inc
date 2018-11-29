@@ -1128,7 +1128,6 @@ function services_dhcpdv6_configure($verbose = false, $blacklist = array())
             continue;
         }
         if (!empty($config['interfaces'][$ifname]['track6-interface'])) {
-            $realif = get_real_interface($ifname, 'inet6');
             $ifcfgipv6 = get_interface_ipv6($ifname);
             if (!is_ipaddrv6($ifcfgipv6)) {
                 continue;
@@ -1181,9 +1180,6 @@ function services_dhcpdv6_configure($verbose = false, $blacklist = array())
 
                 $pd_prefix_from_array[2] = sprintf("%02s", $pd_prefix_from_array[2]);
                 $pd_prefix_to_array[2] = sprintf("%02s", $pd_prefix_to_array[2]);
-
-                $pd_prefix_from_array_out = array();
-                $pd_prefix_to_array_out = array();
 
                 for ($x = 0; $x < 4; $x++) {
                     /* make the prefx long format otherwise dhcpd complains */
@@ -1272,7 +1268,6 @@ EOD;
     $dhcpdv6ifs = array();
     $ddns_zones = array();
     $nsupdate = false;
-    $dhcpv6num = 0;
 
     foreach ($dhcpdv6cfg as $dhcpv6if => $dhcpv6ifconf) {
         if (!isset($dhcpv6ifconf['enable']) || !isset($iflist[$dhcpv6if])) {
@@ -1537,7 +1532,6 @@ function services_dhcrelay_configure($verbose = false)
             array_shift($route_str);
             array_shift($route_str);
             array_shift($route_str);
-            $route_arr = array();
             foreach ($route_str as $routeline) {
                 $items = preg_split("/[ ]+/i", $routeline);
                 if (is_subnetv4($items[0])) {
@@ -1663,7 +1657,6 @@ function services_dhcrelay6_configure($verbose = false)
             array_shift($route_str);
             array_shift($route_str);
             array_shift($route_str);
-            $route_arr = array();
             foreach ($route_str as $routeline) {
                 $items = preg_split("/[ ]+/i", $routeline);
                 if (ip_in_subnet($srvip, $items[0])) {

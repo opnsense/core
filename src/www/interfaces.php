@@ -144,7 +144,7 @@ function endElement_attr($parser, $name) {
 }
 
 function cData_attr($parser, $data) {
-    global $depth, $curpath, $parsedcfg, $havedata;
+    global $curpath, $parsedcfg, $havedata;
 
     $data = trim($data, "\t\n\r");
 
@@ -212,7 +212,7 @@ function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulator
 }
 
 function parse_xml_config_raw_attr($cffile, $rootobj, &$parsed_attributes, $isstring = "false") {
-    global $depth, $curpath, $parsedcfg, $havedata, $listtags, $parsedattrs;
+    global $depth, $curpath, $parsedcfg, $havedata, $parsedattrs;
     $parsedcfg = array();
     $curpath = array();
     $depth = 0;
