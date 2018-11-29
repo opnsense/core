@@ -28,11 +28,11 @@ LIC="BSD2CLAUSE"
 OS="HardenedBSD"
 SEP=${1:-","}
 
-BV=$(opnsense-version -vp base)
-KV=$(opnsense-version -vp kernel)
+BV=$(opnsense-version -v base)
+KV=$(opnsense-version -v kernel)
 
-BS=$(opnsense-version -sp base)
-KS=$(opnsense-version -sp kernel)
+BS=$(opnsense-version -s base)
+KS=$(opnsense-version -s kernel)
 
 BL=0
 KL=0

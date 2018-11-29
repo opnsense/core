@@ -25,17 +25,13 @@
 
 VERSIONDIR="/usr/local/opnsense/version"
 OPENSSL="/usr/local/bin/openssl"
+TARGET="core"
 OUTPUT=
 
-DO_ARCH=
-DO_PKG="-p core"
-DO_SIZE=
-
-while getopts AaefHNnp:svw OPT; do
+while getopts AaefHNnsvw OPT; do
 	case ${OPT} in
 	A)
 		OUTPUT="${OUTPUT} \${product_arch}"
-		DO_ARCH="-A"
 		;;
 	a)
 		OUTPUT="${OUTPUT} \${product_abi}"
@@ -55,11 +51,8 @@ while getopts AaefHNnp:svw OPT; do
 	n)
 		OUTPUT="${OUTPUT} \${product_id}"
 		;;
-	p)
-		DO_PKG="-p ${OPTARG}"
-		;;
 	s)
-		DO_SIZE="-s"
+		OUTPUT="${OUTPUT} \${product_size}"
 		;;
 	v)
 		OUTPUT="${OUTPUT} \${product_version}"
@@ -76,53 +69,54 @@ done
 
 shift $((${OPTIND} - 1))
 
+if [ -n "${1}" ]; then
+	TARGET=${1}
+	shift
+fi
+
 if [ -n "${*}" ]; then
-	echo "Arguments are not supported" >&2
+	echo "Additional arguments are not supported" >&2
 	exit 1
 fi
 
-VERSION="${VERSIONDIR}/${DO_PKG#"-p "}"
-
-if [ "${DO_PKG}" != "-p core" ]; then
-	if [ -n "${DO_SIZE}" ]; then
-		VERSION="${VERSION}.size"
-	elif [ -n "${DO_ARCH}" ]; then
-		VERSION="${VERSION}.arch"
-	fi
-
-	if [ ! -f ${VERSION} ]; then
-		echo "Missing ${VERSION}" >&2
-		exit 1
-	fi
-
-	OUTPUT=$(cat ${VERSION})
-	# XXX this is only required for base/kernel
-	# with old version number that has arch in it
-	echo ${OUTPUT%-*}
-
-	exit 0
-fi
+VERSION="${VERSIONDIR}/${TARGET}"
 
 if [ ! -f ${VERSION} ]; then
 	echo "Missing ${VERSION}" >&2
 	exit 1
 fi
 
-if [ -n "${DO_SIZE}" ]; then
-	# unsupported
-	echo "Missing ${VERSION}.size" >&2
-	exit 1
-fi
+case "${TARGET}" in
+core)
+	eval "$(grep -v '[{}]' ${VERSION} | sed 's/[^"]*"\([^"]*\)"[^"]*"\([^"]*\)".*/\1="\2"/')"
 
-eval "$(grep -v '[{}]' ${VERSION} | sed 's/[^"]*"\([^"]*\)"[^"]*"\([^"]*\)".*/\1="\2"/')"
+	if [ -z "${OUTPUT}" ]; then
+		OUTPUT="\${product_name} \${product_version} \(\${product_arch}/\${product_flavour}\)"
+	fi
 
-if [ -z "${OUTPUT}" ]; then
-	OUTPUT="\${product_name} \${product_version} \(\${product_arch}/\${product_flavour}\)"
-fi
+	if [ -z "${OUTPUT%%*product_flavour*}" -a -f ${OPENSSL} ]; then
+		RESULT=$(${OPENSSL} version)
+		product_flavour=${RESULT%% *}
+	fi
+	;;
+*)
+	if [ -z "${OUTPUT}" ]; then
+		OUTPUT="\${product_version}"
+	fi
 
-if [ -z "${OUTPUT%%*product_flavour*}" -a -f ${OPENSSL} ]; then
-	RESULT=$(${OPENSSL} version)
-	product_flavour=${RESULT%% *}
-fi
+	if [ -z "${OUTPUT%%*product_version*}" -a -f ${VERSION} ]; then
+		RESULT=$(cat ${VERSION})
+		# XXX this is only required for base/kernel
+		# with old version number that has arch in it
+		product_version=${RESULT%-*}
+	fi
+	if [ -z "${OUTPUT%%*product_size*}" -a -f ${VERSION}.size ]; then
+		product_size=$(cat ${VERSION}.size)
+	fi
+	if [ -z "${OUTPUT%%*product_arch*}" -a -f ${VERSION}.arch ]; then
+		product_arch=$(cat ${VERSION}.arch)
+	fi
+	;;
+esac
 
 eval echo ${OUTPUT}

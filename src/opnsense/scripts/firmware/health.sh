@@ -71,7 +71,7 @@ set_check()
 		return
 	fi
 
-	VER=$(opnsense-version -p ${SET})
+	VER=$(opnsense-version -v ${SET})
 
 	echo ">>> Check installed ${SET} version" >> ${PKG_PROGRESS_FILE}
 	if [ -z "${VER}" -o -z "${VERSION}" ]; then
