@@ -41,7 +41,7 @@ def convert_timestamp(val):
             datepart, timepart = val.split(b" ")
         else:
             datepart = val
-            timepart = "0:0:0,0"
+            timepart = b"0:0:0,0"
         year, month, day = list(map(int, datepart.split(b"-")))
         timepart_full = timepart.split(b".")
         hours, minutes, seconds = list(map(int, timepart_full[0].split(b":")))
