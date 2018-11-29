@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd September 26, 2018
+.Dd November 29, 2018
 .Dt OPNSENSE-VERSION 8
 .Os
 .Sh NAME
@@ -32,11 +32,12 @@
 .Nd OPNsense version utility
 .Sh SYNOPSIS
 .Nm
-.Op Fl AaefHNnvw
+.Op Fl AaefHNnsvw
+.Op Ar package
 .Sh DESCRIPTION
 The
 .Nm
-utility emits release package metadata, e.g. build parameters
+utility emits package metadata, e.g. build parameters
 and product-relevant information for full branding capabilities.
 .Pp
 Callers use this metadata to configure the system, return user
@@ -47,7 +48,16 @@ It is similar to
 .Sq Fl a
 parameter, but not intended to handle operating system information.
 .Pp
-Multiple options can be specified to build a custom version string.
+The default package is assumed to be
+.Ar core ,
+unless another package has been specificed.
+Other packages can be
+.Ar base ,
+.Ar kernel ,
+or plugin names.
+.Pp
+Multiple options can be specified to build a custom version string
+when that information is available.
 The options are as follows:
 .Bl -tag -width ".Fl a" -offset indent
 .It Fl A
@@ -59,23 +69,25 @@ Return the product contact e-mail address.
 .It Fl f
 Return the cryptography flavour.
 The correct flavour will be read from the installed OpenSSL
-binary, or from release package metadata if the binary could
+binary, or from package metadata if the binary could
 not be found.
 .It Fl H
-Return the release package commit hash.
+Return the package commit hash.
 .It Fl N
 Return the product name.
 .It Fl n
-Return the release package name.
+Return the package name.
+.It Fl s
+Return the accumulated file size of the package.
 .It Fl v
-Return the release package version.
+Return the package version.
 .It Fl w
 Return the product version website.
 .El
 .Sh FILES
 .Bl -tag -width Ds
-.It Pa /usr/local/opnsense/version/core
-The version metadata file of the release package.
+.It Pa /usr/local/opnsense/version
+The version metadata directory of OPNsense packages.
 .El
 .Sh EXIT STATUS
 .Ex -std
