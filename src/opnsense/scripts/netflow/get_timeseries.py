@@ -28,6 +28,7 @@
     --------------------------------------------------------------------------------------
     fetch timeseries from data provider
 """
+import os
 import time
 import calendar
 import ujson
@@ -73,24 +74,27 @@ if __name__ == '__main__':
                     if record_key not in dimension_keys:
                         dimension_keys.append(record_key)
 
-        # add first measure point if it doesn't exist in the data (graph starting point)
-        if cmd_args.start_time not in timeseries:
-            timeseries[cmd_args.start_time] = dict()
+        # When there's no data found, collect keys from the running configuration to render empty results
+        if len(dimension_keys) == 0 and os.path.isfile('/usr/local/etc/netflow.conf'):
+            tmp = open('/usr/local/etc/netflow.conf').read()
+            if tmp.find('netflow_interfaces="') > -1:
+                for intf in tmp.split('netflow_interfaces="')[-1].split('"')[0].split():
+                    dimension_keys.append('%s,in' % intf)
+                    dimension_keys.append('%s,out' % intf)
+
+        # make sure all timeslices for every dimension key exist (resample collected data)
+        start_time = cmd_args.start_time
+        while start_time < time.time():
+            if start_time not in timeseries:
+                timeseries[start_time] = dict()
             for dimension_key in dimension_keys:
-                timeseries[cmd_args.start_time][dimension_key] = {
-                    'octets': 0,
-                    'packets': 0,
-                    'resolution': cmd_args.resolution
-                }
-        # make sure all measure points exists for all given keys
-        for timeserie in sorted(timeseries):
-            for dimension_key in dimension_keys:
-                if dimension_key not in timeseries[timeserie]:
-                    timeseries[timeserie][dimension_key] = {
+                if dimension_key not in timeseries[start_time]:
+                    timeseries[start_time][dimension_key] = {
                         'octets': 0,
                         'packets': 0,
                         'resolution': cmd_args.resolution
                     }
+            start_time += cmd_args.resolution
     else:
         # generate sample data for given keys
         timeseries = dict()
