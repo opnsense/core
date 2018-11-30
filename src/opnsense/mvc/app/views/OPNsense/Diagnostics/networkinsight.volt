@@ -89,7 +89,6 @@ POSSIBILITY OF SUCH DAMAGE.
                               $("#export_collection").append($("<option data-resolutions='"+res+"'/>").val(agg_name).text(agg_name));
                             });
                             $("#export_collection").change(function(){
-                                //alert($(this).find('option:selected').data('resolutions'));
                                 $("#export_resolution").html("");
                                 var resolutions = String($(this).find('option:selected').data('resolutions'));
                                 resolutions.split(',').map(function(item) {
@@ -182,14 +181,14 @@ POSSIBILITY OF SUCH DAMAGE.
         fetch_params = selected_time.from + '/' + selected_time.to + '/' + selected_time.resolution + '/if,direction' ;
         ajaxGet('/api/diagnostics/networkinsight/timeserie/FlowInterfaceTotals/bps/' + fetch_params,{},function(data,status){
             $.each(['chart_intf_in', 'chart_intf_out'], function(idx, target) {
-                var direction = '';
+                let direction = '';
                 if (target == 'chart_intf_in') {
                     direction = 'in';
                 } else {
                     direction = 'out';
                 }
                 nv.addGraph(function() {
-                  var chart = nv.models.stackedAreaChart()
+                  let chart = nv.models.stackedAreaChart()
                       .x(function(d) { return d[0] })
                       .y(function(d) { return d[1] })
                       .useInteractiveGuideline(true)
@@ -197,9 +196,9 @@ POSSIBILITY OF SUCH DAMAGE.
                       .showControls(true)
                       .clipEdge(true);
 
-                  if (selected_time.resolution < 60) {
+                  if (selected_time.resolution <= 300) {
                       chart.xAxis.tickSize(8).tickFormat(function(d) {
-                        return d3.time.format('%b %e %H:%M:%S')(new Date(d));
+                        return d3.time.format('%H:%M:%S')(new Date(d));
                       });
                   } else if (selected_time.resolution < 3600) {
                       chart.xAxis.tickSize(8).tickFormat(function(d) {
@@ -216,10 +215,10 @@ POSSIBILITY OF SUCH DAMAGE.
                   }
                   chart.yAxis.tickFormat(d3.format(',.2s'));
 
-                  chart_data = [];
+                  let chart_data = [];
                   data.map(function(item){
-                      item_dir = item.key.split(',').pop();
-                      item_intf = item.key.split(',')[0];
+                      let item_dir = item.key.split(',').pop();
+                      let item_intf = item.key.split(',')[0];
                       if (item_intf != '0' && item_intf != 'lo0' ) {
                           if (direction == item_dir) {
                               if (interface_names[item_intf] != undefined) {
@@ -477,14 +476,15 @@ POSSIBILITY OF SUCH DAMAGE.
         ajaxGet('/api/diagnostics/networkinsight/top/FlowSourceAddrDetails/'+time_url+'/service_port,protocol,if,src_addr,dst_addr/octets/100/',
             {'filter_field': filters['filter_field'].join(','), 'filter_value': filters['filter_value'].join(',')}, function(data, status){
             if (status == 'success'){
-                var html = []
+                let html = []
                 // count total traffic
-                grand_total = 0;
+                let grand_total = 0;
                 data.map(function(item){
                     grand_total += item['total'];
                 });
                 // dump  rows
                 data.map(function(item){
+                  let proto;
                   if (item.protocol in protocol_names) {
                       proto = ' (' + protocol_names[item.protocol] + ')';
                   } else {
@@ -495,7 +495,7 @@ POSSIBILITY OF SUCH DAMAGE.
                   } else {
                       service_port = item.service_port
                   }
-                  tr_str = '<tr>';
+                  let tr_str = '<tr>';
                   if (service_port != "") {
                       tr_str += '<td> <span data-toggle="tooltip" title="'+proto+'/'+item.service_port+'">'+service_port+' </span> '+proto+'</td>';
                   } else {
@@ -511,8 +511,8 @@ POSSIBILITY OF SUCH DAMAGE.
                   }
 
 
-                  percentage = parseInt((item['total'] /grand_total) * 100);
-                  perc_text = ((item['total'] /grand_total) * 100).toFixed(2);
+                  let percentage = parseInt((item['total'] /grand_total) * 100);
+                  let perc_text = ((item['total'] /grand_total) * 100).toFixed(2);
                   tr_str += '<td>';
                   tr_str += '<div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" ';
                   tr_str += 'aria-valuenow="'+percentage+'" aria-valuemin="0" aria-valuemax="100" style="color: black; min-width: 2em; width:' ;
@@ -539,9 +539,9 @@ POSSIBILITY OF SUCH DAMAGE.
        */
       function export_flow_data()
       {
-          var time_url = $("#export_date_from").val() + '/' +  $("#export_date_to").val();
-          var url = '/api/diagnostics/networkinsight/export/'+$("#export_collection").val()+'/'+time_url+'/'+$("#export_resolution").val();
-          var link = document.createElement("a");
+          let time_url = $("#export_date_from").val() + '/' +  $("#export_date_to").val();
+          let url = '/api/diagnostics/networkinsight/export/'+$("#export_collection").val()+'/'+time_url+'/'+$("#export_resolution").val();
+          let link = document.createElement("a");
           $(link).click(function(e) {
               e.preventDefault();
               window.location.href = url;
