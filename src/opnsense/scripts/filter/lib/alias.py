@@ -56,7 +56,7 @@ class Alias(object):
         self._timeout = timeout
         self._name = None
         self._type = None
-        self._proto = None
+        self._proto = 'IPv4,IPv6'
         self._items = list()
         self._resolve_content = set()
         for subelem in elem:
