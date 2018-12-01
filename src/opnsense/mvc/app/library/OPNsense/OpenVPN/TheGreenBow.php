@@ -85,73 +85,92 @@ class TheGreenBow extends BaseExporter implements IExportProvider
     }
 
     /**
-     * replace placeholders
-     * @param $template
-     * @return mixed
-     */
-    private function replacePlaceHolders($template)
-    {
-        $result = $template;
-        $tags = $this->config;
-        $tags['Auth'] = "";
-        $tags['AuthSize'] = "";
-        $tags['creation_date'] =  date('Y-m-d \a\t H:i:s');
-        preg_match_all('!\d+!', $this->config['crypto'], $matches);
-        if (!empty($matches)) {
-            $tags['CipherKeySize'] = preg_match_all('!\d+!', $this->config['crypto'], $matches);
-        } else {
-            $tags['CipherKeySize'] = "auto";
-        }
-        if (isset($tags['server_ca_chain'])) {
-            $tags['server_ca_chain'] = implode("\n", $tags['server_ca_chain']);
-        }
-
-        if (!empty($this->config['digest'])) {
-            if (strpos($this->config['digest'], "SHA1") !== false) {
-                $tags['Auth'] = "MD5";
-                $tags['AuthSize'] = "128";
-            } elseif ($this->config['digest'] == "SHA256") {
-                $tags['Auth'] = "SHA2";
-                $tags['AuthSize'] = "256";
-            } elseif ($this->config['digest'] == "SHA384") {
-                $tags['Auth'] = "SHA2";
-                $tags['AuthSize'] = "384";
-            } elseif ($this->config['digest'] == "SHA512") {
-                $tags['Auth'] = "SHA2";
-                $tags['AuthSize'] = "SHA512";
-            }
-        }
-
-        if (strncasecmp($this->config['protocol'], "tcp", 3) === 0) {
-            $tags['proto'] = 'TCP';
-        } else {
-            $tags['proto'] = 'UDP';
-        }
-
-        if (in_array($this->config['mode'], array('server_user', 'server_tls_user'))) {
-            $tags['UserPassword'] = 'yes';
-        } else {
-            $tags['UserPassword'] = 'no';
-        }
-
-        $tags['Compression'] = !empty($this->config['compression']) ? 'yes' : 'no';
-
-        foreach ($tags as $name => $value) {
-            if (!is_array($value)) {
-                $result = str_replace("[[{$name}]]", $value, $result);
-            }
-        }
-
-        return $result;
-    }
-
-
-    /**
      * @return string content
      */
     public function getContent()
     {
-        $template = file_get_contents(substr(__FILE__, 0, -3).'tgb');
-        return $this->replacePlaceHolders($template);
+        $output = new \SimpleXMLElement(
+            file_get_contents(substr(__FILE__, 0, -3).'tgb')
+        );
+
+        if (!empty($this->config['description'])) {
+            $output->cfg_ssl->cfg_sslconnection['name'] = $this->config['description'];
+        }
+        $output->cfg_ssl->cfg_sslconnection['server'] = $this->config['hostname'];
+        $output->cfg_ssl->cfg_sslconnection['port'] = $this->config['local_port'];
+        if (strncasecmp($this->config['protocol'], "tcp", 3) === 0) {
+            $output->cfg_ssl->cfg_sslconnection['proto'] = 'TCP';
+        } else {
+            $output->cfg_ssl->cfg_sslconnection['proto'] = 'UDP';
+        }
+
+        if (in_array($this->config['mode'], array('server_user', 'server_tls_user'))) {
+            $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions['UserPassword'] = 'yes';
+            $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions['PopupUserPassword'] = 'yes';
+        } else {
+            $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions['UserPassword'] = 'no';
+            $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions['PopupUserPassword'] = 'no';
+        }
+
+        $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->Cipher = $this->config['crypto'];
+        preg_match_all('!\d+!', $this->config['crypto'], $matches);
+        if (!empty($matches)) {
+            $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->CipherKeySize = $matches[0][0];
+        } else {
+            $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->CipherKeySize = "auto";
+        }
+
+        if (!empty($this->config['digest'])) {
+            if (strpos($this->config['digest'], "SHA1") !== false) {
+                $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->Auth = "MD5";
+                $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->AuthSize = "128";
+            } elseif ($this->config['digest'] == "SHA256") {
+                $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->Auth = "SHA2";
+                $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->AuthSize = "256";
+            } elseif ($this->config['digest'] == "SHA384") {
+                $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->Auth = "SHA2";
+                $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->AuthSize = "384";
+            } elseif ($this->config['digest'] == "SHA512") {
+                $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->Auth = "SHA2";
+                $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->AuthSize = "SHA512";
+            }
+        }
+        if (!empty($this->config['compression'])) {
+            $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->Compression = 'yes';
+        } else {
+            $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->Compression = 'no';
+        }
+
+        $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->RenegSeconds = $this->config['reneg-sec'];
+        if (!empty($this->config['tls'])) {
+            $tls = array("\n-----BEGIN Static key-----");
+            foreach (explode("\n", trim(base64_decode($this->config['tls']))) as $line){
+                if (!empty($line) && !in_array($line[0], ['-', '#'])) {
+                    $tls[] = $line;
+                }
+            }
+            $tls[] = "-----END Static key-----\n";
+
+            $output->cfg_ssl->cfg_sslconnection->cfg_TlsAuth->key = (string)implode("\n", $tls);
+        } else {
+            unset($output->cfg_ssl->cfg_sslconnection->cfg_TlsAuth);
+        }
+
+        // client certificate
+        $output->cfg_ssl->cfg_sslconnection->authentication->certificate[0]->public_key = $this->config['client_crt'];
+        $output->cfg_ssl->cfg_sslconnection->authentication->certificate[0]->private_key = $this->config['client_prv'];
+        // server CA-chain
+        $output->cfg_ssl->cfg_sslconnection->authentication->certificate[1]->public_key = implode("\n",
+            $this->config['server_ca_chain']
+        );
+
+        // legacy header
+        $heading = "# Do not edit this file. It is overwritten by VpnConf.\n";
+        $heading .= "# SIGNATURE MD5 = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
+        $heading .= "# Creation Date : ".date('Y-m-d \a\t H:i:s')."\n";
+        $heading .= "# Written by OPNsense\n\n\n";
+        $heading .= "[TGBIKENG]\n\n";
+
+        return $heading . str_replace('&#13;', "", $output->asXML());
     }
 }
