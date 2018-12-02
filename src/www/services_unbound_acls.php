@@ -45,9 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $act = null;
     }
     $pconfig = array();
-    $pconfig['aclname'] = isset($id) && !empty($a_acls[$id]['aclname']) ? $a_acls[$id]['aclname'] : "";
-    $pconfig['aclaction'] = isset($id) && !empty($a_acls[$id]['aclaction']) ? $a_acls[$id]['aclaction'] : "";
-    $pconfig['description'] = isset($id) && !empty($a_acls[$id]['description']) ? $a_acls[$id]['description'] : "";
+    $pconfig['aclname'] = isset($id) && !empty($a_acls[$id]['aclname']) ? $a_acls[$id]['aclname'] : '';
+    $pconfig['aclaction'] = isset($id) && !empty($a_acls[$id]['aclaction']) ? $a_acls[$id]['aclaction'] : '';
+    $pconfig['description'] = isset($id) && !empty($a_acls[$id]['description']) ? $a_acls[$id]['description'] : '';
     $pconfig['row'] = isset($id) && !empty($a_acls[$id]['row']) ? $a_acls[$id]['row'] : array();
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
@@ -139,7 +139,7 @@ if (!isset($_GET['act'])) {
     function removeRow() {
         if ( $('#acl_networks_table > tbody > tr').length == 1 ) {
             $('#acl_networks_table > tbody > tr:last > td > input').each(function(){
-              $(this).val("");
+              $(this).val('');
             });
         } else {
             $(this).parent().parent().remove();
@@ -150,7 +150,7 @@ if (!isset($_GET['act'])) {
         // copy last row and reset values
         $('#acl_networks_table > tbody').append('<tr>'+$('#acl_networks_table > tbody > tr:last').html()+'</tr>');
         $('#acl_networks_table > tbody > tr:last > td > input').each(function(){
-          $(this).val("");
+          $(this).val('');
         });
         //  link network / cidr
         var item_cnt = $('#acl_networks_table > tbody > tr').length;
@@ -227,22 +227,22 @@ if (!isset($_GET['act'])) {
                   <td><a id="help_for_aclaction" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Action");?></td>
                   <td>
                     <select name="aclaction" class="selectpicker">
-                      <option value="allow" <?= $pconfig['aclaction'] == "allow" ? "selected=\"selected\"" : ""; ?>>
+                      <option value="allow" <?= $pconfig['aclaction'] == "allow" ? 'selected="selected"' : ''; ?>>
                       <?=gettext("Allow");?>
                       </option>
-                      <option value="deny" <?= $pconfig['aclaction'] == "deny" ? "selected=\"selected\"" : ""; ?>>
+                      <option value="deny" <?= $pconfig['aclaction'] == "deny" ? 'selected="selected"' : ''; ?>>
                       <?=gettext("Deny");?>
                       </option>
-                      <option value="refuse" <?= $pconfig['aclaction'] == "refuse" ? "selected=\"selected\"" : ""; ?>>
+                      <option value="refuse" <?= $pconfig['aclaction'] == "refuse" ? 'selected="selected"' : ''; ?>>
                       <?=gettext("Refuse");?>
                       </option>
-                      <option value="allow snoop" <?= $pconfig['aclaction'] == "allow snoop" ? "selected=\"selected\"" : ""; ?>>
+                      <option value="allow snoop" <?= $pconfig['aclaction'] == "allow snoop" ? 'selected="selected"' : ''; ?>>
                       <?=gettext("Allow Snoop");?>
                       </option>
-                      <option value="deny nonlocal" <?= $pconfig['aclaction'] == "deny nonlocal" ? "selected=\"selected\"" : ""; ?>>
+                      <option value="deny nonlocal" <?= $pconfig['aclaction'] == "deny nonlocal" ? 'selected="selected"' : ''; ?>>
                       <?=gettext("Deny Non-local");?>
                       </option>
-                      <option value="refuse nonlocal" <?= $pconfig['aclaction'] == "refuse nonlocal" ? "selected=\"selected\"" : ""; ?>>
+                      <option value="refuse nonlocal" <?= $pconfig['aclaction'] == "refuse nonlocal" ? 'selected="selected"' : ''; ?>>
                       <?=gettext("Refuse Non-local");?>
                       </option>
                     </select>
@@ -289,7 +289,7 @@ if (!isset($_GET['act'])) {
                             <select name="acl_networks_mask[]" data-network-id="acl_network_<?=$item_idx;?>" class="ipv4v6net" id="mask<?=$item_idx;?>">
 <?php
                               for ($i = 128; $i > 0; $i--):?>
-                              <option value="<?=$i;?>" <?= $item['mask'] == $i ?  "selected=\"selected\"" : ""?>>
+                              <option value="<?=$i;?>" <?= $item['mask'] == $i ? 'selected="selected"' : ''?>>
                                 <?=$i;?>
                               </option>
 <?php
