@@ -37,10 +37,12 @@ function get_dyndns_ip($int, $ipver = 4, $service = null)
 {
     global $config;
 
-    $ip_address = $ipver == 6 ? get_interface_ipv6($int) : get_interface_ip($int);
-    if (empty($ip_address)) {
-        log_error("Aborted IPv{$ipver} detection: no address for {$int}");
-        return 'down';
+    $int_ip_address = ($ipver == 6 ? get_interface_ipv6($int) : get_interface_ip($int)) ?: '';
+    if (empty($int_ip_address)) {
+        $status = sprintf(gettext("Aborted IPv%s detection: no address for %s"), "{$ipver}", "{$int}");
+        log_error($status);
+        $pub_ip_address = '';
+        return array ('Service'=>($servicename ?: ''), 'Interface'=>$int, 'IPVersion'=>$ipver, 'IntIPAddress'=>$int_ip_address, 'PubIPAddress'=>$pub_ip_address, 'Status'=>$status);
     }
 
     $gateways_status = return_gateways_status();
@@ -54,16 +56,19 @@ function get_dyndns_ip($int, $ipver = 4, $service = null)
         !empty($gateways_status[$config['interfaces'][$int]['gateway']]['status']) &&
         stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')
     ) {
-        log_error("Aborted IPv{$ipver} detection: gateway down for {$int}");
-        return 'down';
+        $status = sprintf(gettext("Aborted IPv%s detection: gateway down for %s"), "{$ipver}", "{$int}");
+        log_error($status);
+        $pub_ip_address = '';
+        return array ('Service'=>($servicename ?: ''), 'Interface'=>$int, 'IPVersion'=>$ipver, 'IntIPAddress'=>$int_ip_address, 'PubIPAddress'=>$pub_ip_address, 'Status'=>$status);
     }
 
-    if ($ipver != 6 && is_private_ip($ip_address)) {
+    if ($ipver != 6 && is_private_ip($int_ip_address)) {
 
         // Use the Check IP Services plugin if it is installed.  Else use hard coded service.
         if (stream_resolve_include_path('plugins.inc.d/dyndns/checkipsrvsplugin.inc')) {
             include('plugins.inc.d/dyndns/checkipsrvsplugin.inc');
         } else {
+            $servicename = 'DynDNS (hard coded)';               // Chinese alternative is: '3322 (hard coded)'
             $hosttocheck = 'http://checkip.dyndns.org';         // Chinese alternative is: 'http://ip.3322.net/'
             $regex = '<body>Current IP Address: (.*)</body>';   // Chinese alternative is: '^(.*)$'
             $username = '';
@@ -74,7 +79,7 @@ function get_dyndns_ip($int, $ipver = 4, $service = null)
         $ip_ch = curl_init($hosttocheck);
         curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ip_ch, CURLOPT_SSL_VERIFYPEER, $verifysslpeer);
-        curl_setopt($ip_ch, CURLOPT_INTERFACE, $ip_address);
+        curl_setopt($ip_ch, CURLOPT_INTERFACE, $int_ip_address);
         curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ip_ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ip_ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
@@ -83,20 +88,27 @@ function get_dyndns_ip($int, $ipver = 4, $service = null)
         $ip_result = curl_exec($ip_ch);
         if ($ip_result !== false) {
             preg_match('=' . $regex . '=siU', $ip_result, $matches);
-            $ip_address = trim($matches[1]);
+            $pub_ip_address = trim($matches[1]);
+            $status = ($pub_ip_address ? gettext('Succeeded') : gettext('Failed'));
         } else {
-            log_error('Aborted IPv4 detection: ' . curl_error($ip_ch));
-            $ip_address = '';
+            $status = sprintf(gettext("Aborted IPv4 detection: %s"), curl_error($ip_ch));
+            log_error($status);
+            $pub_ip_address = '';
         }
         curl_close($ip_ch);
-    } elseif ($ipver == 6 && is_linklocal($ip_address)) {
-        log_error('Aborted IPv6 detection: cannot bind to link-local address');
-        $ip_address = '';
+    } elseif ($ipver == 6 && is_linklocal($int_ip_address)) {
+        $status = gettext('Aborted IPv6 detection: cannot bind to link-local address');
+        log_error($status);
+        $pub_ip_address = '';
+    } else {
+        $pub_ip_address = $int_ip_address;
+        $status = ($pub_ip_address ? gettext('Succeeded') : gettext('Failed'));
     }
 
-    if (($ipver == 6 && !is_ipaddrv6($ip_address)) || ($ipver != 6 && !is_ipaddrv4($ip_address))) {
-        return 'down';
+    if (($ipver == 6 && !is_ipaddrv6($pub_ip_address)) || ($ipver != 6 && !is_ipaddrv4($pub_ip_address))) {
+        $status = gettext('Invalid IP address');
+        $pub_ip_address = '';
     }
 
-    return $ip_address;
+    return array ('Service'=>($servicename ?: ''), 'Interface'=>$int, 'IPVersion'=>$ipver, 'IntIPAddress'=>$int_ip_address, 'PubIPAddress'=>$pub_ip_address, 'Status'=>$status);
 }
