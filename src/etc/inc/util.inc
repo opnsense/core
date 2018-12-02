@@ -1502,8 +1502,9 @@ function get_dyndns_ip($int, $ipver = 4)
     }
 
     if ($ipver != 6 && is_private_ip($ip_address)) {
-        /* Chinese alternative is http://ip.3322.net/ */
-        $hosttocheck = 'http://checkip.dyndns.org';
+        $hosttocheck = 'http://checkip.dyndns.org';         // Chinese alternative is: 'http://ip.3322.net/'
+        $regex = '<body>Current IP Address: (.*)</body>';   // Chinese alternative is: '^(.*)$'
+
         $ip_ch = curl_init($hosttocheck);
         curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ip_ch, CURLOPT_INTERFACE, $ip_address);
@@ -1511,8 +1512,9 @@ function get_dyndns_ip($int, $ipver = 4)
         curl_setopt($ip_ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ip_ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
         $ip_result = curl_exec($ip_ch);
+
         if ($ip_result !== false) {
-            preg_match('=<body>Current IP Address: (.*)</body>=siU', $ip_result, $matches);
+            preg_match('=' . $regex . '=siU', $ip_result, $matches);
             $ip_address = trim($matches[1]);
         } else {
             log_error('Aborted IPv4 detection: ' . curl_error($ip_ch));
