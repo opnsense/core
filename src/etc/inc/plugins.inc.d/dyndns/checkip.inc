@@ -33,7 +33,7 @@ require_once("config.inc");
 require_once("interfaces.inc");
 require_once("util.inc");
 
-function get_dyndns_ip($int, $ipver = 4)
+function get_dyndns_ip($int, $ipver = 4, $service = null)
 {
     global $config;
 
@@ -59,17 +59,30 @@ function get_dyndns_ip($int, $ipver = 4)
     }
 
     if ($ipver != 6 && is_private_ip($ip_address)) {
-        /* Chinese alternative is http://ip.3322.net/ */
-        $hosttocheck = 'http://checkip.dyndns.org';
+
+        // Use the Check IP Services plugin if it is installed.  Else use hard coded service.
+        if (stream_resolve_include_path('plugins.inc.d/dyndns/checkipsrvsplugin.inc')) {
+            include('plugins.inc.d/dyndns/checkipsrvsplugin.inc');
+        } else {
+            $hosttocheck = 'http://checkip.dyndns.org';         // Chinese alternative is: 'http://ip.3322.net/'
+            $regex = '<body>Current IP Address: (.*)</body>';   // Chinese alternative is: '^(.*)$'
+            $username = '';
+            $password = '';
+            $verifysslpeer = false;
+        }
+
         $ip_ch = curl_init($hosttocheck);
         curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ip_ch, CURLOPT_SSL_VERIFYPEER, $verifysslpeer);
         curl_setopt($ip_ch, CURLOPT_INTERFACE, $ip_address);
         curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ip_ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ip_ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        curl_setopt($ip_ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+        curl_setopt($ip_ch, CURLOPT_USERPWD, "{$username}:{$password}");
         $ip_result = curl_exec($ip_ch);
         if ($ip_result !== false) {
-            preg_match('=<body>Current IP Address: (.*)</body>=siU', $ip_result, $matches);
+            preg_match('=' . $regex . '=siU', $ip_result, $matches);
             $ip_address = trim($matches[1]);
         } else {
             log_error('Aborted IPv4 detection: ' . curl_error($ip_ch));
