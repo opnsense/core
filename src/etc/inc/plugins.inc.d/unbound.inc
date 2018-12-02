@@ -82,7 +82,7 @@ function unbound_xmlrpc_sync()
 
 function unbound_optimization()
 {
-    $optimization_settings = array();
+    $optimization = array();
 
     /*
      * Set the number of threads equal to the nearest power of 2 when counting the number of CPUs.
@@ -478,7 +478,7 @@ function unbound_add_domain_overrides($pvt = false)
         $result[$domain_key][] = $domain['ip'];
     }
 
-    $domain_entries = "";
+    $domain_entries = '';
     foreach ($result as $domain => $ips) {
         if ($pvt == true) {
             $domain_entries .= "private-domain: \"$domain\"\n";
@@ -592,13 +592,9 @@ function unbound_add_host_entries()
         unset($tmp_known_domains); // remove temporary variable
     }
 
-    /* Static Host entries */
-
     if (isset($config['unbound']['hosts'])) {
-        $added_item = array();
-
         foreach ($config['unbound']['hosts'] as $host) {
-            if ($host['host'] != "") {
+            if ($host['host'] != '') {
                 $host['host'] = $host['host'].".";
             }
 
@@ -629,8 +625,6 @@ function unbound_add_host_entries()
             }
         }
     }
-
-    /* Static DHCP entries */
 
     if (isset($config['unbound']['regdhcpstatic']) && is_array($config['dhcpd'])) {
         foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
