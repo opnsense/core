@@ -31,6 +31,10 @@ require_once('script/load_phalcon.php');
 
 /**
  * wrap config run
+ * @param string $cmd
+ * @param bool $detach
+ * @return string
+ * @throws Exception
  */
 function configd_run($cmd, $detach = false)
 {
@@ -90,7 +94,7 @@ function legacy_list_aliases($type)
  *  @param array $source config section to apply move on
  *  @param int $id item number to move selected to (before)
  *  @param array $items item numbers to move
- *  @return new constructed list
+ *  @return array new constructed list
  */
 function legacy_move_config_list_items($source, $id, $items) {
     $new_config = array();
@@ -140,7 +144,6 @@ function legacy_move_config_list_items($source, $id, $items) {
  */
 function get_alias_description($name)
 {
-    $aliasMdl = new \OPNsense\Firewall\Alias();
     // MVC defined aliases
     foreach ((new \OPNsense\Firewall\Alias())->aliasIterator()  as $alias) {
         if ($alias['name'] == $name) {
