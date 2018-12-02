@@ -1493,7 +1493,7 @@ function dhcp6c_duid_clear()
     @unlink('/conf/dhcp6c_duid');
 }
 
-function get_dyndns_ip($int, $ipver = 4)
+function get_dyndns_ip($int, $ipver = 4, $checkip = null)
 {
     $ip_address = $ipver == 6 ? get_interface_ipv6($int) : get_interface_ip($int);
     if (empty($ip_address)) {
@@ -1504,15 +1504,20 @@ function get_dyndns_ip($int, $ipver = 4)
     if ($ipver != 6 && is_private_ip($ip_address)) {
         /* Chinese alternative is http://ip.3322.net/ */
         $hosttocheck = 'http://checkip.dyndns.org';
+        $regex = '<body>Current IP Address: (.*)</body>';
         $ip_ch = curl_init($hosttocheck);
         curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ip_ch, CURLOPT_INTERFACE, $ip_address);
         curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ip_ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ip_ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        if (is_array($checkip['curl_options'])) {
+            curl_setopt_array($ip_ch, $checkip['curl_options']);
+            $regex = $checkip['capture_regex'];
+        }
         $ip_result = curl_exec($ip_ch);
         if ($ip_result !== false) {
-            preg_match('=<body>Current IP Address: (.*)</body>=siU', $ip_result, $matches);
+            preg_match('=' . $regex . '=siU', $ip_result, $matches);
             $ip_address = trim($matches[1]);
         } else {
             log_error('Aborted IPv4 detection: ' . curl_error($ip_ch));
