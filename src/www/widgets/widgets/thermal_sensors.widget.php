@@ -30,28 +30,40 @@ require_once("guiconfig.inc");
 
 config_read_array('widgets', 'thermal_sensors_widget');
 
-function validate_temp_value($value)
+function fix_temp_value($value, int $default): int
 {
     if (is_numeric($value) && (int)$value == $value && $value >= 0 and $value <= 100) {
+        return (int)$value;
+    } else {
+        return $default;
+    }
+}
+
+function fix_checkbox_value($value): bool
+{
+    if ($value !== '') {
         return true;
     } else {
         return false;
     }
 }
 
-$fieldnames = array('thermal_sensors_widget_zone_warning_threshold', 'thermal_sensors_widget_zone_critical_threshold',
-               'thermal_sensors_widget_core_warning_threshold', 'thermal_sensors_widget_core_critical_threshold');
+$fields = [
+    ['name' => 'thermal_sensors_widget_zone_warning_threshold', 'default' => 70, 'processFunc' => 'fix_temp_value'],
+    ['name' => 'thermal_sensors_widget_zone_critical_threshold', 'default' => 80, 'processFunc' => 'fix_temp_value'],
+    ['name' => 'thermal_sensors_widget_core_warning_threshold', 'default' => 70, 'processFunc' => 'fix_temp_value'],
+    ['name' => 'thermal_sensors_widget_core_critical_threshold', 'default' => 80, 'processFunc' => 'fix_temp_value'],
+    ['name' => 'thermal_sensors_widget_show_one_core_temp', 'default' => false, 'processFunc' => 'fix_checkbox_value'],
+];
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $pconfig = array();
-    foreach ($fieldnames as $fieldname) {
-        $defaultValue = strpos($fieldname, 'critical') !== false ? 80 : 70;
-        $pconfig[$fieldname] = !empty($config['widgets']['thermal_sensors_widget'][$fieldname]) ? $config['widgets']['thermal_sensors_widget'][$fieldname] : $defaultValue;
+    $pconfig = [];
+    foreach ($fields as $field) {
+        $pconfig[$field['name']] = !empty($config['widgets']['thermal_sensors_widget'][$field['name']]) ? $config['widgets']['thermal_sensors_widget'][$field['name']] : $field['default'];
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    foreach ($fieldnames as $fieldname) {
-        $defaultValue = strpos($fieldname, 'critical') !== false ? 80 : 70;
-        $newValue = !empty($_POST[$fieldname]) ? $_POST[$fieldname] : "";
-        $config['widgets']['thermal_sensors_widget'][$fieldname] = validate_temp_value($newValue) ? $newValue : $defaultValue;
+    foreach ($fields as $field) {
+        $newValue = $field['processFunc']($_POST[$field['name']] ?? '', $field['default']);
+        $config['widgets']['thermal_sensors_widget'][$field['name']] = $newValue;
     }
     write_config("Thermal sensors widget saved via Dashboard.");
     header(url_safe('Location: /index.php'));
@@ -63,7 +75,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     'use strict';
 
     function thermal_sensors_widget_update(sender, data) {
+        let firstCore = true;
         data.map(function (sensor) {
+            // Skip if the user only wants one core temperature and we have already showed one.
+            if (sensor['type'] === 'core' && $('#thermal_sensors_widget_show_one_core_temp').attr('checked') === 'checked')
+            {
+                if (!firstCore) {
+                    return;
+                }
+                firstCore = false;
+            }
+
             const tr_id = "thermal_sensors_widget_" + sensor['device'].replace(/\./g, '_');
 
             let tbody = sender.find('tbody');
@@ -149,6 +171,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           <td>
             <input type="text" id="thermal_sensors_widget_core_critical_threshold" name="thermal_sensors_widget_core_critical_threshold" value="<?= $pconfig['thermal_sensors_widget_core_critical_threshold']; ?>" />
           </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="checkbox" id="thermal_sensors_widget_show_one_core_temp" name="thermal_sensors_widget_show_one_core_temp" <?=$pconfig['thermal_sensors_widget_show_one_core_temp'] ? 'checked="checked"' : ''; ?>/>
+                <?= gettext('Show only one CPU core temperature') ?>
+            </td>
         </tr>
         <tr>
           <td colspan="2">
