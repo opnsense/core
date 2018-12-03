@@ -256,6 +256,18 @@
             <multiple>Y</multiple>
             <Required>N</Required>
          </tests>
+         <depends type="ModelRelationField">
+            <Model>
+               <template>
+                  <source>OPNsense.monit.monit</source>
+                  <items>service</items>
+                  <display>name</display>
+               </template>
+            </Model>
+            <ValidationMessage>Related item not found</ValidationMessage>
+            <multiple>Y</multiple>
+            <Required>N</Required>
+         </depends>
       </service>
       <test type="ArrayField">
          <name type="TextField">

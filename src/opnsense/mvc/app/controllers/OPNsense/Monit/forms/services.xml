@@ -73,6 +73,12 @@
       <help><![CDATA[This is a list with service tests.]]></help>
    </field>
    <field>
+      <id>monit.service.depends</id>
+      <label>Depends</label>
+      <type>select_multiple</type>
+      <help><![CDATA[This is a list with service dependencies.]]></help>
+   </field>
+   <field>
       <id>monit.service.description</id>
       <label>Description</label>
       <type>text</type>
