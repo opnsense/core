@@ -25,6 +25,12 @@
         <help><![CDATA[Select authentication methods to use, leave empty for no authentication needed.]]></help>
     </field>
     <field>
+        <id>zone.alwaysSendAccountingReqs</id>
+        <label>Always send accounting requests</label>
+        <type>checkbox</type>
+        <help><![CDATA[This will make the captive portal always send accounting requests, rather than just when there is a need for accounting (e.g. when there is a daily session limit).]]></help>
+    </field>
+    <field>
         <id>zone.authEnforceGroup</id>
         <label>Enforce local group</label>
         <type>dropdown</type>
