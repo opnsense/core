@@ -690,7 +690,7 @@ $( document ).ready(function() {
                   <tr>
                     <td><a id="help_for_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Group Memberships");?></td>
                     <td>
-                      <table class="table" style="width:100%; border:0; cellpadding:0; cellspacing:0">
+                      <table class="table" style="width:100%; border:0;">
                         <thead>
                           <tr>
                             <th><?=gettext("Not Member Of"); ?></th>

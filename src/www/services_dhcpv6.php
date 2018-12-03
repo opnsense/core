@@ -758,7 +758,7 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
           <section class="col-xs-12">
             <div class="tab-content content-box col-xs-12">
                 <div class="table-responsive">
-                  <table class="tabcont table table-striped" style="width:100%; border:0; cellpadding:0; cellspacing:0">
+                  <table class="tabcont table table-striped" style="width:100%; border:0;">
                     <tr>
                       <th colspan="5"><?= gettext('DHCPv6 Static Mappings for this interface.') ?></th>
                     </tr>

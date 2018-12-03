@@ -502,7 +502,7 @@ $( document ).ready(function() {
                   <tfoot>
                     <tr class="hidden-xs hidden-sm">
                       <td colspan="13">
-                        <table style="width:100%; border:0; cellspacing:0; cellpadding:0">
+                        <table style="width:100%; border:0;">
                           <tr>
                             <td><i class="fa fa-play fa-fw text-success"></i></td>
                             <td><?=gettext("Enabled rule"); ?></td>

@@ -748,7 +748,7 @@ $( document ).ready(function() {
                 <tfoot>
                   <tr class="hidden-xs hidden-sm">
                     <td colspan="11">
-                      <table style="width:100%; border:0; cellspacing:0; cellpadding:0">
+                      <table style="width:100%; border:0;">
                         <tr>
                           <td style="width:16px"><span class="fa fa-play text-success"></span></td>
                           <td style="width:100px"><?=gettext("pass");?></td>
