@@ -439,7 +439,7 @@ include("head.inc");
                 </div>
               </td>
             </tr>
-            </tr>
+            <tr>
               <td></td>
               <td>
                 <input name="dnslocalhost" type="checkbox" value="yes" <?=$pconfig['dnslocalhost'] ? "checked=\"checked\"" : ""; ?> />

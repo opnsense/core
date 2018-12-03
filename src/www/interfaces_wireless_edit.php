@@ -175,7 +175,7 @@ include("head.inc");
                     <div class="hidden" data-for="help_for_descr">
                       <?=gettext("You may enter a description here for your reference (not parsed).");?>
                     </div>
-                  </div>
+                  </td>
                 </tr>
                 <tr>
                   <td></td>

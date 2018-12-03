@@ -160,8 +160,10 @@ else :
 <form method="post">
   <table class="table table-striped">
     <thead>
+      <tr>
         <th colspan="2"><?=gettext("Please select users to import:");?></th>
         <th><input type='checkbox' id='select_all'></th>
+      </tr>
     </thead>
     <tbody>
       <?php foreach ($ldap_users as $username => $userDN) :

@@ -2064,7 +2064,7 @@ include("head.inc");
                         <td colspan="2"><strong><?= gettext('RFC 3118 ISP Authentication Algorithm') ?></strong></td>
                       </tr>
                     </thead>
-                       <body>
+                       <tbody>
                           <tr>
                           <td style="width: 22%;"><i class="fa fa-info-circle text-muted"></i> <?=gettext('Service Provider') ?></td>
                           <td>
@@ -2096,7 +2096,7 @@ include("head.inc");
                             <input name="rfc3118_or_fr_lbid" type="text" id="rfc3118_or_fr_lbid" value="<?=$pconfig['rfc3118_or_fr_lbid'];?>" />
                           </td>
                         </tr>
-                      </body>
+                      </tbody>
                   </table>
                 </div>
               </div>
