@@ -60,53 +60,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 ?>
 <script>
-  function thermal_sensors_widget_update(sender, data)
-  {
-    data.map(function(sensor) {
-      var tempIntValue = parseInt(sensor['temperature']);
-      var progressbar = $("#thermal_sensors_widget_progress_bar").html();
-      var tbody = sender.find('tbody');
-      var tr_id = "thermal_sensors_widget_" + sensor['device'].replace(/\./g, '_');
-      if (tbody.find("#"+tr_id).length == 0) {
-          var tr_content = [];
-          tr_content.push('<tr id="'+tr_id+'">');
-          tr_content.push('<td>'+progressbar+'</td>');
-          tr_content.push('</tr>');
-          tbody.append(tr_content.join(''));
-      }
-      let danger_temp, warning_temp;
-      // probe warning / danger temp
-      if (sensor['type'] == 'core') {
-          danger_temp = parseInt($("#thermal_sensors_widget_core_critical_threshold").val());
-          warning_temp = parseInt($("#thermal_sensors_widget_core_warning_threshold").val());
-      } else {
-          danger_temp = parseInt($("#thermal_sensors_widget_zone_critical_threshold").val());
-          warning_temp = parseInt($("#thermal_sensors_widget_zone_warning_threshold").val());
-      }
-      // progress bar style
-      if (tempIntValue > danger_temp) {
-          $("#"+tr_id + " .progress-bar").removeClass('progress-bar-success')
-            .removeClass('progress-bar-warning')
-            .removeClass('progress-bar-danger')
-            .addClass('progress-bar-danger');
-      } else if (tempIntValue > warning_temp) {
-          $("#"+tr_id + " .progress-bar").removeClass('progress-bar-success')
-            .removeClass('progress-bar-warning')
-            .removeClass('progress-bar-danger')
-            .addClass('progress-bar-warning');
-      } else {
-          $("#"+tr_id + " .progress-bar").removeClass('progress-bar-success')
-            .removeClass('progress-bar-warning')
-            .removeClass('progress-bar-danger')
-            .addClass('progress-bar-success');
-      }
-      // update bar
-      $("#"+tr_id + " .progress-bar").html(sensor['temperature'] + ' &deg;C');
-      $("#"+tr_id + " .progress-bar").css("width",  tempIntValue + "%").attr("aria-valuenow", tempIntValue + "%");
-      // update label
-      $("#"+tr_id + " .info").html(sensor['type_translated'] + " " + sensor['device_seq'] + " <small>("+sensor['device']+")<small>");
-    });
-  }
+    'use strict';
+
+    function thermal_sensors_widget_update(sender, data) {
+        data.map(function (sensor) {
+            const tr_id = "thermal_sensors_widget_" + sensor['device'].replace(/\./g, '_');
+
+            let tbody = sender.find('tbody');
+            if (tbody.find('#' + tr_id).length === 0) {
+                let tr = $('<tr>');
+                tr.attr('id', tr_id);
+
+                let td = $('<td>');
+                td.html($('#thermal_sensors_widget_progress_bar').html());
+
+                tr.append(td);
+                tbody.append(tr);
+            }
+
+            // probe warning / danger temp
+            let danger_temp, warning_temp;
+            if (sensor['type'] === 'core') {
+                danger_temp = parseInt($('#thermal_sensors_widget_core_critical_threshold').val());
+                warning_temp = parseInt($('#thermal_sensors_widget_core_warning_threshold').val());
+            } else {
+                danger_temp = parseInt($('#thermal_sensors_widget_zone_critical_threshold').val());
+                warning_temp = parseInt($('#thermal_sensors_widget_zone_warning_threshold').val());
+            }
+
+            // progress bar style
+            let progressBar = $('#' + tr_id + ' .progress-bar');
+            const tempIntValue = parseInt(sensor['temperature']);
+            if (tempIntValue > danger_temp) {
+                progressBar.removeClass('progress-bar-success')
+                    .removeClass('progress-bar-warning')
+                    .removeClass('progress-bar-danger')
+                    .addClass('progress-bar-danger');
+            } else if (tempIntValue > warning_temp) {
+                progressBar.removeClass('progress-bar-success')
+                    .removeClass('progress-bar-warning')
+                    .removeClass('progress-bar-danger')
+                    .addClass('progress-bar-warning');
+            } else {
+                progressBar.removeClass('progress-bar-success')
+                    .removeClass('progress-bar-warning')
+                    .removeClass('progress-bar-danger')
+                    .addClass('progress-bar-success');
+            }
+            // update bar
+            progressBar.html(sensor['temperature'] + ' &deg;C');
+            progressBar.css("width", tempIntValue + "%").attr("aria-valuenow", tempIntValue + "%");
+
+            // update label
+            $('#' + tr_id + ' .info').html(sensor['type_translated'] + ' ' + sensor['device_seq'] + ' <small>(' + sensor['device'] + ')<small>');
+        });
+    }
 </script>
 
 <div id="thermal_sensors-settings" class="widgetconfigdiv" style="display:none;">
