@@ -276,7 +276,8 @@ $main_buttons = array(
                     <td>
                       <?=($vipent['type'] == "single" || $vipent['type'] == "network") && !empty($vipent['subnet_bits']) ? $vipent['subnet']."/".$vipent['subnet_bits'] : "";?>
                       <?=$vipent['type'] == "range" ? $vipent['range']['from'] . "-" .  $vipent['range']['to'] : "";?>
-                      <?=$vipent['mode'] == "carp" ?  " (vhid {$vipent['vhid']} , freq. {$vipent['advbase']} / {$vipent['advskew']} )" : "";?>
+                      <?=$vipent['mode'] == "carp" ?  " (vhid {$vipent['vhid']} , freq. {$vipent['advbase']} / {$vipent['advskew']})" : "";?>
+                      <?=$vipent['mode'] != "carp" && !empty($vipent['vhid']) ? " (vhid {$vipent['vhid']})" : "";?>
                     </td>
                     <td>
                       <?= htmlspecialchars($interfaces[$vipent['interface']]['descr']) ?>
