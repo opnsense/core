@@ -47,7 +47,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['language'] = $config['system']['language'];
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
     $pconfig['theme'] = $config['theme'];
-    $pconfig['timezone'] = empty($config['system']['timezone']) ? 'Etc/UTC' : $config['system']['timezone'] ;
+    $pconfig['timezone'] = empty($config['system']['timezone']) ? 'Etc/UTC' : $config['system']['timezone'];
+
+    $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
+    $pconfig['gw_switch_group4'] = isset($config['system']['gw_switch_group4']) ? $config['system']['gw_switch_group4'] : null;
+    $pconfig['gw_switch_group6'] = isset($config['system']['gw_switch_group6']) ? $config['system']['gw_switch_group6'] : null;
 
     for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
         $dnsname = "dns{$dnscounter}";
@@ -148,6 +152,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['dnslocalhost']);
         }
 
+        if (!empty($pconfig['gw_switch_default'])) {
+            $config['system']['gw_switch_default'] = true;
+        } elseif (isset($config['system']['gw_switch_default'])) {
+            unset($config['system']['gw_switch_default']);
+        }
+
+        if (!empty($pconfig['gw_switch_group4'])) {
+            $config['system']['gw_switch_group4'] = $pconfig['gw_switch_group4'];
+        } elseif (isset($config['system']['gw_switch_group4'])) {
+            unset($config['system']['gw_switch_group4']);
+        }
+
+        if (!empty($pconfig['gw_switch_group6'])) {
+            $config['system']['gw_switch_group6'] = $pconfig['gw_switch_group6'];
+        } elseif (isset($config['system']['gw_switch_group6'])) {
+            unset($config['system']['gw_switch_group6']);
+        }
+
         $olddnsservers = $config['system']['dnsserver'];
         $config['system']['dnsserver'] = array();
 
@@ -155,7 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
             $dnsname="dns{$dnscounter}";
             $dnsgwname="dns{$dnscounter}gw";
-            $olddnsgwname = !empty($config['system'][$dnsgwname]) ? $config['system'][$dnsgwname] : "none" ;
+            $olddnsgwname = !empty($config['system'][$dnsgwname]) ? $config['system'][$dnsgwname] : 'none';
 
             if (!empty($pconfig[$dnsname])) {
                 $config['system']['dnsserver'][] = $pconfig[$dnsname];
@@ -428,6 +450,39 @@ include("head.inc");
                 </div>
               </td>
             </tr>
+              <tr>
+                <td><a id="help_for_gw_switch_default" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Gateway switching') ?></td>
+                <td>
+                  <input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?= !empty($pconfig['gw_switch_default']) ? 'checked="checked"' : '' ?> />
+                  <?=gettext("Allow default gateway switching"); ?>
+                  <div class="hidden" data-for="help_for_gw_switch_default">
+                    <?= gettext('If the link where the default gateway resides fails switch the default gateway to another available one.') ?>
+                    <?= gettext('When using default gateway switching use any available gateway or select a specific gateway group below.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('IPv4 gateway group') ?></td>
+                <td>
+                  <select name="gw_switch_group4" class="selectpicker">
+                    <option value="" <?= empty($pconfig['gw_switch_group4']) ? 'selected="selected"' : '' ?>><?= gettext('Any available gateway') ?></option>
+<?php foreach (config_read_array('gateways', 'gateway_group') as $gwgroup): ?>
+                    <option value="<?= html_safe($gwgroup['name']) ?>" <?= $pconfig['gw_switch_group4'] == $gwgroup['name'] ? 'selected="selected"' : '' ?>><?= $gwgroup['name'] ?></option>
+<?php endforeach ?>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('IPv6 gateway group') ?></td>
+                <td>
+                  <select name="gw_switch_group6" class="selectpicker">
+                    <option value="" <?= empty($pconfig['gw_switch_group6']) ? 'selected="selected"' : '' ?>><?= gettext('Any available gateway') ?></option>
+<?php foreach (config_read_array('gateways', 'gateway_group') as $gwgroup): ?>
+                    <option value="<?= html_safe($gwgroup['name']) ?>" <?= $pconfig['gw_switch_group6'] == $gwgroup['name'] ? 'selected="selected"' : '' ?>><?= $gwgroup['name'] ?></option>
+<?php endforeach ?>
+                  </select>
+                </td>
+              </tr>
           </table>
         </div>
         <div class="content-box tab-content">
