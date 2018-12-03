@@ -28,7 +28,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("PEAR.inc");
 require_once("interfaces.inc");
 
 $input_errors = array();
