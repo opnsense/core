@@ -226,18 +226,18 @@ function repeatExistingDays(){
   var tempstr, tempstrdaypos, week, daypos, dayposdone = "";
 
   var dayarray = daysSelected.split(",");
-  for (i=0; i<=dayarray.length; i++){
+  for (let i=0; i<=dayarray.length; i++){
     tempstr = dayarray[i];
     tempstrdaypos = tempstr.search("p");
     week = tempstr.substring(1,tempstrdaypos);
     week = parseInt(week);
-    dashpos = tempstr.search("-");
+    const dashpos = tempstr.search("-");
     daypos = tempstr.substring(tempstrdaypos+1, dashpos);
     daypos = parseInt(daypos);
 
-    daydone = dayposdone.search(daypos);
+    const daydone = dayposdone.search(daypos);
     tempstr = 'w' + week + 'p' + daypos;
-    daycell = document.getElementById(tempstr);
+    const daycell = document.getElementById(tempstr);
     if (daydone == "-1"){
       if (daycell.dataset['state'] == "lightcoral")
         daytogglerepeating(week,daypos,true);
@@ -250,11 +250,11 @@ function repeatExistingDays(){
 
 function daytogglerepeating(week,daypos,bExists){
   var tempstr, daycell, dayoriginal = "";
-  for (j=1; j<=53; j++)
+  for (let j=1; j<=53; j++)
   {
     tempstr = 'w' + j + 'p' + daypos;
     daycell = document.getElementById(tempstr);
-    dayoriginalpos =  daysSelected.indexOf(tempstr);
+    const dayoriginalpos =  daysSelected.indexOf(tempstr);
 
     //if bExists set to true, means cell is already select it
     //unselect it and remove original day from daysSelected string
@@ -271,7 +271,7 @@ function daytogglerepeating(week,daypos,bExists){
 
       if (dayoriginalpos != "-1")
       {
-        dayoriginalend = daysSelected.indexOf(',', dayoriginalpos);
+        const dayoriginalend = daysSelected.indexOf(',', dayoriginalpos);
         tempstr = daysSelected.substring(dayoriginalpos, dayoriginalend+1);
         daysSelected = daysSelected.replace(tempstr, "");
 
@@ -284,11 +284,12 @@ function daytoggle(id) {
   var runrepeat, tempstr = "";
   var bFoundValid = false;
 
-  iddashpos = id.search("-");
+  const iddashpos = id.search("-");
   var tempstrdaypos = id.search("p");
   var week = id.substring(1,tempstrdaypos);
   week = parseInt(week);
 
+  let idmod;
   if (iddashpos == "-1")
   {
     idmod = id;
@@ -309,7 +310,7 @@ function daytoggle(id) {
     if (daycell != null){
       if (daycell.dataset['state'] == "red"){  // red
         daycell.dataset['state'] = "white";
-        str = id + ",";
+        let str = id + ",";
         daysSelected = daysSelected.replace(str, "");
       }
       else if (daycell.dataset['state'] == "lightcoral")
@@ -345,8 +346,8 @@ function update_month(){
   var indexNum = document.iform.monthsel.selectedIndex;
   var selected = document.iform.monthsel.options[indexNum].text;
 
-  for (i=0; i<=11; i++){
-    option = document.iform.monthsel.options[i].text;
+  for (let month = 0; month < 12; month++){
+    let option = document.iform.monthsel.options[month].text;
     document.popupMonthLayer = document.getElementById(option);
 
     if(selected == option) {
@@ -445,7 +446,7 @@ function addTimeRange(){
 
   if (daysSelected != ""){
     //get days selected
-    for (i=0; i<tempdayarray.length; i++)
+    for (let i=0; i<tempdayarray.length; i++)
     {
       tempstr = tempdayarray[i];
       if (tempstr != "")
@@ -459,7 +460,7 @@ function addTimeRange(){
           nonrepeatingfound = true;
           daypos = tempstr.substring(tempstrdaypos+1, dashpos);
           daypos = parseInt(daypos);
-          monthpos = tempstr.search("m");
+          let monthpos = tempstr.search("m");
           tempstrdaypos = tempstr.search("d");
           month = tempstr.substring(monthpos+1, tempstrdaypos);
           month = parseInt(month);
@@ -560,7 +561,7 @@ function addTimeRange(){
     tempsortArray.sort();
     //clear tempID
     rtempID = "";
-    for (t=0; t<tempsortArray.length; t++)
+    for (let t=0; t<tempsortArray.length; t++)
     {
       if (tempsortArray[t] != ""){
         if (!isFirstdone){
@@ -631,8 +632,8 @@ function addTimeRange(){
 function insertElements(tempFriendlyTime, starttimehour, starttimemin, stoptimehour, stoptimemin, tempdescr, tempTime, tempID){
 
     //add it to the schedule list
-    d = document;
-    tbody = document.getElementById("scheduletable").getElementsByTagName("tbody").item(0);
+    let d = document;
+    let tbody = document.getElementById("scheduletable").getElementsByTagName("tbody").item(0);
     var tr = document.createElement("tr");
     var td = document.createElement("td");
     td.innerHTML= `<span>${tempFriendlyTime}</span>`;
@@ -676,12 +677,12 @@ function clearCalendar(){
   var tempstr, daycell = "";
   //clear days selected
   daysSelected = "";
-  //loop through all 52 weeks
-  for (j=1; j<=53; j++)
+  //loop through all 53 weeks
+  for (let week=1; week<=53; week++)
   {
     //loop through all 7 days
-    for (k=1; k<8; k++){
-      tempstr = 'w' + j + 'p' + k;
+    for (let day = 1; day <= 7; day++){
+      tempstr = 'w' + week + 'p' + day;
       daycell = document.getElementById(tempstr);
       if (daycell != null){
         daycell.dataset['state'] = "white";
@@ -710,7 +711,7 @@ function editRow(incTime, el) {
 
     var starttimehour, descr, days, tempstr, starttimemin, hours, stoptimehour, stoptimemin = "";
 
-    tempArray = incTime.split ("||");
+    let tempArray = incTime.split ("||");
 
     days = tempArray[0];
     hours = tempArray[1];
@@ -733,11 +734,11 @@ function editRow(incTime, el) {
     document.getElementById("timerangedescr").value = descr;
 
     //toggle the appropriate days
-    for (i=0; i<tempdayArray.length; i++)
+    for (let i=0; i<tempdayArray.length; i++)
     {
       if (tempdayArray[i]){
         var tempweekstr = tempdayArray[i];
-        dashpos = tempweekstr.search("-");
+        let dashpos = tempweekstr.search("-");
 
         if (dashpos == "-1")
         {

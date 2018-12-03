@@ -43,7 +43,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             var html = [];
                             $.each(data, function (key, value) {
                                 var fields = ["ip", "mac", "manufacturer", "intf", "intf_description", "hostname"];
-                                tr_str = '<tr>';
+                                let tr_str = '<tr>';
                                 for (var i = 0; i < fields.length; i++) {
                                     if (value[fields[i]] != null) {
                                         tr_str += '<td>' + value[fields[i]] + '</td>';

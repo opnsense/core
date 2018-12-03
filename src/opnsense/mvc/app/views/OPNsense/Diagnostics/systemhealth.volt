@@ -109,10 +109,9 @@
         chart.dispatch.on('brush.brushend', function (b) {
             window.onresize = null; // clear any pending resize events
             if (fetching_data == false) {
+                let inverse = false;
                 if ($('input:radio[name=inverse]:checked').val() == 1) {
                     inverse = true;
-                } else {
-                    inverse = false;
                 }
 
                 var detail = $('input:radio[name=detail]:checked').val();
@@ -272,10 +271,9 @@
 
         }
 
+        let inverse = false;
         if ($('input:radio[name=inverse]:checked').val() == 1) {
             inverse = true;
-        } else {
-            inverse = false;
         }
         if (detail === undefined) {
             detail = 0;
@@ -295,7 +293,7 @@
         csvData = [];
 
         // array used for min/max/average table when shown
-        min_max_average = {};
+        let min_max_average = {};
 
         // info bar - hide averages info bar while refreshing data
         $('#averages').hide();
@@ -339,8 +337,9 @@
 
                 // Add zoomlevel buttons/options
                 if ($('input:radio[name=detail]:checked').val() == undefined || zoom_buttons==="") {
-                    for (setcount = 0; setcount < data["sets"].length; ++setcount) {
-                        recordedtime = data["sets"][setcount]["recorded_time"];
+                    for (let setcount = 0; setcount < data["sets"].length; ++setcount) {
+                        const recordedtime = data["sets"][setcount]["recorded_time"];
+                        let detail_text = '';
                         // Find out what text matches best
                         if (recordedtime >= 31536000) {
                             detail_text = Math.floor(recordedtime / 31536000).toString() + " {{ lang._('Year(s)') }}";
@@ -367,7 +366,7 @@
                 $('#stepsize').text(stepsize + " " + scale);
 
                 // Check for enabled or disabled stream, to make sure that same set stays selected after update
-                for (index = 0; index < disabled.length; ++index) {
+                for (let index = 0; index < disabled.length; ++index) {
                     window.resize = null;
                     data["d3"]["data"][index]["disabled"] = disabled[index]; // disable stream if it was disabled before updating dataset
                 }

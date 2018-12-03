@@ -169,7 +169,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 break;
           }
           // always round from timestamp to nearest hour
-          from_timestamp =  Math.floor((timestamp_now -duration) / 3600 ) * 3600;
+          const from_timestamp =  Math.floor((timestamp_now -duration) / 3600 ) * 3600;
           return {resolution: resolution, from: from_timestamp, to: timestamp_now};
       }
 
@@ -178,7 +178,7 @@ POSSIBILITY OF SUCH DAMAGE.
        */
       function chart_interface_totals() {
         var selected_time = get_time_select();
-        fetch_params = selected_time.from + '/' + selected_time.to + '/' + selected_time.resolution + '/if,direction' ;
+        const fetch_params = selected_time.from + '/' + selected_time.to + '/' + selected_time.resolution + '/if,direction' ;
         ajaxGet('/api/diagnostics/networkinsight/timeserie/FlowInterfaceTotals/bps/' + fetch_params,{},function(data,status){
             $.each(['chart_intf_in', 'chart_intf_out'], function(idx, target) {
                 let direction = '';
@@ -270,9 +270,8 @@ POSSIBILITY OF SUCH DAMAGE.
                     .donutRatio(0.35)
                     .legendPosition("right")
                     .valueFormat(d3.format(',.2s'));
-                    ;
 
-                chart_data = [];
+                let chart_data = [];
                 data.map(function(item){
                     var label = "(other)";
                     var proto = "";
@@ -331,7 +330,7 @@ POSSIBILITY OF SUCH DAMAGE.
         ajaxGet('/api/diagnostics/networkinsight/top/FlowSourceAddrTotals/'+time_url+'/src_addr/octets/25/',
             {'filter_field': 'if', 'filter_value': $('#interface_select').val()}, function(data, status){
             if (status == 'success'){
-              add_src_pie = function(chart_data_in) {
+              let add_src_pie = function(chart_data_in) {
                   nv.addGraph(function() {
                     var chart = nv.models.pieChart()
                         .x(function(d) { return d.label })
@@ -344,7 +343,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         .legendPosition("right")
                         .valueFormat(d3.format(',.2s'));
 
-                    chart_data = [];
+                    let chart_data = [];
                     chart_data_in.map(function(item){
                         var label = "(other)";
                         if (item.src_addr != "") {
@@ -484,12 +483,11 @@ POSSIBILITY OF SUCH DAMAGE.
                 });
                 // dump  rows
                 data.map(function(item){
-                  let proto;
+                  let proto = '';
                   if (item.protocol in protocol_names) {
                       proto = ' (' + protocol_names[item.protocol] + ')';
-                  } else {
-                      proto = ''
                   }
+                  let service_port;
                   if (item.service_port in service_names) {
                       service_port = service_names[item.service_port];
                   } else {
@@ -609,11 +607,11 @@ POSSIBILITY OF SUCH DAMAGE.
           var date_begin = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0);
           var date_end  = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate(), 23, 59, 59, 0);
           var tmp_date = new Date();
-          for (i=0; i < 62; i++) {
-              from_date_ts = (date_begin - (24*60*60*1000 * i)) / 1000;
-              to_date_ts = parseInt((date_end - (24*60*60*1000 * i)) / 1000);
+          for (let i=0; i < 62; i++) {
+              let from_date_ts = (date_begin - (24*60*60*1000 * i)) / 1000;
+              let to_date_ts = parseInt((date_end - (24*60*60*1000 * i)) / 1000);
               tmp_date = new Date(from_date_ts*1000);
-              tmp = tmp_date.toISOString().substr(0, 10);
+              let tmp = tmp_date.toISOString().substr(0, 10);
               if (i < 62) {
                   $("#date_detail_from").append($("<option/>").val(from_date_ts).text(tmp));
                   $("#date_detail_to").append($("<option/>").val(to_date_ts).text(tmp));

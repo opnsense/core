@@ -111,7 +111,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         $("#grid-vouchers > tbody > tr").remove();
                         $.each(data, function (key, value) {
                             var fields = ["username", "starttime", "endtime", "expirytime", "state"];
-                            tr_str = '<tr>';
+                            let tr_str = '<tr>';
                             for (var i = 0; i < fields.length; i++) {
                                 if (value[fields[i]] != null) {
                                     tr_str += '<td>' + value[fields[i]] + '</td>';

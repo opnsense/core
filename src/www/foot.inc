@@ -79,7 +79,7 @@
       $( document ).ready(function() {
         $('.srv_status_act').click(function(event){
           event.preventDefault();
-          params = {};
+          let params = {};
           params['action'] = $(this).data('service_action');
           params['service'] = $(this).data('service');
           params['id'] = $(this).data('service_id');

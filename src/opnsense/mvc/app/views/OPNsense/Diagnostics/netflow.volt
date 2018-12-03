@@ -52,9 +52,9 @@ POSSIBILITY OF SUCH DAMAGE.
                 var data_arr = $.makeArray(data)[0];
                 // sort by flow
                 Object.keys(data_arr).sort().forEach(function (index) {
-                    value = data_arr[index];
+                    let value = data_arr[index];
                     var fields = ["if", "DstIPaddresses", "SrcIPaddresses", "Pkts"];
-                    tr_str = '<tr>';
+                    let tr_str = '<tr>';
                     tr_str += '<td>'+index+'</td>';
                     for (var i = 0; i < fields.length; i++) {
                         if (value[fields[i]] != null) {

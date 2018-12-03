@@ -281,7 +281,7 @@ include("head.inc");
                   var responseTextArr = response.split("\n");
                   responseTextArr.sort();
                   $.each(responseTextArr, function(index, value) {
-                    country = value.split(':');
+                    let country = value.split(':');
                     $('#country').append(new Option(country[0], country[1]));
                   });
                 }
@@ -359,7 +359,7 @@ include("head.inc");
                 responseTextArr.sort();
                 jQuery.each(responseTextArr, function(index, value) {
                   if (value != '') {
-                    providerplan = value.split(':');
+                    let providerplan = value.split(':');
                     $('#providerplan').append(new Option(
                       providerplan[0] + ' - ' + providerplan[1],
                       providerplan[1]

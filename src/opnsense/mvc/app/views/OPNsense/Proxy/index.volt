@@ -117,7 +117,7 @@
             function show_line(the_id) {
                 $('tr[for=' + the_id + ']').show();
             }
-            value = $("#pac\\.match\\.match_type").val();
+            let value = $("#pac\\.match\\.match_type").val();
             if (!value) {
                 // retry later
                 setTimeout(update_pac_match_view, 100);

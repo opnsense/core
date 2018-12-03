@@ -595,6 +595,7 @@ include("head.inc");
           } else {
               $("#icmpbox").addClass("hidden");
           }
+          let port_disabled = true;
           // lock src/dst ports on other then tcp/udp
           if ($("#proto").val() == 'tcp' || $("#proto").val() == 'udp' || $("#proto").val() == 'tcp/udp') {
               port_disabled = false;

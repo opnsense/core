@@ -151,8 +151,8 @@ $.fn.UIBootgrid = function (params) {
                     grid.find(".command-info").on("click", function(e) {
                         if(gridParams['info'] != undefined) {
                             var uuid=$(this).data("row-id");
-                            ajaxGet(url=gridParams['info'] + uuid,
-                                sendData={}, callback=function(data, status) {
+                            ajaxGet(gridParams['info'] + uuid,
+                                {}, function(data, status) {
                                     if(status == 'success') {
                                         var title = data['title'] || "Information";
                                         var message = data['message'] || "A Message";
@@ -184,8 +184,8 @@ $.fn.UIBootgrid = function (params) {
                                 // define save action
                                 $("#btn_"+editDlg+"_save").unbind('click').click(function(){
                                     if (gridParams['set'] != undefined) {
-                                        saveFormToEndpoint(url=gridParams['set']+uuid,
-                                            formid='frm_' + editDlg, callback_ok=function(){
+                                        saveFormToEndpoint(gridParams['set']+uuid,
+                                            'frm_' + editDlg, function(){
                                                 $("#"+editDlg).modal('hide');
                                                 std_bootgrid_reload(gridId);
                                             }, true);
@@ -219,8 +219,8 @@ $.fn.UIBootgrid = function (params) {
                                 // define save action
                                 $("#btn_"+editDlg+"_save").unbind('click').click(function(){
                                     if (gridParams['add'] != undefined) {
-                                        saveFormToEndpoint(url=gridParams['add'],
-                                            formid='frm_' + editDlg, callback_ok=function(){
+                                        saveFormToEndpoint(gridParams['add'],
+                                            'frm_' + editDlg, function(){
                                                 $("#"+editDlg).modal('hide');
                                                 std_bootgrid_reload(gridId);
                                             }, true);
@@ -243,8 +243,8 @@ $.fn.UIBootgrid = function (params) {
                             var uuid=$(this).data("row-id");
                             // XXX must be replaced, cannot translate
                             stdDialogRemoveItem('Remove selected item?',function() {
-                                ajaxCall(url=gridParams['del'] + uuid,
-                                    sendData={},callback=function(data,status){
+                                ajaxCall(gridParams['del'] + uuid,
+                                    {},function(data,status){
                                         // reload grid after delete
                                         std_bootgrid_reload(gridId);
                                     });
@@ -260,8 +260,8 @@ $.fn.UIBootgrid = function (params) {
                         if (gridParams['toggle'] != undefined) {
                             var uuid=$(this).data("row-id");
                             $(this).addClass("fa-spinner fa-pulse");
-                            ajaxCall(url=gridParams['toggle'] + uuid,
-                                sendData={},callback=function(data,status){
+                            ajaxCall(gridParams['toggle'] + uuid,
+                                {},function(data,status){
                                     // reload grid after delete
                                     std_bootgrid_reload(gridId);
                                 });
@@ -289,8 +289,8 @@ $.fn.UIBootgrid = function (params) {
                         $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
                         //
                         $("#btn_"+editDlg+"_save").unbind('click').click(function(){
-                            saveFormToEndpoint(url=gridParams['add'],
-                                formid='frm_' + editDlg, callback_ok=function(){
+                            saveFormToEndpoint(gridParams['add'],
+                                'frm_' + editDlg, function(){
                                     $("#"+editDlg).modal('hide');
                                     std_bootgrid_reload(gridId);
                                 }, true);
@@ -309,7 +309,7 @@ $.fn.UIBootgrid = function (params) {
                             if (rows != undefined){
                                 var deferreds = [];
                                 $.each(rows, function(key,uuid){
-                                    deferreds.push(ajaxCall(url=gridParams['del'] + uuid, sendData={},null));
+                                    deferreds.push(ajaxCall(gridParams['del'] + uuid, {},null));
                                 });
                                 // refresh after load
                                 $.when.apply(null, deferreds).done(function(){

@@ -483,7 +483,7 @@ $( document ).ready(function() {
     // import ldap users
     $("#import_ldap_users").click(function(){
       event.preventDefault();
-      url="system_usermanager_import_ldap.php";
+      const url="system_usermanager_import_ldap.php";
       var oWin = window.open(url,"OPNsense","width=620,height=400,top=150,left=150,scrollbars=yes");
       if (oWin==null || typeof(oWin)=="undefined") {
         alert("<?= html_safe(gettext('Popup blocker detected. Action aborted.')) ?>");
@@ -497,7 +497,7 @@ $( document ).ready(function() {
         $.post(window.location, {act: 'newApiKey', userid: $("#userid").val() }, function(data) {
             if (data['key'] != undefined) {
                 // only generate a key file if there's data
-                output_data = 'key='+data['key'] +'\n' + 'secret='+data['secret'] +'\n';
+                const output_data = 'key='+data['key'] +'\n' + 'secret='+data['secret'] +'\n';
                 // create link, click and send to client
                 $('<a></a>')
                         .attr('id','downloadFile')

@@ -84,7 +84,7 @@ function hook_stacked_form_tables(match)
   $(match).each(function(){
       var root_node = $(this);
       if (root_node.is('table')) {
-          row_number = 0;
+          let row_number = 0;
           // traverse all <tr> tags
           root_node.find('tr').each(function(){
               // only evaluate children under this table or in <thead|tbody|..> element
