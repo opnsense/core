@@ -595,6 +595,7 @@ include("head.inc");
           } else {
               $("#icmpbox").addClass("hidden");
           }
+          let port_disabled = true;
           // lock src/dst ports on other then tcp/udp
           if ($("#proto").val() == 'tcp' || $("#proto").val() == 'udp' || $("#proto").val() == 'tcp/udp') {
               port_disabled = false;
@@ -906,7 +907,7 @@ include("head.inc");
                         <tr>
                           <td>
                             <div>
-                              <table style="border:0; cellpadding:0; cellspacing:0">
+                              <table style="border:0;">
                                 <tbody>
                                   <tr>
                                       <td style="width:348px">
@@ -1035,7 +1036,7 @@ include("head.inc");
                         </tr>
                         <tr>
                           <td>
-                            <table style="border:0; cellpadding:0; cellspacing:0">
+                            <table style="border:0;">
                               <tbody>
                                 <tr>
                                     <td style="width:348px">
@@ -1371,7 +1372,7 @@ include("head.inc");
                   <tr class="opt_advanced hidden">
                       <td><a id="help_for_max-src-conn-rate" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Max new connections");?> </td>
                       <td>
-                        <table style="border:0; cellspacing:0; cellpadding:0">
+                        <table style="border:0;">
                           <tbody>
                             <tr>
                               <td>

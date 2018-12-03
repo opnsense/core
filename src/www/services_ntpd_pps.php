@@ -124,8 +124,9 @@ include("head.inc");
                       <td>
                         <input name="fudge1" type="text" value="<?=$pconfig['fudge1'];?>" />
                         <div class="hidden" data-for="help_for_fudge1">
-                          <?=gettext("Fudge time is used to specify the PPS signal offset from the actual second such as the transmission delay between the transmitter and the receiver.");?> (<?=gettext("default");?>: 0.0).</td>
+                          <?=gettext('Fudge time is used to specify the PPS signal offset from the actual second such as the transmission delay between the transmitter and the receiver.');?> (<?=gettext('default');?>: 0.0).
                         </div>
+                      </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_stratum" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Stratum') ?></td>
@@ -133,8 +134,9 @@ include("head.inc");
                         <input name="stratum" type="text" value="<?=$pconfig['stratum'];?>" />
                         <div class="hidden" data-for="help_for_stratum">
                           <?=gettext("(0-16)");?><br />
-                          <?=gettext("This may be used to change the PPS Clock stratum");?> (<?=gettext("default");?>: 0). <?=gettext("This may be useful if, for some reason, you want ntpd to prefer a different clock and just monitor this source."); ?></td>
+                          <?=gettext('This may be used to change the PPS Clock stratum');?> (<?=gettext('default');?>: 0). <?=gettext('This may be useful if, for some reason, you want ntpd to prefer a different clock and just monitor this source.'); ?>
                         </div>
+                      </td>
                     </tr>
                     <tr>
                       <td><a id="help_for_flags" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Flags') ?></td>

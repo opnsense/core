@@ -396,7 +396,7 @@ include("head.inc");
                         <tr>
                           <td>
                             <div>
-                              <table style="border:0; cellpadding:0; cellspacing:0">
+                              <table style="border:0;">
                                 <tbody>
                                   <tr>
                                       <td style="width:348px">
@@ -495,7 +495,7 @@ include("head.inc");
                         </tr>
                         <tr>
                           <td>
-                            <table style="border:0; cellpadding:0; cellspacing:0">
+                            <table style="border:0;">
                               <tbody>
                                 <tr>
                                     <td style="width:348px">
