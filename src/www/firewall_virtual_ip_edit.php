@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($pconfig['mode'] == 'carp') {
             /* verify against reusage of vhids */
             foreach($config['virtualip']['vip'] as $vipId => $vip) {
-               if (isset($vip['vhid']) &&  $vip['vhid'] == $pconfig['vhid'] && $vip['interface'] == $pconfig['interface'] && $vipId != $id) {
+               if (isset($vip['vhid']) &&  $vip['vhid'] == $pconfig['vhid'] && $vip['type'] == 'carp' && $vip['interface'] == $pconfig['interface'] && $vipId != $id) {
                    $input_errors[] = sprintf(gettext("VHID %s is already in use on interface %s. Pick a unique number on this interface."),$pconfig['vhid'], convert_friendly_interface_to_friendly_descr($pconfig['interface']));
                }
             }
