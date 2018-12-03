@@ -24,8 +24,6 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-BASE_MTREE=/usr/local/opnsense/version/base.mtree
-KERNEL_MTREE=/usr/local/opnsense/version/kernel.mtree
 MTREE="mtree -e -p /"
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 TMPFILE=/tmp/pkg_check.exclude
@@ -64,9 +62,10 @@ VERSION=${VERSION%-*}
 set_check()
 {
 	SET=${1}
-	FILE=${2}
 
-	if [ ! -f ${BASE_MTREE} ]; then
+	FILE=/usr/local/opnsense/version/${SET}.mtree
+
+	if [ ! -f ${FILE} ]; then
 		# XXX complain if file is missing post-18.7
 		return
 	fi
@@ -108,8 +107,8 @@ set_check()
 }
 
 echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${PKG_PROGRESS_FILE}
-set_check kernel ${KERNEL_MTREE}
-set_check base ${BASE_MTREE}
+set_check kernel
+set_check base
 echo ">>> Check for and install missing package dependencies" >> ${PKG_PROGRESS_FILE}
 pkg check -da >> ${PKG_PROGRESS_FILE} 2>&1
 echo ">>> Check for missing or altered package files" >> ${PKG_PROGRESS_FILE}

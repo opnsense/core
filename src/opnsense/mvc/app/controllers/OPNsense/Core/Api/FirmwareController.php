@@ -718,8 +718,8 @@ class FirmwareController extends ApiControllerBase
         $response = array();
 
         /* allows us to select UI features based on product state */
-        $response['product_version'] = trim(shell_exec('opnsense-version -v'));
-        $response['product_name'] = trim(shell_exec('opnsense-version -n'));
+        list ($response['product_name'], $response['product_version']) =
+            explode(' ', trim(shell_exec('opnsense-version -nv')));
 
         $devel = explode('-', $response['product_name']);
         $devel = count($devel) == 2 ? $devel[1] == 'devel' : false;
@@ -750,11 +750,11 @@ class FirmwareController extends ApiControllerBase
                 }
 
                 /* mark remote packages as "provided", local as "installed" */
-                $translated['provided'] = $type == 'remote' ? "1" : "0";
-                $translated['installed'] = $type == 'local' ? "1" : "0";
+                $translated['provided'] = $type == 'remote' ? '1' : '0';
+                $translated['installed'] = $type == 'local' ? '1' : '0';
                 if (isset($packages[$translated['name']])) {
                     /* local iteration, mark package provided */
-                    $translated['provided'] = "1";
+                    $translated['provided'] = '1';
                 }
                 $packages[$translated['name']] = $translated;
 
@@ -797,8 +797,8 @@ class FirmwareController extends ApiControllerBase
         if ($changelogs == null) {
             $changelogs = array();
         } else {
-            $version = trim(shell_exec('opnsense-version -v'));
-            $devel = preg_match('/^\d+\.\d+\.[a-z]/i', $version) ? true : false;
+            /* development strategy for changelog slightly differs from above */
+            $devel = preg_match('/^\d+\.\d+\.[a-z]/i', $response['product_version']) ? true : false;
 
             foreach ($changelogs as $index => &$changelog) {
                 /* skip development items */
