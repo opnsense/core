@@ -144,7 +144,7 @@ class TheGreenBow extends BaseExporter implements IExportProvider
         $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->RenegSeconds = $this->config['reneg-sec'];
         if (!empty($this->config['tls'])) {
             $tls = array("\n-----BEGIN Static key-----");
-            foreach (explode("\n", trim(base64_decode($this->config['tls']))) as $line){
+            foreach (explode("\n", trim(base64_decode($this->config['tls']))) as $line) {
                 if (!empty($line) && !in_array($line[0], ['-', '#'])) {
                     $tls[] = $line;
                 }
@@ -160,7 +160,8 @@ class TheGreenBow extends BaseExporter implements IExportProvider
         $output->cfg_ssl->cfg_sslconnection->authentication->certificate[0]->public_key = $this->config['client_crt'];
         $output->cfg_ssl->cfg_sslconnection->authentication->certificate[0]->private_key = $this->config['client_prv'];
         // server CA-chain
-        $output->cfg_ssl->cfg_sslconnection->authentication->certificate[1]->public_key = implode("\n",
+        $output->cfg_ssl->cfg_sslconnection->authentication->certificate[1]->public_key = implode(
+            "\n",
             $this->config['server_ca_chain']
         );
 
