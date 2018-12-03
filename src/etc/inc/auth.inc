@@ -264,11 +264,10 @@ function getUserGroups($username)
 function &getUserEntry($name)
 {
     global $config, $userindex;
-    $false = false;
     if (isset($userindex[$name])) {
         return $config['system']['user'][$userindex[$name]];
     } else {
-        return $false;
+        return false;
     }
 }
 
