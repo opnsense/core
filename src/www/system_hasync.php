@@ -172,11 +172,11 @@ include("head.inc");
                     <div class="hidden" data-for="help_for_pfsyncinterface">
                       <?=gettext('If Synchronize States is enabled, it will utilize this interface for communication.') ?><br/><br/>
                       <div class="well">
-                        <lu>
+                        <ul>
                         <li><?=gettext('We recommend setting this to a interface other than LAN! A dedicated interface works the best.') ?></li>
                         <li><?=gettext('You must define an IP on each machine participating in this failover group.') ?></li>
                         <li><?=gettext('You must have an IP assigned to the interface on any participating sync nodes.') ?></li>
-                        </lu>
+                        </ul>
                       </div>
                     </div>
                   </td>

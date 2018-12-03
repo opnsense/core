@@ -418,8 +418,9 @@ $(document).ready(function() {
                       <input name="loglighttpd" type="checkbox" id="loglighttpd" value="yes" <?=!empty($pconfig['loglighttpd']) ? "checked=\"checked\"" :""; ?> />
                       <?=gettext("Log errors from the web server process.");?>
                       <div class="hidden" data-for="help_for_loglighttpd">
-                        <?=gettext("Hint: If this is checked, errors from the lighttpd web server process for the GUI or Captive Portal will appear in the main system log.");?></td>
+                        <?=gettext('Hint: If this is checked, errors from the lighttpd web server process for the GUI or Captive Portal will appear in the main system log.');?>
                       </div>
+                    </td>
                   </tr>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Local Logging') ?></td>

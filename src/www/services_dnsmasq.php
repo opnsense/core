@@ -267,6 +267,7 @@ $( document ).ready(function() {
                     </div>
                   </td>
                 </tr>
+                <tr>
                   <td><a id="help_for_strictbind" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Bind Mode') ?></td>
                   <td>
                     <input name="strictbind" type="checkbox" id="strictbind" value="yes" <?= !empty($pconfig['strictbind']) ? "checked=\"checked\"" : "";?> />
