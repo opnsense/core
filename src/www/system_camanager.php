@@ -693,7 +693,7 @@ $main_buttons = array(
           <input type="hidden" name="id" id="id" value="<?=isset($id) ? $id :"";?>"/>
           <input type="hidden" name="act" id="action" value="<?=$act;?>"/>
         </form>
-        <table style="width:100%; border:0; cellpadding:0; cellspacing:0" class="table table-striped">
+        <table style="width:100%; border:0;" class="table table-striped">
           <thead>
             <tr>
               <th><?=gettext("Name");?></th>

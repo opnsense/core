@@ -928,7 +928,7 @@ $( function() { $('#iform td').css({ 'background-color' : '' }); })
                       <tr>
                         <td><a id="help_for_time" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time");?></td>
                         <td>
-                          <table style="cellspacing:2" class="tabcont">
+                          <table class="tabcont">
                             <tr>
                               <td><?=gettext("Start Time");?></td>
                               <td><?=gettext("Stop Time");?></td>

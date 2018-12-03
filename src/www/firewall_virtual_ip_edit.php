@@ -363,7 +363,7 @@ $( document ).ready(function() {
                   <tr>
                       <td><a id="help_for_address" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Address");?></td>
                       <td>
-                        <table style="border:0; cellspacing:0; cellpadding:0">
+                        <table style="border:0;">
                           <tr>
                             <td style="width:348px">
                               <input name="subnet" type="text" class="form-control" id="subnet" size="28" value="<?=$pconfig['subnet'];?>" />
