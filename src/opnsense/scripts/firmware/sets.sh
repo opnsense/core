@@ -41,6 +41,6 @@ opnsense-update -Tb || BL=1
 opnsense-update -Tk || KL=1
 
 cat << EOF
-base${SEP}${BV}${SEP}${OS} userland set${SEP}${BS}${SEP}${BL}${SEP}${LIC}"
-kernel${SEP}${KV}${SEP}${OS} kernel set${SEP}${KS}${SEP}${KL}${SEP}${LIC}"
+base${SEP}${BV}${SEP}${OS} userland set${SEP}${BS}${SEP}${BL}${SEP}${LIC}
+kernel${SEP}${KV}${SEP}${OS} kernel set${SEP}${KS}${SEP}${KL}${SEP}${LIC}
 EOF
