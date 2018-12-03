@@ -114,6 +114,33 @@ class Util
     }
 
     /**
+     * return alias descriptions
+     * @param string $name name
+     * @return string
+     */
+    public static function aliasDescription($name)
+    {
+        if (self::$aliasObject == null) {
+            // Cache the alias object to avoid object creation overhead.
+            self::$aliasObject = new Alias();
+        }
+        foreach (self::$aliasObject->aliasIterator()  as $alias) {
+            if ($alias['name'] == $name) {
+                if (!empty($alias['descr'])) {
+                    return $alias['descr'];
+                } elseif (!empty($alias['description'])) {
+                    return $alias['description'];
+                } elseif (!empty($alias['content'])) {
+                    $tmp = array_slice(explode("\n", $alias['content']), 0, 10);
+                    asort($tmp);
+                    return implode("<br/>", $tmp);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Fetch port alias contents, other alias types are handled using tables so there usually no need
      * to know the contents within any of the scripts.
      * @param string $name name

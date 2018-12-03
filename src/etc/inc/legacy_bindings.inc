@@ -144,20 +144,5 @@ function legacy_move_config_list_items($source, $id, $items) {
  */
 function get_alias_description($name)
 {
-    // MVC defined aliases
-    foreach ((new \OPNsense\Firewall\Alias())->aliasIterator()  as $alias) {
-        if ($alias['name'] == $name) {
-            if (!empty($alias['descr'])) {
-                return $alias['descr'];
-            } elseif (!empty($alias['description'])) {
-                return $alias['description'];
-            } elseif (!empty($alias['content'])) {
-                $tmp = array_slice(explode("\n", $alias['content']), 0, 10);
-                asort($tmp);
-                return implode("<br/>", $tmp);
-            }
-        }
-    }
-
-    return null;
+    return OPNsense\Firewall\Util::aliasDescription($name);
 }
