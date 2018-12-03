@@ -193,12 +193,12 @@ class AccessController extends ApiControllerBase
                             $authProps = $authServer->getLastAuthProperties();
                             // when adding more client/session restrictions, extend next code
                             // (currently only time is restricted)
-                            if (array_key_exists('session_timeout', $authProps)) {
+                            if (array_key_exists('session_timeout', $authProps) || $cpZone->alwaysSendAccountingReqs == '1') {
                                 $backend->configdpRun(
                                     "captiveportal set session_restrictions",
                                     array((string)$cpZone->zoneid,
                                         $CPsession['sessionId'],
-                                        $authProps['session_timeout']
+                                        $authProps['session_timeout'] ?? null,
                                         )
                                 );
                             }
