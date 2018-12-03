@@ -128,6 +128,12 @@ check program {{ service.name }} {{ path }} {{ timeout }}
 check {{ service.type }} {{ service.name }} {{ path }}
 {%      endif %}
 {%     endif %}
+{%     if service.depends is defined %}
+{%      for dependency in service.depends.split(",") %}
+{%      set dependency = helpers.getUUID(dependency) %}
+   depends on {{dependency.name}}
+{%      endfor %}
+{%     endif %}
 {%     if service.start|default('') != '' %}
    start program = "{{ service.start }}"
 {%     endif %}

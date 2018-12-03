@@ -201,6 +201,7 @@ POSSIBILITY OF SUCH DAMAGE.
          $('tr[id="row_monit.service.interface"]').addClass('hidden');
          $('tr[id="row_monit.service.start"]').removeClass('hidden');
          $('tr[id="row_monit.service.stop"]').removeClass('hidden');
+         $('tr[id="row_monit.service.depends"]').removeClass('hidden');
          switch (servicetype) {
             case 'process':
                var pidfile = $('#monit\\.service\\.pidfile').val();
@@ -236,6 +237,7 @@ POSSIBILITY OF SUCH DAMAGE.
             case 'system':
                $('tr[id="row_monit.service.start"]').addClass('hidden');
                $('tr[id="row_monit.service.stop"]').addClass('hidden');
+               $('tr[id="row_monit.service.depends"]').addClass('hidden');
                break;
             default:
                $('tr[id="row_monit.service.path"]').removeClass('hidden');
