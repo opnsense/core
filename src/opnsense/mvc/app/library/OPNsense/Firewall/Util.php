@@ -43,6 +43,11 @@ class Util
     private static $aliasObject = null;
 
     /**
+     * @var null|array cached alias descriptions
+     */
+    private static $aliasDescriptions = array();
+
+    /**
      * is provided address an ip address.
      * @param string $network address
      * @return boolean
@@ -120,24 +125,27 @@ class Util
      */
     public static function aliasDescription($name)
     {
-        if (self::$aliasObject == null) {
-            // Cache the alias object to avoid object creation overhead.
-            self::$aliasObject = new Alias();
-        }
-        foreach (self::$aliasObject->aliasIterator()  as $alias) {
-            if ($alias['name'] == $name) {
-                if (!empty($alias['descr'])) {
-                    return $alias['descr'];
-                } elseif (!empty($alias['description'])) {
-                    return $alias['description'];
-                } elseif (!empty($alias['content'])) {
-                    $tmp = array_slice(explode("\n", $alias['content']), 0, 10);
-                    asort($tmp);
-                    return implode("<br/>", $tmp);
+        if (self::$aliasDescriptions == null) {
+            // read all aliases at ones, and cache descriptions.
+            foreach ((new Alias())->aliasIterator() as $alias) {
+                if (empty(self::$aliasDescriptions[$alias['name']])) {
+                    if (!empty($alias['descr'])) {
+                        self::$aliasDescriptions[$alias['name']] = $alias['descr'];
+                    } elseif (!empty($alias['description'])) {
+                        self::$aliasDescriptions[$alias['name']] = $alias['description'];
+                    } elseif (!empty($alias['content'])) {
+                        $tmp = array_slice(explode("\n", $alias['content']), 0, 10);
+                        asort($tmp);
+                        self::$aliasDescriptions[$alias['name']] = implode("<br/>", $tmp);
+                    }
                 }
             }
         }
-        return null;
+        if (!empty(self::$aliasDescriptions[$name])) {
+            return self::$aliasDescriptions[$name];
+        } else {
+            return null;
+        }
     }
 
     /**
