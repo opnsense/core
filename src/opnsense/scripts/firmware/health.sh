@@ -63,13 +63,6 @@ set_check()
 {
 	SET=${1}
 
-	FILE=/usr/local/opnsense/version/${SET}.mtree
-
-	if [ ! -f ${FILE} ]; then
-		# XXX complain if file is missing post-18.7
-		return
-	fi
-
 	VER=$(opnsense-version -v ${SET})
 
 	echo ">>> Check installed ${SET} version" >> ${PKG_PROGRESS_FILE}
@@ -79,6 +72,13 @@ set_check()
 		echo "Version ${VER} is incorrect: expected ${VERSION}" >> ${PKG_PROGRESS_FILE}
 	else
 		echo "Version ${VER} is correct." >> ${PKG_PROGRESS_FILE}
+	fi
+
+	FILE=/usr/local/opnsense/version/${SET}.mtree
+
+	if [ ! -f ${FILE} ]; then
+		# XXX complain if file is missing post-18.7
+		return
 	fi
 
 	echo ">>> Check for missing or altered ${SET} files" >> ${PKG_PROGRESS_FILE}
