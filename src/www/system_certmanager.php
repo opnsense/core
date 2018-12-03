@@ -171,37 +171,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             echo $exp_data;
         }
         exit;
-    } elseif ($act == "p12") {
-        // export cert+key in p12 format
-        if (isset($id)) {
-            $exp_name = urlencode("{$a_cert[$id]['descr']}.p12");
-            $args = array();
-            $args['friendly_name'] = $a_cert[$id]['descr'];
-
-            $ca = lookup_ca($a_cert[$id]['caref']);
-            if ($ca) {
-                $args['extracerts'] = openssl_x509_read(base64_decode($ca['crt']));
-            }
-            set_error_handler (
-                function () {
-                    return;
-                }
-            );
-
-            $exp_data = '';
-            $res_crt = openssl_x509_read(base64_decode($a_cert[$id]['crt']));
-            $res_key = openssl_pkey_get_private(array(0 => base64_decode($a_cert[$id]['prv']) , 1 => ''));
-
-            openssl_pkcs12_export($res_crt, $exp_data, $res_key, null, $args);
-            $exp_size = strlen($exp_data);
-            restore_error_handler();
-
-            header("Content-Type: application/octet-stream");
-            header("Content-Disposition: attachment; filename={$exp_name}");
-            header("Content-Length: $exp_size");
-            echo $exp_data;
-        }
-        exit;
     } elseif ($act == "csr") {
         if (!isset($id)) {
             header(url_safe('Location: /system_certmanager.php'));
@@ -228,6 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $pconfig = $_POST;
     if (isset($a_cert[$_POST['id']])) {
         $id = $_POST['id'];
     }
@@ -246,6 +216,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
         }
         header(url_safe('Location: /system_certmanager.php'));
+        exit;
+    } elseif ($act == "p12") {
+        // export cert+key in p12 format
+        if (isset($id)) {
+            $exp_name = urlencode("{$a_cert[$id]['descr']}.p12");
+            $args = array();
+            $args['friendly_name'] = $a_cert[$id]['descr'];
+
+            $ca = lookup_ca($a_cert[$id]['caref']);
+            if ($ca) {
+                $args['extracerts'] = openssl_x509_read(base64_decode($ca['crt']));
+            }
+            set_error_handler (
+                function () {
+                    return;
+                }
+            );
+
+            $exp_data = '';
+            $res_crt = openssl_x509_read(base64_decode($a_cert[$id]['crt']));
+            $res_key = openssl_pkey_get_private(array(0 => base64_decode($a_cert[$id]['prv']) , 1 => ''));
+            $res_pw = !empty($pconfig['password']) ? $pconfig['password'] : null;
+            openssl_pkcs12_export($res_crt, $exp_data, $res_key, $res_pw, $args);
+            restore_error_handler();
+
+            $output = json_encode(array(
+              'filename' => $exp_name,
+              'content' => base64_encode($exp_data)
+            ));
+            header("Content-Type: application/json;charset=UTF-8");
+            // header("Content-Length: ". strlen($output));
+            echo $output;
+        }
         exit;
     } elseif ($act == "csr") {
         $input_errors = array();
@@ -285,7 +288,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     } elseif (!empty($_POST['save'])) {
         $input_errors = array();
-        $pconfig = $_POST;
 
         /* input validation */
         if ($pconfig['certmethod'] == "import") {
@@ -561,6 +563,67 @@ if (empty($act)) {
                 }
               }]
       });
+    });
+
+    $('.p12btn').on('click', function(event) {
+        event.preventDefault();
+        var id = $(this).data('id');
+
+        let password_input = $('<input type="password" class="form-control password_field" placeholder="<?=html_safe(gettext("Password"));?>">');
+        let confirm_input = $('<input type="password" class="form-control password_field" placeholder="<?=html_safe(gettext("Confirm"));?>">');
+        let dialog_items = $('<div class = "form-group">');
+        dialog_items.append(
+          $("<span>").text("<?=html_safe(gettext('Optionally use a password to protect your export'));?>"),
+          $('<table class="table table-condensed"/>').append(
+            $("<tbody/>").append(
+              $("<tr/>").append($("<td/>").append(password_input)),
+              $("<tr/>").append($("<td/>").append(confirm_input)),
+            )
+          )
+        );
+
+        // highlight password/confirm when not equal
+        let keyup_pass = function() {
+            if (confirm_input.val() !== password_input.val()) {
+                $(".password_field").addClass("has-warning");
+                $(".password_field").closest('div').addClass('has-warning');
+            } else {
+                $(".password_field").removeClass("has-warning");
+                $(".password_field").closest('div').removeClass('has-warning');
+            }
+        }
+        confirm_input.on('keyup', keyup_pass);
+        password_input.on('keyup', keyup_pass);
+
+
+        BootstrapDialog.show({
+            type:BootstrapDialog.TYPE_INFO,
+            title: "<?= gettext("Certificates");?>",
+            message: dialog_items,
+            buttons: [
+                {
+                    label: "<?=html_safe(gettext("Close"));?>",
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                    }
+                }, {
+                    label: '<i class="fa fa-download fa-fw"></i> <?=html_safe(gettext("Download"));?>',
+                    action: function(dialogRef) {
+                        $.post('system_certmanager.php', {'id': id, 'act': 'p12', 'password': password_input.val()}, function (data) {
+                            var link = $('<a></a>')
+                                .attr('href','data:application/octet-stream;base64,' + data.content)
+                                .attr('download', data.filename)
+                                .appendTo('body');
+                            link.ready(function() {
+                                link.get(0).click();
+                                link.empty();
+                            });
+                        });
+                        dialogRef.close();
+                    }
+                }
+            ]
+        });
     });
 
     $(".act_info").click(function(event){
@@ -1311,7 +1374,7 @@ $( document ).ready(function() {
                     <i class="fa fa-download fa-fw"></i>
                   </a>
 
-                  <a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export ca+user cert+user key in .p12 format");?>">
+                  <a data-id="<?=$i;?>"  class="btn btn-default btn-xs p12btn" data-toggle="tooltip" title="<?=gettext("export ca+user cert+user key in .p12 format");?>">
                       <i class="fa fa-download fa-fw"></i>
                   </a>
 <?php
