@@ -28,6 +28,8 @@ POSSIBILITY OF SUCH DAMAGE.
 <script src="{{ cache_safe('/ui/js/moment-with-locales.min.js') }}"></script>
 
 <script>
+    'use strict';
+    const modifiers = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
 
     $( document ).ready(function() {
         /**
@@ -37,7 +39,31 @@ POSSIBILITY OF SUCH DAMAGE.
             var gridopt = {
                 ajax: false,
                 selection: true,
-                multiSelect: true
+                multiSelect: true,
+                converters: {
+                    memsize: {
+                        from: function (value) {
+                            let ret = parseInt(value);
+                            let modifier = value.slice(-1);
+
+                            for (let exponent = modifiers.length - 1; exponent >= 0; exponent--) {
+                                if (modifier === modifiers[exponent]) {
+                                    ret *= Math.pow(1024, exponent);
+                                    break;
+                                }
+                            }
+                            return ret;
+                        },
+                        to: function (value) {
+                            for (let exponent = modifiers.length - 1; exponent >= 0; exponent--) {
+                                if (value >= (5 * Math.pow(1024, exponent))) {
+                                    return parseInt(value / Math.pow(1024, exponent)) + modifiers[exponent];
+                                }
+                            }
+                            return parseInt(value) + '';
+                        }
+                    }
+                }
             };
             $("#grid-top").bootgrid('destroy');
             ajaxGet("/api/diagnostics/activity/getActivity", {}, function (data, status) {
@@ -100,8 +126,8 @@ POSSIBILITY OF SUCH DAMAGE.
                         <th data-column-id="USERNAME" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('USERNAME') }}</th>
                         <th data-column-id="PRI" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('PRI') }}</th>
                         <th data-column-id="NICE" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('NICE') }}</th>
-                        <th data-column-id="SIZE" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('SIZE') }}</th>
-                        <th data-column-id="RES" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('RES') }}</th>
+                        <th data-column-id="SIZE" data-type="memsize" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('SIZE') }}</th>
+                        <th data-column-id="RES" data-type="memsize" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('RES') }}</th>
                         <th data-column-id="STATE" data-type="string">{{ lang._('STATE') }}</th>
                         <th data-column-id="C" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('C') }}</th>
                         <th data-column-id="TIME" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('TIME') }}</th>
