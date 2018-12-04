@@ -1471,7 +1471,6 @@ include("head.inc");
             }
             case "pppoe":
             case "pptp":
-            case "ppp":
               $("#mtu_calc").show();
               break;
             default:

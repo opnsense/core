@@ -203,7 +203,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         selected_tr.hide();
                     }
                 } catch(e) {
-                    null; // ignore regexp errors
+                    // ignore regexp errors
                 }
             });
         });
