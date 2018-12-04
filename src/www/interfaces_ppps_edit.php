@@ -520,7 +520,7 @@ include("head.inc");
                           <input name="password" type="password" id="password" value="<?=$pconfig['password'];?>" />
                         </td>
                       </tr>
-                      <tr style="display:none" name="phone_num" id="phone_num">
+                      <tr style="display:none" id="phone_num">
                         <td><a id="help_for_phone" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Phone Number"); ?></td>
                         <td>
                           <input name="phone" type="text" id="phone" value="<?=$pconfig['phone'];?>" />
@@ -529,13 +529,13 @@ include("head.inc");
                           </div>
                         </td>
                       </tr>
-                      <tr style="display:none" name="apn_" id="apn_">
+                      <tr style="display:none" id="apn_">
                         <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Access Point Name (APN)"); ?></td>
                         <td>
                           <input name="apn" type="text" id="apn" value="<?=$pconfig['apn'];?>" />
                         </td>
                       </tr>
-                      <tr style="display:none" name="pppoe" id="pppoe">
+                      <tr style="display:none" id="pppoe">
                         <td><a id="help_for_provider" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Service name"); ?></td>
                         <td>
                           <input name="provider" type="text" id="provider" value="<?=$pconfig['provider'];?>" />&nbsp;&nbsp;
@@ -545,7 +545,7 @@ include("head.inc");
                           </div>
                         </td>
                       </tr>
-                      <tr style="display:none" name="hostuniqopt" id="hostuniqopt">
+                      <tr style="display:none" id="hostuniqopt">
                         <td><a id="help_for_hostuniq" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Host-Uniq"); ?></td>
                         <td>
                           <input name="hostuniq" type="text" id="hostuniq" value="<?=$pconfig['hostuniq'];?>" />
