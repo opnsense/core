@@ -144,7 +144,7 @@ include_once("head.inc");
 <body>
 <script>
     $( document ).ready(function() {
-        $("#show_advanced_dns").click(function(){
+        $("#show_advanced_dns").click(function (event) {
             event.preventDefault();
             $(this).parent().parent().hide();
             $(".showadv").show();
