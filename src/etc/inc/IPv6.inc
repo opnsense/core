@@ -24,18 +24,6 @@
 // {{{ constants
 
 /**
- * Error message if netmask bits was not found
- * @see isInNetmask
- */
-define("NET_IPV6_NO_NETMASK_MSG", "Netmask length not found");
-
-/**
- * Error code if netmask bits was not found
- * @see isInNetmask
- */
-define("NET_IPV6_NO_NETMASK", 10);
-
-/**
  * Address Type: Unassigned (RFC 1884, Section 2.3)
  * @see getAddressType()
  */
@@ -276,9 +264,7 @@ class Net_IPv6
                 $addr = $elements[0];
                 $bits = $elements[1];
             } else {
-                include_once 'PEAR.inc';
-                return PEAR::raiseError(NET_IPV6_NO_NETMASK_MSG,
-                                        NET_IPV6_NO_NETMASK);
+                return null;
             }
         } else {
             $addr = $ip;
@@ -325,9 +311,7 @@ class Net_IPv6
                 }
 
                 if (null == $bits) {
-                    include_once 'PEAR.inc';
-                    return PEAR::raiseError(NET_IPV6_NO_NETMASK_MSG,
-                                            NET_IPV6_NO_NETMASK);
+                    return null;
                 }
             }
         }
@@ -800,9 +784,7 @@ class Net_IPv6
                 $ip      = Net_IPv6::uncompress($elements[0]);
                 $bitmask = $elements[1];
             } else {
-                include_once 'PEAR.inc';
-                return PEAR::raiseError(NET_IPV6_NO_NETMASK_MSG,
-                                        NET_IPV6_NO_NETMASK);
+                return null;
             }
         } else {
             $ip      = Net_IPv6::uncompress($ipToParse);
