@@ -2129,7 +2129,7 @@ include("head.inc");
                             </div>
                             <div class="hidden" data-for="help_for_dhcp_mode">
                               <?= gettext('The basic mode auto-configures DHCP using default values and optional user input.') ?><br/>
-                              <?= gettext('The advanced mode does not provide any default values, you will need to fill out any values you would like to use.') ?></br>
+                              <?= gettext('The advanced mode does not provide any default values, you will need to fill out any values you would like to use.') ?><br>
                               <?= gettext('The configuration file override mode may point to a fully customised file on the system instead.') ?>
                             </div>
                           </td>
@@ -2655,7 +2655,7 @@ include("head.inc");
                             </div>
                             <div class="hidden" data-for="help_for_dhcpv6_mode">
                               <?= gettext('The basic mode auto-configures DHCP using default values and optional user input.') ?><br/>
-                              <?= gettext('The advanced mode does not provide any default values, you will need to fill out any values you would like to use.') ?></br>
+                              <?= gettext('The advanced mode does not provide any default values, you will need to fill out any values you would like to use.') ?><br>
                               <?= gettext('The configuration file override mode may point to a fully customised file on the system instead.') ?>
                             </div>
                           </td>
@@ -3502,7 +3502,7 @@ include("head.inc");
                           <td>
                             <input name="auth_server_addr2" id="auth_server_addr2" type="text" value="<?=$pconfig['auth_server_addr2'];?>" />
                             <div class="hidden" data-for="help_for_auth_server_addr2">
-                              <?=gettext("Secondary 802.1X Authentication Server IP Address"); ?></br>
+                              <?=gettext("Secondary 802.1X Authentication Server IP Address"); ?><br>
                               <?=gettext("Enter the IP address of the 802.1X Authentication Server. This is commonly a Radius server (FreeRadius, Internet Authentication Services, etc.)"); ?>
                             </div>
                           </td>
