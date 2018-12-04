@@ -936,7 +936,6 @@ $( document ).ready(function() {
                       <script>
                         $('#otp_qrcode').qrcode('<?= $otp_url ?>');
                       </script>
-                      </div>
                       <div class="hidden" data-for="help_for_otp_code">
                         <?= gettext('Scan this QR code for easy setup with external apps.') ?>
                       </div>
@@ -944,7 +943,6 @@ $( document ).ready(function() {
                   </tr>
 <?php
                         endif;?>
-                  <tr>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Authorized keys");?></td>
                     <td>

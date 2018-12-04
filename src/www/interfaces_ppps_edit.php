@@ -683,7 +683,7 @@ include("head.inc");
                           <?= gettext("Enable Dial-on-Demand mode"); ?>
                           <div class="hidden" data-for="help_for_ondemand">
                             <?= gettext("This option causes the interface to operate in dial-on-demand mode. Do NOT enable if you want your link to be always up. " .
-                            "The interface is configured, but the actual connection of the link is delayed until qualifying outgoing traffic is detected."); ?> </span>
+                            "The interface is configured, but the actual connection of the link is delayed until qualifying outgoing traffic is detected."); ?>
                           </div>
                         </td>
                       </tr>

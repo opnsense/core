@@ -1245,7 +1245,7 @@ $( document ).ready(function() {
                 <td>
                   <textarea name="csr" id="csr" cols="65" rows="7" class="formfld_cert" readonly="readonly"><?=$pconfig['csr'];?></textarea>
                   <br />
-                  <?=gettext("Copy the certificate signing data from here and forward it to your certificate authority for signing.");?></td>
+                  <?=gettext("Copy the certificate signing data from here and forward it to your certificate authority for signing.");?>
                 </td>
               </tr>
               <tr>
@@ -1253,7 +1253,7 @@ $( document ).ready(function() {
                 <td>
                   <textarea name="cert" id="cert" cols="65" rows="7" class="formfld_cert"><?=$pconfig['cert'];?></textarea>
                   <br />
-                  <?=gettext("Paste the certificate received from your certificate authority here.");?></td>
+                  <?=gettext("Paste the certificate received from your certificate authority here.");?>
                 </td>
               </tr>
               <tr>

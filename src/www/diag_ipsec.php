@@ -193,7 +193,7 @@ include("head.inc");
                                 <th class="hidden-xs hidden-sm"><?= gettext("State");?></th>
                                 <th><?= gettext("Stats");?></th>
                               </tr>
-                            </head>
+                            </thead>
                             <tbody>
                             <?php foreach ($ipsec_conn['sas'] as $sa_key => $sa):?>
                               <?php foreach ($sa['child-sas'] as $child_sa_key => $child_sa):?>

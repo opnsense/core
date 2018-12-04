@@ -93,7 +93,7 @@ $( document ).ready(function() {
                 <?=gettext("Gathering PF information, please wait...");?>
                 </pre>
               </div>
-              </br>
+              <br/>
             </div>
 <?php
             endforeach;?>

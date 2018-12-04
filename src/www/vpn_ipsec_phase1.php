@@ -555,6 +555,7 @@ include("head.inc");
           <form method="post" name="iform" id="iform">
             <div class="table-responsive">
               <table class="table table-striped opnsense_standard_table_form">
+                <tbody>
                   <tr>
                     <td style="width:22%"><b><?=gettext("General information"); ?></b></td>
                     <td style="width:78%; text-align:right">
