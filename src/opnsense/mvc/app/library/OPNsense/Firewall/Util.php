@@ -126,7 +126,7 @@ class Util
     public static function aliasDescription($name)
     {
         if (empty(self::$aliasDescriptions)) {
-            // read all aliases at ones, and cache descriptions.
+            // read all aliases at once, and cache descriptions.
             foreach ((new Alias())->aliasIterator() as $alias) {
                 if (empty(self::$aliasDescriptions[$alias['name']])) {
                     if (!empty($alias['descr'])) {
