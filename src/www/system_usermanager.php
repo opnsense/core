@@ -481,7 +481,7 @@ $( document ).ready(function() {
     });
 
     // import ldap users
-    $("#import_ldap_users").click(function(){
+    $("#import_ldap_users").click(function(event){
       event.preventDefault();
       const url="system_usermanager_import_ldap.php";
       var oWin = window.open(url,"OPNsense","width=620,height=400,top=150,left=150,scrollbars=yes");
