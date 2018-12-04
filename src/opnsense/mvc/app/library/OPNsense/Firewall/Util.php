@@ -43,6 +43,11 @@ class Util
     private static $aliasObject = null;
 
     /**
+     * @var null|array cached alias descriptions
+     */
+    private static $aliasDescriptions = array();
+
+    /**
      * is provided address an ip address.
      * @param string $network address
      * @return boolean
@@ -111,6 +116,36 @@ class Util
             }
         }
         return false;
+    }
+
+    /**
+     * return alias descriptions
+     * @param string $name name
+     * @return string
+     */
+    public static function aliasDescription($name)
+    {
+        if (empty(self::$aliasDescriptions)) {
+            // read all aliases at once, and cache descriptions.
+            foreach ((new Alias())->aliasIterator() as $alias) {
+                if (empty(self::$aliasDescriptions[$alias['name']])) {
+                    if (!empty($alias['descr'])) {
+                        self::$aliasDescriptions[$alias['name']] = $alias['descr'];
+                    } elseif (!empty($alias['description'])) {
+                        self::$aliasDescriptions[$alias['name']] = $alias['description'];
+                    } elseif (!empty($alias['content'])) {
+                        $tmp = array_slice(explode("\n", $alias['content']), 0, 10);
+                        asort($tmp);
+                        self::$aliasDescriptions[$alias['name']] = implode("<br/>", $tmp);
+                    }
+                }
+            }
+        }
+        if (!empty(self::$aliasDescriptions[$name])) {
+            return self::$aliasDescriptions[$name];
+        } else {
+            return null;
+        }
     }
 
     /**
