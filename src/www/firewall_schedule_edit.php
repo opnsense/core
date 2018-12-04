@@ -487,7 +487,7 @@ function addTimeRange(){
     var firstprint = false;
     var tempFriendlyMonthArray = monthstr.split(",");
     var tempFriendlyDayArray = daystr.split(",");
-    var currentDay, firstDay, nextDay, currentMonth, nextMonth, firstDay, firstMonth = "";
+    var currentDay, firstDay, nextDay, firstMonth = 0;
     for (var k=0; k<tempFriendlyMonthArray.length; k++){
       tempstr = tempFriendlyMonthArray[k];
       if (tempstr != ""){

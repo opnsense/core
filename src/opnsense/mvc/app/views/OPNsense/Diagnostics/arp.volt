@@ -67,11 +67,11 @@ POSSIBILITY OF SUCH DAMAGE.
             title: "{{ lang._('Flush ARP Table') }}",
             message: "{{ lang._('Flush the ARP cache manually, in case your ARP cache contains invalid data.') }}",
             buttons: [{
-                      label: "<?= gettext("Close");?>",
+                      label: "<?= gettext('Close');?>",
                       action: function(dialogRef) {
                         dialogRef.close();
                       }}, {
-                      label: "<?= gettext("Flush ARP Table");?>",
+                      label: "<?= gettext('Flush ARP Table');?>",
                       action: function(dialogRef) {
                         ajaxCall("/api/diagnostics/interface/flushArp", {}, function (data, status) {
                             $("#refresh").click();

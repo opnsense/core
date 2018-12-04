@@ -200,17 +200,17 @@ function clearFormValidation(parent) {
  */
 function ajaxCall(url, sendData, callback) {
     return $.ajax({
-        type: "POST",
+        type: 'POST',
         url: url,
-        dataType:"json",
-        contentType: "application/json",
+        dataType:'json',
+        contentType: 'application/json',
         complete: function(data, status) {
-            if ( callback == null ) {
-                null;
-            } else if ( "responseJSON" in data ) {
-                callback(data['responseJSON'],status);
-            } else {
-                callback(data,status);
+            if (callback != null) {
+                if ('responseJSON' in data) {
+                    callback(data['responseJSON'], status);
+                } else {
+                    callback(data, status);
+                }
             }
         },
         data: JSON.stringify(sendData)
@@ -226,17 +226,17 @@ function ajaxCall(url, sendData, callback) {
  */
 function ajaxGet(url,sendData,callback) {
     return $.ajax({
-        type: "GET",
+        type: 'GET',
         url: url,
-        dataType:"json",
-        contentType: "application/json",
+        dataType:'json',
+        contentType: 'application/json',
         complete: function(data,status) {
-            if ( callback == null ) {
-                null;
-            } else if ( "responseJSON" in data ) {
-                callback(data['responseJSON'],status);
-            } else {
-                callback({},status);
+            if (callback != null) {
+                if ('responseJSON' in data) {
+                    callback(data['responseJSON'], status);
+                } else {
+                    callback({}, status);
+                }
             }
         },
         data: sendData

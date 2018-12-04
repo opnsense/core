@@ -439,7 +439,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 });
                 if (total > 0) {
                     var ndx = Math.floor( Math.log(total) / Math.log(kb) );
-                    var total =  (total / Math.pow(kb, ndx)).toFixed(2) + ' ' + fileSizeTypes[ndx];
+                    total =  (total / Math.pow(kb, ndx)).toFixed(2) + ' ' + fileSizeTypes[ndx];
                 }
                 $("#total_interface_"+measure+" > td:eq(1)").html(total_in);
                 $("#total_interface_"+measure+" > td:eq(2)").html(total_out);
