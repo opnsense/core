@@ -437,7 +437,7 @@ endif;?>
             <table class="table table-striped">
               <thead>
                 <tr>
-                    <th><?=gettext("Interface"); ?></td>
+                    <th><?=gettext("Interface"); ?></th>
                     <th><?=gettext("IPv6 address"); ?></th>
                     <th><?=gettext("IAID"); ?></th>
                     <th><?=gettext("DUID"); ?></th>
