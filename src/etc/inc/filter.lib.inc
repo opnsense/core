@@ -59,8 +59,16 @@ function filter_core_get_initialized_plugin_system()
     foreach ($cnfint as $key => &$value) {
         // to set "reply-to" we need to know the gateway for our interface, let's collect it here and pass it on to
         // setInterfaceMapping()
-        $value['gateway'] = get_interface_gateway($key);
-        $value['gatewayv6'] = get_interface_gateway_v6($key);
+        if (!empty($value['gateway']) && $value['gateway'] != 'none') {
+            $value['gateway'] = get_interface_gateway($key);
+        } else {
+            $value['gateway'] = null;
+        }
+        if (!empty($value['gatewayv6']) && $value['gatewayv6'] != 'none') {
+            $value['gatewayv6'] = get_interface_gateway_v6($key);
+        } else {
+            $value['gatewayv6'] = null;
+        }
         // In some cases we need to know if there currently are addresses configured on an interface, we pass
         // the relevant ifconfig data to our interfacemapping (prevents "could not parse host specification" on load)
         if (!empty($ifdetails[$value['if']])) {
