@@ -77,7 +77,7 @@ class InterfaceField extends BaseField
 
     /**
      *  collect parents for lagg interfaces
-     *  @return named array containing device and lagg interface
+     *  @return array named array containing device and lagg interface
      */
     private function getConfigLaggInterfaces()
     {
@@ -100,7 +100,7 @@ class InterfaceField extends BaseField
 
     /**
      *  collect parents for vlan interfaces
-     *  @return named array containing device and vlan interfaces
+     *  @return array named array containing device and vlan interfaces
      */
     private function getConfigVLANInterfaces()
     {

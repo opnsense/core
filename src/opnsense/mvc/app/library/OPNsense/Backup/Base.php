@@ -39,6 +39,7 @@ abstract class Base
      * encrypt+encode base64
      * @param string $data to encrypt
      * @param string $pass passphrase to use
+     * @param string $tag
      * @return string base64 encoded crypted data
      */
     public function encrypt($data, $pass, $tag = 'config.xml')
@@ -75,6 +76,7 @@ abstract class Base
      * decrypt base64 encoded data
      * @param string $data to decrypt
      * @param string $pass passphrase to use
+     * @param string $tag
      * @return string data
      */
     public function decrypt($data, $pass, $tag = 'config.xml')

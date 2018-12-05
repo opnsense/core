@@ -106,6 +106,7 @@ class Nextcloud extends Base implements IBackupProvider
      * validate and set configuration
      * @param array $conf configuration array
      * @return array of validation errors when not saved
+     * @throws \OPNsense\Base\ModelException
      */
     public function setConfiguration($conf)
     {
@@ -122,6 +123,7 @@ class Nextcloud extends Base implements IBackupProvider
     /**
      * perform backup
      * @return array filelist
+     * @throws \OPNsense\Base\ModelException
      */
     public function backup()
     {

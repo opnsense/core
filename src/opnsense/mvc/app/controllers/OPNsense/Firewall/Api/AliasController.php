@@ -102,7 +102,8 @@ class AliasController extends ApiMutableModelControllerBase
     /**
      * find the alias uuid by name
      * @param $name alias name
-     * @return string uuid
+     * @return array uuid
+     * @throws \ReflectionException
      */
     public function getAliasUUIDAction($name)
     {

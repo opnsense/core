@@ -46,7 +46,7 @@ function xmlrpc_publishable_service()
 
 /**
  * list configured services
- * @return string
+ * @return array
  */
 function list_services_xmlrpc()
 {
@@ -61,6 +61,8 @@ function list_services_xmlrpc()
 
 /**
  * stop service
+ * @param array $params
+ * @return string
  */
 function stop_service_xmlrpc($params)
 {
@@ -75,6 +77,8 @@ function stop_service_xmlrpc($params)
 
 /**
  * start service
+ * @param array $params
+ * @return string
  */
 function start_service_xmlrpc($params)
 {
@@ -89,6 +93,8 @@ function start_service_xmlrpc($params)
 
 /**
  * restart service
+ * @param array $params
+ * @return string
  */
 function restart_service_xmlrpc($params)
 {

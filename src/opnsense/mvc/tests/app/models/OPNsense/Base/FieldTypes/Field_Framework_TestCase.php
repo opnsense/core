@@ -36,7 +36,7 @@ class Field_Framework_TestCase extends \PHPUnit\Framework\TestCase
 {
     /**
      * Validate and throw exception
-     * @param $field feld type
+     * @param string $field field type
      * @throws \Phalcon\Validation\Exception
      */
     public function validateThrow($field)
@@ -57,7 +57,7 @@ class Field_Framework_TestCase extends \PHPUnit\Framework\TestCase
 
     /**
      * Validate and return exceptions
-     * @param $field feld type
+     * @param string $field field type
      * @return array
      */
     public function validate($field)

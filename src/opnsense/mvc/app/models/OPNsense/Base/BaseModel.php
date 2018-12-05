@@ -110,7 +110,7 @@ abstract class BaseModel
 
     /**
      * fetch reflection class (cached by field type)
-     * @param $classname classname to construct
+     * @param string $classname classname to construct
      * @return BaseField type class
      * @throws ModelException when unable to parse field type
      * @throws \ReflectionException when unable to create class
