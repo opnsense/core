@@ -606,58 +606,61 @@ function ipsec_find_id(&$ph1ent, $side = 'local')
 /* include all configuration functions */
 function ipsec_convert_to_modp($index)
 {
-    $conversion = "";
+    $conversion = '';
+
     switch ($index) {
         case '1':
-            $conversion = "modp768";
+            $conversion = 'modp768';
             break;
         case '2':
-            $conversion = "modp1024";
+            $conversion = 'modp1024';
             break;
         case '5':
-            $conversion = "modp1536";
+            $conversion = 'modp1536';
             break;
         case '14':
-            $conversion = "modp2048";
+            $conversion = 'modp2048';
             break;
         case '15':
-            $conversion = "modp3072";
+            $conversion = 'modp3072';
             break;
         case '16':
-            $conversion = "modp4096";
+            $conversion = 'modp4096';
             break;
         case '17':
-            $conversion = "modp6144";
+            $conversion = 'modp6144';
             break;
         case '18':
-            $conversion = "modp8192";
+            $conversion = 'modp8192';
             break;
         case '19':
-            $conversion = "ecp256";
+            $conversion = 'ecp256';
             break;
         case '20':
-            $conversion = "ecp384";
+            $conversion = 'ecp384';
             break;
         case '21':
-            $conversion = "ecp521";
+            $conversion = 'ecp521';
             break;
         case '22':
-            $conversion = "modp1024s160";
+            $conversion = 'modp1024s160';
             break;
         case '23':
-            $conversion = "modp2048s224";
+            $conversion = 'modp2048s224';
             break;
         case '24':
-            $conversion = "modp2048s256";
+            $conversion = 'modp2048s256';
             break;
         case '28':
-            $conversion = "ecp256bp";
+            $conversion = 'ecp256bp';
             break;
         case '29':
-            $conversion = "ecp384bp";
+            $conversion = 'ecp384bp';
             break;
         case '30':
-            $conversion = "ecp512bp";
+            $conversion = 'ecp512bp';
+            break;
+        default:
             break;
     }
 
