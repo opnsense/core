@@ -30,25 +30,34 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-$ipsec_loglevels = array(
-    "asn" => "Low-level encoding/decoding (ASN.1, X.509 etc.)",
-    "cfg" => "Configuration management and plugins",
-    "chd" => "CHILD_SA/IPsec SA",
-    "dmn" => "Main daemon setup/cleanup/signal handling",
-    "enc" => "Packet encoding/decoding encryption/decryption operations",
-    "esp" => "libipsec library messages",
-    "ike" => "IKE_SA/ISAKMP SA",
-    "imc" => "Integrity Measurement Collector",
-    "imv" => "Integrity Measurement Verifier",
-    "job" => "Jobs queuing/processing and thread pool management",
-    "knl" => "IPsec/Networking kernel interface",
-    "lib" => "libstrongwan library messages",
-    "mgr" => "IKE_SA manager, handling synchronization for IKE_SA access",
-    "net" => "IKE network communication",
-    "pts" => "Platform Trust Service",
-    "tls" => "libtls library messages",
-    "tnc" => "Trusted Network Connect"
-);
+const IPSEC_LOG_SUBSYSTEMS = [
+    'asn' => 'Low-level encoding/decoding (ASN.1, X.509 etc.)',
+    'cfg' => 'Configuration management and plugins',
+    'chd' => 'CHILD_SA/IPsec SA',
+    'dmn' => 'Main daemon setup/cleanup/signal handling',
+    'enc' => 'Packet encoding/decoding encryption/decryption operations',
+    'esp' => 'libipsec library messages',
+    'ike' => 'IKE_SA/ISAKMP SA',
+    'imc' => 'Integrity Measurement Collector',
+    'imv' => 'Integrity Measurement Verifier',
+    'job' => 'Jobs queuing/processing and thread pool management',
+    'knl' => 'IPsec/Networking kernel interface',
+    'lib' => 'libstrongwan library messages',
+    'mgr' => 'IKE_SA manager, handling synchronization for IKE_SA access',
+    'net' => 'IKE network communication',
+    'pts' => 'Platform Trust Service',
+    'tls' => 'libtls library messages',
+    'tnc' => 'Trusted Network Connect',
+];
+
+const IPSEC_LOG_LEVELS = [
+    -1 => 'Silent',
+    0 => 'Basic',
+    1 => 'Audit',
+    2 => 'Control',
+    3 => 'Raw',
+    4 => 'Highest',
+];
 
 $p1_ealgos = array(
     'aes' => array( 'name' => 'AES', 'keysel' => array( 'lo' => 128, 'hi' => 256, 'step' => 64 ), 'iketype' => null ),
@@ -698,7 +707,7 @@ function ipsec_configure_spd()
 
 function ipsec_configure_do($verbose = false, $interface = '')
 {
-    global $config, $p2_ealgos, $ipsec_loglevels;
+    global $config, $p2_ealgos;
 
     if (!empty($interface)) {
          $active = false;
@@ -877,14 +886,12 @@ function ipsec_configure_do($verbose = false, $interface = '')
         }
 
         // Debugging configuration
-        if (isset($ipsec_loglevels)) {
-            // lkey is the log key, which is a three-letter abbreviation of the subsystem to log, e.g. `ike`.
-            // The value will be a number between -1 (silent) and 4 (highest verbosity).
-            foreach ($ipsec_loglevels as $lkey => $ldescr) {
-                if (isset($config['ipsec']["ipsec_{$lkey}"]) && is_numeric($config['ipsec']["ipsec_{$lkey}"]) &&
-                    intval($config['ipsec']["ipsec_{$lkey}"]) >= -1 && intval($config['ipsec']["ipsec_{$lkey}"]) <= 4) {
-                    $strongswanTree['charon']['syslog']['daemon'][$lkey] = $config['ipsec']["ipsec_{$lkey}"];
-                }
+        // lkey is the log key, which is a three-letter abbreviation of the subsystem to log, e.g. `ike`.
+        // The value will be a number between -1 (silent) and 4 (highest verbosity).
+        foreach (IPSEC_LOG_SUBSYSTEMS as $lkey => $ldescr) {
+            if (isset($config['ipsec']["ipsec_{$lkey}"]) && is_numeric($config['ipsec']["ipsec_{$lkey}"]) &&
+                array_key_exists(intval($config['ipsec']["ipsec_{$lkey}"]), IPSEC_LOG_LEVELS)) {
+                $strongswanTree['charon']['syslog']['daemon'][$lkey] = $config['ipsec']["ipsec_{$lkey}"];
             }
         }
 
