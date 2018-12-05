@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['language'] = $config['system']['language'];
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
     $pconfig['theme'] = $config['theme'];
-    $pconfig['timezone'] = empty($config['system']['timezone']) ? 'Etc/UTC' : $config['system']['timezone'] ;
+    $pconfig['timezone'] = empty($config['system']['timezone']) ? 'Etc/UTC' : $config['system']['timezone'];
 
     for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
         $dnsname = "dns{$dnscounter}";
@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
             $dnsname="dns{$dnscounter}";
             $dnsgwname="dns{$dnscounter}gw";
-            $olddnsgwname = !empty($config['system'][$dnsgwname]) ? $config['system'][$dnsgwname] : "none" ;
+            $olddnsgwname = !empty($config['system'][$dnsgwname]) ? $config['system'][$dnsgwname] : 'none';
 
             if (!empty($pconfig[$dnsname])) {
                 $config['system']['dnsserver'][] = $pconfig[$dnsname];
@@ -417,7 +417,7 @@ include("head.inc");
                 </div>
               </td>
             </tr>
-            </tr>
+            <tr>
               <td></td>
               <td>
                 <input name="dnslocalhost" type="checkbox" value="yes" <?=$pconfig['dnslocalhost'] ? "checked=\"checked\"" : ""; ?> />

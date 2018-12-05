@@ -233,7 +233,7 @@ include("head.inc");
                         </option>
                       </select>
                       <div class="hidden" data-for="help_for_ramode">
-                        <?= gettext('Select the Operating Mode for the Router Advertisement (RA) Daemon.') ?></strong>
+                        <?= gettext('Select the Operating Mode for the Router Advertisement (RA) Daemon.') ?>
                         <?= gettext('Use "Router Only" to only advertise this router, "Unmanaged" for Router Advertising with Stateless Autoconfig, ' .
                             '"Managed" for exclusive DHCPv6 Server assignment, "Assisted" for DHCPv6 Server assignment combined with Stateless Autoconfig, ' .
                             'or "Stateless" for Router Advertising with Statless Autoconfig and optional DHCPv6 Server queries.') ?>

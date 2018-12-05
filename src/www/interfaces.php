@@ -109,7 +109,7 @@ function endElement_attr($parser, $name) {
 }
 
 function cData_attr($parser, $data) {
-    global $depth, $curpath, $parsedcfg, $havedata;
+    global $curpath, $parsedcfg, $havedata;
 
     $data = trim($data, "\t\n\r");
 
@@ -177,7 +177,7 @@ function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulator
 }
 
 function parse_xml_config_raw_attr($cffile, $rootobj, &$parsed_attributes, $isstring = "false") {
-    global $depth, $curpath, $parsedcfg, $havedata, $listtags, $parsedattrs;
+    global $depth, $curpath, $parsedcfg, $havedata, $parsedattrs;
     $parsedcfg = array();
     $curpath = array();
     $depth = 0;
@@ -725,8 +725,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $input_errors[] = gettext('6RD IPv4 prefix length must be a number.');
                 }
                 foreach ($ifdescrs as $ifent => $unused) {
-                    if ($if != $ifent && ($config[interfaces][$ifent]['ipaddrv6'] == $pconfig['type6'])) {
-                        if ($config[interfaces][$ifent]['prefix-6rd'] == $pconfig['prefix-6rd']) {
+                    if ($if != $ifent && ($config['interfaces'][$ifent]['ipaddrv6'] == $pconfig['type6'])) {
+                        if ($config['interfaces'][$ifent]['prefix-6rd'] == $pconfig['prefix-6rd']) {
                             $input_errors[] = gettext("You can only have one interface configured in 6rd with same prefix.");
                             break;
                         }
@@ -735,7 +735,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 break;
             case "6to4":
                 foreach ($ifdescrs as $ifent => $unused) {
-                    if ($if != $ifent && ($config[interfaces][$ifent]['ipaddrv6'] == $pconfig['type6'])) {
+                    if ($if != $ifent && ($config['interfaces'][$ifent]['ipaddrv6'] == $pconfig['type6'])) {
                         $input_errors[] = sprintf(gettext("You can only have one interface configured as 6to4."), $pconfig['type6']);
                         break;
                     }
@@ -2006,7 +2006,7 @@ include("head.inc");
                             </div>
                             <div class="hidden" data-for="help_for_dhcp_mode">
                               <?= gettext('The basic mode auto-configures DHCP using default values and optional user input.') ?><br/>
-                              <?= gettext('The advanced mode does not provide any default values, you will need to fill out any values you would like to use.') ?></br>
+                              <?= gettext('The advanced mode does not provide any default values, you will need to fill out any values you would like to use.') ?><br>
                               <?= gettext('The configuration file override mode may point to a fully customised file on the system instead.') ?>
                             </div>
                           </td>
@@ -2532,7 +2532,7 @@ include("head.inc");
                             </div>
                             <div class="hidden" data-for="help_for_dhcpv6_mode">
                               <?= gettext('The basic mode auto-configures DHCP using default values and optional user input.') ?><br/>
-                              <?= gettext('The advanced mode does not provide any default values, you will need to fill out any values you would like to use.') ?></br>
+                              <?= gettext('The advanced mode does not provide any default values, you will need to fill out any values you would like to use.') ?><br>
                               <?= gettext('The configuration file override mode may point to a fully customised file on the system instead.') ?>
                             </div>
                           </td>
@@ -2856,6 +2856,8 @@ include("head.inc");
                         <tr>
                           <th colspan="2"><?=gettext("Track IPv6 Interface"); ?></th>
                         </tr>
+                      </thead>
+                      <tbody>
                         <tr>
                           <td style="width:22%"><a id="help_for_track6-interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Interface"); ?></td>
                           <td style="width:78%">
@@ -3377,7 +3379,7 @@ include("head.inc");
                           <td>
                             <input name="auth_server_addr2" id="auth_server_addr2" type="text" value="<?=$pconfig['auth_server_addr2'];?>" />
                             <div class="hidden" data-for="help_for_auth_server_addr2">
-                              <?=gettext("Secondary 802.1X Authentication Server IP Address"); ?></br>
+                              <?=gettext("Secondary 802.1X Authentication Server IP Address"); ?><br>
                               <?=gettext("Enter the IP address of the 802.1X Authentication Server. This is commonly a Radius server (FreeRadius, Internet Authentication Services, etc.)"); ?>
                             </div>
                           </td>
