@@ -604,67 +604,33 @@ function ipsec_find_id(&$ph1ent, $side = 'local')
 }
 
 /* include all configuration functions */
-function ipsec_convert_to_modp($index)
+function ipsec_convert_to_modp($index): string
 {
-    $conversion = '';
+    $map = [
+        1 => 'modp768',
+        2 => 'modp1024',
+        5 => 'modp1536',
+        14 => 'modp2048',
+        15 => 'modp3072',
+        16 => 'modp4096',
+        17 => 'modp6144',
+        18 => 'modp8192',
+        19 => 'ecp256',
+        20 => 'ecp384',
+        21 => 'ecp521',
+        22 => 'modp1024s160',
+        23 => 'modp2048s224',
+        24 => 'modp2048s256',
+        28 => 'ecp256bp',
+        29 => 'ecp384bp',
+        30 => 'ecp512bp',
+    ];
 
-    switch ($index) {
-        case '1':
-            $conversion = 'modp768';
-            break;
-        case '2':
-            $conversion = 'modp1024';
-            break;
-        case '5':
-            $conversion = 'modp1536';
-            break;
-        case '14':
-            $conversion = 'modp2048';
-            break;
-        case '15':
-            $conversion = 'modp3072';
-            break;
-        case '16':
-            $conversion = 'modp4096';
-            break;
-        case '17':
-            $conversion = 'modp6144';
-            break;
-        case '18':
-            $conversion = 'modp8192';
-            break;
-        case '19':
-            $conversion = 'ecp256';
-            break;
-        case '20':
-            $conversion = 'ecp384';
-            break;
-        case '21':
-            $conversion = 'ecp521';
-            break;
-        case '22':
-            $conversion = 'modp1024s160';
-            break;
-        case '23':
-            $conversion = 'modp2048s224';
-            break;
-        case '24':
-            $conversion = 'modp2048s256';
-            break;
-        case '28':
-            $conversion = 'ecp256bp';
-            break;
-        case '29':
-            $conversion = 'ecp384bp';
-            break;
-        case '30':
-            $conversion = 'ecp512bp';
-            break;
-        default:
-            break;
+    if (array_key_exists($index, $map)) {
+        return $map[$index];
+    } else {
+        return '';
     }
-
-    return $conversion;
 }
 
 /**
