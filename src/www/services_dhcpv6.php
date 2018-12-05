@@ -188,8 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (count($input_errors) == 0) {
             /* make sure the range lies within the current subnet */
-            $ifcfgip = get_interface_ipv6($if);
-            $ifcfgsn = get_interface_subnetv6($if);
+            list ($ifcfgip, $ifcfgsn) = explode('/', find_interface_networkv6(get_real_interface($if, 'inet6'), false));
             $subnet_start = gen_subnetv6($ifcfgip, $ifcfgsn);
             $subnet_end = gen_subnetv6_max($ifcfgip, $ifcfgsn);
 
@@ -329,8 +328,7 @@ legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
 
-$wifcfgip = get_interface_ipv6($if);
-$wifcfgsn = get_interface_subnetv6($if);
+list ($wifcfgip, $wifcfgsn) = explode('/', find_interface_networkv6(get_real_interface($if, 'inet6'), false));
 
 if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
     $prefix_array = array();
@@ -686,7 +684,7 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                             foreach($numberoptions as $item):?>
                               <tr>
                                 <td>
-                                  <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
+                                  <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs"><i class="fa fa-minus fa-fw"></i></div>
                                 </td>
                                 <td>
                                   <input name="numberoptions_number[]" type="text" value="<?=$item['number'];?>" />
@@ -733,7 +731,7 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                             <tfoot>
                               <tr>
                                 <td colspan="4">
-                                  <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><i class="fa fa-plus fa-fw"></i></div>
+                                  <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></div>
                                 </td>
                               </tr>
                             </tfoot>
@@ -760,7 +758,7 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
           <section class="col-xs-12">
             <div class="tab-content content-box col-xs-12">
                 <div class="table-responsive">
-                  <table class="tabcont table table-striped" style="width:100%; border:0; cellpadding:0; cellspacing:0">
+                  <table class="tabcont table table-striped" style="width:100%; border:0;">
                     <tr>
                       <th colspan="5"><?= gettext('DHCPv6 Static Mappings for this interface.') ?></th>
                     </tr>
