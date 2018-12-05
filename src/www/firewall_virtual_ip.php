@@ -53,19 +53,16 @@ function deleteVIPEntry($id) {
     }
 
     if (is_ipaddrv6($a_vip[$id]['subnet'])) {
-        $is_ipv6 = true;
+        $if_subnet = find_interface_networkv6(get_real_interface($a_vip[$id]['interface'], 'inet6'));
         $subnet = gen_subnetv6($a_vip[$id]['subnet'], $a_vip[$id]['subnet_bits']);
-        $if_subnet_bits = get_interface_subnetv6($a_vip[$id]['interface']);
-        $if_subnet = gen_subnetv6(get_interface_ipv6($a_vip[$id]['interface']), $if_subnet_bits);
+        $is_ipv6 = true;
     } else {
-        $is_ipv6 = false;
+        $if_subnet = find_interface_network(get_real_interface($a_vip[$id]['interface']));
         $subnet = gen_subnet($a_vip[$id]['subnet'], $a_vip[$id]['subnet_bits']);
-        $if_subnet_bits = get_interface_subnet($a_vip[$id]['interface']);
-        $if_subnet = gen_subnet(get_interface_ip($a_vip[$id]['interface']), $if_subnet_bits);
+        $is_ipv6 = false;
     }
 
     $subnet .= "/" . $a_vip[$id]['subnet_bits'];
-    $if_subnet .= "/" . $if_subnet_bits;
 
     if (isset($config['gateways']['gateway_item'])) {
         foreach($config['gateways']['gateway_item'] as $gateway) {
