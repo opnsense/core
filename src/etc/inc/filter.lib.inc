@@ -59,12 +59,12 @@ function filter_core_get_initialized_plugin_system()
     foreach ($cnfint as $key => &$value) {
         // to set "reply-to" we need to know the gateway for our interface, let's collect it here and pass it on to
         // setInterfaceMapping()
-        if (!empty($value['gateway']) && $value['gateway'] != 'none') {
+        if (is_ipaddrv4($value['ipaddr']) && !empty($value['gateway']) && $value['gateway'] != 'none') {
             $value['gateway'] = get_interface_gateway($key);
         } else {
             $value['gateway'] = null;
         }
-        if (!empty($value['gatewayv6']) && $value['gatewayv6'] != 'none') {
+        if (is_ipaddrv6($value['ipaddrv6']) && !empty($value['gatewayv6']) && $value['gatewayv6'] != 'none') {
             $value['gatewayv6'] = get_interface_gateway_v6($key);
         } else {
             $value['gatewayv6'] = null;
