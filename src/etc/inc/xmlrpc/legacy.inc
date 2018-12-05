@@ -106,7 +106,7 @@ function firmware_version_xmlrpc()
 {
     return array(
         'base' => array('version' => trim(shell_exec('opnsense-version -v base'))),
-        'firmware' => array('version' => trim(shell_exec('opnsense-version -v'))),
+        'firmware' => array('version' => trim(shell_exec('opnsense-version -v core'))),
         'kernel' => array('version' => trim(shell_exec('opnsense-version -v kernel'))),
     );
 }
