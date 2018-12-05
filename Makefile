@@ -266,7 +266,7 @@ package: plist-check package-check clean-work
 	@echo -n ">>> Generating metadata for ${CORE_NAME}-${CORE_VERSION}..."
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} metadata
 	@echo " done"
-	@echo -n ">>> Installing files for ${CORE_NAME}-${CORE_VERSION}..."
+	@echo -n ">>> Staging files for ${CORE_NAME}-${CORE_VERSION}..."
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
 	@echo " done"
 	@echo ">>> Packaging files for ${CORE_NAME}-${CORE_VERSION}:"
