@@ -120,7 +120,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             return ipcmp($a['ipaddrv6'], $b['ipaddrv6']);
         });
 
-
         write_config();
 
         if (isset($config['dhcpdv6'][$if]['enable'])) {
