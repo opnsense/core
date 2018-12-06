@@ -93,7 +93,8 @@ class ModelRelationField extends BaseField
                 if (!class_exists($className)) {
                     continue;
                 }
-                if (strcasecmp(get_class($this->getParentModel()), $className) === 0) {
+                if ($this->getParentModel() !== null &&
+                        strcasecmp(get_class($this->getParentModel()), $className) === 0) {
                     // model options from the same model, use this model in stead of creating something new
                     $modelObj = $this->getParentModel();
                     $this->internalOptionsFromThisModel = true;
