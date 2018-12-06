@@ -597,6 +597,8 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/BooleanFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/Field_Framework_TestCase.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/IntegerFieldTest.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/ModelRelationFieldTest.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/ModelRelationFieldTest/config.xml
 /usr/local/opnsense/mvc/tests/setup.php
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/allow.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/cp-background-process.py
