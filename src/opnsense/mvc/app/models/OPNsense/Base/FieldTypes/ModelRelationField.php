@@ -48,6 +48,11 @@ class ModelRelationField extends BaseField
     private $internalMultiSelect = false;
 
     /**
+     * @var bool field content should remain sort order
+     */
+    private $internalIsSorted = false;
+
+    /**
      * @var string default validation message string
      */
     protected $internalValidationMessage = "option not in list";
@@ -74,7 +79,7 @@ class ModelRelationField extends BaseField
 
     /**
      * load model option list
-     * @param $force force option load if we already seen this model before
+     * @param boolean $force force option load if we already seen this model before
      */
     private function loadModelOptions($force = false)
     {
@@ -173,11 +178,17 @@ class ModelRelationField extends BaseField
      */
     public function setMultiple($value)
     {
-        if (trim(strtoupper($value)) == "Y") {
-            $this->internalMultiSelect = true;
-        } else {
-            $this->internalMultiSelect = false;
-        }
+        $this->internalMultiSelect = trim(strtoupper($value)) == "Y";
+    }
+
+
+    /**
+     * select if sort order should be maintained
+     * @param $value boolean value Y/N
+     */
+    public function setSorted($value)
+    {
+        $this->internalIsSorted = trim(strtoupper($value)) == "Y";
     }
 
     /**
@@ -195,13 +206,23 @@ class ModelRelationField extends BaseField
             }
 
             $datanodes = explode(',', $this->internalValue);
-            foreach (self::$internalOptionList[$this->internalCacheKey] as $optKey => $optValue) {
-                if (in_array($optKey, $datanodes)) {
-                    $selected = 1;
-                } else {
-                    $selected = 0;
+            if ($this->internalIsSorted) {
+                $optKeys = $datanodes + array_keys(self::$internalOptionList[$this->internalCacheKey]);
+            } else {
+                $optKeys = array_keys(self::$internalOptionList[$this->internalCacheKey]);
+            }
+            foreach ($optKeys as $optKey) {
+                if (isset(self::$internalOptionList[$this->internalCacheKey][$optKey])) {
+                    if (in_array($optKey, $datanodes)) {
+                        $selected = 1;
+                    } else {
+                        $selected = 0;
+                    }
+                    $result[$optKey] = array(
+                        "value"=>self::$internalOptionList[$this->internalCacheKey][$optKey],
+                        "selected" => $selected
+                    );
                 }
-                $result[$optKey] = array("value"=>$optValue, "selected" => $selected);
             }
         }
 
