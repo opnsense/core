@@ -44,14 +44,6 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
     {
         FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ .'/ModelRelationFieldTest/';
         Config::getInstance()->forceReload();
-        $model = new \tests\OPNsense\Base\BaseModel\TestModel();
-        foreach ($model->simpleList->items->iterateItems() as $nodeid => $node) {
-            echo $nodeid . " " .$node->number ."\n";
-        }
-//        $item = $model->simpleList->items->Add();
-//        $item->number = "1";
-//        $model->serializeToConfig();
-//        Config::getInstance()->save();
     }
 
     /**
@@ -123,7 +115,6 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         $field->setValue("x4d0e2835-7a19-4a19-8c23-e12383827594,5ea2a35c-b02b-485a-912b-d077e639bf9f");
         $this->assertEquals($this->validate($field), ['CsvListValidator']);
     }
-
 
     /**
      * type is not a container
