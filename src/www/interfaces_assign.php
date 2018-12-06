@@ -329,8 +329,12 @@ $interfaces = list_interfaces();
 legacy_html_escape_form_data($interfaces);
 $unused_interfaces= array();
 $all_interfaces = legacy_config_get_interfaces();
-foreach ($interfaces as $portname => $portinfo) {
+$ifdetails = legacy_interfaces_details();
+foreach ($interfaces as $portname => &$portinfo) {
     $portused = false;
+    if (!empty($ifdetails[$portname]) && !empty($ifdetails[$portname]['status'])) {
+        $portinfo['status'] = $ifdetails[$portname]['status'];
+    }
     foreach ($all_interfaces as $ifname => $ifdata) {
         if ($ifdata['if'] == $portname) {
             $portused = true;
@@ -405,10 +409,11 @@ include("head.inc");
                           <strong><u><span onclick="location.href='/interfaces.php?if=<?=$ifname;?>'" style="cursor: pointer;"><?=$iface['descr'];?></span></u></strong>
                         </td>
                         <td>
-                          <select name="<?=$ifname;?>" id="<?=$ifname;?>">
+                          <select name="<?=$ifname;?>" id="<?=$ifname;?>"  class="selectpicker" data-size="10">
 <?php
                           foreach ($interfaces as $portname => $portinfo):?>
-                            <option  value="<?=$portname;?>"  <?= $portname == $iface['if'] ? " selected=\"selected\"" : "";?>>
+                            <option data-icon="fa fa-plug <?=$portinfo['status'] == 'no carrier' ? "text-danger": "text-success";?>"
+                                    value="<?=$portname;?>"  <?= $portname == $iface['if'] ? " selected=\"selected\"" : "";?>>
                               <?=$portinfo['descr'];?>
                             </option>
 <?php
@@ -431,10 +436,13 @@ include("head.inc");
                       <tr>
                         <td><?= gettext('New interface:') ?></td>
                         <td>
-                          <select name="if_add" id="if_add">
+                          <select name="if_add" id="if_add" class="selectpicker" data-size="10">
 <?php
                           foreach ($unused_interfaces as $portname => $portinfo): ?>
-                            <option  value="<?=$portname;?>"> <?=$portinfo['descr'];?></option>
+                            <option data-icon="fa fa-plug <?=$portinfo['status'] == 'no carrier' ? "text-danger": "text-success";?>"
+                                    value="<?=$portname;?>">
+                                    <?=$portinfo['descr'];?>
+                            </option>
 <?php
                           endforeach; ?>
                           </select>
