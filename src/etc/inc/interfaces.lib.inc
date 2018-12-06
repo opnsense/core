@@ -358,7 +358,7 @@ function configure_interface_hardware($ifs)
     if (!stristr($ifs, "_vlan") && is_array($intf_details)) {
         // get current settings
         $csum_set = in_array('rxcsum', $intf_details['options']) || in_array('txcsum', $intf_details['options']);
-        $csumv6_set = in_array('rxcsum6', $intf_details['options']) || in_array('txcsum6', $intf_details['options']);
+        $csumv6_set = in_array('rxcsum_ipv6', $intf_details['options']) || in_array('txcsum_ipv6', $intf_details['options']);
         $tso_set = in_array('tso4', $intf_details['options']) || in_array('tso6', $intf_details['options']);
         $lro_set = in_array('lro', $intf_details['options']);
 
