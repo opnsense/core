@@ -30,6 +30,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+require_once 'interfaces.inc';
+require_once 'interfaces.lib.inc';
+require_once 'util.inc';
+
 function return_dpinger_defaults()
 {
     return array(
