@@ -330,6 +330,19 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
+                    $dnsv4 = get_nameservers(get_real_interface($ifdescr));
+                    $dnsv6 = get_nameservers(get_real_interface($ifdescr, 'inet6'));
+                    $dnsall = array_unique(array_merge($dnsv4, $dnsv6));
+                    if (count($dnsall)): ?>
+                    <tr>
+                      <td><?= gettext("DNS servers") ?></td>
+                      <td>
+<?php
+                          echo implode('<br />', $dnsall); ?>
+                      </td>
+                    </tr>
+<?php
+                    endif;
                   endif;
                   if (!empty($ifinfo['media'])): ?>
                     <tr>
