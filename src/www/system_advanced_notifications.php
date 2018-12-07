@@ -83,7 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (!empty($pconfig['test_smtp']) && $pconfig['test_smtp'] == gettext("Test SMTP")) {
         // Send test message via smtp
         @unlink('/var/db/notices_lastmsg.txt');
-        notify_via_smtp(sprintf(gettext("This is a test message from %s. It is safe to ignore this message."), $g['product_name']), true);
     }
 }
 

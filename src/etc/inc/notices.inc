@@ -65,7 +65,6 @@ function file_notice($id, $notice, $category = 'General', $url = '', $priority =
 	fwrite($queueout, serialize($queue));
 	fclose($queueout);
 	log_error("New alert found: $notice");
-	notify_via_smtp($notice);
 	return $queuekey;
 }
 
