@@ -26,8 +26,11 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once 'config.inc';
-require_once 'gwlb.inc';
+require_once('config.inc');
+require_once('interfaces.inc');
+require_once('interfaces.lib.inc');
+require_once('util.inc');
+require_once('gwlb.inc');
 
 $gateways_status = return_gateways_status();
 $clean = true;
