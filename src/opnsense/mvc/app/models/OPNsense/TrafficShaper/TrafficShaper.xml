@@ -277,6 +277,7 @@
                     <Required>Y</Required>
                     <FieldSeparator>,</FieldSeparator>
                     <default>any</default>
+                    <asList>Y</asList>
                 </source>
                 <source_not type="BooleanField">
                     <default>0</default>
@@ -291,6 +292,7 @@
                     <Required>Y</Required>
                     <FieldSeparator>,</FieldSeparator>
                     <default>any</default>
+                    <asList>Y</asList>
                 </destination>
                 <destination_not type="BooleanField">
                     <default>0</default>
