@@ -247,14 +247,12 @@ EOF;
     $do_ip6 = isset($config['system']['ipv6allow']) && !isset($config['system']['prefer_ipv4']) ? 'yes' : 'no';
 
     if (isset($config['unbound']['regdhcp'])) {
-        // include dynamic leases
-        @touch('/var/unbound/dhcpleases.conf');
         $include_dhcpleases = 'include: /var/unbound/dhcpleases.conf';
+        @touch('/var/unbound/dhcpleases.conf');
     } else {
         $include_dhcpleases = '';
     }
 
-    // Set up forwarding if it configured
     $forward_conf = '';
     if (isset($config['unbound']['forwarding'])) {
         $dnsservers = array();
