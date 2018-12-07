@@ -26,13 +26,40 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  */
 
-const GATEWAY_ALERT_FILE = '/tmp/gateway.alert';
+require_once 'config.inc';
+require_once 'gwlb.inc';
 
-if (file_exists(GATEWAY_ALERT_FILE))
-{
-    echo file_get_contents(GATEWAY_ALERT_FILE);
-    @unlink(GATEWAY_ALERT_FILE);
-    exit(1);
-} else {
+$gateways_status = return_gateways_status();
+$clean = true;
+
+if (isset($config['gateways']['gateway_group'])) {
+    foreach ($config['gateways']['gateway_group'] as $group) {
+
+        $tiers_online = 0;
+        foreach ($group['item'] as $item) {
+            $gwname = explode("|", $item)[0];
+
+            if (!empty($gateways_status[$gwname])) {
+                $msg = get_gateway_error($gateways_status[$gwname]['status'], $gwname, $group['name']);
+                if (!empty($msg)) {
+                    echo $msg . PHP_EOL;
+                    $clean = false;
+                } else {
+                    $tiers_online++;
+                }
+            }
+        }
+        if ($tiers_online == 0) {
+            /* Oh dear, we have no members!*/
+            $msg = sprintf(gettext('Gateways status could not be determined, considering all as up/active. (Group: %s)'), $group['name']);
+            echo $msg . PHP_EOL;
+            $clean = false;
+        }
+    }
+}
+
+if ($clean) {
     exit(0);
+} else {
+    exit(1);
 }
