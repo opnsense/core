@@ -330,18 +330,6 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if ($ifdescr == 'wan' && file_exists('/etc/resolv.conf')): ?>
-                    <tr>
-                      <td><?= gettext("DNS servers") ?></td>
-                      <td>
-<?php
-                        foreach(get_dns_servers() as $dns):
-                          echo "{$dns}<br />";
-                        endforeach; ?>
-                      </td>
-                    </tr>
-<?php
-                    endif;
                   endif;
                   if (!empty($ifinfo['media'])): ?>
                     <tr>
