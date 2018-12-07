@@ -56,7 +56,8 @@ class Route extends BaseModel
                     $proto_net = strpos($route->network, ':') === false ? "inet" : "inet6";
                     // Gateway addresses are stored in the result list received from configd.
                     // Unfortunately we can't trust the config here, so we use the list results here.
-                    $gateway = $route->gateway->getNodeData()[(string)$route->gateway];
+                    $gateways = $route->gateway->getNodeData();
+                    $gateway = isset($gateways[(string)$route->gateway]) ? $gateways[(string)$route->gateway] : null;
                     $tmp = explode("-", $gateway['value']);
                     $gateway_ip = !empty($tmp) ? end($tmp) : "";
                     $gateway_proto = strpos($gateway_ip, ":") !== false ? "inet6" : "inet";
