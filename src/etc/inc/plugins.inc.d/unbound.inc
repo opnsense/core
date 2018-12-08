@@ -408,7 +408,7 @@ function unbound_configure_do($verbose = false, $interface = '')
 {
     global $config;
 
-    if (!unbound_interface($interface)) {
+    if (!unbound_interface($interface) && isvalidpid('/var/run/unbound.pid')) {
         return;
     }
 
