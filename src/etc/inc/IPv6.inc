@@ -24,18 +24,6 @@
 // {{{ constants
 
 /**
- * Error message if netmask bits was not found
- * @see isInNetmask
- */
-define("NET_IPV6_NO_NETMASK_MSG", "Netmask length not found");
-
-/**
- * Error code if netmask bits was not found
- * @see isInNetmask
- */
-define("NET_IPV6_NO_NETMASK", 10);
-
-/**
  * Address Type: Unassigned (RFC 1884, Section 2.3)
  * @see getAddressType()
  */
