@@ -53,7 +53,7 @@
     </td>
     <td>
         {% if type == "text" %}
-            <input type="text" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly ? 'readonly="readonly"' : '' }} >
+            <input type="text" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} >
         {% elseif type == "hidden" %}
             <input type="hidden" id="{{ id }}" class="{{style|default('')}}" >
         {% elseif type == "checkbox" %}
@@ -73,9 +73,9 @@
         {% elseif type == "dropdown" %}
             <select {% if size|default(false) %}size="{{size}}"{% endif %} id="{{ id }}" class="{{style|default('selectpicker')}}" data-width="{{width|default("334px")}}"></select>
         {% elseif type == "password" %}
-            <input type="password" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly ? 'readonly="readonly"' : '' }} >
+            <input type="password" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} >
         {% elseif type == "textbox" %}
-            <textarea class="{{style|default('')}}" rows="{{height|default("5")}}" id="{{ id }}" {{ readonly ? 'readonly="readonly"' : '' }}></textarea>
+            <textarea class="{{style|default('')}}" rows="{{height|default("5")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }}></textarea>
         {% elseif type == "info" %}
             <span  class="{style|default('')}}" id="{{ id }}"></span>
         {% endif %}
