@@ -345,7 +345,7 @@ include_once("head.inc");
                           endfor;?>
                           </select>
                           <div class="hidden" data-for="help_for_log_verbosity">
-                            <?= gettext("Select the log verbosity.") ?>
+                            <?= gettext("Select the log verbosity. Level 0 means no verbosity, only errors. Level 1 gives operational information. Level 2 gives detailed operational information. Level 3 gives query level information, output per query. Level 4 gives algorithm level information. Level 5 logs client identification for cache misses. Default is level 1. ") ?>
                           </div>
                         </td>
                       </tr>
