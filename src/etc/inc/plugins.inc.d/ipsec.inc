@@ -626,11 +626,11 @@ function ipsec_convert_to_modp($index): string
         30 => 'ecp512bp',
     ];
 
-    if (array_key_exists($index, $map)) {
-        return $map[$index];
-    } else {
+    if (!array_key_exists($index, $map)) {
         return '';
     }
+
+    return $map[$index];
 }
 
 /**
