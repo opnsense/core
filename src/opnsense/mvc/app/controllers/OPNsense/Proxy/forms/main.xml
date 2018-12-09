@@ -78,7 +78,13 @@
                 <id>proxy.general.forwardedForHandling</id>
                 <label>X-Forwarded-For header handling</label>
                 <type>dropdown</type>
-                <help><![CDATA[Select what to do with X-Forwarded-For header.]]></help>
+                <help><![CDATA[Select what to do with X-Forwarded-For header.<br/>
+                        If set to:<br/>
+                        "on", Squid will append your client's IP address in the HTTP requests it forwards. By default it looks like X-Forwarded-For: 192.1.2.3<br/>
+                        "off", it will appear as X-Forwarded-For: unknown<br/>
+                        "transparent", Squid will not alter the X-Forwarded-For header in any way.<br/>
+                        "delete", Squid will delete the entire X-Forwarded-For header. <br/>
+                        "truncate", Squid will remove all existing X-Forwarded-For entries, and place the client IP as the sole entry.]]></help>
                 <advanced>true</advanced>
             </field>
             <field>
