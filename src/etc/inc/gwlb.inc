@@ -699,20 +699,8 @@ function return_gateway_groups_array()
 
                 $gwup = false;
                 if (!empty($gateways_status[$gwname])) {
-                    $status = $gateways_status[$gwname];
-                    if (stristr($status['status'], 'down')) {
-                        $msg = sprintf(gettext('MONITOR: %s is down, removing from routing group %s'), $gwname, $group['name']);
-                    } elseif (stristr($status['status'], 'loss') && stristr($group['trigger'], 'loss')) {
-                        $msg = sprintf(gettext('MONITOR: %s has packet loss, removing from routing group %s'), $gwname, $group['name']);
-                    } elseif (stristr($status['status'], 'delay') && stristr($group['trigger'] , 'latency')) {
-                        $msg = sprintf(gettext('MONITOR: %s has high latency, removing from routing group %s'), $gwname, $group['name']);
-                    } else {
-                        $msg = null;
-                    }
-                    if (!empty($msg)) {
-                        log_error($msg);
-                        notify_via_smtp($msg);
-                    } else {
+                    $error = get_gateway_error($gateways_status[$gwname]['status'], $gwname, $group['name']);
+                    if ($error === null) {
                         $tiers_online++;
                         $gwup = true;
                     }
@@ -725,12 +713,6 @@ function return_gateway_groups_array()
                 }
 
                 $tiers[$tier][] = array("up" => $gwup, "gwname" => $gwname, "vip" => $vip);
-            }
-            if ($tiers_online == 0 && !file_exists('/var/run/booting')) {
-                /* Oh dear, we have no members!*/
-                $msg = sprintf(gettext('Gateways status could not be determined, considering all as up/active. (Group: %s)'), $group['name']);
-                log_error($msg);
-                notify_via_smtp($msg);
             }
 
             /* sort the tiers array by the tier key */
@@ -992,4 +974,23 @@ function running_dpinger_processes()
     }
 
     return $result;
+}
+
+/**
+ * @param string $status
+ * @param string $gwname
+ * @param array $group
+ * @return string|null A string detailing the error if there is one, null if there is no error.
+ */
+function get_gateway_error(string $status, string $gwname, array $group)
+{
+    if (stristr($status, 'down') !== false) {
+        return sprintf(gettext('MONITOR: %s is down, removing from routing group %s'), $gwname, $group['name']);
+    } elseif (stristr($status, 'loss') !== false && stristr($group['trigger'], 'loss') !== false) {
+        return sprintf(gettext('MONITOR: %s has packet loss, removing from routing group %s'), $gwname, $group['name']);
+    } elseif (stristr($status, 'delay') !== false && stristr($group['trigger'], 'latency') !== false) {
+        return sprintf(gettext('MONITOR: %s has high latency, removing from routing group %s'), $gwname, $group['name']);
+    } else {
+        return null;
+    }
 }
