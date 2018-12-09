@@ -2822,8 +2822,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
     foreach ($stflanbinarr as $bin) {
         $stflanarr[] = dechex(bindec($bin));
     }
-    $stflanpr = Net_IPv6::compress(implode(":", $stflanarr));
-    $stflanarr[7] = 1;
+    $stflan = Net_IPv6::compress(implode(":", $stflanarr));
 
     $stfiface = "{$wanif}_stf";
     if (does_interface_exist($stfiface)) {
@@ -2838,7 +2837,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
     }
     legacy_interface_mtu($stfiface, $mtu);
 
-    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 16', array($stfiface, $stflanpr));
+    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 16', array($stfiface, $stflan));
 
     file_put_contents("/tmp/{$stfiface}_routerv6", "{$stfbrgw}");
     file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$stfbrgw}");
