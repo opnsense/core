@@ -156,8 +156,13 @@ class ForwardRule extends Rule
                 $rule = $tmp;
                 // automatically generate nat rule when enablenatreflectionhelper is set
                 if (!$rule['disabled'] && empty($rule['nordr']) && !empty($rule['enablenatreflectionhelper'])) {
-                    $rule['rule_types'][] = "rdr_nat";
-                    $rule['staticnatport'] = !empty($rule['staticnatport']);
+                    if (!empty($this->interfaceMapping[$rule['interface']]) && (
+                        !empty($this->interfaceMapping[$rule['interface']]['ifconfig']['ipv4']) ||
+                        !empty($this->interfaceMapping[$rule['interface']]['ifconfig']['ipv6'])
+                    )) {
+                        $rule['rule_types'][] = "rdr_nat";
+                        $rule['staticnatport'] = !empty($rule['staticnatport']);
+                    }
                 }
                 $rule['interface'] = $interf;
                 yield $rule;
