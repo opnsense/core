@@ -599,7 +599,6 @@ function filter_generate_scrubing(&$FilterIflist)
     return $scrubrules;
 }
 
-
 function filter_generate_aliases()
 {
     $aliases = "\n# Lockout tables\n";
@@ -636,7 +635,6 @@ function filter_generate_aliases()
 
     return $aliases;
 }
-
 
 function filter_rules_legacy(&$FilterIflist)
 {
