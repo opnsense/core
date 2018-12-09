@@ -34,9 +34,8 @@ require_once("interfaces.inc");
 require_once("filter.inc");
 require_once("system.inc");
 
-function get_mac_address()
+function get_mac_address($ip)
 {
-    $ip = getenv('REMOTE_ADDR');
     $macs = array();
 
     exec(exec_safe('/usr/sbin/arp -an | grep %s | awk \'{ print $4 }\'', $ip), $macs);
@@ -49,7 +48,7 @@ function generate_new_duid($duid_type)
     $new_duid = '';
     switch ($duid_type) {
         case '1': //LLT
-            $mac = get_mac_address();
+            $mac = get_mac_address(getenv('REMOTE_ADDR'));
             $ts = time() - 946684800;
             $hts = dechex($ts);
             $timestamp = sprintf("%s",$hts);
