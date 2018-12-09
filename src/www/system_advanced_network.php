@@ -95,16 +95,12 @@ function generate_new_duid($duid_type)
             break;
     }
 
-    return $new_duid;
+    return strtoupper($new_duid);
 }
 
 function format_duid($duid)
 {
-    $values = explode(':', strtolower(str_replace('-', ':', $duid)));
-
-    if (count($values) == 14) {
-        array_unshift($values, '0e', '00');
-    }
+    $values = explode(':', strtoupper(str_replace('-', ':', $duid)));
 
     array_walk($values, function(&$value) {
         $value = str_pad($value, 2, '0', STR_PAD_LEFT);
@@ -164,12 +160,10 @@ function read_duid()
             $buffer = fread($fd, $filesize);
             fclose($fd);
 
-            $duid_length = hexdec(bin2hex($buffer[0])); // This is the length of the duid, NOT the file
-
-            while ($count < $duid_length) {
-            $duid .= bin2hex($buffer[$count+2]); // Offset by 2 bytes
+            while ($count < $filesize) {
+                $duid .= sprintf('%02X', ord($buffer[$count]));
                 $count++;
-                if ($count < $duid_length) {
+                if ($count < $filesize) {
                     $duid .= ':';
                 }
             }
