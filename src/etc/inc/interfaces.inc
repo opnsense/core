@@ -66,7 +66,6 @@ function convert_ipv6_to_128bit($ipv6)
         return false;
     }
 
-    $ip6arr = array();
     $ip6prefix = Net_IPv6::uncompress($ipv6);
     $ip6arr = explode(":", $ip6prefix);
     /* binary presentation of the prefix for all 128 bits. */
@@ -79,12 +78,11 @@ function convert_ipv6_to_128bit($ipv6)
 
 function convert_128bit_to_ipv6($ip6bin)
 {
-    if (strlen($ip6bin) <> 128) {
+    if (strlen($ip6bin) != 128) {
         return false;
     }
 
     $ip6arr = array();
-    $ip6binarr = array();
     $ip6binarr = str_split($ip6bin, 16);
     foreach ($ip6binarr as $binpart) {
         $ip6arr[] = dechex(bindec($binpart));
@@ -469,10 +467,10 @@ function interface_bridge_configure(&$bridge, $checkmember = 0)
         }
     }
 
-    if ($bridge['maxaddr'] <> "") {
+    if ($bridge['maxaddr'] != '') {
         mwexec("/sbin/ifconfig {$bridgeif} maxaddr " . escapeshellarg($bridge['maxaddr']));
     }
-    if ($bridge['timeout'] <> "") {
+    if ($bridge['timeout'] != '') {
         mwexec("/sbin/ifconfig {$bridgeif} timeout " . escapeshellarg($bridge['timeout']));
     }
     if (!empty($bridge['span'])) {
@@ -1754,7 +1752,7 @@ function interface_wireless_clone($realif, $wlcfg)
 
         log_error("Cloning new wireless interface {$realif}");
         exec("/sbin/ifconfig wlan create wlandev {$baseif} {$mode} bssid name {$realif} 2>&1", $out, $ret);
-        if ($ret <> 0) {
+        if ($ret != 0) {
             log_error("Failed to clone interface {$baseif} with error code {$ret}, output {$out[0]}");
             return false;
         }
@@ -1874,7 +1872,6 @@ function interface_wireless_configure($if, &$wl, &$wlcfg)
     /* set values for /path/program */
     $wpa_supplicant = '/usr/local/sbin/wpa_supplicant';
     $hostapd = '/usr/local/sbin/hostapd';
-    $killall = '/usr/bin/killall';
     $ifconfig = '/sbin/ifconfig';
     $sysctl = '/sbin/sysctl';
 
@@ -2814,7 +2811,6 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
 
     /* convert the 128 bits for the broker address back into a valid IPv6 address */
     $stfbrarr = array();
-    $stfbrbinarr = array();
     $stfbrbinarr = str_split($stfbrokerbin, 16);
     foreach ($stfbrbinarr as $bin) {
         $stfbrarr[] = dechex(bindec($bin));
@@ -2823,13 +2819,10 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
 
     /* convert the 128 bits for the broker address back into a valid IPv6 address */
     $stflanarr = array();
-    $stflanbinarr = array();
     $stflanbinarr = str_split($stflanbin, 16);
     foreach ($stflanbinarr as $bin) {
         $stflanarr[] = dechex(bindec($bin));
     }
-    $stflanpr = Net_IPv6::compress(implode(":", $stflanarr));
-    $stflanarr[7] = 1;
     $stflan = Net_IPv6::compress(implode(":", $stflanarr));
 
     $stfiface = "{$interface}_stf";
@@ -2845,7 +2838,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
     }
     legacy_interface_mtu($stfiface, $mtu);
 
-    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 16', array($stfiface, $stflanpr));
+    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 16', array($stfiface, $stflan));
 
     $stfiface = "{$interface}_stf"; /* XXX temporary */
     file_put_contents("/tmp/{$stfiface}_routerv6", "{$stfbrgw}");
@@ -4006,7 +3999,7 @@ function ip_in_interface_alias_subnet($interface, $ipalias)
         foreach ($config['virtualip']['vip'] as $vip) {
             switch ($vip['mode']) {
                 case "ipalias":
-                    if ($vip['interface'] <> $interface) {
+                    if ($vip['interface'] != $interface) {
                         break;
                     }
                     $subnet = is_ipaddrv6($ipalias) ? gen_subnetv6($vip['subnet'], $vip['subnet_bits']) : gen_subnet($vip['subnet'], $vip['subnet_bits']);
@@ -4284,7 +4277,7 @@ function get_failover_interface($interface, $family = 'all')
     $a_groups = return_gateway_groups_array();
     if (isset($a_groups[$interface])) {
         /* we found a gateway group, fetch the interface or vip */
-        if ($a_groups[$interface][0]['vip'] <> "") {
+        if ($a_groups[$interface][0]['vip'] != '') {
             return $a_groups[$interface][0]['vip'];
         } else {
             return $a_groups[$interface][0]['int'];
@@ -4335,7 +4328,6 @@ function get_interfaces_info()
         $ifinfo['outerrs'] = $ifinfotmp['output errors'];
         $ifinfo['collisions'] = $ifinfotmp['collisions'];
 
-        $ifconfiginfo = "";
         $link_type = $config['interfaces'][$ifdescr]['ipaddr'];
         switch ($link_type) {
             case 'dhcp':
@@ -4446,17 +4438,16 @@ function get_interfaces_info()
             }
         }
 
-        $bridge = "";
         $bridge = link_interface_to_bridge($ifdescr);
         if ($bridge) {
             $bridge_text = `/sbin/ifconfig {$bridge}`;
-            if (stristr($bridge_text, "blocking") <> false) {
-                $ifinfo['bridge'] = "<b><font color='red'>" . gettext("blocking") . "</font></b> - " . gettext("check for ethernet loops");
+            if (stristr($bridge_text, 'blocking') != false) {
+                $ifinfo['bridge'] = "<b><span class='text-danger'>" . gettext("blocking") . "</span></b> - " . gettext("check for ethernet loops");
                 $ifinfo['bridgeint'] = $bridge;
-            } elseif (stristr($bridge_text, "learning") <> false) {
+            } elseif (stristr($bridge_text, 'learning') != false) {
                 $ifinfo['bridge'] = gettext("learning");
                 $ifinfo['bridgeint'] = $bridge;
-            } elseif (stristr($bridge_text, "forwarding") <> false) {
+            } elseif (stristr($bridge_text, 'forwarding') != false) {
                 $ifinfo['bridge'] = gettext("forwarding");
                 $ifinfo['bridgeint'] = $bridge;
             }
