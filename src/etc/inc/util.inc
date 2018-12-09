@@ -178,7 +178,7 @@ function is_numericint($arg)
 function gen_subnet($ipaddr, $bits)
 {
     if (!is_ipaddr($ipaddr) || !is_numeric($bits)) {
-        return "";
+        return '';
     }
     return long2ip(ip2long($ipaddr) & gen_subnet_mask_long($bits));
 }
@@ -187,18 +187,19 @@ function gen_subnet($ipaddr, $bits)
 function gen_subnetv6($ipaddr, $bits, $validate = true)
 {
     if ($validate && (!is_ipaddrv6($ipaddr) || !is_numeric($bits))) {
-        return "";
+        return '';
     }
 
     $address = Net_IPv6::getNetmask($ipaddr, $bits);
     $address = Net_IPv6::compress($address);
+
     return $address;
 }
 
 /* return the highest (broadcast) address in the subnet given a host address and a subnet bit count */
 function gen_subnet_max($ipaddr, $bits) {
     if (!is_ipaddr($ipaddr) || !is_numeric($bits)) {
-        return "";
+        return '';
     }
 
     return long2ip32(ip2long($ipaddr) | ~gen_subnet_mask_long($bits));
@@ -231,36 +232,37 @@ function gen_subnetv6_max($ipaddr, $bits)
     return $result;
 }
 
-/* Returns the calculated bit length of the prefix delegation from the WAN interface */
-/* DHCP-PD is variable, calculate from the prefix-len on the WAN interface */
-/* 6rd is variable, calculate from 64 - (v6 prefixlen - (32 - v4 prefixlen)) */
-/* 6to4 is 16 bits, e.g. 65535 */
-function calculate_ipv6_delegation_length($if) {
+/* returns the calculated bit length of the prefix delegation from a WAN interface */
+function calculate_ipv6_delegation_length($if)
+{
     global $config;
 
-    if(!isset($config['interfaces'][$if]) || !is_array($config['interfaces'][$if])) {
+    $pdlen = 0;
+
+    if (!isset($config['interfaces'][$if]) || !is_array($config['interfaces'][$if])) {
         return false;
-    } elseif (!isset($config['interfaces'][$if]['ipaddrv6'])) {
-        return 0;
+    } else /* XXX break for removal */
+    if (!isset($config['interfaces'][$if]['ipaddrv6'])) {
+        return $pdlen;
     }
 
-    switch($config['interfaces'][$if]['ipaddrv6']) {
-        case "6to4":
+    switch ($config['interfaces'][$if]['ipaddrv6']) {
+        case '6to4':
             $pdlen = 16;
             break;
-        case "6rd":
+        case '6rd':
             $rd6cfg = $config['interfaces'][$if];
-            $rd6plen = explode("/", $rd6cfg['prefix-6rd']);
-            $pdlen = (64 - ($rd6plen[1] + (32 - $rd6cfg['prefix-6rd-v4plen'])));
+            $rd6plen = explode('/', $rd6cfg['prefix-6rd']);
+            $pdlen = 64 - ($rd6plen[1] + (32 - $rd6cfg['prefix-6rd-v4plen']));
             break;
-        case "dhcp6":
+        case 'dhcp6':
             $dhcp6cfg = $config['interfaces'][$if];
             $pdlen = $dhcp6cfg['dhcp6-ia-pd-len'];
             break;
         default:
-            $pdlen = 0;
             break;
     }
+
     return $pdlen;
 }
 
@@ -367,7 +369,7 @@ function ip_range_to_subnet_array($startip, $endip)
 
     // Loop here to reduce subnet size and retest as needed. We need to make sure
     //   that the target subnet is wholly contained between $startip and $endip.
-    for ($cidr; $cidr <= 32; $cidr++) {
+    for (; $cidr <= 32; $cidr++) {
         // Find the network and broadcast addresses for the subnet being tested.
         $targetsub_min = gen_subnet($startip, $cidr);
         $targetsub_max = gen_subnet_max($startip, $cidr);
@@ -472,7 +474,7 @@ function is_linklocal($ipaddr)
 function get_ll_scope($addr)
 {
     if (!is_linklocal($addr) || !strstr($addr, "%")) {
-        return "";
+        return '';
     }
     list ($ll, $scope) = explode("%", $addr);
     return $scope;
@@ -1105,11 +1107,11 @@ function get_sysctl($names)
 function get_single_sysctl($name)
 {
     if (empty($name)) {
-        return "";
+        return '';
     }
     $value = get_sysctl($name);
     if (empty($value) || !isset($value[$name])) {
-        return "";
+        return '';
     }
     return $value[$name];
 }
@@ -1133,7 +1135,7 @@ function set_sysctl($values)
     exec("/sbin/sysctl -i " . implode(" ", $value_list), $output, $success);
 
     /* Retry individually if failed (one or more read-only) */
-    if ($success <> 0 && count($value_list) > 1) {
+    if ($success != 0 && count($value_list) > 1) {
         foreach ($value_list as $value) {
             exec("/sbin/sysctl -i " . $value, $output);
         }
