@@ -262,7 +262,7 @@ function services_radvd_configure($verbose = false, $blacklist = array())
         } elseif (!isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['radnsserver'][0])) {
             $dnslist_tmp = $dhcpv6ifconf['radnsserver'];
         } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
-            $server = get_interface_ipv6($realif);
+            $server = find_interface_ipv6($realif);
             if (is_ipaddrv6($server)) {
                 $dnslist_tmp[] = $server;
             } else {
