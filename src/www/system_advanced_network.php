@@ -37,9 +37,11 @@ require_once("system.inc");
 function get_mac_address()
 {
     $ip = getenv('REMOTE_ADDR');
-    $mac = `/usr/sbin/arp -an | grep {$ip} | cut -d" " -f4`;
-    $mac = str_replace("\n","",$mac);
-    return $mac;
+    $macs = array();
+
+    exec(exec_safe('/usr/sbin/arp -an | grep %s | awk \'{ print $4 }\'', $ip), $macs);
+
+    return !empty($macs[0]) ? $macs[0] : '';
 }
 
 function generate_new_duid($duid_type)
