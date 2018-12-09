@@ -2858,9 +2858,7 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
 
     /* write DUID if override was set */
     if (!empty($config['system']['ipv6duid'])) {
-        $temp = explode(':', $config['system']['ipv6duid']);
-        array_unshift($temp, sprintf('%02x', count($temp)), '00');
-        $temp = implode('', $temp);
+        $temp = str_replace(':', '', $config['system']['ipv6duid']);
         $duid_binstring = pack('H*', $temp);
         $fd = fopen('/var/db/dhcp6c_duid', 'wb');
         if ($fd) {
