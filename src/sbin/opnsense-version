@@ -87,7 +87,7 @@ if [ ! -f ${VERSION} ]; then
 fi
 
 case "${TARGET}" in
-core)
+opnsense)
 	eval "$(grep -v '[{}]' ${VERSION} | sed 's/[^"]*"\([^"]*\)"[^"]*"\([^"]*\)".*/\1="\2"/')"
 
 	if [ -z "${OUTPUT}" ]; then
