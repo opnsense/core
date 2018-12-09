@@ -25,7 +25,7 @@
 
 VERSIONDIR="/usr/local/opnsense/version"
 OPENSSL="/usr/local/bin/openssl"
-TARGET="opnsense"
+TARGET="core"
 OUTPUT=
 
 while getopts AaefHNnsvw OPT; do
@@ -87,7 +87,7 @@ if [ ! -f ${VERSION} ]; then
 fi
 
 case "${TARGET}" in
-opnsense)
+core)
 	eval "$(grep -v '[{}]' ${VERSION} | sed 's/[^"]*"\([^"]*\)"[^"]*"\([^"]*\)".*/\1="\2"/')"
 
 	if [ -z "${OUTPUT}" ]; then

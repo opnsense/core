@@ -154,8 +154,8 @@ want-${WANT}:
 mount:
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
 	    echo -n "Enabling core.git live mount..."; \
-	    sed ${SED_REPLACE} ${.CURDIR}/src/opnsense/version/opnsense.in > \
-	        ${.CURDIR}/src/opnsense/version/opnsense; \
+	    sed ${SED_REPLACE} ${.CURDIR}/src/opnsense/version/core.in > \
+	        ${.CURDIR}/src/opnsense/version/core; \
 	    mount_unionfs ${.CURDIR}/src ${LOCALBASE}; \
 	    touch ${WRKDIR}/.mount_done; \
 	    echo "done"; \
