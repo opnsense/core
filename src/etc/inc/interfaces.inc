@@ -2858,13 +2858,19 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
 
     /* write DUID if override was set */
     if (!empty($config['system']['ipv6duid'])) {
-        $temp = str_replace(':', '', $config['system']['ipv6duid']);
-        $duid_binstring = pack('H*', $temp);
-        $fd = fopen('/var/db/dhcp6c_duid', 'wb');
-        if ($fd) {
-            fwrite($fd, $duid_binstring);
-            fclose($fd);
-        }
+        $values = explode(":", $config['system']['ipv6duid']);
+		$num_values = count($values);
+		$num_values = sprintf("%02x",$num_values);
+		array_unshift($values, $num_values, '00');
+		$duid_to_write = implode(':', $values);
+		log_error("write: {$duid_to_write}");
+		$temp = str_replace(':', '', $duid_to_write);    
+		$duid_binstring = pack('H*', $temp);  
+		$fd = fopen('/var/db/dhcp6c_duid', 'wb');
+		if ($fd) {
+			fwrite($fd, $duid_binstring);
+			fclose($fd);
+		}
     }
 
     if (!is_array($wancfg)) {
