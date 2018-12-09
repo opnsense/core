@@ -52,7 +52,7 @@ require_once('plugins.inc.d/unbound.inc');
 function generate_ipv6_from_mac($mac)
 {
     $elements = explode(":", $mac);
-    if (count($elements) <> 6) {
+    if (count($elements) != 6) {
         return false;
     }
 
@@ -580,12 +580,10 @@ EOPP;
     $iflist = get_configured_interface_with_descr();
 
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
-        $ifcfg = $config['interfaces'][$dhcpif];
-        $newzone = array();
-
         if (!isset($dhcpifconf['enable']) || !isset($iflist[$dhcpif])) {
             continue;
         }
+
         $ifcfgip = get_interface_ip($dhcpif);
         $ifcfgsn = get_interface_subnet($dhcpif);
         $subnet = gen_subnet($ifcfgip, $ifcfgsn);
@@ -610,6 +608,8 @@ EOPP;
         if (!empty($dhcpifconf['domainsearchlist'])) {
             $dnscfg .= "  option domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $dhcpifconf['domainsearchlist'])) . "\";\n";
         }
+
+        $newzone = array();
 
         if (isset($dhcpifconf['ddnsupdate'])) {
             $need_ddns_updates = true;
@@ -946,7 +946,7 @@ EOD;
                 }
 
                 if (isset($sm['ddnsupdate'])) {
-                    if (($sm['ddnsdomain'] <> "") && ($sm['ddnsdomain'] != $dhcpifconf['ddnsdomain'])) {
+                    if (($sm['ddnsdomain'] != '') && ($sm['ddnsdomain'] != $dhcpifconf['ddnsdomain'])) {
                         $smdnscfg .= "    ddns-domainname \"{$sm['ddnsdomain']}\";\n";
                     }
                     $smdnscfg .= "    ddns-update-style interim;\n";
@@ -1131,7 +1131,6 @@ function services_dhcpdv6_configure($verbose = false, $blacklist = array())
             continue;
         }
         if (!empty($config['interfaces'][$ifname]['track6-interface'])) {
-            $realif = get_real_interface($ifname, 'inet6');
             $ifcfgipv6 = get_interface_ipv6($ifname);
             if (!is_ipaddrv6($ifcfgipv6)) {
                 continue;
@@ -1184,9 +1183,6 @@ function services_dhcpdv6_configure($verbose = false, $blacklist = array())
 
                 $pd_prefix_from_array[2] = sprintf("%02s", $pd_prefix_from_array[2]);
                 $pd_prefix_to_array[2] = sprintf("%02s", $pd_prefix_to_array[2]);
-
-                $pd_prefix_from_array_out = array();
-                $pd_prefix_to_array_out = array();
 
                 for ($x = 0; $x < 4; $x++) {
                     /* make the prefx long format otherwise dhcpd complains */
@@ -1275,17 +1271,17 @@ EOD;
     $dhcpdv6ifs = array();
     $ddns_zones = array();
     $nsupdate = false;
-    $dhcpv6num = 0;
 
     foreach ($dhcpdv6cfg as $dhcpv6if => $dhcpv6ifconf) {
-        $newzone = array();
-
         if (!isset($dhcpv6ifconf['enable']) || !isset($iflist[$dhcpv6if])) {
             continue;
         }
+
         if (isset($blacklist[$dhcpv6if])) {
             continue;
         }
+
+        $realif = get_real_interface($dhcpv6if, 'inet6');
 
         $ifcfgipv6 = get_interface_ipv6($dhcpv6if);
         $ifcfgsnv6 = get_interface_subnetv6($dhcpv6if);
@@ -1299,6 +1295,8 @@ EOD;
         if (!empty($dhcpv6ifconf['domainsearchlist'])) {
             $dnscfgv6 .= "  option domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $dhcpv6ifconf['domainsearchlist'])) . "\";\n";
         }
+
+        $newzone = array();
 
         if (isset($dhcpv6ifconf['ddnsupdate'])) {
             if (!empty($dhcpv6ifconf['ddnsdomain'])) {
@@ -1539,7 +1537,6 @@ function services_dhcrelay_configure($verbose = false)
             array_shift($route_str);
             array_shift($route_str);
             array_shift($route_str);
-            $route_arr = array();
             foreach ($route_str as $routeline) {
                 $items = preg_split("/[ ]+/i", $routeline);
                 if (is_subnetv4($items[0])) {
@@ -1662,7 +1659,6 @@ function services_dhcrelay6_configure($verbose = false)
             array_shift($route_str);
             array_shift($route_str);
             array_shift($route_str);
-            $route_arr = array();
             foreach ($route_str as $routeline) {
                 $items = preg_split("/[ ]+/i", $routeline);
                 if (ip_in_subnet($srvip, $items[0])) {

@@ -1,37 +1,37 @@
 <?php
 
 /*
-    Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 function rrd_create($rrdcreatecmd)
 {
     $rrdcreateoutput = array();
     $rrdcreatereturn = 0;
     $_gb = exec("$rrdcreatecmd 2>&1", $rrdcreateoutput, $rrdcreatereturn);
-    if ($rrdcreatereturn <> 0) {
+    if ($rrdcreatereturn != 0) {
         $rrdcreateoutput = implode(" ", $rrdcreateoutput);
         log_error(sprintf('RRD create failed exited with %s, the error is: %s', $rrdcreatereturn, $rrdcreateoutput));
     }
@@ -49,7 +49,6 @@ function rrd_configure($verbose = false)
     }
 
     $rrddbpath = "/var/db/rrd/";
-    $rrdgraphpath = "/usr/local/www/rrd";
 
     $traffic = "-traffic.rrd";
     $packets = "-packets.rrd";
@@ -66,10 +65,8 @@ function rrd_configure($verbose = false)
     $rrdtool = "/usr/local/bin/rrdtool";
     $netstat = "/usr/bin/netstat";
     $awk = "/usr/bin/awk";
-    $tar = "/usr/bin/tar";
     $pfctl = "/sbin/pfctl";
     $sysctl = "/sbin/sysctl";
-    $php = "/usr/local/bin/php";
     $cpustats = "/usr/local/sbin/cpustats";
     $ifconfig = "/sbin/ifconfig";
     $ntpq = "/usr/local/sbin/ntpq";
@@ -91,7 +88,6 @@ function rrd_configure($verbose = false)
     $wirelessvalid = $rrdwirelessinterval * 2;
     $packetsvalid = $rrdpacketsinterval * 2;
     $statesvalid = $rrdstatesinterval*2;
-    $lbpoolvalid = $rrdlbpoolinterval * 2;
     $procvalid = $rrdlbpoolinterval * 2;
     $memvalid = $rrdmeminterval * 2;
     $mbufvalid = $rrdmbufinterval * 2;
@@ -138,7 +134,7 @@ function rrd_configure($verbose = false)
         /* process all real and pseudo interfaces */
         foreach ($ifdescrs as $ifname => $ifdescr) {
             $temp = get_real_interface($ifname);
-            if ($temp <> "") {
+            if ($temp != '') {
                 $realif = $temp;
             }
 
@@ -640,7 +636,6 @@ function rrd_export()
 
     $result = "\t<rrddata>\n";
     $rrd_files = glob("{$rrddbpath}/*.rrd");
-    $xml_files = array();
     foreach ($rrd_files as $rrd_file) {
         $basename = basename($rrd_file);
         $xml_file = preg_replace('/\.rrd$/', ".xml", $rrd_file);
