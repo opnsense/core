@@ -23,18 +23,12 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-VERSION="/usr/local/opnsense/version/opnsense"
+VERSIONDIR="/usr/local/opnsense/version"
 OPENSSL="/usr/local/bin/openssl"
+TARGET="opnsense"
 OUTPUT=
 
-if [ ! -f ${VERSION} ]; then
-	echo "Missing ${VERSION}" >&2
-	exit 1
-fi
-
-eval "$(grep -v '[{}]' ${VERSION} | sed 's/[^"]*"\([^"]*\)"[^"]*"\([^"]*\)".*/\1="\2"/')"
-
-while getopts AaefHNnvw OPT; do
+while getopts AaefHNnsvw OPT; do
 	case ${OPT} in
 	A)
 		OUTPUT="${OUTPUT} \${product_arch}"
@@ -57,6 +51,9 @@ while getopts AaefHNnvw OPT; do
 	n)
 		OUTPUT="${OUTPUT} \${product_id}"
 		;;
+	s)
+		OUTPUT="${OUTPUT} \${product_size}"
+		;;
 	v)
 		OUTPUT="${OUTPUT} \${product_version}"
 		;;
@@ -72,13 +69,54 @@ done
 
 shift $((${OPTIND} - 1))
 
-if [ -z "${OUTPUT}" ]; then
-	OUTPUT="\${product_name} \${product_version} \(\${product_arch}/\${product_flavour}\)"
+if [ -n "${1}" ]; then
+	TARGET=${1}
+	shift
 fi
 
-if [ -z "${OUTPUT%%*product_flavour*}" -a -f ${OPENSSL} ]; then
-	RESULT=$(${OPENSSL} version)
-	product_flavour=${RESULT%% *}
+if [ -n "${*}" ]; then
+	echo "Additional arguments are not supported" >&2
+	exit 1
 fi
+
+VERSION="${VERSIONDIR}/${TARGET}"
+
+if [ ! -f ${VERSION} ]; then
+	echo "Missing ${VERSION}" >&2
+	exit 1
+fi
+
+case "${TARGET}" in
+core)
+	eval "$(grep -v '[{}]' ${VERSION} | sed 's/[^"]*"\([^"]*\)"[^"]*"\([^"]*\)".*/\1="\2"/')"
+
+	if [ -z "${OUTPUT}" ]; then
+		OUTPUT="\${product_name} \${product_version} \(\${product_arch}/\${product_flavour}\)"
+	fi
+
+	if [ -z "${OUTPUT%%*product_flavour*}" -a -f ${OPENSSL} ]; then
+		RESULT=$(${OPENSSL} version)
+		product_flavour=${RESULT%% *}
+	fi
+	;;
+*)
+	if [ -z "${OUTPUT}" ]; then
+		OUTPUT="\${product_version}"
+	fi
+
+	if [ -z "${OUTPUT%%*product_version*}" -a -f ${VERSION} ]; then
+		RESULT=$(cat ${VERSION})
+		# XXX this is only required for base/kernel
+		# with old version number that has arch in it
+		product_version=${RESULT%-*}
+	fi
+	if [ -z "${OUTPUT%%*product_size*}" -a -f ${VERSION}.size ]; then
+		product_size=$(cat ${VERSION}.size)
+	fi
+	if [ -z "${OUTPUT%%*product_arch*}" -a -f ${VERSION}.arch ]; then
+		product_arch=$(cat ${VERSION}.arch)
+	fi
+	;;
+esac
 
 eval echo ${OUTPUT}
