@@ -11,8 +11,7 @@
                 <id>proxy.general.icpPort</id>
                 <label>ICP port</label>
                 <type>text</type>
-                <help>The port number where Squid sends and receives ICP queries to and from neighbor caches. 
-                    Leave blank to disable (default). The standard UDP port for ICP is 3130.</help>
+                <help>The port number where Squid sends and receives ICP queries to and from neighbor caches. Leave blank to disable (default). The standard UDP port for ICP is 3130.</help>
                 <advanced>true</advanced>
             </field>
             <field>
@@ -226,24 +225,13 @@
                 <id>proxy.forward.sslbump</id>
                 <label>Enable SSL inspection</label>
                 <type>checkbox</type>
-                <help><![CDATA[
-                  Enable SSL inspection mode,
-                  which allows to log HTTPS connections information, such as requested URL and/or
-                  make the proxy act as a man in the middle between the internet and your clients.
-                  Be aware of the security implications before enabling this option.
-                  If you plan to use transparent HTTPS mode, you need nat rules to reflect your traffic.
-                  <a href="/firewall_nat_edit.php?template=transparent_proxy&https=1">Add a new firewall rule </a>
-                  ]]></help>
+                <help><![CDATA[Enable SSL inspection mode, which allows to log HTTPS connections information, such as requested URL and/or make the proxy act as a man in the middle between the internet and your clients. Be aware of the security implications before enabling this option. If you plan to use transparent HTTPS mode, you need nat rules to reflect your traffic.<a href="/firewall_nat_edit.php?template=transparent_proxy&https=1">Add a new firewall rule </a>]]></help>
             </field>
             <field>
                 <id>proxy.forward.sslurlonly</id>
                 <label>Log SNI information only</label>
                 <type>checkbox</type>
-                <help><![CDATA[
-                  Do not decode and/or filter SSL content, only log requested domains and IP addresses.<br/>
-                  Some old servers may not provide SNI, so their addresses will not be indicated.<br/>Get more information about
-                  <a href="https://wikipedia.org/wiki/Server_Name_Indication" target="_blank">Server Name Indication</a>.
-                  ]]></help>
+                <help><![CDATA[Do not decode and/or filter SSL content, only log requested domains and IP addresses. Some old servers may not provide SNI, so their addresses will not be indicated.]]></help>
             </field>
             <field>
                 <id>proxy.forward.sslbumpport</id>
@@ -255,9 +243,7 @@
                 <id>proxy.forward.sslcertificate</id>
                 <label>CA to use</label>
                 <type>dropdown</type>
-                <help><![CDATA[
-                  Select a Certificate Authority to use. To create a CA, go to <a href="/system_camanager.php">CA Manager</a>.
-                  ]]></help>
+                <help><![CDATA[Select a Certificate Authority to use. To create a CA, go to <a href="/system_camanager.php">CA Manager</a>.]]></help>
             </field>
             <field>
                 <id>proxy.forward.sslnobumpsites</id>
@@ -265,11 +251,7 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <allownew>true</allownew>
-                <help><![CDATA[
-                  Create a list of sites which may not be inspected, for example bank sites.<br/>
-                  Prefix the domain with a . to accept all subdomains (e.g. .google.com).<br/>
-                  You can also paste a comma-separated list into this field (e.g. bank1.com,.bank2.com).
-                  ]]></help>
+                <help><![CDATA[Create a list of sites which may not be inspected, for example bank sites. Prefix the domain with a . to accept all subdomains (e.g. .google.com). You can also paste a comma-separated list into this field (e.g. bank1.com,.bank2.com).]]></help>
             </field>
             <field>
                 <id>proxy.forward.ssl_crtd_storage_max_size</id>
@@ -320,7 +302,7 @@
                 <label>Allowed Subnets</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type subnets you want to allow access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Type subnets you want to allow access to the proxy server, use a comma or press Enter for new item. TIP: You can also paste a comma separated list into this field.]]></help>
                 <hint>Type subnet addresses (ex. 192.168.2.0/24)</hint>
                 <allownew>true</allownew>
             </field>
@@ -329,7 +311,7 @@
                 <label>Unrestricted IP addresses</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type IP addresses you want to allow access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Type IP addresses you want to allow access to the proxy server, use a comma or press Enter for new item. TIP: You can also paste a comma separated list into this field.]]></help>
                 <hint>Type IP addresses (ex. 192.168.1.100)</hint>
                 <allownew>true</allownew>
             </field>
@@ -338,7 +320,7 @@
                 <label>Banned host IP addresses</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type IP addresses you want to deny access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Type IP addresses you want to deny access to the proxy server, use a comma or press Enter for new item. TIP: You can also paste a comma separated list into this field.]]></help>
                 <hint>Type IP addresses (ex. 192.168.1.100)</hint>
                 <allownew>true</allownew>
             </field>
@@ -347,16 +329,7 @@
                 <label>Whitelist</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Whitelist destination domains.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">mydomain.com</b> -> matches on <b>*.mydomain.com</b><br/>
-            <b class="text-primary">^https?:\/\/([a-zA-Z]+)\.mydomain\.</b> -> matches on <b>http(s)://textONLY.mydomain.*</b><br/>
-            <b class="text-primary">\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
-            <b class="text-primary">\[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Whitelist destination domains. You may use a regular expression, use a comma or press Enter for new item. Examples: "mydomain.com" -> matches on "*.mydomain.com"; "^https?:\/\/([a-zA-Z]+)\.mydomain\." -> matches on "http(s)://textONLY.mydomain.*"; "\.gif$" -> matches on "\*.gif" but not on "\*.gif\test"; "\[0-9]+\.gif$" -> matches on "\123.gif" but not on "\test.gif" TIP: You can also paste a comma separated list into this field.]]></help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
             </field>
@@ -365,16 +338,7 @@
                 <label>Blacklist</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Blacklist destination domains.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">mydomain.com</b> -> matches on <b>*.mydomain.com</b><br/>
-            <b class="text-primary">^https?:\/\/([a-zA-Z]+)\.mydomain\.</b> -> matches on <b>http(s)://textONLY.mydomain.*</b><br/>
-            <b class="text-primary">\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
-            <b class="text-primary">\[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Blacklist destination domains. You may use a regular expression, use a comma or press Enter for new item. Examples: "mydomain.com" -> matches on "*.mydomain.com"; "^https?:\/\/([a-zA-Z]+)\.mydomain\." -> matches on "http(s)://textONLY.mydomain.*"; "\.gif$" -> matches on "*.gif" but not on "\*.gif\test"; "\[0-9]+\.gif$" -> matches on "\123.gif" but not on "\test.gif". TIP: You can also paste a comma separated list into this field.]]></help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
             </field>
@@ -383,14 +347,7 @@
                 <label>Block browser/user-agents</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Block user-agents.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">^(.)+Macintosh(.)+Firefox/37\.0</b> -> matches on <b>Macintosh version of Firefox revision 37.0</b><br/>
-            <b class="text-primary">^Mozilla</b> -> matches on <b>all Mozilla based browsers</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Block user-agents. You may use a regular expression, use a comma or press Enter for new item. Examples: "^(.)+Macintosh(.)+Firefox/37\.0" -> matches on "Macintosh version of Firefox revision 37.0"; "^Mozilla" -> matches on "all Mozilla based browsers". TIP: You can also paste a comma separated list into this field.]]></help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -400,14 +357,7 @@
                 <label>Block specific MIME type reply</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Block specific MIME type reply.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">video/flv</b> -> matches on <b>Flash Video</b><br/>
-            <b class="text-primary">application/x-javascript</b> -> matches on <b>javascripts</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Block specific MIME type reply. You may use a regular expression, use a comma or press Enter for new item. Examples: "video/flv" -> matches on "Flash Video"; "application/x-javascript" -> matches on "javascripts". TIP: You can also paste a comma separated list into this field.]]></help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -417,8 +367,7 @@
                 <label>Allowed destination TCP port</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Allowed destination TCP ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh).<br/>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Allowed destination TCP ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh). TIP: You can also paste a comma separated list into this field.]]></help>
                 <hint>Type port number or range.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -428,8 +377,7 @@
                 <label>Allowed SSL ports</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Allowed destination SSL ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh).<br/>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Allowed destination SSL ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh). TIP: You can also paste a comma separated list into this field.]]></help>
                 <hint>Type port number or range.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -541,16 +489,7 @@
                 <label>Exclusion List</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Exclusion list destination domains.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">mydomain.com</b> -> matches on <b>*.mydomain.com</b><br/>
-            <b class="text-primary">^https?:\/\/([a-zA-Z]+)\.mydomain\.</b> -> matches on <b>http(s)://textONLY.mydomain.*</b><br/>
-            <b class="text-primary">\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
-            <b class="text-primary">\[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Exclusion list destination domains.You may use a regular expression, use a comma or press Enter for new item. Examples: "mydomain.com" -> matches on "*.mydomain.com"; "https://([a-zA-Z]+)\.mydomain\." -> matches on "http(s)://textONLY.mydomain.*"; "\.gif$" -> matches on "\*.gif" but not on "\*.gif\test"; "\[0-9]+\.gif$" -> matches on "\123.gif" but not on "\test.gif". TIP: You can also paste a comma separated list into this field.]]></help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
             </field>
