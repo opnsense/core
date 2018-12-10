@@ -72,7 +72,6 @@
             </General>
             <Logging url="/diag_logs_settings.php"/>
             <Miscellaneous url="/system_advanced_misc.php"/>
-            <Notifications url="/system_advanced_notifications.php"/>
             <Tunables url="/system_advanced_sysctl.php">
                 <Edit url="/system_advanced_sysctl.php*" visibility="hidden"/>
             </Tunables>

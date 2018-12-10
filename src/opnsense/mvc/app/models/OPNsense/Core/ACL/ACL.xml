@@ -615,12 +615,6 @@
             <pattern>system_advanced_network.php*</pattern>
         </patterns>
     </page-system-advanced-network>
-    <page-system-advanced-notifications>
-        <name>System: Advanced: Notifications</name>
-        <patterns>
-            <pattern>system_advanced_notifications.php*</pattern>
-        </patterns>
-    </page-system-advanced-notifications>
     <page-system-advanced-sysctl>
         <name>System: Advanced: Tunables</name>
         <patterns>
