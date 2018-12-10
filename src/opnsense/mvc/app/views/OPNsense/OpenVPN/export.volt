@@ -65,6 +65,7 @@
                         $("#openvpn_export\\.template").append(this_opt);
                     });
                     $("#openvpn_export\\.servers").change();
+                    $("#openvpn_export\\.template").change();
                     $("#openvpn_export\\.template").selectpicker('refresh');
                 }
             });
