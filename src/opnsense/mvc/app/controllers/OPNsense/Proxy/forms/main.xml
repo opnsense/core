@@ -11,7 +11,8 @@
                 <id>proxy.general.icpPort</id>
                 <label>ICP port</label>
                 <type>text</type>
-                <help>The port number where Squid sends and receives ICP queries to and from neighbor caches. Leave blank to disable (default). The standard UDP port for ICP is 3130.</help>
+                <help>The port number where Squid sends and receives ICP queries to and from neighbor caches. 
+                    Leave blank to disable (default). The standard UDP port for ICP is 3130.</help>
                 <advanced>true</advanced>
             </field>
             <field>
@@ -41,7 +42,7 @@
                 <label>Ignore hosts in access.log</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type subnets/addresses you want to ignore for the access.log <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Type subnets/addresses you want to ignore for the access.log. TIP: You can also paste a comma separated list into this field.]]></help>
                 <hint>Type subnet addresses (ex. 192.168.2.0/24)</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -51,7 +52,7 @@
                 <label>Use alternate DNS-servers</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type IPs of alternative DNS servers you like to use. <div class="text-info"><b>TIP: </b>You can also paste a comma seperated list into this field.</div>]]></help>
+                <help><![CDATA[Type IPs of alternative DNS servers you like to use. TIP: You can also paste a comma seperated list into this field.]]></help>
                 <hint>Type IP addresses, followed by Enter or comma.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -60,11 +61,7 @@
                 <id>proxy.general.dnsV4First</id>
                 <label>Enable DNS v4 first</label>
                 <type>checkbox</type>
-                <help><![CDATA[This option reverses the order of preference to make Squid contact dual-stack websites over IPv4 first.
-            Squid will still perform both IPv6 and IPv4 DNS lookups before connecting.
-            <div class="alert alert-warning"><b class="text-danger">Warning:</b> This option will restrict the situations under which IPv6
-                connectivity is used (and tested). Hiding network problems
-                which would otherwise be detected and warned about.</div>]]></help>
+                <help><![CDATA[This option reverses the order of preference to make Squid contact dual-stack websites over IPv4 first. Squid will still perform both IPv6 and IPv4 DNS lookups before connecting. Warning: This option will restrict the situations under which IPv6 connectivity is used (and tested). Hiding network problems which would otherwise be detected and warned about.]]></help>
                 <advanced>true</advanced>
             </field>
             <field>
@@ -78,13 +75,7 @@
                 <id>proxy.general.forwardedForHandling</id>
                 <label>X-Forwarded-For header handling</label>
                 <type>dropdown</type>
-                <help><![CDATA[Select what to do with X-Forwarded-For header.<br/>
-                        If set to:<br/>
-                        "on", Squid will append your client's IP address in the HTTP requests it forwards. By default it looks like X-Forwarded-For: 192.1.2.3<br/>
-                        "off", it will appear as X-Forwarded-For: unknown<br/>
-                        "transparent", Squid will not alter the X-Forwarded-For header in any way.<br/>
-                        "delete", Squid will delete the entire X-Forwarded-For header. <br/>
-                        "truncate", Squid will remove all existing X-Forwarded-For entries, and place the client IP as the sole entry.]]></help>
+                <help><![CDATA[Select what to do with X-Forwarded-For header. If set to: "on", Squid will append your client's IP address in the HTTP requests it forwards. By default it looks like X-Forwarded-For: 192.1.2.3; If set to: "off", it will appear as X-Forwarded-For: unknown; "transparent", Squid will not alter the X-Forwarded-For header in any way; If set to: "delete", Squid will delete the entire X-Forwarded-For header; If set to: "truncate", Squid will remove all existing X-Forwarded-For entries, and place the client IP as the sole entry.]]></help>
                 <advanced>true</advanced>
             </field>
             <field>
@@ -112,9 +103,7 @@
                 <id>proxy.general.uriWhitespaceHandling</id>
                 <label>Whitespace handling of URI</label>
                 <type>dropdown</type>
-                <help><![CDATA[Select what to do with URI that contain whitespaces.<br/>
-            <div class="text-info"><b>NOTE:</b> the current Squid implementation of encode and chop violates
-                RFC2616 by not using a 301 redirect after altering the URL.</div>]]></help>
+                <help><![CDATA[Select what to do with URI that contain whitespaces. NOTE: the current Squid implementation of encode and chop violates RFC2616 by not using a 301 redirect after altering the URL.]]></help>
                 <advanced>true</advanced>
             </field>
         </subtab>
@@ -231,12 +220,7 @@
                 <id>proxy.forward.transparentMode</id>
                 <label>Enable Transparent HTTP proxy</label>
                 <type>checkbox</type>
-                <help><![CDATA[
-                  Enable transparent proxy mode. You will need a firewall rule to forward traffic from the firewall to the proxy server.
-                  You may leave the proxy interfaces empty, but remember to set a valid ACL in that case.
-                  <br/>
-                  <a href="/firewall_nat_edit.php?template=transparent_proxy"> Add a new firewall rule </a>
-                  ]]></help>
+                <help><![CDATA[Enable transparent proxy mode. You will need a firewall rule to forward traffic from the firewall to the proxy server. You may leave the proxy interfaces empty, but remember to set a valid ACL in that case. <a href="/firewall_nat_edit.php?template=transparent_proxy"> Add a new firewall rule </a>]]></help>
             </field>
             <field>
                 <id>proxy.forward.sslbump</id>
@@ -245,10 +229,9 @@
                 <help><![CDATA[
                   Enable SSL inspection mode,
                   which allows to log HTTPS connections information, such as requested URL and/or
-                  make the proxy act as a man in the middle between the internet and your clients.<br/>
+                  make the proxy act as a man in the middle between the internet and your clients.
                   Be aware of the security implications before enabling this option.
-                  <br/><br/>
-                  If you plan to use transparent HTTPS mode, you need nat rules to reflect your traffic.<br/>
+                  If you plan to use transparent HTTPS mode, you need nat rules to reflect your traffic.
                   <a href="/firewall_nat_edit.php?template=transparent_proxy&https=1">Add a new firewall rule </a>
                   ]]></help>
             </field>
@@ -589,8 +572,7 @@
                 <id>proxy.forward.authentication.credentialsttl</id>
                 <label>Authentication TTL (hours)</label>
                 <type>text</type>
-                <help><![CDATA[This specifies for how long (in hours) the proxy server assumes an externally validated username and password combination is valid (Time To Live).<br/>
-            When the TTL expires, the user will be prompted for credentials again.]]></help>
+                <help><![CDATA[This specifies for how long (in hours) the proxy server assumes an externally validated username and password combination is valid (Time To Live). When the TTL expires, the user will be prompted for credentials again.]]></help>
             </field>
             <field>
                 <id>proxy.forward.authentication.children</id>
