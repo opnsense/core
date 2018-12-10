@@ -699,7 +699,7 @@ function return_gateway_groups_array()
 
                 $gwup = false;
                 if (!empty($gateways_status[$gwname])) {
-                    $error = get_gateway_error($gateways_status[$gwname]['status'], $gwname, $group['name']);
+                    $error = get_gateway_error($gateways_status[$gwname]['status'], $gwname, $group);
                     if ($error === null) {
                         $tiers_online++;
                         $gwup = true;
