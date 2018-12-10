@@ -63,7 +63,16 @@ function print_dump($logarr)
     }
 }
 
-function dump_clog($logfile, $tail, $grepfor = '')
+function limit_log_line_length(string $line, int $lineCharLimit): string
+{
+    if (strlen($line) <= $lineCharLimit) {
+        return $line;
+    } else {
+        return substr($line, 0, $lineCharLimit - 1) . '…';
+    }
+}
+
+function dump_clog($logfile, $tail, $grepfor = '', int $lineCharLimit = 0)
 {
     global $config;
 
@@ -89,10 +98,16 @@ function dump_clog($logfile, $tail, $grepfor = '')
         $logarr = sprintf(gettext('File %s yielded no results.'), $logfile);
     }
 
+    if ($lineCharLimit != 0) {
+        $logarr = array_map(function($value) use ($lineCharLimit) {
+            return limit_log_line_length($value, $lineCharLimit);
+        }, $logarr);
+    }
+
     print_dump($logarr);
 }
 
-function dump_log($logfile, $tail, $grepfor = '')
+function dump_log($logfile, $tail, $grepfor = '', int $lineCharLimit = 0)
 {
     global $config;
 
@@ -116,6 +131,12 @@ function dump_log($logfile, $tail, $grepfor = '')
 
     if (is_array($logarr) && !count($logarr)) {
         $logarr = sprintf(gettext('File %s yielded no results.'), $logfile);
+    }
+
+    if ($lineCharLimit != 0) {
+        $logarr = array_map(function($value) use ($lineCharLimit) {
+            return limit_log_line_length($value, $lineCharLimit);
+        }, $logarr);
     }
 
     print_dump($logarr);
