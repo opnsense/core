@@ -70,7 +70,7 @@ require_once('diag_logs_common.inc');
 
 <div id="system_log-widgets" class="content-box" style="overflow:scroll;">
   <table class="table table-striped">
-    <?php dump_clog($system_logfile, $syslogEntriesToFetch); ?>
+    <?php dump_clog($system_logfile, $syslogEntriesToFetch, '', 250); ?>
   </table>
 </div>
 

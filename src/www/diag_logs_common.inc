@@ -33,7 +33,7 @@ if (!isset($logsplit)) {
     $logsplit = 3;
 }
 
-function print_dump($logarr)
+function print_dump($logarr, $lineCharLimit)
 {
     global $config, $logsplit;
 
@@ -45,6 +45,10 @@ function print_dump($logarr)
     }
 
     foreach ($logarr as $logent) {
+        if ($lineCharLimit != 0 && strlen($logent) > $lineCharLimit) {
+            $logent = substr($logent, 0, $lineCharLimit - 1) . '…';
+        }
+
         $logent = preg_split('/\s+/', $logent);
         if (count($logent) < $logsplit + 1) {
             continue;
@@ -63,7 +67,8 @@ function print_dump($logarr)
     }
 }
 
-function dump_clog($logfile, $tail, $grepfor = '')
+
+function dump_clog($logfile, $tail, $grepfor = '', int $lineCharLimit = 0)
 {
     global $config;
 
@@ -89,10 +94,10 @@ function dump_clog($logfile, $tail, $grepfor = '')
         $logarr = sprintf(gettext('File %s yielded no results.'), $logfile);
     }
 
-    print_dump($logarr);
+    print_dump($logarr, $lineCharLimit);
 }
 
-function dump_log($logfile, $tail, $grepfor = '')
+function dump_log($logfile, $tail, $grepfor = '', int $lineCharLimit = 0)
 {
     global $config;
 
@@ -118,5 +123,5 @@ function dump_log($logfile, $tail, $grepfor = '')
         $logarr = sprintf(gettext('File %s yielded no results.'), $logfile);
     }
 
-    print_dump($logarr);
+    print_dump($logarr, $lineCharLimit);
 }
