@@ -80,7 +80,9 @@ class Alias extends BaseModel
         foreach ($this->getAliasSource() as $aliasref) {
             $cfgsection = $cfgObj;
             foreach ($aliasref[0] as $cfgName) {
-                $cfgsection = $cfgsection->$cfgName;
+                if ($cfgsection != null) {
+                    $cfgsection = $cfgsection->$cfgName;
+                }
             }
             if ($cfgsection != null) {
                 $nodeidx = 0;
