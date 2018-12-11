@@ -91,7 +91,7 @@ function generate_new_duid($duid_type)
             }
             break;
         default:
-            $new_duid = 'XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX';
+            $new_duid = 'XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX';
             break;
     }
 
@@ -152,23 +152,24 @@ function is_duid($duid)
 /* read duid from disk or return blank DUID string */
 function read_duid()
 {
-    $duid = '';
-    $count = 0;
+    $parts = array();
+    $skip = 2;
+
     if (file_exists('/var/db/dhcp6c_duid')) {
-        $filesize = filesize('/var/db/dhcp6c_duid');
-        if ($fd = fopen('/var/db/dhcp6c_duid', 'r')) {
-            $buffer = fread($fd, $filesize);
+        $size = filesize('/var/db/dhcp6c_duid');
+        if ($size > $skip && ($fd = fopen('/var/db/dhcp6c_duid', 'r'))) {
+            $ret = unpack('Slen/H*buf', fread($fd, $size));
             fclose($fd);
 
-            while ($count < $filesize) {
-                $duid .= sprintf('%02X', ord($buffer[$count]));
-                $count++;
-                if ($count < $filesize) {
-                    $duid .= ':';
+            if (isset($ret['len']) && isset($ret['buf'])) {
+                if ($ret['len'] + $skip == $size && strlen($ret['buf']) == $ret['len'] * 2) {
+                    $parts = str_split($ret['buf'], 2);
                 }
             }
         }
     }
+
+    $duid = strtoupper(implode(':', $parts));
 
     if (!is_duid($duid)) {
         $duid = 'XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX';
