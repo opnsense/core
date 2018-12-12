@@ -90,14 +90,47 @@ class AliasUtilController extends ApiControllerBase
      * list alias table
      * @param string $alias name to list
      * @return array alias contents
+     * @throws \Exception
      */
     public function listAction($alias)
     {
         $this->sessionClose();
+
+        $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
+        $currentPage = intval($this->request->getPost('current', 'int', 1));
+        $offset = ($currentPage - 1) * $itemsPerPage;
+
         $backend = new Backend();
         $entries = json_decode($backend->configdpRun("filter list table", array($alias, "json")));
-        sort($entries);
-        return $entries;
+
+        if ($this->request->hasPost('searchPhrase') && $this->request->getPost('searchPhrase') !== '') {
+            $searchPhrase = $this->request->getPost('searchPhrase');
+            $entries = array_filter($entries, function($value) use ($searchPhrase) {
+                return strpos($value, $searchPhrase) !== false;
+            });
+        }
+
+        if (
+            $this->request->hasPost('sort') &&
+            is_array($this->request->getPost('sort')) &&
+            array_key_exists('ip', $this->request->getPost('sort')) &&
+            $this->request->getPost('sort')['ip'] === 'desc'
+        ) {
+            rsort($entries);
+        } else {
+            sort($entries);
+        }
+
+        $formatted = array_map(function($value) {
+            return ['ip' => $value];
+        }, array_slice($entries, $offset, $itemsPerPage));
+
+        return [
+            'total' => count($entries),
+            'rowCount' => $itemsPerPage,
+            'current' => $currentPage,
+            'rows' => $formatted,
+        ];
     }
 
     /**
