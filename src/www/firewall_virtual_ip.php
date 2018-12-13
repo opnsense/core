@@ -265,7 +265,7 @@ $main_buttons = array(
                 <tbody>
 <?php
                   $interfaces = legacy_config_get_interfaces(array('virtual' => false));
-                  $interfaces['lo0'] = array('descr' => 'Localhost');
+                  $interfaces['lo0'] = array('descr' => 'Loopback');
                   $i = 0;
                   foreach ($a_vip as $vipent):
                     if(!empty($vipent['subnet']) || !empty($vipent['range']) || !empty($vipent['subnet_bits']) || (isset($vipent['range']['from']) && !empty($vipent['range']['from']))): ?>
