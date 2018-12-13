@@ -609,7 +609,7 @@ include("head.inc");
                       </tr>
                     </table>
                     <div class="hidden" data-for="help_for_destination">
-                      <?=gettext("Enter the source network for the outbound NAT mapping.");?>
+                      <?=gettext("Enter the destination network for the outbound NAT mapping.");?>
                     </div>
                   </td>
                 </tr>
