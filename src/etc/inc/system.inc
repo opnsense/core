@@ -288,38 +288,30 @@ function get_searchdomains()
     return array_unique($master_list);
 }
 
-function get_dns_servers()
-{
-    $dns_servers = array();
-
-    $dns_s = file('/etc/resolv.conf', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
-    foreach($dns_s as $dns) {
-        $matches = '';
-        if (preg_match('/nameserver ([^ ]+)/', $dns, $matches)) {
-            $dns_servers[] = $matches[1];
-        }
-    }
-
-    return array_unique($dns_servers);
-}
-
-function get_nameservers()
+function get_nameservers($interface = null)
 {
     $master_list = array();
 
     $dns_lists = glob('/var/etc/nameserver_*');
 
-    if (is_array($dns_lists)) {
-        foreach ($dns_lists as $fdns) {
-            $contents = file($fdns, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-            if (!is_array($contents)) {
-                continue;
-            }
-            foreach ($contents as $dns) {
-                if (!empty($dns) && is_ipaddr($dns)) {
-                    $master_list[] = $dns;
-                }
+    if (!empty($interface)) {
+        /* only acquire servers provided for this interface */
+        $realif = get_real_interface($interface);
+        $realifv6 = get_real_interface($interface, 'inet6');
+        $dns_lists = array(
+            "/var/etc/nameserver_{$realif}",
+            "/var/etc/nameserver_v6{$realifv6}",
+        );
+    }
+
+    foreach ($dns_lists as $fdns) {
+        $contents = @file($fdns, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if (!is_array($contents)) {
+            continue;
+        }
+        foreach ($contents as $dns) {
+            if (!empty($dns) && is_ipaddr($dns)) {
+                $master_list[] = $dns;
             }
         }
     }

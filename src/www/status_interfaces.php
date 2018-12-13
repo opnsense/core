@@ -330,14 +330,13 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if ($ifdescr == 'wan' && file_exists('/etc/resolv.conf')): ?>
+                    $dnsall = get_nameservers($ifdescr);
+                    if (count($dnsall)): ?>
                     <tr>
                       <td><?= gettext("DNS servers") ?></td>
                       <td>
 <?php
-                        foreach(get_dns_servers() as $dns):
-                          echo "{$dns}<br />";
-                        endforeach; ?>
+                          echo implode('<br />', $dnsall); ?>
                       </td>
                     </tr>
 <?php
