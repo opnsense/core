@@ -291,23 +291,21 @@ function get_searchdomains()
 function get_nameservers($interface = null)
 {
     $master_list = array();
-    $dns_listsv4 = array();
-    $dns_listsv6 = array();
-    $dns_listany = array();
+
+    $dns_lists = glob('/var/etc/nameserver_*');
 
     if (!empty($interface)) {
+        /* only acquire servers provided for this interface */
         $realif = get_real_interface($interface);
-        $dns_listsv4 = glob("/var/etc/nameserver_{$realif}");
         $realifv6 = get_real_interface($interface, 'inet6');
-        $dns_listsv6 = glob("/var/etc/nameserver_v6{$realifv6}");
-    } else {
-        $dns_listany = glob('/var/etc/nameserver_*');
+        $dns_lists = array(
+            "/var/etc/nameserver_{$realif}",
+            "/var/etc/nameserver_v6{$realifv6}",
+        );
     }
 
-    $dns_lists = array_unique(array_merge($dns_listany, $dns_listsv4, $dns_listsv6));
-
     foreach ($dns_lists as $fdns) {
-        $contents = file($fdns, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $contents = @file($fdns, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if (!is_array($contents)) {
             continue;
         }
