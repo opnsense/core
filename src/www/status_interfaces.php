@@ -330,9 +330,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    $dnsv4 = get_nameservers(get_real_interface($ifdescr));
-                    $dnsv6 = get_nameservers(get_real_interface($ifdescr, 'inet6'));
-                    $dnsall = array_unique(array_merge($dnsv4, $dnsv6));
+                    $dnsall = get_nameservers($ifdescr);
                     if (count($dnsall)): ?>
                     <tr>
                       <td><?= gettext("DNS servers") ?></td>

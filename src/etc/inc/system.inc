@@ -288,15 +288,23 @@ function get_searchdomains()
     return array_unique($master_list);
 }
 
-function get_nameservers($realif = '')
+function get_nameservers($interface = null)
 {
     $master_list = array();
+    $dns_listsv4 = array();
+    $dns_listsv6 = array();
+    $dns_listany = array();
 
-    $dns_listsv4 = glob("/var/etc/nameserver_{$realif}*");
-    /* XXX not a great design, please switch */
-    $dns_listsv6 = glob("/var/etc/nameserver_v6{$realif}*");
+    if (!empty($interface)) {
+        $realif = get_real_interface($interface);
+        $dns_listsv4 = glob("/var/etc/nameserver_{$realif}*");
+        $realifv6 = get_real_interface($interface, 'inet6');
+        $dns_listsv6 = glob("/var/etc/nameserver_v6{$realifv6}*");
+    } else {
+        $dns_listany = glob('/var/etc/nameserver_*');
+    }
 
-    $dns_lists = array_unique(array_merge($dns_listsv4, $dns_listsv6));
+    $dns_lists = array_unique(array_merge($dns_listany, $dns_listsv4, $dns_listsv6));
 
     foreach ($dns_lists as $fdns) {
         $contents = file($fdns, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
