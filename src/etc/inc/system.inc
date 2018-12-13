@@ -297,9 +297,9 @@ function get_nameservers($interface = null)
 
     if (!empty($interface)) {
         $realif = get_real_interface($interface);
-        $dns_listsv4 = glob("/var/etc/nameserver_{$realif}*");
+        $dns_listsv4 = glob("/var/etc/nameserver_{$realif}");
         $realifv6 = get_real_interface($interface, 'inet6');
-        $dns_listsv6 = glob("/var/etc/nameserver_v6{$realifv6}*");
+        $dns_listsv6 = glob("/var/etc/nameserver_v6{$realifv6}");
     } else {
         $dns_listany = glob('/var/etc/nameserver_*');
     }
