@@ -31,6 +31,7 @@ namespace OPNsense\Firewall\Api;
 
 use \OPNsense\Base\ApiMutableModelControllerBase;
 use \OPNsense\Core\Backend;
+use \OPNsense\Base\UserException;
 
 /**
  * @package OPNsense\Firewall
@@ -197,11 +198,12 @@ class AliasController extends ApiMutableModelControllerBase
         if ($this->request->isPost()) {
             $backend = new Backend();
             $backend->configdRun('template reload OPNsense/Filter');
-            $backend->configdRun("filter reload");
-            $bckresult = strtolower(
-                trim($backend->configdRun("filter refresh_aliases"))
-            );
-            return array("status" => $bckresult);
+            $backend->configdRun("filter reload skip_alias");
+            $bckresult = json_decode($backend->configdRun("filter refresh_aliases"), true);
+            if (!empty($bckresult['messages'])) {
+                throw new UserException(implode("\n", $bckresult['messages']), gettext("Alias"));
+            }
+            return array("status" => "ok");
         } else {
             return array("status" => "failed");
         }

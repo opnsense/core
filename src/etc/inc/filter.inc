@@ -169,7 +169,7 @@ function filter_delete_states_for_down_gateways()
     }
 }
 
-function filter_configure_sync($verbose = false, $flush_states = false)
+function filter_configure_sync($verbose = false, $flush_states = false, $load_aliases = true)
 {
     global $config;
 
@@ -509,8 +509,10 @@ function filter_configure_sync($verbose = false, $flush_states = false)
         flush();
     }
 
-    configd_run('template reload OPNsense/Filter');
-    configd_run('filter refresh_aliases', true);
+    if ($load_aliases) {
+        configd_run('template reload OPNsense/Filter');
+        configd_run('filter refresh_aliases', true);
+    }
 
     if ($verbose) {
         echo "done.\n";
