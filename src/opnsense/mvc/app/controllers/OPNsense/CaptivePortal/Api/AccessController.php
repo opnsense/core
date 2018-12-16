@@ -41,10 +41,11 @@ class AccessController extends ApiControllerBase
 {
     /**
      * request client session data
-     * @param $zoneid captive portal zone
+     * @param string $zoneid captive portal zone
      * @return array
+     * @throws \OPNsense\Base\ModelException
      */
-    private function clientSession($zoneid)
+    private function clientSession(string $zoneid)
     {
         $backend = new Backend();
         $allClientsRaw = $backend->configdpRun(
@@ -100,7 +101,7 @@ class AccessController extends ApiControllerBase
     /**
      * before routing event
      * @param Dispatcher $dispatcher
-     * @return null|bool
+     * @return void
      */
     public function beforeExecuteRoute($dispatcher)
     {
@@ -114,6 +115,7 @@ class AccessController extends ApiControllerBase
      * logon client to zone, must use post type of request
      * @param int|string zone id number
      * @return array
+     * @throws \OPNsense\Base\ModelException
      */
     public function logonAction($zoneid = 0)
     {
@@ -168,7 +170,7 @@ class AccessController extends ApiControllerBase
                 if ($isAuthenticated) {
                     $this->getLogger("captiveportal")->info("AUTH " . $userName .  " (".$clientIp.") zone " . $zoneid);
                     // when authenticated, we have $authServer available to request additional data if needed
-                    $clientSession = $this->clientSession((string)$cpZone->zoneid);
+                    $clientSession = $this->clientSession($cpZone->zoneid);
                     if ($clientSession['clientState'] == 'AUTHORIZED') {
                         // already authorized, return current session
                         return $clientSession;
@@ -222,6 +224,7 @@ class AccessController extends ApiControllerBase
      * logoff client
      * @param int|string zone id number
      * @return array
+     * @throws \OPNsense\Base\ModelException
      */
     public function logoffAction($zoneid = 0)
     {
@@ -257,6 +260,7 @@ class AccessController extends ApiControllerBase
      * retrieve session info
      * @param int|string zone id number
      * @return array
+     * @throws \OPNsense\Base\ModelException
      */
     public function statusAction($zoneid = 0)
     {
