@@ -104,7 +104,7 @@ POSSIBILITY OF SUCH DAMAGE.
          */
         $("#reconfigureAct").click(function(){
             $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall(url="/api/trafficshaper/service/reconfigure", sendData={}, callback=function(data,status) {
+            ajaxCall("/api/trafficshaper/service/reconfigure", {}, function(data,status) {
                 // when done, disable progress animation.
                 $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
 
@@ -130,7 +130,7 @@ POSSIBILITY OF SUCH DAMAGE.
                   action: function(dialogRef){
                       dialogRef.close();
                       $("#flushAct_progress").addClass("fa fa-spinner fa-pulse");
-                      ajaxCall(url="/api/trafficshaper/service/flushreload", sendData={}, callback=function(data,status) {
+                      ajaxCall("/api/trafficshaper/service/flushreload", {}, function(data,status) {
                           // when done, disable progress animation.
                           $("#flushAct_progress").removeClass("fa fa-spinner fa-pulse");
                       });
