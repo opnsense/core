@@ -105,13 +105,12 @@ class AliasUtilController extends ApiControllerBase
 
         if ($this->request->hasPost('searchPhrase') && $this->request->getPost('searchPhrase') !== '') {
             $searchPhrase = $this->request->getPost('searchPhrase');
-            $entries = array_filter($entries, function($value) use ($searchPhrase) {
+            $entries = array_filter($entries, function ($value) use ($searchPhrase) {
                 return strpos($value, $searchPhrase) !== false;
             });
         }
 
-        if (
-            $this->request->hasPost('sort') &&
+        if ($this->request->hasPost('sort') &&
             is_array($this->request->getPost('sort')) &&
             array_key_exists('ip', $this->request->getPost('sort')) &&
             $this->request->getPost('sort')['ip'] === 'desc'
@@ -121,7 +120,7 @@ class AliasUtilController extends ApiControllerBase
             sort($entries);
         }
 
-        $formatted = array_map(function($value) {
+        $formatted = array_map(function ($value) {
             return ['ip' => $value];
         }, array_slice($entries, $offset, $itemsPerPage));
 
