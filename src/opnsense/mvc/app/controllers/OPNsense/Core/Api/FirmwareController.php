@@ -46,14 +46,18 @@ class FirmwareController extends ApiControllerBase
      */
     protected function formatBytes($bytes)
     {
+        if (preg_match('/[^0-9]/', $bytes)) {
+            /* already processed */
+            return $bytes;
+        }
         if ($bytes >= (1024 * 1024 * 1024)) {
-            return sprintf("%d GB", $bytes / (1024 * 1024 * 1024));
+            return sprintf('%.1F%s', $bytes / (1024 * 1024 * 1024), 'GiB');
         } elseif ($bytes >= 1024 * 1024) {
-            return sprintf("%d MB", $bytes / (1024 * 1024));
+            return sprintf('%.1F%s', $bytes / (1024 * 1024), 'MiB');
         } elseif ($bytes >= 1024) {
-            return sprintf("%d KB", $bytes / 1024);
+            return sprintf('%.1F%s', $bytes / 1024, 'KiB');
         } else {
-            return sprintf("%d bytes", $bytes);
+            return sprintf('%d%s', $bytes, 'B');
         }
     }
 
@@ -621,6 +625,7 @@ class FirmwareController extends ApiControllerBase
     /**
      * query package details
      * @return array
+     * @throws \Exception
      */
     public function detailsAction($package)
     {
@@ -657,8 +662,8 @@ class FirmwareController extends ApiControllerBase
         $response = array();
 
         /* allows us to select UI features based on product state */
-        $response['product_version'] = trim(shell_exec('opnsense-version -v'));
-        $response['product_name'] = trim(shell_exec('opnsense-version -n'));
+        list ($response['product_name'], $response['product_version']) =
+            explode(' ', trim(shell_exec('opnsense-version -nv')));
 
         $devel = explode('-', $response['product_name']);
         $devel = count($devel) == 2 ? $devel[1] == 'devel' : false;
@@ -683,15 +688,17 @@ class FirmwareController extends ApiControllerBase
                     $translated[$key] = $expanded[$index++];
                     if (empty($translated[$key])) {
                         $translated[$key] = gettext('N/A');
+                    } elseif ($key == 'flatsize') {
+                        $translated[$key] = $this->formatBytes($translated[$key]);
                     }
                 }
 
                 /* mark remote packages as "provided", local as "installed" */
-                $translated['provided'] = $type == 'remote' ? "1" : "0";
-                $translated['installed'] = $type == 'local' ? "1" : "0";
+                $translated['provided'] = $type == 'remote' ? '1' : '0';
+                $translated['installed'] = $type == 'local' ? '1' : '0';
                 if (isset($packages[$translated['name']])) {
                     /* local iteration, mark package provided */
-                    $translated['provided'] = "1";
+                    $translated['provided'] = '1';
                 }
                 $packages[$translated['name']] = $translated;
 
@@ -734,8 +741,8 @@ class FirmwareController extends ApiControllerBase
         if ($changelogs == null) {
             $changelogs = array();
         } else {
-            $version = trim(shell_exec('opnsense-version -v'));
-            $devel = preg_match('/^\d+\.\d+\.[a-z]/i', $version) ? true : false;
+            /* development strategy for changelog slightly differs from above */
+            $devel = preg_match('/^\d+\.\d+\.[a-z]/i', $response['product_version']) ? true : false;
 
             foreach ($changelogs as $index => &$changelog) {
                 /* skip development items */
