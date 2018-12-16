@@ -29,17 +29,17 @@
  *
  */
 
-
 function file_notice($notice)
 {
     $queue = get_notices();
-    $queue[time()] = array('notice'  => $notice);
+    $queue[time()] = array('notice' => $notice);
     file_put_contents('/tmp/notices', serialize($queue));
 }
 
 function get_notices()
 {
     $toreturn = array();
+
     if (file_exists('/tmp/notices')) {
         $queue = unserialize(file_get_contents('/tmp/notices'));
         if ($queue) {
@@ -50,14 +50,16 @@ function get_notices()
             }
         }
     }
+
     return $toreturn;
 }
 
 function close_notice($id)
 {
     $ids = array();
+
     if (file_exists('/tmp/notices')) {
-        if ($id == "all") {
+        if ($id == 'all') {
             @unlink('/tmp/notices');
         } else {
             $notices = get_notices();
@@ -79,11 +81,13 @@ function close_notice($id)
 function print_notices($notices)
 {
     $toreturn = '';
+
     if (is_array($notices) && count($notices) > 0) {
         foreach ($notices as $notice) {
             $toreturn .= "<li>{$notice['id']} - {$notice['notice']}</li>";
         }
     }
+
     return $toreturn;
 }
 
