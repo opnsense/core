@@ -18,15 +18,7 @@
 /usr/local/etc/inc/interfaces.inc
 /usr/local/etc/inc/interfaces.lib.inc
 /usr/local/etc/inc/legacy_bindings.inc
-/usr/local/etc/inc/notices.basic_sasl_client.inc
-/usr/local/etc/inc/notices.cram_md5_sasl_client.inc
-/usr/local/etc/inc/notices.digest_sasl_client.inc
 /usr/local/etc/inc/notices.inc
-/usr/local/etc/inc/notices.login_sasl_client.inc
-/usr/local/etc/inc/notices.ntlm_sasl_client.inc
-/usr/local/etc/inc/notices.plain_sasl_client.inc
-/usr/local/etc/inc/notices.sasl.inc
-/usr/local/etc/inc/notices.smtp.inc
 /usr/local/etc/inc/plugins.inc
 /usr/local/etc/inc/plugins.inc.d/core.inc
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
@@ -1695,7 +1687,6 @@
 /usr/local/www/system_advanced_firewall.php
 /usr/local/www/system_advanced_misc.php
 /usr/local/www/system_advanced_network.php
-/usr/local/www/system_advanced_notifications.php
 /usr/local/www/system_advanced_sysctl.php
 /usr/local/www/system_authservers.php
 /usr/local/www/system_camanager.php

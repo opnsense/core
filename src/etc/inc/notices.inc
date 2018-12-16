@@ -28,8 +28,6 @@
  *
  */
 
-require_once("notices.sasl.inc");
-require_once("notices.smtp.inc");
 
 /****f* notices/file_notice
  * NAME
@@ -65,7 +63,6 @@ function file_notice($id, $notice, $category = 'General', $url = '', $priority =
 	fwrite($queueout, serialize($queue));
 	fclose($queueout);
 	log_error("New alert found: $notice");
-	notify_via_smtp($notice);
 	return $queuekey;
 }
 
@@ -200,88 +197,4 @@ function are_notices_pending($category = 'all')
 	}
 
 	return false;
-}
-
-/****f* notices/notify_via_smtp
- * NAME
- *   notify_via_smtp
- * INPUTS
- *	 notification string to send as an email
- * RESULT
- *   returns true if message was sent
- ******/
-function notify_via_smtp($message, $force = false) {
-	global $config;
-	if(file_exists("/var/run/booting"))
-		return;
-
-	if(isset($config['notifications']['smtp']['disable']) && !$force)
-		return;
-
-	/* Do NOT send the same message twice */
-	if(file_exists("/var/db/notices_lastmsg.txt")) {
-		$lastmsg = trim(file_get_contents("/var/db/notices_lastmsg.txt"));
-		if($lastmsg == $message)
-			return;
-	}
-
-	/* Store last message sent to avoid spamming */
-	$fd = fopen("/var/db/notices_lastmsg.txt", "w");
-	fwrite($fd, $message);
-	fclose($fd);
-
-	send_smtp_message($message, "{$config['system']['hostname']}.{$config['system']['domain']} - Notification");
-	return;
-}
-
-function send_smtp_message($message, $subject = "(no subject)") {
-	global $config;
-
-	if(!$config['notifications']['smtp']['ipaddress'])
-		return;
-
-	if(!$config['notifications']['smtp']['notifyemailaddress'])
-		return;
-
-	$smtp = new smtp_class;
-
-	$from = "opnsense@{$config['system']['hostname']}.{$config['system']['domain']}";
-	$to = $config['notifications']['smtp']['notifyemailaddress'];
-
-	$smtp->host_name = $config['notifications']['smtp']['ipaddress'];
-	$smtp->host_port = empty($config['notifications']['smtp']['port']) ? 25 : $config['notifications']['smtp']['port'];
-
-	$smtp->direct_delivery = 0;
-	$smtp->ssl = (isset($config['notifications']['smtp']['ssl'])) ? 1 : 0;
-	$smtp->tls = (isset($config['notifications']['smtp']['tls'])) ? 1 : 0;
-	$smtp->debug = 0;
-	$smtp->html_debug = 0;
-	$smtp->localhost=$config['system']['hostname'].".".$config['system']['domain'];
-
-	if($config['notifications']['smtp']['fromaddress'])
-		$from = $config['notifications']['smtp']['fromaddress'];
-
-	// Use SMTP Auth if fields are filled out
-	if($config['notifications']['smtp']['username'] &&
-	   $config['notifications']['smtp']['password']) {
-		$smtp->authentication_mechanism = "PLAIN";
-		$smtp->user = $config['notifications']['smtp']['username'];
-		$smtp->password = $config['notifications']['smtp']['password'];
-	}
-
-	$headers = array(
-		"From: {$from}",
-		"To: {$to}",
-		"Subject: {$subject}",
-		"Date: ".date("r")
-	);
-
-	if($smtp->SendMessage($from, preg_split('/\s*,\s*/', trim($to)), $headers, $message)) {
-		log_error(sprintf('Message sent to %s OK', $to));
-		return;
-	} else {
-		$msg = sprintf('Could not send the message to %s -- Error: %s', $to, $smtp->error);
-		log_error($msg);
-		return ($msg);
-	}
 }
