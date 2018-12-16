@@ -267,19 +267,13 @@ function filter_configure_sync($verbose = false, $flush_states = false)
     }
 
     // prevent redirection on ports with "lock out" protection
-    $lockoutprts = filter_core_antilockout_ports();
-    if (count($lockoutprts) > 0 &&
-        (!empty($cnfint['lan']['if']) || (count($config['interfaces']) == 1 && !empty($cnfint['wan']['if'])))
-    ) {
+    foreach(filter_core_get_antilockout() as $lockoutif => $lockoutprts) {
         foreach ($lockoutprts as $port) {
             $rule = array(
-                "interface" => !empty($cnfint['lan']['if']) ? "lan" : "wan",
+                'interface' => $lockoutif,
                 "nordr" => true,
                 "protocol" => "tcp",
-                "destination" => array(
-                    "network" => !empty($cnfint['lan']['if']) ? "lanip" : "wanip",
-                    "port" => $port
-                ),
+                'destination' => array('network' => "{$lockoutif}ip", 'port' => $port),
                 "descr" => "Anti lockout, prevent redirects for protected ports to this interface ip"
             );
             $fw->registerForwardRule(300, $rule);

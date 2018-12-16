@@ -150,6 +150,8 @@ include("head.inc");
 
 legacy_html_escape_form_data($a_nat);
 
+$lockout_spec = filter_core_get_antilockout();
+
 $main_buttons = array(
     array('label' => gettext('Add'), 'href' => 'firewall_nat_edit.php'),
 );
@@ -314,33 +316,25 @@ $( document ).ready(function() {
                   </tr>
                 </thead>
                 <tbody>
-<?php           if (isset($config['interfaces']['lan'])) {
-                    $lockout_intf_name = empty($config['interfaces']['lan']['descr']) ? "LAN" :$config['interfaces']['lan']['descr'];
-                } elseif (count($config['interfaces']) == 1 && isset($config['interfaces']['wan'])) {
-                    $lockout_intf_name = empty($config['interfaces']['wan']['descr']) ? "WAN" :$config['interfaces']['wan']['descr'];
-                } else {
-                    $lockout_intf_name = null;
-                }
-
-                // show anti-lockout when enabled
-                if ($lockout_intf_name !== null && !isset($config['system']['webgui']['noantilockout'])):
-?>
-                    <tr>
-                      <td></td>
-                      <td><i class="fa fa-exclamation fa-fw text-success"></i></td>
-                      <td></td>
-                      <td><?=$lockout_intf_name?></td>
-                      <td>TCP</td>
-                      <td class="hidden-xs hidden-sm">*</td>
-                      <td class="hidden-xs hidden-sm">*</td>
-                      <td class="hidden-xs hidden-sm"><?=$lockout_intf_name?> <?=gettext("address");?></td>
-                      <td class="hidden-xs hidden-sm"><?=implode(', ', filter_core_antilockout_ports());?></td>
-                      <td>*</td>
-                      <td>*</td>
-                      <td><?=gettext("Anti-Lockout Rule");?></td>
-                      <td></td>
-                    </tr>
-<?php               endif; ?>
+<?php foreach ($lockout_spec as $lockout_intf => $lockout_prts): ?>
+                  <tr>
+                    <td></td>
+                    <td><i class="fa fa-exclamation fa-fw text-success"></i></td>
+                    <td></td>
+                    <td><?= html_safe(convert_friendly_interface_to_friendly_descr($lockout_intf)) ?></td>
+                    <td>TCP</td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm"><?= html_safe(sprintf(gettext('%s address'), convert_friendly_interface_to_friendly_descr($lockout_intf))) ?></td>
+                    <td class="hidden-xs hidden-sm"><?= html_safe(implode(', ', $lockout_prts)) ?></td>
+                    <td>*</td>
+                    <td>*</td>
+                    <td><?= gettext('Anti-Lockout Rule') ?></td>
+                    <td>
+                      <a href="system_advanced_firewall.php" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
+                    </td>
+                  </tr>
+<?php endforeach ?>
 <?php               $nnats = 0;
                     foreach ($a_nat as $natent):
 ?>
@@ -508,7 +502,7 @@ $( document ).ready(function() {
                   <tfoot>
                     <tr class="hidden-xs hidden-sm">
                       <td colspan="13">
-                        <table style="width:100%; border:0; cellspacing:0; cellpadding:0">
+                        <table style="width:100%; border:0;">
                           <tr>
                             <td><i class="fa fa-play fa-fw text-success"></i></td>
                             <td><?=gettext("Enabled rule"); ?></td>
