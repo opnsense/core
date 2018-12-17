@@ -197,7 +197,10 @@ include("head.inc");
             <div class="table-responsive">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <td colspan="2"><strong><?= gettext('Configuration Synchronization Settings (XMLRPC Sync)') ?></strong></td>
+                  <td colspan="2">
+                    <strong><?= gettext('Configuration Synchronization Settings (XMLRPC Sync)') ?></strong>
+                    <small><a href="/status_habackup.php"><?=gettext("Perform synchronization");?> </a></small>
+                  </td>
                 </tr>
                 <tr>
                   <td style="width:22%"><a id="help_for_synchronizetoip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Synchronize Config to IP') ?></td>
@@ -243,7 +246,7 @@ include("head.inc");
                   <td>
                     <input type="checkbox" name="synchronizeusers" value="on" <?=!empty($pconfig['synchronizeusers']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_synchronizeusers">
-                      <?=gettext('Automatically sync the users and groups over to the other HA host when changes are made.') ?>
+                      <?=gettext('Synchronize the users and groups over to the other HA host.') ?>
                     </div>
                   </td>
                 </tr>
@@ -252,7 +255,7 @@ include("head.inc");
                   <td>
                     <input type="checkbox" name='synchronizeauthservers' value="on" <?=!empty($pconfig['synchronizeauthservers']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_synchronizeauthservers">
-                      <?=gettext('Automatically sync the authentication servers (e.g. LDAP, RADIUS) over to the other HA host when changes are made.') ?>
+                      <?=gettext('Synchronize the authentication servers (e.g. LDAP, RADIUS) over to the other HA host.') ?>
                     </div>
                   </td>
                 </tr>
@@ -261,7 +264,7 @@ include("head.inc");
                   <td>
                     <input type="checkbox" name="synchronizecerts" value="on" <?=!empty($pconfig['synchronizecerts']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_synchronizecerts">
-                      <?=gettext('Automatically sync the Certificate Authorities, Certificates, and Certificate Revocation Lists over to the other HA host when changes are made.') ?>
+                      <?=gettext('Synchronize the Certificate Authorities, Certificates, and Certificate Revocation Lists over to the other HA host.') ?>
                     </div>
                   </td>
                 </tr>
@@ -270,7 +273,7 @@ include("head.inc");
                   <td>
                     <input type="checkbox" name="synchronizerules" value="on" <?=!empty($pconfig['synchronizerules']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_synchronizerules">
-                      <?=gettext('Automatically sync the firewall rules to the other HA host when changes are made.') ?>
+                      <?=gettext('Synchronize the firewall rules to the other HA host.') ?>
                     </div>
                   </td>
                 </tr>
@@ -279,7 +282,7 @@ include("head.inc");
                   <td>
                     <input type="checkbox" name="synchronizeschedules" value="on" <?=!empty($pconfig['synchronizeschedules']) ? "checked=\"checked\"" :"";?> />
                     <div class="hidden" data-for="help_for_synchronizeschedules">
-                      <?=gettext('Automatically sync the firewall schedules to the other HA host when changes are made.') ?>
+                      <?=gettext('Synchronize the firewall schedules to the other HA host.') ?>
                     </div>
                   </td>
                 </tr>
@@ -288,7 +291,7 @@ include("head.inc");
                   <td>
                     <input type="checkbox" name="synchronizealiases" value="on" <?=!empty($pconfig['synchronizealiases']) ? "checked=\"checked\"" : "";?>/>
                     <div class="hidden" data-for="help_for_synchronizealiases">
-                      <?=gettext('Automatically sync the aliases over to the other HA host when changes are made.') ?>
+                      <?=gettext('Synchronize the aliases over to the other HA host.') ?>
                     </div>
                   </td>
                 </tr>
@@ -297,7 +300,7 @@ include("head.inc");
                   <td>
                     <input type="checkbox" name="synchronizenat" value="on" <?=!empty($pconfig['synchronizenat']) ? "checked=\"checked\"" :"";?> />
                     <div class="hidden" data-for="help_for_synchronizenat">
-                      <?=gettext('Automatically sync the NAT rules over to the other HA host when changes are made.') ?>
+                      <?=gettext('Synchronize the NAT rules over to the other HA host.') ?>
                     </div>
                   </td>
                 </tr>
@@ -306,7 +309,7 @@ include("head.inc");
                   <td>
                     <input type="checkbox" name="synchronizedhcpd" value="on" <?=!empty($pconfig['synchronizedhcpd']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_synchronizedhcpd">
-                      <?=gettext('Automatically sync the DHCP Server settings over to the other HA host when changes are made. This only applies to DHCP for IPv4.') ?>
+                      <?=gettext('Synchronize the DHCP Server settings over to the other HA host. This only applies to DHCP for IPv4.') ?>
                     </div>
                   </td>
                 </tr>
@@ -315,7 +318,7 @@ include("head.inc");
                   <td>
                     <input type="checkbox" name="synchronizestaticroutes" value="on" <?=!empty($pconfig['synchronizestaticroutes']) ? "checked=\"checked\"" :"";?> />
                     <div class="hidden" data-for="help_for_synchronizestaticroutes">
-                      <?=gettext('Automatically sync the Static Route configuration to the other HA host when changes are made.') ?>
+                      <?=gettext('Synchronize the Static Route configuration to the other HA host.') ?>
                     </div>
                   </td>
                 </tr>
@@ -324,7 +327,7 @@ include("head.inc");
                   <td>
                     <input type="checkbox" name="synchronizevirtualip" value="on" <?=!empty($pconfig['synchronizevirtualip']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_synchronizevirtualip">
-                      <?=gettext('Automatically sync the CARP Virtual IPs to the other HA host when changes are made.') ?>
+                      <?=gettext('Synchronize the CARP Virtual IPs to the other HA host.') ?>
                     </div>
                   </td>
                 </tr>
