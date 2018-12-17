@@ -45,14 +45,13 @@ if (!strstr($subsystem, '@')) {
     exit(1);
 }
 
-list($vhid, $iface) = explode("@", $subsystem);
+list ($vhid, $iface) = explode('@', $subsystem);
 
 $friendly = convert_real_interface_to_friendly_interface_name($iface);
 $carp_iface = "{$friendly}_vip{$vhid}";
 $friendly_descr = convert_friendly_interface_to_friendly_descr($carp_iface);
-$notificationmsg = sprintf('Carp cluster member "%s (%s)" has resumed the state "%s" for vhid %s', $friendly_descr, $subsystem, $type, $vhid);
 
-log_error($notificationmsg);
+log_error(sprintf('Carp cluster member "%s (%s)" has resumed the state "%s" for vhid %s', $friendly_descr, $subsystem, $type, $vhid));
 
 switch ($type) {
     case 'MASTER':
