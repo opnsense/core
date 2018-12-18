@@ -49,7 +49,7 @@ CORE_PYTHON2?=	27
 CORE_PYTHON3?=	36
 CORE_RADVD?=	1
 CORE_SQUID?=	3
-CORE_SURICATA?=	-devel
+CORE_SURICATA?=	# empty
 
 _FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
 FLAVOUR?=	${_FLAVOUR:[1]}
