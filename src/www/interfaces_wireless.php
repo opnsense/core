@@ -33,7 +33,7 @@ function clone_inuse($cloneif)
 {
     global $config;
 
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $if => $unused) {
+    foreach (array_keys(legacy_config_get_interfaces(['virtual' => false])) as $if) {
         if ($config['interfaces'][$if]['if'] == $cloneif) {
             return true;
         }

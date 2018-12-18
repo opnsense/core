@@ -702,7 +702,7 @@ function unbound_acls_subnets()
     /* add our networks for active interfaces including localhost */
     $subnets = array('127.0.0.1/8', '::1/64');
 
-    foreach ($active_interfaces as $ubif => $unused) {
+    foreach (array_keys($active_interfaces) as $ubif) {
         foreach (legacy_getall_interface_addresses(get_real_interface($ubif)) as $subnet) {
             $subnets[] = $subnet;
         }

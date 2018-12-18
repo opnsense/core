@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         $pconfig['passthrough_networks'] = array();
     }
-    foreach (IPSEC_LOG_SUBSYSTEMS as $lkey => $unused) {
+    foreach (array_keys(IPSEC_LOG_SUBSYSTEMS) as $lkey) {
         if (!empty($config['ipsec']["ipsec_{$lkey}"])) {
             $pconfig["ipsec_{$lkey}"] = $config['ipsec']["ipsec_{$lkey}"];
         } else {
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['ipsec']['preferoldsa']);
         }
         if (isset($config['ipsec']) && is_array($config['ipsec'])) {
-            foreach (IPSEC_LOG_SUBSYSTEMS as $lkey => $unused) {
+            foreach (array_keys(IPSEC_LOG_SUBSYSTEMS) as $lkey) {
                 if (empty($pconfig["ipsec_{$lkey}"])) {
                     if (isset($config['ipsec']["ipsec_{$lkey}"])) {
                         unset($config['ipsec']["ipsec_{$lkey}"]);

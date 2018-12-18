@@ -105,7 +105,7 @@ $gateways = return_gateways_array();
             <option value="yes" <?= !empty($pconfig['gatewaysinvert']) ? 'selected="selected"' : '' ?>><?= gettext('Show') ?></option>
           </select>
           <select id="gatewaysfilter" name="gatewaysfilter[]" multiple="multiple" class="selectpicker_widget">
-<?php foreach ($gateways as $gwname => $unused): ?>
+<?php foreach (array_keys($gateways) as $gwname): ?>
             <option value="<?= html_safe($gwname) ?>" <?= in_array($gwname, $pconfig['gatewaysfilter']) ? 'selected="selected"' : '' ?>><?= html_safe($gwname) ?></option>
 <?php endforeach;?>
           </select>
@@ -125,7 +125,7 @@ $gateways = return_gateways_array();
     <th><?=gettext('Loss')?></th>
     <th><?=gettext('Status')?></th>
   </tr>
-<?php foreach ($gateways as $gwname => $unused):
+<?php foreach (array_keys($gateways) as $gwname):
       $listed = in_array($gwname, $pconfig['gatewaysfilter']);
       $listed = !empty($pconfig['gatewaysinvert']) ? $listed : !$listed;
       if (!$listed) {

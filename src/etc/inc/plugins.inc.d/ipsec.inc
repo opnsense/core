@@ -810,7 +810,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $srcip = null;
                     $local_subnet = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
                     if (is_ipaddrv6($ph2ent['pinghost'])) {
-                        foreach ($iflist as $ifent => $unused) {
+                        foreach (array_keys($iflist) as $ifent) {
                             $interface_ip = get_interface_ipv6($ifent);
                             if (!is_ipaddrv6($interface_ip)) {
                                 continue;
@@ -821,7 +821,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                             }
                         }
                     } else {
-                        foreach ($iflist as $ifent => $unused) {
+                        foreach (array_keys($iflist) as $ifent) {
                             $interface_ip = get_interface_ip($ifent);
                             if (!is_ipaddrv4($interface_ip)) {
                                 continue;
@@ -888,7 +888,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
         // Debugging configuration
         // lkey is the log key, which is a three-letter abbreviation of the subsystem to log, e.g. `ike`.
         // The value will be a number between -1 (silent) and 4 (highest verbosity).
-        foreach (IPSEC_LOG_SUBSYSTEMS as $lkey => $unused) {
+        foreach (array_keys(IPSEC_LOG_SUBSYSTEMS) as $lkey) {
             if (isset($config['ipsec']["ipsec_{$lkey}"]) && is_numeric($config['ipsec']["ipsec_{$lkey}"]) &&
                 array_key_exists(intval($config['ipsec']["ipsec_{$lkey}"]), IPSEC_LOG_LEVELS)) {
                 $strongswanTree['charon']['syslog']['daemon'][$lkey] = $config['ipsec']["ipsec_{$lkey}"];

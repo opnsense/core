@@ -42,7 +42,7 @@ function available_interfaces($selected_id=null)
     global $config;
     // configured interfaces
     $configured_interfaces = array();
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $intf => $unused) {
+    foreach (array_keys(legacy_config_get_interfaces(['virtual' => false])) as $intf) {
         $configured_interfaces[] = get_real_interface($intf);
     }
     // lagg members from other lagg interfaces
