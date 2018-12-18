@@ -291,7 +291,7 @@ function services_radvd_configure($verbose = false, $blacklist = array())
     }
 
     /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
-    foreach (get_configured_interface_with_descr() as $if => $unused) {
+    foreach (array_keys(get_configured_interface_with_descr()) as $if) {
         if (!isset($config['interfaces'][$if]['track6-interface'])) {
             continue;
         } elseif (empty($config['interfaces'][$config['interfaces'][$if]['track6-interface']])) {
@@ -1122,7 +1122,7 @@ function services_dhcpdv6_configure($verbose = false, $blacklist = array())
     }
 
     /* we add a fake entry for interfaces that are set to track6 another WAN */
-    foreach ($iflist as $ifname => $unused) {
+    foreach (array_keys($iflist) as $ifname) {
         /* Do not put in the config an interface which is down */
         if (isset($blacklist[$ifname])) {
             continue;
@@ -1506,7 +1506,7 @@ function services_dhcrelay_configure($verbose = false)
         unset($destif);
 
         /* XXX runs multiple times because of server address loop :( */
-        foreach ($iflist as $ifname => $unused) {
+        foreach (array_keys($iflist) as $ifname) {
             $realif = get_real_interface($ifname);
             $subnet = find_interface_network($realif);
             if (!is_subnetv4($subnet)) {
@@ -1628,7 +1628,7 @@ function services_dhcrelay6_configure($verbose = false)
         unset($destif);
 
         /* XXX runs multiple times because of server address loop :( */
-        foreach ($iflist as $ifname => $unused) {
+        foreach (array_keys($iflist) as $ifname) {
             $realif = get_real_interface($ifname, 'inet6');
             $subnet = find_interface_networkv6($realif);
             if (!is_subnetv6($subnet)) {

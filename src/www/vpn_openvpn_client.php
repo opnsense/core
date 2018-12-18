@@ -213,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $server_addr_a = array();
         $server_port_a = array();
 
-        foreach ($pconfig['server_addr'] as $i => $unused) {
+        foreach (array_keys($pconfig['server_addr']) as $i) {
             if (empty($pconfig['server_addr'][$i]) && empty($pconfig['server_port'][$i])) {
                 continue;
             }
@@ -1190,7 +1190,7 @@ $( document ).ready(function() {
               $server_addr_a = explode(',', $client['server_addr']);
               $server_port_a = explode(',', $client['server_port']);
               $server = array();
-              foreach ($server_addr_a as $j => $unused) {
+              foreach (array_keys($server_addr_a) as $j) {
                   $server[] = "{$server_addr_a[$j]}:{$server_port_a[$j]}";
               } ?>
               <tr>

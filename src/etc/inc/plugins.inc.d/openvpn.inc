@@ -825,7 +825,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         // The remote server
         $server_addr_a = explode(',', $settings['server_addr']);
         $server_port_a = explode(',', $settings['server_port']);
-        foreach ($server_addr_a as $i => $unused) {
+        foreach (array_keys($server_addr_a) as $i) {
             $conf .= "remote {$server_addr_a[$i]} {$server_port_a[$i]}\n";
         }
 

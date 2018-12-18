@@ -278,7 +278,7 @@ function interfaces_create_wireless_clones($verbose = false)
         flush();
     }
 
-    foreach (get_configured_interface_with_descr() as $if => $unused) {
+    foreach (array_keys(get_configured_interface_with_descr()) as $if) {
         $realif = $config['interfaces'][$if]['if'];
         if (is_interface_wireless($realif)) {
             interface_wireless_clone(interface_get_wireless_clone($realif), $config['interfaces'][$if]);
@@ -858,7 +858,7 @@ function interface_gif_configure(&$gif, $gifkey = "")
 
     interfaces_bring_up($gifif);
 
-    foreach (get_configured_interface_with_descr() as $ifname => $unused) {
+    foreach (array_keys(get_configured_interface_with_descr()) as $ifname) {
         if ($config['interfaces'][$ifname]['if'] == $gifif) {
             if (get_interface_gateway($ifname) || get_interface_gateway_v6($ifname)) {
                 system_routing_configure(false, $ifname);
@@ -1104,11 +1104,11 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         }
     }
 
-    foreach ($arpflush as $dev => $unused) {
+    foreach (array_keys($arpflush) as $dev) {
         mwexecf('/usr/sbin/arp -d -i %s -a', $dev);
     }
 
-    foreach ($pfctlflush as $dev => $unused) {
+    foreach (array_keys($pfctlflush) as $dev) {
         log_error("Clearing states for stale {$interface} route on {$dev}");
         mwexecf('/sbin/pfctl -i %s -Fs', $dev);
     }
@@ -1787,7 +1787,7 @@ function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false)
 
     $baseif = interface_get_wireless_base($ifcfg['if']);
 
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $if => $unused) {
+    foreach (array_keys(legacy_config_get_interfaces(['virtual' => false])) as $if) {
         if ($baseif == interface_get_wireless_base($config['interfaces'][$if]['if']) && $ifcfg['if'] != $config['interfaces'][$if]['if']) {
             if (isset($config['interfaces'][$if]['wireless']['standard']) || $sync_changes) {
                 foreach ($shared_settings as $setting) {
@@ -3759,7 +3759,7 @@ function get_interface_number_track6($wanif, $targetif)
     $list = link_interface_to_track6($wanif);
     $number = 0;
 
-    foreach ($list as $lanif => $unused) {
+    foreach (array_keys($list) as $lanif) {
         if ($lanif == $targetif) {
             return $number;
         }
