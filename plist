@@ -66,6 +66,7 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20171219
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/opnsense-update.deciso.com.20180627
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20180614
+/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20181218
 /usr/local/etc/rc
 /usr/local/etc/rc.bootup
 /usr/local/etc/rc.configure_firmware
@@ -304,6 +305,7 @@
 /usr/local/opnsense/contrib/simplepie/phpunit.xml.dist
 /usr/local/opnsense/contrib/tzdata/iso3166.tab
 /usr/local/opnsense/contrib/tzdata/zone.tab
+/usr/local/opnsense/firmware-upgrade
 /usr/local/opnsense/mvc/app/cache/README
 /usr/local/opnsense/mvc/app/config/config.php
 /usr/local/opnsense/mvc/app/config/loader.php
