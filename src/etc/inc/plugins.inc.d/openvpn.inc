@@ -874,12 +874,13 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         }
     }
 
-    // Add remote network route if set
-    if (openvpn_validate_cidr($settings['remote_network'], "", true, "ipv4") === false) {
-        $conf .= openvpn_gen_routes($settings['remote_network'], "ipv4", false);
+    if (!empty($settings['remote_network']) &&
+        openvpn_validate_cidr($settings['remote_network'], '', true, 'ipv4') === false) {
+        $conf .= openvpn_gen_routes($settings['remote_network'], 'ipv4', false);
     }
-    if (openvpn_validate_cidr($settings['remote_networkv6'], "", true, "ipv6") === false) {
-        $conf .= openvpn_gen_routes($settings['remote_networkv6'], "ipv6", false);
+    if (!empty($settings['remote_networkv6']) &&
+        openvpn_validate_cidr($settings['remote_networkv6'], '', true, 'ipv6') === false) {
+        $conf .= openvpn_gen_routes($settings['remote_networkv6'], 'ipv6', false);
     }
 
     // Write the settings for the keys
@@ -1080,15 +1081,13 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
         $conf .= openvpn_gen_routes($settings['local_networkv6'], "ipv6", true);
     }
 
-    // Add a remote network iroute if set
-    if (!empty($settings['remote_network'])
-      && openvpn_validate_cidr($settings['remote_network'], "", true, "ipv4") === false) {
-        $conf .= openvpn_gen_routes($settings['remote_network'], "ipv4", false, true);
+    if (!empty($settings['remote_network']) &&
+        openvpn_validate_cidr($settings['remote_network'], '', true, 'ipv4') === false) {
+        $conf .= openvpn_gen_routes($settings['remote_network'], 'ipv4', false, true);
     }
-    // Add a remote network iroute if set
-    if (!empty($settings['remote_networkv6'])
-      && openvpn_validate_cidr($settings['remote_networkv6'], "", true, "ipv6") === false) {
-        $conf .= openvpn_gen_routes($settings['remote_networkv6'], "ipv6", false, true);
+    if (!empty($settings['remote_networkv6']) &&
+        openvpn_validate_cidr($settings['remote_networkv6'], '', true, 'ipv6') === false) {
+        $conf .= openvpn_gen_routes($settings['remote_networkv6'], 'ipv6', false, true);
     }
 
     openvpn_add_dhcpopts($settings, $conf);
