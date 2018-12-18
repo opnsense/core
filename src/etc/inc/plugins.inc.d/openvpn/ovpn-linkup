@@ -3,27 +3,33 @@
 # let the configuration system know that the ip has changed.
 # /usr/local/opnsense/service/configd_ctl.py interface newip $interface
 
+ROUTER="/tmp/${1}_router"
 if [ -n "${route_vpn_gateway}" ]; then
-	/bin/echo ${route_vpn_gateway} > /tmp/$1_router
+	/bin/echo ${route_vpn_gateway} > "${ROUTER}"
 elif [ -n "${ifconfig_remote}" ]; then
-	/bin/echo ${ifconfig_remote} > /tmp/$1_router
+	/bin/echo ${ifconfig_remote} > "${ROUTER}"
 elif [ -n "${ifconfig_local}" ]; then
-	/bin/echo ${ifconfig_local} > /tmp/$1_router
+	/bin/echo ${ifconfig_local} > "${ROUTER}"
 elif [ "${dev_type}" = "tun" ]; then
-	/bin/echo ${5} > /tmp/${1}_router
+	/bin/echo ${5} > "${ROUTER}"
 fi
 
+ROUTERV6="${ROUTER}v6"
 if [ -n "${route_ipv6_gateway_1}" ]; then
-	/bin/echo ${route_ipv6_gateway_1} > /tmp/${1}_routerv6
+	/bin/echo ${route_ipv6_gateway_1} > "${ROUTERV6}"
 elif [ -n "${ifconfig_ipv6_remote}" ]; then
-	/bin/echo ${ifconfig_ipv6_remote} > /tmp/${1}_routerv6
+	/bin/echo ${ifconfig_ipv6_remote} > "${ROUTERV6}"
 elif [ -n "${ifconfig_ipv6_local}" ]; then
-	/bin/echo ${ifconfig_ipv6_local} > /tmp/${1}_routerv6
+	/bin/echo ${ifconfig_ipv6_local} > "${ROUTERV6}"
 fi
 
-/usr/bin/touch /tmp/$1up
-/usr/bin/touch /tmp/$1upv6
+/usr/bin/touch "/tmp/${1}up"
+/usr/bin/touch "/tmp/${1}upv6"
 
-/usr/local/opnsense/service/configd_ctl.py interface newip $1
+/usr/local/opnsense/service/configd_ctl.py interface newip "${1}"
+
+# If there's a setting for "additional --up script", then run that, but
+# within a subshell so we don't mess up the containing environment,
+# and we don't cause problems for the other stuff
 
 exit 0
