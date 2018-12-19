@@ -41,6 +41,18 @@ function std_bootgrid_reload(gridId) {
 
 
 /**
+ * show/hide boolean true/false
+ */
+function booleanformatter(column, row, hidetrue, hidefalse) {
+    if (parseInt(row[column.id], 2) === 1) {
+        return "<span class=\"fa fa-check "+hidetrue+"\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
+    } else {
+        return "<span class=\"fa fa-times "+hidefalse+"\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
+    }
+}
+
+
+/**
  * creates new bootgrid object and links actions to our standard templates
  * uses the following data properties to define functionality:
  *      data-editDialog : id of the edit dialog to use (  see base_dialog.volt template for details )
@@ -130,11 +142,16 @@ $.fn.UIBootgrid = function (params) {
                     }
                 },
                 "boolean": function (column, row) {
-                    if (parseInt(row[column.id], 2) === 1) {
-                        return "<span class=\"fa fa-check\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
-                    } else {
-                        return "<span class=\"fa fa-times\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
-                    }
+                    return booleanformatter(column, row, '', '');
+                },
+                "boolean-show-true": function (column, row) {
+                    return booleanformatter(column, row, '', 'hidden');
+                },
+                "boolean-show-false": function (column, row) {
+                    return booleanformatter(column, row, 'hidden', '');
+                },
+                "hyperlink": function (column, row) {
+                    return '<a target="_blank" rel="noopener noreferrer" href="'+encodeURI(row.url)+'">'+row[column.id]+'</a>'
                 },
             }
         };
