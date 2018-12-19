@@ -137,6 +137,23 @@ $.fn.UIBootgrid = function (params) {
                         return "<span class=\"fa fa-times\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
                     }
                 },
+                "boolean-show-true": function (column, row) {
+                    if (parseInt(row[column.id], 2) === 1) {
+                        return "<span class=\"fa fa-check\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
+                    } else {
+                        return "<span class=\"fa fa-times hidden\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
+                    }
+                },
+                "boolean-show-false": function (column, row) {
+                    if (parseInt(row[column.id], 2) === 1) {
+                        return "<span class=\"fa fa-check hidden\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
+                    } else {
+                        return "<span class=\"fa fa-times\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
+                    }
+                },
+                "hyperlink": function (column, row) {
+                    return '<a target="_blank" rel="noopener noreferrer" href="'+encodeURI(row.url)+'">'+row[column.id]+'</a>'
+                },
             }
         };
 
