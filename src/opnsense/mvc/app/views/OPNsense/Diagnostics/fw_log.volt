@@ -27,34 +27,44 @@ POSSIBILITY OF SUCH DAMAGE.
 #}
 
 <script>
+    'use strict';
+
+    let hostnameMap = {};
+
     $( document ).ready(function() {
         var field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban', 'in': 'fa-arrow-right', 'out': 'fa-arrow-left', 'rdr': 'fa-exchange' }
         var interface_descriptions = {};
-        function fetch_log(){
-            var record_spec = [];
-            // read heading, contains field specs
-            $("#grid-log > thead > tr > th ").each(function(){
-                record_spec.push({'column-id': $(this).data('column-id'),
-                                  'type': $(this).data('type'),
-                                  'class': $(this).attr('class')
-                                 });
+        var record_spec = [];
+        // read heading, contains field specs
+        $("#grid-log > thead > tr > th ").each(function () {
+            record_spec.push({
+                'column-id': $(this).data('column-id'),
+                'type': $(this).data('type'),
+                'class': $(this).attr('class')
             });
+        });
+
+        function fetch_log() {
             // read last digest (record hash) from top data row
             var last_digest = $("#grid-log > tbody > tr:first > td:first").text();
             // fetch new log lines and add on top of grid-log
             ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': $("#limit").val()}, function(data, status) {
-                if (data != undefined && data.length > 0) {
+                if (data !== undefined && data.length > 0) {
                     let record;
+                    let addressesToLookUp = [];
+                    let doLookUp = $('#dolookup').is(':checked');
                     while ((record = data.pop()) != null) {
                         if (record['__digest__'] != last_digest) {
                             var log_tr = $("<tr>");
                             log_tr.data('details', record);
                             log_tr.hide();
                             $.each(record_spec, function(idx, field){
-                                var log_td = $('<td>').addClass(field['class']);
-                                var column_name = field['column-id'];
-                                var content = null;
-                                switch (field['type']) {
+                                let column_name = field['column-id'];
+                                let column_type = field['type'];
+                                let log_td = $('<td>').addClass(field['class']);
+                                log_td.attr('data-column-type', column_type);
+                                let content = null;
+                                switch (column_type) {
                                     case 'icon':
                                         var icon = field_type_icons[record[column_name]];
                                         if (icon != undefined) {
@@ -69,13 +79,18 @@ POSSIBILITY OF SUCH DAMAGE.
                                         }
                                         break;
                                     case 'address':
-                                        log_td.text(record[column_name]);
-                                        if (record[column_name+'port'] != undefined) {
+                                        let address = record[column_name]
+                                        log_td.text(address);
+                                        if (record[column_name+'port'] !== undefined) {
                                             if (record['version'] == 6) {
                                                 log_td.text('['+log_td.text()+']:'+record[column_name+'port']);
                                             } else {
                                                 log_td.text(log_td.text()+':'+record[column_name+'port']);
                                             }
+                                        }
+                                        if (doLookUp) {
+                                            log_td.attr('data-address', address);
+                                            addressesToLookUp.push(address);
                                         }
                                         break;
                                     case 'info':
@@ -101,6 +116,11 @@ POSSIBILITY OF SUCH DAMAGE.
                     }
                     // apply filter after load
                     $("#filter").keyup();
+
+                    if (doLookUp && addressesToLookUp.length > 0) {
+                        doLookup(addressesToLookUp);
+                        updateAddressFields();
+                    }
 
                     // limit output, try to keep max X records on screen.
                     var tr_count = 0;
@@ -188,7 +208,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     });
                 }
             });
-        };
+        }
 
         // live filter
         $("#filter").keyup(function(){
@@ -203,14 +223,14 @@ POSSIBILITY OF SUCH DAMAGE.
                         selected_tr.hide();
                     }
                 } catch(e) {
-                    null; // ignore regexp errors
+                    // ignore regexp errors
                 }
             });
         });
 
         // reset log content on limit change, forces a reload
         $("#limit").change(function(){
-            $("#grid-log > tbody").html("<tr/>");
+            $('#grid-log > tbody').html("<tr></tr>");
         });
 
         function poller() {
@@ -229,6 +249,40 @@ POSSIBILITY OF SUCH DAMAGE.
         poller();
 
     });
+
+    function doLookup(addresses) {
+
+        let unknownAddresses = [];
+        $.each(addresses, function(index, address) {
+            if (!hostnameMap.hasOwnProperty(address)) {
+                unknownAddresses.push(address);
+            }
+        });
+
+        if (unknownAddresses.length > 0) {
+            ajaxGet('/api/diagnostics/dns/reverse_lookup', { 'address': unknownAddresses }, function(data, status) {
+                $.each(unknownAddresses, function(index, address) {
+                    // If lookup failed, just add the address itself, so we 1) have something useful to show, and
+                    // 2) don't keep trying to look up the same hostname over and over again.
+                    if (!data.hasOwnProperty(address) || data[address] === undefined) {
+                        hostnameMap[address] = address;
+                    } else {
+                        hostnameMap[address] = data[address];
+                    }
+                });
+            });
+        }
+    }
+
+    function updateAddressFields() {
+        $('td[data-column-type=address]').each(function() {
+            let address = $(this).attr('data-address');
+            if (hostnameMap.hasOwnProperty(address)) {
+                let newVal = $(this).text().replace(address, hostnameMap[address]);
+                $(this).text(newVal);
+            }
+        });
+    }
 </script>
 <style>
     .data-center {
@@ -275,6 +329,12 @@ POSSIBILITY OF SUCH DAMAGE.
                     <option value="2500">2500</option>
                     <option value="5000">5000</option>
                 </select>
+                <div class="checkbox-inline pull-right">
+                    <label>
+                        <input id="dolookup" type="checkbox">
+                        <span class="fa fa-search"></span> {{ lang._('Lookup hostnames') }}
+                    </label>
+                </div>
             </div>
             <div  class="col-xs-12">
                 <hr/>
@@ -295,7 +355,7 @@ POSSIBILITY OF SUCH DAMAGE.
                           </tr>
                         </thead>
                         <tbody>
-                          <tr/>
+                        <tr></tr>
                         </tbody>
                     </table>
                     <br/>
