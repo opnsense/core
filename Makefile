@@ -35,9 +35,9 @@ CORE_REVISION?=	${CORE_COMMIT:[2]}
 CORE_HASH?=	${CORE_COMMIT:[3]}
 
 .if "${CORE_REVISION}" != "" && "${CORE_REVISION}" != "0"
-CORE_PKGVER=	${CORE_VERSION}_${CORE_REVISION}
+CORE_PKGVERSION=	${CORE_VERSION}_${CORE_REVISION}
 .else
-CORE_PKGVER=	${CORE_VERSION}
+CORE_PKGVERSION=	${CORE_VERSION}
 .endif
 
 CORE_ABI?=	18.7
@@ -181,7 +181,7 @@ umount:
 
 manifest:
 	@echo "name: \"${CORE_NAME}\""
-	@echo "version: \"${CORE_PKGVER}\""
+	@echo "version: \"${CORE_PKGVERSION}\""
 	@echo "origin: \"${CORE_ORIGIN}\""
 	@echo "comment: \"${CORE_COMMENT}\""
 	@echo "desc: \"${CORE_HASH}\""
@@ -271,13 +271,13 @@ package: plist-check package-check clean-work
 .for CORE_DEPEND in ${CORE_DEPENDS}
 	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yfA ${CORE_DEPEND}; fi
 .endfor
-	@echo -n ">>> Generating metadata for ${CORE_NAME}-${CORE_PKGVER}..."
+	@echo -n ">>> Generating metadata for ${CORE_NAME}-${CORE_PKGVERSION}..."
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} metadata
 	@echo " done"
-	@echo -n ">>> Staging files for ${CORE_NAME}-${CORE_PKGVER}..."
+	@echo -n ">>> Staging files for ${CORE_NAME}-${CORE_PKGVERSION}..."
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
 	@echo " done"
-	@echo ">>> Packaging files for ${CORE_NAME}-${CORE_PKGVER}:"
+	@echo ">>> Packaging files for ${CORE_NAME}-${CORE_PKGVERSION}:"
 	@PORTSDIR=${.CURDIR} ${PKG} create -v -m ${WRKSRC} -r ${WRKSRC} \
 	    -p ${WRKSRC}/plist -o ${PKGDIR}
 
@@ -381,8 +381,8 @@ mfc:
 	@git checkout master
 
 test: want-phpunit6-php${CORE_PHP}
-	@if [ "$$(${PKG} query %n-%v ${CORE_NAME})" != "${CORE_NAME}-${CORE_PKGVER}" ]; then \
-		echo "Installed version does not match, expected ${CORE_NAME}-${CORE_PKGVER}"; \
+	@if [ "$$(${PKG} query %n-%v ${CORE_NAME})" != "${CORE_NAME}-${CORE_PKGVERSION}" ]; then \
+		echo "Installed version does not match, expected ${CORE_NAME}-${CORE_PKGVERSION}"; \
 		exit 1; \
 	fi
 	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
