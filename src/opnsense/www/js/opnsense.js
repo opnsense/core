@@ -137,11 +137,11 @@ function setFormData(parent,data) {
                         // handle select boxes
                         targetNode.empty(); // flush
                         $.each(node[keypart],function(indxItem, keyItem){
+                            var opt = $("<option>").val(indxItem).text(keyItem["value"]);
                             if (keyItem["selected"] != "0") {
-                                targetNode.append("<option value='"+indxItem+"' selected>" + keyItem["value"] + " </option>");
-                            } else {
-                                targetNode.append("<option value='"+indxItem+"'>" + keyItem["value"] + " </option>");
+                                opt.attr('selected', 'selected');
                             }
+                            targetNode.append(opt);
                         });
                     } else if (targetNode.prop("type") == "checkbox") {
                         // checkbox type
