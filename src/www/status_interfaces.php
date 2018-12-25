@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['if']) && !empty($_POST['submit'])) {
         $interface = $_POST['if'];
         if ($_POST['submit'] == 'remote') {
-            configd_run(exec_safe('interface reconfigure %s', array($interface)));
+            configdp_run('interface reconfigure', array($interface));
         } elseif (!empty($_POST['status']) && $_POST['status'] == 'up') {
             interface_bring_down($interface);
         } else {
@@ -66,9 +66,9 @@ include("head.inc");
         <div class="row">
           <section class="col-xs-12">
 <?php
-            $mac_man = json_decode(configd_run("interface list macdb json"), true);
-            $pfctl_counters = json_decode(configd_run("filter list counters json"), true);
-            $vmstat_interupts = json_decode(configd_run("system list interrupts json"), true);
+            $mac_man = json_decode(configd_run('interface list macdb json'), true);
+            $pfctl_counters = json_decode(configd_run('filter list counters json'), true);
+            $vmstat_interupts = json_decode(configd_run('system list interrupts json'), true);
             $ifsinfo = get_interfaces_info();
             foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifdescr => $ifcfg):
               $ifinfo = $ifsinfo[$ifdescr];

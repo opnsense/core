@@ -369,7 +369,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo $pconfig['name'];
             exit;
         } elseif (!empty($reloadif)) {
-            configd_run("interface reconfigure {$reloadif}");
+            configdp_run('interface reconfigure', array($reloadif));
         }
 
         header(url_safe('Location: /system_gateways.php'));
